@@ -1,0 +1,252 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/fonts.less';
+
+.Body {
+  font-family: 'Source Serif Pro', serif;
+  line-height: 1.4;
+  font-weight: 400;
+  color: @black-text;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: none;
+  margin: 4px 0;
+
+  a[target='_blank'] {
+    &:after {
+      content: '\e673';
+      font-family: 'iconfont' !important;
+      font-size: 80%;
+      font-style: normal;
+      -webkit-font-smoothing: antialiased;
+      margin-left: 4px;
+      vertical-align: middle;
+    }
+  }
+
+  // Heading
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: @font-family;
+    font-weight: 700;
+  }
+
+  h1 {
+    margin: 2.5rem 0 0.3rem;
+    font-size: 160%;
+  }
+
+  h2 {
+    margin: 2.5rem 0 0.3rem;
+    font-size: 140%;
+  }
+
+  h3 {
+    margin: 2rem 0 0.3rem;
+    font-size: 120%;
+  }
+
+  h4 {
+    margin: 1.5rem 0 0.2rem;
+    font-size: 110%;
+  }
+
+  h5 {
+    margin: 1rem 0 0.2rem;
+    font-size: 100%;
+  }
+
+  h6 {
+    margin: 1rem 0 0.2rem;
+    font-size: 90%;
+  }
+
+  // Paragraph
+
+  p {
+    font-size: 18px;
+    line-height: 150%;
+
+    &:not(:last-child) {
+      margin: 0 0 0.5rem 0;
+    }
+  }
+
+  strong,
+  b {
+    color: @black;
+  }
+
+  // List
+
+  ol {
+    list-style-type: decimal;
+  }
+
+  ul {
+    list-style-type: disc;
+  }
+
+  ol,
+  ul {
+    margin-left: 20px;
+
+    li {
+      list-style-position: outside;
+      margin: 8px 0;
+    }
+  }
+
+  // Quote and code
+
+  blockquote {
+    padding-left: 1rem;
+    margin: 0.4rem 0;
+    border-left: 1px solid rgba(0, 0, 0, 0.6);
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  :not(pre) > code {
+    padding: 2px 4px;
+    color: @grey-nightRider;
+    background-color: @white-smoke;
+  }
+
+  pre {
+    overflow: auto;
+    padding: 10px 20px;
+    margin-bottom: 14px;
+    line-height: 1em;
+    background-color: #f7f7f9;
+
+    code {
+      font-size: 16px;
+    }
+  }
+
+  // Table
+
+  table {
+    width: 100%;
+    display: block;
+    overflow: auto;
+
+    tr > th {
+      text-align: left;
+      background-color: @post-table-background-color;
+    }
+
+    tr > th,
+    td {
+      padding: 4px 12px;
+      word-wrap: break-word;
+      vertical-align: middle;
+      word-break: normal;
+    }
+
+    tr:nth-child(even) {
+      td {
+        background-color: @post-table-background-color;
+      }
+    }
+  }
+
+  // Position
+
+  div.pull-left {
+    float: left;
+    padding-right: 1rem;
+    max-width: 50%;
+  }
+
+  div.pull-right {
+    float: right;
+    padding-left: 1rem;
+    max-width: 50%;
+  }
+
+  div.text-justify {
+    text-align: justify;
+  }
+
+  div.text-right {
+    text-align: right;
+  }
+
+  div.text-center {
+    text-align: center;
+  }
+
+  div.text-rtl {
+    direction: rtl;
+  }
+
+  // Images
+
+  img {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: none;
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: 20px;
+  }
+
+  p > img:first-child {
+    margin-top: 0;
+  }
+
+  summary {
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  hr {
+    clear: both;
+    margin: 20px auto;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: @base-border;
+  }
+
+  &:after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+
+  &--full {
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.5;
+
+    p:not(:last-child) {
+      margin: 0 0 1.5rem 0;
+    }
+  }
+
+  @media @small {
+    p {
+      font-size: 100%;
+    }
+  }
+}
+
+// This one is required to let rtl readers
+// to read both ltr and rtl (using .text-rtl) posts
+div[data-dir='rtl'] .Body {
+  direction: ltr;
+}
+
+@import 'Body-nightmode';

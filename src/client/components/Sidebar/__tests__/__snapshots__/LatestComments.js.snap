@@ -1,0 +1,576 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<LatestComments /> renders without exploding 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <LatestComments
+    comments={
+      Array [
+        Object {
+          "author": "sekhmet",
+          "created": "2017-10-17T09:52:51",
+          "id": 0,
+          "text": "hello world",
+        },
+        Object {
+          "author": "fabien",
+          "created": "2017-10-11T10:52:51",
+          "id": 1,
+          "text": "hi Busy",
+        },
+      ]
+    }
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "children": <div
+        className="LatestComments__container"
+      >
+        <h4
+          className="LatestComments__title"
+        >
+          <i
+            className="iconfont icon-time LatestComments__icon"
+          />
+           
+          <FormattedMessage
+            defaultMessage="Latest Comments"
+            id="latest_comments"
+            values={Object {}}
+          />
+        </h4>
+        <div
+          className="LatestComments__divider"
+        />
+        <RenderComment
+          author="sekhmet"
+          created="2017-10-17T09:52:51"
+          id={0}
+          text="hello world"
+        />
+        <RenderComment
+          author="fabien"
+          created="2017-10-11T10:52:51"
+          id={1}
+          text="hi Busy"
+        />
+        <div
+          className="LatestComments__divider"
+        />
+        <h4
+          className="LatestComments__more"
+        >
+          <Link
+            replace={false}
+            to="/latest-comments"
+          >
+            <FormattedMessage
+              defaultMessage="See All Comments"
+              id="see_all_comments"
+              values={Object {}}
+            />
+          </Link>
+        </h4>
+      </div>,
+      "className": "LatestComments",
+    },
+    "ref": null,
+    "rendered": Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": Array [
+          <h4
+            className="LatestComments__title"
+          >
+            <i
+              className="iconfont icon-time LatestComments__icon"
+            />
+             
+            <FormattedMessage
+              defaultMessage="Latest Comments"
+              id="latest_comments"
+              values={Object {}}
+            />
+          </h4>,
+          <div
+            className="LatestComments__divider"
+          />,
+          Array [
+            <RenderComment
+              author="sekhmet"
+              created="2017-10-17T09:52:51"
+              id={0}
+              text="hello world"
+            />,
+            <RenderComment
+              author="fabien"
+              created="2017-10-11T10:52:51"
+              id={1}
+              text="hi Busy"
+            />,
+          ],
+          <div
+            className="LatestComments__divider"
+          />,
+          <h4
+            className="LatestComments__more"
+          >
+            <Link
+              replace={false}
+              to="/latest-comments"
+            >
+              <FormattedMessage
+                defaultMessage="See All Comments"
+                id="see_all_comments"
+                values={Object {}}
+              />
+            </Link>
+          </h4>,
+        ],
+        "className": "LatestComments__container",
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": Array [
+              <i
+                className="iconfont icon-time LatestComments__icon"
+              />,
+              " ",
+              <FormattedMessage
+                defaultMessage="Latest Comments"
+                id="latest_comments"
+                values={Object {}}
+              />,
+            ],
+            "className": "LatestComments__title",
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "className": "iconfont icon-time LatestComments__icon",
+              },
+              "ref": null,
+              "rendered": null,
+              "type": "i",
+            },
+            " ",
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "defaultMessage": "Latest Comments",
+                "id": "latest_comments",
+                "values": Object {},
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+          ],
+          "type": "h4",
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "className": "LatestComments__divider",
+          },
+          "ref": null,
+          "rendered": null,
+          "type": "div",
+        },
+        Object {
+          "instance": null,
+          "key": "0",
+          "nodeType": "function",
+          "props": Object {
+            "author": "sekhmet",
+            "created": "2017-10-17T09:52:51",
+            "id": 0,
+            "text": "hello world",
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": "1",
+          "nodeType": "function",
+          "props": Object {
+            "author": "fabien",
+            "created": "2017-10-11T10:52:51",
+            "id": 1,
+            "text": "hi Busy",
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "className": "LatestComments__divider",
+          },
+          "ref": null,
+          "rendered": null,
+          "type": "div",
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": <Link
+              replace={false}
+              to="/latest-comments"
+            >
+              <FormattedMessage
+                defaultMessage="See All Comments"
+                id="see_all_comments"
+                values={Object {}}
+              />
+            </Link>,
+            "className": "LatestComments__more",
+          },
+          "ref": null,
+          "rendered": Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "class",
+            "props": Object {
+              "children": <FormattedMessage
+                defaultMessage="See All Comments"
+                id="see_all_comments"
+                values={Object {}}
+              />,
+              "replace": false,
+              "to": "/latest-comments",
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "defaultMessage": "See All Comments",
+                "id": "see_all_comments",
+                "values": Object {},
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            "type": [Function],
+          },
+          "type": "h4",
+        },
+      ],
+      "type": "div",
+    },
+    "type": "div",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": <div
+          className="LatestComments__container"
+        >
+          <h4
+            className="LatestComments__title"
+          >
+            <i
+              className="iconfont icon-time LatestComments__icon"
+            />
+             
+            <FormattedMessage
+              defaultMessage="Latest Comments"
+              id="latest_comments"
+              values={Object {}}
+            />
+          </h4>
+          <div
+            className="LatestComments__divider"
+          />
+          <RenderComment
+            author="sekhmet"
+            created="2017-10-17T09:52:51"
+            id={0}
+            text="hello world"
+          />
+          <RenderComment
+            author="fabien"
+            created="2017-10-11T10:52:51"
+            id={1}
+            text="hi Busy"
+          />
+          <div
+            className="LatestComments__divider"
+          />
+          <h4
+            className="LatestComments__more"
+          >
+            <Link
+              replace={false}
+              to="/latest-comments"
+            >
+              <FormattedMessage
+                defaultMessage="See All Comments"
+                id="see_all_comments"
+                values={Object {}}
+              />
+            </Link>
+          </h4>
+        </div>,
+        "className": "LatestComments",
+      },
+      "ref": null,
+      "rendered": Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": Array [
+            <h4
+              className="LatestComments__title"
+            >
+              <i
+                className="iconfont icon-time LatestComments__icon"
+              />
+               
+              <FormattedMessage
+                defaultMessage="Latest Comments"
+                id="latest_comments"
+                values={Object {}}
+              />
+            </h4>,
+            <div
+              className="LatestComments__divider"
+            />,
+            Array [
+              <RenderComment
+                author="sekhmet"
+                created="2017-10-17T09:52:51"
+                id={0}
+                text="hello world"
+              />,
+              <RenderComment
+                author="fabien"
+                created="2017-10-11T10:52:51"
+                id={1}
+                text="hi Busy"
+              />,
+            ],
+            <div
+              className="LatestComments__divider"
+            />,
+            <h4
+              className="LatestComments__more"
+            >
+              <Link
+                replace={false}
+                to="/latest-comments"
+              >
+                <FormattedMessage
+                  defaultMessage="See All Comments"
+                  id="see_all_comments"
+                  values={Object {}}
+                />
+              </Link>
+            </h4>,
+          ],
+          "className": "LatestComments__container",
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": Array [
+                <i
+                  className="iconfont icon-time LatestComments__icon"
+                />,
+                " ",
+                <FormattedMessage
+                  defaultMessage="Latest Comments"
+                  id="latest_comments"
+                  values={Object {}}
+                />,
+              ],
+              "className": "LatestComments__title",
+            },
+            "ref": null,
+            "rendered": Array [
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "className": "iconfont icon-time LatestComments__icon",
+                },
+                "ref": null,
+                "rendered": null,
+                "type": "i",
+              },
+              " ",
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "defaultMessage": "Latest Comments",
+                  "id": "latest_comments",
+                  "values": Object {},
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+            ],
+            "type": "h4",
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "className": "LatestComments__divider",
+            },
+            "ref": null,
+            "rendered": null,
+            "type": "div",
+          },
+          Object {
+            "instance": null,
+            "key": "0",
+            "nodeType": "function",
+            "props": Object {
+              "author": "sekhmet",
+              "created": "2017-10-17T09:52:51",
+              "id": 0,
+              "text": "hello world",
+            },
+            "ref": null,
+            "rendered": null,
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": "1",
+            "nodeType": "function",
+            "props": Object {
+              "author": "fabien",
+              "created": "2017-10-11T10:52:51",
+              "id": 1,
+              "text": "hi Busy",
+            },
+            "ref": null,
+            "rendered": null,
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "className": "LatestComments__divider",
+            },
+            "ref": null,
+            "rendered": null,
+            "type": "div",
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": <Link
+                replace={false}
+                to="/latest-comments"
+              >
+                <FormattedMessage
+                  defaultMessage="See All Comments"
+                  id="see_all_comments"
+                  values={Object {}}
+                />
+              </Link>,
+              "className": "LatestComments__more",
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "children": <FormattedMessage
+                  defaultMessage="See All Comments"
+                  id="see_all_comments"
+                  values={Object {}}
+                />,
+                "replace": false,
+                "to": "/latest-comments",
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "defaultMessage": "See All Comments",
+                  "id": "see_all_comments",
+                  "values": Object {},
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              "type": [Function],
+            },
+            "type": "h4",
+          },
+        ],
+        "type": "div",
+      },
+      "type": "div",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;

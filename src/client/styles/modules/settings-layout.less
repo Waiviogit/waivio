@@ -1,0 +1,44 @@
+@import (reference) './variables.less';
+
+.settings-layout {
+  position: relative;
+  padding: 0 @mobile-padding;
+
+  @media @large {
+    padding: auto;
+  }
+
+  &:after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+
+  .left {
+    width: @left-width;
+  }
+
+  .leftContainer {
+    float: left;
+    display: none;
+    width: @left-width;
+
+    @media @medium {
+      display: block;
+    }
+  }
+
+  .center {
+    float: left;
+    width: 100%;
+
+    @media @small {
+      width: calc(100% - @margin);
+    }
+
+    @media @medium {
+      width: calc(100% - (@left-width + @margin));
+      margin-left: @margin;
+    }
+  }
+}

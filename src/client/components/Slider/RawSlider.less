@@ -1,0 +1,24 @@
+@import (reference) '../../styles/modules/variables.less';
+
+.RawSlider {
+  max-width: 560px;
+  padding-top: 8px;
+
+  @media @small {
+    padding-top: 4px;
+  }
+
+  &__presets {
+    padding: 16px 0;
+
+    & > .ant-radio-group {
+      width: 100%;
+
+      & > .ant-radio-button-wrapper {
+        min-width: 20%;
+        text-align: center;
+        padding: 0;
+      }
+    }
+  }
+}

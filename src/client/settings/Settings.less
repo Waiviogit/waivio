@@ -1,0 +1,61 @@
+.Settings {
+  padding-bottom: 24px;
+
+  &__section {
+    &:not(:first-child) {
+      margin-top: 16px;
+    }
+
+    &__inputs {
+      padding-top: 8px;
+
+      .ant-form-item {
+        margin-bottom: 8px;
+      }
+    }
+
+    & > h3:not(:first-of-type) {
+      margin-top: 16px;
+    }
+
+    & > p {
+      color: #99aab5;
+      &:last-of-type {
+        margin-bottom: 4px;
+      }
+    }
+
+    .ant-radio-wrapper {
+      display: block;
+
+      :nth-child(2) {
+        vertical-align: middle;
+      }
+    }
+
+    &__component {
+      margin-top: 16px;
+    }
+
+    &__checkbox {
+      .ant-checkbox-wrapper {
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+
+  &__prefix-icon {
+    font-size: 14px !important;
+  }
+
+  .Action {
+    margin-top: 16px;
+    width: auto;
+  }
+
+  &__version {
+    margin-top: 16px;
+    width: auto;
+  }
+}

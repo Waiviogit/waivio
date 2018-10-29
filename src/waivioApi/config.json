@@ -1,0 +1,5 @@
+{
+  "API_HOST_production": "https://",
+  "API_HOST_development": "http://localhost:3000",
+  "createObject": "/create/object"
+}

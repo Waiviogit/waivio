@@ -1,0 +1,40 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.PopoverMenuItem {
+  height: 30px !important;
+
+  & > a {
+    font-size: 14px !important;
+    font-weight: 500;
+    color: #99aab5 !important;
+    height: 30px !important;
+    line-height: 30px !important;
+
+    &:hover {
+      color: @primary-color !important;
+    }
+
+    &[disabled] {
+      color: #c2ccd3 !important;
+    }
+
+    & > span {
+      white-space: nowrap;
+    }
+  }
+
+  &--bold {
+    & > a {
+      font-weight: bold !important;
+    }
+  }
+}
+
+.PopoverMenuItem.PopOverMenuItem__full-screen-hidden {
+  display: list-item;
+
+  @media @small {
+    display: none;
+  }
+}

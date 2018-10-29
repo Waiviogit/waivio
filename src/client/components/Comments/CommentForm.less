@@ -1,0 +1,44 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/mixins.less';
+
+.CommentForm {
+  position: relative;
+  margin-top: 8px;
+  display: flex;
+
+  &__text {
+    width: 100%;
+    margin-left: 12px;
+  }
+
+  &__preview {
+    margin: 20px 0;
+  }
+
+  &__button {
+    color: @white-darker;
+    margin-top: 4px;
+    .btn;
+    .btn-primary;
+
+    &__primary {
+      .colorize-button(@primary-color, @primary-button-border);
+    }
+
+    &__disabled {
+      .colorize-button(@normal-grey, #5c5f63);
+    }
+
+    & > .anticon {
+      vertical-align: -1px;
+      margin-right: 8px;
+    }
+  }
+}
+
+div[data-dir='rtl'] .CommentForm {
+  &__text {
+    margin-left: 0px;
+    margin-right: 12px;
+  }
+}

@@ -1,0 +1,762 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<TopicSelector /> renders without exploding 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <TopicSelector
+    bold={true}
+    isSingle={true}
+    onSortChange={[Function]}
+    onTopicClose={[Function]}
+    sort="active"
+    topics={
+      Array [
+        "busy",
+        "introduceyourself",
+        "steemfest",
+      ]
+    }
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "children": Array [
+        <div
+          className="TopicSelector__topics"
+        >
+          <Topic
+            closable={false}
+            favorite={false}
+            name="busy"
+            onClose={[Function]}
+          />
+          <Topic
+            closable={false}
+            favorite={false}
+            name="introduceyourself"
+            onClose={[Function]}
+          />
+          <Topic
+            closable={false}
+            favorite={false}
+            name="steemfest"
+            onClose={[Function]}
+          />
+        </div>,
+        <SortSelector
+          onChange={[Function]}
+          sort="active"
+        >
+          <PopoverMenuItem
+            bold={true}
+            disabled={false}
+            fullScreenHidden={false}
+            itemKey=""
+            onClick={[Function]}
+          >
+            <FormattedMessage
+              defaultMessage="Trending"
+              id="sort_trending"
+              values={Object {}}
+            />
+          </PopoverMenuItem>
+          <PopoverMenuItem
+            bold={true}
+            disabled={false}
+            fullScreenHidden={false}
+            itemKey=""
+            onClick={[Function]}
+          >
+            <FormattedMessage
+              defaultMessage="Created"
+              id="sort_created"
+              values={Object {}}
+            />
+          </PopoverMenuItem>
+          <PopoverMenuItem
+            bold={true}
+            disabled={false}
+            fullScreenHidden={false}
+            itemKey=""
+            onClick={[Function]}
+          >
+            <FormattedMessage
+              defaultMessage="Active"
+              id="sort_active"
+              values={Object {}}
+            />
+          </PopoverMenuItem>
+          <PopoverMenuItem
+            bold={true}
+            disabled={false}
+            fullScreenHidden={false}
+            itemKey=""
+            onClick={[Function]}
+          >
+            <FormattedMessage
+              defaultMessage="Hot"
+              id="sort_hot"
+              values={Object {}}
+            />
+          </PopoverMenuItem>
+        </SortSelector>,
+      ],
+      "className": "TopicSelector",
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": Array [
+            <Topic
+              closable={false}
+              favorite={false}
+              name="busy"
+              onClose={[Function]}
+            />,
+            <Topic
+              closable={false}
+              favorite={false}
+              name="introduceyourself"
+              onClose={[Function]}
+            />,
+            <Topic
+              closable={false}
+              favorite={false}
+              name="steemfest"
+              onClose={[Function]}
+            />,
+          ],
+          "className": "TopicSelector__topics",
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": "busy",
+            "nodeType": "class",
+            "props": Object {
+              "closable": false,
+              "favorite": false,
+              "name": "busy",
+              "onClose": [Function],
+            },
+            "ref": null,
+            "rendered": null,
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": "introduceyourself",
+            "nodeType": "class",
+            "props": Object {
+              "closable": false,
+              "favorite": false,
+              "name": "introduceyourself",
+              "onClose": [Function],
+            },
+            "ref": null,
+            "rendered": null,
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": "steemfest",
+            "nodeType": "class",
+            "props": Object {
+              "closable": false,
+              "favorite": false,
+              "name": "steemfest",
+              "onClose": [Function],
+            },
+            "ref": null,
+            "rendered": null,
+            "type": [Function],
+          },
+        ],
+        "type": "div",
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "children": Array [
+            <PopoverMenuItem
+              bold={true}
+              disabled={false}
+              fullScreenHidden={false}
+              itemKey=""
+              onClick={[Function]}
+            >
+              <FormattedMessage
+                defaultMessage="Trending"
+                id="sort_trending"
+                values={Object {}}
+              />
+            </PopoverMenuItem>,
+            <PopoverMenuItem
+              bold={true}
+              disabled={false}
+              fullScreenHidden={false}
+              itemKey=""
+              onClick={[Function]}
+            >
+              <FormattedMessage
+                defaultMessage="Created"
+                id="sort_created"
+                values={Object {}}
+              />
+            </PopoverMenuItem>,
+            <PopoverMenuItem
+              bold={true}
+              disabled={false}
+              fullScreenHidden={false}
+              itemKey=""
+              onClick={[Function]}
+            >
+              <FormattedMessage
+                defaultMessage="Active"
+                id="sort_active"
+                values={Object {}}
+              />
+            </PopoverMenuItem>,
+            <PopoverMenuItem
+              bold={true}
+              disabled={false}
+              fullScreenHidden={false}
+              itemKey=""
+              onClick={[Function]}
+            >
+              <FormattedMessage
+                defaultMessage="Hot"
+                id="sort_hot"
+                values={Object {}}
+              />
+            </PopoverMenuItem>,
+          ],
+          "onChange": [Function],
+          "sort": "active",
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": "trending",
+            "nodeType": "function",
+            "props": Object {
+              "bold": true,
+              "children": <FormattedMessage
+                defaultMessage="Trending"
+                id="sort_trending"
+                values={Object {}}
+              />,
+              "disabled": false,
+              "fullScreenHidden": false,
+              "itemKey": "",
+              "onClick": [Function],
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "defaultMessage": "Trending",
+                "id": "sort_trending",
+                "values": Object {},
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": "created",
+            "nodeType": "function",
+            "props": Object {
+              "bold": true,
+              "children": <FormattedMessage
+                defaultMessage="Created"
+                id="sort_created"
+                values={Object {}}
+              />,
+              "disabled": false,
+              "fullScreenHidden": false,
+              "itemKey": "",
+              "onClick": [Function],
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "defaultMessage": "Created",
+                "id": "sort_created",
+                "values": Object {},
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": "active",
+            "nodeType": "function",
+            "props": Object {
+              "bold": true,
+              "children": <FormattedMessage
+                defaultMessage="Active"
+                id="sort_active"
+                values={Object {}}
+              />,
+              "disabled": false,
+              "fullScreenHidden": false,
+              "itemKey": "",
+              "onClick": [Function],
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "defaultMessage": "Active",
+                "id": "sort_active",
+                "values": Object {},
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            "type": [Function],
+          },
+          Object {
+            "instance": null,
+            "key": "hot",
+            "nodeType": "function",
+            "props": Object {
+              "bold": true,
+              "children": <FormattedMessage
+                defaultMessage="Hot"
+                id="sort_hot"
+                values={Object {}}
+              />,
+              "disabled": false,
+              "fullScreenHidden": false,
+              "itemKey": "",
+              "onClick": [Function],
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "defaultMessage": "Hot",
+                "id": "sort_hot",
+                "values": Object {},
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            "type": [Function],
+          },
+        ],
+        "type": [Function],
+      },
+    ],
+    "type": "div",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": Array [
+          <div
+            className="TopicSelector__topics"
+          >
+            <Topic
+              closable={false}
+              favorite={false}
+              name="busy"
+              onClose={[Function]}
+            />
+            <Topic
+              closable={false}
+              favorite={false}
+              name="introduceyourself"
+              onClose={[Function]}
+            />
+            <Topic
+              closable={false}
+              favorite={false}
+              name="steemfest"
+              onClose={[Function]}
+            />
+          </div>,
+          <SortSelector
+            onChange={[Function]}
+            sort="active"
+          >
+            <PopoverMenuItem
+              bold={true}
+              disabled={false}
+              fullScreenHidden={false}
+              itemKey=""
+              onClick={[Function]}
+            >
+              <FormattedMessage
+                defaultMessage="Trending"
+                id="sort_trending"
+                values={Object {}}
+              />
+            </PopoverMenuItem>
+            <PopoverMenuItem
+              bold={true}
+              disabled={false}
+              fullScreenHidden={false}
+              itemKey=""
+              onClick={[Function]}
+            >
+              <FormattedMessage
+                defaultMessage="Created"
+                id="sort_created"
+                values={Object {}}
+              />
+            </PopoverMenuItem>
+            <PopoverMenuItem
+              bold={true}
+              disabled={false}
+              fullScreenHidden={false}
+              itemKey=""
+              onClick={[Function]}
+            >
+              <FormattedMessage
+                defaultMessage="Active"
+                id="sort_active"
+                values={Object {}}
+              />
+            </PopoverMenuItem>
+            <PopoverMenuItem
+              bold={true}
+              disabled={false}
+              fullScreenHidden={false}
+              itemKey=""
+              onClick={[Function]}
+            >
+              <FormattedMessage
+                defaultMessage="Hot"
+                id="sort_hot"
+                values={Object {}}
+              />
+            </PopoverMenuItem>
+          </SortSelector>,
+        ],
+        "className": "TopicSelector",
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": Array [
+              <Topic
+                closable={false}
+                favorite={false}
+                name="busy"
+                onClose={[Function]}
+              />,
+              <Topic
+                closable={false}
+                favorite={false}
+                name="introduceyourself"
+                onClose={[Function]}
+              />,
+              <Topic
+                closable={false}
+                favorite={false}
+                name="steemfest"
+                onClose={[Function]}
+              />,
+            ],
+            "className": "TopicSelector__topics",
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": "busy",
+              "nodeType": "class",
+              "props": Object {
+                "closable": false,
+                "favorite": false,
+                "name": "busy",
+                "onClose": [Function],
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": "introduceyourself",
+              "nodeType": "class",
+              "props": Object {
+                "closable": false,
+                "favorite": false,
+                "name": "introduceyourself",
+                "onClose": [Function],
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": "steemfest",
+              "nodeType": "class",
+              "props": Object {
+                "closable": false,
+                "favorite": false,
+                "name": "steemfest",
+                "onClose": [Function],
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+          ],
+          "type": "div",
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "children": Array [
+              <PopoverMenuItem
+                bold={true}
+                disabled={false}
+                fullScreenHidden={false}
+                itemKey=""
+                onClick={[Function]}
+              >
+                <FormattedMessage
+                  defaultMessage="Trending"
+                  id="sort_trending"
+                  values={Object {}}
+                />
+              </PopoverMenuItem>,
+              <PopoverMenuItem
+                bold={true}
+                disabled={false}
+                fullScreenHidden={false}
+                itemKey=""
+                onClick={[Function]}
+              >
+                <FormattedMessage
+                  defaultMessage="Created"
+                  id="sort_created"
+                  values={Object {}}
+                />
+              </PopoverMenuItem>,
+              <PopoverMenuItem
+                bold={true}
+                disabled={false}
+                fullScreenHidden={false}
+                itemKey=""
+                onClick={[Function]}
+              >
+                <FormattedMessage
+                  defaultMessage="Active"
+                  id="sort_active"
+                  values={Object {}}
+                />
+              </PopoverMenuItem>,
+              <PopoverMenuItem
+                bold={true}
+                disabled={false}
+                fullScreenHidden={false}
+                itemKey=""
+                onClick={[Function]}
+              >
+                <FormattedMessage
+                  defaultMessage="Hot"
+                  id="sort_hot"
+                  values={Object {}}
+                />
+              </PopoverMenuItem>,
+            ],
+            "onChange": [Function],
+            "sort": "active",
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": "trending",
+              "nodeType": "function",
+              "props": Object {
+                "bold": true,
+                "children": <FormattedMessage
+                  defaultMessage="Trending"
+                  id="sort_trending"
+                  values={Object {}}
+                />,
+                "disabled": false,
+                "fullScreenHidden": false,
+                "itemKey": "",
+                "onClick": [Function],
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "defaultMessage": "Trending",
+                  "id": "sort_trending",
+                  "values": Object {},
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": "created",
+              "nodeType": "function",
+              "props": Object {
+                "bold": true,
+                "children": <FormattedMessage
+                  defaultMessage="Created"
+                  id="sort_created"
+                  values={Object {}}
+                />,
+                "disabled": false,
+                "fullScreenHidden": false,
+                "itemKey": "",
+                "onClick": [Function],
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "defaultMessage": "Created",
+                  "id": "sort_created",
+                  "values": Object {},
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": "active",
+              "nodeType": "function",
+              "props": Object {
+                "bold": true,
+                "children": <FormattedMessage
+                  defaultMessage="Active"
+                  id="sort_active"
+                  values={Object {}}
+                />,
+                "disabled": false,
+                "fullScreenHidden": false,
+                "itemKey": "",
+                "onClick": [Function],
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "defaultMessage": "Active",
+                  "id": "sort_active",
+                  "values": Object {},
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": "hot",
+              "nodeType": "function",
+              "props": Object {
+                "bold": true,
+                "children": <FormattedMessage
+                  defaultMessage="Hot"
+                  id="sort_hot"
+                  values={Object {}}
+                />,
+                "disabled": false,
+                "fullScreenHidden": false,
+                "itemKey": "",
+                "onClick": [Function],
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "defaultMessage": "Hot",
+                  "id": "sort_hot",
+                  "values": Object {},
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              "type": [Function],
+            },
+          ],
+          "type": [Function],
+        },
+      ],
+      "type": "div",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;

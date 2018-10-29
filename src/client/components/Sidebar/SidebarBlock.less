@@ -1,0 +1,43 @@
+@import (reference) '../../styles/custom.less';
+
+.SidebarBlock {
+  padding: 30px 40px;
+  border-radius: @border-radius-base;
+  text-align: center;
+  color: @white;
+  background-color: @primary-color;
+  margin-bottom: 1em;
+}
+
+.SidebarBlock__title {
+  font-size: 18px;
+  margin-bottom: 26px;
+  color: @white;
+  font-weight: 500;
+}
+
+.SidebarBlock__button {
+  .btn;
+  .btn-default;
+  .btn-ghost;
+
+  width: 100% !important;
+  height: 46px !important;
+  color: @white !important;
+  font-size: 16px !important;
+
+  &:hover,
+  &:focus,
+  &:active,
+  &.active {
+    color: @primary-color !important;
+    background: @white !important;
+    border: none !important;
+  }
+}
+
+.SidebarBlock__content-title {
+  color: #99aab5;
+  font-size: 18px;
+  font-weight: 500;
+}

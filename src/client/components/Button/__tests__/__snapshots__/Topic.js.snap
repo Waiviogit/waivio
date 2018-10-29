@@ -1,0 +1,110 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Topic /> renders without exploding 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <Topic
+    closable={true}
+    favorite={true}
+    name="exampletopic"
+    onClose={[Function]}
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "children": Array [
+        "exampletopic",
+        <i
+          className="iconfont icon-close Topic__close"
+          onClick={[Function]}
+          onMouseOut={[Function]}
+          onMouseOver={[Function]}
+          role="presentation"
+        />,
+      ],
+      "className": "Topic Topic--favorite",
+      "replace": false,
+      "to": "/trending/exampletopic",
+    },
+    "ref": null,
+    "rendered": Array [
+      "exampletopic",
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "className": "iconfont icon-close Topic__close",
+          "onClick": [Function],
+          "onMouseOut": [Function],
+          "onMouseOver": [Function],
+          "role": "presentation",
+        },
+        "ref": null,
+        "rendered": null,
+        "type": "i",
+      },
+    ],
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "children": Array [
+          "exampletopic",
+          <i
+            className="iconfont icon-close Topic__close"
+            onClick={[Function]}
+            onMouseOut={[Function]}
+            onMouseOver={[Function]}
+            role="presentation"
+          />,
+        ],
+        "className": "Topic Topic--favorite",
+        "replace": false,
+        "to": "/trending/exampletopic",
+      },
+      "ref": null,
+      "rendered": Array [
+        "exampletopic",
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "className": "iconfont icon-close Topic__close",
+            "onClick": [Function],
+            "onMouseOut": [Function],
+            "onMouseOver": [Function],
+            "role": "presentation",
+          },
+          "ref": null,
+          "rendered": null,
+          "type": "i",
+        },
+      ],
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;

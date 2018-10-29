@@ -1,0 +1,78 @@
+@import (reference) '../styles/custom.less';
+@import (reference) '../styles/modules/variables.less';
+
+.UserWalletSummary {
+  border: @base-border;
+  border-right: 0;
+  border-left: 0;
+  border-radius: 0;
+  background-color: @white;
+
+  &__item {
+    display: flex;
+    border-bottom: @base-border;
+    align-items: center;
+    margin: 0 15px;
+    flex-direction: row;
+    padding: 10px 0;
+
+    &:last-of-type {
+      border-bottom: 0;
+    }
+  }
+
+  &__icon {
+    color: @blue-baliHai;
+    margin-right: 10px;
+  }
+
+  &__label {
+    align-items: center;
+    color: @black;
+    display: flex;
+    font-size: 18px;
+  }
+
+  &__value {
+    align-items: center;
+    color: @black;
+    display: flex;
+    font-size: 18px;
+    margin-left: auto;
+    text-align: right;
+  }
+
+  &__reward {
+    &:after {
+      color: @blue-botticelli;
+      content: ' - ';
+    }
+
+    &:last-of-type {
+      &:after {
+        content: '';
+      }
+    }
+  }
+
+  @media @small {
+    border: @base-border;
+    border-radius: @border-radius-base;
+  }
+}
+
+div[data-dir='rtl'] .UserWalletSummary {
+  &__icon {
+    margin-right: 0;
+    margin-left: 10px;
+  }
+
+  &__value {
+    direction: ltr;
+    margin-left: 0;
+    margin-right: auto;
+    text-align: left;
+  }
+}
+
+@import 'UserWalletSummary-nightmode';

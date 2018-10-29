@@ -1,0 +1,25 @@
+@container-width: 1010px;
+@mobile-padding: 20px;
+@margin: 20px;
+@left-width: 180px;
+@right-width: 270px;
+
+// Responsive design
+@xsmall-bp: 400px;
+@small-bp: 768px;
+@medium-bp: 998px;
+@large-bp: 1200px;
+
+@xsmall: ~'only screen and (min-width: @{xsmall-bp})';
+@small: ~'only screen and (min-width: @{small-bp})';
+@medium: ~'only screen and (min-width: @{medium-bp})';
+@large: ~'only screen and (min-width: @{large-bp})';
+
+// You should not use those breakpoints. You should default to mobile first
+// and then use @xsmall, @small, @medium, @large to handle bigger screens.
+// Only use those when absolutely needed (like when making 3rd-party component
+// responsive.
+@xsmall-max: ~'only screen and (max-width: @{xsmall-bp}';
+@small-max: ~'only screen and (max-width: @{small-bp}';
+@medium-max: ~'only screen and (max-width: @{medium-bp})';
+@large-max: ~'only screen and (max-width: @{large-bp})';

@@ -1,0 +1,31 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/mixins.less';
+
+.Follow {
+  .btn;
+  .btn-primary;
+
+  .colorize-button(@primary-color, @primary-button-border);
+
+  color: @white-darker;
+
+  & > .anticon {
+    margin-right: 12px;
+  }
+}
+
+.Follow--secondary {
+  color: @primary-color !important;
+  background-color: transparent !important;
+  border-width: @border-width-base;
+  border-color: @primary-color !important;
+
+  &:hover {
+    background-color: transparent !important;
+  }
+}
+
+.Follow--danger {
+  color: @white !important;
+  .colorize-button(@red, @red);
+}

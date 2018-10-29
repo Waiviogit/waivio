@@ -1,0 +1,22 @@
+{
+  "name": "Waivio",
+  "scripts": {},
+  "env": {
+    "DEBUG": {
+      "description": "Debug namespaces for https://github.com/visionmedia/debug.",
+      "value": "busy:server",
+      "required": false
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "addons": [],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
+}

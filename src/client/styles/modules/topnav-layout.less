@@ -1,0 +1,105 @@
+@import (reference) './variables.less';
+
+.topnav-layout {
+  position: relative;
+  margin: 0 auto;
+  max-width: @container-width;
+
+  .left {
+    position: absolute;
+    padding-left: 16px;
+
+    @media @small {
+      width: @left-width;
+      padding-left: @mobile-padding;
+    }
+
+    @media @large {
+      padding-left: 0;
+    }
+  }
+
+  .right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-right: 16px;
+    justify-content: flex-end;
+    display: flex;
+
+    @media @small {
+      display: block;
+      justify-content: initial;
+      width: @right-width;
+    }
+
+    @media @large {
+      margin-right: 0;
+    }
+  }
+
+  .center {
+    width: calc(100% - 55px);
+    position: absolute;
+    display: none;
+    z-index: 1;
+
+    @media @small {
+      width: calc(100% - (@left-width + @right-width + 2 * @margin));
+      position: static;
+      margin-left: @left-width;
+      margin-right: @right-width + @margin;
+      display: block;
+    }
+
+    @media @medium {
+      width: calc(100% - (@left-width + @right-width + 4 * @margin));
+      margin-left: @left-width + 2 * @margin;
+    }
+
+    @media @large {
+      width: calc(100% - (@left-width + @right-width + 2 * @margin));
+      margin-left: @left-width + @margin;
+    }
+
+    &.mobileVisible {
+      display: block;
+    }
+  }
+}
+
+div[data-dir='rtl'] .topnav-layout {
+  .left {
+    right: 0;
+    padding-right: 16px;
+    padding-left: 0px;
+  }
+
+  .right {
+    right: unset;
+    left: 0;
+    margin-right: 0px;
+    margin-left: 16px;
+  }
+
+  .center {
+    @media @small {
+      margin-left: @right-width;
+      margin-right: @left-width + @margin;
+    }
+
+    @media @medium {
+      margin-left: 0;
+      margin-right: @left-width + 2 * @margin;
+    }
+
+    @media @large {
+      margin-left: 0;
+      margin-right: @left-width + @margin;
+    }
+
+    &.mobileVisible {
+      background-color: white;
+    }
+  }
+}

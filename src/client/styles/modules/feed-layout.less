@@ -1,0 +1,75 @@
+@import (reference) './variables.less';
+
+.feed-layout {
+  position: relative;
+
+  @media @small {
+    padding: 0 @mobile-padding;
+  }
+
+  @media @large {
+    padding: 0;
+  }
+
+  &:after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+
+  .left {
+    width: @left-width;
+  }
+
+  .right {
+    width: @right-width;
+  }
+
+  .leftContainer {
+    float: left;
+    display: none;
+    width: @left-width;
+
+    &__user {
+      min-height: 150px !important;
+    }
+
+    @media @medium {
+      display: block;
+    }
+  }
+
+  .rightContainer {
+    float: right;
+    display: none;
+    width: @right-width;
+
+    @media @small {
+      display: block;
+    }
+  }
+
+  .center {
+    float: left;
+    width: 100%;
+
+    @media @small {
+      width: calc(100% - (@right-width + @margin));
+    }
+
+    @media @medium {
+      width: calc(100% - (@left-width + @right-width + 2 * @margin));
+      margin-left: @margin;
+    }
+  }
+}
+
+div[data-dir='rtl'] .feed-layout {
+  .leftContainer {
+    float: right;
+  }
+
+  .rightContainer {
+    float: left;
+  }
+}

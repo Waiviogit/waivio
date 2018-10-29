@@ -1,0 +1,40 @@
+version: 2
+general:
+  artifacts:
+    - "yarn-error.log"
+jobs:
+  build:
+    working_directory: ~/busy
+    docker:
+      - image: circleci/node:8
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore node_modules cache
+          key: dependency-cache-{{ checksum "yarn.lock" }}
+      - run:
+          name: Node version
+          command: node --version
+      - run:
+          name: Install packages
+          command: yarn install
+      - run:
+          name: lint
+          command: npm run lint
+      - run:
+          name: prettier
+          command: npm run prettier-check-all
+      - run:
+          name: test
+          command: npm run test
+      - run:
+          name: code-coverage
+          command: npm run test:coverage
+      - store_artifacts:
+          path: coverage
+          prefix: coverage
+      - save_cache:
+          name: Save node_modules cache
+          key: dependency-cache-{{ checksum "yarn.lock" }}
+          paths:
+            - ./node_modules

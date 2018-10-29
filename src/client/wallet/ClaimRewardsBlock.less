@@ -1,0 +1,23 @@
+@import (reference) '../styles/custom.less';
+
+.ClaimRewardsBlock {
+  &__reward {
+    border-bottom: @base-border;
+    color: @grey-nightRider;
+    display: flex;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 10px 0;
+
+    &__value {
+      margin-left: auto;
+    }
+
+    &:last-of-type {
+      margin-bottom: 10px;
+      border-bottom: 0;
+    }
+  }
+}
+
+@import 'ClaimRewardsBlock-nightmode';

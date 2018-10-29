@@ -1,0 +1,69 @@
+.User {
+  font-weight: 500;
+}
+
+.User__top {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  width: 100%;
+  white-space: nowrap;
+}
+
+.leftContainer__user {
+  overflow-wrap: break-word;
+}
+
+.User__links {
+  display: flex;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  overflow: hidden;
+  align-items: center;
+
+  & > a {
+    font-weight: bold;
+    vertical-align: middle;
+    max-width: 100%;
+  }
+}
+
+.User__follow {
+  display: flex;
+  vertical-align: middle;
+  margin-left: auto;
+}
+
+div[data-dir='rtl'] .User__follow {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.User__name {
+  margin-left: 8px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+div[data-dir='rtl'] .User__name {
+  margin-left: 0;
+  margin-right: 8px;
+}
+
+.User__about {
+  font-size: 15px;
+  color: #9d9d9d;
+}
+
+.User__divider {
+  width: 100%;
+  height: 1px;
+  margin: 12px 0;
+  background-color: #e9e7e7;
+}
+
+@import 'User-nightmode';

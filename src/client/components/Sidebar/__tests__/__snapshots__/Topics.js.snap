@@ -1,0 +1,541 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Topics /> renders without exploding 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <Topics
+    favorite={true}
+    loading={false}
+    maxItems={20}
+    topics={
+      Array [
+        "busy",
+        "introduceyourself",
+        "steemfest",
+        "poland",
+      ]
+    }
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "children": Array [
+        <h4>
+          <FormattedMessage
+            defaultMessage="Favorite topics"
+            id="favorite_topics"
+            values={Object {}}
+          />
+        </h4>,
+        false,
+        <ul
+          className="Topics__list"
+        >
+          <li>
+            <Topic
+              closable={false}
+              favorite={true}
+              name="busy"
+              onClose={[Function]}
+            />
+          </li>
+          <li>
+            <Topic
+              closable={false}
+              favorite={true}
+              name="introduceyourself"
+              onClose={[Function]}
+            />
+          </li>
+          <li>
+            <Topic
+              closable={false}
+              favorite={true}
+              name="steemfest"
+              onClose={[Function]}
+            />
+          </li>
+          <li>
+            <Topic
+              closable={false}
+              favorite={true}
+              name="poland"
+              onClose={[Function]}
+            />
+          </li>
+        </ul>,
+        null,
+        null,
+      ],
+      "className": "Topics",
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": <FormattedMessage
+            defaultMessage="Favorite topics"
+            id="favorite_topics"
+            values={Object {}}
+          />,
+        },
+        "ref": null,
+        "rendered": Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "defaultMessage": "Favorite topics",
+            "id": "favorite_topics",
+            "values": Object {},
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        "type": "h4",
+      },
+      false,
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": Array [
+            <li>
+              <Topic
+                closable={false}
+                favorite={true}
+                name="busy"
+                onClose={[Function]}
+              />
+            </li>,
+            <li>
+              <Topic
+                closable={false}
+                favorite={true}
+                name="introduceyourself"
+                onClose={[Function]}
+              />
+            </li>,
+            <li>
+              <Topic
+                closable={false}
+                favorite={true}
+                name="steemfest"
+                onClose={[Function]}
+              />
+            </li>,
+            <li>
+              <Topic
+                closable={false}
+                favorite={true}
+                name="poland"
+                onClose={[Function]}
+              />
+            </li>,
+          ],
+          "className": "Topics__list",
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": "busy",
+            "nodeType": "host",
+            "props": Object {
+              "children": <Topic
+                closable={false}
+                favorite={true}
+                name="busy"
+                onClose={[Function]}
+              />,
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "closable": false,
+                "favorite": true,
+                "name": "busy",
+                "onClose": [Function],
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            "type": "li",
+          },
+          Object {
+            "instance": null,
+            "key": "introduceyourself",
+            "nodeType": "host",
+            "props": Object {
+              "children": <Topic
+                closable={false}
+                favorite={true}
+                name="introduceyourself"
+                onClose={[Function]}
+              />,
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "closable": false,
+                "favorite": true,
+                "name": "introduceyourself",
+                "onClose": [Function],
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            "type": "li",
+          },
+          Object {
+            "instance": null,
+            "key": "steemfest",
+            "nodeType": "host",
+            "props": Object {
+              "children": <Topic
+                closable={false}
+                favorite={true}
+                name="steemfest"
+                onClose={[Function]}
+              />,
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "closable": false,
+                "favorite": true,
+                "name": "steemfest",
+                "onClose": [Function],
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            "type": "li",
+          },
+          Object {
+            "instance": null,
+            "key": "poland",
+            "nodeType": "host",
+            "props": Object {
+              "children": <Topic
+                closable={false}
+                favorite={true}
+                name="poland"
+                onClose={[Function]}
+              />,
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "closable": false,
+                "favorite": true,
+                "name": "poland",
+                "onClose": [Function],
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            "type": "li",
+          },
+        ],
+        "type": "ul",
+      },
+      null,
+      null,
+    ],
+    "type": "div",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": Array [
+          <h4>
+            <FormattedMessage
+              defaultMessage="Favorite topics"
+              id="favorite_topics"
+              values={Object {}}
+            />
+          </h4>,
+          false,
+          <ul
+            className="Topics__list"
+          >
+            <li>
+              <Topic
+                closable={false}
+                favorite={true}
+                name="busy"
+                onClose={[Function]}
+              />
+            </li>
+            <li>
+              <Topic
+                closable={false}
+                favorite={true}
+                name="introduceyourself"
+                onClose={[Function]}
+              />
+            </li>
+            <li>
+              <Topic
+                closable={false}
+                favorite={true}
+                name="steemfest"
+                onClose={[Function]}
+              />
+            </li>
+            <li>
+              <Topic
+                closable={false}
+                favorite={true}
+                name="poland"
+                onClose={[Function]}
+              />
+            </li>
+          </ul>,
+          null,
+          null,
+        ],
+        "className": "Topics",
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": <FormattedMessage
+              defaultMessage="Favorite topics"
+              id="favorite_topics"
+              values={Object {}}
+            />,
+          },
+          "ref": null,
+          "rendered": Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "class",
+            "props": Object {
+              "defaultMessage": "Favorite topics",
+              "id": "favorite_topics",
+              "values": Object {},
+            },
+            "ref": null,
+            "rendered": null,
+            "type": [Function],
+          },
+          "type": "h4",
+        },
+        false,
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": Array [
+              <li>
+                <Topic
+                  closable={false}
+                  favorite={true}
+                  name="busy"
+                  onClose={[Function]}
+                />
+              </li>,
+              <li>
+                <Topic
+                  closable={false}
+                  favorite={true}
+                  name="introduceyourself"
+                  onClose={[Function]}
+                />
+              </li>,
+              <li>
+                <Topic
+                  closable={false}
+                  favorite={true}
+                  name="steemfest"
+                  onClose={[Function]}
+                />
+              </li>,
+              <li>
+                <Topic
+                  closable={false}
+                  favorite={true}
+                  name="poland"
+                  onClose={[Function]}
+                />
+              </li>,
+            ],
+            "className": "Topics__list",
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": "busy",
+              "nodeType": "host",
+              "props": Object {
+                "children": <Topic
+                  closable={false}
+                  favorite={true}
+                  name="busy"
+                  onClose={[Function]}
+                />,
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "closable": false,
+                  "favorite": true,
+                  "name": "busy",
+                  "onClose": [Function],
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              "type": "li",
+            },
+            Object {
+              "instance": null,
+              "key": "introduceyourself",
+              "nodeType": "host",
+              "props": Object {
+                "children": <Topic
+                  closable={false}
+                  favorite={true}
+                  name="introduceyourself"
+                  onClose={[Function]}
+                />,
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "closable": false,
+                  "favorite": true,
+                  "name": "introduceyourself",
+                  "onClose": [Function],
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              "type": "li",
+            },
+            Object {
+              "instance": null,
+              "key": "steemfest",
+              "nodeType": "host",
+              "props": Object {
+                "children": <Topic
+                  closable={false}
+                  favorite={true}
+                  name="steemfest"
+                  onClose={[Function]}
+                />,
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "closable": false,
+                  "favorite": true,
+                  "name": "steemfest",
+                  "onClose": [Function],
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              "type": "li",
+            },
+            Object {
+              "instance": null,
+              "key": "poland",
+              "nodeType": "host",
+              "props": Object {
+                "children": <Topic
+                  closable={false}
+                  favorite={true}
+                  name="poland"
+                  onClose={[Function]}
+                />,
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "closable": false,
+                  "favorite": true,
+                  "name": "poland",
+                  "onClose": [Function],
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              "type": "li",
+            },
+          ],
+          "type": "ul",
+        },
+        null,
+        null,
+      ],
+      "type": "div",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
