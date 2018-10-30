@@ -6,11 +6,11 @@ import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 
 const displayLimit = 20;
 
-const mockObjects = [
+export const mockObjects = [
   {
     id: 300,
     reputation: '996819810443205',
-    name: 'Z-cash',
+    name: 'zcash',
     json_metadata:
       '{"wobjData": {"name": "Z-cash", "about":"The Future of Z-cash", "location":"https://discord.gg/XkkhCc4", "avatar": "https://www.investarena.com/static/images/logoQuotes/Zcash.png", "website":"https://z.cash/"}}',
   },

@@ -1,12 +1,14 @@
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
 import { connect } from 'react-redux';
 import { getIsAuthenticated, getRecommendations } from '../../reducers';
 import { getCryptoDetails } from '../../helpers/cryptosHelper';
 import { updateRecommendations } from '../../user/userActions';
-import InterestingPeople from './InterestingPeople';
+import InterestingObjects from './InterestingObjects';
 import CryptoTrendingCharts from './CryptoTrendingCharts';
+import { mockObjects } from '../../objects/ObjectContent';
+import InterestingPeople from './InterestingPeople';
 
 @connect(
   state => ({
@@ -41,10 +43,16 @@ class FeedSidebar extends React.Component {
       <div>
         {!_.isEmpty(currentCrypto) && <CryptoTrendingCharts cryptos={[currentTag]} />}
         {isAuthenticated && (
-          <InterestingPeople
-            users={recommendations}
-            onRefresh={this.handleInterestingPeopleRefresh}
-          />
+          <React.Fragment>
+            <InterestingObjects
+              objects={mockObjects}
+              onRefresh={this.handleInterestingPeopleRefresh}
+            />
+            <InterestingPeople
+              users={this.props.recommendations}
+              onRefresh={this.handleInterestingPeopleRefresh}
+            />
+          </React.Fragment>
         )}
       </div>
     );
