@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { renderRoutes } from 'react-router-config';
+// import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 // import _ from 'lodash';
 // import { currentUserFollowersUser } from '../helpers/apiHelpers';
@@ -19,7 +19,7 @@ import { getAvatarURL } from '../components/Avatar';
 import Error404 from '../statics/Error404';
 import WobjHero from './WobjHero';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
-import RightSidebar from '../app/Sidebar/RightSidebar';
+// import RightSidebar from '../app/Sidebar/RightSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 
@@ -32,11 +32,11 @@ import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 }))
 export default class Wobj extends React.Component {
   static propTypes = {
-    route: PropTypes.shape().isRequired,
+    // route: PropTypes.shape().isRequired,
     authenticated: PropTypes.bool.isRequired,
     match: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
-    loaded: PropTypes.bool,
+    // loaded: PropTypes.bool,
     failed: PropTypes.bool,
     // getAccount: PropTypes.func,
     openTransfer: PropTypes.func,
@@ -123,7 +123,7 @@ export default class Wobj extends React.Component {
   };
 
   render() {
-    const { authenticated, loaded, failed } = this.props;
+    const { authenticated, failed } = this.props;
     const { isFollowing } = this.state;
     if (failed) return <Error404 />;
 
@@ -180,10 +180,6 @@ export default class Wobj extends React.Component {
                 <LeftSidebar />
               </div>
             </Affix>
-            <Affix className="rightContainer" stickPosition={72}>
-              <div className="right">{loaded && <RightSidebar key={user.name} />}</div>
-            </Affix>
-            {loaded && <div className="center">{renderRoutes(this.props.route.routes)}</div>}
           </div>
         </div>
       </div>
