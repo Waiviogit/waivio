@@ -29,7 +29,7 @@ const DEFINE_PLUGIN = new webpack.DefinePlugin({
     process.env.STEEMCONNECT_CLIENT_ID || 'busy.app',
   ),
   'process.env.STEEMCONNECT_REDIRECT_URL': JSON.stringify(
-    process.env.STEEMCONNECT_REDIRECT_URL || 'http://localhost:3000/callback',
+    process.env.STEEMCONNECT_REDIRECT_URL || 'http://afternoon-meadow-78683.herokuapp.com/callback',
   ),
   'process.env.STEEMCONNECT_HOST': JSON.stringify(
     process.env.STEEMCONNECT_HOST || 'https://steemconnect.com',
