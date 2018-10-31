@@ -9,8 +9,8 @@ Waivio is an Open Source social network and communications platform which extend
 ## Quick Setup
 
 ```bash
-git clone https://romanprysiazhniuk@bitbucket.org/romanprysiazhniuk/waivio-fes.git
-cd waivio-fes
+git clone https://github.com/Waiviogit/waivio.git
+cd waivio
 
 yarn
 yarn dev
