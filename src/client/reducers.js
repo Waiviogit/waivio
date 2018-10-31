@@ -95,6 +95,7 @@ export const getFollowingList = state => fromUser.getFollowingList(state.user);
 export const getPendingFollows = state => fromUser.getPendingFollows(state.user);
 export const getIsFetchingFollowingList = state => fromUser.getIsFetchingFollowingList(state.user);
 export const getRecommendations = state => fromUser.getRecommendations(state.user);
+export const getRecommendedObjects = state => fromUser.getRecommendedObjects(state.user);
 export const getFollowingFetched = state => fromUser.getFollowingFetched(state.user);
 export const getNotifications = state => fromUser.getNotifications(state.user);
 export const getIsLoadingNotifications = state => fromUser.getIsLoadingNotifications(state.user);

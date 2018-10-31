@@ -17,7 +17,7 @@ const InterestingObjects = ({ objects, onRefresh }) => (
       </button>
     </h4>
     <div className="SidebarContentBlock__content">
-      {objects && _.map(objects, object => <ObjectComponent key={object.name} item={object} />)}
+      {objects && _.map(objects, object => <ObjectComponent key={object.tag} item={object} />)}
       <h4 className="InterestingObjects__more">
         <Link to={'/objects'}>
           <FormattedMessage id="discover_more_objects" defaultMessage="Discover More Objects" />
@@ -28,7 +28,7 @@ const InterestingObjects = ({ objects, onRefresh }) => (
 );
 
 InterestingObjects.propTypes = {
-  objects: PropTypes.arrayOf(PropTypes.shape({ name: PropTypes.string })),
+  objects: PropTypes.arrayOf(PropTypes.shape({ tag: PropTypes.string })),
   onRefresh: PropTypes.func,
 };
 

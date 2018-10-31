@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -9,6 +10,7 @@ import {
   getRecommendations,
   getFollowingList,
   getIsFetchingFollowingList,
+  getRecommendedObjects,
 } from '../../reducers';
 import { updateRecommendations } from '../../user/userActions';
 import InterestingPeople from '../../components/Sidebar/InterestingPeople';
@@ -20,7 +22,6 @@ import Loading from '../../components/Icon/Loading';
 import UserActivitySearch from '../../activity/UserActivitySearch';
 import WalletSidebar from '../../components/Sidebar/WalletSidebar';
 import FeedSidebar from '../../components/Sidebar/FeedSidebar';
-import { mockObjects } from '../../objects/ObjectContent';
 
 @withRouter
 @connect(
@@ -31,6 +32,7 @@ import { mockObjects } from '../../objects/ObjectContent';
     recommendations: getRecommendations(state),
     followingList: getFollowingList(state),
     isFetchingFollowingList: getIsFetchingFollowingList(state),
+    recommendedObjects: getRecommendedObjects(state),
   }),
   {
     updateRecommendations,
@@ -43,6 +45,7 @@ export default class RightSidebar extends React.Component {
     isAuthFetching: PropTypes.bool.isRequired,
     showPostRecommendation: PropTypes.bool,
     recommendations: PropTypes.arrayOf(PropTypes.shape({ name: PropTypes.string })).isRequired,
+    recommendedObjects: PropTypes.arrayOf(PropTypes.shape({ tag: PropTypes.string })).isRequired,
     updateRecommendations: PropTypes.func,
     followingList: PropTypes.arrayOf(PropTypes.string).isRequired,
     isFetchingFollowingList: PropTypes.bool.isRequired,
@@ -51,6 +54,7 @@ export default class RightSidebar extends React.Component {
   static defaultProps = {
     showPostRecommendation: false,
     updateRecommendations: () => {},
+    recommendedObjects: [],
   };
 
   handleInterestingPeopleRefresh = () => this.props.updateRecommendations();
@@ -63,6 +67,7 @@ export default class RightSidebar extends React.Component {
       isAuthFetching,
       followingList,
       isFetchingFollowingList,
+      recommendedObjects,
     } = this.props;
 
     if (isAuthFetching) {
@@ -98,18 +103,19 @@ export default class RightSidebar extends React.Component {
             render={() => (
               <div>
                 {authenticated &&
+                  _.size(recommendedObjects) > 0 && (
+                    <InterestingObjects
+                      objects={recommendedObjects}
+                      onRefresh={this.handleInterestingPeopleRefresh}
+                    />
+                  )}
+                {authenticated &&
                 this.props.recommendations.length > 0 &&
                 !showPostRecommendation ? (
-                  <React.Fragment>
-                    <InterestingObjects
-                      objects={mockObjects}
-                      onRefresh={this.handleInterestingPeopleRefresh}
-                    />
-                    <InterestingPeople
-                      users={this.props.recommendations}
-                      onRefresh={this.handleInterestingPeopleRefresh}
-                    />
-                  </React.Fragment>
+                  <InterestingPeople
+                    users={this.props.recommendations}
+                    onRefresh={this.handleInterestingPeopleRefresh}
+                  />
                 ) : (
                   <div />
                 )}

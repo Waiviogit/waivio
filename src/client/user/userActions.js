@@ -3,6 +3,8 @@ import { getIsAuthenticated, getAuthenticatedUserName } from '../reducers';
 import { getAllFollowing } from '../helpers/apiHelpers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 
+require('isomorphic-fetch');
+
 export const FOLLOW_USER = '@user/FOLLOW_USER';
 export const FOLLOW_USER_START = '@user/FOLLOW_USER_START';
 export const FOLLOW_USER_SUCCESS = '@user/FOLLOW_USER_SUCCESS';
@@ -22,6 +24,26 @@ export const followUser = username => (dispatch, getState, { steemConnectAPI }) 
     },
     meta: {
       username,
+    },
+  });
+};
+
+export const GET_RECOMMENDED_OBJECTS = '@user/GET_RECOMMENDED_OBJECTS';
+export const GET_RECOMMENDED_OBJECTS_START = '@user/GET_RECOMMENDED_OBJECTS_START';
+export const GET_RECOMMENDED_OBJECTS_SUCCESS = '@user/GET_RECOMMENDED_OBJECTS_SUCCESS';
+export const GET_RECOMMENDED_OBJECTS_ERROR = '@user/GET_RECOMMENDED_OBJECTS_ERROR';
+
+export const getRecommendedObjects = () => (dispatch, getState) => {
+  const state = getState();
+
+  if (!getIsAuthenticated(state)) {
+    return Promise.reject('User is not authenticated');
+  }
+
+  return dispatch({
+    type: GET_RECOMMENDED_OBJECTS,
+    payload: {
+      promise: fetch('https://test-waivio.herokuapp.com/api/wobject/').then(res => res.json()),
     },
   });
 };

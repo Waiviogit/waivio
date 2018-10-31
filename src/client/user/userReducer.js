@@ -4,6 +4,7 @@ import { people } from '../helpers/constants';
 
 const initialState = {
   recommendations: [],
+  recommendedObjects: [],
   following: {
     list: [],
     pendingFollows: [],
@@ -138,6 +139,13 @@ export default function userReducer(state = initialState, action) {
         notifications: [action.payload, ...state.notifications],
         latestNotification: action.payload,
       };
+    case actions.GET_RECOMMENDED_OBJECTS_START:
+    case actions.GET_RECOMMENDED_OBJECTS_SUCCESS:
+    case actions.GET_RECOMMENDED_OBJECTS_ERROR:
+      return {
+        ...state,
+        recommendedObjects: action.payload,
+      };
     default: {
       return state;
     }
@@ -148,6 +156,7 @@ export const getFollowingList = state => state.following.list;
 export const getPendingFollows = state => state.following.pendingFollows;
 export const getIsFetchingFollowingList = state => state.following.isFetching;
 export const getRecommendations = state => state.recommendations;
+export const getRecommendedObjects = state => state.recommendedObjects;
 export const getFollowingFetched = state => state.following.fetched;
 export const getNotifications = state => state.notifications;
 export const getIsLoadingNotifications = state => state.loadingNotifications;

@@ -6,18 +6,18 @@ import FollowButton from '../../widgets/FollowButton';
 import './ObjectComponent.less';
 
 const ObjectComponent = ({ item }) => (
-  <div key={item.name} className="Object">
+  <div key={item.tag} className="Object">
     <div className="Object__top">
       <div className="Object__links">
-        <Link to={`/@${item.name}`}>
-          <Avatar username={item.name} size={34} />
+        <Link to={`/@${item.tag}`}>
+          <Avatar username={item.tag} size={34} />
         </Link>
-        <Link to={`/@${item.name}`} title={item.name} className="Object__name">
-          <span className="username">{item.name}</span>
+        <Link to={`/@${item.tag}`} title={item.tag} className="Object__name">
+          <span className="username">{item.tag}</span>
         </Link>
       </div>
       <div className="Object__follow">
-        <FollowButton username={item.name} secondary />
+        <FollowButton username={item.tag} secondary />
       </div>
     </div>
     <div className="Object__divider" />
@@ -25,7 +25,7 @@ const ObjectComponent = ({ item }) => (
 );
 
 ObjectComponent.propTypes = {
-  item: PropTypes.shape({ name: PropTypes.string.isRequired }).isRequired,
+  item: PropTypes.shape({ tag: PropTypes.string.isRequired }).isRequired,
 };
 
 export default ObjectComponent;
