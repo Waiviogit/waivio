@@ -5,7 +5,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import './WobjMenu.less';
 
-class UserMenu extends React.Component {
+class WobjMenu extends React.Component {
   static propTypes = {
     onChange: PropTypes.func,
     defaultKey: PropTypes.string,
@@ -34,7 +34,7 @@ class UserMenu extends React.Component {
   }
 
   getItemClasses = key =>
-    classNames('UserMenu__item', { 'UserMenu__item--active': this.state.current === key });
+    classNames('WobjMenu__item', { 'WobjMenu__item--active': this.state.current === key });
 
   handleClick = e => {
     const key = e.currentTarget.dataset.key;
@@ -43,7 +43,7 @@ class UserMenu extends React.Component {
 
   render() {
     return (
-      <div className="UserMenu">
+      <div className="WobjMenu">
         <div className="container menu-layout">
           <div className="left" />
           <Scrollbars
@@ -54,7 +54,7 @@ class UserMenu extends React.Component {
             )}
             style={{ width: '100%', height: 46 }}
           >
-            <ul className="UserMenu__menu center">
+            <ul className="WobjMenu__menu center">
               <li
                 className={this.getItemClasses('discussions')}
                 onClick={this.handleClick}
@@ -78,7 +78,7 @@ class UserMenu extends React.Component {
                 data-key="followers"
               >
                 <FormattedMessage id="followers" defaultMessage="Followers" />
-                <span className="UserMenu__badge">
+                <span className="WobjMenu__badge">
                   <FormattedNumber value={this.props.followers} />
                 </span>
               </li>
@@ -89,7 +89,7 @@ class UserMenu extends React.Component {
                 data-key="followed"
               >
                 <FormattedMessage id="following" defaultMessage="Following" />
-                <span className="UserMenu__badge">
+                <span className="WobjMenu__badge">
                   <FormattedNumber value={this.props.following} />
                 </span>
               </li>
@@ -117,4 +117,4 @@ class UserMenu extends React.Component {
   }
 }
 
-export default UserMenu;
+export default WobjMenu;

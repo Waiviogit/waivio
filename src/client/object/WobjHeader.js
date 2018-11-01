@@ -34,12 +34,12 @@ export default class Wobj extends React.Component {
   static propTypes = {
     // route: PropTypes.shape().isRequired,
     authenticated: PropTypes.bool.isRequired,
-    match: PropTypes.shape().isRequired,
+    // match: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
     // loaded: PropTypes.bool,
     failed: PropTypes.bool,
     // getAccount: PropTypes.func,
-    openTransfer: PropTypes.func,
+    // openTransfer: PropTypes.func,
   };
 
   static defaultProps = {
@@ -112,22 +112,22 @@ export default class Wobj extends React.Component {
   //   }
   // }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.match.params.name !== this.props.match.params.name) {
-      // this.props.getAccount(this.props.match.params.name);
-    }
-  }
+  // componentDidUpdate(prevProps) {
+  //   if (prevProps.match.params.name !== this.props.match.params.name) {
+  //     // this.props.getAccount(this.props.match.params.name);
+  //   }
+  // }
 
-  handleTransferClick = () => {
-    this.props.openTransfer(this.props.match.params.name);
-  };
+  // handleTransferClick = () => {
+  //   this.props.openTransfer(this.props.match.params.name);
+  // };
 
   render() {
     const { authenticated, failed } = this.props;
     const { isFollowing } = this.state;
     if (failed) return <Error404 />;
 
-    const username = this.props.match.params.name;
+    const username = 'Z-cash';
     const { user } = this.props;
     const { wobjData = {} } = user.json_metadata || {};
     const busyHost = global.postOrigin || 'https://busy.org';
