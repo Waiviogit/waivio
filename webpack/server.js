@@ -53,7 +53,9 @@ module.exports = function createConfig(env = 'dev') {
         name: 'server',
         color: '#c065f4',
       }),
-      new UglifyJsPlugin(),
+      new UglifyJsPlugin({
+        cache: true,
+      }),
     ],
   };
 

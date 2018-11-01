@@ -42,7 +42,9 @@ module.exports = function createConfig(env = 'dev') {
         name: 'client',
         color: '#f56be2',
       }),
-      new UglifyJsPlugin(),
+      new UglifyJsPlugin({
+        cache: true,
+      }),
     ],
     module: {
       rules: [
