@@ -29,9 +29,13 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run linc && npm run prettier-check && npm run test"
+      "pre-commit": "npm run linc && npm run prettier-check"
     }
   },
+  "keywords": [
+    "example",
+    "heroku"
+  ],
   "dependencies": {
     "antd": "^3.4.4",
     "babel-core": "^6.25.0",
