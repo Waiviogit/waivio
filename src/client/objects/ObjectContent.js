@@ -1,10 +1,11 @@
 import React from 'react';
+import _ from 'lodash';
 import { people } from '../helpers/constants';
 import WaivioObject from './WaivioObject';
-import SteemAPI from '../steemAPI';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
+import * as ApiClient from '../../waivioApi/ApiClient';
 
-const displayLimit = 20;
+// const displayLimit = 20;
 
 export const mockObjects = [
   {
@@ -18,27 +19,34 @@ export const mockObjects = [
 
 class ObjectContent extends React.Component {
   state = {
-    wobjs: mockObjects,
+    wobjs: [],
   };
 
+  componentDidMount() {
+    ApiClient.getObjects().then(wobjs => {
+      this.setState({ wobjs });
+    });
+  }
+
   handleLoadMore = () => {
-    const { wobjs } = this.state;
-    const moreWobjStartIndex = wobjs.length;
-    const moreWobj = people.slice(moreWobjStartIndex, moreWobjStartIndex + displayLimit);
-    SteemAPI.sendAsync('get_accounts', [moreWobj]).then(moreWobjResponse =>
-      this.setState({
-        wobjs: wobjs.concat(moreWobjResponse),
-      }),
-    );
+    // const { wobjs } = this.state;
+    // const moreWobjStartIndex = wobjs.length;
+    // const moreWobj = people.slice(moreWobjStartIndex, moreWobjStartIndex + displayLimit);
+    // SteemAPI.sendAsync('get_accounts', [moreWobj]).then(moreWobjResponse =>
+    //   this.setState({
+    //     wobjs: wobjs.concat(moreWobjResponse),
+    //   }),
+    // );
   };
 
   render() {
     const { wobjs } = this.state;
+    const ordered = _.orderBy(wobjs, ['weight'], ['desc']);
     const hasMore = wobjs.length !== people.length;
     return (
       <div>
         <ReduxInfiniteScroll hasMore={hasMore} loadMore={this.handleLoadMore}>
-          {wobjs.map(wobj => <WaivioObject wobj={wobj} key={wobj.id} />)}
+          {_.map(ordered, wobj => <WaivioObject wobj={wobj} key={wobj.tag} />)}
         </ReduxInfiniteScroll>
       </div>
     );

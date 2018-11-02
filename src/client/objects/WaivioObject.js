@@ -3,18 +3,17 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import urlParse from 'url-parse';
 import { Link } from 'react-router-dom';
-import ReputationTag from '../components/ReputationTag';
 import FollowButton from '../widgets/FollowButton';
+import ObjectAvatar from '../components/ObjectAvatar';
+import WeightTag from '../components/WeightTag';
+
+const getWebsite = item => {
+  const wo = _.find(item.fields, ['name', 'link']);
+  return wo ? wo.body : null;
+};
 
 const WaivioObject = ({ wobj }) => {
-  const parsedJSON = _.attempt(JSON.parse, wobj.json_metadata);
-  const wobjJSON = _.isError(parsedJSON) ? {} : parsedJSON;
-  const wobjProfile = _.has(wobjJSON, 'wobjData') ? wobjJSON.wobjData : {};
-  const location = wobjProfile.location;
-  const wobjName = wobjProfile.name;
-  const about = wobjProfile.about;
-  const avatar = wobjProfile.avatar;
-  let website = wobjProfile.website;
+  let website = getWebsite(wobj);
 
   if (website && website.indexOf('http://') === -1 && website.indexOf('https://') === -1) {
     website = `http://${website}`;
@@ -28,31 +27,25 @@ const WaivioObject = ({ wobj }) => {
   }
 
   return (
-    <div key={wobj.name} className="Discover__user">
+    <div key={wobj.tag} className="Discover__user">
       <div className="Discover__user__content">
         <div className="Discover__user__links">
-          <Link to={`object/@${wobj.name}`}>
-            <img alt={avatar} src={avatar} />
+          <Link to={`/@${wobj.tag}`}>
+            <ObjectAvatar item={wobj} size={34} />
           </Link>
           <div className="Discover__user__profile">
             <div className="Discover__user__profile__header">
-              <Link to={`object/@${wobj.name}`}>
+              <Link to={`object/@${wobj.tag}`}>
                 <span className="Discover__user__name">
-                  <span className="username">{wobjName || wobj.name}</span>
+                  <span className="username">{wobj.tag}</span>
                 </span>
-                <ReputationTag reputation={wobj.reputation} />
+                <WeightTag weight={wobj.weight} />
               </Link>
               <div className="Discover__user__follow">
-                <FollowButton username={wobj.name} />
+                <FollowButton username={wobj.tag} />
               </div>
             </div>
             <div className="Discover__user__location">
-              {location && (
-                <span>
-                  <i className="iconfont icon-coordinates text-icon" />
-                  {`${location} `}
-                </span>
-              )}
               {website && (
                 <span>
                   <i className="iconfont icon-link text-icon" />
@@ -62,7 +55,6 @@ const WaivioObject = ({ wobj }) => {
                 </span>
               )}
             </div>
-            <div className="Discover__user__about">{about}</div>
           </div>
         </div>
       </div>

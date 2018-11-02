@@ -1,15 +1,23 @@
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import './ObjectAvatar.less';
 
 const defaultUrl = 'https://steemitimages.com/u/waivio/avatar/small';
 
-const ObjectAvatar = ({ url, size }) => {
+const getObjectUrl = item => {
+  const o = _.find(item.fields, ['name', 'avatarImage']);
+  return o ? o.body : null;
+};
+
+const ObjectAvatar = ({ item, size }) => {
   let style = {
     minWidth: `${size}px`,
     width: `${size}px`,
     height: `${size}px`,
   };
+
+  const url = getObjectUrl(item);
 
   if (url) {
     style = {
@@ -27,13 +35,13 @@ const ObjectAvatar = ({ url, size }) => {
 };
 
 ObjectAvatar.propTypes = {
-  url: PropTypes.string.isRequired,
+  item: PropTypes.shape({ tag: PropTypes.string }),
   size: PropTypes.number,
 };
 
 ObjectAvatar.defaultProps = {
   size: 100,
-  url: defaultUrl,
+  item: {},
 };
 
 export default ObjectAvatar;
