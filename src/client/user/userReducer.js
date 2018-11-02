@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import * as actions from './userActions';
 import * as appTypes from '../app/appActions';
 import { people } from '../helpers/constants';
@@ -26,6 +27,11 @@ const filterRecommendations = (following, count = 5) => {
     .sort(() => 0.5 - Math.random())
     .slice(0, count)
     .map(name => ({ name }));
+};
+
+const filterRecommendedObjects = (objects, count = 5) => {
+  const ordered = _.orderBy(objects, ['weight'], ['desc']);
+  return _.slice(ordered, 0, count);
 };
 
 export default function userReducer(state = initialState, action) {
@@ -144,7 +150,7 @@ export default function userReducer(state = initialState, action) {
     case actions.GET_RECOMMENDED_OBJECTS_ERROR:
       return {
         ...state,
-        recommendedObjects: action.payload,
+        recommendedObjects: filterRecommendedObjects(action.payload),
       };
     default: {
       return state;

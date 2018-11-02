@@ -2,6 +2,7 @@ import { createAction } from 'redux-actions';
 import { getIsAuthenticated, getAuthenticatedUserName } from '../reducers';
 import { getAllFollowing } from '../helpers/apiHelpers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
+import * as ApiClient from '../../waivioApi/ApiClient';
 
 require('isomorphic-fetch');
 
@@ -43,7 +44,7 @@ export const getRecommendedObjects = () => (dispatch, getState) => {
   return dispatch({
     type: GET_RECOMMENDED_OBJECTS,
     payload: {
-      promise: fetch('https://test-waivio.herokuapp.com/api/wobject/').then(res => res.json()),
+      promise: ApiClient.getRecommendedObjects(),
     },
   });
 };

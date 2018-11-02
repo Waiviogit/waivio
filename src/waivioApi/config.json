@@ -1,5 +1,6 @@
 {
   "API_HOST_production": "https://",
   "API_HOST_development": "https://test-waivio.herokuapp.com/api/",
-  "createObject": "/create/object"
+  "createObject": "/create/object",
+  "getObjects": "wobject/"
 }
