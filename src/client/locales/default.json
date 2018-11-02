@@ -360,5 +360,7 @@
   "save_draft_error": "Couldn't save this draft. Make sure you are connected to the internet and don't have too much drafts already",
   "draft_save_auth_error": "Couldn't save this draft, because you are logged out. Please backup your post and log in again.",
   "version": "Version: {version}",
-  "objects_title": "Discover more objects"
+  "objects_title": "Discover more objects",
+  "interesting_objects": "Interesting Objects",
+  "discover_more_objects": "Discover More Objects"
 }
