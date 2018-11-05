@@ -363,5 +363,6 @@
   "objects_title": "Discover more objects",
   "interesting_objects": "Top 5 Objects",
   "discover_more_objects": "Discover more objects",
-  "weight_score_value": "Weight score: {value}"
+  "weight_score_value": "Weight score: {value}",
+  "discover_more_objects_info": "Discover the most reputable objects of this platform"
 }

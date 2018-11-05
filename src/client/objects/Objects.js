@@ -23,11 +23,11 @@ const Objects = ({ intl }) => (
       <div className="Discover">
         <div className="Discover__title">
           <h1>
-            <FormattedMessage id="objects_title" defaultMessage="objects_title" />
+            <FormattedMessage id="objects_title" defaultMessage="Discover more objects" />
           </h1>
           <FormattedMessage
-            id="discover_more_people_info"
-            defaultMessage="Discover the most reputable users of this platform"
+            id="discover_more_objects_info"
+            defaultMessage="Discover the most reputable objects of this platform"
           />
         </div>
         <div className="Discover__content">
