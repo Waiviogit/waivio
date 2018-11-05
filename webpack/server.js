@@ -5,6 +5,7 @@ const WebpackBar = require('webpackbar');
 const StartServerPlugin = require('start-server-webpack-plugin');
 const paths = require('../scripts/paths');
 const { MATCH_JS, MATCH_CSS_LESS, DEFINE_PLUGIN } = require('./configUtils');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = function createConfig(env = 'dev') {
   const IS_DEV = env === 'dev';
@@ -51,6 +52,9 @@ module.exports = function createConfig(env = 'dev') {
       new WebpackBar({
         name: 'server',
         color: '#c065f4',
+      }),
+      new UglifyJsPlugin({
+        cache: true,
       }),
     ],
   };
