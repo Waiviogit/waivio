@@ -12,8 +12,14 @@ const getWebsite = item => {
   return wo ? wo.body : null;
 };
 
+const getLocation = item => {
+  const wo = _.find(item.fields, ['name', 'location']);
+  return wo ? wo.body : null;
+};
+
 const WaivioObject = ({ wobj }) => {
   let website = getWebsite(wobj);
+  const location = getLocation(wobj);
 
   if (website && website.indexOf('http://') === -1 && website.indexOf('https://') === -1) {
     website = `http://${website}`;
@@ -46,6 +52,12 @@ const WaivioObject = ({ wobj }) => {
               </div>
             </div>
             <div className="Discover__user__location">
+              {location && (
+                <span>
+                  <i className="iconfont icon-coordinates text-icon" />
+                  {`${location} `}
+                </span>
+              )}
               {website && (
                 <span>
                   <i className="iconfont icon-link text-icon" />
