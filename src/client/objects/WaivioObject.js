@@ -7,19 +7,14 @@ import FollowButton from '../widgets/FollowButton';
 import ObjectAvatar from '../components/ObjectAvatar';
 import WeightTag from '../components/WeightTag';
 
-const getWebsite = item => {
-  const wo = _.find(item.fields, ['name', 'link']);
-  return wo ? wo.body : null;
-};
-
-const getLocation = item => {
-  const wo = _.find(item.fields, ['name', 'location']);
+const getField = (item, field) => {
+  const wo = _.find(item.fields, ['name', field]);
   return wo ? wo.body : null;
 };
 
 const WaivioObject = ({ wobj }) => {
-  let website = getWebsite(wobj);
-  const location = getLocation(wobj);
+  let website = getField(wobj, 'link');
+  const location = getField(wobj, 'location');
 
   if (website && website.indexOf('http://') === -1 && website.indexOf('https://') === -1) {
     website = `http://${website}`;
@@ -36,7 +31,7 @@ const WaivioObject = ({ wobj }) => {
     <div key={wobj.tag} className="Discover__user">
       <div className="Discover__user__content">
         <div className="Discover__user__links">
-          <Link to={`/@${wobj.tag}`}>
+          <Link to={`object/@${wobj.tag}`}>
             <ObjectAvatar item={wobj} size={34} />
           </Link>
           <div className="Discover__user__profile">
