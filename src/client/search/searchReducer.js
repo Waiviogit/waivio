@@ -1,12 +1,14 @@
 import _ from 'lodash';
 import * as searchActions from './searchActions';
 import formatter from '../helpers/steemitFormatter';
+import { getClientWObj } from '../adaptors';
 
 const initialState = {
   loading: true,
   searchError: false,
   searchResults: [],
   autoCompleteSearchResults: [],
+  searchObjectsResults: [],
 };
 
 export default (state = initialState, action) => {
@@ -68,7 +70,9 @@ export default (state = initialState, action) => {
         ...state,
         searchObjectsResults: _.isEmpty(search)
           ? []
-          : result.filter(obj => obj.tag.includes(search)),
+          : result
+              .map(serverWObj => getClientWObj(serverWObj))
+              .filter(obj => obj.tag.includes(search)),
       };
     }
     default:

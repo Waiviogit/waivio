@@ -39,9 +39,7 @@ class SearchObjectsAutocomplete extends Component {
   render() {
     const { intl, style, searchObjectsResults } = this.props;
     const searchObjectsOptions = searchObjectsResults.map(obj => (
-      /* eslint-disable no-underscore-dangle */
-      <AutoComplete.Option key={obj._id}>{obj.tag}</AutoComplete.Option>
-      /* eslint-enable no-underscore-dangle */
+      <AutoComplete.Option key={obj.id}>{obj.tag}</AutoComplete.Option>
     ));
     return (
       <AutoComplete
