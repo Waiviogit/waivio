@@ -62,6 +62,15 @@ export default (state = initialState, action) => {
         autoCompleteSearchResults: _.isEmpty(search) ? [] : sortedResults,
       };
     }
+    case searchActions.SEARCH_OBJECTS.SUCCESS: {
+      const { result, search } = action.payload;
+      return {
+        ...state,
+        searchObjectsResults: _.isEmpty(search)
+          ? []
+          : result.filter(obj => obj.tag.includes(search)),
+      };
+    }
     default:
       return state;
   }
@@ -70,3 +79,4 @@ export default (state = initialState, action) => {
 export const getSearchLoading = state => state.loading;
 export const getSearchResults = state => state.searchResults;
 export const getAutoCompleteSearchResults = state => state.autoCompleteSearchResults;
+export const getSearchObjectsResults = state => state.searchObjectsResults;

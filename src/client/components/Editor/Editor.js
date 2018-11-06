@@ -14,6 +14,7 @@ import withEditor from './withEditor';
 import EditorInput from './EditorInput';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
+import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
 import './Editor.less';
 
 @injectIntl
@@ -332,6 +333,17 @@ class Editor extends React.Component {
             <BodyContainer full body={body} />
           </Form.Item>
         )}
+        <Form.Item
+          label={
+            <span className="Editor__label">
+              <FormattedMessage id="editor_linked_objects" defaultMessage="Linked objects" />
+            </span>
+          }
+        >
+          <SearchObjectsAutocomplete />
+          <div>Objects</div>
+        </Form.Item>
+
         <Form.Item
           className={classNames({ Editor__hidden: isUpdating })}
           label={

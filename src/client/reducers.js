@@ -156,3 +156,4 @@ export const getSearchLoading = state => fromSearch.getSearchLoading(state.searc
 export const getSearchResults = state => fromSearch.getSearchResults(state.search);
 export const getAutoCompleteSearchResults = state =>
   fromSearch.getAutoCompleteSearchResults(state.search);
+export const getSearchObjectsResults = state => fromSearch.getSearchObjectsResults(state.search);
