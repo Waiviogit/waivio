@@ -1,10 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-// import { renderRoutes } from 'react-router-config';
+import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
-import _ from 'lodash';
-import { currentUserFollowersUser } from '../helpers/apiHelpers';
 import {
   getIsAuthenticated,
   getAuthenticatedUser,
@@ -13,13 +11,12 @@ import {
   getIsUserLoaded,
   getAuthenticatedUserName,
 } from '../reducers';
-import { openTransfer } from '../wallet/walletActions';
-// import { getAccount } from './usersActions';
-import { getAvatarURL } from '../components/Avatar';
+import { getObject } from './wobjectsActions';
+import { getObjectUrl } from '../components/ObjectAvatar';
 import Error404 from '../statics/Error404';
-import WobjHero from './WobjHero';
+import UserHero from './UserHero';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
-// import RightSidebar from '../app/Sidebar/RightSidebar';
+import RightSidebar from '../app/Sidebar/RightSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 
@@ -33,103 +30,70 @@ import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
     failed: getIsUserFailed(state, ownProps.match.params.name),
   }),
   {
-    // getAccount,
-    openTransfer,
+    getObject,
   },
 )
-export default class User extends React.Component {
+export default class Wobj extends React.Component {
   static propTypes = {
-    // route: PropTypes.shape().isRequired,
+    route: PropTypes.shape().isRequired,
     authenticated: PropTypes.bool.isRequired,
-    authenticatedUser: PropTypes.shape().isRequired,
-    authenticatedUserName: PropTypes.string,
+    // authenticatedUser: PropTypes.shape().isRequired,
+    // authenticatedUserName: PropTypes.string,
     match: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
-    // loaded: PropTypes.bool,
+    loaded: PropTypes.bool,
     failed: PropTypes.bool,
-    getAccount: PropTypes.func,
-    openTransfer: PropTypes.func,
+    getObject: PropTypes.func,
   };
 
   static defaultProps = {
     authenticatedUserName: '',
     loaded: false,
     failed: false,
-    getAccount: () => {},
-    openTransfer: () => {},
+    getObject: () => {},
   };
 
-  // static fetchData({ store, match }) {
-  //   return store.dispatch(getAccount(match.params.name));
-  // }
-
   state = {
-    isFollowing: false,
+    wobject: {},
   };
 
   componentDidMount() {
-    const { user, authenticated, authenticatedUserName } = this.props;
+    const { user } = this.props;
     if (!user.id && !user.failed) {
-      this.props.getAccount(this.props.match.params.name);
-    }
-
-    if (authenticated) {
-      currentUserFollowersUser(authenticatedUserName, this.props.match.params.name).then(resp => {
-        const result = _.head(resp);
-        const followingUsername = _.get(result, 'following', '');
-        const isFollowing = this.props.authenticatedUserName === followingUsername;
-        this.setState({
-          isFollowing,
-        });
+      this.props.getObject(this.props.match.params.name).then(wobject => {
+        this.setState({ wobject });
       });
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const diffUsername = this.props.match.params.name !== nextProps.match.params.name;
-    const diffAuthUsername = this.props.authenticatedUserName !== nextProps.authenticatedUserName;
-    if (diffUsername || diffAuthUsername) {
-      currentUserFollowersUser(nextProps.authenticatedUserName, nextProps.match.params.name).then(
-        resp => {
-          const result = _.head(resp);
-          const followingUsername = _.get(result, 'following', '');
-          const isFollowing = nextProps.authenticatedUserName === followingUsername;
-          this.setState({
-            isFollowing,
-          });
-        },
-      );
     }
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.match.params.name !== this.props.match.params.name) {
-      this.props.getAccount(this.props.match.params.name);
+      this.props.getObject(this.props.match.params.name).then(wobject => {
+        this.setState({ wobject }, () => {
+          console.log(wobject);
+        });
+      });
     }
   }
 
-  handleTransferClick = () => {
-    this.props.openTransfer(this.props.match.params.name);
-  };
-
   render() {
-    const { authenticated, authenticatedUser, failed } = this.props;
-    const { isFollowing } = this.state;
+    const { authenticated, loaded, failed } = this.props;
     if (failed) return <Error404 />;
 
-    const username = this.props.match.params.name;
-    const { user } = this.props;
-    const { profile = {} } = user.json_metadata || {};
-    const busyHost = global.postOrigin || 'https://busy.org';
-    const desc = profile.about || `Posts by ${username}`;
-    const image = getAvatarURL(username) || '/images/logo.png';
-    const canonicalUrl = `${busyHost}/@${username}`;
-    const url = `${busyHost}/@${username}`;
-    const displayedUsername = profile.name || username || '';
-    const hasCover = !!profile.cover_image;
-    const title = `${displayedUsername} - Busy`;
+    const { wobject: { value } } = this.state;
 
-    const isSameUser = authenticated && authenticatedUser.name === username;
+    if (!value) return 'Loading...';
+
+    const { user } = this.props;
+
+    const busyHost = global.postOrigin || 'https://busy.org';
+    const desc = `Posts by ${value.tag}`;
+    const image = getObjectUrl(value);
+    const canonicalUrl = `${busyHost}/object/@${value.tag}`;
+    const url = `${busyHost}/object/@${value.tag}`;
+    const displayedUsername = value.tag || '';
+    const hasCover = !!value.cover_image;
+    const title = `${displayedUsername} - Waivio`;
 
     return (
       <div className="main-panel">
@@ -156,16 +120,14 @@ export default class User extends React.Component {
         </Helmet>
         <ScrollToTopOnMount />
         {user && (
-          <WobjHero
+          <UserHero
             authenticated={authenticated}
             user={user}
+            wobject={value}
             username={displayedUsername}
-            isSameUser={isSameUser}
-            coverImage={profile.cover_image}
-            isFollowing={isFollowing}
+            coverImage={value.cover_image}
             hasCover={hasCover}
             onFollowClick={this.handleFollowClick}
-            onTransferClick={this.handleTransferClick}
           />
         )}
         <div className="shifted">
@@ -175,6 +137,10 @@ export default class User extends React.Component {
                 <LeftSidebar />
               </div>
             </Affix>
+            <Affix className="rightContainer" stickPosition={72}>
+              <div className="right">{loaded && <RightSidebar key={user.name} />}</div>
+            </Affix>
+            {loaded && <div className="center">{renderRoutes(this.props.route.routes)}</div>}
           </div>
         </div>
       </div>

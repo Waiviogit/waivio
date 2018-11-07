@@ -5,7 +5,7 @@ import './ObjectAvatar.less';
 
 const defaultUrl = 'https://steemitimages.com/u/waivio/avatar/small';
 
-const getObjectUrl = item => {
+export const getObjectUrl = item => {
   const o = _.find(item.fields, ['name', 'avatarImage']);
   return o ? o.body : null;
 };

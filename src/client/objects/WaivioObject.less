@@ -1,7 +1,7 @@
 @import (reference) '../styles/custom.less';
 @import (reference) '../styles/modules/variables';
 
-.Objects {
+.WaivioObject {
   display: inline-block;
   width: 100%;
 
@@ -27,10 +27,6 @@
   &__user {
     &__name {
       margin-right: 8px;
-      margin-left: 8px;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
     }
 
     &__content {
@@ -41,6 +37,7 @@
 
     &__links {
       display: flex;
+      align-items: center;
       width: 100%;
 
       & > a {
@@ -78,18 +75,24 @@
       }
     }
 
+    &__users_weight {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+    }
+
     &_about {
       color: @blue-botticelli;
     }
 
     &__follow {
-      margin-left: auto;
+      margin-left: 8px;
     }
   }
 }
 
-.Discover__user:last-child {
-  .Discover__user__divider {
+.WaivioObject__user:last-child {
+  .WaivioObject__user__divider {
     height: 0;
   }
 }

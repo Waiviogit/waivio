@@ -10,10 +10,10 @@ const ObjectComponent = ({ item }) => (
   <div key={item.tag} className="Object">
     <div className="Object__top">
       <div className="Object__links">
-        <Link to={`/@${item.tag}`}>
+        <Link to={`object/@${item.tag}`}>
           <ObjectAvatar item={item} size={34} />
         </Link>
-        <Link to={`/@${item.tag}`} title={item.tag} className="Object__name">
+        <Link to={`object/@${item.tag}`} title={item.tag} className="Object__name">
           <span className="username">{item.tag}</span>
         </Link>
         <WeightTag weight={item.weight} />
