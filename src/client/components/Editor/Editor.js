@@ -12,6 +12,7 @@ import Action from '../Button/Action';
 import requiresLogin from '../../auth/requiresLogin';
 import withEditor from './withEditor';
 import EditorInput from './EditorInput';
+import EditorObject from '../EditorObject/EditorObject';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
@@ -68,6 +69,7 @@ class Editor extends React.Component {
     this.state = {
       body: '',
       bodyHTML: '',
+      linkedObjects: [],
     };
 
     this.onUpdate = this.onUpdate.bind(this);
@@ -76,6 +78,7 @@ class Editor extends React.Component {
     this.throttledUpdate = this.throttledUpdate.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleAddLinkedObject = this.handleAddLinkedObject.bind(this);
   }
 
   componentDidMount() {
@@ -196,10 +199,19 @@ class Editor extends React.Component {
     this.props.onDelete();
   }
 
+  handleAddLinkedObject(wObj) {
+    this.setState(prevState => {
+      const linkedObjects = prevState.linkedObjects.some(obj => obj.id === wObj.id)
+        ? prevState.linkedObjects
+        : [...prevState.linkedObjects, wObj];
+      return { linkedObjects };
+    });
+  }
+
   render() {
     const { intl, form, loading, isUpdating, saving, draftId } = this.props;
     const { getFieldDecorator } = form;
-    const { body, bodyHTML } = this.state;
+    const { body, bodyHTML, linkedObjects } = this.state;
 
     const { words, minutes } = readingTime(bodyHTML);
 
@@ -340,8 +352,9 @@ class Editor extends React.Component {
             </span>
           }
         >
-          <SearchObjectsAutocomplete />
-          <div>Objects</div>
+          <SearchObjectsAutocomplete handleSelect={this.handleAddLinkedObject} />
+          {Boolean(linkedObjects.length) &&
+            linkedObjects.map(obj => <EditorObject key={obj.id} wObj={obj} />)}
         </Form.Item>
 
         <Form.Item
