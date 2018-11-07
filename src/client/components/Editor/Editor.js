@@ -12,8 +12,10 @@ import Action from '../Button/Action';
 import requiresLogin from '../../auth/requiresLogin';
 import withEditor from './withEditor';
 import EditorInput from './EditorInput';
+import EditorObject from '../EditorObject/EditorObject';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
+import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
 import './Editor.less';
 
 @injectIntl
@@ -67,6 +69,7 @@ class Editor extends React.Component {
     this.state = {
       body: '',
       bodyHTML: '',
+      linkedObjects: [],
     };
 
     this.onUpdate = this.onUpdate.bind(this);
@@ -75,6 +78,8 @@ class Editor extends React.Component {
     this.throttledUpdate = this.throttledUpdate.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleAddLinkedObject = this.handleAddLinkedObject.bind(this);
+    this.handleRemoveObject = this.handleRemoveObject.bind(this);
   }
 
   componentDidMount() {
@@ -195,10 +200,25 @@ class Editor extends React.Component {
     this.props.onDelete();
   }
 
+  handleAddLinkedObject(wObj) {
+    this.setState(prevState => {
+      const linkedObjects = prevState.linkedObjects.some(obj => obj.id === wObj.id)
+        ? prevState.linkedObjects
+        : [...prevState.linkedObjects, wObj];
+      return { linkedObjects };
+    });
+  }
+
+  handleRemoveObject(objId) {
+    this.setState(prevState => ({
+      linkedObjects: prevState.linkedObjects.filter(obj => obj.id !== objId),
+    }));
+  }
+
   render() {
     const { intl, form, loading, isUpdating, saving, draftId } = this.props;
     const { getFieldDecorator } = form;
-    const { body, bodyHTML } = this.state;
+    const { body, bodyHTML, linkedObjects } = this.state;
 
     const { words, minutes } = readingTime(bodyHTML);
 
@@ -332,6 +352,20 @@ class Editor extends React.Component {
             <BodyContainer full body={body} />
           </Form.Item>
         )}
+        <Form.Item
+          label={
+            <span className="Editor__label">
+              <FormattedMessage id="editor_linked_objects" defaultMessage="Linked objects" />
+            </span>
+          }
+        >
+          <SearchObjectsAutocomplete handleSelect={this.handleAddLinkedObject} />
+          {Boolean(linkedObjects.length) &&
+            linkedObjects.map(obj => (
+              <EditorObject key={obj.id} wObj={obj} handleRemoveObject={this.handleRemoveObject} />
+            ))}
+        </Form.Item>
+
         <Form.Item
           className={classNames({ Editor__hidden: isUpdating })}
           label={

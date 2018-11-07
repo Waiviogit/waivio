@@ -1,0 +1,79 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+@height-row: 60px;
+@padding: 5px;
+.editor-object {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 5px;
+  padding: @padding;
+  border: 1px solid @blue-hawkesBlue;
+  border-radius: 4px;
+  @media @medium {
+    &:hover .editor-object__controls {
+      visibility: visible;
+    }
+  }
+  &__content {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    height: @height-row;
+  }
+
+  &__avatar {
+    max-height: @height-row;
+    border-radius: 30%;
+    margin-right: @padding;
+  }
+
+  &__names {
+    &.main {
+      font-weight: 500;
+    }
+  }
+
+  .editor-object__controls {
+    display: flex;
+    align-items: center;
+    padding-right: @padding;
+
+    &.delete {
+      font-weight: 500;
+      color: @red;
+
+      span {
+        display: none;
+      }
+      & > .delete-icon {
+        font-size: 35px;
+      }
+    }
+  }
+
+  @media @medium {
+    .editor-object__controls {
+      visibility: hidden;
+      display: flex;
+      align-items: center;
+      padding-right: @padding;
+
+      &.delete {
+        font-weight: 500;
+        color: @red;
+        &:hover {
+          cursor: pointer;
+          color: @orange-light;
+        }
+        & > .delete-icon {
+          font-size: 26px;
+        }
+        span {
+          display: inline;
+        }
+      }
+    }
+  }
+}
