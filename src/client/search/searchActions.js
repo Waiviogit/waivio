@@ -1,9 +1,11 @@
 import _ from 'lodash';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { getAccountReputation, getAllSearchResultPages } from '../helpers/apiHelpers';
+import { getObjects } from '../../waivioApi/ApiClient';
 
 export const SEARCH_ASK_STEEM = createAsyncActionType('@search/SEARCH_ASK_STEEM');
 export const AUTO_COMPLETE_SEARCH = createAsyncActionType('@search/AUTO_COMPLETE_SEARCH');
+export const SEARCH_OBJECTS = createAsyncActionType('@search/SEARCH_OBJECTS');
 
 export const searchAskSteem = search => dispatch =>
   dispatch({
@@ -29,6 +31,17 @@ export const searchAutoComplete = search => dispatch =>
     type: AUTO_COMPLETE_SEARCH.ACTION,
     payload: {
       promise: getAccountReputation(search).then(result => ({
+        result,
+        search,
+      })),
+    },
+  });
+
+export const searchObjects = search => dispatch =>
+  dispatch({
+    type: SEARCH_OBJECTS.ACTION,
+    payload: {
+      promise: getObjects().then(result => ({
         result,
         search,
       })),
