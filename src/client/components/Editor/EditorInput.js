@@ -18,6 +18,7 @@ class EditorInput extends React.Component {
     onChange: PropTypes.func,
     onImageUpload: PropTypes.func,
     onImageInvalid: PropTypes.func,
+    onAddLinkedObject: PropTypes.func,
   };
 
   static defaultProps = {
@@ -27,6 +28,7 @@ class EditorInput extends React.Component {
     onChange: () => {},
     onImageUpload: () => {},
     onImageInvalid: () => {},
+    onAddLinkedObject: () => {},
   };
 
   static hotkeys = {
@@ -49,6 +51,7 @@ class EditorInput extends React.Component {
     this.state = {
       imageUploading: false,
       dropzoneActive: false,
+      isPopoverVisible: false,
     };
 
     this.setInput = this.setInput.bind(this);
@@ -60,6 +63,7 @@ class EditorInput extends React.Component {
     this.handleDragEnter = this.handleDragEnter.bind(this);
     this.handleDragLeave = this.handleDragLeave.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.togglePopover = this.togglePopover.bind(this);
   }
 
   componentDidMount() {
@@ -163,6 +167,9 @@ class EditorInput extends React.Component {
         break;
       case 'image':
         this.insertAtCursor('![', '](url)', 2, 2);
+        break;
+      case 'object':
+        this.insertAtCursor('[', '](url)', 2, 2);
         break;
       default:
         break;
@@ -287,6 +294,10 @@ class EditorInput extends React.Component {
     this.setValue(value);
   }
 
+  togglePopover() {
+    this.setState(prevState => ({ isPopoverVisible: !prevState.isPopoverVisible }));
+  }
+
   render() {
     const {
       addon,
@@ -301,7 +312,12 @@ class EditorInput extends React.Component {
 
     return (
       <React.Fragment>
-        <EditorToolbar onSelect={this.insertCode} />
+        <EditorToolbar
+          onSelect={this.insertCode}
+          togglePopover={this.togglePopover}
+          isPopoverVisible={this.state.isPopoverVisible}
+          onSelectLinkedObject={this.props.onAddLinkedObject}
+        />
         <div className="EditorInput__dropzone-base">
           <Dropzone
             disableClick

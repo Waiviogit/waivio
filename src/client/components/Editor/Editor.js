@@ -338,6 +338,7 @@ class Editor extends React.Component {
               onImageUpload={this.props.onImageUpload}
               onImageInvalid={this.props.onImageInvalid}
               inputId={'editor-inputfile'}
+              onAddLinkedObject={this.handleAddLinkedObject}
             />,
           )}
         </Form.Item>

@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Button, Menu, Dropdown, Icon } from 'antd';
+import { Button, Menu, Dropdown, Icon, Popover } from 'antd';
 import BTooltip from '../BTooltip';
+import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
 import './EditorToolbar.less';
 
 const tooltip = (description, shortcut) => (
@@ -14,7 +15,13 @@ const tooltip = (description, shortcut) => (
   </span>
 );
 
-const EditorToolbar = ({ intl, onSelect }) => {
+const EditorToolbar = ({
+  intl,
+  onSelect,
+  isPopoverVisible,
+  togglePopover,
+  onSelectLinkedObject,
+}) => {
   const menu = (
     <Menu onClick={e => onSelect(e.key)}>
       <Menu.Item key="h1">
@@ -109,6 +116,25 @@ const EditorToolbar = ({ intl, onSelect }) => {
             <i className="iconfont icon-picture" />
           </Button>
         </BTooltip>
+
+        <Popover
+          content={<SearchObjectsAutocomplete handleSelect={onSelectLinkedObject} />}
+          // title={intl.formatMessage({ id: 'add_object', defaultMessage: 'Add linked object' })}
+          trigger="click"
+          placement="top"
+          visible={isPopoverVisible}
+          onVisibleChange={togglePopover}
+        >
+          <BTooltip
+            title={tooltip(
+              intl.formatMessage({ id: 'add_object', defaultMessage: 'Add linked object' }),
+            )}
+          >
+            <Button className="EditorToolbar__button">
+              <i className="anticon anticon-codepen" />
+            </Button>
+          </BTooltip>
+        </Popover>
       </div>
     </Scrollbars>
   );
@@ -116,7 +142,10 @@ const EditorToolbar = ({ intl, onSelect }) => {
 
 EditorToolbar.propTypes = {
   intl: PropTypes.shape().isRequired,
+  isPopoverVisible: PropTypes.bool.isRequired,
+  togglePopover: PropTypes.func.isRequired,
   onSelect: PropTypes.func,
+  onSelectLinkedObject: PropTypes.func.isRequired,
 };
 
 EditorToolbar.defaultProps = {
