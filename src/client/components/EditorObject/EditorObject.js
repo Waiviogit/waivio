@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import './EditorObject.less';
 
-const EditorObject = ({ wObj }) => (
+const EditorObject = ({ wObj, handleRemoveObject }) => (
   <div className="editor-object">
     <div className="editor-object__content">
       <img className="editor-object__avatar" src={wObj.avatar} alt={wObj.tag} />
@@ -17,7 +17,12 @@ const EditorObject = ({ wObj }) => (
       </span>
     </div>
     <div className="editor-object__controls">
-      <div className="editor-object__controls delete">
+      <div
+        role="button"
+        tabIndex={0}
+        className="editor-object__controls delete"
+        onClick={() => handleRemoveObject(wObj.id)}
+      >
         <i className="iconfont icon-trash editor-object__controls delete-icon" />
         <FormattedMessage id="remove" defaultMessage="Remove" />
       </div>
@@ -27,6 +32,7 @@ const EditorObject = ({ wObj }) => (
 
 EditorObject.propTypes = {
   wObj: PropTypes.shape().isRequired,
+  handleRemoveObject: PropTypes.func.isRequired,
 };
 
 export default EditorObject;

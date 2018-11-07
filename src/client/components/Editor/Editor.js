@@ -79,6 +79,7 @@ class Editor extends React.Component {
     this.handleDelete = this.handleDelete.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleAddLinkedObject = this.handleAddLinkedObject.bind(this);
+    this.handleRemoveObject = this.handleRemoveObject.bind(this);
   }
 
   componentDidMount() {
@@ -206,6 +207,12 @@ class Editor extends React.Component {
         : [...prevState.linkedObjects, wObj];
       return { linkedObjects };
     });
+  }
+
+  handleRemoveObject(objId) {
+    this.setState(prevState => ({
+      linkedObjects: prevState.linkedObjects.filter(obj => obj.id !== objId),
+    }));
   }
 
   render() {
@@ -354,7 +361,9 @@ class Editor extends React.Component {
         >
           <SearchObjectsAutocomplete handleSelect={this.handleAddLinkedObject} />
           {Boolean(linkedObjects.length) &&
-            linkedObjects.map(obj => <EditorObject key={obj.id} wObj={obj} />)}
+            linkedObjects.map(obj => (
+              <EditorObject key={obj.id} wObj={obj} handleRemoveObject={this.handleRemoveObject} />
+            ))}
         </Form.Item>
 
         <Form.Item
