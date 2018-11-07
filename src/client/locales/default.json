@@ -365,5 +365,6 @@
   "discover_more_objects": "Discover more objects",
   "weight_score_value": "Weight score: {value}",
   "editor_linked_objects": "Linked objects",
-  "objects_auto_complete_placeholder": "Input object name here"
+  "objects_auto_complete_placeholder": "Input object name here",
+  "remove": "remove"
 }
