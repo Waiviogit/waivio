@@ -26,6 +26,7 @@ import Search from '../client/search/Search';
 import Notifications from '../client/notifications/Notifications';
 import Error404 from '../client/statics/Error404';
 import ExitPage from '../client/statics/ExitPage';
+import ObjectProfile from '../client/object/ObjectProfile';
 
 const routes = [
   {
@@ -124,14 +125,14 @@ const routes = [
         ],
       },
       {
-        path: '/object/@:name/(comments|followers|followed|reblogs|feed|transfers|activity)?',
+        path: '/object/@:name/(followed|feed)?',
         component: Wobj,
         exact: true,
         routes: [
           {
             path: '/object/@:name',
             exact: true,
-            component: UserProfile,
+            component: ObjectProfile,
           },
           {
             path: '/object/@:name/followers',

@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom';
 import FollowButton from '../widgets/FollowButton';
 import ObjectAvatar from '../components/ObjectAvatar';
 import WeightTag from '../components/WeightTag';
+import Avatar from '../components/Avatar';
+import './WaivioObject.less';
 
 const getField = (item, field) => {
   const wo = _.find(item.fields, ['name', field]);
@@ -28,25 +30,22 @@ const WaivioObject = ({ wobj }) => {
   }
 
   return (
-    <div key={wobj.tag} className="Discover__user">
-      <div className="Discover__user__content">
-        <div className="Discover__user__links">
+    <div key={wobj.tag} className="WaivioObject__user">
+      <div className="WaivioObject__user__content">
+        <div className="WaivioObject__user__links">
           <Link to={`object/@${wobj.tag}`}>
             <ObjectAvatar item={wobj} size={34} />
           </Link>
-          <div className="Discover__user__profile">
-            <div className="Discover__user__profile__header">
+          <div className="WaivioObject__user__profile">
+            <div className="WaivioObject__user__profile__header">
               <Link to={`object/@${wobj.tag}`}>
-                <span className="Discover__user__name">
+                <span className="WaivioObject__user__name">
                   <span className="username">{wobj.tag}</span>
                 </span>
                 <WeightTag weight={wobj.weight} />
               </Link>
-              <div className="Discover__user__follow">
-                <FollowButton username={wobj.tag} />
-              </div>
             </div>
-            <div className="Discover__user__location">
+            <div className="WaivioObject__user__location">
               {location && (
                 <span>
                   <i className="iconfont icon-coordinates text-icon" />
@@ -57,15 +56,28 @@ const WaivioObject = ({ wobj }) => {
                 <span>
                   <i className="iconfont icon-link text-icon" />
                   <a target="_blank" rel="noopener noreferrer" href={website}>
-                    {`${hostWithoutWWW}${url.pathname.replace(/\/$/, '')}`}
+                    Link to website
                   </a>
                 </span>
               )}
             </div>
           </div>
+          <div className="WaivioObject__user__users_weight">
+            {wobj.users &&
+              _.map(wobj.users, user => (
+                <div className="User__links" key={user.name}>
+                  <Link to={`/@${user.name}`}>
+                    <Avatar username={user.name} size={32} />
+                  </Link>
+                </div>
+              ))}
+            <div className="WaivioObject__user__follow">
+              <FollowButton username={wobj.tag} />
+            </div>
+          </div>
         </div>
       </div>
-      <div className="Discover__user__divider" />
+      <div className="WaivioObject__user__divider" />
     </div>
   );
 };
