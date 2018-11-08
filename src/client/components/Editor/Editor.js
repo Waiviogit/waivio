@@ -15,7 +15,6 @@ import EditorInput from './EditorInput';
 import EditorObject from '../EditorObject/EditorObject';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
-import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
 import './Editor.less';
 
 @injectIntl
@@ -341,6 +340,10 @@ class Editor extends React.Component {
               onAddLinkedObject={this.handleAddLinkedObject}
             />,
           )}
+          {Boolean(linkedObjects.length) &&
+            linkedObjects.map(obj => (
+              <EditorObject key={obj.id} wObj={obj} handleRemoveObject={this.handleRemoveObject} />
+            ))}
         </Form.Item>
         {body && (
           <Form.Item
@@ -353,20 +356,6 @@ class Editor extends React.Component {
             <BodyContainer full body={body} />
           </Form.Item>
         )}
-        <Form.Item
-          label={
-            <span className="Editor__label">
-              <FormattedMessage id="editor_linked_objects" defaultMessage="Linked objects" />
-            </span>
-          }
-        >
-          <SearchObjectsAutocomplete handleSelect={this.handleAddLinkedObject} />
-          {Boolean(linkedObjects.length) &&
-            linkedObjects.map(obj => (
-              <EditorObject key={obj.id} wObj={obj} handleRemoveObject={this.handleRemoveObject} />
-            ))}
-        </Form.Item>
-
         <Form.Item
           className={classNames({ Editor__hidden: isUpdating })}
           label={

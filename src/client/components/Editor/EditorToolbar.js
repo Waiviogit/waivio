@@ -119,21 +119,15 @@ const EditorToolbar = ({
 
         <Popover
           content={<SearchObjectsAutocomplete handleSelect={onSelectLinkedObject} />}
-          // title={intl.formatMessage({ id: 'add_object', defaultMessage: 'Add linked object' })}
-          trigger="click"
-          placement="top"
+          title={intl.formatMessage({ id: 'add_object', defaultMessage: 'Add linked object' })}
+          trigger="hover"
+          placement="bottom"
           visible={isPopoverVisible}
           onVisibleChange={togglePopover}
         >
-          <BTooltip
-            title={tooltip(
-              intl.formatMessage({ id: 'add_object', defaultMessage: 'Add linked object' }),
-            )}
-          >
-            <Button className="EditorToolbar__button">
-              <i className="anticon anticon-codepen" />
-            </Button>
-          </BTooltip>
+          <Button className="EditorToolbar__button">
+            <i className="anticon anticon-codepen" />
+          </Button>
         </Popover>
       </div>
     </Scrollbars>

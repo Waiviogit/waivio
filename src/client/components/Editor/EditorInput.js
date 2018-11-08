@@ -7,6 +7,7 @@ import Dropzone from 'react-dropzone';
 import { HotKeys } from 'react-hotkeys';
 import { MAXIMUM_UPLOAD_SIZE, isValidImage } from '../../helpers/image';
 import EditorToolbar from './EditorToolbar';
+import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
 import './EditorInput.less';
 
 class EditorInput extends React.Component {
@@ -64,6 +65,7 @@ class EditorInput extends React.Component {
     this.handleDragLeave = this.handleDragLeave.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.togglePopover = this.togglePopover.bind(this);
+    this.handleSelectObject = this.handleSelectObject.bind(this);
   }
 
   componentDidMount() {
@@ -130,6 +132,22 @@ class EditorInput extends React.Component {
     this.setValue(newValue, startPos + imageText.length, startPos + imageText.length);
   }
 
+  insertObject(objTag, displayName) {
+    if (!this.input) return;
+
+    const { value } = this.props;
+
+    const startPos = this.input.selectionStart;
+    const endPos = this.input.selectionEnd;
+    const wObjText = `[${displayName || objTag}](${document.location.origin}/object/@${objTag})\n`;
+    const newValue = `${value.substring(0, startPos)}${wObjText}${value.substring(
+      endPos,
+      value.length,
+    )}`;
+    this.resizeTextarea();
+    this.setValue(newValue, startPos + wObjText.length, startPos + wObjText.length);
+  }
+
   insertCode(type) {
     if (!this.input) return;
     this.input.focus();
@@ -167,9 +185,6 @@ class EditorInput extends React.Component {
         break;
       case 'image':
         this.insertAtCursor('![', '](url)', 2, 2);
-        break;
-      case 'object':
-        this.insertAtCursor('[', '](url)', 2, 2);
         break;
       default:
         break;
@@ -294,6 +309,11 @@ class EditorInput extends React.Component {
     this.setValue(value);
   }
 
+  handleSelectObject(wObj) {
+    this.props.onAddLinkedObject(wObj);
+    this.insertObject(wObj.tag, wObj.name.value);
+  }
+
   togglePopover() {
     this.setState(prevState => ({ isPopoverVisible: !prevState.isPopoverVisible }));
   }
@@ -316,7 +336,7 @@ class EditorInput extends React.Component {
           onSelect={this.insertCode}
           togglePopover={this.togglePopover}
           isPopoverVisible={this.state.isPopoverVisible}
-          onSelectLinkedObject={this.props.onAddLinkedObject}
+          onSelectLinkedObject={this.handleSelectObject}
         />
         <div className="EditorInput__dropzone-base">
           <Dropzone
@@ -373,6 +393,12 @@ class EditorInput extends React.Component {
             {addon}
           </label>
         </p>
+        <div>
+          <div className="Editor__label">
+            <FormattedMessage id="editor_linked_objects" defaultMessage="Linked objects" />
+          </div>
+          <SearchObjectsAutocomplete handleSelect={this.handleSelectObject} />
+        </div>
       </React.Fragment>
     );
   }
