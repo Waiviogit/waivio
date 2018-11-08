@@ -7,4 +7,7 @@ export const getRecommendedObjects = () =>
 export const getObjects = () =>
   fetch(`${config.API_HOST_development}${config.getObjects}`).then(res => res.json());
 
+export const getObject = name =>
+  fetch(`${config.API_HOST_development}${config.getObjects}${name}`).then(res => res.json());
+
 export default null;
