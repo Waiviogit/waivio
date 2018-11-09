@@ -30,6 +30,41 @@
       font-size: 18px !important;
     }
   }
+
+  &__popover {
+    &.ant-popover {
+      animation: none !important;
+
+      .ant-popover-inner-content {
+        border-radius: 0 0 4px 4px;
+      }
+
+      .ant-popover-arrow {
+        background: @grey-nero;
+        top: 3px !important;
+      }
+
+      .ant-popover-title {
+        color: @white !important;
+        background: @grey-nero;
+        border-radius: 4px 4px 0 0;
+      }
+
+      &.ant-popover-placement-bottom {
+        padding-top: 7px;
+      }
+    }
+
+    @media only screen and (max-width: @medium-bp) {
+      &.ant-popover {
+        top: 48px !important;
+        bottom: unset !important;
+        &-placement-bottom {
+          padding-top: 0;
+        }
+      }
+    }
+  }
 }
 
 .EditorToolbar__container {

@@ -326,6 +326,7 @@ class EditorInput extends React.Component {
       inputRef,
       onImageUpload,
       onImageInvalid,
+      onAddLinkedObject,
       ...restProps
     } = this.props;
     const { dropzoneActive } = this.state;
@@ -394,8 +395,10 @@ class EditorInput extends React.Component {
           </label>
         </p>
         <div>
-          <div className="Editor__label">
-            <FormattedMessage id="editor_linked_objects" defaultMessage="Linked objects" />
+          <div className="ant-form-item-label">
+            <label className="Editor__label" htmlFor="title">
+              <FormattedMessage id="editor_linked_objects" defaultMessage="Linked objects" />
+            </label>
           </div>
           <SearchObjectsAutocomplete handleSelect={this.handleSelectObject} />
         </div>

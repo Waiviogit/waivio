@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import * as searchActions from './searchActions';
 import formatter from '../helpers/steemitFormatter';
-import { getClientWObj } from '../adaptors';
+import { getClientWObj } from '../adapters';
 
 const initialState = {
   loading: true,

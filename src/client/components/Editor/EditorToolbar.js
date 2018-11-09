@@ -120,13 +120,18 @@ const EditorToolbar = ({
         <Popover
           content={<SearchObjectsAutocomplete handleSelect={onSelectLinkedObject} />}
           title={intl.formatMessage({ id: 'add_object', defaultMessage: 'Add linked object' })}
+          // title={popoverTitle}
+          overlayClassName="EditorToolbar__popover"
           trigger="hover"
           placement="bottom"
           visible={isPopoverVisible}
           onVisibleChange={togglePopover}
         >
-          <Button className="EditorToolbar__button">
-            <i className="anticon anticon-codepen" />
+          <Button
+            className="EditorToolbar__button"
+            onClick={() => console.log('-->', 'wObj clicked')}
+          >
+            <i className="iconfont anticon anticon-codepen" />
           </Button>
         </Popover>
       </div>
