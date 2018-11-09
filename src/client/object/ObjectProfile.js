@@ -1,20 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Feed from '../feed/Feed';
 import { getIsAuthenticated, getAuthenticatedUser, getFeed } from '../reducers';
-import {
-  getFeedLoadingFromState,
-  getFeedFetchedFromState,
-  getFeedHasMoreFromState,
-  getFeedFromState,
-} from '../helpers/stateHelpers';
-import { getFeedContent, getMoreFeedContent } from '../feed/feedActions';
+// import {
+//   getFeedLoadingFromState,
+//   getFeedFetchedFromState,
+//   getFeedHasMoreFromState,
+//   getFeedFromState,
+// } from '../helpers/stateHelpers';
+import { getMoreFeedContent } from '../feed/feedActions';
+import { getFeedContentByObject } from '../object/wobjectsActions';
 import { showPostModal } from '../app/appActions';
-import EmptyUserProfile from '../statics/EmptyUserProfile';
-import EmptyUserOwnProfile from '../statics/EmptyUserOwnProfile';
 import PostModal from '../post/PostModalContainer';
 
 @withRouter
@@ -25,68 +23,71 @@ import PostModal from '../post/PostModalContainer';
     feed: getFeed(state),
   }),
   {
-    getFeedContent,
+    getFeedContentByObject,
     getMoreFeedContent,
     showPostModal,
   },
 )
 export default class ObjectProfile extends React.Component {
   static propTypes = {
-    authenticated: PropTypes.bool.isRequired,
-    authenticatedUser: PropTypes.shape().isRequired,
-    feed: PropTypes.shape().isRequired,
+    // authenticated: PropTypes.bool.isRequired,
+    // authenticatedUser: PropTypes.shape().isRequired,
+    // feed: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
-    showPostModal: PropTypes.func.isRequired,
-    limit: PropTypes.number,
-    getFeedContent: PropTypes.func,
-    getMoreFeedContent: PropTypes.func,
+    // showPostModal: PropTypes.func.isRequired,
+    // limit: PropTypes.number,
+    getFeedContentByObject: PropTypes.func,
+    // getMoreFeedContent: PropTypes.func,
   };
 
   static defaultProps = {
     limit: 10,
     location: {},
-    getFeedContent: () => {},
+    getFeedContentByObject: () => {},
     getMoreFeedContent: () => {},
   };
 
-  componentDidMount() {
-    const { match, limit } = this.props;
-    const { name } = match.params;
+  state = {
+    posts: [],
+  };
 
-    this.props.getFeedContent({
-      sortBy: 'blog',
-      category: name,
-      limit,
-    });
+  componentDidMount() {
+    const { match } = this.props;
+    const { name } = match.params;
+    //
+    // this.props.getFeedContent({
+    //   sortBy: 'blog',
+    //   category: name,
+    //   limit,
+    // });
+    this.props.getFeedContentByObject(name).then(({ posts }) => this.setState({ posts }));
   }
 
   render() {
-    const { authenticated, authenticatedUser, feed, limit } = this.props;
-    const username = 'guest123';
-    const isOwnProfile = authenticated && username === authenticatedUser.name;
-    const content = getFeedFromState('blog', username, feed);
-    const isFetching = getFeedLoadingFromState('blog', username, feed);
-    const fetched = getFeedFetchedFromState('blog', username, feed);
-    const hasMore = getFeedHasMoreFromState('blog', username, feed);
-    const loadMoreContentAction = () =>
-      this.props.getMoreFeedContent({
-        sortBy: 'blog',
-        category: username,
-        limit,
-      });
+    // const { authenticated, authenticatedUser, feed, limit } = this.props;
+    // const username = 'guest123';
+    // const isOwnProfile = authenticated && username === authenticatedUser.name;
+    // const content = getFeedFromState('blog', username, feed);
+    // const isFetching = getFeedLoadingFromState('blog', username, feed);
+    // const fetched = getFeedFetchedFromState('blog', username, feed);
+    // const hasMore = getFeedHasMoreFromState('blog', username, feed);
+    // const loadMoreContentAction = () => {};
+    // this.props.getMoreFeedContent({
+    //   sortBy: 'blog',
+    //   category: username,
+    //   limit,
+    // });
 
     return (
       <div>
         <div className="profile">
           <Feed
-            content={content}
-            isFetching={isFetching}
-            hasMore={hasMore}
-            loadMoreContent={loadMoreContentAction}
-            showPostModal={this.props.showPostModal}
+            content={this.state.posts}
+            // isFetching={isFetching}
+            // hasMore={hasMore}
+            // loadMoreContent={loadMoreContentAction}
+            // showPostModal={this.props.showPostModal}
           />
-          {_.isEmpty(content) && fetched && isOwnProfile && <EmptyUserOwnProfile />}
-          {_.isEmpty(content) && fetched && !isOwnProfile && <EmptyUserProfile />}
         </div>
         {<PostModal />}
       </div>

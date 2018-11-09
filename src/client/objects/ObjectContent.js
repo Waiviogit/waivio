@@ -4,6 +4,7 @@ import { people } from '../helpers/constants';
 import WaivioObject from './WaivioObject';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import * as ApiClient from '../../waivioApi/ApiClient';
+import Loading from '../components/Icon/Loading';
 
 // const displayLimit = 20;
 
@@ -43,6 +44,11 @@ class ObjectContent extends React.Component {
     const { wobjs } = this.state;
     const ordered = _.orderBy(wobjs, ['weight'], ['desc']);
     const hasMore = wobjs.length !== people.length;
+
+    if (!wobjs) {
+      return <Loading />;
+    }
+
     return (
       <div>
         <ReduxInfiniteScroll hasMore={hasMore} loadMore={this.handleLoadMore}>
