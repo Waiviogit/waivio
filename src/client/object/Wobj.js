@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-// import { renderRoutes } from 'react-router-config';
+import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import {
   getIsAuthenticated,
@@ -20,14 +20,13 @@ import RightObjectSidebar from '../app/Sidebar/RightObjectSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import Loading from '../components/Icon/Loading';
-import Feed from '../feed/Feed';
 
 @connect(
   (state, ownProps) => ({
     authenticated: getIsAuthenticated(state),
     authenticatedUser: getAuthenticatedUser(state),
     authenticatedUserName: getAuthenticatedUserName(state),
-    user: getUser(state, ownProps.match.params.name),
+    user: getUser(state, 'otve'),
     loaded: getIsUserLoaded(state, ownProps.match.params.name),
     failed: getIsUserFailed(state, ownProps.match.params.name),
   }),
@@ -37,7 +36,7 @@ import Feed from '../feed/Feed';
 )
 export default class Wobj extends React.Component {
   static propTypes = {
-    // route: PropTypes.shape().isRequired,
+    route: PropTypes.shape().isRequired,
     authenticated: PropTypes.bool.isRequired,
     match: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
@@ -147,15 +146,7 @@ export default class Wobj extends React.Component {
                 <RightObjectSidebar users={value.users} />
               </div>
             </Affix>
-            <div className="center">
-              <Feed
-                content={value.posts}
-                hasMore={false}
-                isFetching={false}
-                loadMoreContent={() => {}}
-                showPostModal={() => {}}
-              />
-            </div>
+            <div className="center">{renderRoutes(this.props.route.routes)}</div>
           </div>
         </div>
       </div>

@@ -14,7 +14,9 @@ export const getUsersByObject = object =>
   fetch(`${config.API_HOST_development}${config.getObjects}${object}`).then(res => res.json());
 
 export const getFeedContentByObject = name => {
-  fetch(`${config.API_HOST_development}${config.getObjects}${name}`).then(res => res.json());
+  fetch(`${config.API_HOST_development}${config.getObjects}${name}`)
+    .then(res => res.json())
+    .then(json => ({ posts: json.posts }));
 };
 
 export default null;
