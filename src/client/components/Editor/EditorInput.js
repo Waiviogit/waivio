@@ -52,7 +52,6 @@ class EditorInput extends React.Component {
     this.state = {
       imageUploading: false,
       dropzoneActive: false,
-      isPopoverVisible: false,
     };
 
     this.setInput = this.setInput.bind(this);
@@ -64,7 +63,6 @@ class EditorInput extends React.Component {
     this.handleDragEnter = this.handleDragEnter.bind(this);
     this.handleDragLeave = this.handleDragLeave.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.togglePopover = this.togglePopover.bind(this);
     this.handleSelectObject = this.handleSelectObject.bind(this);
   }
 
@@ -314,10 +312,6 @@ class EditorInput extends React.Component {
     this.insertObject(wObj.tag, wObj.name.value);
   }
 
-  togglePopover() {
-    this.setState(prevState => ({ isPopoverVisible: !prevState.isPopoverVisible }));
-  }
-
   render() {
     const {
       addon,
@@ -336,7 +330,6 @@ class EditorInput extends React.Component {
         <EditorToolbar
           onSelect={this.insertCode}
           togglePopover={this.togglePopover}
-          isPopoverVisible={this.state.isPopoverVisible}
           onSelectLinkedObject={this.handleSelectObject}
         />
         <div className="EditorInput__dropzone-base">

@@ -15,6 +15,7 @@ import EditorInput from './EditorInput';
 import EditorObject from '../EditorObject/EditorObject';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
+import waivioData from '../../../common/constants/waivio';
 import './Editor.less';
 
 @injectIntl
@@ -93,6 +94,7 @@ class Editor extends React.Component {
         selectInput.setAttribute('autocapitalize', 'none');
       }
     }
+    this.props.form.getFieldDecorator(waivioData);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -204,14 +206,17 @@ class Editor extends React.Component {
       const linkedObjects = prevState.linkedObjects.some(obj => obj.id === wObj.id)
         ? prevState.linkedObjects
         : [...prevState.linkedObjects, wObj];
+      this.props.form.setFieldsValue({ [waivioData]: { linkedObjects } });
       return { linkedObjects };
     });
   }
 
   handleRemoveObject(objId) {
-    this.setState(prevState => ({
-      linkedObjects: prevState.linkedObjects.filter(obj => obj.id !== objId),
-    }));
+    this.setState(prevState => {
+      const linkedObjects = prevState.linkedObjects.filter(obj => obj.id !== objId);
+      this.props.form.setFieldsValue({ [waivioData]: { linkedObjects } });
+      return { linkedObjects };
+    });
   }
 
   render() {
@@ -345,6 +350,25 @@ class Editor extends React.Component {
               <EditorObject key={obj.id} wObj={obj} handleRemoveObject={this.handleRemoveObject} />
             ))}
         </Form.Item>
+        {/* <Form.Item */}
+        {/* className={classNames({ Editor__hidden: isUpdating })} */}
+        {/* label={ */}
+        {/* <span className="Editor__label"> */}
+        {/* <FormattedMessage id="wObjects" defaultMessage="LINKED OBJECTS" /> */}
+        {/* </span> */}
+        {/* } */}
+        {/* > */}
+        {/* {getFieldDecorator('wObjects', { */}
+        {/* initialValue: [] */}
+        {/* })( */}
+        {/* <Select */}
+        {/* mode="tags" */}
+        {/* value={linkedObjects.map(obj => obj.id)} */}
+        {/* onChange={() => {}} */}
+        {/* disabled={isUpdating} */}
+        {/* /> */}
+        {/* )} */}
+        {/* </Form.Item> */}
         {body && (
           <Form.Item
             label={

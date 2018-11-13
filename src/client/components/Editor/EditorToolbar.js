@@ -15,13 +15,7 @@ const tooltip = (description, shortcut) => (
   </span>
 );
 
-const EditorToolbar = ({
-  intl,
-  onSelect,
-  isPopoverVisible,
-  togglePopover,
-  onSelectLinkedObject,
-}) => {
+const EditorToolbar = ({ intl, onSelect, onSelectLinkedObject }) => {
   const menu = (
     <Menu onClick={e => onSelect(e.key)}>
       <Menu.Item key="h1">
@@ -120,17 +114,11 @@ const EditorToolbar = ({
         <Popover
           content={<SearchObjectsAutocomplete handleSelect={onSelectLinkedObject} />}
           title={intl.formatMessage({ id: 'add_object', defaultMessage: 'Add linked object' })}
-          // title={popoverTitle}
           overlayClassName="EditorToolbar__popover"
           trigger="hover"
           placement="bottom"
-          visible={isPopoverVisible}
-          onVisibleChange={togglePopover}
         >
-          <Button
-            className="EditorToolbar__button"
-            onClick={() => console.log('-->', 'wObj clicked')}
-          >
+          <Button className="EditorToolbar__button">
             <i className="iconfont anticon anticon-codepen" />
           </Button>
         </Popover>
@@ -141,8 +129,6 @@ const EditorToolbar = ({
 
 EditorToolbar.propTypes = {
   intl: PropTypes.shape().isRequired,
-  isPopoverVisible: PropTypes.bool.isRequired,
-  togglePopover: PropTypes.func.isRequired,
   onSelect: PropTypes.func,
   onSelectLinkedObject: PropTypes.func.isRequired,
 };
