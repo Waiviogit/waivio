@@ -1,25 +1,30 @@
 export const getClientWObj = serverWObj => {
   /* eslint-disable no-underscore-dangle */
   const avatarField = serverWObj.fields.find(f => f.name === 'avatarImage');
-  const nameFields = serverWObj.fields.filter(f => f.name === 'name').map(f => ({
-    id: f._id,
-    value: f.body,
-    locale: f.locale,
-    weight: f.weight,
-  }));
+  const nameField = serverWObj.fields.find(f => f.name === 'name');
   return {
+    ...serverWObj,
     id: serverWObj._id,
-    tag: serverWObj.tag,
     avatar: avatarField ? avatarField.body : '/images/logo-brand.png',
-    weight: serverWObj.weight,
-    parents: serverWObj.parents,
-    createdAt: serverWObj.createdAt,
-    updatedAt: serverWObj.updatedAt,
+    name: nameField ? nameField.body : 'name not found',
     version: serverWObj.__v,
-    names: nameFields,
-    name: nameFields.reduce((acc, curr) => (acc.weight > curr.weight ? acc : curr)),
   };
   /* eslint-enable no-underscore-dangle */
 };
 
-export const getSomething = 'anotherOne';
+export const getServerWObj = clientWObj =>
+  /* eslint-disable no-underscore-dangle */
+  ({
+    _id: clientWObj.id,
+    parents: clientWObj.parents,
+    tag: clientWObj.tag,
+    weight: clientWObj.weight,
+    fields: [...clientWObj.fields],
+    createdAt: clientWObj.createdAt,
+    updatedAt: clientWObj.updatedAt,
+    __v: clientWObj.version,
+    children: [...clientWObj.children],
+    users: [...clientWObj.users],
+    user_count: clientWObj.user_count,
+  });
+/* eslint-enable no-underscore-dangle */

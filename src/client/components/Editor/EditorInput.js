@@ -309,7 +309,7 @@ class EditorInput extends React.Component {
 
   handleSelectObject(wObj) {
     this.props.onAddLinkedObject(wObj);
-    this.insertObject(wObj.tag, wObj.name.value);
+    this.insertObject(wObj.tag, wObj.name);
   }
 
   render() {
