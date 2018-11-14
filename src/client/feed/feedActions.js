@@ -11,6 +11,8 @@ import {
   getBookmarks as getBookmarksSelector,
 } from '../reducers';
 
+import * as ApiClient from '../../waivioApi/ApiClient';
+
 export const GET_FEED_CONTENT = createAsyncActionType('@feed/GET_FEED_CONTENT');
 export const GET_MORE_FEED_CONTENT = createAsyncActionType('@feed/GET_MORE_FEED_CONTENT');
 
@@ -21,6 +23,9 @@ export const GET_REPLIES = createAsyncActionType('@user/GET_REPLIES');
 export const GET_MORE_REPLIES = createAsyncActionType('@user/GET_MORE_REPLIES');
 
 export const GET_BOOKMARKS = createAsyncActionType('@bookmarks/GET_BOOKMARKS');
+
+export const GET_OBJECT_POSTS = createAsyncActionType('@object/GET_OBJECT_POSTS');
+export const GET_MORE_OBJECT_POSTS = createAsyncActionType('@object/GET_MORE_OBJECT_POSTS');
 
 export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) => (
   dispatch,
@@ -82,6 +87,14 @@ export const getUserComments = ({ username, limit = 20 }) => (dispatch, getState
       .then(postsData => postsData),
     meta: { sortBy: 'comments', category: username, limit },
   });
+
+export const getObjectPosts = ({ username, object, limit = 20 }) => dispatch => {
+  dispatch({
+    type: `GET_OBJECT_POSTS_SUCCESS`,
+    payload: ApiClient.getFeedContentByObject(object),
+    meta: { sortBy: 'objectPosts', category: username, limit },
+  });
+};
 
 export const getMoreUserComments = ({ username, limit = 20 }) => (
   dispatch,

@@ -15,17 +15,18 @@ import { getObject } from './wobjectsActions';
 import { getObjectUrl } from '../components/ObjectAvatar';
 import Error404 from '../statics/Error404';
 import UserHero from './UserHero';
-import LeftSidebar from '../app/Sidebar/LeftSidebar';
-import RightSidebar from '../app/Sidebar/RightSidebar';
+import LeftObjectProfileSidebar from '../app/Sidebar/LeftObjectProfileSidebar';
+import RightObjectSidebar from '../app/Sidebar/RightObjectSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
+import Loading from '../components/Icon/Loading';
 
 @connect(
   (state, ownProps) => ({
     authenticated: getIsAuthenticated(state),
     authenticatedUser: getAuthenticatedUser(state),
     authenticatedUserName: getAuthenticatedUserName(state),
-    user: getUser(state, ownProps.match.params.name),
+    user: getUser(state, 'otve'),
     loaded: getIsUserLoaded(state, ownProps.match.params.name),
     failed: getIsUserFailed(state, ownProps.match.params.name),
   }),
@@ -37,11 +38,9 @@ export default class Wobj extends React.Component {
   static propTypes = {
     route: PropTypes.shape().isRequired,
     authenticated: PropTypes.bool.isRequired,
-    // authenticatedUser: PropTypes.shape().isRequired,
-    // authenticatedUserName: PropTypes.string,
     match: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
-    loaded: PropTypes.bool,
+    // loaded: PropTypes.bool,
     failed: PropTypes.bool,
     getObject: PropTypes.func,
   };
@@ -55,13 +54,16 @@ export default class Wobj extends React.Component {
 
   state = {
     wobject: {},
+    isFetching: true,
   };
 
   componentDidMount() {
     const { user } = this.props;
     if (!user.id && !user.failed) {
       this.props.getObject(this.props.match.params.name).then(wobject => {
-        this.setState({ wobject });
+        this.setState({ wobject, isFetching: false }, () => {
+          console.log(`wobject -> ${JSON.stringify(wobject)}`);
+        });
       });
     }
   }
@@ -69,20 +71,22 @@ export default class Wobj extends React.Component {
   componentDidUpdate(prevProps) {
     if (prevProps.match.params.name !== this.props.match.params.name) {
       this.props.getObject(this.props.match.params.name).then(wobject => {
-        this.setState({ wobject }, () => {
-          console.log(wobject);
+        this.setState({ wobject, isFetching: false }, () => {
+          console.log(`wobject -> ${JSON.stringify(wobject)}`);
         });
       });
     }
   }
 
   render() {
-    const { authenticated, loaded, failed } = this.props;
+    const { authenticated, failed } = this.props;
     if (failed) return <Error404 />;
 
     const { wobject: { value } } = this.state;
 
-    if (!value) return 'Loading...';
+    if (!value) {
+      return <Loading center />;
+    }
 
     const { user } = this.props;
 
@@ -134,13 +138,15 @@ export default class Wobj extends React.Component {
           <div className="feed-layout container">
             <Affix className="leftContainer leftContainer__user" stickPosition={72}>
               <div className="left">
-                <LeftSidebar />
+                <LeftObjectProfileSidebar fields={value.fields} />
               </div>
             </Affix>
             <Affix className="rightContainer" stickPosition={72}>
-              <div className="right">{loaded && <RightSidebar key={user.name} />}</div>
+              <div className="right">
+                <RightObjectSidebar users={value.users} />
+              </div>
             </Affix>
-            {loaded && <div className="center">{renderRoutes(this.props.route.routes)}</div>}
+            <div className="center">{renderRoutes(this.props.route.routes)}</div>
           </div>
         </div>
       </div>

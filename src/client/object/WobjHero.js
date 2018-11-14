@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import WobjHeader from './WobjHeader';
 import UserHeaderLoading from '../components/UserHeaderLoading';
-import UserMenu from '../components/UserMenu';
+import ObjectMenu from '../components/ObjectMenu';
 import Hero from '../components/Hero';
 
 const activityFields = [
@@ -31,9 +31,8 @@ class UserMenuWrapper extends React.Component {
 
   render() {
     const { match, location, history, ...otherProps } = this.props;
-    const current = this.props.location.pathname.split('/')[2];
-    const currentKey = current || 'discussions';
-    return <UserMenu defaultKey={currentKey} onChange={this.onChange} {...otherProps} />;
+    const currentKey = 'discussions';
+    return <ObjectMenu defaultKey={currentKey} onChange={this.onChange} {...otherProps} />;
   }
 }
 
@@ -45,7 +44,7 @@ const isUserActive = user =>
       5 * 60 * 1000,
   );
 
-const UserHero = ({
+const WobjHero = ({
   authenticated,
   user,
   username,
@@ -84,7 +83,7 @@ const UserHero = ({
   </div>
 );
 
-UserHero.propTypes = {
+WobjHero.propTypes = {
   authenticated: PropTypes.bool.isRequired,
   user: PropTypes.shape().isRequired,
   username: PropTypes.string.isRequired,
@@ -94,7 +93,7 @@ UserHero.propTypes = {
   onTransferClick: PropTypes.func,
 };
 
-UserHero.defaultProps = {
+WobjHero.defaultProps = {
   isSameUser: false,
   coverImage: '',
   hasCover: false,
@@ -103,4 +102,4 @@ UserHero.defaultProps = {
   onTransferClick: () => {},
 };
 
-export default UserHero;
+export default WobjHero;

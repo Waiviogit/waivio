@@ -11,7 +11,7 @@ import {
   getFeedHasMoreFromState,
   getFeedFromState,
 } from '../helpers/stateHelpers';
-import { getFeedContent, getMoreFeedContent } from '../feed/feedActions';
+import { getObjectPosts } from '../feed/feedActions';
 import { showPostModal } from '../app/appActions';
 import EmptyUserProfile from '../statics/EmptyUserProfile';
 import EmptyUserOwnProfile from '../statics/EmptyUserOwnProfile';
@@ -25,8 +25,8 @@ import PostModal from '../post/PostModalContainer';
     feed: getFeed(state),
   }),
   {
-    getFeedContent,
-    getMoreFeedContent,
+    getObjectPosts,
+    // getMoreFeedContent,
     showPostModal,
   },
 )
@@ -37,43 +37,37 @@ export default class ObjectProfile extends React.Component {
     feed: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     showPostModal: PropTypes.func.isRequired,
-    limit: PropTypes.number,
-    getFeedContent: PropTypes.func,
-    getMoreFeedContent: PropTypes.func,
+    // limit: PropTypes.number,
+    getObjectPosts: PropTypes.func,
+    // getMoreFeedContent: PropTypes.func,
   };
 
   static defaultProps = {
     limit: 10,
     location: {},
-    getFeedContent: () => {},
-    getMoreFeedContent: () => {},
+    getObjectPosts: () => {},
+    // getMoreFeedContent: () => {},
   };
 
   componentDidMount() {
-    const { match, limit } = this.props;
+    const { match } = this.props;
     const { name } = match.params;
 
-    this.props.getFeedContent({
-      sortBy: 'blog',
-      category: name,
-      limit,
+    this.props.getObjectPosts({
+      object: name,
+      username: this.props.authenticatedUser.name,
     });
   }
 
   render() {
-    const { authenticated, authenticatedUser, feed, limit } = this.props;
-    const username = 'guest123';
+    const { authenticated, authenticatedUser, feed } = this.props;
+    const username = this.props.match.params.name;
     const isOwnProfile = authenticated && username === authenticatedUser.name;
-    const content = getFeedFromState('blog', username, feed);
-    const isFetching = getFeedLoadingFromState('blog', username, feed);
-    const fetched = getFeedFetchedFromState('blog', username, feed);
-    const hasMore = getFeedHasMoreFromState('blog', username, feed);
-    const loadMoreContentAction = () =>
-      this.props.getMoreFeedContent({
-        sortBy: 'blog',
-        category: username,
-        limit,
-      });
+    const content = getFeedFromState('objectPosts', authenticatedUser.name, feed);
+    const isFetching = getFeedLoadingFromState('objectPosts', authenticatedUser.name, feed);
+    const fetched = getFeedFetchedFromState('objectPosts', authenticatedUser.name, feed);
+    const hasMore = getFeedHasMoreFromState('objectPosts', authenticatedUser.name, feed);
+    const loadMoreContentAction = () => {};
 
     return (
       <div>
