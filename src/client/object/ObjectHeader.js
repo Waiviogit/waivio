@@ -7,9 +7,9 @@ import WeightTag from '../components/WeightTag';
 import ObjectLightbox from '../components/ObjectLightbox';
 import FollowButton from '../widgets/FollowButton';
 import Action from '../components/Button/Action';
-import '../components/UserHeader.less';
+import '../components/ObjectHeader.less';
 
-const UserHeader = ({
+const ObjectHeader = ({
   username,
   wobject,
   handle,
@@ -23,19 +23,19 @@ const UserHeader = ({
     ? { backgroundImage: `url("https://steemitimages.com/2048x512/${coverImage}")` }
     : {};
   return (
-    <div className={classNames('UserHeader', { 'UserHeader--cover': hasCover })} style={style}>
-      <div className="UserHeader__container">
+    <div className={classNames('ObjectHeader', { 'ObjectHeader--cover': hasCover })} style={style}>
+      <div className="ObjectHeader__container">
         <ObjectLightbox username={wobject} size={100} isActive={isActive} />
-        <div className="UserHeader__user">
-          <div className="UserHeader__row">
-            <h2 className="UserHeader__user__username">
+        <div className="ObjectHeader__user">
+          <div className="ObjectHeader__row">
+            <h2 className="ObjectHeader__user__username">
               {username}
               <WeightTag weight={wobject.weight} />
             </h2>
-            <div className="UserHeader__user__buttons">
+            <div className="ObjectHeader__user__buttons">
               <div
-                className={classNames('UserHeader__user__button', {
-                  'UserHeader__user__button-follows-you': isFollowing && !isSameUser,
+                className={classNames('ObjectHeader__user__button', {
+                  'ObjectHeader__user__button-follows-you': isFollowing && !isSameUser,
                 })}
               >
                 {isSameUser ? (
@@ -50,11 +50,11 @@ const UserHeader = ({
               </div>
             </div>
           </div>
-          <div className="UserHeader__handle-rank-container">
-            <div className="UserHeader__row UserHeader__handle">
+          <div className="ObjectHeader__handle-rank-container">
+            <div className="ObjectHeader__row ObjectHeader__handle">
               @{wobject.tag}
               {isFollowing && (
-                <span className="UserHeader__follows-you">
+                <span className="ObjectHeader__follows-you">
                   <FormattedMessage id="follows_you" defaultMessage="Follows you" />
                 </span>
               )}
@@ -63,9 +63,12 @@ const UserHeader = ({
           {isFollowing &&
             !isSameUser && (
               <span
-                className={classNames('UserHeader__follows-you UserHeader__follows-you--mobile', {
-                  'UserHeader__follows-you-cover-text-color': hasCover,
-                })}
+                className={classNames(
+                  'ObjectHeader__follows-you ObjectHeader__follows-you--mobile',
+                  {
+                    'ObjectHeader__follows-you-cover-text-color': hasCover,
+                  },
+                )}
               >
                 <FormattedMessage id="follows_you" defaultMessage="Follows you" />
               </span>
@@ -76,7 +79,7 @@ const UserHeader = ({
   );
 };
 
-UserHeader.propTypes = {
+ObjectHeader.propTypes = {
   username: PropTypes.string,
   handle: PropTypes.string,
   isSameUser: PropTypes.bool,
@@ -87,7 +90,7 @@ UserHeader.propTypes = {
   isActive: PropTypes.bool.isRequired,
 };
 
-UserHeader.defaultProps = {
+ObjectHeader.defaultProps = {
   username: '',
   handle: '',
   userReputation: '0',
@@ -100,4 +103,4 @@ UserHeader.defaultProps = {
   onTransferClick: () => {},
 };
 
-export default UserHeader;
+export default ObjectHeader;

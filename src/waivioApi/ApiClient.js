@@ -13,10 +13,12 @@ export const getObject = name =>
 export const getUsersByObject = object =>
   fetch(`${config.API_HOST_development}${config.getObjects}${object}`).then(res => res.json());
 
-export const getFeedContentByObject = name => {
-  fetch(`${config.API_HOST_development}${config.getObjects}${name}`)
-    .then(res => res.json())
-    .then(json => ({ posts: json.posts }));
-};
+export const getFeedContentByObject = name =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.API_HOST_development}${config.getObjects}${name}`)
+      .then(res => res.json())
+      .then(({ posts }) => resolve(posts))
+      .catch(error => reject(error));
+  });
 
 export default null;

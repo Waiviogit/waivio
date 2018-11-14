@@ -29,10 +29,8 @@ const feedIdsList = (state = [], action) => {
     case feedTypes.GET_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_REPLIES.SUCCESS:
     case feedTypes.GET_BOOKMARKS.SUCCESS:
-      // case feedTypes.GET_OBJECT_POSTS.SUCCESS:
-      return action.payload.map(post => post.id);
     case feedTypes.GET_OBJECT_POSTS.SUCCESS:
-      return action.payload;
+      return action.payload.map(post => post.id);
     case feedTypes.GET_MORE_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_MORE_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_MORE_REPLIES.SUCCESS:
