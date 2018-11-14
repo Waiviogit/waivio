@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
+import _ from 'lodash';
 import {
   getIsAuthenticated,
   getAuthenticatedUser,
@@ -54,16 +55,13 @@ export default class Wobj extends React.Component {
 
   state = {
     wobject: {},
-    isFetching: true,
   };
 
   componentDidMount() {
     const { user } = this.props;
     if (!user.id && !user.failed) {
       this.props.getObject(this.props.match.params.name).then(wobject => {
-        this.setState({ wobject, isFetching: false }, () => {
-          console.log(`wobject -> ${JSON.stringify(wobject)}`);
-        });
+        this.setState({ wobject: wobject.value });
       });
     }
   }
@@ -71,9 +69,7 @@ export default class Wobj extends React.Component {
   componentDidUpdate(prevProps) {
     if (prevProps.match.params.name !== this.props.match.params.name) {
       this.props.getObject(this.props.match.params.name).then(wobject => {
-        this.setState({ wobject, isFetching: false }, () => {
-          console.log(`wobject -> ${JSON.stringify(wobject)}`);
-        });
+        this.setState({ wobject: wobject.value });
       });
     }
   }
@@ -82,21 +78,21 @@ export default class Wobj extends React.Component {
     const { authenticated, failed } = this.props;
     if (failed) return <Error404 />;
 
-    const { wobject: { value } } = this.state;
+    const { wobject } = this.state;
 
-    if (!value) {
+    if (_.isEmpty(wobject)) {
       return <Loading center />;
     }
 
     const { user } = this.props;
 
     const busyHost = global.postOrigin || 'https://busy.org';
-    const desc = `Posts by ${value.tag}`;
-    const image = getObjectUrl(value);
-    const canonicalUrl = `${busyHost}/object/@${value.tag}`;
-    const url = `${busyHost}/object/@${value.tag}`;
-    const displayedUsername = value.tag || '';
-    const hasCover = !!value.cover_image;
+    const desc = `Posts by ${wobject.tag}`;
+    const image = getObjectUrl(wobject);
+    const canonicalUrl = `${busyHost}/object/@${wobject.tag}`;
+    const url = `${busyHost}/object/@${wobject.tag}`;
+    const displayedUsername = wobject.tag || '';
+    const hasCover = !!wobject.cover_image;
     const title = `${displayedUsername} - Waivio`;
 
     return (
@@ -127,9 +123,9 @@ export default class Wobj extends React.Component {
           <UserHero
             authenticated={authenticated}
             user={user}
-            wobject={value}
+            wobject={wobject}
             username={displayedUsername}
-            coverImage={value.cover_image}
+            coverImage={wobject.cover_image}
             hasCover={hasCover}
             onFollowClick={this.handleFollowClick}
           />
@@ -138,12 +134,12 @@ export default class Wobj extends React.Component {
           <div className="feed-layout container">
             <Affix className="leftContainer leftContainer__user" stickPosition={72}>
               <div className="left">
-                <LeftObjectProfileSidebar fields={value.fields} />
+                <LeftObjectProfileSidebar fields={wobject.fields} />
               </div>
             </Affix>
             <Affix className="rightContainer" stickPosition={72}>
               <div className="right">
-                <RightObjectSidebar users={value.users} />
+                <RightObjectSidebar users={wobject.users} />
               </div>
             </Affix>
             <div className="center">{renderRoutes(this.props.route.routes)}</div>

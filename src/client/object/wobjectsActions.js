@@ -11,7 +11,7 @@ export const getObject = name => dispatch =>
   dispatch({
     type: GET_OBJECT.ACTION,
     payload: ApiClient.getObject(name),
-  }).catch(() => {});
+  });
 
 export const getUsersByObject = object => dispatch =>
   dispatch({
