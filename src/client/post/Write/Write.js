@@ -9,9 +9,11 @@ import { injectIntl } from 'react-intl';
 import uuidv4 from 'uuid/v4';
 import improve from '../../helpers/improve';
 import { createPostMetadata } from '../../helpers/postHelpers';
+import { getClientWObj } from '../../adapters';
 import { rewardsValues } from '../../../common/constants/rewards';
 import LastDraftsContainer from './LastDraftsContainer';
 import DeleteDraftModal from './DeleteDraftModal';
+import waivioData from '../../../common/constants/waivio';
 
 import {
   getAuthenticatedUser,
@@ -78,6 +80,7 @@ class Write extends React.Component {
     this.state = {
       initialTitle: '',
       initialTopics: [],
+      initialWObj: { linkedObjects: [] },
       initialBody: '',
       initialReward: this.props.rewardSetting,
       initialUpvote: this.props.upvoteSetting,
@@ -106,10 +109,15 @@ class Write extends React.Component {
         this.originalBody = draftPost.originalBody;
       }
 
+      if (draftPost.jsonMetadata[waivioData]) {
+        this.wObj = draftPost.jsonMetadata[waivioData].linkedObjects;
+      }
+
       // eslint-disable-next-line
       this.setState({
         initialTitle: draftPost.title || '',
         initialTopics: tags || [],
+        initialWObj: draftPost.wObj || { linkedObjects: [] },
         initialBody: draftPost.body || '',
         initialReward: draftPost.reward,
         initialUpvote: draftPost.upvote,
@@ -133,6 +141,7 @@ class Write extends React.Component {
       this.setState({
         initialTitle: '',
         initialTopics: [],
+        initialWObj: { linkedObjects: [] },
         initialBody: '',
         initialReward: rewardsValues.half,
         initialUpvote: nextProps.upvoteSetting,
@@ -146,11 +155,16 @@ class Write extends React.Component {
       const initialTitle = _.get(draftPost, 'title', '');
       const initialBody = _.get(draftPost, 'body', '');
       const initialTopics = _.get(draftPost, 'jsonMetadata.tags', []);
+      const initialWObj = _.get(draftPost, 'jsonMetadata.wObj', {});
       this.draftId = draftId;
       this.setState({
         initialTitle,
         initialBody,
         initialTopics,
+        initialWObj: {
+          ...initialWObj,
+          linkedObjects: initialWObj.linkedObjects.map(obj => getClientWObj(obj)),
+        },
       });
     }
   }
@@ -171,13 +185,16 @@ class Write extends React.Component {
     if (this.props.draftId) {
       data.draftId = this.props.draftId;
     }
+    // console.log('-->', JSON.stringify(form));
     this.props.createPost(data);
   };
 
   getNewPostData = form => {
+    console.log('=-> saveDraft', form.wObj.linkedObjects);
     const data = {
       body: form.body,
       title: form.title,
+      [waivioData]: form[waivioData],
       reward: form.reward,
       upvote: form.upvote,
       lastUpdated: Date.now(),
@@ -198,7 +215,7 @@ class Write extends React.Component {
       this.props.draftPosts[this.draftId] && this.props.draftPosts[this.draftId].jsonMetadata;
 
     data.parentPermlink = form.topics.length ? form.topics[0] : 'general';
-    data.jsonMetadata = createPostMetadata(data.body, form.topics, oldMetadata);
+    data.jsonMetadata = createPostMetadata(data.body, form.topics, form[waivioData], oldMetadata);
 
     if (this.originalBody) {
       data.originalBody = this.originalBody;
@@ -226,7 +243,14 @@ class Write extends React.Component {
   }, 2000);
 
   render() {
-    const { initialTitle, initialTopics, initialBody, initialReward, initialUpvote } = this.state;
+    const {
+      initialTitle,
+      initialTopics,
+      initialWObj,
+      initialBody,
+      initialReward,
+      initialUpvote,
+    } = this.state;
     const { loading, saving, draftId } = this.props;
 
     return (
@@ -243,6 +267,7 @@ class Write extends React.Component {
               saving={saving}
               title={initialTitle}
               topics={initialTopics}
+              wObj={initialWObj}
               body={initialBody}
               reward={initialReward}
               upvote={initialUpvote}

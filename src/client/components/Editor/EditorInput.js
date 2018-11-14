@@ -7,7 +7,6 @@ import Dropzone from 'react-dropzone';
 import { HotKeys } from 'react-hotkeys';
 import { MAXIMUM_UPLOAD_SIZE, isValidImage } from '../../helpers/image';
 import EditorToolbar from './EditorToolbar';
-import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
 import './EditorInput.less';
 
 class EditorInput extends React.Component {
@@ -15,6 +14,7 @@ class EditorInput extends React.Component {
     value: PropTypes.string, // eslint-disable-line react/require-default-props
     inputId: PropTypes.string,
     addon: PropTypes.node,
+    placeholder: PropTypes.string,
     inputRef: PropTypes.func,
     onChange: PropTypes.func,
     onImageUpload: PropTypes.func,
@@ -25,6 +25,7 @@ class EditorInput extends React.Component {
   static defaultProps = {
     addon: null,
     inputId: '',
+    placeholder: '',
     inputRef: () => {},
     onChange: () => {},
     onImageUpload: () => {},
@@ -316,6 +317,7 @@ class EditorInput extends React.Component {
     const {
       addon,
       value,
+      placeholder,
       inputId,
       inputRef,
       onImageUpload,
@@ -354,6 +356,7 @@ class EditorInput extends React.Component {
             <HotKeys keyMap={this.constructor.hotkeys} handlers={this.handlers}>
               <Input.TextArea
                 {...restProps}
+                placeholder={placeholder}
                 onChange={this.handleChange}
                 value={value}
                 ref={this.setInput}
@@ -387,14 +390,6 @@ class EditorInput extends React.Component {
             {addon}
           </label>
         </p>
-        <div>
-          <div className="ant-form-item-label">
-            <label className="Editor__label" htmlFor="title">
-              <FormattedMessage id="editor_linked_objects" defaultMessage="Linked objects" />
-            </label>
-          </div>
-          <SearchObjectsAutocomplete handleSelect={this.handleSelectObject} />
-        </div>
       </React.Fragment>
     );
   }

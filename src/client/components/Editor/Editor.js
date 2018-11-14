@@ -15,6 +15,7 @@ import EditorInput from './EditorInput';
 import EditorObject from '../EditorObject/EditorObject';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
+import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
 import waivioData from '../../../common/constants/waivio';
 import './Editor.less';
 
@@ -28,6 +29,7 @@ class Editor extends React.Component {
     form: PropTypes.shape().isRequired,
     title: PropTypes.string,
     topics: PropTypes.arrayOf(PropTypes.string),
+    wObj: PropTypes.shape(),
     body: PropTypes.string,
     reward: PropTypes.string,
     upvote: PropTypes.bool,
@@ -46,6 +48,7 @@ class Editor extends React.Component {
   static defaultProps = {
     title: '',
     topics: [],
+    wObj: {},
     body: '',
     reward: rewardsValues.half,
     upvote: true,
@@ -94,14 +97,14 @@ class Editor extends React.Component {
         selectInput.setAttribute('autocapitalize', 'none');
       }
     }
-    this.props.form.getFieldDecorator(waivioData);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { title, topics, body, reward, upvote, draftId } = this.props;
+    const { title, topics, wObj, body, reward, upvote, draftId } = this.props;
     if (
       title !== nextProps.title ||
       !_.isEqual(topics, nextProps.topics) ||
+      !_.isEqual(wObj, nextProps.wObj) ||
       body !== nextProps.body ||
       reward !== nextProps.reward ||
       upvote !== nextProps.upvote ||
@@ -118,6 +121,11 @@ class Editor extends React.Component {
   setValues(post) {
     // NOTE: Used to rollback damaged drafts - https://github.com/busyorg/busy/issues/1412
     // Might be deleted after a while.
+    const { form } = this.props;
+
+    form.getFieldDecorator('topics');
+    form.getFieldDecorator([waivioData]);
+
     let reward = rewardsValues.half;
     if (
       post.reward === rewardsValues.all ||
@@ -127,14 +135,15 @@ class Editor extends React.Component {
       reward = post.reward;
     }
 
-    this.props.form.setFieldsValue({
+    form.setFieldsValue({
       title: post.title,
       topics: post.topics,
+      [waivioData]: post[waivioData],
       body: post.body,
       reward,
       upvote: post.upvote,
     });
-
+    this.setState({ linkedObjects: (post[waivioData] && post[waivioData].linkedObjects) || [] });
     this.setBodyAndRender(post.body);
   }
 
@@ -201,14 +210,14 @@ class Editor extends React.Component {
     this.props.onDelete();
   }
 
-  handleAddLinkedObject(wObj) {
+  handleAddLinkedObject(wObject) {
     this.setState(prevState => {
-      const linkedObjects = prevState.linkedObjects.some(obj => obj.id === wObj.id)
+      const linkedObjects = prevState.linkedObjects.some(obj => obj.id === wObject.id)
         ? prevState.linkedObjects
-        : [...prevState.linkedObjects, wObj];
-      this.props.form.setFieldsValue({ [waivioData]: { linkedObjects } });
+        : [...prevState.linkedObjects, wObject];
+      this.props.form.setFieldsValue({ [waivioData]: { linkedObjects }, topics: ['waivio'] });
       return { linkedObjects };
-    });
+    }, this.onUpdate());
   }
 
   handleRemoveObject(objId) {
@@ -216,7 +225,7 @@ class Editor extends React.Component {
       const linkedObjects = prevState.linkedObjects.filter(obj => obj.id !== objId);
       this.props.form.setFieldsValue({ [waivioData]: { linkedObjects } });
       return { linkedObjects };
-    });
+    }, this.onUpdate());
   }
 
   render() {
@@ -272,48 +281,6 @@ class Editor extends React.Component {
             />,
           )}
         </Form.Item>
-        <Form.Item
-          label={
-            <span className="Editor__label">
-              <FormattedMessage id="topics" defaultMessage="Topics" />
-            </span>
-          }
-          extra={intl.formatMessage({
-            id: 'topics_extra',
-            defaultMessage:
-              'Separate topics with commas. Only lowercase letters, numbers and hyphen character is permitted.',
-          })}
-        >
-          {getFieldDecorator('topics', {
-            initialValue: [],
-            rules: [
-              {
-                required: true,
-                message: intl.formatMessage({
-                  id: 'topics_error_empty',
-                  defaultMessage: 'Please enter topics',
-                }),
-                type: 'array',
-              },
-              { validator: this.checkTopics(intl) },
-            ],
-          })(
-            <Select
-              ref={ref => {
-                this.select = ref;
-              }}
-              onChange={this.onUpdate}
-              className="Editor__topics"
-              mode="tags"
-              placeholder={intl.formatMessage({
-                id: 'topics_placeholder',
-                defaultMessage: 'Add story topics here',
-              })}
-              dropdownStyle={{ display: 'none' }}
-              tokenSeparators={[' ', ',']}
-            />,
-          )}
-        </Form.Item>
         <Form.Item>
           {getFieldDecorator('body', {
             rules: [
@@ -338,6 +305,10 @@ class Editor extends React.Component {
                   }}
                 />
               }
+              placeholder={intl.formatMessage({
+                id: 'story_placeholder',
+                defaultMessage: 'Add content',
+              })}
               onChange={this.onUpdate}
               onImageUpload={this.props.onImageUpload}
               onImageInvalid={this.props.onImageInvalid}
@@ -345,30 +316,23 @@ class Editor extends React.Component {
               onAddLinkedObject={this.handleAddLinkedObject}
             />,
           )}
+        </Form.Item>
+        <div>
+          <div className="ant-form-item-label">
+            <label className="Editor__label" htmlFor="title">
+              <FormattedMessage id="editor_linked_objects" defaultMessage="Linked objects" />
+            </label>
+          </div>
+          <SearchObjectsAutocomplete handleSelect={this.handleAddLinkedObject} />
           {Boolean(linkedObjects.length) &&
             linkedObjects.map(obj => (
-              <EditorObject key={obj.id} wObj={obj} handleRemoveObject={this.handleRemoveObject} />
+              <EditorObject
+                key={obj.id}
+                wObject={obj}
+                handleRemoveObject={this.handleRemoveObject}
+              />
             ))}
-        </Form.Item>
-        {/* <Form.Item */}
-        {/* className={classNames({ Editor__hidden: isUpdating })} */}
-        {/* label={ */}
-        {/* <span className="Editor__label"> */}
-        {/* <FormattedMessage id="wObjects" defaultMessage="LINKED OBJECTS" /> */}
-        {/* </span> */}
-        {/* } */}
-        {/* > */}
-        {/* {getFieldDecorator('wObjects', { */}
-        {/* initialValue: [] */}
-        {/* })( */}
-        {/* <Select */}
-        {/* mode="tags" */}
-        {/* value={linkedObjects.map(obj => obj.id)} */}
-        {/* onChange={() => {}} */}
-        {/* disabled={isUpdating} */}
-        {/* /> */}
-        {/* )} */}
-        {/* </Form.Item> */}
+        </div>
         {body && (
           <Form.Item
             label={
