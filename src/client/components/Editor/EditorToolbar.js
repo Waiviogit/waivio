@@ -15,7 +15,7 @@ const tooltip = (description, shortcut) => (
   </span>
 );
 
-const EditorToolbar = ({ intl, onSelect, onSelectLinkedObject }) => {
+const EditorToolbar = ({ intl, canCreateNewObject, onSelect, onSelectLinkedObject }) => {
   const menu = (
     <Menu onClick={e => onSelect(e.key)}>
       <Menu.Item key="h1">
@@ -112,7 +112,12 @@ const EditorToolbar = ({ intl, onSelect, onSelectLinkedObject }) => {
         </BTooltip>
 
         <Popover
-          content={<SearchObjectsAutocomplete handleSelect={onSelectLinkedObject} />}
+          content={
+            <SearchObjectsAutocomplete
+              handleSelect={onSelectLinkedObject}
+              canCreateNewObject={canCreateNewObject}
+            />
+          }
           title={intl.formatMessage({ id: 'add_object', defaultMessage: 'Add linked object' })}
           overlayClassName="EditorToolbar__popover"
           trigger="hover"
@@ -128,12 +133,14 @@ const EditorToolbar = ({ intl, onSelect, onSelectLinkedObject }) => {
 };
 
 EditorToolbar.propTypes = {
+  canCreateNewObject: PropTypes.bool,
   intl: PropTypes.shape().isRequired,
   onSelect: PropTypes.func,
   onSelectLinkedObject: PropTypes.func.isRequired,
 };
 
 EditorToolbar.defaultProps = {
+  canCreateNewObject: false,
   onSelect: () => {},
 };
 

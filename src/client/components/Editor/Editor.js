@@ -13,10 +13,14 @@ import requiresLogin from '../../auth/requiresLogin';
 import withEditor from './withEditor';
 import EditorInput from './EditorInput';
 import EditorObject from '../EditorObject/EditorObject';
+import { getClientWObj } from '../../adapters';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
-import waivioData from '../../../common/constants/waivio';
+import {
+  MAX_NEW_OBJECTS_NUMBER,
+  WAIVIO_POST_FIELD_NAME as waivioData,
+} from '../../../common/constants/waivio';
 import './Editor.less';
 
 @injectIntl
@@ -73,6 +77,7 @@ class Editor extends React.Component {
       body: '',
       bodyHTML: '',
       linkedObjects: [],
+      canCreateNewObject: true,
     };
 
     this.onUpdate = this.onUpdate.bind(this);
@@ -83,6 +88,7 @@ class Editor extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleAddLinkedObject = this.handleAddLinkedObject.bind(this);
     this.handleRemoveObject = this.handleRemoveObject.bind(this);
+    this.setFormValues = this.setFormValues.bind(this);
   }
 
   componentDidMount() {
@@ -154,6 +160,12 @@ class Editor extends React.Component {
     });
   }
 
+  setFormValues(fieldName, value) {
+    this.props.form.setFieldsValue({
+      [fieldName]: value,
+    });
+  }
+
   checkTopics = intl => (rule, value, callback) => {
     if (!value || value.length < 1 || value.length > 5) {
       callback(
@@ -211,27 +223,32 @@ class Editor extends React.Component {
   }
 
   handleAddLinkedObject(wObject) {
+    const selectedObj = wObject.isNew ? getClientWObj(wObject) : wObject;
     this.setState(prevState => {
-      const linkedObjects = prevState.linkedObjects.some(obj => obj.id === wObject.id)
+      const linkedObjects = prevState.linkedObjects.some(obj => obj.id === selectedObj.id)
         ? prevState.linkedObjects
-        : [...prevState.linkedObjects, wObject];
-      this.props.form.setFieldsValue({ [waivioData]: { linkedObjects }, topics: ['waivio'] });
-      return { linkedObjects };
+        : [...prevState.linkedObjects, selectedObj];
+      const topics = linkedObjects.filter(obj => obj.isNew).map(obj => obj.id);
+      this.setFormValues(waivioData, { linkedObjects });
+      this.setFormValues('topics', topics);
+      return { linkedObjects, canCreateNewObject: topics.length < MAX_NEW_OBJECTS_NUMBER };
     }, this.onUpdate());
   }
 
   handleRemoveObject(objId) {
     this.setState(prevState => {
       const linkedObjects = prevState.linkedObjects.filter(obj => obj.id !== objId);
-      this.props.form.setFieldsValue({ [waivioData]: { linkedObjects } });
-      return { linkedObjects };
+      const topics = linkedObjects.filter(obj => obj.isNew).map(obj => obj.id);
+      this.setFormValues(waivioData, { linkedObjects });
+      this.setFormValues('topics', topics);
+      return { linkedObjects, canCreateNewObject: topics.length < MAX_NEW_OBJECTS_NUMBER };
     }, this.onUpdate());
   }
 
   render() {
     const { intl, form, loading, isUpdating, saving, draftId } = this.props;
     const { getFieldDecorator } = form;
-    const { body, bodyHTML, linkedObjects } = this.state;
+    const { body, bodyHTML, linkedObjects, canCreateNewObject } = this.state;
 
     const { words, minutes } = readingTime(bodyHTML);
 
@@ -313,6 +330,7 @@ class Editor extends React.Component {
               onImageUpload={this.props.onImageUpload}
               onImageInvalid={this.props.onImageInvalid}
               inputId={'editor-inputfile'}
+              canCreateNewObject={canCreateNewObject}
               onAddLinkedObject={this.handleAddLinkedObject}
             />,
           )}
@@ -323,7 +341,10 @@ class Editor extends React.Component {
               <FormattedMessage id="editor_linked_objects" defaultMessage="Linked objects" />
             </label>
           </div>
-          <SearchObjectsAutocomplete handleSelect={this.handleAddLinkedObject} />
+          <SearchObjectsAutocomplete
+            handleSelect={this.handleAddLinkedObject}
+            canCreateNewObject={canCreateNewObject}
+          />
           {Boolean(linkedObjects.length) &&
             linkedObjects.map(obj => (
               <EditorObject

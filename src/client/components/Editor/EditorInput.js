@@ -11,6 +11,7 @@ import './EditorInput.less';
 
 class EditorInput extends React.Component {
   static propTypes = {
+    canCreateNewObject: PropTypes.bool,
     value: PropTypes.string, // eslint-disable-line react/require-default-props
     inputId: PropTypes.string,
     addon: PropTypes.node,
@@ -24,6 +25,7 @@ class EditorInput extends React.Component {
 
   static defaultProps = {
     addon: null,
+    canCreateNewObject: false,
     inputId: '',
     placeholder: '',
     inputRef: () => {},
@@ -318,6 +320,7 @@ class EditorInput extends React.Component {
       addon,
       value,
       placeholder,
+      canCreateNewObject,
       inputId,
       inputRef,
       onImageUpload,
@@ -330,6 +333,7 @@ class EditorInput extends React.Component {
     return (
       <React.Fragment>
         <EditorToolbar
+          canCreateNewObject={canCreateNewObject}
           onSelect={this.insertCode}
           togglePopover={this.togglePopover}
           onSelectLinkedObject={this.handleSelectObject}

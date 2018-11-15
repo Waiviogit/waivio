@@ -190,11 +190,10 @@ class Write extends React.Component {
   };
 
   getNewPostData = form => {
-    console.log('=-> saveDraft', form.wObj.linkedObjects);
+    // console.log('| saveDraft > ', form.topics);
     const data = {
       body: form.body,
       title: form.title,
-      [waivioData]: form[waivioData],
       reward: form.reward,
       upvote: form.upvote,
       lastUpdated: Date.now(),

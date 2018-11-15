@@ -9,7 +9,9 @@ const EditorObject = ({ wObject, handleRemoveObject }) => (
       <img className="editor-object__avatar" src={wObject.avatar} alt={wObject.tag} />
       <span className="editor-object__names">
         <span className="editor-object__names main">{wObject.tag}</span>
-        <span className="editor-object__names other">{` (${wObject.name})`}</span>
+        {Boolean(wObject.name) && (
+          <span className="editor-object__names other">{` (${wObject.name})`}</span>
+        )}
       </span>
     </div>
     <div className="editor-object__controls">

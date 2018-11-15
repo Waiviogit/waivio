@@ -1,3 +1,3 @@
-const WAIVIO_POST_FIELD_NAME = 'wObj';
+export const WAIVIO_POST_FIELD_NAME = 'wObj';
 
-export default WAIVIO_POST_FIELD_NAME;
+export const MAX_NEW_OBJECTS_NUMBER = 5;
