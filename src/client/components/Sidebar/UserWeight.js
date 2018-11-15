@@ -10,10 +10,10 @@ const UserWeight = ({ user }) => (
   <div key={user.name} className="Object">
     <div className="Object__top">
       <div className="Object__links">
-        <Link to={`@${user.name}`}>
+        <Link to={{ pathname: `/@${user.name}` }}>
           <Avatar username={user.name} size={34} />
         </Link>
-        <Link to={`@${user.name}`} title={user.name} className="Object__name">
+        <Link to={{ pathname: `/@${user.name}` }} title={user.name} className="Object__name">
           <span className="username">{user.name}</span>
         </Link>
         <WeightTag weight={user.weight} />
