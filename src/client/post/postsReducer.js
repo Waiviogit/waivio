@@ -42,6 +42,7 @@ const posts = (state = initialState, action) => {
       };
     }
     case feedTypes.GET_FEED_CONTENT.SUCCESS:
+    case feedTypes.GET_OBJECT_POSTS.SUCCESS:
     case feedTypes.GET_MORE_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_REPLIES.SUCCESS:
     case feedTypes.GET_MORE_REPLIES.SUCCESS:

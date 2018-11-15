@@ -90,7 +90,7 @@ export const getUserComments = ({ username, limit = 20 }) => (dispatch, getState
 
 export const getObjectPosts = ({ username, object, limit = 20 }) => dispatch => {
   dispatch({
-    type: `GET_OBJECT_POSTS_SUCCESS`,
+    type: GET_OBJECT_POSTS.ACTION,
     payload: ApiClient.getFeedContentByObject(object),
     meta: { sortBy: 'objectPosts', category: username, limit },
   });
