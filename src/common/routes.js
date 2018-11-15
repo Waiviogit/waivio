@@ -152,7 +152,7 @@ const routes = [
         component: Objects,
       },
       {
-        path: '/wobject/editor',
+        path: '/wobject/editor/@:name',
         exact: true,
         component: AppendObjectPostWtite,
       },

@@ -367,5 +367,12 @@
   "editor_linked_objects": "Linked objects",
   "objects_auto_complete_placeholder": "Input object name here",
   "remove": "remove",
-  "discover_more_objects_info": "Discover the most reputable objects of this platform"
+  "discover_more_objects_info": "Discover the most reputable objects of this platform",
+  "updates_in_object1": "I recommend to add field:",
+  "updates_in_object2": "with value:",
+  "updates_in_object3": "to",
+  "suggest1": "I suggest to add field:",
+  "suggest2": "With locale:",
+  "suggest3": "Value",
+  "value_placeholder": "Add value"
 }

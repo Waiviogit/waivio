@@ -7,16 +7,17 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import readingTime from 'reading-time';
 import { Checkbox, Form, Input, Select } from 'antd';
+import { supportedObjectFields } from '../../../common/constants/listOfFields';
 import { rewardsValues } from '../../../common/constants/rewards';
 import Action from '../Button/Action';
 import requiresLogin from '../../auth/requiresLogin';
-import withEditor from './withEditor';
 import EditorInput from './EditorInput';
-import EditorObject from '../EditorObject/EditorObject';
+import withEditor from './withEditor';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
-import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
 import './Editor.less';
+import { getLanguageText } from '../../translations';
+import LANGUAGES from '../../translations/languages';
 
 @injectIntl
 @requiresLogin
@@ -26,7 +27,9 @@ class AppendObjectPostEditor extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     form: PropTypes.shape().isRequired,
+    wobject: PropTypes.shape().isRequired,
     title: PropTypes.string,
+    locale: PropTypes.string,
     topics: PropTypes.arrayOf(PropTypes.string),
     body: PropTypes.string,
     reward: PropTypes.string,
@@ -48,11 +51,13 @@ class AppendObjectPostEditor extends React.Component {
     body: '',
     reward: rewardsValues.half,
     upvote: true,
+    locale: 'auto',
     recentTopics: [],
     popularTopics: [],
     loading: false,
     isUpdating: false,
     saving: false,
+    wobject: {},
     onUpdate: () => {},
     onDelete: () => {},
     onSubmit: () => {},
@@ -66,8 +71,11 @@ class AppendObjectPostEditor extends React.Component {
 
     this.state = {
       body: '',
+      locale: this.props.locale,
       bodyHTML: '',
       linkedObjects: [],
+      fieldToChange: '',
+      valueToChange: '',
     };
 
     this.onUpdate = this.onUpdate.bind(this);
@@ -76,8 +84,7 @@ class AppendObjectPostEditor extends React.Component {
     this.throttledUpdate = this.throttledUpdate.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleAddLinkedObject = this.handleAddLinkedObject.bind(this);
-    this.handleRemoveObject = this.handleRemoveObject.bind(this);
+    this.handleChangeField = this.handleChangeField.bind(this);
   }
 
   componentDidMount() {
@@ -122,9 +129,6 @@ class AppendObjectPostEditor extends React.Component {
     }
 
     this.props.form.setFieldsValue({
-      title: post.title,
-      topics: post.topics,
-      body: post.body,
       reward,
       upvote: post.upvote,
     });
@@ -165,28 +169,36 @@ class AppendObjectPostEditor extends React.Component {
     this.props.onDelete();
   }
 
-  handleAddLinkedObject(wObj) {
-    this.setState(prevState => {
-      const linkedObjects = prevState.linkedObjects.some(obj => obj.id === wObj.id)
-        ? prevState.linkedObjects
-        : [...prevState.linkedObjects, wObj];
-      return { linkedObjects };
+  handleChangeField(fieldToChange) {
+    this.setState({
+      fieldToChange,
     });
   }
-
-  handleRemoveObject(objId) {
-    this.setState(prevState => ({
-      linkedObjects: prevState.linkedObjects.filter(obj => obj.id !== objId),
-    }));
-  }
-
+  handleLocaleChange = locale => this.setState({ locale });
   render() {
     const { intl, form, loading, isUpdating, saving } = this.props;
     const { getFieldDecorator } = form;
-    const { body, bodyHTML, linkedObjects } = this.state;
+    const { body, bodyHTML, locale } = this.state;
 
     const { words, minutes } = readingTime(bodyHTML);
 
+    const languageOptions = [];
+
+    if (locale === 'auto') {
+      languageOptions.push(
+        <Select.Option disabled key="auto" value="auto">
+          <FormattedMessage id="select_language" defaultMessage="Select your language" />
+        </Select.Option>,
+      );
+    }
+
+    LANGUAGES.forEach(lang => {
+      languageOptions.push(
+        <Select.Option key={lang.id} value={lang.id}>
+          {getLanguageText(lang)}
+        </Select.Option>,
+      );
+    });
     return (
       <Form className="Editor" layout="vertical" onSubmit={this.handleSubmit}>
         <Helmet>
@@ -194,6 +206,70 @@ class AppendObjectPostEditor extends React.Component {
             {intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })} - Waivio
           </title>
         </Helmet>
+        <span className="Editor__label">
+          <FormattedMessage id="suggest1" defaultMessage="I suggest to add field" />
+        </span>
+        <Select
+          defaultValue={supportedObjectFields[0]}
+          style={{ width: '100%' }}
+          onChange={this.handleChangeField}
+        >
+          {_.map(supportedObjectFields, option => (
+            <Select.Option key={option} value={option} className="Topnav__search-autocomplete">
+              {option}
+            </Select.Option>
+          ))}
+        </Select>
+        <span className="Editor__label">
+          <FormattedMessage id="suggest2" defaultMessage="With locale" />
+        </span>
+        <Select
+          defaultValue={locale}
+          value={locale}
+          style={{ width: '100%', maxWidth: 240 }}
+          onChange={this.handleLocaleChange}
+        >
+          {languageOptions}
+        </Select>
+        <Form.Item
+          label={
+            <span className="Editor__label">
+              <FormattedMessage id="suggest3" defaultMessage="Value" />
+            </span>
+          }
+        >
+          {getFieldDecorator('value', {
+            initialValue: '',
+            rules: [
+              {
+                required: true,
+                message: intl.formatMessage({
+                  id: 'title_error_empty',
+                  defaultMessage: 'title_error_empty',
+                }),
+              },
+              {
+                max: 255,
+                message: intl.formatMessage({
+                  id: 'title_error_too_long',
+                  defaultMessage: "Title can't be longer than 255 characters.",
+                }),
+              },
+            ],
+          })(
+            <Input
+              ref={value => {
+                this.value = value;
+              }}
+              onChange={this.onUpdate}
+              className="Editor__title"
+              placeholder={intl.formatMessage({
+                id: 'title_placeholder',
+                defaultMessage: 'Add value',
+              })}
+            />,
+          )}
+        </Form.Item>
         <Form.Item
           label={
             <span className="Editor__label">
@@ -202,7 +278,13 @@ class AppendObjectPostEditor extends React.Component {
           }
         >
           {getFieldDecorator('title', {
-            initialValue: '',
+            initialValue: `${intl.formatMessage({
+              id: 'updates_in_object1',
+              defaultMessage: 'I recommend to add field:',
+            })} "${this.state.fieldToChange}" ${intl.formatMessage({
+              id: 'updates_in_object3',
+              defaultMessage: 'to',
+            })} ${this.props.wobject.name}`,
             rules: [
               {
                 required: true,
@@ -230,53 +312,22 @@ class AppendObjectPostEditor extends React.Component {
                 id: 'title_placeholder',
                 defaultMessage: 'Add title',
               })}
-            />,
-          )}
-        </Form.Item>
-        <Form.Item
-          label={
-            <span className="Editor__label">
-              <FormattedMessage id="topics" defaultMessage="Topics" />
-            </span>
-          }
-          extra={intl.formatMessage({
-            id: 'topics_extra',
-            defaultMessage:
-              'Separate topics with commas. Only lowercase letters, numbers and hyphen character is permitted.',
-          })}
-        >
-          {getFieldDecorator('topics', {
-            initialValue: [],
-            rules: [
-              {
-                required: true,
-                message: intl.formatMessage({
-                  id: 'topics_error_empty',
-                  defaultMessage: 'Please enter topics',
-                }),
-                type: 'array',
-              },
-              { validator: this.checkTopics(intl) },
-            ],
-          })(
-            <Select
-              ref={ref => {
-                this.select = ref;
-              }}
-              onChange={this.onUpdate}
-              className="Editor__topics"
-              mode="tags"
-              placeholder={intl.formatMessage({
-                id: 'topics_placeholder',
-                defaultMessage: 'Add story topics here',
-              })}
-              dropdownStyle={{ display: 'none' }}
-              tokenSeparators={[' ', ',']}
+              disabled
             />,
           )}
         </Form.Item>
         <Form.Item>
           {getFieldDecorator('body', {
+            initialValue: `${intl.formatMessage({
+              id: 'updates_in_object1',
+              defaultMessage: 'I recommend to add field:',
+            })} "${this.state.fieldToChange}" ${intl.formatMessage({
+              id: 'updates_in_object2',
+              defaultMessage: 'with value:',
+            })} "${this.state.valueToChange}" ${intl.formatMessage({
+              id: 'updates_in_object3',
+              defaultMessage: 'to',
+            })} ${this.props.wobject.name}`,
             rules: [
               {
                 required: true,
@@ -317,20 +368,6 @@ class AppendObjectPostEditor extends React.Component {
             <BodyContainer full body={body} />
           </Form.Item>
         )}
-        <Form.Item
-          label={
-            <span className="Editor__label">
-              <FormattedMessage id="editor_linked_objects" defaultMessage="Linked objects" />
-            </span>
-          }
-        >
-          <SearchObjectsAutocomplete handleSelect={this.handleAddLinkedObject} />
-          {Boolean(linkedObjects.length) &&
-            linkedObjects.map(obj => (
-              <EditorObject key={obj.id} wObj={obj} handleRemoveObject={this.handleRemoveObject} />
-            ))}
-        </Form.Item>
-
         <Form.Item
           className={classNames({ Editor__hidden: isUpdating })}
           label={

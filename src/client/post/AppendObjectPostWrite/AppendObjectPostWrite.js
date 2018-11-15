@@ -8,6 +8,7 @@ import 'url-search-params-polyfill';
 import { injectIntl } from 'react-intl';
 import improve from '../../helpers/improve';
 import { rewardsValues } from '../../../common/constants/rewards';
+import { getObject } from '../../object/wobjectsActions';
 
 import {
   getAuthenticatedUser,
@@ -15,6 +16,7 @@ import {
   getIsEditorSaving,
   getUpvoteSetting,
   getRewardSetting,
+  getLocale,
 } from '../../reducers';
 
 import { createPost, newPost } from './editorActions';
@@ -30,20 +32,25 @@ import Affix from '../../components/Utils/Affix';
     saving: getIsEditorSaving(state),
     upvoteSetting: getUpvoteSetting(state),
     rewardSetting: getRewardSetting(state),
+    locale: getLocale(state),
   }),
   {
     createPost,
     newPost,
     replace,
+    getObject,
   },
 )
 class AppendObjectPostWrite extends React.Component {
   static propTypes = {
     user: PropTypes.shape().isRequired,
     loading: PropTypes.bool.isRequired,
+    getObject: PropTypes.func.isRequired,
     saving: PropTypes.bool,
     upvoteSetting: PropTypes.bool,
+    match: PropTypes.shape().isRequired,
     rewardSetting: PropTypes.string,
+    locale: PropTypes.string,
     newPost: PropTypes.func,
     createPost: PropTypes.func,
   };
@@ -51,6 +58,7 @@ class AppendObjectPostWrite extends React.Component {
   static defaultProps = {
     saving: false,
     draftId: null,
+    locale: 'auto',
     upvoteSetting: true,
     rewardSetting: rewardsValues.half,
     newPost: () => {},
@@ -71,11 +79,15 @@ class AppendObjectPostWrite extends React.Component {
       initialUpdatedDate: Date.now(),
       isUpdating: false,
       showModalDelete: false,
+      wobject: {},
     };
   }
 
   componentDidMount() {
     this.props.newPost();
+    this.props.getObject(this.props.match.params.name).then(wobject => {
+      this.setState({ wobject, isFetching: false });
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -123,7 +135,7 @@ class AppendObjectPostWrite extends React.Component {
 
   render() {
     const { initialTitle, initialTopics, initialBody, initialReward, initialUpvote } = this.state;
-    const { loading, saving } = this.props;
+    const { loading, saving, locale } = this.props;
 
     return (
       <div className="shifted">
@@ -133,6 +145,8 @@ class AppendObjectPostWrite extends React.Component {
           </Affix>
           <div className="center">
             <AppendObjectPostEditor
+              locale={locale}
+              wobject={this.state.wobject}
               ref={this.setForm}
               saving={saving}
               title={initialTitle}

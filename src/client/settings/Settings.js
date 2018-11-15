@@ -232,7 +232,9 @@ export default class Settings extends React.Component {
     return (
       <div className="shifted">
         <Helmet>
-          <title>{intl.formatMessage({ id: 'settings', defaultMessage: 'Settings' })} - Busy</title>
+          <title>
+            {intl.formatMessage({ id: 'settings', defaultMessage: 'Settings' })} - Waivio
+          </title>
         </Helmet>
         <div className="settings-layout container">
           <Affix className="leftContainer" stickPosition={77}>
