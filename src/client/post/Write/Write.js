@@ -9,11 +9,9 @@ import { injectIntl } from 'react-intl';
 import uuidv4 from 'uuid/v4';
 import improve from '../../helpers/improve';
 import { createPostMetadata } from '../../helpers/postHelpers';
-import { getClientWObj } from '../../adapters';
 import { rewardsValues } from '../../../common/constants/rewards';
 import LastDraftsContainer from './LastDraftsContainer';
 import DeleteDraftModal from './DeleteDraftModal';
-import waivioData from '../../../common/constants/waivio';
 
 import {
   getAuthenticatedUser,
@@ -58,7 +56,7 @@ class Write extends React.Component {
     upvoteSetting: PropTypes.bool,
     rewardSetting: PropTypes.string,
     newPost: PropTypes.func,
-    createPost: PropTypes.func,
+    // createPost: PropTypes.func,
     saveDraft: PropTypes.func,
     replace: PropTypes.func,
   };
@@ -109,10 +107,6 @@ class Write extends React.Component {
         this.originalBody = draftPost.originalBody;
       }
 
-      if (draftPost.jsonMetadata[waivioData]) {
-        this.wObj = draftPost.jsonMetadata[waivioData].linkedObjects;
-      }
-
       // eslint-disable-next-line
       this.setState({
         initialTitle: draftPost.title || '',
@@ -155,16 +149,11 @@ class Write extends React.Component {
       const initialTitle = _.get(draftPost, 'title', '');
       const initialBody = _.get(draftPost, 'body', '');
       const initialTopics = _.get(draftPost, 'jsonMetadata.tags', []);
-      const initialWObj = _.get(draftPost, 'jsonMetadata.wObj', {});
       this.draftId = draftId;
       this.setState({
         initialTitle,
         initialBody,
         initialTopics,
-        initialWObj: {
-          ...initialWObj,
-          linkedObjects: initialWObj.linkedObjects.map(obj => getClientWObj(obj)),
-        },
       });
     }
   }
@@ -185,12 +174,11 @@ class Write extends React.Component {
     if (this.props.draftId) {
       data.draftId = this.props.draftId;
     }
-    // console.log('-->', JSON.stringify(form));
-    this.props.createPost(data);
+    console.log('-->', JSON.stringify(form));
+    // this.props.createPost(data);
   };
 
   getNewPostData = form => {
-    // console.log('| saveDraft > ', form.topics);
     const data = {
       body: form.body,
       title: form.title,
@@ -214,11 +202,12 @@ class Write extends React.Component {
       this.props.draftPosts[this.draftId] && this.props.draftPosts[this.draftId].jsonMetadata;
 
     data.parentPermlink = form.topics.length ? form.topics[0] : 'general';
-    data.jsonMetadata = createPostMetadata(data.body, form.topics, form[waivioData], oldMetadata);
+    data.jsonMetadata = createPostMetadata(data.body, form.topics, oldMetadata);
 
     if (this.originalBody) {
       data.originalBody = this.originalBody;
     }
+    console.log('| saveDraft > ', data);
 
     return data;
   };

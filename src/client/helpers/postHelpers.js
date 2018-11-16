@@ -2,7 +2,6 @@ import _ from 'lodash';
 import { getHtml } from '../components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
 import { categoryRegex } from './regexHelpers';
-import { getServerWObj } from '../adapters';
 import { jsonParse } from './formatter';
 import DMCA from '../../common/constants/dmca.json';
 import whiteListedApps from './apps';
@@ -67,7 +66,7 @@ export function getContentImages(content, parsed = false) {
   );
 }
 
-export function createPostMetadata(body, tags, wObj, oldMetadata = {}) {
+export function createPostMetadata(body, tags, oldMetadata = {}) {
   let metaData = {
     community: 'busy',
     app: `busy/${appVersion}`,
@@ -99,12 +98,6 @@ export function createPostMetadata(body, tags, wObj, oldMetadata = {}) {
   metaData.users = users;
   metaData.links = links.slice(0, 10);
   metaData.image = images;
-  if (wObj) {
-    metaData.wObj = {
-      ...wObj,
-      linkedObjects: wObj.linkedObjects.map(obj => getServerWObj(obj)),
-    };
-  }
 
   return metaData;
 }
