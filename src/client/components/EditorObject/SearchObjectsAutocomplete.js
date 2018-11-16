@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { getSearchObjectsResults } from '../../reducers';
 import { searchObjects } from '../../search/searchActions';
+import './EditorObject.less';
 
 @injectIntl
 @connect(
@@ -18,11 +19,13 @@ import { searchObjects } from '../../search/searchActions';
 )
 class SearchObjectsAutocomplete extends Component {
   static defaultProps = {
+    canCreateNewObject: false,
     style: { width: '100%' },
     searchObjectsResults: [],
   };
 
   static propTypes = {
+    canCreateNewObject: PropTypes.bool,
     intl: PropTypes.shape().isRequired,
     style: PropTypes.shape(),
     searchObjectsResults: PropTypes.arrayOf(PropTypes.object),
@@ -41,7 +44,8 @@ class SearchObjectsAutocomplete extends Component {
     this.handleSelect = this.handleSelect.bind(this);
   }
 
-  handleChange(searchString) {
+  handleChange(value) {
+    const searchString = value.toLowerCase().trim();
     this.setState(
       prevState =>
         prevState.isOptionSelected
@@ -55,16 +59,18 @@ class SearchObjectsAutocomplete extends Component {
     this.debouncedSearch(value);
   }
 
-  handleSelect(objId) {
+  handleSelect(objTag) {
     this.setState({ isOptionSelected: true });
-    const selectedObject = this.props.searchObjectsResults.find(obj => obj.id === objId);
-    this.props.handleSelect(selectedObject);
+    const selectedObject = this.props.searchObjectsResults.find(obj => obj.tag === objTag);
+    this.props.handleSelect(
+      selectedObject || { tag: objTag, tagName: this.state.searchString, isNew: true },
+    );
   }
   render() {
     const { searchString } = this.state;
-    const { intl, style, searchObjectsResults } = this.props;
+    const { canCreateNewObject, intl, style, searchObjectsResults } = this.props;
     const searchObjectsOptions = searchObjectsResults.map(obj => (
-      <AutoComplete.Option key={obj.id}>{obj.tag}</AutoComplete.Option>
+      <AutoComplete.Option key={obj.tag}>{obj.tag}</AutoComplete.Option>
     ));
     return (
       <AutoComplete
@@ -79,6 +85,19 @@ class SearchObjectsAutocomplete extends Component {
         value={searchString}
         allowClear
       >
+        {canCreateNewObject &&
+          Boolean(searchString) && (
+            <AutoComplete.Option
+              key={`${searchString}-${Math.random()
+                .toString(36)
+                .substring(2)}`}
+            >
+              <div className="wobj-search-option">
+                <span className="wobj-search-option__caption">{searchString}</span>
+                <span className="wobj-search-option__label">create new</span>
+              </div>
+            </AutoComplete.Option>
+          )}
         {searchObjectsOptions}
       </AutoComplete>
     );

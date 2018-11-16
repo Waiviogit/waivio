@@ -56,7 +56,7 @@ class Write extends React.Component {
     upvoteSetting: PropTypes.bool,
     rewardSetting: PropTypes.string,
     newPost: PropTypes.func,
-    createPost: PropTypes.func,
+    // createPost: PropTypes.func,
     saveDraft: PropTypes.func,
     replace: PropTypes.func,
   };
@@ -78,6 +78,7 @@ class Write extends React.Component {
     this.state = {
       initialTitle: '',
       initialTopics: [],
+      initialWObj: { linkedObjects: [] },
       initialBody: '',
       initialReward: this.props.rewardSetting,
       initialUpvote: this.props.upvoteSetting,
@@ -110,6 +111,7 @@ class Write extends React.Component {
       this.setState({
         initialTitle: draftPost.title || '',
         initialTopics: tags || [],
+        initialWObj: draftPost.wObj || { linkedObjects: [] },
         initialBody: draftPost.body || '',
         initialReward: draftPost.reward,
         initialUpvote: draftPost.upvote,
@@ -133,6 +135,7 @@ class Write extends React.Component {
       this.setState({
         initialTitle: '',
         initialTopics: [],
+        initialWObj: { linkedObjects: [] },
         initialBody: '',
         initialReward: rewardsValues.half,
         initialUpvote: nextProps.upvoteSetting,
@@ -171,7 +174,8 @@ class Write extends React.Component {
     if (this.props.draftId) {
       data.draftId = this.props.draftId;
     }
-    this.props.createPost(data);
+    console.log('-->', JSON.stringify(form));
+    // this.props.createPost(data);
   };
 
   getNewPostData = form => {
@@ -203,6 +207,7 @@ class Write extends React.Component {
     if (this.originalBody) {
       data.originalBody = this.originalBody;
     }
+    console.log('| saveDraft > ', data);
 
     return data;
   };
@@ -226,7 +231,14 @@ class Write extends React.Component {
   }, 2000);
 
   render() {
-    const { initialTitle, initialTopics, initialBody, initialReward, initialUpvote } = this.state;
+    const {
+      initialTitle,
+      initialTopics,
+      initialWObj,
+      initialBody,
+      initialReward,
+      initialUpvote,
+    } = this.state;
     const { loading, saving, draftId } = this.props;
 
     return (
@@ -243,6 +255,7 @@ class Write extends React.Component {
               saving={saving}
               title={initialTitle}
               topics={initialTopics}
+              wObj={initialWObj}
               body={initialBody}
               reward={initialReward}
               upvote={initialUpvote}
