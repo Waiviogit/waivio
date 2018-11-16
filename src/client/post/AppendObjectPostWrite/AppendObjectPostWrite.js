@@ -24,6 +24,7 @@ import AppendObjectPostEditor from '../../components/Editor/AppendObjectPostEdit
 import Affix from '../../components/Utils/Affix';
 import CurrentObjectFields from './CurrentObjectFields';
 import LANGUAGES from '../../translations/languages';
+import { createPostMetadata } from '../../helpers/postHelpers';
 
 @injectIntl
 @withRouter
@@ -120,6 +121,8 @@ class AppendObjectPostWrite extends React.Component {
     if (this.state.isUpdating) data.isUpdating = this.state.isUpdating;
 
     data.parentPermlink = form.topics.length ? form.topics[0] : 'general';
+
+    data.jsonMetadata = createPostMetadata(data.body, form.topics, null, 'APPEND_OBJECT');
 
     if (this.originalBody) {
       data.originalBody = this.originalBody;

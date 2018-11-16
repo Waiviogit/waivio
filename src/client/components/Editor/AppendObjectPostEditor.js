@@ -170,7 +170,11 @@ class AppendObjectPostEditor extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (err) this.props.onError();
       else {
-        const valuesToSend = { ...values, topics: ['appendwaivioobject'] };
+        const valuesToSend = {
+          ...values,
+          topics: ['appendwaivioobject'],
+          locale: this.state.currentLocaleInList,
+        };
         this.props.onSubmit(valuesToSend);
       }
     });
@@ -182,8 +186,15 @@ class AppendObjectPostEditor extends React.Component {
     this.props.onDelete();
   }
 
-  handleChangeField = fieldToChange => this.props.changeCurrentField(fieldToChange);
-  handleChangeLocale = localeToChange => this.props.changeCurrentLocale(localeToChange);
+  handleChangeField = fieldToChange => {
+    this.props.changeCurrentField(fieldToChange);
+    this.setState({ body: '' });
+  };
+
+  handleChangeLocale = localeToChange => {
+    this.props.changeCurrentLocale(localeToChange);
+    this.setState({ body: '' });
+  };
   render() {
     const { intl, form, loading, isUpdating, saving } = this.props;
     const { getFieldDecorator } = form;

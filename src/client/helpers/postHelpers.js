@@ -66,7 +66,7 @@ export function getContentImages(content, parsed = false) {
   );
 }
 
-export function createPostMetadata(body, tags, oldMetadata = {}) {
+export function createPostMetadata(body, tags, oldMetadata = {}, type) {
   let metaData = {
     community: 'busy',
     app: `busy/${appVersion}`,
@@ -98,6 +98,7 @@ export function createPostMetadata(body, tags, oldMetadata = {}) {
   metaData.users = users;
   metaData.links = links.slice(0, 10);
   metaData.image = images;
+  if (type) metaData.waivio = { type };
 
   return metaData;
 }

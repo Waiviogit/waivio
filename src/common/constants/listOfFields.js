@@ -14,8 +14,8 @@ export const supportedObjectFields = [
   'linkYoutube',
   'linkInstagram',
   'linkVk',
-  'imageAvatar',
-  'imageBackground',
+  'avatarImage',
+  'backgroundImage',
 ];
 
 export default null;
