@@ -8,24 +8,20 @@ class EditorObject extends React.Component {
   static propTypes = {
     wObject: PropTypes.shape().isRequired,
     handleRemoveObject: PropTypes.func.isRequired,
+    handleChangeInfluence: PropTypes.func.isRequired,
   };
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      influence: 50,
-    };
-
     this.handleChangeInfluence = this.handleChangeInfluence.bind(this);
   }
 
   handleChangeInfluence(influence) {
-    this.setState({ influence });
+    const { wObject, handleChangeInfluence } = this.props;
+    handleChangeInfluence(wObject, influence);
   }
 
   render() {
-    const { influence } = this.state;
     const { wObject, handleRemoveObject } = this.props;
     return (
       <div className="editor-object">
@@ -47,16 +43,18 @@ class EditorObject extends React.Component {
           <div className="editor-object__content influence-slider">
             <InputNumber
               min={1}
-              max={100}
+              max={wObject.influence.max}
+              formatter={value => `${value}%`}
+              parser={value => value.replace('%', '')}
               size="small"
-              value={influence}
+              value={wObject.influence.value}
               onChange={this.handleChangeInfluence}
             />
             <Slider
               min={1}
-              max={100}
+              max={wObject.influence.max}
               onChange={this.handleChangeInfluence}
-              value={typeof influence === 'number' ? influence : 0}
+              value={wObject.influence.value}
             />
           </div>
         </div>

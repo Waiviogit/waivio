@@ -18,6 +18,7 @@ import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
 import { MAX_NEW_OBJECTS_NUMBER } from '../../../common/constants/waivio';
+import { setInitialInfluence } from '../../helpers/wObjInfluenceHelper';
 import './Editor.less';
 
 @injectIntl
@@ -86,6 +87,7 @@ class Editor extends React.Component {
     this.handleAddLinkedObject = this.handleAddLinkedObject.bind(this);
     this.handleRemoveObject = this.handleRemoveObject.bind(this);
     this.setFormValues = this.setFormValues.bind(this);
+    this.handleChangeInfluence = this.handleChangeInfluence.bind(this);
   }
 
   componentDidMount() {
@@ -231,7 +233,10 @@ class Editor extends React.Component {
       const topics = linkedObjects.map(obj => obj.tag);
       // this.setFormValues(WAIVIO_POST_FIELD_NAME, { linkedObjects });
       this.setFormValues('topics', topics);
-      return { linkedObjects, canCreateNewObject: topics.length < MAX_NEW_OBJECTS_NUMBER };
+      return {
+        linkedObjects: setInitialInfluence(linkedObjects),
+        canCreateNewObject: topics.length < MAX_NEW_OBJECTS_NUMBER,
+      };
     }, this.onUpdate());
   }
 
@@ -243,6 +248,15 @@ class Editor extends React.Component {
       this.setFormValues('topics', topics);
       return { linkedObjects, canCreateNewObject: topics.length < MAX_NEW_OBJECTS_NUMBER };
     }, this.onUpdate());
+  }
+
+  handleChangeInfluence(wObj, influence) {
+    this.setState(prevState => {
+      const linkedObjects = prevState.linkedObjects;
+      const index = linkedObjects.indexOf(wObj);
+      linkedObjects[index].influence.value = influence;
+      return { linkedObjects };
+    });
   }
 
   render() {
@@ -397,6 +411,7 @@ class Editor extends React.Component {
                 key={obj.tag}
                 wObject={obj}
                 handleRemoveObject={this.handleRemoveObject}
+                handleChangeInfluence={this.handleChangeInfluence}
               />
             ))}
         </div>
