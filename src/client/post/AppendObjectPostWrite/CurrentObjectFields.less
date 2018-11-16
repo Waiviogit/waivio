@@ -1,0 +1,60 @@
+@import (reference) '../../styles/custom.less';
+
+.CurrentObjectFields {
+  &__title {
+    color: @blue-botticelli;
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  &__more > a {
+    color: @blue-botticelli;
+    font-weight: 500;
+  }
+
+  &__field {
+    & > a {
+      color: @black;
+      font-weight: bold;
+    }
+
+    & > span {
+      color: @black;
+      font-weight: bold;
+    }
+
+    & > div > span {
+      color: @black;
+      font-weight: bold;
+    }
+
+    &__text {
+      color: @blue-heather;
+    }
+
+    &__body {
+      font-weight: bold;
+    }
+
+    &__current {
+      font-weight: bold;
+      margin-left: 3px;
+      margin-right: 3px;
+    }
+
+    &__line {
+      display: flex;
+    }
+
+    &:last-of-type {
+      padding-bottom: 8px;
+    }
+
+    &__noItems > span {
+      color: rgba(0, 0, 0, 0.65) !important;
+      font-weight: bold;
+    }
+  }
+}
+
+@import 'CurrentObjectFields-nightmode';

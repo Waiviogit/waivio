@@ -9,16 +9,7 @@ import FollowButton from '../widgets/FollowButton';
 import Action from '../components/Button/Action';
 import '../components/ObjectHeader.less';
 
-const ObjectHeader = ({
-  username,
-  wobject,
-  handle,
-  isSameUser,
-  coverImage,
-  hasCover,
-  isFollowing,
-  isActive,
-}) => {
+const ObjectHeader = ({ username, wobject, handle, coverImage, hasCover, isActive }) => {
   const style = hasCover
     ? { backgroundImage: `url("https://steemitimages.com/2048x512/${coverImage}")` }
     : {};
@@ -35,44 +26,21 @@ const ObjectHeader = ({
             <div className="ObjectHeader__user__buttons">
               <div
                 className={classNames('ObjectHeader__user__button', {
-                  'ObjectHeader__user__button-follows-you': isFollowing && !isSameUser,
+                  'ObjectHeader__user__button-follows-you': true,
                 })}
               >
-                {isSameUser ? (
-                  <Link to="/edit-profile">
-                    <Action>
-                      <FormattedMessage id="edit_profile" defaultMessage="Edit profile" />
-                    </Action>
-                  </Link>
-                ) : (
-                  <FollowButton username={handle} />
-                )}
+                <FollowButton username={handle} />
+                <Link to={`/wobject/editor/@${wobject.tag}`} className="ObjectHeader__extend">
+                  <Action>
+                    <FormattedMessage id="extend-object" defaultMessage="Extend" />
+                  </Action>
+                </Link>
               </div>
             </div>
           </div>
           <div className="ObjectHeader__handle-rank-container">
-            <div className="ObjectHeader__row ObjectHeader__handle">
-              @{wobject.tag}
-              {isFollowing && (
-                <span className="ObjectHeader__follows-you">
-                  <FormattedMessage id="follows_you" defaultMessage="Follows you" />
-                </span>
-              )}
-            </div>
+            <div className="ObjectHeader__row ObjectHeader__handle">@{wobject.tag}</div>
           </div>
-          {isFollowing &&
-            !isSameUser && (
-              <span
-                className={classNames(
-                  'ObjectHeader__follows-you ObjectHeader__follows-you--mobile',
-                  {
-                    'ObjectHeader__follows-you-cover-text-color': hasCover,
-                  },
-                )}
-              >
-                <FormattedMessage id="follows_you" defaultMessage="Follows you" />
-              </span>
-            )}
         </div>
       </div>
     </div>
@@ -82,10 +50,8 @@ const ObjectHeader = ({
 ObjectHeader.propTypes = {
   username: PropTypes.string,
   handle: PropTypes.string,
-  isSameUser: PropTypes.bool,
   coverImage: PropTypes.string,
   hasCover: PropTypes.bool,
-  isFollowing: PropTypes.bool,
   wobject: PropTypes.shape(),
   isActive: PropTypes.bool.isRequired,
 };
@@ -95,10 +61,8 @@ ObjectHeader.defaultProps = {
   handle: '',
   userReputation: '0',
   vestingShares: 0,
-  isSameUser: false,
   coverImage: '',
   hasCover: false,
-  isFollowing: false,
   wobject: {},
   onTransferClick: () => {},
 };

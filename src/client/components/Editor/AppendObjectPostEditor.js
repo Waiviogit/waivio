@@ -29,7 +29,7 @@ class AppendObjectPostEditor extends React.Component {
     form: PropTypes.shape().isRequired,
     wobject: PropTypes.shape().isRequired,
     title: PropTypes.string,
-    locale: PropTypes.string,
+    currentLocaleInList: PropTypes.shape().isRequired,
     topics: PropTypes.arrayOf(PropTypes.string),
     body: PropTypes.string,
     reward: PropTypes.string,
@@ -37,12 +37,14 @@ class AppendObjectPostEditor extends React.Component {
     loading: PropTypes.bool,
     isUpdating: PropTypes.bool,
     saving: PropTypes.bool,
-    onUpdate: PropTypes.func,
     onDelete: PropTypes.func,
     onSubmit: PropTypes.func,
     onError: PropTypes.func,
     onImageUpload: PropTypes.func,
     onImageInvalid: PropTypes.func,
+    currentField: PropTypes.string,
+    changeCurrentField: PropTypes.func,
+    changeCurrentLocale: PropTypes.func,
   };
 
   static defaultProps = {
@@ -51,14 +53,15 @@ class AppendObjectPostEditor extends React.Component {
     body: '',
     reward: rewardsValues.half,
     upvote: true,
-    locale: 'auto',
-    recentTopics: [],
+    currentLocaleInList: { id: 'auto', name: '', nativeName: '' },
     popularTopics: [],
     loading: false,
     isUpdating: false,
     saving: false,
-    wobject: {},
-    onUpdate: () => {},
+    wobject: { tag: '' },
+    changeCurrentField: () => {},
+    changeCurrentLocale: () => {},
+    currentField: 'name',
     onDelete: () => {},
     onSubmit: () => {},
     onError: () => {},
@@ -71,11 +74,10 @@ class AppendObjectPostEditor extends React.Component {
 
     this.state = {
       body: '',
-      locale: this.props.locale,
+      currentLocaleInList: this.props.currentLocaleInList.id,
       bodyHTML: '',
       linkedObjects: [],
-      fieldToChange: '',
-      valueToChange: '',
+      value: '',
     };
 
     this.onUpdate = this.onUpdate.bind(this);
@@ -133,12 +135,13 @@ class AppendObjectPostEditor extends React.Component {
       upvote: post.upvote,
     });
 
-    this.setBodyAndRender(post.body);
+    this.setBodyAndRender(post.body, post.value);
   }
 
-  setBodyAndRender(body) {
+  setBodyAndRender(body, value) {
     this.setState({
       body,
+      value,
       bodyHTML: remarkable.render(body),
     });
   }
@@ -147,11 +150,18 @@ class AppendObjectPostEditor extends React.Component {
     const { form } = this.props;
 
     const values = form.getFieldsValue();
-    this.setBodyAndRender(values.body);
-
-    if (Object.values(form.getFieldsError()).filter(e => e).length > 0) return;
-
-    this.props.onUpdate(values);
+    this.setBodyAndRender(
+      `${this.props.intl.formatMessage({
+        id: 'updates_in_object1',
+        defaultMessage: 'I recommend to add field:',
+      })} "${this.props.currentField}" ${this.props.intl.formatMessage({
+        id: 'updates_in_object2',
+        defaultMessage: 'with value',
+      })} ${values.value} ${this.props.intl.formatMessage({
+        id: 'updates_in_object3',
+        defaultMessage: 'to',
+      })} ${this.props.wobject.tag} ${values.body}`,
+    );
   }
 
   handleSubmit(e) {
@@ -159,7 +169,10 @@ class AppendObjectPostEditor extends React.Component {
 
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (err) this.props.onError();
-      else this.props.onSubmit(values);
+      else {
+        const valuesToSend = { ...values, topics: ['appendwaivioobject'] };
+        this.props.onSubmit(valuesToSend);
+      }
     });
   }
 
@@ -169,22 +182,18 @@ class AppendObjectPostEditor extends React.Component {
     this.props.onDelete();
   }
 
-  handleChangeField(fieldToChange) {
-    this.setState({
-      fieldToChange,
-    });
-  }
-  handleLocaleChange = locale => this.setState({ locale });
+  handleChangeField = fieldToChange => this.props.changeCurrentField(fieldToChange);
+  handleChangeLocale = localeToChange => this.props.changeCurrentLocale(localeToChange);
   render() {
     const { intl, form, loading, isUpdating, saving } = this.props;
     const { getFieldDecorator } = form;
-    const { body, bodyHTML, locale } = this.state;
+    const { body, bodyHTML, currentLocaleInList } = this.state;
 
     const { words, minutes } = readingTime(bodyHTML);
 
     const languageOptions = [];
 
-    if (locale === 'auto') {
+    if (currentLocaleInList === 'auto') {
       languageOptions.push(
         <Select.Option disabled key="auto" value="auto">
           <FormattedMessage id="select_language" defaultMessage="Select your language" />
@@ -206,9 +215,9 @@ class AppendObjectPostEditor extends React.Component {
             {intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })} - Waivio
           </title>
         </Helmet>
-        <span className="Editor__label">
+        <div className="ant-form-item-label label Editor__appendTitles">
           <FormattedMessage id="suggest1" defaultMessage="I suggest to add field" />
-        </span>
+        </div>
         <Select
           defaultValue={supportedObjectFields[0]}
           style={{ width: '100%' }}
@@ -220,14 +229,14 @@ class AppendObjectPostEditor extends React.Component {
             </Select.Option>
           ))}
         </Select>
-        <span className="Editor__label">
-          <FormattedMessage id="suggest2" defaultMessage="With locale" />
-        </span>
+        <div className="ant-form-item-label Editor__appendTitles">
+          <FormattedMessage id="suggest2" defaultMessage="With language" />
+        </div>
         <Select
-          defaultValue={locale}
-          value={locale}
-          style={{ width: '100%', maxWidth: 240 }}
-          onChange={this.handleLocaleChange}
+          defaultValue={this.props.currentLocaleInList.id}
+          value={this.props.currentLocaleInList.id}
+          style={{ width: '100%' }}
+          onChange={this.handleChangeLocale}
         >
           {languageOptions}
         </Select>
@@ -244,15 +253,15 @@ class AppendObjectPostEditor extends React.Component {
               {
                 required: true,
                 message: intl.formatMessage({
-                  id: 'title_error_empty',
-                  defaultMessage: 'title_error_empty',
+                  id: 'value_error_empty',
+                  defaultMessage: 'Please enter a value',
                 }),
               },
               {
                 max: 255,
                 message: intl.formatMessage({
-                  id: 'title_error_too_long',
-                  defaultMessage: "Title can't be longer than 255 characters.",
+                  id: 'value_error_too_long',
+                  defaultMessage: "Value can't be longer than 255 characters.",
                 }),
               },
             ],
@@ -264,7 +273,7 @@ class AppendObjectPostEditor extends React.Component {
               onChange={this.onUpdate}
               className="Editor__title"
               placeholder={intl.formatMessage({
-                id: 'title_placeholder',
+                id: 'value_placeholder',
                 defaultMessage: 'Add value',
               })}
             />,
@@ -280,11 +289,11 @@ class AppendObjectPostEditor extends React.Component {
           {getFieldDecorator('title', {
             initialValue: `${intl.formatMessage({
               id: 'updates_in_object1',
-              defaultMessage: 'I recommend to add field:',
-            })} "${this.state.fieldToChange}" ${intl.formatMessage({
+              defaultMessage: 'I recommend to add field',
+            })} "${this.props.currentField}" ${intl.formatMessage({
               id: 'updates_in_object3',
               defaultMessage: 'to',
-            })} ${this.props.wobject.name}`,
+            })} ${this.props.wobject.tag}`,
             rules: [
               {
                 required: true,
@@ -318,16 +327,7 @@ class AppendObjectPostEditor extends React.Component {
         </Form.Item>
         <Form.Item>
           {getFieldDecorator('body', {
-            initialValue: `${intl.formatMessage({
-              id: 'updates_in_object1',
-              defaultMessage: 'I recommend to add field:',
-            })} "${this.state.fieldToChange}" ${intl.formatMessage({
-              id: 'updates_in_object2',
-              defaultMessage: 'with value:',
-            })} "${this.state.valueToChange}" ${intl.formatMessage({
-              id: 'updates_in_object3',
-              defaultMessage: 'to',
-            })} ${this.props.wobject.name}`,
+            initialValue: '',
             rules: [
               {
                 required: true,

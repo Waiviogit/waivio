@@ -22,6 +22,8 @@ import {
 import { createPost, newPost } from './editorActions';
 import AppendObjectPostEditor from '../../components/Editor/AppendObjectPostEditor';
 import Affix from '../../components/Utils/Affix';
+import CurrentObjectFields from './CurrentObjectFields';
+import LANGUAGES from '../../translations/languages';
 
 @injectIntl
 @withRouter
@@ -63,7 +65,6 @@ class AppendObjectPostWrite extends React.Component {
     rewardSetting: rewardsValues.half,
     newPost: () => {},
     createPost: () => {},
-    saveDraft: () => {},
     notify: () => {},
     replace: () => {},
   };
@@ -80,6 +81,8 @@ class AppendObjectPostWrite extends React.Component {
       isUpdating: false,
       showModalDelete: false,
       wobject: {},
+      currentField: 'name',
+      locale: this.props.locale,
     };
   }
 
@@ -88,12 +91,6 @@ class AppendObjectPostWrite extends React.Component {
     this.props.getObject(this.props.match.params.name).then(wobject => {
       this.setState({ wobject, isFetching: false });
     });
-  }
-
-  componentDidUpdate(prevProps) {
-    if (_.get(this.props, 'location.search') !== _.get(prevProps, 'location.search')) {
-      this.saveDraft.cancel();
-    }
   }
 
   onSubmit = form => {
@@ -131,22 +128,41 @@ class AppendObjectPostWrite extends React.Component {
     return data;
   };
 
-  handleCancelDeleteDraft = () => this.setState({ showModalDelete: false });
+  changeCurrentField = currentField => this.setState({ currentField });
+
+  changeCurrentLocale = locale => this.setState({ locale });
 
   render() {
-    const { initialTitle, initialTopics, initialBody, initialReward, initialUpvote } = this.state;
-    const { loading, saving, locale } = this.props;
+    const {
+      initialTitle,
+      initialTopics,
+      initialBody,
+      initialReward,
+      initialUpvote,
+      locale,
+    } = this.state;
+    const { loading, saving } = this.props;
+    const currentLocaleInList = LANGUAGES.find(element => element.id === locale);
 
     return (
       <div className="shifted">
         <div className="post-layout container">
           <Affix className="rightContainer" stickPosition={77}>
-            <div className="right">There will be info</div>
+            <div className="right">
+              <CurrentObjectFields
+                wobject={this.state.wobject.value}
+                currentField={this.state.currentField}
+                currentLocaleInList={currentLocaleInList}
+              />
+            </div>
           </Affix>
           <div className="center">
             <AppendObjectPostEditor
-              locale={locale}
-              wobject={this.state.wobject}
+              currentLocaleInList={currentLocaleInList}
+              currentField={this.state.currentField}
+              changeCurrentField={this.changeCurrentField}
+              changeCurrentLocale={this.changeCurrentLocale}
+              wobject={this.state.wobject.value}
               ref={this.setForm}
               saving={saving}
               title={initialTitle}
@@ -156,7 +172,6 @@ class AppendObjectPostWrite extends React.Component {
               upvote={initialUpvote}
               loading={loading}
               isUpdating={this.state.isUpdating}
-              onUpdate={this.saveDraft}
               onSubmit={this.onSubmit}
               onDelete={this.onDelete}
             />
