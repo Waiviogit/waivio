@@ -17,10 +17,7 @@ import { getClientWObj } from '../../adapters';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
-import {
-  MAX_NEW_OBJECTS_NUMBER,
-  WAIVIO_POST_FIELD_NAME as waivioData,
-} from '../../../common/constants/waivio';
+import { MAX_NEW_OBJECTS_NUMBER } from '../../../common/constants/waivio';
 import './Editor.less';
 
 @injectIntl
@@ -130,7 +127,7 @@ class Editor extends React.Component {
     const { form } = this.props;
 
     form.getFieldDecorator('topics');
-    form.getFieldDecorator([waivioData]);
+    // form.getFieldDecorator([WAIVIO_POST_FIELD_NAME]);
 
     let reward = rewardsValues.half;
     if (
@@ -144,12 +141,15 @@ class Editor extends React.Component {
     form.setFieldsValue({
       title: post.title,
       topics: post.topics,
-      [waivioData]: post[waivioData],
+      // [WAIVIO_POST_FIELD_NAME]: post[WAIVIO_POST_FIELD_NAME],
       body: post.body,
       reward,
       upvote: post.upvote,
     });
-    this.setState({ linkedObjects: (post[waivioData] && post[waivioData].linkedObjects) || [] });
+    // this.setState({
+    //   linkedObjects:
+    //     (post[WAIVIO_POST_FIELD_NAME] && post[WAIVIO_POST_FIELD_NAME].linkedObjects) || [],
+    // });
     this.setBodyAndRender(post.body);
   }
 
@@ -225,21 +225,21 @@ class Editor extends React.Component {
   handleAddLinkedObject(wObject) {
     const selectedObj = wObject.isNew ? getClientWObj(wObject) : wObject;
     this.setState(prevState => {
-      const linkedObjects = prevState.linkedObjects.some(obj => obj.id === selectedObj.id)
+      const linkedObjects = prevState.linkedObjects.some(obj => obj.tag === selectedObj.tag)
         ? prevState.linkedObjects
         : [...prevState.linkedObjects, selectedObj];
-      const topics = linkedObjects.filter(obj => obj.isNew).map(obj => obj.id);
-      this.setFormValues(waivioData, { linkedObjects });
+      const topics = linkedObjects.map(obj => obj.tag);
+      // this.setFormValues(WAIVIO_POST_FIELD_NAME, { linkedObjects });
       this.setFormValues('topics', topics);
       return { linkedObjects, canCreateNewObject: topics.length < MAX_NEW_OBJECTS_NUMBER };
     }, this.onUpdate());
   }
 
-  handleRemoveObject(objId) {
+  handleRemoveObject(tag) {
     this.setState(prevState => {
-      const linkedObjects = prevState.linkedObjects.filter(obj => obj.id !== objId);
-      const topics = linkedObjects.filter(obj => obj.isNew).map(obj => obj.id);
-      this.setFormValues(waivioData, { linkedObjects });
+      const linkedObjects = prevState.linkedObjects.filter(obj => obj.tag !== tag);
+      const topics = linkedObjects.map(obj => obj.tag);
+      // this.setFormValues(WAIVIO_POST_FIELD_NAME, { linkedObjects });
       this.setFormValues('topics', topics);
       return { linkedObjects, canCreateNewObject: topics.length < MAX_NEW_OBJECTS_NUMBER };
     }, this.onUpdate());
@@ -298,6 +298,50 @@ class Editor extends React.Component {
             />,
           )}
         </Form.Item>
+
+        <Form.Item
+          label={
+            <span className="Editor__label">
+              <FormattedMessage id="topics" defaultMessage="Topics" />
+            </span>
+          }
+          extra={intl.formatMessage({
+            id: 'topics_extra',
+            defaultMessage:
+              'Separate topics with commas. Only lowercase letters, numbers and hyphen character is permitted.',
+          })}
+        >
+          {getFieldDecorator('topics', {
+            initialValue: [],
+            rules: [
+              {
+                required: true,
+                message: intl.formatMessage({
+                  id: 'topics_error_empty',
+                  defaultMessage: 'Please enter topics',
+                }),
+                type: 'array',
+              },
+              { validator: this.checkTopics(intl) },
+            ],
+          })(
+            <Select
+              ref={ref => {
+                this.select = ref;
+              }}
+              onChange={this.onUpdate}
+              className="Editor__topics"
+              mode="tags"
+              placeholder={intl.formatMessage({
+                id: 'topics_placeholder',
+                defaultMessage: 'Add story topics here',
+              })}
+              dropdownStyle={{ display: 'none' }}
+              tokenSeparators={[' ', ',']}
+            />,
+          )}
+        </Form.Item>
+
         <Form.Item>
           {getFieldDecorator('body', {
             rules: [
@@ -341,14 +385,16 @@ class Editor extends React.Component {
               <FormattedMessage id="editor_linked_objects" defaultMessage="Linked objects" />
             </label>
           </div>
-          <SearchObjectsAutocomplete
-            handleSelect={this.handleAddLinkedObject}
-            canCreateNewObject={canCreateNewObject}
-          />
+          {canCreateNewObject && (
+            <SearchObjectsAutocomplete
+              handleSelect={this.handleAddLinkedObject}
+              canCreateNewObject={canCreateNewObject}
+            />
+          )}
           {Boolean(linkedObjects.length) &&
             linkedObjects.map(obj => (
               <EditorObject
-                key={obj.id}
+                key={obj.tag}
                 wObject={obj}
                 handleRemoveObject={this.handleRemoveObject}
               />

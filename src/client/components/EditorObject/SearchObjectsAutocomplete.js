@@ -59,18 +59,18 @@ class SearchObjectsAutocomplete extends Component {
     this.debouncedSearch(value);
   }
 
-  handleSelect(objId) {
+  handleSelect(objTag) {
     this.setState({ isOptionSelected: true });
-    const selectedObject = this.props.searchObjectsResults.find(obj => obj.id === objId);
+    const selectedObject = this.props.searchObjectsResults.find(obj => obj.tag === objTag);
     this.props.handleSelect(
-      selectedObject || { id: objId, tag: this.state.searchString, isNew: true },
+      selectedObject || { tag: objTag, tagName: this.state.searchString, isNew: true },
     );
   }
   render() {
     const { searchString } = this.state;
     const { canCreateNewObject, intl, style, searchObjectsResults } = this.props;
     const searchObjectsOptions = searchObjectsResults.map(obj => (
-      <AutoComplete.Option key={obj.id}>{obj.tag}</AutoComplete.Option>
+      <AutoComplete.Option key={obj.tag}>{obj.tag}</AutoComplete.Option>
     ));
     return (
       <AutoComplete
