@@ -34,8 +34,16 @@ export const changeObjInfluenceHandler = (objArr, currObj, influence) => {
   const currIndex = objArr.indexOf(currObj);
   if (objArr[currIndex + 1]) {
     const dxInfluence = res[currIndex].influence.value - influence;
-    res[currIndex].influence.value -= dxInfluence;
-    res[currIndex + 1].influence.value += dxInfluence;
+    if (res[currIndex + 1].influence.value + dxInfluence > 0) {
+      res[currIndex + 1].influence.value += dxInfluence;
+      res[currIndex].influence.value -= dxInfluence;
+    }
+  } else if (objArr[currIndex - 1]) {
+    const dxInfluence = res[currIndex].influence.value - influence;
+    if (res[currIndex - 1].influence.value + dxInfluence > 0) {
+      res[currIndex - 1].influence.value += dxInfluence;
+      res[currIndex].influence.value -= dxInfluence;
+    }
   }
   return res;
 };
