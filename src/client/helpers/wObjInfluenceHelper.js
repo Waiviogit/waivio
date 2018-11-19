@@ -15,4 +15,13 @@ export const setInitialInfluence = objArr => {
   return result;
 };
 
-export default setInitialInfluence;
+export const changeObjInfluenceHandler = (objArr, currObj, influence) => {
+  const res = [...objArr];
+  const currIndex = objArr.indexOf(currObj);
+  if (objArr[currIndex + 1]) {
+    const dxInfluence = res[currIndex].influence.value - influence;
+    res[currIndex].influence.value -= dxInfluence;
+    res[currIndex + 1].influence.value += dxInfluence;
+  }
+  return res;
+};

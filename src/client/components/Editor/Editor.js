@@ -18,7 +18,7 @@ import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
 import { MAX_NEW_OBJECTS_NUMBER } from '../../../common/constants/waivio';
-import { setInitialInfluence } from '../../helpers/wObjInfluenceHelper';
+import { setInitialInfluence, changeObjInfluenceHandler } from '../../helpers/wObjInfluenceHelper';
 import './Editor.less';
 
 @injectIntl
@@ -252,9 +252,7 @@ class Editor extends React.Component {
 
   handleChangeInfluence(wObj, influence) {
     this.setState(prevState => {
-      const linkedObjects = prevState.linkedObjects;
-      const index = linkedObjects.indexOf(wObj);
-      linkedObjects[index].influence.value = influence;
+      const linkedObjects = changeObjInfluenceHandler(prevState.linkedObjects, wObj, influence);
       return { linkedObjects };
     });
   }
@@ -312,50 +310,6 @@ class Editor extends React.Component {
             />,
           )}
         </Form.Item>
-
-        <Form.Item
-          label={
-            <span className="Editor__label">
-              <FormattedMessage id="topics" defaultMessage="Topics" />
-            </span>
-          }
-          extra={intl.formatMessage({
-            id: 'topics_extra',
-            defaultMessage:
-              'Separate topics with commas. Only lowercase letters, numbers and hyphen character is permitted.',
-          })}
-        >
-          {getFieldDecorator('topics', {
-            initialValue: [],
-            rules: [
-              {
-                required: true,
-                message: intl.formatMessage({
-                  id: 'topics_error_empty',
-                  defaultMessage: 'Please enter topics',
-                }),
-                type: 'array',
-              },
-              { validator: this.checkTopics(intl) },
-            ],
-          })(
-            <Select
-              ref={ref => {
-                this.select = ref;
-              }}
-              onChange={this.onUpdate}
-              className="Editor__topics"
-              mode="tags"
-              placeholder={intl.formatMessage({
-                id: 'topics_placeholder',
-                defaultMessage: 'Add story topics here',
-              })}
-              dropdownStyle={{ display: 'none' }}
-              tokenSeparators={[' ', ',']}
-            />,
-          )}
-        </Form.Item>
-
         <Form.Item>
           {getFieldDecorator('body', {
             rules: [

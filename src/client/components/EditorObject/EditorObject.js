@@ -18,19 +18,14 @@ class EditorObject extends React.Component {
 
   handleChangeInfluence(influence) {
     const { wObject, handleChangeInfluence } = this.props;
-    handleChangeInfluence(wObject, influence);
+    window.requestAnimationFrame(() => handleChangeInfluence(wObject, influence));
   }
 
   render() {
     const { wObject, handleRemoveObject } = this.props;
     return (
       <div className="editor-object">
-        <div
-          onClick={() => console.log(wObject.tag)}
-          className="editor-object__content"
-          role={'button'}
-          tabIndex={0}
-        >
+        <div className="editor-object__content">
           <div className="editor-object__content info">
             <img className="editor-object__avatar" src={wObject.avatar} alt={wObject.tag} />
             <span className="editor-object__names">
