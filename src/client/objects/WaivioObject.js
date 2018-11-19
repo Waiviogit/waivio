@@ -9,7 +9,7 @@ import WeightTag from '../components/WeightTag';
 import Avatar from '../components/Avatar';
 import './WaivioObject.less';
 
-const getField = (item, field) => {
+export const getField = (item, field) => {
   const wo = _.find(item.fields, ['name', field]);
   return wo ? wo.body : null;
 };
