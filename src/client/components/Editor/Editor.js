@@ -310,50 +310,6 @@ class Editor extends React.Component {
             />,
           )}
         </Form.Item>
-
-        <Form.Item
-          label={
-            <span className="Editor__label">
-              <FormattedMessage id="topics" defaultMessage="Topics" />
-            </span>
-          }
-          extra={intl.formatMessage({
-            id: 'topics_extra',
-            defaultMessage:
-              'Separate topics with commas. Only lowercase letters, numbers and hyphen character is permitted.',
-          })}
-        >
-          {getFieldDecorator('topics', {
-            initialValue: [],
-            rules: [
-              {
-                required: true,
-                message: intl.formatMessage({
-                  id: 'topics_error_empty',
-                  defaultMessage: 'Please enter topics',
-                }),
-                type: 'array',
-              },
-              { validator: this.checkTopics(intl) },
-            ],
-          })(
-            <Select
-              ref={ref => {
-                this.select = ref;
-              }}
-              onChange={this.onUpdate}
-              className="Editor__topics"
-              mode="tags"
-              placeholder={intl.formatMessage({
-                id: 'topics_placeholder',
-                defaultMessage: 'Add story topics here',
-              })}
-              dropdownStyle={{ display: 'none' }}
-              tokenSeparators={[' ', ',']}
-            />,
-          )}
-        </Form.Item>
-
         <Form.Item>
           {getFieldDecorator('body', {
             rules: [
