@@ -16,7 +16,7 @@ const getField = (item, field) => {
 
 const WaivioObject = ({ wobj }) => {
   let website = getField(wobj, 'link');
-  const location = getField(wobj, 'location');
+  const location = getField(wobj, 'locationCity');
 
   if (website && website.indexOf('http://') === -1 && website.indexOf('https://') === -1) {
     website = `http://${website}`;

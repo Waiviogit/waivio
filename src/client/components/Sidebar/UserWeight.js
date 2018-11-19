@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Avatar from '../Avatar';
 import FollowButton from '../../widgets/FollowButton';
 import './ObjectComponent.less';
-import WeightTag from '../WeightTag';
+// import WeightTag from '../WeightTag';
 
 const UserWeight = ({ user }) => (
   <div key={user.name} className="Object">
@@ -16,7 +16,7 @@ const UserWeight = ({ user }) => (
         <Link to={{ pathname: `/@${user.name}` }} title={user.name} className="Object__name">
           <span className="username">{user.name}</span>
         </Link>
-        <WeightTag weight={user.weight} />
+        {/* <WeightTag weight={user.weight} /> */}
       </div>
       <div className="Object__follow">
         <FollowButton username={user.name} secondary />
