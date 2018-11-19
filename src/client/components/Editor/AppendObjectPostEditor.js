@@ -160,7 +160,7 @@ class AppendObjectPostEditor extends React.Component {
       })} ${values.value} ${this.props.intl.formatMessage({
         id: 'updates_in_object3',
         defaultMessage: 'to',
-      })} ${this.props.wobject.tag} ${values.body}`,
+      })} ${this.props.wobject.tag} ${values.body}<br />`,
     );
   }
 
