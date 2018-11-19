@@ -18,7 +18,7 @@ import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
 import { MAX_NEW_OBJECTS_NUMBER } from '../../../common/constants/waivio';
-import { setInitialInfluence } from '../../helpers/wObjInfluenceHelper';
+import { setInitialInfluence, changeObjInfluenceHandler } from '../../helpers/wObjInfluenceHelper';
 import './Editor.less';
 
 @injectIntl
@@ -252,9 +252,7 @@ class Editor extends React.Component {
 
   handleChangeInfluence(wObj, influence) {
     this.setState(prevState => {
-      const linkedObjects = prevState.linkedObjects;
-      const index = linkedObjects.indexOf(wObj);
-      linkedObjects[index].influence.value = influence;
+      const linkedObjects = changeObjInfluenceHandler(prevState.linkedObjects, wObj, influence);
       return { linkedObjects };
     });
   }
