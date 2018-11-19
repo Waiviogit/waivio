@@ -229,12 +229,12 @@ class Editor extends React.Component {
     this.setState(prevState => {
       const linkedObjects = prevState.linkedObjects.some(obj => obj.tag === selectedObj.tag)
         ? prevState.linkedObjects
-        : [...prevState.linkedObjects, selectedObj];
+        : setInitialInfluence(prevState.linkedObjects, selectedObj);
       const topics = linkedObjects.map(obj => obj.tag);
       // this.setFormValues(WAIVIO_POST_FIELD_NAME, { linkedObjects });
       this.setFormValues('topics', topics);
       return {
-        linkedObjects: setInitialInfluence(linkedObjects),
+        linkedObjects,
         canCreateNewObject: topics.length < MAX_NEW_OBJECTS_NUMBER,
       };
     }, this.onUpdate());

@@ -1,18 +1,32 @@
-export const setInitialInfluence = objArr => {
-  const result = [];
-  if (objArr.length) {
-    const maxValue = 100 - objArr.length + 1;
-    for (let i = 0, influence = 100; i < objArr.length; i += 1) {
-      if (objArr[i + 1]) {
-        const currInfluence = Math.ceil(influence / 2);
-        result.push({ ...objArr[i], influence: { value: currInfluence, max: maxValue } });
-        influence -= currInfluence;
-      } else {
-        result.push({ ...objArr[i], influence: { value: influence, max: maxValue } });
+export const setInitialInfluence = (objArr, wObj) => {
+  const res = [...objArr];
+  if (res.length) {
+    const maxValue = 100 - objArr.length;
+    const lastObj = res[res.length - 1];
+    if (lastObj && lastObj.influence.value > 1) {
+      const currInfluence = Math.floor(lastObj.influence.value / 2);
+      res[res.length - 1] = {
+        ...lastObj,
+        influence: { value: lastObj.influence.value - currInfluence },
+      };
+      res[res.length] = { ...wObj, influence: { value: currInfluence } };
+    } else {
+      for (let i = res.length - 1; i >= 0; i -= 1) {
+        if (res[i].influence.value > 1) {
+          const currObj = res[i];
+          res[i] = { ...currObj, influence: { value: currObj.influence.value - 1 } };
+          res[res.length] = { ...wObj, influence: { value: 1 } };
+          break;
+        }
       }
     }
+    for (let i = 0; i < res.length; i += 1) {
+      res[i].influence.max = maxValue;
+    }
+  } else {
+    return [{ ...wObj, influence: { value: 100, max: 100 } }];
   }
-  return result;
+  return res;
 };
 
 export const changeObjInfluenceHandler = (objArr, currObj, influence) => {
