@@ -13,6 +13,8 @@
   }
 
   &__field {
+    overflow: auto;
+    word-break: break-word;
     & > a {
       color: @black;
       font-weight: bold;
@@ -34,6 +36,9 @@
 
     &__body {
       font-weight: bold;
+    }
+    &__image {
+      max-width: 80%;
     }
 
     &__current {
