@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import _ from 'lodash';
+import { getField } from '../objects/WaivioObject';
 import {
   getIsAuthenticated,
   getAuthenticatedUser,
@@ -92,7 +93,8 @@ export default class Wobj extends React.Component {
     const canonicalUrl = `${busyHost}/object/@${wobject.tag}`;
     const url = `${busyHost}/object/@${wobject.tag}`;
     const displayedUsername = wobject.tag || '';
-    const hasCover = !!wobject.cover_image;
+    const coverImage = getField(wobject, 'backgroundImage');
+    const hasCover = !!coverImage;
     const title = `${displayedUsername} - Waivio`;
 
     return (
@@ -125,7 +127,7 @@ export default class Wobj extends React.Component {
             user={user}
             wobject={wobject}
             username={displayedUsername}
-            coverImage={wobject.cover_image}
+            coverImage={coverImage}
             hasCover={hasCover}
             onFollowClick={this.handleFollowClick}
           />
@@ -134,7 +136,7 @@ export default class Wobj extends React.Component {
           <div className="feed-layout container">
             <Affix className="leftContainer leftContainer__user" stickPosition={72}>
               <div className="left">
-                <LeftObjectProfileSidebar fields={wobject.fields} />
+                <LeftObjectProfileSidebar wobject={wobject} />
               </div>
             </Affix>
             <Affix className="rightContainer" stickPosition={72}>

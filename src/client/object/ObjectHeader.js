@@ -9,6 +9,8 @@ import FollowButton from '../widgets/FollowButton';
 import Action from '../components/Button/Action';
 import '../components/ObjectHeader.less';
 
+import { getField } from '../objects/WaivioObject';
+
 const ObjectHeader = ({ username, wobject, handle, coverImage, hasCover, isActive }) => {
   const style = hasCover
     ? { backgroundImage: `url("https://steemitimages.com/2048x512/${coverImage}")` }
@@ -40,6 +42,11 @@ const ObjectHeader = ({ username, wobject, handle, coverImage, hasCover, isActiv
           </div>
           <div className="ObjectHeader__handle-rank-container">
             <div className="ObjectHeader__row ObjectHeader__handle">@{wobject.tag}</div>
+          </div>
+          <div className="ObjectHeader__user__username">
+            <div className="ObjectHeader__descriptionShort">
+              {getField(wobject, 'descriptionShort')}
+            </div>
           </div>
         </div>
       </div>

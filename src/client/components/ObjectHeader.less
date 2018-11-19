@@ -28,9 +28,10 @@
     .ObjectHeader__handle,
     .ObjectHeader__more,
     .ObjectHeader__user__username,
-    .ObjectHeader__follows-you {
+    .ObjectHeader__follows-you,
+    .ObjectHeader__descriptionShort {
       color: #ffffff !important;
-      text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+      text-shadow: 2px 1px 2px black;
     }
   }
 
@@ -145,6 +146,13 @@
   &-follows-you {
     top: 52px;
   }
+}
+
+.ObjectHeader__descriptionShort {
+  margin-right: -8px;
+  font-weight: 400;
+  font-size: 18px;
+  color: #353535;
 }
 
 @media @small {
