@@ -54,7 +54,7 @@ class EditorObject extends React.Component {
             role="button"
             tabIndex={0}
             className="editor-object__controls delete"
-            onClick={() => handleRemoveObject(wObject.tag)}
+            onClick={() => handleRemoveObject(wObject)}
           >
             <i className="iconfont icon-trash editor-object__controls delete-icon" />
             <FormattedMessage id="remove" defaultMessage="Remove" />
