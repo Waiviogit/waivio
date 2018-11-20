@@ -16,7 +16,7 @@ import {
 import { getObject } from './wobjectsActions';
 import { getObjectUrl } from '../components/ObjectAvatar';
 import Error404 from '../statics/Error404';
-import UserHero from './UserHero';
+import WobjHero from './WobjHero';
 import LeftObjectProfileSidebar from '../app/Sidebar/LeftObjectProfileSidebar';
 import RightObjectSidebar from '../app/Sidebar/RightObjectSidebar';
 import Affix from '../components/Utils/Affix';
@@ -122,7 +122,7 @@ export default class Wobj extends React.Component {
         </Helmet>
         <ScrollToTopOnMount />
         {user && (
-          <UserHero
+          <WobjHero
             authenticated={authenticated}
             user={user}
             wobject={wobject}

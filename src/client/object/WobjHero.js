@@ -16,7 +16,7 @@ const activityFields = [
 ];
 
 @withRouter
-class UserMenuWrapper extends React.Component {
+class WobjMenuWrapper extends React.Component {
   static propTypes = {
     match: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
@@ -31,6 +31,7 @@ class UserMenuWrapper extends React.Component {
 
   render() {
     const { match, location, history, ...otherProps } = this.props;
+    // const current = this.props.location.pathname.split('/')[2];
     const currentKey = 'discussions';
     return <ObjectMenu defaultKey={currentKey} onChange={this.onChange} {...otherProps} />;
   }
@@ -46,6 +47,7 @@ const isUserActive = user =>
 
 const WobjHero = ({
   authenticated,
+  wobject,
   user,
   username,
   coverImage,
@@ -64,9 +66,8 @@ const WobjHero = ({
             ) : (
               <WobjHeader
                 username={username}
+                wobject={wobject}
                 handle={user.name}
-                userReputation={user.reputation}
-                vestingShares={parseFloat(user.vesting_shares)}
                 coverImage={coverImage}
                 hasCover={hasCover}
                 isFollowing={isFollowing}
@@ -74,7 +75,7 @@ const WobjHero = ({
                 isActive={isUserActive(user)}
               />
             )}
-            <UserMenuWrapper followers={5} following={0} />
+            <WobjMenuWrapper followers={wobject.followers.length} />
           </div>
         )}
       />
@@ -91,6 +92,7 @@ WobjHero.propTypes = {
   hasCover: PropTypes.bool,
   isFollowing: PropTypes.bool,
   onTransferClick: PropTypes.func,
+  wobject: PropTypes.shape(),
 };
 
 WobjHero.defaultProps = {
@@ -100,6 +102,7 @@ WobjHero.defaultProps = {
   isFollowing: false,
   isPopoverVisible: false,
   onTransferClick: () => {},
+  wobject: {},
 };
 
 export default WobjHero;
