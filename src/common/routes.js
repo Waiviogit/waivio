@@ -126,7 +126,7 @@ const routes = [
         ],
       },
       {
-        path: '/object/@:name/(followed|feed)?',
+        path: '/object/@:name/(followers|feed)?',
         component: Wobj,
         exact: true,
         routes: [
