@@ -18,7 +18,11 @@ import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
 import { MAX_NEW_OBJECTS_NUMBER } from '../../../common/constants/waivio';
-import { setInitialInfluence, changeObjInfluenceHandler } from '../../helpers/wObjInfluenceHelper';
+import {
+  setInitialInfluence,
+  changeObjInfluenceHandler,
+  removeObjInfluenceHandler,
+} from '../../helpers/wObjInfluenceHelper';
 import './Editor.less';
 
 @injectIntl
@@ -240,9 +244,9 @@ class Editor extends React.Component {
     }, this.onUpdate());
   }
 
-  handleRemoveObject(tag) {
+  handleRemoveObject(wObject) {
     this.setState(prevState => {
-      const linkedObjects = prevState.linkedObjects.filter(obj => obj.tag !== tag);
+      const linkedObjects = removeObjInfluenceHandler(prevState.linkedObjects, wObject);
       const topics = linkedObjects.map(obj => obj.tag);
       // this.setFormValues(WAIVIO_POST_FIELD_NAME, { linkedObjects });
       this.setFormValues('topics', topics);
