@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { InputNumber, Slider } from 'antd';
@@ -11,15 +12,10 @@ class EditorObject extends React.Component {
     handleChangeInfluence: PropTypes.func.isRequired,
   };
 
-  constructor(props) {
-    super(props);
-    this.handleChangeInfluence = this.handleChangeInfluence.bind(this);
-  }
-
-  handleChangeInfluence(influence) {
-    const { wObject, handleChangeInfluence } = this.props;
-    window.requestAnimationFrame(() => handleChangeInfluence(wObject, influence));
-  }
+  throttledChange = _.throttle(
+    influence => this.props.handleChangeInfluence(this.props.wObject, influence),
+    10,
+  );
 
   render() {
     const { wObject, handleRemoveObject } = this.props;
@@ -43,12 +39,12 @@ class EditorObject extends React.Component {
               parser={value => value.replace('%', '')}
               size="small"
               value={wObject.influence.value}
-              onChange={this.handleChangeInfluence}
+              onChange={this.throttledChange}
             />
             <Slider
               min={1}
               max={wObject.influence.max}
-              onChange={this.handleChangeInfluence}
+              onChange={this.throttledChange}
               value={wObject.influence.value}
             />
           </div>
