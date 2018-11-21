@@ -366,6 +366,7 @@
   "weight_score_value": "Weight score: {value}",
   "editor_linked_objects": "Linked objects",
   "objects_auto_complete_placeholder": "Input object name here",
+  "create": "create",
   "remove": "remove",
   "discover_more_objects_info": "Discover the most reputable objects of this platform",
   "updates_in_object1": "I suggest to add field",

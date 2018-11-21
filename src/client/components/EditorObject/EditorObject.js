@@ -53,10 +53,19 @@ class EditorObject extends React.Component {
           <div
             role="button"
             tabIndex={0}
-            className="editor-object__controls delete"
+            className="editor-object__control-item create"
+            onClick={() => console.log('handleCreateObj')}
+          >
+            <i className="iconfont anticon anticon-codepen editor-object__control-item item-icon" />
+            <FormattedMessage id="create" defaultMessage="Create" />
+          </div>
+          <div
+            role="button"
+            tabIndex={0}
+            className="editor-object__control-item delete"
             onClick={() => handleRemoveObject(wObject)}
           >
-            <i className="iconfont icon-trash editor-object__controls delete-icon" />
+            <i className="iconfont anticon anticon-delete editor-object__control-item item-icon" />
             <FormattedMessage id="remove" defaultMessage="Remove" />
           </div>
         </div>

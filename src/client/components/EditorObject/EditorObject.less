@@ -59,18 +59,26 @@
 
   .editor-object__controls {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: space-evenly;
+    height: @height-row-info + @height-row-slider;
     padding-right: @padding;
 
-    &.delete {
+    .editor-object__control-item {
+      font-size: 18px;
       font-weight: 500;
-      color: @red;
 
+      &.create {
+        color: @green;
+      }
+      &.delete {
+        color: @red;
+      }
       span {
         display: none;
       }
-      & > .delete-icon {
-        font-size: 35px;
+      & > .item-icon {
+        font-size: 30px;
       }
     }
   }
@@ -78,19 +86,29 @@
   @media @medium {
     .editor-object__controls {
       visibility: hidden;
-      display: flex;
-      align-items: center;
-      padding-right: @padding;
+      align-items: stretch;
 
-      &.delete {
+      .editor-object__control-item {
+        display: flex;
+        align-items: center;
         font-weight: 500;
-        color: @red;
-        &:hover {
-          cursor: pointer;
-          color: @orange-light;
+        &.create {
+          color: @green-darker;
+          &:hover {
+            cursor: pointer;
+            color: @green;
+          }
         }
-        & > .delete-icon {
-          font-size: 26px;
+        &.delete {
+          color: @red;
+          &:hover {
+            cursor: pointer;
+            color: @orange-light;
+          }
+        }
+        & > .item-icon {
+          font-size: 22px;
+          padding-right: 2px;
         }
         span {
           display: inline;
