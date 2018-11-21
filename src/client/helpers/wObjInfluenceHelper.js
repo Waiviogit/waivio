@@ -59,7 +59,7 @@ export const removeObjInfluenceHandler = (objArr, removingObj) => {
   for (let i = 0, remainInfluence = removingObjInfluence; i < filtered.length; i += 1) {
     const currInfluence = filtered[i].influence.value;
     const influenceToAdd =
-      Math.round(currInfluence * 100 / (100 - removingObjInfluence)) - currInfluence;
+      Math.round((currInfluence * 100) / (100 - removingObjInfluence)) - currInfluence;
     filtered[i].influence.value +=
       influenceToAdd <= remainInfluence ? influenceToAdd : remainInfluence;
     remainInfluence -= influenceToAdd;

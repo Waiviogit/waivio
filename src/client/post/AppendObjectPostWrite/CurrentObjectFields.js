@@ -21,7 +21,7 @@ const CurrentObjectFields = ({ wobject, currentField, currentLocaleInList }) => 
       case 'link':
         return (
           <div className="CurrentObjectFields__field__body">
-            <a href={field.body} target="_blank">
+            <a href={field.body} rel="noopener noreferrer" target="_blank">
               Outer link
             </a>
             <span title="Field weight">({field.weight})</span>
