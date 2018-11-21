@@ -50,15 +50,17 @@ class EditorObject extends React.Component {
           </div>
         </div>
         <div className="editor-object__controls">
-          <div
-            role="button"
-            tabIndex={0}
-            className="editor-object__control-item create"
-            onClick={() => console.log('handleCreateObj')}
-          >
-            <i className="iconfont anticon anticon-codepen editor-object__control-item item-icon" />
-            <FormattedMessage id="create" defaultMessage="Create" />
-          </div>
+          {Boolean(wObject.isNew) && (
+            <div
+              role="button"
+              tabIndex={0}
+              className="editor-object__control-item create"
+              onClick={() => console.log('handleCreateObj')}
+            >
+              <i className="iconfont anticon anticon-codepen editor-object__control-item item-icon" />
+              <FormattedMessage id="create" defaultMessage="Create" />
+            </div>
+          )}
           <div
             role="button"
             tabIndex={0}

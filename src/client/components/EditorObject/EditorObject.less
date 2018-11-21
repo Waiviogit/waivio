@@ -14,7 +14,7 @@
   margin-top: 5px;
   padding: @padding;
   @media @medium {
-    &:hover .editor-object__controls {
+    &:hover .editor-object__controls > .editor-object__control-item.delete {
       visibility: visible;
     }
   }
@@ -85,7 +85,6 @@
 
   @media @medium {
     .editor-object__controls {
-      visibility: hidden;
       align-items: stretch;
 
       .editor-object__control-item {
@@ -100,6 +99,7 @@
           }
         }
         &.delete {
+          visibility: hidden;
           color: @red;
           &:hover {
             cursor: pointer;
