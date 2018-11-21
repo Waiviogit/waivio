@@ -383,5 +383,6 @@
   "for_lang1": "for",
   "for_lang2": "language.",
   "value_error_empty": "Please enter a value.",
-  "value_error_too_long": "Value can't be longer than 255 characters."
+  "value_error_too_long": "Value can't be longer than 255 characters.",
+  "create_new_object_placeholder": "This object doesn't exist yet, but you can create it"
 }

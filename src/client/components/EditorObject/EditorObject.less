@@ -74,7 +74,7 @@
       &.delete {
         color: @red;
       }
-      span {
+      & > .item-text {
         display: none;
       }
       & > .item-icon {
@@ -110,11 +110,19 @@
           font-size: 22px;
           padding-right: 2px;
         }
-        span {
+        & > .item-text {
           display: inline;
         }
       }
     }
+  }
+}
+
+.editor-object__validation-msg {
+  color: @red-danger;
+
+  @media @medium {
+    display: none;
   }
 }
 
