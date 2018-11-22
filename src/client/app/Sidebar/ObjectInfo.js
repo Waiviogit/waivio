@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import urlParse from 'url-parse';
+import _ from 'lodash';
 
 import { getField } from '../../objects/WaivioObject';
+import SocialLinks from '../../components/SocialLinks';
 
 export const truncate = str => {
   if (str && str.length > 150) return `${str.substring(0, 150)}...`;
@@ -27,6 +29,65 @@ const ObjectInfo = props => {
     hostWithoutWWW = hostWithoutWWW.slice(4);
   }
 
+  let facebook = wobject && getField(wobject, 'linkFacebook');
+  if (facebook) {
+    facebook = facebook.split('/')[3];
+  }
+
+  let twitter = wobject && getField(wobject, 'linkTwitter');
+  if (twitter) {
+    twitter = twitter.split('/')[3];
+  }
+
+  let linkedin = wobject && getField(wobject, 'linkLinkedIn');
+  if (linkedin) {
+    linkedin = linkedin.split('/')[4];
+  }
+
+  let youtube = wobject && getField(wobject, 'linkYoutube');
+  if (youtube) {
+    youtube = youtube.split('/')[4];
+  }
+
+  let instagram = wobject && getField(wobject, 'linkInstagram');
+  if (instagram) {
+    instagram = instagram.split('/')[3];
+  }
+
+  let github = wobject && getField(wobject, 'linkGithub');
+  if (github) {
+    github = github.split('/')[3];
+  }
+
+  let bitcoin = wobject && getField(wobject, 'linkBitCoin');
+  if (bitcoin) {
+    bitcoin = bitcoin.split('/')[3];
+  }
+
+  let ethereum = wobject && getField(wobject, 'linkEthereum');
+  if (ethereum) {
+    ethereum = ethereum.split('/')[3];
+  }
+
+  let vkontakte = wobject && getField(wobject, 'linkVk');
+  if (vkontakte) {
+    vkontakte = vkontakte.split('/')[3];
+  }
+
+  const profileLinks = {
+    facebook,
+    twitter,
+    linkedin,
+    youtube,
+    instagram,
+    github,
+    bitcoin,
+    ethereum,
+    vkontakte,
+  };
+
+  const profile = _.pickBy(profileLinks, _.identity);
+
   return (
     <div>
       {wobject.tag && (
@@ -48,6 +109,7 @@ const ObjectInfo = props => {
               </div>
             )}
           </div>
+          <SocialLinks profile={profile} />
         </div>
       )}
     </div>
