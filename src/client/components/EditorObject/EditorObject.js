@@ -42,13 +42,15 @@ class EditorObject extends React.Component {
                 parser={value => value.replace('%', '')}
                 size="small"
                 value={wObject.influence.value}
+                disabled={wObject.influence.value === 100}
                 onChange={this.throttledChange}
               />
               <Slider
                 min={1}
                 max={wObject.influence.max}
-                onChange={this.throttledChange}
                 value={wObject.influence.value}
+                disabled={wObject.influence.value === 100}
+                onChange={this.throttledChange}
               />
             </div>
           </div>

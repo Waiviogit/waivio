@@ -17,7 +17,7 @@ import { getClientWObj } from '../../adapters';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
-import { MAX_NEW_OBJECTS_NUMBER } from '../../../common/constants/waivio';
+import { WAIVIO_META_FIELD_NAME, MAX_NEW_OBJECTS_NUMBER } from '../../../common/constants/waivio';
 import {
   setInitialInfluence,
   changeObjInfluenceHandler,
@@ -35,7 +35,7 @@ class Editor extends React.Component {
     form: PropTypes.shape().isRequired,
     title: PropTypes.string,
     topics: PropTypes.arrayOf(PropTypes.string),
-    wObj: PropTypes.shape(),
+    waivioData: PropTypes.shape(),
     body: PropTypes.string,
     reward: PropTypes.string,
     upvote: PropTypes.bool,
@@ -54,7 +54,7 @@ class Editor extends React.Component {
   static defaultProps = {
     title: '',
     topics: [],
-    wObj: {},
+    waivioData: {},
     body: '',
     reward: rewardsValues.half,
     upvote: true,
@@ -109,11 +109,11 @@ class Editor extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { title, topics, wObj, body, reward, upvote, draftId } = this.props;
+    const { title, topics, waivioData, body, reward, upvote, draftId } = this.props;
     if (
       title !== nextProps.title ||
       !_.isEqual(topics, nextProps.topics) ||
-      !_.isEqual(wObj, nextProps.wObj) ||
+      !_.isEqual(waivioData, nextProps.waivioData) ||
       body !== nextProps.body ||
       reward !== nextProps.reward ||
       upvote !== nextProps.upvote ||
@@ -133,7 +133,7 @@ class Editor extends React.Component {
     const { form } = this.props;
 
     form.getFieldDecorator('topics');
-    // form.getFieldDecorator([WAIVIO_POST_FIELD_NAME]);
+    form.getFieldDecorator([WAIVIO_META_FIELD_NAME]);
 
     let reward = rewardsValues.half;
     if (
@@ -147,14 +147,14 @@ class Editor extends React.Component {
     form.setFieldsValue({
       title: post.title,
       topics: post.topics,
-      // [WAIVIO_POST_FIELD_NAME]: post[WAIVIO_POST_FIELD_NAME],
+      [WAIVIO_META_FIELD_NAME]: post.waivioData,
       body: post.body,
       reward,
       upvote: post.upvote,
     });
     // this.setState({
     //   linkedObjects:
-    //     (post[WAIVIO_POST_FIELD_NAME] && post[WAIVIO_POST_FIELD_NAME].linkedObjects) || [],
+    //     (post.waivioData && post.waivioData.wObjects) || [], // todo: getObjects by ids to restore objects from draft
     // });
     this.setBodyAndRender(post.body);
   }
@@ -235,7 +235,7 @@ class Editor extends React.Component {
         ? prevState.linkedObjects
         : setInitialInfluence(prevState.linkedObjects, selectedObj);
       const topics = linkedObjects.map(obj => obj.tag);
-      // this.setFormValues(WAIVIO_POST_FIELD_NAME, { linkedObjects });
+      this.setFormValues(WAIVIO_META_FIELD_NAME, { wObjects: topics }); // todo: change tags to ids
       this.setFormValues('topics', topics);
       return {
         linkedObjects,
@@ -248,7 +248,7 @@ class Editor extends React.Component {
     this.setState(prevState => {
       const linkedObjects = removeObjInfluenceHandler(prevState.linkedObjects, wObject);
       const topics = linkedObjects.map(obj => obj.tag);
-      // this.setFormValues(WAIVIO_POST_FIELD_NAME, { linkedObjects });
+      this.setFormValues(WAIVIO_META_FIELD_NAME, { wObjects: topics }); // todo: change tags to ids
       this.setFormValues('topics', topics);
       return { linkedObjects, canCreateNewObject: topics.length < MAX_NEW_OBJECTS_NUMBER };
     }, this.onUpdate());
