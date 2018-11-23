@@ -119,7 +119,7 @@ export const getMoreObjectPosts = ({ username, limit = 10, tag }) => (dispatch, 
       tag,
       startAuthor,
       startPermlink,
-      limit: limit + 1,
+      limit,
     }),
     meta: { sortBy: 'objectPosts', category: username, limit },
   });

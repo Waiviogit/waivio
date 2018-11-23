@@ -49,12 +49,13 @@ export default class ObjectProfile extends React.Component {
   };
 
   componentDidMount() {
-    const { match } = this.props;
+    const { match, limit } = this.props;
     const { name } = match.params;
 
     this.props.getObjectPosts({
       object: name,
       username: this.props.authenticatedUser.name,
+      limit,
     });
   }
 
