@@ -29,7 +29,13 @@ export const getUsersByObject = object =>
 
 export const getFeedContentByObject = name =>
   new Promise((resolve, reject) => {
-    fetch(`${config.API_HOST_development}${config.getObjects}${name}/posts`)
+    fetch(`${config.API_HOST_development}${config.getObjects}${name}/posts`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
       .then(res => res.json())
       .then(posts => resolve(posts))
       .catch(error => reject(error));
