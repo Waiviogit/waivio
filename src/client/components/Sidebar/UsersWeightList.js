@@ -10,10 +10,10 @@ const UsersWeightList = ({ users }) => (
   <div className="InterestingObjects SidebarContentBlock">
     <h4 className="SidebarContentBlock__title">
       <i className="iconfont icon-collection SidebarContentBlock__icon" />{' '}
-      <FormattedMessage id="user_weight" defaultMessage="User's Weight" />
+      <FormattedMessage id="top_authors" defaultMessage="Top Authors" />
     </h4>
     <div className="SidebarContentBlock__content">
-      {users && _.map(users, (user, index) => <UserWeight key={index} user={user} />)}
+      {users && _.map(users, user => <UserWeight key={user.name} user={user} />)}
     </div>
   </div>
 );
