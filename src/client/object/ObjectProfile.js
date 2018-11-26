@@ -1,8 +1,10 @@
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
+
 import Feed from '../feed/Feed';
 import { getIsAuthenticated, getAuthenticatedUser, getFeed } from '../reducers';
 import {
@@ -11,10 +13,8 @@ import {
   getFeedHasMoreFromState,
   getFeedFromState,
 } from '../helpers/stateHelpers';
-import { getObjectPosts } from '../feed/feedActions';
+import { getObjectPosts, getMoreObjectPosts } from '../feed/feedActions';
 import { showPostModal } from '../app/appActions';
-import EmptyUserProfile from '../statics/EmptyUserProfile';
-import EmptyUserOwnProfile from '../statics/EmptyUserOwnProfile';
 import PostModal from '../post/PostModalContainer';
 
 @withRouter
@@ -26,48 +26,53 @@ import PostModal from '../post/PostModalContainer';
   }),
   {
     getObjectPosts,
-    // getMoreFeedContent,
+    getMoreObjectPosts,
     showPostModal,
   },
 )
 export default class ObjectProfile extends React.Component {
   static propTypes = {
-    authenticated: PropTypes.bool.isRequired,
     authenticatedUser: PropTypes.shape().isRequired,
     feed: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     showPostModal: PropTypes.func.isRequired,
-    // limit: PropTypes.number,
+    limit: PropTypes.number,
     getObjectPosts: PropTypes.func,
-    // getMoreFeedContent: PropTypes.func,
+    getMoreObjectPosts: PropTypes.func,
   };
 
   static defaultProps = {
     limit: 10,
     location: {},
     getObjectPosts: () => {},
-    // getMoreFeedContent: () => {},
+    getMoreObjectPosts: () => {},
   };
 
   componentDidMount() {
-    const { match } = this.props;
+    const { match, limit } = this.props;
     const { name } = match.params;
 
     this.props.getObjectPosts({
       object: name,
       username: this.props.authenticatedUser.name,
+      limit,
     });
   }
 
   render() {
-    const { authenticated, authenticatedUser, feed } = this.props;
-    const username = this.props.match.params.name;
-    const isOwnProfile = authenticated && username === authenticatedUser.name;
+    const { authenticatedUser, feed, limit } = this.props;
+    const wobjectname = this.props.match.params.name;
     const content = getFeedFromState('objectPosts', authenticatedUser.name, feed);
     const isFetching = getFeedLoadingFromState('objectPosts', authenticatedUser.name, feed);
     const fetched = getFeedFetchedFromState('objectPosts', authenticatedUser.name, feed);
     const hasMore = getFeedHasMoreFromState('objectPosts', authenticatedUser.name, feed);
-    const loadMoreContentAction = () => {};
+    const loadMoreContentAction = () => {
+      this.props.getMoreObjectPosts({
+        tag: wobjectname,
+        username: authenticatedUser.name,
+        limit,
+      });
+    };
 
     return (
       <div>
@@ -79,8 +84,17 @@ export default class ObjectProfile extends React.Component {
             loadMoreContent={loadMoreContentAction}
             showPostModal={this.props.showPostModal}
           />
-          {_.isEmpty(content) && fetched && isOwnProfile && <EmptyUserOwnProfile />}
-          {_.isEmpty(content) && fetched && !isOwnProfile && <EmptyUserProfile />}
+          {_.isEmpty(content) &&
+            fetched && (
+              <div className="text-center">
+                <h3>
+                  <FormattedMessage
+                    id="empty_object_profile"
+                    defaultMessage="This object doesn't have any story published yet."
+                  />
+                </h3>
+              </div>
+            )}
         </div>
         {<PostModal />}
       </div>
