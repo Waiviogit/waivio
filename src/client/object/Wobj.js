@@ -141,7 +141,7 @@ export default class Wobj extends React.Component {
             </Affix>
             <Affix className="rightContainer" stickPosition={72}>
               <div className="right">
-                <RightObjectSidebar users={wobject.users} />
+                <RightObjectSidebar users={_.slice(wobject.users, 0, 5)} />
               </div>
             </Affix>
             <div className="center">{renderRoutes(this.props.route.routes)}</div>

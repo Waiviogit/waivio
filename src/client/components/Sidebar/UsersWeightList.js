@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import UserWeight from './UserWeight';
 import './InterestingObjects.less';
@@ -14,6 +15,11 @@ const UsersWeightList = ({ users }) => (
     </h4>
     <div className="SidebarContentBlock__content">
       {users && _.map(users, user => <UserWeight key={user.name} user={user} />)}
+      <h4 className="InterestingPeople__more">
+        <Link to={'/'}>
+          <FormattedMessage id="show_more_authors" defaultMessage="Show more authors" />
+        </Link>
+      </h4>
     </div>
   </div>
 );
