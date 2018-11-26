@@ -4,16 +4,25 @@ import { connect } from 'react-redux';
 import { message } from 'antd';
 import { injectIntl } from 'react-intl';
 import { getAuthenticatedUser } from '../../reducers';
+import { createWaivioObject } from '../../post/Write/editorActions';
 import { MAXIMUM_UPLOAD_SIZE_HUMAN } from '../../helpers/image';
+import { WAIVIO_OBJECT_TYPE } from '../../../common/constants/waivio';
+import { getLocale } from '../../settings/settingsReducer';
 
 function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
 
 export default function withEditor(WrappedComponent) {
-  @connect(state => ({
-    user: getAuthenticatedUser(state),
-  }))
+  @connect(
+    state => ({
+      user: getAuthenticatedUser(state),
+      locale: getLocale(state),
+    }),
+    {
+      createWaivioObject,
+    },
+  )
   @injectIntl
   class EditorBase extends React.Component {
     static displayName = `withEditor(${getDisplayName(WrappedComponent)})`;
@@ -21,6 +30,12 @@ export default function withEditor(WrappedComponent) {
     static propTypes = {
       intl: PropTypes.shape().isRequired,
       user: PropTypes.shape().isRequired,
+      locale: PropTypes.string,
+      createWaivioObject: PropTypes.func.isRequired,
+    };
+
+    static defaultProps = {
+      locale: 'auto',
     };
 
     handleImageUpload = (blob, callback, errorCallback) => {
@@ -63,11 +78,29 @@ export default function withEditor(WrappedComponent) {
       );
     };
 
+    handleCreateObject = (obj, callback, errorCallback) => {
+      this.props
+        .createWaivioObject({
+          author: this.props.user.name,
+          title: `Waivio object. ${obj.tag}`,
+          body: `Waivio object "${obj.tag}" has been created`,
+          permlink: `${this.props.user.name}-${obj.permlink}`,
+          locale: this.props.locale === 'auto' ? 'en-US' : this.props.locale,
+          type: WAIVIO_OBJECT_TYPE.ITEM,
+        })
+        .then(result => callback(result))
+        .catch(err => {
+          console.log('err', err);
+          errorCallback();
+        });
+    };
+
     render() {
       return (
         <WrappedComponent
           onImageUpload={this.handleImageUpload}
           onImageInvalid={this.handleImageInvalid}
+          onCreateObject={this.handleCreateObject}
           {...this.props}
         />
       );

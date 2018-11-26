@@ -35,4 +35,13 @@ export const getFeedContentByObject = name =>
       .catch(error => reject(error));
   });
 
+export const postCreateWaivioObject = wObject =>
+  fetch(`${config.objectsBot.url}${config.objectsBot.createObject}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(wObject),
+  }).then(res => res.json());
+
 export default null;

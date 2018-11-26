@@ -10,6 +10,7 @@ class EditorObject extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     wObject: PropTypes.shape().isRequired,
+    handleCreateObject: PropTypes.func.isRequired,
     handleRemoveObject: PropTypes.func.isRequired,
     handleChangeInfluence: PropTypes.func.isRequired,
   };
@@ -20,7 +21,7 @@ class EditorObject extends React.Component {
   );
 
   render() {
-    const { intl, wObject, handleRemoveObject } = this.props;
+    const { intl, wObject, handleCreateObject, handleRemoveObject } = this.props;
     return (
       <React.Fragment>
         <div className="editor-object">
@@ -64,7 +65,7 @@ class EditorObject extends React.Component {
                   id: 'create_new_object_placeholder',
                   defaultMessage: "This object doesn't exist yet, but you can create it",
                 })}
-                onClick={() => console.log('handleCreateObj')}
+                onClick={() => handleCreateObject(wObject)}
               >
                 <i className="iconfont anticon anticon-codepen editor-object__control-item item-icon" />
                 <span className="editor-object__control-item item-text">

@@ -6,3 +6,8 @@ export const WAIVIO_POST_TYPE = {
   CREATE_POST: 'CREATE_POST',
   APPEND_OBJECT: 'APPEND_OBJECT',
 };
+
+export const WAIVIO_OBJECT_TYPE = {
+  ITEM: 'item',
+  CATALOG: 'catalog',
+};

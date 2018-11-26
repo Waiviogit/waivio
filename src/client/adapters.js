@@ -11,6 +11,7 @@ export const getClientWObj = serverWObj => {
     children,
     users,
     user_count,
+    permlink,
     isNew,
   } = serverWObj;
   const avatarField = fields && fields.find(f => f.name === 'avatarImage');
@@ -25,6 +26,11 @@ export const getClientWObj = serverWObj => {
     children: children || [],
     users: users || [],
     userCount: user_count || '',
+    permlink:
+      permlink ||
+      `${Math.random()
+        .toString(36)
+        .substring(2)}`,
     isNew: Boolean(isNew),
   };
 };

@@ -49,6 +49,7 @@ class Editor extends React.Component {
     onError: PropTypes.func,
     onImageUpload: PropTypes.func,
     onImageInvalid: PropTypes.func,
+    onCreateObject: PropTypes.func,
   };
 
   static defaultProps = {
@@ -70,6 +71,7 @@ class Editor extends React.Component {
     onError: () => {},
     onImageUpload: () => {},
     onImageInvalid: () => {},
+    onCreateObject: () => {},
   };
 
   constructor(props) {
@@ -89,6 +91,7 @@ class Editor extends React.Component {
     this.handleDelete = this.handleDelete.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleAddLinkedObject = this.handleAddLinkedObject.bind(this);
+    this.handleCreateObject = this.handleCreateObject.bind(this);
     this.handleRemoveObject = this.handleRemoveObject.bind(this);
     this.setFormValues = this.setFormValues.bind(this);
     this.handleChangeInfluence = this.handleChangeInfluence.bind(this);
@@ -244,6 +247,11 @@ class Editor extends React.Component {
     }, this.onUpdate());
   }
 
+  handleCreateObject(wObject) {
+    this.props.onCreateObject(wObject, res => console.log('Editor.handleCreateObject', res));
+    console.log('editor', wObject.tag);
+  }
+
   handleRemoveObject(wObject) {
     this.setState(prevState => {
       const linkedObjects = removeObjInfluenceHandler(prevState.linkedObjects, wObject);
@@ -368,6 +376,7 @@ class Editor extends React.Component {
               <EditorObject
                 key={obj.tag}
                 wObject={obj}
+                handleCreateObject={this.handleCreateObject}
                 handleRemoveObject={this.handleRemoveObject}
                 handleChangeInfluence={this.handleChangeInfluence}
               />
