@@ -177,7 +177,7 @@ class Write extends React.Component {
     if (this.props.draftId) {
       data.draftId = this.props.draftId;
     }
-    console.log('-->', JSON.stringify(form));
+    console.log('Write:onSubmit > ', JSON.stringify(form));
     // this.props.createPost(data);
   };
 

@@ -13,6 +13,12 @@
   border-radius: 4px;
   margin-top: 5px;
   padding: @padding;
+
+  &.validation-error {
+    border: 1px solid @red;
+    box-shadow: 0 0 3px @orange, 0 0 5px @red;
+  }
+
   @media @medium {
     &:hover .editor-object__controls > .editor-object__control-item.delete {
       visibility: visible;

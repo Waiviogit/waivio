@@ -83,6 +83,7 @@ class Editor extends React.Component {
       bodyHTML: '',
       linkedObjects: [],
       canCreateNewObject: true,
+      isValid: true,
     };
 
     this.onUpdate = this.onUpdate.bind(this);
@@ -217,12 +218,21 @@ class Editor extends React.Component {
     this.props.onUpdate(values);
   }
 
+  checkObjects() {
+    const isObjectsCreated = !this.state.linkedObjects.some(obj => obj.isNew);
+    this.setState({ isValid: isObjectsCreated });
+    return isObjectsCreated;
+  }
+
   handleSubmit(e) {
     e.preventDefault();
 
     this.props.form.validateFieldsAndScroll((err, values) => {
-      if (err) this.props.onError();
-      else this.props.onSubmit(values);
+      if (this.checkObjects() || err) {
+        this.props.onError();
+      } else {
+        this.props.onSubmit(values);
+      }
     });
   }
 
@@ -274,7 +284,10 @@ class Editor extends React.Component {
               : obj,
         );
         this.setFormValues(WAIVIO_META_FIELD_NAME, { wObjects: linkedObjects.map(obj => obj.id) });
-        return { linkedObjects };
+        return {
+          linkedObjects,
+          isValid: !(prevState.isValid || linkedObjects.some(obj => obj.isNew)),
+        };
       });
     });
   }
@@ -303,7 +316,7 @@ class Editor extends React.Component {
   render() {
     const { intl, form, loading, isUpdating, saving, draftId } = this.props;
     const { getFieldDecorator } = form;
-    const { body, bodyHTML, linkedObjects, canCreateNewObject } = this.state;
+    const { body, bodyHTML, linkedObjects, isValid, canCreateNewObject } = this.state;
 
     const { words, minutes } = readingTime(bodyHTML);
 
@@ -407,6 +420,7 @@ class Editor extends React.Component {
               <EditorObject
                 key={obj.id}
                 wObject={obj}
+                isValid={isValid}
                 handleCreateObject={this.handleCreateObject}
                 handleRemoveObject={this.handleRemoveObject}
                 handleChangeInfluence={this.handleChangeInfluence}

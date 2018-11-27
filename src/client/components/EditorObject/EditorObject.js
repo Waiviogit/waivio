@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
+import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { InputNumber, Slider, Spin } from 'antd';
@@ -10,6 +11,7 @@ class EditorObject extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     wObject: PropTypes.shape().isRequired,
+    isValid: PropTypes.bool.isRequired,
     handleCreateObject: PropTypes.func.isRequired,
     handleRemoveObject: PropTypes.func.isRequired,
     handleChangeInfluence: PropTypes.func.isRequired,
@@ -34,10 +36,14 @@ class EditorObject extends React.Component {
   };
 
   render() {
-    const { intl, wObject, handleRemoveObject } = this.props;
+    const { intl, wObject, handleRemoveObject, isValid } = this.props;
     return (
       <React.Fragment>
-        <div className="editor-object">
+        <div
+          className={classNames('editor-object', {
+            'validation-error': wObject.isNew && !isValid,
+          })}
+        >
           <div className="editor-object__content">
             <div className="editor-object__content info">
               <img className="editor-object__avatar" src={wObject.avatar} alt={wObject.name} />
