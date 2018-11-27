@@ -1,0 +1,358 @@
+{
+  "appVersion": "ST Investarena Desktop v.2.0.1",
+  "production": {
+    "apiPrefix": "https://api.socialtrading.uat.pp.ua/",
+    "brokerWSUrl": {
+      "maximarkets": "https://trading.maximarkets.org/stomp/",
+      "umarkets": "https://trading.umarkets.com/stomp/",
+      "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
+    },
+    "platformDepositUrl": {
+      "umarkets": "https://my.umarkets.com/",
+      "maximarkets": "https://myaccount.maximarkets.org/",
+      "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
+    },
+    "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/",
+    "chatUrl": "https://chatsocket.socialtrading.uat.pp.ua/",
+    "repostUrl": "https://socialtrading.uat.pp.ua/posts/",
+    "shareLinksUrl": {
+      "facebook": "http://www.facebook.com/sharer.php?u=https://socialtrading.uat.pp.ua/posts/",
+      "vkontakte": "http://vkontakte.ru/share.php?url=https://socialtrading.uat.pp.ua/posts/",
+      "odnoklassniki": "https://connect.ok.ru/offer?url=https://socialtrading.uat.pp.ua/posts/",
+      "google": "https://plus.google.com/share?url=https://socialtrading.uat.pp.ua/posts/"
+    },
+    "shareInvitationLinksUrl": {
+      "facebook": "http://www.facebook.com/sharer.php?u=",
+      "vkontakte": "http://vkontakte.ru/share.php?url=",
+      "google": "https://plus.google.com/share?url="
+    },
+    "captcha": {
+      "siteKey": "6Ld4gEcUAAAAAPZRi9qzMFRMxoGFx6sLJTqQH_Lo",
+      "secretKey": "6Ld4gEcUAAAAAILNELlwGVZrq6R09moCQETpoFDD"
+    }
+  },
+  "staging": {
+    "apiPrefix": "https://api.socialtrading.uat.pp.ua/",
+    "brokerWSUrl": {
+      "maximarkets": "https://uat-trading.maximarkets.org/stomp/",
+      "umarkets": "https://uat-trading.umarkets.com/stomp/",
+      "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
+    },
+    "platformDepositUrl": {
+      "umarkets": "https://test-my.umarkets.com/",
+      "maximarkets": "https://test-myaccount.maximarkets.org/"
+    },
+    "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/",
+    "chatUrl": "https://chatsocket.socialtrading.uat.pp.ua/",
+    "repostUrl": "https://socialtrading.uat.pp.ua/posts/",
+    "shareLinksUrl": {
+      "facebook": "http://www.facebook.com/sharer.php?u=https://socialtrading.uat.pp.ua/posts/",
+      "vkontakte": "http://vkontakte.ru/share.php?url=https://socialtrading.uat.pp.ua/posts/",
+      "odnoklassniki": "https://connect.ok.ru/offer?url=https://socialtrading.uat.pp.ua/posts/",
+      "google": "https://plus.google.com/share?url=https://socialtrading.uat.pp.ua/posts/"
+    },
+    "shareInvitationLinksUrl": {
+      "facebook": "http://www.facebook.com/sharer.php?u=",
+      "vkontakte": "http://vkontakte.ru/share.php?url=",
+      "google": "https://plus.google.com/share?url="
+    },
+    "captcha": {
+      "siteKey": "6Ld4gEcUAAAAAPZRi9qzMFRMxoGFx6sLJTqQH_Lo",
+      "secretKey": "6Ld4gEcUAAAAAILNELlwGVZrq6R09moCQETpoFDD"
+    }
+  },
+  "development": {
+    "": "http://localhost:3000/",
+    "apiPrefix": "https://api.socialtrading.uat.pp.ua/",
+    "": "https://api.investarena.com/",
+    "": "https://api.socialtrading.maximarkets.site/",
+    "brokerWSUrl": {
+      "maximarkets": "https://uat-trading.maximarkets.org/stomp/",
+      "umarkets": "https://uat-trading.umarkets.com/stomp/",
+      "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
+    },
+    "platformDepositUrl": {
+      "umarkets": "https://test-my.umarkets.com/",
+      "maximarkets": "https://test-myaccount.maximarkets.org/"
+    },
+    "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/",
+    "": "http://localhost:8082",
+    "repostUrl": "http://socialtrading.uat.pp.ua/posts/",
+    "": "http://localhost:8088/",
+    "chatUrl": "https://chatsocket.socialtrading.uat.pp.ua/",
+    "shareLinksUrl": {
+      "facebook": "http://www.facebook.com/sharer.php?u=https://localhost:3001/posts/",
+      "vkontakte": "http://vkontakte.ru/share.php?url=https://localhost:3001/posts/",
+      "odnoklassniki": "https://connect.ok.ru/offer?url=https://localhost:3001/posts/",
+      "google": "https://plus.google.com/share?url=https://localhost:3001/posts/"
+    },
+    "shareInvitationLinksUrl": {
+      "facebook": "http://www.facebook.com/sharer.php?u=",
+      "vkontakte": "http://vkontakte.ru/share.php?url=",
+      "google": "https://plus.google.com/share?url="
+    }
+  },
+  "test": {
+    "apiPrefix": "http://localhost:3000/",
+    "brokerWSUrl": {
+      "maximarkets": "https://trading.maximarkets.org/stomp/",
+      "umarkets": "https://trading.umarkets.com/stomp/",
+      "widgets": "ws://192.168.1.222/wss/Server.ashx?subscriber=true"
+    },
+    "webSocketUrl": "http://localhost:8082",
+    "chatUrl": "http://localhost:8080/",
+    "shareLinksUrl": {
+      "facebook": "http://www.facebook.com/sharer.php?u=http://localhost:3001/posts/",
+      "vkontakte": "http://vkontakte.ru/share.php?url=http://localhost:3001/posts/",
+      "odnoklassniki": "https://connect.ok.ru/offer?url=http://localhost:3001/posts/",
+      "google": "https://plus.google.com/share?url=http://localhost:3001/posts/"
+    },
+    "platformDepositUrl": {
+      "umarkets": "https://test-my.umarkets.com/",
+      "maximarkets": "https://test-myaccount.maximarkets.org/"
+    }
+  },
+
+  "versionApi": "api/v3",
+
+  "authentication":{
+    "authScope": "auth/",
+    "signIn": "auth/sign_in/",
+    "signOut": "auth/sign_out/",
+    "validateToken": "auth/validate_token/",
+    "registration": "auth/",
+    "password": "auth/password",
+    "keepAlive": "auth/keep_alive"
+  },
+
+  "invitation": "/send_email_invitation",
+
+  "brokers":{
+    "brokerRegistration": "/broker_registration/",
+    "brokerAuthorization": "/broker_authorization/",
+    "userBrokers": "/user_brokers/",
+    "getBroker": "/get_broker/",
+    "reconnectBroker": "/reconnect_broker/",
+    "forgotPassBroker": "/broker_forgot_password",
+    "tradingPlatform": "/trading_platform"
+  },
+
+  "posts":{
+    "posts": "/posts/",
+    "deleteRepost": "/delete_repost",
+    "getNextPosts": "/posts/get_posts/",
+    "decline": "/decline_collaborator",
+    "complain": "/complaint",
+    "searchHashtags": "/search_hashtags",
+    "vote": "/vote"
+  },
+
+  "bookmark":{
+    "bookmarks": "/bookmarks"
+  },
+
+  "blackList": "/blacklist/",
+
+  "trends": {
+    "getTrends": "/find_most_used_hashtags/",
+    "getInstrumentsTrends": "/instruments/trends"
+  },
+
+  "transactions": {
+    "getTransactionByPeriod": "/referral_payments/"
+  },
+
+  "comments":{
+    "commentsScope": "/comments/",
+    "comments": "/comments/"
+  },
+
+  "deals": {
+    "deals": "/deals/",
+    "lastClosedDeals": "/get_last_closed_deal/",
+    "createOpenDeals": "/create_open_deals/",
+    "createClosedDeals": "/create_closed_deals/"
+  },
+
+  "favorites": {
+    "favorites": "/favorites/"
+  },
+  "companies": {
+    "companies": "/companies",
+    "searchCompanies": "/search_companies"
+  },
+  "groups": {
+    "groups": "/groups",
+    "searchGroups": "/search_groups"
+  },
+  "jobs": {
+    "jobs": "/jobs/",
+    "searchJobs": "/search_jobs"
+  },
+
+  "group": {
+    "groups": "/groups/",
+    "getUsers": "/get_users",
+    "updateImage": "/update_image",
+    "changeUserRole": "/change_user_role/",
+    "addUser": "/add_user/",
+    "deleteUser": "/delete_user/",
+    "requestMembership": "/request_membership",
+    "confirmMembership": "/confirm_membership/",
+    "declineMembership": "/decline_membership/",
+    "changeMemberPermissions": "/change_user_access/"
+  },
+
+  "company": {
+    "companies": "/companies/",
+    "manageCompanyGroup": "/manage_group/",
+    "getUsers": "/get_users",
+    "updateImage": "/update_image",
+    "changeUserRole": "/change_user_role/",
+    "addUser": "/add_user/",
+    "deleteUser": "/delete_user/",
+    "requestMembership": "/request_membership",
+    "confirmMembership": "/confirm_membership/",
+    "declineMembership": "/decline_membership/",
+    "changeMemberPermissions": "/change_user_access/"
+  },
+
+  "locales": {
+    "updateLocale": "/update_language/"
+  },
+
+  "agreements":{
+    "umarkets": "https://www.umarkets.com/en/terms-and-conditions/",
+    "maximarkets": "https://www.maximarkets.org/terms-and-conditions/"
+  },
+
+  "logonWithToken": {
+    "maximarkets": "https://publicapi.maximarkets.org/account/logonWithToken?token=",
+    "umarkets": "https://api.umarkets.com/account/logonWithToken?token="
+  },
+
+  "likes":{
+    "updateLike": "/like/",
+    "getLikesNames": "/get_likes_names/"
+  },
+
+  "forecastPosts": {
+    "getForecastPosts": "/forecast_posts/"
+  },
+
+  "notices":{
+    "getNotice": "/get_notifications/",
+    "checkNotice": "/set_checked/",
+    "deleteNotice": "/delete_notification/",
+    "acceptCollaborator": "/invitations/accept_collaboration/",
+    "declineCollaboration": "/invitations/decline_collaboration/",
+    "acceptGroupInvitation": "/invitations/accept_group_invitation/",
+    "declineGroupInvitation": "/invitations/decline_group_invitation/",
+    "acceptCompanyInvitation": "/invitations/accept_company_invitation/",
+    "declineCompanyInvitation": "/invitations/decline_company_invitation/",
+    "getMembershipRequestsCount": "/membership_requests_count/"
+  },
+
+  "links":{
+    "parseLink": "/parse_url/"
+  },
+
+  "logs": {
+    "sendError": "/logs"
+  },
+
+  "followers":{
+    "getFollowers": "/followers/",
+    "getFollowings": "/followings/",
+    "follow": "/follow/",
+    "unFollow": "/unfollow/"
+  },
+
+  "portfolio":{
+    "updateInstrument": "/portfolio_instruments/"
+  },
+
+  "recommend":{
+    "recommend": "/user_recommendations/",
+    "getRecommendations": "/user_recommendations?user_id="
+  },
+
+  "sorts": {
+    "changeSort": "/change_sort/",
+    "changeSettingFeed": "/change_setting_feed/"
+  },
+
+  "users":{
+    "getUserInfo": "/get_user_info/",
+    "updateUserInfo": "/update_personal_info/",
+    "updateUserPrivacy": "/update_privacy/",
+    "updateFieldsConfidentiality": "/update_confidentiality/",
+    "updateUserAvatar": "/update_image/",
+    "updatePassword": "/update_password/",
+    "updateUserNickname": "/update_nickname/",
+    "updatePersonalFilters": "/update_personal_filters/",
+    "searchUsers": "/search_users",
+    "searchAll": "/search_all",
+    "searchHistory": "/search_history",
+    "getTopInstrumentUsers": "/instruments/top_users",
+    "confirmUsingCookies": "/confirm_cookies_policy"
+  },
+
+  "countries":{
+    "getCountryCode": "https://publicapi.maximarkets.org/dictionary/countryiso"
+  },
+
+  "feedback":{
+    "sendFeedback": "/feedback/"
+  },
+
+  "websockets":{
+
+  },
+
+  "signals": {
+    "getSignals": "https://informer.maximarkets.org/wss/signals"
+  },
+
+  "news": {
+    "getLastNews": "https://news.umarkets.com/feed/filter/full"
+  },
+
+  "chat": {
+    "signIn": "auth/signIn",
+    "conversation": "chat/conversation",
+    "chat_participants": "chat/participants",
+    "showConversation": "chat/conversation/show/",
+    "message": "message",
+    "deliveryStatus": "deliveryStatus",
+    "participants": "participants",
+    "history": "history"
+  },
+
+  "charts": {
+    "getChartsData": "https://informer.maximarkets.org/wss/quotation/getstatisticshistory"
+  },
+
+  "competitions": {
+    "competitions": "/competitions",
+    "competition": "/competition",
+    "searchCompetitions": "/search_competitions",
+    "inviteUser": "/invite_user"
+  },
+
+  "courses": {
+    "courses": "/courses",
+    "requestMembership": "/join_course_request",
+    "confirmMembership": "/confirm_course_request/",
+    "declineMembership": "/decline_course_request/",
+    "changeRole": "/change_role/",
+    "deleteUser": "/delete_user/",
+    "addUser": "/add_user/",
+    "joinCourse": "/join_course",
+    "leaveCourse": "/leave_course",
+    "updateImage": "/update_image",
+    "addFiles": "/add_files",
+    "deleteFile": "/delete_file",
+    "lessons": "/lessons"
+  }
+}

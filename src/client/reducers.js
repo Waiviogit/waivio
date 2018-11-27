@@ -17,6 +17,9 @@ import walletReducer, * as fromWallet from './wallet/walletReducer';
 import reblogReducers, * as fromReblog from './app/Reblog/reblogReducers';
 import settingsReducer, * as fromSettings from './settings/settingsReducer';
 import searchReducer, * as fromSearch from './search/searchReducer';
+import quotesReducer from '../investarena/redux/reducers/quotesReducer';
+import quotesSettingsReducer from '../investarena/redux/reducers/quotesSettingsReducer';
+import platformReducer from '../investarena/redux/reducers/platformReducer';
 
 export default () =>
   combineReducers({
@@ -36,6 +39,9 @@ export default () =>
     wallet: walletReducer,
     settings: settingsReducer,
     search: searchReducer,
+    quotes: quotesReducer,
+    quotesSettings: quotesSettingsReducer,
+    platform: platformReducer,
   });
 
 export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);

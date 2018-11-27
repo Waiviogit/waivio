@@ -11,6 +11,8 @@ import AppHost from './AppHost';
 import { getBrowserLocale, loadLanguage } from './translations';
 import { setUsedLocale } from './app/appActions';
 import { getLocale } from './reducers';
+import { connectPlatform } from '../investarena/redux/actions/platformActions';
+import { singleton } from '../investarena/platform/singletonPlatform';
 
 if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
   navigator.serviceWorker.register('/service-worker.js');
@@ -30,6 +32,8 @@ message.config({
 
 const render = async Component => {
   const state = store.getState();
+  store.dispatch(connectPlatform());
+  singleton.initialize(store);
 
   const userLocale = getLocale(state);
 
