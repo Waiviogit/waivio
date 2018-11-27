@@ -234,11 +234,11 @@ class Editor extends React.Component {
   handleAddLinkedObject(wObject) {
     const selectedObj = wObject.isNew ? getClientWObj(wObject) : wObject;
     this.setState(prevState => {
-      const linkedObjects = prevState.linkedObjects.some(obj => obj.tag === selectedObj.tag)
+      const linkedObjects = prevState.linkedObjects.some(obj => obj.id === selectedObj.id)
         ? prevState.linkedObjects
         : setInitialInfluence(prevState.linkedObjects, selectedObj);
-      const topics = linkedObjects.map(obj => obj.tag);
-      this.setFormValues(WAIVIO_META_FIELD_NAME, { wObjects: topics }); // todo: change tags to ids
+      const topics = linkedObjects.map(obj => obj.name);
+      this.setFormValues(WAIVIO_META_FIELD_NAME, { wObjects: linkedObjects.map(obj => obj.id) }); // todo: change tags to ids
       this.setFormValues('topics', topics);
       return {
         linkedObjects,
@@ -248,15 +248,22 @@ class Editor extends React.Component {
   }
 
   handleCreateObject(wObject) {
-    this.props.onCreateObject(wObject, res => console.log('Editor.handleCreateObject', res));
-    console.log('editor', wObject.tag);
+    this.props.onCreateObject(wObject, res => {
+      console.log('Editor.handleCreateObject -> ', res);
+      this.setState(prevState => {
+        const linkedObjects = prevState.linkedObjects // todo: update created object
+          .map(obj => obj);
+        return { linkedObjects };
+      });
+    });
+    console.log('Editor.handleCreateObject() => ', JSON.stringify(wObject));
   }
 
   handleRemoveObject(wObject) {
     this.setState(prevState => {
       const linkedObjects = removeObjInfluenceHandler(prevState.linkedObjects, wObject);
-      const topics = linkedObjects.map(obj => obj.tag);
-      this.setFormValues(WAIVIO_META_FIELD_NAME, { wObjects: topics }); // todo: change tags to ids
+      const topics = linkedObjects.map(obj => obj.name); // todo: sort and limit to 5
+      this.setFormValues(WAIVIO_META_FIELD_NAME, { wObjects: linkedObjects.map(obj => obj.id) }); // todo: change tags to ids
       this.setFormValues('topics', topics);
       return { linkedObjects, canCreateNewObject: topics.length < MAX_NEW_OBJECTS_NUMBER };
     }, this.onUpdate());
@@ -374,7 +381,7 @@ class Editor extends React.Component {
           {Boolean(linkedObjects.length) &&
             linkedObjects.map(obj => (
               <EditorObject
-                key={obj.tag}
+                key={obj.id}
                 wObject={obj}
                 handleCreateObject={this.handleCreateObject}
                 handleRemoveObject={this.handleRemoveObject}

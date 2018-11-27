@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { InputNumber, Slider } from 'antd';
+import { InputNumber, Slider, Spin } from 'antd';
 import './EditorObject.less';
 
 @injectIntl
@@ -15,23 +15,37 @@ class EditorObject extends React.Component {
     handleChangeInfluence: PropTypes.func.isRequired,
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      isCreating: false,
+    };
+  }
+
   throttledChange = _.throttle(
     influence => this.props.handleChangeInfluence(this.props.wObject, influence),
     10,
   );
 
+  handleCreateObject = () => {
+    const { wObject, handleCreateObject } = this.props;
+    this.setState({ isCreating: true });
+    handleCreateObject(wObject);
+  };
+
   render() {
-    const { intl, wObject, handleCreateObject, handleRemoveObject } = this.props;
+    const { isCreating } = this.state;
+    const { intl, wObject, handleRemoveObject } = this.props;
     return (
       <React.Fragment>
         <div className="editor-object">
           <div className="editor-object__content">
             <div className="editor-object__content info">
-              <img className="editor-object__avatar" src={wObject.avatar} alt={wObject.tag} />
+              <img className="editor-object__avatar" src={wObject.avatar} alt={wObject.name} />
               <span className="editor-object__names">
-                <span className="editor-object__names main">{wObject.tag}</span>
-                {Boolean(wObject.name) && (
-                  <span className="editor-object__names other">{` (${wObject.name})`}</span>
+                <span className="editor-object__names main">{wObject.name}</span>
+                {Boolean(wObject.tag) && (
+                  <span className="editor-object__names other">{` (${wObject.tag})`}</span>
                 )}
               </span>
             </div>
@@ -56,7 +70,7 @@ class EditorObject extends React.Component {
             </div>
           </div>
           <div className="editor-object__controls">
-            {Boolean(wObject.isNew) && (
+            {Boolean(wObject.isNew && !isCreating) && (
               <div
                 role="button"
                 tabIndex={0}
@@ -65,7 +79,7 @@ class EditorObject extends React.Component {
                   id: 'create_new_object_placeholder',
                   defaultMessage: "This object doesn't exist yet, but you can create it",
                 })}
-                onClick={() => handleCreateObject(wObject)}
+                onClick={this.handleCreateObject}
               >
                 <i className="iconfont anticon anticon-codepen editor-object__control-item item-icon" />
                 <span className="editor-object__control-item item-text">
@@ -73,17 +87,21 @@ class EditorObject extends React.Component {
                 </span>
               </div>
             )}
-            <div
-              role="button"
-              tabIndex={0}
-              className="editor-object__control-item delete"
-              onClick={() => handleRemoveObject(wObject)}
-            >
-              <i className="iconfont anticon anticon-delete editor-object__control-item item-icon" />
-              <span className="editor-object__control-item item-text">
-                {intl.formatMessage({ id: 'remove', defaultMessage: 'Remove' })}
-              </span>
-            </div>
+            {isCreating ? (
+              <Spin />
+            ) : (
+              <div
+                role="button"
+                tabIndex={0}
+                className="editor-object__control-item delete"
+                onClick={() => handleRemoveObject(wObject)}
+              >
+                <i className="iconfont anticon anticon-delete editor-object__control-item item-icon" />
+                <span className="editor-object__control-item item-text">
+                  {intl.formatMessage({ id: 'remove', defaultMessage: 'Remove' })}
+                </span>
+              </div>
+            )}
           </div>
         </div>
         {Boolean(wObject.isNew) && (

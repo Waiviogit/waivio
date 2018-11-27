@@ -2,35 +2,32 @@ export const getClientWObj = serverWObj => {
   /* eslint-disable no-underscore-dangle */
   /* eslint-disable camelcase */
   const {
-    tag,
-    tagName,
-    fields,
     parents,
+    authorPermlink,
     weight,
+    fields,
     createdAt,
-    children,
+    updatedAt,
+    __v,
     users,
+    children,
     user_count,
-    permlink,
     isNew,
   } = serverWObj;
   const avatarField = fields && fields.find(f => f.name === 'avatarImage');
   const nameField = fields && fields.find(f => f.name === 'name');
   return {
-    tag,
+    id: authorPermlink,
     avatar: avatarField ? avatarField.body : '/images/logo-brand.png',
-    name: (nameField && nameField.body) || (isNew && tagName) || '',
+    name: (nameField && nameField.body) || '',
     parents: parents || [],
     weight: weight || '',
     createdAt: createdAt || Date.now(),
+    updatedAt: updatedAt || Date.now(),
     children: children || [],
     users: users || [],
-    userCount: user_count || '',
-    permlink:
-      permlink ||
-      `${Math.random()
-        .toString(36)
-        .substring(2)}`,
+    userCount: user_count || 0,
+    version: __v || 0,
     isNew: Boolean(isNew),
   };
 };
