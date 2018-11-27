@@ -44,7 +44,7 @@ class SearchObjectsAutocomplete extends Component {
     this.handleSelect = this.handleSelect.bind(this);
   }
 
-  handleChange(value) {
+  handleChange(value = '') {
     const searchString = value.toLowerCase().trim();
     this.setState(
       prevState =>

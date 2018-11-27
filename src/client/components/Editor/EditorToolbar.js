@@ -15,7 +15,7 @@ const tooltip = (description, shortcut) => (
   </span>
 );
 
-const EditorToolbar = ({ intl, canCreateNewObject, onSelect, onSelectLinkedObject }) => {
+const EditorToolbar = ({ intl, onSelect, onSelectLinkedObject }) => {
   const menu = (
     <Menu onClick={e => onSelect(e.key)}>
       <Menu.Item key="h1">
@@ -115,7 +115,7 @@ const EditorToolbar = ({ intl, canCreateNewObject, onSelect, onSelectLinkedObjec
           content={
             <SearchObjectsAutocomplete
               handleSelect={onSelectLinkedObject}
-              canCreateNewObject={canCreateNewObject}
+              canCreateNewObject={false}
             />
           }
           title={intl.formatMessage({ id: 'add_object', defaultMessage: 'Add linked object' })}
@@ -133,14 +133,12 @@ const EditorToolbar = ({ intl, canCreateNewObject, onSelect, onSelectLinkedObjec
 };
 
 EditorToolbar.propTypes = {
-  canCreateNewObject: PropTypes.bool,
   intl: PropTypes.shape().isRequired,
   onSelect: PropTypes.func,
   onSelectLinkedObject: PropTypes.func.isRequired,
 };
 
 EditorToolbar.defaultProps = {
-  canCreateNewObject: false,
   onSelect: () => {},
 };
 

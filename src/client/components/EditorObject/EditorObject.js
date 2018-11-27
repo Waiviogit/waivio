@@ -34,7 +34,6 @@ class EditorObject extends React.Component {
   };
 
   render() {
-    const { isCreating } = this.state;
     const { intl, wObject, handleRemoveObject } = this.props;
     return (
       <React.Fragment>
@@ -70,7 +69,7 @@ class EditorObject extends React.Component {
             </div>
           </div>
           <div className="editor-object__controls">
-            {Boolean(wObject.isNew && !isCreating) && (
+            {Boolean(wObject.isNew && !wObject.isCreating) && (
               <div
                 role="button"
                 tabIndex={0}
@@ -87,7 +86,7 @@ class EditorObject extends React.Component {
                 </span>
               </div>
             )}
-            {isCreating ? (
+            {wObject.isCreating ? (
               <Spin />
             ) : (
               <div

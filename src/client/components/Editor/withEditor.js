@@ -75,9 +75,9 @@ export default function withEditor(WrappedComponent) {
     handleCreateObject = (obj, callback, errorCallback) => {
       const requestBody = {
         author: this.props.user.name,
-        title: `Waivio object. ${obj.tag}`,
-        body: `Waivio object "${obj.tag}" has been created`,
-        permlink: `${this.props.user.name}-${obj.permlink}`,
+        title: `Waivio object. ${obj.name}`,
+        body: `Waivio object "${obj.name}" has been created`,
+        permlink: obj.id,
         locale: this.props.locale === 'auto' ? 'en-US' : this.props.locale,
         type: WAIVIO_OBJECT_TYPE.ITEM,
       };

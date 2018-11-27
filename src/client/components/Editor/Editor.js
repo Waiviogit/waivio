@@ -33,6 +33,7 @@ class Editor extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     form: PropTypes.shape().isRequired,
+    user: PropTypes.shape().isRequired,
     title: PropTypes.string,
     topics: PropTypes.arrayOf(PropTypes.string),
     waivioData: PropTypes.shape(),
@@ -232,13 +233,18 @@ class Editor extends React.Component {
   }
 
   handleAddLinkedObject(wObject) {
-    const selectedObj = wObject.isNew ? getClientWObj(wObject) : wObject;
+    const selectedObj = wObject.isNew
+      ? getClientWObj({
+          ...wObject,
+          authorPermlink: `${this.props.user.name}-${wObject.authorPermlink}`,
+        })
+      : wObject;
     this.setState(prevState => {
       const linkedObjects = prevState.linkedObjects.some(obj => obj.id === selectedObj.id)
         ? prevState.linkedObjects
         : setInitialInfluence(prevState.linkedObjects, selectedObj);
       const topics = linkedObjects.map(obj => obj.name);
-      this.setFormValues(WAIVIO_META_FIELD_NAME, { wObjects: linkedObjects.map(obj => obj.id) }); // todo: change tags to ids
+      this.setFormValues(WAIVIO_META_FIELD_NAME, { wObjects: linkedObjects.map(obj => obj.id) });
       this.setFormValues('topics', topics);
       return {
         linkedObjects,
@@ -248,22 +254,40 @@ class Editor extends React.Component {
   }
 
   handleCreateObject(wObject) {
+    this.setState(prevState => {
+      const linkedObjects = prevState.linkedObjects.map(
+        obj => (obj.id === wObject.id ? { ...obj, isCreating: true } : obj),
+      );
+      return { linkedObjects };
+    });
     this.props.onCreateObject(wObject, res => {
-      console.log('Editor.handleCreateObject -> ', res);
       this.setState(prevState => {
-        const linkedObjects = prevState.linkedObjects // todo: update created object
-          .map(obj => obj);
+        const linkedObjects = prevState.linkedObjects.map(
+          obj =>
+            obj.id === wObject.id
+              ? {
+                  ...obj,
+                  id: `${res.objectAuthor}_${res.objectPermlink}`,
+                  isNew: false,
+                  isCreating: false,
+                }
+              : obj,
+        );
+        this.setFormValues(WAIVIO_META_FIELD_NAME, { wObjects: linkedObjects.map(obj => obj.id) });
         return { linkedObjects };
       });
     });
-    console.log('Editor.handleCreateObject() => ', JSON.stringify(wObject));
   }
 
   handleRemoveObject(wObject) {
     this.setState(prevState => {
       const linkedObjects = removeObjInfluenceHandler(prevState.linkedObjects, wObject);
-      const topics = linkedObjects.map(obj => obj.name); // todo: sort and limit to 5
-      this.setFormValues(WAIVIO_META_FIELD_NAME, { wObjects: linkedObjects.map(obj => obj.id) }); // todo: change tags to ids
+      const topics = [...linkedObjects]
+        .sort((a, b) => b.influence.value - a.influence.value)
+        .slice(0, 5)
+        .map(obj => obj.name);
+      console.log('handleRemove[topics] > ', topics);
+      this.setFormValues(WAIVIO_META_FIELD_NAME, { wObjects: linkedObjects.map(obj => obj.id) });
       this.setFormValues('topics', topics);
       return { linkedObjects, canCreateNewObject: topics.length < MAX_NEW_OBJECTS_NUMBER };
     }, this.onUpdate());
