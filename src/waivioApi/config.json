@@ -7,5 +7,6 @@
     "appendObject": "/objects-bot/append-object"
   },
   "createObject": "/create/object",
-  "getObjects": "wobject/"
+  "getObjects": "wobject/",
+  "searchObjects": "/wobjectSearch"
 }

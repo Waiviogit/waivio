@@ -5,7 +5,7 @@ import { AutoComplete } from 'antd';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { getSearchObjectsResults } from '../../reducers';
-import { searchObjects } from '../../search/searchActions';
+import { searchObjectsAutoCompete } from '../../search/searchActions';
 import './EditorObject.less';
 
 @injectIntl
@@ -14,7 +14,7 @@ import './EditorObject.less';
     searchObjectsResults: getSearchObjectsResults(state),
   }),
   {
-    searchObjects,
+    searchObjects: searchObjectsAutoCompete,
   },
 )
 class SearchObjectsAutocomplete extends Component {
