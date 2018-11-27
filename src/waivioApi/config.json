@@ -8,5 +8,6 @@
   },
   "createObject": "/create/object",
   "getObjects": "wobject/",
-  "searchObjects": "/wobjectSearch"
+  "searchObjects": "/wobjectSearch",
+  "getObjectFollowers": "followers/"
 }

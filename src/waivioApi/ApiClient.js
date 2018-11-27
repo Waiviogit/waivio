@@ -34,6 +34,21 @@ export const getFeedContentByObject = name =>
       .catch(error => reject(error));
   });
 
+export const getMoreFeedContentByObject = ({ tag, startAuthor, startPermlink, limit }) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.API_HOST_development}${config.getObjects}${tag}/posts`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ tag, startAuthor, startPermlink, limit }),
+    })
+      .then(res => res.json())
+      .then(posts => resolve(posts))
+      .catch(error => reject(error));
+  });
+
 export const postCreateWaivioObject = wObject =>
   fetch(`${config.objectsBot.url}${config.objectsBot.createObject}`, {
     headers,
