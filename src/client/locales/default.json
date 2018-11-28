@@ -384,5 +384,8 @@
   "for_lang2": "language.",
   "value_error_empty": "Please enter a value.",
   "value_error_too_long": "Value can't be longer than 255 characters.",
-  "create_new_object_placeholder": "This object doesn't exist yet, but you can create it"
+  "create_new_object_placeholder": "This object doesn't exist yet, but you can create it",
+  "value_error_too_long": "Value can't be longer than 255 characters.",
+  "top_authors": "Top Authors",
+  "show_more_authors": "Show more authors"
 }

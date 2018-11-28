@@ -1,12 +1,11 @@
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
-import urlParse from 'url-parse';
 import { Link } from 'react-router-dom';
+import Avatar from '../components/Avatar';
+import WeightTag from '../components/WeightTag';
 import FollowButton from '../widgets/FollowButton';
 import ObjectAvatar from '../components/ObjectAvatar';
-import WeightTag from '../components/WeightTag';
-import Avatar from '../components/Avatar';
 import './WaivioObject.less';
 
 export const getField = (item, field) => {
@@ -17,30 +16,24 @@ export const getField = (item, field) => {
 const WaivioObject = ({ wobj }) => {
   let website = getField(wobj, 'link');
   const location = getField(wobj, 'locationCity');
+  const name = getField(wobj, 'name');
 
   if (website && website.indexOf('http://') === -1 && website.indexOf('https://') === -1) {
     website = `http://${website}`;
   }
 
-  const url = urlParse(website);
-  let hostWithoutWWW = url.host;
-
-  if (hostWithoutWWW.indexOf('www.') === 0) {
-    hostWithoutWWW = hostWithoutWWW.slice(4);
-  }
-
   return (
-    <div key={wobj.tag} className="WaivioObject__user">
+    <div key={wobj.authorPermlink} className="WaivioObject__user">
       <div className="WaivioObject__user__content">
         <div className="WaivioObject__user__links">
-          <Link to={`object/@${wobj.tag}`}>
+          <Link to={`object/@${wobj.authorPermlink}`}>
             <ObjectAvatar item={wobj} size={34} />
           </Link>
           <div className="WaivioObject__user__profile">
             <div className="WaivioObject__user__profile__header">
-              <Link to={`object/@${wobj.tag}`}>
+              <Link to={`object/@${wobj.authorPermlink}`}>
                 <span className="WaivioObject__user__name">
-                  <span className="username">{wobj.tag}</span>
+                  <span className="username">{name}</span>
                 </span>
                 <WeightTag weight={wobj.weight} />
               </Link>
@@ -72,7 +65,7 @@ const WaivioObject = ({ wobj }) => {
                 </div>
               ))}
             <div className="WaivioObject__user__follow">
-              <FollowButton username={wobj.tag} />
+              <FollowButton username={wobj.authorPermlink} />
             </div>
           </div>
         </div>
