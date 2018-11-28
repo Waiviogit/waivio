@@ -366,6 +366,7 @@
   "weight_score_value": "Weight score: {value}",
   "editor_linked_objects": "Linked objects",
   "objects_auto_complete_placeholder": "Input object name here",
+  "create": "create",
   "remove": "remove",
   "discover_more_objects_info": "Discover the most reputable objects of this platform",
   "updates_in_object1": "I suggest to add field",
@@ -382,5 +383,6 @@
   "for_lang1": "for",
   "for_lang2": "language.",
   "value_error_empty": "Please enter a value.",
-  "value_error_too_long": "Value can't be longer than 255 characters."
+  "value_error_too_long": "Value can't be longer than 255 characters.",
+  "create_new_object_placeholder": "This object doesn't exist yet, but you can create it"
 }

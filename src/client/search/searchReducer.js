@@ -70,9 +70,7 @@ export default (state = initialState, action) => {
         ...state,
         searchObjectsResults: _.isEmpty(search)
           ? []
-          : result
-              .map(serverWObj => getClientWObj(serverWObj))
-              .filter(obj => obj.tag.includes(search)),
+          : result.map(serverWObj => getClientWObj(serverWObj)),
       };
     }
     default:

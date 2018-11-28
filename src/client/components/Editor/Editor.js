@@ -17,7 +17,7 @@ import { getClientWObj } from '../../adapters';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
-import { MAX_NEW_OBJECTS_NUMBER } from '../../../common/constants/waivio';
+import { WAIVIO_META_FIELD_NAME, MAX_NEW_OBJECTS_NUMBER } from '../../../common/constants/waivio';
 import {
   setInitialInfluence,
   changeObjInfluenceHandler,
@@ -33,9 +33,10 @@ class Editor extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     form: PropTypes.shape().isRequired,
+    user: PropTypes.shape().isRequired,
     title: PropTypes.string,
     topics: PropTypes.arrayOf(PropTypes.string),
-    wObj: PropTypes.shape(),
+    waivioData: PropTypes.shape(),
     body: PropTypes.string,
     reward: PropTypes.string,
     upvote: PropTypes.bool,
@@ -49,12 +50,13 @@ class Editor extends React.Component {
     onError: PropTypes.func,
     onImageUpload: PropTypes.func,
     onImageInvalid: PropTypes.func,
+    onCreateObject: PropTypes.func,
   };
 
   static defaultProps = {
     title: '',
     topics: [],
-    wObj: {},
+    waivioData: {},
     body: '',
     reward: rewardsValues.half,
     upvote: true,
@@ -70,6 +72,7 @@ class Editor extends React.Component {
     onError: () => {},
     onImageUpload: () => {},
     onImageInvalid: () => {},
+    onCreateObject: () => {},
   };
 
   constructor(props) {
@@ -80,6 +83,7 @@ class Editor extends React.Component {
       bodyHTML: '',
       linkedObjects: [],
       canCreateNewObject: true,
+      isValid: true,
     };
 
     this.onUpdate = this.onUpdate.bind(this);
@@ -89,6 +93,7 @@ class Editor extends React.Component {
     this.handleDelete = this.handleDelete.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleAddLinkedObject = this.handleAddLinkedObject.bind(this);
+    this.handleCreateObject = this.handleCreateObject.bind(this);
     this.handleRemoveObject = this.handleRemoveObject.bind(this);
     this.setFormValues = this.setFormValues.bind(this);
     this.handleChangeInfluence = this.handleChangeInfluence.bind(this);
@@ -109,11 +114,11 @@ class Editor extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { title, topics, wObj, body, reward, upvote, draftId } = this.props;
+    const { title, topics, waivioData, body, reward, upvote, draftId } = this.props;
     if (
       title !== nextProps.title ||
       !_.isEqual(topics, nextProps.topics) ||
-      !_.isEqual(wObj, nextProps.wObj) ||
+      !_.isEqual(waivioData, nextProps.waivioData) ||
       body !== nextProps.body ||
       reward !== nextProps.reward ||
       upvote !== nextProps.upvote ||
@@ -133,7 +138,7 @@ class Editor extends React.Component {
     const { form } = this.props;
 
     form.getFieldDecorator('topics');
-    // form.getFieldDecorator([WAIVIO_POST_FIELD_NAME]);
+    form.getFieldDecorator([WAIVIO_META_FIELD_NAME]);
 
     let reward = rewardsValues.half;
     if (
@@ -147,14 +152,14 @@ class Editor extends React.Component {
     form.setFieldsValue({
       title: post.title,
       topics: post.topics,
-      // [WAIVIO_POST_FIELD_NAME]: post[WAIVIO_POST_FIELD_NAME],
+      [WAIVIO_META_FIELD_NAME]: post.waivioData,
       body: post.body,
       reward,
       upvote: post.upvote,
     });
     // this.setState({
     //   linkedObjects:
-    //     (post[WAIVIO_POST_FIELD_NAME] && post[WAIVIO_POST_FIELD_NAME].linkedObjects) || [],
+    //     (post.waivioData && post.waivioData.wObjects) || [], // todo: getObjects by ids to restore objects from draft
     // });
     this.setBodyAndRender(post.body);
   }
@@ -213,12 +218,21 @@ class Editor extends React.Component {
     this.props.onUpdate(values);
   }
 
+  checkObjects() {
+    const isObjectsCreated = !this.state.linkedObjects.some(obj => obj.isNew);
+    this.setState({ isValid: isObjectsCreated });
+    return isObjectsCreated;
+  }
+
   handleSubmit(e) {
     e.preventDefault();
 
     this.props.form.validateFieldsAndScroll((err, values) => {
-      if (err) this.props.onError();
-      else this.props.onSubmit(values);
+      if (this.checkObjects() || err) {
+        this.props.onError();
+      } else {
+        this.props.onSubmit(values);
+      }
     });
   }
 
@@ -229,13 +243,18 @@ class Editor extends React.Component {
   }
 
   handleAddLinkedObject(wObject) {
-    const selectedObj = wObject.isNew ? getClientWObj(wObject) : wObject;
+    const selectedObj = wObject.isNew
+      ? getClientWObj({
+          ...wObject,
+          authorPermlink: `${this.props.user.name}-${wObject.authorPermlink}`,
+        })
+      : wObject;
     this.setState(prevState => {
-      const linkedObjects = prevState.linkedObjects.some(obj => obj.tag === selectedObj.tag)
+      const linkedObjects = prevState.linkedObjects.some(obj => obj.id === selectedObj.id)
         ? prevState.linkedObjects
         : setInitialInfluence(prevState.linkedObjects, selectedObj);
-      const topics = linkedObjects.map(obj => obj.tag);
-      // this.setFormValues(WAIVIO_POST_FIELD_NAME, { linkedObjects });
+      const topics = linkedObjects.map(obj => obj.name);
+      this.setFormValues(WAIVIO_META_FIELD_NAME, { wObjects: linkedObjects.map(obj => obj.id) });
       this.setFormValues('topics', topics);
       return {
         linkedObjects,
@@ -244,11 +263,44 @@ class Editor extends React.Component {
     }, this.onUpdate());
   }
 
+  handleCreateObject(wObject) {
+    this.setState(prevState => {
+      const linkedObjects = prevState.linkedObjects.map(
+        obj => (obj.id === wObject.id ? { ...obj, isCreating: true } : obj),
+      );
+      return { linkedObjects };
+    });
+    this.props.onCreateObject(wObject, res => {
+      this.setState(prevState => {
+        const linkedObjects = prevState.linkedObjects.map(
+          obj =>
+            obj.id === wObject.id
+              ? {
+                  ...obj,
+                  id: `${res.objectAuthor}_${res.objectPermlink}`,
+                  isNew: false,
+                  isCreating: false,
+                }
+              : obj,
+        );
+        this.setFormValues(WAIVIO_META_FIELD_NAME, { wObjects: linkedObjects.map(obj => obj.id) });
+        return {
+          linkedObjects,
+          isValid: !(prevState.isValid || linkedObjects.some(obj => obj.isNew)),
+        };
+      });
+    });
+  }
+
   handleRemoveObject(wObject) {
     this.setState(prevState => {
       const linkedObjects = removeObjInfluenceHandler(prevState.linkedObjects, wObject);
-      const topics = linkedObjects.map(obj => obj.tag);
-      // this.setFormValues(WAIVIO_POST_FIELD_NAME, { linkedObjects });
+      const topics = [...linkedObjects]
+        .sort((a, b) => b.influence.value - a.influence.value)
+        .slice(0, 5)
+        .map(obj => obj.name);
+      console.log('handleRemove[topics] > ', topics);
+      this.setFormValues(WAIVIO_META_FIELD_NAME, { wObjects: linkedObjects.map(obj => obj.id) });
       this.setFormValues('topics', topics);
       return { linkedObjects, canCreateNewObject: topics.length < MAX_NEW_OBJECTS_NUMBER };
     }, this.onUpdate());
@@ -264,7 +316,7 @@ class Editor extends React.Component {
   render() {
     const { intl, form, loading, isUpdating, saving, draftId } = this.props;
     const { getFieldDecorator } = form;
-    const { body, bodyHTML, linkedObjects, canCreateNewObject } = this.state;
+    const { body, bodyHTML, linkedObjects, isValid, canCreateNewObject } = this.state;
 
     const { words, minutes } = readingTime(bodyHTML);
 
@@ -366,8 +418,10 @@ class Editor extends React.Component {
           {Boolean(linkedObjects.length) &&
             linkedObjects.map(obj => (
               <EditorObject
-                key={obj.tag}
+                key={obj.id}
                 wObject={obj}
+                isValid={isValid}
+                handleCreateObject={this.handleCreateObject}
                 handleRemoveObject={this.handleRemoveObject}
                 handleChangeInfluence={this.handleChangeInfluence}
               />

@@ -53,7 +53,7 @@ export const changeObjInfluenceHandler = (objArr, currObj, influence) => {
 
 export const removeObjInfluenceHandler = (objArr, removingObj) => {
   const filtered = objArr
-    .filter(obj => obj.tag !== removingObj.tag)
+    .filter(obj => obj.id !== removingObj.id)
     .map(obj => ({ ...obj, influence: { ...obj.influence, max: obj.influence.max + 1 } }));
   const removingObjInfluence = removingObj.influence.value;
   for (let i = 0, remainInfluence = removingObjInfluence; i < filtered.length; i += 1) {

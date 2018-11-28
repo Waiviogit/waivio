@@ -12,6 +12,7 @@ import { createPostMetadata } from '../../helpers/postHelpers';
 import { rewardsValues } from '../../../common/constants/rewards';
 import LastDraftsContainer from './LastDraftsContainer';
 import DeleteDraftModal from './DeleteDraftModal';
+import { WAIVIO_META_FIELD_NAME, WAIVIO_POST_TYPE } from '../../../common/constants/waivio';
 
 import {
   getAuthenticatedUser,
@@ -78,7 +79,7 @@ class Write extends React.Component {
     this.state = {
       initialTitle: '',
       initialTopics: [],
-      initialWObj: { linkedObjects: [] },
+      initialWavioData: { wObjects: [] },
       initialBody: '',
       initialReward: this.props.rewardSetting,
       initialUpvote: this.props.upvoteSetting,
@@ -111,7 +112,7 @@ class Write extends React.Component {
       this.setState({
         initialTitle: draftPost.title || '',
         initialTopics: tags || [],
-        initialWObj: draftPost.wObj || { linkedObjects: [] },
+        initialWavioData: draftPost.jsonMetadata[WAIVIO_META_FIELD_NAME] || { wObjects: [] },
         initialBody: draftPost.body || '',
         initialReward: draftPost.reward,
         initialUpvote: draftPost.upvote,
@@ -135,7 +136,7 @@ class Write extends React.Component {
       this.setState({
         initialTitle: '',
         initialTopics: [],
-        initialWObj: { linkedObjects: [] },
+        initialWavioData: { wObjects: [] },
         initialBody: '',
         initialReward: rewardsValues.half,
         initialUpvote: nextProps.upvoteSetting,
@@ -147,6 +148,7 @@ class Write extends React.Component {
       const { draftPosts, draftId } = nextProps;
       const draftPost = _.get(draftPosts, draftId, {});
       const initialTitle = _.get(draftPost, 'title', '');
+      const initialWavioData = _.get(draftPost, `jsonMetadata.${WAIVIO_META_FIELD_NAME}`, {});
       const initialBody = _.get(draftPost, 'body', '');
       const initialTopics = _.get(draftPost, 'jsonMetadata.tags', []);
       this.draftId = draftId;
@@ -154,6 +156,7 @@ class Write extends React.Component {
         initialTitle,
         initialBody,
         initialTopics,
+        initialWavioData,
       });
     }
   }
@@ -174,7 +177,7 @@ class Write extends React.Component {
     if (this.props.draftId) {
       data.draftId = this.props.draftId;
     }
-    console.log('-->', JSON.stringify(form));
+    console.log('Write:onSubmit > ', JSON.stringify(form));
     // this.props.createPost(data);
   };
 
@@ -201,8 +204,13 @@ class Write extends React.Component {
     const oldMetadata =
       this.props.draftPosts[this.draftId] && this.props.draftPosts[this.draftId].jsonMetadata;
 
+    const waivioData =
+      form[WAIVIO_META_FIELD_NAME] && form[WAIVIO_META_FIELD_NAME].wObjects
+        ? { type: WAIVIO_POST_TYPE.CREATE_POST, ...form[WAIVIO_META_FIELD_NAME] }
+        : { type: WAIVIO_POST_TYPE.CREATE_POST, wObjects: [] };
+
     data.parentPermlink = form.topics.length ? form.topics[0] : 'general';
-    data.jsonMetadata = createPostMetadata(data.body, form.topics, oldMetadata);
+    data.jsonMetadata = createPostMetadata(data.body, form.topics, oldMetadata, waivioData);
 
     if (this.originalBody) {
       data.originalBody = this.originalBody;
@@ -234,7 +242,7 @@ class Write extends React.Component {
     const {
       initialTitle,
       initialTopics,
-      initialWObj,
+      initialWavioData,
       initialBody,
       initialReward,
       initialUpvote,
@@ -255,7 +263,7 @@ class Write extends React.Component {
               saving={saving}
               title={initialTitle}
               topics={initialTopics}
-              wObj={initialWObj}
+              waivioData={initialWavioData}
               body={initialBody}
               reward={initialReward}
               upvote={initialUpvote}

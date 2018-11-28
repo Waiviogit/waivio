@@ -9,6 +9,7 @@ import { injectIntl } from 'react-intl';
 import improve from '../../helpers/improve';
 import { rewardsValues } from '../../../common/constants/rewards';
 import { getObject } from '../../object/wobjectsActions';
+import { WAIVIO_POST_TYPE } from '../../../common/constants/waivio';
 
 import {
   getAuthenticatedUser,
@@ -122,7 +123,9 @@ class AppendObjectPostWrite extends React.Component {
 
     data.parentPermlink = form.topics.length ? form.topics[0] : 'general';
 
-    data.jsonMetadata = createPostMetadata(data.body, form.topics, null, 'APPEND_OBJECT');
+    data.jsonMetadata = createPostMetadata(data.body, form.topics, null, {
+      type: WAIVIO_POST_TYPE.APPEND_OBJECT,
+    });
 
     if (this.originalBody) {
       data.originalBody = this.originalBody;

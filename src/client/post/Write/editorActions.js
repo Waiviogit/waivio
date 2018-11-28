@@ -8,6 +8,7 @@ import { rewardsValues } from '../../../common/constants/rewards';
 import { createPermlink, getBodyPatchIfSmaller } from '../../vendor/steemitHelpers';
 import { saveSettings } from '../../settings/settingsActions';
 import { notify } from '../../app/Notification/notificationActions';
+import { postCreateWaivioObject } from '../../../waivioApi/ApiClient';
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -32,6 +33,8 @@ export const addEditedPost = createAction(ADD_EDITED_POST);
 
 export const DELETE_EDITED_POST = '@editor/DELETE_EDITED_POST';
 export const deleteEditedPost = createAction(DELETE_EDITED_POST);
+
+export const CREATE_WAIVIO_OBJECT = '@editor/CREATE_WAIVIO_OBJECT';
 
 export const saveDraft = (post, redirect, intl) => dispatch =>
   dispatch({
@@ -230,3 +233,9 @@ export function createPost(postData) {
     });
   };
 }
+
+export const createWaivioObject = wObject => dispatch =>
+  dispatch({
+    type: CREATE_WAIVIO_OBJECT,
+    payload: { promise: postCreateWaivioObject(wObject) },
+  });

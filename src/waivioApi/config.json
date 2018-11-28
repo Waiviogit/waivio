@@ -1,7 +1,13 @@
 {
   "API_HOST_production": "https://",
   "API_HOST_development": "https://test-waivio.herokuapp.com/api/",
+  "objectsBot": {
+    "url": "http://localhost:8093",
+    "createObject": "/objects-bot/create-object",
+    "appendObject": "/objects-bot/append-object"
+  },
   "createObject": "/create/object",
   "getObjects": "wobject/",
+  "searchObjects": "/wobjectSearch",
   "getObjectFollowers": "followers/"
 }

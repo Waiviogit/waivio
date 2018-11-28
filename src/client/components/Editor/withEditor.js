@@ -5,6 +5,9 @@ import { message } from 'antd';
 import { injectIntl } from 'react-intl';
 import { getAuthenticatedUser } from '../../reducers';
 import { MAXIMUM_UPLOAD_SIZE_HUMAN } from '../../helpers/image';
+import { WAIVIO_OBJECT_TYPE } from '../../../common/constants/waivio';
+import { getLocale } from '../../settings/settingsReducer';
+import config from '../../../waivioApi/config.json';
 
 function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
@@ -13,6 +16,7 @@ function getDisplayName(WrappedComponent) {
 export default function withEditor(WrappedComponent) {
   @connect(state => ({
     user: getAuthenticatedUser(state),
+    locale: getLocale(state),
   }))
   @injectIntl
   class EditorBase extends React.Component {
@@ -21,6 +25,11 @@ export default function withEditor(WrappedComponent) {
     static propTypes = {
       intl: PropTypes.shape().isRequired,
       user: PropTypes.shape().isRequired,
+      locale: PropTypes.string,
+    };
+
+    static defaultProps = {
+      locale: 'auto',
     };
 
     handleImageUpload = (blob, callback, errorCallback) => {
@@ -63,11 +72,37 @@ export default function withEditor(WrappedComponent) {
       );
     };
 
+    handleCreateObject = (obj, callback, errorCallback) => {
+      const requestBody = {
+        author: this.props.user.name,
+        title: `Waivio object. ${obj.name}`,
+        body: `Waivio object "${obj.name}" has been created`,
+        permlink: obj.id,
+        locale: this.props.locale === 'auto' ? 'en-US' : this.props.locale,
+        type: WAIVIO_OBJECT_TYPE.ITEM,
+      };
+
+      fetch(`${config.objectsBot.url}${config.objectsBot.createObject}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      })
+        .then(res => res.json())
+        .then(res => callback(res))
+        .catch(err => {
+          console.log('err', err);
+          errorCallback();
+        });
+    };
+
     render() {
       return (
         <WrappedComponent
           onImageUpload={this.handleImageUpload}
           onImageInvalid={this.handleImageInvalid}
+          onCreateObject={this.handleCreateObject}
           {...this.props}
         />
       );
