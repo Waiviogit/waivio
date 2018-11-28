@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 // selector
-const getPlatformState = (state) => state.entities.platform;
+const getPlatformState = (state) => state.platform;
 // reselect function
 export const getIsConnectPlatformState = createSelector(
     [ getPlatformState ],

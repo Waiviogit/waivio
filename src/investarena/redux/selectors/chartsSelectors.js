@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect';
 // selector
-export const getChartsState = (state) => state.entities.charts;
+export const getChartsState = (state) => state.charts;
 // reselect function
-export const getAssetsChartsState = (state) => state.entities.charts.assets;
+export const getAssetsChartsState = (state) => state.charts.assets;
 
 export const makeGetChartState = () => createSelector(
     getChartsState,

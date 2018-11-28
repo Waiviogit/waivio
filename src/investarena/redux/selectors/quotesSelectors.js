@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 // selector
-export const getQuotesState = (state) => state.entities.quotes;
+export const getQuotesState = (state) => state.quotes;
 // reselect function
 export const makeGetQuoteState = () => createSelector(
     getQuotesState,

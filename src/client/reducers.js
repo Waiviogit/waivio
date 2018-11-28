@@ -20,6 +20,7 @@ import searchReducer, * as fromSearch from './search/searchReducer';
 import quotesReducer from '../investarena/redux/reducers/quotesReducer';
 import quotesSettingsReducer from '../investarena/redux/reducers/quotesSettingsReducer';
 import platformReducer from '../investarena/redux/reducers/platformReducer';
+import chartsReducer from '../investarena/redux/reducers/chartsReducer';
 
 export default () =>
   combineReducers({
@@ -42,6 +43,7 @@ export default () =>
     quotes: quotesReducer,
     quotesSettings: quotesSettingsReducer,
     platform: platformReducer,
+    charts: chartsReducer,
   });
 
 export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);

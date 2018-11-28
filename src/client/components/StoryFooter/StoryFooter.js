@@ -147,15 +147,15 @@ class StoryFooter extends React.Component {
           )}
         </div>
         <PostChart quoteSecurity = {'AUDCAD'}
-                   expiredBars = {this.props.post.expired_bars || []}
-                   createdAt = {this.props.post.created_at}
-                   forecast = {this.props.post.forecast}
-                   recommend = {this.props.post.recommend}
-                   expiredByTime = {this.expiredByTime()}
-                   expiredTimeScale={this.expiredTimeScale()}
+                   expiredBars = {[]}
+                   createdAt = "2018-11-28T10:54:50.320Z"
+                   forecast = "2018-11-28T14:54:49.000Z"
+                   recommend = "Buy"
+                   expiredByTime = {undefined}
+                   expiredTimeScale={undefined}
                    toggleModalPost={() => {}}
-                   tpPrice={this.props.post.forecast_take_profit}
-                   slPrice={this.props.post.forecast_stop_loss}
+                   tpPrice={null}
+                   slPrice={null}
                    expiredAt={this.props.post.expired_at}/>
         {this.state.sliderVisible && (
           <Slider

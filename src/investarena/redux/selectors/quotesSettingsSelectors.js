@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { createSelector } from 'reselect';
 // selector
-export const getQuotesSettingsState = (state) => state.entities.quotesSettings;
+export const getQuotesSettingsState = (state) => state.quotesSettings;
 // reselect function
 export const makeGetQuoteSettingsState = () => createSelector(
     getQuotesSettingsState,
