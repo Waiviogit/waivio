@@ -1,4 +1,4 @@
-import { currencySymbols } from '../constans/currencySymbols';
+import { currencySymbols } from '../constants/currencySymbols';
 import { singleton } from './singletonPlatform';
 
 export function numberFormat(number, decimals, decPoint, thousandsSep) {

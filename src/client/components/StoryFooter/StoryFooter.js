@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import find from 'lodash/find';
+import PostChart from '../../../investarena/components/PostChart';
 import Slider from '../Slider/Slider';
 import Payout from './Payout';
 import Buttons from './Buttons';
@@ -145,6 +146,17 @@ class StoryFooter extends React.Component {
             />
           )}
         </div>
+        <PostChart quoteSecurity = {'AUDCAD'}
+                   expiredBars = {this.props.post.expired_bars || []}
+                   createdAt = {this.props.post.created_at}
+                   forecast = {this.props.post.forecast}
+                   recommend = {this.props.post.recommend}
+                   expiredByTime = {this.expiredByTime()}
+                   expiredTimeScale={this.expiredTimeScale()}
+                   toggleModalPost={() => {}}
+                   tpPrice={this.props.post.forecast_take_profit}
+                   slPrice={this.props.post.forecast_stop_loss}
+                   expiredAt={this.props.post.expired_at}/>
         {this.state.sliderVisible && (
           <Slider
             value={this.state.sliderValue}
