@@ -290,7 +290,8 @@ class Editor extends React.Component {
           });
           return {
             linkedObjects,
-            isValid: !(prevState.isValid || linkedObjects.some(obj => obj.isNew)),
+            isValid:
+              prevState.isValid || !(prevState.isValid || linkedObjects.some(obj => obj.isNew)),
           };
         });
       },

@@ -91,12 +91,20 @@ export default function withEditor(WrappedComponent) {
         body: JSON.stringify(requestBody),
       })
         .then(res => res.json())
-        .then(res => callback(res))
+        .then(res => {
+          message.success(
+            formatMessage({
+              id: 'create_object_success',
+              defaultMessage: 'Object has been created',
+            }),
+          );
+          callback(res);
+        })
         .catch(err => {
           console.log('err', err);
           message.error(
             formatMessage({
-              id: 'object_creating_error',
+              id: 'create_object_error',
               defaultMessage: 'Something went wrong. Object is not created',
             }),
           );
