@@ -76,9 +76,10 @@ export default function withEditor(WrappedComponent) {
       const { intl: { formatMessage } } = this.props;
       const requestBody = {
         author: this.props.user.name,
-        title: `Waivio object. ${obj.name}`,
+        title: `${obj.name} - waivio object]`,
         body: `Waivio object "${obj.name}" has been created`,
         permlink: obj.id,
+        objectName: obj.name,
         locale: this.props.locale === 'auto' ? 'en-US' : this.props.locale,
         type: WAIVIO_OBJECT_TYPE.ITEM,
       };

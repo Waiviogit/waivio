@@ -218,17 +218,17 @@ class Editor extends React.Component {
     this.props.onUpdate(values);
   }
 
-  checkObjects() {
+  checkNewObjects() {
     const isObjectsCreated = !this.state.linkedObjects.some(obj => obj.isNew);
     this.setState({ isValid: isObjectsCreated });
-    return isObjectsCreated;
+    return !isObjectsCreated;
   }
 
   handleSubmit(e) {
     e.preventDefault();
 
     this.props.form.validateFieldsAndScroll((err, values) => {
-      if (this.checkObjects() || err) {
+      if (this.checkNewObjects() || err) {
         this.props.onError();
       } else {
         this.props.onSubmit(values);
@@ -313,7 +313,6 @@ class Editor extends React.Component {
         .sort((a, b) => b.influence.value - a.influence.value)
         .slice(0, 5)
         .map(obj => obj.name);
-      console.log('handleRemove[topics] > ', topics);
       this.setFormValues(WAIVIO_META_FIELD_NAME, { wObjects: linkedObjects.map(obj => obj.id) });
       this.setFormValues('topics', topics);
       return { linkedObjects, canCreateNewObject: topics.length < MAX_NEW_OBJECTS_NUMBER };

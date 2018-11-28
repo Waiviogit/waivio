@@ -120,6 +120,7 @@ export const getIsPowerDown = state => fromWallet.getIsPowerDown(state.wallet);
 
 export const getIsSettingsLoading = state => fromSettings.getIsLoading(state.settings);
 export const getLocale = state => fromSettings.getLocale(state.settings);
+export const getReadLanguages = state => fromSettings.getReadLanguages(state.settings);
 export const getVotingPower = state => fromSettings.getVotingPower(state.settings);
 export const getVotePercent = state => fromSettings.getVotePercent(state.settings);
 export const getShowNSFWPosts = state => fromSettings.getShowNSFWPosts(state.settings);

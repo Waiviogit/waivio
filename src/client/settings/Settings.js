@@ -7,6 +7,7 @@ import { Select, Radio, Checkbox } from 'antd';
 import {
   getIsReloading,
   getLocale,
+  getReadLanguages,
   getVotingPower,
   getIsSettingsLoading,
   getVotePercent,
@@ -37,6 +38,7 @@ import packageJson from '../../../package.json';
   state => ({
     reloading: getIsReloading(state),
     locale: getLocale(state),
+    readLanguages: getReadLanguages(state),
     votingPower: getVotingPower(state),
     votePercent: getVotePercent(state),
     showNSFWPosts: getShowNSFWPosts(state),
@@ -54,6 +56,7 @@ export default class Settings extends React.Component {
     intl: PropTypes.shape().isRequired,
     reloading: PropTypes.bool,
     locale: PropTypes.string,
+    readLanguages: PropTypes.arrayOf(PropTypes.string),
     votingPower: PropTypes.string,
     votePercent: PropTypes.number,
     loading: PropTypes.bool,
@@ -71,6 +74,7 @@ export default class Settings extends React.Component {
   static defaultProps = {
     reloading: false,
     locale: 'auto',
+    readLanguages: [],
     votingPower: 'auto',
     votePercent: 10000,
     loading: false,
@@ -92,6 +96,7 @@ export default class Settings extends React.Component {
 
   state = {
     locale: 'auto',
+    readLanguages: [],
     votingPower: 'auto',
     votePercent: 10000,
     showNSFWPosts: false,
@@ -103,6 +108,7 @@ export default class Settings extends React.Component {
   componentWillMount() {
     this.setState({
       locale: this.props.locale,
+      readLanguages: this.props.readLanguages,
       votingPower: this.props.votingPower,
       votePercent: this.props.votePercent / 100,
       showNSFWPosts: this.props.showNSFWPosts,
@@ -120,6 +126,10 @@ export default class Settings extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.locale !== this.props.locale) {
+      this.setState({ locale: nextProps.locale });
+    }
+
+    if (nextProps.readLanguages !== this.props.readLanguages) {
       this.setState({ locale: nextProps.locale });
     }
 
@@ -160,6 +170,7 @@ export default class Settings extends React.Component {
     this.props
       .saveSettings({
         locale: this.state.locale,
+        readLanguages: this.state.readLanguages,
         votingPower: this.state.votingPower,
         votePercent: this.state.votePercent * 100,
         showNSFWPosts: this.state.showNSFWPosts,
@@ -178,6 +189,7 @@ export default class Settings extends React.Component {
   };
 
   handleLocaleChange = locale => this.setState({ locale });
+  handleReadLanguageChange = readLanguages => this.setState({ readLanguages });
   handleVotingPowerChange = event => this.setState({ votingPower: event.target.value });
   handleVotePercentChange = value => this.setState({ votePercent: value });
   handleShowNSFWPosts = event => this.setState({ showNSFWPosts: event.target.checked });
@@ -195,6 +207,7 @@ export default class Settings extends React.Component {
       intl,
       reloading,
       locale: initialLocale,
+      readLanguages,
       votingPower: initialVotingPower,
       showNSFWPosts: initialShowNSFWPosts,
       nightmode: initialNightmode,
@@ -211,6 +224,10 @@ export default class Settings extends React.Component {
       exitPageSetting,
     } = this.state;
 
+    const initialLanguages =
+      readLanguages && readLanguages.length
+        ? readLanguages
+        : LANGUAGES.find(lang => lang.name === 'English').id;
     const languageOptions = [];
 
     if (locale === 'auto') {
@@ -309,6 +326,31 @@ export default class Settings extends React.Component {
                     {languageOptions}
                   </Select>
                 </div>
+
+                <div className="Settings__section">
+                  <h3>
+                    <FormattedMessage id="post_languages" defaultMessage="Posts languages" />
+                  </h3>
+                  <p>
+                    <FormattedMessage
+                      id="post_languages_info"
+                      defaultMessage="In which languages do you want to read posts?"
+                    />
+                  </p>
+                  <Select
+                    mode="multiple"
+                    defaultValue={initialLanguages}
+                    style={{ width: '100%' }}
+                    onChange={this.handleReadLanguageChange}
+                  >
+                    {LANGUAGES.map(lang => (
+                      <Select.Option key={lang.id} value={lang.id}>
+                        {getLanguageText(lang)}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </div>
+
                 <div className="Settings__section">
                   <h3>
                     <FormattedMessage id="nsfw_posts" defaultMessage="NSFW Posts" />
