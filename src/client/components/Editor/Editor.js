@@ -270,26 +270,39 @@ class Editor extends React.Component {
       );
       return { linkedObjects };
     });
-    this.props.onCreateObject(wObject, res => {
-      this.setState(prevState => {
-        const linkedObjects = prevState.linkedObjects.map(
-          obj =>
-            obj.id === wObject.id
-              ? {
-                  ...obj,
-                  id: `${res.objectAuthor}_${res.objectPermlink}`,
-                  isNew: false,
-                  isCreating: false,
-                }
-              : obj,
-        );
-        this.setFormValues(WAIVIO_META_FIELD_NAME, { wObjects: linkedObjects.map(obj => obj.id) });
-        return {
-          linkedObjects,
-          isValid: !(prevState.isValid || linkedObjects.some(obj => obj.isNew)),
-        };
-      });
-    });
+    this.props.onCreateObject(
+      wObject,
+      res => {
+        this.setState(prevState => {
+          const linkedObjects = prevState.linkedObjects.map(
+            obj =>
+              obj.id === wObject.id
+                ? {
+                    ...obj,
+                    id: `${res.objectAuthor}_${res.objectPermlink}`,
+                    isNew: false,
+                    isCreating: false,
+                  }
+                : obj,
+          );
+          this.setFormValues(WAIVIO_META_FIELD_NAME, {
+            wObjects: linkedObjects.map(obj => obj.id),
+          });
+          return {
+            linkedObjects,
+            isValid: !(prevState.isValid || linkedObjects.some(obj => obj.isNew)),
+          };
+        });
+      },
+      () => {
+        this.setState(prevState => {
+          const linkedObjects = prevState.linkedObjects.map(
+            obj => (obj.id === wObject.id ? { ...obj, isCreating: false } : obj),
+          );
+          return { linkedObjects };
+        });
+      },
+    );
   }
 
   handleRemoveObject(wObject) {

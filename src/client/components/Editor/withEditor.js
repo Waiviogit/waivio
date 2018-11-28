@@ -73,6 +73,7 @@ export default function withEditor(WrappedComponent) {
     };
 
     handleCreateObject = (obj, callback, errorCallback) => {
+      const { intl: { formatMessage } } = this.props;
       const requestBody = {
         author: this.props.user.name,
         title: `Waivio object. ${obj.name}`,
@@ -93,6 +94,12 @@ export default function withEditor(WrappedComponent) {
         .then(res => callback(res))
         .catch(err => {
           console.log('err', err);
+          message.error(
+            formatMessage({
+              id: 'object_creating_error',
+              defaultMessage: 'Something went wrong. Object is not created',
+            }),
+          );
           errorCallback();
         });
     };
