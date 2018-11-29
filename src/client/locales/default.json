@@ -386,5 +386,7 @@
   "value_error_too_long": "Value can't be longer than 255 characters.",
   "create_new_object_placeholder": "This object doesn't exist yet, but you can create it",
   "create_object_error": "Couldn't create the object",
-  "create_object_success": "Object has been created"
+  "create_object_success": "Object has been created",
+  "post_languages_info": "In which languages do you want to read posts?",
+  "post_languages": "Posts languages"
 }

@@ -132,7 +132,7 @@ export default class Settings extends React.Component {
     }
 
     if (nextProps.readLanguages !== this.props.readLanguages) {
-      this.setState({ locale: nextProps.locale });
+      this.setState({ readLanguages: nextProps.readLanguages });
     }
 
     if (nextProps.votingPower !== this.props.votingPower) {
@@ -335,7 +335,6 @@ export default class Settings extends React.Component {
                     {languageOptions}
                   </Select>
                 </div>
-
                 <div className="Settings__section">
                   <h3>
                     <FormattedMessage id="post_languages" defaultMessage="Posts languages" />
@@ -359,7 +358,6 @@ export default class Settings extends React.Component {
                     ))}
                   </Select>
                 </div>
-
                 <div className="Settings__section">
                   <h3>
                     <FormattedMessage id="nsfw_posts" defaultMessage="NSFW Posts" />
