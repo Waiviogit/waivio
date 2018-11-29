@@ -30,7 +30,9 @@ const propTypes = {
     recommend: PropTypes.string.isRequired,
     getChartData: PropTypes.func.isRequired
 };
-
+const defaultProps = {
+  platformName: 'widgets'
+};
 class PostChart extends Component {
     constructor (props) {
         super(props);
@@ -190,5 +192,6 @@ class PostChart extends Component {
 }
 
 PostChart.propTypes = propTypes;
+PostChart.defaultProps = defaultProps;
 
 export default injectIntl(PostChart);

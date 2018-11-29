@@ -9,9 +9,9 @@ class Chart {
         this.canvas = canvas;
         this.animatedCircle = animatedCircle;
         this.imageStart = new Image();
-        this.imageStart.src = '/static/images/start.png';
+        this.imageStart.src = '/images/investarena/start.png';
         this.imageEnd = new Image();
-        this.imageEnd.src = '/static/images/finish.png';
+        this.imageEnd.src = '/images/investarena/finish.png';
         this.ctx = this.canvas.getContext('2d');
         this.gridCellHeight = 30;
         this.canvasWork = {

@@ -384,5 +384,24 @@
   "for_lang2": "language.",
   "value_error_empty": "Please enter a value.",
   "value_error_too_long": "Value can't be longer than 255 characters.",
-  "create_new_object_placeholder": "This object doesn't exist yet, but you can create it"
+  "create_new_object_placeholder": "This object doesn't exist yet, but you can create it",
+  "tips.sessionStatus": "Trading session status",
+  "tips.dailyChange": "Daily change",
+  "postQuotation.margin": "Margin",
+  "postQuotation.button.sell": "Sell",
+  "postQuotation.button.buy": "Buy",
+  "tips.addToFavorites": "Add to favorites",
+  "tips.removeFromFavorites": "Remove from favorites",
+  "tips.currentPrice": "Remove from favorites",
+  "tips.currentPriceExpired": "Final price",
+  "profit.isNeutral": "Final profitability is neutral",
+  "profit.isNegative": "Final profitability is negative",
+  "profit.isPositive": "Final profitability is positive",
+  "tips.recommendationType": "Forecast type",
+  "tips.recommendationPrice": "Price at the beginning of the forecast",
+  "tips.profitabilityTitle": "The difference between the price at the time of publication of the post and the current price in pips",
+  "postQuotation.recommend.buy": "Buy",
+  "postQuotation.recommend.sell": "Sell",
+  "postSellBuy.profitability": "Profitability:"
+
 }

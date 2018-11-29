@@ -1,5 +1,4 @@
-@select-color: #dedee2;
-
+@import '../../Common.less';
 .st-tab-select {
   display: flex;
   justify-content: center;
@@ -7,31 +6,31 @@
   &-label {
     padding: 5px 10px;
     &.top {
-      border-top: 1px solid @select-color;
+      border-top: 1px solid @color-dark-gray;
       &.first {
         border-top-left-radius: 4px;
-        border-left: 1px solid @select-color;
+        border-left: 1px solid @color-dark-gray;
       }
       &.last {
         border-top-right-radius: 4px;
       }
     }
     &.bottom {
-      border-bottom: 1px solid @select-color;
+      border-bottom: 1px solid @color-dark-gray;
       &.first {
         border-bottom-left-radius: 4px;
-        border-left: 1px solid @select-color;
+        border-left: 1px solid @color-dark-gray;
       }
       &.last {
         border-bottom-right-radius: 4px;
       }
     }
-    border-right: 1px solid @select-color;
+    border-right: 1px solid @color-dark-gray;
     background-color: white;
     cursor: pointer;
     transition: background-color 0.7s;
     &.selected {
-      background-color: @select-color;
+      background-color: @color-dark-gray;
     }
   }
 }

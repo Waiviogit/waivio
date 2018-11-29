@@ -1,0 +1,94 @@
+@import '../Common.less';
+
+.st-post-sell-buy-wrap {
+  width: 100%;
+  padding: 0 16px 0 12px;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  .st-post-sell-buy-quote {
+    color: @color-black !important;
+    font-weight: bold !important;
+    cursor: pointer;
+    &:hover {
+      color: @color-dark-blue !important;
+      text-decoration: underline !important;
+    }
+  }
+  .st-post-recommend-buy{
+    background-color: @color-green;
+    &::after{
+      border-left: 10px solid @color-green;
+    }
+  }
+
+  .st-post-recommend-sell{
+    background-color: @color-red;
+    &::after{
+      border-left: 10px solid @color-red;
+    }
+  }
+  .st-post-sell-buy-icon-sell{
+    display: block;
+    background-color: @color-red;
+    color: @color-white;
+    padding: 0 5px;
+    border-radius: 5px;
+    text-transform: uppercase;
+  }
+  .st-post-sell-buy-icon-buy{
+    display: block;
+    background-color: @color-green;
+    color: @color-white;
+    padding: 0 5px;
+    border-radius: 5px;
+    text-transform: uppercase;
+  }
+  .st-post-sell-buy-block {
+    display: flex;
+    align-items: center;
+    position: relative;
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
+    height: 22px;
+    width: min-content;
+    margin-left: @margin-middle;
+    &::after{
+      content: '';
+      display: block;
+      position: absolute;
+      right: -10px;
+      top: 50%;
+      margin-top: -11px;
+      width: 0;
+      height: 0;
+      border-top: 11px solid transparent;
+      border-bottom: 11px solid transparent;
+    }
+    span{
+      color: @color-white!important;
+    }
+  }
+  .st-profitability-icon {
+    img {
+      margin-left: 5px;
+      width: 25px;
+      height: 25px;
+    }
+  }
+  .st-post-sell-buy-profitability{
+    font-size: 11px;
+    color: @color-darkest-gray;
+    padding-top: 4px;
+  }
+  .st-post-sell-buy-profitability-wrap{
+    width: 140px;
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 414px) {
+  .st-post-sell-buy-wrap .st-post-sell-buy-profitability {
+    display: none;
+  }
+}

@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import React from 'react';
 import { getIsConnectPlatformState, getPlatformNameState } from '../../redux/selectors/platformSelectors';
 import { getChartData } from '../../redux/actions/chartsActions';
