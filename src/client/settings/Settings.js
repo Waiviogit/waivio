@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Select, Radio, Checkbox } from 'antd';
@@ -31,6 +32,7 @@ import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
 import './Settings.less';
 import packageJson from '../../../package.json';
+import SteemConnect from '../steemConnectAPI';
 
 @requiresLogin
 @injectIntl
@@ -167,6 +169,13 @@ export default class Settings extends React.Component {
   }
 
   handleSave = () => {
+    if (!_.isEqual(this.state.readLanguages, this.props.readLanguages)) {
+      const win = window.open(
+        SteemConnect.sign('profile-update', { readLanguages: this.state.readLanguages }),
+        '_blank',
+      );
+      win.focus();
+    }
     this.props
       .saveSettings({
         locale: this.state.locale,
