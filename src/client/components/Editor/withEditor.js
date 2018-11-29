@@ -7,7 +7,7 @@ import { getAuthenticatedUser } from '../../reducers';
 import { MAXIMUM_UPLOAD_SIZE_HUMAN } from '../../helpers/image';
 import { WAIVIO_OBJECT_TYPE } from '../../../common/constants/waivio';
 import { getLocale } from '../../settings/settingsReducer';
-import config from '../../../waivioApi/config.json';
+import config from '../../../waivioApi/routes';
 
 function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
@@ -76,7 +76,7 @@ export default function withEditor(WrappedComponent) {
       const { intl: { formatMessage } } = this.props;
       const requestBody = {
         author: this.props.user.name,
-        title: `${obj.name} - waivio object]`,
+        title: `${obj.name} - waivio object`,
         body: `Waivio object "${obj.name}" has been created`,
         permlink: obj.id,
         objectName: obj.name,
@@ -84,7 +84,7 @@ export default function withEditor(WrappedComponent) {
         type: WAIVIO_OBJECT_TYPE.ITEM,
       };
 
-      fetch(`${config.objectsBot.url}${config.objectsBot.createObject}`, {
+      fetch(`${config.objectsBot.apiPrefix}${config.objectsBot.createObject}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
