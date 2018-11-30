@@ -7,6 +7,7 @@ import { getAuthenticatedUser } from '../../reducers';
 import { MAXIMUM_UPLOAD_SIZE_HUMAN } from '../../helpers/image';
 import { WAIVIO_OBJECT_TYPE } from '../../../common/constants/waivio';
 import { getLocale } from '../../settings/settingsReducer';
+import { handleErrors } from '../../../waivioApi/ApiClient';
 import config from '../../../waivioApi/routes';
 
 function getDisplayName(WrappedComponent) {
@@ -95,6 +96,7 @@ export default function withEditor(WrappedComponent) {
         },
         body: JSON.stringify(requestBody),
       })
+        .then(handleErrors)
         .then(res => res.json())
         .then(res => {
           message.success(

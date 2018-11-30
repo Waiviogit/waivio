@@ -6,6 +6,13 @@ const headers = {
   'Content-Type': 'application/json',
 };
 
+export function handleErrors(response) {
+  if (!response.ok) {
+    throw Error(response.error);
+  }
+  return response;
+}
+
 export const getRecommendedObjects = () =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
     headers,
