@@ -6,7 +6,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const WebpackBar = require('webpackbar');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const paths = require('../scripts/paths');
-// const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const {
   CONTENT_PORT,
@@ -43,9 +43,9 @@ module.exports = function createConfig(env = 'dev') {
         name: 'client',
         color: '#f56be2',
       }),
-      // new UglifyJsPlugin({
-      //   cache: true,
-      // }),
+      new UglifyJsPlugin({
+        cache: true,
+      }),
     ],
     module: {
       rules: [
