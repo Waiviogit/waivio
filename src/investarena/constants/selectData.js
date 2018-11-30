@@ -35,8 +35,8 @@ export const optionsChartType = [
 ];
 
 export const optionsPrice = [
-    { value: 'Sell', label: 'Bid Price' },
-    { value: 'Buy', label: 'Ask Price' }
+    { value: 'Sell', label: 'Bid' },
+    { value: 'Buy', label: 'Ask' }
 ];
 
 export const optionsTimeScale = [

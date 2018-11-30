@@ -37,9 +37,6 @@ class PostCurrentPrice extends Component {
             this.getCurrentData(nextProps);
         }
     }
-    isPostExpires = () => {
-        return this.props.isExpired || (currentTime.getTime() > (moment(this.props.forecast).valueOf()));
-    };
     getExpiredData = () => {
         const quotePost = this.props.finalQuote && this.props.finalQuote.askPrice && this.props.finalQuote.bidPrice
             ? this.props.finalQuote
@@ -57,6 +54,9 @@ class PostCurrentPrice extends Component {
         return quoteFormat(this.props.recommend.toLowerCase() === 'buy'
             ? this.state.quotePost.askPrice
             : this.state.quotePost.bidPrice, quoteSettingsPost);
+    };
+    isPostExpires = () => {
+      return this.props.isExpired || (currentTime.getTime() > (moment(this.props.forecast).valueOf()));
     };
     render () {
         return (

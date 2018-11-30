@@ -135,3 +135,65 @@
 .st-hidden{
   visibility: hidden;
 }
+.formStyle() {
+  .field {
+    width: 100%;
+    height: 35px;
+    font-size: 14px;
+    text-indent: 5px;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    padding: 0 6px;
+    box-sizing: border-box;
+    &:focus {
+      .input-selected-mixin();
+    }
+  }
+  .label {
+    color: @color-darkest-gray;
+  }
+  button {
+    text-transform: uppercase;
+  }
+  .st-field-div {
+    height: 35px;
+    margin-bottom: 15px;
+    position: relative;
+  }
+  .Select {
+    margin-bottom: 15px;
+    .Select-control {
+      border-radius: 2px;
+      height: 35px;
+      .Select-input {
+        input {
+          line-height: 1.4rem; // vertical align works the same
+          height: 1.8rem;      //  in FireFox and Chrome
+        }
+      }
+      &[disabled] {
+        background-color: #ebebe4;
+      }
+    }
+    &.is-disabled {
+      .Select-control {
+        cursor: default;
+      }
+    }
+  }
+  .is-focused > .Select-control {
+    .input-selected-mixin()
+  }
+  .is-disabled > .Select-control {
+    .input-disabled-mixin()
+  }
+}
+.input-selected-mixin(){
+  border-color: dodgerblue;
+  outline: none;
+}
+.input-disabled-mixin() {
+  background-color: #ebebe4;
+  cursor: none;
+  outline: none;
+}

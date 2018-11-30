@@ -1,0 +1,145 @@
+@import '../../Common.less';
+
+.nav-item-mixin (){
+  width: 50%;
+  cursor: pointer;
+  text-align: center;
+}
+
+.modal-broker {
+  width: 550px;
+  .modal-content {
+    background-color: #fff;
+    .modal-header {
+      background-color: #16254c;
+      color: #fff;
+      height: 40px;
+      .close {
+        cursor: pointer;
+        color: #fff;
+      }
+      h4, .h4 {
+        font-size: 14px;
+        font-weight: bold;
+      }
+    }
+    .modal-body {
+      padding: 0;
+      .st-broker-tab {
+        .st-broker-tab-item {
+          .nav-item-mixin();
+          font-size: 18px;
+          .nav-link.active {
+            color: #07D;
+            background-color: #fff;
+            font-weight: 800;
+            border-bottom-color: #fff;
+          }
+        }
+      }
+      .st-broker-authorization {
+        padding: 10px 35px;
+        .st-broker-select-title {
+          text-align: center;
+          color: grey;
+        }
+        .st-broker-authorization-form {
+          @include formStyle();
+          .field:disabled {
+            background-color: #f9f9f9;
+          }
+          .st-broker-text {
+            text-align: center;
+            color: #b3b3b3;
+          }
+        }
+      }
+
+      .st-broker-registration {
+        padding: 10px 35px;
+        .st-broker-registration-nav {
+          border-bottom: 3px solid dodgerblue;
+          margin-bottom: 10px;
+          .st-broker-registration-nav-item {
+            cursor: pointer;
+            @include nav-item();
+            .nav-link {
+              position: relative;
+              background-color: #fff;
+              border-color: #fff #fff #fff #fff;
+              padding: 1rem 0;
+              .st-broker-languages {
+                position: absolute;
+                top: 1rem;
+                right: 0;
+                font-size: 11px;
+                line-height: 10px;
+                text-align: right;
+                color: #999;
+                width: 20%;
+              }
+            }
+            .nav-link.active:before {
+              content: '';
+              display: block;
+              position: absolute;
+              border-left: 10px solid transparent;
+              border-right: 10px solid transparent;
+              border-bottom: 10px solid dodgerblue;
+              border-radius: 1px;
+              bottom: -2px;
+              left: 0;
+              margin-left: 96px;
+              margin-right: 96px;
+            }
+          }
+        }
+        .st-broker-image {
+          width: auto;
+          height: 35px;
+        }
+        .st-broker-registration-form {
+          @include formStyle();
+          .st-half-block {
+            position: relative;
+            width: 50%;
+          }
+          .st-form-mobile-code-block {
+            width: 20%;
+            margin-right: 10px;
+          }
+          .st-form-mobile-block {
+            width: 80%;
+          }
+          .st-broker-checkbox {
+            margin-right: 5px;
+            cursor: pointer;
+          }
+          .st-correct-wrapper{
+            margin: 11px 0 10px 11px;
+          }
+        }
+      }
+    }
+  }
+}
+.st-correct-wrapper{
+  margin: 12px -5px 0 15px;
+}
+.st-modal-broker-authorization-text-click {
+  color: #3a79ee;
+  text-decoration: none;
+  background-color: transparent;
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline;
+    color: #3a79ae;
+  }
+}
+
+@media (max-width: 414px) {
+  .modal-broker {
+    width: 100%;
+    margin: 10px auto;
+  }
+}

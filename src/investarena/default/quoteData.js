@@ -4,5 +4,6 @@ export default {
     askPrice: '-',
     dailyChange: 0,
     timestamp: null,
-    state: 'not-update'
+    state: 'not-update',
+    isSession: true
 };

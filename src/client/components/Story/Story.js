@@ -343,10 +343,10 @@ class Story extends React.Component {
           </div>
           <PostSellBuy
             isExpired={false}
-            finalQuote = {{}}
+            // finalQuote = {{}}
             quoteSecurity = {'AUDCAD'}
             postPrice = {'0.96'}
-            forecast = {null}
+            forecast = {'2018-12-29T14:54:50.000Z'}
             recommend = {'Buy'}
             profitability = {335}
           />
@@ -365,17 +365,18 @@ class Story extends React.Component {
             {this.renderStoryPreview()}
           </div>
           <div className="Story__footer">
-            <PostChart quoteSecurity = {'AUDCAD'}
-                       expiredBars = {[]}
-                       createdAt = "2018-11-28T10:54:50.320Z"
-                       forecast = "2018-11-29T14:54:50.000Z"
-                       recommend = "Buy"
-                       expiredByTime = {undefined}
-                       expiredTimeScale={undefined}
-                       toggleModalPost={() => {}}
-                       tpPrice={'0.969'}
-                       slPrice={'0.958'}
-                       expiredAt={undefined}/>
+            <PostChart
+              quoteSecurity = {'AUDCAD'}
+              expiredBars = {[]}
+              createdAt = "2018-11-28T10:54:50.320Z"
+              forecast = "2018-12-29T14:54:50.000Z"
+              recommend = "Buy"
+              expiredByTime = {undefined}
+              expiredTimeScale={undefined}
+              toggleModalPost={() => {}}
+              tpPrice={'0.969'}
+              slPrice={'0.958'}
+              expiredAt={undefined}/>
             <PostQuotation quoteSecurity = {'AUDCAD'} postId = {'1'}/>
             <StoryFooter
               user={user}

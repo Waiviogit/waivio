@@ -70,7 +70,9 @@ const PostSellBuy = ({intl, quote, quoteSettings, recommend, postPrice, goQuoteP
                         forecast = {forecast}/>
                 </div>
                 <div className='d-flex st-margin-left-large'>
-                    <span className='st-post-sell-buy-profitability' title={intl.formatMessage({ id: 'tips.profitabilityTitle'})}><FormattedMessage id='postSellBuy.profitability' /></span>
+                    <span className='st-post-sell-buy-profitability' title={intl.formatMessage({ id: 'tips.profitabilityTitle'})}>
+                      <FormattedMessage id='postSellBuy.profitability' />
+                    </span>
                     <PostDifference quoteSettings = {quoteSettingsPost}
                         isExpired = {isExpired}
                         profitability = {profitability}
