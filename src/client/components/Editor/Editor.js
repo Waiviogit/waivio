@@ -44,7 +44,7 @@ class Editor extends React.Component {
     isUpdating: PropTypes.bool,
     saving: PropTypes.bool,
     draftId: PropTypes.string,
-    // onUpdate: PropTypes.func,
+    onUpdate: PropTypes.func,
     onDelete: PropTypes.func,
     onSubmit: PropTypes.func,
     onError: PropTypes.func,
@@ -95,7 +95,6 @@ class Editor extends React.Component {
     this.handleAddLinkedObject = this.handleAddLinkedObject.bind(this);
     this.handleCreateObject = this.handleCreateObject.bind(this);
     this.handleRemoveObject = this.handleRemoveObject.bind(this);
-    this.setFormValues = this.setFormValues.bind(this);
     this.handleChangeInfluence = this.handleChangeInfluence.bind(this);
   }
 
@@ -137,9 +136,6 @@ class Editor extends React.Component {
     // Might be deleted after a while.
     const { form } = this.props;
 
-    form.getFieldDecorator('topics');
-    form.getFieldDecorator([WAIVIO_META_FIELD_NAME]);
-
     let reward = rewardsValues.half;
     if (
       post.reward === rewardsValues.all ||
@@ -151,16 +147,10 @@ class Editor extends React.Component {
 
     form.setFieldsValue({
       title: post.title,
-      topics: post.topics,
-      [WAIVIO_META_FIELD_NAME]: post.waivioData,
       body: post.body,
       reward,
       upvote: post.upvote,
     });
-    // this.setState({
-    //   linkedObjects:
-    //     (post.waivioData && post.waivioData.wObjects) || [], // todo: getObjects by ids to restore objects from draft
-    // });
     this.setBodyAndRender(post.body);
   }
 
@@ -171,67 +161,51 @@ class Editor extends React.Component {
     });
   }
 
-  setFormValues(fieldName, value) {
-    this.props.form.setFieldsValue({
-      [fieldName]: value,
-    });
-  }
-
-  checkTopics = intl => (rule, value, callback) => {
-    if (!value || value.length < 1 || value.length > 5) {
-      callback(
-        intl.formatMessage({
-          id: 'topics_error_count',
-          defaultMessage: 'You have to add 1 to 5 topics.',
-        }),
-      );
-    }
-
-    value
-      .map(topic => ({ topic, valid: /^[a-z0-9]+(-[a-z0-9]+)*$/.test(topic) }))
-      .filter(topic => !topic.valid)
-      .map(topic =>
-        callback(
-          intl.formatMessage(
-            {
-              id: 'topics_error_invalid_topic',
-              defaultMessage: 'Topic {topic} is invalid.',
-            },
-            {
-              topic: topic.topic,
-            },
-          ),
-        ),
-      );
-
-    callback();
-  };
-
-  throttledUpdate() {
-    const { form } = this.props;
-
-    const values = form.getFieldsValue();
-    this.setBodyAndRender(values.body);
-
-    // if (Object.values(form.getFieldsError()).filter(e => e).length > 0) return;
-
-    // this.props.onUpdate(values);
-  }
-
   checkNewObjects() {
     const isObjectsCreated = !this.state.linkedObjects.some(obj => obj.isNew);
     this.setState({ isValid: isObjectsCreated });
     return !isObjectsCreated;
   }
 
+  throttledUpdate() {
+    const { linkedObjects } = this.state;
+    const { form } = this.props;
+
+    const values = form.getFieldsValue();
+    this.setBodyAndRender(values.body);
+
+    if (Object.values(form.getFieldsError()).filter(e => e).length > 0 || this.checkNewObjects())
+      return;
+
+    const topics = linkedObjects
+      .sort((a, b) => b.influence.value - a.influence.value)
+      .slice(0, 5)
+      .map(obj => obj.name);
+    const wobjects = linkedObjects.map(obj => ({
+      parentPermlink: obj.id,
+      percent: obj.influence.value,
+    }));
+
+    this.props.onUpdate({ ...values, topics, [WAIVIO_META_FIELD_NAME]: { wobjects } });
+  }
+
   handleSubmit(e) {
     e.preventDefault();
+    const { linkedObjects } = this.state;
 
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (this.checkNewObjects() || err) {
         this.props.onError();
       } else {
-        this.props.onSubmit(values);
+        const topics = linkedObjects
+          .sort((a, b) => b.influence.value - a.influence.value)
+          .slice(0, 5)
+          .map(obj => obj.name);
+        const wobjects = linkedObjects.map(obj => ({
+          parentPermlink: obj.id,
+          percent: obj.influence.value,
+        }));
+        this.props.onSubmit({ ...values, topics, [WAIVIO_META_FIELD_NAME]: { wobjects } });
       }
     });
   }
@@ -253,12 +227,9 @@ class Editor extends React.Component {
       const linkedObjects = prevState.linkedObjects.some(obj => obj.id === selectedObj.id)
         ? prevState.linkedObjects
         : setInitialInfluence(prevState.linkedObjects, selectedObj);
-      const topics = linkedObjects.map(obj => obj.name);
-      this.setFormValues(WAIVIO_META_FIELD_NAME, { wObjects: linkedObjects.map(obj => obj.id) });
-      this.setFormValues('topics', topics);
       return {
         linkedObjects,
-        canCreateNewObject: topics.length < MAX_NEW_OBJECTS_NUMBER,
+        canCreateNewObject: linkedObjects.length < MAX_NEW_OBJECTS_NUMBER,
       };
     }, this.onUpdate());
   }
@@ -284,9 +255,6 @@ class Editor extends React.Component {
                 }
               : obj,
           );
-          this.setFormValues(WAIVIO_META_FIELD_NAME, {
-            wObjects: linkedObjects.map(obj => obj.id),
-          });
           return {
             linkedObjects,
             isValid:
@@ -308,13 +276,7 @@ class Editor extends React.Component {
   handleRemoveObject(wObject) {
     this.setState(prevState => {
       const linkedObjects = removeObjInfluenceHandler(prevState.linkedObjects, wObject);
-      const topics = [...linkedObjects]
-        .sort((a, b) => b.influence.value - a.influence.value)
-        .slice(0, 5)
-        .map(obj => obj.name);
-      this.setFormValues(WAIVIO_META_FIELD_NAME, { wObjects: linkedObjects.map(obj => obj.id) });
-      this.setFormValues('topics', topics);
-      return { linkedObjects, canCreateNewObject: topics.length < MAX_NEW_OBJECTS_NUMBER };
+      return { linkedObjects, canCreateNewObject: linkedObjects.length < MAX_NEW_OBJECTS_NUMBER };
     }, this.onUpdate());
   }
 

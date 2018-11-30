@@ -8,7 +8,7 @@ const headers = {
 
 export function handleErrors(response) {
   if (!response.ok) {
-    throw Error(response.error);
+    throw Error(response.statusText);
   }
   return response;
 }
