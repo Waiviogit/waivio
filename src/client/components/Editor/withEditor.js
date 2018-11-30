@@ -33,7 +33,9 @@ export default function withEditor(WrappedComponent) {
     };
 
     handleImageUpload = (blob, callback, errorCallback) => {
-      const { intl: { formatMessage } } = this.props;
+      const {
+        intl: { formatMessage },
+      } = this.props;
       message.info(
         formatMessage({ id: 'notify_uploading_image', defaultMessage: 'Uploading image' }),
       );
@@ -73,7 +75,9 @@ export default function withEditor(WrappedComponent) {
     };
 
     handleCreateObject = (obj, callback, errorCallback) => {
-      const { intl: { formatMessage } } = this.props;
+      const {
+        intl: { formatMessage },
+      } = this.props;
       const requestBody = {
         author: this.props.user.name,
         title: `${obj.name} - waivio object`,

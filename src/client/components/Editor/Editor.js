@@ -265,8 +265,8 @@ class Editor extends React.Component {
 
   handleCreateObject(wObject) {
     this.setState(prevState => {
-      const linkedObjects = prevState.linkedObjects.map(
-        obj => (obj.id === wObject.id ? { ...obj, isCreating: true } : obj),
+      const linkedObjects = prevState.linkedObjects.map(obj =>
+        obj.id === wObject.id ? { ...obj, isCreating: true } : obj,
       );
       return { linkedObjects };
     });
@@ -274,16 +274,15 @@ class Editor extends React.Component {
       wObject,
       res => {
         this.setState(prevState => {
-          const linkedObjects = prevState.linkedObjects.map(
-            obj =>
-              obj.id === wObject.id
-                ? {
-                    ...obj,
-                    id: `${res.objectAuthor}_${res.objectPermlink}`,
-                    isNew: false,
-                    isCreating: false,
-                  }
-                : obj,
+          const linkedObjects = prevState.linkedObjects.map(obj =>
+            obj.id === wObject.id
+              ? {
+                  ...obj,
+                  id: `${res.objectAuthor}_${res.objectPermlink}`,
+                  isNew: false,
+                  isCreating: false,
+                }
+              : obj,
           );
           this.setFormValues(WAIVIO_META_FIELD_NAME, {
             wObjects: linkedObjects.map(obj => obj.id),
@@ -297,8 +296,8 @@ class Editor extends React.Component {
       },
       () => {
         this.setState(prevState => {
-          const linkedObjects = prevState.linkedObjects.map(
-            obj => (obj.id === wObject.id ? { ...obj, isCreating: false } : obj),
+          const linkedObjects = prevState.linkedObjects.map(obj =>
+            obj.id === wObject.id ? { ...obj, isCreating: false } : obj,
           );
           return { linkedObjects };
         });
