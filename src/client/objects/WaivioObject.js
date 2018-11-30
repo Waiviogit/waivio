@@ -23,15 +23,15 @@ const WaivioObject = ({ wobj }) => {
   }
 
   return (
-    <div key={wobj.authorPermlink} className="WaivioObject__user">
+    <div key={wobj.author_permlink} className="WaivioObject__user">
       <div className="WaivioObject__user__content">
         <div className="WaivioObject__user__links">
-          <Link to={`object/@${wobj.authorPermlink}`}>
+          <Link to={`object/@${wobj.author_permlink}`}>
             <ObjectAvatar item={wobj} size={34} />
           </Link>
           <div className="WaivioObject__user__profile">
             <div className="WaivioObject__user__profile__header">
-              <Link to={`object/@${wobj.authorPermlink}`}>
+              <Link to={`object/@${wobj.author_permlink}`}>
                 <span className="WaivioObject__user__name">
                   <span className="username">{name}</span>
                 </span>
@@ -65,7 +65,7 @@ const WaivioObject = ({ wobj }) => {
                 </div>
               ))}
             <div className="WaivioObject__user__follow">
-              <FollowButton username={wobj.authorPermlink} />
+              <FollowButton username={wobj.author_permlink} />
             </div>
           </div>
         </div>

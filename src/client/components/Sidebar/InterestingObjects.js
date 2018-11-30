@@ -15,7 +15,7 @@ const InterestingObjects = ({ objects }) => (
     </h4>
     <div className="SidebarContentBlock__content">
       {objects &&
-        _.map(objects, object => <ObjectComponent key={object.authorPermlink} item={object} />)}
+        _.map(objects, object => <ObjectComponent key={object.author_permlink} item={object} />)}
       <h4 className="InterestingObjects__more">
         <Link to={'/objects'}>
           <FormattedMessage id="discover_more_objects" defaultMessage="Discover more objects" />

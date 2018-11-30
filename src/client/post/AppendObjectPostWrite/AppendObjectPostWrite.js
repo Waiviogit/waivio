@@ -3,13 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { replace } from 'react-router-redux';
-import _ from 'lodash';
 import 'url-search-params-polyfill';
+import { message } from 'antd';
 import { injectIntl } from 'react-intl';
 import improve from '../../helpers/improve';
 import { rewardsValues } from '../../../common/constants/rewards';
 import { getObject } from '../../object/wobjectsActions';
-import { WAIVIO_POST_TYPE } from '../../../common/constants/waivio';
 
 import {
   getAuthenticatedUser,
@@ -25,7 +24,7 @@ import AppendObjectPostEditor from '../../components/Editor/AppendObjectPostEdit
 import Affix from '../../components/Utils/Affix';
 import CurrentObjectFields from './CurrentObjectFields';
 import LANGUAGES from '../../translations/languages';
-import { createPostMetadata } from '../../helpers/postHelpers';
+import config from '../../../waivioApi/config.json';
 
 @injectIntl
 @withRouter
@@ -56,7 +55,7 @@ class AppendObjectPostWrite extends React.Component {
     rewardSetting: PropTypes.string,
     locale: PropTypes.string,
     newPost: PropTypes.func,
-    createPost: PropTypes.func,
+    history: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -66,9 +65,8 @@ class AppendObjectPostWrite extends React.Component {
     upvoteSetting: true,
     rewardSetting: rewardsValues.half,
     newPost: () => {},
-    createPost: () => {},
-    notify: () => {},
     replace: () => {},
+    history: {},
   };
 
   constructor(props) {
@@ -98,38 +96,49 @@ class AppendObjectPostWrite extends React.Component {
   onSubmit = form => {
     const data = this.getNewPostData(form);
     data.body = improve(data.body);
-    this.props.createPost(data);
+
+    fetch(`${config.objectsBot.url}${config.objectsBot.appendObject}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+      .then(res => res.json())
+      .then(() => {
+        this.props.history.push('/');
+        message.success(
+          `You successfully have added field '${data.field.name}' to object '${data.parentAuthor}'`,
+        );
+      })
+      .catch(err => {
+        message.error(err.error);
+        this.props.history.push('/');
+        console.log('err', err);
+      });
   };
 
   getNewPostData = form => {
-    const data = {
-      body: form.body,
-      title: form.title,
-      reward: form.reward,
-      upvote: form.upvote,
-      lastUpdated: Date.now(),
+    const data = {};
+
+    data.author = this.props.user.name || '';
+    data.parentAuthor = this.state.wobject.value.author_permlink.split('_')[0];
+    data.parentPermlink = this.state.wobject.value.author_permlink.split('_')[1];
+    data.body = `<center>${form.body}</center>`;
+    data.title = '';
+
+    data.field = {
+      name: this.state.currentField,
+      body: form.value,
+      locale: this.state.locale,
     };
 
-    data.parentAuthor = '';
-    data.author = this.props.user.name || '';
-
-    if (data.title && !this.permlink) {
-      data.permlink = _.kebabCase(data.title);
-    } else {
-      data.permlink = this.permlink;
-    }
+    data.permlink = `${data.author}-${Math.random()
+      .toString(36)
+      .substring(2)}`;
+    data.lastUpdated = Date.now();
 
     if (this.state.isUpdating) data.isUpdating = this.state.isUpdating;
-
-    data.parentPermlink = form.topics.length ? form.topics[0] : 'general';
-
-    data.jsonMetadata = createPostMetadata(data.body, form.topics, null, {
-      type: WAIVIO_POST_TYPE.APPEND_OBJECT,
-    });
-
-    if (this.originalBody) {
-      data.originalBody = this.originalBody;
-    }
 
     return data;
   };

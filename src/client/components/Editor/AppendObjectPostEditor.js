@@ -160,7 +160,7 @@ class AppendObjectPostEditor extends React.Component {
       })} ${values.value} ${this.props.intl.formatMessage({
         id: 'updates_in_object3',
         defaultMessage: 'to',
-      })} ${this.props.wobject.tag} ${values.body}<br />`,
+      })} ${this.props.wobject.authorPermlink} ${values.body}<br />`,
     );
   }
 
@@ -172,8 +172,6 @@ class AppendObjectPostEditor extends React.Component {
       else {
         const valuesToSend = {
           ...values,
-          topics: ['appendwaivioobject'],
-          locale: this.state.currentLocaleInList,
         };
         this.props.onSubmit(valuesToSend);
       }
@@ -304,7 +302,7 @@ class AppendObjectPostEditor extends React.Component {
             })} "${this.props.currentField}" ${intl.formatMessage({
               id: 'updates_in_object3',
               defaultMessage: 'to',
-            })} ${this.props.wobject.tag}`,
+            })} ${this.props.wobject.authorPermlink}`,
             rules: [
               {
                 required: true,

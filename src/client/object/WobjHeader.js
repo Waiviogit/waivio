@@ -33,7 +33,7 @@ const WobjHeader = ({ wobject, handle, coverImage, hasCover, isActive }) => {
               >
                 <FollowButton username={handle} />
                 <Link
-                  to={`/wobject/editor/@${wobject.authorPermlink}`}
+                  to={`/wobject/editor/@${wobject.author_permlink}`}
                   className="ObjectHeader__extend"
                 >
                   <Action>
@@ -44,7 +44,7 @@ const WobjHeader = ({ wobject, handle, coverImage, hasCover, isActive }) => {
             </div>
           </div>
           <div className="ObjectHeader__handle-rank-container">
-            <div className="ObjectHeader__row ObjectHeader__handle">@{wobject.authorPermlink}</div>
+            <div className="ObjectHeader__row ObjectHeader__handle">@{wobject.author_permlink}</div>
           </div>
           <div className="ObjectHeader__user__username">
             <div className="ObjectHeader__descriptionShort">

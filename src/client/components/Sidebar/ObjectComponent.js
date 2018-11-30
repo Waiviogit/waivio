@@ -11,13 +11,13 @@ const ObjectComponent = ({ item }) => {
   const name = getField(item, 'name');
 
   return (
-    <div key={item.authorPermlink} className="Object">
+    <div key={item.author_permlink} className="Object">
       <div className="Object__top">
         <div className="Object__links">
-          <Link to={`object/@${item.authorPermlink}`}>
+          <Link to={`object/@${item.author_permlink}`}>
             <ObjectAvatar item={item} size={34} />
           </Link>
-          <Link to={`object/@${item.authorPermlink}`} title={name} className="Object__name">
+          <Link to={`object/@${item.author_permlink}`} title={name} className="Object__name">
             <span className="username">{name}</span>
           </Link>
           {/* <WeightTag weight={item.weight} /> */}
