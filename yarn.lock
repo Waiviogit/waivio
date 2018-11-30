@@ -11936,12 +11936,13 @@ sax@^1.2.4, sax@~1.2.1:
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
   integrity sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
 
-sc2-sdk@^1.0.1:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/sc2-sdk/-/sc2-sdk-1.1.0.tgz#d44ef79bcc096606cb42154438b4f56327133a0a"
-  integrity sha512-ENUG1/+W9Bw3ohw9uo3Ge10Do0onhkJy8eMBv1gVQKkLNKrHEXlL/KBFPN52ePUoXXM+cPiCKC2iVaKGOQTVQA==
+sc2-sdk@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/sc2-sdk/-/sc2-sdk-1.0.2.tgz#6a83d8a55d50ef5c861f80c84da433e4e29fcf56"
+  integrity sha512-QADFzQYCsm6OOQE3cxd/NEhSTEtcohzJ6KQN4E5YaEO/bl2WgWy1Dgz4SFRhjIwTh5luzad2TqfUN7uF4IL8xg==
   dependencies:
     cross-fetch "^1.1.1"
+    debug "^2.2.0"
 
 scheduler@^0.11.2:
   version "0.11.2"
