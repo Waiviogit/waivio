@@ -246,7 +246,7 @@ class Editor extends React.Component {
     const selectedObj = wObject.isNew
       ? getClientWObj({
           ...wObject,
-          authorPermlink: `${this.props.user.name}-${wObject.authorPermlink}`,
+          author_permlink: `${this.props.user.name}-${wObject.author_permlink}`,
         })
       : wObject;
     this.setState(prevState => {

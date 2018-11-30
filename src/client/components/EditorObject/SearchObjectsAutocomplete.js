@@ -61,7 +61,7 @@ class SearchObjectsAutocomplete extends Component {
     const selectedObject = this.props.searchObjectsResults.find(obj => obj.id === objId);
     this.props.handleSelect(
       selectedObject || {
-        authorPermlink: objId,
+        author_permlink: objId,
         fields: [
           {
             name: 'name',
