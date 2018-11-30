@@ -14,7 +14,8 @@ const InterestingObjects = ({ objects }) => (
       <FormattedMessage id="interesting_objects" defaultMessage="Top 5 Objects" />
     </h4>
     <div className="SidebarContentBlock__content">
-      {objects && _.map(objects, object => <ObjectComponent key={object.tag} item={object} />)}
+      {objects &&
+        _.map(objects, object => <ObjectComponent key={object.author_permlink} item={object} />)}
       <h4 className="InterestingObjects__more">
         <Link to={'/objects'}>
           <FormattedMessage id="discover_more_objects" defaultMessage="Discover more objects" />
@@ -25,7 +26,7 @@ const InterestingObjects = ({ objects }) => (
 );
 
 InterestingObjects.propTypes = {
-  objects: PropTypes.arrayOf(PropTypes.shape({ tag: PropTypes.string })),
+  objects: PropTypes.arrayOf(PropTypes.shape()),
 };
 
 InterestingObjects.defaultProps = {

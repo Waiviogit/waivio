@@ -28,14 +28,17 @@ export const getObjects = () =>
   }).then(res => res.json());
 
 export const getObject = name =>
-  fetch(`${config.apiPrefix}${config.getObjects}${name}`).then(res => res.json());
+  fetch(`${config.apiPrefix}${config.getObjects}/${name}`).then(res => res.json());
 
 export const getUsersByObject = object =>
-  fetch(`${config.apiPrefix}${config.getObjects}${object}`).then(res => res.json());
+  fetch(`${config.apiPrefix}${config.getObjects}/${object}`).then(res => res.json());
 
 export const getFeedContentByObject = name =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.getObjects}${name}/posts`)
+    fetch(`${config.apiPrefix}${config.getObjects}${name}/posts`, {
+      headers,
+      method: 'POST',
+    })
       .then(res => res.json())
       .then(posts => resolve(posts))
       .catch(error => reject(error));
@@ -44,11 +47,8 @@ export const getFeedContentByObject = name =>
 export const getMoreFeedContentByObject = ({ tag, startAuthor, startPermlink, limit }) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}${tag}/posts`, {
+      headers,
       method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify({ tag, startAuthor, startPermlink, limit }),
     })
       .then(res => res.json())

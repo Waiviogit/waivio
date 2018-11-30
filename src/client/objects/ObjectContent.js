@@ -29,16 +29,7 @@ class ObjectContent extends React.Component {
     });
   }
 
-  handleLoadMore = () => {
-    // const { wobjs } = this.state;
-    // const moreWobjStartIndex = wobjs.length;
-    // const moreWobj = people.slice(moreWobjStartIndex, moreWobjStartIndex + displayLimit);
-    // SteemAPI.sendAsync('get_accounts', [moreWobj]).then(moreWobjResponse =>
-    //   this.setState({
-    //     wobjs: wobjs.concat(moreWobjResponse),
-    //   }),
-    // );
-  };
+  handleLoadMore = () => {};
 
   render() {
     const { wobjs } = this.state;
@@ -53,7 +44,7 @@ class ObjectContent extends React.Component {
       <div>
         <ReduxInfiniteScroll hasMore={hasMore} loadMore={this.handleLoadMore}>
           {_.map(ordered, wobj => (
-            <WaivioObject wobj={wobj} key={wobj.tag} />
+            <WaivioObject wobj={wobj} key={wobj.author_permlink} />
           ))}
         </ReduxInfiniteScroll>
       </div>

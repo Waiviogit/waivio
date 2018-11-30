@@ -20,8 +20,8 @@ const Objects = ({ intl }) => (
           <LeftSidebar />
         </div>
       </Affix>
-      <div className="Discover">
-        <div className="Discover__title">
+      <div className="Objects">
+        <div className="Objects__title">
           <h1>
             <FormattedMessage id="objects_title" defaultMessage="Discover more objects" />
           </h1>
@@ -30,7 +30,7 @@ const Objects = ({ intl }) => (
             defaultMessage="Discover the most reputable objects of this platform"
           />
         </div>
-        <div className="Discover__content">
+        <div className="Objects__content">
           <ObjectContent />
         </div>
       </div>

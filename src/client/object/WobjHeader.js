@@ -11,7 +11,7 @@ import '../components/ObjectHeader.less';
 
 import { getField } from '../objects/WaivioObject';
 
-const WobjHeader = ({ username, wobject, handle, coverImage, hasCover, isActive }) => {
+const WobjHeader = ({ wobject, handle, coverImage, hasCover, isActive }) => {
   const style = hasCover
     ? { backgroundImage: `url("https://steemitimages.com/2048x512/${coverImage}")` }
     : {};
@@ -22,7 +22,7 @@ const WobjHeader = ({ username, wobject, handle, coverImage, hasCover, isActive 
         <div className="ObjectHeader__user">
           <div className="ObjectHeader__row">
             <h2 className="ObjectHeader__user__username">
-              {username}
+              {getField(wobject, 'name')}
               <WeightTag weight={wobject.weight} />
             </h2>
             <div className="ObjectHeader__user__buttons">
@@ -32,7 +32,10 @@ const WobjHeader = ({ username, wobject, handle, coverImage, hasCover, isActive 
                 })}
               >
                 <FollowButton username={handle} />
-                <Link to={`/wobject/editor/@${wobject.tag}`} className="ObjectHeader__extend">
+                <Link
+                  to={`/wobject/editor/@${wobject.author_permlink}`}
+                  className="ObjectHeader__extend"
+                >
                   <Action>
                     <FormattedMessage id="extend-object" defaultMessage="Extend" />
                   </Action>
@@ -41,7 +44,7 @@ const WobjHeader = ({ username, wobject, handle, coverImage, hasCover, isActive 
             </div>
           </div>
           <div className="ObjectHeader__handle-rank-container">
-            <div className="ObjectHeader__row ObjectHeader__handle">@{wobject.tag}</div>
+            <div className="ObjectHeader__row ObjectHeader__handle">@{wobject.author_permlink}</div>
           </div>
           <div className="ObjectHeader__user__username">
             <div className="ObjectHeader__descriptionShort">
@@ -55,7 +58,6 @@ const WobjHeader = ({ username, wobject, handle, coverImage, hasCover, isActive 
 };
 
 WobjHeader.propTypes = {
-  username: PropTypes.string,
   handle: PropTypes.string,
   coverImage: PropTypes.string,
   hasCover: PropTypes.bool,
