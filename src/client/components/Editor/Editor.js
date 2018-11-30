@@ -44,7 +44,7 @@ class Editor extends React.Component {
     isUpdating: PropTypes.bool,
     saving: PropTypes.bool,
     draftId: PropTypes.string,
-    onUpdate: PropTypes.func,
+    // onUpdate: PropTypes.func,
     onDelete: PropTypes.func,
     onSubmit: PropTypes.func,
     onError: PropTypes.func,
@@ -213,9 +213,9 @@ class Editor extends React.Component {
     const values = form.getFieldsValue();
     this.setBodyAndRender(values.body);
 
-    if (Object.values(form.getFieldsError()).filter(e => e).length > 0) return;
+    // if (Object.values(form.getFieldsError()).filter(e => e).length > 0) return;
 
-    this.props.onUpdate(values);
+    // this.props.onUpdate(values);
   }
 
   checkNewObjects() {

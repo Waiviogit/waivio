@@ -60,7 +60,7 @@ export const searchObjects = (searchString, limit = 10) =>
   fetch(`${config.apiPrefix}${config.searchObjects}`, {
     headers,
     method: 'POST',
-    body: JSON.stringify({ searchString, limit }),
+    body: JSON.stringify({ search_string: searchString, limit }),
   }).then(res => res.json());
 
 export default null;
