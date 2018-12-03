@@ -3,7 +3,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { InputNumber, Slider, Spin } from 'antd';
+import { InputNumber, Slider, Spin, Icon } from 'antd';
 import './EditorObject.less';
 
 @injectIntl
@@ -86,7 +86,7 @@ class EditorObject extends React.Component {
                 })}
                 onClick={this.handleCreateObject}
               >
-                <i className="iconfont anticon anticon-codepen editor-object__control-item item-icon" />
+                <Icon type="codepen" className="editor-object__control-item item-icon" />
                 <span className="editor-object__control-item item-text">
                   {intl.formatMessage({ id: 'create', defaultMessage: 'Create' })}
                 </span>
@@ -101,7 +101,7 @@ class EditorObject extends React.Component {
                 className="editor-object__control-item delete"
                 onClick={() => handleRemoveObject(wObject)}
               >
-                <i className="iconfont anticon anticon-delete editor-object__control-item item-icon" />
+                <Icon type="delete" className="editor-object__control-item item-icon" />
                 <span className="editor-object__control-item item-text">
                   {intl.formatMessage({ id: 'remove', defaultMessage: 'Remove' })}
                 </span>
