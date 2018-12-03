@@ -35,7 +35,7 @@ export const getUsersByObject = object =>
 
 export const getFeedContentByObject = name =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.getObjects}${name}/posts`, {
+    fetch(`${config.apiPrefix}${config.getObjects}/${name}/posts`, {
       headers,
       method: 'POST',
     })
@@ -46,7 +46,7 @@ export const getFeedContentByObject = name =>
 
 export const getMoreFeedContentByObject = ({ tag, startAuthor, startPermlink, limit }) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.getObjects}${tag}/posts`, {
+    fetch(`${config.apiPrefix}${config.getObjects}/${tag}/posts`, {
       headers,
       method: 'POST',
       body: JSON.stringify({ tag, startAuthor, startPermlink, limit }),

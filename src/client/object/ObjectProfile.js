@@ -84,16 +84,17 @@ export default class ObjectProfile extends React.Component {
             loadMoreContent={loadMoreContentAction}
             showPostModal={this.props.showPostModal}
           />
-          {_.isEmpty(content) && fetched && (
-            <div className="text-center">
-              <h3>
-                <FormattedMessage
-                  id="empty_object_profile"
-                  defaultMessage="This object doesn't have any story published yet."
-                />
-              </h3>
-            </div>
-          )}
+          {_.isEmpty(content) &&
+            fetched && (
+              <div className="text-center">
+                <h3>
+                  <FormattedMessage
+                    id="empty_object_profile"
+                    defaultMessage="This object doesn't have any story published yet."
+                  />
+                </h3>
+              </div>
+            )}
         </div>
         {<PostModal />}
       </div>

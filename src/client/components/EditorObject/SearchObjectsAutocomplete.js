@@ -46,8 +46,11 @@ class SearchObjectsAutocomplete extends Component {
 
   handleChange(value = '') {
     const searchString = value.toLowerCase().trim();
-    this.setState(prevState =>
-      prevState.isOptionSelected ? { searchString: '', isOptionSelected: false } : { searchString },
+    this.setState(
+      prevState =>
+        prevState.isOptionSelected
+          ? { searchString: '', isOptionSelected: false }
+          : { searchString },
     );
   }
 
@@ -91,18 +94,19 @@ class SearchObjectsAutocomplete extends Component {
         value={searchString}
         allowClear
       >
-        {canCreateNewObject && Boolean(searchString) && (
-          <AutoComplete.Option
-            key={`${searchString}-${Math.random()
-              .toString(36)
-              .substring(2)}`}
-          >
-            <div className="wobj-search-option">
-              <span className="wobj-search-option__caption">{searchString}</span>
-              <span className="wobj-search-option__label">create new</span>
-            </div>
-          </AutoComplete.Option>
-        )}
+        {canCreateNewObject &&
+          Boolean(searchString) && (
+            <AutoComplete.Option
+              key={`${searchString}-${Math.random()
+                .toString(36)
+                .substring(2)}`}
+            >
+              <div className="wobj-search-option">
+                <span className="wobj-search-option__caption">{searchString}</span>
+                <span className="wobj-search-option__label">create new</span>
+              </div>
+            </AutoComplete.Option>
+          )}
         {searchObjectsOptions}
       </AutoComplete>
     );
