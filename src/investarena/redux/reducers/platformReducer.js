@@ -1,12 +1,12 @@
-// import { AUTHORIZE_BROKER_REQUEST,
-//     AUTHORIZE_BROKER_SUCCESS,
-//     AUTHORIZE_BROKER_ERROR,
-//     REGISTER_BROKER_REQUEST,
-//     REGISTER_BROKER_SUCCESS,
-//     REGISTER_BROKER_ERROR,
-//     FORGOT_PASS_BROKER_REQUEST,
-//     FORGOT_PASS_BROKER_SUCCESS,
-//     FORGOT_PASS_BROKER_ERROR } from '../actions/brokersActions';
+import { AUTHORIZE_BROKER_REQUEST,
+    AUTHORIZE_BROKER_SUCCESS,
+    AUTHORIZE_BROKER_ERROR,
+    REGISTER_BROKER_REQUEST,
+    REGISTER_BROKER_SUCCESS,
+    REGISTER_BROKER_ERROR,
+    FORGOT_PASS_BROKER_REQUEST,
+    FORGOT_PASS_BROKER_SUCCESS,
+    FORGOT_PASS_BROKER_ERROR } from '../actions/brokersActions';
 import {
   CONNECT_PLATFORM_REQUEST,
   CONNECT_PLATFORM_SUCCESS,
@@ -65,17 +65,17 @@ export default function(state = initialState, action) {
         currentAccountName: action.payload.currentAccountName,
         accounts: action.payload.accounts,
       };
-    // case AUTHORIZE_BROKER_REQUEST:
-    // case FORGOT_PASS_BROKER_REQUEST:
-    // case REGISTER_BROKER_REQUEST:
-    //     return { ...state, isLoading: true };
-    // case AUTHORIZE_BROKER_SUCCESS:
-    // case AUTHORIZE_BROKER_ERROR:
-    // case REGISTER_BROKER_SUCCESS:
-    // case REGISTER_BROKER_ERROR:
-    // case FORGOT_PASS_BROKER_SUCCESS:
-    // case FORGOT_PASS_BROKER_ERROR:
-    //     return { ...state, isLoading: false };
+    case AUTHORIZE_BROKER_REQUEST:
+    case FORGOT_PASS_BROKER_REQUEST:
+    case REGISTER_BROKER_REQUEST:
+        return { ...state, isLoading: true };
+    case AUTHORIZE_BROKER_SUCCESS:
+    case AUTHORIZE_BROKER_ERROR:
+    case REGISTER_BROKER_SUCCESS:
+    case REGISTER_BROKER_ERROR:
+    case FORGOT_PASS_BROKER_SUCCESS:
+    case FORGOT_PASS_BROKER_ERROR:
+        return { ...state, isLoading: false };
     // case SIGN_OUT_SUCCESS:
     //     return initialState;
     default:

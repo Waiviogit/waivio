@@ -14,6 +14,7 @@ import {
   getAuthenticatedUserSCMetaData,
   getIsLoadingNotifications,
 } from '../../reducers';
+import ModalBroker from '../../../investarena/components/Modals/ModalBroker';
 import SteemConnect from '../../steemConnectAPI';
 import { PARSED_NOTIFICATIONS } from '../../../common/constants/notifications';
 import BTooltip from '../BTooltip';
@@ -23,6 +24,7 @@ import Popover from '../Popover';
 import Notifications from './Notifications/Notifications';
 import LanguageSettings from './LanguageSettings';
 import './Topnav.less';
+import Broker from "../../../investarena/components/Header/Broker";
 
 @injectIntl
 @withRouter
@@ -169,7 +171,19 @@ class Topnav extends React.Component {
           'Topnav__mobile-hidden': searchBarActive,
         })}
       >
+        <ModalBroker />
         <Menu selectedKeys={[]} className="Topnav__menu-container__menu" mode="horizontal">
+          <Menu.Item key="broker">
+            <BTooltip
+              placement="bottom"
+              title={intl.formatMessage({ id: 'broker.broker', defaultMessage: 'Broker' })}
+              mouseEnterDelay={1}
+            >
+              <div className="st-margin-right-large" id="broker">
+                <Broker />
+              </div>
+            </BTooltip>
+          </Menu.Item>
           <Menu.Item key="write">
             <BTooltip
               placement="bottom"

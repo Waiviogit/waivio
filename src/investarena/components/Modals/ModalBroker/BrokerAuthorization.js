@@ -1,8 +1,9 @@
+import _ from "lodash";
 import { Button, Form } from 'reactstrap';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { injectIntl } from 'react-intl';
-import Select from 'react-select';
+import { Select } from 'antd';
 import LoadingSpinner from '../../LoadingSpinner';
 import ModalBrokerForgotPassword from '../ModalBrokerForgotPassword';
 import { optionsPlatform } from '../../../constants/selectData';
@@ -12,8 +13,6 @@ import {validateRegistrationSignIn} from '../../../constants/constansValidate';
 const propTypes = {
     isLoading: PropTypes.bool.isRequired,
     forgotPassBroker: PropTypes.func.isRequired,
-    getBroker: PropTypes.func.isRequired,
-    getBrokers: PropTypes.func.isRequired,
     authorizeBroker: PropTypes.func.isRequired,
     disconnectBroker: PropTypes.func.isRequired,
     brokerConnected: PropTypes.bool.isRequired,
@@ -45,28 +44,19 @@ class BrokerAuthorization extends Component {
         const value = localStorage.getItem('isOneClickTrade');
         this.checkboxOneClick.checked = (value === 'true');
     }
-    getBroker = () => {
-        return this.props.getBroker()
-            .then((options) => {
-                this.setState({
-                    selectedBroker: options[0].value,
-                    selectedPlatform: options[0].broker_options.broker_name,
-                    selectedAccount: this.props.currentAccountName,
-                    email: options[0].broker_options.email,
-                    isDisabled: true
-                });
-                return { options, complete: true };
-            });
-    };
-    getBrokers = () => {
-        return this.props.getBrokers()
-            .then(options => {
-                if (options.length === 0) {
-                    this.setState({showDefaultBrokers: false});
-                }
-                return { options, complete: true };
-            });
-    };
+    // getBroker = () => {
+    //     return this.props.getBroker()
+    //         .then((options) => {
+    //             this.setState({
+    //                 selectedBroker: options[0].value,
+    //                 selectedPlatform: options[0].broker_options.broker_name,
+    //                 selectedAccount: this.props.currentAccountName,
+    //                 email: options[0].broker_options.email,
+    //                 isDisabled: true
+    //             });
+    //             return { options, complete: true };
+    //         });
+    // };
     handleBrokerChange = (event) => {
         this.setState({
             selectedBroker: event ? event.value : null,
@@ -76,9 +66,9 @@ class BrokerAuthorization extends Component {
         });
         this.passwordInputRef.focus();
     };
-    updateSelectedPlatform = (event) => {
-        if (this.state.selectedPlatform !== event.value) {
-            this.setState({selectedPlatform: event.value});
+    updateSelectedPlatform = (value) => {
+        if (this.state.selectedPlatform !== value) {
+            this.setState({selectedPlatform: value});
         }
     };
     handleInputChange = (event) => {
@@ -122,28 +112,9 @@ class BrokerAuthorization extends Component {
         this.setState({showPassword: !this.state.showPassword});
     };
     render () {
-        const selectBroker = this.state.showDefaultBrokers
-            ? <Select.Async
-                className="st-broker-chose-broker"
-                name="st-broker-select-broker"
-                value={this.state.selectedBroker}
-                placeholder={this.props.intl.formatMessage({ id: 'modalBroker.selectBroker' })}
-                loadOptions={this.getBrokers}
-                onChange={this.handleBrokerChange}
-                clearable={ false }
-                searchable={ false }
-            />
-            : null;
-        const selectBrokerPresent =
-            <Select.Async
-                name="st-broker-select-broker"
-                loadOptions={this.getBroker}
-                value={this.state.selectedBroker}
-                disabled={true}
-            />;
         const buttonConnect =
             <Button
-                className="st-broker-button"
+                className="ant-btn ant-btn-primary"
                 color="primary"
                 onSubmit={this.sendForm}
                 disabled={this.props.isLoading}
@@ -152,13 +123,15 @@ class BrokerAuthorization extends Component {
             </Button>;
         const buttonDisconnect =
             <Button
-                className="st-broker-button"
+                className="ant-btn ant-btn-danger"
                 color="danger"
                 onSubmit={this.disconnectBroker}
                 disabled={false}
             >
                 {this.props.intl.formatMessage({ id: 'modalBroker.disconnect' })}
             </Button>;
+      const children = [];
+      const Option = Select.Option;
         return (
             <div className="st-broker-authorization">
                 { this.props.isLoading && <LoadingSpinner size="small"/> }
@@ -166,27 +139,22 @@ class BrokerAuthorization extends Component {
                     onSubmit={this.props.brokerConnected ? this.disconnectBroker : this.sendForm}
                     className="st-broker-authorization-form"
                 >
-                    {this.state.showDefaultBrokers &&
-                        <div className="st-broker-select-title">
-                            {this.props.intl.formatMessage({ id: 'modalBroker.selectConnectionName' })}
-                        </div>
-                    }
-                    {this.props.brokerConnected ? selectBrokerPresent : selectBroker }
                     <div className="st-broker-select-title">
                         {this.props.intl.formatMessage({ id: 'modalBroker.connectTo' })}
                     </div>
                     <div className="st-field-div" data-position="left">
-                        <Select
-                            name='selected-platform'
-                            className="st-broker-select-platform"
-                            options={optionsPlatform}
-                            value={this.state.selectedPlatform}
-                            onChange={this.updateSelectedPlatform}
-                            disabled={this.state.isDisabled}
-                            clearable={ false }
-                            searchable={ false }
-                            data-empty={this.props.intl.formatMessage({ id: 'tooltip.empty' })}
-                        />
+                      <Select
+                        defaultValue={optionsPlatform[0].value}
+                        style={{ width: 120 }}
+                        onChange={this.updateSelectedPlatform}
+                        placeholder={this.props.intl.formatMessage({ id: 'tooltip.empty' })}
+                      >
+                       {
+                         _.map(optionsPlatform, option => {
+                          return <Option key={option.value}>{option.label}</Option>
+                        })
+                       }
+                      </Select>
                     </div>
                     <div
                         className="st-field-div"
@@ -196,7 +164,7 @@ class BrokerAuthorization extends Component {
                             type="email"
                             name="email"
                             maxLength={256}
-                            className="field broker-auth-email"
+                            className="ant-input ant-input-lg"
                             placeholder={this.props.intl.formatMessage({ id: 'authorizationForm.emailPlaceholder' })}
                             onChange={this.handleInputChange}
                             disabled={this.state.isDisabled}
@@ -215,7 +183,7 @@ class BrokerAuthorization extends Component {
                             type={this.state.showPassword ? 'text' : 'password'}
                             name="password"
                             maxLength={128}
-                            className="field broker-auth-password"
+                            className="ant-input ant-input-lg"
                             placeholder={this.props.intl.formatMessage({ id: 'authorizationForm.passwordPlaceholder' })}
                             onChange={this.handleInputChange}
                             disabled={this.state.isDisabled}
@@ -228,7 +196,7 @@ class BrokerAuthorization extends Component {
                         <img
                             title={this.props.intl.formatMessage({ id: `${this.state.showPassword ? 'password.hidePasswords' : 'password.showPasswords'}` })}
                             className="st-eye-icon"
-                            src={this.state.showPassword ? '/static/images/icons/eyeDark.svg' : '/static/images/icons/eye.svg'}
+                            src={this.state.showPassword ? '/images/icons/eyeDark.svg' : '/images/icons/eye.svg'}
                             onClick={this.showPassword}
                         />
                     </div>
@@ -236,7 +204,7 @@ class BrokerAuthorization extends Component {
                         <span onClick={this.toggleModalForgotPassword} className="st-modal-broker-authorization-text-click">
                             {this.props.intl.formatMessage({id: 'modalBroker.forgotPassword'})}
                         </span>
-                        <p className="d-flex">
+                        <div className="d-flex">
                             {this.props.intl.formatMessage({ id: 'modalBroker.oneClickTrade' })}
                             <div className="checkbox-wrapper st-correct-wrapper">
                                 <input
@@ -246,10 +214,10 @@ class BrokerAuthorization extends Component {
                                     onChange={this.handleOneClickTrading}
                                 />
                                 <div id="oneClickTrade" className="checkbox">
-                                    <img src="/static/images/icons/checkmark.svg"/>
+                                    <img src="/images/icons/checkmark.svg"/>
                                 </div>
                             </div>
-                        </p>
+                        </div>
                     </div>
                     { this.state.isModalForgotPassword &&
                         <ModalBrokerForgotPassword

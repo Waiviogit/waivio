@@ -1,10 +1,10 @@
 import Cookies from 'js-cookie';
-// import { Umarkets } from './umarkets';
+import { Umarkets } from './umarkets';
 import { Widgets } from './widgets';
 
 const platforms = {
-  // 'umarkets': Umarkets,
-  // 'maximarkets': Umarkets,
+  umarkets: Umarkets,
+  maximarkets: Umarkets,
   widgets: Widgets,
 };
 

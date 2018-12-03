@@ -98,7 +98,7 @@
     "remarkable": "1.7.1",
     "resize-observer-polyfill": "^1.4.2",
     "sanitize-html": "1.15.0",
-    "sc2-sdk": "^1.0.1",
+    "sc2-sdk": "1.0.2",
     "secure-random": "^1.1.1",
     "speakingurl": "^11.0.0",
     "steemscript": "^1.0.1",
@@ -115,7 +115,10 @@
     "reactstrap": "6.0.1",
     "react-select": "1.2.1",
     "axios": "0.17.1",
-    "socket.io-client": "2.1.0"
+    "socket.io-client": "2.1.0",
+    "sockjs": "0.3.18",
+    "stompjs": "2.3.3",
+    "net": "1.0.2"
   },
   "devDependencies": {
     "@storybook/addon-actions": "^3.4.8",

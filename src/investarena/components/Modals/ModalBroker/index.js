@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import React from 'react';
-import { authorizeBroker, getBroker,
-getBrokers, disconnectBroker,
+import { authorizeBroker, disconnectBroker,
 registerBroker, forgotPassBroker } from '../../../redux/actions/brokersActions';
 import { getPlatformNameState,
 getIsLoadingPlatformState
@@ -12,8 +11,6 @@ import ModalBroker from './ModalBroker';
 import { toggleModal } from '../../../redux/actions/modalsActions';
 
 const propTypes = {
-    getBroker: PropTypes.func.isRequired,
-    getBrokers: PropTypes.func.isRequired,
     forgotPassBroker: PropTypes.func.isRequired,
     registerBroker: PropTypes.func.isRequired,
     authorizeBroker: PropTypes.func.isRequired,
@@ -44,8 +41,6 @@ function mergeProps (stateProps, dispatchProps) {
         isLoading,
         isOpen,
         forgotPassBroker: (data) => dispatch(forgotPassBroker(data)),
-        getBroker: () => dispatch(getBroker()),
-        getBrokers: () => dispatch(getBrokers()),
         registerBroker: (registrationData, authorizationData) => dispatch(registerBroker(registrationData, authorizationData)),
         authorizeBroker: (data) => dispatch(authorizeBroker(data)),
         disconnectBroker: () => dispatch(disconnectBroker()),

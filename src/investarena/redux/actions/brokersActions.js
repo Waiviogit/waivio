@@ -22,45 +22,31 @@ export const DISCONNECT_TOKEN_SUCCESS = 'DISCONNECT_BROKER_SUCCESS';
 const localStorageKeys = ['sid', 'stompUser', 'stompPassword', 'um_session', 'broker_id', 'WEBSRV', 'token', 'accounts', 'email'];
 const cookiesData = ['platformName'];
 
-export function getBroker () {
-    return () => {
-        return api.brokers.getBroker()
-            .then(({ data }) => {
-                return data;
-            });
-    };
-}
-export function getBrokers () {
-    return () => {
-        return api.brokers.getBrokers()
-            .then(({ data }) => {
-                return data;
-            });
-    };
-}
+// export function getBroker () {
+//     return () => {
+//         return api.brokers.getBroker()
+//             .then(({ data }) => {
+//                 return data;
+//             });
+//     };
+// }
+// export function getBrokers () {
+//     return () => {
+//         return api.brokers.getBrokers()
+//             .then(({ data }) => {
+//                 return data;
+//             });
+//     };
+// }
 export function authorizeBroker (data) {
     return (dispatch, getState) => {
         dispatch(authorizeBrokerRequest());
-        // return api.brokers.authorizeBroker(data, locales[getLanguageState(getState())])
-        return api.brokers.authorizeBroker(data, 'en')
-            .then(({status, message, error, broker}) => {
-                if (!error && status && message) {
-                    if (status === 'success') {
-                        dispatch(authorizeBrokerSuccess());
-                        dispatch(authorizeToken(broker.token));
-                        singleton.closeWebSocketConnection();
-                        singleton.platform = data.broker_name;
-                        singleton.createWebSocketConnection();
-                        dispatch(toggleModal('broker'));
-                    } else if (status === 'error') {
-                        dispatch(authorizeBrokerError());
-                    }
-                    // dispatch(showNotification({status, message}));
-                } else {
-                    dispatch(authorizeBrokerError());
-                    // dispatch(showNotification({status: 'error', message: error.toString()}));
-                }
-            });
+        dispatch(authorizeBrokerSuccess());
+        dispatch(authorizeToken(broker.token));
+        // singleton.closeWebSocketConnection();
+        // singleton.platform = data.broker_name;
+        // singleton.createWebSocketConnection();
+        // dispatch(toggleModal('broker'));
     };
 }
 export function registerBroker (registrationData, authorizationData) {
@@ -87,19 +73,20 @@ export function registerBroker (registrationData, authorizationData) {
 export function reconnectBroker (data) {
     return (dispatch, getState) => {
         // return api.brokers.reconnectBroker(data, locales[getLanguageState(getState())])
-        return api.brokers.reconnectBroker(data, 'en')
-            .then(({status, message, result, error}) => {
-                if (!error && status && message) {
-                    if (result) {
-                        dispatch(connectPlatform());
-                    } else {
-                        // dispatch(showNotification({status: 'error', message}));
-                        dispatch(disconnectBroker(true));
-                    }
-                } else {
-                    // dispatch(showNotification({status: 'error', message: error.toString()}));
-                }
-            });
+        // return dispatch(connectPlatform());
+      // api.brokers.reconnectBroker(data, 'en')
+        //     .then(({status, message, result, error}) => {
+        //         if (!error && status && message) {
+        //             if (result) {
+        //
+        //             } else {
+        //                 // dispatch(showNotification({status: 'error', message}));
+        //                 dispatch(disconnectBroker(true));
+        //             }
+        //         } else {
+        //             // dispatch(showNotification({status: 'error', message: error.toString()}));
+        //         }
+        //     });
     };
 }
 export function disconnectBroker (isReconnect = false) {

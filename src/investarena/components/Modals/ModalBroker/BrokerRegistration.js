@@ -8,9 +8,9 @@ import {validateRegexWithTooltip, validateConfirmPasswordWithTooltip,
 validateInputNumber, validateMobileCode} from '../../../validate/validate';
 import { agreements } from '../../../configApi/licenseAgreements';
 import { country } from '../../../constants/countryData';
-import { getCountryCode } from '../../../redux/actions/authenticate/registration';
+// import { getCountryCode } from '../../../redux/actions/authenticate/registration';
 import LoadingSpinner from '../../../components/LoadingSpinner';
-import { phoneCode } from '../../../constants/phoneCodeData';
+// import { phoneCode } from '../../../constants/phoneCodeData';
 import {validateRegistrationSignIn} from '../../../constants/constansValidate';
 
 const propTypes = {
@@ -51,9 +51,9 @@ class BrokerRegistration extends Component {
         Object.keys(country['ru']).map((code) => {
             optionsCountry.push({value: code, label: country['ru'][code]});
         });
-        getCountryCode().then((data) => {
-            this.setState({optionsCountry: optionsCountry, selectCountry: data, mobileCode: `+${phoneCode[data]}`});
-        });
+        // getCountryCode().then((data) => {
+        //     // this.setState({optionsCountry: optionsCountry, selectCountry: data, mobileCode: `+${phoneCode[data]}`});
+        // });
         this.inputs = {};
         this.btnSignUp = this.buttonSignUp;
         this.inputs.firstNameInput = this.firstName;
@@ -306,7 +306,7 @@ class BrokerRegistration extends Component {
                                 onClick={this.showPassword.bind(this, 'showConfirmPassword')}/>
                         </div>
                     </div>
-                    <p className="d-flex align-items-center">
+                    <div className="d-flex align-items-center">
                         <div className="checkbox-wrapper st-correct-wrapper"><input
                             type="checkbox"
                             className="st-broker-checkbox"
@@ -316,7 +316,7 @@ class BrokerRegistration extends Component {
                         </div>
                         </div>
                         <span><FormattedMessage id="modalBroker.readTerms"/><a href={this.state.agreementsLink} target="_blank" className="st-margin-left-small"><FormattedMessage id="modalBroker.terms"/></a></span>
-                    </p>
+                    </div>
                     <Button
                         className="st-broker-button"
                         color="primary"
