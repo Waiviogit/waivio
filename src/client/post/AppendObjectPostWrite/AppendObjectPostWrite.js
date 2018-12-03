@@ -7,7 +7,6 @@ import 'url-search-params-polyfill';
 import { message } from 'antd';
 import { injectIntl } from 'react-intl';
 import improve from '../../helpers/improve';
-import { rewardsValues } from '../../../common/constants/rewards';
 import { getObject } from '../../object/wobjectsActions';
 
 import {
@@ -52,7 +51,6 @@ class AppendObjectPostWrite extends React.Component {
     saving: PropTypes.bool,
     upvoteSetting: PropTypes.bool,
     match: PropTypes.shape().isRequired,
-    rewardSetting: PropTypes.string,
     locale: PropTypes.string,
     newPost: PropTypes.func,
     history: PropTypes.shape(),
@@ -63,7 +61,6 @@ class AppendObjectPostWrite extends React.Component {
     draftId: null,
     locale: 'auto',
     upvoteSetting: true,
-    rewardSetting: rewardsValues.half,
     newPost: () => {},
     replace: () => {},
     history: {},
@@ -72,10 +69,8 @@ class AppendObjectPostWrite extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      initialTitle: '',
       initialTopics: [],
       initialBody: '',
-      initialReward: this.props.rewardSetting,
       initialUpvote: this.props.upvoteSetting,
       initialUpdatedDate: Date.now(),
       isUpdating: false,
@@ -97,7 +92,7 @@ class AppendObjectPostWrite extends React.Component {
     const data = this.getNewPostData(form);
     data.body = improve(data.body);
 
-    fetch(`${config.objectsBot.url}${config.objectsBot.appendObject}`, {
+    fetch(`${config.objectsBot.apiPrefix}${config.objectsBot.appendObject}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -108,12 +103,13 @@ class AppendObjectPostWrite extends React.Component {
       .then(() => {
         this.props.history.push('/');
         message.success(
-          `You successfully have added field '${data.field.name}' to object '${data.parentAuthor}'`,
+          `You successfully have added the '${data.field.name}' field to '${
+            data.parentAuthor
+          }' object`,
         );
       })
       .catch(err => {
-        message.error(err.error);
-        this.props.history.push('/');
+        message.error(err.message);
         console.log('err', err);
       });
   };
@@ -124,12 +120,12 @@ class AppendObjectPostWrite extends React.Component {
     data.author = this.props.user.name || '';
     data.parentAuthor = this.state.wobject.value.author_permlink.split('_')[0];
     data.parentPermlink = this.state.wobject.value.author_permlink.split('_')[1];
-    data.body = `<center>${form.body}</center>`;
+    data.body = form.preview;
     data.title = '';
 
     data.field = {
       name: this.state.currentField,
-      body: form.value,
+      body: form.value === 'backgroundImage' ? `<center>${form.value}</center>` : form.value,
       locale: this.state.locale,
     };
 
@@ -148,14 +144,7 @@ class AppendObjectPostWrite extends React.Component {
   changeCurrentLocale = locale => this.setState({ locale });
 
   render() {
-    const {
-      initialTitle,
-      initialTopics,
-      initialBody,
-      initialReward,
-      initialUpvote,
-      locale,
-    } = this.state;
+    const { initialTopics, initialBody, initialUpvote, locale } = this.state;
     const { loading, saving } = this.props;
     const currentLocaleInList = LANGUAGES.find(element => element.id === locale);
 
@@ -178,12 +167,9 @@ class AppendObjectPostWrite extends React.Component {
               changeCurrentField={this.changeCurrentField}
               changeCurrentLocale={this.changeCurrentLocale}
               wobject={this.state.wobject.value}
-              ref={this.setForm}
               saving={saving}
-              title={initialTitle}
               topics={initialTopics}
               body={initialBody}
-              reward={initialReward}
               upvote={initialUpvote}
               loading={loading}
               isUpdating={this.state.isUpdating}

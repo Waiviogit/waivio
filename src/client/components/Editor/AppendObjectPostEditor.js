@@ -8,7 +8,6 @@ import _ from 'lodash';
 import readingTime from 'reading-time';
 import { Checkbox, Form, Input, Select } from 'antd';
 import { supportedObjectFields } from '../../../common/constants/listOfFields';
-import { rewardsValues } from '../../../common/constants/rewards';
 import Action from '../Button/Action';
 import requiresLogin from '../../auth/requiresLogin';
 import EditorInput from './EditorInput';
@@ -18,6 +17,7 @@ import BodyContainer from '../../containers/Story/BodyContainer';
 import './Editor.less';
 import { getLanguageText } from '../../translations';
 import LANGUAGES from '../../translations/languages';
+import { getField } from '../../objects/WaivioObject';
 
 @injectIntl
 @requiresLogin
@@ -25,14 +25,13 @@ import LANGUAGES from '../../translations/languages';
 @withEditor
 class AppendObjectPostEditor extends React.Component {
   static propTypes = {
+    user: PropTypes.shape().isRequired,
     intl: PropTypes.shape().isRequired,
     form: PropTypes.shape().isRequired,
     wobject: PropTypes.shape().isRequired,
-    title: PropTypes.string,
     currentLocaleInList: PropTypes.shape().isRequired,
     topics: PropTypes.arrayOf(PropTypes.string),
     body: PropTypes.string,
-    reward: PropTypes.string,
     upvote: PropTypes.bool,
     loading: PropTypes.bool,
     isUpdating: PropTypes.bool,
@@ -48,10 +47,9 @@ class AppendObjectPostEditor extends React.Component {
   };
 
   static defaultProps = {
-    title: '',
+    user: {},
     topics: [],
     body: '',
-    reward: rewardsValues.half,
     upvote: true,
     currentLocaleInList: { id: 'auto', name: '', nativeName: '' },
     popularTopics: [],
@@ -81,7 +79,6 @@ class AppendObjectPostEditor extends React.Component {
     };
 
     this.onUpdate = this.onUpdate.bind(this);
-    this.setValues = this.setValues.bind(this);
     this.setBodyAndRender = this.setBodyAndRender.bind(this);
     this.throttledUpdate = this.throttledUpdate.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
@@ -90,8 +87,6 @@ class AppendObjectPostEditor extends React.Component {
   }
 
   componentDidMount() {
-    this.setValues(this.props);
-
     // eslint-disable-next-line react/no-find-dom-node
     const select = ReactDOM.findDOMNode(this.select);
     if (select) {
@@ -104,12 +99,10 @@ class AppendObjectPostEditor extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { title, topics, body, reward, upvote } = this.props;
+    const { topics, body, upvote } = this.props;
     if (
-      title !== nextProps.title ||
       !_.isEqual(topics, nextProps.topics) ||
       body !== nextProps.body ||
-      reward !== nextProps.reward ||
       upvote !== nextProps.upvote
     ) {
       this.setValues(nextProps);
@@ -118,24 +111,6 @@ class AppendObjectPostEditor extends React.Component {
 
   onUpdate() {
     _.throttle(this.throttledUpdate, 200, { leading: false, trailing: true })();
-  }
-
-  setValues(post) {
-    let reward = rewardsValues.half;
-    if (
-      post.reward === rewardsValues.all ||
-      post.reward === rewardsValues.half ||
-      post.reward === rewardsValues.none
-    ) {
-      reward = post.reward;
-    }
-
-    this.props.form.setFieldsValue({
-      reward,
-      upvote: post.upvote,
-    });
-
-    this.setBodyAndRender(post.body, post.value);
   }
 
   setBodyAndRender(body, value) {
@@ -147,20 +122,32 @@ class AppendObjectPostEditor extends React.Component {
   }
 
   throttledUpdate() {
-    const { form } = this.props;
+    const { form, user } = this.props;
 
     const values = form.getFieldsValue();
+
+    const getBody = val => (val.body ? `<br /><br />${val.body}` : '');
+
     this.setBodyAndRender(
-      `${this.props.intl.formatMessage({
-        id: 'updates_in_object1',
-        defaultMessage: 'I recommend to add field:',
-      })} "${this.props.currentField}" ${this.props.intl.formatMessage({
+      `${this.props.intl.formatMessage(
+        {
+          id: 'updates_in_object1',
+          defaultMessage: 'I recommend to add field:',
+        },
+        {
+          user: user.name,
+          fieldName: this.props.currentField,
+        },
+      )} ${this.props.intl.formatMessage({
         id: 'updates_in_object2',
         defaultMessage: 'with value',
-      })} ${values.value} ${this.props.intl.formatMessage({
+      })} '${values.value}' ${this.props.intl.formatMessage({
         id: 'updates_in_object3',
         defaultMessage: 'to',
-      })} ${this.props.wobject.authorPermlink} ${values.body}<br />`,
+      })} '${getField(this.props.wobject, 'name')}' ${this.props.intl.formatMessage({
+        id: 'object',
+        defaultMessage: 'object',
+      })}. ${getBody(values)}`,
     );
   }
 
@@ -172,6 +159,7 @@ class AppendObjectPostEditor extends React.Component {
       else {
         const valuesToSend = {
           ...values,
+          preview: this.state.body,
         };
         this.props.onSubmit(valuesToSend);
       }
@@ -288,64 +276,9 @@ class AppendObjectPostEditor extends React.Component {
             />,
           )}
         </Form.Item>
-        <Form.Item
-          label={
-            <span className="Editor__label">
-              <FormattedMessage id="title" defaultMessage="Title" />
-            </span>
-          }
-        >
-          {getFieldDecorator('title', {
-            initialValue: `${intl.formatMessage({
-              id: 'updates_in_object1',
-              defaultMessage: 'I recommend to add field',
-            })} "${this.props.currentField}" ${intl.formatMessage({
-              id: 'updates_in_object3',
-              defaultMessage: 'to',
-            })} ${this.props.wobject.authorPermlink}`,
-            rules: [
-              {
-                required: true,
-                message: intl.formatMessage({
-                  id: 'title_error_empty',
-                  defaultMessage: 'title_error_empty',
-                }),
-              },
-              {
-                max: 255,
-                message: intl.formatMessage({
-                  id: 'title_error_too_long',
-                  defaultMessage: "Title can't be longer than 255 characters.",
-                }),
-              },
-            ],
-          })(
-            <Input
-              ref={title => {
-                this.title = title;
-              }}
-              onChange={this.onUpdate}
-              className="Editor__title"
-              placeholder={intl.formatMessage({
-                id: 'title_placeholder',
-                defaultMessage: 'Add title',
-              })}
-              disabled
-            />,
-          )}
-        </Form.Item>
         <Form.Item>
           {getFieldDecorator('body', {
             initialValue: '',
-            rules: [
-              {
-                required: true,
-                message: intl.formatMessage({
-                  id: 'story_error_empty',
-                  defaultMessage: "Story content can't be empty.",
-                }),
-              },
-            ],
           })(
             <EditorInput
               rows={12}
@@ -366,39 +299,30 @@ class AppendObjectPostEditor extends React.Component {
             />,
           )}
         </Form.Item>
-        {body && (
-          <Form.Item
-            label={
-              <span className="Editor__label">
-                <FormattedMessage id="preview" defaultMessage="Preview" />
-              </span>
-            }
-          >
-            <BodyContainer full body={body} />
-          </Form.Item>
-        )}
+
         <Form.Item
-          className={classNames({ Editor__hidden: isUpdating })}
           label={
             <span className="Editor__label">
-              <FormattedMessage id="reward" defaultMessage="Reward" />
+              <FormattedMessage id="preview" defaultMessage="Preview" />
             </span>
           }
         >
-          {getFieldDecorator('reward')(
-            <Select onChange={this.onUpdate} disabled={isUpdating}>
-              <Select.Option value={rewardsValues.all}>
-                <FormattedMessage id="reward_option_100" defaultMessage="100% Steem Power" />
-              </Select.Option>
-              <Select.Option value={rewardsValues.half}>
-                <FormattedMessage id="reward_option_50" defaultMessage="50% SBD and 50% SP" />
-              </Select.Option>
-              <Select.Option value={rewardsValues.none}>
-                <FormattedMessage id="reward_option_0" defaultMessage="Declined" />
-              </Select.Option>
-            </Select>,
-          )}
+          <BodyContainer full body={body} />
         </Form.Item>
+
+        <Form.Item
+          label={
+            <span className="Editor__label">
+              <FormattedMessage id="warning" defaultMessage="Warning!" />
+            </span>
+          }
+        >
+          <BodyContainer
+            full
+            body={`This action extends object will be created by Waivio Bot. And you will get 70% of Author rewards. You do not spend additional resource credits!`}
+          />
+        </Form.Item>
+
         <Form.Item className={classNames({ Editor__hidden: isUpdating })}>
           {getFieldDecorator('upvote', { valuePropName: 'checked', initialValue: true })(
             <Checkbox onChange={this.onUpdate} disabled={isUpdating}>
