@@ -46,7 +46,9 @@ module.exports = function createConfig(env = 'dev') {
     plugins: [
       DEFINE_PLUGIN,
       new webpack.NormalModuleReplacementPlugin(MATCH_CSS_LESS, 'identity-obj-proxy'),
-
+      new webpack.optimize.LimitChunkCountPlugin({
+        maxChunks: 1,
+      }),
       new WebpackBar({
         name: 'server',
         color: '#c065f4',
