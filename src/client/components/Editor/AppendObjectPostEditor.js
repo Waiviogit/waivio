@@ -147,7 +147,15 @@ class AppendObjectPostEditor extends React.Component {
       })} '${getField(this.props.wobject, 'name')}' ${this.props.intl.formatMessage({
         id: 'object',
         defaultMessage: 'object',
-      })}. ${getBody(values)}`,
+      })} ${this.props.intl.formatMessage(
+        {
+          id: 'preview_locale',
+          defaultMessage: 'in {locale} locale',
+        },
+        {
+          locale: this.props.currentLocaleInList.name,
+        },
+      )}. ${getBody(values)}`,
     );
   }
 
