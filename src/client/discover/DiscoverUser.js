@@ -43,7 +43,7 @@ const DiscoverUser = ({ user }) => {
                 <ReputationTag reputation={user.reputation} />
               </Link>
               <div className="Discover__user__follow">
-                <FollowButton username={user.name} />
+                <FollowButton following={user.name} followingType="user" />
               </div>
             </div>
             <div className="Discover__user__location">

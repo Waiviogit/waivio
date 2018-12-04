@@ -27,6 +27,7 @@ import Notifications from '../client/notifications/Notifications';
 import Error404 from '../client/statics/Error404';
 import ExitPage from '../client/statics/ExitPage';
 import ObjectProfile from '../client/object/ObjectProfile';
+import AppendObjectPostWtite from '../client/post/AppendObjectPostWrite/AppendObjectPostWrite';
 
 const routes = [
   {
@@ -125,7 +126,7 @@ const routes = [
         ],
       },
       {
-        path: '/object/@:name/(followed|feed)?',
+        path: '/object/@:name/(followers|feed)?',
         component: Wobj,
         exact: true,
         routes: [
@@ -149,6 +150,11 @@ const routes = [
       {
         path: '/objects',
         component: Objects,
+      },
+      {
+        path: '/wobject/editor/@:name',
+        exact: true,
+        component: AppendObjectPostWtite,
       },
       {
         path: '/:category?/@:author/:permlink',

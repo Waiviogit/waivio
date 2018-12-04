@@ -10,6 +10,7 @@ const initialState = {
   active: {},
   trending: {},
   comments: {},
+  objectPosts: {},
   blog: {},
   bookmarks: {},
   replies: {},
@@ -22,15 +23,18 @@ const feedIdsList = (state = [], action) => {
     case feedTypes.GET_USER_COMMENTS.START:
     case feedTypes.GET_REPLIES.START:
     case feedTypes.GET_BOOKMARKS.START:
+    case feedTypes.GET_OBJECT_POSTS.START:
       return [];
     case feedTypes.GET_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_REPLIES.SUCCESS:
     case feedTypes.GET_BOOKMARKS.SUCCESS:
+    case feedTypes.GET_OBJECT_POSTS.SUCCESS:
       return action.payload.map(post => post.id);
     case feedTypes.GET_MORE_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_MORE_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_MORE_REPLIES.SUCCESS:
+    case feedTypes.GET_MORE_OBJECT_POSTS.SUCCESS:
       return _.uniq([...state, ...action.payload.map(post => post.id)]);
     default:
       return state;
@@ -43,9 +47,11 @@ const feedCategory = (state = {}, action) => {
     case feedTypes.GET_MORE_FEED_CONTENT.START:
     case feedTypes.GET_USER_COMMENTS.START:
     case feedTypes.GET_MORE_USER_COMMENTS.START:
+    case feedTypes.GET_MORE_OBJECT_POSTS.START:
     case feedTypes.GET_REPLIES.START:
     case feedTypes.GET_MORE_REPLIES.START:
     case feedTypes.GET_BOOKMARKS.START:
+    case feedTypes.GET_OBJECT_POSTS.START:
       return {
         ...state,
         isFetching: true,
@@ -57,9 +63,11 @@ const feedCategory = (state = {}, action) => {
     case feedTypes.GET_MORE_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_MORE_USER_COMMENTS.SUCCESS:
+    case feedTypes.GET_MORE_OBJECT_POSTS.SUCCESS:
     case feedTypes.GET_REPLIES.SUCCESS:
     case feedTypes.GET_MORE_REPLIES.SUCCESS:
     case feedTypes.GET_BOOKMARKS.SUCCESS:
+    case feedTypes.GET_OBJECT_POSTS.SUCCESS:
       return {
         ...state,
         isFetching: false,
@@ -72,9 +80,11 @@ const feedCategory = (state = {}, action) => {
     case feedTypes.GET_MORE_FEED_CONTENT.ERROR:
     case feedTypes.GET_USER_COMMENTS.ERROR:
     case feedTypes.GET_MORE_USER_COMMENTS.ERROR:
+    case feedTypes.GET_MORE_OBJECT_POSTS.ERROR:
     case feedTypes.GET_REPLIES.ERROR:
     case feedTypes.GET_MORE_REPLIES.ERROR:
     case feedTypes.GET_BOOKMARKS.ERROR:
+    case feedTypes.GET_OBJECT_POSTS.ERROR:
       return {
         ...state,
         isFetching: false,
@@ -101,6 +111,9 @@ const feedSortBy = (state = {}, action) => {
     case feedTypes.GET_MORE_USER_COMMENTS.START:
     case feedTypes.GET_MORE_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_MORE_USER_COMMENTS.ERROR:
+    case feedTypes.GET_MORE_OBJECT_POSTS.START:
+    case feedTypes.GET_MORE_OBJECT_POSTS.SUCCESS:
+    case feedTypes.GET_MORE_OBJECT_POSTS.ERROR:
     case feedTypes.GET_REPLIES.START:
     case feedTypes.GET_REPLIES.SUCCESS:
     case feedTypes.GET_REPLIES.ERROR:
@@ -110,6 +123,9 @@ const feedSortBy = (state = {}, action) => {
     case feedTypes.GET_BOOKMARKS.START:
     case feedTypes.GET_BOOKMARKS.SUCCESS:
     case feedTypes.GET_BOOKMARKS.ERROR:
+    case feedTypes.GET_OBJECT_POSTS.START:
+    case feedTypes.GET_OBJECT_POSTS.SUCCESS:
+    case feedTypes.GET_OBJECT_POSTS.ERROR:
       return {
         ...state,
         [action.meta.category]: feedCategory(state[action.meta.category], action),
@@ -133,6 +149,9 @@ const feed = (state = initialState, action) => {
     case feedTypes.GET_MORE_USER_COMMENTS.START:
     case feedTypes.GET_MORE_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_MORE_USER_COMMENTS.ERROR:
+    case feedTypes.GET_MORE_OBJECT_POSTS.START:
+    case feedTypes.GET_MORE_OBJECT_POSTS.SUCCESS:
+    case feedTypes.GET_MORE_OBJECT_POSTS.ERROR:
     case feedTypes.GET_REPLIES.START:
     case feedTypes.GET_REPLIES.SUCCESS:
     case feedTypes.GET_REPLIES.ERROR:
@@ -142,6 +161,9 @@ const feed = (state = initialState, action) => {
     case feedTypes.GET_BOOKMARKS.START:
     case feedTypes.GET_BOOKMARKS.SUCCESS:
     case feedTypes.GET_BOOKMARKS.ERROR:
+    case feedTypes.GET_OBJECT_POSTS.START:
+    case feedTypes.GET_OBJECT_POSTS.SUCCESS:
+    case feedTypes.GET_OBJECT_POSTS.ERROR:
       return {
         ...state,
         [action.meta.sortBy]: feedSortBy(state[action.meta.sortBy], action),

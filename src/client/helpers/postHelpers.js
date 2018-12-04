@@ -5,6 +5,7 @@ import { categoryRegex } from './regexHelpers';
 import { jsonParse } from './formatter';
 import DMCA from '../../common/constants/dmca.json';
 import whiteListedApps from './apps';
+import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
 
 const appVersion = require('../../../package.json').version;
 
@@ -66,7 +67,7 @@ export function getContentImages(content, parsed = false) {
   );
 }
 
-export function createPostMetadata(body, tags, oldMetadata = {}) {
+export function createPostMetadata(body, tags, oldMetadata = {}, waivioData) {
   let metaData = {
     community: 'busy',
     app: `busy/${appVersion}`,
@@ -98,6 +99,9 @@ export function createPostMetadata(body, tags, oldMetadata = {}) {
   metaData.users = users;
   metaData.links = links.slice(0, 10);
   metaData.image = images;
+  if (waivioData && waivioData.type) {
+    metaData[WAIVIO_META_FIELD_NAME] = waivioData;
+  }
 
   return metaData;
 }

@@ -10,14 +10,12 @@ class ObjectMenu extends React.Component {
     onChange: PropTypes.func,
     defaultKey: PropTypes.string,
     followers: PropTypes.number,
-    following: PropTypes.number,
   };
 
   static defaultProps = {
     onChange: () => {},
     defaultKey: 'discussions',
     followers: 0,
-    following: 0,
   };
 
   constructor(props) {

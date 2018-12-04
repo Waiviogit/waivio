@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import WobjHeader from './WobjHeader';
 import UserHeaderLoading from '../components/UserHeaderLoading';
-import UserMenu from '../components/UserMenu';
+import ObjectMenu from '../components/ObjectMenu';
 import Hero from '../components/Hero';
 
 const activityFields = [
@@ -16,7 +16,7 @@ const activityFields = [
 ];
 
 @withRouter
-class UserMenuWrapper extends React.Component {
+class WobjMenuWrapper extends React.Component {
   static propTypes = {
     match: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
@@ -31,9 +31,9 @@ class UserMenuWrapper extends React.Component {
 
   render() {
     const { match, location, history, ...otherProps } = this.props;
-    const current = this.props.location.pathname.split('/')[2];
-    const currentKey = current || 'discussions';
-    return <UserMenu defaultKey={currentKey} onChange={this.onChange} {...otherProps} />;
+    // const current = this.props.location.pathname.split('/')[2];
+    const currentKey = 'discussions';
+    return <ObjectMenu defaultKey={currentKey} onChange={this.onChange} {...otherProps} />;
   }
 }
 
@@ -45,8 +45,9 @@ const isUserActive = user =>
       5 * 60 * 1000,
   );
 
-const UserHero = ({
+const WobjHero = ({
   authenticated,
+  wobject,
   user,
   username,
   coverImage,
@@ -65,9 +66,8 @@ const UserHero = ({
             ) : (
               <WobjHeader
                 username={username}
+                wobject={wobject}
                 handle={user.name}
-                userReputation={user.reputation}
-                vestingShares={parseFloat(user.vesting_shares)}
                 coverImage={coverImage}
                 hasCover={hasCover}
                 isFollowing={isFollowing}
@@ -75,7 +75,7 @@ const UserHero = ({
                 isActive={isUserActive(user)}
               />
             )}
-            <UserMenuWrapper followers={5} following={0} />
+            <WobjMenuWrapper followers={wobject.followersCount || 0} />
           </div>
         )}
       />
@@ -84,7 +84,7 @@ const UserHero = ({
   </div>
 );
 
-UserHero.propTypes = {
+WobjHero.propTypes = {
   authenticated: PropTypes.bool.isRequired,
   user: PropTypes.shape().isRequired,
   username: PropTypes.string.isRequired,
@@ -92,15 +92,17 @@ UserHero.propTypes = {
   hasCover: PropTypes.bool,
   isFollowing: PropTypes.bool,
   onTransferClick: PropTypes.func,
+  wobject: PropTypes.shape(),
 };
 
-UserHero.defaultProps = {
+WobjHero.defaultProps = {
   isSameUser: false,
   coverImage: '',
   hasCover: false,
   isFollowing: false,
   isPopoverVisible: false,
   onTransferClick: () => {},
+  wobject: {},
 };
 
-export default UserHero;
+export default WobjHero;

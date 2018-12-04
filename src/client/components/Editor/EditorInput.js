@@ -11,22 +11,28 @@ import './EditorInput.less';
 
 class EditorInput extends React.Component {
   static propTypes = {
+    canCreateNewObject: PropTypes.bool,
     value: PropTypes.string, // eslint-disable-line react/require-default-props
     inputId: PropTypes.string,
     addon: PropTypes.node,
+    placeholder: PropTypes.string,
     inputRef: PropTypes.func,
     onChange: PropTypes.func,
     onImageUpload: PropTypes.func,
     onImageInvalid: PropTypes.func,
+    onAddLinkedObject: PropTypes.func,
   };
 
   static defaultProps = {
     addon: null,
+    canCreateNewObject: false,
     inputId: '',
+    placeholder: '',
     inputRef: () => {},
     onChange: () => {},
     onImageUpload: () => {},
     onImageInvalid: () => {},
+    onAddLinkedObject: () => {},
   };
 
   static hotkeys = {
@@ -60,6 +66,7 @@ class EditorInput extends React.Component {
     this.handleDragEnter = this.handleDragEnter.bind(this);
     this.handleDragLeave = this.handleDragLeave.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleSelectObject = this.handleSelectObject.bind(this);
   }
 
   componentDidMount() {
@@ -124,6 +131,22 @@ class EditorInput extends React.Component {
     )}`;
     this.resizeTextarea();
     this.setValue(newValue, startPos + imageText.length, startPos + imageText.length);
+  }
+
+  insertObject(objId, displayName) {
+    if (!this.input) return;
+
+    const { value } = this.props;
+
+    const startPos = this.input.selectionStart;
+    const endPos = this.input.selectionEnd;
+    const wObjText = `[${displayName}](${document.location.origin}/object/@${objId})\n`;
+    const newValue = `${value.substring(0, startPos)}${wObjText}${value.substring(
+      endPos,
+      value.length,
+    )}`;
+    this.resizeTextarea();
+    this.setValue(newValue, startPos + wObjText.length, startPos + wObjText.length);
   }
 
   insertCode(type) {
@@ -287,21 +310,34 @@ class EditorInput extends React.Component {
     this.setValue(value);
   }
 
+  handleSelectObject(wObj) {
+    this.props.onAddLinkedObject(wObj);
+    this.insertObject(wObj.id, wObj.name);
+  }
+
   render() {
     const {
       addon,
       value,
+      placeholder,
+      canCreateNewObject,
       inputId,
       inputRef,
       onImageUpload,
       onImageInvalid,
+      onAddLinkedObject,
       ...restProps
     } = this.props;
     const { dropzoneActive } = this.state;
 
     return (
       <React.Fragment>
-        <EditorToolbar onSelect={this.insertCode} />
+        <EditorToolbar
+          canCreateNewObject={canCreateNewObject}
+          onSelect={this.insertCode}
+          togglePopover={this.togglePopover}
+          onSelectLinkedObject={this.handleSelectObject}
+        />
         <div className="EditorInput__dropzone-base">
           <Dropzone
             disableClick
@@ -324,6 +360,7 @@ class EditorInput extends React.Component {
             <HotKeys keyMap={this.constructor.hotkeys} handlers={this.handlers}>
               <Input.TextArea
                 {...restProps}
+                placeholder={placeholder}
                 onChange={this.handleChange}
                 value={value}
                 ref={this.setInput}

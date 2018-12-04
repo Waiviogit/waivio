@@ -4,6 +4,7 @@ import { people } from '../helpers/constants';
 import WaivioObject from './WaivioObject';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import * as ApiClient from '../../waivioApi/ApiClient';
+import Loading from '../components/Icon/Loading';
 
 // const displayLimit = 20;
 
@@ -28,25 +29,23 @@ class ObjectContent extends React.Component {
     });
   }
 
-  handleLoadMore = () => {
-    // const { wobjs } = this.state;
-    // const moreWobjStartIndex = wobjs.length;
-    // const moreWobj = people.slice(moreWobjStartIndex, moreWobjStartIndex + displayLimit);
-    // SteemAPI.sendAsync('get_accounts', [moreWobj]).then(moreWobjResponse =>
-    //   this.setState({
-    //     wobjs: wobjs.concat(moreWobjResponse),
-    //   }),
-    // );
-  };
+  handleLoadMore = () => {};
 
   render() {
     const { wobjs } = this.state;
     const ordered = _.orderBy(wobjs, ['weight'], ['desc']);
     const hasMore = wobjs.length !== people.length;
+
+    if (!wobjs) {
+      return <Loading />;
+    }
+
     return (
       <div>
         <ReduxInfiniteScroll hasMore={hasMore} loadMore={this.handleLoadMore}>
-          {_.map(ordered, wobj => <WaivioObject wobj={wobj} key={wobj.tag} />)}
+          {_.map(ordered, wobj => (
+            <WaivioObject wobj={wobj} key={wobj.author_permlink} />
+          ))}
         </ReduxInfiniteScroll>
       </div>
     );

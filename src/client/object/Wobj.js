@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
+import _ from 'lodash';
+import { getField } from '../objects/WaivioObject';
 import {
   getIsAuthenticated,
   getAuthenticatedUser,
@@ -14,18 +16,19 @@ import {
 import { getObject } from './wobjectsActions';
 import { getObjectUrl } from '../components/ObjectAvatar';
 import Error404 from '../statics/Error404';
-import UserHero from './UserHero';
-import LeftSidebar from '../app/Sidebar/LeftSidebar';
-import RightSidebar from '../app/Sidebar/RightSidebar';
+import WobjHero from './WobjHero';
+import LeftObjectProfileSidebar from '../app/Sidebar/LeftObjectProfileSidebar';
+import RightObjectSidebar from '../app/Sidebar/RightObjectSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
+import Loading from '../components/Icon/Loading';
 
 @connect(
   (state, ownProps) => ({
     authenticated: getIsAuthenticated(state),
     authenticatedUser: getAuthenticatedUser(state),
     authenticatedUserName: getAuthenticatedUserName(state),
-    user: getUser(state, ownProps.match.params.name),
+    user: getUser(state, 'otve'),
     loaded: getIsUserLoaded(state, ownProps.match.params.name),
     failed: getIsUserFailed(state, ownProps.match.params.name),
   }),
@@ -37,11 +40,9 @@ export default class Wobj extends React.Component {
   static propTypes = {
     route: PropTypes.shape().isRequired,
     authenticated: PropTypes.bool.isRequired,
-    // authenticatedUser: PropTypes.shape().isRequired,
-    // authenticatedUserName: PropTypes.string,
     match: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
-    loaded: PropTypes.bool,
+    // loaded: PropTypes.bool,
     failed: PropTypes.bool,
     getObject: PropTypes.func,
   };
@@ -58,41 +59,39 @@ export default class Wobj extends React.Component {
   };
 
   componentDidMount() {
-    const { user } = this.props;
-    if (!user.id && !user.failed) {
-      this.props.getObject(this.props.match.params.name).then(wobject => {
-        this.setState({ wobject });
-      });
-    }
+    this.props.getObject(this.props.match.params.name).then(wobject => {
+      this.setState({ wobject: wobject.value });
+    });
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.match.params.name !== this.props.match.params.name) {
       this.props.getObject(this.props.match.params.name).then(wobject => {
-        this.setState({ wobject }, () => {
-          console.log(wobject);
-        });
+        this.setState({ wobject: wobject.value });
       });
     }
   }
 
   render() {
-    const { authenticated, loaded, failed } = this.props;
+    const { authenticated, failed } = this.props;
     if (failed) return <Error404 />;
 
-    const { wobject: { value } } = this.state;
+    const { wobject } = this.state;
 
-    if (!value) return 'Loading...';
+    if (_.isEmpty(wobject)) {
+      return <Loading center />;
+    }
 
     const { user } = this.props;
 
     const busyHost = global.postOrigin || 'https://busy.org';
-    const desc = `Posts by ${value.tag}`;
-    const image = getObjectUrl(value);
-    const canonicalUrl = `${busyHost}/object/@${value.tag}`;
-    const url = `${busyHost}/object/@${value.tag}`;
-    const displayedUsername = value.tag || '';
-    const hasCover = !!value.cover_image;
+    const desc = `Posts by ${wobject.tag}`;
+    const image = getObjectUrl(wobject);
+    const canonicalUrl = `${busyHost}/object/@${wobject.tag}`;
+    const url = `${busyHost}/object/@${wobject.tag}`;
+    const displayedUsername = wobject.tag || '';
+    const coverImage = getField(wobject, 'backgroundImage');
+    const hasCover = !!coverImage;
     const title = `${displayedUsername} - Waivio`;
 
     return (
@@ -120,12 +119,12 @@ export default class Wobj extends React.Component {
         </Helmet>
         <ScrollToTopOnMount />
         {user && (
-          <UserHero
+          <WobjHero
             authenticated={authenticated}
             user={user}
-            wobject={value}
+            wobject={wobject}
             username={displayedUsername}
-            coverImage={value.cover_image}
+            coverImage={coverImage}
             hasCover={hasCover}
             onFollowClick={this.handleFollowClick}
           />
@@ -134,13 +133,15 @@ export default class Wobj extends React.Component {
           <div className="feed-layout container">
             <Affix className="leftContainer leftContainer__user" stickPosition={72}>
               <div className="left">
-                <LeftSidebar />
+                <LeftObjectProfileSidebar wobject={wobject} />
               </div>
             </Affix>
             <Affix className="rightContainer" stickPosition={72}>
-              <div className="right">{loaded && <RightSidebar key={user.name} />}</div>
+              <div className="right">
+                <RightObjectSidebar users={wobject.users} />
+              </div>
             </Affix>
-            {loaded && <div className="center">{renderRoutes(this.props.route.routes)}</div>}
+            <div className="center">{renderRoutes(this.props.route.routes)}</div>
           </div>
         </div>
       </div>

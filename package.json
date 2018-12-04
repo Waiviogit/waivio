@@ -103,7 +103,7 @@
     "remarkable": "1.7.1",
     "resize-observer-polyfill": "^1.4.2",
     "sanitize-html": "1.15.0",
-    "sc2-sdk": "^1.0.1",
+    "sc2-sdk": "1.0.2",
     "secure-random": "^1.1.1",
     "speakingurl": "^11.0.0",
     "steemscript": "^1.0.1",
@@ -149,7 +149,7 @@
     "sw-precache-webpack-plugin": "^0.11.5",
     "url-loader": "^1.0.1",
     "webpack": "^4.7.0",
-    "webpack-bundle-analyzer": "^2.11.1",
+    "webpack-bundle-analyzer": "^2.13.1",
     "webpack-dev-server": "^3.1.4",
     "webpackbar": "^2.6.1"
   },

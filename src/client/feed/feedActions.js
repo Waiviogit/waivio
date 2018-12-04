@@ -11,6 +11,8 @@ import {
   getBookmarks as getBookmarksSelector,
 } from '../reducers';
 
+import * as ApiClient from '../../waivioApi/ApiClient';
+
 export const GET_FEED_CONTENT = createAsyncActionType('@feed/GET_FEED_CONTENT');
 export const GET_MORE_FEED_CONTENT = createAsyncActionType('@feed/GET_MORE_FEED_CONTENT');
 
@@ -21,6 +23,9 @@ export const GET_REPLIES = createAsyncActionType('@user/GET_REPLIES');
 export const GET_MORE_REPLIES = createAsyncActionType('@user/GET_MORE_REPLIES');
 
 export const GET_BOOKMARKS = createAsyncActionType('@bookmarks/GET_BOOKMARKS');
+
+export const GET_OBJECT_POSTS = createAsyncActionType('@object/GET_OBJECT_POSTS');
+export const GET_MORE_OBJECT_POSTS = createAsyncActionType('@object/GET_MORE_OBJECT_POSTS');
 
 export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) => (
   dispatch,
@@ -82,6 +87,43 @@ export const getUserComments = ({ username, limit = 20 }) => (dispatch, getState
       .then(postsData => postsData),
     meta: { sortBy: 'comments', category: username, limit },
   });
+
+export const getObjectPosts = ({ username, object, limit = 10 }) => dispatch => {
+  dispatch({
+    type: GET_OBJECT_POSTS.ACTION,
+    payload: ApiClient.getFeedContentByObject(object),
+    meta: { sortBy: 'objectPosts', category: username, limit },
+  });
+};
+
+export const getMoreObjectPosts = ({ username, limit = 10, tag }) => (dispatch, getState) => {
+  const state = getState();
+  const feed = getFeed(state);
+  const posts = getPosts(state);
+
+  const feedContent = getFeedFromState('objectPosts', username, feed);
+  const isLoading = getFeedLoadingFromState('objectPosts', username, feed);
+
+  if (!feedContent.length || isLoading) {
+    return null;
+  }
+
+  const lastPost = posts[feedContent[feedContent.length - 1]];
+
+  const startAuthor = lastPost.author;
+  const startPermlink = lastPost.permlink;
+
+  return dispatch({
+    type: GET_MORE_OBJECT_POSTS.ACTION,
+    payload: ApiClient.getMoreFeedContentByObject({
+      tag,
+      startAuthor,
+      startPermlink,
+      limit,
+    }),
+    meta: { sortBy: 'objectPosts', category: username, limit },
+  });
+};
 
 export const getMoreUserComments = ({ username, limit = 20 }) => (
   dispatch,

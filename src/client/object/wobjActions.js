@@ -3,12 +3,12 @@ import { getIsAuthenticated, getAuthenticatedUserName } from '../reducers';
 import { getAllFollowing } from '../helpers/apiHelpers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 
-export const FOLLOW_USER = '@user/FOLLOW_USER';
-export const FOLLOW_USER_START = '@user/FOLLOW_USER_START';
-export const FOLLOW_USER_SUCCESS = '@user/FOLLOW_USER_SUCCESS';
-export const FOLLOW_USER_ERROR = '@user/FOLLOW_USER_ERROR';
+export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
+export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';
+export const FOLLOW_WOBJECT_SUCCESS = '@wobj/FOLLOW_WOBJECT_SUCCESS';
+export const FOLLOW_WOBJECT_ERROR = '@wobj/FOLLOW_WOBJECT_ERROR';
 
-export const followUser = username => (dispatch, getState, { steemConnectAPI }) => {
+export const followObject = authorPermlink => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
 
   if (!getIsAuthenticated(state)) {
@@ -16,22 +16,22 @@ export const followUser = username => (dispatch, getState, { steemConnectAPI }) 
   }
 
   return dispatch({
-    type: FOLLOW_USER,
+    type: FOLLOW_WOBJECT,
     payload: {
-      promise: steemConnectAPI.follow(getAuthenticatedUserName(state), username),
+      promise: steemConnectAPI.followObject(getAuthenticatedUserName(state), authorPermlink),
     },
     meta: {
-      username,
+      authorPermlink,
     },
   });
 };
 
-export const UNFOLLOW_USER = '@user/UNFOLLOW_USER';
-export const UNFOLLOW_USER_START = '@user/UNFOLLOW_USER_START';
-export const UNFOLLOW_USER_SUCCESS = '@user/UNFOLLOW_USER_SUCCESS';
-export const UNFOLLOW_USER_ERROR = '@user/UNFOLLOW_USER_ERROR';
+export const UNFOLLOW_WOBJECT = '@wobj/UNFOLLOW_WOBJECT';
+export const UNFOLLOW_WOBJECT_START = '@wobj/UNFOLLOW_WOBJECT_START';
+export const UNFOLLOW_WOBJECT_SUCCESS = '@wobj/UNFOLLOW_WOBJECT_SUCCESS';
+export const UNFOLLOW_WOBJECT_ERROR = '@wobj/UNFOLLOW_WOBJECT_ERROR';
 
-export const unfollowUser = username => (dispatch, getState, { steemConnectAPI }) => {
+export const unfollowObject = authorPermlink => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
 
   if (!getIsAuthenticated(state)) {
@@ -39,20 +39,20 @@ export const unfollowUser = username => (dispatch, getState, { steemConnectAPI }
   }
 
   return dispatch({
-    type: UNFOLLOW_USER,
+    type: UNFOLLOW_WOBJECT,
     payload: {
-      promise: steemConnectAPI.unfollow(getAuthenticatedUserName(state), username),
+      promise: steemConnectAPI.unfollowObject(getAuthenticatedUserName(state), authorPermlink),
     },
     meta: {
-      username,
+      authorPermlink,
     },
   });
 };
 
-export const GET_FOLLOWING = '@user/GET_FOLLOWING';
-export const GET_FOLLOWING_START = '@user/GET_FOLLOWING_START';
-export const GET_FOLLOWING_SUCCESS = '@user/GET_FOLLOWING_SUCCESS';
-export const GET_FOLLOWING_ERROR = '@user/GET_FOLLOWING_ERROR';
+export const GET_FOLLOWING = '@wobj/GET_FOLLOWING';
+export const GET_FOLLOWING_START = '@wobj/GET_FOLLOWING_START';
+export const GET_FOLLOWING_SUCCESS = '@wobj/GET_FOLLOWING_SUCCESS';
+export const GET_FOLLOWING_ERROR = '@wobj/GET_FOLLOWING_ERROR';
 
 export const getFollowing = username => (dispatch, getState) => {
   const state = getState();
@@ -72,10 +72,10 @@ export const getFollowing = username => (dispatch, getState) => {
   });
 };
 
-export const UPDATE_RECOMMENDATIONS = '@user/UPDATE_RECOMMENDATIONS';
+export const UPDATE_RECOMMENDATIONS = '@wobj/UPDATE_RECOMMENDATIONS';
 export const updateRecommendations = createAction(UPDATE_RECOMMENDATIONS);
 
-export const GET_NOTIFICATIONS = createAsyncActionType('@user/GET_NOTIFICATIONS');
+export const GET_NOTIFICATIONS = createAsyncActionType('@wobj/GET_NOTIFICATIONS');
 
 export const getNotifications = username => (dispatch, getState, { busyAPI }) => {
   const state = getState();

@@ -1,6 +1,31 @@
 {
-  "API_HOST_production": "https://",
-  "API_HOST_development": "https://test-waivio.herokuapp.com/api/",
-  "createObject": "/create/object",
-  "getObjects": "wobject/"
+  "development": {
+    "apiPrefix": "http://waiviodev.com/api",
+
+    "objectsBot": {
+      "apiPrefix": "https://objects-bot-service.herokuapp.com",
+      "": "http://localhost:8093",
+      "createObject": "/objects-bot/create-object",
+      "appendObject": "/objects-bot/append-object"
+    },
+
+    "createObject": "/create/object",
+    "getObjects": "/wobject",
+    "searchObjects": "/wobjectSearch",
+    "getObjectFollowers": "/followers"
+  },
+  "production": {
+    "apiPrefix": "http://waiviodev.com/api",
+
+    "objectsBot": {
+      "apiPrefix": "https://objects-bot-service.herokuapp.com",
+      "createObject": "/objects-bot/create-object",
+      "appendObject": "/objects-bot/append-object"
+    },
+
+    "createObject": "/create/object",
+    "getObjects": "/wobject",
+    "searchObjects": "/wobjectSearch",
+    "getObjectFollowers": "/followers"
+  }
 }
