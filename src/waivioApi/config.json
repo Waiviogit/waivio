@@ -1,6 +1,6 @@
 {
   "development": {
-    "apiPrefix": "https://test-waivio.herokuapp.com/api",
+    "apiPrefix": "http://waiviodev.com/api",
 
     "objectsBot": {
       "apiPrefix": "https://objects-bot-service.herokuapp.com",
@@ -15,7 +15,7 @@
     "getObjectFollowers": "/followers"
   },
   "production": {
-    "apiPrefix": "https://test-waivio.herokuapp.com/api",
+    "apiPrefix": "http://waiviodev.com/api",
 
     "objectsBot": {
       "apiPrefix": "https://objects-bot-service.herokuapp.com",

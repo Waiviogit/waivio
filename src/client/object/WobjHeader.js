@@ -31,7 +31,7 @@ const WobjHeader = ({ wobject, coverImage, hasCover, isActive }) => {
                   'ObjectHeader__user__button-follows-you': true,
                 })}
               >
-                <FollowButton following={wobject.parent_permlink} followingType="wobject" />
+                <FollowButton following={wobject.author_permlink} followingType="wobject" />
                 <Link
                   to={`/wobject/editor/@${wobject.author_permlink}`}
                   className="ObjectHeader__extend"
