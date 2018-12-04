@@ -59,12 +59,9 @@ export default class Wobj extends React.Component {
   };
 
   componentDidMount() {
-    const { user } = this.props;
-    if (!user.id && !user.failed) {
-      this.props.getObject(this.props.match.params.name).then(wobject => {
-        this.setState({ wobject: wobject.value });
-      });
-    }
+    this.props.getObject(this.props.match.params.name).then(wobject => {
+      this.setState({ wobject: wobject.value });
+    });
   }
 
   componentDidUpdate(prevProps) {
