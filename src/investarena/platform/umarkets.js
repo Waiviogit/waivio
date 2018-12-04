@@ -14,9 +14,10 @@ getOpenDealsSuccess,
 getCloseDealsSuccess,
 changeOpenDealPlatformSuccess,
 closeOpenDealPlatformSuccess,
-getLastClosedDealForStatistics,
-updateOpenDealsForStatistics,
-updateClosedDealsForStatistics } from '../redux/actions/dealsActions';
+// getLastClosedDealForStatistics,
+// updateOpenDealsForStatistics,
+updateClosedDealsForStatistics
+} from '../redux/actions/dealsActions';
 import { disconnectBroker, reconnectBroker } from '../redux/actions/brokersActions';
 import { getFavoritesSuccess, updateFavoriteSuccess } from '../redux/actions/favoriteQuotesActions';
 import config from '../configApi/config';
@@ -80,8 +81,8 @@ export class Umarkets {
         }
     }
     onConnect () {
-        const data = { broker_name: this.platformName };
-        setTimeout(() => this.dispatch(getLastClosedDealForStatistics(data)), 7000);
+        // const data = { broker_name: this.platformName };
+        // setTimeout(() => this.dispatch(getLastClosedDealForStatistics(data)), 7000);
         this.dispatch(connectPlatformSuccess(this.platformName));
         if (this.stompClient !== null && this.sid !== null) {
             this.platformSubscribe();
@@ -335,7 +336,7 @@ export class Umarkets {
             });
         });
         this.dispatch(getOpenDealsSuccess(openDeals));
-        this.dispatch(updateOpenDealsForStatistics(data));
+        // this.dispatch(updateOpenDealsForStatistics(data));
     }
     parseClosedDeals (result) {
         if (!this.getClosedDealsForStatistics) {
@@ -401,15 +402,17 @@ export class Umarkets {
         this.dispatch(updateFavoriteSuccess(content.security));
     }
     parseOpenMarketOrderResult (result) {
-    //     if (result.response === 'INSUFFICIENT_BALANCE') {
-    //         this.dataDealToApi = null;
-    //         this.dispatch(showNotification({status: 'error',
-    //             message: locales[getLanguageState(this.store.getState())].messages['umarket.insufficienBalance']}));
-    //     } else if (result.response === 'NOT_TRADING_TIME') {
-    //         this.dataDealToApi = null;
-    //         this.dispatch(showNotification({status: 'error',
-    //             message: locales[getLanguageState(this.store.getState())].messages['umarket.notTradingTime']}));
-    //     }
+        if (result.response === 'INSUFFICIENT_BALANCE') {
+            this.dataDealToApi = null;
+            console.log('INSUFFICIENT_BALANCE')
+            // this.dispatch(showNotification({status: 'error',
+            //     message: locales[getLanguageState(this.store.getState())].messages['umarket.insufficienBalance']}));
+        } else if (result.response === 'NOT_TRADING_TIME') {
+            this.dataDealToApi = null;
+            console.log('NOT_TRADING_TIME')
+          // this.dispatch(showNotification({status: 'error',
+            //     message: locales[getLanguageState(this.store.getState())].messages['umarket.notTradingTime']}));
+        }
     }
     parseCloseMarketOrderResult (result) {
     //     if (result.response === 'NOT_TRADING_TIME') {

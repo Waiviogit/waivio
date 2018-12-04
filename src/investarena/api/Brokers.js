@@ -17,25 +17,28 @@ export default class Brokers extends Base {
             });
     }
     authorizeBroker (data, locale) {
+      console.log(data);
+      console.log(config.brokers.brokerAuthorization);
         return this.apiClient.post(config.brokers.brokerAuthorization, data)
             .then(response => {
                 let status = 'error';
                 let message = '';
-                if (response.data && response.data.broker) {
-                    switch (response.data.broker.code) {
+                if (response.data) {
+                    switch (response.data.code) {
                     case 1:
                         status = 'success';
-                        message = locale.messages['brokerAction.authorizeBrokerSuccess'];
-                        setLocalStorageBroker(data.broker_name, response.data.broker);
+                        // message = locale.messages['brokerAction.authorizeBrokerSuccess'];
+                        setLocalStorageBroker(data.platform, response.data);
                         break;
                     case 2:
-                        message = locale.messages['brokerAction.authorizeBrokerErrorCredentials'];
+                        // message = locale.messages['brokerAction.authorizeBrokerErrorCredentials'];
                         break;
                     default:
-                        message = locale.messages['brokerAction.authorizeBrokerError'];
+                        // message = locale.messages['brokerAction.authorizeBrokerError'];
+                        break;
                     }
                 }
-                return ({headers: response.headers, status, message, error: response.error, broker: response.data.broker});
+                return ({headers: response.headers, status, message, error: response.error, broker: response.data});
             });
     }
     registerBroker (data, locale) {

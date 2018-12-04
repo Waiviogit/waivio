@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { updateHeaders } from '../redux/actions/authenticate/headers';
+// import { updateHeaders } from '../redux/actions/authenticate/headers';
 
 export default class ApiClient {
-    constructor ({ prefix = 'localhost:3000/api/v1' } = {}) {
+    constructor ({ prefix = 'localhost:8095' } = {}) {
         this.prefix = prefix;
     }
     get (requestUrl, payload = {}, params) {
@@ -39,9 +39,9 @@ export default class ApiClient {
                 if (response.data && response.data.data) {
                     response.data = response.data.data;
                 }
-                if (response.headers) {
-                    updateHeaders(response.headers);
-                }
+                // if (response.headers) {
+                //     updateHeaders(response.headers);
+                // }
                 return response;
             }, () => {
                 return {};
@@ -55,12 +55,12 @@ const request = ({
         method,
         url,
         params,
-        data
+        data,
     })
         .then((response) => {
-            if (response.headers) {
-                updateHeaders(response.headers);
-            }
+            // if (response.headers) {
+            //     updateHeaders(response.headers);
+            // }
             if (response.status >= 200 && response.status < 300) {
                 if (response.data && response.data.data) {
                     response.data = response.data.data;
@@ -68,9 +68,9 @@ const request = ({
                 return response;
             }
         }, (xhr) => {
-            if (xhr.response && xhr.response.headers) {
-                updateHeaders(xhr.response.headers);
-            }
+            // if (xhr.response && xhr.response.headers) {
+            //     updateHeaders(xhr.response.headers);
+            // }
             const response = { error: {} };
             response.error.statusCode = (xhr && xhr.response && xhr.response.status) || 500;
             response.error.status = 'error';

@@ -179,9 +179,7 @@ class Topnav extends React.Component {
               title={intl.formatMessage({ id: 'broker.broker', defaultMessage: 'Broker' })}
               mouseEnterDelay={1}
             >
-              <div className="st-margin-right-large" id="broker">
-                <Broker />
-              </div>
+            <Broker />
             </BTooltip>
           </Menu.Item>
           <Menu.Item key="write">

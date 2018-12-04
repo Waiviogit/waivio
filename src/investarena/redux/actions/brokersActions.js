@@ -39,15 +39,28 @@ const cookiesData = ['platformName'];
 //     };
 // }
 export function authorizeBroker (data) {
-    return (dispatch, getState) => {
-        dispatch(authorizeBrokerRequest());
-        dispatch(authorizeBrokerSuccess());
-        dispatch(authorizeToken(broker.token));
-        // singleton.closeWebSocketConnection();
-        // singleton.platform = data.broker_name;
-        // singleton.createWebSocketConnection();
-        // dispatch(toggleModal('broker'));
-    };
+  return (dispatch, getState) => {
+    dispatch(authorizeBrokerRequest());
+    return api.brokers.authorizeBroker(data, 'en-UK')
+      .then(({status, message, error, broker}) => {
+        if (!error && status) {
+          if (status === 'success') {
+            dispatch(authorizeBrokerSuccess());
+            dispatch(authorizeToken(broker.token));
+            singleton.closeWebSocketConnection();
+            singleton.platform = data.platform;
+            singleton.createWebSocketConnection();
+            dispatch(toggleModal('broker'));
+          } else if (status === 'error') {
+            dispatch(authorizeBrokerError());
+          }
+          // dispatch(showNotification({status, message}));
+        } else {
+          dispatch(authorizeBrokerError());
+          // dispatch(showNotification({status: 'error', message: error.toString()}));
+        }
+      });
+  };
 }
 export function registerBroker (registrationData, authorizationData) {
     return (dispatch, getState) => {

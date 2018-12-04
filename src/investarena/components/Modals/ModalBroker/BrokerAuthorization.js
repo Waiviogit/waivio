@@ -19,6 +19,8 @@ const propTypes = {
     intl: PropTypes.object.isRequired
 };
 
+const Option = Select.Option;
+
 class BrokerAuthorization extends Component {
     constructor (props) {
         super(props);
@@ -90,7 +92,7 @@ class BrokerAuthorization extends Component {
         });
         if (isValid) {
             const data = {
-                broker_name: this.state.selectedPlatform,
+                platform: this.state.selectedPlatform,
                 email: this.state.email,
                 password: this.state.password
             };
@@ -114,7 +116,7 @@ class BrokerAuthorization extends Component {
     render () {
         const buttonConnect =
             <Button
-                className="ant-btn ant-btn-primary"
+                className="ant-btn ant-btn-primary w-100"
                 color="primary"
                 onSubmit={this.sendForm}
                 disabled={this.props.isLoading}
@@ -123,15 +125,13 @@ class BrokerAuthorization extends Component {
             </Button>;
         const buttonDisconnect =
             <Button
-                className="ant-btn ant-btn-danger"
+                className="ant-btn ant-btn-danger w-100"
                 color="danger"
                 onSubmit={this.disconnectBroker}
                 disabled={false}
             >
                 {this.props.intl.formatMessage({ id: 'modalBroker.disconnect' })}
             </Button>;
-      const children = [];
-      const Option = Select.Option;
         return (
             <div className="st-broker-authorization">
                 { this.props.isLoading && <LoadingSpinner size="small"/> }
@@ -151,7 +151,7 @@ class BrokerAuthorization extends Component {
                       >
                        {
                          _.map(optionsPlatform, option => {
-                          return <Option key={option.value}>{option.label}</Option>
+                          return <Option key={option.value} value={option.value}>{option.label}</Option>
                         })
                        }
                       </Select>
