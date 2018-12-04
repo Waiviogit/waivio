@@ -43,9 +43,6 @@ const WobjHeader = ({ wobject, handle, coverImage, hasCover, isActive }) => {
               </div>
             </div>
           </div>
-          <div className="ObjectHeader__handle-rank-container">
-            <div className="ObjectHeader__row ObjectHeader__handle">@{wobject.author_permlink}</div>
-          </div>
           <div className="ObjectHeader__user__username">
             <div className="ObjectHeader__descriptionShort">
               {getField(wobject, 'descriptionShort')}
