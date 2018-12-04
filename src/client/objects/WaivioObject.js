@@ -65,7 +65,7 @@ const WaivioObject = ({ wobj }) => {
                 </div>
               ))}
             <div className="WaivioObject__user__follow">
-              <FollowButton username={wobj.author_permlink} />
+              <FollowButton following={wobj.author_permlink} followingType="wobject" />
             </div>
           </div>
         </div>

@@ -11,7 +11,7 @@ import '../components/ObjectHeader.less';
 
 import { getField } from '../objects/WaivioObject';
 
-const WobjHeader = ({ wobject, handle, coverImage, hasCover, isActive }) => {
+const WobjHeader = ({ wobject, coverImage, hasCover, isActive }) => {
   const style = hasCover
     ? { backgroundImage: `url("https://steemitimages.com/2048x512/${coverImage}")` }
     : {};
@@ -31,7 +31,7 @@ const WobjHeader = ({ wobject, handle, coverImage, hasCover, isActive }) => {
                   'ObjectHeader__user__button-follows-you': true,
                 })}
               >
-                <FollowButton username={handle} />
+                <FollowButton following={wobject.parent_permlink} followingType="wobject" />
                 <Link
                   to={`/wobject/editor/@${wobject.author_permlink}`}
                   className="ObjectHeader__extend"
@@ -58,7 +58,6 @@ const WobjHeader = ({ wobject, handle, coverImage, hasCover, isActive }) => {
 };
 
 WobjHeader.propTypes = {
-  handle: PropTypes.string,
   coverImage: PropTypes.string,
   hasCover: PropTypes.bool,
   wobject: PropTypes.shape(),

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getAuthenticatedUserName, getFollowingList, getPendingFollows } from '../reducers';
 import { followUser, unfollowUser } from '../user/userActions';
+import { followObject, unfollowObject } from '../object/wobjActions';
 import withAuthAction from '../auth/withAuthActions';
 import Follow from '../components/Button/Follow';
 
@@ -15,26 +16,34 @@ import Follow from '../components/Button/Follow';
   }),
   {
     followUser,
+    followObject,
     unfollowUser,
+    unfollowObject,
   },
 )
 class FollowButton extends React.Component {
   static propTypes = {
     secondary: PropTypes.bool,
-    username: PropTypes.string.isRequired,
+    following: PropTypes.string.isRequired,
+    followingType: PropTypes.oneOf(['user', 'wobject']),
     authenticatedUserName: PropTypes.string,
     followingList: PropTypes.arrayOf(PropTypes.string).isRequired,
     pendingFollows: PropTypes.arrayOf(PropTypes.string).isRequired,
     onActionInitiated: PropTypes.func.isRequired,
     followUser: PropTypes.func,
+    followObject: PropTypes.func,
     unfollowUser: PropTypes.func,
+    unfollowObject: PropTypes.func,
   };
 
   static defaultProps = {
     secondary: false,
+    followingType: 'user',
     authenticatedUserName: undefined,
     followUser: () => {},
+    followObject: () => {},
     unfollowUser: () => {},
+    unfollowObject: () => {},
   };
 
   constructor(props) {
@@ -45,13 +54,25 @@ class FollowButton extends React.Component {
   }
 
   followClick() {
-    const { username } = this.props;
-    const isFollowed = this.props.followingList.includes(username);
+    const { following, followingType } = this.props;
+    const isFollowed = this.props.followingList.includes(following);
 
-    if (isFollowed) {
-      this.props.unfollowUser(username);
-    } else {
-      this.props.followUser(username);
+    switch (followingType) {
+      case 'wobject':
+        if (!isFollowed) {
+          this.props.unfollowObject(following);
+        } else {
+          this.props.followObject(following);
+        }
+        break;
+      case 'user':
+        if (isFollowed) {
+          this.props.unfollowUser(following);
+        } else {
+          this.props.followUser(following);
+        }
+        break;
+      default:
     }
   }
 
@@ -62,15 +83,15 @@ class FollowButton extends React.Component {
   render() {
     const {
       authenticatedUserName,
-      username,
+      following,
       followingList,
       pendingFollows,
       secondary,
     } = this.props;
-    const followed = followingList.includes(username);
-    const pending = pendingFollows.includes(username);
+    const followed = followingList.includes(following);
+    const pending = pendingFollows.includes(following);
 
-    if (authenticatedUserName === username) return null;
+    if (authenticatedUserName === following) return null;
 
     return (
       <Follow

@@ -23,7 +23,7 @@ const ObjectComponent = ({ item }) => {
           {/* <WeightTag weight={item.weight} /> */}
         </div>
         <div className="Object__follow">
-          <FollowButton username={name} secondary />
+          <FollowButton following={name} followingType="wobject" secondary />
         </div>
       </div>
       <div className="Object__divider" />

@@ -48,7 +48,7 @@ const UserHeader = ({
                     </Action>
                   </Link>
                 ) : (
-                  <FollowButton username={handle} />
+                  <FollowButton following={handle} followingType="user" />
                 )}
               </div>
               {!isSameUser && (
@@ -81,16 +81,15 @@ const UserHeader = ({
               />
             </div>
           </div>
-          {isFollowing &&
-            !isSameUser && (
-              <span
-                className={classNames('UserHeader__follows-you UserHeader__follows-you--mobile', {
-                  'UserHeader__follows-you-cover-text-color': hasCover,
-                })}
-              >
-                <FormattedMessage id="follows_you" defaultMessage="Follows you" />
-              </span>
-            )}
+          {isFollowing && !isSameUser && (
+            <span
+              className={classNames('UserHeader__follows-you UserHeader__follows-you--mobile', {
+                'UserHeader__follows-you-cover-text-color': hasCover,
+              })}
+            >
+              <FormattedMessage id="follows_you" defaultMessage="Follows you" />
+            </span>
+          )}
         </div>
       </div>
     </div>
