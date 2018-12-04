@@ -24,6 +24,7 @@ import Affix from '../../components/Utils/Affix';
 import CurrentObjectFields from './CurrentObjectFields';
 import LANGUAGES from '../../translations/languages';
 import config from '../../../waivioApi/routes';
+import { getField } from '../../objects/WaivioObject';
 
 @injectIntl
 @withRouter
@@ -104,7 +105,7 @@ class AppendObjectPostWrite extends React.Component {
         this.props.history.push('/');
         message.success(
           `You successfully have added the '${data.field.name}' field to '${
-            data.parentAuthor
+            data.wobjectName
           }' object`,
         );
       })
@@ -133,6 +134,8 @@ class AppendObjectPostWrite extends React.Component {
       .toString(36)
       .substring(2)}`;
     data.lastUpdated = Date.now();
+
+    data.wobjectName = getField(this.state.wobject.value, 'name');
 
     if (this.state.isUpdating) data.isUpdating = this.state.isUpdating;
 
