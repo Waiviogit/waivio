@@ -66,7 +66,6 @@ WobjHeader.propTypes = {
 
 WobjHeader.defaultProps = {
   username: '',
-  handle: '',
   userReputation: '0',
   vestingShares: 0,
   coverImage: '',
