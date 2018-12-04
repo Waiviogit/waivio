@@ -10,6 +10,7 @@ export class FollowPure extends React.Component {
     intl: PropTypes.shape().isRequired,
     isFollowed: PropTypes.bool,
     pending: PropTypes.bool,
+    disabled: PropTypes.bool,
     onClick: PropTypes.func,
     secondary: PropTypes.bool,
   };
@@ -18,6 +19,7 @@ export class FollowPure extends React.Component {
     isFollowed: false,
     pending: false,
     secondary: false,
+    disabled: false,
     onClick: () => {},
   };
 
@@ -39,7 +41,7 @@ export class FollowPure extends React.Component {
   };
 
   render() {
-    const { intl, isFollowed, pending, secondary } = this.props;
+    const { intl, isFollowed, pending, disabled, secondary } = this.props;
     const { isHovered } = this.state;
     const isDangerStyles = isFollowed && (isHovered || pending);
 
@@ -63,6 +65,7 @@ export class FollowPure extends React.Component {
           'Follow--danger--secondary': isDangerStyles && secondary,
           'Follow--secondary': secondary,
         })}
+        disabled={disabled}
         onClick={this.handleClick}
         onMouseOver={this.onMouseOver}
         onMouseOut={this.onMouseOut}

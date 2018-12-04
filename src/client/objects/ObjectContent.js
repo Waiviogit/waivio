@@ -43,7 +43,9 @@ class ObjectContent extends React.Component {
     return (
       <div>
         <ReduxInfiniteScroll hasMore={hasMore} loadMore={this.handleLoadMore}>
-          {_.map(ordered, wobj => <WaivioObject wobj={wobj} key={wobj.author_permlink} />)}
+          {_.map(ordered, wobj => (
+            <WaivioObject wobj={wobj} key={wobj.author_permlink} />
+          ))}
         </ReduxInfiniteScroll>
       </div>
     );

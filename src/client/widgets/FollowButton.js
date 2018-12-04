@@ -84,6 +84,7 @@ class FollowButton extends React.Component {
     const {
       authenticatedUserName,
       following,
+      followingType,
       followingList,
       pendingFollows,
       secondary,
@@ -97,6 +98,7 @@ class FollowButton extends React.Component {
       <Follow
         isFollowed={followed}
         pending={pending}
+        disabled={followingType === 'wobject'}
         onClick={this.handleFollowClick}
         secondary={secondary}
       />
