@@ -1,6 +1,6 @@
 {
   "name": "Waivio-fes",
-  "version": "2.5.6",
+  "version": "1.0.0",
   "engines": {
     "node": ">=7.10.1",
     "npm": "=5.3.0"
