@@ -1,34 +1,44 @@
 import fetch from 'isomorphic-fetch';
-import config from './config.json';
+import config from './routes';
 
 const headers = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
 };
 
+export function handleErrors(response) {
+  if (!response.ok) {
+    throw Error(response.statusText);
+  }
+  return response;
+}
+
 export const getRecommendedObjects = () =>
-  fetch(`${config.API_HOST_development}${config.getObjects}`, {
+  fetch(`${config.apiPrefix}${config.getObjects}`, {
     headers,
     method: 'POST',
     body: JSON.stringify({ userLimit: 5, locale: 'en-US' }),
   }).then(res => res.json());
 
 export const getObjects = () =>
-  fetch(`${config.API_HOST_development}${config.getObjects}`, {
+  fetch(`${config.apiPrefix}${config.getObjects}`, {
     headers,
     method: 'POST',
     body: JSON.stringify({ userLimit: 5, locale: 'en-US' }),
   }).then(res => res.json());
 
 export const getObject = name =>
-  fetch(`${config.API_HOST_development}${config.getObjects}${name}`).then(res => res.json());
+  fetch(`${config.apiPrefix}${config.getObjects}/${name}`).then(res => res.json());
 
 export const getUsersByObject = object =>
-  fetch(`${config.API_HOST_development}${config.getObjects}${object}`).then(res => res.json());
+  fetch(`${config.apiPrefix}${config.getObjects}/${object}`).then(res => res.json());
 
 export const getFeedContentByObject = name =>
   new Promise((resolve, reject) => {
-    fetch(`${config.API_HOST_development}${config.getObjects}${name}/posts`)
+    fetch(`${config.apiPrefix}${config.getObjects}${name}/posts`, {
+      headers,
+      method: 'POST',
+    })
       .then(res => res.json())
       .then(posts => resolve(posts))
       .catch(error => reject(error));
@@ -36,12 +46,9 @@ export const getFeedContentByObject = name =>
 
 export const getMoreFeedContentByObject = ({ tag, startAuthor, startPermlink, limit }) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.API_HOST_development}${config.getObjects}${tag}/posts`, {
+    fetch(`${config.apiPrefix}${config.getObjects}${tag}/posts`, {
+      headers,
       method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify({ tag, startAuthor, startPermlink, limit }),
     })
       .then(res => res.json())
@@ -57,10 +64,10 @@ export const postCreateWaivioObject = wObject =>
   }).then(res => res.json());
 
 export const searchObjects = (searchString, limit = 10) =>
-  fetch(`${config.API_HOST_development}${config.searchObjects}`, {
+  fetch(`${config.apiPrefix}${config.searchObjects}`, {
     headers,
     method: 'POST',
-    body: JSON.stringify({ searchString, limit }),
+    body: JSON.stringify({ search_string: searchString, limit }),
   }).then(res => res.json());
 
 export default null;

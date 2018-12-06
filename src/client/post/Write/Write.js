@@ -112,7 +112,7 @@ class Write extends React.Component {
       this.setState({
         initialTitle: draftPost.title || '',
         initialTopics: tags || [],
-        initialWavioData: draftPost.jsonMetadata[WAIVIO_META_FIELD_NAME] || { wObjects: [] },
+        initialWavioData: draftPost.jsonMetadata[WAIVIO_META_FIELD_NAME] || { wobjects: [] },
         initialBody: draftPost.body || '',
         initialReward: draftPost.reward,
         initialUpvote: draftPost.upvote,
@@ -136,7 +136,7 @@ class Write extends React.Component {
       this.setState({
         initialTitle: '',
         initialTopics: [],
-        initialWavioData: { wObjects: [] },
+        initialWavioData: { wobjects: [] },
         initialBody: '',
         initialReward: rewardsValues.half,
         initialUpvote: nextProps.upvoteSetting,
@@ -205,9 +205,9 @@ class Write extends React.Component {
       this.props.draftPosts[this.draftId] && this.props.draftPosts[this.draftId].jsonMetadata;
 
     const waivioData =
-      form[WAIVIO_META_FIELD_NAME] && form[WAIVIO_META_FIELD_NAME].wObjects
+      form[WAIVIO_META_FIELD_NAME] && form[WAIVIO_META_FIELD_NAME].wobjects
         ? { type: WAIVIO_POST_TYPE.CREATE_POST, ...form[WAIVIO_META_FIELD_NAME] }
-        : { type: WAIVIO_POST_TYPE.CREATE_POST, wObjects: [] };
+        : { type: WAIVIO_POST_TYPE.CREATE_POST, wobjects: [] };
 
     data.parentPermlink = form.topics.length ? form.topics[0] : 'general';
     data.jsonMetadata = createPostMetadata(data.body, form.topics, oldMetadata, waivioData);

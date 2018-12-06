@@ -1,13 +1,31 @@
 {
-  "API_HOST_production": "https://",
-  "API_HOST_development": "https://test-waivio.herokuapp.com/api/",
-  "objectsBot": {
-    "url": "http://localhost:8093",
-    "createObject": "/objects-bot/create-object",
-    "appendObject": "/objects-bot/append-object"
+  "development": {
+    "apiPrefix": "https://test-waivio.herokuapp.com/api",
+
+    "objectsBot": {
+      "": "https://protected-inlet-33412.herokuapp.com",
+      "apiPrefix": "http://localhost:8093",
+      "createObject": "/objects-bot/create-object",
+      "appendObject": "/objects-bot/append-object"
+    },
+
+    "createObject": "/create/object",
+    "getObjects": "/wobject",
+    "searchObjects": "/wobjectSearch",
+    "getObjectFollowers": "/followers"
   },
-  "createObject": "/create/object",
-  "getObjects": "wobject/",
-  "searchObjects": "/wobjectSearch",
-  "getObjectFollowers": "followers/"
+  "production": {
+    "apiPrefix": "https://test-waivio.herokuapp.com/api",
+
+    "objectsBot": {
+      "apiPrefix": "https://protected-inlet-33412.herokuapp.com",
+      "createObject": "/objects-bot/create-object",
+      "appendObject": "/objects-bot/append-object"
+    },
+
+    "createObject": "/create/object",
+    "getObjects": "/wobject",
+    "searchObjects": "/wobjectSearch",
+    "getObjectFollowers": "/followers"
+  }
 }

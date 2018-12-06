@@ -3,11 +3,12 @@ export const getClientWObj = serverWObj => {
   /* eslint-disable camelcase */
   const {
     parents,
-    authorPermlink,
+    author_permlink,
+    followers_names,
     weight,
     fields,
-    createdAt,
-    updatedAt,
+    created_at,
+    updated_at,
     __v,
     users,
     children,
@@ -17,17 +18,18 @@ export const getClientWObj = serverWObj => {
   const avatarField = fields && fields.find(f => f.name === 'avatarImage');
   const nameField = fields && fields.find(f => f.name === 'name');
   return {
-    id: authorPermlink,
+    id: author_permlink,
     avatar: avatarField ? avatarField.body : '/images/logo-brand.png',
     name: (nameField && nameField.body) || '',
     parents: parents || [],
     weight: weight || '',
-    createdAt: createdAt || Date.now(),
-    updatedAt: updatedAt || Date.now(),
+    createdAt: created_at || Date.now(),
+    updatedAt: updated_at || Date.now(),
     children: children || [],
     users: users || [],
     userCount: user_count || 0,
     version: __v || 0,
+    followersNames: followers_names,
     isNew: Boolean(isNew),
   };
 };

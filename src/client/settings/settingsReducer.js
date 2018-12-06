@@ -4,6 +4,7 @@ import { rewardsValues } from '../../common/constants/rewards';
 
 const initialState = {
   locale: 'auto',
+  readLanguages: [],
   votingPower: 'auto',
   votePercent: 10000,
   showNSFWPosts: false,
@@ -24,6 +25,7 @@ const settings = (state = initialState, action) => {
       if (action.payload.user_metadata && action.payload.user_metadata.settings) {
         const {
           locale,
+          readLanguages,
           votingPower,
           votePercent,
           showNSFWPosts,
@@ -37,6 +39,7 @@ const settings = (state = initialState, action) => {
         return {
           ...state,
           locale: locale || initialState.locale,
+          readLanguages: readLanguages || initialState.readLanguages,
           votingPower: votingPower || initialState.votingPower,
           votePercent: votePercent || initialState.votePercent,
           showNSFWPosts: showNSFWPosts || initialState.showNSFWPosts,
@@ -62,6 +65,7 @@ const settings = (state = initialState, action) => {
         ...state,
         loading: false,
         locale: action.payload.locale,
+        readLanguages: action.payload.readLanguages,
         votingPower: action.payload.votingPower,
         votePercent: action.payload.votePercent,
         showNSFWPosts: action.payload.showNSFWPosts,
@@ -91,6 +95,7 @@ export default settings;
 
 export const getIsLoading = state => state.loading;
 export const getLocale = state => state.locale;
+export const getReadLanguages = state => state.readLanguages;
 export const getVotingPower = state => state.votingPower;
 export const getVotePercent = state => state.votePercent;
 export const getShowNSFWPosts = state => state.showNSFWPosts;
