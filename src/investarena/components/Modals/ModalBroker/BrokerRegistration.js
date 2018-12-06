@@ -1,9 +1,9 @@
-import { Button, Form, Nav, NavItem, NavLink } from 'reactstrap';
+import { Button, Form } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import React, { Component } from 'react';
-import classnames from 'classnames';
+// import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import Select from 'react-select';
+// import Select from 'react-select';
 import {validateRegexWithTooltip, validateConfirmPasswordWithTooltip,
 validateInputNumber, validateMobileCode} from '../../../validate/validate';
 import { agreements } from '../../../configApi/licenseAgreements';
@@ -134,37 +134,37 @@ class BrokerRegistration extends Component {
         return (
             <div className="st-broker-registration">
                 {this.props.isLoading && <LoadingSpinner size="small"/>}
-                <Nav tabs className="st-broker-registration-nav">
-                    <NavItem className="st-broker-registration-nav-item">
-                        <NavLink
-                            id='umarketsOption'
-                            className={classnames({ active: this.state.activeTab === '1' })}
-                            onClick={() => { this.handleChangePlatform('1', 'umarkets') }}>
-                            <img className="st-broker-image" src="/static/images/umarkets-logo.png"/>
-                            <div className="st-broker-languages">
-                                <span>
-                                    English
-                                    Español
-                                    العربية
-                                </span>
-                            </div>
-                        </NavLink>
-                    </NavItem>
-                    <NavItem className="st-broker-registration-nav-item">
-                        <NavLink
-                            id='maximarketsOption'
-                            className={classnames({ active: this.state.activeTab === '2' })}
-                            onClick={() => { this.handleChangePlatform('2', 'maximarkets') }}>
-                            <img className="st-broker-image" src="/static/images/maximarkets-logo.png"/>
-                            <div className="st-broker-languages">
-                                <span>
-                                    English
-                                    Русский
-                                </span>
-                            </div>
-                        </NavLink>
-                    </NavItem>
-                </Nav>
+                {/*<Nav tabs className="st-broker-registration-nav">*/}
+                    {/*<NavItem className="st-broker-registration-nav-item">*/}
+                        {/*<NavLink*/}
+                            {/*id='umarketsOption'*/}
+                            {/*className={classnames({ active: this.state.activeTab === '1' })}*/}
+                            {/*onClick={() => { this.handleChangePlatform('1', 'umarkets') }}>*/}
+                            {/*<img className="st-broker-image" src="/static/images/umarkets-logo.png"/>*/}
+                            {/*<div className="st-broker-languages">*/}
+                                {/*<span>*/}
+                                    {/*English*/}
+                                    {/*Español*/}
+                                    {/*العربية*/}
+                                {/*</span>*/}
+                            {/*</div>*/}
+                        {/*</NavLink>*/}
+                    {/*</NavItem>*/}
+                    {/*<NavItem className="st-broker-registration-nav-item">*/}
+                        {/*<NavLink*/}
+                            {/*id='maximarketsOption'*/}
+                            {/*className={classnames({ active: this.state.activeTab === '2' })}*/}
+                            {/*onClick={() => { this.handleChangePlatform('2', 'maximarkets') }}>*/}
+                            {/*<img className="st-broker-image" src="/static/images/maximarkets-logo.png"/>*/}
+                            {/*<div className="st-broker-languages">*/}
+                                {/*<span>*/}
+                                    {/*English*/}
+                                    {/*Русский*/}
+                                {/*</span>*/}
+                            {/*</div>*/}
+                        {/*</NavLink>*/}
+                    {/*</NavItem>*/}
+                {/*</Nav>*/}
                 <Form onSubmit={this.sendForm} className="st-broker-registration-form">
                     <div className="d-flex st-field-div">
                         <div className="st-half-block st-margin-right-small" data-position="left">
@@ -255,15 +255,15 @@ class BrokerRegistration extends Component {
                             </FormattedMessage>
                         </div>
                     </div>
-                    <Select
-                        name="selected-country"
-                        className="st-broker-select-country"
-                        options={this.state.optionsCountry}
-                        inputProps={{ maxLength: 25 }}
-                        simpleValue
-                        clearable={false}
-                        value={this.state.selectCountry}
-                        onChange={this.updateValueCountry}/>
+                    {/*<Select*/}
+                        {/*name="selected-country"*/}
+                        {/*className="st-broker-select-country"*/}
+                        {/*options={this.state.optionsCountry}*/}
+                        {/*inputProps={{ maxLength: 25 }}*/}
+                        {/*simpleValue*/}
+                        {/*clearable={false}*/}
+                        {/*value={this.state.selectCountry}*/}
+                        {/*onChange={this.updateValueCountry}/>*/}
                     <div className="d-flex st-field-div">
                         <div className="st-half-block st-margin-right-small" data-position="left">
                             <FormattedMessage id="registrationForm.passwordPlaceholder">

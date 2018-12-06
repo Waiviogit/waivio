@@ -21,7 +21,7 @@ const ModalBroker = (props) => {
       <Modal
         title="Broker Settings"
         visible={props.isOpen}
-        // onOk={()=>{}}
+        footer={null}
         onCancel={props.toggleModal}
       >
         <ModalBrokerTab
