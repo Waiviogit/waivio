@@ -55,7 +55,7 @@ class ModalBrokerTab extends Component {
                     authorizeBroker={this.props.authorizeBroker}
                     toggleModal={this.props.toggleModal}/>
                 </TabPane>
-              </Tabs>,
+              </Tabs>
             </React.Fragment>
         );
     }
