@@ -11,19 +11,18 @@ import { getObject } from '../../object/wobjectsActions';
 
 import {
   getAuthenticatedUser,
-  getIsEditorLoading,
   getIsEditorSaving,
   getUpvoteSetting,
   getRewardSetting,
   getLocale,
+  getIsAppendLoading,
 } from '../../reducers';
-
 import { createPost, newPost } from './editorActions';
+import { appendObject } from './appendActions';
 import AppendObjectPostEditor from '../../components/Editor/AppendObjectPostEditor';
 import Affix from '../../components/Utils/Affix';
 import CurrentObjectFields from './CurrentObjectFields';
 import LANGUAGES from '../../translations/languages';
-import config from '../../../waivioApi/routes';
 import { getField } from '../../objects/WaivioObject';
 
 @injectIntl
@@ -31,7 +30,7 @@ import { getField } from '../../objects/WaivioObject';
 @connect(
   state => ({
     user: getAuthenticatedUser(state),
-    loading: getIsEditorLoading(state),
+    loading: getIsAppendLoading(state),
     saving: getIsEditorSaving(state),
     upvoteSetting: getUpvoteSetting(state),
     rewardSetting: getRewardSetting(state),
@@ -42,6 +41,7 @@ import { getField } from '../../objects/WaivioObject';
     newPost,
     replace,
     getObject,
+    appendObject,
   },
 )
 class AppendObjectPostWrite extends React.Component {
@@ -55,9 +55,11 @@ class AppendObjectPostWrite extends React.Component {
     locale: PropTypes.string,
     newPost: PropTypes.func,
     history: PropTypes.shape(),
+    appendObject: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
+    loading: false,
     saving: false,
     draftId: null,
     locale: 'auto',
@@ -65,6 +67,7 @@ class AppendObjectPostWrite extends React.Component {
     newPost: () => {},
     replace: () => {},
     history: {},
+    appendObject: () => {},
   };
 
   constructor(props) {
@@ -74,7 +77,6 @@ class AppendObjectPostWrite extends React.Component {
       initialBody: '',
       initialUpvote: this.props.upvoteSetting,
       initialUpdatedDate: Date.now(),
-      isUpdating: false,
       showModalDelete: false,
       wobject: {},
       currentField: 'name',
@@ -93,14 +95,8 @@ class AppendObjectPostWrite extends React.Component {
     const data = this.getNewPostData(form);
     data.body = improve(data.body);
 
-    fetch(`${config.objectsBot.apiPrefix}${config.objectsBot.appendObject}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-      .then(res => res.json())
+    this.props
+      .appendObject(data)
       .then(() => {
         this.props.history.push('/');
         message.success(
@@ -110,7 +106,7 @@ class AppendObjectPostWrite extends React.Component {
         );
       })
       .catch(err => {
-        message.error(err.message);
+        message.error("Couldn't append object.");
         console.log('err', err);
       });
   };
@@ -127,7 +123,7 @@ class AppendObjectPostWrite extends React.Component {
     data.field = {
       name: this.state.currentField,
       body: form.value === 'backgroundImage' ? `<center>${form.value}</center>` : form.value,
-      locale: this.state.locale,
+      locale: this.state.locale === 'auto' ? 'en-US' : this.state.locale,
     };
 
     data.permlink = `${data.author}-${Math.random()
@@ -136,8 +132,6 @@ class AppendObjectPostWrite extends React.Component {
     data.lastUpdated = Date.now();
 
     data.wobjectName = getField(this.state.wobject.value, 'name');
-
-    if (this.state.isUpdating) data.isUpdating = this.state.isUpdating;
 
     return data;
   };
@@ -175,7 +169,6 @@ class AppendObjectPostWrite extends React.Component {
               body={initialBody}
               upvote={initialUpvote}
               loading={loading}
-              isUpdating={this.state.isUpdating}
               onSubmit={this.onSubmit}
               onDelete={this.onDelete}
             />

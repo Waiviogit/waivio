@@ -70,4 +70,17 @@ export const searchObjects = (searchString, limit = 10) =>
     body: JSON.stringify({ search_string: searchString, limit }),
   }).then(res => res.json());
 
+export const postAppendWaivioObject = postData =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.objectsBot.apiPrefix}${config.objectsBot.appendObject}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify(postData),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export default null;
