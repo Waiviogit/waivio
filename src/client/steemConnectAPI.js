@@ -17,7 +17,7 @@ function sc2Extended() {
           id: 'follow_wobject',
           json: JSON.stringify([
             'follow',
-            { user: follower, author_permlink: followingObject, what: ['wobject'] },
+            { user: follower, author_permlink: followingObject, what: ['feed'] },
           ]),
         };
         return this.broadcast([['custom_json', params]], cb);

@@ -9,9 +9,10 @@ import Follow from '../components/Button/Follow';
 
 @withAuthAction
 @connect(
-  state => ({
+  (state, ownProps) => ({
     authenticatedUserName: getAuthenticatedUserName(state),
-    followingList: getFollowingList(state),
+    followingList:
+      ownProps.followingType === 'user' ? getFollowingList(state) : getFollowingList(state),
     pendingFollows: getPendingFollows(state),
   }),
   {
@@ -84,7 +85,7 @@ class FollowButton extends React.Component {
     const {
       authenticatedUserName,
       following,
-      followingType,
+      // followingType,
       followingList,
       pendingFollows,
       secondary,
@@ -98,7 +99,7 @@ class FollowButton extends React.Component {
       <Follow
         isFollowed={followed}
         pending={pending}
-        disabled={followingType === 'wobject'}
+        // disabled={followingType === 'wobject'}
         onClick={this.handleFollowClick}
         secondary={secondary}
       />
