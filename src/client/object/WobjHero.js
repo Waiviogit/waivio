@@ -31,8 +31,8 @@ class WobjMenuWrapper extends React.Component {
 
   render() {
     const { match, location, history, ...otherProps } = this.props;
-    // const current = this.props.location.pathname.split('/')[2];
-    const currentKey = 'discussions';
+    const current = this.props.location.pathname.split('/')[3];
+    const currentKey = current || 'discussions';
     return <ObjectMenu defaultKey={currentKey} onChange={this.onChange} {...otherProps} />;
   }
 }
