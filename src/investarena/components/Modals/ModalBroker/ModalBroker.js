@@ -23,6 +23,7 @@ const ModalBroker = (props) => {
         visible={props.isOpen}
         footer={null}
         onCancel={props.toggleModal}
+        style={{width: '451px'}}
       >
         <ModalBrokerTab
             isLoading={props.isLoading}
