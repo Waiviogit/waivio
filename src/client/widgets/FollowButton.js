@@ -1,7 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getAuthenticatedUserName, getFollowingList, getPendingFollows } from '../reducers';
+import {
+  getAuthenticatedUserName,
+  getFollowingList,
+  getFollowingObjectsList,
+  getPendingFollows,
+  getPendingFollowingObjects,
+} from '../reducers';
 import { followUser, unfollowUser } from '../user/userActions';
 import { followObject, unfollowObject } from '../object/wobjActions';
 import withAuthAction from '../auth/withAuthActions';
@@ -12,8 +18,11 @@ import Follow from '../components/Button/Follow';
   (state, ownProps) => ({
     authenticatedUserName: getAuthenticatedUserName(state),
     followingList:
-      ownProps.followingType === 'user' ? getFollowingList(state) : getFollowingList(state),
-    pendingFollows: getPendingFollows(state),
+      ownProps.followingType === 'user' ? getFollowingList(state) : getFollowingObjectsList(state),
+    pendingFollows:
+      ownProps.followingType === 'user'
+        ? getPendingFollows(state)
+        : getPendingFollowingObjects(state),
   }),
   {
     followUser,
@@ -60,7 +69,7 @@ class FollowButton extends React.Component {
 
     switch (followingType) {
       case 'wobject':
-        if (!isFollowed) {
+        if (isFollowed) {
           this.props.unfollowObject(following);
         } else {
           this.props.followObject(following);
