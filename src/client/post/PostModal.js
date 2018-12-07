@@ -129,20 +129,31 @@ class PostModal extends React.Component {
           <Link replace to={`/@${author}/${permlink}`} className="PostModal__action">
             <i className="iconfont icon-send PostModal__icon" />
           </Link>
-          <a href={twitterShareURL} target="_blank" className="PostModal__action">
+          <a
+            href={twitterShareURL}
+            rel="noopener noreferrer"
+            target="_blank"
+            className="PostModal__action"
+          >
             <i className="iconfont icon-twitter PostModal__icon" />
           </a>
-          <a href={facebookShareURL} target="_blank" className="PostModal__action">
+          <a
+            href={facebookShareURL}
+            rel="noopener noreferrer"
+            target="_blank"
+            className="PostModal__action"
+          >
             <i className="iconfont icon-facebook PostModal__icon" />
           </a>
         </div>
         <PostContent content={shownPostContents} signature={signature} />
-        <VisibilitySensor onChange={this.handleCommentsVisibility} />
-        {!isBannedPost(shownPostContents) && (
-          <div id="comments">
-            <Comments show={this.state.commentsVisible} post={shownPostContents} />
-          </div>
-        )}
+        <VisibilitySensor onChange={this.handleCommentsVisibility}>
+          {!isBannedPost(shownPostContents) && (
+            <div id="comments">
+              <Comments show={this.state.commentsVisible} post={shownPostContents} />
+            </div>
+          )}
+        </VisibilitySensor>
       </Modal>
     );
   }
