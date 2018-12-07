@@ -92,7 +92,9 @@ export const getRebloggedList = state => fromReblog.getRebloggedList(state.reblo
 export const getPendingReblogs = state => fromReblog.getPendingReblogs(state.reblog);
 
 export const getFollowingList = state => fromUser.getFollowingList(state.user);
+export const getFollowingObjectsList = state => fromUser.getFollowingObjectsList(state.user);
 export const getPendingFollows = state => fromUser.getPendingFollows(state.user);
+export const getPendingFollowingObjects = state => fromUser.getPendingFollowingObjects(state.user);
 export const getIsFetchingFollowingList = state => fromUser.getIsFetchingFollowingList(state.user);
 export const getRecommendations = state => fromUser.getRecommendations(state.user);
 export const getRecommendedObjects = state => fromUser.getRecommendedObjects(state.user);

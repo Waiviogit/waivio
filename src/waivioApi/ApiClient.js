@@ -70,4 +70,13 @@ export const searchObjects = (searchString, limit = 10) =>
     body: JSON.stringify({ search_string: searchString, limit }),
   }).then(res => res.json());
 
+export const getAllFollowingObjects = username =>
+  new Promise((resolve, reject) => {
+    console.log('-->', username);
+    fetch(`${config.apiPrefix}${config.user}/${username}`)
+      .then(res => res.json())
+      .then(user => resolve(user.objects_follow || []))
+      .catch(error => reject(error));
+  });
+
 export default null;
