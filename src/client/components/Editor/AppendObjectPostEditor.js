@@ -34,7 +34,6 @@ class AppendObjectPostEditor extends React.Component {
     body: PropTypes.string,
     upvote: PropTypes.bool,
     loading: PropTypes.bool,
-    isUpdating: PropTypes.bool,
     saving: PropTypes.bool,
     onDelete: PropTypes.func,
     onSubmit: PropTypes.func,
@@ -190,7 +189,7 @@ class AppendObjectPostEditor extends React.Component {
     this.setState({ body: '' });
   };
   render() {
-    const { intl, form, loading, isUpdating, saving } = this.props;
+    const { intl, form, loading, saving } = this.props;
     const { getFieldDecorator } = form;
     const { body, bodyHTML, currentLocaleInList } = this.state;
 
@@ -331,9 +330,9 @@ class AppendObjectPostEditor extends React.Component {
           />
         </Form.Item>
 
-        <Form.Item className={classNames({ Editor__hidden: isUpdating })}>
+        <Form.Item className={classNames({ Editor__hidden: loading })}>
           {getFieldDecorator('upvote', { valuePropName: 'checked', initialValue: true })(
-            <Checkbox onChange={this.onUpdate} disabled={isUpdating}>
+            <Checkbox onChange={this.onUpdate} disabled={loading}>
               <FormattedMessage id="like_post" defaultMessage="Like this post" />
             </Checkbox>,
           )}
@@ -353,7 +352,7 @@ class AppendObjectPostEditor extends React.Component {
               </span>
             )}
             <Form.Item className="Editor__bottom__submit">
-              {isUpdating ? (
+              {loading ? (
                 <Action primary big loading={loading} disabled={loading}>
                   <FormattedMessage
                     id={loading ? 'post_send_progress' : 'post_update_send'}
