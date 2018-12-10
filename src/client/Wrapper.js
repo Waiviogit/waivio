@@ -20,7 +20,12 @@ import {
   getNightmode,
 } from './reducers';
 import { login, logout, busyLogin } from './auth/authActions';
-import { getFollowing, getNotifications, getRecommendedObjects } from './user/userActions';
+import {
+  getFollowing,
+  getFollowingObjects,
+  getNotifications,
+  getRecommendedObjects,
+} from './user/userActions';
 import {
   getRate,
   getRewardFund,
@@ -51,6 +56,7 @@ import BBackTop from './components/BBackTop';
     login,
     logout,
     getFollowing,
+    getFollowingObjects,
     getRecommendedObjects,
     getNotifications,
     getRate,
@@ -73,6 +79,7 @@ export default class Wrapper extends React.PureComponent {
     login: PropTypes.func,
     logout: PropTypes.func,
     getFollowing: PropTypes.func,
+    getFollowingObjects: PropTypes.func,
     getRecommendedObjects: PropTypes.func,
     getRewardFund: PropTypes.func,
     getRebloggedList: PropTypes.func,
@@ -91,6 +98,7 @@ export default class Wrapper extends React.PureComponent {
     login: () => {},
     logout: () => {},
     getFollowing: () => {},
+    getFollowingObjects: () => {},
     getRecommendedObjects: () => {},
     getRewardFund: () => {},
     getRebloggedList: () => {},
@@ -141,6 +149,7 @@ export default class Wrapper extends React.PureComponent {
   componentDidMount() {
     this.props.login().then(() => {
       this.props.getFollowing();
+      this.props.getFollowingObjects();
       this.props.getRecommendedObjects();
       this.props.getNotifications();
       this.props.busyLogin();

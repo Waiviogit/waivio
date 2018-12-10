@@ -174,8 +174,7 @@ class Editor extends React.Component {
     const values = form.getFieldsValue();
     this.setBodyAndRender(values.body);
 
-    if (Object.values(form.getFieldsError()).filter(e => e).length > 0 || this.checkNewObjects())
-      return;
+    // if (Object.values(form.getFieldsError()).filter(e => e).length > 0) return;
 
     const topics = linkedObjects
       .sort((a, b) => b.influence.value - a.influence.value)
@@ -184,6 +183,7 @@ class Editor extends React.Component {
     const wobjects = linkedObjects.map(obj => ({
       parentPermlink: obj.id,
       percent: obj.influence.value,
+      isNew: Boolean(obj.isNew),
     }));
 
     this.props.onUpdate({ ...values, topics, [WAIVIO_META_FIELD_NAME]: { wobjects } });

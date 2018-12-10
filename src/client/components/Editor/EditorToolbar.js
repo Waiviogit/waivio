@@ -124,7 +124,7 @@ const EditorToolbar = ({ intl, onSelect, onSelectLinkedObject }) => {
           placement="bottom"
         >
           <Button className="EditorToolbar__button">
-            <i className="iconfont anticon anticon-codepen" />
+            <Icon type="codepen" className="iconfont" />
           </Button>
         </Popover>
       </div>

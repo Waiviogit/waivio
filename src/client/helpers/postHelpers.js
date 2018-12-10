@@ -69,8 +69,8 @@ export function getContentImages(content, parsed = false) {
 
 export function createPostMetadata(body, tags, oldMetadata = {}, waivioData) {
   let metaData = {
-    community: 'busy',
-    app: `busy/${appVersion}`,
+    community: 'waiviodev',
+    app: `waiviodev/${appVersion}`,
     format: 'markdown',
   };
 

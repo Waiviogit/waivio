@@ -19,7 +19,7 @@ const UserWeight = ({ user }) => (
         {/* <WeightTag weight={user.weight} /> */}
       </div>
       <div className="Object__follow">
-        <FollowButton username={user.name} secondary />
+        <FollowButton following={user.name} followingType="user" secondary />
       </div>
     </div>
     <div className="Object__divider" />

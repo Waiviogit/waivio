@@ -1,10 +1,10 @@
 {
   "development": {
-    "apiPrefix": "https://test-waivio.herokuapp.com/api",
+    "apiPrefix": "http://waiviodev.com/api",
 
     "objectsBot": {
-      "": "https://protected-inlet-33412.herokuapp.com",
-      "apiPrefix": "http://localhost:8093",
+      "apiPrefix": "https://objects-bot-service.herokuapp.com",
+      "": "http://localhost:8093",
       "createObject": "/objects-bot/create-object",
       "appendObject": "/objects-bot/append-object"
     },
@@ -12,13 +12,15 @@
     "createObject": "/create/object",
     "getObjects": "/wobject",
     "searchObjects": "/wobjectSearch",
-    "getObjectFollowers": "/followers"
+    "getObjectFollowers": "/followers",
+    "user": "/user",
+    "followingObjects": "/following_objects"
   },
   "production": {
-    "apiPrefix": "https://test-waivio.herokuapp.com/api",
+    "apiPrefix": "http://waiviodev.com/api",
 
     "objectsBot": {
-      "apiPrefix": "https://protected-inlet-33412.herokuapp.com",
+      "apiPrefix": "https://objects-bot-service.herokuapp.com",
       "createObject": "/objects-bot/create-object",
       "appendObject": "/objects-bot/append-object"
     },
@@ -26,6 +28,8 @@
     "createObject": "/create/object",
     "getObjects": "/wobject",
     "searchObjects": "/wobjectSearch",
-    "getObjectFollowers": "/followers"
+    "getObjectFollowers": "/followers",
+    "user": "/user",
+    "followingObjects": "/following_objects"
   }
 }

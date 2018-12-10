@@ -90,7 +90,7 @@ const ObjectInfo = props => {
 
   return (
     <div>
-      {wobject.tag && (
+      {getField(wobject, 'name') && (
         <div style={{ wordBreak: 'break-word' }}>
           <div style={{ fontSize: '18px' }}>{wobject && descriptionFull}</div>
           <div style={{ marginTop: 16, marginBottom: 16 }}>

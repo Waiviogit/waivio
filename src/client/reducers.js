@@ -24,6 +24,7 @@ import dealsReducer from '../investarena/redux/reducers/dealsReducer';
 import modalsReducer from '../investarena/redux/reducers/modalsReducer';
 import favoriteQuotesReducer from '../investarena/redux/reducers/favoriteQuotesReducer';
 import chartsReducer from '../investarena/redux/reducers/chartsReducer';
+import appendReducer, * as fromAppend from '../client/post/AppendObjectPostWrite/appendReducer';
 
 export default () =>
   combineReducers({
@@ -50,6 +51,7 @@ export default () =>
     deals: dealsReducer,
     modals: modalsReducer,
     favoriteQuotes: favoriteQuotesReducer,
+    append: appendReducer,
   });
 
 export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);
@@ -106,7 +108,9 @@ export const getRebloggedList = state => fromReblog.getRebloggedList(state.reblo
 export const getPendingReblogs = state => fromReblog.getPendingReblogs(state.reblog);
 
 export const getFollowingList = state => fromUser.getFollowingList(state.user);
+export const getFollowingObjectsList = state => fromUser.getFollowingObjectsList(state.user);
 export const getPendingFollows = state => fromUser.getPendingFollows(state.user);
+export const getPendingFollowingObjects = state => fromUser.getPendingFollowingObjects(state.user);
 export const getIsFetchingFollowingList = state => fromUser.getIsFetchingFollowingList(state.user);
 export const getRecommendations = state => fromUser.getRecommendations(state.user);
 export const getRecommendedObjects = state => fromUser.getRecommendedObjects(state.user);
@@ -172,3 +176,5 @@ export const getSearchResults = state => fromSearch.getSearchResults(state.searc
 export const getAutoCompleteSearchResults = state =>
   fromSearch.getAutoCompleteSearchResults(state.search);
 export const getSearchObjectsResults = state => fromSearch.getSearchObjectsResults(state.search);
+
+export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.append);

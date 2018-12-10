@@ -35,7 +35,7 @@ export const getUsersByObject = object =>
 
 export const getFeedContentByObject = name =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.getObjects}${name}/posts`, {
+    fetch(`${config.apiPrefix}${config.getObjects}/${name}/posts`, {
       headers,
       method: 'POST',
     })
@@ -46,7 +46,7 @@ export const getFeedContentByObject = name =>
 
 export const getMoreFeedContentByObject = ({ tag, startAuthor, startPermlink, limit }) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.getObjects}${tag}/posts`, {
+    fetch(`${config.apiPrefix}${config.getObjects}/${tag}/posts`, {
       headers,
       method: 'POST',
       body: JSON.stringify({ tag, startAuthor, startPermlink, limit }),
@@ -69,5 +69,39 @@ export const searchObjects = (searchString, limit = 10) =>
     method: 'POST',
     body: JSON.stringify({ search_string: searchString, limit }),
   }).then(res => res.json());
+
+export const postAppendWaivioObject = postData =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.objectsBot.apiPrefix}${config.objectsBot.appendObject}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify(postData),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getAllFollowingObjects = username =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.user}/${username}`)
+      .then(res => res.json())
+      .then(user => resolve(user.objects_follow || []))
+      .catch(error => reject(error));
+  });
+
+export const getWobjectFollowers = (wobject, skip = 0, limit = 50) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.getObjects}/${wobject}${config.getObjectFollowers}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({ skip, limit }),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  }).then(({ followers }) => followers.map(user => user.name));
 
 export default null;
