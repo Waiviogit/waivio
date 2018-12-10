@@ -75,7 +75,7 @@ const WobjHero = ({
                 isActive={isUserActive(user)}
               />
             )}
-            <WobjMenuWrapper followers={wobject.followersCount || 0} />
+            <WobjMenuWrapper followers={wobject.followers_count || 0} />
           </div>
         )}
       />
