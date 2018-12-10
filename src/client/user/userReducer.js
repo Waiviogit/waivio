@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import * as actions from './userActions';
+import * as userActions from './userActions';
+import * as wobjActions from '../object/wobjActions';
 import * as appTypes from '../app/appActions';
 import { people } from '../helpers/constants';
 
@@ -7,6 +8,12 @@ const initialState = {
   recommendations: [],
   recommendedObjects: [],
   following: {
+    list: [],
+    pendingFollows: [],
+    isFetching: false,
+    fetched: false,
+  },
+  followingObjects: {
     list: [],
     pendingFollows: [],
     isFetching: false,
@@ -36,7 +43,7 @@ const filterRecommendedObjects = (objects, count = 5) => {
 
 export default function userReducer(state = initialState, action) {
   switch (action.type) {
-    case actions.GET_FOLLOWING_START:
+    case userActions.GET_FOLLOWING_START:
       return {
         ...state,
         following: {
@@ -47,7 +54,7 @@ export default function userReducer(state = initialState, action) {
         },
         fetchFollowListError: false,
       };
-    case actions.GET_FOLLOWING_ERROR:
+    case userActions.GET_FOLLOWING_ERROR:
       return {
         ...state,
         following: {
@@ -58,7 +65,7 @@ export default function userReducer(state = initialState, action) {
         },
         fetchFollowListError: true,
       };
-    case actions.GET_FOLLOWING_SUCCESS:
+    case userActions.GET_FOLLOWING_SUCCESS:
       return {
         ...state,
         recommendations: filterRecommendations(action.payload),
@@ -70,8 +77,41 @@ export default function userReducer(state = initialState, action) {
         },
         fetchFollowListError: false,
       };
-    case actions.FOLLOW_USER_START:
-    case actions.UNFOLLOW_USER_START:
+    case userActions.GET_FOLLOWING_OBJECTS_START:
+      return {
+        ...state,
+        followingObjects: {
+          ...state.followingObjects,
+          list: [],
+          isFetching: true,
+          fetched: false,
+        },
+        fetchFollowListError: false,
+      };
+    case userActions.GET_FOLLOWING_OBJECTS_ERROR:
+      return {
+        ...state,
+        followingObjects: {
+          ...state.followingObjects,
+          list: [],
+          isFetching: false,
+          fetched: true,
+        },
+        fetchFollowListError: true,
+      };
+    case userActions.GET_FOLLOWING_OBJECTS_SUCCESS:
+      return {
+        ...state,
+        followingObjects: {
+          ...state.followingObjects,
+          list: action.payload,
+          isFetching: false,
+          fetched: true,
+        },
+        fetchFollowListError: false,
+      };
+    case userActions.FOLLOW_USER_START:
+    case userActions.UNFOLLOW_USER_START:
       return {
         ...state,
         following: {
@@ -79,7 +119,7 @@ export default function userReducer(state = initialState, action) {
           pendingFollows: [...state.following.pendingFollows, action.meta.username],
         },
       };
-    case actions.FOLLOW_USER_SUCCESS:
+    case userActions.FOLLOW_USER_SUCCESS:
       return {
         ...state,
         following: {
@@ -90,7 +130,7 @@ export default function userReducer(state = initialState, action) {
           ),
         },
       };
-    case actions.UNFOLLOW_USER_SUCCESS:
+    case userActions.UNFOLLOW_USER_SUCCESS:
       return {
         ...state,
         following: {
@@ -102,8 +142,8 @@ export default function userReducer(state = initialState, action) {
         },
       };
 
-    case actions.FOLLOW_USER_ERROR:
-    case actions.UNFOLLOW_USER_ERROR:
+    case userActions.FOLLOW_USER_ERROR:
+    case userActions.UNFOLLOW_USER_ERROR:
       return {
         ...state,
         following: {
@@ -114,26 +154,70 @@ export default function userReducer(state = initialState, action) {
         },
       };
 
-    case actions.UPDATE_RECOMMENDATIONS:
+    case wobjActions.FOLLOW_WOBJECT_START:
+    case wobjActions.UNFOLLOW_WOBJECT_START:
+      return {
+        ...state,
+        followingObjects: {
+          ...state.followingObjects,
+          pendingFollows: [...state.followingObjects.pendingFollows, action.meta.authorPermlink],
+        },
+      };
+    case wobjActions.FOLLOW_WOBJECT_SUCCESS:
+      return {
+        ...state,
+        followingObjects: {
+          ...state.followingObjects,
+          list: [...state.followingObjects.list, action.meta.authorPermlink],
+          pendingFollows: state.followingObjects.pendingFollows.filter(
+            obj => obj !== action.meta.authorPermlink,
+          ),
+        },
+      };
+    case wobjActions.UNFOLLOW_WOBJECT_SUCCESS:
+      return {
+        ...state,
+        followingObjects: {
+          ...state.followingObjects,
+          list: state.followingObjects.list.filter(obj => obj !== action.meta.authorPermlink),
+          pendingFollows: state.followingObjects.pendingFollows.filter(
+            obj => obj !== action.meta.authorPermlink,
+          ),
+        },
+      };
+
+    case wobjActions.FOLLOW_WOBJECT_ERROR:
+    case wobjActions.UNFOLLOW_WOBJECT_ERROR:
+      return {
+        ...state,
+        followingObjects: {
+          ...state.followingObjects,
+          pendingFollows: state.followingObjects.pendingFollows.filter(
+            obj => obj !== action.meta.authorPermlink,
+          ),
+        },
+      };
+
+    case userActions.UPDATE_RECOMMENDATIONS:
       return {
         ...state,
         recommendations: filterRecommendations(state.following.list),
       };
 
-    case actions.GET_NOTIFICATIONS.START:
+    case userActions.GET_NOTIFICATIONS.START:
       return {
         ...state,
         loadingNotifications: true,
       };
 
-    case actions.GET_NOTIFICATIONS.SUCCESS:
+    case userActions.GET_NOTIFICATIONS.SUCCESS:
       return {
         ...state,
         notifications: action.payload,
         loadingNotifications: false,
       };
 
-    case actions.GET_NOTIFICATIONS.ERROR:
+    case userActions.GET_NOTIFICATIONS.ERROR:
       return {
         ...state,
         loadingNotifications: false,
@@ -145,9 +229,9 @@ export default function userReducer(state = initialState, action) {
         notifications: [action.payload, ...state.notifications],
         latestNotification: action.payload,
       };
-    case actions.GET_RECOMMENDED_OBJECTS_START:
-    case actions.GET_RECOMMENDED_OBJECTS_SUCCESS:
-    case actions.GET_RECOMMENDED_OBJECTS_ERROR:
+    case userActions.GET_RECOMMENDED_OBJECTS_START:
+    case userActions.GET_RECOMMENDED_OBJECTS_SUCCESS:
+    case userActions.GET_RECOMMENDED_OBJECTS_ERROR:
       return {
         ...state,
         recommendedObjects: filterRecommendedObjects(action.payload),
@@ -159,7 +243,9 @@ export default function userReducer(state = initialState, action) {
 }
 
 export const getFollowingList = state => state.following.list;
+export const getFollowingObjectsList = state => state.followingObjects.list;
 export const getPendingFollows = state => state.following.pendingFollows;
+export const getPendingFollowingObjects = state => state.followingObjects.pendingFollows;
 export const getIsFetchingFollowingList = state => state.following.isFetching;
 export const getRecommendations = state => state.recommendations;
 export const getRecommendedObjects = state => state.recommendedObjects;

@@ -83,4 +83,12 @@ export const postAppendWaivioObject = postData =>
       .catch(error => reject(error));
   });
 
+export const getAllFollowingObjects = username =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.user}/${username}`)
+      .then(res => res.json())
+      .then(user => resolve(user.objects_follow || []))
+      .catch(error => reject(error));
+  });
+
 export default null;
