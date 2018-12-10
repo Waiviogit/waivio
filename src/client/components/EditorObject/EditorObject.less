@@ -31,15 +31,14 @@
     height: @height-row-info + @height-row-slider;
     width: 100%;
     outline: none;
-    &.info,
-    &.influence-slider {
+    &.row {
       display: flex;
       flex-flow: row nowrap;
       align-items: center;
       height: @height-row-info;
       width: 100%;
     }
-    &.influence-slider {
+    &.row.slider {
       height: @height-row-slider;
       .ant-slider {
         width: 100%;
@@ -51,15 +50,22 @@
   }
 
   &__avatar {
-    max-height: @height-row-info;
-    max-width: @height-row-info;
+    height: @height-row-info;
+    width: @height-row-info;
     border-radius: 30%;
     margin-right: @padding;
   }
 
-  &__names {
-    &.main {
+  &__info {
+    display: flex;
+    flex-direction: column;
+    &.name {
       font-weight: 500;
+    }
+    &.description {
+      max-height: @height-row-info / 2 + 5;
+      line-height: 1.1;
+      overflow: hidden;
     }
   }
 
