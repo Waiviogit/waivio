@@ -91,4 +91,17 @@ export const getAllFollowingObjects = username =>
       .catch(error => reject(error));
   });
 
+export const getWobjectFollowers = (wobject, skip = 0, limit = 50) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.getObjects}/${wobject}${config.getObjectFollowers}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({ skip, limit }),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  }).then(({ followers }) => followers.map(user => user.name));
+
 export default null;

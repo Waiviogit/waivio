@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { getFollowers } from '../helpers/apiHelpers';
+import { getWobjectFollowers } from '../../waivioApi/ApiClient';
 import UserDynamicList from '../user/UserDynamicList';
 
 export default class WobjFollowers extends React.Component {
@@ -10,21 +10,10 @@ export default class WobjFollowers extends React.Component {
 
   static limit = 50;
 
-  constructor(props) {
-    super(props);
-
-    this.fetcher = this.fetcher.bind(this);
-  }
-
-  fetcher(previous) {
+  fetcher = skip => {
     const { match } = this.props;
-    return getFollowers(
-      match.params.name,
-      previous[previous.length - 1],
-      'blog',
-      WobjFollowers.limit,
-    );
-  }
+    return getWobjectFollowers(match.params.name, skip.length, WobjFollowers.limit);
+  };
 
   render() {
     return <UserDynamicList limit={WobjFollowers.limit} fetcher={this.fetcher} />;
