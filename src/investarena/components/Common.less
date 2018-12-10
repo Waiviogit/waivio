@@ -112,7 +112,7 @@
   margin-bottom: @margin-small;
 }
 .st-margin-right-middle {
-  margin-right: @margin-middle;
+  margin-right: @margin-middle!important;
 }
 .st-margin-left-middle {
   margin-left: @margin-middle;
@@ -209,4 +209,136 @@
 }
 .ant-select-dropdown{
   z-index: 1300!important;
+}
+.textStyle (@fontSize, @fontColor, @fontWeight){
+  font-size: @fontSize;
+  color: @fontColor;
+  font-weight: @fontWeight;
+}
+.tabArrowStyle (@top, @left, @color){
+  display: block;
+  position: relative;
+  top: @top;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid @color;
+  bottom: 0;
+  left: @left;
+}
+.st-icon-point (@color, @animation) {
+  height: 12px;
+  width: 12px;
+  display: block;
+  border-radius: 100%;
+  border: 3px solid @color;
+  animation: @animation 3s  infinite ease-in-out;
+}
+.sessionIndicator{
+@-moz-keyframes rollGreen {
+  0%{
+    box-shadow: 0 0 3px 1px rgba(59,188,83,0);
+  }
+  25%{
+    box-shadow: 0 0 3px 2px rgba(59,188,83,0.3);
+  }
+  50% {
+    box-shadow: 0 0 4px 3px rgba(59,188,83,0.4);
+  }
+  51%{
+    box-shadow: 0 0 5px 4px rgba(59,188,83,0.5);
+  }
+  60%{
+    box-shadow: 0 0 4px 3px rgba(59,188,83,0.4);
+  }
+  75%{
+    box-shadow: 0 0 3px 2px rgba(59,188,83,0.3);
+  }
+  100%{
+    box-shadow: 0 0 3px 1px rgba(59,188,83,0);
+  }
+}
+@keyframes  rollGreen{
+  0%{
+    box-shadow: 0 0 3px 1px rgba(59,188,83,0);
+  }
+  25%{
+    box-shadow: 0 0 3px 2px rgba(59,188,83,0.3);
+  }
+  50% {
+    box-shadow: 0 0 4px 3px rgba(59,188,83,0.4);
+  }
+  51%{
+    box-shadow: 0 0 5px 4px rgba(59,188,83,0.5);
+  }
+  60%{
+    box-shadow: 0 0 4px 3px rgba(59,188,83,0.4);
+  }
+  75%{
+    box-shadow: 0 0 3px 2px rgba(59,188,83,0.3);
+  }
+  100%{
+    box-shadow: 0 0 3px 1px rgba(59,188,83,0);
+  }
+}
+@-moz-keyframes rollRed {
+  0%{
+    box-shadow: 0 0 3px 1px rgba(233,55,0,0);
+  }
+  25%{
+    box-shadow: 0 0 3px 2px rgba(233,55,0,0.3);
+  }
+  50% {
+    box-shadow: 0 0 4px 3px rgba(233,55,0,0.4);
+  }
+  51%{
+    box-shadow: 0 0 5px 4px rgba(233,55,0,0.5);
+  }
+  60%{
+    box-shadow: 0 0 4px 3px rgba(233,55,0,0.4);
+  }
+  75%{
+    box-shadow: 0 0 3px 2px rgba(233,55,0,0.3);
+  }
+  100%{
+    box-shadow: 0 0 3px 1px rgba(233,55,0,0);
+  }
+}
+@keyframes  rollRed{
+  0%{
+    box-shadow: 0 0 3px 1px rgba(233,55,0,0);
+  }
+  25%{
+    box-shadow: 0 0 3px 1px rgba(233,55,0,0.3);
+  }
+  50% {
+    box-shadow: 0 0 4px 2px rgba(233,55,0,0.4);
+  }
+  51%{
+    box-shadow: 0 0 5px 3px rgba(233,55,0,0.5);
+  }
+  60%{
+    box-shadow: 0 0 4px 2px rgba(233,55,0,0.4);
+  }
+  75%{
+    box-shadow: 0 0 3px 1px rgba(233,55,0,0.3);
+  }
+  100%{
+    box-shadow: 0 0 3px 1px rgba(233,55,0,0);
+  }
+}
+}
+.st-open-deal-buttonStyle (@height, @width, @fontWeight, @color, @backgroundColor, @hoverColor){
+  height: @height;
+  width: @width;
+  font-weight: bold;
+  background-color: @backgroundColor;
+  border-color: @backgroundColor;
+  color: @color;
+  cursor: pointer;
+&:hover{
+  background-color: @hoverColor;
+  color: @color;
+}
 }

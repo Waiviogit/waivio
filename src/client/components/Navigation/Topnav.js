@@ -15,6 +15,7 @@ import {
   getIsLoadingNotifications,
 } from '../../reducers';
 import ModalBroker from '../../../investarena/components/Modals/ModalBroker';
+import ModalDealConfirmation from '../../../investarena/components/Modals/ModalDealConfirmation';
 import SteemConnect from '../../steemConnectAPI';
 import { PARSED_NOTIFICATIONS } from '../../../common/constants/notifications';
 import BTooltip from '../BTooltip';
@@ -172,6 +173,7 @@ class Topnav extends React.Component {
         })}
       >
         <ModalBroker />
+        <ModalDealConfirmation />
         <Menu selectedKeys={[]} className="Topnav__menu-container__menu" mode="horizontal">
           <Menu.Item key="broker">
             <BTooltip

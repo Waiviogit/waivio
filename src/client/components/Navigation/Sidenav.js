@@ -2,11 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { NavLink } from 'react-router-dom';
+import Icon from "antd/es/icon/index";
 import './Sidenav.less';
 
 const isNews = (match, location) => location.pathname.match(/trending/);
 const isWallet = (match, location) => location.pathname.match(/wallet/);
 const isReplies = (match, location) => location.pathname.match(/replies/);
+const isInstruments = (match, location) => location.pathname.match(/instruments/);
+const isDeals = (match, location) => location.pathname.match(/instruments/);
 
 const Sidenav = ({ username }) =>
   username ? (
@@ -39,6 +42,18 @@ const Sidenav = ({ username }) =>
         <NavLink to="/wallet" activeClassName="Sidenav__item--active" isActive={isWallet}>
           <i className="iconfont icon-wallet" />
           <FormattedMessage id="wallet" defaultMessage="Wallet" />
+        </NavLink>
+      </li>
+      <li>
+        <NavLink to="/instruments" activeClassName="Sidenav__item--active" isActive={isInstruments}>
+          <Icon type="dollar" className="st-margin-right-middle"/>
+          <FormattedMessage id="sidebar.nav.assets" defaultMessage="Instruments" />
+        </NavLink>
+      </li>
+      <li>
+        <NavLink to="/deals" activeClassName="Sidenav__item--active" isActive={isDeals}>
+          <Icon type="pie-chart" className="st-margin-right-middle"/>
+          <FormattedMessage id="sidebar.nav.deals" defaultMessage="Deals" />
         </NavLink>
       </li>
     </ul>

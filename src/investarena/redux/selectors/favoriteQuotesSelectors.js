@@ -5,5 +5,5 @@ export const getFavoritesState = (state) => state.favoriteQuotes;
 export const makeIsFavoriteState = () => createSelector(
     getFavoritesState,
     (state, props) => props.quoteSecurity,
-    (favorites, quoteSecurity) => favorites.includes(quoteSecurity)
+    (favorites, quoteSecurity) => favorites.includes(quoteSecurity) || false
 );

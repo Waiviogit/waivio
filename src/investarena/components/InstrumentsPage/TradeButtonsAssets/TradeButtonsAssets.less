@@ -1,0 +1,110 @@
+@import (reference) '../../Common.less';
+
+.st-trade-buttons-asset-page-wrap {
+  .st-trade-buttons-wrap {
+    width: 20%;
+    position: absolute;
+    top: 47px;
+    left: 455px;
+    margin: auto;
+    z-index: 1;
+    transition: all 0.45s ease-in-out;
+    .st-trade-buttons-deal-wrap {
+      margin: 3px;
+      display: flex;
+    }
+    .st-trade-buttons-header {
+      .sessionIndicator;
+      .st-trade-buttons-quote {
+        color: @color-black;
+        font-weight: bold;
+        &:hover {
+          color: @color-dark-blue;
+          text-decoration: underline;
+        }
+      }
+      .st-trade-buttons-icon-point-green {
+        .st-icon-point(@color-green, rollGreen);
+      }
+      .st-trade-buttons-icon-point-red {
+        .st-icon-point(@color-red, rollRed);
+      }
+    }
+    .st-trade-buttons-container {
+      .st-daily-change {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 45px;
+        font-size: 20px;
+        font-weight: bold;
+      }
+      .st-trade-buttons-amount {
+        display: flex;
+        .st-trade-buttons-action-block {
+          text-align: center;
+          border-radius: 3px;
+          height: 54px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 90px;
+          cursor: pointer;
+          color: @color-white;
+          &::after {
+            content: "";
+            position: absolute;
+            width: 30px;
+            padding-top: 53px;
+            border-bottom: 1px solid #ddd;
+          }
+        }
+        .st-assets-inc-button {
+          outline: none;
+          font-size: 19px;
+          background-color: @color-light-gray;
+          border: none;
+          width: 20%;
+          font-weight: bold;
+          border-radius: 4px;
+          &:hover {
+            cursor: pointer;
+            color: @color-blue;
+          }
+        }
+        input {
+          outline: none;
+          font-size: 15px;
+          background-color: @color-light-gray ;
+          border-style: none;
+          text-align: center;
+          width: 60%;
+          font-weight: bold;
+        }
+      }
+    }
+    .st-trade-buttons-deal-wrap {
+      margin: 0 3px 3px 3px;
+    }
+    .st-trade-buttons-opacity-on {
+      opacity: 1;
+    }
+    .st-trade-buttons-opacity-off {
+      opacity: 0.65;
+    }
+  }
+  .st-trade-buttons-footer {
+    display: flex;
+    text-align: center;
+    .st-trade-buttons-action-span {
+      font-size: 12px;
+    }
+    .st-trade-buttons-action-block {
+      text-align: center;
+      border-radius: 3px;
+      width: 50%;
+      cursor: pointer;
+      color: @color-white;
+    }
+  }
+}

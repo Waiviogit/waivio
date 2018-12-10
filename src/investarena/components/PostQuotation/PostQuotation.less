@@ -15,7 +15,7 @@
     padding: 5px 10px;
   }
   .st-post-quotation-header {
-    @include sessionIndicator;
+    .sessionIndicator();
     .st-quote-name-container {
       max-width: 95px;
       white-space: nowrap;
@@ -33,10 +33,10 @@
       }
     }
     .st-post-quotation-icon-point-green {
-      @include st-icon-point(@color-green, rollGreen);
+      .st-icon-point(@color-green, rollGreen);
     }
     .st-post-quotation-icon-point-red {
-      @include st-icon-point(@color-red, rollRed);
+      .st-icon-point(@color-red, rollRed);
     }
   }
   .st-post-quotation-container {

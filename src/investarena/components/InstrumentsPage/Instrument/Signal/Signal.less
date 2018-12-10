@@ -1,0 +1,62 @@
+@import (reference) '../../../Common.less';
+
+.st-signal-wrap {
+  display: flex;
+  min-width: 160px;
+  padding: 5px;
+  border-bottom: 2px solid whitesmoke;
+  text-align: center;
+  .st-signal-strength {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    .progress {
+      width: 80%;
+    }
+    font-weight: bold;
+    align-self: center;
+    width: 55%;
+  }
+  .st-signal-interval {
+    width: 20%;
+    color: #2c3552;
+    text-align: center;
+  }
+  .st-signal-recommendation {
+    font-weight: bold;
+    text-align: center;
+    width: 25%;
+  }
+}
+.st-signal-popover {
+  .tooltip-inner {
+    max-width: unset;
+    border: 1px solid #444444;
+    background-color: white;
+  }
+}
+.st-signal-info {
+  font-weight: bold;
+  color: #444;
+  .st-signal-row {
+    width: 300px;
+    text-align: center;
+    display: flex;
+    justify-content: space-around;
+    .st-signal-block {
+      display: flex;
+      justify-content: space-around;
+      width: 50%;
+      text-align: center;
+    }
+  }
+}
+.st-signal-color-danger {
+  color: @color-red;
+}
+.st-signal-color-success {
+  color: @color-green;
+}
+.st-signal-color-info {
+  color: #e0a800;
+}

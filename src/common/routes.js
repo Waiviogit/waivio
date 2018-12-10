@@ -28,6 +28,7 @@ import Error404 from '../client/statics/Error404';
 import ExitPage from '../client/statics/ExitPage';
 import ObjectProfile from '../client/object/ObjectProfile';
 import AppendObjectPostWtite from '../client/post/AppendObjectPostWrite/AppendObjectPostWrite';
+import InstrumentsPage from "../investarena/components/InstrumentsPage";
 
 const routes = [
   {
@@ -150,6 +151,10 @@ const routes = [
       {
         path: '/objects',
         component: Objects,
+      },
+      {
+        path: '/instruments',
+        component: InstrumentsPage,
       },
       {
         path: '/wobject/editor/@:name',

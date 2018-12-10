@@ -116,7 +116,8 @@
     "socket.io-client": "2.1.0",
     "sockjs": "0.3.18",
     "stompjs": "2.3.3",
-    "net": "1.0.2"
+    "net": "1.0.2",
+    "react-easy-chart": "1.0.0"
   },
   "devDependencies": {
     "@storybook/addon-actions": "^3.4.8",

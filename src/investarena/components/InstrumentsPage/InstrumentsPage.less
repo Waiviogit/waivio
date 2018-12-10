@@ -1,0 +1,376 @@
+@import '../Common.less';
+
+@instruments-content-block-height: 585px;
+@list-view-header-height: 56px;
+.st-instr-page {
+  .st-instruments-controls {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    margin-bottom: 10px;
+    .st-items-search-wrap {
+      width: 500px;
+      margin: 0;
+      .is-focused, .is-open{
+        .Select-arrow{
+          width: 25px;
+          height: 25px;
+          margin-top: 4px;
+          background-image: none;
+          border: none;
+        }
+      }
+    }
+    .st-instruments-toggle-view {
+      margin-left: 10px;
+      cursor: pointer;
+      &__icon {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+  .st-signals-button{
+    background: #1367b0;
+    border: 1px solid #cccccc;
+    border-radius: 50%;
+    color: #FFFFFF;
+    top: 10px;
+    font-size: 10px;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    line-height: 22px;
+    margin-left: 15px;
+  }
+  .st-signals-empty{
+    width: 25px;
+    height: 25px;
+    margin-left: 15px;
+  }
+  .st-instruments-details {
+    height: @instruments-content-block-height;
+    overflow: auto;
+    margin-top: 5px;
+    display: flex;
+    .bg-success{
+      background-color: @color-green!important;
+    }
+    .bg-danger{
+      background-color: @color-red!important;
+    }
+    .st-deal-pl-red {
+      color: @color-red!important;
+    }
+    .st-deal-pl-green{
+      color: @color-green!important;
+    }
+    &.list-view {
+      flex-direction: column;
+      .st-list-item {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        min-height: 55px;
+        border-bottom: 1px solid @color-gray;
+        .progress-bar{
+          height: 0.3rem;
+        }
+        &:hover{
+          background-color: @color-light-gray;
+        }
+        .st-instruments-progress-bar{
+          margin-left: 15px;
+          display: flex;
+          flex-direction: column;
+          span{
+            .textStyle(@font-size-small, @color-darkest-gray, regular);
+          }
+          .st-instruments-buy-count{
+            color: @color-black-blue;
+            font-weight: bold;
+          }
+        }
+        .st-daily-change {
+          width: 60px;
+          text-align: center;
+          font-size: 20px;
+          font-weight: bold;
+        }
+        .progress {
+          width: 260px;
+          margin-right: 15px;
+        }
+        .st-assets-chart-wrap{
+          width: 200px;
+          margin: 0 15px 0 15px;
+          cursor: pointer;
+
+          .st-assets-chart-no-data{
+            text-align: center;
+            font-size: 22px;
+            color: @color-black-blue;
+          }
+        }
+        .st-trade-buttons-wrap {
+          position: unset;
+          opacity: 1;
+          width: 270px;
+        }
+        .st-instrument-avatar {
+          margin-left: 15px;
+          img {
+            width: 35px;
+            height: 35px;
+          }
+        }
+        .st-instrument-button {
+          display: flex;
+          align-self: center;
+          width: 30%;
+          height: 35px;
+          button {
+            width: 100%;
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 12px;
+          }
+        }
+      }
+    }
+    &.cards-view {
+      height: @instruments-content-block-height + @list-view-header-height;
+      flex-direction: row;
+      flex-wrap: wrap;
+      .st-instruments-responsible-wrap {
+        display: flex;
+        flex-flow: row wrap;
+        align-content: flex-start;
+        .st-card {
+          display: flex;
+          flex-direction: column;
+          max-height: 230px;
+          width: 252px;
+          padding: 10px;
+          margin: 12px;
+          border: 1px solid @color-gray;
+          border-radius: 4px;
+          box-shadow: 0 3px 15px @color-gray;
+          .st-card__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 5px;
+            border-bottom: 1px solid @color-gray;
+            .st-icon-favorite-false, .st-icon-favorite-true {
+              width: 22px;
+              height: 24px;
+              svg {
+                width: 24px;
+                height: 24px;
+              }
+            }
+          }
+          .st-card__content {
+            display: flex;
+            flex-direction: column;
+            .st-card__daily-change-signal-info {
+              display: flex;
+              justify-content: space-between;
+              .st-daily-change {
+                font-size: 20px;
+                font-weight: bold;
+              }
+              .st-signals-button{
+                width: 20px;
+                height: 20px;
+                line-height: 18px;
+                margin-top: 6px;
+              }
+            }
+            .st-card__chart {
+              min-height: 65px;
+              .st-assets-chart-no-data{
+                text-align: center;
+                font-size: 22px;
+                color: @color-black-blue;
+              }
+            }
+            .st-instruments-progress-bar{
+              span{
+                .textStyle(@font-size-medium, @color-darkest-gray, regular);
+              }
+              .st-instruments-buy-count{
+                color: @color-black-blue;
+                font-weight: bold;
+              }
+            }
+            .st-trade-buttons-wrap {
+              position: unset;
+              width: 100%;
+              padding-top: 10px;
+              opacity: 1;
+              transition: none;
+            }
+          }
+          .progress-bar{
+            height: 0.8rem;
+          }
+        }
+      }
+    }
+  }
+  .st-grid {
+    display: flex;
+    .st-left-area {
+      width: 20%;
+      margin: 0 auto;
+      box-sizing: border-box;
+      position: relative;
+    }
+    .st-center-area {
+      width: 100%;
+      margin: 0 0 0 15px;
+      box-sizing: border-box;
+      position: relative;
+    }
+  }
+
+.st-assets-wrap {
+  background-color: @color-white;
+  padding: 15px;
+  .st-quotes-no-present{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    .st-quotes-no-present-wrap{
+      display: flex;
+      text-align: center;
+      word-break: break-word;
+      align-items: center;
+      width: 40%;
+      height: 642px;
+    }
+  }
+  .st-signal-info-img {
+    height: 16px;
+    width: 16px;
+    background-color: #444;
+    border-radius: 50%;
+    padding: 3px;
+    margin: 0 0 0 4px;
+    color: whitesmoke;
+    &:hover {
+      background-color: dimgray;
+    }
+  }
+  .st-instrument-title{
+    .textStyle(@font-size-large, @color-black-blue, bold);
+  }
+  .st-tab {
+    width: 16.66%;
+    cursor: pointer;
+    background-color: @color-white;
+    border-bottom: 2px solid @color-dark-gray;
+    .active{
+      .st-assets-arrow{
+        .tabArrowStyle (-1px, 70px, @color-white);
+      }
+      .st-assets-arrow-gray{
+        .tabArrowStyle (7px, 70px, @color-dark-gray);
+      }
+      .textStyle(@font-size-medium, @color-black, bold);
+      background-color: @color-white;
+    }
+  }
+  .nav-link {
+    height: 45px;
+    .textStyle(@font-size-medium, @color-darkest-gray, bold);
+    border-radius: 0;
+  }
+}
+.st-instrument-info-wrap{
+  text-align: center;
+  width: 150px;
+  .st-instrument-name{
+    .textStyle(@font-size-medium, @color-black-blue, bold);
+    max-width: 340px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .st-instrument-description{
+    .textStyle(@font-size-small, @color-darkest-gray, bold);
+    max-width: 340px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .st-instrument-privacy-image{
+    height: 15px;
+    width: 15px;
+  }
+}
+.st-assets-avatar {
+  margin-right: 10px;
+  img {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    background-color: #f7f7f6;
+  }
+}
+.st-assets-border{
+  border-bottom: solid 1px @color-dark-gray;;
+}
+  .st-instr-column-wrap{
+    .columnAssetsStyle (@width){
+      .textStyle(@font-size-medium, @color-black-blue, bold);
+      margin: 15px 0;
+      width: @width;
+      text-align: center;
+    }
+    border-bottom: 1px solid @color-dark-gray;
+    .st-instruments-text-title{.columnAssetsStyle (287px)}
+    .st-daily-title{.columnAssetsStyle (226px)}
+    .st-buy-title{.columnAssetsStyle (60px)}
+    .st-amount-title{.columnAssetsStyle (135px)}
+    .st-sell-title{.columnAssetsStyle (60px)}
+    .st-trend-title{.columnAssetsStyle (280px)}
+    .st-signals-title{
+      width: 25px;
+      height: 29px;
+      margin: 13px 25px;
+    }
+  }
+  .st-sidebar-ul{margin: 0!important;}
+}
+
+.st-assets-back{
+  width: 176px;
+  margin-left: 15px;
+  margin-bottom: 10px;
+  padding: 0!important;
+}
+.st-assets-to-deals-wrap {
+  justify-content: flex-end;
+  margin-bottom: 10px;
+  min-width: 150px;
+}
+.st-assets-to-deals{
+  text-align: right;
+  padding: 5px;
+  text-decoration: none;
+  color: #838383;
+  height: 30px;
+  &:hover{
+    text-decoration: none;
+    color: #838383;
+    background-color: @color-dark-gray;
+  }
+  .st-assets-to-deals-arrow{
+    width: 18px;
+    height: 18px;
+    margin-left: 10px;
+    transform: rotate(180deg);
+  }
+}

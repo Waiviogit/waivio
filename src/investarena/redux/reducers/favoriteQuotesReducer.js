@@ -8,7 +8,7 @@ export default function (state = initialState, action) {
         return [...action.payload];
     case UPDATE_FAVORITE_SUCCESS:
         if (state.includes(action.payload)) {
-            return state.filter(favorites => favorites !== action.payload);
+            return state.filter(favoriteQuotes => favoriteQuotes !== action.payload);
         } else {
             return [...state, action.payload];
         }
