@@ -395,5 +395,7 @@
   "object": "object",
   "preview_locale": "in {locale} locale",
   "objects": "Objects",
-  "users": "Users"
+  "users": "Users",
+  "preview_locale": "in {locale} locale",
+  "append_object_validation_msg": "The field with this value already exists"
 }

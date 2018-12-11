@@ -173,6 +173,22 @@ class AppendObjectPostEditor extends React.Component {
     });
   }
 
+  validateFieldValue = (rule, value, callback) => {
+    const { intl, wobject, currentLocaleInList, currentField } = this.props;
+    const filtered = wobject.fields.filter(
+      f => f.locale === currentLocaleInList.id && f.name === currentField,
+    );
+    if (filtered.map(f => f.body.toLowerCase()).includes(value)) {
+      callback(
+        intl.formatMessage({
+          id: 'append_object_validation_msg',
+          defaultMessage: 'The field with this value already exists',
+        }),
+      );
+    }
+    callback();
+  };
+
   handleDelete(e) {
     e.stopPropagation();
     e.preventDefault();
@@ -185,7 +201,10 @@ class AppendObjectPostEditor extends React.Component {
   };
 
   handleChangeLocale = localeToChange => {
-    this.props.changeCurrentLocale(localeToChange);
+    const { form, changeCurrentLocale } = this.props;
+    const currValue = form.getFieldValue('value');
+    changeCurrentLocale(localeToChange);
+    form.setFieldsValue({ value: currValue });
     this.setState({ body: '' });
   };
   render() {
@@ -255,6 +274,9 @@ class AppendObjectPostEditor extends React.Component {
             initialValue: '',
             rules: [
               {
+                transform: value => value.toLowerCase(),
+              },
+              {
                 required: true,
                 message: intl.formatMessage({
                   id: 'value_error_empty',
@@ -267,6 +289,9 @@ class AppendObjectPostEditor extends React.Component {
                   id: 'value_error_too_long',
                   defaultMessage: "Value can't be longer than 255 characters.",
                 }),
+              },
+              {
+                validator: this.validateFieldValue,
               },
             ],
           })(

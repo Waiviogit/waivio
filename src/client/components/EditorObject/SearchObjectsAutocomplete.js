@@ -4,8 +4,8 @@ import _ from 'lodash';
 import { AutoComplete } from 'antd';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
+import { clearSearchObjectsResults, searchObjectsAutoCompete } from '../../search/searchActions';
 import { getSearchObjectsResults } from '../../reducers';
-import { searchObjectsAutoCompete } from '../../search/searchActions';
 import './EditorObject.less';
 
 @injectIntl
@@ -15,6 +15,7 @@ import './EditorObject.less';
   }),
   {
     searchObjects: searchObjectsAutoCompete,
+    clearSearchResults: clearSearchObjectsResults,
   },
 )
 class SearchObjectsAutocomplete extends Component {
@@ -22,14 +23,17 @@ class SearchObjectsAutocomplete extends Component {
     canCreateNewObject: false,
     style: { width: '100%' },
     searchObjectsResults: [],
+    linkedObjectsIds: [],
   };
 
   static propTypes = {
     canCreateNewObject: PropTypes.bool,
+    linkedObjectsIds: PropTypes.arrayOf(PropTypes.string),
     intl: PropTypes.shape().isRequired,
     style: PropTypes.shape(),
     searchObjectsResults: PropTypes.arrayOf(PropTypes.object),
     searchObjects: PropTypes.func.isRequired,
+    clearSearchResults: PropTypes.func.isRequired,
     handleSelect: PropTypes.func.isRequired,
   };
 
@@ -45,6 +49,7 @@ class SearchObjectsAutocomplete extends Component {
   }
 
   handleChange(value = '') {
+    if (!value) this.props.clearSearchResults();
     const searchString = value.toLowerCase().trim();
     this.setState(prevState =>
       prevState.isOptionSelected ? { searchString: '', isOptionSelected: false } : { searchString },
@@ -53,11 +58,14 @@ class SearchObjectsAutocomplete extends Component {
 
   debouncedSearch = _.debounce(value => this.props.searchObjects(value), 300);
   handleSearch(value) {
-    this.debouncedSearch(value);
+    if (value) {
+      this.debouncedSearch(value);
+    }
   }
 
   handleSelect(objId) {
     this.setState({ isOptionSelected: true });
+    this.props.clearSearchResults();
     const selectedObject = this.props.searchObjectsResults.find(obj => obj.id === objId);
     this.props.handleSelect(
       selectedObject || {
@@ -74,10 +82,12 @@ class SearchObjectsAutocomplete extends Component {
   }
   render() {
     const { searchString } = this.state;
-    const { canCreateNewObject, intl, style, searchObjectsResults } = this.props;
-    const searchObjectsOptions = searchObjectsResults.map(obj => (
-      <AutoComplete.Option key={obj.id}>{obj.name}</AutoComplete.Option>
-    ));
+    const { canCreateNewObject, intl, style, searchObjectsResults, linkedObjectsIds } = this.props;
+    const searchObjectsOptions = searchString
+      ? searchObjectsResults
+          .filter(obj => !linkedObjectsIds.includes(obj.id))
+          .map(obj => <AutoComplete.Option key={obj.id}>{obj.name}</AutoComplete.Option>)
+      : [];
     return (
       <AutoComplete
         style={style}
