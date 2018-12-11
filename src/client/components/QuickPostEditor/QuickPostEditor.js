@@ -13,6 +13,7 @@ import { isValidImage, MAXIMUM_UPLOAD_SIZE } from '../../helpers/image';
 import { notify } from '../../app/Notification/notificationActions';
 import withEditor from '../Editor/withEditor';
 import { createPost } from '../../post/Write/editorActions';
+import Action from '../Button/Action';
 import Avatar from '../Avatar';
 import QuickPostEditorFooter from './QuickPostEditorFooter';
 import './QuickPostEditor.less';
@@ -303,21 +304,28 @@ class QuickPostEditor extends React.Component {
         {focusedInput && (
           <QuickPostEditorFooter
             imageUploading={imageUploading}
-            postCreationLoading={postCreationLoading}
-            handleCreatePost={this.handleCreatePost}
             handleImageChange={this.handleImageChange}
-            postText={intl.formatMessage({
-              id: 'post_send',
-              defaultMessage: 'Post',
-            })}
-            submittingPostText={intl.formatMessage({
-              id: 'post_send_progress',
-              defaultMessage: 'Submitting',
-            })}
             currentImages={currentImages}
             onRemoveImage={this.handleRemoveImage}
             handleFooterFocus={this.handleFocusInput}
-          />
+          >
+            <Action
+              primary
+              loading={postCreationLoading}
+              disabled={postCreationLoading}
+              onClick={this.handleCreatePost}
+            >
+              {postCreationLoading
+                ? intl.formatMessage({
+                    id: 'post_send_progress',
+                    defaultMessage: 'Submitting',
+                  })
+                : intl.formatMessage({
+                    id: 'post_send',
+                    defaultMessage: 'Post',
+                  })}
+            </Action>
+          </QuickPostEditorFooter>
         )}
       </div>
     );
