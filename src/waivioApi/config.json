@@ -11,8 +11,10 @@
 
     "createObject": "/create/object",
     "getObjects": "/wobject",
+    "getUser": "/user",
     "searchObjects": "/wobjectSearch",
-    "getObjectFollowers": "/followers"
+    "getObjectFollowers": "/followers",
+    "getObjectFollowing": "/following_objects"
   },
   "production": {
     "apiPrefix": "http://waiviodev.com/api",

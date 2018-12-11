@@ -393,5 +393,7 @@
   "top_authors": "Top Authors",
   "show_more_authors": "Show more authors",
   "object": "object",
-  "preview_locale": "in {locale} locale"
+  "preview_locale": "in {locale} locale",
+  "objects": "Objects",
+  "users": "Users"
 }

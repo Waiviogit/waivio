@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch';
 import config from './routes';
+import { getFollowingCount } from '../client/helpers/apiHelpers';
 
 const headers = {
   Accept: 'application/json',
@@ -95,5 +96,35 @@ export const getWobjectFollowers = (wobject, skip = 0, limit = 50) =>
       .then(result => resolve(result))
       .catch(error => reject(error));
   }).then(({ followers }) => followers.map(user => user.name));
+
+export const getWobjectFollowing = (wobject, skip = 0, limit = 50) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.getUser}/${wobject}${config.getObjectFollowing}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({ skip, limit }),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getUserAccount = username =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.getUser}/${username}`)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getAccountWithFollowingCount = username =>
+  Promise.all([getUserAccount(username), getFollowingCount(username)]).then(
+    ([account, following]) => ({
+      ...account,
+      following_count: following.following_count,
+      follower_count: following.follower_count,
+    }),
+  );
 
 export default null;
