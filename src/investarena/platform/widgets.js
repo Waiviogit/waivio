@@ -10,6 +10,7 @@ import {
 import { getChartDataSuccess } from '../redux/actions/chartsActions';
 import { updateQuotes } from '../redux/actions/quotesActions';
 import { updateQuotesSettings } from '../redux/actions/quotesSettingsActions';
+import {getFavoritesSuccess} from "../redux/actions/favoriteQuotesActions";
 
 export class Widgets {
   constructor() {
@@ -52,9 +53,10 @@ export class Widgets {
   onConnect() {
     this.subscribeRates();
     this.subscribeSettings();
-    // this.dispatch(getFavorites());
     this.dispatch(updateUserStatistics({}));
     this.dispatch(updateUserAccountCurrency('USD'));
+    const favoriteQuotes = localStorage.getItem('favoriteQuotes') || '[]';
+    this.dispatch(getFavoritesSuccess(JSON.parse(favoriteQuotes)));
   }
   onError() {
     // console.log(error);

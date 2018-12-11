@@ -23,12 +23,7 @@ export function getFavorites () {
 
 export function updateFavorite (quoteSecurity) {
     return (dispatch) => {
-        return api.favorites.updateFavorite(quoteSecurity)
-            .then(({error}) => {
-                if (!error) {
-                    dispatch(updateFavoriteSuccess(quoteSecurity));
-                }
-            });
+      return dispatch(updateFavoriteSuccess(quoteSecurity))
     };
 }
 
