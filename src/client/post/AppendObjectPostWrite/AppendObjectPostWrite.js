@@ -12,7 +12,6 @@ import { getObject } from '../../object/wobjectsActions';
 import {
   getAuthenticatedUser,
   getIsEditorSaving,
-  getUpvoteSetting,
   getRewardSetting,
   getLocale,
   getIsAppendLoading,
@@ -32,7 +31,6 @@ import { getField } from '../../objects/WaivioObject';
     user: getAuthenticatedUser(state),
     loading: getIsAppendLoading(state),
     saving: getIsEditorSaving(state),
-    upvoteSetting: getUpvoteSetting(state),
     rewardSetting: getRewardSetting(state),
     locale: getLocale(state),
   }),
@@ -50,7 +48,6 @@ class AppendObjectPostWrite extends React.Component {
     loading: PropTypes.bool.isRequired,
     getObject: PropTypes.func.isRequired,
     saving: PropTypes.bool,
-    upvoteSetting: PropTypes.bool,
     match: PropTypes.shape().isRequired,
     locale: PropTypes.string,
     newPost: PropTypes.func,
@@ -63,7 +60,6 @@ class AppendObjectPostWrite extends React.Component {
     saving: false,
     draftId: null,
     locale: 'auto',
-    upvoteSetting: true,
     newPost: () => {},
     replace: () => {},
     history: {},
@@ -75,7 +71,6 @@ class AppendObjectPostWrite extends React.Component {
     this.state = {
       initialTopics: [],
       initialBody: '',
-      initialUpvote: this.props.upvoteSetting,
       initialUpdatedDate: Date.now(),
       showModalDelete: false,
       wobject: {},
@@ -141,7 +136,7 @@ class AppendObjectPostWrite extends React.Component {
   changeCurrentLocale = locale => this.setState({ locale });
 
   render() {
-    const { initialTopics, initialBody, initialUpvote, locale } = this.state;
+    const { initialTopics, initialBody, locale } = this.state;
     const { loading, saving } = this.props;
     const currentLocaleInList = LANGUAGES.find(element => element.id === locale);
 
@@ -167,7 +162,6 @@ class AppendObjectPostWrite extends React.Component {
               saving={saving}
               topics={initialTopics}
               body={initialBody}
-              upvote={initialUpvote}
               loading={loading}
               onSubmit={this.onSubmit}
               onDelete={this.onDelete}

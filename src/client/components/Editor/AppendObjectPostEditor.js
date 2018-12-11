@@ -2,11 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import ReactDOM from 'react-dom';
-import classNames from 'classnames';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import readingTime from 'reading-time';
-import { Checkbox, Form, Input, Select } from 'antd';
+import { Form, Input, Select } from 'antd';
 import { supportedObjectFields } from '../../../common/constants/listOfFields';
 import Action from '../Button/Action';
 import requiresLogin from '../../auth/requiresLogin';
@@ -32,7 +31,6 @@ class AppendObjectPostEditor extends React.Component {
     currentLocaleInList: PropTypes.shape().isRequired,
     topics: PropTypes.arrayOf(PropTypes.string),
     body: PropTypes.string,
-    upvote: PropTypes.bool,
     loading: PropTypes.bool,
     saving: PropTypes.bool,
     onDelete: PropTypes.func,
@@ -49,7 +47,6 @@ class AppendObjectPostEditor extends React.Component {
     user: {},
     topics: [],
     body: '',
-    upvote: true,
     currentLocaleInList: { id: 'auto', name: '', nativeName: '' },
     popularTopics: [],
     loading: false,
@@ -98,12 +95,8 @@ class AppendObjectPostEditor extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { topics, body, upvote } = this.props;
-    if (
-      !_.isEqual(topics, nextProps.topics) ||
-      body !== nextProps.body ||
-      upvote !== nextProps.upvote
-    ) {
+    const { topics, body } = this.props;
+    if (!_.isEqual(topics, nextProps.topics) || body !== nextProps.body) {
       this.setValues(nextProps);
     }
   }
@@ -354,14 +347,7 @@ class AppendObjectPostEditor extends React.Component {
             body={`This action extends object will be created by Waivio Bot. And you will get 70% of Author rewards. You do not spend additional resource credits!`}
           />
         </Form.Item>
-
-        <Form.Item className={classNames({ Editor__hidden: loading })}>
-          {getFieldDecorator('upvote', { valuePropName: 'checked', initialValue: true })(
-            <Checkbox onChange={this.onUpdate} disabled={loading}>
-              <FormattedMessage id="like_post" defaultMessage="Like this post" />
-            </Checkbox>,
-          )}
-        </Form.Item>
+        <br />
         <div className="Editor__bottom">
           <span className="Editor__bottom__info">
             <i className="iconfont icon-markdown" />{' '}
