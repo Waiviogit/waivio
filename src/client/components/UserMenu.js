@@ -90,7 +90,7 @@ class UserMenu extends React.Component {
               >
                 <FormattedMessage id="following" defaultMessage="Following" />
                 <span className="UserMenu__badge">
-                  <FormattedNumber value={this.props.following} />
+                  <FormattedNumber value={this.props.following || 0} />
                 </span>
               </li>
               <li
