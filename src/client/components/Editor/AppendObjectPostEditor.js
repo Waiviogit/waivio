@@ -195,8 +195,17 @@ class AppendObjectPostEditor extends React.Component {
   }
 
   handleChangeField = fieldToChange => {
-    this.props.changeCurrentField(fieldToChange);
+    const { currentField, changeCurrentField, form } = this.props;
     this.setState({ body: '' });
+    if (objectImageFields.includes(fieldToChange)) {
+      const { currentImage } = this.state;
+      form.setFieldsValue({
+        value: currentImage.length ? currentImage[0].src : '',
+      });
+    } else if (objectImageFields.includes(currentField)) {
+      form.setFieldsValue({ value: '' });
+    }
+    changeCurrentField(fieldToChange);
   };
 
   handleChangeLocale = localeToChange => {
@@ -216,6 +225,7 @@ class AppendObjectPostEditor extends React.Component {
 
       this.setState({
         imageUploading: true,
+        currentImage: [],
       });
 
       this.props.onImageUpload(e.target.files[0], this.disableAndInsertImage, () =>
@@ -233,11 +243,15 @@ class AppendObjectPostEditor extends React.Component {
       name: imageName,
       id: uuidv4(),
     };
-    this.setState({
-      imageUploading: false,
-      currentImage: [newImage],
-    });
-    this.insertImage(image, imageName);
+    this.setState({ imageUploading: false, currentImage: [newImage] });
+    this.props.form.setFieldsValue({ value: image });
+    this.onUpdate();
+  };
+
+  handleRemoveImage = () => {
+    this.setState({ currentImage: [] });
+    this.props.form.setFieldsValue({ value: '' });
+    this.onUpdate();
   };
 
   render() {
@@ -300,7 +314,7 @@ class AppendObjectPostEditor extends React.Component {
           {languageOptions}
         </Select>
 
-        <div className="ant-form-item-label label Editor__appendTitles">
+        <div className="ant-form-item-label Editor__appendTitles">
           <FormattedMessage id="suggest3" defaultMessage="Value" />
         </div>
         {isImageValueRequire && (
