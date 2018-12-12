@@ -14,7 +14,7 @@ import {
   getAuthenticatedUserName,
 } from '../reducers';
 import { openTransfer } from '../wallet/walletActions';
-import { getAccount } from './usersActions';
+import { getUserAccount } from './usersActions';
 import { getAvatarURL } from '../components/Avatar';
 import Error404 from '../statics/Error404';
 import UserHero from './UserHero';
@@ -33,7 +33,7 @@ import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
     failed: getIsUserFailed(state, ownProps.match.params.name),
   }),
   {
-    getAccount,
+    getUserAccount,
     openTransfer,
   },
 )
@@ -47,7 +47,7 @@ export default class User extends React.Component {
     user: PropTypes.shape().isRequired,
     loaded: PropTypes.bool,
     failed: PropTypes.bool,
-    getAccount: PropTypes.func,
+    getUserAccount: PropTypes.func,
     openTransfer: PropTypes.func,
   };
 
@@ -55,12 +55,12 @@ export default class User extends React.Component {
     authenticatedUserName: '',
     loaded: false,
     failed: false,
-    getAccount: () => {},
+    getUserAccount: () => {},
     openTransfer: () => {},
   };
 
   static fetchData({ store, match }) {
-    return store.dispatch(getAccount(match.params.name));
+    return store.dispatch(getUserAccount(match.params.name));
   }
 
   state = {
@@ -70,7 +70,7 @@ export default class User extends React.Component {
   componentDidMount() {
     const { user, authenticated, authenticatedUserName } = this.props;
     if (!user.id && !user.failed) {
-      this.props.getAccount(this.props.match.params.name);
+      this.props.getUserAccount(this.props.match.params.name);
     }
 
     if (authenticated) {
@@ -104,7 +104,7 @@ export default class User extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.match.params.name !== this.props.match.params.name) {
-      this.props.getAccount(this.props.match.params.name);
+      this.props.getUserAccount(this.props.match.params.name);
     }
   }
 
