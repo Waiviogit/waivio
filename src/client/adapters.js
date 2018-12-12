@@ -22,7 +22,7 @@ export const getClientWObj = serverWObj => {
     id: author_permlink,
     avatar: avatarField ? avatarField.body : '/images/logo-brand.png',
     name: (nameField && nameField.body) || '',
-    descriptionShort: descriptionShort || '',
+    descriptionShort: (descriptionShort && descriptionShort.body) || '',
     parents: parents || [],
     weight: weight || '',
     createdAt: created_at || Date.now(),
