@@ -107,7 +107,7 @@ export const getWobjectFollowers = (wobject, skip = 0, limit = 50) =>
 
 export const getWobjectFollowing = (wobject, skip = 0, limit = 50) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.getUser}/${wobject}${config.getObjectFollowing}`, {
+    fetch(`${config.apiPrefix}${config.user}/${wobject}${config.followingObjects}`, {
       headers,
       method: 'POST',
       body: JSON.stringify({ skip, limit }),
@@ -120,7 +120,7 @@ export const getWobjectFollowing = (wobject, skip = 0, limit = 50) =>
 
 export const getUserAccount = username =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.getUser}/${username}`)
+    fetch(`${config.apiPrefix}${config.user}/${username}`)
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));
