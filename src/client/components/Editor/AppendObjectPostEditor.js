@@ -34,7 +34,6 @@ class AppendObjectPostEditor extends React.Component {
     body: PropTypes.string,
     upvote: PropTypes.bool,
     loading: PropTypes.bool,
-    isUpdating: PropTypes.bool,
     saving: PropTypes.bool,
     onDelete: PropTypes.func,
     onSubmit: PropTypes.func,
@@ -174,6 +173,22 @@ class AppendObjectPostEditor extends React.Component {
     });
   }
 
+  validateFieldValue = (rule, value, callback) => {
+    const { intl, wobject, currentLocaleInList, currentField } = this.props;
+    const filtered = wobject.fields.filter(
+      f => f.locale === currentLocaleInList.id && f.name === currentField,
+    );
+    if (filtered.map(f => f.body.toLowerCase()).includes(value)) {
+      callback(
+        intl.formatMessage({
+          id: 'append_object_validation_msg',
+          defaultMessage: 'The field with this value already exists',
+        }),
+      );
+    }
+    callback();
+  };
+
   handleDelete(e) {
     e.stopPropagation();
     e.preventDefault();
@@ -186,11 +201,14 @@ class AppendObjectPostEditor extends React.Component {
   };
 
   handleChangeLocale = localeToChange => {
-    this.props.changeCurrentLocale(localeToChange);
+    const { form, changeCurrentLocale } = this.props;
+    const currValue = form.getFieldValue('value');
+    changeCurrentLocale(localeToChange);
+    form.setFieldsValue({ value: currValue });
     this.setState({ body: '' });
   };
   render() {
-    const { intl, form, loading, isUpdating, saving } = this.props;
+    const { intl, form, loading, saving } = this.props;
     const { getFieldDecorator } = form;
     const { body, bodyHTML, currentLocaleInList } = this.state;
 
@@ -256,6 +274,9 @@ class AppendObjectPostEditor extends React.Component {
             initialValue: '',
             rules: [
               {
+                transform: value => value.toLowerCase(),
+              },
+              {
                 required: true,
                 message: intl.formatMessage({
                   id: 'value_error_empty',
@@ -268,6 +289,9 @@ class AppendObjectPostEditor extends React.Component {
                   id: 'value_error_too_long',
                   defaultMessage: "Value can't be longer than 255 characters.",
                 }),
+              },
+              {
+                validator: this.validateFieldValue,
               },
             ],
           })(
@@ -331,9 +355,9 @@ class AppendObjectPostEditor extends React.Component {
           />
         </Form.Item>
 
-        <Form.Item className={classNames({ Editor__hidden: isUpdating })}>
+        <Form.Item className={classNames({ Editor__hidden: loading })}>
           {getFieldDecorator('upvote', { valuePropName: 'checked', initialValue: true })(
-            <Checkbox onChange={this.onUpdate} disabled={isUpdating}>
+            <Checkbox onChange={this.onUpdate} disabled={loading}>
               <FormattedMessage id="like_post" defaultMessage="Like this post" />
             </Checkbox>,
           )}
@@ -353,7 +377,7 @@ class AppendObjectPostEditor extends React.Component {
               </span>
             )}
             <Form.Item className="Editor__bottom__submit">
-              {isUpdating ? (
+              {loading ? (
                 <Action primary big loading={loading} disabled={loading}>
                   <FormattedMessage
                     id={loading ? 'post_send_progress' : 'post_update_send'}

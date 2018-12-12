@@ -54,37 +54,42 @@ const UserHero = ({
   hasCover,
   isFollowing,
   onTransferClick,
-}) => (
-  <div>
-    <Switch>
-      <Route
-        path="/@:name"
-        render={() => (
-          <div>
-            {user.fetching ? (
-              <UserHeaderLoading />
-            ) : (
-              <UserHeader
-                username={username}
-                handle={user.name}
-                userReputation={user.reputation}
-                vestingShares={parseFloat(user.vesting_shares)}
-                isSameUser={isSameUser}
-                coverImage={coverImage}
-                hasCover={hasCover}
-                isFollowing={isFollowing}
-                onTransferClick={onTransferClick}
-                isActive={isUserActive(user)}
-              />
-            )}
-            <UserMenuWrapper followers={user.follower_count} following={user.following_count} />
-          </div>
-        )}
-      />
-      <Route render={() => (authenticated ? <Hero /> : <div />)} />
-    </Switch>
-  </div>
-);
+}) => {
+  const objectsFollowingCount = user.objects_following_count ? user.objects_following_count : 0;
+  const followingCount = user.following_count + objectsFollowingCount;
+
+  return (
+    <div>
+      <Switch>
+        <Route
+          path="/@:name"
+          render={() => (
+            <div>
+              {user.fetching ? (
+                <UserHeaderLoading />
+              ) : (
+                <UserHeader
+                  username={username}
+                  handle={user.name}
+                  userReputation={user.reputation}
+                  vestingShares={parseFloat(user.vesting_shares)}
+                  isSameUser={isSameUser}
+                  coverImage={coverImage}
+                  hasCover={hasCover}
+                  isFollowing={isFollowing}
+                  onTransferClick={onTransferClick}
+                  isActive={isUserActive(user)}
+                />
+              )}
+              <UserMenuWrapper followers={user.follower_count} following={followingCount} />
+            </div>
+          )}
+        />
+        <Route render={() => (authenticated ? <Hero /> : <div />)} />
+      </Switch>
+    </div>
+  );
+};
 
 UserHero.propTypes = {
   authenticated: PropTypes.bool.isRequired,

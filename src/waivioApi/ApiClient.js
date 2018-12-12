@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch';
 import config from './routes';
+import { getFollowingCount } from '../client/helpers/apiHelpers';
 
 const headers = {
   Accept: 'application/json',
@@ -69,5 +70,69 @@ export const searchObjects = (searchString, limit = 10) =>
     method: 'POST',
     body: JSON.stringify({ search_string: searchString, limit }),
   }).then(res => res.json());
+
+export const postAppendWaivioObject = postData =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.objectsBot.apiPrefix}${config.objectsBot.appendObject}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify(postData),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getAllFollowingObjects = username =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.user}/${username}`)
+      .then(res => res.json())
+      .then(user => resolve(user.objects_follow || []))
+      .catch(error => reject(error));
+  });
+
+export const getWobjectFollowers = (wobject, skip = 0, limit = 50) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.getObjects}/${wobject}${config.getObjectFollowers}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({ skip, limit }),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  }).then(({ followers }) => followers.map(user => user.name));
+
+export const getWobjectFollowing = (wobject, skip = 0, limit = 50) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.user}/${wobject}${config.followingObjects}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({ skip, limit }),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getUserAccount = username =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.user}/${username}`)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getAccountWithFollowingCount = username =>
+  Promise.all([getUserAccount(username), getFollowingCount(username)]).then(
+    ([account, following]) => ({
+      ...account,
+      following_count: following.following_count,
+      follower_count: following.follower_count,
+    }),
+  );
 
 export default null;

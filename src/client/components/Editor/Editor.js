@@ -387,6 +387,7 @@ class Editor extends React.Component {
             <SearchObjectsAutocomplete
               handleSelect={this.handleAddLinkedObject}
               canCreateNewObject={canCreateNewObject}
+              linkedObjectsIds={linkedObjects.map(obj => obj.id)}
             />
           )}
           {Boolean(linkedObjects.length) &&

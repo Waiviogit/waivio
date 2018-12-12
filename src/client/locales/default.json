@@ -393,5 +393,9 @@
   "top_authors": "Top Authors",
   "show_more_authors": "Show more authors",
   "object": "object",
-  "preview_locale": "in {locale} locale"
+  "preview_locale": "in {locale} locale",
+  "objects": "Objects",
+  "users": "Users",
+  "preview_locale": "in {locale} locale",
+  "append_object_validation_msg": "The field with this value already exists"
 }
