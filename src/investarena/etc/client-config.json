@@ -34,8 +34,8 @@
   "staging": {
     "apiPrefix": "https://api.socialtrading.uat.pp.ua/",
     "brokerWSUrl": {
-      "maximarkets": "https://uat-trading.maximarkets.org/stomp/",
-      "umarkets": "https://uat-trading.umarkets.com/stomp/",
+      "maximarkets": "https://trading.maximarkets.org/stomp/",
+      "umarkets": "https://trading.umarkets.com/stomp/",
       "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
     },
     "platformDepositUrl": {
@@ -67,8 +67,8 @@
     "": "https://api.investarena.com/",
     "": "https://api.socialtrading.maximarkets.site/",
     "brokerWSUrl": {
-      "maximarkets": "https://uat-trading.maximarkets.org/stomp/",
-      "umarkets": "https://uat-trading.umarkets.com/stomp/",
+      "maximarkets": "https://trading.maximarkets.org/stomp/",
+      "umarkets": "https://trading.umarkets.com/stomp/",
       "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
     },
     "platformDepositUrl": {

@@ -1,0 +1,42 @@
+@import (reference) '../../../Common.less';
+
+.st-open-deals-wrap-deals {
+  display: block;
+  .st-open-deals-content {
+    width: 100%;
+    background-color: @color-white;
+    .st-open-deals-content-quotes {
+      font-size: 11px;
+    }
+  }
+  .sr-open-deals-not-present {
+    padding: 10px;
+    margin-top: 150px;
+    text-align: center;
+    width: 100%;
+  }
+  .st-open-deal-button-blue{
+    .buttonStyle(35px, 90px, bold);
+  }
+  .st-open-deal-button-red{
+    .buttonStyle(35px, 75px, bold);
+  }
+  .st-open-deal-button-green{
+    .buttonStyle(35px, 75px, bold);
+  }
+}
+.st-close-deals-row{
+  margin-top: 15px;
+  .buttonDealsStyle (@backgroundColor, @backgroundColorHover){
+    .buttonStyle(35px, 200px, bold);
+    color: @color-white;
+    border: none;
+    background-color: @backgroundColor;
+    &:hover{
+      background-color: @backgroundColorHover;
+    }
+  }
+  .st-close-all{ .buttonDealsStyle(@color-blue, @color-dark-blue); }
+  .st-close-positive{ .buttonDealsStyle(@color-green, @color-dark-green); }
+  .st-close-negative{ .buttonDealsStyle(@color-red, @color-dark-red); }
+}

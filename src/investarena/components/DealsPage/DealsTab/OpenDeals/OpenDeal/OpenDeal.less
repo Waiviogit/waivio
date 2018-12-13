@@ -1,0 +1,173 @@
+@import (reference) '../../../../Common.less';
+
+.st-open-deal-wrapper {
+  &.st-list-item {
+    .containerStyle (auto, 100%, 0, @color-white);
+    border-bottom: 1px solid @color-gray;
+    .st-open-deal-header-wrap {
+      display: flex;
+    }
+    .st-open-deal-button-wrap {
+      width: auto;
+      margin-left: 5px;
+    }
+    .st-open-deal-header {
+      width: 100%;
+      height: 55px;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      .st-open-deal-header-line {
+        display: flex;
+        align-items: center;
+      }
+      .st-open-deal-header-item-title {
+        .textStyle(@font-size-small, @color-darkest-gray, normal);
+        align-self: center;
+        margin-right: 5px;
+      }
+      .st-open-deal-header-value {
+        .textStyle(@font-size-small, @color-black-blue, bold);
+        align-self: center;
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+    .st-open-deal-arrow-wrap {
+      margin: 15px 0 0 5px;
+      .st-open-deal-header-arrow-up {
+        @include arrowUpStyle;
+      }
+      .st-open-deal-header-arrow-down {
+        @include arrowDownStyle;
+      }
+    }
+    .st-open-deal-buttons-block {
+      display: flex;
+      flex-direction: column;
+      .st-open-deal-buttons-line {
+        display: flex;
+      }
+    }
+  }
+  &.st-card {
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    width: 252px;
+    border: 1px solid @color-gray;
+    border-radius: 4px;
+    padding: 10px;
+    margin: 12px;
+    box-shadow: 0 3px 15px @color-gray;
+    .st-card__header {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+      border-bottom: 1px solid @color-gray;
+      padding-bottom: 5px;
+      .st-instrument-avatar-wrap {
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+        .st-instrument-avatar {
+          margin: 0;
+        }
+        .st-type {
+          width: fit-content;
+        }
+        .st-deal-direction-sell {
+          .textStyle(@font-size-medium, @color-red, bold);
+        }
+        .st-deal-direction-buy {
+          .textStyle(@font-size-medium, @color-green, bold);
+        }
+      }
+      .st-instrument-name-wrap {
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: space-around;
+        .st-instruments-text {
+          .textStyle(@font-size-large, @color-black, bold);
+        }
+      }
+      .st-price {
+        .st-open-deal-header-item-title, st-open-deal-header-item-title {
+          display: none;
+        }
+      }
+    }
+    .st-card__pnlInfo {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 5px;
+      .textStyle(@font-size-small, @color-darkest-gray, normal);
+      .st-id-wrap {
+        .st-id-value {
+          font-size: @font-size-medium;
+        }
+      }
+      .st-pnl-wrap {
+        .st-pnl {
+          font-size: @font-size-large;
+          font-weight: 700;
+          &.st-deal-pl-red{
+            color: @color-red!important;
+          }
+          &.st-deal-pl-green{
+            color: @color-green!important;
+          }
+        }
+      }
+    }
+    .st-card__commission {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      margin-bottom: 5px;
+      .textStyle(@font-size-small, @color-darkest-gray, normal);
+      .value {
+        font-size: @font-size-medium;
+        font-weight: 700;
+        padding-left: 4px;
+      }
+    }
+    .st-opened {
+      display: flex;
+      justify-content: space-between;
+      .textStyle(@font-size-small, @color-darkest-gray, normal);
+      .st-open-deal-header-item-title {
+        margin-right: 4px;
+      }
+    }
+    .st-card__btn-wrap {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 8px;
+      .st-open-deal-button-wrap {
+        position: unset;
+        width: 48%;
+        margin: 0;
+        .btn {
+          width: 100%;
+          height: 30px;
+        }
+      }
+    }
+  }
+}
+.st-disabled{
+  background-color: @color-gray!important;
+}
+.st-open-deal-button-blue{
+  .st-open-deal-buttonStyle(35px, 100%, bold, @color-white, @color-blue, @color-dark-blue);
+}
+.st-open-deal-button-green{
+  .st-open-deal-buttonStyle(35px, 100%, bold, @color-white, @color-green, @color-dark-green);
+}
+.st-open-deal-button-red{
+  .st-open-deal-buttonStyle(35px, 100%, bold, @color-white, @color-red, @color-dark-red);
+}

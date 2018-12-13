@@ -1,0 +1,104 @@
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import React from 'react';
+import classNames from 'classnames';
+import { injectIntl } from 'react-intl';
+import { currencyFormat } from '../../../../platform/numberFormat';
+import ModalCloseAll from '../../../Modals/ModalsOpenDeal/ModalCloseAll/ModalCloseAll';
+import OpenDeal from './OpenDeal';
+import { PlatformHelper } from '../../../../platform/platformHelper';
+import './OpenDeals.less';
+
+const propTypes = {
+    openDeals: PropTypes.object.isRequired,
+    quotes: PropTypes.object.isRequired,
+    quoteSettings: PropTypes.object.isRequired,
+    viewMode: PropTypes.oneOf(['list', 'cards'])
+};
+
+const OpenDeals = ({openDeals, intl, quotes, viewMode, quoteSettings }) => {
+    let sumPnl = 0;
+    let positiveDeals = {};
+    let positiveDealsPnl = 0;
+    let negativeDeals = {};
+    let negativeDealsPnl = 0;
+    const getPnl = (openDeal) => {
+        let pnl = (quoteSettings && quoteSettings[openDeal.security]) ? PlatformHelper.getPnl(quotes[openDeal.security], openDeal, quoteSettings[openDeal.security]) : 0;
+        if (isNaN(pnl) || pnl === undefined) {
+            return '-';
+        } else {
+            if (pnl.toFixed(2) > 0) {
+                positiveDeals = {...positiveDeals, [openDeal.dealId]: openDeal};
+                positiveDealsPnl += pnl;
+            } else {
+                negativeDeals = {...negativeDeals, [openDeal.dealId]: openDeal};
+                negativeDealsPnl += pnl;
+            }
+            sumPnl += pnl;
+            pnl = parseFloat(pnl).toFixed(2);
+        }
+        return pnl;
+    };
+    const dealsListHeader =
+        <div className="st-instr-column-wrap d-flex">
+            <div className="st-id-title">ID:</div>
+            <div className="st-instrument-avatar-title"> </div>
+            <div className="st-instruments-text-title">{intl.formatMessage({ id: 'assets.instrument' })}</div>
+            <div className="st-type-title">{intl.formatMessage({ id: 'deals.type' })}</div>
+            <div className="st-amount-title">{intl.formatMessage({ id: 'assets.amount' })}</div>
+            <div className="st-opened-title">{intl.formatMessage({ id: 'deals.opened' })}</div>
+            <div className="st-tp-title">{intl.formatMessage({ id: 'modalTakeProfit.header.title' })}</div>
+            <div className="st-sl-title">{intl.formatMessage({ id: 'deals.stopLoss' })}</div>
+            <div className="st-price-title">{intl.formatMessage({ id: 'deals.price' })}</div>
+            <div className="st-pnl-title">P&L:</div>
+        </div>;
+    return (
+        <div className="st-open-deals-wrap-deals">
+            <div className="st-open-deals-content">
+                {viewMode === 'list' && dealsListHeader}
+                <div className={classNames('st-content-quotes', {'list-view': viewMode === 'list', 'cards-view': viewMode === 'cards'})}>
+                    <div className="st-deals-responsible-wrap">
+                        {!_.isEmpty(openDeals)
+                            ? _.map(openDeals, (openDeal) =>
+                                <div key={openDeal.dealId}>
+                                    <OpenDeal
+                                        quoteSecurity = {openDeal.security}
+                                        openDeal = {openDeal}
+                                        dealPnL={getPnl(openDeal)}
+                                        viewMode={viewMode}/>
+                                </div>)
+                            : <div className="sr-open-deals-not-present">
+                                {intl.formatMessage({ id: 'openDeals.notPresent' })}
+                            </div>
+                        }</div>
+                </div>
+                <div className="d-flex justify-content-end">
+                    <div className="st-close-deals-row d-flex justify-content-between">
+                        {openDeals && <ModalCloseAll
+                            openDeals={openDeals}
+                            sumPnl={currencyFormat(parseFloat(sumPnl).toFixed(2))}
+                            buttonClass='st-close-all'
+                            allMarker='CloseAll'
+                        />}
+                        {positiveDeals && <ModalCloseAll openDeals={positiveDeals}
+                            title='deals.positive'
+                            sumPnl={currencyFormat(parseFloat(positiveDealsPnl).toFixed(2))}
+                            buttonClass='st-close-positive'
+                            allMarker='CloseAllProfitable'
+                        />}
+                        {negativeDeals && <ModalCloseAll openDeals={negativeDeals}
+                            title='deals.negative'
+                            sumPnl={currencyFormat(parseFloat(negativeDealsPnl).toFixed(2))}
+                            buttonClass='st-close-negative'
+                            allMarker='CloseAllLosing'
+                        />}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+OpenDeals.propTypes = propTypes;
+
+export default injectIntl(OpenDeals);

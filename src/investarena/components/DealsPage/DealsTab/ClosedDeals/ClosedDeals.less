@@ -1,0 +1,72 @@
+@import (reference) '../../../Common.less';
+
+@closed-deals-wrap-height: 472px;
+
+.st-closed-deals-wrapper {
+
+  .st-closed-deals-select-wrap{
+    padding: @margin-large @margin-large 0 @margin-large;
+    border-bottom: 2px solid @color-dark-gray;
+  }
+  .st-closed-deals-total-pnl-wrap{
+    display: flex;
+    justify-content: center;
+    padding: 5px 0;
+    .textStyle(@font-size-small, @color-black-blue, normal);
+  }
+  .st-closed-deals-block{
+    height: @closed-deals-wrap-height;
+    overflow: auto;
+    &.cards-view {
+      height: @closed-deals-wrap-height + 107px;
+    }
+    .st-closed-deals-header {
+      padding: 0 15px;
+      color: @color-gray;
+      display: flex;
+      align-items: center;
+      height: 45px;
+      background-color: @color-white;
+    }
+    .st-closed-deals-search {
+      display: flex;
+      justify-content: space-between;
+      background-color: @color-white;
+      padding: 0 15px;
+      input {
+        outline: none;
+        color: @color-gray;
+        border: none;
+        height: 45px;
+        background-color: @color-white;
+      }
+      div {
+        align-self: center;
+      }
+    }
+    .st-closed-deals-content-header {
+      align-items: center;
+      height: 45px;
+      background-color: @color-white;
+      color: @color-gray;
+      padding: 0 30px 0 15px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .st-closed-deals-content {
+      height: 245px;
+      overflow: auto;
+      padding: 0 0 0 15px;
+      background-color: @color-white;
+      .st-closed-deals-content-quotes {
+        font-size: 11px;
+      }
+    }
+    .sr-close-deals-not-present {
+      padding: 10px;
+      margin-top: 140px;
+      text-align: center;
+      width: 100%;
+    }
+  }
+}

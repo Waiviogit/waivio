@@ -342,3 +342,41 @@
   color: @color;
 }
 }
+.buttonStyle (@height, @width, @fontWeight){
+  height: @height;
+  width: @width;
+  text-transform: uppercase;
+  font-weight: @fontWeight;  //normal or bold
+  font-size: @font-size-small;
+  border-radius: 4px;
+}
+.textStyle (@fontSize, @fontColor, @fontWeight){
+  font-size: @fontSize;
+  color: @fontColor;
+  font-weight: @fontWeight;
+}
+.containerStyle (@height, @width, @padding, @color){
+  height: @height;
+  width: @width;
+  padding: @padding;
+  background-color: @color;
+}
+.fieldStyle (@height, @width, @padding-left, @font-size, @color){
+  height: @height;
+  width: @width;
+  padding-left: @padding-left;
+  font-size: @font-size;
+  color: @color;
+}
+.st-first-number-favorites {
+  font-size: 12px;
+}
+.st-second-number-favorites {
+  font-weight: bold;
+  font-size: 18px;
+}
+.st-third-number-favorites {
+  position: relative;
+  top: -4px;
+  font-size: 12px;
+}
