@@ -85,7 +85,7 @@
     border-bottom: 1px solid @color-dark-gray;
   }
   .columnAssetsStyle (@width, @font-size, @margin-top){
-    @include textStyle(@font-size-medium, @color-black-blue, bold);
+    .textStyle(@font-size-medium, @color-black-blue, bold);
     margin: @margin-top 0;
     width: @width;
     text-align: center;
@@ -106,7 +106,7 @@
   .st-instrument-avatar-closed-title {
     width: 40px;
   }
-  .st-instruments-text-title{.columnAssetsStyle (130px, @font-size-medium, 15px)}
+  .st-instruments-text-title{.columnAssetsStyle (145px, @font-size-medium, 15px)}
   .st-type-title{.columnAssetsStyle (50px, @font-size-medium, 15px)}
   .st-pnl-title{.columnAssetsStyle (85px, @font-size-medium, 15px)}
   .st-opened-title{.columnAssetsStyle (125px, @font-size-medium, 15px)}
@@ -116,35 +116,92 @@
   .st-price-title{.columnAssetsStyle (135px, @font-size-medium, 15px)}
   .st-commission-title{.columnAssetsStyle (130px, @font-size-medium, 15px)}
   .st-list-item {
-    .st-instruments-text{.columnAssetsStyle (130px, @font-size-small, 0)}
-    .st-type{.columnAssetsStyle (50px, @font-size-small, 0)}
-    .st-pnl{.columnAssetsStyle (85px, @font-size-small, 0)}
-    .st-opened{.columnAssetsStyle (125px, @font-size-small, 0)}
-    .st-amount{.columnAssetsStyle (75px, @font-size-small, 0)}
-    .st-tp{.columnAssetsStyle (90px, @font-size-small, 0)}
-    .st-sl{.columnAssetsStyle (90px, @font-size-small, 0)}
+    .st-instruments-text {
+      .columnAssetsStyle (130px, @font-size-small, 0)
+    }
+    .st-type {
+      width: 35px;
+      text-align: center;
+    }
+    .st-pnl {
+      .columnAssetsStyle (85px, @font-size-small, 0)
+    }
+    .st-opened {
+      .columnAssetsStyle (125px, @font-size-small, 0)
+    }
+    .st-amount {
+      .columnAssetsStyle (75px, @font-size-small, 0)
+    }
+    .st-tp {
+      .columnAssetsStyle (90px, @font-size-small, 0)
+    }
+    .st-sl {
+      .columnAssetsStyle (90px, @font-size-small, 0)
+    }
     .st-price {
       margin-left: 5px;
       .textStyle(@font-size-medium, @color-black-blue, bold);
       width: 130px;
       text-align: center;
     }
-    .st-commission{.columnAssetsStyle (130px, @font-size-small, 0)}
-
-    .st-deal-direction-sell{
-      .textStyle(@font-size-small, @color-red, bold);
-      align-self: center;
-    }
-    .st-deal-direction-buy{
-      .textStyle(@font-size-small, @color-green, bold);
-      align-self: center;
-    }
+  }
+  .st-closed-deals-block{
+    .st-instruments-text-title{.columnAssetsStyle (160px, @font-size-medium, 15px)}
+    .st-type-title{.columnAssetsStyle (40px, @font-size-medium, 15px)}
+    .st-pnl-title{.columnAssetsStyle (85px, @font-size-medium, 15px)}
+    .st-opened-title{.columnAssetsStyle (125px, @font-size-medium, 15px)}
+    .st-amount-title{.columnAssetsStyle (75px, @font-size-medium, 15px)}
+    .st-tp-title{.columnAssetsStyle (95px, @font-size-medium, 15px)}
+    .st-sl-title{.columnAssetsStyle (90px, @font-size-medium, 15px)}
+    .st-price-title{.columnAssetsStyle (135px, @font-size-medium, 15px)}
+    .st-commission-title{.columnAssetsStyle (130px, @font-size-medium, 15px)}
+    .st-list-item {
+      .st-instruments-text {
+        .columnAssetsStyle (130px, @font-size-small, 0)
+      }
+      .st-type {
+        width: 35px;
+        text-align: center;
+      }
+      .st-pnl {
+        .columnAssetsStyle (85px, @font-size-small, 0)
+      }
+      .st-opened {
+        .columnAssetsStyle (105px, @font-size-small, 0)
+      }
+      .st-amount {
+        .columnAssetsStyle (75px, @font-size-small, 0)
+      }
+      .st-tp {
+        .columnAssetsStyle (90px, @font-size-small, 0)
+      }
+      .st-sl {
+        .columnAssetsStyle (90px, @font-size-small, 0)
+      }
+      .st-price {
+        margin-left: 5px;
+        .textStyle(@font-size-medium, @color-black-blue, bold);
+        width: 115px;
+        text-align: center;
+      }
+      .st-commission {
+        .columnAssetsStyle (110px, @font-size-small, 0)
+      }
+  }
     .st-deal-pl-red{
       color: @color-red!important;
     }
     .st-deal-pl-green{
       color: @color-green!important;
     }
+  }
+  .st-deal-direction-sell{
+    .textStyle(@font-size-small, @color-red, bold);
+    align-self: center;
+  }
+  .st-deal-direction-buy{
+    .textStyle(@font-size-small, @color-green, bold);
+    align-self: center;
   }
   .st-content-quotes{
     height: @open-deals-wrap-height;

@@ -3,13 +3,15 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-// import Select from 'react-select';
+import { Select } from 'antd';
 import ClosedDeal from './ClosedDeal';
 import { currencyFormat } from '../../../../platform/numberFormat';
-// import { optionsPeriod } from '../../../../constants/selectData';
+import { optionsPeriod } from '../../../../constants/selectData';
 import quoteSettingsData from '../../../../default/quoteSettingsData';
 import { singleton } from '../../../../platform/singletonPlatform';
 import './ClosedDeals.less';
+
+const Option =Select.Option;
 
 const propTypes = {
     quotesSettings: PropTypes.object,
@@ -64,21 +66,15 @@ class ClosedDeals extends Component {
         return (
             <div className="st-closed-deals-wrapper">
                 <div className="st-closed-deals-select-wrap">
-                    {/*<FormattedMessage id="createPost.selectLabel.default">*/}
-                        {/*{msg => (*/}
-                            {/*<Select*/}
-                                {/*name="selected-period"*/}
-                                {/*placeholder={msg}*/}
-                                {/*options={optionsPeriod}*/}
-                                {/*inputProps={{ maxLength: 9 }}*/}
-                                {/*simpleValue*/}
-                                {/*clearable={false}*/}
-                                {/*searchable={false}*/}
-                                {/*value={this.state.selectedPeriod}*/}
-                                {/*onChange={this.updateSelectedPeriod}*/}
-                            {/*/>*/}
-                        {/*)}*/}
-                    {/*</FormattedMessage>*/}
+                  <Select
+                    defaultValue={optionsPeriod[0].value}
+                    style={{ width: 120 }}
+                    onChange={this.updateSelectedPeriod}
+                  >
+                    {_.map(optionsPeriod, (option) => (
+                      <Option key={option.value} value={option.value}>{option.label}</Option>
+                    ))}
+                  </Select>
                     <span className="st-closed-deals-total-pnl-wrap">
                         <span className="st-margin-right-small">{this.props.intl.formatMessage({ id: 'deals.totalPnL' })}: </span>
                         <span className={totalPnL < 0 ? 'st-deal-pl-red' : 'st-deal-pl-green'}>{currencyFormat(totalPnL)}</span>

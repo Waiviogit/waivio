@@ -1,9 +1,9 @@
-import ClosedDeals from './ClosedDeals';
 import { connect } from 'react-redux';
-import { getClosedDealsState } from 'redux/selectors/entities/dealsSelectors';
-import { getQuotesSettingsState } from 'redux/selectors/entities/quotesSettingsSelectors';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { getClosedDealsState } from '../../../../redux/selectors/dealsSelectors';
+import { getQuotesSettingsState } from '../../../../redux/selectors/quotesSettingsSelectors';
+import ClosedDeals from './ClosedDeals';
 
 const propTypes = {
     quotesSettings: PropTypes.object,

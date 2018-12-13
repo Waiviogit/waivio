@@ -1,14 +1,14 @@
-import './ClosedDeal.scss';
-import { currencyFormat, numberFormat } from 'platform/numberFormat';
 import React, { Fragment } from 'react';
 import { injectIntl } from 'react-intl';
-import InstrumentAvatar from 'components/InstrumentAvatar/InstrumentAvatar';
-import { Link } from 'react-router';
-import moment from 'moment';
-import { PlatformHelper } from 'platform/platformHelper';
 import PropTypes from 'prop-types';
-import { quoteFormat } from 'platform/parsingPrice';
-import quoteSettingsData from 'default/quoteSettingsData';
+import { Link } from 'react-router-dom';
+import moment from 'moment';
+import { currencyFormat, numberFormat } from '../../../../../platform/numberFormat';
+import InstrumentAvatar from '../../../../InstrumentAvatar/InstrumentAvatar';
+import { PlatformHelper } from '../../../../../platform/platformHelper';
+import { quoteFormat } from '../../../../../platform/parsingPrice';
+import quoteSettingsData from '../../../../../default/quoteSettingsData';
+import './ClosedDeal.less';
 
 const propTypes = {
     quoteSettings: PropTypes.object,

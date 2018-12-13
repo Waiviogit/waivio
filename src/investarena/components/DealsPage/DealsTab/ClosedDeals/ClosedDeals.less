@@ -5,8 +5,15 @@
 .st-closed-deals-wrapper {
 
   .st-closed-deals-select-wrap{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     padding: @margin-large @margin-large 0 @margin-large;
     border-bottom: 2px solid @color-dark-gray;
+    .ant-select-enabled{
+      width: 350px!important;
+    }
   }
   .st-closed-deals-total-pnl-wrap{
     display: flex;

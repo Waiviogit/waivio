@@ -2,8 +2,9 @@ import PropTypes from 'prop-types';
 import {injectIntl} from "react-intl";
 import React from 'react';
 import { Tabs } from 'antd';
-// import ClosedDeals from './ClosedDeals';
+import ClosedDeals from './ClosedDeals';
 import OpenDeals from './OpenDeals';
+
 const TabPane = Tabs.TabPane;
 
 const propTypes = {
@@ -20,7 +21,7 @@ const DealsTab = ({viewMode, intl}) => {
               <OpenDeals viewMode={viewMode}/>
             </TabPane>
             <TabPane tab={intl.formatMessage({ id: 'sidebarWidget.tabTitle.closedDeals' })} key="2">
-              {/*<ClosedDeals viewMode={viewMode}/>*/} bla
+              <ClosedDeals viewMode={viewMode}/>
             </TabPane>
           </Tabs>
         </div>
