@@ -83,12 +83,6 @@ class DealsPage extends Component {
                             {/*searchParams={searchParams.search}*/}
                             {/*valueKey="id"*/}
                             {/*options={_.sortBy(this.state.updatedQuoteSettings, 'name')}/>*/}
-                        <div className="st-deals-toggle-view" onClick={this.toggleViewMode}>
-                            {/*{this.state.viewMode === 'list'*/}
-                                {/*? <img className="st-deals-toggle-view__icon" src="/static/images/icons/grid-view.svg"/>*/}
-                                {/*: <img className="st-deals-toggle-view__icon" src="/static/images/icons/list-of-items.svg"/>*/}
-                            {/*}*/}
-                        </div>
                     </div>
                     <div className="st-assets-to-deals-wrap"/>
                 </div>
@@ -101,6 +95,12 @@ class DealsPage extends Component {
                                 </span>
                                 {/*<ButtonBroker />*/}
                             </div>}
+                      <div className="st-deals-toggle-view" onClick={this.toggleViewMode}>
+                        {this.state.viewMode === 'list'
+                          ? <img className="st-deals-toggle-view__icon" src="/images/icons/grid-view.svg"/>
+                          : <img className="st-deals-toggle-view__icon" src="/images/icons/list-of-items.svg"/>
+                        }
+                      </div>
                     </div>
             </div>
         );

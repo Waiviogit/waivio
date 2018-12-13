@@ -108,7 +108,7 @@ class Instrument extends Component {
                             {signal}
                         </div>
                         <div className="st-card__chart" onClick={this.toggleModalInstrumentsChart}>
-                            {getChart(230, 60)}
+                            {getChart(276, 60)}
                         </div>
                         {/*{modalChart}*/}
                         <TradeButtonsAssets

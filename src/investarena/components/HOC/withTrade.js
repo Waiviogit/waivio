@@ -105,8 +105,7 @@ const withTrade = (Component) => {
         const { quote, quoteSettings, platformName, isSignIn, isOpen } = stateProps;
         const { dispatch } = dispatchProps;
         const { postId } = ownProps;
-        const value = localStorage.getItem('isOneClickTrade');
-        const isOneClickTrade = value && value === 'true';
+        const isOneClickTrade = localStorage && localStorage.getItem('isOneClickTrade') === 'true';
         return {
             ...ownProps,
             ...stateProps,

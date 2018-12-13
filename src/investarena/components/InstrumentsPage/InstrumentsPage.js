@@ -85,25 +85,7 @@ class InstrumentsPage extends Component {
             <div className="st-instr-page">
                 <div className="shifted">
                     <div className="feed-layout container">
-                      {/*<div className="st-assets-back"><SidebarBack/></div>*/}
-                          <div className="st-instruments-controls">
-                          {/*<QuotesSearch*/}
-                              {/*placeholderMessage="assets.instrumentsSearch"*/}
-                              {/*onChange={this.goToAssets}*/}
-                              {/*multi={false}*/}
-                              {/*backspaceRemoves={true}*/}
-                              {/*searchable={true}*/}
-                              {/*labelKey="name"*/}
-                              {/*searchParams={searchParams.search}*/}
-                              {/*valueKey="id"*/}
-                              {/*options={_.sortBy(this.state.updatedQuoteSettings, 'name')}/>*/}
-                          {/*<div className="st-instruments-toggle-view" onClick={this.toggleViewMode}>*/}
-                              {/*{this.state.viewMode === 'list'*/}
-                                  {/*? <img className="st-instruments-toggle-view__icon" src="/static/images/icons/grid-view.svg"/>*/}
-                                  {/*: <img className="st-instruments-toggle-view__icon" src="/static/images/icons/list-of-items.svg"/>*/}
-                              {/*}*/}
-                          {/*</div>*/}
-                          </div>
+                          <div className="st-instruments-controls"/>
                          <div className="st-assets-wrap">
                             <Tabs defaultActiveKey="1" onChange={this.goToAssets}>
                               <TabPane tab={this.props.intl.formatMessage({ id: 'sidebarWidget.tabTitle.favorites' })} key="1">
@@ -196,6 +178,12 @@ class InstrumentsPage extends Component {
                                     viewMode={this.state.viewMode}/>
                                 </TabPane>
                             </Tabs>
+                           <div className="st-instruments-toggle-view" onClick={this.toggleViewMode}>
+                             {this.state.viewMode === 'list'
+                               ? <img className="st-instruments-toggle-view__icon" src="/images/icons/grid-view.svg"/>
+                               : <img className="st-instruments-toggle-view__icon" src="/images/icons/list-of-items.svg"/>
+                             }
+                           </div>
                         </div>
                       </div>
                   </div>
