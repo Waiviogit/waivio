@@ -11,7 +11,7 @@ class EditorObject extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     wObject: PropTypes.shape().isRequired,
-    isValid: PropTypes.bool.isRequired,
+    areObjectsCreated: PropTypes.bool.isRequired,
     handleCreateObject: PropTypes.func.isRequired,
     handleRemoveObject: PropTypes.func.isRequired,
     handleChangeInfluence: PropTypes.func.isRequired,
@@ -36,12 +36,12 @@ class EditorObject extends React.Component {
   };
 
   render() {
-    const { intl, wObject, handleRemoveObject, isValid } = this.props;
+    const { intl, wObject, handleRemoveObject, areObjectsCreated } = this.props;
     return (
       <React.Fragment>
         <div
           className={classNames('editor-object', {
-            'validation-error': wObject.isNew && !isValid,
+            'validation-error': wObject.isNew && !areObjectsCreated,
           })}
         >
           <div className="editor-object__content">

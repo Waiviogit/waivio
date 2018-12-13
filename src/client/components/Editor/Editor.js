@@ -12,11 +12,10 @@ import Action from '../Button/Action';
 import requiresLogin from '../../auth/requiresLogin';
 import withEditor from './withEditor';
 import EditorInput from './EditorInput';
-import EditorObject from '../EditorObject/EditorObject';
+import LinkedObjects from './LinkedObjects';
 import { getClientWObj } from '../../adapters';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
-import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
 import { WAIVIO_META_FIELD_NAME, MAX_NEW_OBJECTS_NUMBER } from '../../../common/constants/waivio';
 import {
   setInitialInfluence,
@@ -83,7 +82,7 @@ class Editor extends React.Component {
       bodyHTML: '',
       linkedObjects: [],
       canCreateNewObject: true,
-      isValid: true,
+      areObjectsCreated: true,
     };
 
     this.onUpdate = this.onUpdate.bind(this);
@@ -163,7 +162,7 @@ class Editor extends React.Component {
 
   checkNewObjects() {
     const isObjectsCreated = !this.state.linkedObjects.some(obj => obj.isNew);
-    this.setState({ isValid: isObjectsCreated });
+    this.setState({ areObjectsCreated: isObjectsCreated });
     return !isObjectsCreated;
   }
 
@@ -257,8 +256,9 @@ class Editor extends React.Component {
           );
           return {
             linkedObjects,
-            isValid:
-              prevState.isValid || !(prevState.isValid || linkedObjects.some(obj => obj.isNew)),
+            areObjectsCreated:
+              prevState.areObjectsCreated ||
+              !(prevState.areObjectsCreated || linkedObjects.some(obj => obj.isNew)),
           };
         });
       },
@@ -290,7 +290,7 @@ class Editor extends React.Component {
   render() {
     const { intl, form, loading, isUpdating, saving, draftId } = this.props;
     const { getFieldDecorator } = form;
-    const { body, bodyHTML, linkedObjects, isValid, canCreateNewObject } = this.state;
+    const { body, bodyHTML, linkedObjects, areObjectsCreated, canCreateNewObject } = this.state;
 
     const { words, minutes } = readingTime(bodyHTML);
 
@@ -377,31 +377,15 @@ class Editor extends React.Component {
             />,
           )}
         </Form.Item>
-        <div>
-          <div className="ant-form-item-label">
-            <label className="Editor__label" htmlFor="title">
-              <FormattedMessage id="editor_linked_objects" defaultMessage="Linked objects" />
-            </label>
-          </div>
-          {canCreateNewObject && (
-            <SearchObjectsAutocomplete
-              handleSelect={this.handleAddLinkedObject}
-              canCreateNewObject={canCreateNewObject}
-              linkedObjectsIds={linkedObjects.map(obj => obj.id)}
-            />
-          )}
-          {Boolean(linkedObjects.length) &&
-            linkedObjects.map(obj => (
-              <EditorObject
-                key={obj.id}
-                wObject={obj}
-                isValid={isValid}
-                handleCreateObject={this.handleCreateObject}
-                handleRemoveObject={this.handleRemoveObject}
-                handleChangeInfluence={this.handleChangeInfluence}
-              />
-            ))}
-        </div>
+        <LinkedObjects
+          canCreateNewObject={canCreateNewObject}
+          linkedObjects={linkedObjects}
+          areObjectsCreated={areObjectsCreated}
+          handleAddLinkedObject={this.handleAddLinkedObject}
+          handleCreateObject={this.handleCreateObject}
+          handleRemoveObject={this.handleRemoveObject}
+          handleChangeInfluence={this.handleChangeInfluence}
+        />
         {body && (
           <Form.Item
             label={
