@@ -21,12 +21,14 @@ const ModalDealConfirmation = (props) => {
         onCancel={props.toggleModal}
         style={{width: '451px'}}
       >
-        <div className="st-modal-open-deals-content-block-wrap">
-            {props.modalInfo && !_.isEmpty(props.modalInfo) && <PostQuotation
-                quoteSecurity={props.modalInfo.quote.security}
-                amountModal={props.modalInfo.amount}
-                postId={props.modalInfo.postId}
-                toggleConfirmationModal={props.toggleModal}/>}
+        <div className="modal-open-deals">
+          <div className="st-modal-open-deals-content-block-wrap">
+              {props.modalInfo && !_.isEmpty(props.modalInfo) && <PostQuotation
+                  quoteSecurity={props.modalInfo.quote.security}
+                  amountModal={props.modalInfo.amount}
+                  postId={props.modalInfo.postId}
+                  toggleConfirmationModal={props.toggleModal}/>}
+          </div>
         </div>
       </Modal>
     );

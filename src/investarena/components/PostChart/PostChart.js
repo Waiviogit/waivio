@@ -11,6 +11,7 @@ import ChartData from './chart/chartData';
 import { currentTime } from '../../helpers/currentTime';
 import TabSelect from './TabSelect';
 import quoteData from "../../default/quoteData";
+import quoteSettingsData from "../../default/quoteSettingsData";
 
 const propTypes = {
     bars: PropTypes.object,
@@ -33,7 +34,8 @@ const propTypes = {
 };
 const defaultProps = {
   platformName: 'widgets',
-  quote: quoteData
+  quote: quoteData,
+  quoteSettings: quoteSettingsData,
 };
 class PostChart extends Component {
     constructor (props) {

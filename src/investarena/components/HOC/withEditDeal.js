@@ -1,7 +1,7 @@
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import { message } from 'antd';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { changeOpenDealPlatform } from '../../redux/actions/dealsActions';
 import { PlatformHelper } from '../../platform/platformHelper';
 
@@ -9,7 +9,6 @@ const propTypes = {
     quote: PropTypes.object,
     quoteSettings: PropTypes.object,
     openDeal: PropTypes.object.isRequired,
-    // showNotification: PropTypes.func.isRequired,
     toggle: PropTypes.func.isRequired
 };
 
@@ -29,9 +28,6 @@ const withEditDeal = (Component) => {
         componentDidMount () {
             this.inputSL = document.getElementsByClassName('st-sl')[0];
             this.inputTP = document.getElementsByClassName('st-tp')[0];
-          // const a = typeof Component;
-          //   this.inputSL = ReactDOM.findDOMNode(this).querySelector('st-sl');
-          //   this.inputTP = ReactDOM.findDOMNode(this).querySelector('st-tp');
             const ranges = PlatformHelper.getRanges(this.props.quote, this.props.openDeal, this.props.quoteSettings);
             const pnl = this.getPnl(this.props.quote, this.props.openDeal, this.props.quoteSettings);
             let isAmountSL = false;
@@ -122,7 +118,9 @@ const withEditDeal = (Component) => {
                 }
                 this.props.toggle();
             } else {
-                // this.props.showNotification('error', this.props.intl.formatMessage({ id: 'deals.stopLossWrongValue' }));
+              message.error(
+                this.props.intl.formatMessage({ id: 'deals.stopLossWrongValue', defaultMessage: 'Wrong value of stop loss' }),
+              );
             }
         };
         handleClickSetTP = () => {
@@ -142,7 +140,9 @@ const withEditDeal = (Component) => {
                 }
                 this.props.toggle();
             } else {
-                // this.props.showNotification('error', this.props.intl.formatMessage({ id: 'deals.stopLossWrongValue' }));
+              message.error(
+                this.props.intl.formatMessage({ id: 'deals.stopLossWrongValue', defaultMessage: 'Wrong value of take profit' }),
+              );
             }
         };
         handleClickSetSLTP = () => {
