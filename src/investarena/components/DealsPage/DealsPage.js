@@ -92,20 +92,16 @@ class DealsPage extends Component {
                     </div>
                     <div className="st-assets-to-deals-wrap"/>
                 </div>
-                <div className="st-grid">
-                    <div className="st-center-area">
-                        <div className="st-instruments-details">
-                            {this.props.platformName !== 'widgets'
-                                ? <DealsTab viewMode={this.state.viewMode} />
-                                : <div className="st-deals-wrap st-connect-to-broker-wrap">
-                                    <span className="st-margin-bottom-large">
-                                        {this.props.intl.formatMessage({ id: 'headerAuthorized.textAttention3' })}
-                                    </span>
-                                    {/*<ButtonBroker />*/}
-                                </div>}
-                        </div>
+                    <div className="st-instruments-details">
+                        {this.props.platformName !== 'widgets'
+                            ? <DealsTab viewMode={this.state.viewMode} />
+                            : <div className="st-deals-wrap st-connect-to-broker-wrap">
+                                <span className="st-margin-bottom-large">
+                                    {this.props.intl.formatMessage({ id: 'headerAuthorized.textAttention3' })}
+                                </span>
+                                {/*<ButtonBroker />*/}
+                            </div>}
                     </div>
-                </div>
             </div>
         );
     }
