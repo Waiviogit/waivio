@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { clearSearchObjectsResults, searchObjectsAutoCompete } from '../../search/searchActions';
 import { getSearchObjectsResults } from '../../reducers';
-import './EditorObject.less';
+import './SearchObjectsAutocomplete.less';
 
 @injectIntl
 @connect(
@@ -83,10 +83,23 @@ class SearchObjectsAutocomplete extends Component {
   render() {
     const { searchString } = this.state;
     const { canCreateNewObject, intl, style, searchObjectsResults, linkedObjectsIds } = this.props;
+    const getObjMarkup = obj => (
+      <div className="obj-search-option">
+        <img
+          className="obj-search-option__avatar"
+          src={obj.avatar}
+          alt={obj.descriptionShort || ''}
+        />
+        <div className="obj-search-option__info">
+          <span className="obj-search-option__text">{obj.name}</span>
+          <span className="obj-search-option__text">{obj.descriptionShort}</span>
+        </div>
+      </div>
+    );
     const searchObjectsOptions = searchString
       ? searchObjectsResults
           .filter(obj => !linkedObjectsIds.includes(obj.id))
-          .map(obj => <AutoComplete.Option key={obj.id}>{obj.name}</AutoComplete.Option>)
+          .map(obj => <AutoComplete.Option key={obj.id}>{getObjMarkup(obj)}</AutoComplete.Option>)
       : [];
     return (
       <AutoComplete
@@ -107,9 +120,9 @@ class SearchObjectsAutocomplete extends Component {
               .toString(36)
               .substring(2)}`}
           >
-            <div className="wobj-search-option">
-              <span className="wobj-search-option__caption">{searchString}</span>
-              <span className="wobj-search-option__label">create new</span>
+            <div className="obj-search-option first">
+              <span className="obj-search-option__info">{searchString}</span>
+              <span className="obj-search-option__label">create new</span>
             </div>
           </AutoComplete.Option>
         )}

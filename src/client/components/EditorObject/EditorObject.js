@@ -45,16 +45,18 @@ class EditorObject extends React.Component {
           })}
         >
           <div className="editor-object__content">
-            <div className="editor-object__content info">
+            <div className="editor-object__content row">
               <img className="editor-object__avatar" src={wObject.avatar} alt={wObject.name} />
-              <span className="editor-object__names">
-                <span className="editor-object__names main">{wObject.name}</span>
-                {Boolean(wObject.tag) && (
-                  <span className="editor-object__names other">{` (${wObject.tag})`}</span>
+              <span className="editor-object__info">
+                <span className="editor-object__info name">{wObject.name}</span>
+                {Boolean(wObject.descriptionShort) && (
+                  <span className="editor-object__info description">
+                    {wObject.descriptionShort}
+                  </span>
                 )}
               </span>
             </div>
-            <div className="editor-object__content influence-slider">
+            <div className="editor-object__content row slider">
               <InputNumber
                 min={1}
                 max={wObject.influence.max}

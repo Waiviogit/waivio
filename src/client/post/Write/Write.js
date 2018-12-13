@@ -12,7 +12,7 @@ import { createPostMetadata } from '../../helpers/postHelpers';
 import { rewardsValues } from '../../../common/constants/rewards';
 import LastDraftsContainer from './LastDraftsContainer';
 import DeleteDraftModal from './DeleteDraftModal';
-import { WAIVIO_META_FIELD_NAME, WAIVIO_POST_TYPE } from '../../../common/constants/waivio';
+import { WAIVIO_META_FIELD_NAME, WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
 
 import {
   getAuthenticatedUser,
@@ -177,7 +177,7 @@ class Write extends React.Component {
     if (this.props.draftId) {
       data.draftId = this.props.draftId;
     }
-    console.log('Write:onSubmit > ', JSON.stringify(form));
+    console.log('Write:onSubmit > ', JSON.stringify(data));
     // this.props.createPost(data);
   };
 
@@ -206,10 +206,10 @@ class Write extends React.Component {
 
     const waivioData =
       form[WAIVIO_META_FIELD_NAME] && form[WAIVIO_META_FIELD_NAME].wobjects
-        ? { type: WAIVIO_POST_TYPE.CREATE_POST, ...form[WAIVIO_META_FIELD_NAME] }
-        : { type: WAIVIO_POST_TYPE.CREATE_POST, wobjects: [] };
+        ? { ...form[WAIVIO_META_FIELD_NAME] }
+        : { wobjects: [] };
 
-    data.parentPermlink = form.topics.length ? form.topics[0] : 'general';
+    data.parentPermlink = WAIVIO_PARENT_PERMLINK;
     data.jsonMetadata = createPostMetadata(data.body, form.topics, oldMetadata, waivioData);
 
     if (this.originalBody) {
