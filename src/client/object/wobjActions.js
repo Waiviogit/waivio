@@ -94,3 +94,25 @@ export const getNotifications = username => (dispatch, getState, { busyAPI }) =>
     },
   });
 };
+
+export const LIKE_OBJECT = '@wobj/LIKE_OBJECT';
+
+export const voteObject = (objCreator, objPermlink, weight = 10000) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const { auth } = getState();
+  if (!auth.isAuthenticated) {
+    return null;
+  }
+
+  const voter = auth.user.name;
+
+  return dispatch({
+    type: LIKE_OBJECT,
+    payload: {
+      promise: steemConnectAPI.vote(voter, objCreator, objPermlink, weight),
+    },
+  });
+};

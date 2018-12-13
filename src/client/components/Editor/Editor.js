@@ -178,10 +178,10 @@ class Editor extends React.Component {
 
     const topics = linkedObjects
       .sort((a, b) => b.influence.value - a.influence.value)
-      .slice(0, 5)
+      .slice(0, 4)
       .map(obj => obj.name);
     const wobjects = linkedObjects.map(obj => ({
-      parentPermlink: obj.id,
+      author_permlink: obj.id,
       percent: obj.influence.value,
       isNew: Boolean(obj.isNew),
     }));
@@ -199,10 +199,10 @@ class Editor extends React.Component {
       } else {
         const topics = linkedObjects
           .sort((a, b) => b.influence.value - a.influence.value)
-          .slice(0, 5)
+          .slice(0, 4)
           .map(obj => obj.name);
         const wobjects = linkedObjects.map(obj => ({
-          parentPermlink: obj.id,
+          author_permlink: obj.id,
           percent: obj.influence.value,
         }));
         this.props.onSubmit({ ...values, topics, [WAIVIO_META_FIELD_NAME]: { wobjects } });
