@@ -59,7 +59,7 @@ class AppendObjectPostWrite extends React.Component {
     loading: false,
     saving: false,
     draftId: null,
-    locale: 'auto',
+    locale: 'en-US',
     newPost: () => {},
     replace: () => {},
     history: {},
@@ -75,7 +75,7 @@ class AppendObjectPostWrite extends React.Component {
       showModalDelete: false,
       wobject: {},
       currentField: 'name',
-      locale: this.props.locale,
+      locale: this.props.locale === 'auto' ? 'en-US' : this.props.locale,
     };
   }
 
@@ -107,18 +107,19 @@ class AppendObjectPostWrite extends React.Component {
   };
 
   getNewPostData = form => {
+    const { wobject, currentField, locale } = this.state;
     const data = {};
 
     data.author = this.props.user.name || '';
-    data.parentAuthor = this.state.wobject.value.author_permlink.split('_')[0];
-    data.parentPermlink = this.state.wobject.value.author_permlink.split('_')[1];
+    data.parentAuthor = wobject.value.author_permlink.split('_')[0];
+    data.parentPermlink = wobject.value.author_permlink.split('_')[1];
     data.body = form.preview;
     data.title = '';
 
     data.field = {
-      name: this.state.currentField,
-      body: form.value === 'backgroundImage' ? `<center>${form.value}</center>` : form.value,
-      locale: this.state.locale === 'auto' ? 'en-US' : this.state.locale,
+      name: currentField,
+      body: form.value,
+      locale,
     };
 
     data.permlink = `${data.author}-${Math.random()
@@ -126,7 +127,7 @@ class AppendObjectPostWrite extends React.Component {
       .substring(2)}`;
     data.lastUpdated = Date.now();
 
-    data.wobjectName = getField(this.state.wobject.value, 'name');
+    data.wobjectName = getField(wobject.value, 'name');
 
     return data;
   };
