@@ -74,7 +74,6 @@ export function registerBroker (registrationData) {
                         dispatch(registerBrokerSuccess());
                         setTimeout(() => {
                           dispatch(authorizeBroker(registrationData));
-                          dispatch(toggleModal('broker'));
                         }, 2000)
                     } else if (status === 'error') {
                         dispatch(registerBrokerError());
