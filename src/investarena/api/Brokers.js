@@ -45,18 +45,14 @@ export default class Brokers extends Base {
         return this.apiClient.post(config.brokers.brokerRegistration, data)
             .then(response => {
                 let status = 'error';
-                let message = '';
-                if (response.data && response.data.broker) {
-                    if (!response.data.broker.statusCode) {
-                        status = 'success';
-                        message = locale.messages['brokerAction.registerBrokerSuccess'];
-                    } else if (response.data.broker.statusCode === 500) {
-                        message = response.data.broker.message;
-                    } else {
-                        message = locale.messages['brokerAction.registerBrokerError'];
-                    }
+                // let message = '';
+                if (!response.error && response.data) {
+                    status = 'success';
+                    // message = locale.messages['brokerAction.registerBrokerSuccess'];
+                } else if (response.data.broker.statusCode === 500) {
+                    // message = response.data.broker.message;
                 }
-                return ({headers: response.headers, status, message, error: response.error});
+                return ({status, error: response.error});
             });
     }
     reconnectBroker (data, locale) {

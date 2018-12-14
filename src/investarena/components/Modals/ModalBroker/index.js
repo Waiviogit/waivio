@@ -41,7 +41,7 @@ function mergeProps (stateProps, dispatchProps) {
         isLoading,
         isOpen,
         forgotPassBroker: (data) => dispatch(forgotPassBroker(data)),
-        registerBroker: (registrationData, authorizationData) => dispatch(registerBroker(registrationData, authorizationData)),
+        registerBroker: (registrationData) => dispatch(registerBroker(registrationData)),
         authorizeBroker: (data) => dispatch(authorizeBroker(data)),
         disconnectBroker: () => dispatch(disconnectBroker()),
         toggleModal: () => dispatch(toggleModal('broker'))

@@ -26,7 +26,6 @@ class BrokerAuthorization extends Component {
     event.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
         this.props.authorizeBroker(values);
       }
     });

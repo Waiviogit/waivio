@@ -39,7 +39,7 @@ const cookiesData = ['platformName'];
 //     };
 // }
 export function authorizeBroker (data) {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch(authorizeBrokerRequest());
     return api.brokers.authorizeBroker(data, 'en-UK')
       .then(({status, message, error, broker}) => {
@@ -62,17 +62,20 @@ export function authorizeBroker (data) {
       });
   };
 }
-export function registerBroker (registrationData, authorizationData) {
-    return (dispatch, getState) => {
+export function registerBroker (registrationData) {
+    return (dispatch) => {
         dispatch(registerBrokerRequest());
         // return api.brokers.registerBroker(registrationData, locales[getLanguageState(getState())])
-        return api.brokers.registerBroker(registrationData, 'en')
-            .then(({status, message, error}) => {
-                if (!error && status && message) {
+        return api.brokers.registerBroker(registrationData, 'en-UK')
+            .then(({status, error}) => {
+                if (!error && status) {
                     // dispatch(showNotification({status, message}));
                     if (status === 'success') {
                         dispatch(registerBrokerSuccess());
-                        setTimeout(() => dispatch(authorizeBroker(authorizationData)), 2000);
+                        setTimeout(() => {
+                          dispatch(authorizeBroker(registrationData));
+                          dispatch(toggleModal('broker'));
+                        }, 2000)
                     } else if (status === 'error') {
                         dispatch(registerBrokerError());
                     }
