@@ -55,6 +55,7 @@ class BrokerAuthorization extends Component {
               <Select
                 style={{ width: '100%'}}
                 placeholder={this.props.intl.formatMessage({ id: 'tooltip.empty' })}
+                disabled={this.props.brokerConnected}
               >
                 {
                   _.map(optionsPlatform, option => {
@@ -72,21 +73,40 @@ class BrokerAuthorization extends Component {
                 required: true, message: this.props.intl.formatMessage({ id: 'tooltip.empty' }),
               }],
             })(
-              <Input prefix={<Icon type="mail" style={{color: 'rgba(0,0,0,.25)'}}/>} placeholder="E-mail"/>
+              <Input
+                prefix={
+                  <Icon
+                    type="mail"
+                    style={{color: 'rgba(0,0,0,.25)'}}
+                  />
+                }
+                placeholder="E-mail"
+                disabled={this.props.brokerConnected}
+              />
             )}
           </FormItem>
           <FormItem>
             {getFieldDecorator('password', {
               rules: [{required: true, message: 'Please input your Password!'}],
             })(
-              <Input prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>} type="password"
-                     placeholder="Password"/>
+              <Input
+                prefix={
+                  <Icon
+                    type="lock"
+                    style={{color: 'rgba(0,0,0,.25)'}}
+                  />
+                }
+                type="password"
+                placeholder="Password"
+                disabled={this.props.brokerConnected}
+              />
             )}
           </FormItem>
           <div className="d-flex justify-content-between">
-              <span onClick={()=>{}} className="st-modal-broker-authorization-text-click">
+            {!this.props.brokerConnected ? <span onClick={()=>{}} className="st-modal-broker-authorization-text-click">
                 {this.props.intl.formatMessage({id: 'modalBroker.forgotPassword'})}
-              </span>
+              </span> : <span/>
+            }
               <Checkbox onChange={this.handleOneClickTrading} checked={this.state.checked}>
                 {this.props.intl.formatMessage({ id: 'modalBroker.oneClickTrade' })}
               </Checkbox>
