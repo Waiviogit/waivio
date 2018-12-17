@@ -1,21 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
+import { FormattedMessage } from 'react-intl';
 import { Progress } from 'antd';
 import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
 import EditorObject from '../EditorObject/EditorObject';
+import './LinkedObjects.less';
 
 const LinkedObjects = ({
   title,
   canCreateNewObject,
   linkedObjects,
   influenceRemain,
-  areObjectsCreated,
+  isLinkedObjectsValid,
   handleAddLinkedObject,
   handleCreateObject,
   handleRemoveObject,
   handleChangeInfluence,
 }) => (
-  <div>
+  <div className="linked-objects">
     {title}
     {canCreateNewObject && (
       <SearchObjectsAutocomplete
@@ -26,23 +29,40 @@ const LinkedObjects = ({
     )}
     {Boolean(linkedObjects.length) && (
       <React.Fragment>
-        <div>
-          <span>Object Power</span>
-          <Progress
-            status="active"
-            showInfo={Boolean(linkedObjects.length)}
-            percent={influenceRemain}
-            strokeWidth={15}
-            strokeColor="orange"
-            trailColor="red"
-          />
-        </div>
+        {linkedObjects.length > 1 && (
+          <div
+            className={classNames('linked-objects__buffer', {
+              'validation-error': !isLinkedObjectsValid && influenceRemain > 0,
+            })}
+          >
+            <span className="linked-objects__label">
+              <FormattedMessage id="linked_objects_remaining" defaultMessage="Remaining" />
+            </span>
+            <Progress
+              className="linked-objects__buffer-bar"
+              status="active"
+              showInfo={Boolean(linkedObjects.length)}
+              percent={influenceRemain}
+              strokeWidth={15}
+              strokeColor="orange"
+              trailColor="red"
+            />
+          </div>
+        )}
+        {Boolean(!isLinkedObjectsValid && influenceRemain > 0) && (
+          <div className="linked-objects__buffer-validation-msg">
+            <FormattedMessage
+              id="linked_objects_buffer_validation"
+              defaultMessage="Buffer must be empty"
+            />
+          </div>
+        )}
         {linkedObjects.map(obj => (
           <EditorObject
             key={obj.id}
             wObject={obj}
             objectsNumber={linkedObjects.length}
-            areObjectsCreated={areObjectsCreated}
+            isLinkedObjectsValid={isLinkedObjectsValid}
             handleCreateObject={handleCreateObject}
             handleRemoveObject={handleRemoveObject}
             handleChangeInfluence={handleChangeInfluence}
@@ -56,7 +76,7 @@ const LinkedObjects = ({
 LinkedObjects.propTypes = {
   title: PropTypes.node,
   canCreateNewObject: PropTypes.bool,
-  areObjectsCreated: PropTypes.bool,
+  isLinkedObjectsValid: PropTypes.bool,
   linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
   influenceRemain: PropTypes.number,
   handleAddLinkedObject: PropTypes.func,
@@ -68,7 +88,7 @@ LinkedObjects.propTypes = {
 LinkedObjects.defaultProps = {
   title: null,
   canCreateNewObject: true,
-  areObjectsCreated: true,
+  isLinkedObjectsValid: true,
   linkedObjects: [],
   influenceRemain: 0,
   handleAddLinkedObject: () => {},

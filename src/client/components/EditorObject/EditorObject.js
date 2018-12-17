@@ -12,7 +12,7 @@ class EditorObject extends React.Component {
     intl: PropTypes.shape().isRequired,
     wObject: PropTypes.shape().isRequired,
     objectsNumber: PropTypes.number.isRequired,
-    areObjectsCreated: PropTypes.bool.isRequired,
+    isLinkedObjectsValid: PropTypes.bool.isRequired,
     handleCreateObject: PropTypes.func.isRequired,
     handleRemoveObject: PropTypes.func.isRequired,
     handleChangeInfluence: PropTypes.func.isRequired,
@@ -55,12 +55,12 @@ class EditorObject extends React.Component {
 
   render() {
     const { influenceValue } = this.state;
-    const { intl, wObject, handleRemoveObject, areObjectsCreated } = this.props;
+    const { intl, wObject, handleRemoveObject, isLinkedObjectsValid } = this.props;
     return (
       <React.Fragment>
         <div
           className={classNames('editor-object', {
-            'validation-error': wObject.isNew && !areObjectsCreated,
+            'validation-error': wObject.isNew && !isLinkedObjectsValid,
           })}
         >
           <div className="editor-object__content">
@@ -122,7 +122,7 @@ class EditorObject extends React.Component {
             )}
           </div>
         </div>
-        {Boolean(wObject.isNew) && (
+        {!isLinkedObjectsValid && wObject.isNew && (
           <div className="editor-object__validation-msg">
             {intl.formatMessage({
               id: 'editor_object_validation_message',

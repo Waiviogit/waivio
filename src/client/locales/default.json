@@ -388,14 +388,12 @@
   "create_object_success": "Object has been created",
   "post_languages_info": "In which languages do you want to read posts?",
   "post_languages": "Posts languages",
-  "create_new_object_placeholder": "This object doesn't exist yet, but you can create it",
-  "value_error_too_long": "Value can't be longer than 255 characters.",
   "top_authors": "Top Authors",
   "show_more_authors": "Show more authors",
   "object": "object",
   "preview_locale": "in {locale} locale",
   "objects": "Objects",
   "users": "Users",
-  "preview_locale": "in {locale} locale",
-  "append_object_validation_msg": "The field with this value already exists"
+  "append_object_validation_msg": "The field with this value already exists",
+  "linked_objects_remaining": "Remaining weight"
 }

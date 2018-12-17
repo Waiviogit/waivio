@@ -83,7 +83,7 @@ class Editor extends React.Component {
       linkedObjects: [],
       influenceRemain: 0,
       canCreateNewObject: true,
-      areObjectsCreated: true,
+      isLinkedObjectsValid: true,
     };
 
     this.onUpdate = this.onUpdate.bind(this);
@@ -161,10 +161,11 @@ class Editor extends React.Component {
     });
   }
 
-  checkNewObjects() {
-    const isObjectsCreated = !this.state.linkedObjects.some(obj => obj.isNew);
-    this.setState({ areObjectsCreated: isObjectsCreated });
-    return !isObjectsCreated;
+  checkLinkedObjects() {
+    const areObjectsCreated = !this.state.linkedObjects.some(obj => obj.isNew);
+    const isInfluenceRemain = this.state.influenceRemain !== 0;
+    this.setState({ isLinkedObjectsValid: areObjectsCreated && !isInfluenceRemain });
+    return !areObjectsCreated || isInfluenceRemain;
   }
 
   throttledUpdate() {
@@ -194,7 +195,7 @@ class Editor extends React.Component {
     const { linkedObjects } = this.state;
 
     this.props.form.validateFieldsAndScroll((err, values) => {
-      if (this.checkNewObjects() || err) {
+      if (this.checkLinkedObjects() || err) {
         this.props.onError();
       } else {
         const topics = linkedObjects
@@ -260,9 +261,9 @@ class Editor extends React.Component {
           );
           return {
             linkedObjects,
-            areObjectsCreated:
-              prevState.areObjectsCreated ||
-              !(prevState.areObjectsCreated || linkedObjects.some(obj => obj.isNew)),
+            isLinkedObjectsValid:
+              prevState.isLinkedObjectsValid ||
+              !(prevState.isLinkedObjectsValid || linkedObjects.some(obj => obj.isNew)),
           };
         });
       },
@@ -307,7 +308,7 @@ class Editor extends React.Component {
       bodyHTML,
       linkedObjects,
       influenceRemain,
-      areObjectsCreated,
+      isLinkedObjectsValid,
       canCreateNewObject,
     } = this.state;
 
@@ -408,7 +409,7 @@ class Editor extends React.Component {
           canCreateNewObject={canCreateNewObject}
           influenceRemain={influenceRemain}
           linkedObjects={linkedObjects}
-          areObjectsCreated={areObjectsCreated}
+          isLinkedObjectsValid={isLinkedObjectsValid}
           handleAddLinkedObject={this.handleAddLinkedObject}
           handleCreateObject={this.handleCreateObject}
           handleRemoveObject={this.handleRemoveObject}
