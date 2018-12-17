@@ -3,7 +3,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { InputNumber, Slider, Spin, Icon } from 'antd';
+import { Slider, Spin, Icon } from 'antd';
 import './EditorObject.less';
 
 @injectIntl
@@ -76,16 +76,7 @@ class EditorObject extends React.Component {
               </span>
             </div>
             <div className="editor-object__content row slider">
-              <InputNumber
-                min={1}
-                max={wObject.influence.max}
-                formatter={value => `${value}%`}
-                parser={value => value.replace('%', '')}
-                size="small"
-                value={wObject.influence.value}
-                disabled={wObject.influence.value === 100}
-                onChange={this.throttledChange}
-              />
+              <span className="label">{`${influenceValue}%`}</span>
               <Slider
                 min={1}
                 max={100}
