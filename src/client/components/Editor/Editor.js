@@ -7,6 +7,7 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import readingTime from 'reading-time';
 import { Checkbox, Form, Input, Select, Button } from 'antd';
+import BTooltip from '../BTooltip';
 import { rewardsValues } from '../../../common/constants/rewards';
 import Action from '../Button/Action';
 import requiresLogin from '../../auth/requiresLogin';
@@ -316,9 +317,18 @@ class Editor extends React.Component {
 
     const linkedObjectsTitle = (
       <div className="ant-form-item-label">
-        <label className="Editor__label" htmlFor="title">
-          <FormattedMessage id="editor_linked_objects" defaultMessage="Linked objects" />
-        </label>
+        <BTooltip
+          title={
+            <FormattedMessage
+              id="linked_objects_tooltip"
+              defaultMessage="Add objects those described in the post, and set the value of belonging"
+            />
+          }
+        >
+          <label className="Editor__label" htmlFor="title">
+            <FormattedMessage id="editor_linked_objects" defaultMessage="Linked objects" />
+          </label>
+        </BTooltip>
       </div>
     );
     return (
