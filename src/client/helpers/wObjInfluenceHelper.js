@@ -1,7 +1,6 @@
 export const setInitialInfluence = (objArr, wObj, influenceRemain) => {
   const result = [...objArr];
   const arrLen = result.length;
-  const maxValue = 100 - arrLen;
 
   if (arrLen) {
     const lastObj = result[arrLen - 1];
@@ -24,7 +23,7 @@ export const setInitialInfluence = (objArr, wObj, influenceRemain) => {
     result.push({ ...wObj, influence: { value: 100, max: 100 } });
   }
   for (let i = 0; i < result.length; i += 1) {
-    result[i].influence.max = maxValue;
+    result[i].influence.max = result[i].influence.value;
   }
 
   return result;
@@ -59,7 +58,10 @@ export const changeObjInfluenceHandler = (objArr, currObj, influence, influenceR
 export const removeObjInfluenceHandler = (objArr, removingObj, influenceRemain) => {
   const filtered = objArr
     .filter(obj => obj.id !== removingObj.id)
-    .map(obj => ({ ...obj, influence: { ...obj.influence, max: obj.influence.max + 1 } }));
+    .map(obj => ({
+      ...obj,
+      influence: { ...obj.influence, max: obj.influence.max + removingObj.influence.value },
+    }));
   if (filtered.length === 1) {
     const lastObj = filtered[0];
     return {
