@@ -11,6 +11,7 @@ class EditorObject extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     wObject: PropTypes.shape().isRequired,
+    objectsNumber: PropTypes.number.isRequired,
     areObjectsCreated: PropTypes.bool.isRequired,
     handleCreateObject: PropTypes.func.isRequired,
     handleRemoveObject: PropTypes.func.isRequired,
@@ -20,14 +21,31 @@ class EditorObject extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      influenceValue: this.props.wObject.influence.value,
       isCreating: false,
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.objectsNumber !== this.props.objectsNumber) {
+      this.handleChangeInfluence(this.props.wObject.influence.value);
+    }
   }
 
   throttledChange = _.throttle(
     influence => this.props.handleChangeInfluence(this.props.wObject, influence),
     10,
   );
+
+  handleChangeInfluence = influence => {
+    const influenceValue =
+      influence < this.props.wObject.influence.max ? influence : this.props.wObject.influence.max;
+    this.setState({ influenceValue });
+  };
+
+  handleAfterChangeInfluence = influence => {
+    this.props.handleChangeInfluence(this.props.wObject, influence);
+  };
 
   handleCreateObject = () => {
     const { wObject, handleCreateObject } = this.props;
@@ -36,6 +54,7 @@ class EditorObject extends React.Component {
   };
 
   render() {
+    const { influenceValue } = this.state;
     const { intl, wObject, handleRemoveObject, areObjectsCreated } = this.props;
     return (
       <React.Fragment>
@@ -69,10 +88,11 @@ class EditorObject extends React.Component {
               />
               <Slider
                 min={1}
-                max={wObject.influence.max}
-                value={wObject.influence.value}
+                max={100}
+                value={influenceValue}
                 disabled={wObject.influence.value === 100}
-                onChange={this.throttledChange}
+                onChange={this.handleChangeInfluence}
+                onAfterChange={this.handleAfterChangeInfluence}
               />
             </div>
           </div>

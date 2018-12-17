@@ -81,6 +81,7 @@ class Editor extends React.Component {
       body: '',
       bodyHTML: '',
       linkedObjects: [],
+      influenceRemain: 0,
       canCreateNewObject: true,
       areObjectsCreated: true,
     };
@@ -167,7 +168,7 @@ class Editor extends React.Component {
   }
 
   throttledUpdate() {
-    const { linkedObjects } = this.state;
+    const objectsArr = [...this.state.linkedObjects];
     const { form } = this.props;
 
     const values = form.getFieldsValue();
@@ -175,11 +176,11 @@ class Editor extends React.Component {
 
     // if (Object.values(form.getFieldsError()).filter(e => e).length > 0) return;
 
-    const topics = linkedObjects
+    const topics = objectsArr
       .sort((a, b) => b.influence.value - a.influence.value)
       .slice(0, 4)
       .map(obj => obj.name);
-    const wobjects = linkedObjects.map(obj => ({
+    const wobjects = objectsArr.map(obj => ({
       author_permlink: obj.id,
       percent: obj.influence.value,
       isNew: Boolean(obj.isNew),
@@ -223,11 +224,14 @@ class Editor extends React.Component {
         })
       : wObject;
     this.setState(prevState => {
-      const linkedObjects = prevState.linkedObjects.some(obj => obj.id === selectedObj.id)
-        ? prevState.linkedObjects
-        : setInitialInfluence(prevState.linkedObjects, selectedObj);
+      const linkedObjects = setInitialInfluence(
+        prevState.linkedObjects,
+        selectedObj,
+        prevState.influenceRemain,
+      );
       return {
         linkedObjects,
+        influenceRemain: 0,
         canCreateNewObject: linkedObjects.length < MAX_NEW_OBJECTS_NUMBER,
       };
     }, this.onUpdate());
@@ -275,25 +279,47 @@ class Editor extends React.Component {
 
   handleRemoveObject(wObject) {
     this.setState(prevState => {
-      const linkedObjects = removeObjInfluenceHandler(prevState.linkedObjects, wObject);
-      return { linkedObjects, canCreateNewObject: linkedObjects.length < MAX_NEW_OBJECTS_NUMBER };
+      const result = removeObjInfluenceHandler(
+        prevState.linkedObjects,
+        wObject,
+        prevState.influenceRemain,
+      );
+      return {
+        linkedObjects: result.linkedObjects,
+        influenceRemain: result.influenceRemain,
+        canCreateNewObject: result.linkedObjects.length < MAX_NEW_OBJECTS_NUMBER,
+      };
     }, this.onUpdate());
   }
 
   handleChangeInfluence(wObj, influence) {
-    this.setState(prevState => {
-      const linkedObjects = changeObjInfluenceHandler(prevState.linkedObjects, wObj, influence);
-      return { linkedObjects };
-    });
+    const { influenceRemain, linkedObjects } = this.state;
+    if (influenceRemain - (influence - wObj.influence.value) >= 0) {
+      this.setState(changeObjInfluenceHandler(linkedObjects, wObj, influence, influenceRemain));
+    }
   }
 
   render() {
     const { intl, form, loading, isUpdating, saving, draftId } = this.props;
     const { getFieldDecorator } = form;
-    const { body, bodyHTML, linkedObjects, areObjectsCreated, canCreateNewObject } = this.state;
+    const {
+      body,
+      bodyHTML,
+      linkedObjects,
+      influenceRemain,
+      areObjectsCreated,
+      canCreateNewObject,
+    } = this.state;
 
     const { words, minutes } = readingTime(bodyHTML);
 
+    const linkedObjectsTitle = (
+      <div className="ant-form-item-label">
+        <label className="Editor__label" htmlFor="title">
+          <FormattedMessage id="editor_linked_objects" defaultMessage="Linked objects" />
+        </label>
+      </div>
+    );
     return (
       <Form className="Editor" layout="vertical" onSubmit={this.handleSubmit}>
         <Helmet>
@@ -378,7 +404,9 @@ class Editor extends React.Component {
           )}
         </Form.Item>
         <LinkedObjects
+          title={linkedObjectsTitle}
           canCreateNewObject={canCreateNewObject}
+          influenceRemain={influenceRemain}
           linkedObjects={linkedObjects}
           areObjectsCreated={areObjectsCreated}
           handleAddLinkedObject={this.handleAddLinkedObject}
