@@ -480,8 +480,7 @@
   "users": "Users",
   "append_object_validation_msg": "The field with this value already exists",
   "linked_objects_remaining": "Remaining weight",
-  "linked_objects_tooltip": "Add objects those described in the post, and set the value of belonging"
-  "append_object_validation_msg": "The field with this value already exists",
+  "linked_objects_tooltip": "Add objects those described in the post, and set the value of belonging",
   "headerAuthorized.textAttention3": "To start trading, connect your broker.",
   "deals.type": "Type",
   "deals.opened": "Deal is opened",
