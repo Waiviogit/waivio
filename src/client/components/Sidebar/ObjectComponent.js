@@ -14,10 +14,14 @@ const ObjectComponent = ({ item }) => {
     <div key={item.author_permlink} className="Object">
       <div className="Object__top">
         <div className="Object__links">
-          <Link to={`object/@${item.author_permlink}`}>
+          <Link to={{ pathname: `/object/@${item.author_permlink}` }}>
             <ObjectAvatar item={item} size={34} />
           </Link>
-          <Link to={`object/@${item.author_permlink}`} title={name} className="Object__name">
+          <Link
+            to={{ pathname: `/object/@${item.author_permlink}` }}
+            title={name}
+            className="Object__name"
+          >
             <span className="username">{name}</span>
           </Link>
           {/* <WeightTag weight={item.weight} /> */}

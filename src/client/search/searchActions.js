@@ -6,6 +6,7 @@ import { searchObjects } from '../../waivioApi/ApiClient';
 export const SEARCH_ASK_STEEM = createAsyncActionType('@search/SEARCH_ASK_STEEM');
 export const AUTO_COMPLETE_SEARCH = createAsyncActionType('@search/AUTO_COMPLETE_SEARCH');
 export const SEARCH_OBJECTS = createAsyncActionType('@search/SEARCH_OBJECTS');
+export const CLEAR_SEARCH_OBJECTS_RESULT = '@search/CLEAR_SEARCH_OBJECTS_RESULT';
 
 export const searchAskSteem = search => dispatch =>
   dispatch({
@@ -46,4 +47,9 @@ export const searchObjectsAutoCompete = searchString => dispatch =>
         search: searchString,
       })),
     },
+  });
+
+export const clearSearchObjectsResults = () => dispatch =>
+  dispatch({
+    type: CLEAR_SEARCH_OBJECTS_RESULT,
   });

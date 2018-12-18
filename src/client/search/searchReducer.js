@@ -73,6 +73,12 @@ export default (state = initialState, action) => {
           : result.map(serverWObj => getClientWObj(serverWObj)),
       };
     }
+    case searchActions.CLEAR_SEARCH_OBJECTS_RESULT: {
+      return {
+        ...state,
+        searchObjectsResults: [],
+      };
+    }
     default:
       return state;
   }

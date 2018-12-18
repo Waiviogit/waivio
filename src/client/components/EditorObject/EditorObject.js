@@ -3,7 +3,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { InputNumber, Slider, Spin, Icon } from 'antd';
+import { Slider, Spin, Icon } from 'antd';
 import './EditorObject.less';
 
 @injectIntl
@@ -11,7 +11,8 @@ class EditorObject extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     wObject: PropTypes.shape().isRequired,
-    isValid: PropTypes.bool.isRequired,
+    objectsNumber: PropTypes.number.isRequired,
+    isLinkedObjectsValid: PropTypes.bool.isRequired,
     handleCreateObject: PropTypes.func.isRequired,
     handleRemoveObject: PropTypes.func.isRequired,
     handleChangeInfluence: PropTypes.func.isRequired,
@@ -20,14 +21,31 @@ class EditorObject extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      influenceValue: this.props.wObject.influence.value,
       isCreating: false,
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.objectsNumber !== this.props.objectsNumber) {
+      this.handleChangeInfluence(this.props.wObject.influence.value);
+    }
   }
 
   throttledChange = _.throttle(
     influence => this.props.handleChangeInfluence(this.props.wObject, influence),
     10,
   );
+
+  handleChangeInfluence = influence => {
+    const influenceValue =
+      influence < this.props.wObject.influence.max ? influence : this.props.wObject.influence.max;
+    this.setState({ influenceValue });
+  };
+
+  handleAfterChangeInfluence = influence => {
+    this.props.handleChangeInfluence(this.props.wObject, influence);
+  };
 
   handleCreateObject = () => {
     const { wObject, handleCreateObject } = this.props;
@@ -36,41 +54,36 @@ class EditorObject extends React.Component {
   };
 
   render() {
-    const { intl, wObject, handleRemoveObject, isValid } = this.props;
+    const { influenceValue } = this.state;
+    const { intl, wObject, handleRemoveObject, isLinkedObjectsValid } = this.props;
     return (
       <React.Fragment>
         <div
           className={classNames('editor-object', {
-            'validation-error': wObject.isNew && !isValid,
+            'validation-error': wObject.isNew && !isLinkedObjectsValid,
           })}
         >
           <div className="editor-object__content">
-            <div className="editor-object__content info">
+            <div className="editor-object__content row">
               <img className="editor-object__avatar" src={wObject.avatar} alt={wObject.name} />
-              <span className="editor-object__names">
-                <span className="editor-object__names main">{wObject.name}</span>
-                {Boolean(wObject.tag) && (
-                  <span className="editor-object__names other">{` (${wObject.tag})`}</span>
+              <span className="editor-object__info">
+                <span className="editor-object__info name">{wObject.name}</span>
+                {Boolean(wObject.descriptionShort) && (
+                  <span className="editor-object__info description">
+                    {wObject.descriptionShort}
+                  </span>
                 )}
               </span>
             </div>
-            <div className="editor-object__content influence-slider">
-              <InputNumber
-                min={1}
-                max={wObject.influence.max}
-                formatter={value => `${value}%`}
-                parser={value => value.replace('%', '')}
-                size="small"
-                value={wObject.influence.value}
-                disabled={wObject.influence.value === 100}
-                onChange={this.throttledChange}
-              />
+            <div className="editor-object__content row slider">
+              <span className="label">{`${influenceValue}%`}</span>
               <Slider
                 min={1}
-                max={wObject.influence.max}
-                value={wObject.influence.value}
+                max={100}
+                value={influenceValue}
                 disabled={wObject.influence.value === 100}
-                onChange={this.throttledChange}
+                onChange={this.handleChangeInfluence}
+                onAfterChange={this.handleAfterChangeInfluence}
               />
             </div>
           </div>
@@ -109,7 +122,7 @@ class EditorObject extends React.Component {
             )}
           </div>
         </div>
-        {Boolean(wObject.isNew) && (
+        {!isLinkedObjectsValid && wObject.isNew && (
           <div className="editor-object__validation-msg">
             {intl.formatMessage({
               id: 'editor_object_validation_message',

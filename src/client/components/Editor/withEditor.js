@@ -9,16 +9,22 @@ import { WAIVIO_OBJECT_TYPE } from '../../../common/constants/waivio';
 import { getLocale } from '../../settings/settingsReducer';
 import { handleErrors } from '../../../waivioApi/ApiClient';
 import config from '../../../waivioApi/routes';
+import { voteObject } from '../../object/wobjActions';
 
 function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
 
 export default function withEditor(WrappedComponent) {
-  @connect(state => ({
-    user: getAuthenticatedUser(state),
-    locale: getLocale(state),
-  }))
+  @connect(
+    state => ({
+      user: getAuthenticatedUser(state),
+      locale: getLocale(state),
+    }),
+    {
+      voteObject,
+    },
+  )
   @injectIntl
   class EditorBase extends React.Component {
     static displayName = `withEditor(${getDisplayName(WrappedComponent)})`;
@@ -105,6 +111,8 @@ export default function withEditor(WrappedComponent) {
               defaultMessage: 'Object has been created',
             }),
           );
+          this.props.voteObject(res.objectAuthor, res.objectPermlink);
+
           callback(res);
         })
         .catch(err => {

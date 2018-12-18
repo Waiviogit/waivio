@@ -1,0 +1,32 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+@padding: 10px;
+
+.linked-objects__buffer {
+  display: flex;
+  border: 1px solid @blue-hawkesBlue;
+  border-radius: 4px;
+  padding: @padding;
+  margin-top: 5px;
+
+  &.validation-error {
+    border: 1px solid @red;
+    box-shadow: 0 0 3px @orange, 0 0 5px @red;
+  }
+}
+
+.linked-objects__label {
+  display: flex;
+  align-self: center;
+  flex-shrink: 0;
+  padding-right: @padding;
+}
+
+.ant-progress.linked-objects__buffer-bar {
+  padding-bottom: 5px;
+}
+
+.linked-objects__buffer-validation-msg {
+  color: @red-danger;
+}

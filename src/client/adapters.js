@@ -17,10 +17,12 @@ export const getClientWObj = serverWObj => {
   } = serverWObj;
   const avatarField = fields && fields.find(f => f.name === 'avatarImage');
   const nameField = fields && fields.find(f => f.name === 'name');
+  const descriptionShort = fields && fields.find(f => f.name === 'descriptionShort');
   return {
     id: author_permlink,
     avatar: avatarField ? avatarField.body : '/images/logo-brand.png',
     name: (nameField && nameField.body) || '',
+    descriptionShort: (descriptionShort && descriptionShort.body) || '',
     parents: parents || [],
     weight: weight || '',
     createdAt: created_at || Date.now(),
