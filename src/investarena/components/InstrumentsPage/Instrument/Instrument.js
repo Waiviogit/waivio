@@ -13,8 +13,8 @@ import TradeButtonsAssets from '../../InstrumentsPage/TradeButtonsAssets';
 import withTrade from '../../HOC/withTrade';
 import '../InstrumentsPage.less';
 import {formatSignalsData} from '../../../helpers/signalsHelper';
-// import ModalInstrumentsChart from 'components/Modals/ModalInstrumentsChart';
 import Signal from '../../InstrumentsPage/Instrument/Signal';
+import ModalTC from "../../Modals/ModalTC/ModalTC";
 
 const propTypes = {
   chart: PropTypes.array,
@@ -86,13 +86,13 @@ class Instrument extends Component {
                 data={[this.props.chart]}
             /> :
              <div className="st-assets-chart-no-data">{this.props.intl.formatMessage({id: 'charts.noData'})}</div>;
-        // const modalChart = this.state.isModalInstrumentsChart &&
-            {/*<ModalInstrumentsChart*/}
-                {/*quoteName={this.props.quote.security}*/}
-                {/*market={this.props.quoteSettings.market}*/}
-                {/*isModalInstrumentsChart={this.state.isModalInstrumentsChart}*/}
-                {/*toggleModalInstrumentsChart={this.toggleModalInstrumentsChart}*/}
-            {/*/>;*/}
+        const modalChart = this.state.isModalInstrumentsChart &&
+            <ModalTC
+                quoteName={this.props.quote.security}
+                market={this.props.quoteSettings.market}
+                isOpen={this.state.isModalInstrumentsChart}
+                toggle={this.toggleModalInstrumentsChart}
+            />;
         switch (this.props.viewMode) {
         case 'cards':
             return (
@@ -110,7 +110,7 @@ class Instrument extends Component {
                         <div className="st-card__chart" onClick={this.toggleModalInstrumentsChart}>
                             {getChart(276, 60)}
                         </div>
-                        {/*{modalChart}*/}
+                        {modalChart}
                         <TradeButtonsAssets
                             className="st-assets-buttons st-trade-buttons-asset-page-wrap"
                             quoteSecurity={this.props.quote.security}/>
@@ -130,7 +130,7 @@ class Instrument extends Component {
                     <div className="st-assets-chart-wrap" onClick={this.toggleModalInstrumentsChart}>
                         {getChart(200, 40)}
                     </div>
-                    {/*{modalChart}*/}
+                    {modalChart}
                     <TradeButtonsAssets className="st-assets-buttons st-trade-buttons-asset-page-wrap"
                         quoteSecurity={this.props.quote.security}/>
                     {signal}
