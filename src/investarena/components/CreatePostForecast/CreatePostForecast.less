@@ -1,0 +1,40 @@
+@import (reference) '../../../client/styles/custom';
+
+.st-create-post-optional {
+  margin-bottom: 5px;
+
+  .st-create-post-optional-title {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 5px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .st-create-post-dropdowns {
+    display: flex;
+    padding-bottom: 10px;
+    flex-direction: column;
+    .st-create-post-dropdowns-row {
+      display: flex;
+      .st-create-post-select-wrap {
+        width: 33.3%;
+        margin-right: 10px;
+        &:last-child {
+          margin-right: 0;
+        }
+        .st-create-post-danger {
+          border: 1px solid @red-danger;
+        }
+      }
+      .st-create-post-quotation {
+        text-align: center;
+      }
+      .st-create-post-select__quote {
+        .Select-value {
+          max-width: 80% !important;
+          display: block;
+        }
+      }
+    }
+  }
+}
