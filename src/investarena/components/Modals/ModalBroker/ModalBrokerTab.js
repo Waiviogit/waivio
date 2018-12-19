@@ -23,13 +23,16 @@ class ModalBrokerTab extends Component {
         super(props);
         this.state = {
             activeTab: '1',
-            email: ''
+            email: null
         };
     }
     toggle = (tab) => {
         if (this.state.activeTab !== tab) {
             this.setState({activeTab: tab});
         }
+    };
+    toggleEmail = (email) => {
+        this.setState({email});
     };
     render () {
         return (
@@ -40,6 +43,7 @@ class ModalBrokerTab extends Component {
                   key="1"
                 >
                   <BrokerAuthorization
+                    email={this.state.email}
                     isLoading={this.props.isLoading}
                     forgotPassBroker={this.props.forgotPassBroker}
                     authorizeBroker={this.props.authorizeBroker}
@@ -54,6 +58,7 @@ class ModalBrokerTab extends Component {
                     isLoading={this.props.isLoading}
                     registerBroker = {this.props.registerBroker}
                     authorizeBroker={this.props.authorizeBroker}
+                    toggleEmail={this.toggleEmail}
                     toggleModal={this.props.toggleModal}/>
                 </TabPane>
               </Tabs>

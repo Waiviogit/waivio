@@ -15,6 +15,7 @@ const propTypes = {
     isLoading: PropTypes.bool.isRequired,
     registerBroker: PropTypes.func.isRequired,
     authorizeBroker: PropTypes.func.isRequired,
+    toggleEmail: PropTypes.func.isRequired,
     intl: PropTypes.object.isRequired
 };
 
