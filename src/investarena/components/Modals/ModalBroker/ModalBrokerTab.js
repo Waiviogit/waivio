@@ -22,7 +22,8 @@ class ModalBrokerTab extends Component {
     constructor (props) {
         super(props);
         this.state = {
-            activeTab: '1'
+            activeTab: '1',
+            email: ''
         };
     }
     toggle = (tab) => {

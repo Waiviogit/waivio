@@ -19,7 +19,7 @@ const ModalTC = ({toggle, isOpen, market, quoteName, intl}) => {
                 visible={isOpen}
                 footer={null}
                 onCancel={toggle}
-                style={{width: '600px'}}
+                width={'90%'}
               >
                 <div style={{width: '100%', height: '305px', marginTop: '1px'}}>
                   <TchChart

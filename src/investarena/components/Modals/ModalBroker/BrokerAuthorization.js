@@ -86,7 +86,10 @@ class BrokerAuthorization extends Component {
           </FormItem>
           <FormItem>
             {getFieldDecorator('password', {
-              rules: [{required: true, message: 'Please input your Password!'}],
+              rules: [
+                {required: true, message: 'Please input your Password!'},
+                { min: 5, message: 'Require more then 5 symbols' }
+              ],
             })(
               <Input
                 prefix={

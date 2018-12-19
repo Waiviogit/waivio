@@ -6,6 +6,7 @@ import { Form, Input, Select, Checkbox, Button } from 'antd';
 import { optionsPlatform } from '../../../constants/selectData';
 import { country } from '../../../constants/countryData';
 import { phoneCode } from '../../../constants/phoneCodeData';
+import { agreements } from '../../../configApi/licenseAgreements';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -21,7 +22,8 @@ class BrokerRegistration extends Component {
   state = {
     confirmDirty: false,
     isAgreementRead: false,
-    currentCountryValue: 'US'
+    currentCountryValue: 'US',
+    platformName: 'umarkets'
   };
 
   handleSubmit = (e) => {
@@ -63,6 +65,9 @@ class BrokerRegistration extends Component {
   };
   handleCountryValueChange = (e) => {
     this.setState({ currentCountryValue: e });
+  };
+  changePlatform = (e) => {
+    this.setState({ platformName: e });
   };
 
   render() {
@@ -117,6 +122,7 @@ class BrokerRegistration extends Component {
             <Select
               style={{ width: '100%'}}
               placeholder={this.props.intl.formatMessage({ id: 'tooltip.empty' })}
+              onChange={this.changePlatform}
             >
               {
                 _.map(optionsPlatform, option => {
@@ -178,7 +184,9 @@ class BrokerRegistration extends Component {
               required: true, message: 'Please input your password!',
             }, {
               validator: this.validateToNextPassword,
-            }],
+            },
+              { min: 5, message: 'Require more then 5 symbols' }
+            ],
           })(
             <Input type="password" />
           )}
@@ -188,11 +196,11 @@ class BrokerRegistration extends Component {
           label="Confirmation"
         >
           {getFieldDecorator('confirm', {
-            rules: [{
-              required: true, message: 'Please confirm your password!',
-            }, {
-              validator: this.compareToFirstPassword,
-            }],
+            rules: [
+              { required: true, message: 'Please confirm your password!' },
+              { validator: this.compareToFirstPassword },
+              { min: 5, message: 'Require more then 5 symbols' }
+            ],
           })(
             <Input type="password" onBlur={this.handleConfirmBlur} />
           )}
@@ -238,7 +246,7 @@ class BrokerRegistration extends Component {
           )}
         </FormItem>
         <FormItem {...tailFormItemLayout}>
-            <Checkbox className="d-flex align-items-center" onClick={this.handleReadChange}>I have read the <a href="">agreement</a></Checkbox>
+            <Checkbox className="d-flex align-items-center" onClick={this.handleReadChange}>I have read the <a href={agreements[this.state.platformName]} target='_blank'  rel='noopener noreferrer'>agreement</a></Checkbox>
         </FormItem>
         <FormItem {...tailFormItemLayout}>
           <Button className="w-100" type="primary" htmlType="submit" disabled={!this.state.isAgreementRead}>
