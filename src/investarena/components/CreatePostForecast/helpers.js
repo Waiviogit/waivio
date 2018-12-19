@@ -23,4 +23,27 @@ export const getQuotePrice = (quote, recommend, quoteList) => {
   return quotePrice;
 };
 
+export const isStopLossTakeProfitValid = (value, input, recommend, quotePrice) => {
+  if (value === '') return false;
+  const price = Number(quotePrice);
+  let isError = value.length > 8;
+  switch (recommend) {
+    case 'Buy':
+      isError =
+        input === 'takeProfitValue'
+          ? Number(value) <= price || isError
+          : Number(value) >= price || isError;
+      break;
+    case 'Sell':
+      isError =
+        input === 'takeProfitValue'
+          ? Number(value) >= price || isError
+          : Number(value) <= price || isError;
+      break;
+    default:
+      break;
+  }
+  return isError || Number(value) <= 0;
+};
+
 export default null;
