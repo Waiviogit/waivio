@@ -10,15 +10,14 @@ const parseSignals = (signals, quote) => {
 };
 
 export default class Signals extends Base {
-    getSignals (quote) {
-        return this.apiClient.get(config.signals.getSignals, {}, {}).then((response) => {
-            if (response.data) {
-                return parseSignals(response.data, quote);
-            }
-        });
-    }
-    getAllSignals () {
-        return this.apiClient.get(config.signals.getSignals, {}, {});
-    }
+  getSignals(quote) {
+    return this.apiClient.get(config.signals.getSignals, {}, {}).then(response => {
+      if (response.data) {
+        return parseSignals(response.data, quote);
+      }
+    });
+  }
+  getAllSignals() {
+    return this.apiClient.get(config.signals.getSignals, {}, {});
+  }
 }
-

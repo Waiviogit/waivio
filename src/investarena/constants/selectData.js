@@ -4,8 +4,8 @@ import React from 'react';
 import { BROKER } from '../constants/platform';
 
 export const optionsAction = [
-    { value: 'Buy', label: <FormattedMessage id="createPost.selectLabel.buy" /> },
-    { value: 'Sell', label: <FormattedMessage id="createPost.selectLabel.sell" />}
+    { value: 'Buy', label: <FormattedMessage id="postQuotation.recommend.buy" /> },
+    { value: 'Sell', label: <FormattedMessage id="postQuotation.recommend.sell" />}
 ];
 export const optionsForecast = [
     { value: '900', label: <FormattedMessage id="createPost.selectLabel.15m" /> },

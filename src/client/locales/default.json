@@ -536,5 +536,11 @@
   "dealsSelect.last60Days": "Last 60 days",
   "dealsSelect.last90Days": "Last 90 days",
   "dealsSelect.allTime": "All time",
-  "dealsSelect.last6Months": "Last 6 Months"
+  "dealsSelect.last6Months": "Last 6 Months",
+  "createPost.selectLabel.default": "Select",
+  "createPost.selectTitle.forecast": "Forecast time",
+  "createPost.selectTitle.instrument": "Instrument",
+  "createPost.selectTitle.recommend": "I recommend",
+  "createPost.selectTitle.price": "Price",
+  "createPost.titleForecast": "Your forecast (optional)"
 }

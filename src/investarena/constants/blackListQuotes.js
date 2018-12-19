@@ -13,3 +13,5 @@ export const blackListQuotes = [
   'BilbaoXETRA',
   'CninaRail',
 ];
+
+export default blackListQuotes;

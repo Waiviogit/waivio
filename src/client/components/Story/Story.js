@@ -32,7 +32,7 @@ import PostedFrom from './PostedFrom';
 import './Story.less';
 import PostChart from '../../../investarena/components/PostChart';
 import PostQuotation from '../../../investarena/components/PostQuotation';
-import PostSellBuy from "../../../investarena/components/PostSellBuy";
+import PostSellBuy from '../../../investarena/components/PostSellBuy';
 
 @injectIntl
 @withRouter
@@ -344,11 +344,11 @@ class Story extends React.Component {
           <PostSellBuy
             isExpired={false}
             // finalQuote = {{}}
-            quoteSecurity = {'AUDCAD'}
-            postPrice = {'0.96'}
-            forecast = {'2018-12-29T14:54:50.000Z'}
-            recommend = {'Buy'}
-            profitability = {335}
+            quoteSecurity={'AUDCAD'}
+            postPrice={'0.96'}
+            forecast={'2018-12-29T14:54:50.000Z'}
+            recommend={'Buy'}
+            profitability={335}
           />
           <div className="Story__content">
             <a
@@ -366,18 +366,19 @@ class Story extends React.Component {
           </div>
           <div className="Story__footer">
             <PostChart
-              quoteSecurity = {'AUDCAD'}
-              expiredBars = {[]}
-              createdAt = "2018-11-28T10:54:50.320Z"
-              forecast = "2018-12-29T14:54:50.000Z"
-              recommend = "Buy"
-              expiredByTime = {undefined}
+              quoteSecurity={'AUDCAD'}
+              expiredBars={[]}
+              createdAt="2018-11-28T10:54:50.320Z"
+              forecast="2018-12-29T14:54:50.000Z"
+              recommend="Buy"
+              expiredByTime={undefined}
               expiredTimeScale={undefined}
               toggleModalPost={() => {}}
               tpPrice={'0.969'}
               slPrice={'0.958'}
-              expiredAt={undefined}/>
-            <PostQuotation quoteSecurity = {'AUDCAD'} postId = {'1'}/>
+              expiredAt={undefined}
+            />
+            <PostQuotation quoteSecurity={'AUDCAD'} postId={'1'} />
             <StoryFooter
               user={user}
               post={post}

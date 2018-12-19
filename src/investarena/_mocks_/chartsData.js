@@ -1,8 +1,6 @@
-export const forecast = {
+export const forecast = {};
 
-};
-
-  export const bars = {
+export const bars = {
   APPLE: {
     MINUTE: [
       {

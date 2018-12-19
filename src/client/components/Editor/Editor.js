@@ -23,6 +23,7 @@ import {
   changeObjInfluenceHandler,
   removeObjInfluenceHandler,
 } from '../../helpers/wObjInfluenceHelper';
+import CreatePostForecast from '../../../investarena/components/CreatePostForecast';
 import './Editor.less';
 
 @injectIntl
@@ -458,6 +459,7 @@ class Editor extends React.Component {
             </Select>,
           )}
         </Form.Item>
+        <CreatePostForecast />
         <Form.Item className={classNames({ Editor__hidden: isUpdating })}>
           {getFieldDecorator('upvote', { valuePropName: 'checked', initialValue: true })(
             <Checkbox onChange={this.onUpdate} disabled={isUpdating}>
