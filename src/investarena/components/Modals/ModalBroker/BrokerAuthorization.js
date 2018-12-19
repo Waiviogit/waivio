@@ -7,6 +7,8 @@ import { optionsPlatform } from '../../../constants/selectData';
 
 const propTypes = {
     isLoading: PropTypes.bool.isRequired,
+    platformName: PropTypes.string,
+    email: PropTypes.string,
     forgotPassBroker: PropTypes.func.isRequired,
     authorizeBroker: PropTypes.func.isRequired,
     disconnectBroker: PropTypes.func.isRequired,
@@ -49,7 +51,7 @@ class BrokerAuthorization extends Component {
           </div>
           {
             getFieldDecorator('platform', {
-              initialValue: optionsPlatform[0].value,
+              initialValue: this.props.brokerConnected ? this.props.platformName : null || optionsPlatform[0].value,
             })(
               <Select
                 style={{ width: '100%'}}
@@ -64,7 +66,7 @@ class BrokerAuthorization extends Component {
               </Select>
             )
           }
-          <FormItem>
+          {!this.props.brokerConnected ? <FormItem>
             {getFieldDecorator('email', {
               rules: [{
                 type: 'email', message: this.props.intl.formatMessage({ id: 'tooltip.emailValid' }),
@@ -83,8 +85,12 @@ class BrokerAuthorization extends Component {
                 disabled={this.props.brokerConnected}
               />
             )}
-          </FormItem>
-          <FormItem>
+          </FormItem> : <div className="d-flex flex-column align-items-center st-margin-bottom-middle">
+            <div className="st-broker-text">
+              {this.props.email}
+            </div>
+          </div>}
+          {!this.props.brokerConnected && <FormItem>
             {getFieldDecorator('password', {
               rules: [
                 {required: true, message: 'Please input your Password!'},
@@ -103,7 +109,7 @@ class BrokerAuthorization extends Component {
                 disabled={this.props.brokerConnected}
               />
             )}
-          </FormItem>
+          </FormItem>}
           <div className="d-flex justify-content-between">
             {!this.props.brokerConnected ? <span onClick={()=>{}} className="st-modal-broker-authorization-text-click">
                 {this.props.intl.formatMessage({id: 'modalBroker.forgotPassword'})}

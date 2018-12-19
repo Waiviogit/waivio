@@ -49,7 +49,7 @@ export default class Brokers extends Base {
                 if (!response.error && response.data) {
                     status = 'success';
                     // message = locale.messages['brokerAction.registerBrokerSuccess'];
-                } else if (response.data.broker.statusCode === 500) {
+                } else {
                     // message = response.data.broker.message;
                 }
                 return ({status, error: response.error});

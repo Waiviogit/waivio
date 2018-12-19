@@ -15,7 +15,7 @@ const propTypes = {
     isLoading: PropTypes.bool.isRequired,
     registerBroker: PropTypes.func.isRequired,
     authorizeBroker: PropTypes.func.isRequired,
-    toggleEmail: PropTypes.func.isRequired,
+    changeEmail: PropTypes.func.isRequired,
     intl: PropTypes.object.isRequired
 };
 
@@ -34,6 +34,7 @@ class BrokerRegistration extends Component {
         console.log('Received values of form: ', values);
         values.phoneNumber = values.phone.substring(2,values.phone.length - 1);
         values.phoneOperator = values.phone.substring(0,2);
+        this.props.changeEmail(values.email);
         this.props.registerBroker(values);
       }
     });
@@ -173,7 +174,7 @@ class BrokerRegistration extends Component {
               required: true, message: 'Please input your E-mail!',
             }],
           })(
-            <Input />
+            <Input/>
           )}
         </FormItem>
         <FormItem
@@ -216,9 +217,9 @@ class BrokerRegistration extends Component {
         >
           {
             getFieldDecorator('country', {
+              initialValue: 'US',
             })(
               <Select
-                defaultValue={country['en']['US']}
                 style={{ width: '100%'}}
                 placeholder={this.props.intl.formatMessage({ id: 'tooltip.empty' })}
                 onChange={this.handleCountryValueChange}
