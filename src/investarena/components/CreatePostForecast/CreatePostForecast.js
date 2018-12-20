@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import moment from 'moment';
@@ -51,7 +52,14 @@ class CreatePostForecast extends Component {
     stopLossValueIncorrect: false,
   };
 
+  componentDidUpdate(prevProps, prevState) {
+    if(!_.isEqual(prevState, this.state)) {
+      this.props.onChange(this.getForecastObject())
+    }
+  }
+
   getForecastObject = () => {
+    const { quotesSettings } = this.props;
     const {
       selectQuote,
       selectRecommend,
@@ -62,7 +70,7 @@ class CreatePostForecast extends Component {
     } = this.state;
     return {
       quote: selectQuote,
-      market: "",
+      market: selectQuote ? quotesSettings[selectQuote].market : '',
       recommend: selectRecommend,
       price: parseFloat(quotePrice),
       forecast_take_profit: parseFloat(takeProfitValue),
@@ -82,7 +90,7 @@ class CreatePostForecast extends Component {
       stopLossValue: '',
       takeProfitValueIncorrect: false,
       stopLossValueIncorrect: false,
-    }, this.props.onChange(this.getForecastObject()));
+    });
     // this.checkSelectDropDown(newValue, this.state.selectRecommend, this.state.selectForecastTime);
   };
 
@@ -194,6 +202,7 @@ class CreatePostForecast extends Component {
                         // ref={(node) => this.selectQuoteRef = node}
                         // value={this.state.selectQuote}
                         onChange={this.updateValueQuote}
+                        showSearch
                         allowClear
                       >
                         {optionsQuote.map(option => (
