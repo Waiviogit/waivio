@@ -1,9 +1,7 @@
 import Cookies from 'js-cookie';
+import { message } from 'antd';
 import api from '../../configApi/apiResources';
 import { authorizeToken, connectPlatform } from './platformActions';
-// import { getLanguageState } from 'redux/selectors/languageSelectors';
-// import locales from 'locales';
-// import { showNotification } from 'redux/actions/ui/notificationActions';
 import { singleton } from '../../platform/singletonPlatform';
 import { toggleModal } from './modalsActions';
 
@@ -42,7 +40,7 @@ export function authorizeBroker (data) {
   return (dispatch) => {
     dispatch(authorizeBrokerRequest());
     return api.brokers.authorizeBroker(data, 'en-UK')
-      .then(({status, message, error, broker}) => {
+      .then(({status, error, broker}) => {
         if (!error && status) {
           if (status === 'success') {
             dispatch(authorizeBrokerSuccess());
@@ -54,10 +52,10 @@ export function authorizeBroker (data) {
           } else if (status === 'error') {
             dispatch(authorizeBrokerError());
           }
-          // dispatch(showNotification({status, message}));
+          message.success('Successfully connected to broker');
         } else {
           dispatch(authorizeBrokerError());
-          // dispatch(showNotification({status: 'error', message: error.toString()}));
+          message.error(error.toString());
         }
       });
   };
@@ -65,11 +63,10 @@ export function authorizeBroker (data) {
 export function registerBroker (registrationData) {
     return (dispatch) => {
         dispatch(registerBrokerRequest());
-        // return api.brokers.registerBroker(registrationData, locales[getLanguageState(getState())])
         return api.brokers.registerBroker(registrationData, 'en-UK')
             .then(({status, error}) => {
                 if (!error && status) {
-                    // dispatch(showNotification({status, message}));
+                    message.success('Registration success');
                     if (status === 'success') {
                         dispatch(registerBrokerSuccess());
                         setTimeout(() => {
@@ -80,7 +77,7 @@ export function registerBroker (registrationData) {
                     }
                 } else {
                     dispatch(registerBrokerError());
-                    // dispatch(showNotification({status: 'error', message: error.toString()}));
+                    message.error(error.toString());
                 }
             });
     };
@@ -105,7 +102,7 @@ export function reconnectBroker (data) {
     };
 }
 export function disconnectBroker (isReconnect = false) {
-    return (dispatch, getState) => {
+    return (dispatch) => {
         localStorageKeys.forEach((data) => {
             localStorage.removeItem(data);
         });
@@ -117,8 +114,7 @@ export function disconnectBroker (isReconnect = false) {
         singleton.closeWebSocketConnection();
         singleton.platform = 'widgets';
         singleton.createWebSocketConnection();
-        // dispatch(showNotification({status: 'success',
-        //     message: locales[getLanguageState(getState())].messages['brokerAction.disconnectBrokerSuccess']}));
+        message.success('Broker successfully disconnected');
         if (!isReconnect) {
             dispatch(toggleModal('broker'));
         }
@@ -126,22 +122,21 @@ export function disconnectBroker (isReconnect = false) {
     };
 }
 export function forgotPassBroker (data) {
-    return (dispatch, getState) => {
+    return (dispatch) => {
         dispatch(forgotBrokerPassRequest());
-      // return api.brokers.forgotPassBroker(data, locales[getLanguageState(getState())])
       return api.brokers.forgotPassBroker(data, 'en')
-            .then(({status, message, error}) => {
-                if (!error && status && message) {
+            .then(({status, error}) => {
+                if (!error && status && messageresp) {
                     if (status === 'success') {
                         dispatch(forgotBrokerPassSuccess());
-                        // dispatch(showNotification({status: status, message: message}));
+                        message.success('Password successfully send to your email');
                     } else {
                         dispatch(forgotBrokerPassError());
-                        // dispatch(showNotification({status: 'error', message: error.toString()}));
+                        message.error(error.toString());
                     }
                 } else {
                     dispatch(forgotBrokerPassError());
-                    // dispatch(showNotification({status: 'error', message: error.toString()}));
+                    message.error(error.toString());
                 }
             });
     };

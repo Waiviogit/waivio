@@ -1,10 +1,8 @@
 import _ from 'lodash';
-// import locales from 'locales';
+import { message } from 'antd';
 import api from '../../configApi/apiResources';
 import { currentTime } from '../../helpers/currentTime';
-// import { getLanguageState } from '../selectors/languageSelectors';
 import { PlatformHelper } from '../../platform/platformHelper';
-// import { showNotification } from 'redux/actions/ui/notificationActions';
 import { singleton } from '../../platform/singletonPlatform';
 
 export const GET_OPEN_DEALS_SUCCESS = 'GET_OPEN_DEALS_SUCCESS';
@@ -15,11 +13,10 @@ export const CHANGE_OPEN_DEAL_SUCCESS = 'CHANGE_OPEN_DEAL_SUCCESS';
 export const CLOSE_OPEN_DEAL_SUCCESS = 'CLOSE_OPEN_DEAL_SUCCESS';
 
 export function createOpenDealPlatform (quote, quoteSettings, side, amount, margin, postId = '', platform) {
-    return (dispatch, getState) => {
+    return () => {
         const validAmount = parseFloat(amount.replace(/,/g, '')) * 1000000;
         if (validAmount > quoteSettings.maximumQuantity || validAmount < quoteSettings.minimumQuantity) {
-            // dispatch(showNotification({status: 'error',
-            //     message: locales[getLanguageState(getState())].messages['deals.invalidAmount']}));
+            message.error('Invalid amount');
         } else {
             const deal = {security: quote.security, side, amount: validAmount};
             const dataDealToApi = {
@@ -47,9 +44,10 @@ export function createOpenDealApi (dealData) {
                 if (!error) {
                     if (dealData.post_id) {
                         dispatch(createPostOpenDealSuccess(dealData));
+                        message.success('Deal successfully open');
                     }
                 } else {
-                    // dispatch(showNotification({status: 'error', message: error.toString()}));
+                  message.error(error.toString());
                 }
             });
     };
