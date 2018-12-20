@@ -12,6 +12,7 @@ const propTypes = {
     forgotPassBroker: PropTypes.func.isRequired,
     authorizeBroker: PropTypes.func.isRequired,
     disconnectBroker: PropTypes.func.isRequired,
+    changeEmail: PropTypes.func.isRequired,
     brokerConnected: PropTypes.bool.isRequired,
     intl: PropTypes.object.isRequired
 };
@@ -28,6 +29,7 @@ class BrokerAuthorization extends Component {
     event.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
+        this.props.changeEmail(values.email);
         this.props.authorizeBroker(values);
       }
     });

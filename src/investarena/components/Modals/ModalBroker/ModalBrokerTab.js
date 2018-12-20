@@ -50,6 +50,7 @@ class ModalBrokerTab extends Component {
                     authorizeBroker={this.props.authorizeBroker}
                     disconnectBroker={this.props.disconnectBroker}
                     toggleModal={this.props.toggleModal}
+                    changeEmail={this.changeEmail}
                     brokerConnected={this.props.platformName !== 'widgets'}/>
                 </TabPane>
                 <TabPane
