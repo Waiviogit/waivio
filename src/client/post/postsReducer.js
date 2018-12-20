@@ -56,8 +56,10 @@ const posts = (state = initialState, action) => {
       };
 
       _.each(action.payload, post => {
-        list[post.id] = post;
-        postsStates[`${post.author}/${post.permlink}}`] = {
+        const postInStore = post;
+        postInStore.id = post.post_id;
+        list[postInStore.id] = postInStore;
+        postsStates[`${postInStore.author}/${postInStore.permlink}}`] = {
           fetching: false,
           loaded: true,
           failed: false,
