@@ -31,7 +31,8 @@ const posts = (state = initialState, action) => {
     case feedTypes.GET_MORE_USER_COMMENTS.SUCCESS: {
       const commentsMoreList = {};
       action.payload.forEach(comment => {
-        commentsMoreList[comment.id] = comment;
+        const commentInStore = { ...comment, id: comment.post_id };
+        commentsMoreList[comment.post_id] = commentInStore;
       });
       return {
         ...state,
@@ -56,8 +57,10 @@ const posts = (state = initialState, action) => {
       };
 
       _.each(action.payload, post => {
-        list[post.id] = post;
-        postsStates[`${post.author}/${post.permlink}}`] = {
+        const postInStore = post;
+        postInStore.id = post.post_id;
+        list[postInStore.id] = postInStore;
+        postsStates[`${postInStore.author}/${postInStore.permlink}}`] = {
           fetching: false,
           loaded: true,
           failed: false,

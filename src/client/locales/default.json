@@ -389,8 +389,6 @@
   "create_object_success": "Object has been created",
   "post_languages_info": "In which languages do you want to read posts?",
   "post_languages": "Posts languages",
-  "create_new_object_placeholder": "This object doesn't exist yet, but you can create it",
-  "value_error_too_long": "Value can't be longer than 255 characters.",
   "top_authors": "Top Authors",
   "show_more_authors": "Show more authors",
   "object": "object",
@@ -408,4 +406,7 @@
   "post_code": "Post Code",
   "location_latitude": "Latitude",
   "location_longitude": "Longitude"
+  "append_object_validation_msg": "The field with this value already exists",
+  "linked_objects_remaining": "Remaining weight",
+  "linked_objects_tooltip": "Add objects those described in the post, and set the value of belonging"
 }
