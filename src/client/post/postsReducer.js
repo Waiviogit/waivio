@@ -31,7 +31,8 @@ const posts = (state = initialState, action) => {
     case feedTypes.GET_MORE_USER_COMMENTS.SUCCESS: {
       const commentsMoreList = {};
       action.payload.forEach(comment => {
-        commentsMoreList[comment.id] = comment;
+        const commentInStore = { ...comment, id: comment.post_id };
+        commentsMoreList[comment.post_id] = commentInStore;
       });
       return {
         ...state,
