@@ -86,6 +86,7 @@ class Editor extends React.Component {
       influenceRemain: 0,
       canCreateNewObject: true,
       isLinkedObjectsValid: true,
+      forecast: null,
     };
 
     this.onUpdate = this.onUpdate.bind(this);
@@ -98,6 +99,7 @@ class Editor extends React.Component {
     this.handleCreateObject = this.handleCreateObject.bind(this);
     this.handleRemoveObject = this.handleRemoveObject.bind(this);
     this.handleChangeInfluence = this.handleChangeInfluence.bind(this);
+    this.handleForecastChange = this.handleForecastChange.bind(this);
   }
 
   componentDidMount() {
@@ -302,6 +304,10 @@ class Editor extends React.Component {
     }
   }
 
+  handleForecastChange(forecast) {
+    this.setState({forecast});
+  }
+
   render() {
     const { intl, form, loading, isUpdating, saving, draftId } = this.props;
     const { getFieldDecorator } = form;
@@ -459,7 +465,7 @@ class Editor extends React.Component {
             </Select>,
           )}
         </Form.Item>
-        <CreatePostForecast />
+        <CreatePostForecast onChange={this.handleForecastChange} />
         <Form.Item className={classNames({ Editor__hidden: isUpdating })}>
           {getFieldDecorator('upvote', { valuePropName: 'checked', initialValue: true })(
             <Checkbox onChange={this.onUpdate} disabled={isUpdating}>
