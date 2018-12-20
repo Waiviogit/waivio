@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import Helmet from 'react-helmet';
 import ReactDOM from 'react-dom';
-import classNames from 'classnames';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import readingTime from 'reading-time';
-import { Checkbox, Form, Input, Select } from 'antd';
-import { supportedObjectFields } from '../../../common/constants/listOfFields';
+import { Form, Input, Select } from 'antd';
+import uuidv4 from 'uuid/v4';
+import { supportedObjectFields, objectImageFields } from '../../../common/constants/listOfFields';
 import Action from '../Button/Action';
 import requiresLogin from '../../auth/requiresLogin';
 import EditorInput from './EditorInput';
@@ -18,6 +19,8 @@ import './Editor.less';
 import { getLanguageText } from '../../translations';
 import LANGUAGES from '../../translations/languages';
 import { getField } from '../../objects/WaivioObject';
+import QuickPostEditorFooter from '../QuickPostEditor/QuickPostEditorFooter';
+import { isValidImage } from '../../helpers/image';
 
 @injectIntl
 @requiresLogin
@@ -32,7 +35,6 @@ class AppendObjectPostEditor extends React.Component {
     currentLocaleInList: PropTypes.shape().isRequired,
     topics: PropTypes.arrayOf(PropTypes.string),
     body: PropTypes.string,
-    upvote: PropTypes.bool,
     loading: PropTypes.bool,
     saving: PropTypes.bool,
     onDelete: PropTypes.func,
@@ -49,7 +51,6 @@ class AppendObjectPostEditor extends React.Component {
     user: {},
     topics: [],
     body: '',
-    upvote: true,
     currentLocaleInList: { id: 'auto', name: '', nativeName: '' },
     popularTopics: [],
     loading: false,
@@ -73,8 +74,9 @@ class AppendObjectPostEditor extends React.Component {
       body: '',
       currentLocaleInList: this.props.currentLocaleInList.id,
       bodyHTML: '',
-      linkedObjects: [],
       value: '',
+      imageUploading: false,
+      currentImage: [],
     };
 
     this.onUpdate = this.onUpdate.bind(this);
@@ -83,6 +85,7 @@ class AppendObjectPostEditor extends React.Component {
     this.handleDelete = this.handleDelete.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChangeField = this.handleChangeField.bind(this);
+    this.handleImageChange = this.handleImageChange.bind(this);
   }
 
   componentDidMount() {
@@ -98,12 +101,8 @@ class AppendObjectPostEditor extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { topics, body, upvote } = this.props;
-    if (
-      !_.isEqual(topics, nextProps.topics) ||
-      body !== nextProps.body ||
-      upvote !== nextProps.upvote
-    ) {
+    const { topics, body } = this.props;
+    if (!_.isEqual(topics, nextProps.topics) || body !== nextProps.body) {
       this.setValues(nextProps);
     }
   }
@@ -196,8 +195,17 @@ class AppendObjectPostEditor extends React.Component {
   }
 
   handleChangeField = fieldToChange => {
-    this.props.changeCurrentField(fieldToChange);
+    const { currentField, changeCurrentField, form } = this.props;
     this.setState({ body: '' });
+    if (objectImageFields.includes(fieldToChange)) {
+      const { currentImage } = this.state;
+      form.setFieldsValue({
+        value: currentImage.length ? currentImage[0].src : '',
+      });
+    } else if (objectImageFields.includes(currentField)) {
+      form.setFieldsValue({ value: '' });
+    }
+    changeCurrentField(fieldToChange);
   };
 
   handleChangeLocale = localeToChange => {
@@ -207,10 +215,49 @@ class AppendObjectPostEditor extends React.Component {
     form.setFieldsValue({ value: currValue });
     this.setState({ body: '' });
   };
+
+  handleImageChange(e) {
+    if (e.target.files && e.target.files[0]) {
+      if (!isValidImage(e.target.files[0])) {
+        this.props.onImageInvalid();
+        return;
+      }
+
+      this.setState({
+        imageUploading: true,
+        currentImage: [],
+      });
+
+      this.props.onImageUpload(e.target.files[0], this.disableAndInsertImage, () =>
+        this.setState({
+          imageUploading: false,
+        }),
+      );
+      e.target.value = '';
+    }
+  }
+
+  disableAndInsertImage = (image, imageName = 'image') => {
+    const newImage = {
+      src: image,
+      name: imageName,
+      id: uuidv4(),
+    };
+    this.setState({ imageUploading: false, currentImage: [newImage] });
+    this.props.form.setFieldsValue({ value: image });
+    this.onUpdate();
+  };
+
+  handleRemoveImage = () => {
+    this.setState({ currentImage: [] });
+    this.props.form.setFieldsValue({ value: '' });
+    this.onUpdate();
+  };
+
   render() {
-    const { intl, form, loading, saving } = this.props;
+    const { intl, form, loading, saving, currentField } = this.props;
     const { getFieldDecorator } = form;
-    const { body, bodyHTML, currentLocaleInList } = this.state;
+    const { body, bodyHTML, currentLocaleInList, imageUploading, currentImage } = this.state;
 
     const { words, minutes } = readingTime(bodyHTML);
 
@@ -231,6 +278,9 @@ class AppendObjectPostEditor extends React.Component {
         </Select.Option>,
       );
     });
+
+    const isImageValueRequire = objectImageFields.includes(currentField);
+
     return (
       <Form className="Editor" layout="vertical" onSubmit={this.handleSubmit}>
         <Helmet>
@@ -263,13 +313,19 @@ class AppendObjectPostEditor extends React.Component {
         >
           {languageOptions}
         </Select>
-        <Form.Item
-          label={
-            <span className="Editor__label">
-              <FormattedMessage id="suggest3" defaultMessage="Value" />
-            </span>
-          }
-        >
+
+        <div className="ant-form-item-label Editor__appendTitles">
+          <FormattedMessage id="suggest3" defaultMessage="Value" />
+        </div>
+        {isImageValueRequire && (
+          <QuickPostEditorFooter
+            imageUploading={imageUploading}
+            handleImageChange={this.handleImageChange}
+            currentImages={currentImage}
+            onRemoveImage={this.handleRemoveImage}
+          />
+        )}
+        <Form.Item className={classNames({ Editor__hidden: isImageValueRequire })}>
           {getFieldDecorator('value', {
             initialValue: '',
             rules: [
@@ -308,6 +364,7 @@ class AppendObjectPostEditor extends React.Component {
             />,
           )}
         </Form.Item>
+
         <Form.Item>
           {getFieldDecorator('body', {
             initialValue: '',
@@ -331,7 +388,6 @@ class AppendObjectPostEditor extends React.Component {
             />,
           )}
         </Form.Item>
-
         <Form.Item
           label={
             <span className="Editor__label">
@@ -354,14 +410,7 @@ class AppendObjectPostEditor extends React.Component {
             body={`This action extends object will be created by Waivio Bot. And you will get 70% of Author rewards. You do not spend additional resource credits!`}
           />
         </Form.Item>
-
-        <Form.Item className={classNames({ Editor__hidden: loading })}>
-          {getFieldDecorator('upvote', { valuePropName: 'checked', initialValue: true })(
-            <Checkbox onChange={this.onUpdate} disabled={loading}>
-              <FormattedMessage id="like_post" defaultMessage="Like this post" />
-            </Checkbox>,
-          )}
-        </Form.Item>
+        <br />
         <div className="Editor__bottom">
           <span className="Editor__bottom__info">
             <i className="iconfont icon-markdown" />{' '}

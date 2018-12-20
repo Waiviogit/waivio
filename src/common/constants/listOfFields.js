@@ -18,4 +18,6 @@ export const supportedObjectFields = [
   'backgroundImage',
 ];
 
+export const objectImageFields = ['avatarImage', 'backgroundImage'];
+
 export default null;

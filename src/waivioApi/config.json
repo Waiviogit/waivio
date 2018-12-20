@@ -12,6 +12,7 @@
     "createObject": "/create/object",
     "getObjects": "/wobject",
     "searchObjects": "/wobjectSearch",
+    "getObjectFollowing": "/following_objects",
     "getObjectFollowers": "/followers",
     "user": "/user",
     "followingObjects": "/following_objects"

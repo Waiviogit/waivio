@@ -10,7 +10,8 @@
   margin-bottom: @content-margin;
 
   &__contents {
-    border-radius: @border-radius-base;
+    border-radius: @border-radius-base @border-radius-base 0 0;
+    border-bottom: @base-border;
     background: @white;
     display: flex;
     flex-direction: row;
@@ -54,7 +55,6 @@
 
   &__footer {
     align-items: center;
-    border-top: @base-border;
     display: flex;
     flex-wrap: wrap;
     min-height: 56px;
