@@ -23,6 +23,7 @@ import Affix from '../../components/Utils/Affix';
 import CurrentObjectFields from './CurrentObjectFields';
 import LANGUAGES from '../../translations/languages';
 import { getField } from '../../objects/WaivioObject';
+import { objectFields } from '../../../common/constants/listOfFields';
 
 @injectIntl
 @withRouter
@@ -110,6 +111,12 @@ class AppendObjectPostWrite extends React.Component {
     const { wobject, currentField, locale } = this.state;
     const data = {};
 
+    const getBody = formField => {
+      const { body, preview, ...rest } = formField;
+      if (rest[objectFields.name]) return rest[objectFields.name];
+      return JSON.stringify(rest);
+    };
+
     data.author = this.props.user.name || '';
     data.parentAuthor = wobject.value.author_permlink.split('_')[0];
     data.parentPermlink = wobject.value.author_permlink.split('_')[1];
@@ -118,7 +125,7 @@ class AppendObjectPostWrite extends React.Component {
 
     data.field = {
       name: currentField,
-      body: form.value,
+      body: getBody(form),
       locale,
     };
 
