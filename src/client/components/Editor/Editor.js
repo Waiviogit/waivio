@@ -305,7 +305,7 @@ class Editor extends React.Component {
   }
 
   handleForecastChange(forecast) {
-    this.setState({forecast});
+    this.setState({ forecast });
   }
 
   render() {

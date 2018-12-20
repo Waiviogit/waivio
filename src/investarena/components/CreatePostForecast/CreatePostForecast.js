@@ -9,6 +9,7 @@ import { Collapse, DatePicker, Select, Input } from 'antd';
 import { optionsAction, optionsForecast } from '../../constants/selectData';
 import { currentTime } from '../../helpers/currentTime';
 import { getQuoteOptions, getQuotePrice, isStopLossTakeProfitValid } from './helpers';
+import { forecastDateTimeFormat, maxForecastDay, minForecastMinutes } from './constants';
 import { ceil10, floor10 } from '../../helpers/calculationsHelper';
 import { getQuotesSettingsState } from '../../../investarena/redux/selectors/quotesSettingsSelectors';
 import { getQuotesState } from '../../../investarena/redux/selectors/quotesSelectors';
@@ -20,24 +21,17 @@ import './CreatePostForecast.less';
   quotes: getQuotesState(state),
 }))
 class CreatePostForecast extends Component {
-  static minForecastMinutes = 15;
-  static maxForecastDay = 140;
-
   static propTypes = {
     intl: PropTypes.shape().isRequired,
-    // isForecastOptionsVisible: PropTypes.bool,
-    // toggleForecastBlock: PropTypes.func,
     quotesSettings: PropTypes.shape(),
     quotes: PropTypes.shape(),
     onChange: PropTypes.func,
   };
 
   static defaultProps = {
-    // isForecastOptionsVisible: true,
     quotesSettings: {},
     quotes: {},
     onChange: () => {},
-    // toggleForecastBlock: () => {},
   };
 
   state = {
@@ -45,7 +39,7 @@ class CreatePostForecast extends Component {
     quotePrice: null,
     selectQuote: null,
     selectRecommend: null,
-    selectForecastTime: null,
+    selectForecast: null,
     takeProfitValue: '',
     stopLossValue: '',
     takeProfitValueIncorrect: false,
@@ -53,8 +47,8 @@ class CreatePostForecast extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    if(!_.isEqual(prevState, this.state)) {
-      this.props.onChange(this.getForecastObject())
+    if (!_.isEqual(prevState, this.state)) {
+      this.props.onChange(this.getForecastObject());
     }
   }
 
@@ -63,7 +57,7 @@ class CreatePostForecast extends Component {
     const {
       selectQuote,
       selectRecommend,
-      selectForecastTime,
+      dateTimeValue,
       quotePrice,
       stopLossValue,
       takeProfitValue,
@@ -75,7 +69,7 @@ class CreatePostForecast extends Component {
       price: parseFloat(quotePrice),
       forecast_take_profit: parseFloat(takeProfitValue),
       forecast_stop_loss: parseFloat(stopLossValue),
-      forecast: selectForecastTime,
+      forecast: dateTimeValue ? dateTimeValue.format(forecastDateTimeFormat) : null,
     };
   };
 
@@ -91,7 +85,7 @@ class CreatePostForecast extends Component {
       takeProfitValueIncorrect: false,
       stopLossValueIncorrect: false,
     });
-    // this.checkSelectDropDown(newValue, this.state.selectRecommend, this.state.selectForecastTime);
+    // this.checkSelectDropDown(newValue, this.state.selectRecommend, this.state.selectForecast);
   };
 
   updateValueRecommend = recommendValue => {
@@ -107,10 +101,8 @@ class CreatePostForecast extends Component {
       stopLossValueIncorrect: false,
     });
 
-    // this.checkSelectDropDown(this.state.selectQuote, newValue, this.state.selectForecastTime);
+    // this.checkSelectDropDown(this.state.selectQuote, newValue, this.state.selectForecast);
   };
-
-  handleChangeDatetime = value => this.setState({ dateTimeValue: value });
 
   handleChangeTakeProfitStopLostInputs = (event, input) => {
     const value = event.target.value;
@@ -152,7 +144,7 @@ class CreatePostForecast extends Component {
           return {
             [input]: initialValue,
             [`${input}Incorrect`]: false,
-            selectForecastTime: forecastValue,
+            dateTimeValue: forecastValue,
           };
         }
         return prevState;
@@ -161,20 +153,28 @@ class CreatePostForecast extends Component {
     }
   };
 
-  updateValueForecast = newValue => {
-    if (newValue === 'Custom') {
+  handleChangeDatetime = dateTimeValue => this.setState({ dateTimeValue });
+
+  updateValueForecast = value => {
+    if (value === 'Custom') {
       this.setState({
-        selectForecastTime: newValue,
-        dateTimeValue: moment(currentTime.getTime()).add(this.minForecastMinutes, 'minute'),
+        selectForecast: value,
+        dateTimeValue: moment(currentTime.getTime()).add(minForecastMinutes, 'minute'),
       });
     } else {
-      this.setState({ selectForecastTime: newValue });
+      this.handleChangeDatetime(moment(currentTime.getTime()).add(value, 'seconds'));
     }
     // this.checkSelectDropDown(this.state.selectQuote, this.state.selectRecommend, newValue);
   };
 
   render() {
-    const { selectQuote, selectRecommend, stopLossValue, takeProfitValue } = this.state;
+    const {
+      selectQuote,
+      selectRecommend,
+      stopLossValue,
+      takeProfitValue,
+      dateTimeValue,
+    } = this.state;
     const { intl, quotes, quotesSettings } = this.props;
     const optionsQuote = getQuoteOptions(quotesSettings, quotes);
     return (
@@ -198,7 +198,9 @@ class CreatePostForecast extends Component {
                       <Select
                         name="selected-quote"
                         placeholder={intl.formatMessage({ id: 'createPost.selectLabel.default' })}
-                        className={classNames("st-create-post-select__quote", {"st-create-post-danger": !(selectQuote)})}
+                        className={classNames('st-create-post-select__quote', {
+                          'st-create-post-danger': !selectQuote,
+                        })}
                         // ref={(node) => this.selectQuoteRef = node}
                         // value={this.state.selectQuote}
                         onChange={this.updateValueQuote}
@@ -283,17 +285,18 @@ class CreatePostForecast extends Component {
                       <p className="m-0">
                         <FormattedMessage id="createPost.selectTitle.forecast" />
                       </p>
-                      {this.state.selectForecastTime === 'Custom' ? (
+                      {this.state.selectForecast === 'Custom' ? (
                         <DatePicker
                           showTime
                           style={{ width: '100%' }}
                           locale={intl.formatMessage({ id: 'locale', defaultMessage: 'en' })}
-                          // value={this.state.dateTimeValue}
-                          onOk={this.handleChangeDatetime}
+                          value={dateTimeValue}
+                          onChange={this.handleChangeDatetime}
                           format="YYYY-MM-DD HH:mm"
-                          isValidDate={current =>
-                            current > moment(currentTime.getTime()).subtract(1, 'days') &&
-                            current < moment(currentTime.getTime()).add(this.maxForecastDay, 'days')
+                          disabledTime={date =>
+                            date.valueOf() < moment(currentTime.getTime()).subtract(1, 'days') ||
+                            date.valueOf() >
+                              moment(currentTime.getTime()).add(maxForecastDay, 'days')
                           }
                         />
                       ) : (
@@ -301,12 +304,7 @@ class CreatePostForecast extends Component {
                           name="selected-forecast"
                           placeholder={intl.formatMessage({ id: 'createPost.selectLabel.default' })}
                           className="st-create-post-select__forecast"
-                          // ref={(node) => this.selectForecastRef = node}
-                          // simpleValue
-                          // options={optionsForecast}
-                          // value={this.state.selectForecastTime}
                           onChange={this.updateValueForecast}
-                          // searchable={false}
                         >
                           {optionsForecast.map(option => (
                             <Select.Option key={option.value} value={option.value}>
