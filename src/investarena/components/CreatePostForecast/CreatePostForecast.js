@@ -63,12 +63,14 @@ class CreatePostForecast extends Component {
       takeProfitValue,
     } = this.state;
     return {
-      quote: selectQuote,
+      postId: "",
+      quoteSecurity: selectQuote,
       market: selectQuote ? quotesSettings[selectQuote].market : '',
       recommend: selectRecommend,
-      price: parseFloat(quotePrice),
-      forecast_take_profit: parseFloat(takeProfitValue),
-      forecast_stop_loss: parseFloat(stopLossValue),
+      postPrice: parseFloat(quotePrice),
+      tpPrice: parseFloat(takeProfitValue),
+      slPrice: parseFloat(stopLossValue),
+      createdAt: "",
       forecast: dateTimeValue ? dateTimeValue.format(forecastDateTimeFormat) : null,
     };
   };
@@ -144,7 +146,8 @@ class CreatePostForecast extends Component {
           return {
             [input]: initialValue,
             [`${input}Incorrect`]: false,
-            dateTimeValue: forecastValue,
+            selectForecast: forecastValue,
+            dateTimeValue: moment(currentTime.getTime()).add(forecastValue, 'seconds'),
           };
         }
         return prevState;
@@ -153,7 +156,10 @@ class CreatePostForecast extends Component {
     }
   };
 
-  handleChangeDatetime = dateTimeValue => this.setState({ dateTimeValue });
+  handleChangeDatetime = dateTimeValue => {
+    console.log(moment(currentTime.getTime()).subtract(1, 'days').unix());
+    this.setState({ dateTimeValue })
+  };
 
   updateValueForecast = value => {
     if (value === 'Custom') {
@@ -162,6 +168,7 @@ class CreatePostForecast extends Component {
         dateTimeValue: moment(currentTime.getTime()).add(minForecastMinutes, 'minute'),
       });
     } else {
+      this.setState({selectForecast: value});
       this.handleChangeDatetime(moment(currentTime.getTime()).add(value, 'seconds'));
     }
     // this.checkSelectDropDown(this.state.selectQuote, this.state.selectRecommend, newValue);
@@ -171,6 +178,7 @@ class CreatePostForecast extends Component {
     const {
       selectQuote,
       selectRecommend,
+      selectForecast,
       stopLossValue,
       takeProfitValue,
       dateTimeValue,
@@ -293,10 +301,9 @@ class CreatePostForecast extends Component {
                           value={dateTimeValue}
                           onChange={this.handleChangeDatetime}
                           format="YYYY-MM-DD HH:mm"
-                          disabledTime={date =>
-                            date.valueOf() < moment(currentTime.getTime()).subtract(1, 'days') ||
-                            date.valueOf() >
-                              moment(currentTime.getTime()).add(maxForecastDay, 'days')
+                          disabledDate={date =>
+                            date < moment(currentTime.getTime()) ||
+                            date > moment(currentTime.getTime()).add(maxForecastDay, 'days')
                           }
                         />
                       ) : (
@@ -304,6 +311,7 @@ class CreatePostForecast extends Component {
                           name="selected-forecast"
                           placeholder={intl.formatMessage({ id: 'createPost.selectLabel.default' })}
                           className="st-create-post-select__forecast"
+                          value={selectForecast}
                           onChange={this.updateValueForecast}
                         >
                           {optionsForecast.map(option => (
