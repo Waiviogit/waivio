@@ -1,29 +1,25 @@
 import _ from 'lodash';
-// import locales from 'locales';
+import { message } from 'antd';
 import Cookies from 'js-cookie';
-import { CMD, HOURS } from './platformData';
 import Stomp from 'stompjs';
 import SockJS from 'sockjs-client/dist/sockjs.js';
+import { CMD, HOURS } from './platformData';
 import { connectPlatformSuccess,
 connectPlatformError,
 updateUserAccountCurrency,
 updateUserAccounts,
 updateUserStatistics } from '../redux/actions/platformActions';
-import { createOpenDealApi,
+import {
 getOpenDealsSuccess,
 getCloseDealsSuccess,
 changeOpenDealPlatformSuccess,
 closeOpenDealPlatformSuccess,
-// getLastClosedDealForStatistics,
-// updateOpenDealsForStatistics,
 updateClosedDealsForStatistics
 } from '../redux/actions/dealsActions';
 import { disconnectBroker, reconnectBroker } from '../redux/actions/brokersActions';
 import { getFavoritesSuccess, updateFavoriteSuccess } from '../redux/actions/favoriteQuotesActions';
 import config from '../configApi/config';
 import { getChartDataSuccess } from '../redux/actions/chartsActions';
-// import {getLanguageState} from '../../redux/selectors/languageSelectors';
-// import { showNotification } from '../redux/actions/notificationActions';
 import { updateQuotes } from '../redux/actions/quotesActions';
 import { updateQuotesSettings } from '../redux/actions/quotesSettingsActions';
 
@@ -81,8 +77,6 @@ export class Umarkets {
         }
     }
     onConnect () {
-        // const data = { broker_name: this.platformName };
-        // setTimeout(() => this.dispatch(getLastClosedDealForStatistics(data)), 7000);
         this.dispatch(connectPlatformSuccess(this.platformName));
         if (this.stompClient !== null && this.sid !== null) {
             this.platformSubscribe();
@@ -181,8 +175,8 @@ export class Umarkets {
             }
         }
     }
-    onWebSocketMessage (message) {
-        const result = JSON.parse(message.body);
+    onWebSocketMessage (mes) {
+        const result = JSON.parse(mes.body);
         if (result.type === 'response' || result.type === 'update') {
             switch (result.cmd) {
             case CMD.getUserRates: this.parseUserRates(result);
@@ -336,7 +330,6 @@ export class Umarkets {
             });
         });
         this.dispatch(getOpenDealsSuccess(openDeals));
-        // this.dispatch(updateOpenDealsForStatistics(data));
     }
     parseClosedDeals (result) {
         if (!this.getClosedDealsForStatistics) {
@@ -404,47 +397,36 @@ export class Umarkets {
     parseOpenMarketOrderResult (result) {
         if (result.response === 'INSUFFICIENT_BALANCE') {
             this.dataDealToApi = null;
-            console.log('INSUFFICIENT_BALANCE')
-            // this.dispatch(showNotification({status: 'error',
-            //     message: locales[getLanguageState(this.store.getState())].messages['umarket.insufficienBalance']}));
+            message.error('Insufficient balance');
         } else if (result.response === 'NOT_TRADING_TIME') {
             this.dataDealToApi = null;
-            console.log('NOT_TRADING_TIME')
-          // this.dispatch(showNotification({status: 'error',
-            //     message: locales[getLanguageState(this.store.getState())].messages['umarket.notTradingTime']}));
+            message.error('Not trading time');
         }
     }
     parseCloseMarketOrderResult (result) {
-    //     if (result.response === 'NOT_TRADING_TIME') {
-    //         this.dispatch(showNotification({status: 'error',
-    //             message: locales[getLanguageState(this.store.getState())].messages['umarket.notTradingTime']}));
-    //     } else if (result.response === 'CLOSE_DEAL_INTERVAL_IS_TOO_SMALL') {
-    //         this.dispatch(showNotification({status: 'error',
-    //             message: locales[getLanguageState(this.store.getState())].messages['umarket.closeDealIntervalIsTooSmall']}));
-    //     }
+        if (result.response === 'NOT_TRADING_TIME') {
+            message.error('Not trading time');
+        } else if (result.response === 'CLOSE_DEAL_INTERVAL_IS_TOO_SMALL') {
+            message.error('Wait 60 seconds after opening deal to close');
+        }
     }
     parseChangeMarketOrderResult (result) {
-        // if (result.response === 'NOT_TRADING_TIME') {
-        //     this.dispatch(showNotification({status: 'error',
-        //         message: locales[getLanguageState(this.store.getState())].messages['umarket.notTradingTime']}));
-        // } else if (result.response === 'INVALID_ORDER_PRICE') {
-        //     this.dispatch(showNotification({status: 'error',
-        //         message: locales[getLanguageState(this.store.getState())].messages['umarket.invalidOrderPrice']}));
-        // }
+        if (result.response === 'NOT_TRADING_TIME') {
+            message.error('Not trading time');
+        } else if (result.response === 'INVALID_ORDER_PRICE') {
+          message.error('Invalid order price');
+        }
     }
     parseOpenByMarketOrder (result) {
         this.getOpenDeals();
-        // this.dispatch(showNotification({status: 'success',
-        //     message: locales[getLanguageState(this.store.getState())].messages['umarket.openedDealSuccess']}));
+        message.success('Deal successfully opened');
         if (this.dataDealToApi) {
             this.dataDealToApi.deal_id = result.content.dealId;
-            this.dispatch(createOpenDealApi(this.dataDealToApi));
             this.dataDealToApi = null;
         }
     }
     parseCloseByMarketOrder (result) {
-        // this.dispatch(showNotification({status: 'success',
-        //     message: locales[getLanguageState(this.store.getState())].messages['umarket.closedDealSuccess']}));
+        message.success('Deal successfully closed');
         this.dispatch(closeOpenDealPlatformSuccess(result.content.dealId));
     }
     parseChangeByMarketOrder (result) {
@@ -465,8 +447,7 @@ export class Umarkets {
             content.takeProfitPrice = null;
             content.takeProfitAmount = null;
         }
-        // this.dispatch(showNotification({status: 'success',
-        //     message: locales[getLanguageState(this.store.getState())].messages['umarket.changedDealSuccess']}));
-        this.dispatch(changeOpenDealPlatformSuccess(content));
+        message.success('Deal successfully updated');
+      this.dispatch(changeOpenDealPlatformSuccess(content));
     }
 }

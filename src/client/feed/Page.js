@@ -58,7 +58,6 @@ class Page extends React.Component {
       <div>
         <Helmet>
           <title>Waivio</title>
-          <script src="//script.maximarkets.org/tch-1.2.1/js/TchChart.min.js" async/>
           <meta name="robots" content={robots} />
         </Helmet>
         <ScrollToTop />
