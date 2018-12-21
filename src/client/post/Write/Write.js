@@ -7,7 +7,6 @@ import _ from 'lodash';
 import 'url-search-params-polyfill';
 import { injectIntl } from 'react-intl';
 import uuidv4 from 'uuid/v4';
-import moment from 'moment';
 import improve from '../../helpers/improve';
 import { createPostMetadata } from '../../helpers/postHelpers';
 import { rewardsValues } from '../../../common/constants/rewards';
@@ -31,8 +30,6 @@ import {
 import { createPost, saveDraft, newPost } from './editorActions';
 import Editor from '../../components/Editor/Editor';
 import Affix from '../../components/Utils/Affix';
-import { currentTime } from '../../../investarena/helpers/currentTime';
-import { forecastDateTimeFormat } from '../../../investarena/components/CreatePostForecast/constants';
 
 @injectIntl
 @withRouter
@@ -216,18 +213,7 @@ class Write extends React.Component {
         ? { ...form[WAIVIO_META_FIELD_NAME] }
         : { wobjects: [] };
 
-    const forecast = form[INVESTARENA_META_FIELD_NAME]
-      ? {
-          ...form[INVESTARENA_META_FIELD_NAME],
-          createdAt: moment(currentTime.getTime()).format(forecastDateTimeFormat),
-          expiredAt:
-            form[INVESTARENA_META_FIELD_NAME].selectForecast === 'Custom'
-              ? form[INVESTARENA_META_FIELD_NAME].expiredAt
-              : moment(currentTime.getTime())
-                  .add(form[INVESTARENA_META_FIELD_NAME].selectForecast, 'seconds')
-                  .format(forecastDateTimeFormat),
-        }
-      : null;
+    const forecast = form[INVESTARENA_META_FIELD_NAME];
 
     const appData = { waivioData, forecast };
 

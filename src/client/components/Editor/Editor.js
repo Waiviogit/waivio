@@ -7,6 +7,7 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import readingTime from 'reading-time';
 import { Checkbox, Form, Input, Select, Button } from 'antd';
+import moment from 'moment';
 import BTooltip from '../BTooltip';
 import { rewardsValues } from '../../../common/constants/rewards';
 import Action from '../Button/Action';
@@ -29,6 +30,8 @@ import {
 } from '../../helpers/wObjInfluenceHelper';
 import CreatePostForecast from '../../../investarena/components/CreatePostForecast';
 import './Editor.less';
+import { currentTime } from '../../../investarena/helpers/currentTime';
+import { forecastDateTimeFormat } from '../../../investarena/components/CreatePostForecast/constants';
 
 @injectIntl
 @requiresLogin
@@ -90,7 +93,7 @@ class Editor extends React.Component {
       influenceRemain: 0,
       canCreateNewObject: true,
       isLinkedObjectsValid: true,
-      forecast: null,
+      forecastValues: { isValid: true },
     };
 
     this.onUpdate = this.onUpdate.bind(this);
@@ -203,10 +206,11 @@ class Editor extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    const { linkedObjects, forecast } = this.state;
+    const { linkedObjects, forecastValues } = this.state;
 
     this.props.form.validateFieldsAndScroll((err, values) => {
-      if (this.checkLinkedObjects() || err) {
+      const { isValid, selectForecast, ...forecast } = forecastValues;
+      if (this.checkLinkedObjects() || !isValid || err) {
         this.props.onError();
       } else {
         const topics = linkedObjects
@@ -221,7 +225,18 @@ class Editor extends React.Component {
           ...values,
           topics,
           [WAIVIO_META_FIELD_NAME]: { wobjects },
-          [INVESTARENA_META_FIELD_NAME]: forecast,
+          [INVESTARENA_META_FIELD_NAME]: forecast
+            ? {
+                ...forecast,
+                createdAt: moment(currentTime.getTime()).format(forecastDateTimeFormat),
+                expiredAt:
+                  selectForecast === 'Custom'
+                    ? forecast.expiredAt
+                    : moment(currentTime.getTime())
+                        .add(selectForecast, 'seconds')
+                        .format(forecastDateTimeFormat),
+              }
+            : null,
         });
       }
     });
@@ -316,8 +331,8 @@ class Editor extends React.Component {
     }
   }
 
-  handleForecastChange(forecast) {
-    this.setState({ forecast });
+  handleForecastChange(forecastValues) {
+    this.setState({ forecastValues });
   }
 
   render() {
@@ -478,10 +493,7 @@ class Editor extends React.Component {
             </Select>,
           )}
         </Form.Item>
-        <CreatePostForecast
-          onChange={this.handleForecastChange}
-          isPosted={isCreatePostClicked}
-        />
+        <CreatePostForecast onChange={this.handleForecastChange} isPosted={isCreatePostClicked} />
         <Form.Item className={classNames({ Editor__hidden: isUpdating })}>
           {getFieldDecorator('upvote', { valuePropName: 'checked', initialValue: true })(
             <Checkbox onChange={this.onUpdate} disabled={isUpdating}>

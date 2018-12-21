@@ -106,9 +106,8 @@ export function createPostMetadata(body, tags, oldMetadata = {}, appData) {
   if (appData && appData.waivioData) {
     metaData[WAIVIO_META_FIELD_NAME] = appData.waivioData;
   }
-  if (appData && appData.forecast) {
-    const { selectForecast, ...forecast} = appData.forecast;
-    metaData[INVESTARENA_META_FIELD_NAME] = forecast;
+  if (appData && appData.forecast && appData.forecast.quoteSecurity && appData.forecast.recommend) {
+    metaData[INVESTARENA_META_FIELD_NAME] = appData.forecast;
   }
 
   return metaData;

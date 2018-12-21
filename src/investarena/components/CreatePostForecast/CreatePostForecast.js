@@ -46,6 +46,7 @@ class CreatePostForecast extends Component {
     stopLossValue: '',
     takeProfitValueIncorrect: false,
     stopLossValueIncorrect: false,
+    isValid: true,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -64,20 +65,27 @@ class CreatePostForecast extends Component {
       quotePrice,
       stopLossValue,
       takeProfitValue,
+      isValid,
     } = this.state;
-    return {
+    const forecastObject = {
       quoteSecurity: selectQuote,
       market: selectQuote ? quotesSettings[selectQuote].market : '',
       recommend: selectRecommend,
       postPrice: parseFloat(quotePrice),
-      tpPrice: parseFloat(takeProfitValue),
-      slPrice: parseFloat(stopLossValue),
       selectForecast,
       expiredAt: dateTimeValue ? dateTimeValue.format(forecastDateTimeFormat) : null,
+      isValid,
     };
+    if (takeProfitValue) forecastObject.tpPrice = parseFloat(takeProfitValue);
+    if (stopLossValue) forecastObject.tpPrice = parseFloat(stopLossValue);
+    return forecastObject;
   };
 
+  validateForm = (quote, recommend, forecast) =>
+    !!(quote && recommend && forecast) || !(quote || recommend || forecast);
+
   updateValueQuote = selectQuote => {
+    const { selectRecommend, selectForecast } = this.state;
     const quotePrice = this.state.selectRecommend
       ? getQuotePrice(selectQuote, this.state.selectRecommend, this.props.quotes)
       : null;
@@ -88,24 +96,24 @@ class CreatePostForecast extends Component {
       stopLossValue: '',
       takeProfitValueIncorrect: false,
       stopLossValueIncorrect: false,
+      isValid: this.validateForm(selectQuote, selectRecommend, selectForecast),
     });
-    // this.checkSelectDropDown(newValue, this.state.selectRecommend, this.state.selectForecast);
   };
 
-  updateValueRecommend = recommendValue => {
+  updateValueRecommend = selectRecommend => {
+    const { selectQuote, selectForecast } = this.state;
     const quotePrice = this.state.selectQuote
-      ? getQuotePrice(this.state.selectQuote, recommendValue, this.props.quotes)
+      ? getQuotePrice(this.state.selectQuote, selectRecommend, this.props.quotes)
       : null;
     this.setState({
       quotePrice,
-      selectRecommend: recommendValue,
+      selectRecommend,
       takeProfitValue: '',
       stopLossValue: '',
       takeProfitValueIncorrect: false,
       stopLossValueIncorrect: false,
+      isValid: this.validateForm(selectQuote, selectRecommend, selectForecast),
     });
-
-    // this.checkSelectDropDown(this.state.selectQuote, newValue, this.state.selectForecast);
   };
 
   handleChangeTakeProfitStopLostInputs = (event, input) => {
@@ -154,26 +162,25 @@ class CreatePostForecast extends Component {
         }
         return prevState;
       });
-      // this.checkSelectDropDown(this.state.selectQuote, this.state.selectRecommend, forecastValue);
     }
   };
 
-  handleChangeDatetime = dateTimeValue => {
-    // console.log(moment(currentTime.getTime()).subtract(1, 'days').unix());
-    this.setState({ dateTimeValue });
-  };
+  handleChangeDatetime = dateTimeValue => this.setState({ dateTimeValue });
 
-  updateValueForecast = value => {
-    if (value === 'Custom') {
+  updateValueForecast = selectForecast => {
+    const { selectQuote, selectRecommend } = this.state;
+    if (selectForecast === 'Custom') {
       this.setState({
-        selectForecast: value,
+        selectForecast,
         dateTimeValue: moment(currentTime.getTime()).add(minForecastMinutes, 'minute'),
+        isValid: this.validateForm(selectQuote, selectRecommend, selectForecast),
       });
     } else {
-      this.setState({ selectForecast: value });
-      // this.handleChangeDatetime(moment(currentTime.getTime()).add(value, 'seconds'));
+      this.setState({
+        selectForecast,
+        isValid: this.validateForm(selectQuote, selectRecommend, selectForecast),
+      });
     }
-    // this.checkSelectDropDown(this.state.selectQuote, this.state.selectRecommend, newValue);
   };
 
   render() {
@@ -184,8 +191,9 @@ class CreatePostForecast extends Component {
       stopLossValue,
       takeProfitValue,
       dateTimeValue,
+      isValid,
     } = this.state;
-    const { intl, quotes, quotesSettings } = this.props;
+    const { intl, isPosted, quotes, quotesSettings } = this.props;
     const optionsQuote = getQuoteOptions(quotesSettings, quotes);
     return (
       <div className="st-create-post-optional">
@@ -209,10 +217,8 @@ class CreatePostForecast extends Component {
                         name="selected-quote"
                         placeholder={intl.formatMessage({ id: 'createPost.selectLabel.default' })}
                         className={classNames('st-create-post-select__quote', {
-                          'st-create-post-danger': !selectQuote,
+                          'st-create-post-danger': isPosted && !isValid && !selectQuote,
                         })}
-                        // ref={(node) => this.selectQuoteRef = node}
-                        // value={this.state.selectQuote}
                         onChange={this.updateValueQuote}
                         showSearch
                         allowClear
@@ -231,8 +237,9 @@ class CreatePostForecast extends Component {
                       <Select
                         name="selected-action"
                         placeholder={intl.formatMessage({ id: 'createPost.selectLabel.default' })}
-                        className="st-create-post-select__action"
-                        // ref={(node) => this.selectRecommendRef = node}
+                        className={classNames('st-create-post-select__action', {
+                          'st-create-post-danger': isPosted && !isValid && !selectRecommend,
+                        })}
                         onChange={this.updateValueRecommend}
                         allowClear
                       >
@@ -312,9 +319,12 @@ class CreatePostForecast extends Component {
                         <Select
                           name="selected-forecast"
                           placeholder={intl.formatMessage({ id: 'createPost.selectLabel.default' })}
-                          className="st-create-post-select__forecast"
+                          className={classNames('st-create-post-select__forecast', {
+                            'st-create-post-danger': isPosted && !isValid && !selectForecast,
+                          })}
                           value={selectForecast}
                           onChange={this.updateValueForecast}
+                          allowClear
                         >
                           {optionsForecast.map(option => (
                             <Select.Option key={option.value} value={option.value}>
