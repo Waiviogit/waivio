@@ -25,12 +25,14 @@ class CreatePostForecast extends Component {
     intl: PropTypes.shape().isRequired,
     quotesSettings: PropTypes.shape(),
     quotes: PropTypes.shape(),
+    isPosted: PropTypes.bool,
     onChange: PropTypes.func,
   };
 
   static defaultProps = {
     quotesSettings: {},
     quotes: {},
+    isPosted: false,
     onChange: () => {},
   };
 

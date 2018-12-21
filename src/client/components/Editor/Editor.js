@@ -172,7 +172,10 @@ class Editor extends React.Component {
   checkLinkedObjects() {
     const areObjectsCreated = !this.state.linkedObjects.some(obj => obj.isNew);
     const isInfluenceRemain = this.state.influenceRemain !== 0;
-    this.setState({ isLinkedObjectsValid: areObjectsCreated && !isInfluenceRemain });
+    this.setState({
+      isLinkedObjectsValid: areObjectsCreated && !isInfluenceRemain,
+      isCreatePostClicked: true,
+    });
     return !areObjectsCreated || isInfluenceRemain;
   }
 
@@ -327,6 +330,7 @@ class Editor extends React.Component {
       influenceRemain,
       isLinkedObjectsValid,
       canCreateNewObject,
+      isCreatePostClicked,
     } = this.state;
 
     const { words, minutes } = readingTime(bodyHTML);
@@ -474,7 +478,10 @@ class Editor extends React.Component {
             </Select>,
           )}
         </Form.Item>
-        <CreatePostForecast onChange={this.handleForecastChange} />
+        <CreatePostForecast
+          onChange={this.handleForecastChange}
+          isPosted={isCreatePostClicked}
+        />
         <Form.Item className={classNames({ Editor__hidden: isUpdating })}>
           {getFieldDecorator('upvote', { valuePropName: 'checked', initialValue: true })(
             <Checkbox onChange={this.onUpdate} disabled={isUpdating}>
