@@ -43,8 +43,10 @@
       .ant-slider {
         width: 100%;
       }
-      .ant-input-number.ant-input-number-sm {
-        width: 70px;
+      .label {
+        color: rgba(0, 0, 0, 0.45);
+        width: @height-row-info + 2 * @padding;
+        text-align: center;
       }
     }
   }
@@ -133,8 +135,4 @@
 
 .editor-object__validation-msg {
   color: @red-danger;
-
-  @media @medium {
-    display: none;
-  }
 }

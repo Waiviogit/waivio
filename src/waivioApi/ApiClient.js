@@ -21,11 +21,11 @@ export const getRecommendedObjects = () =>
     body: JSON.stringify({ userLimit: 5, locale: 'en-US' }),
   }).then(res => res.json());
 
-export const getObjects = () =>
+export const getObjects = ({ limit = 30, locale = 'en-US', startAuthorPermlink = '' }) =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
     headers,
     method: 'POST',
-    body: JSON.stringify({ userLimit: 5, locale: 'en-US' }),
+    body: JSON.stringify({ limit, locale, start_author_permlink: startAuthorPermlink }),
   }).then(res => res.json());
 
 export const getObject = name =>
@@ -34,23 +34,24 @@ export const getObject = name =>
 export const getUsersByObject = object =>
   fetch(`${config.apiPrefix}${config.getObjects}/${object}`).then(res => res.json());
 
-export const getFeedContentByObject = name =>
+export const getFeedContentByObject = (name, limit = 10) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${name}/posts`, {
       headers,
       method: 'POST',
+      body: JSON.stringify({ limit }),
     })
       .then(res => res.json())
       .then(posts => resolve(posts))
       .catch(error => reject(error));
   });
 
-export const getMoreFeedContentByObject = ({ tag, startAuthor, startPermlink, limit }) =>
+export const getMoreFeedContentByObject = ({ authorPermlink, startId, limit = 10 }) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.getObjects}/${tag}/posts`, {
+    fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}/posts`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ tag, startAuthor, startPermlink, limit }),
+      body: JSON.stringify({ start_id: startId, limit }),
     })
       .then(res => res.json())
       .then(posts => resolve(posts))

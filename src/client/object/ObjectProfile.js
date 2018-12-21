@@ -68,8 +68,8 @@ export default class ObjectProfile extends React.Component {
     const hasMore = getFeedHasMoreFromState('objectPosts', authenticatedUser.name, feed);
     const loadMoreContentAction = () => {
       this.props.getMoreObjectPosts({
-        tag: wobjectname,
-        username: authenticatedUser.name,
+        username: this.props.authenticatedUser.name,
+        authorPermlink: wobjectname,
         limit,
       });
     };
