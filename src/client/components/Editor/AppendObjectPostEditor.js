@@ -143,7 +143,7 @@ class AppendObjectPostEditor extends React.Component {
 
   handleRemoveImage = () => {
     this.setState({ currentImage: [] });
-    this.props.form.setFieldsValue({ imageSrc: '' });
+    this.props.form.setFieldsValue({ image: '' });
     this.onUpdate();
   };
 
@@ -154,7 +154,7 @@ class AppendObjectPostEditor extends React.Component {
       id: uuidv4(),
     };
     this.setState({ imageUploading: false, currentImage: [newImage] });
-    this.props.form.setFieldsValue({ imageSrc: image });
+    this.props.form.setFieldsValue({ image });
     this.onUpdate();
   };
 
@@ -321,7 +321,7 @@ class AppendObjectPostEditor extends React.Component {
         return (
           <React.Fragment>
             <Form.Item>
-              {getFieldDecorator('imageSrc')(
+              {getFieldDecorator('image')(
                 <Input onChange={this.onUpdate} className="Editor__hidden" />,
               )}
             </Form.Item>

@@ -114,6 +114,7 @@ class AppendObjectPostWrite extends React.Component {
     const getBody = formField => {
       const { body, preview, ...rest } = formField;
       if (rest[objectFields.name]) return rest[objectFields.name];
+      if (rest.image) return rest.image;
       return JSON.stringify(rest);
     };
 

@@ -27,15 +27,7 @@ const CurrentObjectFields = ({ wobject, currentField, currentLocaleInList }) => 
     switch (field.name) {
       case objectFields.avatarImage:
       case objectFields.backgroundImage: {
-        let imageSrc = null;
-
-        try {
-          imageSrc = JSON.parse(field.body).imageSrc;
-        } catch (e) {
-          console.log(e);
-          imageSrc = '';
-        }
-
+        const imageSrc = field.body;
         return (
           imageSrc && (
             <div className="CurrentObjectFields__field">
