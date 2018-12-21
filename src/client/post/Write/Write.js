@@ -7,12 +7,13 @@ import _ from 'lodash';
 import 'url-search-params-polyfill';
 import { injectIntl } from 'react-intl';
 import uuidv4 from 'uuid/v4';
+import moment from 'moment';
 import improve from '../../helpers/improve';
 import { createPostMetadata } from '../../helpers/postHelpers';
 import { rewardsValues } from '../../../common/constants/rewards';
 import LastDraftsContainer from './LastDraftsContainer';
 import DeleteDraftModal from './DeleteDraftModal';
-import { WAIVIO_META_FIELD_NAME, WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
+import { WAIVIO_META_FIELD_NAME, INVESTARENA_META_FIELD_NAME, WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
 
 import {
   getAuthenticatedUser,
@@ -26,6 +27,8 @@ import {
 import { createPost, saveDraft, newPost } from './editorActions';
 import Editor from '../../components/Editor/Editor';
 import Affix from '../../components/Utils/Affix';
+import { currentTime } from '../../../investarena/helpers/currentTime';
+import { forecastDateTimeFormat } from '../../../investarena/components/CreatePostForecast/constants';
 
 @injectIntl
 @withRouter
@@ -209,8 +212,18 @@ class Write extends React.Component {
         ? { ...form[WAIVIO_META_FIELD_NAME] }
         : { wobjects: [] };
 
+    const forecast = form[INVESTARENA_META_FIELD_NAME]
+      ? {
+        ...form[INVESTARENA_META_FIELD_NAME],
+        postId: `${data.author}${data.permlink}`,
+        createdAt: moment(currentTime.getTime()).format(forecastDateTimeFormat),
+      }
+      : null;
+
+    const appData = { waivioData, forecast };
+
     data.parentPermlink = WAIVIO_PARENT_PERMLINK;
-    data.jsonMetadata = createPostMetadata(data.body, form.topics, oldMetadata, waivioData);
+    data.jsonMetadata = createPostMetadata(data.body, form.topics, oldMetadata, appData);
 
     if (this.originalBody) {
       data.originalBody = this.originalBody;

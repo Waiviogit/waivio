@@ -1,4 +1,5 @@
 export const WAIVIO_META_FIELD_NAME = 'wobj';
+export const INVESTARENA_META_FIELD_NAME = 'wia';
 export const WAIVIO_PARENT_PERMLINK = 'waiviodev';
 
 export const MAX_NEW_OBJECTS_NUMBER = 5;

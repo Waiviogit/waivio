@@ -17,7 +17,7 @@ import LinkedObjects from './LinkedObjects';
 import { getClientWObj } from '../../adapters';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
-import { WAIVIO_META_FIELD_NAME, MAX_NEW_OBJECTS_NUMBER } from '../../../common/constants/waivio';
+import { WAIVIO_META_FIELD_NAME, INVESTARENA_META_FIELD_NAME, MAX_NEW_OBJECTS_NUMBER } from '../../../common/constants/waivio';
 import {
   setInitialInfluence,
   changeObjInfluenceHandler,
@@ -196,7 +196,7 @@ class Editor extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    const { linkedObjects } = this.state;
+    const { linkedObjects, forecast } = this.state;
 
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (this.checkLinkedObjects() || err) {
@@ -210,7 +210,12 @@ class Editor extends React.Component {
           author_permlink: obj.id,
           percent: obj.influence.value,
         }));
-        this.props.onSubmit({ ...values, topics, [WAIVIO_META_FIELD_NAME]: { wobjects } });
+        this.props.onSubmit({
+          ...values,
+          topics,
+          [WAIVIO_META_FIELD_NAME]: { wobjects },
+          [INVESTARENA_META_FIELD_NAME]: forecast,
+        });
       }
     });
   }

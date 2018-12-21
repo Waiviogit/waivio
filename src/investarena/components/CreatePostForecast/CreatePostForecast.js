@@ -71,7 +71,7 @@ class CreatePostForecast extends Component {
       tpPrice: parseFloat(takeProfitValue),
       slPrice: parseFloat(stopLossValue),
       createdAt: "",
-      forecast: dateTimeValue ? dateTimeValue.format(forecastDateTimeFormat) : null,
+      expiredAt: dateTimeValue ? dateTimeValue.format(forecastDateTimeFormat) : null,
     };
   };
 
@@ -157,7 +157,7 @@ class CreatePostForecast extends Component {
   };
 
   handleChangeDatetime = dateTimeValue => {
-    console.log(moment(currentTime.getTime()).subtract(1, 'days').unix());
+    // console.log(moment(currentTime.getTime()).subtract(1, 'days').unix());
     this.setState({ dateTimeValue })
   };
 

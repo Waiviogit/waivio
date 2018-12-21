@@ -5,7 +5,11 @@ import { categoryRegex } from './regexHelpers';
 import { jsonParse } from './formatter';
 import DMCA from '../../common/constants/dmca.json';
 import whiteListedApps from './apps';
-import { WAIVIO_META_FIELD_NAME, WAIVIO_PARENT_PERMLINK } from '../../common/constants/waivio';
+import {
+  INVESTARENA_META_FIELD_NAME,
+  WAIVIO_META_FIELD_NAME,
+  WAIVIO_PARENT_PERMLINK
+} from '../../common/constants/waivio';
 
 const appVersion = require('../../../package.json').version;
 
@@ -67,7 +71,7 @@ export function getContentImages(content, parsed = false) {
   );
 }
 
-export function createPostMetadata(body, tags, oldMetadata = {}, waivioData) {
+export function createPostMetadata(body, tags, oldMetadata = {}, appData) {
   let metaData = {
     community: 'waiviodev',
     app: `waiviodev/${appVersion}`,
@@ -99,8 +103,11 @@ export function createPostMetadata(body, tags, oldMetadata = {}, waivioData) {
   metaData.users = users;
   metaData.links = links.slice(0, 10);
   metaData.image = images;
-  if (waivioData) {
-    metaData[WAIVIO_META_FIELD_NAME] = waivioData;
+  if (appData && appData.waivioData) {
+    metaData[WAIVIO_META_FIELD_NAME] = appData.waivioData;
+  }
+  if (appData && appData.forecast) {
+    metaData[INVESTARENA_META_FIELD_NAME] = appData.forecast;
   }
 
   return metaData;
