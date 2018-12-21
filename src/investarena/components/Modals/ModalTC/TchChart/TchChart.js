@@ -61,14 +61,13 @@ class TchChart extends Component {
     configuration.modules.isShowEvents = false;
     configuration.modules.signals = false;
     this.createTch(params, 'default');
-    // document.querySelector('.tch-data-panel').classList.add('invisible');
-    // document.querySelector('.tch-search').classList.add('invisible');
-    // document.querySelector('.tch-chart-layouts-container').classList.add('invisible');
-    // document.querySelector('.tch-fullscreen-btn').classList.add('invisible');
-    // setTimeout(() => {
-    //   const sidebarToggle = document.querySelector('.tch-sidebar-close-panel');
-    //   sidebarToggle && sidebarToggle.click();
-    // },200)
+    document.querySelector('.tch-data-panel').classList.add('invisible');
+    document.querySelector('.tch-search-container').classList.add('invisible');
+    document.querySelector('.tch-chart-layouts-container').classList.add('invisible');
+    setTimeout(() => {
+      const sidebarToggle = document.querySelector('.tch-sidebar-close-panel');
+      sidebarToggle && sidebarToggle.click();
+    },200)
 
   };
   componentWillUnmount () {
