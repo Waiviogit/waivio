@@ -27,8 +27,8 @@ import Error404 from '../client/statics/Error404';
 import ExitPage from '../client/statics/ExitPage';
 import ObjectProfile from '../client/object/ObjectProfile';
 import AppendObjectPostWtite from '../client/post/AppendObjectPostWrite/AppendObjectPostWrite';
-import InstrumentsPage from "../investarena/components/InstrumentsPage";
-import DealsPage from "../investarena/components/DealsPage";
+import InstrumentsPage from '../investarena/components/InstrumentsPage';
+import DealsPage from '../investarena/components/DealsPage';
 import WobjFollowers from '../client/object/WobjFollowers';
 
 const routes = [

@@ -481,7 +481,6 @@
   "append_object_validation_msg": "The field with this value already exists",
   "linked_objects_remaining": "Remaining weight",
   "linked_objects_tooltip": "Add objects those described in the post, and set the value of belonging",
-  "append_object_validation_msg": "The field with this value already exists",
   "headerAuthorized.textAttention3": "To start trading, connect your broker.",
   "deals.type": "Type",
   "deals.opened": "Deal is opened",
@@ -537,6 +536,25 @@
   "dealsSelect.last60Days": "Last 60 days",
   "dealsSelect.last90Days": "Last 90 days",
   "dealsSelect.allTime": "All time",
+  "dealsSelect.last6Months": "Last 6 Months",
+  "createPost.selectLabel.default": "Select",
+  "createPost.selectTitle.forecast": "Forecast time",
+  "createPost.selectTitle.instrument": "Instrument",
+  "createPost.selectTitle.recommend": "I recommend",
+  "createPost.selectTitle.price": "Price",
+  "createPost.titleForecast": "Your forecast (optional)",
+  "createPost.selectLabel.15m": "15m",
+  "createPost.selectLabel.30m": "30m",
+  "createPost.selectLabel.1h": "1h",
+  "createPost.selectLabel.4h": "4h",
+  "createPost.selectLabel.8h": "8h",
+  "createPost.selectLabel.24h": "24h",
+  "createPost.selectLabel.1week": "1 week",
+  "createPost.selectLabel.18days": "18 days",
+  "createPost.selectLabel.3weeks": "3 weeks",
+  "createPost.selectLabel.custom": "Custom",
+  "locale": "en"
+
   "dealsSelect.last6Months": "Last 6 Months",
   "modalPost.navBar.titleChart": "Chart"
 }

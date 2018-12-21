@@ -12,7 +12,11 @@ import { createPostMetadata } from '../../helpers/postHelpers';
 import { rewardsValues } from '../../../common/constants/rewards';
 import LastDraftsContainer from './LastDraftsContainer';
 import DeleteDraftModal from './DeleteDraftModal';
-import { WAIVIO_META_FIELD_NAME, WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
+import {
+  WAIVIO_META_FIELD_NAME,
+  INVESTARENA_META_FIELD_NAME,
+  WAIVIO_PARENT_PERMLINK,
+} from '../../../common/constants/waivio';
 
 import {
   getAuthenticatedUser,
@@ -209,8 +213,12 @@ class Write extends React.Component {
         ? { ...form[WAIVIO_META_FIELD_NAME] }
         : { wobjects: [] };
 
+    const forecast = form[INVESTARENA_META_FIELD_NAME];
+
+    const appData = { waivioData, forecast };
+
     data.parentPermlink = WAIVIO_PARENT_PERMLINK;
-    data.jsonMetadata = createPostMetadata(data.body, form.topics, oldMetadata, waivioData);
+    data.jsonMetadata = createPostMetadata(data.body, form.topics, oldMetadata, appData);
 
     if (this.originalBody) {
       data.originalBody = this.originalBody;

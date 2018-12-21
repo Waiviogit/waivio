@@ -25,7 +25,7 @@ import Popover from '../Popover';
 import Notifications from './Notifications/Notifications';
 import LanguageSettings from './LanguageSettings';
 import './Topnav.less';
-import Broker from "../../../investarena/components/Header/Broker";
+import Broker from '../../../investarena/components/Header/Broker';
 
 @injectIntl
 @withRouter
@@ -181,7 +181,7 @@ class Topnav extends React.Component {
               title={intl.formatMessage({ id: 'broker.broker', defaultMessage: 'Broker' })}
               mouseEnterDelay={1}
             >
-            <Broker />
+              <Broker />
             </BTooltip>
           </Menu.Item>
           <Menu.Item key="write">

@@ -6,9 +6,9 @@ import Authentications from './authentications/Authentications';
 import ApiClient from './ApiClient';
 
 export default function({ apiPrefix } = {}) {
-  const api = new ApiClient({ prefix: apiPrefix});
+  const api = new ApiClient({ prefix: apiPrefix });
   return {
-    authentications: new Authentications({apiClient: api}),
+    authentications: new Authentications({ apiClient: api }),
     brokers: new Brokers({ apiClient: api }),
     deals: new Deals({ apiClient: api }),
     charts: new Charts({ apiClient: api }),
