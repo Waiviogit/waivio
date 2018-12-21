@@ -91,12 +91,15 @@ export const getUserComments = ({ username, limit = 20 }) => (dispatch, getState
 export const getObjectPosts = ({ username, object, limit = 10 }) => dispatch => {
   dispatch({
     type: GET_OBJECT_POSTS.ACTION,
-    payload: ApiClient.getFeedContentByObject(object),
+    payload: ApiClient.getFeedContentByObject(object, limit),
     meta: { sortBy: 'objectPosts', category: username, limit },
   });
 };
 
-export const getMoreObjectPosts = ({ username, limit = 10, tag }) => (dispatch, getState) => {
+export const getMoreObjectPosts = ({ username, authorPermlink, limit = 10 }) => (
+  dispatch,
+  getState,
+) => {
   const state = getState();
   const feed = getFeed(state);
   const posts = getPosts(state);
@@ -109,16 +112,13 @@ export const getMoreObjectPosts = ({ username, limit = 10, tag }) => (dispatch, 
   }
 
   const lastPost = posts[feedContent[feedContent.length - 1]];
-
-  const startAuthor = lastPost.author;
-  const startPermlink = lastPost.permlink;
+  const startId = lastPost._id; // eslint-disable-line no-underscore-dangle
 
   return dispatch({
     type: GET_MORE_OBJECT_POSTS.ACTION,
     payload: ApiClient.getMoreFeedContentByObject({
-      tag,
-      startAuthor,
-      startPermlink,
+      authorPermlink,
+      startId,
       limit,
     }),
     meta: { sortBy: 'objectPosts', category: username, limit },
