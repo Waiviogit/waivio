@@ -3,34 +3,57 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import './CurrentObjectFields.less';
-// import * as reblogActions from '../../app/Reblog/reblogActions';
+import { objectFields } from '../../../common/constants/listOfFields';
+
+export const getFieldsBody = field => {
+  try {
+    const parsedBody = JSON.parse(field.body);
+    return _.map(parsedBody, (value, key) => {
+      if (value)
+        return (
+          <p>
+            {key}: {value}
+          </p>
+        );
+      return null;
+    });
+  } catch (e) {
+    return field.body;
+  }
+};
 
 const CurrentObjectFields = ({ wobject, currentField, currentLocaleInList }) => {
   const setStyledField = field => {
     switch (field.name) {
-      case 'avatarImage':
-      case 'backgroundImage':
+      case objectFields.avatarImage:
+      case objectFields.backgroundImage: {
+        const imageSrc = field.body;
         return (
-          <div className="CurrentObjectFields__field">
-            <img className="CurrentObjectFields__field__image" src={field.body} alt={field.body} />
-            <span className="CurrentObjectFields__field__body" title="Field weight">
-              ({field.weight})
-            </span>
-          </div>
+          imageSrc && (
+            <div className="CurrentObjectFields__field">
+              <img
+                className="CurrentObjectFields__field__image"
+                src={imageSrc}
+                alt={currentField}
+              />
+              <span className="CurrentObjectFields__field__body" title="Field weight">
+                ({field.weight})
+              </span>
+            </div>
+          )
         );
-      case 'link':
+      }
+      case objectFields.link:
         return (
           <div className="CurrentObjectFields__field__body">
-            <a href={field.body} rel="noopener noreferrer" target="_blank">
-              Outer link
-            </a>
+            {getFieldsBody(field)}
             <span title="Field weight">({field.weight})</span>
           </div>
         );
       default:
         return (
           <div className="CurrentObjectFields__field__body">
-            {field.body}
+            {getFieldsBody(field)}
             <span title="Field weight">({field.weight})</span>
           </div>
         );
@@ -62,14 +85,14 @@ const CurrentObjectFields = ({ wobject, currentField, currentLocaleInList }) => 
             ['desc'],
           ),
           field => (
-            <div key={`${field.body} + ${field.locale}`}>
+            <div key={`${field.body} ${field.locale}`}>
               <div className="CurrentObjectFields__field__line">{setStyledField(field)}</div>
             </div>
           ),
         )
       ) : (
         <div className="CurrentObjectFields__field__noItems">
-          <FormattedMessage id="no_fiends" defaultMessage="There is no added fields with type" />
+          <FormattedMessage id="no_fields" defaultMessage="There is no added fields with type" />
           <span className="CurrentObjectFields__field__current">{`"${currentField}"`}</span>
         </div>
       )}
