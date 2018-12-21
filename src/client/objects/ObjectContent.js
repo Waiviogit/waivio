@@ -1,12 +1,10 @@
 import React from 'react';
-import _ from 'lodash';
-import { people } from '../helpers/constants';
 import WaivioObject from './WaivioObject';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import Loading from '../components/Icon/Loading';
 
-// const displayLimit = 20;
+const displayLimit = 30;
 
 export const mockObjects = [
   {
@@ -18,38 +16,63 @@ export const mockObjects = [
   },
 ];
 
-class ObjectContent extends React.Component {
+export default class ObjectContent extends React.Component {
   state = {
     wobjs: [],
+    loading: false,
+    hasMore: true,
   };
 
   componentDidMount() {
-    ApiClient.getObjects().then(wobjs => {
+    ApiClient.getObjects({ limit: displayLimit }).then(wobjs => {
       this.setState({ wobjs });
     });
   }
 
-  handleLoadMore = () => {};
+  handleLoadMore = () => {
+    const { wobjs } = this.state;
+
+    this.setState(
+      {
+        loading: true,
+      },
+      () => {
+        const lastWobject = wobjs[wobjs.length - 1];
+
+        ApiClient.getObjects({
+          limit: displayLimit,
+          startAuthorPermlink: lastWobject.author_permlink,
+        }).then(newWobjs =>
+          this.setState(state => ({
+            loading: false,
+            hasMore: newWobjs.length === displayLimit,
+            wobjs: state.wobjs.concat(newWobjs),
+          })),
+        );
+      },
+    );
+  };
 
   render() {
-    const { wobjs } = this.state;
-    const ordered = _.orderBy(wobjs, ['weight'], ['desc']);
-    const hasMore = wobjs.length !== people.length;
+    const { wobjs, loading, hasMore } = this.state;
 
-    if (!wobjs) {
+    if (wobjs.length === 0) {
       return <Loading />;
     }
 
     return (
       <div>
-        <ReduxInfiniteScroll hasMore={hasMore} loadMore={this.handleLoadMore}>
-          {_.map(ordered, wobj => (
-            <WaivioObject wobj={wobj} key={wobj.author_permlink} />
-          ))}
+        <ReduxInfiniteScroll
+          elementIsScrollable={false}
+          hasMore={hasMore}
+          loadMore={this.handleLoadMore}
+          loadingMore={loading}
+          loader={<Loading />}
+        >
+          {wobjs.length &&
+            wobjs.map(wobj => <WaivioObject wobj={wobj} key={wobj.author_permlink} />)}
         </ReduxInfiniteScroll>
       </div>
     );
   }
 }
-
-export default ObjectContent;
