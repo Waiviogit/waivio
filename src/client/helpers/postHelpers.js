@@ -8,7 +8,7 @@ import whiteListedApps from './apps';
 import {
   INVESTARENA_META_FIELD_NAME,
   WAIVIO_META_FIELD_NAME,
-  WAIVIO_PARENT_PERMLINK
+  WAIVIO_PARENT_PERMLINK,
 } from '../../common/constants/waivio';
 
 const appVersion = require('../../../package.json').version;
@@ -107,7 +107,8 @@ export function createPostMetadata(body, tags, oldMetadata = {}, appData) {
     metaData[WAIVIO_META_FIELD_NAME] = appData.waivioData;
   }
   if (appData && appData.forecast) {
-    metaData[INVESTARENA_META_FIELD_NAME] = appData.forecast;
+    const { selectForecast, ...forecast} = appData.forecast;
+    metaData[INVESTARENA_META_FIELD_NAME] = forecast;
   }
 
   return metaData;

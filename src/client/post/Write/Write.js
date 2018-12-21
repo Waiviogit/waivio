@@ -13,7 +13,11 @@ import { createPostMetadata } from '../../helpers/postHelpers';
 import { rewardsValues } from '../../../common/constants/rewards';
 import LastDraftsContainer from './LastDraftsContainer';
 import DeleteDraftModal from './DeleteDraftModal';
-import { WAIVIO_META_FIELD_NAME, INVESTARENA_META_FIELD_NAME, WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
+import {
+  WAIVIO_META_FIELD_NAME,
+  INVESTARENA_META_FIELD_NAME,
+  WAIVIO_PARENT_PERMLINK,
+} from '../../../common/constants/waivio';
 
 import {
   getAuthenticatedUser,
@@ -214,10 +218,15 @@ class Write extends React.Component {
 
     const forecast = form[INVESTARENA_META_FIELD_NAME]
       ? {
-        ...form[INVESTARENA_META_FIELD_NAME],
-        postId: `${data.author}${data.permlink}`,
-        createdAt: moment(currentTime.getTime()).format(forecastDateTimeFormat),
-      }
+          ...form[INVESTARENA_META_FIELD_NAME],
+          createdAt: moment(currentTime.getTime()).format(forecastDateTimeFormat),
+          expiredAt:
+            form[INVESTARENA_META_FIELD_NAME].selectForecast === 'Custom'
+              ? form[INVESTARENA_META_FIELD_NAME].expiredAt
+              : moment(currentTime.getTime())
+                  .add(form[INVESTARENA_META_FIELD_NAME].selectForecast, 'seconds')
+                  .format(forecastDateTimeFormat),
+        }
       : null;
 
     const appData = { waivioData, forecast };

@@ -57,20 +57,20 @@ class CreatePostForecast extends Component {
     const {
       selectQuote,
       selectRecommend,
+      selectForecast,
       dateTimeValue,
       quotePrice,
       stopLossValue,
       takeProfitValue,
     } = this.state;
     return {
-      postId: "",
       quoteSecurity: selectQuote,
       market: selectQuote ? quotesSettings[selectQuote].market : '',
       recommend: selectRecommend,
       postPrice: parseFloat(quotePrice),
       tpPrice: parseFloat(takeProfitValue),
       slPrice: parseFloat(stopLossValue),
-      createdAt: "",
+      selectForecast,
       expiredAt: dateTimeValue ? dateTimeValue.format(forecastDateTimeFormat) : null,
     };
   };
@@ -158,7 +158,7 @@ class CreatePostForecast extends Component {
 
   handleChangeDatetime = dateTimeValue => {
     // console.log(moment(currentTime.getTime()).subtract(1, 'days').unix());
-    this.setState({ dateTimeValue })
+    this.setState({ dateTimeValue });
   };
 
   updateValueForecast = value => {
@@ -168,8 +168,8 @@ class CreatePostForecast extends Component {
         dateTimeValue: moment(currentTime.getTime()).add(minForecastMinutes, 'minute'),
       });
     } else {
-      this.setState({selectForecast: value});
-      this.handleChangeDatetime(moment(currentTime.getTime()).add(value, 'seconds'));
+      this.setState({ selectForecast: value });
+      // this.handleChangeDatetime(moment(currentTime.getTime()).add(value, 'seconds'));
     }
     // this.checkSelectDropDown(this.state.selectQuote, this.state.selectRecommend, newValue);
   };

@@ -17,7 +17,11 @@ import LinkedObjects from './LinkedObjects';
 import { getClientWObj } from '../../adapters';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
-import { WAIVIO_META_FIELD_NAME, INVESTARENA_META_FIELD_NAME, MAX_NEW_OBJECTS_NUMBER } from '../../../common/constants/waivio';
+import {
+  WAIVIO_META_FIELD_NAME,
+  INVESTARENA_META_FIELD_NAME,
+  MAX_NEW_OBJECTS_NUMBER,
+} from '../../../common/constants/waivio';
 import {
   setInitialInfluence,
   changeObjInfluenceHandler,
