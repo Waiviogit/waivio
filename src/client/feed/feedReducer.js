@@ -30,12 +30,12 @@ const feedIdsList = (state = [], action) => {
     case feedTypes.GET_REPLIES.SUCCESS:
     case feedTypes.GET_BOOKMARKS.SUCCESS:
     case feedTypes.GET_OBJECT_POSTS.SUCCESS:
-      return action.payload.map(post => post.id);
+      return action.payload.map(post => post.post_id);
     case feedTypes.GET_MORE_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_MORE_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_MORE_REPLIES.SUCCESS:
     case feedTypes.GET_MORE_OBJECT_POSTS.SUCCESS:
-      return _.uniq([...state, ...action.payload.map(post => post.id)]);
+      return _.uniq([...state, ...action.payload.map(post => post.post_id)]);
     default:
       return state;
   }
