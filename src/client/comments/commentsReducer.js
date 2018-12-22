@@ -31,7 +31,7 @@ const mapCommentsBasedOnId = (data, action) => {
     ) {
       comment.focus = true;
     }
-    commentsList[data[key].post_id] = comment;
+    commentsList[data[key].id] = comment;
   });
   return commentsList;
 };
@@ -46,7 +46,7 @@ const commentsData = (state = {}, action) => {
     case commentsTypes.RELOAD_EXISTING_COMMENT:
       return {
         ...state,
-        [action.payload.post_id]: { ...action.payload, id: action.payload.post_id },
+        [action.payload.id]: action.payload,
       };
     default:
       return state;
