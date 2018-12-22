@@ -13,98 +13,106 @@ import DealsTab from './DealsTab';
 import './DealsPage.less';
 
 const propTypes = {
-    quotes: PropTypes.object.isRequired,
-    quoteSettings: PropTypes.object.isRequired,
-    platformName: PropTypes.string.isRequired,
-    platformConnect: PropTypes.bool.isRequired,
-    viewMode: PropTypes.oneOf(['list', 'cards'])
+  quotes: PropTypes.object.isRequired,
+  quoteSettings: PropTypes.object.isRequired,
+  platformName: PropTypes.string.isRequired,
+  platformConnect: PropTypes.bool.isRequired,
+  viewMode: PropTypes.oneOf(['list', 'cards']),
 };
 
 class DealsPage extends Component {
-    constructor (props) {
-        super(props);
-        this.state = {
-            updatedQuoteSettings: {},
-            viewMode: 'list'
-        };
-    }
-
-    componentDidMount () {
-        const currentViewMode = getViewMode('instruments');
-        if (currentViewMode) {
-            this.setState({viewMode: currentViewMode});
-        }
-    }
-
-    componentDidUpdate () {
-        if (_.size(this.state.updatedQuoteSettings) === 0 && this.props.quotes && this.props.quoteSettings && _.size(this.props.quotes) > 0 && _.size(this.props.quoteSettings) > 0) {
-            this.setState({updatedQuoteSettings: this.getOptions()});
-        }
-    }
-    goToAssets = (quote) => {
-        // browserHistory.push(`/quote/${quote.id}`);
+  constructor(props) {
+    super(props);
+    this.state = {
+      updatedQuoteSettings: {},
+      viewMode: 'list',
     };
-    getOptions = () => {
-        let resArray = [];
-        const self = this;
-        _.each(this.props.quotes, (quote) => {
-            if (self.props.quoteSettings[quote.security]) {
-                resArray.push({id: quote.security,
-                    name: self.props.quoteSettings[quote.security].name,
-                    image_small: arrayOfLogos.includes(quote.security)
-                        ? `/static/images/logoQuotes/${quote.security}.png`
-                        : `/static/images/logoQuotes/FX.png`,
-                    market: self.props.quoteSettings[quote.security].market}
-                );
-            }
+  }
+
+  componentDidMount() {
+    const currentViewMode = getViewMode('instruments');
+    if (currentViewMode) {
+      this.setState({ viewMode: currentViewMode });
+    }
+  }
+
+  componentDidUpdate() {
+    if (
+      _.size(this.state.updatedQuoteSettings) === 0 &&
+      this.props.quotes &&
+      this.props.quoteSettings &&
+      _.size(this.props.quotes) > 0 &&
+      _.size(this.props.quoteSettings) > 0
+    ) {
+      this.setState({ updatedQuoteSettings: this.getOptions() });
+    }
+  }
+  goToAssets = quote => {
+    // browserHistory.push(`/quote/${quote.id}`);
+  };
+  getOptions = () => {
+    let resArray = [];
+    const self = this;
+    _.each(this.props.quotes, quote => {
+      if (self.props.quoteSettings[quote.security]) {
+        resArray.push({
+          id: quote.security,
+          name: self.props.quoteSettings[quote.security].name,
+          image_small: arrayOfLogos.includes(quote.security)
+            ? `/static/images/logoQuotes/${quote.security}.png`
+            : `/static/images/logoQuotes/FX.png`,
+          market: self.props.quoteSettings[quote.security].market,
         });
-        return resArray;
-    };
-    toggleViewMode = () => {
-        const viewModeValue = this.state.viewMode === 'list' ? 'cards' : 'list';
-        this.setState({viewMode: viewModeValue});
-        setViewMode('instruments', viewModeValue);
-    };
-    render () {
-        return (
-            <div className="st-deals-page container">
-                <div className="d-flex justify-content-between align-items-center">
-                    <div className="st-deals-back">
-                      {/*<SidebarBack/>*/}
-                    </div>
-                    <div className="st-deals-controls">
-                        {/*<QuotesSearch*/}
-                            {/*placeholderMessage="assets.instrumentsSearch"*/}
-                            {/*onChange={this.goToAssets}*/}
-                            {/*multi={false}*/}
-                            {/*backspaceRemoves={true}*/}
-                            {/*searchable={true}*/}
-                            {/*labelKey="name"*/}
-                            {/*searchParams={searchParams.search}*/}
-                            {/*valueKey="id"*/}
-                            {/*options={_.sortBy(this.state.updatedQuoteSettings, 'name')}/>*/}
-                    </div>
-                    <div className="st-assets-to-deals-wrap"/>
-                </div>
-                    <div className="st-instruments-details">
-                        {this.props.platformName !== 'widgets'
-                            ? <DealsTab viewMode={this.state.viewMode} />
-                            : <div className="st-deals-wrap st-connect-to-broker-wrap">
-                                <span className="st-margin-bottom-large">
-                                    {this.props.intl.formatMessage({ id: 'headerAuthorized.textAttention3' })}
-                                </span>
-                                {/*<ButtonBroker />*/}
-                            </div>}
-                      <div className="st-deals-toggle-view" onClick={this.toggleViewMode}>
-                        {this.state.viewMode === 'list'
-                          ? <img className="st-deals-toggle-view__icon" src="/images/icons/grid-view.svg"/>
-                          : <img className="st-deals-toggle-view__icon" src="/images/icons/list-of-items.svg"/>
-                        }
-                      </div>
-                    </div>
+      }
+    });
+    return resArray;
+  };
+  toggleViewMode = () => {
+    const viewModeValue = this.state.viewMode === 'list' ? 'cards' : 'list';
+    this.setState({ viewMode: viewModeValue });
+    setViewMode('instruments', viewModeValue);
+  };
+  render() {
+    return (
+      <div className="st-deals-page container">
+        <div className="d-flex justify-content-between align-items-center">
+          <div className="st-deals-back">{/*<SidebarBack/>*/}</div>
+          <div className="st-deals-controls">
+            {/*<QuotesSearch*/}
+            {/*placeholderMessage="assets.instrumentsSearch"*/}
+            {/*onChange={this.goToAssets}*/}
+            {/*multi={false}*/}
+            {/*backspaceRemoves={true}*/}
+            {/*searchable={true}*/}
+            {/*labelKey="name"*/}
+            {/*searchParams={searchParams.search}*/}
+            {/*valueKey="id"*/}
+            {/*options={_.sortBy(this.state.updatedQuoteSettings, 'name')}/>*/}
+          </div>
+          <div className="st-assets-to-deals-wrap" />
+        </div>
+        <div className="st-instruments-details">
+          {this.props.platformName !== 'widgets' ? (
+            <DealsTab viewMode={this.state.viewMode} />
+          ) : (
+            <div className="st-deals-wrap st-connect-to-broker-wrap">
+              <span className="st-margin-bottom-large">
+                {this.props.intl.formatMessage({ id: 'headerAuthorized.textAttention3' })}
+              </span>
+              {/*<ButtonBroker />*/}
             </div>
-        );
-    }
+          )}
+          <div className="st-deals-toggle-view" onClick={this.toggleViewMode}>
+            {this.state.viewMode === 'list' ? (
+              <img className="st-deals-toggle-view__icon" src="/images/icons/grid-view.svg" />
+            ) : (
+              <img className="st-deals-toggle-view__icon" src="/images/icons/list-of-items.svg" />
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 DealsPage.propTypes = propTypes;

@@ -7,6 +7,7 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import readingTime from 'reading-time';
 import { Checkbox, Form, Input, Select, Button } from 'antd';
+import moment from 'moment';
 import BTooltip from '../BTooltip';
 import { rewardsValues } from '../../../common/constants/rewards';
 import Action from '../Button/Action';
@@ -17,13 +18,20 @@ import LinkedObjects from './LinkedObjects';
 import { getClientWObj } from '../../adapters';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
-import { WAIVIO_META_FIELD_NAME, MAX_NEW_OBJECTS_NUMBER } from '../../../common/constants/waivio';
+import {
+  WAIVIO_META_FIELD_NAME,
+  INVESTARENA_META_FIELD_NAME,
+  MAX_NEW_OBJECTS_NUMBER,
+} from '../../../common/constants/waivio';
 import {
   setInitialInfluence,
   changeObjInfluenceHandler,
   removeObjInfluenceHandler,
 } from '../../helpers/wObjInfluenceHelper';
+import CreatePostForecast from '../../../investarena/components/CreatePostForecast';
 import './Editor.less';
+import { currentTime } from '../../../investarena/helpers/currentTime';
+import { forecastDateTimeFormat } from '../../../investarena/components/CreatePostForecast/constants';
 
 @injectIntl
 @requiresLogin
@@ -85,6 +93,7 @@ class Editor extends React.Component {
       influenceRemain: 0,
       canCreateNewObject: true,
       isLinkedObjectsValid: true,
+      forecastValues: { isValid: true },
     };
 
     this.onUpdate = this.onUpdate.bind(this);
@@ -97,6 +106,7 @@ class Editor extends React.Component {
     this.handleCreateObject = this.handleCreateObject.bind(this);
     this.handleRemoveObject = this.handleRemoveObject.bind(this);
     this.handleChangeInfluence = this.handleChangeInfluence.bind(this);
+    this.handleForecastChange = this.handleForecastChange.bind(this);
   }
 
   componentDidMount() {
@@ -165,7 +175,10 @@ class Editor extends React.Component {
   checkLinkedObjects() {
     const areObjectsCreated = !this.state.linkedObjects.some(obj => obj.isNew);
     const isInfluenceRemain = this.state.influenceRemain !== 0;
-    this.setState({ isLinkedObjectsValid: areObjectsCreated && !isInfluenceRemain });
+    this.setState({
+      isLinkedObjectsValid: areObjectsCreated && !isInfluenceRemain,
+      isCreatePostClicked: true,
+    });
     return !areObjectsCreated || isInfluenceRemain;
   }
 
@@ -193,10 +206,11 @@ class Editor extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    const { linkedObjects } = this.state;
+    const { linkedObjects, forecastValues } = this.state;
 
     this.props.form.validateFieldsAndScroll((err, values) => {
-      if (this.checkLinkedObjects() || err) {
+      const { isValid, selectForecast, ...forecast } = forecastValues;
+      if (this.checkLinkedObjects() || !isValid || err) {
         this.props.onError();
       } else {
         const topics = linkedObjects
@@ -207,7 +221,23 @@ class Editor extends React.Component {
           author_permlink: obj.id,
           percent: obj.influence.value,
         }));
-        this.props.onSubmit({ ...values, topics, [WAIVIO_META_FIELD_NAME]: { wobjects } });
+        this.props.onSubmit({
+          ...values,
+          topics,
+          [WAIVIO_META_FIELD_NAME]: { wobjects },
+          [INVESTARENA_META_FIELD_NAME]: forecast
+            ? {
+                ...forecast,
+                createdAt: moment(currentTime.getTime()).format(forecastDateTimeFormat),
+                expiredAt:
+                  selectForecast === 'Custom'
+                    ? forecast.expiredAt
+                    : moment(currentTime.getTime())
+                        .add(selectForecast, 'seconds')
+                        .format(forecastDateTimeFormat),
+              }
+            : null,
+        });
       }
     });
   }
@@ -301,6 +331,10 @@ class Editor extends React.Component {
     }
   }
 
+  handleForecastChange(forecastValues) {
+    this.setState({ forecastValues });
+  }
+
   render() {
     const { intl, form, loading, isUpdating, saving, draftId } = this.props;
     const { getFieldDecorator } = form;
@@ -311,6 +345,7 @@ class Editor extends React.Component {
       influenceRemain,
       isLinkedObjectsValid,
       canCreateNewObject,
+      isCreatePostClicked,
     } = this.state;
 
     const { words, minutes } = readingTime(bodyHTML);
@@ -458,6 +493,7 @@ class Editor extends React.Component {
             </Select>,
           )}
         </Form.Item>
+        <CreatePostForecast onChange={this.handleForecastChange} isPosted={isCreatePostClicked} />
         <Form.Item className={classNames({ Editor__hidden: isUpdating })}>
           {getFieldDecorator('upvote', { valuePropName: 'checked', initialValue: true })(
             <Checkbox onChange={this.onUpdate} disabled={isUpdating}>

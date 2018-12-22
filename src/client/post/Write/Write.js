@@ -12,7 +12,11 @@ import { createPostMetadata } from '../../helpers/postHelpers';
 import { rewardsValues } from '../../../common/constants/rewards';
 import LastDraftsContainer from './LastDraftsContainer';
 import DeleteDraftModal from './DeleteDraftModal';
-import { WAIVIO_META_FIELD_NAME, WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
+import {
+  WAIVIO_META_FIELD_NAME,
+  INVESTARENA_META_FIELD_NAME,
+  WAIVIO_PARENT_PERMLINK,
+} from '../../../common/constants/waivio';
 
 import {
   getAuthenticatedUser,
@@ -57,7 +61,7 @@ class Write extends React.Component {
     upvoteSetting: PropTypes.bool,
     rewardSetting: PropTypes.string,
     newPost: PropTypes.func,
-    // createPost: PropTypes.func,
+    createPost: PropTypes.func,
     saveDraft: PropTypes.func,
     replace: PropTypes.func,
   };
@@ -177,8 +181,8 @@ class Write extends React.Component {
     if (this.props.draftId) {
       data.draftId = this.props.draftId;
     }
-    console.log('Write:onSubmit > ', JSON.stringify(data));
-    // this.props.createPost(data);
+    // console.log('Write:onSubmit > ', JSON.stringify(data));
+    this.props.createPost(data);
   };
 
   getNewPostData = form => {
@@ -209,8 +213,12 @@ class Write extends React.Component {
         ? { ...form[WAIVIO_META_FIELD_NAME] }
         : { wobjects: [] };
 
+    const forecast = form[INVESTARENA_META_FIELD_NAME];
+
+    const appData = { waivioData, forecast };
+
     data.parentPermlink = WAIVIO_PARENT_PERMLINK;
-    data.jsonMetadata = createPostMetadata(data.body, form.topics, oldMetadata, waivioData);
+    data.jsonMetadata = createPostMetadata(data.body, form.topics, oldMetadata, appData);
 
     if (this.originalBody) {
       data.originalBody = this.originalBody;

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { NavLink } from 'react-router-dom';
-import Icon from "antd/es/icon/index";
+import Icon from 'antd/es/icon/index';
 import './Sidenav.less';
 
 const isNews = (match, location) => location.pathname.match(/trending/);
@@ -46,13 +46,13 @@ const Sidenav = ({ username }) =>
       </li>
       <li>
         <NavLink to="/instruments" activeClassName="Sidenav__item--active" isActive={isInstruments}>
-          <Icon type="dollar" className="st-margin-right-middle"/>
+          <Icon type="dollar" className="st-margin-right-middle" />
           <FormattedMessage id="sidebar.nav.assets" defaultMessage="Instruments" />
         </NavLink>
       </li>
       <li>
         <NavLink to="/deals" activeClassName="Sidenav__item--active" isActive={isDeals}>
-          <Icon type="pie-chart" className="st-margin-right-middle"/>
+          <Icon type="pie-chart" className="st-margin-right-middle" />
           <FormattedMessage id="sidebar.nav.deals" defaultMessage="Deals" />
         </NavLink>
       </li>
