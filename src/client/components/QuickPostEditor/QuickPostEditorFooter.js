@@ -3,18 +3,14 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import classNames from 'classnames';
 import { Icon } from 'antd';
-import Action from '../Button/Action';
 
 const QuickPostEditorFooter = ({
   currentImages,
   imageUploading,
-  postCreationLoading,
-  handleCreatePost,
   handleImageChange,
-  postText,
-  submittingPostText,
   onRemoveImage,
   handleFooterFocus,
+  children,
 }) => (
   // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
   <div className="QuickPostEditor__footer" tabIndex="0" onFocus={handleFooterFocus}>
@@ -59,39 +55,26 @@ const QuickPostEditorFooter = ({
         )}
       </label>
     </div>
-    <Action
-      primary
-      loading={postCreationLoading}
-      disabled={postCreationLoading}
-      onClick={handleCreatePost}
-    >
-      {postCreationLoading ? submittingPostText : postText}
-    </Action>
+    {children}
   </div>
 );
 
 QuickPostEditorFooter.propTypes = {
   currentImages: PropTypes.arrayOf(PropTypes.shape()),
   imageUploading: PropTypes.bool,
-  postCreationLoading: PropTypes.bool,
-  postText: PropTypes.string,
-  submittingPostText: PropTypes.string,
-  handleCreatePost: PropTypes.func,
   handleImageChange: PropTypes.func,
   onRemoveImage: PropTypes.func,
   handleFooterFocus: PropTypes.func,
+  children: PropTypes.node,
 };
 
 QuickPostEditorFooter.defaultProps = {
   currentImages: [],
   imageUploading: false,
-  postCreationLoading: false,
-  postText: 'Post',
-  submittingPostText: 'Submitting',
-  handleCreatePost: () => {},
   handleImageChange: () => {},
   onRemoveImage: () => {},
   handleFooterFocus: () => {},
+  children: null,
 };
 
 export default QuickPostEditorFooter;

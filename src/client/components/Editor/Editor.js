@@ -7,16 +7,16 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import readingTime from 'reading-time';
 import { Checkbox, Form, Input, Select, Button } from 'antd';
+import BTooltip from '../BTooltip';
 import { rewardsValues } from '../../../common/constants/rewards';
 import Action from '../Button/Action';
 import requiresLogin from '../../auth/requiresLogin';
 import withEditor from './withEditor';
 import EditorInput from './EditorInput';
-import EditorObject from '../EditorObject/EditorObject';
+import LinkedObjects from './LinkedObjects';
 import { getClientWObj } from '../../adapters';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
-import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
 import { WAIVIO_META_FIELD_NAME, MAX_NEW_OBJECTS_NUMBER } from '../../../common/constants/waivio';
 import {
   setInitialInfluence,
@@ -82,8 +82,9 @@ class Editor extends React.Component {
       body: '',
       bodyHTML: '',
       linkedObjects: [],
+      influenceRemain: 0,
       canCreateNewObject: true,
-      isValid: true,
+      isLinkedObjectsValid: true,
     };
 
     this.onUpdate = this.onUpdate.bind(this);
@@ -161,14 +162,15 @@ class Editor extends React.Component {
     });
   }
 
-  checkNewObjects() {
-    const isObjectsCreated = !this.state.linkedObjects.some(obj => obj.isNew);
-    this.setState({ isValid: isObjectsCreated });
-    return !isObjectsCreated;
+  checkLinkedObjects() {
+    const areObjectsCreated = !this.state.linkedObjects.some(obj => obj.isNew);
+    const isInfluenceRemain = this.state.influenceRemain !== 0;
+    this.setState({ isLinkedObjectsValid: areObjectsCreated && !isInfluenceRemain });
+    return !areObjectsCreated || isInfluenceRemain;
   }
 
   throttledUpdate() {
-    const { linkedObjects } = this.state;
+    const objectsArr = [...this.state.linkedObjects];
     const { form } = this.props;
 
     const values = form.getFieldsValue();
@@ -176,12 +178,12 @@ class Editor extends React.Component {
 
     // if (Object.values(form.getFieldsError()).filter(e => e).length > 0) return;
 
-    const topics = linkedObjects
+    const topics = objectsArr
       .sort((a, b) => b.influence.value - a.influence.value)
-      .slice(0, 5)
+      .slice(0, 4)
       .map(obj => obj.name);
-    const wobjects = linkedObjects.map(obj => ({
-      parentPermlink: obj.id,
+    const wobjects = objectsArr.map(obj => ({
+      author_permlink: obj.id,
       percent: obj.influence.value,
       isNew: Boolean(obj.isNew),
     }));
@@ -194,15 +196,15 @@ class Editor extends React.Component {
     const { linkedObjects } = this.state;
 
     this.props.form.validateFieldsAndScroll((err, values) => {
-      if (this.checkNewObjects() || err) {
+      if (this.checkLinkedObjects() || err) {
         this.props.onError();
       } else {
         const topics = linkedObjects
           .sort((a, b) => b.influence.value - a.influence.value)
-          .slice(0, 5)
+          .slice(0, 4)
           .map(obj => obj.name);
         const wobjects = linkedObjects.map(obj => ({
-          parentPermlink: obj.id,
+          author_permlink: obj.id,
           percent: obj.influence.value,
         }));
         this.props.onSubmit({ ...values, topics, [WAIVIO_META_FIELD_NAME]: { wobjects } });
@@ -224,11 +226,14 @@ class Editor extends React.Component {
         })
       : wObject;
     this.setState(prevState => {
-      const linkedObjects = prevState.linkedObjects.some(obj => obj.id === selectedObj.id)
-        ? prevState.linkedObjects
-        : setInitialInfluence(prevState.linkedObjects, selectedObj);
+      const linkedObjects = setInitialInfluence(
+        prevState.linkedObjects,
+        selectedObj,
+        prevState.influenceRemain,
+      );
       return {
         linkedObjects,
+        influenceRemain: 0,
         canCreateNewObject: linkedObjects.length < MAX_NEW_OBJECTS_NUMBER,
       };
     }, this.onUpdate());
@@ -257,8 +262,9 @@ class Editor extends React.Component {
           );
           return {
             linkedObjects,
-            isValid:
-              prevState.isValid || !(prevState.isValid || linkedObjects.some(obj => obj.isNew)),
+            isLinkedObjectsValid:
+              prevState.isLinkedObjectsValid ||
+              !(prevState.isLinkedObjectsValid || linkedObjects.some(obj => obj.isNew)),
           };
         });
       },
@@ -275,25 +281,56 @@ class Editor extends React.Component {
 
   handleRemoveObject(wObject) {
     this.setState(prevState => {
-      const linkedObjects = removeObjInfluenceHandler(prevState.linkedObjects, wObject);
-      return { linkedObjects, canCreateNewObject: linkedObjects.length < MAX_NEW_OBJECTS_NUMBER };
+      const result = removeObjInfluenceHandler(
+        prevState.linkedObjects,
+        wObject,
+        prevState.influenceRemain,
+      );
+      return {
+        linkedObjects: result.linkedObjects,
+        influenceRemain: result.influenceRemain,
+        canCreateNewObject: result.linkedObjects.length < MAX_NEW_OBJECTS_NUMBER,
+      };
     }, this.onUpdate());
   }
 
   handleChangeInfluence(wObj, influence) {
-    this.setState(prevState => {
-      const linkedObjects = changeObjInfluenceHandler(prevState.linkedObjects, wObj, influence);
-      return { linkedObjects };
-    });
+    const { influenceRemain, linkedObjects } = this.state;
+    if (influenceRemain - (influence - wObj.influence.value) >= 0) {
+      this.setState(changeObjInfluenceHandler(linkedObjects, wObj, influence, influenceRemain));
+    }
   }
 
   render() {
     const { intl, form, loading, isUpdating, saving, draftId } = this.props;
     const { getFieldDecorator } = form;
-    const { body, bodyHTML, linkedObjects, isValid, canCreateNewObject } = this.state;
+    const {
+      body,
+      bodyHTML,
+      linkedObjects,
+      influenceRemain,
+      isLinkedObjectsValid,
+      canCreateNewObject,
+    } = this.state;
 
     const { words, minutes } = readingTime(bodyHTML);
 
+    const linkedObjectsTitle = (
+      <div className="ant-form-item-label">
+        <BTooltip
+          title={
+            <FormattedMessage
+              id="linked_objects_tooltip"
+              defaultMessage="Add objects those described in the post, and set the value of belonging"
+            />
+          }
+        >
+          <label className="Editor__label" htmlFor="title">
+            <FormattedMessage id="editor_linked_objects" defaultMessage="Linked objects" />
+          </label>
+        </BTooltip>
+      </div>
+    );
     return (
       <Form className="Editor" layout="vertical" onSubmit={this.handleSubmit}>
         <Helmet>
@@ -377,30 +414,17 @@ class Editor extends React.Component {
             />,
           )}
         </Form.Item>
-        <div>
-          <div className="ant-form-item-label">
-            <label className="Editor__label" htmlFor="title">
-              <FormattedMessage id="editor_linked_objects" defaultMessage="Linked objects" />
-            </label>
-          </div>
-          {canCreateNewObject && (
-            <SearchObjectsAutocomplete
-              handleSelect={this.handleAddLinkedObject}
-              canCreateNewObject={canCreateNewObject}
-            />
-          )}
-          {Boolean(linkedObjects.length) &&
-            linkedObjects.map(obj => (
-              <EditorObject
-                key={obj.id}
-                wObject={obj}
-                isValid={isValid}
-                handleCreateObject={this.handleCreateObject}
-                handleRemoveObject={this.handleRemoveObject}
-                handleChangeInfluence={this.handleChangeInfluence}
-              />
-            ))}
-        </div>
+        <LinkedObjects
+          title={linkedObjectsTitle}
+          canCreateNewObject={canCreateNewObject}
+          influenceRemain={influenceRemain}
+          linkedObjects={linkedObjects}
+          isLinkedObjectsValid={isLinkedObjectsValid}
+          handleAddLinkedObject={this.handleAddLinkedObject}
+          handleCreateObject={this.handleCreateObject}
+          handleRemoveObject={this.handleRemoveObject}
+          handleChangeInfluence={this.handleChangeInfluence}
+        />
         {body && (
           <Form.Item
             label={

@@ -28,6 +28,7 @@ import Error404 from '../client/statics/Error404';
 import ExitPage from '../client/statics/ExitPage';
 import ObjectProfile from '../client/object/ObjectProfile';
 import AppendObjectPostWtite from '../client/post/AppendObjectPostWrite/AppendObjectPostWrite';
+import WobjFollowers from '../client/object/WobjFollowers';
 
 const routes = [
   {
@@ -138,7 +139,7 @@ const routes = [
           {
             path: '/object/@:name/followers',
             exact: true,
-            component: UserFollowers,
+            component: WobjFollowers,
           },
         ],
       },

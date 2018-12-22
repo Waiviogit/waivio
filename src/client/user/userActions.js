@@ -95,6 +95,27 @@ export const getFollowing = username => (dispatch, getState) => {
   });
 };
 
+export const GET_FOLLOWING_OBJECTS = '@user/GET_FOLLOWING_OBJECTS';
+export const GET_FOLLOWING_OBJECTS_START = '@user/GET_FOLLOWING_OBJECTS_START';
+export const GET_FOLLOWING_OBJECTS_SUCCESS = '@user/GET_FOLLOWING_OBJECTS_SUCCESS';
+export const GET_FOLLOWING_OBJECTS_ERROR = '@user/GET_FOLLOWING_OBJECTS_ERROR';
+
+export const getFollowingObjects = username => (dispatch, getState) => {
+  const state = getState();
+
+  if (!username && !getIsAuthenticated(state)) {
+    return dispatch({ type: GET_FOLLOWING_ERROR });
+  }
+
+  const targetUsername = username || getAuthenticatedUserName(state);
+  return dispatch({
+    type: GET_FOLLOWING_OBJECTS,
+    payload: {
+      promise: ApiClient.getAllFollowingObjects(targetUsername),
+    },
+  });
+};
+
 export const UPDATE_RECOMMENDATIONS = '@user/UPDATE_RECOMMENDATIONS';
 export const updateRecommendations = createAction(UPDATE_RECOMMENDATIONS);
 

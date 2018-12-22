@@ -11,29 +11,27 @@ import { getObject } from '../../object/wobjectsActions';
 
 import {
   getAuthenticatedUser,
-  getIsEditorLoading,
   getIsEditorSaving,
-  getUpvoteSetting,
   getRewardSetting,
   getLocale,
+  getIsAppendLoading,
 } from '../../reducers';
-
 import { createPost, newPost } from './editorActions';
+import { appendObject } from './appendActions';
 import AppendObjectPostEditor from '../../components/Editor/AppendObjectPostEditor';
 import Affix from '../../components/Utils/Affix';
 import CurrentObjectFields from './CurrentObjectFields';
 import LANGUAGES from '../../translations/languages';
-import config from '../../../waivioApi/routes';
 import { getField } from '../../objects/WaivioObject';
+import { objectFields } from '../../../common/constants/listOfFields';
 
 @injectIntl
 @withRouter
 @connect(
   state => ({
     user: getAuthenticatedUser(state),
-    loading: getIsEditorLoading(state),
+    loading: getIsAppendLoading(state),
     saving: getIsEditorSaving(state),
-    upvoteSetting: getUpvoteSetting(state),
     rewardSetting: getRewardSetting(state),
     locale: getLocale(state),
   }),
@@ -42,6 +40,7 @@ import { getField } from '../../objects/WaivioObject';
     newPost,
     replace,
     getObject,
+    appendObject,
   },
 )
 class AppendObjectPostWrite extends React.Component {
@@ -50,21 +49,22 @@ class AppendObjectPostWrite extends React.Component {
     loading: PropTypes.bool.isRequired,
     getObject: PropTypes.func.isRequired,
     saving: PropTypes.bool,
-    upvoteSetting: PropTypes.bool,
     match: PropTypes.shape().isRequired,
     locale: PropTypes.string,
     newPost: PropTypes.func,
     history: PropTypes.shape(),
+    appendObject: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
+    loading: false,
     saving: false,
     draftId: null,
-    locale: 'auto',
-    upvoteSetting: true,
+    locale: 'en-US',
     newPost: () => {},
     replace: () => {},
     history: {},
+    appendObject: () => {},
   };
 
   constructor(props) {
@@ -72,13 +72,11 @@ class AppendObjectPostWrite extends React.Component {
     this.state = {
       initialTopics: [],
       initialBody: '',
-      initialUpvote: this.props.upvoteSetting,
       initialUpdatedDate: Date.now(),
-      isUpdating: false,
       showModalDelete: false,
       wobject: {},
       currentField: 'name',
-      locale: this.props.locale,
+      locale: this.props.locale === 'auto' ? 'en-US' : this.props.locale,
     };
   }
 
@@ -93,14 +91,8 @@ class AppendObjectPostWrite extends React.Component {
     const data = this.getNewPostData(form);
     data.body = improve(data.body);
 
-    fetch(`${config.objectsBot.apiPrefix}${config.objectsBot.appendObject}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-      .then(res => res.json())
+    this.props
+      .appendObject(data)
       .then(() => {
         this.props.history.push('/');
         message.success(
@@ -110,24 +102,32 @@ class AppendObjectPostWrite extends React.Component {
         );
       })
       .catch(err => {
-        message.error(err.message);
+        message.error("Couldn't append object.");
         console.log('err', err);
       });
   };
 
   getNewPostData = form => {
+    const { wobject, currentField, locale } = this.state;
     const data = {};
 
+    const getBody = formField => {
+      const { body, preview, ...rest } = formField;
+      if (rest[objectFields.name]) return rest[objectFields.name];
+      if (rest.image) return rest.image;
+      return JSON.stringify(rest);
+    };
+
     data.author = this.props.user.name || '';
-    data.parentAuthor = this.state.wobject.value.author_permlink.split('_')[0];
-    data.parentPermlink = this.state.wobject.value.author_permlink.split('_')[1];
+    data.parentAuthor = wobject.value.author_permlink.split('_')[0];
+    data.parentPermlink = wobject.value.author_permlink.split('_')[1];
     data.body = form.preview;
     data.title = '';
 
     data.field = {
-      name: this.state.currentField,
-      body: form.value === 'backgroundImage' ? `<center>${form.value}</center>` : form.value,
-      locale: this.state.locale,
+      name: currentField,
+      body: getBody(form),
+      locale,
     };
 
     data.permlink = `${data.author}-${Math.random()
@@ -135,9 +135,7 @@ class AppendObjectPostWrite extends React.Component {
       .substring(2)}`;
     data.lastUpdated = Date.now();
 
-    data.wobjectName = getField(this.state.wobject.value, 'name');
-
-    if (this.state.isUpdating) data.isUpdating = this.state.isUpdating;
+    data.wobjectName = getField(wobject.value, 'name');
 
     return data;
   };
@@ -147,7 +145,7 @@ class AppendObjectPostWrite extends React.Component {
   changeCurrentLocale = locale => this.setState({ locale });
 
   render() {
-    const { initialTopics, initialBody, initialUpvote, locale } = this.state;
+    const { initialTopics, initialBody, locale } = this.state;
     const { loading, saving } = this.props;
     const currentLocaleInList = LANGUAGES.find(element => element.id === locale);
 
@@ -173,9 +171,7 @@ class AppendObjectPostWrite extends React.Component {
               saving={saving}
               topics={initialTopics}
               body={initialBody}
-              upvote={initialUpvote}
               loading={loading}
-              isUpdating={this.state.isUpdating}
               onSubmit={this.onSubmit}
               onDelete={this.onDelete}
             />

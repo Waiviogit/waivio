@@ -63,18 +63,9 @@ const settings = (state = initialState, action) => {
     case settingsTypes.SAVE_SETTINGS_SUCCESS:
       return {
         ...state,
-        loading: false,
-        locale: action.payload.locale,
-        readLanguages: action.payload.readLanguages,
-        votingPower: action.payload.votingPower,
-        votePercent: action.payload.votePercent,
-        showNSFWPosts: action.payload.showNSFWPosts,
-        nightmode: action.payload.nightmode,
-        rewriteLinks: action.payload.rewriteLinks,
-        upvoteSetting: action.payload.upvoteSetting,
-        exitPageSetting: action.payload.exitPageSetting,
-        rewardSetting: action.payload.rewardSetting,
+        ...action.payload,
         useBeta: !!action.payload.useBeta,
+        loading: false,
       };
     case settingsTypes.SAVE_SETTINGS_ERROR:
       return {
