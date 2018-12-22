@@ -65,9 +65,32 @@ class EditorObject extends React.Component {
         >
           <div className="editor-object__content">
             <div className="editor-object__content row">
-              <img className="editor-object__avatar" src={wObject.avatar} alt={wObject.name} />
+              {wObject.isNew ? (
+                <img className="editor-object__avatar" src={wObject.avatar} alt={wObject.name} />
+              ) : (
+                <a
+                  href={`/object/@${wObject.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="editor-object__info name"
+                >
+                  <img className="editor-object__avatar" src={wObject.avatar} alt={wObject.name} />
+                </a>
+              )}
+
               <span className="editor-object__info">
-                <span className="editor-object__info name">{wObject.name}</span>
+                {wObject.isNew ? (
+                  <span className="editor-object__info name">{wObject.name}</span>
+                ) : (
+                  <a
+                    href={`/object/@${wObject.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="editor-object__info name"
+                  >
+                    {wObject.name}
+                  </a>
+                )}
                 {Boolean(wObject.descriptionShort) && (
                   <span className="editor-object__info description">
                     {wObject.descriptionShort}
