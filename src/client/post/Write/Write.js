@@ -57,7 +57,7 @@ class Write extends React.Component {
     upvoteSetting: PropTypes.bool,
     rewardSetting: PropTypes.string,
     newPost: PropTypes.func,
-    // createPost: PropTypes.func,
+    createPost: PropTypes.func,
     saveDraft: PropTypes.func,
     replace: PropTypes.func,
   };
@@ -177,8 +177,7 @@ class Write extends React.Component {
     if (this.props.draftId) {
       data.draftId = this.props.draftId;
     }
-    console.log('Write:onSubmit > ', JSON.stringify(data));
-    // this.props.createPost(data);
+    this.props.createPost(data);
   };
 
   getNewPostData = form => {
@@ -215,7 +214,6 @@ class Write extends React.Component {
     if (this.originalBody) {
       data.originalBody = this.originalBody;
     }
-    console.log('| saveDraft > ', data);
 
     return data;
   };
