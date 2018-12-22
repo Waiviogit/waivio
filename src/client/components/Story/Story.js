@@ -362,7 +362,7 @@ class Story extends React.Component {
             <PostSellBuy
               isExpired={false}
               quoteSecurity = {forecast.quoteSecurity}
-              postPrice = {forecast.postPrice}
+              postPrice = {forecast.postPrice ? forecast.postPrice.toString() : 0}
               forecast = {forecast.expiredAt}
               recommend = {forecast.recommend}
               profitability = {335}
@@ -393,8 +393,8 @@ class Story extends React.Component {
                 expiredByTime = {undefined}
                 expiredTimeScale={undefined}
                 toggleModalPost={() => {}}
-                tpPrice={forecast.tpPrice.toString()}
-                slPrice={forecast.slPrice.toString()}
+                tpPrice={forecast.tpPrice ? forecast.tpPrice.toString() : null}
+                slPrice={forecast.slPrice ? forecast.slPrice.toString() : null}
                 expiredAt={undefined}
               />
             }

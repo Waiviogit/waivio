@@ -52,7 +52,7 @@ const AssetsTab = ({intl, quotes, quoteSettings, title, trends, charts, signals,
             <div className={classNames('st-instruments-details', {'list-view': viewMode === 'list', 'cards-view': viewMode === 'cards'})}>
                 {quotes && quoteSettings && !_.isEmpty(quotes) && !_.isEmpty(quoteSettings) && _.some(quotes, quote => quoteSettings[quote.security] && matchTitle(quote))
                     ? <div className="st-instruments-responsible-wrap">{selectedInstruments}</div>
-                    : <div className="d-flex justify-content-center align-items-center h-100">{intl.formatMessage({ id: 'assets.quotesNoPresent' })}</div>}
+                    : <div className="d-flex justify-content-center align-items-center h-100 w-100">{intl.formatMessage({ id: 'assets.quotesNoPresent' })}</div>}
             </div>
         </Fragment>
     );
