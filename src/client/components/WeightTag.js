@@ -7,7 +7,7 @@ import BTooltip from './BTooltip';
 const WeightTag = ({ intl, weight }) => (
   <BTooltip
     title={intl.formatMessage(
-      { id: 'weight_score_value', defaultMessage: 'Weight score: {value}' },
+      { id: 'rank_score_value', defaultMessage: 'Rank score: {value}' },
       { value: weight },
     )}
   >
