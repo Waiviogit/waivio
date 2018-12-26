@@ -7,6 +7,30 @@ export const objectFields = {
   backgroundImage: 'backgroundImage',
 };
 
+export const descriptionFields = {
+  descriptionShort: 'descriptionShort',
+  descriptionFull: 'descriptionFull',
+};
+
+export const locationFields = {
+  locationCountry: 'locationCountry',
+  locationCity: 'locationCity',
+  locationStreet: 'locationStreet',
+  locationAccommodation: 'locationAccommodation',
+  postCode: 'postCode',
+  locationLatitude: 'locationLatitude',
+  locationLongitude: 'locationLongitude',
+};
+
+export const linkFields = {
+  website: 'website',
+  linkFacebook: 'linkFacebook',
+  linkTwitter: 'linkTwitter',
+  linkYouTube: 'linkYouTube',
+  linkInstagram: 'linkInstagram',
+  linkGitHub: 'linkGitHub',
+};
+
 export const socialObjectFields = [
   { id: 'facebook', icon: 'facebook', color: '#3b5998', name: 'Facebook' },
   { id: 'twitter', icon: 'twitter', color: '#00aced', name: 'Twitter' },

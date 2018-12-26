@@ -11,7 +11,7 @@ const WeightTag = ({ intl, weight }) => (
       { value: weight },
     )}
   >
-    <Tag>{weight}</Tag>
+    <Tag>{weight.toFixed(2)}</Tag>
   </BTooltip>
 );
 
