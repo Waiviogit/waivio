@@ -6,6 +6,7 @@ import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import UserCard from '../components/UserCard';
 import Loading from '../components/Icon/Loading';
 import './UserDynamicList.less';
+import WeightTag from '../components/WeightTag';
 
 export default class UserDynamicList extends React.Component {
   static propTypes = {
@@ -58,7 +59,13 @@ export default class UserDynamicList extends React.Component {
           loader={<Loading />}
           loadMore={this.handleLoadMore}
         >
-          {users.map(user => <UserCard key={user} username={user} />)}
+          {users.map(user => (
+            <UserCard
+              key={user.name || user}
+              username={user}
+              alt={<WeightTag weight={user.rank} />}
+            />
+          ))}
         </ReduxInfiniteScroll>
         {empty && (
           <div className="UserDynamicList__empty">

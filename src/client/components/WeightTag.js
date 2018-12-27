@@ -11,13 +11,17 @@ const WeightTag = ({ intl, weight }) => (
       { value: weight },
     )}
   >
-    <Tag>{weight}</Tag>
+    {weight && <Tag>{weight}</Tag>}
   </BTooltip>
 );
 
 WeightTag.propTypes = {
   intl: PropTypes.shape().isRequired,
   weight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+};
+
+WeightTag.defaultProps = {
+  weight: '',
 };
 
 export default injectIntl(WeightTag);
