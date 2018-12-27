@@ -32,12 +32,12 @@ export const getField = (wObject, currentField, fieldName) => {
 
   if (!wo) return '';
 
-  let pre = null;
+  let parsed = null;
 
   try {
-    pre = JSON.parse(wo.body);
+    parsed = JSON.parse(wo.body);
   } catch (e) {
     //
   }
-  return pre ? pre[fieldName] : wo.body;
+  return parsed ? parsed[fieldName] : wo.body;
 };
