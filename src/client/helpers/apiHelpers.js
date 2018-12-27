@@ -58,7 +58,7 @@ export const getFollowers = (username, startForm = '', type = 'blog', limit = 10
     'follow_api',
     'get_followers',
     [username, startForm, type, limit],
-  ]).then(result => result.map(user => user.follower));
+  ]).then(result => result.map(user => ({ name: user.follower })));
 
 export const getAllFollowing = username =>
   new Promise(async resolve => {

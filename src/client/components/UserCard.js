@@ -5,29 +5,29 @@ import FollowButton from '../widgets/FollowButton';
 import Avatar from '../components/Avatar';
 import './UserCard.less';
 
-const UserCard = ({ username, alt }) => (
+const UserCard = ({ user, alt }) => (
   <div className="UserCard">
     <div className="UserCard__left">
-      <Link to={`/@${username.name || username}`}>
-        <Avatar username={username.name || username} size={40} />
+      <Link to={`/@${user.name}`}>
+        <Avatar username={user.name} size={40} />
       </Link>
-      <Link to={`/@${username.name || username}`}>
-        <span className="username">{username.name || username}</span>
+      <Link to={`/@${user.name}`}>
+        <span className="username">{user.name}</span>
       </Link>
       {alt && <span className="UserCard__alt">{alt}</span>}
     </div>
-    <FollowButton following={username.name || username} followingType="user" secondary />
+    <FollowButton following={user.name} followingType="user" secondary />
   </div>
 );
 
 UserCard.propTypes = {
-  username: PropTypes.oneOfType([PropTypes.string, PropTypes.shape]),
+  user: PropTypes.shape(),
   alt: PropTypes.node,
 };
 
 UserCard.defaultProps = {
   alt: '',
-  username: '' || {},
+  user: {},
 };
 
 export default UserCard;

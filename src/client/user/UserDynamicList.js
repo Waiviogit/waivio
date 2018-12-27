@@ -38,7 +38,7 @@ export default class UserDynamicList extends React.Component {
           this.setState(state => ({
             loading: false,
             hasMore: newUsers.length === limit,
-            users: _.union(state.users, newUsers),
+            users: _.unionBy(state.users, newUsers, 'name'),
           })),
         );
       },
@@ -61,9 +61,9 @@ export default class UserDynamicList extends React.Component {
         >
           {users.map(user => (
             <UserCard
-              key={user.name || user}
-              username={user}
-              alt={<WeightTag weight={user.rank} />}
+              key={user.name}
+              user={user}
+              alt={user.rank ? <WeightTag weight={user.rank} /> : null}
             />
           ))}
         </ReduxInfiniteScroll>
