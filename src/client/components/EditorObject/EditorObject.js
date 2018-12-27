@@ -3,7 +3,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Slider, Spin, Icon } from 'antd';
+import { Slider, Spin, Icon, Switch } from 'antd';
 import './EditorObject.less';
 
 @injectIntl
@@ -22,6 +22,8 @@ class EditorObject extends React.Component {
     super(props);
     this.state = {
       influenceValue: this.props.wObject.influence.value,
+      isPostingOpen: true,
+      isExtendingOpen: true,
       isCreating: false,
     };
   }
@@ -49,10 +51,18 @@ class EditorObject extends React.Component {
 
   handleCreateObject = () => {
     const { wObject, handleCreateObject } = this.props;
+    const { isPostingOpen, isExtendingOpen } = this.state;
+    wObject.isPostingOpen = isPostingOpen;
+    wObject.isExtendingOpen = isExtendingOpen;
     this.setState({ isCreating: true });
     handleCreateObject(wObject);
   };
-
+  toggleAccessPost = () => {
+    this.setState({ isPostingOpen: !this.state.isPostingOpen });
+  };
+  toggleAccessExpand = () => {
+    this.setState({ isExtendingOpen: !this.state.isExtendingOpen });
+  };
   render() {
     const { influenceValue } = this.state;
     const { intl, wObject, handleRemoveObject, isLinkedObjectsValid } = this.props;
@@ -65,9 +75,89 @@ class EditorObject extends React.Component {
         >
           <div className="editor-object__content">
             <div className="editor-object__content row">
-              <img className="editor-object__avatar" src={wObject.avatar} alt={wObject.name} />
+              {wObject.isNew ? (
+                <img className="editor-object__avatar" src={wObject.avatar} alt={wObject.name} />
+              ) : (
+                <a href={`/object/@${wObject.id}`} target="_blank" rel="noopener noreferrer">
+                  <img className="editor-object__avatar" src={wObject.avatar} alt={wObject.name} />
+                </a>
+              )}
+
               <span className="editor-object__info">
-                <span className="editor-object__info name">{wObject.name}</span>
+                {wObject.isNew ? (
+                  <span className="editor-object__info name">{wObject.name}</span>
+                ) : (
+                  <a
+                    href={`/object/@${wObject.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="editor-object__info name"
+                  >
+                    {wObject.name}
+                  </a>
+                )}{' '}
+                {Boolean(wObject.isNew && !wObject.isCreating) && (
+                  <div className="editor-object__checkbox-line">
+                    <div
+                      className="editor-object__checkbox-wrap"
+                      title={
+                        this.state.isExtendingOpen
+                          ? intl.formatMessage({
+                              id: 'access_expand_tooltip1',
+                              defaultMessage:
+                                'Any user can suggest changing the display of the object (avatar, description, etc.). All users will be shown the option with the maximum number of votes.',
+                            })
+                          : intl.formatMessage({
+                              id: 'access_expand_tooltip2',
+                              defaultMessage:
+                                'Only the creator, and the users added by him, can suggest changing the display of the object (avatar, description, etc.). All users will see the last proposed option.',
+                            })
+                      }
+                    >
+                      <span className="editor-object__checkbox-descr">
+                        {intl.formatMessage({
+                          id: 'access_expand',
+                          defaultMessage: 'Everyone can expand',
+                        })}
+                      </span>
+                      <Switch
+                        defaultChecked={this.state.isExtendingOpen}
+                        onChange={this.toggleAccessExpand}
+                        checkedChildren={<Icon type="check" />}
+                        unCheckedChildren={<Icon type="close" />}
+                      />
+                    </div>
+                    <div
+                      className="editor-object__checkbox-wrap"
+                      title={
+                        this.state.isPostingOpen
+                          ? intl.formatMessage({
+                              id: 'access_post_tooltip1',
+                              defaultMessage:
+                                'Any user can add link to your object to the post. These posts will be visible in the object feed.',
+                            })
+                          : intl.formatMessage({
+                              id: 'access_post_tooltip2',
+                              defaultMessage:
+                                'Only the creator, and the users added by him, can add link to object in posts.',
+                            })
+                      }
+                    >
+                      <span className="editor-object__checkbox-descr">
+                        {intl.formatMessage({
+                          id: 'access_post',
+                          defaultMessage: 'Everyone can link posts',
+                        })}
+                      </span>
+                      <Switch
+                        defaultChecked={this.state.isPostingOpen}
+                        onChange={this.toggleAccessPost}
+                        checkedChildren={<Icon type="check" />}
+                        unCheckedChildren={<Icon type="close" />}
+                      />
+                    </div>
+                  </div>
+                )}
                 {Boolean(wObject.descriptionShort) && (
                   <span className="editor-object__info description">
                     {wObject.descriptionShort}

@@ -48,9 +48,11 @@ class Editor extends React.Component {
     onDelete: PropTypes.func,
     onSubmit: PropTypes.func,
     onError: PropTypes.func,
+    // from withEditor decorator
     onImageUpload: PropTypes.func,
     onImageInvalid: PropTypes.func,
     onCreateObject: PropTypes.func,
+    getLinkedObjects: PropTypes.func,
   };
 
   static defaultProps = {
@@ -73,6 +75,7 @@ class Editor extends React.Component {
     onImageUpload: () => {},
     onImageInvalid: () => {},
     onCreateObject: () => {},
+    getLinkedObjects: () => {},
   };
 
   constructor(props) {
@@ -128,6 +131,18 @@ class Editor extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    const { waivioData, getLinkedObjects } = this.props;
+    if (!_.isEmpty(waivioData.wobjects) && !_.isEqual(prevProps.waivioData, waivioData)) {
+      const existingObjectIds = waivioData.wobjects
+        .filter(wo => !wo.isNew)
+        .map(wo => wo.author_permlink);
+      getLinkedObjects(existingObjectIds).then(res =>
+        this.restoreLinkedObjects(res, waivioData.wobjects),
+      );
+    }
+  }
+
   onUpdate() {
     _.throttle(this.throttledUpdate, 200, { leading: false, trailing: true })();
   }
@@ -151,6 +166,7 @@ class Editor extends React.Component {
       body: post.body,
       reward,
       upvote: post.upvote,
+      [WAIVIO_META_FIELD_NAME]: post.waivioData,
     });
     this.setBodyAndRender(post.body);
   }
@@ -160,6 +176,26 @@ class Editor extends React.Component {
       body,
       bodyHTML: remarkable.render(body),
     });
+  }
+
+  restoreLinkedObjects(existingObjects, fromDraft) {
+    const influenceRemain = 100 - fromDraft.reduce((acc, curr) => acc + curr.percent, 0);
+    const linkedObjects = fromDraft.map(obj =>
+      !obj.isNew && existingObjects.some(exObj => exObj.id === obj.author_permlink)
+        ? {
+            ..._.find(existingObjects, currObj => currObj.id === obj.author_permlink),
+            influence: { value: obj.percent, max: obj.percent + influenceRemain },
+          }
+        : {
+            ...getClientWObj({
+              author_permlink: obj.author_permlink,
+              fields: [{ name: 'name', body: obj.objectName }],
+              isNew: true,
+            }),
+            influence: { value: obj.percent, max: obj.percent + influenceRemain },
+          },
+    );
+    this.setState({ linkedObjects, influenceRemain });
   }
 
   checkLinkedObjects() {
@@ -183,6 +219,7 @@ class Editor extends React.Component {
       .slice(0, 4)
       .map(obj => obj.name);
     const wobjects = objectsArr.map(obj => ({
+      objectName: obj.name,
       author_permlink: obj.id,
       percent: obj.influence.value,
       isNew: Boolean(obj.isNew),
@@ -226,6 +263,7 @@ class Editor extends React.Component {
         })
       : wObject;
     this.setState(prevState => {
+      if (prevState.linkedObjects.some(obj => obj.id === wObject.id)) return prevState;
       const linkedObjects = setInitialInfluence(
         prevState.linkedObjects,
         selectedObj,
@@ -236,7 +274,7 @@ class Editor extends React.Component {
         influenceRemain: 0,
         canCreateNewObject: linkedObjects.length < MAX_NEW_OBJECTS_NUMBER,
       };
-    }, this.onUpdate());
+    }, this.onUpdate);
   }
 
   handleCreateObject(wObject) {
@@ -266,7 +304,7 @@ class Editor extends React.Component {
               prevState.isLinkedObjectsValid ||
               !(prevState.isLinkedObjectsValid || linkedObjects.some(obj => obj.isNew)),
           };
-        });
+        }, this.onUpdate);
       },
       () => {
         this.setState(prevState => {
@@ -274,7 +312,7 @@ class Editor extends React.Component {
             obj.id === wObject.id ? { ...obj, isCreating: false } : obj,
           );
           return { linkedObjects };
-        });
+        }, this.onUpdate);
       },
     );
   }
@@ -291,13 +329,16 @@ class Editor extends React.Component {
         influenceRemain: result.influenceRemain,
         canCreateNewObject: result.linkedObjects.length < MAX_NEW_OBJECTS_NUMBER,
       };
-    }, this.onUpdate());
+    }, this.onUpdate);
   }
 
   handleChangeInfluence(wObj, influence) {
     const { influenceRemain, linkedObjects } = this.state;
     if (influenceRemain - (influence - wObj.influence.value) >= 0) {
-      this.setState(changeObjInfluenceHandler(linkedObjects, wObj, influence, influenceRemain));
+      this.setState(
+        changeObjInfluenceHandler(linkedObjects, wObj, influence, influenceRemain),
+        this.onUpdate,
+      );
     }
   }
 

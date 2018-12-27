@@ -9,7 +9,8 @@ import FollowButton from '../widgets/FollowButton';
 import Action from '../components/Button/Action';
 import '../components/ObjectHeader.less';
 
-import { getField } from '../objects/WaivioObject';
+import { getFieldWithMaxWeight, getField } from '../../client/object/wObjectHelper';
+import { objectFields, descriptionFields } from '../../common/constants/listOfFields';
 
 const WobjHeader = ({ wobject, coverImage, hasCover, isActive }) => {
   const style = hasCover
@@ -22,7 +23,7 @@ const WobjHeader = ({ wobject, coverImage, hasCover, isActive }) => {
         <div className="ObjectHeader__user">
           <div className="ObjectHeader__row">
             <h2 className="ObjectHeader__user__username">
-              {getField(wobject, 'name')}
+              {getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name)}
               <WeightTag weight={wobject.weight} />
             </h2>
             <div className="ObjectHeader__user__buttons">
@@ -45,7 +46,7 @@ const WobjHeader = ({ wobject, coverImage, hasCover, isActive }) => {
           </div>
           <div className="ObjectHeader__user__username">
             <div className="ObjectHeader__descriptionShort">
-              {getField(wobject, 'descriptionShort')}
+              {getField(wobject, objectFields.description, descriptionFields.descriptionShort)}
             </div>
           </div>
         </div>
