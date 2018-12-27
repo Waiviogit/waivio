@@ -107,7 +107,7 @@ class FollowButton extends React.Component {
       <Follow
         isFollowed={followed}
         pending={pending}
-        disabled={Boolean(pendingFollows.length)}
+        disabled={Boolean(pendingFollows.length) && !pending}
         onClick={this.handleFollowClick}
         secondary={secondary}
       />
