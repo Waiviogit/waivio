@@ -116,10 +116,10 @@ export default class User extends React.Component {
     const { authenticated, authenticatedUser, loaded, failed } = this.props;
     const { isFollowing } = this.state;
     if (failed) return <Error404 />;
-
     const username = this.props.match.params.name;
     const { user } = this.props;
-    const { profile = {} } = user.json_metadata || {};
+    const jsonMetadata = JSON.parse(user.json_metadata);
+    const { profile = {} } = jsonMetadata || {};
     const busyHost = global.postOrigin || 'https://busy.org';
     const desc = profile.about || `Posts by ${username}`;
     const image = getAvatarURL(username) || '/images/logo.png';

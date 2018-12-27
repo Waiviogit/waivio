@@ -3,8 +3,15 @@ import PropTypes from 'prop-types';
 import urlParse from 'url-parse';
 import _ from 'lodash';
 
-import { getField } from '../../objects/WaivioObject';
 import SocialLinks from '../../components/SocialLinks';
+
+import { getField } from '../../object/wObjectHelper';
+import {
+  objectFields,
+  descriptionFields,
+  locationFields,
+  linkFields,
+} from '../../../common/constants/listOfFields';
 
 export const truncate = str => {
   if (str && str.length > 150) return `${str.substring(0, 150)}...`;
@@ -14,10 +21,42 @@ export const truncate = str => {
 const ObjectInfo = props => {
   const { wobject } = props;
 
-  const location = wobject && getField(wobject, 'locationAccomodation');
-  const descriptionFull = wobject && truncate(getField(wobject, 'descriptionFull'));
+  const locationCountry =
+    wobject && getField(wobject, objectFields.location, locationFields.locationCountry);
+  const locationCity =
+    wobject && getField(wobject, objectFields.location, locationFields.locationCity);
+  const locationStreet =
+    wobject && getField(wobject, objectFields.location, locationFields.locationStreet);
+  const locationAccommodation =
+    wobject && getField(wobject, objectFields.location, locationFields.locationAccommodation);
+  const postCode = wobject && getField(wobject, objectFields.location, locationFields.postCode);
+  const locationLatitude =
+    wobject && getField(wobject, objectFields.location, locationFields.locationLatitude);
+  const locationLongitude =
+    wobject && getField(wobject, objectFields.location, locationFields.locationLongitude);
 
-  let website = wobject && getField(wobject, 'link');
+  const locationArray = [
+    locationCountry,
+    locationCity,
+    locationStreet,
+    locationAccommodation,
+    postCode,
+    locationLatitude,
+    locationLongitude,
+  ];
+
+  const locations = _.compact(locationArray);
+  const location = locations.join(', ');
+
+  const descriptionField = getField(
+    wobject,
+    objectFields.description,
+    descriptionFields.descriptionFull,
+  );
+
+  const descriptionFull = wobject && truncate(descriptionField);
+
+  let website = wobject && getField(wobject, objectFields.link, linkFields.website);
 
   if (website && website.indexOf('http://') === -1 && website.indexOf('https://') === -1) {
     website = `http://${website}`;
@@ -29,64 +68,15 @@ const ObjectInfo = props => {
     hostWithoutWWW = hostWithoutWWW.slice(4);
   }
 
-  let facebook = wobject && getField(wobject, 'linkFacebook');
-  if (facebook) {
-    facebook = facebook.split('/')[3];
-  }
-
-  let twitter = wobject && getField(wobject, 'linkTwitter');
-  if (twitter) {
-    twitter = twitter.split('/')[3];
-  }
-
-  let linkedin = wobject && getField(wobject, 'linkLinkedIn');
-  if (linkedin) {
-    linkedin = linkedin.split('/')[4];
-  }
-
-  let youtube = wobject && getField(wobject, 'linkYoutube');
-  if (youtube) {
-    youtube = youtube.split('/')[4];
-  }
-
-  let instagram = wobject && getField(wobject, 'linkInstagram');
-  if (instagram) {
-    instagram = instagram.split('/')[3];
-  }
-
-  let github = wobject && getField(wobject, 'linkGithub');
-  if (github) {
-    github = github.split('/')[3];
-  }
-
-  let bitcoin = wobject && getField(wobject, 'linkBitCoin');
-  if (bitcoin) {
-    bitcoin = bitcoin.split('/')[3];
-  }
-
-  let ethereum = wobject && getField(wobject, 'linkEthereum');
-  if (ethereum) {
-    ethereum = ethereum.split('/')[3];
-  }
-
-  let vkontakte = wobject && getField(wobject, 'linkVk');
-  if (vkontakte) {
-    vkontakte = vkontakte.split('/')[3];
-  }
-
-  const profileLinks = {
-    facebook,
-    twitter,
-    linkedin,
-    youtube,
-    instagram,
-    github,
-    bitcoin,
-    ethereum,
-    vkontakte,
+  let profile = {
+    facebook: getField(wobject, objectFields.link, linkFields.linkFacebook),
+    twitter: getField(wobject, objectFields.link, linkFields.linkTwitter),
+    youtube: getField(wobject, objectFields.link, linkFields.linkYouTube),
+    instagram: getField(wobject, objectFields.link, linkFields.linkInstagram),
+    github: getField(wobject, objectFields.link, linkFields.linkGitHub),
   };
 
-  const profile = _.pickBy(profileLinks, _.identity);
+  profile = _.pickBy(profile, _.identity);
 
   return (
     <div>
