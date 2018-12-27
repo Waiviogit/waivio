@@ -93,6 +93,8 @@ export default function withEditor(WrappedComponent) {
         objectName: obj.name,
         locale: this.props.locale === 'auto' ? 'en-US' : this.props.locale,
         type: WAIVIO_OBJECT_TYPE.ITEM,
+        isExtendingOpen: obj.isExtendingOpen,
+        isPostingOpen: obj.isPostingOpen,
       };
 
       fetch(`${config.objectsBot.apiPrefix}${config.objectsBot.createObject}`, {
