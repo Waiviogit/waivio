@@ -1,3 +1,6 @@
+import { getField } from './object/wObjectHelper';
+import { descriptionFields } from '../common/constants/listOfFields';
+
 export const getClientWObj = serverWObj => {
   /* eslint-disable no-underscore-dangle */
   /* eslint-disable camelcase */
@@ -17,12 +20,12 @@ export const getClientWObj = serverWObj => {
   } = serverWObj;
   const avatarField = fields && fields.find(f => f.name === 'avatarImage');
   const nameField = fields && fields.find(f => f.name === 'name');
-  const descriptionShort = fields && fields.find(f => f.name === 'descriptionShort');
+  const descriptionShort = getField(serverWObj, 'description', descriptionFields.descriptionShort);
   return {
     id: author_permlink,
     avatar: avatarField ? avatarField.body : '/images/logo-brand.png',
     name: (nameField && nameField.body) || '',
-    descriptionShort: (descriptionShort && descriptionShort.body) || '',
+    descriptionShort: descriptionShort || '',
     parents: parents || [],
     weight: weight || '',
     createdAt: created_at || Date.now(),
