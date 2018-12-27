@@ -8,7 +8,6 @@
       "createObject": "/objects-bot/create-object",
       "appendObject": "/objects-bot/append-object"
     },
-
     "createObject": "/create/object",
     "getObjects": "/wobject",
     "searchObjects": "/wobjectSearch",
@@ -25,10 +24,10 @@
       "createObject": "/objects-bot/create-object",
       "appendObject": "/objects-bot/append-object"
     },
-
     "createObject": "/create/object",
     "getObjects": "/wobject",
     "searchObjects": "/wobjectSearch",
+    "getObjectFollowing": "/following_objects",
     "getObjectFollowers": "/followers",
     "user": "/user",
     "followingObjects": "/following_objects"
