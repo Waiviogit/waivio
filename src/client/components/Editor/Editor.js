@@ -273,7 +273,7 @@ class Editor extends React.Component {
         influenceRemain: 0,
         canCreateNewObject: linkedObjects.length < MAX_NEW_OBJECTS_NUMBER,
       };
-    }, this.onUpdate());
+    }, this.onUpdate);
   }
 
   handleCreateObject(wObject) {
@@ -328,13 +328,16 @@ class Editor extends React.Component {
         influenceRemain: result.influenceRemain,
         canCreateNewObject: result.linkedObjects.length < MAX_NEW_OBJECTS_NUMBER,
       };
-    }, this.onUpdate());
+    }, this.onUpdate);
   }
 
   handleChangeInfluence(wObj, influence) {
     const { influenceRemain, linkedObjects } = this.state;
     if (influenceRemain - (influence - wObj.influence.value) >= 0) {
-      this.setState(changeObjInfluenceHandler(linkedObjects, wObj, influence, influenceRemain));
+      this.setState(
+        changeObjInfluenceHandler(linkedObjects, wObj, influence, influenceRemain),
+        this.onUpdate,
+      );
     }
   }
 
