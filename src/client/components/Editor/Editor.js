@@ -263,6 +263,7 @@ class Editor extends React.Component {
         })
       : wObject;
     this.setState(prevState => {
+      if (prevState.linkedObjects.some(obj => obj.id === wObject.id)) return prevState;
       const linkedObjects = setInitialInfluence(
         prevState.linkedObjects,
         selectedObj,
