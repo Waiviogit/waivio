@@ -1,13 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import ObjectInfo from './ObjectInfo';
 
-const LeftObjectProfileSidebar = ({ wobject }) => (
-  <div>
-    <ObjectInfo wobject={wobject} />
-  </div>
-);
+const LeftObjectProfileSidebar = ({ wobject }) => <ObjectInfo wobject={wobject} />;
 
 LeftObjectProfileSidebar.propTypes = {
   wobject: PropTypes.shape().isRequired,
