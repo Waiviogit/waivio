@@ -6,8 +6,9 @@ import { injectIntl } from 'react-intl';
 import { getAuthenticatedUser } from '../../reducers';
 import { MAXIMUM_UPLOAD_SIZE_HUMAN } from '../../helpers/image';
 import { WAIVIO_OBJECT_TYPE } from '../../../common/constants/waivio';
+import { getClientWObj } from '../../adapters';
 import { getLocale } from '../../settings/settingsReducer';
-import { handleErrors } from '../../../waivioApi/ApiClient';
+import { getObjectsByIds, handleErrors } from '../../../waivioApi/ApiClient';
 import config from '../../../waivioApi/routes';
 import { voteObject } from '../../object/wobjActions';
 
@@ -37,6 +38,13 @@ export default function withEditor(WrappedComponent) {
 
     static defaultProps = {
       locale: 'auto',
+    };
+
+    getObjectsByAuthorPermlinks = objectIds => {
+      const locale = this.props.locale === 'auto' ? 'en-US' : this.props.locale;
+      return getObjectsByIds({ authorPermlinks: objectIds, locale }).then(res =>
+        res.map(obj => getClientWObj(obj)),
+      );
     };
 
     handleImageUpload = (blob, callback, errorCallback) => {
@@ -135,6 +143,7 @@ export default function withEditor(WrappedComponent) {
           onImageUpload={this.handleImageUpload}
           onImageInvalid={this.handleImageInvalid}
           onCreateObject={this.handleCreateObject}
+          getLinkedObjects={this.getObjectsByAuthorPermlinks}
           {...this.props}
         />
       );
