@@ -303,7 +303,7 @@ class Editor extends React.Component {
               prevState.isLinkedObjectsValid ||
               !(prevState.isLinkedObjectsValid || linkedObjects.some(obj => obj.isNew)),
           };
-        });
+        }, this.onUpdate);
       },
       () => {
         this.setState(prevState => {
@@ -311,7 +311,7 @@ class Editor extends React.Component {
             obj.id === wObject.id ? { ...obj, isCreating: false } : obj,
           );
           return { linkedObjects };
-        });
+        }, this.onUpdate);
       },
     );
   }
