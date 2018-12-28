@@ -166,6 +166,7 @@ class Editor extends React.Component {
     }
 
     form.setFieldsValue({
+      name: post.name,
       title: post.title,
       body: post.body,
       reward,
