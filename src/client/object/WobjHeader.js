@@ -9,7 +9,7 @@ import FollowButton from '../widgets/FollowButton';
 import Action from '../components/Button/Action';
 import '../components/ObjectHeader.less';
 
-import { getFieldWithMaxWeight, getField } from '../../client/object/wObjectHelper';
+import { getFieldWithMaxWeight } from '../../client/object/wObjectHelper';
 import { objectFields, descriptionFields } from '../../common/constants/listOfFields';
 
 const WobjHeader = ({ wobject, coverImage, hasCover, isActive }) => {
@@ -46,7 +46,11 @@ const WobjHeader = ({ wobject, coverImage, hasCover, isActive }) => {
           </div>
           <div className="ObjectHeader__user__username">
             <div className="ObjectHeader__descriptionShort">
-              {getField(wobject, objectFields.description, descriptionFields.descriptionShort)}
+              {getFieldWithMaxWeight(
+                wobject,
+                objectFields.description,
+                descriptionFields.descriptionShort,
+              )}
             </div>
           </div>
         </div>
