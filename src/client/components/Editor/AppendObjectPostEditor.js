@@ -281,7 +281,7 @@ class AppendObjectPostEditor extends React.Component {
         return (
           <Form.Item>
             {getFieldDecorator('name', {
-              initialValue: this.getInitialValue(wobject, 'name'),
+              initialValue: this.getInitialValue(wobject, this.props.currentField),
               rules: [
                 {
                   transform: value => value.toLowerCase(),
@@ -713,7 +713,7 @@ class AppendObjectPostEditor extends React.Component {
           <FormattedMessage id="suggest1" defaultMessage="I suggest to add field" />
         </div>
         <Select
-          defaultValue={supportedObjectFields[0]}
+          defaultValue={this.props.currentField}
           style={{ width: '100%' }}
           onChange={this.handleChangeField}
         >

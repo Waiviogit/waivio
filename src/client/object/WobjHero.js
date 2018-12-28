@@ -55,12 +55,12 @@ const WobjHero = ({
   isFollowing,
   onTransferClick,
 }) => (
-  <div>
+  <React.Fragment>
     <Switch>
       <Route
         path="/object/@:name"
         render={() => (
-          <div>
+          <React.Fragment>
             {user.fetching ? (
               <UserHeaderLoading />
             ) : (
@@ -76,12 +76,12 @@ const WobjHero = ({
               />
             )}
             <WobjMenuWrapper followers={wobject.followers_count || 0} />
-          </div>
+          </React.Fragment>
         )}
       />
       <Route render={() => (authenticated ? <Hero /> : <div />)} />
     </Switch>
-  </div>
+  </React.Fragment>
 );
 
 WobjHero.propTypes = {

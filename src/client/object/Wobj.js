@@ -92,7 +92,7 @@ export default class Wobj extends React.Component {
     const displayedUsername = wobject.tag || '';
     const coverImage = getField(wobject, 'backgroundImage');
     const hasCover = !!coverImage;
-    const title = `${displayedUsername} - Waivio`;
+    const title = `Object - Waivio`;
 
     return (
       <div className="main-panel">
