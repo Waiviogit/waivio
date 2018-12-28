@@ -133,7 +133,11 @@ class Editor extends React.Component {
 
   componentDidUpdate(prevProps) {
     const { waivioData, getLinkedObjects } = this.props;
-    if (!_.isEmpty(waivioData.wobjects) && !_.isEqual(prevProps.waivioData, waivioData)) {
+    if (!_.isEqual(prevProps.waivioData, waivioData)) {
+      if (_.isEmpty(waivioData.wobjects)) {
+        this.resetLinkedObjects();
+        return;
+      }
       const existingObjectIds = waivioData.wobjects
         .filter(wo => !wo.isNew)
         .map(wo => wo.author_permlink);
@@ -177,6 +181,8 @@ class Editor extends React.Component {
       bodyHTML: remarkable.render(body),
     });
   }
+
+  resetLinkedObjects = () => this.setState({ linkedObjects: [], influenceRemain: 0 });
 
   restoreLinkedObjects(existingObjects, fromDraft) {
     const influenceRemain = 100 - fromDraft.reduce((acc, curr) => acc + curr.percent, 0);
