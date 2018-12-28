@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import urlParse from 'url-parse';
 import _ from 'lodash';
+import './ObjectInfo.less';
 
 import SocialLinks from '../../components/SocialLinks';
 
@@ -12,6 +13,7 @@ import {
   locationFields,
   linkFields,
 } from '../../../common/constants/listOfFields';
+import Proposition from '../../components/Proposition/Proposition';
 
 export const truncate = str => {
   if (str && str.length > 150) return `${str.substring(0, 150)}...`;
@@ -79,30 +81,37 @@ const ObjectInfo = props => {
   profile = _.pickBy(profile, _.identity);
 
   return (
-    <div>
+    <React.Fragment>
       {getField(wobject, 'name') && (
-        <div style={{ wordBreak: 'break-word' }}>
-          <div style={{ fontSize: '18px' }}>{wobject && descriptionFull}</div>
-          <div style={{ marginTop: 16, marginBottom: 16 }}>
-            {location && (
-              <div>
+        <div className="object-profile">
+          <div className="object-profile__description">{wobject && descriptionFull}</div>
+          <div className="object-profile__element">
+            {location ? (
+              <React.Fragment>
                 <i className="iconfont icon-coordinates text-icon" />
                 {location}
-              </div>
+              </React.Fragment>
+            ) : (
+              <Proposition objectID={wobject.author_permlink} fieldName="location" />
             )}
-            {website && (
-              <div>
+          </div>
+          <div className="object-profile__element">
+            {website ? (
+              <React.Fragment>
                 <i className="iconfont icon-link text-icon" />
                 <a target="_blank" rel="noopener noreferrer" href={website}>
-                  {`${hostWithoutWWW}${url.pathname.replace(/\/$/, '')}`}
+                  {/* {`${hostWithoutWWW}${url.pathname.replace(/\/$/, '')}`} */}
+                  Website
                 </a>
-              </div>
+              </React.Fragment>
+            ) : (
+              <Proposition objectID={wobject.author_permlink} fieldName="link" />
             )}
           </div>
           <SocialLinks profile={profile} />
         </div>
       )}
-    </div>
+    </React.Fragment>
   );
 };
 

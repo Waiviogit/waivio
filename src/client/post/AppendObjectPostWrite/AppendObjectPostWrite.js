@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -6,6 +7,7 @@ import { replace } from 'react-router-redux';
 import 'url-search-params-polyfill';
 import { message } from 'antd';
 import { injectIntl } from 'react-intl';
+import { objectFields } from '../../../common/constants/listOfFields';
 import improve from '../../helpers/improve';
 import { getObject } from '../../object/wobjectsActions';
 
@@ -23,7 +25,6 @@ import Affix from '../../components/Utils/Affix';
 import CurrentObjectFields from './CurrentObjectFields';
 import LANGUAGES from '../../translations/languages';
 import { getField } from '../../objects/WaivioObject';
-import { objectFields } from '../../../common/constants/listOfFields';
 
 @injectIntl
 @withRouter
@@ -69,13 +70,14 @@ class AppendObjectPostWrite extends React.Component {
 
   constructor(props) {
     super(props);
+    const isLinkFieldValid = _.has(objectFields, this.props.match.params.fieldName);
     this.state = {
       initialTopics: [],
       initialBody: '',
       initialUpdatedDate: Date.now(),
       showModalDelete: false,
       wobject: {},
-      currentField: 'name',
+      currentField: isLinkFieldValid ? this.props.match.params.fieldName || 'name' : 'name',
       locale: this.props.locale === 'auto' ? 'en-US' : this.props.locale,
     };
   }
@@ -83,7 +85,11 @@ class AppendObjectPostWrite extends React.Component {
   componentDidMount() {
     this.props.newPost();
     this.props.getObject(this.props.match.params.name).then(wobject => {
-      this.setState({ wobject, isFetching: false });
+      this.setState({
+        wobject,
+        isFetching: false,
+        currentField: this.props.match.params.fieldName || 'name',
+      });
     });
   }
 

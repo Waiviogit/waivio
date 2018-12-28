@@ -75,7 +75,7 @@ export default class ObjectProfile extends React.Component {
     };
 
     return (
-      <div>
+      <React.Fragment>
         <div className="profile">
           <Feed
             content={content}
@@ -96,7 +96,7 @@ export default class ObjectProfile extends React.Component {
           )}
         </div>
         {<PostModal />}
-      </div>
+      </React.Fragment>
     );
   }
 }

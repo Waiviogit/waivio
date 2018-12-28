@@ -413,5 +413,7 @@
   "access_expand_tooltip2": "Only the creator, and the users added by him, can suggest changing the display of the object (avatar, description, etc.). All users will see the last proposed option.",
   "access_post_tooltip1": "Any user can add your object to the post. These posts will be visible in the object feed.",
   "access_post_tooltip2": "Only the posts of the creator, and the users added by him, can add an object to the posts.",
-  "rank_score_value": "Rank: {value}"
+  "rank_score_value": "Rank: {value}",
+  "access_post_tooltip2": "Only the posts of the creator, and the users added by him, can add an object to the posts.",
+  "there_may_be": "There may be"
 }

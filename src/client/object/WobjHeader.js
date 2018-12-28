@@ -11,11 +11,17 @@ import '../components/ObjectHeader.less';
 
 import { getFieldWithMaxWeight, getField } from '../../client/object/wObjectHelper';
 import { objectFields, descriptionFields } from '../../common/constants/listOfFields';
+import Proposition from '../components/Proposition/Proposition';
 
 const WobjHeader = ({ wobject, coverImage, hasCover, isActive }) => {
   const style = hasCover
     ? { backgroundImage: `url("https://steemitimages.com/2048x512/${coverImage}")` }
     : {};
+  const descriptionShort = getField(
+    wobject,
+    objectFields.description,
+    descriptionFields.descriptionShort,
+  );
   return (
     <div className={classNames('ObjectHeader', { 'ObjectHeader--cover': hasCover })} style={style}>
       <div className="ObjectHeader__container">
@@ -34,7 +40,7 @@ const WobjHeader = ({ wobject, coverImage, hasCover, isActive }) => {
               >
                 <FollowButton following={wobject.author_permlink} followingType="wobject" />
                 <Link
-                  to={`/wobject/editor/@${wobject.author_permlink}`}
+                  to={`/wobject/editor/@${wobject.author_permlink}/name`}
                   className="ObjectHeader__extend"
                 >
                   <Action>
@@ -46,9 +52,16 @@ const WobjHeader = ({ wobject, coverImage, hasCover, isActive }) => {
           </div>
           <div className="ObjectHeader__user__username">
             <div className="ObjectHeader__descriptionShort">
-              {getField(wobject, objectFields.description, descriptionFields.descriptionShort)}
+              {descriptionShort || (
+                <Proposition objectID={wobject.author_permlink} fieldName="description" />
+              )}
             </div>
           </div>
+          {!hasCover && (
+            <div className="ObjectHeader__user__addCover">
+              <Proposition objectID={wobject.author_permlink} fieldName="backgroundImage" />
+            </div>
+          )}
         </div>
       </div>
     </div>
