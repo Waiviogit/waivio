@@ -45,16 +45,7 @@ const isUserActive = user =>
       5 * 60 * 1000,
   );
 
-const WobjHero = ({
-  authenticated,
-  wobject,
-  user,
-  username,
-  coverImage,
-  hasCover,
-  isFollowing,
-  onTransferClick,
-}) => (
+const WobjHero = ({ authenticated, wobject, user, username, isFollowing, onTransferClick }) => (
   <React.Fragment>
     <Switch>
       <Route
@@ -68,8 +59,6 @@ const WobjHero = ({
                 username={username}
                 wobject={wobject}
                 handle={user.name}
-                coverImage={coverImage}
-                hasCover={hasCover}
                 isFollowing={isFollowing}
                 onTransferClick={onTransferClick}
                 isActive={isUserActive(user)}
@@ -88,8 +77,6 @@ WobjHero.propTypes = {
   authenticated: PropTypes.bool.isRequired,
   user: PropTypes.shape().isRequired,
   username: PropTypes.string.isRequired,
-  coverImage: PropTypes.string,
-  hasCover: PropTypes.bool,
   isFollowing: PropTypes.bool,
   onTransferClick: PropTypes.func,
   wobject: PropTypes.shape(),
@@ -97,8 +84,6 @@ WobjHero.propTypes = {
 
 WobjHero.defaultProps = {
   isSameUser: false,
-  coverImage: '',
-  hasCover: false,
   isFollowing: false,
   isPopoverVisible: false,
   onTransferClick: () => {},

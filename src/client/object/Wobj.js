@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import _ from 'lodash';
-import { getField } from '../objects/WaivioObject';
 import {
   getIsAuthenticated,
   getAuthenticatedUser,
@@ -90,8 +89,6 @@ export default class Wobj extends React.Component {
     const canonicalUrl = `${busyHost}/object/@${wobject.tag}`;
     const url = `${busyHost}/object/@${wobject.tag}`;
     const displayedUsername = wobject.tag || '';
-    const coverImage = getField(wobject, 'backgroundImage');
-    const hasCover = !!coverImage;
     const title = `Object - Waivio`;
 
     return (
@@ -124,8 +121,6 @@ export default class Wobj extends React.Component {
             user={user}
             wobject={wobject}
             username={displayedUsername}
-            coverImage={coverImage}
-            hasCover={hasCover}
             onFollowClick={this.handleFollowClick}
           />
         )}

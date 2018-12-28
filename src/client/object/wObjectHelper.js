@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { supportedObjectFields } from '../../../src/common/constants/listOfFields';
 
-export const getFieldWithMaxWeight = (wObject, currentField, fieldName) => {
+export const getFieldWithMaxWeight = (wObject, currentField, innerField) => {
   const field = supportedObjectFields.includes(currentField);
   if (!field) return '';
 
@@ -16,7 +16,7 @@ export const getFieldWithMaxWeight = (wObject, currentField, fieldName) => {
   _.forEach(orderedValues, fld => {
     try {
       const parsed = JSON.parse(fld.body);
-      value = parsed[fieldName];
+      value = parsed[innerField];
       return false;
     } catch (e) {
       value = fld.body;
@@ -24,7 +24,7 @@ export const getFieldWithMaxWeight = (wObject, currentField, fieldName) => {
     }
   });
 
-  return value;
+  return value || '';
 };
 
 export const getField = (wObject, currentField, fieldName) => {
@@ -41,3 +41,5 @@ export const getField = (wObject, currentField, fieldName) => {
   }
   return parsed ? parsed[fieldName] : wo.body;
 };
+
+export const truncate = str => (str && str.length > 150 ? `${str.substring(0, 150)}...` : str);

@@ -133,7 +133,11 @@ class Editor extends React.Component {
 
   componentDidUpdate(prevProps) {
     const { waivioData, getLinkedObjects } = this.props;
-    if (!_.isEmpty(waivioData.wobjects) && !_.isEqual(prevProps.waivioData, waivioData)) {
+    if (!_.isEqual(prevProps.waivioData, waivioData)) {
+      if (_.isEmpty(waivioData.wobjects)) {
+        this.resetLinkedObjects();
+        return;
+      }
       const existingObjectIds = waivioData.wobjects
         .filter(wo => !wo.isNew)
         .map(wo => wo.author_permlink);
@@ -179,6 +183,8 @@ class Editor extends React.Component {
     });
   }
 
+  resetLinkedObjects = () => this.setState({ linkedObjects: [], influenceRemain: 0 });
+
   restoreLinkedObjects(existingObjects, fromDraft) {
     const influenceRemain = 100 - fromDraft.reduce((acc, curr) => acc + curr.percent, 0);
     const linkedObjects = fromDraft.map(obj =>
@@ -207,7 +213,7 @@ class Editor extends React.Component {
   }
 
   throttledUpdate() {
-    const objectsArr = [...this.state.linkedObjects];
+    const { linkedObjects } = this.state;
     const { form } = this.props;
 
     const values = form.getFieldsValue();
@@ -215,11 +221,11 @@ class Editor extends React.Component {
 
     // if (Object.values(form.getFieldsError()).filter(e => e).length > 0) return;
 
-    const topics = objectsArr
+    const topics = [...linkedObjects]
       .sort((a, b) => b.influence.value - a.influence.value)
       .slice(0, 4)
       .map(obj => obj.name);
-    const wobjects = objectsArr.map(obj => ({
+    const wobjects = linkedObjects.map(obj => ({
       objectName: obj.name,
       author_permlink: obj.id,
       percent: obj.influence.value,

@@ -6,7 +6,7 @@ import './ObjectInfo.less';
 
 import SocialLinks from '../../components/SocialLinks';
 
-import { getField } from '../../object/wObjectHelper';
+import { getFieldWithMaxWeight, truncate } from '../../object/wObjectHelper';
 import {
   objectFields,
   descriptionFields,
@@ -15,50 +15,25 @@ import {
 } from '../../../common/constants/listOfFields';
 import Proposition from '../../components/Proposition/Proposition';
 
-export const truncate = str => {
-  if (str && str.length > 150) return `${str.substring(0, 150)}...`;
-  return str;
-};
-
 const ObjectInfo = props => {
   const { wobject } = props;
+  let locationArray = [];
+  let location = '';
+  let descriptionFull = '';
+  let website = '';
 
-  const locationCountry =
-    wobject && getField(wobject, objectFields.location, locationFields.locationCountry);
-  const locationCity =
-    wobject && getField(wobject, objectFields.location, locationFields.locationCity);
-  const locationStreet =
-    wobject && getField(wobject, objectFields.location, locationFields.locationStreet);
-  const locationAccommodation =
-    wobject && getField(wobject, objectFields.location, locationFields.locationAccommodation);
-  const postCode = wobject && getField(wobject, objectFields.location, locationFields.postCode);
-  const locationLatitude =
-    wobject && getField(wobject, objectFields.location, locationFields.locationLatitude);
-  const locationLongitude =
-    wobject && getField(wobject, objectFields.location, locationFields.locationLongitude);
+  if (wobject) {
+    locationArray = Object.keys(locationFields).map(fieldName =>
+      getFieldWithMaxWeight(wobject, objectFields.location, fieldName),
+    );
+    location = _.compact(locationArray).join(', ');
 
-  const locationArray = [
-    locationCountry,
-    locationCity,
-    locationStreet,
-    locationAccommodation,
-    postCode,
-    locationLatitude,
-    locationLongitude,
-  ];
+    descriptionFull = truncate(
+      getFieldWithMaxWeight(wobject, objectFields.description, descriptionFields.descriptionFull),
+    );
 
-  const locations = _.compact(locationArray);
-  const location = locations.join(', ');
-
-  const descriptionField = getField(
-    wobject,
-    objectFields.description,
-    descriptionFields.descriptionFull,
-  );
-
-  const descriptionFull = wobject && truncate(descriptionField);
-
-  let website = wobject && getField(wobject, objectFields.link, linkFields.website);
+    website = getFieldWithMaxWeight(wobject, objectFields.link, linkFields.website);
+  }
 
   if (website && website.indexOf('http://') === -1 && website.indexOf('https://') === -1) {
     website = `http://${website}`;
@@ -71,18 +46,18 @@ const ObjectInfo = props => {
   }
 
   let profile = {
-    facebook: getField(wobject, objectFields.link, linkFields.linkFacebook),
-    twitter: getField(wobject, objectFields.link, linkFields.linkTwitter),
-    youtube: getField(wobject, objectFields.link, linkFields.linkYouTube),
-    instagram: getField(wobject, objectFields.link, linkFields.linkInstagram),
-    github: getField(wobject, objectFields.link, linkFields.linkGitHub),
+    facebook: getFieldWithMaxWeight(wobject, objectFields.link, linkFields.linkFacebook),
+    twitter: getFieldWithMaxWeight(wobject, objectFields.link, linkFields.linkTwitter),
+    youtube: getFieldWithMaxWeight(wobject, objectFields.link, linkFields.linkYouTube),
+    instagram: getFieldWithMaxWeight(wobject, objectFields.link, linkFields.linkInstagram),
+    github: getFieldWithMaxWeight(wobject, objectFields.link, linkFields.linkGitHub),
   };
 
   profile = _.pickBy(profile, _.identity);
 
   return (
     <React.Fragment>
-      {getField(wobject, 'name') && (
+      {getFieldWithMaxWeight(wobject, 'name') && (
         <div className="object-profile">
           <div className="object-profile__description">{wobject && descriptionFull}</div>
           <div className="object-profile__element">
