@@ -9,19 +9,26 @@ import FollowButton from '../widgets/FollowButton';
 import Action from '../components/Button/Action';
 import '../components/ObjectHeader.less';
 
-import { getFieldWithMaxWeight, getField } from '../../client/object/wObjectHelper';
+import { getFieldWithMaxWeight } from '../../client/object/wObjectHelper';
 import { objectFields, descriptionFields } from '../../common/constants/listOfFields';
 import Proposition from '../components/Proposition/Proposition';
 
-const WobjHeader = ({ wobject, coverImage, hasCover, isActive }) => {
+const WobjHeader = ({ wobject, isActive }) => {
+  const coverImage = getFieldWithMaxWeight(
+    wobject,
+    objectFields.backgroundImage,
+    objectFields.backgroundImage,
+  );
+  const hasCover = !!coverImage;
   const style = hasCover
     ? { backgroundImage: `url("https://steemitimages.com/2048x512/${coverImage}")` }
     : {};
-  const descriptionShort = getField(
+  const descriptionShort = getFieldWithMaxWeight(
     wobject,
     objectFields.description,
     descriptionFields.descriptionShort,
   );
+
   return (
     <div className={classNames('ObjectHeader', { 'ObjectHeader--cover': hasCover })} style={style}>
       <div className="ObjectHeader__container">
@@ -69,8 +76,6 @@ const WobjHeader = ({ wobject, coverImage, hasCover, isActive }) => {
 };
 
 WobjHeader.propTypes = {
-  coverImage: PropTypes.string,
-  hasCover: PropTypes.bool,
   wobject: PropTypes.shape(),
   isActive: PropTypes.bool.isRequired,
 };
@@ -79,8 +84,6 @@ WobjHeader.defaultProps = {
   username: '',
   userReputation: '0',
   vestingShares: 0,
-  coverImage: '',
-  hasCover: false,
   wobject: {},
   onTransferClick: () => {},
 };
