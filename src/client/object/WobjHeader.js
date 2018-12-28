@@ -25,7 +25,7 @@ const WobjHeader = ({ wobject, coverImage, hasCover, isActive }) => {
   return (
     <div className={classNames('ObjectHeader', { 'ObjectHeader--cover': hasCover })} style={style}>
       <div className="ObjectHeader__container">
-        <ObjectLightbox username={wobject} size={100} isActive={isActive} />
+        <ObjectLightbox wobject={wobject} size={100} isActive={isActive} />
         <div className="ObjectHeader__user">
           <div className="ObjectHeader__row">
             <h2 className="ObjectHeader__user__username">

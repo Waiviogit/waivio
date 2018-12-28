@@ -97,7 +97,7 @@ class Drafts extends React.Component {
     return (
       <div className="Drafts shifted">
         <Helmet>
-          <title>{intl.formatMessage({ id: 'drafts', defaultMessage: 'Drafts' })} - Busy</title>
+          <title>{intl.formatMessage({ id: 'drafts', defaultMessage: 'Drafts' })} - Waivio</title>
         </Helmet>
         <div className="drafts-layout container">
           <Affix className="leftContainer" stickPosition={77}>
@@ -118,25 +118,24 @@ class Drafts extends React.Component {
               </h3>
             </div>
             {reloading && <Loading center={false} />}
-            {!reloading &&
-              _.size(draftPosts) !== 0 && (
-                <div className="Drafts__toolbar">
-                  <Checkbox
-                    checked={_.isEqual(selectedDrafts, Object.keys(draftPosts))}
-                    onChange={this.handleCheckAll}
-                  />
-                  <div>
-                    <a
-                      role="presentation"
-                      className="Drafts__toolbar__delete"
-                      onClick={this.showModal}
-                    >
-                      <i className="iconfont icon-trash Drafts__toolbar__delete__icon" />
-                      <FormattedMessage id="delete_selected" defaultMessage="Delete selected" />
-                    </a>
-                  </div>
+            {!reloading && _.size(draftPosts) !== 0 && (
+              <div className="Drafts__toolbar">
+                <Checkbox
+                  checked={_.isEqual(selectedDrafts, Object.keys(draftPosts))}
+                  onChange={this.handleCheckAll}
+                />
+                <div>
+                  <a
+                    role="presentation"
+                    className="Drafts__toolbar__delete"
+                    onClick={this.showModal}
+                  >
+                    <i className="iconfont icon-trash Drafts__toolbar__delete__icon" />
+                    <FormattedMessage id="delete_selected" defaultMessage="Delete selected" />
+                  </a>
                 </div>
-              )}
+              </div>
+            )}
             {noDrafts && (
               <h3 className="text-center">
                 <FormattedMessage

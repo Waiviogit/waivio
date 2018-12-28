@@ -64,7 +64,7 @@ class Replies extends React.Component {
     return (
       <div className="shifted">
         <Helmet>
-          <title>{intl.formatMessage({ id: 'replies', defaultMessage: 'Replies' })} - Busy</title>
+          <title>{intl.formatMessage({ id: 'replies', defaultMessage: 'Replies' })} - Waivio</title>
         </Helmet>
         <div className="feed-layout container">
           <Affix className="leftContainer" stickPosition={77}>
@@ -100,5 +100,10 @@ const mapStateToProps = state => ({
 });
 
 export default requiresLogin(
-  injectIntl(connect(mapStateToProps, { getReplies, getMoreReplies, showPostModal })(Replies)),
+  injectIntl(
+    connect(
+      mapStateToProps,
+      { getReplies, getMoreReplies, showPostModal },
+    )(Replies),
+  ),
 );
