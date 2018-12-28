@@ -42,4 +42,4 @@ export const getField = (wObject, currentField, fieldName) => {
   return parsed ? parsed[fieldName] : wo.body;
 };
 
-export const truncate = str => (str && str.length > 150 ? `${str.substring(0, 150)}...` : str);
+export const truncate = str => (str && str.length > 255 ? `${str.substring(0, 255)}...` : str);
