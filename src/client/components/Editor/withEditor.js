@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { message } from 'antd';
+import filesize from 'filesize';
 import { injectIntl } from 'react-intl';
 import { getAuthenticatedUser } from '../../reducers';
-import { MAXIMUM_UPLOAD_SIZE_HUMAN } from '../../helpers/image';
+import { MAXIMUM_UPLOAD_SIZE } from '../../helpers/image';
 import { WAIVIO_OBJECT_TYPE } from '../../../common/constants/waivio';
 import { getClientWObj } from '../../adapters';
 import { getLocale } from '../../settings/settingsReducer';
@@ -75,17 +76,18 @@ export default function withEditor(WrappedComponent) {
         });
     };
 
-    handleImageInvalid = () => {
+    handleImageInvalid = (maxSize = MAXIMUM_UPLOAD_SIZE, allowedFormats = '') => {
       const { formatMessage } = this.props.intl;
       message.error(
         formatMessage(
           {
             id: 'notify_uploading_image_invalid',
             defaultMessage:
-              'This file is invalid. Only image files with maximum size of {size} are supported',
+              'This file is invalid. Only image files {formats}with maximum size of {size} are supported',
           },
-          { size: MAXIMUM_UPLOAD_SIZE_HUMAN },
+          { size: filesize(maxSize), formats: allowedFormats },
         ),
+        3,
       );
     };
 
