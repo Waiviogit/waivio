@@ -35,7 +35,9 @@ export default class UserFollowing extends React.Component {
       previous[previous.length - 1] && previous[previous.length - 1].name
         ? previous[previous.length - 1].name
         : '';
-    return getFollowing(match.params.name, startFrom, 'blog', UserFollowing.limit);
+    return getFollowing(match.params.name, startFrom, 'blog', UserFollowing.limit).then(
+      followings => followings.map(following => ({ name: following })),
+    );
   }
 
   objectFetcher = skip => {
