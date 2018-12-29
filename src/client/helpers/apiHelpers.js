@@ -51,7 +51,7 @@ export const getFollowing = (username, startForm = '', type = 'blog', limit = 10
     'follow_api',
     'get_following',
     [username, startForm, type, limit],
-  ]).then(result => result.map(user => user.following));
+  ]).then(result => result.map(user => ({ name: user.following })));
 
 export const getFollowers = (username, startForm = '', type = 'blog', limit = 100) =>
   SteemAPI.sendAsync('call', [

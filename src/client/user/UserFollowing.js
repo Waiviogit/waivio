@@ -31,12 +31,11 @@ export default class UserFollowing extends React.Component {
 
   fetcher(previous) {
     const { match } = this.props;
-    return getFollowing(
-      match.params.name,
-      previous[previous.length - 1],
-      'blog',
-      UserFollowing.limit,
-    );
+    const startFrom =
+      previous[previous.length - 1] && previous[previous.length - 1].name
+        ? previous[previous.length - 1].name
+        : '';
+    return getFollowing(match.params.name, startFrom, 'blog', UserFollowing.limit);
   }
 
   objectFetcher = skip => {
