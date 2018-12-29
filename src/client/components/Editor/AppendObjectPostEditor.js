@@ -30,6 +30,17 @@ import { isValidImage } from '../../helpers/image';
 @Form.create()
 @withEditor
 class AppendObjectPostEditor extends React.Component {
+  static get MAX_IMG_SIZE() {
+    return {
+      [objectFields.avatarImage]: 2097152,
+      [objectFields.backgroundImage]: 15728640,
+    };
+  }
+
+  static get ALLOWED_IMG_FORMATS() {
+    return ['jpg', 'jpeg', 'png', 'gif'];
+  }
+
   static propTypes = {
     user: PropTypes.shape().isRequired,
     intl: PropTypes.shape().isRequired,
@@ -159,9 +170,19 @@ class AppendObjectPostEditor extends React.Component {
   };
 
   handleImageChange(e) {
+    const { currentField } = this.props;
     if (e.target.files && e.target.files[0]) {
-      if (!isValidImage(e.target.files[0])) {
-        this.props.onImageInvalid();
+      if (
+        !isValidImage(
+          e.target.files[0],
+          AppendObjectPostEditor.MAX_IMG_SIZE[currentField],
+          AppendObjectPostEditor.ALLOWED_IMG_FORMATS,
+        )
+      ) {
+        this.props.onImageInvalid(
+          AppendObjectPostEditor.MAX_IMG_SIZE[currentField],
+          `(${AppendObjectPostEditor.ALLOWED_IMG_FORMATS.join(', ')}) `,
+        );
         return;
       }
 
@@ -175,7 +196,6 @@ class AppendObjectPostEditor extends React.Component {
           imageUploading: false,
         }),
       );
-      e.target.value = '';
     }
   }
 

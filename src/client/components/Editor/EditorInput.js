@@ -374,6 +374,9 @@ class EditorInput extends React.Component {
             id={this.props.inputId || 'inputfile'}
             accept="image/*"
             onChange={this.handleImageChange}
+            onClick={e => {
+              e.target.value = null;
+            }}
           />
           <label htmlFor={this.props.inputId || 'inputfile'}>
             {this.state.imageUploading ? (
