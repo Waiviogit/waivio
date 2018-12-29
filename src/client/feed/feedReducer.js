@@ -73,7 +73,7 @@ const feedCategory = (state = {}, action) => {
         isFetching: false,
         isLoaded: true,
         failed: false,
-        hasMore: action.payload.length === action.meta.limit || action.meta.once,
+        hasMore: Boolean(action.payload.length === action.meta.limit || action.meta.once),
         list: feedIdsList(state.list, action),
       };
     case feedTypes.GET_FEED_CONTENT.ERROR:
