@@ -42,6 +42,11 @@
     height: 45px !important;
     font-size: 20px !important;
     font-weight: bold;
+
+    &.validation-error {
+      border: 1px solid @red;
+      box-shadow: 0 0 3px @orange, 0 0 5px @red;
+    }
   }
 
   &__topics {
@@ -126,6 +131,10 @@ div[data-dir='rtl'] .Editor {
   &__reading_time {
     float: left;
   }
+}
+
+.append-combined-value__validation-msg {
+  color: @red-danger;
 }
 
 @import 'Editor-nightmode';
