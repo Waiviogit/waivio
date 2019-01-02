@@ -6,15 +6,6 @@ import UserHeaderLoading from '../components/UserHeaderLoading';
 import ObjectMenu from '../components/ObjectMenu';
 import Hero from '../components/Hero';
 
-const activityFields = [
-  'last_owner_update',
-  'last_account_update',
-  'last_vote_time',
-  'last_account_recovery',
-  'last_post',
-  'last_root_post',
-];
-
 @withRouter
 class WobjMenuWrapper extends React.Component {
   static propTypes = {
@@ -37,32 +28,17 @@ class WobjMenuWrapper extends React.Component {
   }
 }
 
-const isUserActive = user =>
-  activityFields.some(
-    field =>
-      new Date(new Date().valueOf() + new Date().getTimezoneOffset() * 60000).valueOf() -
-        Date.parse(user[field]) <
-      5 * 60 * 1000,
-  );
-
-const WobjHero = ({ authenticated, wobject, user, username, isFollowing, onTransferClick }) => (
+const WobjHero = ({ authenticated, wobject, isFetching, username, isFollowing }) => (
   <React.Fragment>
     <Switch>
       <Route
         path="/object/@:name"
         render={() => (
           <React.Fragment>
-            {user.fetching ? (
+            {isFetching ? (
               <UserHeaderLoading />
             ) : (
-              <WobjHeader
-                username={username}
-                wobject={wobject}
-                handle={user.name}
-                isFollowing={isFollowing}
-                onTransferClick={onTransferClick}
-                isActive={isUserActive(user)}
-              />
+              <WobjHeader username={username} wobject={wobject} isFollowing={isFollowing} />
             )}
             <WobjMenuWrapper followers={wobject.followers_count || 0} />
           </React.Fragment>
@@ -75,10 +51,9 @@ const WobjHero = ({ authenticated, wobject, user, username, isFollowing, onTrans
 
 WobjHero.propTypes = {
   authenticated: PropTypes.bool.isRequired,
-  user: PropTypes.shape().isRequired,
+  isFetching: PropTypes.bool.isRequired,
   username: PropTypes.string.isRequired,
   isFollowing: PropTypes.bool,
-  onTransferClick: PropTypes.func,
   wobject: PropTypes.shape(),
 };
 

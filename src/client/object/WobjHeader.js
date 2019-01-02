@@ -13,7 +13,7 @@ import { getFieldWithMaxWeight } from '../../client/object/wObjectHelper';
 import { objectFields, descriptionFields } from '../../common/constants/listOfFields';
 import Proposition from '../components/Proposition/Proposition';
 
-const WobjHeader = ({ wobject, isActive }) => {
+const WobjHeader = ({ wobject }) => {
   const coverImage = getFieldWithMaxWeight(
     wobject,
     objectFields.backgroundImage,
@@ -32,7 +32,7 @@ const WobjHeader = ({ wobject, isActive }) => {
   return (
     <div className={classNames('ObjectHeader', { 'ObjectHeader--cover': hasCover })} style={style}>
       <div className="ObjectHeader__container">
-        <ObjectLightbox wobject={wobject} size={100} isActive={isActive} />
+        <ObjectLightbox wobject={wobject} size={100} />
         <div className="ObjectHeader__user">
           <div className="ObjectHeader__row">
             <h2 className="ObjectHeader__user__username">
@@ -77,7 +77,6 @@ const WobjHeader = ({ wobject, isActive }) => {
 
 WobjHeader.propTypes = {
   wobject: PropTypes.shape(),
-  isActive: PropTypes.bool.isRequired,
 };
 
 WobjHeader.defaultProps = {

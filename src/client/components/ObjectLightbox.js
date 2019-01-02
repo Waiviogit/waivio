@@ -9,13 +9,11 @@ export default class ObjectLightbox extends Component {
   static propTypes = {
     wobject: PropTypes.shape(),
     size: PropTypes.number,
-    isActive: PropTypes.bool,
   };
 
   static defaultProps = {
     wobject: undefined,
     size: 100,
-    isActive: false,
   };
 
   state = {
@@ -27,7 +25,7 @@ export default class ObjectLightbox extends Component {
   handleCloseRequest = () => this.setState({ open: false });
 
   render() {
-    const { wobject, size, isActive } = this.props;
+    const { wobject, size } = this.props;
     let imageUrl = getObjectUrl(wobject);
     let isFieldAvatarImage = true;
     if (!imageUrl) {
@@ -41,7 +39,6 @@ export default class ObjectLightbox extends Component {
         {isFieldAvatarImage ? (
           <a role="presentation" onClick={this.handleAvatarClick}>
             <ObjectAvatar item={wobject} size={size} />
-            {isActive && <div className="UserHeader__container--active" />}
           </a>
         ) : (
           <Link to={{ pathname: `/wobject/editor/@${wobject.author_permlink}/avatarImage` }}>

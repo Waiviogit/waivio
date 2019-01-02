@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import urlParse from 'url-parse';
 import _ from 'lodash';
 import './ObjectInfo.less';
-
+import { haveAcess, accessTypesArr } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 
 import { getFieldWithMaxWeight, truncate } from '../../object/wObjectHelper';
@@ -16,7 +16,7 @@ import {
 import Proposition from '../../components/Proposition/Proposition';
 
 const ObjectInfo = props => {
-  const { wobject } = props;
+  const { wobject, userName } = props;
   let locationArray = [];
   let location = '';
   let descriptionFull = '';
@@ -54,7 +54,7 @@ const ObjectInfo = props => {
   };
 
   profile = _.pickBy(profile, _.identity);
-
+  const accessExtend = haveAcess(wobject, userName, accessTypesArr[0]);
   return (
     <React.Fragment>
       {getFieldWithMaxWeight(wobject, 'name') && (
@@ -80,7 +80,7 @@ const ObjectInfo = props => {
                 </a>
               </React.Fragment>
             ) : (
-              <Proposition objectID={wobject.author_permlink} fieldName="link" />
+              accessExtend && <Proposition objectID={wobject.author_permlink} fieldName="link" />
             )}
           </div>
           <SocialLinks profile={profile} />
@@ -92,6 +92,7 @@ const ObjectInfo = props => {
 
 ObjectInfo.propTypes = {
   wobject: PropTypes.shape().isRequired,
+  userName: PropTypes.string.isRequired,
 };
 
 export default ObjectInfo;
