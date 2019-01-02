@@ -63,7 +63,7 @@ export default class UserDynamicList extends React.Component {
             <UserCard
               key={user.name}
               user={user}
-              alt={user.rank ? <WeightTag weight={user.rank} /> : null}
+              alt={user.rank ? <WeightTag weight={user.weight} rank={user.rank} /> : null}
             />
           ))}
         </ReduxInfiniteScroll>
