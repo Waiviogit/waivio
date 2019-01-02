@@ -6,8 +6,9 @@ import './ObjectAvatar.less';
 const defaultUrl = 'https://steemitimages.com/u/waivio/avatar/small';
 
 export const getObjectUrl = item => {
-  const o = _.find(item.fields, ['name', 'avatarImage']);
-  return o ? o.body : null;
+  const avatarFields = _.filter(item.fields, o => o.name === 'avatarImage');
+  const avatarField = _.maxBy(avatarFields, 'weight');
+  return avatarField ? avatarField.body : null;
 };
 
 const ObjectAvatar = ({ item, size }) => {

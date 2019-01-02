@@ -15,19 +15,23 @@
 .leftContainer__user {
   overflow-wrap: break-word;
 }
-
 .User__links {
-  display: flex;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  overflow: hidden;
-  align-items: center;
-
-  & > a {
-    font-weight: bold;
-    vertical-align: middle;
+  display: none;
+}
+@media @large, @medium {
+  .User__links {
+    display: flex;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     max-width: 100%;
+    overflow: hidden;
+    align-items: center;
+
+    & > a {
+      font-weight: bold;
+      vertical-align: middle;
+      max-width: 100%;
+    }
   }
 }
 

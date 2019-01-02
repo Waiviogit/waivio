@@ -2,61 +2,38 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import urlParse from 'url-parse';
 import _ from 'lodash';
-
+import './ObjectInfo.less';
+import { haveAcess, accessTypesArr } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 
-import { getField } from '../../object/wObjectHelper';
+import { getFieldWithMaxWeight, truncate } from '../../object/wObjectHelper';
 import {
   objectFields,
   descriptionFields,
   locationFields,
   linkFields,
 } from '../../../common/constants/listOfFields';
-
-export const truncate = str => {
-  if (str && str.length > 150) return `${str.substring(0, 150)}...`;
-  return str;
-};
+import Proposition from '../../components/Proposition/Proposition';
 
 const ObjectInfo = props => {
-  const { wobject } = props;
+  const { wobject, userName } = props;
+  let locationArray = [];
+  let location = '';
+  let descriptionFull = '';
+  let website = '';
 
-  const locationCountry =
-    wobject && getField(wobject, objectFields.location, locationFields.locationCountry);
-  const locationCity =
-    wobject && getField(wobject, objectFields.location, locationFields.locationCity);
-  const locationStreet =
-    wobject && getField(wobject, objectFields.location, locationFields.locationStreet);
-  const locationAccommodation =
-    wobject && getField(wobject, objectFields.location, locationFields.locationAccommodation);
-  const postCode = wobject && getField(wobject, objectFields.location, locationFields.postCode);
-  const locationLatitude =
-    wobject && getField(wobject, objectFields.location, locationFields.locationLatitude);
-  const locationLongitude =
-    wobject && getField(wobject, objectFields.location, locationFields.locationLongitude);
+  if (wobject) {
+    locationArray = Object.keys(locationFields).map(fieldName =>
+      getFieldWithMaxWeight(wobject, objectFields.location, fieldName),
+    );
+    location = _.compact(locationArray).join(', ');
 
-  const locationArray = [
-    locationCountry,
-    locationCity,
-    locationStreet,
-    locationAccommodation,
-    postCode,
-    locationLatitude,
-    locationLongitude,
-  ];
+    descriptionFull = truncate(
+      getFieldWithMaxWeight(wobject, objectFields.description, descriptionFields.descriptionFull),
+    );
 
-  const locations = _.compact(locationArray);
-  const location = locations.join(', ');
-
-  const descriptionField = getField(
-    wobject,
-    objectFields.description,
-    descriptionFields.descriptionFull,
-  );
-
-  const descriptionFull = wobject && truncate(descriptionField);
-
-  let website = wobject && getField(wobject, objectFields.link, linkFields.website);
+    website = getFieldWithMaxWeight(wobject, objectFields.link, linkFields.website);
+  }
 
   if (website && website.indexOf('http://') === -1 && website.indexOf('https://') === -1) {
     website = `http://${website}`;
@@ -69,45 +46,53 @@ const ObjectInfo = props => {
   }
 
   let profile = {
-    facebook: getField(wobject, objectFields.link, linkFields.linkFacebook),
-    twitter: getField(wobject, objectFields.link, linkFields.linkTwitter),
-    youtube: getField(wobject, objectFields.link, linkFields.linkYouTube),
-    instagram: getField(wobject, objectFields.link, linkFields.linkInstagram),
-    github: getField(wobject, objectFields.link, linkFields.linkGitHub),
+    facebook: getFieldWithMaxWeight(wobject, objectFields.link, linkFields.linkFacebook),
+    twitter: getFieldWithMaxWeight(wobject, objectFields.link, linkFields.linkTwitter),
+    youtube: getFieldWithMaxWeight(wobject, objectFields.link, linkFields.linkYouTube),
+    instagram: getFieldWithMaxWeight(wobject, objectFields.link, linkFields.linkInstagram),
+    github: getFieldWithMaxWeight(wobject, objectFields.link, linkFields.linkGitHub),
   };
 
   profile = _.pickBy(profile, _.identity);
-
+  const accessExtend = haveAcess(wobject, userName, accessTypesArr[0]);
   return (
-    <div>
-      {getField(wobject, 'name') && (
-        <div style={{ wordBreak: 'break-word' }}>
-          <div style={{ fontSize: '18px' }}>{wobject && descriptionFull}</div>
-          <div style={{ marginTop: 16, marginBottom: 16 }}>
-            {location && (
-              <div>
+    <React.Fragment>
+      {getFieldWithMaxWeight(wobject, 'name') && (
+        <div className="object-profile">
+          <div className="object-profile__description">{wobject && descriptionFull}</div>
+          <div className="object-profile__element">
+            {location ? (
+              <React.Fragment>
                 <i className="iconfont icon-coordinates text-icon" />
                 {location}
-              </div>
+              </React.Fragment>
+            ) : (
+              <Proposition objectID={wobject.author_permlink} fieldName="location" />
             )}
-            {website && (
-              <div>
+          </div>
+          <div className="object-profile__element">
+            {website ? (
+              <React.Fragment>
                 <i className="iconfont icon-link text-icon" />
                 <a target="_blank" rel="noopener noreferrer" href={website}>
-                  {`${hostWithoutWWW}${url.pathname.replace(/\/$/, '')}`}
+                  {/* {`${hostWithoutWWW}${url.pathname.replace(/\/$/, '')}`} */}
+                  Website
                 </a>
-              </div>
+              </React.Fragment>
+            ) : (
+              accessExtend && <Proposition objectID={wobject.author_permlink} fieldName="link" />
             )}
           </div>
           <SocialLinks profile={profile} />
         </div>
       )}
-    </div>
+    </React.Fragment>
   );
 };
 
 ObjectInfo.propTypes = {
   wobject: PropTypes.shape().isRequired,
+  userName: PropTypes.string.isRequired,
 };
 
 export default ObjectInfo;

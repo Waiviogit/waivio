@@ -4,6 +4,7 @@ import Helmet from 'react-helmet';
 import ReactDOM from 'react-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _ from 'lodash';
+import classNames from 'classnames';
 import readingTime from 'reading-time';
 import { Form, Input, Select } from 'antd';
 import uuidv4 from 'uuid/v4';
@@ -11,6 +12,9 @@ import {
   supportedObjectFields,
   objectFields,
   socialObjectFields,
+  descriptionFields,
+  locationFields,
+  linkFields,
 } from '../../../common/constants/listOfFields';
 import Action from '../Button/Action';
 import requiresLogin from '../../auth/requiresLogin';
@@ -30,6 +34,17 @@ import { isValidImage } from '../../helpers/image';
 @Form.create()
 @withEditor
 class AppendObjectPostEditor extends React.Component {
+  static get MAX_IMG_SIZE() {
+    return {
+      [objectFields.avatarImage]: 2097152,
+      [objectFields.backgroundImage]: 15728640,
+    };
+  }
+
+  static get ALLOWED_IMG_FORMATS() {
+    return ['jpg', 'jpeg', 'png', 'gif'];
+  }
+
   static propTypes = {
     user: PropTypes.shape().isRequired,
     intl: PropTypes.shape().isRequired,
@@ -80,6 +95,7 @@ class AppendObjectPostEditor extends React.Component {
       value: '',
       imageUploading: false,
       currentImage: [],
+      isSomeValue: true,
     };
 
     this.onUpdate = this.onUpdate.bind(this);
@@ -159,9 +175,19 @@ class AppendObjectPostEditor extends React.Component {
   };
 
   handleImageChange(e) {
+    const { currentField } = this.props;
     if (e.target.files && e.target.files[0]) {
-      if (!isValidImage(e.target.files[0])) {
-        this.props.onImageInvalid();
+      if (
+        !isValidImage(
+          e.target.files[0],
+          AppendObjectPostEditor.MAX_IMG_SIZE[currentField],
+          AppendObjectPostEditor.ALLOWED_IMG_FORMATS,
+        )
+      ) {
+        this.props.onImageInvalid(
+          AppendObjectPostEditor.MAX_IMG_SIZE[currentField],
+          `(${AppendObjectPostEditor.ALLOWED_IMG_FORMATS.join(', ')}) `,
+        );
         return;
       }
 
@@ -175,7 +201,6 @@ class AppendObjectPostEditor extends React.Component {
           imageUploading: false,
         }),
       );
-      e.target.value = '';
     }
   }
 
@@ -216,11 +241,37 @@ class AppendObjectPostEditor extends React.Component {
     callback();
   };
 
+  checkRequiredField = () => {
+    const { form, currentField } = this.props;
+    let formFields = null;
+    switch (currentField) {
+      case objectFields.description:
+        formFields = form.getFieldsValue(Object.values(descriptionFields));
+        break;
+      case objectFields.location:
+        formFields = form.getFieldsValue(Object.values(locationFields));
+        break;
+      case objectFields.link:
+        formFields = form.getFieldsValue(Object.values(linkFields));
+        break;
+      default:
+        break;
+    }
+
+    if (formFields) {
+      const isSomeValueFilled = Object.values(formFields).some(f => Boolean(f));
+      this.setState({ isSomeValue: isSomeValueFilled });
+      return !isSomeValueFilled;
+    }
+
+    return true;
+  };
+
   handleSubmit(e) {
     e.preventDefault();
 
     this.props.form.validateFieldsAndScroll((err, values) => {
-      if (err) this.props.onError();
+      if (err || this.checkRequiredField()) this.props.onError();
       else {
         const valuesToSend = {
           ...values,
@@ -244,6 +295,7 @@ class AppendObjectPostEditor extends React.Component {
       return list.join(' ');
     };
 
+    this.checkRequiredField();
     this.setBodyAndRender(
       `${this.props.intl.formatMessage(
         {
@@ -276,12 +328,21 @@ class AppendObjectPostEditor extends React.Component {
     const { intl, wobject } = this.props;
     const { getFieldDecorator } = this.props.form;
 
+    const combinedFieldValidationMsg = !this.state.isSomeValue ? (
+      <div className="append-combined-value__validation-msg">
+        {intl.formatMessage({
+          id: 'append_object_validation_message',
+          defaultMessage: 'At least one field must be filled',
+        })}
+      </div>
+    ) : null;
+
     switch (currentField) {
       case objectFields.name: {
         return (
           <Form.Item>
             {getFieldDecorator('name', {
-              initialValue: this.getInitialValue(wobject, 'name'),
+              initialValue: this.getInitialValue(wobject, this.props.currentField),
               rules: [
                 {
                   transform: value => value.toLowerCase(),
@@ -338,8 +399,8 @@ class AppendObjectPostEditor extends React.Component {
         return (
           <React.Fragment>
             <Form.Item>
-              {getFieldDecorator('descriptionShort', {
-                initialValue: this.getInitialValue(wobject, 'descriptionShort'),
+              {getFieldDecorator(descriptionFields.descriptionShort, {
+                initialValue: this.getInitialValue(wobject, descriptionFields.descriptionShort),
                 rules: [
                   {
                     max: 100,
@@ -358,7 +419,9 @@ class AppendObjectPostEditor extends React.Component {
               })(
                 <Input
                   onChange={this.onUpdate}
-                  className="Editor__input"
+                  className={classNames('Editor__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
                   placeholder={intl.formatMessage({
                     id: 'description_short',
                     defaultMessage: 'Short description',
@@ -367,8 +430,8 @@ class AppendObjectPostEditor extends React.Component {
               )}
             </Form.Item>
             <Form.Item>
-              {getFieldDecorator('descriptionFull', {
-                initialValue: this.getInitialValue(wobject, 'descriptionFull'),
+              {getFieldDecorator(descriptionFields.descriptionFull, {
+                initialValue: this.getInitialValue(wobject, descriptionFields.descriptionFull),
                 rules: [
                   {
                     max: 255,
@@ -384,7 +447,9 @@ class AppendObjectPostEditor extends React.Component {
               })(
                 <Input.TextArea
                   onChange={this.onUpdate}
-                  className="Editor__input"
+                  className={classNames('Editor__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
                   autosize={{ minRows: 4, maxRows: 8 }}
                   placeholder={intl.formatMessage({
                     id: 'description_full',
@@ -393,6 +458,7 @@ class AppendObjectPostEditor extends React.Component {
                 />,
               )}
             </Form.Item>
+            {combinedFieldValidationMsg}
           </React.Fragment>
         );
       }
@@ -400,8 +466,8 @@ class AppendObjectPostEditor extends React.Component {
         return (
           <React.Fragment>
             <Form.Item>
-              {getFieldDecorator('locationCountry', {
-                initialValue: this.getInitialValue(wobject, 'locationCountry'),
+              {getFieldDecorator(locationFields.locationCountry, {
+                initialValue: this.getInitialValue(wobject, locationFields.locationCountry),
                 rules: [
                   {
                     max: 100,
@@ -420,7 +486,9 @@ class AppendObjectPostEditor extends React.Component {
               })(
                 <Input
                   onChange={this.onUpdate}
-                  className="Editor__input"
+                  className={classNames('Editor__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
                   placeholder={intl.formatMessage({
                     id: 'location_country',
                     defaultMessage: 'Country',
@@ -429,8 +497,8 @@ class AppendObjectPostEditor extends React.Component {
               )}
             </Form.Item>
             <Form.Item>
-              {getFieldDecorator('locationCity', {
-                initialValue: this.getInitialValue(wobject, 'locationCity'),
+              {getFieldDecorator(locationFields.locationCity, {
+                initialValue: this.getInitialValue(wobject, locationFields.locationCity),
                 rules: [
                   {
                     max: 100,
@@ -449,7 +517,9 @@ class AppendObjectPostEditor extends React.Component {
               })(
                 <Input
                   onChange={this.onUpdate}
-                  className="Editor__input"
+                  className={classNames('Editor__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
                   placeholder={intl.formatMessage({
                     id: 'location_city',
                     defaultMessage: 'City',
@@ -458,8 +528,8 @@ class AppendObjectPostEditor extends React.Component {
               )}
             </Form.Item>
             <Form.Item>
-              {getFieldDecorator('locationStreet', {
-                initialValue: this.getInitialValue(wobject, 'locationStreet'),
+              {getFieldDecorator(locationFields.locationStreet, {
+                initialValue: this.getInitialValue(wobject, locationFields.locationStreet),
                 rules: [
                   {
                     max: 100,
@@ -478,7 +548,9 @@ class AppendObjectPostEditor extends React.Component {
               })(
                 <Input
                   onChange={this.onUpdate}
-                  className="Editor__input"
+                  className={classNames('Editor__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
                   placeholder={intl.formatMessage({
                     id: 'location_street',
                     defaultMessage: 'Street',
@@ -487,8 +559,8 @@ class AppendObjectPostEditor extends React.Component {
               )}
             </Form.Item>
             <Form.Item>
-              {getFieldDecorator('locationAccommodation', {
-                initialValue: this.getInitialValue(wobject, 'locationAccommodation'),
+              {getFieldDecorator(locationFields.locationAccommodation, {
+                initialValue: this.getInitialValue(wobject, locationFields.locationAccommodation),
                 rules: [
                   {
                     max: 100,
@@ -507,7 +579,9 @@ class AppendObjectPostEditor extends React.Component {
               })(
                 <Input
                   onChange={this.onUpdate}
-                  className="Editor__input"
+                  className={classNames('Editor__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
                   placeholder={intl.formatMessage({
                     id: 'location_accommodation',
                     defaultMessage: 'Accommodation',
@@ -516,8 +590,8 @@ class AppendObjectPostEditor extends React.Component {
               )}
             </Form.Item>
             <Form.Item>
-              {getFieldDecorator('postCode', {
-                initialValue: this.getInitialValue(wobject, 'postCode'),
+              {getFieldDecorator(locationFields.postCode, {
+                initialValue: this.getInitialValue(wobject, locationFields.postCode),
                 rules: [
                   {
                     max: 100,
@@ -536,7 +610,9 @@ class AppendObjectPostEditor extends React.Component {
               })(
                 <Input
                   onChange={this.onUpdate}
-                  className="Editor__input"
+                  className={classNames('Editor__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
                   placeholder={intl.formatMessage({
                     id: 'post_code',
                     defaultMessage: 'Post Code',
@@ -545,8 +621,8 @@ class AppendObjectPostEditor extends React.Component {
               )}
             </Form.Item>
             <Form.Item>
-              {getFieldDecorator('locationLatitude', {
-                initialValue: this.getInitialValue(wobject, 'locationLatitude'),
+              {getFieldDecorator(locationFields.locationLatitude, {
+                initialValue: this.getInitialValue(wobject, locationFields.locationLatitude),
                 rules: [
                   {
                     max: 100,
@@ -565,7 +641,9 @@ class AppendObjectPostEditor extends React.Component {
               })(
                 <Input
                   onChange={this.onUpdate}
-                  className="Editor__input"
+                  className={classNames('Editor__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
                   placeholder={intl.formatMessage({
                     id: 'location_latitude',
                     defaultMessage: 'Latitude',
@@ -574,8 +652,8 @@ class AppendObjectPostEditor extends React.Component {
               )}
             </Form.Item>
             <Form.Item>
-              {getFieldDecorator('locationLongitude', {
-                initialValue: this.getInitialValue(wobject, 'locationLongitude'),
+              {getFieldDecorator(locationFields.locationLongitude, {
+                initialValue: this.getInitialValue(wobject, locationFields.locationLongitude),
                 rules: [
                   {
                     max: 100,
@@ -594,7 +672,9 @@ class AppendObjectPostEditor extends React.Component {
               })(
                 <Input
                   onChange={this.onUpdate}
-                  className="Editor__input"
+                  className={classNames('Editor__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
                   placeholder={intl.formatMessage({
                     id: 'location_longitude',
                     defaultMessage: 'Longitude',
@@ -602,6 +682,7 @@ class AppendObjectPostEditor extends React.Component {
                 />,
               )}
             </Form.Item>
+            {combinedFieldValidationMsg}
           </React.Fragment>
         );
       }
@@ -609,8 +690,8 @@ class AppendObjectPostEditor extends React.Component {
         return (
           <React.Fragment>
             <Form.Item>
-              {getFieldDecorator('website', {
-                initialValue: this.getInitialValue(wobject, 'website'),
+              {getFieldDecorator(linkFields.website, {
+                initialValue: this.getInitialValue(wobject, linkFields.website),
                 rules: [
                   {
                     max: 100,
@@ -629,7 +710,9 @@ class AppendObjectPostEditor extends React.Component {
               })(
                 <Input
                   onChange={this.onUpdate}
-                  className="Editor__input"
+                  className={classNames('Editor__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
                   placeholder={intl.formatMessage({
                     id: 'profile_website',
                     defaultMessage: 'Website',
@@ -655,6 +738,9 @@ class AppendObjectPostEditor extends React.Component {
                 })(
                   <Input
                     onChange={this.onUpdate}
+                    className={classNames('Editor__input', {
+                      'validation-error': !this.state.isSomeValue,
+                    })}
                     size="large"
                     prefix={
                       <i
@@ -669,6 +755,7 @@ class AppendObjectPostEditor extends React.Component {
                 )}
               </Form.Item>
             ))}
+            {combinedFieldValidationMsg}
           </React.Fragment>
         );
       }
@@ -713,7 +800,7 @@ class AppendObjectPostEditor extends React.Component {
           <FormattedMessage id="suggest1" defaultMessage="I suggest to add field" />
         </div>
         <Select
-          defaultValue={supportedObjectFields[0]}
+          defaultValue={this.props.currentField}
           style={{ width: '100%' }}
           onChange={this.handleChangeField}
         >

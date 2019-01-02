@@ -219,7 +219,7 @@ class PostContent extends React.Component {
     const canonicalUrl = `${canonicalHost}${dropCategory(content.url)}`;
     const url = `${busyHost}${dropCategory(content.url)}`;
     const ampUrl = `${url}/amp`;
-    const metaTitle = `${title} - Busy`;
+    const metaTitle = `${title} - Waivio`;
 
     return (
       <div>

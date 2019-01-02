@@ -144,7 +144,7 @@ export default class ProfileSettings extends React.Component {
       <div className="shifted">
         <Helmet>
           <title>
-            {intl.formatMessage({ id: 'edit_profile', defaultMessage: 'Edit profile' })} - Busy
+            {intl.formatMessage({ id: 'edit_profile', defaultMessage: 'Edit profile' })} - Waivio
           </title>
         </Helmet>
         <div className="settings-layout container">

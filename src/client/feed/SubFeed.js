@@ -120,7 +120,10 @@ class SubFeed extends React.Component {
       content = getUserFeedFromState(user.name, feed);
       isFetching = getUserFeedLoadingFromState(user.name, feed);
       fetched = getUserFeedFetchedFromState(user.name, feed);
-      hasMore = feed.created[user.name] ? feed.created[user.name].hasMore : true;
+      hasMore =
+        feed.feed[user.name] && !_.isNil(feed.feed[user.name].hasMore)
+          ? feed.feed[user.name].hasMore
+          : true;
       failed = getUserFeedFailedFromState(user.name, feed);
       loadMoreContent = () => this.props.getMoreFeedContent('feed', user.name);
     } else {

@@ -109,9 +109,9 @@ export const getWobjectFollowers = (wobject, skip = 0, limit = 50) =>
     })
       .then(handleErrors)
       .then(res => res.json())
-      .then(result => resolve(result))
+      .then(result => resolve(result || []))
       .catch(error => reject(error));
-  }).then(({ followers }) => followers.map(user => user.name));
+  });
 
 export const getWobjectFollowing = (wobject, skip = 0, limit = 50) =>
   new Promise((resolve, reject) => {
