@@ -299,7 +299,8 @@ class Editor extends React.Component {
             obj.id === wObject.id
               ? {
                   ...obj,
-                  id: `${res.objectAuthor}_${res.objectPermlink}`,
+                  // id: `${res.objectAuthor}_${res.objectPermlink}`,
+                  id: `${res.objectPermlink}`,
                   isNew: false,
                   isCreating: false,
                 }
