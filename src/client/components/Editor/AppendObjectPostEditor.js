@@ -28,6 +28,8 @@ import LANGUAGES from '../../translations/languages';
 import { getField } from '../../objects/WaivioObject';
 import QuickPostEditorFooter from '../QuickPostEditor/QuickPostEditorFooter';
 import { isValidImage } from '../../helpers/image';
+import Map from '../Maps/Map';
+import { regexCoordsLatitude, regexCoordsLongitude } from '../Maps/mapHelper';
 
 @injectIntl
 @requiresLogin
@@ -96,9 +98,12 @@ class AppendObjectPostEditor extends React.Component {
       imageUploading: false,
       currentImage: [],
       isSomeValue: true,
+      lng: -101.39,
+      lat: 37.22,
     };
-
     this.onUpdate = this.onUpdate.bind(this);
+    this.setCoordinates = this.setCoordinates.bind(this);
+    this.onUpdateCoordinate = this.onUpdateCoordinate.bind(this);
     this.setBodyAndRender = this.setBodyAndRender.bind(this);
     this.throttledUpdate = this.throttledUpdate.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
@@ -125,11 +130,31 @@ class AppendObjectPostEditor extends React.Component {
       this.setValues(nextProps);
     }
   }
-
   onUpdate() {
     _.throttle(this.throttledUpdate, 200, { leading: false, trailing: true })();
   }
-
+  onUpdateCoordinate(e) {
+    if (
+      e.target.id === 'locationLatitude' &&
+      Number(e.target.value) > -85 &&
+      Number(e.target.value) < 85
+    )
+      this.setState({ lat: Number(e.target.value) });
+    if (
+      e.target.id === 'locationLongitude' &&
+      Number(e.target.value) > -180 &&
+      Number(e.target.value) < 180
+    )
+      this.setState({ lng: Number(e.target.value) });
+  }
+  setCoordinates(coordinates) {
+    const latLng = coordinates.latLng;
+    this.setState({ lat: latLng.lat(), lng: latLng.lng() });
+    this.props.form.setFieldsValue({
+      locationLatitude: latLng.lat().toFixed(6),
+      locationLongitude: latLng.lng().toFixed(6),
+    });
+  }
   setBodyAndRender(body, value) {
     this.setState({
       body,
@@ -137,7 +162,6 @@ class AppendObjectPostEditor extends React.Component {
       bodyHTML: remarkable.render(body),
     });
   }
-
   getInitialValue = (wobject, fieldName) => {
     const { currentField, currentLocaleInList } = this.props;
 
@@ -623,13 +647,14 @@ class AppendObjectPostEditor extends React.Component {
             <Form.Item>
               {getFieldDecorator(locationFields.locationLatitude, {
                 initialValue: this.getInitialValue(wobject, locationFields.locationLatitude),
+                // initialValue: this.state.lat,
                 rules: [
                   {
-                    max: 100,
+                    pattern: regexCoordsLatitude,
                     message: intl.formatMessage(
                       {
-                        id: 'value_error_long',
-                        defaultMessage: "Value can't be longer than 100 characters.",
+                        id: 'value_invalid_latitude',
+                        defaultMessage: 'Should be number from -90 to 90',
                       },
                       { value: 100 },
                     ),
@@ -641,6 +666,7 @@ class AppendObjectPostEditor extends React.Component {
               })(
                 <Input
                   onChange={this.onUpdate}
+                  onBlur={this.onUpdateCoordinate}
                   className={classNames('Editor__input', {
                     'validation-error': !this.state.isSomeValue,
                   })}
@@ -654,13 +680,14 @@ class AppendObjectPostEditor extends React.Component {
             <Form.Item>
               {getFieldDecorator(locationFields.locationLongitude, {
                 initialValue: this.getInitialValue(wobject, locationFields.locationLongitude),
+                // initialValue: this.state.lng,
                 rules: [
                   {
-                    max: 100,
+                    pattern: regexCoordsLongitude,
                     message: intl.formatMessage(
                       {
-                        id: 'value_error_long',
-                        defaultMessage: "Value can't be longer than 100 characters.",
+                        id: 'value_invalid_longitude',
+                        defaultMessage: 'Should be number from -180 to 180',
                       },
                       { value: 100 },
                     ),
@@ -671,6 +698,7 @@ class AppendObjectPostEditor extends React.Component {
                 ],
               })(
                 <Input
+                  onBlur={this.onUpdateCoordinate}
                   onChange={this.onUpdate}
                   className={classNames('Editor__input', {
                     'validation-error': !this.state.isSomeValue,
@@ -682,6 +710,19 @@ class AppendObjectPostEditor extends React.Component {
                 />,
               )}
             </Form.Item>
+            {
+              <Map
+                isMarkerShown
+                setCoordinates={this.setCoordinates}
+                wobject={wobject}
+                googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
+                loadingElement={<div style={{ height: `100%` }} />}
+                containerElement={<div style={{ height: `400px` }} />}
+                mapElement={<div style={{ height: `100%` }} />}
+                lat={this.state.lat}
+                lng={this.state.lng}
+              />
+            }
             {combinedFieldValidationMsg}
           </React.Fragment>
         );
