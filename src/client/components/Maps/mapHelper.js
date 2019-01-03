@@ -4,9 +4,9 @@ export const regexCoordsLongitude = /^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1
 export const isCoordinatesValid = (lat, lng) =>
   lat &&
   lng &&
-  lat > -85 &&
-  lat < 85 &&
-  lng > -180 &&
-  lng < 180 &&
+  lat >= -90 &&
+  lat <= 90 &&
+  lng >= -180 &&
+  lng <= 180 &&
   String(lat).match(regexCoordsLatitude) &&
   String(lng).match(regexCoordsLongitude);
