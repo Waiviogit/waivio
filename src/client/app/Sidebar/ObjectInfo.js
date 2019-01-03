@@ -14,6 +14,8 @@ import {
   linkFields,
 } from '../../../common/constants/listOfFields';
 import Proposition from '../../components/Proposition/Proposition';
+import Map from '../../components/Maps/Map';
+import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 
 const ObjectInfo = props => {
   const { wobject, userName } = props;
@@ -65,6 +67,22 @@ const ObjectInfo = props => {
               <React.Fragment>
                 <i className="iconfont icon-coordinates text-icon" />
                 {location}
+                {locationArray &&
+                  locationArray[5] &&
+                  locationArray[6] &&
+                  isCoordinatesValid(locationArray[5], locationArray[6]) && (
+                    <Map
+                      isMarkerShown
+                      setCoordinates={() => {}}
+                      wobject={wobject}
+                      googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
+                      loadingElement={<div style={{ height: `100%` }} />}
+                      containerElement={<div style={{ height: `200px` }} />}
+                      mapElement={<div style={{ height: `100%` }} />}
+                      lat={Number(locationArray[5])}
+                      lng={Number(locationArray[6])}
+                    />
+                  )}
               </React.Fragment>
             ) : (
               <Proposition objectID={wobject.author_permlink} fieldName="location" />
