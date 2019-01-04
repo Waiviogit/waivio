@@ -3,7 +3,7 @@
     "apiPrefix": "http://waiviodev.com/api",
 
     "objectsBot": {
-      "apiPrefix": "https://objects-bot-service.herokuapp.com",
+      "apiPrefix": "http://waiviodev.com",
       "": "http://localhost:8093",
       "createObject": "/objects-bot/create-object",
       "appendObject": "/objects-bot/append-object"
@@ -20,7 +20,7 @@
     "apiPrefix": "http://waiviodev.com/api",
 
     "objectsBot": {
-      "apiPrefix": "https://objects-bot-service.herokuapp.com",
+      "apiPrefix": "http://waiviodev.com",
       "createObject": "/objects-bot/create-object",
       "appendObject": "/objects-bot/append-object"
     },
