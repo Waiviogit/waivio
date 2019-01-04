@@ -34,20 +34,13 @@ export const GET_RECOMMENDED_OBJECTS_START = '@user/GET_RECOMMENDED_OBJECTS_STAR
 export const GET_RECOMMENDED_OBJECTS_SUCCESS = '@user/GET_RECOMMENDED_OBJECTS_SUCCESS';
 export const GET_RECOMMENDED_OBJECTS_ERROR = '@user/GET_RECOMMENDED_OBJECTS_ERROR';
 
-export const getRecommendedObjects = () => (dispatch, getState) => {
-  const state = getState();
-
-  if (!getIsAuthenticated(state)) {
-    return Promise.reject('User is not authenticated');
-  }
-
-  return dispatch({
+export const getRecommendedObjects = () => dispatch =>
+  dispatch({
     type: GET_RECOMMENDED_OBJECTS,
     payload: {
       promise: ApiClient.getRecommendedObjects(),
     },
   });
-};
 
 export const UNFOLLOW_USER = '@user/UNFOLLOW_USER';
 export const UNFOLLOW_USER_START = '@user/UNFOLLOW_USER_START';
