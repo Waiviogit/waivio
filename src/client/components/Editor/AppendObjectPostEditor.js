@@ -281,6 +281,9 @@ class AppendObjectPostEditor extends React.Component {
     const { form, currentField } = this.props;
     let formFields = null;
     switch (currentField) {
+      case objectFields.name:
+        formFields = form.getFieldsValue(['name']);
+        break;
       case objectFields.description:
         formFields = form.getFieldsValue(Object.values(descriptionFields));
         break;
@@ -659,7 +662,6 @@ class AppendObjectPostEditor extends React.Component {
             <Form.Item>
               {getFieldDecorator(locationFields.locationLatitude, {
                 initialValue: this.getInitialValue(wobject, locationFields.locationLatitude),
-                // initialValue: this.state.lat,
                 rules: [
                   {
                     pattern: regexCoordsLatitude,
