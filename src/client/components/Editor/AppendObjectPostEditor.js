@@ -165,6 +165,7 @@ class AppendObjectPostEditor extends React.Component {
       locationLatitude: latLng.lat().toFixed(6),
       locationLongitude: latLng.lng().toFixed(6),
     });
+    _.throttle(this.throttledUpdate, 200, { leading: false, trailing: true })();
   }
   setBodyAndRender(body, value) {
     this.setState({
