@@ -298,6 +298,12 @@ class AppendObjectPostEditor extends React.Component {
     }
 
     if (formFields) {
+      if (
+        (currentField === objectFields.location &&
+          (formFields.locationLatitude !== '' && formFields.locationLongitude === '')) ||
+        (formFields.locationLatitude === '' && formFields.locationLongitude !== '')
+      )
+        return true;
       const isSomeValueFilled = Object.values(formFields).some(f => Boolean(f));
       this.setState({ isSomeValue: isSomeValueFilled });
       return !isSomeValueFilled;
@@ -310,8 +316,9 @@ class AppendObjectPostEditor extends React.Component {
     e.preventDefault();
 
     this.props.form.validateFieldsAndScroll((err, values) => {
-      if (err || this.checkRequiredField()) this.props.onError();
-      else {
+      if (err || this.checkRequiredField()) {
+        this.props.onError();
+      } else {
         const valuesToSend = {
           ...values,
           preview: this.state.body,
