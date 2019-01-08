@@ -337,6 +337,7 @@ class EditorInput extends React.Component {
           onSelect={this.insertCode}
           togglePopover={this.togglePopover}
           onSelectLinkedObject={this.handleSelectObject}
+          imageRef={this.imageRef}
         />
         <div className="EditorInput__dropzone-base">
           <Dropzone
@@ -370,6 +371,9 @@ class EditorInput extends React.Component {
         </div>
         <p className="EditorInput__imagebox">
           <input
+            ref={input => {
+              this.imageRef = input;
+            }}
             type="file"
             id={this.props.inputId || 'inputfile'}
             accept="image/*"
@@ -379,18 +383,11 @@ class EditorInput extends React.Component {
             }}
           />
           <label htmlFor={this.props.inputId || 'inputfile'}>
-            {this.state.imageUploading ? (
-              <Icon type="loading" />
-            ) : (
-              <i className="iconfont icon-picture" />
-            )}
-            {this.state.imageUploading ? (
-              <FormattedMessage id="image_uploading" defaultMessage="Uploading your image..." />
-            ) : (
-              <FormattedMessage
-                id="select_or_past_image"
-                defaultMessage="Select image or paste it from the clipboard."
-              />
+            {this.state.imageUploading && (
+              <React.Fragment>
+                <Icon type="loading" />
+                <FormattedMessage id="image_uploading" defaultMessage="Uploading your image..." />
+              </React.Fragment>
             )}
           </label>
           <label htmlFor="reading_time" className="EditorInput__addon">

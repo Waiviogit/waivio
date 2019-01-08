@@ -15,7 +15,7 @@ const tooltip = (description, shortcut) => (
   </span>
 );
 
-const EditorToolbar = ({ intl, onSelect, onSelectLinkedObject }) => {
+const EditorToolbar = ({ intl, onSelect, onSelectLinkedObject, imageRef }) => {
   const menu = (
     <Menu onClick={e => onSelect(e.key)}>
       <Menu.Item key="h1">
@@ -106,7 +106,7 @@ const EditorToolbar = ({ intl, onSelect, onSelectLinkedObject }) => {
             'Ctrl+m',
           )}
         >
-          <Button className="EditorToolbar__button" onClick={() => onSelect('image')}>
+          <Button className="EditorToolbar__button" onClick={() => imageRef.click()}>
             <i className="iconfont icon-picture" />
           </Button>
         </BTooltip>
