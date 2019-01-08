@@ -8,7 +8,7 @@ const WeightTag = ({ intl, weight, rank }) => (
   <BTooltip
     title={intl.formatMessage(
       { id: 'weight_score_value', defaultMessage: 'Weight score: {value}' },
-      { value: weight },
+      { value: weight.toFixed() },
     )}
   >
     {rank && <Tag>{rank}</Tag>}
