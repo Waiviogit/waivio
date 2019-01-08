@@ -127,7 +127,7 @@ const routes = [
         ],
       },
       {
-        path: '/object/@:name/(followers|feed)?',
+        path: '/object/@:name/(followers|updates)?',
         component: Wobj,
         exact: true,
         routes: [
@@ -138,6 +138,11 @@ const routes = [
           },
           {
             path: '/object/@:name/followers',
+            exact: true,
+            component: WobjFollowers,
+          },
+          {
+            path: '/object/@:name/updates',
             exact: true,
             component: WobjFollowers,
           },
