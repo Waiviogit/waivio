@@ -348,6 +348,9 @@ class AppendObjectPostEditor extends React.Component {
                   transform: value => value.toLowerCase(),
                 },
                 {
+                  required: true,
+                },
+                {
                   max: 100,
                   message: intl.formatMessage(
                     {
@@ -378,6 +381,7 @@ class AppendObjectPostEditor extends React.Component {
         );
       }
       case objectFields.backgroundImage:
+      case objectFields.galleryItem:
       case objectFields.avatarImage: {
         return (
           <React.Fragment>
@@ -585,37 +589,6 @@ class AppendObjectPostEditor extends React.Component {
                   placeholder={intl.formatMessage({
                     id: 'location_accommodation',
                     defaultMessage: 'Accommodation',
-                  })}
-                />,
-              )}
-            </Form.Item>
-            <Form.Item>
-              {getFieldDecorator(locationFields.postCode, {
-                initialValue: this.getInitialValue(wobject, locationFields.postCode),
-                rules: [
-                  {
-                    max: 100,
-                    message: intl.formatMessage(
-                      {
-                        id: 'value_error_long',
-                        defaultMessage: "Value can't be longer than 100 characters.",
-                      },
-                      { value: 100 },
-                    ),
-                  },
-                  {
-                    validator: this.validateFieldValue,
-                  },
-                ],
-              })(
-                <Input
-                  onChange={this.onUpdate}
-                  className={classNames('Editor__input', {
-                    'validation-error': !this.state.isSomeValue,
-                  })}
-                  placeholder={intl.formatMessage({
-                    id: 'post_code',
-                    defaultMessage: 'Post Code',
                   })}
                 />,
               )}

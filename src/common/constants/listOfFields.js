@@ -5,6 +5,7 @@ export const objectFields = {
   link: 'link',
   avatarImage: 'avatarImage',
   backgroundImage: 'backgroundImage',
+  galleryItem: 'galleryItem',
 };
 
 export const descriptionFields = {
@@ -17,7 +18,7 @@ export const locationFields = {
   locationCity: 'locationCity',
   locationStreet: 'locationStreet',
   locationAccommodation: 'locationAccommodation',
-  postCode: 'postCode',
+  // postCode: 'postCode',
   locationLatitude: 'locationLatitude',
   locationLongitude: 'locationLongitude',
 };

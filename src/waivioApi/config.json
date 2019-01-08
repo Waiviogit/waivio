@@ -14,7 +14,8 @@
     "getObjectFollowing": "/following_objects",
     "getObjectFollowers": "/followers",
     "user": "/user",
-    "followingObjects": "/following_objects"
+    "followingObjects": "/following_objects",
+    "getGallery": "/gallery"
   },
   "production": {
     "apiPrefix": "http://waiviodev.com/api",
@@ -30,6 +31,7 @@
     "getObjectFollowing": "/following_objects",
     "getObjectFollowers": "/followers",
     "user": "/user",
-    "followingObjects": "/following_objects"
+    "followingObjects": "/following_objects",
+    "getGallery": "/gallery"
   }
 }

@@ -61,6 +61,7 @@
   "followed": "Following",
   "unfollowing": "Unfollowing",
   "followers": "Followers",
+  "gallery": "Gallery",
   "reblogged": "Re-blogged",
   "reblogged_username": "{username} reblogged",
   "follow_username": "Follow {username}",
@@ -415,5 +416,6 @@
   "rank_score_value": "Rank: {value}",
   "access_post_tooltip2": "Only the posts of the creator, and the users added by him, can add an object to the posts.",
   "there_may_be": "There may be",
-  "append_object_validation_message": "At least one field must be filled"
+  "append_object_validation_message": "At least one field must be filled",
+  "gallery_list_empty": "Nothing is there. Be first to create a new one!"
 }

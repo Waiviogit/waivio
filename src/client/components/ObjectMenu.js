@@ -72,6 +72,14 @@ class ObjectMenu extends React.Component {
                   <FormattedNumber value={this.props.followers} />
                 </span>
               </li>
+              <li
+                className={this.getItemClasses('gallery')}
+                onClick={this.handleClick}
+                role="presentation"
+                data-key="gallery"
+              >
+                <FormattedMessage id="gallery" defaultMessage="Gallery" />
+              </li>
             </ul>
           </Scrollbars>
         </div>

@@ -1,0 +1,24 @@
+@import (reference) '../styles/custom.less';
+@import (reference) '../styles/modules/variables.less';
+
+.ObjectGallery {
+  .ant-card-grid {
+    padding: 0;
+  }
+
+  &__empty {
+    background: @white;
+    border-top: @base-border;
+    border-bottom: @base-border;
+    padding: 16px;
+
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+
+    .proposition-line {
+      display: flex;
+      justify-content: center;
+    }
+  }
+}
