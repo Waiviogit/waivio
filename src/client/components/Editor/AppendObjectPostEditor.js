@@ -29,7 +29,8 @@ import { getField } from '../../objects/WaivioObject';
 import QuickPostEditorFooter from '../QuickPostEditor/QuickPostEditorFooter';
 import { isValidImage } from '../../helpers/image';
 import Map from '../Maps/Map';
-import { regexCoordsLatitude, regexCoordsLongitude } from '../Maps/mapHelper';
+import { isCoordinatesValid, regexCoordsLatitude, regexCoordsLongitude } from '../Maps/mapHelper';
+import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 
 @injectIntl
 @requiresLogin
@@ -89,7 +90,6 @@ class AppendObjectPostEditor extends React.Component {
 
   constructor(props) {
     super(props);
-
     this.state = {
       body: '',
       currentLocaleInList: this.props.currentLocaleInList.id,
@@ -98,8 +98,8 @@ class AppendObjectPostEditor extends React.Component {
       imageUploading: false,
       currentImage: [],
       isSomeValue: true,
-      lng: -101.39,
-      lat: 37.22,
+      lng: null,
+      lat: null,
     };
     this.onUpdate = this.onUpdate.bind(this);
     this.setCoordinates = this.setCoordinates.bind(this);
@@ -129,6 +129,17 @@ class AppendObjectPostEditor extends React.Component {
     if (!_.isEqual(topics, nextProps.topics) || body !== nextProps.body) {
       this.setValues(nextProps);
     }
+    if (nextProps.currentField === 'location' && !this.state.lng && !this.state.lat) {
+      const lat = Number(
+        getFieldWithMaxWeight(nextProps.wobject, objectFields.location, 'locationLatitude'),
+      );
+      const lng = Number(
+        getFieldWithMaxWeight(nextProps.wobject, objectFields.location, 'locationLongitude'),
+      );
+      if (isCoordinatesValid(lat, lng)) {
+        this.setState({ lat, lng });
+      }
+    }
   }
   onUpdate() {
     _.throttle(this.throttledUpdate, 200, { leading: false, trailing: true })();
@@ -154,6 +165,7 @@ class AppendObjectPostEditor extends React.Component {
       locationLatitude: latLng.lat().toFixed(6),
       locationLongitude: latLng.lng().toFixed(6),
     });
+    _.throttle(this.throttledUpdate, 200, { leading: false, trailing: true })();
   }
   setBodyAndRender(body, value) {
     this.setState({
@@ -269,6 +281,9 @@ class AppendObjectPostEditor extends React.Component {
     const { form, currentField } = this.props;
     let formFields = null;
     switch (currentField) {
+      case objectFields.name:
+        formFields = form.getFieldsValue(['name']);
+        break;
       case objectFields.description:
         formFields = form.getFieldsValue(Object.values(descriptionFields));
         break;
@@ -283,6 +298,12 @@ class AppendObjectPostEditor extends React.Component {
     }
 
     if (formFields) {
+      if (
+        (currentField === objectFields.location &&
+          (formFields.locationLatitude !== '' && formFields.locationLongitude === '')) ||
+        (formFields.locationLatitude === '' && formFields.locationLongitude !== '')
+      )
+        return true;
       const isSomeValueFilled = Object.values(formFields).some(f => Boolean(f));
       this.setState({ isSomeValue: isSomeValueFilled });
       return !isSomeValueFilled;
@@ -295,8 +316,9 @@ class AppendObjectPostEditor extends React.Component {
     e.preventDefault();
 
     this.props.form.validateFieldsAndScroll((err, values) => {
-      if (err || this.checkRequiredField()) this.props.onError();
-      else {
+      if (err || this.checkRequiredField()) {
+        this.props.onError();
+      } else {
         const valuesToSend = {
           ...values,
           preview: this.state.body,
@@ -647,14 +669,13 @@ class AppendObjectPostEditor extends React.Component {
             <Form.Item>
               {getFieldDecorator(locationFields.locationLatitude, {
                 initialValue: this.getInitialValue(wobject, locationFields.locationLatitude),
-                // initialValue: this.state.lat,
                 rules: [
                   {
                     pattern: regexCoordsLatitude,
                     message: intl.formatMessage(
                       {
                         id: 'value_invalid_latitude',
-                        defaultMessage: 'Should be number from -90 to 90',
+                        defaultMessage: 'Should be number from -85 to 85',
                       },
                       { value: 100 },
                     ),
@@ -719,8 +740,8 @@ class AppendObjectPostEditor extends React.Component {
                 loadingElement={<div style={{ height: `100%` }} />}
                 containerElement={<div style={{ height: `400px` }} />}
                 mapElement={<div style={{ height: `100%` }} />}
-                lat={this.state.lat}
-                lng={this.state.lng}
+                lat={this.state.lat || 37.22}
+                lng={this.state.lng || -101.39}
               />
             }
             {combinedFieldValidationMsg}

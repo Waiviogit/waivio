@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import urlParse from 'url-parse';
 import _ from 'lodash';
 import './ObjectInfo.less';
-import { haveAcess, accessTypesArr } from '../../helpers/wObjectHelper';
+import { haveAccess, accessTypesArr } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 
 import { getFieldWithMaxWeight, truncate } from '../../object/wObjectHelper';
@@ -56,7 +56,7 @@ const ObjectInfo = props => {
   };
 
   profile = _.pickBy(profile, _.identity);
-  const accessExtend = haveAcess(wobject, userName, accessTypesArr[0]);
+  const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]);
   return (
     <React.Fragment>
       {getFieldWithMaxWeight(wobject, 'name') && (

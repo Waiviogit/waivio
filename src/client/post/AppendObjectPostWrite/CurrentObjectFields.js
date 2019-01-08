@@ -11,7 +11,7 @@ export const getFieldsBody = field => {
     return _.map(parsedBody, (value, key) => {
       if (value)
         return (
-          <p>
+          <p key={key + value}>
             {key}: {value}
           </p>
         );
@@ -85,7 +85,11 @@ const CurrentObjectFields = ({ wobject, currentField, currentLocaleInList }) => 
             ['desc'],
           ),
           field => (
-            <div key={`${field.body} ${field.locale}`}>
+            <div
+              key={`${Math.random()
+                .toString(36)
+                .substring(2)} ${field.locale}`}
+            >
               <div className="CurrentObjectFields__field__line">{setStyledField(field)}</div>
             </div>
           ),

@@ -177,7 +177,6 @@ class Write extends React.Component {
     if (this.props.draftId) {
       data.draftId = this.props.draftId;
     }
-    // console.log('Write:onSubmit > ', JSON.stringify(data));
     this.props.createPost(data);
   };
 
@@ -215,7 +214,6 @@ class Write extends React.Component {
     if (this.originalBody) {
       data.originalBody = this.originalBody;
     }
-    console.log('| saveDraft > ', data);
 
     return data;
   };
