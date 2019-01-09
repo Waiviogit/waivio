@@ -21,17 +21,17 @@ const WaivioObject = ({ wobj }) => {
   if (website && website.indexOf('http://') === -1 && website.indexOf('https://') === -1) {
     website = `http://${website}`;
   }
-
+  const pathName = `/object/${wobj.author_permlink}/${wobj.default_name || ''}`;
   return (
     <div key={wobj.author_permlink} className="WaivioObject__user">
       <div className="WaivioObject__user__content">
         <div className="WaivioObject__user__links">
-          <Link to={`object/@${wobj.author_permlink}`}>
+          <Link to={{ pathname: pathName }} title={name}>
             <ObjectAvatar item={wobj} size={34} />
           </Link>
           <div className="WaivioObject__user__profile">
             <div className="WaivioObject__user__profile__header">
-              <Link to={`object/@${wobj.author_permlink}`}>
+              <Link to={{ pathname: pathName }}>
                 <span className="WaivioObject__user__name">
                   <span className="username">{name}</span>
                 </span>

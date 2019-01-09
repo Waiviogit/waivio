@@ -33,7 +33,7 @@ class Editor extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     form: PropTypes.shape().isRequired,
-    user: PropTypes.shape().isRequired,
+    // user: PropTypes.shape().isRequired,
     title: PropTypes.string,
     topics: PropTypes.arrayOf(PropTypes.string),
     waivioData: PropTypes.shape(),
@@ -266,7 +266,7 @@ class Editor extends React.Component {
     const selectedObj = wObject.isNew
       ? getClientWObj({
           ...wObject,
-          author_permlink: `${this.props.user.name}-${wObject.author_permlink}`,
+          author_permlink: wObject.author_permlink.replace(' ', '-'),
         })
       : wObject;
     this.setState(prevState => {
