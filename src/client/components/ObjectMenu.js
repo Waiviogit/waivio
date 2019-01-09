@@ -21,7 +21,7 @@ class ObjectMenu extends React.Component {
   static TAB_NAME = {
     DISCUSSIONS: 'discussions',
     FOLLOWERS: 'followers',
-    UPDATES: 'updates',
+    HISTORY: 'history',
   };
 
   constructor(props) {
@@ -79,12 +79,12 @@ class ObjectMenu extends React.Component {
                 </span>
               </li>
               <li
-                className={this.getItemClasses(ObjectMenu.TAB_NAME.UPDATES)}
+                className={this.getItemClasses(ObjectMenu.TAB_NAME.HISTORY)}
                 onClick={this.handleClick}
                 role="presentation"
-                data-key={ObjectMenu.TAB_NAME.UPDATES}
+                data-key={ObjectMenu.TAB_NAME.HISTORY}
               >
-                <FormattedMessage id="object_updates" defaultMessage="Updates" />
+                <FormattedMessage id="object_history" defaultMessage="History" />
               </li>
             </ul>
           </Scrollbars>

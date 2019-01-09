@@ -417,5 +417,6 @@
   "there_may_be": "There may be",
   "append_object_validation_message": "At least one field must be filled",
   "value_invalid_latitude": "Should be number from -85 to 85",
-  "value_invalid_longitude": "Should be number from -180 to 180"
+  "value_invalid_longitude": "Should be number from -180 to 180",
+  "object_history": "History"
 }

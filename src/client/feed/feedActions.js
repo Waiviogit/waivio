@@ -88,6 +88,20 @@ export const getUserComments = ({ username, limit = 20 }) => (dispatch, getState
     meta: { sortBy: 'comments', category: username, limit },
   });
 
+export const getObjectComments = (author, permlink, category = 'waivio-object') => (
+  dispatch,
+  getState,
+  { steemAPI },
+) => {
+  dispatch({
+    type: GET_USER_COMMENTS.ACTION,
+    payload: steemAPI
+      .sendAsync('get_state', [`/${category}/@${author}/${permlink}`])
+      .then(apiRes => Object.values(apiRes.content)),
+    meta: { sortBy: 'comments', category: author, limit: 10 },
+  });
+};
+
 export const getObjectPosts = ({ username, object, limit = 10 }) => dispatch => {
   dispatch({
     type: GET_OBJECT_POSTS.ACTION,
