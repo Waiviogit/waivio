@@ -49,7 +49,13 @@ export const hasActionType = (post, actionType) => {
   const parsedMetadata = JSON.parse(post.json_metadata);
   const objActionType =
     parsedMetadata[WAIVIO_META_FIELD_NAME] && parsedMetadata[WAIVIO_META_FIELD_NAME].action;
-  return objActionType === actionType;
+  const appendingField =
+    parsedMetadata[WAIVIO_META_FIELD_NAME] && parsedMetadata[WAIVIO_META_FIELD_NAME].field;
+  return (
+    objActionType === actionType &&
+    appendingField &&
+    supportedObjectFields.includes(appendingField.name)
+  );
 };
 
 export const hasField = (post, fieldName, locale) => {

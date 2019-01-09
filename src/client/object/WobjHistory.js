@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Select } from 'antd';
 import { connect } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
+
 import { getPosts, getFeed, getObject } from '../reducers';
 import Feed from '../feed/Feed';
 import {
@@ -69,12 +71,22 @@ export default class WobjHistory extends React.Component {
       <React.Fragment>
         {!isFetching && (
           <div className="wobj-history__filters">
-            <Select onChange={this.handleFieldChange}>
+            <Select
+              allowClear
+              placeholder={
+                <FormattedMessage id="object_field_placeholder" defaultMessage="Object field" />
+              }
+              onChange={this.handleFieldChange}
+            >
               {supportedObjectFields.map(f => (
                 <Select.Option key={f}>{f}</Select.Option>
               ))}
             </Select>
-            <Select onChange={this.handleLocaleChange}>
+            <Select
+              allowClear
+              placeholder={<FormattedMessage id="language" defaultMessage="Language" />}
+              onChange={this.handleLocaleChange}
+            >
               {LANGUAGES.map(lang => (
                 <Select.Option key={lang.id} value={lang.id}>
                   {getLanguageText(lang)}

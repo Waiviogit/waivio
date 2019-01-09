@@ -418,5 +418,6 @@
   "append_object_validation_message": "At least one field must be filled",
   "value_invalid_latitude": "Should be number from -85 to 85",
   "value_invalid_longitude": "Should be number from -180 to 180",
-  "object_history": "History"
+  "object_history": "History",
+  "object_field_placeholder": "Object field"
 }
