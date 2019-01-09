@@ -416,6 +416,6 @@
   "access_post_tooltip2": "Only the posts of the creator, and the users added by him, can add an object to the posts.",
   "there_may_be": "There may be",
   "append_object_validation_message": "At least one field must be filled",
-  "value_invalid_latitude": "Should be number from -85 to 85",
-  "value_invalid_longitude": "Should be number from -180 to 180"
+  "value_invalid_latitude": "Should be number more then -85 and less then 85",
+  "value_invalid_longitude": "Should be number more then -180 and less then 180"
 }

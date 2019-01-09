@@ -116,7 +116,7 @@ class SearchObjectsAutocomplete extends Component {
       >
         {canCreateNewObject && Boolean(searchString) && (
           <AutoComplete.Option
-            key={`${searchString}-${Math.random()
+            key={`${Math.random()
               .toString(36)
               .substring(2)}`}
           >

@@ -127,17 +127,17 @@ const routes = [
         ],
       },
       {
-        path: '/object/@:name/(followers|feed)?',
+        path: '/object/:name/:defaultName/(followers|feed)?',
         component: Wobj,
         exact: true,
         routes: [
           {
-            path: '/object/@:name',
+            path: '/object/:name/:defaultName',
             exact: true,
             component: ObjectProfile,
           },
           {
-            path: '/object/@:name/followers',
+            path: '/object/:name/:defaultName/followers',
             exact: true,
             component: WobjFollowers,
           },
