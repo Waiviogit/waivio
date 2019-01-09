@@ -29,7 +29,7 @@ import ExitPage from '../client/statics/ExitPage';
 import ObjectProfile from '../client/object/ObjectProfile';
 import AppendObjectPostWtite from '../client/post/AppendObjectPostWrite/AppendObjectPostWrite';
 import WobjFollowers from '../client/object/WobjFollowers';
-import WobjUpdates from '../client/object/WobjUpdates';
+import WobjHistory from '../client/object/WobjHistory';
 
 const routes = [
   {
@@ -145,7 +145,7 @@ const routes = [
           {
             path: '/object/@:name/history',
             exact: true,
-            component: WobjUpdates,
+            component: WobjHistory,
           },
         ],
       },
