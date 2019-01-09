@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { supportedObjectFields } from '../../../src/common/constants/listOfFields';
+import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
 
 export const getFieldWithMaxWeight = (wObject, currentField, innerField) => {
   const field = supportedObjectFields.includes(currentField);
@@ -43,3 +44,10 @@ export const getField = (wObject, currentField, fieldName) => {
 };
 
 export const truncate = str => (str && str.length > 255 ? `${str.substring(0, 255)}...` : str);
+
+export const hasActionType = (post, actionType) => {
+  const parsedMetadata = JSON.parse(post.json_metadata);
+  const objActionType =
+    parsedMetadata[WAIVIO_META_FIELD_NAME] && parsedMetadata[WAIVIO_META_FIELD_NAME].action;
+  return objActionType === actionType;
+};

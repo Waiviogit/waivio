@@ -4,13 +4,8 @@ import { connect } from 'react-redux';
 import { getCommentsList, getFeed, getObject } from '../reducers';
 import Feed from '../feed/Feed';
 import PostModal from '../post/PostModalContainer';
-import {
-  getFeedFromState,
-  getFeedHasMoreFromState,
-  getFeedLoadingFromState,
-} from '../helpers/stateHelpers';
+import { getFeedFromState, getFeedLoadingFromState } from '../helpers/stateHelpers';
 import { getObjectComments } from '../feed/feedActions';
-import { showPostModal } from '../app/appActions';
 
 @connect(
   state => ({
@@ -20,13 +15,11 @@ import { showPostModal } from '../app/appActions';
   }),
   {
     getObjectComments,
-    showPostModal,
   },
 )
 export default class WobjUpdates extends React.Component {
   static propTypes = {
     feed: PropTypes.shape().isRequired,
-    showPostModal: PropTypes.func.isRequired,
     getObjectComments: PropTypes.func,
     object: PropTypes.shape(),
   };
@@ -47,18 +40,12 @@ export default class WobjUpdates extends React.Component {
   render() {
     const { feed, object } = this.props;
 
-    const content = getFeedFromState('comments', object.author, feed);
+    const content = getFeedFromState('comments', object.author, feed).sort((a, b) => b - a);
     const isFetching = getFeedLoadingFromState('comments', object.author, feed);
-    const hasMore = getFeedHasMoreFromState('comments', object.author, feed);
 
     return (
       <React.Fragment>
-        <Feed
-          content={content}
-          isFetching={isFetching}
-          hasMore={hasMore}
-          showPostModal={this.props.showPostModal}
-        />
+        <Feed content={content} isFetching={isFetching} />
         <PostModal />
       </React.Fragment>
     );
