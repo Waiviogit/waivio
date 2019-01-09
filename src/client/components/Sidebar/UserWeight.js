@@ -16,7 +16,7 @@ const UserWeight = ({ user }) => (
         <Link to={{ pathname: `/@${user.name}` }} title={user.name} className="Object__name">
           <span className="username">{user.name}</span>
         </Link>
-        <WeightTag weight={user.rank.toFixed(2)} />
+        <WeightTag rank={user.rank} weight={user.weight} />
       </div>
       <div className="Object__follow">
         <FollowButton following={user.name} followingType="user" secondary />
