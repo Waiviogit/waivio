@@ -426,5 +426,14 @@
   "validation_special_symbols": "Please dont use special symbols like /, ?, %, &",
   "validation_locale": "Please select your locale!",
   "validation_object_type": "Please select object type!",
-  "placeholder_obj_type": "Select a option and change input text above"
+  "placeholder_obj_type": "Select a option and change input text above",
+  "object_history": "History",
+  "object_field_placeholder": "Object field",
+  "object_field_descriptionShort": "Short description",
+  "object_field_descriptionFull": "Full description",
+  "object_field_address": "Address",
+  "object_field_position": "Position",
+  "object_field_link": "Links",
+  "object_field_avatarImage": "Avatar",
+  "object_field_backgroundImage": "Background image"
 }

@@ -18,16 +18,22 @@ class ObjectMenu extends React.Component {
     followers: 0,
   };
 
+  static TAB_NAME = {
+    DISCUSSIONS: 'discussions',
+    FOLLOWERS: 'followers',
+    HISTORY: 'history',
+  };
+
   constructor(props) {
     super(props);
     this.state = {
-      current: props.defaultKey ? props.defaultKey : 'discussions',
+      current: props.defaultKey ? props.defaultKey : ObjectMenu.TAB_NAME.DISCUSSIONS,
     };
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      current: nextProps.defaultKey ? nextProps.defaultKey : 'discussions',
+      current: nextProps.defaultKey ? nextProps.defaultKey : ObjectMenu.TAB_NAME.DISCUSSIONS,
     });
   }
 
@@ -54,23 +60,31 @@ class ObjectMenu extends React.Component {
           >
             <ul className="UserMenu__menu center">
               <li
-                className={this.getItemClasses('discussions')}
+                className={this.getItemClasses(ObjectMenu.TAB_NAME.DISCUSSIONS)}
                 onClick={this.handleClick}
                 role="presentation"
-                data-key="discussions"
+                data-key={ObjectMenu.TAB_NAME.DISCUSSIONS}
               >
                 <FormattedMessage id="discussions" defaultMessage="Discussions" />
               </li>
               <li
-                className={this.getItemClasses('followers')}
+                className={this.getItemClasses(ObjectMenu.TAB_NAME.FOLLOWERS)}
                 onClick={this.handleClick}
                 role="presentation"
-                data-key="followers"
+                data-key={ObjectMenu.TAB_NAME.FOLLOWERS}
               >
                 <FormattedMessage id="followers" defaultMessage="Followers" />
                 <span className="UserMenu__badge">
                   <FormattedNumber value={this.props.followers} />
                 </span>
+              </li>
+              <li
+                className={this.getItemClasses(ObjectMenu.TAB_NAME.HISTORY)}
+                onClick={this.handleClick}
+                role="presentation"
+                data-key={ObjectMenu.TAB_NAME.HISTORY}
+              >
+                <FormattedMessage id="object_history" defaultMessage="History" />
               </li>
             </ul>
           </Scrollbars>
