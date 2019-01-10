@@ -24,7 +24,7 @@ const Avatar = ({ username, size }) => {
     };
   }
 
-  return <div className="Avatar" style={style} />;
+  return <div className="Avatar" style={style} title={username} />;
 };
 
 Avatar.propTypes = {
