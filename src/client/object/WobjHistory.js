@@ -29,6 +29,8 @@ import './WobjHistory.less';
 )
 export default class WobjHistory extends React.Component {
   static propTypes = {
+    history: PropTypes.shape().isRequired,
+    match: PropTypes.shape().isRequired,
     feed: PropTypes.shape().isRequired,
     comments: PropTypes.shape(),
     getObjectComments: PropTypes.func,
@@ -41,16 +43,38 @@ export default class WobjHistory extends React.Component {
     object: {},
   };
 
-  state = {
-    field: null,
-    locale: null,
-  };
+  state = {};
 
   componentDidMount() {
-    this.props.getObjectComments(this.props.object.author, this.props.object.author_permlink);
+    const { object, match } = this.props;
+
+    if (object && object.author && object.author_permlink) {
+      this.props.getObjectComments(object.author, object.author_permlink);
+    }
+    if (match.params.field) {
+      this.handleFieldChange(match.params.field);
+    }
   }
 
-  handleFieldChange = field => this.setState({ field });
+  componentDidUpdate(prevProps) {
+    const { object, match } = this.props;
+
+    if (
+      prevProps.match.params.field !== match.params.field &&
+      this.state.field !== match.params.field
+    ) {
+      this.handleFieldChange(this.props.match.params.field);
+    }
+    if (prevProps.object.author_permlink !== object.author_permlink) {
+      this.props.getObjectComments(object.author, object.author_permlink);
+    }
+  }
+
+  handleFieldChange = field => {
+    const { object, history } = this.props;
+    history.push(`/object/@${object.author_permlink}/${field ? `history/${field}` : 'history'}`);
+    this.setState({ field });
+  };
 
   handleLocaleChange = locale => this.setState({ locale });
 
@@ -76,6 +100,7 @@ export default class WobjHistory extends React.Component {
               placeholder={
                 <FormattedMessage id="object_field_placeholder" defaultMessage="Object field" />
               }
+              value={field}
               onChange={this.handleFieldChange}
             >
               {supportedObjectFields.map(f => (

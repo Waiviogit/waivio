@@ -2,11 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import urlParse from 'url-parse';
 import _ from 'lodash';
-import './ObjectInfo.less';
+import { Link } from 'react-router-dom';
 import { haveAccess, accessTypesArr } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
+import './ObjectInfo.less';
 
-import { getFieldWithMaxWeight, truncate } from '../../object/wObjectHelper';
+import { getFieldWithMaxWeight, getFieldsCount, truncate } from '../../object/wObjectHelper';
 import {
   objectFields,
   descriptionFields,
@@ -61,7 +62,12 @@ const ObjectInfo = props => {
     <React.Fragment>
       {getFieldWithMaxWeight(wobject, 'name') && (
         <div className="object-profile">
-          <div className="object-profile__description">{wobject && descriptionFull}</div>
+          <div className="object-profile__description">
+            {wobject && descriptionFull}
+            <Link to={`/object/@${wobject.author_permlink}/history/${objectFields.description}`}>
+              ({getFieldsCount(wobject, objectFields.description)})
+            </Link>
+          </div>
           <div className="object-profile__element">
             {location ? (
               <React.Fragment>
@@ -83,6 +89,9 @@ const ObjectInfo = props => {
                       lng={Number(locationArray[6])}
                     />
                   )}
+                <Link to={`/object/@${wobject.author_permlink}/history/${objectFields.location}`}>
+                  ({getFieldsCount(wobject, objectFields.location)})
+                </Link>
               </React.Fragment>
             ) : (
               <Proposition objectID={wobject.author_permlink} fieldName="location" />
