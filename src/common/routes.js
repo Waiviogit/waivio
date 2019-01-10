@@ -1,4 +1,5 @@
 import Wrapper from '../client/Wrapper';
+import { supportedObjectFields } from '../../src/common/constants/listOfFields';
 
 import Bookmarks from '../client/bookmarks/Bookmarks';
 import Drafts from '../client/post/Write/Drafts';
@@ -128,7 +129,7 @@ const routes = [
         ],
       },
       {
-        path: '/object/@:name/(followers|history)?',
+        path: `/object/@:name/(followers|history)?/(${supportedObjectFields.join('|')})?`,
         component: Wobj,
         exact: true,
         routes: [
@@ -143,7 +144,7 @@ const routes = [
             component: WobjFollowers,
           },
           {
-            path: '/object/@:name/history',
+            path: '/object/@:name/history/:field?',
             exact: true,
             component: WobjHistory,
           },

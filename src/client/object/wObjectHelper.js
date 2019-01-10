@@ -43,10 +43,15 @@ export const getField = (wObject, currentField, fieldName) => {
   return parsed ? parsed[fieldName] : wo.body;
 };
 
+export const getFieldsCount = (wObject, fieldName) =>
+  wObject.fields.filter(field => field.name === fieldName).length;
+
 export const truncate = str => (str && str.length > 255 ? `${str.substring(0, 255)}...` : str);
 
 export const hasActionType = (post, actionType) => {
-  const parsedMetadata = JSON.parse(post.json_metadata);
+  const parsedMetadata = post && post.json_metadata && JSON.parse(post.json_metadata);
+  if (!parsedMetadata) return false;
+
   const objActionType =
     parsedMetadata[WAIVIO_META_FIELD_NAME] && parsedMetadata[WAIVIO_META_FIELD_NAME].action;
   const appendingField =
@@ -59,7 +64,9 @@ export const hasActionType = (post, actionType) => {
 };
 
 export const hasField = (post, fieldName, locale) => {
-  const parsedMetadata = JSON.parse(post.json_metadata);
+  const parsedMetadata = post && post.json_metadata && JSON.parse(post.json_metadata);
+  if (!parsedMetadata) return false;
+
   const field =
     parsedMetadata[WAIVIO_META_FIELD_NAME] && parsedMetadata[WAIVIO_META_FIELD_NAME].field;
   return !(fieldName && !(field.name === fieldName)) && !(locale && !(field.locale === locale));
