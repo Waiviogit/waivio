@@ -77,6 +77,7 @@ app.get('/i/:parent/@:referral/:permlink', async (req, res) => {
 });
 
 app.get('/@:author/:permlink/amp', ampHandler);
+app.get('/object/@:authorPermlink/:menu', ssrHandler);
 app.get('/:category/@:author/:permlink/amp', (req, res) => {
   const { author, permlink } = req.params;
   res.redirect(301, `/@${author}/${permlink}/amp`);

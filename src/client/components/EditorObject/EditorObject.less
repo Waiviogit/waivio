@@ -40,7 +40,7 @@
     flex-flow: column nowrap;
     align-items: flex-start;
     height: @height-row-info + @height-row-slider;
-    width: 100%;
+    width: 85%;
     outline: none;
     &.row {
       display: flex;
@@ -65,7 +65,7 @@
   &__avatar {
     height: @height-row-info;
     width: @height-row-info;
-    border-radius: 30%;
+    //border-radius: 30%;
     margin-right: @padding;
   }
 
@@ -76,13 +76,13 @@
     &.name {
       font-weight: 500;
     }
-    &.description {
-      max-height: @height-row-info / 2 + 5;
-      line-height: 1.1;
-      overflow: hidden;
-    }
   }
-
+  &__truncated {
+    width: 75%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
   .editor-object__controls {
     display: flex;
     flex-direction: column;
@@ -109,7 +109,13 @@
     }
   }
 
-  @media @medium {
+  @media @medium, @large {
+    .editor-object__truncated {
+      width: 85%;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
     .editor-object__controls {
       align-items: stretch;
       min-width: 90px;

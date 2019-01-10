@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
 import Feed from '../feed/Feed';
-import { getIsAuthenticated, getAuthenticatedUser, getFeed } from '../reducers';
+import { getFeed } from '../reducers';
 import {
   getFeedLoadingFromState,
   getFeedFetchedFromState,
@@ -20,8 +20,6 @@ import PostModal from '../post/PostModalContainer';
 @withRouter
 @connect(
   state => ({
-    authenticated: getIsAuthenticated(state),
-    authenticatedUser: getAuthenticatedUser(state),
     feed: getFeed(state),
   }),
   {
@@ -32,7 +30,6 @@ import PostModal from '../post/PostModalContainer';
 )
 export default class ObjectProfile extends React.Component {
   static propTypes = {
-    authenticatedUser: PropTypes.shape().isRequired,
     feed: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     showPostModal: PropTypes.func.isRequired,
@@ -54,28 +51,28 @@ export default class ObjectProfile extends React.Component {
 
     this.props.getObjectPosts({
       object: name,
-      username: this.props.authenticatedUser.name,
+      username: name,
       limit,
     });
   }
 
   render() {
-    const { authenticatedUser, feed, limit } = this.props;
+    const { feed, limit } = this.props;
     const wobjectname = this.props.match.params.name;
-    const content = getFeedFromState('objectPosts', authenticatedUser.name, feed);
-    const isFetching = getFeedLoadingFromState('objectPosts', authenticatedUser.name, feed);
-    const fetched = getFeedFetchedFromState('objectPosts', authenticatedUser.name, feed);
-    const hasMore = getFeedHasMoreFromState('objectPosts', authenticatedUser.name, feed);
+    const content = getFeedFromState('objectPosts', wobjectname, feed);
+    const isFetching = getFeedLoadingFromState('objectPosts', wobjectname, feed);
+    const fetched = getFeedFetchedFromState('objectPosts', wobjectname, feed);
+    const hasMore = getFeedHasMoreFromState('objectPosts', wobjectname, feed);
     const loadMoreContentAction = () => {
       this.props.getMoreObjectPosts({
-        username: this.props.authenticatedUser.name,
+        username: wobjectname,
         authorPermlink: wobjectname,
         limit,
       });
     };
 
     return (
-      <div>
+      <React.Fragment>
         <div className="profile">
           <Feed
             content={content}
@@ -96,7 +93,7 @@ export default class ObjectProfile extends React.Component {
           )}
         </div>
         {<PostModal />}
-      </div>
+      </React.Fragment>
     );
   }
 }

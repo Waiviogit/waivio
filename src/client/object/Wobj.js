@@ -4,11 +4,9 @@ import { connect } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import _ from 'lodash';
-import { getField } from '../objects/WaivioObject';
 import {
   getIsAuthenticated,
   getAuthenticatedUser,
-  getUser,
   getIsUserFailed,
   getIsUserLoaded,
   getAuthenticatedUserName,
@@ -21,14 +19,12 @@ import LeftObjectProfileSidebar from '../app/Sidebar/LeftObjectProfileSidebar';
 import RightObjectSidebar from '../app/Sidebar/RightObjectSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
-import Loading from '../components/Icon/Loading';
 
 @connect(
   (state, ownProps) => ({
     authenticated: getIsAuthenticated(state),
     authenticatedUser: getAuthenticatedUser(state),
     authenticatedUserName: getAuthenticatedUserName(state),
-    user: getUser(state, 'otve'),
     loaded: getIsUserLoaded(state, ownProps.match.params.name),
     failed: getIsUserFailed(state, ownProps.match.params.name),
   }),
@@ -39,10 +35,9 @@ import Loading from '../components/Icon/Loading';
 export default class Wobj extends React.Component {
   static propTypes = {
     route: PropTypes.shape().isRequired,
+    authenticatedUserName: PropTypes.string.isRequired,
     authenticated: PropTypes.bool.isRequired,
     match: PropTypes.shape().isRequired,
-    user: PropTypes.shape().isRequired,
-    // loaded: PropTypes.bool,
     failed: PropTypes.bool,
     getObject: PropTypes.func,
   };
@@ -73,26 +68,18 @@ export default class Wobj extends React.Component {
   }
 
   render() {
-    const { authenticated, failed } = this.props;
+    const { authenticated, failed, authenticatedUserName } = this.props;
     if (failed) return <Error404 />;
 
     const { wobject } = this.state;
-
-    if (_.isEmpty(wobject)) {
-      return <Loading center />;
-    }
-
-    const { user } = this.props;
 
     const busyHost = global.postOrigin || 'https://busy.org';
     const desc = `Posts by ${wobject.tag}`;
     const image = getObjectUrl(wobject);
     const canonicalUrl = `${busyHost}/object/@${wobject.tag}`;
     const url = `${busyHost}/object/@${wobject.tag}`;
-    const displayedUsername = wobject.tag || '';
-    const coverImage = getField(wobject, 'backgroundImage');
-    const hasCover = !!coverImage;
-    const title = `${displayedUsername} - Waivio`;
+    const displayedObjectName = wobject.tag || '';
+    const title = `Object - Waivio`;
 
     return (
       <div className="main-panel">
@@ -106,7 +93,7 @@ export default class Wobj extends React.Component {
           <meta property="og:url" content={url} />
           <meta property="og:image" content={image} />
           <meta property="og:description" content={desc} />
-          <meta property="og:site_name" content="Busy" />
+          <meta property="og:site_name" content="Waivio" />
 
           <meta property="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
           <meta property="twitter:site" content={'@steemit'} />
@@ -118,22 +105,18 @@ export default class Wobj extends React.Component {
           />
         </Helmet>
         <ScrollToTopOnMount />
-        {user && (
-          <WobjHero
-            authenticated={authenticated}
-            user={user}
-            wobject={wobject}
-            username={displayedUsername}
-            coverImage={coverImage}
-            hasCover={hasCover}
-            onFollowClick={this.handleFollowClick}
-          />
-        )}
+        <WobjHero
+          authenticated={authenticated}
+          isFetching={_.isEmpty(wobject)}
+          wobject={wobject}
+          username={displayedObjectName}
+          onFollowClick={this.handleFollowClick}
+        />
         <div className="shifted">
           <div className="feed-layout container">
             <Affix className="leftContainer leftContainer__user" stickPosition={72}>
               <div className="left">
-                <LeftObjectProfileSidebar wobject={wobject} />
+                <LeftObjectProfileSidebar wobject={wobject} userName={authenticatedUserName} />
               </div>
             </Affix>
             <Affix className="rightContainer" stickPosition={72}>

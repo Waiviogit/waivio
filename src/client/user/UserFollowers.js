@@ -18,12 +18,11 @@ export default class UserFollowers extends React.Component {
 
   fetcher(previous) {
     const { match } = this.props;
-    return getFollowers(
-      match.params.name,
-      previous[previous.length - 1],
-      'blog',
-      UserFollowers.limit,
-    );
+    const startFrom =
+      previous[previous.length - 1] && previous[previous.length - 1].name
+        ? previous[previous.length - 1].name
+        : '';
+    return getFollowers(match.params.name, startFrom, 'blog', UserFollowers.limit);
   }
 
   render() {

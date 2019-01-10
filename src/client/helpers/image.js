@@ -18,6 +18,11 @@ export const getProxyImageURL = (url, type) => {
   return `${IMG_PROXY}${url}`;
 };
 
-export const isValidImage = file => file.type.match('image/.*') && file.size <= MAXIMUM_UPLOAD_SIZE;
+export const isValidImage = (file, maxFileSize = MAXIMUM_UPLOAD_SIZE, allowedFormats = null) => {
+  const pattern = allowedFormats
+    ? new RegExp(`^image/(${allowedFormats.join('|')})$`, 'g')
+    : 'image/.*';
+  return file.type.match(pattern) && file.size <= maxFileSize;
+};
 
 export default null;

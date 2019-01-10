@@ -1,19 +1,21 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Lightbox from 'react-image-lightbox';
+import { Link } from 'react-router-dom';
+import { Icon } from 'antd';
 import ObjectAvatar, { getObjectUrl } from './ObjectAvatar';
 
 export default class ObjectLightbox extends Component {
   static propTypes = {
-    username: PropTypes.shape(),
+    wobject: PropTypes.shape(),
     size: PropTypes.number,
-    isActive: PropTypes.bool,
+    accessExtend: PropTypes.bool,
   };
 
   static defaultProps = {
-    username: undefined,
+    wobject: undefined,
+    accessExtend: false,
     size: 100,
-    isActive: false,
   };
 
   state = {
@@ -25,21 +27,29 @@ export default class ObjectLightbox extends Component {
   handleCloseRequest = () => this.setState({ open: false });
 
   render() {
-    const { username, size, isActive } = this.props;
-    let image = getObjectUrl(username);
-
-    if (!image) {
-      image = 'https://steemitimages.com/u/waivio/avatar/large';
+    const { wobject, size, accessExtend } = this.props;
+    let imageUrl = getObjectUrl(wobject);
+    let isFieldAvatarImage = true;
+    if (!imageUrl) {
+      imageUrl = 'https://steemitimages.com/u/waivio/avatar';
+      isFieldAvatarImage = false;
     }
 
     return (
-      <div>
-        <a role="presentation" onClick={this.handleAvatarClick}>
-          <ObjectAvatar item={username} size={size} />
-          {isActive && <div className="UserHeader__container--active" />}
-        </a>
-        {this.state.open && <Lightbox mainSrc={image} onCloseRequest={this.handleCloseRequest} />}
-      </div>
+      <React.Fragment>
+        {!isFieldAvatarImage && accessExtend ? (
+          <Link to={{ pathname: `/wobject/editor/@${wobject.author_permlink}/avatarImage` }}>
+            <Icon type="plus-circle" className="ObjectHeader__avatar-image" />
+          </Link>
+        ) : (
+          <a role="presentation" onClick={this.handleAvatarClick}>
+            <ObjectAvatar item={wobject} size={size} />
+          </a>
+        )}
+        {this.state.open && (
+          <Lightbox mainSrc={imageUrl} onCloseRequest={this.handleCloseRequest} />
+        )}
+      </React.Fragment>
     );
   }
 }

@@ -12,7 +12,7 @@ const Discover = ({ intl }) => (
     <Helmet>
       <title>
         {intl.formatMessage({ id: 'discover_more_people', defaultMessage: 'discover_more_people' })}{' '}
-        - Busy
+        - Waivio
       </title>
     </Helmet>
     <div className="feed-layout container">

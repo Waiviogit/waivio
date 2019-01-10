@@ -17,7 +17,7 @@ import walletReducer, * as fromWallet from './wallet/walletReducer';
 import reblogReducers, * as fromReblog from './app/Reblog/reblogReducers';
 import settingsReducer, * as fromSettings from './settings/settingsReducer';
 import searchReducer, * as fromSearch from './search/searchReducer';
-import appendReducer, * as fromAppend from '../client/post/AppendObjectPostWrite/appendReducer';
+import wobjectReducer, * as fromObject from '../client/object/wobjectReducer';
 
 export default () =>
   combineReducers({
@@ -29,6 +29,7 @@ export default () =>
     feed: feedReducer,
     user: userReducer,
     users: usersReducer,
+    object: wobjectReducer,
     notifications: notificationReducer,
     bookmarks: bookmarksReducer,
     favorites: favoritesReducer,
@@ -37,7 +38,6 @@ export default () =>
     wallet: walletReducer,
     settings: settingsReducer,
     search: searchReducer,
-    append: appendReducer,
   });
 
 export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);
@@ -163,4 +163,6 @@ export const getAutoCompleteSearchResults = state =>
   fromSearch.getAutoCompleteSearchResults(state.search);
 export const getSearchObjectsResults = state => fromSearch.getSearchObjectsResults(state.search);
 
-export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.append);
+export const getObject = state => fromObject.getObjectState(state.object);
+export const getObjectAuthor = state => fromObject.getObjectAuthor(state.object);
+export const getObjectFields = state => fromObject.getObjectFields(state.object);

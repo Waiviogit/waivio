@@ -1,0 +1,18 @@
+@import (reference) '../../styles/modules/variables.less';
+
+.proposition-line {
+  display: none;
+}
+
+@media @medium, @large {
+  .proposition-line {
+    display: flex;
+    align-items: center;
+    &__text {
+      margin-right: 8px;
+    }
+    &__icon {
+      font-size: 23px;
+    }
+  }
+}
