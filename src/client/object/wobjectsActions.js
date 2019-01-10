@@ -1,17 +1,18 @@
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 
-export const GET_OBJECT = createAsyncActionType('@objects/GET_OBJECT');
-export const GET_USERS_BY_OBJECT = createAsyncActionType('@objects/GET_USERS_BY_OBJECT');
-export const GET_FEED_CONTENT_BY_OBJECT = createAsyncActionType(
-  '@objects/GET_FEED_CONTENT_BY_OBJECT',
-);
+export const GET_OBJECT = '@objects/GET_OBJECT';
+export const GET_OBJECT_START = '@objects/GET_OBJECT_START';
+export const GET_OBJECT_ERROR = '@objects/GET_OBJECT_ERROR';
+export const GET_OBJECT_SUCCESS = '@objects/GET_OBJECT_SUCCESS';
 
 export const getObject = name => dispatch =>
   dispatch({
-    type: GET_OBJECT.ACTION,
+    type: GET_OBJECT,
     payload: ApiClient.getObject(name),
   });
+
+export const GET_USERS_BY_OBJECT = createAsyncActionType('@objects/GET_USERS_BY_OBJECT');
 
 export const getUsersByObject = object => dispatch =>
   dispatch({
@@ -19,6 +20,9 @@ export const getUsersByObject = object => dispatch =>
     payload: ApiClient.getUsersByObject(object),
   }).catch(() => {});
 
+export const GET_FEED_CONTENT_BY_OBJECT = createAsyncActionType(
+  '@objects/GET_FEED_CONTENT_BY_OBJECT',
+);
 export const getFeedContentByObject = object => dispatch =>
   dispatch({
     type: GET_FEED_CONTENT_BY_OBJECT.ACTION,

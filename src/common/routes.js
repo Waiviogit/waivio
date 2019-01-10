@@ -29,6 +29,7 @@ import ExitPage from '../client/statics/ExitPage';
 import ObjectProfile from '../client/object/ObjectProfile';
 import AppendObjectPostWtite from '../client/post/AppendObjectPostWrite/AppendObjectPostWrite';
 import WobjFollowers from '../client/object/WobjFollowers';
+import WobjHistory from '../client/object/WobjHistory';
 
 const routes = [
   {
@@ -127,7 +128,7 @@ const routes = [
         ],
       },
       {
-        path: '/object/@:name/(followers|feed)?',
+        path: '/object/@:name/(followers|history)?',
         component: Wobj,
         exact: true,
         routes: [
@@ -140,6 +141,11 @@ const routes = [
             path: '/object/@:name/followers',
             exact: true,
             component: WobjFollowers,
+          },
+          {
+            path: '/object/@:name/history',
+            exact: true,
+            component: WobjHistory,
           },
         ],
       },

@@ -1,3 +1,5 @@
+import { hasActionType, hasField } from '../object/wObjectHelper';
+
 export const getFeedFromState = (sortBy, category = 'all', state) => {
   switch (sortBy) {
     case 'feed':
@@ -93,6 +95,14 @@ export const getFeedFailedFromState = (sortBy, listName = 'all', feedState) => {
     default:
       return false;
   }
+};
+
+export const getFilteredContent = (content, actionType, fieldName = null, locale = null) => {
+  let filteredContent = content.filter(post => hasActionType(post, actionType));
+  if (fieldName || locale) {
+    filteredContent = filteredContent.filter(post => hasField(post, fieldName, locale));
+  }
+  return filteredContent.map(item => item.id).sort((a, b) => b - a);
 };
 
 // returning the same function but different naming helps to understand the code's flow better
