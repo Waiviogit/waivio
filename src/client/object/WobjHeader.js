@@ -34,7 +34,7 @@ const WobjHeader = ({ wobject, username }) => {
           <div className="ObjectHeader__row">
             <h2 className="ObjectHeader__user__username">
               {getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name)}
-              <WeightTag weight={wobject.weight} />
+              <WeightTag weight={wobject.weight} rank={wobject.rank} />
             </h2>
             <div className="ObjectHeader__user__buttons">
               <div
