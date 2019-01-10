@@ -27,7 +27,6 @@ import Notifications from '../client/notifications/Notifications';
 import Error404 from '../client/statics/Error404';
 import ExitPage from '../client/statics/ExitPage';
 import ObjectProfile from '../client/object/ObjectProfile';
-import AppendObjectPostWtite from '../client/post/AppendObjectPostWrite/AppendObjectPostWrite';
 import WobjFollowers from '../client/object/WobjFollowers';
 
 const routes = [
@@ -151,11 +150,6 @@ const routes = [
       {
         path: '/objects',
         component: Objects,
-      },
-      {
-        path: '/wobject/editor/@:name/:fieldName',
-        exact: true,
-        component: AppendObjectPostWtite,
       },
       {
         path: '/:category?/@:author/:permlink',

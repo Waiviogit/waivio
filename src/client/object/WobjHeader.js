@@ -1,12 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { Link } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
 import WeightTag from '../components/WeightTag';
 import ObjectLightbox from '../components/ObjectLightbox';
 import FollowButton from '../widgets/FollowButton';
-import Action from '../components/Button/Action';
 import '../components/ObjectHeader.less';
 import { haveAccess, accessTypesArr } from '../helpers/wObjectHelper';
 import { getFieldWithMaxWeight } from '../../client/object/wObjectHelper';
@@ -46,16 +43,6 @@ const WobjHeader = ({ wobject, username }) => {
                 })}
               >
                 <FollowButton following={wobject.author_permlink} followingType="wobject" />
-                {accessExtend && (
-                  <Link
-                    to={`/wobject/editor/@${wobject.author_permlink}/name`}
-                    className="ObjectHeader__extend"
-                  >
-                    <Action>
-                      <FormattedMessage id="extend-object" defaultMessage="Extend" />
-                    </Action>
-                  </Link>
-                )}
               </div>
             </div>
           </div>

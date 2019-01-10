@@ -20,14 +20,12 @@ import './SearchObjectsAutocomplete.less';
 )
 class SearchObjectsAutocomplete extends Component {
   static defaultProps = {
-    canCreateNewObject: false,
     style: { width: '100%' },
     searchObjectsResults: [],
     linkedObjectsIds: [],
   };
 
   static propTypes = {
-    canCreateNewObject: PropTypes.bool,
     linkedObjectsIds: PropTypes.arrayOf(PropTypes.string),
     intl: PropTypes.shape().isRequired,
     style: PropTypes.shape(),
@@ -82,7 +80,7 @@ class SearchObjectsAutocomplete extends Component {
   }
   render() {
     const { searchString } = this.state;
-    const { canCreateNewObject, intl, style, searchObjectsResults, linkedObjectsIds } = this.props;
+    const { intl, style, searchObjectsResults, linkedObjectsIds } = this.props;
     const getObjMarkup = obj => (
       <div className="obj-search-option">
         <img
@@ -114,18 +112,6 @@ class SearchObjectsAutocomplete extends Component {
         value={searchString}
         allowClear
       >
-        {canCreateNewObject && Boolean(searchString) && (
-          <AutoComplete.Option
-            key={`${Math.random()
-              .toString(36)
-              .substring(2)}`}
-          >
-            <div className="obj-search-option first">
-              <span className="obj-search-option__info">{searchString}</span>
-              <span className="obj-search-option__label">create new</span>
-            </div>
-          </AutoComplete.Option>
-        )}
         {searchObjectsOptions}
       </AutoComplete>
     );
