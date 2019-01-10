@@ -10,8 +10,8 @@ import './ObjectInfo.less';
 import { getFieldWithMaxWeight, getFieldsCount, truncate } from '../../object/wObjectHelper';
 import {
   objectFields,
-  descriptionFields,
-  locationFields,
+  addressFields,
+  // positionFields,
   linkFields,
 } from '../../../common/constants/listOfFields';
 import Proposition from '../../components/Proposition/Proposition';
@@ -20,20 +20,18 @@ import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 
 const ObjectInfo = props => {
   const { wobject, userName } = props;
-  let locationArray = [];
-  let location = '';
-  let descriptionFull = '';
+  let addressArr = [];
+  let address = '';
+  let description = '';
   let website = '';
 
   if (wobject) {
-    locationArray = Object.keys(locationFields).map(fieldName =>
-      getFieldWithMaxWeight(wobject, objectFields.location, fieldName),
+    addressArr = Object.values(addressFields).map(fieldName =>
+      getFieldWithMaxWeight(wobject, objectFields.address, fieldName),
     );
-    location = _.compact(locationArray).join(', ');
+    address = _.compact(addressArr).join(', ');
 
-    descriptionFull = truncate(
-      getFieldWithMaxWeight(wobject, objectFields.description, descriptionFields.descriptionFull),
-    );
+    description = truncate(getFieldWithMaxWeight(wobject, objectFields.description, null));
 
     website = getFieldWithMaxWeight(wobject, objectFields.link, linkFields.website);
   }
@@ -58,25 +56,48 @@ const ObjectInfo = props => {
 
   profile = _.pickBy(profile, _.identity);
   const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]);
+
+  const listItem = (fieldName, content) => {
+    const fieldsCount = getFieldsCount(wobject, fieldName);
+    return fieldsCount ? (
+      <div className="field-info">
+        <div className="field-info__title">
+          {`${fieldName} `}
+          <Link to={`/object/@${wobject.author_permlink}/history/${fieldName}`}>
+            ({fieldsCount})
+          </Link>
+        </div>
+        <div className="field-info__content">{content}</div>
+      </div>
+    ) : null;
+  };
   return (
     <React.Fragment>
       {getFieldWithMaxWeight(wobject, 'name') && (
-        <div className="object-profile">
-          <div className="object-profile__description">
-            {wobject && descriptionFull}
-            <Link to={`/object/@${wobject.author_permlink}/history/${objectFields.description}`}>
-              ({getFieldsCount(wobject, objectFields.description)})
-            </Link>
-          </div>
+        <div className="object-sidebar">
+          {/* <div className="object-profile__description"> */}
+          {/* {wobject && descriptionFull} */}
+          {/* <Link to={`/object/@${wobject.author_permlink}/history/${objectFields.description}`}> */}
+          {/* ({getFieldsCount(wobject, objectFields.description)}) */}
+          {/* </Link> */}
+          {/* </div> */}
+          {listItem(objectFields.description, description)}
+          {listItem(
+            objectFields.address,
+            <React.Fragment>
+              <i className="iconfont icon-coordinates text-icon" />
+              {address}
+            </React.Fragment>,
+          )}
           <div className="object-profile__element">
-            {location ? (
+            {address ? (
               <React.Fragment>
                 <i className="iconfont icon-coordinates text-icon" />
-                {location}
-                {locationArray &&
-                  locationArray[5] &&
-                  locationArray[6] &&
-                  isCoordinatesValid(locationArray[5], locationArray[6]) && (
+                {address}
+                {addressArr &&
+                  addressArr[5] &&
+                  addressArr[6] &&
+                  isCoordinatesValid(addressArr[5], addressArr[6]) && (
                     <Map
                       isMarkerShown
                       setCoordinates={() => {}}
@@ -85,8 +106,8 @@ const ObjectInfo = props => {
                       loadingElement={<div style={{ height: `100%` }} />}
                       containerElement={<div style={{ height: `200px` }} />}
                       mapElement={<div style={{ height: `100%` }} />}
-                      lat={Number(locationArray[5])}
-                      lng={Number(locationArray[6])}
+                      lat={Number(addressArr[5])}
+                      lng={Number(addressArr[6])}
                     />
                   )}
                 <Link to={`/object/@${wobject.author_permlink}/history/${objectFields.location}`}>

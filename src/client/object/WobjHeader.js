@@ -10,7 +10,7 @@ import Action from '../components/Button/Action';
 import '../components/ObjectHeader.less';
 import { haveAccess, accessTypesArr } from '../helpers/wObjectHelper';
 import { getFieldWithMaxWeight } from '../../client/object/wObjectHelper';
-import { objectFields, descriptionFields } from '../../common/constants/listOfFields';
+import { objectFields } from '../../common/constants/listOfFields';
 import Proposition from '../components/Proposition/Proposition';
 
 const WobjHeader = ({ wobject, username }) => {
@@ -23,11 +23,7 @@ const WobjHeader = ({ wobject, username }) => {
   const style = hasCover
     ? { backgroundImage: `url("https://steemitimages.com/2048x512/${coverImage}")` }
     : {};
-  const descriptionShort = getFieldWithMaxWeight(
-    wobject,
-    objectFields.description,
-    descriptionFields.descriptionShort,
-  );
+  const descriptionShort = getFieldWithMaxWeight(wobject, objectFields.descriptionShort);
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
   return (
     <div className={classNames('ObjectHeader', { 'ObjectHeader--cover': hasCover })} style={style}>
@@ -63,7 +59,10 @@ const WobjHeader = ({ wobject, username }) => {
             <div className="ObjectHeader__descriptionShort">
               {descriptionShort ||
                 (accessExtend && (
-                  <Proposition objectID={wobject.author_permlink} fieldName="description" />
+                  <Proposition
+                    objectID={wobject.author_permlink}
+                    fieldName={objectFields.descriptionShort}
+                  />
                 ))}
             </div>
           </div>
