@@ -26,7 +26,6 @@ class LinkedObjects extends React.Component {
           <React.Fragment>
             <SearchObjectsAutocomplete
               handleSelect={this.props.handleAddLinkedObject}
-              canCreateNewObject={this.props.canCreateNewObject}
               linkedObjectsIds={this.props.linkedObjects.map(obj => obj.id)}
             />
             <div className="obj-search-option first">
@@ -52,7 +51,10 @@ class LinkedObjects extends React.Component {
                 footer={null}
                 onCancel={this.toggleModal}
               >
-                <CreateObject handleCreateObject={this.props.handleCreateObject} />
+                <CreateObject
+                  handleCreateObject={this.props.handleCreateObject}
+                  toggleModal={this.toggleModal}
+                />
               </Modal>
             )}
           </React.Fragment>

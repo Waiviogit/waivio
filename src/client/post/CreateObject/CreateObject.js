@@ -14,6 +14,7 @@ class CreateObject extends React.Component {
     intl: PropTypes.shape().isRequired,
     form: PropTypes.shape().isRequired,
     handleCreateObject: PropTypes.func.isRequired,
+    toggleModal: PropTypes.func.isRequired,
     currentLocaleInList: PropTypes.shape().isRequired,
   };
 
@@ -21,6 +22,7 @@ class CreateObject extends React.Component {
     currentLocaleInList: { id: 'en-US', name: '', nativeName: '' },
     wobject: { tag: '' },
     handleCreateObject: () => {},
+    toggleModal: () => {},
   };
 
   constructor(props) {
@@ -47,6 +49,7 @@ class CreateObject extends React.Component {
         objData.isPostingOpen = true;
         console.log('Received values of form: ', values);
         this.props.handleCreateObject(objData);
+        this.props.toggleModal();
       }
     });
   };

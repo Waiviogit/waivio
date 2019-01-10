@@ -48,7 +48,7 @@ class SearchObjectsAutocomplete extends Component {
 
   handleChange(value = '') {
     if (!value) this.props.clearSearchResults();
-    const searchString = value.toLowerCase().trim();
+    const searchString = value.toLowerCase();
     this.setState(prevState =>
       prevState.isOptionSelected ? { searchString: '', isOptionSelected: false } : { searchString },
     );
