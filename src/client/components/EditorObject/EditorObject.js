@@ -64,21 +64,22 @@ class EditorObject extends React.Component {
               <a href={pathName} target="_blank" rel="noopener noreferrer">
                 <img className="editor-object__avatar" src={wObject.avatar} alt={wObject.name} />
               </a>
-              <span className="editor-object__info">
+              <div className="editor-object__info">
                 <a
                   href={pathName}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="editor-object__info name"
+                  title={wObject.name}
                 >
-                  {wObject.name}
+                  <span className="editor-object__truncated">{wObject.name}s</span>
                 </a>
                 {Boolean(wObject.descriptionShort) && (
-                  <span className="editor-object__info description">
+                  <span className="editor-object__truncated" title={wObject.descriptionShort}>
                     {wObject.descriptionShort}
                   </span>
                 )}
-              </span>
+              </div>
             </div>
             <div className="editor-object__content row slider">
               <span className="label">{`${influenceValue}%`}</span>

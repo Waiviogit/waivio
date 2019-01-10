@@ -2,6 +2,9 @@
 @import (reference) '../styles/modules/variables.less';
 
 .ObjectHeader {
+  &__text {
+    word-break: break-word;
+  }
   &__avatar-image {
     font-size: 100px;
   }
@@ -129,13 +132,18 @@
 }
 
 .ObjectHeader__user__username {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   margin-right: -8px;
   font-weight: 700;
   font-size: 28px;
   color: #353535;
 
   .ant-tag {
-    margin-left: 8px;
+    margin-bottom: 8px;
+    margin-left: 0;
     vertical-align: 4px;
     text-shadow: none;
   }
@@ -167,6 +175,12 @@
     padding: 30px 0 30px 16px;
     align-items: initial;
     flex-direction: initial;
+  }
+  .ObjectHeader&__text {
+    max-width: 50%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
   .ObjectHeader__user {
@@ -210,8 +224,31 @@
   }
 }
 
-@media @large {
+@media @large, @medium {
   .ObjectHeader__container {
     padding: 30px 0;
+  }
+  &__text {
+    max-width: 50%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .ObjectHeader__user__username {
+    display: flex;
+    flex-direction: unset;
+    justify-content: unset;
+    align-items: center;
+    margin-right: -8px;
+    font-weight: 700;
+    font-size: 28px;
+    color: #353535;
+
+    .ant-tag {
+      margin-left: 8px;
+      margin-bottom: 0;
+      vertical-align: 4px;
+      text-shadow: none;
+    }
   }
 }
