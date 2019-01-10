@@ -2,18 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import urlParse from 'url-parse';
 import _ from 'lodash';
+import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { haveAccess, accessTypesArr } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import './ObjectInfo.less';
 
 import { getFieldWithMaxWeight, getFieldsCount, truncate } from '../../object/wObjectHelper';
-import {
-  objectFields,
-  addressFields,
-  // positionFields,
-  linkFields,
-} from '../../../common/constants/listOfFields';
+import { objectFields, addressFields, linkFields } from '../../../common/constants/listOfFields';
 import Proposition from '../../components/Proposition/Proposition';
 import Map from '../../components/Maps/Map';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
@@ -22,7 +18,9 @@ const ObjectInfo = props => {
   const { wobject, userName } = props;
   let addressArr = [];
   let address = '';
-  let description = '';
+  let position = '';
+  let descriptionShort = '';
+  let descriptionFull = '';
   let website = '';
 
   if (wobject) {
@@ -31,7 +29,10 @@ const ObjectInfo = props => {
     );
     address = _.compact(addressArr).join(', ');
 
-    description = truncate(getFieldWithMaxWeight(wobject, objectFields.description, null));
+    position = getFieldWithMaxWeight(wobject, objectFields.position, null);
+
+    descriptionShort = truncate(getFieldWithMaxWeight(wobject, objectFields.descriptionShort));
+    descriptionFull = truncate(getFieldWithMaxWeight(wobject, objectFields.descriptionFull));
 
     website = getFieldWithMaxWeight(wobject, objectFields.link, linkFields.website);
   }
@@ -59,29 +60,31 @@ const ObjectInfo = props => {
 
   const listItem = (fieldName, content) => {
     const fieldsCount = getFieldsCount(wobject, fieldName);
-    return fieldsCount ? (
+    return (
       <div className="field-info">
-        <div className="field-info__title">
-          {`${fieldName} `}
-          <Link to={`/object/@${wobject.author_permlink}/history/${fieldName}`}>
-            ({fieldsCount})
-          </Link>
-        </div>
-        <div className="field-info__content">{content}</div>
+        {fieldsCount ? (
+          <React.Fragment>
+            <div className="field-info__title">
+              <FormattedMessage id={`object_field_${fieldName}`} defaultMessage={fieldName} />
+              &nbsp;
+              <Link to={`/object/@${wobject.author_permlink}/history/${fieldName}`}>
+                ({fieldsCount})
+              </Link>
+            </div>
+            <div className="field-info__content">{content}</div>
+          </React.Fragment>
+        ) : (
+          accessExtend && <Proposition objectID={wobject.author_permlink} fieldName={fieldName} />
+        )}
       </div>
-    ) : null;
+    );
   };
   return (
     <React.Fragment>
       {getFieldWithMaxWeight(wobject, 'name') && (
         <div className="object-sidebar">
-          {/* <div className="object-profile__description"> */}
-          {/* {wobject && descriptionFull} */}
-          {/* <Link to={`/object/@${wobject.author_permlink}/history/${objectFields.description}`}> */}
-          {/* ({getFieldsCount(wobject, objectFields.description)}) */}
-          {/* </Link> */}
-          {/* </div> */}
-          {listItem(objectFields.description, description)}
+          {listItem(objectFields.descriptionShort, descriptionShort)}
+          {listItem(objectFields.descriptionFull, descriptionFull)}
           {listItem(
             objectFields.address,
             <React.Fragment>
@@ -89,49 +92,37 @@ const ObjectInfo = props => {
               {address}
             </React.Fragment>,
           )}
-          <div className="object-profile__element">
-            {address ? (
-              <React.Fragment>
-                <i className="iconfont icon-coordinates text-icon" />
-                {address}
-                {addressArr &&
-                  addressArr[5] &&
-                  addressArr[6] &&
-                  isCoordinatesValid(addressArr[5], addressArr[6]) && (
-                    <Map
-                      isMarkerShown
-                      setCoordinates={() => {}}
-                      wobject={wobject}
-                      googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
-                      loadingElement={<div style={{ height: `100%` }} />}
-                      containerElement={<div style={{ height: `200px` }} />}
-                      mapElement={<div style={{ height: `100%` }} />}
-                      lat={Number(addressArr[5])}
-                      lng={Number(addressArr[6])}
-                    />
-                  )}
-                <Link to={`/object/@${wobject.author_permlink}/history/${objectFields.location}`}>
-                  ({getFieldsCount(wobject, objectFields.location)})
-                </Link>
-              </React.Fragment>
-            ) : (
-              <Proposition objectID={wobject.author_permlink} fieldName="location" />
-            )}
-          </div>
-          <div className="object-profile__element">
-            {website ? (
-              <React.Fragment>
-                <i className="iconfont icon-link text-icon" />
-                <a target="_blank" rel="noopener noreferrer" href={website}>
-                  {/* {`${hostWithoutWWW}${url.pathname.replace(/\/$/, '')}`} */}
-                  Website
-                </a>
-              </React.Fragment>
-            ) : (
-              accessExtend && <Proposition objectID={wobject.author_permlink} fieldName="link" />
-            )}
-          </div>
-          <SocialLinks profile={profile} />
+          {listItem(
+            objectFields.position,
+            <React.Fragment>
+              {position &&
+                position.latitude &&
+                position.longitude &&
+                isCoordinatesValid(position.latitude, position.longitude) && (
+                  <Map
+                    isMarkerShown
+                    setCoordinates={() => {}}
+                    wobject={wobject}
+                    googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
+                    loadingElement={<div style={{ height: `100%` }} />}
+                    containerElement={<div style={{ height: `200px` }} />}
+                    mapElement={<div style={{ height: `100%` }} />}
+                    lat={Number(position.latitude)}
+                    lng={Number(position.longitude)}
+                  />
+                )}
+            </React.Fragment>,
+          )}
+          {listItem(
+            objectFields.link,
+            <React.Fragment>
+              <i className="iconfont icon-link text-icon" />
+              <a target="_blank" rel="noopener noreferrer" href={website}>
+                Website
+              </a>
+              <SocialLinks profile={profile} />
+            </React.Fragment>,
+          )}
         </div>
       )}
     </React.Fragment>

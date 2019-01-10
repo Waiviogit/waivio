@@ -419,5 +419,12 @@
   "value_invalid_latitude": "Should be number from -85 to 85",
   "value_invalid_longitude": "Should be number from -180 to 180",
   "object_history": "History",
-  "object_field_placeholder": "Object field"
+  "object_field_placeholder": "Object field",
+  "object_field_descriptionShort": "Short description",
+  "object_field_descriptionFull": "Full description",
+  "object_field_address": "Address",
+  "object_field_position": "Position",
+  "object_field_link": "Links",
+  "object_field_avatarImage": "Avatar",
+  "object_field_backgroundImage": "Background image"
 }
