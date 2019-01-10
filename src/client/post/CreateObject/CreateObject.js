@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Form, Input, Select, Button } from 'antd';
@@ -28,7 +29,9 @@ class CreateObject extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      loading: false,
+    };
   }
 
   handleChangeLocale = () => {
@@ -40,16 +43,17 @@ class CreateObject extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
-      if (!err) {
+      if (!err && !this.state.loading) {
+        this.setState({ loading: true });
         const objData = values;
         objData.id = Math.random()
           .toString(32)
           .substring(2);
         objData.isExtendingOpen = true;
         objData.isPostingOpen = true;
-        console.log('Received values of form: ', values);
+        // console.log('Received values of form: ', values);
         this.props.handleCreateObject(objData);
-        this.props.toggleModal();
+        _.delay(this.props.toggleModal, 2000);
       }
     });
   };
@@ -179,7 +183,7 @@ class CreateObject extends React.Component {
           })}
         </div>
         <Form.Item className="Editor__bottom__submit">
-          <Button type="primary" onClick={this.handleSubmit}>
+          <Button type="primary" onClick={this.handleSubmit} loading={this.state.loading}>
             {intl.formatMessage({ id: 'confirm', defaultMessage: 'Confirm' })}
           </Button>
         </Form.Item>
