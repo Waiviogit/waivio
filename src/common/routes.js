@@ -128,19 +128,9 @@ const routes = [
         ],
       },
       {
-        path: `/object/@:name/(history)?/(${supportedObjectFields.join('|')})?`,
-        component: Wobj,
-        exact: true,
-        routes: [
-          {
-            path: '/object/@:name/history/:field?',
-            exact: true,
-            component: WobjHistory,
-          },
-        ],
-      },
-      {
-        path: '/object/:name/:defaultName/(followers|feed)?',
+        path: `/object/:name/:defaultName/(followers|feed|history)?/(${supportedObjectFields.join(
+          '|',
+        )})?`,
         component: Wobj,
         exact: true,
         routes: [
@@ -153,6 +143,11 @@ const routes = [
             path: '/object/:name/:defaultName/followers',
             exact: true,
             component: WobjFollowers,
+          },
+          {
+            path: '/object/:name/:defaultName/history/:field?',
+            exact: true,
+            component: WobjHistory,
           },
         ],
       },

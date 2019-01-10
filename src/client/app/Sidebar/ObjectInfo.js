@@ -67,7 +67,11 @@ const ObjectInfo = props => {
             <div className="field-info__title">
               <FormattedMessage id={`object_field_${fieldName}`} defaultMessage={fieldName} />
               &nbsp;
-              <Link to={`/object/@${wobject.author_permlink}/history/${fieldName}`}>
+              <Link
+                to={`/object/${wobject.author_permlink}/${
+                  wobject.default_name
+                }/history/${fieldName}`}
+              >
                 ({fieldsCount})
               </Link>
             </div>
