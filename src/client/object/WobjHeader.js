@@ -22,6 +22,7 @@ const WobjHeader = ({ wobject, username }) => {
     : {};
   const descriptionShort = getFieldWithMaxWeight(wobject, objectFields.descriptionShort);
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
+  const objectName = getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name);
   return (
     <div className={classNames('ObjectHeader', { 'ObjectHeader--cover': hasCover })} style={style}>
       <div className="ObjectHeader__container">
@@ -29,8 +30,8 @@ const WobjHeader = ({ wobject, username }) => {
         <div className="ObjectHeader__user">
           <div className="ObjectHeader__row">
             <div className="ObjectHeader__user__username">
-              <div className="ObjectHeader__text">
-                {getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name)}
+              <div className="ObjectHeader__text" title={objectName}>
+                {objectName}
               </div>
               <WeightTag weight={wobject.weight} rank={wobject.rank} />
               <FollowButton following={wobject.author_permlink} followingType="wobject" />
