@@ -434,5 +434,7 @@
   "object_field_position": "Position",
   "object_field_link": "Links",
   "object_field_avatarImage": "Avatar",
-  "object_field_backgroundImage": "Background image"
+  "object_field_backgroundImage": "Background image",
+  "field_error": "{field} is required",
+  "append_send": "Suggest"
 }

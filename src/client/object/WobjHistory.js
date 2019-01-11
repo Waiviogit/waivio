@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Select } from 'antd';
+import { Select } from 'antd';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 
@@ -16,6 +16,7 @@ import { supportedObjectFields } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
 import './WobjHistory.less';
+import AppendButton from './AppendButton';
 
 @connect(
   state => ({
@@ -43,7 +44,9 @@ export default class WobjHistory extends React.Component {
     object: {},
   };
 
-  state = {};
+  state = {
+    showModal: false,
+  };
 
   componentDidMount() {
     const { object, match } = this.props;
@@ -82,8 +85,13 @@ export default class WobjHistory extends React.Component {
 
   handleLocaleChange = locale => this.setState({ locale });
 
+  handleToggleModal = () =>
+    this.setState(prevState => ({
+      showModal: !prevState.showModal,
+    }));
+
   render() {
-    const { field, locale } = this.state;
+    const { field, locale, showModal } = this.state;
     const { feed, object, comments } = this.props;
 
     const commentIds = getFeedFromState('comments', object.author, feed);
@@ -122,7 +130,11 @@ export default class WobjHistory extends React.Component {
                 </Select.Option>
               ))}
             </Select>
-            <Button>New proposition</Button>
+            <AppendButton
+              showModal={showModal}
+              toggleModal={this.handleToggleModal}
+              locale={this.state.locale}
+            />
           </div>
         )}
         <Feed content={content} isFetching={isFetching} />
