@@ -1,4 +1,5 @@
 @import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
 
 .proposition-line {
   display: none;
@@ -6,10 +7,16 @@
 
 @media @medium, @large {
   .proposition-line {
+    border: 1px solid;
+    border-radius: 3px;
+    padding: 5px;
     display: flex;
     align-items: center;
+    &:hover {
+      border-color: @color-hover-border !important;
+    }
     &__text {
-      margin-right: 8px;
+      margin-left: 8px;
     }
     &__icon {
       font-size: 23px;

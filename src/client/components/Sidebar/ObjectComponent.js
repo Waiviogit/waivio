@@ -9,19 +9,15 @@ import './ObjectComponent.less';
 
 const ObjectComponent = ({ item }) => {
   const name = getField(item, 'name');
-
+  const pathName = `/object/${item.author_permlink}/${item.default_name || ''}`;
   return (
     <div key={item.author_permlink} className="Object">
       <div className="Object__top">
         <div className="Object__links">
-          <Link to={{ pathname: `/object/@${item.author_permlink}` }}>
+          <Link to={{ pathname: pathName }} title={name}>
             <ObjectAvatar item={item} size={34} />
           </Link>
-          <Link
-            to={{ pathname: `/object/@${item.author_permlink}` }}
-            title={name}
-            className="Object__name"
-          >
+          <Link to={{ pathname: pathName }} title={name} className="Object__name">
             <span className="username">{name}</span>
           </Link>
           {/* <WeightTag weight={item.weight} /> */}

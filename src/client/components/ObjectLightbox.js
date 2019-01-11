@@ -9,10 +9,12 @@ export default class ObjectLightbox extends Component {
   static propTypes = {
     wobject: PropTypes.shape(),
     size: PropTypes.number,
+    accessExtend: PropTypes.bool,
   };
 
   static defaultProps = {
     wobject: undefined,
+    accessExtend: false,
     size: 100,
   };
 
@@ -25,25 +27,24 @@ export default class ObjectLightbox extends Component {
   handleCloseRequest = () => this.setState({ open: false });
 
   render() {
-    const { wobject, size } = this.props;
+    const { wobject, size, accessExtend } = this.props;
     let imageUrl = getObjectUrl(wobject);
     let isFieldAvatarImage = true;
     if (!imageUrl) {
-      imageUrl =
-        'https://cdn.steemitimages.com/DQmVEdTitcDnsjgtFnqz3MBnCGZgg67qcyCZQkCfWQTEwzY/plus-1270001_640.png';
+      imageUrl = 'https://steemitimages.com/u/waivio/avatar';
       isFieldAvatarImage = false;
     }
 
     return (
       <React.Fragment>
-        {isFieldAvatarImage ? (
-          <a role="presentation" onClick={this.handleAvatarClick}>
-            <ObjectAvatar item={wobject} size={size} />
-          </a>
-        ) : (
+        {!isFieldAvatarImage && accessExtend ? (
           <Link to={{ pathname: `/wobject/editor/@${wobject.author_permlink}/avatarImage` }}>
             <Icon type="plus-circle" className="ObjectHeader__avatar-image" />
           </Link>
+        ) : (
+          <a role="presentation" onClick={this.handleAvatarClick}>
+            <ObjectAvatar item={wobject} size={size} />
+          </a>
         )}
         {this.state.open && (
           <Lightbox mainSrc={imageUrl} onCloseRequest={this.handleCloseRequest} />

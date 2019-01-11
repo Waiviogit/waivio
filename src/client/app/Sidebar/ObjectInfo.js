@@ -2,35 +2,37 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import urlParse from 'url-parse';
 import _ from 'lodash';
-import './ObjectInfo.less';
-import { haveAcess, accessTypesArr } from '../../helpers/wObjectHelper';
+import { FormattedMessage } from 'react-intl';
+import { Link } from 'react-router-dom';
+import { haveAccess, accessTypesArr } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
+import './ObjectInfo.less';
 
-import { getFieldWithMaxWeight, truncate } from '../../object/wObjectHelper';
-import {
-  objectFields,
-  descriptionFields,
-  locationFields,
-  linkFields,
-} from '../../../common/constants/listOfFields';
+import { getFieldWithMaxWeight, getFieldsCount, truncate } from '../../object/wObjectHelper';
+import { objectFields, addressFields, linkFields } from '../../../common/constants/listOfFields';
 import Proposition from '../../components/Proposition/Proposition';
+import Map from '../../components/Maps/Map';
+import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 
 const ObjectInfo = props => {
   const { wobject, userName } = props;
-  let locationArray = [];
-  let location = '';
+  let addressArr = [];
+  let address = '';
+  let position = '';
+  let descriptionShort = '';
   let descriptionFull = '';
   let website = '';
 
   if (wobject) {
-    locationArray = Object.keys(locationFields).map(fieldName =>
-      getFieldWithMaxWeight(wobject, objectFields.location, fieldName),
+    addressArr = Object.values(addressFields).map(fieldName =>
+      getFieldWithMaxWeight(wobject, objectFields.address, fieldName),
     );
-    location = _.compact(locationArray).join(', ');
+    address = _.compact(addressArr).join(', ');
 
-    descriptionFull = truncate(
-      getFieldWithMaxWeight(wobject, objectFields.description, descriptionFields.descriptionFull),
-    );
+    position = getFieldWithMaxWeight(wobject, objectFields.position, null);
+
+    descriptionShort = truncate(getFieldWithMaxWeight(wobject, objectFields.descriptionShort));
+    descriptionFull = truncate(getFieldWithMaxWeight(wobject, objectFields.descriptionFull));
 
     website = getFieldWithMaxWeight(wobject, objectFields.link, linkFields.website);
   }
@@ -54,36 +56,77 @@ const ObjectInfo = props => {
   };
 
   profile = _.pickBy(profile, _.identity);
-  const accessExtend = haveAcess(wobject, userName, accessTypesArr[0]);
+  const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]);
+
+  const listItem = (fieldName, content) => {
+    const fieldsCount = getFieldsCount(wobject, fieldName);
+    return (
+      <div className="field-info">
+        {fieldsCount ? (
+          <React.Fragment>
+            <div className="field-info__title">
+              <FormattedMessage id={`object_field_${fieldName}`} defaultMessage={fieldName} />
+              &nbsp;
+              <Link
+                to={`/object/${wobject.author_permlink}/${
+                  wobject.default_name
+                }/history/${fieldName}`}
+              >
+                ({fieldsCount})
+              </Link>
+            </div>
+            <div className="field-info__content">{content}</div>
+          </React.Fragment>
+        ) : (
+          accessExtend && <Proposition objectID={wobject.author_permlink} fieldName={fieldName} />
+        )}
+      </div>
+    );
+  };
   return (
     <React.Fragment>
       {getFieldWithMaxWeight(wobject, 'name') && (
-        <div className="object-profile">
-          <div className="object-profile__description">{wobject && descriptionFull}</div>
-          <div className="object-profile__element">
-            {location ? (
-              <React.Fragment>
-                <i className="iconfont icon-coordinates text-icon" />
-                {location}
-              </React.Fragment>
-            ) : (
-              <Proposition objectID={wobject.author_permlink} fieldName="location" />
-            )}
-          </div>
-          <div className="object-profile__element">
-            {website ? (
-              <React.Fragment>
-                <i className="iconfont icon-link text-icon" />
-                <a target="_blank" rel="noopener noreferrer" href={website}>
-                  {/* {`${hostWithoutWWW}${url.pathname.replace(/\/$/, '')}`} */}
-                  Website
-                </a>
-              </React.Fragment>
-            ) : (
-              accessExtend && <Proposition objectID={wobject.author_permlink} fieldName="link" />
-            )}
-          </div>
-          <SocialLinks profile={profile} />
+        <div className="object-sidebar">
+          {listItem(objectFields.descriptionShort, descriptionShort)}
+          {listItem(objectFields.descriptionFull, descriptionFull)}
+          {listItem(
+            objectFields.address,
+            <React.Fragment>
+              <i className="iconfont icon-coordinates text-icon" />
+              {address}
+            </React.Fragment>,
+          )}
+          {listItem(
+            objectFields.position,
+            <React.Fragment>
+              {position &&
+                position.latitude &&
+                position.longitude &&
+                isCoordinatesValid(position.latitude, position.longitude) && (
+                  <Map
+                    isMarkerShown
+                    setCoordinates={() => {}}
+                    wobject={wobject}
+                    googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
+                    loadingElement={<div style={{ height: `100%` }} />}
+                    containerElement={<div style={{ height: `200px` }} />}
+                    mapElement={<div style={{ height: `100%` }} />}
+                    lat={Number(position.latitude)}
+                    lng={Number(position.longitude)}
+                  />
+                )}
+            </React.Fragment>,
+          )}
+          {listItem(
+            objectFields.link,
+            <React.Fragment>
+              <i className="iconfont icon-link text-icon" />
+              <a target="_blank" rel="noopener noreferrer" href={website}>
+                Website
+              </a>
+              <SocialLinks profile={profile} />
+            </React.Fragment>,
+          )}
         </div>
       )}
     </React.Fragment>

@@ -12,6 +12,7 @@ import {
 } from '../reducers';
 
 import * as ApiClient from '../../waivioApi/ApiClient';
+import { hasActionType } from '../object/wObjectHelper';
 
 export const GET_FEED_CONTENT = createAsyncActionType('@feed/GET_FEED_CONTENT');
 export const GET_MORE_FEED_CONTENT = createAsyncActionType('@feed/GET_MORE_FEED_CONTENT');
@@ -87,6 +88,22 @@ export const getUserComments = ({ username, limit = 20 }) => (dispatch, getState
       .then(postsData => postsData),
     meta: { sortBy: 'comments', category: username, limit },
   });
+
+export const getObjectComments = (author, permlink, category = 'waivio-object') => (
+  dispatch,
+  getState,
+  { steemAPI },
+) => {
+  dispatch({
+    type: GET_USER_COMMENTS.ACTION,
+    payload: steemAPI
+      .sendAsync('get_state', [`/${category}/@${author}/${permlink}`])
+      .then(apiRes =>
+        Object.values(apiRes.content).filter(comment => hasActionType(comment, 'appendObject')),
+      ),
+    meta: { sortBy: 'comments', category: author, limit: 10 },
+  });
+};
 
 export const getObjectPosts = ({ username, object, limit = 10 }) => dispatch => {
   dispatch({

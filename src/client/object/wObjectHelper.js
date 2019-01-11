@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import { supportedObjectFields } from '../../../src/common/constants/listOfFields';
+import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
 
+// set innerField to "null" to get whole parsed object
 export const getFieldWithMaxWeight = (wObject, currentField, innerField) => {
   const field = supportedObjectFields.includes(currentField);
   if (!field) return '';
@@ -16,7 +18,7 @@ export const getFieldWithMaxWeight = (wObject, currentField, innerField) => {
   _.forEach(orderedValues, fld => {
     try {
       const parsed = JSON.parse(fld.body);
-      value = parsed[innerField];
+      value = innerField === null ? parsed : parsed[innerField];
       return false;
     } catch (e) {
       value = fld.body;
@@ -42,4 +44,31 @@ export const getField = (wObject, currentField, fieldName) => {
   return parsed ? parsed[fieldName] : wo.body;
 };
 
+export const getFieldsCount = (wObject, fieldName) =>
+  wObject.fields.filter(field => field.name === fieldName).length;
+
 export const truncate = str => (str && str.length > 255 ? `${str.substring(0, 255)}...` : str);
+
+export const hasActionType = (post, actionType) => {
+  const parsedMetadata = post && post.json_metadata && JSON.parse(post.json_metadata);
+  if (!parsedMetadata) return false;
+
+  const objActionType =
+    parsedMetadata[WAIVIO_META_FIELD_NAME] && parsedMetadata[WAIVIO_META_FIELD_NAME].action;
+  const appendingField =
+    parsedMetadata[WAIVIO_META_FIELD_NAME] && parsedMetadata[WAIVIO_META_FIELD_NAME].field;
+  return (
+    objActionType === actionType &&
+    appendingField &&
+    supportedObjectFields.includes(appendingField.name)
+  );
+};
+
+export const hasField = (post, fieldName, locale) => {
+  const parsedMetadata = post && post.json_metadata && JSON.parse(post.json_metadata);
+  if (!parsedMetadata) return false;
+
+  const field =
+    parsedMetadata[WAIVIO_META_FIELD_NAME] && parsedMetadata[WAIVIO_META_FIELD_NAME].field;
+  return !(fieldName && !(field.name === fieldName)) && !(locale && !(field.locale === locale));
+};

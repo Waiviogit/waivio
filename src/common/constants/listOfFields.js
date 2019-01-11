@@ -1,26 +1,25 @@
 export const objectFields = {
   name: 'name',
-  description: 'description',
-  location: 'location',
+  descriptionShort: 'descriptionShort',
+  descriptionFull: 'descriptionFull',
+  address: 'address',
+  position: 'position',
   link: 'link',
   avatarImage: 'avatarImage',
   backgroundImage: 'backgroundImage',
   galleryItem: 'galleryItem',
 };
 
-export const descriptionFields = {
-  descriptionShort: 'descriptionShort',
-  descriptionFull: 'descriptionFull',
+export const addressFields = {
+  country: 'country',
+  city: 'city',
+  street: 'street',
+  accommodation: 'accommodation',
 };
 
-export const locationFields = {
-  locationCountry: 'locationCountry',
-  locationCity: 'locationCity',
-  locationStreet: 'locationStreet',
-  locationAccommodation: 'locationAccommodation',
-  // postCode: 'postCode',
-  locationLatitude: 'locationLatitude',
-  locationLongitude: 'locationLongitude',
+export const positionFields = {
+  latitude: 'latitude',
+  longitude: 'longitude',
 };
 
 export const linkFields = {
