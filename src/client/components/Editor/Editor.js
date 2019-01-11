@@ -202,7 +202,11 @@ class Editor extends React.Component {
             influence: { value: obj.percent, max: obj.percent + influenceRemain },
           },
     );
-    this.setState({ linkedObjects, influenceRemain });
+    this.setState({
+      linkedObjects,
+      influenceRemain,
+      canCreateNewObject: linkedObjects.length < MAX_NEW_OBJECTS_NUMBER,
+    });
   }
 
   checkLinkedObjects() {
