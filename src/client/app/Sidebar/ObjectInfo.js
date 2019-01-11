@@ -78,7 +78,13 @@ const ObjectInfo = props => {
             <div className="field-info__content">{content}</div>
           </React.Fragment>
         ) : (
-          accessExtend && <Proposition objectID={wobject.author_permlink} fieldName={fieldName} />
+          accessExtend && (
+            <Proposition
+              objectID={wobject.author_permlink}
+              fieldName={fieldName}
+              defaultName={wobject.default_name}
+            />
+          )
         )}
       </div>
     );

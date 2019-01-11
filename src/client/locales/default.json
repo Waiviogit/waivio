@@ -435,7 +435,8 @@
   "object_field_position": "Position",
   "object_field_link": "Links",
   "object_field_avatarImage": "Avatar",
-  "object_field_backgroundImage": "Background image"
-  "append_object_validation_message": "At least one field must be filled",
+  "field_error": "{field} is required",
+  "append_send": "Suggest",
+  "object_field_backgroundImage": "Background image",
   "gallery_list_empty": "Nothing is there. Be first to create a new one!"
 }
