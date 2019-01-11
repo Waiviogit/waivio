@@ -15,13 +15,15 @@ const Feed = ({ content, isFetching, hasMore, loadMoreContent, showPostModal }) 
     elementIsScrollable={false}
     threshold={1500}
   >
-    {content.map(id => <StoryContainer key={id} id={id} showPostModal={showPostModal} />)}
+    {content.map(id => (
+      <StoryContainer key={id} id={id} showPostModal={showPostModal} />
+    ))}
   </ReduxInfiniteScroll>
 );
 
 Feed.propTypes = {
   showPostModal: PropTypes.func,
-  content: PropTypes.arrayOf(PropTypes.number),
+  content: PropTypes.arrayOf(PropTypes.string),
   isFetching: PropTypes.bool,
   hasMore: PropTypes.bool,
   loadMoreContent: PropTypes.func,
