@@ -17,6 +17,7 @@ import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
 import './WobjHistory.less';
 import AppendButton from './AppendButton';
+import AppendModal from './AppendModal';
 
 @connect(
   state => ({
@@ -53,9 +54,9 @@ export default class WobjHistory extends React.Component {
 
     if (object && object.author && object.author_permlink) {
       this.props.getObjectComments(object.author, object.author_permlink);
-    }
-    if (match.params.field) {
-      this.handleFieldChange(match.params.field);
+      if (match.params.field) {
+        this.handleFieldChange(match.params.field);
+      }
     }
   }
 
@@ -70,6 +71,9 @@ export default class WobjHistory extends React.Component {
     }
     if (prevProps.object.author_permlink !== object.author_permlink) {
       this.props.getObjectComments(object.author, object.author_permlink);
+      if (match.params.field) {
+        this.handleFieldChange(match.params.field);
+      }
     }
   }
 
@@ -130,10 +134,12 @@ export default class WobjHistory extends React.Component {
                 </Select.Option>
               ))}
             </Select>
-            <AppendButton
+            <AppendButton toggleModal={this.handleToggleModal} />
+            <AppendModal
               showModal={showModal}
-              toggleModal={this.handleToggleModal}
+              hideModal={this.handleToggleModal}
               locale={this.state.locale}
+              field={this.state.field}
             />
           </div>
         )}

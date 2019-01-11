@@ -54,7 +54,7 @@ export default class AppendForm extends Component {
 
   static defaultProps = {
     currentField: 'auto',
-    currentLocale: 'auto',
+    currentLocale: 'en-US',
     currentUsername: '',
     loading: false,
     hideModal: () => {},
@@ -104,23 +104,10 @@ export default class AppendForm extends Component {
       });
   };
 
-  onUpdateCoordinate = e => {
-    if (
-      e.target.id === positionFields.latitude &&
-      Number(e.target.value) > -85 &&
-      Number(e.target.value) < 85
-    )
-      this.props.form.setFieldsValue({
-        [positionFields.latitude]: Number(e.target.value),
-      });
-    if (
-      e.target.id === positionFields.longitude &&
-      Number(e.target.value) > -180 &&
-      Number(e.target.value) < 180
-    )
-      this.props.form.setFieldsValue({
-        [positionFields.longitude]: Number(e.target.value),
-      });
+  onUpdateCoordinate = positionField => e => {
+    this.props.form.setFieldsValue({
+      [positionField]: Number(e.target.value),
+    });
   };
 
   getNewPostData = form => {
@@ -130,7 +117,6 @@ export default class AppendForm extends Component {
     const field = getFieldValue('currentField');
     let locale = getFieldValue('currentLocale');
 
-    // if (field === 'auto') field = 'name';
     if (locale === 'auto') locale = 'en-US';
 
     const data = {};
@@ -639,7 +625,7 @@ export default class AppendForm extends Component {
                 ],
               })(
                 <Input
-                  onBlur={this.onUpdateCoordinate}
+                  onBlur={this.onUpdateCoordinate(positionFields.latitude)}
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
                   })}
@@ -679,7 +665,7 @@ export default class AppendForm extends Component {
                 ],
               })(
                 <Input
-                  onBlur={this.onUpdateCoordinate}
+                  onBlur={this.onUpdateCoordinate(positionFields.longitude)}
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
                   })}
