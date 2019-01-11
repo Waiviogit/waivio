@@ -120,7 +120,9 @@ export default class WobjHistory extends React.Component {
               onChange={this.handleFieldChange}
             >
               {supportedObjectFields.map(f => (
-                <Select.Option key={f}>{f}</Select.Option>
+                <Select.Option key={f}>
+                  <FormattedMessage id={`object_field_${f}`} defaultMessage={f} />
+                </Select.Option>
               ))}
             </Select>
             <Select

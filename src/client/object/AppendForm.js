@@ -797,7 +797,7 @@ export default class AppendForm extends Component {
     supportedObjectFields.forEach(option => {
       fieldOptions.push(
         <Select.Option key={option} value={option} className="Topnav__search-autocomplete">
-          {option}
+          <FormattedMessage id={`object_field_${option}`} defaultMessage={option} />
         </Select.Option>,
       );
     });
