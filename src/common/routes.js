@@ -28,7 +28,6 @@ import Notifications from '../client/notifications/Notifications';
 import Error404 from '../client/statics/Error404';
 import ExitPage from '../client/statics/ExitPage';
 import ObjectProfile from '../client/object/ObjectProfile';
-import AppendObjectPostWtite from '../client/post/AppendObjectPostWrite/AppendObjectPostWrite';
 import WobjFollowers from '../client/object/WobjFollowers';
 import WobjHistory from '../client/object/WobjHistory';
 
@@ -129,22 +128,24 @@ const routes = [
         ],
       },
       {
-        path: `/object/@:name/(followers|history)?/(${supportedObjectFields.join('|')})?`,
+        path: `/object/:name/:defaultName/(followers|feed|history)?/(${supportedObjectFields.join(
+          '|',
+        )})?`,
         component: Wobj,
         exact: true,
         routes: [
           {
-            path: '/object/@:name',
+            path: '/object/:name/:defaultName',
             exact: true,
             component: ObjectProfile,
           },
           {
-            path: '/object/@:name/followers',
+            path: '/object/:name/:defaultName/followers',
             exact: true,
             component: WobjFollowers,
           },
           {
-            path: '/object/@:name/history/:field?',
+            path: '/object/:name/:defaultName/history/:field?',
             exact: true,
             component: WobjHistory,
           },
@@ -160,11 +161,6 @@ const routes = [
         component: Objects,
       },
       {
-        path: '/wobject/editor/@:name/:fieldName',
-        exact: true,
-        component: AppendObjectPostWtite,
-      },
-      {
         path: '/:category?/@:author/:permlink',
         component: Post,
       },
@@ -177,7 +173,7 @@ const routes = [
         component: ExitPage,
       },
       {
-        path: '/:sortBy(trending|created|active|hot|promoted)?/:category?',
+        path: '/:sortBy(trending|created|hot|promoted)?/:category?',
         component: Page,
       },
       {

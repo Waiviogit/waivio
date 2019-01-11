@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { supportedObjectFields } from '../../../src/common/constants/listOfFields';
 import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
 
+// set innerField to "null" to get whole parsed object
 export const getFieldWithMaxWeight = (wObject, currentField, innerField) => {
   const field = supportedObjectFields.includes(currentField);
   if (!field) return '';
@@ -17,7 +18,7 @@ export const getFieldWithMaxWeight = (wObject, currentField, innerField) => {
   _.forEach(orderedValues, fld => {
     try {
       const parsed = JSON.parse(fld.body);
-      value = parsed[innerField];
+      value = innerField === null ? parsed : parsed[innerField];
       return false;
     } catch (e) {
       value = fld.body;

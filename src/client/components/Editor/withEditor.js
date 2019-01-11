@@ -101,7 +101,7 @@ export default function withEditor(WrappedComponent) {
         body: `Waivio object "${obj.name}" has been created`,
         permlink: obj.id,
         objectName: obj.name,
-        locale: this.props.locale === 'auto' ? 'en-US' : this.props.locale,
+        locale: obj.locale || this.props.locale === 'auto' ? 'en-US' : this.props.locale,
         type: WAIVIO_OBJECT_TYPE.ITEM,
         isExtendingOpen: obj.isExtendingOpen,
         isPostingOpen: obj.isPostingOpen,

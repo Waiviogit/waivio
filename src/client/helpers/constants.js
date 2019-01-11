@@ -12,10 +12,10 @@ export const knownDomains = [
 ];
 
 export const people = [
-  'steemsports',
-  'knozaki2015',
-  'gavvet',
-  'krnel',
+  'grampo',
+  'monterey',
+  'eugenezh',
+  'jucci',
   'papa-pepper',
   'ozchartart',
   'craig-grant',

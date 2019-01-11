@@ -72,7 +72,11 @@ export default class WobjHistory extends React.Component {
 
   handleFieldChange = field => {
     const { object, history } = this.props;
-    history.push(`/object/@${object.author_permlink}/${field ? `history/${field}` : 'history'}`);
+    history.push(
+      `/object/${object.author_permlink}/${object.default_name}/${
+        field ? `history/${field}` : 'history'
+      }`,
+    );
     this.setState({ field });
   };
 
