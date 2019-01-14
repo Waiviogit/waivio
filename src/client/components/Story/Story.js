@@ -244,6 +244,7 @@ class Story extends React.Component {
     return showStoryPreview ? (
       <a
         href={dropCategory(post.url)}
+        rel="noopener noreferrer"
         target="_blank"
         onClick={this.handlePreviewClickPostModalDisplay}
         className="Story__content__preview"
@@ -314,7 +315,11 @@ class Story extends React.Component {
                 <Link to={`/@${post.author}`}>
                   <h4>
                     <span className="username">{post.author}</span>
-                    <ReputationTag reputation={post.author_reputation} />
+                    {_.isNil(post.author_rank) ? (
+                      <ReputationTag reputation={post.author_reputation} />
+                    ) : (
+                      <Tag>RANK: {post.author_rank}</Tag>
+                    )}
                   </h4>
                 </Link>
                 <span className="Story__topics">
@@ -341,6 +346,7 @@ class Story extends React.Component {
           <div className="Story__content">
             <a
               href={dropCategory(post.url)}
+              rel="noopener noreferrer"
               target="_blank"
               onClick={this.handlePostModalDisplay}
               className="Story__content__title"
