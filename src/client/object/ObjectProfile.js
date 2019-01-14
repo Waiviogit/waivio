@@ -16,6 +16,7 @@ import {
 import { getObjectPosts, getMoreObjectPosts } from '../feed/feedActions';
 import { showPostModal } from '../app/appActions';
 import PostModal from '../post/PostModalContainer';
+import './ObjectProfile.less';
 
 @withRouter
 @connect(
@@ -82,13 +83,11 @@ export default class ObjectProfile extends React.Component {
             showPostModal={this.props.showPostModal}
           />
           {_.isEmpty(content) && fetched && (
-            <div className="text-center">
-              <h3>
-                <FormattedMessage
-                  id="empty_object_profile"
-                  defaultMessage="This object doesn't have any story published yet."
-                />
-              </h3>
+            <div className="ObjectProfile__empty">
+              <FormattedMessage
+                id="empty_object_profile"
+                defaultMessage="This object doesn't have any reviews."
+              />
             </div>
           )}
         </div>
