@@ -7,7 +7,6 @@ export const objectFields = {
   link: 'link',
   avatarImage: 'avatarImage',
   backgroundImage: 'backgroundImage',
-  galleryItem: 'galleryItem',
 };
 
 export const addressFields = {

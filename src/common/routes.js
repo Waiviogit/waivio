@@ -146,7 +146,7 @@ const routes = [
             component: WobjFollowers,
           },
           {
-            path: '/object/:name/defaultName/gallery',
+            path: '/object/:name/:defaultName/gallery',
             exact: true,
             component: ObjectGallery,
           },

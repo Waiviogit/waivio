@@ -122,7 +122,7 @@ export default class AppendForm extends Component {
     const data = {};
 
     const getBody = formField => {
-      const { body, preview, currentField, currentLocale, ...rest } = formField;
+      const { currentField, currentLocale, ...rest } = formField;
       if (rest[objectFields.name]) return rest[objectFields.name];
       if (rest[objectFields.descriptionShort]) return rest[objectFields.descriptionShort];
       if (rest[objectFields.descriptionFull]) return rest[objectFields.descriptionFull];
@@ -133,7 +133,7 @@ export default class AppendForm extends Component {
     data.author = this.props.currentUsername;
     data.parentAuthor = wObject.author;
     data.parentPermlink = wObject.author_permlink;
-    data.body = `@{data.author} suggests adding the following field(s): ${getBody(
+    data.body = `@${data.author} suggests adding the following field(s): ${getBody(
       form,
     )} with locale: ${locale}`;
     data.title = '';
