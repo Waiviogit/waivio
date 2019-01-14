@@ -9,10 +9,11 @@ import {
   getFeed,
   getPosts,
   getBookmarks as getBookmarksSelector,
+  getObject,
 } from '../reducers';
 
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { hasActionType } from '../object/wObjectHelper';
+import { mapObjectAppends } from '../object/wObjectHelper';
 
 export const GET_FEED_CONTENT = createAsyncActionType('@feed/GET_FEED_CONTENT');
 export const GET_MORE_FEED_CONTENT = createAsyncActionType('@feed/GET_MORE_FEED_CONTENT');
@@ -94,13 +95,13 @@ export const getObjectComments = (author, permlink, category = 'waivio-object') 
   getState,
   { steemAPI },
 ) => {
-  dispatch({
+  const state = getState();
+  const wobject = getObject(state);
+  return dispatch({
     type: GET_USER_COMMENTS.ACTION,
     payload: steemAPI
       .sendAsync('get_state', [`/${category}/@${author}/${permlink}`])
-      .then(apiRes =>
-        Object.values(apiRes.content).filter(comment => hasActionType(comment, 'appendObject')),
-      ),
+      .then(apiRes => mapObjectAppends(apiRes.content, wobject)),
     meta: { sortBy: 'comments', category: author, limit: 10 },
   });
 };

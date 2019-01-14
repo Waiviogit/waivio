@@ -438,5 +438,8 @@
   "object_field_backgroundImage": "Background image",
   "field_error": "{field} is required",
   "append_send": "Suggest",
-  "suggestion_add_field": "Suggestion to add a field"
+  "suggestion_add_field": "Suggestion to add a field",
+  "rank": "Rank: {rank}",
+  "updates": "Updates",
+  "reviews": "Reviews"
 }

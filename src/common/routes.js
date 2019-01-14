@@ -128,7 +128,7 @@ const routes = [
         ],
       },
       {
-        path: `/object/:name/:defaultName/(followers|feed|history)?/(${supportedObjectFields.join(
+        path: `/object/:name/:defaultName/(about|gallery|updates|reviews|followers|feed)?/(${supportedObjectFields.join(
           '|',
         )})?`,
         component: Wobj,
@@ -140,12 +140,17 @@ const routes = [
             component: ObjectProfile,
           },
           {
+            path: '/object/:name/:defaultName/reviews',
+            exact: true,
+            component: ObjectProfile,
+          },
+          {
             path: '/object/:name/:defaultName/followers',
             exact: true,
             component: WobjFollowers,
           },
           {
-            path: '/object/:name/:defaultName/history/:field?',
+            path: '/object/:name/:defaultName/updates/:field?',
             exact: true,
             component: WobjHistory,
           },

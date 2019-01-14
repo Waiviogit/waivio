@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { injectIntl } from 'react-intl';
 import WeightTag from '../components/WeightTag';
 import ObjectLightbox from '../components/ObjectLightbox';
 import FollowButton from '../widgets/FollowButton';
@@ -10,7 +11,7 @@ import { getFieldWithMaxWeight } from '../../client/object/wObjectHelper';
 import { objectFields } from '../../common/constants/listOfFields';
 import Proposition from '../components/Proposition/Proposition';
 
-const WobjHeader = ({ wobject, username }) => {
+const WobjHeader = ({ wobject, username, intl }) => {
   const coverImage = getFieldWithMaxWeight(
     wobject,
     objectFields.backgroundImage,
@@ -35,6 +36,19 @@ const WobjHeader = ({ wobject, username }) => {
               </div>
               <WeightTag weight={wobject.weight} rank={wobject.rank} />
               <FollowButton following={wobject.author_permlink} followingType="wobject" />
+            </div>
+          </div>
+          <div className="ObjectHeader__row">
+            <div className="ObjectHeader__rank">
+              {intl.formatMessage(
+                {
+                  id: 'rank',
+                  defaultMessage: 'Rank',
+                },
+                {
+                  rank: wobject.rank,
+                },
+              )}
             </div>
           </div>
           <div className="ObjectHeader__user__username">
@@ -67,6 +81,7 @@ const WobjHeader = ({ wobject, username }) => {
 WobjHeader.propTypes = {
   wobject: PropTypes.shape(),
   username: PropTypes.string,
+  intl: PropTypes.shape(),
 };
 
 WobjHeader.defaultProps = {
@@ -75,6 +90,7 @@ WobjHeader.defaultProps = {
   vestingShares: 0,
   wobject: {},
   onTransferClick: () => {},
+  intl: {},
 };
 
-export default WobjHeader;
+export default injectIntl(WobjHeader);
