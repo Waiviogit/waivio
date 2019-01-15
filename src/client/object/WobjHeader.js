@@ -15,14 +15,14 @@ import ObjectRank from './ObjectRank';
 const WobjHeader = ({ wobject, username }) => {
   const coverImage = getFieldWithMaxWeight(
     wobject,
-    objectFields.backgroundImage,
-    objectFields.backgroundImage,
+    objectFields.background,
+    objectFields.background,
   );
   const hasCover = !!coverImage;
   const style = hasCover
     ? { backgroundImage: `url("https://steemitimages.com/2048x512/${coverImage}")` }
     : {};
-  const descriptionShort = getFieldWithMaxWeight(wobject, objectFields.descriptionShort);
+  const descriptionShort = getFieldWithMaxWeight(wobject, objectFields.title);
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
   const objectName = getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name);
   return (
@@ -64,7 +64,7 @@ const WobjHeader = ({ wobject, username }) => {
                   <Proposition
                     defaultName={wobject.default_name}
                     objectID={wobject.author_permlink}
-                    fieldName={objectFields.descriptionShort}
+                    fieldName={objectFields.title}
                   />
                 ))}
             </div>
@@ -73,7 +73,7 @@ const WobjHeader = ({ wobject, username }) => {
             <div className="ObjectHeader__user__addCover">
               <Proposition
                 objectID={wobject.author_permlink}
-                fieldName="backgroundImage"
+                fieldName={objectFields.background}
                 defaultName={wobject.default_name}
               />
             </div>

@@ -8,7 +8,7 @@ import { Button, Form, Input, message, Select } from 'antd';
 import {
   linkFields,
   objectFields,
-  positionFields,
+  mapFields,
   addressFields,
   socialObjectFields,
   supportedObjectFields,
@@ -68,8 +68,8 @@ export default class AppendForm extends Component {
 
   static get MAX_IMG_SIZE() {
     return {
-      [objectFields.avatarImage]: 2097152,
-      [objectFields.backgroundImage]: 15728640,
+      [objectFields.avatar]: 2097152,
+      [objectFields.background]: 15728640,
     };
   }
 
@@ -124,8 +124,8 @@ export default class AppendForm extends Component {
     const getBody = formField => {
       const { body, preview, currentField, currentLocale, ...rest } = formField;
       if (rest[objectFields.name]) return rest[objectFields.name];
-      if (rest[objectFields.descriptionShort]) return rest[objectFields.descriptionShort];
-      if (rest[objectFields.descriptionFull]) return rest[objectFields.descriptionFull];
+      if (rest[objectFields.title]) return rest[objectFields.title];
+      if (rest[objectFields.description]) return rest[objectFields.description];
       if (rest.image) return rest.image;
       return JSON.stringify(rest);
     };
@@ -177,8 +177,8 @@ export default class AppendForm extends Component {
 
   setCoordinates = ({ latLng }) => {
     this.props.form.setFieldsValue({
-      [positionFields.latitude]: latLng.lat().toFixed(6),
-      [positionFields.longitude]: latLng.lng().toFixed(6),
+      [mapFields.latitude]: latLng.lat().toFixed(6),
+      [mapFields.longitude]: latLng.lng().toFixed(6),
     });
   };
 
@@ -206,8 +206,8 @@ export default class AppendForm extends Component {
       case objectFields.address:
         formFields = form.getFieldsValue(Object.values(addressFields));
         break;
-      case objectFields.position:
-        formFields = form.getFieldsValue(Object.values(positionFields));
+      case objectFields.map:
+        formFields = form.getFieldsValue(Object.values(mapFields));
         break;
       case objectFields.link:
         formFields = form.getFieldsValue(Object.values(linkFields));
@@ -351,8 +351,8 @@ export default class AppendForm extends Component {
           </Form.Item>
         );
       }
-      case objectFields.backgroundImage:
-      case objectFields.avatarImage: {
+      case objectFields.background:
+      case objectFields.avatar: {
         return (
           <React.Fragment>
             <QuickPostEditorFooter
@@ -385,10 +385,10 @@ export default class AppendForm extends Component {
           </React.Fragment>
         );
       }
-      case objectFields.descriptionShort: {
+      case objectFields.title: {
         return (
           <Form.Item>
-            {getFieldDecorator(objectFields.descriptionShort, {
+            {getFieldDecorator(objectFields.title, {
               rules: [
                 {
                   max: 100,
@@ -428,10 +428,10 @@ export default class AppendForm extends Component {
           </Form.Item>
         );
       }
-      case objectFields.descriptionFull: {
+      case objectFields.description: {
         return (
           <Form.Item>
-            {getFieldDecorator(objectFields.descriptionFull, {
+            {getFieldDecorator(objectFields.description, {
               rules: [
                 {
                   max: 255,
@@ -593,11 +593,11 @@ export default class AppendForm extends Component {
           </React.Fragment>
         );
       }
-      case objectFields.position: {
+      case objectFields.map: {
         return (
           <React.Fragment>
             <Form.Item>
-              {getFieldDecorator(positionFields.latitude, {
+              {getFieldDecorator(mapFields.latitude, {
                 rules: [
                   {
                     pattern: regexCoordsLatitude,
@@ -625,7 +625,7 @@ export default class AppendForm extends Component {
                 ],
               })(
                 <Input
-                  onBlur={this.onUpdateCoordinate(positionFields.latitude)}
+                  onBlur={this.onUpdateCoordinate(mapFields.latitude)}
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
                   })}
@@ -637,7 +637,7 @@ export default class AppendForm extends Component {
               )}
             </Form.Item>
             <Form.Item>
-              {getFieldDecorator(positionFields.longitude, {
+              {getFieldDecorator(mapFields.longitude, {
                 rules: [
                   {
                     pattern: regexCoordsLongitude,
@@ -665,7 +665,7 @@ export default class AppendForm extends Component {
                 ],
               })(
                 <Input
-                  onBlur={this.onUpdateCoordinate(positionFields.longitude)}
+                  onBlur={this.onUpdateCoordinate(mapFields.longitude)}
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
                   })}
@@ -684,8 +684,8 @@ export default class AppendForm extends Component {
               loadingElement={<div style={{ height: `100%` }} />}
               containerElement={<div style={{ height: `400px` }} />}
               mapElement={<div style={{ height: `100%` }} />}
-              lat={Number(getFieldValue(positionFields.latitude)) || 37.22}
-              lng={Number(getFieldValue(positionFields.longitude)) || -101.39}
+              lat={Number(getFieldValue(mapFields.latitude)) || 37.22}
+              lng={Number(getFieldValue(mapFields.longitude)) || -101.39}
             />
           </React.Fragment>
         );
