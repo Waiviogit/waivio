@@ -29,6 +29,7 @@ import Error404 from '../client/statics/Error404';
 import ExitPage from '../client/statics/ExitPage';
 import ObjectProfile from '../client/object/ObjectProfile';
 import WobjFollowers from '../client/object/WobjFollowers';
+import ObjectGallery from '../client/object/ObjectGallery';
 import WobjHistory from '../client/object/WobjHistory';
 
 const routes = [
@@ -148,6 +149,11 @@ const routes = [
             path: '/object/:name/:defaultName/followers',
             exact: true,
             component: WobjFollowers,
+          },
+          {
+            path: '/object/:name/:defaultName/gallery',
+            exact: true,
+            component: ObjectGallery,
           },
           {
             path: '/object/:name/:defaultName/updates/:field?',

@@ -143,4 +143,13 @@ export const getAccountWithFollowingCount = username =>
     }),
   );
 
+export const getWobjectGallery = wobject =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.getObjects}/${wobject}${config.getGallery}`)
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export default null;
