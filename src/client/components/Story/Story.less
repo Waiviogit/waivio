@@ -59,6 +59,19 @@
 
     &__flex {
       display: flex;
+
+      & > .ant-tag {
+        font-weight: bold;
+        margin-left: 6px;
+        font-size: 12px;
+        vertical-align: 1px;
+        padding: 0 4px;
+        cursor: default;
+
+        @media @small {
+          padding: 0 8px;
+        }
+      }
     }
 
     &__text {
@@ -67,18 +80,6 @@
 
       @media @small {
         margin-left: 0 12px;
-      }
-
-      a > h4 > .ant-tag {
-        font-weight: bold;
-        margin-left: 6px;
-        font-size: 12px;
-        vertical-align: 1px;
-        padding: 0 4px;
-
-        @media @small {
-          padding: 0 8px;
-        }
       }
     }
   }

@@ -21,6 +21,7 @@ import {
 import withAuthActions from '../../auth/withAuthActions';
 import BTooltip from '../BTooltip';
 import ReputationTag from '../ReputationTag';
+import RankTag from '../RankTag';
 import StoryPreview from './StoryPreview';
 import StoryFooter from '../StoryFooter/StoryFooter';
 import Avatar from '../Avatar';
@@ -258,7 +259,6 @@ class Story extends React.Component {
 
   render() {
     const {
-      intl,
       user,
       post,
       postState,
@@ -313,21 +313,16 @@ class Story extends React.Component {
             </Link>
             <div className="Story__header__text">
               <span className="Story__header__flex">
-                <Link to={`/@${post.author}`}>
-                  <h4>
+                <h4>
+                  <Link to={`/@${post.author}`}>
                     <span className="username">{post.author}</span>
-                    {_.isNil(post.author_rank) ? (
-                      <ReputationTag reputation={post.author_reputation} />
-                    ) : (
-                      <Tag>
-                        {intl.formatMessage(
-                          { id: 'rank', defaultMessage: 'Rank: {rank}' },
-                          { rank: post.author_rank.toFixed() },
-                        )}
-                      </Tag>
-                    )}
-                  </h4>
-                </Link>
+                  </Link>
+                </h4>
+                {_.isNil(post.author_rank) ? (
+                  <ReputationTag reputation={post.author_reputation} />
+                ) : (
+                  <RankTag rank={post.author_rank} />
+                )}
                 <span className="Story__topics">
                   <Topic name={post.category} />
                 </span>
