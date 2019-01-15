@@ -18,9 +18,9 @@ const ObjectInfo = props => {
   const { wobject, userName } = props;
   let addressArr = [];
   let address = '';
-  let position = '';
-  let descriptionShort = '';
-  let descriptionFull = '';
+  let map = '';
+  let title = '';
+  let description = '';
   let website = '';
 
   if (wobject) {
@@ -29,10 +29,10 @@ const ObjectInfo = props => {
     );
     address = _.compact(addressArr).join(', ');
 
-    position = getFieldWithMaxWeight(wobject, objectFields.position, null);
+    map = getFieldWithMaxWeight(wobject, objectFields.map, null);
 
-    descriptionShort = truncate(getFieldWithMaxWeight(wobject, objectFields.descriptionShort));
-    descriptionFull = truncate(getFieldWithMaxWeight(wobject, objectFields.descriptionFull));
+    title = truncate(getFieldWithMaxWeight(wobject, objectFields.title));
+    description = truncate(getFieldWithMaxWeight(wobject, objectFields.description));
 
     website = getFieldWithMaxWeight(wobject, objectFields.link, linkFields.website);
   }
@@ -91,10 +91,10 @@ const ObjectInfo = props => {
   };
   return (
     <React.Fragment>
-      {getFieldWithMaxWeight(wobject, 'name') && (
+      {getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name) && (
         <div className="object-sidebar">
-          {listItem(objectFields.descriptionShort, descriptionShort)}
-          {listItem(objectFields.descriptionFull, descriptionFull)}
+          {listItem(objectFields.title, title)}
+          {listItem(objectFields.description, description)}
           {listItem(
             objectFields.address,
             <React.Fragment>
@@ -103,12 +103,12 @@ const ObjectInfo = props => {
             </React.Fragment>,
           )}
           {listItem(
-            objectFields.position,
+            objectFields.map,
             <React.Fragment>
-              {position &&
-                position.latitude &&
-                position.longitude &&
-                isCoordinatesValid(position.latitude, position.longitude) && (
+              {map &&
+                map.latitude &&
+                map.longitude &&
+                isCoordinatesValid(map.latitude, map.longitude) && (
                   <Map
                     isMarkerShown
                     setCoordinates={() => {}}
@@ -117,8 +117,8 @@ const ObjectInfo = props => {
                     loadingElement={<div style={{ height: `100%` }} />}
                     containerElement={<div style={{ height: `200px` }} />}
                     mapElement={<div style={{ height: `100%` }} />}
-                    lat={Number(position.latitude)}
-                    lng={Number(position.longitude)}
+                    lat={Number(map.latitude)}
+                    lng={Number(map.longitude)}
                   />
                 )}
             </React.Fragment>,

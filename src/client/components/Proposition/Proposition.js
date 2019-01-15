@@ -13,29 +13,26 @@ class Proposition extends React.Component {
   handleToggleModal = () => this.setState({ showModal: !this.state.showModal });
 
   render() {
-    const { intl, fieldName, objectID, defaultName } = this.props;
+    const { intl, fieldName, objectID, defaultName, showFieldName } = this.props;
     const { showModal } = this.state;
     return (
       <React.Fragment>
-        <Link
-          to={{ pathname: `/object/${objectID}/${defaultName}/history/${fieldName}` }}
-          onClick={this.handleToggleModal}
-        >
-          <div className="proposition-line">
-            <Icon type="plus-circle" className="proposition-line__icon" />
+        <div className="proposition-line">
+          {showFieldName && (
             <span className="proposition-line__text">
-              {`${intl.formatMessage({
-                id: 'there_may_be',
-                defaultMessage: 'There may be',
-              })} ${intl
-                .formatMessage({
-                  id: `object_field_${fieldName}`,
-                  defaultMessage: fieldName,
-                })
-                .toLowerCase()}`}
+              {intl.formatMessage({
+                id: `object_field_${fieldName}`,
+                defaultMessage: fieldName,
+              })}
             </span>
-          </div>
-        </Link>
+          )}
+          <Link
+            to={{ pathname: `/object/${objectID}/${defaultName}/reviews/${fieldName}` }}
+            onClick={this.handleToggleModal}
+          >
+            <Icon type="plus-circle" className="proposition-line__icon" />
+          </Link>
+        </div>
         <AppendModal
           showModal={showModal}
           hideModal={this.handleToggleModal}
@@ -51,11 +48,13 @@ Proposition.propTypes = {
   defaultName: PropTypes.string.isRequired,
   objectID: PropTypes.string.isRequired,
   intl: PropTypes.shape().isRequired,
+  showFieldName: PropTypes.bool,
 };
 
 Proposition.defaultProps = {
   fieldName: 'name',
   defaultName: 'abc',
+  showFieldName: true,
 };
 
 export default injectIntl(Proposition);
