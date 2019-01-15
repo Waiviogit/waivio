@@ -244,6 +244,7 @@ class Story extends React.Component {
     return showStoryPreview ? (
       <a
         href={dropCategory(post.url)}
+        rel="noopener noreferrer"
         target="_blank"
         onClick={this.handlePreviewClickPostModalDisplay}
         className="Story__content__preview"
@@ -257,6 +258,7 @@ class Story extends React.Component {
 
   render() {
     const {
+      intl,
       user,
       post,
       postState,
@@ -314,7 +316,16 @@ class Story extends React.Component {
                 <Link to={`/@${post.author}`}>
                   <h4>
                     <span className="username">{post.author}</span>
-                    <ReputationTag reputation={post.author_reputation} />
+                    {_.isNil(post.author_rank) ? (
+                      <ReputationTag reputation={post.author_reputation} />
+                    ) : (
+                      <Tag>
+                        {intl.formatMessage(
+                          { id: 'rank', defaultMessage: 'Rank: {rank}' },
+                          { rank: post.author_rank.toFixed() },
+                        )}
+                      </Tag>
+                    )}
                   </h4>
                 </Link>
                 <span className="Story__topics">
@@ -341,13 +352,28 @@ class Story extends React.Component {
           <div className="Story__content">
             <a
               href={dropCategory(post.url)}
+              rel="noopener noreferrer"
               target="_blank"
               onClick={this.handlePostModalDisplay}
               className="Story__content__title"
             >
               <h2>
-                {post.depth !== 0 && <Tag color="#4f545c">RE</Tag>}
-                {post.title || post.root_title}
+                {post.append_field_name ? (
+                  <React.Fragment>
+                    <FormattedMessage
+                      id={`object_field_${post.append_field_name}`}
+                      defaultMessage={post.append_field_name}
+                    />
+                    {/* {!_.isNil(post.append_field_weight) && ( */}
+                    {/* <Tag>WEIGHT: {post.append_field_weight}</Tag> */}
+                    {/* )} */}
+                  </React.Fragment>
+                ) : (
+                  <React.Fragment>
+                    {post.depth !== 0 && <Tag color="#4f545c">RE</Tag>}
+                    {post.title || post.root_title}
+                  </React.Fragment>
+                )}
               </h2>
             </a>
             {this.renderStoryPreview()}
