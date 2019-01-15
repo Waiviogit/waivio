@@ -12,6 +12,7 @@ class WobjMenuWrapper extends React.Component {
     match: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
+    wobject: PropTypes.shape().isRequired,
   };
 
   onChange = key => {
@@ -24,7 +25,17 @@ class WobjMenuWrapper extends React.Component {
     const { match, location, history, ...otherProps } = this.props;
     const current = this.props.location.pathname.split('/')[4];
     const currentKey = current || 'about';
-    return <ObjectMenu defaultKey={currentKey} onChange={this.onChange} {...otherProps} />;
+    let fieldsCount = 0;
+    if (this.props.wobject && this.props.wobject.fields)
+      fieldsCount = this.props.wobject.fields.length > 0 ? this.props.wobject.fields.length - 1 : 0;
+    return (
+      <ObjectMenu
+        defaultKey={currentKey}
+        onChange={this.onChange}
+        {...otherProps}
+        fieldsCount={fieldsCount}
+      />
+    );
   }
 }
 
@@ -40,7 +51,7 @@ const WobjHero = ({ authenticated, wobject, isFetching, username, isFollowing })
             ) : (
               <WobjHeader username={username} wobject={wobject} isFollowing={isFollowing} />
             )}
-            <WobjMenuWrapper followers={wobject.followers_count || 0} />
+            <WobjMenuWrapper followers={wobject.followers_count || 0} wobject={wobject} />
           </React.Fragment>
         )}
       />

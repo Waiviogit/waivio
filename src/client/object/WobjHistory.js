@@ -4,7 +4,7 @@ import { Select } from 'antd';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 
-import { getPosts, getFeed, getObject } from '../reducers';
+import { getPosts, getFeed, getObject, getReadLanguages } from '../reducers';
 import Feed from '../feed/Feed';
 import {
   getFeedFromState,
@@ -24,6 +24,7 @@ import AppendModal from './AppendModal';
     feed: getFeed(state),
     comments: getPosts(state),
     object: getObject(state),
+    readLanguages: getReadLanguages(state),
   }),
   {
     getObjectComments,
@@ -36,11 +37,13 @@ export default class WobjHistory extends React.Component {
     feed: PropTypes.shape().isRequired,
     comments: PropTypes.shape(),
     getObjectComments: PropTypes.func,
+    readLanguages: PropTypes.arrayOf(PropTypes.string),
     object: PropTypes.shape(),
   };
 
   static defaultProps = {
     getObjectComments: () => {},
+    readLanguages: ['en-US'],
     comments: {},
     object: {},
   };
@@ -96,7 +99,7 @@ export default class WobjHistory extends React.Component {
 
   render() {
     const { field, locale, showModal } = this.state;
-    const { feed, object, comments } = this.props;
+    const { feed, object, comments, readLanguages } = this.props;
 
     const commentIds = getFeedFromState('comments', object.author, feed);
     const content = getFilteredContent(
@@ -106,7 +109,14 @@ export default class WobjHistory extends React.Component {
       locale,
     );
     const isFetching = getFeedLoadingFromState('comments', object.author, feed);
-
+    const usedByUserLanguages = [];
+    const filteredLanguages = LANGUAGES.filter(lang => {
+      if (readLanguages.includes(lang.id)) {
+        usedByUserLanguages.push(lang);
+        return false;
+      }
+      return true;
+    });
     return (
       <React.Fragment>
         {!isFetching && (
@@ -127,10 +137,16 @@ export default class WobjHistory extends React.Component {
             </Select>
             <Select
               allowClear
-              placeholder={<FormattedMessage id="language" defaultMessage="Language" />}
+              placeholder={<FormattedMessage id="language" defaultMessage="All languages" />}
               onChange={this.handleLocaleChange}
             >
-              {LANGUAGES.map(lang => (
+              {usedByUserLanguages.length > 0 &&
+                usedByUserLanguages.map(lang => (
+                  <Select.Option key={lang.id} value={lang.id}>
+                    {getLanguageText(lang)}
+                  </Select.Option>
+                ))}
+              {filteredLanguages.map(lang => (
                 <Select.Option key={lang.id} value={lang.id}>
                   {getLanguageText(lang)}
                 </Select.Option>
