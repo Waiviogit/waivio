@@ -1,16 +1,34 @@
-import { Card, Icon } from 'antd';
 import PropTypes from 'prop-types';
+import { Card, Icon, message } from 'antd';
 import React, { Component } from 'react';
 import Lightbox from 'react-image-lightbox';
 import { FormattedMessage } from 'react-intl';
+import { connect } from 'react-redux';
+import uuidv4 from 'uuid/v4';
 import Loading from '../components/Icon/Loading';
 import GalleryCard from './GalleryCard';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import './ObjectGallery.less';
+import CreateAlbum from './CreateAlbum';
+import { getAuthenticatedUserName, getIsAppendLoading, getObject } from '../reducers';
+import { appendObject } from './appendActions';
+import { getField } from '../objects/WaivioObject';
 
+@connect(
+  state => ({
+    currentUsername: getAuthenticatedUserName(state),
+    wObject: getObject(state),
+    loadingAlbum: getIsAppendLoading(state),
+  }),
+  { appendObject },
+)
 export default class ObjectGallery extends Component {
   static propTypes = {
     match: PropTypes.shape().isRequired,
+    currentUsername: PropTypes.string.isRequired,
+    wObject: PropTypes.shape().isRequired,
+    appendObject: PropTypes.func.isRequired,
+    loadingAlbum: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -18,6 +36,7 @@ export default class ObjectGallery extends Component {
     loading: true,
     photoIndex: 0,
     isOpen: false,
+    showModal: false,
   };
 
   componentDidMount() {
@@ -30,8 +49,52 @@ export default class ObjectGallery extends Component {
 
   handleOpenLightbox = photoIndex => this.setState({ isOpen: true, photoIndex });
 
+  handleToggleModal = () =>
+    this.setState(prevState => ({
+      showModal: !prevState.showModal,
+    }));
+
+  handleCreateAlbum = form => {
+    const { currentUsername, wObject } = this.props;
+
+    const data = {};
+    data.author = currentUsername;
+    data.parentAuthor = wObject.author;
+    data.parentPermlink = wObject.author_permlink;
+    data.body = `@${data.author} created a new album: ${form.galleryAlbum}.`;
+    data.title = '';
+    data.id = uuidv4();
+
+    data.field = {
+      name: 'galleryAlbum',
+      body: form.galleryAlbum,
+      locale: 'en-US',
+    };
+
+    data.permlink = `${data.author}-${Math.random()
+      .toString(36)
+      .substring(2)}`;
+    data.lastUpdated = Date.now();
+
+    data.wobjectName = getField(wObject, 'name');
+
+    this.props
+      .appendObject(data)
+      .then(() => {
+        this.handleToggleModal();
+
+        message.success(`You successfully have created the ${form.galleryAlbum} album`);
+      })
+      .catch(err => {
+        message.error("Couldn't append object.");
+        console.log('err', err);
+      });
+  };
+
   render() {
-    const { loading, images, photoIndex, isOpen } = this.state;
+    const { loading, images, photoIndex, isOpen, showModal } = this.state;
+    const { loadingAlbum } = this.props;
+
     if (loading) return <Loading center />;
     const empty = images.length === 0;
 
@@ -78,7 +141,17 @@ export default class ObjectGallery extends Component {
               <a role="presentation" onClick={this.handleToggleModal}>
                 <Icon type="plus-circle" className="proposition-line__icon" />
               </a>
-              <FormattedMessage id="add_new_album" defaultMessage="Add new album" />
+              <FormattedMessage
+                id="add_new_album"
+                defaultMessage="Add new album"
+                onClick={this.handleToggleModal}
+              />
+              <CreateAlbum
+                showModal={showModal}
+                hideModal={this.handleToggleModal}
+                handleSubmit={this.handleCreateAlbum}
+                loading={loadingAlbum}
+              />
             </div>
           </div>
         )}
