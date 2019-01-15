@@ -1,12 +1,12 @@
 export const objectFields = {
   name: 'name',
-  descriptionShort: 'descriptionShort',
-  descriptionFull: 'descriptionFull',
+  title: 'title',
+  description: 'description',
   address: 'address',
-  position: 'position',
+  map: 'map',
   link: 'link',
-  avatarImage: 'avatarImage',
-  backgroundImage: 'backgroundImage',
+  avatar: 'avatar',
+  background: 'background',
 };
 
 export const addressFields = {
@@ -16,7 +16,7 @@ export const addressFields = {
   accommodation: 'accommodation',
 };
 
-export const positionFields = {
+export const mapFields = {
   latitude: 'latitude',
   longitude: 'longitude',
 };
@@ -40,6 +40,6 @@ export const socialObjectFields = [
 
 export const supportedObjectFields = Object.values(objectFields);
 
-export const objectImageFields = ['avatarImage', 'backgroundImage'];
+export const objectImageFields = ['avatar', 'background'];
 
 export default null;
