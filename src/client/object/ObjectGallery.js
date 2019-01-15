@@ -1,4 +1,4 @@
-import { Card } from 'antd';
+import { Card, Icon } from 'antd';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Lightbox from 'react-image-lightbox';
@@ -7,8 +7,6 @@ import Loading from '../components/Icon/Loading';
 import GalleryCard from './GalleryCard';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import './ObjectGallery.less';
-import Proposition from '../components/Proposition/Proposition';
-import { objectFields } from '../../common/constants/listOfFields';
 
 export default class ObjectGallery extends Component {
   static propTypes = {
@@ -33,7 +31,6 @@ export default class ObjectGallery extends Component {
   handleOpenLightbox = photoIndex => this.setState({ isOpen: true, photoIndex });
 
   render() {
-    const { match } = this.props;
     const { loading, images, photoIndex, isOpen } = this.state;
     if (loading) return <Loading center />;
     const empty = images.length === 0;
@@ -77,7 +74,12 @@ export default class ObjectGallery extends Component {
         {empty && (
           <div className="ObjectGallery__empty">
             <FormattedMessage id="gallery_list_empty" defaultMessage="Nothing is there" />
-            <Proposition objectID={match.params.name} fieldName={objectFields.galleryItem} />
+            <div className="ObjectGallery__addAlbum">
+              <a role="presentation" onClick={this.handleToggleModal}>
+                <Icon type="plus-circle" className="proposition-line__icon" />
+              </a>
+              <FormattedMessage id="add_new_album" defaultMessage="Add new album" />
+            </div>
           </div>
         )}
       </React.Fragment>
