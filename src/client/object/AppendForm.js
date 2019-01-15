@@ -123,11 +123,18 @@ export default class AppendForm extends Component {
 
     const getBody = formField => {
       const { body, preview, currentField, currentLocale, ...rest } = formField;
-      if (rest[objectFields.name]) return rest[objectFields.name];
-      if (rest[objectFields.title]) return rest[objectFields.title];
-      if (rest[objectFields.description]) return rest[objectFields.description];
-      if (rest.image) return rest.image;
-      return JSON.stringify(rest);
+
+      switch (currentField) {
+        case objectFields.name:
+        case objectFields.title:
+        case objectFields.description:
+        case objectFields.avatar:
+        case objectFields.background: {
+          return rest[currentField];
+        }
+        default:
+          return JSON.stringify(rest);
+      }
     };
 
     data.author = this.props.currentUsername;
@@ -247,18 +254,24 @@ export default class AppendForm extends Component {
   };
 
   handleRemoveImage = () => {
+    const { getFieldValue } = this.props.form;
+    const currentField = getFieldValue('currentField');
+
     this.setState({ currentImage: [] });
-    this.props.form.setFieldsValue({ image: '' });
+    this.props.form.setFieldsValue({ [currentField]: '' });
   };
 
   disableAndInsertImage = (image, imageName = 'image') => {
+    const { getFieldValue } = this.props.form;
+    const currentField = getFieldValue('currentField');
+
     const newImage = {
       src: image,
       name: imageName,
       id: uuidv4(),
     };
     this.setState({ imageUploading: false, currentImage: [newImage] });
-    this.props.form.setFieldsValue({ image });
+    this.props.form.setFieldsValue({ [currentField]: image });
   };
 
   handleImageChange = e => {
@@ -362,7 +375,7 @@ export default class AppendForm extends Component {
               onRemoveImage={this.handleRemoveImage}
             />
             <Form.Item>
-              {getFieldDecorator('image', {
+              {getFieldDecorator(currentField, {
                 rules: [
                   {
                     required: true,
@@ -377,9 +390,9 @@ export default class AppendForm extends Component {
                 ],
               })(<Input className="AppendForm__hidden" />)}
             </Form.Item>
-            {getFieldValue('image') && (
+            {getFieldValue(currentField) && (
               <div>
-                <img src={getFieldValue('image')} alt="pic" style={{ width: '715px' }} />
+                <img src={getFieldValue(currentField)} alt="pic" style={{ width: '715px' }} />
               </div>
             )}
           </React.Fragment>
