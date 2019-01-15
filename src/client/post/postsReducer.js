@@ -87,7 +87,16 @@ const posts = (state = initialState, action) => {
         },
       };
     case postsActions.GET_CONTENT.SUCCESS: {
-      const key = getPostKey(action.payload);
+      let key = getPostKey(action.payload);
+      let author = action.payload.author;
+      const matchPost = _.find(
+        state.list,
+        post => `${post.author_original}/${post.permlink}` === key,
+      );
+      if (matchPost) {
+        key = getPostKey(matchPost);
+        author = matchPost.author;
+      }
       const baseState = {
         ...state,
         list: {
@@ -95,12 +104,13 @@ const posts = (state = initialState, action) => {
           [key]: {
             ...state.list[key],
             ...action.payload,
+            author,
             id: key,
           },
         },
         postsStates: {
           ...state.postsStates,
-          [getPostKey(action.meta)]: {
+          [key]: {
             fetching: false,
             loaded: true,
             failed: false,
@@ -110,7 +120,7 @@ const posts = (state = initialState, action) => {
       if (action.meta.afterLike) {
         return {
           ...baseState,
-          pendingLikes: _.omit(state.pendingLikes, getPostKey(action.payload)),
+          pendingLikes: _.omit(state.pendingLikes, key),
         };
       }
       return baseState;

@@ -44,19 +44,21 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
   return dispatch({
     type: LIKE_POST,
     payload: {
-      promise: steemConnectAPI.vote(voter, post.author, post.permlink, weight).then(res => {
-        if (window.analytics) {
-          window.analytics.track('Vote', {
-            category: 'vote',
-            label: 'submit',
-            value: 1,
-          });
-        }
+      promise: steemConnectAPI
+        .vote(voter, author || post.author, post.permlink, weight)
+        .then(res => {
+          if (window.analytics) {
+            window.analytics.track('Vote', {
+              category: 'vote',
+              label: 'submit',
+              value: 1,
+            });
+          }
 
-        // Delay to make sure you get the latest data (unknown issue with API)
-        setTimeout(() => dispatch(getContent(post.author, post.permlink, true)), 1000);
-        return res;
-      }),
+          // Delay to make sure you get the latest data (unknown issue with API)
+          setTimeout(() => dispatch(getContent(author || post.author, post.permlink, true)), 1000);
+          return res;
+        }),
     },
     meta: { postId, voter, weight },
   });

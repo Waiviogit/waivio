@@ -75,7 +75,8 @@ export const mapObjectAppends = (comments, wObj) => {
     const rankedUser = wObj.users && wObj.users.find(user => user.name === field.creator);
     return {
       ...matchComment,
-      author: field.creator || matchComment.author,
+      author: field.creator,
+      author_original: field.author,
       author_rank: (rankedUser && rankedUser.rank) || 0,
       append_field_name: field.name || '',
       append_field_weight: field.weight || null,
