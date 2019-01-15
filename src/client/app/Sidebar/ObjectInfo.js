@@ -70,7 +70,7 @@ const ObjectInfo = props => {
               <Link
                 to={`/object/${wobject.author_permlink}/${
                   wobject.default_name
-                }/history/${fieldName}`}
+                }/updates/${fieldName}`}
               >
                 ({fieldsCount})
               </Link>

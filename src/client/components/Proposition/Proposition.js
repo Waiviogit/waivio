@@ -27,7 +27,7 @@ class Proposition extends React.Component {
             </span>
           )}
           <Link
-            to={{ pathname: `/object/${objectID}/${defaultName}/reviews/${fieldName}` }}
+            to={{ pathname: `/object/${objectID}/${defaultName}/updates/${fieldName}` }}
             onClick={this.handleToggleModal}
           >
             <Icon type="plus-circle" className="proposition-line__icon" />
