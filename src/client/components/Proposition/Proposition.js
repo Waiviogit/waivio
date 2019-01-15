@@ -18,6 +18,12 @@ class Proposition extends React.Component {
     return (
       <React.Fragment>
         <div className="proposition-line">
+          <Link
+            to={{ pathname: `/object/${objectID}/${defaultName}/updates/${fieldName}` }}
+            onClick={this.handleToggleModal}
+          >
+            <Icon type="plus-circle" className="proposition-line__icon" />
+          </Link>
           {showFieldName && (
             <span className="proposition-line__text">
               {intl.formatMessage({
@@ -26,12 +32,6 @@ class Proposition extends React.Component {
               })}
             </span>
           )}
-          <Link
-            to={{ pathname: `/object/${objectID}/${defaultName}/updates/${fieldName}` }}
-            onClick={this.handleToggleModal}
-          >
-            <Icon type="plus-circle" className="proposition-line__icon" />
-          </Link>
         </div>
         <AppendModal
           showModal={showModal}

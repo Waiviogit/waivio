@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Select } from 'antd';
+import { Select, Icon } from 'antd';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 
@@ -16,7 +16,6 @@ import { supportedObjectFields } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
 import './WobjHistory.less';
-import AppendButton from './AppendButton';
 import AppendModal from './AppendModal';
 
 @connect(
@@ -137,7 +136,7 @@ export default class WobjHistory extends React.Component {
             </Select>
             <Select
               allowClear
-              placeholder={<FormattedMessage id="language" defaultMessage="All languages" />}
+              placeholder={<FormattedMessage id="all_languages" defaultMessage="All languages" />}
               onChange={this.handleLocaleChange}
             >
               {usedByUserLanguages.length > 0 &&
@@ -152,7 +151,12 @@ export default class WobjHistory extends React.Component {
                 </Select.Option>
               ))}
             </Select>
-            <AppendButton toggleModal={this.handleToggleModal} />
+            <div className="wobj-history__add">
+              <a role="presentation" onClick={this.handleToggleModal}>
+                <Icon type="plus-circle" className="proposition-line__icon" />
+              </a>
+              <FormattedMessage id="add_new_proposition" defaultMessage="Add" />
+            </div>
             <AppendModal
               showModal={showModal}
               hideModal={this.handleToggleModal}
