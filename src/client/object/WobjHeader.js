@@ -35,17 +35,6 @@ const WobjHeader = ({ wobject, username }) => {
               <div className="ObjectHeader__text" title={objectName}>
                 {objectName}
               </div>
-              <div className="ObjectHeader__add_name">
-                {objectName &&
-                  (accessExtend && (
-                    <Proposition
-                      defaultName={wobject.default_name}
-                      objectID={wobject.author_permlink}
-                      fieldName={objectFields.name}
-                      showFieldName={false}
-                    />
-                  ))}
-              </div>
               <FollowButton following={wobject.author_permlink} followingType="wobject" />
             </div>
           </div>

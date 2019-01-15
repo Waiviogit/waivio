@@ -20,7 +20,6 @@ const ObjectInfo = props => {
   let addressArr = [];
   let address = '';
   let map = '';
-  let title = '';
   let description = '';
   let website = '';
 
@@ -32,7 +31,6 @@ const ObjectInfo = props => {
 
     map = getFieldWithMaxWeight(wobject, objectFields.map, null);
 
-    title = truncate(getFieldWithMaxWeight(wobject, objectFields.title));
     description = truncate(getFieldWithMaxWeight(wobject, objectFields.description));
 
     website = getFieldWithMaxWeight(wobject, objectFields.link, linkFields.website);
@@ -94,7 +92,6 @@ const ObjectInfo = props => {
     <React.Fragment>
       {getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name) && (
         <div className="object-sidebar">
-          {listItem(objectFields.title, title)}
           {listItem(objectFields.description, description)}
           {listItem(
             objectFields.address,
