@@ -7,7 +7,7 @@ const PicturesCarousel = ({ pics }) =>
   pics.length && (
     <Carousel autoplay lazyLoad>
       {pics.map(pic => (
-        <img src={pic} alt="pic" />
+        <img key={pic} src={pic} alt="pic" />
       ))}
     </Carousel>
   );
