@@ -16,14 +16,14 @@ class WobjMenuWrapper extends React.Component {
 
   onChange = key => {
     const { match, history } = this.props;
-    const section = key === 'discussions' ? '' : `/${key}`;
+    const section = key === 'about' ? '' : `/${key}`;
     history.push(`${match.url.replace(/\/$/, '')}${section}`);
   };
 
   render() {
     const { match, location, history, ...otherProps } = this.props;
     const current = this.props.location.pathname.split('/')[4];
-    const currentKey = current || 'discussions';
+    const currentKey = current || 'about';
     return <ObjectMenu defaultKey={currentKey} onChange={this.onChange} {...otherProps} />;
   }
 }

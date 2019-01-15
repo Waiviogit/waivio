@@ -67,44 +67,35 @@ const EditorToolbar = ({ intl, onSelect, onSelectLinkedObject, imageRef }) => {
           </Button>
         </Dropdown>
         <BTooltip
-          title={tooltip(intl.formatMessage({ id: 'bold', defaultMessage: 'Add bold' }), 'Ctrl+b')}
+          title={tooltip(intl.formatMessage({ id: 'bold', defaultMessage: 'Add bold' }), '')}
         >
           <Button className="EditorToolbar__button" onClick={() => onSelect('b')}>
             <i className="iconfont icon-bold" />
           </Button>
         </BTooltip>
         <BTooltip
-          title={tooltip(
-            intl.formatMessage({ id: 'italic', defaultMessage: 'Add italic' }),
-            'Ctrl+i',
-          )}
+          title={tooltip(intl.formatMessage({ id: 'italic', defaultMessage: 'Add italic' }), '')}
         >
           <Button className="EditorToolbar__button" onClick={() => onSelect('i')}>
             <i className="iconfont icon-italic" />
           </Button>
         </BTooltip>
         <BTooltip
-          title={tooltip(
-            intl.formatMessage({ id: 'quote', defaultMessage: 'Add quote' }),
-            'Ctrl+q',
-          )}
+          title={tooltip(intl.formatMessage({ id: 'quote', defaultMessage: 'Add quote' }), '')}
         >
           <Button className="EditorToolbar__button" onClick={() => onSelect('q')}>
             <i className="iconfont icon-q1" />
           </Button>
         </BTooltip>
         <BTooltip
-          title={tooltip(intl.formatMessage({ id: 'link', defaultMessage: 'Add link' }), 'Ctrl+k')}
+          title={tooltip(intl.formatMessage({ id: 'link', defaultMessage: 'Add link' }), '')}
         >
           <Button className="EditorToolbar__button" onClick={() => onSelect('link')}>
             <i className="iconfont icon-link" />
           </Button>
         </BTooltip>
         <BTooltip
-          title={tooltip(
-            intl.formatMessage({ id: 'image', defaultMessage: 'Add image' }),
-            'Ctrl+m',
-          )}
+          title={tooltip(intl.formatMessage({ id: 'image', defaultMessage: 'Add image' }), '')}
         >
           <Button className="EditorToolbar__button" onClick={() => imageRef.click()}>
             <i className="iconfont icon-picture" />
