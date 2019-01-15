@@ -135,7 +135,8 @@ class Story extends React.Component {
 
   handleReportClick(post, postState) {
     const weight = postState.isReported ? 0 : -10000;
-    this.props.votePost(post.id, post.author, post.permlink, weight);
+    const author = post.author_original || post.author;
+    this.props.votePost(post.id, author, post.permlink, weight);
   }
 
   handleShareClick(post) {
@@ -364,7 +365,7 @@ class Story extends React.Component {
                       <Tag>
                         {intl.formatMessage(
                           { id: 'weight_score_value', defaultMessage: 'Weight: {value}' },
-                          { value: post.append_field_weight },
+                          { value: Number(post.append_field_weight).toFixed(0) },
                         )}
                       </Tag>
                     )}
@@ -391,6 +392,7 @@ class Story extends React.Component {
               sliderMode={sliderMode}
               defaultVotePercent={defaultVotePercent}
               onLikeClick={this.handleLikeClick}
+              onReportClick={this.handleReportClick}
               onShareClick={this.handleShareClick}
               onEditClick={this.handleEditClick}
               pendingFollow={pendingFollow}
