@@ -172,7 +172,7 @@ export default class Buttons extends React.Component {
 
     let popoverMenu = [];
 
-    if (ownPost) {
+    if (ownPost && !post.author_original) {
       popoverMenu = [
         ...popoverMenu,
         <PopoverMenuItem key="edit">
