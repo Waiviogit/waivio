@@ -1,12 +1,16 @@
 import React from 'react';
 import { Modal } from 'antd';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import AppendForm from './AppendForm';
 
-const AppendModal = ({ showModal, hideModal, locale, field }) => (
+const AppendModal = ({ showModal, hideModal, locale, field, intl }) => (
   <Modal
-    title={null}
+    title={intl.formatMessage({
+      id: 'suggestion_add_field',
+      defaultMessage: 'Suggestion to add a field',
+    })}
     footer={null}
     visible={showModal}
     onCancel={hideModal}
@@ -22,6 +26,7 @@ AppendModal.propTypes = {
   hideModal: PropTypes.func.isRequired,
   field: PropTypes.string,
   locale: PropTypes.string,
+  intl: PropTypes.shape().isRequired,
 };
 
 AppendModal.defaultProps = {
@@ -30,4 +35,4 @@ AppendModal.defaultProps = {
   locale: 'en-US',
 };
 
-export default withRouter(AppendModal);
+export default injectIntl(withRouter(AppendModal));

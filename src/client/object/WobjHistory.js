@@ -81,7 +81,7 @@ export default class WobjHistory extends React.Component {
     const { object, history } = this.props;
     history.push(
       `/object/${object.author_permlink}/${object.default_name}/${
-        field ? `history/${field}` : 'history'
+        field ? `updates/${field}` : 'updates'
       }`,
     );
     this.setState({ field });
@@ -120,7 +120,9 @@ export default class WobjHistory extends React.Component {
               onChange={this.handleFieldChange}
             >
               {supportedObjectFields.map(f => (
-                <Select.Option key={f}>{f}</Select.Option>
+                <Select.Option key={f}>
+                  <FormattedMessage id={`object_field_${f}`} defaultMessage={f} />
+                </Select.Option>
               ))}
             </Select>
             <Select

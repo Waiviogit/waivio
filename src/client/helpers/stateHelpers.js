@@ -97,7 +97,9 @@ export const getFilteredContent = (content, actionType, fieldName = null, locale
   if (fieldName || locale) {
     filteredContent = filteredContent.filter(post => hasField(post, fieldName, locale));
   }
-  return filteredContent.map(item => item.id).sort((a, b) => b - a);
+  return filteredContent
+    .sort((a, b) => new Date(b.created) - new Date(a.created))
+    .map(item => item.id);
 };
 
 // returning the same function but different naming helps to understand the code's flow better

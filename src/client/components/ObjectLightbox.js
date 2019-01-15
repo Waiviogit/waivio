@@ -4,6 +4,7 @@ import Lightbox from 'react-image-lightbox';
 import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
 import ObjectAvatar, { getObjectUrl } from './ObjectAvatar';
+import AppendModal from '../object/AppendModal';
 
 export default class ObjectLightbox extends Component {
   static propTypes = {
@@ -38,16 +39,33 @@ export default class ObjectLightbox extends Component {
     return (
       <React.Fragment>
         {!isFieldAvatarImage && accessExtend ? (
-          <Link to={{ pathname: `/wobject/editor/@${wobject.author_permlink}/avatarImage` }}>
-            <Icon type="plus-circle" className="ObjectHeader__avatar-image" />
-          </Link>
+          <React.Fragment>
+            <Link
+              to={{
+                pathname: `/object/${wobject.author_permlink}/${
+                  wobject.default_name
+                }/history/avatarImage`,
+              }}
+              onClick={this.handleAvatarClick}
+            >
+              <Icon type="plus-circle" className="ObjectHeader__avatar-image" />
+            </Link>
+            <AppendModal
+              showModal={this.state.open}
+              hideModal={this.handleCloseRequest}
+              locale={'en-US'}
+              field={'avatarImage'}
+            />
+          </React.Fragment>
         ) : (
-          <a role="presentation" onClick={this.handleAvatarClick}>
-            <ObjectAvatar item={wobject} size={size} />
-          </a>
-        )}
-        {this.state.open && (
-          <Lightbox mainSrc={imageUrl} onCloseRequest={this.handleCloseRequest} />
+          <React.Fragment>
+            <a role="presentation" onClick={this.handleAvatarClick}>
+              <ObjectAvatar item={wobject} size={size} />
+            </a>
+            {this.state.open && (
+              <Lightbox mainSrc={imageUrl} onCloseRequest={this.handleCloseRequest} />
+            )}
+          </React.Fragment>
         )}
       </React.Fragment>
     );

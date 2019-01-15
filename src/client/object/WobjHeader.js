@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import WeightTag from '../components/WeightTag';
+import { injectIntl } from 'react-intl';
 import ObjectLightbox from '../components/ObjectLightbox';
 import FollowButton from '../widgets/FollowButton';
 import '../components/ObjectHeader.less';
@@ -9,18 +9,20 @@ import { haveAccess, accessTypesArr } from '../helpers/wObjectHelper';
 import { getFieldWithMaxWeight } from '../../client/object/wObjectHelper';
 import { objectFields } from '../../common/constants/listOfFields';
 import Proposition from '../components/Proposition/Proposition';
+import ObjectType from './ObjectType';
+import ObjectRank from './ObjectRank';
 
 const WobjHeader = ({ wobject, username }) => {
   const coverImage = getFieldWithMaxWeight(
     wobject,
-    objectFields.backgroundImage,
-    objectFields.backgroundImage,
+    objectFields.background,
+    objectFields.background,
   );
   const hasCover = !!coverImage;
   const style = hasCover
     ? { backgroundImage: `url("https://steemitimages.com/2048x512/${coverImage}")` }
     : {};
-  const descriptionShort = getFieldWithMaxWeight(wobject, objectFields.descriptionShort);
+  const descriptionShort = getFieldWithMaxWeight(wobject, objectFields.title);
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
   const objectName = getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name);
   return (
@@ -33,8 +35,26 @@ const WobjHeader = ({ wobject, username }) => {
               <div className="ObjectHeader__text" title={objectName}>
                 {objectName}
               </div>
-              <WeightTag weight={wobject.weight} rank={wobject.rank} />
+              <div className="ObjectHeader__add_name">
+                {objectName &&
+                  (accessExtend && (
+                    <Proposition
+                      defaultName={wobject.default_name}
+                      objectID={wobject.author_permlink}
+                      fieldName={objectFields.name}
+                      showFieldName={false}
+                    />
+                  ))}
+              </div>
               <FollowButton following={wobject.author_permlink} followingType="wobject" />
+            </div>
+          </div>
+          <div className="ObjectHeader__info">
+            <div className="ObjectHeader__type">
+              <ObjectType type={wobject.object_type} />
+            </div>
+            <div className="ObjectHeader__rank">
+              <ObjectRank rank={wobject.rank} />
             </div>
           </div>
           <div className="ObjectHeader__user__username">
@@ -44,7 +64,7 @@ const WobjHeader = ({ wobject, username }) => {
                   <Proposition
                     defaultName={wobject.default_name}
                     objectID={wobject.author_permlink}
-                    fieldName={objectFields.descriptionShort}
+                    fieldName={objectFields.title}
                   />
                 ))}
             </div>
@@ -53,7 +73,7 @@ const WobjHeader = ({ wobject, username }) => {
             <div className="ObjectHeader__user__addCover">
               <Proposition
                 objectID={wobject.author_permlink}
-                fieldName="backgroundImage"
+                fieldName={objectFields.background}
                 defaultName={wobject.default_name}
               />
             </div>
@@ -77,4 +97,4 @@ WobjHeader.defaultProps = {
   onTransferClick: () => {},
 };
 
-export default WobjHeader;
+export default injectIntl(WobjHeader);

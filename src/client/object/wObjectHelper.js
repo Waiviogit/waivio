@@ -64,6 +64,25 @@ export const hasActionType = (post, actionType) => {
   );
 };
 
+export const mapObjectAppends = (comments, wObj) => {
+  const filteredComments = Object.values(comments).filter(comment =>
+    hasActionType(comment, 'appendObject'),
+  );
+  return wObj.fields.map(field => {
+    const matchComment = filteredComments.find(
+      comment => comment.permlink === field.permlink && comment.author === field.author,
+    );
+    const rankedUser = wObj.users && wObj.users.find(user => user.name === field.creator);
+    return {
+      ...matchComment,
+      author: field.creator || matchComment.author,
+      author_rank: (rankedUser && rankedUser.rank) || 0,
+      append_field_name: field.name || '',
+      append_field_weight: field.weight || null,
+    };
+  });
+};
+
 export const hasField = (post, fieldName, locale) => {
   const parsedMetadata = post && post.json_metadata && JSON.parse(post.json_metadata);
   if (!parsedMetadata) return false;

@@ -95,36 +95,7 @@ class Write extends React.Component {
     const draftPost = draftPosts[draftId];
 
     if (draftPost) {
-      let tags = [];
-      if (_.isArray(draftPost.jsonMetadata.tags)) {
-        tags = draftPost.jsonMetadata.tags;
-      }
-
-      if (draftPost.permlink) {
-        this.permlink = draftPost.permlink;
-      }
-
-      if (draftPost.originalBody) {
-        this.originalBody = draftPost.originalBody;
-      }
-
-      // eslint-disable-next-line
-      this.setState({
-        initialTitle: draftPost.title || '',
-        initialTopics: tags || [],
-        initialWavioData: draftPost.jsonMetadata[WAIVIO_META_FIELD_NAME] || { wobjects: [] },
-        initialBody: draftPost.body || '',
-        initialReward: draftPost.reward,
-        initialUpvote: draftPost.upvote,
-        initialUpdatedDate: draftPost.lastUpdated || Date.now(),
-        isUpdating: draftPost.isUpdating || false,
-      });
-    }
-
-    if (draftId) {
-      this.draftId = draftId;
-    } else {
-      this.draftId = uuidv4();
+      this.initFromDraft(draftId, draftPost);
     }
   }
 
@@ -158,6 +129,8 @@ class Write extends React.Component {
         initialTopics,
         initialWavioData,
       });
+    } else if (!differentDraft && nextProps.draftPosts[nextProps.draftId]) {
+      this.initFromDraft(nextProps.draftId, nextProps.draftPosts[nextProps.draftId]);
     }
   }
 
@@ -216,6 +189,39 @@ class Write extends React.Component {
     }
 
     return data;
+  };
+
+  initFromDraft = (draftId, draftPost) => {
+    let tags = [];
+    if (_.isArray(draftPost.jsonMetadata.tags)) {
+      tags = draftPost.jsonMetadata.tags;
+    }
+
+    if (draftPost.permlink) {
+      this.permlink = draftPost.permlink;
+    }
+
+    if (draftPost.originalBody) {
+      this.originalBody = draftPost.originalBody;
+    }
+
+    // eslint-disable-next-line
+    this.setState({
+      initialTitle: draftPost.title || '',
+      initialTopics: tags || [],
+      initialWavioData: draftPost.jsonMetadata[WAIVIO_META_FIELD_NAME] || { wobjects: [] },
+      initialBody: draftPost.body || '',
+      initialReward: draftPost.reward,
+      initialUpvote: draftPost.upvote,
+      initialUpdatedDate: draftPost.lastUpdated || Date.now(),
+      isUpdating: draftPost.isUpdating || false,
+    });
+
+    if (draftId) {
+      this.draftId = draftId;
+    } else {
+      this.draftId = uuidv4();
+    }
   };
 
   handleCancelDeleteDraft = () => this.setState({ showModalDelete: false });
