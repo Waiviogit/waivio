@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
-import WeightTag from '../components/WeightTag';
 import ObjectLightbox from '../components/ObjectLightbox';
 import FollowButton from '../widgets/FollowButton';
 import '../components/ObjectHeader.less';
@@ -10,8 +9,10 @@ import { haveAccess, accessTypesArr } from '../helpers/wObjectHelper';
 import { getFieldWithMaxWeight } from '../../client/object/wObjectHelper';
 import { objectFields } from '../../common/constants/listOfFields';
 import Proposition from '../components/Proposition/Proposition';
+import ObjectType from './ObjectType';
+import ObjectRank from './ObjectRank';
 
-const WobjHeader = ({ wobject, username, intl }) => {
+const WobjHeader = ({ wobject, username }) => {
   const coverImage = getFieldWithMaxWeight(
     wobject,
     objectFields.backgroundImage,
@@ -34,21 +35,26 @@ const WobjHeader = ({ wobject, username, intl }) => {
               <div className="ObjectHeader__text" title={objectName}>
                 {objectName}
               </div>
-              <WeightTag weight={wobject.weight} rank={wobject.rank} />
+              <div className="ObjectHeader__add_name">
+                {objectName &&
+                  (accessExtend && (
+                    <Proposition
+                      defaultName={wobject.default_name}
+                      objectID={wobject.author_permlink}
+                      fieldName={objectFields.name}
+                      showFieldName={false}
+                    />
+                  ))}
+              </div>
               <FollowButton following={wobject.author_permlink} followingType="wobject" />
             </div>
           </div>
-          <div className="ObjectHeader__row">
+          <div className="ObjectHeader__info">
+            <div className="ObjectHeader__type">
+              <ObjectType type={wobject.object_type} />
+            </div>
             <div className="ObjectHeader__rank">
-              {intl.formatMessage(
-                {
-                  id: 'rank',
-                  defaultMessage: 'Rank',
-                },
-                {
-                  rank: wobject.rank,
-                },
-              )}
+              <ObjectRank rank={wobject.rank} />
             </div>
           </div>
           <div className="ObjectHeader__user__username">
@@ -81,7 +87,6 @@ const WobjHeader = ({ wobject, username, intl }) => {
 WobjHeader.propTypes = {
   wobject: PropTypes.shape(),
   username: PropTypes.string,
-  intl: PropTypes.shape(),
 };
 
 WobjHeader.defaultProps = {
@@ -90,7 +95,6 @@ WobjHeader.defaultProps = {
   vestingShares: 0,
   wobject: {},
   onTransferClick: () => {},
-  intl: {},
 };
 
 export default injectIntl(WobjHeader);
