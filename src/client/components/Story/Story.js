@@ -259,6 +259,7 @@ class Story extends React.Component {
 
   render() {
     const {
+      intl,
       user,
       post,
       postState,
@@ -359,9 +360,14 @@ class Story extends React.Component {
                       id={`object_field_${post.append_field_name}`}
                       defaultMessage={post.append_field_name}
                     />
-                    {/* {!_.isNil(post.append_field_weight) && ( */}
-                    {/* <Tag>WEIGHT: {post.append_field_weight}</Tag> */}
-                    {/* )} */}
+                    {!_.isNil(post.append_field_weight) && (
+                      <Tag>
+                        {intl.formatMessage(
+                          { id: 'weight_score_value', defaultMessage: 'Weight: {value}' },
+                          { value: post.append_field_weight },
+                        )}
+                      </Tag>
+                    )}
                   </React.Fragment>
                 ) : (
                   <React.Fragment>

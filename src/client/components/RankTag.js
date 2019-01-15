@@ -5,7 +5,14 @@ import { Tag } from 'antd';
 import './RankTag.less';
 
 function RankTag({ intl, rank }) {
-  return <Tag>{intl.formatMessage({ id: 'rank', defaultMessage: 'Rank: {rank}' }, { rank })}</Tag>;
+  return (
+    <Tag>
+      {intl.formatMessage(
+        { id: 'rank_score_value', defaultMessage: 'Rank: {value}' },
+        { value: rank },
+      )}
+    </Tag>
+  );
 }
 
 RankTag.propTypes = {
