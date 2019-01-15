@@ -10,12 +10,14 @@ class ObjectMenu extends React.Component {
     onChange: PropTypes.func,
     defaultKey: PropTypes.string,
     followers: PropTypes.number,
+    fieldsCount: PropTypes.number,
   };
 
   static defaultProps = {
     onChange: () => {},
     defaultKey: 'about',
     followers: 0,
+    fieldsCount: 0,
   };
 
   static TAB_NAME = {
@@ -84,6 +86,9 @@ class ObjectMenu extends React.Component {
                 data-key={ObjectMenu.TAB_NAME.UPDATES}
               >
                 <FormattedMessage id="updates" defaultMessage="Updates" />
+                <span className="UserMenu__badge">
+                  <FormattedNumber value={this.props.fieldsCount} />
+                </span>
               </li>
               <li
                 className={this.getItemClasses(ObjectMenu.TAB_NAME.REVIEWS)}
