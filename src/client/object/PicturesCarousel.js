@@ -6,9 +6,9 @@ import './PicturesCarousel.less';
 const PicturesCarousel = ({ pics }) =>
   pics.length && (
     <Carousel autoplay lazyLoad>
-      {pics.map(pic => {
-        return <img src={pic} />;
-      })}
+      {pics.map(pic => (
+        <img src={pic} alt="pic" />
+      ))}
     </Carousel>
   );
 
