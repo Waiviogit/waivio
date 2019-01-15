@@ -68,20 +68,18 @@ export const mapObjectAppends = (comments, wObj) => {
   const filteredComments = Object.values(comments).filter(comment =>
     hasActionType(comment, 'appendObject'),
   );
-  return filteredComments.map(comment => {
-    const matchField = wObj.fields.find(
-      field => field.permlink === comment.permlink && field.author === comment.author,
+  return wObj.fields.map(field => {
+    const matchComment = filteredComments.find(
+      comment => comment.permlink === field.permlink && comment.author === field.author,
     );
-    const rankedUser = wObj.users && wObj.users.find(user => user.name === matchField.creator);
-    return matchField
-      ? {
-          ...comment,
-          author: matchField.creator,
-          author_rank: (rankedUser && rankedUser.rank) || 0,
-          append_field_name: (matchField && matchField.name) || '',
-          append_field_weight: (matchField && matchField.weight) || null,
-        }
-      : comment;
+    const rankedUser = wObj.users && wObj.users.find(user => user.name === field.creator);
+    return {
+      ...matchComment,
+      author: field.creator || matchComment.author,
+      author_rank: (rankedUser && rankedUser.rank) || 0,
+      append_field_name: field.name || '',
+      append_field_weight: field.weight || null,
+    };
   });
 };
 
