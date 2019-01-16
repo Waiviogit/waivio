@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Form, Input, Modal } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import objectNameValidationRegExp from '../../common/constants/validationRegExps';
+import objectNameValidationRegExp from '../../../common/constants/validationRegExps';
 import './CreateAlbum.less';
 
 const CreateAlbum = ({ showModal, hideModal, handleSubmit, form, loading, intl }) => (
