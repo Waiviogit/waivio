@@ -49,7 +49,7 @@ export const getFieldsCount = (wObject, fieldName) =>
 
 export const truncate = str => (str && str.length > 255 ? `${str.substring(0, 255)}...` : str);
 
-export const hasActionType = (post, actionType) => {
+export const hasActionType = (post, actionTypes = ['createObject', 'appendObject']) => {
   const parsedMetadata = post && post.json_metadata && JSON.parse(post.json_metadata);
   if (!parsedMetadata) return false;
 
@@ -58,16 +58,14 @@ export const hasActionType = (post, actionType) => {
   const appendingField =
     parsedMetadata[WAIVIO_META_FIELD_NAME] && parsedMetadata[WAIVIO_META_FIELD_NAME].field;
   return (
-    objActionType === actionType &&
+    actionTypes.includes(objActionType) &&
     appendingField &&
     supportedObjectFields.includes(appendingField.name)
   );
 };
 
 export const mapObjectAppends = (comments, wObj) => {
-  const filteredComments = Object.values(comments).filter(comment =>
-    hasActionType(comment, 'appendObject'),
-  );
+  const filteredComments = Object.values(comments).filter(comment => hasActionType(comment));
   return wObj.fields.map(field => {
     const matchComment = filteredComments.find(
       comment => comment.permlink === field.permlink && comment.author === field.author,
