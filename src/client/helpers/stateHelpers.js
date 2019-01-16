@@ -94,13 +94,13 @@ export const getFeedFailedFromState = (sortBy, listName = 'all', feedState) => {
 
 export const getFilteredContent = (
   content,
-  actionType,
+  actionTypes = ['createObject', 'appendObject'],
   fieldName = null,
   locale = null,
   sortBy = 'recency',
 ) => {
   let comparator;
-  let filteredContent = content.filter(post => hasActionType(post, actionType));
+  let filteredContent = content.filter(post => hasActionType(post, actionTypes));
   if (fieldName || locale) {
     filteredContent = filteredContent.filter(post => hasField(post, fieldName, locale));
   }

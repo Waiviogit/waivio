@@ -107,7 +107,7 @@ export default class WobjHistory extends React.Component {
     const commentIds = getFeedFromState('comments', object.author, feed);
     const content = getFilteredContent(
       Object.values(comments).filter(comment => commentIds.includes(comment.id)),
-      'appendObject',
+      ['createObject', 'appendObject'],
       field,
       locale,
       sort,
