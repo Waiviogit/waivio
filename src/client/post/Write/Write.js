@@ -103,6 +103,8 @@ class Write extends React.Component {
     if (objPermlink) {
       this.setInitialLinkedObject(objPermlink);
     }
+
+    this.draftId = draftId || uuidv4();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -237,12 +239,6 @@ class Write extends React.Component {
       initialUpdatedDate: draftPost.lastUpdated || Date.now(),
       isUpdating: draftPost.isUpdating || false,
     });
-
-    if (draftId) {
-      this.draftId = draftId;
-    } else {
-      this.draftId = uuidv4();
-    }
   };
 
   handleCancelDeleteDraft = () => this.setState({ showModalDelete: false });
