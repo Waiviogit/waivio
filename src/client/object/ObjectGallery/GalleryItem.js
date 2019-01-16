@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Card } from 'antd';
-import './GalleryCard.less';
+import './GalleryItem.less';
 
-const GalleryCard = ({ image, handleOpenLightbox, idx }) => (
-  <div className="GalleryCard">
+const GalleryItem = ({ image, handleOpenLightbox, idx }) => (
+  <div className="GalleryItem">
     <Card
       hoverable
       cover={<img alt="" src={image.body} />}
@@ -13,10 +13,10 @@ const GalleryCard = ({ image, handleOpenLightbox, idx }) => (
   </div>
 );
 
-GalleryCard.propTypes = {
+GalleryItem.propTypes = {
   image: PropTypes.shape().isRequired,
   handleOpenLightbox: PropTypes.func.isRequired,
   idx: PropTypes.number.isRequired,
 };
 
-export default GalleryCard;
+export default GalleryItem;
