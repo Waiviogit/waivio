@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import Lightbox from 'react-image-lightbox';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import uuidv4 from 'uuid/v4';
 import Loading from '../components/Icon/Loading';
 import GalleryCard from './GalleryCard';
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -63,7 +62,6 @@ export default class ObjectGallery extends Component {
     data.parentPermlink = wObject.author_permlink;
     data.body = `@${data.author} created a new album: ${form.galleryAlbum}.`;
     data.title = '';
-    data.id = uuidv4();
 
     data.field = {
       name: 'galleryAlbum',
