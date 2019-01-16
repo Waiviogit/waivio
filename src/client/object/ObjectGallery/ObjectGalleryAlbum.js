@@ -55,7 +55,7 @@ export default class ObjectGalleryAlbum extends Component {
               </div>
             </div>
           </div>
-          {!album && !album[0] && (
+          {(!album || !album[0]) && (
             <div className="ObjectGallery__emptyText">
               <FormattedMessage id="gallery_list_empty" defaultMessage="Nothing is there" />
             </div>
