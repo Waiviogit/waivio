@@ -3,18 +3,11 @@ import PropTypes from 'prop-types';
 import { Carousel, Icon } from 'antd';
 import './PicturesCarousel.less';
 
-const Arrow = ({ className, style, onClick, icon }) => (
-  <Icon
-    className={className}
-    style={{ ...style, fontSize: '20px' }}
-    type={icon}
-    onClick={onClick}
-  />
+const Arrow = ({ onClick, icon }) => (
+  <Icon style={{ fontSize: '20px' }} type={icon} onClick={onClick} />
 );
 
 Arrow.propTypes = {
-  className: PropTypes.string.isRequired,
-  style: PropTypes.shape().isRequired,
   onClick: PropTypes.func.isRequired,
   icon: PropTypes.string.isRequired,
 };
