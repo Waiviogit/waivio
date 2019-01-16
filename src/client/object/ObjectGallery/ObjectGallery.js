@@ -1,18 +1,17 @@
-import PropTypes from 'prop-types';
-import { Card, Icon, message } from 'antd';
-import React, { Component } from 'react';
-import Lightbox from 'react-image-lightbox';
-import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import uuidv4 from 'uuid/v4';
-import Loading from '../components/Icon/Loading';
-import GalleryCard from './GalleryCard';
-import * as ApiClient from '../../waivioApi/ApiClient';
+import { Icon, Col, Row, message } from 'antd';
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { FormattedMessage } from 'react-intl';
+import Loading from '../../components/Icon/Loading';
+import GalleryAlbum from './GalleryAlbum';
+import * as ApiClient from '../../../waivioApi/ApiClient';
 import './ObjectGallery.less';
 import CreateAlbum from './CreateAlbum';
-import { getAuthenticatedUserName, getIsAppendLoading, getObject } from '../reducers';
-import { appendObject } from './appendActions';
-import { getField } from '../objects/WaivioObject';
+import { getAuthenticatedUserName, getIsAppendLoading, getObject } from '../../reducers';
+import { appendObject } from '../appendActions';
+import { getField } from '../../objects/WaivioObject';
 
 @connect(
   state => ({
@@ -32,22 +31,18 @@ export default class ObjectGallery extends Component {
   };
 
   state = {
-    images: [],
+    albums: [],
     loading: true,
     photoIndex: 0,
-    isOpen: false,
     showModal: false,
   };
 
   componentDidMount() {
     const { match } = this.props;
-
-    ApiClient.getWobjectGallery(match.params.name).then(images =>
-      this.setState({ loading: false, images }),
+    ApiClient.getWobjectGallery(match.params.name).then(albums =>
+      this.setState({ loading: false, albums }),
     );
   }
-
-  handleOpenLightbox = photoIndex => this.setState({ isOpen: true, photoIndex });
 
   handleToggleModal = () =>
     this.setState(prevState => ({
@@ -63,7 +58,6 @@ export default class ObjectGallery extends Component {
     data.parentPermlink = wObject.author_permlink;
     data.body = `@${data.author} created a new album: ${form.galleryAlbum}.`;
     data.title = '';
-    data.id = uuidv4();
 
     data.field = {
       name: 'galleryAlbum',
@@ -92,51 +86,15 @@ export default class ObjectGallery extends Component {
   };
 
   render() {
-    const { loading, images, photoIndex, isOpen, showModal } = this.state;
-    const { loadingAlbum } = this.props;
-
+    const { match, loadingAlbum } = this.props;
+    const { loading, albums, showModal } = this.state;
     if (loading) return <Loading center />;
-    const empty = images.length === 0;
+    const empty = albums.length === 0;
 
     return (
       <React.Fragment>
         <div className="ObjectGallery">
-          {!empty && (
-            <Card title="Album">
-              {images.map((image, idx) => (
-                <Card.Grid>
-                  <GalleryCard
-                    key={image.weight} // TODO: temp solution
-                    image={image}
-                    handleOpenLightbox={this.handleOpenLightbox}
-                    idx={idx}
-                  />
-                </Card.Grid>
-              ))}
-            </Card>
-          )}
-        </div>
-        {isOpen && (
-          <Lightbox
-            mainSrc={images[photoIndex].body}
-            nextSrc={images[(photoIndex + 1) % images.length].body}
-            prevSrc={images[(photoIndex + images.length - 1) % images.length].body}
-            onCloseRequest={() => this.setState({ isOpen: false })}
-            onMovePrevRequest={() =>
-              this.setState({
-                photoIndex: (photoIndex + images.length - 1) % images.length,
-              })
-            }
-            onMoveNextRequest={() =>
-              this.setState({
-                photoIndex: (photoIndex + 1) % images.length,
-              })
-            }
-          />
-        )}
-        {empty && (
           <div className="ObjectGallery__empty">
-            <FormattedMessage id="gallery_list_empty" defaultMessage="Nothing is there" />
             <div className="ObjectGallery__addAlbum">
               <a role="presentation" onClick={this.handleToggleModal}>
                 <Icon type="plus-circle" className="proposition-line__icon" />
@@ -154,7 +112,31 @@ export default class ObjectGallery extends Component {
               />
             </div>
           </div>
-        )}
+          {empty && (
+            <div className="ObjectGallery__emptyText">
+              <FormattedMessage id="gallery_list_empty" defaultMessage="Nothing is there" />
+            </div>
+          )}
+          {!empty && (
+            <div className="ObjectGallery__cardWrap">
+              <Row gutter={24}>
+                {albums.map(album => (
+                  <Col span={12} key={album.body + album.weight}>
+                    <Link
+                      replace
+                      to={`/object/${match.params.name}/${match.params.defaultName}/gallery/album/${
+                        album.id
+                      }`}
+                      className="GalleryAlbum"
+                    >
+                      <GalleryAlbum album={album} handleOpenLightbox={this.handleOpenLightbox} />
+                    </Link>
+                  </Col>
+                ))}
+              </Row>
+            </div>
+          )}
+        </div>
       </React.Fragment>
     );
   }

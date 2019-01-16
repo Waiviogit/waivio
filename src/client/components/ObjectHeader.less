@@ -176,7 +176,7 @@
     align-items: initial;
     flex-direction: initial;
   }
-  .ObjectHeader&__text {
+  .ObjectHeader__text {
     max-width: 76%;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -229,12 +229,11 @@
     width: 100%;
     padding: 30px 0;
   }
-  ObjectHeader__text {
+  .ObjectHeader__text {
     max-width: 76%;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-    margin-right: 10px;
   }
   .ObjectHeader__user__username {
     display: flex;
@@ -251,6 +250,10 @@
       margin-bottom: 0;
       vertical-align: 4px;
       text-shadow: none;
+    }
+
+    .ObjectHeader__text {
+      margin-right: 8px;
     }
   }
 
