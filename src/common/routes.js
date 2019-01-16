@@ -29,7 +29,8 @@ import Error404 from '../client/statics/Error404';
 import ExitPage from '../client/statics/ExitPage';
 import ObjectProfile from '../client/object/ObjectProfile';
 import WobjFollowers from '../client/object/WobjFollowers';
-import ObjectGallery from '../client/object/ObjectGallery';
+import ObjectGallery from '../client/object/ObjectGallery/ObjectGallery';
+import ObjectGalleryAlbum from '../client/object/ObjectGallery/ObjectGalleryAlbum';
 import WobjHistory from '../client/object/WobjHistory';
 
 const routes = [
@@ -154,6 +155,13 @@ const routes = [
             path: '/object/:name/:defaultName/gallery',
             exact: true,
             component: ObjectGallery,
+            routes: [
+              {
+                path: '/object/:name/:defaultName/gallery/:albumId',
+                exact: true,
+                component: ObjectGalleryAlbum,
+              },
+            ],
           },
           {
             path: '/object/:name/:defaultName/updates/:field?',

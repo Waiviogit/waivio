@@ -2,12 +2,12 @@ import { Icon } from 'antd';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-import Loading from '../components/Icon/Loading';
+import Loading from '../../components/Icon/Loading';
 import GalleryAlbum from './GalleryAlbum';
-import * as ApiClient from '../../waivioApi/ApiClient';
+import * as ApiClient from '../../../waivioApi/ApiClient';
 import './ObjectGallery.less';
 
-export default class ObjectGallery extends Component {
+export default class ObjectGalleryAlbum extends Component {
   static propTypes = {
     match: PropTypes.shape().isRequired,
   };
@@ -21,8 +21,8 @@ export default class ObjectGallery extends Component {
   componentDidMount() {
     const { match } = this.props;
 
-    ApiClient.getWobjectGallery(match.params.name).then(images =>
-      this.setState({ loading: false, images }),
+    ApiClient.getWobjectGallery(match.params.name).then(albums =>
+      this.setState({ loading: false, albums }),
     );
   }
 
@@ -48,7 +48,7 @@ export default class ObjectGallery extends Component {
           {!empty &&
             albums.map(album => (
               <GalleryAlbum
-                key={album.name + album.weight}
+                key={album.body + album.weight}
                 album={album}
                 handleOpenLightbox={this.handleOpenLightbox}
               />

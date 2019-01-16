@@ -2,13 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Card } from 'antd';
 import Lightbox from 'react-image-lightbox';
-import './GalleryItem.less';
+import './GalleryAlbum.less';
+import GalleryItem from './GalleryItem';
 
-class GalleryItem extends React.Component() {
+class GalleryAlbum extends React.Component {
   static propTypes = {
     album: PropTypes.arrayOf(PropTypes.shape().isRequired),
   };
-
+  static defaultProps = {
+    album: [{}],
+  };
   state = {
     isOpen: false,
   };
@@ -20,8 +23,8 @@ class GalleryItem extends React.Component() {
     const { isOpen, photoIndex } = this.state;
     return (
       <div className="GalleryAlbum">
-        <Card title={album.name}>
-          {album.images.map((image, idx) => (
+        <Card title={album.body}>
+          {album.items.map((image, idx) => (
             <Card.Grid>
               <GalleryItem
                 key={image.weight} // TODO: temp solution
@@ -34,20 +37,18 @@ class GalleryItem extends React.Component() {
         </Card>
         {isOpen && (
           <Lightbox
-            mainSrc={album.images[photoIndex].body}
-            nextSrc={album.images[(photoIndex + 1) % album.images.length].body}
-            prevSrc={
-              album.images[(photoIndex + album.images.length - 1) % album.images.length].body
-            }
+            mainSrc={album.items[photoIndex].body}
+            nextSrc={album.items[(photoIndex + 1) % album.items.length].body}
+            prevSrc={album.items[(photoIndex + album.items.length - 1) % album.items.length].body}
             onCloseRequest={() => this.setState({ isOpen: false })}
             onMovePrevRequest={() =>
               this.setState({
-                photoIndex: (photoIndex + album.images.length - 1) % album.images.length,
+                photoIndex: (photoIndex + album.items.length - 1) % album.items.length,
               })
             }
             onMoveNextRequest={() =>
               this.setState({
-                photoIndex: (photoIndex + 1) % album.images.length,
+                photoIndex: (photoIndex + 1) % album.items.length,
               })
             }
           />
@@ -57,4 +58,4 @@ class GalleryItem extends React.Component() {
   }
 }
 
-export default GalleryItem;
+export default GalleryAlbum;
