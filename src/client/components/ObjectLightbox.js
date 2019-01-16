@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
 import ObjectAvatar, { getObjectUrl } from './ObjectAvatar';
 import AppendModal from '../object/AppendModal';
+import { objectFields } from '../../common/constants/listOfFields';
 
 export default class ObjectLightbox extends Component {
   static propTypes = {
@@ -42,9 +43,9 @@ export default class ObjectLightbox extends Component {
           <React.Fragment>
             <Link
               to={{
-                pathname: `/object/${wobject.author_permlink}/${
-                  wobject.default_name
-                }/history/avatarImage`,
+                pathname: `/object/${wobject.author_permlink}/${wobject.default_name}/updates/${
+                  objectFields.avatar
+                }`,
               }}
               onClick={this.handleAvatarClick}
             >
@@ -54,7 +55,7 @@ export default class ObjectLightbox extends Component {
               showModal={this.state.open}
               hideModal={this.handleCloseRequest}
               locale={'en-US'}
-              field={'avatarImage'}
+              field={objectFields.avatar}
             />
           </React.Fragment>
         ) : (
