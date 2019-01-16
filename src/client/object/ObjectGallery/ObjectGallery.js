@@ -36,9 +36,6 @@ export default class ObjectGallery extends Component {
       <React.Fragment>
         <div className="ObjectGallery">
           <div className="ObjectGallery__empty">
-            {empty && (
-              <FormattedMessage id="gallery_list_empty" defaultMessage="Nothing is there" />
-            )}
             <div className="ObjectGallery__addAlbum">
               <a role="presentation" onClick={this.handleToggleModal}>
                 <Icon type="plus-circle" className="proposition-line__icon" />
@@ -46,6 +43,11 @@ export default class ObjectGallery extends Component {
               <FormattedMessage id="add_new_album" defaultMessage="Add new album" />
             </div>
           </div>
+          {empty && (
+            <div className="ObjectGallery__emptyText">
+              <FormattedMessage id="gallery_list_empty" defaultMessage="Nothing is there" />
+            </div>
+          )}
           {!empty && (
             <div className="ObjectGallery__cardWrap">
               <Row gutter={24}>
