@@ -37,9 +37,6 @@ export default class ObjectGalleryAlbum extends Component {
       <React.Fragment>
         <div className="ObjectGallery">
           <div className="ObjectGallery__empty">
-            {!album && !album[0] && (
-              <FormattedMessage id="gallery_list_empty" defaultMessage="Nothing is there" />
-            )}
             <div className="ObjectGallery__addImageWrap">
               <div className="ObjectGallery__addImage">
                 <Link
@@ -58,6 +55,11 @@ export default class ObjectGalleryAlbum extends Component {
               </div>
             </div>
           </div>
+          {!album && !album[0] && (
+            <div className="ObjectGallery__emptyText">
+              <FormattedMessage id="gallery_list_empty" defaultMessage="Nothing is there" />
+            </div>
+          )}
           {album && album[0] && (
             <Album
               key={album[0].body + album[0].weight}
