@@ -51,6 +51,7 @@ export default class WobjHistory extends React.Component {
 
   state = {
     showModal: false,
+    sort: 'recency',
   };
 
   componentDidMount() {
@@ -98,8 +99,10 @@ export default class WobjHistory extends React.Component {
       showModal: !prevState.showModal,
     }));
 
+  handleSortChange = sort => this.setState({ sort });
+
   render() {
-    const { field, locale, showModal } = this.state;
+    const { field, locale, showModal, sort } = this.state;
     const { feed, object, comments, readLanguages } = this.props;
 
     const commentIds = getFeedFromState('comments', object.author, feed);
@@ -108,6 +111,7 @@ export default class WobjHistory extends React.Component {
       'appendObject',
       field,
       locale,
+      sort,
     );
     const isFetching = getFeedLoadingFromState('comments', object.author, feed);
     const usedByUserLanguages = [];
@@ -163,7 +167,7 @@ export default class WobjHistory extends React.Component {
               />
             </div>
             <div className="wobj-history__sort">
-              <SortSelector sort={'sort'} onChange={param => console.log('SORT CHANGE', param)}>
+              <SortSelector sort={sort} onChange={this.handleSortChange}>
                 <SortSelector.Item key="rank">
                   <FormattedMessage id="rank" defaultMessage="Rank">
                     {msg => msg.toUpperCase()}
