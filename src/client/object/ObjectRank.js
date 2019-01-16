@@ -7,8 +7,7 @@ import './ObjectRank.less';
 const ObjectRank = ({ rank }) =>
   rank && (
     <div className="ObjectRank">
-      <FormattedMessage id="rank" defaultMessage="Rank:" />
-      <Tag>{rank}</Tag>
+      <FormattedMessage id="rank" defaultMessage="Rank:" />:<Tag>{rank}</Tag>
     </div>
   );
 
