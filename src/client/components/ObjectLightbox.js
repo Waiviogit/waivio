@@ -44,7 +44,7 @@ export default class ObjectLightbox extends Component {
               to={{
                 pathname: `/object/${wobject.author_permlink}/${
                   wobject.default_name
-                }/history/avatarImage`,
+                }/updates/avatarImage`,
               }}
               onClick={this.handleAvatarClick}
             >
