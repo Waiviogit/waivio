@@ -13,13 +13,13 @@ import { objectFields, addressFields, linkFields } from '../../../common/constan
 import Proposition from '../../components/Proposition/Proposition';
 import Map from '../../components/Maps/Map';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
+import PicturesCarousel from '../../object/PicturesCarousel';
 
 const ObjectInfo = props => {
   const { wobject, userName } = props;
   let addressArr = [];
   let address = '';
   let map = '';
-  let title = '';
   let description = '';
   let website = '';
 
@@ -31,7 +31,6 @@ const ObjectInfo = props => {
 
     map = getFieldWithMaxWeight(wobject, objectFields.map, null);
 
-    title = truncate(getFieldWithMaxWeight(wobject, objectFields.title));
     description = truncate(getFieldWithMaxWeight(wobject, objectFields.description));
 
     website = getFieldWithMaxWeight(wobject, objectFields.link, linkFields.website);
@@ -93,7 +92,6 @@ const ObjectInfo = props => {
     <React.Fragment>
       {getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name) && (
         <div className="object-sidebar">
-          {listItem(objectFields.title, title)}
           {listItem(objectFields.description, description)}
           {listItem(
             objectFields.address,
@@ -135,6 +133,15 @@ const ObjectInfo = props => {
           )}
         </div>
       )}
+      <div className="object-gallery">
+        <PicturesCarousel
+          pics={[
+            'https://ipfs.busy.org/ipfs/QmWLagsHPbJNTVnLz78mUBykTu1FczAj8LyE8zCYcvJY8V',
+            'https://ipfs.busy.org/ipfs/QmeSC3KgJ4vFPwKUo6FoTrn4riEbVMF1ubbSeciaM3f6eg',
+            'https://ipfs.busy.org/ipfs/QmUaxDCi5eYL9hMWZYJti431RAnCtHM8ucGDFZojuozQVP',
+          ]}
+        />
+      </div>
     </React.Fragment>
   );
 };

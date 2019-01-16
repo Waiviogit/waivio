@@ -366,6 +366,8 @@ export default class AppendForm extends Component {
       }
       case objectFields.background:
       case objectFields.avatar: {
+        this.state.imageUploading = false;
+        this.state.currentImage = [];
         return (
           <React.Fragment>
             <QuickPostEditorFooter
@@ -391,8 +393,8 @@ export default class AppendForm extends Component {
               })(<Input className="AppendForm__hidden" />)}
             </Form.Item>
             {getFieldValue(currentField) && (
-              <div>
-                <img src={getFieldValue(currentField)} alt="pic" style={{ width: '715px' }} />
+              <div className="AppendForm__previewWrap">
+                <img src={getFieldValue(currentField)} alt="pic" className="AppendForm__preview" />
               </div>
             )}
           </React.Fragment>

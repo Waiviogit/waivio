@@ -17,6 +17,12 @@ const UserHeaderLoading = () => (
           className="ant-card-loading-block"
           style={{ width: '120px', height: '20px', marginLeft: 0 }}
         />
+        <div className="UserHeaderLoading__user">
+          <div
+            className="ant-card-loading-block"
+            style={{ width: '100px', height: '20px', marginLeft: 0 }}
+          />
+        </div>
       </div>
     </div>
   </div>

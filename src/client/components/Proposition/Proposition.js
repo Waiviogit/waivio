@@ -13,7 +13,7 @@ class Proposition extends React.Component {
   handleToggleModal = () => this.setState({ showModal: !this.state.showModal });
 
   render() {
-    const { intl, fieldName, objectID, defaultName, showFieldName } = this.props;
+    const { intl, fieldName, objectID, defaultName } = this.props;
     const { showModal } = this.state;
     return (
       <React.Fragment>
@@ -24,14 +24,12 @@ class Proposition extends React.Component {
           >
             <Icon type="plus-circle" className="proposition-line__icon" />
           </Link>
-          {showFieldName && (
-            <span className="proposition-line__text">
-              {intl.formatMessage({
-                id: `object_field_${fieldName}`,
-                defaultMessage: fieldName,
-              })}
-            </span>
-          )}
+          <span className="proposition-line__text">
+            {intl.formatMessage({
+              id: `object_field_${fieldName}`,
+              defaultMessage: fieldName,
+            })}
+          </span>
         </div>
         <AppendModal
           showModal={showModal}
@@ -48,13 +46,11 @@ Proposition.propTypes = {
   defaultName: PropTypes.string.isRequired,
   objectID: PropTypes.string.isRequired,
   intl: PropTypes.shape().isRequired,
-  showFieldName: PropTypes.bool,
 };
 
 Proposition.defaultProps = {
   fieldName: 'name',
   defaultName: 'abc',
-  showFieldName: true,
 };
 
 export default injectIntl(Proposition);
