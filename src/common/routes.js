@@ -132,7 +132,7 @@ const routes = [
       {
         path: `/object/:name/:defaultName/(about|gallery|updates|reviews|followers|feed)?/(${supportedObjectFields.join(
           '|',
-        )})?`,
+        )}|album)?/:albumId?`,
         component: Wobj,
         exact: true,
         routes: [
@@ -155,13 +155,11 @@ const routes = [
             path: '/object/:name/:defaultName/gallery',
             exact: true,
             component: ObjectGallery,
-            routes: [
-              {
-                path: '/object/:name/:defaultName/gallery/:albumId',
-                exact: true,
-                component: ObjectGalleryAlbum,
-              },
-            ],
+          },
+          {
+            path: '/object/:name/:defaultName/gallery/album/:albumId',
+            exact: true,
+            component: ObjectGalleryAlbum,
           },
           {
             path: '/object/:name/:defaultName/updates/:field?',

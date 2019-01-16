@@ -447,6 +447,8 @@
   "gallery_list_empty": "Nothing is there. Be first to create a new one!",
   "add_new_proposition": "Add",
   "add_new_album": "Add new album",
+  "add_new_image": "Add new image",
   "all_languages": "All languages",
+  "back_to_albums": "Back to albums",
   "add_new_album_placeholder": "New album"
 }

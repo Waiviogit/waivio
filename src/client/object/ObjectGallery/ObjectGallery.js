@@ -1,4 +1,5 @@
-import { Icon } from 'antd';
+import { Icon, Col, Row } from 'antd';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -20,13 +21,13 @@ export default class ObjectGallery extends Component {
 
   componentDidMount() {
     const { match } = this.props;
-    console.log(match.params.albumId);
     ApiClient.getWobjectGallery(match.params.name).then(albums =>
       this.setState({ loading: false, albums }),
     );
   }
 
   render() {
+    const { match } = this.props;
     const { loading, albums } = this.state;
     if (loading) return <Loading center />;
     const empty = albums.length === 0;
@@ -45,14 +46,25 @@ export default class ObjectGallery extends Component {
               <FormattedMessage id="add_new_album" defaultMessage="Add new album" />
             </div>
           </div>
-          {!empty &&
-            albums.map(album => (
-              <GalleryAlbum
-                key={album.body + album.weight}
-                album={album}
-                handleOpenLightbox={this.handleOpenLightbox}
-              />
-            ))}
+          {!empty && (
+            <div className="ObjectGallery__cardWrap">
+              <Row gutter={24}>
+                {albums.map(album => (
+                  <Col span={12} key={album.body + album.weight}>
+                    <Link
+                      replace
+                      to={`/object/${match.params.name}/${match.params.defaultName}/gallery/album/${
+                        album.id
+                      }`}
+                      className="GalleryAlbum"
+                    >
+                      <GalleryAlbum album={album} handleOpenLightbox={this.handleOpenLightbox} />
+                    </Link>
+                  </Col>
+                ))}
+              </Row>
+            </div>
+          )}
         </div>
       </React.Fragment>
     );
