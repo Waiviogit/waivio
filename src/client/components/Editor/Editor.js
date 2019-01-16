@@ -44,6 +44,7 @@ class Editor extends React.Component {
     isUpdating: PropTypes.bool,
     saving: PropTypes.bool,
     draftId: PropTypes.string,
+    initialObjPermlink: PropTypes.string,
     onUpdate: PropTypes.func,
     onDelete: PropTypes.func,
     onSubmit: PropTypes.func,
@@ -68,6 +69,7 @@ class Editor extends React.Component {
     isUpdating: false,
     saving: false,
     draftId: null,
+    initialObjPermlink: null,
     onUpdate: () => {},
     onDelete: () => {},
     onSubmit: () => {},
@@ -105,6 +107,9 @@ class Editor extends React.Component {
   componentDidMount() {
     this.setValues(this.props);
 
+    if (this.props.initialObjPermlink) {
+      this.restoreLinkedObjects(this.props.waivioData.wobjects);
+    }
     // eslint-disable-next-line react/no-find-dom-node
     const select = ReactDOM.findDOMNode(this.select);
     if (select) {
@@ -132,18 +137,9 @@ class Editor extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { waivioData, getLinkedObjects } = this.props;
+    const { waivioData } = this.props;
     if (!_.isEqual(prevProps.waivioData, waivioData)) {
-      if (_.isEmpty(waivioData.wobjects)) {
-        this.resetLinkedObjects();
-        return;
-      }
-      const existingObjectIds = waivioData.wobjects
-        .filter(wo => !wo.isNew)
-        .map(wo => wo.author_permlink);
-      getLinkedObjects(existingObjectIds).then(res =>
-        this.restoreLinkedObjects(res, waivioData.wobjects),
-      );
+      this.restoreLinkedObjects(waivioData.wobjects);
     }
   }
 
@@ -185,27 +181,34 @@ class Editor extends React.Component {
 
   resetLinkedObjects = () => this.setState({ linkedObjects: [], influenceRemain: 0 });
 
-  restoreLinkedObjects(existingObjects, fromDraft) {
-    const influenceRemain = 100 - fromDraft.reduce((acc, curr) => acc + curr.percent, 0);
-    const linkedObjects = fromDraft.map(obj =>
-      !obj.isNew && existingObjects.some(exObj => exObj.id === obj.author_permlink)
-        ? {
-            ..._.find(existingObjects, currObj => currObj.id === obj.author_permlink),
-            influence: { value: obj.percent, max: obj.percent + influenceRemain },
-          }
-        : {
-            ...getClientWObj({
-              author_permlink: obj.author_permlink,
-              fields: [{ name: 'name', body: obj.objectName }],
-              isNew: true,
-            }),
-            influence: { value: obj.percent, max: obj.percent + influenceRemain },
-          },
-    );
-    this.setState({
-      linkedObjects,
-      influenceRemain,
-      canCreateNewObject: linkedObjects.length < MAX_NEW_OBJECTS_NUMBER,
+  restoreLinkedObjects(wobjects) {
+    if (_.isEmpty(wobjects)) {
+      this.resetLinkedObjects();
+      return;
+    }
+    const existingObjectIds = wobjects.filter(wo => !wo.isNew).map(wo => wo.author_permlink);
+    this.props.getLinkedObjects(existingObjectIds).then(res => {
+      const influenceRemain = 100 - wobjects.reduce((acc, curr) => acc + curr.percent, 0);
+      const linkedObjects = wobjects.map(obj =>
+        !obj.isNew && res.some(exObj => exObj.id === obj.author_permlink)
+          ? {
+              ..._.find(res, currObj => currObj.id === obj.author_permlink),
+              influence: { value: obj.percent, max: obj.percent + influenceRemain },
+            }
+          : {
+              ...getClientWObj({
+                author_permlink: obj.author_permlink,
+                fields: [{ name: 'name', body: obj.objectName }],
+                isNew: true,
+              }),
+              influence: { value: obj.percent, max: obj.percent + influenceRemain },
+            },
+      );
+      this.setState({
+        linkedObjects,
+        influenceRemain,
+        canCreateNewObject: linkedObjects.length < MAX_NEW_OBJECTS_NUMBER,
+      });
     });
   }
 
