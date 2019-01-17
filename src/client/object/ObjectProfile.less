@@ -1,0 +1,22 @@
+@import (reference) '../styles/custom.less';
+@import (reference) '../styles/modules/variables.less';
+
+.object-profile {
+  &__row {
+    display: flex;
+    background: @white;
+    border: @base-border;
+    padding: 16px;
+    margin-bottom: 12px;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 500;
+
+    &.align-center {
+      justify-content: center;
+    }
+    &.align-right {
+      justify-content: flex-end;
+    }
+  }
+}

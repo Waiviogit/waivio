@@ -10,24 +10,34 @@ class ObjectMenu extends React.Component {
     onChange: PropTypes.func,
     defaultKey: PropTypes.string,
     followers: PropTypes.number,
+    fieldsCount: PropTypes.number,
   };
 
   static defaultProps = {
     onChange: () => {},
-    defaultKey: 'discussions',
+    defaultKey: 'about',
     followers: 0,
+    fieldsCount: 0,
+  };
+
+  static TAB_NAME = {
+    ABOUT: 'about',
+    GALLERY: 'gallery',
+    UPDATES: 'updates',
+    REVIEWS: 'reviews',
+    FOLLOWERS: 'followers',
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      current: props.defaultKey ? props.defaultKey : 'discussions',
+      current: props.defaultKey ? props.defaultKey : ObjectMenu.TAB_NAME.ABOUT,
     };
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      current: nextProps.defaultKey ? nextProps.defaultKey : 'discussions',
+      current: nextProps.defaultKey ? nextProps.defaultKey : ObjectMenu.TAB_NAME.ABOUT,
     });
   }
 
@@ -54,18 +64,45 @@ class ObjectMenu extends React.Component {
           >
             <ul className="UserMenu__menu center">
               <li
-                className={this.getItemClasses('discussions')}
+                className={this.getItemClasses(ObjectMenu.TAB_NAME.ABOUT)}
                 onClick={this.handleClick}
                 role="presentation"
-                data-key="discussions"
+                data-key={ObjectMenu.TAB_NAME.ABOUT}
               >
-                <FormattedMessage id="discussions" defaultMessage="Discussions" />
+                <FormattedMessage id="about" defaultMessage="About" />
               </li>
               <li
-                className={this.getItemClasses('followers')}
+                className={this.getItemClasses(ObjectMenu.TAB_NAME.GALLERY)}
                 onClick={this.handleClick}
                 role="presentation"
-                data-key="followers"
+                data-key={ObjectMenu.TAB_NAME.GALLERY}
+              >
+                <FormattedMessage id="gallery" defaultMessage="Gallery" />
+              </li>
+              <li
+                className={this.getItemClasses(ObjectMenu.TAB_NAME.UPDATES)}
+                onClick={this.handleClick}
+                role="presentation"
+                data-key={ObjectMenu.TAB_NAME.UPDATES}
+              >
+                <FormattedMessage id="updates" defaultMessage="Updates" />
+                <span className="UserMenu__badge">
+                  <FormattedNumber value={this.props.fieldsCount} />
+                </span>
+              </li>
+              <li
+                className={this.getItemClasses(ObjectMenu.TAB_NAME.REVIEWS)}
+                onClick={this.handleClick}
+                role="presentation"
+                data-key={ObjectMenu.TAB_NAME.REVIEWS}
+              >
+                <FormattedMessage id="reviews" defaultMessage="Reviews" />
+              </li>
+              <li
+                className={this.getItemClasses(ObjectMenu.TAB_NAME.FOLLOWERS)}
+                onClick={this.handleClick}
+                role="presentation"
+                data-key={ObjectMenu.TAB_NAME.FOLLOWERS}
               >
                 <FormattedMessage id="followers" defaultMessage="Followers" />
                 <span className="UserMenu__badge">

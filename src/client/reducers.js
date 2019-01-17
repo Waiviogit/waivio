@@ -25,6 +25,8 @@ import modalsReducer from '../investarena/redux/reducers/modalsReducer';
 import favoriteQuotesReducer from '../investarena/redux/reducers/favoriteQuotesReducer';
 import chartsReducer from '../investarena/redux/reducers/chartsReducer';
 import appendReducer, * as fromAppend from '../client/post/AppendObjectPostWrite/appendReducer';
+import wobjectReducer, * as fromObject from '../client/object/wobjectReducer';
+import appendReducer, * as fromAppend from '../client/object/appendReducer';
 
 export default () =>
   combineReducers({
@@ -36,6 +38,7 @@ export default () =>
     feed: feedReducer,
     user: userReducer,
     users: usersReducer,
+    object: wobjectReducer,
     notifications: notificationReducer,
     bookmarks: bookmarksReducer,
     favorites: favoritesReducer,
@@ -176,5 +179,9 @@ export const getSearchResults = state => fromSearch.getSearchResults(state.searc
 export const getAutoCompleteSearchResults = state =>
   fromSearch.getAutoCompleteSearchResults(state.search);
 export const getSearchObjectsResults = state => fromSearch.getSearchObjectsResults(state.search);
+
+export const getObject = state => fromObject.getObjectState(state.object);
+export const getObjectAuthor = state => fromObject.getObjectAuthor(state.object);
+export const getObjectFields = state => fromObject.getObjectFields(state.object);
 
 export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.append);

@@ -1,6 +1,6 @@
-import { createAsyncActionType } from '../../helpers/stateHelpers';
-import { postAppendWaivioObject } from '../../../waivioApi/ApiClient';
-import { voteObject } from '../../object/wobjActions';
+import { createAsyncActionType } from '../helpers/stateHelpers';
+import { postAppendWaivioObject } from '../../waivioApi/ApiClient';
+import { voteObject } from './wobjActions';
 
 export const APPEND_WAIVIO_OBJECT = createAsyncActionType('@editor/APPEND_WAIVIO_OBJECT');
 

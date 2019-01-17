@@ -1,0 +1,27 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.proposition-line {
+  display: none;
+}
+
+@media @medium, @large {
+  .proposition-line {
+    display: flex;
+    align-items: center;
+    &__text {
+      margin-left: 8px;
+      color: #99aab5;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    a {
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+    &__icon {
+      font-size: 23px;
+    }
+  }
+}

@@ -32,7 +32,10 @@ const QuickPostEditorFooter = ({
         className="QuickPostEditor__footer__file"
         type="file"
         accept="image/*"
-        onChange={handleImageChange}
+        onInput={handleImageChange}
+        onClick={e => {
+          e.target.value = null;
+        }}
       />
       <label htmlFor="inputfile">
         {imageUploading ? (

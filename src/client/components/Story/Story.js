@@ -21,6 +21,7 @@ import {
 import withAuthActions from '../../auth/withAuthActions';
 import BTooltip from '../BTooltip';
 import ReputationTag from '../ReputationTag';
+import RankTag from '../RankTag';
 import StoryPreview from './StoryPreview';
 import StoryFooter from '../StoryFooter/StoryFooter';
 import Avatar from '../Avatar';
@@ -127,18 +128,21 @@ class Story extends React.Component {
 
   handleLikeClick(post, postState, weight = 10000) {
     const { sliderMode, user, defaultVotePercent } = this.props;
+    const author = post.author_original || post.author;
+
     if (sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user))) {
-      this.props.votePost(post.id, post.author, post.permlink, weight);
+      this.props.votePost(post.id, author, post.permlink, weight);
     } else if (postState.isLiked) {
-      this.props.votePost(post.id, post.author, post.permlink, 0);
+      this.props.votePost(post.id, author, post.permlink, 0);
     } else {
-      this.props.votePost(post.id, post.author, post.permlink, defaultVotePercent);
+      this.props.votePost(post.id, author, post.permlink, defaultVotePercent);
     }
   }
 
   handleReportClick(post, postState) {
     const weight = postState.isReported ? 0 : -10000;
-    this.props.votePost(post.id, post.author, post.permlink, weight);
+    const author = post.author_original || post.author;
+    this.props.votePost(post.id, author, post.permlink, weight);
   }
 
   handleShareClick(post) {
@@ -248,6 +252,7 @@ class Story extends React.Component {
     return showStoryPreview ? (
       <a
         href={dropCategory(post.url)}
+        rel="noopener noreferrer"
         target="_blank"
         onClick={this.handlePreviewClickPostModalDisplay}
         className="Story__content__preview"
@@ -272,6 +277,7 @@ class Story extends React.Component {
   };
   render() {
     const {
+      intl,
       user,
       post,
       postState,
@@ -331,12 +337,16 @@ class Story extends React.Component {
             </Link>
             <div className="Story__header__text">
               <span className="Story__header__flex">
-                <Link to={`/@${post.author}`}>
-                  <h4>
+                <h4>
+                  <Link to={`/@${post.author}`}>
                     <span className="username">{post.author}</span>
-                    <ReputationTag reputation={post.author_reputation} />
-                  </h4>
-                </Link>
+                  </Link>
+                </h4>
+                {_.isNil(post.author_rank) ? (
+                  <ReputationTag reputation={post.author_reputation} />
+                ) : (
+                  <RankTag rank={post.author_rank} />
+                )}
                 <span className="Story__topics">
                   <Topic name={post.category} />
                 </span>
@@ -371,13 +381,33 @@ class Story extends React.Component {
           <div className="Story__content">
             <a
               href={dropCategory(post.url)}
+              rel="noopener noreferrer"
               target="_blank"
               onClick={this.handlePostModalDisplay}
               className="Story__content__title"
             >
               <h2>
-                {post.depth !== 0 && <Tag color="#4f545c">RE</Tag>}
-                {post.title || post.root_title}
+                {post.append_field_name ? (
+                  <React.Fragment>
+                    <FormattedMessage
+                      id={`object_field_${post.append_field_name}`}
+                      defaultMessage={post.append_field_name}
+                    />
+                    {!_.isNil(post.append_field_weight) && (
+                      <Tag>
+                        {intl.formatMessage(
+                          { id: 'weight_score_value', defaultMessage: 'Weight: {value}' },
+                          { value: Number(post.append_field_weight).toFixed(0) },
+                        )}
+                      </Tag>
+                    )}
+                  </React.Fragment>
+                ) : (
+                  <React.Fragment>
+                    {post.depth !== 0 && <Tag color="#4f545c">RE</Tag>}
+                    {post.title || post.root_title}
+                  </React.Fragment>
+                )}
               </h2>
             </a>
             {this.renderStoryPreview()}
@@ -415,6 +445,7 @@ class Story extends React.Component {
               sliderMode={sliderMode}
               defaultVotePercent={defaultVotePercent}
               onLikeClick={this.handleLikeClick}
+              onReportClick={this.handleReportClick}
               onShareClick={this.handleShareClick}
               onEditClick={this.handleEditClick}
               pendingFollow={pendingFollow}

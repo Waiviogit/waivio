@@ -1,9 +1,10 @@
+import { hasActionType, hasField } from '../object/wObjectHelper';
+
 export const getFeedFromState = (sortBy, category = 'all', state) => {
   switch (sortBy) {
     case 'feed':
     case 'hot':
     case 'created':
-    case 'active':
     case 'trending':
     case 'comments':
     case 'blog':
@@ -22,7 +23,6 @@ export const getFeedLoadingFromState = (sortBy, category = 'all', feedState) => 
     case 'feed':
     case 'hot':
     case 'created':
-    case 'active':
     case 'trending':
     case 'comments':
     case 'blog':
@@ -41,7 +41,6 @@ export const getFeedFetchedFromState = (sortBy, category = 'all', feedState) => 
     case 'feed':
     case 'hot':
     case 'created':
-    case 'active':
     case 'trending':
     case 'comments':
     case 'blog':
@@ -61,7 +60,6 @@ export const getFeedHasMoreFromState = (sortBy, listName = 'all', feedState) => 
     case 'hot':
     case 'cashout':
     case 'created':
-    case 'active':
     case 'trending':
     case 'comments':
     case 'blog':
@@ -81,7 +79,6 @@ export const getFeedFailedFromState = (sortBy, listName = 'all', feedState) => {
     case 'hot':
     case 'cashout':
     case 'created':
-    case 'active':
     case 'trending':
     case 'comments':
     case 'blog':
@@ -93,6 +90,33 @@ export const getFeedFailedFromState = (sortBy, listName = 'all', feedState) => {
     default:
       return false;
   }
+};
+
+export const getFilteredContent = (
+  content,
+  actionTypes = ['createObject', 'appendObject'],
+  fieldName = null,
+  locale = null,
+  sortBy = 'recency',
+) => {
+  let comparator;
+  let filteredContent = content.filter(post => hasActionType(post, actionTypes));
+  if (fieldName || locale) {
+    filteredContent = filteredContent.filter(post => hasField(post, fieldName, locale));
+  }
+  switch (sortBy) {
+    case 'rank':
+      comparator = (a, b) => {
+        const diff = b.append_field_weight - a.append_field_weight;
+        return diff === 0 ? new Date(b.created) - new Date(a.created) : diff;
+      };
+      break;
+    case 'recency':
+    default:
+      comparator = (a, b) => new Date(b.created) - new Date(a.created);
+      break;
+  }
+  return filteredContent.sort(comparator).map(item => item.id);
 };
 
 // returning the same function but different naming helps to understand the code's flow better
@@ -148,3 +172,4 @@ export const createAsyncActionType = type => ({
 });
 
 export const getUserDetailsKey = username => `user-${username}`;
+export const getPostKey = post => `${post.author}/${post.permlink}`;

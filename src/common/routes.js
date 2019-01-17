@@ -1,4 +1,6 @@
 import Wrapper from '../client/Wrapper';
+import { supportedObjectFields } from '../../src/common/constants/listOfFields';
+
 import Bookmarks from '../client/bookmarks/Bookmarks';
 import Drafts from '../client/post/Write/Drafts';
 import Replies from '../client/replies/Replies';
@@ -30,6 +32,9 @@ import AppendObjectPostWtite from '../client/post/AppendObjectPostWrite/AppendOb
 import InstrumentsPage from '../investarena/components/InstrumentsPage';
 import DealsPage from '../investarena/components/DealsPage';
 import WobjFollowers from '../client/object/WobjFollowers';
+import ObjectGallery from '../client/object/ObjectGallery/ObjectGallery';
+import ObjectGalleryAlbum from '../client/object/ObjectGallery/ObjectGalleryAlbum';
+import WobjHistory from '../client/object/WobjHistory';
 
 const routes = [
   {
@@ -128,7 +133,9 @@ const routes = [
         ],
       },
       {
-        path: '/object/@:name/(followers|feed)?',
+        path: `/object/@:name/(about|gallery|updates|reviews|followers|feed)?/(${supportedObjectFields.join(
+          '|',
+        )}|album)?/:albumId?`,
         component: Wobj,
         exact: true,
         routes: [
@@ -138,9 +145,29 @@ const routes = [
             component: ObjectProfile,
           },
           {
+            path: '/object/@:name/reviews',
+            exact: true,
+            component: ObjectProfile,
+          },
+          {
             path: '/object/@:name/followers',
             exact: true,
             component: WobjFollowers,
+          },
+          {
+            path: '/object/@:name/gallery',
+            exact: true,
+            component: ObjectGallery,
+          },
+          {
+            path: '/object/@:name/gallery/album/:albumId',
+            exact: true,
+            component: ObjectGalleryAlbum,
+          },
+          {
+            path: '/object/@:name/updates/:field?',
+            exact: true,
+            component: WobjHistory,
           },
         ],
       },
@@ -179,7 +206,7 @@ const routes = [
         component: ExitPage,
       },
       {
-        path: '/:sortBy(trending|created|active|hot|promoted)?/:category?',
+        path: '/:sortBy(trending|created|hot|promoted)?/:category?',
         component: Page,
       },
       {

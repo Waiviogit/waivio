@@ -2,6 +2,9 @@
 @import (reference) '../styles/modules/variables.less';
 
 .ObjectHeader {
+  &__avatar-image {
+    font-size: 100px;
+  }
   background-color: #f3f4f6;
   background-size: cover;
   background-position: center;
@@ -29,12 +32,18 @@
     .ObjectHeader__more,
     .ObjectHeader__user__username,
     .ObjectHeader__follows-you,
+    .ObjectHeader__rank,
+    .ObjectHeader__type,
     .ObjectHeader__descriptionShort {
       color: #ffffff !important;
       text-shadow: 2px 1px 2px black;
     }
   }
-
+  .ObjectHeader__user__addCover {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+  }
   &__handle {
     .ObjectHeader__follows-you {
       display: none;
@@ -85,6 +94,7 @@
 }
 
 .ObjectHeader__user {
+  width: 100%;
   display: flex;
   flex-direction: column;
   padding-bottom: 20px;
@@ -92,6 +102,7 @@
 }
 
 .ObjectHeader__row {
+  width: 100%;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -109,26 +120,20 @@
   }
 }
 
-.ObjectHeader__rank {
-  align-self: center;
-  margin-top: -62px;
-  margin-left: 15px;
-
-  & > i {
-    font-size: 18px !important;
-    vertical-align: -1px;
-    margin-right: 4px;
-  }
-}
-
 .ObjectHeader__user__username {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   margin-right: -8px;
   font-weight: 700;
   font-size: 28px;
   color: #353535;
 
   .ant-tag {
-    margin-left: 8px;
+    margin-bottom: 8px;
+    margin-left: 0;
     vertical-align: 4px;
     text-shadow: none;
   }
@@ -155,11 +160,27 @@
   color: #353535;
 }
 
+.ObjectHeader__info {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
 @media @small {
+  &__text {
+    word-break: break-word;
+  }
+
   .ObjectHeader__container {
     padding: 30px 0 30px 16px;
     align-items: initial;
     flex-direction: initial;
+  }
+  .ObjectHeader__text {
+    max-width: 76%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
   .ObjectHeader__user {
@@ -180,7 +201,7 @@
   }
 
   .ObjectHeader__rank {
-    margin-top: -4px;
+    margin-top: 0;
     margin-left: 0;
   }
 
@@ -203,8 +224,41 @@
   }
 }
 
-@media @large {
+@media @large, @medium {
   .ObjectHeader__container {
+    width: 100%;
     padding: 30px 0;
+  }
+  .ObjectHeader__text {
+    max-width: 76%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .ObjectHeader__user__username {
+    display: flex;
+    flex-direction: unset;
+    justify-content: unset;
+    align-items: center;
+    margin-right: -8px;
+    font-weight: 700;
+    font-size: 28px;
+    color: #353535;
+
+    .ant-tag {
+      margin-left: 8px;
+      margin-bottom: 0;
+      vertical-align: 4px;
+      text-shadow: none;
+    }
+
+    .ObjectHeader__text {
+      margin-right: 8px;
+    }
+  }
+
+  .ObjectHeader__info {
+    display: flex;
+    flex-direction: column;
   }
 }

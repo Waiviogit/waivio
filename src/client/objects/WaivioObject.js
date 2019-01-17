@@ -7,6 +7,8 @@ import WeightTag from '../components/WeightTag';
 import FollowButton from '../widgets/FollowButton';
 import ObjectAvatar from '../components/ObjectAvatar';
 import './WaivioObject.less';
+import { getFieldWithMaxWeight } from '../../client/object/wObjectHelper';
+import { objectFields, linkFields } from '../../common/constants/listOfFields';
 
 export const getField = (item, field) => {
   const wo = _.find(item.fields, ['name', field]);
@@ -14,28 +16,28 @@ export const getField = (item, field) => {
 };
 
 const WaivioObject = ({ wobj }) => {
-  let website = getField(wobj, 'link');
+  let website = getFieldWithMaxWeight(wobj, linkFields.website, linkFields.website);
   const location = getField(wobj, 'locationCity');
-  const name = getField(wobj, 'name');
+  const name = getFieldWithMaxWeight(wobj, objectFields.name, objectFields.name);
 
   if (website && website.indexOf('http://') === -1 && website.indexOf('https://') === -1) {
     website = `http://${website}`;
   }
-
+  const pathName = `/object/@${wobj.author_permlink}`;
   return (
     <div key={wobj.author_permlink} className="WaivioObject__user">
       <div className="WaivioObject__user__content">
         <div className="WaivioObject__user__links">
-          <Link to={`object/@${wobj.author_permlink}`}>
+          <Link to={{ pathname: pathName }} title={name}>
             <ObjectAvatar item={wobj} size={34} />
           </Link>
           <div className="WaivioObject__user__profile">
             <div className="WaivioObject__user__profile__header">
-              <Link to={`object/@${wobj.author_permlink}`}>
+              <Link to={{ pathname: pathName }}>
                 <span className="WaivioObject__user__name">
                   <span className="username">{name}</span>
                 </span>
-                <WeightTag weight={wobj.weight} />
+                <WeightTag weight={wobj.weight} rank={wobj.rank} />
               </Link>
             </div>
             <div className="WaivioObject__user__location">

@@ -1,3 +1,5 @@
+import { objectFields } from '../common/constants/listOfFields';
+
 export const getClientWObj = serverWObj => {
   /* eslint-disable no-underscore-dangle */
   /* eslint-disable camelcase */
@@ -15,9 +17,9 @@ export const getClientWObj = serverWObj => {
     user_count,
     isNew,
   } = serverWObj;
-  const avatarField = fields && fields.find(f => f.name === 'avatarImage');
-  const nameField = fields && fields.find(f => f.name === 'name');
-  const descriptionShort = fields && fields.find(f => f.name === 'descriptionShort');
+  const avatarField = fields && fields.find(f => f.name === objectFields.avatarImage);
+  const nameField = fields && fields.find(f => f.name === objectFields.name);
+  const descriptionShort = fields && fields.find(f => f.name === objectFields.descriptionShort);
   return {
     id: author_permlink,
     avatar: avatarField ? avatarField.body : '/images/logo-brand.png',
@@ -36,18 +38,7 @@ export const getClientWObj = serverWObj => {
   };
 };
 
-export const getServerWObj = clientWObj => ({
-  _id: clientWObj.id,
-  parents: clientWObj.parents,
-  tag: clientWObj.tag,
-  weight: clientWObj.weight,
-  fields: [...clientWObj.fields],
-  createdAt: clientWObj.createdAt,
-  updatedAt: clientWObj.updatedAt,
-  __v: clientWObj.version,
-  children: [...clientWObj.children],
-  users: [...clientWObj.users],
-  user_count: clientWObj.userCount,
-});
 /* eslint-enable no-underscore-dangle */
 /* eslint-enable camelcase */
+
+export default getClientWObj;

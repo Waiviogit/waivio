@@ -1,0 +1,60 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.ObjectGallery {
+  &__cardWrap {
+    background-color: @white;
+    border: @base-border;
+    padding: 15px;
+    width: 100%;
+  }
+  &__emptyText {
+    background-color: @white;
+    border: @base-border;
+    padding: 15px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  &__addAlbum {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  &__addImageWrap {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    a {
+      display: flex;
+      align-items: center;
+    }
+    span {
+      margin-left: 8px;
+      color: #99aab5;
+      font-size: 16px;
+      font-weight: 500;
+    }
+  }
+  &__addImage {
+    display: flex;
+  }
+  &__empty {
+    background: @white;
+    border: @base-border;
+    padding: 16px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 12px;
+
+    .proposition-line {
+      display: flex;
+      justify-content: center;
+    }
+  }
+}

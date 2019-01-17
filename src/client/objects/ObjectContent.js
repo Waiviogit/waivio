@@ -6,16 +6,6 @@ import Loading from '../components/Icon/Loading';
 
 const displayLimit = 30;
 
-export const mockObjects = [
-  {
-    id: 300,
-    reputation: '996819810443205',
-    name: 'zcash',
-    json_metadata:
-      '{"wobjData": {"name": "Z-cash", "about":"The Future of Z-cash", "location":"https://discord.gg/XkkhCc4", "avatar": "https://www.investarena.com/static/images/logoQuotes/Zcash.png", "website":"https://z.cash/"}}',
-  },
-];
-
 export default class ObjectContent extends React.Component {
   state = {
     wobjs: [],
@@ -61,18 +51,15 @@ export default class ObjectContent extends React.Component {
     }
 
     return (
-      <div>
-        <ReduxInfiniteScroll
-          elementIsScrollable={false}
-          hasMore={hasMore}
-          loadMore={this.handleLoadMore}
-          loadingMore={loading}
-          loader={<Loading />}
-        >
-          {wobjs.length &&
-            wobjs.map(wobj => <WaivioObject wobj={wobj} key={wobj.author_permlink} />)}
-        </ReduxInfiniteScroll>
-      </div>
+      <ReduxInfiniteScroll
+        elementIsScrollable={false}
+        hasMore={hasMore}
+        loadMore={this.handleLoadMore}
+        loadingMore={loading}
+        loader={<Loading />}
+      >
+        {wobjs.length && wobjs.map(wobj => <WaivioObject wobj={wobj} key={wobj.author_permlink} />)}
+      </ReduxInfiniteScroll>
     );
   }
 }

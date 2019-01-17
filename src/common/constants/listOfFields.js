@@ -1,10 +1,33 @@
 export const objectFields = {
   name: 'name',
+  title: 'title',
   description: 'description',
-  location: 'location',
+  address: 'address',
+  map: 'map',
   link: 'link',
-  avatarImage: 'avatarImage',
-  backgroundImage: 'backgroundImage',
+  avatar: 'avatar',
+  background: 'background',
+};
+
+export const addressFields = {
+  country: 'country',
+  city: 'city',
+  street: 'street',
+  accommodation: 'accommodation',
+};
+
+export const mapFields = {
+  latitude: 'latitude',
+  longitude: 'longitude',
+};
+
+export const linkFields = {
+  website: 'website',
+  linkFacebook: 'linkFacebook',
+  linkTwitter: 'linkTwitter',
+  linkYouTube: 'linkYouTube',
+  linkInstagram: 'linkInstagram',
+  linkGitHub: 'linkGitHub',
 };
 
 export const socialObjectFields = [
@@ -17,6 +40,6 @@ export const socialObjectFields = [
 
 export const supportedObjectFields = Object.values(objectFields);
 
-export const objectImageFields = ['avatarImage', 'backgroundImage'];
+export const objectImageFields = ['avatar', 'background'];
 
 export default null;

@@ -18,7 +18,18 @@
     border: 1px solid @red;
     box-shadow: 0 0 3px @orange, 0 0 5px @red;
   }
-
+  &__checkbox-line {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+  &__checkbox-wrap {
+    display: flex;
+    width: 50%;
+  }
+  &__checkbox-descr {
+    margin-right: 10px;
+  }
   @media @medium {
     &:hover .editor-object__controls > .editor-object__control-item.delete {
       visibility: visible;
@@ -29,7 +40,7 @@
     flex-flow: column nowrap;
     align-items: flex-start;
     height: @height-row-info + @height-row-slider;
-    width: 100%;
+    width: 85%;
     outline: none;
     &.row {
       display: flex;
@@ -54,23 +65,24 @@
   &__avatar {
     height: @height-row-info;
     width: @height-row-info;
-    border-radius: 30%;
+    //border-radius: 30%;
     margin-right: @padding;
   }
 
   &__info {
     display: flex;
     flex-direction: column;
+    width: 100%;
     &.name {
       font-weight: 500;
     }
-    &.description {
-      max-height: @height-row-info / 2 + 5;
-      line-height: 1.1;
-      overflow: hidden;
-    }
   }
-
+  &__truncated {
+    width: 75%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
   .editor-object__controls {
     display: flex;
     flex-direction: column;
@@ -97,7 +109,13 @@
     }
   }
 
-  @media @medium {
+  @media @medium, @large {
+    .editor-object__truncated {
+      width: 85%;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
     .editor-object__controls {
       align-items: stretch;
       min-width: 90px;

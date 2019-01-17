@@ -2,12 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { message } from 'antd';
+import filesize from 'filesize';
 import { injectIntl } from 'react-intl';
 import { getAuthenticatedUser } from '../../reducers';
-import { MAXIMUM_UPLOAD_SIZE_HUMAN } from '../../helpers/image';
+import { MAXIMUM_UPLOAD_SIZE } from '../../helpers/image';
 import { WAIVIO_OBJECT_TYPE } from '../../../common/constants/waivio';
+import { getClientWObj } from '../../adapters';
 import { getLocale } from '../../settings/settingsReducer';
-import { handleErrors } from '../../../waivioApi/ApiClient';
+import { getObjectsByIds, handleErrors } from '../../../waivioApi/ApiClient';
 import config from '../../../waivioApi/routes';
 import { voteObject } from '../../object/wobjActions';
 
@@ -39,6 +41,13 @@ export default function withEditor(WrappedComponent) {
       locale: 'auto',
     };
 
+    getObjectsByAuthorPermlinks = objectIds => {
+      const locale = this.props.locale === 'auto' ? 'en-US' : this.props.locale;
+      return getObjectsByIds({ authorPermlinks: objectIds, locale }).then(res =>
+        res.map(obj => getClientWObj(obj)),
+      );
+    };
+
     handleImageUpload = (blob, callback, errorCallback) => {
       const {
         intl: { formatMessage },
@@ -67,17 +76,18 @@ export default function withEditor(WrappedComponent) {
         });
     };
 
-    handleImageInvalid = () => {
+    handleImageInvalid = (maxSize = MAXIMUM_UPLOAD_SIZE, allowedFormats = '') => {
       const { formatMessage } = this.props.intl;
       message.error(
         formatMessage(
           {
             id: 'notify_uploading_image_invalid',
             defaultMessage:
-              'This file is invalid. Only image files with maximum size of {size} are supported',
+              'This file is invalid. Only image files {formats}with maximum size of {size} are supported',
           },
-          { size: MAXIMUM_UPLOAD_SIZE_HUMAN },
+          { size: filesize(maxSize), formats: allowedFormats },
         ),
+        3,
       );
     };
 
@@ -91,8 +101,10 @@ export default function withEditor(WrappedComponent) {
         body: `Waivio object "${obj.name}" has been created`,
         permlink: obj.id,
         objectName: obj.name,
-        locale: this.props.locale === 'auto' ? 'en-US' : this.props.locale,
+        locale: obj.locale || this.props.locale === 'auto' ? 'en-US' : this.props.locale,
         type: WAIVIO_OBJECT_TYPE.ITEM,
+        isExtendingOpen: obj.isExtendingOpen,
+        isPostingOpen: obj.isPostingOpen,
       };
 
       fetch(`${config.objectsBot.apiPrefix}${config.objectsBot.createObject}`, {
@@ -133,6 +145,7 @@ export default function withEditor(WrappedComponent) {
           onImageUpload={this.handleImageUpload}
           onImageInvalid={this.handleImageInvalid}
           onCreateObject={this.handleCreateObject}
+          getLinkedObjects={this.getObjectsByAuthorPermlinks}
           {...this.props}
         />
       );

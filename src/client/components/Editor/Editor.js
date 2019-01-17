@@ -41,7 +41,7 @@ class Editor extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     form: PropTypes.shape().isRequired,
-    user: PropTypes.shape().isRequired,
+    // user: PropTypes.shape().isRequired,
     title: PropTypes.string,
     topics: PropTypes.arrayOf(PropTypes.string),
     waivioData: PropTypes.shape(),
@@ -52,13 +52,16 @@ class Editor extends React.Component {
     isUpdating: PropTypes.bool,
     saving: PropTypes.bool,
     draftId: PropTypes.string,
+    initialObjPermlink: PropTypes.string,
     onUpdate: PropTypes.func,
     onDelete: PropTypes.func,
     onSubmit: PropTypes.func,
     onError: PropTypes.func,
+    // from withEditor decorator
     onImageUpload: PropTypes.func,
     onImageInvalid: PropTypes.func,
     onCreateObject: PropTypes.func,
+    getLinkedObjects: PropTypes.func,
   };
 
   static defaultProps = {
@@ -74,6 +77,7 @@ class Editor extends React.Component {
     isUpdating: false,
     saving: false,
     draftId: null,
+    initialObjPermlink: null,
     onUpdate: () => {},
     onDelete: () => {},
     onSubmit: () => {},
@@ -81,6 +85,7 @@ class Editor extends React.Component {
     onImageUpload: () => {},
     onImageInvalid: () => {},
     onCreateObject: () => {},
+    getLinkedObjects: () => {},
   };
 
   constructor(props) {
@@ -112,6 +117,9 @@ class Editor extends React.Component {
   componentDidMount() {
     this.setValues(this.props);
 
+    if (this.props.initialObjPermlink) {
+      this.restoreLinkedObjects(this.props.waivioData.wobjects);
+    }
     // eslint-disable-next-line react/no-find-dom-node
     const select = ReactDOM.findDOMNode(this.select);
     if (select) {
@@ -138,6 +146,13 @@ class Editor extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    const { waivioData } = this.props;
+    if (!_.isEqual(prevProps.waivioData, waivioData)) {
+      this.restoreLinkedObjects(waivioData.wobjects);
+    }
+  }
+
   onUpdate() {
     _.throttle(this.throttledUpdate, 200, { leading: false, trailing: true })();
   }
@@ -157,10 +172,12 @@ class Editor extends React.Component {
     }
 
     form.setFieldsValue({
+      name: post.name,
       title: post.title,
       body: post.body,
       reward,
       upvote: post.upvote,
+      [WAIVIO_META_FIELD_NAME]: post.waivioData,
     });
     this.setBodyAndRender(post.body);
   }
@@ -169,6 +186,39 @@ class Editor extends React.Component {
     this.setState({
       body,
       bodyHTML: remarkable.render(body),
+    });
+  }
+
+  resetLinkedObjects = () => this.setState({ linkedObjects: [], influenceRemain: 0 });
+
+  restoreLinkedObjects(wobjects) {
+    if (_.isEmpty(wobjects)) {
+      this.resetLinkedObjects();
+      return;
+    }
+    const existingObjectIds = wobjects.filter(wo => !wo.isNew).map(wo => wo.author_permlink);
+    this.props.getLinkedObjects(existingObjectIds).then(res => {
+      const influenceRemain = 100 - wobjects.reduce((acc, curr) => acc + curr.percent, 0);
+      const linkedObjects = wobjects.map(obj =>
+        !obj.isNew && res.some(exObj => exObj.id === obj.author_permlink)
+          ? {
+              ..._.find(res, currObj => currObj.id === obj.author_permlink),
+              influence: { value: obj.percent, max: obj.percent + influenceRemain },
+            }
+          : {
+              ...getClientWObj({
+                author_permlink: obj.author_permlink,
+                fields: [{ name: 'name', body: obj.objectName }],
+                isNew: true,
+              }),
+              influence: { value: obj.percent, max: obj.percent + influenceRemain },
+            },
+      );
+      this.setState({
+        linkedObjects,
+        influenceRemain,
+        canCreateNewObject: linkedObjects.length < MAX_NEW_OBJECTS_NUMBER,
+      });
     });
   }
 
@@ -183,7 +233,7 @@ class Editor extends React.Component {
   }
 
   throttledUpdate() {
-    const objectsArr = [...this.state.linkedObjects];
+    const { linkedObjects } = this.state;
     const { form } = this.props;
 
     const values = form.getFieldsValue();
@@ -191,11 +241,12 @@ class Editor extends React.Component {
 
     // if (Object.values(form.getFieldsError()).filter(e => e).length > 0) return;
 
-    const topics = objectsArr
+    const topics = [...linkedObjects]
       .sort((a, b) => b.influence.value - a.influence.value)
       .slice(0, 4)
       .map(obj => obj.name);
-    const wobjects = objectsArr.map(obj => ({
+    const wobjects = linkedObjects.map(obj => ({
+      objectName: obj.name,
       author_permlink: obj.id,
       percent: obj.influence.value,
       isNew: Boolean(obj.isNew),
@@ -252,10 +303,11 @@ class Editor extends React.Component {
     const selectedObj = wObject.isNew
       ? getClientWObj({
           ...wObject,
-          author_permlink: `${this.props.user.name}-${wObject.author_permlink}`,
+          author_permlink: wObject.author_permlink.replace(' ', '-'),
         })
       : wObject;
     this.setState(prevState => {
+      if (prevState.linkedObjects.some(obj => obj.id === wObject.id)) return prevState;
       const linkedObjects = setInitialInfluence(
         prevState.linkedObjects,
         selectedObj,
@@ -266,7 +318,7 @@ class Editor extends React.Component {
         influenceRemain: 0,
         canCreateNewObject: linkedObjects.length < MAX_NEW_OBJECTS_NUMBER,
       };
-    }, this.onUpdate());
+    }, this.onUpdate);
   }
 
   handleCreateObject(wObject) {
@@ -284,7 +336,8 @@ class Editor extends React.Component {
             obj.id === wObject.id
               ? {
                   ...obj,
-                  id: `${res.objectAuthor}_${res.objectPermlink}`,
+                  // id: `${res.objectAuthor}_${res.objectPermlink}`,
+                  id: `${res.objectPermlink}`,
                   isNew: false,
                   isCreating: false,
                 }
@@ -296,7 +349,7 @@ class Editor extends React.Component {
               prevState.isLinkedObjectsValid ||
               !(prevState.isLinkedObjectsValid || linkedObjects.some(obj => obj.isNew)),
           };
-        });
+        }, this.onUpdate);
       },
       () => {
         this.setState(prevState => {
@@ -304,7 +357,7 @@ class Editor extends React.Component {
             obj.id === wObject.id ? { ...obj, isCreating: false } : obj,
           );
           return { linkedObjects };
-        });
+        }, this.onUpdate);
       },
     );
   }
@@ -321,13 +374,16 @@ class Editor extends React.Component {
         influenceRemain: result.influenceRemain,
         canCreateNewObject: result.linkedObjects.length < MAX_NEW_OBJECTS_NUMBER,
       };
-    }, this.onUpdate());
+    }, this.onUpdate);
   }
 
   handleChangeInfluence(wObj, influence) {
     const { influenceRemain, linkedObjects } = this.state;
     if (influenceRemain - (influence - wObj.influence.value) >= 0) {
-      this.setState(changeObjInfluenceHandler(linkedObjects, wObj, influence, influenceRemain));
+      this.setState(
+        changeObjInfluenceHandler(linkedObjects, wObj, influence, influenceRemain),
+        this.onUpdate,
+      );
     }
   }
 
@@ -370,7 +426,7 @@ class Editor extends React.Component {
       <Form className="Editor" layout="vertical" onSubmit={this.handleSubmit}>
         <Helmet>
           <title>
-            {intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })} - Busy
+            {intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })} - Waivio
           </title>
         </Helmet>
         <Form.Item

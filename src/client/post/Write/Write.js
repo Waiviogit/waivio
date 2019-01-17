@@ -40,6 +40,7 @@ import Affix from '../../components/Utils/Affix';
     loading: getIsEditorLoading(state),
     saving: getIsEditorSaving(state),
     draftId: new URLSearchParams(props.location.search).get('draft'),
+    objPermlink: new URLSearchParams(props.location.search).get('object'),
     upvoteSetting: getUpvoteSetting(state),
     rewardSetting: getRewardSetting(state),
   }),
@@ -58,6 +59,7 @@ class Write extends React.Component {
     intl: PropTypes.shape().isRequired,
     saving: PropTypes.bool,
     draftId: PropTypes.string,
+    objPermlink: PropTypes.string,
     upvoteSetting: PropTypes.bool,
     rewardSetting: PropTypes.string,
     newPost: PropTypes.func,
@@ -69,6 +71,7 @@ class Write extends React.Component {
   static defaultProps = {
     saving: false,
     draftId: null,
+    objPermlink: null,
     upvoteSetting: true,
     rewardSetting: rewardsValues.half,
     newPost: () => {},
@@ -95,41 +98,17 @@ class Write extends React.Component {
 
   componentDidMount() {
     this.props.newPost();
-    const { draftPosts, draftId } = this.props;
+    const { draftPosts, draftId, objPermlink } = this.props;
     const draftPost = draftPosts[draftId];
 
     if (draftPost) {
-      let tags = [];
-      if (_.isArray(draftPost.jsonMetadata.tags)) {
-        tags = draftPost.jsonMetadata.tags;
-      }
-
-      if (draftPost.permlink) {
-        this.permlink = draftPost.permlink;
-      }
-
-      if (draftPost.originalBody) {
-        this.originalBody = draftPost.originalBody;
-      }
-
-      // eslint-disable-next-line
-      this.setState({
-        initialTitle: draftPost.title || '',
-        initialTopics: tags || [],
-        initialWavioData: draftPost.jsonMetadata[WAIVIO_META_FIELD_NAME] || { wobjects: [] },
-        initialBody: draftPost.body || '',
-        initialReward: draftPost.reward,
-        initialUpvote: draftPost.upvote,
-        initialUpdatedDate: draftPost.lastUpdated || Date.now(),
-        isUpdating: draftPost.isUpdating || false,
-      });
+      this.initFromDraft(draftId, draftPost);
+    }
+    if (objPermlink) {
+      this.setInitialLinkedObject(objPermlink);
     }
 
-    if (draftId) {
-      this.draftId = draftId;
-    } else {
-      this.draftId = uuidv4();
-    }
+    this.draftId = draftId || uuidv4();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -162,6 +141,8 @@ class Write extends React.Component {
         initialTopics,
         initialWavioData,
       });
+    } else if (!differentDraft && nextProps.draftPosts[nextProps.draftId]) {
+      this.initFromDraft(nextProps.draftId, nextProps.draftPosts[nextProps.draftId]);
     }
   }
 
@@ -181,7 +162,6 @@ class Write extends React.Component {
     if (this.props.draftId) {
       data.draftId = this.props.draftId;
     }
-    // console.log('Write:onSubmit > ', JSON.stringify(data));
     this.props.createPost(data);
   };
 
@@ -218,14 +198,55 @@ class Write extends React.Component {
     const appData = { waivioData, forecast };
 
     data.parentPermlink = WAIVIO_PARENT_PERMLINK;
-    data.jsonMetadata = createPostMetadata(data.body, form.topics, oldMetadata, appData);
+    data.jsonMetadata = createPostMetadata(data.body, form.topics, oldMetadata, waivioData);
 
     if (this.originalBody) {
       data.originalBody = this.originalBody;
     }
-    console.log('| saveDraft > ', data);
 
     return data;
+  };
+
+  setInitialLinkedObject = objectPermlink => {
+    this.setState({
+      initialWavioData: {
+        wobjects: [
+          {
+            objectName: 'init object',
+            author_permlink: objectPermlink,
+            percent: 100,
+            isNew: false,
+          },
+        ],
+      },
+    });
+  };
+
+  initFromDraft = (draftId, draftPost) => {
+    let tags = [];
+    if (_.isArray(draftPost.jsonMetadata.tags)) {
+      tags = draftPost.jsonMetadata.tags;
+    }
+
+    if (draftPost.permlink) {
+      this.permlink = draftPost.permlink;
+    }
+
+    if (draftPost.originalBody) {
+      this.originalBody = draftPost.originalBody;
+    }
+
+    // eslint-disable-next-line
+    this.setState({
+      initialTitle: draftPost.title || '',
+      initialTopics: tags || [],
+      initialWavioData: draftPost.jsonMetadata[WAIVIO_META_FIELD_NAME] || { wobjects: [] },
+      initialBody: draftPost.body || '',
+      initialReward: draftPost.reward,
+      initialUpvote: draftPost.upvote,
+      initialUpdatedDate: draftPost.lastUpdated || Date.now(),
+      isUpdating: draftPost.isUpdating || false,
+    });
   };
 
   handleCancelDeleteDraft = () => this.setState({ showModalDelete: false });
@@ -255,7 +276,7 @@ class Write extends React.Component {
       initialReward,
       initialUpvote,
     } = this.state;
-    const { loading, saving, draftId } = this.props;
+    const { loading, saving, draftId, objPermlink } = this.props;
 
     return (
       <div className="shifted">
@@ -276,6 +297,7 @@ class Write extends React.Component {
               reward={initialReward}
               upvote={initialUpvote}
               draftId={draftId}
+              initialObjPermlink={objPermlink}
               loading={loading}
               isUpdating={this.state.isUpdating}
               onUpdate={this.saveDraft}

@@ -1,0 +1,147 @@
+@import (reference) '../styles/custom.less';
+
+.AppendForm {
+  padding-bottom: 24px;
+
+  .ant-form-item {
+    margin-bottom: 0px;
+    padding-bottom: 24px;
+  }
+
+  &__hidden {
+    display: none !important;
+  }
+  &__previewWrap {
+    display: flex;
+    justify-content: center;
+  }
+  &__preview {
+    max-width: 100%;
+    max-height: 450px;
+  }
+
+  & .ant-form-item-label {
+    position: relative;
+    top: 8px !important;
+  }
+
+  & .ant-form-item-required {
+    &:before {
+      content: '' !important;
+    }
+  }
+
+  & .ant-checkbox-wrapper > :last-child {
+    vertical-align: -3px;
+  }
+
+  &__label {
+    font-weight: bold;
+  }
+
+  &__appendTitles {
+    font-weight: bold;
+    color: @black;
+    margin-left: 5px !important;
+  }
+
+  &__input,
+  &__title {
+    height: 45px !important;
+    font-size: 20px !important;
+    font-weight: bold;
+
+    &.validation-error {
+      border: 1px solid @red;
+      box-shadow: 0 0 3px @orange, 0 0 5px @red;
+    }
+  }
+
+  &__topics {
+    & > div {
+      padding-top: 5px !important;
+      padding-bottom: 8px !important;
+      height: auto !important;
+    }
+  }
+
+  &__bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &__info {
+      font-weight: bold;
+
+      .iconfont {
+        font-size: 20px;
+        vertical-align: -3px;
+        margin-right: 4px;
+      }
+    }
+
+    &__right {
+      display: flex;
+      align-items: center;
+
+      &__saving {
+        margin-right: 16px;
+      }
+    }
+
+    &__submit {
+      margin-top: 10px !important;
+      margin-bottom: 0 !important;
+
+      .ant-form-item-control {
+        text-align: right !important;
+      }
+    }
+
+    &__cancel {
+      margin-bottom: 0 !important;
+      padding-right: 10px;
+      margin-right: 10px !important;
+
+      .ant-form-item-control {
+        text-align: right !important;
+      }
+
+      .Action {
+        background-color: @red !important;
+      }
+    }
+  }
+
+  .ant-select-selection__choice {
+    font-weight: 500 !important;
+    color: @topic-button-color !important;
+    background-color: @topic-button-background-color !important;
+    border-radius: @border-radius-base !important;
+    border: @topic-button-border;
+
+    & > div {
+      position: relative;
+      top: -2px;
+      font-size: 14px;
+    }
+
+    & > span {
+      color: @black !important;
+    }
+  }
+}
+
+div[data-dir='rtl'] .Editor {
+  .ant-form-item-label {
+    text-align: right;
+  }
+
+  &__reading_time {
+    float: left;
+  }
+}
+
+.append-combined-value__validation-msg {
+  color: @red-danger;
+}

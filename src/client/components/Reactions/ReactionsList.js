@@ -40,7 +40,7 @@ export default class UserList extends React.Component {
             {take(votes, noOfItemsToShow).map(vote => (
               <UserCard
                 key={vote.voter}
-                username={vote.voter}
+                user={{ name: vote.voter }}
                 alt={
                   <span>
                     <USDDisplay value={vote.rshares * ratio} />
