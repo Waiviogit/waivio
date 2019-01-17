@@ -24,7 +24,6 @@ import dealsReducer from '../investarena/redux/reducers/dealsReducer';
 import modalsReducer from '../investarena/redux/reducers/modalsReducer';
 import favoriteQuotesReducer from '../investarena/redux/reducers/favoriteQuotesReducer';
 import chartsReducer from '../investarena/redux/reducers/chartsReducer';
-import appendReducer, * as fromAppend from '../client/post/AppendObjectPostWrite/appendReducer';
 import wobjectReducer, * as fromObject from '../client/object/wobjectReducer';
 import appendReducer, * as fromAppend from '../client/object/appendReducer';
 
