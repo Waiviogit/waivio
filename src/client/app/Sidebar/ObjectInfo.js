@@ -15,8 +15,7 @@ import Map from '../../components/Maps/Map';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
 
-const ObjectInfo = props => {
-  const { wobject, userName } = props;
+const ObjectInfo = ({ wobject, userName }) => {
   let addressArr = [];
   let address = '';
   let map = '';
