@@ -1,0 +1,27 @@
+@import (reference) '../styles/custom.less';
+@import (reference) '../styles/mixins.less';
+
+.icon-button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+
+  &__icon,
+  &__text {
+    display: flex;
+    align-items: center;
+  }
+
+  &__icon {
+    color: @primary-color;
+    padding-right: 5px;
+    font-size: 23px;
+  }
+
+  &__text {
+    color: @blue-botticelli;
+    font-size: @font-size-base;
+    font-weight: 500;
+  }
+}

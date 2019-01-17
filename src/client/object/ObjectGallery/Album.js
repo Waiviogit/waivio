@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Card, Row, Col } from 'antd';
 import Lightbox from 'react-image-lightbox';
+import { FormattedMessage } from 'react-intl';
 import GalleryItem from './GalleryItem';
 import './GalleryAlbum.less';
 
@@ -25,13 +26,23 @@ class Album extends React.Component {
     return (
       <div className="GalleryAlbum">
         <Card title={album.body}>
-          <Row gutter={24}>
-            {album.items.map((image, idx) => (
-              <Col span={12} key={image.body}>
-                <GalleryItem image={image} handleOpenLightbox={this.handleOpenLightbox} idx={idx} />
-              </Col>
-            ))}
-          </Row>
+          {album.items && album.items.lenght > 0 ? (
+            <Row gutter={24}>
+              {album.items.map((image, idx) => (
+                <Col span={12} key={image.body}>
+                  <GalleryItem
+                    image={image}
+                    handleOpenLightbox={this.handleOpenLightbox}
+                    idx={idx}
+                  />
+                </Col>
+              ))}
+            </Row>
+          ) : (
+            <div className="ObjectGallery__emptyText">
+              <FormattedMessage id="gallery_list_empty" defaultMessage="Nothing is there" />
+            </div>
+          )}
         </Card>
         {isOpen && (
           <Lightbox

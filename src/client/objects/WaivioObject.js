@@ -23,7 +23,7 @@ const WaivioObject = ({ wobj }) => {
   if (website && website.indexOf('http://') === -1 && website.indexOf('https://') === -1) {
     website = `http://${website}`;
   }
-  const pathName = `/object/${wobj.author_permlink}/${wobj.default_name || ''}`;
+  const pathName = `/object/@${wobj.author_permlink}`;
   return (
     <div key={wobj.author_permlink} className="WaivioObject__user">
       <div className="WaivioObject__user__content">

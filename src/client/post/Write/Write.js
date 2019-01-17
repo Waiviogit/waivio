@@ -36,6 +36,7 @@ import Affix from '../../components/Utils/Affix';
     loading: getIsEditorLoading(state),
     saving: getIsEditorSaving(state),
     draftId: new URLSearchParams(props.location.search).get('draft'),
+    objPermlink: new URLSearchParams(props.location.search).get('object'),
     upvoteSetting: getUpvoteSetting(state),
     rewardSetting: getRewardSetting(state),
   }),
@@ -54,6 +55,7 @@ class Write extends React.Component {
     intl: PropTypes.shape().isRequired,
     saving: PropTypes.bool,
     draftId: PropTypes.string,
+    objPermlink: PropTypes.string,
     upvoteSetting: PropTypes.bool,
     rewardSetting: PropTypes.string,
     newPost: PropTypes.func,
@@ -65,6 +67,7 @@ class Write extends React.Component {
   static defaultProps = {
     saving: false,
     draftId: null,
+    objPermlink: null,
     upvoteSetting: true,
     rewardSetting: rewardsValues.half,
     newPost: () => {},
@@ -91,12 +94,17 @@ class Write extends React.Component {
 
   componentDidMount() {
     this.props.newPost();
-    const { draftPosts, draftId } = this.props;
+    const { draftPosts, draftId, objPermlink } = this.props;
     const draftPost = draftPosts[draftId];
 
     if (draftPost) {
       this.initFromDraft(draftId, draftPost);
     }
+    if (objPermlink) {
+      this.setInitialLinkedObject(objPermlink);
+    }
+
+    this.draftId = draftId || uuidv4();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -191,6 +199,21 @@ class Write extends React.Component {
     return data;
   };
 
+  setInitialLinkedObject = objectPermlink => {
+    this.setState({
+      initialWavioData: {
+        wobjects: [
+          {
+            objectName: 'init object',
+            author_permlink: objectPermlink,
+            percent: 100,
+            isNew: false,
+          },
+        ],
+      },
+    });
+  };
+
   initFromDraft = (draftId, draftPost) => {
     let tags = [];
     if (_.isArray(draftPost.jsonMetadata.tags)) {
@@ -216,12 +239,6 @@ class Write extends React.Component {
       initialUpdatedDate: draftPost.lastUpdated || Date.now(),
       isUpdating: draftPost.isUpdating || false,
     });
-
-    if (draftId) {
-      this.draftId = draftId;
-    } else {
-      this.draftId = uuidv4();
-    }
   };
 
   handleCancelDeleteDraft = () => this.setState({ showModalDelete: false });
@@ -251,7 +268,7 @@ class Write extends React.Component {
       initialReward,
       initialUpvote,
     } = this.state;
-    const { loading, saving, draftId } = this.props;
+    const { loading, saving, draftId, objPermlink } = this.props;
 
     return (
       <div className="shifted">
@@ -272,6 +289,7 @@ class Write extends React.Component {
               reward={initialReward}
               upvote={initialUpvote}
               draftId={draftId}
+              initialObjPermlink={objPermlink}
               loading={loading}
               isUpdating={this.state.isUpdating}
               onUpdate={this.saveDraft}
