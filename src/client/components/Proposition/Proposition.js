@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
 import './Proposition.less';
 import AppendModal from '../../object/AppendModal';
+import IconButton from '../IconButton';
 
 class Proposition extends React.Component {
   state = {
@@ -18,18 +19,17 @@ class Proposition extends React.Component {
     return (
       <React.Fragment>
         <div className="proposition-line">
-          <Link
-            to={{ pathname: `/object/${objectID}/${defaultName}/updates/${fieldName}` }}
-            onClick={this.handleToggleModal}
-          >
-            <Icon type="plus-circle" className="proposition-line__icon" />
+          <Link to={{ pathname: `/object/${objectID}/${defaultName}/updates/${fieldName}` }}>
+            <IconButton
+              icon={<Icon type="plus-circle" />}
+              onClick={this.handleToggleModal}
+              caption={intl.formatMessage({
+                id: `object_field_${fieldName}`,
+                defaultMessage: fieldName,
+              })}
+            />
+            {/* <Icon type="plus-circle" className="proposition-line__icon" /> */}
           </Link>
-          <span className="proposition-line__text">
-            {intl.formatMessage({
-              id: `object_field_${fieldName}`,
-              defaultMessage: fieldName,
-            })}
-          </span>
         </div>
         <AppendModal
           showModal={showModal}

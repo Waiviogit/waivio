@@ -15,9 +15,10 @@ import { getObjectComments } from '../feed/feedActions';
 import { supportedObjectFields } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
-import './WobjHistory.less';
 import AppendModal from './AppendModal';
+import IconButton from '../components/IconButton';
 import SortSelector from '../components/SortSelector/SortSelector';
+import './WobjHistory.less';
 
 @connect(
   state => ({
@@ -123,68 +124,65 @@ export default class WobjHistory extends React.Component {
     });
     return (
       <React.Fragment>
+        <div className="wobj-history__filters">
+          <Select
+            allowClear
+            placeholder={
+              <FormattedMessage id="object_field_placeholder" defaultMessage="Object field" />
+            }
+            value={field}
+            onChange={this.handleFieldChange}
+          >
+            {supportedObjectFields.map(f => (
+              <Select.Option key={f}>
+                <FormattedMessage id={`object_field_${f}`} defaultMessage={f} />
+              </Select.Option>
+            ))}
+          </Select>
+          <Select
+            allowClear
+            placeholder={<FormattedMessage id="language" defaultMessage="All languages" />}
+            onChange={this.handleLocaleChange}
+          >
+            {usedByUserLanguages.length > 0 &&
+              usedByUserLanguages.map(lang => (
+                <Select.Option key={lang.id} value={lang.id}>
+                  {getLanguageText(lang)}
+                </Select.Option>
+              ))}
+            {filteredLanguages.map(lang => (
+              <Select.Option key={lang.id} value={lang.id}>
+                {getLanguageText(lang)}
+              </Select.Option>
+            ))}
+          </Select>
+          <IconButton
+            icon={<Icon type="plus-circle" />}
+            onClick={this.handleToggleModal}
+            caption={<FormattedMessage id="add_new_proposition" defaultMessage="Add" />}
+          />
+          <AppendModal
+            showModal={showModal}
+            hideModal={this.handleToggleModal}
+            locale={this.state.locale}
+            field={this.state.field}
+          />
+        </div>
         {!isFetching && (
-          <React.Fragment>
-            <div className="wobj-history__filters">
-              <Select
-                allowClear
-                placeholder={
-                  <FormattedMessage id="object_field_placeholder" defaultMessage="Object field" />
-                }
-                value={field}
-                onChange={this.handleFieldChange}
-              >
-                {supportedObjectFields.map(f => (
-                  <Select.Option key={f}>
-                    <FormattedMessage id={`object_field_${f}`} defaultMessage={f} />
-                  </Select.Option>
-                ))}
-              </Select>
-              <Select
-                allowClear
-                placeholder={<FormattedMessage id="language" defaultMessage="All languages" />}
-                onChange={this.handleLocaleChange}
-              >
-                {usedByUserLanguages.length > 0 &&
-                  usedByUserLanguages.map(lang => (
-                    <Select.Option key={lang.id} value={lang.id}>
-                      {getLanguageText(lang)}
-                    </Select.Option>
-                  ))}
-                {filteredLanguages.map(lang => (
-                  <Select.Option key={lang.id} value={lang.id}>
-                    {getLanguageText(lang)}
-                  </Select.Option>
-                ))}
-              </Select>
-              <div className="wobj-history__add">
-                <a role="presentation" onClick={this.handleToggleModal}>
-                  <Icon type="plus-circle" className="proposition-line__icon" />
-                </a>
-                <FormattedMessage id="add_new_proposition" defaultMessage="Add" />
-              </div>
-              <AppendModal
-                showModal={showModal}
-                hideModal={this.handleToggleModal}
-                locale={this.state.locale}
-                field={this.state.field}
-              />
-            </div>
-            <div className="wobj-history__sort">
-              <SortSelector sort={sort} onChange={this.handleSortChange}>
-                <SortSelector.Item key="rank">
-                  <FormattedMessage id="rank" defaultMessage="Rank">
-                    {msg => msg.toUpperCase()}
-                  </FormattedMessage>
-                </SortSelector.Item>
-                <SortSelector.Item key="recency">
-                  <FormattedMessage id="recency" defaultMessage="Recency">
-                    {msg => msg.toUpperCase()}
-                  </FormattedMessage>
-                </SortSelector.Item>
-              </SortSelector>
-            </div>
-          </React.Fragment>
+          <div className="wobj-history__sort">
+            <SortSelector sort={sort} onChange={this.handleSortChange}>
+              <SortSelector.Item key="rank">
+                <FormattedMessage id="rank" defaultMessage="Rank">
+                  {msg => msg.toUpperCase()}
+                </FormattedMessage>
+              </SortSelector.Item>
+              <SortSelector.Item key="recency">
+                <FormattedMessage id="recency" defaultMessage="Recency">
+                  {msg => msg.toUpperCase()}
+                </FormattedMessage>
+              </SortSelector.Item>
+            </SortSelector>
+          </div>
         )}
         <Feed content={content} isFetching={isFetching} />
       </React.Fragment>
