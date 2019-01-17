@@ -17,6 +17,7 @@ import {
 import { getObjectPosts, getMoreObjectPosts } from '../feed/feedActions';
 import { showPostModal } from '../app/appActions';
 import PostModal from '../post/PostModalContainer';
+import IconButton from '../components/IconButton';
 import './ObjectProfile.less';
 
 @withRouter
@@ -84,12 +85,11 @@ export default class ObjectProfile extends React.Component {
     return (
       <React.Fragment>
         <div className="profile">
-          <div className="wobj-history__add">
-            <a role="presentation" onClick={this.handleCreatePost}>
-              <Icon type="plus-circle" className="proposition-line__icon" />
-            </a>
-            <FormattedMessage id="add_new_proposition" defaultMessage="Add" />
-          </div>
+          <IconButton
+            icon={<Icon type="plus-circle" />}
+            onClick={this.handleCreatePost}
+            caption={<FormattedMessage id="add_new_proposition" defaultMessage="Add" />}
+          />
           <Feed
             content={content}
             isFetching={isFetching}
