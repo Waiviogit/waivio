@@ -130,39 +130,39 @@ const routes = [
         ],
       },
       {
-        path: `/object/:name/:defaultName/(about|gallery|updates|reviews|followers|feed)?/(${supportedObjectFields.join(
+        path: `/object/@:name/(about|gallery|updates|reviews|followers|feed)?/(${supportedObjectFields.join(
           '|',
         )}|album)?/:albumId?`,
         component: Wobj,
         exact: true,
         routes: [
           {
-            path: '/object/:name/:defaultName',
+            path: '/object/@:name',
             exact: true,
             component: ObjectProfile,
           },
           {
-            path: '/object/:name/:defaultName/reviews',
+            path: '/object/@:name/reviews',
             exact: true,
             component: ObjectProfile,
           },
           {
-            path: '/object/:name/:defaultName/followers',
+            path: '/object/@:name/followers',
             exact: true,
             component: WobjFollowers,
           },
           {
-            path: '/object/:name/:defaultName/gallery',
+            path: '/object/@:name/gallery',
             exact: true,
             component: ObjectGallery,
           },
           {
-            path: '/object/:name/:defaultName/gallery/album/:albumId',
+            path: '/object/@:name/gallery/album/:albumId',
             exact: true,
             component: ObjectGalleryAlbum,
           },
           {
-            path: '/object/:name/:defaultName/updates/:field?',
+            path: '/object/@:name/updates/:field?',
             exact: true,
             component: WobjHistory,
           },

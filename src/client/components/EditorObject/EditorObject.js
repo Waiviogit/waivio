@@ -51,7 +51,7 @@ class EditorObject extends React.Component {
   render() {
     const { influenceValue } = this.state;
     const { intl, wObject, handleRemoveObject, isLinkedObjectsValid } = this.props;
-    const pathName = `/object/${wObject.id}/${wObject.default_name || wObject.name || ''}`;
+    const pathName = `/object/@${wObject.id}`;
     return (
       <React.Fragment>
         <div

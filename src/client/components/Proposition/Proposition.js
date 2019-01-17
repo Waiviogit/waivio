@@ -13,13 +13,13 @@ class Proposition extends React.Component {
   handleToggleModal = () => this.setState({ showModal: !this.state.showModal });
 
   render() {
-    const { intl, fieldName, objectID, defaultName } = this.props;
+    const { intl, fieldName, objectID } = this.props;
     const { showModal } = this.state;
     return (
       <React.Fragment>
         <div className="proposition-line">
           <Link
-            to={{ pathname: `/object/${objectID}/${defaultName}/updates/${fieldName}` }}
+            to={{ pathname: `/object/@${objectID}/updates/${fieldName}` }}
             onClick={this.handleToggleModal}
           >
             <Icon type="plus-circle" className="proposition-line__icon" />
@@ -43,14 +43,12 @@ class Proposition extends React.Component {
 }
 Proposition.propTypes = {
   fieldName: PropTypes.string.isRequired,
-  defaultName: PropTypes.string.isRequired,
   objectID: PropTypes.string.isRequired,
   intl: PropTypes.shape().isRequired,
 };
 
 Proposition.defaultProps = {
   fieldName: 'name',
-  defaultName: 'abc',
 };
 
 export default injectIntl(Proposition);

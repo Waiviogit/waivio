@@ -65,24 +65,14 @@ const ObjectInfo = ({ wobject, userName }) => {
             <div className="field-info__title">
               <FormattedMessage id={`object_field_${fieldName}`} defaultMessage={fieldName} />
               &nbsp;
-              <Link
-                to={`/object/${wobject.author_permlink}/${
-                  wobject.default_name
-                }/updates/${fieldName}`}
-              >
+              <Link to={`/object/@${wobject.author_permlink}/updates/${fieldName}`}>
                 ({fieldsCount})
               </Link>
             </div>
             <div className="field-info__content">{content}</div>
           </React.Fragment>
         ) : (
-          accessExtend && (
-            <Proposition
-              objectID={wobject.author_permlink}
-              fieldName={fieldName}
-              defaultName={wobject.default_name}
-            />
-          )
+          accessExtend && <Proposition objectID={wobject.author_permlink} fieldName={fieldName} />
         )}
       </div>
     );

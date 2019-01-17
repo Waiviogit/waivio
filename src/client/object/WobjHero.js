@@ -43,7 +43,7 @@ const WobjHero = ({ authenticated, wobject, isFetching, username, isFollowing })
   <React.Fragment>
     <Switch>
       <Route
-        path="/object/:name/:defaultName"
+        path="/object/@:name"
         render={() => (
           <React.Fragment>
             {isFetching ? (

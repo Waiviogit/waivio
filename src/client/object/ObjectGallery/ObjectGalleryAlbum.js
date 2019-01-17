@@ -39,10 +39,7 @@ export default class ObjectGalleryAlbum extends Component {
           <div className="ObjectGallery__empty">
             <div className="ObjectGallery__addImageWrap">
               <div className="ObjectGallery__addImage">
-                <Link
-                  replace
-                  to={`/object/${match.params.name}/${match.params.defaultName}/gallery`}
-                >
+                <Link replace to={`/object/@${match.params.name}/gallery`}>
                   <Icon type="arrow-left" />
                 </Link>
                 <FormattedMessage id="back_to_albums" defaultMessage="Back to albums" />
