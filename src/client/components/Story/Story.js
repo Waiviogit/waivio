@@ -33,8 +33,8 @@ import PostedFrom from './PostedFrom';
 import './Story.less';
 import PostChart from '../../../investarena/components/PostChart';
 import PostQuotation from '../../../investarena/components/PostQuotation';
-import PostSellBuy from "../../../investarena/components/PostSellBuy";
-import {jsonParse} from "../../helpers/formatter";
+import PostSellBuy from '../../../investarena/components/PostSellBuy';
+import { jsonParse } from '../../helpers/formatter';
 
 @injectIntl
 @withRouter
@@ -83,7 +83,7 @@ class Story extends React.Component {
     editPost: () => {},
     followUser: () => {},
     unfollowUser: () => {},
-    push: () => {}
+    push: () => {},
   };
 
   constructor(props) {
@@ -263,16 +263,17 @@ class Story extends React.Component {
       hiddenStoryPreviewMessage
     );
   }
-  isValidForecast = (forecast) => {
+  isValidForecast = forecast => {
     let isValid = true;
     'quoteSecurity,postPrice,recommend,expiredAt,createdAt'.split(',').forEach(field => {
-      if(forecast[field] === undefined || forecast[field] === null) isValid = false
+      if (forecast[field] === undefined || forecast[field] === null) isValid = false;
     });
-    if(
+    if (
       forecast.recommend !== 'Buy' &&
       forecast.recommend !== 'Sell' &&
       typeof forecast.postPrice !== 'number'
-    ) isValid = false;
+    )
+      isValid = false;
     return isValid;
   };
   render() {
@@ -294,7 +295,9 @@ class Story extends React.Component {
     const jsonMetadata = jsonParse(post.json_metadata);
     const forecast = _.get(jsonMetadata, 'wia', null);
     let isForecastValid = false;
-    if(forecast){isForecastValid = this.isValidForecast(forecast)};
+    if (forecast) {
+      isForecastValid = this.isValidForecast(forecast);
+    }
     if (isPostDeleted(post)) return <div />;
 
     let rebloggedUI = null;
@@ -309,9 +312,7 @@ class Story extends React.Component {
             values={{
               username: (
                 <Link to={`/@${post.first_reblogged_by}`}>
-                  <span className="username">
-                    {post.first_reblogged_by}
-                  </span>
+                  <span className="username">{post.first_reblogged_by}</span>
                 </Link>
               ),
             }}
@@ -368,16 +369,16 @@ class Story extends React.Component {
               </span>
             </div>
           </div>
-          {forecast && isForecastValid &&
+          {forecast && isForecastValid && (
             <PostSellBuy
               isExpired={false}
-              quoteSecurity = {forecast.quoteSecurity}
-              postPrice = {forecast.postPrice ? forecast.postPrice.toString() : 0}
-              forecast = {forecast.expiredAt}
-              recommend = {forecast.recommend}
-              profitability = {335}
+              quoteSecurity={forecast.quoteSecurity}
+              postPrice={forecast.postPrice ? forecast.postPrice.toString() : 0}
+              forecast={forecast.expiredAt}
+              recommend={forecast.recommend}
+              profitability={335}
             />
-          }
+          )}
           <div className="Story__content">
             <a
               href={dropCategory(post.url)}
@@ -413,27 +414,24 @@ class Story extends React.Component {
             {this.renderStoryPreview()}
           </div>
           <div className="Story__footer">
-            {forecast && isForecastValid &&
+            {forecast && isForecastValid && (
               <PostChart
-                quoteSecurity = {forecast.quoteSecurity}
-                expiredBars = {[]}
-                createdAt = {forecast.createdAt}
-                forecast = {forecast.expiredAt}
-                recommend = {forecast.recommend}
-                expiredByTime = {undefined}
+                quoteSecurity={forecast.quoteSecurity}
+                expiredBars={[]}
+                createdAt={forecast.createdAt}
+                forecast={forecast.expiredAt}
+                recommend={forecast.recommend}
+                expiredByTime={undefined}
                 expiredTimeScale={undefined}
                 toggleModalPost={() => {}}
                 tpPrice={forecast.tpPrice ? forecast.tpPrice.toString() : null}
                 slPrice={forecast.slPrice ? forecast.slPrice.toString() : null}
                 expiredAt={undefined}
               />
-            }
-            {forecast && isForecastValid &&
-              <PostQuotation
-                quoteSecurity = {forecast.quoteSecurity}
-                postId = {forecast.postId}
-              />
-            }
+            )}
+            {forecast && isForecastValid && (
+              <PostQuotation quoteSecurity={forecast.quoteSecurity} postId={forecast.postId} />
+            )}
             <StoryFooter
               user={user}
               post={post}

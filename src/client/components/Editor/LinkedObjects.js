@@ -29,7 +29,7 @@ class LinkedObjects extends React.Component {
               linkedObjectsIds={this.props.linkedObjects.map(obj => obj.id)}
             />
             <div className="obj-search-option first">
-              <span
+              <a
                 role="presentation"
                 className="obj-search-option__label"
                 onClick={this.toggleModal}
@@ -38,7 +38,7 @@ class LinkedObjects extends React.Component {
                   id: 'create_new_object',
                   defaultMessage: 'create new object',
                 })}
-              </span>
+              </a>
             </div>
             {this.state.isModalOpen && (
               <Modal
