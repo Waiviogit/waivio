@@ -198,7 +198,7 @@ class Write extends React.Component {
     const appData = { waivioData, forecast };
 
     data.parentPermlink = WAIVIO_PARENT_PERMLINK;
-    data.jsonMetadata = createPostMetadata(data.body, form.topics, oldMetadata, waivioData);
+    data.jsonMetadata = createPostMetadata(data.body, form.topics, oldMetadata, appData);
 
     if (this.originalBody) {
       data.originalBody = this.originalBody;
