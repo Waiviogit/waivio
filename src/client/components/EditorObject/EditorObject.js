@@ -72,7 +72,7 @@ class EditorObject extends React.Component {
                   className="editor-object__info name"
                   title={wObject.name}
                 >
-                  <span className="editor-object__truncated">{wObject.name}s</span>
+                  <span className="editor-object__truncated">{wObject.name}</span>
                 </a>
                 {Boolean(wObject.descriptionShort) && (
                   <span className="editor-object__truncated" title={wObject.descriptionShort}>

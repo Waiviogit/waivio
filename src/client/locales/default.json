@@ -451,5 +451,6 @@
   "add_new_image": "Add new image",
   "all_languages": "All languages",
   "back_to_albums": "Back to albums",
-  "add_new_album_placeholder": "New album"
+  "add_new_album_placeholder": "New album",
+  "empty_object_profile": "This object doesn't have any"
 }

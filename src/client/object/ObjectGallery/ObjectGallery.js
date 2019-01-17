@@ -12,6 +12,7 @@ import CreateAlbum from './CreateAlbum';
 import { getAuthenticatedUserName, getIsAppendLoading, getObject } from '../../reducers';
 import { appendObject } from '../appendActions';
 import { getField } from '../../objects/WaivioObject';
+import IconButton from '../../components/IconButton';
 
 @connect(
   state => ({
@@ -96,13 +97,10 @@ export default class ObjectGallery extends Component {
         <div className="ObjectGallery">
           <div className="ObjectGallery__empty">
             <div className="ObjectGallery__addAlbum">
-              <a role="presentation" onClick={this.handleToggleModal}>
-                <Icon type="plus-circle" className="proposition-line__icon" />
-              </a>
-              <FormattedMessage
-                id="add_new_album"
-                defaultMessage="Add new album"
+              <IconButton
+                icon={<Icon type="plus-circle" />}
                 onClick={this.handleToggleModal}
+                caption={<FormattedMessage id="add_new_album" defaultMessage="Add new album" />}
               />
               <CreateAlbum
                 showModal={showModal}
