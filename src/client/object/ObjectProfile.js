@@ -10,7 +10,6 @@ import Feed from '../feed/Feed';
 import { getFeed, getObject } from '../reducers';
 import {
   getFeedLoadingFromState,
-  getFeedFetchedFromState,
   getFeedHasMoreFromState,
   getFeedFromState,
 } from '../helpers/stateHelpers';
@@ -72,7 +71,6 @@ export default class ObjectProfile extends React.Component {
     const wobjectname = this.props.match.params.name;
     const content = getFeedFromState('objectPosts', wobjectname, feed);
     const isFetching = getFeedLoadingFromState('objectPosts', wobjectname, feed);
-    const fetched = getFeedFetchedFromState('objectPosts', wobjectname, feed);
     const hasMore = getFeedHasMoreFromState('objectPosts', wobjectname, feed);
     const loadMoreContentAction = () => {
       this.props.getMoreObjectPosts({
@@ -84,24 +82,28 @@ export default class ObjectProfile extends React.Component {
 
     return (
       <React.Fragment>
-        <div className="profile">
-          <IconButton
-            icon={<Icon type="plus-circle" />}
-            onClick={this.handleCreatePost}
-            caption={<FormattedMessage id="add_new_proposition" defaultMessage="Add" />}
-          />
-          <Feed
-            content={content}
-            isFetching={isFetching}
-            hasMore={hasMore}
-            loadMoreContent={loadMoreContentAction}
-            showPostModal={this.props.showPostModal}
-          />
-          {_.isEmpty(content) && fetched && (
-            <div className="ObjectProfile__empty">
+        <div className="object-profile">
+          <div className="object-profile__row align-right">
+            <IconButton
+              icon={<Icon type="plus-circle" />}
+              onClick={this.handleCreatePost}
+              caption={<FormattedMessage id="add_new_proposition" defaultMessage="Add" />}
+              className="object-profile__add-btn"
+            />
+          </div>
+          {!_.isEmpty(content) || isFetching ? (
+            <Feed
+              content={content}
+              isFetching={isFetching}
+              hasMore={hasMore}
+              loadMoreContent={loadMoreContentAction}
+              showPostModal={this.props.showPostModal}
+            />
+          ) : (
+            <div className="object-profile__row align-center">
               <FormattedMessage
                 id="empty_object_profile"
-                defaultMessage="This object doesn't have any reviews."
+                defaultMessage="This object doesn't have any"
               />
             </div>
           )}
