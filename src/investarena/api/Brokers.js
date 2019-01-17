@@ -25,8 +25,6 @@ export default class Brokers extends Base {
     });
   }
   authorizeBroker(data, locale) {
-    console.log(data);
-    console.log(config.brokers.brokerAuthorization);
     return this.apiClient.post(config.brokers.brokerAuthorization, data).then(response => {
       let status = 'error';
       let message = '';
