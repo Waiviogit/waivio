@@ -27,9 +27,16 @@ class UserInfo extends React.Component {
 
   render() {
     const { intl, user, rewardFund, rate } = this.props;
-    const location = user && _.get(user.json_metadata, 'profile.location');
-    const profile = (user && _.get(user.json_metadata, 'profile')) || {};
-    let website = user && _.get(user.json_metadata, 'profile.website');
+    let metadata = {};
+    let location = null;
+    let profile = null;
+    let website = null;
+    if (user && user.json_metadata) {
+      metadata = JSON.parse(user.json_metadata);
+      location = metadata && _.get(metadata, 'profile.location');
+      profile = (metadata && _.get(metadata, 'profile')) || {};
+      website = metadata && _.get(metadata, 'profile.website');
+    }
 
     if (website && website.indexOf('http://') === -1 && website.indexOf('https://') === -1) {
       website = `http://${website}`;
@@ -53,9 +60,7 @@ class UserInfo extends React.Component {
       <div>
         {user.name && (
           <div style={{ wordBreak: 'break-word' }}>
-            <div style={{ fontSize: '18px' }}>
-              {_.get(user && user.json_metadata, 'profile.about')}
-            </div>
+            <div style={{ fontSize: '18px' }}>{_.get(user && metadata, 'profile.about')}</div>
             <div style={{ marginTop: 16, marginBottom: 16 }}>
               {location && (
                 <div>
@@ -87,8 +92,7 @@ class UserInfo extends React.Component {
               </div>
               <div>
                 <i className="iconfont icon-flashlight text-icon" />
-                <FormattedMessage id="voting_power" defaultMessage="Voting Power" />
-                :{' '}
+                <FormattedMessage id="voting_power" defaultMessage="Voting Power" />:{' '}
                 <FormattedNumber
                   style="percent" // eslint-disable-line react/style-prop-object
                   value={calculateVotingPower(user)}
@@ -97,8 +101,7 @@ class UserInfo extends React.Component {
               </div>
               <div>
                 <i className="iconfont icon-dollar text-icon" />
-                <FormattedMessage id="vote_value" defaultMessage="Vote Value" />
-                :{' '}
+                <FormattedMessage id="vote_value" defaultMessage="Vote Value" />:{' '}
                 {isNaN(voteWorth) ? (
                   <Icon type="loading" className="text-icon-right" />
                 ) : (
