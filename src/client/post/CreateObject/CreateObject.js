@@ -6,7 +6,7 @@ import { Form, Input, Select, Button } from 'antd';
 import './CreateObject.less';
 import LANGUAGES from '../../translations/languages';
 import { getLanguageText } from '../../translations';
-import objectNameValidationRegExp from '../../../common/constants/validationRegExps';
+import objectNameValidationRegExp from '../../../common/constants/validation';
 
 @injectIntl
 @Form.create()
