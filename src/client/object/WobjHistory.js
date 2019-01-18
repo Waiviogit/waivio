@@ -12,13 +12,14 @@ import {
   getFilteredContent,
 } from '../helpers/stateHelpers';
 import { getObjectComments } from '../feed/feedActions';
-import { supportedObjectFields } from '../../common/constants/listOfFields';
+import { objectFields, supportedObjectFields } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
 import AppendModal from './AppendModal';
 import IconButton from '../components/IconButton';
 import SortSelector from '../components/SortSelector/SortSelector';
 import './WobjHistory.less';
+import { getFieldWithMaxWeight } from './wObjectHelper';
 
 @connect(
   state => ({
@@ -118,6 +119,7 @@ export default class WobjHistory extends React.Component {
       }
       return true;
     });
+    const objName = getFieldWithMaxWeight(object, objectFields.name, objectFields.name);
     return (
       <React.Fragment>
         <div className="wobj-history__filters">
@@ -162,6 +164,7 @@ export default class WobjHistory extends React.Component {
             hideModal={this.handleToggleModal}
             locale={this.state.locale}
             field={this.state.field}
+            objName={objName}
           />
         </div>
         {!isFetching && (

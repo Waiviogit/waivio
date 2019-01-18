@@ -55,6 +55,7 @@ const ObjectInfo = ({ wobject, userName }) => {
 
   profile = _.pickBy(profile, _.identity);
   const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]);
+  const objectName = getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name);
 
   const listItem = (fieldName, content) => {
     const fieldsCount = getFieldsCount(wobject, fieldName);
@@ -72,7 +73,13 @@ const ObjectInfo = ({ wobject, userName }) => {
             <div className="field-info__content">{content}</div>
           </React.Fragment>
         ) : (
-          accessExtend && <Proposition objectID={wobject.author_permlink} fieldName={fieldName} />
+          accessExtend && (
+            <Proposition
+              objectID={wobject.author_permlink}
+              fieldName={fieldName}
+              objName={objectName}
+            />
+          )
         )}
       </div>
     );

@@ -50,13 +50,21 @@ const WobjHeader = ({ wobject, username }) => {
             <div className="ObjectHeader__descriptionShort">
               {descriptionShort ||
                 (accessExtend && (
-                  <Proposition objectID={wobject.author_permlink} fieldName={objectFields.title} />
+                  <Proposition
+                    objectID={wobject.author_permlink}
+                    fieldName={objectFields.title}
+                    objName={objectName}
+                  />
                 ))}
             </div>
           </div>
           {!hasCover && accessExtend && (
             <div className="ObjectHeader__user__addCover">
-              <Proposition objectID={wobject.author_permlink} fieldName={objectFields.background} />
+              <Proposition
+                objectID={wobject.author_permlink}
+                fieldName={objectFields.background}
+                objName={objectName}
+              />
             </div>
           )}
         </div>
