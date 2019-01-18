@@ -4,12 +4,11 @@ import classNames from 'classnames';
 import './IconButton.less';
 
 const IconButton = props => {
-  const { icon, caption, onClick, className } = props;
+  const { icon, caption, className } = props;
   return (
     <div
       className={classNames('icon-button', { [className]: Boolean(className) })}
       role="presentation"
-      onClick={onClick}
     >
       <div className="icon-button__icon">{icon}</div>
       <div className="icon-button__text">{caption}</div>
@@ -19,7 +18,6 @@ const IconButton = props => {
 
 IconButton.propTypes = {
   icon: PropTypes.node.isRequired,
-  onClick: PropTypes.func.isRequired,
   caption: PropTypes.oneOfType(PropTypes.node, PropTypes.string),
   className: PropTypes.string,
 };
