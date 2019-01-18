@@ -10,7 +10,10 @@ const GalleryAlbum = ({ album }) => {
   };
   return (
     <div className="GalleryAlbum">
-      <Card hoverable cover={<img alt="example" src={albumItem.body} />}>
+      <Card
+        hoverable
+        cover={<img alt="example" src={albumItem.body} className="GalleryAlbum__image" />}
+      >
         <Card.Meta title={album.body} />
       </Card>
     </div>

@@ -91,7 +91,7 @@ const ObjectInfo = ({ wobject, userName }) => {
       {getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name) && (
         <div className="object-sidebar">
           {listItem(objectFields.description, description)}
-          {wobject.preview_gallery[0] ? (
+          {wobject.preview_gallery && wobject.preview_gallery[0] ? (
             <div className="field-info__title">
               <FormattedMessage id={`object_field_gallery`} defaultMessage="Gallery" />
               &nbsp;
