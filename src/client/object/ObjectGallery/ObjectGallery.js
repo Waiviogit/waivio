@@ -81,7 +81,7 @@ export default class ObjectGallery extends Component {
         message.success(`You successfully have created the ${form.galleryAlbum} album`);
       })
       .catch(err => {
-        message.error("Couldn't append object.");
+        message.error("Couldn't update object.");
         console.log('err', err);
       });
   };

@@ -7,7 +7,7 @@ const GalleryItem = ({ image, handleOpenLightbox, idx }) => (
   <div className="GalleryItem">
     <Card
       hoverable
-      cover={<img alt="" src={image.body} />}
+      cover={<img alt="" src={image.body} className="GalleryItem__image" />}
       onClick={() => handleOpenLightbox(idx)}
     />
   </div>

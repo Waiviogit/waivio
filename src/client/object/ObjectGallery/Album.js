@@ -26,7 +26,7 @@ class Album extends React.Component {
     return (
       <div className="GalleryAlbum">
         <Card title={album.body}>
-          {album.items && album.items.lenght > 0 ? (
+          {album.items && album.items.length > 0 ? (
             <Row gutter={24}>
               {album.items.map((image, idx) => (
                 <Col span={12} key={image.body}>

@@ -1,20 +1,39 @@
-.ant-carousel .slick-slide {
-  height: 160px;
-  line-height: 160px;
-  overflow: hidden;
-}
+.PicturesCarousel {
+  &__imageWrap {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  &__image {
+    max-width: 178px;
+  }
+  border: 1px solid #e8e8e8;
+  margin-bottom: 10px;
 
-.slick-prev,
-.slick-next {
-  z-index: 1200;
-  background: initial !important;
-  color: initial !important;
-}
+  .ant-carousel .slick-slide {
+    height: 160px;
+    line-height: 160px;
+    overflow: hidden;
+  }
 
-.slick-prev {
-  margin-left: 32px;
-}
+  .slick-prev,
+  .slick-next {
+    z-index: 1200;
+    background: initial !important;
+    color: initial !important;
+  }
 
-.slick-next {
-  margin-right: 32px;
+  .slick-prev {
+    margin-left: 32px;
+  }
+
+  .slick-next {
+    margin-right: 32px;
+  }
+  .slick-track {
+    div {
+      height: 100%;
+    }
+  }
 }
