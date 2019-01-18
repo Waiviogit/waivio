@@ -25,6 +25,7 @@ import { getField } from '../objects/WaivioObject';
 import { appendObject } from '../object/appendActions';
 import { isValidImage } from '../helpers/image';
 import withEditor from '../components/Editor/withEditor';
+import { MAX_IMG_SIZE, ALLOWED_IMG_FORMATS } from '../../common/constants/validation';
 
 @connect(
   state => ({
@@ -65,17 +66,6 @@ export default class AppendForm extends Component {
     appendObject: () => {},
     intl: {},
   };
-
-  static get MAX_IMG_SIZE() {
-    return {
-      [objectFields.avatar]: 2097152,
-      [objectFields.background]: 15728640,
-    };
-  }
-
-  static get ALLOWED_IMG_FORMATS() {
-    return ['jpg', 'jpeg', 'png', 'gif'];
-  }
 
   state = {
     isSomeValue: true,
@@ -279,16 +269,10 @@ export default class AppendForm extends Component {
     const currentField = getFieldValue('currentField');
 
     if (e.target.files && e.target.files[0]) {
-      if (
-        !isValidImage(
-          e.target.files[0],
-          AppendForm.MAX_IMG_SIZE[currentField],
-          AppendForm.ALLOWED_IMG_FORMATS,
-        )
-      ) {
+      if (!isValidImage(e.target.files[0], MAX_IMG_SIZE[currentField], ALLOWED_IMG_FORMATS)) {
         this.props.onImageInvalid(
-          AppendForm.MAX_IMG_SIZE[currentField],
-          `(${AppendForm.ALLOWED_IMG_FORMATS.join(', ')}) `,
+          MAX_IMG_SIZE[currentField],
+          `(${ALLOWED_IMG_FORMATS.join(', ')}) `,
         );
         return;
       }

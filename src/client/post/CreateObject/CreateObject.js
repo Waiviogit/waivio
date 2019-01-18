@@ -6,7 +6,8 @@ import { Form, Input, Select, Button } from 'antd';
 import './CreateObject.less';
 import LANGUAGES from '../../translations/languages';
 import { getLanguageText } from '../../translations';
-import objectNameValidationRegExp from '../../../common/constants/validationRegExps';
+import { generateRandomString } from '../../helpers/wObjectHelper';
+import objectNameValidationRegExp from '../../../common/constants/validation';
 
 @injectIntl
 @Form.create()
@@ -46,12 +47,11 @@ class CreateObject extends React.Component {
       if (!err && !this.state.loading) {
         this.setState({ loading: true });
         const objData = values;
-        objData.id = Math.random()
-          .toString(32)
-          .substring(2);
+        objData.id = `${generateRandomString(3).toLowerCase()}-${objData.name
+          .trim()
+          .replace(/ /g, '-')}`;
         objData.isExtendingOpen = true;
         objData.isPostingOpen = true;
-        // console.log('Received values of form: ', values);
         this.props.handleCreateObject(objData);
         _.delay(this.props.toggleModal, 2000);
       }

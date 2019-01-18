@@ -133,16 +133,14 @@ class EditorInput extends React.Component {
     this.setValue(newValue, startPos + imageText.length, startPos + imageText.length);
   }
 
-  insertObject(objId, displayName, defaultName) {
+  insertObject(objId, displayName) {
     if (!this.input) return;
 
     const { value } = this.props;
 
     const startPos = this.input.selectionStart;
     const endPos = this.input.selectionEnd;
-    const wObjText = `[${displayName}](${
-      document.location.origin
-    }/object/${objId}/${defaultName})\n`;
+    const wObjText = `[${displayName}](${document.location.origin}/object/@${objId})\n`;
     const newValue = `${value.substring(0, startPos)}${wObjText}${value.substring(
       endPos,
       value.length,
@@ -314,7 +312,7 @@ class EditorInput extends React.Component {
 
   handleSelectObject(wObj) {
     this.props.onAddLinkedObject(wObj);
-    this.insertObject(wObj.id, wObj.name, wObj.default_name);
+    this.insertObject(wObj.id, wObj.name);
   }
 
   render() {

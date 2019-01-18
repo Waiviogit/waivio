@@ -51,9 +51,9 @@ const WobjHeader = ({ wobject, username }) => {
               {descriptionShort ||
                 (accessExtend && (
                   <Proposition
-                    defaultName={wobject.default_name}
                     objectID={wobject.author_permlink}
                     fieldName={objectFields.title}
+                    objName={objectName}
                   />
                 ))}
             </div>
@@ -63,7 +63,7 @@ const WobjHeader = ({ wobject, username }) => {
               <Proposition
                 objectID={wobject.author_permlink}
                 fieldName={objectFields.background}
-                defaultName={wobject.default_name}
+                objName={objectName}
               />
             </div>
           )}

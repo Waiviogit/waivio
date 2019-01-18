@@ -6,6 +6,7 @@ import { Icon } from 'antd';
 import ObjectAvatar, { getObjectUrl } from './ObjectAvatar';
 import AppendModal from '../object/AppendModal';
 import { objectFields } from '../../common/constants/listOfFields';
+import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 
 export default class ObjectLightbox extends Component {
   static propTypes = {
@@ -36,22 +37,21 @@ export default class ObjectLightbox extends Component {
       imageUrl = 'https://steemitimages.com/u/waivio/avatar';
       isFieldAvatarImage = false;
     }
-
+    const objectName = getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name);
     return (
       <React.Fragment>
         {!isFieldAvatarImage && accessExtend ? (
           <React.Fragment>
             <Link
               to={{
-                pathname: `/object/${wobject.author_permlink}/${wobject.default_name}/updates/${
-                  objectFields.avatar
-                }`,
+                pathname: `/object/@${wobject.author_permlink}/updates/${objectFields.avatar}`,
               }}
               onClick={this.handleAvatarClick}
             >
               <Icon type="plus-circle" className="ObjectHeader__avatar-image" />
             </Link>
             <AppendModal
+              objName={objectName}
               showModal={this.state.open}
               hideModal={this.handleCloseRequest}
               locale={'en-US'}

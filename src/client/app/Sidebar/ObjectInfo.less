@@ -1,5 +1,28 @@
 .field-info {
-  padding-bottom: 8px;
+  padding-bottom: 12px;
+
+  &:last-child {
+    padding: 0;
+  }
+
+  .proposition-line {
+    display: flex;
+    align-items: center;
+    &__text {
+      margin-left: 8px;
+      color: #99aab5;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    a {
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+    &__icon {
+      font-size: 23px;
+    }
+  }
 }
 
 .field-info__title {

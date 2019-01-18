@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
 import './Proposition.less';
 import AppendModal from '../../object/AppendModal';
+import IconButton from '../IconButton';
 
 class Proposition extends React.Component {
   state = {
@@ -13,25 +14,24 @@ class Proposition extends React.Component {
   handleToggleModal = () => this.setState({ showModal: !this.state.showModal });
 
   render() {
-    const { intl, fieldName, objectID, defaultName } = this.props;
+    const { intl, fieldName, objectID, objName } = this.props;
     const { showModal } = this.state;
     return (
       <React.Fragment>
         <div className="proposition-line">
-          <Link
-            to={{ pathname: `/object/${objectID}/${defaultName}/updates/${fieldName}` }}
-            onClick={this.handleToggleModal}
-          >
-            <Icon type="plus-circle" className="proposition-line__icon" />
+          <Link to={{ pathname: `/object/@${objectID}/updates/${fieldName}` }}>
+            <IconButton
+              icon={<Icon type="plus-circle" />}
+              onClick={this.handleToggleModal}
+              caption={intl.formatMessage({
+                id: `object_field_${fieldName}`,
+                defaultMessage: fieldName,
+              })}
+            />
           </Link>
-          <span className="proposition-line__text">
-            {intl.formatMessage({
-              id: `object_field_${fieldName}`,
-              defaultMessage: fieldName,
-            })}
-          </span>
         </div>
         <AppendModal
+          objName={objName}
           showModal={showModal}
           hideModal={this.handleToggleModal}
           locale={'en-US'}
@@ -42,15 +42,14 @@ class Proposition extends React.Component {
   }
 }
 Proposition.propTypes = {
+  objName: PropTypes.string.isRequired,
   fieldName: PropTypes.string.isRequired,
-  defaultName: PropTypes.string.isRequired,
   objectID: PropTypes.string.isRequired,
   intl: PropTypes.shape().isRequired,
 };
 
 Proposition.defaultProps = {
   fieldName: 'name',
-  defaultName: 'abc',
 };
 
 export default injectIntl(Proposition);

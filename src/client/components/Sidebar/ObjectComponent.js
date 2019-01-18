@@ -9,7 +9,7 @@ import './ObjectComponent.less';
 
 const ObjectComponent = ({ item }) => {
   const name = getField(item, 'name');
-  const pathName = `/object/${item.author_permlink}/${item.default_name || ''}`;
+  const pathName = `/object/@${item.author_permlink}`;
   return (
     <div key={item.author_permlink} className="Object">
       <div className="Object__top">

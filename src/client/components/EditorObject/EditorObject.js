@@ -51,7 +51,7 @@ class EditorObject extends React.Component {
   render() {
     const { influenceValue } = this.state;
     const { intl, wObject, handleRemoveObject, isLinkedObjectsValid } = this.props;
-    const pathName = `/object/${wObject.id}/${wObject.default_name || wObject.name || ''}`;
+    const pathName = `/object/@${wObject.id}`;
     return (
       <React.Fragment>
         <div
@@ -72,7 +72,7 @@ class EditorObject extends React.Component {
                   className="editor-object__info name"
                   title={wObject.name}
                 >
-                  <span className="editor-object__truncated">{wObject.name}s</span>
+                  <span className="editor-object__truncated">{wObject.name}</span>
                 </a>
                 {Boolean(wObject.descriptionShort) && (
                   <span className="editor-object__truncated" title={wObject.descriptionShort}>

@@ -17,7 +17,7 @@ export const getClientWObj = serverWObj => {
     user_count,
     isNew,
   } = serverWObj;
-  const avatarField = fields && fields.find(f => f.name === objectFields.avatarImage);
+  const avatarField = fields && fields.find(f => f.name === objectFields.avatar);
   const nameField = fields && fields.find(f => f.name === objectFields.name);
   const descriptionShort = fields && fields.find(f => f.name === objectFields.descriptionShort);
   return {

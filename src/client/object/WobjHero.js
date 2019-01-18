@@ -22,8 +22,8 @@ class WobjMenuWrapper extends React.Component {
   };
 
   render() {
-    const { match, location, history, ...otherProps } = this.props;
-    const current = this.props.location.pathname.split('/')[4];
+    const { ...otherProps } = this.props;
+    const current = this.props.location.pathname.split('/')[3];
     const currentKey = current || 'about';
     let fieldsCount = 0;
     if (this.props.wobject && this.props.wobject.fields)
@@ -43,7 +43,7 @@ const WobjHero = ({ authenticated, wobject, isFetching, username, isFollowing })
   <React.Fragment>
     <Switch>
       <Route
-        path="/object/:name/:defaultName"
+        path="/object/@:name"
         render={() => (
           <React.Fragment>
             {isFetching ? (
