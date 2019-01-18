@@ -1,9 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import urlParse from 'url-parse';
 import _ from 'lodash';
-import { FormattedMessage } from 'react-intl';
+import React from 'react';
+import { Icon } from 'antd';
+import urlParse from 'url-parse';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 import { haveAccess, accessTypesArr } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import './ObjectInfo.less';
@@ -14,6 +15,7 @@ import Proposition from '../../components/Proposition/Proposition';
 import Map from '../../components/Maps/Map';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
+import IconButton from '../../components/IconButton';
 
 const ObjectInfo = ({ wobject, userName }) => {
   let addressArr = [];
@@ -82,6 +84,28 @@ const ObjectInfo = ({ wobject, userName }) => {
       {getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name) && (
         <div className="object-sidebar">
           {listItem(objectFields.description, description)}
+          {wobject.preview_gallery[0] ? (
+            <div className="field-info__title">
+              <FormattedMessage id={`object_field_gallery`} defaultMessage="Gallery" />
+              &nbsp;
+              <PicturesCarousel pics={wobject.preview_gallery} objectID={wobject.author_permlink} />
+            </div>
+          ) : (
+            accessExtend && (
+              <div className="field-info">
+                <div className="proposition-line">
+                  <Link to={{ pathname: `/object/@${wobject.author_permlink}/gallery` }}>
+                    <IconButton
+                      icon={<Icon type="plus-circle" />}
+                      caption={
+                        <FormattedMessage id="object_field_gallery" defaultMessage="Gallery" />
+                      }
+                    />
+                  </Link>
+                </div>
+              </div>
+            )
+          )}
           {listItem(
             objectFields.address,
             <React.Fragment>
@@ -122,15 +146,6 @@ const ObjectInfo = ({ wobject, userName }) => {
           )}
         </div>
       )}
-      <div className="object-gallery">
-        <PicturesCarousel
-          pics={[
-            'https://ipfs.busy.org/ipfs/QmWLagsHPbJNTVnLz78mUBykTu1FczAj8LyE8zCYcvJY8V',
-            'https://ipfs.busy.org/ipfs/QmeSC3KgJ4vFPwKUo6FoTrn4riEbVMF1ubbSeciaM3f6eg',
-            'https://ipfs.busy.org/ipfs/QmUaxDCi5eYL9hMWZYJti431RAnCtHM8ucGDFZojuozQVP',
-          ]}
-        />
-      </div>
     </React.Fragment>
   );
 };

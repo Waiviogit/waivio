@@ -34,7 +34,7 @@ export default class ObjectGalleryAlbum extends Component {
     onImageUpload: PropTypes.func.isRequired,
     currentUsername: PropTypes.string.isRequired,
     wObject: PropTypes.shape().isRequired,
-    appendObject: PropTypes.bool.isRequired,
+    appendObject: PropTypes.func.isRequired,
     loadingImage: PropTypes.bool.isRequired,
   };
 
