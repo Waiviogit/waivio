@@ -61,7 +61,8 @@
         width: 100%;
       }
       .label {
-        color: rgba(0, 0, 0, 0.45);
+        color: @black;
+        font-weight: bold;
         width: @height-row-info + 2 * @padding;
         text-align: center;
       }
@@ -72,11 +73,6 @@
     height: @height-row-info;
     width: @height-row-info;
     margin-right: @padding;
-  }
-  &__type,
-  &__rank {
-    color: #ffffff !important;
-    text-shadow: 2px 1px 2px black;
   }
 
   &__rankWrap {
