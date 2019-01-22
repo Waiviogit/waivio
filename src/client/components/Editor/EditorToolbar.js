@@ -138,7 +138,6 @@ EditorToolbar.propTypes = {
   intl: PropTypes.shape().isRequired,
   onSelect: PropTypes.func,
   onSelectLinkedObject: PropTypes.func.isRequired,
-  onSubmitLink: PropTypes.func.isRequired,
 };
 
 EditorToolbar.defaultProps = {
