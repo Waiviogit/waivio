@@ -1,3 +1,5 @@
+@import (reference) '../../styles/custom.less';
+
 .field-info {
   padding-bottom: 12px;
 
@@ -29,12 +31,20 @@
         font-size: 16px;
         font-weight: 500;
       }
+      border-bottom: 2px solid transparent;
+      &:hover {
+        a,
+        span {
+          color: @primary-color;
+        }
+        border-bottom: 2px solid @primary-color;
+      }
       &.field-selected {
         a,
         span {
-          color: #f87007;
+          color: @primary-color;
         }
-        border-bottom: 2px solid #f87007;
+        border-bottom: 2px solid @primary-color;
       }
     }
   }
