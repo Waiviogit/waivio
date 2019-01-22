@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -145,7 +146,7 @@ export default class AppendForm extends Component {
       '',
     )}`;
     data.title = '';
-    data.field = {
+    let fieldsObject = {
       name: field,
       body: getBody(form),
       locale,
