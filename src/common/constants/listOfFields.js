@@ -7,6 +7,7 @@ export const objectFields = {
   link: 'link',
   avatar: 'avatar',
   background: 'background',
+  website: 'website',
 };
 
 export const addressFields = {
@@ -22,12 +23,16 @@ export const mapFields = {
 };
 
 export const linkFields = {
-  website: 'website',
   linkFacebook: 'linkFacebook',
   linkTwitter: 'linkTwitter',
   linkYouTube: 'linkYouTube',
   linkInstagram: 'linkInstagram',
   linkGitHub: 'linkGitHub',
+};
+
+export const websiteFields = {
+  title: 'title',
+  link: 'link',
 };
 
 export const socialObjectFields = [

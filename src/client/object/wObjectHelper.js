@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { supportedObjectFields } from '../../../src/common/constants/listOfFields';
+import { objectFields, supportedObjectFields } from '../../../src/common/constants/listOfFields';
 import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
 
 // set innerField to "null" to get whole parsed object
@@ -89,4 +89,10 @@ export const hasField = (post, fieldName, locale) => {
   const field =
     parsedMetadata[WAIVIO_META_FIELD_NAME] && parsedMetadata[WAIVIO_META_FIELD_NAME].field;
   return !(fieldName && !(field.name === fieldName)) && !(locale && !(field.locale === locale));
+};
+
+export const getWebsiteField = (wObject, currentField = objectFields.website) => {
+  const wo = _.find(wObject.fields, ['name', currentField]);
+  if (!wo) return '';
+  return wo;
 };

@@ -7,7 +7,7 @@ import './CreateObject.less';
 import LANGUAGES from '../../translations/languages';
 import { getLanguageText } from '../../translations';
 import { generateRandomString } from '../../helpers/wObjectHelper';
-import objectNameValidationRegExp from '../../../common/constants/validation';
+import { objectNameValidationRegExp } from '../../../common/constants/validation';
 
 @injectIntl
 @Form.create()
@@ -47,9 +47,9 @@ class CreateObject extends React.Component {
       if (!err && !this.state.loading) {
         this.setState({ loading: true });
         const objData = values;
-        objData.id = `${generateRandomString(3).toLowerCase()}-${objData.name
+        objData.id = `${generateRandomString(3)}-${objData.name
           .trim()
-          .replace(/ /g, '-')}`;
+          .replace(/ /g, '-')}`.toLowerCase();
         objData.isExtendingOpen = true;
         objData.isPostingOpen = true;
         this.props.handleCreateObject(objData);

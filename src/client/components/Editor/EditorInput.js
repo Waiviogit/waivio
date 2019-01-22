@@ -149,7 +149,7 @@ class EditorInput extends React.Component {
     this.setValue(newValue, startPos + wObjText.length, startPos + wObjText.length);
   }
 
-  insertCode(type) {
+  insertCode(type, params) {
     if (!this.input) return;
     this.input.focus();
 
@@ -182,7 +182,7 @@ class EditorInput extends React.Component {
         this.insertAtCursor('> ', '', 2, 2);
         break;
       case 'link':
-        this.insertAtCursor('[', '](url)', 1, 1);
+        this.insertAtCursor(`[${params.title || ''}](${params.url || ''})`, ' ', 1, 1);
         break;
       case 'image':
         this.insertAtCursor('![', '](url)', 2, 2);
