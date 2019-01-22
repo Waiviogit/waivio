@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -12,6 +13,7 @@ import {
   addressFields,
   socialObjectFields,
   supportedObjectFields,
+  websiteFields,
 } from '../../common/constants/listOfFields';
 import { getObject, getAuthenticatedUserName, getIsAppendLoading } from '../reducers';
 import LANGUAGES from '../translations/languages';
@@ -25,7 +27,12 @@ import { getField } from '../objects/WaivioObject';
 import { appendObject } from '../object/appendActions';
 import { isValidImage } from '../helpers/image';
 import withEditor from '../components/Editor/withEditor';
-import { MAX_IMG_SIZE, ALLOWED_IMG_FORMATS } from '../../common/constants/validation';
+import {
+  MAX_IMG_SIZE,
+  ALLOWED_IMG_FORMATS,
+  objectNameValidationRegExp,
+  objectURLValidationRegExp,
+} from '../../common/constants/validation';
 
 @connect(
   state => ({
@@ -122,6 +129,9 @@ export default class AppendForm extends Component {
         case objectFields.background: {
           return rest[currentField];
         }
+        case objectFields.website: {
+          return rest[websiteFields.link];
+        }
         default:
           return JSON.stringify(rest);
       }
@@ -130,16 +140,26 @@ export default class AppendForm extends Component {
     data.author = this.props.currentUsername;
     data.parentAuthor = wObject.author;
     data.parentPermlink = wObject.author_permlink;
-    data.body = `@${data.author} suggests adding the following field(s): ${getBody(
-      form,
-    )} with locale: ${locale}`;
+    const langReadable = _.filter(LANGUAGES, { id: locale })[0].name;
+    data.body = `@${data.author} added ${field}(${langReadable}):\n ${getBody(form).replace(
+      /[{}"]/g,
+      '',
+    )}`;
     data.title = '';
-
-    data.field = {
+    let fieldsObject = {
       name: field,
       body: getBody(form),
       locale,
     };
+
+    if (field === objectFields.website) {
+      fieldsObject = {
+        ...fieldsObject,
+        [websiteFields.title]: form[websiteFields.title],
+      };
+    }
+
+    data.field = fieldsObject;
 
     data.permlink = `${data.author}-${Math.random()
       .toString(36)
@@ -433,11 +453,14 @@ export default class AppendForm extends Component {
             {getFieldDecorator(objectFields.description, {
               rules: [
                 {
-                  max: 255,
-                  message: intl.formatMessage({
-                    id: 'value_error_too_long',
-                    defaultMessage: "Value can't be longer than 255 characters.",
-                  }),
+                  max: 512,
+                  message: intl.formatMessage(
+                    {
+                      id: 'value_error_too_long',
+                      defaultMessage: "Value can't be longer than 512 characters.",
+                    },
+                    { value: 512 },
+                  ),
                 },
                 {
                   required: true,
@@ -689,11 +712,11 @@ export default class AppendForm extends Component {
           </React.Fragment>
         );
       }
-      case objectFields.link: {
+      case objectFields.website: {
         return (
           <React.Fragment>
             <Form.Item>
-              {getFieldDecorator(linkFields.website, {
+              {getFieldDecorator(websiteFields.title, {
                 rules: [
                   {
                     max: 100,
@@ -704,6 +727,69 @@ export default class AppendForm extends Component {
                       },
                       { value: 100 },
                     ),
+                  },
+                  {
+                    required: true,
+                    message: intl.formatMessage(
+                      {
+                        id: 'field_error',
+                        defaultMessage: 'Field is required',
+                      },
+                      { field: 'Title' },
+                    ),
+                  },
+                  {
+                    pattern: objectNameValidationRegExp,
+                    message: intl.formatMessage({
+                      id: 'validation_special_symbols',
+                      defaultMessage: 'Please dont use special symbols like "/", "?", "%", "&"',
+                    }),
+                  },
+                  {
+                    validator: this.validateFieldValue,
+                  },
+                ],
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  placeholder={intl.formatMessage({
+                    id: 'title_website_placeholder',
+                    defaultMessage: 'Title',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator(websiteFields.link, {
+                rules: [
+                  {
+                    max: 255,
+                    message: intl.formatMessage(
+                      {
+                        id: 'value_error_long',
+                        defaultMessage: "Value can't be longer than 255 characters.",
+                      },
+                      { value: 255 },
+                    ),
+                  },
+                  {
+                    required: true,
+                    message: intl.formatMessage(
+                      {
+                        id: 'field_error',
+                        defaultMessage: 'Field is required',
+                      },
+                      { field: 'Website' },
+                    ),
+                  },
+                  {
+                    pattern: objectURLValidationRegExp,
+                    message: intl.formatMessage({
+                      id: 'website_validation',
+                      defaultMessage: 'Please enter valid website',
+                    }),
                   },
                   {
                     validator: this.validateFieldValue,
@@ -721,7 +807,12 @@ export default class AppendForm extends Component {
                 />,
               )}
             </Form.Item>
-
+          </React.Fragment>
+        );
+      }
+      case objectFields.link: {
+        return (
+          <React.Fragment>
             {socialObjectFields.map(profile => (
               <Form.Item key={profile.id}>
                 {getFieldDecorator(`link${profile.name}`, {

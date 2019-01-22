@@ -336,7 +336,6 @@ class Editor extends React.Component {
             obj.id === wObject.id
               ? {
                   ...obj,
-                  // id: `${res.objectAuthor}_${res.objectPermlink}`,
                   id: `${res.objectPermlink}`,
                   isNew: false,
                   isCreating: false,
@@ -417,7 +416,7 @@ class Editor extends React.Component {
           }
         >
           <label className="Editor__label" htmlFor="title">
-            <FormattedMessage id="editor_linked_objects" defaultMessage="Linked objects" />
+            <FormattedMessage id="add_object" defaultMessage="Add object" />
           </label>
         </BTooltip>
       </div>
@@ -550,13 +549,6 @@ class Editor extends React.Component {
           )}
         </Form.Item>
         <CreatePostForecast onChange={this.handleForecastChange} isPosted={isCreatePostClicked} />
-        <Form.Item className={classNames({ Editor__hidden: isUpdating })}>
-          {getFieldDecorator('upvote', { valuePropName: 'checked', initialValue: true })(
-            <Checkbox onChange={this.onUpdate} disabled={isUpdating}>
-              <FormattedMessage id="like_post" defaultMessage="Like this post" />
-            </Checkbox>,
-          )}
-        </Form.Item>
         <div className="Editor__bottom">
           <span className="Editor__bottom__info">
             <i className="iconfont icon-markdown" />{' '}

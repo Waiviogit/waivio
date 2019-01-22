@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
+import cn from 'classnames';
 import './Proposition.less';
 import AppendModal from '../../object/AppendModal';
 import IconButton from '../IconButton';
@@ -11,24 +12,35 @@ class Proposition extends React.Component {
   state = {
     showModal: false,
   };
+
   handleToggleModal = () => this.setState({ showModal: !this.state.showModal });
 
   render() {
-    const { intl, fieldName, objectID, objName } = this.props;
+    const { intl, fieldName, objectID, objName, handleSelectField, selectedField } = this.props;
     const { showModal } = this.state;
+
+    const linkClass = cn({
+      'icon-button__text': true,
+      'field-selected': selectedField === fieldName,
+    });
+
     return (
       <React.Fragment>
         <div className="proposition-line">
           <Link to={{ pathname: `/object/@${objectID}/updates/${fieldName}` }}>
-            <IconButton
-              icon={<Icon type="plus-circle" />}
-              onClick={this.handleToggleModal}
-              caption={intl.formatMessage({
+            <IconButton icon={<Icon type="plus-circle" />} onClick={this.handleToggleModal} />
+          </Link>
+          <div className={linkClass}>
+            <Link
+              to={`/object/@${objectID}/updates/${fieldName}`}
+              onClick={() => handleSelectField(fieldName)}
+            >
+              {intl.formatMessage({
                 id: `object_field_${fieldName}`,
                 defaultMessage: fieldName,
               })}
-            />
-          </Link>
+            </Link>
+          </div>
         </div>
         <AppendModal
           objName={objName}
@@ -46,10 +58,14 @@ Proposition.propTypes = {
   fieldName: PropTypes.string.isRequired,
   objectID: PropTypes.string.isRequired,
   intl: PropTypes.shape().isRequired,
+  handleSelectField: PropTypes.func,
+  selectedField: PropTypes.string,
 };
 
 Proposition.defaultProps = {
   fieldName: 'name',
+  handleSelectField: () => {},
+  selectedField: '',
 };
 
 export default injectIntl(Proposition);

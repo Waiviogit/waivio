@@ -16,15 +16,18 @@ export const getClientWObj = serverWObj => {
     children,
     user_count,
     isNew,
+    rank,
+    object_type,
   } = serverWObj;
   const avatarField = fields && fields.find(f => f.name === objectFields.avatar);
   const nameField = fields && fields.find(f => f.name === objectFields.name);
-  const descriptionShort = fields && fields.find(f => f.name === objectFields.descriptionShort);
+  const title = fields && fields.find(f => f.name === objectFields.title);
+  const backgroundField = fields && fields.find(f => f.name === objectFields.background);
   return {
     id: author_permlink,
     avatar: avatarField ? avatarField.body : '/images/logo-brand.png',
     name: (nameField && nameField.body) || '',
-    descriptionShort: (descriptionShort && descriptionShort.body) || '',
+    title: (title && title.body) || '',
     parents: parents || [],
     weight: weight || '',
     createdAt: created_at || Date.now(),
@@ -35,6 +38,9 @@ export const getClientWObj = serverWObj => {
     version: __v || 0,
     followersNames: followers_names,
     isNew: Boolean(isNew),
+    rank: rank || 0,
+    type: object_type || 'item',
+    background: backgroundField ? backgroundField.body : null,
   };
 };
 

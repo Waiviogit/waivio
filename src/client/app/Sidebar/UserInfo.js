@@ -29,9 +29,9 @@ class UserInfo extends React.Component {
     const { intl, user, rewardFund, rate } = this.props;
     let metadata = {};
     let location = null;
-    let profile = null;
+    let profile = {};
     let website = null;
-    if (user && user.json_metadata) {
+    if (user && user.json_metadata && user.json_metadata !== '') {
       metadata = JSON.parse(user.json_metadata);
       location = metadata && _.get(metadata, 'profile.location');
       profile = (metadata && _.get(metadata, 'profile')) || {};
