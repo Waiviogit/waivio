@@ -35,6 +35,7 @@ import PostChart from '../../../investarena/components/PostChart';
 import PostQuotation from '../../../investarena/components/PostQuotation';
 import PostSellBuy from '../../../investarena/components/PostSellBuy';
 import { jsonParse } from '../../helpers/formatter';
+import PostForecast from "../../../investarena/components/PostForecast/PostForecast";
 
 @injectIntl
 @withRouter
@@ -348,9 +349,6 @@ class Story extends React.Component {
                 ) : (
                   <RankTag rank={post.author_rank} />
                 )}
-                <span className="Story__topics">
-                  <Topic name={post.category} />
-                </span>
               </span>
               <span>
                 <BTooltip
@@ -368,6 +366,17 @@ class Story extends React.Component {
                 <PostedFrom post={post} />
               </span>
             </div>
+            <span className="Story__topics">
+                {(forecast && isForecastValid) ?
+                  <PostForecast
+                    postForecast={forecast.expiredAt}
+                    isExpired={false}
+                    expiredAt={forecast.expiredAt}
+                  />
+                  :
+                  <Topic name={post.category} />
+                }
+                </span>
           </div>
           {forecast && isForecastValid && (
             <PostSellBuy

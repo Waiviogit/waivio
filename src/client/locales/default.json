@@ -614,5 +614,8 @@
   "object_field_website": "Website",
   "website_validation": "Please enter valid website",
   "write_new_review": "Write new review",
-  "add_object": "Add object"
+  "postForecast.title": "Validity period",
+  "postForecast.expired": "Expired date",
+  "add_object": "Add object",
+  "locale": "en"
 }
