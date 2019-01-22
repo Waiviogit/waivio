@@ -7,7 +7,7 @@ import './CreateObject.less';
 import LANGUAGES from '../../translations/languages';
 import { getLanguageText } from '../../translations';
 import { generateRandomString } from '../../helpers/wObjectHelper';
-import objectNameValidationRegExp from '../../../common/constants/validation';
+import { objectNameValidationRegExp } from '../../../common/constants/validation';
 
 @injectIntl
 @Form.create()
