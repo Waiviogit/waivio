@@ -364,7 +364,7 @@
   "discover_more_objects": "Discover more objects",
   "weight_score_value": "Weight score: {value}",
   "editor_linked_objects": "Linked objects",
-  "objects_auto_complete_placeholder": "Input object name here",
+  "objects_auto_complete_placeholder": "Find",
   "create": "create",
   "remove": "remove",
   "discover_more_objects_info": "Discover the most ranked objects of this platform",
@@ -452,5 +452,6 @@
   "all_languages": "All languages",
   "back_to_albums": "Back to albums",
   "add_new_album_placeholder": "New album",
-  "empty_object_profile": "This object doesn't have any"
+  "empty_object_profile": "This object doesn't have any",
+  "add_object": "Add object"
 }

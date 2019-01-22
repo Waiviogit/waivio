@@ -6,6 +6,7 @@ import { Button, Menu, Dropdown, Icon, Popover } from 'antd';
 import BTooltip from '../BTooltip';
 import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
 import './EditorToolbar.less';
+import FormattedLink from '../EditorObject/FormattedLink';
 
 const tooltip = (description, shortcut) => (
   <span>
@@ -87,13 +88,23 @@ const EditorToolbar = ({ intl, onSelect, onSelectLinkedObject, imageRef }) => {
             <i className="iconfont icon-q1" />
           </Button>
         </BTooltip>
-        <BTooltip
-          title={tooltip(intl.formatMessage({ id: 'link', defaultMessage: 'Add link' }), '')}
+        <Popover
+          content={
+            <FormattedLink
+              handleSelect={onSelectLinkedObject}
+              canCreateNewObject={false}
+              addLink={onSelect}
+            />
+          }
+          title={intl.formatMessage({ id: 'link', defaultMessage: 'Add link' })}
+          overlayClassName="EditorToolbar__popover"
+          trigger="hover"
+          placement="bottom"
         >
-          <Button className="EditorToolbar__button" onClick={() => onSelect('link')}>
+          <Button className="EditorToolbar__button">
             <i className="iconfont icon-link" />
           </Button>
-        </BTooltip>
+        </Popover>
         <BTooltip
           title={tooltip(intl.formatMessage({ id: 'image', defaultMessage: 'Add image' }), '')}
         >
@@ -109,7 +120,7 @@ const EditorToolbar = ({ intl, onSelect, onSelectLinkedObject, imageRef }) => {
               canCreateNewObject={false}
             />
           }
-          title={intl.formatMessage({ id: 'add_object', defaultMessage: 'Add linked object' })}
+          title={intl.formatMessage({ id: 'add_object', defaultMessage: 'Add object' })}
           overlayClassName="EditorToolbar__popover"
           trigger="hover"
           placement="bottom"
@@ -127,6 +138,7 @@ EditorToolbar.propTypes = {
   intl: PropTypes.shape().isRequired,
   onSelect: PropTypes.func,
   onSelectLinkedObject: PropTypes.func.isRequired,
+  onSubmitLink: PropTypes.func.isRequired,
 };
 
 EditorToolbar.defaultProps = {

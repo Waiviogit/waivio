@@ -5,6 +5,8 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Slider, Icon } from 'antd';
 import './EditorObject.less';
+import ObjectRank from '../../object/ObjectRank';
+import ObjectType from '../../object/ObjectType';
 
 @injectIntl
 class EditorObject extends React.Component {
@@ -55,55 +57,73 @@ class EditorObject extends React.Component {
     return (
       <React.Fragment>
         <div
+          style={{
+            backgroundImage: `url(${wObject.background})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
           className={classNames('editor-object', {
             'validation-error': wObject.isNew && !isLinkedObjectsValid,
           })}
         >
-          <div className="editor-object__content">
-            <div className="editor-object__content row">
-              <a href={pathName} target="_blank" rel="noopener noreferrer">
-                <img className="editor-object__avatar" src={wObject.avatar} alt={wObject.name} />
-              </a>
-              <div className="editor-object__info">
-                <a
-                  href={pathName}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="editor-object__info name"
-                  title={wObject.name}
-                >
-                  <span className="editor-object__truncated">{wObject.name}</span>
+          <div className="background-transparent">
+            <div className="editor-object__content">
+              <div className="editor-object__content row">
+                <a href={pathName} target="_blank" rel="noopener noreferrer">
+                  <img className="editor-object__avatar" src={wObject.avatar} alt={wObject.name} />
                 </a>
-                {Boolean(wObject.descriptionShort) && (
-                  <span className="editor-object__truncated" title={wObject.descriptionShort}>
-                    {wObject.descriptionShort}
-                  </span>
-                )}
+                <div className="editor-object__info">
+                  <a
+                    href={pathName}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="editor-object__info name"
+                    title={wObject.name}
+                  >
+                    <span className="editor-object__truncated">{wObject.name}</span>
+                  </a>
+                  {wObject.type && wObject.rank && (
+                    <div className="editor-object__rankWrap">
+                      <div className="editor-object__type">
+                        <ObjectType type={wObject.type} />
+                      </div>
+                      <div className="editor-object__rank">
+                        <ObjectRank rank={wObject.rank} />
+                      </div>
+                    </div>
+                  )}
+                  {wObject.title && (
+                    <span className="editor-object__truncated" title={wObject.title}>
+                      {wObject.title}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="editor-object__content row slider">
+                <span className="label">{`${influenceValue}%`}</span>
+                <Slider
+                  min={1}
+                  max={100}
+                  value={influenceValue}
+                  disabled={wObject.influence.value === 100}
+                  onChange={this.handleChangeInfluence}
+                  onAfterChange={this.handleAfterChangeInfluence}
+                />
               </div>
             </div>
-            <div className="editor-object__content row slider">
-              <span className="label">{`${influenceValue}%`}</span>
-              <Slider
-                min={1}
-                max={100}
-                value={influenceValue}
-                disabled={wObject.influence.value === 100}
-                onChange={this.handleChangeInfluence}
-                onAfterChange={this.handleAfterChangeInfluence}
-              />
-            </div>
-          </div>
-          <div className="editor-object__controls">
-            <div
-              role="button"
-              tabIndex={0}
-              className="editor-object__control-item delete"
-              onClick={() => handleRemoveObject(wObject)}
-            >
-              <Icon type="delete" className="editor-object__control-item item-icon" />
-              <span className="editor-object__control-item item-text">
-                {intl.formatMessage({ id: 'remove', defaultMessage: 'Remove' })}
-              </span>
+            <div className="editor-object__controls">
+              <div
+                role="button"
+                tabIndex={0}
+                className="editor-object__control-item delete"
+                onClick={() => handleRemoveObject(wObject)}
+              >
+                <Icon
+                  type="close"
+                  className="editor-object__control-item item-icon"
+                  title={intl.formatMessage({ id: 'remove', defaultMessage: 'Remove' })}
+                />
+              </div>
             </div>
           </div>
         </div>
