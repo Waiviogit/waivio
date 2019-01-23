@@ -91,10 +91,9 @@ export default class WobjHistory extends React.Component {
 
   handleLocaleChange = locale => this.setState({ locale });
 
-  handleToggleModal = () =>
-    this.setState(prevState => ({
-      showModal: !prevState.showModal,
-    }));
+  handleToggleModal = () => {
+    this.setState({ showModal: !this.state.showModal });
+  };
 
   handleSortChange = sort => this.setState({ sort });
 
@@ -159,13 +158,15 @@ export default class WobjHistory extends React.Component {
             onClick={this.handleToggleModal}
             caption={<FormattedMessage id="add_new_proposition" defaultMessage="Add" />}
           />
-          <AppendModal
-            showModal={showModal}
-            hideModal={this.handleToggleModal}
-            locale={this.state.locale}
-            field={this.state.field}
-            objName={objName}
-          />
+          {showModal && (
+            <AppendModal
+              showModal={showModal}
+              hideModal={this.handleToggleModal}
+              locale={this.state.locale}
+              field={this.state.field}
+              objName={objName}
+            />
+          )}
         </div>
         {!isFetching && (
           <div className="wobj-history__sort">
