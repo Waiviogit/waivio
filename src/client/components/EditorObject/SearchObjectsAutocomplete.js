@@ -7,6 +7,8 @@ import { injectIntl } from 'react-intl';
 import { clearSearchObjectsResults, searchObjectsAutoCompete } from '../../search/searchActions';
 import { getSearchObjectsResults } from '../../reducers';
 import './SearchObjectsAutocomplete.less';
+import { linkRegex } from '../../helpers/regexHelpers';
+import ObjectRank from '../../object/ObjectRank';
 
 @injectIntl
 @connect(
@@ -54,10 +56,16 @@ class SearchObjectsAutocomplete extends Component {
     );
   }
 
-  debouncedSearch = _.debounce(value => this.props.searchObjects(value), 300);
+  debouncedSearch = _.debounce(val => this.props.searchObjects(val), 300);
   handleSearch(value) {
-    if (value) {
-      this.debouncedSearch(value);
+    let val = value;
+    const link = val.match(linkRegex);
+    if (link && link.length > 0 && link[0] !== '') {
+      const permlink = link[0].split('/');
+      val = permlink[permlink.length - 1].replace('@', '');
+    }
+    if (val) {
+      this.debouncedSearch(val);
     }
   }
 
@@ -83,14 +91,15 @@ class SearchObjectsAutocomplete extends Component {
     const { intl, style, searchObjectsResults, linkedObjectsIds } = this.props;
     const getObjMarkup = obj => (
       <div className="obj-search-option">
-        <img
-          className="obj-search-option__avatar"
-          src={obj.avatar}
-          alt={obj.descriptionShort || ''}
-        />
+        <img className="obj-search-option__avatar" src={obj.avatar} alt={obj.title || ''} />
         <div className="obj-search-option__info">
-          <span className="obj-search-option__text">{obj.name}</span>
-          <span className="obj-search-option__text">{obj.descriptionShort}</span>
+          <span className="obj-search-option__text">
+            {obj.name}
+            <div className="ObjectHeader__rank">
+              <ObjectRank rank={obj.rank} />
+            </div>
+          </span>
+          <span className="obj-search-option__text">{obj.title}</span>
         </div>
       </div>
     );
@@ -107,7 +116,7 @@ class SearchObjectsAutocomplete extends Component {
         onSearch={this.handleSearch}
         placeholder={intl.formatMessage({
           id: 'objects_auto_complete_placeholder',
-          defaultMessage: 'Input object name here',
+          defaultMessage: 'Find',
         })}
         value={searchString}
         allowClear

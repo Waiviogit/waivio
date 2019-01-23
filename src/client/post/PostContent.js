@@ -70,7 +70,7 @@ class PostContent extends React.Component {
     content: PropTypes.shape().isRequired,
     signature: PropTypes.string,
     pendingLikes: PropTypes.shape(),
-    reblogList: PropTypes.arrayOf(PropTypes.number),
+    reblogList: PropTypes.arrayOf(PropTypes.string),
     pendingReblogs: PropTypes.arrayOf(PropTypes.number),
     followingList: PropTypes.arrayOf(PropTypes.string),
     pendingFollows: PropTypes.arrayOf(PropTypes.string),

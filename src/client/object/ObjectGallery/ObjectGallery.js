@@ -119,7 +119,7 @@ export default class ObjectGallery extends Component {
             <div className="ObjectGallery__cardWrap">
               <Row gutter={24}>
                 {albums.map(album => (
-                  <Col span={12} key={album.body + album.weight}>
+                  <Col span={12} key={album.id}>
                     <Link
                       replace
                       to={`/object/@${match.params.name}/gallery/album/${album.id}`}

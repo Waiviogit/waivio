@@ -12,7 +12,7 @@ const IconButton = props => {
       onClick={onClick}
     >
       <div className="icon-button__icon">{icon}</div>
-      <div className="icon-button__text">{caption}</div>
+      {caption && <div className="icon-button__text">{caption}</div>}
     </div>
   );
 };

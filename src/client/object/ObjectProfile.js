@@ -87,7 +87,7 @@ export default class ObjectProfile extends React.Component {
             <IconButton
               icon={<Icon type="plus-circle" />}
               onClick={this.handleCreatePost}
-              caption={<FormattedMessage id="add_new_proposition" defaultMessage="Add" />}
+              caption={<FormattedMessage id="write_new_review" defaultMessage="Write new review" />}
             />
           </div>
           {!_.isEmpty(content) || isFetching ? (

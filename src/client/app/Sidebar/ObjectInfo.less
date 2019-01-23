@@ -1,3 +1,5 @@
+@import (reference) '../../styles/custom.less';
+
 .field-info {
   padding-bottom: 12px;
 
@@ -8,6 +10,7 @@
   .proposition-line {
     display: flex;
     align-items: center;
+    margin-right: 4px;
     &__text {
       margin-left: 8px;
       color: #99aab5;
@@ -22,9 +25,42 @@
     &__icon {
       font-size: 23px;
     }
+    .icon-button__text {
+      a {
+        color: #99aab5;
+        font-size: 16px;
+        font-weight: 500;
+      }
+      &.field-selected {
+        a,
+        span {
+          color: @primary-color;
+        }
+        border-bottom: 2px solid @primary-color;
+      }
+    }
   }
 }
 
 .field-info__title {
   font-weight: 500;
+  display: flex;
+}
+
+.field-website {
+  display: flex;
+  flex-direction: column;
+}
+
+.field-avatar {
+  img {
+    max-width: 178px;
+  }
+}
+
+.field-background {
+  img {
+    max-width: 178px;
+  }
+  margin-bottom: 50px;
 }
