@@ -118,13 +118,18 @@ export default class User extends React.Component {
     if (failed) return <Error404 />;
     const username = this.props.match.params.name;
     const { user } = this.props;
-    let jsonMetadata = {};
+    let profile = {};
     try {
-      jsonMetadata = user.json_metadata ? JSON.parse(user.json_metadata) : {};
+      if (user.json_metadata) {
+        if (user.json_metadata.profile) {
+          profile = user.json_metadata.profile;
+        } else {
+          profile = JSON.parse(user.json_metadata).profile;
+        }
+      }
     } catch (error) {
       // jsonMetadata = user.json_metadata || {}
     }
-    const { profile = {} } = jsonMetadata || {};
     const busyHost = global.postOrigin || 'https://busy.org';
     const desc = profile.about || `Posts by ${username}`;
     const image = getAvatarURL(username) || '/images/logo.png';
