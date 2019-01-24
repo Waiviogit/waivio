@@ -44,7 +44,7 @@ class TrendingTagsMenu extends React.Component {
 
   handleTagMenuSelect(key) {
     this.hideTagMenu();
-    this.props.history.push(`/trending/${key}`);
+    this.props.history.push(`/home/${key}`);
   }
 
   render() {
