@@ -475,7 +475,7 @@ class Topnav extends React.Component {
           <div className="st-header-broker-balance-pl-wrap">
             <div className="st-balance-wrap">
               <div className="st-balance-text">
-                {intl.formatMessage({ id: 'headerAuthorized.freeBalance' })}:
+                {intl.formatMessage({ id: 'headerAuthorized.freeBalance', defaultMessage: 'Free balance'})}:
               </div>
               <div className="st-balance-amount">
                 <Balance balanceType="freeBalance" />
@@ -483,7 +483,7 @@ class Topnav extends React.Component {
             </div>
             <div className="st-balance-border">
               <div className="st-balance-text">
-                {intl.formatMessage({ id: 'headerAuthorized.p&l' })}:
+                {intl.formatMessage({ id: 'headerAuthorized.p&l', defaultMessage: 'P&L deals' })}:
               </div>
               <div className="st-balance-amount">
                 <Balance balanceType="unrealizedPnl" />
@@ -491,7 +491,7 @@ class Topnav extends React.Component {
             </div>
             <div className="st-balance-border">
               <div className="st-balance-text">
-                {intl.formatMessage({ id: 'headerAuthorized.balance' })}:
+                {intl.formatMessage({ id: 'headerAuthorized.balance', defaultMessage: 'Balance' })}:
               </div>
               <div className="st-balance-amount">
                 <Balance balanceType="balance" />
