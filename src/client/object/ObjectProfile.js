@@ -21,6 +21,7 @@ import './ObjectProfile.less';
 import PostChart from "../../investarena/components/PostChart";
 import {getIsLoadingPlatformState} from "../../investarena/redux/selectors/platformSelectors";
 import {getDataCreatedAt, getDataForecast} from "../../investarena/helpers/diffDateTime";
+import {supportedObjectTypes} from "../../investarena/constants/objectsInvestarena";
 
 @withRouter
 @connect(
@@ -73,11 +74,15 @@ export default class ObjectProfile extends React.Component {
   };
 
   render() {
-    const { feed, limit, isLoadingPlatform } = this.props;
+    const { feed, limit, isLoadingPlatform, object} = this.props;
     const wobjectname = this.props.match.params.name;
     const content = getFeedFromState('objectPosts', wobjectname, feed);
     const isFetching = getFeedLoadingFromState('objectPosts', wobjectname, feed);
     const hasMore = getFeedHasMoreFromState('objectPosts', wobjectname, feed);
+    let createdAt = null;
+    let forecast = null;
+    const showChart = !isLoadingPlatform &&
+      _.some(supportedObjectTypes, objectType => objectType === object.type );
     const loadMoreContentAction = () => {
       this.props.getMoreObjectPosts({
         username: wobjectname,
@@ -85,13 +90,14 @@ export default class ObjectProfile extends React.Component {
         limit,
       });
     };
-    const createdAt = getDataCreatedAt();
-    const forecast = getDataForecast();
-
+    if(showChart){
+      createdAt = getDataCreatedAt();
+      forecast = getDataForecast();
+    }
     return (
       <React.Fragment>
         <div className="object-profile">
-          {!isLoadingPlatform && <PostChart
+          {showChart && <PostChart
             quoteSecurity={'AUDCAD'}
             expiredBars={[]}
             createdAt={createdAt}
