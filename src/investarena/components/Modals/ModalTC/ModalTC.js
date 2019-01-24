@@ -15,7 +15,7 @@ const ModalTC = ({toggle, isOpen, market, quoteName, intl}) => {
         <div className='st-open-deal-button-wrap st-margin-left-large'>
             {isOpen &&
               <Modal
-                title={intl.formatMessage({ id: 'modalPost.navBar.titleChart' })}
+                title={intl.formatMessage({ id: 'modalPost.navBar.titleChart', defaultMessage: 'Chart' })}
                 visible={isOpen}
                 footer={null}
                 onCancel={toggle}

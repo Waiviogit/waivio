@@ -47,21 +47,21 @@ class ClosedDeals extends Component {
                 );
             })
             : <div className="sr-close-deals-not-present">
-                {this.props.intl.formatMessage({ id: 'closeDeals.notPresent' })}
+                {this.props.intl.formatMessage({ id: 'closeDeals.notPresent', defaultMessage: 'You do not have closed deals for this period' })}
             </div>;
         const dealsListHeader =
             <div className="st-instr-column-wrap d-flex">
                 <div className="st-id-title">ID:</div>
                 <div className="st-instrument-avatar-closed-title"> </div>
                 <div className="st-instruments-text-title">{this.props.intl.formatMessage({ id: 'assets.instrument' })}</div>
-                <div className="st-type-title">{this.props.intl.formatMessage({ id: 'deals.type' })}</div>
-                <div className="st-amount-title">{this.props.intl.formatMessage({ id: 'assets.amount' })}</div>
-                <div className="st-opened-title">{this.props.intl.formatMessage({ id: 'deals.openTime' })}</div>
-                <div className="st-opened-title">{this.props.intl.formatMessage({ id: 'deals.closeTime' })}</div>
-                <div className="st-price-title">{this.props.intl.formatMessage({ id: 'deals.openPrice' })}</div>
-                <div className="st-price-title">{this.props.intl.formatMessage({ id: 'deals.closePrice' })}</div>
+                <div className="st-type-title">{this.props.intl.formatMessage({ id: 'deals.type', defaultMessage: 'Type' })}</div>
+                <div className="st-amount-title">{this.props.intl.formatMessage({ id: 'assets.amount', defaultMessage: 'Amount' })}</div>
+                <div className="st-opened-title">{this.props.intl.formatMessage({ id: 'deals.openTime', defaultMessage: 'Opening time' })}</div>
+                <div className="st-opened-title">{this.props.intl.formatMessage({ id: 'deals.closeTime', defaultMessage: 'Closing time' })}</div>
+                <div className="st-price-title">{this.props.intl.formatMessage({ id: 'deals.openPrice', defaultMessage: 'Opening price' })}</div>
+                <div className="st-price-title">{this.props.intl.formatMessage({ id: 'deals.closePrice', defaultMessage: 'Closing price' })}</div>
                 <div className="st-pnl-title">P&L:</div>
-                <div className="st-commission-title">{this.props.intl.formatMessage({ id: 'deals.commission' })}</div>
+                <div className="st-commission-title">{this.props.intl.formatMessage({ id: 'deals.commission', defaultMessage: 'Commission' })}</div>
             </div>;
         return (
             <div className="st-closed-deals-wrapper">
@@ -76,7 +76,7 @@ class ClosedDeals extends Component {
                     ))}
                   </Select>
                     <span className="st-closed-deals-total-pnl-wrap">
-                        <span className="st-margin-right-small">{this.props.intl.formatMessage({ id: 'deals.totalPnL' })}: </span>
+                        <span className="st-margin-right-small">{this.props.intl.formatMessage({ id: 'deals.totalPnL', defaultMessage: 'Total P&L' })}: </span>
                         <span className={totalPnL < 0 ? 'st-deal-pl-red' : 'st-deal-pl-green'}>{currencyFormat(totalPnL)}</span>
                     </span>
                 </div>

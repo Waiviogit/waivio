@@ -30,7 +30,7 @@ class QuotesSearch extends Component {
     render () {
         return (
             <div className="st-items-search-wrap">
-                <FormattedMessage id={this.props.placeholderMessage ? this.props.placeholderMessage : 'createPost.selectLabel.default'}>
+                <FormattedMessage id={this.props.placeholderMessage ? this.props.placeholderMessage : 'createPost.selectLabel.default'} defaultMessage="Select">
                     { msg => (
                         <Select
                             inputProps={this.props.maxLength ? {maxLength: this.props.maxLength} : {maxLength: 30} }

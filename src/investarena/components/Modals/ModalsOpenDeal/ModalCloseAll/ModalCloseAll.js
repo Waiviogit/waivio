@@ -33,32 +33,32 @@ class ModalCloseAll extends Component {
             <div className="st-open-deal-button-wrap st-margin-left-large">
                 { _.size(this.props.openDeals) > 0
                     ? <button className={this.props.buttonClass} onClick={this.toggle}>
-                        {`${this.props.intl.formatMessage({ id: 'deals.closeAll' })}: ${this.props.sumPnl}`}
+                        {`${this.props.intl.formatMessage({ id: 'deals.closeAll', defaultMessage: 'Close all' })}: ${this.props.sumPnl}`}
                     </button>
                     : <button className={`${this.props.buttonClass} st-disabled`} disabled={true}>
-                        {`${this.props.intl.formatMessage({ id: 'deals.closeAll' })}: 0`}
+                        {`${this.props.intl.formatMessage({ id: 'deals.closeAll', defaultMessage: 'Close all' })}: 0`}
                     </button>
                 }
                 {this.state.modal &&
                   <Modal
-                    title={`${this.props.intl.formatMessage({ id: 'deals.closeAll' })} ${this.props.title ? this.props.intl.formatMessage({ id: this.props.title }) : ''}`}
+                    title={`${this.props.intl.formatMessage({ id: 'deals.closeAll', defaultMessage: 'Close all' })} ${this.props.title ? this.props.intl.formatMessage({ id: this.props.title }) : ''}`}
                     visible={this.state.modal}
                     footer={null}
                     onCancel={this.toggle}
                     style={{width: '250px'}}
                   >
                     <span className="modal-text st-margin-bottom-large">
-                                  {`${this.props.intl.formatMessage({ id: 'deals.closeAll' })}: ${this.props.sumPnl}`}
+                                  {`${this.props.intl.formatMessage({ id: 'deals.closeAll', defaultMessage: 'Close all' })}: ${this.props.sumPnl}`}
                               </span>
                     <div className="d-flex">
                       <button className="btn st-open-deal-button-red" onClick={this.toggle}>
-                        {this.props.intl.formatMessage({ id: 'modal.button.cancel' })}
+                        {this.props.intl.formatMessage({ id: 'modal.button.cancel', defaultMessage: 'Cancel' })}
                       </button>
                       <button
                         className="btn st-open-deal-button-blue st-margin-left-large"
                         onClick={this.handleClickConfirmCloseDeals.bind(this, this.props.openDeals, this.props.allMarker)}
                       >
-                        {this.props.intl.formatMessage({ id: 'modal.button.yes' })}
+                        {this.props.intl.formatMessage({ id: 'modal.button.yes', defaultMessage: 'OK' })}
                       </button>
                     </div>
                   </Modal>

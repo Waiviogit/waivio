@@ -39,7 +39,7 @@ class ModalBrokerTab extends Component {
             <React.Fragment>
               <Tabs defaultActiveKey="1" onChange={this.toggle}>
                 <TabPane
-                  tab={ this.props.intl.formatMessage({id: 'modalBroker.tab.connect'})}
+                  tab={ this.props.intl.formatMessage({id: 'modalBroker.tab.connect', defaultMessage: 'Connect to your broker'})}
                   key="1"
                 >
                   <BrokerAuthorization
@@ -54,7 +54,7 @@ class ModalBrokerTab extends Component {
                     brokerConnected={this.props.platformName !== 'widgets'}/>
                 </TabPane>
                 <TabPane
-                  tab={ this.props.intl.formatMessage({id: 'modalBroker.tab.create'})}
+                  tab={ this.props.intl.formatMessage({id: 'modalBroker.tab.create', defaultMessage: 'Create trading account'})}
                   key="2">
                   <BrokerRegistration
                     isLoading={this.props.isLoading}
