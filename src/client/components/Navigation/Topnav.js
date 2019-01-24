@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { withRouter, Link } from 'react-router-dom';
+import {withRouter, Link, NavLink} from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Menu, Input, AutoComplete } from 'antd';
 import classNames from 'classnames';
@@ -415,6 +415,33 @@ class Topnav extends React.Component {
             </button>
             {this.content()}
           </div>
+        </div>
+        <div className="topnav-layout main-nav">
+          <Menu
+            selectedKeys={[this.state.selectedPage]}
+            mode="horizontal"
+          >
+            <Menu.Item key="home">
+              <NavLink to="/trending">
+                {intl.formatMessage({id: "home", defaultMessage: "Home"}).toUpperCase()}
+              </NavLink>
+            </Menu.Item>
+            <Menu.Item key="myFeed">
+              <NavLink to="/">
+                {intl.formatMessage({id: "my_feed", defaultMessage: "My feed"}).toUpperCase()}
+              </NavLink>
+            </Menu.Item>
+            <Menu.Item key="markets">
+              <NavLink to="/instruments">
+                {intl.formatMessage({id: "markets", defaultMessage: "Markets"}).toUpperCase()}
+              </NavLink>
+            </Menu.Item>
+            <Menu.Item key="deals">
+              <NavLink to="/deals">
+                {intl.formatMessage({id: "sidebar.nav.deals", defaultMessage: "Deals"}).toUpperCase()}
+              </NavLink>
+            </Menu.Item>
+          </Menu>
         </div>
       </div>
     );
