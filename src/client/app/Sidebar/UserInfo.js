@@ -31,11 +31,20 @@ class UserInfo extends React.Component {
     let location = null;
     let profile = {};
     let website = null;
+    let about = null;
     if (user && user.json_metadata && user.json_metadata !== '') {
-      metadata = JSON.parse(user.json_metadata);
-      location = metadata && _.get(metadata, 'profile.location');
-      profile = (metadata && _.get(metadata, 'profile')) || {};
-      website = metadata && _.get(metadata, 'profile.website');
+      if (user.json_metadata.profile) {
+        location = user.json_metadata.profile.location;
+        profile = user.json_metadata.profile || {};
+        website = user.json_metadata.profile.website;
+        about = user.json_metadata.profile.about;
+      } else {
+        metadata = JSON.parse(user.json_metadata);
+        location = metadata && _.get(metadata, 'profile.location');
+        profile = (metadata && _.get(metadata, 'profile')) || {};
+        website = metadata && _.get(metadata, 'profile.website');
+        about = metadata && _.get(metadata, 'profile.about');
+      }
     }
 
     if (website && website.indexOf('http://') === -1 && website.indexOf('https://') === -1) {
@@ -60,7 +69,7 @@ class UserInfo extends React.Component {
       <div>
         {user.name && (
           <div style={{ wordBreak: 'break-word' }}>
-            <div style={{ fontSize: '18px' }}>{_.get(user && metadata, 'profile.about')}</div>
+            <div style={{ fontSize: '18px' }}>{about}</div>
             <div style={{ marginTop: 16, marginBottom: 16 }}>
               {location && (
                 <div>
