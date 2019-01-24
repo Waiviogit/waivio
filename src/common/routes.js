@@ -180,7 +180,7 @@ const routes = [
         component: Objects,
       },
       {
-        path: '/instruments',
+        path: '/markets',
         component: InstrumentsPage,
       },
       {
