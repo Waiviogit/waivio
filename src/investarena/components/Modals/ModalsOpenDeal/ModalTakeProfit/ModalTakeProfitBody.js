@@ -32,14 +32,14 @@ const ModalTakeProfitBody = ({quoteSettings,
     return (
         <React.Fragment>
             <span className='modal-text'>
-                      {intl.formatMessage({ id: 'deals.takeProfitForDeal' })}
+                      {intl.formatMessage({ id: 'deals.takeProfitForDeal', defaultMessage: 'Take profit for deal' })}
               <span>&ensp;{`${openDeal.dealSequenceNumber}`} </span>
                     </span>
           <div className='st-margin-bottom-middle st-modal-tp'>
                   <span className='st-modal-tp-line'>
                       <div className='d-flex align-content-center st-modal-checkbox-wrap'>
                           <span className={isAmountTP ? 'st-modals-value' : 'st-modals-title'}>
-                              {intl.formatMessage({ id: 'deals.amount' })}
+                              {intl.formatMessage({ id: 'deals.amount', defaultMessage: 'Amount' })}
                           </span>
                           <div className='st-margin-left-middle st-margin-right-middle'>
                               <label className="toggle" >
@@ -55,14 +55,14 @@ const ModalTakeProfitBody = ({quoteSettings,
                               </label>
                           </div>
                           <span className={isAmountTP ? 'st-modals-title' : 'st-modals-value'}>
-                            {intl.formatMessage({ id: 'deals.rate' })}
+                            {intl.formatMessage({ id: 'deals.rate', defaultMessage: 'Rate' })}
                           </span>
                       </div>
                   </span>
             <input id='st-tp'
                    type='text'
                    className='st-tp st-modal-tp-input st-margin-top-small'
-                   placeholder={intl.formatMessage({ id: 'deals.tpIsNotSet' })}
+                   placeholder={intl.formatMessage({ id: 'deals.tpIsNotSet', defaultMessage: 'TP is not set' })}
                    onChange = {handleChangeInputTP}
                    maxLength={18}
             />
@@ -92,13 +92,13 @@ const ModalTakeProfitBody = ({quoteSettings,
               className='btn st-open-deal-button-red'
               onClick={handleClickClear}
             >
-              {intl.formatMessage({ id: 'deals.clear' })}
+              {intl.formatMessage({ id: 'deals.clear', defaultMessage: 'Clear' })}
             </button>
             <button
               className='btn st-open-deal-button-blue st-margin-left-large'
               onClick={handleClickSetTP}
             >
-              {intl.formatMessage({ id: 'deals.confirm' })}
+              {intl.formatMessage({ id: 'deals.confirm', defaultMessage: 'Confirm' })}
             </button>
           </div>
         </React.Fragment>

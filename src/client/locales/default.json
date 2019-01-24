@@ -27,6 +27,7 @@
   "logout": "Logout",
   "my_profile": "My profile",
   "feed": "Feed",
+  "my_feed": "My feed",
   "feed_empty": "Oops! This feed empty",
   "empty_user_profile": "This user doesn't have any story published yet.",
   "empty_comments": "There are no comments yet.",
@@ -521,7 +522,7 @@
   "deals.edit": "Edit",
   "deals.close": "Close",
   "deals.invalidAmount": "Invalid amount",
-  "modal.button.cancel": "Cansel",
+  "modal.button.cancel": "Cancel",
   "modal.button.yes": "OK",
   "deals.positive": "deals with positive P&L",
   "deals.negative": "deals with negative P&L",
@@ -617,5 +618,7 @@
   "postForecast.title": "Validity period",
   "postForecast.expired": "Expired date",
   "add_object": "Add object",
-  "locale": "en"
+  "locale": "en",
+  "home": "Home",
+  "markets": "Markets"
 }

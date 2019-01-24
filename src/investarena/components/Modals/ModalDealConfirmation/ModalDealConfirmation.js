@@ -15,7 +15,7 @@ const propTypes = {
 const ModalDealConfirmation = (props) => {
     return (
       <Modal
-        title={props.intl.formatMessage({ id: 'modalOpen.header.title' })}
+        title={props.intl.formatMessage({ id: 'modalOpen.header.title', defaultMessage: 'Open deal' })}
         visible={props.isModalOpenDealsOpen}
         footer={null}
         onCancel={props.toggleModal}

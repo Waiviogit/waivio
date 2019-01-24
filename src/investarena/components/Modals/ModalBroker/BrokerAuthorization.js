@@ -48,7 +48,7 @@ class BrokerAuthorization extends Component {
         <Form onSubmit={this.props.brokerConnected ? this.disconnectBroker : this.connectBroker} className="login-form">
           <div className="d-flex justify-content-center st-margin-bottom-middle">
             <div className="st-broker-select-title">
-              {this.props.intl.formatMessage({ id: 'modalBroker.connectTo' })}
+              {this.props.intl.formatMessage({ id: 'modalBroker.connectTo', defaultMessage: 'Connect to:' })}
             </div>
           </div>
           {
@@ -57,7 +57,7 @@ class BrokerAuthorization extends Component {
             })(
               <Select
                 style={{ width: '100%'}}
-                placeholder={this.props.intl.formatMessage({ id: 'tooltip.empty' })}
+                placeholder={this.props.intl.formatMessage({ id: 'tooltip.empty', defaultMessage: 'Please fill in this field' })}
                 disabled={this.props.brokerConnected}
               >
                 {
@@ -71,9 +71,9 @@ class BrokerAuthorization extends Component {
           {!this.props.brokerConnected ? <FormItem>
             {getFieldDecorator('email', {
               rules: [{
-                type: 'email', message: this.props.intl.formatMessage({ id: 'tooltip.emailValid' }),
+                type: 'email', message: this.props.intl.formatMessage({ id: 'tooltip.emailValid', defaultMessage: 'Please enter a valid email' }),
               }, {
-                required: true, message: this.props.intl.formatMessage({ id: 'tooltip.empty' }),
+                required: true, message: this.props.intl.formatMessage({ id: 'tooltip.empty', defaultMessage: 'Please fill in this field' }),
               }],
             })(
               <Input
@@ -114,22 +114,22 @@ class BrokerAuthorization extends Component {
           </FormItem>}
           <div className="d-flex justify-content-between">
             {!this.props.brokerConnected ? <span onClick={()=>{}} className="st-modal-broker-authorization-text-click">
-                {this.props.intl.formatMessage({id: 'modalBroker.forgotPassword'})}
+                {this.props.intl.formatMessage({id: 'modalBroker.forgotPassword', defaultMessage: 'Forgot password?'})}
               </span> : <span/>
             }
               <Checkbox onChange={this.handleOneClickTrading} checked={this.state.checked}>
-                {this.props.intl.formatMessage({ id: 'modalBroker.oneClickTrade' })}
+                {this.props.intl.formatMessage({ id: 'modalBroker.oneClickTrade', defaultMessage: 'One click trade' })}
               </Checkbox>
           </div>
           <div className="d-flex flex-column align-items-center st-margin-bottom-middle">
             <div className="st-broker-text">
-              {this.props.intl.formatMessage({ id: 'modalBroker.weNeverKeep' })}
+              {this.props.intl.formatMessage({ id: 'modalBroker.weNeverKeep', defaultMessage: 'We never keep your passwords' })}
             </div>
             <div className="st-broker-text">
-              {this.props.intl.formatMessage({ id: 'modalBroker.tradingAccounts' })}
+              {this.props.intl.formatMessage({ id: 'modalBroker.tradingAccounts', defaultMessage: 'from brokers trading accounts' })}
             </div>
             <div className="st-broker-text">
-              {this.props.intl.formatMessage({ id: 'modalBroker.brokers' })}
+              {this.props.intl.formatMessage({ id: 'modalBroker.brokers', defaultMessage: 'in our database.' })}
             </div>
           </div>
           <div className="d-flex justify-content-end">
@@ -138,7 +138,7 @@ class BrokerAuthorization extends Component {
               type={!this.props.brokerConnected ? "primary" : "danger"}
               disabled={this.props.isLoading}
             >
-              {!this.props.brokerConnected ? this.props.intl.formatMessage({ id: 'modalBroker.connect' }) : this.props.intl.formatMessage({ id: 'modalBroker.disconnect' })}
+              {!this.props.brokerConnected ? this.props.intl.formatMessage({ id: 'modalBroker.connect', defaultMessage: 'CONNECT' }) : this.props.intl.formatMessage({ id: 'modalBroker.disconnect', defaultMessage: 'DISCONNECT' })}
             </Button>
           </div>
         </Form>

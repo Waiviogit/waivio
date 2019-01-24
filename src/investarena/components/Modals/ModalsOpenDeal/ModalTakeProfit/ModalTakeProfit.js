@@ -23,7 +23,7 @@ class ModalTakeProfit extends Component {
         this.setState({modal: !this.state.modal});
     };
     render () {
-        let buttonText = this.props.intl.formatMessage({ id: 'deals.takeProfit' });
+        let buttonText = this.props.intl.formatMessage({ id: 'deals.takeProfit', defaultMessage: 'Take profit' });
         if (this.props.openDeal.takeProfitPrice) {
             buttonText = quoteFormat(this.props.openDeal.takeProfitPrice / 1000000, this.props.quoteSettings);
         } else if (this.props.openDeal.takeProfitAmount) {
@@ -36,7 +36,7 @@ class ModalTakeProfit extends Component {
                 </button>
                 {this.state.modal &&
                   <Modal
-                    title={this.props.intl.formatMessage({ id: 'modalTakeProfit.header.title' })}
+                    title={this.props.intl.formatMessage({ id: 'modalTakeProfit.header.title', defaultMessage: 'Take profit' })}
                     visible={this.state.modal}
                     footer={null}
                     onCancel={this.toggle}

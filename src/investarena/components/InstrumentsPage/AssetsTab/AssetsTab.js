@@ -39,12 +39,12 @@ const AssetsTab = ({intl, quotes, quoteSettings, title, trends, charts, signals,
     );
     const listHeader =
         <div className="st-instr-column-wrap d-flex">
-            <div className="st-instruments-text-title">{intl.formatMessage({ id: 'assets.instrument' })}</div>
-            <div className="st-daily-title">{intl.formatMessage({ id: 'assets.dailyChange' })}</div>
-            <div className="st-buy-title">{intl.formatMessage({ id: 'assets.sell' })}</div>
-            <div className="st-amount-title">{intl.formatMessage({ id: 'assets.amount' })}</div>
-            <div className="st-sell-title">{intl.formatMessage({ id: 'assets.buy' })}</div>
-            <img title={intl.formatMessage({ id: 'assetWidgets.tabSignals' })} className="st-signals-title" src="/images/icons/icon-signal.svg"/>
+            <div className="st-instruments-text-title">{intl.formatMessage({ id: 'assets.instrument', defaultMessage: 'Instrument' })}</div>
+            <div className="st-daily-title">{intl.formatMessage({ id: 'assets.dailyChange', defaultMessage: 'Daily change' })}</div>
+            <div className="st-buy-title">{intl.formatMessage({ id: 'assets.sell', defaultMessage: 'Sell' })}</div>
+            <div className="st-amount-title">{intl.formatMessage({ id: 'assets.amount', defaultMessage: 'Amount' })}</div>
+            <div className="st-sell-title">{intl.formatMessage({ id: 'assets.buy', defaultMessage: 'Buy' })}</div>
+            <img title={intl.formatMessage({ id: 'assetWidgets.tabSignals', defaultMessage: 'Signals' })} className="st-signals-title" src="/images/icons/icon-signal.svg"/>
         </div>;
     return (
         <Fragment>

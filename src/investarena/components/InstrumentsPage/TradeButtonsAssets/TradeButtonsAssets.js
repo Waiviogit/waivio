@@ -36,7 +36,7 @@ const TradeButtonsAssets = (props) => {
             <div ref={(div) => { divWrap = div }} className="st-trade-buttons-wrap">
                 <div className="st-trade-buttons-footer">
                     <div className={ `st-trade-buttons-action-block st-quote-${quote.state ? quote.state : 'not-update'}`} onClick={props.handleClickOpenDeal.bind(this, 'Sell')}>
-                        <div title={props.intl.formatMessage({ id: 'postQuotation.button.sell' })}>
+                        <div title={props.intl.formatMessage({ id: 'postQuotation.button.sell', defaultMessage: 'Sell' })}>
                             { quoteFormat(quote.bidPrice, quoteSettings)}
                         </div>
                     </div>
@@ -56,7 +56,7 @@ const TradeButtonsAssets = (props) => {
                     <div className={ `st-trade-buttons-action-block st-quote-${quote.state ? quote.state : 'not-update'}`}
                          onClick={props.handleClickOpenDeal.bind(this, 'Buy')}
                     >
-                        <div title={props.intl.formatMessage({ id: 'postQuotation.button.buy' })}>
+                        <div title={props.intl.formatMessage({ id: 'postQuotation.button.buy', defaultMessage: 'Buy' })}>
                             {quoteFormat(quote.askPrice, quoteSettings)}
                         </div>
                     </div>

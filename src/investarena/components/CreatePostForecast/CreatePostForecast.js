@@ -77,7 +77,7 @@ class CreatePostForecast extends Component {
       isValid,
     };
     if (takeProfitValue) forecastObject.tpPrice = parseFloat(takeProfitValue);
-    if (stopLossValue) forecastObject.tpPrice = parseFloat(stopLossValue);
+    if (stopLossValue) forecastObject.slPrice = parseFloat(stopLossValue);
     return forecastObject;
   };
 
@@ -201,7 +201,7 @@ class CreatePostForecast extends Component {
           <Collapse.Panel
             header={
               <div className="st-create-post-optional-title">
-                <FormattedMessage id="createPost.titleForecast" />
+                <FormattedMessage id="createPost.titleForecast" defaultMessage="Your forecast (optional)" />
               </div>
             }
           >
@@ -211,11 +211,11 @@ class CreatePostForecast extends Component {
                   <div className="st-create-post-dropdowns-row">
                     <div className="st-create-post-select-wrap" data-test="select-instrument">
                       <p className="m-0">
-                        <FormattedMessage id="createPost.selectTitle.instrument" />
+                        <FormattedMessage id="createPost.selectTitle.instrument" defaultMessage="Instrument" />
                       </p>
                       <Select
                         name="selected-quote"
-                        placeholder={intl.formatMessage({ id: 'createPost.selectLabel.default' })}
+                        placeholder={intl.formatMessage({ id: 'createPost.selectLabel.default', defaultMessage: 'Select' })}
                         className={classNames('st-create-post-select__quote', {
                           'st-create-post-danger': isPosted && !isValid && !selectQuote,
                         })}
@@ -232,11 +232,11 @@ class CreatePostForecast extends Component {
                     </div>
                     <div className="st-create-post-select-wrap" data-test="select-recommend">
                       <p className="m-0">
-                        <FormattedMessage id="createPost.selectTitle.recommend" />
+                        <FormattedMessage id="createPost.selectTitle.recommend" defaultMessage="I recommend" />
                       </p>
                       <Select
                         name="selected-action"
-                        placeholder={intl.formatMessage({ id: 'createPost.selectLabel.default' })}
+                        placeholder={intl.formatMessage({ id: 'createPost.selectLabel.default', defaultMessage: 'Select' })}
                         className={classNames('st-create-post-select__action', {
                           'st-create-post-danger': isPosted && !isValid && !selectRecommend,
                         })}
@@ -252,7 +252,7 @@ class CreatePostForecast extends Component {
                     </div>
                     <div className="st-create-post-select-wrap">
                       <p className="m-0">
-                        <FormattedMessage id="createPost.selectTitle.price" />
+                        <FormattedMessage id="createPost.selectTitle.price" defaultMessage="Price" />
                       </p>
                       <Input
                         className="st-create-post-quotation"
@@ -266,7 +266,10 @@ class CreatePostForecast extends Component {
                   <div className="st-create-post-dropdowns-row">
                     <div className="st-create-post-select-wrap">
                       <p className="m-0">
-                        <FormattedMessage id="modalTakeProfit.header.title" />
+                        <FormattedMessage
+                          id="modalTakeProfit.header.title"
+                          defaultMessage="Take profit"
+                        />
                       </p>
                       <Input
                         type="text"
@@ -283,7 +286,7 @@ class CreatePostForecast extends Component {
                     </div>
                     <div className="st-create-post-select-wrap">
                       <p className="m-0">
-                        <FormattedMessage id="modalStopLoss.header.title" />
+                        <FormattedMessage id="modalStopLoss.header.title" defaultMessage="Stop loss" />
                       </p>
                       <Input
                         type="text"
@@ -300,7 +303,7 @@ class CreatePostForecast extends Component {
                     </div>
                     <div className="st-create-post-select-wrap" data-test="select-forecast">
                       <p className="m-0">
-                        <FormattedMessage id="createPost.selectTitle.forecast" />
+                        <FormattedMessage id="createPost.selectTitle.forecast" defaultMessage="Forecast time" />
                       </p>
                       {this.state.selectForecast === 'Custom' ? (
                         <DatePicker
@@ -318,7 +321,7 @@ class CreatePostForecast extends Component {
                       ) : (
                         <Select
                           name="selected-forecast"
-                          placeholder={intl.formatMessage({ id: 'createPost.selectLabel.default' })}
+                          placeholder={intl.formatMessage({ id: 'createPost.selectLabel.default', defaultMessage: 'Select' })}
                           className={classNames('st-create-post-select__forecast', {
                             'st-create-post-danger': isPosted && !isValid && !selectForecast,
                           })}
