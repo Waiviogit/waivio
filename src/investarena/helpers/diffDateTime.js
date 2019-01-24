@@ -1,5 +1,6 @@
 import moment from 'moment';
 import { currentTime } from './currentTime';
+import {forecastDateTimeFormat} from "../constants/constantsForecast";
 
 export function localeDate (date, locale) {
   const dateFormat = {
@@ -49,10 +50,20 @@ export function timeForecastRemain (forecastTime) {
   if (diff > 0) {
     const timeValues = calculateTime(diff);
     const resultValues = `${timeValues.hours  }:${  timeValues.minutes  }:${  timeValues.seconds}`;
-    return `${timeValues.days}d ${  moment(resultValues, 'HH:mm:ss').format('HH:mm:ss')}`;
+    return `${timeValues.days}d ${ moment(resultValues, 'HH:mm:ss').format('HH:mm:ss')}`;
   } 
     return `0d 00:00:00`;
   
 }
 
-
+// "2019-01-30T17:58:38.000Z"
+export function getDataCreatedAt () {
+  const periodBefore = 22118400;
+  const nowDate = Date.now();
+  return moment(nowDate - periodBefore).format(forecastDateTimeFormat);
+}
+export function getDataForecast () {
+  const periodAfter= 604800;
+  const nowDate = Date.now();
+  return moment.utc(nowDate + periodAfter).format(forecastDateTimeFormat);
+}

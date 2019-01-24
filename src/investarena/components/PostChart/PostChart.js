@@ -17,6 +17,7 @@ const propTypes = {
     bars: PropTypes.object,
     platformName: PropTypes.string,
     connect: PropTypes.bool,
+    isObjectProfile: PropTypes.bool,
     quote: PropTypes.object,
     expiredBars: PropTypes.array,
     slPrice: PropTypes.string,
@@ -36,6 +37,7 @@ const defaultProps = {
   platformName: 'widgets',
   quote: quoteData,
   quoteSettings: quoteSettingsData,
+  isObjectProfile: false,
 };
 class PostChart extends Component {
     constructor (props) {
@@ -130,7 +132,8 @@ class PostChart extends Component {
     };
     createChart = () => new Chart({
             canvas: this.canvasRef,
-            animatedCircle: this.circleRef
+            animatedCircle: this.circleRef,
+            isObjectProfile: this.props.isObjectProfile
         });
     shouldGetChartData = (bars) => {
         const timeNow = currentTime.getTime();

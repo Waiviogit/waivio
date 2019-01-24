@@ -31,7 +31,7 @@ import {
 import CreatePostForecast from '../../../investarena/components/CreatePostForecast';
 import './Editor.less';
 import { currentTime } from '../../../investarena/helpers/currentTime';
-import { forecastDateTimeFormat } from '../../../investarena/components/CreatePostForecast/constants';
+import { forecastDateTimeFormat } from '../../../investarena/constants/constantsForecast';
 
 @injectIntl
 @requiresLogin

@@ -236,7 +236,19 @@ class Story extends React.Component {
       this.props.showPostModal(post);
     }
   }
-
+  isValidForecast = forecast => {
+    let isValid = true;
+    'quoteSecurity,postPrice,recommend,expiredAt,createdAt'.split(',').forEach(field => {
+      if (forecast[field] === undefined || forecast[field] === null) isValid = false;
+    });
+    if (
+      forecast.recommend !== 'Buy' &&
+      forecast.recommend !== 'Sell' &&
+      typeof forecast.postPrice !== 'number'
+    )
+      isValid = false;
+    return isValid;
+  };
   renderStoryPreview() {
     const { post } = this.props;
     const showStoryPreview = this.getDisplayStoryPreview();
@@ -264,19 +276,7 @@ class Story extends React.Component {
       hiddenStoryPreviewMessage
     );
   }
-  isValidForecast = forecast => {
-    let isValid = true;
-    'quoteSecurity,postPrice,recommend,expiredAt,createdAt'.split(',').forEach(field => {
-      if (forecast[field] === undefined || forecast[field] === null) isValid = false;
-    });
-    if (
-      forecast.recommend !== 'Buy' &&
-      forecast.recommend !== 'Sell' &&
-      typeof forecast.postPrice !== 'number'
-    )
-      isValid = false;
-    return isValid;
-  };
+
   render() {
     const {
       intl,

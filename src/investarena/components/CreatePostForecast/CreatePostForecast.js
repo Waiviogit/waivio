@@ -9,7 +9,7 @@ import { Collapse, DatePicker, Select, Input } from 'antd';
 import { optionsAction, optionsForecast } from '../../constants/selectData';
 import { currentTime } from '../../helpers/currentTime';
 import { getQuoteOptions, getQuotePrice, isStopLossTakeProfitValid } from './helpers';
-import { forecastDateTimeFormat, maxForecastDay, minForecastMinutes } from './constants';
+import { forecastDateTimeFormat, maxForecastDay, minForecastMinutes } from '../../constants/constantsForecast';
 import { ceil10, floor10 } from '../../helpers/calculationsHelper';
 import { getQuotesSettingsState } from '../../../investarena/redux/selectors/quotesSettingsSelectors';
 import { getQuotesState } from '../../../investarena/redux/selectors/quotesSelectors';

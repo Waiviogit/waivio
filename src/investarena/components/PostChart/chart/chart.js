@@ -5,9 +5,10 @@ import { ParsingPriceHelper } from '../../../platform/parsingPrice';
 const MINUTE_PER_DAY = 60 * 24;
 
 class Chart {
-    constructor ({ canvas, animatedCircle }) {
+    constructor ({ canvas, animatedCircle, isObjectProfile}) {
         this.canvas = canvas;
         this.animatedCircle = animatedCircle;
+        this.isObjectProfile = isObjectProfile;
         this.imageStart = new Image();
         this.imageStart.src = '/images/investarena/start.png';
         this.imageEnd = new Image();
@@ -69,18 +70,21 @@ class Chart {
                 if (!isExpired && quote) {
                     this.drawQuotationLine(chartType, quote, quoteSettings, shortBars);
                 }
-                this.drawStartLine();
                 this.drawTimeMark(shortBars, times);
-                this.drawStartPolygon(recommend, brokenStopPrices);
-                if (isExpired) {
-                    this.drawExpiredText(locale, brokenStopPrices);
-                }
-                if (!isExpired || expiredByTime) {
-                    this.drawFinishLine();
-                }
-                this.drawStopPriceLine(scaleY, stopPrices, recommend, brokenStopPrices);
-                this.ctx.restore();
-            }
+
+                if(!this.isObjectProfile) {
+                    this.drawStartLine();
+                    this.drawStartPolygon(recommend, brokenStopPrices);
+                    if (isExpired) {
+                        this.drawExpiredText(locale, brokenStopPrices);
+                    }
+                    if (!isExpired || expiredByTime) {
+                        this.drawFinishLine();
+                    }
+                    this.drawStopPriceLine(scaleY, stopPrices, recommend, brokenStopPrices);
+                  }
+                  this.ctx.restore();
+              }
         }
     };
     assignChartInfo = (chartInfo) => {
