@@ -26,6 +26,7 @@ import Notifications from './Notifications/Notifications';
 import LanguageSettings from './LanguageSettings';
 import './Topnav.less';
 import Broker from '../../../investarena/components/Header/Broker';
+import Balance from "../../../investarena/components/Header/Balance";
 
 @injectIntl
 @withRouter
@@ -442,6 +443,32 @@ class Topnav extends React.Component {
               </NavLink>
             </Menu.Item>
           </Menu>
+          <div className="st-header-broker-balance-pl-wrap">
+            <div className="st-balance-wrap">
+              <div className="st-balance-text">
+                {intl.formatMessage({ id: 'headerAuthorized.freeBalance' })}:
+              </div>
+              <div className="st-balance-amount">
+                <Balance balanceType="freeBalance" />
+              </div>
+            </div>
+            <div className="st-balance-border">
+              <div className="st-balance-text">
+                {intl.formatMessage({ id: 'headerAuthorized.p&l' })}:
+              </div>
+              <div className="st-balance-amount">
+                <Balance balanceType="unrealizedPnl" />
+              </div>
+            </div>
+            <div className="st-balance-border">
+              <div className="st-balance-text">
+                {intl.formatMessage({ id: 'headerAuthorized.balance' })}:
+              </div>
+              <div className="st-balance-amount">
+                <Balance balanceType="balance" />
+              </div>
+            </div>
+            </div>
         </div>
       </div>
     );
