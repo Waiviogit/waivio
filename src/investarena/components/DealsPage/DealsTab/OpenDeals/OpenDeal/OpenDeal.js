@@ -43,12 +43,12 @@ const OpenDeal = ({intl, quote, quoteSettings, openDeal, quoteSecurity, showNoti
     const prices =
         <div className="st-price">
             <div className="d-flex align-items-center justify-content-between">
-                <div className="st-open-deal-header-item-title">{intl.formatMessage({id: 'deals.opening'})}</div>
-                <div title={intl.formatMessage({id: 'deals.opening'})}>{quoteFormat(openDeal.openPrice, quoteSettingsDeal)}</div>
+                <div className="st-open-deal-header-item-title">{intl.formatMessage({id: 'deals.opening', defaultMessage: 'opening'})}</div>
+                <div title={intl.formatMessage({id: 'deals.opening', defaultMessage: 'opening'})}>{quoteFormat(openDeal.openPrice, quoteSettingsDeal)}</div>
             </div>
             <div className="d-flex align-items-center justify-content-between">
-                <div className="st-open-deal-header-item-title">{intl.formatMessage({id: 'deals.market'})}</div>
-                <div title={intl.formatMessage({id: 'deals.market'})}>{quoteFormat(marketPrice, quoteSettingsDeal)}</div>
+                <div className="st-open-deal-header-item-title">{intl.formatMessage({id: 'deals.market', defaultMessage: 'market'})}</div>
+                <div title={intl.formatMessage({id: 'deals.market', defaultMessage: 'market'})}>{quoteFormat(marketPrice, quoteSettingsDeal)}</div>
             </div>
         </div>;
     const pnlValue =
@@ -58,11 +58,11 @@ const OpenDeal = ({intl, quote, quoteSettings, openDeal, quoteSecurity, showNoti
     const dealDates =
         <div className="st-opened">
             <div className="d-flex align-items-center justify-content-between">
-                <div className="st-open-deal-header-item-title">{intl.formatMessage({id: 'deals.from'})}</div>
+                <div className="st-open-deal-header-item-title">{intl.formatMessage({id: 'deals.from', defaultMessage: 'from'})}</div>
                 <div className="st-open-deal-header-item-title">{moment(openDeal.openTime).format('DD.MM, HH:mm')}</div>
             </div>
             <div className="d-flex align-items-center justify-content-between">
-                <div className="st-open-deal-header-item-title">{intl.formatMessage({id: 'deals.till'})}</div>
+                <div className="st-open-deal-header-item-title">{intl.formatMessage({id: 'deals.till', defaultMessage: 'till'})}</div>
                 <div className="st-open-deal-header-item-title">{moment(openDeal.goodTillDate).format('DD.MM, HH:mm')}</div>
             </div>
         </div>;

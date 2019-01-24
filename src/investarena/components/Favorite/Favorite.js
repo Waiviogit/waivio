@@ -14,7 +14,8 @@ export const Favorite = ({intl, isFavorite, updateFavorite}) => {
     const handleClickUpdateFavorite = () => updateFavorite();
     return (
         <div
-          title={intl.formatMessage({ id: isFavorite ? 'tips.removeFromFavorites' : 'tips.addToFavorites'})}
+          title={intl.formatMessage(isFavorite ? { id: 'tips.removeFromFavorites', defaultMessage: 'Remove from favorites' }
+                  : {id: 'tips.addToFavorites', defaultMessage: 'Add to favorites'})}
           className={classIsFavorite}
           onClick={handleClickUpdateFavorite}
         >

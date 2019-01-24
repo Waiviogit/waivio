@@ -40,7 +40,7 @@ class Instrument extends Component {
         }
         return sumPnL !== 0 ? (
             <Link to = '/deals' className="st-assets-to-deals">
-                <span title={`${this.props.intl.formatMessage({id: 'deals.cumPnl'})}: ${this.props.quoteSettings.name}`} className={`st-pnl ${sumPnL < 0 ? 'st-deal-pl-red' : 'st-deal-pl-green'}`}>
+                <span title={`${this.props.intl.formatMessage({id: 'deals.cumPnl', defaultMessage: 'Cumulative P&L'})}: ${this.props.quoteSettings.name}`} className={`st-pnl ${sumPnL < 0 ? 'st-deal-pl-red' : 'st-deal-pl-green'}`}>
                     {currencyFormat(sumPnL.toFixed(2))}
                 </span>
             </Link>
@@ -58,7 +58,7 @@ class Instrument extends Component {
                 </div>
             </Link>;
         const dailyChangeValue =
-            <div title={this.props.intl.formatMessage({id: 'tips.dailyChange'})}
+            <div title={this.props.intl.formatMessage({id: 'tips.dailyChange', defaultMessage: 'Daily change'})}
                 className={`st-daily-change ${this.props.quote.dailyChange > 0 ? 'st-quote-text-up' : 'st-quote-text-down'}`}>
                 {`${this.props.quote.dailyChange.toFixed(2)}%`}
             </div>;
@@ -85,7 +85,7 @@ class Instrument extends Component {
                 areaColors={['#3a79ee']}
                 data={[this.props.chart]}
             /> :
-             <div className="st-assets-chart-no-data">{this.props.intl.formatMessage({id: 'charts.noData'})}</div>;
+             <div className="st-assets-chart-no-data">{this.props.intl.formatMessage({id: 'charts.noData', defaultMessage: 'No data'})}</div>;
         const modalChart = this.state.isModalInstrumentsChart &&
             <ModalTC
                 quoteName={this.props.quote.security}

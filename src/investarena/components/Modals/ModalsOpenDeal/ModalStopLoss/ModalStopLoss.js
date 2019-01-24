@@ -24,7 +24,7 @@ class ModalStopLoss extends Component {
         this.setState({modal: !this.state.modal});
     };
     render () {
-        let buttonText = this.props.intl.formatMessage({ id: 'deals.stopLoss' });
+        let buttonText = this.props.intl.formatMessage({ id: 'deals.stopLoss', defaultMessage: 'Stop loss' });
         if (this.props.openDeal.stopLossPrice) {
             buttonText = quoteFormat(this.props.openDeal.stopLossPrice / 1000000, this.props.quoteSettings);
         }
@@ -39,7 +39,7 @@ class ModalStopLoss extends Component {
                 </button>
                 {this.state.modal &&
                   <Modal
-                    title={this.props.intl.formatMessage({ id: 'modalStopLoss.header.title' })}
+                    title={this.props.intl.formatMessage({ id: 'modalStopLoss.header.title', defaultMessage: 'Stop loss' })}
                     visible={this.state.modal}
                     footer={null}
                     onCancel={this.toggle}

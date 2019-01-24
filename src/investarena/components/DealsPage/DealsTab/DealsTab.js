@@ -17,10 +17,10 @@ const DealsTab = ({viewMode, intl}) => {
     return (
         <div className="st-deals-wrap">
           <Tabs defaultActiveKey="1">
-            <TabPane tab={intl.formatMessage({ id: 'sidebarWidget.tabTitle.openDeals' })} key="1">
+            <TabPane tab={intl.formatMessage({ id: 'sidebarWidget.tabTitle.openDeals', defaultMessage: "Open" })} key="1">
               <OpenDeals viewMode={viewMode}/>
             </TabPane>
-            <TabPane tab={intl.formatMessage({ id: 'sidebarWidget.tabTitle.closedDeals' })} key="2">
+            <TabPane tab={intl.formatMessage({ id: 'sidebarWidget.tabTitle.closedDeals', defaultMessage: "Closed" })} key="2">
               <ClosedDeals viewMode={viewMode}/>
             </TabPane>
           </Tabs>

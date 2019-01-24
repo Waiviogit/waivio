@@ -33,8 +33,8 @@ const ClosedDeal = ({quoteSettings, closedDeal, quoteSecurity, intl, viewMode}) 
         </div>;
     const prices =
         <Fragment>
-            <div title={intl.formatMessage({ id: 'deals.openPrice' })} className="st-price">{quoteFormat(closedDeal.openPrice, closedQuoteSettings)}</div>
-            <div title={intl.formatMessage({ id: 'deals.closePrice' })} className="st-price">{quoteFormat(closedDeal.closePrice, closedQuoteSettings)}</div>
+            <div title={intl.formatMessage({ id: 'deals.openPrice', defaultMessage: 'Opening price' })} className="st-price">{quoteFormat(closedDeal.openPrice, closedQuoteSettings)}</div>
+            <div title={intl.formatMessage({ id: 'deals.closePrice', defaultMessage: 'Closing price' })} className="st-price">{quoteFormat(closedDeal.closePrice, closedQuoteSettings)}</div>
         </Fragment>;
     const pnlValue =
         <span className={`st-pnl ${closedDeal.pnl < 0 ? 'st-deal-pl-red' : 'st-deal-pl-green'}`}>
@@ -64,12 +64,12 @@ const ClosedDeal = ({quoteSettings, closedDeal, quoteSecurity, intl, viewMode}) 
                     <span className="st-pnl-wrap">P&L  {pnlValue}</span>
                 </div>
                 <div className="st-card__commission">
-                    <span className="title">{intl.formatMessage({ id: 'deals.commission' })}</span>
+                    <span className="title">{intl.formatMessage({ id: 'deals.commission', defaultMessage: 'Commission' })}</span>
                     <span className="value">{currencyFormat(closedDeal.rolloverCommission / 1000000)}</span>
                 </div>
                 <div className="st-opened">
-                    <div title={intl.formatMessage({id: 'deals.openTime'})}>{moment(closedDeal.openTime).format('DD.MM, HH:mm')}</div>
-                    <div title={intl.formatMessage({id: 'deals.closeTime'})}>{moment(closedDeal.goodTillDate).format('DD.MM, HH:mm')}</div>
+                    <div title={intl.formatMessage({id: 'deals.openTime', defaultMessage: 'Opening time'})}>{moment(closedDeal.openTime).format('DD.MM, HH:mm')}</div>
+                    <div title={intl.formatMessage({id: 'deals.closeTime', defaultMessage: 'Closing time'})}>{moment(closedDeal.goodTillDate).format('DD.MM, HH:mm')}</div>
                 </div>
             </div>
         );

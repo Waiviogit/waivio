@@ -35,14 +35,14 @@ const ModalStopLossBody = (
      ) => (
       <React.Fragment>
         <span className='modal-text'>
-        {intl.formatMessage({ id: 'deals.stopLossForDeal' })}
+        {intl.formatMessage({ id: 'deals.stopLossForDeal', defaultMessage: 'Stop loss for deal' })}
         <span>&ensp;{`${openDeal.dealSequenceNumber}`} </span>
         </span>
         <div className='st-margin-bottom-middle st-modal-sl'>
         <span className='st-modal-sl-line'>
         <div className='d-flex align-content-center st-modal-checkbox-wrap'>
         <span className={isAmountSL ? 'st-modals-value' : 'st-modals-title'}>
-        {intl.formatMessage({ id: 'deals.amount' })}
+        {intl.formatMessage({ id: 'deals.amount', defaultMessage: 'Amount' })}
         </span>
         <div className='st-margin-left-middle st-margin-right-middle'>
         <label className="toggle" >
@@ -56,14 +56,14 @@ const ModalStopLossBody = (
         </label>
         </div>
         <span className={isAmountSL ? 'st-modals-title' : 'st-modals-value'}>
-        {intl.formatMessage({ id: 'deals.rate' })}
+          {intl.formatMessage({ id: 'deals.rate', defaultMessage: 'Rate' })}
         </span>
         </div>
         </span>
         <input
         type='text'
         className='st-sl st-modal-sl-input st-margin-top-small'
-        placeholder={intl.formatMessage({ id: 'deals.slIsNotSet' })}
+        placeholder={intl.formatMessage({ id: 'deals.slIsNotSet', defaultMessage: 'SL is not set' })}
         onChange = {handleChangeInputSL}
         maxLength={18}
         />
@@ -82,10 +82,10 @@ const ModalStopLossBody = (
         </div>
         <div className='d-flex'>
         <button className='btn st-open-deal-button-red' onClick={handleClickClear}>
-        {intl.formatMessage({ id: 'deals.clear' })}
+        {intl.formatMessage({ id: 'deals.clear', defaultMessage: 'Clear' })}
         </button>
         <button className='btn st-open-deal-button-blue st-margin-left-large' onClick={handleClickSetSL}>
-        {intl.formatMessage({ id: 'deals.confirm' })}
+        {intl.formatMessage({ id: 'deals.confirm', defaultMessage: 'Confirm' })}
         </button>
         </div>
       </React.Fragment>

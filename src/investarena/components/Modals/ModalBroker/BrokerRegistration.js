@@ -123,7 +123,7 @@ class BrokerRegistration extends Component {
           })(
             <Select
               style={{ width: '100%'}}
-              placeholder={this.props.intl.formatMessage({ id: 'tooltip.empty' })}
+              placeholder={this.props.intl.formatMessage({ id: 'tooltip.empty', defaultMessage: 'Please fill in this field' })}
               onChange={this.changePlatform}
             >
               {
@@ -221,7 +221,7 @@ class BrokerRegistration extends Component {
             })(
               <Select
                 style={{ width: '100%'}}
-                placeholder={this.props.intl.formatMessage({ id: 'tooltip.empty' })}
+                placeholder={this.props.intl.formatMessage({ id: 'tooltip.empty', defaultMessage: 'Please fill in this field' })}
                 onChange={this.handleCountryValueChange}
               >
                 {
