@@ -13,6 +13,7 @@ import {
   socialObjectFields,
   supportedObjectFields,
   websiteFields,
+  objectImageFields,
 } from '../../common/constants/listOfFields';
 import { getObject, getAuthenticatedUserName, getIsAppendLoading } from '../reducers';
 import LANGUAGES from '../translations/languages';
@@ -32,6 +33,8 @@ import {
   objectNameValidationRegExp,
   objectURLValidationRegExp,
 } from '../../common/constants/validation';
+import RawSlider from '../components/Slider/RawSlider';
+import { IMAGE_STATUS, testImage } from './wObjectHelper';
 
 @connect(
   state => ({
@@ -77,6 +80,7 @@ export default class AppendForm extends Component {
     isSomeValue: true,
     imageUploading: false,
     currentImage: [],
+    votePercent: 10000,
   };
 
   onSubmit = form => {
@@ -308,6 +312,20 @@ export default class AppendForm extends Component {
     }
   };
 
+  handleOnChange = () => {
+    const { getFieldValue } = this.props.form;
+    const currentField = getFieldValue('currentField');
+
+    if (objectImageFields.includes(currentField)) {
+      this.setState({
+        imageUploading: false,
+        currentImage: [],
+      });
+    }
+  };
+
+  handleVotePercentChange = value => this.setState({ votePercent: value });
+
   renderContentValue = currentField => {
     const { intl, wObject } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
@@ -368,16 +386,22 @@ export default class AppendForm extends Component {
       }
       case objectFields.background:
       case objectFields.avatar: {
-        this.state.imageUploading = false;
-        this.state.currentImage = [];
+        const imageLink = getFieldValue(currentField);
+
         return (
-          <React.Fragment>
+          <div className="image-wrapper">
             <QuickPostEditorFooter
               imageUploading={this.state.imageUploading}
               handleImageChange={this.handleImageChange}
               currentImages={this.state.currentImage}
               onRemoveImage={this.handleRemoveImage}
             />
+            <span>
+              {intl.formatMessage({
+                id: 'or',
+                defaultMessage: 'OR',
+              })}
+            </span>
             <Form.Item>
               {getFieldDecorator(currentField, {
                 rules: [
@@ -388,18 +412,47 @@ export default class AppendForm extends Component {
                         id: 'field_error',
                         defaultMessage: 'Field is required',
                       },
-                      { field: currentField },
+                      {
+                        field: intl.formatMessage({
+                          id: 'photo_url_placeholder',
+                          defaultMessage: 'Photo URL',
+                        }),
+                      },
                     ),
                   },
+                  {
+                    pattern: objectURLValidationRegExp,
+                    message: intl.formatMessage({
+                      id: 'image_link_validation',
+                      defaultMessage: 'Please enter valid link',
+                    }),
+                  },
                 ],
-              })(<Input className="AppendForm__hidden" />)}
+              })(
+                <Input
+                  className="AppendForm__title"
+                  placeholder={intl.formatMessage({
+                    id: 'photo_url_placeholder',
+                    defaultMessage: 'Photo URL',
+                  })}
+                />,
+              )}
             </Form.Item>
-            {getFieldValue(currentField) && (
-              <div className="AppendForm__previewWrap">
-                <img src={getFieldValue(currentField)} alt="pic" className="AppendForm__preview" />
-              </div>
-            )}
-          </React.Fragment>
+            {imageLink &&
+              testImage(imageLink, (url, result) => {
+                if (IMAGE_STATUS.ERROR === result || IMAGE_STATUS.TIMEOUT === result) {
+                  return (
+                    <div className="AppendForm__preview-invalid">An image cannot be loaded.</div>
+                  );
+                }
+
+                return (
+                  <div className="AppendForm__previewWrap">
+                    <img src={url} alt="pic" className="AppendForm__preview" />
+                  </div>
+                );
+              })}
+          </div>
         );
       }
       case objectFields.title: {
@@ -899,7 +952,11 @@ export default class AppendForm extends Component {
         <Form.Item>
           {getFieldDecorator('currentField', {
             initialValue: currentField,
-          })(<Select style={{ width: '100%' }}>{fieldOptions}</Select>)}
+          })(
+            <Select style={{ width: '100%' }} onChange={this.handleOnChange}>
+              {fieldOptions}
+            </Select>,
+          )}
         </Form.Item>
 
         <div className="ant-form-item-label AppendForm__appendTitles">
@@ -913,6 +970,13 @@ export default class AppendForm extends Component {
         </Form.Item>
 
         {this.renderContentValue(getFieldValue('currentField'))}
+
+        <div>
+          <RawSlider
+            initialValue={this.state.votePercent}
+            onChange={this.handleVotePercentChange}
+          />
+        </div>
 
         {getFieldValue('currentField') !== 'auto' && (
           <Form.Item className="AppendForm__bottom__submit">
