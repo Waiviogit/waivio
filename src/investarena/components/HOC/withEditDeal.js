@@ -119,7 +119,7 @@ const withEditDeal = (Component) => {
                 this.props.toggle();
             } else {
               message.error(
-                this.props.intl.formatMessage({ id: 'deals.stopLossWrongValue', defaultMessage: 'Wrong value of stop loss' }),
+                this.props.intl.formatMessage({ id: 'deals.stopLossWrongValue', defaultMessage: 'Please enter a value in the acceptable range' }),
               );
             }
         };
@@ -141,7 +141,7 @@ const withEditDeal = (Component) => {
                 this.props.toggle();
             } else {
               message.error(
-                this.props.intl.formatMessage({ id: 'deals.stopLossWrongValue', defaultMessage: 'Wrong value of take profit' }),
+                this.props.intl.formatMessage({ id: 'deals.stopLossWrongValue', defaultMessage: 'Please enter a value in the acceptable range' }),
               );
             }
         };

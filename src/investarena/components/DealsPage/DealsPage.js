@@ -97,7 +97,10 @@ class DealsPage extends Component {
           ) : (
             <div className="st-deals-wrap st-connect-to-broker-wrap">
               <span className="st-margin-bottom-large">
-                {this.props.intl.formatMessage({ id: 'headerAuthorized.textAttention3' })}
+                {this.props.intl.formatMessage({
+                  id: 'headerAuthorized.textAttention3',
+                  defaultMessage: 'To start trading, connect your broker.',
+                })}
               </span>
               {/*<ButtonBroker />*/}
             </div>

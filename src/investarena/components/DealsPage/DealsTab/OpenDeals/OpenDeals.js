@@ -43,13 +43,13 @@ const OpenDeals = ({openDeals, intl, quotes, viewMode, quoteSettings }) => {
         <div className="st-instr-column-wrap d-flex">
             <div className="st-id-title">ID:</div>
             <div className="st-instrument-avatar-title"> </div>
-            <div className="st-instruments-text-title">{intl.formatMessage({ id: 'assets.instrument' })}</div>
-            <div className="st-type-title">{intl.formatMessage({ id: 'deals.type' })}</div>
-            <div className="st-amount-title">{intl.formatMessage({ id: 'assets.amount' })}</div>
-            <div className="st-opened-title">{intl.formatMessage({ id: 'deals.opened' })}</div>
-            <div className="st-tp-title">{intl.formatMessage({ id: 'modalTakeProfit.header.title' })}</div>
-            <div className="st-sl-title">{intl.formatMessage({ id: 'deals.stopLoss' })}</div>
-            <div className="st-price-title">{intl.formatMessage({ id: 'deals.price' })}</div>
+            <div className="st-instruments-text-title">{intl.formatMessage({ id: 'assets.instrument', defaultMessage: 'Instrument' })}</div>
+            <div className="st-type-title">{intl.formatMessage({ id: 'deals.type', defaultMessage: 'Type' })}</div>
+            <div className="st-amount-title">{intl.formatMessage({ id: 'assets.amount', defaultMessage: 'Amount' })}</div>
+            <div className="st-opened-title">{intl.formatMessage({ id: 'deals.opened', defaultMessage: 'Deal is opened' })}</div>
+            <div className="st-tp-title">{intl.formatMessage({ id: 'modalTakeProfit.header.title', defaultMessage: 'Take profit' })}</div>
+            <div className="st-sl-title">{intl.formatMessage({ id: 'deals.stopLoss', defaultMessage: 'Stop loss' })}</div>
+            <div className="st-price-title">{intl.formatMessage({ id: 'deals.price', defaultMessage: 'Price' })}</div>
             <div className="st-pnl-title">P&L:</div>
         </div>;
     return (
@@ -68,7 +68,7 @@ const OpenDeals = ({openDeals, intl, quotes, viewMode, quoteSettings }) => {
                                         viewMode={viewMode}/>
                                 </div>)
                             : <div className="sr-open-deals-not-present">
-                                {intl.formatMessage({ id: 'openDeals.notPresent' })}
+                                {intl.formatMessage({ id: 'openDeals.notPresent', defaultMessage: 'You do not have open deals' })}
                             </div>
                         }</div>
                 </div>
@@ -81,13 +81,13 @@ const OpenDeals = ({openDeals, intl, quotes, viewMode, quoteSettings }) => {
                             allMarker='CloseAll'
                         />}
                         {positiveDeals && <ModalCloseAll openDeals={positiveDeals}
-                            title='deals.positive'
+                            title={intl.formatMessage({ id: 'deals.positive', defaultMessage: 'deals with positive P&L' })}
                             sumPnl={currencyFormat(parseFloat(positiveDealsPnl).toFixed(2))}
                             buttonClass='st-close-positive'
                             allMarker='CloseAllProfitable'
                         />}
                         {negativeDeals && <ModalCloseAll openDeals={negativeDeals}
-                            title='deals.negative'
+                            title={intl.formatMessage({ id: 'deals.negative', defaultMessage: 'deals with negative P&L' })}
                             sumPnl={currencyFormat(parseFloat(negativeDealsPnl).toFixed(2))}
                             buttonClass='st-close-negative'
                             allMarker='CloseAllLosing'

@@ -98,7 +98,7 @@ const PostQuotation = (props) => {
                       onClick={handleClickOpenDeal.bind(this, 'Sell')}
                     >
                         <span className="st-post-action-span">
-                          <FormattedMessage id="postQuotation.button.sell" />
+                          <FormattedMessage id="postQuotation.button.sell" defaultMessage="Sell" />
                         </span>
                         <div>
                             { quoteFormat(quote.bidPrice, quoteSettings)}
@@ -108,7 +108,7 @@ const PostQuotation = (props) => {
                          onClick={handleClickOpenDeal.bind(this, 'Buy')}
                     >
                         <span className="st-post-action-span">
-                          <FormattedMessage id="postQuotation.button.buy" />
+                          <FormattedMessage id="postQuotation.button.buy" defaultMessage="Buy" />
                         </span>
                         <div>
                             {quoteFormat(quote.askPrice, quoteSettings)}
