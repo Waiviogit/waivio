@@ -82,7 +82,7 @@ export default class ObjectProfile extends React.Component {
     let createdAt = null;
     let forecast = null;
     const showChart = !isLoadingPlatform &&
-      _.some(supportedObjectTypes, objectType => objectType === object.type );
+      _.some(supportedObjectTypes, objectType => objectType === object.object_type );
     const loadMoreContentAction = () => {
       this.props.getMoreObjectPosts({
         username: wobjectname,
