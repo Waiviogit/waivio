@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import readingTime from 'reading-time';
-import { Checkbox, Form, Input, Select, Button } from 'antd';
+import { Form, Input, Select, Button } from 'antd';
 import moment from 'moment';
 import BTooltip from '../BTooltip';
 import { rewardsValues } from '../../../common/constants/rewards';
@@ -279,11 +279,11 @@ class Editor extends React.Component {
           [INVESTARENA_META_FIELD_NAME]: forecast
             ? {
                 ...forecast,
-                createdAt: moment(currentTime.getTime()).format(forecastDateTimeFormat),
+                createdAt: moment.utc(currentTime.getTime()).format(forecastDateTimeFormat),
                 expiredAt:
                   selectForecast === 'Custom'
                     ? forecast.expiredAt
-                    : moment(currentTime.getTime())
+                    : moment.utc(currentTime.getTime())
                         .add(selectForecast, 'seconds')
                         .format(forecastDateTimeFormat),
               }

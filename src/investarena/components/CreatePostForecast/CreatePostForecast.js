@@ -77,7 +77,7 @@ class CreatePostForecast extends Component {
       isValid,
     };
     if (takeProfitValue) forecastObject.tpPrice = parseFloat(takeProfitValue);
-    if (stopLossValue) forecastObject.tpPrice = parseFloat(stopLossValue);
+    if (stopLossValue) forecastObject.slPrice = parseFloat(stopLossValue);
     return forecastObject;
   };
 
