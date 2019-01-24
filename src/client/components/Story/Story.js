@@ -35,7 +35,7 @@ import PostChart from '../../../investarena/components/PostChart';
 import PostQuotation from '../../../investarena/components/PostQuotation';
 import PostSellBuy from '../../../investarena/components/PostSellBuy';
 import { jsonParse } from '../../helpers/formatter';
-import PostForecast from "../../../investarena/components/PostForecast/PostForecast";
+import PostForecast from '../../../investarena/components/PostForecast/PostForecast';
 
 @injectIntl
 @withRouter
@@ -367,16 +367,16 @@ class Story extends React.Component {
               </span>
             </div>
             <span className="Story__topics">
-                {(forecast && isForecastValid) ?
-                  <PostForecast
-                    postForecast={forecast.expiredAt}
-                    isExpired={false}
-                    expiredAt={forecast.expiredAt}
-                  />
-                  :
-                  <Topic name={post.category} />
-                }
-                </span>
+              {forecast && isForecastValid ? (
+                <PostForecast
+                  postForecast={forecast.expiredAt}
+                  isExpired={false}
+                  expiredAt={forecast.expiredAt}
+                />
+              ) : (
+                <Topic name={post.category} />
+              )}
+            </span>
           </div>
           {forecast && isForecastValid && (
             <PostSellBuy

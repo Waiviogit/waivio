@@ -1,7 +1,7 @@
 {
   "appVersion": "ST Investarena Desktop v.2.0.1",
   "production": {
-    "apiPrefix": "https://api.socialtrading.uat.pp.ua/",
+    "apiPrefix": "http://waiviodev.com/",
     "brokerWSUrl": {
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
@@ -29,10 +29,7 @@
       "maximarkets": "https://test-myaccount.maximarkets.org/"
     },
     "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/",
-    "": "http://localhost:8082",
-    "repostUrl": "http://socialtrading.uat.pp.ua/posts/",
-    "": "http://localhost:8088/",
-    "chatUrl": "https://chatsocket.socialtrading.uat.pp.ua/"
+    "": "http://localhost:8082"
   },
   "test": {
     "apiPrefix": "http://localhost:3000/",
@@ -77,10 +74,6 @@
     "tradingPlatform": "/trading_platform"
   },
 
-  "bookmark":{
-    "bookmarks": "/bookmarks"
-  },
-
   "trends": {
     "getTrends": "/find_most_used_hashtags/",
     "getInstrumentsTrends": "/instruments/trends"
@@ -100,55 +93,11 @@
   "favorites": {
     "favorites": "/favorites/"
   },
-  "companies": {
-    "companies": "/companies",
-    "searchCompanies": "/search_companies"
-  },
-  "groups": {
-    "groups": "/groups",
-    "searchGroups": "/search_groups"
-  },
-  "jobs": {
-    "jobs": "/jobs/",
-    "searchJobs": "/search_jobs"
-  },
-
-  "locales": {
-    "updateLocale": "/update_language/"
-  },
-
-  "agreements":{
-    "umarkets": "https://www.umarkets.com/en/terms-and-conditions/",
-    "maximarkets": "https://www.maximarkets.org/terms-and-conditions/"
-  },
 
   "logonWithToken": {
     "maximarkets": "https://publicapi.maximarkets.org/account/logonWithToken?token=",
     "umarkets": "https://api.umarkets.com/account/logonWithToken?token="
   },
-
-  "likes":{
-    "updateLike": "/like/",
-    "getLikesNames": "/get_likes_names/"
-  },
-
-  "forecastPosts": {
-    "getForecastPosts": "/forecast_posts/"
-  },
-
-  "notices":{
-    "getNotice": "/get_notifications/",
-    "checkNotice": "/set_checked/",
-    "deleteNotice": "/delete_notification/",
-    "acceptCollaborator": "/invitations/accept_collaboration/",
-    "declineCollaboration": "/invitations/decline_collaboration/",
-    "acceptGroupInvitation": "/invitations/accept_group_invitation/",
-    "declineGroupInvitation": "/invitations/decline_group_invitation/",
-    "acceptCompanyInvitation": "/invitations/accept_company_invitation/",
-    "declineCompanyInvitation": "/invitations/decline_company_invitation/",
-    "getMembershipRequestsCount": "/membership_requests_count/"
-  },
-
   "signals": {
     "getSignals": "https://informer.maximarkets.org/wss/signals"
   },
