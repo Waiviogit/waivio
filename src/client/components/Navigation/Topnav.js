@@ -42,6 +42,15 @@ import Broker from '../../../investarena/components/Header/Broker';
   },
 )
 class Topnav extends React.Component {
+  static get  MENU_ITEMS() {
+    return {
+      HOME: 'home',
+      MY_FEED: 'myFeed',
+      MARKETS: 'markets',
+      DEALS: 'deals',
+    };
+  }
+
   static propTypes = {
     autoCompleteSearchResults: PropTypes.arrayOf(PropTypes.string),
     intl: PropTypes.shape().isRequired,
@@ -79,6 +88,7 @@ class Topnav extends React.Component {
       popoverVisible: false,
       searchBarValue: '',
       notificationsPopoverVisible: false,
+      selectedPage: this.setSelectedPage(),
     };
     this.handleMoreMenuSelect = this.handleMoreMenuSelect.bind(this);
     this.handleMoreMenuVisibleChange = this.handleMoreMenuVisibleChange.bind(this);
@@ -91,6 +101,22 @@ class Topnav extends React.Component {
     this.handleSearchForInput = this.handleSearchForInput.bind(this);
     this.handleOnChangeForAutoComplete = this.handleOnChangeForAutoComplete.bind(this);
     this.hideAutoCompleteDropdown = this.hideAutoCompleteDropdown.bind(this);
+    this.setSelectedPage = this.setSelectedPage.bind(this);
+    this.handleClickMenu = this.handleClickMenu.bind(this);
+  }
+
+  setSelectedPage() {
+    const { location } = this.props;
+    let currItem = '';
+    Object.values(Topnav.MENU_ITEMS)
+      .forEach(item => {
+        if (location.pathname.includes(`/${item}`)) {
+          currItem = item;
+          return false;
+        }
+        return true;
+      });
+    return currItem;
   }
 
   handleMoreMenuSelect(key) {
@@ -116,6 +142,8 @@ class Topnav extends React.Component {
       notificationsPopoverVisible: false,
     });
   }
+
+  handleClickMenu = e => this.setState({ selectedPage: e.key });
 
   menuForLoggedOut = () => {
     const { location } = this.props;
@@ -419,24 +447,25 @@ class Topnav extends React.Component {
         <div className="topnav-layout main-nav">
           <Menu
             selectedKeys={[this.state.selectedPage]}
+            onClick={this.handleClickMenu}
             mode="horizontal"
           >
-            <Menu.Item key="home">
-              <NavLink to="/trending">
+            <Menu.Item key={Topnav.MENU_ITEMS.HOME}>
+              <NavLink to="/home">
                 {intl.formatMessage({id: "home", defaultMessage: "Home"}).toUpperCase()}
               </NavLink>
             </Menu.Item>
-            <Menu.Item key="myFeed">
+            <Menu.Item key={Topnav.MENU_ITEMS.MY_FEED}>
               <NavLink to="/">
                 {intl.formatMessage({id: "my_feed", defaultMessage: "My feed"}).toUpperCase()}
               </NavLink>
             </Menu.Item>
-            <Menu.Item key="markets">
-              <NavLink to="/instruments">
+            <Menu.Item key={Topnav.MENU_ITEMS.MARKETS}>
+              <NavLink to="/markets">
                 {intl.formatMessage({id: "markets", defaultMessage: "Markets"}).toUpperCase()}
               </NavLink>
             </Menu.Item>
-            <Menu.Item key="deals">
+            <Menu.Item key={Topnav.MENU_ITEMS.DEALS}>
               <NavLink to="/deals">
                 {intl.formatMessage({id: "sidebar.nav.deals", defaultMessage: "Deals"}).toUpperCase()}
               </NavLink>
