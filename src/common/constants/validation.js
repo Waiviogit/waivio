@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { objectFields } from './listOfFields';
 
-export const objectNameValidationRegExp = /^[^\/&?%]{0,100}$/;
+export const objectNameValidationRegExp = /^[^!@#$%^&*(),.?":{}|<>]{0,100}$/;
 
 export const objectURLValidationRegExp = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
 

@@ -105,7 +105,7 @@ class CreateObject extends React.Component {
                 pattern: objectNameValidationRegExp,
                 message: intl.formatMessage({
                   id: 'validation_special_symbols',
-                  defaultMessage: 'Please dont use special simbols like "/", "?", "%", "&"',
+                  defaultMessage: 'Please use only letters and numbers',
                 }),
               },
             ],

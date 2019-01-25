@@ -69,7 +69,7 @@ class UserInfo extends React.Component {
       <div>
         {user.name && (
           <div style={{ wordBreak: 'break-word' }}>
-            <div style={{ fontSize: '18px' }}>{about}</div>
+            {about && <div style={{ fontSize: '18px' }}>{about}</div>}
             <div style={{ marginTop: 16, marginBottom: 16 }}>
               {location && (
                 <div>
