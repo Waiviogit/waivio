@@ -39,8 +39,8 @@ class PostForecast extends Component {
                 </div>
                 <div className="st-post-forecast-time">
                     <div className="st-post-forecast-time-title">{!this.props.isExpired
-                        ? this.props.intl.formatMessage({ id: 'postForecast.title' })
-                        : this.props.intl.formatMessage({ id: 'postForecast.expired' })}</div>
+                        ? this.props.intl.formatMessage({ id: 'postForecast.title', defaultMessage: 'Validity period' })
+                        : this.props.intl.formatMessage({ id: 'postForecast.expired', defaultMessage: 'Expired date' })}</div>
                     <div>{this.props.isExpired
                         ? timeExpired(this.props.expiredAt || this.props.postForecast, this.props.intl.locale)
                         : this.state.time}</div>
