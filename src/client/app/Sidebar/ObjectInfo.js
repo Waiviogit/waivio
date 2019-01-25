@@ -9,7 +9,6 @@ import { FormattedMessage } from 'react-intl';
 import { haveAccess, accessTypesArr, prepareAlbumData } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import './ObjectInfo.less';
-
 import {
   getFieldWithMaxWeight,
   getFieldsCount,
@@ -23,12 +22,11 @@ import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
 import IconButton from '../../components/IconButton';
 import CreateAlbum from '../../object/ObjectGallery/CreateAlbum';
-import { getAuthenticatedUserName, getIsAppendLoading } from '../../reducers';
+import { getIsAppendLoading } from '../../reducers';
 import { appendObject } from '../../object/appendActions';
 
 @connect(
   state => ({
-    currentUsername: getAuthenticatedUserName(state),
     loadingAlbum: getIsAppendLoading(state),
   }),
   { appendObject },
