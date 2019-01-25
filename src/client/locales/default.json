@@ -423,7 +423,7 @@
   "create_new_object_message2": "This object will be created in post form by WaivioBot.",
   "create_new_object_message3": "You do not spend additional resource credits and you will get a 70% of authors rewards.",
   "name_required": "Please enter name for new object",
-  "validation_special_symbols": "Please don't use special symbols like /, ?, %, &",
+  "validation_special_symbols": "Please use only letters and numbers",
   "validation_locale": "Please select your locale!",
   "validation_object_type": "Please select object type!",
   "placeholder_obj_type": "Select a option and change input text above",
