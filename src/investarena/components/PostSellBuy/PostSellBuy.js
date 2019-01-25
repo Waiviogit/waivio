@@ -53,7 +53,7 @@ const PostSellBuy = ({intl, quote, quoteSettings, recommend, postPrice, goQuoteP
                 </div>
                 <div className={`st-post-sell-buy-block st-post-recommend-${recommendPost}`}>
                     <div title={intl.formatMessage({ id: 'tips.recommendationType', defaultMessage: 'Forecast type' })} className={`st-post-sell-buy-icon-${recommendPost}`}>
-                        <FormattedMessage id={`postQuotation.recommend.${recommendPost}`} />
+                        <FormattedMessage id={`postQuotation.recommend.${recommendPost}`} defaultMessage={recommendPost.toUpperCase()}/>
                     </div>
                     <div title={intl.formatMessage({ id: 'tips.recommendationPrice', defaultMessage: 'Price at the beginning of the forecast' })}>
                         {quoteFormat(postPrice, quoteSettingsPost)}
@@ -71,7 +71,7 @@ const PostSellBuy = ({intl, quote, quoteSettings, recommend, postPrice, goQuoteP
                 </div>
                 <div className='d-flex st-margin-left-large'>
                     <span className='st-post-sell-buy-profitability' title={intl.formatMessage({ id: 'tips.profitabilityTitle', defaultMessage: 'The difference between the price at the time of publication of the post and the current price in pips'})}>
-                      <FormattedMessage id='postSellBuy.profitability' />
+                      <FormattedMessage id='postSellBuy.profitability' defaultMessage='Profitability'/>
                     </span>
                     <PostDifference quoteSettings = {quoteSettingsPost}
                         isExpired = {isExpired}
