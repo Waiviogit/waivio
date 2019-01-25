@@ -130,13 +130,19 @@ export default class User extends React.Component {
     } catch (error) {
       // jsonMetadata = user.json_metadata || {}
     }
+    let desc = `Posts by ${username}`;
+    let displayedUsername = username;
+    let coverImage = null;
+    if (profile) {
+      desc = profile.about || `Posts by ${username}`;
+      displayedUsername = profile.name || username || '';
+      coverImage = profile.cover_image;
+    }
+    const hasCover = !!coverImage;
     const busyHost = global.postOrigin || 'https://busy.org';
-    const desc = profile.about || `Posts by ${username}`;
     const image = getAvatarURL(username) || '/images/logo.png';
     const canonicalUrl = `${busyHost}/@${username}`;
     const url = `${busyHost}/@${username}`;
-    const displayedUsername = profile.name || username || '';
-    const hasCover = !!profile.cover_image;
     const title = `${displayedUsername} - Waivio`;
 
     const isSameUser = authenticated && authenticatedUser.name === username;
@@ -147,14 +153,12 @@ export default class User extends React.Component {
           <title>{title}</title>
           <link rel="canonical" href={canonicalUrl} />
           <meta property="description" content={desc} />
-
           <meta property="og:title" content={title} />
           <meta property="og:type" content="article" />
           <meta property="og:url" content={url} />
           <meta property="og:image" content={image} />
           <meta property="og:description" content={desc} />
-          <meta property="og:site_name" content="Busy" />
-
+          <meta property="og:site_name" content="Waivio" />
           <meta property="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
           <meta property="twitter:site" content={'@steemit'} />
           <meta property="twitter:title" content={title} />
@@ -171,7 +175,7 @@ export default class User extends React.Component {
             user={user}
             username={displayedUsername}
             isSameUser={isSameUser}
-            coverImage={profile.cover_image}
+            coverImage={coverImage}
             isFollowing={isFollowing}
             hasCover={hasCover}
             onFollowClick={this.handleFollowClick}
