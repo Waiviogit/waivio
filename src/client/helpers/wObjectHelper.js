@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { getField } from '../objects/WaivioObject';
 
 export const accessTypesArr = ['is_extending_open', 'is_posting_open'];
 
@@ -16,4 +17,27 @@ export const generateRandomString = stringLength => {
     randomString += String.fromCharCode(randomAscii);
   }
   return randomString;
+};
+
+export const prepareAlbumData = (form, currentUsername, wObject) => {
+  const data = {};
+  data.author = currentUsername;
+  data.parentAuthor = wObject.author;
+  data.parentPermlink = wObject.author_permlink;
+  data.body = `@${data.author} created a new album: ${form.galleryAlbum}.`;
+  data.title = '';
+
+  data.field = {
+    name: 'galleryAlbum',
+    body: form.galleryAlbum,
+    locale: 'en-US',
+  };
+
+  data.permlink = `${data.author}-${Math.random()
+    .toString(36)
+    .substring(2)}`;
+  data.lastUpdated = Date.now();
+
+  data.wobjectName = getField(wObject, 'name');
+  return data;
 };
