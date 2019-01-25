@@ -42,7 +42,7 @@ class ObjectInfo extends React.Component {
     let avatar = '';
     let short = '';
     let background = '';
-
+    let albumsCount = 0;
     if (wobject) {
       addressArr = Object.values(addressFields).map(fieldName =>
         getFieldWithMaxWeight(wobject, objectFields.address, fieldName),
@@ -61,6 +61,7 @@ class ObjectInfo extends React.Component {
       websiteFields = getWebsiteField(wobject);
       title = websiteFields.title;
       link = websiteFields.body;
+      albumsCount = wobject.preview_gallery ? wobject.preview_gallery.length : 0;
     }
 
     if (link && link.indexOf('http://') === -1 && link.indexOf('https://') === -1) {
@@ -128,13 +129,14 @@ class ObjectInfo extends React.Component {
                       <FormattedMessage id="object_field_gallery" defaultMessage="Gallery" />
                     </div>
                   </Link>
+                  <span className="proposition-line__text">({albumsCount})</span>
                 </div>
-                {wobject.preview_gallery && wobject.preview_gallery[0] ? (
+                {wobject.preview_gallery && wobject.preview_gallery[0] && (
                   <PicturesCarousel
                     pics={wobject.preview_gallery}
                     objectID={wobject.author_permlink}
                   />
-                ) : null}
+                )}
               </div>
             )}
             {listItem(
