@@ -4,6 +4,7 @@
 @base-spacing: 0;
 
 .Topnav {
+  position: relative;
   background-color: @black;
   height: 96px;
   line-height: 52px;
@@ -238,21 +239,34 @@
     }
   }
   .main-nav {
-    display: flex;
-    justify-content: space-between;
-    min-width: 655px;
+    display: block;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+
     .st-header-broker-balance-pl-wrap {
-      color: @white;
+      display: none;
+    }
+
+    @media @small, @medium, @large {
+      position: unset;
       display: flex;
       justify-content: space-between;
-    }
-    .st-balance-border {
-      padding: 0 10px;
-      border-left: 1px solid @white;
-      display: flex;
-      flex-direction: column;
-      line-height: 14px;
-      margin-bottom: 10px;
+
+      .st-header-broker-balance-pl-wrap {
+        color: @white;
+        display: flex;
+        justify-content: space-between;
+
+        .st-balance-border {
+          padding: 0 10px;
+          border-left: 1px solid @white;
+          display: flex;
+          flex-direction: column;
+          line-height: 14px;
+          margin-bottom: 10px;
+        }
+      }
     }
   }
 }
