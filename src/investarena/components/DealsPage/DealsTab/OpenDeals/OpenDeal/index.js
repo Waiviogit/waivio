@@ -13,7 +13,6 @@ const propTypes = {
     openDeal: PropTypes.object.isRequired,
     quoteSecurity: PropTypes.string.isRequired,
     dealPnL: PropTypes.string.isRequired,
-    showNotification: PropTypes.func,
     platformName: PropTypes.string.isRequired,
     viewMode: PropTypes.oneOf(['list', 'cards'])
 };
@@ -34,10 +33,4 @@ const mapState = () => {
     };
 };
 
-function mapDispatchToProps (dispatch) {
-    return {
-        showNotification: (status, message) => dispatch(showNotification({status: status, message: message}))
-    };
-}
-
-export default connect(mapState, mapDispatchToProps)(OpenDealContainer);
+export default connect(mapState)(OpenDealContainer);

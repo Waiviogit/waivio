@@ -32,17 +32,18 @@ class InstrumentsPage extends Component {
             trends: [],
             updatedQuoteSettings: {},
             signals: {},
-            viewMode: 'list',
+            viewMode: null,
             wobjs: []
         };
     }
-
+    componentWillMount () {
+      this.state.viewMode = getViewMode('instruments');
+    }
     componentDidMount () {
         this.props.getChartsData();
         getAllSignals().then(({ data, error }) => {
-          const currentViewMode = getViewMode('instruments');
             if (!error && data) {
-                this.setState({signals: data, viewMode: currentViewMode});
+                this.setState({signals: data});
             }
         });
     }
@@ -84,110 +85,108 @@ class InstrumentsPage extends Component {
     render () {
         return (
             <div className="st-instr-page">
-                <div className="shifted">
-                    <div className="feed-layout container">
-                          <div className="st-instruments-controls"/>
-                         <div className="st-assets-wrap">
-                            <Tabs defaultActiveKey="1">
-                              <TabPane tab={this.props.intl.formatMessage({ id: 'sidebarWidget.tabTitle.favorites', defaultMessage: 'Favorites' })} key="1">
-                                {this.props.favorites.length !== 0 ? (
-                                  <AssetsTab
-                                    quotes={this.props.quotes}
-                                    charts={this.props.charts}
-                                    signals={this.state.signals}
-                                    deals={this.props.openDeals}
-                                    quoteSettings={this.props.quoteSettings}
-                                    title='Favorites'
-                                    favorites={this.props.favorites}
-                                    trends={this.state.trends}
-                                    viewMode={this.state.viewMode}
-                                  />
-                                ) : (
-                                  <div className="st-quotes-no-present">
-                                    <div className="st-quotes-no-present-wrap">
-                                      <div>
-                                        {this.props.intl.formatMessage({ id: 'favorites.quotesNotPresentPart1', defaultMessage: 'You do not have favorite quotes. Go to the \'All\' tab and click' })}
-                                        <svg height="18" viewBox="0 -3 24 24" width="18" xmlns="http://www.w3.org/2000/svg">
-                                          <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                                          <path d="M0 0h24v24H0z" fill="none"/>
-                                        </svg>
-                                        {this.props.intl.formatMessage({ id: 'favorites.quotesNotPresentPart2', defaultMessage: 'to select favorite quote.' })}
-                                      </div>
-                                    </div>
-                                  </div>
-                                )
-                                }
-                              </TabPane>
-                                <TabPane tab={this.props.intl.formatMessage({ id: 'modalAssets.cryptocurrencies', defaultMessage: 'Cryptocurrencies' })} key="2">
-                                  <AssetsTab
-                                  quotes={this.props.quotes}
-                                  charts={this.props.charts}
-                                  signals={this.state.signals}
-                                  deals={this.props.openDeals}
-                                  quoteSettings={this.props.quoteSettings}
-                                  title='CryptoCurrency'
-                                  favorites={this.props.favorites}
-                                  trends={this.state.trends}
-                                  viewMode={this.state.viewMode}/>
-                                </TabPane>
-                                <TabPane tab={this.props.intl.formatMessage({ id: 'modalAssets.currencies', defaultMessage: 'Currency' })} key="3">
-                                  <AssetsTab
-                                    quotes={this.props.quotes}
-                                    charts={this.props.charts}
-                                    signals={this.state.signals}
-                                    deals={this.props.openDeals}
-                                    quoteSettings={this.props.quoteSettings}
-                                    title='Currency'
-                                    favorites={this.props.favorites}
-                                    trends={this.state.trends}
-                                    viewMode={this.state.viewMode}/>
-                                </TabPane>
-                                <TabPane tab={this.props.intl.formatMessage({ id: 'modalAssets.commodities', defaultMessage: 'Commodity' })} key="4">
-                                  <AssetsTab
-                                    quotes={this.props.quotes}
-                                    charts={this.props.charts}
-                                    signals={this.state.signals}
-                                    deals={this.props.openDeals}
-                                    quoteSettings={this.props.quoteSettings}
-                                    title='Commodity'
-                                    favorites={this.props.favorites}
-                                    trends={this.state.trends}
-                                    viewMode={this.state.viewMode}/>
-                                </TabPane>
-                                <TabPane tab={this.props.intl.formatMessage({ id: 'modalAssets.stocks', defaultMessage: 'Stocks' })} key="5">
-                                  <AssetsTab
-                                    quotes={this.props.quotes}
-                                    charts={this.props.charts}
-                                    signals={this.state.signals}
-                                    deals={this.props.openDeals}
-                                    quoteSettings={this.props.quoteSettings}
-                                    title='Stock'
-                                    favorites={this.props.favorites}
-                                    trends={this.state.trends}
-                                    viewMode={this.state.viewMode}/>
-                                </TabPane>
-                                <TabPane tab={this.props.intl.formatMessage({ id: 'modalAssets.indices', defaultMessage: 'Indices' })} key="6">
-                                  <AssetsTab
-                                    quotes={this.props.quotes}
-                                    charts={this.props.charts}
-                                    signals={this.state.signals}
-                                    deals={this.props.openDeals}
-                                    quoteSettings={this.props.quoteSettings}
-                                    title='Index'
-                                    favorites={this.props.favorites}
-                                    trends={this.state.trends}
-                                    viewMode={this.state.viewMode}/>
-                                </TabPane>
-                            </Tabs>
-                           <div role='presentation' className="st-instruments-toggle-view" onClick={this.toggleViewMode}>
-                             {this.state.viewMode === 'list'
-                               ? <img alt="cards" className="st-instruments-toggle-view__icon" src="/images/icons/grid-view.svg"/>
-                               : <img alt="list" className="st-instruments-toggle-view__icon" src="/images/icons/list-of-items.svg"/>
-                             }
-                           </div>
-                        </div>
-                      </div>
+              <div className="feed-layout container">
+                    <div className="st-instruments-controls"/>
+                   <div className="st-assets-wrap">
+                      <Tabs defaultActiveKey="1">
+                        <TabPane tab={this.props.intl.formatMessage({ id: 'sidebarWidget.tabTitle.favorites', defaultMessage: 'Favorites' })} key="1">
+                          {this.props.favorites.length !== 0 ? (
+                            <AssetsTab
+                              quotes={this.props.quotes}
+                              charts={this.props.charts}
+                              signals={this.state.signals}
+                              deals={this.props.openDeals}
+                              quoteSettings={this.props.quoteSettings}
+                              title='Favorites'
+                              favorites={this.props.favorites}
+                              trends={this.state.trends}
+                              viewMode={this.state.viewMode}
+                            />
+                          ) : (
+                            <div className="st-quotes-no-present">
+                              <div className="st-quotes-no-present-wrap">
+                                <div>
+                                  {this.props.intl.formatMessage({ id: 'favorites.quotesNotPresentPart1', defaultMessage: 'You do not have favorite quotes. Go to the \'All\' tab and click' })}
+                                  <svg height="18" viewBox="0 -3 24 24" width="18" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                    <path d="M0 0h24v24H0z" fill="none"/>
+                                  </svg>
+                                  {this.props.intl.formatMessage({ id: 'favorites.quotesNotPresentPart2', defaultMessage: 'to select favorite quote.' })}
+                                </div>
+                              </div>
+                            </div>
+                          )
+                          }
+                        </TabPane>
+                          <TabPane tab={this.props.intl.formatMessage({ id: 'modalAssets.cryptocurrencies', defaultMessage: 'Cryptocurrencies' })} key="2">
+                            <AssetsTab
+                            quotes={this.props.quotes}
+                            charts={this.props.charts}
+                            signals={this.state.signals}
+                            deals={this.props.openDeals}
+                            quoteSettings={this.props.quoteSettings}
+                            title='CryptoCurrency'
+                            favorites={this.props.favorites}
+                            trends={this.state.trends}
+                            viewMode={this.state.viewMode}/>
+                          </TabPane>
+                          <TabPane tab={this.props.intl.formatMessage({ id: 'modalAssets.currencies', defaultMessage: 'Currency' })} key="3">
+                            <AssetsTab
+                              quotes={this.props.quotes}
+                              charts={this.props.charts}
+                              signals={this.state.signals}
+                              deals={this.props.openDeals}
+                              quoteSettings={this.props.quoteSettings}
+                              title='Currency'
+                              favorites={this.props.favorites}
+                              trends={this.state.trends}
+                              viewMode={this.state.viewMode}/>
+                          </TabPane>
+                          <TabPane tab={this.props.intl.formatMessage({ id: 'modalAssets.commodities', defaultMessage: 'Commodity' })} key="4">
+                            <AssetsTab
+                              quotes={this.props.quotes}
+                              charts={this.props.charts}
+                              signals={this.state.signals}
+                              deals={this.props.openDeals}
+                              quoteSettings={this.props.quoteSettings}
+                              title='Commodity'
+                              favorites={this.props.favorites}
+                              trends={this.state.trends}
+                              viewMode={this.state.viewMode}/>
+                          </TabPane>
+                          <TabPane tab={this.props.intl.formatMessage({ id: 'modalAssets.stocks', defaultMessage: 'Stocks' })} key="5">
+                            <AssetsTab
+                              quotes={this.props.quotes}
+                              charts={this.props.charts}
+                              signals={this.state.signals}
+                              deals={this.props.openDeals}
+                              quoteSettings={this.props.quoteSettings}
+                              title='Stock'
+                              favorites={this.props.favorites}
+                              trends={this.state.trends}
+                              viewMode={this.state.viewMode}/>
+                          </TabPane>
+                          <TabPane tab={this.props.intl.formatMessage({ id: 'modalAssets.indices', defaultMessage: 'Indices' })} key="6">
+                            <AssetsTab
+                              quotes={this.props.quotes}
+                              charts={this.props.charts}
+                              signals={this.state.signals}
+                              deals={this.props.openDeals}
+                              quoteSettings={this.props.quoteSettings}
+                              title='Index'
+                              favorites={this.props.favorites}
+                              trends={this.state.trends}
+                              viewMode={this.state.viewMode}/>
+                          </TabPane>
+                      </Tabs>
+                     <div role='presentation' className="st-instruments-toggle-view" onClick={this.toggleViewMode}>
+                       {this.state.viewMode === 'list'
+                         ? <img alt="cards" className="st-instruments-toggle-view__icon" src="/images/icons/grid-view.svg"/>
+                         : <img alt="list" className="st-instruments-toggle-view__icon" src="/images/icons/list-of-items.svg"/>
+                       }
+                     </div>
                   </div>
+                </div>
               </div>
         );
     }

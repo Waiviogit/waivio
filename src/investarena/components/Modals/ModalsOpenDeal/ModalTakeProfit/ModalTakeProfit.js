@@ -11,7 +11,6 @@ const propTypes = {
   quote: PropTypes.object,
   quoteSettings: PropTypes.object,
   openDeal: PropTypes.object.isRequired,
-  showNotification: PropTypes.func.isRequired
 };
 
 class ModalTakeProfit extends Component {
@@ -46,7 +45,6 @@ class ModalTakeProfit extends Component {
                       openDeal = {this.props.openDeal}
                       quote = {this.props.quote}
                       quoteSettings = {this.props.quoteSettings}
-                      // showNotification = {this.props.showNotification}
                       toggle = {this.toggle}
                     />
                   </Modal>

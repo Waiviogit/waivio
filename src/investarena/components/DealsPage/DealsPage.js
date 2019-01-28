@@ -11,6 +11,7 @@ import './DealsPage.less';
 const propTypes = {
   quotes: PropTypes.object.isRequired,
   quoteSettings: PropTypes.object.isRequired,
+  intl: PropTypes.shape().isRequired,
   platformName: PropTypes.string.isRequired,
   platformConnect: PropTypes.bool.isRequired,
   viewMode: PropTypes.oneOf(['list', 'cards']),
@@ -73,7 +74,16 @@ class DealsPage extends Component {
       <div className="st-deals-page container">
         <div className="st-instruments-details">
           {this.props.platformName !== 'widgets' ? (
+            <React.Fragment>
             <DealsTab viewMode={this.state.viewMode} />
+            <div className="st-deals-toggle-view" onClick={this.toggleViewMode}>
+              {this.state.viewMode === 'list' ?
+                <img alt='card' className="st-deals-toggle-view__icon" src="/images/icons/grid-view.svg" />
+                 :
+                <img alt='list' className="st-deals-toggle-view__icon" src="/images/icons/list-of-items.svg" />
+              }
+            </div>
+            </React.Fragment>
           ) : (
             <div className="st-deals-wrap st-connect-to-broker-wrap">
               <span className="st-margin-bottom-large">
@@ -85,13 +95,6 @@ class DealsPage extends Component {
               {/*<ButtonBroker />*/}
             </div>
           )}
-          <div className="st-deals-toggle-view" onClick={this.toggleViewMode}>
-            {this.state.viewMode === 'list' ? (
-              <img className="st-deals-toggle-view__icon" src="/images/icons/grid-view.svg" />
-            ) : (
-              <img className="st-deals-toggle-view__icon" src="/images/icons/list-of-items.svg" />
-            )}
-          </div>
         </div>
       </div>
     );

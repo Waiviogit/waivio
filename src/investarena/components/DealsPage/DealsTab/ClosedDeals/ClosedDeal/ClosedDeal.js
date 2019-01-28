@@ -22,7 +22,7 @@ const ClosedDeal = ({quoteSettings, closedDeal, quoteSecurity, intl, viewMode}) 
     const direction = closedDeal.side === 'LONG' || closedDeal.side === 'BUY' ? 'buy' : 'sell';
     const directionCaption = <div className={`st-type st-deal-direction-${direction}`}>{direction}</div>;
     const instrumentName =
-        <Link to={`/quote/${quoteSecurity}`}>
+        <Link to={`/object/@${closedQuoteSettings.wobjData.author_permlink}`}>
             <div className='st-instruments-text' data-test = "amount-opened-deal">
                 <div>{closedQuoteSettings.name}</div>
             </div>
@@ -46,7 +46,11 @@ const ClosedDeal = ({quoteSettings, closedDeal, quoteSecurity, intl, viewMode}) 
             <div className="st-open-deal-wrapper st-card">
                 <div className="st-card__header">
                     <div className="st-instrument-avatar-wrap">
-                        <InstrumentAvatar quoteSecurity={quoteSecurity} market={closedQuoteSettings.market}/>
+                      <InstrumentAvatar
+                        avatarlink={closedQuoteSettings.wobjData.avatarlink}
+                        market={closedQuoteSettings.market}
+                        permlink={closedQuoteSettings.wobjData.author_permlink}
+                      />
                         {directionCaption}
                     </div>
                     <div className="st-instrument-name-wrap">

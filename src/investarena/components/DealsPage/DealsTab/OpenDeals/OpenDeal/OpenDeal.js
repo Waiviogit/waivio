@@ -17,21 +17,20 @@ import './OpenDeal.less';
 const propTypes = {
     quote: PropTypes.object,
     quoteSettings: PropTypes.object,
-    openDeal: PropTypes.object.isRequired,
+    openDeal: PropTypes.shape().isRequired,
+    intl: PropTypes.shape().isRequired,
     quoteSecurity: PropTypes.string.isRequired,
-    platformName: PropTypes.string.isRequired,
-    showNotification: PropTypes.func.isRequired,
     viewMode: PropTypes.oneOf(['list', 'cards'])
 };
 
-const OpenDeal = ({intl, quote, quoteSettings, openDeal, quoteSecurity, showNotification, dealPnL, viewMode, platformName}) => {
+const OpenDeal = ({intl, quote, quoteSettings, openDeal, quoteSecurity, dealPnL, viewMode}) => {
     const quoteDeal = quote || quoteData;
     const quoteSettingsDeal = quoteSettings || quoteSettingsData;
     const direction = openDeal.side === 'LONG' || openDeal.side === 'BUY' ? 'buy' : 'sell';
     const marketPrice = openDeal.side === 'LONG' || openDeal.side === 'BUY' ? quoteDeal.askPrice : quoteDeal.bidPrice;
     const directionCaption = <span className={`st-type st-deal-direction-${direction}`}>{direction}</span>;
     const instrumentName =
-        <Link to={`/quote/${quoteSecurity}`}>
+        <Link to={`/object/@${quoteSettingsDeal.wobjData.autor_permlink}`}>
             <div className="st-instruments-text" data-test = "amount-opened-deal">
                 <span>{quoteSettingsDeal.name}</span>
             </div>
@@ -70,13 +69,11 @@ const OpenDeal = ({intl, quote, quoteSettings, openDeal, quoteSecurity, showNoti
         openDeal = {openDeal}
         quote = {quoteDeal}
         quoteSettings = {quoteSettingsDeal}
-        showNotification = {showNotification}
     />;
     const modalSL = <ModalStopLoss
         openDeal = {openDeal}
         quote = {quoteDeal}
         quoteSettings = {quoteSettingsDeal}
-        showNotification = {showNotification}
     />;
     const modalCloseDeal = <ModalClose
         openDealId={openDeal.dealId}
@@ -88,7 +85,11 @@ const OpenDeal = ({intl, quote, quoteSettings, openDeal, quoteSecurity, showNoti
             <div className="st-open-deal-wrapper st-card">
                 <div className="st-card__header">
                     <div className="st-instrument-avatar-wrap">
-                        <InstrumentAvatar quoteSecurity={quoteSecurity} market={quoteSettingsDeal.market}/>
+                        <InstrumentAvatar
+                          permlink={quoteSettingsDeal.wobjData.author_permlink}
+                          market={quoteSettingsDeal.market}
+                          avatarlink={quoteSettingsDeal.wobjData.avatarlink}
+                        />
                         {directionCaption}
                     </div>
                     <div className="st-instrument-name-wrap">
@@ -121,7 +122,11 @@ const OpenDeal = ({intl, quote, quoteSettings, openDeal, quoteSecurity, showNoti
                     <div className="st-open-deal-header">
                         <div className="st-open-deal-header-line">
                             <span className="st-id">{openDeal.dealSequenceNumber}</span>
-                            <InstrumentAvatar quoteSecurity={quoteSecurity} market={quoteSettingsDeal.market}/>
+                            <InstrumentAvatar
+                              avatarlink={quoteSettings.wobjData.avatarlink}
+                              market={quoteSettingsDeal.market}
+                              permlink={quoteSettings.wobjData.author_permlink}
+                            />
                             {instrumentName}
                             {directionCaption}
                             {dealAmount}

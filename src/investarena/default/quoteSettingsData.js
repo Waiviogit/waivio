@@ -10,5 +10,6 @@ export default {
     tickSize: null,
     popular: null,
     ID: null,
-    isSession: false
+    isSession: false,
+    wobj: {fields: {}}
 };
