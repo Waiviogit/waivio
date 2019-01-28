@@ -100,7 +100,7 @@ class Drafts extends React.Component {
           <title>{intl.formatMessage({ id: 'drafts', defaultMessage: 'Drafts' })} - Waivio</title>
         </Helmet>
         <div className="drafts-layout container">
-          <Affix className="leftContainer" stickPosition={77}>
+          <Affix className="leftContainer" stickPosition={115}>
             <div className="left">
               <LeftSidebar />
             </div>
