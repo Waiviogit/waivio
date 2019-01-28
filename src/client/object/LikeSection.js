@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { Checkbox, Form } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import RawSlider from '../components/Slider/RawSlider';
-import './AppendForm.less';
+import './LikeSection.less';
 
 const LikeSection = ({ voteWorth, votePercent, handleVotePercentChange, form }) => (
-  <div className="like-wrapper">
+  <div className="LikeSection">
     <Form.Item>
       {form.getFieldDecorator('like', {
         valuePropName: 'checked',
