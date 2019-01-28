@@ -35,10 +35,12 @@ export default function withEditor(WrappedComponent) {
       intl: PropTypes.shape().isRequired,
       user: PropTypes.shape().isRequired,
       locale: PropTypes.string,
+      voteObject: PropTypes.func.isRequired,
     };
 
     static defaultProps = {
       locale: 'auto',
+      voteObject: () => {},
     };
 
     getObjectsByAuthorPermlinks = objectIds => {

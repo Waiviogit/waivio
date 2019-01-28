@@ -16,7 +16,14 @@ import {
   websiteFields,
   objectImageFields,
 } from '../../common/constants/listOfFields';
-import { getObject, getAuthenticatedUserName, getIsAppendLoading } from '../reducers';
+import {
+  getObject,
+  getAuthenticatedUserName,
+  getIsAppendLoading,
+  getUser,
+  getRewardFund,
+  getRate,
+} from '../reducers';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
 import QuickPostEditorFooter from '../components/QuickPostEditor/QuickPostEditorFooter';
@@ -34,14 +41,18 @@ import {
   objectNameValidationRegExp,
   objectURLValidationRegExp,
 } from '../../common/constants/validation';
-import RawSlider from '../components/Slider/RawSlider';
-import { IMAGE_STATUS, testImage } from './wObjectHelper';
+import { getVoteValue } from '../helpers/user';
+import { calculateVotingPower } from '../vendor/steemitHelpers';
+import LikeSection from './LikeSection';
 
 @connect(
-  state => ({
+  (state, ownProps) => ({
     currentUsername: getAuthenticatedUserName(state),
     wObject: getObject(state),
     loading: getIsAppendLoading(state),
+    user: getUser(state, ownProps.currentUsername),
+    rewardFund: getRewardFund(state),
+    rate: getRate(state),
   }),
   { appendObject },
 )
@@ -61,6 +72,9 @@ export default class AppendForm extends Component {
     form: PropTypes.shape(),
     appendObject: PropTypes.func,
     intl: PropTypes.shape(),
+    user: PropTypes.shape(),
+    rewardFund: PropTypes.shape(),
+    rate: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -75,13 +89,17 @@ export default class AppendForm extends Component {
     form: {},
     appendObject: () => {},
     intl: {},
+    user: {},
+    rewardFund: {},
+    rate: {},
   };
 
   state = {
     isSomeValue: true,
     imageUploading: false,
     currentImage: [],
-    votePercent: 10000,
+    votePercent: 100,
+    isValidImage: false,
   };
 
   onSubmit = form => {
@@ -117,13 +135,14 @@ export default class AppendForm extends Component {
 
     const field = getFieldValue('currentField');
     let locale = getFieldValue('currentLocale');
+    const like = getFieldValue('like');
 
     if (locale === 'auto') locale = 'en-US';
 
     const data = {};
 
     const getBody = formField => {
-      const { body, preview, currentField, currentLocale, ...rest } = formField;
+      const { body, preview, currentField, currentLocale, like: likeFlag, ...rest } = formField;
 
       switch (currentField) {
         case objectFields.name:
@@ -171,6 +190,11 @@ export default class AppendForm extends Component {
     data.lastUpdated = Date.now();
 
     data.wobjectName = getField(wObject, 'name');
+
+    if (like) {
+      data.like = like;
+      data.votePower = this.state.votePercent * 100;
+    }
 
     return data;
   };
@@ -440,20 +464,11 @@ export default class AppendForm extends Component {
                 />,
               )}
             </Form.Item>
-            {imageLink &&
-              testImage(imageLink, (url, result) => {
-                if (IMAGE_STATUS.ERROR === result || IMAGE_STATUS.TIMEOUT === result) {
-                  return (
-                    <div className="AppendForm__preview-invalid">An image cannot be loaded.</div>
-                  );
-                }
-
-                return (
-                  <div className="AppendForm__previewWrap">
-                    <img src={url} alt="pic" className="AppendForm__preview" />
-                  </div>
-                );
-              })}
+            {imageLink && (
+              <div className="AppendForm__previewWrap">
+                <img src={imageLink} alt="pic" className="AppendForm__preview" />
+              </div>
+            )}
           </div>
         );
       }
@@ -908,7 +923,7 @@ export default class AppendForm extends Component {
   };
 
   render() {
-    const { currentLocale, currentField, loading } = this.props;
+    const { currentLocale, currentField, loading, rewardFund, user, rate } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
 
     const languageOptions = [];
@@ -945,6 +960,17 @@ export default class AppendForm extends Component {
       );
     });
 
+    const votePower = calculateVotingPower(user);
+
+    const voteWorth =
+      getVoteValue(
+        user,
+        rewardFund.recent_claims,
+        rewardFund.reward_balance,
+        rate,
+        votePower * 1000,
+      ) * this.state.votePercent;
+
     return (
       <Form className="AppendForm" layout="vertical" onSubmit={this.handleSubmit}>
         <div className="ant-form-item-label label AppendForm__appendTitles">
@@ -954,11 +980,7 @@ export default class AppendForm extends Component {
         <Form.Item>
           {getFieldDecorator('currentField', {
             initialValue: currentField,
-          })(
-            <Select style={{ width: '100%' }} onChange={this.handleOnChange}>
-              {fieldOptions}
-            </Select>,
-          )}
+          })(<Select style={{ width: '100%' }}>{fieldOptions}</Select>)}
         </Form.Item>
 
         <div className="ant-form-item-label AppendForm__appendTitles">
@@ -973,12 +995,11 @@ export default class AppendForm extends Component {
 
         {this.renderContentValue(getFieldValue('currentField'))}
 
-        <div>
-          <RawSlider
-            initialValue={this.state.votePercent}
-            onChange={this.handleVotePercentChange}
-          />
-        </div>
+        <LikeSection
+          handleVotePercentChange={this.handleVotePercentChange}
+          votePercent={this.state.votePercent}
+          voteWorth={voteWorth}
+        />
 
         {getFieldValue('currentField') !== 'auto' && (
           <Form.Item className="AppendForm__bottom__submit">

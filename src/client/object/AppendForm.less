@@ -130,6 +130,25 @@
       color: @black !important;
     }
   }
+
+  .like-wrapper {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    .like-slider {
+      & .RawSlider {
+        max-width: none;
+        width: 100%;
+      }
+    }
+    .like-worth {
+      align-self: center;
+      margin-bottom: 16px;
+    }
+  }
+  .warning-wrapper {
+    text-align: justify;
+  }
 }
 
 div[data-dir='rtl'] .Editor {
