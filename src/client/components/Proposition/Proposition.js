@@ -42,13 +42,15 @@ class Proposition extends React.Component {
             </Link>
           </div>
         </div>
-        <AppendModal
-          objName={objName}
-          showModal={showModal}
-          hideModal={this.handleToggleModal}
-          locale={'en-US'}
-          field={fieldName}
-        />
+        {showModal && (
+          <AppendModal
+            objName={objName}
+            showModal={showModal}
+            hideModal={this.handleToggleModal}
+            locale={'en-US'}
+            field={fieldName}
+          />
+        )}
       </React.Fragment>
     );
   }

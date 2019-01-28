@@ -364,7 +364,7 @@
   "discover_more_objects": "Discover more objects",
   "weight_score_value": "Weight score: {value}",
   "editor_linked_objects": "Linked objects",
-  "objects_auto_complete_placeholder": "Input object name here",
+  "objects_auto_complete_placeholder": "Find",
   "create": "create",
   "remove": "remove",
   "discover_more_objects_info": "Discover the most ranked objects of this platform",
@@ -456,5 +456,6 @@
   "title_website_placeholder": "Title",
   "object_field_website": "Website",
   "website_validation": "Please enter valid website",
-  "write_new_review": "Write new review"
+  "write_new_review": "Write new review",
+  "add_object": "Add object"
 }

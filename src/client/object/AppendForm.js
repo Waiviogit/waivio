@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -143,11 +144,12 @@ export default class AppendForm extends Component {
     data.author = this.props.currentUsername;
     data.parentAuthor = wObject.author;
     data.parentPermlink = wObject.author_permlink;
-    data.body = `@${data.author} suggests adding the following field(s): ${getBody(
-      form,
-    )} with locale: ${locale}`;
+    const langReadable = _.filter(LANGUAGES, { id: locale })[0].name;
+    data.body = `@${data.author} added ${field}(${langReadable}):\n ${getBody(form).replace(
+      /[{}"]/g,
+      '',
+    )}`;
     data.title = '';
-
     let fieldsObject = {
       name: field,
       body: getBody(form),

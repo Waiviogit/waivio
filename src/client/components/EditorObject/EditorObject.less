@@ -12,7 +12,7 @@
   border: 1px solid @blue-hawkesBlue;
   border-radius: 4px;
   margin-top: 5px;
-  padding: @padding;
+  padding: 15px;
 
   &.validation-error {
     border: 1px solid @red;
@@ -35,13 +35,19 @@
       visibility: visible;
     }
   }
+  .background-transparent {
+    display: flex;
+    background: rgba(255, 255, 255, 0.6);
+    padding: 10px;
+    width: 100%;
+  }
   &__content {
     display: flex;
     flex-flow: column nowrap;
     align-items: flex-start;
     height: @height-row-info + @height-row-slider;
-    width: 85%;
     outline: none;
+    width: 97%;
     &.row {
       display: flex;
       flex-flow: row nowrap;
@@ -55,7 +61,8 @@
         width: 100%;
       }
       .label {
-        color: rgba(0, 0, 0, 0.45);
+        color: @black;
+        font-weight: bold;
         width: @height-row-info + 2 * @padding;
         text-align: center;
       }
@@ -65,16 +72,21 @@
   &__avatar {
     height: @height-row-info;
     width: @height-row-info;
-    //border-radius: 30%;
     margin-right: @padding;
   }
 
+  &__rankWrap {
+    display: flex;
+  }
   &__info {
     display: flex;
     flex-direction: column;
     width: 100%;
+    color: @black;
     &.name {
       font-weight: 500;
+      color: @primary-color;
+      text-shadow: 1px 2px 0 @black;
     }
   }
   &__truncated {
@@ -85,20 +97,15 @@
   }
   .editor-object__controls {
     display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: flex-start;
+    align-items: flex-start;
     height: @height-row-info + @height-row-slider;
-    padding-right: @padding;
 
     .editor-object__control-item {
       font-size: 18px;
       font-weight: 500;
-
-      &.create {
-        color: @green;
-      }
       &.delete {
-        color: @red;
+        color: @tertiary-color;
       }
       & > .item-text {
         display: none;
@@ -117,31 +124,21 @@
       overflow: hidden;
     }
     .editor-object__controls {
-      align-items: stretch;
-      min-width: 90px;
-
       .editor-object__control-item {
         display: flex;
-        align-items: center;
+        align-items: flex-end;
         font-weight: 500;
-        &.create {
-          color: @green-darker;
-          &:hover {
-            cursor: pointer;
-            color: @green;
-          }
-        }
         &.delete {
-          visibility: hidden;
-          color: @red;
+          color: @black;
+          text-shadow: 1px 2px 0 @black;
+
           &:hover {
             cursor: pointer;
-            color: @orange-light;
+            color: @secondary-color;
           }
         }
         & > .item-icon {
           font-size: 22px;
-          padding-right: 2px;
         }
         & > .item-text {
           display: inline;
