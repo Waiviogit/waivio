@@ -15,22 +15,22 @@ import quoteSettingsData from '../../../../../default/quoteSettingsData';
 import './OpenDeal.less';
 
 const propTypes = {
-    quote: PropTypes.object,
-    quoteSettings: PropTypes.object,
+    quote: PropTypes.shape(),
+    quoteSettings: PropTypes.shape(),
     openDeal: PropTypes.shape().isRequired,
     intl: PropTypes.shape().isRequired,
-    quoteSecurity: PropTypes.string.isRequired,
     viewMode: PropTypes.oneOf(['list', 'cards'])
 };
 
-const OpenDeal = ({intl, quote, quoteSettings, openDeal, quoteSecurity, dealPnL, viewMode}) => {
+const OpenDeal = ({intl, quote, quoteSettings, openDeal, dealPnL, viewMode}) => {
     const quoteDeal = quote || quoteData;
     const quoteSettingsDeal = quoteSettings || quoteSettingsData;
     const direction = openDeal.side === 'LONG' || openDeal.side === 'BUY' ? 'buy' : 'sell';
     const marketPrice = openDeal.side === 'LONG' || openDeal.side === 'BUY' ? quoteDeal.askPrice : quoteDeal.bidPrice;
     const directionCaption = <span className={`st-type st-deal-direction-${direction}`}>{direction}</span>;
-    const instrumentName =
-        <Link to={`/object/@${quoteSettingsDeal.wobjData.autor_permlink}`}>
+    const wobj = quoteSettingsDeal.wobjData ? quoteSettingsDeal.wobjData : {};
+  const instrumentName =
+        <Link to={`/object/@${wobj.author_permlink}`}>
             <div className="st-instruments-text" data-test = "amount-opened-deal">
                 <span>{quoteSettingsDeal.name}</span>
             </div>
@@ -86,9 +86,9 @@ const OpenDeal = ({intl, quote, quoteSettings, openDeal, quoteSecurity, dealPnL,
                 <div className="st-card__header">
                     <div className="st-instrument-avatar-wrap">
                         <InstrumentAvatar
-                          permlink={quoteSettingsDeal.wobjData.author_permlink}
+                          permlink={wobj.author_permlink}
                           market={quoteSettingsDeal.market}
-                          avatarlink={quoteSettingsDeal.wobjData.avatarlink}
+                          avatarlink={wobj.avatarlink}
                         />
                         {directionCaption}
                     </div>
@@ -123,9 +123,9 @@ const OpenDeal = ({intl, quote, quoteSettings, openDeal, quoteSecurity, dealPnL,
                         <div className="st-open-deal-header-line">
                             <span className="st-id">{openDeal.dealSequenceNumber}</span>
                             <InstrumentAvatar
-                              avatarlink={quoteSettings.wobjData.avatarlink}
+                              avatarlink={wobj.avatarlink}
                               market={quoteSettingsDeal.market}
-                              permlink={quoteSettings.wobjData.author_permlink}
+                              permlink={wobj.author_permlink}
                             />
                             {instrumentName}
                             {directionCaption}

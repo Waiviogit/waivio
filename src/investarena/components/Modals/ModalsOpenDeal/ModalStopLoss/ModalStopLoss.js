@@ -4,15 +4,14 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { currencyFormat } from '../../../../platform/numberFormat';
 import { quoteFormat } from '../../../../platform/parsingPrice';
-import withEditDeal from '../../../HOC/withEditDeal';
 import ModalStopLossBody from "./ModalStopLossBody";
 import './ModalStopLoss.less';
 
 const propTypes = {
-  quote: PropTypes.object,
-  quoteSettings: PropTypes.object,
-  openDeal: PropTypes.object.isRequired,
-  showNotification: PropTypes.func.isRequired
+  quote: PropTypes.shape(),
+  quoteSettings: PropTypes.shape(),
+  openDeal: PropTypes.shape().isRequired,
+  intl: PropTypes.shape().isRequired,
 };
 
 class ModalStopLoss extends Component {
@@ -49,7 +48,6 @@ class ModalStopLoss extends Component {
                       openDeal = {this.props.openDeal}
                       quoteSettings = {this.props.quoteSettings}
                       quote = {this.props.quote}
-                      // showNotification = {this.props.showNotification}
                       toggle = {this.toggle}
                     />
                   </Modal>

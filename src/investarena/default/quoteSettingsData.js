@@ -11,5 +11,5 @@ export default {
     popular: null,
     ID: null,
     isSession: false,
-    wobj: {fields: {}}
+    wobjData: {author_permlink: 'abc', avatarlink: null}
 };

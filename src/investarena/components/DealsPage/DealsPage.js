@@ -44,9 +44,7 @@ class DealsPage extends Component {
       this.setState({ updatedQuoteSettings: this.getOptions() });
     }
   }
-  goToAssets = quote => {
-    // browserHistory.push(`/quote/${quote.id}`);
-  };
+
   getOptions = () => {
     let resArray = [];
     const self = this;
@@ -76,7 +74,7 @@ class DealsPage extends Component {
           {this.props.platformName !== 'widgets' ? (
             <React.Fragment>
             <DealsTab viewMode={this.state.viewMode} />
-            <div className="st-deals-toggle-view" onClick={this.toggleViewMode}>
+            <div role="presentation" className="st-deals-toggle-view" onClick={this.toggleViewMode}>
               {this.state.viewMode === 'list' ?
                 <img alt='card' className="st-deals-toggle-view__icon" src="/images/icons/grid-view.svg" />
                  :

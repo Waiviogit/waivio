@@ -21,12 +21,13 @@ const ClosedDeal = ({quoteSettings, closedDeal, quoteSecurity, intl, viewMode}) 
     const closedQuoteSettings = quoteSettings || quoteSettingsData;
     const direction = closedDeal.side === 'LONG' || closedDeal.side === 'BUY' ? 'buy' : 'sell';
     const directionCaption = <div className={`st-type st-deal-direction-${direction}`}>{direction}</div>;
+    const wobj = closedQuoteSettings.wobjData ? closedQuoteSettings.wobjData : {};
     const instrumentName =
-        <Link to={`/object/@${closedQuoteSettings.wobjData.author_permlink}`}>
-            <div className='st-instruments-text' data-test = "amount-opened-deal">
-                <div>{closedQuoteSettings.name}</div>
-            </div>
-        </Link>;
+          <Link to={`/object/@${wobj.author_permlink}`}>
+              <div className='st-instruments-text' data-test = "amount-opened-deal">
+                  <div>{closedQuoteSettings.name}</div>
+              </div>
+          </Link>;
     const dealAmount =
         <div className="st-amount" data-test = "instrument-open">
             {numberFormat(closedDeal.amount, PlatformHelper.countDecimals(closedDeal.amount))}
@@ -47,9 +48,9 @@ const ClosedDeal = ({quoteSettings, closedDeal, quoteSecurity, intl, viewMode}) 
                 <div className="st-card__header">
                     <div className="st-instrument-avatar-wrap">
                       <InstrumentAvatar
-                        avatarlink={closedQuoteSettings.wobjData.avatarlink}
+                        avatarlink={wobj.avatarlink}
                         market={closedQuoteSettings.market}
-                        permlink={closedQuoteSettings.wobjData.author_permlink}
+                        permlink={wobj.author_permlink}
                       />
                         {directionCaption}
                     </div>
@@ -85,7 +86,11 @@ const ClosedDeal = ({quoteSettings, closedDeal, quoteSecurity, intl, viewMode}) 
                     <div className="st-open-deal-header">
                         <div className="st-open-deal-header-line">
                             <div className="st-id">{closedDeal.dealSequenceNumber}</div>
-                            <InstrumentAvatar quoteSecurity={quoteSecurity} market={closedQuoteSettings.market}/>
+                            <InstrumentAvatar
+                              avatarlink={wobj.avatarlink}
+                              market={closedQuoteSettings.market}
+                              permlink={wobj.author_permlink}
+                            />
                             {instrumentName}
                             {directionCaption}
                             {dealAmount}
