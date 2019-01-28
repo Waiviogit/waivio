@@ -65,12 +65,12 @@ class Page extends React.Component {
         <HeroBannerContainer />
         <div className="shifted">
           <div className="feed-layout container">
-            <Affix className="leftContainer" stickPosition={77}>
+            <Affix className="leftContainer" stickPosition={115}>
               <div className="left">
                 <LeftSidebar />
               </div>
             </Affix>
-            <Affix className="rightContainer" stickPosition={77}>
+            <Affix className="rightContainer" stickPosition={115}>
               <div className="right">
                 <RightSidebar />
               </div>

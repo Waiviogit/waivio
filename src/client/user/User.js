@@ -184,12 +184,12 @@ export default class User extends React.Component {
         )}
         <div className="shifted">
           <div className="feed-layout container">
-            <Affix className="leftContainer leftContainer__user" stickPosition={72}>
+            <Affix className="leftContainer leftContainer__user" stickPosition={110}>
               <div className="left">
                 <LeftSidebar />
               </div>
             </Affix>
-            <Affix className="rightContainer" stickPosition={72}>
+            <Affix className="rightContainer" stickPosition={110}>
               <div className="right">{loaded && <RightSidebar key={user.name} />}</div>
             </Affix>
             {loaded && <div className="center">{renderRoutes(this.props.route.routes)}</div>}
