@@ -241,18 +241,24 @@
     display: flex;
     justify-content: space-between;
     min-width: 655px;
+
     .st-header-broker-balance-pl-wrap {
-      color: @white;
-      display: flex;
-      justify-content: space-between;
-    }
-    .st-balance-border {
-      padding: 0 10px;
-      border-left: 1px solid @white;
-      display: flex;
-      flex-direction: column;
-      line-height: 14px;
-      margin-bottom: 10px;
+      display: none;
+
+      @media @small, @medium, @large {
+        color: @white;
+        display: flex;
+        justify-content: space-between;
+
+        .st-balance-border {
+          padding: 0 10px;
+          border-left: 1px solid @white;
+          display: flex;
+          flex-direction: column;
+          line-height: 14px;
+          margin-bottom: 10px;
+        }
+      }
     }
   }
 }
