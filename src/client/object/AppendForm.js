@@ -74,7 +74,7 @@ export default class AppendForm extends Component {
     intl: PropTypes.shape(),
     user: PropTypes.shape(),
     rewardFund: PropTypes.shape(),
-    rate: PropTypes.shape(),
+    rate: PropTypes.number,
   };
 
   static defaultProps = {
@@ -91,7 +91,7 @@ export default class AppendForm extends Component {
     intl: {},
     user: {},
     rewardFund: {},
-    rate: {},
+    rate: 1,
   };
 
   state = {
@@ -923,7 +923,7 @@ export default class AppendForm extends Component {
   };
 
   render() {
-    const { currentLocale, currentField, loading, rewardFund, user, rate } = this.props;
+    const { currentLocale, currentField, loading, rewardFund, user, rate, form } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
 
     const languageOptions = [];
@@ -999,6 +999,7 @@ export default class AppendForm extends Component {
           handleVotePercentChange={this.handleVotePercentChange}
           votePercent={this.state.votePercent}
           voteWorth={voteWorth}
+          form={form}
         />
 
         {getFieldValue('currentField') !== 'auto' && (

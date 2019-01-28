@@ -42,10 +42,10 @@ const LikeSection = ({ voteWorth, votePercent, handleVotePercentChange, form }) 
 );
 
 LikeSection.propTypes = {
-  voteWorth: PropTypes.string.isRequired,
-  votePercent: PropTypes.string.isRequired,
+  voteWorth: PropTypes.number.isRequired,
+  votePercent: PropTypes.number.isRequired,
   handleVotePercentChange: PropTypes.func.isRequired,
   form: PropTypes.shape().isRequired,
 };
 
-export default Form.create()(LikeSection);
+export default LikeSection;
