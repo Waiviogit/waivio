@@ -14,7 +14,7 @@ const GalleryAlbum = ({ album }) => {
         hoverable
         cover={<img alt="example" src={albumItem.body} className="GalleryAlbum__image" />}
       >
-        <Card.Meta title={album.body} />
+        <Card.Meta title={`${album.body} (${album.items ? album.items.length : 0})`} />
       </Card>
     </div>
   );
