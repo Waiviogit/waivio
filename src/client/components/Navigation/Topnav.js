@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import {withRouter, Link, NavLink} from 'react-router-dom';
+import { withRouter, Link, NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Menu, Input, AutoComplete } from 'antd';
 import classNames from 'classnames';
@@ -26,7 +26,7 @@ import Notifications from './Notifications/Notifications';
 import LanguageSettings from './LanguageSettings';
 import './Topnav.less';
 import Broker from '../../../investarena/components/Header/Broker';
-import Balance from "../../../investarena/components/Header/Balance";
+import Balance from '../../../investarena/components/Header/Balance';
 
 @injectIntl
 @withRouter
@@ -43,7 +43,7 @@ import Balance from "../../../investarena/components/Header/Balance";
   },
 )
 class Topnav extends React.Component {
-  static get  MENU_ITEMS() {
+  static get MENU_ITEMS() {
     return {
       HOME: 'home',
       MY_FEED: 'myFeed',
@@ -57,7 +57,7 @@ class Topnav extends React.Component {
       [this.MENU_ITEMS.HOME]: ['trending', 'hot', 'created'],
       [this.MENU_ITEMS.MARKETS]: ['markets'],
       [this.MENU_ITEMS.DEALS]: ['deals'],
-    }
+    };
   }
 
   static propTypes = {
@@ -115,7 +115,8 @@ class Topnav extends React.Component {
   }
 
   setSelectedPage() {
-    const { location } = this.props;
+    const { location, username } = this.props;
+    if (!username) return Topnav.MENU_ITEMS.HOME;
     let currPage = Topnav.MENU_ITEMS.MY_FEED;
     Object.keys(Topnav.ROUTES_MAP).forEach(key => {
       const routeList = Topnav.ROUTES_MAP[key];
@@ -459,29 +460,35 @@ class Topnav extends React.Component {
           >
             <Menu.Item key={Topnav.MENU_ITEMS.HOME}>
               <NavLink to="/trending">
-                {intl.formatMessage({id: "home", defaultMessage: "Home"}).toUpperCase()}
+                {intl.formatMessage({ id: 'home', defaultMessage: 'Home' }).toUpperCase()}
               </NavLink>
             </Menu.Item>
-            <Menu.Item key={Topnav.MENU_ITEMS.MY_FEED}>
+            <Menu.Item key={Topnav.MENU_ITEMS.MY_FEED} disabled={!this.props.username}>
               <NavLink to="/">
-                {intl.formatMessage({id: "my_feed", defaultMessage: "My feed"}).toUpperCase()}
+                {intl.formatMessage({ id: 'my_feed', defaultMessage: 'My feed' }).toUpperCase()}
               </NavLink>
             </Menu.Item>
-            <Menu.Item key={Topnav.MENU_ITEMS.MARKETS}>
+            <Menu.Item key={Topnav.MENU_ITEMS.MARKETS} disabled={!this.props.username}>
               <NavLink to="/markets">
-                {intl.formatMessage({id: "markets", defaultMessage: "Markets"}).toUpperCase()}
+                {intl.formatMessage({ id: 'markets', defaultMessage: 'Markets' }).toUpperCase()}
               </NavLink>
             </Menu.Item>
-            <Menu.Item key={Topnav.MENU_ITEMS.DEALS}>
+            <Menu.Item key={Topnav.MENU_ITEMS.DEALS} disabled={!this.props.username}>
               <NavLink to="/deals">
-                {intl.formatMessage({id: "sidebar.nav.deals", defaultMessage: "Deals"}).toUpperCase()}
+                {intl
+                  .formatMessage({ id: 'sidebar.nav.deals', defaultMessage: 'Deals' })
+                  .toUpperCase()}
               </NavLink>
             </Menu.Item>
           </Menu>
           <div className="st-header-broker-balance-pl-wrap">
             <div className="st-balance-wrap">
               <div className="st-balance-text">
-                {intl.formatMessage({ id: 'headerAuthorized.freeBalance', defaultMessage: 'Free balance'})}:
+                {intl.formatMessage({
+                  id: 'headerAuthorized.freeBalance',
+                  defaultMessage: 'Free balance',
+                })}
+                :
               </div>
               <div className="st-balance-amount">
                 <Balance balanceType="freeBalance" />
@@ -503,7 +510,7 @@ class Topnav extends React.Component {
                 <Balance balanceType="balance" />
               </div>
             </div>
-            </div>
+          </div>
         </div>
       </div>
     );

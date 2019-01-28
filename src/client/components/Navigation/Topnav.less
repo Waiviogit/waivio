@@ -215,15 +215,20 @@
     margin-left: 5px;
   }
 
-  .main-nav>.ant-menu-horizontal {
+  .main-nav > .ant-menu-horizontal {
     border: 0;
     color: @white-gainsboro;
     font-weight: bold;
     line-height: 38px;
 
-    .ant-menu-item-selected {
-      a {
-        color: @primary-color;
+    .ant-menu-item {
+      &-selected {
+        a {
+          color: @primary-color;
+        }
+      }
+      &-disabled {
+        display: none;
       }
     }
 
