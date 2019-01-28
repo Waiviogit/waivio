@@ -11,9 +11,9 @@ import quoteSettingsData from '../../../../../default/quoteSettingsData';
 import './ClosedDeal.less';
 
 const propTypes = {
-    quoteSettings: PropTypes.object,
-    closedDeal: PropTypes.object.isRequired,
-    quoteSecurity: PropTypes.string.isRequired,
+    quoteSettings: PropTypes.shape(),
+    closedDeal: PropTypes.shape().isRequired,
+    intl: PropTypes.shape().isRequired,
     viewMode: PropTypes.oneOf(['list', 'cards'])
 };
 
