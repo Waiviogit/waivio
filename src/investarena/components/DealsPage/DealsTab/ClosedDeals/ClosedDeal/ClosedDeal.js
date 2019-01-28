@@ -17,7 +17,7 @@ const propTypes = {
     viewMode: PropTypes.oneOf(['list', 'cards'])
 };
 
-const ClosedDeal = ({quoteSettings, closedDeal, quoteSecurity, intl, viewMode}) => {
+const ClosedDeal = ({quoteSettings, closedDeal, intl, viewMode}) => {
     const closedQuoteSettings = quoteSettings || quoteSettingsData;
     const direction = closedDeal.side === 'LONG' || closedDeal.side === 'BUY' ? 'buy' : 'sell';
     const directionCaption = <div className={`st-type st-deal-direction-${direction}`}>{direction}</div>;
