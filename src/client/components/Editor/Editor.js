@@ -283,7 +283,8 @@ class Editor extends React.Component {
                 expiredAt:
                   selectForecast === 'Custom'
                     ? forecast.expiredAt
-                    : moment.utc(currentTime.getTime())
+                    : moment
+                        .utc(currentTime.getTime())
                         .add(selectForecast, 'seconds')
                         .format(forecastDateTimeFormat),
               }

@@ -18,17 +18,17 @@ import { showPostModal } from '../app/appActions';
 import PostModal from '../post/PostModalContainer';
 import IconButton from '../components/IconButton';
 import './ObjectProfile.less';
-import PostChart from "../../investarena/components/PostChart";
-import {getIsLoadingPlatformState} from "../../investarena/redux/selectors/platformSelectors";
-import {getDataCreatedAt, getDataForecast} from "../../investarena/helpers/diffDateTime";
-import {supportedObjectTypes} from "../../investarena/constants/objectsInvestarena";
+import PostChart from '../../investarena/components/PostChart';
+import { getIsLoadingPlatformState } from '../../investarena/redux/selectors/platformSelectors';
+import { getDataCreatedAt, getDataForecast } from '../../investarena/helpers/diffDateTime';
+import { supportedObjectTypes } from '../../investarena/constants/objectsInvestarena';
 
 @withRouter
 @connect(
   state => ({
     feed: getFeed(state),
     object: getObject(state),
-    isLoadingPlatform: getIsLoadingPlatformState(state)
+    isLoadingPlatform: getIsLoadingPlatformState(state),
   }),
   {
     getObjectPosts,
@@ -74,15 +74,16 @@ export default class ObjectProfile extends React.Component {
   };
 
   render() {
-    const { feed, limit, isLoadingPlatform, object} = this.props;
+    const { feed, limit, isLoadingPlatform, object } = this.props;
     const wobjectname = this.props.match.params.name;
     const content = getFeedFromState('objectPosts', wobjectname, feed);
     const isFetching = getFeedLoadingFromState('objectPosts', wobjectname, feed);
     const hasMore = getFeedHasMoreFromState('objectPosts', wobjectname, feed);
     let createdAt = null;
     let forecast = null;
-    const showChart = !isLoadingPlatform &&
-      _.some(supportedObjectTypes, objectType => objectType === object.object_type );
+    const showChart =
+      !isLoadingPlatform &&
+      _.some(supportedObjectTypes, objectType => objectType === object.object_type);
     const loadMoreContentAction = () => {
       this.props.getMoreObjectPosts({
         username: wobjectname,
@@ -90,7 +91,7 @@ export default class ObjectProfile extends React.Component {
         limit,
       });
     };
-    if(showChart){
+    if (showChart) {
       createdAt = getDataCreatedAt();
       forecast = getDataForecast();
     }
