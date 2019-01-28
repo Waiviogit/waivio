@@ -1,24 +1,21 @@
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {arrayOfLogos} from '../../constants/arrayOfQuoteLogos';
 import './InstrumentAvatar.less';
 
 const propTypes = {
-    quoteSecurity: PropTypes.string.isRequired,
-    market: PropTypes.string.isRequired
+    permlink: PropTypes.string.isRequired,
+    market: PropTypes.string.isRequired,
+    avatarlink: PropTypes.string
 };
 const avatarKey = {Currency: 'FX', Commodity: 'CM', Stock: 'ST', Crypto: 'CR', CryptoCurrency: 'CR', Index: 'IN'};
 
-const InstrumentAvatar = ({ quoteSecurity, market }) => {
+const InstrumentAvatar = ({ permlink, market, avatarlink }) => {
     const imageIdentifier = avatarKey[market] ? avatarKey[market] : avatarKey.Currency;
     return (
-        <Link to={`/quote/${quoteSecurity}`}>
+        <Link to={`/object/@${permlink}`}>
             <div className='st-instrument-avatar'>
-                <img src={arrayOfLogos.includes(quoteSecurity)
-                    ? `/images/investarena/logoQuotes/${quoteSecurity}.png`
-                    : `/images/investarena/logoQuotes/${imageIdentifier}.png`}
-                />
+                <img alt="avatar" src={avatarlink || `/images/investarena/logoQuotes/${imageIdentifier}.png`}/>
             </div>
         </Link>
     );

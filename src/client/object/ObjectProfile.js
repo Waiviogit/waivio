@@ -94,23 +94,26 @@ export default class ObjectProfile extends React.Component {
       createdAt = getDataCreatedAt();
       forecast = getDataForecast();
     }
+    const chartId = _.find(object.fields, ['name', 'chartid']);
     return (
       <React.Fragment>
         <div className="object-profile">
-          {showChart && <PostChart
-            quoteSecurity={'AUDCAD'}
-            expiredBars={[]}
-            createdAt={createdAt}
-            forecast={forecast}
-            recommend={'Buy'}
-            expiredByTime={undefined}
-            expiredTimeScale={undefined}
-            toggleModalPost={() => {}}
-            tpPrice={null}
-            slPrice={null}
-            expiredAt={undefined}
-            isObjectProfile
-          />}
+          {showChart && chartId && chartId.body &&
+            <PostChart
+              quoteSecurity={chartId.body}
+              expiredBars={[]}
+              createdAt={createdAt}
+              forecast={forecast}
+              recommend={'Buy'}
+              expiredByTime={undefined}
+              expiredTimeScale={undefined}
+              toggleModalPost={() => {}}
+              tpPrice={null}
+              slPrice={null}
+              expiredAt={undefined}
+              isObjectProfile
+            />
+          }
           <div className="object-profile__row align-right">
             <IconButton
               icon={<Icon type="plus-circle" />}

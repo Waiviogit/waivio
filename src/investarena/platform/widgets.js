@@ -11,6 +11,9 @@ import { getChartDataSuccess } from '../redux/actions/chartsActions';
 import { updateQuotes } from '../redux/actions/quotesActions';
 import { updateQuotesSettings } from '../redux/actions/quotesSettingsActions';
 import {getFavoritesSuccess} from "../redux/actions/favoriteQuotesActions";
+import * as ApiClient from "../../waivioApi/ApiClient";
+import {objectFields} from "../../common/constants/listOfFields";
+import {getFieldWithMaxWeight} from "../../client/object/wObjectHelper";
 
 export class Widgets {
   constructor() {
@@ -122,7 +125,7 @@ export class Widgets {
   //     this.dispatch(updateFavorite(quoteSecurity));
   // }
   parseRates(msg) {
-    let data = {};
+    const data = {};
     if (msg.args) {
       msg.args.forEach(q => {
         if (_.size(this.quotes) !== 0 && this.quotes[q.Name]) {
@@ -156,14 +159,24 @@ export class Widgets {
   parseSettings(msg) {
     const quotesSettings = JSON.parse(msg.args);
     const keys = Object.keys(quotesSettings);
-    let sortedQuotesSettings = {};
+    const sortedQuotesSettings = {};
     keys.sort();
-    for (let i in keys) {
-      let key = keys[i];
-      sortedQuotesSettings[key] = quotesSettings[key];
-    }
-    this.quotesSettings = sortedQuotesSettings;
-    this.dispatch(updateQuotesSettings(this.quotesSettings));
+    ApiClient.getObjects({ limit: 500, invObjects: true, requiredFields: ['chartid']}).then(wobjs => {
+      for (const i in keys) {
+        const key = keys[i];
+        const wobjData =_.find(wobjs, o => _.find(o.fields, field => field.name === 'chartid' && field.body === key));
+        sortedQuotesSettings[key] = quotesSettings[key];
+
+        if(wobjData) {
+          sortedQuotesSettings[key].wobjData = {
+            avatarlink: getFieldWithMaxWeight(wobjData, objectFields.avatar),
+            author_permlink: wobjData.author_permlink
+          };
+        }
+      }
+      this.quotesSettings = sortedQuotesSettings;
+      this.dispatch(updateQuotesSettings(this.quotesSettings));
+    });
   }
   parseChartData(msg) {
     if (msg.args) {

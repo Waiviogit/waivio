@@ -22,6 +22,9 @@ import config from '../configApi/config';
 import { getChartDataSuccess } from '../redux/actions/chartsActions';
 import { updateQuotes } from '../redux/actions/quotesActions';
 import { updateQuotesSettings } from '../redux/actions/quotesSettingsActions';
+import * as ApiClient from "../../waivioApi/ApiClient";
+import {objectFields} from "../../common/constants/listOfFields";
+import {getFieldWithMaxWeight} from "../../client/object/wObjectHelper";
 
 export class Umarkets {
     constructor () {
@@ -67,7 +70,7 @@ export class Umarkets {
     }
     createSockJS () {
         const websrv = parseInt(localStorage.getItem('WEBSRV'));
-        let url = `${config[process.env.NODE_ENV].brokerWSUrl[this.platformName]}websrv${websrv}`;
+        const url = `${config[process.env.NODE_ENV].brokerWSUrl[this.platformName]}websrv${websrv}`;
         return new SockJS(url);
     }
     closeWebSocketConnection () {
@@ -105,7 +108,7 @@ export class Umarkets {
         }
     }
     platformSubscribe () {
-        this.stompClient.subscribe('/amq/queue/session.' + this.sid, this.onWebSocketMessage.bind(this));
+        this.stompClient.subscribe(`/amq/queue/session.${  this.sid}`, this.onWebSocketMessage.bind(this));
     }
     getStartData () {
         this.getServerTime();
@@ -158,7 +161,7 @@ export class Umarkets {
             if (this.stompClient !== null && this.sid !== null && this.um_session !== null) {
                 let chartsArr = [ [active, interval] ];
                 chartsArr = JSON.stringify(chartsArr);
-                this.stompClient.send('/exchange/CMD/', {}, '{"sid":"' + this.sid + '", "umid": "' + this.um_session + '", "cmd" : "' + CMD.getChartData + '", "array": ' + chartsArr + '}');
+                this.stompClient.send('/exchange/CMD/', {}, `{"sid":"${  this.sid  }", "umid": "${  this.um_session  }", "cmd" : "${  CMD.getChartData  }", "array": ${  chartsArr  }}`);
             }
         }
     }
@@ -271,17 +274,27 @@ export class Umarkets {
         const tradingSessions = content.tradingSessions;
         this.userSettings = content;
         const keys = Object.keys(quotesSettings);
-        let sortedQuotesSettings = {};
+        const sortedQuotesSettings = {};
         const currentTime = Date.now();
         keys.sort();
-        for (let i in keys) {
-            let key = keys[i];
+        ApiClient.getObjects({ limit: 500, invObjects: true, requiredFields: ['chartid']}).then(wobjs => {
+          for (const i in keys) {
+            const key = keys[i];
+            const wobjData =_.find(wobjs, o => _.find(o.fields, field => field.name === 'chartid' && field.body === key));
             sortedQuotesSettings[key] = quotesSettings[key];
+            if(wobjData) {
+              sortedQuotesSettings[key].wobjData = {
+                avatarlink: getFieldWithMaxWeight(wobjData, objectFields.avatar),
+                author_permlink: wobjData.author_permlink
+              };
+            }
             sortedQuotesSettings[key].isSession = _.some(tradingSessions[sortedQuotesSettings[key].calendarCodeId], item =>
-                currentTime < item.sessionEnd && currentTime > item.sessionStart
+              currentTime < item.sessionEnd && currentTime > item.sessionStart
             );
-        }
-        this.dispatch(updateQuotesSettings(this.quotesSettings));
+          }
+          this.quotesSettings = sortedQuotesSettings;
+          this.dispatch(updateQuotesSettings(this.quotesSettings));
+        });
         if (content.accounts && content.currentAccountName) {
             this.dispatch(updateUserAccounts({
                 currentAccountName: content.currentAccountName,
@@ -297,8 +310,8 @@ export class Umarkets {
                 this.currentAccount = currentAccount[0].id;
             }
         }
-        this.quotesSettings = sortedQuotesSettings;
-        this.dispatch(updateQuotesSettings(this.quotesSettings));
+        // this.quotesSettings = sortedQuotesSettings;
+        // this.dispatch(updateQuotesSettings(this.quotesSettings));
     }
     parseChartData (result) {
         const chart = result.content;
@@ -315,8 +328,8 @@ export class Umarkets {
         const openDeals = {};
         const data = { open_deals: [] };
         content.map((openDeal) => {
-            openDeal.openPrice = openDeal.openPrice / 1000000;
-            openDeal.amount = openDeal.amount / 1000000;
+            openDeal.openPrice /= 1000000;
+            openDeal.amount /= 1000000;
             openDeals[openDeal.dealId] = openDeal;
             data.open_deals.push({
                 amount: openDeal.amount,
@@ -336,10 +349,10 @@ export class Umarkets {
             const content = _.sortBy(result.content.closedDeals, 'closeTime').reverse();
             const closedDeals = {};
             content.map((closeDeal) => {
-                closeDeal.amount = closeDeal.amount / 1000000;
-                closeDeal.pnl = closeDeal.pnl / 1000000;
-                closeDeal.openPrice = closeDeal.openPrice / 1000000;
-                closeDeal.closePrice = closeDeal.closePrice / 1000000;
+                closeDeal.amount /= 1000000;
+                closeDeal.pnl /= 1000000;
+                closeDeal.openPrice /= 1000000;
+                closeDeal.closePrice /= 1000000;
                 closedDeals[closeDeal.dealId] = closeDeal;
             });
             this.dispatch(getCloseDealsSuccess(closedDeals));
@@ -348,7 +361,7 @@ export class Umarkets {
             const content = _.sortBy(result.content.closedDeals, 'closeTime');
             const contentFilter = content.filter((closedDeal) => closedDeal.closeTime > this.lastClosedDealTime);
             if (contentFilter.length > 0) {
-                let data = { closed_deals: [] };
+                const data = { closed_deals: [] };
                 content.map((closeDeal) => {
                     data.closed_deals.push({
                         deal_id: closeDeal.dealId,
@@ -370,7 +383,7 @@ export class Umarkets {
         }
     }
     parseUserStatistics (result) {
-        let content = result.content;
+        const content = result.content;
         this.userStatistics = {
             balance: content.balance,
             freeBalance: content.freeBalance,

@@ -7,24 +7,24 @@ import Instrument from '../../InstrumentsPage/Instrument';
 import '../InstrumentsPage.less';
 
 const propTypes = {
-    charts: PropTypes.object,
-    signals: PropTypes.object,
-    deals: PropTypes.object,
-    quotes: PropTypes.object.isRequired,
-    quoteSettings: PropTypes.object.isRequired,
-    intl: PropTypes.object.isRequired,
+    charts: PropTypes.shape(),
+    signals: PropTypes.shape(),
+    deals: PropTypes.shape(),
+    quotes: PropTypes.shape().isRequired,
+    quoteSettings: PropTypes.shape().isRequired,
+    intl: PropTypes.shape().isRequired,
     favorites: PropTypes.array.isRequired,
     title: PropTypes.string.isRequired,
     viewMode: PropTypes.oneOf(['list', 'cards'])
 };
 
-const AssetsTab = ({intl, quotes, quoteSettings, title, trends, charts, signals, favorites, deals, viewMode}) => {
-    quotes = _.sortBy(quotes, 'security');
+const AssetsTab = ({intl, quotes, quoteSettings, title, charts, signals, favorites, deals, viewMode}) => {
+    const sortedQuotes = _.sortBy(quotes, 'security');
     const matchTitle = (quote) => title === 'CryptoCurrency'
             ? quoteSettings[quote.security].market === title || quoteSettings[quote.security].market === 'Crypto'
             : quoteSettings[quote.security].market === title || (title === 'Favorites' && favorites.includes(quote.security));
-    const selectedInstruments = _.map(quotes, (quote) =>
-        (quoteSettings[quote.security] && matchTitle(quote)) &&
+    const selectedInstruments = _.map(sortedQuotes, (quote) =>
+        (quoteSettings[quote.security] && quoteSettings[quote.security].wobjData && matchTitle(quote) && charts) &&
         <div key={quote.security} className={classNames({'st-list-item': viewMode === 'list', 'st-card': viewMode === 'cards'})}>
             <Instrument
                 signals={signals[quote.security]}
@@ -32,7 +32,6 @@ const AssetsTab = ({intl, quotes, quoteSettings, title, trends, charts, signals,
                 quoteSettings={quoteSettings[quote.security]}
                 quote={quote}
                 chart={charts ? charts[quote.security] : []}
-                trendBuy={(trends && trends[quote.security]) ? trends[quote.security].long_part * 100 : 50}
                 quoteSecurity={quote.security}
                 viewMode={viewMode}/>
         </div>
@@ -44,13 +43,18 @@ const AssetsTab = ({intl, quotes, quoteSettings, title, trends, charts, signals,
             <div className="st-buy-title">{intl.formatMessage({ id: 'assets.sell', defaultMessage: 'Sell' })}</div>
             <div className="st-amount-title">{intl.formatMessage({ id: 'assets.amount', defaultMessage: 'Amount' })}</div>
             <div className="st-sell-title">{intl.formatMessage({ id: 'assets.buy', defaultMessage: 'Buy' })}</div>
-            <img title={intl.formatMessage({ id: 'assetWidgets.tabSignals', defaultMessage: 'Signals' })} className="st-signals-title" src="/images/icons/icon-signal.svg"/>
+            <img
+              alt="signal"
+              title={intl.formatMessage({ id: 'assetWidgets.tabSignals', defaultMessage: 'Signals' })}
+              className="st-signals-title"
+              src="/images/icons/icon-signal.svg"
+            />
         </div>;
     return (
         <Fragment>
             {viewMode === 'list' && listHeader}
             <div className={classNames('st-instruments-details', {'list-view': viewMode === 'list', 'cards-view': viewMode === 'cards'})}>
-                {quotes && quoteSettings && !_.isEmpty(quotes) && !_.isEmpty(quoteSettings) && _.some(quotes, quote => quoteSettings[quote.security] && matchTitle(quote))
+                {sortedQuotes && quoteSettings && !_.isEmpty(sortedQuotes) && !_.isEmpty(quoteSettings) && _.some(sortedQuotes, quote => quoteSettings[quote.security] && matchTitle(quote))
                     ? <div className="st-instruments-responsible-wrap">{selectedInstruments}</div>
                     : <div className="d-flex justify-content-center align-items-center h-100 w-100">{intl.formatMessage({ id: 'assets.quotesNoPresent' })}</div>}
             </div>

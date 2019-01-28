@@ -1,15 +1,11 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
-// import { browserHistory } from 'react-router';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { getViewMode, setViewMode } from '../../helpers/localStorageHelpers';
 import { arrayOfLogos } from '../../constants/arrayOfQuoteLogos';
 // import ButtonBroker from '../Header/ButtonBroker';
 import DealsTab from './DealsTab';
-// import QuotesSearch from './QuotesSearch/QuotesSearch';
-// import { searchParams } from 'components/ItemsSearch/constants';
-// import SidebarBack from 'components/MainPage/Sidebar/SidebarBack';
 import './DealsPage.less';
 
 const propTypes = {
@@ -75,22 +71,6 @@ class DealsPage extends Component {
   render() {
     return (
       <div className="st-deals-page container">
-        <div className="d-flex justify-content-between align-items-center">
-          <div className="st-deals-back">{/*<SidebarBack/>*/}</div>
-          <div className="st-deals-controls">
-            {/*<QuotesSearch*/}
-            {/*placeholderMessage="assets.instrumentsSearch"*/}
-            {/*onChange={this.goToAssets}*/}
-            {/*multi={false}*/}
-            {/*backspaceRemoves={true}*/}
-            {/*searchable={true}*/}
-            {/*labelKey="name"*/}
-            {/*searchParams={searchParams.search}*/}
-            {/*valueKey="id"*/}
-            {/*options={_.sortBy(this.state.updatedQuoteSettings, 'name')}/>*/}
-          </div>
-          <div className="st-assets-to-deals-wrap" />
-        </div>
         <div className="st-instruments-details">
           {this.props.platformName !== 'widgets' ? (
             <DealsTab viewMode={this.state.viewMode} />

@@ -8,19 +8,21 @@ import AssetsTab from './AssetsTab/AssetsTab';
 import { arrayOfLogos } from '../../constants/arrayOfQuoteLogos';
 import { getAllSignals } from '../../redux/actions/signalsActions';
 import './InstrumentsPage.less';
-import * as ApiClient from "../../../waivioApi/ApiClient";
 
 const TabPane = Tabs.TabPane;
 
 const propTypes = {
-    charts: PropTypes.object,
-    openDeals: PropTypes.object,
+    charts: PropTypes.shape(),
+    openDeals: PropTypes.shape(),
     favorites: PropTypes.array.isRequired,
-    quotes: PropTypes.object.isRequired,
-    quoteSettings: PropTypes.object.isRequired,
+    quotes: PropTypes.shape().isRequired,
+    quoteSettings: PropTypes.shape().isRequired,
     getChartsData: PropTypes.func.isRequired,
-    platformConnect: PropTypes.bool.isRequired,
-    viewMode: PropTypes.oneOf(['list', 'cards'])
+    intl: PropTypes.shape().isRequired,
+};
+const defaultProps = {
+    charts: {},
+    openDeals: {},
 };
 
 class InstrumentsPage extends Component {
@@ -34,32 +36,30 @@ class InstrumentsPage extends Component {
             wobjs: []
         };
     }
+
     componentDidMount () {
         this.props.getChartsData();
         getAllSignals().then(({ data, error }) => {
+          const currentViewMode = getViewMode('instruments');
             if (!error && data) {
-                this.setState({signals: data});
+                this.setState({signals: data, viewMode: currentViewMode});
             }
         });
-        ApiClient.getObjects({ limit: 500 }).then(wobjs => {
-          this.setState({ wobjs });
-        });
-        const currentViewMode = getViewMode('instruments');
-        if (currentViewMode) {
-            this.setState({viewMode: currentViewMode});
-        }
     }
+
     componentDidUpdate () {
-        if (_.size(this.state.updatedQuoteSettings) === 0 && this.props.quotes && this.props.quoteSettings && _.size(this.props.quotes) > 0 && _.size(this.props.quoteSettings) > 0) {
+        if (
+          _.size(this.state.updatedQuoteSettings) === 0 &&
+          this.props.quotes && this.props.quoteSettings &&
+          _.size(this.props.quotes) > 0 &&
+          _.size(this.props.quoteSettings) > 0
+        ) {
             this.setState({updatedQuoteSettings: this.getOptions()});
         }
     }
 
-    goToAssets = (quote) => {
-        // browserHistory.push(`/quote/${quote.id}`);
-    };
     getOptions = () => {
-        let resArray = [];
+        const resArray = [];
         const self = this;
         _.each(this.props.quotes, (quote) => {
             if (self.props.quoteSettings[quote.security]) {
@@ -74,11 +74,13 @@ class InstrumentsPage extends Component {
         });
         return resArray;
     };
+
     toggleViewMode = () => {
         const viewModeValue = this.state.viewMode === 'list' ? 'cards' : 'list';
         this.setState({viewMode: viewModeValue});
         setViewMode('instruments', viewModeValue);
     };
+
     render () {
         return (
             <div className="st-instr-page">
@@ -86,7 +88,7 @@ class InstrumentsPage extends Component {
                     <div className="feed-layout container">
                           <div className="st-instruments-controls"/>
                          <div className="st-assets-wrap">
-                            <Tabs defaultActiveKey="1" onChange={this.goToAssets}>
+                            <Tabs defaultActiveKey="1">
                               <TabPane tab={this.props.intl.formatMessage({ id: 'sidebarWidget.tabTitle.favorites', defaultMessage: 'Favorites' })} key="1">
                                 {this.props.favorites.length !== 0 ? (
                                   <AssetsTab
@@ -177,10 +179,10 @@ class InstrumentsPage extends Component {
                                     viewMode={this.state.viewMode}/>
                                 </TabPane>
                             </Tabs>
-                           <div className="st-instruments-toggle-view" onClick={this.toggleViewMode}>
+                           <div role='presentation' className="st-instruments-toggle-view" onClick={this.toggleViewMode}>
                              {this.state.viewMode === 'list'
-                               ? <img className="st-instruments-toggle-view__icon" src="/images/icons/grid-view.svg"/>
-                               : <img className="st-instruments-toggle-view__icon" src="/images/icons/list-of-items.svg"/>
+                               ? <img alt="cards" className="st-instruments-toggle-view__icon" src="/images/icons/grid-view.svg"/>
+                               : <img alt="list" className="st-instruments-toggle-view__icon" src="/images/icons/list-of-items.svg"/>
                              }
                            </div>
                         </div>
@@ -192,5 +194,6 @@ class InstrumentsPage extends Component {
 }
 
 InstrumentsPage.propTypes = propTypes;
+InstrumentsPage.defaultProps = defaultProps;
 
 export default injectIntl(InstrumentsPage);

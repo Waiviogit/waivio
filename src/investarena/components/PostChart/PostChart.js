@@ -27,7 +27,7 @@ const propTypes = {
     expiredTimeScale: PropTypes.string,
     toggleModalPost: PropTypes.func.isRequired,
     quoteSecurity: PropTypes.string.isRequired,
-    intl: PropTypes.object.isRequired,
+    intl: PropTypes.shape().isRequired,
     createdAt: PropTypes.string.isRequired,
     forecast: PropTypes.string.isRequired,
     recommend: PropTypes.string.isRequired,

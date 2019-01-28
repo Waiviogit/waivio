@@ -1,6 +1,7 @@
 import fetch from 'isomorphic-fetch';
 import config from './routes';
 import { getFollowingCount } from '../client/helpers/apiHelpers';
+import {supportedObjectTypes} from "../investarena/constants/objectsInvestarena";
 
 const headers = {
   Accept: 'application/json',
@@ -21,11 +22,16 @@ export const getRecommendedObjects = () =>
     body: JSON.stringify({ userLimit: 5, locale: 'en-US' }),
   }).then(res => res.json());
 
-export const getObjects = ({ limit = 30, locale = 'en-US', startAuthorPermlink = '' }) =>
+export const getObjects = ({ limit = 30, locale = 'en-US', startAuthorPermlink = '', invObjects, requiredFields = [] }) =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
     headers,
     method: 'POST',
-    body: JSON.stringify({ limit, locale, start_author_permlink: startAuthorPermlink }),
+    body: JSON.stringify({
+      limit,
+      locale,
+      start_author_permlink: startAuthorPermlink,
+      object_types: invObjects ? supportedObjectTypes : [],
+      required_fields: requiredFields}),
   }).then(res => res.json());
 
 export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US' }) =>
@@ -36,7 +42,7 @@ export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US' }) =>
   }).then(res => res.json());
 
 export const getObject = name =>
-  fetch(`${config.apiPrefix}${config.getObjects}/${name}`).then(res => res.json());
+  fetch(`${config.apiPrefix}${config.getObjects}/${name}?required_fields=chartid`).then(res => res.json());
 
 export const getUsersByObject = object =>
   fetch(`${config.apiPrefix}${config.getObjects}/${object}`).then(res => res.json());

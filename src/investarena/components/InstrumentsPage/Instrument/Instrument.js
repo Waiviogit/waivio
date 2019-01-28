@@ -18,11 +18,11 @@ import ModalTC from "../../Modals/ModalTC/ModalTC";
 
 const propTypes = {
   chart: PropTypes.array,
+  intl: PropTypes.shape().isRequired,
   signals: PropTypes.array,
-  deals: PropTypes.object,
-  quoteSettings: PropTypes.object.isRequired,
-  quote: PropTypes.object.isRequired,
-  trendBuy: PropTypes.number.isRequired,
+  deals: PropTypes.shape(),
+  quoteSettings: PropTypes.shape().isRequired,
+  quote: PropTypes.shape().isRequired,
   viewMode: PropTypes.oneOf(['list', 'cards'])
 };
 
@@ -50,46 +50,46 @@ class Instrument extends Component {
       this.setState({ isModalInstrumentsChart: !this.state.isModalInstrumentsChart });
     };
     render () {
+        const {quoteSettings, quote, signals, chart} = this.props;
         const investments = this.getInvestments();
         const instrumentName =
-            <Link to={`/quote/${this.props.quote.security}`}>
+            <Link to={`/object/@${quoteSettings.wobjData.author_permlink}`}>
                 <div className="st-instrument-info-wrap">
-                    <div className="st-instrument-name" title={this.props.quoteSettings.name}>{this.props.quoteSettings.name} </div>
+                    <div className="st-instrument-name" title={quoteSettings.name}>{quoteSettings.name} </div>
                 </div>
             </Link>;
         const dailyChangeValue =
             <div title={this.props.intl.formatMessage({id: 'tips.dailyChange', defaultMessage: 'Daily change'})}
-                className={`st-daily-change ${this.props.quote.dailyChange > 0 ? 'st-quote-text-up' : 'st-quote-text-down'}`}>
-                {`${this.props.quote.dailyChange.toFixed(2)}%`}
+                className={`st-daily-change ${quote.dailyChange > 0 ? 'st-quote-text-up' : 'st-quote-text-down'}`}>
+                {`${quote.dailyChange.toFixed(2)}%`}
             </div>;
         const signal =
-            (this.props.signals && this.props.signals.length > 0)
+            (signals && signals.length > 0)
                 ? (
                   <Popover
                     placement="bottom"
                     className="st-signal-popover"
-                    content={_.map(formatSignalsData(this.props.signals), (signal) =>
-                      <Signal key={`signal:${signal.id}`} signal={signal} />)}
+                    content={_.map(formatSignalsData(this.props.signals), (sign) =>
+                      <Signal key={`signal:${sign.id}`} signal={sign} />)}
                   >
                     <div className="st-signals-button">
-                    {this.props.signals.length}
+                    {signals.length}
                     </div>
                   </Popover>
               )
                 : <div className="st-signals-empty"/>;
-        const getChart = (width, height) => this.props.chart && this.props.chart.length !== 0
+        const getChart = (width, height) => chart && chart.length !== 0
             ? <AreaChart
                 width={width}
                 height={height}
-                // interpolate={'cardinal'}
                 areaColors={['#3a79ee']}
                 data={[this.props.chart]}
             /> :
              <div className="st-assets-chart-no-data">{this.props.intl.formatMessage({id: 'charts.noData', defaultMessage: 'No data'})}</div>;
         const modalChart = this.state.isModalInstrumentsChart &&
             <ModalTC
-                quoteName={this.props.quote.security}
-                market={this.props.quoteSettings.market}
+                quoteName={quote.security}
+                market={quoteSettings.market}
                 isOpen={this.state.isModalInstrumentsChart}
                 toggle={this.toggleModalInstrumentsChart}
             />;
@@ -98,41 +98,49 @@ class Instrument extends Component {
             return (
                 <React.Fragment>
                     <div className="st-card__header">
-                        <InstrumentAvatar quoteSecurity={this.props.quote.security} market={this.props.quoteSettings.market}/>
+                        <InstrumentAvatar
+                          permlink={quoteSettings.wobjData.author_permlink}
+                          market={quoteSettings.market}
+                          avatarlink={quoteSettings.wobjData.avatarlink}
+                        />
                         {instrumentName}
-                        <Favorite quoteSecurity={this.props.quote.security}/>
+                        <Favorite quoteSecurity={quote.security}/>
                     </div>
                     <div className="st-card__content">
                         <div className="st-card__daily-change-signal-info">
                             {dailyChangeValue}
                             {signal}
                         </div>
-                        <div className="st-card__chart" onClick={this.toggleModalInstrumentsChart}>
+                        <div role='presentation' className="st-card__chart" onClick={this.toggleModalInstrumentsChart}>
                             {getChart(276, 60)}
                         </div>
                         {modalChart}
                         <TradeButtonsAssets
                             className="st-assets-buttons st-trade-buttons-asset-page-wrap"
-                            quoteSecurity={this.props.quote.security}/>
+                            quoteSecurity={quote.security}/>
                     </div>
                 </React.Fragment>);
         case 'list':
         default:
             return (
                 <React.Fragment>
-                    <Favorite quoteSecurity={this.props.quote.security}/>
-                    <InstrumentAvatar quoteSecurity={this.props.quote.security} market={this.props.quoteSettings.market}/>
+                    <Favorite quoteSecurity={quote.security}/>
+                    <InstrumentAvatar
+                      permlink={quoteSettings.wobjData.author_permlink}
+                      market={quoteSettings.market}
+                      avatarlink={quoteSettings.wobjData.avatarlink}
+                    />
                     <div className="d-flex flex-column align-items-center">
                         {instrumentName}
                         {investments}
                     </div>
                     {dailyChangeValue}
-                    <div className="st-assets-chart-wrap" onClick={this.toggleModalInstrumentsChart}>
+                    <div role="presentation" className="st-assets-chart-wrap" onClick={this.toggleModalInstrumentsChart}>
                         {getChart(200, 40)}
                     </div>
                     {modalChart}
                     <TradeButtonsAssets className="st-assets-buttons st-trade-buttons-asset-page-wrap"
-                        quoteSecurity={this.props.quote.security}/>
+                        quoteSecurity={quote.security}/>
                     {signal}
                 </React.Fragment>
             );
@@ -141,7 +149,8 @@ class Instrument extends Component {
 }
 
 Instrument.defaultProps = {
-    viewMode: 'list'
+    viewMode: 'list',
+    deals: ''
 };
 
 Instrument.propTypes = propTypes;
