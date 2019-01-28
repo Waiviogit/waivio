@@ -11,8 +11,8 @@ import './ObjectGallery.less';
 import CreateAlbum from './CreateAlbum';
 import { getAuthenticatedUserName, getIsAppendLoading, getObject } from '../../reducers';
 import { appendObject } from '../appendActions';
-import { getField } from '../../objects/WaivioObject';
 import IconButton from '../../components/IconButton';
+import { prepareAlbumData } from '../../helpers/wObjectHelper';
 
 @connect(
   state => ({
@@ -52,32 +52,11 @@ export default class ObjectGallery extends Component {
 
   handleCreateAlbum = form => {
     const { currentUsername, wObject } = this.props;
-
-    const data = {};
-    data.author = currentUsername;
-    data.parentAuthor = wObject.author;
-    data.parentPermlink = wObject.author_permlink;
-    data.body = `@${data.author} created a new album: ${form.galleryAlbum}.`;
-    data.title = '';
-
-    data.field = {
-      name: 'galleryAlbum',
-      body: form.galleryAlbum,
-      locale: 'en-US',
-    };
-
-    data.permlink = `${data.author}-${Math.random()
-      .toString(36)
-      .substring(2)}`;
-    data.lastUpdated = Date.now();
-
-    data.wobjectName = getField(wObject, 'name');
-
+    const data = prepareAlbumData(form, currentUsername, wObject);
     this.props
       .appendObject(data)
       .then(() => {
         this.handleToggleModal();
-
         message.success(`You successfully have created the ${form.galleryAlbum} album`);
       })
       .catch(err => {
@@ -102,12 +81,14 @@ export default class ObjectGallery extends Component {
                 onClick={this.handleToggleModal}
                 caption={<FormattedMessage id="add_new_album" defaultMessage="Add new album" />}
               />
-              <CreateAlbum
-                showModal={showModal}
-                hideModal={this.handleToggleModal}
-                handleSubmit={this.handleCreateAlbum}
-                loading={loadingAlbum}
-              />
+              {showModal && (
+                <CreateAlbum
+                  showModal={showModal}
+                  hideModal={this.handleToggleModal}
+                  handleSubmit={this.handleCreateAlbum}
+                  loading={loadingAlbum}
+                />
+              )}
             </div>
           </div>
           {empty && (

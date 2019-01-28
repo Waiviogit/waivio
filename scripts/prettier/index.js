@@ -8,7 +8,7 @@ function formatFile(file) {
 
   const formatOptions = {
     ...options,
-    parser: file.endsWith('.less') ? 'less' : 'babylon',
+    parser: file.endsWith('.less') ? 'less' : 'babel',
   };
 
   const output = prettier.format(input, formatOptions);
@@ -28,7 +28,7 @@ function checkFiles(files) {
   files.forEach(file => {
     const formatOptions = {
       ...options,
-      parser: file.endsWith('.less') ? 'less' : 'babylon',
+      parser: file.endsWith('.less') ? 'less' : 'babel',
     };
     const input = fs.readFileSync(file, 'utf-8');
     if (!prettier.check(input, formatOptions)) {

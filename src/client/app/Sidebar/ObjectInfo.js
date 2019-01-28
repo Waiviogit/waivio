@@ -1,14 +1,14 @@
 import _ from 'lodash';
 import React from 'react';
-import { Icon } from 'antd';
+import { Icon, message } from 'antd';
 import urlParse from 'url-parse';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { haveAccess, accessTypesArr } from '../../helpers/wObjectHelper';
+import { haveAccess, accessTypesArr, prepareAlbumData } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import './ObjectInfo.less';
-
 import {
   getFieldWithMaxWeight,
   getFieldsCount,
@@ -21,16 +21,48 @@ import Map from '../../components/Maps/Map';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
 import IconButton from '../../components/IconButton';
+import CreateAlbum from '../../object/ObjectGallery/CreateAlbum';
+import { getIsAppendLoading } from '../../reducers';
+import { appendObject } from '../../object/appendActions';
 
+@connect(
+  state => ({
+    loadingAlbum: getIsAppendLoading(state),
+  }),
+  { appendObject },
+)
 class ObjectInfo extends React.Component {
+  static propTypes = {
+    wobject: PropTypes.shape().isRequired,
+    userName: PropTypes.string.isRequired,
+    appendObject: PropTypes.func.isRequired,
+    loadingAlbum: PropTypes.bool.isRequired,
+  };
+
   state = {
     selectedField: null,
+    showModal: false,
   };
 
   handleSelectField = field => this.setState({ selectedField: field });
-
+  handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
+  handleCreateAlbum = form => {
+    const { userName, wobject } = this.props;
+    const data = prepareAlbumData(form, userName, wobject);
+    this.props
+      .appendObject(data)
+      .then(() => {
+        this.handleToggleModal();
+        message.success(`You successfully have created the ${form.galleryAlbum} album`);
+      })
+      .catch(err => {
+        message.error("Couldn't update object.");
+        console.log('err', err);
+      });
+  };
   render() {
-    const { wobject, userName } = this.props;
+    const { wobject, userName, loadingAlbum } = this.props;
+    const { showModal, selectedField } = this.state;
 
     let addressArr = [];
     let address = '';
@@ -42,7 +74,7 @@ class ObjectInfo extends React.Component {
     let avatar = '';
     let short = '';
     let background = '';
-
+    let albumsCount = 0;
     if (wobject) {
       addressArr = Object.values(addressFields).map(fieldName =>
         getFieldWithMaxWeight(wobject, objectFields.address, fieldName),
@@ -61,6 +93,7 @@ class ObjectInfo extends React.Component {
       websiteFields = getWebsiteField(wobject);
       title = websiteFields.title;
       link = websiteFields.body;
+      albumsCount = wobject.albums_count;
     }
 
     if (link && link.indexOf('http://') === -1 && link.indexOf('https://') === -1) {
@@ -89,21 +122,21 @@ class ObjectInfo extends React.Component {
       const fieldsCount = getFieldsCount(wobject, fieldName);
       return (
         <div className="field-info">
-          {accessExtend ? (
-            <React.Fragment>
+          <React.Fragment>
+            {accessExtend && (
               <div className="field-info__title">
                 <Proposition
                   objectID={wobject.author_permlink}
                   fieldName={fieldName}
                   objName={objectName}
                   handleSelectField={this.handleSelectField}
-                  selectedField={this.state.selectedField}
+                  selectedField={selectedField}
                 />
                 ({fieldsCount})
               </div>
-              <div className="field-info__content">{content}</div>
-            </React.Fragment>
-          ) : null}
+            )}
+            <div className="field-info__content">{content}</div>
+          </React.Fragment>
         </div>
       );
     };
@@ -119,22 +152,34 @@ class ObjectInfo extends React.Component {
                     to={{ pathname: `/object/@${wobject.author_permlink}/gallery` }}
                     onClick={() => this.handleSelectField('gallery')}
                   >
-                    <IconButton icon={<Icon type="plus-circle" />} onClick={() => {}} />
+                    <IconButton
+                      icon={<Icon type="plus-circle" />}
+                      onClick={this.handleToggleModal}
+                    />
                     <div
                       className={`icon-button__text ${
-                        this.state.selectedField === 'gallery' ? 'field-selected' : ''
+                        selectedField === 'gallery' ? 'field-selected' : ''
                       }`}
                     >
                       <FormattedMessage id="object_field_gallery" defaultMessage="Gallery" />
                     </div>
                   </Link>
+                  <span className="proposition-line__text">({albumsCount})</span>
+                  {showModal && (
+                    <CreateAlbum
+                      showModal={showModal}
+                      hideModal={this.handleToggleModal}
+                      handleSubmit={this.handleCreateAlbum}
+                      loading={loadingAlbum}
+                    />
+                  )}
                 </div>
-                {wobject.preview_gallery && wobject.preview_gallery[0] ? (
+                {wobject.preview_gallery && wobject.preview_gallery[0] && (
                   <PicturesCarousel
                     pics={wobject.preview_gallery}
                     objectID={wobject.author_permlink}
                   />
-                ) : null}
+                )}
               </div>
             )}
             {listItem(
@@ -204,10 +249,5 @@ class ObjectInfo extends React.Component {
     );
   }
 }
-
-ObjectInfo.propTypes = {
-  wobject: PropTypes.shape().isRequired,
-  userName: PropTypes.string.isRequired,
-};
 
 export default ObjectInfo;
