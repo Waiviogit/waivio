@@ -52,6 +52,14 @@ class Topnav extends React.Component {
     };
   }
 
+  static get ROUTES_MAP() {
+    return {
+      [this.MENU_ITEMS.HOME]: ['trending', 'hot', 'created'],
+      [this.MENU_ITEMS.MARKETS]: ['markets'],
+      [this.MENU_ITEMS.DEALS]: ['deals'],
+    }
+  }
+
   static propTypes = {
     autoCompleteSearchResults: PropTypes.arrayOf(PropTypes.string),
     intl: PropTypes.shape().isRequired,
@@ -108,16 +116,14 @@ class Topnav extends React.Component {
 
   setSelectedPage() {
     const { location } = this.props;
-    let currItem = '';
-    Object.values(Topnav.MENU_ITEMS)
-      .forEach(item => {
-        if (location.pathname.includes(`/${item}`)) {
-          currItem = item;
-          return false;
-        }
-        return true;
-      });
-    return currItem;
+    let currPage = Topnav.MENU_ITEMS.MY_FEED;
+    Object.keys(Topnav.ROUTES_MAP).forEach(key => {
+      const routeList = Topnav.ROUTES_MAP[key];
+      if (routeList.some(route => location.pathname.includes(`/${route}`))) {
+        currPage = key;
+      }
+    });
+    return currPage;
   }
 
   handleMoreMenuSelect(key) {
@@ -452,7 +458,7 @@ class Topnav extends React.Component {
             mode="horizontal"
           >
             <Menu.Item key={Topnav.MENU_ITEMS.HOME}>
-              <NavLink to="/home">
+              <NavLink to="/trending">
                 {intl.formatMessage({id: "home", defaultMessage: "Home"}).toUpperCase()}
               </NavLink>
             </Menu.Item>
