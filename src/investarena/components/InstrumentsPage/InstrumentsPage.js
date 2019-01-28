@@ -1,18 +1,15 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import { Tabs } from 'antd';
-// import { browserHistory } from 'react-router';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { getViewMode, setViewMode } from '../../helpers/localStorageHelpers';
 import AssetsTab from './AssetsTab/AssetsTab';
 import { arrayOfLogos } from '../../constants/arrayOfQuoteLogos';
 import { getAllSignals } from '../../redux/actions/signalsActions';
-// import QuotesSearch from '../InstrumentsPage/QuotesSearch/QuotesSearch';
-// import { searchParams } from '../ItemsSearch/constants';
-// import SidebarBack from '../MainPage/Sidebar/SidebarBack';
-// import Tabs from '../Tabs';
 import './InstrumentsPage.less';
+import * as ApiClient from "../../../waivioApi/ApiClient";
+
 const TabPane = Tabs.TabPane;
 
 const propTypes = {
@@ -33,18 +30,19 @@ class InstrumentsPage extends Component {
             trends: [],
             updatedQuoteSettings: {},
             signals: {},
-            viewMode: 'list'
+            viewMode: 'list',
+            wobjs: []
         };
     }
     componentDidMount () {
         this.props.getChartsData();
-        // this.props.getInstrumentsTrends().then((data) => {
-        //     this.setState({trends: data});
-        // });
         getAllSignals().then(({ data, error }) => {
             if (!error && data) {
                 this.setState({signals: data});
             }
+        });
+        ApiClient.getObjects({ limit: 500 }).then(wobjs => {
+          this.setState({ wobjs });
         });
         const currentViewMode = getViewMode('instruments');
         if (currentViewMode) {
@@ -56,6 +54,7 @@ class InstrumentsPage extends Component {
             this.setState({updatedQuoteSettings: this.getOptions()});
         }
     }
+
     goToAssets = (quote) => {
         // browserHistory.push(`/quote/${quote.id}`);
     };

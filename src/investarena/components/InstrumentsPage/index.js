@@ -31,7 +31,7 @@ function mapStateToProps (state) {
         favorites: getFavoritesState(state),
         platformConnect: getIsConnectPlatformState(state),
         openDeals: getOpenDealsState(state),
-        charts: getAssetsChartsState(state)
+        charts: getAssetsChartsState(state),
     };
 }
 
