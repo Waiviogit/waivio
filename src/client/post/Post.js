@@ -172,7 +172,7 @@ export default class Post extends React.Component {
         <ScrollToTopOnMount />
         <div className="shifted">
           <div className="post-layout container">
-            <Affix className="rightContainer" stickPosition={77}>
+            <Affix className="rightContainer" stickPosition={115}>
               <div className="right">
                 {loaded && this.renderCryptoTrendingCharts()}
                 <PostRecommendation isAuthFetching={isAuthFetching} />

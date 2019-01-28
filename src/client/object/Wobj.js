@@ -114,12 +114,12 @@ export default class Wobj extends React.Component {
         />
         <div className="shifted">
           <div className="feed-layout container">
-            <Affix className="leftContainer leftContainer__user" stickPosition={72}>
+            <Affix className="leftContainer leftContainer__user" stickPosition={110}>
               <div className="left">
                 <LeftObjectProfileSidebar wobject={wobject} userName={authenticatedUserName} />
               </div>
             </Affix>
-            <Affix className="rightContainer" stickPosition={72}>
+            <Affix className="rightContainer" stickPosition={110}>
               <div className="right">
                 <RightObjectSidebar users={wobject.users} />
               </div>
