@@ -20,9 +20,12 @@ const propTypes = {
 
 const AssetsTab = ({intl, quotes, quoteSettings, title, charts, signals, favorites, deals, viewMode}) => {
     const sortedQuotes = _.sortBy(quotes, 'security');
-    const matchTitle = (quote) => title === 'CryptoCurrency'
-            ? quoteSettings[quote.security].market === title || quoteSettings[quote.security].market === 'Crypto'
-            : quoteSettings[quote.security].market === title || (title === 'Favorites' && favorites.includes(quote.security));
+    const matchTitle = (quote) => {
+      const quoteMarket = quoteSettings[quote.security].market.toLowerCase();
+      return title === 'cryptocurrency'
+            ? quoteMarket === title || quoteMarket === 'crypto'
+            : quoteMarket === title || (title === 'favorites' && favorites.includes(quote.security))
+    };
     const selectedInstruments = _.map(sortedQuotes, (quote) =>
         (quoteSettings[quote.security] && quoteSettings[quote.security].wobjData && matchTitle(quote) && charts) &&
         <div key={quote.security} className={classNames({'st-list-item': viewMode === 'list', 'st-card': viewMode === 'cards'})}>

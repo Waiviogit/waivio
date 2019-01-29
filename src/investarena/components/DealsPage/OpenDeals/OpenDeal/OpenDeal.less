@@ -1,4 +1,4 @@
-@import '../../../../Common.less';
+@import '../../../Common.less';
 
 .st-open-deal-wrapper {
   &.st-list-item {
@@ -23,7 +23,7 @@
       }
       .st-open-deal-header-item-title {
         .textStyle(@font-size-small, @color-darkest-gray, normal);
-        align-self: center;
+        text-align: center!important;
         margin-right: 5px;
       }
       .st-open-deal-header-value {
@@ -130,9 +130,6 @@
       display: flex;
       justify-content: space-between;
       .textStyle(@font-size-small, @color-darkest-gray, normal);
-      .st-open-deal-header-item-title {
-        margin-right: 4px;
-      }
     }
     .st-card__btn-wrap {
       display: flex;

@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
-import { currencyFormat } from '../../../../platform/numberFormat';
-import ModalCloseAll from '../../../Modals/ModalsOpenDeal/ModalCloseAll/ModalCloseAll';
-import OpenDeal from './OpenDeal';
-import { PlatformHelper } from '../../../../platform/platformHelper';
+import { currencyFormat } from '../../../platform/numberFormat';
+import ModalCloseAll from '../../Modals/ModalsOpenDeal/ModalCloseAll/ModalCloseAll';
+import OpenDeal from './OpenDeal/index';
+import { PlatformHelper } from '../../../platform/platformHelper';
 import './OpenDeals.less';
 
 const propTypes = {
@@ -44,8 +44,6 @@ const OpenDeals = ({openDeals, intl, quotes, viewMode, quoteSettings }) => {
             <div className="st-id-title">ID:</div>
             <div className="st-instrument-avatar-title"> </div>
             <div className="st-instruments-text-title">{intl.formatMessage({ id: 'assets.instrument', defaultMessage: 'Instrument' })}</div>
-            <div className="st-type-title">{intl.formatMessage({ id: 'deals.type', defaultMessage: 'Type' })}</div>
-            <div className="st-amount-title">{intl.formatMessage({ id: 'assets.amount', defaultMessage: 'Amount' })}</div>
             <div className="st-opened-title">{intl.formatMessage({ id: 'deals.opened', defaultMessage: 'Deal is opened' })}</div>
             <div className="st-tp-title">{intl.formatMessage({ id: 'modalTakeProfit.header.title', defaultMessage: 'Take profit' })}</div>
             <div className="st-sl-title">{intl.formatMessage({ id: 'deals.stopLoss', defaultMessage: 'Stop loss' })}</div>
