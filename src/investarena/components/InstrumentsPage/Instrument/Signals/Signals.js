@@ -11,15 +11,14 @@ const propTypes = {
     signals: PropTypes.arrayOf(PropTypes.shape()),
 };
 
-const Signals = ({intl, signals}) => {
-    return (
+const Signals = ({intl, signals}) => (
       (signals && signals.length > 0)
         ? (
           <Popover
             placement="bottom"
             className="st-signal-popover"
             content={_.map(formatSignalsData(signals), (signal) =>
-              <div className="st-signal-wrap">
+              <div className="st-signal-wrap" key={`signal:${signal.id}`}>
                 <div className="st-signal-interval">{getCorrectTime(signal.interval, intl)}</div>
                 <div className={`st-signal-recommendation st-signal-color-${signal.recommendation === 'buy' ? 'success' : 'danger'}`}>
                   <FormattedMessage id={`signal.${signal.recommendation}`}/>
@@ -36,7 +35,6 @@ const Signals = ({intl, signals}) => {
         )
         : null
     );
-};
 
 Signals.propTypes = propTypes;
 Signals.defaultProps = {
