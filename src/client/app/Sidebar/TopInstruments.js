@@ -21,7 +21,7 @@ const TopInstruments = ({ intl, trendingTopicsLoading, trendingTopics }) => {
     <div>
       <Collapse bordered={false} defaultActiveKey={instrumentGroups}>
         {instrumentGroups.map(groupName => (
-          <Collapse.Panel header={groupName} key={groupName} showArrow={false} disabled>
+          <Collapse.Panel header={groupName.toUpperCase()} key={groupName} showArrow={false} disabled>
             <div className="top-instruments__headline">card</div>
             <div className="top-instruments__card">
               content
