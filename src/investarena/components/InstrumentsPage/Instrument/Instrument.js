@@ -10,8 +10,8 @@ import InstrumentAvatar from '../../InstrumentAvatar/InstrumentAvatar';
 import { PlatformHelper } from '../../../platform/platformHelper';
 import TradeButtonsAssets from '../../InstrumentsPage/TradeButtonsAssets';
 import withTrade from '../../HOC/withTrade';
+import InstrumentCardView from './CardView';
 import Signals from './Signals';
-import InstrumentsChart from './InstrumentChart';
 import ModalTC from "../../Modals/ModalTC/ModalTC";
 import '../InstrumentsPage.less';
 
@@ -49,7 +49,7 @@ class Instrument extends Component {
       this.setState({ isModalInstrumentsChart: !this.state.isModalInstrumentsChart });
     };
     render () {
-        const {intl,quoteSettings, quote, signals, chart} = this.props;
+        const { intl, quoteSettings, quote, signals, chart} = this.props;
         const investments = this.getInvestments();
         const instrumentName =
             <Link to={`/object/@${quoteSettings.wobjData.author_permlink}`}>
@@ -57,11 +57,6 @@ class Instrument extends Component {
                     <div className="st-instrument-name" title={quoteSettings.name}>{quoteSettings.name} </div>
                 </div>
             </Link>;
-        const dailyChangeValue =
-            <div title={this.props.intl.formatMessage({id: 'tips.dailyChange', defaultMessage: 'Daily change'})}
-                className={`st-daily-change ${quote.dailyChange > 0 ? 'st-quote-text-up' : 'st-quote-text-down'}`}>
-                {`${quote.dailyChange.toFixed(2)}%`}
-            </div>;
         const getChart = (width, height) => chart && chart.length !== 0
             ? <AreaChart
                 width={width}
@@ -69,43 +64,10 @@ class Instrument extends Component {
                 areaColors={['#3a79ee']}
                 data={[this.props.chart]}
             /> :
-             <div className="st-assets-chart-no-data">{this.props.intl.formatMessage({id: 'charts.noData', defaultMessage: 'No data'})}</div>;
-        const modalChart = this.state.isModalInstrumentsChart &&
-            <ModalTC
-                quoteName={quote.security}
-                market={quoteSettings.market}
-                isOpen={this.state.isModalInstrumentsChart}
-                toggle={this.toggleModalInstrumentsChart}
-            />;
+             <div className="st-assets-chart-no-data">{intl.formatMessage({id: 'charts.noData', defaultMessage: 'No data'})}</div>;
         switch (this.props.viewMode) {
         case 'cards':
-            return (
-                <React.Fragment>
-                    <div className="st-card__header">
-                        <InstrumentAvatar
-                          permlink={quoteSettings.wobjData.author_permlink}
-                          market={quoteSettings.market}
-                          avatarlink={quoteSettings.wobjData.avatarlink}
-                        />
-                        {instrumentName}
-                        <Favorite quoteSecurity={quote.security}/>
-                    </div>
-                    <div className="st-card__content">
-                        <div className="st-card__daily-change-signal-info">
-                            {dailyChangeValue}
-                            <Signals signals={signals} />
-                        </div>
-                        <InstrumentsChart
-                          chart={chart}
-                          height={50}
-                          width={246}
-                          noDataMsg={intl.formatMessage({id: 'charts.noData', defaultMessage: 'No data'})}
-                        />
-                        <TradeButtonsAssets
-                            className="st-assets-buttons st-trade-buttons-asset-page-wrap"
-                            quoteSecurity={quote.security}/>
-                    </div>
-                </React.Fragment>);
+          return <InstrumentCardView quoteSettings={quoteSettings} quote={quote} chart={chart} signals={signals}/>;
         case 'list':
         default:
             return (
@@ -120,7 +82,10 @@ class Instrument extends Component {
                         {instrumentName}
                         {investments}
                     </div>
-                    {dailyChangeValue}
+                    <div title={intl.formatMessage({id: 'tips.dailyChange', defaultMessage: 'Daily change'})}
+                         className={`st-daily-change ${quote.dailyChange > 0 ? 'st-quote-text-up' : 'st-quote-text-down'}`}>
+                      {`${quote.dailyChange.toFixed(2)}%`}
+                    </div>
                     <div role="presentation" className="st-assets-chart-wrap" onClick={this.toggleModalInstrumentsChart}>
                         {getChart(180, 40)}
                     </div>
