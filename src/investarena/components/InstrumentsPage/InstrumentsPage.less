@@ -5,10 +5,12 @@
 @list-view-header-height: 56px;
 @chartWidht: 180px;
 .st-instr-page {
+  padding-top: 10px;
+  width: 100vw;
   .center {
     float: left;
     width: 100%;
-
+    background-color: @color-white;
     @media @small {
       width: calc(100% - @margin)!important;
     }
@@ -18,25 +20,6 @@
       margin-left: @margin!important;
     }
   }
-  //.st-instruments-controls {
-  //  display: flex;
-  //  flex-flow: row nowrap;
-  //  align-items: center;
-  //  margin-bottom: 10px;
-  //  .st-items-search-wrap {
-  //    width: 500px;
-  //    margin: 0;
-  //    .is-focused, .is-open{
-  //      .Select-arrow{
-  //        width: 25px;
-  //        height: 25px;
-  //        margin-top: 4px;
-  //        background-image: none;
-  //        border: none;
-  //      }
-  //    }
-  //  }
-  //}
   .st-instruments-toggle-view {
     margin-left: 10px;
     position: absolute;
@@ -343,7 +326,7 @@
     }
     border-bottom: 1px solid @color-dark-gray;
     .st-instruments-text-title{.columnAssetsStyle (287px)}
-    .st-daily-title{.columnAssetsStyle (226px)}
+    .st-daily-title{.columnAssetsStyle (205px)}
     .st-buy-title{.columnAssetsStyle (60px)}
     .st-amount-title{.columnAssetsStyle (135px)}
     .st-sell-title{.columnAssetsStyle (60px)}
@@ -351,7 +334,7 @@
     .st-signals-title{
       width: 25px;
       height: 29px;
-      margin: 13px 25px;
+      margin: 13px 0 13px 25px;
     }
   }
   .st-sidebar-ul{margin: 0!important;}

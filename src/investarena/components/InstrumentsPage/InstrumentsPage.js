@@ -40,11 +40,13 @@ class InstrumentsPage extends Component {
     componentDidMount () {
         this.props.getChartsData();
         const viewMode = getViewMode('instruments');
+        if(viewMode) this.setState({viewMode});
         getAllSignals().then(({ data, error }) => {
             if (!error && data) {
-              viewMode ? this.setState({signals: data, viewMode}) : this.setState({signals: data})
+              this.setState({signals: data})
             }
         });
+
     }
 
     toggleViewMode = () => {

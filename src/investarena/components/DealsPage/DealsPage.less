@@ -1,8 +1,26 @@
 @import (reference) '../Common.less';
+@import (reference) '../../../client/styles/modules/variables.less';
+
 @open-deals-wrap-height: 550px;
 @list-view-header-height: 52px;
 
 .st-deals-page {
+  padding-top: 10px;
+  width: 100vw;
+  .center {
+    float: left;
+    width: 100%;
+    background-color: @color-white;
+
+    @media @small {
+      width: calc(100% - @margin)!important;
+    }
+
+    @media @medium {
+      width: calc(100% - (@left-width + @margin))!important;
+      margin-left: @margin!important;
+    }
+  }
   .st-deal-pl-red {
     color: @color-red!important;
   }
@@ -22,8 +40,7 @@
       height: 20px;
     }
   }
-  padding-top: 10px;
-  width: 100vw;
+
   .st-grid {
     display: flex;
     .st-left-area {
@@ -92,10 +109,10 @@
   .st-instrument-avatar-closed-title {
     width: 40px;
   }
-  .st-instruments-text-title{.columnAssetsStyle (145px, @font-size-medium, 15px)}
+  .st-instruments-text-title{.columnAssetsStyle (135px, @font-size-medium, 15px)}
   .st-type-title{.columnAssetsStyle (50px, @font-size-medium, 15px)}
   .st-pnl-title{.columnAssetsStyle (85px, @font-size-medium, 15px)}
-  .st-opened-title{.columnAssetsStyle (125px, @font-size-medium, 15px)}
+  .st-opened-title{.columnAssetsStyle (90px, @font-size-medium, 15px)}
   .st-amount-title{.columnAssetsStyle (75px, @font-size-medium, 15px)}
   .st-tp-title{.columnAssetsStyle (95px, @font-size-medium, 15px)}
   .st-sl-title{.columnAssetsStyle (90px, @font-size-medium, 15px)}
@@ -113,7 +130,7 @@
       .columnAssetsStyle (85px, @font-size-small, 0)
     }
     .st-opened {
-      .columnAssetsStyle (125px, @font-size-small, 0)
+      .columnAssetsStyle (90px, @font-size-small, 0)
     }
     .st-amount {
       .columnAssetsStyle (75px, @font-size-small, 0)
@@ -127,7 +144,7 @@
     .st-price {
       margin-left: 5px;
       .textStyle(@font-size-medium, @color-black-blue, bold);
-      width: 130px;
+      width: 102px;
       text-align: center;
     }
   }
@@ -135,7 +152,7 @@
     .st-instruments-text-title{.columnAssetsStyle (160px, @font-size-medium, 15px)}
     .st-type-title{.columnAssetsStyle (40px, @font-size-medium, 15px)}
     .st-pnl-title{.columnAssetsStyle (85px, @font-size-medium, 15px)}
-    .st-opened-title{.columnAssetsStyle (125px, @font-size-medium, 15px)}
+    .st-opened-title{.columnAssetsStyle (105px, @font-size-medium, 15px)}
     .st-amount-title{.columnAssetsStyle (75px, @font-size-medium, 15px)}
     .st-tp-title{.columnAssetsStyle (95px, @font-size-medium, 15px)}
     .st-sl-title{.columnAssetsStyle (90px, @font-size-medium, 15px)}
@@ -146,14 +163,13 @@
         .columnAssetsStyle (130px, @font-size-small, 0)
       }
       .st-type {
-        width: 35px;
         text-align: center;
       }
       .st-pnl {
         .columnAssetsStyle (85px, @font-size-small, 0)
       }
       .st-opened {
-        .columnAssetsStyle (105px, @font-size-small, 0)
+        .columnAssetsStyle (90px, @font-size-small, 0)
       }
       .st-amount {
         .columnAssetsStyle (75px, @font-size-small, 0)
@@ -167,7 +183,7 @@
       .st-price {
         margin-left: 5px;
         .textStyle(@font-size-medium, @color-black-blue, bold);
-        width: 115px;
+        width: 102px;
         text-align: center;
       }
       .st-commission {

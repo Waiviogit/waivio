@@ -1,9 +1,9 @@
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { getOpenDealsState } from '../../../../redux/selectors/dealsSelectors';
-import {getQuotesSettingsState} from '../../../../redux/selectors/quotesSettingsSelectors';
-import {getQuotesState} from '../../../../redux/selectors/quotesSelectors';
+import { getOpenDealsState } from '../../../redux/selectors/dealsSelectors';
+import {getQuotesSettingsState} from '../../../redux/selectors/quotesSettingsSelectors';
+import {getQuotesState} from '../../../redux/selectors/quotesSelectors';
 import OpenDeals from './OpenDeals';
 
 const propTypes = {

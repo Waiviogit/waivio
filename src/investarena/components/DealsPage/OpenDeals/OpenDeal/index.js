@@ -1,9 +1,9 @@
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {getPlatformNameState} from '../../../../../redux/selectors/platformSelectors';
-import { makeGetQuoteSettingsState } from '../../../../../redux/selectors/quotesSettingsSelectors';
-import { makeGetQuoteState } from '../../../../../redux/selectors/quotesSelectors';
+import {getPlatformNameState} from '../../../../redux/selectors/platformSelectors';
+import { makeGetQuoteSettingsState } from '../../../../redux/selectors/quotesSettingsSelectors';
+import { makeGetQuoteState } from '../../../../redux/selectors/quotesSelectors';
 import OpenDeal from './OpenDeal';
 // import { showNotification } from '../../../../../redux/actions/notificationActions';
 

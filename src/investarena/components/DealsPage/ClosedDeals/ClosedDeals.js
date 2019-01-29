@@ -4,11 +4,11 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { Select } from 'antd';
-import ClosedDeal from './ClosedDeal';
-import { currencyFormat } from '../../../../platform/numberFormat';
-import { optionsPeriod } from '../../../../constants/selectData';
-import quoteSettingsData from '../../../../default/quoteSettingsData';
-import { singleton } from '../../../../platform/singletonPlatform';
+import ClosedDeal from './ClosedDeal/index';
+import { currencyFormat } from '../../../platform/numberFormat';
+import { optionsPeriod } from '../../../constants/selectData';
+import quoteSettingsData from '../../../default/quoteSettingsData';
+import { singleton } from '../../../platform/singletonPlatform';
 import './ClosedDeals.less';
 
 const Option =Select.Option;
@@ -52,10 +52,8 @@ class ClosedDeals extends Component {
         const dealsListHeader =
             <div className="st-instr-column-wrap d-flex">
                 <div className="st-id-title">ID:</div>
-                <div className="st-instrument-avatar-closed-title"> </div>
+                <div className="st-instrument-avatar-closed-title"/>
                 <div className="st-instruments-text-title">{this.props.intl.formatMessage({ id: 'assets.instrument' })}</div>
-                <div className="st-type-title">{this.props.intl.formatMessage({ id: 'deals.type', defaultMessage: 'Type' })}</div>
-                <div className="st-amount-title">{this.props.intl.formatMessage({ id: 'assets.amount', defaultMessage: 'Amount' })}</div>
                 <div className="st-opened-title">{this.props.intl.formatMessage({ id: 'deals.openTime', defaultMessage: 'Opening time' })}</div>
                 <div className="st-opened-title">{this.props.intl.formatMessage({ id: 'deals.closeTime', defaultMessage: 'Closing time' })}</div>
                 <div className="st-price-title">{this.props.intl.formatMessage({ id: 'deals.openPrice', defaultMessage: 'Opening price' })}</div>
