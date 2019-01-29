@@ -125,7 +125,7 @@ export default function withEditor(WrappedComponent) {
               defaultMessage: 'Object has been created',
             }),
           );
-          this.props.voteObject(res.objectAuthor, res.objectPermlink);
+          this.props.voteObject(res.objectAuthor, res.objectPermlink, obj.votePercent);
 
           callback(res);
         })

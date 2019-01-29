@@ -18,11 +18,12 @@ import {
 } from '../../common/constants/listOfFields';
 import {
   getObject,
-  getAuthenticatedUserName,
   getIsAppendLoading,
-  getUser,
   getRewardFund,
   getRate,
+  getAuthenticatedUser,
+  getVotingPower,
+  getVotePercent,
 } from '../reducers';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
@@ -41,18 +42,18 @@ import {
   objectNameValidationRegExp,
   objectURLValidationRegExp,
 } from '../../common/constants/validation';
-import { getVoteValue } from '../helpers/user';
-import { calculateVotingPower } from '../vendor/steemitHelpers';
+import { getHasDefaultSlider, getVoteValue } from '../helpers/user';
 import LikeSection from './LikeSection';
 
 @connect(
-  (state, ownProps) => ({
-    currentUsername: getAuthenticatedUserName(state),
+  state => ({
+    user: getAuthenticatedUser(state),
     wObject: getObject(state),
     loading: getIsAppendLoading(state),
-    user: getUser(state, ownProps.currentUsername),
     rewardFund: getRewardFund(state),
     rate: getRate(state),
+    sliderMode: getVotingPower(state),
+    defaultVotePercent: getVotePercent(state),
   }),
   { appendObject },
 )
@@ -63,7 +64,6 @@ export default class AppendForm extends Component {
   static propTypes = {
     currentField: PropTypes.string,
     currentLocale: PropTypes.string,
-    currentUsername: PropTypes.string,
     loading: PropTypes.bool,
     hideModal: PropTypes.func,
     onImageUpload: PropTypes.func,
@@ -75,6 +75,8 @@ export default class AppendForm extends Component {
     user: PropTypes.shape(),
     rewardFund: PropTypes.shape(),
     rate: PropTypes.number,
+    sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
+    defaultVotePercent: PropTypes.number.isRequired,
   };
 
   static defaultProps = {
@@ -92,14 +94,27 @@ export default class AppendForm extends Component {
     user: {},
     rewardFund: {},
     rate: 1,
+    sliderMode: 'auto',
+    defaultVotePercent: 100,
   };
 
   state = {
     isSomeValue: true,
     imageUploading: false,
     currentImage: [],
-    votePercent: 100,
+    votePercent: this.props.defaultVotePercent / 100,
+    voteWorth: 0,
     isValidImage: false,
+    sliderVisible: false,
+  };
+
+  componentDidMount = () => {
+    const { sliderMode, user } = this.props;
+    if (sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user))) {
+      if (!this.state.sliderVisible) {
+        this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
+      }
+    }
   };
 
   onSubmit = form => {
@@ -135,14 +150,13 @@ export default class AppendForm extends Component {
 
     const field = getFieldValue('currentField');
     let locale = getFieldValue('currentLocale');
-    const like = getFieldValue('like');
 
     if (locale === 'auto') locale = 'en-US';
 
     const data = {};
 
     const getBody = formField => {
-      const { body, preview, currentField, currentLocale, like: likeFlag, ...rest } = formField;
+      const { body, preview, currentField, currentLocale, ...rest } = formField;
 
       switch (currentField) {
         case objectFields.name:
@@ -160,7 +174,7 @@ export default class AppendForm extends Component {
       }
     };
 
-    data.author = this.props.currentUsername;
+    data.author = this.props.user.name;
     data.parentAuthor = wObject.author;
     data.parentPermlink = wObject.author_permlink;
     const langReadable = _.filter(LANGUAGES, { id: locale })[0].name;
@@ -191,11 +205,7 @@ export default class AppendForm extends Component {
 
     data.wobjectName = getField(wObject, 'name');
 
-    if (like) {
-      data.like = like;
-      data.votePower = this.state.votePercent * 100;
-    }
-
+    data.votePower = this.state.votePercent * 100;
     return data;
   };
 
@@ -350,7 +360,26 @@ export default class AppendForm extends Component {
     }
   };
 
-  handleVotePercentChange = value => this.setState({ votePercent: value });
+  handleVotePercentChange = value => {
+    const { user, rewardFund, rate } = this.props;
+    const voteWorth = getVoteValue(
+      user,
+      rewardFund.recent_claims,
+      rewardFund.reward_balance,
+      rate,
+      value * 100,
+    );
+    this.setState({ votePercent: value, voteWorth });
+  };
+
+  handleLikeClick = () => {
+    const { sliderMode, user } = this.props;
+    if (sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user))) {
+      if (!this.state.sliderVisible) {
+        this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
+      }
+    }
+  };
 
   renderContentValue = currentField => {
     const { intl, wObject } = this.props;
@@ -923,7 +952,7 @@ export default class AppendForm extends Component {
   };
 
   render() {
-    const { currentLocale, currentField, loading, rewardFund, user, rate, form } = this.props;
+    const { currentLocale, currentField, loading, form } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
 
     const languageOptions = [];
@@ -960,17 +989,6 @@ export default class AppendForm extends Component {
       );
     });
 
-    const votePower = calculateVotingPower(user);
-
-    const voteWorth =
-      getVoteValue(
-        user,
-        rewardFund.recent_claims,
-        rewardFund.reward_balance,
-        rate,
-        votePower * 1000,
-      ) * this.state.votePercent;
-
     return (
       <Form className="AppendForm" layout="vertical" onSubmit={this.handleSubmit}>
         <div className="ant-form-item-label label AppendForm__appendTitles">
@@ -998,8 +1016,10 @@ export default class AppendForm extends Component {
         <LikeSection
           handleVotePercentChange={this.handleVotePercentChange}
           votePercent={this.state.votePercent}
-          voteWorth={voteWorth}
+          voteWorth={this.state.voteWorth}
           form={form}
+          sliderVisible={this.state.sliderVisible}
+          onChange={this.handleLikeClick}
         />
 
         {getFieldValue('currentField') !== 'auto' && (
