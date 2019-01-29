@@ -136,7 +136,7 @@ class Instrument extends Component {
                     </div>
                     {dailyChangeValue}
                     <div role="presentation" className="st-assets-chart-wrap" onClick={this.toggleModalInstrumentsChart}>
-                        {getChart(200, 40)}
+                        {getChart(180, 40)}
                     </div>
                     {modalChart}
                     <TradeButtonsAssets className="st-assets-buttons st-trade-buttons-asset-page-wrap"
