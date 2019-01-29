@@ -65,7 +65,12 @@ class InstrumentsPage extends Component {
             <div className="st-instr-page">
               <div className="feed-layout container">
                 <div className="leftContainer">
-                  left
+                  <div role='presentation' className="st-instruments-toggle-view" onClick={this.toggleViewMode}>
+                    {this.state.viewMode === 'list'
+                    ? <img alt="cards" className="st-instruments-toggle-view__icon" src="/images/icons/grid-view.svg"/>
+                    : <img alt="list" className="st-instruments-toggle-view__icon" src="/images/icons/list-of-items.svg"/>
+                    }
+                  </div>
                 </div>
                 <div className="center">
                   <AssetsTab
@@ -79,12 +84,7 @@ class InstrumentsPage extends Component {
                     trends={this.state.trends}
                     viewMode={this.state.viewMode}
                   />
-                     {/*<div role='presentation' className="st-instruments-toggle-view" onClick={this.toggleViewMode}>*/}
-                       {/*{this.state.viewMode === 'list'*/}
-                         {/*? <img alt="cards" className="st-instruments-toggle-view__icon" src="/images/icons/grid-view.svg"/>*/}
-                         {/*: <img alt="list" className="st-instruments-toggle-view__icon" src="/images/icons/list-of-items.svg"/>*/}
-                       {/*}*/}
-                     {/*</div>*/}
+
                   </div>
                 </div>
               </div>
