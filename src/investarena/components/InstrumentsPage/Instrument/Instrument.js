@@ -10,9 +10,10 @@ import InstrumentAvatar from '../../InstrumentAvatar/InstrumentAvatar';
 import { PlatformHelper } from '../../../platform/platformHelper';
 import TradeButtonsAssets from '../../InstrumentsPage/TradeButtonsAssets';
 import withTrade from '../../HOC/withTrade';
-import '../InstrumentsPage.less';
-import Signals from '../../InstrumentsPage/Instrument/Signals';
+import Signals from './Signals';
+import InstrumentsChart from './InstrumentChart';
 import ModalTC from "../../Modals/ModalTC/ModalTC";
+import '../InstrumentsPage.less';
 
 const propTypes = {
   chart: PropTypes.array,
@@ -48,7 +49,7 @@ class Instrument extends Component {
       this.setState({ isModalInstrumentsChart: !this.state.isModalInstrumentsChart });
     };
     render () {
-        const {quoteSettings, quote, signals, chart} = this.props;
+        const {intl,quoteSettings, quote, signals, chart} = this.props;
         const investments = this.getInvestments();
         const instrumentName =
             <Link to={`/object/@${quoteSettings.wobjData.author_permlink}`}>
@@ -94,10 +95,12 @@ class Instrument extends Component {
                             {dailyChangeValue}
                             <Signals signals={signals} />
                         </div>
-                        <div role='presentation' className="st-card__chart" onClick={this.toggleModalInstrumentsChart}>
-                            {getChart(276, 60)}
-                        </div>
-                        {modalChart}
+                        <InstrumentsChart
+                          chart={chart}
+                          height={50}
+                          width={246}
+                          noDataMsg={intl.formatMessage({id: 'charts.noData', defaultMessage: 'No data'})}
+                        />
                         <TradeButtonsAssets
                             className="st-assets-buttons st-trade-buttons-asset-page-wrap"
                             quoteSecurity={quote.security}/>
@@ -121,7 +124,14 @@ class Instrument extends Component {
                     <div role="presentation" className="st-assets-chart-wrap" onClick={this.toggleModalInstrumentsChart}>
                         {getChart(180, 40)}
                     </div>
-                    {modalChart}
+                    {this.state.isModalInstrumentsChart &&
+                      <ModalTC
+                        quoteName={quote.security}
+                        market={quoteSettings.market}
+                        isOpen={this.state.isModalInstrumentsChart}
+                        toggle={this.toggleModalInstrumentsChart}
+                      />
+                    }
                     <TradeButtonsAssets className="st-assets-buttons st-trade-buttons-asset-page-wrap"
                         quoteSecurity={quote.security}/>
                     <Signals signals={signals} />
