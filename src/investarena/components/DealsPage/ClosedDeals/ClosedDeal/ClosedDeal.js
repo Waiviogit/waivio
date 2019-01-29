@@ -8,7 +8,6 @@ import InstrumentAvatar from '../../../InstrumentAvatar/InstrumentAvatar';
 import { PlatformHelper } from '../../../../platform/platformHelper';
 import { quoteFormat } from '../../../../platform/parsingPrice';
 import quoteSettingsData from '../../../../default/quoteSettingsData';
-import './ClosedDeal.less';
 
 const propTypes = {
     quoteSettings: PropTypes.shape(),

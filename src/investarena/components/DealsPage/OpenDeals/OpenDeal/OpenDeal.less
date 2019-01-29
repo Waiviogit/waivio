@@ -1,4 +1,5 @@
-@import '../../../Common.less';
+@import (reference) '../../../Common.less';
+@import (reference) '../../../../../client/styles/modules/variables';
 
 .st-open-deal-wrapper {
   &.st-list-item {
@@ -47,7 +48,10 @@
     display: flex;
     flex-direction: column;
     align-content: flex-start;
-    width: 296px;
+    width: 100%;
+    @media @large, @medium, @small {
+      width: 30%;
+    }
     border: 1px solid @color-gray;
     border-radius: 4px;
     padding: 10px;

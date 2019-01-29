@@ -58,13 +58,13 @@ const OpenDeals = ({openDeals, intl, quotes, viewMode, quoteSettings }) => {
                     <div className="st-deals-responsible-wrap">
                         {!_.isEmpty(openDeals)
                             ? _.map(openDeals, (openDeal) =>
-                                <div key={openDeal.dealId}>
                                     <OpenDeal
+                                        key={openDeal.dealId}
                                         quoteSecurity = {openDeal.security}
                                         openDeal = {openDeal}
                                         dealPnL={getPnl(openDeal)}
                                         viewMode={viewMode}/>
-                                </div>)
+                            )
                             : <div className="sr-open-deals-not-present">
                                 {intl.formatMessage({ id: 'openDeals.notPresent', defaultMessage: 'You do not have open deals' })}
                             </div>

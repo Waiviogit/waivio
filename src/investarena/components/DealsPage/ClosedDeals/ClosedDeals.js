@@ -36,14 +36,13 @@ class ClosedDeals extends Component {
                 totalPnL += closedDeal.pnl;
                 quoteSettings = this.props.quotesSettings[closedDeal.security] || quoteSettingsData;
                 return (
-                    <div key={closedDeal.dealId}>
                         <ClosedDeal
+                            key={closedDeal.dealId}
                             quoteSecurity={closedDeal.security}
                             quoteSettings = {quoteSettings}
                             closedDeal={closedDeal}
                             viewMode={this.props.viewMode}
                         />
-                    </div>
                 );
             })
             : <div className="sr-close-deals-not-present">
