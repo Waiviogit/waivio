@@ -3,15 +3,15 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { currencyFormat, numberFormat } from '../../../../../platform/numberFormat';
-import InstrumentAvatar from '../../../../InstrumentAvatar/InstrumentAvatar';
-import ModalClose from '../../../../Modals/ModalsOpenDeal/ModalClose';
-import ModalStopLoss from '../../../../Modals/ModalsOpenDeal/ModalStopLoss';
-import ModalTakeProfit from '../../../../Modals/ModalsOpenDeal/ModalTakeProfit';
-import { PlatformHelper } from '../../../../../platform/platformHelper';
-import quoteData from '../../../../../default/quoteData';
-import { quoteFormat } from '../../../../../platform/parsingPrice';
-import quoteSettingsData from '../../../../../default/quoteSettingsData';
+import { currencyFormat, numberFormat } from '../../../../platform/numberFormat';
+import InstrumentAvatar from '../../../InstrumentAvatar/InstrumentAvatar';
+import ModalClose from '../../../Modals/ModalsOpenDeal/ModalClose/index';
+import ModalStopLoss from '../../../Modals/ModalsOpenDeal/ModalStopLoss/index';
+import ModalTakeProfit from '../../../Modals/ModalsOpenDeal/ModalTakeProfit/index';
+import { PlatformHelper } from '../../../../platform/platformHelper';
+import quoteData from '../../../../default/quoteData';
+import { quoteFormat } from '../../../../platform/parsingPrice';
+import quoteSettingsData from '../../../../default/quoteSettingsData';
 import './OpenDeal.less';
 
 const propTypes = {
@@ -27,7 +27,7 @@ const OpenDeal = ({intl, quote, quoteSettings, openDeal, dealPnL, viewMode}) => 
     const quoteSettingsDeal = quoteSettings || quoteSettingsData;
     const direction = openDeal.side === 'LONG' || openDeal.side === 'BUY' ? 'buy' : 'sell';
     const marketPrice = openDeal.side === 'LONG' || openDeal.side === 'BUY' ? quoteDeal.askPrice : quoteDeal.bidPrice;
-    const directionCaption = <span className={`st-type st-deal-direction-${direction}`}>{direction}</span>;
+    const directionCaption = <div className={`st-type st-deal-direction-${direction}`}>{direction}</div>;
     const wobj = quoteSettingsDeal.wobjData ? quoteSettingsDeal.wobjData : {};
   const instrumentName =
         <Link to={`/object/@${wobj.author_permlink}`}>
@@ -36,9 +36,9 @@ const OpenDeal = ({intl, quote, quoteSettings, openDeal, dealPnL, viewMode}) => 
             </div>
         </Link>;
     const dealAmount =
-        <span className="st-amount st-open-deal-header-item-title" data-test = "instrument-open">
+        <div className="st-open-deal-header-item-title" data-test = "instrument-open" title={intl.formatMessage({id: 'deals.amount', defaultMessage: 'Amount'})}>
             {numberFormat(openDeal.amount, PlatformHelper.countDecimals(openDeal.amount))}
-        </span>;
+        </div>;
     const prices =
         <div className="st-price">
             <div className="d-flex align-items-center justify-content-between">
@@ -121,15 +121,19 @@ const OpenDeal = ({intl, quote, quoteSettings, openDeal, dealPnL, viewMode}) => 
                 <div className="st-open-deal-header-wrap">
                     <div className="st-open-deal-header">
                         <div className="st-open-deal-header-line">
-                            <span className="st-id">{openDeal.dealSequenceNumber}</span>
+                            <div className="st-id">
+                              {openDeal.dealSequenceNumber}
+                              {directionCaption}
+                            </div>
                             <InstrumentAvatar
                               avatarlink={wobj.avatarlink}
                               market={quoteSettingsDeal.market}
                               permlink={wobj.author_permlink}
                             />
-                            {instrumentName}
-                            {directionCaption}
-                            {dealAmount}
+                            <div>
+                              {instrumentName}
+                              {dealAmount}
+                            </div>
                             {dealDates}
                             {modalTP}
                             {modalSL}

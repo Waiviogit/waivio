@@ -3,11 +3,11 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-import { currencyFormat, numberFormat } from '../../../../../platform/numberFormat';
-import InstrumentAvatar from '../../../../InstrumentAvatar/InstrumentAvatar';
-import { PlatformHelper } from '../../../../../platform/platformHelper';
-import { quoteFormat } from '../../../../../platform/parsingPrice';
-import quoteSettingsData from '../../../../../default/quoteSettingsData';
+import { currencyFormat, numberFormat } from '../../../../platform/numberFormat';
+import InstrumentAvatar from '../../../InstrumentAvatar/InstrumentAvatar';
+import { PlatformHelper } from '../../../../platform/platformHelper';
+import { quoteFormat } from '../../../../platform/parsingPrice';
+import quoteSettingsData from '../../../../default/quoteSettingsData';
 import './ClosedDeal.less';
 
 const propTypes = {
@@ -28,10 +28,7 @@ const ClosedDeal = ({quoteSettings, closedDeal, intl, viewMode}) => {
                   <div>{closedQuoteSettings.name}</div>
               </div>
           </Link>;
-    const dealAmount =
-        <div className="st-amount" data-test = "instrument-open">
-            {numberFormat(closedDeal.amount, PlatformHelper.countDecimals(closedDeal.amount))}
-        </div>;
+    const dealAmount = numberFormat(closedDeal.amount, PlatformHelper.countDecimals(closedDeal.amount));
     const prices =
         <Fragment>
             <div title={intl.formatMessage({ id: 'deals.openPrice', defaultMessage: 'Opening price' })} className="st-price">{quoteFormat(closedDeal.openPrice, closedQuoteSettings)}</div>
@@ -56,7 +53,7 @@ const ClosedDeal = ({quoteSettings, closedDeal, intl, viewMode}) => {
                     </div>
                     <div className="st-instrument-name-wrap">
                         {instrumentName}
-                        {dealAmount}
+                      <div title={intl.formatMessage({ id: 'deals.amount', defaultMessage: 'Amount' })}>{dealAmount}</div>
                     </div>
                     <div className="st-price">
                         {prices}
@@ -85,15 +82,19 @@ const ClosedDeal = ({quoteSettings, closedDeal, intl, viewMode}) => {
                 <div className="st-open-deal-header-wrap">
                     <div className="st-open-deal-header">
                         <div className="st-open-deal-header-line">
-                            <div className="st-id">{closedDeal.dealSequenceNumber}</div>
+                            <div className="st-id">
+                              {closedDeal.dealSequenceNumber}
+                              {directionCaption}
+                            </div>
                             <InstrumentAvatar
                               avatarlink={wobj.avatarlink}
                               market={closedQuoteSettings.market}
                               permlink={wobj.author_permlink}
                             />
-                            {instrumentName}
-                            {directionCaption}
-                            {dealAmount}
+                            <div className="st-instruments-text">
+                              {instrumentName}
+                              <div title={intl.formatMessage({id: 'deals.amount', defaultMessage: 'Amount'})}>{dealAmount}</div>
+                            </div>
                             <div className="st-opened">{moment(closedDeal.openTime).format('DD.MM, HH:mm')}</div>
                             <div className="st-opened">{moment(closedDeal.goodTillDate).format('DD.MM, HH:mm')}</div>                            {prices}
                             {pnlValue}
