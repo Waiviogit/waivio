@@ -15,7 +15,7 @@ class InstrumentCard extends React.Component {
     quoteSettings: PropTypes.shape(),
     quote: PropTypes.shape(),
     chart: PropTypes.arrayOf(PropTypes.shape()),
-    signals: PropTypes.arrayOf(),
+    signals: PropTypes.arrayOf(PropTypes.shape()),
   };
 
   static defaultProps = {
@@ -32,6 +32,7 @@ class InstrumentCard extends React.Component {
 
   render() {
     const {intl, quoteSettings, quote, chart, signals} = this.props;
+    console.log('-->', signals);
     return (
       <React.Fragment>
         <div className="st-card__header">
