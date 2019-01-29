@@ -180,11 +180,12 @@ const routes = [
         component: Objects,
       },
       {
-        path: '/markets',
+        path: '/markets/:marketType',
         component: InstrumentsPage,
+        exact: true,
       },
       {
-        path: '/deals',
+        path: '/deals/:dealType',
         component: DealsPage,
       },
       {
