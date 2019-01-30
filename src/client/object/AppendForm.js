@@ -374,11 +374,9 @@ export default class AppendForm extends Component {
 
   handleLikeClick = () => {
     const { sliderMode, user } = this.props;
-    if (sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user))) {
-      if (!this.state.sliderVisible) {
-        this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
-      }
-    }
+    this.setState({
+      sliderVisible: sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user)),
+    });
   };
 
   renderContentValue = currentField => {
@@ -1014,12 +1012,12 @@ export default class AppendForm extends Component {
         {this.renderContentValue(getFieldValue('currentField'))}
 
         <LikeSection
-          handleVotePercentChange={this.handleVotePercentChange}
+          onVotePercentChange={this.handleVotePercentChange}
           votePercent={this.state.votePercent}
           voteWorth={this.state.voteWorth}
           form={form}
           sliderVisible={this.state.sliderVisible}
-          onChange={this.handleLikeClick}
+          onLikeClick={this.handleLikeClick}
         />
 
         {getFieldValue('currentField') !== 'auto' && (

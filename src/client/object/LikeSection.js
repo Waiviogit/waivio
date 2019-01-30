@@ -8,9 +8,9 @@ import './LikeSection.less';
 const LikeSection = ({
   voteWorth,
   votePercent,
-  handleVotePercentChange,
+  onVotePercentChange,
   form,
-  onChange,
+  onLikeClick,
   sliderVisible,
   intl,
 }) => (
@@ -31,7 +31,7 @@ const LikeSection = ({
           },
         ],
       })(
-        <Checkbox onChange={onChange}>
+        <Checkbox onChange={onLikeClick}>
           {intl.formatMessage({ id: 'like', defaultMessage: 'Like' })}
         </Checkbox>,
       )}
@@ -40,7 +40,7 @@ const LikeSection = ({
     {form.getFieldValue('like') && sliderVisible && (
       <React.Fragment>
         <div className="like-slider">
-          <RawSlider min={1} initialValue={votePercent} onChange={handleVotePercentChange} />
+          <RawSlider min={1} initialValue={votePercent} onChange={onVotePercentChange} />
         </div>
         <div className="like-worth">
           <FormattedMessage
@@ -63,11 +63,11 @@ const LikeSection = ({
 LikeSection.propTypes = {
   voteWorth: PropTypes.number.isRequired,
   votePercent: PropTypes.number.isRequired,
-  handleVotePercentChange: PropTypes.func.isRequired,
   form: PropTypes.shape().isRequired,
   sliderVisible: PropTypes.bool.isRequired,
   intl: PropTypes.shape().isRequired,
-  onChange: PropTypes.func.isRequired,
+  onVotePercentChange: PropTypes.func.isRequired,
+  onLikeClick: PropTypes.func.isRequired,
 };
 
 export default injectIntl(LikeSection);
