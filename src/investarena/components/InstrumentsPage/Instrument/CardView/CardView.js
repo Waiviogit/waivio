@@ -28,8 +28,8 @@ class InstrumentCard extends React.Component {
     chart: [],
     signals: [],
     showTradeBtn: true,
-    chartHeight: 221,
-    chartWidth: 65,
+    chartHeight: 65,
+    chartWidth: 221,
   };
 
   state = {

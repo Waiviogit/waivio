@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import InstrumentCardView from '../../../investarena/components/InstrumentsPage/Instrument/CardView';
 import { getQuotesState } from '../../../investarena/redux/selectors/quotesSelectors';
 import { getQuotesSettingsState } from '../../../investarena/redux/selectors/quotesSettingsSelectors';
@@ -44,7 +45,9 @@ const TopInstruments = ({ intl, quoteSettings, quotes, charts }) => {
     <div>
       {instrumentGroups.map(group => (
         <div className='SidebarContentBlock top-instruments'>
-          <h4 className='SidebarContentBlock__title'>{group.displayName.toUpperCase()}</h4>
+          <Link to={`/markets/${group.market.toLowerCase()}`}>
+            <h4 className='SidebarContentBlock__title'>{group.displayName.toUpperCase()}</h4>
+          </Link>
           <div className='SidebarContentBlock__content'>
             {instrumentsToShow[group.market].map(
               instrumentName =>

@@ -8,6 +8,8 @@ import AssetsTab from './AssetsTab/AssetsTab';
 import { getAllSignals } from '../../redux/actions/signalsActions';
 import './InstrumentsPage.less';
 import {supportedObjectTypes} from "../../constants/objectsInvestarena";
+import Affix from '../../../client/components/Utils/Affix';
+import LeftSidebar from '../../../client/app/Sidebar/LeftSidebar';
 
 const TabPane = Tabs.TabPane;
 
@@ -64,14 +66,17 @@ class InstrumentsPage extends Component {
       return (
             <div className="st-instr-page">
               <div className="feed-layout container">
-                <div className="leftContainer">
-                  <div role='presentation' className="st-instruments-toggle-view" onClick={this.toggleViewMode}>
-                    {this.state.viewMode === 'list'
-                    ? <img alt="cards" className="st-instruments-toggle-view__icon" src="/images/icons/grid-view.svg"/>
-                    : <img alt="list" className="st-instruments-toggle-view__icon" src="/images/icons/list-of-items.svg"/>
-                    }
+                <Affix className="leftContainer" stickPosition={115}>
+                  <div className="left">
+                    <div role='presentation' className="st-instruments-toggle-view" onClick={this.toggleViewMode}>
+                      {this.state.viewMode === 'list'
+                        ? <img alt="cards" className="st-instruments-toggle-view__icon" src="/images/icons/grid-view.svg"/>
+                        : <img alt="list" className="st-instruments-toggle-view__icon" src="/images/icons/list-of-items.svg"/>
+                      }
+                    </div>
+                    <LeftSidebar />
                   </div>
-                </div>
+                </Affix>
                 <div className="center">
                   <AssetsTab
                     quotes={this.props.quotes}
