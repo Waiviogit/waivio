@@ -118,7 +118,6 @@ class Topnav extends React.Component {
     this.setSelectedPage();
   }
 
-
   componentDidUpdate(prevProps) {
     if (prevProps.location.pathname !== this.props.location.pathname) {
       this.setSelectedPage();
@@ -135,7 +134,7 @@ class Topnav extends React.Component {
         currPage = key;
       }
     });
-    this.setState({selectedPage: currPage});
+    this.setState({ selectedPage: currPage });
   }
 
   handleMoreMenuSelect(key) {

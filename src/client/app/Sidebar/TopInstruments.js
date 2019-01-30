@@ -44,11 +44,20 @@ const TopInstruments = ({ intl, quoteSettings, quotes, charts }) => {
   return (
     <div>
       {instrumentGroups.map(group => (
-        <div className='SidebarContentBlock top-instruments'>
-          <Link to={`/markets/${group.market.toLowerCase()}`}>
-            <h4 className='SidebarContentBlock__title'>{group.displayName.toUpperCase()}</h4>
-          </Link>
-          <div className='SidebarContentBlock__content'>
+        <div className="SidebarContentBlock top-instruments">
+          <div className="SidebarContentBlock__title">
+            <Link to={`/markets/${group.market.toLowerCase()}`}>
+              {group.displayName.toUpperCase()}
+            </Link>
+            <div className="SidebarContentBlock__amount">
+              {
+                Object.values(quoteSettings).filter(
+                  quote => quote.wobjData && quote.market === group.market,
+                ).length
+              }
+            </div>
+          </div>
+          <div className="SidebarContentBlock__content">
             {instrumentsToShow[group.market].map(
               instrumentName =>
                 quoteSettings[instrumentName] &&
