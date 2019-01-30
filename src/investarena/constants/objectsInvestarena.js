@@ -1,3 +1,3 @@
 export const supportedObjectTypes = [
-  'crypto','currency', 'commodity', 'stocks', 'indices'
+  'crypto','currency', 'commodity', 'stock', 'index'
 ];

@@ -57,9 +57,8 @@ class InstrumentsPage extends Component {
 
     render () {
       const paramMarket = this.props.match.params.marketType;
-      const marketType = (_.some(supportedObjectTypes, paramMarket) ||
-        paramMarket === 'favorites' ||
-        paramMarket === 'crypto') ? paramMarket : 'favorites';
+      const marketType = (_.some(supportedObjectTypes, market => market === paramMarket) ||
+        paramMarket === 'favorites') ? paramMarket : 'favorites';
 
       return (
             <div className="st-instr-page">

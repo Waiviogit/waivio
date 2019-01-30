@@ -22,8 +22,8 @@ const AssetsTab = ({intl, quotes, quoteSettings, title, charts, signals, favorit
     const sortedQuotes = _.sortBy(quotes, 'security');
     const matchTitle = (quote) => {
       const quoteMarket = quoteSettings[quote.security].market.toLowerCase();
-      return title === 'cryptocurrency'
-            ? quoteMarket === title || quoteMarket === 'crypto'
+      return title === 'crypto'
+            ? quoteMarket === title || quoteMarket === 'cryptocurrency'
             : quoteMarket === title || (title === 'favorites' && favorites.includes(quote.security))
     };
     const selectedInstruments = _.map(sortedQuotes, (quote) =>
