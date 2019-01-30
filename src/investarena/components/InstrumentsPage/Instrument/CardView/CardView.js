@@ -18,6 +18,8 @@ class InstrumentCard extends React.Component {
     chart: PropTypes.arrayOf(PropTypes.shape()),
     signals: PropTypes.arrayOf(PropTypes.shape()),
     showTradeBtn: PropTypes.bool,
+    chartHeight: PropTypes.number,
+    chartWidth: PropTypes.number,
   };
 
   static defaultProps = {
@@ -26,6 +28,8 @@ class InstrumentCard extends React.Component {
     chart: [],
     signals: [],
     showTradeBtn: true,
+    chartHeight: 221,
+    chartWidth: 65,
   };
 
   state = {
@@ -34,7 +38,7 @@ class InstrumentCard extends React.Component {
   toggleModal = () => this.setState({isModalChart: !this.state.isModalChart});
 
   render() {
-    const {intl, quoteSettings, quote, chart, signals, showTradeBtn } = this.props;
+    const {intl, quoteSettings, quote, chart, signals, showTradeBtn, chartHeight, chartWidth } = this.props;
     return (
       <div key={quote.security} className='st-card'>
         <div className="st-card__header">
@@ -60,8 +64,8 @@ class InstrumentCard extends React.Component {
           </div>
           <InstrumentsChart
             chart={chart}
-            height={65}
-            width={221}
+            height={chartHeight}
+            width={chartWidth}
             noDataMsg={intl.formatMessage({id: 'charts.noData', defaultMessage: 'No data'})}
             onClick={this.toggleModal}
           />

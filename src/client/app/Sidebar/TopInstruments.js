@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Collapse } from 'antd';
 import InstrumentCardView from '../../../investarena/components/InstrumentsPage/Instrument/CardView';
 import { getQuotesState } from '../../../investarena/redux/selectors/quotesSelectors';
 import { getQuotesSettingsState } from '../../../investarena/redux/selectors/quotesSettingsSelectors';
 import { getAssetsChartsState } from '../../../investarena/redux/selectors/chartsSelectors';
+import './TopInsruments.less';
 
 const instrumentsToShow = {
   Index: ['DOWUSD', 'DAXEUR'],
@@ -42,14 +42,10 @@ const TopInstruments = ({ intl, quoteSettings, quotes, charts }) => {
 
   return (
     <div>
-      <Collapse bordered={false} defaultActiveKey={instrumentGroups.map(group => group.market)}>
-        {instrumentGroups.map(group => (
-          <Collapse.Panel
-            header={group.displayName.toUpperCase()}
-            key={group.market}
-            showArrow={false}
-            disabled
-          >
+      {instrumentGroups.map(group => (
+        <div className='SidebarContentBlock top-instruments'>
+          <h4 className='SidebarContentBlock__title'>{group.displayName.toUpperCase()}</h4>
+          <div className='SidebarContentBlock__content'>
             {instrumentsToShow[group.market].map(
               instrumentName =>
                 quoteSettings[instrumentName] &&
@@ -60,12 +56,14 @@ const TopInstruments = ({ intl, quoteSettings, quotes, charts }) => {
                     quote={quotes[instrumentName]}
                     chart={charts ? charts[instrumentName] : []}
                     showTradeBtn={false}
+                    chartHeight={60}
+                    chartWidth={160}
                   />
                 ),
             )}
-          </Collapse.Panel>
-        ))}
-      </Collapse>
+          </div>
+        </div>
+      ))}
     </div>
   );
 };
