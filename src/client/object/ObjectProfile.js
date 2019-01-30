@@ -99,7 +99,7 @@ export default class ObjectProfile extends React.Component {
     return (
       <React.Fragment>
         <div className="object-profile">
-          {showChart && chartId && chartId.body &&
+          {showChart && chartId && chartId.body && (
             <PostChart
               quoteSecurity={chartId.body}
               expiredBars={[]}
@@ -114,7 +114,7 @@ export default class ObjectProfile extends React.Component {
               expiredAt={undefined}
               isObjectProfile
             />
-          }
+          )}
           <div className="object-profile__row align-right">
             <IconButton
               icon={<Icon type="plus-circle" />}

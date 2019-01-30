@@ -8,6 +8,7 @@ import TradeButtonsAssets from '../../TradeButtonsAssets';
 import ModalTC from '../../../Modals/ModalTC/ModalTC';
 import InstrumentsChart from '../InstrumentChart';
 import Signals from '../Signals';
+import './CardView.less';
 
 class InstrumentCard extends React.Component {
   static propTypes = {
@@ -16,6 +17,7 @@ class InstrumentCard extends React.Component {
     quote: PropTypes.shape(),
     chart: PropTypes.arrayOf(PropTypes.shape()),
     signals: PropTypes.arrayOf(PropTypes.shape()),
+    showTradeBtn: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -23,6 +25,7 @@ class InstrumentCard extends React.Component {
     quote: {},
     chart: [],
     signals: [],
+    showTradeBtn: true,
   };
 
   state = {
@@ -31,10 +34,9 @@ class InstrumentCard extends React.Component {
   toggleModal = () => this.setState({isModalChart: !this.state.isModalChart});
 
   render() {
-    const {intl, quoteSettings, quote, chart, signals} = this.props;
-    console.log('-->', signals);
+    const {intl, quoteSettings, quote, chart, signals, showTradeBtn } = this.props;
     return (
-      <React.Fragment>
+      <div key={quote.security} className='st-card'>
         <div className="st-card__header">
           <InstrumentAvatar
             permlink={quoteSettings.wobjData.author_permlink}
@@ -71,11 +73,11 @@ class InstrumentCard extends React.Component {
               toggle={this.toggleModal}
             />
           }
-          <TradeButtonsAssets
+          {showTradeBtn && <TradeButtonsAssets
             className="st-assets-buttons st-trade-buttons-asset-page-wrap"
-            quoteSecurity={quote.security}/>
+            quoteSecurity={quote.security}/>}
         </div>
-      </React.Fragment>
+      </div>
     );
   }
 }

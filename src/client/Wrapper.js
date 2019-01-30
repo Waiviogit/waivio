@@ -40,6 +40,7 @@ import Topnav from './components/Navigation/Topnav';
 import Transfer from './wallet/Transfer';
 import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
+import { getChartsData } from '../investarena/redux/actions/chartsActions';
 
 @withRouter
 @connect(
@@ -65,6 +66,7 @@ import BBackTop from './components/BBackTop';
     busyLogin,
     getRebloggedList: reblogActions.getRebloggedList,
     setUsedLocale,
+    getChartsData,
   },
 )
 export default class Wrapper extends React.PureComponent {
@@ -89,6 +91,7 @@ export default class Wrapper extends React.PureComponent {
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
     nightmode: PropTypes.bool,
+    getChartsData: PropTypes.func,
   };
 
   static defaultProps = {
@@ -108,6 +111,7 @@ export default class Wrapper extends React.PureComponent {
     setUsedLocale: () => {},
     busyLogin: () => {},
     nightmode: false,
+    getChartsData: () => {},
   };
 
   static async fetchData({ store, req, res }) {
@@ -159,6 +163,7 @@ export default class Wrapper extends React.PureComponent {
     this.props.getRebloggedList();
     this.props.getRate();
     this.props.getTrendingTopics();
+    this.props.getChartsData();
   }
 
   componentWillReceiveProps(nextProps) {

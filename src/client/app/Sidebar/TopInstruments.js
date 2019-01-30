@@ -3,43 +3,82 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Collapse } from 'antd';
-import {
-  getIsTrendingTopicsLoading,
-  getTrendingTopics,
-} from '../../reducers';
+import InstrumentCardView from '../../../investarena/components/InstrumentsPage/Instrument/CardView';
+import { getQuotesState } from '../../../investarena/redux/selectors/quotesSelectors';
+import { getQuotesSettingsState } from '../../../investarena/redux/selectors/quotesSettingsSelectors';
+import { getAssetsChartsState } from '../../../investarena/redux/selectors/chartsSelectors';
 
+const instrumentsToShow = {
+  Index: ['DOWUSD', 'DAXEUR'],
+  Crypto: ['Bitcoin', 'Zcash'],
+  Currency: ['AUDCAD', 'AUDNZD'],
+  Commodity: ['XPTUSD', 'UKOUSD'],
+  Stock: ['BKNG', 'APPLE'],
+};
 
-const TopInstruments = ({ intl, trendingTopicsLoading, trendingTopics }) => {
+const TopInstruments = ({ intl, quoteSettings, quotes, charts }) => {
   const instrumentGroups = [
-    intl.formatMessage({id: 'modalAssets.indices', defaultMessage: 'Indicies'}),
-    intl.formatMessage({id: 'wia.cryptos', defaultMessage: 'Cryptos'}),
-    intl.formatMessage({id: 'wia.currencies', defaultMessage: 'Currencies'}),
-    intl.formatMessage({id: 'wia.commodities', defaultMessage: 'Commodities'}),
-    intl.formatMessage({id: 'modalAssets.stocks', defaultMessage: 'Stocks'}),
+    {
+      market: 'Index',
+      displayName: intl.formatMessage({ id: 'modalAssets.indices', defaultMessage: 'Indicies' }),
+    },
+    {
+      market: 'Crypto',
+      displayName: intl.formatMessage({ id: 'wia.cryptos', defaultMessage: 'Cryptos' }),
+    },
+    {
+      market: 'Currency',
+      displayName: intl.formatMessage({ id: 'wia.currencies', defaultMessage: 'Currencies' }),
+    },
+    {
+      market: 'Commodity',
+      displayName: intl.formatMessage({ id: 'wia.commodities', defaultMessage: 'Commodities' }),
+    },
+    {
+      market: 'Stock',
+      displayName: intl.formatMessage({ id: 'modalAssets.stocks', defaultMessage: 'Stocks' }),
+    },
   ];
+
   return (
     <div>
-      <Collapse bordered={false} defaultActiveKey={instrumentGroups}>
-        {instrumentGroups.map(groupName => (
-          <Collapse.Panel header={groupName.toUpperCase()} key={groupName} showArrow={false} disabled>
-            <div className="top-instruments__headline">card</div>
-            <div className="top-instruments__card">
-              content
-              content
-            </div>
+      <Collapse bordered={false} defaultActiveKey={instrumentGroups.map(group => group.market)}>
+        {instrumentGroups.map(group => (
+          <Collapse.Panel
+            header={group.displayName.toUpperCase()}
+            key={group.market}
+            showArrow={false}
+            disabled
+          >
+            {instrumentsToShow[group.market].map(
+              instrumentName =>
+                quoteSettings[instrumentName] &&
+                quoteSettings[instrumentName].wobjData && (
+                  <InstrumentCardView
+                    intl={intl}
+                    quoteSettings={quoteSettings[instrumentName]}
+                    quote={quotes[instrumentName]}
+                    chart={charts ? charts[instrumentName] : []}
+                    showTradeBtn={false}
+                  />
+                ),
+            )}
           </Collapse.Panel>
         ))}
       </Collapse>
-  </div>)
+    </div>
+  );
 };
 
 TopInstruments.propTypes = {
   intl: PropTypes.shape().isRequired,
-  trendingTopicsLoading: PropTypes.bool.isRequired,
-  trendingTopics: PropTypes.arrayOf(PropTypes.string).isRequired,
+  charts: PropTypes.shape().isRequired,
+  quotes: PropTypes.shape().isRequired,
+  quoteSettings: PropTypes.shape().isRequired,
 };
 
 export default connect(state => ({
-  trendingTopicsLoading: getIsTrendingTopicsLoading(state),
-  trendingTopics: getTrendingTopics(state),
+  quotes: getQuotesState(state),
+  quoteSettings: getQuotesSettingsState(state),
+  charts: getAssetsChartsState(state),
 }))(injectIntl(TopInstruments));

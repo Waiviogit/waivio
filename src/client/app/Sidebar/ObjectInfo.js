@@ -227,19 +227,24 @@ class ObjectInfo extends React.Component {
             )}
             {listItem(objectFields.link, <SocialLinks profile={profile} />)}
             {accessExtend &&
-              listItem(objectFields.avatar, avatar &&
-                <div className="field-avatar">
-                  <img src={avatar} alt="pic" />
-                </div>
-              )
-            }
+              listItem(
+                objectFields.avatar,
+                avatar && (
+                  <div className="field-avatar">
+                    <img src={avatar} alt="pic" />
+                  </div>
+                ),
+              )}
             {accessExtend && listItem(objectFields.title, short)}
             {accessExtend &&
-              listItem(objectFields.background, background &&
-                <div className="field-background">
-                  <img src={background} alt="pic" />
-                </div>
-            )}
+              listItem(
+                objectFields.background,
+                background && (
+                  <div className="field-background">
+                    <img src={background} alt="pic" />
+                  </div>
+                ),
+              )}
           </div>
         )}
       </React.Fragment>

@@ -28,16 +28,14 @@ const AssetsTab = ({intl, quotes, quoteSettings, title, charts, signals, favorit
     };
     const selectedInstruments = _.map(sortedQuotes, (quote) =>
         (quoteSettings[quote.security] && quoteSettings[quote.security].wobjData && matchTitle(quote) && charts) &&
-        <div key={quote.security} className={classNames({'st-list-item': viewMode === 'list', 'st-card': viewMode === 'cards'})}>
-            <Instrument
-                signals={signals[quote.security]}
-                deals={deals}
-                quoteSettings={quoteSettings[quote.security]}
-                quote={quote}
-                chart={charts ? charts[quote.security] : []}
-                quoteSecurity={quote.security}
-                viewMode={viewMode}/>
-        </div>
+          <Instrument
+              signals={signals[quote.security]}
+              deals={deals}
+              quoteSettings={quoteSettings[quote.security]}
+              quote={quote}
+              chart={charts ? charts[quote.security] : []}
+              quoteSecurity={quote.security}
+              viewMode={viewMode}/>
     );
     const listHeader =
         <div className="st-instr-column-wrap d-flex">

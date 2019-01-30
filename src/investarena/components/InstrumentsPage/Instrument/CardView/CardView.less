@@ -1,0 +1,76 @@
+@import (reference) '../../../Common.less';
+@import (reference) '../../../../../client/styles/modules/variables.less';
+
+.st-card {
+  display: flex;
+  flex-direction: column;
+  max-height: 230px;
+  width: 100%;
+  padding: 10px;
+  margin: 12px;
+  border: 1px solid @color-gray;
+  border-radius: 4px;
+  box-shadow: 0 3px 15px @color-gray;
+  .st-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 5px;
+    border-bottom: 1px solid @color-gray;
+    .st-icon-favorite-false, .st-icon-favorite-true {
+      width: 22px;
+      height: 24px;
+      svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+  }
+  .st-card__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .st-card__daily-change-signal-info {
+      display: flex;
+      justify-content: space-between;
+      .st-daily-change {
+        font-size: 20px;
+        font-weight: bold;
+      }
+      .st-signals-button{
+        width: 20px;
+        height: 20px;
+        line-height: 18px;
+        margin-top: 6px;
+      }
+    }
+    .st-card__chart {
+      min-height: 65px;
+      .st-assets-chart-no-data{
+        text-align: center;
+        font-size: 22px;
+        color: @color-black-blue;
+      }
+    }
+    .st-instruments-progress-bar{
+      span{
+        .textStyle(@font-size-medium, @color-darkest-gray, regular);
+      }
+      .st-instruments-buy-count{
+        color: @color-black-blue;
+        font-weight: bold;
+      }
+    }
+    .st-trade-buttons-wrap {
+      position: unset;
+      width: 100%;
+      padding-top: 10px;
+      opacity: 1;
+      transition: none;
+    }
+  }
+  .progress-bar{
+    height: 0.8rem;
+  }
+}
