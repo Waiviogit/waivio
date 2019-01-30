@@ -64,13 +64,21 @@ class ObjectMenu extends React.Component {
           >
             <ul className="UserMenu__menu center">
               <li
-                className={this.getItemClasses(ObjectMenu.TAB_NAME.ABOUT)}
+                className={this.getItemClasses(ObjectMenu.TAB_NAME.REVIEWS)}
                 onClick={this.handleClick}
                 role="presentation"
-                data-key={ObjectMenu.TAB_NAME.ABOUT}
+                data-key={ObjectMenu.TAB_NAME.REVIEWS}
               >
-                <FormattedMessage id="about" defaultMessage="About" />
+                <FormattedMessage id="reviews" defaultMessage="Reviews" />
               </li>
+              {/* <li */}
+              {/* className={this.getItemClasses(ObjectMenu.TAB_NAME.ABOUT)} */}
+              {/* onClick={this.handleClick} */}
+              {/* role="presentation" */}
+              {/* data-key={ObjectMenu.TAB_NAME.ABOUT} */}
+              {/* > */}
+              {/* <FormattedMessage id="about" defaultMessage="About" /> */}
+              {/* </li> */}
               <li
                 className={this.getItemClasses(ObjectMenu.TAB_NAME.GALLERY)}
                 onClick={this.handleClick}
@@ -89,14 +97,6 @@ class ObjectMenu extends React.Component {
                 <span className="UserMenu__badge">
                   <FormattedNumber value={this.props.fieldsCount} />
                 </span>
-              </li>
-              <li
-                className={this.getItemClasses(ObjectMenu.TAB_NAME.REVIEWS)}
-                onClick={this.handleClick}
-                role="presentation"
-                data-key={ObjectMenu.TAB_NAME.REVIEWS}
-              >
-                <FormattedMessage id="reviews" defaultMessage="Reviews" />
               </li>
               <li
                 className={this.getItemClasses(ObjectMenu.TAB_NAME.FOLLOWERS)}
