@@ -97,7 +97,7 @@ class Topnav extends React.Component {
       popoverVisible: false,
       searchBarValue: '',
       notificationsPopoverVisible: false,
-      selectedPage: this.setSelectedPage(),
+      selectedPage: Topnav.MENU_ITEMS.MY_FEED,
     };
     this.handleMoreMenuSelect = this.handleMoreMenuSelect.bind(this);
     this.handleMoreMenuVisibleChange = this.handleMoreMenuVisibleChange.bind(this);
@@ -114,6 +114,17 @@ class Topnav extends React.Component {
     this.handleClickMenu = this.handleClickMenu.bind(this);
   }
 
+  componentDidMount() {
+    this.setSelectedPage();
+  }
+
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.location.pathname !== this.props.location.pathname) {
+      this.setSelectedPage();
+    }
+  }
+
   setSelectedPage() {
     const { location, username } = this.props;
     if (!username) return Topnav.MENU_ITEMS.HOME;
@@ -124,7 +135,7 @@ class Topnav extends React.Component {
         currPage = key;
       }
     });
-    return currPage;
+    this.setState({selectedPage: currPage});
   }
 
   handleMoreMenuSelect(key) {

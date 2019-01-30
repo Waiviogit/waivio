@@ -17,6 +17,13 @@
     align-items: center;
     padding-bottom: 5px;
     border-bottom: 1px solid @color-gray;
+    .st-instrument-name {
+      .textStyle(@font-size-medium, @color-black-blue, bold);
+      max-width: 340px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     .st-icon-favorite-false, .st-icon-favorite-true {
       width: 22px;
       height: 24px;
@@ -35,6 +42,7 @@
     .st-card__daily-change-signal-info {
       display: flex;
       justify-content: space-between;
+      width: 100%;
       .st-daily-change {
         font-size: 20px;
         font-weight: bold;
