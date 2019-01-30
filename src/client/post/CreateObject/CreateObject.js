@@ -1,6 +1,7 @@
-import React from 'react';
 import _ from 'lodash';
+import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Form, Input, Select, Button } from 'antd';
 import './CreateObject.less';
@@ -8,7 +9,24 @@ import LANGUAGES from '../../translations/languages';
 import { getLanguageText } from '../../translations';
 import { generateRandomString } from '../../helpers/wObjectHelper';
 import { objectNameValidationRegExp } from '../../../common/constants/validation';
+import { objectFields } from '../../../common/constants/listOfFields';
+import LikeSection from '../../object/LikeSection';
+import { getHasDefaultSlider, getVoteValue } from '../../helpers/user';
+import {
+  getAuthenticatedUser,
+  getRate,
+  getRewardFund,
+  getVotePercent,
+  getVotingPower,
+} from '../../reducers';
 
+@connect(state => ({
+  rewardFund: getRewardFund(state),
+  rate: getRate(state),
+  defaultVotePercent: getVotePercent(state),
+  user: getAuthenticatedUser(state),
+  sliderMode: getVotingPower(state),
+}))
 @injectIntl
 @Form.create()
 class CreateObject extends React.Component {
@@ -18,6 +36,11 @@ class CreateObject extends React.Component {
     handleCreateObject: PropTypes.func.isRequired,
     toggleModal: PropTypes.func.isRequired,
     currentLocaleInList: PropTypes.shape().isRequired,
+    sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
+    defaultVotePercent: PropTypes.number,
+    user: PropTypes.shape(),
+    rewardFund: PropTypes.shape(),
+    rate: PropTypes.number,
   };
 
   static defaultProps = {
@@ -25,6 +48,11 @@ class CreateObject extends React.Component {
     wobject: { tag: '' },
     handleCreateObject: () => {},
     toggleModal: () => {},
+    sliderMode: 'auto',
+    defaultVotePercent: 100,
+    user: {},
+    rewardFund: {},
+    rate: 1,
   };
 
   constructor(props) {
@@ -32,13 +60,19 @@ class CreateObject extends React.Component {
 
     this.state = {
       loading: false,
+      votePercent: this.props.defaultVotePercent / 100,
+      voteWorth: 0,
+      sliderVisible: false,
     };
   }
 
-  handleChangeLocale = () => {
-    const { form } = this.props;
-    const currValue = form.getFieldValue('value');
-    form.setFieldsValue({ value: currValue });
+  componentDidMount = () => {
+    const { sliderMode, user } = this.props;
+    if (sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user))) {
+      if (!this.state.sliderVisible) {
+        this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
+      }
+    }
   };
 
   handleSubmit = e => {
@@ -52,16 +86,38 @@ class CreateObject extends React.Component {
           .replace(/ /g, '-')}`.toLowerCase();
         objData.isExtendingOpen = true;
         objData.isPostingOpen = true;
+        objData.votePercent = this.state.votePercent * 100;
         this.props.handleCreateObject(objData);
         _.delay(this.props.toggleModal, 2000);
       }
     });
   };
 
+  handleVotePercentChange = value => {
+    const { user, rewardFund, rate } = this.props;
+    const voteWorth = getVoteValue(
+      user,
+      rewardFund.recent_claims,
+      rewardFund.reward_balance,
+      rate,
+      value * 100,
+    );
+    this.setState({ votePercent: value, voteWorth });
+  };
+
+  handleLikeClick = () => {
+    const { sliderMode, user } = this.props;
+    if (sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user))) {
+      if (!this.state.sliderVisible) {
+        this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
+      }
+    }
+  };
+
   render() {
     const languageOptions = [];
     const { getFieldDecorator } = this.props.form;
-    const { currentLocaleInList, intl } = this.props;
+    const { currentLocaleInList, intl, form } = this.props;
 
     if (currentLocaleInList === 'auto') {
       languageOptions.push(
@@ -78,10 +134,11 @@ class CreateObject extends React.Component {
         </Select.Option>,
       );
     });
+
     return (
       <React.Fragment>
         <Form.Item>
-          {getFieldDecorator('name', {
+          {getFieldDecorator(objectFields.name, {
             initialValue: '',
             rules: [
               {
@@ -111,10 +168,6 @@ class CreateObject extends React.Component {
             ],
           })(
             <Input
-              ref={value => {
-                this.value = value;
-              }}
-              onChange={this.onUpdate}
               className="Editor__title"
               placeholder={intl.formatMessage({
                 id: 'value_placeholder',
@@ -135,11 +188,7 @@ class CreateObject extends React.Component {
                 }),
               },
             ],
-          })(
-            <Select style={{ width: '100%' }} onChange={this.handleChangeLocale}>
-              {languageOptions}
-            </Select>,
-          )}
+          })(<Select style={{ width: '100%' }}>{languageOptions}</Select>)}
         </Form.Item>
         <Form.Item>
           {getFieldDecorator('type', {
@@ -166,22 +215,14 @@ class CreateObject extends React.Component {
             </Select>,
           )}
         </Form.Item>
-        <div>
-          {intl.formatMessage({ id: 'create_new_object_message1', defaultMessage: 'Attention!' })}
-        </div>
-        <div>
-          {intl.formatMessage({
-            id: 'create_new_object_message2',
-            defaultMessage: 'This object will be created in post form by WaivioBot.',
-          })}
-        </div>
-        <div>
-          {intl.formatMessage({
-            id: 'create_new_object_message3',
-            defaultMessage:
-              'You do not spend additional resource credits and you will get a 70% of authors rewards.',
-          })}
-        </div>
+        <LikeSection
+          handleVotePercentChange={this.handleVotePercentChange}
+          votePercent={this.state.votePercent}
+          voteWorth={this.state.voteWorth}
+          form={form}
+          sliderVisible={this.state.sliderVisible}
+          onChange={this.handleLikeClick}
+        />
         <Form.Item className="Editor__bottom__submit">
           <Button type="primary" onClick={this.handleSubmit} loading={this.state.loading}>
             {intl.formatMessage({ id: 'confirm', defaultMessage: 'Confirm' })}

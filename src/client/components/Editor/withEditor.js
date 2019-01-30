@@ -35,10 +35,12 @@ export default function withEditor(WrappedComponent) {
       intl: PropTypes.shape().isRequired,
       user: PropTypes.shape().isRequired,
       locale: PropTypes.string,
+      voteObject: PropTypes.func.isRequired,
     };
 
     static defaultProps = {
       locale: 'auto',
+      voteObject: () => {},
     };
 
     getObjectsByAuthorPermlinks = objectIds => {
@@ -123,7 +125,7 @@ export default function withEditor(WrappedComponent) {
               defaultMessage: 'Object has been created',
             }),
           );
-          this.props.voteObject(res.objectAuthor, res.objectPermlink);
+          this.props.voteObject(res.objectAuthor, res.objectPermlink, obj.votePercent);
 
           callback(res);
         })
