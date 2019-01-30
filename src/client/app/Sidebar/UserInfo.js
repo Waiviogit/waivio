@@ -39,11 +39,15 @@ class UserInfo extends React.Component {
         website = user.json_metadata.profile.website;
         about = user.json_metadata.profile.about;
       } else {
-        metadata = JSON.parse(user.json_metadata);
-        location = metadata && _.get(metadata, 'profile.location');
-        profile = (metadata && _.get(metadata, 'profile')) || {};
-        website = metadata && _.get(metadata, 'profile.website');
-        about = metadata && _.get(metadata, 'profile.about');
+        try {
+          metadata = JSON.parse(user.json_metadata);
+          location = metadata && _.get(metadata, 'profile.location');
+          profile = (metadata && _.get(metadata, 'profile')) || {};
+          website = metadata && _.get(metadata, 'profile.website');
+          about = metadata && _.get(metadata, 'profile.about');
+        } catch (e) {
+          // do nothing
+        }
       }
     }
 
