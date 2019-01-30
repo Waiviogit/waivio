@@ -8,7 +8,6 @@ import './CreateObject.less';
 import LANGUAGES from '../../translations/languages';
 import { getLanguageText } from '../../translations';
 import { generateRandomString } from '../../helpers/wObjectHelper';
-import { objectNameValidationRegExp } from '../../../common/constants/validation';
 import { objectFields } from '../../../common/constants/listOfFields';
 import LikeSection from '../../object/LikeSection';
 import { getHasDefaultSlider, getVoteValue } from '../../helpers/user';
@@ -81,14 +80,12 @@ class CreateObject extends React.Component {
       if (!err && !this.state.loading) {
         this.setState({ loading: true });
         const objData = values;
-        objData.id = `${generateRandomString(3)}-${objData.name
-          .trim()
-          .replace(/ /g, '-')}`.toLowerCase();
+        objData.id = `${generateRandomString(3)}-${objData.name}`;
         objData.isExtendingOpen = true;
         objData.isPostingOpen = true;
         objData.votePercent = this.state.votePercent * 100;
         this.props.handleCreateObject(objData);
-        _.delay(this.props.toggleModal, 2000);
+        _.delay(this.props.toggleModal, 2500);
       }
     });
   };
@@ -156,13 +153,6 @@ class CreateObject extends React.Component {
                 message: intl.formatMessage({
                   id: 'name_required',
                   defaultMessage: 'Please enter name for new object',
-                }),
-              },
-              {
-                pattern: objectNameValidationRegExp,
-                message: intl.formatMessage({
-                  id: 'validation_special_symbols',
-                  defaultMessage: 'Please use only letters and numbers',
                 }),
               },
             ],
