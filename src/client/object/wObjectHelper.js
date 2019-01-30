@@ -96,3 +96,37 @@ export const getWebsiteField = (wObject, currentField = objectFields.website) =>
   if (!wo) return '';
   return wo;
 };
+
+export const IMAGE_STATUS = {
+  ERROR: 'error',
+  SUCCESS: 'success',
+  TIMEOUT: 'timeout',
+};
+
+export const testImage = (url, callback, timeout = 3000) => {
+  let timedOut = false;
+  let timer;
+
+  const img = new Image();
+
+  const handleError = () => {
+    if (!timedOut) {
+      clearTimeout(timer);
+      callback(url, IMAGE_STATUS.ERROR);
+    }
+  };
+
+  img.onerror = handleError;
+  img.onabort = handleError;
+  img.onload = () => {
+    if (!timedOut) {
+      clearTimeout(timer);
+      callback(url, IMAGE_STATUS.SUCCESS);
+    }
+  };
+  img.src = url;
+  timer = setTimeout(() => {
+    timedOut = true;
+    callback(url, IMAGE_STATUS.TIMEOUT);
+  }, timeout);
+};

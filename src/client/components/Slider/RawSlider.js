@@ -11,12 +11,14 @@ class RawSlider extends React.Component {
     initialValue: PropTypes.number,
     tipFormatter: PropTypes.func,
     onChange: PropTypes.func,
+    min: PropTypes.number,
   };
 
   static defaultProps = {
     initialValue: 100,
     tipFormatter: value => `${value}%`,
     onChange: () => {},
+    min: 0,
   };
 
   state = {
@@ -57,10 +59,12 @@ class RawSlider extends React.Component {
 
   render() {
     const { value } = this.state;
+    const { min } = this.props;
 
     return (
       <div className="RawSlider">
         <Slider
+          min={min}
           value={value}
           marks={this.marks}
           tipFormatter={this.props.tipFormatter}

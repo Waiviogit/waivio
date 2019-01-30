@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import classNames from 'classnames';
 import { Icon } from 'antd';
+import { FormattedMessage } from 'react-intl';
 
 const QuickPostEditorFooter = ({
   currentImages,
@@ -53,7 +54,11 @@ const QuickPostEditorFooter = ({
                 'icon-picture': _.isEmpty(currentImages),
                 'icon-add': !_.isEmpty(currentImages),
               })}
-            />
+            >
+              {_.isEmpty(currentImages) && (
+                <FormattedMessage id="add_photo" defaultMessage="Add photo" />
+              )}
+            </i>
           </div>
         )}
       </label>
