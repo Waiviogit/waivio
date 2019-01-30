@@ -7,7 +7,6 @@ import { Form, Input, Select, Button } from 'antd';
 import './CreateObject.less';
 import LANGUAGES from '../../translations/languages';
 import { getLanguageText } from '../../translations';
-import { generateRandomString } from '../../helpers/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import LikeSection from '../../object/LikeSection';
 import { getHasDefaultSlider, getVoteValue } from '../../helpers/user';
@@ -80,7 +79,7 @@ class CreateObject extends React.Component {
       if (!err && !this.state.loading) {
         this.setState({ loading: true });
         const objData = values;
-        objData.id = `${generateRandomString(3)}-${objData.name}`;
+        objData.id = objData.name;
         objData.isExtendingOpen = true;
         objData.isPostingOpen = true;
         objData.votePercent = this.state.votePercent * 100;
