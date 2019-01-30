@@ -14,8 +14,17 @@ import {
   socialObjectFields,
   supportedObjectFields,
   websiteFields,
+  objectImageFields,
 } from '../../common/constants/listOfFields';
-import { getObject, getAuthenticatedUserName, getIsAppendLoading } from '../reducers';
+import {
+  getObject,
+  getIsAppendLoading,
+  getRewardFund,
+  getRate,
+  getAuthenticatedUser,
+  getVotingPower,
+  getVotePercent,
+} from '../reducers';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
 import QuickPostEditorFooter from '../components/QuickPostEditor/QuickPostEditorFooter';
@@ -33,12 +42,18 @@ import {
   objectNameValidationRegExp,
   objectURLValidationRegExp,
 } from '../../common/constants/validation';
+import { getHasDefaultSlider, getVoteValue } from '../helpers/user';
+import LikeSection from './LikeSection';
 
 @connect(
   state => ({
-    currentUsername: getAuthenticatedUserName(state),
+    user: getAuthenticatedUser(state),
     wObject: getObject(state),
     loading: getIsAppendLoading(state),
+    rewardFund: getRewardFund(state),
+    rate: getRate(state),
+    sliderMode: getVotingPower(state),
+    defaultVotePercent: getVotePercent(state),
   }),
   { appendObject },
 )
@@ -49,7 +64,6 @@ export default class AppendForm extends Component {
   static propTypes = {
     currentField: PropTypes.string,
     currentLocale: PropTypes.string,
-    currentUsername: PropTypes.string,
     loading: PropTypes.bool,
     hideModal: PropTypes.func,
     onImageUpload: PropTypes.func,
@@ -58,6 +72,11 @@ export default class AppendForm extends Component {
     form: PropTypes.shape(),
     appendObject: PropTypes.func,
     intl: PropTypes.shape(),
+    user: PropTypes.shape(),
+    rewardFund: PropTypes.shape(),
+    rate: PropTypes.number,
+    sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
+    defaultVotePercent: PropTypes.number.isRequired,
   };
 
   static defaultProps = {
@@ -72,12 +91,30 @@ export default class AppendForm extends Component {
     form: {},
     appendObject: () => {},
     intl: {},
+    user: {},
+    rewardFund: {},
+    rate: 1,
+    sliderMode: 'auto',
+    defaultVotePercent: 100,
   };
 
   state = {
     isSomeValue: true,
     imageUploading: false,
     currentImage: [],
+    votePercent: this.props.defaultVotePercent / 100,
+    voteWorth: 0,
+    isValidImage: false,
+    sliderVisible: false,
+  };
+
+  componentDidMount = () => {
+    const { sliderMode, user } = this.props;
+    if (sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user))) {
+      if (!this.state.sliderVisible) {
+        this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
+      }
+    }
   };
 
   onSubmit = form => {
@@ -137,7 +174,7 @@ export default class AppendForm extends Component {
       }
     };
 
-    data.author = this.props.currentUsername;
+    data.author = this.props.user.name;
     data.parentAuthor = wObject.author;
     data.parentPermlink = wObject.author_permlink;
     const langReadable = _.filter(LANGUAGES, { id: locale })[0].name;
@@ -168,6 +205,7 @@ export default class AppendForm extends Component {
 
     data.wobjectName = getField(wObject, 'name');
 
+    data.votePower = this.state.votePercent * 100;
     return data;
   };
 
@@ -310,6 +348,37 @@ export default class AppendForm extends Component {
     }
   };
 
+  handleOnChange = () => {
+    const { getFieldValue } = this.props.form;
+    const currentField = getFieldValue('currentField');
+
+    if (objectImageFields.includes(currentField)) {
+      this.setState({
+        imageUploading: false,
+        currentImage: [],
+      });
+    }
+  };
+
+  handleVotePercentChange = value => {
+    const { user, rewardFund, rate } = this.props;
+    const voteWorth = getVoteValue(
+      user,
+      rewardFund.recent_claims,
+      rewardFund.reward_balance,
+      rate,
+      value * 100,
+    );
+    this.setState({ votePercent: value, voteWorth });
+  };
+
+  handleLikeClick = () => {
+    const { sliderMode, user } = this.props;
+    this.setState({
+      sliderVisible: sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user)),
+    });
+  };
+
   renderContentValue = currentField => {
     const { intl, wObject } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
@@ -370,16 +439,22 @@ export default class AppendForm extends Component {
       }
       case objectFields.background:
       case objectFields.avatar: {
-        this.state.imageUploading = false;
-        this.state.currentImage = [];
+        const imageLink = getFieldValue(currentField);
+
         return (
-          <React.Fragment>
+          <div className="image-wrapper">
             <QuickPostEditorFooter
               imageUploading={this.state.imageUploading}
               handleImageChange={this.handleImageChange}
               currentImages={this.state.currentImage}
               onRemoveImage={this.handleRemoveImage}
             />
+            <span>
+              {intl.formatMessage({
+                id: 'or',
+                defaultMessage: 'OR',
+              })}
+            </span>
             <Form.Item>
               {getFieldDecorator(currentField, {
                 rules: [
@@ -390,18 +465,38 @@ export default class AppendForm extends Component {
                         id: 'field_error',
                         defaultMessage: 'Field is required',
                       },
-                      { field: currentField },
+                      {
+                        field: intl.formatMessage({
+                          id: 'photo_url_placeholder',
+                          defaultMessage: 'Photo URL',
+                        }),
+                      },
                     ),
                   },
+                  {
+                    pattern: objectURLValidationRegExp,
+                    message: intl.formatMessage({
+                      id: 'image_link_validation',
+                      defaultMessage: 'Please enter valid link',
+                    }),
+                  },
                 ],
-              })(<Input className="AppendForm__hidden" />)}
+              })(
+                <Input
+                  className="AppendForm__title"
+                  placeholder={intl.formatMessage({
+                    id: 'photo_url_placeholder',
+                    defaultMessage: 'Photo URL',
+                  })}
+                />,
+              )}
             </Form.Item>
-            {getFieldValue(currentField) && (
+            {imageLink && (
               <div className="AppendForm__previewWrap">
-                <img src={getFieldValue(currentField)} alt="pic" className="AppendForm__preview" />
+                <img src={imageLink} alt="pic" className="AppendForm__preview" />
               </div>
             )}
-          </React.Fragment>
+          </div>
         );
       }
       case objectFields.title: {
@@ -855,7 +950,7 @@ export default class AppendForm extends Component {
   };
 
   render() {
-    const { currentLocale, currentField, loading } = this.props;
+    const { currentLocale, currentField, loading, form } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
 
     const languageOptions = [];
@@ -915,6 +1010,15 @@ export default class AppendForm extends Component {
         </Form.Item>
 
         {this.renderContentValue(getFieldValue('currentField'))}
+
+        <LikeSection
+          onVotePercentChange={this.handleVotePercentChange}
+          votePercent={this.state.votePercent}
+          voteWorth={this.state.voteWorth}
+          form={form}
+          sliderVisible={this.state.sliderVisible}
+          onLikeClick={this.handleLikeClick}
+        />
 
         {getFieldValue('currentField') !== 'auto' && (
           <Form.Item className="AppendForm__bottom__submit">

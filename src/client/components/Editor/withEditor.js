@@ -12,6 +12,8 @@ import { getLocale } from '../../settings/settingsReducer';
 import { getObjectsByIds, handleErrors } from '../../../waivioApi/ApiClient';
 import config from '../../../waivioApi/routes';
 import { voteObject } from '../../object/wobjActions';
+import { createPermlink } from '../../vendor/steemitHelpers';
+import { generateRandomString } from '../../helpers/wObjectHelper';
 
 function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
@@ -35,10 +37,12 @@ export default function withEditor(WrappedComponent) {
       intl: PropTypes.shape().isRequired,
       user: PropTypes.shape().isRequired,
       locale: PropTypes.string,
+      voteObject: PropTypes.func.isRequired,
     };
 
     static defaultProps = {
       locale: 'auto',
+      voteObject: () => {},
     };
 
     getObjectsByAuthorPermlinks = objectIds => {
@@ -95,48 +99,50 @@ export default function withEditor(WrappedComponent) {
       const {
         intl: { formatMessage },
       } = this.props;
-      const requestBody = {
-        author: this.props.user.name,
-        title: `${obj.name} - waivio object`,
-        body: `Waivio object "${obj.name}" has been created`,
-        permlink: obj.id,
-        objectName: obj.name,
-        locale: obj.locale || this.props.locale === 'auto' ? 'en-US' : this.props.locale,
-        type: WAIVIO_OBJECT_TYPE.ITEM,
-        isExtendingOpen: obj.isExtendingOpen,
-        isPostingOpen: obj.isPostingOpen,
-      };
+      createPermlink(obj.id, this.props.user.name, '', 'waiviodev').then(permlink => {
+        const requestBody = {
+          author: this.props.user.name,
+          title: `${obj.name} - waivio object`,
+          body: `Waivio object "${obj.name}" has been created`,
+          permlink: `${generateRandomString(3).toLowerCase()}-${permlink}`,
+          objectName: obj.name,
+          locale: obj.locale || this.props.locale === 'auto' ? 'en-US' : this.props.locale,
+          type: WAIVIO_OBJECT_TYPE.ITEM,
+          isExtendingOpen: obj.isExtendingOpen,
+          isPostingOpen: obj.isPostingOpen,
+        };
 
-      fetch(`${config.objectsBot.apiPrefix}${config.objectsBot.createObject}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-      })
-        .then(handleErrors)
-        .then(res => res.json())
-        .then(res => {
-          message.success(
-            formatMessage({
-              id: 'create_object_success',
-              defaultMessage: 'Object has been created',
-            }),
-          );
-          this.props.voteObject(res.objectAuthor, res.objectPermlink);
-
-          callback(res);
+        fetch(`${config.objectsBot.apiPrefix}${config.objectsBot.createObject}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
         })
-        .catch(err => {
-          console.log('err', err);
-          message.error(
-            formatMessage({
-              id: 'create_object_error',
-              defaultMessage: 'Something went wrong. Object is not created',
-            }),
-          );
-          errorCallback();
-        });
+          .then(handleErrors)
+          .then(res => res.json())
+          .then(res => {
+            message.success(
+              formatMessage({
+                id: 'create_object_success',
+                defaultMessage: 'Object has been created',
+              }),
+            );
+            this.props.voteObject(res.objectAuthor, res.objectPermlink, obj.votePercent);
+
+            callback(res);
+          })
+          .catch(err => {
+            console.log('err', err);
+            message.error(
+              formatMessage({
+                id: 'create_object_error',
+                defaultMessage: 'Something went wrong. Object is not created',
+              }),
+            );
+            errorCallback();
+          });
+      });
     };
 
     render() {
