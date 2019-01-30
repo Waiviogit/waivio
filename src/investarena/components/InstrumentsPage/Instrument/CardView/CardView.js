@@ -59,7 +59,7 @@ class InstrumentCard extends React.Component {
           <InstrumentsChart
             chart={chart}
             height={65}
-            width={276}
+            width={221}
             noDataMsg={intl.formatMessage({id: 'charts.noData', defaultMessage: 'No data'})}
             onClick={this.toggleModal}
           />
