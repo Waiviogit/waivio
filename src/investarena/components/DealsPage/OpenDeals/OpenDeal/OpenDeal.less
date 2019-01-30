@@ -83,12 +83,14 @@
       .st-instrument-name-wrap {
         display: flex;
         flex-flow: column nowrap;
-        justify-content: space-around;
+        justify-content: center;
+        align-items: center;
         .st-instruments-text {
           .textStyle(@font-size-large, @color-black, bold);
         }
       }
       .st-price {
+        min-width: 60px;
         .st-open-deal-header-item-title, st-open-deal-header-item-title {
           display: none;
         }
