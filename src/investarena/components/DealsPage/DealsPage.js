@@ -1,13 +1,11 @@
-import _ from 'lodash';
 import React, { Component } from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import {Link} from "react-router-dom";
 import { getViewMode, setViewMode } from '../../helpers/localStorageHelpers';
-import { arrayOfLogos } from '../../constants/arrayOfQuoteLogos';
 import './DealsPage.less';
 import OpenDeals from "./OpenDeals";
 import ClosedDeals from "./ClosedDeals";
-import {Link} from "react-router-dom";
 
 const propTypes = {
   quotes: PropTypes.object.isRequired,
