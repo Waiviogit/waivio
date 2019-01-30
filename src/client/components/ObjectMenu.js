@@ -95,7 +95,7 @@ class ObjectMenu extends React.Component {
               >
                 <FormattedMessage id="updates" defaultMessage="Updates" />
                 <span className="UserMenu__badge">
-                  <FormattedNumber value={this.props.fieldsCount} />
+                  <FormattedNumber value={this.props.fieldsCount + 1} />
                 </span>
               </li>
               <li
