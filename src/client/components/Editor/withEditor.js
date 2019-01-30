@@ -13,6 +13,7 @@ import { getObjectsByIds, handleErrors } from '../../../waivioApi/ApiClient';
 import config from '../../../waivioApi/routes';
 import { voteObject } from '../../object/wobjActions';
 import { createPermlink } from '../../vendor/steemitHelpers';
+import { generateRandomString } from '../../helpers/wObjectHelper';
 
 function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
@@ -103,7 +104,7 @@ export default function withEditor(WrappedComponent) {
           author: this.props.user.name,
           title: `${obj.name} - waivio object`,
           body: `Waivio object "${obj.name}" has been created`,
-          permlink,
+          permlink: `${generateRandomString(3).toLowerCase()}-${permlink}`,
           objectName: obj.name,
           locale: obj.locale || this.props.locale === 'auto' ? 'en-US' : this.props.locale,
           type: WAIVIO_OBJECT_TYPE.ITEM,
