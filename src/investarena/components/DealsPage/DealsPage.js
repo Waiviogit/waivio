@@ -8,8 +8,8 @@ import './DealsPage.less';
 import OpenDeals from './OpenDeals';
 import ClosedDeals from './ClosedDeals';
 import { Link } from 'react-router-dom';
-import Affix from "../../../client/components/Utils/Affix";
-import LeftSidebar from "../../../client/app/Sidebar/LeftSidebar";
+import Affix from '../../../client/components/Utils/Affix';
+import LeftSidebar from '../../../client/app/Sidebar/LeftSidebar';
 
 const propTypes = {
   quotes: PropTypes.object.isRequired,
@@ -48,7 +48,11 @@ class DealsPage extends Component {
         <div className="feed-layout container">
           <Affix className="leftContainer" stickPosition={115}>
             <div className="left">
-              <div role="presentation" className="st-deals-toggle-view" onClick={this.toggleViewMode}>
+              <div
+                role="presentation"
+                className="st-deals-toggle-view"
+                onClick={this.toggleViewMode}
+              >
                 {this.state.viewMode === 'list' ? (
                   <img
                     alt="cards"
