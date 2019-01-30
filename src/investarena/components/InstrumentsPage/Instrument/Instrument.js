@@ -14,6 +14,7 @@ import InstrumentCardView from './CardView';
 import Signals from './Signals';
 import ModalTC from "../../Modals/ModalTC/ModalTC";
 import '../InstrumentsPage.less';
+import classNames from "classnames";
 
 const propTypes = {
   chart: PropTypes.array,
@@ -71,7 +72,7 @@ class Instrument extends Component {
         case 'list':
         default:
             return (
-                <React.Fragment>
+                  <div key={quote.security} className='st-list-item'>
                     <Favorite quoteSecurity={quote.security}/>
                     <InstrumentAvatar
                       permlink={quoteSettings.wobjData.author_permlink}
@@ -100,7 +101,7 @@ class Instrument extends Component {
                     <TradeButtonsAssets className="st-assets-buttons st-trade-buttons-asset-page-wrap"
                         quoteSecurity={quote.security}/>
                     <Signals signals={signals} />
-                </React.Fragment>
+                  </div>
             );
         }
     }
