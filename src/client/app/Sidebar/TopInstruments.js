@@ -15,7 +15,7 @@ const instrumentsToShow = {
   Crypto: ['Bitcoin', 'Zcash'],
   Currency: ['AUDCAD', 'AUDNZD'],
   Commodity: ['XPTUSD', 'UKOUSD'],
-  Stock: ['AMAZON', 'APPLE'],
+  Stock: ['Gazprom', 'Adidas'],
 };
 
 const TopInstruments = ({ intl, quoteSettings, quotes, charts }) => {
@@ -45,7 +45,7 @@ const TopInstruments = ({ intl, quoteSettings, quotes, charts }) => {
                     intl={intl}
                     quoteSettings={quoteSettings[instrumentName]}
                     quote={quotes[instrumentName]}
-                    chart={charts ? charts[instrumentName] : []}
+                    chart={charts && charts[instrumentName] ? charts[instrumentName] : []}
                     showTradeBtn={false}
                     chartHeight={60}
                     chartWidth={160}
@@ -61,9 +61,13 @@ const TopInstruments = ({ intl, quoteSettings, quotes, charts }) => {
 
 TopInstruments.propTypes = {
   intl: PropTypes.shape().isRequired,
-  charts: PropTypes.shape().isRequired,
+  charts: PropTypes.shape(),
   quotes: PropTypes.shape().isRequired,
   quoteSettings: PropTypes.shape().isRequired,
+};
+
+TopInstruments.defaultProps = {
+  charts: {},
 };
 
 export default connect(state => ({
