@@ -52,7 +52,7 @@ class DealsPage extends Component {
             </div>
           </Affix>
           <div className="center">
-            <div className="st-deals-toggle-view" >
+            <div className="st-deals-toggle-view">
               {isClosedDealType ? (
                 <Link to={`/deals/open`}>To open deals</Link>
               ) : (
