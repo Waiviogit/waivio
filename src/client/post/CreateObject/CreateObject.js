@@ -189,6 +189,16 @@ class CreateObject extends React.Component {
                   defaultMessage: 'Please select object type!',
                 }),
               },
+              {
+                max: 100,
+                message: intl.formatMessage(
+                  {
+                    id: 'value_error_long',
+                    defaultMessage: "Name can't be longer than 100 characters.",
+                  },
+                  { value: 100 },
+                ),
+              },
             ],
           })(
             <Input
