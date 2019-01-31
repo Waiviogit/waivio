@@ -30,7 +30,7 @@ const TopInstruments = ({ intl, quoteSettings, quotes, charts }) => {
             <div className="SidebarContentBlock__amount">
               {
                 Object.values(quoteSettings).filter(
-                  quote => quote.wobjData && quote.market === market.name,
+                  quote => quote.wobjData && market.names.some(name => name === quote.market),
                 ).length
               }
             </div>
