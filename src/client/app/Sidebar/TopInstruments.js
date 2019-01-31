@@ -7,6 +7,7 @@ import InstrumentCardView from '../../../investarena/components/InstrumentsPage/
 import { getQuotesState } from '../../../investarena/redux/selectors/quotesSelectors';
 import { getQuotesSettingsState } from '../../../investarena/redux/selectors/quotesSettingsSelectors';
 import { getAssetsChartsState } from '../../../investarena/redux/selectors/chartsSelectors';
+import { marketNames } from '../../../investarena/constants/objectsInvestarena';
 import './TopInsruments.less';
 
 const instrumentsToShow = {
@@ -18,47 +19,24 @@ const instrumentsToShow = {
 };
 
 const TopInstruments = ({ intl, quoteSettings, quotes, charts }) => {
-  const instrumentGroups = [
-    {
-      market: 'Index',
-      displayName: intl.formatMessage({ id: 'modalAssets.indices', defaultMessage: 'Indicies' }),
-    },
-    {
-      market: 'Crypto',
-      displayName: intl.formatMessage({ id: 'wia.cryptos', defaultMessage: 'Cryptos' }),
-    },
-    {
-      market: 'Currency',
-      displayName: intl.formatMessage({ id: 'wia.currencies', defaultMessage: 'Currencies' }),
-    },
-    {
-      market: 'Commodity',
-      displayName: intl.formatMessage({ id: 'wia.commodities', defaultMessage: 'Commodities' }),
-    },
-    {
-      market: 'Stock',
-      displayName: intl.formatMessage({ id: 'modalAssets.stocks', defaultMessage: 'Stocks' }),
-    },
-  ];
-
   return (
     <div>
-      {instrumentGroups.map(group => (
+      {marketNames.map(market => (
         <div className="SidebarContentBlock top-instruments">
           <div className="SidebarContentBlock__title">
-            <Link to={`/markets/${group.market.toLowerCase()}`}>
-              {group.displayName.toUpperCase()}
+            <Link to={`/markets/${market.name.toLowerCase()}`}>
+              {intl.formatMessage(market.intl).toUpperCase()}
             </Link>
             <div className="SidebarContentBlock__amount">
               {
                 Object.values(quoteSettings).filter(
-                  quote => quote.wobjData && quote.market === group.market,
+                  quote => quote.wobjData && quote.market === market.name,
                 ).length
               }
             </div>
           </div>
           <div className="SidebarContentBlock__content">
-            {instrumentsToShow[group.market].map(
+            {instrumentsToShow[market.name].map(
               instrumentName =>
                 quoteSettings[instrumentName] &&
                 quoteSettings[instrumentName].wobjData && (

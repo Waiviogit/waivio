@@ -3,6 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 
 import UserInfo from './UserInfo';
 import TopInstruments from './TopInstruments';
+import MarketsList from './MarketsList';
 import SidenavUser from '../../components/Navigation/SidenavUser';
 
 const LeftSidebar = () => (
@@ -10,6 +11,7 @@ const LeftSidebar = () => (
     <Route path="/@:name/wallet" component={TopInstruments} />
     <Route path="/@:name" component={UserInfo} />
     <Route path="/object/@:name" component={UserInfo} />
+    <Route path="/(markets|deals)/:marketType" component={MarketsList} />
     <Route path="/activity" component={SidenavUser} />
     <Route path="/replies" component={TopInstruments} />
     <Route path="/bookmarks" component={SidenavUser} />
