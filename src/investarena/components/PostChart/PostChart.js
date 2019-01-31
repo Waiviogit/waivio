@@ -12,6 +12,7 @@ import { currentTime } from '../../helpers/currentTime';
 import TabSelect from './TabSelect';
 import quoteData from "../../default/quoteData";
 import quoteSettingsData from "../../default/quoteSettingsData";
+import ModalTC from "../Modals/ModalTC/ModalTC";
 
 const propTypes = {
     bars: PropTypes.object,
@@ -45,6 +46,7 @@ class PostChart extends Component {
         this.state = {
             isLoading: true,
             timeScale: CanvasHelper.getTimeScale(this.props.createdAt, this.props.forecast),
+            isModalChart: false,
             chartType: 'Line',
             priceType: this.props.recommend,
             expired: !!this.props.expiredAt || this.isExpiredByTime(),
@@ -104,6 +106,7 @@ class PostChart extends Component {
             }
         }
     }
+    toggleModal = () => this.setState({isModalChart: !this.state.isModalChart});
     isExpiredByTime = () => currentTime.getTime() > (moment(this.props.forecast).valueOf());
     createChartData = () => new ChartData({
             createdAt: this.props.createdAt,
@@ -178,7 +181,7 @@ class PostChart extends Component {
                         SL: {this.props.slPrice.slice(0, 6)}
                     </div>}
                 </div>
-                <div className="st-post-chart-wrap">
+                <div className="st-post-chart-wrap" onClick={this.toggleModal}>
                     {this.state.isLoading && !this.state.expired && <div className="spinner"/>}
                     <div className="st-post-chart-block">
                         <div className={`st-chart-circle ${classNameCircle} invisible`} ref={(div) => { this.circleRef = div }}/>
@@ -193,6 +196,14 @@ class PostChart extends Component {
                     className="st-chart-tab-select time"
                     onSelect={this.updateTimeScaleType}
                 />
+                {this.state.isModalChart &&
+                  <ModalTC
+                    quoteName={this.props.quote.security}
+                    market={this.props.quoteSettings.market}
+                    isOpen={this.state.isModalChart}
+                    toggle={this.toggleModal}
+                  />
+                }
             </div>
         );
     }
