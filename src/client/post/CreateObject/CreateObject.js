@@ -191,17 +191,13 @@ class CreateObject extends React.Component {
               },
             ],
           })(
-            <Select
-              style={{ width: '100%' }}
+            <Input
+              className="Editor__title"
               placeholder={intl.formatMessage({
                 id: 'placeholder_obj_type',
-                defaultMessage: 'Select a option and change input text above',
+                defaultMessage: 'Object type',
               })}
-              onChange={this.handleSelectChange}
-            >
-              <Select.Option value="item">item</Select.Option>
-              <Select.Option value="catalogue">catalogue</Select.Option>
-            </Select>,
+            />,
           )}
         </Form.Item>
         <LikeSection
