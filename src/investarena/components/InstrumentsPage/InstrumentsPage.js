@@ -67,12 +67,12 @@ class InstrumentsPage extends Component {
               <div className="feed-layout container">
                 <Affix className="leftContainer" stickPosition={115}>
                   <div className="left">
-                    <div role='presentation' className="st-instruments-toggle-view" onClick={this.toggleViewMode}>
-                      {this.state.viewMode === 'list'
-                        ? <img alt="cards" className="st-instruments-toggle-view__icon" src="/images/icons/grid-view.svg"/>
-                        : <img alt="list" className="st-instruments-toggle-view__icon" src="/images/icons/list-of-items.svg"/>
-                      }
-                    </div>
+                    {/* <div role='presentation' className="st-instruments-toggle-view" onClick={this.toggleViewMode}> */}
+                      {/* {this.state.viewMode === 'list' */}
+                        {/* ? <img alt="cards" className="st-instruments-toggle-view__icon" src="/images/icons/grid-view.svg"/> */}
+                        {/* : <img alt="list" className="st-instruments-toggle-view__icon" src="/images/icons/list-of-items.svg"/> */}
+                      {/* } */}
+                    {/* </div> */}
                     <LeftSidebar />
                   </div>
                 </Affix>

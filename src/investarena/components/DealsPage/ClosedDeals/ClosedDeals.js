@@ -36,13 +36,13 @@ class ClosedDeals extends Component {
         totalPnL += closedDeal.pnl;
         quoteSettings = this.props.quotesSettings[closedDeal.security] || quoteSettingsData;
         return (
-            <ClosedDeal
-              key={closedDeal.dealId}
-              quoteSecurity={closedDeal.security}
-              quoteSettings={quoteSettings}
-              closedDeal={closedDeal}
-              viewMode={this.props.viewMode}
-            />
+          <ClosedDeal
+            key={closedDeal.dealId}
+            quoteSecurity={closedDeal.security}
+            quoteSettings={quoteSettings}
+            closedDeal={closedDeal}
+            viewMode={this.props.viewMode}
+          />
         );
       })
     ) : (
