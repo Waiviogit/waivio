@@ -20,9 +20,9 @@ const instrumentsToShow = {
 
 const TopInstruments = ({ intl, quoteSettings, quotes, charts }) => {
   return (
-    <div>
+    <React.Fragment>
       {marketNames.map(market => (
-        <div className="SidebarContentBlock top-instruments">
+        <div className="SidebarContentBlock top-instruments" key={market.name}>
           <div className="SidebarContentBlock__title">
             <Link to={`/markets/${market.name.toLowerCase()}`}>
               {intl.formatMessage(market.intl).toUpperCase()}
@@ -41,6 +41,7 @@ const TopInstruments = ({ intl, quoteSettings, quotes, charts }) => {
                 quoteSettings[instrumentName] &&
                 quoteSettings[instrumentName].wobjData && (
                   <InstrumentCardView
+                    key={instrumentName}
                     intl={intl}
                     quoteSettings={quoteSettings[instrumentName]}
                     quote={quotes[instrumentName]}
@@ -54,7 +55,7 @@ const TopInstruments = ({ intl, quoteSettings, quotes, charts }) => {
           </div>
         </div>
       ))}
-    </div>
+    </React.Fragment>
   );
 };
 
