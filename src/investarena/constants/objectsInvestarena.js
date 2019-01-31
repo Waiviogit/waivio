@@ -4,11 +4,6 @@ export const supportedObjectTypes = [
 
 export const marketNames = [
   {
-    name: 'Index',
-    names: ['Index'],
-    intl: { id: 'modalAssets.indices', defaultMessage: 'Indicies' },
-  },
-  {
     name: 'Crypto',
     names: ['CryptoCurrency', 'Crypto'],
     intl: { id: 'wia.cryptos', defaultMessage: 'Cryptos' },
@@ -27,5 +22,10 @@ export const marketNames = [
     name: 'Stock',
     names: ['Stock'],
     intl: { id: 'modalAssets.stocks', defaultMessage: 'Stocks' },
+  },
+  {
+    name: 'Index',
+    names: ['Index'],
+    intl: { id: 'modalAssets.indices', defaultMessage: 'Indicies' },
   },
 ];

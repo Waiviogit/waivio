@@ -12,8 +12,8 @@ import './TopInsruments.less';
 
 const instrumentsToShow = {
   Index: ['DOWUSD', 'DAXEUR'],
-  Crypto: ['Bitcoin', 'Zcash'],
-  Currency: ['AUDCAD', 'AUDNZD'],
+  Crypto: ['Bitcoin', 'Etherium'],
+  Currency: ['AUDCAD', 'EURUSD'],
   Commodity: ['XPTUSD', 'UKOUSD'],
   Stock: ['Gazprom', 'Adidas'],
 };
