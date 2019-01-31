@@ -6,7 +6,6 @@ import filesize from 'filesize';
 import { injectIntl } from 'react-intl';
 import { getAuthenticatedUser } from '../../reducers';
 import { MAXIMUM_UPLOAD_SIZE } from '../../helpers/image';
-import { WAIVIO_OBJECT_TYPE } from '../../../common/constants/waivio';
 import { getClientWObj } from '../../adapters';
 import { getLocale } from '../../settings/settingsReducer';
 import { getObjectsByIds, handleErrors } from '../../../waivioApi/ApiClient';
