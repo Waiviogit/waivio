@@ -125,12 +125,14 @@ class Topnav extends React.Component {
   }
 
   setSelectedPage() {
-    const { location: { pathname }, username } = this.props;
+    const {
+      location: { pathname },
+      username,
+    } = this.props;
     if (!username) return Topnav.MENU_ITEMS.HOME;
     const routeParts = pathname.split('/');
-    let currPage = routeParts[1] && routeParts[1].length
-      ? Topnav.MENU_ITEMS.HOME
-      : Topnav.MENU_ITEMS.MY_FEED;
+    let currPage =
+      routeParts[1] && routeParts[1].length ? Topnav.MENU_ITEMS.HOME : Topnav.MENU_ITEMS.MY_FEED;
     Object.keys(Topnav.ROUTES_MAP).forEach(key => {
       const routeList = Topnav.ROUTES_MAP[key];
       if (routeList.some(route => pathname.includes(`/${route}`))) {

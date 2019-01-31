@@ -56,9 +56,11 @@ class InstrumentCard extends React.Component {
         </div>
         <div className="st-card__content">
           <div className="st-card__daily-change-signal-info">
-            <div title={intl.formatMessage({id: 'tips.dailyChange', defaultMessage: 'Daily change'})}
-                 className={`st-daily-change ${quote.dailyChange > 0 ? 'st-quote-text-up' : 'st-quote-text-down'}`}>
-              {`${quote.dailyChange.toFixed(2)}%`}
+            <div
+              title={intl.formatMessage({id: 'tips.dailyChange', defaultMessage: 'Daily change'})}
+              className={`st-daily-change ${quote.dailyChange > 0 ? 'st-quote-text-up' : 'st-quote-text-down'}`}
+            >
+              {quote.dailyChange ? `${quote.dailyChange.toFixed(2)}%` : '—'}
             </div>
             <Signals signals={signals} />
           </div>

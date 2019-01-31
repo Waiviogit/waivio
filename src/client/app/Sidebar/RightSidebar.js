@@ -102,7 +102,7 @@ export default class RightSidebar extends React.Component {
             render={() => (
               <div>
                 {/* {authenticated && _.size(recommendedObjects) > 0 && ( */}
-                  {/* <InterestingObjects objects={recommendedObjects} /> */}
+                {/* <InterestingObjects objects={recommendedObjects} /> */}
                 {/* )} */}
                 {authenticated &&
                 this.props.recommendations.length > 0 &&
