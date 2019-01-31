@@ -201,8 +201,9 @@ class CreatePostForecast extends Component {
     const optionsQuote = getQuoteOptions(quotesSettings, quotes);
     return (
       <div className="st-create-post-optional">
-        <Collapse bordered>
+        <Collapse defaultActiveKey={['1']} bordered>
           <Collapse.Panel
+            key="1"
             header={
               <div className="st-create-post-optional-title">
                 <FormattedMessage
