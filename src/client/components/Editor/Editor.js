@@ -264,17 +264,13 @@ class Editor extends React.Component {
       if (this.checkLinkedObjects() || !isValid || err) {
         this.props.onError();
       } else {
-        const topics = linkedObjects
-          .sort((a, b) => b.influence.value - a.influence.value)
-          .slice(0, 4)
-          .map(obj => obj.name);
         const wobjects = linkedObjects.map(obj => ({
           author_permlink: obj.id,
           percent: obj.influence.value,
         }));
+        this.props.onSubmit({ ...values, [WAIVIO_META_FIELD_NAME]: { wobjects } });
         this.props.onSubmit({
           ...values,
-          topics,
           [WAIVIO_META_FIELD_NAME]: { wobjects },
           [INVESTARENA_META_FIELD_NAME]: forecast
             ? {
@@ -386,6 +382,33 @@ class Editor extends React.Component {
       );
     }
   }
+  checkTopics = intl => (rule, value, callback) => {
+    if (!value || value.length < 1 || value.length > 5) {
+      callback(
+        intl.formatMessage({
+          id: 'topics_error_count',
+          defaultMessage: 'You have to add 1 to 5 topics.',
+        }),
+      );
+    }
+    value
+      .map(topic => ({ topic, valid: /^[a-z0-9]+(-[a-z0-9]+)*$/.test(topic) }))
+      .filter(topic => !topic.valid)
+      .map(topic =>
+        callback(
+          intl.formatMessage(
+            {
+              id: 'topics_error_invalid_topic',
+              defaultMessage: 'Topic {topic} is invalid.',
+            },
+            {
+              topic: topic.topic,
+            },
+          ),
+        ),
+      );
+    callback();
+  };
 
   handleForecastChange(forecastValues) {
     this.setState({ forecastValues });
@@ -468,6 +491,49 @@ class Editor extends React.Component {
             />,
           )}
         </Form.Item>
+        <Form.Item
+          label={
+            <span className="Editor__label">
+              <FormattedMessage id="topics" defaultMessage="Topics" />
+            </span>
+          }
+          extra={intl.formatMessage({
+            id: 'topics_extra',
+            defaultMessage:
+              'Separate topics with commas. Only lowercase letters, numbers and hyphen character is permitted.',
+          })}
+        >
+          {getFieldDecorator('topics', {
+            initialValue: [],
+            rules: [
+              {
+                required: true,
+                message: intl.formatMessage({
+                  id: 'topics_error_empty',
+                  defaultMessage: 'Please enter topics',
+                }),
+                type: 'array',
+              },
+              { validator: this.checkTopics(intl) },
+            ],
+          })(
+            <Select
+              ref={ref => {
+                this.select = ref;
+              }}
+              onChange={this.onUpdate}
+              className="Editor__topics"
+              mode="tags"
+              placeholder={intl.formatMessage({
+                id: 'topics_placeholder',
+                defaultMessage: 'Add story topics here',
+              })}
+              dropdownStyle={{ display: 'none' }}
+              tokenSeparators={[' ', ',']}
+            />,
+          )}
+        </Form.Item>
+
         <Form.Item>
           {getFieldDecorator('body', {
             rules: [
