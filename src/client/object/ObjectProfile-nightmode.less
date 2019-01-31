@@ -1,0 +1,27 @@
+@import (reference) '../styles/custom.less';
+
+.nightmode {
+  .object-profile {
+    &__row {
+      display: flex;
+      background: @grey-nero;
+      border: @normal-grey;
+      padding: 16px;
+      margin-bottom: 12px;
+      width: 100%;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    &__trade {
+      background-color: @grey-nero;
+      color: @white-smoke !important;
+      border: @border-width-base @border-style-base @normal-grey !important;
+    }
+    .st-tab-select-label {
+      background-color: @grey-nero;
+    }
+    .selected{
+      background-color: @normal-grey !important;
+    }
+  }
+}
