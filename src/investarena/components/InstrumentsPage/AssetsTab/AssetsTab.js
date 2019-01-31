@@ -29,6 +29,7 @@ const AssetsTab = ({intl, quotes, quoteSettings, title, charts, signals, favorit
     const selectedInstruments = _.map(sortedQuotes, (quote) =>
         (quoteSettings[quote.security] && quoteSettings[quote.security].wobjData && matchTitle(quote) && charts) &&
           <Instrument
+              key={quote.security}
               signals={signals[quote.security]}
               deals={deals}
               quoteSettings={quoteSettings[quote.security]}
