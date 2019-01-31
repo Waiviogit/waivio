@@ -107,7 +107,7 @@ export default function withEditor(WrappedComponent) {
           permlink: `${generateRandomString(3).toLowerCase()}-${permlink}`,
           objectName: obj.name,
           locale: obj.locale || this.props.locale === 'auto' ? 'en-US' : this.props.locale,
-          type: WAIVIO_OBJECT_TYPE.ITEM,
+          type: obj.type,
           isExtendingOpen: obj.isExtendingOpen,
           isPostingOpen: obj.isPostingOpen,
         };
