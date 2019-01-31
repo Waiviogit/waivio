@@ -191,6 +191,13 @@ class CreateObject extends React.Component {
               },
             ],
           })(
+            <Input
+              className="Editor__title"
+              placeholder={intl.formatMessage({
+                id: 'placeholder_obj_type',
+                defaultMessage: 'Object type',
+              })}
+            />,
             <Select
               style={{ width: '100%' }}
               placeholder={intl.formatMessage({

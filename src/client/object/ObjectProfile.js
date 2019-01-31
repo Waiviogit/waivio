@@ -22,6 +22,7 @@ import PostChart from '../../investarena/components/PostChart';
 import { getIsLoadingPlatformState } from '../../investarena/redux/selectors/platformSelectors';
 import { getDataCreatedAt, getDataForecast } from '../../investarena/helpers/diffDateTime';
 import { supportedObjectTypes } from '../../investarena/constants/objectsInvestarena';
+import PostQuotation from "../../investarena/components/PostQuotation/PostQuotation";
 
 @withRouter
 @connect(
@@ -100,20 +101,23 @@ export default class ObjectProfile extends React.Component {
       <React.Fragment>
         <div className="object-profile">
           {showChart && chartId && chartId.body && (
-            <PostChart
-              quoteSecurity={chartId.body}
-              expiredBars={[]}
-              createdAt={createdAt}
-              forecast={forecast}
-              recommend={'Buy'}
-              expiredByTime={undefined}
-              expiredTimeScale={undefined}
-              toggleModalPost={() => {}}
-              tpPrice={null}
-              slPrice={null}
-              expiredAt={undefined}
-              isObjectProfile
-            />
+            <div className="object-profile__trade">
+              <PostChart
+                quoteSecurity={chartId.body}
+                expiredBars={[]}
+                createdAt={createdAt}
+                forecast={forecast}
+                recommend={'Buy'}
+                expiredByTime={undefined}
+                expiredTimeScale={undefined}
+                toggleModalPost={() => {}}
+                tpPrice={null}
+                slPrice={null}
+                expiredAt={undefined}
+                isObjectProfile
+              />
+              <PostQuotation quoteSecurity={chartId.body} />
+            </div>
           )}
           <div className="object-profile__row align-right">
             <IconButton

@@ -58,7 +58,7 @@ export function timeForecastRemain (forecastTime) {
 
 // "2019-01-30T17:58:38.000Z"
 export function getDataCreatedAt () {
-  const periodBefore = 992118400;
+  const periodBefore = 692118400;
   const nowDate = Date.now();
   return moment(nowDate - periodBefore).format(forecastDateTimeFormat);
 }
