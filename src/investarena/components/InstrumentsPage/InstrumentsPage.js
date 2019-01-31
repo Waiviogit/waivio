@@ -34,7 +34,6 @@ class InstrumentsPage extends Component {
         this.state = {
             trends: [],
             signals: {},
-            viewMode: null,
             wobjs: []
         };
     }

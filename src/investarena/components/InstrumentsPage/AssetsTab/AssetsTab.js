@@ -64,7 +64,7 @@ const AssetsTab = ({intl, quotes, quoteSettings, title, charts, signals, favorit
     );
 };
 
-AssetsTab.defaultProps = { viewMode: 'list' };
+AssetsTab.defaultProps = { viewMode: 'cards' };
 
 AssetsTab.propTypes = propTypes;
 
