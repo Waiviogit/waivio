@@ -12,27 +12,28 @@ import './TopInsruments.less';
 
 const instrumentsToShow = {
   Index: ['DOWUSD', 'DAXEUR'],
-  Crypto: ['Bitcoin', 'Zcash'],
-  Currency: ['AUDCAD', 'AUDNZD'],
+  Crypto: ['Bitcoin', 'Etherium'],
+  Currency: ['AUDCAD', 'EURUSD'],
   Commodity: ['XPTUSD', 'UKOUSD'],
   Stock: ['Gazprom', 'Adidas'],
 };
 
-const TopInstruments = ({ intl, quoteSettings, quotes, charts }) => {
-  return (
-    <React.Fragment>
-      {marketNames.map(market => (
+const TopInstruments = ({ intl, quoteSettings, quotes, charts }) => (
+  <React.Fragment>
+    {marketNames.map(market => {
+      const instrumentsCount = Object.values(quoteSettings).filter(
+        quote =>
+          quote.wobjData &&
+          (quote.market === market.name || market.names.some(name => name === quote.market)),
+      ).length;
+      return instrumentsCount ? (
         <div className="SidebarContentBlock top-instruments" key={market.name}>
           <div className="SidebarContentBlock__title">
             <Link to={`/markets/${market.name.toLowerCase()}`}>
               {intl.formatMessage(market.intl).toUpperCase()}
             </Link>
             <div className="SidebarContentBlock__amount">
-              {
-                Object.values(quoteSettings).filter(
-                  quote => quote.wobjData && market.names.some(name => name === quote.market),
-                ).length
-              }
+              {instrumentsCount}
             </div>
           </div>
           <div className="SidebarContentBlock__content">
@@ -54,10 +55,10 @@ const TopInstruments = ({ intl, quoteSettings, quotes, charts }) => {
             )}
           </div>
         </div>
-      ))}
-    </React.Fragment>
-  );
-};
+      ) : null;
+    })}
+  </React.Fragment>
+);
 
 TopInstruments.propTypes = {
   intl: PropTypes.shape().isRequired,
