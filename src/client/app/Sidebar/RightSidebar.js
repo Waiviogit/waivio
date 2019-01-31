@@ -1,4 +1,4 @@
-import _ from 'lodash';
+// import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -14,7 +14,7 @@ import {
 } from '../../reducers';
 import { updateRecommendations } from '../../user/userActions';
 import InterestingPeople from '../../components/Sidebar/InterestingPeople';
-import InterestingObjects from '../../components/Sidebar/InterestingObjects';
+// import InterestingObjects from '../../components/Sidebar/InterestingObjects';
 import InterestingPeopleWithAPI from '../../components/Sidebar/InterestingPeopleWithAPI';
 import SignUp from '../../components/Sidebar/SignUp';
 import PostRecommendation from '../../components/Sidebar/PostRecommendation';
@@ -45,7 +45,7 @@ export default class RightSidebar extends React.Component {
     isAuthFetching: PropTypes.bool.isRequired,
     showPostRecommendation: PropTypes.bool,
     recommendations: PropTypes.arrayOf(PropTypes.shape({ name: PropTypes.string })).isRequired,
-    recommendedObjects: PropTypes.arrayOf(PropTypes.shape({ tag: PropTypes.string })).isRequired,
+    // recommendedObjects: PropTypes.arrayOf(PropTypes.shape({ tag: PropTypes.string })).isRequired,
     updateRecommendations: PropTypes.func,
     followingList: PropTypes.arrayOf(PropTypes.string).isRequired,
     isFetchingFollowingList: PropTypes.bool.isRequired,
@@ -67,7 +67,7 @@ export default class RightSidebar extends React.Component {
       isAuthFetching,
       followingList,
       isFetchingFollowingList,
-      recommendedObjects,
+      // recommendedObjects,
     } = this.props;
 
     if (isAuthFetching) {
@@ -101,9 +101,9 @@ export default class RightSidebar extends React.Component {
             path="/"
             render={() => (
               <div>
-                {authenticated && _.size(recommendedObjects) > 0 && (
-                  <InterestingObjects objects={recommendedObjects} />
-                )}
+                {/* {authenticated && _.size(recommendedObjects) > 0 && ( */}
+                  {/* <InterestingObjects objects={recommendedObjects} /> */}
+                {/* )} */}
                 {authenticated &&
                 this.props.recommendations.length > 0 &&
                 !showPostRecommendation ? (
