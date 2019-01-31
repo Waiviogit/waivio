@@ -52,11 +52,7 @@ class DealsPage extends Component {
             </div>
           </Affix>
           <div className="center">
-            <div
-              role="presentation"
-              className="st-deals-toggle-view"
-              onClick={this.toggleViewMode}
-            >
+            <div className="st-deals-toggle-view" >
               {isClosedDealType ? (
                 <Link to={`/deals/open`}>To open deals</Link>
               ) : (
@@ -64,15 +60,19 @@ class DealsPage extends Component {
               )}
               {this.state.viewMode === 'list' ? (
                 <img
+                  role="presentation"
                   alt="cards"
                   className="st-deals-toggle-view__icon"
                   src="/images/icons/grid-view.svg"
+                  onClick={this.toggleViewMode}
                 />
               ) : (
                 <img
+                  role="presentation"
                   alt="list"
                   className="st-deals-toggle-view__icon"
                   src="/images/icons/list-of-items.svg"
+                  onClick={this.toggleViewMode}
                 />
               )}
             </div>
