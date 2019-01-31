@@ -22,7 +22,7 @@ import PostChart from '../../investarena/components/PostChart';
 import { getIsLoadingPlatformState } from '../../investarena/redux/selectors/platformSelectors';
 import { getDataCreatedAt, getDataForecast } from '../../investarena/helpers/diffDateTime';
 import { supportedObjectTypes } from '../../investarena/constants/objectsInvestarena';
-import PostQuotation from "../../investarena/components/PostQuotation/PostQuotation";
+import PostQuotation from '../../investarena/components/PostQuotation/PostQuotation';
 
 @withRouter
 @connect(
