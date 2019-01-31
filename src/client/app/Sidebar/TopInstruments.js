@@ -15,7 +15,7 @@ const instrumentsToShow = {
   Crypto: ['Bitcoin', 'Zcash'],
   Currency: ['AUDCAD', 'AUDNZD'],
   Commodity: ['XPTUSD', 'UKOUSD'],
-  Stock: ['BKNG', 'APPLE'],
+  Stock: ['AMAZON', 'APPLE'],
 };
 
 const TopInstruments = ({ intl, quoteSettings, quotes, charts }) => {

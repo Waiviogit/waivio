@@ -55,8 +55,8 @@ class Topnav extends React.Component {
   static get ROUTES_MAP() {
     return {
       [this.MENU_ITEMS.HOME]: ['trending', 'hot', 'created'],
-      [this.MENU_ITEMS.MARKETS]: ['markets'],
-      [this.MENU_ITEMS.DEALS]: ['deals'],
+      [this.MENU_ITEMS.MARKETS]: ['markets/'],
+      [this.MENU_ITEMS.DEALS]: ['deals/'],
     };
   }
 
@@ -97,7 +97,7 @@ class Topnav extends React.Component {
       popoverVisible: false,
       searchBarValue: '',
       notificationsPopoverVisible: false,
-      selectedPage: Topnav.MENU_ITEMS.MY_FEED,
+      selectedPage: '',
     };
     this.handleMoreMenuSelect = this.handleMoreMenuSelect.bind(this);
     this.handleMoreMenuVisibleChange = this.handleMoreMenuVisibleChange.bind(this);
@@ -125,12 +125,15 @@ class Topnav extends React.Component {
   }
 
   setSelectedPage() {
-    const { location, username } = this.props;
+    const { location: { pathname }, username } = this.props;
     if (!username) return Topnav.MENU_ITEMS.HOME;
-    let currPage = Topnav.MENU_ITEMS.MY_FEED;
+    const routeParts = pathname.split('/');
+    let currPage = routeParts[1] && routeParts[1].length
+      ? Topnav.MENU_ITEMS.HOME
+      : Topnav.MENU_ITEMS.MY_FEED;
     Object.keys(Topnav.ROUTES_MAP).forEach(key => {
       const routeList = Topnav.ROUTES_MAP[key];
-      if (routeList.some(route => location.pathname.includes(`/${route}`))) {
+      if (routeList.some(route => pathname.includes(`/${route}`))) {
         currPage = key;
       }
     });
