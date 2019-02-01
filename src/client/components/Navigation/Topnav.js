@@ -54,7 +54,7 @@ class Topnav extends React.Component {
 
   static get ROUTES_MAP() {
     return {
-      [this.MENU_ITEMS.HOME]: ['trending', 'hot', 'created'],
+      [this.MENU_ITEMS.HOME]: ['home/'],
       [this.MENU_ITEMS.MARKETS]: ['markets/'],
       [this.MENU_ITEMS.DEALS]: ['deals/'],
     };
@@ -474,7 +474,7 @@ class Topnav extends React.Component {
             mode="horizontal"
           >
             <Menu.Item key={Topnav.MENU_ITEMS.HOME}>
-              <NavLink to="/trending">
+              <NavLink to="/home">
                 {intl.formatMessage({ id: 'home', defaultMessage: 'Home' }).toUpperCase()}
               </NavLink>
             </Menu.Item>
@@ -483,12 +483,12 @@ class Topnav extends React.Component {
                 {intl.formatMessage({ id: 'my_feed', defaultMessage: 'My feed' }).toUpperCase()}
               </NavLink>
             </Menu.Item>
-            <Menu.Item key={Topnav.MENU_ITEMS.MARKETS} disabled={!this.props.username}>
+            <Menu.Item key={Topnav.MENU_ITEMS.MARKETS}>
               <NavLink to="/markets/favorites">
                 {intl.formatMessage({ id: 'markets', defaultMessage: 'Markets' }).toUpperCase()}
               </NavLink>
             </Menu.Item>
-            <Menu.Item key={Topnav.MENU_ITEMS.DEALS} disabled={!this.props.username}>
+            <Menu.Item key={Topnav.MENU_ITEMS.DEALS}>
               <NavLink to="/deals/open">
                 {intl
                   .formatMessage({ id: 'sidebar.nav.deals', defaultMessage: 'Deals' })

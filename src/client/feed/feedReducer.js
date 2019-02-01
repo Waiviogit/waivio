@@ -5,6 +5,7 @@ import { getPostKey } from '../helpers/stateHelpers';
 
 const initialState = {
   feed: {},
+  wia_feed: {},
   hot: {},
   cashout: {},
   created: {},

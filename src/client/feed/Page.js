@@ -62,7 +62,7 @@ class Page extends React.Component {
         </Helmet>
         <ScrollToTop />
         <ScrollToTopOnMount />
-        <HeroBannerContainer />
+        {/* <HeroBannerContainer /> */}
         <div className="shifted">
           <div className="feed-layout container">
             <Affix className="leftContainer" stickPosition={115}>
@@ -76,16 +76,16 @@ class Page extends React.Component {
               </div>
             </Affix>
             <div className="center">
-              {displayTopicSelector && <TrendingTagsMenu />}
-              {shouldDisplaySelector && (
-                <TopicSelector
-                  isSingle={false}
-                  sort={sortBy}
-                  topics={category ? [category] : []}
-                  onSortChange={this.handleSortChange}
-                  onTopicClose={this.handleTopicClose}
-                />
-              )}
+              {/* {displayTopicSelector && <TrendingTagsMenu />} */}
+              {/* {shouldDisplaySelector && ( */}
+                {/* <TopicSelector */}
+                  {/* isSingle={false} */}
+                  {/* sort={sortBy} */}
+                  {/* topics={category ? [category] : []} */}
+                  {/* onSortChange={this.handleSortChange} */}
+                  {/* onTopicClose={this.handleTopicClose} */}
+                {/* /> */}
+              {/* )} */}
               {authenticated && <QuickPostEditor />}
               <SubFeed />
             </div>

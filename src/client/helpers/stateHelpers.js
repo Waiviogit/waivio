@@ -3,6 +3,7 @@ import { hasActionType, hasField } from '../object/wObjectHelper';
 export const getFeedFromState = (sortBy, category = 'all', state) => {
   switch (sortBy) {
     case 'feed':
+    case 'wia_feed':
     case 'hot':
     case 'created':
     case 'trending':
@@ -21,6 +22,7 @@ export const getFeedFromState = (sortBy, category = 'all', state) => {
 export const getFeedLoadingFromState = (sortBy, category = 'all', feedState) => {
   switch (sortBy) {
     case 'feed':
+    case 'wia_feed':
     case 'hot':
     case 'created':
     case 'trending':
@@ -39,6 +41,7 @@ export const getFeedLoadingFromState = (sortBy, category = 'all', feedState) => 
 export const getFeedFetchedFromState = (sortBy, category = 'all', feedState) => {
   switch (sortBy) {
     case 'feed':
+    case 'wia_feed':
     case 'hot':
     case 'created':
     case 'trending':
@@ -57,6 +60,7 @@ export const getFeedFetchedFromState = (sortBy, category = 'all', feedState) => 
 export const getFeedHasMoreFromState = (sortBy, listName = 'all', feedState) => {
   switch (sortBy) {
     case 'feed':
+    case 'wia_feed':
     case 'hot':
     case 'cashout':
     case 'created':
@@ -76,6 +80,7 @@ export const getFeedHasMoreFromState = (sortBy, listName = 'all', feedState) => 
 export const getFeedFailedFromState = (sortBy, listName = 'all', feedState) => {
   switch (sortBy) {
     case 'feed':
+    case 'wia_feed':
     case 'hot':
     case 'cashout':
     case 'created':

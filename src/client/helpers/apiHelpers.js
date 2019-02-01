@@ -1,4 +1,5 @@
 import SteemAPI from '../steemAPI';
+import { getWobjectsFeed } from '../../waivioApi/ApiClient';
 import { jsonParse } from '../helpers/formatter';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
 
@@ -21,6 +22,9 @@ export function getDiscussionsFromAPI(sortBy, query, steemAPI) {
     case 'comments':
     case 'promoted':
       return steemAPI.sendAsync(`get_discussions_by_${sortBy}`, [query]);
+    case 'wia_feed':
+      console.log("getWIA FEED");
+      return getWobjectsFeed(query.limit, query.start_id || '');
     default:
       throw new Error('There is not API endpoint defined for this sorting');
   }

@@ -201,9 +201,17 @@ const routes = [
         component: ExitPage,
       },
       {
-        path: '/:sortBy(trending|created|hot|promoted)?/:category?',
+        path: '/home',
         component: Page,
       },
+      {
+        path: '/',
+        component: Page,
+      },
+      // {
+      //   path: '/:sortBy(trending|created|hot|promoted)?/:category?',
+      //   component: Page,
+      // },
       {
         path: '*',
         component: Error404,
