@@ -32,9 +32,7 @@ const TopInstruments = ({ intl, quoteSettings, quotes, charts }) => (
             <Link to={`/markets/${market.name.toLowerCase()}`}>
               {intl.formatMessage(market.intl).toUpperCase()}
             </Link>
-            <div className="SidebarContentBlock__amount">
-              {instrumentsCount}
-            </div>
+            <div className="SidebarContentBlock__amount">{instrumentsCount}</div>
           </div>
           <div className="SidebarContentBlock__content">
             {instrumentsToShow[market.name].map(

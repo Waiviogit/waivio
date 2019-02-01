@@ -7,13 +7,19 @@
     & > a {
       padding: 0 10px !important;
       display: block;
-      color: #99aab5;
+      color: @blue-baliHai;
       font-weight: 500;
       line-height: 2.3em;
       border: @border-width-base @border-style-base transparent;
 
+      &.with-badge {
+        display: flex;
+        justify-content: space-between;
+        font-weight: 600;
+      }
+
       &:hover {
-        color: rgba(0, 0, 0, 0.65);
+        color: rgba(0, 0, 0, 0.75);
       }
 
       &:focus {
@@ -46,7 +52,7 @@ div[data-dir='rtl'] .Sidenav {
   background: white;
   border: @border-width-base @border-style-base @border-color-base !important;
   border-radius: @border-radius-base;
-  color: rgba(0, 0, 0, 0.65) !important;
+  color: rgba(0, 0, 0, 0.75) !important;
   & > i {
     color: @primary-color;
   }
