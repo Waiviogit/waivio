@@ -5,6 +5,7 @@ import WobjHeader from './WobjHeader';
 import UserHeaderLoading from '../components/UserHeaderLoading';
 import ObjectMenu from '../components/ObjectMenu';
 import Hero from '../components/Hero';
+import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
 
 @withRouter
 class WobjMenuWrapper extends React.Component {
@@ -13,6 +14,7 @@ class WobjMenuWrapper extends React.Component {
     location: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
     wobject: PropTypes.shape().isRequired,
+    username: PropTypes.string.isRequired,
   };
 
   onChange = key => {
@@ -28,8 +30,10 @@ class WobjMenuWrapper extends React.Component {
     let fieldsCount = 0;
     if (this.props.wobject && this.props.wobject.fields)
       fieldsCount = this.props.wobject.fields.length > 0 ? this.props.wobject.fields.length - 1 : 0;
+    const accessExtend = haveAccess(this.props.wobject, this.props.username, accessTypesArr[0]);
     return (
       <ObjectMenu
+        accessExtend={accessExtend}
         defaultKey={currentKey}
         onChange={this.onChange}
         {...otherProps}
@@ -51,7 +55,11 @@ const WobjHero = ({ authenticated, wobject, isFetching, username, isFollowing })
             ) : (
               <WobjHeader username={username} wobject={wobject} isFollowing={isFollowing} />
             )}
-            <WobjMenuWrapper followers={wobject.followers_count || 0} wobject={wobject} />
+            <WobjMenuWrapper
+              followers={wobject.followers_count || 0}
+              wobject={wobject}
+              username={username}
+            />
           </React.Fragment>
         )}
       />
