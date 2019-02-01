@@ -5,15 +5,13 @@ import { voteObject } from './wobjActions';
 export const APPEND_WAIVIO_OBJECT = createAsyncActionType('@editor/APPEND_WAIVIO_OBJECT');
 
 export const appendObject = postData => dispatch => {
-  const { like, votePower, ...rest } = postData;
+  const { votePower, ...rest } = postData;
 
   return dispatch({
     type: APPEND_WAIVIO_OBJECT.ACTION,
     payload: {
       promise: postAppendWaivioObject(rest).then(res => {
-        if (like) {
-          dispatch(voteObject(res.author, res.permlink, votePower));
-        }
+        dispatch(voteObject(res.author, res.permlink, votePower));
         return res;
       }),
     },

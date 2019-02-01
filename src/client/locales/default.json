@@ -374,7 +374,7 @@
   "suggest1": "I suggest adding field",
   "suggest2": "With language",
   "suggest3": "Value",
-  "value_placeholder": "New object name",
+  "value_placeholder": "Object name",
   "extend-object": "Extend",
   "current_fields1": "Current",
   "current_fields2": "fields",
@@ -426,7 +426,7 @@
   "validation_special_symbols": "Please use only letters and numbers",
   "validation_locale": "Please select your locale!",
   "validation_object_type": "Please select object type!",
-  "placeholder_obj_type": "Select a option and change input text above",
+  "placeholder_obj_type": "Object type",
   "object_history": "History",
   "object_field_placeholder": "All updates",
   "object_field_name": "Name",
@@ -459,6 +459,7 @@
   "add_object": "Add object",
   "warning_message": "Object updates are posted by Waivio Bots in order to avoid technical posts in user feeds and spending limited resource credits on multiple posts by users, authors are required to upvote updates with voting power that should generate an equivalent of at least $0.001 to ensure validity of the posted content. Users receive 70% of author rewards in addition to standard curation rewards.",
   "vote_worth": "Your vote will be worth ${value} (min. $0.001)",
+  "need_like": "You need to like these updates to take effect",
   "write_new_review": "Write new review",
   "upload_photo_error": "You need to upload at least one image"
 }
