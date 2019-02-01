@@ -373,10 +373,6 @@ export default class AppendForm extends Component {
     }
   };
 
-  handleVotePercentChange = value => {
-    this.calculateVoteWorth(value);
-  };
-
   handleLikeClick = () => {
     const { sliderMode, user } = this.props;
     this.setState({
@@ -1017,7 +1013,7 @@ export default class AppendForm extends Component {
         {this.renderContentValue(getFieldValue('currentField'))}
 
         <LikeSection
-          onVotePercentChange={this.handleVotePercentChange}
+          onVotePercentChange={this.calculateVoteWorth}
           votePercent={this.state.votePercent}
           voteWorth={this.state.voteWorth}
           form={form}

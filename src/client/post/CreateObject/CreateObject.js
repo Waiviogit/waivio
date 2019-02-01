@@ -102,10 +102,6 @@ class CreateObject extends React.Component {
     });
   };
 
-  handleVotePercentChange = value => {
-    this.calculateVoteWorth(value);
-  };
-
   handleLikeClick = () => {
     const { sliderMode, user } = this.props;
     if (sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user))) {
@@ -206,7 +202,7 @@ class CreateObject extends React.Component {
           )}
         </Form.Item>
         <LikeSection
-          onVotePercentChange={this.handleVotePercentChange}
+          onVotePercentChange={this.calculateVoteWorth}
           votePercent={this.state.votePercent}
           voteWorth={this.state.voteWorth}
           form={form}
