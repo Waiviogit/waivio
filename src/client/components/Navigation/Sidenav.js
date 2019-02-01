@@ -6,14 +6,19 @@ import './Sidenav.less';
 
 const Sidenav = ({ navigationMenu }) => (
   <ul className="Sidenav">
-    {navigationMenu.map(menuItem => (!menuItem.isHidden ? (
+    {navigationMenu.map(menuItem =>
+      !menuItem.isHidden ? (
         <li key={menuItem.name}>
-          <NavLink to={menuItem.linkTo.toLowerCase()} className="with-badge" activeClassName="Sidenav__item--active">
+          <NavLink
+            to={menuItem.linkTo.toLowerCase()}
+            className="with-badge"
+            activeClassName="Sidenav__item--active"
+          >
             <FormattedMessage id={menuItem.intl.id} defaultMessage={menuItem.intl.defaultMessage} />
             {menuItem.badge ? <span>{menuItem.badge}</span> : null}
           </NavLink>
         </li>
-      ) : null)
+      ) : null,
     )}
   </ul>
 );

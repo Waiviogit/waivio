@@ -8,7 +8,7 @@ import { getQuotesSettingsState } from '../../../investarena/redux/selectors/quo
 
 const MarketsList = ({ quoteSettings, quoteFavorites }) => {
   const instrumentsCount = Object.values(quoteSettings).reduce((acc, quote) => {
-    return {...acc, [quote.market]: acc[quote.market] ? acc[quote.market] + 1 : 1}
+    return { ...acc, [quote.market]: acc[quote.market] ? acc[quote.market] + 1 : 1 };
   }, {});
   const menu = [
     {
@@ -19,15 +19,16 @@ const MarketsList = ({ quoteSettings, quoteFavorites }) => {
       isHidden: !quoteFavorites.length,
     },
     ...marketNames.map(market => {
-      const count = market.names.reduce((acc, marketName ) => (
-        acc + instrumentsCount[marketName] || 0),
-        0);
+      const count = market.names.reduce(
+        (acc, marketName) => acc + instrumentsCount[marketName] || 0,
+        0,
+      );
       return {
         ...market,
         linkTo: `/markets/${market.name}`,
         badge: count,
         isHidden: !count,
-      }
+      };
     }),
   ];
   return (
