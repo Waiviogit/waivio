@@ -115,6 +115,7 @@ export default class AppendForm extends Component {
         this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
       }
     }
+    this.calculateVoteWorth(this.state.votePercent);
   };
 
   onSubmit = form => {
@@ -235,6 +236,18 @@ export default class AppendForm extends Component {
       [mapFields.latitude]: latLng.lat().toFixed(6),
       [mapFields.longitude]: latLng.lng().toFixed(6),
     });
+  };
+
+  calculateVoteWorth = value => {
+    const { user, rewardFund, rate } = this.props;
+    const voteWorth = getVoteValue(
+      user,
+      rewardFund.recent_claims,
+      rewardFund.reward_balance,
+      rate,
+      value * 100,
+    );
+    this.setState({ votePercent: value, voteWorth });
   };
 
   handleSubmit = e => {
@@ -361,15 +374,7 @@ export default class AppendForm extends Component {
   };
 
   handleVotePercentChange = value => {
-    const { user, rewardFund, rate } = this.props;
-    const voteWorth = getVoteValue(
-      user,
-      rewardFund.recent_claims,
-      rewardFund.reward_balance,
-      rate,
-      value * 100,
-    );
-    this.setState({ votePercent: value, voteWorth });
+    this.calculateVoteWorth(value);
   };
 
   handleLikeClick = () => {
