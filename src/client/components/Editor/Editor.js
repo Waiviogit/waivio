@@ -268,7 +268,7 @@ class Editor extends React.Component {
           author_permlink: obj.id,
           percent: obj.influence.value,
         }));
-        this.props.onSubmit({ ...values, [WAIVIO_META_FIELD_NAME]: { wobjects } });
+        // this.props.onSubmit({ ...values, [WAIVIO_META_FIELD_NAME]: { wobjects } });
         this.props.onSubmit({
           ...values,
           [WAIVIO_META_FIELD_NAME]: { wobjects },

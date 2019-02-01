@@ -1,13 +1,13 @@
-import _ from 'lodash';
+// import _ from 'lodash';
 import React, { Component } from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { getViewMode, setViewMode } from '../../helpers/localStorageHelpers';
-import { arrayOfLogos } from '../../constants/arrayOfQuoteLogos';
+// import { arrayOfLogos } from '../../constants/arrayOfQuoteLogos';
 import './DealsPage.less';
 import OpenDeals from './OpenDeals';
 import ClosedDeals from './ClosedDeals';
-import { Link } from 'react-router-dom';
 import Affix from '../../../client/components/Utils/Affix';
 import LeftSidebar from '../../../client/app/Sidebar/LeftSidebar';
 
@@ -53,11 +53,7 @@ class DealsPage extends Component {
           </Affix>
           <div className="center">
             <div className="st-deals-toggle-view">
-              {isClosedDealType ? (
-                <Link to={`/deals/open`}>To open deals</Link>
-              ) : (
-                <Link to={`/deals/closed`}>To closed deals</Link>
-              )}
+              <div/>
               {this.state.viewMode === 'list' ? (
                 <img
                   role="presentation"
