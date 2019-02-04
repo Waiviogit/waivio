@@ -71,6 +71,19 @@ class CreateObject extends React.Component {
         this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
       }
     }
+    this.calculateVoteWorth(this.state.votePercent);
+  };
+
+  calculateVoteWorth = value => {
+    const { user, rewardFund, rate } = this.props;
+    const voteWorth = getVoteValue(
+      user,
+      rewardFund.recent_claims,
+      rewardFund.reward_balance,
+      rate,
+      value * 100,
+    );
+    this.setState({ votePercent: value, voteWorth });
   };
 
   handleSubmit = e => {
@@ -87,18 +100,6 @@ class CreateObject extends React.Component {
         _.delay(this.props.toggleModal, 2500);
       }
     });
-  };
-
-  handleVotePercentChange = value => {
-    const { user, rewardFund, rate } = this.props;
-    const voteWorth = getVoteValue(
-      user,
-      rewardFund.recent_claims,
-      rewardFund.reward_balance,
-      rate,
-      value * 100,
-    );
-    this.setState({ votePercent: value, voteWorth });
   };
 
   handleLikeClick = () => {
@@ -201,12 +202,12 @@ class CreateObject extends React.Component {
           )}
         </Form.Item>
         <LikeSection
-          handleVotePercentChange={this.handleVotePercentChange}
+          onVotePercentChange={this.calculateVoteWorth}
           votePercent={this.state.votePercent}
           voteWorth={this.state.voteWorth}
           form={form}
           sliderVisible={this.state.sliderVisible}
-          onChange={this.handleLikeClick}
+          onLikeClick={this.handleLikeClick}
         />
         <Form.Item className="Editor__bottom__submit">
           <Button type="primary" onClick={this.handleSubmit} loading={this.state.loading}>

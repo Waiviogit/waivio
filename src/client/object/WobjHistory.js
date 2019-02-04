@@ -123,7 +123,6 @@ export default class WobjHistory extends React.Component {
       <React.Fragment>
         <div className="wobj-history__filters">
           <Select
-            allowClear
             placeholder={
               <FormattedMessage id="object_field_placeholder" defaultMessage="Object field" />
             }
@@ -137,7 +136,6 @@ export default class WobjHistory extends React.Component {
             ))}
           </Select>
           <Select
-            allowClear
             placeholder={<FormattedMessage id="language" defaultMessage="All languages" />}
             onChange={this.handleLocaleChange}
           >
