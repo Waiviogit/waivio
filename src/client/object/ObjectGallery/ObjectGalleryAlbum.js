@@ -76,17 +76,12 @@ export default class ObjectGalleryAlbum extends Component {
               </div>
             </div>
           </div>
-          {(!album || !album[0]) && (
+          {album && album[0] ? (
+            <Album key={album[0].body + album[0].weight} album={album[0]} />
+          ) : (
             <div className="ObjectGallery__emptyText">
               <FormattedMessage id="gallery_list_empty" defaultMessage="Nothing is there" />
             </div>
-          )}
-          {album && album[0] && (
-            <Album
-              key={album[0].body + album[0].weight}
-              album={album[0]}
-              handleOpenLightbox={this.handleOpenLightbox}
-            />
           )}
         </div>
       </React.Fragment>

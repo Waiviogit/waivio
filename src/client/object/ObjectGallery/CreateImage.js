@@ -49,10 +49,18 @@ class CreateImage extends React.Component {
   });
 
   getWobjectBody = image => {
-    const { selectedAlbum, currentUsername } = this.props;
-    return `@${currentUsername} added a new image to album ${selectedAlbum.body} <br /> ${
-      image.response.url
-    }`;
+    const { selectedAlbum, currentUsername, intl } = this.props;
+    return intl.formatMessage(
+      {
+        id: 'append_new_image',
+        defaultMessage: `@{user} added a new image to album {album} <br /> {url}`,
+      },
+      {
+        user: currentUsername,
+        album: selectedAlbum.body,
+        url: image.response.url,
+      },
+    );
   };
 
   handlePreviewCancel = () => this.setState({ previewVisible: false });
@@ -60,7 +68,7 @@ class CreateImage extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
 
-    const { selectedAlbum, hideModal } = this.props;
+    const { selectedAlbum, hideModal, intl } = this.props;
     const { fileList } = this.state;
 
     this.props.form.validateFields(err => {
@@ -70,10 +78,25 @@ class CreateImage extends React.Component {
             hideModal();
             this.setState({ fileList: [], uploadingList: [] });
             message.success(
-              `You successfully have added the image(s) to album ${selectedAlbum.body}`,
+              intl.formatMessage(
+                {
+                  id: 'added_image_to_album',
+                  defaultMessage: `@{user} added a new image to album {album} <br /> {url}`,
+                },
+                {
+                  album: selectedAlbum.body,
+                },
+              ),
             );
           })
-          .catch(() => message.error("Couldn't add the image to album."));
+          .catch(() =>
+            message.error(
+              intl.formatMessage({
+                id: 'couldnt_upload_image',
+                defaultMessage: "Couldn't add the image to album.",
+              }),
+            ),
+          );
       }
     });
   };
@@ -86,25 +109,43 @@ class CreateImage extends React.Component {
     const isAllowed = ALLOWED_IMG_FORMATS.includes(`${file.type.split('/')[1]}`);
     if (!isAllowed) {
       message.error(
-        `You can only upload ${ALLOWED_IMG_FORMATS.join(' ').toUpperCase()} file formats!`,
+        this.props.intl.formatMessage(
+          {
+            id: 'file_format_allowed',
+            defaultMessage: 'You can only upload {formats} file formats!',
+          },
+          {
+            formats: ALLOWED_IMG_FORMATS.join(' ').toUpperCase(),
+          },
+        ),
       );
       return;
     }
+
     const maxSizeByte = MAX_IMG_SIZE[objectFields.background];
-    const isLimited = file.size < maxSizeByte;
-    if (!isLimited) {
-      message.error(`Image must smaller than ${(maxSizeByte / 1024 / 1024).toFixed()}MB!`);
+    if (file.size > maxSizeByte) {
+      message.error(
+        this.props.intl.formatMessage(
+          {
+            id: 'invalid_image_size',
+            defaultMessage: 'Image must smaller than {size}MB!',
+          },
+          {
+            size: (maxSizeByte / 1024 / 1024).toFixed(),
+          },
+        ),
+      );
       return;
     }
 
     switch (file.status) {
       case 'uploading':
-        this.setState({ uploadingList: this.state.uploadingList.concat(file.uid) });
+        this.setState(prevState => ({ uploadingList: prevState.uploadingList.concat(file.uid) }));
         break;
       case 'done':
-        this.setState({
-          uploadingList: this.state.uploadingList.filter(f => f !== file.uid),
-        });
+        this.setState(prevState => ({
+          uploadingList: prevState.uploadingList.filter(f => f !== file.uid),
+        }));
         break;
       default:
         this.setState({ uploadingList: [] });
@@ -145,23 +186,6 @@ class CreateImage extends React.Component {
     this.props.hideModal();
     this.setState({ fileList: [], uploadingList: [] });
   };
-
-  // beforeUpload = (fileList, file) => {
-  //   const isAllowed = ALLOWED_IMG_FORMATS.includes(`${file[0].type.split('/')[1]}`);
-  //   if (!isAllowed) {
-  //     message.error(
-  //       `You can only upload ${ALLOWED_IMG_FORMATS.join(' ').toUpperCase()} file formats!`,
-  //     );
-  //     return false;
-  //   }
-  //   const maxSizeByte = MAX_IMG_SIZE[objectFields.background];
-  //   const isLimited = file[0].size < maxSizeByte;
-  //   if (!isLimited) {
-  //     message.error(`Image must smaller than ${(maxSizeByte / 1024 / 1024).toFixed()}MB!`);
-  //     return false;
-  //   }
-  //   return true;
-  // };
 
   render() {
     const { showModal, form, loading, intl, selectedAlbum, albums } = this.props;
@@ -208,7 +232,12 @@ class CreateImage extends React.Component {
             )}
           </Form.Item>
 
-          <Form.Item label="Upload photos">
+          <Form.Item
+            label={intl.formatMessage({
+              id: 'upload_photos',
+              defaultMessage: 'Upload photos',
+            })}
+          >
             {form.getFieldDecorator('upload', {
               rules: [
                 {
@@ -221,7 +250,13 @@ class CreateImage extends React.Component {
               ],
             })(
               <div className="clearfix">
-                <Spin tip="Submitting..." spinning={loading}>
+                <Spin
+                  tip={intl.formatMessage({
+                    id: 'image_submitting',
+                    defaultMessage: 'Submitting...',
+                  })}
+                  spinning={loading}
+                >
                   <Upload
                     accept={acceptImageFormat}
                     action="https://ipfs.busy.org/upload"
@@ -229,13 +264,17 @@ class CreateImage extends React.Component {
                     fileList={fileList}
                     onPreview={this.handlePreview}
                     onChange={this.handleChange}
-                    // beforeUpload={this.beforeUpload}
                     supportServerRender
                   >
                     {fileList.length >= 10 ? null : (
                       <div>
                         <Icon type="plus" />
-                        <div className="ant-upload-text">Upload</div>
+                        <div className="ant-upload-text">
+                          {intl.formatMessage({
+                            id: 'upload_image',
+                            defaultMessage: 'Upload',
+                          })}
+                        </div>
                       </div>
                     )}
                   </Upload>
@@ -262,8 +301,8 @@ class CreateImage extends React.Component {
             ) : (
               <Button
                 type="primary"
-                loading={!!uploadingList.length}
-                disabled={uploadingList.length}
+                loading={Boolean(uploadingList.length)}
+                disabled={Boolean(uploadingList.length)}
               >
                 {intl.formatMessage({
                   id: 'uploading_image_progress',
