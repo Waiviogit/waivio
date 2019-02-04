@@ -63,13 +63,13 @@ class SubFeed extends React.Component {
 
     if (!loaded && Cookie.get('access_token')) return;
 
-    if (match.url === '/' && authenticated) {
+    if (match.url === '/my_feed' && authenticated) {
       const fetched = getUserFeedFetchedFromState(user.name, feed);
       if (fetched) return;
       this.props.getFeedContent('feed', user.name);
     } else {
-      const sortBy = match.url === '/home' ? 'wia_feed' : match.params.sortBy || 'trending';
-      const category = match.url === '/home' ? 'all' : match.params.category;
+      const sortBy = match.url === '/my_steem' ? 'wia_feed' : match.params.sortBy || 'trending';
+      const category = match.url === '/my_steem' ? 'all' : match.params.category;
       const fetched = getFeedFetchedFromState(sortBy, category, feed);
       if (fetched) return;
       this.props.getFeedContent(sortBy, category);
@@ -90,7 +90,7 @@ class SubFeed extends React.Component {
     if (!isLoaded && Cookie.get('access_token')) return;
 
     if (
-      match.url === '/' &&
+      match.url === '/my_feed' &&
       ((match.url !== this.props.match.url && isAuthenticated) ||
         (isAuthenticated && !wasAuthenticated))
     ) {
@@ -99,7 +99,7 @@ class SubFeed extends React.Component {
         this.props.getFeedContent('feed', user.name);
       }
     } else if (
-      match.url === '/home' &&
+      match.url === '/my_steem' &&
       ((match.url !== this.props.match.url))
     ) {
       const fetching = getFeedLoadingFromState('wia_feed', 'all', feed);
@@ -122,7 +122,7 @@ class SubFeed extends React.Component {
     let hasMore = false;
     let failed = false;
     let loadMoreContent = () => {};
-    const isAuthHomeFeed = match.url === '/' && authenticated;
+    const isAuthHomeFeed = match.url === '/my_feed' && authenticated;
 
     if (isAuthHomeFeed) {
       content = getUserFeedFromState(user.name, feed);
@@ -135,8 +135,8 @@ class SubFeed extends React.Component {
       failed = getUserFeedFailedFromState(user.name, feed);
       loadMoreContent = () => this.props.getMoreFeedContent('feed', user.name);
     } else {
-      const sortBy = match.url === '/home' ? 'wia_feed' : match.params.sortBy || 'trending';
-      const category = match.url === '/home'? 'all' : match.params.category;
+      const sortBy = match.url === '/my_steem' ? 'wia_feed' : match.params.sortBy || 'trending';
+      const category = match.url === '/my_steem'? 'all' : match.params.category;
       content = getFeedFromState(sortBy, category, feed);
       isFetching = getFeedLoadingFromState(sortBy, category, feed);
       fetched = getFeedFetchedFromState(sortBy, category, feed);
@@ -152,7 +152,7 @@ class SubFeed extends React.Component {
 
     return (
       <div>
-        {/* {isAuthHomeFeed && <LetsGetStarted />} */}
+        {isAuthHomeFeed && <LetsGetStarted />}
         {empty && <ScrollToTop />}
         <Feed
           content={content}

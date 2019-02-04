@@ -201,17 +201,17 @@ const routes = [
         component: ExitPage,
       },
       {
-        path: '/home',
+        path: '/my_steem',
         component: Page,
       },
       {
-        path: '/',
+        path: '/my_feed',
         component: Page,
       },
-      // {
-      //   path: '/:sortBy(trending|created|hot|promoted)?/:category?',
-      //   component: Page,
-      // },
+      {
+        path: '/:sortBy(trending|created|hot|promoted)?/:category?',
+        component: Page,
+      },
       {
         path: '*',
         component: Error404,
