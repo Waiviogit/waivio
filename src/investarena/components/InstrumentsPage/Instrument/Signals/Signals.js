@@ -21,7 +21,7 @@ const Signals = ({intl, signals}) => (
               <div className="st-signal-wrap" key={`signal:${signal.id}`}>
                 <div className="st-signal-interval">{getCorrectTime(signal.interval, intl)}</div>
                 <div className={`st-signal-recommendation st-signal-color-${signal.recommendation === 'buy' ? 'success' : 'danger'}`}>
-                  <FormattedMessage id={`signal.${signal.recommendation}`}/>
+                  <FormattedMessage id={`signal.${signal.recommendation}`} defaultMessage={signal.recommendation === 'buy' ? 'Buy' : 'Sell'}/>
                 </div>
                 <div className="st-signal-strength">
                   <Progress percent={signal.strength*10} showInfo={false} status="active"/>
