@@ -5,7 +5,7 @@ import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Form, Select, Modal, Upload, Icon, message, Spin } from 'antd';
 import './CreateImage.less';
-import { ALLOWED_IMG_FORMATS } from '../../../common/constants/validation';
+import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
 import { getField } from '../../objects/WaivioObject';
 import { getAuthenticatedUserName, getObject } from '../../reducers';
 import { appendObject } from '../appendActions';
@@ -23,7 +23,7 @@ class CreateImage extends React.Component {
     previewVisible: false,
     previewImage: '',
     fileList: [],
-    // uploading: false,
+    uploadingList: [],
   };
 
   getWobjectData = () => {
@@ -55,7 +55,7 @@ class CreateImage extends React.Component {
     }`;
   };
 
-  handleCancel = () => this.setState({ previewVisible: false });
+  handlePreviewCancel = () => this.setState({ previewVisible: false });
 
   handleSubmit = e => {
     e.preventDefault();
@@ -63,19 +63,18 @@ class CreateImage extends React.Component {
     const { selectedAlbum, hideModal } = this.props;
     const { fileList } = this.state;
 
-    this.props.form.validateFields((err, values) => {
+    this.props.form.validateFields(err => {
       if (!err) {
         this.appendImages(fileList)
           .then(() => {
             hideModal();
+            this.setState({ fileList: [], uploadingList: [] });
             message.success(
               `You successfully have added the image(s) to album ${selectedAlbum.body}`,
             );
           })
           .catch(() => message.error("Couldn't add the image to album."));
       }
-      message.error("Couldn't add the image to album.");
-      console.log(values);
     });
   };
 
@@ -84,13 +83,31 @@ class CreateImage extends React.Component {
       this.props.form.resetFields();
     }
 
-    if (file.status !== 'uploading') {
-      console.log(file, fileList);
+    const isAllowed = ALLOWED_IMG_FORMATS.includes(`${file.type.split('/')[1]}`);
+    if (!isAllowed) {
+      message.error(
+        `You can only upload ${ALLOWED_IMG_FORMATS.join(' ').toUpperCase()} file formats!`,
+      );
+      return;
     }
-    if (file.status === 'done') {
-      console.info(`${file.name} file uploaded successfully`);
-    } else if (file.status === 'error') {
-      console.error(`${file.name} file upload failed.`);
+    const maxSizeByte = MAX_IMG_SIZE[objectFields.background];
+    const isLimited = file.size < maxSizeByte;
+    if (!isLimited) {
+      message.error(`Image must smaller than ${(maxSizeByte / 1024 / 1024).toFixed()}MB!`);
+      return;
+    }
+
+    switch (file.status) {
+      case 'uploading':
+        this.setState({ uploadingList: this.state.uploadingList.concat(file.uid) });
+        break;
+      case 'done':
+        this.setState({
+          uploadingList: this.state.uploadingList.filter(f => f !== file.uid),
+        });
+        break;
+      default:
+        this.setState({ uploadingList: [] });
     }
 
     this.setState({ fileList });
@@ -124,25 +141,31 @@ class CreateImage extends React.Component {
     }
   };
 
-  handleCustomRequest = () => {};
+  handleModalCancel = () => {
+    this.props.hideModal();
+    this.setState({ fileList: [], uploadingList: [] });
+  };
+
+  // beforeUpload = (fileList, file) => {
+  //   const isAllowed = ALLOWED_IMG_FORMATS.includes(`${file[0].type.split('/')[1]}`);
+  //   if (!isAllowed) {
+  //     message.error(
+  //       `You can only upload ${ALLOWED_IMG_FORMATS.join(' ').toUpperCase()} file formats!`,
+  //     );
+  //     return false;
+  //   }
+  //   const maxSizeByte = MAX_IMG_SIZE[objectFields.background];
+  //   const isLimited = file[0].size < maxSizeByte;
+  //   if (!isLimited) {
+  //     message.error(`Image must smaller than ${(maxSizeByte / 1024 / 1024).toFixed()}MB!`);
+  //     return false;
+  //   }
+  //   return true;
+  // };
 
   render() {
-    const {
-      showModal,
-      hideModal,
-      // handleSubmit,
-      form,
-      loading,
-      intl,
-      selectedAlbum,
-      albums,
-      // imageUploading,
-      // currentImage,
-      // handleImageChange,
-      // handleRemoveImage,
-    } = this.props;
-
-    const { previewVisible, previewImage, fileList } = this.state;
+    const { showModal, form, loading, intl, selectedAlbum, albums } = this.props;
+    const { previewVisible, previewImage, fileList, uploadingList } = this.state;
 
     const acceptImageFormat = ALLOWED_IMG_FORMATS.map(format => `.${format}`).join(',');
 
@@ -154,7 +177,7 @@ class CreateImage extends React.Component {
         })}
         footer={null}
         visible={showModal}
-        onCancel={hideModal}
+        onCancel={this.handleModalCancel}
         width={767}
         destroyOnClose
       >
@@ -206,7 +229,7 @@ class CreateImage extends React.Component {
                     fileList={fileList}
                     onPreview={this.handlePreview}
                     onChange={this.handleChange}
-                    // customRequest={this.handleCustomRequest}
+                    // beforeUpload={this.beforeUpload}
                     supportServerRender
                   >
                     {fileList.length >= 10 ? null : (
@@ -216,7 +239,7 @@ class CreateImage extends React.Component {
                       </div>
                     )}
                   </Upload>
-                  <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
+                  <Modal visible={previewVisible} footer={null} onCancel={this.handlePreviewCancel}>
                     <img alt="example" style={{ width: '100%' }} src={previewImage} />
                   </Modal>
                 </Spin>
@@ -224,12 +247,30 @@ class CreateImage extends React.Component {
             )}
           </Form.Item>
           <Form.Item className="CreateImage__submit">
-            <Button type="primary" loading={loading} disabled={loading} onClick={this.handleSubmit}>
-              {intl.formatMessage({
-                id: loading ? 'image_send_progress' : 'image_append_send',
-                defaultMessage: loading ? 'Submitting' : 'Submit image',
-              })}
-            </Button>
+            {!uploadingList.length ? (
+              <Button
+                type="primary"
+                loading={loading}
+                disabled={loading}
+                onClick={this.handleSubmit}
+              >
+                {intl.formatMessage({
+                  id: loading ? 'image_send_progress' : 'image_append_send',
+                  defaultMessage: loading ? 'Submitting' : 'Submit image',
+                })}
+              </Button>
+            ) : (
+              <Button
+                type="primary"
+                loading={!!uploadingList.length}
+                disabled={uploadingList.length}
+              >
+                {intl.formatMessage({
+                  id: 'uploading_image_progress',
+                  defaultMessage: 'Uploading image...',
+                })}
+              </Button>
+            )}
           </Form.Item>
         </Form>
       </Modal>
@@ -240,19 +281,20 @@ class CreateImage extends React.Component {
 CreateImage.propTypes = {
   showModal: PropTypes.bool.isRequired,
   hideModal: PropTypes.func.isRequired,
-  // handleSubmit: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
   intl: PropTypes.shape().isRequired,
   form: PropTypes.shape().isRequired,
   selectedAlbum: PropTypes.shape().isRequired,
   albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  // currentImage: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  // imageUploading: PropTypes.bool.isRequired,
-  // handleImageChange: PropTypes.func.isRequired,
-  // handleRemoveImage: PropTypes.func.isRequired,
-  currentUsername: PropTypes.shape().isRequired,
-  wObject: PropTypes.shape().isRequired,
-  appendObject: PropTypes.func.isRequired,
+  currentUsername: PropTypes.shape(),
+  wObject: PropTypes.shape(),
+  appendObject: PropTypes.func,
+};
+
+CreateImage.defaultProps = {
+  currentUsername: {},
+  wObject: {},
+  appendObject: () => {},
 };
 
 export default injectIntl(Form.create()(CreateImage));
