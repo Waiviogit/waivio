@@ -68,8 +68,8 @@ class SubFeed extends React.Component {
       if (fetched) return;
       this.props.getFeedContent('feed', user.name);
     } else {
-      const sortBy = match.url === '/my_steem' ? 'wia_feed' : match.params.sortBy || 'trending';
-      const category = match.url === '/my_steem' ? 'all' : match.params.category;
+      const sortBy = match.url === '/' ? 'wia_feed' : match.params.sortBy || 'trending';
+      const category = match.url === '/' ? 'all' : match.params.category;
       const fetched = getFeedFetchedFromState(sortBy, category, feed);
       if (fetched) return;
       this.props.getFeedContent(sortBy, category);
@@ -99,7 +99,7 @@ class SubFeed extends React.Component {
         this.props.getFeedContent('feed', user.name);
       }
     } else if (
-      match.url === '/my_steem' &&
+      match.url === '/' &&
       ((match.url !== this.props.match.url))
     ) {
       const fetching = getFeedLoadingFromState('wia_feed', 'all', feed);
@@ -135,8 +135,8 @@ class SubFeed extends React.Component {
       failed = getUserFeedFailedFromState(user.name, feed);
       loadMoreContent = () => this.props.getMoreFeedContent('feed', user.name);
     } else {
-      const sortBy = match.url === '/my_steem' ? 'wia_feed' : match.params.sortBy || 'trending';
-      const category = match.url === '/my_steem'? 'all' : match.params.category;
+      const sortBy = match.url === '/' ? 'wia_feed' : match.params.sortBy || 'trending';
+      const category = match.url === '/'? 'all' : match.params.category;
       content = getFeedFromState(sortBy, category, feed);
       isFetching = getFeedLoadingFromState(sortBy, category, feed);
       fetched = getFeedFetchedFromState(sortBy, category, feed);

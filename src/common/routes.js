@@ -201,7 +201,8 @@ const routes = [
         component: ExitPage,
       },
       {
-        path: '/my_steem',
+        path: '/',
+        exact: true,
         component: Page,
       },
       {
