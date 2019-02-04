@@ -61,18 +61,21 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (
   const startAuthor = lastPost.author;
   const startPermlink = lastPost.permlink;
 
+  const query = {
+    tag: category,
+    limit: limit + 1,
+  };
+  if (sortBy === 'wia_feed') {
+    query.start_id = lastPost._id;
+  } else {
+    query.start_author = startAuthor;
+    query.start_permlink = startPermlink;
+  }
+
   return dispatch({
     type: GET_MORE_FEED_CONTENT.ACTION,
-    payload: getDiscussionsFromAPI(
-      sortBy,
-      {
-        tag: category,
-        limit: limit + 1,
-        start_author: startAuthor,
-        start_permlink: startPermlink,
-      },
-      steemAPI,
-    ).then(postsData => postsData.slice(1)),
+    payload: getDiscussionsFromAPI(sortBy, query, steemAPI)
+      .then(postsData => postsData.slice(1)),
     meta: {
       sortBy,
       category: category || 'all',

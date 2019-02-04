@@ -201,6 +201,14 @@ const routes = [
         component: ExitPage,
       },
       {
+        path: '/my_steem',
+        component: Page,
+      },
+      {
+        path: '/my_feed',
+        component: Page,
+      },
+      {
         path: '/:sortBy(trending|created|hot|promoted)?/:category?',
         component: Page,
       },

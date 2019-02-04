@@ -629,5 +629,6 @@
   "headerAuthorized.p&l": "P&L deals",
   "headerAuthorized.balance": "Balance",
   "headerAuthorized.freeBalance": "Free balance",
-  "markets": "Markets"
+  "markets": "Markets",
+  "my_steem": "My steem"
 }
