@@ -46,6 +46,7 @@ class Topnav extends React.Component {
   static get MENU_ITEMS() {
     return {
       HOME: 'home',
+      MY_STEEM: 'mySteem',
       MY_FEED: 'myFeed',
       MARKETS: 'markets',
       DEALS: 'deals',
@@ -54,9 +55,11 @@ class Topnav extends React.Component {
 
   static get ROUTES_MAP() {
     return {
-      [this.MENU_ITEMS.HOME]: ['trending', 'hot', 'created'],
-      [this.MENU_ITEMS.MARKETS]: ['markets/'],
-      [this.MENU_ITEMS.DEALS]: ['deals/'],
+      [this.MENU_ITEMS.HOME]: ['/'],
+      [this.MENU_ITEMS.MY_STEEM]: ['/trending', '/hot', '/created'],
+      [this.MENU_ITEMS.MY_FEED]: ['/my_feed'],
+      [this.MENU_ITEMS.MARKETS]: ['/markets/'],
+      [this.MENU_ITEMS.DEALS]: ['/deals/'],
     };
   }
 
@@ -129,16 +132,16 @@ class Topnav extends React.Component {
       location: { pathname },
       username,
     } = this.props;
-    if (!username) return Topnav.MENU_ITEMS.HOME;
-    const routeParts = pathname.split('/');
-    let currPage =
-      routeParts[1] && routeParts[1].length ? Topnav.MENU_ITEMS.HOME : Topnav.MENU_ITEMS.MY_FEED;
-    Object.keys(Topnav.ROUTES_MAP).forEach(key => {
-      const routeList = Topnav.ROUTES_MAP[key];
-      if (routeList.some(route => pathname.includes(`/${route}`))) {
-        currPage = key;
-      }
-    });
+    let currPage = Topnav.MENU_ITEMS.HOME;
+    if (pathname !== '/' && username || pathname !== '/my_feed' && !username) {
+      Object.keys(Topnav.ROUTES_MAP).forEach(key => {
+        const routeList = Topnav.ROUTES_MAP[key];
+        if (routeList.some(route => pathname.includes(`${route}`))) {
+          currPage = key;
+        }
+      });
+    }
+
     this.setState({ selectedPage: currPage });
   }
 
@@ -474,21 +477,26 @@ class Topnav extends React.Component {
             mode="horizontal"
           >
             <Menu.Item key={Topnav.MENU_ITEMS.HOME}>
-              <NavLink to="/trending">
+              <NavLink to="/">
                 {intl.formatMessage({ id: 'home', defaultMessage: 'Home' }).toUpperCase()}
               </NavLink>
             </Menu.Item>
+            <Menu.Item key={Topnav.MENU_ITEMS.MY_STEEM}>
+              <NavLink to="/trending">
+                {intl.formatMessage({ id: 'my_steem', defaultMessage: 'My steem' }).toUpperCase()}
+              </NavLink>
+            </Menu.Item>
             <Menu.Item key={Topnav.MENU_ITEMS.MY_FEED} disabled={!this.props.username}>
-              <NavLink to="/">
+              <NavLink to="/my_feed">
                 {intl.formatMessage({ id: 'my_feed', defaultMessage: 'My feed' }).toUpperCase()}
               </NavLink>
             </Menu.Item>
-            <Menu.Item key={Topnav.MENU_ITEMS.MARKETS} disabled={!this.props.username}>
+            <Menu.Item key={Topnav.MENU_ITEMS.MARKETS}>
               <NavLink to="/markets/favorites">
                 {intl.formatMessage({ id: 'markets', defaultMessage: 'Markets' }).toUpperCase()}
               </NavLink>
             </Menu.Item>
-            <Menu.Item key={Topnav.MENU_ITEMS.DEALS} disabled={!this.props.username}>
+            <Menu.Item key={Topnav.MENU_ITEMS.DEALS}>
               <NavLink to="/deals/open">
                 {intl
                   .formatMessage({ id: 'sidebar.nav.deals', defaultMessage: 'Deals' })

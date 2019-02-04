@@ -201,6 +201,15 @@ const routes = [
         component: ExitPage,
       },
       {
+        path: '/',
+        exact: true,
+        component: Page,
+      },
+      {
+        path: '/my_feed',
+        component: Page,
+      },
+      {
         path: '/:sortBy(trending|created|hot|promoted)?/:category?',
         component: Page,
       },

@@ -58,7 +58,7 @@ const AssetsTab = ({intl, quotes, quoteSettings, title, charts, signals, favorit
             <div className={classNames('st-instruments-details', {'list-view': viewMode === 'list', 'cards-view': viewMode === 'cards'})}>
                 {sortedQuotes && quoteSettings && !_.isEmpty(sortedQuotes) && !_.isEmpty(quoteSettings) && _.some(sortedQuotes, quote => quoteSettings[quote.security] && matchTitle(quote))
                     ? <div className="st-instruments-responsible-wrap">{selectedInstruments}</div>
-                    : <div className="d-flex justify-content-center align-items-center h-100 w-100">{intl.formatMessage({ id: 'assets.quotesNoPresent' })}</div>}
+                    : <div className="d-flex justify-content-center align-items-center h-100 w-100">{intl.formatMessage({ id: 'assets.quotesNoPresent', defaultMessage: 'There are no quotes'})}</div>}
             </div>
         </Fragment>
     );

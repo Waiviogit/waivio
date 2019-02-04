@@ -140,7 +140,8 @@ class PostChart extends Component {
         });
     shouldGetChartData = (bars) => {
         const timeNow = currentTime.getTime();
-        let lastTime = _.last(bars[this.state.timeScale]).time;
+        const lastTimeScale = _.last(bars[this.state.timeScale]);
+        let lastTime = !lastTimeScale.length ? null :lastTimeScale.time;
         const coefficient = 1000 * 60 * CanvasHelper.hours[this.state.timeScale];
         if (((timeNow - lastTime) - coefficient) > coefficient && timeNow - lastTime > coefficient) {
             lastTime += coefficient * Math.floor((timeNow - lastTime) / coefficient);
@@ -181,7 +182,7 @@ class PostChart extends Component {
                         SL: {this.props.slPrice.slice(0, 6)}
                     </div>}
                 </div>
-                <div className="st-post-chart-wrap" onClick={this.toggleModal}>
+                <div role="presentation" className="st-post-chart-wrap" onClick={this.toggleModal}>
                     {this.state.isLoading && !this.state.expired && <div className="spinner"/>}
                     <div className="st-post-chart-block">
                         <div className={`st-chart-circle ${classNameCircle} invisible`} ref={(div) => { this.circleRef = div }}/>

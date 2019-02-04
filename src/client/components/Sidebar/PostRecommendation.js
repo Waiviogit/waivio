@@ -31,7 +31,7 @@ class PostRecommendation extends Component {
 
   componentWillMount() {
     const { location, isAuthFetching } = this.props;
-    if (!isAuthFetching && location.pathname !== '/') {
+    if (!isAuthFetching && location.pathname !== '/my_feed') {
       this.getRecommendations();
     }
   }
