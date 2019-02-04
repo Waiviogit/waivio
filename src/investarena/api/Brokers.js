@@ -24,10 +24,9 @@ export default class Brokers extends Base {
       };
     });
   }
-  authorizeBroker(data, locale) {
+  authorizeBroker(data) {
     return this.apiClient.post(config.brokers.brokerAuthorization, data).then(response => {
       let status = 'error';
-      let message = '';
       if (response.data) {
         switch (response.data.code) {
           case 1:
@@ -46,13 +45,13 @@ export default class Brokers extends Base {
       return {
         headers: response.headers,
         status,
-        message,
+        message: '',
         error: response.error,
         broker: response.data,
       };
     });
   }
-  registerBroker(data, locale) {
+  registerBroker(data) {
     return this.apiClient.post(config.brokers.brokerRegistration, data).then(response => {
       let status = 'error';
       // let message = '';
@@ -65,20 +64,19 @@ export default class Brokers extends Base {
       return { status, error: response.error };
     });
   }
-  reconnectBroker(data, locale) {
+  reconnectBroker(data) {
     return this.apiClient.post(config.brokers.reconnectBroker, data).then(response => {
       let status = 'error';
-      let message = '';
       let result = false;
       if (response.data && response.data.broker) {
         if (response.data.broker.code === 1) {
           result = true;
           status = 'success';
         } else {
-          message = locale.messages['brokerAction.reconnectBroker'];
+          console.log(response.data.broker.message);
         }
       }
-      return { headers: response.headers, status, message, result, error: response.error };
+      return { headers: response.headers, status, resMessage: 'reconnect', result, error: response.error };
     });
   }
   forgotPassBroker(data, locale) {

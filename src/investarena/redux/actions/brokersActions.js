@@ -83,23 +83,19 @@ export function registerBroker (registrationData) {
     };
 }
 export function reconnectBroker (data) {
-    return (dispatch, getState) => {
-        // return api.brokers.reconnectBroker(data, locales[getLanguageState(getState())])
-        // return dispatch(connectPlatform());
-      // api.brokers.reconnectBroker(data, 'en')
-        //     .then(({status, message, result, error}) => {
-        //         if (!error && status && message) {
-        //             if (result) {
-        //
-        //             } else {
-        //                 // dispatch(showNotification({status: 'error', message}));
-        //                 dispatch(disconnectBroker(true));
-        //             }
-        //         } else {
-        //             // dispatch(showNotification({status: 'error', message: error.toString()}));
-        //         }
-        //     });
-    };
+    return (dispatch) => api.brokers.reconnectBroker(data)
+        .then(({status, resMessage, result, error}) => {
+          if (!error && status && resMessage) {
+            if (result) {
+              dispatch(connectPlatform());
+            } else {
+              message.error(resMessage);
+              dispatch(disconnectBroker(true));
+            }
+          } else {
+            message.error(error.toString());
+          }
+        });
 }
 export function disconnectBroker (isReconnect = false) {
     return (dispatch) => {
