@@ -499,7 +499,7 @@ class Topnav extends React.Component {
             <Menu.Item key={Topnav.MENU_ITEMS.DEALS}>
               <NavLink to="/deals/open">
                 {intl
-                  .formatMessage({ id: 'sidebar.nav.deals', defaultMessage: 'Deals' })
+                  .formatMessage({ id: 'my_deals', defaultMessage: 'My deals' })
                   .toUpperCase()}
               </NavLink>
             </Menu.Item>

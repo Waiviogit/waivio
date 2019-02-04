@@ -495,7 +495,8 @@
   "append_object_validation_msg": "The field with this value already exists",
   "linked_objects_remaining": "Remaining weight",
   "linked_objects_tooltip": "Add objects those described in the post, and set the value of belonging",
-  "headerAuthorized.textAttention3": "To start trading, connect your broker.",
+  "headerAuthorized.textAttention3": "To start trading, connect ",
+  "wia.your_broker": "your broker",
   "deals.type": "Type",
   "deals.opened": "Deal is opened",
   "deals.price": "Price",
@@ -630,5 +631,9 @@
   "headerAuthorized.balance": "Balance",
   "headerAuthorized.freeBalance": "Free balance",
   "markets": "Markets",
-  "my_steem": "My steem"
+  "my_steem": "My steem",
+  "list": "List",
+  "cards": "Cards",
+  "view_as": "View as",
+  "my_deals": "My deals"
 }

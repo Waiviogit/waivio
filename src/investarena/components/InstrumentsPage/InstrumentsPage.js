@@ -6,10 +6,11 @@ import PropTypes from 'prop-types';
 import { getViewMode, setViewMode } from '../../helpers/localStorageHelpers';
 import AssetsTab from './AssetsTab/AssetsTab';
 import { getAllSignals } from '../../redux/actions/signalsActions';
-import './InstrumentsPage.less';
-import {supportedObjectTypes} from "../../constants/objectsInvestarena";
+import { supportedObjectTypes } from "../../constants/objectsInvestarena";
 import Affix from '../../../client/components/Utils/Affix';
 import LeftSidebar from '../../../client/app/Sidebar/LeftSidebar';
+import SortSelector from '../../../client/components/SortSelector/SortSelector';
+import './InstrumentsPage.less';
 
 const TabPane = Tabs.TabPane;
 
@@ -34,7 +35,8 @@ class InstrumentsPage extends Component {
         this.state = {
             trends: [],
             signals: {},
-            wobjs: []
+            wobjs: [],
+            viewMode: 'list',
         };
     }
 
@@ -50,10 +52,9 @@ class InstrumentsPage extends Component {
 
     }
 
-    toggleViewMode = () => {
-        const viewModeValue = this.state.viewMode === 'list' ? 'cards' : 'list';
-        this.setState({viewMode: viewModeValue});
-        setViewMode('instruments', viewModeValue);
+    toggleViewMode = viewMode => {
+      this.setState({viewMode});
+      setViewMode('instruments', viewMode);
     };
 
     render () {
@@ -70,13 +71,19 @@ class InstrumentsPage extends Component {
                   </div>
                 </Affix>
                 <div className="center">
-                  <div className="">
-                    <div role='presentation' className="st-instruments-toggle-view" onClick={this.toggleViewMode}>
-                      {this.state.viewMode === 'list'
-                        ? <img alt="cards" className="st-instruments-toggle-view__icon" src="/images/icons/grid-view.svg"/>
-                        : <img alt="list" className="st-instruments-toggle-view__icon" src="/images/icons/list-of-items.svg"/>
-                      }
-                    </div>
+                  <div role='presentation' className="st-instruments-toggle-view">
+                    <SortSelector
+                      caption={this.props.intl.formatMessage({id: 'view_as', defaultMessage: "View as"})}
+                      sort={this.state.viewMode}
+                      onChange={this.toggleViewMode}
+                    >
+                      <SortSelector.Item key="list">
+                        {this.props.intl.formatMessage({id: 'list', defaultMessage: "List"})}
+                      </SortSelector.Item>
+                      <SortSelector.Item key="cards">
+                        {this.props.intl.formatMessage({id: 'cards', defaultMessage: "Cards"})}
+                      </SortSelector.Item>
+                    </SortSelector>
                   </div>
                   <AssetsTab
                     quotes={this.props.quotes}
@@ -89,7 +96,6 @@ class InstrumentsPage extends Component {
                     trends={this.state.trends}
                     viewMode={this.state.viewMode}
                   />
-
                   </div>
                 </div>
               </div>
