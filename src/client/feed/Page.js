@@ -44,7 +44,7 @@ class Page extends React.Component {
   handleTopicClose = () => this.props.history.push('/trending');
 
   render() {
-    const { authenticated, loaded, location: { pathname }, match } = this.props;
+    const { authenticated, location: { pathname }, match } = this.props;
     const { category, sortBy } = match.params;
 
     const shouldDisplaySelector = pathname !== '/my_feed' && pathname !== '/my_steem';
