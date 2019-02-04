@@ -6,11 +6,9 @@ import { Helmet } from 'react-helmet';
 import { getFeedContent } from './feedActions';
 import { getIsLoaded, getIsAuthenticated } from '../reducers';
 import SubFeed from './SubFeed';
-import HeroBannerContainer from './HeroBannerContainer';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
 import TopicSelector from '../components/TopicSelector';
-import TrendingTagsMenu from '../components/TrendingTagsMenu';
 import Affix from '../components/Utils/Affix';
 import ScrollToTop from '../components/Utils/ScrollToTop';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
@@ -46,13 +44,12 @@ class Page extends React.Component {
   handleTopicClose = () => this.props.history.push('/trending');
 
   render() {
-    const { authenticated, loaded, location, match } = this.props;
+    const { authenticated, loaded, location: { pathname }, match } = this.props;
     const { category, sortBy } = match.params;
 
-    const shouldDisplaySelector = location.pathname !== '/' || (!authenticated && loaded);
-    const displayTopicSelector = location.pathname === '/trending';
+    const shouldDisplaySelector = pathname !== '/my_feed' && pathname !== '/my_steem';
 
-    const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
+    const robots = pathname === '/my_feed' ? 'index,follow' : 'noindex,follow';
 
     return (
       <div>
@@ -62,7 +59,6 @@ class Page extends React.Component {
         </Helmet>
         <ScrollToTop />
         <ScrollToTopOnMount />
-        <HeroBannerContainer />
         <div className="shifted">
           <div className="feed-layout container">
             <Affix className="leftContainer" stickPosition={115}>
@@ -76,16 +72,15 @@ class Page extends React.Component {
               </div>
             </Affix>
             <div className="center">
-              {displayTopicSelector && <TrendingTagsMenu />}
-              {shouldDisplaySelector && (
-                <TopicSelector
-                  isSingle={false}
-                  sort={sortBy}
-                  topics={category ? [category] : []}
-                  onSortChange={this.handleSortChange}
-                  onTopicClose={this.handleTopicClose}
-                />
-              )}
+               {shouldDisplaySelector && (
+                 <TopicSelector
+                   isSingle={false}
+                   sort={sortBy}
+                   topics={category ? [category] : []}
+                   onSortChange={this.handleSortChange}
+                   onTopicClose={this.handleTopicClose}
+                 />
+               )}
               {authenticated && <QuickPostEditor />}
               <SubFeed />
             </div>

@@ -158,4 +158,17 @@ export const getWobjectGallery = wobject =>
       .catch(error => reject(error));
   });
 
+export const getWobjectsFeed = (limit = 20, start_id = '') =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.getWobjFeed}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({ start_id, limit }),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export default null;
