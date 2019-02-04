@@ -5,12 +5,11 @@ import { getIsConnectPlatformState, getPlatformNameState } from '../../redux/sel
 import DealsPage from './DealsPage';
 import { getQuotesSettingsState } from '../../redux/selectors/quotesSettingsSelectors';
 import { getQuotesState } from '../../redux/selectors/quotesSelectors';
+import { toggleModal } from '../../redux/actions/modalsActions';
 
 const propTypes = {
-    quotes: PropTypes.object.isRequired,
-    quoteSettings: PropTypes.object.isRequired,
-    platformConnect: PropTypes.bool.isRequired,
-    platformName: PropTypes.string.isRequired
+    platformName: PropTypes.string.isRequired,
+    toggleModalBroker: PropTypes.func.isRequired
 };
 
 const DealsPageContainer = (props) => <DealsPage {...props} />;
@@ -19,11 +18,14 @@ DealsPageContainer.propTypes = propTypes;
 
 function mapStateToProps (state) {
     return {
-        quotes: getQuotesState(state),
-        quoteSettings: getQuotesSettingsState(state),
-        platformConnect: getIsConnectPlatformState(state),
         platformName: getPlatformNameState(state),
     };
 }
 
-export default connect(mapStateToProps)(DealsPageContainer);
+function mapDispatchToProps (dispatch) {
+  return ({
+    toggleModalBroker: () => { dispatch(toggleModal('broker')) }
+  });
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DealsPageContainer);

@@ -10,12 +10,14 @@ export default class SortSelector extends React.Component {
 
   static propTypes = {
     sort: PropTypes.string,
+    caption: PropTypes.string,
     children: PropTypes.node,
     onChange: PropTypes.func,
   };
 
   static defaultProps = {
     sort: null,
+    caption: null,
     children: null,
     onChange: () => {},
   };
@@ -47,7 +49,7 @@ export default class SortSelector extends React.Component {
   }
 
   render() {
-    const { sort } = this.props;
+    const { caption, sort } = this.props;
     const { visible } = this.state;
 
     const currentSort = React.Children.map(this.props.children, c => c).find(
@@ -57,7 +59,7 @@ export default class SortSelector extends React.Component {
     return (
       <div className="SortSelector">
         <span className="SortSelector__title">
-          <FormattedMessage id="sort_by" defaultMessage="Sort by" />
+          {caption || <FormattedMessage id="sort_by" defaultMessage="Sort by" />}
         </span>
         <Popover
           trigger="click"

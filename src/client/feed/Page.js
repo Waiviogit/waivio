@@ -47,7 +47,7 @@ class Page extends React.Component {
     const { authenticated, location: { pathname }, match } = this.props;
     const { category, sortBy } = match.params;
 
-    const shouldDisplaySelector = pathname !== '/my_feed' && pathname !== '/my_steem';
+    const shouldDisplaySelector = pathname !== '/my_feed' && pathname !== '/';
 
     const robots = pathname === '/my_feed' ? 'index,follow' : 'noindex,follow';
 
