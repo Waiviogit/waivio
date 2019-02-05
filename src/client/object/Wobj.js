@@ -51,6 +51,7 @@ export default class Wobj extends React.Component {
 
   state = {
     wobject: {},
+    isEditMode: false,
   };
 
   componentDidMount() {
@@ -67,7 +68,10 @@ export default class Wobj extends React.Component {
     }
   }
 
+  toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
+
   render() {
+    const { isEditMode } = this.state;
     const { authenticated, failed, authenticatedUserName } = this.props;
     if (failed) return <Error404 />;
 
@@ -106,11 +110,13 @@ export default class Wobj extends React.Component {
         </Helmet>
         <ScrollToTopOnMount />
         <WobjHero
+          isEditMode={isEditMode}
           authenticated={authenticated}
           isFetching={_.isEmpty(wobject)}
           wobject={wobject}
           username={displayedObjectName}
           onFollowClick={this.handleFollowClick}
+          toggleViewEditMode={this.toggleViewEditMode}
         />
         <div className="shifted">
           <div className="feed-layout container">
