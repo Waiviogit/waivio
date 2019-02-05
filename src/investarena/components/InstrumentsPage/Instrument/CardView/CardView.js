@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import InstrumentAvatar from '../../../InstrumentAvatar/InstrumentAvatar';
-import Favorite from '../../../Favorite';
 import TradeButtonsAssets from '../../TradeButtonsAssets';
 import ModalTC from '../../../Modals/ModalTC/ModalTC';
 import InstrumentsChart from '../InstrumentChart';
@@ -52,7 +51,6 @@ class InstrumentCard extends React.Component {
               <div className="st-instrument-name" title={quoteSettings.name}>{quoteSettings.name} </div>
             </div>
           </Link>
-          <Favorite quoteSecurity={quote.security}/>
         </div>
         <div className="st-card__content">
           <div className="st-card__daily-change-signal-info">

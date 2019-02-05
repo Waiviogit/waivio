@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
-import { Tabs } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { getViewMode, setViewMode } from '../../helpers/localStorageHelpers';
@@ -12,12 +11,9 @@ import LeftSidebar from '../../../client/app/Sidebar/LeftSidebar';
 import SortSelector from '../../../client/components/SortSelector/SortSelector';
 import './InstrumentsPage.less';
 
-const TabPane = Tabs.TabPane;
-
 const propTypes = {
     charts: PropTypes.shape(),
     openDeals: PropTypes.shape(),
-    favorites: PropTypes.array.isRequired,
     quotes: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     quoteSettings: PropTypes.shape().isRequired,
@@ -27,6 +23,7 @@ const propTypes = {
 const defaultProps = {
     charts: {},
     openDeals: {},
+    favorites: []
 };
 
 class InstrumentsPage extends Component {
@@ -59,9 +56,7 @@ class InstrumentsPage extends Component {
 
     render () {
       const paramMarket = this.props.match.params.marketType;
-      const marketType = (_.some(supportedObjectTypes, market => market === paramMarket) ||
-        paramMarket === 'favorites') ? paramMarket : 'favorites';
-
+      const marketType = _.some(supportedObjectTypes, market => market === paramMarket) ? paramMarket : 'crypto';
       return (
             <div className="st-instr-page">
               <div className="feed-layout container">
@@ -92,7 +87,6 @@ class InstrumentsPage extends Component {
                     deals={this.props.openDeals}
                     quoteSettings={this.props.quoteSettings}
                     title={marketType.toLowerCase()}
-                    favorites={this.props.favorites}
                     trends={this.state.trends}
                     viewMode={this.state.viewMode}
                   />

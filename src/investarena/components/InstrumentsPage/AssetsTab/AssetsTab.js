@@ -13,18 +13,17 @@ const propTypes = {
     quotes: PropTypes.shape().isRequired,
     quoteSettings: PropTypes.shape().isRequired,
     intl: PropTypes.shape().isRequired,
-    favorites: PropTypes.array.isRequired,
     title: PropTypes.string.isRequired,
     viewMode: PropTypes.oneOf(['list', 'cards'])
 };
 
-const AssetsTab = ({intl, quotes, quoteSettings, title, charts, signals, favorites, deals, viewMode}) => {
+const AssetsTab = ({intl, quotes, quoteSettings, title, charts, signals, deals, viewMode}) => {
     const sortedQuotes = _.sortBy(quotes, 'security');
     const matchTitle = (quote) => {
       const quoteMarket = quoteSettings[quote.security].market.toLowerCase();
       return title === 'crypto'
             ? quoteMarket === title || quoteMarket === 'cryptocurrency'
-            : quoteMarket === title || (title === 'favorites' && favorites.includes(quote.security))
+            : quoteMarket === title || (title === 'favorites')
     };
     const selectedInstruments = _.map(sortedQuotes, (quote) =>
         (quoteSettings[quote.security] && quoteSettings[quote.security].wobjData && matchTitle(quote) && charts) &&
@@ -45,12 +44,6 @@ const AssetsTab = ({intl, quotes, quoteSettings, title, charts, signals, favorit
             <div className="st-buy-title">{intl.formatMessage({ id: 'assets.sell', defaultMessage: 'Sell' })}</div>
             <div className="st-amount-title">{intl.formatMessage({ id: 'assets.amount', defaultMessage: 'Amount' })}</div>
             <div className="st-sell-title">{intl.formatMessage({ id: 'assets.buy', defaultMessage: 'Buy' })}</div>
-            <img
-              alt="signal"
-              title={intl.formatMessage({ id: 'assetWidgets.tabSignals', defaultMessage: 'Signals' })}
-              className="st-signals-title"
-              src="/images/icons/icon-signal.svg"
-            />
         </div>;
     return (
         <Fragment>
@@ -64,7 +57,12 @@ const AssetsTab = ({intl, quotes, quoteSettings, title, charts, signals, favorit
     );
 };
 
-AssetsTab.defaultProps = { viewMode: 'cards' };
+AssetsTab.defaultProps = {
+  viewMode: 'cards',
+  deals: {},
+  signals: {},
+  charts: {}
+};
 
 AssetsTab.propTypes = propTypes;
 

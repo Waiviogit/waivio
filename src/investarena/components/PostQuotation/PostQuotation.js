@@ -2,7 +2,6 @@ import { injectIntl } from 'react-intl';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import Favorite from '../Favorite';
 import quoteData from '../../default/quoteData';
 import { quoteFormat } from '../../platform/parsingPrice';
 import quoteSettingsData from '../../default/quoteSettingsData';
@@ -53,9 +52,6 @@ const PostQuotation = ({quote, quoteSettings, margin, amount, toggleConfirmation
         <div className="st-post-quotation-wrap">
             <div className="st-post-quotation-block margins">
                 <div className="st-post-quotation-header d-flex justify-content-between align-items-center" >
-                    <div className="d-flex">
-                        <Favorite quoteSecurity = {quote.security}/>
-                    </div>
                     <div className='st-quote-name-container'>
                       <Link
                         to={`/object/@${wobj.author_permlink}`}

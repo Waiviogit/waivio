@@ -1,0 +1,30 @@
+@import (reference) '../../../Common.less';
+@import (reference) '../../../../../client/styles/common';
+
+.nightmode{
+  .st-open-deal-wrapper {
+    &.st-list-item {
+      .containerStyle (auto, 100%, 0, @grey-nero);
+      border-bottom: 1px solid @normal-grey;
+      .st-open-deal-header {
+        .st-open-deal-header-item-title {
+          .textStyle(@font-size-small, @white, normal);
+        }
+        .st-open-deal-header-value {
+          .textStyle(@font-size-small, @white, bold);
+        }
+      }
+    }
+    &.st-card {
+      border: 1px solid @normal-grey;
+      box-shadow: 0 3px 15px @normal-grey;
+      .textStyle(@font-size-large, @white, bold);
+      .st-card__header {
+        border-bottom: 1px solid @normal-grey;
+      }
+    }
+  }
+  .st-disabled{
+    background-color: @color-gray!important;
+  }
+}

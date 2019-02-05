@@ -1,9 +1,10 @@
-@import (reference) '../Common.less';
+@import '../Common.less';
 @import (reference) '../../../client/styles/modules/variables.less';
 
 @instruments-content-block-height: 585px;
 @list-view-header-height: 56px;
 @chartWidht: 180px;
+
 .st-instr-page {
   padding-top: 10px;
   width: 100vw;
@@ -11,6 +12,8 @@
     float: left;
     width: 100%;
     background-color: @color-white;
+    border: 1px solid @normal-grey;
+
     @media @small {
       width: calc(100% - @margin)!important;
     }
@@ -195,22 +198,6 @@
   .st-instrument-title{
     .textStyle(@font-size-large, @color-black-blue, bold);
   }
-  .st-tab {
-    width: 16.66%;
-    cursor: pointer;
-    background-color: @color-white;
-    border-bottom: 2px solid @color-dark-gray;
-    .active{
-      .st-assets-arrow{
-        .tabArrowStyle (-1px, 70px, @color-white);
-      }
-      .st-assets-arrow-gray{
-        .tabArrowStyle (7px, 70px, @color-dark-gray);
-      }
-      .textStyle(@font-size-medium, @color-black, bold);
-      background-color: @color-white;
-    }
-  }
   .nav-link {
     height: 45px;
     .textStyle(@font-size-medium, @color-darkest-gray, bold);
@@ -258,7 +245,7 @@
       text-align: center;
     }
     border-bottom: 1px solid @color-dark-gray;
-    .st-instruments-text-title{.columnAssetsStyle (287px)}
+    .st-instruments-text-title{.columnAssetsStyle (270px)}
     .st-daily-title{.columnAssetsStyle (205px)}
     .st-buy-title{.columnAssetsStyle (60px)}
     .st-amount-title{.columnAssetsStyle (135px)}
@@ -284,21 +271,5 @@
   margin-bottom: 10px;
   min-width: 150px;
 }
-.st-assets-to-deals{
-  text-align: right;
-  padding: 5px;
-  text-decoration: none;
-  color: #838383;
-  height: 30px;
-  &:hover{
-    text-decoration: none;
-    color: #838383;
-    background-color: @color-dark-gray;
-  }
-  .st-assets-to-deals-arrow{
-    width: 18px;
-    height: 18px;
-    margin-left: 10px;
-    transform: rotate(180deg);
-  }
-}
+
+@import 'InstrumentsPage-nightmode';

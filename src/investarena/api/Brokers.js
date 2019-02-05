@@ -76,7 +76,13 @@ export default class Brokers extends Base {
           console.log(response.data.broker.message);
         }
       }
-      return { headers: response.headers, status, resMessage: 'reconnect', result, error: response.error };
+      return {
+        headers: response.headers,
+        status,
+        resMessage: 'reconnect',
+        result,
+        error: response.error,
+      };
     });
   }
   forgotPassBroker(data, locale) {

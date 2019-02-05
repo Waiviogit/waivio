@@ -44,7 +44,11 @@ class Page extends React.Component {
   handleTopicClose = () => this.props.history.push('/trending');
 
   render() {
-    const { authenticated, location: { pathname }, match } = this.props;
+    const {
+      authenticated,
+      location: { pathname },
+      match,
+    } = this.props;
     const { category, sortBy } = match.params;
 
     const shouldDisplaySelector = pathname !== '/my_feed' && pathname !== '/';
@@ -72,15 +76,15 @@ class Page extends React.Component {
               </div>
             </Affix>
             <div className="center">
-               {shouldDisplaySelector && (
-                 <TopicSelector
-                   isSingle={false}
-                   sort={sortBy}
-                   topics={category ? [category] : []}
-                   onSortChange={this.handleSortChange}
-                   onTopicClose={this.handleTopicClose}
-                 />
-               )}
+              {shouldDisplaySelector && (
+                <TopicSelector
+                  isSingle={false}
+                  sort={sortBy}
+                  topics={category ? [category] : []}
+                  onSortChange={this.handleSortChange}
+                  onTopicClose={this.handleTopicClose}
+                />
+              )}
               {authenticated && <QuickPostEditor />}
               <SubFeed />
             </div>

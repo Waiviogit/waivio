@@ -1,0 +1,29 @@
+@import (reference) '../Common.less';
+@import (reference) '../../../client/styles/modules/variables.less';
+@import (reference) '../../../client/styles/custom.less';
+
+.nightmode {
+  .st-deals-page {
+    .center {
+      background-color: @grey-nero;
+      border: 1px solid @normal-grey;
+
+      .st-deals-wrap {background-color: @grey-nero;}
+      .st-deals-avatar {
+        img {
+          background-color: @white;
+        }
+      }
+      div, .st-opened, .st-commission{
+        color: @color-white;
+      }
+    }
+    .st-closed-deals-block {
+      .st-list-item {
+        .st-price {
+          color: @color-white;
+        }
+      }
+    }
+  }
+}

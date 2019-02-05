@@ -11,6 +11,7 @@
     float: left;
     width: 100%;
     background-color: @color-white;
+    border: 1px solid @border-color-base;
 
     @media @small {
       width: calc(100% - @margin)!important;
@@ -200,10 +201,12 @@
   }
   .st-deal-direction-sell{
     .textStyle(@font-size-small, @color-red, bold);
+    color: @color-red!important;
     align-self: center;
   }
   .st-deal-direction-buy{
     .textStyle(@font-size-small, @color-green, bold);
+    color: @color-green!important;
     align-self: center;
   }
   .st-content-quotes{
@@ -231,22 +234,6 @@
   width: 337px;
   justify-content: flex-end;
 }
-.st-deals-to-deals{
-  text-align: right;
-  padding: 5px;
-  text-decoration: none;
-  color: #838383;
-  height: 30px;
-  &:hover{
-    text-decoration: none;
-    color: #838383;
-    background-color: @color-dark-gray;
-  }
-  .st-sidebar-ul{margin-bottom: 0!important;}
-  .st-deals-to-deals-arrow{
-    width: 18px;
-    height: 18px;
-    margin-left: 10px;
-    transform: rotate(180deg);
-  }
-}
+
+@import 'DealsPage-nightmode';
+

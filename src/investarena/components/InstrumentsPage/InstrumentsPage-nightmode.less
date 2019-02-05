@@ -1,0 +1,54 @@
+@import (reference) '../Common.less';
+@import (reference) '../../../client/styles/modules/variables.less';
+@import (reference) '../../../client/styles/custom.less';
+
+.nightmode{
+  .st-instr-page {
+    .center {
+        .list-view{
+          .st-list-item{
+            &:hover{
+              background-color: @normal-grey;
+            }
+          }
+        }
+      color: unset;
+      background-color: @grey-nero;
+      .st-signals-button {
+        background: #1367b0;
+        border: 1px solid @normal-grey;
+        color: @color-white;
+        font-weight: bold;
+      }
+      .st-assets-wrap {
+        background-color: @grey-nero;
+        .st-signal-info-img {
+          color: whitesmoke;
+          &:hover {
+            background-color: dimgray;
+          }
+        }
+      }
+      .st-instrument-info-wrap {
+        .st-instrument-name {
+          .textStyle(@font-size-medium, @color-white, bold);
+        }
+        .st-instrument-description {
+          .textStyle(@font-size-small, @color-darkest-gray, bold);
+        }
+      }
+      .st-assets-avatar {
+        img {
+          background-color: @grey-nero;
+        }
+      }
+      .st-instr-column-wrap {
+        border-bottom: 1px solid @normal-grey;
+        div{
+          color: @white!important
+        }
+      }
+    }
+  }
+}
+

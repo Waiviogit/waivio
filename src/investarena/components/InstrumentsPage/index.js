@@ -3,7 +3,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { getAssetsChartsState } from '../../redux/selectors/chartsSelectors';
 import { getChartsData } from '../../redux/actions/chartsActions';
-import {getFavoritesState} from '../../redux/selectors/favoriteQuotesSelectors';
 import {getIsConnectPlatformState} from '../../redux/selectors/platformSelectors';
 import { getOpenDealsState } from '../../redux/selectors/dealsSelectors';
 import {getQuotesSettingsState} from '../../redux/selectors/quotesSettingsSelectors';
@@ -13,7 +12,6 @@ import InstrumentsPage from './InstrumentsPage';
 const propTypes = {
     charts: PropTypes.object,
     openDeals: PropTypes.object,
-    favorites: PropTypes.array.isRequired,
     quotes: PropTypes.object.isRequired,
     quoteSettings: PropTypes.object.isRequired,
     platformConnect: PropTypes.bool.isRequired,
@@ -28,7 +26,6 @@ function mapStateToProps (state) {
     return {
         quotes: getQuotesState(state),
         quoteSettings: getQuotesSettingsState(state),
-        favorites: getFavoritesState(state),
         platformConnect: getIsConnectPlatformState(state),
         openDeals: getOpenDealsState(state),
         charts: getAssetsChartsState(state),

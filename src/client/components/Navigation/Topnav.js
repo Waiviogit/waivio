@@ -133,7 +133,7 @@ class Topnav extends React.Component {
       username,
     } = this.props;
     let currPage = Topnav.MENU_ITEMS.HOME;
-    if (pathname !== '/' && username || pathname !== '/my_feed' && !username) {
+    if ((pathname !== '/' && username) || (pathname !== '/my_feed' && !username)) {
       Object.keys(Topnav.ROUTES_MAP).forEach(key => {
         const routeList = Topnav.ROUTES_MAP[key];
         if (routeList.some(route => pathname.includes(`${route}`))) {
@@ -492,15 +492,13 @@ class Topnav extends React.Component {
               </NavLink>
             </Menu.Item>
             <Menu.Item key={Topnav.MENU_ITEMS.MARKETS}>
-              <NavLink to="/markets/favorites">
+              <NavLink to="/markets/crypto">
                 {intl.formatMessage({ id: 'markets', defaultMessage: 'Markets' }).toUpperCase()}
               </NavLink>
             </Menu.Item>
             <Menu.Item key={Topnav.MENU_ITEMS.DEALS}>
               <NavLink to="/deals/open">
-                {intl
-                  .formatMessage({ id: 'my_deals', defaultMessage: 'My deals' })
-                  .toUpperCase()}
+                {intl.formatMessage({ id: 'my_deals', defaultMessage: 'My deals' }).toUpperCase()}
               </NavLink>
             </Menu.Item>
           </Menu>

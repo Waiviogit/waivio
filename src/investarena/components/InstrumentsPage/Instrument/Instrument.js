@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { AreaChart } from 'react-easy-chart';
 import {currencyFormat} from '../../../platform/numberFormat';
-import Favorite from '../../Favorite';
 import InstrumentAvatar from '../../InstrumentAvatar/InstrumentAvatar';
 import { PlatformHelper } from '../../../platform/platformHelper';
 import TradeButtonsAssets from '../../InstrumentsPage/TradeButtonsAssets';
@@ -14,12 +13,11 @@ import InstrumentCardView from './CardView';
 import Signals from './Signals';
 import ModalTC from "../../Modals/ModalTC/ModalTC";
 import '../InstrumentsPage.less';
-import classNames from "classnames";
 
 const propTypes = {
-  chart: PropTypes.array,
+  chart: PropTypes.arrayOf(PropTypes.shape()),
   intl: PropTypes.shape().isRequired,
-  signals: PropTypes.array,
+  signals: PropTypes.arrayOf(PropTypes.shape()),
   deals: PropTypes.shape(),
   quoteSettings: PropTypes.shape().isRequired,
   quote: PropTypes.shape().isRequired,
@@ -73,7 +71,6 @@ class Instrument extends Component {
         default:
             return (
                   <div key={quote.security} className='st-list-item'>
-                    <Favorite quoteSecurity={quote.security}/>
                     <InstrumentAvatar
                       permlink={quoteSettings.wobjData.author_permlink}
                       market={quoteSettings.market}
@@ -109,7 +106,9 @@ class Instrument extends Component {
 
 Instrument.defaultProps = {
     viewMode: 'list',
-    deals: ''
+    deals: '',
+    chart: [],
+    signals: []
 };
 
 Instrument.propTypes = propTypes;

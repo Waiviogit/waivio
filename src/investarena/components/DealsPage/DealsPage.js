@@ -48,15 +48,18 @@ class DealsPage extends Component {
           <div className="center">
             <div className="st-deals-toggle-view">
               <SortSelector
-                caption={this.props.intl.formatMessage({id: 'view_as', defaultMessage: "View as"})}
+                caption={this.props.intl.formatMessage({
+                  id: 'view_as',
+                  defaultMessage: 'View as',
+                })}
                 sort={this.state.viewMode}
                 onChange={this.toggleViewMode}
               >
                 <SortSelector.Item key="list">
-                  {this.props.intl.formatMessage({id: 'list', defaultMessage: "List"})}
+                  {this.props.intl.formatMessage({ id: 'list', defaultMessage: 'List' })}
                 </SortSelector.Item>
                 <SortSelector.Item key="cards">
-                  {this.props.intl.formatMessage({id: 'cards', defaultMessage: "Cards"})}
+                  {this.props.intl.formatMessage({ id: 'cards', defaultMessage: 'Cards' })}
                 </SortSelector.Item>
               </SortSelector>
             </div>

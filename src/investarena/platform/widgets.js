@@ -6,11 +6,9 @@ import {
   updateUserAccountCurrency,
   updateUserStatistics,
 } from '../redux/actions/platformActions';
-// import { getFavorites, updateFavorite } from 'redux/actions/entities/favoritesActions';
 import { getChartDataSuccess } from '../redux/actions/chartsActions';
 import { updateQuotes } from '../redux/actions/quotesActions';
 import { updateQuotesSettings } from '../redux/actions/quotesSettingsActions';
-import {getFavoritesSuccess} from "../redux/actions/favoriteQuotesActions";
 import * as ApiClient from "../../waivioApi/ApiClient";
 import {objectFields} from "../../common/constants/listOfFields";
 import {getFieldWithMaxWeight} from "../../client/object/wObjectHelper";
@@ -58,8 +56,6 @@ export class Widgets {
     this.subscribeSettings();
     this.dispatch(updateUserStatistics({}));
     this.dispatch(updateUserAccountCurrency('USD'));
-    const favoriteQuotes = localStorage.getItem('favoriteQuotes') || '[]';
-    this.dispatch(getFavoritesSuccess(JSON.parse(favoriteQuotes)));
   }
   onError() {
     // console.log(error);

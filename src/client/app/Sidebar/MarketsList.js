@@ -3,10 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { marketNames } from '../../../investarena/constants/objectsInvestarena';
 import Sidenav from '../../components/Navigation/Sidenav';
-import { getFavoritesState } from '../../../investarena/redux/selectors/favoriteQuotesSelectors';
 import { getQuotesSettingsState } from '../../../investarena/redux/selectors/quotesSettingsSelectors';
 
-const MarketsList = ({ quoteSettings, quoteFavorites }) => {
+const MarketsList = ({ quoteSettings }) => {
   const instrumentsCount = Object.values(quoteSettings).reduce((acc, quote) => {
     return { ...acc, [quote.market]: acc[quote.market] ? acc[quote.market] + 1 : 1 };
   }, {});
@@ -15,12 +14,12 @@ const MarketsList = ({ quoteSettings, quoteFavorites }) => {
       name: 'Favorites',
       linkTo: '/markets/favorites',
       intl: { id: 'sidebarWidget.tabTitle.favorites', defaultMessage: 'Favorites' },
-      badge: quoteFavorites.length,
-      isHidden: !quoteFavorites.length,
+      badge: false,
+      isHidden: true,
     },
     ...marketNames.map(market => {
       const count = market.names.reduce(
-        (acc, marketName) => acc + instrumentsCount[marketName] || 0,
+        (acc, marketName) => acc + (instrumentsCount[marketName] || 0),
         0,
       );
       return {
@@ -31,16 +30,11 @@ const MarketsList = ({ quoteSettings, quoteFavorites }) => {
       };
     }),
   ];
-  return (
-    <div>
-      <Sidenav navigationMenu={menu} />
-    </div>
-  );
+  return <Sidenav navigationMenu={menu} />
 };
 
 MarketsList.propTypes = {
   quoteSettings: PropTypes.shape().isRequired,
-  quoteFavorites: PropTypes.arrayOf(PropTypes.string),
 };
 
 MarketsList.defaultProps = {
@@ -49,5 +43,5 @@ MarketsList.defaultProps = {
 
 export default connect(state => ({
   quoteSettings: getQuotesSettingsState(state),
-  quoteFavorites: getFavoritesState(state),
+  quoteFavorites: [],
 }))(MarketsList);

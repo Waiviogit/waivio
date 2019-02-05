@@ -74,8 +74,7 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (
 
   return dispatch({
     type: GET_MORE_FEED_CONTENT.ACTION,
-    payload: getDiscussionsFromAPI(sortBy, query, steemAPI)
-      .then(postsData => postsData.slice(1)),
+    payload: getDiscussionsFromAPI(sortBy, query, steemAPI).then(postsData => postsData.slice(1)),
     meta: {
       sortBy,
       category: category || 'all',

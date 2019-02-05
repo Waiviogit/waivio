@@ -5,7 +5,7 @@ import UserInfo from './UserInfo';
 import TopInstruments from './TopInstruments';
 import MarketsList from './MarketsList';
 import SidenavUser from '../../components/Navigation/SidenavUser';
-import DealsList from "./DealsList";
+import DealsList from './DealsList';
 
 const LeftSidebar = () => (
   <Switch>

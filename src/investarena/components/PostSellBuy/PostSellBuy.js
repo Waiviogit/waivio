@@ -2,7 +2,6 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {Link} from "react-router-dom";
-import Favorite from '../Favorite';
 import InstrumentAvatar from '../InstrumentAvatar/InstrumentAvatar';
 import PostCurrentPrice from './PostCurrentPrice';
 import PostDifference from './PostDifference';
@@ -48,7 +47,6 @@ const PostSellBuy = ({intl, quote, quoteSettings, recommend, postPrice, profitab
     return (
         <div className='st-post-sell-buy-wrap'>
             <div className='d-flex align-items-center'>
-                <Favorite quoteSecurity = {quote.security}/>
                 <InstrumentAvatar
                   avatarlink={wobj.avatarlink}
                   market={quoteSettings.market}

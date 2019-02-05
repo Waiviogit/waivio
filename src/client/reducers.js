@@ -22,7 +22,6 @@ import quotesSettingsReducer from '../investarena/redux/reducers/quotesSettingsR
 import platformReducer from '../investarena/redux/reducers/platformReducer';
 import dealsReducer from '../investarena/redux/reducers/dealsReducer';
 import modalsReducer from '../investarena/redux/reducers/modalsReducer';
-import favoriteQuotesReducer from '../investarena/redux/reducers/favoriteQuotesReducer';
 import chartsReducer from '../investarena/redux/reducers/chartsReducer';
 import wobjectReducer, * as fromObject from '../client/object/wobjectReducer';
 import appendReducer, * as fromAppend from '../client/object/appendReducer';
@@ -52,7 +51,6 @@ export default () =>
     charts: chartsReducer,
     deals: dealsReducer,
     modals: modalsReducer,
-    favoriteQuotes: favoriteQuotesReducer,
     append: appendReducer,
   });
 

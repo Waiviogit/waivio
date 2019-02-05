@@ -17,7 +17,6 @@ closeOpenDealPlatformSuccess,
 updateClosedDealsForStatistics
 } from '../redux/actions/dealsActions';
 import { disconnectBroker, reconnectBroker } from '../redux/actions/brokersActions';
-import { getFavoritesSuccess, updateFavoriteSuccess } from '../redux/actions/favoriteQuotesActions';
 import config from '../configApi/config';
 import { getChartDataSuccess } from '../redux/actions/chartsActions';
 import { updateQuotes } from '../redux/actions/quotesActions';
@@ -117,23 +116,12 @@ export class Umarkets {
         this.getUserRates();
         this.getOpenDeals();
         this.getClosedDeals();
-        this.getFavorites();
     }
     getServerTime () { this.sendRequestToPlatform(CMD.getTime, '[]') }
     getUserAccount () { this.sendRequestToPlatform(CMD.getUserAccount, '[]') }
     getUserSettings () { this.sendRequestToPlatform(CMD.getUserSettings, '[]') }
     getUserStatistics () { this.sendRequestToPlatform(CMD.getUserStatistics, '[]') }
     getUserRates () { this.sendRequestToPlatform(CMD.getUserRates, '[]') }
-    getFavorites () { this.sendRequestToPlatform(CMD.getFavorites, '[]') }
-    addFavorites (currency) { this.sendRequestToPlatform(CMD.addFavorites, `[${currency}]`) }
-    delFavorites (currency) { this.sendRequestToPlatform(CMD.delFavorites, `[${currency}]`) }
-    updateFavorite (quoteSecurity) {
-        if (this.allFavorites.includes(quoteSecurity)) {
-            this.delFavorites(quoteSecurity);
-        } else {
-            this.addFavorites(quoteSecurity);
-        }
-    }
     getOpenDeals () { this.sendRequestToPlatform(CMD.getOpenDeals, '[]') }
     getClosedDeals (period = 'LAST_7_DAYS', getClosedDealsForStatistics = false, lastClosedDealTime = null) {
         this.getClosedDealsForStatistics = getClosedDealsForStatistics;
@@ -193,8 +181,6 @@ export class Umarkets {
             case CMD.getOpenDeals: this.parseOpenDeals(result);
                 break;
             case CMD.getClosedDeals: this.parseClosedDeals(result);
-                break;
-            case CMD.getFavorites: this.parseFavorites(result);
                 break;
             case CMD.getChartData: this.parseChartData(result);
                 break;
@@ -392,20 +378,6 @@ export class Umarkets {
             unrealizedPnl: content.unrealizedPnl
         };
         this.dispatch(updateUserStatistics(this.userStatistics));
-    }
-    parseFavorites (result) {
-        const content = result.content;
-        this.allFavorites = content.favorites;
-        this.dispatch(getFavoritesSuccess(content.favorites));
-    }
-    parseUpdateFavorites (result) {
-        const content = result.content;
-        if (this.allFavorites.includes(content.security)) {
-            this.allFavorites = this.allFavorites.filter(favorites => favorites !== content.security);
-        } else {
-            this.allFavorites = [...this.allFavorites, content.security];
-        }
-        this.dispatch(updateFavoriteSuccess(content.security));
     }
     parseOpenMarketOrderResult (result) {
         if (result.response === 'INSUFFICIENT_BALANCE') {
