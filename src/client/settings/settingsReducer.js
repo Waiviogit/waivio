@@ -14,7 +14,6 @@ const initialState = {
   upvoteSetting: true,
   exitPageSetting: true,
   rewardSetting: rewardsValues.half,
-  useBeta: false,
 };
 
 const settings = (state = initialState, action) => {
@@ -34,7 +33,6 @@ const settings = (state = initialState, action) => {
           upvoteSetting,
           exitPageSetting,
           rewardSetting,
-          useBeta,
         } = action.payload.user_metadata.settings;
         return {
           ...state,
@@ -51,7 +49,6 @@ const settings = (state = initialState, action) => {
           exitPageSetting:
             typeof exitPageSetting === 'boolean' ? exitPageSetting : initialState.exitPageSetting,
           rewardSetting: rewardSetting || initialState.rewardSetting,
-          useBeta: typeof useBeta === 'boolean' ? useBeta : initialState.useBeta,
         };
       }
       return state;
@@ -64,7 +61,6 @@ const settings = (state = initialState, action) => {
       return {
         ...state,
         ...action.payload,
-        useBeta: !!action.payload.useBeta,
         loading: false,
       };
     case settingsTypes.SAVE_SETTINGS_ERROR:
@@ -95,4 +91,3 @@ export const getRewriteLinks = state => !!state.rewriteLinks;
 export const getUpvoteSetting = state => state.upvoteSetting;
 export const getExitPageSetting = state => state.exitPageSetting;
 export const getRewardSetting = state => state.rewardSetting;
-export const getUseBeta = state => state.useBeta;
