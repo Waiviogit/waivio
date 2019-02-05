@@ -11,6 +11,7 @@ const QuickPostEditorFooter = ({
   handleImageChange,
   onRemoveImage,
   handleFooterFocus,
+  showAddButton,
   children,
 }) => (
   // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
@@ -46,13 +47,13 @@ const QuickPostEditorFooter = ({
         ) : (
           <div
             className={classNames({
-              QuickPostEditor__imagebox__upload: !_.isEmpty(currentImages),
+              QuickPostEditor__imagebox__upload: showAddButton && !_.isEmpty(currentImages),
             })}
           >
             <i
               className={classNames('iconfont QuickPostEditor__imagebox__upload__icon', {
                 'icon-picture': _.isEmpty(currentImages),
-                'icon-add': !_.isEmpty(currentImages),
+                'icon-add': showAddButton && !_.isEmpty(currentImages),
               })}
             >
               {_.isEmpty(currentImages) && (
@@ -74,6 +75,7 @@ QuickPostEditorFooter.propTypes = {
   onRemoveImage: PropTypes.func,
   handleFooterFocus: PropTypes.func,
   children: PropTypes.node,
+  showAddButton: PropTypes.bool,
 };
 
 QuickPostEditorFooter.defaultProps = {
@@ -83,6 +85,7 @@ QuickPostEditorFooter.defaultProps = {
   onRemoveImage: () => {},
   handleFooterFocus: () => {},
   children: null,
+  showAddButton: true,
 };
 
 export default QuickPostEditorFooter;

@@ -16,7 +16,7 @@ const tooltip = (description, shortcut) => (
   </span>
 );
 
-const EditorToolbar = ({ intl, onSelect, onSelectLinkedObject, imageRef }) => {
+const EditorToolbar = ({ intl, onSelect, onSelectLinkedObject }) => {
   const menu = (
     <Menu onClick={e => onSelect(e.key)}>
       <Menu.Item key="h1">
@@ -108,7 +108,7 @@ const EditorToolbar = ({ intl, onSelect, onSelectLinkedObject, imageRef }) => {
         <BTooltip
           title={tooltip(intl.formatMessage({ id: 'image', defaultMessage: 'Add image' }), '')}
         >
-          <Button className="EditorToolbar__button" onClick={() => imageRef.click()}>
+          <Button className="EditorToolbar__button" onClick={() => onSelect('image')}>
             <i className="iconfont icon-picture" />
           </Button>
         </BTooltip>
@@ -136,17 +136,12 @@ const EditorToolbar = ({ intl, onSelect, onSelectLinkedObject, imageRef }) => {
 
 EditorToolbar.propTypes = {
   intl: PropTypes.shape().isRequired,
-  imageRef: PropTypes.oneOfType([
-    PropTypes.func,
-    PropTypes.shape({ current: PropTypes.instanceOf(PropTypes.element) }),
-  ]),
   onSelect: PropTypes.func,
   onSelectLinkedObject: PropTypes.func.isRequired,
 };
 
 EditorToolbar.defaultProps = {
   onSelect: () => {},
-  imageRef: null,
 };
 
 export default injectIntl(EditorToolbar);

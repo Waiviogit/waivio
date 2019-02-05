@@ -1,13 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import { FormattedMessage } from 'react-intl';
-import { Icon, Input } from 'antd';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { Icon, Input, Modal, Form } from 'antd';
 import Dropzone from 'react-dropzone';
 import { HotKeys } from 'react-hotkeys';
+import uuidv4 from 'uuid/v4';
 import { MAXIMUM_UPLOAD_SIZE, isValidImage } from '../../helpers/image';
 import EditorToolbar from './EditorToolbar';
 import './EditorInput.less';
+import QuickPostEditorFooter from '../../../client/components/QuickPostEditor/QuickPostEditorFooter';
+import {
+  ALLOWED_IMG_FORMATS,
+  MAX_IMG_SIZE,
+  objectURLValidationRegExp,
+} from '../../../common/constants/validation';
 
 class EditorInput extends React.Component {
   static propTypes = {
@@ -21,6 +28,8 @@ class EditorInput extends React.Component {
     onImageUpload: PropTypes.func,
     onImageInvalid: PropTypes.func,
     onAddLinkedObject: PropTypes.func,
+    form: PropTypes.shape(),
+    intl: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -33,6 +42,8 @@ class EditorInput extends React.Component {
     onImageUpload: () => {},
     onImageInvalid: () => {},
     onAddLinkedObject: () => {},
+    form: {},
+    intl: {},
   };
 
   static hotkeys = {
@@ -55,6 +66,8 @@ class EditorInput extends React.Component {
     this.state = {
       imageUploading: false,
       dropzoneActive: false,
+      showModal: false,
+      currentImage: [],
     };
 
     this.setInput = this.setInput.bind(this);
@@ -111,10 +124,13 @@ class EditorInput extends React.Component {
   }
 
   disableAndInsertImage(image, imageName = 'image') {
-    this.setState({
-      imageUploading: false,
-    });
-    this.insertImage(image, imageName);
+    const newImage = {
+      src: image,
+      name: imageName,
+      id: uuidv4(),
+    };
+    this.setState({ imageUploading: false, currentImage: [newImage] });
+    this.props.form.setFieldsValue({ image });
   }
 
   insertImage(image, imageName = 'image') {
@@ -185,7 +201,7 @@ class EditorInput extends React.Component {
         this.insertAtCursor(`[${params.title || ''}](${params.url || ''})`, ' ', 1, 1);
         break;
       case 'image':
-        this.insertAtCursor('![', '](url)', 2, 2);
+        this.setState(prevState => ({ showModal: !prevState.showModal }));
         break;
       default:
         break;
@@ -245,8 +261,8 @@ class EditorInput extends React.Component {
 
   handleImageChange(e) {
     if (e.target.files && e.target.files[0]) {
-      if (!isValidImage(e.target.files[0])) {
-        this.props.onImageInvalid();
+      if (!isValidImage(e.target.files[0], MAX_IMG_SIZE.background, ALLOWED_IMG_FORMATS)) {
+        this.props.onImageInvalid(MAX_IMG_SIZE.background, `(${ALLOWED_IMG_FORMATS.join(', ')}) `);
         return;
       }
 
@@ -259,7 +275,6 @@ class EditorInput extends React.Component {
           imageUploading: false,
         }),
       );
-      e.target.value = '';
     }
   }
 
@@ -315,6 +330,30 @@ class EditorInput extends React.Component {
     this.insertObject(wObj.id, wObj.name);
   }
 
+  handleToggleModal = () => {
+    this.props.form.setFieldsValue({ image: '' });
+
+    this.setState(prevState => ({
+      showModal: !prevState.showModal,
+      currentImage: [],
+    }));
+  };
+
+  handleRemoveImage = () => {
+    this.setState({ currentImage: [] });
+    this.props.form.setFieldsValue({ image: '' });
+  };
+
+  handleOk = e => {
+    e.preventDefault();
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        this.handleToggleModal();
+        this.insertImage(values.image);
+      }
+    });
+  };
+
   render() {
     const {
       addon,
@@ -326,6 +365,8 @@ class EditorInput extends React.Component {
       onImageUpload,
       onImageInvalid,
       onAddLinkedObject,
+      form,
+      intl,
       ...restProps
     } = this.props;
     const { dropzoneActive } = this.state;
@@ -335,10 +376,79 @@ class EditorInput extends React.Component {
         <EditorToolbar
           canCreateNewObject={canCreateNewObject}
           onSelect={this.insertCode}
-          togglePopover={this.togglePopover}
           onSelectLinkedObject={this.handleSelectObject}
           imageRef={this.imageRef}
         />
+        <Modal
+          title={intl.formatMessage({
+            id: 'image',
+            defaultMessage: 'Add image',
+          })}
+          visible={this.state.showModal}
+          onCancel={this.handleToggleModal}
+          onOk={this.handleOk}
+        >
+          <div className="image-wrapper">
+            <QuickPostEditorFooter
+              imageUploading={this.state.imageUploading}
+              handleImageChange={this.handleImageChange}
+              currentImages={this.state.currentImage}
+              onRemoveImage={this.handleRemoveImage}
+              showAddButton={false}
+            />
+            <span>
+              {intl.formatMessage({
+                id: 'or',
+                defaultMessage: 'OR',
+              })}
+            </span>
+            <Form.Item>
+              {form.getFieldDecorator('image', {
+                rules: [
+                  {
+                    required: true,
+                    message: intl.formatMessage(
+                      {
+                        id: 'field_error',
+                        defaultMessage: 'Field is required',
+                      },
+                      {
+                        field: intl.formatMessage({
+                          id: 'image_url_placeholder',
+                          defaultMessage: 'Image URL',
+                        }),
+                      },
+                    ),
+                  },
+                  {
+                    pattern: objectURLValidationRegExp,
+                    message: intl.formatMessage({
+                      id: 'image_link_validation',
+                      defaultMessage: 'Please enter valid link',
+                    }),
+                  },
+                ],
+              })(
+                <Input
+                  className="AppendForm__title"
+                  placeholder={intl.formatMessage({
+                    id: 'image_url_placeholder',
+                    defaultMessage: 'Image URL',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            {this.state.currentImage[0] && (
+              <div className="AppendForm__previewWrap">
+                <img
+                  src={this.state.currentImage[0].src}
+                  alt="pic"
+                  className="AppendForm__preview"
+                />
+              </div>
+            )}
+          </div>
+        </Modal>
         <div className="EditorInput__dropzone-base">
           <Dropzone
             disableClick
@@ -399,4 +509,4 @@ class EditorInput extends React.Component {
   }
 }
 
-export default EditorInput;
+export default Form.create()(injectIntl(EditorInput));
