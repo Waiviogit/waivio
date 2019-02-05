@@ -10,6 +10,7 @@ import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
 @withRouter
 class WobjMenuWrapper extends React.Component {
   static propTypes = {
+    // isEditMode: PropTypes.bool.isRequired,
     match: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
@@ -43,7 +44,15 @@ class WobjMenuWrapper extends React.Component {
   }
 }
 
-const WobjHero = ({ authenticated, wobject, isFetching, username, isFollowing }) => (
+const WobjHero = ({
+  isEditMode,
+  authenticated,
+  wobject,
+  isFetching,
+  username,
+  isFollowing,
+  toggleViewEditMode,
+}) => (
   <React.Fragment>
     <Switch>
       <Route
@@ -53,7 +62,13 @@ const WobjHero = ({ authenticated, wobject, isFetching, username, isFollowing })
             {isFetching ? (
               <UserHeaderLoading />
             ) : (
-              <WobjHeader username={username} wobject={wobject} isFollowing={isFollowing} />
+              <WobjHeader
+                isEditMode={isEditMode}
+                username={username}
+                wobject={wobject}
+                isFollowing={isFollowing}
+                toggleViewEditMode={toggleViewEditMode}
+              />
             )}
             <WobjMenuWrapper
               followers={wobject.followers_count || 0}
@@ -72,16 +87,20 @@ WobjHero.propTypes = {
   authenticated: PropTypes.bool.isRequired,
   isFetching: PropTypes.bool.isRequired,
   username: PropTypes.string.isRequired,
+  isEditMode: PropTypes.bool,
   isFollowing: PropTypes.bool,
   wobject: PropTypes.shape(),
+  toggleViewEditMode: PropTypes.func,
 };
 
 WobjHero.defaultProps = {
+  isEditMode: false,
   isSameUser: false,
   isFollowing: false,
   isPopoverVisible: false,
-  onTransferClick: () => {},
   wobject: {},
+  onTransferClick: () => {},
+  toggleViewEditMode: () => {},
 };
 
 export default WobjHero;
