@@ -453,7 +453,7 @@ export default class AppendForm extends Component {
             <span>
               {intl.formatMessage({
                 id: 'or',
-                defaultMessage: 'OR',
+                defaultMessage: 'or',
               })}
             </span>
             <Form.Item>
