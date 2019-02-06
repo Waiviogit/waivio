@@ -16,7 +16,6 @@ import {
   getLocale,
   getUsedLocale,
   getTranslations,
-  getUseBeta,
   getNightmode,
 } from './reducers';
 import { login, logout, busyLogin } from './auth/authActions';
@@ -34,7 +33,6 @@ import {
   setAppUrl,
 } from './app/appActions';
 import * as reblogActions from './app/Reblog/reblogActions';
-import Redirect from './components/Utils/Redirect';
 import NotificationPopup from './notifications/NotificationPopup';
 import Topnav from './components/Navigation/Topnav';
 import Transfer from './wallet/Transfer';
@@ -110,7 +108,7 @@ export default class Wrapper extends React.PureComponent {
     nightmode: false,
   };
 
-  static async fetchData({ store, req, res }) {
+  static async fetchData({ store, req }) {
     await store.dispatch(login());
 
     const appUrl = url.format({
@@ -121,13 +119,6 @@ export default class Wrapper extends React.PureComponent {
     store.dispatch(setAppUrl(appUrl));
 
     const state = store.getState();
-
-    const useBeta = getUseBeta(state);
-
-    if (useBeta && appUrl === 'https://busy.org') {
-      res.redirect(`https://staging.busy.org${req.originalUrl}`);
-      return;
-    }
 
     let activeLocale = getLocale(state);
     if (activeLocale === 'auto') {
@@ -239,7 +230,6 @@ export default class Wrapper extends React.PureComponent {
             </Layout.Header>
             <div className="content">
               {renderRoutes(this.props.route.routes)}
-              <Redirect />
               <Transfer />
               <PowerUpOrDown />
               <NotificationPopup />

@@ -31,16 +31,11 @@ export default class ObjectLightbox extends Component {
 
   render() {
     const { wobject, size, accessExtend } = this.props;
-    let imageUrl = getObjectUrl(wobject);
-    let isFieldAvatarImage = true;
-    if (!imageUrl) {
-      imageUrl = 'https://steemitimages.com/u/waivio/avatar';
-      isFieldAvatarImage = false;
-    }
+    const imageUrl = getObjectUrl(wobject) || 'https://steemitimages.com/u/waivio/avatar';
     const objectName = getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name);
     return (
       <React.Fragment>
-        {!isFieldAvatarImage && accessExtend ? (
+        {accessExtend ? (
           <React.Fragment>
             <Link
               to={{
