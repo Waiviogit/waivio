@@ -19,14 +19,14 @@ class WobjMenuWrapper extends React.Component {
 
   onChange = key => {
     const { match, history } = this.props;
-    const section = key === 'about' ? '' : `/${key}`;
+    const section = key === 'reviews' ? '' : `/${key}`;
     history.push(`${match.url.replace(/\/$/, '')}${section}`);
   };
 
   render() {
     const { ...otherProps } = this.props;
     const current = this.props.location.pathname.split('/')[3];
-    const currentKey = current || 'about';
+    const currentKey = current || 'reviews';
     let fieldsCount = 0;
     if (this.props.wobject && this.props.wobject.fields)
       fieldsCount = this.props.wobject.fields.length > 0 ? this.props.wobject.fields.length - 1 : 0;
@@ -43,7 +43,15 @@ class WobjMenuWrapper extends React.Component {
   }
 }
 
-const WobjHero = ({ authenticated, wobject, isFetching, username, isFollowing }) => (
+const WobjHero = ({
+  isEditMode,
+  authenticated,
+  wobject,
+  isFetching,
+  username,
+  isFollowing,
+  toggleViewEditMode,
+}) => (
   <React.Fragment>
     <Switch>
       <Route
@@ -53,7 +61,13 @@ const WobjHero = ({ authenticated, wobject, isFetching, username, isFollowing })
             {isFetching ? (
               <UserHeaderLoading />
             ) : (
-              <WobjHeader username={username} wobject={wobject} isFollowing={isFollowing} />
+              <WobjHeader
+                isEditMode={isEditMode}
+                username={username}
+                wobject={wobject}
+                isFollowing={isFollowing}
+                toggleViewEditMode={toggleViewEditMode}
+              />
             )}
             <WobjMenuWrapper
               followers={wobject.followers_count || 0}
@@ -72,16 +86,20 @@ WobjHero.propTypes = {
   authenticated: PropTypes.bool.isRequired,
   isFetching: PropTypes.bool.isRequired,
   username: PropTypes.string.isRequired,
+  isEditMode: PropTypes.bool,
   isFollowing: PropTypes.bool,
   wobject: PropTypes.shape(),
+  toggleViewEditMode: PropTypes.func,
 };
 
 WobjHero.defaultProps = {
+  isEditMode: false,
   isSameUser: false,
   isFollowing: false,
   isPopoverVisible: false,
-  onTransferClick: () => {},
   wobject: {},
+  onTransferClick: () => {},
+  toggleViewEditMode: () => {},
 };
 
 export default WobjHero;

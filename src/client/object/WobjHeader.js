@@ -2,17 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
+import { Button } from 'antd';
 import ObjectLightbox from '../components/ObjectLightbox';
 import FollowButton from '../widgets/FollowButton';
-import '../components/ObjectHeader.less';
 import { haveAccess, accessTypesArr } from '../helpers/wObjectHelper';
 import { getFieldWithMaxWeight } from '../../client/object/wObjectHelper';
 import { objectFields } from '../../common/constants/listOfFields';
 import Proposition from '../components/Proposition/Proposition';
 import ObjectType from './ObjectType';
 import ObjectRank from './ObjectRank';
+import '../components/ObjectHeader.less';
 
-const WobjHeader = ({ wobject, username }) => {
+const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode }) => {
   const coverImage = getFieldWithMaxWeight(
     wobject,
     objectFields.background,
@@ -25,40 +26,46 @@ const WobjHeader = ({ wobject, username }) => {
   const descriptionShort = getFieldWithMaxWeight(wobject, objectFields.title);
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
   const objectName = getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name);
+  const canEdit = accessExtend && isEditMode;
   return (
     <div className={classNames('ObjectHeader', { 'ObjectHeader--cover': hasCover })} style={style}>
       <div className="ObjectHeader__container">
-        <ObjectLightbox wobject={wobject} size={100} accessExtend={accessExtend} />
+        <ObjectLightbox wobject={wobject} size={100} accessExtend={canEdit} />
         <div className="ObjectHeader__user">
           <div className="ObjectHeader__row">
             <div className="ObjectHeader__user__username">
               <div className="ObjectHeader__text" title={objectName}>
                 {objectName}
               </div>
-              <FollowButton following={wobject.author_permlink} followingType="wobject" />
+              <div className="ObjectHeader__controls">
+                <FollowButton following={wobject.author_permlink} followingType="wobject" />
+                {accessExtend && (
+                  <Button onClick={toggleViewEditMode}>
+                    {isEditMode
+                      ? intl.formatMessage({ id: 'view', defaultMessage: 'View' })
+                      : intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
           <div className="ObjectHeader__info">
-            <div className="ObjectHeader__type">
-              <ObjectType type={wobject.object_type} />
-            </div>
-            <div className="ObjectHeader__rank">
-              <ObjectRank rank={wobject.rank} />
-            </div>
+            <ObjectType type={wobject.object_type} />
+            <ObjectRank rank={wobject.rank} />
           </div>
           <div className="ObjectHeader__user__username">
             <div className="ObjectHeader__descriptionShort">
-              {descriptionShort ||
-                (accessExtend && (
-                  <Proposition
-                    objectID={wobject.author_permlink}
-                    fieldName={objectFields.title}
-                    objName={objectName}
-                  />
-                ))}
+              {(canEdit && (
+                <Proposition
+                  objectID={wobject.author_permlink}
+                  fieldName={objectFields.title}
+                  objName={objectName}
+                />
+              )) ||
+                descriptionShort}
             </div>
           </div>
-          {!hasCover && accessExtend && (
+          {canEdit && (
             <div className="ObjectHeader__user__addCover">
               <Proposition
                 objectID={wobject.author_permlink}
@@ -74,16 +81,19 @@ const WobjHeader = ({ wobject, username }) => {
 };
 
 WobjHeader.propTypes = {
+  intl: PropTypes.shape(),
+  isEditMode: PropTypes.bool,
   wobject: PropTypes.shape(),
   username: PropTypes.string,
+  toggleViewEditMode: PropTypes.func,
 };
 
 WobjHeader.defaultProps = {
-  username: '',
-  userReputation: '0',
-  vestingShares: 0,
+  intl: {},
+  isEditMode: false,
   wobject: {},
-  onTransferClick: () => {},
+  username: '',
+  toggleViewEditMode: () => {},
 };
 
 export default injectIntl(WobjHeader);

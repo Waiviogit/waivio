@@ -1,0 +1,35 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.nightmode {
+  .ObjectGallery {
+    &__cardWrap {
+      background-color: @grey-nero;
+      border: 1px solid @normal-grey;
+    }
+    &__emptyText {
+      background-color: @grey-nero;
+      border: 1px solid @normal-grey;
+    }
+    &__empty {
+      background: @grey-nero;
+      border: 1px solid @normal-grey;
+    }
+  }
+  .GalleryAlbum .ant-card {
+    &:hover {
+      border: 1px solid @grey-darkGrey;
+    }
+    border: 1px solid @normal-grey;
+    background-color: @grey-nero;
+    .ant-card-cover {
+      border: 1px solid @normal-grey;
+    }
+    .ant-card-head-title {
+      color: @tertiary-color;
+    }
+    .ant-card-meta-title {
+      color: @tertiary-color;
+    }
+  }
+}

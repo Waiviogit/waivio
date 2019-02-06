@@ -51,6 +51,7 @@ export default class Wobj extends React.Component {
 
   state = {
     wobject: {},
+    isEditMode: false,
   };
 
   componentDidMount() {
@@ -67,8 +68,11 @@ export default class Wobj extends React.Component {
     }
   }
 
+  toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
+
   render() {
-    const { authenticated, failed, authenticatedUserName } = this.props;
+    const { isEditMode } = this.state;
+    const { authenticated, failed, authenticatedUserName: userName } = this.props;
     if (failed) return <Error404 />;
 
     const { wobject } = this.state;
@@ -106,17 +110,23 @@ export default class Wobj extends React.Component {
         </Helmet>
         <ScrollToTopOnMount />
         <WobjHero
+          isEditMode={isEditMode}
           authenticated={authenticated}
           isFetching={_.isEmpty(wobject)}
           wobject={wobject}
           username={displayedObjectName}
           onFollowClick={this.handleFollowClick}
+          toggleViewEditMode={this.toggleViewEditMode}
         />
         <div className="shifted">
           <div className="feed-layout container">
             <Affix className="leftContainer leftContainer__user" stickPosition={72}>
               <div className="left">
-                <LeftObjectProfileSidebar wobject={wobject} userName={authenticatedUserName} />
+                <LeftObjectProfileSidebar
+                  isEditMode={isEditMode}
+                  wobject={wobject}
+                  userName={userName}
+                />
               </div>
             </Affix>
             <Affix className="rightContainer" stickPosition={72}>
@@ -124,7 +134,9 @@ export default class Wobj extends React.Component {
                 <RightObjectSidebar users={wobject.users} />
               </div>
             </Affix>
-            <div className="center">{renderRoutes(this.props.route.routes)}</div>
+            <div className="center">
+              {renderRoutes(this.props.route.routes, { isEditMode, wobject, userName })}
+            </div>
           </div>
         </div>
       </div>
