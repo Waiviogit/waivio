@@ -119,7 +119,6 @@ class SearchObjectsAutocomplete extends Component {
           defaultMessage: 'Find',
         })}
         value={searchString}
-        allowClear
       >
         {searchObjectsOptions}
       </AutoComplete>
