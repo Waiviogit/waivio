@@ -469,5 +469,6 @@
   "invalid_image_size": "Image must smaller than {size}MB!",
   "upload_photos": "Upload photos",
   "image_submitting": "Submitting...",
-  "upload_image": "Upload"
+  "upload_image": "Upload",
+  "or": "or"
 }
