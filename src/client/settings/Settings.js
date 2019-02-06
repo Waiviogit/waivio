@@ -15,7 +15,6 @@ import {
   getShowNSFWPosts,
   getNightmode,
   getRewriteLinks,
-  getUseBeta,
   getUpvoteSetting,
   getExitPageSetting,
 } from '../reducers';
@@ -46,7 +45,6 @@ import SteemConnect from '../steemConnectAPI';
     showNSFWPosts: getShowNSFWPosts(state),
     nightmode: getNightmode(state),
     rewriteLinks: getRewriteLinks(state),
-    useBeta: getUseBeta(state),
     loading: getIsSettingsLoading(state),
     upvoteSetting: getUpvoteSetting(state),
     exitPageSetting: getExitPageSetting(state),
@@ -65,7 +63,6 @@ export default class Settings extends React.Component {
     showNSFWPosts: PropTypes.bool,
     nightmode: PropTypes.bool,
     rewriteLinks: PropTypes.bool,
-    useBeta: PropTypes.bool,
     reload: PropTypes.func,
     saveSettings: PropTypes.func,
     notify: PropTypes.func,
@@ -83,7 +80,6 @@ export default class Settings extends React.Component {
     showNSFWPosts: false,
     nightmode: false,
     rewriteLinks: false,
-    useBeta: false,
     upvoteSetting: true,
     exitPageSetting: true,
     reload: () => {},
@@ -116,7 +112,6 @@ export default class Settings extends React.Component {
       showNSFWPosts: this.props.showNSFWPosts,
       nightmode: this.props.nightmode,
       rewriteLinks: this.props.rewriteLinks,
-      useBeta: this.props.useBeta,
       upvoteSetting: this.props.upvoteSetting,
       exitPageSetting: this.props.exitPageSetting,
     });
@@ -155,10 +150,6 @@ export default class Settings extends React.Component {
       this.setState({ rewriteLinks: nextProps.rewriteLinks });
     }
 
-    if (nextProps.useBeta !== this.props.useBeta) {
-      this.setState({ useBeta: nextProps.useBeta });
-    }
-
     if (nextProps.upvoteSetting !== this.props.upvoteSetting) {
       this.setState({ upvoteSetting: nextProps.upvoteSetting });
     }
@@ -185,7 +176,6 @@ export default class Settings extends React.Component {
         showNSFWPosts: this.state.showNSFWPosts,
         nightmode: this.state.nightmode,
         rewriteLinks: this.state.rewriteLinks,
-        useBeta: this.state.useBeta,
         upvoteSetting: this.state.upvoteSetting,
         exitPageSetting: this.state.exitPageSetting,
       })
@@ -204,7 +194,6 @@ export default class Settings extends React.Component {
   handleShowNSFWPosts = event => this.setState({ showNSFWPosts: event.target.checked });
   handleNightmode = event => this.setState({ nightmode: event.target.checked });
   handleRewriteLinksChange = event => this.setState({ rewriteLinks: event.target.checked });
-  handleUseBetaChange = event => this.setState({ useBeta: event.target.checked });
   handleExitPageSettingChange = event => this.setState({ exitPageSetting: event.target.checked });
 
   handleUpvoteSettingChange(event) {
@@ -229,7 +218,6 @@ export default class Settings extends React.Component {
       showNSFWPosts,
       nightmode,
       rewriteLinks,
-      useBeta,
       upvoteSetting,
       exitPageSetting,
     } = this.state;
@@ -421,22 +409,6 @@ export default class Settings extends React.Component {
                       onChange={this.handleRewriteLinksChange}
                     >
                       <FormattedMessage id="rewrite_links" defaultMessage="Rewrite links" />
-                    </Checkbox>
-                  </div>
-                </div>
-                <div className="Settings__section">
-                  <h3>
-                    <FormattedMessage id="use_beta" defaultMessage="Use Busy beta" />
-                  </h3>
-                  <p>
-                    <FormattedMessage
-                      id="use_beta_details"
-                      defaultMessage="You can enable this option to use Busy beta by default."
-                    />
-                  </p>
-                  <div className="Settings__section__checkbox">
-                    <Checkbox name="use_beta" checked={useBeta} onChange={this.handleUseBetaChange}>
-                      <FormattedMessage id="use_beta" defaultMessage="Use Busy beta" />
                     </Checkbox>
                   </div>
                 </div>
