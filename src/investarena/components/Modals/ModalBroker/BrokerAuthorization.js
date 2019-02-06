@@ -25,7 +25,7 @@ class BrokerAuthorization extends Component {
   state = {
     checked: localStorage.getItem('isOneClickTrade') === 'true' || false,
   };
-  connectBroker = () => {
+  connectBroker = (event) => {
     event.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {

@@ -1,0 +1,12 @@
+@import (reference) '../styles/custom.less';
+@import (reference) '../styles/modules/variables.less';
+
+.nightmode{
+  .ObjectHeader {
+    background-color: @white-shadow;
+    &__descriptionShort, &__user__username{
+      color: @white;
+      text-shadow: 1px 1px 0 @black;
+    }
+  }
+}
