@@ -5,13 +5,13 @@ import { injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import ObjectLightbox from '../components/ObjectLightbox';
 import FollowButton from '../widgets/FollowButton';
-import '../components/ObjectHeader.less';
 import { haveAccess, accessTypesArr } from '../helpers/wObjectHelper';
 import { getFieldWithMaxWeight } from '../../client/object/wObjectHelper';
 import { objectFields } from '../../common/constants/listOfFields';
 import Proposition from '../components/Proposition/Proposition';
 import ObjectType from './ObjectType';
 import ObjectRank from './ObjectRank';
+import '../components/ObjectHeader.less';
 
 const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode }) => {
   const coverImage = getFieldWithMaxWeight(

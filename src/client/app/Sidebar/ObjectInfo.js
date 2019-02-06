@@ -108,9 +108,11 @@ class ObjectInfo extends React.Component {
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
     const objectName = getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name);
 
+    const hasGalleryImg = wobject.preview_gallery && wobject.preview_gallery[0];
+
     const listItem = (fieldName, content) => {
       const fieldsCount = getFieldsCount(wobject, fieldName);
-      return (
+      return content || accessExtend ? (
         <div className="field-info">
           <React.Fragment>
             {accessExtend && (
@@ -125,53 +127,55 @@ class ObjectInfo extends React.Component {
                 {fieldsCount}
               </div>
             )}
-            <div className="field-info__content">{content}</div>
+            {content ? <div className="field-info__content">{content}</div> : null}
           </React.Fragment>
         </div>
-      );
+      ) : null;
     };
     return (
       <React.Fragment>
         {getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name) && (
           <div className="object-sidebar">
             {listItem(objectFields.description, description)}
-            <div className="field-info">
-              {accessExtend && (
-                <div className="proposition-line">
-                  <Link
-                    to={{ pathname: `/object/@${wobject.author_permlink}/gallery` }}
-                    onClick={() => this.handleSelectField('gallery')}
-                  >
-                    <IconButton
-                      icon={<Icon type="plus-circle" />}
-                      onClick={this.handleToggleModal}
-                    />
-                    <div
-                      className={`icon-button__text ${
-                        selectedField === 'gallery' ? 'field-selected' : ''
-                      }`}
+            {hasGalleryImg || accessExtend ? (
+              <div className="field-info">
+                {accessExtend && (
+                  <div className="proposition-line">
+                    <Link
+                      to={{ pathname: `/object/@${wobject.author_permlink}/gallery` }}
+                      onClick={() => this.handleSelectField('gallery')}
                     >
-                      <FormattedMessage id="object_field_gallery" defaultMessage="Gallery" />
-                    </div>
-                  </Link>
-                  <span className="proposition-line__text">{albumsCount}</span>
-                  {showModal && (
-                    <CreateAlbum
-                      showModal={showModal}
-                      hideModal={this.handleToggleModal}
-                      handleSubmit={this.handleCreateAlbum}
-                      loading={loadingAlbum}
-                    />
-                  )}
-                </div>
-              )}
-              {wobject.preview_gallery && wobject.preview_gallery[0] && (
-                <PicturesCarousel
-                  pics={wobject.preview_gallery}
-                  objectID={wobject.author_permlink}
-                />
-              )}
-            </div>
+                      <IconButton
+                        icon={<Icon type="plus-circle" />}
+                        onClick={this.handleToggleModal}
+                      />
+                      <div
+                        className={`icon-button__text ${
+                          selectedField === 'gallery' ? 'field-selected' : ''
+                        }`}
+                      >
+                        <FormattedMessage id="object_field_gallery" defaultMessage="Gallery" />
+                      </div>
+                    </Link>
+                    <span className="proposition-line__text">{albumsCount}</span>
+                    {showModal && (
+                      <CreateAlbum
+                        showModal={showModal}
+                        hideModal={this.handleToggleModal}
+                        handleSubmit={this.handleCreateAlbum}
+                        loading={loadingAlbum}
+                      />
+                    )}
+                  </div>
+                )}
+                {hasGalleryImg && (
+                  <PicturesCarousel
+                    pics={wobject.preview_gallery}
+                    objectID={wobject.author_permlink}
+                  />
+                )}
+              </div>
+            ) : null}
             {listItem(
               objectFields.address,
               address && (
@@ -183,24 +187,22 @@ class ObjectInfo extends React.Component {
             )}
             {listItem(
               objectFields.map,
-              <React.Fragment>
-                {map &&
-                  map.latitude &&
-                  map.longitude &&
-                  isCoordinatesValid(map.latitude, map.longitude) && (
-                    <Map
-                      isMarkerShown
-                      setCoordinates={() => {}}
-                      wobject={wobject}
-                      googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
-                      loadingElement={<div style={{ height: `100%` }} />}
-                      containerElement={<div style={{ height: `200px` }} />}
-                      mapElement={<div style={{ height: `100%` }} />}
-                      lat={Number(map.latitude)}
-                      lng={Number(map.longitude)}
-                    />
-                  )}
-              </React.Fragment>,
+              map &&
+                map.latitude &&
+                map.longitude &&
+                isCoordinatesValid(map.latitude, map.longitude) && (
+                  <Map
+                    isMarkerShown
+                    setCoordinates={() => {}}
+                    wobject={wobject}
+                    googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
+                    loadingElement={<div style={{ height: `100%` }} />}
+                    containerElement={<div style={{ height: `200px` }} />}
+                    mapElement={<div style={{ height: `100%` }} />}
+                    lat={Number(map.latitude)}
+                    lng={Number(map.longitude)}
+                  />
+                ),
             )}
             {listItem(
               objectFields.website,

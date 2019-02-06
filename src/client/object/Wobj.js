@@ -72,7 +72,7 @@ export default class Wobj extends React.Component {
 
   render() {
     const { isEditMode } = this.state;
-    const { authenticated, failed, authenticatedUserName } = this.props;
+    const { authenticated, failed, authenticatedUserName: userName } = this.props;
     if (failed) return <Error404 />;
 
     const { wobject } = this.state;
@@ -125,7 +125,7 @@ export default class Wobj extends React.Component {
                 <LeftObjectProfileSidebar
                   isEditMode={isEditMode}
                   wobject={wobject}
-                  userName={authenticatedUserName}
+                  userName={userName}
                 />
               </div>
             </Affix>
@@ -134,7 +134,9 @@ export default class Wobj extends React.Component {
                 <RightObjectSidebar users={wobject.users} />
               </div>
             </Affix>
-            <div className="center">{renderRoutes(this.props.route.routes)}</div>
+            <div className="center">
+              {renderRoutes(this.props.route.routes, { isEditMode, wobject, userName })}
+            </div>
           </div>
         </div>
       </div>
