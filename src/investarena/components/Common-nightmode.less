@@ -1,0 +1,39 @@
+@import (reference) '../../client/styles/custom';
+
+.nightmode{
+  .st-card__header{
+    .st-instrument-name{
+      color: @white;
+    }
+  }
+  .Story, .object-profile{
+    &__row {
+      background: @grey-nero;
+      border-color: @normal-grey;
+    }
+    &__trade {
+      background-color: @grey-nero;
+      color: @white-smoke;
+      border-color: @normal-grey;
+    }
+    .st-tab-select-label {
+      background-color: @grey-nero;
+      border-color: @normal-grey !important;
+    }
+    .selected {
+      background-color: @normal-grey;
+    }
+    .st-post-chart-block, .st-post-quotation-wrap{
+      .st-post-quotation-quote{
+        color: @white;
+      }
+      border-color: @normal-grey;
+    }
+    .st-post-sell-buy-quote{
+      color: @white!important;
+    }
+    .amount{
+      color: @grey-nero;
+    }
+  }
+}
