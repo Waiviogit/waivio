@@ -10,7 +10,6 @@ import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
 @withRouter
 class WobjMenuWrapper extends React.Component {
   static propTypes = {
-    // isEditMode: PropTypes.bool.isRequired,
     match: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
@@ -20,14 +19,14 @@ class WobjMenuWrapper extends React.Component {
 
   onChange = key => {
     const { match, history } = this.props;
-    const section = key === 'about' ? '' : `/${key}`;
+    const section = key === 'reviews' ? '' : `/${key}`;
     history.push(`${match.url.replace(/\/$/, '')}${section}`);
   };
 
   render() {
     const { ...otherProps } = this.props;
     const current = this.props.location.pathname.split('/')[3];
-    const currentKey = current || 'about';
+    const currentKey = current || 'reviews';
     let fieldsCount = 0;
     if (this.props.wobject && this.props.wobject.fields)
       fieldsCount = this.props.wobject.fields.length > 0 ? this.props.wobject.fields.length - 1 : 0;

@@ -66,6 +66,14 @@ class ObjectMenu extends React.Component {
           >
             <ul className="UserMenu__menu center">
               <li
+                className={this.getItemClasses(ObjectMenu.TAB_NAME.ABOUT)}
+                onClick={this.handleClick}
+                role="presentation"
+                data-key={ObjectMenu.TAB_NAME.ABOUT}
+              >
+                <FormattedMessage id="about" defaultMessage="About" />
+              </li>
+              <li
                 className={this.getItemClasses(ObjectMenu.TAB_NAME.REVIEWS)}
                 onClick={this.handleClick}
                 role="presentation"
@@ -73,14 +81,6 @@ class ObjectMenu extends React.Component {
               >
                 <FormattedMessage id="reviews" defaultMessage="Reviews" />
               </li>
-              {/* <li */}
-              {/* className={this.getItemClasses(ObjectMenu.TAB_NAME.ABOUT)} */}
-              {/* onClick={this.handleClick} */}
-              {/* role="presentation" */}
-              {/* data-key={ObjectMenu.TAB_NAME.ABOUT} */}
-              {/* > */}
-              {/* <FormattedMessage id="about" defaultMessage="About" /> */}
-              {/* </li> */}
               {this.props.accessExtend && (
                 <li
                   className={this.getItemClasses(ObjectMenu.TAB_NAME.GALLERY)}
