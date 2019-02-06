@@ -32,6 +32,7 @@ import WobjFollowers from '../client/object/WobjFollowers';
 import ObjectGallery from '../client/object/ObjectGallery/ObjectGallery';
 import ObjectGalleryAlbum from '../client/object/ObjectGallery/ObjectGalleryAlbum';
 import WobjHistory from '../client/object/WobjHistory';
+import ObjectAbout from '../client/object/ObjectAbout';
 
 const routes = [
   {
@@ -142,9 +143,9 @@ const routes = [
             component: ObjectProfile,
           },
           {
-            path: '/object/@:name/reviews',
+            path: '/object/@:name/about',
             exact: true,
-            component: ObjectProfile,
+            component: ObjectAbout,
           },
           {
             path: '/object/@:name/followers',

@@ -460,5 +460,14 @@
   "vote_worth": "Your vote will be worth ${value} (min. $0.001)",
   "write_new_review": "Write new review",
   "need_like": "You need to like these updates to take effect",
-  "add_photo": "ADD PHOTO"
+  "add_photo": "ADD PHOTO",
+  "upload_photo_error": "You need to upload at least one image",
+  "couldnt_upload_image": "Couldn't add the image to album.",
+  "append_new_image": "@{user} added a new image to album {album} <br /> {url}",
+  "added_image_to_album": "You successfully have added the image(s) to album {album}",
+  "file_format_allowed": "You can only upload {formats} file formats!",
+  "invalid_image_size": "Image must smaller than {size}MB!",
+  "upload_photos": "Upload photos",
+  "image_submitting": "Submitting...",
+  "upload_image": "Upload"
 }
