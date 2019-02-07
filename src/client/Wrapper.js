@@ -112,7 +112,7 @@ export default class Wrapper extends React.PureComponent {
     getChartsData: () => {},
   };
 
-  static async fetchData({ store, req, res }) {
+  static async fetchData({ store, req }) {
     await store.dispatch(login());
 
     const appUrl = url.format({
