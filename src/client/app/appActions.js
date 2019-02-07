@@ -24,6 +24,9 @@ export const setAppUrl = createAction(SET_APP_URL);
 export const SET_USED_LOCALE = '@app/SET_USED_LOCALE';
 export const setUsedLocale = createAction(SET_USED_LOCALE);
 
+export const SET_SCREEN_SIZE = '@app/SET_SCREEN_SIZE';
+export const setScreenSize = createAction(SET_SCREEN_SIZE);
+
 export const GET_CRYPTO_PRICE_HISTORY = createAsyncActionType('@app/GET_CRYPTOS_PRICE_HISTORY');
 export const REFRESH_CRYPTO_PRICE_HISTORY = '@app/REFRESH_CRYPTO_PRICE_HISTORY';
 export const refreshCryptoPriceHistory = createAction(REFRESH_CRYPTO_PRICE_HISTORY);
