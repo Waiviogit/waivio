@@ -1,67 +1,66 @@
 @import (reference) '../../Common.less';
 
-.nav-item-mixin (){
+.nav-item-mixin () {
   width: 50%;
   cursor: pointer;
   text-align: center;
 }
-    .modal-header {
-      background-color: #16254c;
-      color: #fff;
-      height: 40px;
-      .close {
-        cursor: pointer;
-        color: #fff;
-      }
-      h4, .h4 {
-        font-size: 14px;
-        font-weight: bold;
-      }
-    }
+.modal-header {
+  background-color: #16254c;
+  color: #fff;
+  height: 40px;
+  .close {
+    cursor: pointer;
+    color: #fff;
+  }
+  h4,
+  .h4 {
+    font-size: 14px;
+    font-weight: bold;
+  }
+}
 
-  .st-broker-tab {
-    .st-broker-tab-item {
-      .nav-item-mixin();
-      font-size: 18px;
-      .nav-link.active {
-        color: #07D;
-        background-color: #fff;
-        font-weight: 800;
-        border-bottom-color: #fff;
-      }
+.st-broker-tab {
+  .st-broker-tab-item {
+    .nav-item-mixin();
+    font-size: 18px;
+    .nav-link.active {
+      color: #07d;
+      background-color: #fff;
+      font-weight: 800;
+      border-bottom-color: #fff;
     }
   }
-  .st-broker-authorization {
-    padding: 10px 35px;
-    .st-broker-select-title {
+}
+.st-broker-authorization {
+  padding: 10px 35px;
+  .st-broker-select-title {
+    text-align: center;
+    color: grey;
+  }
+  .st-broker-authorization-form {
+    .formStyle();
+    .field:disabled {
+      background-color: #f9f9f9;
+    }
+    .st-broker-text {
       text-align: center;
-      color: grey;
+      color: #b3b3b3;
     }
-    .st-broker-authorization-form {
-      .formStyle();
-      .field:disabled {
-        background-color: #f9f9f9;
-      }
-      .st-broker-text {
-        text-align: center;
-        color: #b3b3b3;
-      }
-    }
-
   }
-.login-form{
-  .ant-select{
+}
+.login-form {
+  .ant-select {
     margin-bottom: 25px;
   }
-  .ant-checkbox-wrapper{
+  .ant-checkbox-wrapper {
     display: flex;
     align-items: center;
   }
 }
 .st-broker-registration {
-
 }
-.st-correct-wrapper{
+.st-correct-wrapper {
   margin: 12px -5px 0 15px;
 }
 .st-modal-broker-authorization-text-click {

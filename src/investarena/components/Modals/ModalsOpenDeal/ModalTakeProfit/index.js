@@ -1,2 +1,1 @@
-export { default }  from './ModalTakeProfit';
-
+export { default } from './ModalTakeProfit';

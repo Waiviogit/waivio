@@ -4,22 +4,12 @@ import { AreaChart } from 'react-easy-chart';
 
 const InstrumentChart = props => {
   const { chart, width, height, noDataMsg, onClick } = props;
-  return (
-    chart && chart.length !== 0
-      ? (
-        <div role='presentation' className="st-card__chart" onClick={onClick}>
-          <AreaChart
-            width={width}
-            height={height}
-            areaColors={['#3a79ee']}
-            data={[chart]}
-          />
-        </div>
-      ) : (
-        <div className="st-assets-chart-no-data">
-          {noDataMsg}
-        </div>
-      )
+  return chart && chart.length !== 0 ? (
+    <div role="presentation" className="st-card__chart" onClick={onClick}>
+      <AreaChart width={width} height={height} areaColors={['#3a79ee']} data={[chart]} />
+    </div>
+  ) : (
+    <div className="st-assets-chart-no-data">{noDataMsg}</div>
   );
 };
 

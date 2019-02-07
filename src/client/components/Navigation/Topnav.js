@@ -12,7 +12,8 @@ import {
   getAutoCompleteSearchResults,
   getNotifications,
   getAuthenticatedUserSCMetaData,
-  getIsLoadingNotifications, getScreenSize,
+  getIsLoadingNotifications,
+  getScreenSize,
 } from '../../reducers';
 import ModalBroker from '../../../investarena/components/Modals/ModalBroker';
 import ModalDealConfirmation from '../../../investarena/components/Modals/ModalDealConfirmation';
@@ -36,7 +37,7 @@ import Balance from '../../../investarena/components/Header/Balance';
     notifications: getNotifications(state),
     userSCMetaData: getAuthenticatedUserSCMetaData(state),
     loadingNotifications: getIsLoadingNotifications(state),
-    screenSize: getScreenSize(state)
+    screenSize: getScreenSize(state),
   }),
   {
     searchAutoComplete,
@@ -51,7 +52,7 @@ class Topnav extends React.Component {
       MY_FEED: 'myFeed',
       MARKETS: 'markets',
       DEALS: 'deals',
-      CLOSEDDEALS: 'closedDeals'
+      CLOSEDDEALS: 'closedDeals',
     };
   }
 
@@ -87,7 +88,7 @@ class Topnav extends React.Component {
     onMenuItemClick: () => {},
     userSCMetaData: {},
     loadingNotifications: false,
-    screenSize: 'medium'
+    screenSize: 'medium',
   };
 
   static handleScrollToTop() {
@@ -506,20 +507,22 @@ class Topnav extends React.Component {
             </Menu.Item>
             <Menu.Item key={Topnav.MENU_ITEMS.DEALS}>
               <NavLink to="/deals/open">
-                {!isMobile ?
-                  intl.formatMessage({ id: 'my_deals', defaultMessage: 'My deals' }).toUpperCase()
-                  :
-                  intl.formatMessage({ id: 'open_deals', defaultMessage: 'Open deals' }).toUpperCase()
-                }
+                {!isMobile
+                  ? intl.formatMessage({ id: 'my_deals', defaultMessage: 'My deals' }).toUpperCase()
+                  : intl
+                      .formatMessage({ id: 'open_deals', defaultMessage: 'Open deals' })
+                      .toUpperCase()}
               </NavLink>
             </Menu.Item>
-            {isMobile &&
+            {isMobile && (
               <Menu.Item key={Topnav.MENU_ITEMS.CLOSEDDEALS}>
                 <NavLink to="/deals/closed">
-                  {intl.formatMessage({ id: 'closed_deals', defaultMessage: 'Closed deals' }).toUpperCase()}
+                  {intl
+                    .formatMessage({ id: 'closed_deals', defaultMessage: 'Closed deals' })
+                    .toUpperCase()}
                 </NavLink>
               </Menu.Item>
-            }
+            )}
           </Menu>
           <div className="st-header-broker-balance-pl-wrap">
             <div className="st-balance-wrap">

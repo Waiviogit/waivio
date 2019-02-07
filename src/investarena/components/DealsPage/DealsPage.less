@@ -14,18 +14,18 @@
     border: 1px solid @border-color-base;
 
     @media @small {
-      width: calc(100% - @margin)!important;
+      width: calc(100% - @margin) !important;
     }
 
     @media @medium {
-      width: calc(100% - (@left-width + @margin))!important;
+      width: calc(100% - (@left-width + @margin)) !important;
       margin-left: @margin!important;
     }
   }
   .st-deal-pl-red {
     color: @color-red!important;
   }
-  .st-deal-pl-green{
+  .st-deal-pl-green {
     color: @color-green!important;
   }
   .st-deals-toggle-view {
@@ -56,54 +56,56 @@
     }
   }
 
-.st-deals-wrap {
-  background-color: @color-white;
-  padding: 15px;
-  .st-instrument-title{
-    .textStyle(@font-size-large, @color-black-blue, bold);
+  .st-deals-wrap {
+    background-color: @color-white;
+    padding: 15px;
+    .st-instrument-title {
+      .textStyle(@font-size-large, @color-black-blue, bold);
+    }
+    .nav-link {
+      height: 45px;
+      .textStyle(@font-size-medium, @color-darkest-gray, bold);
+      border-radius: 0;
+    }
+    &.st-connect-to-broker-wrap {
+      text-align: center;
+    }
   }
-  .nav-link {
-    height: 45px;
-    .textStyle(@font-size-medium, @color-darkest-gray, bold);
-    border-radius: 0;
+  .st-deals-avatar {
+    margin-right: 10px;
+    img {
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      background-color: #f7f7f6;
+    }
   }
-  &.st-connect-to-broker-wrap {
-    text-align: center;
+  .st-deals-border {
+    border-bottom: solid 1px @color-dark-gray;
   }
-}
-.st-deals-avatar {
-  margin-right: 10px;
-  img {
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    background-color: #f7f7f6;
-  }
-}
-.st-deals-border{
-  border-bottom: solid 1px @color-dark-gray;;
-}
-  .st-instr-column-wrap{
+  .st-instr-column-wrap {
     border-bottom: 1px solid @color-dark-gray;
   }
-  .columnAssetsStyle (@width, @font-size, @margin-top){
+  .columnAssetsStyle (@width, @font-size, @margin-top) {
     .textStyle(@font-size-medium, @color-black-blue, bold);
     margin: @margin-top 0;
     width: @width;
     text-align: center;
   }
-  .st-id-title{
-    .columnAssetsStyle(50px, @font-size-medium, 15px)
+  .st-id-title {
+    .columnAssetsStyle(50px, @font-size-medium, 15px);
   }
-  .st-id{
-    .columnAssetsStyle(50px, @font-size-small, 0)
+  .st-id {
+    .columnAssetsStyle(50px, @font-size-small, 0);
   }
-  .st-instrument-avatar-title {width: 35px;}
+  .st-instrument-avatar-title {
+    width: 35px;
+  }
   .st-instrument-avatar {
     width: 35px;
     height: 35px;
   }
-  .st-instrument-avatar-closed{
+  .st-instrument-avatar-closed {
     width: 35px;
     height: 35px;
     margin-left: 35px;
@@ -111,37 +113,55 @@
   .st-instrument-avatar-closed-title {
     width: 40px;
   }
-  .st-instruments-text-title{.columnAssetsStyle (135px, @font-size-medium, 15px)}
-  .st-type-title{.columnAssetsStyle (50px, @font-size-medium, 15px)}
-  .st-pnl-title{.columnAssetsStyle (85px, @font-size-medium, 15px)}
-  .st-opened-title{.columnAssetsStyle (90px, @font-size-medium, 15px)}
-  .st-amount-title{.columnAssetsStyle (75px, @font-size-medium, 15px)}
-  .st-tp-title{.columnAssetsStyle (95px, @font-size-medium, 15px)}
-  .st-sl-title{.columnAssetsStyle (90px, @font-size-medium, 15px)}
-  .st-price-title{.columnAssetsStyle (135px, @font-size-medium, 15px)}
-  .st-commission-title{.columnAssetsStyle (130px, @font-size-medium, 15px)}
+  .st-instruments-text-title {
+    .columnAssetsStyle(135px, @font-size-medium, 15px);
+  }
+  .st-type-title {
+    .columnAssetsStyle(50px, @font-size-medium, 15px);
+  }
+  .st-pnl-title {
+    .columnAssetsStyle(85px, @font-size-medium, 15px);
+  }
+  .st-opened-title {
+    .columnAssetsStyle(90px, @font-size-medium, 15px);
+  }
+  .st-amount-title {
+    .columnAssetsStyle(75px, @font-size-medium, 15px);
+  }
+  .st-tp-title {
+    .columnAssetsStyle(95px, @font-size-medium, 15px);
+  }
+  .st-sl-title {
+    .columnAssetsStyle(90px, @font-size-medium, 15px);
+  }
+  .st-price-title {
+    .columnAssetsStyle(135px, @font-size-medium, 15px);
+  }
+  .st-commission-title {
+    .columnAssetsStyle(130px, @font-size-medium, 15px);
+  }
   .st-list-item {
     .st-instruments-text {
-      .columnAssetsStyle (130px, @font-size-small, 0)
+      .columnAssetsStyle(130px, @font-size-small, 0);
     }
     .st-type {
       width: 50px;
       text-align: center;
     }
     .st-pnl {
-      .columnAssetsStyle (85px, @font-size-small, 0)
+      .columnAssetsStyle (85px, @font-size-small, 0);
     }
     .st-opened {
-      .columnAssetsStyle (90px, @font-size-small, 0)
+      .columnAssetsStyle (90px, @font-size-small, 0);
     }
     .st-amount {
-      .columnAssetsStyle (75px, @font-size-small, 0)
+      .columnAssetsStyle (75px, @font-size-small, 0);
     }
     .st-tp {
-      .columnAssetsStyle (90px, @font-size-small, 0)
+      .columnAssetsStyle (90px, @font-size-small, 0);
     }
     .st-sl {
-      .columnAssetsStyle (90px, @font-size-small, 0)
+      .columnAssetsStyle (90px, @font-size-small, 0);
     }
     .st-price {
       margin-left: 5px;
@@ -150,37 +170,55 @@
       text-align: center;
     }
   }
-  .st-closed-deals-block{
-    .st-instruments-text-title{.columnAssetsStyle (160px, @font-size-medium, 15px)}
-    .st-type-title{.columnAssetsStyle (40px, @font-size-medium, 15px)}
-    .st-pnl-title{.columnAssetsStyle (85px, @font-size-medium, 15px)}
-    .st-opened-title{.columnAssetsStyle (105px, @font-size-medium, 15px)}
-    .st-amount-title{.columnAssetsStyle (75px, @font-size-medium, 15px)}
-    .st-tp-title{.columnAssetsStyle (95px, @font-size-medium, 15px)}
-    .st-sl-title{.columnAssetsStyle (90px, @font-size-medium, 15px)}
-    .st-price-title{.columnAssetsStyle (135px, @font-size-medium, 15px)}
-    .st-commission-title{.columnAssetsStyle (130px, @font-size-medium, 15px)}
+  .st-closed-deals-block {
+    .st-instruments-text-title {
+      .columnAssetsStyle(160px, @font-size-medium, 15px);
+    }
+    .st-type-title {
+      .columnAssetsStyle(40px, @font-size-medium, 15px);
+    }
+    .st-pnl-title {
+      .columnAssetsStyle(85px, @font-size-medium, 15px);
+    }
+    .st-opened-title {
+      .columnAssetsStyle(105px, @font-size-medium, 15px);
+    }
+    .st-amount-title {
+      .columnAssetsStyle(75px, @font-size-medium, 15px);
+    }
+    .st-tp-title {
+      .columnAssetsStyle(95px, @font-size-medium, 15px);
+    }
+    .st-sl-title {
+      .columnAssetsStyle(90px, @font-size-medium, 15px);
+    }
+    .st-price-title {
+      .columnAssetsStyle(135px, @font-size-medium, 15px);
+    }
+    .st-commission-title {
+      .columnAssetsStyle(130px, @font-size-medium, 15px);
+    }
     .st-list-item {
       .st-instruments-text {
-        .columnAssetsStyle (130px, @font-size-small, 0)
+        .columnAssetsStyle (130px, @font-size-small, 0);
       }
       .st-type {
         text-align: center;
       }
       .st-pnl {
-        .columnAssetsStyle (85px, @font-size-small, 0)
+        .columnAssetsStyle (85px, @font-size-small, 0);
       }
       .st-opened {
-        .columnAssetsStyle (90px, @font-size-small, 0)
+        .columnAssetsStyle (90px, @font-size-small, 0);
       }
       .st-amount {
-        .columnAssetsStyle (75px, @font-size-small, 0)
+        .columnAssetsStyle (75px, @font-size-small, 0);
       }
       .st-tp {
-        .columnAssetsStyle (90px, @font-size-small, 0)
+        .columnAssetsStyle (90px, @font-size-small, 0);
       }
       .st-sl {
-        .columnAssetsStyle (90px, @font-size-small, 0)
+        .columnAssetsStyle (90px, @font-size-small, 0);
       }
       .st-price {
         margin-left: 5px;
@@ -189,27 +227,27 @@
         text-align: center;
       }
       .st-commission {
-        .columnAssetsStyle (110px, @font-size-small, 0)
+        .columnAssetsStyle (110px, @font-size-small, 0);
       }
-  }
-    .st-deal-pl-red{
+    }
+    .st-deal-pl-red {
       color: @color-red!important;
     }
-    .st-deal-pl-green{
+    .st-deal-pl-green {
       color: @color-green!important;
     }
   }
-  .st-deal-direction-sell{
+  .st-deal-direction-sell {
     .textStyle(@font-size-small, @color-red, bold);
     color: @color-red!important;
     align-self: center;
   }
-  .st-deal-direction-buy{
+  .st-deal-direction-buy {
     .textStyle(@font-size-small, @color-green, bold);
     color: @color-green!important;
     align-self: center;
   }
-  .st-content-quotes{
+  .st-content-quotes {
     overflow: auto;
     &.cards-view {
       .st-deals-responsible-wrap {
@@ -226,9 +264,9 @@
   }
 }
 
-.st-deals-back{
+.st-deals-back {
   margin-left: 15px;
-  padding: 0!important;
+  padding: 0 !important;
 }
 .st-deals-to-deals-wrap {
   width: 337px;
@@ -236,4 +274,3 @@
 }
 
 @import 'DealsPage-nightmode';
-

@@ -30,7 +30,7 @@ const MarketsList = ({ quoteSettings }) => {
       };
     }),
   ];
-  return <Sidenav navigationMenu={menu} />
+  return <Sidenav navigationMenu={menu} />;
 };
 
 MarketsList.propTypes = {

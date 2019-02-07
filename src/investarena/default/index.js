@@ -1,4 +1,4 @@
 import quoteData from './quoteData';
 import quoteSettingsData from './quoteSettingsData';
 
-export {quoteData, quoteSettingsData};
+export { quoteData, quoteSettingsData };

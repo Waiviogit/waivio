@@ -26,10 +26,10 @@ class DealsPage extends Component {
   }
 
   componentDidMount() {
-    if(this.props.screenSize === 'medium' || this.props.screenSize === 'large'){
+    if (this.props.screenSize === 'medium' || this.props.screenSize === 'large') {
       const viewMode = getViewMode('instruments');
-      if(viewMode) this.setState({viewMode});
-    } else this.setState({viewMode: 'cards'});
+      if (viewMode) this.setState({ viewMode });
+    } else this.setState({ viewMode: 'cards' });
   }
 
   toggleViewMode = viewMode => {
@@ -49,24 +49,25 @@ class DealsPage extends Component {
             </div>
           </Affix>
           <div className="center">
-            {(this.props.screenSize === 'medium' || this.props.screenSize === 'large') && <div className="st-deals-toggle-view">
-              <SortSelector
-                caption={this.props.intl.formatMessage({
-                  id: 'view_as',
-                  defaultMessage: 'View as',
-                })}
-                sort={this.state.viewMode}
-                onChange={this.toggleViewMode}
-              >
-                <SortSelector.Item key="list">
-                  {this.props.intl.formatMessage({ id: 'list', defaultMessage: 'List' })}
-                </SortSelector.Item>
-                <SortSelector.Item key="cards">
-                  {this.props.intl.formatMessage({ id: 'cards', defaultMessage: 'Cards' })}
-                </SortSelector.Item>
-              </SortSelector>
-            </div>
-            }
+            {(this.props.screenSize === 'medium' || this.props.screenSize === 'large') && (
+              <div className="st-deals-toggle-view">
+                <SortSelector
+                  caption={this.props.intl.formatMessage({
+                    id: 'view_as',
+                    defaultMessage: 'View as',
+                  })}
+                  sort={this.state.viewMode}
+                  onChange={this.toggleViewMode}
+                >
+                  <SortSelector.Item key="list">
+                    {this.props.intl.formatMessage({ id: 'list', defaultMessage: 'List' })}
+                  </SortSelector.Item>
+                  <SortSelector.Item key="cards">
+                    {this.props.intl.formatMessage({ id: 'cards', defaultMessage: 'Cards' })}
+                  </SortSelector.Item>
+                </SortSelector>
+              </div>
+            )}
             <div className="st-instruments-details">
               {this.props.platformName !== 'widgets' ? (
                 isClosedDealType ? (

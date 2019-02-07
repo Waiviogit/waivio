@@ -1,2 +1,1 @@
-export { default }  from './ModalClose';
-
+export { default } from './ModalClose';

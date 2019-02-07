@@ -15,11 +15,11 @@
     border: 1px solid @border-color-base;
 
     @media @small {
-      width: calc(100% - @margin)!important;
+      width: calc(100% - @margin) !important;
     }
 
     @media @medium {
-      width: calc(100% - (@left-width + @margin))!important;
+      width: calc(100% - (@left-width + @margin)) !important;
       margin-left: @margin!important;
     }
   }
@@ -34,11 +34,11 @@
       cursor: pointer;
     }
   }
-  .st-signals-button{
+  .st-signals-button {
     background: #1367b0;
     border: 1px solid #cccccc;
     border-radius: 50%;
-    color: #FFFFFF;
+    color: #ffffff;
     top: 10px;
     font-size: 10px;
     width: 25px;
@@ -47,7 +47,7 @@
     line-height: 22px;
     margin-left: 15px;
   }
-  .st-signals-empty{
+  .st-signals-empty {
     width: 25px;
     height: 25px;
     margin-left: 15px;
@@ -57,10 +57,10 @@
     overflow: auto;
     margin-top: 5px;
     display: flex;
-    .bg-success{
+    .bg-success {
       background-color: @color-green!important;
     }
-    .bg-danger{
+    .bg-danger {
       background-color: @color-red!important;
     }
 
@@ -72,20 +72,20 @@
         width: 100%;
         min-height: 55px;
         border-bottom: 1px solid @color-gray;
-        .progress-bar{
+        .progress-bar {
           height: 0.3rem;
         }
-        &:hover{
+        &:hover {
           background-color: @color-light-gray;
         }
-        .st-instruments-progress-bar{
+        .st-instruments-progress-bar {
           margin-left: 15px;
           display: flex;
           flex-direction: column;
-          span{
+          span {
             .textStyle(@font-size-small, @color-darkest-gray, regular);
           }
-          .st-instruments-buy-count{
+          .st-instruments-buy-count {
             color: @color-black-blue;
             font-weight: bold;
           }
@@ -96,12 +96,12 @@
           font-size: 20px;
           font-weight: bold;
         }
-        .st-assets-chart-wrap{
+        .st-assets-chart-wrap {
           width: @chartWidht;
           margin: 0 15px 0 15px;
           cursor: pointer;
 
-          .st-assets-chart-no-data{
+          .st-assets-chart-no-data {
             width: @chartWidht;
             text-align: center;
             font-size: 22px;
@@ -166,105 +166,119 @@
     }
   }
 
-.st-assets-wrap {
-  position: relative;
-  background-color: @color-white;
-  padding: 15px;
-  .st-quotes-no-present{
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    .st-quotes-no-present-wrap{
+  .st-assets-wrap {
+    position: relative;
+    background-color: @color-white;
+    padding: 15px;
+    .st-quotes-no-present {
+      width: 100%;
       display: flex;
-      text-align: center;
-      word-break: break-word;
-      align-items: center;
-      width: 40%;
-      height: 642px;
+      justify-content: center;
+      .st-quotes-no-present-wrap {
+        display: flex;
+        text-align: center;
+        word-break: break-word;
+        align-items: center;
+        width: 40%;
+        height: 642px;
+      }
+    }
+    .st-signal-info-img {
+      height: 16px;
+      width: 16px;
+      background-color: #444;
+      border-radius: 50%;
+      padding: 3px;
+      margin: 0 0 0 4px;
+      color: whitesmoke;
+      &:hover {
+        background-color: dimgray;
+      }
+    }
+    .st-instrument-title {
+      .textStyle(@font-size-large, @color-black-blue, bold);
+    }
+    .nav-link {
+      height: 45px;
+      .textStyle(@font-size-medium, @color-darkest-gray, bold);
+      border-radius: 0;
     }
   }
-  .st-signal-info-img {
-    height: 16px;
-    width: 16px;
-    background-color: #444;
-    border-radius: 50%;
-    padding: 3px;
-    margin: 0 0 0 4px;
-    color: whitesmoke;
-    &:hover {
-      background-color: dimgray;
+  .st-instrument-info-wrap {
+    text-align: center;
+    width: 150px;
+    .st-instrument-name {
+      .textStyle(@font-size-medium, @color-black-blue, bold);
+      max-width: 340px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .st-instrument-description {
+      .textStyle(@font-size-small, @color-darkest-gray, bold);
+      max-width: 340px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .st-instrument-privacy-image {
+      height: 15px;
+      width: 15px;
     }
   }
-  .st-instrument-title{
-    .textStyle(@font-size-large, @color-black-blue, bold);
+  .st-assets-avatar {
+    margin-right: 10px;
+    img {
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      background-color: #f7f7f6;
+    }
   }
-  .nav-link {
-    height: 45px;
-    .textStyle(@font-size-medium, @color-darkest-gray, bold);
-    border-radius: 0;
+  .st-assets-border {
+    border-bottom: solid 1px @color-dark-gray;
   }
-}
-.st-instrument-info-wrap{
-  text-align: center;
-  width: 150px;
-  .st-instrument-name{
-    .textStyle(@font-size-medium, @color-black-blue, bold);
-    max-width: 340px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .st-instrument-description{
-    .textStyle(@font-size-small, @color-darkest-gray, bold);
-    max-width: 340px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .st-instrument-privacy-image{
-    height: 15px;
-    width: 15px;
-  }
-}
-.st-assets-avatar {
-  margin-right: 10px;
-  img {
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    background-color: #f7f7f6;
-  }
-}
-.st-assets-border{
-  border-bottom: solid 1px @color-dark-gray;;
-}
-  .st-instr-column-wrap{
-    .columnAssetsStyle (@width){
+  .st-instr-column-wrap {
+    .columnAssetsStyle (@width) {
       .textStyle(@font-size-medium, @color-black-blue, bold);
       margin: 15px 0;
       width: @width;
       text-align: center;
     }
     border-bottom: 1px solid @color-dark-gray;
-    .st-instruments-text-title{.columnAssetsStyle (270px)}
-    .st-daily-title{.columnAssetsStyle (205px)}
-    .st-buy-title{.columnAssetsStyle (60px)}
-    .st-amount-title{.columnAssetsStyle (135px)}
-    .st-sell-title{.columnAssetsStyle (60px)}
-    .st-trend-title{.columnAssetsStyle (280px)}
-    .st-signals-title{
+    .st-instruments-text-title {
+      .columnAssetsStyle(270px);
+    }
+    .st-daily-title {
+      .columnAssetsStyle(205px);
+    }
+    .st-buy-title {
+      .columnAssetsStyle(60px);
+    }
+    .st-amount-title {
+      .columnAssetsStyle(135px);
+    }
+    .st-sell-title {
+      .columnAssetsStyle(60px);
+    }
+    .st-trend-title {
+      .columnAssetsStyle(280px);
+    }
+    .st-signals-title {
       width: 25px;
       height: 29px;
       margin: 13px 0 13px 25px;
     }
   }
-  .st-sidebar-ul{margin: 0!important;}
+  .st-sidebar-ul {
+    margin: 0 !important;
+  }
 }
 
-.st-assets-back{
+.st-assets-back {
   width: 176px;
   margin-left: 15px;
   margin-bottom: 10px;
-  padding: 0!important;
+  padding: 0 !important;
 }
 .st-assets-to-deals-wrap {
   justify-content: flex-end;

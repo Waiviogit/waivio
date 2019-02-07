@@ -4,8 +4,8 @@ import { injectIntl } from 'react-intl';
 // import ModalBrokerForgotPasswordBody from './ModalBrokerForgotPasswordBody';
 import './ModalBrokerForgotPassword.less';
 
-const ModalBrokerForgotPassword = ({toggle, isOpen, forgotPassBroker, isLoading, intl}) => (
-  <div></div>
-    );
+const ModalBrokerForgotPassword = ({ toggle, isOpen, forgotPassBroker, isLoading, intl }) => (
+  <div />
+);
 
 export default injectIntl(ModalBrokerForgotPassword);
