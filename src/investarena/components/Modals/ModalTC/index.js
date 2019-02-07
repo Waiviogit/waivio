@@ -1,2 +1,1 @@
-export { default }  from './ModalTC';
-
+export { default } from './ModalTC';

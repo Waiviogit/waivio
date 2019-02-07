@@ -6,26 +6,29 @@ import ModalOpenDeals from './ModalDealConfirmation';
 import { toggleModal } from '../../../redux/actions/modalsActions';
 
 const propTypes = {
-    modalInfo: PropTypes.object,
-    toggleModal: PropTypes.func.isRequired,
-    isModalOpenDealsOpen: PropTypes.bool.isRequired
+  modalInfo: PropTypes.object,
+  toggleModal: PropTypes.func.isRequired,
+  isModalOpenDealsOpen: PropTypes.bool.isRequired,
 };
 
-const ModalOpenDealsContainer = (props) => <ModalOpenDeals {...props}/>;
+const ModalOpenDealsContainer = props => <ModalOpenDeals {...props} />;
 
 ModalOpenDealsContainer.propTypes = propTypes;
 
-function mapStateToProps (state) {
-    return {
-        modalInfo: getModalInfoState(state, 'openDeals'),
-        isModalOpenDealsOpen: getModalIsOpenState(state, 'openDeals')
-    };
+function mapStateToProps(state) {
+  return {
+    modalInfo: getModalInfoState(state, 'openDeals'),
+    isModalOpenDealsOpen: getModalIsOpenState(state, 'openDeals'),
+  };
 }
 
-function mapDispatchToProps (dispatch) {
-    return {
-        toggleModal: () => dispatch(toggleModal('openDeals'))
-    };
+function mapDispatchToProps(dispatch) {
+  return {
+    toggleModal: () => dispatch(toggleModal('openDeals')),
+  };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ModalOpenDeals);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ModalOpenDeals);

@@ -1,6 +1,6 @@
 @import (reference) '../../Common.less';
 
-.modalOpenDealStyle (){
+.modalOpenDealStyle () {
   .modal-content {
     background-color: @color-white;
     .modal-header {
@@ -17,16 +17,16 @@
       padding: 15px;
     }
   }
-  .modal-title{
+  .modal-title {
     .textStyle(@font-size-medium, @color-white, bold);
   }
-  .modal-text{
+  .modal-text {
     text-align: center;
     .textStyle(@font-size-large, @color-black-blue, bold);
     display: flex;
     justify-content: center;
   }
-  .st-modals-value-amount{
+  .st-modals-value-amount {
     .textStyle(@font-size-small, @color-black-blue, normal);
     align-self: center;
     margin-top: 9px;
@@ -37,7 +37,9 @@
     margin-bottom: 1rem;
   }
 
-  .toggle input:focus + div { text-decoration: underline; }
+  .toggle input:focus + div {
+    text-decoration: underline;
+  }
 
   .toggle > div {
     cursor: pointer;
@@ -58,17 +60,19 @@
   .st-modal-input {
     .fieldStyle (35px, 50%, @margin-middle, @font-size-medium, @color-black-blue);
   }
-  .st-modal-checkbox-wrap{
+  .st-modal-checkbox-wrap {
     line-height: 0;
   }
-  .toggle > div:hover { box-shadow: 0 0 5px @color-blue; }
+  .toggle > div:hover {
+    box-shadow: 0 0 5px @color-blue;
+  }
 
   .toggle > div:before {
     will-change: translate;
     display: block;
     position: absolute;
-    top: calc(50% - .5rem);
-    left: .07rem;
+    top: calc(50% - 0.5rem);
+    left: 0.07rem;
     content: '';
     width: 1rem;
     height: 1rem;
@@ -97,8 +101,8 @@
 
   .toggle input:checked + div:before {
     color: @color-blue;
-    -webkit-transform: translateX(calc(1*100% + 5px));
-    transform: translateX(calc(1*100% + 5px));
+    -webkit-transform: translateX(calc(1 * 100% + 5px));
+    transform: translateX(calc(1 * 100% + 5px));
     background: @color-white;
   }
 
@@ -107,9 +111,10 @@
     right: 20px;
   }
 
-  input:focus + div:after { text-decoration: underline; }
+  input:focus + div:after {
+    text-decoration: underline;
+  }
 }
-
 
 .st-modals-title {
   .textStyle(@font-size-small, @color-darkest-gray, normal);
@@ -130,5 +135,3 @@
   display: flex;
   justify-content: flex-end;
 }
-
-

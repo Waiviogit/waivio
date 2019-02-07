@@ -5,17 +5,22 @@ import Broker from './Broker';
 import { toggleModal } from '../../../redux/actions/modalsActions';
 
 const propTypes = {
-    toggle: PropTypes.func.isRequired
+  toggle: PropTypes.func.isRequired,
 };
 
-const BrokerContainer = (props) => <Broker {...props}/>;
+const BrokerContainer = props => <Broker {...props} />;
 
 BrokerContainer.propTypes = propTypes;
 
-function mapDispatchToProps (dispatch) {
-    return ({
-        toggle: () => { dispatch(toggleModal('broker')) }
-    });
+function mapDispatchToProps(dispatch) {
+  return {
+    toggle: () => {
+      dispatch(toggleModal('broker'));
+    },
+  };
 }
 
-export default connect(null, mapDispatchToProps)(BrokerContainer);
+export default connect(
+  null,
+  mapDispatchToProps,
+)(BrokerContainer);

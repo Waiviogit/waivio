@@ -1,1 +1,1 @@
-export {default} from './PostQuotation';
+export { default } from './PostQuotation';

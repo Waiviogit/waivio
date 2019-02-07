@@ -1,1 +1,1 @@
-export { default }  from './ModalCloseAll';
+export { default } from './ModalCloseAll';

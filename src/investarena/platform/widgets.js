@@ -9,9 +9,9 @@ import {
 import { getChartDataSuccess } from '../redux/actions/chartsActions';
 import { updateQuotes } from '../redux/actions/quotesActions';
 import { updateQuotesSettings } from '../redux/actions/quotesSettingsActions';
-import * as ApiClient from "../../waivioApi/ApiClient";
-import {objectFields} from "../../common/constants/listOfFields";
-import {getFieldWithMaxWeight} from "../../client/object/wObjectHelper";
+import * as ApiClient from '../../waivioApi/ApiClient';
+import { objectFields } from '../../common/constants/listOfFields';
+import { getFieldWithMaxWeight } from '../../client/object/wObjectHelper';
 
 export class Widgets {
   constructor() {
@@ -157,22 +157,26 @@ export class Widgets {
     const keys = Object.keys(quotesSettings);
     const sortedQuotesSettings = {};
     keys.sort();
-    ApiClient.getObjects({ limit: 500, invObjects: true, requiredFields: ['chartid']}).then(wobjs => {
-      for (const i in keys) {
-        const key = keys[i];
-        const wobjData =_.find(wobjs, o => _.find(o.fields, field => field.name === 'chartid' && field.body === key));
-        sortedQuotesSettings[key] = quotesSettings[key];
+    ApiClient.getObjects({ limit: 500, invObjects: true, requiredFields: ['chartid'] }).then(
+      wobjs => {
+        for (const i in keys) {
+          const key = keys[i];
+          const wobjData = _.find(wobjs, o =>
+            _.find(o.fields, field => field.name === 'chartid' && field.body === key),
+          );
+          sortedQuotesSettings[key] = quotesSettings[key];
 
-        if(wobjData) {
-          sortedQuotesSettings[key].wobjData = {
-            avatarlink: getFieldWithMaxWeight(wobjData, objectFields.avatar),
-            author_permlink: wobjData.author_permlink
-          };
+          if (wobjData) {
+            sortedQuotesSettings[key].wobjData = {
+              avatarlink: getFieldWithMaxWeight(wobjData, objectFields.avatar),
+              author_permlink: wobjData.author_permlink,
+            };
+          }
         }
-      }
-      this.quotesSettings = sortedQuotesSettings;
-      this.dispatch(updateQuotesSettings(this.quotesSettings));
-    });
+        this.quotesSettings = sortedQuotesSettings;
+        this.dispatch(updateQuotesSettings(this.quotesSettings));
+      },
+    );
   }
   parseChartData(msg) {
     if (msg.args) {

@@ -5,18 +5,20 @@ import { publishSubscribe, destroyPublishSubscribe } from '../../../../platform/
 import { singleton } from '../../../../platform/singletonPlatform';
 
 class TchChart extends Component {
-    constructor (props) {
-        super(props);
-    }
+  constructor(props) {
+    super(props);
+  }
   componentDidMount = () => {
     publishSubscribe(singleton.platform);
     let source = 'fes.investarena';
     let name = this.props.quoteSecurity;
-    let fullName = singleton.platform.quotesSettings[name] ? singleton.platform.quotesSettings[name].name : name;
+    let fullName = singleton.platform.quotesSettings[name]
+      ? singleton.platform.quotesSettings[name].name
+      : name;
     let market = this.props.market;
     let period = humanize(this.props.period);
     let params = {
-      pair: {Name: name, FullName: fullName, Category: market},
+      pair: { Name: name, FullName: fullName, Category: market },
       period: period,
       timeMode: 'global',
       chartType: 'candle',
@@ -31,7 +33,7 @@ class TchChart extends Component {
         sid: '',
         authData: {},
         um_session: '',
-        sockjspath: ''
+        sockjspath: '',
       },
       settingsUrl: '//informer.maximarkets.ru/wss/quotation/getsettings?tch=true',
       lang: 'ru',
@@ -49,8 +51,8 @@ class TchChart extends Component {
         isHeaderCreate: true,
         isShowEvents: false,
         signals: false,
-        chartElements: {}
-      }
+        chartElements: {},
+      },
     };
     configuration.settingsUrl = '//informer.maximarkets.ru/wss/quotation/getsettings?tch=true';
     configuration.lang = 'en';
@@ -67,32 +69,29 @@ class TchChart extends Component {
     setTimeout(() => {
       const sidebarToggle = document.querySelector('.tch-sidebar-close-panel');
       sidebarToggle && sidebarToggle.click();
-    },200)
-
+    }, 200);
   };
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.tch.close();
     destroyPublishSubscribe(singleton.platform);
   }
-  createTch (params) {
+  createTch(params) {
     let tchParent = document.querySelector('.tch-assets-page');
-    if (TechnicalChart){
+    if (TechnicalChart) {
       this.tch = new TechnicalChart(tchParent, params);
       this.tch.init(params);
     }
   }
-    render () {
-        return (
-            <div
-                className="tch-wrap"
-                style={{width: '100%', height: '100%', position: 'relative'}}
-            >
-                <div className="tch-technical-chart-container tch-assets-page"
-                     style={{width: '100%', height: '100%', backgroundColor: 'yellow'}}
-                />
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div className="tch-wrap" style={{ width: '100%', height: '100%', position: 'relative' }}>
+        <div
+          className="tch-technical-chart-container tch-assets-page"
+          style={{ width: '100%', height: '100%', backgroundColor: 'yellow' }}
+        />
+      </div>
+    );
+  }
 }
 
 export default TchChart;

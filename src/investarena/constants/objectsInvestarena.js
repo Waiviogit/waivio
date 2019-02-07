@@ -1,5 +1,10 @@
 export const supportedObjectTypes = [
-  'crypto','currency', 'commodity', 'stock', 'index', 'cryptocurrency'
+  'crypto',
+  'currency',
+  'commodity',
+  'stock',
+  'index',
+  'cryptocurrency',
 ];
 
 export const marketNames = [

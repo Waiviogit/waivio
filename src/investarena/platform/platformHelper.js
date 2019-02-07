@@ -95,11 +95,11 @@ export class PlatformHelper {
           quote['security'].substring(3, 6) === accountCurrency ||
           instrCurrency === accountCurrency
         ) {
-          margin = amount / quoteSettings.leverage * midPrice;
+          margin = (amount / quoteSettings.leverage) * midPrice;
         } else if (values.isAccountCurrencyBasic && values.midPrice) {
           margin = amount / quoteSettings.leverage / values.midPrice;
         } else if (!values.isAccountCurrencyBasic && values.midPrice) {
-          margin = amount / quoteSettings.leverage * values.midPrice;
+          margin = (amount / quoteSettings.leverage) * values.midPrice;
         }
         return margin;
       })().toFixed(2);
@@ -140,10 +140,11 @@ export class PlatformHelper {
           }
           if (postPl[i].action === 'Sell') {
             const currentPrice = parseFloat(quote.askPrice);
-            pnl += -(currentPrice - postPl[i].bid_price) * postPl[i].amount / parseFloat(crossUSD);
+            pnl +=
+              (-(currentPrice - postPl[i].bid_price) * postPl[i].amount) / parseFloat(crossUSD);
           } else {
             const currentPrice = parseFloat(quote.bidPrice);
-            pnl += (currentPrice - postPl[i].ask_price) * postPl[i].amount / parseFloat(crossUSD);
+            pnl += ((currentPrice - postPl[i].ask_price) * postPl[i].amount) / parseFloat(crossUSD);
           }
         }
       }
@@ -158,10 +159,10 @@ export class PlatformHelper {
       const crossUSD = this.getCrossUSD(quote, quoteSettings);
       const currentPrice = parseFloat(deal['openPrice']);
       if (deal['side'] && (deal['side'] === 'LONG' || deal['side'] === 'BUY')) {
-        pnl = -(currentPrice - quote.bidPrice) * deal['amount'] / parseFloat(crossUSD);
+        pnl = (-(currentPrice - quote.bidPrice) * deal['amount']) / parseFloat(crossUSD);
       }
       if (deal['side'] && (deal['side'] === 'SHORT' || deal['side'] === 'SELL')) {
-        pnl = (currentPrice - quote.askPrice) * deal['amount'] / parseFloat(crossUSD);
+        pnl = ((currentPrice - quote.askPrice) * deal['amount']) / parseFloat(crossUSD);
       }
     }
     return pnl;
@@ -175,14 +176,14 @@ export class PlatformHelper {
       const currentPrice = parseFloat(deal['currentValue']);
       if (deal['side'] && (deal['side'] === 'SHORT' || deal['side'] === 'SELL')) {
         if (crossUSD > 0) {
-          pnl = -(currentPrice - openPrice) * amount / parseFloat(crossUSD);
+          pnl = (-(currentPrice - openPrice) * amount) / parseFloat(crossUSD);
         } else {
           pnl = -(currentPrice - openPrice) * amount * parseFloat(-crossUSD);
         }
       }
       if (deal['side'] && (deal['side'] === 'LONG' || deal['side'] === 'BUY')) {
         if (crossUSD > 0) {
-          pnl = (currentPrice - openPrice) * amount / parseFloat(crossUSD);
+          pnl = ((currentPrice - openPrice) * amount) / parseFloat(crossUSD);
         } else {
           pnl = (currentPrice - openPrice) * amount * parseFloat(-crossUSD);
         }
@@ -206,9 +207,9 @@ export class PlatformHelper {
       if (allSell === 0 && allBuy === 0) return '---';
       allSell = Math.round(Math.abs(allSell) * 100) / 100;
       allBuy = Math.round(Math.abs(allBuy) * 100) / 100;
-      const long = Math.round(allBuy / (allBuy + allSell) * 100);
-      const short = Math.round(allSell / (allSell + allBuy) * 100);
-      const res = min + (max - min) / 2 + (long - short) / 100 * (max - min) / 2;
+      const long = Math.round((allBuy / (allBuy + allSell)) * 100);
+      const short = Math.round((allSell / (allSell + allBuy)) * 100);
+      const res = min + (max - min) / 2 + (((long - short) / 100) * (max - min)) / 2;
       return parseFloat(res).toFixed(0);
     }
     return '---';
@@ -267,12 +268,12 @@ export class PlatformHelper {
     let takeProfitMax = 0;
     switch (dealParams.direction) {
       case 'SHORT':
-        takeProfitMin = dealParams.price * (100 - maxPercent / 1000000) / 100 + flFix;
-        takeProfitMax = dealParams.price * (100 - minPercent / 1000000) / 100 - flFix;
+        takeProfitMin = (dealParams.price * (100 - maxPercent / 1000000)) / 100 + flFix;
+        takeProfitMax = (dealParams.price * (100 - minPercent / 1000000)) / 100 - flFix;
         break;
       case 'LONG':
-        takeProfitMin = dealParams.price * (100 + minPercent / 1000000) / 100 + flFix;
-        takeProfitMax = dealParams.price * (100 + maxPercent / 1000000) / 100 - flFix;
+        takeProfitMin = (dealParams.price * (100 + minPercent / 1000000)) / 100 + flFix;
+        takeProfitMax = (dealParams.price * (100 + maxPercent / 1000000)) / 100 - flFix;
         break;
     }
     rangesPrice['min'] = takeProfitMin.toFixed(dIndex);
@@ -290,12 +291,12 @@ export class PlatformHelper {
     let stopLossMax = 0;
     switch (dealParams.direction) {
       case 'SHORT':
-        stopLossMin = dealParams.price * (100 + minPercent / 1000000) / 100 + flFix;
-        stopLossMax = dealParams.price * (100 + maxPercent / 1000000) / 100 - flFix;
+        stopLossMin = (dealParams.price * (100 + minPercent / 1000000)) / 100 + flFix;
+        stopLossMax = (dealParams.price * (100 + maxPercent / 1000000)) / 100 - flFix;
         break;
       case 'LONG':
-        stopLossMin = dealParams.price * (100 - maxPercent / 1000000) / 100 + flFix;
-        stopLossMax = dealParams.price * (100 - minPercent / 1000000) / 100 - flFix;
+        stopLossMin = (dealParams.price * (100 - maxPercent / 1000000)) / 100 + flFix;
+        stopLossMax = (dealParams.price * (100 - minPercent / 1000000)) / 100 - flFix;
         break;
     }
     rangesPrice['min'] = stopLossMin.toFixed(dIndex);
@@ -318,12 +319,12 @@ export class PlatformHelper {
     });
     switch (dealParams.direction) {
       case 'SHORT':
-        stopLossMin = dealParams.price * (100 + minPercent / 1000000) / 100;
-        stopLossMax = dealParams.price * (100 + maxPercent / 1000000) / 100;
+        stopLossMin = (dealParams.price * (100 + minPercent / 1000000)) / 100;
+        stopLossMax = (dealParams.price * (100 + maxPercent / 1000000)) / 100;
         break;
       case 'LONG':
-        stopLossMin = dealParams.price * (100 - minPercent / 1000000) / 100;
-        stopLossMax = dealParams.price * (100 - maxPercent / 1000000) / 100;
+        stopLossMin = (dealParams.price * (100 - minPercent / 1000000)) / 100;
+        stopLossMax = (dealParams.price * (100 - maxPercent / 1000000)) / 100;
         break;
     }
     tempDealForMin['currentValue'] = stopLossMin;
@@ -362,12 +363,12 @@ export class PlatformHelper {
     });
     switch (dealParams.direction) {
       case 'SHORT':
-        takeProfitMin = dealParams.price * (100 - minPercent / 1000000) / 100;
-        takeProfitMax = dealParams.price * (100 - maxPercent / 1000000) / 100;
+        takeProfitMin = (dealParams.price * (100 - minPercent / 1000000)) / 100;
+        takeProfitMax = (dealParams.price * (100 - maxPercent / 1000000)) / 100;
         break;
       case 'LONG':
-        takeProfitMin = dealParams.price * (100 + minPercent / 1000000) / 100;
-        takeProfitMax = dealParams.price * (100 + maxPercent / 1000000) / 100;
+        takeProfitMin = (dealParams.price * (100 + minPercent / 1000000)) / 100;
+        takeProfitMax = (dealParams.price * (100 + maxPercent / 1000000)) / 100;
         break;
     }
     tempDealForMin['currentValue'] = takeProfitMin;

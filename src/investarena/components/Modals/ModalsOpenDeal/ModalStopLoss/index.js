@@ -1,1 +1,1 @@
-export { default }  from './ModalStopLoss';
+export { default } from './ModalStopLoss';
