@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
-import _ from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 import { getViewMode, setViewMode } from '../../helpers/localStorageHelpers';
 import AssetsTab from './AssetsTab/AssetsTab';
 import { getAllSignals } from '../../redux/actions/signalsActions';
-import { supportedObjectTypes } from '../../constants/objectsInvestarena';
+import { marketNames, supportedObjectTypes } from '../../constants/objectsInvestarena';
 import Affix from '../../../client/components/Utils/Affix';
 import LeftSidebar from '../../../client/app/Sidebar/LeftSidebar';
 import SortSelector from '../../../client/components/SortSelector/SortSelector';
 import './InstrumentsPage.less';
 
 const propTypes = {
+  history: PropTypes.shape().isRequired,
   charts: PropTypes.shape(),
   openDeals: PropTypes.shape(),
   quotes: PropTypes.shape().isRequired,
@@ -57,11 +58,47 @@ class InstrumentsPage extends Component {
     setViewMode('instruments', viewMode);
   };
 
+  handleMarketChange = marketType => this.props.history.push(`/markets/${marketType.toLowerCase()}`);
+
   render() {
+    const {intl, quotes, quoteSettings, openDeals, charts,} = this.props;
     const paramMarket = this.props.match.params.marketType;
-    const marketType = _.some(supportedObjectTypes, market => market === paramMarket)
+    const marketType = supportedObjectTypes.some(market => market === paramMarket)
       ? paramMarket
       : 'crypto';
+
+    const sortSelector = (this.props.screenSize === 'medium' || this.props.screenSize === 'large') ? (
+      <SortSelector
+        caption={intl.formatMessage({
+          id: 'view_as',
+          defaultMessage: 'View as',
+        })}
+        sort={this.state.viewMode}
+        onChange={this.toggleViewMode}
+      >
+        <SortSelector.Item key="list">
+          {intl.formatMessage({ id: 'list', defaultMessage: 'List' })}
+        </SortSelector.Item>
+        <SortSelector.Item key="cards">
+          {intl.formatMessage({ id: 'cards', defaultMessage: 'Cards' })}
+        </SortSelector.Item>
+      </SortSelector>
+    ) : (
+      <SortSelector
+        caption={intl.formatMessage({
+          id: 'market',
+          defaultMessage: 'Market',
+        })}
+        sort={paramMarket}
+        onChange={this.handleMarketChange}
+      >
+        {marketNames.map(item => (
+          <SortSelector.Item key={item.name.toLowerCase()}>
+            {intl.formatMessage(item.intl)}
+          </SortSelector.Item>
+        ))}
+      </SortSelector>
+    );
     return (
       <div className="st-instr-page">
         <div className="feed-layout container">
@@ -71,31 +108,15 @@ class InstrumentsPage extends Component {
             </div>
           </Affix>
           <div className="center">
-            {(this.props.screenSize === 'medium' || this.props.screenSize === 'large') && (
-              <div role="presentation" className="st-instruments-toggle-view">
-                <SortSelector
-                  caption={this.props.intl.formatMessage({
-                    id: 'view_as',
-                    defaultMessage: 'View as',
-                  })}
-                  sort={this.state.viewMode}
-                  onChange={this.toggleViewMode}
-                >
-                  <SortSelector.Item key="list">
-                    {this.props.intl.formatMessage({ id: 'list', defaultMessage: 'List' })}
-                  </SortSelector.Item>
-                  <SortSelector.Item key="cards">
-                    {this.props.intl.formatMessage({ id: 'cards', defaultMessage: 'Cards' })}
-                  </SortSelector.Item>
-                </SortSelector>
-              </div>
-            )}
+            <div role="presentation" className="st-instruments-toggle-view">
+              {sortSelector}
+            </div>
             <AssetsTab
-              quotes={this.props.quotes}
-              charts={this.props.charts}
+              quotes={quotes}
+              charts={charts}
               signals={this.state.signals}
-              deals={this.props.openDeals}
-              quoteSettings={this.props.quoteSettings}
+              deals={openDeals}
+              quoteSettings={quoteSettings}
               title={marketType.toLowerCase()}
               trends={this.state.trends}
               viewMode={this.state.viewMode}
@@ -110,4 +131,4 @@ class InstrumentsPage extends Component {
 InstrumentsPage.propTypes = propTypes;
 InstrumentsPage.defaultProps = defaultProps;
 
-export default injectIntl(InstrumentsPage);
+export default withRouter(injectIntl(InstrumentsPage));
