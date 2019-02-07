@@ -137,6 +137,7 @@ class BrokerAuthorization extends Component {
               htmlType="submit"
               type={!this.props.brokerConnected ? "primary" : "danger"}
               disabled={this.props.isLoading}
+              loading={this.props.isLoading}
             >
               {!this.props.brokerConnected ? this.props.intl.formatMessage({ id: 'modalBroker.connect', defaultMessage: 'CONNECT' }) : this.props.intl.formatMessage({ id: 'modalBroker.disconnect', defaultMessage: 'DISCONNECT' })}
             </Button>
