@@ -1,4 +1,5 @@
 @import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
 
 .Editor {
   padding-bottom: 24px;
@@ -59,12 +60,25 @@
 
   &__bottom {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
+    &__cancel {
+      margin: 0;
+      padding: 0;
+      button {
+        margin-right: 10px;
+      }
+    }
+    @media @small, @medium, @large {
+      justify-content: space-between;
+      &__info {
+        display: unset !important;
+      }
+    }
 
     &__info {
       font-weight: bold;
-
+      display: none;
       .iconfont {
         font-size: 20px;
         vertical-align: -3px;
@@ -91,8 +105,6 @@
 
     &__cancel {
       margin-bottom: 0 !important;
-      padding-right: 10px;
-      margin-right: 10px !important;
 
       .ant-form-item-control {
         text-align: right !important;
