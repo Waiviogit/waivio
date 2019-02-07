@@ -6,10 +6,15 @@
   background-color: @component-background;
   border: @border-width-base @border-style-base @border-color-base;
   margin-bottom: 12px;
-
+    .ant-select{
+      margin-bottom: 15px;
+    }
   @media @small, @medium, @large {
     display: flex;
     justify-content: space-between;
+    .ant-select{
+      margin-bottom: 0;
+    }
   }
   .wobj-history__add {
     width: 18%;
