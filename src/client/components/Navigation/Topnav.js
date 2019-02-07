@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Menu, Input, AutoComplete } from 'antd';
+import { Menu, Icon, Input, AutoComplete } from 'antd';
 import classNames from 'classnames';
 import { searchAutoComplete } from '../../search/searchActions';
 import { getUpdatedSCUserMetadata } from '../../auth/authActions';
@@ -239,6 +239,9 @@ class Topnav extends React.Component {
                   <PopoverMenuItem key="news" fullScreenHidden>
                     <FormattedMessage id="news" defaultMessage="News" />
                   </PopoverMenuItem>
+                  <PopoverMenuItem key="objects" fullScreenHidden>
+                    <FormattedMessage id="objects" defaultMessage="Objects" />
+                  </PopoverMenuItem>
                   <PopoverMenuItem key="replies" fullScreenHidden>
                     <FormattedMessage id="replies" defaultMessage="Replies" />
                   </PopoverMenuItem>
@@ -263,8 +266,9 @@ class Topnav extends React.Component {
                 </PopoverMenu>
               }
             >
-              <a className="Topnav__link Topnav__link--light">
-                <i className="iconfont icon-caretbottom" />
+              <a className="Topnav__link">
+                <Icon type="caret-down" />
+                <Icon type="bars" />
               </a>
             </Popover>
           </Menu.Item>
