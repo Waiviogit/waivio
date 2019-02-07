@@ -359,7 +359,6 @@ class CreatePostForecast extends Component {
                           })}
                           value={selectForecast}
                           onChange={this.updateValueForecast}
-                          allowClear
                         >
                           {optionsForecast.map(option => (
                             <Select.Option key={option.value} value={option.value}>

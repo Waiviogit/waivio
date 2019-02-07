@@ -16,6 +16,7 @@ const propTypes = {
     openDeals: PropTypes.shape(),
     quotes: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
+    screenSize: PropTypes.string.isRequired,
     quoteSettings: PropTypes.shape().isRequired,
     getChartsData: PropTypes.func.isRequired,
     intl: PropTypes.shape().isRequired,
@@ -33,14 +34,17 @@ class InstrumentsPage extends Component {
             trends: [],
             signals: {},
             wobjs: [],
-            viewMode: 'list',
+            viewMode: 'list'
         };
     }
 
     componentDidMount () {
         this.props.getChartsData();
-        const viewMode = getViewMode('instruments');
-        if(viewMode) this.setState({viewMode});
+        if(this.props.screenSize === 'medium' || this.props.screenSize === 'large'){
+          const viewMode = getViewMode('instruments');
+          if(viewMode) this.setState({viewMode});
+        } else this.setState({viewMode: 'cards'});
+
         getAllSignals().then(({ data, error }) => {
             if (!error && data) {
               this.setState({signals: data})
@@ -66,7 +70,7 @@ class InstrumentsPage extends Component {
                   </div>
                 </Affix>
                 <div className="center">
-                  <div role='presentation' className="st-instruments-toggle-view">
+                  {(this.props.screenSize === 'medium' || this.props.screenSize === 'large') && <div role='presentation' className="st-instruments-toggle-view">
                     <SortSelector
                       caption={this.props.intl.formatMessage({id: 'view_as', defaultMessage: "View as"})}
                       sort={this.state.viewMode}
@@ -79,7 +83,7 @@ class InstrumentsPage extends Component {
                         {this.props.intl.formatMessage({id: 'cards', defaultMessage: "Cards"})}
                       </SortSelector.Item>
                     </SortSelector>
-                  </div>
+                  </div>}
                   <AssetsTab
                     quotes={this.props.quotes}
                     charts={this.props.charts}

@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { getAssetsChartsState } from '../../redux/selectors/chartsSelectors';
@@ -8,19 +7,9 @@ import { getOpenDealsState } from '../../redux/selectors/dealsSelectors';
 import {getQuotesSettingsState} from '../../redux/selectors/quotesSettingsSelectors';
 import {getQuotesState} from '../../redux/selectors/quotesSelectors';
 import InstrumentsPage from './InstrumentsPage';
-
-const propTypes = {
-    charts: PropTypes.object,
-    openDeals: PropTypes.object,
-    quotes: PropTypes.object.isRequired,
-    quoteSettings: PropTypes.object.isRequired,
-    platformConnect: PropTypes.bool.isRequired,
-    getChartsData: PropTypes.func.isRequired,
-};
+import {getScreenSize} from "../../../client/reducers";
 
 const InstrumentsPageContainer = (props) => <InstrumentsPage {...props} />;
-
-InstrumentsPageContainer.propTypes = propTypes;
 
 function mapStateToProps (state) {
     return {
@@ -29,6 +18,7 @@ function mapStateToProps (state) {
         platformConnect: getIsConnectPlatformState(state),
         openDeals: getOpenDealsState(state),
         charts: getAssetsChartsState(state),
+        screenSize: getScreenSize(state)
     };
 }
 

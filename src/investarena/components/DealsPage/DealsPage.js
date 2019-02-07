@@ -14,6 +14,7 @@ const propTypes = {
   match: PropTypes.shape().isRequired,
   platformName: PropTypes.string.isRequired,
   toggleModalBroker: PropTypes.func.isRequired,
+  screenSize: PropTypes.string.isRequired,
 };
 
 class DealsPage extends Component {
@@ -25,8 +26,10 @@ class DealsPage extends Component {
   }
 
   componentDidMount() {
-    const currentViewMode = getViewMode('instruments');
-    if (currentViewMode) this.setState({ viewMode: currentViewMode });
+    if(this.props.screenSize === 'medium' || this.props.screenSize === 'large'){
+      const viewMode = getViewMode('instruments');
+      if(viewMode) this.setState({viewMode});
+    } else this.setState({viewMode: 'cards'});
   }
 
   toggleViewMode = viewMode => {
@@ -46,7 +49,7 @@ class DealsPage extends Component {
             </div>
           </Affix>
           <div className="center">
-            <div className="st-deals-toggle-view">
+            {(this.props.screenSize === 'medium' || this.props.screenSize === 'large') && <div className="st-deals-toggle-view">
               <SortSelector
                 caption={this.props.intl.formatMessage({
                   id: 'view_as',
@@ -63,6 +66,7 @@ class DealsPage extends Component {
                 </SortSelector.Item>
               </SortSelector>
             </div>
+            }
             <div className="st-instruments-details">
               {this.props.platformName !== 'widgets' ? (
                 isClosedDealType ? (

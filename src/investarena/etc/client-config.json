@@ -17,7 +17,8 @@
     "repostUrl": "https://socialtrading.uat.pp.ua/posts/"
   },
   "development": {
-    "apiPrefix": "http://waiviodev.com/",
+    "apiPrefix": "http://localhost:8095/",
+    "": "http://waiviodev.com/",
     "": "https://api.socialtrading.uat.pp.ua/",
     "brokerWSUrl": {
       "maximarkets": "https://trading.maximarkets.org/stomp/",
