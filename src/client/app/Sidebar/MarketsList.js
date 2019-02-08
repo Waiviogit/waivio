@@ -1,14 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { marketNames } from '../../../investarena/constants/objectsInvestarena';
 import Sidenav from '../../components/Navigation/Sidenav';
-import { getQuotesSettingsState } from '../../../investarena/redux/selectors/quotesSettingsSelectors';
 
-const MarketsList = ({ quoteSettings }) => {
-  const instrumentsCount = Object.values(quoteSettings).reduce((acc, quote) => {
-    return { ...acc, [quote.market]: acc[quote.market] ? acc[quote.market] + 1 : 1 };
-  }, {});
+const MarketsList = ({ quoteSettingsSorted }) => {
   const menu = [
     {
       name: 'Favorites',
@@ -19,7 +14,7 @@ const MarketsList = ({ quoteSettings }) => {
     },
     ...marketNames.map(market => {
       const count = market.names.reduce(
-        (acc, marketName) => acc + (instrumentsCount[marketName] || 0),
+        (acc, marketName) => acc + (quoteSettingsSorted[marketName] ? quoteSettingsSorted[marketName].length : 0),
         0,
       );
       return {
@@ -34,14 +29,8 @@ const MarketsList = ({ quoteSettings }) => {
 };
 
 MarketsList.propTypes = {
-  quoteSettings: PropTypes.shape().isRequired,
+  quoteSettingsSorted: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 
-MarketsList.defaultProps = {
-  quoteFavorites: [],
-};
 
-export default connect(state => ({
-  quoteSettings: getQuotesSettingsState(state),
-  quoteFavorites: [],
-}))(MarketsList);
+export default MarketsList;
