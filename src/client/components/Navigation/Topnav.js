@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { withRouter, Link, NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Menu, Icon, Input, AutoComplete } from 'antd';
+import {Menu, Icon, Input, AutoComplete, Button, Modal} from 'antd';
 import classNames from 'classnames';
 import { searchAutoComplete } from '../../search/searchActions';
 import { getUpdatedSCUserMetadata } from '../../auth/authActions';
@@ -13,7 +13,7 @@ import {
   getNotifications,
   getAuthenticatedUserSCMetaData,
   getIsLoadingNotifications,
-  getScreenSize,
+  getScreenSize, getNightmode,
 } from '../../reducers';
 import ModalBroker from '../../../investarena/components/Modals/ModalBroker';
 import ModalDealConfirmation from '../../../investarena/components/Modals/ModalDealConfirmation';
@@ -26,8 +26,10 @@ import Popover from '../Popover';
 import Notifications from './Notifications/Notifications';
 import LanguageSettings from './LanguageSettings';
 import './Topnav.less';
-import Broker from '../../../investarena/components/Header/Broker';
 import Balance from '../../../investarena/components/Header/Balance';
+import {getPlatformNameState, getIsLoadingPlatformState} from "../../../investarena/redux/selectors/platformSelectors";
+import {toggleModal} from "../../../investarena/redux/actions/modalsActions";
+import config from "../../../investarena/configApi/config";
 
 @injectIntl
 @withRouter
@@ -38,10 +40,14 @@ import Balance from '../../../investarena/components/Header/Balance';
     userSCMetaData: getAuthenticatedUserSCMetaData(state),
     loadingNotifications: getIsLoadingNotifications(state),
     screenSize: getScreenSize(state),
+    isNightMode: getNightmode(state),
+    platformName: getPlatformNameState(state),
+    isLoadingPlatform: getIsLoadingPlatformState(state)
   }),
   {
     searchAutoComplete,
     getUpdatedSCUserMetadata,
+    toggleModal
   },
 )
 class Topnav extends React.Component {
@@ -72,13 +78,17 @@ class Topnav extends React.Component {
     location: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
     username: PropTypes.string,
+    platformName: PropTypes.string.isRequired,
     notifications: PropTypes.arrayOf(PropTypes.shape()),
     searchAutoComplete: PropTypes.func.isRequired,
+    toggleModal: PropTypes.func.isRequired,
     getUpdatedSCUserMetadata: PropTypes.func.isRequired,
     screenSize: PropTypes.string.isRequired,
     onMenuItemClick: PropTypes.func,
     userSCMetaData: PropTypes.shape(),
     loadingNotifications: PropTypes.bool,
+    isLoadingPlatform: PropTypes.bool.isRequired,
+    isNightMode: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -234,15 +244,6 @@ class Topnav extends React.Component {
         <ModalBroker />
         <ModalDealConfirmation />
         <Menu selectedKeys={[]} className="Topnav__menu-container__menu" mode="horizontal">
-          <Menu.Item key="broker">
-            <BTooltip
-              placement="bottom"
-              title={intl.formatMessage({ id: 'broker.broker', defaultMessage: 'Broker' })}
-              mouseEnterDelay={1}
-            >
-              <Broker />
-            </BTooltip>
-          </Menu.Item>
           <Menu.Item key="write">
             <BTooltip
               placement="bottom"
@@ -391,9 +392,17 @@ class Topnav extends React.Component {
     });
   }
 
+  toggleModalBroker = () => {
+    this.props.toggleModal('broker')
+  };
+
+  toggleModalDeposit = () => {
+    this.setState({isModalDeposit: !this.state.isModalDeposit})
+  };
+
   render() {
-    const { intl, autoCompleteSearchResults } = this.props;
-    const { searchBarActive, searchBarValue } = this.state;
+    const { intl, autoCompleteSearchResults, platformName, isLoadingPlatform, isNightMode} = this.props;
+    const { searchBarActive, searchBarValue, isModalDeposit } = this.state;
 
     const dropdownOptions = _.map(autoCompleteSearchResults, option => (
       <AutoComplete.Option key={option} value={option} className="Topnav__search-autocomplete">
@@ -524,36 +533,59 @@ class Topnav extends React.Component {
               </Menu.Item>
             )}
           </Menu>
-          <div className="st-header-broker-balance-pl-wrap">
-            <div className="st-balance-wrap">
-              <div className="st-balance-text">
-                {intl.formatMessage({
-                  id: 'headerAuthorized.freeBalance',
-                  defaultMessage: 'Free balance',
-                })}
-                :
+          {(platformName !== 'widgets' && !isLoadingPlatform) ?
+            <div className="st-header-broker-balance-pl-wrap">
+              <div className="st-balance-wrap">
+                <div className="st-balance-text">
+                  {intl.formatMessage({id: 'headerAuthorized.p&l', defaultMessage: 'P&L deals'})}:
+                </div>
+                <div className="st-balance-amount">
+                  <Balance balanceType="unrealizedPnl"/>
+                </div>
               </div>
-              <div className="st-balance-amount">
-                <Balance balanceType="freeBalance" />
+              <div className="st-balance-border">
+                <div className="st-balance-text">
+                  {intl.formatMessage({id: 'headerAuthorized.balance', defaultMessage: 'Balance'})}:
+                </div>
+                <div className="st-balance-amount">
+                  <Balance balanceType="balance"/>
+                </div>
               </div>
+              <Button  type="primary" onClick={this.toggleModalDeposit}>
+                {intl.formatMessage({id: 'headerAuthorized.deposit', defaultMessage: 'Deposit'})}
+              </Button>
+              <Modal
+                title={intl.formatMessage({id: 'headerAuthorized.deposit', defaultMessage: 'Deposit'})}
+                footer={null}
+                visible={isModalDeposit}
+                onCancel={this.toggleModalDeposit}
+                width={1250}
+                wrapClassName={'st-header-deposit-modal'}
+                destroyOnClose
+              >
+                <iframe
+                  title='depositFrame'
+                  src={`${config[process.env.NODE_ENV].platformDepositUrl[this.props.platformName]}?${isNightMode ? 'style=wp&' : ''}mode=popup&lang=en#deposit`}
+                  width='1200px'
+                  height='696px'
+                />
+              </Modal>
+              <img
+                role="presentation"
+                title={platformName}
+                onClick={this.toggleModalBroker}
+                className="st-header__image"
+                src={`/images/investarena/${platformName}.png`}
+                alt="broker"
+              />
             </div>
-            <div className="st-balance-border">
-              <div className="st-balance-text">
-                {intl.formatMessage({ id: 'headerAuthorized.p&l', defaultMessage: 'P&L deals' })}:
-              </div>
-              <div className="st-balance-amount">
-                <Balance balanceType="unrealizedPnl" />
-              </div>
+            :
+            <div className="st-header-broker-balance-pl-wrap">
+              <Button  type="primary" onClick={this.toggleModalBroker}>
+                {intl.formatMessage({id: 'headerAuthorized.connectToBroker', defaultMessage: 'Connect to broker'})}
+              </Button>
             </div>
-            <div className="st-balance-border">
-              <div className="st-balance-text">
-                {intl.formatMessage({ id: 'headerAuthorized.balance', defaultMessage: 'Balance' })}:
-              </div>
-              <div className="st-balance-amount">
-                <Balance balanceType="balance" />
-              </div>
-            </div>
-          </div>
+          }
         </div>
       </div>
     );

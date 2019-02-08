@@ -238,6 +238,12 @@
 
     .st-header-broker-balance-pl-wrap {
       display: none;
+      .st-header__image{
+        margin-left: 10px;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+      }
     }
 
     @media @small, @medium, @large {
@@ -249,14 +255,14 @@
         color: @white;
         display: flex;
         justify-content: space-between;
-
+        height: 32px;
+        align-items: center;
         .st-balance-border {
           padding: 0 10px;
           border-left: 1px solid @white;
           display: flex;
           flex-direction: column;
           line-height: 14px;
-          margin-bottom: 10px;
         }
       }
     }

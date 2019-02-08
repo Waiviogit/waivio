@@ -26,8 +26,8 @@
       "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
     },
     "platformDepositUrl": {
-      "umarkets": "https://test-my.umarkets.com/",
-      "maximarkets": "https://test-myaccount.maximarkets.org/"
+      "umarkets": "https://my.umarkets.com/",
+      "maximarkets": "https://myaccount.maximarkets.org/"
     },
     "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/",
     "": "http://localhost:8082"
@@ -48,8 +48,8 @@
       "google": "https://plus.google.com/share?url=http://localhost:3001/posts/"
     },
     "platformDepositUrl": {
-      "umarkets": "https://test-my.umarkets.com/",
-      "maximarkets": "https://test-myaccount.maximarkets.org/"
+      "umarkets": "https://my.umarkets.com/",
+      "maximarkets": "https://myaccount.maximarkets.org/"
     }
   },
 
