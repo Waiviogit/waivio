@@ -20,7 +20,7 @@ const propTypes = {
   signals: PropTypes.arrayOf(PropTypes.shape()),
   deals: PropTypes.shape(),
   quoteSettings: PropTypes.shape().isRequired,
-  quote: PropTypes.shape().isRequired,
+  quote: PropTypes.shape(),
   viewMode: PropTypes.oneOf(['list', 'cards']),
 };
 
@@ -79,6 +79,7 @@ class Instrument extends Component {
           {intl.formatMessage({ id: 'charts.noData', defaultMessage: 'No data' })}
         </div>
       );
+    if (!(quote && quote.security)) return null;
     switch (this.props.viewMode) {
       case 'cards':
         return (
@@ -137,6 +138,9 @@ class Instrument extends Component {
 }
 
 Instrument.defaultProps = {
+  quote: {
+    security: '',
+  },
   viewMode: 'list',
   deals: '',
   chart: [],

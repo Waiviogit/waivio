@@ -10,27 +10,27 @@ export const supportedObjectTypes = [
 export const marketNames = [
   {
     name: 'Crypto',
-    names: ['CryptoCurrency', 'Crypto'],
+    names: ['cryptocurrency', 'crypto'],
     intl: { id: 'wia.cryptos', defaultMessage: 'Cryptos' },
   },
   {
     name: 'Currency',
-    names: ['Currency'],
+    names: ['currency'],
     intl: { id: 'wia.currencies', defaultMessage: 'Currencies' },
   },
   {
     name: 'Commodity',
-    names: ['Commodity'],
+    names: ['commodity'],
     intl: { id: 'wia.commodities', defaultMessage: 'Commodities' },
   },
   {
     name: 'Stock',
-    names: ['Stock'],
+    names: ['stock'],
     intl: { id: 'modalAssets.stocks', defaultMessage: 'Stocks' },
   },
   {
     name: 'Index',
-    names: ['Index'],
+    names: ['index'],
     intl: { id: 'modalAssets.indices', defaultMessage: 'Indicies' },
   },
 ];

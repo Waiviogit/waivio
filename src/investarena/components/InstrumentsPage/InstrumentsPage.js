@@ -15,7 +15,6 @@ const propTypes = {
   history: PropTypes.shape().isRequired,
   charts: PropTypes.shape(),
   openDeals: PropTypes.shape(),
-  quotes: PropTypes.shape().isRequired,
   match: PropTypes.shape().isRequired,
   screenSize: PropTypes.string.isRequired,
   quoteSettings: PropTypes.shape().isRequired,
@@ -32,7 +31,6 @@ class InstrumentsPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      trends: [],
       signals: {},
       wobjs: [],
       viewMode: 'list',
@@ -58,53 +56,65 @@ class InstrumentsPage extends Component {
     setViewMode('instruments', viewMode);
   };
 
-  handleMarketChange = marketType => this.props.history.push(`/markets/${marketType.toLowerCase()}`);
+  handleMarketChange = marketType =>
+    this.props.history.push(`/markets/${marketType.toLowerCase()}`);
 
   render() {
-    const {intl, quotes, quoteSettings, openDeals, charts,} = this.props;
+    const { intl, quoteSettings, openDeals, charts } = this.props;
     const paramMarket = this.props.match.params.marketType;
     const marketType = supportedObjectTypes.some(market => market === paramMarket)
       ? paramMarket
       : 'crypto';
 
-    const sortSelector = (this.props.screenSize === 'medium' || this.props.screenSize === 'large') ? (
-      <SortSelector
-        caption={intl.formatMessage({
-          id: 'view_as',
-          defaultMessage: 'View as',
-        })}
-        sort={this.state.viewMode}
-        onChange={this.toggleViewMode}
-      >
-        <SortSelector.Item key="list">
-          {intl.formatMessage({ id: 'list', defaultMessage: 'List' })}
-        </SortSelector.Item>
-        <SortSelector.Item key="cards">
-          {intl.formatMessage({ id: 'cards', defaultMessage: 'Cards' })}
-        </SortSelector.Item>
-      </SortSelector>
-    ) : (
-      <SortSelector
-        caption={intl.formatMessage({
-          id: 'market',
-          defaultMessage: 'Market',
-        })}
-        sort={paramMarket}
-        onChange={this.handleMarketChange}
-      >
-        {marketNames.map(item => (
-          <SortSelector.Item key={item.name.toLowerCase()}>
-            {intl.formatMessage(item.intl)}
+    const quoteSettingsSorted = [];
+    Object.entries(quoteSettings).forEach(([key, value]) => {
+      if(value.wobjData) {
+        const marketName = value.market.toLowerCase() === 'cryptocurrency' ? 'crypto' : value.market.toLowerCase();
+        quoteSettingsSorted[marketName] = quoteSettingsSorted[marketName]
+          ? [...quoteSettingsSorted[marketName], {...value, keyName: key}]
+          : [{...value, keyName: key}];
+      }
+    });
+
+    const sortSelector =
+      this.props.screenSize === 'medium' || this.props.screenSize === 'large' ? (
+        <SortSelector
+          caption={intl.formatMessage({
+            id: 'view_as',
+            defaultMessage: 'View as',
+          })}
+          sort={this.state.viewMode}
+          onChange={this.toggleViewMode}
+        >
+          <SortSelector.Item key="list">
+            {intl.formatMessage({ id: 'list', defaultMessage: 'List' })}
           </SortSelector.Item>
-        ))}
-      </SortSelector>
-    );
+          <SortSelector.Item key="cards">
+            {intl.formatMessage({ id: 'cards', defaultMessage: 'Cards' })}
+          </SortSelector.Item>
+        </SortSelector>
+      ) : (
+        <SortSelector
+          caption={intl.formatMessage({
+            id: 'market',
+            defaultMessage: 'Market',
+          })}
+          sort={paramMarket}
+          onChange={this.handleMarketChange}
+        >
+          {marketNames.map(item => (
+            <SortSelector.Item key={item.name.toLowerCase()}>
+              {intl.formatMessage(item.intl)}
+            </SortSelector.Item>
+          ))}
+        </SortSelector>
+      );
     return (
       <div className="st-instr-page">
         <div className="feed-layout container">
           <Affix className="leftContainer" stickPosition={115}>
             <div className="left">
-              <LeftSidebar />
+              <LeftSidebar quoteSettingsSorted={quoteSettingsSorted}/>
             </div>
           </Affix>
           <div className="center">
@@ -112,13 +122,10 @@ class InstrumentsPage extends Component {
               {sortSelector}
             </div>
             <AssetsTab
-              quotes={quotes}
               charts={charts}
               signals={this.state.signals}
               deals={openDeals}
-              quoteSettings={quoteSettings}
-              title={marketType.toLowerCase()}
-              trends={this.state.trends}
+              quoteSettingsFiltered={quoteSettingsSorted[marketType]}
               viewMode={this.state.viewMode}
             />
           </div>
