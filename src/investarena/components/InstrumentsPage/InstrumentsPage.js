@@ -41,8 +41,8 @@ class InstrumentsPage extends Component {
     this.props.getChartsData();
     if (this.props.screenSize === 'medium' || this.props.screenSize === 'large') {
       const viewMode = getViewMode('instruments');
-      if (viewMode) this.setState({ viewMode });
-    } else this.setState({ viewMode: 'cards' });
+      if (viewMode) this.toggleViewMode(viewMode);
+    } else this.toggleViewMode('cards');
 
     getAllSignals().then(({ data, error }) => {
       if (!error && data) {
@@ -52,8 +52,10 @@ class InstrumentsPage extends Component {
   }
 
   toggleViewMode = viewMode => {
-    this.setState({ viewMode });
-    setViewMode('instruments', viewMode);
+    if(viewMode !== this.state.viewMode) {
+      this.setState({ viewMode });
+      setViewMode('instruments', viewMode);
+    }
   };
 
   handleMarketChange = marketType =>
