@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import { marketNames } from '../../../investarena/constants/objectsInvestarena';
+import Loading from '../../components/Icon/Loading';
 import Sidenav from '../../components/Navigation/Sidenav';
 
 const MarketsList = ({ quoteSettingsSorted }) => {
@@ -25,11 +27,11 @@ const MarketsList = ({ quoteSettingsSorted }) => {
       };
     }),
   ];
-  return <Sidenav navigationMenu={menu} />;
+  return _.isEmpty(quoteSettingsSorted) ? <Loading/> : <Sidenav navigationMenu={menu} />;
 };
 
 MarketsList.propTypes = {
-  quoteSettingsSorted: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  quoteSettingsSorted: PropTypes.shape().isRequired,
 };
 
 

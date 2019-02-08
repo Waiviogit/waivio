@@ -27,7 +27,7 @@ const LeftSidebar = ({ quoteSettingsSorted }) => (
 );
 
 LeftSidebar.propTypes = {
-  quoteSettingsSorted: PropTypes.arrayOf(PropTypes.shape()),
+  quoteSettingsSorted: PropTypes.shape(),
 };
 
 LeftSidebar.defaultProps = {

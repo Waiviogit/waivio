@@ -197,7 +197,6 @@ export default class Settings extends React.Component {
   handleExitPageSettingChange = event => this.setState({ exitPageSetting: event.target.checked });
 
   handleUpvoteSettingChange(event) {
-    console.log('-->', process.env.NODE_ENV);
     this.setState({ upvoteSetting: event.target.checked });
   }
 
