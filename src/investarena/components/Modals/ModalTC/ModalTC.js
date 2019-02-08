@@ -3,6 +3,7 @@ import { injectIntl } from 'react-intl';
 import React from 'react';
 import PropTypes from 'prop-types';
 import TchChart from './TchChart';
+import PostQuotation from "../../PostQuotation/PostQuotation";
 
 const propTypes = {
   toggle: PropTypes.func.isRequired,
@@ -21,8 +22,11 @@ const ModalTC = ({ toggle, isOpen, market, quoteName, intl }) => {
           onCancel={toggle}
           width={'90%'}
         >
-          <div style={{ width: '100%', height: '305px', marginTop: '1px' }}>
+          <div style={{ width: '100%', height: '50vh' }}>
             <TchChart quoteSecurity={quoteName} market={market} period={'60'} />
+          </div>
+          <div className="d-flex justify-content-center">
+            <PostQuotation quoteSecurity={quoteName} />
           </div>
         </Modal>
       )}

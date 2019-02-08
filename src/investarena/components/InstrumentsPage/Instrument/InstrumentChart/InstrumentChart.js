@@ -16,7 +16,7 @@ const InstrumentChart = props => {
 InstrumentChart.propTypes = {
   chart: PropTypes.arrayOf(PropTypes.shape()),
   width: PropTypes.number,
-  height: PropTypes.oneOfType(PropTypes.string, PropTypes.number),
+  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   noDataMsg: PropTypes.string,
   onClick: PropTypes.func,
 };

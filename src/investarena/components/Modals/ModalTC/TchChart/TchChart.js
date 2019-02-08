@@ -35,7 +35,7 @@ class TchChart extends Component {
         um_session: '',
         sockjspath: '',
       },
-      settingsUrl: '//informer.maximarkets.ru/wss/quotation/getsettings?tch=true',
+      settingsUrl: '//informer.maximarkets.org/wss/quotation/getsettings?tch=true',
       lang: 'ru',
       isHeaderHidden: false,
       isSidebarHidden: false,
@@ -44,7 +44,7 @@ class TchChart extends Component {
       isOtherParams: false,
       isAutoRestore: false,
       rowsid: [],
-      typeThemes: 'DefaultThema',
+      typeTheme: 'black',
       typeData: this.props.typeData === 'Sell' ? 'bid' : 'ask',
       modules: {
         isShowNews: false,
@@ -66,10 +66,10 @@ class TchChart extends Component {
     document.querySelector('.tch-data-panel').classList.add('invisible');
     document.querySelector('.tch-search-container').classList.add('invisible');
     document.querySelector('.tch-chart-layouts-container').classList.add('invisible');
-    setTimeout(() => {
-      const sidebarToggle = document.querySelector('.tch-sidebar-close-panel');
-      sidebarToggle && sidebarToggle.click();
-    }, 200);
+    // setTimeout(() => {
+    //   const sidebarToggle = document.querySelector('.tch-sidebar-close-panel');
+    //   sidebarToggle && sidebarToggle.click();
+    // }, 200);
   };
   componentWillUnmount() {
     this.tch.close();

@@ -25,6 +25,7 @@ const defaultProps = {
   charts: {},
   openDeals: {},
   favorites: [],
+  screenSize: 'medium'
 };
 
 class InstrumentsPage extends Component {
