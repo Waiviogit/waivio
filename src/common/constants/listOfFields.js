@@ -8,6 +8,7 @@ export const objectFields = {
   avatar: 'avatar',
   background: 'background',
   website: 'website',
+  hashtag: 'tag',
 };
 
 export const addressFields = {

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import { Icon, message } from 'antd';
+import { Icon, message, Tag } from 'antd';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -76,6 +76,7 @@ class ObjectInfo extends React.Component {
     let title = '';
     let websiteFields = {};
     let albumsCount = 0;
+    let hashtags = [];
     if (wobject) {
       addressArr = Object.values(addressFields).map(fieldName =>
         getFieldWithMaxWeight(wobject, objectFields.address, fieldName),
@@ -90,6 +91,9 @@ class ObjectInfo extends React.Component {
       title = websiteFields.title;
       link = websiteFields.body;
       albumsCount = wobject.albums_count;
+
+      const filtered = _.filter(wobject.fields, ['name', objectFields.hashtag]);
+      hashtags = _.orderBy(filtered, ['weight'], ['desc']);
     }
 
     if (link && link.indexOf('http://') === -1 && link.indexOf('https://') === -1) {
@@ -137,6 +141,46 @@ class ObjectInfo extends React.Component {
         {getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name) && (
           <div className="object-sidebar">
             {listItem(objectFields.description, description)}
+            {listItem(
+              objectFields.hashtag,
+              <div className="field-info">
+                {accessExtend ? (
+                  <React.Fragment>
+                    {hashtags.length <= 3 ? (
+                      hashtags.slice(0, 3).map(({ body }) => (
+                        <div key={body} className="tag-item">
+                          #{body}
+                        </div>
+                      ))
+                    ) : (
+                      <React.Fragment>
+                        {hashtags.slice(0, 2).map(({ body }) => (
+                          <div key={body} className="tag-item">
+                            #{body}
+                          </div>
+                        ))}
+                        <Link
+                          to={`/object/@${wobject.author_permlink}/updates/${objectFields.hashtag}`}
+                          onClick={() => this.handleSelectField(objectFields.hashtag)}
+                        >
+                          <FormattedMessage id="show_more_tags" defaultMessage="show more">
+                            {value => <div className="tag-item">{value}</div>}
+                          </FormattedMessage>
+                        </Link>
+                      </React.Fragment>
+                    )}
+                  </React.Fragment>
+                ) : (
+                  <React.Fragment>
+                    {hashtags.slice(0, 3).map(({ body }) => (
+                      <Tag key={body} color="volcano">
+                        #{body}
+                      </Tag>
+                    ))}
+                  </React.Fragment>
+                )}
+              </div>,
+            )}
             {hasGalleryImg || accessExtend ? (
               <div className="field-info">
                 {accessExtend && (

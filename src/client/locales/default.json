@@ -436,7 +436,7 @@
   "object_field_link": "Social Links",
   "object_field_avatar": "Avatar",
   "object_field_background": "Background",
-  "field_error": "{field} is required",
+  "field_error": "{field} is required.",
   "append_send": "Submit",
   "suggestion_add_field": "Update",
   "rank": "Rank",
@@ -468,5 +468,12 @@
   "invalid_image_size": "Image must smaller than {size}MB!",
   "upload_photos": "Upload photos",
   "image_submitting": "Submitting...",
-  "upload_image": "Upload"
+  "upload_image": "Upload",
+  "hashtag_value_placeholder": "#Hashtags",
+  "object_field_tag": "Hashtag",
+  "hashtags_error_count": "You have to add 1 to 5 #tags.",
+  "hashtags_error_invalid_hashtag": "Hashtag {hashtag} is invalid.",
+  "hashtags_extra": "Separate #tags with commas. Only lowercase letters, numbers and hyphen character is permitted.",
+  "added_field_to_wobject": "You successfully have added the {field} field to {wobject} object.",
+  "website_symbols_validation": "Please don't use special symbols"
 }
