@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import _ from 'lodash';
 import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -10,36 +9,20 @@ const propTypes = {
   charts: PropTypes.shape(),
   signals: PropTypes.shape(),
   deals: PropTypes.shape(),
-  quotes: PropTypes.shape().isRequired,
-  quoteSettings: PropTypes.shape().isRequired,
+  quoteSettingsFiltered: PropTypes.arrayOf(PropTypes.shape()),
   intl: PropTypes.shape().isRequired,
-  title: PropTypes.string.isRequired,
   viewMode: PropTypes.oneOf(['list', 'cards']),
 };
 
-const AssetsTab = ({ intl, quotes, quoteSettings, title, charts, signals, deals, viewMode }) => {
-  const sortedQuotes = _.sortBy(quotes, 'security');
-  const matchTitle = quote => {
-    const quoteMarket = quoteSettings[quote.security].market.toLowerCase();
-    return title === 'crypto'
-      ? quoteMarket === title || quoteMarket === 'cryptocurrency'
-      : quoteMarket === title || title === 'favorites';
-  };
-  const selectedInstruments = _.map(
-    sortedQuotes,
-    quote =>
-      quoteSettings[quote.security] &&
-      quoteSettings[quote.security].wobjData &&
-      matchTitle(quote) &&
-      charts && (
+const AssetsTab = ({ intl, quoteSettingsFiltered, charts, signals, deals, viewMode }) => {
+  const selectedInstruments = quoteSettingsFiltered.map(qs => (
         <Instrument
-          key={quote.security}
-          signals={signals[quote.security]}
+          key={qs.keyName}
+          signals={signals[qs.keyName]}
           deals={deals}
-          quoteSettings={quoteSettings[quote.security]}
-          quote={quote}
-          chart={charts ? charts[quote.security] : []}
-          quoteSecurity={quote.security}
+          quoteSettings={qs}
+          chart={charts && charts[qs.keyName] || []}
+          quoteSecurity={qs.keyName}
           viewMode={viewMode}
         />
       ),
@@ -72,11 +55,7 @@ const AssetsTab = ({ intl, quotes, quoteSettings, title, charts, signals, deals,
           'cards-view': viewMode === 'cards',
         })}
       >
-        {sortedQuotes &&
-        quoteSettings &&
-        !_.isEmpty(sortedQuotes) &&
-        !_.isEmpty(quoteSettings) &&
-        _.some(sortedQuotes, quote => quoteSettings[quote.security] && matchTitle(quote)) ? (
+        {quoteSettingsFiltered.length > 0 ? (
           <div className="st-instruments-responsible-wrap">{selectedInstruments}</div>
         ) : (
           <div className="d-flex justify-content-center align-items-center h-100 w-100">
@@ -92,6 +71,7 @@ const AssetsTab = ({ intl, quotes, quoteSettings, title, charts, signals, deals,
 };
 
 AssetsTab.defaultProps = {
+  quoteSettingsFiltered: [],
   viewMode: 'cards',
   deals: {},
   signals: {},

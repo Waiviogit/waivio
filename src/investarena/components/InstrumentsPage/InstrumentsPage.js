@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
-import _ from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 import { getViewMode, setViewMode } from '../../helpers/localStorageHelpers';
 import AssetsTab from './AssetsTab/AssetsTab';
 import { getAllSignals } from '../../redux/actions/signalsActions';
-import { supportedObjectTypes } from '../../constants/objectsInvestarena';
+import { marketNames, supportedObjectTypes } from '../../constants/objectsInvestarena';
 import Affix from '../../../client/components/Utils/Affix';
 import LeftSidebar from '../../../client/app/Sidebar/LeftSidebar';
 import SortSelector from '../../../client/components/SortSelector/SortSelector';
 import './InstrumentsPage.less';
 
 const propTypes = {
+  history: PropTypes.shape().isRequired,
   charts: PropTypes.shape(),
   openDeals: PropTypes.shape(),
-  quotes: PropTypes.shape().isRequired,
   match: PropTypes.shape().isRequired,
   screenSize: PropTypes.string.isRequired,
   quoteSettings: PropTypes.shape().isRequired,
@@ -32,7 +32,6 @@ class InstrumentsPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      trends: [],
       signals: {},
       wobjs: [],
       viewMode: 'list',
@@ -43,8 +42,8 @@ class InstrumentsPage extends Component {
     this.props.getChartsData();
     if (this.props.screenSize === 'medium' || this.props.screenSize === 'large') {
       const viewMode = getViewMode('instruments');
-      if (viewMode) this.setState({ viewMode });
-    } else this.setState({ viewMode: 'cards' });
+      if (viewMode) this.toggleViewMode(viewMode);
+    } else this.toggleViewMode('cards');
 
     getAllSignals().then(({ data, error }) => {
       if (!error && data) {
@@ -54,51 +53,82 @@ class InstrumentsPage extends Component {
   }
 
   toggleViewMode = viewMode => {
-    this.setState({ viewMode });
-    setViewMode('instruments', viewMode);
+    if(viewMode !== this.state.viewMode) {
+      this.setState({ viewMode });
+      setViewMode('instruments', viewMode);
+    }
   };
 
+  handleMarketChange = marketType =>
+    this.props.history.push(`/markets/${marketType.toLowerCase()}`);
+
   render() {
+    const { intl, quoteSettings, openDeals, charts } = this.props;
     const paramMarket = this.props.match.params.marketType;
-    const marketType = _.some(supportedObjectTypes, market => market === paramMarket)
+    const marketType = supportedObjectTypes.some(market => market === paramMarket)
       ? paramMarket
       : 'crypto';
+
+    const quoteSettingsSorted = [];
+    Object.entries(quoteSettings).forEach(([key, value]) => {
+      if(value.wobjData) {
+        const marketName = value.market.toLowerCase() === 'cryptocurrency' ? 'crypto' : value.market.toLowerCase();
+        quoteSettingsSorted[marketName] = quoteSettingsSorted[marketName]
+          ? [...quoteSettingsSorted[marketName], {...value, keyName: key}]
+          : [{...value, keyName: key}];
+      }
+    });
+
+    const sortSelector =
+      this.props.screenSize === 'medium' || this.props.screenSize === 'large' ? (
+        <SortSelector
+          caption={intl.formatMessage({
+            id: 'view_as',
+            defaultMessage: 'View as',
+          })}
+          sort={this.state.viewMode}
+          onChange={this.toggleViewMode}
+        >
+          <SortSelector.Item key="list">
+            {intl.formatMessage({ id: 'list', defaultMessage: 'List' })}
+          </SortSelector.Item>
+          <SortSelector.Item key="cards">
+            {intl.formatMessage({ id: 'cards', defaultMessage: 'Cards' })}
+          </SortSelector.Item>
+        </SortSelector>
+      ) : (
+        <SortSelector
+          caption={intl.formatMessage({
+            id: 'market',
+            defaultMessage: 'Market',
+          })}
+          sort={paramMarket}
+          onChange={this.handleMarketChange}
+        >
+          {marketNames.map(item => (
+            <SortSelector.Item key={item.name.toLowerCase()}>
+              {intl.formatMessage(item.intl)}
+            </SortSelector.Item>
+          ))}
+        </SortSelector>
+      );
     return (
       <div className="st-instr-page">
         <div className="feed-layout container">
           <Affix className="leftContainer" stickPosition={115}>
             <div className="left">
-              <LeftSidebar />
+              <LeftSidebar quoteSettingsSorted={quoteSettingsSorted}/>
             </div>
           </Affix>
           <div className="center">
-            {(this.props.screenSize === 'medium' || this.props.screenSize === 'large') && (
-              <div role="presentation" className="st-instruments-toggle-view">
-                <SortSelector
-                  caption={this.props.intl.formatMessage({
-                    id: 'view_as',
-                    defaultMessage: 'View as',
-                  })}
-                  sort={this.state.viewMode}
-                  onChange={this.toggleViewMode}
-                >
-                  <SortSelector.Item key="list">
-                    {this.props.intl.formatMessage({ id: 'list', defaultMessage: 'List' })}
-                  </SortSelector.Item>
-                  <SortSelector.Item key="cards">
-                    {this.props.intl.formatMessage({ id: 'cards', defaultMessage: 'Cards' })}
-                  </SortSelector.Item>
-                </SortSelector>
-              </div>
-            )}
+            <div role="presentation" className="st-instruments-toggle-view">
+              {sortSelector}
+            </div>
             <AssetsTab
-              quotes={this.props.quotes}
-              charts={this.props.charts}
+              charts={charts}
               signals={this.state.signals}
-              deals={this.props.openDeals}
-              quoteSettings={this.props.quoteSettings}
-              title={marketType.toLowerCase()}
-              trends={this.state.trends}
+              deals={openDeals}
+              quoteSettingsFiltered={quoteSettingsSorted[marketType]}
               viewMode={this.state.viewMode}
             />
           </div>
@@ -111,4 +141,4 @@ class InstrumentsPage extends Component {
 InstrumentsPage.propTypes = propTypes;
 InstrumentsPage.defaultProps = defaultProps;
 
-export default injectIntl(InstrumentsPage);
+export default withRouter(injectIntl(InstrumentsPage));
