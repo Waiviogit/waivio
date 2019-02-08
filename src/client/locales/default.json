@@ -436,7 +436,7 @@
   "object_field_link": "Social Links",
   "object_field_avatar": "Avatar",
   "object_field_background": "Background",
-  "field_error": "{field} is required.",
+  "field_error": "{field} is required",
   "append_send": "Submit",
   "suggestion_add_field": "Update",
   "rank": "Rank",
@@ -458,8 +458,8 @@
   "add_object": "Add object",
   "warning_message": "Object updates are posted by Waivio Bots in order to avoid technical posts in user feeds and spending limited resource credits on multiple posts by users, authors are required to upvote updates with voting power that should generate an equivalent of at least $0.001 to ensure validity of the posted content. Users receive 70% of author rewards in addition to standard curation rewards.",
   "vote_worth": "Your vote will be worth ${value} (min. $0.001)",
-  "need_like": "You need to like these updates to take effect",
   "write_new_review": "Write new review",
+  "add_photo": "Add photo",
   "upload_photo_error": "You need to upload at least one image",
   "couldnt_upload_image": "Couldn't add the image to album.",
   "append_new_image": "@{user} added a new image to album {album} <br /> {url}",
@@ -468,7 +468,6 @@
   "invalid_image_size": "Image must smaller than {size}MB!",
   "upload_photos": "Upload photos",
   "image_submitting": "Submitting...",
-  "upload_image": "Upload",
   "hashtag_value_placeholder": "#Hashtags",
   "object_field_tag": "Hashtag",
   "hashtags_error_count": "You have to add 1 to 5 #tags.",
@@ -476,4 +475,6 @@
   "hashtags_extra": "Separate #tags with commas. Only lowercase letters, numbers and hyphen character is permitted.",
   "added_field_to_wobject": "You successfully have added the {field} field to {wobject} object.",
   "website_symbols_validation": "Please don't use special symbols"
+  "upload_image": "Upload",
+  "or": "or"
 }

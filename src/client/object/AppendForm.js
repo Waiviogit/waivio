@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Button, Form, Input, message, Select } from 'antd';
+import { Button, Form, Input, message, Select, Avatar } from 'antd';
 import {
   linkFields,
   objectFields,
@@ -509,11 +509,12 @@ export default class AppendForm extends Component {
               handleImageChange={this.handleImageChange}
               currentImages={this.state.currentImage}
               onRemoveImage={this.handleRemoveImage}
+              showAddButton={false}
             />
             <span>
               {intl.formatMessage({
                 id: 'or',
-                defaultMessage: 'OR',
+                defaultMessage: 'or',
               })}
             </span>
             <Form.Item>
@@ -555,7 +556,16 @@ export default class AppendForm extends Component {
             </Form.Item>
             {imageLink && (
               <div className="AppendForm__previewWrap">
-                <img src={imageLink} alt="pic" className="AppendForm__preview" />
+                {currentField === objectFields.avatar ? (
+                  <Avatar shape="square" size={100} src={imageLink} className="avatar" />
+                ) : (
+                  <div
+                    style={{
+                      backgroundImage: `url(${imageLink})`,
+                    }}
+                    className="background"
+                  />
+                )}
               </div>
             )}
           </div>
