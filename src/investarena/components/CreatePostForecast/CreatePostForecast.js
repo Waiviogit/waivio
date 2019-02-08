@@ -235,7 +235,6 @@ class CreatePostForecast extends Component {
                         })}
                         onChange={this.updateValueQuote}
                         showSearch
-                        allowClear
                       >
                         {optionsQuote.map(option => (
                           <Select.Option key={option.value} value={option.value}>
@@ -261,7 +260,6 @@ class CreatePostForecast extends Component {
                           'st-create-post-danger': isPosted && !isValid && !selectRecommend,
                         })}
                         onChange={this.updateValueRecommend}
-                        allowClear
                       >
                         {optionsAction.map(option => (
                           <Select.Option key={option.value} value={option.value}>
