@@ -16,7 +16,8 @@ const MarketsList = ({ quoteSettingsSorted }) => {
     },
     ...marketNames.map(market => {
       const count = market.names.reduce(
-        (acc, marketName) => acc + (quoteSettingsSorted[marketName] ? quoteSettingsSorted[marketName].length : 0),
+        (acc, marketName) =>
+          acc + (quoteSettingsSorted[marketName] ? quoteSettingsSorted[marketName].length : 0),
         0,
       );
       return {
@@ -27,12 +28,11 @@ const MarketsList = ({ quoteSettingsSorted }) => {
       };
     }),
   ];
-  return _.isEmpty(quoteSettingsSorted) ? <Loading/> : <Sidenav navigationMenu={menu} />;
+  return _.isEmpty(quoteSettingsSorted) ? <Loading /> : <Sidenav navigationMenu={menu} />;
 };
 
 MarketsList.propTypes = {
   quoteSettingsSorted: PropTypes.shape().isRequired,
 };
-
 
 export default MarketsList;

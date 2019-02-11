@@ -232,8 +232,26 @@ class Editor extends React.Component {
     return !areObjectsCreated || isInfluenceRemain;
   }
 
+  getForecastObject = (forecast, selectForecast) =>
+    forecast
+      ? {
+          ...forecast,
+          createdAt: moment.utc(currentTime.getTime()).format(forecastDateTimeFormat),
+          expiredAt:
+            selectForecast === 'Custom'
+              ? forecast.expiredAt
+              : moment
+                  .utc(currentTime.getTime())
+                  .add(selectForecast, 'seconds')
+                  .format(forecastDateTimeFormat),
+        }
+      : null;
+
   throttledUpdate() {
-    const { linkedObjects } = this.state;
+    const {
+      linkedObjects,
+      forecastValues: { selectForecast, ...forecast },
+    } = this.state;
     const { form } = this.props;
 
     const values = form.getFieldsValue();
@@ -252,7 +270,12 @@ class Editor extends React.Component {
       isNew: Boolean(obj.isNew),
     }));
 
-    this.props.onUpdate({ ...values, topics, [WAIVIO_META_FIELD_NAME]: { wobjects } });
+    this.props.onUpdate({
+      ...values,
+      topics,
+      [WAIVIO_META_FIELD_NAME]: { wobjects },
+      [INVESTARENA_META_FIELD_NAME]: this.getForecastObject(forecast, selectForecast),
+    });
   }
 
   handleSubmit(e) {
@@ -268,23 +291,10 @@ class Editor extends React.Component {
           author_permlink: obj.id,
           percent: obj.influence.value,
         }));
-        // this.props.onSubmit({ ...values, [WAIVIO_META_FIELD_NAME]: { wobjects } });
         this.props.onSubmit({
           ...values,
           [WAIVIO_META_FIELD_NAME]: { wobjects },
-          [INVESTARENA_META_FIELD_NAME]: forecast
-            ? {
-                ...forecast,
-                createdAt: moment.utc(currentTime.getTime()).format(forecastDateTimeFormat),
-                expiredAt:
-                  selectForecast === 'Custom'
-                    ? forecast.expiredAt
-                    : moment
-                        .utc(currentTime.getTime())
-                        .add(selectForecast, 'seconds')
-                        .format(forecastDateTimeFormat),
-              }
-            : null,
+          [INVESTARENA_META_FIELD_NAME]: this.getForecastObject(forecast, selectForecast),
         });
       }
     });

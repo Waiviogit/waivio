@@ -5,7 +5,7 @@ import _ from 'lodash';
 import React from 'react';
 import PostQuotation from '../../PostQuotation';
 import './ModalDealConfirmation.less';
-import TchChart from "../ModalTC/TchChart/TchChart";
+import TchChart from '../ModalTC/TchChart/TchChart';
 
 const propTypes = {
   modalInfo: PropTypes.shape(),
@@ -30,7 +30,11 @@ const ModalDealConfirmation = props => {
         {props.modalInfo && !_.isEmpty(props.modalInfo) && (
           <div className="st-modal-open-deals-content-block-wrap">
             <div style={{ width: '100%', height: '50vh' }}>
-              <TchChart quoteSecurity={props.modalInfo.quote.security} market={props.modalInfo.quote.market} period={'60'} />
+              <TchChart
+                quoteSecurity={props.modalInfo.quote.security}
+                market={props.modalInfo.quote.market}
+                period={'60'}
+              />
             </div>
             <PostQuotation
               quoteSecurity={props.modalInfo.quote.security}
@@ -38,7 +42,7 @@ const ModalDealConfirmation = props => {
               postId={props.modalInfo.postId}
               toggleConfirmationModal={props.toggleModal}
             />
-        </div>
+          </div>
         )}
       </div>
     </Modal>

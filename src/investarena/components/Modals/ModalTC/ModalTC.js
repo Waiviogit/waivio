@@ -3,7 +3,7 @@ import { injectIntl } from 'react-intl';
 import React from 'react';
 import PropTypes from 'prop-types';
 import TchChart from './TchChart';
-import PostQuotation from "../../PostQuotation/PostQuotation";
+import PostQuotation from '../../PostQuotation/PostQuotation';
 
 const propTypes = {
   toggle: PropTypes.func.isRequired,
