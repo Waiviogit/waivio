@@ -195,16 +195,18 @@ class Editor extends React.Component {
   getForecastObject = (forecast, selectForecast) =>
     forecast
       ? {
-        ...forecast,
-        createdAt: moment.utc(currentTime.getTime()).format(forecastDateTimeFormat),
-        expiredAt:
-          selectForecast === 'Custom'
-            ? forecast.expiredAt
-            : moment
-              .utc(currentTime.getTime())
-              .add(selectForecast, 'seconds')
-              .format(forecastDateTimeFormat),
-      }
+          ...forecast,
+          createdAt: moment.utc(currentTime.getTime()).format(forecastDateTimeFormat),
+          expiredAt:
+            selectForecast === 'Custom'
+              ? forecast.expiredAt
+              : moment
+                  .utc(currentTime.getTime())
+                  .add(selectForecast, 'seconds')
+                  .format(forecastDateTimeFormat),
+          tpPrice: forecast.tpPrice ? parseFloat(forecast.tpPrice) : null,
+          slPrice: forecast.slPrice ? parseFloat(forecast.slPrice) : null,
+        }
       : null;
 
   resetLinkedObjects = () => this.setState({ linkedObjects: [], influenceRemain: 0 });
@@ -424,7 +426,7 @@ class Editor extends React.Component {
   };
 
   handleForecastChange(forecastValues) {
-    this.setState({ forecastValues });
+    this.setState({ forecastValues }, this.onUpdate);
   }
 
   render() {

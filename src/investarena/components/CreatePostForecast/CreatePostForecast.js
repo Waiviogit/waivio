@@ -84,8 +84,8 @@ class CreatePostForecast extends Component {
       expiredAt: dateTimeValue ? dateTimeValue.format(forecastDateTimeFormat) : null,
       isValid,
     };
-    if (takeProfitValue) forecastObject.tpPrice = parseFloat(takeProfitValue);
-    if (stopLossValue) forecastObject.slPrice = parseFloat(stopLossValue);
+    if (takeProfitValue) forecastObject.tpPrice = takeProfitValue;
+    if (stopLossValue) forecastObject.slPrice = stopLossValue;
     return forecastObject;
   };
 
@@ -100,7 +100,7 @@ class CreatePostForecast extends Component {
       selectForecast,
       takeProfitValue: forecast.tpPrice || '',
       stopLossValue: forecast.slPrice || '',
-      isValid: true,
+      isValid: forecast.isValid,
     });
   };
 
@@ -112,8 +112,9 @@ class CreatePostForecast extends Component {
     const quotePrice = this.state.selectRecommend
       ? getQuotePrice(selectQuote, this.state.selectRecommend, this.props.quotes)
       : null;
-    this.props.onChange(this.getForecastObject({
-      ...this.state,
+    this.props.onChange(
+      this.getForecastObject({
+        ...this.state,
         quotePrice,
         selectQuote,
         takeProfitValue: '',
@@ -121,7 +122,8 @@ class CreatePostForecast extends Component {
         takeProfitValueIncorrect: false,
         stopLossValueIncorrect: false,
         isValid: this.validateForm(selectQuote, selectRecommend, selectForecast),
-    }));
+      }),
+    );
   };
 
   updateValueRecommend = selectRecommend => {
@@ -129,8 +131,9 @@ class CreatePostForecast extends Component {
     const quotePrice = this.state.selectQuote
       ? getQuotePrice(this.state.selectQuote, selectRecommend, this.props.quotes)
       : null;
-    this.props.onChange(this.getForecastObject({
-      ...this.state,
+    this.props.onChange(
+      this.getForecastObject({
+        ...this.state,
         quotePrice,
         selectRecommend,
         takeProfitValue: '',
@@ -138,23 +141,30 @@ class CreatePostForecast extends Component {
         takeProfitValueIncorrect: false,
         stopLossValueIncorrect: false,
         isValid: this.validateForm(selectQuote, selectRecommend, selectForecast),
-    }));
+      }),
+    );
   };
 
   handleChangeTakeProfitStopLostInputs = (event, input) => {
     const value = event.target.value;
     if (!isNaN(value)) {
       const { selectQuote, selectRecommend } = this.state;
-      this.setState({
-        [`${input}Incorrect`]: isStopLossTakeProfitValid(
-          value,
-          input,
-          selectRecommend,
-          getQuotePrice(selectQuote, selectRecommend, this.props.quotes),
+      this.setState(
+        {
+          [`${input}Incorrect`]: isStopLossTakeProfitValid(
+            value,
+            input,
+            selectRecommend,
+            getQuotePrice(selectQuote, selectRecommend, this.props.quotes),
+          ),
+        },
+        this.props.onChange(
+          this.getForecastObject({
+            ...this.state,
+            [input]: value,
+          }),
         ),
-      }, this.props.onChange(this.getForecastObject({
-        ...this.state, [input]: value
-      })));
+      );
     }
   };
 
@@ -177,19 +187,24 @@ class CreatePostForecast extends Component {
     }
     if (!isNaN(initialValue) && initialValue > 0) {
       const forecastValue = '1555200';
-      this.setState(prevState => {
-        if (prevState[input] === '') {
-          return {
-            [`${input}Incorrect`]: false,
-          };
-        }
-        return prevState;
-      }, this.props.onChange(this.getForecastObject({
-        ...this.state,
-        [input]: initialValue,
-        selectForecast: forecastValue,
-        dateTimeValue: moment(currentTime.getTime()).add(forecastValue, 'seconds'),
-      })));
+      this.setState(
+        prevState => {
+          if (prevState[input] === '') {
+            return {
+              [`${input}Incorrect`]: false,
+            };
+          }
+          return prevState;
+        },
+        this.props.onChange(
+          this.getForecastObject({
+            ...this.state,
+            [input]: initialValue,
+            selectForecast: forecastValue,
+            dateTimeValue: moment(currentTime.getTime()).add(forecastValue, 'seconds'),
+          }),
+        ),
+      );
     }
   };
 
@@ -198,18 +213,22 @@ class CreatePostForecast extends Component {
   updateValueForecast = selectForecast => {
     const { selectQuote, selectRecommend } = this.state;
     if (selectForecast === 'Custom') {
-      this.props.onChange(this.getForecastObject({
-        ...this.state,
+      this.props.onChange(
+        this.getForecastObject({
+          ...this.state,
           selectForecast,
           dateTimeValue: moment(currentTime.getTime()).add(minForecastMinutes, 'minute'),
           isValid: this.validateForm(selectQuote, selectRecommend, selectForecast),
-      }));
+        }),
+      );
     } else {
-      this.props.onChange(this.getForecastObject({
-        ...this.state,
+      this.props.onChange(
+        this.getForecastObject({
+          ...this.state,
           selectForecast,
           isValid: this.validateForm(selectQuote, selectRecommend, selectForecast),
-      }));
+        }),
+      );
     }
   };
 
