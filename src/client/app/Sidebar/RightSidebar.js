@@ -22,7 +22,6 @@ import Loading from '../../components/Icon/Loading';
 import UserActivitySearch from '../../activity/UserActivitySearch';
 import WalletSidebar from '../../components/Sidebar/WalletSidebar';
 import FeedSidebar from '../../components/Sidebar/FeedSidebar';
-import RightSidebarLoading from './RightSidebarLoading';
 
 @withRouter
 @connect(
@@ -113,7 +112,7 @@ export default class RightSidebar extends React.Component {
                     onRefresh={this.handleInterestingPeopleRefresh}
                   />
                 ) : (
-                  <RightSidebarLoading />
+                  <div />
                 )}
               </div>
             )}
