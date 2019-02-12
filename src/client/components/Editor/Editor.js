@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import readingTime from 'reading-time';
-import { Form, Input, Select, Button } from 'antd';
+import { Form, Input, Select, Button, Checkbox } from 'antd';
 import BTooltip from '../BTooltip';
 import { rewardsValues } from '../../../common/constants/rewards';
 import Action from '../Button/Action';
@@ -579,13 +579,13 @@ class Editor extends React.Component {
             </Select>,
           )}
         </Form.Item>
-        {/* <Form.Item className={classNames({ Editor__hidden: isUpdating })}> */}
-        {/* {getFieldDecorator('upvote', { valuePropName: 'checked', initialValue: true })( */}
-        {/* <Checkbox onChange={this.onUpdate} disabled={isUpdating}> */}
-        {/* <FormattedMessage id="like_post" defaultMessage="Like this post" /> */}
-        {/* </Checkbox>, */}
-        {/* )} */}
-        {/* </Form.Item> */}
+        <Form.Item className={classNames({ Editor__hidden: isUpdating })}>
+          {getFieldDecorator('upvote', { valuePropName: 'checked', initialValue: true })(
+            <Checkbox onChange={this.onUpdate} disabled={isUpdating}>
+              <FormattedMessage id="like_post" defaultMessage="Like this post" />
+            </Checkbox>,
+          )}
+        </Form.Item>
         <div className="Editor__bottom">
           <span className="Editor__bottom__info">
             <i className="iconfont icon-markdown" />{' '}

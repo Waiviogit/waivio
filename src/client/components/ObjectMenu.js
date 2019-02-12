@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
-import './UserMenu.less';
+import './ObjectMenu.less';
 
 class ObjectMenu extends React.Component {
   static propTypes = {
@@ -44,7 +44,7 @@ class ObjectMenu extends React.Component {
   }
 
   getItemClasses = key =>
-    classNames('UserMenu__item', { 'UserMenu__item--active': this.state.current === key });
+    classNames('ObjectMenu__item', { 'ObjectMenu__item--active': this.state.current === key });
 
   handleClick = e => {
     const key = e.currentTarget.dataset.key;
@@ -53,7 +53,7 @@ class ObjectMenu extends React.Component {
 
   render() {
     return (
-      <div className="UserMenu">
+      <div className="ObjectMenu">
         <div className="container menu-layout">
           <div className="left" />
           <Scrollbars
@@ -64,7 +64,15 @@ class ObjectMenu extends React.Component {
             )}
             style={{ width: '100%', height: 46 }}
           >
-            <ul className="UserMenu__menu center">
+            <ul className="ObjectMenu__menu center">
+              <li
+                className={this.getItemClasses(ObjectMenu.TAB_NAME.ABOUT)}
+                onClick={this.handleClick}
+                role="presentation"
+                data-key={ObjectMenu.TAB_NAME.ABOUT}
+              >
+                <FormattedMessage id="about" defaultMessage="About" />
+              </li>
               <li
                 className={this.getItemClasses(ObjectMenu.TAB_NAME.REVIEWS)}
                 onClick={this.handleClick}
@@ -73,14 +81,6 @@ class ObjectMenu extends React.Component {
               >
                 <FormattedMessage id="reviews" defaultMessage="Reviews" />
               </li>
-              {/* <li */}
-              {/* className={this.getItemClasses(ObjectMenu.TAB_NAME.ABOUT)} */}
-              {/* onClick={this.handleClick} */}
-              {/* role="presentation" */}
-              {/* data-key={ObjectMenu.TAB_NAME.ABOUT} */}
-              {/* > */}
-              {/* <FormattedMessage id="about" defaultMessage="About" /> */}
-              {/* </li> */}
               {this.props.accessExtend && (
                 <li
                   className={this.getItemClasses(ObjectMenu.TAB_NAME.GALLERY)}
@@ -99,7 +99,7 @@ class ObjectMenu extends React.Component {
                   data-key={ObjectMenu.TAB_NAME.UPDATES}
                 >
                   <FormattedMessage id="updates" defaultMessage="Updates" />
-                  <span className="UserMenu__badge">
+                  <span className="ObjectMenu__badge">
                     <FormattedNumber value={this.props.fieldsCount + 1} />
                   </span>
                 </li>
@@ -111,7 +111,7 @@ class ObjectMenu extends React.Component {
                 data-key={ObjectMenu.TAB_NAME.FOLLOWERS}
               >
                 <FormattedMessage id="followers" defaultMessage="Followers" />
-                <span className="UserMenu__badge">
+                <span className="ObjectMenu__badge">
                   <FormattedNumber value={this.props.followers} />
                 </span>
               </li>

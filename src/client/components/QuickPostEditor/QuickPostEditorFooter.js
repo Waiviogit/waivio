@@ -57,7 +57,9 @@ const QuickPostEditorFooter = ({
               })}
             >
               {_.isEmpty(currentImages) && (
-                <FormattedMessage id="add_photo" defaultMessage="Add photo" />
+                <FormattedMessage id="add_photo" defaultMessage="Add photo">
+                  {value => <div className="add-button">{value}</div>}
+                </FormattedMessage>
               )}
             </i>
           </div>

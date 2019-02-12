@@ -16,7 +16,6 @@ describe('settingsReducer', () => {
     upvoteSetting: true,
     exitPageSetting: true,
     rewardSetting: rewardsValues.half,
-    useBeta: false,
   };
 
   it('should return initial state', () => {

@@ -90,6 +90,11 @@ export default (state = initialState, action) => {
         usedLocale: action.payload.id,
         translations: action.payload.translations,
       };
+    case appTypes.SET_SCREEN_SIZE:
+      return {
+        ...state,
+        screenSize: action.payload,
+      };
     case appTypes.REFRESH_CRYPTO_PRICE_HISTORY:
       return {
         ...state,
@@ -147,6 +152,7 @@ export const getIsFetching = state => state.isFetching;
 export const getIsBannerClosed = state => state.bannerClosed;
 export const getAppUrl = state => state.appUrl;
 export const getUsedLocale = state => state.usedLocale;
+export const getScreenSize = state => state.screenSize;
 export const getTranslations = state => state.translations;
 export const getCryptosPriceHistory = state => state.cryptosPriceHistory;
 export const getShowPostModal = state => state.showPostModal;

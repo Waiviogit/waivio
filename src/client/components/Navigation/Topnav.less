@@ -52,7 +52,7 @@
     > .ant-select-show-search {
       width: 100%;
       .ant-select-search__field {
-        background-color: @white !important;
+        background-color: @white!important;
       }
     }
 
@@ -143,14 +143,6 @@
 
   &__item-user {
     margin: 0 !important;
-  }
-
-  &__link {
-    &--light {
-      i {
-        font-weight: normal !important;
-      }
-    }
   }
 
   &__mobile-search {
@@ -288,8 +280,33 @@ div[data-dir='rtl'] .Topnav {
 }
 
 .Topnav__menu--icon {
-  width: 16px !important;
-  justify-content: flex-end !important;
+  .Topnav__link {
+    margin-top: 9px;
+  }
+  .anticon-bars {
+    font-size: 28px !important;
+    margin: 0 !important;
+  }
+  .anticon-caret-down {
+    display: none;
+  }
+
+  @media @medium, @large {
+    width: 16px !important;
+    justify-content: flex-end !important;
+    .Topnav__link {
+      margin: 0;
+    }
+    .anticon-caret-down {
+      display: unset;
+      font-weight: normal !important;
+      margin: 0 !important;
+      font-size: 12px !important;
+    }
+    .anticon-bars {
+      display: none;
+    }
+  }
 }
 
 @import 'Topnav-nightmode';
