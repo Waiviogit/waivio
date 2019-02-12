@@ -4,6 +4,7 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import Instrument from '../../InstrumentsPage/Instrument';
 import '../InstrumentsPage.less';
+import AssetsTabLoading from "./AssetsTabLoading";
 
 const propTypes = {
   charts: PropTypes.shape(),
@@ -48,30 +49,25 @@ const AssetsTab = ({ intl, quoteSettingsFiltered, charts, signals, deals, viewMo
   return (
     <Fragment>
       {viewMode === 'list' && listHeader}
+      {quoteSettingsFiltered.length > 0 ? (
       <div
         className={classNames('st-instruments-details', {
           'list-view': viewMode === 'list',
           'cards-view': viewMode === 'cards',
         })}
       >
-        {quoteSettingsFiltered.length > 0 ? (
           <div className="st-instruments-responsible-wrap">{selectedInstruments}</div>
-        ) : (
-          <div className="d-flex justify-content-center align-items-center h-100 w-100">
-            {intl.formatMessage({
-              id: 'assets.quotesNoPresent',
-              defaultMessage: 'There are no quotes',
-            })}
-          </div>
-        )}
       </div>
+      ) : (
+        <AssetsTabLoading />
+      )}
     </Fragment>
   );
 };
 
 AssetsTab.defaultProps = {
   quoteSettingsFiltered: [],
-  viewMode: 'cards',
+  viewMode: 'list',
   deals: {},
   signals: {},
   charts: {},

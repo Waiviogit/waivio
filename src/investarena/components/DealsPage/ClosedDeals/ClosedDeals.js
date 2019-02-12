@@ -14,8 +14,9 @@ import './ClosedDeals.less';
 const Option = Select.Option;
 
 const propTypes = {
-  quotesSettings: PropTypes.object,
-  closedDeals: PropTypes.object.isRequired,
+  quotesSettings: PropTypes.shape(),
+  closedDeals: PropTypes.shape().isRequired,
+  intl: PropTypes.shape().isRequired,
   viewMode: PropTypes.oneOf(['list', 'cards']),
 };
 

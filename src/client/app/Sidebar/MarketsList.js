@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { marketNames } from '../../../investarena/constants/objectsInvestarena';
-import Loading from '../../components/Icon/Loading';
 import Sidenav from '../../components/Navigation/Sidenav';
+import MarketsListLoading from './MarketsListLoadivg';
 
 const MarketsList = ({ quoteSettingsSorted }) => {
   const menu = [
@@ -28,7 +28,11 @@ const MarketsList = ({ quoteSettingsSorted }) => {
       };
     }),
   ];
-  return _.isEmpty(quoteSettingsSorted) ? <Loading /> : <Sidenav navigationMenu={menu} />;
+  return _.isEmpty(quoteSettingsSorted) ? (
+    <MarketsListLoading />
+  ) : (
+    <Sidenav navigationMenu={menu} />
+  );
 };
 
 MarketsList.propTypes = {
