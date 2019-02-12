@@ -12,8 +12,8 @@ import { PlatformHelper } from '../../platform/platformHelper';
 import { toggleModal } from '../../redux/actions/modalsActions';
 
 const propTypes = {
-  quoteSettings: PropTypes.object,
-  quote: PropTypes.object,
+  quoteSettings: PropTypes.shape(),
+  quote: PropTypes.shape(),
   postId: PropTypes.string,
   amountModal: PropTypes.string,
   marginModal: PropTypes.string,

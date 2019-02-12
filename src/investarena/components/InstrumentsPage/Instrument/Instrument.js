@@ -11,7 +11,6 @@ import TradeButtonsAssets from '../../InstrumentsPage/TradeButtonsAssets';
 import withTrade from '../../HOC/withTrade';
 import InstrumentCardView from './CardView';
 import Signals from './Signals';
-import ModalTC from '../../Modals/ModalTC/ModalTC';
 import '../InstrumentsPage.less';
 
 const propTypes = {
@@ -22,6 +21,8 @@ const propTypes = {
   quoteSettings: PropTypes.shape().isRequired,
   quote: PropTypes.shape(),
   viewMode: PropTypes.oneOf(['list', 'cards']),
+  toggleModal: PropTypes.func.isRequired,
+  platformName: PropTypes.string.isRequired,
 };
 
 class Instrument extends Component {
@@ -52,7 +53,8 @@ class Instrument extends Component {
     ) : null;
   };
   toggleModalInstrumentsChart = () => {
-    this.setState({ isModalInstrumentsChart: !this.state.isModalInstrumentsChart });
+    const { quote, quoteSettings, platformName, toggleModal } = this.props;
+    toggleModal('openDeals', { quote, quoteSettings, platformName });
   };
   render() {
     const { intl, quoteSettings, quote, signals, chart } = this.props;
@@ -84,6 +86,7 @@ class Instrument extends Component {
       case 'cards':
         return (
           <InstrumentCardView
+            toggleModalTC={this.toggleModalInstrumentsChart}
             quoteSettings={quoteSettings}
             quote={quote}
             chart={chart}
@@ -118,14 +121,6 @@ class Instrument extends Component {
             >
               {getChart(180, 40)}
             </div>
-            {this.state.isModalInstrumentsChart && (
-              <ModalTC
-                quoteName={quote.security}
-                market={quoteSettings.market}
-                isOpen={this.state.isModalInstrumentsChart}
-                toggle={this.toggleModalInstrumentsChart}
-              />
-            )}
             <TradeButtonsAssets
               className="st-assets-buttons st-trade-buttons-asset-page-wrap"
               quoteSecurity={quote.security}

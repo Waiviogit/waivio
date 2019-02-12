@@ -1,8 +1,8 @@
 /* eslint-disable */
 import humanize from 'string-humanize';
 import React, { Component } from 'react';
-import { publishSubscribe, destroyPublishSubscribe } from '../../../../platform/publishSubscribe';
-import { singleton } from '../../../../platform/singletonPlatform';
+import { publishSubscribe, destroyPublishSubscribe } from '../../platform/publishSubscribe';
+import { singleton } from '../../platform/singletonPlatform';
 
 class TchChart extends Component {
   constructor(props) {

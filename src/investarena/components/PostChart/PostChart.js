@@ -12,21 +12,21 @@ import { currentTime } from '../../helpers/currentTime';
 import TabSelect from './TabSelect';
 import quoteData from '../../default/quoteData';
 import quoteSettingsData from '../../default/quoteSettingsData';
-import ModalTC from '../Modals/ModalTC/ModalTC';
 
 const propTypes = {
-  bars: PropTypes.object,
+  bars: PropTypes.shape(),
   platformName: PropTypes.string,
   connect: PropTypes.bool,
   isObjectProfile: PropTypes.bool,
-  quote: PropTypes.object,
+  quote: PropTypes.shape(),
   expiredBars: PropTypes.array,
   slPrice: PropTypes.string,
   tpPrice: PropTypes.string,
   expiredAt: PropTypes.string,
-  quoteSettings: PropTypes.object,
+  quoteSettings: PropTypes.shape(),
   expiredTimeScale: PropTypes.string,
   toggleModalPost: PropTypes.func.isRequired,
+  toggleModal: PropTypes.func.isRequired,
   quoteSecurity: PropTypes.string.isRequired,
   intl: PropTypes.shape().isRequired,
   createdAt: PropTypes.string.isRequired,
@@ -34,19 +34,21 @@ const propTypes = {
   recommend: PropTypes.string.isRequired,
   getChartData: PropTypes.func.isRequired,
 };
+
 const defaultProps = {
   platformName: 'widgets',
   quote: quoteData,
   quoteSettings: quoteSettingsData,
   isObjectProfile: false,
+  connect: false,
 };
+
 class PostChart extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isLoading: true,
       timeScale: CanvasHelper.getTimeScale(this.props.createdAt, this.props.forecast),
-      isModalChart: false,
       chartType: 'Line',
       priceType: this.props.recommend,
       expired: !!this.props.expiredAt || this.isExpiredByTime(),
@@ -57,6 +59,7 @@ class PostChart extends Component {
           : this.props.quoteSettings.isSession,
     };
   }
+
   componentDidMount() {
     const parentSize = this.canvasRef.parentElement.getBoundingClientRect();
     this.canvasRef.width = parentSize.width;
@@ -81,6 +84,7 @@ class PostChart extends Component {
       }
     }
   }
+
   componentWillReceiveProps(nextProps) {
     if (!this.state.expired && this.chartData && this.chart) {
       if (nextProps.expiredBars && nextProps.expiredAt) {
@@ -120,7 +124,12 @@ class PostChart extends Component {
       }
     }
   }
-  toggleModal = () => this.setState({ isModalChart: !this.state.isModalChart });
+
+  toggleModalTC = () => {
+    const { quote, quoteSettings, platformName, toggleModal } = this.props;
+    toggleModal('openDeals', { quote, quoteSettings, platformName });
+  };
+
   isExpiredByTime = () => currentTime.getTime() > moment(this.props.forecast).valueOf();
   createChartData = () =>
     new ChartData({
@@ -212,7 +221,7 @@ class PostChart extends Component {
             </div>
           )}
         </div>
-        <div role="presentation" className="st-post-chart-wrap" onClick={this.toggleModal}>
+        <div role="presentation" className="st-post-chart-wrap" onClick={this.toggleModalTC}>
           {this.state.isLoading && !this.state.expired && <div className="spinner" />}
           <div className="st-post-chart-block">
             <div
@@ -239,14 +248,6 @@ class PostChart extends Component {
           className="st-chart-tab-select time"
           onSelect={this.updateTimeScaleType}
         />
-        {this.state.isModalChart && (
-          <ModalTC
-            quoteName={this.props.quote.security}
-            market={this.props.quoteSettings.market}
-            isOpen={this.state.isModalChart}
-            toggle={this.toggleModal}
-          />
-        )}
       </div>
     );
   }

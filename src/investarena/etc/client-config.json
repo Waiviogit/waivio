@@ -40,7 +40,6 @@
       "widgets": "ws://192.168.1.222/wss/Server.ashx?subscriber=true"
     },
     "webSocketUrl": "http://localhost:8082",
-    "chatUrl": "http://localhost:8080/",
     "shareLinksUrl": {
       "facebook": "http://www.facebook.com/sharer.php?u=http://localhost:3001/posts/",
       "vkontakte": "http://vkontakte.ru/share.php?url=http://localhost:3001/posts/",

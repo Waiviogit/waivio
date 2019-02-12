@@ -10,6 +10,8 @@ import { getQuotesSettingsState } from '../../../investarena/redux/selectors/quo
 import { getAssetsChartsState } from '../../../investarena/redux/selectors/chartsSelectors';
 import { marketNames } from '../../../investarena/constants/objectsInvestarena';
 import './TopInsruments.less';
+import { getPlatformNameState } from '../../../investarena/redux/selectors/platformSelectors';
+import { toggleModal } from '../../../investarena/redux/actions/modalsActions';
 
 const instrumentsToShow = {
   Index: ['DOWUSD', 'DAXEUR'],
@@ -19,13 +21,17 @@ const instrumentsToShow = {
   Stock: ['Gazprom', 'Adidas'],
 };
 
-const TopInstruments = ({ intl, quoteSettings, quotes, charts }) => {
+const TopInstruments = ({ intl, quoteSettings, quotes, charts, toggleModalTC, platformName }) => {
   const sidebarItems = marketNames.map(market => {
     const instrumentsCount = Object.values(quoteSettings).filter(
       quote =>
         quote.wobjData &&
         (quote.market === market.name || market.names.some(name => name === quote.market)),
     ).length;
+
+    const toggleModalInstrumentsChart = (quote, quoteSettingsTC) => {
+      toggleModalTC('openDeals', { quote, quoteSettingsTC, platformName });
+    };
     return instrumentsCount ? (
       <div className="SidebarContentBlock top-instruments" key={market.name}>
         <div className="SidebarContentBlock__title">
@@ -41,6 +47,7 @@ const TopInstruments = ({ intl, quoteSettings, quotes, charts }) => {
               quoteSettings[instrumentName].wobjData && (
                 <InstrumentCardView
                   key={instrumentName}
+                  toggleModalTC={toggleModalInstrumentsChart}
                   intl={intl}
                   quoteSettings={quoteSettings[instrumentName]}
                   quote={quotes[instrumentName]}
@@ -67,14 +74,22 @@ TopInstruments.propTypes = {
   charts: PropTypes.shape(),
   quotes: PropTypes.shape().isRequired,
   quoteSettings: PropTypes.shape().isRequired,
+  toggleModalTC: PropTypes.func.isRequired,
+  platformName: PropTypes.string.isRequired,
 };
 
 TopInstruments.defaultProps = {
   charts: {},
 };
 
-export default connect(state => ({
-  quotes: getQuotesState(state),
-  quoteSettings: getQuotesSettingsState(state),
-  charts: getAssetsChartsState(state),
-}))(injectIntl(TopInstruments));
+export default connect(
+  state => ({
+    quotes: getQuotesState(state),
+    quoteSettings: getQuotesSettingsState(state),
+    charts: getAssetsChartsState(state),
+    platformName: getPlatformNameState(state),
+  }),
+  dispatch => ({
+    toggleModalTC: (type, modalInfo) => dispatch(toggleModal(type, modalInfo)),
+  }),
+)(injectIntl(TopInstruments));
