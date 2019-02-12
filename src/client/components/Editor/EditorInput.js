@@ -2,19 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Icon, Input, Modal, Form } from 'antd';
+import { Icon, Input, Form } from 'antd';
 import Dropzone from 'react-dropzone';
 import { HotKeys } from 'react-hotkeys';
-import uuidv4 from 'uuid/v4';
 import { MAXIMUM_UPLOAD_SIZE, isValidImage } from '../../helpers/image';
 import EditorToolbar from './EditorToolbar';
 import './EditorInput.less';
-import QuickPostEditorFooter from '../../../client/components/QuickPostEditor/QuickPostEditorFooter';
-import {
-  ALLOWED_IMG_FORMATS,
-  MAX_IMG_SIZE,
-  objectURLValidationRegExp,
-} from '../../../common/constants/validation';
+import AddImageModal from './AddImageModal';
 
 class EditorInput extends React.Component {
   static propTypes = {
@@ -64,17 +58,13 @@ class EditorInput extends React.Component {
     super(props);
 
     this.state = {
-      imageUploading: false,
       dropzoneActive: false,
       showModal: false,
-      currentImage: [],
     };
 
     this.setInput = this.setInput.bind(this);
-    this.disableAndInsertImage = this.disableAndInsertImage.bind(this);
     this.insertCode = this.insertCode.bind(this);
     this.handlePastedImage = this.handlePastedImage.bind(this);
-    this.handleImageChange = this.handleImageChange.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
     this.handleDragEnter = this.handleDragEnter.bind(this);
     this.handleDragLeave = this.handleDragLeave.bind(this);
@@ -121,16 +111,6 @@ class EditorInput extends React.Component {
       value.substring(endPos, value.length);
 
     this.setValue(newValue, startPos + deltaStart, endPos + deltaEnd);
-  }
-
-  disableAndInsertImage(image, imageName = 'image') {
-    const newImage = {
-      src: image,
-      name: imageName,
-      id: uuidv4(),
-    };
-    this.setState({ imageUploading: false, currentImage: [newImage] });
-    this.props.form.setFieldsValue({ image });
   }
 
   insertImage(image, imageName = 'image') {
@@ -259,25 +239,6 @@ class EditorInput extends React.Component {
     }
   }
 
-  handleImageChange(e) {
-    if (e.target.files && e.target.files[0]) {
-      if (!isValidImage(e.target.files[0], MAX_IMG_SIZE.background, ALLOWED_IMG_FORMATS)) {
-        this.props.onImageInvalid(MAX_IMG_SIZE.background, `(${ALLOWED_IMG_FORMATS.join(', ')}) `);
-        return;
-      }
-
-      this.setState({
-        imageUploading: true,
-      });
-
-      this.props.onImageUpload(e.target.files[0], this.disableAndInsertImage, () =>
-        this.setState({
-          imageUploading: false,
-        }),
-      );
-    }
-  }
-
   handleDrop(files) {
     if (files.length === 0) {
       this.setState({
@@ -331,27 +292,13 @@ class EditorInput extends React.Component {
   }
 
   handleToggleModal = () => {
-    this.props.form.setFieldsValue({ image: '' });
-
     this.setState(prevState => ({
       showModal: !prevState.showModal,
-      currentImage: [],
     }));
   };
 
-  handleRemoveImage = () => {
-    this.setState({ currentImage: [] });
-    this.props.form.setFieldsValue({ image: '' });
-  };
-
-  handleOk = e => {
-    e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        this.handleToggleModal();
-        this.insertImage(values.image);
-      }
-    });
+  beforeInsertImage = (image, imageName) => {
+    this.insertImage(image, imageName, this.input);
   };
 
   render() {
@@ -369,7 +316,7 @@ class EditorInput extends React.Component {
       intl,
       ...restProps
     } = this.props;
-    const { dropzoneActive } = this.state;
+    const { dropzoneActive, showModal } = this.state;
 
     return (
       <React.Fragment>
@@ -379,76 +326,13 @@ class EditorInput extends React.Component {
           onSelectLinkedObject={this.handleSelectObject}
           imageRef={this.imageRef}
         />
-        <Modal
-          title={intl.formatMessage({
-            id: 'image',
-            defaultMessage: 'Add image',
-          })}
-          visible={this.state.showModal}
+        <AddImageModal
+          visible={showModal}
           onCancel={this.handleToggleModal}
-          onOk={this.handleOk}
-        >
-          <div className="image-wrapper">
-            <QuickPostEditorFooter
-              imageUploading={this.state.imageUploading}
-              handleImageChange={this.handleImageChange}
-              currentImages={this.state.currentImage}
-              onRemoveImage={this.handleRemoveImage}
-              showAddButton={false}
-            />
-            <span>
-              {intl.formatMessage({
-                id: 'or',
-                defaultMessage: 'OR',
-              })}
-            </span>
-            <Form.Item>
-              {form.getFieldDecorator('image', {
-                rules: [
-                  {
-                    required: true,
-                    message: intl.formatMessage(
-                      {
-                        id: 'field_error',
-                        defaultMessage: 'Field is required',
-                      },
-                      {
-                        field: intl.formatMessage({
-                          id: 'image_url_placeholder',
-                          defaultMessage: 'Image URL',
-                        }),
-                      },
-                    ),
-                  },
-                  {
-                    pattern: objectURLValidationRegExp,
-                    message: intl.formatMessage({
-                      id: 'image_link_validation',
-                      defaultMessage: 'Please enter valid link',
-                    }),
-                  },
-                ],
-              })(
-                <Input
-                  className="AppendForm__title"
-                  placeholder={intl.formatMessage({
-                    id: 'image_url_placeholder',
-                    defaultMessage: 'Image URL',
-                  })}
-                />,
-              )}
-            </Form.Item>
-            {this.state.currentImage[0] && (
-              <div className="AppendForm__previewWrap">
-                <img
-                  src={this.state.currentImage[0].src}
-                  alt="pic"
-                  className="AppendForm__preview"
-                />
-              </div>
-            )}
-          </div>
-        </Modal>
+          insertImage={this.beforeInsertImage}
+          onImageUpload={onImageUpload}
+          onImageInvalid={onImageInvalid}
+        />
         <div className="EditorInput__dropzone-base">
           <Dropzone
             disableClick

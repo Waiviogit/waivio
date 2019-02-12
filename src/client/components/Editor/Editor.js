@@ -166,7 +166,7 @@ class Editor extends React.Component {
       title: post.title,
       body: post.body,
       reward,
-      upvote: post.upvote,
+      // upvote: post.upvote,
       [WAIVIO_META_FIELD_NAME]: post.waivioData,
     });
     this.setBodyAndRender(post.body);
