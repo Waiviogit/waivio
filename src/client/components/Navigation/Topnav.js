@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { withRouter, Link, NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
-import {Menu, Icon, Input, AutoComplete, Button, Modal} from 'antd';
+import { Menu, Icon, Input, AutoComplete, Button, Modal } from 'antd';
 import classNames from 'classnames';
 import { searchAutoComplete } from '../../search/searchActions';
 import { getUpdatedSCUserMetadata } from '../../auth/authActions';
@@ -13,7 +13,8 @@ import {
   getNotifications,
   getAuthenticatedUserSCMetaData,
   getIsLoadingNotifications,
-  getScreenSize, getNightmode,
+  getScreenSize,
+  getNightmode,
 } from '../../reducers';
 import ModalBroker from '../../../investarena/components/Modals/ModalBroker';
 import ModalDealConfirmation from '../../../investarena/components/Modals/ModalDealConfirmation';
@@ -27,9 +28,12 @@ import Notifications from './Notifications/Notifications';
 import LanguageSettings from './LanguageSettings';
 import './Topnav.less';
 import Balance from '../../../investarena/components/Header/Balance';
-import {getPlatformNameState, getIsLoadingPlatformState} from "../../../investarena/redux/selectors/platformSelectors";
-import {toggleModal} from "../../../investarena/redux/actions/modalsActions";
-import config from "../../../investarena/configApi/config";
+import {
+  getPlatformNameState,
+  getIsLoadingPlatformState,
+} from '../../../investarena/redux/selectors/platformSelectors';
+import { toggleModal } from '../../../investarena/redux/actions/modalsActions';
+import config from '../../../investarena/configApi/config';
 
 @injectIntl
 @withRouter
@@ -42,12 +46,12 @@ import config from "../../../investarena/configApi/config";
     screenSize: getScreenSize(state),
     isNightMode: getNightmode(state),
     platformName: getPlatformNameState(state),
-    isLoadingPlatform: getIsLoadingPlatformState(state)
+    isLoadingPlatform: getIsLoadingPlatformState(state),
   }),
   {
     searchAutoComplete,
     getUpdatedSCUserMetadata,
-    toggleModal
+    toggleModal,
   },
 )
 class Topnav extends React.Component {
@@ -393,15 +397,21 @@ class Topnav extends React.Component {
   }
 
   toggleModalBroker = () => {
-    this.props.toggleModal('broker')
+    this.props.toggleModal('broker');
   };
 
   toggleModalDeposit = () => {
-    this.setState({isModalDeposit: !this.state.isModalDeposit})
+    this.setState({ isModalDeposit: !this.state.isModalDeposit });
   };
 
   render() {
-    const { intl, autoCompleteSearchResults, platformName, isLoadingPlatform, isNightMode} = this.props;
+    const {
+      intl,
+      autoCompleteSearchResults,
+      platformName,
+      isLoadingPlatform,
+      isNightMode,
+    } = this.props;
     const { searchBarActive, searchBarValue, isModalDeposit } = this.state;
 
     const dropdownOptions = _.map(autoCompleteSearchResults, option => (
@@ -533,29 +543,36 @@ class Topnav extends React.Component {
               </Menu.Item>
             )}
           </Menu>
-          {(platformName !== 'widgets' && !isLoadingPlatform) ?
+          {platformName !== 'widgets' && !isLoadingPlatform ? (
             <div className="st-header-broker-balance-pl-wrap">
               <div className="st-balance-wrap">
                 <div className="st-balance-text">
-                  {intl.formatMessage({id: 'headerAuthorized.p&l', defaultMessage: 'P&L deals'})}:
+                  {intl.formatMessage({ id: 'headerAuthorized.p&l', defaultMessage: 'P&L deals' })}:
                 </div>
                 <div className="st-balance-amount">
-                  <Balance balanceType="unrealizedPnl"/>
+                  <Balance balanceType="unrealizedPnl" />
                 </div>
               </div>
               <div className="st-balance-border">
                 <div className="st-balance-text">
-                  {intl.formatMessage({id: 'headerAuthorized.balance', defaultMessage: 'Balance'})}:
+                  {intl.formatMessage({
+                    id: 'headerAuthorized.balance',
+                    defaultMessage: 'Balance',
+                  })}
+                  :
                 </div>
                 <div className="st-balance-amount">
-                  <Balance balanceType="balance"/>
+                  <Balance balanceType="balance" />
                 </div>
               </div>
-              <Button  type="primary" onClick={this.toggleModalDeposit}>
-                {intl.formatMessage({id: 'headerAuthorized.deposit', defaultMessage: 'Deposit'})}
+              <Button type="primary" onClick={this.toggleModalDeposit}>
+                {intl.formatMessage({ id: 'headerAuthorized.deposit', defaultMessage: 'Deposit' })}
               </Button>
               <Modal
-                title={intl.formatMessage({id: 'headerAuthorized.deposit', defaultMessage: 'Deposit'})}
+                title={intl.formatMessage({
+                  id: 'headerAuthorized.deposit',
+                  defaultMessage: 'Deposit',
+                })}
                 footer={null}
                 visible={isModalDeposit}
                 onCancel={this.toggleModalDeposit}
@@ -564,10 +581,12 @@ class Topnav extends React.Component {
                 destroyOnClose
               >
                 <iframe
-                  title='depositFrame'
-                  src={`${config[process.env.NODE_ENV].platformDepositUrl[this.props.platformName]}?${isNightMode ? 'style=wp&' : ''}mode=popup&lang=en#deposit`}
-                  width='1200px'
-                  height='696px'
+                  title="depositFrame"
+                  src={`${
+                    config[process.env.NODE_ENV].platformDepositUrl[this.props.platformName]
+                  }?${isNightMode ? 'style=wp&' : ''}mode=popup&lang=en#deposit`}
+                  width="1200px"
+                  height="696px"
                 />
               </Modal>
               <img
@@ -579,13 +598,16 @@ class Topnav extends React.Component {
                 alt="broker"
               />
             </div>
-            :
+          ) : (
             <div className="st-header-broker-balance-pl-wrap">
-              <Button  type="primary" onClick={this.toggleModalBroker}>
-                {intl.formatMessage({id: 'headerAuthorized.connectToBroker', defaultMessage: 'Connect to broker'})}
+              <Button type="primary" onClick={this.toggleModalBroker}>
+                {intl.formatMessage({
+                  id: 'headerAuthorized.connectToBroker',
+                  defaultMessage: 'Connect to broker',
+                })}
               </Button>
             </div>
-          }
+          )}
         </div>
       </div>
     );

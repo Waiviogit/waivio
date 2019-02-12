@@ -25,7 +25,7 @@ const defaultProps = {
   charts: {},
   openDeals: {},
   favorites: [],
-  screenSize: 'medium'
+  screenSize: 'medium',
 };
 
 class InstrumentsPage extends Component {
@@ -53,7 +53,7 @@ class InstrumentsPage extends Component {
   }
 
   toggleViewMode = viewMode => {
-    if(viewMode !== this.state.viewMode) {
+    if (viewMode !== this.state.viewMode) {
       this.setState({ viewMode });
       setViewMode('instruments', viewMode);
     }
@@ -71,11 +71,12 @@ class InstrumentsPage extends Component {
 
     const quoteSettingsSorted = {};
     Object.entries(quoteSettings).forEach(([key, value]) => {
-      if(value.wobjData) {
-        const marketName = value.market.toLowerCase() === 'cryptocurrency' ? 'crypto' : value.market.toLowerCase();
+      if (value.wobjData) {
+        const marketName =
+          value.market.toLowerCase() === 'cryptocurrency' ? 'crypto' : value.market.toLowerCase();
         quoteSettingsSorted[marketName] = quoteSettingsSorted[marketName]
-          ? [...quoteSettingsSorted[marketName], {...value, keyName: key}]
-          : [{...value, keyName: key}];
+          ? [...quoteSettingsSorted[marketName], { ...value, keyName: key }]
+          : [{ ...value, keyName: key }];
       }
     });
 
@@ -117,7 +118,7 @@ class InstrumentsPage extends Component {
         <div className="feed-layout container">
           <Affix className="leftContainer" stickPosition={115}>
             <div className="left">
-              <LeftSidebar quoteSettingsSorted={quoteSettingsSorted}/>
+              <LeftSidebar quoteSettingsSorted={quoteSettingsSorted} />
             </div>
           </Affix>
           <div className="center">

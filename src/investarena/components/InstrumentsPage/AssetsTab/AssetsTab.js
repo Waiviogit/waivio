@@ -16,17 +16,16 @@ const propTypes = {
 
 const AssetsTab = ({ intl, quoteSettingsFiltered, charts, signals, deals, viewMode }) => {
   const selectedInstruments = quoteSettingsFiltered.map(qs => (
-        <Instrument
-          key={qs.keyName}
-          signals={signals[qs.keyName]}
-          deals={deals}
-          quoteSettings={qs}
-          chart={charts && charts[qs.keyName] || []}
-          quoteSecurity={qs.keyName}
-          viewMode={viewMode}
-        />
-      ),
-  );
+    <Instrument
+      key={qs.keyName}
+      signals={signals[qs.keyName]}
+      deals={deals}
+      quoteSettings={qs}
+      chart={(charts && charts[qs.keyName]) || []}
+      quoteSecurity={qs.keyName}
+      viewMode={viewMode}
+    />
+  ));
   const listHeader = (
     <div className="st-instr-column-wrap d-flex">
       <div className="st-instruments-text-title">

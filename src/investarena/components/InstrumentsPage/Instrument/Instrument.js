@@ -22,7 +22,7 @@ const propTypes = {
   quote: PropTypes.shape(),
   viewMode: PropTypes.oneOf(['list', 'cards']),
   toggleModal: PropTypes.func.isRequired,
-  platformName: PropTypes.string.isRequired
+  platformName: PropTypes.string.isRequired,
 };
 
 class Instrument extends Component {
@@ -53,8 +53,8 @@ class Instrument extends Component {
     ) : null;
   };
   toggleModalInstrumentsChart = () => {
-    const {quote, quoteSettings, platformName, toggleModal} = this.props;
-    toggleModal('openDeals', {quote, quoteSettings, platformName})
+    const { quote, quoteSettings, platformName, toggleModal } = this.props;
+    toggleModal('openDeals', { quote, quoteSettings, platformName });
   };
   render() {
     const { intl, quoteSettings, quote, signals, chart } = this.props;

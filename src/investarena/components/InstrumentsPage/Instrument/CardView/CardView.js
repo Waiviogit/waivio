@@ -35,7 +35,7 @@ class InstrumentCard extends React.Component {
     isModalChart: false,
   };
   toggleModalInstrumentsChart = () => {
-    this.props.toggleModalTC(this.props.quote, this.props.quoteSettings)
+    this.props.toggleModalTC(this.props.quote, this.props.quoteSettings);
   };
   render() {
     const {
@@ -47,7 +47,7 @@ class InstrumentCard extends React.Component {
       showTradeBtn,
       chartHeight,
       chartWidth,
-      toggleModalTC
+      toggleModalTC,
     } = this.props;
     return (
       <div key={quote.security} className="st-card">
@@ -77,7 +77,7 @@ class InstrumentCard extends React.Component {
             </div>
             <Signals signals={signals} />
           </div>
-          <div role='presentation' onClick={this.toggleModalInstrumentsChart}>
+          <div role="presentation" onClick={this.toggleModalInstrumentsChart}>
             <InstrumentsChart
               chart={chart}
               height={chartHeight}

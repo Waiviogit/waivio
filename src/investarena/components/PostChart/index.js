@@ -9,7 +9,7 @@ import { makeGetChartState } from '../../redux/selectors/chartsSelectors';
 import { makeGetQuoteSettingsState } from '../../redux/selectors/quotesSettingsSelectors';
 import { makeGetQuoteState } from '../../redux/selectors/quotesSelectors';
 import PostChart from './PostChart';
-import {toggleModal} from "../../redux/actions/modalsActions";
+import { toggleModal } from '../../redux/actions/modalsActions';
 
 const PostChartContainer = props => <PostChart {...props} />;
 

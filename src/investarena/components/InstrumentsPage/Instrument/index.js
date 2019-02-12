@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Instrument from './Instrument';
 import { getPlatformNameState } from '../../../redux/selectors/platformSelectors';
-import {toggleModal} from "../../../redux/actions/modalsActions";
+import { toggleModal } from '../../../redux/actions/modalsActions';
 
 const InstrumentContainer = props => <Instrument {...props} />;
 
