@@ -87,6 +87,7 @@ class Write extends React.Component {
       initialTitle: '',
       initialTopics: [],
       initialWavioData: { wObjects: [] },
+      initialForecast: {},
       initialBody: '',
       initialReward: this.props.rewardSetting,
       initialUpvote: this.props.upvoteSetting,
@@ -120,6 +121,7 @@ class Write extends React.Component {
         initialTitle: '',
         initialTopics: [],
         initialWavioData: { wobjects: [] },
+        initialForecast: {},
         initialBody: '',
         initialReward: rewardsValues.half,
         initialUpvote: nextProps.upvoteSetting,
@@ -132,6 +134,7 @@ class Write extends React.Component {
       const draftPost = _.get(draftPosts, draftId, {});
       const initialTitle = _.get(draftPost, 'title', '');
       const initialWavioData = _.get(draftPost, `jsonMetadata.${WAIVIO_META_FIELD_NAME}`, {});
+      const initialForecast = _.get(draftPost, `jsonMetadata.${INVESTARENA_META_FIELD_NAME}`, {});
       const initialBody = _.get(draftPost, 'body', '');
       const initialTopics = _.get(draftPost, 'jsonMetadata.tags', []);
       this.draftId = draftId;
@@ -140,8 +143,14 @@ class Write extends React.Component {
         initialBody,
         initialTopics,
         initialWavioData,
+        initialForecast,
+        isUpdating: draftPost.isUpdating || false,
       });
-    } else if (!differentDraft && nextProps.draftPosts[nextProps.draftId]) {
+    } else if (
+      !differentDraft &&
+      nextProps.draftPosts[nextProps.draftId] &&
+      nextProps.saving === this.props.saving
+    ) {
       this.initFromDraft(nextProps.draftId, nextProps.draftPosts[nextProps.draftId]);
     }
   }
@@ -241,6 +250,7 @@ class Write extends React.Component {
       initialTitle: draftPost.title || '',
       initialTopics: tags || [],
       initialWavioData: draftPost.jsonMetadata[WAIVIO_META_FIELD_NAME] || { wobjects: [] },
+      initialForecast: draftPost.jsonMetadata[INVESTARENA_META_FIELD_NAME] || {},
       initialBody: draftPost.body || '',
       initialReward: draftPost.reward,
       initialUpvote: draftPost.upvote,
@@ -272,6 +282,7 @@ class Write extends React.Component {
       initialTitle,
       initialTopics,
       initialWavioData,
+      initialForecast,
       initialBody,
       initialReward,
       initialUpvote,
@@ -293,6 +304,7 @@ class Write extends React.Component {
               title={initialTitle}
               topics={initialTopics}
               waivioData={initialWavioData}
+              initialForecast={initialForecast}
               body={initialBody}
               reward={initialReward}
               upvote={initialUpvote}

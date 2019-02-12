@@ -13,7 +13,10 @@ const LeftSidebar = ({ quoteSettingsSorted }) => (
     <Route path="/@:name/wallet" component={TopInstruments} />
     <Route path="/@:name" component={UserInfo} />
     <Route path="/object/@:name" component={UserInfo} />
-    <Route path="/markets/:marketType" render={props => <MarketsList quoteSettingsSorted={quoteSettingsSorted} {...props}/>} />
+    <Route
+      path="/markets/:marketType"
+      render={props => <MarketsList quoteSettingsSorted={quoteSettingsSorted} {...props} />}
+    />
     <Route path="/deals/:dealType" component={DealsList} />
     <Route path="/activity" component={SidenavUser} />
     <Route path="/replies" component={TopInstruments} />

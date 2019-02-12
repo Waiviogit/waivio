@@ -10,8 +10,8 @@ import { getQuotesSettingsState } from '../../../investarena/redux/selectors/quo
 import { getAssetsChartsState } from '../../../investarena/redux/selectors/chartsSelectors';
 import { marketNames } from '../../../investarena/constants/objectsInvestarena';
 import './TopInsruments.less';
-import {getPlatformNameState} from "../../../investarena/redux/selectors/platformSelectors";
-import {toggleModal} from "../../../investarena/redux/actions/modalsActions";
+import { getPlatformNameState } from '../../../investarena/redux/selectors/platformSelectors';
+import { toggleModal } from '../../../investarena/redux/actions/modalsActions';
 
 const instrumentsToShow = {
   Index: ['DOWUSD', 'DAXEUR'],
@@ -29,9 +29,9 @@ const TopInstruments = ({ intl, quoteSettings, quotes, charts, toggleModalTC, pl
         (quote.market === market.name || market.names.some(name => name === quote.market)),
     ).length;
 
-  const toggleModalInstrumentsChart = (quote, quoteSettingsTC) => {
-      toggleModalTC('openDeals', {quote, quoteSettingsTC, platformName})
-  };
+    const toggleModalInstrumentsChart = (quote, quoteSettingsTC) => {
+      toggleModalTC('openDeals', { quote, quoteSettingsTC, platformName });
+    };
     return instrumentsCount ? (
       <div className="SidebarContentBlock top-instruments" key={market.name}>
         <div className="SidebarContentBlock__title">
@@ -82,10 +82,14 @@ TopInstruments.defaultProps = {
   charts: {},
 };
 
-export default connect(state => ({
-  quotes: getQuotesState(state),
-  quoteSettings: getQuotesSettingsState(state),
-  charts: getAssetsChartsState(state),
-  platformName: getPlatformNameState(state)
-}), dispatch => ({
-    toggleModalTC: (type, modalInfo) => dispatch(toggleModal(type, modalInfo))}))(injectIntl(TopInstruments));
+export default connect(
+  state => ({
+    quotes: getQuotesState(state),
+    quoteSettings: getQuotesSettingsState(state),
+    charts: getAssetsChartsState(state),
+    platformName: getPlatformNameState(state),
+  }),
+  dispatch => ({
+    toggleModalTC: (type, modalInfo) => dispatch(toggleModal(type, modalInfo)),
+  }),
+)(injectIntl(TopInstruments));

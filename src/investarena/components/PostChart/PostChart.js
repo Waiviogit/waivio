@@ -127,7 +127,7 @@ class PostChart extends Component {
 
   toggleModalTC = () => {
     const { quote, quoteSettings, platformName, toggleModal } = this.props;
-    toggleModal('openDeals', { quote, quoteSettings, platformName })
+    toggleModal('openDeals', { quote, quoteSettings, platformName });
   };
 
   isExpiredByTime = () => currentTime.getTime() > moment(this.props.forecast).valueOf();

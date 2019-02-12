@@ -45,6 +45,7 @@ class Editor extends React.Component {
     title: PropTypes.string,
     topics: PropTypes.arrayOf(PropTypes.string),
     waivioData: PropTypes.shape(),
+    initialForecast: PropTypes.shape(),
     body: PropTypes.string,
     reward: PropTypes.string,
     upvote: PropTypes.bool,
@@ -68,6 +69,7 @@ class Editor extends React.Component {
     title: '',
     topics: [],
     waivioData: {},
+    initialForecast: {},
     body: '',
     reward: rewardsValues.half,
     upvote: true,
@@ -179,6 +181,7 @@ class Editor extends React.Component {
       upvote: post.upvote,
       [WAIVIO_META_FIELD_NAME]: post.waivioData,
     });
+    this.setState({ forecastValues: post.initialForecast });
     this.setBodyAndRender(post.body);
   }
 
@@ -188,6 +191,23 @@ class Editor extends React.Component {
       bodyHTML: remarkable.render(body),
     });
   }
+
+  getForecastObject = (forecast, selectForecast) =>
+    forecast
+      ? {
+          ...forecast,
+          createdAt: moment.utc(currentTime.getTime()).format(forecastDateTimeFormat),
+          expiredAt:
+            selectForecast === 'Custom'
+              ? forecast.expiredAt
+              : moment
+                  .utc(currentTime.getTime())
+                  .add(selectForecast, 'seconds')
+                  .format(forecastDateTimeFormat),
+          tpPrice: forecast.tpPrice ? parseFloat(forecast.tpPrice) : null,
+          slPrice: forecast.slPrice ? parseFloat(forecast.slPrice) : null,
+        }
+      : null;
 
   resetLinkedObjects = () => this.setState({ linkedObjects: [], influenceRemain: 0 });
 
@@ -233,7 +253,10 @@ class Editor extends React.Component {
   }
 
   throttledUpdate() {
-    const { linkedObjects } = this.state;
+    const {
+      linkedObjects,
+      forecastValues: { selectForecast, ...forecast },
+    } = this.state;
     const { form } = this.props;
 
     const values = form.getFieldsValue();
@@ -252,7 +275,12 @@ class Editor extends React.Component {
       isNew: Boolean(obj.isNew),
     }));
 
-    this.props.onUpdate({ ...values, topics, [WAIVIO_META_FIELD_NAME]: { wobjects } });
+    this.props.onUpdate({
+      ...values,
+      topics,
+      [WAIVIO_META_FIELD_NAME]: { wobjects },
+      [INVESTARENA_META_FIELD_NAME]: this.getForecastObject(forecast, selectForecast),
+    });
   }
 
   handleSubmit(e) {
@@ -268,23 +296,10 @@ class Editor extends React.Component {
           author_permlink: obj.id,
           percent: obj.influence.value,
         }));
-        // this.props.onSubmit({ ...values, [WAIVIO_META_FIELD_NAME]: { wobjects } });
         this.props.onSubmit({
           ...values,
           [WAIVIO_META_FIELD_NAME]: { wobjects },
-          [INVESTARENA_META_FIELD_NAME]: forecast
-            ? {
-                ...forecast,
-                createdAt: moment.utc(currentTime.getTime()).format(forecastDateTimeFormat),
-                expiredAt:
-                  selectForecast === 'Custom'
-                    ? forecast.expiredAt
-                    : moment
-                        .utc(currentTime.getTime())
-                        .add(selectForecast, 'seconds')
-                        .format(forecastDateTimeFormat),
-              }
-            : null,
+          [INVESTARENA_META_FIELD_NAME]: this.getForecastObject(forecast, selectForecast),
         });
       }
     });
@@ -411,7 +426,7 @@ class Editor extends React.Component {
   };
 
   handleForecastChange(forecastValues) {
-    this.setState({ forecastValues });
+    this.setState({ forecastValues }, this.onUpdate);
   }
 
   render() {
@@ -421,6 +436,7 @@ class Editor extends React.Component {
       body,
       bodyHTML,
       linkedObjects,
+      forecastValues,
       influenceRemain,
       isLinkedObjectsValid,
       canCreateNewObject,
@@ -622,7 +638,12 @@ class Editor extends React.Component {
             </Checkbox>,
           )}
         </Form.Item>
-        <CreatePostForecast onChange={this.handleForecastChange} isPosted={isCreatePostClicked} />
+        <CreatePostForecast
+          forecastValues={forecastValues}
+          onChange={this.handleForecastChange}
+          isPosted={isCreatePostClicked}
+          isUpdating={isUpdating}
+        />
         <div className="Editor__bottom">
           <span className="Editor__bottom__info">
             <i className="iconfont icon-markdown" />{' '}
