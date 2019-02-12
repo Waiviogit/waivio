@@ -640,6 +640,7 @@ class Editor extends React.Component {
           forecastValues={forecastValues}
           onChange={this.handleForecastChange}
           isPosted={isCreatePostClicked}
+          isUpdating={isUpdating}
         />
         <div className="Editor__bottom">
           <span className="Editor__bottom__info">

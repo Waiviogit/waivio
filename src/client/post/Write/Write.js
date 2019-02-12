@@ -144,6 +144,7 @@ class Write extends React.Component {
         initialTopics,
         initialWavioData,
         initialForecast,
+        isUpdating: draftPost.isUpdating || false,
       });
     } else if (!differentDraft && nextProps.draftPosts[nextProps.draftId]) {
       this.initFromDraft(nextProps.draftId, nextProps.draftPosts[nextProps.draftId]);

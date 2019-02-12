@@ -30,6 +30,7 @@ class CreatePostForecast extends Component {
     quotesSettings: PropTypes.shape(),
     quotes: PropTypes.shape(),
     isPosted: PropTypes.bool,
+    isUpdating: PropTypes.bool,
     forecastValues: PropTypes.shape(),
     onChange: PropTypes.func,
   };
@@ -38,6 +39,7 @@ class CreatePostForecast extends Component {
     quotesSettings: {},
     quotes: {},
     isPosted: false,
+    isUpdating: false,
     forecastValues: {},
     onChange: () => {},
   };
@@ -55,7 +57,7 @@ class CreatePostForecast extends Component {
     isValid: true,
   };
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     if (!_.isEqual(prevProps.forecastValues, this.props.forecastValues)) {
       this.updateForecastValues(this.props.forecastValues);
     }
@@ -88,7 +90,7 @@ class CreatePostForecast extends Component {
   };
 
   updateForecastValues = forecast => {
-    const selectForecast = forecast.selectForecast || 'Custom';
+    const selectForecast = forecast.selectForecast;
     const dateTimeValue = forecast.expiredAt ? moment(forecast.expiredAt) : null;
     this.setState({
       dateTimeValue,
@@ -221,7 +223,7 @@ class CreatePostForecast extends Component {
       dateTimeValue,
       isValid,
     } = this.state;
-    const { intl, isPosted, quotes, quotesSettings } = this.props;
+    const { intl, isPosted, quotes, quotesSettings, isUpdating } = this.props;
     const optionsQuote = getQuoteOptions(quotesSettings, quotes);
     return (
       <div className="st-create-post-optional">
@@ -257,6 +259,7 @@ class CreatePostForecast extends Component {
                         className={classNames('st-create-post-select__quote', {
                           'st-create-post-danger': isPosted && !isValid && !selectQuote,
                         })}
+                        disabled={isUpdating}
                         onChange={this.updateValueQuote}
                         value={selectQuote}
                         showSearch
@@ -284,6 +287,7 @@ class CreatePostForecast extends Component {
                         className={classNames('st-create-post-select__action', {
                           'st-create-post-danger': isPosted && !isValid && !selectRecommend,
                         })}
+                        disabled={isUpdating}
                         value={selectRecommend}
                         onChange={this.updateValueRecommend}
                       >
@@ -357,8 +361,9 @@ class CreatePostForecast extends Component {
                           defaultMessage="Forecast time"
                         />
                       </p>
-                      {this.state.selectForecast === 'Custom' ? (
+                      {isUpdating || this.state.selectForecast === 'Custom' ? (
                         <DatePicker
+                          disabled={isUpdating}
                           showTime
                           style={{ width: '100%' }}
                           locale={intl.formatMessage({ id: 'locale', defaultMessage: 'en' })}
