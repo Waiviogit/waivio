@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import Loading from '../../components/Icon/Loading';
 import InstrumentCardView from '../../../investarena/components/InstrumentsPage/Instrument/CardView';
 import { getQuotesState } from '../../../investarena/redux/selectors/quotesSelectors';
 import { getQuotesSettingsState } from '../../../investarena/redux/selectors/quotesSettingsSelectors';
@@ -12,6 +11,7 @@ import { marketNames } from '../../../investarena/constants/objectsInvestarena';
 import './TopInsruments.less';
 import { getPlatformNameState } from '../../../investarena/redux/selectors/platformSelectors';
 import { toggleModal } from '../../../investarena/redux/actions/modalsActions';
+import TopInstrumentsLoading from "./TopInstrumentsLoading";
 
 const instrumentsToShow = {
   Index: ['DOWUSD', 'DAXEUR'],
@@ -65,7 +65,7 @@ const TopInstruments = ({ intl, quoteSettings, quotes, charts, toggleModalTC, pl
   return sidebarItems.some(item => Boolean(item)) ? (
     <React.Fragment>{sidebarItems}</React.Fragment>
   ) : (
-    <Loading />
+    <TopInstrumentsLoading />
   );
 };
 
