@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import InstrumentAvatar from '../../../InstrumentAvatar/InstrumentAvatar';
 import TradeButtonsAssets from '../../TradeButtonsAssets';
-import ModalTC from '../../../Modals/ModalTC/ModalTC';
 import InstrumentsChart from '../InstrumentChart';
 import Signals from '../Signals';
 import './CardView.less';
@@ -12,6 +11,7 @@ import './CardView.less';
 class InstrumentCard extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
+    toggleModalTC: PropTypes.func.isRequired,
     quoteSettings: PropTypes.shape(),
     quote: PropTypes.shape(),
     chart: PropTypes.arrayOf(PropTypes.shape()),
@@ -34,8 +34,9 @@ class InstrumentCard extends React.Component {
   state = {
     isModalChart: false,
   };
-  toggleModal = () => this.setState({ isModalChart: !this.state.isModalChart });
-
+  toggleModalInstrumentsChart = () => {
+    this.props.toggleModalTC(this.props.quote, this.props.quoteSettings)
+  };
   render() {
     const {
       intl,
@@ -46,6 +47,7 @@ class InstrumentCard extends React.Component {
       showTradeBtn,
       chartHeight,
       chartWidth,
+      toggleModalTC
     } = this.props;
     return (
       <div key={quote.security} className="st-card">
@@ -75,21 +77,14 @@ class InstrumentCard extends React.Component {
             </div>
             <Signals signals={signals} />
           </div>
-          <InstrumentsChart
-            chart={chart}
-            height={chartHeight}
-            width={chartWidth}
-            noDataMsg={intl.formatMessage({ id: 'charts.noData', defaultMessage: 'No data' })}
-            onClick={this.toggleModal}
-          />
-          {this.state.isModalChart && (
-            <ModalTC
-              quoteName={quote.security}
-              market={quoteSettings.market}
-              isOpen={this.state.isModalChart}
-              toggle={this.toggleModal}
+          <div role='presentation' onClick={this.toggleModalInstrumentsChart}>
+            <InstrumentsChart
+              chart={chart}
+              height={chartHeight}
+              width={chartWidth}
+              noDataMsg={intl.formatMessage({ id: 'charts.noData', defaultMessage: 'No data' })}
             />
-          )}
+          </div>
           {showTradeBtn && (
             <TradeButtonsAssets
               className="st-assets-buttons st-trade-buttons-asset-page-wrap"

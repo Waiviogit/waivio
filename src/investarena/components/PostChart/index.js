@@ -9,6 +9,7 @@ import { makeGetChartState } from '../../redux/selectors/chartsSelectors';
 import { makeGetQuoteSettingsState } from '../../redux/selectors/quotesSettingsSelectors';
 import { makeGetQuoteState } from '../../redux/selectors/quotesSelectors';
 import PostChart from './PostChart';
+import {toggleModal} from "../../redux/actions/modalsActions";
 
 const PostChartContainer = props => <PostChart {...props} />;
 
@@ -30,6 +31,7 @@ const mapState = () => {
 function mapDispatchToProps(dispatch, ownProps) {
   return {
     getChartData: timeScale => dispatch(getChartData(ownProps.quoteSecurity, timeScale)),
+    toggleModal: (name, data) => dispatch(toggleModal(name, data)),
   };
 }
 

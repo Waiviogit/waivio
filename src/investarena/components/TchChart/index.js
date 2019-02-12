@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import React from 'react';
 // import { getLanguageState } from '../../../../redux/selectors/languageSelectors';
-import { getModalIsOpenState } from '../../../../redux/selectors/modalsSelectors';
+import { getModalIsOpenState } from '../../redux/selectors/modalsSelectors';
 import TchChart from './TchChart';
 
 const propTypes = {
