@@ -10,6 +10,7 @@ import {
   objectURLValidationRegExp,
 } from '../../../common/constants/validation';
 import { isValidImage } from '../../helpers/image';
+import './AddImageModal.less';
 
 @injectIntl
 @Form.create()
@@ -100,8 +101,8 @@ class AddImageModal extends React.Component {
 
     if (currentImage[0]) {
       return (
-        <div className="AppendForm__previewWrap">
-          <img src={currentImage[0].src} alt="pic" className="AppendForm__preview" />
+        <div className="AddImageModal__previewWrap">
+          <img src={currentImage[0].src} alt="pic" className="AddImageModal__preview" />
         </div>
       );
     }
@@ -128,6 +129,7 @@ class AddImageModal extends React.Component {
             handleImageChange={this.handleImageChange}
             currentImages={currentImage}
             onRemoveImage={this.handleRemoveImage}
+            showAddButton={false}
           />
           <span>
             {intl.formatMessage({
@@ -164,7 +166,7 @@ class AddImageModal extends React.Component {
               ],
             })(
               <Input
-                className="AppendForm__title"
+                className="AddImageModal__input"
                 placeholder={intl.formatMessage({
                   id: 'image_url_placeholder',
                   defaultMessage: 'Image URL',
