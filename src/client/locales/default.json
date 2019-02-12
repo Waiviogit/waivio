@@ -474,7 +474,8 @@
   "hashtags_error_invalid_hashtag": "Hashtag {hashtag} is invalid.",
   "hashtags_extra": "Separate #tags with commas. Only lowercase letters, numbers and hyphen character is permitted.",
   "added_field_to_wobject": "You successfully have added the {field} field to {wobject} object.",
-  "website_symbols_validation": "Please don't use special symbols"
+  "website_symbols_validation": "Please don't use special symbols",
   "upload_image": "Upload",
-  "or": "or"
+  "or": "or",
+  "couldnt_append": "Couldn't add the field to object."
 }

@@ -134,8 +134,8 @@ export default class AppendForm extends Component {
       } catch (e) {
         message.error(
           this.props.intl.formatMessage({
-            id: 'couldnt_upload_image',
-            defaultMessage: "Couldn't add the image to album.",
+            id: 'couldnt_append',
+            defaultMessage: "Couldn't add the field to object.",
           }),
         );
         console.log(e);
