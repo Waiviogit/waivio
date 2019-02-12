@@ -45,6 +45,7 @@ class Editor extends React.Component {
     title: PropTypes.string,
     topics: PropTypes.arrayOf(PropTypes.string),
     waivioData: PropTypes.shape(),
+    initialForecast: PropTypes.shape(),
     body: PropTypes.string,
     reward: PropTypes.string,
     upvote: PropTypes.bool,
@@ -68,6 +69,7 @@ class Editor extends React.Component {
     title: '',
     topics: [],
     waivioData: {},
+    initialForecast: {},
     body: '',
     reward: rewardsValues.half,
     upvote: true,
@@ -179,6 +181,7 @@ class Editor extends React.Component {
       upvote: post.upvote,
       [WAIVIO_META_FIELD_NAME]: post.waivioData,
     });
+    this.setState({ forecastValues: post.initialForecast });
     this.setBodyAndRender(post.body);
   }
 
@@ -188,6 +191,21 @@ class Editor extends React.Component {
       bodyHTML: remarkable.render(body),
     });
   }
+
+  getForecastObject = (forecast, selectForecast) =>
+    forecast
+      ? {
+        ...forecast,
+        createdAt: moment.utc(currentTime.getTime()).format(forecastDateTimeFormat),
+        expiredAt:
+          selectForecast === 'Custom'
+            ? forecast.expiredAt
+            : moment
+              .utc(currentTime.getTime())
+              .add(selectForecast, 'seconds')
+              .format(forecastDateTimeFormat),
+      }
+      : null;
 
   resetLinkedObjects = () => this.setState({ linkedObjects: [], influenceRemain: 0 });
 
@@ -231,21 +249,6 @@ class Editor extends React.Component {
     });
     return !areObjectsCreated || isInfluenceRemain;
   }
-
-  getForecastObject = (forecast, selectForecast) =>
-    forecast
-      ? {
-          ...forecast,
-          createdAt: moment.utc(currentTime.getTime()).format(forecastDateTimeFormat),
-          expiredAt:
-            selectForecast === 'Custom'
-              ? forecast.expiredAt
-              : moment
-                  .utc(currentTime.getTime())
-                  .add(selectForecast, 'seconds')
-                  .format(forecastDateTimeFormat),
-        }
-      : null;
 
   throttledUpdate() {
     const {
@@ -431,6 +434,7 @@ class Editor extends React.Component {
       body,
       bodyHTML,
       linkedObjects,
+      forecastValues,
       influenceRemain,
       isLinkedObjectsValid,
       canCreateNewObject,
@@ -632,7 +636,11 @@ class Editor extends React.Component {
             </Checkbox>,
           )}
         </Form.Item>
-        <CreatePostForecast onChange={this.handleForecastChange} isPosted={isCreatePostClicked} />
+        <CreatePostForecast
+          forecastValues={forecastValues}
+          onChange={this.handleForecastChange}
+          isPosted={isCreatePostClicked}
+        />
         <div className="Editor__bottom">
           <span className="Editor__bottom__info">
             <i className="iconfont icon-markdown" />{' '}
