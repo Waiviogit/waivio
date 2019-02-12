@@ -1,0 +1,24 @@
+@import (reference) '../../styles/custom.less';
+
+.AddImageModal {
+  &__previewWrap {
+    display: flex;
+    justify-content: center;
+    background-size: cover;
+  }
+  &__preview {
+    max-width: 100%;
+    max-height: 450px;
+  }
+
+  &__input {
+    height: 45px !important;
+    font-size: 20px !important;
+    font-weight: bold;
+
+    &.validation-error {
+      border: 1px solid @red;
+      box-shadow: 0 0 3px @orange, 0 0 5px @red;
+    }
+  }
+}

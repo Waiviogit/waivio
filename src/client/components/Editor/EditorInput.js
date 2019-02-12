@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import { FormattedMessage } from 'react-intl';
-import { Icon, Input } from 'antd';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { Icon, Input, Form } from 'antd';
 import Dropzone from 'react-dropzone';
 import { HotKeys } from 'react-hotkeys';
 import { MAXIMUM_UPLOAD_SIZE, isValidImage } from '../../helpers/image';
 import EditorToolbar from './EditorToolbar';
 import './EditorInput.less';
+import AddImageModal from './AddImageModal';
 
 class EditorInput extends React.Component {
   static propTypes = {
@@ -21,6 +22,8 @@ class EditorInput extends React.Component {
     onImageUpload: PropTypes.func,
     onImageInvalid: PropTypes.func,
     onAddLinkedObject: PropTypes.func,
+    form: PropTypes.shape(),
+    intl: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -33,6 +36,8 @@ class EditorInput extends React.Component {
     onImageUpload: () => {},
     onImageInvalid: () => {},
     onAddLinkedObject: () => {},
+    form: {},
+    intl: {},
   };
 
   static hotkeys = {
@@ -53,15 +58,13 @@ class EditorInput extends React.Component {
     super(props);
 
     this.state = {
-      imageUploading: false,
       dropzoneActive: false,
+      showModal: false,
     };
 
     this.setInput = this.setInput.bind(this);
-    this.disableAndInsertImage = this.disableAndInsertImage.bind(this);
     this.insertCode = this.insertCode.bind(this);
     this.handlePastedImage = this.handlePastedImage.bind(this);
-    this.handleImageChange = this.handleImageChange.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
     this.handleDragEnter = this.handleDragEnter.bind(this);
     this.handleDragLeave = this.handleDragLeave.bind(this);
@@ -108,13 +111,6 @@ class EditorInput extends React.Component {
       value.substring(endPos, value.length);
 
     this.setValue(newValue, startPos + deltaStart, endPos + deltaEnd);
-  }
-
-  disableAndInsertImage(image, imageName = 'image') {
-    this.setState({
-      imageUploading: false,
-    });
-    this.insertImage(image, imageName);
   }
 
   insertImage(image, imageName = 'image') {
@@ -185,7 +181,7 @@ class EditorInput extends React.Component {
         this.insertAtCursor(`[${params.title || ''}](${params.url || ''})`, ' ', 1, 1);
         break;
       case 'image':
-        this.insertAtCursor('![', '](url)', 2, 2);
+        this.setState(prevState => ({ showModal: !prevState.showModal }));
         break;
       default:
         break;
@@ -243,26 +239,6 @@ class EditorInput extends React.Component {
     }
   }
 
-  handleImageChange(e) {
-    if (e.target.files && e.target.files[0]) {
-      if (!isValidImage(e.target.files[0])) {
-        this.props.onImageInvalid();
-        return;
-      }
-
-      this.setState({
-        imageUploading: true,
-      });
-
-      this.props.onImageUpload(e.target.files[0], this.disableAndInsertImage, () =>
-        this.setState({
-          imageUploading: false,
-        }),
-      );
-      e.target.value = '';
-    }
-  }
-
   handleDrop(files) {
     if (files.length === 0) {
       this.setState({
@@ -315,6 +291,16 @@ class EditorInput extends React.Component {
     this.insertObject(wObj.id, wObj.name);
   }
 
+  handleToggleModal = () => {
+    this.setState(prevState => ({
+      showModal: !prevState.showModal,
+    }));
+  };
+
+  beforeInsertImage = (image, imageName) => {
+    this.insertImage(image, imageName, this.input);
+  };
+
   render() {
     const {
       addon,
@@ -326,18 +312,26 @@ class EditorInput extends React.Component {
       onImageUpload,
       onImageInvalid,
       onAddLinkedObject,
+      form,
+      intl,
       ...restProps
     } = this.props;
-    const { dropzoneActive } = this.state;
+    const { dropzoneActive, showModal } = this.state;
 
     return (
       <React.Fragment>
         <EditorToolbar
           canCreateNewObject={canCreateNewObject}
           onSelect={this.insertCode}
-          togglePopover={this.togglePopover}
           onSelectLinkedObject={this.handleSelectObject}
           imageRef={this.imageRef}
+        />
+        <AddImageModal
+          visible={showModal}
+          onCancel={this.handleToggleModal}
+          insertImage={this.beforeInsertImage}
+          onImageUpload={onImageUpload}
+          onImageInvalid={onImageInvalid}
         />
         <div className="EditorInput__dropzone-base">
           <Dropzone
@@ -399,4 +393,4 @@ class EditorInput extends React.Component {
   }
 }
 
-export default EditorInput;
+export default Form.create()(injectIntl(EditorInput));
