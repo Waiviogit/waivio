@@ -16,41 +16,45 @@ const propTypes = {
 };
 
 const ModalDealConfirmation = props => {
-  const isModalOpen = props.isModalOpenDealsOpen && props.modalInfo && !_.isEmpty(props.modalInfo) && props.modalInfo.quote;
+  const isModalOpen =
+    props.isModalOpenDealsOpen &&
+    props.modalInfo &&
+    !_.isEmpty(props.modalInfo) &&
+    props.modalInfo.quote;
   return (
     <React.Fragment>
-      {isModalOpen &&
-      <Modal
-        title={props.intl.formatMessage({
-          id: 'modalOpen.header.title',
-          defaultMessage: 'Open deal',
-        })}
-        visible={isModalOpen}
-        footer={null}
-        onCancel={props.toggleModal}
-        width={'90vw'}
-      >
-        <div className="modal-open-deals">
-          <div className="st-modal-open-deals-content-block-wrap">
-            <div style={{width: '100%', height: '50vh'}}>
-              <TchChart
-                quoteSecurity={props.modalInfo.quote.security}
-                market={props.modalInfo.quote.market}
-                period={'60'}
-              />
+      {isModalOpen && (
+        <Modal
+          title={props.intl.formatMessage({
+            id: 'modalOpen.header.title',
+            defaultMessage: 'Open deal',
+          })}
+          visible={isModalOpen}
+          footer={null}
+          onCancel={props.toggleModal}
+          width={'90vw'}
+        >
+          <div className="modal-open-deals">
+            <div className="st-modal-open-deals-content-block-wrap">
+              <div style={{ width: '100%', height: '50vh' }}>
+                <TchChart
+                  quoteSecurity={props.modalInfo.quote.security}
+                  market={props.modalInfo.quote.market}
+                  period={'60'}
+                />
+              </div>
+              {props.platformName !== 'widgets' && (
+                <PostQuotation
+                  quoteSecurity={props.modalInfo.quote.security}
+                  amountModal={props.modalInfo.amount}
+                  postId={props.modalInfo.postId}
+                  toggleConfirmationModal={props.toggleModal}
+                />
+              )}
             </div>
-            {props.platformName !== 'widgets' && (
-              <PostQuotation
-                quoteSecurity={props.modalInfo.quote.security}
-                amountModal={props.modalInfo.amount}
-                postId={props.modalInfo.postId}
-                toggleConfirmationModal={props.toggleModal}
-              />
-            )}
           </div>
-        </div>
-      </Modal>
-      }
+        </Modal>
+      )}
     </React.Fragment>
   );
 };
