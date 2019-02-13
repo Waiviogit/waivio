@@ -13,6 +13,7 @@ const LikeSection = ({
   onLikeClick,
   sliderVisible,
   intl,
+  disabled,
 }) => (
   <div className="LikeSection">
     <Form.Item>
@@ -31,7 +32,7 @@ const LikeSection = ({
           },
         ],
       })(
-        <Checkbox onChange={onLikeClick}>
+        <Checkbox onChange={onLikeClick} disabled={disabled}>
           {intl.formatMessage({ id: 'like', defaultMessage: 'Like' })}
         </Checkbox>,
       )}
@@ -40,7 +41,12 @@ const LikeSection = ({
     {form.getFieldValue('like') && sliderVisible && (
       <React.Fragment>
         <div className="like-slider">
-          <RawSlider min={1} initialValue={votePercent} onChange={onVotePercentChange} />
+          <RawSlider
+            min={1}
+            initialValue={votePercent}
+            onChange={onVotePercentChange}
+            disabled={disabled}
+          />
         </div>
         <div className="like-worth">
           <FormattedMessage
@@ -71,6 +77,11 @@ LikeSection.propTypes = {
   intl: PropTypes.shape().isRequired,
   onVotePercentChange: PropTypes.func.isRequired,
   onLikeClick: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+};
+
+LikeSection.defaultProps = {
+  disabled: false,
 };
 
 export default injectIntl(LikeSection);
