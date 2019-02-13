@@ -643,11 +643,19 @@
   "invalid_image_size": "Image must smaller than {size}MB!",
   "upload_photos": "Upload photos",
   "image_submitting": "Submitting...",
+  "hashtag_value_placeholder": "#Hashtags",
+  "object_field_tag": "Hashtags",
+  "hashtags_error_count": "You have to add 1 to 5 #tags.",
+  "hashtags_error_invalid_hashtag": "Hashtag {hashtag} is invalid.",
+  "hashtags_extra": "Separate #tags with commas. Only lowercase letters, numbers and hyphen character is permitted.",
+  "added_field_to_wobject": "You successfully have added the {field} field to {wobject} object.",
+  "website_symbols_validation": "Please don't use special symbols",
   "upload_image": "Upload",
   "or": "or",
   "image_url_placeholder": "Image URL",
   "open_deals": "Open deals",
   "closed_deals": "Closed deals",
   "headerAuthorized.connectToBroker": "Connect to broker",
-  "headerAuthorized.deposit": "Deposit"
+  "headerAuthorized.deposit": "Deposit",
+  "couldnt_append": "Couldn't add the field to object."
 }

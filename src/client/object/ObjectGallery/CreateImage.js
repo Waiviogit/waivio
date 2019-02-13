@@ -164,7 +164,7 @@ class CreateImage extends React.Component {
   appendImages = async images => {
     const data = this.getWobjectData();
 
-    /* eslint-disable-next-line */
+    /* eslint-disable no-restricted-syntax */
     for (const image of images) {
       const postData = {
         ...data,
@@ -172,7 +172,7 @@ class CreateImage extends React.Component {
         body: this.getWobjectBody(image),
       };
 
-      /* eslint-disable-next-line */
+      /* eslint-disable no-await-in-loop */
       const response = await this.props.appendObject(postData);
 
       if (response.value.transactionId) {
@@ -241,7 +241,7 @@ class CreateImage extends React.Component {
             {form.getFieldDecorator('upload', {
               rules: [
                 {
-                  required: true,
+                  required: !fileList.length,
                   message: intl.formatMessage({
                     id: 'upload_photo_error',
                     defaultMessage: 'You need to upload at least one image',
