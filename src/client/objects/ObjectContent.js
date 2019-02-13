@@ -27,11 +27,11 @@ export default class ObjectContent extends React.Component {
         loading: true,
       },
       () => {
-        const lastWobject = wobjs[wobjs.length - 1];
+        const skip = wobjs.length;
 
         ApiClient.getObjects({
           limit: displayLimit,
-          startAuthorPermlink: lastWobject.author_permlink,
+          skip,
         }).then(newWobjs =>
           this.setState(state => ({
             loading: false,
