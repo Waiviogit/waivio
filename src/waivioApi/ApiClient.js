@@ -21,11 +21,11 @@ export const getRecommendedObjects = () =>
     body: JSON.stringify({ userLimit: 5, locale: 'en-US' }),
   }).then(res => res.json());
 
-export const getObjects = ({ limit = 30, locale = 'en-US', startAuthorPermlink = '' }) =>
+export const getObjects = ({ limit = 30, locale = 'en-US', skip = 0 }) =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
     headers,
     method: 'POST',
-    body: JSON.stringify({ limit, locale, start_author_permlink: startAuthorPermlink }),
+    body: JSON.stringify({ limit, locale, skip }),
   }).then(res => res.json());
 
 export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US' }) =>
