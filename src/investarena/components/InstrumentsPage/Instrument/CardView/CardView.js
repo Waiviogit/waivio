@@ -47,7 +47,6 @@ class InstrumentCard extends React.Component {
       showTradeBtn,
       chartHeight,
       chartWidth,
-      toggleModalTC,
     } = this.props;
     return (
       <div key={quote.security} className="st-card">

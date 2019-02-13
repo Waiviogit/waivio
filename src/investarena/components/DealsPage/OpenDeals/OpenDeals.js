@@ -10,9 +10,10 @@ import { PlatformHelper } from '../../../platform/platformHelper';
 import './OpenDeals.less';
 
 const propTypes = {
-  openDeals: PropTypes.object.isRequired,
-  quotes: PropTypes.object.isRequired,
-  quoteSettings: PropTypes.object.isRequired,
+  openDeals: PropTypes.shape().isRequired,
+  quotes: PropTypes.shape().isRequired,
+  quoteSettings: PropTypes.shape().isRequired,
+  intl: PropTypes.shape().isRequired,
   viewMode: PropTypes.oneOf(['list', 'cards']),
 };
 

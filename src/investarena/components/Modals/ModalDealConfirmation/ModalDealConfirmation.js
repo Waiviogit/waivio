@@ -16,21 +16,23 @@ const propTypes = {
 };
 
 const ModalDealConfirmation = props => {
+  const isModalOpen = props.isModalOpenDealsOpen && props.modalInfo && !_.isEmpty(props.modalInfo) && props.modalInfo.quote;
   return (
-    <Modal
-      title={props.intl.formatMessage({
-        id: 'modalOpen.header.title',
-        defaultMessage: 'Open deal',
-      })}
-      visible={props.isModalOpenDealsOpen}
-      footer={null}
-      onCancel={props.toggleModal}
-      width={'90vw'}
-    >
-      <div className="modal-open-deals">
-        {props.modalInfo && !_.isEmpty(props.modalInfo) && props.modalInfo.quote && (
+    <React.Fragment>
+      {isModalOpen &&
+      <Modal
+        title={props.intl.formatMessage({
+          id: 'modalOpen.header.title',
+          defaultMessage: 'Open deal',
+        })}
+        visible={isModalOpen}
+        footer={null}
+        onCancel={props.toggleModal}
+        width={'90vw'}
+      >
+        <div className="modal-open-deals">
           <div className="st-modal-open-deals-content-block-wrap">
-            <div style={{ width: '100%', height: '50vh' }}>
+            <div style={{width: '100%', height: '50vh'}}>
               <TchChart
                 quoteSecurity={props.modalInfo.quote.security}
                 market={props.modalInfo.quote.market}
@@ -46,9 +48,10 @@ const ModalDealConfirmation = props => {
               />
             )}
           </div>
-        )}
-      </div>
-    </Modal>
+        </div>
+      </Modal>
+      }
+    </React.Fragment>
   );
 };
 

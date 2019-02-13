@@ -475,7 +475,6 @@
   "signal.seconds": "s",
   "signal.hours": "h",
   "signal.days": "d",
-  "assets.quotesNoPresent": "There are no quotes",
   "modalOpen.header.title": "Open deal",
   "object": "object",
   "objects": "Objects",
