@@ -75,6 +75,9 @@ class ObjectInfo extends React.Component {
     let link = '';
     let title = '';
     let websiteFields = {};
+    let avatar = '';
+    let short = '';
+    let background = '';
     let albumsCount = 0;
     let hashtags = [];
     if (wobject) {
@@ -86,6 +89,11 @@ class ObjectInfo extends React.Component {
       map = getFieldWithMaxWeight(wobject, objectFields.map, null);
 
       description = truncate(getFieldWithMaxWeight(wobject, objectFields.description));
+
+      avatar = getFieldWithMaxWeight(wobject, objectFields.avatar, null);
+      background = getFieldWithMaxWeight(wobject, objectFields.background, null);
+
+      short = getFieldWithMaxWeight(wobject, objectFields.title, null);
 
       websiteFields = getWebsiteField(wobject);
       title = websiteFields.title;
@@ -136,6 +144,31 @@ class ObjectInfo extends React.Component {
         </div>
       ) : null;
     };
+
+    const settingsSection = (
+      <React.Fragment>
+        <div className="object-sidebar__section-title">
+          <FormattedMessage id="settings" defaultMessage="Settings" />
+        </div>
+        {listItem(
+          objectFields.avatar,
+          avatar ? (
+            <div className="field-avatar">
+              <img src={avatar} alt="pic" />
+            </div>
+          ) : null,
+        )}
+        {listItem(objectFields.title, short)}
+        {listItem(
+          objectFields.background,
+          background ? (
+            <div className="field-background">
+              <img src={background} alt="pic" />
+            </div>
+          ) : null,
+        )}
+      </React.Fragment>
+    );
     return (
       <React.Fragment>
         {getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name) && (
@@ -262,6 +295,8 @@ class ObjectInfo extends React.Component {
               ) : null,
             )}
             {listItem(objectFields.link, <SocialLinks profile={profile} />)}
+
+            {accessExtend && settingsSection}
           </div>
         )}
       </React.Fragment>
