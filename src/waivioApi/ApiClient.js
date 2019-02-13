@@ -25,7 +25,7 @@ export const getRecommendedObjects = () =>
 export const getObjects = ({
   limit = 30,
   locale = 'en-US',
-  startAuthorPermlink = '',
+  skip = 0,
   invObjects,
   requiredFields = [],
 }) =>
@@ -35,7 +35,7 @@ export const getObjects = ({
     body: JSON.stringify({
       limit,
       locale,
-      start_author_permlink: startAuthorPermlink,
+      skip,
       object_types: invObjects ? supportedObjectTypes : [],
       required_fields: requiredFields,
     }),
