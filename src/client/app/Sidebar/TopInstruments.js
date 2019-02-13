@@ -11,7 +11,7 @@ import { marketNames } from '../../../investarena/constants/objectsInvestarena';
 import './TopInsruments.less';
 import { getPlatformNameState } from '../../../investarena/redux/selectors/platformSelectors';
 import { toggleModal } from '../../../investarena/redux/actions/modalsActions';
-import TopInstrumentsLoading from "./TopInstrumentsLoading";
+import TopInstrumentsLoading from './TopInstrumentsLoading';
 
 const instrumentsToShow = {
   Index: ['DOWUSD', 'DAXEUR'],

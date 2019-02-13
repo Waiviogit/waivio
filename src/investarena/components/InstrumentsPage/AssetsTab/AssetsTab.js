@@ -4,7 +4,7 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import Instrument from '../../InstrumentsPage/Instrument';
 import '../InstrumentsPage.less';
-import AssetsTabLoading from "./AssetsTabLoading";
+import AssetsTabLoading from './AssetsTabLoading';
 
 const propTypes = {
   charts: PropTypes.shape(),
@@ -50,14 +50,14 @@ const AssetsTab = ({ intl, quoteSettingsFiltered, charts, signals, deals, viewMo
     <Fragment>
       {viewMode === 'list' && listHeader}
       {quoteSettingsFiltered.length > 0 ? (
-      <div
-        className={classNames('st-instruments-details', {
-          'list-view': viewMode === 'list',
-          'cards-view': viewMode === 'cards',
-        })}
-      >
+        <div
+          className={classNames('st-instruments-details', {
+            'list-view': viewMode === 'list',
+            'cards-view': viewMode === 'cards',
+          })}
+        >
           <div className="st-instruments-responsible-wrap">{selectedInstruments}</div>
-      </div>
+        </div>
       ) : (
         <AssetsTabLoading />
       )}

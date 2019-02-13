@@ -181,7 +181,9 @@ class Editor extends React.Component {
       upvote: post.upvote,
       [WAIVIO_META_FIELD_NAME]: post.waivioData,
     });
-    this.setState({ forecastValues: post.initialForecast });
+    if(post.initialForecast && !_.isEmpty(post.initialForecast)) {
+      this.setState({ forecastValues: post.initialForecast });
+    }
     this.setBodyAndRender(post.body);
   }
 
@@ -193,7 +195,7 @@ class Editor extends React.Component {
   }
 
   getForecastObject = (forecast, selectForecast) =>
-    forecast
+    forecast && !_.isEmpty(forecast)
       ? {
           ...forecast,
           createdAt: moment.utc(currentTime.getTime()).format(forecastDateTimeFormat),
