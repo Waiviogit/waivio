@@ -12,6 +12,7 @@ class RawSlider extends React.Component {
     tipFormatter: PropTypes.func,
     onChange: PropTypes.func,
     min: PropTypes.number,
+    disabled: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -19,6 +20,7 @@ class RawSlider extends React.Component {
     tipFormatter: value => `${value}%`,
     onChange: () => {},
     min: 0,
+    disabled: false,
   };
 
   state = {
@@ -59,7 +61,7 @@ class RawSlider extends React.Component {
 
   render() {
     const { value } = this.state;
-    const { min } = this.props;
+    const { min, disabled } = this.props;
 
     return (
       <div className="RawSlider">
@@ -69,9 +71,15 @@ class RawSlider extends React.Component {
           marks={this.marks}
           tipFormatter={this.props.tipFormatter}
           onChange={this.handleChange}
+          disabled={disabled}
         />
         <div className="RawSlider__presets">
-          <RadioGroup value={value} size="large" onChange={this.handlePresetChange}>
+          <RadioGroup
+            disabled={disabled}
+            value={value}
+            size="large"
+            onChange={this.handlePresetChange}
+          >
             <RadioButton value={1}>1%</RadioButton>
             <RadioButton value={25}>25%</RadioButton>
             <RadioButton value={50}>50%</RadioButton>
