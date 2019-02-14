@@ -55,17 +55,18 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode })
           </div>
           <div className="ObjectHeader__user__username">
             <div className="ObjectHeader__descriptionShort">
-              {(canEdit && (
+              {canEdit && !descriptionShort ? (
                 <Proposition
                   objectID={wobject.author_permlink}
                   fieldName={objectFields.title}
                   objName={objectName}
                 />
-              )) ||
-                descriptionShort}
+              ) : (
+                descriptionShort
+              )}
             </div>
           </div>
-          {canEdit && (
+          {canEdit && !hasCover ? (
             <div className="ObjectHeader__user__addCover">
               <Proposition
                 objectID={wobject.author_permlink}
@@ -73,7 +74,7 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode })
                 objName={objectName}
               />
             </div>
-          )}
+          ) : null}
         </div>
       </div>
     </div>
