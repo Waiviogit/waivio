@@ -121,7 +121,7 @@ export default class ObjectProfile extends React.Component {
               />
               <PostQuotation quoteSecurity={chartId.body} />
               <iframe title='analysis'
-                style={{width: '100%', height: '210px', border: 'none', overflow: 'hidden', background: '#24292e', color: 'white', padding: '10px'}}
+                style={{width: '100%', height: '210px', border: 'none', overflow: 'hidden', background: isNightMode ? '#24292e' : 'white', padding: '10px'}}
                 src={`//informer.maximarkets.org/widgetsws/AnalizeID.html?Period=60&typemode=${isNightMode ? 'first' : 'second'}&font=OpenSans-Regular&css=${isNightMode ? 'darkGroup' : 'defaultGroup'}&rowsID=${quoteIdForWidget[chartId.body]}&defaultId=190&time=global&lang=en`}
               />
             </div>
