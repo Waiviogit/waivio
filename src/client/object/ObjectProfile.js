@@ -7,7 +7,7 @@ import { FormattedMessage } from 'react-intl';
 import { Icon } from 'antd';
 
 import Feed from '../feed/Feed';
-import { getFeed, getObject } from '../reducers';
+import {getFeed, getNightmode, getObject} from '../reducers';
 import {
   getFeedLoadingFromState,
   getFeedHasMoreFromState,
@@ -23,6 +23,7 @@ import { getIsLoadingPlatformState } from '../../investarena/redux/selectors/pla
 import { getDataCreatedAt, getDataForecast } from '../../investarena/helpers/diffDateTime';
 import { supportedObjectTypes } from '../../investarena/constants/objectsInvestarena';
 import PostQuotation from '../../investarena/components/PostQuotation/PostQuotation';
+import {quoteIdForWidget} from "../../investarena/constants/constantsWidgets";
 
 @withRouter
 @connect(
@@ -30,6 +31,7 @@ import PostQuotation from '../../investarena/components/PostQuotation/PostQuotat
     feed: getFeed(state),
     object: getObject(state),
     isLoadingPlatform: getIsLoadingPlatformState(state),
+    isNightMode: getNightmode(state)
   }),
   {
     getObjectPosts,
@@ -46,6 +48,7 @@ export default class ObjectProfile extends React.Component {
     showPostModal: PropTypes.func.isRequired,
     limit: PropTypes.number,
     isLoadingPlatform: PropTypes.bool,
+    isNightMode: PropTypes.bool.isRequired,
     getObjectPosts: PropTypes.func,
     getMoreObjectPosts: PropTypes.func,
   };
@@ -75,7 +78,7 @@ export default class ObjectProfile extends React.Component {
   };
 
   render() {
-    const { feed, limit, isLoadingPlatform, object } = this.props;
+    const { feed, limit, isLoadingPlatform, object, isNightMode } = this.props;
     const wobjectname = this.props.match.params.name;
     const content = getFeedFromState('objectPosts', wobjectname, feed);
     const isFetching = getFeedLoadingFromState('objectPosts', wobjectname, feed);
@@ -117,6 +120,10 @@ export default class ObjectProfile extends React.Component {
                 isObjectProfile
               />
               <PostQuotation quoteSecurity={chartId.body} />
+              <iframe title='analysis'
+                style={{width: '100%', height: '210px', border: 'none', overflow: 'hidden', background: '#24292e', color: 'white', padding: '10px'}}
+                src={`//informer.maximarkets.org/widgetsws/AnalizeID.html?Period=60&typemode=${isNightMode ? 'first' : 'second'}&font=OpenSans-Regular&css=${isNightMode ? 'darkGroup' : 'defaultGroup'}&rowsID=${quoteIdForWidget[chartId.body]}&defaultId=190&time=global&lang=en`}
+              />
             </div>
           )}
           <div className="object-profile__row align-right">

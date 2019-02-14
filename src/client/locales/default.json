@@ -648,5 +648,6 @@
   "open_deals": "Open deals",
   "closed_deals": "Closed deals",
   "headerAuthorized.connectToBroker": "Connect to broker",
-  "headerAuthorized.deposit": "Deposit"
+  "headerAuthorized.deposit": "Deposit",
+  "wia.followingInstruments": "Following instruments"
 }

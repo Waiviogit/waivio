@@ -8,6 +8,7 @@ import InstrumentsChart from '../InstrumentChart';
 import Signals from '../Signals';
 import './CardView.less';
 
+@injectIntl
 class InstrumentCard extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -96,4 +97,4 @@ class InstrumentCard extends React.Component {
   }
 }
 
-export default injectIntl(InstrumentCard);
+export default InstrumentCard;
