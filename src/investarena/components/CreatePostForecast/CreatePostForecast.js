@@ -90,8 +90,10 @@ class CreatePostForecast extends Component {
   };
 
   updateForecastValues = forecast => {
-    const selectForecast = forecast.selectForecast;
     const dateTimeValue = forecast.expiredAt ? moment(forecast.expiredAt) : null;
+    const selectForecast = !forecast.selectForecast && Boolean(dateTimeValue)
+      ? 'Custom'
+      : forecast.selectForecast || null;
     this.setState({
       dateTimeValue,
       quotePrice: forecast.postPrice,
@@ -100,7 +102,7 @@ class CreatePostForecast extends Component {
       selectForecast,
       takeProfitValue: forecast.tpPrice || '',
       stopLossValue: forecast.slPrice || '',
-      isValid: forecast.isValid,
+      isValid: this.validateForm(forecast.quoteSecurity, forecast.recommend, selectForecast),
     });
   };
 
