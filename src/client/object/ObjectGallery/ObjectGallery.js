@@ -60,11 +60,8 @@ export default class ObjectGallery extends Component {
   };
 
   componentDidMount() {
-    const { albums, getAlbums, match } = this.props;
-
-    if (!albums.length) {
-      getAlbums(match.params.name);
-    }
+    const { getAlbums, match } = this.props;
+    getAlbums(match.params.name);
   }
 
   handleToggleModal = () =>
