@@ -31,11 +31,11 @@ export default class ObjectLightbox extends Component {
 
   render() {
     const { wobject, size, accessExtend } = this.props;
-    const imageUrl = getObjectUrl(wobject) || 'https://steemitimages.com/u/waivio/avatar';
+    const imageUrl = getObjectUrl(wobject);
     const objectName = getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name);
     return (
       <React.Fragment>
-        {accessExtend ? (
+        {accessExtend && !imageUrl ? (
           <React.Fragment>
             <Link
               to={{
@@ -59,7 +59,10 @@ export default class ObjectLightbox extends Component {
               <ObjectAvatar item={wobject} size={size} />
             </a>
             {this.state.open && (
-              <Lightbox mainSrc={imageUrl} onCloseRequest={this.handleCloseRequest} />
+              <Lightbox
+                mainSrc={imageUrl || 'https://steemitimages.com/u/waivio/avatar'}
+                onCloseRequest={this.handleCloseRequest}
+              />
             )}
           </React.Fragment>
         )}

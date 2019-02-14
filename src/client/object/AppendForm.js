@@ -18,7 +18,6 @@ import {
 } from '../../common/constants/listOfFields';
 import {
   getObject,
-  getIsAppendLoading,
   getRewardFund,
   getRate,
   getAuthenticatedUser,
@@ -31,7 +30,6 @@ import QuickPostEditorFooter from '../components/QuickPostEditor/QuickPostEditor
 import { regexCoordsLatitude, regexCoordsLongitude } from '../components/Maps/mapHelper';
 import Map from '../components/Maps/Map';
 import './AppendForm.less';
-import improve from '../helpers/improve';
 import { getField } from '../objects/WaivioObject';
 import { appendObject } from '../object/appendActions';
 import { isValidImage } from '../helpers/image';
@@ -39,17 +37,17 @@ import withEditor from '../components/Editor/withEditor';
 import {
   MAX_IMG_SIZE,
   ALLOWED_IMG_FORMATS,
-  objectNameValidationRegExp,
+  websiteTitleRegExp,
   objectURLValidationRegExp,
 } from '../../common/constants/validation';
 import { getHasDefaultSlider, getVoteValue } from '../helpers/user';
 import LikeSection from './LikeSection';
+import { getFieldWithMaxWeight } from './wObjectHelper';
 
 @connect(
   state => ({
     user: getAuthenticatedUser(state),
     wObject: getObject(state),
-    loading: getIsAppendLoading(state),
     rewardFund: getRewardFund(state),
     rate: getRate(state),
     sliderMode: getVotingPower(state),
@@ -64,7 +62,6 @@ export default class AppendForm extends Component {
   static propTypes = {
     currentField: PropTypes.string,
     currentLocale: PropTypes.string,
-    loading: PropTypes.bool,
     hideModal: PropTypes.func,
     onImageUpload: PropTypes.func,
     onImageInvalid: PropTypes.func,
@@ -83,7 +80,6 @@ export default class AppendForm extends Component {
     currentField: 'auto',
     currentLocale: 'en-US',
     currentUsername: '',
-    loading: false,
     hideModal: () => {},
     onImageUpload: () => {},
     onImageInvalid: () => {},
@@ -106,6 +102,7 @@ export default class AppendForm extends Component {
     voteWorth: 0,
     isValidImage: false,
     sliderVisible: false,
+    loading: false,
   };
 
   componentDidMount = () => {
@@ -118,25 +115,49 @@ export default class AppendForm extends Component {
     this.calculateVoteWorth(this.state.votePercent);
   };
 
-  onSubmit = form => {
-    const data = this.getNewPostData(form);
-    data.body = improve(data.body);
+  onSubmit = async form => {
+    this.setState({ loading: true });
 
-    this.props
-      .appendObject(data)
-      .then(() => {
-        this.props.hideModal();
+    const {
+      form: { getFieldValue },
+      wObject,
+    } = this.props;
 
-        message.success(
-          `You successfully have added the '${data.field.name}' field to '${
-            data.wobjectName
-          }' object`,
+    const postData = this.getNewPostData(form);
+
+    /* eslint-disable no-restricted-syntax */
+    for (const data of postData) {
+      try {
+        /* eslint-disable no-await-in-loop */
+        await this.props.appendObject(data);
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      } catch (e) {
+        message.error(
+          this.props.intl.formatMessage({
+            id: 'couldnt_append',
+            defaultMessage: "Couldn't add the field to object.",
+          }),
         );
-      })
-      .catch(err => {
-        message.error("Couldn't append object.");
-        console.log('err', err);
-      });
+        console.log(e);
+        this.setState({ loading: false });
+      }
+    }
+
+    this.setState({ loading: false });
+
+    this.props.hideModal();
+    message.success(
+      this.props.intl.formatMessage(
+        {
+          id: 'added_field_to_wobject',
+          defaultMessage: `You successfully have added the {field} field to {wobject} object`,
+        },
+        {
+          field: getFieldValue('currentField'),
+          wobject: getFieldWithMaxWeight(wObject, objectFields.name),
+        },
+      ),
+    );
   };
 
   onUpdateCoordinate = positionField => e => {
@@ -148,66 +169,75 @@ export default class AppendForm extends Component {
   getNewPostData = form => {
     const { wObject } = this.props;
     const { getFieldValue } = this.props.form;
+    const { body, preview, currentField, currentLocale, like, ...rest } = form;
 
     const field = getFieldValue('currentField');
     let locale = getFieldValue('currentLocale');
-
     if (locale === 'auto') locale = 'en-US';
+    let fieldBody = [];
+    const postData = [];
 
-    const data = {};
-
-    const getBody = formField => {
-      const { body, preview, currentField, currentLocale, ...rest } = formField;
-
-      switch (currentField) {
-        case objectFields.name:
-        case objectFields.title:
-        case objectFields.description:
-        case objectFields.avatar:
-        case objectFields.background: {
-          return rest[currentField];
-        }
-        case objectFields.website: {
-          return rest[websiteFields.link];
-        }
-        default:
-          return JSON.stringify(rest);
+    switch (currentField) {
+      case objectFields.name:
+      case objectFields.title:
+      case objectFields.description:
+      case objectFields.avatar:
+      case objectFields.background: {
+        fieldBody.push(rest[currentField]);
+        break;
       }
-    };
-
-    data.author = this.props.user.name;
-    data.parentAuthor = wObject.author;
-    data.parentPermlink = wObject.author_permlink;
-    const langReadable = _.filter(LANGUAGES, { id: locale })[0].name;
-    data.body = `@${data.author} added ${field}(${langReadable}):\n ${getBody(form).replace(
-      /[{}"]/g,
-      '',
-    )}`;
-    data.title = '';
-    let fieldsObject = {
-      name: field,
-      body: getBody(form),
-      locale,
-    };
-
-    if (field === objectFields.website) {
-      fieldsObject = {
-        ...fieldsObject,
-        [websiteFields.title]: form[websiteFields.title],
-      };
+      case objectFields.website: {
+        fieldBody.push(rest[websiteFields.link]);
+        break;
+      }
+      case objectFields.hashtag: {
+        fieldBody = rest[objectFields.hashtag];
+        break;
+      }
+      default:
+        fieldBody.push(JSON.stringify(rest));
+        break;
     }
 
-    data.field = fieldsObject;
+    fieldBody.forEach(bodyField => {
+      const data = {};
 
-    data.permlink = `${data.author}-${Math.random()
-      .toString(36)
-      .substring(2)}`;
-    data.lastUpdated = Date.now();
+      data.author = this.props.user.name;
+      data.parentAuthor = wObject.author;
+      data.parentPermlink = wObject.author_permlink;
+      const langReadable = _.filter(LANGUAGES, { id: locale })[0].name;
+      data.body = `@${data.author} added ${field}(${langReadable}):\n ${bodyField.replace(
+        /[{}"]/g,
+        '',
+      )}`;
+      data.title = '';
+      let fieldsObject = {
+        name: field,
+        body: bodyField,
+        locale,
+      };
 
-    data.wobjectName = getField(wObject, 'name');
+      if (field === objectFields.website) {
+        fieldsObject = {
+          ...fieldsObject,
+          [websiteFields.title]: form[websiteFields.title],
+        };
+      }
+      data.field = fieldsObject;
 
-    data.votePower = this.state.votePercent * 100;
-    return data;
+      data.permlink = `${data.author}-${Math.random()
+        .toString(36)
+        .substring(2)}`;
+      data.lastUpdated = Date.now();
+
+      data.wobjectName = getField(wObject, 'name');
+
+      data.votePower = this.state.votePercent * 100;
+
+      postData.push(data);
+    });
+
+    return postData;
   };
 
   getInitialValue = (wobject, fieldName) => {
@@ -380,7 +410,36 @@ export default class AppendForm extends Component {
     });
   };
 
+  checkHashtags = intl => (rule, value, callback) => {
+    if (!value || value.length < 1 || value.length > 5) {
+      callback(
+        intl.formatMessage({
+          id: 'hashtags_error_count',
+          defaultMessage: 'You have to add 1 to 5 #tags.',
+        }),
+      );
+    }
+    value
+      .map(hashtag => ({ hashtag, valid: /^[a-z0-9]+(-[a-z0-9]+)*$/.test(hashtag) }))
+      .filter(hashtag => !hashtag.valid)
+      .map(hashtag =>
+        callback(
+          intl.formatMessage(
+            {
+              id: 'topics_error_invalid_topic',
+              defaultMessage: 'Hashtag {hashtag} is invalid.',
+            },
+            {
+              hashtag: hashtag.hashtag,
+            },
+          ),
+        ),
+      );
+    callback();
+  };
+
   renderContentValue = currentField => {
+    const { loading } = this.state;
     const { intl, wObject } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
 
@@ -429,6 +488,7 @@ export default class AppendForm extends Component {
             })(
               <Input
                 className="AppendForm__title"
+                disabled={loading}
                 placeholder={intl.formatMessage({
                   id: 'value_placeholder',
                   defaultMessage: 'Add value',
@@ -486,6 +546,7 @@ export default class AppendForm extends Component {
               })(
                 <Input
                   className="AppendForm__title"
+                  disabled={loading}
                   placeholder={intl.formatMessage({
                     id: 'photo_url_placeholder',
                     defaultMessage: 'Photo URL',
@@ -544,6 +605,7 @@ export default class AppendForm extends Component {
                 className={classNames('AppendForm__input', {
                   'validation-error': !this.state.isSomeValue,
                 })}
+                disabled={loading}
                 placeholder={intl.formatMessage({
                   id: 'description_short',
                   defaultMessage: 'Short description',
@@ -587,6 +649,7 @@ export default class AppendForm extends Component {
                 className={classNames('AppendForm__input', {
                   'validation-error': !this.state.isSomeValue,
                 })}
+                disabled={loading}
                 autosize={{ minRows: 4, maxRows: 8 }}
                 placeholder={intl.formatMessage({
                   id: 'description_full',
@@ -623,6 +686,7 @@ export default class AppendForm extends Component {
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
                   })}
+                  disabled={loading}
                   placeholder={intl.formatMessage({
                     id: 'location_country',
                     defaultMessage: 'Country',
@@ -652,6 +716,7 @@ export default class AppendForm extends Component {
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
                   })}
+                  disabled={loading}
                   placeholder={intl.formatMessage({
                     id: 'location_city',
                     defaultMessage: 'City',
@@ -681,6 +746,7 @@ export default class AppendForm extends Component {
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
                   })}
+                  disabled={loading}
                   placeholder={intl.formatMessage({
                     id: 'location_street',
                     defaultMessage: 'Street',
@@ -710,6 +776,7 @@ export default class AppendForm extends Component {
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
                   })}
+                  disabled={loading}
                   placeholder={intl.formatMessage({
                     id: 'location_accommodation',
                     defaultMessage: 'Accommodation',
@@ -757,6 +824,7 @@ export default class AppendForm extends Component {
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
                   })}
+                  disabled={loading}
                   placeholder={intl.formatMessage({
                     id: 'location_latitude',
                     defaultMessage: 'Latitude',
@@ -797,6 +865,7 @@ export default class AppendForm extends Component {
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
                   })}
+                  disabled={loading}
                   placeholder={intl.formatMessage({
                     id: 'location_longitude',
                     defaultMessage: 'Longitude',
@@ -845,10 +914,10 @@ export default class AppendForm extends Component {
                     ),
                   },
                   {
-                    pattern: objectNameValidationRegExp,
+                    pattern: websiteTitleRegExp,
                     message: intl.formatMessage({
-                      id: 'validation_special_symbols',
-                      defaultMessage: 'Please dont use special symbols like "/", "?", "%", "&"',
+                      id: 'website_symbols_validation',
+                      defaultMessage: 'Please dont use special symbols',
                     }),
                   },
                   {
@@ -860,6 +929,7 @@ export default class AppendForm extends Component {
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
                   })}
+                  disabled={loading}
                   placeholder={intl.formatMessage({
                     id: 'title_website_placeholder',
                     defaultMessage: 'Title',
@@ -906,6 +976,7 @@ export default class AppendForm extends Component {
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
                   })}
+                  disabled={loading}
                   placeholder={intl.formatMessage({
                     id: 'profile_website',
                     defaultMessage: 'Website',
@@ -946,6 +1017,7 @@ export default class AppendForm extends Component {
                         }}
                       />
                     }
+                    disabled={loading}
                     placeholder={profile.name}
                   />,
                 )}
@@ -955,14 +1027,59 @@ export default class AppendForm extends Component {
           </React.Fragment>
         );
       }
+      case objectFields.hashtag: {
+        return (
+          <Form.Item
+            extra={intl.formatMessage({
+              id: 'hashtags_extra',
+              defaultMessage:
+                'Separate #tags with commas. Only lowercase letters, numbers and hyphen character is permitted.',
+            })}
+          >
+            {getFieldDecorator(objectFields.hashtag, {
+              initialValue: [],
+              rules: [
+                {
+                  required: true,
+                  message: intl.formatMessage(
+                    {
+                      id: 'field_error',
+                      defaultMessage: 'Field is required',
+                    },
+                    { field: 'Hashtag' },
+                  ),
+                  type: 'array',
+                },
+                { validator: this.checkHashtags(intl) },
+                {
+                  validator: this.validateFieldValue,
+                },
+              ],
+            })(
+              <Select
+                className="AppendForm__hashtags"
+                mode="tags"
+                placeholder={intl.formatMessage({
+                  id: 'hashtag_value_placeholder',
+                  defaultMessage: 'Add value',
+                })}
+                disabled={loading}
+                dropdownStyle={{ display: 'none' }}
+                tokenSeparators={[' ', ',']}
+              />,
+            )}
+          </Form.Item>
+        );
+      }
       default:
         return null;
     }
   };
 
   render() {
-    const { currentLocale, currentField, loading, form } = this.props;
+    const { currentLocale, currentField, form } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
+    const { loading } = this.state;
 
     const languageOptions = [];
     if (currentLocale === 'auto') {
@@ -1007,7 +1124,11 @@ export default class AppendForm extends Component {
         <Form.Item>
           {getFieldDecorator('currentField', {
             initialValue: currentField,
-          })(<Select style={{ width: '100%' }}>{fieldOptions}</Select>)}
+          })(
+            <Select disabled={loading} style={{ width: '100%' }}>
+              {fieldOptions}
+            </Select>,
+          )}
         </Form.Item>
 
         <div className="ant-form-item-label AppendForm__appendTitles">
@@ -1017,7 +1138,11 @@ export default class AppendForm extends Component {
         <Form.Item>
           {getFieldDecorator('currentLocale', {
             initialValue: currentLocale,
-          })(<Select style={{ width: '100%' }}>{languageOptions}</Select>)}
+          })(
+            <Select disabled={loading} style={{ width: '100%' }}>
+              {languageOptions}
+            </Select>,
+          )}
         </Form.Item>
 
         {this.renderContentValue(getFieldValue('currentField'))}
@@ -1029,6 +1154,7 @@ export default class AppendForm extends Component {
           form={form}
           sliderVisible={this.state.sliderVisible}
           onLikeClick={this.handleLikeClick}
+          disabled={loading}
         />
 
         {getFieldValue('currentField') !== 'auto' && (

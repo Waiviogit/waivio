@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import { Icon, message } from 'antd';
+import { Icon, message, Tag } from 'antd';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -75,7 +75,11 @@ class ObjectInfo extends React.Component {
     let link = '';
     let title = '';
     let websiteFields = {};
+    let avatar = '';
+    let short = '';
+    let background = '';
     let albumsCount = 0;
+    let hashtags = [];
     if (wobject) {
       addressArr = Object.values(addressFields).map(fieldName =>
         getFieldWithMaxWeight(wobject, objectFields.address, fieldName),
@@ -86,10 +90,18 @@ class ObjectInfo extends React.Component {
 
       description = truncate(getFieldWithMaxWeight(wobject, objectFields.description));
 
+      avatar = getFieldWithMaxWeight(wobject, objectFields.avatar, null);
+      background = getFieldWithMaxWeight(wobject, objectFields.background, null);
+
+      short = getFieldWithMaxWeight(wobject, objectFields.title, null);
+
       websiteFields = getWebsiteField(wobject);
       title = websiteFields.title;
       link = websiteFields.body;
       albumsCount = wobject.albums_count;
+
+      const filtered = _.filter(wobject.fields, ['name', objectFields.hashtag]);
+      hashtags = _.orderBy(filtered, ['weight'], ['desc']);
     }
 
     if (link && link.indexOf('http://') === -1 && link.indexOf('https://') === -1) {
@@ -132,11 +144,76 @@ class ObjectInfo extends React.Component {
         </div>
       ) : null;
     };
+
+    const settingsSection = (
+      <React.Fragment>
+        <div className="object-sidebar__section-title">
+          <FormattedMessage id="settings" defaultMessage="Settings" />
+        </div>
+        {listItem(
+          objectFields.avatar,
+          avatar ? (
+            <div className="field-avatar">
+              <img src={avatar} alt="pic" />
+            </div>
+          ) : null,
+        )}
+        {listItem(objectFields.title, short)}
+        {listItem(
+          objectFields.background,
+          background ? (
+            <div className="field-background">
+              <img src={background} alt="pic" />
+            </div>
+          ) : null,
+        )}
+      </React.Fragment>
+    );
     return (
       <React.Fragment>
         {getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name) && (
           <div className="object-sidebar">
             {listItem(objectFields.description, description)}
+            {listItem(
+              objectFields.hashtag,
+              <div className="field-info">
+                {accessExtend ? (
+                  <React.Fragment>
+                    {hashtags.length <= 3 ? (
+                      hashtags.slice(0, 3).map(({ body }) => (
+                        <div key={body} className="tag-item">
+                          #{body}
+                        </div>
+                      ))
+                    ) : (
+                      <React.Fragment>
+                        {hashtags.slice(0, 2).map(({ body }) => (
+                          <div key={body} className="tag-item">
+                            #{body}
+                          </div>
+                        ))}
+                        <Link
+                          to={`/object/@${wobject.author_permlink}/updates/${objectFields.hashtag}`}
+                          onClick={() => this.handleSelectField(objectFields.hashtag)}
+                        >
+                          <FormattedMessage id="show_more_tags" defaultMessage="show more">
+                            {value => <div className="tag-item">{value}</div>}
+                          </FormattedMessage>
+                        </Link>
+                      </React.Fragment>
+                    )}
+                  </React.Fragment>
+                ) : (
+                  <React.Fragment>
+                    {hashtags.slice(0, 3).map(({ body }) => (
+                      <Tag key={body} color="volcano">
+                        #{body}
+                      </Tag>
+                    ))}
+                  </React.Fragment>
+                )}
+              </div>,
+            )}
             {hasGalleryImg || accessExtend ? (
               <div className="field-info">
                 {accessExtend && (
@@ -218,6 +295,8 @@ class ObjectInfo extends React.Component {
               ) : null,
             )}
             {listItem(objectFields.link, <SocialLinks profile={profile} />)}
+
+            {accessExtend && settingsSection}
           </div>
         )}
       </React.Fragment>
