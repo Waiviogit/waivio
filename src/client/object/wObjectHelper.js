@@ -47,7 +47,7 @@ export const getField = (wObject, currentField, fieldName) => {
 export const getFieldsCount = (wObject, fieldName) =>
   wObject && wObject.fields ? wObject.fields.filter(field => field.name === fieldName).length : 0;
 
-export const truncate = str => (str && str.length > 255 ? `${str.substring(0, 255)}...` : str);
+export const truncate = str => (str && str.length > 255 ? str.substring(0, 255) : str);
 
 export const hasActionType = (post, actionTypes = ['createObject', 'appendObject']) => {
   const parsedMetadata = post && post.json_metadata && JSON.parse(post.json_metadata);

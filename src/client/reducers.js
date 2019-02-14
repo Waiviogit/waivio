@@ -25,6 +25,7 @@ import modalsReducer from '../investarena/redux/reducers/modalsReducer';
 import chartsReducer from '../investarena/redux/reducers/chartsReducer';
 import wobjectReducer, * as fromObject from '../client/object/wobjectReducer';
 import appendReducer, * as fromAppend from '../client/object/appendReducer';
+import galleryReducer, * as fromGallery from '../client/object/ObjectGallery/galleryReducer';
 
 export default () =>
   combineReducers({
@@ -52,6 +53,7 @@ export default () =>
     deals: dealsReducer,
     modals: modalsReducer,
     append: appendReducer,
+    gallery: galleryReducer,
   });
 
 export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);
@@ -182,3 +184,7 @@ export const getObjectAuthor = state => fromObject.getObjectAuthor(state.object)
 export const getObjectFields = state => fromObject.getObjectFields(state.object);
 
 export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.append);
+
+export const getObjectAlbums = state => fromGallery.getObjectAlbums(state.gallery);
+export const getIsObjectAlbumsLoading = state =>
+  fromGallery.getIsObjectAlbumsLoading(state.gallery);

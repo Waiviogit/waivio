@@ -8,12 +8,7 @@ import { FormattedMessage } from 'react-intl';
 import { haveAccess, accessTypesArr, prepareAlbumData } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import './ObjectInfo.less';
-import {
-  getFieldWithMaxWeight,
-  getFieldsCount,
-  truncate,
-  getWebsiteField,
-} from '../../object/wObjectHelper';
+import { getFieldWithMaxWeight, getFieldsCount, getWebsiteField } from '../../object/wObjectHelper';
 import { objectFields, addressFields, linkFields } from '../../../common/constants/listOfFields';
 import Proposition from '../../components/Proposition/Proposition';
 import Map from '../../components/Maps/Map';
@@ -23,6 +18,7 @@ import IconButton from '../../components/IconButton';
 import CreateAlbum from '../../object/ObjectGallery/CreateAlbum';
 import { getIsAppendLoading } from '../../reducers';
 import { appendObject } from '../../object/appendActions';
+import DescriptionInfo from './DescriptionInfo';
 
 @connect(
   state => ({
@@ -46,6 +42,7 @@ class ObjectInfo extends React.Component {
   state = {
     selectedField: null,
     showModal: false,
+    showMore: false,
   };
 
   handleSelectField = field => this.setState({ selectedField: field });
@@ -75,6 +72,9 @@ class ObjectInfo extends React.Component {
     let link = '';
     let title = '';
     let websiteFields = {};
+    let avatar = '';
+    let short = '';
+    let background = '';
     let albumsCount = 0;
     let hashtags = [];
     if (wobject) {
@@ -85,7 +85,12 @@ class ObjectInfo extends React.Component {
 
       map = getFieldWithMaxWeight(wobject, objectFields.map, null);
 
-      description = truncate(getFieldWithMaxWeight(wobject, objectFields.description));
+      description = getFieldWithMaxWeight(wobject, objectFields.description);
+
+      avatar = getFieldWithMaxWeight(wobject, objectFields.avatar, null);
+      background = getFieldWithMaxWeight(wobject, objectFields.background, null);
+
+      short = getFieldWithMaxWeight(wobject, objectFields.title, null);
 
       websiteFields = getWebsiteField(wobject);
       title = websiteFields.title;
@@ -136,11 +141,36 @@ class ObjectInfo extends React.Component {
         </div>
       ) : null;
     };
+
+    const settingsSection = (
+      <React.Fragment>
+        <div className="object-sidebar__section-title">
+          <FormattedMessage id="settings" defaultMessage="Settings" />
+        </div>
+        {listItem(
+          objectFields.avatar,
+          avatar ? (
+            <div className="field-avatar">
+              <img src={avatar} alt="pic" />
+            </div>
+          ) : null,
+        )}
+        {listItem(objectFields.title, short)}
+        {listItem(
+          objectFields.background,
+          background ? (
+            <div className="field-background">
+              <img src={background} alt="pic" />
+            </div>
+          ) : null,
+        )}
+      </React.Fragment>
+    );
     return (
       <React.Fragment>
         {getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name) && (
           <div className="object-sidebar">
-            {listItem(objectFields.description, description)}
+            {listItem(objectFields.description, <DescriptionInfo description={description} />)}
             {listItem(
               objectFields.hashtag,
               <div className="field-info">
@@ -262,6 +292,8 @@ class ObjectInfo extends React.Component {
               ) : null,
             )}
             {listItem(objectFields.link, <SocialLinks profile={profile} />)}
+
+            {accessExtend && settingsSection}
           </div>
         )}
       </React.Fragment>
