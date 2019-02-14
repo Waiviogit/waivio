@@ -8,12 +8,7 @@ import { FormattedMessage } from 'react-intl';
 import { haveAccess, accessTypesArr, prepareAlbumData } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import './ObjectInfo.less';
-import {
-  getFieldWithMaxWeight,
-  getFieldsCount,
-  truncate,
-  getWebsiteField,
-} from '../../object/wObjectHelper';
+import { getFieldWithMaxWeight, getFieldsCount, getWebsiteField } from '../../object/wObjectHelper';
 import { objectFields, addressFields, linkFields } from '../../../common/constants/listOfFields';
 import Proposition from '../../components/Proposition/Proposition';
 import Map from '../../components/Maps/Map';
@@ -23,6 +18,7 @@ import IconButton from '../../components/IconButton';
 import CreateAlbum from '../../object/ObjectGallery/CreateAlbum';
 import { getIsAppendLoading } from '../../reducers';
 import { appendObject } from '../../object/appendActions';
+import DescriptionInfo from './DescriptionInfo';
 
 @connect(
   state => ({
@@ -46,6 +42,7 @@ class ObjectInfo extends React.Component {
   state = {
     selectedField: null,
     showModal: false,
+    showMore: false,
   };
 
   handleSelectField = field => this.setState({ selectedField: field });
@@ -88,7 +85,7 @@ class ObjectInfo extends React.Component {
 
       map = getFieldWithMaxWeight(wobject, objectFields.map, null);
 
-      description = truncate(getFieldWithMaxWeight(wobject, objectFields.description));
+      description = getFieldWithMaxWeight(wobject, objectFields.description);
 
       avatar = getFieldWithMaxWeight(wobject, objectFields.avatar, null);
       background = getFieldWithMaxWeight(wobject, objectFields.background, null);
@@ -173,7 +170,7 @@ class ObjectInfo extends React.Component {
       <React.Fragment>
         {getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name) && (
           <div className="object-sidebar">
-            {listItem(objectFields.description, description)}
+            {listItem(objectFields.description, <DescriptionInfo description={description} />)}
             {listItem(
               objectFields.hashtag,
               <div className="field-info">

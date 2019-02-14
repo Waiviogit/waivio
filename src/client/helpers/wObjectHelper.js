@@ -19,6 +19,11 @@ export const generateRandomString = stringLength => {
   return randomString;
 };
 
+const generatePermlink = () =>
+  Math.random()
+    .toString(36)
+    .substring(2);
+
 export const prepareAlbumData = (form, currentUsername, wObject) => {
   const data = {};
   data.author = currentUsername;
@@ -31,13 +36,34 @@ export const prepareAlbumData = (form, currentUsername, wObject) => {
     name: 'galleryAlbum',
     body: form.galleryAlbum,
     locale: 'en-US',
+    id: generatePermlink(),
   };
 
-  data.permlink = `${data.author}-${Math.random()
-    .toString(36)
-    .substring(2)}`;
+  data.permlink = `${data.author}-${generatePermlink()}`;
   data.lastUpdated = Date.now();
 
   data.wobjectName = getField(wObject, 'name');
   return data;
 };
+
+export const prepareAlbumToStore = data => ({
+  locale: data.field.locale,
+  creator: data.author,
+  permlink: data.permlink,
+  name: data.field.name,
+  body: data.field.body,
+  weight: 1,
+  active_votes: [],
+  items: [],
+  id: data.field.id,
+});
+
+export const prepareImageToStore = postData => ({
+  weight: 1,
+  locale: postData.field.locale,
+  creator: postData.author,
+  permlink: postData.permlink,
+  name: postData.field.name,
+  body: postData.field.body,
+  active_votes: [],
+});

@@ -1,22 +1,32 @@
 import React from 'react';
 import { map } from 'lodash';
 import PropTypes from 'prop-types';
-import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
+import { injectIntl } from 'react-intl';
+import { bindActionCreators } from 'redux';
 import { Button, Form, Select, Modal, Upload, Icon, message, Spin } from 'antd';
 import './CreateImage.less';
 import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
 import { getField } from '../../objects/WaivioObject';
 import { getAuthenticatedUserName, getObject } from '../../reducers';
-import { appendObject } from '../appendActions';
 import { objectFields } from '../../../common/constants/listOfFields';
+import * as galleryActions from './galleryActions';
+import * as appendActions from '../appendActions';
+import { prepareImageToStore } from '../../helpers/wObjectHelper';
 
 @connect(
   state => ({
     currentUsername: getAuthenticatedUserName(state),
     wObject: getObject(state),
   }),
-  { appendObject },
+  dispatch =>
+    bindActionCreators(
+      {
+        addImageToAlbumStore: image => galleryActions.addImageToAlbumStore(image),
+        appendObject: wObject => appendActions.appendObject(wObject),
+      },
+      dispatch,
+    ),
 )
 class CreateImage extends React.Component {
   state = {
@@ -24,6 +34,7 @@ class CreateImage extends React.Component {
     previewImage: '',
     fileList: [],
     uploadingList: [],
+    loading: false,
   };
 
   getWobjectData = () => {
@@ -73,10 +84,12 @@ class CreateImage extends React.Component {
 
     this.props.form.validateFields(err => {
       if (!err) {
+        this.setState({ loading: true });
+
         this.appendImages(fileList)
           .then(() => {
             hideModal();
-            this.setState({ fileList: [], uploadingList: [] });
+            this.setState({ fileList: [], uploadingList: [], loading: false });
             message.success(
               intl.formatMessage(
                 {
@@ -89,14 +102,15 @@ class CreateImage extends React.Component {
               ),
             );
           })
-          .catch(() =>
+          .catch(() => {
             message.error(
               intl.formatMessage({
                 id: 'couldnt_upload_image',
                 defaultMessage: "Couldn't add the image to album.",
               }),
-            ),
-          );
+            );
+            this.setState({ loading: false });
+          });
       }
     });
   };
@@ -162,6 +176,8 @@ class CreateImage extends React.Component {
   };
 
   appendImages = async images => {
+    const { addImageToAlbumStore, selectedAlbum } = this.props;
+
     const data = this.getWobjectData();
 
     /* eslint-disable no-restricted-syntax */
@@ -174,10 +190,18 @@ class CreateImage extends React.Component {
 
       /* eslint-disable no-await-in-loop */
       const response = await this.props.appendObject(postData);
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
       if (response.value.transactionId) {
         const filteredFileList = this.state.fileList.filter(file => file.uid !== image.uid);
-        this.setState({ fileList: filteredFileList });
+        this.setState({ fileList: filteredFileList }, async () => {
+          const img = prepareImageToStore(postData);
+          await addImageToAlbumStore({
+            ...img,
+            author: response.value.author,
+            id: selectedAlbum.id,
+          });
+        });
       }
     }
   };
@@ -188,8 +212,8 @@ class CreateImage extends React.Component {
   };
 
   render() {
-    const { showModal, form, loading, intl, selectedAlbum, albums } = this.props;
-    const { previewVisible, previewImage, fileList, uploadingList } = this.state;
+    const { showModal, form, intl, selectedAlbum, albums } = this.props;
+    const { previewVisible, previewImage, fileList, uploadingList, loading } = this.state;
 
     const acceptImageFormat = ALLOWED_IMG_FORMATS.map(format => `.${format}`).join(',');
 
@@ -222,7 +246,7 @@ class CreateImage extends React.Component {
                 },
               ],
             })(
-              <Select>
+              <Select disabled={loading}>
                 {map(albums, album => (
                   <Select.Option key={album.id} value={album.id}>
                     {album.body}
@@ -320,7 +344,6 @@ class CreateImage extends React.Component {
 CreateImage.propTypes = {
   showModal: PropTypes.bool.isRequired,
   hideModal: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired,
   intl: PropTypes.shape().isRequired,
   form: PropTypes.shape().isRequired,
   selectedAlbum: PropTypes.shape().isRequired,
@@ -328,6 +351,7 @@ CreateImage.propTypes = {
   currentUsername: PropTypes.shape(),
   wObject: PropTypes.shape(),
   appendObject: PropTypes.func,
+  addImageToAlbumStore: PropTypes.func.isRequired,
 };
 
 CreateImage.defaultProps = {
