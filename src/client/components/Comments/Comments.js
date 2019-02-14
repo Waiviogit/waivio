@@ -40,6 +40,7 @@ class Comments extends React.Component {
     onLikeClick: PropTypes.func,
     onDislikeClick: PropTypes.func,
     onSendComment: PropTypes.func,
+    isQuickComments: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -52,6 +53,7 @@ class Comments extends React.Component {
     rewriteLinks: false,
     sliderMode: 'auto',
     show: false,
+    isQuickComments: false,
     notify: () => {},
     onLikeClick: () => {},
     onDislikeClick: () => {},
@@ -197,6 +199,7 @@ class Comments extends React.Component {
       loading,
       loaded,
       show,
+      isQuickComments,
       pendingVotes,
       onLikeClick,
       onDislikeClick,
@@ -215,46 +218,50 @@ class Comments extends React.Component {
 
     return (
       <div className="Comments">
-        <div className="Comments__header">
-          <h2>
-            <FormattedMessage id="comments" defaultMessage="Comments" />
-          </h2>
-          <SortSelector sort={sort} onChange={this.handleSortChange}>
-            <SortSelector.Item key="BEST">
-              <FormattedMessage id="sort_best" defaultMessage="Best" />
-            </SortSelector.Item>
-            <SortSelector.Item key="NEWEST">
-              <FormattedMessage id="sort_newest" defaultMessage="Newest" />
-            </SortSelector.Item>
-            <SortSelector.Item key="OLDEST">
-              <FormattedMessage id="sort_oldest" defaultMessage="Oldest" />
-            </SortSelector.Item>
-            <SortSelector.Item key="AUTHOR_REPUTATION">
-              <FormattedMessage id="sort_author_reputation" defaultMessage="Reputation" />
-            </SortSelector.Item>
-          </SortSelector>
-        </div>
-
-        {authenticated && (
-          <CommentForm
-            top
-            parentPost={this.props.parentPost}
-            username={username}
-            onSubmit={this.handleSubmitComment}
-            isLoading={this.state.showCommentFormLoading}
-            inputValue={this.state.commentFormText}
-            submitted={this.state.commentSubmitted}
-            onImageInserted={this.handleImageInserted}
-            onImageInvalid={this.handleImageInvalid}
-          />
-        )}
-        {loading && <Loading />}
-        {loaded &&
-          commentsToRender.length === 0 && (
-            <div className="Comments__empty">
-              <FormattedMessage id="empty_comments" defaultMessage="There are no comments yet." />
+        {!isQuickComments && (
+          <React.Fragment>
+            <div className="Comments__header">
+              <h2>
+                <FormattedMessage id="comments" defaultMessage="Comments" />
+              </h2>
+              <SortSelector sort={sort} onChange={this.handleSortChange}>
+                <SortSelector.Item key="BEST">
+                  <FormattedMessage id="sort_best" defaultMessage="Best" />
+                </SortSelector.Item>
+                <SortSelector.Item key="NEWEST">
+                  <FormattedMessage id="sort_newest" defaultMessage="Newest" />
+                </SortSelector.Item>
+                <SortSelector.Item key="OLDEST">
+                  <FormattedMessage id="sort_oldest" defaultMessage="Oldest" />
+                </SortSelector.Item>
+                <SortSelector.Item key="AUTHOR_REPUTATION">
+                  <FormattedMessage id="sort_author_reputation" defaultMessage="Reputation" />
+                </SortSelector.Item>
+              </SortSelector>
             </div>
-          )}
+
+            {authenticated && (
+              <CommentForm
+                top
+                parentPost={this.props.parentPost}
+                username={username}
+                onSubmit={this.handleSubmitComment}
+                isLoading={this.state.showCommentFormLoading}
+                inputValue={this.state.commentFormText}
+                submitted={this.state.commentSubmitted}
+                onImageInserted={this.handleImageInserted}
+                onImageInvalid={this.handleImageInvalid}
+              />
+            )}
+          </React.Fragment>
+        )}
+
+        {loading && <Loading />}
+        {loaded && commentsToRender.length === 0 && (
+          <div className="Comments__empty">
+            <FormattedMessage id="empty_comments" defaultMessage="There are no comments yet." />
+          </div>
+        )}
         {loaded &&
           show &&
           comments &&

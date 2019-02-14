@@ -65,6 +65,7 @@ export default class Comments extends React.Component {
       }),
     ),
     show: PropTypes.bool,
+    isQuickComments: PropTypes.bool,
     notify: PropTypes.func,
     getComments: PropTypes.func,
     voteComment: PropTypes.func,
@@ -79,6 +80,7 @@ export default class Comments extends React.Component {
     commentsList: {},
     pendingVotes: [],
     show: false,
+    isQuickComments: false,
     notify: () => {},
     getComments: () => {},
     voteComment: () => {},
@@ -148,6 +150,7 @@ export default class Comments extends React.Component {
       comments,
       pendingVotes,
       show,
+      isQuickComments,
       sliderMode,
       rewardFund,
       defaultVotePercent,
@@ -182,6 +185,7 @@ export default class Comments extends React.Component {
           loading={comments.isFetching}
           loaded={comments.isLoaded}
           show={show}
+          isQuickComments={isQuickComments}
           notify={this.props.notify}
           rewardFund={rewardFund}
           sliderMode={sliderMode}

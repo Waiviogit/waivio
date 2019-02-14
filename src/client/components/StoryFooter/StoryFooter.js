@@ -6,6 +6,7 @@ import Slider from '../Slider/Slider';
 import Payout from './Payout';
 import Buttons from './Buttons';
 import Confirmation from './Confirmation';
+import Comments from '../../../client/comments/Comments';
 import { getHasDefaultSlider, getVoteValue } from '../../helpers/user';
 import { getRate } from '../../reducers';
 import './StoryFooter.less';
@@ -50,6 +51,7 @@ class StoryFooter extends React.Component {
 
   state = {
     sliderVisible: false,
+    commentsVisible: false,
     sliderValue: 100,
     voteWorth: 0,
   };
@@ -106,7 +108,15 @@ class StoryFooter extends React.Component {
     this.setState({ sliderValue: value, voteWorth });
   };
 
+  toggleCommentsVisibility = () => {
+    // const commentsVisible = !this.state.commentsVisible;
+    if (this.props.post.children > 0) {
+      this.setState(prevState => ({ commentsVisible: !prevState.commentsVisible }));
+    }
+  };
+
   render() {
+    const { commentsVisible } = this.state;
     const {
       post,
       postState,
@@ -141,6 +151,7 @@ class StoryFooter extends React.Component {
               onLikeClick={this.handleLikeClick}
               onShareClick={this.handleShareClick}
               onEditClick={this.handleEditClick}
+              onCommentClick={this.toggleCommentsVisibility}
               handlePostPopoverMenuClick={handlePostPopoverMenuClick}
             />
           )}
@@ -152,6 +163,7 @@ class StoryFooter extends React.Component {
             onChange={this.handleSliderChange}
           />
         )}
+        {commentsVisible && <Comments show={commentsVisible} isQuickComments post={post} />}
       </div>
     );
   }
