@@ -1,26 +1,44 @@
-import { connect } from 'react-redux';
-import { Icon, Col, Row, message } from 'antd';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import React, { Component } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { bindActionCreators } from 'redux';
+import { Icon, Col, Row, message } from 'antd';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import Loading from '../../components/Icon/Loading';
 import GalleryAlbum from './GalleryAlbum';
-import * as ApiClient from '../../../waivioApi/ApiClient';
 import './ObjectGallery.less';
 import CreateAlbum from './CreateAlbum';
-import { getAuthenticatedUserName, getIsAppendLoading, getObject } from '../../reducers';
-import { appendObject } from '../appendActions';
+import {
+  getAuthenticatedUserName,
+  getIsObjectAlbumsLoading,
+  getObject,
+  getObjectAlbums,
+  getIsAppendLoading,
+} from '../../reducers';
+import * as appendActions from '../appendActions';
+import * as galleryActions from './galleryActions';
 import IconButton from '../../components/IconButton';
-import { prepareAlbumData } from '../../helpers/wObjectHelper';
+import { prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelper';
 
+@injectIntl
 @connect(
   state => ({
     currentUsername: getAuthenticatedUserName(state),
     wObject: getObject(state),
     loadingAlbum: getIsAppendLoading(state),
+    loading: getIsObjectAlbumsLoading(state),
+    albums: getObjectAlbums(state),
   }),
-  { appendObject },
+  dispatch =>
+    bindActionCreators(
+      {
+        getAlbums: galleryActions.getAlbums,
+        addAlbumToStore: album => galleryActions.addAlbumToStore(album),
+        appendObject: wObject => appendActions.appendObject(wObject),
+      },
+      dispatch,
+    ),
 )
 export default class ObjectGallery extends Component {
   static propTypes = {
@@ -29,20 +47,24 @@ export default class ObjectGallery extends Component {
     wObject: PropTypes.shape().isRequired,
     appendObject: PropTypes.func.isRequired,
     loadingAlbum: PropTypes.bool.isRequired,
+    loading: PropTypes.bool.isRequired,
+    intl: PropTypes.shape().isRequired,
+    albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+    getAlbums: PropTypes.func.isRequired,
+    addAlbumToStore: PropTypes.func.isRequired,
   };
 
   state = {
-    albums: [],
-    loading: true,
     photoIndex: 0,
     showModal: false,
   };
 
   componentDidMount() {
-    const { match } = this.props;
-    ApiClient.getWobjectGallery(match.params.name).then(albums =>
-      this.setState({ loading: false, albums }),
-    );
+    const { albums, getAlbums, match } = this.props;
+
+    if (!albums.length) {
+      getAlbums(match.params.name);
+    }
   }
 
   handleToggleModal = () =>
@@ -50,71 +72,84 @@ export default class ObjectGallery extends Component {
       showModal: !prevState.showModal,
     }));
 
-  handleCreateAlbum = form => {
-    const { currentUsername, wObject } = this.props;
+  handleCreateAlbum = async form => {
+    const { currentUsername, wObject, appendObject, intl, addAlbumToStore } = this.props;
     const data = prepareAlbumData(form, currentUsername, wObject);
-    this.props
-      .appendObject(data)
-      .then(() => {
-        this.handleToggleModal();
-        message.success(`You successfully have created the ${form.galleryAlbum} album`);
-      })
-      .catch(err => {
-        message.error("Couldn't update object.");
-        console.log('err', err);
-      });
+    const album = prepareAlbumToStore(data);
+
+    try {
+      const { author } = await appendObject(data);
+      await addAlbumToStore({ ...album, author });
+      this.handleToggleModal();
+      message.success(
+        intl.formatMessage(
+          {
+            id: 'gallery_add_album_success',
+            defaultMessage: 'You successfully have created the {albumName} album',
+          },
+          {
+            albumName: form.galleryAlbum,
+          },
+        ),
+      );
+    } catch (err) {
+      message.error(
+        intl.formatMessage({
+          id: 'gallery_add_album_failure',
+          defaultMessage: "Couldn't create the album.",
+        }),
+      );
+      console.log('err', err);
+    }
   };
 
   render() {
-    const { match, loadingAlbum } = this.props;
-    const { loading, albums, showModal } = this.state;
+    const { showModal } = this.state;
+    const { match, loadingAlbum, albums, loading } = this.props;
     if (loading) return <Loading center />;
     const empty = albums.length === 0;
 
     return (
-      <React.Fragment>
-        <div className="ObjectGallery">
-          <div className="ObjectGallery__empty">
-            <div className="ObjectGallery__addAlbum">
-              <IconButton
-                icon={<Icon type="plus-circle" />}
-                onClick={this.handleToggleModal}
-                caption={<FormattedMessage id="add_new_album" defaultMessage="Add new album" />}
+      <div className="ObjectGallery">
+        <div className="ObjectGallery__empty">
+          <div className="ObjectGallery__addAlbum">
+            <IconButton
+              icon={<Icon type="plus-circle" />}
+              onClick={this.handleToggleModal}
+              caption={<FormattedMessage id="add_new_album" defaultMessage="Add new album" />}
+            />
+            {showModal && (
+              <CreateAlbum
+                showModal={showModal}
+                hideModal={this.handleToggleModal}
+                handleSubmit={this.handleCreateAlbum}
+                loading={loadingAlbum}
               />
-              {showModal && (
-                <CreateAlbum
-                  showModal={showModal}
-                  hideModal={this.handleToggleModal}
-                  handleSubmit={this.handleCreateAlbum}
-                  loading={loadingAlbum}
-                />
-              )}
-            </div>
+            )}
           </div>
-          {empty && (
-            <div className="ObjectGallery__emptyText">
-              <FormattedMessage id="gallery_list_empty" defaultMessage="Nothing is there" />
-            </div>
-          )}
-          {!empty && (
-            <div className="ObjectGallery__cardWrap">
-              <Row gutter={24}>
-                {albums.map(album => (
-                  <Col span={12} key={album.id}>
-                    <Link
-                      replace
-                      to={`/object/@${match.params.name}/gallery/album/${album.id}`}
-                      className="GalleryAlbum"
-                    >
-                      <GalleryAlbum album={album} handleOpenLightbox={this.handleOpenLightbox} />
-                    </Link>
-                  </Col>
-                ))}
-              </Row>
-            </div>
-          )}
         </div>
-      </React.Fragment>
+        {!empty ? (
+          <div className="ObjectGallery__cardWrap">
+            <Row gutter={24}>
+              {albums.map(album => (
+                <Col span={12} key={album.id}>
+                  <Link
+                    replace
+                    to={`/object/@${match.params.name}/gallery/album/${album.id}`}
+                    className="GalleryAlbum"
+                  >
+                    <GalleryAlbum album={album} handleOpenLightbox={this.handleOpenLightbox} />
+                  </Link>
+                </Col>
+              ))}
+            </Row>
+          </div>
+        ) : (
+          <div className="ObjectGallery__emptyText">
+            <FormattedMessage id="gallery_list_empty" defaultMessage="Nothing is there" />
+          </div>
+        )}
+      </div>
     );
   }
 }
