@@ -12,6 +12,7 @@ import {
   getAuthenticatedUserName,
 } from '../reducers';
 import { getObject } from './wobjectsActions';
+import { resetGallery } from '../object/ObjectGallery/galleryActions';
 import { getObjectUrl } from '../components/ObjectAvatar';
 import Error404 from '../statics/Error404';
 import WobjHero from './WobjHero';
@@ -30,6 +31,7 @@ import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
   }),
   {
     getObject,
+    resetGallery,
   },
 )
 export default class Wobj extends React.Component {
@@ -40,6 +42,7 @@ export default class Wobj extends React.Component {
     match: PropTypes.shape().isRequired,
     failed: PropTypes.bool,
     getObject: PropTypes.func,
+    resetGallery: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -66,6 +69,10 @@ export default class Wobj extends React.Component {
         this.setState({ wobject: wobject.value });
       });
     }
+  }
+
+  componentWillUnmount() {
+    this.props.resetGallery();
   }
 
   toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));

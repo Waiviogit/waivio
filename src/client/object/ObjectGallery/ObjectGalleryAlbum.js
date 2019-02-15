@@ -16,7 +16,7 @@ import {
   getObjectAlbums,
 } from '../../reducers';
 import withEditor from '../../components/Editor/withEditor';
-import { getAlbums, resetGallery } from './galleryActions';
+import { getAlbums } from './galleryActions';
 
 @withEditor
 @connect(
@@ -28,7 +28,6 @@ import { getAlbums, resetGallery } from './galleryActions';
   }),
   {
     getAlbums,
-    resetGallery,
   },
 )
 export default class ObjectGalleryAlbum extends Component {
@@ -37,7 +36,6 @@ export default class ObjectGalleryAlbum extends Component {
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     getAlbums: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
-    resetGallery: PropTypes.func.isRequired,
   };
 
   state = {
@@ -46,12 +44,10 @@ export default class ObjectGalleryAlbum extends Component {
   };
 
   componentDidMount() {
-    const { match } = this.props;
-    this.props.getAlbums(match.params.name);
-  }
-
-  componentWillUnmount() {
-    this.props.resetGallery();
+    const { match, albums } = this.props;
+    if (!albums.length) {
+      this.props.getAlbums(match.params.name);
+    }
   }
 
   handleToggleModal = () =>
