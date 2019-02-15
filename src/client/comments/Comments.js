@@ -182,6 +182,7 @@ export default class Comments extends React.Component {
           authenticated={this.props.authenticated}
           username={this.props.username}
           pendingVotes={pendingVotes}
+          loadingPostId={comments.fetchingPostId}
           loading={comments.isFetching}
           loaded={comments.isLoaded}
           show={show}

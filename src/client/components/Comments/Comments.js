@@ -10,6 +10,7 @@ import CommentForm from './CommentForm';
 import Comment from './Comment';
 import './Comments.less';
 import MoreCommentsButton from './MoreCommentsButton';
+import { getPostKey } from '../../helpers/stateHelpers';
 import { findTopComment, getLinkedComment } from '../../helpers/commentHelpers';
 
 @injectIntl
@@ -18,6 +19,7 @@ class Comments extends React.Component {
     intl: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
     authenticated: PropTypes.bool.isRequired,
+    loadingPostId: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     loaded: PropTypes.bool.isRequired,
     username: PropTypes.string,
@@ -196,6 +198,7 @@ class Comments extends React.Component {
       comments,
       rootLevelComments,
       commentsChildren,
+      loadingPostId,
       loading,
       loaded,
       show,
@@ -215,6 +218,7 @@ class Comments extends React.Component {
     const linkedComment = getLinkedComment(comments);
     const rootLinkedComment = findTopComment(parentPost, comments, linkedComment);
     const commentsToRender = this.commentsToRender(rootLevelComments, rootLinkedComment);
+    const isParentPostFetching = loadingPostId === getPostKey(parentPost);
 
     return (
       <div className="Comments">
@@ -256,13 +260,13 @@ class Comments extends React.Component {
           </React.Fragment>
         )}
 
-        {loading && <Loading />}
+        {loading && isParentPostFetching && <Loading />}
         {loaded && commentsToRender.length === 0 && (
           <div className="Comments__empty">
             <FormattedMessage id="empty_comments" defaultMessage="There are no comments yet." />
           </div>
         )}
-        {loaded &&
+        {(loaded || !isParentPostFetching) &&
           show &&
           comments &&
           commentsToRender.map(comment => (
