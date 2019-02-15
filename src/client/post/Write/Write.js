@@ -137,7 +137,11 @@ class Write extends React.Component {
         initialTopics,
         initialWavioData,
       });
-    } else if (!differentDraft && nextProps.draftPosts[nextProps.draftId]) {
+    } else if (
+      !differentDraft &&
+      nextProps.draftPosts[nextProps.draftId] &&
+      nextProps.saving !== this.props.saving
+    ) {
       this.initFromDraft(nextProps.draftId, nextProps.draftPosts[nextProps.draftId]);
     }
   }
