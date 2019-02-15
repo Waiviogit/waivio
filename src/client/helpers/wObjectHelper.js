@@ -19,7 +19,7 @@ export const generateRandomString = stringLength => {
   return randomString;
 };
 
-const generatePermlink = () =>
+export const generatePermlink = () =>
   Math.random()
     .toString(36)
     .substring(2);
