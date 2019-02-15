@@ -29,8 +29,7 @@ class Album extends React.Component {
           {album.items && album.items.length > 0 ? (
             <Row gutter={24}>
               {album.items.map((image, idx) => (
-                /* eslint-disable-next-line no-underscore-dangle */
-                <Col span={12} key={image._id}>
+                <Col span={12} key={image.permlink}>
                   <GalleryItem
                     image={image}
                     handleOpenLightbox={this.handleOpenLightbox}
