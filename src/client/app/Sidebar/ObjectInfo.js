@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import React from 'react';
-import { Icon, message, Tag } from 'antd';
+import { Icon, Tag } from 'antd';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { haveAccess, accessTypesArr, prepareAlbumData } from '../../helpers/wObjectHelper';
+import { haveAccess, accessTypesArr } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import './ObjectInfo.less';
 import { getFieldWithMaxWeight, getFieldsCount, getWebsiteField } from '../../object/wObjectHelper';
@@ -15,24 +15,19 @@ import Map from '../../components/Maps/Map';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
 import IconButton from '../../components/IconButton';
-import CreateAlbum from '../../object/ObjectGallery/CreateAlbum';
-import { getIsAppendLoading } from '../../reducers';
-import { appendObject } from '../../object/appendActions';
+import { getObjectAlbums } from '../../reducers';
 import DescriptionInfo from './DescriptionInfo';
+import CreateImage from '../../object/ObjectGallery/CreateImage';
 
-@connect(
-  state => ({
-    loadingAlbum: getIsAppendLoading(state),
-  }),
-  { appendObject },
-)
+@connect(state => ({
+  albums: getObjectAlbums(state),
+}))
 class ObjectInfo extends React.Component {
   static propTypes = {
     wobject: PropTypes.shape().isRequired,
     userName: PropTypes.string.isRequired,
-    appendObject: PropTypes.func.isRequired,
-    loadingAlbum: PropTypes.bool.isRequired,
     isEditMode: PropTypes.bool,
+    albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   };
 
   static defaultProps = {
@@ -47,22 +42,9 @@ class ObjectInfo extends React.Component {
 
   handleSelectField = field => this.setState({ selectedField: field });
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
-  handleCreateAlbum = form => {
-    const { userName, wobject } = this.props;
-    const data = prepareAlbumData(form, userName, wobject);
-    this.props
-      .appendObject(data)
-      .then(() => {
-        this.handleToggleModal();
-        message.success(`You successfully have created the ${form.galleryAlbum} album`);
-      })
-      .catch(err => {
-        message.error("Couldn't update object.");
-        console.log('err', err);
-      });
-  };
+
   render() {
-    const { isEditMode, wobject, userName, loadingAlbum } = this.props;
+    const { isEditMode, wobject, userName, albums } = this.props;
     const { showModal, selectedField } = this.state;
 
     let addressArr = [];
@@ -75,7 +57,7 @@ class ObjectInfo extends React.Component {
     let avatar = '';
     let short = '';
     let background = '';
-    let albumsCount = 0;
+    let photosCount = 0;
     let hashtags = [];
     if (wobject) {
       addressArr = Object.values(addressFields).map(fieldName =>
@@ -95,7 +77,7 @@ class ObjectInfo extends React.Component {
       websiteFields = getWebsiteField(wobject);
       title = websiteFields.title;
       link = websiteFields.body;
-      albumsCount = wobject.albums_count;
+      photosCount = wobject.photos_count;
 
       const filtered = _.filter(wobject.fields, ['name', objectFields.hashtag]);
       hashtags = _.orderBy(filtered, ['weight'], ['desc']);
@@ -116,7 +98,7 @@ class ObjectInfo extends React.Component {
     profile = _.pickBy(profile, _.identity);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
     const objectName = getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name);
-
+    const album = _.filter(albums, _.iteratee(['id', wobject.author_permlink]));
     const hasGalleryImg = wobject.preview_gallery && wobject.preview_gallery[0];
 
     const listItem = (fieldName, content) => {
@@ -231,13 +213,13 @@ class ObjectInfo extends React.Component {
                         <FormattedMessage id="object_field_gallery" defaultMessage="Gallery" />
                       </div>
                     </Link>
-                    <span className="proposition-line__text">{albumsCount}</span>
+                    <span className="proposition-line__text">{photosCount}</span>
                     {showModal && (
-                      <CreateAlbum
+                      <CreateImage
+                        albums={albums}
+                        selectedAlbum={album[0]}
                         showModal={showModal}
                         hideModal={this.handleToggleModal}
-                        handleSubmit={this.handleCreateAlbum}
-                        loading={loadingAlbum}
                       />
                     )}
                   </div>
