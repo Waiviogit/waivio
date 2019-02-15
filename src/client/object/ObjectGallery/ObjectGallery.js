@@ -36,6 +36,7 @@ import { prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelp
         getAlbums: galleryActions.getAlbums,
         addAlbumToStore: album => galleryActions.addAlbumToStore(album),
         appendObject: wObject => appendActions.appendObject(wObject),
+        resetGallery: galleryActions.resetGallery,
       },
       dispatch,
     ),
@@ -52,6 +53,7 @@ export default class ObjectGallery extends Component {
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     getAlbums: PropTypes.func.isRequired,
     addAlbumToStore: PropTypes.func.isRequired,
+    resetGallery: PropTypes.func.isRequired,
   };
 
   state = {
@@ -62,6 +64,10 @@ export default class ObjectGallery extends Component {
   componentDidMount() {
     const { getAlbums, match } = this.props;
     getAlbums(match.params.name);
+  }
+
+  componentWillUnmount() {
+    this.props.resetGallery();
   }
 
   handleToggleModal = () =>

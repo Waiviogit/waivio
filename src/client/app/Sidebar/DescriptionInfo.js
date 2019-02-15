@@ -36,7 +36,11 @@ class DescriptionInfo extends React.Component {
 
 DescriptionInfo.propTypes = {
   description: PropTypes.string.isRequired,
-  intl: PropTypes.shape().isRequired,
+  intl: PropTypes.shape(),
+};
+
+DescriptionInfo.defaultProps = {
+  intl: {},
 };
 
 export default DescriptionInfo;
