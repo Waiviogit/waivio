@@ -62,13 +62,13 @@ class Comments extends React.Component {
     onSendComment: () => {},
   };
 
-  static SHOW_COMMENTS_INCREMENT = 20;
-
   constructor(props) {
     super(props);
 
+    this.SHOW_COMMENTS_INCREMENT = props.isQuickComments ? 10 : 20;
+
     this.state = {
-      sort: props.isQuickComments ? 'OLDEST' : 'BEST',
+      sort: props.isQuickComments ? 'NEWEST' : 'BEST',
       showCommentFormLoading: false,
       commentFormText: '',
       commentSubmitted: false,
@@ -111,7 +111,7 @@ class Comments extends React.Component {
 
   handleShowMoreComments() {
     this.setState(prevState => ({
-      nRenderedComments: prevState.nRenderedComments + Comments.SHOW_COMMENTS_INCREMENT,
+      nRenderedComments: prevState.nRenderedComments + this.SHOW_COMMENTS_INCREMENT,
     }));
   }
 
@@ -184,11 +184,11 @@ class Comments extends React.Component {
       .filter(comment => comment.id !== (rootLinkedComment && rootLinkedComment.id))
       .slice(
         0,
-        rootLinkedComment
-          ? nRenderedComments - Comments.SHOW_COMMENTS_INCREMENT
-          : nRenderedComments,
+        rootLinkedComment ? nRenderedComments - this.SHOW_COMMENTS_INCREMENT : nRenderedComments,
       );
-    return rootLinkedComment ? [rootLinkedComment, ...filteredComments] : filteredComments;
+
+    const result = rootLinkedComment ? [rootLinkedComment, ...filteredComments] : filteredComments;
+    return this.props.isQuickComments ? result.reverse() : result;
   }
 
   render() {
@@ -266,6 +266,14 @@ class Comments extends React.Component {
             <FormattedMessage id="empty_comments" defaultMessage="There are no comments yet." />
           </div>
         )}
+        {isQuickComments && (
+          <MoreCommentsButton
+            comments={rootLevelComments.length}
+            visibleComments={commentsToRender.length}
+            isQuickComments={isQuickComments}
+            onClick={this.handleShowMoreComments}
+          />
+        )}
         {(loaded || !isParentPostFetching) &&
           show &&
           comments &&
@@ -293,11 +301,14 @@ class Comments extends React.Component {
               onSendComment={this.props.onSendComment}
             />
           ))}
-        <MoreCommentsButton
-          comments={rootLevelComments.length}
-          visibleComments={commentsToRender.length}
-          onClick={this.handleShowMoreComments}
-        />
+        {!isQuickComments && (
+          <MoreCommentsButton
+            comments={rootLevelComments.length}
+            visibleComments={commentsToRender.length}
+            isQuickComments={isQuickComments}
+            onClick={this.handleShowMoreComments}
+          />
+        )}
       </div>
     );
   }

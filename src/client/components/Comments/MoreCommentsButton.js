@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import './MoreCommentsButton.less';
 
-const MoreCommentsButton = ({ comments, visibleComments, onClick }) => {
+const MoreCommentsButton = ({ comments, visibleComments, isQuickComments, onClick }) => {
   if (comments === 0 || visibleComments >= comments) {
     return null;
   }
@@ -18,7 +19,7 @@ const MoreCommentsButton = ({ comments, visibleComments, onClick }) => {
           }}
         />
       </span>
-      <i className="iconfont icon-unfold" />
+      <Icon type={isQuickComments ? 'up' : 'down'} />
     </button>
   );
 };
@@ -26,6 +27,7 @@ const MoreCommentsButton = ({ comments, visibleComments, onClick }) => {
 MoreCommentsButton.propTypes = {
   comments: PropTypes.number.isRequired,
   visibleComments: PropTypes.number.isRequired,
+  isQuickComments: PropTypes.bool.isRequired,
   onClick: PropTypes.func.isRequired,
 };
 
