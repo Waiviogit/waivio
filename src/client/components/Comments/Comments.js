@@ -68,11 +68,11 @@ class Comments extends React.Component {
     super(props);
 
     this.state = {
-      sort: 'BEST',
+      sort: props.isQuickComments ? 'OLDEST' : 'BEST',
       showCommentFormLoading: false,
       commentFormText: '',
       commentSubmitted: false,
-      nRenderedComments: 20,
+      nRenderedComments: props.isQuickComments ? 3 : 20,
     };
 
     this.detectSort = this.detectSort.bind(this);
@@ -277,6 +277,7 @@ class Comments extends React.Component {
               authenticated={authenticated}
               username={username}
               comment={comment}
+              isQuickComment={isQuickComments}
               parent={this.props.parentPost}
               sort={sort}
               rootPostAuthor={this.props.parentPost && this.props.parentPost.author}

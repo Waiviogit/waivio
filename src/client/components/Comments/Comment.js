@@ -29,6 +29,7 @@ class Comment extends React.Component {
     user: PropTypes.shape().isRequired,
     intl: PropTypes.shape().isRequired,
     comment: PropTypes.shape().isRequired,
+    isQuickComment: PropTypes.bool.isRequired,
     parent: PropTypes.shape().isRequired,
     sort: PropTypes.oneOf(['BEST', 'NEWEST', 'OLDEST', 'AUTHOR_REPUTATION']),
     rewardFund: PropTypes.shape().isRequired,
@@ -69,7 +70,7 @@ class Comment extends React.Component {
     this.state = {
       replyOpen: false,
       editOpen: false,
-      collapsed: false,
+      collapsed: props.isQuickComment && props.depth === 1,
       showCommentFormLoading: false,
       commentFormText: '',
       showHiddenComment: false,
@@ -352,6 +353,7 @@ class Comment extends React.Component {
                   depth={depth + 1}
                   intl={this.props.intl}
                   comment={child}
+                  isQuickComment={this.props.isQuickComment}
                   parent={comment}
                   sort={sort}
                   pendingVotes={pendingVotes}
