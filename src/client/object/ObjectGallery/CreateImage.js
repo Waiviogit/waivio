@@ -12,7 +12,7 @@ import { getAuthenticatedUserName, getObject } from '../../reducers';
 import { objectFields } from '../../../common/constants/listOfFields';
 import * as galleryActions from './galleryActions';
 import * as appendActions from '../appendActions';
-import { prepareImageToStore } from '../../helpers/wObjectHelper';
+import { prepareImageToStore, generatePermlink } from '../../helpers/wObjectHelper';
 
 @connect(
   state => ({
@@ -44,9 +44,6 @@ class CreateImage extends React.Component {
     data.parentAuthor = wObject.author;
     data.parentPermlink = wObject.author_permlink;
     data.title = '';
-    data.permlink = `${data.author}-${Math.random()
-      .toString(36)
-      .substring(2)}`;
     data.lastUpdated = Date.now();
     data.wobjectName = getField(wObject, objectFields.name);
     return data;
@@ -184,6 +181,7 @@ class CreateImage extends React.Component {
     for (const image of images) {
       const postData = {
         ...data,
+        permlink: `${data.author}-${generatePermlink()}`,
         field: this.getWobjectField(image),
         body: this.getWobjectBody(image),
       };
