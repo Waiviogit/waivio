@@ -10,8 +10,10 @@ import {
   getIsUserFailed,
   getIsUserLoaded,
   getAuthenticatedUserName,
+  getObject as getObjectState,
 } from '../reducers';
-import { getObject } from './wobjectsActions';
+import { getObjectInfo } from './wobjectsActions';
+import { resetGallery } from '../object/ObjectGallery/galleryActions';
 import { getObjectUrl } from '../components/ObjectAvatar';
 import Error404 from '../statics/Error404';
 import WobjHero from './WobjHero';
@@ -27,9 +29,11 @@ import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
     authenticatedUserName: getAuthenticatedUserName(state),
     loaded: getIsUserLoaded(state, ownProps.match.params.name),
     failed: getIsUserFailed(state, ownProps.match.params.name),
+    wobject: getObjectState(state),
   }),
   {
-    getObject,
+    getObjectInfo,
+    resetGallery,
   },
 )
 export default class Wobj extends React.Component {
@@ -39,43 +43,46 @@ export default class Wobj extends React.Component {
     authenticated: PropTypes.bool.isRequired,
     match: PropTypes.shape().isRequired,
     failed: PropTypes.bool,
-    getObject: PropTypes.func,
+    getObjectInfo: PropTypes.func,
+    resetGallery: PropTypes.func.isRequired,
+    wobject: PropTypes.shape(),
   };
 
   static defaultProps = {
     authenticatedUserName: '',
     loaded: false,
     failed: false,
-    getObject: () => {},
+    getObjectInfo: () => {},
+    wobject: {},
   };
 
   state = {
-    wobject: {},
     isEditMode: false,
   };
 
   componentDidMount() {
-    this.props.getObject(this.props.match.params.name).then(wobject => {
-      this.setState({ wobject: wobject.value });
-    });
+    const { match } = this.props;
+    this.props.getObjectInfo(match.params.name);
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.match.params.name !== this.props.match.params.name) {
-      this.props.getObject(this.props.match.params.name).then(wobject => {
-        this.setState({ wobject: wobject.value });
-      });
+    const { match } = this.props;
+
+    if (prevProps.match.params.name !== match.params.name) {
+      this.props.getObjectInfo(match.params.name);
     }
+  }
+
+  componentWillUnmount() {
+    this.props.resetGallery();
   }
 
   toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
 
   render() {
     const { isEditMode } = this.state;
-    const { authenticated, failed, authenticatedUserName: userName } = this.props;
+    const { authenticated, failed, authenticatedUserName: userName, wobject } = this.props;
     if (failed) return <Error404 />;
-
-    const { wobject } = this.state;
 
     const busyHost = global.postOrigin || 'https://busy.org';
     const desc = `Posts by ${wobject.tag}`;

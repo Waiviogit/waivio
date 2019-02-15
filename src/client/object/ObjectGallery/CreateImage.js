@@ -351,13 +351,14 @@ CreateImage.propTypes = {
   currentUsername: PropTypes.shape(),
   wObject: PropTypes.shape(),
   appendObject: PropTypes.func,
-  addImageToAlbumStore: PropTypes.func.isRequired,
+  addImageToAlbumStore: PropTypes.func,
 };
 
 CreateImage.defaultProps = {
   currentUsername: {},
   wObject: {},
   appendObject: () => {},
+  addImageToAlbumStore: () => {},
 };
 
 export default injectIntl(Form.create()(CreateImage));
