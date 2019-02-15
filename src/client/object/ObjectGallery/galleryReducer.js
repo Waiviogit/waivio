@@ -43,6 +43,9 @@ export default (state = defaultState, action) => {
       );
       return { ...state, albums };
     }
+    case galleryActions.RESET_GALLERY: {
+      return defaultState;
+    }
     default:
       return state;
   }
