@@ -68,12 +68,10 @@ class InstrumentsPage extends Component {
     const marketType = supportedObjectTypes.some(market => market === paramMarket)
       ? paramMarket
       : 'crypto';
-
     const quoteSettingsSorted = {};
     Object.entries(quoteSettings).forEach(([key, value]) => {
       if (value.wobjData) {
-        const marketName =
-          value.market.toLowerCase() === 'cryptocurrency' ? 'crypto' : value.market.toLowerCase();
+        const marketName = value.market.toLowerCase();
         quoteSettingsSorted[marketName] = quoteSettingsSorted[marketName]
           ? [...quoteSettingsSorted[marketName], { ...value, keyName: key }]
           : [{ ...value, keyName: key }];

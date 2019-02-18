@@ -94,9 +94,6 @@ class TopInstruments extends React.Component {
           if (instrumentsToShow[quoteSettings.market]) {
             instrumentsToShow[quoteSettings.market].push(quoteSettings.keyName);
             instrumentsCount+=1;
-          } else if (quoteSettings.keyName === 'CryptoCurrency'){
-            instrumentsToShow.Crypto.push(quoteSettings.keyName);
-            instrumentsCount+=1
           }
         }
       }
@@ -119,34 +116,37 @@ class TopInstruments extends React.Component {
                   <div className="SidebarContentBlock__amount">{instrumentsCount}</div>
                 </div>
               }
-              {marketNames.map(market => <div className="SidebarContentBlock top-instruments" key={market.name}>
-                <div className="SidebarContentBlock__title">
-                  <Link to={`/markets/${market.name.toLowerCase()}`}>
-                    {intl.formatMessage(market.intl).toUpperCase()}
-                  </Link>
-                  {/* {isAuthenticated && <div className="SidebarContentBlock__amount">{instrumentsToShow[market.name].length}</div>} */}
-                </div>
-                <div className="SidebarContentBlock__content">
-                  {instrumentsToShow[market.name].map(
-                    instrumentName =>
-                      quotesSettings[instrumentName] &&
-                      quotesSettings[instrumentName].wobjData && (
-                        <TopInstrumentsItem
-                          key={instrumentName}
-                          toggleModalTC={this.toggleModalInstrumentsChart}
-                          intl={intl}
-                          quoteSettings={quotesSettings[instrumentName]}
-                          quoteSecurity={instrumentName}
-                          chart={charts && charts[instrumentName] ? charts[instrumentName] : []}
-                          showTradeBtn={false}
-                          chartHeight={60}
-                          chartWidth={160}
-                        />
-                      ),
-                  )}
-                </div>
-              </div>
-              )}
+              {marketNames.map(market => {
+                return !_.isEmpty(instrumentsToShow[market.name]) &&
+                  <div className="SidebarContentBlock top-instruments" key={market.name}>
+                    <div className="SidebarContentBlock__title">
+                      <Link to={`/markets/${market.name.toLowerCase()}`}>
+                        {intl.formatMessage(market.intl).toUpperCase()}
+                      </Link>
+                      {/* {isAuthenticated && <div className="SidebarContentBlock__amount">{instrumentsToShow[market.name].length}</div>} */}
+                    </div>
+                    <div className="SidebarContentBlock__content">
+                      {instrumentsToShow[market.name].map(
+                        instrumentName =>
+                          quotesSettings[instrumentName] &&
+                          quotesSettings[instrumentName].wobjData && (
+                            <TopInstrumentsItem
+                              key={instrumentName}
+                              toggleModalTC={this.toggleModalInstrumentsChart}
+                              intl={intl}
+                              quoteSettings={quotesSettings[instrumentName]}
+                              quoteSecurity={instrumentName}
+                              chart={charts && charts[instrumentName] ? charts[instrumentName] : []}
+                              showTradeBtn={false}
+                              chartHeight={60}
+                              chartWidth={160}
+                            />
+                          ),
+                      )}
+                    </div>
+                  </div>
+              })
+              }
             </React.Fragment> :
           <TopInstrumentsLoading/>
           }

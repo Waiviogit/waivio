@@ -333,6 +333,8 @@ export class Umarkets {
             _.find(o.fields, field => field.name === 'chartid' && field.body === key),
           );
           sortedQuotesSettings[key] = quotesSettings[key];
+          if(sortedQuotesSettings[key].market === 'CryptoCurrency') sortedQuotesSettings[key].market = 'Crypto';
+          sortedQuotesSettings[key].keyName = key;
           if (wobjData) {
             sortedQuotesSettings[key].wobjData = {
               avatarlink: getFieldWithMaxWeight(wobjData, objectFields.avatar),

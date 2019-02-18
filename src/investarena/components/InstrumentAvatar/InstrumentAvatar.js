@@ -13,7 +13,6 @@ const avatarKey = {
   Commodity: 'CM',
   Stock: 'ST',
   Crypto: 'CR',
-  CryptoCurrency: 'CR',
   Index: 'IN',
 };
 
