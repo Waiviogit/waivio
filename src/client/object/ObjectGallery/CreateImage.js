@@ -49,12 +49,16 @@ class CreateImage extends React.Component {
     return data;
   };
 
-  getWobjectField = image => ({
-    name: 'galleryItem',
-    body: image.response.url,
-    locale: 'en-US',
-    id: this.props.selectedAlbum.id,
-  });
+  getWobjectField = image => {
+    const { form } = this.props;
+
+    return {
+      name: 'galleryItem',
+      body: image.response.url,
+      locale: 'en-US',
+      id: form.getFieldValue('id'),
+    };
+  };
 
   getWobjectBody = image => {
     const { selectedAlbum, currentUsername, intl } = this.props;
@@ -173,7 +177,7 @@ class CreateImage extends React.Component {
   };
 
   appendImages = async images => {
-    const { addImageToAlbumStore, selectedAlbum } = this.props;
+    const { addImageToAlbumStore, form } = this.props;
 
     const data = this.getWobjectData();
 
@@ -197,7 +201,7 @@ class CreateImage extends React.Component {
           await addImageToAlbumStore({
             ...img,
             author: response.value.author,
-            id: selectedAlbum.id,
+            id: form.getFieldValue('id'),
           });
         });
       }
