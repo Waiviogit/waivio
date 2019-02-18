@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { message } from 'antd';
 import { MAXIMUM_UPLOAD_SIZE_HUMAN } from '../../helpers/image';
@@ -8,6 +9,7 @@ import Loading from '../Icon/Loading';
 import SortSelector from '../SortSelector/SortSelector';
 import CommentForm from './CommentForm';
 import Comment from './Comment';
+import QuickCommentEditor from './QuickCommentEditor';
 import './Comments.less';
 import MoreCommentsButton from './MoreCommentsButton';
 import { getPostKey } from '../../helpers/stateHelpers';
@@ -87,6 +89,9 @@ class Comments extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (this.props.isQuickComments && !nextProps.show) {
+      this.setState({ nRenderedComments: 3 });
+    }
     this.detectSort(nextProps.comments);
   }
 
@@ -221,7 +226,7 @@ class Comments extends React.Component {
     const isParentPostFetching = loadingPostId === getPostKey(parentPost);
 
     return (
-      <div className="Comments">
+      <div className={classNames('Comments', { 'quick-comments': isQuickComments })}>
         {!isQuickComments && (
           <React.Fragment>
             <div className="Comments__header">
@@ -257,16 +262,15 @@ class Comments extends React.Component {
                 onImageInvalid={this.handleImageInvalid}
               />
             )}
+            {loaded && commentsToRender.length === 0 && (
+              <div className="Comments__empty">
+                <FormattedMessage id="empty_comments" defaultMessage="There are no comments yet." />
+              </div>
+            )}
           </React.Fragment>
         )}
-
         {loading && isParentPostFetching && <Loading />}
-        {loaded && commentsToRender.length === 0 && (
-          <div className="Comments__empty">
-            <FormattedMessage id="empty_comments" defaultMessage="There are no comments yet." />
-          </div>
-        )}
-        {isQuickComments && (
+        {isQuickComments && show && (
           <MoreCommentsButton
             comments={rootLevelComments.length}
             visibleComments={commentsToRender.length}
@@ -301,7 +305,20 @@ class Comments extends React.Component {
               onSendComment={this.props.onSendComment}
             />
           ))}
-        {!isQuickComments && (
+        {isQuickComments ? (
+          authenticated && (
+            <QuickCommentEditor
+              parentPost={this.props.parentPost}
+              username={username}
+              onSubmit={this.handleSubmitComment}
+              isLoading={this.state.showCommentFormLoading}
+              inputValue={this.state.commentFormText}
+              submitted={this.state.commentSubmitted}
+              onImageInserted={this.handleImageInserted}
+              onImageInvalid={this.handleImageInvalid}
+            />
+          )
+        ) : (
           <MoreCommentsButton
             comments={rootLevelComments.length}
             visibleComments={commentsToRender.length}

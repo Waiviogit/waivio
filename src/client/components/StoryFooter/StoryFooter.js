@@ -8,17 +8,19 @@ import Buttons from './Buttons';
 import Confirmation from './Confirmation';
 import Comments from '../../../client/comments/Comments';
 import { getHasDefaultSlider, getVoteValue } from '../../helpers/user';
-import { getRate } from '../../reducers';
+import { getRate, getShowPostModal } from '../../reducers';
 import './StoryFooter.less';
 
 @connect(state => ({
   rate: getRate(state),
+  showPostModal: getShowPostModal(state),
 }))
 class StoryFooter extends React.Component {
   static propTypes = {
     user: PropTypes.shape().isRequired,
     post: PropTypes.shape().isRequired,
     postState: PropTypes.shape().isRequired,
+    showPostModal: PropTypes.bool.isRequired,
     rewardFund: PropTypes.shape().isRequired,
     rate: PropTypes.number.isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
@@ -109,7 +111,6 @@ class StoryFooter extends React.Component {
   };
 
   toggleCommentsVisibility = () => {
-    // const commentsVisible = !this.state.commentsVisible;
     if (this.props.post.children > 0) {
       this.setState(prevState => ({ commentsVisible: !prevState.commentsVisible }));
     }
@@ -122,6 +123,7 @@ class StoryFooter extends React.Component {
       postState,
       pendingLike,
       pendingFlag,
+      showPostModal,
       ownPost,
       defaultVotePercent,
       pendingFollow,
@@ -163,7 +165,7 @@ class StoryFooter extends React.Component {
             onChange={this.handleSliderChange}
           />
         )}
-        {commentsVisible && <Comments show={commentsVisible} isQuickComments post={post} />}
+        {!showPostModal && <Comments show={commentsVisible} isQuickComments post={post} />}
       </div>
     );
   }

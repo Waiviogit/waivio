@@ -92,6 +92,7 @@
   "comment_update_send": "Update comment",
   "comment_update_progress": "Updating",
   "comment_show_more": "Show more comments ({count})",
+  "show_more_comments": "Show more comments",
   "notify_comment_sent": "Comment submitted",
   "notify_comment_updated": "Comment updated",
   "reblog": "Reblog",

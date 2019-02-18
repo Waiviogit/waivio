@@ -17,6 +17,7 @@ import { sortComments } from '../../helpers/sortHelpers';
 import ReputationTag from '../../components/ReputationTag';
 import CommentForm from './CommentForm';
 import EmbeddedCommentForm from './EmbeddedCommentForm';
+import QuickCommentEditor from './QuickCommentEditor';
 import Avatar from '../Avatar';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import CommentFooter from '../CommentFooter/CommentFooter';
@@ -223,6 +224,7 @@ class Comment extends React.Component {
       rewardFund,
       defaultVotePercent,
       rewriteLinks,
+      isQuickComment,
     } = this.props;
     const { showHiddenComment } = this.state;
     const anchorId = `@${comment.author}/${comment.permlink}`;
@@ -257,6 +259,30 @@ class Comment extends React.Component {
     }
 
     const avatarSize = comment.depth === 1 ? 40 : 32;
+
+    const commentEditor = isQuickComment ? ( // todo: pass same props
+      <QuickCommentEditor
+        username={user.name}
+        parentPost={comment}
+        isSmall={comment.depth !== 1}
+        onSubmit={this.handleSubmitComment}
+        isLoading={this.state.showCommentFormLoading}
+        inputValue={this.state.commentFormText}
+        onImageInserted={this.handleImageInserted}
+        onImageInvalid={this.handleImageInvalid}
+      />
+    ) : (
+      <CommentForm
+        username={user.name}
+        parentPost={comment}
+        isSmall={comment.depth !== 1}
+        onSubmit={this.handleSubmitComment}
+        isLoading={this.state.showCommentFormLoading}
+        inputValue={this.state.commentFormText}
+        onImageInserted={this.handleImageInserted}
+        onImageInvalid={this.handleImageInvalid}
+      />
+    );
 
     return (
       <div ref={this.setSelf} className="Comment" id={anchorId}>
@@ -325,18 +351,7 @@ class Comment extends React.Component {
             onReplyClick={this.handleReplyClick}
             onEditClick={this.handleEditClick}
           />
-          {this.state.replyOpen && user.name && (
-            <CommentForm
-              username={user.name}
-              parentPost={comment}
-              isSmall={comment.depth !== 1}
-              onSubmit={this.handleSubmitComment}
-              isLoading={this.state.showCommentFormLoading}
-              inputValue={this.state.commentFormText}
-              onImageInserted={this.handleImageInserted}
-              onImageInvalid={this.handleImageInvalid}
-            />
-          )}
+          {this.state.replyOpen && user.name && commentEditor}
           <div
             className={classNames('Comment__replies', {
               'Comment__replies--no-indent': depth >= 1,
