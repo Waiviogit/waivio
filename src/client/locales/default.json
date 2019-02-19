@@ -483,5 +483,7 @@
   "gallery_add_album_failure": "Couldn't create the album.",
   "image_url_placeholder": "Image URL",
   "couldnt_append": "Couldn't add the field to object.",
-  "GoTo": "Go to"
+  "GoTo": "Go to",
+  "emptyCatalog": "This catalog is empty",
+  "emptyCategory": "This category is empty"
 }

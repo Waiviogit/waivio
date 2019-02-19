@@ -47,21 +47,32 @@ const CatalogWrap = ({ wobject, match, intl }) => {
               ))}
             </Breadcrumb>
           </div>
-          {_.map(currentItem.items, catalogItem => (
-            <div key={`category-${catalogItem.permlink}`}>
-              <Link
-                to={{ pathname: `${link}/${catalogItem.permlink}` }}
-                title={`${intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
-                  catalogItem.body
-                }`}
-              >
-                <CatalogItem catalogItem={catalogItem} />
-              </Link>
+          {!_.isEmpty(currentItem.items) ? (
+            _.map(currentItem.items, catalogItem => (
+              <div key={`category-${catalogItem.permlink}`}>
+                <Link
+                  to={{ pathname: `${link}/${catalogItem.permlink}` }}
+                  title={`${intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
+                    catalogItem.body
+                  }`}
+                >
+                  <CatalogItem catalogItem={catalogItem} />
+                </Link>
+              </div>
+            ))
+          ) : (
+            <div>
+              {intl.formatMessage({
+                id: 'emptyCategory',
+                defaultMessage: 'This category is empty',
+              })}
             </div>
-          ))}
+          )}
         </div>
       ) : (
-        'nothing to show'
+        <div>
+          {intl.formatMessage({ id: 'emptyCatalog', defaultMessage: 'This catalog is empty' })}
+        </div>
       )}
     </div>
   );
