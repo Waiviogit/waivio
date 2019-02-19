@@ -25,7 +25,7 @@ class CatalogItem extends React.Component {
     const wobject = _.isEmpty(catalogItem.object_links)
       ? {}
       : getClientWObj(catalogItem.object_links[0].wobject);
-    const pathName = `/object/@${wobject.author_permlink}/catalog`;
+    const pathName = `/object/${wobject.author_permlink}/catalog`;
     return (
       <React.Fragment>
         <div
