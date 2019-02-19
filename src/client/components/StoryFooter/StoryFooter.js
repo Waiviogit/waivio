@@ -165,7 +165,14 @@ class StoryFooter extends React.Component {
             onChange={this.handleSliderChange}
           />
         )}
-        {!showPostModal && <Comments show={commentsVisible} isQuickComments post={post} />}
+        {!showPostModal && (
+          <Comments
+            show={commentsVisible}
+            isQuickComments
+            post={post}
+            toggleShowComments={this.toggleCommentsVisibility}
+          />
+        )}
       </div>
     );
   }

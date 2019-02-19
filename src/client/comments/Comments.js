@@ -70,6 +70,7 @@ export default class Comments extends React.Component {
     getComments: PropTypes.func,
     voteComment: PropTypes.func,
     sendComment: PropTypes.func,
+    toggleShowComments: PropTypes.func,
   };
 
   static defaultProps = {
@@ -85,6 +86,7 @@ export default class Comments extends React.Component {
     getComments: () => {},
     voteComment: () => {},
     sendComment: () => {},
+    toggleShowComments: () => {},
   };
 
   state = {
@@ -155,6 +157,7 @@ export default class Comments extends React.Component {
       rewardFund,
       defaultVotePercent,
       rewriteLinks,
+      toggleShowComments,
     } = this.props;
     const postId = post.id;
     let rootLevelComments = [];
@@ -195,6 +198,7 @@ export default class Comments extends React.Component {
           onLikeClick={this.handleLikeClick}
           onDislikeClick={this.handleDislikeClick}
           onSendComment={this.props.sendComment}
+          toggleShowComments={toggleShowComments}
         />
       )
     );

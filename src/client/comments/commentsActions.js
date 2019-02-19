@@ -76,7 +76,6 @@ export const getComments = (postId, reload = false, focusedComment = undefined) 
               },
             };
           }
-          console.log('-->', resContent);
 
           return {
             rootCommentsList: getRootCommentsList(resContent),

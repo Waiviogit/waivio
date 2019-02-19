@@ -13,7 +13,7 @@ class QuickCommentEditor extends React.Component {
     parentPost: PropTypes.shape().isRequired,
     username: PropTypes.string.isRequired,
     // isSmall: PropTypes.bool,
-    // isLoading: PropTypes.bool,
+    isLoading: PropTypes.bool,
     // submitted: PropTypes.bool,
     inputValue: PropTypes.string.isRequired,
     onImageUpload: PropTypes.func,
@@ -23,6 +23,7 @@ class QuickCommentEditor extends React.Component {
 
   static defaultProps = {
     inputValue: '',
+    isLoading: false,
     onImageUpload: () => {},
     onImageInvalid: () => {},
     onSubmit: () => {},
@@ -101,7 +102,7 @@ class QuickCommentEditor extends React.Component {
 
   render() {
     const { image, imageUploading, commentMsg } = this.state;
-    const { username } = this.props;
+    const { username, isLoading } = this.props;
 
     // const buttonClass = isLoading ? 'CommentForm__button_disabled' : 'CommentForm__button_primary';
 
@@ -139,7 +140,7 @@ class QuickCommentEditor extends React.Component {
             autosize
             // defaultValue={inputValue}
             value={commentMsg}
-            disabled={imageUploading}
+            disabled={imageUploading || isLoading}
             onPressEnter={this.handleSubmit}
             onChange={this.handleMsgChange}
           />

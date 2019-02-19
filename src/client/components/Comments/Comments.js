@@ -40,11 +40,12 @@ class Comments extends React.Component {
     rewriteLinks: PropTypes.bool,
     sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
     show: PropTypes.bool,
+    isQuickComments: PropTypes.bool,
     notify: PropTypes.func,
     onLikeClick: PropTypes.func,
     onDislikeClick: PropTypes.func,
     onSendComment: PropTypes.func,
-    isQuickComments: PropTypes.bool,
+    toggleShowComments: PropTypes.func,
   };
 
   static defaultProps = {
@@ -62,6 +63,7 @@ class Comments extends React.Component {
     onLikeClick: () => {},
     onDislikeClick: () => {},
     onSendComment: () => {},
+    toggleShowComments: () => {},
   };
 
   constructor(props) {
@@ -91,6 +93,9 @@ class Comments extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.isQuickComments && !nextProps.show) {
       this.setState({ nRenderedComments: 3 });
+    }
+    if (nextProps.parentPost.children - this.props.parentPost.children === 1) {
+      this.setState(prevState => ({ nRenderedComments: prevState.nRenderedComments + 1 }));
     }
     this.detectSort(nextProps.comments);
   }
@@ -152,7 +157,7 @@ class Comments extends React.Component {
   };
 
   handleSubmitComment(parentPost, commentValue) {
-    const { intl } = this.props;
+    const { intl, isQuickComments, toggleShowComments } = this.props;
 
     this.setState({ showCommentFormLoading: true });
     return this.props
@@ -170,6 +175,9 @@ class Comments extends React.Component {
           commentFormText: '',
           commentSubmitted: true,
         });
+        if (isQuickComments && !this.props.show) {
+          toggleShowComments();
+        }
       })
       .catch(() => {
         this.setState({
