@@ -29,7 +29,7 @@ export default (state = defaultState, action) => {
     case galleryActions.ADD_ALBUM: {
       return {
         ...state,
-        albums: [action.payload, ...state.albums],
+        albums: [...state.albums, action.payload],
       };
     }
     case galleryActions.ADD_IMAGE: {
