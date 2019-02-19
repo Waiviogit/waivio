@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { haveAccess, accessTypesArr } from '../../helpers/wObjectHelper';
+import { haveAccess, accessTypesArr, isCatalog } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import './ObjectInfo.less';
 import { getFieldWithMaxWeight, getFieldsCount, getWebsiteField } from '../../object/wObjectHelper';
@@ -18,6 +18,7 @@ import IconButton from '../../components/IconButton';
 import { getObjectAlbums } from '../../reducers';
 import DescriptionInfo from './DescriptionInfo';
 import CreateImage from '../../object/ObjectGallery/CreateImage';
+import CatalogStructure from '../../object/Catalog/CatalogStructure';
 
 @connect(state => ({
   albums: getObjectAlbums(state),
@@ -153,6 +154,7 @@ class ObjectInfo extends React.Component {
         {getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name) && (
           <div className="object-sidebar">
             {listItem(objectFields.description, <DescriptionInfo description={description} />)}
+            {isCatalog && <CatalogStructure wobject={wobject} />}
             {listItem(
               objectFields.hashtag,
               <div className="field-info">

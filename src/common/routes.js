@@ -33,6 +33,7 @@ import ObjectGallery from '../client/object/ObjectGallery/ObjectGallery';
 import ObjectGalleryAlbum from '../client/object/ObjectGallery/ObjectGalleryAlbum';
 import WobjHistory from '../client/object/WobjHistory';
 import ObjectAbout from '../client/object/ObjectAbout';
+import CatalogWrap from '../client/object/Catalog/CatalogWrap';
 
 const routes = [
   {
@@ -131,7 +132,7 @@ const routes = [
         ],
       },
       {
-        path: `/object/@:name/(about|gallery|updates|reviews|followers|feed)?/(${supportedObjectFields.join(
+        path: `/object/@:name/(about|gallery|catalog|updates|reviews|followers|feed)?/(${supportedObjectFields.join(
           '|',
         )}|album)?/:albumId?`,
         component: Wobj,
@@ -156,6 +157,11 @@ const routes = [
             path: '/object/@:name/gallery',
             exact: true,
             component: ObjectGallery,
+          },
+          {
+            path: '/object/@:name/catalog',
+            exact: true,
+            component: CatalogWrap,
           },
           {
             path: '/object/@:name/gallery/album/:albumId',

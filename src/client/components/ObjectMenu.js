@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import './ObjectMenu.less';
+import { isCatalog } from '../helpers/wObjectHelper';
 
 class ObjectMenu extends React.Component {
   static propTypes = {
@@ -12,6 +13,7 @@ class ObjectMenu extends React.Component {
     followers: PropTypes.number,
     fieldsCount: PropTypes.number,
     accessExtend: PropTypes.bool,
+    wobject: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -20,11 +22,13 @@ class ObjectMenu extends React.Component {
     followers: 0,
     fieldsCount: 0,
     accessExtend: true,
+    wobject: {},
   };
 
   static TAB_NAME = {
     ABOUT: 'about',
     GALLERY: 'gallery',
+    CATALOG: 'catalog',
     UPDATES: 'updates',
     REVIEWS: 'reviews',
     FOLLOWERS: 'followers',
@@ -52,6 +56,7 @@ class ObjectMenu extends React.Component {
   };
 
   render() {
+    const isCatalogue = isCatalog(this.props.wobject);
     return (
       <div className="ObjectMenu">
         <div className="container menu-layout">
@@ -73,6 +78,16 @@ class ObjectMenu extends React.Component {
               >
                 <FormattedMessage id="about" defaultMessage="About" />
               </li>
+              {isCatalogue && (
+                <li
+                  className={this.getItemClasses(ObjectMenu.TAB_NAME.CATALOG)}
+                  onClick={this.handleClick}
+                  role="presentation"
+                  data-key={ObjectMenu.TAB_NAME.CATALOG}
+                >
+                  <FormattedMessage id="catalog" defaultMessage="Catalog" />
+                </li>
+              )}
               <li
                 className={this.getItemClasses(ObjectMenu.TAB_NAME.REVIEWS)}
                 onClick={this.handleClick}

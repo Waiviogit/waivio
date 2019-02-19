@@ -62,6 +62,7 @@
   "unfollowing": "Unfollowing",
   "followers": "Followers",
   "gallery": "Gallery",
+  "catalog": "Catalog",
   "reblogged": "Re-blogged",
   "reblogged_username": "{username} reblogged",
   "follow_username": "Follow {username}",
