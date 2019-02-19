@@ -17,6 +17,7 @@ import { sortComments } from '../../helpers/sortHelpers';
 import ReputationTag from '../../components/ReputationTag';
 import CommentForm from './CommentForm';
 import EmbeddedCommentForm from './EmbeddedCommentForm';
+import QuickCommentEditor from './QuickCommentEditor';
 import Avatar from '../Avatar';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import CommentFooter from '../CommentFooter/CommentFooter';
@@ -29,6 +30,7 @@ class Comment extends React.Component {
     user: PropTypes.shape().isRequired,
     intl: PropTypes.shape().isRequired,
     comment: PropTypes.shape().isRequired,
+    isQuickComment: PropTypes.bool.isRequired,
     parent: PropTypes.shape().isRequired,
     sort: PropTypes.oneOf(['BEST', 'NEWEST', 'OLDEST', 'AUTHOR_REPUTATION']),
     rewardFund: PropTypes.shape().isRequired,
@@ -69,7 +71,7 @@ class Comment extends React.Component {
     this.state = {
       replyOpen: false,
       editOpen: false,
-      collapsed: false,
+      collapsed: props.isQuickComment && props.depth === 1,
       showCommentFormLoading: false,
       commentFormText: '',
       showHiddenComment: false,
@@ -222,6 +224,7 @@ class Comment extends React.Component {
       rewardFund,
       defaultVotePercent,
       rewriteLinks,
+      isQuickComment,
     } = this.props;
     const { showHiddenComment } = this.state;
     const anchorId = `@${comment.author}/${comment.permlink}`;
@@ -234,7 +237,16 @@ class Comment extends React.Component {
     let content = null;
 
     if (this.state.editOpen) {
-      content = (
+      content = isQuickComment ? (
+        <QuickCommentEditor
+          parentPost={parent}
+          username={''}
+          inputValue={comment.body}
+          onSubmit={this.handleEditComment}
+          onImageInserted={this.handleImageInserted}
+          onImageInvalid={this.handleImageInvalid}
+        />
+      ) : (
         <EmbeddedCommentForm
           parentPost={parent}
           inputValue={comment.body}
@@ -256,6 +268,30 @@ class Comment extends React.Component {
     }
 
     const avatarSize = comment.depth === 1 ? 40 : 32;
+
+    const commentEditor = isQuickComment ? ( // todo: pass same props
+      <QuickCommentEditor
+        username={user.name}
+        parentPost={comment}
+        isSmall={comment.depth !== 1}
+        onSubmit={this.handleSubmitComment}
+        isLoading={this.state.showCommentFormLoading}
+        inputValue={this.state.commentFormText}
+        onImageInserted={this.handleImageInserted}
+        onImageInvalid={this.handleImageInvalid}
+      />
+    ) : (
+      <CommentForm
+        username={user.name}
+        parentPost={comment}
+        isSmall={comment.depth !== 1}
+        onSubmit={this.handleSubmitComment}
+        isLoading={this.state.showCommentFormLoading}
+        inputValue={this.state.commentFormText}
+        onImageInserted={this.handleImageInserted}
+        onImageInvalid={this.handleImageInvalid}
+      />
+    );
 
     return (
       <div ref={this.setSelf} className="Comment" id={anchorId}>
@@ -324,18 +360,7 @@ class Comment extends React.Component {
             onReplyClick={this.handleReplyClick}
             onEditClick={this.handleEditClick}
           />
-          {this.state.replyOpen && user.name && (
-            <CommentForm
-              username={user.name}
-              parentPost={comment}
-              isSmall={comment.depth !== 1}
-              onSubmit={this.handleSubmitComment}
-              isLoading={this.state.showCommentFormLoading}
-              inputValue={this.state.commentFormText}
-              onImageInserted={this.handleImageInserted}
-              onImageInvalid={this.handleImageInvalid}
-            />
-          )}
+          {this.state.replyOpen && user.name && commentEditor}
           <div
             className={classNames('Comment__replies', {
               'Comment__replies--no-indent': depth >= 1,
@@ -352,6 +377,7 @@ class Comment extends React.Component {
                   depth={depth + 1}
                   intl={this.props.intl}
                   comment={child}
+                  isQuickComment={this.props.isQuickComment}
                   parent={comment}
                   sort={sort}
                   pendingVotes={pendingVotes}

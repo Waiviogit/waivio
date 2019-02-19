@@ -6,18 +6,21 @@ import Slider from '../Slider/Slider';
 import Payout from './Payout';
 import Buttons from './Buttons';
 import Confirmation from './Confirmation';
+import Comments from '../../../client/comments/Comments';
 import { getHasDefaultSlider, getVoteValue } from '../../helpers/user';
-import { getRate } from '../../reducers';
+import { getRate, getShowPostModal } from '../../reducers';
 import './StoryFooter.less';
 
 @connect(state => ({
   rate: getRate(state),
+  showPostModal: getShowPostModal(state),
 }))
 class StoryFooter extends React.Component {
   static propTypes = {
     user: PropTypes.shape().isRequired,
     post: PropTypes.shape().isRequired,
     postState: PropTypes.shape().isRequired,
+    showPostModal: PropTypes.bool.isRequired,
     rewardFund: PropTypes.shape().isRequired,
     rate: PropTypes.number.isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
@@ -50,6 +53,7 @@ class StoryFooter extends React.Component {
 
   state = {
     sliderVisible: false,
+    commentsVisible: false,
     sliderValue: 100,
     voteWorth: 0,
   };
@@ -106,12 +110,20 @@ class StoryFooter extends React.Component {
     this.setState({ sliderValue: value, voteWorth });
   };
 
+  toggleCommentsVisibility = () => {
+    if (this.props.post.children > 0) {
+      this.setState(prevState => ({ commentsVisible: !prevState.commentsVisible }));
+    }
+  };
+
   render() {
+    const { commentsVisible } = this.state;
     const {
       post,
       postState,
       pendingLike,
       pendingFlag,
+      showPostModal,
       ownPost,
       defaultVotePercent,
       pendingFollow,
@@ -141,6 +153,7 @@ class StoryFooter extends React.Component {
               onLikeClick={this.handleLikeClick}
               onShareClick={this.handleShareClick}
               onEditClick={this.handleEditClick}
+              onCommentClick={this.toggleCommentsVisibility}
               handlePostPopoverMenuClick={handlePostPopoverMenuClick}
             />
           )}
@@ -150,6 +163,14 @@ class StoryFooter extends React.Component {
             value={this.state.sliderValue}
             voteWorth={this.state.voteWorth}
             onChange={this.handleSliderChange}
+          />
+        )}
+        {!showPostModal && (
+          <Comments
+            show={commentsVisible}
+            isQuickComments
+            post={post}
+            toggleShowComments={this.toggleCommentsVisibility}
           />
         )}
       </div>

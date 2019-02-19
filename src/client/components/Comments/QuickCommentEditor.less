@@ -1,0 +1,69 @@
+@import (reference) '../../styles/custom.less';
+
+.QuickComment {
+  display: flex;
+  position: relative;
+  align-items: flex-start;
+  padding: 12px 0;
+
+  &__avatar {
+    margin-right: 8px;
+  }
+
+  &__add-img-icon {
+    position: absolute;
+    right: 5px;
+    bottom: 9px;
+    color: @blue-botticelli;
+    cursor: pointer;
+    &:hover {
+      color: @grey-empress;
+    }
+  }
+
+  &__loading-img-icon {
+    position: absolute;
+    right: 10px;
+    bottom: 20px;
+    font-size: 20px !important;
+    color: @primary-color;
+  }
+}
+
+.QuickComment_inputfile {
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  width: 0.1px;
+  z-index: -1;
+}
+
+.QuickComment__img-preview {
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 12px;
+
+  & > img {
+    max-height: 50px;
+    padding: 0 5px 0 0;
+  }
+
+  &__remove {
+    align-items: center;
+    background-color: @white;
+    color: @primary-color !important;
+    cursor: pointer;
+    display: flex;
+    height: 10px;
+    justify-content: center;
+    margin-left: 3px;
+    margin-top: -4px;
+    position: absolute;
+    width: 12px;
+
+    &__icon {
+      font-size: 24px !important;
+    }
+  }
+}

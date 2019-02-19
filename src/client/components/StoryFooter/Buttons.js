@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import take from 'lodash/take';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
-import { scroller } from 'react-scroll';
 import { Link } from 'react-router-dom';
 import { Icon, Modal } from 'antd';
 import classNames from 'classnames';
@@ -33,6 +32,7 @@ export default class Buttons extends React.Component {
     saving: PropTypes.bool,
     onLikeClick: PropTypes.func,
     onShareClick: PropTypes.func,
+    onCommentClick: PropTypes.func,
     handlePostPopoverMenuClick: PropTypes.func,
   };
 
@@ -45,18 +45,9 @@ export default class Buttons extends React.Component {
     saving: false,
     onLikeClick: () => {},
     onShareClick: () => {},
+    onCommentClick: () => {},
     handlePostPopoverMenuClick: () => {},
   };
-
-  static handleCommentClick() {
-    const form = document.getElementById('commentFormInput');
-    if (form) {
-      scroller.scrollTo('commentFormInputScrollerElement', {
-        offset: 50,
-      });
-      form.focus();
-    }
-  }
 
   constructor(props) {
     super(props);
@@ -269,8 +260,6 @@ export default class Buttons extends React.Component {
     const likeClass = classNames({ active: postState.isLiked, Buttons__link: true });
     const rebloggedClass = classNames({ active: postState.isReblogged, Buttons__link: true });
 
-    const commentsLink =
-      post.url.indexOf('#') !== -1 ? post.url : { pathname: post.url, hash: '#comments' };
     const showReblogLink = !ownPost && post.parent_author === '';
 
     let likeTooltip = <span>{intl.formatMessage({ id: 'like' })}</span>;
@@ -327,9 +316,9 @@ export default class Buttons extends React.Component {
           </span>
         )}
         <BTooltip title={intl.formatMessage({ id: 'comment', defaultMessage: 'Comment' })}>
-          <Link className="Buttons__link" to={commentsLink} onClick={this.handleCommentClick}>
+          <a className="Buttons__link" role="presentation" onClick={this.props.onCommentClick}>
             <i className="iconfont icon-message_fill" />
-          </Link>
+          </a>
         </BTooltip>
         <span className="Buttons__number">
           {post.children > 0 && <FormattedNumber value={post.children} />}

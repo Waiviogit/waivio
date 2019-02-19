@@ -65,10 +65,12 @@ export default class Comments extends React.Component {
       }),
     ),
     show: PropTypes.bool,
+    isQuickComments: PropTypes.bool,
     notify: PropTypes.func,
     getComments: PropTypes.func,
     voteComment: PropTypes.func,
     sendComment: PropTypes.func,
+    toggleShowComments: PropTypes.func,
   };
 
   static defaultProps = {
@@ -79,10 +81,12 @@ export default class Comments extends React.Component {
     commentsList: {},
     pendingVotes: [],
     show: false,
+    isQuickComments: false,
     notify: () => {},
     getComments: () => {},
     voteComment: () => {},
     sendComment: () => {},
+    toggleShowComments: () => {},
   };
 
   state = {
@@ -148,10 +152,12 @@ export default class Comments extends React.Component {
       comments,
       pendingVotes,
       show,
+      isQuickComments,
       sliderMode,
       rewardFund,
       defaultVotePercent,
       rewriteLinks,
+      toggleShowComments,
     } = this.props;
     const postId = post.id;
     let rootLevelComments = [];
@@ -179,9 +185,11 @@ export default class Comments extends React.Component {
           authenticated={this.props.authenticated}
           username={this.props.username}
           pendingVotes={pendingVotes}
+          loadingPostId={comments.fetchingPostId}
           loading={comments.isFetching}
           loaded={comments.isLoaded}
           show={show}
+          isQuickComments={isQuickComments}
           notify={this.props.notify}
           rewardFund={rewardFund}
           sliderMode={sliderMode}
@@ -190,6 +198,7 @@ export default class Comments extends React.Component {
           onLikeClick={this.handleLikeClick}
           onDislikeClick={this.handleDislikeClick}
           onSendComment={this.props.sendComment}
+          toggleShowComments={toggleShowComments}
         />
       )
     );
