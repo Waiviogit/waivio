@@ -59,6 +59,7 @@ class ObjectInfo extends React.Component {
     let background = '';
     let photosCount = 0;
     let hashtags = [];
+    let phones = [];
     if (wobject) {
       addressArr = Object.values(addressFields).map(fieldName =>
         getFieldWithMaxWeight(wobject, objectFields.address, fieldName),
@@ -81,6 +82,9 @@ class ObjectInfo extends React.Component {
 
       const filtered = _.filter(wobject.fields, ['name', objectFields.hashtag]);
       hashtags = _.orderBy(filtered, ['weight'], ['desc']);
+
+      const filteredPhones = _.filter(wobject.fields, ['name', objectFields.phone]);
+      phones = _.orderBy(filteredPhones, ['weight'], ['desc']);
     }
 
     if (link && link.indexOf('http://') === -1 && link.indexOf('https://') === -1) {
@@ -273,8 +277,51 @@ class ObjectInfo extends React.Component {
                 </div>
               ) : null,
             )}
-            {listItem(objectFields.link, <SocialLinks profile={profile} />)}
+            {listItem(
+              objectFields.phone,
+              <div className="field-info">
+                {accessExtend ? (
+                  <React.Fragment>
+                    {phones.length <= 3 ? (
+                      phones.slice(0, 3).map(({ body, number }) => (
+                        <div key={body} className="tag-item">
+                          {body} <br />
+                          <a role="presentation">{number}</a>
+                        </div>
+                      ))
+                    ) : (
+                      <React.Fragment>
+                        {phones.slice(0, 2).map(({ body, number }) => (
+                          <div key={body} className="tag-item">
+                            {body} <br />
+                            <a role="presentation">{number}</a>
+                          </div>
+                        ))}
+                        <Link
+                          to={`/object/@${wobject.author_permlink}/updates/${objectFields.phone}`}
+                          onClick={() => this.handleSelectField(objectFields.phone)}
+                        >
+                          <FormattedMessage id="show_more_tags" defaultMessage="show more">
+                            {value => <div className="tag-item">{value}</div>}
+                          </FormattedMessage>
+                        </Link>
+                      </React.Fragment>
+                    )}
+                  </React.Fragment>
+                ) : (
+                  <React.Fragment>
+                    {phones.slice(0, 3).map(({ body, number }) => (
+                      <div key={body}>
+                        {body} <br />
+                        <a role="presentation">{number}</a>
+                      </div>
+                    ))}
+                  </React.Fragment>
+                )}
+              </div>,
+            )}
 
+            {listItem(objectFields.link, <SocialLinks profile={profile} />)}
             {accessExtend && settingsSection}
           </div>
         )}

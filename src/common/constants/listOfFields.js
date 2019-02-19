@@ -9,6 +9,7 @@ export const objectFields = {
   background: 'background',
   website: 'website',
   hashtag: 'tag',
+  phone: 'phone',
 };
 
 export const addressFields = {
@@ -34,6 +35,11 @@ export const linkFields = {
 export const websiteFields = {
   title: 'title',
   link: 'link',
+};
+
+export const phoneFields = {
+  name: 'name',
+  number: 'number',
 };
 
 export const socialObjectFields = [

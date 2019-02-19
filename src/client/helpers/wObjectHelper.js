@@ -67,3 +67,6 @@ export const prepareImageToStore = postData => ({
   body: postData.field.body,
   active_votes: [],
 });
+
+export const isCatalog = wobj =>
+  !!(wobj && wobj.object_type && wobj.object_type.toLowerCase() === 'catalog');
