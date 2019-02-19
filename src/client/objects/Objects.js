@@ -12,7 +12,7 @@ import SearchObjectsAutocomplete from '../components/EditorObject/SearchObjectsA
 const Objects = ({ intl, history }) => {
   const handleSelectObject = selected => {
     if (selected) {
-      history.push(`/object/@${selected.id}`);
+      history.push(`/object/${selected.id}`);
     }
   };
   return (

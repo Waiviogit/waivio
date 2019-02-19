@@ -482,5 +482,6 @@
   "gallery_add_album_success": "You successfully have created the {albumName} album.",
   "gallery_add_album_failure": "Couldn't create the album.",
   "image_url_placeholder": "Image URL",
-  "couldnt_append": "Couldn't add the field to object."
+  "couldnt_append": "Couldn't add the field to object.",
+  "GoTo": "Go to"
 }
