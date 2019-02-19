@@ -176,7 +176,7 @@ class ObjectInfo extends React.Component {
                           </div>
                         ))}
                         <Link
-                          to={`/object/@${wobject.author_permlink}/updates/${objectFields.hashtag}`}
+                          to={`/object/${wobject.author_permlink}/updates/${objectFields.hashtag}`}
                           onClick={() => this.handleSelectField(objectFields.hashtag)}
                         >
                           <FormattedMessage id="show_more_tags" defaultMessage="show more">
@@ -202,7 +202,7 @@ class ObjectInfo extends React.Component {
                 {accessExtend && (
                   <div className="proposition-line">
                     <Link
-                      to={{ pathname: `/object/@${wobject.author_permlink}/gallery` }}
+                      to={{ pathname: `/object/${wobject.author_permlink}/gallery` }}
                       onClick={() => this.handleSelectField('gallery')}
                     >
                       <IconButton
@@ -298,7 +298,7 @@ class ObjectInfo extends React.Component {
                           </div>
                         ))}
                         <Link
-                          to={`/object/@${wobject.author_permlink}/updates/${objectFields.phone}`}
+                          to={`/object/${wobject.author_permlink}/updates/${objectFields.phone}`}
                           onClick={() => this.handleSelectField(objectFields.phone)}
                         >
                           <FormattedMessage id="show_more_tags" defaultMessage="show more">
