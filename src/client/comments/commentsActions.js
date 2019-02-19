@@ -25,16 +25,16 @@ export const reloadExistingComment = createAction(RELOAD_EXISTING_COMMENT, undef
   commentId: getPostKey(data),
 }));
 
-const getRootCommentsList = apiRes =>
-  Object.keys(apiRes.content)
-    .filter(commentKey => apiRes.content[commentKey].depth === 1)
-    .map(commentKey => getPostKey(apiRes.content[commentKey]));
+const getRootCommentsList = content =>
+  Object.keys(content)
+    .filter(commentKey => content[commentKey].depth === 1)
+    .map(commentKey => getPostKey(content[commentKey]));
 
-const getCommentsChildrenLists = apiRes => {
+const getCommentsChildrenLists = content => {
   const listsById = {};
-  Object.keys(apiRes.content).forEach(commentKey => {
-    listsById[getPostKey(apiRes.content[commentKey])] = apiRes.content[commentKey].replies.map(
-      childKey => getPostKey(apiRes.content[childKey]),
+  Object.keys(content).forEach(commentKey => {
+    listsById[getPostKey(content[commentKey])] = content[commentKey].replies.map(childKey =>
+      getPostKey(content[childKey]),
     );
   });
 
@@ -64,11 +64,25 @@ export const getComments = (postId, reload = false, focusedComment = undefined) 
     payload: {
       promise: steemAPI
         .sendAsync('get_state', [`/${category}/@${author}/${permlink}`])
-        .then(apiRes => ({
-          rootCommentsList: getRootCommentsList(apiRes),
-          commentsChildrenList: getCommentsChildrenLists(apiRes),
-          content: apiRes.content,
-        })),
+        .then(apiRes => {
+          let resContent = apiRes.content;
+          if (focusedComment) {
+            const focusedCommentKey = getPostKey(focusedComment);
+            resContent = {
+              ...resContent,
+              [focusedCommentKey]: {
+                ...focusedComment,
+                ...resContent[focusedCommentKey],
+              },
+            };
+          }
+
+          return {
+            rootCommentsList: getRootCommentsList(resContent),
+            commentsChildrenList: getCommentsChildrenLists(resContent),
+            content: resContent,
+          };
+        }),
     },
     meta: {
       id: postId,
@@ -113,10 +127,7 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
       promise: steemConnectAPI
         .comment(parentAuthor, parentPermlink, author, permlink, '', newBody, jsonMetadata)
         .then(resp => {
-          const focusedComment = {
-            author: resp.result.operations[0][1].author,
-            permlink: resp.result.operations[0][1].permlink,
-          };
+          const focusedComment = { ...resp.result.operations[0][1], replies: [] };
           dispatch(getComments(id, true, focusedComment));
 
           if (window.analytics) {

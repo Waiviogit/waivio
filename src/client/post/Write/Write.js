@@ -140,7 +140,7 @@ class Write extends React.Component {
     } else if (
       !differentDraft &&
       nextProps.draftPosts[nextProps.draftId] &&
-      nextProps.saving !== this.props.saving
+      nextProps.saving === this.props.saving
     ) {
       this.initFromDraft(nextProps.draftId, nextProps.draftPosts[nextProps.draftId]);
     }
