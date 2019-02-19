@@ -55,7 +55,7 @@ const WobjHero = ({
   <React.Fragment>
     <Switch>
       <Route
-        path="/object/@:name"
+        path="/object/:name"
         render={() => (
           <React.Fragment>
             {isFetching ? (

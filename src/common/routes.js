@@ -33,6 +33,7 @@ import ObjectGallery from '../client/object/ObjectGallery/ObjectGallery';
 import ObjectGalleryAlbum from '../client/object/ObjectGallery/ObjectGalleryAlbum';
 import WobjHistory from '../client/object/WobjHistory';
 import ObjectAbout from '../client/object/ObjectAbout';
+import CatalogWrap from '../client/object/Catalog/CatalogWrap';
 
 const routes = [
   {
@@ -131,39 +132,51 @@ const routes = [
         ],
       },
       {
-        path: `/object/@:name/(about|gallery|updates|reviews|followers|feed)?/(${supportedObjectFields.join(
+        path: `/object/:name/catalog/:item1Id?/:item2Id?/:item3Id?`,
+        component: Wobj,
+        exact: true,
+        routes: [
+          {
+            path: '/object/:name/catalog/:item1Id?/:item2Id?/:item3Id?',
+            exact: true,
+            component: CatalogWrap,
+          },
+        ],
+      },
+      {
+        path: `/object/:name/(about|gallery|updates|reviews|followers|feed)?/(${supportedObjectFields.join(
           '|',
         )}|album)?/:albumId?`,
         component: Wobj,
         exact: true,
         routes: [
           {
-            path: '/object/@:name',
+            path: '/object/:name',
             exact: true,
             component: ObjectProfile,
           },
           {
-            path: '/object/@:name/about',
+            path: '/object/:name/about',
             exact: true,
             component: ObjectAbout,
           },
           {
-            path: '/object/@:name/followers',
+            path: '/object/:name/followers',
             exact: true,
             component: WobjFollowers,
           },
           {
-            path: '/object/@:name/gallery',
+            path: '/object/:name/gallery',
             exact: true,
             component: ObjectGallery,
           },
           {
-            path: '/object/@:name/gallery/album/:albumId',
+            path: '/object/:name/gallery/album/:albumId',
             exact: true,
             component: ObjectGalleryAlbum,
           },
           {
-            path: '/object/@:name/updates/:field?',
+            path: '/object/:name/updates/:field?',
             exact: true,
             component: WobjHistory,
           },

@@ -136,7 +136,7 @@ class EditorInput extends React.Component {
 
     const startPos = this.input.selectionStart;
     const endPos = this.input.selectionEnd;
-    const wObjText = `[${displayName}](${document.location.origin}/object/@${objId})\n`;
+    const wObjText = `[${displayName}](${document.location.origin}/object/${objId})\n`;
     const newValue = `${value.substring(0, startPos)}${wObjText}${value.substring(
       endPos,
       value.length,
