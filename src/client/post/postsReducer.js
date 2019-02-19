@@ -6,7 +6,7 @@ import { getPostKey } from '../helpers/stateHelpers';
 
 const postItem = (state = {}, action) => {
   switch (action.type) {
-    case commentsActions.SEND_COMMENT_START:
+    case commentsActions.SEND_COMMENT_SUCCESS:
       if (action.meta.isReplyToComment) {
         return state;
       }
@@ -146,10 +146,15 @@ const posts = (state = initialState, action) => {
         ...state,
         pendingLikes: _.omit(state.pendingLikes, action.meta.postId),
       };
-    case commentsActions.SEND_COMMENT_START:
+    case commentsActions.SEND_COMMENT_SUCCESS:
       return {
         ...state,
-        [action.meta.parentId]: postItem(state[action.meta.parentId], action),
+        list: state.list[action.meta.parentId]
+          ? {
+              ...state.list,
+              [action.meta.parentId]: postItem(state.list[action.meta.parentId], action),
+            }
+          : state.list,
       };
     default:
       return state;

@@ -130,9 +130,11 @@ class QuickCommentEditor extends React.Component {
     return (
       <React.Fragment>
         <div className="QuickComment">
-          <div className="QuickComment__avatar">
-            <Avatar username={username} size={34} />
-          </div>
+          {Boolean(username) && (
+            <div className="QuickComment__avatar">
+              <Avatar username={username} size={34} />
+            </div>
+          )}
           <Input.TextArea
             autosize
             // defaultValue={inputValue}

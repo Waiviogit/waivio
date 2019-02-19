@@ -237,7 +237,16 @@ class Comment extends React.Component {
     let content = null;
 
     if (this.state.editOpen) {
-      content = (
+      content = isQuickComment ? (
+        <QuickCommentEditor
+          parentPost={parent}
+          username={''}
+          inputValue={comment.body}
+          onSubmit={this.handleEditComment}
+          onImageInserted={this.handleImageInserted}
+          onImageInvalid={this.handleImageInvalid}
+        />
+      ) : (
         <EmbeddedCommentForm
           parentPost={parent}
           inputValue={comment.body}
