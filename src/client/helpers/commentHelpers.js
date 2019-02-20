@@ -63,4 +63,13 @@ export function findTopComment(root, comments, child) {
   return top;
 }
 
+export function findRoot(list, post) {
+  let root = { ...post };
+  if (post && post.parent_author) {
+    const parentKey = `${post.parent_author}/${post.parent_permlink}`;
+    root = findRoot(list, list[parentKey]);
+  }
+  return root;
+}
+
 export default null;

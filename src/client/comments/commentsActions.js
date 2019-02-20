@@ -4,6 +4,7 @@ import { notify } from '../app/Notification/notificationActions';
 import { jsonParse } from '../helpers/formatter';
 import { createPostMetadata } from '../helpers/postHelpers';
 import { getPostKey } from '../helpers/stateHelpers';
+import { findRoot } from '../helpers/commentHelpers';
 
 export const GET_COMMENTS = 'GET_COMMENTS';
 export const GET_COMMENTS_START = 'GET_COMMENTS_START';
@@ -134,7 +135,7 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
   { steemConnectAPI },
 ) => {
   const { category, id, permlink: parentPermlink, author: parentAuthor } = parentPost;
-  const { auth } = getState();
+  const { auth, comments } = getState();
 
   if (!auth.isAuthenticated) {
     return dispatch(notify('You have to be logged in to comment', 'error'));
@@ -157,11 +158,18 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
 
   const newBody = isUpdating ? getBodyPatchIfSmaller(originalComment.body, body) : body;
 
+  let rootPostId = null;
+  if (parentPost.parent_author) {
+    const { comments: commentsState } = comments;
+    rootPostId = getPostKey(findRoot(commentsState, parentPost));
+  }
+
   return dispatch({
     type: SEND_COMMENT,
     payload: {
       promise: steemConnectAPI
         .comment(parentAuthor, parentPermlink, author, permlink, '', newBody, jsonMetadata)
+        // .comment('', '', author, '', '', newBody, jsonMetadata)
         .then(resp => {
           const focusedComment = getDummyComment(resp.result.operations[0][1], parentPost);
           dispatch(getComments(id, true, focusedComment));
@@ -177,6 +185,7 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
     },
     meta: {
       parentId: parentPost.id,
+      rootPostId,
       isEditing: false,
       isReplyToComment: parentPost.id !== id,
     },
