@@ -42,7 +42,7 @@ const PicturesCarousel = ({ pics, objectID }) => {
           {map(pics, pic => (
             <Link
               key={pic.id}
-              to={{ pathname: `/object/@${objectID}/gallery/album/${pic.id}` }}
+              to={{ pathname: `/object/${objectID}/gallery/album/${pic.id}` }}
               className="PicturesCarousel__imageWrap"
             >
               <img src={pic.body} alt="pic" className="PicturesCarousel__image" />

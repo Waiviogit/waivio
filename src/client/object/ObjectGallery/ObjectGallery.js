@@ -125,7 +125,7 @@ export default class ObjectGallery extends Component {
                 <Col span={12} key={album.id}>
                   <Link
                     replace
-                    to={`/object/@${match.params.name}/gallery/album/${album.id}`}
+                    to={`/object/${match.params.name}/gallery/album/${album.id}`}
                     className="GalleryAlbum"
                   >
                     <GalleryAlbum album={album} handleOpenLightbox={this.handleOpenLightbox} />
