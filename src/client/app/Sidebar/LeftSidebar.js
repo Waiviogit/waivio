@@ -9,7 +9,7 @@ const LeftSidebar = () => (
   <Switch>
     <Route path="/@:name/wallet" component={Navigation} />
     <Route path="/@:name" component={UserInfo} />
-    <Route path="/object/@:name" component={UserInfo} />
+    <Route path="/object/:name" component={UserInfo} />
     <Route path="/activity" component={SidenavUser} />
     <Route path="/replies" component={Navigation} />
     <Route path="/bookmarks" component={SidenavUser} />

@@ -62,6 +62,7 @@
   "unfollowing": "Unfollowing",
   "followers": "Followers",
   "gallery": "Gallery",
+  "catalog": "Catalog",
   "reblogged": "Re-blogged",
   "reblogged_username": "{username} reblogged",
   "follow_username": "Follow {username}",
@@ -437,6 +438,7 @@
   "object_field_link": "Social Links",
   "object_field_avatar": "Avatar",
   "object_field_background": "Background",
+  "object_field_phone": "Phone",
   "field_error": "{field} is required",
   "append_send": "Submit",
   "suggestion_add_field": "Update",
@@ -454,6 +456,8 @@
   "add_new_album_placeholder": "New album",
   "empty_object_profile": "This object doesn't have any",
   "title_website_placeholder": "Title",
+  "name_phone_placeholder": "Phone name",
+  "number_phone_placeholder": "Phone number",
   "object_field_website": "Website",
   "website_validation": "Please enter valid website",
   "add_object": "Add object",
@@ -482,5 +486,8 @@
   "gallery_add_album_success": "You successfully have created the {albumName} album.",
   "gallery_add_album_failure": "Couldn't create the album.",
   "image_url_placeholder": "Image URL",
-  "couldnt_append": "Couldn't add the field to object."
+  "couldnt_append": "Couldn't add the field to object.",
+  "GoTo": "Go to",
+  "emptyCatalog": "This catalog is empty",
+  "emptyCategory": "This category is empty"
 }

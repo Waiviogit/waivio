@@ -39,7 +39,7 @@ export default class ObjectLightbox extends Component {
           <React.Fragment>
             <Link
               to={{
-                pathname: `/object/@${wobject.author_permlink}/updates/${objectFields.avatar}`,
+                pathname: `/object/${wobject.author_permlink}/updates/${objectFields.avatar}`,
               }}
               onClick={this.handleAvatarClick}
             >

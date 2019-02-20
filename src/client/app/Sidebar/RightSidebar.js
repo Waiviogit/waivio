@@ -101,23 +101,25 @@ export default class RightSidebar extends React.Component {
           <Route
             path="/"
             render={() => (
-              <div>
-                {authenticated && _.size(recommendedObjects) > 0 ? (
-                  <InterestingObjects objects={recommendedObjects} />
-                ) : (
-                  <RightSidebarLoading />
+              <React.Fragment>
+                {authenticated && (
+                  <React.Fragment>
+                    {_.size(recommendedObjects) > 0 ? (
+                      <InterestingObjects objects={recommendedObjects} />
+                    ) : (
+                      <RightSidebarLoading />
+                    )}
+                    {this.props.recommendations.length > 0 && !showPostRecommendation ? (
+                      <InterestingPeople
+                        users={this.props.recommendations}
+                        onRefresh={this.handleInterestingPeopleRefresh}
+                      />
+                    ) : (
+                      <RightSidebarLoading />
+                    )}
+                  </React.Fragment>
                 )}
-                {authenticated &&
-                this.props.recommendations.length > 0 &&
-                !showPostRecommendation ? (
-                  <InterestingPeople
-                    users={this.props.recommendations}
-                    onRefresh={this.handleInterestingPeopleRefresh}
-                  />
-                ) : (
-                  <RightSidebarLoading />
-                )}
-              </div>
+              </React.Fragment>
             )}
           />
         </Switch>
