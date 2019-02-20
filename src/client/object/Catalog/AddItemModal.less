@@ -1,0 +1,19 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.modal-content {
+  &__row {
+    display: flex;
+
+    &.align-center {
+      justify-content: center;
+    }
+    &.align-right {
+      justify-content: flex-end;
+    }
+  }
+
+  &__name-input {
+    margin-bottom: 16px;
+  }
+}
