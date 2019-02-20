@@ -454,6 +454,23 @@ export default class AppendForm extends Component {
     callback();
   };
 
+  checkLengthHashtags = intl => (rule, values, callback) => {
+    for (const val of values) {
+      if (val.length > 100) {
+        return callback(
+          intl.formatMessage(
+            {
+              id: 'value_error_long',
+              defaultMessage: "Value can't be longer than 100 characters.",
+            },
+            { value: 100 },
+          ),
+        );
+      }
+    }
+    return callback();
+  };
+
   renderContentValue = currentField => {
     const { loading } = this.state;
     const { intl, wObject } = this.props;
@@ -1066,6 +1083,7 @@ export default class AppendForm extends Component {
                   ),
                   type: 'array',
                 },
+                { validator: this.checkLengthHashtags(intl) },
                 { validator: this.checkHashtags(intl) },
                 {
                   validator: this.validateFieldValue,
