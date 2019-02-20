@@ -41,6 +41,37 @@ const getCommentsChildrenLists = content => {
   return listsById;
 };
 
+const getDummyComment = (child, parent) => {
+  const date = new Date(Date.now() - 2000);
+  return {
+    ...child,
+    post_id: Date.now().toFixed(),
+    category: parent.category,
+    created: date.toISOString().slice(0, 22),
+    last_update: date.toISOString().slice(0, 22),
+    depth: parent.depth + 1,
+    children: 0,
+    net_rshares: 0,
+    last_payout: '1969-12-31T23:59:59',
+    cashout_time: new Date(date.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 22),
+    total_payout_value: '0.000 SBD',
+    curator_payout_value: '0.000 SBD',
+    pending_payout_value: '0.000 SBD',
+    promoted: '0.000 SBD',
+    replies: [],
+    body_length: child.body.length,
+    active_votes: [],
+    author_reputation: 1,
+    url: `/${parent.category}/@${parent.author}/${parent.permlink}#@${child.author}/${
+      child.permlink
+    }`,
+    root_title: parent.title,
+    beneficiaries: [],
+    max_accepted_payout: '1000000.000 SBD',
+    percent_steem_dollars: 10000,
+  };
+};
+
 /**
  * Fetches comments from blockchain.
  * @param {number} postId Id of post to fetch comments from
@@ -67,9 +98,14 @@ export const getComments = (postId, reload = false, focusedComment = undefined) 
         .then(apiRes => {
           let resContent = apiRes.content;
           if (focusedComment) {
+            const parentKey = `${focusedComment.parent_author}/${focusedComment.parent_permlink}`;
             const focusedCommentKey = getPostKey(focusedComment);
             resContent = {
               ...resContent,
+              [parentKey]: {
+                ...resContent[parentKey],
+                replies: [...resContent[parentKey].replies, focusedCommentKey],
+              },
               [focusedCommentKey]: {
                 ...focusedComment,
                 ...resContent[focusedCommentKey],
@@ -127,7 +163,7 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
       promise: steemConnectAPI
         .comment(parentAuthor, parentPermlink, author, permlink, '', newBody, jsonMetadata)
         .then(resp => {
-          const focusedComment = { ...resp.result.operations[0][1], replies: [] };
+          const focusedComment = getDummyComment(resp.result.operations[0][1], parentPost);
           dispatch(getComments(id, true, focusedComment));
 
           if (window.analytics) {
