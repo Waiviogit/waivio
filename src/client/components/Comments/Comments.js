@@ -163,8 +163,11 @@ class Comments extends React.Component {
     );
   };
 
-  handleSubmitComment(parentPost, commentValue) {
+  handleSubmitComment(parentP, commentValue) {
     const { intl } = this.props;
+    const parentPost = parentP;
+    // foe object updates
+    if (parentPost.author_original) parentPost.author = parentPost.author_original;
 
     this.setState({ showCommentFormLoading: true });
     return this.props
