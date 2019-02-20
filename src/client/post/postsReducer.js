@@ -7,10 +7,6 @@ import { getPostKey } from '../helpers/stateHelpers';
 const postItem = (state = {}, action) => {
   switch (action.type) {
     case commentsActions.SEND_COMMENT_SUCCESS:
-      if (action.meta.isReplyToComment) {
-        return state;
-      }
-
       return {
         ...state,
         children: parseInt(state.children, 10) + 1,
@@ -18,6 +14,21 @@ const postItem = (state = {}, action) => {
     default:
       return state;
   }
+};
+
+const getPostsList = (list, action) => {
+  const resultList = { ...list };
+
+  const rootPost = list[action.meta.rootPostId];
+  if (rootPost) {
+    resultList[action.meta.rootPostId] = postItem(rootPost, action);
+  }
+  const parentPost = list[action.meta.parentId];
+  if (parentPost) {
+    resultList[action.meta.parentId] = postItem(parentPost, action);
+  }
+
+  return resultList;
 };
 
 const initialState = {
@@ -149,12 +160,13 @@ const posts = (state = initialState, action) => {
     case commentsActions.SEND_COMMENT_SUCCESS:
       return {
         ...state,
-        list: state.list[action.meta.parentId]
-          ? {
-              ...state.list,
-              [action.meta.parentId]: postItem(state.list[action.meta.parentId], action),
-            }
-          : state.list,
+        list: getPostsList(state.list, action),
+        // list: state.list[action.meta.parentId]
+        //   ? {
+        //       ...state.list,
+        //       [action.meta.parentId]: postItem(state.list[action.meta.parentId], action),
+        //     }
+        //   : state.list,
       };
     default:
       return state;

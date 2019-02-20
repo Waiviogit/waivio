@@ -95,7 +95,14 @@ class Comments extends React.Component {
       this.setState({ nRenderedComments: 3 });
     }
     if (nextProps.parentPost.children - this.props.parentPost.children === 1) {
-      this.setState(prevState => ({ nRenderedComments: prevState.nRenderedComments + 1 }));
+      this.setState(prevState => {
+        const nRenderedComments =
+          prevState.nRenderedComments >= 3 ? prevState.nRenderedComments + 1 : 3;
+        return { nRenderedComments };
+      });
+      if (!(this.props.show || nextProps.show)) {
+        this.props.toggleShowComments();
+      }
     }
     this.detectSort(nextProps.comments);
   }
@@ -157,7 +164,7 @@ class Comments extends React.Component {
   };
 
   handleSubmitComment(parentPost, commentValue) {
-    const { intl, isQuickComments, toggleShowComments } = this.props;
+    const { intl } = this.props;
 
     this.setState({ showCommentFormLoading: true });
     return this.props
@@ -175,9 +182,6 @@ class Comments extends React.Component {
           commentFormText: '',
           commentSubmitted: true,
         });
-        if (isQuickComments && !this.props.show) {
-          toggleShowComments();
-        }
       })
       .catch(() => {
         this.setState({
