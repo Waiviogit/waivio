@@ -36,6 +36,7 @@ const CatalogWrap = ({ wobject, match, intl }) => {
               {_.map(breadcrumb, crumb => (
                 <Breadcrumb.Item key={`crumb-${crumb.name}`}>
                   <Link
+                    className="CatalogWrap__breadcrumb__link"
                     to={{ pathname: crumb.link }}
                     title={`${intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
                       crumb.name
