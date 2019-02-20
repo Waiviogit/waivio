@@ -4,6 +4,7 @@ import { notify } from '../app/Notification/notificationActions';
 import { jsonParse } from '../helpers/formatter';
 import { createPostMetadata } from '../helpers/postHelpers';
 import { getPostKey } from '../helpers/stateHelpers';
+import { findRoot } from '../helpers/commentHelpers';
 
 export const GET_COMMENTS = 'GET_COMMENTS';
 export const GET_COMMENTS_START = 'GET_COMMENTS_START';
@@ -41,6 +42,37 @@ const getCommentsChildrenLists = content => {
   return listsById;
 };
 
+const getDummyComment = (child, parent) => {
+  const date = new Date(Date.now() - 2000);
+  return {
+    ...child,
+    post_id: Date.now().toFixed(),
+    category: parent.category,
+    created: date.toISOString().slice(0, 22),
+    last_update: date.toISOString().slice(0, 22),
+    depth: parent.depth + 1,
+    children: 0,
+    net_rshares: 0,
+    last_payout: '1969-12-31T23:59:59',
+    cashout_time: new Date(date.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 22),
+    total_payout_value: '0.000 SBD',
+    curator_payout_value: '0.000 SBD',
+    pending_payout_value: '0.000 SBD',
+    promoted: '0.000 SBD',
+    replies: [],
+    body_length: child.body.length,
+    active_votes: [],
+    author_reputation: 1,
+    url: `/${parent.category}/@${parent.author}/${parent.permlink}#@${child.author}/${
+      child.permlink
+    }`,
+    root_title: parent.title,
+    beneficiaries: [],
+    max_accepted_payout: '1000000.000 SBD',
+    percent_steem_dollars: 10000,
+  };
+};
+
 /**
  * Fetches comments from blockchain.
  * @param {number} postId Id of post to fetch comments from
@@ -67,9 +99,14 @@ export const getComments = (postId, reload = false, focusedComment = undefined) 
         .then(apiRes => {
           let resContent = apiRes.content;
           if (focusedComment) {
+            const parentKey = `${focusedComment.parent_author}/${focusedComment.parent_permlink}`;
             const focusedCommentKey = getPostKey(focusedComment);
             resContent = {
               ...resContent,
+              [parentKey]: {
+                ...resContent[parentKey],
+                replies: [...resContent[parentKey].replies, focusedCommentKey],
+              },
               [focusedCommentKey]: {
                 ...focusedComment,
                 ...resContent[focusedCommentKey],
@@ -98,7 +135,7 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
   { steemConnectAPI },
 ) => {
   const { category, id, permlink: parentPermlink, author: parentAuthor } = parentPost;
-  const { auth } = getState();
+  const { auth, comments } = getState();
 
   if (!auth.isAuthenticated) {
     return dispatch(notify('You have to be logged in to comment', 'error'));
@@ -121,13 +158,20 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
 
   const newBody = isUpdating ? getBodyPatchIfSmaller(originalComment.body, body) : body;
 
+  let rootPostId = null;
+  if (parentPost.parent_author) {
+    const { comments: commentsState } = comments;
+    rootPostId = getPostKey(findRoot(commentsState, parentPost));
+  }
+
   return dispatch({
     type: SEND_COMMENT,
     payload: {
       promise: steemConnectAPI
         .comment(parentAuthor, parentPermlink, author, permlink, '', newBody, jsonMetadata)
+        // .comment('', '', author, '', '', newBody, jsonMetadata)
         .then(resp => {
-          const focusedComment = { ...resp.result.operations[0][1], replies: [] };
+          const focusedComment = getDummyComment(resp.result.operations[0][1], parentPost);
           dispatch(getComments(id, true, focusedComment));
 
           if (window.analytics) {
@@ -141,6 +185,7 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
     },
     meta: {
       parentId: parentPost.id,
+      rootPostId,
       isEditing: false,
       isReplyToComment: parentPost.id !== id,
     },
