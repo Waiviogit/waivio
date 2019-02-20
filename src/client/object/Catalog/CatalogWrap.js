@@ -9,7 +9,8 @@ import CatalogItem from './CatalogItem';
 import { getFieldWithMaxWeight } from '../wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 
-const innerCategoryCount = 4;
+const innerCategoryCount = 5;
+
 const CatalogWrap = ({ wobject, match, intl }) => {
   let currentItem = {};
   currentItem.items = wobject.catalog;

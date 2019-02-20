@@ -25,7 +25,7 @@ class CatalogItem extends React.Component {
     const wobject = _.isEmpty(catalogItem.object_links)
       ? {}
       : getClientWObj(catalogItem.object_links[0].wobject);
-    const pathName = `/object/${wobject.author_permlink}/catalog`;
+    // const pathName = `/object/${wobject.author_permlink}/catalog`;
     return (
       <React.Fragment>
         <div
@@ -38,20 +38,10 @@ class CatalogItem extends React.Component {
         >
           <div className="catalog-item__content">
             <div className="catalog-item__info">
-              <a
-                href={pathName}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="catalog-item__info name"
-                title={catalogItem.body}
-              >
-                <span className="catalog-item__truncated">{catalogItem.body}</span>
-              </a>
+              <span className="catalog-item__truncated">{catalogItem.body}</span>
             </div>
             {wobject.avatar ? (
-              <a href={pathName} target="_blank" rel="noopener noreferrer">
-                <img className="catalog-item__avatar" src={wobject.avatar} alt={wobject.name} />
-              </a>
+              <img className="catalog-item__avatar" src={wobject.avatar} alt={wobject.name} />
             ) : (
               <div className="catalog-item__avatar" />
             )}

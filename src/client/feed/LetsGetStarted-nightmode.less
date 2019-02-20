@@ -1,0 +1,35 @@
+@import (reference) '../styles/custom.less';
+@import (reference) '../styles/modules/variables.less';
+@import (reference) '../styles/mixins.less';
+
+.nightmode {
+  .LetsGetStarted {
+    background-color: @grey-nero;
+    border: 1px solid @normal-grey;
+    &__title {
+      border-bottom: 1px solid @normal-grey;
+      color: @blue-baliHai;
+      &__text {
+        color: @white;
+      }
+
+      &__description {
+        color: @blue-botticelli;
+      }
+    }
+
+    &__action {
+      border-bottom: 1px solid @normal-grey;
+      color: @white;
+
+      &__icon {
+        margin-right: 8px;
+        color: @blue-baliHai;
+      }
+
+      a {
+        color: @white !important;
+      }
+    }
+  }
+}
