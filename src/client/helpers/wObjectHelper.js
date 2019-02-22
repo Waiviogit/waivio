@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { getField } from '../objects/WaivioObject';
+import { objectFields } from '../../common/constants/listOfFields';
 
 export const accessTypesArr = ['is_extending_open', 'is_posting_open'];
 
@@ -70,3 +71,22 @@ export const prepareImageToStore = postData => ({
 
 export const isCatalog = wobj =>
   !!(wobj && wobj.object_type && wobj.object_type.toLowerCase() === 'catalog');
+
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable camelcase */
+export const getAppendData = (creator, wObj, bodyMsg, fieldContent) => {
+  const { author, author_permlink } = wObj;
+  return {
+    author: creator,
+    parentAuthor: author,
+    parentPermlink: author_permlink,
+    body: bodyMsg,
+    title: '',
+    field: fieldContent,
+    permlink: `${creator}-${generatePermlink()}`,
+    lastUpdated: Date.now(),
+    wobjectName: getField(wObj, objectFields.name),
+  };
+};
+/* eslint-enable no-underscore-dangle */
+/* eslint-enable camelcase */

@@ -451,6 +451,7 @@
   "add_new_proposition": "Add",
   "add_new_album": "Add new album",
   "add_new_image": "Add new image",
+  "add_new_item": "Add new item",
   "all_languages": "All languages",
   "back_to_albums": "Back to albums",
   "add_new_album_placeholder": "New album",
@@ -489,5 +490,6 @@
   "couldnt_append": "Couldn't add the field to object.",
   "GoTo": "Go to",
   "emptyCatalog": "This catalog is empty",
-  "emptyCategory": "This category is empty"
+  "emptyCategory": "This category is empty",
+  "add_catalog_item": "@{currentUserName} added category <strong>{category}</strong> to catalog."
 }
