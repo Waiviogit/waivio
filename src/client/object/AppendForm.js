@@ -41,6 +41,7 @@ import {
   websiteTitleRegExp,
   objectURLValidationRegExp,
   phoneNameValidationRegExp,
+  emailValidationRegExp,
 } from '../../common/constants/validation';
 import { getHasDefaultSlider, getVoteValue } from '../helpers/user';
 import LikeSection from './LikeSection';
@@ -184,7 +185,8 @@ export default class AppendForm extends Component {
       case objectFields.title:
       case objectFields.description:
       case objectFields.avatar:
-      case objectFields.background: {
+      case objectFields.background:
+      case objectFields.email: {
         fieldBody.push(rest[currentField]);
         break;
       }
@@ -1203,6 +1205,57 @@ export default class AppendForm extends Component {
               )}
             </Form.Item>
           </React.Fragment>
+        );
+      }
+      case objectFields.email: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.email, {
+              rules: [
+                {
+                  max: 256,
+                  message: intl.formatMessage(
+                    {
+                      id: 'value_error_long',
+                      defaultMessage: "Value can't be longer than 100 characters.",
+                    },
+                    { value: 256 },
+                  ),
+                },
+                {
+                  required: true,
+                  message: intl.formatMessage(
+                    {
+                      id: 'field_error',
+                      defaultMessage: 'Field is required',
+                    },
+                    { field: 'Email address' },
+                  ),
+                },
+                {
+                  pattern: emailValidationRegExp,
+                  message: intl.formatMessage({
+                    id: 'email_append_validation',
+                    defaultMessage: 'Please enter valid email',
+                  }),
+                },
+                {
+                  validator: this.validateFieldValue,
+                },
+              ],
+            })(
+              <Input
+                className={classNames('AppendForm__input', {
+                  'validation-error': !this.state.isSomeValue,
+                })}
+                disabled={loading}
+                placeholder={intl.formatMessage({
+                  id: 'email_placeholder',
+                  defaultMessage: 'Email address',
+                })}
+              />,
+            )}
+          </Form.Item>
         );
       }
       default:
