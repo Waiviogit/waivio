@@ -1,6 +1,7 @@
 export const knownDomains = [
-  'localhost',
   'busy.org',
+  'waiviodev.com',
+  'investarena.waiviodev.com',
   'staging.busy.org',
   'steemit.com',
   'steem.io',
