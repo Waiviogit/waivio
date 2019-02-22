@@ -491,5 +491,5 @@
   "GoTo": "Go to",
   "emptyCatalog": "This catalog is empty",
   "emptyCategory": "This category is empty",
-  "create": "Create"
+  "add_catalog_item": "@{currentUserName} added category <strong>{category}</strong> to catalog."
 }

@@ -29,24 +29,15 @@ const CatalogWrap = ({ wobject, match, intl }) => {
       }
     }
   }
+  const newCategoryParent = link.split('/').pop();
 
   return (
     <React.Fragment>
       <div className="CatalogWrap__add-item">
-        <AddItemModal />
-        {/* <IconButton */}
-        {/* icon={<Icon type="plus-circle" />} */}
-        {/* // onClick={this.handleToggleModal} */}
-        {/* caption={<FormattedMessage id="add_new_item" defaultMessage="Add new item" />} */}
-        {/* /> */}
-        {/* {showModal && ( */}
-        {/* <CreateAlbum */}
-        {/* showModal={showModal} */}
-        {/* hideModal={this.handleToggleModal} */}
-        {/* handleSubmit={this.handleCreateAlbum} */}
-        {/* loading={loadingAlbum} */}
-        {/* /> */}
-        {/* )} */}
+        <AddItemModal
+          wobject={wobject}
+          parent={newCategoryParent === 'catalog' ? '' : newCategoryParent}
+        />
       </div>
       <div className="CatalogWrap">
         {currentItem ? (
