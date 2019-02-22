@@ -51,6 +51,7 @@ class Story extends React.Component {
     pendingBookmark: PropTypes.bool,
     saving: PropTypes.bool,
     ownPost: PropTypes.bool,
+    singlePostVew: PropTypes.bool,
     sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
     history: PropTypes.shape(),
     showPostModal: PropTypes.func,
@@ -70,6 +71,7 @@ class Story extends React.Component {
     pendingBookmark: false,
     saving: false,
     ownPost: false,
+    singlePostVew: false,
     sliderMode: 'auto',
     history: {},
     showPostModal: () => {},
@@ -273,6 +275,7 @@ class Story extends React.Component {
       saving,
       rewardFund,
       ownPost,
+      singlePostVew,
       sliderMode,
       defaultVotePercent,
     } = this.props;
@@ -391,6 +394,7 @@ class Story extends React.Component {
               pendingFlag={pendingFlag}
               rewardFund={rewardFund}
               ownPost={ownPost}
+              singlePostVew={singlePostVew}
               sliderMode={sliderMode}
               defaultVotePercent={defaultVotePercent}
               onLikeClick={this.handleLikeClick}

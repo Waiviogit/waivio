@@ -492,6 +492,7 @@ class StoryFull extends React.Component {
           pendingFollow={pendingFollow}
           pendingBookmark={pendingBookmark}
           ownPost={ownPost}
+          singlePostVew
           rewardFund={rewardFund}
           saving={saving}
           sliderMode={sliderMode}
