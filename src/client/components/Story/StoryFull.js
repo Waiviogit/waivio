@@ -483,6 +483,7 @@ class StoryFull extends React.Component {
             </div>
           </Scrollbars>
         </div>
+        {/* <PostObjectCard> */}
         <StoryFooter
           user={user}
           post={post}

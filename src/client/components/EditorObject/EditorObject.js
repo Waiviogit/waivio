@@ -23,9 +23,6 @@ class EditorObject extends React.Component {
     super(props);
     this.state = {
       influenceValue: this.props.wObject.influence.value,
-      isPostingOpen: true,
-      isExtendingOpen: true,
-      isModalOpen: false,
     };
   }
 
