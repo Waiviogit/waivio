@@ -19,6 +19,8 @@
   "notify_uploading_image": "Uploading image",
   "notify_uploading_iamge_error": "Couldn't upload image",
   "notify_uploading_image_invalid": "This file is invalid. Only image files {formats}with maximum size of {size} are supported",
+  "notify_create_category": "Category has been created",
+  "notify_create_category_error": "Couldn't create category",
   "signup": "Sign up",
   "login": "Log in",
   "activity": "Activity",
@@ -451,7 +453,6 @@
   "add_new_proposition": "Add",
   "add_new_album": "Add new album",
   "add_new_image": "Add new image",
-  "add_new_item": "Add new item",
   "all_languages": "All languages",
   "back_to_albums": "Back to albums",
   "add_new_album_placeholder": "New album",
@@ -491,5 +492,8 @@
   "GoTo": "Go to",
   "emptyCatalog": "This catalog is empty",
   "emptyCategory": "This category is empty",
-  "add_catalog_item": "@{currentUserName} added category <strong>{category}</strong> to catalog."
+  "add_catalog_item": "@{currentUserName} added category <strong>{category}</strong> to catalog.",
+  "category": "Category",
+  "category_new": "New category",
+  "category_name": "Category name"
 }

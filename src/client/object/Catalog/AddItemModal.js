@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { Button, Icon, Input, Modal } from 'antd';
+import { Button, Icon, Input, Modal, message } from 'antd';
 import IconButton from '../../components/IconButton';
 import { getAppendData } from '../../helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../reducers';
@@ -25,7 +25,6 @@ class AddItemModal extends Component {
 
   static propTypes = {
     intl: PropTypes.shape().isRequired,
-    loading: PropTypes.bool,
     // passed props
     parent: PropTypes.string.isRequired,
     wobject: PropTypes.shape().isRequired,
@@ -36,6 +35,7 @@ class AddItemModal extends Component {
 
   state = {
     isModalOpen: false,
+    isLoading: false,
     inputValue: '',
   };
 
@@ -53,6 +53,8 @@ class AddItemModal extends Component {
   handleSubmit = () => {
     const { inputValue } = this.state;
     const { currentUserName, wobject, parent, intl } = this.props;
+
+    this.setState({ isLoading: true });
     const bodyMsg = intl.formatMessage(
       {
         id: 'add_catalog_item',
@@ -70,19 +72,40 @@ class AddItemModal extends Component {
       locale: 'en-US',
     };
     const appendData = getAppendData(currentUserName, wobject, bodyMsg, fieldContent);
-    this.props.appendObject(appendData).then(res => console.log('-appended->', res));
-    this.handleToggleModal();
+    this.props
+      .appendObject(appendData)
+      .then(() => {
+        this.setState({ isLoading: false });
+        message.success(
+          intl.formatMessage({
+            id: 'notify_create_category',
+            defaultMessage: 'Category has been created',
+          }),
+        );
+        this.handleToggleModal();
+      })
+      .catch(err => {
+        console.log('err > ', err);
+        this.setState({ isLoading: false });
+        message.error(
+          intl.formatMessage({
+            id: 'notify_create_category_error',
+            defaultMessage: "Couldn't create category",
+          }),
+        );
+        this.handleToggleModal();
+      });
   };
 
   render() {
-    const { isModalOpen, inputValue } = this.state;
-    const { intl, loading } = this.props;
+    const { isModalOpen, isLoading, inputValue } = this.state;
+    const { intl } = this.props;
 
     return isModalOpen ? (
       <Modal
         title={intl.formatMessage({
-          id: 'add_new_item',
-          defaultMessage: 'Add new item',
+          id: 'category_new',
+          defaultMessage: 'New category',
         })}
         visible={isModalOpen}
         onCancel={this.handleToggleModal}
@@ -94,7 +117,10 @@ class AddItemModal extends Component {
           <div className="modal-content__row align-center">
             <Input
               className="modal-content__name-input"
-              placeholder="place holder"
+              placeholder={intl.formatMessage({
+                id: 'category_name',
+                defaultMessage: 'Category name',
+              })}
               value={inputValue}
               onChange={this.handleInputChange}
               onPressEnter={this.handleSubmit}
@@ -104,13 +130,13 @@ class AddItemModal extends Component {
             <Button
               className="modal-content__submit-btn"
               type="primary"
-              loading={loading}
-              disabled={loading}
+              loading={isLoading}
+              disabled={isLoading}
               onClick={this.handleSubmit}
             >
               {intl.formatMessage({
-                id: loading ? 'post_send_progress' : 'create',
-                defaultMessage: loading ? 'Submitting' : 'Create',
+                id: isLoading ? 'post_send_progress' : 'create',
+                defaultMessage: isLoading ? 'Submitting' : 'Create',
               })}
             </Button>
           </div>
@@ -120,8 +146,7 @@ class AddItemModal extends Component {
       <IconButton
         icon={<Icon type="plus-circle" />}
         onClick={this.handleToggleModal}
-        caption={intl.formatMessage({ id: 'add_new_item', defaultMessage: 'Add new item' })}
-        // caption={<FormattedMessage id="add_new_item" defaultMessage="Add new item" />}
+        caption={intl.formatMessage({ id: 'category', defaultMessage: 'Category' })}
       />
     );
   }
