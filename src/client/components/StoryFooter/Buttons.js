@@ -67,6 +67,7 @@ export default class Buttons extends React.Component {
     this.handleShowReactions = this.handleShowReactions.bind(this);
     this.handleCloseReactions = this.handleCloseReactions.bind(this);
     this.handleFlagClick = this.handleFlagClick.bind(this);
+    this.handleCommentsClick = this.handleCommentsClick.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -82,6 +83,12 @@ export default class Buttons extends React.Component {
 
   handleLikeClick() {
     this.props.onActionInitiated(this.props.onLikeClick);
+  }
+
+  handleCommentsClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.props.onCommentClick();
   }
 
   handleFlagClick() {
@@ -326,7 +333,7 @@ export default class Buttons extends React.Component {
           </span>
         )}
         <BTooltip title={intl.formatMessage({ id: 'comment', defaultMessage: 'Comment' })}>
-          <a className="Buttons__link" role="presentation" onClick={this.props.onCommentClick}>
+          <a className="Buttons__link" role="presentation" onClick={this.handleCommentsClick}>
             <i className="iconfont icon-message_fill" />
           </a>
         </BTooltip>
