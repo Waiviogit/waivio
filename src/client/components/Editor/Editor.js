@@ -17,6 +17,7 @@ import LinkedObjects from './LinkedObjects';
 import { getClientWObj } from '../../adapters';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
+import { BENEFICIARY_PERCENT } from '../../helpers/constants';
 import { WAIVIO_META_FIELD_NAME, MAX_NEW_OBJECTS_NUMBER } from '../../../common/constants/waivio';
 import {
   setInitialInfluence,
@@ -39,6 +40,7 @@ class Editor extends React.Component {
     waivioData: PropTypes.shape(),
     body: PropTypes.string,
     reward: PropTypes.string,
+    beneficiary: PropTypes.bool,
     upvote: PropTypes.bool,
     loading: PropTypes.bool,
     isUpdating: PropTypes.bool,
@@ -62,6 +64,7 @@ class Editor extends React.Component {
     waivioData: {},
     body: '',
     reward: rewardsValues.half,
+    beneficiary: true,
     upvote: true,
     recentTopics: [],
     popularTopics: [],
@@ -122,13 +125,14 @@ class Editor extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { title, topics, waivioData, body, reward, upvote, draftId } = this.props;
+    const { title, topics, waivioData, body, reward, beneficiary, upvote, draftId } = this.props;
     if (
       title !== nextProps.title ||
       !_.isEqual(topics, nextProps.topics) ||
       !_.isEqual(waivioData, nextProps.waivioData) ||
       body !== nextProps.body ||
       reward !== nextProps.reward ||
+      beneficiary !== nextProps.beneficiary ||
       upvote !== nextProps.upvote ||
       (draftId && nextProps.draftId === null)
     ) {
@@ -166,6 +170,7 @@ class Editor extends React.Component {
       title: post.title,
       body: post.body,
       reward,
+      beneficiary: post.beneficiary,
       upvote: post.upvote,
       [WAIVIO_META_FIELD_NAME]: post.waivioData,
     });
@@ -577,6 +582,19 @@ class Editor extends React.Component {
                 <FormattedMessage id="reward_option_0" defaultMessage="Declined" />
               </Select.Option>
             </Select>,
+          )}
+        </Form.Item>
+        <Form.Item>
+          {getFieldDecorator('beneficiary', { valuePropName: 'checked', initialValue: true })(
+            <Checkbox onChange={this.onUpdate} disabled={isUpdating}>
+              <FormattedMessage
+                id="add_waivio_beneficiary"
+                defaultMessage="Share {share}% of this post rewards with Waivio"
+                values={{
+                  share: BENEFICIARY_PERCENT / 100,
+                }}
+              />
+            </Checkbox>,
           )}
         </Form.Item>
         <Form.Item className={classNames({ Editor__hidden: isUpdating })}>

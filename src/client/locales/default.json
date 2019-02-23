@@ -157,7 +157,7 @@
   "discover_more_people_info": "Discover the most reputable users of this platform",
   "invite": "Invite",
   "invite_title": "Don't use Waivio alone!",
-  "invite_info": "Onboard new users on Waivio.org today using the link below and get 10% of their rewards for 30 days.",
+  "invite_info": "Onboard new users on Busy.org today using the link below and get {percent}% of their rewards for {days} days.",
   "invite_share": "Join me today on busy.org and get rewarded to blog {link}",
   "invite_copy_link": "Copy link",
   "invite_copied": "Copied",
@@ -491,5 +491,6 @@
   "GoTo": "Go to",
   "emptyCatalog": "This catalog is empty",
   "emptyCategory": "This category is empty",
-  "add_catalog_item": "@{currentUserName} added category <strong>{category}</strong> to catalog."
+  "add_catalog_item": "@{currentUserName} added category <strong>{category}</strong> to catalog.",
+  "add_waivio_beneficiary": "Share {share}% of this post rewards with Waivio"
 }
