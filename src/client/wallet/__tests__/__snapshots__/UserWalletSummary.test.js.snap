@@ -1,0 +1,2117 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`(Component) UserWalletSummary with default prop values renders and matches snapshot 1`] = `
+ShallowWrapper {
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <UserWalletSummary
+    estAccountValue="100.00 STEEM"
+    loading={false}
+    sbdRate={1}
+    steemRate={1}
+    steemRateLoading={false}
+    totalVestingFundSteem="100 STEEM"
+    totalVestingShares="100 STEEM"
+    user={
+      Object {
+        "balance": "100",
+        "savings_balance": "100 STEEM",
+        "savings_sbd_balance": "1000 STEEM",
+        "vesting_shares": "0",
+      }
+    }
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateError": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "children": Array [
+        <div
+          className="UserWalletSummary__item"
+        >
+          <i
+            className="iconfont icon-steem UserWalletSummary__icon"
+          />
+          <div
+            className="UserWalletSummary__label"
+          >
+            <FormattedMessage
+              defaultMessage="Steem"
+              id="steem"
+              values={Object {}}
+            />
+          </div>
+          <div
+            className="UserWalletSummary__value"
+          >
+            <span>
+              <FormattedNumber
+                value={100}
+              />
+               STEEM
+            </span>
+          </div>
+        </div>,
+        <div
+          className="UserWalletSummary__item"
+        >
+          <i
+            className="iconfont icon-flashlight_fill UserWalletSummary__icon"
+          />
+          <div
+            className="UserWalletSummary__label"
+          >
+            <FormattedMessage
+              defaultMessage="Steem Power"
+              id="steem_power"
+              values={Object {}}
+            />
+          </div>
+          <div
+            className="UserWalletSummary__value"
+          >
+            <span>
+              <FormattedNumber
+                value={0}
+              />
+              <BTooltip
+                title={
+                  <span>
+                    <FormattedMessage
+                      defaultMessage="The next power down is scheduled to happen on "
+                      id="steem_power_pending_withdrawal_tooltip"
+                      values={Object {}}
+                    />
+                    <FormattedDate
+                      value="undefinedZ"
+                    />
+                     
+                    <FormattedTime
+                      value="undefinedZ"
+                    />
+                  </span>
+                }
+              >
+                <span>
+                   - 
+                  <FormattedNumber
+                    value={NaN}
+                  />
+                </span>
+              </BTooltip>
+              <BTooltip
+                title={
+                  <span>
+                    <FormattedMessage
+                      defaultMessage="Steem Power delegated to this account"
+                      id="steem_power_delegated_to_account_tooltip"
+                      values={Object {}}
+                    />
+                  </span>
+                }
+              >
+                <span>
+                   (
+                  <FormattedNumber
+                    value={NaN}
+                  />
+                  )
+                </span>
+              </BTooltip>
+               SP
+            </span>
+          </div>
+        </div>,
+        <div
+          className="UserWalletSummary__item"
+        >
+          <i
+            className="iconfont icon-Dollar UserWalletSummary__icon"
+          />
+          <div
+            className="UserWalletSummary__label"
+          >
+            <FormattedMessage
+              defaultMessage="Steem Dollar"
+              id="steem_dollar"
+              values={Object {}}
+            />
+          </div>
+          <div
+            className="UserWalletSummary__value"
+          >
+            <span>
+              <FormattedNumber
+                value={NaN}
+              />
+               SBD
+            </span>
+          </div>
+        </div>,
+        <div
+          className="UserWalletSummary__item"
+        >
+          <i
+            className="iconfont icon-savings UserWalletSummary__icon"
+          />
+          <div
+            className="UserWalletSummary__label"
+          >
+            <FormattedMessage
+              defaultMessage="Savings"
+              id="savings"
+              values={Object {}}
+            />
+          </div>
+          <div
+            className="UserWalletSummary__value"
+          >
+            <span>
+              <FormattedNumber
+                value={100}
+              />
+               STEEM, 
+              <FormattedNumber
+                value={1000}
+              />
+               SBD
+            </span>
+          </div>
+        </div>,
+        <div
+          className="UserWalletSummary__item"
+        >
+          <i
+            className="iconfont icon-people_fill UserWalletSummary__icon"
+          />
+          <div
+            className="UserWalletSummary__label"
+          >
+            <FormattedMessage
+              defaultMessage="Est. Account Value"
+              id="est_account_value"
+              values={Object {}}
+            />
+          </div>
+          <div
+            className="UserWalletSummary__value"
+          >
+            <USDDisplay
+              value={NaN}
+            />
+          </div>
+        </div>,
+      ],
+      "className": "UserWalletSummary",
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": Array [
+            <i
+              className="iconfont icon-steem UserWalletSummary__icon"
+            />,
+            <div
+              className="UserWalletSummary__label"
+            >
+              <FormattedMessage
+                defaultMessage="Steem"
+                id="steem"
+                values={Object {}}
+              />
+            </div>,
+            <div
+              className="UserWalletSummary__value"
+            >
+              <span>
+                <FormattedNumber
+                  value={100}
+                />
+                 STEEM
+              </span>
+            </div>,
+          ],
+          "className": "UserWalletSummary__item",
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "className": "iconfont icon-steem UserWalletSummary__icon",
+            },
+            "ref": null,
+            "rendered": null,
+            "type": "i",
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": <FormattedMessage
+                defaultMessage="Steem"
+                id="steem"
+                values={Object {}}
+              />,
+              "className": "UserWalletSummary__label",
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "defaultMessage": "Steem",
+                "id": "steem",
+                "values": Object {},
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            "type": "div",
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": <span>
+                <FormattedNumber
+                  value={100}
+                />
+                 STEEM
+              </span>,
+              "className": "UserWalletSummary__value",
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": Array [
+                  <FormattedNumber
+                    value={100}
+                  />,
+                  " STEEM",
+                ],
+              },
+              "ref": null,
+              "rendered": Array [
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "class",
+                  "props": Object {
+                    "value": 100,
+                  },
+                  "ref": null,
+                  "rendered": null,
+                  "type": [Function],
+                },
+                " STEEM",
+              ],
+              "type": "span",
+            },
+            "type": "div",
+          },
+        ],
+        "type": "div",
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": Array [
+            <i
+              className="iconfont icon-flashlight_fill UserWalletSummary__icon"
+            />,
+            <div
+              className="UserWalletSummary__label"
+            >
+              <FormattedMessage
+                defaultMessage="Steem Power"
+                id="steem_power"
+                values={Object {}}
+              />
+            </div>,
+            <div
+              className="UserWalletSummary__value"
+            >
+              <span>
+                <FormattedNumber
+                  value={0}
+                />
+                <BTooltip
+                  title={
+                    <span>
+                      <FormattedMessage
+                        defaultMessage="The next power down is scheduled to happen on "
+                        id="steem_power_pending_withdrawal_tooltip"
+                        values={Object {}}
+                      />
+                      <FormattedDate
+                        value="undefinedZ"
+                      />
+                       
+                      <FormattedTime
+                        value="undefinedZ"
+                      />
+                    </span>
+                  }
+                >
+                  <span>
+                     - 
+                    <FormattedNumber
+                      value={NaN}
+                    />
+                  </span>
+                </BTooltip>
+                <BTooltip
+                  title={
+                    <span>
+                      <FormattedMessage
+                        defaultMessage="Steem Power delegated to this account"
+                        id="steem_power_delegated_to_account_tooltip"
+                        values={Object {}}
+                      />
+                    </span>
+                  }
+                >
+                  <span>
+                     (
+                    <FormattedNumber
+                      value={NaN}
+                    />
+                    )
+                  </span>
+                </BTooltip>
+                 SP
+              </span>
+            </div>,
+          ],
+          "className": "UserWalletSummary__item",
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "className": "iconfont icon-flashlight_fill UserWalletSummary__icon",
+            },
+            "ref": null,
+            "rendered": null,
+            "type": "i",
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": <FormattedMessage
+                defaultMessage="Steem Power"
+                id="steem_power"
+                values={Object {}}
+              />,
+              "className": "UserWalletSummary__label",
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "defaultMessage": "Steem Power",
+                "id": "steem_power",
+                "values": Object {},
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            "type": "div",
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": <span>
+                <FormattedNumber
+                  value={0}
+                />
+                <BTooltip
+                  title={
+                    <span>
+                      <FormattedMessage
+                        defaultMessage="The next power down is scheduled to happen on "
+                        id="steem_power_pending_withdrawal_tooltip"
+                        values={Object {}}
+                      />
+                      <FormattedDate
+                        value="undefinedZ"
+                      />
+                       
+                      <FormattedTime
+                        value="undefinedZ"
+                      />
+                    </span>
+                  }
+                >
+                  <span>
+                     - 
+                    <FormattedNumber
+                      value={NaN}
+                    />
+                  </span>
+                </BTooltip>
+                <BTooltip
+                  title={
+                    <span>
+                      <FormattedMessage
+                        defaultMessage="Steem Power delegated to this account"
+                        id="steem_power_delegated_to_account_tooltip"
+                        values={Object {}}
+                      />
+                    </span>
+                  }
+                >
+                  <span>
+                     (
+                    <FormattedNumber
+                      value={NaN}
+                    />
+                    )
+                  </span>
+                </BTooltip>
+                 SP
+              </span>,
+              "className": "UserWalletSummary__value",
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": Array [
+                  <FormattedNumber
+                    value={0}
+                  />,
+                  <BTooltip
+                    title={
+                      <span>
+                        <FormattedMessage
+                          defaultMessage="The next power down is scheduled to happen on "
+                          id="steem_power_pending_withdrawal_tooltip"
+                          values={Object {}}
+                        />
+                        <FormattedDate
+                          value="undefinedZ"
+                        />
+                         
+                        <FormattedTime
+                          value="undefinedZ"
+                        />
+                      </span>
+                    }
+                  >
+                    <span>
+                       - 
+                      <FormattedNumber
+                        value={NaN}
+                      />
+                    </span>
+                  </BTooltip>,
+                  <BTooltip
+                    title={
+                      <span>
+                        <FormattedMessage
+                          defaultMessage="Steem Power delegated to this account"
+                          id="steem_power_delegated_to_account_tooltip"
+                          values={Object {}}
+                        />
+                      </span>
+                    }
+                  >
+                    <span>
+                       (
+                      <FormattedNumber
+                        value={NaN}
+                      />
+                      )
+                    </span>
+                  </BTooltip>,
+                  " SP",
+                ],
+              },
+              "ref": null,
+              "rendered": Array [
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "class",
+                  "props": Object {
+                    "value": 0,
+                  },
+                  "ref": null,
+                  "rendered": null,
+                  "type": [Function],
+                },
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "class",
+                  "props": Object {
+                    "children": <span>
+                       - 
+                      <FormattedNumber
+                        value={NaN}
+                      />
+                    </span>,
+                    "title": <span>
+                      <FormattedMessage
+                        defaultMessage="The next power down is scheduled to happen on "
+                        id="steem_power_pending_withdrawal_tooltip"
+                        values={Object {}}
+                      />
+                      <FormattedDate
+                        value="undefinedZ"
+                      />
+                       
+                      <FormattedTime
+                        value="undefinedZ"
+                      />
+                    </span>,
+                  },
+                  "ref": null,
+                  "rendered": Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "host",
+                    "props": Object {
+                      "children": Array [
+                        " - ",
+                        <FormattedNumber
+                          value={NaN}
+                        />,
+                      ],
+                    },
+                    "ref": null,
+                    "rendered": Array [
+                      " - ",
+                      Object {
+                        "instance": null,
+                        "key": undefined,
+                        "nodeType": "class",
+                        "props": Object {
+                          "value": NaN,
+                        },
+                        "ref": null,
+                        "rendered": null,
+                        "type": [Function],
+                      },
+                    ],
+                    "type": "span",
+                  },
+                  "type": [Function],
+                },
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "class",
+                  "props": Object {
+                    "children": <span>
+                       (
+                      <FormattedNumber
+                        value={NaN}
+                      />
+                      )
+                    </span>,
+                    "title": <span>
+                      <FormattedMessage
+                        defaultMessage="Steem Power delegated to this account"
+                        id="steem_power_delegated_to_account_tooltip"
+                        values={Object {}}
+                      />
+                    </span>,
+                  },
+                  "ref": null,
+                  "rendered": Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "host",
+                    "props": Object {
+                      "children": Array [
+                        " (",
+                        <FormattedNumber
+                          value={NaN}
+                        />,
+                        ")",
+                      ],
+                    },
+                    "ref": null,
+                    "rendered": Array [
+                      " (",
+                      Object {
+                        "instance": null,
+                        "key": undefined,
+                        "nodeType": "class",
+                        "props": Object {
+                          "value": NaN,
+                        },
+                        "ref": null,
+                        "rendered": null,
+                        "type": [Function],
+                      },
+                      ")",
+                    ],
+                    "type": "span",
+                  },
+                  "type": [Function],
+                },
+                " SP",
+              ],
+              "type": "span",
+            },
+            "type": "div",
+          },
+        ],
+        "type": "div",
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": Array [
+            <i
+              className="iconfont icon-Dollar UserWalletSummary__icon"
+            />,
+            <div
+              className="UserWalletSummary__label"
+            >
+              <FormattedMessage
+                defaultMessage="Steem Dollar"
+                id="steem_dollar"
+                values={Object {}}
+              />
+            </div>,
+            <div
+              className="UserWalletSummary__value"
+            >
+              <span>
+                <FormattedNumber
+                  value={NaN}
+                />
+                 SBD
+              </span>
+            </div>,
+          ],
+          "className": "UserWalletSummary__item",
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "className": "iconfont icon-Dollar UserWalletSummary__icon",
+            },
+            "ref": null,
+            "rendered": null,
+            "type": "i",
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": <FormattedMessage
+                defaultMessage="Steem Dollar"
+                id="steem_dollar"
+                values={Object {}}
+              />,
+              "className": "UserWalletSummary__label",
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "defaultMessage": "Steem Dollar",
+                "id": "steem_dollar",
+                "values": Object {},
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            "type": "div",
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": <span>
+                <FormattedNumber
+                  value={NaN}
+                />
+                 SBD
+              </span>,
+              "className": "UserWalletSummary__value",
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": Array [
+                  <FormattedNumber
+                    value={NaN}
+                  />,
+                  " SBD",
+                ],
+              },
+              "ref": null,
+              "rendered": Array [
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "class",
+                  "props": Object {
+                    "value": NaN,
+                  },
+                  "ref": null,
+                  "rendered": null,
+                  "type": [Function],
+                },
+                " SBD",
+              ],
+              "type": "span",
+            },
+            "type": "div",
+          },
+        ],
+        "type": "div",
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": Array [
+            <i
+              className="iconfont icon-savings UserWalletSummary__icon"
+            />,
+            <div
+              className="UserWalletSummary__label"
+            >
+              <FormattedMessage
+                defaultMessage="Savings"
+                id="savings"
+                values={Object {}}
+              />
+            </div>,
+            <div
+              className="UserWalletSummary__value"
+            >
+              <span>
+                <FormattedNumber
+                  value={100}
+                />
+                 STEEM, 
+                <FormattedNumber
+                  value={1000}
+                />
+                 SBD
+              </span>
+            </div>,
+          ],
+          "className": "UserWalletSummary__item",
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "className": "iconfont icon-savings UserWalletSummary__icon",
+            },
+            "ref": null,
+            "rendered": null,
+            "type": "i",
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": <FormattedMessage
+                defaultMessage="Savings"
+                id="savings"
+                values={Object {}}
+              />,
+              "className": "UserWalletSummary__label",
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "defaultMessage": "Savings",
+                "id": "savings",
+                "values": Object {},
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            "type": "div",
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": <span>
+                <FormattedNumber
+                  value={100}
+                />
+                 STEEM, 
+                <FormattedNumber
+                  value={1000}
+                />
+                 SBD
+              </span>,
+              "className": "UserWalletSummary__value",
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": Array [
+                  <FormattedNumber
+                    value={100}
+                  />,
+                  " STEEM, ",
+                  <FormattedNumber
+                    value={1000}
+                  />,
+                  " SBD",
+                ],
+              },
+              "ref": null,
+              "rendered": Array [
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "class",
+                  "props": Object {
+                    "value": 100,
+                  },
+                  "ref": null,
+                  "rendered": null,
+                  "type": [Function],
+                },
+                " STEEM, ",
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "class",
+                  "props": Object {
+                    "value": 1000,
+                  },
+                  "ref": null,
+                  "rendered": null,
+                  "type": [Function],
+                },
+                " SBD",
+              ],
+              "type": "span",
+            },
+            "type": "div",
+          },
+        ],
+        "type": "div",
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": Array [
+            <i
+              className="iconfont icon-people_fill UserWalletSummary__icon"
+            />,
+            <div
+              className="UserWalletSummary__label"
+            >
+              <FormattedMessage
+                defaultMessage="Est. Account Value"
+                id="est_account_value"
+                values={Object {}}
+              />
+            </div>,
+            <div
+              className="UserWalletSummary__value"
+            >
+              <USDDisplay
+                value={NaN}
+              />
+            </div>,
+          ],
+          "className": "UserWalletSummary__item",
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "className": "iconfont icon-people_fill UserWalletSummary__icon",
+            },
+            "ref": null,
+            "rendered": null,
+            "type": "i",
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": <FormattedMessage
+                defaultMessage="Est. Account Value"
+                id="est_account_value"
+                values={Object {}}
+              />,
+              "className": "UserWalletSummary__label",
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "defaultMessage": "Est. Account Value",
+                "id": "est_account_value",
+                "values": Object {},
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            "type": "div",
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": <USDDisplay
+                value={NaN}
+              />,
+              "className": "UserWalletSummary__value",
+            },
+            "ref": null,
+            "rendered": Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "function",
+              "props": Object {
+                "value": NaN,
+              },
+              "ref": null,
+              "rendered": null,
+              "type": [Function],
+            },
+            "type": "div",
+          },
+        ],
+        "type": "div",
+      },
+    ],
+    "type": "div",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": Array [
+          <div
+            className="UserWalletSummary__item"
+          >
+            <i
+              className="iconfont icon-steem UserWalletSummary__icon"
+            />
+            <div
+              className="UserWalletSummary__label"
+            >
+              <FormattedMessage
+                defaultMessage="Steem"
+                id="steem"
+                values={Object {}}
+              />
+            </div>
+            <div
+              className="UserWalletSummary__value"
+            >
+              <span>
+                <FormattedNumber
+                  value={100}
+                />
+                 STEEM
+              </span>
+            </div>
+          </div>,
+          <div
+            className="UserWalletSummary__item"
+          >
+            <i
+              className="iconfont icon-flashlight_fill UserWalletSummary__icon"
+            />
+            <div
+              className="UserWalletSummary__label"
+            >
+              <FormattedMessage
+                defaultMessage="Steem Power"
+                id="steem_power"
+                values={Object {}}
+              />
+            </div>
+            <div
+              className="UserWalletSummary__value"
+            >
+              <span>
+                <FormattedNumber
+                  value={0}
+                />
+                <BTooltip
+                  title={
+                    <span>
+                      <FormattedMessage
+                        defaultMessage="The next power down is scheduled to happen on "
+                        id="steem_power_pending_withdrawal_tooltip"
+                        values={Object {}}
+                      />
+                      <FormattedDate
+                        value="undefinedZ"
+                      />
+                       
+                      <FormattedTime
+                        value="undefinedZ"
+                      />
+                    </span>
+                  }
+                >
+                  <span>
+                     - 
+                    <FormattedNumber
+                      value={NaN}
+                    />
+                  </span>
+                </BTooltip>
+                <BTooltip
+                  title={
+                    <span>
+                      <FormattedMessage
+                        defaultMessage="Steem Power delegated to this account"
+                        id="steem_power_delegated_to_account_tooltip"
+                        values={Object {}}
+                      />
+                    </span>
+                  }
+                >
+                  <span>
+                     (
+                    <FormattedNumber
+                      value={NaN}
+                    />
+                    )
+                  </span>
+                </BTooltip>
+                 SP
+              </span>
+            </div>
+          </div>,
+          <div
+            className="UserWalletSummary__item"
+          >
+            <i
+              className="iconfont icon-Dollar UserWalletSummary__icon"
+            />
+            <div
+              className="UserWalletSummary__label"
+            >
+              <FormattedMessage
+                defaultMessage="Steem Dollar"
+                id="steem_dollar"
+                values={Object {}}
+              />
+            </div>
+            <div
+              className="UserWalletSummary__value"
+            >
+              <span>
+                <FormattedNumber
+                  value={NaN}
+                />
+                 SBD
+              </span>
+            </div>
+          </div>,
+          <div
+            className="UserWalletSummary__item"
+          >
+            <i
+              className="iconfont icon-savings UserWalletSummary__icon"
+            />
+            <div
+              className="UserWalletSummary__label"
+            >
+              <FormattedMessage
+                defaultMessage="Savings"
+                id="savings"
+                values={Object {}}
+              />
+            </div>
+            <div
+              className="UserWalletSummary__value"
+            >
+              <span>
+                <FormattedNumber
+                  value={100}
+                />
+                 STEEM, 
+                <FormattedNumber
+                  value={1000}
+                />
+                 SBD
+              </span>
+            </div>
+          </div>,
+          <div
+            className="UserWalletSummary__item"
+          >
+            <i
+              className="iconfont icon-people_fill UserWalletSummary__icon"
+            />
+            <div
+              className="UserWalletSummary__label"
+            >
+              <FormattedMessage
+                defaultMessage="Est. Account Value"
+                id="est_account_value"
+                values={Object {}}
+              />
+            </div>
+            <div
+              className="UserWalletSummary__value"
+            >
+              <USDDisplay
+                value={NaN}
+              />
+            </div>
+          </div>,
+        ],
+        "className": "UserWalletSummary",
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": Array [
+              <i
+                className="iconfont icon-steem UserWalletSummary__icon"
+              />,
+              <div
+                className="UserWalletSummary__label"
+              >
+                <FormattedMessage
+                  defaultMessage="Steem"
+                  id="steem"
+                  values={Object {}}
+                />
+              </div>,
+              <div
+                className="UserWalletSummary__value"
+              >
+                <span>
+                  <FormattedNumber
+                    value={100}
+                  />
+                   STEEM
+                </span>
+              </div>,
+            ],
+            "className": "UserWalletSummary__item",
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "className": "iconfont icon-steem UserWalletSummary__icon",
+              },
+              "ref": null,
+              "rendered": null,
+              "type": "i",
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": <FormattedMessage
+                  defaultMessage="Steem"
+                  id="steem"
+                  values={Object {}}
+                />,
+                "className": "UserWalletSummary__label",
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "defaultMessage": "Steem",
+                  "id": "steem",
+                  "values": Object {},
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              "type": "div",
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": <span>
+                  <FormattedNumber
+                    value={100}
+                  />
+                   STEEM
+                </span>,
+                "className": "UserWalletSummary__value",
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": Array [
+                    <FormattedNumber
+                      value={100}
+                    />,
+                    " STEEM",
+                  ],
+                },
+                "ref": null,
+                "rendered": Array [
+                  Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "class",
+                    "props": Object {
+                      "value": 100,
+                    },
+                    "ref": null,
+                    "rendered": null,
+                    "type": [Function],
+                  },
+                  " STEEM",
+                ],
+                "type": "span",
+              },
+              "type": "div",
+            },
+          ],
+          "type": "div",
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": Array [
+              <i
+                className="iconfont icon-flashlight_fill UserWalletSummary__icon"
+              />,
+              <div
+                className="UserWalletSummary__label"
+              >
+                <FormattedMessage
+                  defaultMessage="Steem Power"
+                  id="steem_power"
+                  values={Object {}}
+                />
+              </div>,
+              <div
+                className="UserWalletSummary__value"
+              >
+                <span>
+                  <FormattedNumber
+                    value={0}
+                  />
+                  <BTooltip
+                    title={
+                      <span>
+                        <FormattedMessage
+                          defaultMessage="The next power down is scheduled to happen on "
+                          id="steem_power_pending_withdrawal_tooltip"
+                          values={Object {}}
+                        />
+                        <FormattedDate
+                          value="undefinedZ"
+                        />
+                         
+                        <FormattedTime
+                          value="undefinedZ"
+                        />
+                      </span>
+                    }
+                  >
+                    <span>
+                       - 
+                      <FormattedNumber
+                        value={NaN}
+                      />
+                    </span>
+                  </BTooltip>
+                  <BTooltip
+                    title={
+                      <span>
+                        <FormattedMessage
+                          defaultMessage="Steem Power delegated to this account"
+                          id="steem_power_delegated_to_account_tooltip"
+                          values={Object {}}
+                        />
+                      </span>
+                    }
+                  >
+                    <span>
+                       (
+                      <FormattedNumber
+                        value={NaN}
+                      />
+                      )
+                    </span>
+                  </BTooltip>
+                   SP
+                </span>
+              </div>,
+            ],
+            "className": "UserWalletSummary__item",
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "className": "iconfont icon-flashlight_fill UserWalletSummary__icon",
+              },
+              "ref": null,
+              "rendered": null,
+              "type": "i",
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": <FormattedMessage
+                  defaultMessage="Steem Power"
+                  id="steem_power"
+                  values={Object {}}
+                />,
+                "className": "UserWalletSummary__label",
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "defaultMessage": "Steem Power",
+                  "id": "steem_power",
+                  "values": Object {},
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              "type": "div",
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": <span>
+                  <FormattedNumber
+                    value={0}
+                  />
+                  <BTooltip
+                    title={
+                      <span>
+                        <FormattedMessage
+                          defaultMessage="The next power down is scheduled to happen on "
+                          id="steem_power_pending_withdrawal_tooltip"
+                          values={Object {}}
+                        />
+                        <FormattedDate
+                          value="undefinedZ"
+                        />
+                         
+                        <FormattedTime
+                          value="undefinedZ"
+                        />
+                      </span>
+                    }
+                  >
+                    <span>
+                       - 
+                      <FormattedNumber
+                        value={NaN}
+                      />
+                    </span>
+                  </BTooltip>
+                  <BTooltip
+                    title={
+                      <span>
+                        <FormattedMessage
+                          defaultMessage="Steem Power delegated to this account"
+                          id="steem_power_delegated_to_account_tooltip"
+                          values={Object {}}
+                        />
+                      </span>
+                    }
+                  >
+                    <span>
+                       (
+                      <FormattedNumber
+                        value={NaN}
+                      />
+                      )
+                    </span>
+                  </BTooltip>
+                   SP
+                </span>,
+                "className": "UserWalletSummary__value",
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": Array [
+                    <FormattedNumber
+                      value={0}
+                    />,
+                    <BTooltip
+                      title={
+                        <span>
+                          <FormattedMessage
+                            defaultMessage="The next power down is scheduled to happen on "
+                            id="steem_power_pending_withdrawal_tooltip"
+                            values={Object {}}
+                          />
+                          <FormattedDate
+                            value="undefinedZ"
+                          />
+                           
+                          <FormattedTime
+                            value="undefinedZ"
+                          />
+                        </span>
+                      }
+                    >
+                      <span>
+                         - 
+                        <FormattedNumber
+                          value={NaN}
+                        />
+                      </span>
+                    </BTooltip>,
+                    <BTooltip
+                      title={
+                        <span>
+                          <FormattedMessage
+                            defaultMessage="Steem Power delegated to this account"
+                            id="steem_power_delegated_to_account_tooltip"
+                            values={Object {}}
+                          />
+                        </span>
+                      }
+                    >
+                      <span>
+                         (
+                        <FormattedNumber
+                          value={NaN}
+                        />
+                        )
+                      </span>
+                    </BTooltip>,
+                    " SP",
+                  ],
+                },
+                "ref": null,
+                "rendered": Array [
+                  Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "class",
+                    "props": Object {
+                      "value": 0,
+                    },
+                    "ref": null,
+                    "rendered": null,
+                    "type": [Function],
+                  },
+                  Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "class",
+                    "props": Object {
+                      "children": <span>
+                         - 
+                        <FormattedNumber
+                          value={NaN}
+                        />
+                      </span>,
+                      "title": <span>
+                        <FormattedMessage
+                          defaultMessage="The next power down is scheduled to happen on "
+                          id="steem_power_pending_withdrawal_tooltip"
+                          values={Object {}}
+                        />
+                        <FormattedDate
+                          value="undefinedZ"
+                        />
+                         
+                        <FormattedTime
+                          value="undefinedZ"
+                        />
+                      </span>,
+                    },
+                    "ref": null,
+                    "rendered": Object {
+                      "instance": null,
+                      "key": undefined,
+                      "nodeType": "host",
+                      "props": Object {
+                        "children": Array [
+                          " - ",
+                          <FormattedNumber
+                            value={NaN}
+                          />,
+                        ],
+                      },
+                      "ref": null,
+                      "rendered": Array [
+                        " - ",
+                        Object {
+                          "instance": null,
+                          "key": undefined,
+                          "nodeType": "class",
+                          "props": Object {
+                            "value": NaN,
+                          },
+                          "ref": null,
+                          "rendered": null,
+                          "type": [Function],
+                        },
+                      ],
+                      "type": "span",
+                    },
+                    "type": [Function],
+                  },
+                  Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "class",
+                    "props": Object {
+                      "children": <span>
+                         (
+                        <FormattedNumber
+                          value={NaN}
+                        />
+                        )
+                      </span>,
+                      "title": <span>
+                        <FormattedMessage
+                          defaultMessage="Steem Power delegated to this account"
+                          id="steem_power_delegated_to_account_tooltip"
+                          values={Object {}}
+                        />
+                      </span>,
+                    },
+                    "ref": null,
+                    "rendered": Object {
+                      "instance": null,
+                      "key": undefined,
+                      "nodeType": "host",
+                      "props": Object {
+                        "children": Array [
+                          " (",
+                          <FormattedNumber
+                            value={NaN}
+                          />,
+                          ")",
+                        ],
+                      },
+                      "ref": null,
+                      "rendered": Array [
+                        " (",
+                        Object {
+                          "instance": null,
+                          "key": undefined,
+                          "nodeType": "class",
+                          "props": Object {
+                            "value": NaN,
+                          },
+                          "ref": null,
+                          "rendered": null,
+                          "type": [Function],
+                        },
+                        ")",
+                      ],
+                      "type": "span",
+                    },
+                    "type": [Function],
+                  },
+                  " SP",
+                ],
+                "type": "span",
+              },
+              "type": "div",
+            },
+          ],
+          "type": "div",
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": Array [
+              <i
+                className="iconfont icon-Dollar UserWalletSummary__icon"
+              />,
+              <div
+                className="UserWalletSummary__label"
+              >
+                <FormattedMessage
+                  defaultMessage="Steem Dollar"
+                  id="steem_dollar"
+                  values={Object {}}
+                />
+              </div>,
+              <div
+                className="UserWalletSummary__value"
+              >
+                <span>
+                  <FormattedNumber
+                    value={NaN}
+                  />
+                   SBD
+                </span>
+              </div>,
+            ],
+            "className": "UserWalletSummary__item",
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "className": "iconfont icon-Dollar UserWalletSummary__icon",
+              },
+              "ref": null,
+              "rendered": null,
+              "type": "i",
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": <FormattedMessage
+                  defaultMessage="Steem Dollar"
+                  id="steem_dollar"
+                  values={Object {}}
+                />,
+                "className": "UserWalletSummary__label",
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "defaultMessage": "Steem Dollar",
+                  "id": "steem_dollar",
+                  "values": Object {},
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              "type": "div",
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": <span>
+                  <FormattedNumber
+                    value={NaN}
+                  />
+                   SBD
+                </span>,
+                "className": "UserWalletSummary__value",
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": Array [
+                    <FormattedNumber
+                      value={NaN}
+                    />,
+                    " SBD",
+                  ],
+                },
+                "ref": null,
+                "rendered": Array [
+                  Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "class",
+                    "props": Object {
+                      "value": NaN,
+                    },
+                    "ref": null,
+                    "rendered": null,
+                    "type": [Function],
+                  },
+                  " SBD",
+                ],
+                "type": "span",
+              },
+              "type": "div",
+            },
+          ],
+          "type": "div",
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": Array [
+              <i
+                className="iconfont icon-savings UserWalletSummary__icon"
+              />,
+              <div
+                className="UserWalletSummary__label"
+              >
+                <FormattedMessage
+                  defaultMessage="Savings"
+                  id="savings"
+                  values={Object {}}
+                />
+              </div>,
+              <div
+                className="UserWalletSummary__value"
+              >
+                <span>
+                  <FormattedNumber
+                    value={100}
+                  />
+                   STEEM, 
+                  <FormattedNumber
+                    value={1000}
+                  />
+                   SBD
+                </span>
+              </div>,
+            ],
+            "className": "UserWalletSummary__item",
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "className": "iconfont icon-savings UserWalletSummary__icon",
+              },
+              "ref": null,
+              "rendered": null,
+              "type": "i",
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": <FormattedMessage
+                  defaultMessage="Savings"
+                  id="savings"
+                  values={Object {}}
+                />,
+                "className": "UserWalletSummary__label",
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "defaultMessage": "Savings",
+                  "id": "savings",
+                  "values": Object {},
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              "type": "div",
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": <span>
+                  <FormattedNumber
+                    value={100}
+                  />
+                   STEEM, 
+                  <FormattedNumber
+                    value={1000}
+                  />
+                   SBD
+                </span>,
+                "className": "UserWalletSummary__value",
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
+                  "children": Array [
+                    <FormattedNumber
+                      value={100}
+                    />,
+                    " STEEM, ",
+                    <FormattedNumber
+                      value={1000}
+                    />,
+                    " SBD",
+                  ],
+                },
+                "ref": null,
+                "rendered": Array [
+                  Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "class",
+                    "props": Object {
+                      "value": 100,
+                    },
+                    "ref": null,
+                    "rendered": null,
+                    "type": [Function],
+                  },
+                  " STEEM, ",
+                  Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "class",
+                    "props": Object {
+                      "value": 1000,
+                    },
+                    "ref": null,
+                    "rendered": null,
+                    "type": [Function],
+                  },
+                  " SBD",
+                ],
+                "type": "span",
+              },
+              "type": "div",
+            },
+          ],
+          "type": "div",
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": Array [
+              <i
+                className="iconfont icon-people_fill UserWalletSummary__icon"
+              />,
+              <div
+                className="UserWalletSummary__label"
+              >
+                <FormattedMessage
+                  defaultMessage="Est. Account Value"
+                  id="est_account_value"
+                  values={Object {}}
+                />
+              </div>,
+              <div
+                className="UserWalletSummary__value"
+              >
+                <USDDisplay
+                  value={NaN}
+                />
+              </div>,
+            ],
+            "className": "UserWalletSummary__item",
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "className": "iconfont icon-people_fill UserWalletSummary__icon",
+              },
+              "ref": null,
+              "rendered": null,
+              "type": "i",
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": <FormattedMessage
+                  defaultMessage="Est. Account Value"
+                  id="est_account_value"
+                  values={Object {}}
+                />,
+                "className": "UserWalletSummary__label",
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "defaultMessage": "Est. Account Value",
+                  "id": "est_account_value",
+                  "values": Object {},
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              "type": "div",
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": <USDDisplay
+                  value={NaN}
+                />,
+                "className": "UserWalletSummary__value",
+              },
+              "ref": null,
+              "rendered": Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "function",
+                "props": Object {
+                  "value": NaN,
+                },
+                "ref": null,
+                "rendered": null,
+                "type": [Function],
+              },
+              "type": "div",
+            },
+          ],
+          "type": "div",
+        },
+      ],
+      "type": "div",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+        "lifecycles": Object {
+          "componentDidUpdate": Object {
+            "onSetState": true,
+          },
+          "getDerivedStateFromProps": true,
+          "getSnapshotBeforeUpdate": true,
+          "setState": Object {
+            "skipsComponentDidUpdateOnNullish": true,
+          },
+        },
+      },
+    },
+  },
+}
+`;
