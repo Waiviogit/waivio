@@ -439,6 +439,7 @@
   "object_field_avatar": "Avatar",
   "object_field_background": "Background",
   "object_field_phone": "Phone",
+  "object_field_email": "Email",
   "field_error": "{field} is required",
   "append_send": "Submit",
   "suggestion_add_field": "Update",
