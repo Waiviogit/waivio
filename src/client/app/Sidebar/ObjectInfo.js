@@ -18,7 +18,6 @@ import IconButton from '../../components/IconButton';
 import { getObjectAlbums } from '../../reducers';
 import DescriptionInfo from './DescriptionInfo';
 import CreateImage from '../../object/ObjectGallery/CreateImage';
-import EmailIcon from '../../../../public/images/contact_us.svg';
 
 @connect(state => ({
   albums: getObjectAlbums(state),
@@ -326,20 +325,20 @@ class ObjectInfo extends React.Component {
             )}
             {listItem(
               objectFields.email,
-              <div className="field-info">
-                {accessExtend ? (
-                  <React.Fragment>
-                    <EmailIcon />
-                    {email}
-                  </React.Fragment>
-                ) : (
-                  <React.Fragment>
-                    <EmailIcon />
-
-                    {email}
-                  </React.Fragment>
-                )}
-              </div>,
+              email && (
+                <div className="field-info">
+                  {accessExtend ? (
+                    <div className="email">
+                      <Icon type="mail" /> {email}
+                    </div>
+                  ) : (
+                    <React.Fragment>
+                      <Icon type="mail" />
+                      <a href={`mailto:${email}`}> {email}</a>
+                    </React.Fragment>
+                  )}
+                </div>
+              ),
             )}
             {listItem(objectFields.link, <SocialLinks profile={profile} />)}
             {accessExtend && settingsSection}
