@@ -31,7 +31,7 @@ class Comments extends React.Component {
     commentsChildren: PropTypes.shape(),
     pendingVotes: PropTypes.arrayOf(
       PropTypes.shape({
-        id: PropTypes.number,
+        id: PropTypes.string,
         percent: PropTypes.number,
       }),
     ),
