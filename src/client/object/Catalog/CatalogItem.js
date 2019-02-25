@@ -38,7 +38,7 @@ class CatalogItem extends React.Component {
         >
           <div className="catalog-item__content">
             <div className="catalog-item__info">
-              <span className="catalog-item__truncated">{catalogItem.body}</span>
+              <div className="catalog-item__truncated">{catalogItem.body}</div>
             </div>
             {wobject.avatar ? (
               <img className="catalog-item__avatar" src={wobject.avatar} alt={wobject.name} />

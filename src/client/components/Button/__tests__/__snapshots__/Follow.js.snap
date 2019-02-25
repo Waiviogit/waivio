@@ -2,9 +2,9 @@
 
 exports[`<Follow /> renders without exploding 1`] = `
 ShallowWrapper {
-  "length": 1,
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <FollowPure
+    disabled={false}
     intl={
       Object {
         "defaultFormats": Object {},
@@ -27,7 +27,9 @@ ShallowWrapper {
         "locale": "en",
         "messages": Object {},
         "now": [Function],
+        "onError": [Function],
         "textComponent": "span",
+        "timeZone": null,
       }
     }
     isFollowed={true}
@@ -39,6 +41,7 @@ ShallowWrapper {
     "batchedUpdates": [Function],
     "getNode": [Function],
     "render": [Function],
+    "simulateError": [Function],
     "simulateEvent": [Function],
     "unmount": [Function],
   },
@@ -52,6 +55,7 @@ ShallowWrapper {
         "Following",
       ],
       "className": "Follow",
+      "disabled": false,
       "onClick": [Function],
       "onMouseOut": [Function],
       "onMouseOver": [Function],
@@ -74,6 +78,7 @@ ShallowWrapper {
           "Following",
         ],
         "className": "Follow",
+        "disabled": false,
         "onClick": [Function],
         "onMouseOut": [Function],
         "onMouseOver": [Function],
@@ -90,6 +95,16 @@ ShallowWrapper {
     "adapter": ReactSixteenAdapter {
       "options": Object {
         "enableComponentDidUpdateOnSetState": true,
+        "lifecycles": Object {
+          "componentDidUpdate": Object {
+            "onSetState": true,
+          },
+          "getDerivedStateFromProps": true,
+          "getSnapshotBeforeUpdate": true,
+          "setState": Object {
+            "skipsComponentDidUpdateOnNullish": true,
+          },
+        },
       },
     },
   },

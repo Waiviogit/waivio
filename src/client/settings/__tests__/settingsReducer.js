@@ -16,14 +16,15 @@ describe('settingsReducer', () => {
     upvoteSetting: true,
     exitPageSetting: true,
     rewardSetting: rewardsValues.half,
+    readLanguages: [],
   };
 
   it('should return initial state', () => {
     const stateBefore = undefined;
     const stateAfter = initialState;
     const action = {};
-
-    expect(settingsReducer(stateBefore, action)).to.eql(stateAfter);
+    const returnState = settingsReducer(stateBefore, action);
+    expect(returnState).to.eql(stateAfter);
   });
 
   it('should not change on unknown action', () => {
