@@ -51,12 +51,16 @@ class StoryFooter extends React.Component {
     handlePostPopoverMenuClick: () => {},
   };
 
-  state = {
-    sliderVisible: false,
-    commentsVisible: false,
-    sliderValue: 100,
-    voteWorth: 0,
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      sliderVisible: false,
+      commentsVisible: !props.post.children,
+      sliderValue: 100,
+      voteWorth: 0,
+    };
+  }
 
   componentWillMount() {
     const { user, post, defaultVotePercent } = this.props;
@@ -166,12 +170,7 @@ class StoryFooter extends React.Component {
           />
         )}
         {!singlePostVew && (
-          <Comments
-            show={commentsVisible}
-            isQuickComments={!singlePostVew}
-            post={post}
-            toggleShowComments={this.toggleCommentsVisibility}
-          />
+          <Comments show={commentsVisible} isQuickComments={!singlePostVew} post={post} />
         )}
       </div>
     );
