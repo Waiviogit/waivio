@@ -10,6 +10,7 @@ export const objectFields = {
   website: 'website',
   hashtag: 'tag',
   phone: 'phone',
+  email: 'email',
 };
 
 export const addressFields = {

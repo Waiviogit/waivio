@@ -9,6 +9,8 @@ export const objectURLValidationRegExp = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:
 
 export const phoneNameValidationRegExp = /^[^!@#$%^&*,.?":{}|<>]{0,100}$/;
 
+export const emailValidationRegExp = /^[^\s@]+@[^\s@]+\.[^\s@]{0,100}$/;
+
 export const ALLOWED_IMG_FORMATS = ['jpg', 'jpeg', 'png', 'gif'];
 export const MAX_IMG_SIZE = {
   [objectFields.avatar]: 2097152,
