@@ -492,7 +492,7 @@
   "GoTo": "Go to",
   "emptyCatalog": "This catalog is empty",
   "emptyCategory": "This category is empty",
-  "add_catalog_item": "@{currentUserName} added category <strong>{category}</strong> to catalog.",
+  "add_catalog_item": "@{currentUserName} added {itemType} <strong>{itemValue}</strong> to catalog.",
   "category": "Category",
   "category_new": "New category",
   "category_name": "Category name"

@@ -58,15 +58,16 @@ class AddItemModal extends Component {
     const bodyMsg = intl.formatMessage(
       {
         id: 'add_catalog_item',
-        defaultMessage: `@{currentUserName} added category <strong>{category}</strong> to catalog.`,
+        defaultMessage: `@{user} added {itemType} <strong>{itemValue}</strong> to catalog.`,
       },
       {
         user: currentUserName,
-        category: inputValue,
+        itemType: 'category',
+        itemValue: inputValue,
       },
     );
     const fieldContent = {
-      name: 'catalogItem',
+      name: 'catalogCategory',
       body: inputValue,
       parent,
       locale: 'en-US',
