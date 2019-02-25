@@ -197,7 +197,7 @@ export default class AppendForm extends Component {
         break;
       }
       case objectFields.phone: {
-        fieldBody.push(rest[phoneFields.name]);
+        fieldBody.push(rest[phoneFields.name] || '');
         break;
       }
       default:
@@ -1119,16 +1119,6 @@ export default class AppendForm extends Component {
                         defaultMessage: "Value can't be longer than 100 characters.",
                       },
                       { value: 100 },
-                    ),
-                  },
-                  {
-                    required: true,
-                    message: intl.formatMessage(
-                      {
-                        id: 'field_error',
-                        defaultMessage: 'Field is required',
-                      },
-                      { field: 'Phone name' },
                     ),
                   },
                   {
