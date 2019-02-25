@@ -51,12 +51,16 @@ class StoryFooter extends React.Component {
     handlePostPopoverMenuClick: () => {},
   };
 
-  state = {
-    sliderVisible: false,
-    commentsVisible: false,
-    sliderValue: 100,
-    voteWorth: 0,
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      sliderVisible: false,
+      commentsVisible: !props.post.children,
+      sliderValue: 100,
+      voteWorth: 0,
+    };
+  }
 
   componentWillMount() {
     const { user, post, defaultVotePercent } = this.props;

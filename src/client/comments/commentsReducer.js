@@ -20,7 +20,7 @@ const childrenById = (state = initialState.childrenById, action) => {
 
       return {
         ...state,
-        [parentKey]: uniq([...state[parentKey], commentKey]),
+        [parentKey]: state[parentKey] ? uniq([...state[parentKey], commentKey]) : [commentKey],
         [commentKey]: oldComments,
       };
     }
