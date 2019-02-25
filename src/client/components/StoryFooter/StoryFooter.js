@@ -166,12 +166,7 @@ class StoryFooter extends React.Component {
           />
         )}
         {!singlePostVew && (
-          <Comments
-            show={commentsVisible}
-            isQuickComments={!singlePostVew}
-            post={post}
-            toggleShowComments={this.toggleCommentsVisibility}
-          />
+          <Comments show={commentsVisible} isQuickComments={!singlePostVew} post={post} />
         )}
       </div>
     );
