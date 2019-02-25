@@ -281,7 +281,6 @@ class Comments extends React.Component {
             )}
           </React.Fragment>
         )}
-        {loading && isParentPostFetching && <Loading />}
         {isQuickComments && show && (
           <MoreCommentsButton
             comments={rootLevelComments.length}
@@ -290,6 +289,7 @@ class Comments extends React.Component {
             onClick={this.handleShowMoreComments}
           />
         )}
+        {loading && isParentPostFetching && <Loading />}
         {(loaded || !isParentPostFetching) &&
           show &&
           comments &&
