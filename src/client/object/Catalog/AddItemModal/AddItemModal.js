@@ -2,16 +2,21 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { Button, Input, Modal, message } from 'antd';
+import { Button, Modal, message, Select } from 'antd';
 import { getAppendData } from '../../../helpers/wObjectHelper';
-import { getAuthenticatedUserName } from '../../../reducers';
+import { getFieldWithMaxWeight } from '../../../object/wObjectHelper';
+import { getAuthenticatedUserName, getLocale } from '../../../reducers';
 import { appendObject } from '../../appendActions';
+import { objectFields } from '../../../../common/constants/listOfFields';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
+import LANGUAGES from '../../../translations/languages';
+import { getLanguageText } from '../../../translations';
 import './AddItemModal.less';
 
 @connect(
   state => ({
     currentUserName: getAuthenticatedUserName(state),
+    locale: getLocale(state),
   }),
   { appendObject },
 )
@@ -19,6 +24,7 @@ import './AddItemModal.less';
 class AddItemModal extends Component {
   static defaultProps = {
     currentUserName: '',
+    locale: 'en-US',
     loading: false,
     appendObject: () => {},
   };
@@ -26,33 +32,35 @@ class AddItemModal extends Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     // passed props
-    parent: PropTypes.string.isRequired,
     wobject: PropTypes.shape().isRequired,
     // from connect
     currentUserName: PropTypes.string,
+    locale: PropTypes.string,
     appendObject: PropTypes.func,
   };
 
-  state = {
-    isModalOpen: false,
-    isLoading: false,
-    inputValue: '',
-  };
+  constructor(props) {
+    super(props);
 
-  handleInputChange = event => {
-    const inputValue = event.target.value;
-    this.setState({ inputValue });
-  };
+    this.state = {
+      isModalOpen: false,
+      isLoading: false,
+      language: props.locale || 'en-US',
+      selectedItem: null,
+    };
+  }
 
-  handleToggleModal = () =>
-    this.setState(prevState => ({
-      isModalOpen: !prevState.isModalOpen,
-      inputValue: prevState.isModalOpen ? '' : prevState.inputValue,
-    }));
+  handleLanguageChange = language => this.setState({ language });
+
+  handleToggleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
+
+  handleObjectSelect = selectedItem => {
+    this.setState({ selectedItem, isModalOpen: true });
+  };
 
   handleSubmit = () => {
-    const { inputValue } = this.state;
-    const { currentUserName, wobject, parent, intl } = this.props;
+    const { inputValue, language } = this.state;
+    const { currentUserName, wobject, intl } = this.props;
 
     this.setState({ isLoading: true });
     const bodyMsg = intl.formatMessage(
@@ -67,10 +75,9 @@ class AddItemModal extends Component {
       },
     );
     const fieldContent = {
-      name: 'catalogCategory',
+      name: 'listItem',
       body: inputValue,
-      parent,
-      locale: 'en-US',
+      locale: language,
     };
     const appendData = getAppendData(currentUserName, wobject, bodyMsg, fieldContent);
     this.props
@@ -99,16 +106,32 @@ class AddItemModal extends Component {
   };
 
   render() {
-    const { isModalOpen, isLoading, inputValue } = this.state;
-    const { intl } = this.props;
+    const { isModalOpen, isLoading, language } = this.state;
+    const { intl, wobject } = this.props;
+
+    const listName = getFieldWithMaxWeight(wobject, objectFields.name);
+    const itemType = ['catalog', 'list'].includes(wobject.object_type)
+      ? intl.formatMessage({
+          id: 'list',
+          defaultMessage: 'List',
+        })
+      : intl.formatMessage({
+          id: 'object',
+          defaultMessage: 'Object',
+        });
+    const languageOptions = LANGUAGES.map(lang => (
+      <Select.Option key={lang.id} value={lang.id}>
+        {getLanguageText(lang)}
+      </Select.Option>
+    ));
 
     return (
       <React.Fragment>
         {isModalOpen && (
           <Modal
             title={intl.formatMessage({
-              id: 'category_new',
-              defaultMessage: 'New category',
+              id: 'list_update',
+              defaultMessage: 'Update list',
             })}
             visible={isModalOpen}
             onCancel={this.handleToggleModal}
@@ -117,17 +140,27 @@ class AddItemModal extends Component {
             destroyOnClose
           >
             <div className="modal-content">
-              <div className="modal-content__row align-center">
-                <Input
-                  className="modal-content__name-input"
-                  placeholder={intl.formatMessage({
-                    id: 'category_name',
-                    defaultMessage: 'Category name',
-                  })}
-                  value={inputValue}
-                  onChange={this.handleInputChange}
-                  onPressEnter={this.handleSubmit}
-                />
+              <div className="modal-content__row align-left">
+                {`${intl.formatMessage({
+                  id: 'suggestion_add_field',
+                  defaultMessage: 'Update',
+                })}: ${listName}`}
+              </div>
+              <div className="modal-content__row align-left">
+                {`${intl.formatMessage({
+                  id: 'add_new',
+                  defaultMessage: 'Add new',
+                })}: ${itemType}`}
+              </div>
+              <div className="modal-content__row">
+                <Select
+                  style={{ width: '100%' }}
+                  placeholder={intl.formatMessage({ id: 'language', defaultMessage: 'Language' })}
+                  value={language}
+                  onChange={this.handleLanguageChange}
+                >
+                  {languageOptions}
+                </Select>
               </div>
               <div className="modal-content__row align-right">
                 <Button
@@ -146,7 +179,7 @@ class AddItemModal extends Component {
             </div>
           </Modal>
         )}
-        <SearchObjectsAutocomplete handleSelect={this.handleToggleModal} canCreateNewObject />
+        <SearchObjectsAutocomplete handleSelect={this.handleObjectSelect} canCreateNewObject />
       </React.Fragment>
     );
   }

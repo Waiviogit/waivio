@@ -55,15 +55,11 @@ const CatalogWrap = ({ wobject, match, intl, createObject, notify }) => {
       }
     }
   }
-  const newCategoryParent = link.split('/').pop();
 
   return (
     <React.Fragment>
       <div className="CatalogWrap__add-item">
-        <AddItemModal
-          wobject={wobject}
-          parent={newCategoryParent === 'catalog' ? '' : newCategoryParent}
-        />
+        <AddItemModal wobject={wobject} />
         <CreateObjectModal handleCreateObject={handleCreateObject} />
       </div>
       <div className="CatalogWrap">
