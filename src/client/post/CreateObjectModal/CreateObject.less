@@ -1,0 +1,19 @@
+@import (reference) '../../styles/custom.less';
+
+.CreateObject {
+  &__row {
+    display: flex;
+    &.align-right {
+      justify-content: flex-end !important;
+    }
+  }
+
+  &__button {
+    color: @orange-hot;
+    cursor: pointer;
+
+    &:hover {
+      font-weight: 500;
+    }
+  }
+}

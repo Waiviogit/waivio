@@ -3,8 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { Form, Input, Select, Button } from 'antd';
-import './CreateObject.less';
+import { Form, Input, Select, Button, Modal } from 'antd';
 import LANGUAGES from '../../translations/languages';
 import { getLanguageText } from '../../translations';
 import { objectFields } from '../../../common/constants/listOfFields';
@@ -17,6 +16,7 @@ import {
   getVotePercent,
   getVotingPower,
 } from '../../reducers';
+import './CreateObject.less';
 
 @connect(state => ({
   rewardFund: getRewardFund(state),
@@ -32,7 +32,6 @@ class CreateObject extends React.Component {
     intl: PropTypes.shape().isRequired,
     form: PropTypes.shape().isRequired,
     handleCreateObject: PropTypes.func.isRequired,
-    toggleModal: PropTypes.func.isRequired,
     currentLocaleInList: PropTypes.shape().isRequired,
     sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
     defaultVotePercent: PropTypes.number,
@@ -45,7 +44,6 @@ class CreateObject extends React.Component {
     currentLocaleInList: { id: 'en-US', name: '', nativeName: '' },
     wobject: { tag: '' },
     handleCreateObject: () => {},
-    toggleModal: () => {},
     sliderMode: 'auto',
     defaultVotePercent: 100,
     user: {},
@@ -57,6 +55,7 @@ class CreateObject extends React.Component {
     super(props);
 
     this.state = {
+      isModalOpen: false,
       loading: false,
       votePercent: this.props.defaultVotePercent / 100,
       voteWorth: 0,
@@ -72,6 +71,10 @@ class CreateObject extends React.Component {
       }
     }
     this.calculateVoteWorth(this.state.votePercent);
+  };
+
+  toggleModal = () => {
+    this.setState({ isModalOpen: !this.state.isModalOpen });
   };
 
   calculateVoteWorth = value => {
@@ -97,7 +100,7 @@ class CreateObject extends React.Component {
         objData.isPostingOpen = true;
         objData.votePercent = this.state.votePercent * 100;
         this.props.handleCreateObject(objData);
-        _.delay(this.props.toggleModal, 2500);
+        _.delay(this.toggleModal, 2500);
       }
     });
   };
@@ -134,86 +137,108 @@ class CreateObject extends React.Component {
 
     return (
       <React.Fragment>
-        <Form.Item>
-          {getFieldDecorator(objectFields.name, {
-            initialValue: '',
-            rules: [
-              {
-                max: 100,
-                message: intl.formatMessage(
+        <div className="CreateObject__row align-right">
+          <span role="presentation" className="CreateObject__button" onClick={this.toggleModal}>
+            {this.props.intl.formatMessage({
+              id: 'create_new_object',
+              defaultMessage: 'create new object',
+            })}
+          </span>
+        </div>
+
+        {this.state.isModalOpen && (
+          <Modal
+            title={this.props.intl.formatMessage({
+              id: 'create_new_object',
+              defaultMessage: 'Create new object',
+            })}
+            visible
+            confirmLoading={this.state.isCreating}
+            footer={null}
+            onCancel={this.toggleModal}
+          >
+            <Form.Item>
+              {getFieldDecorator(objectFields.name, {
+                initialValue: '',
+                rules: [
                   {
-                    id: 'value_error_long',
-                    defaultMessage: "Name can't be longer than 100 characters.",
+                    max: 100,
+                    message: intl.formatMessage(
+                      {
+                        id: 'value_error_long',
+                        defaultMessage: "Name can't be longer than 100 characters.",
+                      },
+                      { value: 100 },
+                    ),
                   },
-                  { value: 100 },
-                ),
-              },
-              {
-                required: true,
-                message: intl.formatMessage({
-                  id: 'name_required',
-                  defaultMessage: 'Please enter name for new object',
-                }),
-              },
-            ],
-          })(
-            <Input
-              className="Editor__title"
-              placeholder={intl.formatMessage({
-                id: 'value_placeholder',
-                defaultMessage: 'Add value',
-              })}
-            />,
-          )}
-        </Form.Item>
-        <Form.Item>
-          {getFieldDecorator('locale', {
-            initialValue: this.props.currentLocaleInList.id,
-            rules: [
-              {
-                required: true,
-                message: intl.formatMessage({
-                  id: 'validation_locale',
-                  defaultMessage: 'Please select your locale!',
-                }),
-              },
-            ],
-          })(<Select style={{ width: '100%' }}>{languageOptions}</Select>)}
-        </Form.Item>
-        <Form.Item>
-          {getFieldDecorator('type', {
-            rules: [
-              {
-                required: true,
-                message: intl.formatMessage({
-                  id: 'validation_object_type',
-                  defaultMessage: 'Please select object type!',
-                }),
-              },
-            ],
-          })(
-            <Input
-              className="Editor__title"
-              placeholder={intl.formatMessage({
-                id: 'placeholder_obj_type',
-                defaultMessage: 'Object type',
-              })}
-            />,
-          )}
-        </Form.Item>
-        <LikeSection
-          onVotePercentChange={this.calculateVoteWorth}
-          votePercent={this.state.votePercent}
-          voteWorth={this.state.voteWorth}
-          form={form}
-          sliderVisible={this.state.sliderVisible}
-          onLikeClick={this.handleLikeClick}
-        />
-        <Form.Item className="Editor__bottom__submit">
-          <Button type="primary" onClick={this.handleSubmit} loading={this.state.loading}>
-            {intl.formatMessage({ id: 'confirm', defaultMessage: 'Confirm' })}
-          </Button>
-        </Form.Item>
+                  {
+                    required: true,
+                    message: intl.formatMessage({
+                      id: 'name_required',
+                      defaultMessage: 'Please enter name for new object',
+                    }),
+                  },
+                ],
+              })(
+                <Input
+                  className="Editor__title"
+                  placeholder={intl.formatMessage({
+                    id: 'value_placeholder',
+                    defaultMessage: 'Add value',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator('locale', {
+                initialValue: this.props.currentLocaleInList.id,
+                rules: [
+                  {
+                    required: true,
+                    message: intl.formatMessage({
+                      id: 'validation_locale',
+                      defaultMessage: 'Please select your locale!',
+                    }),
+                  },
+                ],
+              })(<Select style={{ width: '100%' }}>{languageOptions}</Select>)}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator('type', {
+                rules: [
+                  {
+                    required: true,
+                    message: intl.formatMessage({
+                      id: 'validation_object_type',
+                      defaultMessage: 'Please select object type!',
+                    }),
+                  },
+                ],
+              })(
+                <Input
+                  className="Editor__title"
+                  placeholder={intl.formatMessage({
+                    id: 'placeholder_obj_type',
+                    defaultMessage: 'Object type',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <LikeSection
+              onVotePercentChange={this.calculateVoteWorth}
+              votePercent={this.state.votePercent}
+              voteWorth={this.state.voteWorth}
+              form={form}
+              sliderVisible={this.state.sliderVisible}
+              onLikeClick={this.handleLikeClick}
+            />
+            <Form.Item className="Editor__bottom__submit">
+              <Button type="primary" onClick={this.handleSubmit} loading={this.state.loading}>
+                {intl.formatMessage({ id: 'confirm', defaultMessage: 'Confirm' })}
+              </Button>
+            </Form.Item>
+          </Modal>
+        )}
       </React.Fragment>
     );
   }
