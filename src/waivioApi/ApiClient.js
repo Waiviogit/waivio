@@ -66,11 +66,17 @@ export const getMoreFeedContentByObject = ({ authorPermlink, startId, limit = 10
   });
 
 export const postCreateWaivioObject = wObject =>
-  fetch(`${config.objectsBot.url}${config.objectsBot.createObject}`, {
-    headers,
-    method: 'POST',
-    body: JSON.stringify(wObject),
-  }).then(res => res.json());
+  new Promise((resolve, reject) => {
+    fetch(`${config.objectsBot.apiPrefix}${config.objectsBot.createObject}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify(wObject),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(res => resolve(res))
+      .catch(error => reject(error));
+  });
 
 export const searchObjects = (searchString, limit = 10) =>
   fetch(`${config.apiPrefix}${config.searchObjects}`, {

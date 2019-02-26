@@ -1,4 +1,4 @@
-import { Breadcrumb, message } from 'antd';
+import { Breadcrumb } from 'antd';
 import { Link } from 'react-router-dom';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -8,16 +8,37 @@ import PropTypes from 'prop-types';
 import CatalogItem from './CatalogItem';
 import { getFieldWithMaxWeight } from '../wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
-import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
-import AddItemModal from './AddItemModal';
-import { getAppendData } from '../../helpers/wObjectHelper';
-import { getAuthenticatedUserName } from '../../reducers';
-import * as appendActions from '../appendActions';
+import AddItemModal from './AddItemModal/AddItemModal';
+import CreateObjectModal from '../../post/CreateObjectModal/CreateObject';
+import * as wobjectActions from '../../../client/object/wobjActions';
+import * as notificationActions from '../../../client/app/Notification/notificationActions';
 import './CatalogWrap.less';
 
 const innerCategoryCount = 5;
 
-const CatalogWrap = ({ wobject, match, currentUserName, intl, appendObject }) => {
+const CatalogWrap = ({ wobject, match, intl, createObject, notify }) => {
+  const handleCreateObject = wobj => {
+    createObject(wobj)
+      .then(() =>
+        notify(
+          intl.formatMessage({
+            id: 'create_object_success',
+            defaultMessage: 'Object has been created',
+          }),
+          'success',
+        ),
+      )
+      .catch(() =>
+        notify(
+          intl.formatMessage({
+            id: 'create_object_error',
+            defaultMessage: 'Something went wrong. Object is not created',
+          }),
+          'error',
+        ),
+      );
+  };
+
   let currentItem = {};
   currentItem.items = wobject.catalog;
   let link = '/';
@@ -36,53 +57,14 @@ const CatalogWrap = ({ wobject, match, currentUserName, intl, appendObject }) =>
   }
   const newCategoryParent = link.split('/').pop();
 
-  const handleSelectObject = selectedObj => {
-    const bodyMsg = intl.formatMessage(
-      {
-        id: 'add_catalog_item',
-        defaultMessage: `@{user} added {itemType} <strong>{itemValue}</strong> to catalog.`,
-      },
-      {
-        user: currentUserName,
-        itemType: 'object',
-        itemValue: selectedObj.name,
-      },
-    );
-    const fieldContent = {
-      name: 'catalogObject',
-      body: selectedObj.id,
-      parent: newCategoryParent === 'catalog' ? '' : newCategoryParent,
-      locale: 'en-US',
-    };
-    const appendData = getAppendData(currentUserName, wobject, bodyMsg, fieldContent);
-    appendObject(appendData)
-      .then(() => {
-        message.success(
-          intl.formatMessage({
-            id: 'notify_create_category',
-            defaultMessage: 'Category has been created',
-          }),
-        );
-      })
-      .catch(err => {
-        console.log('err > ', err);
-        message.error(
-          intl.formatMessage({
-            id: 'notify_create_category_error',
-            defaultMessage: "Couldn't create category",
-          }),
-        );
-      });
-  };
-
   return (
     <React.Fragment>
       <div className="CatalogWrap__add-item">
-        <SearchObjectsAutocomplete handleSelect={handleSelectObject} canCreateNewObject={false} />
         <AddItemModal
           wobject={wobject}
           parent={newCategoryParent === 'catalog' ? '' : newCategoryParent}
         />
+        <CreateObjectModal handleCreateObject={handleCreateObject} />
       </div>
       <div className="CatalogWrap">
         {currentItem ? (
@@ -140,17 +122,20 @@ CatalogWrap.propTypes = {
   wobject: PropTypes.shape(),
   intl: PropTypes.shape().isRequired,
   match: PropTypes.shape().isRequired,
-  currentUserName: PropTypes.string.isRequired,
-  appendObject: PropTypes.func.isRequired,
+  createObject: PropTypes.func,
+  notify: PropTypes.func,
 };
 
 CatalogWrap.defaultProps = {
   wobject: {},
+  createObject: () => {},
+  notify: () => {},
 };
 
 export default connect(
-  state => ({
-    currentUserName: getAuthenticatedUserName(state),
-  }),
-  { appendObject: appendActions.appendObject },
+  null,
+  {
+    createObject: wobjectActions.createObject,
+    notify: notificationActions.notify,
+  },
 )(injectIntl(CatalogWrap));

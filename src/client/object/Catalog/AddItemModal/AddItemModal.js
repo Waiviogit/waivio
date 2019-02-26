@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { Button, Icon, Input, Modal, message } from 'antd';
-import IconButton from '../../components/IconButton';
-import { getAppendData } from '../../helpers/wObjectHelper';
-import { getAuthenticatedUserName } from '../../reducers';
-import { appendObject } from '../appendActions';
+import { Button, Input, Modal, message } from 'antd';
+import { getAppendData } from '../../../helpers/wObjectHelper';
+import { getAuthenticatedUserName } from '../../../reducers';
+import { appendObject } from '../../appendActions';
+import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
 import './AddItemModal.less';
 
 @connect(
@@ -102,53 +102,52 @@ class AddItemModal extends Component {
     const { isModalOpen, isLoading, inputValue } = this.state;
     const { intl } = this.props;
 
-    return isModalOpen ? (
-      <Modal
-        title={intl.formatMessage({
-          id: 'category_new',
-          defaultMessage: 'New category',
-        })}
-        visible={isModalOpen}
-        onCancel={this.handleToggleModal}
-        width={500}
-        footer={null}
-        destroyOnClose
-      >
-        <div className="modal-content">
-          <div className="modal-content__row align-center">
-            <Input
-              className="modal-content__name-input"
-              placeholder={intl.formatMessage({
-                id: 'category_name',
-                defaultMessage: 'Category name',
-              })}
-              value={inputValue}
-              onChange={this.handleInputChange}
-              onPressEnter={this.handleSubmit}
-            />
-          </div>
-          <div className="modal-content__row align-right">
-            <Button
-              className="modal-content__submit-btn"
-              type="primary"
-              loading={isLoading}
-              disabled={isLoading}
-              onClick={this.handleSubmit}
-            >
-              {intl.formatMessage({
-                id: isLoading ? 'post_send_progress' : 'create',
-                defaultMessage: isLoading ? 'Submitting' : 'Create',
-              })}
-            </Button>
-          </div>
-        </div>
-      </Modal>
-    ) : (
-      <IconButton
-        icon={<Icon type="plus-circle" />}
-        onClick={this.handleToggleModal}
-        caption={intl.formatMessage({ id: 'category', defaultMessage: 'Category' })}
-      />
+    return (
+      <React.Fragment>
+        {isModalOpen && (
+          <Modal
+            title={intl.formatMessage({
+              id: 'category_new',
+              defaultMessage: 'New category',
+            })}
+            visible={isModalOpen}
+            onCancel={this.handleToggleModal}
+            width={500}
+            footer={null}
+            destroyOnClose
+          >
+            <div className="modal-content">
+              <div className="modal-content__row align-center">
+                <Input
+                  className="modal-content__name-input"
+                  placeholder={intl.formatMessage({
+                    id: 'category_name',
+                    defaultMessage: 'Category name',
+                  })}
+                  value={inputValue}
+                  onChange={this.handleInputChange}
+                  onPressEnter={this.handleSubmit}
+                />
+              </div>
+              <div className="modal-content__row align-right">
+                <Button
+                  className="modal-content__submit-btn"
+                  type="primary"
+                  loading={isLoading}
+                  disabled={isLoading}
+                  onClick={this.handleSubmit}
+                >
+                  {intl.formatMessage({
+                    id: isLoading ? 'post_send_progress' : 'create',
+                    defaultMessage: isLoading ? 'Submitting' : 'Create',
+                  })}
+                </Button>
+              </div>
+            </div>
+          </Modal>
+        )}
+        <SearchObjectsAutocomplete handleSelect={this.handleToggleModal} canCreateNewObject />
+      </React.Fragment>
     );
   }
 }

@@ -74,7 +74,7 @@ class CreateObject extends React.Component {
   };
 
   toggleModal = () => {
-    this.setState({ isModalOpen: !this.state.isModalOpen });
+    this.setState({ isModalOpen: !this.state.isModalOpen, loading: false });
   };
 
   calculateVoteWorth = value => {
