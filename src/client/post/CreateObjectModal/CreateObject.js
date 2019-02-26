@@ -1,30 +1,14 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Form, Input, Select, Button, Modal } from 'antd';
 import LANGUAGES from '../../translations/languages';
 import { getLanguageText } from '../../translations';
 import { objectFields } from '../../../common/constants/listOfFields';
 import LikeSection from '../../object/LikeSection';
-import { getHasDefaultSlider, getVoteValue } from '../../helpers/user';
-import {
-  getAuthenticatedUser,
-  getRate,
-  getRewardFund,
-  getVotePercent,
-  getVotingPower,
-} from '../../reducers';
 import './CreateObject.less';
 
-@connect(state => ({
-  rewardFund: getRewardFund(state),
-  rate: getRate(state),
-  defaultVotePercent: getVotePercent(state),
-  user: getAuthenticatedUser(state),
-  sliderMode: getVotingPower(state),
-}))
 @injectIntl
 @Form.create()
 class CreateObject extends React.Component {
@@ -33,22 +17,12 @@ class CreateObject extends React.Component {
     form: PropTypes.shape().isRequired,
     handleCreateObject: PropTypes.func.isRequired,
     currentLocaleInList: PropTypes.shape().isRequired,
-    sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
-    defaultVotePercent: PropTypes.number,
-    user: PropTypes.shape(),
-    rewardFund: PropTypes.shape(),
-    rate: PropTypes.number,
   };
 
   static defaultProps = {
     currentLocaleInList: { id: 'en-US', name: '', nativeName: '' },
     wobject: { tag: '' },
     handleCreateObject: () => {},
-    sliderMode: 'auto',
-    defaultVotePercent: 100,
-    user: {},
-    rewardFund: {},
-    rate: 1,
   };
 
   constructor(props) {
@@ -57,37 +31,14 @@ class CreateObject extends React.Component {
     this.state = {
       isModalOpen: false,
       loading: false,
-      votePercent: this.props.defaultVotePercent / 100,
-      voteWorth: 0,
-      sliderVisible: false,
     };
   }
-
-  componentDidMount = () => {
-    const { sliderMode, user } = this.props;
-    if (sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user))) {
-      if (!this.state.sliderVisible) {
-        this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
-      }
-    }
-    this.calculateVoteWorth(this.state.votePercent);
-  };
 
   toggleModal = () => {
     this.setState({ isModalOpen: !this.state.isModalOpen, loading: false });
   };
 
-  calculateVoteWorth = value => {
-    const { user, rewardFund, rate } = this.props;
-    const voteWorth = getVoteValue(
-      user,
-      rewardFund.recent_claims,
-      rewardFund.reward_balance,
-      rate,
-      value * 100,
-    );
-    this.setState({ votePercent: value, voteWorth });
-  };
+  handleVotePercentChange = votePercent => this.setState({ votePercent });
 
   handleSubmit = e => {
     e.preventDefault();
@@ -103,15 +54,6 @@ class CreateObject extends React.Component {
         _.delay(this.toggleModal, 2500);
       }
     });
-  };
-
-  handleLikeClick = () => {
-    const { sliderMode, user } = this.props;
-    if (sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user))) {
-      if (!this.state.sliderVisible) {
-        this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
-      }
-    }
   };
 
   render() {
@@ -224,14 +166,7 @@ class CreateObject extends React.Component {
                 />,
               )}
             </Form.Item>
-            <LikeSection
-              onVotePercentChange={this.calculateVoteWorth}
-              votePercent={this.state.votePercent}
-              voteWorth={this.state.voteWorth}
-              form={form}
-              sliderVisible={this.state.sliderVisible}
-              onLikeClick={this.handleLikeClick}
-            />
+            <LikeSection form={form} onVotePercentChange={this.handleVotePercentChange} />
             <Form.Item className="Editor__bottom__submit">
               <Button type="primary" onClick={this.handleSubmit} loading={this.state.loading}>
                 {intl.formatMessage({ id: 'confirm', defaultMessage: 'Confirm' })}

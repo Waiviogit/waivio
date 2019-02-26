@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { Button, Modal, message, Select } from 'antd';
+import { Button, Modal, message, Select, Form } from 'antd';
 import { getAppendData } from '../../../helpers/wObjectHelper';
 import { getFieldWithMaxWeight } from '../../../object/wObjectHelper';
 import { getAuthenticatedUserName, getLocale } from '../../../reducers';
 import { appendObject } from '../../appendActions';
 import { objectFields } from '../../../../common/constants/listOfFields';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
+import LikeSection from '../../../object/LikeSection';
 import LANGUAGES from '../../../translations/languages';
 import { getLanguageText } from '../../../translations';
 import './AddItemModal.less';
@@ -21,6 +22,7 @@ import './AddItemModal.less';
   { appendObject },
 )
 @injectIntl
+@Form.create()
 class AddItemModal extends Component {
   static defaultProps = {
     currentUserName: '',
@@ -31,6 +33,7 @@ class AddItemModal extends Component {
 
   static propTypes = {
     intl: PropTypes.shape().isRequired,
+    form: PropTypes.shape().isRequired,
     // passed props
     wobject: PropTypes.shape().isRequired,
     // from connect
@@ -45,18 +48,17 @@ class AddItemModal extends Component {
     this.state = {
       isModalOpen: false,
       isLoading: false,
-      language: props.locale || 'en-US',
       selectedItem: null,
     };
   }
-
-  handleLanguageChange = language => this.setState({ language });
 
   handleToggleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
 
   handleObjectSelect = selectedItem => {
     this.setState({ selectedItem, isModalOpen: true });
   };
+
+  handleVotePercentChange = votePercent => this.setState({ votePercent });
 
   handleSubmit = () => {
     const { inputValue, language } = this.state;
@@ -106,11 +108,12 @@ class AddItemModal extends Component {
   };
 
   render() {
-    const { isModalOpen, isLoading, language } = this.state;
-    const { intl, wobject } = this.props;
+    const { isModalOpen, isLoading, selectedItem } = this.state;
+    const { intl, wobject, form } = this.props;
+    const { getFieldDecorator } = form;
 
     const listName = getFieldWithMaxWeight(wobject, objectFields.name);
-    const itemType = ['catalog', 'list'].includes(wobject.object_type)
+    const itemType = ['catalog', 'list'].includes(selectedItem && selectedItem.type)
       ? intl.formatMessage({
           id: 'list',
           defaultMessage: 'List',
@@ -152,16 +155,29 @@ class AddItemModal extends Component {
                   defaultMessage: 'Add new',
                 })}: ${itemType}`}
               </div>
-              <div className="modal-content__row">
-                <Select
-                  style={{ width: '100%' }}
-                  placeholder={intl.formatMessage({ id: 'language', defaultMessage: 'Language' })}
-                  value={language}
-                  onChange={this.handleLanguageChange}
-                >
-                  {languageOptions}
-                </Select>
-              </div>
+              <Form.Item>
+                {getFieldDecorator('locale', {
+                  initialValue: this.props.locale,
+                  rules: [
+                    {
+                      required: true,
+                      message: intl.formatMessage({
+                        id: 'validation_locale',
+                        defaultMessage: 'Please select your locale!',
+                      }),
+                    },
+                  ],
+                })(
+                  <Select
+                    style={{ width: '100%' }}
+                    placeholder={intl.formatMessage({ id: 'language', defaultMessage: 'Language' })}
+                    onChange={this.handleLanguageChange}
+                  >
+                    {languageOptions}
+                  </Select>,
+                )}
+              </Form.Item>
+              <LikeSection form={form} onVotePercentChange={this.handleVotePercentChange} />
               <div className="modal-content__row align-right">
                 <Button
                   className="modal-content__submit-btn"
