@@ -55,7 +55,7 @@ const posts = (state = initialState, action) => {
       };
     }
     case feedTypes.GET_MORE_USER_FEED_CONTENT.SUCCESS:
-    case feedTypes.GET_USER_FEED_CONTENT.SUCCESS:{
+    case feedTypes.GET_USER_FEED_CONTENT.SUCCESS: {
       const list = {
         ...state.list,
       };

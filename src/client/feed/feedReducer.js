@@ -174,9 +174,9 @@ const feed = (state = initialState, action) => {
     case feedTypes.GET_MORE_USER_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_MORE_USER_FEED_CONTENT.ERROR:
       return {
-      ...state,
-      [action.meta.sortBy]: feedSortBy(state[action.meta.sortBy], action),
-    };
+        ...state,
+        [action.meta.sortBy]: feedSortBy(state[action.meta.sortBy], action),
+      };
     case feedTypes.GET_FEED_CONTENT.START:
     case feedTypes.GET_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_FEED_CONTENT.ERROR:

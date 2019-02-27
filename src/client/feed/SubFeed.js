@@ -5,7 +5,12 @@ import { withRouter } from 'react-router';
 import Cookie from 'js-cookie';
 import _ from 'lodash';
 import { showPostModal } from '../app/appActions';
-import { getFeedContent, getUserFeedContent, getMoreFeedContent, getMoreUserFeedContent } from './feedActions';
+import {
+  getFeedContent,
+  getUserFeedContent,
+  getMoreFeedContent,
+  getMoreUserFeedContent,
+} from './feedActions';
 
 import {
   getFeedFromState,
@@ -36,8 +41,8 @@ import PostModal from '../post/PostModalContainer';
   }),
   dispatch => ({
     getFeedContent: (sortBy, category) => dispatch(getFeedContent({ sortBy, category, limit: 10 })),
-    getUserFeedContent: (userName) => dispatch(getUserFeedContent({ userName, limit: 10 })),
-    getMoreUserFeedContent: (userName) => dispatch(getMoreUserFeedContent({ userName, limit: 10 })),
+    getUserFeedContent: userName => dispatch(getUserFeedContent({ userName, limit: 10 })),
+    getMoreUserFeedContent: userName => dispatch(getMoreUserFeedContent({ userName, limit: 10 })),
     getMoreFeedContent: (sortBy, category) =>
       dispatch(getMoreFeedContent({ sortBy, category, limit: 10 })),
     showPostModal: post => dispatch(showPostModal(post)),

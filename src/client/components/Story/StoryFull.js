@@ -32,7 +32,7 @@ import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import PostFeedEmbed from './PostFeedEmbed';
 import PostedFrom from './PostedFrom';
 import './StoryFull.less';
-import PostObjectCard from "../../post/PostObjectCard/PostObjectCard";
+import PostObjectCard from '../../post/PostObjectCard/PostObjectCard';
 
 @injectIntl
 @withAuthActions
@@ -477,8 +477,7 @@ class StoryFull extends React.Component {
           </Scrollbars>
         </div>
         {post.wobjects &&
-          _.map(post.wobjects, wobj => <PostObjectCard key={`${wobj.creator}`} wObject={wobj}/>)
-        }
+          _.map(post.wobjects, wobj => <PostObjectCard key={`${wobj.creator}`} wObject={wobj} />)}
         <StoryFooter
           user={user}
           post={post}

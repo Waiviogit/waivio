@@ -84,12 +84,23 @@ export const getUserFeedContent = (feedUserName, limit = 10) =>
       .catch(error => reject(error));
   });
 
-export const getMoreUserFeedContent = ({ userName, limit = 10, startAuthor ='', startPermlink ='', countWithWobj = '' }) =>
+export const getMoreUserFeedContent = ({
+  userName,
+  limit = 10,
+  startAuthor = '',
+  startPermlink = '',
+  countWithWobj = '',
+}) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.feed}`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ count_with_wobj: countWithWobj, limit, start_author: startAuthor, start_permlink: startPermlink }),
+      body: JSON.stringify({
+        count_with_wobj: countWithWobj,
+        limit,
+        start_author: startAuthor,
+        start_permlink: startPermlink,
+      }),
     })
       .then(res => res.json())
       .then(posts => resolve(posts))

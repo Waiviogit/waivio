@@ -4,7 +4,7 @@ import { Slider } from 'antd';
 import './PostObjectCard.less';
 import ObjectRank from '../../object/ObjectRank';
 import ObjectType from '../../object/ObjectType';
-import {getClientWObj} from "../../adapters";
+import { getClientWObj } from '../../adapters';
 
 const propTypes = {
   wObject: PropTypes.shape().isRequired,
