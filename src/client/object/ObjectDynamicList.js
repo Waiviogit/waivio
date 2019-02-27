@@ -5,12 +5,18 @@ import _ from 'lodash';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import Loading from '../components/Icon/Loading';
 import './ObjectDynamicList.less';
-import ObjectComponent from '../components/Sidebar/ObjectComponent';
+import ObjectCard from '../components/Sidebar/ObjectCard';
+import WeightTag from '../components/WeightTag';
 
 export default class ObjectDynamicList extends React.Component {
   static propTypes = {
     limit: PropTypes.number.isRequired,
     fetcher: PropTypes.func.isRequired,
+    showWeight: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    showWeight: false,
   };
 
   state = {
@@ -28,7 +34,7 @@ export default class ObjectDynamicList extends React.Component {
         loading: true,
       },
       () => {
-        fetcher(wobjects).then(newWobjects =>
+        fetcher(wobjects.length).then(newWobjects =>
           this.setState(state => ({
             loading: false,
             hasMore: newWobjects.length === limit,
@@ -41,7 +47,6 @@ export default class ObjectDynamicList extends React.Component {
 
   render() {
     const { loading, hasMore, wobjects } = this.state;
-
     const empty = !hasMore && wobjects.length === 0;
 
     return (
@@ -54,7 +59,11 @@ export default class ObjectDynamicList extends React.Component {
           loadMore={this.handleLoadMore}
         >
           {_.map(wobjects, wo => (
-            <ObjectComponent key={wo.author_permlink} item={wo} />
+            <ObjectCard
+              key={wo.author_permlink}
+              wobject={wo}
+              alt={this.props.showWeight && <WeightTag weight={wo.weight} rank={wo.rank} />}
+            />
           ))}
         </ReduxInfiniteScroll>
         {empty && (

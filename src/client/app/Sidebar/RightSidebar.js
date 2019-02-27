@@ -23,6 +23,7 @@ import UserActivitySearch from '../../activity/UserActivitySearch';
 import WalletSidebar from '../../components/Sidebar/WalletSidebar';
 import FeedSidebar from '../../components/Sidebar/FeedSidebar';
 import RightSidebarLoading from './RightSidebarLoading';
+import ObjectWeightBlock from '../../components/Sidebar/ObjectWeightBlock';
 
 @withRouter
 @connect(
@@ -50,12 +51,14 @@ export default class RightSidebar extends React.Component {
     updateRecommendations: PropTypes.func,
     followingList: PropTypes.arrayOf(PropTypes.string).isRequired,
     isFetchingFollowingList: PropTypes.bool.isRequired,
+    match: PropTypes.shape(),
   };
 
   static defaultProps = {
     showPostRecommendation: false,
     updateRecommendations: () => {},
     recommendedObjects: [],
+    match: {},
   };
 
   handleInterestingPeopleRefresh = () => this.props.updateRecommendations();
@@ -69,6 +72,7 @@ export default class RightSidebar extends React.Component {
       followingList,
       isFetchingFollowingList,
       recommendedObjects,
+      match,
     } = this.props;
 
     if (isAuthFetching) {
@@ -90,11 +94,14 @@ export default class RightSidebar extends React.Component {
             path="/@:name"
             render={() =>
               authenticated && (
-                <InterestingPeopleWithAPI
-                  authenticatedUser={authenticatedUser}
-                  followingList={followingList}
-                  isFetchingFollowingList={isFetchingFollowingList}
-                />
+                <React.Fragment>
+                  <InterestingPeopleWithAPI
+                    authenticatedUser={authenticatedUser}
+                    followingList={followingList}
+                    isFetchingFollowingList={isFetchingFollowingList}
+                  />
+                  <ObjectWeightBlock username={match.params.name} />
+                </React.Fragment>
               )
             }
           />
