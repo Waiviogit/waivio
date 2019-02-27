@@ -31,13 +31,12 @@ class Comments extends React.Component {
     commentsChildren: PropTypes.shape(),
     pendingVotes: PropTypes.arrayOf(
       PropTypes.shape({
-        id: PropTypes.number,
+        id: PropTypes.string,
         percent: PropTypes.number,
       }),
     ),
     rewardFund: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
-    rewriteLinks: PropTypes.bool,
     sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
     show: PropTypes.bool,
     isQuickComments: PropTypes.bool,
@@ -45,7 +44,6 @@ class Comments extends React.Component {
     onLikeClick: PropTypes.func,
     onDislikeClick: PropTypes.func,
     onSendComment: PropTypes.func,
-    toggleShowComments: PropTypes.func,
   };
 
   static defaultProps = {
@@ -55,7 +53,6 @@ class Comments extends React.Component {
     rootLevelComments: [],
     commentsChildren: undefined,
     pendingVotes: [],
-    rewriteLinks: false,
     sliderMode: 'auto',
     show: false,
     isQuickComments: false,
@@ -63,7 +60,6 @@ class Comments extends React.Component {
     onLikeClick: () => {},
     onDislikeClick: () => {},
     onSendComment: () => {},
-    toggleShowComments: () => {},
   };
 
   constructor(props) {
@@ -100,9 +96,6 @@ class Comments extends React.Component {
           prevState.nRenderedComments >= 3 ? prevState.nRenderedComments + 1 : 3;
         return { nRenderedComments };
       });
-      if (!(this.props.show || nextProps.show)) {
-        this.props.toggleShowComments();
-      }
     }
     this.detectSort(nextProps.comments);
   }
@@ -163,8 +156,11 @@ class Comments extends React.Component {
     );
   };
 
-  handleSubmitComment(parentPost, commentValue) {
+  handleSubmitComment(parentP, commentValue) {
     const { intl } = this.props;
+    const parentPost = parentP;
+    // foe object updates
+    if (parentPost.author_original) parentPost.author = parentPost.author_original;
 
     this.setState({ showCommentFormLoading: true });
     return this.props
@@ -228,7 +224,6 @@ class Comments extends React.Component {
       sliderMode,
       rewardFund,
       defaultVotePercent,
-      rewriteLinks,
     } = this.props;
     const { sort } = this.state;
 
@@ -281,7 +276,6 @@ class Comments extends React.Component {
             )}
           </React.Fragment>
         )}
-        {loading && isParentPostFetching && <Loading />}
         {isQuickComments && show && (
           <MoreCommentsButton
             comments={rootLevelComments.length}
@@ -290,6 +284,7 @@ class Comments extends React.Component {
             onClick={this.handleShowMoreComments}
           />
         )}
+        {loading && isParentPostFetching && <Loading />}
         {(loaded || !isParentPostFetching) &&
           show &&
           comments &&
@@ -311,7 +306,6 @@ class Comments extends React.Component {
               rewardFund={rewardFund}
               sliderMode={sliderMode}
               defaultVotePercent={defaultVotePercent}
-              rewriteLinks={rewriteLinks}
               onLikeClick={onLikeClick}
               onDislikeClick={onDislikeClick}
               onSendComment={this.props.onSendComment}

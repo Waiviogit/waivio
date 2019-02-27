@@ -6,6 +6,7 @@
   background-color: @white;
   border: 1px solid @border-color-base;
   padding: 15px;
+  width: 100%;
 
   &__content {
     display: flex;
@@ -33,12 +34,11 @@
       border: 2px solid @primary-color;
     }
   }
-
+  &__info {
+    width: 100%;
+    margin-right: 10px;
+  }
   &__truncated {
-    width: 75%;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
     font-weight: bold;
     font-size: 26px;
     text-shadow: 1px 1px 0 #000;

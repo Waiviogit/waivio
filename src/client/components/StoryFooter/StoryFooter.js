@@ -8,19 +8,17 @@ import Buttons from './Buttons';
 import Confirmation from './Confirmation';
 import Comments from '../../../client/comments/Comments';
 import { getHasDefaultSlider, getVoteValue } from '../../helpers/user';
-import { getRate, getShowPostModal } from '../../reducers';
+import { getRate } from '../../reducers';
 import './StoryFooter.less';
 
 @connect(state => ({
   rate: getRate(state),
-  showPostModal: getShowPostModal(state),
 }))
 class StoryFooter extends React.Component {
   static propTypes = {
     user: PropTypes.shape().isRequired,
     post: PropTypes.shape().isRequired,
     postState: PropTypes.shape().isRequired,
-    showPostModal: PropTypes.bool.isRequired,
     rewardFund: PropTypes.shape().isRequired,
     rate: PropTypes.number.isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
@@ -31,6 +29,7 @@ class StoryFooter extends React.Component {
     pendingFollow: PropTypes.bool,
     pendingBookmark: PropTypes.bool,
     saving: PropTypes.bool,
+    singlePostVew: PropTypes.bool,
     onLikeClick: PropTypes.func,
     onShareClick: PropTypes.func,
     onEditClick: PropTypes.func,
@@ -44,6 +43,7 @@ class StoryFooter extends React.Component {
     pendingFollow: false,
     pendingBookmark: false,
     saving: false,
+    singlePostVew: false,
     sliderMode: 'auto',
     onLikeClick: () => {},
     onShareClick: () => {},
@@ -51,12 +51,16 @@ class StoryFooter extends React.Component {
     handlePostPopoverMenuClick: () => {},
   };
 
-  state = {
-    sliderVisible: false,
-    commentsVisible: false,
-    sliderValue: 100,
-    voteWorth: 0,
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      sliderVisible: false,
+      commentsVisible: !props.post.children,
+      sliderValue: 100,
+      voteWorth: 0,
+    };
+  }
 
   componentWillMount() {
     const { user, post, defaultVotePercent } = this.props;
@@ -110,9 +114,9 @@ class StoryFooter extends React.Component {
     this.setState({ sliderValue: value, voteWorth });
   };
 
-  toggleCommentsVisibility = () => {
+  toggleCommentsVisibility = isVisible => {
     if (this.props.post.children > 0) {
-      this.setState(prevState => ({ commentsVisible: !prevState.commentsVisible }));
+      this.setState(prevState => ({ commentsVisible: isVisible || !prevState.commentsVisible }));
     }
   };
 
@@ -123,12 +127,12 @@ class StoryFooter extends React.Component {
       postState,
       pendingLike,
       pendingFlag,
-      showPostModal,
       ownPost,
       defaultVotePercent,
       pendingFollow,
       pendingBookmark,
       saving,
+      singlePostVew,
       handlePostPopoverMenuClick,
     } = this.props;
 
@@ -165,13 +169,8 @@ class StoryFooter extends React.Component {
             onChange={this.handleSliderChange}
           />
         )}
-        {!showPostModal && (
-          <Comments
-            show={commentsVisible}
-            isQuickComments
-            post={post}
-            toggleShowComments={this.toggleCommentsVisibility}
-          />
+        {!singlePostVew && (
+          <Comments show={commentsVisible} isQuickComments={!singlePostVew} post={post} />
         )}
       </div>
     );
