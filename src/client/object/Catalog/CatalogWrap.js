@@ -17,7 +17,7 @@ import './CatalogWrap.less';
 
 const innerCategoryCount = 5;
 
-const CatalogWrap = ({ wobject, match, intl, createObject, notify }) => {
+const CatalogWrap = ({ wobject, match, intl, createObject, notify, isEditMode }) => {
   const handleCreateObject = wobj => {
     createObject(wobj)
       .then(() =>
@@ -59,10 +59,12 @@ const CatalogWrap = ({ wobject, match, intl, createObject, notify }) => {
 
   return (
     <React.Fragment>
-      <div className="CatalogWrap__add-item">
-        <AddItemModal wobject={wobject} />
-        <CreateObjectModal handleCreateObject={handleCreateObject} />
-      </div>
+      {isEditMode && (
+        <div className="CatalogWrap__add-item">
+          <AddItemModal wobject={wobject} />
+          <CreateObjectModal handleCreateObject={handleCreateObject} />
+        </div>
+      )}
       <div className="CatalogWrap">
         {currentItem ? (
           <div>
@@ -121,6 +123,7 @@ CatalogWrap.propTypes = {
   match: PropTypes.shape().isRequired,
   createObject: PropTypes.func,
   notify: PropTypes.func,
+  isEditMode: PropTypes.bool.isRequired,
 };
 
 CatalogWrap.defaultProps = {

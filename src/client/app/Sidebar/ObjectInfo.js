@@ -7,9 +7,13 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { haveAccess, accessTypesArr } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
-import './ObjectInfo.less';
 import { getFieldWithMaxWeight, getFieldsCount, getWebsiteField } from '../../object/wObjectHelper';
-import { objectFields, addressFields, linkFields } from '../../../common/constants/listOfFields';
+import {
+  objectFields,
+  addressFields,
+  linkFields,
+  getAllowedFieldsByObjType,
+} from '../../../common/constants/listOfFields';
 import Proposition from '../../components/Proposition/Proposition';
 import Map from '../../components/Maps/Map';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
@@ -18,6 +22,7 @@ import IconButton from '../../components/IconButton';
 import { getObjectAlbums } from '../../reducers';
 import DescriptionInfo from './DescriptionInfo';
 import CreateImage from '../../object/ObjectGallery/CreateImage';
+import './ObjectInfo.less';
 
 @connect(state => ({
   albums: getObjectAlbums(state),
@@ -46,6 +51,8 @@ class ObjectInfo extends React.Component {
   render() {
     const { isEditMode, wobject, userName, albums } = this.props;
     const { showModal, selectedField } = this.state;
+    const renderFields = getAllowedFieldsByObjType(wobject.object_type);
+    const isRenderGallery = !['catalog', 'list'].includes(wobject.object_type);
 
     let addressArr = [];
     let address = '';
@@ -110,7 +117,7 @@ class ObjectInfo extends React.Component {
 
     const listItem = (fieldName, content) => {
       const fieldsCount = getFieldsCount(wobject, fieldName);
-      return content || accessExtend ? (
+      return renderFields.includes(fieldName) && (content || accessExtend) ? (
         <div className="field-info">
           <React.Fragment>
             {accessExtend && (
@@ -200,7 +207,7 @@ class ObjectInfo extends React.Component {
                 )}
               </div>,
             )}
-            {hasGalleryImg || accessExtend ? (
+            {isRenderGallery && (hasGalleryImg || accessExtend) ? (
               <div className="field-info">
                 {accessExtend && (
                   <div className="proposition-line">

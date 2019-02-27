@@ -62,7 +62,7 @@ class AddItemModal extends Component {
   handleVotePercentChange = votePercent => this.setState({ votePercent });
 
   handleSubmit = () => {
-    const { language, votePercent } = this.state;
+    const { language, votePercent, selectedItem } = this.state;
     const { currentUserName, wobject, intl, form } = this.props;
 
     form.validateFields(err => {
@@ -71,17 +71,17 @@ class AddItemModal extends Component {
         const bodyMsg = intl.formatMessage(
           {
             id: 'add_list_item',
-            defaultMessage: `@{user} added {itemType} <strong>{itemValue}</strong> to list.`,
+            defaultMessage: `@{user} added {itemType} <strong>{itemValue}</strong> to the list.`,
           },
           {
             user: currentUserName,
-            itemType: 'object',
-            itemValue: wobject.name,
+            itemType: selectedItem.type === 'listItem' ? 'list-item' : 'object',
+            itemValue: selectedItem.name,
           },
         );
         const fieldContent = {
           name: 'listItem',
-          body: wobject.id,
+          body: selectedItem.id,
           locale: language,
         };
         const appendData = getAppendData(currentUserName, wobject, bodyMsg, fieldContent);
@@ -91,8 +91,8 @@ class AddItemModal extends Component {
             this.setState({ isLoading: false });
             message.success(
               intl.formatMessage({
-                id: 'notify_create_category',
-                defaultMessage: 'Category has been created',
+                id: 'notify_add_list_item',
+                defaultMessage: 'List item successfully has been added',
               }),
             );
             this.handleToggleModal();
@@ -102,8 +102,8 @@ class AddItemModal extends Component {
             this.setState({ isLoading: false });
             message.error(
               intl.formatMessage({
-                id: 'notify_create_category_error',
-                defaultMessage: "Couldn't create category",
+                id: 'notify_add_list_item_error',
+                defaultMessage: "Couldn't add list item",
               }),
             );
             this.handleToggleModal();
