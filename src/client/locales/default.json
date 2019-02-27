@@ -493,5 +493,6 @@
   "emptyCatalog": "This catalog is empty",
   "emptyCategory": "This category is empty",
   "add_catalog_item": "@{currentUserName} added category <strong>{category}</strong> to catalog.",
-  "add_waivio_beneficiary": "Share {share}% of this post rewards with Waivio"
+  "add_waivio_beneficiary": "Share {share}% of this post rewards with Waivio",
+  "related_to_object": "Related to object"
 }

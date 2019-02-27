@@ -25,12 +25,13 @@ import RankTag from '../RankTag';
 import StoryPreview from './StoryPreview';
 import StoryFooter from '../StoryFooter/StoryFooter';
 import Avatar from '../Avatar';
-import Topic from '../Button/Topic';
+// import Topic from '../Button/Topic';
 import NSFWStoryPreviewMessage from './NSFWStoryPreviewMessage';
 import HiddenStoryPreviewMessage from './HiddenStoryPreviewMessage';
 import DMCARemovedMessage from './DMCARemovedMessage';
 import PostedFrom from './PostedFrom';
 import './Story.less';
+import ObjectAvatar from '../ObjectAvatar';
 
 @injectIntl
 @withRouter
@@ -123,6 +124,30 @@ class Story extends React.Component {
 
     return true;
   }
+
+  getWobjects = wobjects => {
+    let i = 0;
+    return _.map(wobjects, wobj => {
+      if (i < 5) {
+        const pathName = `/object/${wobj.author_permlink}`;
+        const nameFields = _.filter(wobj.fields, o => o.name === 'name');
+        const nameField = _.maxBy(nameFields, 'weight');
+        i += 1;
+        return (
+          <Link
+            to={{ pathname: pathName }}
+            title={`${this.props.intl.formatMessage({
+              id: 'related_to_obj',
+              defaultMessage: 'Related to object',
+            })} ${nameField.body} ${wobj.percent ? `(${wobj.percent}%)` : ''}`}
+          >
+            <ObjectAvatar item={wobj} size={40} />
+          </Link>
+        );
+      }
+      return null;
+    });
+  };
 
   handleLikeClick(post, postState, weight = 10000) {
     const { sliderMode, user, defaultVotePercent } = this.props;
@@ -330,9 +355,6 @@ class Story extends React.Component {
                 ) : (
                   <RankTag rank={post.author_rank} />
                 )}
-                <span className="Story__topics">
-                  <Topic name={post.category} />
-                </span>
               </span>
               <span>
                 <BTooltip
@@ -349,6 +371,13 @@ class Story extends React.Component {
                 </BTooltip>
                 <PostedFrom post={post} />
               </span>
+            </div>
+            <div className="Story__topics">
+              <div className="Story__published">
+                <div className="PostWobject__wrap">
+                  {post.wobjects && this.getWobjects(post.wobjects)}
+                </div>
+              </div>
             </div>
           </div>
           <div className="Story__content">
