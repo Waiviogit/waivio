@@ -177,9 +177,9 @@ export const calculateVoteValue = (
   weight = 10000,
 ) => {
   const vestingShares = parseInt(vests * 1e6, 10);
-  const power = vp * weight / 10000 / 50;
-  const rshares = power * vestingShares / 10000;
-  return rshares / recentClaims * rewardBalance * rate;
+  const power = (vp * weight) / 10000 / 50;
+  const rshares = (power * vestingShares) / 10000;
+  return (rshares / recentClaims) * rewardBalance * rate;
 };
 
 export const calculateTotalDelegatedSP = (user, totalVestingShares, totalVestingFundSteem) => {
@@ -192,9 +192,15 @@ export const calculateTotalDelegatedSP = (user, totalVestingShares, totalVesting
   return receivedSP - delegatedSP;
 };
 
+export const calculatePendingWithdrawalSP = (user, totalVestingShares, totalVestingFundSteem) => {
+  return parseFloat(
+    formatter.vestToSteem(user.vesting_withdraw_rate, totalVestingShares, totalVestingFundSteem),
+  );
+};
+
 export const calculateVotingPower = user => {
   const secondsago = (new Date().getTime() - new Date(user.last_vote_time + 'Z').getTime()) / 1000;
-  return Math.min(10000, user.voting_power + 10000 * secondsago / 432000) / 10000;
+  return Math.min(10000, user.voting_power + (10000 * secondsago) / 432000) / 10000;
 };
 
 export const calculateEstAccountValue = (

@@ -5,28 +5,21 @@ import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
 // set innerField to "null" to get whole parsed object
 export const getFieldWithMaxWeight = (wObject, currentField, innerField) => {
   const field = supportedObjectFields.includes(currentField);
-  if (!field) return '';
+  if (!field || !wObject) return '';
 
   const fieldValues = _.filter(wObject.fields, ['name', currentField]);
-  if (!fieldValues) return '';
-
   const orderedValues = _.orderBy(fieldValues, ['weight'], ['desc']);
   if (!orderedValues.length) return '';
 
-  let value = '';
+  const fld = orderedValues[0];
 
-  _.forEach(orderedValues, fld => {
-    try {
-      const parsed = JSON.parse(fld.body);
-      value = innerField === null ? parsed : parsed[innerField];
-      return false;
-    } catch (e) {
-      value = fld.body;
-      return false;
-    }
-  });
-
-  return value || '';
+  if (fld.body) {
+    const parsed = _.attempt(JSON.parse, fld.body);
+    if (_.isError(parsed)) return fld.body;
+    if (!innerField) return parsed;
+    if (parsed[innerField]) return parsed[innerField];
+  }
+  return '';
 };
 
 export const getField = (wObject, currentField, fieldName) => {
@@ -83,12 +76,12 @@ export const mapObjectAppends = (comments, wObj) => {
 };
 
 export const hasField = (post, fieldName, locale) => {
-  const parsedMetadata = post && post.json_metadata && JSON.parse(post.json_metadata);
-  if (!parsedMetadata) return false;
+  const parsedMetadata = post && post.json_metadata && _.attempt(JSON.parse, post.json_metadata);
+  if (!parsedMetadata || _.isError(parsedMetadata)) return false;
 
   const field =
     parsedMetadata[WAIVIO_META_FIELD_NAME] && parsedMetadata[WAIVIO_META_FIELD_NAME].field;
-  return !(fieldName && !(field.name === fieldName)) && !(locale && !(field.locale === locale));
+  return !!(field && fieldName && field.name === fieldName && locale && field.locale === locale);
 };
 
 export const getWebsiteField = (wObject, currentField = objectFields.website) => {
