@@ -56,7 +56,7 @@ export const supportedObjectFields = Object.values(objectFields);
 export const objectImageFields = ['avatar', 'background'];
 
 export const getAllowedFieldsByObjType = objectType => {
-  switch (objectType) {
+  switch (objectType && objectType.toLowerCase()) {
     case 'list':
       return [objectFields.title, objectFields.avatar, objectFields.background];
     default:

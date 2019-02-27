@@ -52,7 +52,7 @@ class ObjectInfo extends React.Component {
     const { isEditMode, wobject, userName, albums } = this.props;
     const { showModal, selectedField } = this.state;
     const renderFields = getAllowedFieldsByObjType(wobject.object_type);
-    const isRenderGallery = !['catalog', 'list'].includes(wobject.object_type);
+    const isRenderGallery = !['list'].includes(wobject.object_type);
 
     let addressArr = [];
     let address = '';
@@ -164,7 +164,7 @@ class ObjectInfo extends React.Component {
     );
     return (
       <React.Fragment>
-        {getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name) && (
+        {getFieldWithMaxWeight(wobject, objectFields.name) && (
           <div className="object-sidebar">
             {listItem(objectFields.description, <DescriptionInfo description={description} />)}
             {listItem(
