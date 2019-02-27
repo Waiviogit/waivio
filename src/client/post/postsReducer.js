@@ -187,12 +187,6 @@ const posts = (state = initialState, action) => {
       return {
         ...state,
         list: getPostsList(state.list, action),
-        // list: state.list[action.meta.parentId]
-        //   ? {
-        //       ...state.list,
-        //       [action.meta.parentId]: postItem(state.list[action.meta.parentId], action),
-        //     }
-        //   : state.list,
       };
     default:
       return state;

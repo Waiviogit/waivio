@@ -60,6 +60,7 @@ class ObjectInfo extends React.Component {
     let photosCount = 0;
     let hashtags = [];
     let phones = [];
+    let email = '';
     if (wobject) {
       addressArr = Object.values(addressFields).map(fieldName =>
         getFieldWithMaxWeight(wobject, objectFields.address, fieldName),
@@ -74,6 +75,8 @@ class ObjectInfo extends React.Component {
       background = getFieldWithMaxWeight(wobject, objectFields.background, null);
 
       short = getFieldWithMaxWeight(wobject, objectFields.title, null);
+
+      email = getFieldWithMaxWeight(wobject, objectFields.email, null);
 
       websiteFields = getWebsiteField(wobject);
       title = websiteFields.title;
@@ -284,17 +287,17 @@ class ObjectInfo extends React.Component {
                   <React.Fragment>
                     {phones.length <= 3 ? (
                       phones.slice(0, 3).map(({ body, number }) => (
-                        <div key={body} className="tag-item">
-                          {body} <br />
-                          <a role="presentation">{number}</a>
+                        <div key={number} className="phone">
+                          {body && body} <br />
+                          <Icon type="phone" /> <a href={`tel:${number}`}>{number}</a>
                         </div>
                       ))
                     ) : (
                       <React.Fragment>
                         {phones.slice(0, 2).map(({ body, number }) => (
-                          <div key={body} className="tag-item">
-                            {body} <br />
-                            <a role="presentation">{number}</a>
+                          <div key={number} className="phone">
+                            {body && body} <br />
+                            <Icon type="phone" /> <a href={`tel:${number}`}>{number}</a>
                           </div>
                         ))}
                         <Link
@@ -302,7 +305,7 @@ class ObjectInfo extends React.Component {
                           onClick={() => this.handleSelectField(objectFields.phone)}
                         >
                           <FormattedMessage id="show_more_tags" defaultMessage="show more">
-                            {value => <div className="tag-item">{value}</div>}
+                            {value => <div className="phone">{value}</div>}
                           </FormattedMessage>
                         </Link>
                       </React.Fragment>
@@ -311,16 +314,32 @@ class ObjectInfo extends React.Component {
                 ) : (
                   <React.Fragment>
                     {phones.slice(0, 3).map(({ body, number }) => (
-                      <div key={body}>
-                        {body} <br />
-                        <a role="presentation">{number}</a>
+                      <div key={number}>
+                        {body && body} <br />
+                        <Icon type="phone" /> <a href={`tel:${number}`}>{number}</a>
                       </div>
                     ))}
                   </React.Fragment>
                 )}
               </div>,
             )}
-
+            {listItem(
+              objectFields.email,
+              email && (
+                <div className="field-info">
+                  {accessExtend ? (
+                    <div className="email">
+                      <Icon type="mail" /> {email}
+                    </div>
+                  ) : (
+                    <React.Fragment>
+                      <Icon type="mail" />
+                      <a href={`mailto:${email}`}> {email}</a>
+                    </React.Fragment>
+                  )}
+                </div>
+              ),
+            )}
             {listItem(objectFields.link, <SocialLinks profile={profile} />)}
             {accessExtend && settingsSection}
           </div>

@@ -31,7 +31,7 @@ class Comments extends React.Component {
     commentsChildren: PropTypes.shape(),
     pendingVotes: PropTypes.arrayOf(
       PropTypes.shape({
-        id: PropTypes.number,
+        id: PropTypes.string,
         percent: PropTypes.number,
       }),
     ),
@@ -44,7 +44,6 @@ class Comments extends React.Component {
     onLikeClick: PropTypes.func,
     onDislikeClick: PropTypes.func,
     onSendComment: PropTypes.func,
-    toggleShowComments: PropTypes.func,
   };
 
   static defaultProps = {
@@ -61,7 +60,6 @@ class Comments extends React.Component {
     onLikeClick: () => {},
     onDislikeClick: () => {},
     onSendComment: () => {},
-    toggleShowComments: () => {},
   };
 
   constructor(props) {
@@ -98,9 +96,6 @@ class Comments extends React.Component {
           prevState.nRenderedComments >= 3 ? prevState.nRenderedComments + 1 : 3;
         return { nRenderedComments };
       });
-      if (!(this.props.show || nextProps.show)) {
-        this.props.toggleShowComments();
-      }
     }
     this.detectSort(nextProps.comments);
   }

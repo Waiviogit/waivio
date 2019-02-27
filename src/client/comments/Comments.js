@@ -57,7 +57,7 @@ export default class Comments extends React.Component {
     commentsList: PropTypes.shape(),
     pendingVotes: PropTypes.arrayOf(
       PropTypes.shape({
-        id: PropTypes.number,
+        id: PropTypes.string,
         percent: PropTypes.number,
       }),
     ),
@@ -67,7 +67,6 @@ export default class Comments extends React.Component {
     getComments: PropTypes.func,
     voteComment: PropTypes.func,
     sendComment: PropTypes.func,
-    toggleShowComments: PropTypes.func,
   };
 
   static defaultProps = {
@@ -83,7 +82,6 @@ export default class Comments extends React.Component {
     getComments: () => {},
     voteComment: () => {},
     sendComment: () => {},
-    toggleShowComments: () => {},
   };
 
   state = {
@@ -153,7 +151,6 @@ export default class Comments extends React.Component {
       sliderMode,
       rewardFund,
       defaultVotePercent,
-      toggleShowComments,
     } = this.props;
     const postId = post.id;
     let rootLevelComments = [];
@@ -193,7 +190,6 @@ export default class Comments extends React.Component {
           onLikeClick={this.handleLikeClick}
           onDislikeClick={this.handleDislikeClick}
           onSendComment={this.props.sendComment}
-          toggleShowComments={toggleShowComments}
         />
       )
     );
