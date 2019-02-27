@@ -7,6 +7,7 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import CatalogItem from './CatalogItem';
 import { getFieldWithMaxWeight } from '../wObjectHelper';
+import { getClientWObj } from '../../adapters';
 import { objectFields } from '../../../common/constants/listOfFields';
 import AddItemModal from './AddItemModal/AddItemModal';
 import CreateObjectModal from '../../post/CreateObjectModal/CreateObject';
@@ -91,7 +92,7 @@ const CatalogWrap = ({ wobject, match, intl, createObject, notify }) => {
                       catalogItem.body
                     }`}
                   >
-                    <CatalogItem catalogItem={catalogItem} />
+                    <CatalogItem wobject={getClientWObj(catalogItem)} />
                   </Link>
                 </div>
               ))

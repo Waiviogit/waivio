@@ -12,6 +12,7 @@ import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchOb
 import LikeSection from '../../../object/LikeSection';
 import LANGUAGES from '../../../translations/languages';
 import { getLanguageText } from '../../../translations';
+import ListItem from '../CatalogItem';
 import './AddItemModal.less';
 
 @connect(
@@ -61,50 +62,54 @@ class AddItemModal extends Component {
   handleVotePercentChange = votePercent => this.setState({ votePercent });
 
   handleSubmit = () => {
-    const { inputValue, language } = this.state;
-    const { currentUserName, wobject, intl } = this.props;
+    const { language, votePercent } = this.state;
+    const { currentUserName, wobject, intl, form } = this.props;
 
-    this.setState({ isLoading: true });
-    const bodyMsg = intl.formatMessage(
-      {
-        id: 'add_catalog_item',
-        defaultMessage: `@{user} added {itemType} <strong>{itemValue}</strong> to catalog.`,
-      },
-      {
-        user: currentUserName,
-        itemType: 'category',
-        itemValue: inputValue,
-      },
-    );
-    const fieldContent = {
-      name: 'listItem',
-      body: inputValue,
-      locale: language,
-    };
-    const appendData = getAppendData(currentUserName, wobject, bodyMsg, fieldContent);
-    this.props
-      .appendObject(appendData)
-      .then(() => {
-        this.setState({ isLoading: false });
-        message.success(
-          intl.formatMessage({
-            id: 'notify_create_category',
-            defaultMessage: 'Category has been created',
-          }),
+    form.validateFields(err => {
+      if (!err && !this.state.isLoading) {
+        this.setState({ isLoading: true });
+        const bodyMsg = intl.formatMessage(
+          {
+            id: 'add_list_item',
+            defaultMessage: `@{user} added {itemType} <strong>{itemValue}</strong> to list.`,
+          },
+          {
+            user: currentUserName,
+            itemType: 'object',
+            itemValue: wobject.name,
+          },
         );
-        this.handleToggleModal();
-      })
-      .catch(err => {
-        console.log('err > ', err);
-        this.setState({ isLoading: false });
-        message.error(
-          intl.formatMessage({
-            id: 'notify_create_category_error',
-            defaultMessage: "Couldn't create category",
-          }),
-        );
-        this.handleToggleModal();
-      });
+        const fieldContent = {
+          name: 'listItem',
+          body: wobject.id,
+          locale: language,
+        };
+        const appendData = getAppendData(currentUserName, wobject, bodyMsg, fieldContent);
+        this.props
+          .appendObject({ ...appendData, votePower: votePercent * 100 })
+          .then(() => {
+            this.setState({ isLoading: false });
+            message.success(
+              intl.formatMessage({
+                id: 'notify_create_category',
+                defaultMessage: 'Category has been created',
+              }),
+            );
+            this.handleToggleModal();
+          })
+          .catch(error => {
+            console.log('err > ', error);
+            this.setState({ isLoading: false });
+            message.error(
+              intl.formatMessage({
+                id: 'notify_create_category_error',
+                defaultMessage: "Couldn't create category",
+              }),
+            );
+            this.handleToggleModal();
+          });
+      }
+    });
   };
 
   render() {
@@ -177,6 +182,7 @@ class AddItemModal extends Component {
                   </Select>,
                 )}
               </Form.Item>
+              <ListItem wobject={selectedItem} />
               <LikeSection form={form} onVotePercentChange={this.handleVotePercentChange} />
               <div className="modal-content__row align-right">
                 <Button
@@ -187,8 +193,8 @@ class AddItemModal extends Component {
                   onClick={this.handleSubmit}
                 >
                   {intl.formatMessage({
-                    id: isLoading ? 'post_send_progress' : 'create',
-                    defaultMessage: isLoading ? 'Submitting' : 'Create',
+                    id: isLoading ? 'post_send_progress' : 'append_send',
+                    defaultMessage: isLoading ? 'Submitting' : 'Submit',
                   })}
                 </Button>
               </div>

@@ -74,7 +74,7 @@ class LikeSection extends React.Component {
     );
     this.setState({ votePercent: value, voteWorth });
 
-    onVotePercentChange(voteWorth);
+    onVotePercentChange(value);
   };
 
   handleLikeClick = () => {
