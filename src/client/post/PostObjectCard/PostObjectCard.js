@@ -4,19 +4,20 @@ import { Slider } from 'antd';
 import './PostObjectCard.less';
 import ObjectRank from '../../object/ObjectRank';
 import ObjectType from '../../object/ObjectType';
+import {getClientWObj} from "../../adapters";
 
 const propTypes = {
   wObject: PropTypes.shape().isRequired,
-  influenceValue: PropTypes.number.isRequired,
 };
 
-const PostObjectCard = ({ wObject, influenceValue }) => {
-  const pathName = `/object/${wObject.id}`;
+const PostObjectCard = ({ wObject }) => {
+  const object = getClientWObj(wObject);
+  const pathName = `/object/${object.id}`;
   return (
     <React.Fragment>
       <div
         style={{
-          backgroundImage: `url(${wObject.background})`,
+          backgroundImage: `url(${object.background})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
@@ -26,7 +27,7 @@ const PostObjectCard = ({ wObject, influenceValue }) => {
           <div className="editor-object__content">
             <div className="editor-object__content row">
               <a href={pathName} target="_blank" rel="noopener noreferrer">
-                <img className="editor-object__avatar" src={wObject.avatar} alt={wObject.name} />
+                <img className="editor-object__avatar" src={object.avatar} alt={object.name} />
               </a>
               <div className="editor-object__info">
                 <a
@@ -34,30 +35,30 @@ const PostObjectCard = ({ wObject, influenceValue }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="editor-object__info name"
-                  title={wObject.name}
+                  title={object.name}
                 >
-                  <span className="editor-object__truncated">{wObject.name}</span>
+                  <span className="editor-object__truncated">{object.name}</span>
                 </a>
-                {wObject.type && wObject.rank && (
+                {wObject.object_type && wObject.rank && (
                   <div className="editor-object__rankWrap">
                     <div className="editor-object__type">
-                      <ObjectType type={wObject.type} />
+                      <ObjectType type={wObject.object_type} />
                     </div>
                     <div className="editor-object__rank">
                       <ObjectRank rank={wObject.rank} />
                     </div>
                   </div>
                 )}
-                {wObject.title && (
-                  <span className="editor-object__truncated" title={wObject.title}>
-                    {wObject.title}
+                {object.title && (
+                  <span className="editor-object__truncated" title={object.title}>
+                    {object.title}
                   </span>
                 )}
               </div>
             </div>
             <div className="editor-object__content row slider">
-              <span className="label">{`${influenceValue}%`}</span>
-              <Slider min={1} max={100} value={influenceValue} disabled />
+              <span className="label">{`${wObject.percent}%`}</span>
+              <Slider min={1} max={100} value={wObject.percent} disabled />
             </div>
           </div>
         </div>

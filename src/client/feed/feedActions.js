@@ -18,6 +18,9 @@ import { mapObjectAppends } from '../object/wObjectHelper';
 export const GET_FEED_CONTENT = createAsyncActionType('@feed/GET_FEED_CONTENT');
 export const GET_MORE_FEED_CONTENT = createAsyncActionType('@feed/GET_MORE_FEED_CONTENT');
 
+export const GET_USER_FEED_CONTENT = createAsyncActionType('@feed/GET_USER_FEED_CONTENT');
+export const GET_MORE_USER_FEED_CONTENT = createAsyncActionType('@feed/GET_MORE_USER_FEED_CONTENT');
+
 export const GET_USER_COMMENTS = createAsyncActionType('@feed/GET_USER_COMMENTS');
 export const GET_MORE_USER_COMMENTS = createAsyncActionType('@feed/GET_MORE_USER_COMMENTS');
 
@@ -44,6 +47,35 @@ export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) =>
     },
   });
 
+export const getUserFeedContent = ({ userName, limit = 20 }) =>
+  dispatch => dispatch({
+    type: GET_USER_FEED_CONTENT.ACTION,
+    payload: ApiClient.getUserFeedContent(userName, limit),
+    meta: {
+      sortBy: 'feed', category: userName, limit
+    },
+  });
+
+export const getMoreUserFeedContent = ({ userName, limit = 20 }) => (
+  dispatch,
+  getState,
+) => {
+  const state = getState();
+  const feed = getFeed(state);
+  const feedContent = getFeedFromState('feed', userName, feed);
+
+  if (!feedContent.length || !feed || !feed.feed || !feed.feed[userName]) return Promise.resolve(null);
+
+  const startAuthor = feed.feed[userName].startAuthor;
+  const startPermlink = feed.feed[userName].startPermlink;
+  const countWithWobj = feed.feed[userName].countWithWobj;
+
+  return dispatch({
+    type: GET_MORE_USER_FEED_CONTENT.ACTION,
+    payload: ApiClient.getMoreUserFeedContent({userName, limit, startAuthor, startPermlink, countWithWobj}),
+    meta: { sortBy: 'feed', category: userName, limit },
+  });
+};
 export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (
   dispatch,
   getState,

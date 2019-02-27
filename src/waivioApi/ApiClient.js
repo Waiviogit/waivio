@@ -72,6 +72,30 @@ export const postCreateWaivioObject = wObject =>
     body: JSON.stringify(wObject),
   }).then(res => res.json());
 
+export const getUserFeedContent = (feedUserName, limit = 10) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.user}/${feedUserName}${config.feed}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({ limit }),
+    })
+      .then(res => res.json())
+      .then(posts => resolve(posts))
+      .catch(error => reject(error));
+  });
+
+export const getMoreUserFeedContent = ({ userName, limit = 10, startAuthor ='', startPermlink ='', countWithWobj = '' }) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.user}/${userName}${config.feed}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({ count_with_wobj: countWithWobj, limit, start_author: startAuthor, start_permlink: startPermlink }),
+    })
+      .then(res => res.json())
+      .then(posts => resolve(posts))
+      .catch(error => reject(error));
+  });
+
 export const searchObjects = (searchString, limit = 10) =>
   fetch(`${config.apiPrefix}${config.searchObjects}`, {
     headers,

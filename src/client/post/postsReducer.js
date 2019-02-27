@@ -54,6 +54,32 @@ const posts = (state = initialState, action) => {
         },
       };
     }
+    case feedTypes.GET_MORE_USER_FEED_CONTENT.SUCCESS:
+    case feedTypes.GET_USER_FEED_CONTENT.SUCCESS:{
+      const list = {
+        ...state.list,
+      };
+      const postsStates = {
+        ...state.postsStates,
+      };
+
+      _.each(action.payload.posts, post => {
+        const key = getPostKey(post);
+        list[key] = { ...post, id: key };
+        postsStates[key] = {
+          fetching: false,
+          loaded: true,
+          failed: false,
+        };
+      });
+
+      return {
+        ...state,
+        list,
+        postsStates,
+      };
+    }
+
     case feedTypes.GET_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_OBJECT_POSTS.SUCCESS:
     case feedTypes.GET_MORE_OBJECT_POSTS.SUCCESS:
