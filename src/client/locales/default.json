@@ -496,5 +496,5 @@
   "add_waivio_beneficiary": "Share {share}% of this post rewards with Waivio",
   "add_list_item": "@{currentUserName} added {itemType} <strong>{itemValue}</strong> to list.",
   "list": "list",
-  "list_update": "Update list",
+  "list_update": "Update list"
 }
