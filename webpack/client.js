@@ -26,7 +26,7 @@ module.exports = function createConfig(env = 'dev') {
   const config = {
     mode: IS_DEV ? 'development' : 'production',
     entry: [paths.client],
-    devtool: 'inline-source-map',
+    devtool: IS_DEV ? 'inline-source-map' : '',
     output: {
       path: appPath,
       filename: IS_DEV ? 'bundle.js' : 'bundle-[name].[chunkhash].js',
