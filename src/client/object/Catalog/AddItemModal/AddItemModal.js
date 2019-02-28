@@ -62,10 +62,10 @@ class AddItemModal extends Component {
   handleVotePercentChange = votePercent => this.setState({ votePercent });
 
   handleSubmit = () => {
-    const { language, votePercent, selectedItem } = this.state;
+    const { votePercent, selectedItem } = this.state;
     const { currentUserName, wobject, intl, form } = this.props;
 
-    form.validateFields(err => {
+    form.validateFields((err, values) => {
       if (!err && !this.state.isLoading) {
         this.setState({ isLoading: true });
         const bodyMsg = intl.formatMessage(
@@ -82,7 +82,7 @@ class AddItemModal extends Component {
         const fieldContent = {
           name: 'listItem',
           body: selectedItem.id,
-          locale: language,
+          locale: values.locale,
         };
         const appendData = getAppendData(currentUserName, wobject, bodyMsg, fieldContent);
         this.props
