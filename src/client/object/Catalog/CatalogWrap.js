@@ -135,11 +135,7 @@ class CatalogWrap extends React.Component {
   render() {
     const { listItems, breadcrumb } = this.state;
     const { isEditMode, wobject, intl, match } = this.props;
-    let link = '/';
-    if (match && match.params && wobject.listItems) {
-      const params = match.params;
-      link = `/object/${params.name}/list`;
-    }
+    const listBaseUrl = `/object/${match.params.name}/list`;
 
     return (
       <React.Fragment>
@@ -150,50 +146,57 @@ class CatalogWrap extends React.Component {
           </div>
         )}
         <div className="CatalogWrap">
+          <div className="CatalogWrap__breadcrumb">
+            <Breadcrumb separator={'>'}>
+              {map(breadcrumb, crumb => (
+                <Breadcrumb.Item key={`crumb-${crumb.name}`}>
+                  <Link
+                    className="CatalogWrap__breadcrumb__link"
+                    to={{ pathname: crumb.link }}
+                    title={`${intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
+                      crumb.name
+                    }`}
+                  >
+                    {crumb.name}
+                  </Link>
+                </Breadcrumb.Item>
+              ))}
+            </Breadcrumb>
+          </div>
           {listItems.length ? (
             <div>
-              <div className="CatalogWrap__breadcrumb">
-                <Breadcrumb>
-                  {map(breadcrumb, crumb => (
-                    <Breadcrumb.Item key={`crumb-${crumb.name}`}>
-                      <Link
-                        className="CatalogWrap__breadcrumb__link"
-                        to={{ pathname: crumb.link }}
-                        title={`${intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
-                          crumb.name
-                        }`}
-                      >
-                        {crumb.name}
-                      </Link>
-                    </Breadcrumb.Item>
-                  ))}
-                </Breadcrumb>
-              </div>
               {!isEmpty(listItems) ? (
-                map(listItems, listItem => (
-                  <div key={`category-${listItem.author_permlink}`}>
-                    <Link
-                      to={{ pathname: `${link}/${listItem.author_permlink}` }}
-                      title={`${intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
-                        listItem.body
-                      }`}
-                    >
-                      <CatalogItem wobject={getClientWObj(listItem)} />
-                    </Link>
-                  </div>
-                ))
+                map(listItems, listItem => {
+                  const linkTo =
+                    listItem.object_type === 'list'
+                      ? { pathname: `${listBaseUrl}/${listItem.author_permlink}` }
+                      : { pathname: `/object/${listItem.author_permlink}` };
+                  return (
+                    <div key={`category-${listItem.author_permlink}`}>
+                      <Link
+                        to={linkTo}
+                        title={`${intl.formatMessage({
+                          id: 'GoTo',
+                          defaultMessage: 'Go to',
+                        })} ${getFieldWithMaxWeight(listItem, objectFields.name)}`}
+                      >
+                        <CatalogItem wobject={getClientWObj(listItem)} />
+                      </Link>
+                    </div>
+                  );
+                })
               ) : (
                 <div>
                   {intl.formatMessage({
-                    id: 'emptyCategory',
-                    defaultMessage: 'This category is empty',
+                    id: 'emptyList',
+                    defaultMessage: 'This list is empty',
                   })}
                 </div>
               )}
             </div>
           ) : (
             <div>
-              {intl.formatMessage({ id: 'emptyCatalog', defaultMessage: 'This catalog is empty' })}
+              {intl.formatMessage({ id: 'emptyList', defaultMessage: 'This list is empty' })}
             </div>
           )}
         </div>
