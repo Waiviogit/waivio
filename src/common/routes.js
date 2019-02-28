@@ -132,12 +132,12 @@ const routes = [
         ],
       },
       {
-        path: `/object/:name/list/:item1Id?/:item2Id?/:item3Id?/:item4Id?`,
+        path: `/object/:name/list/:itemId?`,
         component: Wobj,
         exact: true,
         routes: [
           {
-            path: '/object/:name/list/:item1Id?/:item2Id?/:item3Id?/:item4Id?',
+            path: '/object/:name/list/:itemId?',
             exact: true,
             component: CatalogWrap,
           },
