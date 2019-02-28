@@ -1,14 +1,12 @@
 import React from 'react';
-import _ from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import './CatalogItem.less';
-import { getClientWObj } from '../../adapters';
 
 @injectIntl
 class CatalogItem extends React.Component {
   static propTypes = {
-    catalogItem: PropTypes.shape().isRequired,
+    wobject: PropTypes.shape().isRequired,
   };
 
   constructor(props) {
@@ -21,11 +19,7 @@ class CatalogItem extends React.Component {
   }
 
   render() {
-    const { catalogItem } = this.props;
-    const wobject = _.isEmpty(catalogItem.object_links)
-      ? {}
-      : getClientWObj(catalogItem.object_links[0].wobject);
-    // const pathName = `/object/${wobject.author_permlink}/catalog`;
+    const { wobject } = this.props;
     return (
       <React.Fragment>
         <div
@@ -38,7 +32,7 @@ class CatalogItem extends React.Component {
         >
           <div className="catalog-item__content">
             <div className="catalog-item__info">
-              <div className="catalog-item__truncated">{catalogItem.body}</div>
+              <div className="catalog-item__truncated">{wobject.name}</div>
             </div>
             {wobject.avatar ? (
               <img className="catalog-item__avatar" src={wobject.avatar} alt={wobject.name} />

@@ -69,8 +69,8 @@ export const prepareImageToStore = postData => ({
   active_votes: [],
 });
 
-export const isCatalog = wobj =>
-  !!(wobj && wobj.object_type && wobj.object_type.toLowerCase() === 'catalog');
+export const hasType = (wobj, type) =>
+  Boolean(wobj && wobj.object_type && wobj.object_type.toLowerCase() === type.toLowerCase());
 
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable camelcase */
