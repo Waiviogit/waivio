@@ -19,6 +19,8 @@
   "notify_uploading_image": "Uploading image",
   "notify_uploading_iamge_error": "Couldn't upload image",
   "notify_uploading_image_invalid": "This file is invalid. Only image files {formats}with maximum size of {size} are supported",
+  "notify_add_list_item": "List item successfully has been added",
+  "notify_add_list_item_error": "Couldn't add list item",
   "signup": "Sign up",
   "login": "Log in",
   "activity": "Activity",
@@ -450,9 +452,9 @@
   "object_field_backgroundImage": "Background image",
   "gallery_list_empty": "Nothing is there. Be first to create a new one!",
   "add_new_proposition": "Add",
+  "add_new": "Add new",
   "add_new_album": "Add new album",
   "add_new_image": "Add new image",
-  "add_new_item": "Add new item",
   "all_languages": "All languages",
   "back_to_albums": "Back to albums",
   "add_new_album_placeholder": "New album",
@@ -493,6 +495,10 @@
   "emptyCatalog": "This catalog is empty",
   "emptyCategory": "This category is empty",
   "add_catalog_item": "@{currentUserName} added category <strong>{category}</strong> to catalog.",
+  "related_to_object": "Related to object",
+  "emptyList": "This list is empty",
   "add_waivio_beneficiary": "Share {share}% of this post rewards with Waivio",
-  "related_to_object": "Related to object"
+  "add_list_item": "@{currentUserName} added {itemType} <strong>{itemValue}</strong> to list.",
+  "list": "list",
+  "list_update": "Update list"
 }

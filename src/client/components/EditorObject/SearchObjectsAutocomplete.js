@@ -6,9 +6,10 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { clearSearchObjectsResults, searchObjectsAutoCompete } from '../../search/searchActions';
 import { getSearchObjectsResults } from '../../reducers';
-import './SearchObjectsAutocomplete.less';
 import { linkRegex } from '../../helpers/regexHelpers';
 import ObjectRank from '../../object/ObjectRank';
+import ObjectType from '../../object/ObjectType';
+import './SearchObjectsAutocomplete.less';
 
 @injectIntl
 @connect(
@@ -93,12 +94,13 @@ class SearchObjectsAutocomplete extends Component {
       <div className="obj-search-option">
         <img className="obj-search-option__avatar" src={obj.avatar} alt={obj.title || ''} />
         <div className="obj-search-option__info">
-          <span className="obj-search-option__text">
+          <div className="obj-search-option__text">
             {obj.name}
-            <div className="ObjectHeader__rank">
+            <div className="obj-search-option__row">
+              <ObjectType type={obj.type} />
               <ObjectRank rank={obj.rank} />
             </div>
-          </span>
+          </div>
           <span className="obj-search-option__text">{obj.title}</span>
         </div>
       </div>
