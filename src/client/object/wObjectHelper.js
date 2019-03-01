@@ -123,3 +123,31 @@ export const testImage = (url, callback, timeout = 3000) => {
     callback(url, IMAGE_STATUS.TIMEOUT);
   }, timeout);
 };
+
+/**
+ *
+ * @param items - array of waivio objects
+ * @param sortBy - string, one of 'by-name-asc'|'by-name-desc'|'rank'|'custom'
+ * @returns {*}
+ */
+export const sortListItemsBy = (items, sortBy = 'by-name-asc') => {
+  if (!items || !items.length) return items;
+  let comparator;
+  switch (sortBy) {
+    case 'rank':
+      comparator = (a, b) => b.rank - a.rank;
+      break;
+    case 'by-name-desc':
+      comparator = (a, b) => (a.name < b.name ? 1 : -1);
+      break;
+    case 'by-name-asc':
+    default:
+      comparator = (a, b) => (a.name > b.name ? 1 : -1);
+      break;
+  }
+  const sorted = items.sort(comparator);
+  return [
+    ...sorted.filter(item => item.type === 'list'),
+    ...sorted.filter(item => item.type !== 'list'),
+  ];
+};

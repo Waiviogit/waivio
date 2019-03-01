@@ -3,27 +3,19 @@ import { Link, withRouter } from 'react-router-dom';
 import React from 'react';
 import { connect } from 'react-redux';
 import { isEmpty, map, forEach } from 'lodash';
-import { injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import CatalogItem from './CatalogItem';
-import { getFieldWithMaxWeight } from '../wObjectHelper';
+import { getFieldWithMaxWeight, sortListItemsBy } from '../wObjectHelper';
 import { getClientWObj } from '../../adapters';
 import { objectFields } from '../../../common/constants/listOfFields';
 import AddItemModal from './AddItemModal/AddItemModal';
 import CreateObjectModal from '../../post/CreateObjectModal/CreateObject';
+import SortSelector from '../../components/SortSelector/SortSelector';
 import { getObject } from '../../../../src/waivioApi/ApiClient';
 import * as wobjectActions from '../../../client/object/wobjActions';
 import * as notificationActions from '../../../client/app/Notification/notificationActions';
 import './CatalogWrap.less';
-
-const sortItems = items =>
-  items && !isEmpty(items)
-    ? items.sort((a, b) => {
-        if (a.object_type !== 'list' && b.object_type === 'list') return 1;
-        if (a.object_type === 'list' && b.object_type !== 'list') return -1;
-        return 0;
-      })
-    : items;
 
 @withRouter
 @injectIntl
@@ -53,11 +45,15 @@ class CatalogWrap extends React.Component {
     super(props);
 
     this.state = {
+      sort: 'rank',
       breadcrumb: [
         { name: getFieldWithMaxWeight(props.wobject, objectFields.name), link: props.match.url },
       ],
       listItems:
-        (props.wobject && props.wobject.listItems && sortItems(props.wobject.listItems)) || [],
+        (props.wobject &&
+          props.wobject.listItems &&
+          props.wobject.listItems.map(item => getClientWObj(item))) ||
+        [],
     };
   }
 
@@ -74,7 +70,10 @@ class CatalogWrap extends React.Component {
       if (nextTarget === 'list') {
         if (nextProps.wobject && nextProps.wobject.listItems) {
           this.setState({
-            listItems: sortItems(nextProps.wobject.listItems),
+            listItems: sortListItemsBy(
+              nextProps.wobject.listItems.map(item => getClientWObj(item)),
+              this.state.sort,
+            ),
             breadcrumb: [
               {
                 name: getFieldWithMaxWeight(nextProps.wobject, objectFields.name),
@@ -85,7 +84,8 @@ class CatalogWrap extends React.Component {
         }
       } else if (nextTarget !== this.props.match.params.itemId) {
         getObject(nextTarget).then(res => {
-          const listItems = (res && res.listItems && sortItems(res.listItems)) || [];
+          const listItems =
+            (res && res.listItems && res.listItems.map(item => getClientWObj(item))) || [];
           this.setState(prevState => {
             let breadcrumb = [];
             if (prevState.breadcrumb.some(crumb => crumb.link.includes(nextTarget))) {
@@ -100,7 +100,7 @@ class CatalogWrap extends React.Component {
               ];
             }
             return {
-              listItems,
+              listItems: sortListItemsBy(listItems, this.state.sort),
               breadcrumb,
             };
           });
@@ -108,6 +108,11 @@ class CatalogWrap extends React.Component {
       }
     }
   }
+
+  handleSortChange = sort => {
+    const listItems = sortListItemsBy(this.state.listItems, sort);
+    this.setState({ sort, listItems });
+  };
 
   handleCreateObject = wobj => {
     const { intl, notify, createObject } = this.props;
@@ -133,18 +138,44 @@ class CatalogWrap extends React.Component {
   };
 
   render() {
-    const { listItems, breadcrumb } = this.state;
+    const { sort, listItems, breadcrumb } = this.state;
     const { isEditMode, wobject, intl, match } = this.props;
     const listBaseUrl = `/object/${match.params.name}/list`;
 
     return (
-      <React.Fragment>
+      <div>
         {isEditMode && (
           <div className="CatalogWrap__add-item">
             <AddItemModal wobject={wobject} />
             <CreateObjectModal handleCreateObject={this.handleCreateObject} />
           </div>
         )}
+
+        <div className="CatalogWrap__sort">
+          <SortSelector sort={sort} onChange={this.handleSortChange}>
+            <SortSelector.Item key="custom">
+              <FormattedMessage id="custom" defaultMessage="Custom">
+                {msg => msg.toUpperCase()}
+              </FormattedMessage>
+            </SortSelector.Item>
+            <SortSelector.Item key="rank">
+              <FormattedMessage id="rank" defaultMessage="Rank">
+                {msg => msg.toUpperCase()}
+              </FormattedMessage>
+            </SortSelector.Item>
+            <SortSelector.Item key="by-name-asc">
+              <FormattedMessage id="by-name-asc" defaultMessage="a . . z">
+                {msg => msg.toUpperCase()}
+              </FormattedMessage>
+            </SortSelector.Item>
+            <SortSelector.Item key="by-name-desc">
+              <FormattedMessage id="by-name-desc" defaultMessage="z . . a">
+                {msg => msg.toUpperCase()}
+              </FormattedMessage>
+            </SortSelector.Item>
+          </SortSelector>
+        </div>
+
         <div className="CatalogWrap">
           <div className="CatalogWrap__breadcrumb">
             <Breadcrumb separator={'>'}>
@@ -168,19 +199,19 @@ class CatalogWrap extends React.Component {
               {!isEmpty(listItems) ? (
                 map(listItems, listItem => {
                   const linkTo =
-                    listItem.object_type === 'list'
-                      ? { pathname: `${listBaseUrl}/${listItem.author_permlink}` }
-                      : { pathname: `/object/${listItem.author_permlink}` };
+                    listItem.type === 'list'
+                      ? { pathname: `${listBaseUrl}/${listItem.id}` }
+                      : { pathname: `/object/${listItem.id}` };
                   return (
-                    <div key={`category-${listItem.author_permlink}`}>
+                    <div key={`category-${listItem.id}`}>
                       <Link
                         to={linkTo}
                         title={`${intl.formatMessage({
                           id: 'GoTo',
                           defaultMessage: 'Go to',
-                        })} ${getFieldWithMaxWeight(listItem, objectFields.name)}`}
+                        })} ${listItem.name}`}
                       >
-                        <CatalogItem wobject={getClientWObj(listItem)} />
+                        <CatalogItem wobject={listItem} />
                       </Link>
                     </div>
                   );
@@ -200,7 +231,7 @@ class CatalogWrap extends React.Component {
             </div>
           )}
         </div>
-      </React.Fragment>
+      </div>
     );
   }
 }
