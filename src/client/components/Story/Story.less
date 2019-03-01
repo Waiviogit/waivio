@@ -71,7 +71,7 @@
     }
 
     &__text {
-      margin: 0 6px;
+      margin-left: 6px;
       width: 100%;
 
       @media @small {
@@ -89,8 +89,17 @@
 
   &__topics {
     margin-left: auto;
+    display: none;
+    @media @large, @medium, @small {
+      display: flex;
+    }
   }
-
+  .PostWobject__wrap {
+    display: flex;
+    .ObjectAvatar {
+      margin-left: 4px;
+    }
+  }
   &__topics > button {
     margin: 0 2px;
   }
