@@ -250,7 +250,7 @@ class CreateImage extends React.Component {
             })(
               <Select disabled={loading}>
                 {map(albums, album => (
-                  <Select.Option key={album.id} value={album.id}>
+                  <Select.Option key={`${album.id}${album.bogy}`} value={album.id}>
                     {album.body}
                   </Select.Option>
                 ))}

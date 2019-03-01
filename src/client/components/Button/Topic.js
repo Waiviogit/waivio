@@ -51,7 +51,7 @@ class Topic extends React.Component {
         })}
         to={`/trending/${name}`}
       >
-        {name}
+        #{name}
         {closable && (
           <i
             role="presentation"

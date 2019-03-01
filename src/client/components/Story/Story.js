@@ -135,6 +135,7 @@ class Story extends React.Component {
         i += 1;
         return (
           <Link
+            key={wobj.author_permlink}
             to={{ pathname: pathName }}
             title={`${this.props.intl.formatMessage({
               id: 'related_to_obj',
