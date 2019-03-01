@@ -52,7 +52,7 @@ class CatalogWrap extends React.Component {
       listItems:
         (props.wobject &&
           props.wobject.listItems &&
-          props.wobject.listItems.map(item => getClientWObj(item))) ||
+          sortListItemsBy(props.wobject.listItems.map(item => getClientWObj(item)), 'rank')) ||
         [],
     };
   }
