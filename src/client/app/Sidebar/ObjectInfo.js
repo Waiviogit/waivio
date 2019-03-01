@@ -7,9 +7,13 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { haveAccess, accessTypesArr } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
-import './ObjectInfo.less';
 import { getFieldWithMaxWeight, getFieldsCount, getWebsiteField } from '../../object/wObjectHelper';
-import { objectFields, addressFields, linkFields } from '../../../common/constants/listOfFields';
+import {
+  objectFields,
+  addressFields,
+  linkFields,
+  getAllowedFieldsByObjType,
+} from '../../../common/constants/listOfFields';
 import Proposition from '../../components/Proposition/Proposition';
 import Map from '../../components/Maps/Map';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
@@ -18,6 +22,7 @@ import IconButton from '../../components/IconButton';
 import { getObjectAlbums } from '../../reducers';
 import DescriptionInfo from './DescriptionInfo';
 import CreateImage from '../../object/ObjectGallery/CreateImage';
+import './ObjectInfo.less';
 
 @connect(state => ({
   albums: getObjectAlbums(state),
@@ -46,6 +51,8 @@ class ObjectInfo extends React.Component {
   render() {
     const { isEditMode, wobject, userName, albums } = this.props;
     const { showModal, selectedField } = this.state;
+    const renderFields = getAllowedFieldsByObjType(wobject.object_type);
+    const isRenderGallery = !['list'].includes(wobject.object_type);
 
     let addressArr = [];
     let address = '';
@@ -59,6 +66,8 @@ class ObjectInfo extends React.Component {
     let background = '';
     let photosCount = 0;
     let hashtags = [];
+    let phones = [];
+    let email = '';
     if (wobject) {
       addressArr = Object.values(addressFields).map(fieldName =>
         getFieldWithMaxWeight(wobject, objectFields.address, fieldName),
@@ -74,6 +83,8 @@ class ObjectInfo extends React.Component {
 
       short = getFieldWithMaxWeight(wobject, objectFields.title, null);
 
+      email = getFieldWithMaxWeight(wobject, objectFields.email, null);
+
       websiteFields = getWebsiteField(wobject);
       title = websiteFields.title;
       link = websiteFields.body;
@@ -81,6 +92,9 @@ class ObjectInfo extends React.Component {
 
       const filtered = _.filter(wobject.fields, ['name', objectFields.hashtag]);
       hashtags = _.orderBy(filtered, ['weight'], ['desc']);
+
+      const filteredPhones = _.filter(wobject.fields, ['name', objectFields.phone]);
+      phones = _.orderBy(filteredPhones, ['weight'], ['desc']);
     }
 
     if (link && link.indexOf('http://') === -1 && link.indexOf('https://') === -1) {
@@ -103,7 +117,7 @@ class ObjectInfo extends React.Component {
 
     const listItem = (fieldName, content) => {
       const fieldsCount = getFieldsCount(wobject, fieldName);
-      return content || accessExtend ? (
+      return renderFields.includes(fieldName) && (content || accessExtend) ? (
         <div className="field-info">
           <React.Fragment>
             {accessExtend && (
@@ -150,7 +164,7 @@ class ObjectInfo extends React.Component {
     );
     return (
       <React.Fragment>
-        {getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name) && (
+        {getFieldWithMaxWeight(wobject, objectFields.name) && (
           <div className="object-sidebar">
             {listItem(objectFields.description, <DescriptionInfo description={description} />)}
             {listItem(
@@ -172,7 +186,7 @@ class ObjectInfo extends React.Component {
                           </div>
                         ))}
                         <Link
-                          to={`/object/@${wobject.author_permlink}/updates/${objectFields.hashtag}`}
+                          to={`/object/${wobject.author_permlink}/updates/${objectFields.hashtag}`}
                           onClick={() => this.handleSelectField(objectFields.hashtag)}
                         >
                           <FormattedMessage id="show_more_tags" defaultMessage="show more">
@@ -193,12 +207,12 @@ class ObjectInfo extends React.Component {
                 )}
               </div>,
             )}
-            {hasGalleryImg || accessExtend ? (
+            {isRenderGallery && (hasGalleryImg || accessExtend) ? (
               <div className="field-info">
                 {accessExtend && (
                   <div className="proposition-line">
                     <Link
-                      to={{ pathname: `/object/@${wobject.author_permlink}/gallery` }}
+                      to={{ pathname: `/object/${wobject.author_permlink}/gallery` }}
                       onClick={() => this.handleSelectField('gallery')}
                     >
                       <IconButton
@@ -273,8 +287,67 @@ class ObjectInfo extends React.Component {
                 </div>
               ) : null,
             )}
+            {listItem(
+              objectFields.phone,
+              <div className="field-info">
+                {accessExtend ? (
+                  <React.Fragment>
+                    {phones.length <= 3 ? (
+                      phones.slice(0, 3).map(({ body, number }) => (
+                        <div key={number} className="phone">
+                          {body && body} <br />
+                          <Icon type="phone" /> <a href={`tel:${number}`}>{number}</a>
+                        </div>
+                      ))
+                    ) : (
+                      <React.Fragment>
+                        {phones.slice(0, 2).map(({ body, number }) => (
+                          <div key={number} className="phone">
+                            {body && body} <br />
+                            <Icon type="phone" /> <a href={`tel:${number}`}>{number}</a>
+                          </div>
+                        ))}
+                        <Link
+                          to={`/object/${wobject.author_permlink}/updates/${objectFields.phone}`}
+                          onClick={() => this.handleSelectField(objectFields.phone)}
+                        >
+                          <FormattedMessage id="show_more_tags" defaultMessage="show more">
+                            {value => <div className="phone">{value}</div>}
+                          </FormattedMessage>
+                        </Link>
+                      </React.Fragment>
+                    )}
+                  </React.Fragment>
+                ) : (
+                  <React.Fragment>
+                    {phones.slice(0, 3).map(({ body, number }) => (
+                      <div key={number}>
+                        {body && body} <br />
+                        <Icon type="phone" /> <a href={`tel:${number}`}>{number}</a>
+                      </div>
+                    ))}
+                  </React.Fragment>
+                )}
+              </div>,
+            )}
+            {listItem(
+              objectFields.email,
+              email && (
+                <div className="field-info">
+                  {accessExtend ? (
+                    <div className="email">
+                      <Icon type="mail" /> {email}
+                    </div>
+                  ) : (
+                    <React.Fragment>
+                      <Icon type="mail" />
+                      <a href={`mailto:${email}`}> {email}</a>
+                    </React.Fragment>
+                  )}
+                </div>
+              ),
+            )}
             {listItem(objectFields.link, <SocialLinks profile={profile} />)}
-
             {accessExtend && settingsSection}
           </div>
         )}

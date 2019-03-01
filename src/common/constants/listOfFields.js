@@ -9,6 +9,8 @@ export const objectFields = {
   background: 'background',
   website: 'website',
   hashtag: 'tag',
+  phone: 'phone',
+  email: 'email',
 };
 
 export const addressFields = {
@@ -36,6 +38,11 @@ export const websiteFields = {
   link: 'link',
 };
 
+export const phoneFields = {
+  name: 'name',
+  number: 'number',
+};
+
 export const socialObjectFields = [
   { id: 'facebook', icon: 'facebook', color: '#3b5998', name: 'Facebook' },
   { id: 'twitter', icon: 'twitter', color: '#00aced', name: 'Twitter' },
@@ -47,5 +54,14 @@ export const socialObjectFields = [
 export const supportedObjectFields = Object.values(objectFields);
 
 export const objectImageFields = ['avatar', 'background'];
+
+export const getAllowedFieldsByObjType = objectType => {
+  switch (objectType && objectType.toLowerCase()) {
+    case 'list':
+      return [objectFields.title, objectFields.avatar, objectFields.background];
+    default:
+      return supportedObjectFields;
+  }
+};
 
 export default null;

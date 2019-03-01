@@ -1,6 +1,7 @@
+import _ from 'lodash';
 import { createAction } from 'redux-actions';
-import { createAsyncActionType } from '../../helpers/stateHelpers';
 
+import { createAsyncActionType } from '../../helpers/stateHelpers';
 import { getWobjectGallery } from '../../../waivioApi/ApiClient';
 
 export const GET_ALBUMS = createAsyncActionType('@gallery/GET_ALBUMS');
@@ -8,11 +9,17 @@ export const ADD_ALBUM = '@gallery/ADD_ALBUM';
 export const ADD_IMAGE = '@gallery/ADD_IMAGE';
 export const RESET_GALLERY = '@gallery/RESET_GALLERY';
 
-export const getAlbums = wObject => dispatch =>
+export const getAlbums = authorPermlink => dispatch =>
   dispatch({
     type: GET_ALBUMS.ACTION,
     payload: {
-      promise: getWobjectGallery(wObject).then(res => res),
+      promise: getWobjectGallery(authorPermlink).then(albums => {
+        const defaultAlbum = _.remove(albums, alb => alb.id === authorPermlink);
+
+        const sortedAlbums = _.orderBy(albums, ['weight'], ['desc']);
+
+        return [...defaultAlbum, ...sortedAlbums];
+      }),
     },
   }).catch(() => {});
 

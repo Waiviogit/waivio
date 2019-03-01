@@ -14,7 +14,6 @@ import {
   getVotingPower,
   getRewardFund,
   getVotePercent,
-  getRewriteLinks,
 } from '../reducers';
 import CommentsList from '../components/Comments/Comments';
 import * as commentsActions from './commentsActions';
@@ -32,7 +31,6 @@ import './Comments.less';
     sliderMode: getVotingPower(state),
     rewardFund: getRewardFund(state),
     defaultVotePercent: getVotePercent(state),
-    rewriteLinks: getRewriteLinks(state),
   }),
   dispatch =>
     bindActionCreators(
@@ -52,7 +50,6 @@ export default class Comments extends React.Component {
     user: PropTypes.shape().isRequired,
     rewardFund: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
-    rewriteLinks: PropTypes.bool.isRequired,
     sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
     username: PropTypes.string,
     post: PropTypes.shape(),
@@ -60,11 +57,12 @@ export default class Comments extends React.Component {
     commentsList: PropTypes.shape(),
     pendingVotes: PropTypes.arrayOf(
       PropTypes.shape({
-        id: PropTypes.number,
+        id: PropTypes.string,
         percent: PropTypes.number,
       }),
     ),
     show: PropTypes.bool,
+    isQuickComments: PropTypes.bool,
     notify: PropTypes.func,
     getComments: PropTypes.func,
     voteComment: PropTypes.func,
@@ -79,6 +77,7 @@ export default class Comments extends React.Component {
     commentsList: {},
     pendingVotes: [],
     show: false,
+    isQuickComments: false,
     notify: () => {},
     getComments: () => {},
     voteComment: () => {},
@@ -148,10 +147,10 @@ export default class Comments extends React.Component {
       comments,
       pendingVotes,
       show,
+      isQuickComments,
       sliderMode,
       rewardFund,
       defaultVotePercent,
-      rewriteLinks,
     } = this.props;
     const postId = post.id;
     let rootLevelComments = [];
@@ -179,14 +178,15 @@ export default class Comments extends React.Component {
           authenticated={this.props.authenticated}
           username={this.props.username}
           pendingVotes={pendingVotes}
+          loadingPostId={comments.fetchingPostId}
           loading={comments.isFetching}
           loaded={comments.isLoaded}
           show={show}
+          isQuickComments={isQuickComments}
           notify={this.props.notify}
           rewardFund={rewardFund}
           sliderMode={sliderMode}
           defaultVotePercent={defaultVotePercent}
-          rewriteLinks={rewriteLinks}
           onLikeClick={this.handleLikeClick}
           onDislikeClick={this.handleDislikeClick}
           onSendComment={this.props.sendComment}

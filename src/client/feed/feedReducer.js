@@ -22,17 +22,22 @@ const initialState = {
 const feedIdsList = (state = [], action) => {
   switch (action.type) {
     case feedTypes.GET_FEED_CONTENT.START:
+    case feedTypes.GET_USER_FEED_CONTENT.START:
     case feedTypes.GET_USER_COMMENTS.START:
     case feedTypes.GET_REPLIES.START:
     case feedTypes.GET_BOOKMARKS.START:
     case feedTypes.GET_OBJECT_POSTS.START:
       return [];
+    case feedTypes.GET_USER_FEED_CONTENT.SUCCESS:
+      return action.payload.posts.map(getPostKey);
     case feedTypes.GET_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_REPLIES.SUCCESS:
     case feedTypes.GET_BOOKMARKS.SUCCESS:
     case feedTypes.GET_OBJECT_POSTS.SUCCESS:
       return action.payload.map(getPostKey);
+    case feedTypes.GET_MORE_USER_FEED_CONTENT.SUCCESS:
+      return _.uniq([...state, ...action.payload.posts.map(getPostKey)]);
     case feedTypes.GET_MORE_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_MORE_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_MORE_REPLIES.SUCCESS:
@@ -46,7 +51,9 @@ const feedIdsList = (state = [], action) => {
 const feedCategory = (state = {}, action) => {
   switch (action.type) {
     case feedTypes.GET_FEED_CONTENT.START:
+    case feedTypes.GET_USER_FEED_CONTENT.START:
     case feedTypes.GET_MORE_FEED_CONTENT.START:
+    case feedTypes.GET_MORE_USER_FEED_CONTENT.START:
     case feedTypes.GET_USER_COMMENTS.START:
     case feedTypes.GET_MORE_USER_COMMENTS.START:
     case feedTypes.GET_MORE_OBJECT_POSTS.START:
@@ -59,6 +66,20 @@ const feedCategory = (state = {}, action) => {
         isFetching: true,
         isLoaded: false,
         failed: false,
+        list: feedIdsList(state.list, action),
+      };
+    case feedTypes.GET_USER_FEED_CONTENT.SUCCESS:
+    case feedTypes.GET_MORE_USER_FEED_CONTENT.SUCCESS:
+      return {
+        ...state,
+        startAuthor: action.payload.start_author || '',
+        startPermlink: action.payload.start_permlink || '',
+        countWithWobj: action.payload.count_with_wobj || '',
+        isFetching: false,
+        isLoaded: true,
+        failed: false,
+        // hasMore: Boolean(action.payload.posts.length < action.meta.limit || action.meta.once),
+        hasMore: Boolean(action.payload.posts.length === action.meta.limit),
         list: feedIdsList(state.list, action),
       };
     case feedTypes.GET_FEED_CONTENT.SUCCESS:
@@ -79,7 +100,9 @@ const feedCategory = (state = {}, action) => {
         list: feedIdsList(state.list, action),
       };
     case feedTypes.GET_FEED_CONTENT.ERROR:
+    case feedTypes.GET_USER_FEED_CONTENT.ERROR:
     case feedTypes.GET_MORE_FEED_CONTENT.ERROR:
+    case feedTypes.GET_MORE_USER_FEED_CONTENT.ERROR:
     case feedTypes.GET_USER_COMMENTS.ERROR:
     case feedTypes.GET_MORE_USER_COMMENTS.ERROR:
     case feedTypes.GET_MORE_OBJECT_POSTS.ERROR:
@@ -101,6 +124,12 @@ const feedCategory = (state = {}, action) => {
 
 const feedSortBy = (state = {}, action) => {
   switch (action.type) {
+    case feedTypes.GET_USER_FEED_CONTENT.START:
+    case feedTypes.GET_USER_FEED_CONTENT.SUCCESS:
+    case feedTypes.GET_USER_FEED_CONTENT.ERROR:
+    case feedTypes.GET_MORE_USER_FEED_CONTENT.START:
+    case feedTypes.GET_MORE_USER_FEED_CONTENT.SUCCESS:
+    case feedTypes.GET_MORE_USER_FEED_CONTENT.ERROR:
     case feedTypes.GET_FEED_CONTENT.START:
     case feedTypes.GET_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_FEED_CONTENT.ERROR:
@@ -139,6 +168,16 @@ const feedSortBy = (state = {}, action) => {
 
 const feed = (state = initialState, action) => {
   switch (action.type) {
+    case feedTypes.GET_USER_FEED_CONTENT.START:
+    case feedTypes.GET_USER_FEED_CONTENT.SUCCESS:
+    case feedTypes.GET_USER_FEED_CONTENT.ERROR:
+    case feedTypes.GET_MORE_USER_FEED_CONTENT.START:
+    case feedTypes.GET_MORE_USER_FEED_CONTENT.SUCCESS:
+    case feedTypes.GET_MORE_USER_FEED_CONTENT.ERROR:
+      return {
+        ...state,
+        [action.meta.sortBy]: feedSortBy(state[action.meta.sortBy], action),
+      };
     case feedTypes.GET_FEED_CONTENT.START:
     case feedTypes.GET_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_FEED_CONTENT.ERROR:

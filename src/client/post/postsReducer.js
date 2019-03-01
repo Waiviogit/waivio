@@ -6,11 +6,7 @@ import { getPostKey } from '../helpers/stateHelpers';
 
 const postItem = (state = {}, action) => {
   switch (action.type) {
-    case commentsActions.SEND_COMMENT_START:
-      if (action.meta.isReplyToComment) {
-        return state;
-      }
-
+    case commentsActions.SEND_COMMENT_SUCCESS:
       return {
         ...state,
         children: parseInt(state.children, 10) + 1,
@@ -18,6 +14,21 @@ const postItem = (state = {}, action) => {
     default:
       return state;
   }
+};
+
+const getPostsList = (list, action) => {
+  const resultList = { ...list };
+
+  const rootPost = list[action.meta.rootPostId];
+  if (rootPost) {
+    resultList[action.meta.rootPostId] = postItem(rootPost, action);
+  }
+  const parentPost = list[action.meta.parentId];
+  if (parentPost) {
+    resultList[action.meta.parentId] = postItem(parentPost, action);
+  }
+
+  return resultList;
 };
 
 const initialState = {
@@ -43,6 +54,32 @@ const posts = (state = initialState, action) => {
         },
       };
     }
+    case feedTypes.GET_MORE_USER_FEED_CONTENT.SUCCESS:
+    case feedTypes.GET_USER_FEED_CONTENT.SUCCESS: {
+      const list = {
+        ...state.list,
+      };
+      const postsStates = {
+        ...state.postsStates,
+      };
+
+      _.each(action.payload.posts, post => {
+        const key = getPostKey(post);
+        list[key] = { ...post, id: key };
+        postsStates[key] = {
+          fetching: false,
+          loaded: true,
+          failed: false,
+        };
+      });
+
+      return {
+        ...state,
+        list,
+        postsStates,
+      };
+    }
+
     case feedTypes.GET_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_OBJECT_POSTS.SUCCESS:
     case feedTypes.GET_MORE_OBJECT_POSTS.SUCCESS:
@@ -146,10 +183,10 @@ const posts = (state = initialState, action) => {
         ...state,
         pendingLikes: _.omit(state.pendingLikes, action.meta.postId),
       };
-    case commentsActions.SEND_COMMENT_START:
+    case commentsActions.SEND_COMMENT_SUCCESS:
       return {
         ...state,
-        [action.meta.parentId]: postItem(state[action.meta.parentId], action),
+        list: getPostsList(state.list, action),
       };
     default:
       return state;

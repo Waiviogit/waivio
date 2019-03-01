@@ -18,6 +18,7 @@ import LinkedObjects from './LinkedObjects';
 import { getClientWObj } from '../../adapters';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
+import { BENEFICIARY_PERCENT } from '../../helpers/constants';
 import {
   WAIVIO_META_FIELD_NAME,
   INVESTARENA_META_FIELD_NAME,
@@ -28,7 +29,6 @@ import {
   changeObjInfluenceHandler,
   removeObjInfluenceHandler,
 } from '../../helpers/wObjInfluenceHelper';
-import CreatePostForecast from '../../../investarena/components/CreatePostForecast';
 import './Editor.less';
 import { currentTime } from '../../../investarena/helpers/currentTime';
 import { forecastDateTimeFormat } from '../../../investarena/constants/constantsForecast';
@@ -48,6 +48,7 @@ class Editor extends React.Component {
     initialForecast: PropTypes.shape(),
     body: PropTypes.string,
     reward: PropTypes.string,
+    beneficiary: PropTypes.bool,
     upvote: PropTypes.bool,
     loading: PropTypes.bool,
     isUpdating: PropTypes.bool,
@@ -72,6 +73,7 @@ class Editor extends React.Component {
     initialForecast: {},
     body: '',
     reward: rewardsValues.half,
+    beneficiary: true,
     upvote: true,
     recentTopics: [],
     popularTopics: [],
@@ -134,13 +136,14 @@ class Editor extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { title, topics, waivioData, body, reward, upvote, draftId } = this.props;
+    const { title, topics, waivioData, body, reward, beneficiary, upvote, draftId } = this.props;
     if (
       title !== nextProps.title ||
       !_.isEqual(topics, nextProps.topics) ||
       !_.isEqual(waivioData, nextProps.waivioData) ||
       body !== nextProps.body ||
       reward !== nextProps.reward ||
+      beneficiary !== nextProps.beneficiary ||
       upvote !== nextProps.upvote ||
       (draftId && nextProps.draftId === null)
     ) {
@@ -178,6 +181,7 @@ class Editor extends React.Component {
       title: post.title,
       body: post.body,
       reward,
+      beneficiary: post.beneficiary,
       upvote: post.upvote,
       [WAIVIO_META_FIELD_NAME]: post.waivioData,
     });
@@ -509,6 +513,43 @@ class Editor extends React.Component {
             />,
           )}
         </Form.Item>
+        <Form.Item>
+          {getFieldDecorator('body', {
+            rules: [
+              {
+                required: true,
+                message: intl.formatMessage({
+                  id: 'story_error_empty',
+                  defaultMessage: "Story content can't be empty.",
+                }),
+              },
+            ],
+          })(
+            <EditorInput
+              rows={12}
+              addon={
+                <FormattedMessage
+                  id="reading_time"
+                  defaultMessage={'{words} words / {min} min read'}
+                  values={{
+                    words,
+                    min: Math.ceil(minutes),
+                  }}
+                />
+              }
+              placeholder={intl.formatMessage({
+                id: 'story_placeholder',
+                defaultMessage: 'Add content',
+              })}
+              onChange={this.onUpdate}
+              onImageUpload={this.props.onImageUpload}
+              onImageInvalid={this.props.onImageInvalid}
+              inputId={'editor-inputfile'}
+              canCreateNewObject={canCreateNewObject}
+              onAddLinkedObject={this.handleAddLinkedObject}
+            />,
+          )}
+        </Form.Item>
         <Form.Item
           label={
             <span className="Editor__label">
@@ -548,44 +589,6 @@ class Editor extends React.Component {
               })}
               dropdownStyle={{ display: 'none' }}
               tokenSeparators={[' ', ',']}
-            />,
-          )}
-        </Form.Item>
-
-        <Form.Item>
-          {getFieldDecorator('body', {
-            rules: [
-              {
-                required: true,
-                message: intl.formatMessage({
-                  id: 'story_error_empty',
-                  defaultMessage: "Story content can't be empty.",
-                }),
-              },
-            ],
-          })(
-            <EditorInput
-              rows={12}
-              addon={
-                <FormattedMessage
-                  id="reading_time"
-                  defaultMessage={'{words} words / {min} min read'}
-                  values={{
-                    words,
-                    min: Math.ceil(minutes),
-                  }}
-                />
-              }
-              placeholder={intl.formatMessage({
-                id: 'story_placeholder',
-                defaultMessage: 'Add content',
-              })}
-              onChange={this.onUpdate}
-              onImageUpload={this.props.onImageUpload}
-              onImageInvalid={this.props.onImageInvalid}
-              inputId={'editor-inputfile'}
-              canCreateNewObject={canCreateNewObject}
-              onAddLinkedObject={this.handleAddLinkedObject}
             />,
           )}
         </Form.Item>
@@ -631,6 +634,19 @@ class Editor extends React.Component {
                 <FormattedMessage id="reward_option_0" defaultMessage="Declined" />
               </Select.Option>
             </Select>,
+          )}
+        </Form.Item>
+        <Form.Item>
+          {getFieldDecorator('beneficiary', { valuePropName: 'checked', initialValue: true })(
+            <Checkbox onChange={this.onUpdate} disabled={isUpdating}>
+              <FormattedMessage
+                id="add_waivio_beneficiary"
+                defaultMessage="Share {share}% of this post rewards with Waivio"
+                values={{
+                  share: BENEFICIARY_PERCENT / 100,
+                }}
+              />
+            </Checkbox>,
           )}
         </Form.Item>
         <Form.Item className={classNames({ Editor__hidden: isUpdating })}>

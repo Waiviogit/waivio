@@ -6,6 +6,7 @@ import Slider from '../Slider/Slider';
 import Payout from './Payout';
 import Buttons from './Buttons';
 import Confirmation from './Confirmation';
+import Comments from '../../../client/comments/Comments';
 import { getHasDefaultSlider, getVoteValue } from '../../helpers/user';
 import { getRate } from '../../reducers';
 import './StoryFooter.less';
@@ -28,6 +29,7 @@ class StoryFooter extends React.Component {
     pendingFollow: PropTypes.bool,
     pendingBookmark: PropTypes.bool,
     saving: PropTypes.bool,
+    singlePostVew: PropTypes.bool,
     onLikeClick: PropTypes.func,
     onShareClick: PropTypes.func,
     onEditClick: PropTypes.func,
@@ -41,6 +43,7 @@ class StoryFooter extends React.Component {
     pendingFollow: false,
     pendingBookmark: false,
     saving: false,
+    singlePostVew: false,
     sliderMode: 'auto',
     onLikeClick: () => {},
     onShareClick: () => {},
@@ -48,11 +51,16 @@ class StoryFooter extends React.Component {
     handlePostPopoverMenuClick: () => {},
   };
 
-  state = {
-    sliderVisible: false,
-    sliderValue: 100,
-    voteWorth: 0,
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      sliderVisible: false,
+      commentsVisible: !props.post.children,
+      sliderValue: 100,
+      voteWorth: 0,
+    };
+  }
 
   componentWillMount() {
     const { user, post, defaultVotePercent } = this.props;
@@ -106,7 +114,14 @@ class StoryFooter extends React.Component {
     this.setState({ sliderValue: value, voteWorth });
   };
 
+  toggleCommentsVisibility = isVisible => {
+    if (this.props.post.children > 0) {
+      this.setState(prevState => ({ commentsVisible: isVisible || !prevState.commentsVisible }));
+    }
+  };
+
   render() {
+    const { commentsVisible } = this.state;
     const {
       post,
       postState,
@@ -117,6 +132,7 @@ class StoryFooter extends React.Component {
       pendingFollow,
       pendingBookmark,
       saving,
+      singlePostVew,
       handlePostPopoverMenuClick,
     } = this.props;
 
@@ -141,6 +157,7 @@ class StoryFooter extends React.Component {
               onLikeClick={this.handleLikeClick}
               onShareClick={this.handleShareClick}
               onEditClick={this.handleEditClick}
+              onCommentClick={this.toggleCommentsVisibility}
               handlePostPopoverMenuClick={handlePostPopoverMenuClick}
             />
           )}
@@ -151,6 +168,9 @@ class StoryFooter extends React.Component {
             voteWorth={this.state.voteWorth}
             onChange={this.handleSliderChange}
           />
+        )}
+        {!singlePostVew && (
+          <Comments show={commentsVisible} isQuickComments={!singlePostVew} post={post} />
         )}
       </div>
     );

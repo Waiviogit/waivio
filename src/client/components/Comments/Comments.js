@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { message } from 'antd';
 import { MAXIMUM_UPLOAD_SIZE_HUMAN } from '../../helpers/image';
@@ -8,8 +9,10 @@ import Loading from '../Icon/Loading';
 import SortSelector from '../SortSelector/SortSelector';
 import CommentForm from './CommentForm';
 import Comment from './Comment';
+import QuickCommentEditor from './QuickCommentEditor';
 import './Comments.less';
 import MoreCommentsButton from './MoreCommentsButton';
+import { getPostKey } from '../../helpers/stateHelpers';
 import { findTopComment, getLinkedComment } from '../../helpers/commentHelpers';
 
 @injectIntl
@@ -18,6 +21,7 @@ class Comments extends React.Component {
     intl: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
     authenticated: PropTypes.bool.isRequired,
+    loadingPostId: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     loaded: PropTypes.bool.isRequired,
     username: PropTypes.string,
@@ -27,15 +31,15 @@ class Comments extends React.Component {
     commentsChildren: PropTypes.shape(),
     pendingVotes: PropTypes.arrayOf(
       PropTypes.shape({
-        id: PropTypes.number,
+        id: PropTypes.string,
         percent: PropTypes.number,
       }),
     ),
     rewardFund: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
-    rewriteLinks: PropTypes.bool,
     sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
     show: PropTypes.bool,
+    isQuickComments: PropTypes.bool,
     notify: PropTypes.func,
     onLikeClick: PropTypes.func,
     onDislikeClick: PropTypes.func,
@@ -49,26 +53,26 @@ class Comments extends React.Component {
     rootLevelComments: [],
     commentsChildren: undefined,
     pendingVotes: [],
-    rewriteLinks: false,
     sliderMode: 'auto',
     show: false,
+    isQuickComments: false,
     notify: () => {},
     onLikeClick: () => {},
     onDislikeClick: () => {},
     onSendComment: () => {},
   };
 
-  static SHOW_COMMENTS_INCREMENT = 20;
-
   constructor(props) {
     super(props);
 
+    this.SHOW_COMMENTS_INCREMENT = props.isQuickComments ? 10 : 20;
+
     this.state = {
-      sort: 'BEST',
+      sort: props.isQuickComments ? 'NEWEST' : 'BEST',
       showCommentFormLoading: false,
       commentFormText: '',
       commentSubmitted: false,
-      nRenderedComments: 20,
+      nRenderedComments: props.isQuickComments ? 3 : 20,
     };
 
     this.detectSort = this.detectSort.bind(this);
@@ -83,6 +87,16 @@ class Comments extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (this.props.isQuickComments && !nextProps.show) {
+      this.setState({ nRenderedComments: 3 });
+    }
+    if (nextProps.parentPost.children - this.props.parentPost.children === 1) {
+      this.setState(prevState => {
+        const nRenderedComments =
+          prevState.nRenderedComments >= 3 ? prevState.nRenderedComments + 1 : 3;
+        return { nRenderedComments };
+      });
+    }
     this.detectSort(nextProps.comments);
   }
 
@@ -107,7 +121,7 @@ class Comments extends React.Component {
 
   handleShowMoreComments() {
     this.setState(prevState => ({
-      nRenderedComments: prevState.nRenderedComments + Comments.SHOW_COMMENTS_INCREMENT,
+      nRenderedComments: prevState.nRenderedComments + this.SHOW_COMMENTS_INCREMENT,
     }));
   }
 
@@ -142,8 +156,11 @@ class Comments extends React.Component {
     );
   };
 
-  handleSubmitComment(parentPost, commentValue) {
+  handleSubmitComment(parentP, commentValue) {
     const { intl } = this.props;
+    const parentPost = parentP;
+    // foe object updates
+    if (parentPost.author_original) parentPost.author = parentPost.author_original;
 
     this.setState({ showCommentFormLoading: true });
     return this.props
@@ -180,11 +197,11 @@ class Comments extends React.Component {
       .filter(comment => comment.id !== (rootLinkedComment && rootLinkedComment.id))
       .slice(
         0,
-        rootLinkedComment
-          ? nRenderedComments - Comments.SHOW_COMMENTS_INCREMENT
-          : nRenderedComments,
+        rootLinkedComment ? nRenderedComments - this.SHOW_COMMENTS_INCREMENT : nRenderedComments,
       );
-    return rootLinkedComment ? [rootLinkedComment, ...filteredComments] : filteredComments;
+
+    const result = rootLinkedComment ? [rootLinkedComment, ...filteredComments] : filteredComments;
+    return this.props.isQuickComments ? result.reverse() : result;
   }
 
   render() {
@@ -194,9 +211,11 @@ class Comments extends React.Component {
       comments,
       rootLevelComments,
       commentsChildren,
+      loadingPostId,
       loading,
       loaded,
       show,
+      isQuickComments,
       pendingVotes,
       onLikeClick,
       onDislikeClick,
@@ -205,57 +224,68 @@ class Comments extends React.Component {
       sliderMode,
       rewardFund,
       defaultVotePercent,
-      rewriteLinks,
     } = this.props;
     const { sort } = this.state;
 
     const linkedComment = getLinkedComment(comments);
     const rootLinkedComment = findTopComment(parentPost, comments, linkedComment);
     const commentsToRender = this.commentsToRender(rootLevelComments, rootLinkedComment);
+    const isParentPostFetching = loadingPostId === getPostKey(parentPost);
 
     return (
-      <div className="Comments">
-        <div className="Comments__header">
-          <h2>
-            <FormattedMessage id="comments" defaultMessage="Comments" />
-          </h2>
-          <SortSelector sort={sort} onChange={this.handleSortChange}>
-            <SortSelector.Item key="BEST">
-              <FormattedMessage id="sort_best" defaultMessage="Best" />
-            </SortSelector.Item>
-            <SortSelector.Item key="NEWEST">
-              <FormattedMessage id="sort_newest" defaultMessage="Newest" />
-            </SortSelector.Item>
-            <SortSelector.Item key="OLDEST">
-              <FormattedMessage id="sort_oldest" defaultMessage="Oldest" />
-            </SortSelector.Item>
-            <SortSelector.Item key="AUTHOR_REPUTATION">
-              <FormattedMessage id="sort_author_reputation" defaultMessage="Reputation" />
-            </SortSelector.Item>
-          </SortSelector>
-        </div>
+      <div className={classNames('Comments', { 'quick-comments': isQuickComments })}>
+        {!isQuickComments && (
+          <React.Fragment>
+            <div className="Comments__header">
+              <h2>
+                <FormattedMessage id="comments" defaultMessage="Comments" />
+              </h2>
+              <SortSelector sort={sort} onChange={this.handleSortChange}>
+                <SortSelector.Item key="BEST">
+                  <FormattedMessage id="sort_best" defaultMessage="Best" />
+                </SortSelector.Item>
+                <SortSelector.Item key="NEWEST">
+                  <FormattedMessage id="sort_newest" defaultMessage="Newest" />
+                </SortSelector.Item>
+                <SortSelector.Item key="OLDEST">
+                  <FormattedMessage id="sort_oldest" defaultMessage="Oldest" />
+                </SortSelector.Item>
+                <SortSelector.Item key="AUTHOR_REPUTATION">
+                  <FormattedMessage id="sort_author_reputation" defaultMessage="Reputation" />
+                </SortSelector.Item>
+              </SortSelector>
+            </div>
 
-        {authenticated && (
-          <CommentForm
-            top
-            parentPost={this.props.parentPost}
-            username={username}
-            onSubmit={this.handleSubmitComment}
-            isLoading={this.state.showCommentFormLoading}
-            inputValue={this.state.commentFormText}
-            submitted={this.state.commentSubmitted}
-            onImageInserted={this.handleImageInserted}
-            onImageInvalid={this.handleImageInvalid}
+            {authenticated && (
+              <CommentForm
+                top
+                parentPost={this.props.parentPost}
+                username={username}
+                onSubmit={this.handleSubmitComment}
+                isLoading={this.state.showCommentFormLoading}
+                inputValue={this.state.commentFormText}
+                submitted={this.state.commentSubmitted}
+                onImageInserted={this.handleImageInserted}
+                onImageInvalid={this.handleImageInvalid}
+              />
+            )}
+            {loaded && commentsToRender.length === 0 && (
+              <div className="Comments__empty">
+                <FormattedMessage id="empty_comments" defaultMessage="There are no comments yet." />
+              </div>
+            )}
+          </React.Fragment>
+        )}
+        {isQuickComments && show && (
+          <MoreCommentsButton
+            comments={rootLevelComments.length}
+            visibleComments={commentsToRender.length}
+            isQuickComments={isQuickComments}
+            onClick={this.handleShowMoreComments}
           />
         )}
-        {loading && <Loading />}
-        {loaded &&
-          commentsToRender.length === 0 && (
-            <div className="Comments__empty">
-              <FormattedMessage id="empty_comments" defaultMessage="There are no comments yet." />
-            </div>
-          )}
-        {loaded &&
+        {loading && isParentPostFetching && <Loading />}
+        {(loaded || !isParentPostFetching) &&
           show &&
           comments &&
           commentsToRender.map(comment => (
@@ -266,6 +296,7 @@ class Comments extends React.Component {
               authenticated={authenticated}
               username={username}
               comment={comment}
+              isQuickComment={isQuickComments}
               parent={this.props.parentPost}
               sort={sort}
               rootPostAuthor={this.props.parentPost && this.props.parentPost.author}
@@ -275,17 +306,32 @@ class Comments extends React.Component {
               rewardFund={rewardFund}
               sliderMode={sliderMode}
               defaultVotePercent={defaultVotePercent}
-              rewriteLinks={rewriteLinks}
               onLikeClick={onLikeClick}
               onDislikeClick={onDislikeClick}
               onSendComment={this.props.onSendComment}
             />
           ))}
-        <MoreCommentsButton
-          comments={rootLevelComments.length}
-          visibleComments={commentsToRender.length}
-          onClick={this.handleShowMoreComments}
-        />
+        {isQuickComments ? (
+          authenticated && (
+            <QuickCommentEditor
+              parentPost={this.props.parentPost}
+              username={username}
+              onSubmit={this.handleSubmitComment}
+              isLoading={this.state.showCommentFormLoading}
+              inputValue={this.state.commentFormText}
+              submitted={this.state.commentSubmitted}
+              onImageInserted={this.handleImageInserted}
+              onImageInvalid={this.handleImageInvalid}
+            />
+          )
+        ) : (
+          <MoreCommentsButton
+            comments={rootLevelComments.length}
+            visibleComments={commentsToRender.length}
+            isQuickComments={isQuickComments}
+            onClick={this.handleShowMoreComments}
+          />
+        )}
       </div>
     );
   }

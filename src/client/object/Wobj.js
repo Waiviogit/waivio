@@ -81,14 +81,14 @@ export default class Wobj extends React.Component {
 
   render() {
     const { isEditMode } = this.state;
-    const { authenticated, failed, authenticatedUserName: userName, wobject } = this.props;
+    const { authenticated, failed, authenticatedUserName: userName, wobject, match } = this.props;
     if (failed) return <Error404 />;
 
     const busyHost = global.postOrigin || 'https://busy.org';
     const desc = `Posts by ${wobject.tag}`;
     const image = getObjectUrl(wobject);
-    const canonicalUrl = `${busyHost}/object/@${wobject.tag}`;
-    const url = `${busyHost}/object/@${wobject.tag}`;
+    const canonicalUrl = `${busyHost}/object/${wobject.tag}`;
+    const url = `${busyHost}/object/${wobject.tag}`;
     const displayedObjectName = wobject.tag || '';
     const title = `Object - Waivio`;
 
@@ -142,7 +142,7 @@ export default class Wobj extends React.Component {
               </div>
             </Affix>
             <div className="center">
-              {renderRoutes(this.props.route.routes, { isEditMode, wobject, userName })}
+              {renderRoutes(this.props.route.routes, { isEditMode, wobject, userName, match })}
             </div>
           </div>
         </div>

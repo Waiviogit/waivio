@@ -23,9 +23,6 @@ class EditorObject extends React.Component {
     super(props);
     this.state = {
       influenceValue: this.props.wObject.influence.value,
-      isPostingOpen: true,
-      isExtendingOpen: true,
-      isModalOpen: false,
     };
   }
 
@@ -53,7 +50,7 @@ class EditorObject extends React.Component {
   render() {
     const { influenceValue } = this.state;
     const { intl, wObject, handleRemoveObject, isLinkedObjectsValid } = this.props;
-    const pathName = `/object/@${wObject.id}`;
+    const pathName = `/object/${wObject.id}`;
     return (
       <React.Fragment>
         <div

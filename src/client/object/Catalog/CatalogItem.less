@@ -1,0 +1,60 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+@padding: 5px;
+.catalog-item {
+  background-color: @white;
+  border: 1px solid @border-color-base;
+  padding: 15px;
+  width: 100%;
+
+  &__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 80px;
+    background: rgba(255, 255, 255, 0.6);
+    padding: 10px;
+  }
+
+  &__avatar {
+    height: 60px;
+    width: 60px;
+    margin-right: @padding;
+  }
+
+  &__wrapper {
+    border: 2px solid @border-color-base;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #777676;
+    &:hover {
+      cursor: pointer;
+      border: 2px solid @primary-color;
+    }
+  }
+  &__info {
+    width: 100%;
+    margin-right: 10px;
+  }
+  &__truncated {
+    font-weight: bold;
+    font-size: 26px;
+    text-shadow: 1px 1px 0 #000;
+  }
+  &__more {
+    line-height: 12px !important;
+    font-size: 36px !important;
+    color: @primary-color;
+
+    &:hover {
+      cursor: pointer;
+      color: darken(@primary-color, 15%);
+    }
+  }
+}
+
+.editor-object__validation-msg {
+  color: @red-danger;
+}

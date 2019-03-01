@@ -5,7 +5,12 @@ import { withRouter } from 'react-router';
 import Cookie from 'js-cookie';
 import _ from 'lodash';
 import { showPostModal } from '../app/appActions';
-import { getFeedContent, getMoreFeedContent } from './feedActions';
+import {
+  getFeedContent,
+  getUserFeedContent,
+  getMoreFeedContent,
+  getMoreUserFeedContent,
+} from './feedActions';
 
 import {
   getFeedFromState,
@@ -36,6 +41,8 @@ import PostModal from '../post/PostModalContainer';
   }),
   dispatch => ({
     getFeedContent: (sortBy, category) => dispatch(getFeedContent({ sortBy, category, limit: 10 })),
+    getUserFeedContent: userName => dispatch(getUserFeedContent({ userName, limit: 10 })),
+    getMoreUserFeedContent: userName => dispatch(getMoreUserFeedContent({ userName, limit: 10 })),
     getMoreFeedContent: (sortBy, category) =>
       dispatch(getMoreFeedContent({ sortBy, category, limit: 10 })),
     showPostModal: post => dispatch(showPostModal(post)),
@@ -50,11 +57,15 @@ class SubFeed extends React.Component {
     match: PropTypes.shape().isRequired,
     showPostModal: PropTypes.func.isRequired,
     getFeedContent: PropTypes.func,
+    getUserFeedContent: PropTypes.func,
+    getMoreUserFeedContent: PropTypes.func,
     getMoreFeedContent: PropTypes.func,
   };
 
   static defaultProps = {
     getFeedContent: () => {},
+    getUserFeedContent: () => {},
+    getMoreUserFeedContent: () => {},
     getMoreFeedContent: () => {},
   };
 
@@ -66,7 +77,7 @@ class SubFeed extends React.Component {
     if (match.url === '/my_feed' && authenticated) {
       const fetched = getUserFeedFetchedFromState(user.name, feed);
       if (fetched) return;
-      this.props.getFeedContent('feed', user.name);
+      this.props.getUserFeedContent(user.name);
     } else {
       const sortBy = match.url === '/' ? 'wia_feed' : match.params.sortBy || 'trending';
       const category = match.url === '/' ? 'all' : match.params.category;
@@ -96,7 +107,7 @@ class SubFeed extends React.Component {
     ) {
       const fetching = getUserFeedLoadingFromState(user.name, feed);
       if (!fetching) {
-        this.props.getFeedContent('feed', user.name);
+        this.props.getUserFeedContent(user.name);
       }
     } else if (match.url === '/' && match.url !== this.props.match.url) {
       const fetching = getFeedLoadingFromState('wia_feed', 'all', feed);
@@ -130,7 +141,7 @@ class SubFeed extends React.Component {
           ? feed.feed[user.name].hasMore
           : true;
       failed = getUserFeedFailedFromState(user.name, feed);
-      loadMoreContent = () => this.props.getMoreFeedContent('feed', user.name);
+      loadMoreContent = () => this.props.getMoreUserFeedContent(user.name);
     } else {
       const sortBy = match.url === '/' ? 'wia_feed' : match.params.sortBy || 'trending';
       const category = match.url === '/' ? 'all' : match.params.category;

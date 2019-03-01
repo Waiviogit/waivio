@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import take from 'lodash/take';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
-import { scroller } from 'react-scroll';
 import { Link } from 'react-router-dom';
 import { Icon, Modal } from 'antd';
 import classNames from 'classnames';
@@ -33,6 +32,7 @@ export default class Buttons extends React.Component {
     saving: PropTypes.bool,
     onLikeClick: PropTypes.func,
     onShareClick: PropTypes.func,
+    onCommentClick: PropTypes.func,
     handlePostPopoverMenuClick: PropTypes.func,
   };
 
@@ -45,18 +45,9 @@ export default class Buttons extends React.Component {
     saving: false,
     onLikeClick: () => {},
     onShareClick: () => {},
+    onCommentClick: () => {},
     handlePostPopoverMenuClick: () => {},
   };
-
-  static handleCommentClick() {
-    const form = document.getElementById('commentFormInput');
-    if (form) {
-      scroller.scrollTo('commentFormInputScrollerElement', {
-        offset: 50,
-      });
-      form.focus();
-    }
-  }
 
   constructor(props) {
     super(props);
@@ -76,6 +67,7 @@ export default class Buttons extends React.Component {
     this.handleShowReactions = this.handleShowReactions.bind(this);
     this.handleCloseReactions = this.handleCloseReactions.bind(this);
     this.handleFlagClick = this.handleFlagClick.bind(this);
+    this.handleCommentsClick = this.handleCommentsClick.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -91,6 +83,12 @@ export default class Buttons extends React.Component {
 
   handleLikeClick() {
     this.props.onActionInitiated(this.props.onLikeClick);
+  }
+
+  handleCommentsClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.props.onCommentClick();
   }
 
   handleFlagClick() {
@@ -136,6 +134,7 @@ export default class Buttons extends React.Component {
 
   renderPostPopoverMenu() {
     const {
+      pendingFlag,
       pendingFollow,
       pendingBookmark,
       saving,
@@ -145,7 +144,7 @@ export default class Buttons extends React.Component {
       handlePostPopoverMenuClick,
       ownPost,
     } = this.props;
-
+    const { isReported } = postState;
     let followText = '';
 
     if (postState.userFollowed && !pendingFollow) {
@@ -201,6 +200,23 @@ export default class Buttons extends React.Component {
           defaultMessage={postState.isSaved ? 'Unsave post' : 'Save post'}
         />
       </PopoverMenuItem>,
+      <PopoverMenuItem key="report">
+        {pendingFlag ? (
+          <Icon type="loading" />
+        ) : (
+          <i
+            className={classNames('iconfont', {
+              'icon-flag': !postState.isReported,
+              'icon-flag_fill': postState.isReported,
+            })}
+          />
+        )}
+        {isReported ? (
+          <FormattedMessage id="unflag_post" defaultMessage="Unflag post" />
+        ) : (
+          <FormattedMessage id="flag_post" defaultMessage="Flag post" />
+        )}
+      </PopoverMenuItem>,
     ];
 
     return (
@@ -219,15 +235,7 @@ export default class Buttons extends React.Component {
   }
 
   render() {
-    const {
-      intl,
-      post,
-      postState,
-      pendingLike,
-      pendingFlag,
-      ownPost,
-      defaultVotePercent,
-    } = this.props;
+    const { intl, post, postState, pendingLike, ownPost, defaultVotePercent } = this.props;
 
     const upVotes = getUpvotes(post.active_votes).sort(sortVotes);
     const downVotes = getDownvotes(post.active_votes)
@@ -269,8 +277,6 @@ export default class Buttons extends React.Component {
     const likeClass = classNames({ active: postState.isLiked, Buttons__link: true });
     const rebloggedClass = classNames({ active: postState.isReblogged, Buttons__link: true });
 
-    const commentsLink =
-      post.url.indexOf('#') !== -1 ? post.url : { pathname: post.url, hash: '#comments' };
     const showReblogLink = !ownPost && post.parent_author === '';
 
     let likeTooltip = <span>{intl.formatMessage({ id: 'like' })}</span>;
@@ -327,32 +333,13 @@ export default class Buttons extends React.Component {
           </span>
         )}
         <BTooltip title={intl.formatMessage({ id: 'comment', defaultMessage: 'Comment' })}>
-          <Link className="Buttons__link" to={commentsLink} onClick={this.handleCommentClick}>
+          <a className="Buttons__link" role="presentation" onClick={this.handleCommentsClick}>
             <i className="iconfont icon-message_fill" />
-          </Link>
+          </a>
         </BTooltip>
         <span className="Buttons__number">
           {post.children > 0 && <FormattedNumber value={post.children} />}
         </span>
-        <BTooltip
-          title={
-            postState.isReported ? (
-              <FormattedMessage id="unflag_post" defaultMessage="Unflag post" />
-            ) : (
-              <FormattedMessage id="flag_post" defaultMessage="Flag post" />
-            )
-          }
-        >
-          <a
-            role="presentation"
-            className={classNames('Buttons__link', {
-              active: postState.isReported,
-            })}
-            onClick={this.handleFlagClick}
-          >
-            {pendingFlag ? <Icon type="loading" /> : <i className="iconfont icon-flag_fill" />}
-          </a>
-        </BTooltip>
         {showReblogLink && (
           <BTooltip
             title={intl.formatMessage({

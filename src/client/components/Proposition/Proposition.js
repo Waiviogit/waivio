@@ -27,12 +27,12 @@ class Proposition extends React.Component {
     return (
       <React.Fragment>
         <div className="proposition-line">
-          <Link to={{ pathname: `/object/@${objectID}/updates/${fieldName}` }}>
+          <Link to={{ pathname: `/object/${objectID}/updates/${fieldName}` }}>
             <IconButton icon={<Icon type="plus-circle" />} onClick={this.handleToggleModal} />
           </Link>
           <div className={linkClass}>
             <Link
-              to={`/object/@${objectID}/updates/${fieldName}`}
+              to={`/object/${objectID}/updates/${fieldName}`}
               onClick={() => handleSelectField(fieldName)}
             >
               {intl.formatMessage({

@@ -1,5 +1,5 @@
 {
-  "name": "Waivio-fes",
+  "name": "waivio-fes",
   "version": "1.0.0",
   "engines": {
     "node": ">=7.10.1",
@@ -20,9 +20,9 @@
     "build": "node ./scripts/build.js",
     "start": "node ./build/server.js",
     "storybook": "start-storybook -p 9001 -c .storybook",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "test": "jest --config jest.config.json",
+    "test:watch": "jest --config jest.config.json --watch",
+    "test:coverage": "jest --config jest.config.json --coverage",
     "eslint-autofix": "eslint --fix \"src/**/*.js\"",
     "heroku-prebuild": "npm i -g pm2 && pm2 install pm2-logrotate",
     "heroku-postbuild": "npm run build"
@@ -147,7 +147,7 @@
     "mini-css-extract-plugin": "^0.4.0",
     "minimatch": "^3.0.4",
     "postcss-loader": "^2.1.4",
-    "prettier": "^1.9.2",
+    "prettier": "^1.16.4",
     "start-server-webpack-plugin": "^2.2.5",
     "style-loader": "^0.21.0",
     "sw-precache-webpack-plugin": "^0.11.5",
@@ -156,12 +156,6 @@
     "webpack-bundle-analyzer": "2.11.1",
     "webpack-dev-server": "3.1.4",
     "webpackbar": "^2.6.1"
-  },
-  "jest": {
-    "moduleNameMapper": {
-      "\\.((s)css|less)$": "identity-obj-proxy"
-    },
-    "setupTestFrameworkScriptFile": "<rootDir>/setupTests.js"
   },
   "repository": "https://github.com/adcpm/busy.git",
   "license": "MIT"

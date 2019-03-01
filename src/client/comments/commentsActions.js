@@ -1,9 +1,11 @@
-import { createAction } from 'redux-actions';
 import { createCommentPermlink, getBodyPatchIfSmaller } from '../vendor/steemitHelpers';
 import { notify } from '../app/Notification/notificationActions';
 import { jsonParse } from '../helpers/formatter';
 import { createPostMetadata } from '../helpers/postHelpers';
-import { getPostKey } from '../helpers/stateHelpers';
+import { createAsyncActionType, getPostKey } from '../helpers/stateHelpers';
+import { findRoot } from '../helpers/commentHelpers';
+
+export const GET_SINGLE_COMMENT = createAsyncActionType('@comments/GET_SINGLE_COMMENT');
 
 export const GET_COMMENTS = 'GET_COMMENTS';
 export const GET_COMMENTS_START = 'GET_COMMENTS_START';
@@ -20,10 +22,16 @@ export const LIKE_COMMENT_START = '@comments/LIKE_COMMENT_START';
 export const LIKE_COMMENT_SUCCESS = '@comments/LIKE_COMMENT_SUCCESS';
 export const LIKE_COMMENT_ERROR = '@comments/LIKE_COMMENT_ERROR';
 
-export const RELOAD_EXISTING_COMMENT = '@comments/RELOAD_EXISTING_COMMENT';
-export const reloadExistingComment = createAction(RELOAD_EXISTING_COMMENT, undefined, data => ({
-  commentId: getPostKey(data),
-}));
+export const getSingleComment = (author, permlink, focus = false) => (
+  dispatch,
+  getState,
+  { steemAPI },
+) =>
+  dispatch({
+    type: GET_SINGLE_COMMENT.ACTION,
+    payload: steemAPI.sendAsync('get_content', [author, permlink]),
+    meta: { focus },
+  });
 
 const getRootCommentsList = apiRes =>
   Object.keys(apiRes.content)
@@ -37,7 +45,6 @@ const getCommentsChildrenLists = apiRes => {
       childKey => getPostKey(apiRes.content[childKey]),
     );
   });
-
   return listsById;
 };
 
@@ -48,11 +55,7 @@ const getCommentsChildrenLists = apiRes => {
  * preventing loading icon to be dispalyed
  * @param {object} focusedComment Object with author and permlink to which focus after loading
  */
-export const getComments = (postId, reload = false, focusedComment = undefined) => (
-  dispatch,
-  getState,
-  { steemAPI },
-) => {
+export const getComments = postId => (dispatch, getState, { steemAPI }) => {
   const { posts, comments } = getState();
 
   const content = posts.list[postId] || comments.comments[postId];
@@ -72,8 +75,6 @@ export const getComments = (postId, reload = false, focusedComment = undefined) 
     },
     meta: {
       id: postId,
-      reload,
-      focusedComment,
     },
   });
 };
@@ -84,7 +85,7 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
   { steemConnectAPI },
 ) => {
   const { category, id, permlink: parentPermlink, author: parentAuthor } = parentPost;
-  const { auth } = getState();
+  const { auth, comments } = getState();
 
   if (!auth.isAuthenticated) {
     return dispatch(notify('You have to be logged in to comment', 'error'));
@@ -107,17 +108,19 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
 
   const newBody = isUpdating ? getBodyPatchIfSmaller(originalComment.body, body) : body;
 
+  let rootPostId = null;
+  if (parentPost.parent_author) {
+    const { comments: commentsState } = comments;
+    rootPostId = getPostKey(findRoot(commentsState, parentPost));
+  }
+
   return dispatch({
     type: SEND_COMMENT,
     payload: {
       promise: steemConnectAPI
         .comment(parentAuthor, parentPermlink, author, permlink, '', newBody, jsonMetadata)
-        .then(resp => {
-          const focusedComment = {
-            author: resp.result.operations[0][1].author,
-            permlink: resp.result.operations[0][1].permlink,
-          };
-          dispatch(getComments(id, true, focusedComment));
+        .then(() => {
+          dispatch(getSingleComment(author, permlink, !isUpdating));
 
           if (window.analytics) {
             window.analytics.track('Comment', {
@@ -130,6 +133,7 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
     },
     meta: {
       parentId: parentPost.id,
+      rootPostId,
       isEditing: false,
       isReplyToComment: parentPost.id !== id,
     },
@@ -139,7 +143,7 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
 export const likeComment = (commentId, weight = 10000, vote = 'like', retryCount = 0) => (
   dispatch,
   getState,
-  { steemAPI, steemConnectAPI },
+  { steemConnectAPI },
 ) => {
   const { auth, comments } = getState();
 
@@ -154,11 +158,7 @@ export const likeComment = (commentId, weight = 10000, vote = 'like', retryCount
     type: LIKE_COMMENT,
     payload: {
       promise: steemConnectAPI.vote(voter, author, permlink, weight).then(res => {
-        // reload comment data to fetch payout after vote
-        steemAPI.sendAsync('get_content', [author, permlink]).then(data => {
-          dispatch(reloadExistingComment(data));
-          return data;
-        });
+        dispatch(getSingleComment(author, permlink));
         return res;
       }),
     },

@@ -15,6 +15,7 @@ import {
   supportedObjectFields,
   websiteFields,
   objectImageFields,
+  phoneFields,
 } from '../../common/constants/listOfFields';
 import {
   getObject,
@@ -23,6 +24,7 @@ import {
   getAuthenticatedUser,
   getVotingPower,
   getVotePercent,
+  getFollowingObjectsList,
 } from '../reducers';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
@@ -39,10 +41,14 @@ import {
   ALLOWED_IMG_FORMATS,
   websiteTitleRegExp,
   objectURLValidationRegExp,
+  phoneNameValidationRegExp,
+  emailValidationRegExp,
 } from '../../common/constants/validation';
 import { getHasDefaultSlider, getVoteValue } from '../helpers/user';
 import LikeSection from './LikeSection';
 import { getFieldWithMaxWeight } from './wObjectHelper';
+import FollowObjectForm from './FollowObjectForm';
+import { followObject } from '../object/wobjActions';
 
 @connect(
   state => ({
@@ -52,8 +58,9 @@ import { getFieldWithMaxWeight } from './wObjectHelper';
     rate: getRate(state),
     sliderMode: getVotingPower(state),
     defaultVotePercent: getVotePercent(state),
+    followingList: getFollowingObjectsList(state),
   }),
-  { appendObject },
+  { appendObject, followObject },
 )
 @injectIntl
 @Form.create()
@@ -68,12 +75,14 @@ export default class AppendForm extends Component {
     wObject: PropTypes.shape(),
     form: PropTypes.shape(),
     appendObject: PropTypes.func,
+    followObject: PropTypes.func,
     intl: PropTypes.shape(),
     user: PropTypes.shape(),
     rewardFund: PropTypes.shape(),
     rate: PropTypes.number,
     sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
     defaultVotePercent: PropTypes.number.isRequired,
+    followingList: PropTypes.arrayOf(PropTypes.string),
   };
 
   static defaultProps = {
@@ -86,12 +95,14 @@ export default class AppendForm extends Component {
     wObject: {},
     form: {},
     appendObject: () => {},
+    followObject: () => {},
     intl: {},
     user: {},
     rewardFund: {},
     rate: 1,
     sliderMode: 'auto',
     defaultVotePercent: 100,
+    followingList: [],
   };
 
   state = {
@@ -143,6 +154,10 @@ export default class AppendForm extends Component {
       }
     }
 
+    if (getFieldValue('follow')) {
+      await this.props.followObject(wObject.author_permlink);
+    }
+
     this.setState({ loading: false });
 
     this.props.hideModal();
@@ -161,15 +176,18 @@ export default class AppendForm extends Component {
   };
 
   onUpdateCoordinate = positionField => e => {
-    this.props.form.setFieldsValue({
-      [positionField]: Number(e.target.value),
-    });
+    const value = Number(e.target.value);
+    if (!_.isNan(value)) {
+      this.props.form.setFieldsValue({
+        [positionField]: Number(e.target.value),
+      });
+    }
   };
 
   getNewPostData = form => {
     const { wObject } = this.props;
     const { getFieldValue } = this.props.form;
-    const { body, preview, currentField, currentLocale, like, ...rest } = form;
+    const { body, preview, currentField, currentLocale, like, follow, ...rest } = form;
 
     const field = getFieldValue('currentField');
     let locale = getFieldValue('currentLocale');
@@ -182,7 +200,8 @@ export default class AppendForm extends Component {
       case objectFields.title:
       case objectFields.description:
       case objectFields.avatar:
-      case objectFields.background: {
+      case objectFields.background:
+      case objectFields.email: {
         fieldBody.push(rest[currentField]);
         break;
       }
@@ -192,6 +211,10 @@ export default class AppendForm extends Component {
       }
       case objectFields.hashtag: {
         fieldBody = rest[objectFields.hashtag];
+        break;
+      }
+      case objectFields.phone: {
+        fieldBody.push(rest[phoneFields.name] || '');
         break;
       }
       default:
@@ -223,6 +246,19 @@ export default class AppendForm extends Component {
           [websiteFields.title]: form[websiteFields.title],
         };
       }
+
+      if (field === objectFields.phone) {
+        fieldsObject = {
+          ...fieldsObject,
+          [phoneFields.number]: form[phoneFields.number],
+        };
+
+        data.body = `@${data.author} added ${field}(${langReadable}):\n ${bodyField.replace(
+          /[{}"]/g,
+          '',
+        )} ${form[phoneFields.number].replace(/[{}"]/g, '')}  `;
+      }
+
       data.field = fieldsObject;
 
       data.permlink = `${data.author}-${Math.random()
@@ -287,10 +323,7 @@ export default class AppendForm extends Component {
       if (err || this.checkRequiredField()) {
         // this.props.onError();
       } else {
-        const valuesToSend = {
-          ...values,
-        };
-        this.onSubmit(valuesToSend);
+        this.onSubmit(values);
       }
     });
   };
@@ -436,6 +469,23 @@ export default class AppendForm extends Component {
         ),
       );
     callback();
+  };
+
+  checkLengthHashtags = intl => (rule, values, callback) => {
+    for (const val of values) {
+      if (val.length > 100) {
+        return callback(
+          intl.formatMessage(
+            {
+              id: 'value_error_long',
+              defaultMessage: "Value can't be longer than 100 characters.",
+            },
+            { value: 100 },
+          ),
+        );
+      }
+    }
+    return callback();
   };
 
   renderContentValue = currentField => {
@@ -624,7 +674,7 @@ export default class AppendForm extends Component {
                   max: 512,
                   message: intl.formatMessage(
                     {
-                      id: 'value_error_too_long',
+                      id: 'value_error_long',
                       defaultMessage: "Value can't be longer than 512 characters.",
                     },
                     { value: 512 },
@@ -1050,6 +1100,7 @@ export default class AppendForm extends Component {
                   ),
                   type: 'array',
                 },
+                { validator: this.checkLengthHashtags(intl) },
                 { validator: this.checkHashtags(intl) },
                 {
                   validator: this.validateFieldValue,
@@ -1071,13 +1122,154 @@ export default class AppendForm extends Component {
           </Form.Item>
         );
       }
+      case objectFields.phone: {
+        return (
+          <React.Fragment>
+            <Form.Item>
+              {getFieldDecorator(phoneFields.name, {
+                rules: [
+                  {
+                    max: 100,
+                    message: intl.formatMessage(
+                      {
+                        id: 'value_error_long',
+                        defaultMessage: "Value can't be longer than 100 characters.",
+                      },
+                      { value: 100 },
+                    ),
+                  },
+                  {
+                    pattern: phoneNameValidationRegExp,
+                    message: intl.formatMessage({
+                      id: 'website_symbols_validation',
+                      defaultMessage: "Please don't use special symbols",
+                    }),
+                  },
+                  {
+                    validator: this.validateFieldValue,
+                  },
+                ],
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'name_phone_placeholder',
+                    defaultMessage: 'Phone name',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator(phoneFields.number, {
+                rules: [
+                  {
+                    max: 100,
+                    message: intl.formatMessage(
+                      {
+                        id: 'value_error_long',
+                        defaultMessage: "Value can't be longer than 100 characters.",
+                      },
+                      { value: 100 },
+                    ),
+                  },
+                  {
+                    required: true,
+                    message: intl.formatMessage(
+                      {
+                        id: 'field_error',
+                        defaultMessage: 'Field is required',
+                      },
+                      { field: 'Phone number' },
+                    ),
+                  },
+                  {
+                    pattern: phoneNameValidationRegExp,
+                    message: intl.formatMessage({
+                      id: 'website_symbols_validation',
+                      defaultMessage: "Please don't use special symbols",
+                    }),
+                  },
+                  {
+                    validator: this.validateFieldValue,
+                  },
+                ],
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'number_phone_placeholder',
+                    defaultMessage: 'Phone number',
+                  })}
+                />,
+              )}
+            </Form.Item>
+          </React.Fragment>
+        );
+      }
+      case objectFields.email: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.email, {
+              rules: [
+                {
+                  max: 256,
+                  message: intl.formatMessage(
+                    {
+                      id: 'value_error_long',
+                      defaultMessage: "Value can't be longer than 100 characters.",
+                    },
+                    { value: 256 },
+                  ),
+                },
+                {
+                  required: true,
+                  message: intl.formatMessage(
+                    {
+                      id: 'field_error',
+                      defaultMessage: 'Field is required',
+                    },
+                    { field: 'Email address' },
+                  ),
+                },
+                {
+                  pattern: emailValidationRegExp,
+                  message: intl.formatMessage({
+                    id: 'email_append_validation',
+                    defaultMessage: 'Please enter valid email',
+                  }),
+                },
+                {
+                  validator: this.validateFieldValue,
+                },
+              ],
+            })(
+              <Input
+                className={classNames('AppendForm__input', {
+                  'validation-error': !this.state.isSomeValue,
+                })}
+                disabled={loading}
+                placeholder={intl.formatMessage({
+                  id: 'email_placeholder',
+                  defaultMessage: 'Email address',
+                })}
+              />,
+            )}
+          </Form.Item>
+        );
+      }
       default:
         return null;
     }
   };
 
   render() {
-    const { currentLocale, currentField, form } = this.props;
+    const { currentLocale, currentField, form, followingList, wObject } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const { loading } = this.state;
 
@@ -1156,6 +1348,10 @@ export default class AppendForm extends Component {
           onLikeClick={this.handleLikeClick}
           disabled={loading}
         />
+
+        {followingList.includes(wObject.author_permlink) ? null : (
+          <FollowObjectForm loading={loading} form={form} />
+        )}
 
         {getFieldValue('currentField') !== 'auto' && (
           <Form.Item className="AppendForm__bottom__submit">

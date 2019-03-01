@@ -25,7 +25,7 @@ import RankTag from '../RankTag';
 import StoryPreview from './StoryPreview';
 import StoryFooter from '../StoryFooter/StoryFooter';
 import Avatar from '../Avatar';
-import Topic from '../Button/Topic';
+// import Topic from '../Button/Topic';
 import NSFWStoryPreviewMessage from './NSFWStoryPreviewMessage';
 import HiddenStoryPreviewMessage from './HiddenStoryPreviewMessage';
 import DMCARemovedMessage from './DMCARemovedMessage';
@@ -36,6 +36,7 @@ import PostQuotation from '../../../investarena/components/PostQuotation';
 import PostSellBuy from '../../../investarena/components/PostSellBuy';
 import { jsonParse } from '../../helpers/formatter';
 import PostForecast from '../../../investarena/components/PostForecast/PostForecast';
+import ObjectAvatar from '../ObjectAvatar';
 
 @injectIntl
 @withRouter
@@ -56,6 +57,7 @@ class Story extends React.Component {
     pendingBookmark: PropTypes.bool,
     saving: PropTypes.bool,
     ownPost: PropTypes.bool,
+    singlePostVew: PropTypes.bool,
     sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
     history: PropTypes.shape(),
     showPostModal: PropTypes.func,
@@ -75,6 +77,7 @@ class Story extends React.Component {
     pendingBookmark: false,
     saving: false,
     ownPost: false,
+    singlePostVew: false,
     sliderMode: 'auto',
     history: {},
     showPostModal: () => {},
@@ -127,6 +130,31 @@ class Story extends React.Component {
     return true;
   }
 
+  getWobjects = wobjects => {
+    let i = 0;
+    return _.map(wobjects, wobj => {
+      if (i < 5) {
+        const pathName = `/object/${wobj.author_permlink}`;
+        const nameFields = _.filter(wobj.fields, o => o.name === 'name');
+        const nameField = _.maxBy(nameFields, 'weight');
+        i += 1;
+        return (
+          <Link
+            key={wobj.author_permlink}
+            to={{ pathname: pathName }}
+            title={`${this.props.intl.formatMessage({
+              id: 'related_to_obj',
+              defaultMessage: 'Related to object',
+            })} ${nameField.body} ${wobj.percent ? `(${wobj.percent}%)` : ''}`}
+          >
+            <ObjectAvatar item={wobj} size={40} />
+          </Link>
+        );
+      }
+      return null;
+    });
+  };
+
   handleLikeClick(post, postState, weight = 10000) {
     const { sliderMode, user, defaultVotePercent } = this.props;
     const author = post.author_original || post.author;
@@ -172,7 +200,7 @@ class Story extends React.Component {
         this.handleFollowClick(post);
         break;
       case 'save':
-        this.props.toggleBookmark(post.id, post.author, post.permlink);
+        this.props.toggleBookmark(post.id, post.author_original || post.author, post.permlink);
         break;
       case 'report':
         this.handleReportClick(post, postState);
@@ -290,6 +318,7 @@ class Story extends React.Component {
       saving,
       rewardFund,
       ownPost,
+      singlePostVew,
       sliderMode,
       defaultVotePercent,
     } = this.props;
@@ -303,7 +332,7 @@ class Story extends React.Component {
 
     let rebloggedUI = null;
 
-    if (post.first_reblogged_by) {
+    if (post.reblogged_by) {
       rebloggedUI = (
         <div className="Story__reblog">
           <i className="iconfont icon-share1" />
@@ -312,8 +341,8 @@ class Story extends React.Component {
             defaultMessage="{username} reblogged"
             values={{
               username: (
-                <Link to={`/@${post.first_reblogged_by}`}>
-                  <span className="username">{post.first_reblogged_by}</span>
+                <Link to={`/@${post.reblogged_by[0]}`}>
+                  <span className="username">{post.reblogged_by[0]}</span>
                 </Link>
               ),
             }}
@@ -374,7 +403,13 @@ class Story extends React.Component {
                   expiredAt={forecast.expiredAt}
                 />
               ) : (
-                <Topic name={post.category} />
+                <div className="Story__topics">
+                  <div className="Story__published">
+                    <div className="PostWobject__wrap">
+                      {post.wobjects && this.getWobjects(post.wobjects)}
+                    </div>
+                  </div>
+                </div>
               )}
             </span>
           </div>
@@ -449,6 +484,7 @@ class Story extends React.Component {
               pendingFlag={pendingFlag}
               rewardFund={rewardFund}
               ownPost={ownPost}
+              singlePostVew={singlePostVew}
               sliderMode={sliderMode}
               defaultVotePercent={defaultVotePercent}
               onLikeClick={this.handleLikeClick}

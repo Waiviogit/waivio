@@ -35,7 +35,7 @@ class Map extends React.Component {
               <InfoWindow>
                 <Link
                   className="tooltip-wrap"
-                  to={{ pathname: `/object/@${this.props.wobject.author_permlink}` }}
+                  to={{ pathname: `/object/${this.props.wobject.author_permlink}` }}
                 >
                   <ObjectAvatar item={this.props.wobject} size={34} />
                   <h4>{this.getObjectName(this.props.wobject)}</h4>

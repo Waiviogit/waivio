@@ -1,0 +1,26 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.CatalogWrap {
+  background-color: @white;
+  border: 1px solid @border-color-base;
+  padding: 10px;
+  &__breadcrumb {
+    margin-bottom: 10px;
+  }
+
+  &__add-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background: @white;
+    border: @base-border;
+    padding: 16px 16px 2px 16px;
+    margin-bottom: 12px;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 500;
+  }
+}
+
+@import 'CatalogWrap-nightmode';

@@ -17,6 +17,7 @@ import { sortComments } from '../../helpers/sortHelpers';
 import ReputationTag from '../../components/ReputationTag';
 import CommentForm from './CommentForm';
 import EmbeddedCommentForm from './EmbeddedCommentForm';
+import QuickCommentEditor from './QuickCommentEditor';
 import Avatar from '../Avatar';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import CommentFooter from '../CommentFooter/CommentFooter';
@@ -29,17 +30,17 @@ class Comment extends React.Component {
     user: PropTypes.shape().isRequired,
     intl: PropTypes.shape().isRequired,
     comment: PropTypes.shape().isRequired,
+    isQuickComment: PropTypes.bool.isRequired,
     parent: PropTypes.shape().isRequired,
     sort: PropTypes.oneOf(['BEST', 'NEWEST', 'OLDEST', 'AUTHOR_REPUTATION']),
     rewardFund: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
-    rewriteLinks: PropTypes.bool,
     sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
     rootPostAuthor: PropTypes.string,
     commentsChildren: PropTypes.shape(),
     pendingVotes: PropTypes.arrayOf(
       PropTypes.shape({
-        id: PropTypes.number,
+        id: PropTypes.string,
         percent: PropTypes.number,
       }),
     ),
@@ -53,7 +54,6 @@ class Comment extends React.Component {
   static defaultProps = {
     sort: 'BEST',
     sliderMode: 'auto',
-    rewriteLinks: false,
     rootPostAuthor: undefined,
     commentsChildren: undefined,
     pendingVotes: [],
@@ -69,7 +69,7 @@ class Comment extends React.Component {
     this.state = {
       replyOpen: false,
       editOpen: false,
-      collapsed: false,
+      collapsed: props.isQuickComment && props.depth === 1 && props.comment.children,
       showCommentFormLoading: false,
       commentFormText: '',
       showHiddenComment: false,
@@ -83,7 +83,7 @@ class Comment extends React.Component {
     const { hash } = window.location;
 
     const anchorLink = `#@${comment.author}/${comment.permlink}`;
-    if (hash.indexOf(anchorLink) === 0 || comment.focus) {
+    if (hash.indexOf(anchorLink) === 0 || (comment.focus && !this.props.isQuickComment)) {
       if (hash.endsWith('-edit')) {
         this.handleEditClick();
       }
@@ -221,7 +221,7 @@ class Comment extends React.Component {
       sliderMode,
       rewardFund,
       defaultVotePercent,
-      rewriteLinks,
+      isQuickComment,
     } = this.props;
     const { showHiddenComment } = this.state;
     const anchorId = `@${comment.author}/${comment.permlink}`;
@@ -233,25 +233,29 @@ class Comment extends React.Component {
 
     let content = null;
 
+    const commentEditor = props => {
+      if (isQuickComment) {
+        return <QuickCommentEditor {...props} />;
+      }
+      return this.state.editOpen ? <EmbeddedCommentForm {...props} /> : <CommentForm {...props} />;
+    };
+
     if (this.state.editOpen) {
-      content = (
-        <EmbeddedCommentForm
-          parentPost={parent}
-          inputValue={comment.body}
-          isLoading={this.state.showCommentFormLoading}
-          onSubmit={this.handleEditComment}
-          onClose={this.handleEditClick}
-          onImageInserted={this.handleImageInserted}
-          onImageInvalid={this.handleImageInvalid}
-        />
-      );
+      content = commentEditor({
+        parentPost: parent,
+        username: '',
+        inputValue: comment.body,
+        onSubmit: this.handleEditComment,
+        onImageInserted: this.handleImageInserted,
+        onImageInvalid: this.handleImageInvalid,
+      });
     } else {
       content = this.state.collapsed ? (
         <div className="Comment__content__collapsed">
           <FormattedMessage id="comment_collapsed" defaultMessage="Comment collapsed" />
         </div>
       ) : (
-        <BodyContainer rewriteLinks={rewriteLinks} body={comment.body} />
+        <BodyContainer body={comment.body} />
       );
     }
 
@@ -324,18 +328,18 @@ class Comment extends React.Component {
             onReplyClick={this.handleReplyClick}
             onEditClick={this.handleEditClick}
           />
-          {this.state.replyOpen && user.name && (
-            <CommentForm
-              username={user.name}
-              parentPost={comment}
-              isSmall={comment.depth !== 1}
-              onSubmit={this.handleSubmitComment}
-              isLoading={this.state.showCommentFormLoading}
-              inputValue={this.state.commentFormText}
-              onImageInserted={this.handleImageInserted}
-              onImageInvalid={this.handleImageInvalid}
-            />
-          )}
+          {this.state.replyOpen &&
+            user.name &&
+            commentEditor({
+              username: user.name,
+              parentPost: comment,
+              isSmall: comment.depth !== 1,
+              onSubmit: this.handleSubmitComment,
+              isLoading: this.state.showCommentFormLoading,
+              inputValue: this.state.commentFormText,
+              onImageInserted: this.handleImageInserted,
+              onImageInvalid: this.handleImageInvalid,
+            })}
           <div
             className={classNames('Comment__replies', {
               'Comment__replies--no-indent': depth >= 1,
@@ -352,6 +356,7 @@ class Comment extends React.Component {
                   depth={depth + 1}
                   intl={this.props.intl}
                   comment={child}
+                  isQuickComment={this.props.isQuickComment}
                   parent={comment}
                   sort={sort}
                   pendingVotes={pendingVotes}
@@ -361,7 +366,6 @@ class Comment extends React.Component {
                   rewardFund={rewardFund}
                   sliderMode={sliderMode}
                   defaultVotePercent={defaultVotePercent}
-                  rewriteLinks={rewriteLinks}
                   onLikeClick={this.props.onLikeClick}
                   onDislikeClick={this.props.onDislikeClick}
                   onSendComment={this.props.onSendComment}
