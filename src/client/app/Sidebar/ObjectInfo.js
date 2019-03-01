@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { haveAccess, accessTypesArr } from '../../helpers/wObjectHelper';
+import { haveAccess, hasType, accessTypesArr } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import { getFieldWithMaxWeight, getFieldsCount, getWebsiteField } from '../../object/wObjectHelper';
 import {
@@ -137,6 +137,15 @@ class ObjectInfo extends React.Component {
         </div>
       ) : null;
     };
+
+    const listSection = (
+      <React.Fragment>
+        <div className="object-sidebar__section-title">
+          <FormattedMessage id="list" defaultMessage="List" />
+        </div>
+        {listItem(objectFields.sorting, null)}
+      </React.Fragment>
+    );
 
     const settingsSection = (
       <React.Fragment>
@@ -348,6 +357,7 @@ class ObjectInfo extends React.Component {
               ),
             )}
             {listItem(objectFields.link, <SocialLinks profile={profile} />)}
+            {accessExtend && hasType(wobject, 'list') && listSection}
             {accessExtend && settingsSection}
           </div>
         )}
