@@ -12,7 +12,7 @@ import {
   getFilteredContent,
 } from '../helpers/stateHelpers';
 import { getObjectComments } from '../feed/feedActions';
-import { objectFields, supportedObjectFields } from '../../common/constants/listOfFields';
+import { objectFields, getAllowedFieldsByObjType } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
 import AppendModal from './AppendModal';
@@ -130,7 +130,7 @@ export default class WobjHistory extends React.Component {
             value={field}
             onChange={this.handleFieldChange}
           >
-            {supportedObjectFields.map(f => (
+            {getAllowedFieldsByObjType(this.props.object.object_type).map(f => (
               <Select.Option key={f}>
                 <FormattedMessage id={`object_field_${f}`} defaultMessage={f} />
               </Select.Option>
