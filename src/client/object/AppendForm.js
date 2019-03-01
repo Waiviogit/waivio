@@ -164,9 +164,12 @@ export default class AppendForm extends Component {
   };
 
   onUpdateCoordinate = positionField => e => {
-    this.props.form.setFieldsValue({
-      [positionField]: Number(e.target.value),
-    });
+    const value = Number(e.target.value);
+    if (!_.isNan(value)) {
+      this.props.form.setFieldsValue({
+        [positionField]: Number(e.target.value),
+      });
+    }
   };
 
   getNewPostData = form => {
