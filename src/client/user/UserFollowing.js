@@ -42,7 +42,7 @@ export default class UserFollowing extends React.Component {
 
   objectFetcher = skip => {
     const { match } = this.props;
-    return getWobjectFollowing(match.params.name, skip.length, UserFollowing.limit);
+    return getWobjectFollowing(match.params.name, skip, UserFollowing.limit);
   };
 
   render() {
