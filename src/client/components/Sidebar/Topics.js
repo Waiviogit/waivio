@@ -43,6 +43,7 @@ class Topics extends React.Component {
             id={favorite ? 'favorite_topics' : 'trending_topics'}
             defaultMessage={favorite ? 'Favorite topics' : 'Trending topics'}
           />
+          (#)
         </h4>
         {loading && <Loading center={false} />}
         {!loading && (

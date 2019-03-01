@@ -460,6 +460,43 @@ class Editor extends React.Component {
             />,
           )}
         </Form.Item>
+        <Form.Item>
+          {getFieldDecorator('body', {
+            rules: [
+              {
+                required: true,
+                message: intl.formatMessage({
+                  id: 'story_error_empty',
+                  defaultMessage: "Story content can't be empty.",
+                }),
+              },
+            ],
+          })(
+            <EditorInput
+              rows={12}
+              addon={
+                <FormattedMessage
+                  id="reading_time"
+                  defaultMessage={'{words} words / {min} min read'}
+                  values={{
+                    words,
+                    min: Math.ceil(minutes),
+                  }}
+                />
+              }
+              placeholder={intl.formatMessage({
+                id: 'story_placeholder',
+                defaultMessage: 'Add content',
+              })}
+              onChange={this.onUpdate}
+              onImageUpload={this.props.onImageUpload}
+              onImageInvalid={this.props.onImageInvalid}
+              inputId={'editor-inputfile'}
+              canCreateNewObject={canCreateNewObject}
+              onAddLinkedObject={this.handleAddLinkedObject}
+            />,
+          )}
+        </Form.Item>
         <Form.Item
           label={
             <span className="Editor__label">
@@ -499,44 +536,6 @@ class Editor extends React.Component {
               })}
               dropdownStyle={{ display: 'none' }}
               tokenSeparators={[' ', ',']}
-            />,
-          )}
-        </Form.Item>
-
-        <Form.Item>
-          {getFieldDecorator('body', {
-            rules: [
-              {
-                required: true,
-                message: intl.formatMessage({
-                  id: 'story_error_empty',
-                  defaultMessage: "Story content can't be empty.",
-                }),
-              },
-            ],
-          })(
-            <EditorInput
-              rows={12}
-              addon={
-                <FormattedMessage
-                  id="reading_time"
-                  defaultMessage={'{words} words / {min} min read'}
-                  values={{
-                    words,
-                    min: Math.ceil(minutes),
-                  }}
-                />
-              }
-              placeholder={intl.formatMessage({
-                id: 'story_placeholder',
-                defaultMessage: 'Add content',
-              })}
-              onChange={this.onUpdate}
-              onImageUpload={this.props.onImageUpload}
-              onImageInvalid={this.props.onImageInvalid}
-              inputId={'editor-inputfile'}
-              canCreateNewObject={canCreateNewObject}
-              onAddLinkedObject={this.handleAddLinkedObject}
             />,
           )}
         </Form.Item>
