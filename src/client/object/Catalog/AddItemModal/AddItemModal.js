@@ -183,6 +183,9 @@ class AddItemModal extends Component {
                 )}
               </Form.Item>
               <ListItem wobject={selectedItem} />
+
+              <Form.Item>{}</Form.Item>
+
               <LikeSection form={form} onVotePercentChange={this.handleVotePercentChange} />
               <div className="modal-content__row align-right">
                 <Button

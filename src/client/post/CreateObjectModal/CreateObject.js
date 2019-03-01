@@ -3,11 +3,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Form, Input, Select, Button, Modal } from 'antd';
+import './CreateObject.less';
 import LANGUAGES from '../../translations/languages';
 import { getLanguageText } from '../../translations';
 import { objectFields } from '../../../common/constants/listOfFields';
 import LikeSection from '../../object/LikeSection';
-import './CreateObject.less';
+import FollowObjectForm from '../../object/FollowObjectForm';
 
 @injectIntl
 @Form.create()
@@ -51,7 +52,7 @@ class CreateObject extends React.Component {
         objData.isPostingOpen = true;
         objData.votePercent = this.state.votePercent * 100;
         this.props.handleCreateObject(objData);
-        _.delay(this.toggleModal, 2500);
+        _.delay(this.toggleModal, 4500);
       }
     });
   };
@@ -60,6 +61,7 @@ class CreateObject extends React.Component {
     const languageOptions = [];
     const { getFieldDecorator } = this.props.form;
     const { currentLocaleInList, intl, form } = this.props;
+    const { loading } = this.state;
 
     if (currentLocaleInList === 'auto') {
       languageOptions.push(
@@ -123,6 +125,7 @@ class CreateObject extends React.Component {
                 ],
               })(
                 <Input
+                  disabled={loading}
                   className="Editor__title"
                   placeholder={intl.formatMessage({
                     id: 'value_placeholder',
@@ -143,7 +146,11 @@ class CreateObject extends React.Component {
                     }),
                   },
                 ],
-              })(<Select style={{ width: '100%' }}>{languageOptions}</Select>)}
+              })(
+                <Select disabled={loading} style={{ width: '100%' }}>
+                  {languageOptions}
+                </Select>,
+              )}
             </Form.Item>
             <Form.Item>
               {getFieldDecorator('type', {
@@ -158,6 +165,7 @@ class CreateObject extends React.Component {
                 ],
               })(
                 <Input
+                  disabled={loading}
                   className="Editor__title"
                   placeholder={intl.formatMessage({
                     id: 'placeholder_obj_type',
@@ -166,7 +174,12 @@ class CreateObject extends React.Component {
                 />,
               )}
             </Form.Item>
-            <LikeSection form={form} onVotePercentChange={this.handleVotePercentChange} />
+            <LikeSection
+              form={form}
+              onVotePercentChange={this.handleVotePercentChange}
+              disabled={loading}
+            />
+            <FollowObjectForm form={form} loading={loading} />
             <Form.Item className="Editor__bottom__submit">
               <Button type="primary" onClick={this.handleSubmit} loading={this.state.loading}>
                 {intl.formatMessage({ id: 'confirm', defaultMessage: 'Confirm' })}

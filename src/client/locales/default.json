@@ -497,8 +497,9 @@
   "add_catalog_item": "@{currentUserName} added category <strong>{category}</strong> to catalog.",
   "related_to_object": "Related to object",
   "emptyList": "This list is empty",
-  "add_waivio_beneficiary": "Share {share}% of this post rewards with Waivio",
   "add_list_item": "@{currentUserName} added {itemType} <strong>{itemValue}</strong> to list.",
   "list": "list",
-  "list_update": "Update list"
+  "list_update": "Update list",
+  "add_waivio_beneficiary": "Share {share}% of this post rewards with Waivio",
+  "follow_extra": "Stay informed about object updates submitted by other users"
 }
