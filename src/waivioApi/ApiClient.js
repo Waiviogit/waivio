@@ -65,12 +65,18 @@ export const getMoreFeedContentByObject = ({ authorPermlink, startId, limit = 10
       .catch(error => reject(error));
   });
 
-export const postCreateWaivioObject = wObject =>
-  fetch(`${config.objectsBot.url}${config.objectsBot.createObject}`, {
-    headers,
-    method: 'POST',
-    body: JSON.stringify(wObject),
-  }).then(res => res.json());
+export const postCreateWaivioObject = requestBody =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.objectsBot.apiPrefix}${config.objectsBot.createObject}`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(requestBody),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
 
 export const getUserFeedContent = (feedUserName, limit = 10) =>
   new Promise((resolve, reject) => {

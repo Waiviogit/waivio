@@ -8,9 +8,8 @@ import { getAuthenticatedUser } from '../../reducers';
 import { MAXIMUM_UPLOAD_SIZE } from '../../helpers/image';
 import { getClientWObj } from '../../adapters';
 import { getLocale } from '../../settings/settingsReducer';
-import { getObjectsByIds, handleErrors } from '../../../waivioApi/ApiClient';
-import config from '../../../waivioApi/routes';
-import { voteObject } from '../../object/wobjActions';
+import * as api from '../../../waivioApi/ApiClient';
+import { voteObject, followObject } from '../../object/wobjActions';
 import { createPermlink } from '../../vendor/steemitHelpers';
 import { generateRandomString } from '../../helpers/wObjectHelper';
 
@@ -26,6 +25,7 @@ export default function withEditor(WrappedComponent) {
     }),
     {
       voteObject,
+      followObject,
     },
   )
   @injectIntl
@@ -37,18 +37,20 @@ export default function withEditor(WrappedComponent) {
       user: PropTypes.shape().isRequired,
       locale: PropTypes.string,
       voteObject: PropTypes.func.isRequired,
+      followObject: PropTypes.func.isRequired,
     };
 
     static defaultProps = {
       locale: 'auto',
       voteObject: () => {},
+      followObject: () => {},
     };
 
     getObjectsByAuthorPermlinks = objectIds => {
       const locale = this.props.locale === 'auto' ? 'en-US' : this.props.locale;
-      return getObjectsByIds({ authorPermlinks: objectIds, locale }).then(res =>
-        res.map(obj => getClientWObj(obj)),
-      );
+      return api
+        .getObjectsByIds({ authorPermlinks: objectIds, locale })
+        .then(res => res.map(obj => getClientWObj(obj)));
     };
 
     handleImageUpload = (blob, callback, errorCallback) => {
@@ -94,54 +96,53 @@ export default function withEditor(WrappedComponent) {
       );
     };
 
-    handleCreateObject = (obj, callback, errorCallback) => {
-      const {
-        intl: { formatMessage },
-      } = this.props;
-      createPermlink(obj.id, this.props.user.name, '', 'waiviodev').then(permlink => {
-        const requestBody = {
-          author: this.props.user.name,
-          title: `${obj.name} - waivio object`,
-          body: `Waivio object "${obj.name}" has been created`,
-          permlink: `${generateRandomString(3).toLowerCase()}-${permlink}`,
-          objectName: obj.name,
-          locale: obj.locale || this.props.locale === 'auto' ? 'en-US' : this.props.locale,
-          type: obj.type,
-          isExtendingOpen: obj.isExtendingOpen,
-          isPostingOpen: obj.isPostingOpen,
-        };
+    handleCreateObject = async (obj, callback, errorCallback) => {
+      const { formatMessage } = this.props.intl;
 
-        fetch(`${config.objectsBot.apiPrefix}${config.objectsBot.createObject}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestBody),
-        })
-          .then(handleErrors)
-          .then(res => res.json())
-          .then(res => {
-            message.success(
-              formatMessage({
-                id: 'create_object_success',
-                defaultMessage: 'Object has been created',
-              }),
-            );
-            this.props.voteObject(res.objectAuthor, res.objectPermlink, obj.votePercent);
+      const permlink = await createPermlink(obj.id, this.props.user.name, '', 'waiviodev');
 
-            callback(res);
-          })
-          .catch(err => {
-            console.log('err', err);
-            message.error(
-              formatMessage({
-                id: 'create_object_error',
-                defaultMessage: 'Something went wrong. Object is not created',
-              }),
-            );
-            errorCallback();
-          });
-      });
+      const requestBody = {
+        author: this.props.user.name,
+        title: `${obj.name} - waivio object`,
+        body: `Waivio object "${obj.name}" has been created`,
+        permlink: `${generateRandomString(3).toLowerCase()}-${permlink}`,
+        objectName: obj.name,
+        locale: obj.locale || this.props.locale === 'auto' ? 'en-US' : this.props.locale,
+        type: obj.type,
+        isExtendingOpen: obj.isExtendingOpen,
+        isPostingOpen: obj.isPostingOpen,
+      };
+
+      try {
+        const response = await api.postCreateWaivioObject(requestBody);
+        await this.props.voteObject(
+          response.objectAuthor,
+          response.objectPermlink,
+          obj.votePercent,
+        );
+
+        if (obj.follow) {
+          await this.props.followObject(requestBody.permlink);
+        }
+
+        await message.success(
+          formatMessage({
+            id: 'create_object_success',
+            defaultMessage: 'Object has been created',
+          }),
+        );
+
+        callback(response);
+      } catch (e) {
+        await message.error(
+          formatMessage({
+            id: 'create_object_error',
+            defaultMessage: 'Something went wrong. Object is not created',
+          }),
+        );
+
+        errorCallback();
+      }
     };
 
     render() {

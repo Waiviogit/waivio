@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { Form, Input, Select, Button } from 'antd';
+import { Form, Input, Select, Button, Checkbox } from 'antd';
 import './CreateObject.less';
 import LANGUAGES from '../../translations/languages';
 import { getLanguageText } from '../../translations';
@@ -97,7 +97,7 @@ class CreateObject extends React.Component {
         objData.isPostingOpen = true;
         objData.votePercent = this.state.votePercent * 100;
         this.props.handleCreateObject(objData);
-        _.delay(this.props.toggleModal, 2500);
+        _.delay(this.props.toggleModal, 3000);
       }
     });
   };
@@ -115,6 +115,7 @@ class CreateObject extends React.Component {
     const languageOptions = [];
     const { getFieldDecorator } = this.props.form;
     const { currentLocaleInList, intl, form } = this.props;
+    const { loading } = this.state;
 
     if (currentLocaleInList === 'auto') {
       languageOptions.push(
@@ -158,6 +159,7 @@ class CreateObject extends React.Component {
             ],
           })(
             <Input
+              disabled={loading}
               className="Editor__title"
               placeholder={intl.formatMessage({
                 id: 'value_placeholder',
@@ -178,7 +180,11 @@ class CreateObject extends React.Component {
                 }),
               },
             ],
-          })(<Select style={{ width: '100%' }}>{languageOptions}</Select>)}
+          })(
+            <Select disabled={loading} style={{ width: '100%' }}>
+              {languageOptions}
+            </Select>,
+          )}
         </Form.Item>
         <Form.Item>
           {getFieldDecorator('type', {
@@ -193,6 +199,7 @@ class CreateObject extends React.Component {
             ],
           })(
             <Input
+              disabled={loading}
               className="Editor__title"
               placeholder={intl.formatMessage({
                 id: 'placeholder_obj_type',
@@ -208,9 +215,28 @@ class CreateObject extends React.Component {
           form={form}
           sliderVisible={this.state.sliderVisible}
           onLikeClick={this.handleLikeClick}
+          disabled={loading}
         />
+        <Form.Item
+          extra={intl.formatMessage({
+            id: 'follow_extra',
+            defaultMessage: 'Stay informed about object updates submitted by other users',
+          })}
+        >
+          {getFieldDecorator('follow', {
+            valuePropName: 'checked',
+            initialValue: true,
+          })(
+            <Checkbox disabled={loading}>
+              {intl.formatMessage({
+                id: 'follow',
+                defaultMessage: 'Follow',
+              })}
+            </Checkbox>,
+          )}
+        </Form.Item>
         <Form.Item className="Editor__bottom__submit">
-          <Button type="primary" onClick={this.handleSubmit} loading={this.state.loading}>
+          <Button type="primary" onClick={this.handleSubmit} loading={loading}>
             {intl.formatMessage({ id: 'confirm', defaultMessage: 'Confirm' })}
           </Button>
         </Form.Item>
