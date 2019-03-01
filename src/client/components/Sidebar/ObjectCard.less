@@ -1,8 +1,12 @@
-.Object {
+.ObjectCard {
   font-weight: 500;
+
+  &__alt {
+    margin-left: 8px;
+  }
 }
 
-.Object__top {
+.ObjectCard__top {
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;
@@ -16,7 +20,7 @@
   overflow-wrap: break-word;
 }
 
-.Object__links {
+.ObjectCard__links {
   display: flex;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -32,7 +36,7 @@
   }
 }
 
-.Object__follow {
+.ObjectCard__follow {
   display: flex;
   vertical-align: middle;
   margin-left: auto;
@@ -43,7 +47,7 @@ div[data-dir='rtl'] .Object__follow {
   margin-right: auto;
 }
 
-.Object__name {
+.ObjectCard__name {
   margin-left: 8px;
   margin-right: 8px;
   text-overflow: ellipsis;
@@ -51,21 +55,21 @@ div[data-dir='rtl'] .Object__follow {
   white-space: nowrap;
 }
 
-div[data-dir='rtl'] .Object__name {
+div[data-dir='rtl'] .ObjectCard__name {
   margin-left: 0;
   margin-right: 8px;
 }
 
-.Object__about {
+.ObjectCard__about {
   font-size: 15px;
   color: #9d9d9d;
 }
 
-.Object__divider {
+.ObjectCard__divider {
   width: 100%;
   height: 1px;
   margin: 12px 0;
   background-color: #e9e7e7;
 }
 
-@import 'ObjectComponent-nightmode';
+@import 'ObjectCard-nightmode';

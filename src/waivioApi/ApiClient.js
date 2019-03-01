@@ -193,4 +193,17 @@ export const getWobjectGallery = wobject =>
       .catch(error => reject(error));
   });
 
+export const getWobjectsWithUserWeight = (userName, skip = 20, limit = 30) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.user}/${userName}${config.wobjectsWithUserWeight}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({ skip, limit }),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export default null;
