@@ -60,7 +60,7 @@ class Instrument extends Component {
     const { intl, quoteSettings, quote, signals, chart } = this.props;
     const investments = this.getInvestments();
     const instrumentName = (
-      <Link to={`/object/@${quoteSettings.wobjData.author_permlink}`}>
+      <Link to={`/object/${quoteSettings.wobjData.author_permlink}`}>
         <div className="st-instrument-info-wrap">
           <div className="st-instrument-name" title={quoteSettings.name}>
             {quoteSettings.name}{' '}

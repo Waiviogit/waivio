@@ -24,7 +24,7 @@ const ClosedDeal = ({ quoteSettings, closedDeal, intl, viewMode }) => {
   );
   const wobj = closedQuoteSettings.wobjData ? closedQuoteSettings.wobjData : {};
   const instrumentName = (
-    <Link to={`/object/@${wobj.author_permlink}`}>
+    <Link to={`/object/${wobj.author_permlink}`}>
       <div className="st-instruments-text" data-test="amount-opened-deal">
         <div>{closedQuoteSettings.name}</div>
       </div>

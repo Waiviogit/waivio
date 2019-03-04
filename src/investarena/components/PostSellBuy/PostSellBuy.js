@@ -67,7 +67,7 @@ const PostSellBuy = ({
           permlink={wobj.author_permlink}
         />
         <div className="st-margin-left-small">
-          <Link to={`/object/@${wobj.author_permlink}`} className="st-post-sell-buy-quote">
+          <Link to={`/object/${wobj.author_permlink}`} className="st-post-sell-buy-quote">
             {quoteSettings.name}
           </Link>
         </div>

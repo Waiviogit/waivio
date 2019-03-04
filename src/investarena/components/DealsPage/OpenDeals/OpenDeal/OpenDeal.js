@@ -33,7 +33,7 @@ const OpenDeal = ({ intl, quote, quoteSettings, openDeal, dealPnL, viewMode }) =
   );
   const wobj = quoteSettingsDeal.wobjData ? quoteSettingsDeal.wobjData : {};
   const instrumentName = (
-    <Link to={`/object/@${wobj.author_permlink}`}>
+    <Link to={`/object/${wobj.author_permlink}`}>
       <div className="st-instruments-text" data-test="amount-opened-deal">
         <span>{quoteSettingsDeal.name}</span>
       </div>

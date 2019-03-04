@@ -69,7 +69,7 @@ const PostQuotation = ({
         <div className="st-post-quotation-header d-flex justify-content-between align-items-center">
           <div className="st-quote-name-container">
             <Link
-              to={`/object/@${wobj.author_permlink}`}
+              to={`/object/${wobj.author_permlink}`}
               className="st-post-quotation-quote"
               title={quoteSettings.name}
             >

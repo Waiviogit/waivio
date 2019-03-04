@@ -19,7 +19,7 @@ const avatarKey = {
 const InstrumentAvatar = ({ permlink, market, avatarlink }) => {
   const imageIdentifier = avatarKey[market] ? avatarKey[market] : avatarKey.Currency;
   return (
-    <Link to={`/object/@${permlink}`}>
+    <Link to={`/object/${permlink}`}>
       <div className="st-instrument-avatar">
         <img
           alt="avatar"

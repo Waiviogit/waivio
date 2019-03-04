@@ -57,7 +57,7 @@ class InstrumentCard extends React.Component {
             market={quoteSettings.market}
             avatarlink={quoteSettings.wobjData.avatarlink}
           />
-          <Link to={`/object/@${quoteSettings.wobjData.author_permlink}`}>
+          <Link to={`/object/${quoteSettings.wobjData.author_permlink}`}>
             <div className="st-instrument-info-wrap">
               <div className="st-instrument-name" title={quoteSettings.name}>
                 {quoteSettings.name}{' '}
