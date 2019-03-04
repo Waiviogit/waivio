@@ -126,6 +126,7 @@ class ObjectInfo extends React.Component {
                   objectID={wobject.author_permlink}
                   fieldName={fieldName}
                   objName={objectName}
+                  objType={wobject.object_type}
                   handleSelectField={this.handleSelectField}
                   selectedField={selectedField}
                 />

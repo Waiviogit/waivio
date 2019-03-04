@@ -12,10 +12,10 @@ import {
   mapFields,
   addressFields,
   socialObjectFields,
-  supportedObjectFields,
   websiteFields,
   objectImageFields,
   phoneFields,
+  getAllowedFieldsByObjType,
 } from '../../common/constants/listOfFields';
 import {
   getObject,
@@ -83,6 +83,7 @@ export default class AppendForm extends Component {
     sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
     defaultVotePercent: PropTypes.number.isRequired,
     followingList: PropTypes.arrayOf(PropTypes.string),
+    objType: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -1299,7 +1300,7 @@ export default class AppendForm extends Component {
       );
     }
 
-    supportedObjectFields.forEach(option => {
+    getAllowedFieldsByObjType(this.props.objType).forEach(option => {
       fieldOptions.push(
         <Select.Option key={option} value={option} className="Topnav__search-autocomplete">
           <FormattedMessage id={`object_field_${option}`} defaultMessage={option} />
