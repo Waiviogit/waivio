@@ -81,7 +81,7 @@ export const hasField = (post, fieldName, locale) => {
 
   const field =
     parsedMetadata[WAIVIO_META_FIELD_NAME] && parsedMetadata[WAIVIO_META_FIELD_NAME].field;
-  return !!(field && fieldName && field.name === fieldName && locale && field.locale === locale);
+  return !(fieldName && !(field.name === fieldName)) && !(locale && !(field.locale === locale));
 };
 
 export const getWebsiteField = (wObject, currentField = objectFields.website) => {
