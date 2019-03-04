@@ -64,6 +64,17 @@ export const getMoreFeedContentByObject = ({ authorPermlink, startId, limit = 10
       .then(posts => resolve(posts))
       .catch(error => reject(error));
   });
+export const getFeedContent = (sortBy, queryData) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.posts}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify(queryData),
+    })
+      .then(res => res.json())
+      .then(posts => resolve(posts))
+      .catch(error => reject(error));
+  });
 
 export const postCreateWaivioObject = requestBody =>
   new Promise((resolve, reject) => {
@@ -187,6 +198,19 @@ export const getAccountWithFollowingCount = username =>
 export const getWobjectGallery = wobject =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${wobject}${config.getGallery}`)
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getWobjectsWithUserWeight = (userName, skip = 20, limit = 30) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.user}/${userName}${config.wobjectsWithUserWeight}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({ skip, limit }),
+    })
       .then(handleErrors)
       .then(res => res.json())
       .then(result => resolve(result))
