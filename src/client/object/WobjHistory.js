@@ -164,7 +164,6 @@ export default class WobjHistory extends React.Component {
             locale={this.state.locale}
             field={this.state.field}
             objName={objName}
-            objType={object.object_type}
           />
         </div>
         {!isFetching && (
