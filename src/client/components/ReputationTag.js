@@ -12,7 +12,7 @@ function ReputationTag({ intl, reputation }) {
     <BTooltip
       title={intl.formatMessage(
         { id: 'reputation_score_value', defaultMessage: 'Reputation score: {value}' },
-        { value: formattedReputation.toFixed(3) },
+        { value: formattedReputation ? formattedReputation.toFixed(3) : '' },
       )}
     >
       <Tag>{Math.floor(formattedReputation)}</Tag>

@@ -16,6 +16,7 @@
     "user": "/user",
     "feed": "/feed",
     "posts": "/posts",
+    "post": "/post",
     "followingObjects": "/following_objects",
     "getGallery": "/gallery",
     "wobjectsWithUserWeight": "/objects_shares"
@@ -35,7 +36,8 @@
     "getObjectFollowers": "/followers",
     "user": "/user",
     "feed": "/feed",
-    "post": "/posts",
+    "posts": "/posts",
+    "post": "/post",
     "followingObjects": "/following_objects",
     "getGallery": "/gallery",
     "wobjectsWithUserWeight": "/objects_shares"
