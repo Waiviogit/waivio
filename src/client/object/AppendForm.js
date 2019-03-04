@@ -49,6 +49,9 @@ import LikeSection from './LikeSection';
 import { getFieldWithMaxWeight } from './wObjectHelper';
 import FollowObjectForm from './FollowObjectForm';
 import { followObject } from '../object/wobjActions';
+import CustomSort from './CustomSort';
+import CatalogItem from './Catalog/CatalogItem';
+import { getClientWObj } from '../adapters';
 
 @connect(
   state => ({
@@ -1261,6 +1264,20 @@ export default class AppendForm extends Component {
               />,
             )}
           </Form.Item>
+        );
+      }
+      case objectFields.sorting: {
+        const listItems =
+          (wObject.listItems &&
+            wObject.listItems.map(item => ({
+              id: item.author_permlink,
+              content: <CatalogItem wobject={getClientWObj(item)} />,
+            }))) ||
+          [];
+        return (
+          <div>
+            <CustomSort listItems={listItems} onChange={data => console.log('-onDnD->', data)} />
+          </div>
         );
       }
       default:
