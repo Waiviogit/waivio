@@ -24,6 +24,7 @@ import {
   getAuthenticatedUser,
   getVotingPower,
   getVotePercent,
+  getFollowingObjectsList,
 } from '../reducers';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
@@ -46,6 +47,8 @@ import {
 import { getHasDefaultSlider, getVoteValue } from '../helpers/user';
 import LikeSection from './LikeSection';
 import { getFieldWithMaxWeight } from './wObjectHelper';
+import FollowObjectForm from './FollowObjectForm';
+import { followObject } from '../object/wobjActions';
 
 @connect(
   state => ({
@@ -55,8 +58,9 @@ import { getFieldWithMaxWeight } from './wObjectHelper';
     rate: getRate(state),
     sliderMode: getVotingPower(state),
     defaultVotePercent: getVotePercent(state),
+    followingList: getFollowingObjectsList(state),
   }),
-  { appendObject },
+  { appendObject, followObject },
 )
 @injectIntl
 @Form.create()
@@ -71,12 +75,14 @@ export default class AppendForm extends Component {
     wObject: PropTypes.shape(),
     form: PropTypes.shape(),
     appendObject: PropTypes.func,
+    followObject: PropTypes.func,
     intl: PropTypes.shape(),
     user: PropTypes.shape(),
     rewardFund: PropTypes.shape(),
     rate: PropTypes.number,
     sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
     defaultVotePercent: PropTypes.number.isRequired,
+    followingList: PropTypes.arrayOf(PropTypes.string),
   };
 
   static defaultProps = {
@@ -89,12 +95,14 @@ export default class AppendForm extends Component {
     wObject: {},
     form: {},
     appendObject: () => {},
+    followObject: () => {},
     intl: {},
     user: {},
     rewardFund: {},
     rate: 1,
     sliderMode: 'auto',
     defaultVotePercent: 100,
+    followingList: [],
   };
 
   state = {
@@ -146,6 +154,10 @@ export default class AppendForm extends Component {
       }
     }
 
+    if (getFieldValue('follow')) {
+      await this.props.followObject(wObject.author_permlink);
+    }
+
     this.setState({ loading: false });
 
     this.props.hideModal();
@@ -164,15 +176,18 @@ export default class AppendForm extends Component {
   };
 
   onUpdateCoordinate = positionField => e => {
-    this.props.form.setFieldsValue({
-      [positionField]: Number(e.target.value),
-    });
+    const value = Number(e.target.value);
+    if (!_.isNan(value)) {
+      this.props.form.setFieldsValue({
+        [positionField]: Number(e.target.value),
+      });
+    }
   };
 
   getNewPostData = form => {
     const { wObject } = this.props;
     const { getFieldValue } = this.props.form;
-    const { body, preview, currentField, currentLocale, like, ...rest } = form;
+    const { body, preview, currentField, currentLocale, like, follow, ...rest } = form;
 
     const field = getFieldValue('currentField');
     let locale = getFieldValue('currentLocale');
@@ -1254,7 +1269,7 @@ export default class AppendForm extends Component {
   };
 
   render() {
-    const { currentLocale, currentField, form } = this.props;
+    const { currentLocale, currentField, form, followingList, wObject } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const { loading } = this.state;
 
@@ -1333,6 +1348,10 @@ export default class AppendForm extends Component {
           onLikeClick={this.handleLikeClick}
           disabled={loading}
         />
+
+        {followingList.includes(wObject.author_permlink) ? null : (
+          <FollowObjectForm loading={loading} form={form} />
+        )}
 
         {getFieldValue('currentField') !== 'auto' && (
           <Form.Item className="AppendForm__bottom__submit">

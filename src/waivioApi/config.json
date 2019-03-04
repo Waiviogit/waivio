@@ -15,8 +15,11 @@
     "getObjectFollowers": "/followers",
     "user": "/user",
     "feed": "/feed",
+    "posts": "/posts",
+    "post": "/post",
     "followingObjects": "/following_objects",
-    "getGallery": "/gallery"
+    "getGallery": "/gallery",
+    "wobjectsWithUserWeight": "/objects_shares"
   },
   "production": {
     "apiPrefix": "http://waiviodev.com/api",
@@ -33,7 +36,10 @@
     "getObjectFollowers": "/followers",
     "user": "/user",
     "feed": "/feed",
+    "posts": "/posts",
+    "post": "/post",
     "followingObjects": "/following_objects",
-    "getGallery": "/gallery"
+    "getGallery": "/gallery",
+    "wobjectsWithUserWeight": "/objects_shares"
   }
 }

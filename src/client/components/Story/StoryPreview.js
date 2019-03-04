@@ -19,6 +19,7 @@ import { getHtml } from './Body';
 import { getProxyImageURL } from '../../helpers/image';
 
 const StoryPreview = ({ post }) => {
+  if (!post) return '';
   const jsonMetadata = jsonParse(post.json_metadata);
   let imagePath = '';
 
