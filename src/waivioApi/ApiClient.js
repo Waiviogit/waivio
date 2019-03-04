@@ -64,6 +64,17 @@ export const getMoreFeedContentByObject = ({ authorPermlink, startId, limit = 10
       .then(posts => resolve(posts))
       .catch(error => reject(error));
   });
+export const getFeedContent = (sortBy, queryData) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.posts}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify(queryData),
+    })
+      .then(res => res.json())
+      .then(posts => resolve(posts))
+      .catch(error => reject(error));
+  });
 
 export const postCreateWaivioObject = requestBody =>
   new Promise((resolve, reject) => {
