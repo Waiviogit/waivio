@@ -6,38 +6,6 @@ import { createPermlink } from '../vendor/steemitHelpers';
 import { generateRandomString } from '../helpers/wObjectHelper';
 import { postCreateWaivioObject } from '../../waivioApi/ApiClient';
 
-export const CREATE_WOBJECT = '@wobj/CREATE_WOBJECT';
-export const CREATE_WOBJECT_START = '@wobj/FOLLOWCREATECT_START';
-export const CREATE_WOBJECT_SUCCESS = '@wobj/FOLLOW_WCREATE_SUCCESS';
-export const CREATE_WOBJECT_ERROR = '@wobj/FOLLOWCREATECT_ERROR';
-
-export const createObject = wobj => (dispatch, getState) => {
-  const { auth, settings } = getState();
-  if (!auth.isAuthenticated) {
-    return null;
-  }
-
-  return dispatch({
-    type: CREATE_WOBJECT,
-    payload: {
-      promise: createPermlink(wobj.id, auth.user.name, '', 'waiviodev').then(permlink => {
-        const requestBody = {
-          author: auth.user.name,
-          title: `${wobj.name} - waivio object`,
-          body: `Waivio object "${wobj.name}" has been created`,
-          permlink: `${generateRandomString(3).toLowerCase()}-${permlink}`,
-          objectName: wobj.name,
-          locale: wobj.locale || settings.locale === 'auto' ? 'en-US' : settings.locale,
-          type: wobj.type,
-          isExtendingOpen: Boolean(wobj.isExtendingOpen),
-          isPostingOpen: Boolean(wobj.isPostingOpen),
-        };
-        return postCreateWaivioObject(requestBody);
-      }),
-    },
-  });
-};
-
 export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
 export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';
 export const FOLLOW_WOBJECT_SUCCESS = '@wobj/FOLLOW_WOBJECT_SUCCESS';
@@ -148,6 +116,42 @@ export const voteObject = (objCreator, objPermlink, weight = 10000) => (
     type: LIKE_OBJECT,
     payload: {
       promise: steemConnectAPI.vote(voter, objCreator, objPermlink, weight),
+    },
+  });
+};
+
+export const CREATE_WOBJECT = '@wobj/CREATE_WOBJECT';
+export const CREATE_WOBJECT_START = '@wobj/FOLLOWCREATECT_START';
+export const CREATE_WOBJECT_SUCCESS = '@wobj/FOLLOW_WCREATE_SUCCESS';
+export const CREATE_WOBJECT_ERROR = '@wobj/FOLLOWCREATECT_ERROR';
+
+export const createObject = (wobj, follow = false) => (dispatch, getState) => {
+  const { auth, settings } = getState();
+  if (!auth.isAuthenticated) {
+    return null;
+  }
+
+  if (follow) {
+    dispatch(followObject(wobj.author_permlink));
+  }
+
+  return dispatch({
+    type: CREATE_WOBJECT,
+    payload: {
+      promise: createPermlink(wobj.id, auth.user.name, '', 'waiviodev').then(permlink => {
+        const requestBody = {
+          author: auth.user.name,
+          title: `${wobj.name} - waivio object`,
+          body: `Waivio object "${wobj.name}" has been created`,
+          permlink: `${generateRandomString(3).toLowerCase()}-${permlink}`,
+          objectName: wobj.name,
+          locale: wobj.locale || settings.locale === 'auto' ? 'en-US' : settings.locale,
+          type: wobj.type,
+          isExtendingOpen: Boolean(wobj.isExtendingOpen),
+          isPostingOpen: Boolean(wobj.isPostingOpen),
+        };
+        return postCreateWaivioObject(requestBody);
+      }),
     },
   });
 };

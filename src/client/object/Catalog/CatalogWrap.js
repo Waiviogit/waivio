@@ -109,9 +109,9 @@ class CatalogWrap extends React.Component {
     }
   }
 
-  handleCreateObject = wobj => {
+  handleCreateObject = (wobj, follow) => {
     const { intl, notify, createObject } = this.props;
-    createObject(wobj)
+    createObject(wobj, follow)
       .then(() =>
         notify(
           intl.formatMessage({
