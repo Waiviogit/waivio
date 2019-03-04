@@ -101,6 +101,17 @@ export const getUserFeedContent = (feedUserName, limit = 10) =>
       .catch(error => reject(error));
   });
 
+export const getContent = (author, permlink) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.post}/${author}/${permlink}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(posts => resolve(posts))
+      .catch(error => reject(error));
+  });
+
 export const getMoreUserFeedContent = ({
   userName,
   limit = 10,

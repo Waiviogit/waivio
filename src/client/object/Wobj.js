@@ -84,7 +84,7 @@ export default class Wobj extends React.Component {
     const { authenticated, failed, authenticatedUserName: userName, wobject, match } = this.props;
     if (failed) return <Error404 />;
 
-    const busyHost = global.postOrigin || 'https://busy.org';
+    const busyHost = global.postOrigin || 'https://waiviodev.com';
     const desc = `Posts by ${wobject.tag}`;
     const image = getObjectUrl(wobject);
     const canonicalUrl = `${busyHost}/object/${wobject.tag}`;

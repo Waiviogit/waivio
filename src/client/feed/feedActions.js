@@ -260,15 +260,12 @@ export const getMoreReplies = () => (dispatch, getState, { steemAPI }) => {
  * @param steemAPI
  * @returns Promise - bookmarksData
  */
-async function getBookmarksData(bookmarks, steemAPI) {
+async function getBookmarksData(bookmarks) {
   const bookmarksData = [];
   for (let idx = 0; idx < Object.keys(bookmarks).length; idx += 1) {
     const postId = Object.keys(bookmarks)[idx];
 
-    const postData = steemAPI.sendAsync('get_content', [
-      bookmarks[postId].author,
-      bookmarks[postId].permlink,
-    ]);
+    const postData = ApiClient.getContent(bookmarks[postId].author, bookmarks[postId].permlink);
     bookmarksData.push(postData);
   }
   return Promise.all(bookmarksData.sort((a, b) => a.timestamp - b.timestamp).reverse());

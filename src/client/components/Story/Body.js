@@ -41,7 +41,7 @@ const getEmbed = link => {
 export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options = {}) {
   const parsedJsonMetadata = jsonParse(jsonMetadata) || {};
   parsedJsonMetadata.image = parsedJsonMetadata.image || [];
-
+  if (!body) return '';
   let parsedBody = body.replace(/<!--([\s\S]+?)(-->|$)/g, '(html comment removed: $1)');
 
   parsedBody.replace(imageRegex, img => {
