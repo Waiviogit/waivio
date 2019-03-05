@@ -27,6 +27,7 @@ import {
   getFollowingObjectsList,
 } from '../reducers';
 import LANGUAGES from '../translations/languages';
+import { PRIMARY_COLOR } from '../../common/constants/waivio';
 import { getLanguageText } from '../translations';
 import QuickPostEditorFooter from '../components/QuickPostEditor/QuickPostEditorFooter';
 import { regexCoordsLatitude, regexCoordsLongitude } from '../components/Maps/mapHelper';
@@ -49,7 +50,7 @@ import LikeSection from './LikeSection';
 import { getFieldWithMaxWeight } from './wObjectHelper';
 import FollowObjectForm from './FollowObjectForm';
 import { followObject } from '../object/wobjActions';
-import CustomSort from './CustomSort';
+import SortingList from '../components/DnDList/DnDList';
 import CatalogItem from './Catalog/CatalogItem';
 import { getClientWObj } from '../adapters';
 
@@ -1276,7 +1277,11 @@ export default class AppendForm extends Component {
           [];
         return (
           <div>
-            <CustomSort listItems={listItems} onChange={data => console.log('-onDnD->', data)} />
+            <SortingList
+              listItems={listItems}
+              accentColor={PRIMARY_COLOR}
+              onChange={data => console.log('-onDnD->', data)}
+            />
           </div>
         );
       }

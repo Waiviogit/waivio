@@ -1,18 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import './DnDList.less';
 
-const getListStyle = isDraggingOver => ({
-  background: isDraggingOver ? 'lightblue' : 'none',
-  width: '100%',
-});
-
-const getItemStyle = (isDragging, draggableStyle) => ({
-  userSelect: 'none',
-
-  // change background colour if dragging
-  background: isDragging ? 'lightgreen' : 'none',
-  border: `2px solid ${isDragging ? 'orange' : 'white'}`,
+const getItemStyle = (isDraggingOver, isDragging, draggableStyle, accentColor) => ({
+  'box-shadow': isDragging ? `0 0 5px ${accentColor}, 0 0 10px ${accentColor}` : 'none',
+  opacity: isDraggingOver && !isDragging ? '.65' : 1,
   ...draggableStyle,
 });
 
@@ -24,12 +17,14 @@ const reorder = (list, startIndex, endIndex) => {
   return result;
 };
 
-class CustomSort extends Component {
+class DnDList extends Component {
   static propTypes = {
     listItems: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+    accentColor: PropTypes.string,
     onChange: PropTypes.func,
   };
   static defaultProps = {
+    accentColor: 'lightgreen',
     onChange: () => {},
   };
 
@@ -60,17 +55,20 @@ class CustomSort extends Component {
       <DragDropContext onDragEnd={this.onDragEnd}>
         <Droppable droppableId="droppable">
           {(provided, snapshot) => (
-            <div ref={provided.innerRef} style={getListStyle(snapshot.isDraggingOver)}>
+            <div className="dnd-list" ref={provided.innerRef}>
               {this.state.items.map((item, index) => (
                 <Draggable key={item.id} draggableId={item.id} index={index}>
                   {(druggableProvided, druggableSnapshot) => (
                     <div
+                      className="dnd-list__item"
                       ref={druggableProvided.innerRef}
                       {...druggableProvided.draggableProps}
                       {...druggableProvided.dragHandleProps}
                       style={getItemStyle(
+                        snapshot.isDraggingOver,
                         druggableSnapshot.isDragging,
                         druggableProvided.draggableProps.style,
+                        this.props.accentColor,
                       )}
                     >
                       {item.content}
@@ -87,4 +85,4 @@ class CustomSort extends Component {
   }
 }
 
-export default CustomSort;
+export default DnDList;

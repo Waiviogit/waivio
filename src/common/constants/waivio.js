@@ -12,3 +12,5 @@ export const WAIVIO_OBJECT_TYPE = {
   ITEM: 'item',
   CATALOG: 'catalog',
 };
+
+export const PRIMARY_COLOR = '#f87007';
