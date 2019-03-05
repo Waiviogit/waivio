@@ -115,11 +115,7 @@ export default function withEditor(WrappedComponent) {
 
       try {
         const response = await api.postCreateWaivioObject(requestBody);
-        await this.props.voteObject(
-          response.objectAuthor,
-          response.objectPermlink,
-          obj.votePercent,
-        );
+        await this.props.voteObject(response.objectAuthor, response.objectPermlink, obj.votePower);
 
         if (obj.follow) {
           await this.props.followObject(requestBody.permlink);

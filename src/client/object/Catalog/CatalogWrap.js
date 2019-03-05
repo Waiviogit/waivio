@@ -12,7 +12,7 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import AddItemModal from './AddItemModal/AddItemModal';
 import CreateObjectModal from '../../post/CreateObjectModal/CreateObject';
 import { getObject } from '../../../../src/waivioApi/ApiClient';
-import * as wobjectActions from '../../../client/object/wobjActions';
+import * as wobjectActions from '../../../client/object/wobjectsActions';
 import * as notificationActions from '../../../client/app/Notification/notificationActions';
 import './CatalogWrap.less';
 
@@ -30,7 +30,7 @@ const sortItems = items =>
 @connect(
   null,
   {
-    createObject: wobjectActions.createObject,
+    createObject: wobjectActions.createWaivioObject,
     notify: notificationActions.notify,
   },
 )
