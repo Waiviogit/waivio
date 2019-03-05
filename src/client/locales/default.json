@@ -501,5 +501,6 @@
   "list": "list",
   "list_update": "Update list",
   "add_waivio_beneficiary": "Share {share}% of this post rewards with Waivio",
+  "objects_related_by_tags": "Objects related by #tags",
   "follow_extra": "Stay informed about object updates submitted by other users"
 }
