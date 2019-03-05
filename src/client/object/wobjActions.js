@@ -125,15 +125,13 @@ export const CREATE_WOBJECT_START = '@wobj/FOLLOWCREATECT_START';
 export const CREATE_WOBJECT_SUCCESS = '@wobj/FOLLOW_WCREATE_SUCCESS';
 export const CREATE_WOBJECT_ERROR = '@wobj/FOLLOWCREATECT_ERROR';
 
-export const createObject = (wobj, follow = false) => (dispatch, getState) => {
+export const createObject = postData => (dispatch, getState) => {
   const { auth, settings } = getState();
   if (!auth.isAuthenticated) {
     return null;
   }
 
-  if (follow) {
-    dispatch(followObject(wobj.author_permlink));
-  }
+  const { votePower, follow, ...wobj } = postData;
 
   return dispatch({
     type: CREATE_WOBJECT,
@@ -150,7 +148,13 @@ export const createObject = (wobj, follow = false) => (dispatch, getState) => {
           isExtendingOpen: Boolean(wobj.isExtendingOpen),
           isPostingOpen: Boolean(wobj.isPostingOpen),
         };
-        return postCreateWaivioObject(requestBody);
+        return postCreateWaivioObject(requestBody).then(response => {
+          if (follow) {
+            dispatch(followObject(response.objectPermlink));
+          }
+          dispatch(voteObject(response.objectAuthor, response.objectPermlink, votePower));
+          return response;
+        });
       }),
     },
   });

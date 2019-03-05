@@ -50,8 +50,8 @@ class CreateObject extends React.Component {
         objData.id = objData.name;
         objData.isExtendingOpen = true;
         objData.isPostingOpen = true;
-        objData.votePercent = this.state.votePercent * 100;
-        this.props.handleCreateObject(objData, objData.follow);
+        objData.votePower = this.state.votePercent * 100;
+        this.props.handleCreateObject(objData);
         _.delay(this.toggleModal, 4500);
       }
     });
