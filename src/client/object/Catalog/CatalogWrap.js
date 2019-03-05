@@ -110,7 +110,8 @@ class CatalogWrap extends React.Component {
   }
 
   handleSortChange = sort => {
-    const listItems = sortListItemsBy(this.state.listItems, sort);
+    const sortOrder = this.props.wobject && this.props.wobject[objectFields.sorting];
+    const listItems = sortListItemsBy(this.state.listItems, sort, sortOrder);
     this.setState({ sort, listItems });
   };
 
@@ -142,6 +143,50 @@ class CatalogWrap extends React.Component {
     const { isEditMode, wobject, intl, match } = this.props;
     const listBaseUrl = `/object/${match.params.name}/list`;
 
+    const sortSelector =
+      wobject && wobject[objectFields.sorting] && wobject[objectFields.sorting].length ? (
+        <SortSelector sort={sort} onChange={this.handleSortChange}>
+          <SortSelector.Item key="custom">
+            <FormattedMessage id="custom" defaultMessage="Custom">
+              {msg => msg.toUpperCase()}
+            </FormattedMessage>
+          </SortSelector.Item>
+          <SortSelector.Item key="rank">
+            <FormattedMessage id="rank" defaultMessage="Rank">
+              {msg => msg.toUpperCase()}
+            </FormattedMessage>
+          </SortSelector.Item>
+          <SortSelector.Item key="by-name-asc">
+            <FormattedMessage id="by-name-asc" defaultMessage="a . . z">
+              {msg => msg.toUpperCase()}
+            </FormattedMessage>
+          </SortSelector.Item>
+          <SortSelector.Item key="by-name-desc">
+            <FormattedMessage id="by-name-desc" defaultMessage="z . . a">
+              {msg => msg.toUpperCase()}
+            </FormattedMessage>
+          </SortSelector.Item>
+        </SortSelector>
+      ) : (
+        <SortSelector sort={sort} onChange={this.handleSortChange}>
+          <SortSelector.Item key="rank">
+            <FormattedMessage id="rank" defaultMessage="Rank">
+              {msg => msg.toUpperCase()}
+            </FormattedMessage>
+          </SortSelector.Item>
+          <SortSelector.Item key="by-name-asc">
+            <FormattedMessage id="by-name-asc" defaultMessage="a . . z">
+              {msg => msg.toUpperCase()}
+            </FormattedMessage>
+          </SortSelector.Item>
+          <SortSelector.Item key="by-name-desc">
+            <FormattedMessage id="by-name-desc" defaultMessage="z . . a">
+              {msg => msg.toUpperCase()}
+            </FormattedMessage>
+          </SortSelector.Item>
+        </SortSelector>
+      );
+
     return (
       <div>
         {isEditMode && (
@@ -151,30 +196,7 @@ class CatalogWrap extends React.Component {
           </div>
         )}
 
-        <div className="CatalogWrap__sort">
-          <SortSelector sort={sort} onChange={this.handleSortChange}>
-            <SortSelector.Item key="custom">
-              <FormattedMessage id="custom" defaultMessage="Custom">
-                {msg => msg.toUpperCase()}
-              </FormattedMessage>
-            </SortSelector.Item>
-            <SortSelector.Item key="rank">
-              <FormattedMessage id="rank" defaultMessage="Rank">
-                {msg => msg.toUpperCase()}
-              </FormattedMessage>
-            </SortSelector.Item>
-            <SortSelector.Item key="by-name-asc">
-              <FormattedMessage id="by-name-asc" defaultMessage="a . . z">
-                {msg => msg.toUpperCase()}
-              </FormattedMessage>
-            </SortSelector.Item>
-            <SortSelector.Item key="by-name-desc">
-              <FormattedMessage id="by-name-desc" defaultMessage="z . . a">
-                {msg => msg.toUpperCase()}
-              </FormattedMessage>
-            </SortSelector.Item>
-          </SortSelector>
-        </div>
+        <div className="CatalogWrap__sort">{sortSelector}</div>
 
         <div className="CatalogWrap">
           <div className="CatalogWrap__breadcrumb">

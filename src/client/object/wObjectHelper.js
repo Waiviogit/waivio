@@ -128,12 +128,22 @@ export const testImage = (url, callback, timeout = 3000) => {
  *
  * @param items - array of waivio objects
  * @param sortBy - string, one of 'by-name-asc'|'by-name-desc'|'rank'|'custom'
+ * @param sortOrder - array of strings (object permlinks)
  * @returns {*}
  */
-export const sortListItemsBy = (items, sortBy = 'by-name-asc') => {
-  if (!items || !items.length) return items;
+export const sortListItemsBy = (items, sortBy = 'by-name-asc', sortOrder = null) => {
+  if (!items || !items.length || (sortBy === 'custom' && !sortOrder)) return items;
   let comparator;
   switch (sortBy) {
+    case 'custom': {
+      const resultArr = [...items];
+      sortOrder.reverse().forEach(permlink => {
+        const index = resultArr.findIndex(item => item.id === permlink);
+        const [itemToMove] = resultArr.splice(index, 1);
+        resultArr.unshift(itemToMove);
+      });
+      return resultArr;
+    }
     case 'rank':
       comparator = (a, b) => b.rank - a.rank || (a.name > b.name ? 1 : -1);
       break;
