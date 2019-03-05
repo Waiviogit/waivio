@@ -5,7 +5,7 @@ import { injectIntl } from 'react-intl';
 import { Button, Modal, message, Select, Form } from 'antd';
 import { getAppendData } from '../../../helpers/wObjectHelper';
 import { getFieldWithMaxWeight } from '../../../object/wObjectHelper';
-import { getAuthenticatedUserName, getLocale } from '../../../reducers';
+import { getAuthenticatedUserName, getFollowingObjectsList, getLocale } from '../../../reducers';
 import { appendObject } from '../../appendActions';
 import { objectFields } from '../../../../common/constants/listOfFields';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
@@ -14,13 +14,16 @@ import LANGUAGES from '../../../translations/languages';
 import { getLanguageText } from '../../../translations';
 import ListItem from '../CatalogItem';
 import './AddItemModal.less';
+import FollowObjectForm from '../../FollowObjectForm';
+import { followObject } from '../../../object/wobjActions';
 
 @connect(
   state => ({
     currentUserName: getAuthenticatedUserName(state),
     locale: getLocale(state),
+    followingList: getFollowingObjectsList(state),
   }),
-  { appendObject },
+  { appendObject, followObject },
 )
 @injectIntl
 @Form.create()
@@ -30,6 +33,9 @@ class AddItemModal extends Component {
     locale: 'en-US',
     loading: false,
     appendObject: () => {},
+    followObject: () => {},
+    wobject: {},
+    followingList: [],
   };
 
   static propTypes = {
@@ -41,6 +47,8 @@ class AddItemModal extends Component {
     currentUserName: PropTypes.string,
     locale: PropTypes.string,
     appendObject: PropTypes.func,
+    followingList: PropTypes.arrayOf(PropTypes.string),
+    followObject: PropTypes.func,
   };
 
   constructor(props) {
@@ -84,9 +92,17 @@ class AddItemModal extends Component {
           body: selectedItem.id,
           locale: values.locale,
         };
+
         const appendData = getAppendData(currentUserName, wobject, bodyMsg, fieldContent);
+
         this.props
           .appendObject({ ...appendData, votePower: votePercent * 100 })
+          .then(() => {
+            if (form.getFieldValue('follow')) {
+              return this.props.followObject(wobject.author_permlink);
+            }
+            return Promise.resolve();
+          })
           .then(() => {
             this.setState({ isLoading: false });
             message.success(
@@ -114,7 +130,7 @@ class AddItemModal extends Component {
 
   render() {
     const { isModalOpen, isLoading, selectedItem } = this.state;
-    const { intl, wobject, form } = this.props;
+    const { intl, wobject, form, followingList } = this.props;
     const { getFieldDecorator } = form;
 
     const listName = getFieldWithMaxWeight(wobject, objectFields.name);
@@ -177,16 +193,23 @@ class AddItemModal extends Component {
                     style={{ width: '100%' }}
                     placeholder={intl.formatMessage({ id: 'language', defaultMessage: 'Language' })}
                     onChange={this.handleLanguageChange}
+                    disabled={isLoading}
                   >
                     {languageOptions}
                   </Select>,
                 )}
               </Form.Item>
               <ListItem wobject={selectedItem} />
+              <LikeSection
+                form={form}
+                onVotePercentChange={this.handleVotePercentChange}
+                disabled={isLoading}
+              />
 
-              <Form.Item>{}</Form.Item>
+              {followingList.includes(wobject.author_permlink) ? null : (
+                <FollowObjectForm loading={isLoading} form={form} />
+              )}
 
-              <LikeSection form={form} onVotePercentChange={this.handleVotePercentChange} />
               <div className="modal-content__row align-right">
                 <Button
                   className="modal-content__submit-btn"

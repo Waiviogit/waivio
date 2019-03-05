@@ -13,7 +13,7 @@ import AddItemModal from './AddItemModal/AddItemModal';
 import CreateObjectModal from '../../post/CreateObjectModal/CreateObject';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import { getObject } from '../../../../src/waivioApi/ApiClient';
-import * as wobjectActions from '../../../client/object/wobjActions';
+import * as wobjectActions from '../../../client/object/wobjectsActions';
 import * as notificationActions from '../../../client/app/Notification/notificationActions';
 import './CatalogWrap.less';
 
@@ -22,7 +22,7 @@ import './CatalogWrap.less';
 @connect(
   null,
   {
-    createObject: wobjectActions.createObject,
+    createObject: wobjectActions.createWaivioObject,
     notify: notificationActions.notify,
   },
 )
@@ -114,9 +114,9 @@ class CatalogWrap extends React.Component {
     this.setState({ sort, listItems });
   };
 
-  handleCreateObject = wobj => {
+  handleCreateObject = (wobj, follow) => {
     const { intl, notify, createObject } = this.props;
-    createObject(wobj)
+    createObject(wobj, follow)
       .then(() =>
         notify(
           intl.formatMessage({

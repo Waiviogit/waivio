@@ -11,7 +11,7 @@ export const objectFields = {
   hashtag: 'tag',
   phone: 'phone',
   email: 'email',
-  sorting: 'sorting',
+  sorting: 'sortCustom',
 };
 
 export const addressFields = {

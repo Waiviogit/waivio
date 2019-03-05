@@ -1,4 +1,5 @@
 import { createAsyncActionType } from '../helpers/stateHelpers';
+import * as ApiClient from '../../waivioApi/ApiClient';
 
 export const GET_CONTENT = createAsyncActionType('@post/GET_CONTENT');
 
@@ -7,7 +8,7 @@ export const LIKE_POST_START = '@post/LIKE_POST_START';
 export const LIKE_POST_SUCCESS = '@post/LIKE_POST_SUCCESS';
 export const LIKE_POST_ERROR = '@post/LIKE_POST_ERROR';
 
-export const getContent = (author, permlink, afterLike) => (dispatch, getState, { steemAPI }) => {
+export const getContent = (author, permlink, afterLike) => dispatch => {
   if (!author || !permlink) {
     return null;
   }
@@ -15,7 +16,7 @@ export const getContent = (author, permlink, afterLike) => (dispatch, getState, 
   return dispatch({
     type: GET_CONTENT.ACTION,
     payload: {
-      promise: steemAPI.sendAsync('get_content', [author, permlink]).then(res => {
+      promise: ApiClient.getContent(author, permlink).then(res => {
         if (res.id === 0) throw new Error('There is no such post');
         return res;
       }),

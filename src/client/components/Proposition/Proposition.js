@@ -16,15 +16,7 @@ class Proposition extends React.Component {
   handleToggleModal = () => this.setState({ showModal: !this.state.showModal });
 
   render() {
-    const {
-      intl,
-      fieldName,
-      objectID,
-      objName,
-      objType,
-      handleSelectField,
-      selectedField,
-    } = this.props;
+    const { intl, fieldName, objectID, objName, handleSelectField, selectedField } = this.props;
     const { showModal } = this.state;
 
     const linkClass = cn({
@@ -53,7 +45,6 @@ class Proposition extends React.Component {
         {showModal && (
           <AppendModal
             objName={objName}
-            objType={objType}
             showModal={showModal}
             hideModal={this.handleToggleModal}
             locale={'en-US'}
@@ -67,7 +58,6 @@ class Proposition extends React.Component {
 Proposition.propTypes = {
   objName: PropTypes.string.isRequired,
   fieldName: PropTypes.string.isRequired,
-  objType: PropTypes.string.isRequired,
   objectID: PropTypes.string.isRequired,
   intl: PropTypes.shape().isRequired,
   handleSelectField: PropTypes.func,

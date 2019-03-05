@@ -12,7 +12,7 @@ import {
   FormattedNumber,
 } from 'react-intl';
 import { Link } from 'react-router-dom';
-import { Icon } from 'antd';
+import { Collapse, Icon } from 'antd';
 import Lightbox from 'react-image-lightbox';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { getFromMetadata, extractImageTags } from '../../helpers/parser';
@@ -201,6 +201,14 @@ class StoryFull extends React.Component {
       onShareClick,
       onEditClick,
     } = this.props;
+
+    const taggedObjects = [];
+    const linkedObjects = [];
+
+    _.forEach(post.wobjects, wobj => {
+      if (wobj.tagged) taggedObjects.push(wobj);
+      else linkedObjects.push(wobj);
+    });
     const { isReported } = postState;
 
     const { open, index } = this.state.lightbox;
@@ -476,8 +484,36 @@ class StoryFull extends React.Component {
             </div>
           </Scrollbars>
         </div>
-        {post.wobjects &&
-          _.map(post.wobjects, wobj => <PostObjectCard key={`${wobj.creator}`} wObject={wobj} />)}
+
+        <Collapse defaultActiveKey={['1']} accordion>
+          {!_.isEmpty(linkedObjects) && (
+            <Collapse.Panel
+              header={`${intl.formatMessage({
+                id: 'linked_objects',
+                defaultMessage: 'Linked objects',
+              })} ${linkedObjects.length}`}
+              key="1"
+            >
+              {_.map(linkedObjects, wobj => (
+                <PostObjectCard key={`${wobj.creator}`} wObject={wobj} />
+              ))}
+            </Collapse.Panel>
+          )}
+          {!_.isEmpty(taggedObjects) && (
+            <Collapse.Panel
+              header={`${intl.formatMessage({
+                id: 'objects_related_by_tags',
+                defaultMessage: 'Objects related by #tags',
+              })} ${taggedObjects.length}`}
+              key="2"
+            >
+              {_.map(taggedObjects, wobj => (
+                <PostObjectCard key={`${wobj.creator}`} wObject={wobj} />
+              ))}
+            </Collapse.Panel>
+          )}
+        </Collapse>
+
         <StoryFooter
           user={user}
           post={post}

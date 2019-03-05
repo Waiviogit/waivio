@@ -209,6 +209,10 @@ export default class AppendForm extends Component {
         fieldBody.push(rest[currentField]);
         break;
       }
+      case objectFields.sorting: {
+        fieldBody.push(JSON.stringify(rest[objectFields.sorting]));
+        break;
+      }
       case objectFields.website: {
         fieldBody.push(rest[websiteFields.link]);
         break;
@@ -379,6 +383,10 @@ export default class AppendForm extends Component {
       );
     }
     callback();
+  };
+
+  handleChangeSorting = sortedList => {
+    this.props.form.setFieldsValue({ [objectFields.sorting]: sortedList });
   };
 
   handleRemoveImage = () => {
@@ -1276,13 +1284,26 @@ export default class AppendForm extends Component {
             }))) ||
           [];
         return (
-          <div>
+          <React.Fragment>
+            <Form.Item>
+              {getFieldDecorator(objectFields.sorting, {
+                initialValue: listItems.map(item => item.id),
+              })(
+                <Select
+                  className="AppendForm__hidden"
+                  mode="tags"
+                  disabled={loading}
+                  dropdownStyle={{ display: 'none' }}
+                  tokenSeparators={[' ', ',']}
+                />,
+              )}
+            </Form.Item>
             <SortingList
               listItems={listItems}
               accentColor={PRIMARY_COLOR}
-              onChange={data => console.log('-onDnD->', data)}
+              onChange={this.handleChangeSorting}
             />
-          </div>
+          </React.Fragment>
         );
       }
       default:
@@ -1294,6 +1315,11 @@ export default class AppendForm extends Component {
     const { currentLocale, currentField, form, followingList, wObject } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const { loading } = this.state;
+
+    const isCustomSortingList =
+      wObject.object_type &&
+      wObject.object_type.toLowerCase() === 'list' &&
+      form.getFieldValue('currentField') === objectFields.sorting;
 
     const languageOptions = [];
     if (currentLocale === 'auto') {
@@ -1345,15 +1371,22 @@ export default class AppendForm extends Component {
           )}
         </Form.Item>
 
-        <div className="ant-form-item-label AppendForm__appendTitles">
+        <div
+          className={classNames('ant-form-item-label AppendForm__appendTitles', {
+            AppendForm__hidden: isCustomSortingList,
+          })}
+        >
           <FormattedMessage id="suggest2" defaultMessage="With language" />
         </div>
-
         <Form.Item>
           {getFieldDecorator('currentLocale', {
             initialValue: currentLocale,
           })(
-            <Select disabled={loading} style={{ width: '100%' }}>
+            <Select
+              className={classNames({ AppendForm__hidden: isCustomSortingList })}
+              disabled={loading}
+              style={{ width: '100%' }}
+            >
               {languageOptions}
             </Select>,
           )}

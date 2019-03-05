@@ -4,7 +4,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import './DnDList.less';
 
 const getItemStyle = (isDraggingOver, isDragging, draggableStyle, accentColor) => ({
-  'box-shadow': isDragging ? `0 0 5px ${accentColor}, 0 0 10px ${accentColor}` : 'none',
+  boxShadow: isDragging ? `0 0 5px ${accentColor}, 0 0 10px ${accentColor}` : 'none',
   opacity: isDraggingOver && !isDragging ? '.65' : 1,
   ...draggableStyle,
 });
