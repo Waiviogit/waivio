@@ -33,7 +33,7 @@ const Objects = ({ intl, history }) => {
             <div className="Objects__message">
               <FormattedMessage id="objects_title" defaultMessage="Discover more objects" />
             </div>
-            <SearchObjectsAutocomplete handleSelect={handleSelectObject} linkedObjectsIds={[]} />
+            <SearchObjectsAutocomplete handleSelect={handleSelectObject} />
           </div>
           <div className="Objects__content">
             <ObjectContent />

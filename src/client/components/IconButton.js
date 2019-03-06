@@ -20,7 +20,7 @@ const IconButton = props => {
 IconButton.propTypes = {
   icon: PropTypes.node.isRequired,
   onClick: PropTypes.func.isRequired,
-  caption: PropTypes.oneOfType(PropTypes.node, PropTypes.string),
+  caption: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
   className: PropTypes.string,
 };
 

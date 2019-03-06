@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Button, Modal, message, Select, Form } from 'antd';
+import { uniq } from 'lodash';
 import { getAppendData } from '../../../helpers/wObjectHelper';
 import { getFieldWithMaxWeight } from '../../../object/wObjectHelper';
 import { getAuthenticatedUserName, getFollowingObjectsList, getLocale } from '../../../reducers';
@@ -13,9 +14,9 @@ import LikeSection from '../../../object/LikeSection';
 import LANGUAGES from '../../../translations/languages';
 import { getLanguageText } from '../../../translations';
 import ListItem from '../CatalogItem';
-import './AddItemModal.less';
 import FollowObjectForm from '../../FollowObjectForm';
 import { followObject } from '../../../object/wobjActions';
+import './AddItemModal.less';
 
 @connect(
   state => ({
@@ -36,6 +37,7 @@ class AddItemModal extends Component {
     followObject: () => {},
     wobject: {},
     followingList: [],
+    itemsIdsToOmit: [],
   };
 
   static propTypes = {
@@ -43,11 +45,12 @@ class AddItemModal extends Component {
     form: PropTypes.shape().isRequired,
     // passed props
     wobject: PropTypes.shape().isRequired,
+    itemsIdsToOmit: PropTypes.arrayOf(PropTypes.string),
     // from connect
     currentUserName: PropTypes.string,
     locale: PropTypes.string,
-    appendObject: PropTypes.func,
     followingList: PropTypes.arrayOf(PropTypes.string),
+    appendObject: PropTypes.func,
     followObject: PropTypes.func,
   };
 
@@ -130,7 +133,7 @@ class AddItemModal extends Component {
 
   render() {
     const { isModalOpen, isLoading, selectedItem } = this.state;
-    const { intl, wobject, form, followingList } = this.props;
+    const { intl, wobject, itemsIdsToOmit, form, followingList } = this.props;
     const { getFieldDecorator } = form;
 
     const listName = getFieldWithMaxWeight(wobject, objectFields.name);
@@ -227,7 +230,14 @@ class AddItemModal extends Component {
             </div>
           </Modal>
         )}
-        <SearchObjectsAutocomplete handleSelect={this.handleObjectSelect} canCreateNewObject />
+        <SearchObjectsAutocomplete
+          handleSelect={this.handleObjectSelect}
+          itemsIdsToOmit={uniq([
+            ...wobject.listItems.map(item => item.author_permlink),
+            ...itemsIdsToOmit,
+            wobject.author_permlink,
+          ])}
+        />
       </React.Fragment>
     );
   }
