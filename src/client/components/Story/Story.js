@@ -323,24 +323,7 @@ class Story extends React.Component {
 
     let rebloggedUI = null;
 
-    if (post.reblogged_by) {
-      rebloggedUI = (
-        <div className="Story__reblog">
-          <i className="iconfont icon-share1" />
-          <FormattedMessage
-            id="reblogged_username"
-            defaultMessage="{username} reblogged"
-            values={{
-              username: (
-                <Link to={`/@${post.reblogged_by[0]}`}>
-                  <span className="username">{post.reblogged_by[0]}</span>
-                </Link>
-              ),
-            }}
-          />
-        </div>
-      );
-    } else if (post.first_reblogged_on) {
+    if (!ownPost && postState.isReblogged) {
       rebloggedUI = (
         <div className="Story__reblog">
           <i className="iconfont icon-share1" />
