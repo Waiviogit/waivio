@@ -132,7 +132,7 @@ export const testImage = (url, callback, timeout = 3000) => {
  * @returns {*}
  */
 export const sortListItemsBy = (items, sortBy = 'by-name-asc', sortOrder = null) => {
-  if (!items || !items.length || (sortBy === 'custom' && !sortOrder)) return items;
+  if (!items || !items.length) return items;
   let comparator;
   switch (sortBy) {
     case 'rank':
@@ -152,11 +152,13 @@ export const sortListItemsBy = (items, sortBy = 'by-name-asc', sortOrder = null)
     ...sorted.filter(item => item.type !== 'list'),
   ];
 
-  if (sortBy === 'custom') {
-    sortOrder.reverse().forEach(permlink => {
+  if (sortBy === 'custom' && sortOrder && sortOrder.length) {
+    [...sortOrder].reverse().forEach(permlink => {
       const index = resultArr.findIndex(item => item.id === permlink);
-      const [itemToMove] = resultArr.splice(index, 1);
-      resultArr.unshift(itemToMove);
+      if (index !== -1) {
+        const [itemToMove] = resultArr.splice(index, 1);
+        resultArr.unshift(itemToMove);
+      }
     });
   }
   return resultArr;

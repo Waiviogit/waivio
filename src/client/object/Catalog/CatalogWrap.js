@@ -44,15 +44,26 @@ class CatalogWrap extends React.Component {
   constructor(props) {
     super(props);
 
+    const initialSort =
+      props.wobject &&
+      props.wobject[objectFields.sorting] &&
+      props.wobject[objectFields.sorting].length
+        ? 'custom'
+        : 'rank';
+    const customSortOrder = initialSort === 'custom' ? props.wobject[objectFields.sorting] : null;
     this.state = {
-      sort: 'rank',
+      sort: initialSort,
       breadcrumb: [
         { name: getFieldWithMaxWeight(props.wobject, objectFields.name), link: props.match.url },
       ],
       listItems:
         (props.wobject &&
           props.wobject.listItems &&
-          sortListItemsBy(props.wobject.listItems.map(item => getClientWObj(item)), 'rank')) ||
+          sortListItemsBy(
+            props.wobject.listItems.map(item => getClientWObj(item)),
+            initialSort,
+            customSortOrder,
+          )) ||
         [],
     };
   }
@@ -69,10 +80,17 @@ class CatalogWrap extends React.Component {
       const nextTarget = nextProps.match.url.split('/').pop();
       if (nextTarget === 'list') {
         if (nextProps.wobject && nextProps.wobject.listItems) {
+          const sort =
+            nextProps.wobject[objectFields.sorting] &&
+            nextProps.wobject[objectFields.sorting].length
+              ? 'custom'
+              : 'rank';
           this.setState({
+            sort,
             listItems: sortListItemsBy(
               nextProps.wobject.listItems.map(item => getClientWObj(item)),
-              this.state.sort,
+              sort,
+              sort === 'custom' ? nextProps.wobject[objectFields.sorting] : null,
             ),
             breadcrumb: [
               {
