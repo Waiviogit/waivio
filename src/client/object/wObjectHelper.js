@@ -81,7 +81,7 @@ export const hasField = (post, fieldName, locale) => {
 
   const field =
     parsedMetadata[WAIVIO_META_FIELD_NAME] && parsedMetadata[WAIVIO_META_FIELD_NAME].field;
-  return !!(field && fieldName && field.name === fieldName && locale && field.locale === locale);
+  return !(fieldName && !(field.name === fieldName)) && !(locale && !(field.locale === locale));
 };
 
 export const getWebsiteField = (wObject, currentField = objectFields.website) => {
@@ -122,4 +122,42 @@ export const testImage = (url, callback, timeout = 3000) => {
     timedOut = true;
     callback(url, IMAGE_STATUS.TIMEOUT);
   }, timeout);
+};
+
+/**
+ *
+ * @param items - array of waivio objects
+ * @param sortBy - string, one of 'by-name-asc'|'by-name-desc'|'rank'|'custom'
+ * @param sortOrder - array of strings (object permlinks)
+ * @returns {*}
+ */
+export const sortListItemsBy = (items, sortBy = 'by-name-asc', sortOrder = null) => {
+  if (!items || !items.length || (sortBy === 'custom' && !sortOrder)) return items;
+  let comparator;
+  switch (sortBy) {
+    case 'rank':
+      comparator = (a, b) => b.rank - a.rank || (a.name > b.name ? 1 : -1);
+      break;
+    case 'by-name-desc':
+      comparator = (a, b) => (a.name < b.name ? 1 : -1);
+      break;
+    case 'by-name-asc':
+    default:
+      comparator = (a, b) => (a.name > b.name ? 1 : -1);
+      break;
+  }
+  const sorted = items.sort(comparator);
+  const resultArr = [
+    ...sorted.filter(item => item.type === 'list'),
+    ...sorted.filter(item => item.type !== 'list'),
+  ];
+
+  if (sortBy === 'custom') {
+    sortOrder.reverse().forEach(permlink => {
+      const index = resultArr.findIndex(item => item.id === permlink);
+      const [itemToMove] = resultArr.splice(index, 1);
+      resultArr.unshift(itemToMove);
+    });
+  }
+  return resultArr;
 };

@@ -1,4 +1,5 @@
 import { objectFields } from '../common/constants/listOfFields';
+import { getFieldWithMaxWeight } from './object/wObjectHelper';
 
 export const getClientWObj = serverWObj => {
   /* eslint-disable no-underscore-dangle */
@@ -8,7 +9,6 @@ export const getClientWObj = serverWObj => {
     author_permlink,
     followers_names,
     weight,
-    fields,
     created_at,
     updated_at,
     __v,
@@ -19,15 +19,12 @@ export const getClientWObj = serverWObj => {
     rank,
     object_type,
   } = serverWObj;
-  const avatarField = fields && fields.find(f => f.name === objectFields.avatar);
-  const nameField = fields && fields.find(f => f.name === objectFields.name);
-  const title = fields && fields.find(f => f.name === objectFields.title);
-  const backgroundField = fields && fields.find(f => f.name === objectFields.background);
+
   return {
     id: author_permlink,
-    avatar: avatarField ? avatarField.body : '/images/logo-brand.png',
-    name: (nameField && nameField.body) || '',
-    title: (title && title.body) || '',
+    avatar: getFieldWithMaxWeight(serverWObj, objectFields.avatar) || '/images/logo-brand.png',
+    name: getFieldWithMaxWeight(serverWObj, objectFields.name),
+    title: getFieldWithMaxWeight(serverWObj, objectFields.title),
     parents: parents || [],
     weight: weight || '',
     createdAt: created_at || Date.now(),
@@ -40,7 +37,7 @@ export const getClientWObj = serverWObj => {
     isNew: Boolean(isNew),
     rank: rank || 0,
     type: object_type || 'item',
-    background: backgroundField ? backgroundField.body : null,
+    background: getFieldWithMaxWeight(serverWObj, objectFields.background),
   };
 };
 

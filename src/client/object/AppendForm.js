@@ -12,10 +12,10 @@ import {
   mapFields,
   addressFields,
   socialObjectFields,
-  supportedObjectFields,
   websiteFields,
   objectImageFields,
   phoneFields,
+  getAllowedFieldsByObjType,
 } from '../../common/constants/listOfFields';
 import {
   getObject,
@@ -27,6 +27,7 @@ import {
   getFollowingObjectsList,
 } from '../reducers';
 import LANGUAGES from '../translations/languages';
+import { PRIMARY_COLOR } from '../../common/constants/waivio';
 import { getLanguageText } from '../translations';
 import QuickPostEditorFooter from '../components/QuickPostEditor/QuickPostEditorFooter';
 import { regexCoordsLatitude, regexCoordsLongitude } from '../components/Maps/mapHelper';
@@ -49,6 +50,9 @@ import LikeSection from './LikeSection';
 import { getFieldWithMaxWeight } from './wObjectHelper';
 import FollowObjectForm from './FollowObjectForm';
 import { followObject } from '../object/wobjActions';
+import SortingList from '../components/DnDList/DnDList';
+import CatalogItem from './Catalog/CatalogItem';
+import { getClientWObj } from '../adapters';
 
 @connect(
   state => ({
@@ -203,6 +207,10 @@ export default class AppendForm extends Component {
       case objectFields.background:
       case objectFields.email: {
         fieldBody.push(rest[currentField]);
+        break;
+      }
+      case objectFields.sorting: {
+        fieldBody.push(JSON.stringify(rest[objectFields.sorting]));
         break;
       }
       case objectFields.website: {
@@ -375,6 +383,10 @@ export default class AppendForm extends Component {
       );
     }
     callback();
+  };
+
+  handleChangeSorting = sortedList => {
+    this.props.form.setFieldsValue({ [objectFields.sorting]: sortedList });
   };
 
   handleRemoveImage = () => {
@@ -1263,6 +1275,37 @@ export default class AppendForm extends Component {
           </Form.Item>
         );
       }
+      case objectFields.sorting: {
+        const listItems =
+          (wObject.listItems &&
+            wObject.listItems.map(item => ({
+              id: item.author_permlink,
+              content: <CatalogItem wobject={getClientWObj(item)} />,
+            }))) ||
+          [];
+        return (
+          <React.Fragment>
+            <Form.Item>
+              {getFieldDecorator(objectFields.sorting, {
+                initialValue: listItems.map(item => item.id),
+              })(
+                <Select
+                  className="AppendForm__hidden"
+                  mode="tags"
+                  disabled={loading}
+                  dropdownStyle={{ display: 'none' }}
+                  tokenSeparators={[' ', ',']}
+                />,
+              )}
+            </Form.Item>
+            <SortingList
+              listItems={listItems}
+              accentColor={PRIMARY_COLOR}
+              onChange={this.handleChangeSorting}
+            />
+          </React.Fragment>
+        );
+      }
       default:
         return null;
     }
@@ -1272,6 +1315,11 @@ export default class AppendForm extends Component {
     const { currentLocale, currentField, form, followingList, wObject } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const { loading } = this.state;
+
+    const isCustomSortingList =
+      wObject.object_type &&
+      wObject.object_type.toLowerCase() === 'list' &&
+      form.getFieldValue('currentField') === objectFields.sorting;
 
     const languageOptions = [];
     if (currentLocale === 'auto') {
@@ -1299,7 +1347,7 @@ export default class AppendForm extends Component {
       );
     }
 
-    supportedObjectFields.forEach(option => {
+    getAllowedFieldsByObjType(wObject.object_type).forEach(option => {
       fieldOptions.push(
         <Select.Option key={option} value={option} className="Topnav__search-autocomplete">
           <FormattedMessage id={`object_field_${option}`} defaultMessage={option} />
@@ -1323,15 +1371,22 @@ export default class AppendForm extends Component {
           )}
         </Form.Item>
 
-        <div className="ant-form-item-label AppendForm__appendTitles">
+        <div
+          className={classNames('ant-form-item-label AppendForm__appendTitles', {
+            AppendForm__hidden: isCustomSortingList,
+          })}
+        >
           <FormattedMessage id="suggest2" defaultMessage="With language" />
         </div>
-
         <Form.Item>
           {getFieldDecorator('currentLocale', {
             initialValue: currentLocale,
           })(
-            <Select disabled={loading} style={{ width: '100%' }}>
+            <Select
+              className={classNames({ AppendForm__hidden: isCustomSortingList })}
+              disabled={loading}
+              style={{ width: '100%' }}
+            >
               {languageOptions}
             </Select>,
           )}

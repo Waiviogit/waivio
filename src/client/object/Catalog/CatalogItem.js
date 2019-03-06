@@ -2,6 +2,8 @@ import React from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import './CatalogItem.less';
+import ObjectType from '../ObjectType';
+import ObjectRank from '../ObjectRank';
 
 @injectIntl
 class CatalogItem extends React.Component {
@@ -33,6 +35,10 @@ class CatalogItem extends React.Component {
           <div className="catalog-item__content">
             <div className="catalog-item__info">
               <div className="catalog-item__truncated">{wobject.name}</div>
+              <div className="catalog-item__row">
+                <ObjectType type={wobject.type} />
+                <ObjectRank rank={wobject.rank} />
+              </div>
             </div>
             {wobject.avatar ? (
               <img className="catalog-item__avatar" src={wobject.avatar} alt={wobject.name} />
