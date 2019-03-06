@@ -25,7 +25,7 @@ const LinkedObjects = ({
       <React.Fragment>
         <SearchObjectsAutocomplete
           handleSelect={handleAddLinkedObject}
-          linkedObjectsIds={linkedObjects.map(obj => obj.id)}
+          itemsIdsToOmit={linkedObjects.map(obj => obj.id)}
         />
         <CreateObject handleCreateObject={handleCreateObject} />
       </React.Fragment>

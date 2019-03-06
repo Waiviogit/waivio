@@ -209,7 +209,7 @@ class CatalogWrap extends React.Component {
       <div>
         {isEditMode && (
           <div className="CatalogWrap__add-item">
-            <AddItemModal wobject={wobject} />
+            <AddItemModal wobject={wobject} itemsIdsToOmit={listItems.map(item => item.id)} />
             <CreateObjectModal handleCreateObject={this.handleCreateObject} />
           </div>
         )}
