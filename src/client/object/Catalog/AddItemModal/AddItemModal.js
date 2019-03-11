@@ -137,7 +137,7 @@ class AddItemModal extends Component {
     const { getFieldDecorator } = form;
 
     const listName = getFieldWithMaxWeight(wobject, objectFields.name);
-    const itemType = ['catalog', 'list'].includes(selectedItem && selectedItem.type)
+    const itemType = ['list'].includes(selectedItem && selectedItem.type)
       ? intl.formatMessage({
           id: 'list',
           defaultMessage: 'List',
@@ -230,6 +230,9 @@ class AddItemModal extends Component {
             </div>
           </Modal>
         )}
+        <div className="modal-content__row align-left tittle">
+          {intl.formatMessage({ id: 'add_object', defaultMessage: 'Add object' })}
+        </div>
         <SearchObjectsAutocomplete
           handleSelect={this.handleObjectSelect}
           itemsIdsToOmit={uniq([
