@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import _ from 'lodash';
@@ -22,6 +23,7 @@ import RightObjectSidebar from '../app/Sidebar/RightObjectSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 
+@withRouter
 @connect(
   (state, ownProps) => ({
     authenticated: getIsAuthenticated(state),
@@ -42,6 +44,7 @@ export default class Wobj extends React.Component {
     authenticatedUserName: PropTypes.string.isRequired,
     authenticated: PropTypes.bool.isRequired,
     match: PropTypes.shape().isRequired,
+    history: PropTypes.shape().isRequired,
     failed: PropTypes.bool,
     getObjectInfo: PropTypes.func,
     resetGallery: PropTypes.func.isRequired,
@@ -63,6 +66,18 @@ export default class Wobj extends React.Component {
   componentDidMount() {
     const { match } = this.props;
     this.props.getObjectInfo(match.params.name);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { history, match } = this.props;
+    if (
+      nextProps.wobject &&
+      nextProps.wobject.object_type === 'list' &&
+      !match.params[0] &&
+      !nextProps.match.params[0]
+    ) {
+      history.push(`${history.location.pathname}/list`);
+    }
   }
 
   componentDidUpdate(prevProps) {
