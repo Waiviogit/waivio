@@ -23,6 +23,7 @@ ShallowWrapper {
     "nodeType": "class",
     "props": Object {
       "children": Array [
+        "#",
         "exampletopic",
         <i
           className="iconfont icon-close Topic__close"
@@ -38,6 +39,7 @@ ShallowWrapper {
     },
     "ref": null,
     "rendered": Array [
+      "#",
       "exampletopic",
       Object {
         "instance": null,
@@ -64,6 +66,7 @@ ShallowWrapper {
       "nodeType": "class",
       "props": Object {
         "children": Array [
+          "#",
           "exampletopic",
           <i
             className="iconfont icon-close Topic__close"
@@ -79,6 +82,7 @@ ShallowWrapper {
       },
       "ref": null,
       "rendered": Array [
+        "#",
         "exampletopic",
         Object {
           "instance": null,

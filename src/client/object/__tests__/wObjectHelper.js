@@ -1,4 +1,4 @@
-import { hasField, getFieldWithMaxWeight } from '../wObjectHelper';
+import { hasField, getFieldWithMaxWeight, sortListItemsBy } from '../wObjectHelper';
 import { WAIVIO_META_FIELD_NAME } from '../../../common/constants/waivio';
 
 describe('hasField', () => {
@@ -27,13 +27,21 @@ describe('hasField', () => {
     };
     expect(hasField(post, 'testName', 'en-US')).toEqual(false);
   });
-  it('should return false without fieldName prop', () => {
+  it('should return false without fieldName prop and different locales', () => {
     const post = {
       json_metadata: `{"${[
         WAIVIO_META_FIELD_NAME,
       ]}": {"field": {"name": "testName", "locale": "en-US"}}}`,
     };
-    expect(hasField(post, null, 'en-US')).toEqual(false);
+    expect(hasField(post, null, 'ru-Ru')).toEqual(false);
+  });
+  it('should return tru without fieldName prop and the same locales', () => {
+    const post = {
+      json_metadata: `{"${[
+        WAIVIO_META_FIELD_NAME,
+      ]}": {"field": {"name": "testName", "locale": "en-US"}}}`,
+    };
+    expect(hasField(post, null, 'en-US')).toEqual(true);
   });
   it('should return false without field in json_metadata', () => {
     const post = {
@@ -203,5 +211,71 @@ describe('getFieldWithMaxWeight', () => {
       ],
     };
     expect(getFieldWithMaxWeight(wObject, 'name', null)).toEqual('');
+  });
+});
+
+describe('sortListItemsBy', () => {
+  const obj1 = { id: 'id_obj1', type: 'item', name: 'obj-1', rank: 22 };
+  const obj2 = { id: 'id_obj2', type: 'crypto', name: 'obj-2', rank: 11 };
+  const list1 = { id: 'id_lst1', type: 'list', name: 'list-1', rank: 77 };
+  const list2 = { id: 'id_lst2', type: 'list', name: 'list-2', rank: 99 };
+  const list3 = { id: 'id_lst3', type: 'list', name: 'list-3', rank: 88 };
+
+  let items = [];
+  beforeEach(() => {
+    items = [obj1, list1, list3, obj2, list2]
+      .map(item => ({ sort: Math.random(), value: item }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(item => item.value);
+  });
+  it('should return the the same items instance', () => {
+    items = {};
+    expect(sortListItemsBy(items, 'noMatter')).toBe(items);
+  });
+  it('should sort items by type (lists first) and name by default', () => {
+    expect(sortListItemsBy(items)).toEqual([list1, list2, list3, obj1, obj2]);
+  });
+  it('should sort items by type (lists first) and name asc', () => {
+    expect(sortListItemsBy(items, 'by-name-asc')).toEqual([list1, list2, list3, obj1, obj2]);
+  });
+  it('should sort items by type (lists first) and name desc', () => {
+    expect(sortListItemsBy(items, 'by-name-desc')).toEqual([list3, list2, list1, obj2, obj1]);
+  });
+  it('should sort items by type (lists first) and rank', () => {
+    expect(sortListItemsBy(items, 'rank')).toEqual([list2, list3, list1, obj1, obj2]);
+  });
+  it('should sort items by type (lists first) and rank (by name if ranks are equal)', () => {
+    const withSameRank1 = { ...obj1, name: obj1.name.substring(0, obj1.name.length - 2) };
+    const withSameRank2 = { ...obj1, name: `${obj1.name}-1` };
+    expect(sortListItemsBy([...items, withSameRank1, withSameRank2], 'rank')).toEqual([
+      list2,
+      list3,
+      list1,
+      withSameRank1,
+      obj1,
+      withSameRank2,
+      obj2,
+    ]);
+  });
+  it('should sort items by default if custom sort and sort order is not defined', () => {
+    expect(sortListItemsBy(items, 'custom')).toEqual([list1, list2, list3, obj1, obj2]);
+  });
+  it('should sort items according sortOrder', () => {
+    const expected = [obj2, list3, list1, obj1, list2];
+    expect(sortListItemsBy(items, 'custom', expected.map(item => item.id))).toEqual(expected);
+  });
+  it('should move new items to the end of the list', () => {
+    const expected = [obj2, list1, list2];
+    expect(sortListItemsBy(items, 'custom', expected.map(item => item.id))).toEqual([
+      ...expected,
+      list3,
+      obj1,
+    ]);
+  });
+  it('should skip item without error if there is no item for id in sort-order', () => {
+    const expected = [obj2, list1, list2];
+    expect(
+      sortListItemsBy(items, 'custom', ['deleted-item_id', ...expected.map(item => item.id)]),
+    ).toEqual([...expected, list3, obj1]);
   });
 });
