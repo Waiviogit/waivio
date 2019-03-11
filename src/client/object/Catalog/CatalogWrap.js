@@ -233,7 +233,7 @@ class CatalogWrap extends React.Component {
               {!isEmpty(listItems) ? (
                 map(listItems, listItem => {
                   const linkTo =
-                    listItem.type === 'list'
+                    listItem.type && listItem.type.toLowerCase() === 'list'
                       ? { pathname: `${listBaseUrl}/${listItem.id}` }
                       : { pathname: `/object/${listItem.id}` };
                   return (
