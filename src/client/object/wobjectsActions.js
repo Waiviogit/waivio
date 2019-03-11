@@ -65,9 +65,9 @@ export const createWaivioObject = postData => (dispatch, getState) => {
         };
         return ApiClient.postCreateWaivioObject(requestBody).then(response => {
           if (follow) {
-            dispatch(followObject(response.objectPermlink));
+            dispatch(followObject(response.permlink));
           }
-          dispatch(voteObject(response.objectAuthor, response.objectPermlink, votePower));
+          dispatch(voteObject(response.author, response.permlink, votePower));
           return response;
         });
       }),

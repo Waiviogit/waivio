@@ -245,7 +245,7 @@ describe('sortListItemsBy', () => {
     expect(sortListItemsBy(items, 'rank')).toEqual([list2, list3, list1, obj1, obj2]);
   });
   it('should sort items by type (lists first) and rank (by name if ranks are equal)', () => {
-    const withSameRank1 = { ...obj1, name: obj1.name.substring(0, obj1.name.length - 2) };
+    const withSameRank1 = { ...obj1, name: obj1.name.slice(0, -2) };
     const withSameRank2 = { ...obj1, name: `${obj1.name}-1` };
     expect(sortListItemsBy([...items, withSameRank1, withSameRank2], 'rank')).toEqual([
       list2,
