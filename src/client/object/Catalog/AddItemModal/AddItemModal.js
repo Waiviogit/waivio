@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Button, Modal, message, Select, Form } from 'antd';
-import { uniq } from 'lodash';
 import { getAppendData } from '../../../helpers/wObjectHelper';
 import { getFieldWithMaxWeight } from '../../../object/wObjectHelper';
 import { getAuthenticatedUserName, getFollowingObjectsList, getLocale } from '../../../reducers';
@@ -235,11 +234,7 @@ class AddItemModal extends Component {
         </div>
         <SearchObjectsAutocomplete
           handleSelect={this.handleObjectSelect}
-          itemsIdsToOmit={uniq([
-            ...itemsIdsToOmit,
-            ...(wobject.listItems ? wobject.listItems.map(item => item.author_permlink) : []),
-            wobject.author_permlink,
-          ])}
+          itemsIdsToOmit={itemsIdsToOmit}
         />
       </React.Fragment>
     );

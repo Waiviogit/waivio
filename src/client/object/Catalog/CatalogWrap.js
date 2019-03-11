@@ -2,7 +2,7 @@ import { Breadcrumb } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import React from 'react';
 import { connect } from 'react-redux';
-import { isEmpty, isEqual, map, forEach } from 'lodash';
+import { isEmpty, isEqual, map, forEach, uniq } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import CatalogItem from './CatalogItem';
@@ -54,8 +54,13 @@ class CatalogWrap extends React.Component {
     this.state = {
       sort: initialSort,
       breadcrumb: [
-        { name: getFieldWithMaxWeight(props.wobject, objectFields.name), link: props.match.url },
+        {
+          id: props.wobject.author_permlink,
+          name: getFieldWithMaxWeight(props.wobject, objectFields.name),
+          link: props.match.url,
+        },
       ],
+      wobjNested: null,
       listItems:
         (props.wobject &&
           props.wobject.listItems &&
@@ -79,21 +84,7 @@ class CatalogWrap extends React.Component {
     if (!isEqual(nextProps.match, this.props.match)) {
       const nextTarget = nextProps.match.url.split('/').pop();
       if (nextTarget === 'list') {
-        if (nextProps.wobject && nextProps.wobject.listItems) {
-          this.setState({
-            listItems: sortListItemsBy(
-              nextProps.wobject.listItems.map(item => getClientWObj(item)),
-              this.state.sort,
-              this.state.sort === 'custom' ? nextProps.wobject[objectFields.sorting] : null,
-            ),
-            breadcrumb: [
-              {
-                name: getFieldWithMaxWeight(nextProps.wobject, objectFields.name),
-                link: nextProps.match.url,
-              },
-            ],
-          });
-        }
+        this.setListItemsFromProps(nextProps);
       } else if (nextTarget !== this.props.match.params.itemId) {
         getObject(nextTarget).then(res => {
           const listItems =
@@ -108,10 +99,15 @@ class CatalogWrap extends React.Component {
             } else {
               breadcrumb = [
                 ...prevState.breadcrumb,
-                { name: getFieldWithMaxWeight(res, objectFields.name), link: nextProps.match.url },
+                {
+                  id: res.author_permlink,
+                  name: getFieldWithMaxWeight(res, objectFields.name),
+                  link: nextProps.match.url,
+                },
               ];
             }
             return {
+              wobjNested: res,
               listItems: sortListItemsBy(listItems, this.state.sort),
               breadcrumb,
             };
@@ -119,7 +115,30 @@ class CatalogWrap extends React.Component {
         });
       }
     }
+    if (!isEqual(this.props.wobject, nextProps.wobject)) {
+      this.setListItemsFromProps(nextProps);
+    }
   }
+
+  setListItemsFromProps = nextProps => {
+    if (nextProps.wobject && nextProps.wobject.listItems) {
+      this.setState({
+        wobjNested: null,
+        listItems: sortListItemsBy(
+          nextProps.wobject.listItems.map(item => getClientWObj(item)),
+          this.state.sort,
+          this.state.sort === 'custom' ? nextProps.wobject[objectFields.sorting] : null,
+        ),
+        breadcrumb: [
+          {
+            id: nextProps.wobject.author_permlink,
+            name: getFieldWithMaxWeight(nextProps.wobject, objectFields.name),
+            link: nextProps.match.url,
+          },
+        ],
+      });
+    }
+  };
 
   handleSortChange = sort => {
     const sortOrder = this.props.wobject && this.props.wobject[objectFields.sorting];
@@ -151,9 +170,13 @@ class CatalogWrap extends React.Component {
   };
 
   render() {
-    const { sort, listItems, breadcrumb } = this.state;
+    const { sort, wobjNested, listItems, breadcrumb } = this.state;
     const { isEditMode, wobject, intl, match } = this.props;
     const listBaseUrl = `/object/${match.params.name}/list`;
+    const itemsIdsToOmit = uniq([
+      ...listItems.map(item => item.id),
+      ...breadcrumb.map(crumb => crumb.id),
+    ]);
 
     const sortSelector =
       wobject && wobject[objectFields.sorting] && wobject[objectFields.sorting].length ? (
@@ -215,7 +238,7 @@ class CatalogWrap extends React.Component {
 
         {isEditMode && (
           <div className="CatalogWrap__add-item">
-            <AddItemModal wobject={wobject} itemsIdsToOmit={listItems.map(item => item.id)} />
+            <AddItemModal wobject={wobjNested || wobject} itemsIdsToOmit={itemsIdsToOmit} />
             <CreateObjectModal handleCreateObject={this.handleCreateObject} />
           </div>
         )}
