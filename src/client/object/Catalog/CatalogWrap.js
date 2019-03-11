@@ -165,14 +165,10 @@ class CatalogWrap extends React.Component {
       wobject && wobject[objectFields.sorting] && wobject[objectFields.sorting].length ? (
         <SortSelector sort={sort} onChange={this.handleSortChange}>
           <SortSelector.Item key="custom">
-            <FormattedMessage id="custom" defaultMessage="Custom">
-              {msg => msg.toUpperCase()}
-            </FormattedMessage>
+            <FormattedMessage id="custom" defaultMessage="Custom" />
           </SortSelector.Item>
           <SortSelector.Item key="rank">
-            <FormattedMessage id="rank" defaultMessage="Rank">
-              {msg => msg.toUpperCase()}
-            </FormattedMessage>
+            <FormattedMessage id="rank" defaultMessage="Rank" />
           </SortSelector.Item>
           <SortSelector.Item key="by-name-asc">
             <FormattedMessage id="by-name-asc" defaultMessage="a . . z">
@@ -188,9 +184,7 @@ class CatalogWrap extends React.Component {
       ) : (
         <SortSelector sort={sort} onChange={this.handleSortChange}>
           <SortSelector.Item key="rank">
-            <FormattedMessage id="rank" defaultMessage="Rank">
-              {msg => msg.toUpperCase()}
-            </FormattedMessage>
+            <FormattedMessage id="rank" defaultMessage="Rank" />
           </SortSelector.Item>
           <SortSelector.Item key="by-name-asc">
             <FormattedMessage id="by-name-asc" defaultMessage="a . . z">
