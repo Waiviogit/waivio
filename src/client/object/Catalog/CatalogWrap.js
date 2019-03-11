@@ -195,6 +195,24 @@ class CatalogWrap extends React.Component {
 
     return (
       <div>
+        <div className="CatalogWrap__breadcrumb">
+          <Breadcrumb separator={'>'}>
+            {map(breadcrumb, crumb => (
+              <Breadcrumb.Item key={`crumb-${crumb.name}`}>
+                <Link
+                  className="CatalogWrap__breadcrumb__link"
+                  to={{ pathname: crumb.link }}
+                  title={`${intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
+                    crumb.name
+                  }`}
+                >
+                  {crumb.name}
+                </Link>
+              </Breadcrumb.Item>
+            ))}
+          </Breadcrumb>
+        </div>
+
         {isEditMode && (
           <div className="CatalogWrap__add-item">
             <AddItemModal wobject={wobject} itemsIdsToOmit={listItems.map(item => item.id)} />
@@ -205,23 +223,6 @@ class CatalogWrap extends React.Component {
         <div className="CatalogWrap__sort">{sortSelector}</div>
 
         <div className="CatalogWrap">
-          <div className="CatalogWrap__breadcrumb">
-            <Breadcrumb separator={'>'}>
-              {map(breadcrumb, crumb => (
-                <Breadcrumb.Item key={`crumb-${crumb.name}`}>
-                  <Link
-                    className="CatalogWrap__breadcrumb__link"
-                    to={{ pathname: crumb.link }}
-                    title={`${intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
-                      crumb.name
-                    }`}
-                  >
-                    {crumb.name}
-                  </Link>
-                </Breadcrumb.Item>
-              ))}
-            </Breadcrumb>
-          </div>
           {listItems.length ? (
             <div>
               {!isEmpty(listItems) ? (

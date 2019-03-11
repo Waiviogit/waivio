@@ -72,7 +72,7 @@ export default class Wobj extends React.Component {
     const { history, match } = this.props;
     if (
       nextProps.wobject &&
-      nextProps.wobject.object_type === 'list' &&
+      nextProps.wobject.object_type.toLowerCase() === 'list' &&
       !match.params[0] &&
       !nextProps.match.params[0]
     ) {

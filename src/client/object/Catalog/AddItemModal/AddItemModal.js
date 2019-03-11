@@ -236,8 +236,8 @@ class AddItemModal extends Component {
         <SearchObjectsAutocomplete
           handleSelect={this.handleObjectSelect}
           itemsIdsToOmit={uniq([
-            ...wobject.listItems.map(item => item.author_permlink),
             ...itemsIdsToOmit,
+            ...(wobject.listItems ? wobject.listItems.map(item => item.author_permlink) : []),
             wobject.author_permlink,
           ])}
         />
