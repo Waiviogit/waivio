@@ -2,7 +2,7 @@ import { Breadcrumb } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import React from 'react';
 import { connect } from 'react-redux';
-import { isEmpty, map, forEach } from 'lodash';
+import { isEmpty, isEqual, map, forEach } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import CatalogItem from './CatalogItem';
@@ -76,21 +76,15 @@ class CatalogWrap extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.match !== this.props.match) {
+    if (!isEqual(nextProps.match, this.props.match)) {
       const nextTarget = nextProps.match.url.split('/').pop();
       if (nextTarget === 'list') {
         if (nextProps.wobject && nextProps.wobject.listItems) {
-          const sort =
-            nextProps.wobject[objectFields.sorting] &&
-            nextProps.wobject[objectFields.sorting].length
-              ? 'custom'
-              : 'rank';
           this.setState({
-            sort,
             listItems: sortListItemsBy(
               nextProps.wobject.listItems.map(item => getClientWObj(item)),
-              sort,
-              sort === 'custom' ? nextProps.wobject[objectFields.sorting] : null,
+              this.state.sort,
+              this.state.sort === 'custom' ? nextProps.wobject[objectFields.sorting] : null,
             ),
             breadcrumb: [
               {
