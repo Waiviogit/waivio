@@ -8,7 +8,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: @white;
+  background-color: @grey-nero;
   border: 1px solid @blue-hawkesBlue;
   border-radius: 4px;
   margin-top: 5px;
@@ -38,8 +38,13 @@
   .background-transparent {
     display: flex;
     background: rgba(255, 255, 255, 0.6);
+    position: relative;
     padding: 10px;
     width: 100%;
+    .editor-object__tag {
+      position: absolute;
+      right: 10px;
+    }
   }
   &__content {
     display: flex;

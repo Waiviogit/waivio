@@ -25,7 +25,6 @@ import RankTag from '../RankTag';
 import StoryPreview from './StoryPreview';
 import StoryFooter from '../StoryFooter/StoryFooter';
 import Avatar from '../Avatar';
-// import Topic from '../Button/Topic';
 import NSFWStoryPreviewMessage from './NSFWStoryPreviewMessage';
 import HiddenStoryPreviewMessage from './HiddenStoryPreviewMessage';
 import DMCARemovedMessage from './DMCARemovedMessage';
@@ -46,6 +45,7 @@ class Story extends React.Component {
     intl: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
     post: PropTypes.shape().isRequired,
+    match: PropTypes.shape(),
     postState: PropTypes.shape().isRequired,
     rewardFund: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
@@ -80,6 +80,7 @@ class Story extends React.Component {
     singlePostVew: false,
     sliderMode: 'auto',
     history: {},
+    match: { params: {} },
     showPostModal: () => {},
     votePost: () => {},
     toggleBookmark: () => {},
@@ -129,30 +130,42 @@ class Story extends React.Component {
 
     return true;
   }
-
+  getObjectLayout = wobj => {
+    const pathName = `/object/${wobj.author_permlink}`;
+    const nameFields = _.filter(wobj.fields, o => o.name === 'name');
+    const nameField = _.maxBy(nameFields, 'weight');
+    return (
+      <Link
+        key={wobj.author_permlink}
+        to={{ pathname: pathName }}
+        title={`${this.props.intl.formatMessage({
+          id: 'related_to_obj',
+          defaultMessage: 'Related to object',
+        })} ${nameField.body} ${wobj.percent ? `(${wobj.percent}%)` : ''}`}
+      >
+        <ObjectAvatar item={wobj} size={40} />
+      </Link>
+    );
+  };
   getWobjects = wobjects => {
     let i = 0;
-    return _.map(wobjects, wobj => {
+    let objectFromCurrentPage = null;
+    const returnData = _.map(wobjects, wobj => {
+      if (wobj.author_permlink === this.props.match.params.name) {
+        objectFromCurrentPage = this.getObjectLayout(wobj);
+        return null;
+      }
       if (i < 5) {
-        const pathName = `/object/${wobj.author_permlink}`;
-        const nameFields = _.filter(wobj.fields, o => o.name === 'name');
-        const nameField = _.maxBy(nameFields, 'weight');
         i += 1;
-        return (
-          <Link
-            key={wobj.author_permlink}
-            to={{ pathname: pathName }}
-            title={`${this.props.intl.formatMessage({
-              id: 'related_to_obj',
-              defaultMessage: 'Related to object',
-            })} ${nameField.body} ${wobj.percent ? `(${wobj.percent}%)` : ''}`}
-          >
-            <ObjectAvatar item={wobj} size={40} />
-          </Link>
-        );
+        return this.getObjectLayout(wobj);
       }
       return null;
     });
+    if (objectFromCurrentPage) {
+      returnData.unshift(objectFromCurrentPage);
+      if (i === 4) returnData.splice(-1, 1);
+    }
+    return returnData;
   };
 
   handleLikeClick(post, postState, weight = 10000) {
@@ -332,7 +345,7 @@ class Story extends React.Component {
 
     let rebloggedUI = null;
 
-    if (post.reblogged_by) {
+    if (post.reblogged_by && post.reblogged_by.length) {
       rebloggedUI = (
         <div className="Story__reblog">
           <i className="iconfont icon-share1" />
@@ -349,7 +362,7 @@ class Story extends React.Component {
           />
         </div>
       );
-    } else if (post.first_reblogged_on) {
+    } else if (postState.isReblogged) {
       rebloggedUI = (
         <div className="Story__reblog">
           <i className="iconfont icon-share1" />

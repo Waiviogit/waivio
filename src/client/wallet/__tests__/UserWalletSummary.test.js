@@ -16,6 +16,7 @@ describe('(Component) UserWalletSummary', () => {
         totalVestingShares: '100 STEEM',
         totalVestingFundSteem: '100 STEEM',
         loading: false,
+        loadingGlobalProperties: false,
       };
       const wrapper = shallow(<UserWalletSummary {...props} />);
       expect(wrapper).toMatchSnapshot();

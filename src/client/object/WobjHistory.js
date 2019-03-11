@@ -12,7 +12,7 @@ import {
   getFilteredContent,
 } from '../helpers/stateHelpers';
 import { getObjectComments } from '../feed/feedActions';
-import { objectFields, supportedObjectFields } from '../../common/constants/listOfFields';
+import { objectFields, getAllowedFieldsByObjType } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
 import AppendModal from './AppendModal';
@@ -60,8 +60,8 @@ export default class WobjHistory extends React.Component {
 
     if (object && object.author && object.author_permlink) {
       this.props.getObjectComments(object.author, object.author_permlink);
-      if (match.params.field) {
-        this.handleFieldChange(match.params.field);
+      if (match.params[1]) {
+        this.handleFieldChange(match.params[1]);
       }
     }
   }
@@ -70,10 +70,11 @@ export default class WobjHistory extends React.Component {
     const { object, match } = this.props;
 
     if (
-      prevProps.match.params.field !== match.params.field &&
-      this.state.field !== match.params.field
+      // compare field-name
+      prevProps.match.params[1] !== match.params[1] &&
+      this.state.field !== match.params[1]
     ) {
-      this.handleFieldChange(this.props.match.params.field);
+      this.handleFieldChange(this.props.match.params[1]);
     }
     if (prevProps.object.author_permlink !== object.author_permlink) {
       this.props.getObjectComments(object.author, object.author_permlink);
@@ -129,7 +130,7 @@ export default class WobjHistory extends React.Component {
             value={field}
             onChange={this.handleFieldChange}
           >
-            {supportedObjectFields.map(f => (
+            {getAllowedFieldsByObjType(this.props.object.object_type).map(f => (
               <Select.Option key={f}>
                 <FormattedMessage id={`object_field_${f}`} defaultMessage={f} />
               </Select.Option>

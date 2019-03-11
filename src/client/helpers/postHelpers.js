@@ -26,7 +26,7 @@ export const isPostTaggedNSFW = post => {
 };
 
 export function dropCategory(url) {
-  return url.replace(categoryRegex, '');
+  return url ? url.replace(categoryRegex, '') : null;
 }
 
 /**

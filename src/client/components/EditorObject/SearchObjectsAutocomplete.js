@@ -25,11 +25,11 @@ class SearchObjectsAutocomplete extends Component {
   static defaultProps = {
     style: { width: '100%' },
     searchObjectsResults: [],
-    linkedObjectsIds: [],
+    itemsIdsToOmit: [],
   };
 
   static propTypes = {
-    linkedObjectsIds: PropTypes.arrayOf(PropTypes.string),
+    itemsIdsToOmit: PropTypes.arrayOf(PropTypes.string),
     intl: PropTypes.shape().isRequired,
     style: PropTypes.shape(),
     searchObjectsResults: PropTypes.arrayOf(PropTypes.object),
@@ -89,7 +89,7 @@ class SearchObjectsAutocomplete extends Component {
   }
   render() {
     const { searchString } = this.state;
-    const { intl, style, searchObjectsResults, linkedObjectsIds } = this.props;
+    const { intl, style, searchObjectsResults, itemsIdsToOmit } = this.props;
     const getObjMarkup = obj => (
       <div className="obj-search-option">
         <img className="obj-search-option__avatar" src={obj.avatar} alt={obj.title || ''} />
@@ -107,7 +107,7 @@ class SearchObjectsAutocomplete extends Component {
     );
     const searchObjectsOptions = searchString
       ? searchObjectsResults
-          .filter(obj => !linkedObjectsIds.includes(obj.id))
+          .filter(obj => !itemsIdsToOmit.includes(obj.id))
           .map(obj => <AutoComplete.Option key={obj.id}>{getObjMarkup(obj)}</AutoComplete.Option>)
       : [];
     return (
