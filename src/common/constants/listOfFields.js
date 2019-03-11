@@ -11,6 +11,7 @@ export const objectFields = {
   hashtag: 'tag',
   phone: 'phone',
   email: 'email',
+  sorting: 'sortCustom',
 };
 
 export const addressFields = {
@@ -58,9 +59,16 @@ export const objectImageFields = ['avatar', 'background'];
 export const getAllowedFieldsByObjType = objectType => {
   switch (objectType && objectType.toLowerCase()) {
     case 'list':
-      return [objectFields.title, objectFields.avatar, objectFields.background];
-    default:
-      return supportedObjectFields;
+      return [
+        objectFields.title,
+        objectFields.avatar,
+        objectFields.background,
+        objectFields.sorting,
+      ];
+    default: {
+      const excludeFields = [objectFields.sorting];
+      return supportedObjectFields.filter(field => !excludeFields.includes(field));
+    }
   }
 };
 

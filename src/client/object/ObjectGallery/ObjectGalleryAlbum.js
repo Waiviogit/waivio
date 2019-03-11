@@ -47,7 +47,7 @@ export default class ObjectGalleryAlbum extends Component {
 
     if (loading) return <Loading center />;
 
-    const albumId = match.params.albumId;
+    const albumId = match.params.itemId;
     const album = _.filter(albums, _.iteratee(['id', albumId]));
 
     return (

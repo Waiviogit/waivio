@@ -1,6 +1,9 @@
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { getAlbums } from '../object/ObjectGallery/galleryActions';
+import { createPermlink } from '../vendor/steemitHelpers';
+import { generateRandomString } from '../helpers/wObjectHelper';
+import { followObject, voteObject } from './wobjActions';
 
 export const GET_OBJECT = '@objects/GET_OBJECT';
 export const GET_OBJECT_START = '@objects/GET_OBJECT_START';
@@ -33,4 +36,41 @@ export const getFeedContentByObject = object => dispatch =>
 export const getObjectInfo = authorPermlink => dispatch => {
   dispatch(getObject(authorPermlink));
   dispatch(getAlbums(authorPermlink));
+};
+
+export const CREATE_WOBJECT = '@wobj/CREATE_WOBJECT';
+
+export const createWaivioObject = postData => (dispatch, getState) => {
+  const { auth, settings } = getState();
+  if (!auth.isAuthenticated) {
+    return null;
+  }
+
+  const { votePower, follow, ...wobj } = postData;
+
+  return dispatch({
+    type: CREATE_WOBJECT,
+    payload: {
+      promise: createPermlink(wobj.id, auth.user.name, '', 'waiviodev').then(permlink => {
+        const requestBody = {
+          author: auth.user.name,
+          title: `${wobj.name} - waivio object`,
+          body: `Waivio object "${wobj.name}" has been created`,
+          permlink: `${generateRandomString(3).toLowerCase()}-${permlink}`,
+          objectName: wobj.name,
+          locale: wobj.locale || settings.locale === 'auto' ? 'en-US' : settings.locale,
+          type: wobj.type,
+          isExtendingOpen: Boolean(wobj.isExtendingOpen),
+          isPostingOpen: Boolean(wobj.isPostingOpen),
+        };
+        return ApiClient.postCreateWaivioObject(requestBody).then(response => {
+          if (follow) {
+            dispatch(followObject(response.objectPermlink));
+          }
+          dispatch(voteObject(response.objectAuthor, response.objectPermlink, votePower));
+          return response;
+        });
+      }),
+    },
+  });
 };

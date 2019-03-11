@@ -132,21 +132,9 @@ const routes = [
         ],
       },
       {
-        path: `/object/:name/list/:itemId?`,
-        component: Wobj,
-        exact: true,
-        routes: [
-          {
-            path: '/object/:name/list/:itemId?',
-            exact: true,
-            component: CatalogWrap,
-          },
-        ],
-      },
-      {
-        path: `/object/:name/(about|gallery|updates|reviews|followers|feed)?/(${supportedObjectFields.join(
+        path: `/object/:name/(about|gallery|updates|reviews|followers|feed|list)?/(${supportedObjectFields.join(
           '|',
-        )}|album)?/:albumId?`,
+        )}|album)?/:itemId?`,
         component: Wobj,
         exact: true,
         routes: [
@@ -171,7 +159,7 @@ const routes = [
             component: ObjectGallery,
           },
           {
-            path: '/object/:name/gallery/album/:albumId',
+            path: '/object/:name/gallery/album/:itemId',
             exact: true,
             component: ObjectGalleryAlbum,
           },
@@ -179,6 +167,11 @@ const routes = [
             path: '/object/:name/updates/:field?',
             exact: true,
             component: WobjHistory,
+          },
+          {
+            path: '/object/:name/list/:itemId?',
+            exact: true,
+            component: CatalogWrap,
           },
         ],
       },

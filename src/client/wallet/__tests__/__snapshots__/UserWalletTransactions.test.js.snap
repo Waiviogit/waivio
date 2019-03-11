@@ -6,6 +6,8 @@ ShallowWrapper {
   Symbol(enzyme.__unrendered__): <UserWalletTransactions
     actions={Array []}
     currentUsername="hellosteem"
+    getMoreUserAccountHistory={[Function]}
+    loadingMoreUsersAccountHistory={false}
     totalVestingFundSteem="0"
     totalVestingShares="0"
     transactions={
@@ -32,6 +34,7 @@ ShallowWrapper {
         },
       ]
     }
+    userHasMoreActions={false}
   />,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
@@ -50,7 +53,7 @@ ShallowWrapper {
         className=""
         containerHeight="100%"
         elementIsScrollable={false}
-        hasMore={true}
+        hasMore={false}
         holderType="div"
         horizontal={false}
         items={Array []}
@@ -154,7 +157,7 @@ ShallowWrapper {
         "className": "",
         "containerHeight": "100%",
         "elementIsScrollable": false,
-        "hasMore": true,
+        "hasMore": false,
         "holderType": "div",
         "horizontal": false,
         "items": Array [],
@@ -242,7 +245,7 @@ ShallowWrapper {
           className=""
           containerHeight="100%"
           elementIsScrollable={false}
-          hasMore={true}
+          hasMore={false}
           holderType="div"
           horizontal={false}
           items={Array []}
@@ -346,7 +349,7 @@ ShallowWrapper {
           "className": "",
           "containerHeight": "100%",
           "elementIsScrollable": false,
-          "hasMore": true,
+          "hasMore": false,
           "holderType": "div",
           "horizontal": false,
           "items": Array [],
