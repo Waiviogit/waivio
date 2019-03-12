@@ -506,5 +506,6 @@
   "add_waivio_beneficiary": "Share {share}% of this post rewards with Waivio",
   "objects_related_by_tags": "Objects related by #tags",
   "follow_extra": "Stay informed about object updates submitted by other users",
-  "category_rating_placeholder": "Category"
+  "category_rating_placeholder": "Category",
+  "your_vote_placeholder": "Your vote(optional)"
 }

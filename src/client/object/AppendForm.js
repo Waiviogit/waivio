@@ -150,7 +150,7 @@ export default class AppendForm extends Component {
         /* eslint-disable no-await-in-loop */
         const response = await this.props.appendObject(data);
 
-        if (objectFields.rating === form.currentField) {
+        if (objectFields.rating === form.currentField && form.rate) {
           const { author, permlink } = response.value;
           await this.props.rateObject(
             author,
@@ -1364,6 +1364,9 @@ export default class AppendForm extends Component {
                 />,
               )}
             </Form.Item>
+            <div className="ant-form-item-label label AppendForm__appendTitles">
+              <FormattedMessage id="your_vote_placeholder" defaultMessage="Your vote(optional)" />
+            </div>
             <Form.Item>
               {getFieldDecorator(ratingFields.rate)(
                 <Rate
