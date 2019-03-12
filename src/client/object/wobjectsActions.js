@@ -74,3 +74,11 @@ export const createWaivioObject = postData => (dispatch, getState) => {
     },
   });
 };
+
+export const ADD_ITEM_TO_LIST = '@wobj/ADD_ITEM_TO_LIST';
+
+export const addListItem = item => dispatch =>
+  dispatch({
+    type: ADD_ITEM_TO_LIST,
+    payload: item,
+  });
