@@ -603,6 +603,7 @@
   "object_field_phone": "Phone",
   "object_field_email": "Email",
   "object_field_sortCustom": "Custom sorting",
+  "object_field_listItem": "List item",
   "field_error": "{field} is required",
   "append_send": "Submit",
   "suggestion_add_field": "Update",
