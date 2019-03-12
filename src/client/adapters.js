@@ -35,13 +35,66 @@ export const getClientWObj = serverWObj => {
     version: __v || 0,
     followersNames: followers_names,
     isNew: Boolean(isNew),
-    rank: rank || 0,
-    type: object_type || 'item',
+    rank: rank || 1,
+    type: (object_type && object_type.toLowerCase()) || 'item',
     background: getFieldWithMaxWeight(serverWObj, objectFields.background),
   };
 };
 
 /* eslint-enable no-underscore-dangle */
 /* eslint-enable camelcase */
+
+export const getServerWObj = clientWObj => {
+  const {
+    id,
+    author,
+    creator,
+    name,
+    type,
+    rank,
+    version,
+    createdAt,
+    updatedAt,
+    parents,
+    children,
+    weight,
+    app,
+    avatar,
+    title,
+    background,
+  } = clientWObj;
+  const fields = [
+    {
+      name: 'name',
+      body: name,
+    },
+  ];
+  if (avatar) {
+    fields.push({ name: objectFields.avatar, body: avatar });
+  }
+  if (title) {
+    fields.push({ name: objectFields.title, body: title });
+  }
+  if (background) {
+    fields.push({ name: objectFields.background, body: background });
+  }
+  return {
+    author_permlink: id,
+    author,
+    creator,
+    default_name: name,
+    object_type: type,
+    __v: version,
+    rank: rank || 1,
+    weight: weight || '',
+    parents: parents && parents.length ? parents : [],
+    children: children && children.length ? children : [],
+    app: app || 'waiviodev/1.0.0',
+    community: '',
+    createdAt: createdAt || Date.now(),
+    updatedAt: updatedAt || Date.now(),
+    fields,
+  };
+};
 
 export default getClientWObj;
