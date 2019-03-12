@@ -27,7 +27,7 @@ const LinkedObjects = ({
           handleSelect={handleAddLinkedObject}
           itemsIdsToOmit={linkedObjects.map(obj => obj.id)}
         />
-        <CreateObject handleCreateObject={handleCreateObject} />
+        <CreateObject onCreateObject={handleCreateObject} />
       </React.Fragment>
     )}
     {Boolean(linkedObjects.length) && (
