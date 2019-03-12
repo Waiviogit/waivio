@@ -443,6 +443,7 @@
   "object_field_phone": "Phone",
   "object_field_email": "Email",
   "object_field_sortCustom": "Custom sorting",
+  "object_field_rating": "Ratings",
   "field_error": "{field} is required",
   "append_send": "Submit",
   "suggestion_add_field": "Update",
@@ -503,5 +504,6 @@
   "list_update": "Update list",
   "add_waivio_beneficiary": "Share {share}% of this post rewards with Waivio",
   "objects_related_by_tags": "Objects related by #tags",
-  "follow_extra": "Stay informed about object updates submitted by other users"
+  "follow_extra": "Stay informed about object updates submitted by other users",
+  "category_rating_placeholder": "Category"
 }
