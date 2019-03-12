@@ -16,14 +16,14 @@ class CreateObject extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     form: PropTypes.shape().isRequired,
-    handleCreateObject: PropTypes.func.isRequired,
+    onCreateObject: PropTypes.func.isRequired,
     currentLocaleInList: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
     currentLocaleInList: { id: 'en-US', name: '', nativeName: '' },
     wobject: { tag: '' },
-    handleCreateObject: () => {},
+    onCreateObject: () => {},
   };
 
   constructor(props) {
@@ -51,7 +51,7 @@ class CreateObject extends React.Component {
         objData.isExtendingOpen = true;
         objData.isPostingOpen = true;
         objData.votePower = this.state.votePercent * 100;
-        this.props.handleCreateObject(objData);
+        this.props.onCreateObject(objData);
         _.delay(this.toggleModal, 4500);
       }
     });

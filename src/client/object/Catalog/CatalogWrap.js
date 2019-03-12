@@ -1,7 +1,6 @@
 import { Breadcrumb } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import React from 'react';
-import { connect } from 'react-redux';
 import { isEmpty, isEqual, map, forEach, uniq } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -10,22 +9,12 @@ import { getFieldWithMaxWeight, sortListItemsBy } from '../wObjectHelper';
 import { getClientWObj } from '../../adapters';
 import { objectFields } from '../../../common/constants/listOfFields';
 import AddItemModal from './AddItemModal/AddItemModal';
-import CreateObjectModal from '../../post/CreateObjectModal/CreateObject';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import { getObject } from '../../../../src/waivioApi/ApiClient';
-import * as wobjectActions from '../../../client/object/wobjectsActions';
-import * as notificationActions from '../../../client/app/Notification/notificationActions';
 import './CatalogWrap.less';
 
 @withRouter
 @injectIntl
-@connect(
-  null,
-  {
-    createObject: wobjectActions.createWaivioObject,
-    notify: notificationActions.notify,
-  },
-)
 class CatalogWrap extends React.Component {
   static propTypes = {
     wobject: PropTypes.shape(),
@@ -33,12 +22,9 @@ class CatalogWrap extends React.Component {
     history: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     isEditMode: PropTypes.bool.isRequired,
-    createObject: PropTypes.func.isRequired,
-    notify: PropTypes.func,
   };
   static defaultProps = {
     wobject: {},
-    notify: () => {},
   };
 
   constructor(props) {
@@ -140,33 +126,13 @@ class CatalogWrap extends React.Component {
     }
   };
 
+  handleAddItem = listItem =>
+    this.setState(prevState => ({ listItems: [...prevState.listItems, listItem] }));
+
   handleSortChange = sort => {
     const sortOrder = this.props.wobject && this.props.wobject[objectFields.sorting];
     const listItems = sortListItemsBy(this.state.listItems, sort, sortOrder);
     this.setState({ sort, listItems });
-  };
-
-  handleCreateObject = (wobj, follow) => {
-    const { intl, notify, createObject } = this.props;
-    createObject(wobj, follow)
-      .then(() =>
-        notify(
-          intl.formatMessage({
-            id: 'create_object_success',
-            defaultMessage: 'Object has been created',
-          }),
-          'success',
-        ),
-      )
-      .catch(() =>
-        notify(
-          intl.formatMessage({
-            id: 'create_object_error',
-            defaultMessage: 'Something went wrong. Object is not created',
-          }),
-          'error',
-        ),
-      );
   };
 
   render() {
@@ -238,8 +204,11 @@ class CatalogWrap extends React.Component {
 
         {isEditMode && (
           <div className="CatalogWrap__add-item">
-            <AddItemModal wobject={wobjNested || wobject} itemsIdsToOmit={itemsIdsToOmit} />
-            <CreateObjectModal handleCreateObject={this.handleCreateObject} />
+            <AddItemModal
+              wobject={wobjNested || wobject}
+              itemsIdsToOmit={itemsIdsToOmit}
+              onAddItem={this.handleAddItem}
+            />
           </div>
         )}
 
