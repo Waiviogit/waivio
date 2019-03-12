@@ -5,6 +5,7 @@ import './PostObjectCard.less';
 import ObjectRank from '../../object/ObjectRank';
 import ObjectType from '../../object/ObjectType';
 import { getClientWObj } from '../../adapters';
+import Topic from '../../components/Button/Topic';
 
 const propTypes = {
   wObject: PropTypes.shape().isRequired,
@@ -61,6 +62,11 @@ const PostObjectCard = ({ wObject }) => {
               <Slider min={1} max={100} value={wObject.percent} disabled />
             </div>
           </div>
+          {wObject.tagged && (
+            <div className="editor-object__tag">
+              <Topic key={wObject.tagged} name={wObject.tagged} />
+            </div>
+          )}
         </div>
       </div>
     </React.Fragment>
