@@ -79,7 +79,7 @@ class SubFeed extends React.Component {
       if (fetched) return;
       this.props.getUserFeedContent(user.name);
     } else {
-      const sortBy = match.url === '/' ? 'wia_feed' : match.params.sortBy || 'trending';
+      const sortBy = 'wia_feed';
       const category = match.url === '/' ? 'all' : match.params.category;
       const fetched = getFeedFetchedFromState(sortBy, category, feed);
       if (fetched) return;

@@ -4,9 +4,6 @@ export const getFeedFromState = (sortBy, category = 'all', state) => {
   switch (sortBy) {
     case 'feed':
     case 'wia_feed':
-    case 'hot':
-    case 'created':
-    case 'trending':
     case 'comments':
     case 'blog':
     case 'bookmarks':
@@ -23,9 +20,6 @@ export const getFeedLoadingFromState = (sortBy, category = 'all', feedState) => 
   switch (sortBy) {
     case 'feed':
     case 'wia_feed':
-    case 'hot':
-    case 'created':
-    case 'trending':
     case 'comments':
     case 'blog':
     case 'bookmarks':
@@ -42,9 +36,6 @@ export const getFeedFetchedFromState = (sortBy, category = 'all', feedState) => 
   switch (sortBy) {
     case 'feed':
     case 'wia_feed':
-    case 'hot':
-    case 'created':
-    case 'trending':
     case 'comments':
     case 'blog':
     case 'bookmarks':
@@ -61,10 +52,7 @@ export const getFeedHasMoreFromState = (sortBy, listName = 'all', feedState) => 
   switch (sortBy) {
     case 'feed':
     case 'wia_feed':
-    case 'hot':
     case 'cashout':
-    case 'created':
-    case 'trending':
     case 'comments':
     case 'blog':
     case 'bookmarks':
@@ -81,10 +69,7 @@ export const getFeedFailedFromState = (sortBy, listName = 'all', feedState) => {
   switch (sortBy) {
     case 'feed':
     case 'wia_feed':
-    case 'hot':
     case 'cashout':
-    case 'created':
-    case 'trending':
     case 'comments':
     case 'blog':
     case 'bookmarks':

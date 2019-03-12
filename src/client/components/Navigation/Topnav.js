@@ -58,7 +58,6 @@ class Topnav extends React.Component {
   static get MENU_ITEMS() {
     return {
       HOME: 'home',
-      MY_STEEM: 'mySteem',
       MY_FEED: 'myFeed',
       MARKETS: 'markets',
       DEALS: 'deals',
@@ -69,7 +68,6 @@ class Topnav extends React.Component {
   static get ROUTES_MAP() {
     return {
       [this.MENU_ITEMS.HOME]: ['/'],
-      [this.MENU_ITEMS.MY_STEEM]: ['/trending', '/hot', '/created'],
       [this.MENU_ITEMS.MY_FEED]: ['/my_feed'],
       [this.MENU_ITEMS.MARKETS]: ['/markets/'],
       [this.MENU_ITEMS.DEALS]: ['/deals/'],
@@ -507,11 +505,6 @@ class Topnav extends React.Component {
             <Menu.Item key={Topnav.MENU_ITEMS.HOME}>
               <NavLink to="/">
                 {intl.formatMessage({ id: 'home', defaultMessage: 'Home' }).toUpperCase()}
-              </NavLink>
-            </Menu.Item>
-            <Menu.Item key={Topnav.MENU_ITEMS.MY_STEEM}>
-              <NavLink to="/trending">
-                {intl.formatMessage({ id: 'my_steem', defaultMessage: 'My steem' }).toUpperCase()}
               </NavLink>
             </Menu.Item>
             <Menu.Item key={Topnav.MENU_ITEMS.MY_FEED} disabled={!this.props.username}>

@@ -217,10 +217,6 @@ const routes = [
         component: Page,
       },
       {
-        path: '/:sortBy(trending|created|hot|promoted)?/:category?',
-        component: Page,
-      },
-      {
         path: '*',
         component: Error404,
       },
