@@ -23,6 +23,14 @@ export default function wobjectReducer(state = initialState, action) {
         wobject: action.payload,
         isFetching: false,
       };
+    case actions.ADD_ITEM_TO_LIST:
+      return {
+        ...state,
+        wobject: {
+          ...state.wobject,
+          listItems: [...state.wobject.listItems, action.payload],
+        },
+      };
     default: {
       return state;
     }

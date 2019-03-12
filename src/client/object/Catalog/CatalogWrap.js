@@ -1,20 +1,28 @@
 import { Breadcrumb } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import React from 'react';
+import { connect } from 'react-redux';
 import { isEmpty, isEqual, map, forEach, uniq } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import CatalogItem from './CatalogItem';
 import { getFieldWithMaxWeight, sortListItemsBy } from '../wObjectHelper';
-import { getClientWObj } from '../../adapters';
+import { getClientWObj, getServerWObj } from '../../adapters';
 import { objectFields } from '../../../common/constants/listOfFields';
 import AddItemModal from './AddItemModal/AddItemModal';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import { getObject } from '../../../../src/waivioApi/ApiClient';
+import * as wobjectActions from '../../../client/object/wobjectsActions';
 import './CatalogWrap.less';
 
 @withRouter
 @injectIntl
+@connect(
+  null,
+  {
+    addItemToWobjStore: wobjectActions.addListItem,
+  },
+)
 class CatalogWrap extends React.Component {
   static propTypes = {
     wobject: PropTypes.shape(),
@@ -22,6 +30,7 @@ class CatalogWrap extends React.Component {
     history: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     isEditMode: PropTypes.bool.isRequired,
+    addItemToWobjStore: PropTypes.func.isRequired,
   };
   static defaultProps = {
     wobject: {},
@@ -126,8 +135,19 @@ class CatalogWrap extends React.Component {
     }
   };
 
-  handleAddItem = listItem =>
-    this.setState(prevState => ({ listItems: [...prevState.listItems, listItem] }));
+  handleAddItem = listItem => {
+    const { breadcrumb, listItems } = this.state;
+    this.setState({
+      listItems: sortListItemsBy(
+        [...listItems, listItem],
+        this.state.sort,
+        this.state.sort === 'custom' ? this.props.wobject[objectFields.sorting] : null,
+      ),
+    });
+    if (breadcrumb.length === 1) {
+      this.props.addItemToWobjStore(getServerWObj(listItem));
+    }
+  };
 
   handleSortChange = sort => {
     const sortOrder = this.props.wobject && this.props.wobject[objectFields.sorting];
@@ -220,7 +240,7 @@ class CatalogWrap extends React.Component {
               {!isEmpty(listItems) ? (
                 map(listItems, listItem => {
                   const linkTo =
-                    listItem.type && listItem.type.toLowerCase() === 'list'
+                    listItem.type === 'list'
                       ? { pathname: `${listBaseUrl}/${listItem.id}` }
                       : { pathname: `/object/${listItem.id}` };
                   return (
