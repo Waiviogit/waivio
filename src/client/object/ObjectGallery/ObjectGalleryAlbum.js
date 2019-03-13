@@ -11,6 +11,7 @@ import './ObjectGallery.less';
 import CreateImage from './CreateImage';
 import {
   getAuthenticatedUserName,
+  getIsAuthenticated,
   getIsObjectAlbumsLoading,
   getObject,
   getObjectAlbums,
@@ -23,12 +24,14 @@ import withEditor from '../../components/Editor/withEditor';
   wObject: getObject(state),
   loading: getIsObjectAlbumsLoading(state),
   albums: getObjectAlbums(state),
+  isAuthenticated: getIsAuthenticated(state),
 }))
 export default class ObjectGalleryAlbum extends Component {
   static propTypes = {
     match: PropTypes.shape().isRequired,
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     loading: PropTypes.bool.isRequired,
+    isAuthenticated: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -42,7 +45,7 @@ export default class ObjectGalleryAlbum extends Component {
     }));
 
   render() {
-    const { loading, match, albums } = this.props;
+    const { loading, match, albums, isAuthenticated } = this.props;
     const { showModal } = this.state;
 
     if (loading) return <Loading center />;
@@ -52,28 +55,30 @@ export default class ObjectGalleryAlbum extends Component {
 
     return (
       <div className="ObjectGallery">
-        <div className="ObjectGallery__empty">
-          <div className="ObjectGallery__addImageWrap">
-            <div className="ObjectGallery__addImage">
-              <Link replace to={`/object/${match.params.name}/gallery`}>
-                <Icon type="arrow-left" />
-              </Link>
-              <FormattedMessage id="back_to_albums" defaultMessage="Back to albums" />
-            </div>
-            <div className="ObjectGallery__addImage">
-              <a role="presentation" onClick={this.handleToggleModal}>
-                <Icon type="plus-circle" className="proposition-line__icon" />
-              </a>
-              <FormattedMessage id="add_new_image" defaultMessage="Add new image" />
-              <CreateImage
-                albums={albums}
-                selectedAlbum={album[0]}
-                showModal={showModal}
-                hideModal={this.handleToggleModal}
-              />
+        {isAuthenticated && (
+          <div className="ObjectGallery__empty">
+            <div className="ObjectGallery__addImageWrap">
+              <div className="ObjectGallery__addImage">
+                <Link replace to={`/object/${match.params.name}/gallery`}>
+                  <Icon type="arrow-left" />
+                </Link>
+                <FormattedMessage id="back_to_albums" defaultMessage="Back to albums" />
+              </div>
+              <div className="ObjectGallery__addImage">
+                <a role="presentation" onClick={this.handleToggleModal}>
+                  <Icon type="plus-circle" className="proposition-line__icon" />
+                </a>
+                <FormattedMessage id="add_new_image" defaultMessage="Add new image" />
+                <CreateImage
+                  albums={albums}
+                  selectedAlbum={album[0]}
+                  showModal={showModal}
+                  hideModal={this.handleToggleModal}
+                />
+              </div>
             </div>
           </div>
-        </div>
+        )}
         {album && album[0] ? (
           <Album key={album[0].body + album[0].weight} album={album[0]} />
         ) : (
