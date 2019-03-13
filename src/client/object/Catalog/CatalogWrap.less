@@ -4,9 +4,18 @@
 .CatalogWrap {
   background-color: @white;
   border: 1px solid @border-color-base;
-  padding: 10px;
+  padding: 12px;
+
   &__breadcrumb {
+    background: @white;
+    border: @base-border;
+    padding: 12px;
     margin-bottom: 10px;
+    word-break: break-word;
+
+    .ant-breadcrumb > span:last-child {
+      font-weight: 500;
+    }
   }
 
   &__add-item {
@@ -15,10 +24,10 @@
     justify-content: flex-end;
     background: @white;
     border: @base-border;
-    padding: 2px 16px;
+    padding: 2px 12px;
     margin-bottom: 12px;
     width: 100%;
-    font-size: 16px;
+    font-size: @font-size-base;
     font-weight: 500;
   }
 }
