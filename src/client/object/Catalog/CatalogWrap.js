@@ -38,7 +38,7 @@ class CatalogWrap extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = this.getStateFromProps(props);
+    this.state = this.getNextStateFromProps(props);
   }
 
   componentDidMount() {
@@ -52,7 +52,7 @@ class CatalogWrap extends React.Component {
     if (!isEqual(nextProps.match, this.props.match)) {
       const nextTarget = nextProps.match.url.split('/').pop();
       if (nextTarget === 'list') {
-        this.setState(this.getStateFromProps(nextProps));
+        this.setState(this.getNextStateFromProps(nextProps));
       } else if (nextTarget !== this.props.match.params.itemId) {
         getObject(nextTarget).then(res => {
           const listItems =
@@ -84,32 +84,42 @@ class CatalogWrap extends React.Component {
       }
     }
     if (!isEqual(this.props.wobject, nextProps.wobject)) {
-      this.setState(this.getStateFromProps(nextProps));
+      this.setState(this.getNextStateFromProps(nextProps));
     }
   }
 
-  getStateFromProps = ({ wobject, match }) => {
-    const sort =
-      wobject && wobject[objectFields.sorting] && wobject[objectFields.sorting].length
-        ? 'custom'
-        : 'rank';
-    const customSortOrder = sort === 'custom' ? wobject[objectFields.sorting] : null;
-    const listItems =
-      wobject &&
-      wobject.listItems &&
-      sortListItemsBy(wobject.listItems.map(item => getClientWObj(item)), sort, customSortOrder);
-    return {
-      sort,
-      listItems: listItems || [],
-      wobjNested: null,
-      breadcrumb: [
-        {
-          id: wobject.author_permlink,
-          name: getFieldWithMaxWeight(wobject, objectFields.name),
-          link: match.url,
-        },
-      ],
-    };
+  getNextStateFromProps = ({ wobject, match }) => {
+    let state = { listItems: [], wobjNested: null, breadcrumb: [] };
+    if (!isEmpty(wobject)) {
+      let nextSort;
+      if (this.state && this.state.sort) {
+        nextSort = this.state.sort;
+      } else {
+        nextSort =
+          wobject[objectFields.sorting] && wobject[objectFields.sorting].length ? 'custom' : 'rank';
+      }
+      const customSortOrder = nextSort === 'custom' ? wobject[objectFields.sorting] : null;
+      const listItems =
+        wobject.listItems &&
+        sortListItemsBy(
+          wobject.listItems.map(item => getClientWObj(item)),
+          nextSort,
+          customSortOrder,
+        );
+      state = {
+        sort: nextSort,
+        listItems,
+        wobjNested: null,
+        breadcrumb: [
+          {
+            id: wobject.author_permlink,
+            name: getFieldWithMaxWeight(wobject, objectFields.name),
+            link: match.url,
+          },
+        ],
+      };
+    }
+    return state;
   };
 
   handleAddItem = listItem => {
