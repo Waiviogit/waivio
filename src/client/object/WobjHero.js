@@ -4,7 +4,7 @@ import { Route, Switch, withRouter } from 'react-router-dom';
 import WobjHeader from './WobjHeader';
 import UserHeaderLoading from '../components/UserHeaderLoading';
 import ObjectMenu from '../components/ObjectMenu';
-import Hero from '../components/Hero';
+// import Hero from '../components/Hero';
 import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
 
 @withRouter
@@ -64,6 +64,7 @@ const WobjHero = ({
               <WobjHeader
                 isEditMode={isEditMode}
                 username={username}
+                authenticated={authenticated}
                 wobject={wobject}
                 isFollowing={isFollowing}
                 toggleViewEditMode={toggleViewEditMode}
@@ -77,7 +78,7 @@ const WobjHero = ({
           </React.Fragment>
         )}
       />
-      <Route render={() => (authenticated ? <Hero /> : <div />)} />
+      {/* <Route render={() => (authenticated ? <Hero /> : <div />)} /> */}
     </Switch>
   </React.Fragment>
 );

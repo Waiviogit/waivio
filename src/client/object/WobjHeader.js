@@ -13,7 +13,7 @@ import ObjectType from './ObjectType';
 import ObjectRank from './ObjectRank';
 import '../components/ObjectHeader.less';
 
-const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode }) => {
+const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, authenticated }) => {
   const coverImage = getFieldWithMaxWeight(
     wobject,
     objectFields.background,
@@ -39,7 +39,7 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode })
               </div>
               <div className="ObjectHeader__controls">
                 <FollowButton following={wobject.author_permlink} followingType="wobject" />
-                {accessExtend && (
+                {accessExtend && authenticated && (
                   <Button onClick={toggleViewEditMode}>
                     {isEditMode
                       ? intl.formatMessage({ id: 'view', defaultMessage: 'View' })
@@ -66,7 +66,7 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode })
               )}
             </div>
           </div>
-          {canEdit && !hasCover ? (
+          {canEdit && !hasCover && (
             <div className="ObjectHeader__user__addCover">
               <Proposition
                 objectID={wobject.author_permlink}
@@ -74,7 +74,7 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode })
                 objName={objectName}
               />
             </div>
-          ) : null}
+          )}
         </div>
       </div>
     </div>
@@ -84,6 +84,7 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode })
 WobjHeader.propTypes = {
   intl: PropTypes.shape(),
   isEditMode: PropTypes.bool,
+  authenticated: PropTypes.bool,
   wobject: PropTypes.shape(),
   username: PropTypes.string,
   toggleViewEditMode: PropTypes.func,
@@ -92,6 +93,7 @@ WobjHeader.propTypes = {
 WobjHeader.defaultProps = {
   intl: {},
   isEditMode: false,
+  authenticated: false,
   wobject: {},
   username: '',
   toggleViewEditMode: () => {},

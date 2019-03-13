@@ -149,7 +149,7 @@ export const sortListItemsBy = (items, sortBy = 'by-name-asc', sortOrder = null)
       comparator = (a, b) => (a.name > b.name ? 1 : -1);
       break;
   }
-  const sorted = items.sort(comparator);
+  const sorted = _.uniqBy(items, 'id').sort(comparator);
   const resultArr = [
     ...sorted.filter(item => item.type === 'list'),
     ...sorted.filter(item => item.type !== 'list'),

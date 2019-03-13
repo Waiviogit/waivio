@@ -4,7 +4,7 @@ import { Select, Icon } from 'antd';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 
-import { getPosts, getFeed, getObject, getReadLanguages } from '../reducers';
+import { getPosts, getFeed, getObject, getReadLanguages, getIsAuthenticated } from '../reducers';
 import Feed from '../feed/Feed';
 import {
   getFeedFromState,
@@ -27,6 +27,7 @@ import { getFieldWithMaxWeight } from './wObjectHelper';
     comments: getPosts(state),
     object: getObject(state),
     readLanguages: getReadLanguages(state),
+    isAuthenticated: getIsAuthenticated(state),
   }),
   {
     getObjectComments,
@@ -38,6 +39,7 @@ export default class WobjHistory extends React.Component {
     match: PropTypes.shape().isRequired,
     feed: PropTypes.shape().isRequired,
     comments: PropTypes.shape(),
+    isAuthenticated: PropTypes.bool,
     getObjectComments: PropTypes.func,
     readLanguages: PropTypes.arrayOf(PropTypes.string),
     object: PropTypes.shape(),
@@ -46,6 +48,7 @@ export default class WobjHistory extends React.Component {
   static defaultProps = {
     getObjectComments: () => {},
     readLanguages: ['en-US'],
+    isAuthenticated: false,
     comments: {},
     object: {},
   };
@@ -100,7 +103,7 @@ export default class WobjHistory extends React.Component {
 
   render() {
     const { field, locale, showModal, sort } = this.state;
-    const { feed, object, comments, readLanguages } = this.props;
+    const { feed, object, comments, readLanguages, isAuthenticated } = this.props;
 
     const commentIds = getFeedFromState('comments', object.author, feed);
     const content = getFilteredContent(
@@ -152,19 +155,22 @@ export default class WobjHistory extends React.Component {
               </Select.Option>
             ))}
           </Select>
-          <IconButton
-            icon={<Icon type="plus-circle" />}
-            onClick={this.handleToggleModal}
-            caption={<FormattedMessage id="add_new_proposition" defaultMessage="Add" />}
-          />
-          {showModal && (
-            <AppendModal
-              showModal={showModal}
-              hideModal={this.handleToggleModal}
-              locale={this.state.locale}
-              field={this.state.field}
-              objName={objName}
-            />
+          {isAuthenticated && (
+            <React.Fragment>
+              <IconButton
+                icon={<Icon type="plus-circle" />}
+                onClick={this.handleToggleModal}
+                caption={<FormattedMessage id="add_new_proposition" defaultMessage="Add" />}
+              />
+              {showModal && <AppendModal
+                showModal={showModal}
+                hideModal={this.handleToggleModal}
+                locale={this.state.locale}
+                field={this.state.field}
+                objName={objName}
+              />
+              }
+            </React.Fragment>
           )}
         </div>
         {!isFetching && (

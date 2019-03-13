@@ -12,6 +12,7 @@ export const objectFields = {
   phone: 'phone',
   email: 'email',
   sorting: 'sortCustom',
+  listItem: 'listItem',
 };
 
 export const addressFields = {
@@ -63,10 +64,11 @@ export const getAllowedFieldsByObjType = objectType => {
         objectFields.title,
         objectFields.avatar,
         objectFields.background,
+        objectFields.listItem,
         objectFields.sorting,
       ];
     default: {
-      const excludeFields = [objectFields.sorting];
+      const excludeFields = [objectFields.sorting, objectFields.listItem];
       return supportedObjectFields.filter(field => !excludeFields.includes(field));
     }
   }

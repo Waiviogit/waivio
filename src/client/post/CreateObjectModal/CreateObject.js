@@ -16,14 +16,14 @@ class CreateObject extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     form: PropTypes.shape().isRequired,
-    handleCreateObject: PropTypes.func.isRequired,
+    onCreateObject: PropTypes.func.isRequired,
     currentLocaleInList: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
     currentLocaleInList: { id: 'en-US', name: '', nativeName: '' },
     wobject: { tag: '' },
-    handleCreateObject: () => {},
+    onCreateObject: () => {},
   };
 
   constructor(props) {
@@ -46,12 +46,15 @@ class CreateObject extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err && !this.state.loading) {
         this.setState({ loading: true });
-        const objData = values;
-        objData.id = objData.name;
-        objData.isExtendingOpen = true;
-        objData.isPostingOpen = true;
-        objData.votePower = this.state.votePercent * 100;
-        this.props.handleCreateObject(objData);
+        const objData = {
+          ...values,
+          id: values.name,
+          type: values.type.toLowerCase(),
+          isExtendingOpen: true,
+          isPostingOpen: true,
+          votePower: this.state.votePercent * 100,
+        };
+        this.props.onCreateObject(objData);
         _.delay(this.toggleModal, 4500);
       }
     });
