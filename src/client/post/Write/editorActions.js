@@ -91,6 +91,7 @@ const requiredFields = 'parentAuthor,parentPermlink,author,permlink,title,body,j
 
 const broadcastComment = (
   steemConnectAPI,
+  isUpdating,
   parentAuthor,
   parentPermlink,
   author,
@@ -119,6 +120,8 @@ const broadcastComment = (
   ];
   operations.push(commentOp);
 
+  if (isUpdating) return steemConnectAPI.broadcast(operations);
+
   const commentOptionsConfig = {
     author,
     permlink,
@@ -126,6 +129,7 @@ const broadcastComment = (
     allow_curation_rewards: true,
     max_accepted_payout: '1000000.000 SBD',
     percent_steem_dollars: 10000,
+    extensions: [],
   };
 
   if (reward === rewardsValues.none) {
@@ -145,7 +149,7 @@ const broadcastComment = (
   }
 
   if (beneficiaries.length !== 0) {
-    commentOptionsConfig.extensions = [[0, { beneficiaries }]];
+    commentOptionsConfig.extensions.push([0, { beneficiaries }]);
   }
 
   operations.push(['comment_options', commentOptionsConfig]);
@@ -208,13 +212,14 @@ export function createPost(postData) {
         promise: getPermLink.then(permlink =>
           broadcastComment(
             steemConnectAPI,
+            isUpdating,
             parentAuthor,
             parentPermlink,
             author,
             title,
             newBody,
             jsonMetadata,
-            !isUpdating && reward,
+            reward,
             beneficiary,
             !isUpdating && upvote,
             permlink,
