@@ -31,9 +31,9 @@ class CatalogWrap extends React.Component {
     wobject: PropTypes.shape(),
     locale: PropTypes.string,
     intl: PropTypes.shape().isRequired,
-    history: PropTypes.shape().isRequired,
+    // history: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
-    match: PropTypes.shape().isRequired,
+    // match: PropTypes.shape().isRequired,
     isEditMode: PropTypes.bool.isRequired,
     addItemToWobjStore: PropTypes.func.isRequired,
   };
@@ -45,13 +45,6 @@ class CatalogWrap extends React.Component {
   constructor(props) {
     super(props);
     this.state = this.getNextStateFromProps(props);
-  }
-
-  componentDidMount() {
-    const { match, history } = this.props;
-    if (this.props.match.params.itemId) {
-      history.push(`/object/${match.params.name}/list`);
-    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -102,24 +95,17 @@ class CatalogWrap extends React.Component {
   };
 
   getNextStateFromProps = ({ wobject, location }) => {
-    let state = { listItems: [], wobjNested: null, breadcrumb: [] };
+    let sort = '';
+    let listItems = [];
+    let breadcrumb = [];
     if (wobject && wobject.listItems) {
-      let nextSort;
       if (this.state && this.state.sort) {
-        nextSort = this.state.sort;
+        sort = this.state.sort;
       } else {
-        nextSort =
+        sort =
           wobject[objectFields.sorting] && wobject[objectFields.sorting].length ? 'custom' : 'rank';
       }
-      const customSortOrder = nextSort === 'custom' ? wobject[objectFields.sorting] : null;
-      const listItems =
-        wobject.listItems &&
-        sortListItemsBy(
-          wobject.listItems.map(item => getClientWObj(item)),
-          nextSort,
-          customSortOrder,
-        );
-      const breadcrumb = [
+      breadcrumb = [
         {
           id: wobject.author_permlink,
           name: getFieldWithMaxWeight(wobject, objectFields.name),
@@ -130,7 +116,11 @@ class CatalogWrap extends React.Component {
         const permlinks = location.hash.slice(1).split('/');
         const locale = this.props.locale === 'auto' ? 'en-US' : this.props.locale;
         getObjectsByIds({ authorPermlinks: permlinks, locale })
-          .then(res => res.map(obj => getClientWObj(obj)))
+          .then(res =>
+            permlinks.map(permlink =>
+              getClientWObj(res.find(wobj => wobj.author_permlink === permlink)),
+            ),
+          )
           .then(res => {
             const crumbs = res.map(obj => ({
               id: obj.id,
@@ -140,15 +130,16 @@ class CatalogWrap extends React.Component {
             this.setState({ breadcrumb: [...breadcrumb, ...crumbs] });
           });
         this.getObjectFromApi(permlinks[permlinks.length - 1], location.hash);
+      } else {
+        const customSortOrder = sort === 'custom' ? wobject[objectFields.sorting] : null;
+        listItems = sortListItemsBy(
+          wobject.listItems.map(item => getClientWObj(item)),
+          sort,
+          customSortOrder,
+        );
       }
-      state = {
-        sort: nextSort,
-        listItems,
-        wobjNested: null,
-        breadcrumb,
-      };
     }
-    return state;
+    return { sort, listItems, breadcrumb, wobjNested: null };
   };
 
   handleAddItem = listItem => {
