@@ -135,7 +135,7 @@ export const testImage = (url, callback, timeout = 3000) => {
  * @returns {*}
  */
 export const sortListItemsBy = (items, sortBy = 'by-name-asc', sortOrder = null) => {
-  if (!items || !items.length) return items;
+  if (!items || !items.length) return [];
   let comparator;
   switch (sortBy) {
     case 'rank':
