@@ -95,7 +95,7 @@ class AddItemModal extends Component {
           },
           {
             user: currentUserName,
-            itemType: selectedItem.type === 'listItem' ? 'list-item' : 'object',
+            itemType: selectedItem.type === 'list' ? 'nested list' : 'object',
             itemValue: selectedItem.name,
           },
         );
