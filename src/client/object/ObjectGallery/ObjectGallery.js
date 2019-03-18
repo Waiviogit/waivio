@@ -15,6 +15,7 @@ import {
   getObject,
   getObjectAlbums,
   getIsAppendLoading,
+  getIsAuthenticated,
 } from '../../reducers';
 import * as appendActions from '../appendActions';
 import * as galleryActions from './galleryActions';
@@ -29,6 +30,7 @@ import { prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelp
     loadingAlbum: getIsAppendLoading(state),
     loading: getIsObjectAlbumsLoading(state),
     albums: getObjectAlbums(state),
+    isAuthenticated: getIsAuthenticated(state),
   }),
   dispatch =>
     bindActionCreators(
@@ -47,6 +49,7 @@ export default class ObjectGallery extends Component {
     appendObject: PropTypes.func.isRequired,
     loadingAlbum: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
+    isAuthenticated: PropTypes.bool.isRequired,
     intl: PropTypes.shape().isRequired,
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     addAlbumToStore: PropTypes.func.isRequired,
@@ -95,29 +98,31 @@ export default class ObjectGallery extends Component {
 
   render() {
     const { showModal } = this.state;
-    const { match, loadingAlbum, albums, loading } = this.props;
+    const { match, loadingAlbum, albums, loading, isAuthenticated } = this.props;
     if (loading) return <Loading center />;
     const empty = albums.length === 0;
 
     return (
       <div className="ObjectGallery">
-        <div className="ObjectGallery__empty">
-          <div className="ObjectGallery__addAlbum">
-            <IconButton
-              icon={<Icon type="plus-circle" />}
-              onClick={this.handleToggleModal}
-              caption={<FormattedMessage id="add_new_album" defaultMessage="Add new album" />}
-            />
-            {showModal && (
-              <CreateAlbum
-                showModal={showModal}
-                hideModal={this.handleToggleModal}
-                handleSubmit={this.handleCreateAlbum}
-                loading={loadingAlbum}
+        {isAuthenticated && (
+          <div className="ObjectGallery__empty">
+            <div className="ObjectGallery__addAlbum">
+              <IconButton
+                icon={<Icon type="plus-circle" />}
+                onClick={this.handleToggleModal}
+                caption={<FormattedMessage id="add_new_album" defaultMessage="Add new album" />}
               />
-            )}
+              {showModal && (
+                <CreateAlbum
+                  showModal={showModal}
+                  hideModal={this.handleToggleModal}
+                  handleSubmit={this.handleCreateAlbum}
+                  loading={loadingAlbum}
+                />
+              )}
+            </div>
           </div>
-        </div>
+        )}
         {!empty ? (
           <div className="ObjectGallery__cardWrap">
             <Row gutter={24}>

@@ -4,7 +4,7 @@ import { Route, Switch, withRouter } from 'react-router-dom';
 import WobjHeader from './WobjHeader';
 import UserHeaderLoading from '../components/UserHeaderLoading';
 import ObjectMenu from '../components/ObjectMenu';
-import Hero from '../components/Hero';
+// import Hero from '../components/Hero';
 import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
 
 @withRouter
@@ -28,8 +28,9 @@ class WobjMenuWrapper extends React.Component {
     const current = this.props.location.pathname.split('/')[3];
     const currentKey = current || 'reviews';
     let fieldsCount = 0;
-    if (this.props.wobject && this.props.wobject.fields)
-      fieldsCount = this.props.wobject.fields.length > 0 ? this.props.wobject.fields.length - 1 : 0;
+    if (this.props.wobject && this.props.wobject.fields && this.props.wobject.fields.length) {
+      fieldsCount = this.props.wobject.fields.length;
+    }
     const accessExtend = haveAccess(this.props.wobject, this.props.username, accessTypesArr[0]);
     return (
       <ObjectMenu
@@ -64,6 +65,7 @@ const WobjHero = ({
               <WobjHeader
                 isEditMode={isEditMode}
                 username={username}
+                authenticated={authenticated}
                 wobject={wobject}
                 isFollowing={isFollowing}
                 toggleViewEditMode={toggleViewEditMode}
@@ -77,7 +79,7 @@ const WobjHero = ({
           </React.Fragment>
         )}
       />
-      <Route render={() => (authenticated ? <Hero /> : <div />)} />
+      {/* <Route render={() => (authenticated ? <Hero /> : <div />)} /> */}
     </Switch>
   </React.Fragment>
 );

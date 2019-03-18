@@ -495,7 +495,7 @@ class StoryFull extends React.Component {
               key="1"
             >
               {_.map(linkedObjects, wobj => (
-                <PostObjectCard key={`${wobj.creator}`} wObject={wobj} />
+                <PostObjectCard key={`${wobj.author_permlink}`} wObject={wobj} />
               ))}
             </Collapse.Panel>
           )}
@@ -508,7 +508,7 @@ class StoryFull extends React.Component {
               key="2"
             >
               {_.map(taggedObjects, wobj => (
-                <PostObjectCard key={`${wobj.creator}`} wObject={wobj} />
+                <PostObjectCard key={`${wobj.author_permlink}`} wObject={wobj} />
               ))}
             </Collapse.Panel>
           )}
