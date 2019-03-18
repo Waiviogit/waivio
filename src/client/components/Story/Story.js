@@ -408,13 +408,14 @@ class Story extends React.Component {
                 <PostedFrom post={post} />
               </span>
             </div>
-            <span className="Story__topics">
               {forecast && isForecastValid ? (
-                <PostForecast
-                  postForecast={forecast.expiredAt}
-                  isExpired={false}
-                  expiredAt={forecast.expiredAt}
-                />
+                <div className="Story__forecast">
+                  <PostForecast
+                    postForecast={forecast.expiredAt}
+                    isExpired={false}
+                    expiredAt={forecast.expiredAt}
+                  />
+                </div>
               ) : (
                 <div className="Story__topics">
                   <div className="Story__published">
@@ -424,7 +425,6 @@ class Story extends React.Component {
                   </div>
                 </div>
               )}
-            </span>
           </div>
           {forecast && isForecastValid && (
             <PostSellBuy

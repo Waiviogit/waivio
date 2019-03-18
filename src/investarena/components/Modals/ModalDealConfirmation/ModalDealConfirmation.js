@@ -29,7 +29,7 @@ const ModalDealConfirmation = props => {
             id: 'modalOpen.header.title',
             defaultMessage: 'Open deal',
           })}
-          visible={isModalOpen}
+          visible={!!isModalOpen}
           footer={null}
           onCancel={props.toggleModal}
           width={'90vw'}

@@ -124,11 +124,11 @@ export default class ObjectProfile extends React.Component {
                 title="analysis"
                 style={{
                   width: '100%',
-                  height: '210px',
+                  height: '213px',
                   border: 'none',
                   overflow: 'hidden',
                   background: isNightMode ? '#24292e' : 'white',
-                  padding: '10px',
+                  padding: '10px 10px 0 10px',
                 }}
                 src={`//informer.maximarkets.org/widgetsws/AnalizeID.html?Period=60&typemode=${
                   isNightMode ? 'first' : 'second'

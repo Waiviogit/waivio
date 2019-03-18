@@ -10,6 +10,7 @@ import { makeGetQuoteSettingsState } from '../../redux/selectors/quotesSettingsS
 import { makeGetQuoteState } from '../../redux/selectors/quotesSelectors';
 import PostChart from './PostChart';
 import { toggleModal } from '../../redux/actions/modalsActions';
+import { getNightmode } from "../../../client/reducers";
 
 const PostChartContainer = props => <PostChart {...props} />;
 
@@ -24,6 +25,7 @@ const mapState = () => {
       quoteSettings: getQuoteSettingsState(state, ownProps),
       connect: getIsConnectPlatformState(state),
       platformName: getPlatformNameState(state),
+      isNightMode: getNightmode(state)
     };
   };
 };

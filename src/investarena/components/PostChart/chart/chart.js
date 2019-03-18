@@ -3,11 +3,39 @@ import moment from 'moment/moment';
 import { ParsingPriceHelper } from '../../../platform/parsingPrice';
 
 const MINUTE_PER_DAY = 60 * 24;
+const lightMode = {
+  chartLine: '#2942ee',
+  startLine: 'grey',
+  finishLine: '#ee5451',
+  gridLine: '#eee',
+  polygon: { Buy: '#1ebea5', Sell: '#ee5451' },
+  quote: {
+    notUpdate: '#c7c7c7',
+    up: '#1ebea5',
+    down: '#ee5451',
+    stroke: { up: '#1a735b', down: '#733230' },
+  },
+};
+const darkMode = {
+  chartLine: '#2942ee',
+  startLine: '#eee',
+  finishLine: '#ee5451',
+  gridLine: '#4f545c',
+  polygon: { Buy: '#1ebea5', Sell: '#ee5451' },
+  quote: {
+    notUpdate: '#c7c7c7',
+    up: '#1ebea5',
+    down: '#ee5451',
+    stroke: { up: '#1a735b', down: '#733230' },
+  },
+};
+
 
 class Chart {
-  constructor({ canvas, animatedCircle, isObjectProfile }) {
+  constructor({ canvas, animatedCircle, isObjectProfile, isNightMode }) {
     this.canvas = canvas;
     this.animatedCircle = animatedCircle;
+    this.isNightMode = isNightMode;
     this.isObjectProfile = isObjectProfile;
     this.imageStart = new Image();
     this.imageStart.src = '/images/investarena/start.png';
@@ -24,19 +52,8 @@ class Chart {
       grid: 0.3,
       chart: 1,
     };
-    this.colors = {
-      chartLine: '#2942ee',
-      startLine: 'grey',
-      finishLine: '#ee5451',
-      gridLine: '#eee',
-      polygon: { Buy: '#1ebea5', Sell: '#ee5451' },
-      quote: {
-        notUpdate: '#c7c7c7',
-        up: '#1ebea5',
-        down: '#ee5451',
-        stroke: { up: '#1a735b', down: '#733230' },
-      },
-    };
+
+    this.colors = isNightMode ? darkMode : lightMode;
     if (this.ctx) {
       this.ctx.lineWidth = 1;
       this.ctx.strokeStyle = '#ccc';
@@ -467,7 +484,7 @@ class Chart {
         maxHeight - i + 3,
         quotationMark.toFixed(countAfter),
         '13px sans-serif',
-        'black',
+        this.isNightMode ? 'white' : 'black',
       );
     }
   }
@@ -570,7 +587,7 @@ class Chart {
               this.canvas.height - 7,
               date.format('DD MMM'),
               '13px sans-serif',
-              'black',
+              this.isNightMode ? 'white' : 'black',
             );
           } else {
             this.drawText(
@@ -578,7 +595,7 @@ class Chart {
               this.canvas.height - 7,
               date.format('HH:mm'),
               '13px sans-serif',
-              'black',
+              this.isNightMode ? 'white' : 'black',
             );
           }
         } else if (
@@ -590,7 +607,7 @@ class Chart {
             this.canvas.height - 7,
             date.format('YYYY'),
             '13px sans-serif',
-            'black',
+            this.isNightMode ? 'white' : 'black',
           );
         } else {
           this.drawText(
@@ -598,7 +615,7 @@ class Chart {
             this.canvas.height - 7,
             date.format('DD MMM'),
             '13px sans-serif',
-            'black',
+            this.isNightMode ? 'white' : 'black',
           );
         }
         oldDate = date;

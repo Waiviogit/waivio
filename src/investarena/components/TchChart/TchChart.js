@@ -3,6 +3,7 @@ import humanize from 'string-humanize';
 import React, { Component } from 'react';
 import { publishSubscribe, destroyPublishSubscribe } from '../../platform/publishSubscribe';
 import { singleton } from '../../platform/singletonPlatform';
+import './TchChart.less';
 
 class TchChart extends Component {
   constructor(props) {
@@ -66,6 +67,8 @@ class TchChart extends Component {
     document.querySelector('.tch-data-panel').classList.add('invisible');
     document.querySelector('.tch-search-container').classList.add('invisible');
     document.querySelector('.tch-chart-layouts-container').classList.add('invisible');
+    document.querySelector('.tch-tab-btn').classList.add('tch-hidden');
+    document.querySelector('.tch-fullscreen-btn').classList.add('tch-hidden');
     // setTimeout(() => {
     //   const sidebarToggle = document.querySelector('.tch-sidebar-close-panel');
     //   sidebarToggle && sidebarToggle.click();

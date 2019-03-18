@@ -18,6 +18,7 @@ const propTypes = {
   platformName: PropTypes.string,
   connect: PropTypes.bool,
   isObjectProfile: PropTypes.bool,
+  isNightMode: PropTypes.bool,
   quote: PropTypes.shape(),
   expiredBars: PropTypes.array,
   slPrice: PropTypes.string,
@@ -162,6 +163,7 @@ class PostChart extends Component {
       canvas: this.canvasRef,
       animatedCircle: this.circleRef,
       isObjectProfile: this.props.isObjectProfile,
+      isNightMode: this.props.isNightMode
     });
   shouldGetChartData = bars => {
     const timeNow = currentTime.getTime();
