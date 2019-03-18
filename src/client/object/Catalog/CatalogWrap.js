@@ -32,6 +32,7 @@ class CatalogWrap extends React.Component {
     locale: PropTypes.string,
     intl: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
+    match: PropTypes.shape().isRequired,
     isEditMode: PropTypes.bool.isRequired,
     addItemToWobjStore: PropTypes.func.isRequired,
   };
@@ -48,7 +49,8 @@ class CatalogWrap extends React.Component {
   componentWillReceiveProps(nextProps) {
     const newPath = nextProps.location.hash.slice(1);
     const currPath = this.props.location.hash.slice(1);
-    if (newPath !== currPath) {
+    const isReloadingPage = nextProps.match.params.name !== this.props.match.params.name;
+    if (!isReloadingPage && newPath !== currPath) {
       const nextListPermlink = newPath.split('/').pop() || 'list';
       const currListPermlink = currPath.split('/').pop();
       if (nextListPermlink === 'list') {
