@@ -31,9 +31,7 @@ class CatalogWrap extends React.Component {
     wobject: PropTypes.shape(),
     locale: PropTypes.string,
     intl: PropTypes.shape().isRequired,
-    // history: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
-    // match: PropTypes.shape().isRequired,
     isEditMode: PropTypes.bool.isRequired,
     addItemToWobjStore: PropTypes.func.isRequired,
   };
@@ -212,17 +210,29 @@ class CatalogWrap extends React.Component {
       <div>
         <div className="CatalogWrap__breadcrumb">
           <Breadcrumb separator={'>'}>
-            {map(breadcrumb, crumb => (
+            {map(breadcrumb, (crumb, index, crumbsArr) => (
               <Breadcrumb.Item key={`crumb-${crumb.name}`}>
-                <Link
-                  className="CatalogWrap__breadcrumb__link"
-                  to={{ pathname: location.pathname, hash: crumb.path }}
-                  title={`${intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
-                    crumb.name
-                  }`}
-                >
-                  {crumb.name}
-                </Link>
+                {index && index === crumbsArr.length - 1 ? (
+                  <React.Fragment>
+                    <span className="CatalogWrap__breadcrumb__link">{crumb.name}</span>
+                    <Link
+                      className="CatalogWrap__breadcrumb__obj-page-link"
+                      to={{ pathname: `/object/${crumb.id}/list` }}
+                    >
+                      <i className="iconfont icon-send PostModal__icon" />
+                    </Link>
+                  </React.Fragment>
+                ) : (
+                  <Link
+                    className="CatalogWrap__breadcrumb__link"
+                    to={{ pathname: location.pathname, hash: crumb.path }}
+                    title={`${intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
+                      crumb.name
+                    }`}
+                  >
+                    {crumb.name}
+                  </Link>
+                )}
               </Breadcrumb.Item>
             ))}
           </Breadcrumb>

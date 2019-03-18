@@ -14,8 +14,22 @@
     margin-bottom: 10px;
     word-break: break-word;
 
-    .ant-breadcrumb > span:last-child {
-      font-weight: 500;
+    span {
+      cursor: default;
+    }
+
+    &__obj-page-link {
+      color: @normal-grey;
+    }
+
+    .ant-breadcrumb {
+      & > span:last-child {
+        .ant-breadcrumb-link {
+          display: inline-flex;
+          align-items: center;
+        }
+        font-weight: 500;
+      }
     }
   }
 
