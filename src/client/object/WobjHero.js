@@ -28,8 +28,9 @@ class WobjMenuWrapper extends React.Component {
     const current = this.props.location.pathname.split('/')[3];
     const currentKey = current || 'reviews';
     let fieldsCount = 0;
-    if (this.props.wobject && this.props.wobject.fields)
-      fieldsCount = this.props.wobject.fields.length > 0 ? this.props.wobject.fields.length - 1 : 0;
+    if (this.props.wobject && this.props.wobject.fields && this.props.wobject.fields.length) {
+      fieldsCount = this.props.wobject.fields.length;
+    }
     const accessExtend = haveAccess(this.props.wobject, this.props.username, accessTypesArr[0]);
     return (
       <ObjectMenu
