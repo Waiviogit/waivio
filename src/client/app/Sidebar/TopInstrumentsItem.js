@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import './TopInsruments.less';
 import InstrumentCardView from '../../../investarena/components/InstrumentsPage/Instrument/CardView';
-import {makeGetQuoteState} from "../../../investarena/redux/selectors/quotesSelectors";
+import { makeGetQuoteState } from '../../../investarena/redux/selectors/quotesSelectors';
 
 const TopInstrumentsItem = props => <InstrumentCardView {...props} />;
 

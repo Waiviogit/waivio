@@ -32,7 +32,7 @@ import {
 import './Editor.less';
 import { currentTime } from '../../../investarena/helpers/currentTime';
 import { forecastDateTimeFormat } from '../../../investarena/constants/constantsForecast';
-import CreatePostForecast from "../../../investarena/components/CreatePostForecast";
+import CreatePostForecast from '../../../investarena/components/CreatePostForecast';
 
 @injectIntl
 @requiresLogin
@@ -46,7 +46,7 @@ class Editor extends React.Component {
     title: PropTypes.string,
     topics: PropTypes.arrayOf(PropTypes.string),
     waivioData: PropTypes.shape(),
-    initialForecast: PropTypes.shape(),
+    // initialForecast: PropTypes.shape(),
     body: PropTypes.string,
     reward: PropTypes.string,
     beneficiary: PropTypes.bool,
@@ -186,7 +186,7 @@ class Editor extends React.Component {
       upvote: post.upvote,
       [WAIVIO_META_FIELD_NAME]: post.waivioData,
     });
-    if(post.initialForecast && !_.isEmpty(post.initialForecast)) {
+    if (post.initialForecast && !_.isEmpty(post.initialForecast)) {
       this.setState({ forecastValues: post.initialForecast });
     }
     this.setBodyAndRender(post.body);

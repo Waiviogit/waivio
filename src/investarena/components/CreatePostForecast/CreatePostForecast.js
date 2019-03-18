@@ -91,9 +91,10 @@ class CreatePostForecast extends Component {
 
   updateForecastValues = forecast => {
     const dateTimeValue = forecast.expiredAt ? moment(forecast.expiredAt) : null;
-    const selectForecast = !forecast.selectForecast && Boolean(dateTimeValue)
-      ? 'Custom'
-      : forecast.selectForecast || null;
+    const selectForecast =
+      !forecast.selectForecast && Boolean(dateTimeValue)
+        ? 'Custom'
+        : forecast.selectForecast || null;
     this.setState({
       dateTimeValue,
       quotePrice: forecast.postPrice,

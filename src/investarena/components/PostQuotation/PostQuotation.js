@@ -63,83 +63,96 @@ const PostQuotation = ({
     handleClickOpenDeal(direction);
     if (toggleConfirmationModal) toggleConfirmationModal();
   };
+
+
   return (
     <div className="st-post-quotation-wrap">
-      <div className="st-post-quotation-block margins">
-        <div className="st-post-quotation-header d-flex justify-content-between align-items-center">
-          <div className="st-quote-name-container">
-            <Link
-              to={`/object/${wobj.author_permlink}`}
-              className="st-post-quotation-quote"
-              title={quoteSettings.name}
-            >
-              {quoteSettings.name}
-            </Link>
-          </div>
-          <div
-            title={intl.formatMessage({
-              id: 'tips.sessionStatus',
-              defaultMessage: 'Trading session status',
-            })}
-            className={classOfIndicator}
-          />
-        </div>
-        <div className="st-post-quotation-container">
-          <div
-            title={intl.formatMessage({ id: 'tips.dailyChange', defaultMessage: 'Daily change' })}
-            className={`st-daily-change ${classOfDailyChange}`}
-          >
-            {dailyChange}
-          </div>
-        </div>
-        <div className="d-flex justify-content-between st-margin-bottom-small">
+      {(quote && quoteSettings && quoteSettings.tickSize) ?
+        <React.Fragment>
+          <div className="st-post-quotation-block margins">
+            <div className="st-post-quotation-header d-flex justify-content-between align-items-center">
+              <div className="st-quote-name-container">
+                <Link
+                  to={`/object/${wobj.author_permlink}`}
+                  className="st-post-quotation-quote"
+                  title={quoteSettings.name}
+                >
+                  {quoteSettings.name}
+                </Link>
+              </div>
+              <div
+                title={intl.formatMessage({
+                  id: 'tips.sessionStatus',
+                  defaultMessage: 'Trading session status',
+                })}
+                className={classOfIndicator}
+              />
+            </div>
+            <div className="st-post-quotation-container">
+              <div
+                title={intl.formatMessage({id: 'tips.dailyChange', defaultMessage: 'Daily change'})}
+                className={`st-daily-change ${classOfDailyChange}`}
+              >
+                {dailyChange}
+              </div>
+            </div>
+            <div className="d-flex justify-content-between st-margin-bottom-small">
           <span>
-            {intl.formatMessage({ id: 'postQuotation.margin', defaultMessage: 'Margin' })}
+            {intl.formatMessage({id: 'postQuotation.margin', defaultMessage: 'Margin'})}
           </span>
-          {currencyFormat(margin)}
-        </div>
-      </div>
-      <div className="st-post-quotation-block amount">
-        <div className="st-post-amount">
-          <button className="st-post-more-deal" onClick={handleClickLess}>
-            &ndash;
-          </button>
-          <input
-            type="text"
-            onBlur={handleBlurInput}
-            onChange={handleChangeInput}
-            onKeyPress={handleKeyPressInput}
-            value={amount}
-          />
-          <button className="st-post-less-deal" onClick={handleClickMore}>
-            +
-          </button>
-        </div>
-        <div className="st-post-quotation-footer">
-          <div
-            role="presentation"
-            className={`st-post-action-block st-margin-right-small st-quote-${
-              quote.state ? quote.state : 'not-update'
-            }`}
-            onClick={handleOpenDeal.bind(this, 'Sell')}
-          >
-            <span className="st-post-action-span">
-              {intl.formatMessage({ id: 'postQuotation.button.sell', defaultMessage: 'Sell' })}
-            </span>
-            <div>{quoteFormat(quote.bidPrice, quoteSettings)}</div>
+              {currencyFormat(margin)}
+            </div>
           </div>
-          <div
-            role="presentation"
-            className={`st-post-action-block st-quote-${quote.state ? quote.state : 'not-update'}`}
-            onClick={handleOpenDeal.bind(this, 'Buy')}
-          >
+          <div className="st-post-quotation-block amount">
+            <div className="st-post-amount">
+              <button className="st-post-more-deal" onClick={handleClickLess}>
+                &ndash;
+              </button>
+              <input
+                type="text"
+                onBlur={handleBlurInput}
+                onChange={handleChangeInput}
+                onKeyPress={handleKeyPressInput}
+                value={amount}
+              />
+              <button className="st-post-less-deal" onClick={handleClickMore}>
+                +
+              </button>
+            </div>
+            <div className="st-post-quotation-footer">
+              <div
+                role="presentation"
+                className={`st-post-action-block st-margin-right-small st-quote-${
+                  quote.state ? quote.state : 'not-update'
+                  }`}
+                onClick={handleOpenDeal.bind(this, 'Sell')}
+              >
             <span className="st-post-action-span">
-              {intl.formatMessage({ id: 'postQuotation.button.buy', defaultMessage: 'Buy' })}
+              {intl.formatMessage({id: 'postQuotation.button.sell', defaultMessage: 'Sell'})}
             </span>
-            <div>{quoteFormat(quote.askPrice, quoteSettings)}</div>
+                <div>{quoteFormat(quote.bidPrice, quoteSettings)}</div>
+              </div>
+              <div
+                role="presentation"
+                className={`st-post-action-block st-quote-${quote.state ? quote.state : 'not-update'}`}
+                onClick={handleOpenDeal.bind(this, 'Buy')}
+              >
+            <span className="st-post-action-span">
+              {intl.formatMessage({id: 'postQuotation.button.buy', defaultMessage: 'Buy'})}
+            </span>
+                <div>{quoteFormat(quote.askPrice, quoteSettings)}</div>
+              </div>
+            </div>
           </div>
+        </React.Fragment>
+        :
+        <div className="no-data-access-wrap">
+          {intl.formatMessage({
+            id: 'no_access_to_quote',
+            defaultMessage: 'Your broker is not provide actual data for this instrument, or your account need special access to this instrument.',
+          })}
         </div>
-      </div>
+      }
     </div>
   );
 };

@@ -194,10 +194,14 @@ class PostChart extends Component {
         : 'st-chart-circle-session';
     }
     const { chartType, timeScale, priceType } = this.state;
-    const { createdAt, forecast } = this.props;
+    const { createdAt, forecast, quote, quoteSettings } = this.props;
     return (
-      <div className="w-100">
-        <div className="st-chart-select">
+      <div
+        className={`w-100 ${
+          (!quote || !quoteSettings || !quoteSettings.tickSize) ? 'st-hidden' : ''
+        }`}
+      >
+        <div className="st-chart-select hidden">
           <TabSelect
             data={optionsChartType}
             className="st-chart-tab-select"
