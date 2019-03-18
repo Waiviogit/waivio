@@ -299,7 +299,7 @@ class Editor extends React.Component {
       );
       return { linkedObjects };
     });
-    this.props.onCreateObject(
+    return this.props.onCreateObject(
       wObject,
       res => {
         this.setState(prevState => {
