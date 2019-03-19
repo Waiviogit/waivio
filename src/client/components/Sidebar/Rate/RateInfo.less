@@ -1,0 +1,19 @@
+.RateInfo {
+  &__header {
+    display: flex;
+    flex-direction: column;
+  }
+  &__stars {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    &-container {
+      margin-bottom: 8px;
+      .ant-rate-disabled {
+        .ant-rate-star {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
