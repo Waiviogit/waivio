@@ -59,7 +59,6 @@ class CreateObject extends React.Component {
         this.props
           .onCreateObject(objData)
           .then(() => this.setState({ loading: false, isModalOpen: false }));
-        // _.delay(this.toggleModal, 4500);
       }
     });
   };
