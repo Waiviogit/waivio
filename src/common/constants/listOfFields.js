@@ -12,6 +12,7 @@ export const objectFields = {
   phone: 'phone',
   email: 'email',
   sorting: 'sortCustom',
+  rating: 'rating',
   listItem: 'listItem',
 };
 
@@ -44,6 +45,13 @@ export const phoneFields = {
   name: 'name',
   number: 'number',
 };
+
+export const ratingFields = {
+  category: 'category',
+  rate: 'rate',
+};
+
+export const ratePercent = [2, 4, 6, 8, 10];
 
 export const socialObjectFields = [
   { id: 'facebook', icon: 'facebook', color: '#3b5998', name: 'Facebook' },

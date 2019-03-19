@@ -23,6 +23,7 @@ import { getIsAuthenticated, getObjectAlbums } from '../../reducers';
 import DescriptionInfo from './DescriptionInfo';
 import CreateImage from '../../object/ObjectGallery/CreateImage';
 import './ObjectInfo.less';
+import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 
 @connect(state => ({
   albums: getObjectAlbums(state),
@@ -72,6 +73,7 @@ class ObjectInfo extends React.Component {
     let hashtags = [];
     let phones = [];
     let email = '';
+
     if (wobject) {
       addressArr = Object.values(addressFields).map(fieldName =>
         getFieldWithMaxWeight(wobject, objectFields.address, fieldName),
@@ -180,6 +182,7 @@ class ObjectInfo extends React.Component {
         {getFieldWithMaxWeight(wobject, objectFields.name) && (
           <div className="object-sidebar">
             {listItem(objectFields.description, <DescriptionInfo description={description} />)}
+            {listItem(objectFields.rating, <RateInfo username={userName} wobject={wobject} />)}
             {listItem(
               objectFields.hashtag,
               <div className="field-info">

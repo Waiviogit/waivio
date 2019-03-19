@@ -116,3 +116,29 @@ export const voteObject = (objCreator, objPermlink, weight = 10000) => (
     },
   });
 };
+
+export const RATE_WOBJECT = '@wobj/RATE_WOBJECT';
+
+export const rateObject = (author, permlink, authorPermlink, rate) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const state = getState();
+
+  if (!getIsAuthenticated(state)) {
+    return Promise.reject('User is not authenticated');
+  }
+
+  const username = getAuthenticatedUserName(state);
+
+  return dispatch({
+    type: RATE_WOBJECT,
+    payload: {
+      promise: steemConnectAPI.rankingObject(username, author, permlink, authorPermlink, rate),
+    },
+    meta: {
+      username,
+    },
+  });
+};
