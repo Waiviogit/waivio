@@ -96,7 +96,7 @@ class StarRating extends React.Component {
             )}
           </div>
         </div>
-        <div>{this.renderVotes(field)}</div>
+        <div className="StarRating__table">{this.renderVotes(field)}</div>
       </React.Fragment>
     );
   }

@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { Modal, Rate } from 'antd';
 import { injectIntl } from 'react-intl';
 import RateForm from './RateForm';
-import StarRating from './StarRating';
 import { averageRate, rateCount } from './rateHelper';
 import { objectFields, ratePercent } from '../../../../common/constants/listOfFields';
 import './RateInfo.less';
@@ -27,9 +26,9 @@ class RateInfo extends React.Component {
     return voter ? ratePercent.indexOf(voter.rate) + 1 : null;
   };
 
-  handleOnClick = e => {
+  handleOnClick = field => {
     this.setState({
-      field: _.attempt(JSON.parse, e.target.dataset.field),
+      field,
     });
     this.toggleModal();
   };
@@ -40,8 +39,8 @@ class RateInfo extends React.Component {
     }));
 
   render() {
-    const { fields } = this.props.wobject;
-
+    const { username, wobject } = this.props;
+    const { fields } = wobject;
     const filteredRatingFields = fields.filter(field => field.name === objectFields.rating);
     const rankingList = _.orderBy(filteredRatingFields, ['weight'], ['desc']);
     const ratingByCategoryFields = fields.find(
@@ -53,17 +52,14 @@ class RateInfo extends React.Component {
         {rankingList &&
           rankingList.map(field => (
             <div className="RateInfo__header" key={field.permlink}>
-              <div
-                role="presentation"
-                className="RateInfo__title"
-                data-field={JSON.stringify(field)}
-                key={field.permlink}
-                onClick={this.handleOnClick}
-              >
-                {field.body}
-              </div>
+              <div>{field.body}</div>
               <div className="RateInfo__stars">
-                <div className="RateInfo__stars-container">
+                <div
+                  className="RateInfo__stars-container"
+                  role="presentation"
+                  data-field={JSON.stringify(field)}
+                  onClick={this.handleOnClick.bind(this, field)} // eslint-disable-line react/jsx-no-bind
+                >
                   <Rate allowHalf disabled defaultValue={+averageRate(field)} />
                 </div>
                 <div>({rateCount(field)})</div>
@@ -82,10 +78,10 @@ class RateInfo extends React.Component {
               initialValue={this.getInitialRateValue(ratingByCategoryFields) || 0}
               field={this.state.field}
               authorPermlink={this.props.wobject.author_permlink}
+              username={username}
+              wobject={wobject}
+              ratingByCategoryFields={ratingByCategoryFields}
             />
-            {this.getInitialRateValue(ratingByCategoryFields) && (
-              <StarRating field={ratingByCategoryFields} />
-            )}
           </Modal>
         )}
       </React.Fragment>

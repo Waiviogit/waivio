@@ -3,14 +3,17 @@
     display: flex;
     flex-direction: column;
   }
-  &__title {
-    cursor: pointer;
-  }
   &__stars {
     display: flex;
     align-items: center;
+    cursor: pointer;
     &-container {
       margin-bottom: 8px;
+      .ant-rate-disabled {
+        .ant-rate-star {
+          cursor: pointer;
+        }
+      }
     }
   }
 }

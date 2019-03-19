@@ -6,6 +6,7 @@ import { Button, Form, message, Rate } from 'antd';
 import { rateObject } from '../../../object/wobjActions';
 import { ratePercent, ratingFields } from '../../../../common/constants/listOfFields';
 import './RateForm.less';
+import StarRating from './StarRating';
 
 @connect(
   null,
@@ -22,6 +23,7 @@ class RateForm extends React.Component {
     rateObject: PropTypes.func.isRequired,
     intl: PropTypes.shape().isRequired,
     initialValue: PropTypes.number,
+    ratingByCategoryFields: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -66,7 +68,7 @@ class RateForm extends React.Component {
   render() {
     const { getFieldDecorator } = this.props.form;
     const { loading, submitted } = this.state;
-    const { intl } = this.props;
+    const { intl, ratingByCategoryFields } = this.props;
 
     return !submitted ? (
       <div className="RateForm">
@@ -88,11 +90,14 @@ class RateForm extends React.Component {
         </Form>
       </div>
     ) : (
-      <div>
-        {intl.formatMessage({
-          id: 'thank_for_vote',
-          defaultMessage: 'Thank you for your vote!',
-        })}
+      <div className="RateForm__full">
+        <div>
+          {intl.formatMessage({
+            id: 'thank_for_vote',
+            defaultMessage: 'Thank you for your vote!',
+          })}
+        </div>
+        <StarRating field={ratingByCategoryFields} />
       </div>
     );
   }
