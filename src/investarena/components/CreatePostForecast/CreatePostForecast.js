@@ -48,7 +48,7 @@ class CreatePostForecast extends Component {
     dateTimeValue: null,
     quotePrice: null,
     selectQuote: null,
-    selectRecommend: optionsAction[0].value,
+    selectRecommend: null,
     selectForecast: null,
     takeProfitValue: '',
     stopLossValue: '',
@@ -75,11 +75,12 @@ class CreatePostForecast extends Component {
       takeProfitValue,
       isValid,
     } = forecast;
+    const price = parseFloat(quotePrice);
     const forecastObject = {
       quoteSecurity: selectQuote,
       market: selectQuote ? quotesSettings[selectQuote].market : '',
       recommend: selectRecommend,
-      postPrice: parseFloat(quotePrice),
+      postPrice: !isNaN(price) ? price : null,
       selectForecast,
       expiredAt: dateTimeValue ? dateTimeValue.format(forecastDateTimeFormat) : null,
       isValid,
@@ -99,7 +100,7 @@ class CreatePostForecast extends Component {
       dateTimeValue,
       quotePrice: forecast.postPrice,
       selectQuote: forecast.quoteSecurity,
-      selectRecommend: forecast.recommend || optionsAction[0].value,
+      selectRecommend: forecast.recommend,
       selectForecast,
       takeProfitValue: forecast.tpPrice || '',
       stopLossValue: forecast.slPrice || '',
