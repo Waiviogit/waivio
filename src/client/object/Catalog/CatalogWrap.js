@@ -16,6 +16,12 @@ import * as wobjectActions from '../../../client/object/wobjectsActions';
 import { getLocale } from '../../reducers';
 import './CatalogWrap.less';
 
+const getListSorting = wobj => {
+  const type = wobj[objectFields.sorting] && wobj[objectFields.sorting].length ? 'custom' : 'rank';
+  const order = type === 'custom' ? wobj[objectFields.sorting] : null;
+  return { type, order };
+};
+
 @withRouter
 @injectIntl
 @connect(
@@ -31,9 +37,8 @@ class CatalogWrap extends React.Component {
     wobject: PropTypes.shape(),
     locale: PropTypes.string,
     intl: PropTypes.shape().isRequired,
-    // history: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
-    // match: PropTypes.shape().isRequired,
+    match: PropTypes.shape().isRequired,
     isEditMode: PropTypes.bool.isRequired,
     addItemToWobjStore: PropTypes.func.isRequired,
   };
@@ -50,7 +55,8 @@ class CatalogWrap extends React.Component {
   componentWillReceiveProps(nextProps) {
     const newPath = nextProps.location.hash.slice(1);
     const currPath = this.props.location.hash.slice(1);
-    if (newPath !== currPath) {
+    const isReloadingPage = nextProps.match.params.name !== this.props.match.params.name;
+    if (!isReloadingPage && newPath !== currPath) {
       const nextListPermlink = newPath.split('/').pop() || 'list';
       const currListPermlink = currPath.split('/').pop();
       if (nextListPermlink === 'list') {
@@ -85,9 +91,11 @@ class CatalogWrap extends React.Component {
             },
           ];
         }
+        const sorting = getListSorting(res);
         return {
+          sort: sorting.type,
           wobjNested: res,
-          listItems: sortListItemsBy(listItems, this.state.sort),
+          listItems: sortListItemsBy(listItems, sorting.type, sorting.order),
           breadcrumb,
         };
       });
@@ -95,16 +103,11 @@ class CatalogWrap extends React.Component {
   };
 
   getNextStateFromProps = ({ wobject, location }) => {
-    let sort = '';
+    let sorting = {};
     let listItems = [];
     let breadcrumb = [];
     if (wobject && wobject.listItems) {
-      if (this.state && this.state.sort) {
-        sort = this.state.sort;
-      } else {
-        sort =
-          wobject[objectFields.sorting] && wobject[objectFields.sorting].length ? 'custom' : 'rank';
-      }
+      sorting = getListSorting(wobject);
       breadcrumb = [
         {
           id: wobject.author_permlink,
@@ -113,6 +116,7 @@ class CatalogWrap extends React.Component {
         },
       ];
       if (location.hash) {
+        // restore breadcrumbs from url hash
         const permlinks = location.hash.slice(1).split('/');
         const locale = this.props.locale === 'auto' ? 'en-US' : this.props.locale;
         getObjectsByIds({ authorPermlinks: permlinks, locale })
@@ -131,24 +135,24 @@ class CatalogWrap extends React.Component {
           });
         this.getObjectFromApi(permlinks[permlinks.length - 1], location.hash);
       } else {
-        const customSortOrder = sort === 'custom' ? wobject[objectFields.sorting] : null;
         listItems = sortListItemsBy(
           wobject.listItems.map(item => getClientWObj(item)),
-          sort,
-          customSortOrder,
+          sorting.type,
+          sorting.order,
         );
       }
     }
-    return { sort, listItems, breadcrumb, wobjNested: null };
+    return { sort: sorting.type, listItems, breadcrumb, wobjNested: null };
   };
 
   handleAddItem = listItem => {
-    const { breadcrumb, listItems } = this.state;
+    const { breadcrumb, listItems, sort } = this.state;
+    const { wobject } = this.props;
     this.setState({
       listItems: sortListItemsBy(
         [...listItems, listItem],
-        this.state.sort,
-        this.state.sort === 'custom' ? this.props.wobject[objectFields.sorting] : null,
+        sort,
+        sort === 'custom' ? wobject[objectFields.sorting] : null,
       ),
     });
     if (breadcrumb.length === 1) {
@@ -165,13 +169,16 @@ class CatalogWrap extends React.Component {
   render() {
     const { sort, wobjNested, listItems, breadcrumb } = this.state;
     const { isEditMode, wobject, intl, location } = this.props;
+    const currentList = wobjNested || wobject;
     const itemsIdsToOmit = uniq([
       ...listItems.map(item => item.id),
       ...breadcrumb.map(crumb => crumb.id),
     ]);
 
     const sortSelector =
-      wobject && wobject[objectFields.sorting] && wobject[objectFields.sorting].length ? (
+      currentList &&
+      currentList[objectFields.sorting] &&
+      currentList[objectFields.sorting].length ? (
         <SortSelector sort={sort} onChange={this.handleSortChange}>
           <SortSelector.Item key="custom">
             <FormattedMessage id="custom" defaultMessage="Custom" />
@@ -212,17 +219,29 @@ class CatalogWrap extends React.Component {
       <div>
         <div className="CatalogWrap__breadcrumb">
           <Breadcrumb separator={'>'}>
-            {map(breadcrumb, crumb => (
+            {map(breadcrumb, (crumb, index, crumbsArr) => (
               <Breadcrumb.Item key={`crumb-${crumb.name}`}>
-                <Link
-                  className="CatalogWrap__breadcrumb__link"
-                  to={{ pathname: location.pathname, hash: crumb.path }}
-                  title={`${intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
-                    crumb.name
-                  }`}
-                >
-                  {crumb.name}
-                </Link>
+                {index && index === crumbsArr.length - 1 ? (
+                  <React.Fragment>
+                    <span className="CatalogWrap__breadcrumb__link">{crumb.name}</span>
+                    <Link
+                      className="CatalogWrap__breadcrumb__obj-page-link"
+                      to={{ pathname: `/object/${crumb.id}/list` }}
+                    >
+                      <i className="iconfont icon-send PostModal__icon" />
+                    </Link>
+                  </React.Fragment>
+                ) : (
+                  <Link
+                    className="CatalogWrap__breadcrumb__link"
+                    to={{ pathname: location.pathname, hash: crumb.path }}
+                    title={`${intl.formatMessage({ id: 'GoTo', defaultMessage: 'Go to' })} ${
+                      crumb.name
+                    }`}
+                  >
+                    {crumb.name}
+                  </Link>
+                )}
               </Breadcrumb.Item>
             ))}
           </Breadcrumb>
@@ -231,7 +250,7 @@ class CatalogWrap extends React.Component {
         {isEditMode && (
           <div className="CatalogWrap__add-item">
             <AddItemModal
-              wobject={wobjNested || wobject}
+              wobject={currentList}
               itemsIdsToOmit={itemsIdsToOmit}
               onAddItem={this.handleAddItem}
             />

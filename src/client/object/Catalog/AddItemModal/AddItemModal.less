@@ -1,26 +1,52 @@
 @import (reference) '../../../styles/custom.less';
 @import (reference) '../../../styles/modules/variables.less';
 
-.modal-content {
-  &__row {
-    display: flex;
+.add-item-modal,
+.create-object-modal {
+  button.ant-modal-close {
+    display: none;
+  }
 
-    &.align-center {
-      justify-content: center;
-    }
-    &.align-left {
-      justify-content: flex-start;
-    }
-    &.align-right {
-      justify-content: flex-end;
-    }
-    &.tittle {
+  .modal-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    &__close-btn > .icon-button__icon {
       font-size: 16px;
-      font-weight: 500;
+      color: @normal-grey;
+      padding: 0;
+      transition: color 0.3s;
+
+      &:hover {
+        color: @black;
+      }
     }
   }
 
-  &__name-input {
-    margin-bottom: 16px !important;
+  .modal-content {
+    &__row {
+      display: flex;
+
+      &.align-center {
+        justify-content: center;
+      }
+      &.align-left {
+        justify-content: flex-start;
+      }
+      &.align-right {
+        justify-content: flex-end;
+      }
+      &.tittle {
+        font-size: 16px;
+        font-weight: 500;
+      }
+    }
+
+    &__name-input {
+      margin-bottom: 16px !important;
+    }
   }
 }
+
+@import 'AddItemModal-nightmode';
