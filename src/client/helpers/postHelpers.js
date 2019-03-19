@@ -5,7 +5,7 @@ import { categoryRegex } from './regexHelpers';
 import { jsonParse } from './formatter';
 import DMCA from '../../common/constants/dmca.json';
 import whiteListedApps from './apps';
-import { WAIVIO_META_FIELD_NAME, WAIVIO_PARENT_PERMLINK } from '../../common/constants/waivio';
+import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
 
 const appVersion = require('../../../package.json').version;
 
@@ -95,7 +95,7 @@ export function createPostMetadata(body, tags, oldMetadata = {}, waivioData) {
   const images = getContentImages(parsedBody, true);
   const links = extractLinks(parsedBody);
 
-  metaData.tags = [WAIVIO_PARENT_PERMLINK, ...tags];
+  metaData.tags = tags;
   metaData.users = users;
   metaData.links = links.slice(0, 10);
   metaData.image = images;
