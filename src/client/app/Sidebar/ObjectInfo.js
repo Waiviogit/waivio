@@ -19,7 +19,7 @@ import Map from '../../components/Maps/Map';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
 import IconButton from '../../components/IconButton';
-import { getObjectAlbums } from '../../reducers';
+import { getIsAuthenticated, getObjectAlbums } from '../../reducers';
 import DescriptionInfo from './DescriptionInfo';
 import CreateImage from '../../object/ObjectGallery/CreateImage';
 import './ObjectInfo.less';
@@ -27,17 +27,20 @@ import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 
 @connect(state => ({
   albums: getObjectAlbums(state),
+  isAuthenticated: getIsAuthenticated(state),
 }))
 class ObjectInfo extends React.Component {
   static propTypes = {
     wobject: PropTypes.shape().isRequired,
     userName: PropTypes.string.isRequired,
     isEditMode: PropTypes.bool,
+    isAuthenticated: PropTypes.bool,
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   };
 
   static defaultProps = {
     isEditMode: false,
+    isAuthenticated: false,
   };
 
   state = {
@@ -50,7 +53,8 @@ class ObjectInfo extends React.Component {
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
 
   render() {
-    const { isEditMode, wobject, userName, albums } = this.props;
+    const { wobject, userName, albums, isAuthenticated } = this.props;
+    const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const { showModal, selectedField } = this.state;
     const renderFields = getAllowedFieldsByObjType(wobject.object_type);
     const isRenderGallery = !['list'].includes(wobject.object_type);

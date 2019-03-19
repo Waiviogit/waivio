@@ -92,8 +92,7 @@ class Write extends React.Component {
       showModalDelete: false,
     };
   }
-  // NOTE: To be replaced with getDerivedStateFromProps or refactored entirely after React 16.3
-  componentWillMount() {
+  componentDidMount() {
     this.props.newPost();
     const { draftPosts, draftId, objPermlink } = this.props;
     const draftPost = draftPosts[draftId];

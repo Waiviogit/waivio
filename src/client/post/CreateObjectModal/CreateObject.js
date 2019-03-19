@@ -1,14 +1,14 @@
-import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { Form, Input, Select, Button, Modal } from 'antd';
+import { Form, Input, Select, Button, Modal, Icon } from 'antd';
 import './CreateObject.less';
 import LANGUAGES from '../../translations/languages';
 import { getLanguageText } from '../../translations';
 import { objectFields } from '../../../common/constants/listOfFields';
 import LikeSection from '../../object/LikeSection';
 import FollowObjectForm from '../../object/FollowObjectForm';
+import IconButton from '../../components/IconButton';
 
 @injectIntl
 @Form.create()
@@ -16,14 +16,14 @@ class CreateObject extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     form: PropTypes.shape().isRequired,
-    handleCreateObject: PropTypes.func.isRequired,
+    onCreateObject: PropTypes.func.isRequired,
     currentLocaleInList: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
     currentLocaleInList: { id: 'en-US', name: '', nativeName: '' },
     wobject: { tag: '' },
-    handleCreateObject: () => {},
+    onCreateObject: () => {},
   };
 
   constructor(props) {
@@ -36,7 +36,9 @@ class CreateObject extends React.Component {
   }
 
   toggleModal = () => {
-    this.setState({ isModalOpen: !this.state.isModalOpen, loading: false });
+    if (!this.state.loading) {
+      this.setState({ isModalOpen: !this.state.isModalOpen });
+    }
   };
 
   handleVotePercentChange = votePercent => this.setState({ votePercent });
@@ -46,13 +48,17 @@ class CreateObject extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err && !this.state.loading) {
         this.setState({ loading: true });
-        const objData = values;
-        objData.id = objData.name;
-        objData.isExtendingOpen = true;
-        objData.isPostingOpen = true;
-        objData.votePower = this.state.votePercent * 100;
-        this.props.handleCreateObject(objData);
-        _.delay(this.toggleModal, 4500);
+        const objData = {
+          ...values,
+          id: values.name,
+          type: values.type.toLowerCase(),
+          isExtendingOpen: true,
+          isPostingOpen: true,
+          votePower: this.state.votePercent * 100,
+        };
+        this.props
+          .onCreateObject(objData)
+          .then(() => this.setState({ loading: false, isModalOpen: false }));
       }
     });
   };
@@ -92,14 +98,23 @@ class CreateObject extends React.Component {
 
         {this.state.isModalOpen && (
           <Modal
-            title={this.props.intl.formatMessage({
-              id: 'create_new_object',
-              defaultMessage: 'Create new object',
-            })}
-            visible
+            title={
+              <div className="modal-header">
+                {this.props.intl.formatMessage({
+                  id: 'create_new_object',
+                  defaultMessage: 'Create new object',
+                })}
+                <IconButton
+                  className="modal-header__close-btn"
+                  icon={<Icon type="close" />}
+                  onClick={this.toggleModal}
+                />
+              </div>
+            }
+            visible={this.state.isModalOpen}
+            wrapClassName="create-object-modal"
             confirmLoading={this.state.isCreating}
             footer={null}
-            onCancel={this.toggleModal}
           >
             <Form.Item>
               {getFieldDecorator(objectFields.name, {

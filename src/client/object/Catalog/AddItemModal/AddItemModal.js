@@ -2,20 +2,24 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { Button, Modal, message, Select, Form } from 'antd';
+import { Button, Icon, Modal, message, Select, Form } from 'antd';
 import { getAppendData } from '../../../helpers/wObjectHelper';
 import { getFieldWithMaxWeight } from '../../../object/wObjectHelper';
 import { getAuthenticatedUserName, getFollowingObjectsList, getLocale } from '../../../reducers';
 import { appendObject } from '../../appendActions';
 import { objectFields } from '../../../../common/constants/listOfFields';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
+import CreateObjectModal from '../../../post/CreateObjectModal/CreateObject';
 import LikeSection from '../../../object/LikeSection';
 import LANGUAGES from '../../../translations/languages';
 import { getLanguageText } from '../../../translations';
 import ListItem from '../CatalogItem';
 import FollowObjectForm from '../../FollowObjectForm';
 import { followObject } from '../../../object/wobjActions';
+import * as wobjectActions from '../../wobjectsActions';
+import * as notificationActions from '../../../app/Notification/notificationActions';
 import './AddItemModal.less';
+import IconButton from '../../../components/IconButton';
 
 @connect(
   state => ({
@@ -23,7 +27,12 @@ import './AddItemModal.less';
     locale: getLocale(state),
     followingList: getFollowingObjectsList(state),
   }),
-  { appendObject, followObject },
+  {
+    appendObject,
+    followObject,
+    createObject: wobjectActions.createWaivioObject,
+    notify: notificationActions.notify,
+  },
 )
 @injectIntl
 @Form.create()
@@ -32,11 +41,10 @@ class AddItemModal extends Component {
     currentUserName: '',
     locale: 'en-US',
     loading: false,
-    appendObject: () => {},
-    followObject: () => {},
     wobject: {},
     followingList: [],
     itemsIdsToOmit: [],
+    onAddItem: () => {},
   };
 
   static propTypes = {
@@ -45,12 +53,15 @@ class AddItemModal extends Component {
     // passed props
     wobject: PropTypes.shape().isRequired,
     itemsIdsToOmit: PropTypes.arrayOf(PropTypes.string),
+    onAddItem: PropTypes.func,
     // from connect
     currentUserName: PropTypes.string,
     locale: PropTypes.string,
     followingList: PropTypes.arrayOf(PropTypes.string),
-    appendObject: PropTypes.func,
-    followObject: PropTypes.func,
+    appendObject: PropTypes.func.isRequired,
+    followObject: PropTypes.func.isRequired,
+    createObject: PropTypes.func.isRequired,
+    notify: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -85,7 +96,7 @@ class AddItemModal extends Component {
           },
           {
             user: currentUserName,
-            itemType: selectedItem.type === 'listItem' ? 'list-item' : 'object',
+            itemType: selectedItem.type === 'list' ? 'nested list' : 'object',
             itemValue: selectedItem.name,
           },
         );
@@ -113,6 +124,7 @@ class AddItemModal extends Component {
                 defaultMessage: 'List item successfully has been added',
               }),
             );
+            this.props.onAddItem(selectedItem);
             this.handleToggleModal();
           })
           .catch(error => {
@@ -128,6 +140,48 @@ class AddItemModal extends Component {
           });
       }
     });
+  };
+
+  handleCreateObject = (wobj, follow) => {
+    const { intl, notify, createObject } = this.props;
+    return createObject(wobj, follow)
+      .then(({ value: { objectPermlink, objectAuthor } }) => {
+        notify(
+          intl.formatMessage({
+            id: 'create_object_success',
+            defaultMessage: 'Object has been created',
+          }),
+          'success',
+        );
+        this.handleObjectSelect({
+          id: objectPermlink,
+          author: objectAuthor,
+          avatar: '/images/logo-brand.png',
+          name: wobj.name,
+          title: '',
+          parents: [],
+          weight: '',
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+          children: [],
+          users: [],
+          userCount: 0,
+          version: 0,
+          isNew: false,
+          rank: 1,
+          type: wobj.type,
+          background: '',
+        });
+      })
+      .catch(() =>
+        notify(
+          intl.formatMessage({
+            id: 'create_object_error',
+            defaultMessage: 'Something went wrong. Object is not created',
+          }),
+          'error',
+        ),
+      );
   };
 
   render() {
@@ -155,12 +209,21 @@ class AddItemModal extends Component {
       <React.Fragment>
         {isModalOpen && (
           <Modal
-            title={intl.formatMessage({
-              id: 'list_update',
-              defaultMessage: 'Update list',
-            })}
+            title={
+              <div className="modal-header">
+                {intl.formatMessage({
+                  id: 'list_update',
+                  defaultMessage: 'Update list',
+                })}
+                <IconButton
+                  className="modal-header__close-btn"
+                  icon={<Icon type="close" />}
+                  onClick={this.handleToggleModal}
+                />
+              </div>
+            }
             visible={isModalOpen}
-            onCancel={this.handleToggleModal}
+            wrapClassName="add-item-modal"
             width={500}
             footer={null}
             destroyOnClose
@@ -236,6 +299,7 @@ class AddItemModal extends Component {
           handleSelect={this.handleObjectSelect}
           itemsIdsToOmit={itemsIdsToOmit}
         />
+        <CreateObjectModal onCreateObject={this.handleCreateObject} />
       </React.Fragment>
     );
   }

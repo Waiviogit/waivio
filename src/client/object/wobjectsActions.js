@@ -65,12 +65,20 @@ export const createWaivioObject = postData => (dispatch, getState) => {
         };
         return ApiClient.postCreateWaivioObject(requestBody).then(response => {
           if (follow) {
-            dispatch(followObject(response.objectPermlink));
+            dispatch(followObject(response.permlink));
           }
-          dispatch(voteObject(response.objectAuthor, response.objectPermlink, votePower));
+          dispatch(voteObject(response.author, response.permlink, votePower));
           return response;
         });
       }),
     },
   });
 };
+
+export const ADD_ITEM_TO_LIST = '@wobj/ADD_ITEM_TO_LIST';
+
+export const addListItem = item => dispatch =>
+  dispatch({
+    type: ADD_ITEM_TO_LIST,
+    payload: item,
+  });

@@ -7,7 +7,7 @@ import { FormattedMessage } from 'react-intl';
 import { Icon } from 'antd';
 
 import Feed from '../feed/Feed';
-import { getFeed, getObject } from '../reducers';
+import { getFeed, getIsAuthenticated, getObject } from '../reducers';
 import {
   getFeedLoadingFromState,
   getFeedHasMoreFromState,
@@ -24,6 +24,7 @@ import './ObjectProfile.less';
   state => ({
     feed: getFeed(state),
     object: getObject(state),
+    isAuthenticated: getIsAuthenticated(state),
   }),
   {
     getObjectPosts,
@@ -39,6 +40,7 @@ export default class ObjectProfile extends React.Component {
     match: PropTypes.shape().isRequired,
     showPostModal: PropTypes.func.isRequired,
     limit: PropTypes.number,
+    isAuthenticated: PropTypes.bool.isRequired,
     getObjectPosts: PropTypes.func,
     getMoreObjectPosts: PropTypes.func,
   };
@@ -67,7 +69,7 @@ export default class ObjectProfile extends React.Component {
   };
 
   render() {
-    const { feed, limit } = this.props;
+    const { feed, limit, isAuthenticated } = this.props;
     const wobjectname = this.props.match.params.name;
     const content = getFeedFromState('objectPosts', wobjectname, feed);
     const isFetching = getFeedLoadingFromState('objectPosts', wobjectname, feed);
@@ -83,13 +85,17 @@ export default class ObjectProfile extends React.Component {
     return (
       <React.Fragment>
         <div className="object-profile">
-          <div className="object-profile__row align-right">
-            <IconButton
-              icon={<Icon type="plus-circle" />}
-              onClick={this.handleCreatePost}
-              caption={<FormattedMessage id="write_new_review" defaultMessage="Write new review" />}
-            />
-          </div>
+          {isAuthenticated && (
+            <div className="object-profile__row align-right">
+              <IconButton
+                icon={<Icon type="plus-circle" />}
+                onClick={this.handleCreatePost}
+                caption={
+                  <FormattedMessage id="write_new_review" defaultMessage="Write new review" />
+                }
+              />
+            </div>
+          )}
           {!_.isEmpty(content) || isFetching ? (
             <Feed
               content={content}
