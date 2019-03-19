@@ -240,6 +240,10 @@ export default class AppendForm extends Component {
         fieldBody.push(rest[phoneFields.name] || '');
         break;
       }
+      case objectFields.rating: {
+        fieldBody.push(rest[ratingFields.category]);
+        break;
+      }
       default:
         fieldBody.push(JSON.stringify(rest));
         break;

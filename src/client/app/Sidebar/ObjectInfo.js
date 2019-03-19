@@ -23,6 +23,7 @@ import { getObjectAlbums } from '../../reducers';
 import DescriptionInfo from './DescriptionInfo';
 import CreateImage from '../../object/ObjectGallery/CreateImage';
 import './ObjectInfo.less';
+import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 
 @connect(state => ({
   albums: getObjectAlbums(state),
@@ -68,7 +69,7 @@ class ObjectInfo extends React.Component {
     let hashtags = [];
     let phones = [];
     let email = '';
-    let rating = '';
+
     if (wobject) {
       addressArr = Object.values(addressFields).map(fieldName =>
         getFieldWithMaxWeight(wobject, objectFields.address, fieldName),
@@ -85,8 +86,6 @@ class ObjectInfo extends React.Component {
       short = getFieldWithMaxWeight(wobject, objectFields.title, null);
 
       email = getFieldWithMaxWeight(wobject, objectFields.email, null);
-
-      rating = getFieldWithMaxWeight(wobject, objectFields.rating, null);
 
       websiteFields = getWebsiteField(wobject);
       title = websiteFields.title;
@@ -179,7 +178,7 @@ class ObjectInfo extends React.Component {
         {getFieldWithMaxWeight(wobject, objectFields.name) && (
           <div className="object-sidebar">
             {listItem(objectFields.description, <DescriptionInfo description={description} />)}
-            {listItem(objectFields.rating, rating)}
+            {listItem(objectFields.rating, <RateInfo username={userName} wobject={wobject} />)}
             {listItem(
               objectFields.hashtag,
               <div className="field-info">

@@ -507,5 +507,14 @@
   "objects_related_by_tags": "Objects related by #tags",
   "follow_extra": "Stay informed about object updates submitted by other users",
   "category_rating_placeholder": "Category",
-  "your_vote_placeholder": "Your vote(optional)"
+  "your_vote_placeholder": "Your vote(optional)",
+  "your_vote": "Your vote",
+  "rate_vote_error": "Couldn't rate a vote",
+  "thank_for_vote": "Thank you for your vote!",
+  "overall": "Overall",
+  "rate_star_count": "{count} star",
+  "no_votes_message": "There is no votes",
+  "rate_overall": "Overall",
+  "rate_average_count": "Rating: {count}",
+  "vote_count": "Votes: {votes}"
 }
