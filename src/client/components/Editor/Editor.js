@@ -347,7 +347,7 @@ class Editor extends React.Component {
       );
       return { linkedObjects };
     });
-    this.props.onCreateObject(
+    return this.props.onCreateObject(
       wObject,
       res => {
         this.setState(prevState => {
@@ -355,7 +355,7 @@ class Editor extends React.Component {
             obj.id === wObject.id
               ? {
                   ...obj,
-                  id: `${res.objectPermlink}`,
+                  id: `${res.permlink}`,
                   isNew: false,
                   isCreating: false,
                 }
@@ -637,19 +637,21 @@ class Editor extends React.Component {
             </Select>,
           )}
         </Form.Item>
-        <Form.Item>
-          {getFieldDecorator('beneficiary', { valuePropName: 'checked', initialValue: true })(
-            <Checkbox onChange={this.onUpdate} disabled={isUpdating}>
-              <FormattedMessage
-                id="add_waivio_beneficiary"
-                defaultMessage="Share {share}% of this post rewards with Waivio"
-                values={{
-                  share: BENEFICIARY_PERCENT / 100,
-                }}
-              />
-            </Checkbox>,
-          )}
-        </Form.Item>
+        {!isUpdating && ( // don't show for editing
+          <Form.Item>
+            {getFieldDecorator('beneficiary', { valuePropName: 'checked', initialValue: true })(
+              <Checkbox onChange={this.onUpdate} disabled={isUpdating}>
+                <FormattedMessage
+                  id="add_busy_beneficiary"
+                  defaultMessage="Share {share}% of this post rewards with Busy"
+                  values={{
+                    share: BENEFICIARY_PERCENT / 100,
+                  }}
+                />
+              </Checkbox>,
+            )}
+          </Form.Item>
+        )}
         <Form.Item className={classNames({ Editor__hidden: isUpdating })}>
           {getFieldDecorator('upvote', { valuePropName: 'checked', initialValue: true })(
             <Checkbox onChange={this.onUpdate} disabled={isUpdating}>

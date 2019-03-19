@@ -5,6 +5,11 @@
     "DEBUG": {
       "description": "Debug namespaces for https://github.com/visionmedia/debug.",
       "value": "busy:server",
+      "required": false,
+    },
+    "STEEMJS_URL": {
+      "description": "Steem node URL",
+      "value": "https://anyx.io",
       "required": false
     }
   },
