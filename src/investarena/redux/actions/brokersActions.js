@@ -90,21 +90,6 @@ export function registerBroker(registrationData) {
     });
   };
 }
-export function reconnectBroker(data) {
-  return dispatch =>
-    api.brokers.reconnectBroker(data).then(({ status, resMessage, result, error }) => {
-      if (!error && status && resMessage) {
-        if (result) {
-          dispatch(connectPlatform());
-        } else {
-          message.error(resMessage);
-          dispatch(disconnectBroker(true));
-        }
-      } else {
-        message.error(error.toString());
-      }
-    });
-}
 export function disconnectBroker(isReconnect = false) {
   return dispatch => {
     localStorageKeys.forEach(data => {
@@ -124,6 +109,21 @@ export function disconnectBroker(isReconnect = false) {
     }
     return { type: DISCONNECT_BROKER_SUCCESS };
   };
+}
+export function reconnectBroker(data) {
+  return dispatch =>
+    api.brokers.reconnectBroker(data).then(({ status, resMessage, result, error }) => {
+      if (!error && status && resMessage) {
+        if (result) {
+          dispatch(connectPlatform());
+        } else {
+          message.error(resMessage);
+          dispatch(disconnectBroker(true));
+        }
+      } else {
+        message.error(error.toString());
+      }
+    });
 }
 export function forgotPassBroker(data) {
   return dispatch => {

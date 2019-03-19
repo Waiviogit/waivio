@@ -19,7 +19,6 @@ const propTypes = {
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-// const AutoCompleteOption = AutoComplete.Option;
 
 class BrokerAuthorization extends Component {
   state = {
