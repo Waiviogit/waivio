@@ -73,6 +73,7 @@ class RateInfo extends React.Component {
             visible={this.state.showModal}
             footer={null}
             onCancel={this.toggleModal}
+            className="RateInfo__modal"
           >
             <RateForm
               initialValue={this.getInitialRateValue(ratingByCategoryFields) || 0}
