@@ -79,6 +79,10 @@ class RateForm extends React.Component {
     const fieldWithVote = { ...ratingByCategoryFields };
 
     if (submitted) {
+      if (!fieldWithVote.rating_votes) {
+        fieldWithVote.rating_votes = [];
+      }
+
       const previousVoteIndex = fieldWithVote.rating_votes.findIndex(v => v.voter === username);
 
       if (previousVoteIndex === -1) {
@@ -94,7 +98,7 @@ class RateForm extends React.Component {
           <div>{intl.formatMessage({ id: 'your_vote', defaultMessage: 'Your vote' })}</div>
           <Form.Item>
             {getFieldDecorator(ratingFields.rate, {
-              initialValue: this.props.initialValue || 0,
+              initialValue: this.props.initialValue,
             })(<Rate disabled={loading} allowClear={false} />)}
           </Form.Item>
           <Form.Item>
