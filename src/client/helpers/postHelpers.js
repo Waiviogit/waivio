@@ -8,7 +8,6 @@ import whiteListedApps from './apps';
 import {
   INVESTARENA_META_FIELD_NAME,
   WAIVIO_META_FIELD_NAME,
-  WAIVIO_PARENT_PERMLINK,
 } from '../../common/constants/waivio';
 
 const appVersion = require('../../../package.json').version;
@@ -99,7 +98,7 @@ export function createPostMetadata(body, tags, oldMetadata = {}, appData) {
   const images = getContentImages(parsedBody, true);
   const links = extractLinks(parsedBody);
 
-  metaData.tags = [WAIVIO_PARENT_PERMLINK, ...tags];
+  metaData.tags = tags;
   metaData.users = users;
   metaData.links = links.slice(0, 10);
   metaData.image = images;

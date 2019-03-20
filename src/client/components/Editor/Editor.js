@@ -180,6 +180,7 @@ class Editor extends React.Component {
     form.setFieldsValue({
       name: post.name,
       title: post.title,
+      topics: post.topics,
       body: post.body,
       reward,
       beneficiary: post.beneficiary,
@@ -271,10 +272,10 @@ class Editor extends React.Component {
 
     // if (Object.values(form.getFieldsError()).filter(e => e).length > 0) return;
 
-    const topics = [...linkedObjects]
-      .sort((a, b) => b.influence.value - a.influence.value)
-      .slice(0, 4)
-      .map(obj => obj.name);
+    // const topics = [...linkedObjects]
+    //   .sort((a, b) => b.influence.value - a.influence.value)
+    //   .slice(0, 4)
+    //   .map(obj => obj.name);
     const wobjects = linkedObjects.map(obj => ({
       objectName: obj.name,
       author_permlink: obj.id,
