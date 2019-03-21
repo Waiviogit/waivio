@@ -33,7 +33,7 @@ class RateInfo extends React.Component {
   getInitialRateValue = field => {
     const { username } = this.props;
     const voter = field.rating_votes && field.rating_votes.find(rate => rate.voter === username);
-    return voter ? ratePercent.indexOf(voter.rate) + 1 : null;
+    return voter ? ratePercent.indexOf(voter.rate) + 1 : 0;
   };
 
   handleOnClick = field => {
@@ -84,7 +84,7 @@ class RateInfo extends React.Component {
             className="RateInfo__modal"
           >
             <RateForm
-              initialValue={this.getInitialRateValue(ratingByCategoryFields) || 0}
+              initialValue={this.getInitialRateValue(ratingByCategoryFields)}
               field={this.state.field}
               authorPermlink={this.props.authorPermlink}
               username={username}
