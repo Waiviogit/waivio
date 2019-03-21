@@ -212,7 +212,17 @@ class CreatePostForecast extends Component {
     }
   };
 
-  handleChangeDatetime = dateTimeValue => this.setState({ dateTimeValue });
+  handleChangeDatetime = dateTimeValue => {
+    const { selectQuote, selectRecommend } = this.state;
+    this.setState({ dateTimeValue });
+    this.props.onChange(
+      this.getForecastObject({
+        ...this.state,
+        dateTimeValue,
+        isValid: this.validateForm(selectQuote, selectRecommend, 'Custom'),
+      }),
+    );
+  };
 
   updateValueForecast = selectForecast => {
     const { selectQuote, selectRecommend } = this.state;
@@ -221,7 +231,7 @@ class CreatePostForecast extends Component {
         this.getForecastObject({
           ...this.state,
           selectForecast,
-          dateTimeValue: moment(currentTime.getTime()).add(minForecastMinutes, 'minute'),
+          dateTimeValue: moment.utc(currentTime.getTime()).add(minForecastMinutes, 'minute'),
           isValid: this.validateForm(selectQuote, selectRecommend, selectForecast),
         }),
       );
@@ -391,7 +401,7 @@ class CreatePostForecast extends Component {
                           style={{ width: '100%' }}
                           locale={intl.formatMessage({ id: 'locale', defaultMessage: 'en' })}
                           value={dateTimeValue}
-                          onChange={this.handleChangeDatetime}
+                          onOk={this.handleChangeDatetime}
                           format="YYYY-MM-DD HH:mm"
                           disabledDate={date =>
                             date < moment(currentTime.getTime()) ||
