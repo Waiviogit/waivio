@@ -118,6 +118,9 @@ export const voteObject = (objCreator, objPermlink, weight = 10000) => (
 };
 
 export const RATE_WOBJECT = '@wobj/RATE_WOBJECT';
+export const RATE_WOBJECT_START = '@wobj/RATE_WOBJECT_START';
+export const RATE_WOBJECT_ERROR = '@wobj/RATE_WOBJECT_ERROR';
+export const RATE_WOBJECT_SUCCESS = '@wobj/RATE_WOBJECT_SUCCESS';
 
 export const rateObject = (author, permlink, authorPermlink, rate) => (
   dispatch,
@@ -138,7 +141,9 @@ export const rateObject = (author, permlink, authorPermlink, rate) => (
       promise: steemConnectAPI.rankingObject(username, author, permlink, authorPermlink, rate),
     },
     meta: {
-      username,
+      voter: username,
+      permlink,
+      rate,
     },
   });
 };

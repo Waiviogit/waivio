@@ -589,8 +589,8 @@ class Editor extends React.Component {
             {getFieldDecorator('beneficiary', { valuePropName: 'checked', initialValue: true })(
               <Checkbox onChange={this.onUpdate} disabled={isUpdating}>
                 <FormattedMessage
-                  id="add_busy_beneficiary"
-                  defaultMessage="Share {share}% of this post rewards with Busy"
+                  id="add_waivio_beneficiary"
+                  defaultMessage="Share {share}% of this post rewards with Waivio"
                   values={{
                     share: BENEFICIARY_PERCENT / 100,
                   }}

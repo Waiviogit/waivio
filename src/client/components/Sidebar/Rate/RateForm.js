@@ -24,6 +24,8 @@ class RateForm extends React.Component {
     intl: PropTypes.shape().isRequired,
     initialValue: PropTypes.number,
     ratingByCategoryFields: PropTypes.shape().isRequired,
+    username: PropTypes.string.isRequired,
+    authorPermlink: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -33,6 +35,7 @@ class RateForm extends React.Component {
   state = {
     loading: false,
     submitted: false,
+    vote: {},
   };
 
   handleSubmit = async e => {
@@ -52,7 +55,11 @@ class RateForm extends React.Component {
 
     try {
       await this.props.rateObject(author, permlink, authorPermlink, ratePercent[rate - 1]);
-      this.setState({ loading: false, submitted: true });
+      this.setState({
+        loading: false,
+        submitted: true,
+        vote: { voter: this.props.username, rate: ratePercent[rate - 1] },
+      });
     } catch (error) {
       message.error(
         this.props.intl.formatMessage({
@@ -67,28 +74,47 @@ class RateForm extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { loading, submitted } = this.state;
-    const { intl, ratingByCategoryFields } = this.props;
+    const { loading, submitted, vote } = this.state;
+    const { intl, ratingByCategoryFields, username, initialValue } = this.props;
+
+    const fieldWithVote = { ...ratingByCategoryFields };
+
+    if (submitted) {
+      if (!fieldWithVote.rating_votes) {
+        fieldWithVote.rating_votes = [];
+      }
+
+      const previousVoteIndex = fieldWithVote.rating_votes.findIndex(v => v.voter === username);
+
+      if (previousVoteIndex === -1) {
+        fieldWithVote.rating_votes.push(vote);
+      } else {
+        fieldWithVote.rating_votes[previousVoteIndex] = vote;
+      }
+    }
 
     return !submitted ? (
-      <div className="RateForm">
-        <Form layout="inline" onSubmit={this.handleSubmit} className="RateForm__form">
-          <div>{intl.formatMessage({ id: 'your_vote', defaultMessage: 'Your vote' })}</div>
-          <Form.Item>
-            {getFieldDecorator(ratingFields.rate, {
-              initialValue: this.props.initialValue || 0,
-            })(<Rate allowClear={false} />)}
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" loading={loading}>
-              {intl.formatMessage({
-                id: loading ? 'post_send_progress' : 'append_send',
-                defaultMessage: loading ? 'Submitting' : 'Submit',
-              })}
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
+      <React.Fragment>
+        <div className="RateForm">
+          <Form layout="inline" onSubmit={this.handleSubmit} className="RateForm__form">
+            <div>{intl.formatMessage({ id: 'your_vote', defaultMessage: 'Your vote' })}</div>
+            <Form.Item>
+              {getFieldDecorator(ratingFields.rate, {
+                initialValue,
+              })(<Rate disabled={loading} allowClear={false} />)}
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" loading={loading}>
+                {intl.formatMessage({
+                  id: loading ? 'post_send_progress' : 'append_send',
+                  defaultMessage: loading ? 'Submitting' : 'Submit',
+                })}
+              </Button>
+            </Form.Item>
+          </Form>
+        </div>
+        {!!initialValue && <StarRating field={fieldWithVote} />}
+      </React.Fragment>
     ) : (
       <div className="RateForm__full">
         <div>
@@ -97,7 +123,7 @@ class RateForm extends React.Component {
             defaultMessage: 'Thank you for your vote!',
           })}
         </div>
-        <StarRating field={ratingByCategoryFields} />
+        <StarRating field={fieldWithVote} />
       </div>
     );
   }

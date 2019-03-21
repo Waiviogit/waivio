@@ -1331,6 +1331,7 @@ export default class AppendForm extends Component {
             <Form.Item>
               {getFieldDecorator(ratingFields.category, {
                 rules: [
+                  { transform: value => value && value.trim() },
                   {
                     required: true,
                     message: intl.formatMessage(

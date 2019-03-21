@@ -49,7 +49,7 @@ class StarRating extends React.Component {
               },
             )}
           </div>
-          <Progress status="normal" percent={votePercent} />
+          <Progress status="normal" percent={+votePercent.toFixed(2)} />
         </div>,
       );
     });
