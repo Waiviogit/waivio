@@ -9,7 +9,7 @@ export default function(state = initialState, action) {
       return { ...state, ...action.payload };
     case AUTHORIZE_BROKER_SUCCESS:
     case DISCONNECT_BROKER_SUCCESS:
-        return initialState;
+      return initialState;
     default:
       return state;
   }

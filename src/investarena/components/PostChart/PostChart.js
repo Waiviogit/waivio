@@ -42,6 +42,7 @@ const defaultProps = {
   quoteSettings: quoteSettingsData,
   isObjectProfile: false,
   connect: false,
+  isNightMode: false,
 };
 
 class PostChart extends Component {
@@ -76,7 +77,11 @@ class PostChart extends Component {
           },
           () => this.updateChartData(this.props),
         );
-      } else if (this.props.connect && this.props.quoteSettings && this.props.quoteSettings.leverage) {
+      } else if (
+        this.props.connect &&
+        this.props.quoteSettings &&
+        this.props.quoteSettings.leverage
+      ) {
         if (this.props.quote && this.props.bars && this.props.bars[this.state.timeScale]) {
           this.updateChartData(this.props);
         } else {
@@ -163,12 +168,12 @@ class PostChart extends Component {
       canvas: this.canvasRef,
       animatedCircle: this.circleRef,
       isObjectProfile: this.props.isObjectProfile,
-      isNightMode: this.props.isNightMode
+      isNightMode: this.props.isNightMode,
     });
   shouldGetChartData = bars => {
     const timeNow = currentTime.getTime();
     const lastTimeScale = _.last(bars[this.state.timeScale]);
-    let lastTime = !lastTimeScale.length ? null : lastTimeScale.time;
+    let lastTime = (!lastTimeScale || !lastTimeScale.length) ? null : lastTimeScale.time;
     const coefficient = 1000 * 60 * CanvasHelper.hours[this.state.timeScale];
     if (timeNow - lastTime - coefficient > coefficient && timeNow - lastTime > coefficient) {
       lastTime += coefficient * Math.floor((timeNow - lastTime) / coefficient);
@@ -200,7 +205,7 @@ class PostChart extends Component {
     return (
       <div
         className={`w-100 ${
-          (!quote || !quoteSettings || !quoteSettings.tickSize) ? 'st-hidden' : ''
+          !quote || !quoteSettings || !quoteSettings.tickSize ? 'st-hidden' : ''
         }`}
       >
         <div className="st-chart-select hidden">

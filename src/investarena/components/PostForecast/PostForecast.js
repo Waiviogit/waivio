@@ -9,9 +9,13 @@ const propTypes = {
   postForecast: PropTypes.string.isRequired,
   isExpired: PropTypes.bool.isRequired,
   intl: PropTypes.shape().isRequired,
+  quoteSettings: PropTypes.shape(),
+  quote: PropTypes.shape(),
 };
 const defaultProps = {
   expiredAt: '',
+  quoteSettings: null,
+  quote: null
 };
 
 class PostForecast extends Component {
@@ -29,8 +33,9 @@ class PostForecast extends Component {
     this.setState({ time: timeForecastRemain(this.props.postForecast) });
   };
   render() {
-    return (
+    return (this.props.quote && this.props.quoteSettings) ? (
       <div className="st-post-forecast-wrap">
+
         <div className="st-post-forecast-time-icon">
           <svg
             fill="#999"
@@ -62,7 +67,7 @@ class PostForecast extends Component {
           </div>
         </div>
       </div>
-    );
+    ) : null;
   }
 }
 

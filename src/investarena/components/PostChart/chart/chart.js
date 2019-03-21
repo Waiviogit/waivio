@@ -30,7 +30,6 @@ const darkMode = {
   },
 };
 
-
 class Chart {
   constructor({ canvas, animatedCircle, isObjectProfile, isNightMode }) {
     this.canvas = canvas;

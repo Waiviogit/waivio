@@ -441,168 +441,171 @@ class Topnav extends React.Component {
           </AutoComplete.Option>,
         ]);
     const isMobile = this.props.screenSize === 'xsmall' || this.props.screenSize === 'small';
-    return <div className="Topnav">
-      <div className="topnav-layout">
-        <div className={classNames('left', {'Topnav__mobile-hidden': searchBarActive})}>
-          <Link className="Topnav__brand" to="/">
-            WTrade
-          </Link>
-          <span className="Topnav__version">beta</span>
-        </div>
-        <div className={classNames('center', {mobileVisible: searchBarActive})}>
-          <div className="Topnav__input-container">
-            <AutoComplete
-              dropdownClassName="Topnav__search-dropdown-container"
-              dataSource={formattedAutoCompleteDropdown}
-              onSearch={this.handleAutoCompleteSearch}
-              onSelect={this.handleSelectOnAutoCompleteDropdown}
-              onChange={this.handleOnChangeForAutoComplete}
-              defaultActiveFirstOption={false}
-              dropdownMatchSelectWidth={false}
-              optionLabelProp="value"
-              value={searchBarValue}
+    return (
+      <div className="Topnav">
+        <div className="topnav-layout">
+          <div className={classNames('left', { 'Topnav__mobile-hidden': searchBarActive })}>
+            <Link className="Topnav__brand" to="/">
+              WTrade
+            </Link>
+            <span className="Topnav__version">beta</span>
+          </div>
+          <div className={classNames('center', { mobileVisible: searchBarActive })}>
+            <div className="Topnav__input-container">
+              <AutoComplete
+                dropdownClassName="Topnav__search-dropdown-container"
+                dataSource={formattedAutoCompleteDropdown}
+                onSearch={this.handleAutoCompleteSearch}
+                onSelect={this.handleSelectOnAutoCompleteDropdown}
+                onChange={this.handleOnChangeForAutoComplete}
+                defaultActiveFirstOption={false}
+                dropdownMatchSelectWidth={false}
+                optionLabelProp="value"
+                value={searchBarValue}
+              >
+                <Input
+                  ref={ref => {
+                    this.searchInputRef = ref;
+                  }}
+                  onPressEnter={this.handleSearchForInput}
+                  placeholder={intl.formatMessage({
+                    id: 'search_placeholder',
+                    defaultMessage: 'What are you looking for?',
+                  })}
+                  autoCapitalize="off"
+                  autoCorrect="off"
+                />
+              </AutoComplete>
+              <i className="iconfont icon-search" />
+            </div>
+          </div>
+          <div className="right">
+            <button
+              className={classNames('Topnav__mobile-search', {
+                'Topnav__mobile-search-close': searchBarActive,
+              })}
+              onClick={this.handleMobileSearchButtonClick}
             >
-              <Input
-                ref={ref => {
-                  this.searchInputRef = ref;
-                }}
-                onPressEnter={this.handleSearchForInput}
-                placeholder={intl.formatMessage({
-                  id: 'search_placeholder',
-                  defaultMessage: 'What are you looking for?',
+              <i
+                className={classNames('iconfont', {
+                  'icon-close': searchBarActive,
+                  'icon-search': !searchBarActive,
                 })}
-                autoCapitalize="off"
-                autoCorrect="off"
               />
-            </AutoComplete>
-            <i className="iconfont icon-search"/>
+            </button>
+            {this.content()}
           </div>
         </div>
-        <div className="right">
-          <button
-            className={classNames('Topnav__mobile-search', {
-              'Topnav__mobile-search-close': searchBarActive,
-            })}
-            onClick={this.handleMobileSearchButtonClick}
+        <div className="topnav-layout main-nav">
+          <Menu
+            selectedKeys={[this.state.selectedPage]}
+            onClick={this.handleClickMenu}
+            mode="horizontal"
           >
-            <i
-              className={classNames('iconfont', {
-                'icon-close': searchBarActive,
-                'icon-search': !searchBarActive,
-              })}
-            />
-          </button>
-          {this.content()}
-        </div>
-      </div>
-      <div className="topnav-layout main-nav">
-        <Menu
-          selectedKeys={[this.state.selectedPage]}
-          onClick={this.handleClickMenu}
-          mode="horizontal"
-        >
-          <Menu.Item key={Topnav.MENU_ITEMS.HOME}>
-            <NavLink to="/">
-              {intl.formatMessage({id: 'home', defaultMessage: 'Home'}).toUpperCase()}
-            </NavLink>
-          </Menu.Item>
-          <Menu.Item key={Topnav.MENU_ITEMS.MY_FEED} disabled={!this.props.username}>
-            <NavLink to="/my_feed">
-              {intl.formatMessage({id: 'my_feed', defaultMessage: 'My feed'}).toUpperCase()}
-            </NavLink>
-          </Menu.Item>
-          <Menu.Item key={Topnav.MENU_ITEMS.MARKETS}>
-            <NavLink to="/markets/crypto">
-              {intl.formatMessage({id: 'markets', defaultMessage: 'Markets'}).toUpperCase()}
-            </NavLink>
-          </Menu.Item>
-          <Menu.Item key={Topnav.MENU_ITEMS.DEALS}>
-            <NavLink to="/deals/open">
-              {!isMobile
-                ? intl.formatMessage({id: 'my_deals', defaultMessage: 'My deals'}).toUpperCase()
-                : intl
-                  .formatMessage({id: 'open_deals', defaultMessage: 'Open deals'})
-                  .toUpperCase()}
-            </NavLink>
-          </Menu.Item>
-          {isMobile && (
-            <Menu.Item key={Topnav.MENU_ITEMS.CLOSEDDEALS}>
-              <NavLink to="/deals/closed">
-                {intl
-                  .formatMessage({id: 'closed_deals', defaultMessage: 'Closed deals'})
-                  .toUpperCase()}
+            <Menu.Item key={Topnav.MENU_ITEMS.HOME}>
+              <NavLink to="/">
+                {intl.formatMessage({ id: 'home', defaultMessage: 'Home' }).toUpperCase()}
               </NavLink>
             </Menu.Item>
-          )}
-        </Menu>
-        {(platformName !== 'widgets' && !isLoadingPlatform) ? (
-          <div className="st-header-broker-balance-pl-wrap">
-            <div className="st-balance-wrap">
-              <div className="st-balance-text">
-                {intl.formatMessage({id: 'headerAuthorized.p&l', defaultMessage: 'P&L deals'})}:
-              </div>
-              <div className="st-balance-amount">
-                <Balance balanceType="unrealizedPnl"/>
-              </div>
-            </div>
-            <div className="st-balance-border">
-              <div className="st-balance-text">
-                {intl.formatMessage({
-                  id: 'headerAuthorized.balance',
-                  defaultMessage: 'Balance',
-                })}
-                :
-              </div>
-              <div className="st-balance-amount">
-                <Balance balanceType="balance"/>
-              </div>
-            </div>
-            <Button type="primary" onClick={this.toggleModalDeposit}>
-              {intl.formatMessage({id: 'headerAuthorized.deposit', defaultMessage: 'Deposit'})}
-            </Button>
-            <Modal
-              title={intl.formatMessage({
-                id: 'headerAuthorized.deposit',
-                defaultMessage: 'Deposit',
-              })}
-              footer={null}
-              visible={isModalDeposit}
-              onCancel={this.toggleModalDeposit}
-              width={1250}
-              wrapClassName={'st-header-deposit-modal'}
-              destroyOnClose
-            >
-              <iframe
-                title="depositFrame"
-                src={`${
-                  config[process.env.NODE_ENV].platformDepositUrl[this.props.platformName]
-                  }?${isNightMode ? 'style=wp&' : ''}mode=popup&lang=en#deposit`}
-                width="1200px"
-                height="696px"
-              />
-            </Modal>
-            <img
-              role="presentation"
-              title={platformName}
-              onClick={this.toggleModalBroker}
-              className="st-header__image"
-              src={`/images/investarena/${platformName}.png`}
-              alt="broker"
-            />
-          </div>
-        ) : (
-          this.props.username &&
+            <Menu.Item key={Topnav.MENU_ITEMS.MY_FEED} disabled={!this.props.username}>
+              <NavLink to="/my_feed">
+                {intl.formatMessage({ id: 'my_feed', defaultMessage: 'My feed' }).toUpperCase()}
+              </NavLink>
+            </Menu.Item>
+            <Menu.Item key={Topnav.MENU_ITEMS.MARKETS}>
+              <NavLink to="/markets/crypto">
+                {intl.formatMessage({ id: 'markets', defaultMessage: 'Markets' }).toUpperCase()}
+              </NavLink>
+            </Menu.Item>
+            <Menu.Item key={Topnav.MENU_ITEMS.DEALS}>
+              <NavLink to="/deals/open">
+                {!isMobile
+                  ? intl.formatMessage({ id: 'my_deals', defaultMessage: 'My deals' }).toUpperCase()
+                  : intl
+                      .formatMessage({ id: 'open_deals', defaultMessage: 'Open deals' })
+                      .toUpperCase()}
+              </NavLink>
+            </Menu.Item>
+            {isMobile && (
+              <Menu.Item key={Topnav.MENU_ITEMS.CLOSEDDEALS}>
+                <NavLink to="/deals/closed">
+                  {intl
+                    .formatMessage({ id: 'closed_deals', defaultMessage: 'Closed deals' })
+                    .toUpperCase()}
+                </NavLink>
+              </Menu.Item>
+            )}
+          </Menu>
+          {platformName !== 'widgets' && !isLoadingPlatform ? (
             <div className="st-header-broker-balance-pl-wrap">
-              <Button type="primary" onClick={this.toggleModalBroker}>
-                {intl.formatMessage({
-                  id: 'headerAuthorized.connectToBroker',
-                  defaultMessage: 'Connect to broker',
-                })}
+              <div className="st-balance-wrap">
+                <div className="st-balance-text">
+                  {intl.formatMessage({ id: 'headerAuthorized.p&l', defaultMessage: 'P&L deals' })}:
+                </div>
+                <div className="st-balance-amount">
+                  <Balance balanceType="unrealizedPnl" />
+                </div>
+              </div>
+              <div className="st-balance-border">
+                <div className="st-balance-text">
+                  {intl.formatMessage({
+                    id: 'headerAuthorized.balance',
+                    defaultMessage: 'Balance',
+                  })}
+                  :
+                </div>
+                <div className="st-balance-amount">
+                  <Balance balanceType="balance" />
+                </div>
+              </div>
+              <Button type="primary" onClick={this.toggleModalDeposit}>
+                {intl.formatMessage({ id: 'headerAuthorized.deposit', defaultMessage: 'Deposit' })}
               </Button>
+              <Modal
+                title={intl.formatMessage({
+                  id: 'headerAuthorized.deposit',
+                  defaultMessage: 'Deposit',
+                })}
+                footer={null}
+                visible={isModalDeposit}
+                onCancel={this.toggleModalDeposit}
+                width={1250}
+                wrapClassName={'st-header-deposit-modal'}
+                destroyOnClose
+              >
+                <iframe
+                  title="depositFrame"
+                  src={`${
+                    config[process.env.NODE_ENV].platformDepositUrl[this.props.platformName]
+                  }?${isNightMode ? 'style=wp&' : ''}mode=popup&lang=en#deposit`}
+                  width="1200px"
+                  height="696px"
+                />
+              </Modal>
+              <img
+                role="presentation"
+                title={platformName}
+                onClick={this.toggleModalBroker}
+                className="st-header__image"
+                src={`/images/investarena/${platformName}.png`}
+                alt="broker"
+              />
             </div>
-        )}
+          ) : (
+            this.props.username && (
+              <div className="st-header-broker-balance-pl-wrap">
+                <Button type="primary" onClick={this.toggleModalBroker}>
+                  {intl.formatMessage({
+                    id: 'headerAuthorized.connectToBroker',
+                    defaultMessage: 'Connect to broker',
+                  })}
+                </Button>
+              </div>
+            )
+          )}
+        </div>
       </div>
-    </div>;
+    );
   }
 }
 

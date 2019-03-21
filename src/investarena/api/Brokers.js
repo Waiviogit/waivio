@@ -73,8 +73,8 @@ export default class Brokers extends Base {
         // localStorage.setItem('WEBSRV', response.data.connectionData[0][7]);
 
         // if (response.data.broker.code === 1) {
-          result = true;
-          status = 'success';
+        result = true;
+        status = 'success';
         // } else {
         //   console.log(response.data.broker.message);
         // }

@@ -34,7 +34,7 @@ import PostChart from '../../../investarena/components/PostChart';
 import PostQuotation from '../../../investarena/components/PostQuotation';
 import PostSellBuy from '../../../investarena/components/PostSellBuy';
 import { jsonParse } from '../../helpers/formatter';
-import PostForecast from '../../../investarena/components/PostForecast/PostForecast';
+import PostForecast from '../../../investarena/components/PostForecast';
 import ObjectAvatar from '../ObjectAvatar';
 
 @injectIntl
@@ -97,6 +97,7 @@ class Story extends React.Component {
     this.state = {
       showHiddenStoryPreview: false,
       displayLoginModal: false,
+      isQuoteValid: true
     };
 
     this.getDisplayStoryPreview = this.getDisplayStoryPreview.bind(this);
@@ -370,7 +371,6 @@ class Story extends React.Component {
         </div>
       );
     }
-
     return (
       <div className="Story" id={`${post.author}-${post.permlink}`}>
         {rebloggedUI}
@@ -408,23 +408,24 @@ class Story extends React.Component {
                 <PostedFrom post={post} />
               </span>
             </div>
-              {forecast && isForecastValid ? (
-                <div className="Story__forecast">
-                  <PostForecast
-                    postForecast={forecast.expiredAt}
-                    isExpired={false}
-                    expiredAt={forecast.expiredAt}
-                  />
-                </div>
-              ) : (
-                <div className="Story__topics">
-                  <div className="Story__published">
-                    <div className="PostWobject__wrap">
-                      {post.wobjects && this.getWobjects(post.wobjects)}
-                    </div>
+            {forecast && isForecastValid ? (
+              <div className="Story__forecast">
+                <PostForecast
+                  quoteSecurity={forecast.quoteSecurity}
+                  postForecast={forecast.expiredAt}
+                  isExpired={false}
+                  expiredAt={forecast.expiredAt}
+                />
+              </div>
+            ) : (
+              <div className="Story__topics">
+                <div className="Story__published">
+                  <div className="PostWobject__wrap">
+                    {post.wobjects && this.getWobjects(post.wobjects)}
                   </div>
                 </div>
-              )}
+              </div>
+            )}
           </div>
           {forecast && isForecastValid && (
             <PostSellBuy

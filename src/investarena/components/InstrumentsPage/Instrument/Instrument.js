@@ -58,6 +58,7 @@ class Instrument extends Component {
   };
   render() {
     const { intl, quoteSettings, quote, signals, chart } = this.props;
+    if(quoteSettings){
     const investments = this.getInvestments();
     const instrumentName = (
       <Link to={`/object/${quoteSettings.wobjData.author_permlink}`}>
@@ -129,6 +130,7 @@ class Instrument extends Component {
           </div>
         );
     }
+  } else {return null}
   }
 }
 
