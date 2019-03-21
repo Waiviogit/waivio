@@ -25,6 +25,7 @@ class RateForm extends React.Component {
     initialValue: PropTypes.number,
     ratingByCategoryFields: PropTypes.shape().isRequired,
     username: PropTypes.string.isRequired,
+    authorPermlink: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -74,7 +75,7 @@ class RateForm extends React.Component {
   render() {
     const { getFieldDecorator } = this.props.form;
     const { loading, submitted, vote } = this.state;
-    const { intl, ratingByCategoryFields, username } = this.props;
+    const { intl, ratingByCategoryFields, username, initialValue } = this.props;
 
     const fieldWithVote = { ...ratingByCategoryFields };
 
@@ -93,24 +94,27 @@ class RateForm extends React.Component {
     }
 
     return !submitted ? (
-      <div className="RateForm">
-        <Form layout="inline" onSubmit={this.handleSubmit} className="RateForm__form">
-          <div>{intl.formatMessage({ id: 'your_vote', defaultMessage: 'Your vote' })}</div>
-          <Form.Item>
-            {getFieldDecorator(ratingFields.rate, {
-              initialValue: this.props.initialValue,
-            })(<Rate disabled={loading} allowClear={false} />)}
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" loading={loading}>
-              {intl.formatMessage({
-                id: loading ? 'post_send_progress' : 'append_send',
-                defaultMessage: loading ? 'Submitting' : 'Submit',
-              })}
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
+      <React.Fragment>
+        <div className="RateForm">
+          <Form layout="inline" onSubmit={this.handleSubmit} className="RateForm__form">
+            <div>{intl.formatMessage({ id: 'your_vote', defaultMessage: 'Your vote' })}</div>
+            <Form.Item>
+              {getFieldDecorator(ratingFields.rate, {
+                initialValue,
+              })(<Rate disabled={loading} allowClear={false} />)}
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" loading={loading}>
+                {intl.formatMessage({
+                  id: loading ? 'post_send_progress' : 'append_send',
+                  defaultMessage: loading ? 'Submitting' : 'Submit',
+                })}
+              </Button>
+            </Form.Item>
+          </Form>
+        </div>
+        {!!initialValue && <StarRating field={fieldWithVote} />}
+      </React.Fragment>
     ) : (
       <div className="RateForm__full">
         <div>

@@ -2,23 +2,33 @@ import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Rate } from 'antd';
+import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import RateForm from './RateForm';
 import { averageRate, rateCount } from './rateHelper';
-import { objectFields, ratePercent } from '../../../../common/constants/listOfFields';
+import { ratePercent } from '../../../../common/constants/listOfFields';
+import { getRatingFields } from '../../../reducers';
 import './RateInfo.less';
 
 @injectIntl
+@connect(state => ({
+  ratingFields: getRatingFields(state),
+}))
 class RateInfo extends React.Component {
   static propTypes = {
     username: PropTypes.string.isRequired,
-    wobject: PropTypes.shape().isRequired,
+    ratingFields: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+    authorPermlink: PropTypes.string.isRequired,
   };
 
   state = {
     showModal: false,
     field: {},
   };
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return !_.isEqual(this.props.ratingFields, nextProps.ratingFields) || this.state !== nextState;
+  }
 
   getInitialRateValue = field => {
     const { username } = this.props;
@@ -39,11 +49,9 @@ class RateInfo extends React.Component {
     }));
 
   render() {
-    const { username, wobject } = this.props;
-    const { fields } = wobject;
-    const filteredRatingFields = fields.filter(field => field.name === objectFields.rating);
-    const rankingList = _.orderBy(filteredRatingFields, ['weight'], ['desc']);
-    const ratingByCategoryFields = fields.find(
+    const { username, ratingFields } = this.props;
+    const rankingList = _.orderBy(ratingFields, ['weight'], ['desc']);
+    const ratingByCategoryFields = ratingFields.find(
       field => field.permlink === this.state.field.permlink,
     );
 
@@ -60,7 +68,7 @@ class RateInfo extends React.Component {
                   data-field={JSON.stringify(field)}
                   onClick={this.handleOnClick.bind(this, field)} // eslint-disable-line react/jsx-no-bind
                 >
-                  <Rate allowHalf disabled defaultValue={+averageRate(field)} />
+                  <Rate allowHalf disabled value={+averageRate(field)} />
                 </div>
                 <div>({rateCount(field)})</div>
               </div>
@@ -78,9 +86,8 @@ class RateInfo extends React.Component {
             <RateForm
               initialValue={this.getInitialRateValue(ratingByCategoryFields) || 0}
               field={this.state.field}
-              authorPermlink={this.props.wobject.author_permlink}
+              authorPermlink={this.props.authorPermlink}
               username={username}
-              wobject={wobject}
               ratingByCategoryFields={ratingByCategoryFields}
             />
           </Modal>
