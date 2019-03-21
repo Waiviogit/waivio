@@ -68,13 +68,16 @@ export default class Brokers extends Base {
     return this.apiClient.post(config.brokers.reconnectBroker, data).then(response => {
       let status = 'error';
       let result = false;
-      if (response.data && response.data.broker) {
-        if (response.data.broker.code === 1) {
+      // if (response.data && response.data.broker) {
+      if (response.data) {
+        // localStorage.setItem('WEBSRV', response.data.connectionData[0][7]);
+
+        // if (response.data.broker.code === 1) {
           result = true;
           status = 'success';
-        } else {
-          console.log(response.data.broker.message);
-        }
+        // } else {
+        //   console.log(response.data.broker.message);
+        // }
       }
       return {
         headers: response.headers,

@@ -285,7 +285,6 @@ class Editor extends React.Component {
 
     this.props.onUpdate({
       ...values,
-      topics,
       [WAIVIO_META_FIELD_NAME]: { wobjects },
       [INVESTARENA_META_FIELD_NAME]: this.getForecastObject(forecast, selectForecast),
     });

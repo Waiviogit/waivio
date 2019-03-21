@@ -105,7 +105,7 @@ export class Umarkets {
         this.websocket.close();
       }
       const data = {
-        broker_name: this.platformName,
+        platform: this.platformName,
         stomp_user: this.stompUser,
         stomp_password: this.stompPassword,
       };
