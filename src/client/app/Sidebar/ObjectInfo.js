@@ -182,7 +182,10 @@ class ObjectInfo extends React.Component {
         {getFieldWithMaxWeight(wobject, objectFields.name) && (
           <div className="object-sidebar">
             {listItem(objectFields.description, <DescriptionInfo description={description} />)}
-            {listItem(objectFields.rating, <RateInfo username={userName} wobject={wobject} />)}
+            {listItem(
+              objectFields.rating,
+              <RateInfo username={userName} authorPermlink={wobject.author_permlink} />,
+            )}
             {listItem(
               objectFields.hashtag,
               <div className="field-info">
