@@ -118,7 +118,7 @@ export default class RightSidebar extends React.Component {
                   ) : (
                     <RightSidebarLoading />
                   ))
-                  // </React.Fragment>
+                // </React.Fragment>
                 }
               </React.Fragment>
             )}

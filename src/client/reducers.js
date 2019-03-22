@@ -182,6 +182,7 @@ export const getSearchObjectsResults = state => fromSearch.getSearchObjectsResul
 export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectAuthor = state => fromObject.getObjectAuthor(state.object);
 export const getObjectFields = state => fromObject.getObjectFields(state.object);
+export const getRatingFields = state => fromObject.getRatingFields(state.object);
 
 export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.append);
 

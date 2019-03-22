@@ -12,14 +12,11 @@
       "maximarkets": "https://myaccount.maximarkets.org/",
       "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
     },
-    "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/",
-    "chatUrl": "https://chatsocket.socialtrading.uat.pp.ua/",
-    "repostUrl": "https://socialtrading.uat.pp.ua/posts/"
+    "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/"
   },
   "development": {
     "": "http://localhost:8095/",
     "apiPrefix": "http://waiviodev.com/",
-    "": "https://api.socialtrading.uat.pp.ua/",
     "brokerWSUrl": {
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",

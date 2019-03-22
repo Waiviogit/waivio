@@ -7,7 +7,7 @@ import { FormattedMessage } from 'react-intl';
 import { Icon } from 'antd';
 
 import Feed from '../feed/Feed';
-import { getFeed, getNightmode, getObject } from '../reducers';
+import { getFeed, getNightmode, getObject, getIsAuthenticated } from '../reducers';
 import {
   getFeedLoadingFromState,
   getFeedHasMoreFromState,
@@ -30,6 +30,7 @@ import { quoteIdForWidget } from '../../investarena/constants/constantsWidgets';
   state => ({
     feed: getFeed(state),
     object: getObject(state),
+    isAuthenticated: getIsAuthenticated(state),
     isLoadingPlatform: getIsLoadingPlatformState(state),
     isNightMode: getNightmode(state),
   }),
@@ -47,6 +48,7 @@ export default class ObjectProfile extends React.Component {
     match: PropTypes.shape().isRequired,
     showPostModal: PropTypes.func.isRequired,
     limit: PropTypes.number,
+    isAuthenticated: PropTypes.bool.isRequired,
     isLoadingPlatform: PropTypes.bool,
     isNightMode: PropTypes.bool.isRequired,
     getObjectPosts: PropTypes.func,
@@ -78,7 +80,7 @@ export default class ObjectProfile extends React.Component {
   };
 
   render() {
-    const { feed, limit, isLoadingPlatform, object, isNightMode } = this.props;
+    const { feed, limit, isLoadingPlatform, object, isNightMode, isAuthenticated } = this.props;
     const wobjectname = this.props.match.params.name;
     const content = getFeedFromState('objectPosts', wobjectname, feed);
     const isFetching = getFeedLoadingFromState('objectPosts', wobjectname, feed);
@@ -138,15 +140,17 @@ export default class ObjectProfile extends React.Component {
               />
             </div>
           )}
-          <div className="object-profile__row align-right">
-            <IconButton
-              icon={<Icon type="plus-circle" />}
-              onClick={this.handleCreatePost}
-              caption={
-                <FormattedMessage id="write_new_review" defaultMessage="Write post or forecast" />
-              }
-            />
-          </div>
+          {isAuthenticated && (
+            <div className="object-profile__row align-right">
+              <IconButton
+                icon={<Icon type="plus-circle" />}
+                onClick={this.handleCreatePost}
+                caption={
+                  <FormattedMessage id="write_new_review" defaultMessage="Write new review" />
+                }
+              />
+            </div>
+          )}
           {!_.isEmpty(content) || isFetching ? (
             <Feed
               content={content}

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { Button, Modal, message, Select, Form } from 'antd';
+import { Button, Icon, Modal, message, Select, Form } from 'antd';
 import { getAppendData } from '../../../helpers/wObjectHelper';
 import { getFieldWithMaxWeight } from '../../../object/wObjectHelper';
 import { getAuthenticatedUserName, getFollowingObjectsList, getLocale } from '../../../reducers';
@@ -19,6 +19,7 @@ import { followObject } from '../../../object/wobjActions';
 import * as wobjectActions from '../../wobjectsActions';
 import * as notificationActions from '../../../app/Notification/notificationActions';
 import './AddItemModal.less';
+import IconButton from '../../../components/IconButton';
 
 @connect(
   state => ({
@@ -95,7 +96,7 @@ class AddItemModal extends Component {
           },
           {
             user: currentUserName,
-            itemType: selectedItem.type === 'listItem' ? 'list-item' : 'object',
+            itemType: selectedItem.type === 'list' ? 'nested list' : 'object',
             itemValue: selectedItem.name,
           },
         );
@@ -143,7 +144,7 @@ class AddItemModal extends Component {
 
   handleCreateObject = (wobj, follow) => {
     const { intl, notify, createObject } = this.props;
-    createObject(wobj, follow)
+    return createObject(wobj, follow)
       .then(({ value: { objectPermlink, objectAuthor } }) => {
         notify(
           intl.formatMessage({
@@ -208,12 +209,21 @@ class AddItemModal extends Component {
       <React.Fragment>
         {isModalOpen && (
           <Modal
-            title={intl.formatMessage({
-              id: 'list_update',
-              defaultMessage: 'Update list',
-            })}
+            title={
+              <div className="modal-header">
+                {intl.formatMessage({
+                  id: 'list_update',
+                  defaultMessage: 'Update list',
+                })}
+                <IconButton
+                  className="modal-header__close-btn"
+                  icon={<Icon type="close" />}
+                  onClick={this.handleToggleModal}
+                />
+              </div>
+            }
             visible={isModalOpen}
-            onCancel={this.handleToggleModal}
+            wrapClassName="add-item-modal"
             width={500}
             footer={null}
             destroyOnClose

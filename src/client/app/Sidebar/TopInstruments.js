@@ -57,25 +57,19 @@ class TopInstruments extends React.Component {
     instrumentsCount: 0,
   };
   componentDidMount() {
-    if (_.size(this.props.quotesSettings) > 0 && this.state.isLoading) {
-      if (this.props.isAuthenticated) {
-        if (!_.isEmpty(this.props.followingObjects)) {
-          this.sortSidebarItems(this.props.quotesSettings);
-        }
-      } else {
-        this.setState({ isLoading: false });
-      }
-    }
+    this.prepareItems(this.props);
   }
   componentWillReceiveProps(nextProps) {
-    if (_.size(nextProps.quotesSettings) > 0 && this.state.isLoading) {
-      if (this.props.isAuthenticated) {
-        if (!_.isEmpty(nextProps.followingObjects)) {
-          this.sortSidebarItems(nextProps.quotesSettings);
+    this.prepareItems(nextProps)
+  }
+  prepareItems(props){
+    if (_.size(props.quotesSettings) > 0 && this.state.isLoading) {
+      if (props.isAuthenticated) {
+        if (!_.isEmpty(props.followingObjects)) {
+          this.sortSidebarItems(props.quotesSettings);
         }
-      } else {
-        this.setState({ isLoading: false });
       }
+        this.setState({ isLoading: false });
     }
   }
 
@@ -126,8 +120,7 @@ class TopInstruments extends React.Component {
                 <div className="SidebarContentBlock__amount">{instrumentsCount}</div>
               </div>
             )}
-            {marketNames.map(market => {
-              return (
+            {marketNames.map(market => (
                 !_.isEmpty(instrumentsToShow[market.name]) && (
                   <div className="SidebarContentBlock top-instruments" key={market.name}>
                     <div className="SidebarContentBlock__title">
@@ -157,8 +150,7 @@ class TopInstruments extends React.Component {
                     </div>
                   </div>
                 )
-              );
-            })}
+              ))}
           </React.Fragment>
         ) : (
           <TopInstrumentsLoading />

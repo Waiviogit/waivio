@@ -243,12 +243,12 @@ export const getWobjectsWithUserWeight = (userName, skip = 20, limit = 30) =>
       .catch(error => reject(error));
   });
 
-export const getWobjectsFeed = (limit = 20, start_id = '') =>
+export const getWobjectsFeed = (limit = 20, skip = 0) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getWobjFeed}`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ start_id, limit }),
+      body: JSON.stringify({ skip, limit }),
     })
       .then(handleErrors)
       .then(res => res.json())

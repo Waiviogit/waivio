@@ -5,7 +5,7 @@ import { createAsyncActionType } from '../helpers/stateHelpers';
 import { addNewNotification } from '../app/appActions';
 import { getFollowing } from '../user/userActions';
 import { BUSY_API_TYPES } from '../../common/constants/notifications';
-import {disconnectBroker} from "../../investarena/redux/actions/brokersActions";
+import { disconnectBroker } from '../../investarena/redux/actions/brokersActions';
 
 export const LOGIN = '@auth/LOGIN';
 export const LOGIN_START = '@auth/LOGIN_START';

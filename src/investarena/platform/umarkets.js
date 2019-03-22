@@ -105,7 +105,7 @@ export class Umarkets {
         this.websocket.close();
       }
       const data = {
-        broker_name: this.platformName,
+        platform: this.platformName,
         stomp_user: this.stompUser,
         stomp_password: this.stompPassword,
       };
@@ -333,7 +333,8 @@ export class Umarkets {
             _.find(o.fields, field => field.name === 'chartid' && field.body === key),
           );
           sortedQuotesSettings[key] = quotesSettings[key];
-          if(sortedQuotesSettings[key].market === 'CryptoCurrency') sortedQuotesSettings[key].market = 'Crypto';
+          if (sortedQuotesSettings[key].market === 'CryptoCurrency')
+            sortedQuotesSettings[key].market = 'Crypto';
           sortedQuotesSettings[key].keyName = key;
           if (wobjData) {
             sortedQuotesSettings[key].wobjData = {

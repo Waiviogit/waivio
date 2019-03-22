@@ -179,6 +179,7 @@ class Editor extends React.Component {
     form.setFieldsValue({
       name: post.name,
       title: post.title,
+      topics: post.topics,
       body: post.body,
       reward,
       beneficiary: post.beneficiary,
@@ -270,10 +271,10 @@ class Editor extends React.Component {
 
     // if (Object.values(form.getFieldsError()).filter(e => e).length > 0) return;
 
-    const topics = [...linkedObjects]
-      .sort((a, b) => b.influence.value - a.influence.value)
-      .slice(0, 4)
-      .map(obj => obj.name);
+    // const topics = [...linkedObjects]
+    //   .sort((a, b) => b.influence.value - a.influence.value)
+    //   .slice(0, 4)
+    //   .map(obj => obj.name);
     const wobjects = linkedObjects.map(obj => ({
       objectName: obj.name,
       author_permlink: obj.id,
@@ -283,7 +284,6 @@ class Editor extends React.Component {
 
     this.props.onUpdate({
       ...values,
-      topics,
       [WAIVIO_META_FIELD_NAME]: { wobjects },
       [INVESTARENA_META_FIELD_NAME]: this.getForecastObject(forecast, selectForecast),
     });
@@ -346,7 +346,7 @@ class Editor extends React.Component {
       );
       return { linkedObjects };
     });
-    this.props.onCreateObject(
+    return this.props.onCreateObject(
       wObject,
       res => {
         this.setState(prevState => {
@@ -354,7 +354,7 @@ class Editor extends React.Component {
             obj.id === wObject.id
               ? {
                   ...obj,
-                  id: `${res.objectPermlink}`,
+                  id: `${res.permlink}`,
                   isNew: false,
                   isCreating: false,
                 }
@@ -636,19 +636,21 @@ class Editor extends React.Component {
             </Select>,
           )}
         </Form.Item>
-        <Form.Item>
-          {getFieldDecorator('beneficiary', { valuePropName: 'checked', initialValue: true })(
-            <Checkbox onChange={this.onUpdate} disabled={isUpdating}>
-              <FormattedMessage
-                id="add_waivio_beneficiary"
-                defaultMessage="Share {share}% of this post rewards with Waivio"
-                values={{
-                  share: BENEFICIARY_PERCENT / 100,
-                }}
-              />
-            </Checkbox>,
-          )}
-        </Form.Item>
+        {!isUpdating && ( // don't show for editing
+          <Form.Item>
+            {getFieldDecorator('beneficiary', { valuePropName: 'checked', initialValue: true })(
+              <Checkbox onChange={this.onUpdate} disabled={isUpdating}>
+                <FormattedMessage
+                  id="add_waivio_beneficiary"
+                  defaultMessage="Share {share}% of this post rewards with Waivio"
+                  values={{
+                    share: BENEFICIARY_PERCENT / 100,
+                  }}
+                />
+              </Checkbox>,
+            )}
+          </Form.Item>
+        )}
         <Form.Item className={classNames({ Editor__hidden: isUpdating })}>
           {getFieldDecorator('upvote', { valuePropName: 'checked', initialValue: true })(
             <Checkbox onChange={this.onUpdate} disabled={isUpdating}>

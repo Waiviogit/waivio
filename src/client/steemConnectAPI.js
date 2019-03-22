@@ -37,6 +37,17 @@ function sc2Extended() {
         return this.broadcast([['custom_json', params]], cb);
       },
     },
+    {
+      rankingObject(username, author, permlink, authorPermlink, rate, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'wobj_rating',
+          json: JSON.stringify({ author, permlink, author_permlink: authorPermlink, rate }),
+        };
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
   );
 
   return copied;
