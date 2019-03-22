@@ -7,7 +7,6 @@ import moment from 'moment';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Collapse, DatePicker, Select, Input } from 'antd';
 import { optionsAction, optionsForecast } from '../../constants/selectData';
-import { currentTime } from '../../helpers/currentTime';
 import { getQuoteOptions, getQuotePrice, isStopLossTakeProfitValid } from './helpers';
 import {
   forecastDateTimeFormat,
@@ -91,7 +90,7 @@ class CreatePostForecast extends Component {
   };
 
   updateForecastValues = forecast => {
-    const dateTimeValue = forecast.expiredAt ? moment(forecast.expiredAt) : null;
+    const dateTimeValue = forecast.expiredAt ? moment(forecast.expiredAt).local() : null;
     const selectForecast =
       !forecast.selectForecast && Boolean(dateTimeValue)
         ? 'Custom'
@@ -190,7 +189,6 @@ class CreatePostForecast extends Component {
         break;
     }
     if (!isNaN(initialValue) && initialValue > 0) {
-      const forecastValue = '1555200';
       this.setState(
         prevState => {
           if (prevState[input] === '') {
@@ -204,8 +202,6 @@ class CreatePostForecast extends Component {
           this.getForecastObject({
             ...this.state,
             [input]: initialValue,
-            selectForecast: forecastValue,
-            dateTimeValue: moment(currentTime.getTime()).add(forecastValue, 'seconds'),
           }),
         ),
       );
@@ -218,7 +214,7 @@ class CreatePostForecast extends Component {
     this.props.onChange(
       this.getForecastObject({
         ...this.state,
-        dateTimeValue,
+        dateTimeValue: moment.utc(dateTimeValue),
         isValid: this.validateForm(selectQuote, selectRecommend, 'Custom'),
       }),
     );
@@ -231,7 +227,7 @@ class CreatePostForecast extends Component {
         this.getForecastObject({
           ...this.state,
           selectForecast,
-          dateTimeValue: moment.utc(currentTime.getTime()).add(minForecastMinutes, 'minute'),
+          dateTimeValue: moment.utc().add(minForecastMinutes, 'minute'),
           isValid: this.validateForm(selectQuote, selectRecommend, selectForecast),
         }),
       );
@@ -397,15 +393,15 @@ class CreatePostForecast extends Component {
                       {isUpdating || this.state.selectForecast === 'Custom' ? (
                         <DatePicker
                           disabled={isUpdating}
-                          showTime
+                          showTime={{format: "HH:mm", minuteStep: 5}}
                           style={{ width: '100%' }}
                           locale={intl.formatMessage({ id: 'locale', defaultMessage: 'en' })}
                           value={dateTimeValue}
-                          onOk={this.handleChangeDatetime}
+                          onChange={this.handleChangeDatetime}
                           format="YYYY-MM-DD HH:mm"
                           disabledDate={date =>
-                            date < moment(currentTime.getTime()) ||
-                            date > moment(currentTime.getTime()).add(maxForecastDay, 'days')
+                            date < moment().local() ||
+                            date > moment().local().add(maxForecastDay, 'days')
                           }
                         />
                       ) : (

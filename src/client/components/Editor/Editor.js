@@ -30,7 +30,6 @@ import {
   removeObjInfluenceHandler,
 } from '../../helpers/wObjInfluenceHelper';
 import './Editor.less';
-import { currentTime } from '../../../investarena/helpers/currentTime';
 import { forecastDateTimeFormat } from '../../../investarena/constants/constantsForecast';
 import CreatePostForecast from '../../../investarena/components/CreatePostForecast';
 
@@ -203,12 +202,12 @@ class Editor extends React.Component {
     forecast && !_.isEmpty(forecast)
       ? {
           ...forecast,
-          createdAt: moment.utc(currentTime.getTime()).format(forecastDateTimeFormat),
+          createdAt: moment.utc().format(forecastDateTimeFormat),
           expiredAt:
             selectForecast === 'Custom'
               ? forecast.expiredAt
               : moment
-                  .utc(currentTime.getTime())
+                  .utc()
                   .add(selectForecast, 'seconds')
                   .format(forecastDateTimeFormat),
           tpPrice: forecast.tpPrice ? parseFloat(forecast.tpPrice) : null,
