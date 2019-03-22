@@ -517,7 +517,7 @@ class Topnav extends React.Component {
                 {intl.formatMessage({ id: 'markets', defaultMessage: 'Markets' }).toUpperCase()}
               </NavLink>
             </Menu.Item>
-            <Menu.Item key={Topnav.MENU_ITEMS.DEALS}>
+            <Menu.Item key={Topnav.MENU_ITEMS.DEALS} disabled={!this.props.username}>
               <NavLink to="/deals/open">
                 {!isMobile
                   ? intl.formatMessage({ id: 'my_deals', defaultMessage: 'My deals' }).toUpperCase()

@@ -143,12 +143,21 @@ class SubFeed extends React.Component {
       failed = getUserFeedFailedFromState(user.name, feed);
       loadMoreContent = () => this.props.getMoreUserFeedContent(user.name);
     } else {
-      const sortBy = match.url === '/' ? 'wia_feed' : match.params.sortBy || 'trending';
-      const category = match.url === '/' ? 'all' : match.params.category;
+      let sortBy = 'trending';
+      let category = 'all';
+
+      if(match.url === '/'){
+        sortBy = 'wia_feed';
+        hasMore = true;
+      } else {
+        sortBy = match.params.sortBy || 'trending';
+        category = match.params.category;
+        hasMore = getFeedHasMoreFromState(sortBy, category, feed);
+      }
+
       content = getFeedFromState(sortBy, category, feed);
       isFetching = getFeedLoadingFromState(sortBy, category, feed);
       fetched = getFeedFetchedFromState(sortBy, category, feed);
-      hasMore = getFeedHasMoreFromState(sortBy, category, feed);
       failed = getFeedFailedFromState(sortBy, category, feed);
       loadMoreContent = () => this.props.getMoreFeedContent(sortBy, category);
     }

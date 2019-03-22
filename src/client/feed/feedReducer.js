@@ -74,7 +74,7 @@ const feedCategory = (state = {}, action) => {
         ...state,
         startAuthor: action.payload.start_author || '',
         startPermlink: action.payload.start_permlink || '',
-        countWithWobj: action.payload.count_with_wobj || '',
+        countWithWobj: action.payload.count_with_wobj || 0,
         isFetching: false,
         isLoaded: true,
         failed: false,

@@ -15,7 +15,7 @@ export function getDiscussionsFromAPI(sortBy, query, ApiClient) {
     case 'promoted':
       return ApiClient.getFeedContent(sortBy, query);
     case 'wia_feed':
-      return getWobjectsFeed(query.limit, query.start_id || '');
+      return getWobjectsFeed(query.limit, query.skip || 0);
     default:
       return new Promise((resolve, reject) => {
         reject(new Error('There is not API endpoint defined for this sorting'));
