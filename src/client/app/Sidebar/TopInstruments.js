@@ -60,16 +60,16 @@ class TopInstruments extends React.Component {
     this.prepareItems(this.props);
   }
   componentWillReceiveProps(nextProps) {
-    this.prepareItems(nextProps)
+    this.prepareItems(nextProps);
   }
-  prepareItems(props){
+  prepareItems(props) {
     if (_.size(props.quotesSettings) > 0 && this.state.isLoading) {
       if (props.isAuthenticated) {
         if (!_.isEmpty(props.followingObjects)) {
           this.sortSidebarItems(props.quotesSettings);
         }
       }
-        this.setState({ isLoading: false });
+      this.setState({ isLoading: false });
     }
   }
 
@@ -120,7 +120,8 @@ class TopInstruments extends React.Component {
                 <div className="SidebarContentBlock__amount">{instrumentsCount}</div>
               </div>
             )}
-            {marketNames.map(market => (
+            {marketNames.map(
+              market =>
                 !_.isEmpty(instrumentsToShow[market.name]) && (
                   <div className="SidebarContentBlock top-instruments" key={market.name}>
                     <div className="SidebarContentBlock__title">
@@ -149,8 +150,8 @@ class TopInstruments extends React.Component {
                       )}
                     </div>
                   </div>
-                )
-              ))}
+                ),
+            )}
           </React.Fragment>
         ) : (
           <TopInstrumentsLoading />

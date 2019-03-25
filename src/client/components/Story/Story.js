@@ -97,7 +97,7 @@ class Story extends React.Component {
     this.state = {
       showHiddenStoryPreview: false,
       displayLoginModal: false,
-      isQuoteValid: true
+      isQuoteValid: true,
     };
 
     this.getDisplayStoryPreview = this.getDisplayStoryPreview.bind(this);

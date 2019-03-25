@@ -146,7 +146,7 @@ class SubFeed extends React.Component {
       let sortBy = 'trending';
       let category = 'all';
 
-      if(match.url === '/'){
+      if (match.url === '/') {
         sortBy = 'wia_feed';
         hasMore = true;
       } else {
