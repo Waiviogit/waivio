@@ -1,20 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import RightSidebarLoading from '../../../client/app/Sidebar/RightSidebarLoading';
+import ObjectExpertise from '../../components/Sidebar/ObjectExpertise';
 
-import UsersWeightList from '../../components/Sidebar/UsersWeightList';
-import Loading from '../../components/Icon/Loading';
-
-const RightObjectSidebar = ({ users }) => {
-  if (!users) {
-    return <Loading />;
-  }
-
-  return <div>{_.size(users) > 0 && <UsersWeightList users={users} />}</div>;
-};
+const RightObjectSidebar = ({ users }) =>
+  users.length ? <ObjectExpertise users={users} /> : <RightSidebarLoading />;
 
 RightObjectSidebar.propTypes = {
-  users: PropTypes.arrayOf(PropTypes.shape({ name: PropTypes.string })),
+  users: PropTypes.arrayOf(PropTypes.shape()),
 };
 
 RightObjectSidebar.defaultProps = {
