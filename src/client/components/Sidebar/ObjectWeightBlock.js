@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import * as api from '../../../waivioApi/ApiClient';
 import ObjectWeightModal from './ObjectWeightModal';
-import Loading from '../../components/Icon/Loading';
 import ObjectCard from './ObjectCard';
 import WeightTag from '../WeightTag';
 import './ObjectWeightBlock.less';
+import RightSidebarLoading from '../../../client/app/Sidebar/RightSidebarLoading';
 
 class ObjectWeightBlock extends React.Component {
   static propTypes = {
@@ -45,7 +45,7 @@ class ObjectWeightBlock extends React.Component {
     const { wObjects, loading, showModal, wObjectsCount } = this.state;
 
     if (loading) {
-      return <Loading />;
+      return <RightSidebarLoading />;
     }
 
     return wObjects.length ? (
