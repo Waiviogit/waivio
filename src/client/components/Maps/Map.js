@@ -1,12 +1,12 @@
-import { GoogleMap, Marker, withGoogleMap, withScriptjs, InfoWindow } from 'react-google-maps';
 import PropTypes from 'prop-types';
-import React from 'react';
 import _ from 'lodash';
-import { Link } from 'react-router-dom';
-import ObjectAvatar from '../ObjectAvatar';
+import React from 'react';
+import Map from 'pigeon-maps';
+import Marker from 'pigeon-marker/react';
+// import Overlay from 'pigeon-overlay'
 import './Map.less';
 
-class Map extends React.Component {
+class MapOS extends React.Component {
   state = {
     showInfobox: false,
   };
@@ -20,46 +20,31 @@ class Map extends React.Component {
   };
   render() {
     return (
-      <GoogleMap
-        defaultZoom={8}
-        defaultCenter={{ lat: 37.0902, lng: 95 }}
-        center={{ lat: this.props.lat, lng: this.props.lng }}
-        onClick={this.props.setCoordinates}
-      >
-        {this.props.isMarkerShown && (
-          <Marker
-            onClick={this.toggleInfobox}
-            position={{ lat: this.props.lat, lng: this.props.lng }}
-          >
-            {this.state.showInfobox && (
-              <InfoWindow>
-                <Link
-                  className="tooltip-wrap"
-                  to={{ pathname: `/object/${this.props.wobject.author_permlink}` }}
-                >
-                  <ObjectAvatar item={this.props.wobject} size={34} />
-                  <h4>{this.getObjectName(this.props.wobject)}</h4>
-                </Link>
-              </InfoWindow>
-            )}
-          </Marker>
-        )}
-      </GoogleMap>
+      <Map center={[this.props.lat, this.props.lng]} zoom={8} width={178} height={160}>
+        <Marker
+          anchor={[this.props.lat, this.props.lng]}
+          payload={1}
+          onClick={this.toggleInfobox}
+        />
+        {/* <Overlay anchor={[50.879, 4.6997]} offset={[120, 79]}> */}
+        {/* <img src='/images/hero-2.svg' width={240} height={158} alt='' /> */}
+        {/* </Overlay> */}
+      </Map>
     );
   }
 }
 
-Map.defuultProps = {
+MapOS.defuultProps = {
   lat: 37.0902,
   lng: 95,
 };
 
-Map.propTypes = {
-  isMarkerShown: PropTypes.bool.isRequired,
-  wobject: PropTypes.shape().isRequired,
-  setCoordinates: PropTypes.func.isRequired,
+MapOS.propTypes = {
+  // isMarkerShown: PropTypes.bool.isRequired,
+  // wobject: PropTypes.shape().isRequired,
+  // setCoordinates: PropTypes.func.isRequired,
   lat: PropTypes.number.isRequired,
   lng: PropTypes.number.isRequired,
 };
 
-export default withScriptjs(withGoogleMap(Map));
+export default MapOS;

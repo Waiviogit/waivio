@@ -59,6 +59,11 @@ module.exports = function createConfig(env = 'dev') {
           loader: 'url-loader',
         },
         {
+          test: /\.(png|jpg|gif)$/,
+          loader: 'file-loader',
+          options: {},
+        },
+        {
           test: MATCH_CSS_LESS,
           use: [
             IS_PROD ? CSSExtract.loader : 'style-loader',
