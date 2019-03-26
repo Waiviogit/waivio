@@ -4,17 +4,21 @@ import { quoteIdForWidget } from '../../constants/constantsWidgets';
 
 const initialState = {};
 
-export default function(state = initialState, action) {
-  switch (action.type) {
-    case GET_CHART_DATA_SUCCESS:
-      return updateChart(state, action.payload);
-    case GET_CHARTS_DATA_SUCCESS:
-      return { ...state, assets: parseCharts(action.payload) };
-    default:
-      return state;
-  }
-}
+function parseCharts(charts) {
+  const result = {};
+  _.forEach(charts, chart => {
+    const quote = _.invert(quoteIdForWidget)[chart.id];
 
+    if (quote && chart.closeAsk) {
+      result[quote] = _.map(chart.closeAsk.reverse(), (price, index) => ({
+          y: +price,
+          x: index,
+        })
+      );
+    }
+  });
+  return result;
+}
 function updateChart(state, payload) {
   const chart = state[payload.quoteSecurity];
   if (chart) {
@@ -34,19 +38,15 @@ function updateChart(state, payload) {
     };
   }
 }
-
-function parseCharts(charts) {
-  let result = {};
-  _.forEach(charts, chart => {
-    const quote = _.invert(quoteIdForWidget)[chart.id];
-    if (quote) {
-      result[quote] = _.map(chart.closeAsk, (price, index) => {
-        return {
-          y: +price,
-          x: index,
-        };
-      });
-    }
-  });
-  return result;
+export default function(state = initialState, action) {
+  switch (action.type) {
+    case GET_CHART_DATA_SUCCESS:
+      return updateChart(state, action.payload);
+    case GET_CHARTS_DATA_SUCCESS:
+      return { ...state, assets: parseCharts(action.payload) };
+    default:
+      return state;
+  }
 }
+
+
