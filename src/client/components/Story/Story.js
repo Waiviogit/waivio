@@ -139,21 +139,24 @@ class Story extends React.Component {
     return true;
   }
   getObjectLayout = wobj => {
-    const pathName = `/object/${wobj.author_permlink}`;
-    const nameFields = _.filter(wobj.fields, o => o.name === 'name');
-    const nameField = _.maxBy(nameFields, 'weight');
-    return (
-      <Link
-        key={wobj.author_permlink}
-        to={{ pathname: pathName }}
-        title={`${this.props.intl.formatMessage({
-          id: 'related_to_obj',
-          defaultMessage: 'Related to object',
-        })} ${nameField.body} ${wobj.percent ? `(${wobj.percent}%)` : ''}`}
-      >
-        <ObjectAvatar item={wobj} size={40} />
-      </Link>
-    );
+    if (wobj.fields) {
+      const pathName = `/object/${wobj.author_permlink}`;
+      const nameFields = _.filter(wobj.fields, o => o.name === 'name');
+      const nameField = _.maxBy(nameFields, 'weight');
+      return (
+        <Link
+          key={wobj.author_permlink}
+          to={{pathname: pathName}}
+          title={`${this.props.intl.formatMessage({
+            id: 'related_to_obj',
+            defaultMessage: 'Related to object',
+          })} ${nameField.body} ${wobj.percent ? `(${wobj.percent}%)` : ''}`}
+        >
+          <ObjectAvatar item={wobj} size={40}/>
+        </Link>
+      );
+    }
+    return null;
   };
   getWobjects = wobjects => {
     let i = 0;

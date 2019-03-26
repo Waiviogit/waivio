@@ -8,6 +8,16 @@ const headers = {
   'Content-Type': 'application/json',
 };
 
+const filterKey = 'investarena';
+
+const getFilterKey = () => {
+  if(localStorage){
+    const isAppFilterOff = localStorage.getItem('isAppFilterOff');
+    return  isAppFilterOff ? '' : filterKey;
+  }
+  return filterKey;
+};
+
 export function handleErrors(response) {
   if (!response.ok) {
     throw Error(response.statusText);
@@ -109,7 +119,10 @@ export const getUserFeedContent = (feedUserName, limit = 10) =>
     fetch(`${config.apiPrefix}${config.user}/${feedUserName}${config.feed}`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ limit }),
+      body: JSON.stringify({ limit, filter: {
+          byApp: getFilterKey()
+        }
+      }),
     })
       .then(res => res.json())
       .then(posts => resolve(posts))
@@ -143,6 +156,9 @@ export const getMoreUserFeedContent = ({
         limit,
         start_author: startAuthor,
         start_permlink: startPermlink,
+        filter: {
+          byApp: getFilterKey()
+        }
       }),
     })
       .then(res => res.json())
@@ -248,7 +264,10 @@ export const getWobjectsFeed = (limit = 20, skip = 0) =>
     fetch(`${config.apiPrefix}${config.getWobjFeed}`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ skip, limit }),
+      body: JSON.stringify({ skip, limit, filter: {
+        byApp: getFilterKey()
+      }
+      }),
     })
       .then(handleErrors)
       .then(res => res.json())
