@@ -12,6 +12,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { Tag } from 'antd';
 import formatter from '../../helpers/steemitFormatter';
 import { getHasDefaultSlider } from '../../helpers/user';
+import {isValidForecast} from "../../helpers/forecastHelper";
 import {
   isPostDeleted,
   isPostTaggedNSFW,
@@ -43,14 +44,14 @@ import ObjectAvatar from '../ObjectAvatar';
 class Story extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
-    user: PropTypes.shape().isRequired,
     post: PropTypes.shape().isRequired,
-    match: PropTypes.shape(),
-    postState: PropTypes.shape().isRequired,
     rewardFund: PropTypes.shape().isRequired,
-    defaultVotePercent: PropTypes.number.isRequired,
-    showNSFWPosts: PropTypes.bool.isRequired,
     onActionInitiated: PropTypes.func.isRequired,
+    defaultVotePercent: PropTypes.number,
+    postState: PropTypes.shape(),
+    match: PropTypes.shape(),
+    user: PropTypes.shape(),
+    showNSFWPosts: PropTypes.bool,
     pendingLike: PropTypes.bool,
     pendingFlag: PropTypes.bool,
     pendingFollow: PropTypes.bool,
@@ -78,8 +79,14 @@ class Story extends React.Component {
     saving: false,
     ownPost: false,
     singlePostVew: false,
+    showNSFWPosts: false,
     sliderMode: 'auto',
     history: {},
+    user: {},
+    postState: {},
+    rewardFund: {},
+    post: {},
+    defaultVotePercent: 100,
     match: { params: {} },
     showPostModal: () => {},
     votePost: () => {},
@@ -278,19 +285,6 @@ class Story extends React.Component {
       this.props.showPostModal(post);
     }
   }
-  isValidForecast = forecast => {
-    let isValid = true;
-    'quoteSecurity,postPrice,recommend,expiredAt,createdAt'.split(',').forEach(field => {
-      if (forecast[field] === undefined || forecast[field] === null) isValid = false;
-    });
-    if (
-      forecast.recommend !== 'Buy' &&
-      forecast.recommend !== 'Sell' &&
-      typeof forecast.postPrice !== 'number'
-    )
-      isValid = false;
-    return isValid;
-  };
   renderStoryPreview() {
     const { post } = this.props;
     const showStoryPreview = this.getDisplayStoryPreview();
@@ -336,42 +330,47 @@ class Story extends React.Component {
       sliderMode,
       defaultVotePercent,
     } = this.props;
-    const jsonMetadata = jsonParse(post.json_metadata);
-    const forecast = _.get(jsonMetadata, 'wia', null);
-    let isForecastValid = false;
-    if (forecast) {
-      isForecastValid = this.isValidForecast(forecast);
-    }
-    if (isPostDeleted(post)) return <div />;
-
+    const isEnoughtData = !_.isEmpty(post) &&  !_.isEmpty(postState) && !_.isEmpty(user) && !_.isEmpty(rewardFund);
     let rebloggedUI = null;
+    let isForecastValid = false;
+    let forecast = null;
 
-    if (post.reblogged_by && post.reblogged_by.length > 0) {
-      rebloggedUI = (
-        <div className="Story__reblog">
-          <i className="iconfont icon-share1" />
-          <FormattedMessage
-            id="reblogged_username"
-            defaultMessage="{username} reblogged"
-            values={{
-              username: (
-                <Link to={`/@${post.reblogged_by[0]}`}>
-                  <span className="username">{post.reblogged_by[0]}</span>
-                </Link>
-              ),
-            }}
-          />
-        </div>
-      );
-    } else if (postState.isReblogged) {
-      rebloggedUI = (
-        <div className="Story__reblog">
-          <i className="iconfont icon-share1" />
-          <FormattedMessage id="reblogged" defaultMessage="Reblogged" />
-        </div>
-      );
+    if(isEnoughtData) {
+      const jsonMetadata = jsonParse(post.json_metadata);
+      forecast = _.get(jsonMetadata, 'wia', null);
+      if (forecast) {
+        isForecastValid = isValidForecast(forecast);
+      }
+      if (!post || isPostDeleted(post)) return <div/>;
+
+
+      if (post.reblogged_by && post.reblogged_by.length > 0) {
+        rebloggedUI = (
+          <div className="Story__reblog">
+            <i className="iconfont icon-share1"/>
+            <FormattedMessage
+              id="reblogged_username"
+              defaultMessage="{username} reblogged"
+              values={{
+                username: (
+                  <Link to={`/@${post.reblogged_by[0]}`}>
+                    <span className="username">{post.reblogged_by[0]}</span>
+                  </Link>
+                ),
+              }}
+            />
+          </div>
+        );
+      } else if (postState.isReblogged) {
+        rebloggedUI = (
+          <div className="Story__reblog">
+            <i className="iconfont icon-share1"/>
+            <FormattedMessage id="reblogged" defaultMessage="Reblogged"/>
+          </div>
+        );
+      }
     }
-    return (
+    return isEnoughtData ? (
       <div className="Story" id={`${post.author}-${post.permlink}`}>
         {rebloggedUI}
         <div className="Story__content">
@@ -408,7 +407,7 @@ class Story extends React.Component {
                 <PostedFrom post={post} />
               </span>
             </div>
-            {forecast && isForecastValid ? (
+            {isForecastValid ? (
               <div className="Story__forecast">
                 <PostForecast
                   quoteSecurity={forecast.quoteSecurity}
@@ -427,7 +426,7 @@ class Story extends React.Component {
               </div>
             )}
           </div>
-          {forecast && isForecastValid && (
+          {isForecastValid && (
             <PostSellBuy
               isExpired={false}
               quoteSecurity={forecast.quoteSecurity}
@@ -472,7 +471,7 @@ class Story extends React.Component {
             {this.renderStoryPreview()}
           </div>
           <div className="Story__footer">
-            {forecast && isForecastValid && (
+            {isForecastValid && (
               <PostChart
                 quoteSecurity={forecast.quoteSecurity}
                 expiredBars={[]}
@@ -513,7 +512,7 @@ class Story extends React.Component {
           </div>
         </div>
       </div>
-    );
+    ) : null;
   }
 }
 

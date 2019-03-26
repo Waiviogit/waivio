@@ -60,7 +60,7 @@ const PostSellBuy = ({
   }
   return (
     <React.Fragment>
-      {quoteSettings && quoteSettings.leverage && (
+      {quoteSettings && quoteSettings.leverage && wobj && wobj.author_permlink && (
         <div className="st-post-sell-buy-wrap">
           <div className="d-flex align-items-center">
             <InstrumentAvatar

@@ -33,6 +33,12 @@ import PostFeedEmbed from './PostFeedEmbed';
 import PostedFrom from './PostedFrom';
 import './StoryFull.less';
 import PostObjectCard from '../../post/PostObjectCard/PostObjectCard';
+import PostForecast from "./Story";
+import {jsonParse} from "../../helpers/formatter";
+import PostSellBuy from "../../../investarena/components/PostSellBuy";
+import {isValidForecast} from "../../helpers/forecastHelper";
+import PostQuotation from "../../../investarena/components/PostQuotation";
+import PostChart from "../../../investarena/components/PostChart";
 
 @injectIntl
 @withAuthActions
@@ -349,7 +355,12 @@ class StoryFull extends React.Component {
         </div>
       );
     }
-
+    const jsonMetadata = post ? jsonParse(post.json_metadata) : {};
+    const forecast = _.get(jsonMetadata, 'wia', null);
+    let isForecastValid = false;
+    if (forecast) {
+      isForecastValid = isValidForecast(forecast);
+    }
     return (
       <div className="StoryFull">
         {replyUI}
@@ -432,6 +443,26 @@ class StoryFull extends React.Component {
             <i className="iconfont icon-more StoryFull__header__more" />
           </Popover>
         </div>
+        {isForecastValid &&
+        <div className="Story__forecast">
+          <PostForecast
+            quoteSecurity={forecast.quoteSecurity}
+            postForecast={forecast.expiredAt}
+            isExpired={false}
+            expiredAt={forecast.expiredAt}
+          />
+        </div>
+        }
+        {isForecastValid && (
+          <PostSellBuy
+            isExpired={false}
+            quoteSecurity={forecast.quoteSecurity}
+            postPrice={forecast.postPrice ? forecast.postPrice.toString() : 0}
+            forecast={forecast.expiredAt}
+            recommend={forecast.recommend}
+            profitability={335}
+          />
+        )}
         <div className="StoryFull__content">{content}</div>
         {open && (
           <Lightbox
@@ -465,6 +496,24 @@ class StoryFull extends React.Component {
             }
           />
         )}
+        {isForecastValid && (
+          <PostChart
+            quoteSecurity={forecast.quoteSecurity}
+            expiredBars={[]}
+            createdAt={forecast.createdAt}
+            forecast={forecast.expiredAt}
+            recommend={forecast.recommend}
+            expiredByTime={undefined}
+            expiredTimeScale={undefined}
+            toggleModalPost={() => {}}
+            tpPrice={forecast.tpPrice ? forecast.tpPrice.toString() : null}
+            slPrice={forecast.slPrice ? forecast.slPrice.toString() : null}
+            expiredAt={undefined}
+          />
+        )}
+        {isForecastValid && (
+          <PostQuotation quoteSecurity={forecast.quoteSecurity} postId={forecast.postId} />
+        )}
         <div className="StoryFull__topics">
           <Scrollbars
             universal
@@ -480,7 +529,6 @@ class StoryFull extends React.Component {
                 .map(tag => (
                   <Topic key={tag} name={tag} />
                 ))}
-              <div style={{ flex: '0 0 20px' }} />
             </div>
           </Scrollbars>
         </div>
@@ -513,7 +561,6 @@ class StoryFull extends React.Component {
             </Collapse.Panel>
           )}
         </Collapse>
-
         <StoryFooter
           user={user}
           post={post}
