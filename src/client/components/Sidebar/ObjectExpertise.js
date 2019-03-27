@@ -8,18 +8,7 @@ import UserCard from '../UserCard';
 import WeightTag from '../WeightTag';
 
 const ObjectExpertise = ({ username, wobject }) => {
-  const { users } = wobject;
-
-  const {
-    user: { name, weight, rank },
-  } = wobject;
-
-  const authUser = {
-    name,
-    weight,
-    rank: rank.toString(),
-  };
-
+  const { users, user } = wobject;
   const isUserInTopFive = users.slice(0, 5).find(u => u.name === username);
 
   return (
@@ -30,23 +19,23 @@ const ObjectExpertise = ({ username, wobject }) => {
       </h4>
       <div className="SidebarContentBlock__content">
         {users &&
-          _.map(_.slice(users, 0, 5), user => (
+          _.map(_.slice(users, 0, 5), u => (
+            <UserCard
+              key={u.name}
+              user={u}
+              showFollow={false}
+              alt={<WeightTag rank={u.rank} weight={u.weight} />}
+            />
+          ))}
+
+        {!isUserInTopFive && user && (
+          <React.Fragment>
+            <div className="ObjectExpertise__dots">...</div>
             <UserCard
               key={user.name}
               user={user}
               showFollow={false}
-              alt={<WeightTag rank={user.rank} weight={user.weight} />}
-            />
-          ))}
-
-        {!isUserInTopFive && (
-          <React.Fragment>
-            <div className="ObjectExpertise__dots">...</div>
-            <UserCard
-              key={authUser.name}
-              user={authUser}
-              showFollow={false}
-              alt={<WeightTag rank={authUser.rank} weight={authUser.weight} />}
+              alt={<WeightTag rank={user.rank.toString()} weight={user.weight} />}
             />
           </React.Fragment>
         )}
