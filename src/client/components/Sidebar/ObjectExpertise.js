@@ -9,10 +9,15 @@ import WeightTag from '../WeightTag';
 
 const ObjectExpertise = ({ username, wobject }) => {
   const { users } = wobject;
+
+  const {
+    user: { name, weight, rank },
+  } = wobject;
+
   const authUser = {
-    name: username,
-    weight: wobject.userWeight,
-    rank: wobject.userRank || '0',
+    name,
+    weight,
+    rank: rank.toString(),
   };
 
   const isUserInTopFive = users.slice(0, 5).find(u => u.name === username);
