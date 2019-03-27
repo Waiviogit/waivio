@@ -35,8 +35,13 @@ export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US' }) =>
     body: JSON.stringify({ author_permlinks: authorPermlinks, locale }),
   }).then(res => res.json());
 
-export const getObject = name =>
-  fetch(`${config.apiPrefix}${config.getObjects}/${name}`).then(res => res.json());
+export const getObject = (authorPermlink, username) => {
+  const query = username ? `?user=${username}` : '';
+
+  return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${query}`).then(res =>
+    res.json(),
+  );
+};
 
 export const getUsersByObject = object =>
   fetch(`${config.apiPrefix}${config.getObjects}/${object}`).then(res => res.json());
@@ -218,6 +223,19 @@ export const getWobjectGallery = wobject =>
 export const getWobjectsWithUserWeight = (userName, skip = 20, limit = 30) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.wobjectsWithUserWeight}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({ skip, limit }),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getWobjectsExpertise = (authorPermlink, skip = 0, limit = 30) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.wobjectsExpertise}`, {
       headers,
       method: 'POST',
       body: JSON.stringify({ skip, limit }),

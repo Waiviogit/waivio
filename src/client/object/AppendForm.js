@@ -1331,17 +1331,6 @@ export default class AppendForm extends Component {
             <Form.Item>
               {getFieldDecorator(ratingFields.category, {
                 rules: [
-                  { transform: value => value && value.trim() },
-                  {
-                    required: true,
-                    message: intl.formatMessage(
-                      {
-                        id: 'field_error',
-                        defaultMessage: 'Field is required',
-                      },
-                      { field: 'Category' },
-                    ),
-                  },
                   {
                     max: 100,
                     message: intl.formatMessage(
@@ -1352,6 +1341,17 @@ export default class AppendForm extends Component {
                       { value: 100 },
                     ),
                   },
+                  {
+                    required: true,
+                    message: intl.formatMessage(
+                      {
+                        id: 'field_error',
+                        defaultMessage: 'Field is required',
+                      },
+                      { field: 'Category' },
+                    ),
+                  },
+                  { transform: value => value && value.trim() },
                   {
                     validator: this.validateFieldValue,
                   },
