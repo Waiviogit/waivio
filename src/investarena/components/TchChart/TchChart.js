@@ -55,7 +55,7 @@ class TchChart extends Component {
         chartElements: {},
       },
     };
-    configuration.settingsUrl = '//informer.maximarkets.ru/wss/quotation/getsettings?tch=true';
+    configuration.settingsUrl = '//informer.maximarkets.org/wss/quotation/getsettings?tch=true';
     configuration.lang = 'en';
     configuration.modules.isShowNews = false;
     configuration.modules.isHeaderCreate = true;
