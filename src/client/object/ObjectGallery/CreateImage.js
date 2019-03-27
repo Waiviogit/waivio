@@ -305,7 +305,11 @@ class CreateImage extends React.Component {
                     )}
                   </Upload>
                   <Modal visible={previewVisible} footer={null} onCancel={this.handlePreviewCancel}>
-                    <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                    <img
+                      alt="example"
+                      style={{ width: '100%', 'max-height': '90vh' }}
+                      src={previewImage}
+                    />
                   </Modal>
                 </Spin>
               </div>,
