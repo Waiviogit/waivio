@@ -39,7 +39,7 @@ class Instrument extends Component {
       });
     }
     return sumPnL !== 0 ? (
-      <Link to="/deals" className="st-assets-to-deals">
+      <Link to="/deals/open" className="st-assets-to-deals">
         <span
           title={`${this.props.intl.formatMessage({
             id: 'deals.cumPnl',
