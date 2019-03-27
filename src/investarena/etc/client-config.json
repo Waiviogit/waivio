@@ -5,12 +5,12 @@
     "brokerWSUrl": {
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
-      "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
+      "widgets": "ws://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
     },
     "platformDepositUrl": {
       "umarkets": "https://my.umarkets.com/",
       "maximarkets": "https://myaccount.maximarkets.org/",
-      "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
+      "widgets": "ws://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
     },
     "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/"
   },
@@ -20,7 +20,7 @@
     "brokerWSUrl": {
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
-      "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
+      "widgets": "ws://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
     },
     "platformDepositUrl": {
       "umarkets": "https://my.umarkets.com/",
