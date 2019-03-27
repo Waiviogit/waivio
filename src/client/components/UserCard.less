@@ -2,12 +2,15 @@
 .UserCard {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding-bottom: 14px;
   padding-top: 14px;
   border-bottom: @base-border;
-
+  .Follow {
+    margin-left: 8px;
+  }
   &:first-child {
-    padding-top: 0px;
+    padding-top: 0;
   }
 
   &:last-child {
@@ -17,14 +20,22 @@
   & > &__left {
     display: flex;
     align-items: center;
-
+    justify-content: space-between;
+    width: 100%;
     & > a:nth-child(2) {
       margin-left: 8px;
     }
+    .username {
+      margin-left: 8px;
+    }
+    .ant-tag {
+      margin-right: 0;
+    }
   }
 
-  &__alt {
-    margin-left: 8px;
+  &__wrap {
+    display: flex;
+    align-items: center;
   }
 }
 
