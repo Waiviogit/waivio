@@ -64,8 +64,8 @@ export default class Wobj extends React.Component {
   };
 
   componentDidMount() {
-    const { match } = this.props;
-    this.props.getObjectInfo(match.params.name);
+    const { match, authenticatedUserName } = this.props;
+    this.props.getObjectInfo(match.params.name, authenticatedUserName);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -153,7 +153,7 @@ export default class Wobj extends React.Component {
             </Affix>
             <Affix className="rightContainer" stickPosition={110}>
               <div className="right">
-                <RightObjectSidebar users={wobject.users} />
+                <RightObjectSidebar username={userName} wobject={wobject} />
               </div>
             </Affix>
             <div className="center">
