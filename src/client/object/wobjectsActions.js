@@ -10,10 +10,10 @@ export const GET_OBJECT_START = '@objects/GET_OBJECT_START';
 export const GET_OBJECT_ERROR = '@objects/GET_OBJECT_ERROR';
 export const GET_OBJECT_SUCCESS = '@objects/GET_OBJECT_SUCCESS';
 
-export const getObject = name => dispatch =>
+export const getObject = (authorPermlink, username) => dispatch =>
   dispatch({
     type: GET_OBJECT,
-    payload: ApiClient.getObject(name),
+    payload: ApiClient.getObject(authorPermlink, username),
   });
 
 export const GET_USERS_BY_OBJECT = createAsyncActionType('@objects/GET_USERS_BY_OBJECT');
@@ -33,8 +33,8 @@ export const getFeedContentByObject = object => dispatch =>
     payload: ApiClient.getFeedContentByObject(object),
   }).catch(() => {});
 
-export const getObjectInfo = authorPermlink => dispatch => {
-  dispatch(getObject(authorPermlink));
+export const getObjectInfo = (authorPermlink, username) => dispatch => {
+  dispatch(getObject(authorPermlink, username));
   dispatch(getAlbums(authorPermlink));
 };
 
