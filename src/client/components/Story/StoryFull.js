@@ -499,16 +499,13 @@ class StoryFull extends React.Component {
         {isForecastValid && (
           <PostChart
             quoteSecurity={forecast.quoteSecurity}
-            expiredBars={[]}
             createdAt={forecast.createdAt}
             forecast={forecast.expiredAt}
             recommend={forecast.recommend}
-            expiredByTime={undefined}
-            expiredTimeScale={undefined}
             toggleModalPost={() => {}}
             tpPrice={forecast.tpPrice ? forecast.tpPrice.toString() : null}
             slPrice={forecast.slPrice ? forecast.slPrice.toString() : null}
-            expiredAt={undefined}
+            expForecast={post.exp_forecast}
           />
         )}
         {isForecastValid && (
