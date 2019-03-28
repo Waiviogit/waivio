@@ -244,7 +244,6 @@ class Topnav extends React.Component {
         })}
       >
         <ModalBroker />
-        <ModalDealConfirmation />
         <Menu selectedKeys={[]} className="Topnav__menu-container__menu" mode="horizontal">
           <Menu.Item key="write">
             <BTooltip
@@ -270,7 +269,7 @@ class Topnav extends React.Component {
                 content={
                   <Notifications
                     notifications={notifications}
-                    onNotificationClick={this.handleCloseNotificationsPopover}
+                    onNotificationClick={this.handleCloseNotificationsPopover}st-card__chart
                     currentAuthUsername={username}
                     lastSeenTimestamp={lastSeenTimestamp}
                     loadingNotifications={loadingNotifications}
@@ -443,6 +442,7 @@ class Topnav extends React.Component {
     const isMobile = this.props.screenSize === 'xsmall' || this.props.screenSize === 'small';
     return (
       <div className="Topnav">
+        <ModalDealConfirmation />
         <div className="topnav-layout">
           <div className={classNames('left', { 'Topnav__mobile-hidden': searchBarActive })}>
             <Link className="Topnav__brand" to="/">
