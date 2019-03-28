@@ -9,6 +9,7 @@ import { averageRate, rateCount } from './rateHelper';
 import { ratePercent } from '../../../../common/constants/listOfFields';
 import { getRatingFields } from '../../../reducers';
 import './RateInfo.less';
+import BTooltip from '../../BTooltip';
 
 @injectIntl
 @connect(state => ({
@@ -19,6 +20,7 @@ class RateInfo extends React.Component {
     username: PropTypes.string.isRequired,
     ratingFields: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     authorPermlink: PropTypes.string.isRequired,
+    intl: PropTypes.shape().isRequired,
   };
 
   state = {
@@ -48,6 +50,22 @@ class RateInfo extends React.Component {
       showModal: !prevState.showModal,
     }));
 
+  rateDescription = field => {
+    const { intl } = this.props;
+
+    const yourVote = this.getInitialRateValue(field);
+    if (yourVote) {
+      return (
+        <React.Fragment>
+          {intl.formatMessage({ id: 'your_vote', defaultMessage: 'Your vote' })}
+          {': '}
+          {yourVote.toFixed(2)}
+        </React.Fragment>
+      );
+    }
+    return null;
+  };
+
   render() {
     const { username, ratingFields } = this.props;
     const rankingList = _.orderBy(ratingFields, ['weight'], ['desc']);
@@ -62,14 +80,27 @@ class RateInfo extends React.Component {
             <div className="RateInfo__header" key={field.permlink}>
               <div>{field.body}</div>
               <div className="RateInfo__stars">
-                <div
-                  className="RateInfo__stars-container"
-                  role="presentation"
-                  data-field={JSON.stringify(field)}
-                  onClick={this.handleOnClick.bind(this, field)} // eslint-disable-line react/jsx-no-bind
-                >
-                  <Rate allowHalf disabled value={+averageRate(field)} />
-                </div>
+                {this.rateDescription(field) ? (
+                  <BTooltip title={this.rateDescription(field)}>
+                    <div
+                      className="RateInfo__stars-container"
+                      role="presentation"
+                      data-field={JSON.stringify(field)}
+                      onClick={this.handleOnClick.bind(this, field)} // eslint-disable-line react/jsx-no-bind
+                    >
+                      <Rate allowHalf disabled value={+averageRate(field)} />
+                    </div>
+                  </BTooltip>
+                ) : (
+                  <div
+                    className="RateInfo__stars-container"
+                    role="presentation"
+                    data-field={JSON.stringify(field)}
+                    onClick={this.handleOnClick.bind(this, field)} // eslint-disable-line react/jsx-no-bind
+                  >
+                    <Rate allowHalf disabled value={+averageRate(field)} />
+                  </div>
+                )}
                 <div>({rateCount(field)})</div>
               </div>
             </div>

@@ -446,7 +446,6 @@
   "create_object_success": "Object has been created and saved to STEEM blockchain, in a few minutes it will be available in search.",
   "post_languages_info": "In which languages do you want to read posts?",
   "post_languages": "Posts languages",
-  "top_authors": "Object expertise",
   "show_more_authors": "Show more authors",
   "sidebarWidget.tabTitle.favorites": "Favorites",
   "sidebarWidget.tabTitle.instruments": "Instruments",
@@ -688,11 +687,12 @@
   "no_votes_message": "There is no votes",
   "rate_overall": "Overall",
   "rate_average_count": "Rating: {count}",
-  "vote_count": "Votes: {votes}",
   "open_deals": "Open deals",
   "closed_deals": "Closed deals",
   "headerAuthorized.connectToBroker": "Connect to broker",
   "wia.followingInstruments": "Following instruments",
   "headerAuthorized.deposit": "Deposit",
-  "no_access_to_quote": "Your broker is not provide actual data for this instrument, or your account need special access to this instrument."
+  "no_access_to_quote": "Your broker is not provide actual data for this instrument, or your account need special access to this instrument.",
+  "vote_count": "Votes: {votes}",
+  "object_expertise": "Object Expertise"
 }

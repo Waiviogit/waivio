@@ -10,6 +10,7 @@ import uuidv4 from 'uuid/v4';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { getAuthenticatedUser, getIsEditorLoading, getUpvoteSetting } from '../../reducers';
 import { isValidImage, MAXIMUM_UPLOAD_SIZE } from '../../helpers/image';
+import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
 import { notify } from '../../app/Notification/notificationActions';
 import withEditor from '../Editor/withEditor';
 import { createPost } from '../../post/Write/editorActions';
@@ -78,7 +79,7 @@ class QuickPostEditor extends React.Component {
 
   getQuickPostData = () => {
     const currentPaths = this.props.location.pathname.split('/');
-    const busyTag = 'busy';
+    const appTag = WAIVIO_PARENT_PERMLINK;
     const tag = currentPaths[2];
     const tags = [];
     const images = _.map(this.state.currentImages, image => image.src);
@@ -102,8 +103,8 @@ class QuickPostEditor extends React.Component {
     };
 
     const metaData = {
-      community: 'busy',
-      app: `busy/${version}`,
+      community: 'waiviodev',
+      app: `waiviodev/${version}`,
       format: 'markdown',
     };
 
@@ -114,12 +115,12 @@ class QuickPostEditor extends React.Component {
     if (!_.isEmpty(tag)) {
       tags.push(tag);
     } else {
-      tags.push(busyTag);
+      tags.push(appTag);
     }
 
     metaData.tags = tags;
 
-    data.parentPermlink = _.isEmpty(tag) ? busyTag : tag;
+    data.parentPermlink = _.isEmpty(tag) ? appTag : tag;
     data.permlink = _.kebabCase(postTitle);
     data.jsonMetadata = metaData;
 
