@@ -108,16 +108,14 @@ class QuickCommentEditor extends React.Component {
 
     const imageSelector = (
       <React.Fragment>
-        <input
-          id={this.props.parentPost.id}
-          className="QuickComment_inputfile"
-          type="file"
-          accept="image/*"
-          onInput={this.handleImageChange}
-          onClick={e => {
-            e.target.value = null;
-          }}
-        />
+        <div className="QuickComment_inputfile">
+          <input
+            id={this.props.parentPost.id}
+            type="file"
+            accept="image/*"
+            onInput={this.handleImageChange}
+          />
+        </div>
         <label htmlFor={this.props.parentPost.id}>
           {imageUploading ? (
             <Icon className="QuickComment__loading-img-icon" type="loading" />
