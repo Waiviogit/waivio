@@ -333,7 +333,7 @@ class Story extends React.Component {
       sliderMode,
       defaultVotePercent,
     } = this.props;
-    const isEnoughtData = !_.isEmpty(post) &&  !_.isEmpty(postState) && !_.isEmpty(user) && !_.isEmpty(rewardFund);
+    const isEnoughtData = !_.isEmpty(post) &&  !_.isEmpty(postState);
     let rebloggedUI = null;
     let isForecastValid = false;
     let forecast = null;
