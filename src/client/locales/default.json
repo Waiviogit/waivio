@@ -694,5 +694,6 @@
   "headerAuthorized.deposit": "Deposit",
   "no_access_to_quote": "Your broker is not provide actual data for this instrument, or your account need special access to this instrument.",
   "vote_count": "Votes: {votes}",
-  "object_expertise": "Object Expertise"
+  "object_expertise": "Object Expertise",
+  "onlyRelated": "Show only related posts"
 }

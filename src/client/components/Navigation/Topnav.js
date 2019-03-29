@@ -269,7 +269,8 @@ class Topnav extends React.Component {
                 content={
                   <Notifications
                     notifications={notifications}
-                    onNotificationClick={this.handleCloseNotificationsPopover}st-card__chart
+                    onNotificationClick={this.handleCloseNotificationsPopover}
+                    st-card__chart
                     currentAuthUsername={username}
                     lastSeenTimestamp={lastSeenTimestamp}
                     loadingNotifications={loadingNotifications}

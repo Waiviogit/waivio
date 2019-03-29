@@ -15,7 +15,7 @@ const propTypes = {
 const defaultProps = {
   expiredAt: '',
   quoteSettings: null,
-  quote: null
+  quote: null,
 };
 
 class PostForecast extends Component {
@@ -33,9 +33,8 @@ class PostForecast extends Component {
     this.setState({ time: timeForecastRemain(this.props.postForecast) });
   };
   render() {
-    return (this.props.quote && this.props.quoteSettings) ? (
+    return this.props.quote && this.props.quoteSettings ? (
       <div className="st-post-forecast-wrap">
-
         <div className="st-post-forecast-time-icon">
           <svg
             fill="#999"

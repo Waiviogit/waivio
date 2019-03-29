@@ -12,7 +12,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { Tag } from 'antd';
 import formatter from '../../helpers/steemitFormatter';
 import { getHasDefaultSlider } from '../../helpers/user';
-import {isValidForecast} from "../../helpers/forecastHelper";
+import { isValidForecast } from '../../helpers/forecastHelper';
 import {
   isPostDeleted,
   isPostTaggedNSFW,
@@ -146,13 +146,13 @@ class Story extends React.Component {
       return (
         <Link
           key={wobj.author_permlink}
-          to={{pathname: pathName}}
+          to={{ pathname: pathName }}
           title={`${this.props.intl.formatMessage({
             id: 'related_to_obj',
             defaultMessage: 'Related to object',
           })} ${nameField.body} ${wobj.percent ? `(${wobj.percent}%)` : ''}`}
         >
-          <ObjectAvatar item={wobj} size={40}/>
+          <ObjectAvatar item={wobj} size={40} />
         </Link>
       );
     }
@@ -333,24 +333,23 @@ class Story extends React.Component {
       sliderMode,
       defaultVotePercent,
     } = this.props;
-    const isEnoughtData = !_.isEmpty(post) &&  !_.isEmpty(postState);
+    const isEnoughtData = !_.isEmpty(post) && !_.isEmpty(postState);
     let rebloggedUI = null;
     let isForecastValid = false;
     let forecast = null;
 
-    if(isEnoughtData) {
+    if (isEnoughtData) {
       const jsonMetadata = jsonParse(post.json_metadata);
       forecast = _.get(jsonMetadata, 'wia', null);
       if (forecast) {
         isForecastValid = isValidForecast(forecast);
       }
-      if (!post || isPostDeleted(post)) return <div/>;
-
+      if (!post || isPostDeleted(post)) return <div />;
 
       if (post.reblogged_by && post.reblogged_by.length > 0) {
         rebloggedUI = (
           <div className="Story__reblog">
-            <i className="iconfont icon-share1"/>
+            <i className="iconfont icon-share1" />
             <FormattedMessage
               id="reblogged_username"
               defaultMessage="{username} reblogged"
@@ -367,8 +366,8 @@ class Story extends React.Component {
       } else if (postState.isReblogged) {
         rebloggedUI = (
           <div className="Story__reblog">
-            <i className="iconfont icon-share1"/>
-            <FormattedMessage id="reblogged" defaultMessage="Reblogged"/>
+            <i className="iconfont icon-share1" />
+            <FormattedMessage id="reblogged" defaultMessage="Reblogged" />
           </div>
         );
       }

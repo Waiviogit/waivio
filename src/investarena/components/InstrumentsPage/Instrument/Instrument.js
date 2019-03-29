@@ -58,79 +58,84 @@ class Instrument extends Component {
   };
   render() {
     const { intl, quoteSettings, quote, signals, chart } = this.props;
-    if(quoteSettings){
-    const investments = this.getInvestments();
-    const instrumentName = (
-      <Link to={`/object/${quoteSettings.wobjData.author_permlink}`}>
-        <div className="st-instrument-info-wrap">
-          <div className="st-instrument-name" title={quoteSettings.name}>
-            {quoteSettings.name}{' '}
+    if (quoteSettings) {
+      const investments = this.getInvestments();
+      const instrumentName = (
+        <Link to={`/object/${quoteSettings.wobjData.author_permlink}`}>
+          <div className="st-instrument-info-wrap">
+            <div className="st-instrument-name" title={quoteSettings.name}>
+              {quoteSettings.name}{' '}
+            </div>
           </div>
-        </div>
-      </Link>
-    );
-    const getChart = (width, height) =>
-      chart && chart.length !== 0 ? (
-        <AreaChart
-          width={width}
-          height={height}
-          areaColors={['#3a79ee']}
-          data={[this.props.chart]}
-        />
-      ) : (
-        <div className="st-assets-chart-no-data">
-          {intl.formatMessage({ id: 'charts.noData', defaultMessage: 'No data' })}
-        </div>
+        </Link>
       );
-    if (!(quote && quote.security)) return null;
-    switch (this.props.viewMode) {
-      case 'cards':
-        return (
-          <InstrumentCardView
-            toggleModalTC={this.toggleModalInstrumentsChart}
-            quoteSettings={quoteSettings}
-            quote={quote}
-            chart={chart}
-            signals={signals}
+      const getChart = (width, height) =>
+        chart && chart.length !== 0 ? (
+          <AreaChart
+            width={width}
+            height={height}
+            areaColors={['#3a79ee']}
+            data={[this.props.chart]}
           />
-        );
-      case 'list':
-      default:
-        return (
-          <div key={quote.security} className="st-list-item">
-            <InstrumentAvatar
-              permlink={quoteSettings.wobjData.author_permlink}
-              market={quoteSettings.market}
-              avatarlink={quoteSettings.wobjData.avatarlink}
-            />
-            <div className="d-flex flex-column align-items-center">
-              {instrumentName}
-              {investments}
-            </div>
-            <div
-              title={intl.formatMessage({ id: 'tips.dailyChange', defaultMessage: 'Daily change' })}
-              className={`st-daily-change ${
-                quote.dailyChange > 0 ? 'st-quote-text-up' : 'st-quote-text-down'
-              }`}
-            >
-              {`${quote.dailyChange.toFixed(2)}%`}
-            </div>
-            <div
-              role="presentation"
-              className="st-assets-chart-wrap"
-              onClick={this.toggleModalInstrumentsChart}
-            >
-              {getChart(180, 40)}
-            </div>
-            <TradeButtonsAssets
-              className="st-assets-buttons st-trade-buttons-asset-page-wrap"
-              quoteSecurity={quote.security}
-            />
-            <Signals signals={signals} />
+        ) : (
+          <div className="st-assets-chart-no-data">
+            {intl.formatMessage({ id: 'charts.noData', defaultMessage: 'No data' })}
           </div>
         );
+      if (!(quote && quote.security)) return null;
+      switch (this.props.viewMode) {
+        case 'cards':
+          return (
+            <InstrumentCardView
+              toggleModalTC={this.toggleModalInstrumentsChart}
+              quoteSettings={quoteSettings}
+              quote={quote}
+              chart={chart}
+              signals={signals}
+            />
+          );
+        case 'list':
+        default:
+          return (
+            <div key={quote.security} className="st-list-item">
+              <InstrumentAvatar
+                permlink={quoteSettings.wobjData.author_permlink}
+                market={quoteSettings.market}
+                avatarlink={quoteSettings.wobjData.avatarlink}
+              />
+              <div className="d-flex flex-column align-items-center">
+                {instrumentName}
+                {investments}
+              </div>
+              <div
+                title={intl.formatMessage({
+                  id: 'tips.dailyChange',
+                  defaultMessage: 'Daily change',
+                })}
+                className={`st-daily-change ${
+                  quote.dailyChange > 0 ? 'st-quote-text-up' : 'st-quote-text-down'
+                }`}
+              >
+                {`${quote.dailyChange.toFixed(2)}%`}
+              </div>
+              <div
+                role="presentation"
+                className="st-assets-chart-wrap"
+                onClick={this.toggleModalInstrumentsChart}
+              >
+                {getChart(180, 40)}
+              </div>
+              <TradeButtonsAssets
+                className="st-assets-buttons st-trade-buttons-asset-page-wrap"
+                quoteSecurity={quote.security}
+              />
+              <Signals signals={signals} />
+            </div>
+          );
+      }
+    } else {
+      return null;
     }
-  } else {return null}
   }
 }
 

@@ -393,7 +393,7 @@ class CreatePostForecast extends Component {
                       {isUpdating || this.state.selectForecast === 'Custom' ? (
                         <DatePicker
                           disabled={isUpdating}
-                          showTime={{format: "HH:mm", minuteStep: 5}}
+                          showTime={{ format: 'HH:mm', minuteStep: 5 }}
                           style={{ width: '100%' }}
                           locale={intl.formatMessage({ id: 'locale', defaultMessage: 'en' })}
                           value={dateTimeValue}
@@ -401,7 +401,10 @@ class CreatePostForecast extends Component {
                           format="YYYY-MM-DD HH:mm"
                           disabledDate={date =>
                             date < moment().local() ||
-                            date > moment().local().add(maxForecastDay, 'days')
+                            date >
+                              moment()
+                                .local()
+                                .add(maxForecastDay, 'days')
                           }
                         />
                       ) : (

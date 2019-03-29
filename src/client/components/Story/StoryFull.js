@@ -33,12 +33,12 @@ import PostFeedEmbed from './PostFeedEmbed';
 import PostedFrom from './PostedFrom';
 import './StoryFull.less';
 import PostObjectCard from '../../post/PostObjectCard/PostObjectCard';
-import PostForecast from "./Story";
-import {jsonParse} from "../../helpers/formatter";
-import PostSellBuy from "../../../investarena/components/PostSellBuy";
-import {isValidForecast} from "../../helpers/forecastHelper";
-import PostQuotation from "../../../investarena/components/PostQuotation";
-import PostChart from "../../../investarena/components/PostChart";
+import PostForecast from './Story';
+import { jsonParse } from '../../helpers/formatter';
+import PostSellBuy from '../../../investarena/components/PostSellBuy';
+import { isValidForecast } from '../../helpers/forecastHelper';
+import PostQuotation from '../../../investarena/components/PostQuotation';
+import PostChart from '../../../investarena/components/PostChart';
 
 @injectIntl
 @withAuthActions
@@ -443,16 +443,16 @@ class StoryFull extends React.Component {
             <i className="iconfont icon-more StoryFull__header__more" />
           </Popover>
         </div>
-        {isForecastValid &&
-        <div className="Story__forecast">
-          <PostForecast
-            quoteSecurity={forecast.quoteSecurity}
-            postForecast={forecast.expiredAt}
-            isExpired={false}
-            expiredAt={forecast.expiredAt}
-          />
-        </div>
-        }
+        {isForecastValid && (
+          <div className="Story__forecast">
+            <PostForecast
+              quoteSecurity={forecast.quoteSecurity}
+              postForecast={forecast.expiredAt}
+              isExpired={false}
+              expiredAt={forecast.expiredAt}
+            />
+          </div>
+        )}
         {isForecastValid && (
           <PostSellBuy
             isExpired={false}

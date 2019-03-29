@@ -33,6 +33,8 @@ export const GET_BOOKMARKS = createAsyncActionType('@bookmarks/GET_BOOKMARKS');
 export const GET_OBJECT_POSTS = createAsyncActionType('@object/GET_OBJECT_POSTS');
 export const GET_MORE_OBJECT_POSTS = createAsyncActionType('@object/GET_MORE_OBJECT_POSTS');
 
+export const CLEAN_FEED = 'CLEAN_FEED';
+
 export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) => dispatch =>
   dispatch({
     type: GET_FEED_CONTENT.ACTION,
@@ -46,6 +48,11 @@ export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) =>
       category: category || 'all',
       limit,
     },
+  });
+export const cleanFeed = () => dispatch =>
+  dispatch({
+    type: CLEAN_FEED,
+    payload: '',
   });
 
 export const getUserFeedContent = ({ userName, limit = 20 }) => dispatch =>

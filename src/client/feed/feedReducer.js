@@ -209,6 +209,8 @@ const feed = (state = initialState, action) => {
         ...state,
         [action.meta.sortBy]: feedSortBy(state[action.meta.sortBy], action),
       };
+    case feedTypes.CLEAN_FEED:
+      return initialState;
     case TOGGLE_BOOKMARK:
       return {
         ...state,

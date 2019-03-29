@@ -76,15 +76,15 @@ class PostChart extends Component {
       if (this.state.expired) {
         this.setState(
           {
-            timeScale: get(expForecast, 'rate.quote.timeScale', this.state.timeScale).toUpperCase(),
+            timeScale: _.get(
+              expForecast,
+              'rate.quote.timeScale',
+              this.state.timeScale,
+            ).toUpperCase(),
           },
           () => this.updateChartData(this.props),
         );
-      } else if (
-        connect &&
-        quoteSettings &&
-        quoteSettings.leverage
-      ) {
+      } else if (connect && quoteSettings && quoteSettings.leverage) {
         if (quote && bars && bars[this.state.timeScale]) {
           this.updateChartData(this.props);
         } else {
@@ -119,7 +119,7 @@ class PostChart extends Component {
             const expiredProps = {
               ...nextProps,
               expiredByTime: true,
-              expiredBars: nextProps.expForecast && nextProps.expForecast.bars || nextProps.bars,
+              expiredBars: (nextProps.expForecast && nextProps.expForecast.bars) || nextProps.bars,
             };
             this.setState(
               {
@@ -156,7 +156,9 @@ class PostChart extends Component {
     const notEnoughData = this.chartData.updateData({
       isScaleChanged: Boolean(props.expForecast && get(props.expForecast, 'rate.quote.timeScale')),
       timeScale: this.state.timeScale,
-      data: this.state.expired ? props.expForecast && props.expForecast.bars || props.bars : props.bars,
+      data: this.state.expired
+        ? (props.expForecast && props.expForecast.bars) || props.bars
+        : props.bars,
       quote: props.quote,
       expiredAt: props.expiredAt,
       quoteSettings: props.quoteSettings,
@@ -177,7 +179,7 @@ class PostChart extends Component {
   shouldGetChartData = bars => {
     const timeNow = currentTime.getTime();
     const lastTimeScale = last(bars[this.state.timeScale]);
-    let lastTime = (!lastTimeScale || !lastTimeScale.length) ? null : lastTimeScale.time;
+    let lastTime = !lastTimeScale || !lastTimeScale.length ? null : lastTimeScale.time;
     const coefficient = 1000 * 60 * CanvasHelper.hours[this.state.timeScale];
     if (timeNow - lastTime - coefficient > coefficient && timeNow - lastTime > coefficient) {
       lastTime += coefficient * Math.floor((timeNow - lastTime) / coefficient);

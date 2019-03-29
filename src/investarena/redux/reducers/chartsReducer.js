@@ -11,10 +11,9 @@ function parseCharts(charts) {
 
     if (quote && chart.closeAsk) {
       result[quote] = _.map(chart.closeAsk.reverse(), (price, index) => ({
-          y: +price,
-          x: index,
-        })
-      );
+        y: +price,
+        x: index,
+      }));
     }
   });
   return result;
@@ -48,5 +47,3 @@ export default function(state = initialState, action) {
       return state;
   }
 }
-
-
