@@ -1,10 +1,11 @@
 @import (reference) '../../styles/custom.less';
 
 .nightmode {
-  .ObjectCard__divider {
-    background: @normal-grey;
-  }
-  .ObjectCard__name {
-    color: @white;
+  .ObjectCard {
+    border-bottom: @border-width-base @border-style-base @normal-grey;
+
+    &__name {
+      color: @white;
+    }
   }
 }

@@ -516,5 +516,6 @@
   "rate_overall": "Overall",
   "rate_average_count": "Rating: {count}",
   "vote_count": "Votes: {votes}",
-  "object_expertise": "Object Expertise"
+  "user_expertise": "Expertise",
+  "related_objects": "Related Objects"
 }
