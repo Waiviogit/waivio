@@ -1,45 +1,45 @@
+@import (reference) '../../styles/custom.less';
+
 .ObjectCard {
-  font-weight: 500;
-
-  &__alt {
-    margin-left: 8px;
-  }
-}
-
-.ObjectCard__top {
   display: flex;
-  flex-wrap: nowrap;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
-  width: 100%;
-  white-space: nowrap;
-}
+  padding-bottom: 14px;
+  padding-top: 14px;
+  border-bottom: @base-border;
 
-.leftContainer__user {
-  overflow-wrap: break-word;
-}
-
-.ObjectCard__links {
-  display: flex;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  overflow: hidden;
-  align-items: center;
-
-  & > a {
-    font-weight: bold;
-    vertical-align: middle;
-    color: #000;
-    max-width: 100%;
+  &:first-child {
+    padding-top: 0;
   }
-}
 
-.ObjectCard__follow {
-  display: flex;
-  vertical-align: middle;
-  margin-left: auto;
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  &__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    & > a:nth-child(2) {
+      margin-left: 8px;
+    }
+    .username {
+      margin-left: 8px;
+    }
+    .ant-tag {
+      margin-right: 0;
+    }
+  }
+
+  &__links {
+    display: flex;
+    align-items: center;
+  }
+
+  &__follow {
+    margin-left: 8px;
+  }
 }
 
 div[data-dir='rtl'] .Object__follow {
