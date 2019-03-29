@@ -37,6 +37,7 @@ import WobjHistory from '../client/object/WobjHistory';
 import ObjectAbout from '../client/object/ObjectAbout';
 import CatalogWrap from '../client/object/Catalog/CatalogWrap';
 import WobjExpertise from '../client/object/WobjExpertise';
+import UserExpertise from '../client/user/UserExpertise';
 
 const routes = [
   {
@@ -93,7 +94,7 @@ const routes = [
         component: Notifications,
       },
       {
-        path: '/@:name/(comments|followers|followed|reblogs|feed|transfers|activity)?',
+        path: '/@:name/(comments|followers|followed|reblogs|feed|transfers|activity|expertise)?',
         component: User,
         exact: true,
         routes: [
@@ -131,6 +132,11 @@ const routes = [
             path: '/@:name/activity',
             exact: true,
             component: UserActivity,
+          },
+          {
+            path: '/@:name/expertise',
+            exact: true,
+            component: UserExpertise,
           },
         ],
       },

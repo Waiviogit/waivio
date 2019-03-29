@@ -6,12 +6,12 @@ import { getField } from '../../objects/WaivioObject';
 import FollowButton from '../../widgets/FollowButton';
 import './ObjectCard.less';
 
-const ObjectCard = ({ wobject, alt }) => {
+const ObjectCard = ({ wobject, alt, showFollow }) => {
   const name = getField(wobject, 'name');
   const pathname = `/object/${wobject.author_permlink}`;
 
   return (
-    <div key={wobject.author_permlink} className="Object">
+    <div key={wobject.author_permlink} className="ObjectCard">
       <div className="ObjectCard__top">
         <div className="ObjectCard__links">
           <Link to={{ pathname }} title={name}>
@@ -20,13 +20,14 @@ const ObjectCard = ({ wobject, alt }) => {
           <Link to={{ pathname }} title={name} className="ObjectCard__name">
             <span className="username">{name}</span>
           </Link>
-          {alt && <div className="ObjectCard__alt">{alt}</div>}
         </div>
-        <div className="ObjectCard__follow">
-          <FollowButton following={wobject.author_permlink} followingType="wobject" secondary />
-        </div>
+        {alt && <span className="ObjectCard__alt">{alt}</span>}
       </div>
-      <div className="ObjectCard__divider" />
+      <div className="ObjectCard__follow">
+        {showFollow && (
+          <FollowButton following={wobject.author_permlink} followingType="wobject" secondary />
+        )}
+      </div>
     </div>
   );
 };
@@ -34,10 +35,12 @@ const ObjectCard = ({ wobject, alt }) => {
 ObjectCard.propTypes = {
   wobject: PropTypes.shape().isRequired,
   alt: PropTypes.node,
+  showFollow: PropTypes.bool,
 };
 
 ObjectCard.defaultProps = {
   alt: '',
+  showFollow: true,
 };
 
 export default ObjectCard;
