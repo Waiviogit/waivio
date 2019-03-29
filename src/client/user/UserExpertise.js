@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, Tabs } from 'antd';
+import { Tabs } from 'antd';
 import PropTypes from 'prop-types';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { getWobjectsWithUserWeight } from '../../waivioApi/ApiClient';
@@ -41,7 +41,7 @@ export default class UserExpertise extends React.Component {
                   <FormattedMessage id="objects" defaultMessage="Objects" />
                 </span>
                 <span className="UserExpertise__badge">
-                  {objCount ? <FormattedNumber value={objCount} /> : <Icon type="loading" />}
+                  <FormattedNumber value={objCount} />
                 </span>
               </React.Fragment>
             }
