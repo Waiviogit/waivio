@@ -145,7 +145,7 @@ class AddItemModal extends Component {
   handleCreateObject = (wobj, follow) => {
     const { intl, notify, createObject } = this.props;
     return createObject(wobj, follow)
-      .then(({ value: { objectPermlink, objectAuthor } }) => {
+      .then(({ value: { parentPermlink, parentAuthor } }) => {
         notify(
           intl.formatMessage({
             id: 'create_object_success',
@@ -154,8 +154,8 @@ class AddItemModal extends Component {
           'success',
         );
         this.handleObjectSelect({
-          id: objectPermlink,
-          author: objectAuthor,
+          id: parentPermlink,
+          author: parentAuthor,
           avatar: '/images/logo-brand.png',
           name: wobj.name,
           title: '',

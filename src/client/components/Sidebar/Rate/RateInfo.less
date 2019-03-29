@@ -1,0 +1,27 @@
+.RateInfo {
+  &__header {
+    display: flex;
+    flex-direction: column;
+  }
+  &__modal {
+    .ant-modal-title {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      margin-right: 24px;
+    }
+  }
+  &__stars {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    &-container {
+      margin-bottom: 8px;
+      .ant-rate-disabled {
+        .ant-rate-star {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

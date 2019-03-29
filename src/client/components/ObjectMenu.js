@@ -32,6 +32,7 @@ class ObjectMenu extends React.Component {
     UPDATES: 'updates',
     REVIEWS: 'reviews',
     FOLLOWERS: 'followers',
+    EXPERTISE: 'expertise',
   };
 
   constructor(props) {
@@ -129,6 +130,14 @@ class ObjectMenu extends React.Component {
                 <span className="ObjectMenu__badge">
                   <FormattedNumber value={this.props.followers} />
                 </span>
+              </li>
+              <li
+                className={this.getItemClasses(ObjectMenu.TAB_NAME.EXPERTISE)}
+                onClick={this.handleClick}
+                role="presentation"
+                data-key={ObjectMenu.TAB_NAME.EXPERTISE}
+              >
+                <FormattedMessage id="expertise" defaultMessage="Expertise" />
               </li>
             </ul>
           </Scrollbars>

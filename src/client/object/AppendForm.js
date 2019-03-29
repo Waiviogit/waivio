@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Button, Form, Input, message, Select, Avatar } from 'antd';
+import { Button, Form, Input, message, Select, Avatar, Rate, Icon } from 'antd';
 import {
   linkFields,
   objectFields,
@@ -15,6 +15,8 @@ import {
   websiteFields,
   objectImageFields,
   phoneFields,
+  ratingFields,
+  ratePercent,
   getAllowedFieldsByObjType,
 } from '../../common/constants/listOfFields';
 import {
@@ -49,7 +51,7 @@ import { getHasDefaultSlider, getVoteValue } from '../helpers/user';
 import LikeSection from './LikeSection';
 import { getFieldWithMaxWeight } from './wObjectHelper';
 import FollowObjectForm from './FollowObjectForm';
-import { followObject } from '../object/wobjActions';
+import { followObject, rateObject } from '../object/wobjActions';
 import SortingList from '../components/DnDList/DnDList';
 import CatalogItem from './Catalog/CatalogItem';
 import { getClientWObj } from '../adapters';
@@ -64,7 +66,7 @@ import { getClientWObj } from '../adapters';
     defaultVotePercent: getVotePercent(state),
     followingList: getFollowingObjectsList(state),
   }),
-  { appendObject, followObject },
+  { appendObject, followObject, rateObject },
 )
 @injectIntl
 @Form.create()
@@ -87,6 +89,7 @@ export default class AppendForm extends Component {
     sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
     defaultVotePercent: PropTypes.number.isRequired,
     followingList: PropTypes.arrayOf(PropTypes.string),
+    rateObject: PropTypes.func,
   };
 
   static defaultProps = {
@@ -107,6 +110,7 @@ export default class AppendForm extends Component {
     sliderMode: 'auto',
     defaultVotePercent: 100,
     followingList: [],
+    rateObject: () => {},
   };
 
   state = {
@@ -144,7 +148,18 @@ export default class AppendForm extends Component {
     for (const data of postData) {
       try {
         /* eslint-disable no-await-in-loop */
-        await this.props.appendObject(data);
+        const response = await this.props.appendObject(data);
+
+        if (objectFields.rating === form.currentField && form.rate) {
+          const { author, permlink } = response.value;
+          await this.props.rateObject(
+            author,
+            permlink,
+            wObject.author_permlink,
+            ratePercent[form.rate - 1],
+          );
+        }
+
         await new Promise(resolve => setTimeout(resolve, 2000));
       } catch (e) {
         message.error(
@@ -223,6 +238,10 @@ export default class AppendForm extends Component {
       }
       case objectFields.phone: {
         fieldBody.push(rest[phoneFields.name] || '');
+        break;
+      }
+      case objectFields.rating: {
+        fieldBody.push(rest[ratingFields.category]);
         break;
       }
       default:
@@ -1303,6 +1322,68 @@ export default class AppendForm extends Component {
               accentColor={PRIMARY_COLOR}
               onChange={this.handleChangeSorting}
             />
+          </React.Fragment>
+        );
+      }
+      case objectFields.rating: {
+        return (
+          <React.Fragment>
+            <Form.Item>
+              {getFieldDecorator(ratingFields.category, {
+                rules: [
+                  {
+                    max: 100,
+                    message: intl.formatMessage(
+                      {
+                        id: 'value_error_long',
+                        defaultMessage: "Value can't be longer than 100 characters.",
+                      },
+                      { value: 100 },
+                    ),
+                  },
+                  {
+                    required: true,
+                    message: intl.formatMessage(
+                      {
+                        id: 'field_error',
+                        defaultMessage: 'Field is required',
+                      },
+                      { field: 'Category' },
+                    ),
+                  },
+                  { transform: value => value && value.trim() },
+                  {
+                    validator: this.validateFieldValue,
+                  },
+                ],
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'category_rating_placeholder',
+                    defaultMessage: 'Category',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <div className="ant-form-item-label label AppendForm__appendTitles">
+              <FormattedMessage id="your_vote_placeholder" defaultMessage="Your vote(optional)" />
+            </div>
+            <Form.Item>
+              {getFieldDecorator(ratingFields.rate)(
+                <Rate
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  character={<Icon type="star" style={{ fontSize: '26px' }} theme="filled" />}
+                  disabled={loading}
+                  allowClear={false}
+                />,
+              )}
+            </Form.Item>
           </React.Fragment>
         );
       }
