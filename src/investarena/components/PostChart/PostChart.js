@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import _ from 'lodash';
+import { get, last } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import moment from 'moment';
@@ -20,12 +20,9 @@ const propTypes = {
   isObjectProfile: PropTypes.bool,
   isNightMode: PropTypes.bool,
   quote: PropTypes.shape(),
-  expiredBars: PropTypes.array,
   slPrice: PropTypes.string,
   tpPrice: PropTypes.string,
-  expiredAt: PropTypes.string,
   quoteSettings: PropTypes.shape(),
-  expiredTimeScale: PropTypes.string,
   toggleModalPost: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
   quoteSecurity: PropTypes.string.isRequired,
@@ -34,6 +31,7 @@ const propTypes = {
   forecast: PropTypes.string.isRequired,
   recommend: PropTypes.string.isRequired,
   getChartData: PropTypes.func.isRequired,
+  expForecast: PropTypes.shape(),
 };
 
 const defaultProps = {
@@ -43,6 +41,10 @@ const defaultProps = {
   isObjectProfile: false,
   connect: false,
   isNightMode: false,
+  slPrice: null,
+  tpPrice: null,
+  bars: null,
+  expForecast: null,
 };
 
 class PostChart extends Component {
@@ -53,7 +55,7 @@ class PostChart extends Component {
       timeScale: CanvasHelper.getTimeScale(this.props.createdAt, this.props.forecast),
       chartType: 'Line',
       priceType: this.props.recommend,
-      expired: !!this.props.expiredAt || this.isExpiredByTime(),
+      expired: !!this.props.expForecast || this.isExpiredByTime(),
       disabledSelect: false,
       isSession:
         this.props.platformName === 'widgets'
@@ -63,6 +65,7 @@ class PostChart extends Component {
   }
 
   componentDidMount() {
+    const { expForecast, connect, quote, quoteSettings, bars, getChartData } = this.props;
     const parentSize = this.canvasRef.parentElement.getBoundingClientRect();
     this.canvasRef.width = parentSize.width;
     this.canvasRef.height = parentSize.height;
@@ -73,19 +76,19 @@ class PostChart extends Component {
       if (this.state.expired) {
         this.setState(
           {
-            timeScale: this.props.expiredTimeScale || this.state.timeScale,
+            timeScale: get(expForecast, 'rate.quote.timeScale', this.state.timeScale).toUpperCase(),
           },
           () => this.updateChartData(this.props),
         );
       } else if (
-        this.props.connect &&
-        this.props.quoteSettings &&
-        this.props.quoteSettings.leverage
+        connect &&
+        quoteSettings &&
+        quoteSettings.leverage
       ) {
-        if (this.props.quote && this.props.bars && this.props.bars[this.state.timeScale]) {
+        if (quote && bars && bars[this.state.timeScale]) {
           this.updateChartData(this.props);
         } else {
-          this.props.getChartData(this.state.timeScale);
+          getChartData(this.state.timeScale);
         }
       }
     }
@@ -93,15 +96,16 @@ class PostChart extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!this.state.expired && this.chartData && this.chart) {
-      if (nextProps.expiredBars && nextProps.expiredAt) {
-        this.setState(
-          {
-            expired: true,
-            timeScale: nextProps.expiredTimeScale || this.state.timeScale,
-          },
-          () => this.updateChartData(nextProps),
-        );
-      } else if (nextProps.connect && nextProps.quoteSettings && nextProps.quoteSettings.leverage) {
+      // if (nextProps.expiredBars && nextProps.expiredAt) {
+      //   this.setState(
+      //     {
+      //       expired: true,
+      //       timeScale: nextProps.expiredTimeScale || this.state.timeScale,
+      //     },
+      //     () => this.updateChartData(nextProps),
+      //   );
+      // } else
+      if (nextProps.connect && nextProps.quoteSettings && nextProps.quoteSettings.leverage) {
         if (nextProps.quote && (!nextProps.bars || !nextProps.bars[this.state.timeScale])) {
           this.props.getChartData(this.state.timeScale);
         } else if (nextProps.bars && nextProps.bars[this.state.timeScale] && nextProps.quote) {
@@ -115,7 +119,7 @@ class PostChart extends Component {
             const expiredProps = {
               ...nextProps,
               expiredByTime: true,
-              expiredBars: nextProps.expiredBars || nextProps.bars,
+              expiredBars: nextProps.expForecast && nextProps.expForecast.bars || nextProps.bars,
             };
             this.setState(
               {
@@ -136,7 +140,7 @@ class PostChart extends Component {
     toggleModal('openDeals', { quote, quoteSettings, platformName });
   };
 
-  isExpiredByTime = () => currentTime.getTime() > moment(this.props.forecast).valueOf();
+  isExpiredByTime = () => moment().valueOf() > moment(this.props.forecast).valueOf();
   createChartData = () =>
     new ChartData({
       createdAt: this.props.createdAt,
@@ -150,9 +154,9 @@ class PostChart extends Component {
     });
   updateChartData = props => {
     const notEnoughData = this.chartData.updateData({
-      isScaleChanged: !!this.props.expiredTimeScale,
+      isScaleChanged: Boolean(props.expForecast && get(props.expForecast, 'rate.quote.timeScale')),
       timeScale: this.state.timeScale,
-      data: this.state.expired ? props.expiredBars : props.bars,
+      data: this.state.expired ? props.expForecast && props.expForecast.bars || props.bars : props.bars,
       quote: props.quote,
       expiredAt: props.expiredAt,
       quoteSettings: props.quoteSettings,
@@ -172,7 +176,7 @@ class PostChart extends Component {
     });
   shouldGetChartData = bars => {
     const timeNow = currentTime.getTime();
-    const lastTimeScale = _.last(bars[this.state.timeScale]);
+    const lastTimeScale = last(bars[this.state.timeScale]);
     let lastTime = (!lastTimeScale || !lastTimeScale.length) ? null : lastTimeScale.time;
     const coefficient = 1000 * 60 * CanvasHelper.hours[this.state.timeScale];
     if (timeNow - lastTime - coefficient > coefficient && timeNow - lastTime > coefficient) {
@@ -194,14 +198,15 @@ class PostChart extends Component {
     this.updateChartData(this.props);
   };
   render() {
+    const { chartType, timeScale, priceType } = this.state;
+    const { createdAt, forecast, quote, quoteSettings } = this.props;
+
     let classNameCircle = '';
     if (!this.state.isLoading && !this.state.expired && !this.state.disabledSelect) {
       classNameCircle = !this.state.isSession
         ? 'st-chart-circle-not-session'
         : 'st-chart-circle-session';
     }
-    const { chartType, timeScale, priceType } = this.state;
-    const { createdAt, forecast, quote, quoteSettings } = this.props;
     return (
       <div
         className={`w-100 ${
