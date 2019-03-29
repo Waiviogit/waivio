@@ -198,14 +198,15 @@ class PostChart extends Component {
     this.updateChartData(this.props);
   };
   render() {
+    const { chartType, timeScale, priceType } = this.state;
+    const { createdAt, forecast, quote, quoteSettings } = this.props;
+
     let classNameCircle = '';
     if (!this.state.isLoading && !this.state.expired && !this.state.disabledSelect) {
       classNameCircle = !this.state.isSession
         ? 'st-chart-circle-not-session'
         : 'st-chart-circle-session';
     }
-    const { chartType, timeScale, priceType } = this.state;
-    const { createdAt, forecast, quote, quoteSettings } = this.props;
     return (
       <div
         className={`w-100 ${
