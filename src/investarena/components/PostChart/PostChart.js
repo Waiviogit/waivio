@@ -76,7 +76,7 @@ class PostChart extends Component {
       if (this.state.expired) {
         this.setState(
           {
-            timeScale: _.get(
+            timeScale: get(
               expForecast,
               'rate.quote.timeScale',
               this.state.timeScale,
