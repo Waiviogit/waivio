@@ -109,16 +109,13 @@ export default class ObjectProfile extends React.Component {
             <div className="object-profile__trade">
               <PostChart
                 quoteSecurity={chartId.body}
-                expiredBars={[]}
                 createdAt={createdAt}
                 forecast={forecast}
                 recommend={'Buy'}
-                expiredByTime={undefined}
-                expiredTimeScale={undefined}
                 toggleModalPost={() => {}}
                 tpPrice={null}
                 slPrice={null}
-                expiredAt={undefined}
+                expForecast={null}
                 isObjectProfile
               />
               <PostQuotation quoteSecurity={chartId.body} />
