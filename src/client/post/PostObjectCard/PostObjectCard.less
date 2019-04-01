@@ -1,14 +1,18 @@
 @import (reference) '../../styles/custom.less';
 @import (reference) '../../styles/modules/variables.less';
 
-@height-row-info: 60px;
-@height-row-slider: 26px;
+@height-row-info: 210px;
+@height-row-slider: 210px;
 @padding: 5px;
 .editor-object {
+  .editor-object-mixin(60px, 60px);
+  @media @large, @medium, @small {
+    .editor-object-mixin(210px, 60px);
+  }
+}
+.editor-object-mixin (@height-row-info, @height-row-slider) {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  background-color: @grey-nero;
   border: 1px solid @blue-hawkesBlue;
   border-radius: 4px;
   margin-top: 5px;
@@ -35,17 +39,6 @@
       visibility: visible;
     }
   }
-  .background-transparent {
-    display: flex;
-    background: rgba(255, 255, 255, 0.6);
-    position: relative;
-    padding: 10px;
-    width: 100%;
-    .editor-object__tag {
-      position: absolute;
-      right: 10px;
-    }
-  }
   &__content {
     display: flex;
     flex-flow: column nowrap;
@@ -56,7 +49,6 @@
     &.row {
       display: flex;
       flex-flow: row nowrap;
-      align-items: center;
       height: @height-row-info;
       width: 100%;
     }
@@ -92,6 +84,7 @@
       font-weight: 500;
       color: @primary-color;
       text-shadow: 1px 1px 0 @black;
+      display: flex;
     }
   }
   &__truncated {
@@ -120,13 +113,13 @@
       }
     }
   }
-
+  .rate-wrap {
+    display: flex;
+    align-items: center;
+  }
   @media @medium, @large {
     .editor-object__truncated {
       width: 85%;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
     }
     .editor-object__controls {
       .editor-object__control-item {
