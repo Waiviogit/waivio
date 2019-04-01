@@ -21,16 +21,16 @@ class EditPost extends Component {
 
   render() {
     const { draftId, user } = this.props;
-    console.log('user > ', user);
+    console.log('user > ', user); // todo: remove this
     console.log('draft > ', draftId);
     return (
       <div className="shifted">
         <div className="post-layout container">
-          <div className="rightContainer">
-            <div className="right">[drafts block]</div>
-          </div>
           <div className="center">
             <Editor />
+          </div>
+          <div className="rightContainer">
+            <div className="right">[drafts block]</div>
           </div>
         </div>
       </div>

@@ -1,0 +1,21 @@
+@import (reference) '../../../styles/custom.less';
+
+.editor-side-btn {
+  width: 30px;
+  height: 30px;
+  line-height: 1;
+  background: @white;
+  border: 1px solid @blue-botticelli;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  & > .iconfont {
+    font-size: 24px;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: @secondary-color;
+  }
+}

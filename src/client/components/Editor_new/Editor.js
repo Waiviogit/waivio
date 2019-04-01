@@ -1,10 +1,25 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import { Editor as MediumDraftEditor, createEditorState } from 'medium-draft';
 import 'medium-draft/lib/index.css';
+import ImageSideBtn from './SideButtons/ImageSideButton';
+import './Editor.less';
 
+@injectIntl
 class Editor extends React.Component {
+  static propTypes = {
+    intl: PropTypes.shape().isRequired,
+  };
   constructor(props) {
     super(props);
+
+    this.sideButtons = [
+      {
+        title: props.intl.formatMessage({ id: 'image', defaultMessage: 'Image' }),
+        component: ImageSideBtn,
+      },
+    ];
 
     this.state = {
       editorState: createEditorState(), // for empty content
@@ -27,7 +42,14 @@ class Editor extends React.Component {
   render() {
     const { editorState } = this.state;
     return (
-      <MediumDraftEditor ref={this.refsEditor} editorState={editorState} onChange={this.onChange} />
+      <div className="waiv-editor">
+        <MediumDraftEditor
+          ref={this.refsEditor}
+          editorState={editorState}
+          onChange={this.onChange}
+          sideButtons={this.sideButtons}
+        />
+      </div>
     );
   }
 }
