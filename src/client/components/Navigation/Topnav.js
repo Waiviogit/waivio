@@ -176,7 +176,7 @@ class Topnav extends React.Component {
               title={intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })}
               mouseEnterDelay={1}
             >
-              <Link to="/editor" className="Topnav__link Topnav__link--action">
+              <Link to="/edit" className="Topnav__link Topnav__link--action">
                 <i className="iconfont icon-write" />
               </Link>
             </BTooltip>
