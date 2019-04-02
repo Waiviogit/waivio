@@ -1,0 +1,36 @@
+@import (reference) '../../../styles/custom.less';
+
+.ObjectTypes {
+  margin-left: -11px;
+  &__object-wrap {
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    padding: 0 10px;
+  }
+
+  &__type-wrap {
+    background-color: @white;
+    border: @base-border;
+    border-radius: 4px;
+    margin-top: 10px;
+  }
+  &__name {
+    margin-left: 5px;
+    max-width: 90px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  &__name-wrap {
+    display: flex;
+    color: @blue-baliHai;
+    padding: 5px 11px;
+    margin: 0 0 11px 0;
+    font-weight: 500;
+    border-bottom: @base-border;
+  }
+  .ObjectCard__name {
+    width: 100%;
+    max-width: 125px;
+  }
+}

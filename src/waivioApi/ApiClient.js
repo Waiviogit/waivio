@@ -245,5 +245,17 @@ export const getWobjectsExpertise = (authorPermlink, skip = 0, limit = 30) =>
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
+export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.getObjectTypes}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({ limit, skip, wobjects_count }),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
 
 export default null;

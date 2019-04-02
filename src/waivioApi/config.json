@@ -20,7 +20,8 @@
     "followingObjects": "/following_objects",
     "getGallery": "/gallery",
     "wobjectsWithUserWeight": "/objects_shares",
-    "wobjectsExpertise": "/object_expertise"
+    "wobjectsExpertise": "/object_expertise",
+    "getObjectTypes": "/objectTypes"
   },
   "production": {
     "apiPrefix": "http://waiviodev.com/api",
@@ -42,7 +43,8 @@
     "followingObjects": "/following_objects",
     "getGallery": "/gallery",
     "wobjectsWithUserWeight": "/objects_shares",
-    "wobjectsExpertise": "/object_expertise"
+    "wobjectsExpertise": "/object_expertise",
+    "getObjectTypes": "/objectTypes"
 
   }
 }
