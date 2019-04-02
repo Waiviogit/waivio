@@ -2,10 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Editor as MediumDraftEditor, createEditorState } from 'medium-draft';
+import { convertToRaw } from 'draft-js';
 import 'medium-draft/lib/index.css';
 import ImageSideBtn from './SideButtons/ImageSideButton';
 import EmbedSideBtn from './SideButtons/EmbedSideButton';
 import './Editor.less';
+import toMarkdown from './helpers/editorStateToMarkdown';
 
 @injectIntl
 class Editor extends React.Component {
@@ -52,7 +54,7 @@ class Editor extends React.Component {
 
   handleContentChange = editorState => {
     this.onChange(editorState);
-    this.props.onChange(editorState);
+    this.props.onChange(toMarkdown(convertToRaw(editorState.getCurrentContent())));
   };
 
   render() {

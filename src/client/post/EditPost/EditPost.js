@@ -27,7 +27,7 @@ class EditPost extends Component {
       <div className="shifted">
         <div className="post-layout container">
           <div className="center">
-            <Editor />
+            <Editor onChange={content => console.log('editor.onChange >>>\n', content)} />
           </div>
           <div className="rightContainer">
             <div className="right">[drafts block]</div>
