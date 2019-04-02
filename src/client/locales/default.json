@@ -229,6 +229,7 @@
   "quote": "Add quote",
   "link": "Add link",
   "image": "Add image",
+  "embed": "Add embed",
   "drafts": "Drafts",
   "drafts_empty": "You don't have any draft saved",
   "drafts_description": "These are posts that were never made public. You can publish them or delete them.",

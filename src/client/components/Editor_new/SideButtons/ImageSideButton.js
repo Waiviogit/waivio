@@ -73,7 +73,7 @@ class ImageSideButton extends Component {
       <button
         className="editor-side-btn"
         onClick={this.onClick}
-        title={this.props.intl.formatMessage({ id: 'image', defaultMessage: 'Add an Image' })}
+        title={this.props.intl.formatMessage({ id: 'image', defaultMessage: 'Add an image' })}
       >
         <i className="iconfont icon-picture" />
         <input
