@@ -6,6 +6,7 @@ import { convertToRaw } from 'draft-js';
 import 'medium-draft/lib/index.css';
 import ImageSideBtn from './SideButtons/ImageSideButton';
 import EmbedSideBtn from './SideButtons/EmbedSideButton';
+import SeparatorSideBtn from './SideButtons/SeparatorSideButton';
 import './Editor.less';
 import toMarkdown from './helpers/editorStateToMarkdown';
 
@@ -31,6 +32,10 @@ class Editor extends React.Component {
       {
         title: props.intl.formatMessage({ id: 'embed', defaultMessage: 'Add embed' }),
         component: EmbedSideBtn,
+      },
+      {
+        title: props.intl.formatMessage({ id: 'add_separator', defaultMessage: 'Add a separator' }),
+        component: SeparatorSideBtn,
       },
     ];
 
