@@ -10,7 +10,6 @@ class SeparatorSideButton extends Component {
     intl: PropTypes.shape().isRequired,
     setEditorState: PropTypes.func,
     getEditorState: PropTypes.func,
-    // close: PropTypes.func,
   };
   static defaultProps = {
     setEditorState: () => {},

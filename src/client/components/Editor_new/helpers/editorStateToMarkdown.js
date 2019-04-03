@@ -12,6 +12,7 @@ const blockStyleDict = {
   'header-four': '#### ',
   'header-five': '##### ',
   'header-six': '###### ',
+  'atomic:break': '***',
   blockquote: '> ',
 };
 

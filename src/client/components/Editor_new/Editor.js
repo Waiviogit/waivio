@@ -7,6 +7,7 @@ import 'medium-draft/lib/index.css';
 import ImageSideBtn from './SideButtons/ImageSideButton';
 import EmbedSideBtn from './SideButtons/EmbedSideButton';
 import SeparatorSideBtn from './SideButtons/SeparatorSideButton';
+import { BLOCK_BUTTONS, INLINE_BUTTONS, TOOLBAR_CONFIG } from './constants';
 import './Editor.less';
 import toMarkdown from './helpers/editorStateToMarkdown';
 
@@ -70,6 +71,9 @@ class Editor extends React.Component {
           ref={this.refsEditor}
           editorState={editorState}
           onChange={this.handleContentChange}
+          blockButtons={BLOCK_BUTTONS}
+          inlineButtons={INLINE_BUTTONS}
+          toolbarConfig={TOOLBAR_CONFIG}
           sideButtons={this.sideButtons}
         />
       </div>
