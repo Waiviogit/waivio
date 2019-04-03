@@ -62,6 +62,23 @@ export default class ObjectProfile extends React.Component {
       limit,
     });
   }
+  componentWillReceiveProps(nextProps) {
+    const { match, limit } = this.props;
+    if (match.params.name !== nextProps.match.params.name) {
+      if (
+        nextProps.feed &&
+        nextProps.feed.objectPosts &&
+        !nextProps.feed.objectPosts[nextProps.match.params.name]
+      ) {
+        this.props.getObjectPosts({
+          object: nextProps.match.params.name,
+          username: nextProps.match.params.name,
+          limit,
+        });
+      }
+      window.scrollTo(0, 0);
+    }
+  }
 
   handleCreatePost = () => {
     const { history, object } = this.props;

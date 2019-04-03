@@ -20,7 +20,7 @@ import { getobjectTypesState } from '../../../reducers';
 )
 class ObjectTypes extends React.Component {
   static propTypes = {
-    objectTypes: PropTypes.arrayOf(PropTypes.shape()),
+    objectTypes: PropTypes.shape(),
     loading: PropTypes.bool,
     getObjectTypes: PropTypes.func.isRequired,
   };
