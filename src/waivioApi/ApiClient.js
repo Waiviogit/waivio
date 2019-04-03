@@ -258,4 +258,16 @@ export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3) =>
       .catch(error => reject(error));
   });
 
+export const getMoreObjectsByType = (type, skip, limit) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.getObjects}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({ object_types: [type], skip, limit }),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve({ data: result, type }))
+      .catch(error => reject(error));
+  });
 export default null;

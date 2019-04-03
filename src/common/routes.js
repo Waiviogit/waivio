@@ -36,6 +36,7 @@ import ObjectAbout from '../client/object/ObjectAbout';
 import CatalogWrap from '../client/object/Catalog/CatalogWrap';
 import WobjExpertise from '../client/object/WobjExpertise';
 import UserExpertise from '../client/user/UserExpertise';
+import ObjectTypePage from '../client/objectTypes/ObjectTypePage';
 
 const routes = [
   {
@@ -90,6 +91,11 @@ const routes = [
         path: '/notifications',
         exact: true,
         component: Notifications,
+      },
+      {
+        path: '/objectType/:typePermlink',
+        exact: true,
+        component: ObjectTypePage,
       },
       {
         path: '/@:name/(comments|followers|followed|reblogs|feed|transfers|activity|expertise)?',

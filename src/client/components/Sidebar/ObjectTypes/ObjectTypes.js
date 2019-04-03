@@ -3,10 +3,10 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import { Link } from 'react-router-dom';
+import { getObjectTypes, getMoreObjectsByType } from '../../../objectTypes/objectTypesActions';
 import Loading from '../../Icon/Loading';
 import './ObjectTypes.less';
-import { getObjectTypes } from '../../../objectTypes/objectTypesActions';
-import WeightTag from '../../WeightTag';
 import ObjectCard from '../ObjectCard';
 import { getobjectTypesState } from '../../../reducers';
 
@@ -16,6 +16,7 @@ import { getobjectTypesState } from '../../../reducers';
   }),
   {
     getObjectTypes,
+    getMoreObjectsByType,
   },
 )
 class ObjectTypes extends React.Component {
@@ -23,6 +24,7 @@ class ObjectTypes extends React.Component {
     objectTypes: PropTypes.shape(),
     loading: PropTypes.bool,
     getObjectTypes: PropTypes.func.isRequired,
+    getMoreObjectsByType: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -41,9 +43,11 @@ class ObjectTypes extends React.Component {
   componentDidMount() {
     this.props.getObjectTypes();
   }
-
-  changeVisibility(showMore) {
-    this.setState({ showMore });
+  componentWillReceiveProps(nextProps) {
+    console.log(nextProps);
+  }
+  getMoreObjectsByType(type, skip) {
+    this.props.getMoreObjectsByType(type, skip);
   }
 
   render() {
@@ -67,24 +71,36 @@ class ObjectTypes extends React.Component {
                       key={wobject.author_permlink}
                       wobject={wobject}
                       showFollow={false}
-                      alt={<WeightTag weight={wobject.user_weight} rank={wobject.rank} />}
                     />
                   ))}
+                  {objectType.name && objectType.permlink && (
+                    <div className="ObjectTypes__buttons">
+                      {objectType.hasMoreWobjects ? (
+                        <a
+                          role="presentation"
+                          onClick={() =>
+                            this.getMoreObjectsByType(
+                              objectType.name,
+                              _.size(objectType.related_wobjects),
+                            )
+                          }
+                          className="ObjectTypes__more"
+                        >
+                          <FormattedMessage id="show_more" defaultMessage="Show more" />
+                        </a>
+                      ) : (
+                        <div />
+                      )}
+                      <Link to={`/objectType/${objectType.permlink}`}>
+                        <FormattedMessage id="explore" defaultMessage="Explore" />
+                      </Link>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
           ))}
         {loading && <Loading center={false} />}
-        {/* {!loading && topics.length > maxItems && !this.state.showMore ? ( */}
-        {/* <a role="button" tabIndex={0} onClick={() => this.changeVisibility(true)}> */}
-        {/* <FormattedMessage id="show_more" defaultMessage="View more" /> */}
-        {/* </a> */}
-        {/* ) : null} */}
-        {/* {!loading && topics.length > maxItems && this.state.showMore ? ( */}
-        {/* <a role="button" tabIndex={0} onClick={() => this.changeVisibility(false)}> */}
-        {/* <FormattedMessage id="show_less" defaultMessage="View less" /> */}
-        {/* </a> */}
-        {/* ) : null} */}
       </div>
     );
   }
