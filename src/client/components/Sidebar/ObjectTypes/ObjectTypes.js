@@ -43,9 +43,6 @@ class ObjectTypes extends React.Component {
   componentDidMount() {
     this.props.getObjectTypes();
   }
-  componentWillReceiveProps(nextProps) {
-    console.log(nextProps);
-  }
   getMoreObjectsByType(type, skip) {
     this.props.getMoreObjectsByType(type, skip);
   }
