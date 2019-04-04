@@ -17,7 +17,11 @@ const ObjectCard = ({ wobject, alt, showFollow }) => {
           <Link to={{ pathname }} title={name}>
             <ObjectAvatar item={wobject} size={34} />
           </Link>
-          <Link to={{ pathname }} title={name} className="ObjectCard__name">
+          <Link
+            to={{ pathname }}
+            title={name}
+            className={`ObjectCard__name ${showFollow ? 'ObjectCard__name-short' : ''}`}
+          >
             <span className="username">{name}</span>
           </Link>
         </div>
