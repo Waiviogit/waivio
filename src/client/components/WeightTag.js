@@ -22,7 +22,7 @@ WeightTag.propTypes = {
 };
 
 WeightTag.defaultProps = {
-  weight: '',
+  weight: 0,
   rank: '',
 };
 
