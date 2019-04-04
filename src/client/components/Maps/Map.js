@@ -19,13 +19,10 @@ class MapOS extends React.Component {
     this.setState({ showInfobox: !this.state.showInfobox });
   };
   render() {
+    const { lat, lng, isMarkerShown, mapHeigth, setCoordinates } = this.props;
     return (
-      <Map center={[this.props.lat, this.props.lng]} zoom={8} width={178} height={160}>
-        <Marker
-          anchor={[this.props.lat, this.props.lng]}
-          payload={1}
-          onClick={this.toggleInfobox}
-        />
+      <Map center={[lat, lng]} zoom={8} height={mapHeigth} zoomSnap onClick={setCoordinates}>
+        {isMarkerShown && <Marker anchor={[lat, lng]} payload={1} />}
         {/* <Overlay anchor={[50.879, 4.6997]} offset={[120, 79]}> */}
         {/* <img src='/images/hero-2.svg' width={240} height={158} alt='' /> */}
         {/* </Overlay> */}
@@ -40,9 +37,9 @@ MapOS.defuultProps = {
 };
 
 MapOS.propTypes = {
-  // isMarkerShown: PropTypes.bool.isRequired,
-  // wobject: PropTypes.shape().isRequired,
-  // setCoordinates: PropTypes.func.isRequired,
+  isMarkerShown: PropTypes.bool.isRequired,
+  setCoordinates: PropTypes.func.isRequired,
+  mapHeigth: PropTypes.number.isRequired,
   lat: PropTypes.number.isRequired,
   lng: PropTypes.number.isRequired,
 };

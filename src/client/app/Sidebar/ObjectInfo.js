@@ -284,10 +284,7 @@ class ObjectInfo extends React.Component {
                     isMarkerShown
                     setCoordinates={() => {}}
                     wobject={wobject}
-                    googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
-                    loadingElement={<div style={{ height: `100%` }} />}
-                    containerElement={<div style={{ height: `200px` }} />}
-                    mapElement={<div style={{ height: `100%` }} />}
+                    mapHeigth={200}
                     lat={Number(map.latitude)}
                     lng={Number(map.longitude)}
                   />

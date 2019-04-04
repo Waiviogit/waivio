@@ -326,8 +326,8 @@ export default class AppendForm extends Component {
 
   setCoordinates = ({ latLng }) => {
     this.props.form.setFieldsValue({
-      [mapFields.latitude]: latLng.lat().toFixed(6),
-      [mapFields.longitude]: latLng.lng().toFixed(6),
+      [mapFields.latitude]: latLng[0].toFixed(6),
+      [mapFields.longitude]: latLng[1].toFixed(6),
     });
   };
 
@@ -958,10 +958,7 @@ export default class AppendForm extends Component {
               isMarkerShown
               setCoordinates={this.setCoordinates}
               wobject={wObject}
-              googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
-              loadingElement={<div style={{ height: `100%` }} />}
-              containerElement={<div style={{ height: `400px` }} />}
-              mapElement={<div style={{ height: `100%` }} />}
+              mapHeigth={400}
               lat={Number(getFieldValue(mapFields.latitude)) || 37.22}
               lng={Number(getFieldValue(mapFields.longitude)) || -101.39}
             />
