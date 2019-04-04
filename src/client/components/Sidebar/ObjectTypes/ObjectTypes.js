@@ -28,7 +28,7 @@ class ObjectTypes extends React.Component {
   };
 
   static defaultProps = {
-    objectTypes: [],
+    objectTypes: {},
     topics: [],
     maxItems: 5,
     loading: false,
@@ -41,7 +41,7 @@ class ObjectTypes extends React.Component {
     };
   }
   componentDidMount() {
-    this.props.getObjectTypes();
+    if (_.isEmpty(this.props.objectTypes)) this.props.getObjectTypes();
   }
   getMoreObjectsByType(type, skip) {
     this.props.getMoreObjectsByType(type, skip);

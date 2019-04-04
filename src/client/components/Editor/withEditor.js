@@ -111,6 +111,8 @@ export default function withEditor(WrappedComponent) {
         type: obj.type,
         isExtendingOpen: obj.isExtendingOpen,
         isPostingOpen: obj.isPostingOpen,
+        parentAuthor: obj.parentAuthor,
+        parentPermlink: obj.parentPermlink,
       };
 
       try {
