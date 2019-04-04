@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { Block, addNewBlock } from 'medium-draft';
+import { EditorState, AtomicBlockUtils } from 'draft-js';
 import './SideButtons.less';
 
 @injectIntl
@@ -10,6 +10,7 @@ class SeparatorSideButton extends Component {
     intl: PropTypes.shape().isRequired,
     setEditorState: PropTypes.func,
     getEditorState: PropTypes.func,
+    close: PropTypes.func,
   };
   static defaultProps = {
     setEditorState: () => {},
@@ -18,7 +19,13 @@ class SeparatorSideButton extends Component {
   };
 
   onClick = () => {
-    this.props.setEditorState(addNewBlock(this.props.getEditorState(), Block.BREAK));
+    let editorState = this.props.getEditorState();
+    const content = editorState.getCurrentContent();
+    const contentWithEntity = content.createEntity('separator', 'IMMUTABLE', { metadata: 'test' });
+    const entityKey = contentWithEntity.getLastCreatedEntityKey();
+    editorState = EditorState.push(editorState, contentWithEntity, 'create-entity');
+    this.props.setEditorState(AtomicBlockUtils.insertAtomicBlock(editorState, entityKey, '***'));
+    this.props.close();
   };
 
   render() {

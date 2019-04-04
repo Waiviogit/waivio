@@ -47,10 +47,14 @@ const applyAtomicStyle = (block, entityMap, content) => {
   const strippedContent = content.substring(0, content.length - block.text.length);
   const key = block.entityRanges[0].key;
   const { type, data } = entityMap[key];
-  if (type === 'draft-js-video-plugin-video') {
-    return `${strippedContent}[[ embed url=${data.url || data.src} ]]`;
+  switch (type) {
+    case 'separator':
+      return `${strippedContent}***`;
+    case 'draft-js-video-plugin-video':
+      return `${strippedContent}[[ embed url=${data.url || data.src} ]]`;
+    default:
+      return content;
   }
-  return `${strippedContent}![${data.fileName || ''}](${data.url || data.src})`;
 };
 
 const getEntityStart = entity => {
