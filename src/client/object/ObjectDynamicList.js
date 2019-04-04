@@ -1,22 +1,22 @@
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import _ from 'lodash';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
-import Loading from '../components/Icon/Loading';
-import './ObjectDynamicList.less';
 import ObjectCard from '../components/Sidebar/ObjectCard';
+import Loading from '../components/Icon/Loading';
 import WeightTag from '../components/WeightTag';
+import './ObjectDynamicList.less';
 
 export default class ObjectDynamicList extends React.Component {
   static propTypes = {
     limit: PropTypes.number.isRequired,
     fetcher: PropTypes.func.isRequired,
-    showWeight: PropTypes.bool,
+    handleObjectCount: PropTypes.func,
   };
 
   static defaultProps = {
-    showWeight: false,
+    handleObjectCount: () => {},
   };
 
   state = {
@@ -26,7 +26,7 @@ export default class ObjectDynamicList extends React.Component {
   };
 
   handleLoadMore = () => {
-    const { fetcher, limit } = this.props;
+    const { fetcher, limit, handleObjectCount } = this.props;
     const { wobjects } = this.state;
 
     this.setState(
@@ -34,13 +34,24 @@ export default class ObjectDynamicList extends React.Component {
         loading: true,
       },
       () => {
-        fetcher(wobjects.length).then(newWobjects =>
-          this.setState(state => ({
-            loading: false,
-            hasMore: newWobjects.length === limit,
-            wobjects: _.union(state.wobjects, newWobjects),
-          })),
-        );
+        fetcher(wobjects.length).then(newWobjects => {
+          newWobjects.wobjects_count // eslint-disable-line no-unused-expressions
+            ? this.setState(
+                state => ({
+                  loading: false,
+                  hasMore: _.size(newWobjects.wobjects) === limit,
+                  wobjects: _.union(state.wobjects, newWobjects.wobjects),
+                }),
+                () => {
+                  handleObjectCount(newWobjects.wobjects_count);
+                },
+              )
+            : this.setState(state => ({
+                loading: false,
+                hasMore: newWobjects.length === limit,
+                wobjects: _.union(state.wobjects, newWobjects),
+              }));
+        });
       },
     );
   };
@@ -62,7 +73,7 @@ export default class ObjectDynamicList extends React.Component {
             <ObjectCard
               key={wo.author_permlink}
               wobject={wo}
-              alt={this.props.showWeight && <WeightTag weight={wo.weight} rank={wo.rank} />}
+              alt={<WeightTag weight={wo.weight} rank={wo.rank} />}
             />
           ))}
         </ReduxInfiniteScroll>

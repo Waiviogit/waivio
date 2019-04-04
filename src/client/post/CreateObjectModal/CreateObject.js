@@ -1,7 +1,9 @@
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Form, Input, Select, Button, Modal, Icon } from 'antd';
+import { connect } from 'react-redux';
 import './CreateObject.less';
 import LANGUAGES from '../../translations/languages';
 import { getLanguageText } from '../../translations';
@@ -9,20 +11,33 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import LikeSection from '../../object/LikeSection';
 import FollowObjectForm from '../../object/FollowObjectForm';
 import IconButton from '../../components/IconButton';
+import { getobjectTypesState } from '../../reducers';
+import { getObjectTypes } from '../../objectTypes/objectTypesActions';
 
 @injectIntl
 @Form.create()
+@connect(
+  state => ({
+    objectTypes: getobjectTypesState(state),
+  }),
+  {
+    getObjectTypes,
+  },
+)
 class CreateObject extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     form: PropTypes.shape().isRequired,
+    objectTypes: PropTypes.shape(),
     onCreateObject: PropTypes.func.isRequired,
+    getObjectTypes: PropTypes.func.isRequired,
     currentLocaleInList: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
     currentLocaleInList: { id: 'en-US', name: '', nativeName: '' },
     wobject: { tag: '' },
+    objectTypes: {},
     onCreateObject: () => {},
   };
 
@@ -37,6 +52,7 @@ class CreateObject extends React.Component {
 
   toggleModal = () => {
     if (!this.state.loading) {
+      if (!this.state.isModalOpen && _.isEmpty(this.props.objectTypes)) this.props.getObjectTypes();
       this.setState({ isModalOpen: !this.state.isModalOpen });
     }
   };
@@ -47,6 +63,7 @@ class CreateObject extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err && !this.state.loading) {
+        const selectedType = this.props.objectTypes[values.type];
         this.setState({ loading: true });
         const objData = {
           ...values,
@@ -55,6 +72,8 @@ class CreateObject extends React.Component {
           isExtendingOpen: true,
           isPostingOpen: true,
           votePower: this.state.votePercent * 100,
+          parentAuthor: selectedType.author,
+          parentPermlink: selectedType.permlink,
         };
         this.props
           .onCreateObject(objData)
@@ -66,8 +85,10 @@ class CreateObject extends React.Component {
   render() {
     const languageOptions = [];
     const { getFieldDecorator } = this.props.form;
-    const { currentLocaleInList, intl, form } = this.props;
+    const { currentLocaleInList, intl, form, objectTypes } = this.props;
     const { loading } = this.state;
+
+    const Option = Select.Option;
 
     if (currentLocaleInList === 'auto') {
       languageOptions.push(
@@ -179,14 +200,24 @@ class CreateObject extends React.Component {
                   },
                 ],
               })(
-                <Input
-                  disabled={loading}
-                  className="Editor__title"
+                <Select
+                  showSearch
+                  style={{ width: '100%' }}
                   placeholder={intl.formatMessage({
                     id: 'placeholder_obj_type',
                     defaultMessage: 'Object type',
                   })}
-                />,
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {_.map(objectTypes, type => (
+                    <Option value={type.name} key={type.name}>
+                      {type.name}
+                    </Option>
+                  ))}
+                </Select>,
               )}
             </Form.Item>
             <LikeSection

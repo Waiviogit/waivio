@@ -143,7 +143,7 @@
   "reply": "Reply",
   "edit": "Edit",
   "view": "View",
-  "show_more": "View more",
+  "show_more": "Show more",
   "show_less": "View less",
   "vote_value": "Vote Value",
   "voting_power": "Voting Power",
@@ -392,7 +392,6 @@
   "create_object_success": "Object has been created and saved to STEEM blockchain, in a few minutes it will be available in search.",
   "post_languages_info": "In which languages do you want to read posts?",
   "post_languages": "Posts languages",
-  "top_authors": "Object expertise",
   "show_more_authors": "Show more authors",
   "object": "object",
   "objects": "Objects",
@@ -516,5 +515,7 @@
   "no_votes_message": "There is no votes",
   "rate_overall": "Overall",
   "rate_average_count": "Rating: {count}",
-  "vote_count": "Votes: {votes}"
+  "vote_count": "Votes: {votes}",
+  "user_expertise": "Expertise",
+  "related_objects": "Related Objects"
 }

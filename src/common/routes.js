@@ -34,6 +34,9 @@ import ObjectGalleryAlbum from '../client/object/ObjectGallery/ObjectGalleryAlbu
 import WobjHistory from '../client/object/WobjHistory';
 import ObjectAbout from '../client/object/ObjectAbout';
 import CatalogWrap from '../client/object/Catalog/CatalogWrap';
+import WobjExpertise from '../client/object/WobjExpertise';
+import UserExpertise from '../client/user/UserExpertise';
+import ObjectTypePage from '../client/objectTypes/ObjectTypePage';
 
 const routes = [
   {
@@ -90,7 +93,12 @@ const routes = [
         component: Notifications,
       },
       {
-        path: '/@:name/(comments|followers|followed|reblogs|feed|transfers|activity)?',
+        path: '/objectType/:typePermlink',
+        exact: true,
+        component: ObjectTypePage,
+      },
+      {
+        path: '/@:name/(comments|followers|followed|reblogs|feed|transfers|activity|expertise)?',
         component: User,
         exact: true,
         routes: [
@@ -129,10 +137,15 @@ const routes = [
             exact: true,
             component: UserActivity,
           },
+          {
+            path: '/@:name/expertise',
+            exact: true,
+            component: UserExpertise,
+          },
         ],
       },
       {
-        path: `/object/:name/(about|gallery|updates|reviews|followers|feed|list)?/(${supportedObjectFields.join(
+        path: `/object/:name/(about|gallery|updates|reviews|followers|feed|list|expertise)?/(${supportedObjectFields.join(
           '|',
         )}|album)?/:itemId?`,
         component: Wobj,
@@ -157,6 +170,11 @@ const routes = [
             path: '/object/:name/gallery',
             exact: true,
             component: ObjectGallery,
+          },
+          {
+            path: '/object/:name/expertise',
+            exact: true,
+            component: WobjExpertise,
           },
           {
             path: '/object/:name/gallery/album/:itemId',

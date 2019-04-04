@@ -2,12 +2,12 @@ import React from 'react';
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
+import { Link } from 'react-router-dom';
 import * as api from '../../../waivioApi/ApiClient';
-import ObjectWeightModal from './ObjectWeightModal';
-import Loading from '../../components/Icon/Loading';
 import ObjectCard from './ObjectCard';
 import WeightTag from '../WeightTag';
 import './ObjectWeightBlock.less';
+import RightSidebarLoading from '../../../client/app/Sidebar/RightSidebarLoading';
 
 class ObjectWeightBlock extends React.Component {
   static propTypes = {
@@ -17,7 +17,6 @@ class ObjectWeightBlock extends React.Component {
   state = {
     wObjects: [],
     wObjectsCount: 0,
-    showModal: false,
     loading: true,
   };
 
@@ -36,23 +35,19 @@ class ObjectWeightBlock extends React.Component {
     }
   }
 
-  toggleModal = () =>
-    this.setState(prevState => ({
-      showModal: !prevState.showModal,
-    }));
-
   render() {
-    const { wObjects, loading, showModal, wObjectsCount } = this.state;
+    const { username } = this.props;
+    const { wObjects, loading, wObjectsCount } = this.state;
 
     if (loading) {
-      return <Loading />;
+      return <RightSidebarLoading />;
     }
 
     return wObjects.length ? (
       <div className="ObjectWeightBlock SidebarContentBlock">
         <h4 className="SidebarContentBlock__title title">
           <Icon type="codepen" className="ObjectWeightBlock__icon" />{' '}
-          <FormattedMessage id="related_objects" defaultMessage="Related objects" />
+          <FormattedMessage id="user_expertise" defaultMessage="Expertise" />
         </h4>
         <div className="SidebarContentBlock__content">
           {wObjects &&
@@ -60,21 +55,17 @@ class ObjectWeightBlock extends React.Component {
               <ObjectCard
                 key={wobject.author_permlink}
                 wobject={wobject}
+                showFollow={false}
                 alt={<WeightTag weight={wobject.user_weight} rank={wobject.rank} />}
               />
             ))}
           {wObjectsCount > 5 && (
             <React.Fragment>
               <h4 className="ObjectWeightBlock__more">
-                <a role="presentation" onClick={this.toggleModal}>
+                <Link to={`/@${username}/expertise`}>
                   <FormattedMessage id="show_more_objects" defaultMessage="Show more objects" />
-                </a>
+                </Link>
               </h4>
-              <ObjectWeightModal
-                username={this.props.username}
-                visible={showModal}
-                onClose={this.toggleModal}
-              />
             </React.Fragment>
           )}
         </div>

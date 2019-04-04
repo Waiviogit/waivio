@@ -19,7 +19,9 @@
     "post": "/post",
     "followingObjects": "/following_objects",
     "getGallery": "/gallery",
-    "wobjectsWithUserWeight": "/objects_shares"
+    "wobjectsWithUserWeight": "/objects_shares",
+    "wobjectsExpertise": "/object_expertise",
+    "getObjectTypes": "/objectTypes"
   },
   "production": {
     "apiPrefix": "http://waiviodev.com/api",
@@ -40,6 +42,9 @@
     "post": "/post",
     "followingObjects": "/following_objects",
     "getGallery": "/gallery",
-    "wobjectsWithUserWeight": "/objects_shares"
+    "wobjectsWithUserWeight": "/objects_shares",
+    "wobjectsExpertise": "/object_expertise",
+    "getObjectTypes": "/objectTypes"
+
   }
 }

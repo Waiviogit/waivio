@@ -94,6 +94,14 @@ class UserMenu extends React.Component {
                 </span>
               </li>
               <li
+                className={this.getItemClasses('expertise')}
+                onClick={this.handleClick}
+                role="presentation"
+                data-key="expertise"
+              >
+                <FormattedMessage id="expertise" defaultMessage="Expertise" />
+              </li>
+              <li
                 className={this.getItemClasses('transfers')}
                 onClick={this.handleClick}
                 role="presentation"
