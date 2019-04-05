@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
+import { message } from 'antd';
 
 import { addNewBlock } from '../../model';
 import { Block } from '../../util/constants';
@@ -26,25 +27,49 @@ export default class ImageButton extends React.Component {
     this.input.click();
   }
 
-  /*
-  This is an example of how an image button can be added
-  on the side control. This Button handles the image addition locally
-  by creating an object url. You can override this method to upload
-  images to your server first, then get the image url in return and then
-  add to the editor.
-  */
   onChange(e) {
     // e.preventDefault();
     const file = e.target.files[0];
     if (file.type.indexOf('image/') === 0) {
-      // console.log(this.props.getEditorState());
-      // eslint-disable-next-line no-undef
-      const src = URL.createObjectURL(file);
-      this.props.setEditorState(
-        addNewBlock(this.props.getEditorState(), Block.IMAGE, {
-          src,
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const hideNotification = message.loading(
+        this.props.intl.formatMessage({
+          id: 'notify_uploading_image',
+          defaultMessage: 'Uploading image',
         }),
+        0,
       );
+
+      fetch(`https://ipfs.busy.org/upload`, {
+        method: 'POST',
+        body: formData,
+      })
+        .then(response => {
+          if (response.status === 200) {
+            return response.json().then(data => {
+              if (data.url) {
+                this.props.setEditorState(
+                  addNewBlock(this.props.getEditorState(), Block.IMAGE, {
+                    src: data.url,
+                  }),
+                );
+                hideNotification();
+              }
+            });
+          }
+          return null;
+        })
+        .catch(err => {
+          console.log('err', err);
+          message.error(
+            this.props.intl.formatMessage({
+              id: 'notify_uploading_iamge_error',
+              defaultMessage: "Couldn't upload image",
+            }),
+          );
+        });
     }
     this.props.close();
   }
