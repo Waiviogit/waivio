@@ -3,7 +3,7 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { getAuthenticatedUser } from '../../reducers';
-import Editor from '../../components/Editor_new/Editor';
+import Editor from '../../components/EditorExtended/EditorExtended';
 
 @withRouter
 @connect((state, props) => ({
@@ -27,7 +27,10 @@ class EditPost extends Component {
       <div className="shifted">
         <div className="post-layout container">
           <div className="center">
-            <Editor onChange={content => console.log('editor.onChange >>>\n', content)} />
+            <Editor
+              onChange={content => console.log('editor.onChange > >\n', content)}
+              onAddObject={obj => console.log('postEdit.onAddObject > >\n ', obj)}
+            />
           </div>
           <div className="rightContainer">
             <div className="right">[drafts block]</div>
