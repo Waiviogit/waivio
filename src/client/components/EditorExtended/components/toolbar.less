@@ -1,3 +1,5 @@
+@import (reference) '../../../styles/custom.less';
+
 @keyframes pop-upwards {
   0% {
     transform: matrix(0.97, 0, 0, 1, 0, 12);
@@ -172,7 +174,7 @@
   padding: 6px 10px;
 
   &:hover {
-    color: yellow;
+    color: @orange;
   }
 
   &:last-child {
@@ -194,11 +196,11 @@
 }
 
 .md-RichEditor-activeButton {
-  color: #50ff4d;
+  color: @orange-hot;
   background: #242933;
 
   &:hover {
-    color: #08c;
+    color: @orange;
   }
 }
 

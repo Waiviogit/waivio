@@ -1,5 +1,7 @@
+@import (reference) '../../styles/custom.less';
+
 .md-RichEditor-root {
-  background: #fff;
+  background: @white;
   box-sizing: border-box;
   //font-family: 'Georgia', serif;
   padding: 15px 30px;
@@ -33,13 +35,11 @@
 }
 
 .md-RichEditor-editor .md-RichEditor-blockquote {
-  border-left: 5px solid #4ca8de;
-  color: #555;
+  border-left: 2px solid @normal-grey;
+  color: @text-color;
   //font-family: 'Hoefler Text', 'Georgia', serif;
-  font-size: 1.2em;
   margin: 0;
-  padding: 10px 0 10px 20px;
-  background-color: #e2f2ff;
+  padding: 5px 0 5px 15px;
 }
 
 .md-RichEditor-blockquote {

@@ -301,6 +301,12 @@ export default class Toolbar extends React.Component {
 
 export const BLOCK_BUTTONS = [
   {
+    label: 'H2',
+    style: 'header-two',
+    icon: 'header',
+    description: 'Heading 2',
+  },
+  {
     label: 'H3',
     style: 'header-three',
     icon: 'header',
@@ -323,25 +329,7 @@ export const BLOCK_BUTTONS = [
       </svg>
     ),
     style: 'blockquote',
-    icon: 'quote-right',
     description: 'Blockquote',
-  },
-  {
-    label: 'UL',
-    style: 'unordered-list-item',
-    icon: 'list-ul',
-    description: 'Unordered List',
-  },
-  {
-    label: 'OL',
-    style: 'ordered-list-item',
-    icon: 'list-ol',
-    description: 'Ordered List',
-  },
-  {
-    label: '✓',
-    style: 'todo',
-    description: 'Todo List',
   },
 ];
 
@@ -357,17 +345,6 @@ export const INLINE_BUTTONS = [
     style: 'ITALIC',
     icon: 'italic',
     description: 'Italic',
-  },
-  {
-    label: 'U',
-    style: 'UNDERLINE',
-    icon: 'underline',
-    description: 'Underline',
-  },
-  {
-    label: 'Hi',
-    style: 'HIGHLIGHT',
-    description: 'Highlight selection',
   },
   {
     label: (
@@ -391,7 +368,7 @@ export const INLINE_BUTTONS = [
         </g>
       </svg>
     ),
-    style: HYPERLINK,
+    style: 'hyperlink',
     icon: 'link',
     description: 'Add a link',
   },
