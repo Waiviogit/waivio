@@ -368,7 +368,7 @@ export const INLINE_BUTTONS = [
         </g>
       </svg>
     ),
-    style: 'hyperlink',
+    style: HYPERLINK,
     icon: 'link',
     description: 'Add a link',
   },

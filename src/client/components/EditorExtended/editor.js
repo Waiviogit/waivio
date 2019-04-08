@@ -115,10 +115,10 @@ class MediumDraftEditor extends React.Component {
     disableToolbar: false,
     showLinkEditToolbar: true,
     toolbarConfig: {},
+    processURL: null,
     handleKeyCommand: () => {},
     handleReturn: () => {},
     handlePastedText: () => {},
-    processURL: () => {},
   };
 
   constructor(props) {
