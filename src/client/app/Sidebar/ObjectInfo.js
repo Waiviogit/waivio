@@ -285,14 +285,20 @@ class ObjectInfo extends React.Component {
                     setCoordinates={() => {}}
                     wobject={wobject}
                     mapHeigth={200}
-                    lat={Number(map.latitude)}
-                    lng={Number(map.longitude)}
+                    markers={[
+                      {
+                        lat: Number(map.latitude),
+                        lng: Number(map.longitude),
+                      },
+                    ]}
+                    centerLat={Number(map.latitude)}
+                    centerLng={Number(map.longitude)}
                   />
                 ),
             )}
             {listItem(
               objectFields.website,
-              title ? (
+              title && (
                 <div className="field-website">
                   <span className="field-website__title">
                     <i className="iconfont icon-link text-icon" />
@@ -301,7 +307,7 @@ class ObjectInfo extends React.Component {
                     </a>
                   </span>
                 </div>
-              ) : null,
+              ),
             )}
             {listItem(
               objectFields.phone,

@@ -41,7 +41,7 @@ class ObjectTypes extends React.Component {
     };
   }
   componentDidMount() {
-    if (_.isEmpty(this.props.objectTypes)) this.props.getObjectTypes();
+    if (_.size(this.props.objectTypes) < 5) this.props.getObjectTypes();
   }
   getMoreObjectsByType(type, skip) {
     this.props.getMoreObjectsByType(type, skip);
@@ -53,50 +53,53 @@ class ObjectTypes extends React.Component {
       <div className="ObjectTypes">
         {!loading &&
           !_.isEmpty(objectTypes) &&
-          _.map(objectTypes, objectType => (
-            <div key={objectType.name} className="ObjectTypes__type-wrap">
-              <div className="ObjectTypes__name-wrap">
-                <FormattedMessage id="sort_trending" defaultMessage="Trending" />:
-                <div className="ObjectTypes__name" title={objectType.name}>
-                  {objectType.name}
-                </div>
-              </div>
-              {objectType.related_wobjects && !_.isEmpty(objectType.related_wobjects) && (
-                <div className="ObjectTypes__object-wrap">
-                  {_.map(objectType.related_wobjects, wobject => (
-                    <ObjectCard
-                      key={wobject.author_permlink}
-                      wobject={wobject}
-                      showFollow={false}
-                    />
-                  ))}
-                  {objectType.name && objectType.permlink && (
-                    <div className="ObjectTypes__buttons">
-                      {objectType.hasMoreWobjects ? (
-                        <a
-                          role="presentation"
-                          onClick={() =>
-                            this.getMoreObjectsByType(
-                              objectType.name,
-                              _.size(objectType.related_wobjects),
-                            )
-                          }
-                          className="ObjectTypes__more"
-                        >
-                          <FormattedMessage id="show_more" defaultMessage="Show more" />
-                        </a>
-                      ) : (
-                        <div />
-                      )}
-                      <Link to={`/objectType/${objectType.permlink}`}>
-                        <FormattedMessage id="explore" defaultMessage="Explore" />
-                      </Link>
+          _.map(
+            objectTypes,
+            objectType =>
+              objectType.related_wobjects &&
+              !_.isEmpty(objectType.related_wobjects) && (
+                <div key={objectType.name} className="ObjectTypes__type-wrap">
+                  <div className="ObjectTypes__name-wrap">
+                    <FormattedMessage id="sort_trending" defaultMessage="Trending" />:
+                    <div className="ObjectTypes__name" title={objectType.name}>
+                      {objectType.name}
                     </div>
-                  )}
+                  </div>
+                  <div className="ObjectTypes__object-wrap">
+                    {_.map(objectType.related_wobjects, wobject => (
+                      <ObjectCard
+                        key={wobject.author_permlink}
+                        wobject={wobject}
+                        showFollow={false}
+                      />
+                    ))}
+                    {objectType.name && objectType.permlink && (
+                      <div className="ObjectTypes__buttons">
+                        {objectType.hasMoreWobjects ? (
+                          <a
+                            role="presentation"
+                            onClick={() =>
+                              this.getMoreObjectsByType(
+                                objectType.name,
+                                _.size(objectType.related_wobjects),
+                              )
+                            }
+                            className="ObjectTypes__more"
+                          >
+                            <FormattedMessage id="show_more" defaultMessage="Show more" />
+                          </a>
+                        ) : (
+                          <div />
+                        )}
+                        <Link to={`/objectType/${objectType.name}`}>
+                          <FormattedMessage id="explore" defaultMessage="Explore" />
+                        </Link>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              )}
-            </div>
-          ))}
+              ),
+          )}
         {loading && <Loading center={false} />}
       </div>
     );

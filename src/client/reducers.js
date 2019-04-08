@@ -174,6 +174,8 @@ export const getObjectAuthor = state => fromObject.getObjectAuthor(state.object)
 export const getObjectFields = state => fromObject.getObjectFields(state.object);
 export const getRatingFields = state => fromObject.getRatingFields(state.object);
 export const getobjectTypesState = state => fromObjectTypes.getobjectTypesState(state.objectTypes);
+export const getObjectTypeState = (state, typeName) =>
+  fromObjectTypes.getobjectType(state.objectTypes, typeName);
 
 export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.append);
 

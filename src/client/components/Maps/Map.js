@@ -19,29 +19,41 @@ class MapOS extends React.Component {
     this.setState({ showInfobox: !this.state.showInfobox });
   };
   render() {
-    const { lat, lng, isMarkerShown, mapHeigth, setCoordinates } = this.props;
+    const { centerLat, centerLng, markers, mapHeigth, setCoordinates } = this.props;
     return (
-      <Map center={[lat, lng]} zoom={8} height={mapHeigth} zoomSnap onClick={setCoordinates}>
-        {isMarkerShown && <Marker anchor={[lat, lng]} payload={1} />}
-        {/* <Overlay anchor={[50.879, 4.6997]} offset={[120, 79]}> */}
-        {/* <img src='/images/hero-2.svg' width={240} height={158} alt='' /> */}
-        {/* </Overlay> */}
+      <Map
+        center={[centerLat, centerLng]}
+        zoom={8}
+        height={mapHeigth}
+        zoomSnap
+        onClick={setCoordinates}
+      >
+        {_.map(markers, marker => (
+          <Marker
+            key={`${marker.lat}${marker.lng}`}
+            anchor={[marker.lat, marker.lng]}
+            payload={1}
+          />
+        ))}
       </Map>
     );
   }
 }
 
-MapOS.defuultProps = {
-  lat: 37.0902,
-  lng: 95,
+MapOS.defaultProps = {
+  centerLat: 37.0902,
+  centerLng: 95,
+  markers: {},
+  mapHeigth: 200,
+  setCoordinates: () => {},
 };
 
 MapOS.propTypes = {
-  isMarkerShown: PropTypes.bool.isRequired,
-  setCoordinates: PropTypes.func.isRequired,
-  mapHeigth: PropTypes.number.isRequired,
-  lat: PropTypes.number.isRequired,
-  lng: PropTypes.number.isRequired,
+  setCoordinates: PropTypes.func,
+  mapHeigth: PropTypes.number,
+  centerLat: PropTypes.number,
+  centerLng: PropTypes.number,
+  markers: PropTypes.arrayOf(PropTypes.shape()),
 };
 
 export default MapOS;

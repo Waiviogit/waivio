@@ -955,12 +955,17 @@ export default class AppendForm extends Component {
               )}
             </Form.Item>
             <Map
-              isMarkerShown
+              markers={[
+                {
+                  lat: Number(getFieldValue(mapFields.latitude)) || 37.22,
+                  lng: Number(getFieldValue(mapFields.longitude)) || -101.39,
+                },
+              ]}
               setCoordinates={this.setCoordinates}
               wobject={wObject}
               mapHeigth={400}
-              lat={Number(getFieldValue(mapFields.latitude)) || 37.22}
-              lng={Number(getFieldValue(mapFields.longitude)) || -101.39}
+              centerLat={Number(getFieldValue(mapFields.latitude))}
+              centerLng={Number(getFieldValue(mapFields.longitude))}
             />
           </React.Fragment>
         );

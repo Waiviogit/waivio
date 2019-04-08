@@ -93,7 +93,7 @@ const routes = [
         component: Notifications,
       },
       {
-        path: '/objectType/:typePermlink',
+        path: '/objectType/:typeName',
         exact: true,
         component: ObjectTypePage,
       },

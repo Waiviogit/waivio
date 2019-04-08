@@ -21,7 +21,8 @@
     "getGallery": "/gallery",
     "wobjectsWithUserWeight": "/objects_shares",
     "wobjectsExpertise": "/object_expertise",
-    "getObjectTypes": "/objectTypes"
+    "getObjectTypes": "/objectTypes",
+    "objectType": "/objectType"
   },
   "production": {
     "apiPrefix": "http://waiviodev.com/api",
@@ -44,7 +45,7 @@
     "getGallery": "/gallery",
     "wobjectsWithUserWeight": "/objects_shares",
     "wobjectsExpertise": "/object_expertise",
-    "getObjectTypes": "/objectTypes"
-
+    "getObjectTypes": "/objectTypes",
+    "objectType": "/objectType"
   }
 }
