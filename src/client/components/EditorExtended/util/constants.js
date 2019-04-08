@@ -51,6 +51,10 @@ export const KEY_COMMANDS = {
   deleteBlock: () => 'delete-block',
 };
 
+export const ATOMIC_TYPES = {
+  SEPARATOR: 'separator',
+};
+
 export default {
   Block,
   Inline,

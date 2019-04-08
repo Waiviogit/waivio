@@ -26,7 +26,8 @@ import beforeInput, { StringToTypeMap } from './util/beforeinput';
 import blockStyleFn from './util/blockStyleFn';
 import { getCurrentBlock, resetBlockWithType, addNewBlockAt, isCursorBetweenLink } from './model';
 
-import ImageButton from './components/sides/image';
+import ImageSideButton from './components/sides/ImageSideButton';
+import SeparatorButton from './components/sides/SeparatorSideButton';
 import './index.less';
 
 /*
@@ -104,7 +105,11 @@ class MediumDraftEditor extends React.Component {
     sideButtons: [
       {
         title: 'Image',
-        component: ImageButton,
+        component: ImageSideButton,
+      },
+      {
+        title: 'Separator',
+        component: SeparatorButton,
       },
     ],
     disableToolbar: false,

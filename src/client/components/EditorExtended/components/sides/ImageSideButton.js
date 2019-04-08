@@ -7,7 +7,7 @@ import { addNewBlock } from '../../model';
 import { Block } from '../../util/constants';
 
 @injectIntl
-export default class ImageButton extends React.Component {
+export default class ImageSideButton extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     setEditorState: PropTypes.func.isRequired,

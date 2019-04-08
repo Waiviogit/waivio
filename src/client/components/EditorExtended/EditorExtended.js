@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { convertToRaw } from 'draft-js';
 import { Editor as MediumDraftEditor, createEditorState } from './index';
+import rendererFn from './util/customRenderer';
 
 @injectIntl
 class Editor extends React.Component {
@@ -19,21 +20,6 @@ class Editor extends React.Component {
 
   constructor(props) {
     super(props);
-
-    // this.sideButtons = [
-    //   {
-    //     title: props.intl.formatMessage({ id: 'image', defaultMessage: 'Image' }),
-    //     component: ImageSideBtn,
-    //   },
-    //   {
-    //     title: props.intl.formatMessage({ id: 'embed', defaultMessage: 'Add embed' }),
-    //     component: EmbedSideBtn,
-    //   },
-    //   {
-    //     title: 'Separator',
-    //     component: SeparatorSideBtn,
-    //   },
-    // ];
 
     this.state = {
       isMounted: false,
@@ -72,11 +58,7 @@ class Editor extends React.Component {
             editorState={editorState}
             beforeInput={this.handleBeforeInput}
             onChange={this.handleContentChange}
-            // blockButtons={BLOCK_BUTTONS}
-            // inlineButtons={INLINE_BUTTONS}
-            // toolbarConfig={TOOLBAR_CONFIG}
-            // sideButtons={this.sideButtons}
-            // rendererFn={customRenderer}
+            rendererFn={rendererFn}
           />
         ) : null}
       </div>
