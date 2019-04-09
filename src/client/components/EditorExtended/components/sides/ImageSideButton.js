@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
+// import { EditorState, AtomicBlockUtils } from 'draft-js';
 import { message } from 'antd';
 
 import { addNewBlock } from '../../model';
@@ -73,6 +74,21 @@ export default class ImageSideButton extends React.Component {
     }
     this.props.close();
   }
+
+  // For testing - don't load images to ipfs
+  // onChange(e) {
+  //   // e.preventDefault();
+  //   const file = e.target.files[0];
+  //   if (file.type.indexOf('image/') === 0) {
+  //     const src = URL.createObjectURL(file);
+  //     this.props.setEditorState(
+  //       addNewBlock(this.props.getEditorState(), Block.IMAGE, {
+  //         src,
+  //       }),
+  //     );
+  //   }
+  //   this.props.close();
+  // }
 
   render() {
     return (

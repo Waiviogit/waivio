@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { convertToRaw } from 'draft-js';
 import { Editor as MediumDraftEditor, createEditorState } from './index';
-import rendererFn from './util/customRenderer';
+import toMarkdown from './util/editorStateToMarkdown';
 
 @injectIntl
 class Editor extends React.Component {
@@ -44,7 +44,7 @@ class Editor extends React.Component {
 
   handleContentChange = editorState => {
     this.onChange(editorState);
-    this.props.onChange(convertToRaw(editorState.getCurrentContent()));
+    this.props.onChange(toMarkdown(convertToRaw(editorState.getCurrentContent())));
   };
 
   render() {
@@ -58,7 +58,6 @@ class Editor extends React.Component {
             editorState={editorState}
             beforeInput={this.handleBeforeInput}
             onChange={this.handleContentChange}
-            rendererFn={rendererFn}
           />
         ) : null}
       </div>
