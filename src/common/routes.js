@@ -6,7 +6,8 @@ import Drafts from '../client/post/Write/Drafts';
 import Replies from '../client/replies/Replies';
 import Activity from '../client/activity/Activity';
 import Wallet from '../client/wallet/Wallet';
-import Editor from '../client/post/Write/Write';
+import BusyEditor from '../client/post/Write/Write';
+import Editor from '../client/post/EditPost/EditPost';
 import Settings from '../client/settings/Settings';
 import ProfileSettings from '../client/settings/ProfileSettings';
 import Invite from '../client/invite/Invite';
@@ -68,8 +69,13 @@ const routes = [
         component: Wallet,
       },
       {
-        path: '/editor',
+        path: '/edit',
         component: Editor,
+        exact: true,
+      },
+      {
+        path: '/editor',
+        component: BusyEditor,
         exact: true,
       },
       {
