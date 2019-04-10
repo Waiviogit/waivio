@@ -228,7 +228,9 @@
   "italic": "Add italic",
   "quote": "Add quote",
   "link": "Add link",
-  "image": "Add image",
+  "image": "Add an image",
+  "embed": "Add an embed",
+  "add_separator": "Add a separator",
   "drafts": "Drafts",
   "drafts_empty": "You don't have any draft saved",
   "drafts_description": "These are posts that were never made public. You can publish them or delete them.",
@@ -517,6 +519,8 @@
   "rate_average_count": "Rating: {count}",
   "vote_count": "Votes: {votes}",
   "user_expertise": "Expertise",
+  "related_objects": "Related Objects",
+  "ready_to_publish": "Ready to publish",
   "related_objects": "Related Objects",
   "type": "Type"
 }
