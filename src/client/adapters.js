@@ -32,6 +32,7 @@ export const getClientWObj = serverWObj => {
     children: children || [],
     users: users || [],
     userCount: user_count || 0,
+    fields: serverWObj.fields,
     version: __v || 0,
     followersNames: followers_names,
     isNew: Boolean(isNew),

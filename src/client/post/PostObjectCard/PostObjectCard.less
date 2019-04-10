@@ -1,13 +1,13 @@
 @import (reference) '../../styles/custom.less';
 @import (reference) '../../styles/modules/variables.less';
 
-@height-row-info: 210px;
+@height-row-info: 190px;
 @height-row-slider: 210px;
 @padding: 5px;
 .editor-object {
   .editor-object-mixin(60px, 60px);
   @media @large, @medium, @small {
-    .editor-object-mixin(210px, 60px);
+    .editor-object-mixin(@height-row-info, 60px);
   }
 }
 .editor-object-mixin (@height-row-info, @height-row-slider) {
@@ -22,28 +22,29 @@
     border: 1px solid @red;
     box-shadow: 0 0 3px @orange, 0 0 5px @red;
   }
-  &__checkbox-line {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-  }
-  &__checkbox-wrap {
-    display: flex;
-    width: 50%;
-  }
-  &__checkbox-descr {
-    margin-right: 10px;
-  }
+  //&__checkbox-line {
+  //  display: flex;
+  //  width: 100%;
+  //  justify-content: space-between;
+  //}
+  //&__checkbox-wrap {
+  //  display: flex;
+  //  width: 50%;
+  //}
+  //&__checkbox-descr {
+  //  margin-right: 10px;
+  //}
   @media @medium {
     &:hover .editor-object__controls > .editor-object__control-item.delete {
       visibility: visible;
     }
   }
   &__content {
+    position: relative;
     display: flex;
     flex-flow: column nowrap;
     align-items: flex-start;
-    height: @height-row-info + @height-row-slider;
+    height: @height-row-info;
     outline: none;
     width: 97%;
     &.row {
@@ -52,52 +53,50 @@
       height: @height-row-info;
       width: 100%;
     }
-    &.row.slider {
-      height: @height-row-slider;
-      .ant-slider {
-        width: 100%;
-      }
-      .label {
-        color: @black;
-        font-weight: bold;
-        width: @height-row-info + 2 * @padding;
-        text-align: center;
-      }
-    }
   }
 
   &__avatar {
-    height: @height-row-info;
-    width: @height-row-info;
+    width: 100%;
     margin-right: @padding;
+    border-radius: 8px;
+    max-width: 178px;
+    height: @height-row-info;
+  }
+  &__type {
+    font-size: 15px;
+    color: @blue-botticelli;
+    font-weight: 500;
   }
 
-  &__rankWrap {
-    display: flex;
-  }
   &__info {
-    display: flex;
-    flex-direction: column;
     width: 100%;
     color: @black;
-    &.name {
-      font-weight: 500;
-      color: @primary-color;
-      text-shadow: 1px 1px 0 @black;
-      display: flex;
-    }
+    padding-left: 15px !important;
   }
   &__truncated {
-    width: 75%;
+    font-weight: 900;
+    color: @black;
+    font-size: 20px;
     text-overflow: ellipsis;
     white-space: nowrap;
+    overflow: hidden;
+    margin-right: 8px;
+  }
+  &__name {
+    display: flex;
+    align-items: center;
+  }
+  &__title {
+    color: @black;
+    font-size: 17px;
+    word-break: break-all;
     overflow: hidden;
   }
   .editor-object__controls {
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
-    height: @height-row-info + @height-row-slider;
+    height: @height-row-info;
 
     .editor-object__control-item {
       font-size: 18px;
@@ -115,11 +114,28 @@
   }
   .rate-wrap {
     display: flex;
+    .rate-title {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      max-width: 40%;
+    }
     align-items: center;
+    .ant-rate {
+      line-height: 0;
+    }
+    svg {
+      width: 0.8em;
+      height: 0.8em;
+    }
+  }
+  .rate-divider {
+    padding-left: 15px;
+    border-left: 2px @border-style-base @border-color-base;
   }
   @media @medium, @large {
     .editor-object__truncated {
-      width: 85%;
+      max-width: 85%;
     }
     .editor-object__controls {
       .editor-object__control-item {
@@ -146,6 +162,9 @@
   }
 }
 
+.rate-padding {
+  margin: 10px 0;
+}
 .editor-object__validation-msg {
   color: @red-danger;
 }

@@ -20,9 +20,8 @@
     "build": "node ./scripts/build.js",
     "start": "node ./build/server.js",
     "storybook": "start-storybook -p 9001 -c .storybook",
-    "test": "jest --config jest.config.json",
+    "test": "jest --config jest.config.json --coverage",
     "test:watch": "jest --config jest.config.json --watch",
-    "test:coverage": "jest --config jest.config.json --coverage",
     "eslint-autofix": "eslint --fix \"src/**/*.js\"",
     "heroku-prebuild": "npm i -g pm2 && pm2 install pm2-logrotate",
     "heroku-postbuild": "npm run build"

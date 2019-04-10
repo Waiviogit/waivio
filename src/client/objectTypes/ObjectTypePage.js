@@ -1,10 +1,10 @@
 import React from 'react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
 import { Helmet } from 'react-helmet';
-// import _ from 'lodash';
 import {
   getIsAuthenticated,
   getAuthenticatedUser,
@@ -17,6 +17,8 @@ import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import { getObjectType } from './objectTypesActions';
 import './ObjectTypePage.less';
+import ObjectCardView from '../objectCard/ObjectCardView';
+import { getClientWObj } from '../adapters';
 
 @injectIntl
 @withRouter
@@ -103,7 +105,14 @@ export default class ObjectTypePage extends React.Component {
               </div>
             </Affix>
             <div className="center">
-              {`${intl.formatMessage({ id: 'type', defaultMessage: 'Type' })}: ${type.name}`}
+              <div className="ObjectTypePage__title">{`${intl.formatMessage({
+                id: 'type',
+                defaultMessage: 'Type',
+              })}: ${type.name}`}</div>
+              {_.map(type.related_wobjects, obj => {
+                const wobj = getClientWObj(obj);
+                return <ObjectCardView key={wobj.id} wObject={wobj} />;
+              })}
             </div>
           </div>
         </div>

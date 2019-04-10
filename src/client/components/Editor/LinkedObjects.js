@@ -4,9 +4,10 @@ import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { Progress } from 'antd';
 import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
-import EditorObject from '../EditorObject/EditorObject';
+// import EditorObject from '../EditorObject/EditorObject';
 import CreateObject from '../../post/CreateObjectModal/CreateObject';
 import './LinkedObjects.less';
+import ObjectCardView from '../../objectCard/ObjectCardView';
 
 const LinkedObjects = ({
   title,
@@ -61,7 +62,7 @@ const LinkedObjects = ({
           </div>
         )}
         {linkedObjects.map(obj => (
-          <EditorObject
+          <ObjectCardView
             key={obj.id}
             wObject={obj}
             objectsNumber={linkedObjects.length}
