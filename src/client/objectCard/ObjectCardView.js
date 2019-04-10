@@ -1,14 +1,12 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import _ from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Tag, Row } from 'antd';
 import './/ObjectCardView.less';
-import { getScreenSize } from '../reducers';
 import RatingsWrap from './RatingsWrap/RatingsWrap';
 
-const ObjectCardView = ({ wObject, screenSize }) => {
+const ObjectCardView = ({ wObject }) => {
   const getObjectRatings = () => _.filter(wObject.fields, ['name', 'rating']);
   const pathName = `/object/${wObject.id}`;
   const ratings = getObjectRatings();
@@ -40,7 +38,7 @@ const ObjectCardView = ({ wObject, screenSize }) => {
                 </div>
                 {wObject.rank && <Tag>{wObject.rank}</Tag>}
               </a>
-              {ratings && <RatingsWrap ratings={ratings} isMobile={screenSize === 'xsmall'} />}
+              {ratings && <RatingsWrap ratings={ratings} />}
               {wObject.title && (
                 <div className="ObjectCardView__title" title={wObject.title}>
                   {wObject.title}
@@ -70,11 +68,6 @@ const ObjectCardView = ({ wObject, screenSize }) => {
 
 ObjectCardView.propTypes = {
   wObject: PropTypes.shape().isRequired,
-  screenSize: PropTypes.bool.isRequired,
 };
 
-export default injectIntl(
-  connect(state => ({
-    screenSize: getScreenSize(state),
-  }))(ObjectCardView),
-);
+export default injectIntl(ObjectCardView);
