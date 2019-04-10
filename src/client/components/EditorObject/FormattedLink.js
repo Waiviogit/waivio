@@ -2,7 +2,7 @@ import React from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Form, Input } from 'antd';
-import './EditorObject.less';
+// import './EditorObject.less';
 import Action from '../Button/Action';
 
 @injectIntl

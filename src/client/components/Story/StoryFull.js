@@ -33,6 +33,8 @@ import PostFeedEmbed from './PostFeedEmbed';
 import PostedFrom from './PostedFrom';
 import './StoryFull.less';
 import PostObjectCard from '../../post/PostObjectCard/PostObjectCard';
+import ObjectCardView from '../../objectCard/ObjectCardView';
+import { getClientWObj } from '../../adapters';
 
 @injectIntl
 @withAuthActions
@@ -494,9 +496,10 @@ class StoryFull extends React.Component {
               })} ${linkedObjects.length}`}
               key="1"
             >
-              {_.map(linkedObjects, wobj => (
-                <PostObjectCard key={`${wobj.author_permlink}`} wObject={wobj} />
-              ))}
+              {_.map(linkedObjects, obj => {
+                const wobj = getClientWObj(obj);
+                return <ObjectCardView key={`${wobj.id}`} wObject={wobj} />;
+              })}
             </Collapse.Panel>
           )}
           {!_.isEmpty(taggedObjects) && (

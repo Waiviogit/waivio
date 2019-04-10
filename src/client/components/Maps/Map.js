@@ -1,12 +1,12 @@
-import { GoogleMap, Marker, withGoogleMap, withScriptjs, InfoWindow } from 'react-google-maps';
 import PropTypes from 'prop-types';
-import React from 'react';
 import _ from 'lodash';
-import { Link } from 'react-router-dom';
-import ObjectAvatar from '../ObjectAvatar';
+import React from 'react';
+import Map from 'pigeon-maps';
+import Marker from 'pigeon-marker/react';
+// import Overlay from 'pigeon-overlay'
 import './Map.less';
 
-class Map extends React.Component {
+class MapOS extends React.Component {
   state = {
     showInfobox: false,
   };
@@ -19,47 +19,41 @@ class Map extends React.Component {
     this.setState({ showInfobox: !this.state.showInfobox });
   };
   render() {
+    const { centerLat, centerLng, markers, mapHeigth, setCoordinates } = this.props;
     return (
-      <GoogleMap
-        defaultZoom={8}
-        defaultCenter={{ lat: 37.0902, lng: 95 }}
-        center={{ lat: this.props.lat, lng: this.props.lng }}
-        onClick={this.props.setCoordinates}
+      <Map
+        center={[centerLat, centerLng]}
+        zoom={8}
+        height={mapHeigth}
+        zoomSnap
+        onClick={setCoordinates}
       >
-        {this.props.isMarkerShown && (
+        {_.map(markers, marker => (
           <Marker
-            onClick={this.toggleInfobox}
-            position={{ lat: this.props.lat, lng: this.props.lng }}
-          >
-            {this.state.showInfobox && (
-              <InfoWindow>
-                <Link
-                  className="tooltip-wrap"
-                  to={{ pathname: `/object/${this.props.wobject.author_permlink}` }}
-                >
-                  <ObjectAvatar item={this.props.wobject} size={34} />
-                  <h4>{this.getObjectName(this.props.wobject)}</h4>
-                </Link>
-              </InfoWindow>
-            )}
-          </Marker>
-        )}
-      </GoogleMap>
+            key={`${marker.lat}${marker.lng}`}
+            anchor={[marker.lat, marker.lng]}
+            payload={1}
+          />
+        ))}
+      </Map>
     );
   }
 }
 
-Map.defuultProps = {
-  lat: 37.0902,
-  lng: 95,
+MapOS.defaultProps = {
+  centerLat: 37.0902,
+  centerLng: 95,
+  markers: {},
+  mapHeigth: 200,
+  setCoordinates: () => {},
 };
 
-Map.propTypes = {
-  isMarkerShown: PropTypes.bool.isRequired,
-  wobject: PropTypes.shape().isRequired,
-  setCoordinates: PropTypes.func.isRequired,
-  lat: PropTypes.number.isRequired,
-  lng: PropTypes.number.isRequired,
+MapOS.propTypes = {
+  setCoordinates: PropTypes.func,
+  mapHeigth: PropTypes.number,
+  centerLat: PropTypes.number,
+  centerLng: PropTypes.number,
+  markers: PropTypes.arrayOf(PropTypes.shape()),
 };
 
-export default withScriptjs(withGoogleMap(Map));
+export default MapOS;
