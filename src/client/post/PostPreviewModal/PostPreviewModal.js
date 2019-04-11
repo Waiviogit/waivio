@@ -5,6 +5,7 @@ import { Button, Modal } from 'antd';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import TagsSelector from '../../components/TagsSelector/TagsSelector';
 import PolicyConfirmation from '../../components/PolicyConfirmation/PolicyConfirmation';
+import AdvanceSettings from './AdvanceSettings';
 
 const isTopicValid = topic => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(topic);
 
@@ -41,6 +42,7 @@ class PostPreviewModal extends Component {
         {isModalOpen && (
           <Modal
             title={intl.formatMessage({ id: 'preview', defaultMessage: 'Preview' })}
+            style={{ top: 20 }}
             visible={isModalOpen}
             centered={false}
             closable
@@ -70,6 +72,10 @@ class PostPreviewModal extends Component {
               policyText="Lorem ipsum dolor sit amet, enim in ut adipiscing turpis, mi interdum faucibus eleifend montes, augue viverra commodo vel placerat. Neque vitae amet consequat, proin sociis in sem, nunc fusce a facilisi per, sed sit et eget. A morbi velit proin, elit ac integer in justo, enim quis arcu arcu, magna dapibus est etiam. Nisl dapibus ut leo semper, pellentesque nec sem nec nulla, convallis dictum odio porttitor."
               onChange={this.handleConfirmedChange}
             />
+            <AdvanceSettings />
+            <Button htmlType="submit" onClick={this.submit} className="edit-post__submit-btn">
+              {intl.formatMessage({ id: 'publish', defaultMessage: 'Publish' })}
+            </Button>
           </Modal>
         )}
         {content && content.length > 0 ? (
