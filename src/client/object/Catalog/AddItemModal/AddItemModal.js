@@ -156,7 +156,8 @@ class AddItemModal extends Component {
         this.handleObjectSelect({
           id: parentPermlink,
           author: parentAuthor,
-          avatar: '/images/logo-brand.png',
+          avatar:
+            'https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png',
           name: wobj.name,
           title: '',
           parents: [],
