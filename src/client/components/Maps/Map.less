@@ -1,16 +1,55 @@
 @import (reference) '../../styles/custom.less';
 
-.gm-ui-hover-effect {
-  display: none !important;
-}
-.pigeon-attribution {
-  display: none;
-}
-.gm-style-iw {
-  text-align: center;
-  .tooltip-wrap {
+.MapOS {
+  position: relative;
+  &__locateGPS {
+    position: absolute;
+    left: 10px;
+    bottom: 15px;
+    &-button {
+      width: 25px;
+      height: 25px;
+      text-align: center;
+      background-color: @white;
+      border: 1px solid @border-color-base;
+      cursor: pointer;
+    }
+  }
+  &__zoom {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    &-button {
+      width: 25px;
+      height: 25px;
+      text-align: center;
+      background-color: @white;
+      border: 1px solid @border-color-base;
+      cursor: pointer;
+    }
+  }
+  &__overlay-wrap {
     display: flex;
-    flex-direction: column;
     align-items: center;
+    padding: 3px;
+    background-color: @white;
+    border: 1px solid @black;
+    &-name {
+      margin-left: 3px;
+    }
+  }
+  .gm-ui-hover-effect {
+    display: none !important;
+  }
+  .pigeon-attribution {
+    display: none;
+  }
+  .gm-style-iw {
+    text-align: center;
+    .tooltip-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
   }
 }

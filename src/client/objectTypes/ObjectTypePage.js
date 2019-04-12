@@ -51,6 +51,7 @@ export default class ObjectTypePage extends React.Component {
 
   state = {
     isEditMode: false,
+    isMapFullScreen: false,
   };
 
   componentDidMount() {
@@ -95,20 +96,16 @@ export default class ObjectTypePage extends React.Component {
           <div className="feed-layout container">
             <Affix className="leftContainer leftContainer__user" stickPosition={72}>
               <div className="left">
-                <MapOS
-                  markers={[
-                    { lat: 37.0902, lng: 95 },
-                    { lat: 37.1, lng: 95 },
-                    { lat: 39.0902, lng: 95 },
-                  ]}
-                />
+                <MapOS wobjects={this.props.type.related_wobjects} />
               </div>
             </Affix>
             <div className="center">
-              <div className="ObjectTypePage__title">{`${intl.formatMessage({
-                id: 'type',
-                defaultMessage: 'Type',
-              })}: ${type.name}`}</div>
+              {type.name && (
+                <div className="ObjectTypePage__title">{`${intl.formatMessage({
+                  id: 'type',
+                  defaultMessage: 'Type',
+                })}: ${type.name}`}</div>
+              )}
               {_.map(type.related_wobjects, obj => {
                 const wobj = getClientWObj(obj);
                 return <ObjectCardView key={wobj.id} wObject={wobj} />;

@@ -128,7 +128,9 @@ class Story extends React.Component {
   getObjectLayout = wobj => {
     const pathName = `/object/${wobj.author_permlink}`;
     const nameFields = _.filter(wobj.fields, o => o.name === 'name');
-    const nameField = _.maxBy(nameFields, 'weight');
+    const nameField = _.maxBy(nameFields, 'weight') || {
+      body: wobj.default_name || '',
+    };
     return (
       <Link
         key={wobj.author_permlink}
