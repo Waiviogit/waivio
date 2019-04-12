@@ -1,0 +1,25 @@
+.rewards-settings {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  &__label {
+    padding-right: 8px;
+  }
+  &__control {
+    flex-grow: 1;
+    .ant-select {
+      width: 100%;
+    }
+  }
+}
+
+.beneficiary-settings,
+.upvote-settings {
+  padding-top: 8px;
+  .ant-checkbox-wrapper {
+    .ant-checkbox {
+      top: -0.2em;
+    }
+  }
+}

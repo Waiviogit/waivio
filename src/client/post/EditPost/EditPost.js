@@ -69,7 +69,7 @@ class EditPost extends Component {
     postData.parentPermlink = WAIVIO_PARENT_PERMLINK;
     postData.author = this.props.user.name || '';
     postData.permlink = kebabCase(data.title);
-    postData.isUpdating = false; // use for update post
+    // if (isUpdating) postData.isUpdating = isUpdating; // use for update post
 
     const oldMetadata =
       this.props.draftPosts[this.props.draftId] &&

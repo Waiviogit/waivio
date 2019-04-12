@@ -27,6 +27,11 @@ class PostPreviewModal extends Component {
     this.state = {
       isModalOpen: false,
       topics: [],
+      settings: {
+        reward: '0',
+        beneficiary: false,
+        upvote: false,
+      },
       isConfirmed: false,
     };
   }
@@ -52,8 +57,13 @@ class PostPreviewModal extends Component {
 
   handleConfirmedChange = isConfirmed => this.setState({ isConfirmed });
 
+  handleSettingsChange = updatedValue =>
+    this.setState(prevState => ({
+      settings: { ...prevState.settings, ...updatedValue },
+    }));
+
   handleSubmit = () => {
-    const { body, title, topics } = this.state;
+    const { body, title, topics, settings } = this.state;
     const postData = {
       body,
       title,
@@ -62,6 +72,7 @@ class PostPreviewModal extends Component {
       beneficiary: false,
       upvote: false,
       wobjects: [],
+      ...settings,
     };
     this.props.onSubmit(postData);
   };
@@ -105,7 +116,7 @@ class PostPreviewModal extends Component {
               policyText="Lorem ipsum dolor sit amet, enim in ut adipiscing turpis, mi interdum faucibus eleifend montes, augue viverra commodo vel placerat. Neque vitae amet consequat, proin sociis in sem, nunc fusce a facilisi per, sed sit et eget. A morbi velit proin, elit ac integer in justo, enim quis arcu arcu, magna dapibus est etiam. Nisl dapibus ut leo semper, pellentesque nec sem nec nulla, convallis dictum odio porttitor."
               onChange={this.handleConfirmedChange}
             />
-            <AdvanceSettings />
+            <AdvanceSettings onChange={this.handleSettingsChange} />
             <Button htmlType="submit" onClick={this.handleSubmit} className="edit-post__submit-btn">
               {intl.formatMessage({ id: 'publish', defaultMessage: 'Publish' })}
             </Button>
