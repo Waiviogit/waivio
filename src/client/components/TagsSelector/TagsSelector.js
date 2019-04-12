@@ -5,35 +5,32 @@ import { Select } from 'antd';
 class TagsSelector extends Component {
   static propTypes = {
     label: PropTypes.string,
-    topics: PropTypes.arrayOf(PropTypes.string),
     placeholder: PropTypes.string,
-    onChange: PropTypes.func,
-    // validator: PropTypes.func,
+    tags: PropTypes.arrayOf(PropTypes.string).isRequired,
+    onChange: PropTypes.func.isRequired,
+    validator: PropTypes.func,
   };
   static defaultProps = {
     label: '',
-    topics: [],
+    tags: [],
     placeholder: '',
     onChange: () => {},
-    // validator: null,
+    validator: null,
   };
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      topics: props.topics,
-    };
+    this.handleTopicsChange = this.handleTopicsChange.bind(this);
   }
 
-  handleTopicsChange = topics => {
-    this.setState({ topics });
-    this.props.onChange(topics);
-  };
+  handleTopicsChange(tags) {
+    const { validator } = this.props;
+    const updatedTopics = validator ? tags.filter(t => validator(t)) : tags;
+    this.props.onChange(updatedTopics);
+  }
 
   render() {
-    const { topics } = this.state;
-    const { label, placeholder } = this.props;
+    const { label, placeholder, tags } = this.props;
     return (
       <div className="tags-selector">
         {label && <div className="tags-selector__label">{label}</div>}
@@ -43,10 +40,11 @@ class TagsSelector extends Component {
           placeholder={placeholder}
           dropdownStyle={{ display: 'none' }}
           tokenSeparators={[' ', ',']}
+          value={tags}
           onChange={this.handleTopicsChange}
         >
-          {topics.map(topic => (
-            <Select.Option key={topic}>{topic}</Select.Option>
+          {tags.map(tag => (
+            <Select.Option key={tag}>{tag}</Select.Option>
           ))}
         </Select>
       </div>

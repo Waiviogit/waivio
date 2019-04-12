@@ -519,8 +519,9 @@
   "rate_average_count": "Rating: {count}",
   "vote_count": "Votes: {votes}",
   "user_expertise": "Expertise",
-  "related_objects": "Related Objects",
   "ready_to_publish": "Ready to publish",
   "related_objects": "Related Objects",
-  "type": "Type"
+  "type": "Type",
+  "advance_settings": "Advance settings",
+  "publish": "Publish"
 }
