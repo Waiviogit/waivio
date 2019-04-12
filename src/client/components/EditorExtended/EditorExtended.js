@@ -8,12 +8,13 @@ import toMarkdown from './util/editorStateToMarkdown';
 @injectIntl
 class Editor extends React.Component {
   static propTypes = {
-    intl: PropTypes.shape().isRequired,
+    intl: PropTypes.shape(),
     // passed props:
     // onAddObject: PropTypes.func, // use it in future
     onChange: PropTypes.func,
   };
   static defaultProps = {
+    intl: {},
     onAddObject: () => {},
     onChange: () => {},
   };

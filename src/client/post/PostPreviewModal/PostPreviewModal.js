@@ -13,8 +13,12 @@ const isTopicValid = topic => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(topic);
 @injectIntl
 class PostPreviewModal extends Component {
   static propTypes = {
-    intl: PropTypes.shape().isRequired,
+    intl: PropTypes.shape(),
     content: PropTypes.string.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+  };
+  static defaultProps = {
+    intl: {},
   };
 
   constructor(props) {
@@ -33,7 +37,14 @@ class PostPreviewModal extends Component {
     );
   }
 
-  showModal = () => this.setState({ isModalOpen: true });
+  showModal = () => {
+    const { postTitle, postBody } = splitPostContent(this.props.content);
+    this.setState({
+      isModalOpen: true,
+      body: postBody,
+      title: postTitle,
+    });
+  };
 
   hideModal = () => this.setState({ isModalOpen: false });
 
@@ -41,10 +52,23 @@ class PostPreviewModal extends Component {
 
   handleConfirmedChange = isConfirmed => this.setState({ isConfirmed });
 
+  handleSubmit = () => {
+    const { body, title, topics } = this.state;
+    const postData = {
+      body,
+      title,
+      topics,
+      reward: 0,
+      beneficiary: false,
+      upvote: false,
+      wobjects: [],
+    };
+    this.props.onSubmit(postData);
+  };
+
   render() {
-    const { isModalOpen, topics } = this.state;
+    const { isModalOpen, body, title, topics } = this.state;
     const { intl, content } = this.props;
-    const { postTitle, postBody } = splitPostContent(content);
     return (
       <React.Fragment>
         {isModalOpen && (
@@ -61,8 +85,8 @@ class PostPreviewModal extends Component {
             onCancel={this.hideModal}
             onOk={() => console.log('You are my hero!')}
           >
-            <h1>{postTitle}</h1>
-            <BodyContainer full body={postBody} />
+            <h1>{title}</h1>
+            <BodyContainer full body={body} />
             <TagsSelector
               label={intl.formatMessage({
                 id: 'topics',
@@ -82,7 +106,7 @@ class PostPreviewModal extends Component {
               onChange={this.handleConfirmedChange}
             />
             <AdvanceSettings />
-            <Button htmlType="submit" onClick={this.submit} className="edit-post__submit-btn">
+            <Button htmlType="submit" onClick={this.handleSubmit} className="edit-post__submit-btn">
               {intl.formatMessage({ id: 'publish', defaultMessage: 'Publish' })}
             </Button>
           </Modal>
