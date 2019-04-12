@@ -18,7 +18,8 @@ export const getField = (item, field) => {
 const WaivioObject = ({ wobj }) => {
   let website = getFieldWithMaxWeight(wobj, linkFields.website, linkFields.website);
   const location = getField(wobj, 'locationCity');
-  const name = getFieldWithMaxWeight(wobj, objectFields.name, objectFields.name);
+  const name =
+    getFieldWithMaxWeight(wobj, objectFields.name, objectFields.name) || wobj.default_name;
 
   if (website && website.indexOf('http://') === -1 && website.indexOf('https://') === -1) {
     website = `http://${website}`;

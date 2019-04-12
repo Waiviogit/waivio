@@ -22,7 +22,9 @@ export const getClientWObj = serverWObj => {
 
   return {
     id: author_permlink,
-    avatar: getFieldWithMaxWeight(serverWObj, objectFields.avatar) || '/images/logo-brand.png',
+    avatar:
+      getFieldWithMaxWeight(serverWObj, objectFields.avatar) ||
+      'https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png',
     name: getFieldWithMaxWeight(serverWObj, objectFields.name),
     title: getFieldWithMaxWeight(serverWObj, objectFields.title),
     parents: parents || [],

@@ -3,7 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './ObjectAvatar.less';
 
-const defaultUrl = 'https://steemitimages.com/u/waivio/avatar/small';
+const defaultUrl =
+  'https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png';
 
 export const getObjectUrl = item => {
   const avatarFields = _.filter(item.fields, o => o.name === 'avatar');

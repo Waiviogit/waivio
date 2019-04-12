@@ -32,7 +32,8 @@ export default class ObjectLightbox extends Component {
   render() {
     const { wobject, size, accessExtend } = this.props;
     const imageUrl = getObjectUrl(wobject);
-    const objectName = getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name);
+    const objectName =
+      getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name) || wobject.default_name;
     return (
       <React.Fragment>
         {accessExtend && !imageUrl ? (

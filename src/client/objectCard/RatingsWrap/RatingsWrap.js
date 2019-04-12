@@ -1,10 +1,13 @@
 import React from 'react';
 import { Col, Rate, Row } from 'antd';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { averageRate, avrRate } from '../../components/Sidebar/Rate/rateHelper';
 import './RatingsWrap.less';
+import { getScreenSize } from '../../reducers';
 
-const RatingsWrap = ({ ratings, isMobile }) => {
+const RatingsWrap = ({ ratings, screenSize }) => {
+  const isMobile = screenSize === 'xsmall';
   // _.orderBy(ratings, [ratings., 'age'], ['asc', 'desc']);
   let layout = null;
 
@@ -19,12 +22,12 @@ const RatingsWrap = ({ ratings, isMobile }) => {
       layout = (
         <div className="RatingsWrap">
           <Row>
-            {rateLayout(12, 0, '')}
+            {rateLayout(ratings[1] ? 12 : 24, 0, '')}
             {ratings[1] && rateLayout(12, 1, 'RatingsWrap__divider')}
           </Row>
           {ratings[2] && (
             <Row>
-              {rateLayout(12, 2, '')}
+              {rateLayout(ratings[3] ? 12 : 24, 2, '')}
               {ratings[3] && rateLayout(12, 3, 'RatingsWrap__divider')}
             </Row>
           )}
@@ -48,7 +51,9 @@ const RatingsWrap = ({ ratings, isMobile }) => {
 
 RatingsWrap.propTypes = {
   ratings: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  isMobile: PropTypes.bool.isRequired,
+  screenSize: PropTypes.string.isRequired,
 };
 
-export default RatingsWrap;
+export default connect(state => ({
+  screenSize: getScreenSize(state),
+}))(RatingsWrap);

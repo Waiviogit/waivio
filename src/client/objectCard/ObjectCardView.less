@@ -12,7 +12,7 @@
     width: 100%;
   }
   @media @medium, @small, @large {
-    .ObjectCardView-mixin(190px, 100%);
+    .ObjectCardView-mixin(220px, 100%);
     &__title {
       word-break: break-all;
       overflow: hidden;
@@ -32,7 +32,7 @@
     position: relative;
     display: flex;
     flex-flow: column nowrap;
-    align-items: flex-start;
+    align-items: center;
     height: @cardHeight;
     outline: none;
     width: 97%;
@@ -60,20 +60,28 @@
     border: 1px solid #e9e7e7;
   }
   &__type {
-    font-size: 15px;
     color: @blue-botticelli;
-    font-weight: 500;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
   }
   &__name {
     display: flex;
     align-items: center;
     width: auto;
     cursor: auto;
+    margin-top: 13px;
 
     &-truncated {
-      font-weight: 900;
       color: @black;
-      font-size: 20px;
+      font-weight: bold;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      font-size: 24px;
+      letter-spacing: -0.5px;
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
@@ -83,7 +91,7 @@
   }
   &__title {
     color: @black;
-    font-size: 17px;
+    font-size: 24px;
   }
 }
 
