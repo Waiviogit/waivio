@@ -8,7 +8,11 @@
   z-index: 1;
   left: -35px;
   top: 0;
-  transition: all 0.2s ease;
+  transition: all 0.1s ease;
+
+  div {
+    display: flex;
+  }
 }
 
 .md-sb-button {
@@ -49,6 +53,14 @@
     & > .iconfont {
       font-size: 24px;
     }
+
+    & > .object-btn {
+      font-size: 20px;
+
+      svg path {
+        fill: @grey-empress;
+      }
+    }
   }
 }
 
@@ -66,7 +78,7 @@
 .md-add-btn-anim-appear.md-add-btn-anim-appear-active {
   transform: translate3d(0px, 0px, 0px);
   opacity: 1;
-  transition: all 0.5s ease-in;
+  transition: all 0.2s ease-in;
 }
 
 .md-add-btn-anim-enter {
@@ -77,7 +89,7 @@
 .md-add-btn-anim-enter.md-add-btn-anim-enter-active {
   opacity: 1;
   transform: translate3d(0px, 0px, 0px);
-  transition: all 500ms ease-in;
+  transition: all 200ms ease-in;
 }
 
 .md-add-btn-anim-exit {
@@ -86,5 +98,5 @@
 
 .md-add-btn-anim-exit.md-add-btn-anim-exit-active {
   opacity: 0.01;
-  transition: opacity 300ms ease-in;
+  transition: opacity 200ms ease-in;
 }

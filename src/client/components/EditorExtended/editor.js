@@ -28,6 +28,7 @@ import { getCurrentBlock, resetBlockWithType, addNewBlockAt, isCursorBetweenLink
 
 import ImageSideButton from './components/sides/ImageSideButton';
 import SeparatorButton from './components/sides/SeparatorSideButton';
+import ObjectSideButton from './components/sides/ObjectSideButton';
 import './index.less';
 
 /*
@@ -94,14 +95,7 @@ class MediumDraftEditor extends React.Component {
     blockButtons: BLOCK_BUTTONS,
     inlineButtons: INLINE_BUTTONS,
     placeholder: 'Write your story...',
-    continuousBlocks: [
-      Block.UNSTYLED,
-      Block.BLOCKQUOTE,
-      Block.OL,
-      Block.UL,
-      Block.CODE,
-      Block.TODO,
-    ],
+    continuousBlocks: [Block.UNSTYLED, Block.BLOCKQUOTE, Block.OL, Block.UL, Block.CODE],
     sideButtons: [
       {
         title: 'Image',
@@ -110,6 +104,10 @@ class MediumDraftEditor extends React.Component {
       {
         title: 'Separator',
         component: SeparatorButton,
+      },
+      {
+        title: 'Object',
+        component: ObjectSideButton,
       },
     ],
     disableToolbar: false,
