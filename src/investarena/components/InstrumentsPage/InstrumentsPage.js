@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { getViewMode, setViewMode } from '../../helpers/localStorageHelpers';
 import AssetsTab from './AssetsTab/AssetsTab';
 import { getAllSignals } from '../../redux/actions/signalsActions';
-import { marketNames, supportedObjectTypes } from '../../constants/objectsInvestarena';
+import { marketNames, typesWithChartId } from '../../constants/objectsInvestarena';
 import Affix from '../../../client/components/Utils/Affix';
 import LeftSidebar from '../../../client/app/Sidebar/LeftSidebar';
 import SortSelector from '../../../client/components/SortSelector/SortSelector';
@@ -65,7 +65,7 @@ class InstrumentsPage extends Component {
   render() {
     const { intl, quoteSettings, openDeals, charts } = this.props;
     const paramMarket = this.props.match.params.marketType;
-    const marketType = supportedObjectTypes.some(market => market === paramMarket)
+    const marketType = typesWithChartId.some(market => market === paramMarket)
       ? paramMarket
       : 'crypto';
     const quoteSettingsSorted = {};
