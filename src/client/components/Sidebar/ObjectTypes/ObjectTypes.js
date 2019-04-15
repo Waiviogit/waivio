@@ -38,17 +38,35 @@ class ObjectTypes extends React.Component {
     super(props);
     this.state = {
       showMore: false,
+      showedItemsCount: 3,
     };
   }
+
   componentDidMount() {
     if (_.size(this.props.objectTypes) < 5) this.props.getObjectTypes();
   }
+
   getMoreObjectsByType(type, skip) {
-    this.props.getMoreObjectsByType(type, skip);
+    if (skip <= this.state.showedItemsCount) {
+      this.props.getMoreObjectsByType(type, skip);
+    }
+    this.setState({ showedItemsCount: this.state.showedItemsCount + 10 });
   }
 
+  getTypesLayout = objectType => {
+    let tmp = 0;
+    return _.map(objectType.related_wobjects, wobject => {
+      if (tmp < this.state.showedItemsCount) {
+        tmp += 1;
+        return <ObjectCard key={wobject.author_permlink} wobject={wobject} showFollow={false} />;
+      }
+      return null;
+    });
+  };
   render() {
     const { objectTypes, loading } = this.props;
+    const { showedItemsCount } = this.state;
+
     return (
       <div className="ObjectTypes">
         {!loading &&
@@ -66,16 +84,11 @@ class ObjectTypes extends React.Component {
                     </div>
                   </div>
                   <div className="ObjectTypes__object-wrap">
-                    {_.map(objectType.related_wobjects, wobject => (
-                      <ObjectCard
-                        key={wobject.author_permlink}
-                        wobject={wobject}
-                        showFollow={false}
-                      />
-                    ))}
+                    {this.getTypesLayout(objectType)}
                     {objectType.name && objectType.permlink && (
                       <div className="ObjectTypes__buttons">
-                        {objectType.hasMoreWobjects ? (
+                        {objectType.hasMoreWobjects ||
+                        showedItemsCount < objectType.related_wobjects.length ? (
                           <a
                             role="presentation"
                             onClick={() =>
