@@ -108,7 +108,11 @@ class SearchObjectsAutocomplete extends Component {
     const searchObjectsOptions = searchString
       ? searchObjectsResults
           .filter(obj => !itemsIdsToOmit.includes(obj.id))
-          .map(obj => <AutoComplete.Option key={obj.id}>{getObjMarkup(obj)}</AutoComplete.Option>)
+          .map(obj => (
+            <AutoComplete.Option key={obj.id} label={obj.id}>
+              {getObjMarkup(obj)}
+            </AutoComplete.Option>
+          ))
       : [];
     return (
       <AutoComplete
@@ -116,6 +120,7 @@ class SearchObjectsAutocomplete extends Component {
         onChange={this.handleChange}
         onSelect={this.handleSelect}
         onSearch={this.handleSearch}
+        optionLabelProp={'label'}
         placeholder={intl.formatMessage({
           id: 'objects_auto_complete_placeholder',
           defaultMessage: 'Find',
