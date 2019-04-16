@@ -23,19 +23,23 @@ import './SearchObjectsAutocomplete.less';
 )
 class SearchObjectsAutocomplete extends Component {
   static defaultProps = {
+    intl: {},
     style: { width: '100%' },
     searchObjectsResults: [],
     itemsIdsToOmit: [],
+    searchObjects: () => {},
+    clearSearchResults: () => {},
+    handleSelect: () => {},
   };
 
   static propTypes = {
     itemsIdsToOmit: PropTypes.arrayOf(PropTypes.string),
-    intl: PropTypes.shape().isRequired,
+    intl: PropTypes.shape(),
     style: PropTypes.shape(),
     searchObjectsResults: PropTypes.arrayOf(PropTypes.object),
-    searchObjects: PropTypes.func.isRequired,
-    clearSearchResults: PropTypes.func.isRequired,
-    handleSelect: PropTypes.func.isRequired,
+    searchObjects: PropTypes.func,
+    clearSearchResults: PropTypes.func,
+    handleSelect: PropTypes.func,
   };
 
   constructor(props) {
