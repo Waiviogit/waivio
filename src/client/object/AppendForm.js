@@ -228,10 +228,10 @@ export default class AppendForm extends Component {
         fieldBody.push(JSON.stringify(rest[objectFields.sorting]));
         break;
       }
-      case objectFields.website: {
-        fieldBody.push(rest[websiteFields.link]);
-        break;
-      }
+      // case objectFields.website: {
+      //   fieldBody.push(rest[websiteFields.link]);
+      //   break;
+      // }
       case objectFields.hashtag: {
         fieldBody = rest[objectFields.hashtag];
         break;
@@ -267,12 +267,12 @@ export default class AppendForm extends Component {
         locale,
       };
 
-      if (field === objectFields.website) {
-        fieldsObject = {
-          ...fieldsObject,
-          [websiteFields.title]: form[websiteFields.title],
-        };
-      }
+      // if (field === objectFields.website) {
+      //   fieldsObject = {
+      //     ...fieldsObject,
+      //     [websiteFields.title]: form[websiteFields.title],
+      //   };
+      // }
 
       if (field === objectFields.phone) {
         fieldsObject = {

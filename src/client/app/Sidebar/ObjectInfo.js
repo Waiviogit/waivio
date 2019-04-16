@@ -7,7 +7,11 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { haveAccess, hasType, accessTypesArr } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
-import { getFieldWithMaxWeight, getFieldsCount, getWebsiteField } from '../../object/wObjectHelper';
+import {
+  getFieldWithMaxWeight,
+  getFieldsCount,
+  getInnerFieldWithMaxWeight,
+} from '../../object/wObjectHelper';
 import {
   objectFields,
   addressFields,
@@ -74,26 +78,27 @@ class ObjectInfo extends React.Component {
     let phones = [];
     let email = '';
 
-    if (wobject) {
-      addressArr = Object.values(addressFields).map(fieldName =>
-        getFieldWithMaxWeight(wobject, objectFields.address, fieldName),
-      );
+    if (_.size(wobject) > 0) {
+      const adressFields = getInnerFieldWithMaxWeight(wobject, objectFields.address);
+      addressArr = adressFields
+        ? Object.values(addressFields).map(fieldName => adressFields[fieldName])
+        : [];
       address = _.compact(addressArr).join(', ');
 
-      map = getFieldWithMaxWeight(wobject, objectFields.map, null);
+      map = getInnerFieldWithMaxWeight(wobject, objectFields.map);
 
       description = getFieldWithMaxWeight(wobject, objectFields.description);
 
-      avatar = getFieldWithMaxWeight(wobject, objectFields.avatar, null);
-      background = getFieldWithMaxWeight(wobject, objectFields.background, null);
+      avatar = getInnerFieldWithMaxWeight(wobject, objectFields.avatar);
+      background = getFieldWithMaxWeight(wobject, objectFields.background);
 
-      short = getFieldWithMaxWeight(wobject, objectFields.title, null);
+      short = getFieldWithMaxWeight(wobject, objectFields.title);
 
-      email = getFieldWithMaxWeight(wobject, objectFields.email, null);
+      email = getFieldWithMaxWeight(wobject, objectFields.email);
 
-      websiteFields = getWebsiteField(wobject);
+      websiteFields = getInnerFieldWithMaxWeight(wobject, objectFields.website);
       title = websiteFields.title;
-      link = websiteFields.body;
+      link = websiteFields.link;
       photosCount = wobject.photos_count;
 
       const filtered = _.filter(wobject.fields, ['name', objectFields.hashtag]);
@@ -106,18 +111,20 @@ class ObjectInfo extends React.Component {
     if (link && link.indexOf('http://') === -1 && link.indexOf('https://') === -1) {
       link = `http://${link}`;
     }
-
-    let profile = {
-      facebook: getFieldWithMaxWeight(wobject, objectFields.link, linkFields.linkFacebook),
-      twitter: getFieldWithMaxWeight(wobject, objectFields.link, linkFields.linkTwitter),
-      youtube: getFieldWithMaxWeight(wobject, objectFields.link, linkFields.linkYouTube),
-      instagram: getFieldWithMaxWeight(wobject, objectFields.link, linkFields.linkInstagram),
-      github: getFieldWithMaxWeight(wobject, objectFields.link, linkFields.linkGitHub),
-    };
+    const linkField = getInnerFieldWithMaxWeight(wobject, objectFields.link);
+    let profile = linkField
+      ? {
+          facebook: linkField[linkFields.linkFacebook] || '',
+          twitter: linkField[linkFields.linkTwitter] || '',
+          youtube: linkField[linkFields.linkYouTube] || '',
+          instagram: linkField[linkFields.linkInstagram] || '',
+          github: linkField[linkFields.linkGitHub] || '',
+        }
+      : {};
 
     profile = _.pickBy(profile, _.identity);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
-    const objectName = getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name);
+    const objectName = getInnerFieldWithMaxWeight(wobject, objectFields.name, objectFields.name);
     const album = _.filter(albums, _.iteratee(['id', wobject.author_permlink]));
     const hasGalleryImg = wobject.preview_gallery && wobject.preview_gallery[0];
 
@@ -317,14 +324,14 @@ class ObjectInfo extends React.Component {
                     {phones.length <= 3 ? (
                       phones.slice(0, 3).map(({ body, number }) => (
                         <div key={number} className="phone">
-                          {body && body} <br />
                           <Icon type="phone" /> <a href={`tel:${number}`}>{number}</a>
+                          {body && body} <br />
                         </div>
                       ))
                     ) : (
                       <React.Fragment>
                         {phones.slice(0, 2).map(({ body, number }) => (
-                          <div key={number} className="phone">
+                          <div key={`${number}${body}`} className="phone">
                             {body && body} <br />
                             <Icon type="phone" /> <a href={`tel:${number}`}>{number}</a>
                           </div>

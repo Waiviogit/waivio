@@ -25,8 +25,7 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, a
     : {};
   const descriptionShort = getFieldWithMaxWeight(wobject, objectFields.title);
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
-  const objectName =
-    getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name) || wobject.default_name;
+  const objectName = getFieldWithMaxWeight(wobject, objectFields.name) || wobject.default_name;
   const canEdit = accessExtend && isEditMode;
   return (
     <div className={classNames('ObjectHeader', { 'ObjectHeader--cover': hasCover })} style={style}>

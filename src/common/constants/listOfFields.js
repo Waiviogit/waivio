@@ -16,6 +16,16 @@ export const objectFields = {
   listItem: 'listItem',
 };
 
+export const objectFieldsWithInnerData = [
+  'address',
+  'map',
+  'link',
+  'website',
+  'phone',
+  'email',
+  'rating',
+];
+
 export const addressFields = {
   country: 'country',
   city: 'city',

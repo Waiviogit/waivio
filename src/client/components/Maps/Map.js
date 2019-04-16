@@ -6,7 +6,7 @@ import Marker from 'pigeon-marker/react';
 import Overlay from 'pigeon-overlay';
 import { getClientWObj } from '../../adapters';
 import './Map.less';
-import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
+import { getInnerFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { mapFields, objectFields } from '../../../common/constants/listOfFields';
 import Loading from '../Icon/Loading';
 
@@ -36,8 +36,8 @@ class MapOS extends React.Component {
 
   getMarkers = props =>
     _.map(props.wobjects, wobject => {
-      const lat = getFieldWithMaxWeight(wobject, objectFields.map, mapFields.latitude);
-      const lng = getFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude);
+      const lat = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.latitude);
+      const lng = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude);
       return lat && lng ? (
         <Marker
           key={`${lat}${lng}`}

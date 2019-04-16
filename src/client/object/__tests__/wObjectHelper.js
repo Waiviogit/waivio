@@ -1,4 +1,9 @@
-import { hasField, getFieldWithMaxWeight, sortListItemsBy } from '../wObjectHelper';
+import {
+  hasField,
+  getFieldWithMaxWeight,
+  sortListItemsBy,
+  getInnerFieldWithMaxWeight,
+} from '../wObjectHelper';
 import { WAIVIO_META_FIELD_NAME } from '../../../common/constants/waivio';
 
 describe('hasField', () => {
@@ -78,7 +83,7 @@ describe('getFieldWithMaxWeight', () => {
         result,
       ],
     };
-    expect(getFieldWithMaxWeight(wObject, 'name', null)).toEqual(result.body);
+    expect(getFieldWithMaxWeight(wObject, 'name')).toEqual(result.body);
   });
   it('should return field innerField of field with max weight', () => {
     const result = {
@@ -96,7 +101,7 @@ describe('getFieldWithMaxWeight', () => {
         result,
       ],
     };
-    expect(getFieldWithMaxWeight(wObject, 'address', 'country')).toEqual('resultValue');
+    expect(getInnerFieldWithMaxWeight(wObject, 'address', 'country')).toEqual('resultValue');
   });
   // Strange function return
   it('should return parsed field body if innerField null', () => {
