@@ -97,8 +97,10 @@ class ObjectInfo extends React.Component {
       email = getFieldWithMaxWeight(wobject, objectFields.email);
 
       websiteFields = getInnerFieldWithMaxWeight(wobject, objectFields.website);
-      title = websiteFields.title;
-      link = websiteFields.link;
+      if (websiteFields) {
+        title = websiteFields.title;
+        link = websiteFields.link;
+      }
       photosCount = wobject.photos_count;
 
       const filtered = _.filter(wobject.fields, ['name', objectFields.hashtag]);

@@ -255,11 +255,14 @@ export default class AppendForm extends Component {
       data.author = this.props.user.name;
       data.parentAuthor = wObject.author;
       data.parentPermlink = wObject.author_permlink;
+
       const langReadable = _.filter(LANGUAGES, { id: locale })[0].name;
+
       data.body = `@${data.author} added ${field}(${langReadable}):\n ${bodyField.replace(
         /[{}"]/g,
         '',
       )}`;
+
       data.title = '';
       let fieldsObject = {
         name: field,
