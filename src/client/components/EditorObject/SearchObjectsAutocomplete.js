@@ -131,6 +131,7 @@ class SearchObjectsAutocomplete extends Component {
         })}
         value={searchString}
         allowClear
+        autoFocus
       >
         {searchObjectsOptions}
       </AutoComplete>

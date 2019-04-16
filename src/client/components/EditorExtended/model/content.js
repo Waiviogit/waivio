@@ -1,8 +1,13 @@
 import { EditorState, convertFromRaw, CompositeDecorator, ContentState } from 'draft-js';
 
 import Link, { findLinkEntities } from '../components/entities/link';
+import ObjectLink, { findObjEntities } from '../components/entities/objectlink';
 
 const defaultDecorators = new CompositeDecorator([
+  {
+    strategy: findObjEntities,
+    component: ObjectLink,
+  },
   {
     strategy: findLinkEntities,
     component: Link,

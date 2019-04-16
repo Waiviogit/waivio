@@ -36,6 +36,7 @@ export const Inline = {
 
 export const Entity = {
   LINK: 'LINK',
+  OBJECT: 'OBJECT',
 };
 
 export const HYPERLINK = 'hyperlink';

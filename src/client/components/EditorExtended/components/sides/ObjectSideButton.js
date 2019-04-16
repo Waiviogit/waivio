@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import { EditorState, Modifier } from 'draft-js';
 import { Icon, Popover } from 'antd';
-// import { EditorState, AtomicBlockUtils } from 'draft-js';
-// import { ATOMIC_TYPES } from '../../util/constants';
+import { Entity } from '../../util/constants';
 import SearchObjectsAutocomplete from '../../../../../client/components/EditorObject/SearchObjectsAutocomplete';
 
 @injectIntl
 class ObjectSideButton extends Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
-    // setEditorState: PropTypes.func,
-    // getEditorState: PropTypes.func,
+    setEditorState: PropTypes.func,
+    getEditorState: PropTypes.func,
     // close: PropTypes.func,
   };
   static defaultProps = {
@@ -20,19 +20,21 @@ class ObjectSideButton extends Component {
     close: () => {},
   };
 
-  // onClick = () => {
-  //   let editorState = this.props.getEditorState();
-  //   const content = editorState.getCurrentContent();
-  //   const contentWithEntity = content.createEntity(ATOMIC_TYPES.SEPARATOR, 'IMMUTABLE', {
-  //     testmetadata: 'test',
-  //   });
-  //   const entityKey = contentWithEntity.getLastCreatedEntityKey();
-  //   editorState = EditorState.push(editorState, contentWithEntity, 'create-entity');
-  //   this.props.setEditorState(AtomicBlockUtils.insertAtomicBlock(editorState, entityKey, '***'));
-  //   this.props.close();
-  // };
-
   handleSelectObject = selectedObject => {
+    const editorState = this.props.getEditorState();
+    let contentState = editorState.getCurrentContent();
+    const selectionState = editorState.getSelection();
+    const contentStateWithEntity = contentState.createEntity(Entity.OBJECT, 'IMMUTABLE');
+    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+    contentState = Modifier.insertText(
+      contentState,
+      selectionState,
+      selectedObject.name,
+      null,
+      entityKey,
+    );
+
+    this.props.setEditorState(EditorState.push(editorState, contentState, 'insert-characters'));
     console.log('-->', selectedObject);
   };
 
@@ -53,7 +55,6 @@ class ObjectSideButton extends Component {
       >
         <button
           className="md-sb-button action-btn"
-          // onClick={this.onClick}
           title={intl.formatMessage({
             id: 'add_object',
             defaultMessage: 'Add an object',
