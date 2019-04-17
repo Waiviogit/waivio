@@ -9,6 +9,7 @@ import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
 import { createPostMetadata } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
+import ObjectCardView from '../../objectCard/ObjectCardView';
 
 @withRouter
 @connect(
@@ -38,15 +39,21 @@ class EditPost extends Component {
 
     this.state = {
       content: '',
+      linkedObjects: [],
     };
 
     this.handleChangeContent = this.handleChangeContent.bind(this);
+    this.handleAddObject = this.handleAddObject.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.buildPost = this.buildPost.bind(this);
   }
 
   handleChangeContent(content) {
     this.setState({ content });
+  }
+
+  handleAddObject(wobj) {
+    this.setState({ linkedObjects: [...this.state.linkedObjects, wobj] });
   }
 
   handleSubmit(data) {
@@ -56,6 +63,7 @@ class EditPost extends Component {
   }
 
   buildPost(data) {
+    const { linkedObjects } = this.state;
     const postData = {
       body: data.body,
       title: data.title,
@@ -75,7 +83,11 @@ class EditPost extends Component {
       this.props.draftPosts[this.props.draftId] &&
       this.props.draftPosts[this.props.draftId].jsonMetadata;
     const waivioData = {
-      wobjects: data.wobjects,
+      wobjects: linkedObjects.map(obj => ({
+        objectName: obj.name,
+        author_permlink: obj.id,
+        percent: obj.percent || Math.floor(100 / linkedObjects.length),
+      })),
     };
 
     postData.jsonMetadata = createPostMetadata(data.body, data.topics, oldMetadata, waivioData);
@@ -84,16 +96,16 @@ class EditPost extends Component {
   }
 
   render() {
-    const { content } = this.state;
+    const { content, linkedObjects } = this.state;
     return (
       <div className="shifted">
         <div className="post-layout container">
           <div className="center">
-            <Editor
-              onChange={this.handleChangeContent}
-              onAddObject={obj => console.log('postEdit.onAddObject > >\n ', obj)}
-            />
+            <Editor onChange={this.handleChangeContent} onAddObject={this.handleAddObject} />
             <PostPreviewModal content={content} onSubmit={this.handleSubmit} />
+            {linkedObjects.map(wObj => (
+              <ObjectCardView wObject={wObj} />
+            ))}
           </div>
           <div className="rightContainer">
             <div className="right">[drafts block]</div>

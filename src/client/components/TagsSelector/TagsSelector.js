@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { Select } from 'antd';
 
 class TagsSelector extends Component {
   static propTypes = {
+    className: PropTypes.string,
     label: PropTypes.string,
     placeholder: PropTypes.string,
     tags: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -11,6 +13,7 @@ class TagsSelector extends Component {
     validator: PropTypes.func,
   };
   static defaultProps = {
+    className: '',
     label: '',
     tags: [],
     placeholder: '',
@@ -30,9 +33,9 @@ class TagsSelector extends Component {
   }
 
   render() {
-    const { label, placeholder, tags } = this.props;
+    const { label, placeholder, tags, className } = this.props;
     return (
-      <div className="tags-selector">
+      <div className={classNames('tags-selector', { [className]: Boolean(className) })}>
         {label && <div className="tags-selector__label">{label}</div>}
         <Select
           mode="tags"

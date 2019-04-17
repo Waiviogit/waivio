@@ -4,13 +4,16 @@ import { injectIntl } from 'react-intl';
 import { convertToRaw } from 'draft-js';
 import { Editor as MediumDraftEditor, createEditorState } from './index';
 import toMarkdown from './util/editorStateToMarkdown';
+import ImageSideButton from './components/sides/ImageSideButton';
+import SeparatorButton from './components/sides/SeparatorSideButton';
+import ObjectSideButton from './components/sides/ObjectSideButton';
 
 @injectIntl
 class Editor extends React.Component {
   static propTypes = {
     intl: PropTypes.shape(),
     // passed props:
-    // onAddObject: PropTypes.func, // use it in future
+    onAddObject: PropTypes.func,
     onChange: PropTypes.func,
   };
   static defaultProps = {
@@ -48,6 +51,8 @@ class Editor extends React.Component {
     this.props.onChange(toMarkdown(convertToRaw(editorState.getCurrentContent())));
   };
 
+  handleAddObject = object => this.props.onAddObject(object);
+
   render() {
     const { editorState, isMounted } = this.state;
     return (
@@ -59,6 +64,24 @@ class Editor extends React.Component {
             editorState={editorState}
             beforeInput={this.handleBeforeInput}
             onChange={this.handleContentChange}
+            onAddObject={this.handleAddObject}
+            sideButtons={[
+              {
+                title: 'Image',
+                component: ImageSideButton,
+              },
+              {
+                title: 'Separator',
+                component: SeparatorButton,
+              },
+              {
+                title: 'Object',
+                component: ObjectSideButton,
+                props: {
+                  onAddObject: this.handleAddObject,
+                },
+              },
+            ]}
           />
         ) : null}
       </div>
