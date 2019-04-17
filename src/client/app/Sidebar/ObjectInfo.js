@@ -62,6 +62,7 @@ class ObjectInfo extends React.Component {
     let address = '';
     let map = '';
     let description = '';
+    let price = '';
     let link = '';
     let title = '';
     let websiteFields = {};
@@ -90,6 +91,8 @@ class ObjectInfo extends React.Component {
       short = getFieldWithMaxWeight(wobject, objectFields.title);
 
       email = getFieldWithMaxWeight(wobject, objectFields.email);
+
+      price = getFieldWithMaxWeight(wobject, objectFields.price);
 
       websiteFields = getInnerFieldWithMaxWeight(wobject, objectFields.website);
       if (websiteFields) {
@@ -269,6 +272,7 @@ class ObjectInfo extends React.Component {
                 )}
               </div>
             ) : null}
+            {listItem(objectFields.price, <React.Fragment>{price}</React.Fragment>)}
             {listItem(
               objectFields.address,
               address && (

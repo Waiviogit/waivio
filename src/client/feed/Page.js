@@ -9,8 +9,6 @@ import SubFeed from './SubFeed';
 import HeroBannerContainer from './HeroBannerContainer';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
-import TopicSelector from '../components/TopicSelector';
-import TrendingTagsMenu from '../components/TrendingTagsMenu';
 import Affix from '../components/Utils/Affix';
 import ScrollToTop from '../components/Utils/ScrollToTop';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
@@ -23,7 +21,6 @@ import QuickPostEditor from '../components/QuickPostEditor/QuickPostEditor';
 class Page extends React.Component {
   static propTypes = {
     authenticated: PropTypes.bool.isRequired,
-    loaded: PropTypes.bool.isRequired,
     history: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
@@ -46,12 +43,7 @@ class Page extends React.Component {
   handleTopicClose = () => this.props.history.push('/trending');
 
   render() {
-    const { authenticated, loaded, location, match } = this.props;
-    const { category, sortBy } = match.params;
-
-    const shouldDisplaySelector = location.pathname !== '/' || (!authenticated && loaded);
-    const displayTopicSelector = location.pathname === '/trending';
-
+    const { authenticated, location } = this.props;
     const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
 
     return (
@@ -76,16 +68,6 @@ class Page extends React.Component {
               </div>
             </Affix>
             <div className="center">
-              {displayTopicSelector && <TrendingTagsMenu />}
-              {shouldDisplaySelector && (
-                <TopicSelector
-                  isSingle={false}
-                  sort={sortBy}
-                  topics={category ? [category] : []}
-                  onSortChange={this.handleSortChange}
-                  onTopicClose={this.handleTopicClose}
-                />
-              )}
               {authenticated && <QuickPostEditor />}
               <SubFeed />
             </div>

@@ -220,6 +220,7 @@ export default class AppendForm extends Component {
       case objectFields.description:
       case objectFields.avatar:
       case objectFields.background:
+      case objectFields.price:
       case objectFields.email: {
         fieldBody.push(rest[currentField]);
         break;
@@ -693,6 +694,51 @@ export default class AppendForm extends Component {
                 placeholder={intl.formatMessage({
                   id: 'description_short',
                   defaultMessage: 'Short description',
+                })}
+              />,
+            )}
+          </Form.Item>
+        );
+      }
+      case objectFields.price: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.price, {
+              rules: [
+                {
+                  max: 100,
+                  message: intl.formatMessage(
+                    {
+                      id: 'value_error_long',
+                      defaultMessage: "Value can't be longer than 100 characters.",
+                    },
+                    { value: 100 },
+                  ),
+                },
+                {
+                  required: true,
+                  message: intl.formatMessage(
+                    {
+                      id: 'field_error',
+                      defaultMessage: 'Field is required',
+                    },
+                    { field: 'Short description' },
+                  ),
+                },
+                {
+                  validator: this.validateFieldValue,
+                },
+              ],
+            })(
+              <Input.TextArea
+                className={classNames('AppendForm__input', {
+                  'validation-error': !this.state.isSomeValue,
+                })}
+                disabled={loading}
+                autosize={{ minRows: 4, maxRows: 8 }}
+                placeholder={intl.formatMessage({
+                  id: 'price_field',
+                  defaultMessage: 'Price',
                 })}
               />,
             )}

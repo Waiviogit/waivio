@@ -14,6 +14,7 @@ export const objectFields = {
   sorting: 'sortCustom',
   rating: 'rating',
   listItem: 'listItem',
+  price: 'price',
 };
 
 export const objectFieldsWithInnerData = [
