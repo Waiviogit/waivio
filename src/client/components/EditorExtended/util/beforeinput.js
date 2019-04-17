@@ -37,10 +37,10 @@ const beforeInput = (editorState, inputString, onChange, mapping = StringToTypeM
     return NOT_HANDLED;
   }
   const blockLength = block.getLength();
-  if (selection.getAnchorOffset() > 1 || blockLength > 1) {
+  if (selection.getAnchorOffset() > 2 || blockLength > 2) {
     return NOT_HANDLED;
   }
-  const blockTo = mapping[block.getText()[0] + inputString];
+  const blockTo = mapping[block.getText() + inputString];
   if (!blockTo) {
     return NOT_HANDLED;
   }
