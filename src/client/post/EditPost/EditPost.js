@@ -9,6 +9,7 @@ import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
 import { createPostMetadata } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
+import ObjectCardView from '../../objectCard/ObjectCardView';
 
 @withRouter
 @connect(
@@ -38,15 +39,21 @@ class EditPost extends Component {
 
     this.state = {
       content: '',
+      wobjects: [],
     };
 
     this.handleChangeContent = this.handleChangeContent.bind(this);
+    this.handleAddObject = this.handleAddObject.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.buildPost = this.buildPost.bind(this);
   }
 
   handleChangeContent(content) {
     this.setState({ content });
+  }
+
+  handleAddObject(wobj) {
+    this.setState({ wobjects: [...this.state.wobjects, wobj] });
   }
 
   handleSubmit(data) {
@@ -84,16 +91,15 @@ class EditPost extends Component {
   }
 
   render() {
-    const { content } = this.state;
+    const { content, wobjects } = this.state;
+    const linkedObjects = wobjects.map(wObj => <ObjectCardView wObject={wObj} />);
     return (
       <div className="shifted">
         <div className="post-layout container">
           <div className="center">
-            <Editor
-              onChange={this.handleChangeContent}
-              onAddObject={obj => console.log('postEdit.onAddObject > >\n ', obj)}
-            />
+            <Editor onChange={this.handleChangeContent} onAddObject={this.handleAddObject} />
             <PostPreviewModal content={content} onSubmit={this.handleSubmit} />
+            {linkedObjects}
           </div>
           <div className="rightContainer">
             <div className="right">[drafts block]</div>

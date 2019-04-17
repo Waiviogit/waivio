@@ -1,7 +1,7 @@
 import { ATOMIC_TYPES, Block, Entity } from './constants';
 
 const defaultMarkdownDict = {
-  BOLD: '__',
+  BOLD: '**',
   ITALIC: '*',
   // UNDERLINE: '++',
 };

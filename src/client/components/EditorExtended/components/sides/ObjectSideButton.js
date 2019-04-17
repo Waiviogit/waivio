@@ -12,11 +12,13 @@ class ObjectSideButton extends Component {
     intl: PropTypes.shape().isRequired,
     setEditorState: PropTypes.func,
     getEditorState: PropTypes.func,
+    onAddObject: PropTypes.func,
     // close: PropTypes.func,
   };
   static defaultProps = {
     setEditorState: () => {},
     getEditorState: () => {},
+    onAddObject: () => {},
     close: () => {},
   };
 
@@ -44,6 +46,7 @@ class ObjectSideButton extends Component {
     });
 
     this.props.setEditorState(EditorState.forceSelection(newEditorState, newSelection));
+    this.props.onAddObject(selectedObject);
   };
 
   render() {

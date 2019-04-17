@@ -27,8 +27,6 @@ import blockStyleFn from './util/blockStyleFn';
 import { getCurrentBlock, resetBlockWithType, addNewBlockAt, isCursorBetweenLink } from './model';
 
 import ImageSideButton from './components/sides/ImageSideButton';
-import SeparatorButton from './components/sides/SeparatorSideButton';
-import ObjectSideButton from './components/sides/ObjectSideButton';
 import './index.less';
 
 /*
@@ -100,14 +98,6 @@ class MediumDraftEditor extends React.Component {
       {
         title: 'Image',
         component: ImageSideButton,
-      },
-      {
-        title: 'Separator',
-        component: SeparatorButton,
-      },
-      {
-        title: 'Object',
-        component: ObjectSideButton,
       },
     ],
     disableToolbar: false,

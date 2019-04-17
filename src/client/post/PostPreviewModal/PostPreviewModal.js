@@ -96,7 +96,7 @@ class PostPreviewModal extends Component {
             onCancel={this.hideModal}
             onOk={() => console.log('You are my hero!')}
           >
-            <h1>{title}</h1>
+            <h1 className="StoryFull__title">{title}</h1>
             <BodyContainer full body={body} />
             <TagsSelector
               label={intl.formatMessage({
