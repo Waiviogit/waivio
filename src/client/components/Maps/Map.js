@@ -2,9 +2,10 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import React from 'react';
 import Map from 'pigeon-maps';
-import { Icon } from 'antd';
+import { Icon, Modal } from 'antd';
 import Marker from 'pigeon-marker/react';
 import Overlay from 'pigeon-overlay';
+import classNames from 'classnames';
 import { getClientWObj } from '../../adapters';
 import './Map.less';
 import { getInnerFieldWithMaxWeight } from '../../object/wObjectHelper';
@@ -20,11 +21,13 @@ class MapOS extends React.Component {
       markersLayout: null,
       zoom: 8,
       userCoordinates: null,
+      isFullscreenMode: false,
     };
 
     this.setPosition = this.setPosition.bind(this);
     this.showUserPosition = this.showUserPosition.bind(this);
     this.setCoordinates = this.setCoordinates.bind(this);
+    this.toggleModal = this.toggleModal.bind(this);
   }
 
   componentDidMount() {
@@ -92,9 +95,13 @@ class MapOS extends React.Component {
     this.setState({ zoom: this.state.zoom - 1 });
   };
 
+  toggleModal() {
+    this.setState({ isFullscreenMode: !this.state.isFullscreenMode });
+  }
+
   render() {
     const { mapHeigth, setCoordinates } = this.props;
-    const { markersLayout, infoboxData, zoom, userCoordinates } = this.state;
+    const { markersLayout, infoboxData, zoom, userCoordinates, isFullscreenMode } = this.state;
     return userCoordinates ? (
       <div className="MapOS">
         <Map
@@ -119,9 +126,56 @@ class MapOS extends React.Component {
         <div role="presentation" className="MapOS__locateGPS" onClick={this.setPosition}>
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
         </div>
-        <div role="presentation" className="MapOS__fullScreen" onClick={this.setPosition}>
+        <div role="presentation" className="MapOS__fullScreen" onClick={this.toggleModal}>
           <Icon type="fullscreen" style={{ fontSize: '25px', color: '#000000' }} />
         </div>
+        {isFullscreenMode && (
+          <Modal
+            title={null}
+            footer={null}
+            visible={isFullscreenMode}
+            onCancel={this.toggleModal}
+            width={'90%'}
+            wrapClassName={classNames('MapModal')}
+            destroyOnClose
+          >
+            <div className="MapOS__fullscreenContent">
+              <Map
+                center={userCoordinates}
+                zoom={zoom}
+                height={'100%'}
+                onClick={setCoordinates}
+                animate
+                zoomSnap={false}
+              >
+                {markersLayout}
+                {infoboxData && this.getOverlayLayout()}
+              </Map>
+              <div className="MapOS__zoom">
+                <div
+                  role="presentation"
+                  className="MapOS__zoom-button"
+                  onClick={this.incrementZoom}
+                >
+                  +
+                </div>
+                <div
+                  role="presentation"
+                  className="MapOS__zoom-button"
+                  onClick={this.decrementZoom}
+                >
+                  -
+                </div>
+              </div>
+              <div role="presentation" className="MapOS__locateGPS" onClick={this.setPosition}>
+                <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
+              </div>
+              <div role="presentation" className="MapOS__fullScreen" onClick={this.toggleModal}>
+                <Icon type="fullscreen-exit" style={{ fontSize: '25px', color: '#000000' }} />
+              </div>
+            </div>
+          </Modal>
+        )}
       </div>
     ) : (
       <Loading />
