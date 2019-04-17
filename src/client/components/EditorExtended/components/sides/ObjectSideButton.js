@@ -24,11 +24,10 @@ class ObjectSideButton extends Component {
     const editorState = this.props.getEditorState();
     let contentState = editorState.getCurrentContent();
     const selectionState = editorState.getSelection();
-    const contentStateWithEntity = contentState.createEntity(
-      Entity.OBJECT,
-      'IMMUTABLE',
-      selectedObject,
-    );
+    const contentStateWithEntity = contentState.createEntity(Entity.OBJECT, 'IMMUTABLE', {
+      object: selectedObject,
+      url: `${document.location.origin}/object/${selectedObject.id}`,
+    });
     const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
     contentState = Modifier.insertText(
       contentState,

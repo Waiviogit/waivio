@@ -11,8 +11,7 @@ export const findObjEntities = (contentBlock, callback, contentState) => {
 };
 
 const ObjectLink = props => {
-  const obj = props.contentState.getEntity(props.entityKey).getData();
-  const url = `${document.location.origin}/object/${obj.id}`;
+  const { url } = props.contentState.getEntity(props.entityKey).getData();
   return (
     <a
       className="object-link"
