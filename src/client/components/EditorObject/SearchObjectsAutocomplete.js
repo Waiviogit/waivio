@@ -23,19 +23,23 @@ import './SearchObjectsAutocomplete.less';
 )
 class SearchObjectsAutocomplete extends Component {
   static defaultProps = {
+    intl: {},
     style: { width: '100%' },
     searchObjectsResults: [],
     itemsIdsToOmit: [],
+    searchObjects: () => {},
+    clearSearchResults: () => {},
+    handleSelect: () => {},
   };
 
   static propTypes = {
     itemsIdsToOmit: PropTypes.arrayOf(PropTypes.string),
-    intl: PropTypes.shape().isRequired,
+    intl: PropTypes.shape(),
     style: PropTypes.shape(),
     searchObjectsResults: PropTypes.arrayOf(PropTypes.object),
-    searchObjects: PropTypes.func.isRequired,
-    clearSearchResults: PropTypes.func.isRequired,
-    handleSelect: PropTypes.func.isRequired,
+    searchObjects: PropTypes.func,
+    clearSearchResults: PropTypes.func,
+    handleSelect: PropTypes.func,
   };
 
   constructor(props) {
@@ -108,7 +112,11 @@ class SearchObjectsAutocomplete extends Component {
     const searchObjectsOptions = searchString
       ? searchObjectsResults
           .filter(obj => !itemsIdsToOmit.includes(obj.id))
-          .map(obj => <AutoComplete.Option key={obj.id}>{getObjMarkup(obj)}</AutoComplete.Option>)
+          .map(obj => (
+            <AutoComplete.Option key={obj.id} label={obj.id}>
+              {getObjMarkup(obj)}
+            </AutoComplete.Option>
+          ))
       : [];
     return (
       <AutoComplete
@@ -116,12 +124,14 @@ class SearchObjectsAutocomplete extends Component {
         onChange={this.handleChange}
         onSelect={this.handleSelect}
         onSearch={this.handleSearch}
+        optionLabelProp={'label'}
         placeholder={intl.formatMessage({
           id: 'objects_auto_complete_placeholder',
           defaultMessage: 'Find',
         })}
         value={searchString}
         allowClear
+        autoFocus
       >
         {searchObjectsOptions}
       </AutoComplete>

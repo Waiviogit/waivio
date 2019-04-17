@@ -1,7 +1,7 @@
-import { ATOMIC_TYPES, Block } from './constants';
+import { ATOMIC_TYPES, Block, Entity } from './constants';
 
 const defaultMarkdownDict = {
-  BOLD: '__',
+  BOLD: '**',
   ITALIC: '*',
   // UNDERLINE: '++',
 };
@@ -77,7 +77,8 @@ const applyAtomicStyle = (block, entityMap, content) => {
 
 const getEntityStart = entity => {
   switch (entity.type) {
-    case 'LINK':
+    case Entity.LINK:
+    case Entity.OBJECT:
       return '[';
     default:
       return '';
@@ -86,7 +87,8 @@ const getEntityStart = entity => {
 
 const getEntityEnd = entity => {
   switch (entity.type) {
-    case 'LINK':
+    case Entity.LINK:
+    case Entity.OBJECT:
       return `](${entity.data.url})`;
     default:
       return '';
