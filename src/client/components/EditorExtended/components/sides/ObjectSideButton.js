@@ -24,7 +24,11 @@ class ObjectSideButton extends Component {
     const editorState = this.props.getEditorState();
     let contentState = editorState.getCurrentContent();
     const selectionState = editorState.getSelection();
-    const contentStateWithEntity = contentState.createEntity(Entity.OBJECT, 'IMMUTABLE');
+    const contentStateWithEntity = contentState.createEntity(
+      Entity.OBJECT,
+      'IMMUTABLE',
+      selectedObject,
+    );
     const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
     contentState = Modifier.insertText(
       contentState,
@@ -34,8 +38,13 @@ class ObjectSideButton extends Component {
       entityKey,
     );
 
-    this.props.setEditorState(EditorState.push(editorState, contentState, 'insert-characters'));
-    console.log('-->', selectedObject);
+    const newEditorState = EditorState.push(editorState, contentState, 'insert-characters');
+    const newSelection = selectionState.merge({
+      anchorOffset: selectedObject.name.length,
+      focusOffset: selectedObject.name.length,
+    });
+
+    this.props.setEditorState(EditorState.forceSelection(newEditorState, newSelection));
   };
 
   render() {

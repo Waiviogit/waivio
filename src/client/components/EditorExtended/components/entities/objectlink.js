@@ -10,16 +10,26 @@ export const findObjEntities = (contentBlock, callback, contentState) => {
   }, callback);
 };
 
-const ObjectLink = props => (
-  <a className="object-link" href="http://waiviodev.com" rel="noopener noreferrer" target="_blank">
-    {props.children}
-  </a>
-);
+const ObjectLink = props => {
+  const obj = props.contentState.getEntity(props.entityKey).getData();
+  const url = `${document.location.origin}/object/${obj.id}`;
+  return (
+    <a
+      className="object-link"
+      href={url}
+      rel="noopener noreferrer"
+      target="_blank"
+      aria-label={url}
+    >
+      {props.children}
+    </a>
+  );
+};
 
 ObjectLink.propTypes = {
-  // contentState: PropTypes.shape().isRequired,
+  contentState: PropTypes.shape().isRequired,
   children: PropTypes.node.isRequired,
-  // entityKey: PropTypes.string.isRequired,
+  entityKey: PropTypes.string.isRequired,
 };
 
 export default ObjectLink;
