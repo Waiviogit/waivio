@@ -18,7 +18,7 @@ export const getRecommendedObjects = () =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
     headers,
     method: 'POST',
-    body: JSON.stringify({ userLimit: 5, locale: 'en-US' }),
+    body: JSON.stringify({ userLimit: 5, locale: 'en-US', limit: 6 }),
   }).then(res => res.json());
 
 export const getObjects = ({ limit = 30, locale = 'en-US', skip = 0 }) =>

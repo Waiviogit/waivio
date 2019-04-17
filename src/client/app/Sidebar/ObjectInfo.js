@@ -37,14 +37,9 @@ class ObjectInfo extends React.Component {
   static propTypes = {
     wobject: PropTypes.shape().isRequired,
     userName: PropTypes.string.isRequired,
-    isEditMode: PropTypes.bool,
-    isAuthenticated: PropTypes.bool,
+    isEditMode: PropTypes.bool.isRequired,
+    isAuthenticated: PropTypes.bool.isRequired,
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  };
-
-  static defaultProps = {
-    isEditMode: false,
-    isAuthenticated: false,
   };
 
   state = {
