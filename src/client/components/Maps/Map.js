@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import React from 'react';
 import Map from 'pigeon-maps';
+import { Icon } from 'antd';
 import Marker from 'pigeon-marker/react';
 import Overlay from 'pigeon-overlay';
 import { getClientWObj } from '../../adapters';
@@ -117,6 +118,9 @@ class MapOS extends React.Component {
         </div>
         <div role="presentation" className="MapOS__locateGPS" onClick={this.setPosition}>
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
+        </div>
+        <div role="presentation" className="MapOS__fullScreen" onClick={this.setPosition}>
+          <Icon type="fullscreen" style={{ fontSize: '25px', color: '#000000' }} />
         </div>
       </div>
     ) : (
