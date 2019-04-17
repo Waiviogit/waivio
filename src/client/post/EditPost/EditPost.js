@@ -39,7 +39,7 @@ class EditPost extends Component {
 
     this.state = {
       content: '',
-      wobjects: [],
+      linkedObjects: [],
     };
 
     this.handleChangeContent = this.handleChangeContent.bind(this);
@@ -53,7 +53,7 @@ class EditPost extends Component {
   }
 
   handleAddObject(wobj) {
-    this.setState({ wobjects: [...this.state.wobjects, wobj] });
+    this.setState({ linkedObjects: [...this.state.linkedObjects, wobj] });
   }
 
   handleSubmit(data) {
@@ -63,6 +63,7 @@ class EditPost extends Component {
   }
 
   buildPost(data) {
+    const { linkedObjects } = this.state;
     const postData = {
       body: data.body,
       title: data.title,
@@ -82,7 +83,11 @@ class EditPost extends Component {
       this.props.draftPosts[this.props.draftId] &&
       this.props.draftPosts[this.props.draftId].jsonMetadata;
     const waivioData = {
-      wobjects: data.wobjects,
+      wobjects: linkedObjects.map(obj => ({
+        objectName: obj.name,
+        author_permlink: obj.id,
+        percent: obj.percent || Math.floor(100 / linkedObjects.length),
+      })),
     };
 
     postData.jsonMetadata = createPostMetadata(data.body, data.topics, oldMetadata, waivioData);
@@ -91,15 +96,16 @@ class EditPost extends Component {
   }
 
   render() {
-    const { content, wobjects } = this.state;
-    const linkedObjects = wobjects.map(wObj => <ObjectCardView wObject={wObj} />);
+    const { content, linkedObjects } = this.state;
     return (
       <div className="shifted">
         <div className="post-layout container">
           <div className="center">
             <Editor onChange={this.handleChangeContent} onAddObject={this.handleAddObject} />
             <PostPreviewModal content={content} onSubmit={this.handleSubmit} />
-            {linkedObjects}
+            {linkedObjects.map(wObj => (
+              <ObjectCardView wObject={wObj} />
+            ))}
           </div>
           <div className="rightContainer">
             <div className="right">[drafts block]</div>
