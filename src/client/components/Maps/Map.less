@@ -2,31 +2,40 @@
 
 .MapOS {
   position: relative;
-  &__locateGPS {
+  .mapButton-mixin() {
     position: absolute;
-    left: 10px;
-    bottom: 15px;
+    cursor: pointer;
     &-button {
       width: 25px;
       height: 25px;
       text-align: center;
       background-color: @white;
       border: 1px solid @border-color-base;
-      cursor: pointer;
+      &:hover {
+        background-color: @border-color-base;
+      }
+    }
+    &:hover {
+      background-color: @border-color-base;
     }
   }
+  &__fullScreen {
+    .mapButton-mixin();
+    right: 10px;
+    bottom: 15px;
+    background-color: @white;
+    width: 25px;
+    height: 25px;
+  }
+  &__locateGPS {
+    .mapButton-mixin();
+    left: 10px;
+    bottom: 15px;
+  }
   &__zoom {
-    position: absolute;
+    .mapButton-mixin();
     right: 10px;
     top: 10px;
-    &-button {
-      width: 25px;
-      height: 25px;
-      text-align: center;
-      background-color: @white;
-      border: 1px solid @border-color-base;
-      cursor: pointer;
-    }
   }
   &__overlay-wrap {
     display: flex;

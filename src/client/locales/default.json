@@ -446,6 +446,7 @@
   "object_field_sortCustom": "Custom sorting",
   "object_field_listItem": "List item",
   "object_field_rating": "Ratings",
+  "object_field_price": "Price",
   "field_error": "{field} is required",
   "append_send": "Submit",
   "suggestion_add_field": "Update",
@@ -523,5 +524,6 @@
   "related_objects": "Related Objects",
   "type": "Type",
   "advance_settings": "Advance settings",
-  "publish": "Publish"
+  "publish": "Publish",
+  "price_field": "Price"
 }

@@ -14,7 +14,18 @@ export const objectFields = {
   sorting: 'sortCustom',
   rating: 'rating',
   listItem: 'listItem',
+  price: 'price',
 };
+
+export const objectFieldsWithInnerData = [
+  'address',
+  'map',
+  'link',
+  'website',
+  'phone',
+  'email',
+  'rating',
+];
 
 export const addressFields = {
   country: 'country',

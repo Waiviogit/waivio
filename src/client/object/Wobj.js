@@ -81,10 +81,10 @@ export default class Wobj extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { match } = this.props;
+    const { match, authenticatedUserName } = this.props;
 
     if (prevProps.match.params.name !== match.params.name) {
-      this.props.getObjectInfo(match.params.name);
+      this.props.getObjectInfo(match.params.name, authenticatedUserName);
     }
   }
 

@@ -220,6 +220,7 @@ export default class AppendForm extends Component {
       case objectFields.description:
       case objectFields.avatar:
       case objectFields.background:
+      case objectFields.price:
       case objectFields.email: {
         fieldBody.push(rest[currentField]);
         break;
@@ -228,10 +229,10 @@ export default class AppendForm extends Component {
         fieldBody.push(JSON.stringify(rest[objectFields.sorting]));
         break;
       }
-      case objectFields.website: {
-        fieldBody.push(rest[websiteFields.link]);
-        break;
-      }
+      // case objectFields.website: {
+      //   fieldBody.push(rest[websiteFields.link]);
+      //   break;
+      // }
       case objectFields.hashtag: {
         fieldBody = rest[objectFields.hashtag];
         break;
@@ -255,11 +256,14 @@ export default class AppendForm extends Component {
       data.author = this.props.user.name;
       data.parentAuthor = wObject.author;
       data.parentPermlink = wObject.author_permlink;
+
       const langReadable = _.filter(LANGUAGES, { id: locale })[0].name;
+
       data.body = `@${data.author} added ${field}(${langReadable}):\n ${bodyField.replace(
         /[{}"]/g,
         '',
       )}`;
+
       data.title = '';
       let fieldsObject = {
         name: field,
@@ -267,12 +271,12 @@ export default class AppendForm extends Component {
         locale,
       };
 
-      if (field === objectFields.website) {
-        fieldsObject = {
-          ...fieldsObject,
-          [websiteFields.title]: form[websiteFields.title],
-        };
-      }
+      // if (field === objectFields.website) {
+      //   fieldsObject = {
+      //     ...fieldsObject,
+      //     [websiteFields.title]: form[websiteFields.title],
+      //   };
+      // }
 
       if (field === objectFields.phone) {
         fieldsObject = {
@@ -690,6 +694,51 @@ export default class AppendForm extends Component {
                 placeholder={intl.formatMessage({
                   id: 'description_short',
                   defaultMessage: 'Short description',
+                })}
+              />,
+            )}
+          </Form.Item>
+        );
+      }
+      case objectFields.price: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.price, {
+              rules: [
+                {
+                  max: 100,
+                  message: intl.formatMessage(
+                    {
+                      id: 'value_error_long',
+                      defaultMessage: "Value can't be longer than 100 characters.",
+                    },
+                    { value: 100 },
+                  ),
+                },
+                {
+                  required: true,
+                  message: intl.formatMessage(
+                    {
+                      id: 'field_error',
+                      defaultMessage: 'Field is required',
+                    },
+                    { field: 'Short description' },
+                  ),
+                },
+                {
+                  validator: this.validateFieldValue,
+                },
+              ],
+            })(
+              <Input.TextArea
+                className={classNames('AppendForm__input', {
+                  'validation-error': !this.state.isSomeValue,
+                })}
+                disabled={loading}
+                autosize={{ minRows: 4, maxRows: 8 }}
+                placeholder={intl.formatMessage({
+                  id: 'price_field',
+                  defaultMessage: 'Price',
                 })}
               />,
             )}

@@ -34,7 +34,7 @@ export const GET_RECOMMENDED_OBJECTS_START = '@user/GET_RECOMMENDED_OBJECTS_STAR
 export const GET_RECOMMENDED_OBJECTS_SUCCESS = '@user/GET_RECOMMENDED_OBJECTS_SUCCESS';
 export const GET_RECOMMENDED_OBJECTS_ERROR = '@user/GET_RECOMMENDED_OBJECTS_ERROR';
 
-export const getRecommendedObjects = () => dispatch =>
+export const getRecommendedObj = () => dispatch =>
   dispatch({
     type: GET_RECOMMENDED_OBJECTS,
     payload: {

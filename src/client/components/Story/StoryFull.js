@@ -14,7 +14,6 @@ import {
 import { Link } from 'react-router-dom';
 import { Collapse, Icon } from 'antd';
 import Lightbox from 'react-image-lightbox';
-import { Scrollbars } from 'react-custom-scrollbars';
 import { getFromMetadata, extractImageTags } from '../../helpers/parser';
 import { isPostDeleted, dropCategory } from '../../helpers/postHelpers';
 import withAuthActions from '../../auth/withAuthActions';
@@ -27,12 +26,10 @@ import BodyContainer from '../../containers/Story/BodyContainer';
 import StoryDeleted from './StoryDeleted';
 import StoryFooter from '../StoryFooter/StoryFooter';
 import Avatar from '../Avatar';
-import Topic from '../Button/Topic';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import PostFeedEmbed from './PostFeedEmbed';
 import PostedFrom from './PostedFrom';
 import './StoryFull.less';
-import PostObjectCard from '../../post/PostObjectCard/PostObjectCard';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { getClientWObj } from '../../adapters';
 
@@ -223,8 +220,6 @@ class StoryFull extends React.Component {
     const parsedBody = getHtml(signedBody, {}, 'text');
 
     this.images = extractImageTags(parsedBody);
-
-    const tags = _.union(getFromMetadata(post.json_metadata, 'tags'), [post.category]);
 
     let followText = '';
 
@@ -467,25 +462,6 @@ class StoryFull extends React.Component {
             }
           />
         )}
-        <div className="StoryFull__topics">
-          <Scrollbars
-            universal
-            autoHide
-            renderView={({ style, ...props }) => (
-              <div style={{ ...style, marginBottom: '-20px' }} {...props} />
-            )}
-            style={{ width: '100%', height: 46 }}
-          >
-            <div className="StoryFull__topics__content">
-              {_.uniq(tags)
-                .filter(_.isString)
-                .map(tag => (
-                  <Topic key={tag} name={tag} />
-                ))}
-              <div style={{ flex: '0 0 20px' }} />
-            </div>
-          </Scrollbars>
-        </div>
 
         <Collapse defaultActiveKey={['1']} accordion>
           {!_.isEmpty(linkedObjects) && (
@@ -510,9 +486,10 @@ class StoryFull extends React.Component {
               })} ${taggedObjects.length}`}
               key="2"
             >
-              {_.map(taggedObjects, wobj => (
-                <PostObjectCard key={`${wobj.author_permlink}`} wObject={wobj} />
-              ))}
+              {_.map(taggedObjects, obj => {
+                const wobj = getClientWObj(obj);
+                return <ObjectCardView key={`${wobj.id}`} wObject={wobj} />;
+              })}
             </Collapse.Panel>
           )}
         </Collapse>

@@ -1,14 +1,8 @@
-import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Route, Switch, withRouter } from 'react-router-dom';
-import {
-  getIsAuthenticated,
-  getIsAuthFetching,
-  getRecommendations,
-  getRecommendedObjects,
-} from '../../reducers';
+import { getIsAuthenticated, getIsAuthFetching, getRecommendations } from '../../reducers';
 import { updateRecommendations } from '../../user/userActions';
 import InterestingPeople from '../../components/Sidebar/InterestingPeople';
 import InterestingObjects from '../../components/Sidebar/InterestingObjects';
@@ -27,7 +21,6 @@ import ObjectWeightBlock from '../../components/Sidebar/ObjectWeightBlock';
     authenticated: getIsAuthenticated(state),
     isAuthFetching: getIsAuthFetching(state),
     recommendations: getRecommendations(state),
-    recommendedObjects: getRecommendedObjects(state),
   }),
   {
     updateRecommendations,
@@ -39,7 +32,6 @@ export default class RightSidebar extends React.Component {
     isAuthFetching: PropTypes.bool.isRequired,
     showPostRecommendation: PropTypes.bool,
     recommendations: PropTypes.arrayOf(PropTypes.shape({ name: PropTypes.string })).isRequired,
-    recommendedObjects: PropTypes.arrayOf(PropTypes.shape({ tag: PropTypes.string })).isRequired,
     updateRecommendations: PropTypes.func,
     match: PropTypes.shape(),
   };
@@ -54,13 +46,7 @@ export default class RightSidebar extends React.Component {
   handleInterestingPeopleRefresh = () => this.props.updateRecommendations();
 
   render() {
-    const {
-      authenticated,
-      showPostRecommendation,
-      isAuthFetching,
-      recommendedObjects,
-      match,
-    } = this.props;
+    const { authenticated, showPostRecommendation, isAuthFetching, match } = this.props;
 
     if (isAuthFetching) {
       return <Loading />;
@@ -87,11 +73,7 @@ export default class RightSidebar extends React.Component {
               <React.Fragment>
                 {authenticated && (
                   <React.Fragment>
-                    {_.size(recommendedObjects) > 0 ? (
-                      <InterestingObjects objects={recommendedObjects} />
-                    ) : (
-                      <RightSidebarLoading />
-                    )}
+                    <InterestingObjects />
                     {this.props.recommendations.length > 0 && !showPostRecommendation ? (
                       <InterestingPeople
                         users={this.props.recommendations}
