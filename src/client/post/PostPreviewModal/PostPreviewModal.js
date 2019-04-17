@@ -7,6 +7,7 @@ import TagsSelector from '../../components/TagsSelector/TagsSelector';
 import PolicyConfirmation from '../../components/PolicyConfirmation/PolicyConfirmation';
 import AdvanceSettings from './AdvanceSettings';
 import { splitPostContent } from '../../helpers/postHelpers';
+import './PostPreviewModal.less';
 
 const isTopicValid = topic => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(topic);
 
@@ -96,9 +97,10 @@ class PostPreviewModal extends Component {
             onCancel={this.hideModal}
             onOk={() => console.log('You are my hero!')}
           >
-            <h1 className="StoryFull__title">{title}</h1>
+            <h1 className="StoryFull__title preview">{title}</h1>
             <BodyContainer full body={body} />
             <TagsSelector
+              className="post-preview-topics"
               label={intl.formatMessage({
                 id: 'topics',
                 defaultMessage: 'Topics',
@@ -112,24 +114,35 @@ class PostPreviewModal extends Component {
               onChange={this.handleTopicsChange}
             />
             <PolicyConfirmation
+              className="post-preview-legal-notice"
               checkboxLabel="Legal notice"
               policyText="Lorem ipsum dolor sit amet, enim in ut adipiscing turpis, mi interdum faucibus eleifend montes, augue viverra commodo vel placerat. Neque vitae amet consequat, proin sociis in sem, nunc fusce a facilisi per, sed sit et eget. A morbi velit proin, elit ac integer in justo, enim quis arcu arcu, magna dapibus est etiam. Nisl dapibus ut leo semper, pellentesque nec sem nec nulla, convallis dictum odio porttitor."
               onChange={this.handleConfirmedChange}
             />
             <AdvanceSettings onChange={this.handleSettingsChange} />
-            <Button htmlType="submit" onClick={this.handleSubmit} className="edit-post__submit-btn">
-              {intl.formatMessage({ id: 'publish', defaultMessage: 'Publish' })}
-            </Button>
+            <div className="edit-post-controls">
+              <Button
+                htmlType="submit"
+                onClick={this.handleSubmit}
+                size="large"
+                className="edit-post__submit-btn"
+              >
+                {intl.formatMessage({ id: 'publish', defaultMessage: 'Publish' })}
+              </Button>
+            </div>
           </Modal>
         )}
         {content && content.length > 0 ? (
-          <Button
-            htmlType="button"
-            onClick={this.showModal}
-            className="edit-post__publish-ready-btn"
-          >
-            {intl.formatMessage({ id: 'ready_to_publish', defaultMessage: 'Ready to publish' })}
-          </Button>
+          <div className="edit-post-controls">
+            <Button
+              htmlType="button"
+              onClick={this.showModal}
+              size="large"
+              className="edit-post-controls__publish-ready-btn"
+            >
+              {intl.formatMessage({ id: 'ready_to_publish', defaultMessage: 'Ready to publish' })}
+            </Button>
+          </div>
         ) : null}
       </React.Fragment>
     );
