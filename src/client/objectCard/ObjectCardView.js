@@ -2,10 +2,11 @@ import React from 'react';
 import _ from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Tag, Row } from 'antd';
+import { Row } from 'antd';
 import { Link } from 'react-router-dom';
 import './ObjectCardView.less';
 import RatingsWrap from './RatingsWrap/RatingsWrap';
+import WeightTag from '../components/WeightTag';
 
 const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => {
   const getObjectRatings = () => _.filter(wObject.fields, ['name', 'rating']);
@@ -37,17 +38,14 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
             </Link>
             <div className="ObjectCardView__info">
               <div className="ObjectCardView__type">{wObject.type}</div>
-              <a
-                href={pathName}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="ObjectCardView__name"
-              >
-                <div className="ObjectCardView__name-truncated" title={wObject.name}>
-                  {wObject.name}
-                </div>
-                {wObject.rank && <Tag>{wObject.rank}</Tag>}
-              </a>
+              <div className="ObjectCardView__name">
+                <a href={pathName} target="_blank" rel="noopener noreferrer">
+                  <div className="ObjectCardView__name-truncated" title={wObject.name}>
+                    {wObject.name}
+                  </div>
+                </a>
+                {wObject.weight && <WeightTag weight={wObject.weight} rank={wObject.rank} />}
+              </div>
               {ratings && <RatingsWrap ratings={ratings} showSmallVersion={showSmallVersion} />}
               {wObject.title && (
                 <div className="ObjectCardView__title" title={wObject.title}>

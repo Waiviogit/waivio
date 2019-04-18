@@ -10,8 +10,8 @@ import { getFieldWithMaxWeight } from '../../client/object/wObjectHelper';
 import { objectFields } from '../../common/constants/listOfFields';
 import Proposition from '../components/Proposition/Proposition';
 import ObjectType from './ObjectType';
-import ObjectRank from './ObjectRank';
 import '../components/ObjectHeader.less';
+import WeightTag from '../components/WeightTag';
 
 const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, authenticated }) => {
   const coverImage = getFieldWithMaxWeight(
@@ -51,7 +51,7 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, a
           </div>
           <div className="ObjectHeader__info">
             <ObjectType type={wobject.object_type} />
-            <ObjectRank rank={wobject.rank} />
+            <WeightTag weight={wobject.weight} rank={wobject.rank} />
           </div>
           <div className="ObjectHeader__user__username">
             <div className="ObjectHeader__descriptionShort">
