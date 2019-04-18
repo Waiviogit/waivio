@@ -110,7 +110,11 @@ class EditPost extends Component {
         <div className="post-layout container">
           <div className="center">
             <Editor onChange={this.handleChangeContent} />
-            <PostPreviewModal content={content} onSubmit={this.handleSubmit} />
+            <PostPreviewModal
+              content={content}
+              linkedObjects={linkedObjects}
+              onSubmit={this.handleSubmit}
+            />
             {linkedObjects.map(wObj => (
               <ObjectCardView wObject={wObj} key={wObj.id} />
             ))}

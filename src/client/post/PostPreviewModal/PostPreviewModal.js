@@ -7,6 +7,7 @@ import TagsSelector from '../../components/TagsSelector/TagsSelector';
 import PolicyConfirmation from '../../components/PolicyConfirmation/PolicyConfirmation';
 import AdvanceSettings from './AdvanceSettings';
 import { splitPostContent } from '../../helpers/postHelpers';
+import { setInitialPercent } from '../../helpers/wObjInfluenceHelper';
 import './PostPreviewModal.less';
 
 const isTopicValid = topic => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(topic);
@@ -16,10 +17,12 @@ class PostPreviewModal extends Component {
   static propTypes = {
     intl: PropTypes.shape(),
     content: PropTypes.string.isRequired,
+    linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
     onSubmit: PropTypes.func.isRequired,
   };
   static defaultProps = {
     intl: {},
+    linkedObjects: [],
   };
 
   constructor(props) {
@@ -27,7 +30,10 @@ class PostPreviewModal extends Component {
 
     this.state = {
       isModalOpen: false,
+      title: '',
+      body: '',
       topics: [],
+      linkedObjects: setInitialPercent(props.linkedObjects),
       settings: {
         reward: '0',
         beneficiary: false,
@@ -45,10 +51,12 @@ class PostPreviewModal extends Component {
 
   showModal = () => {
     const { postTitle, postBody } = splitPostContent(this.props.content);
+    const linkedObjects = setInitialPercent(this.props.linkedObjects);
     this.setState({
       isModalOpen: true,
-      body: postBody,
       title: postTitle,
+      body: postBody,
+      linkedObjects,
     });
   };
 
