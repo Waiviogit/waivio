@@ -37,7 +37,8 @@ class WeightTag extends React.Component {
         <div
           title={intl.formatMessage({
             id: 'total_ralated_payout',
-            defaultMessage: 'Total payout for all related posts',
+            defaultMessage:
+              'Total payout for all related posts, without bidbots and upvote services',
           })}
         >
           {isNaN(value) ? (
