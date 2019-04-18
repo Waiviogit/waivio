@@ -27,6 +27,33 @@ export const setInitialPercent = linkedObjects => {
   ];
 };
 
+export const handleWeightChange = (linkedObjects, objId, weightPercent, weightBuffer) => {
+  const currObj = linkedObjects.find(obj => obj.id === objId);
+  const deltaWeight = currObj.percent.value - weightPercent;
+  const weightBufferNext = weightBuffer + deltaWeight;
+  if (weightBufferNext >= 0) {
+    const resultArr = linkedObjects.map(obj =>
+      obj.id === objId
+        ? {
+            ...obj,
+            percent: {
+              value: weightPercent,
+              max: weightPercent + weightBufferNext,
+            },
+          }
+        : {
+            ...obj,
+            percent: {
+              value: obj.percent.value,
+              max: obj.percent.value + weightBufferNext,
+            },
+          },
+    );
+    return { linkedObjects: resultArr, weightBuffer: weightBufferNext };
+  }
+  return linkedObjects;
+};
+
 export const setInitialInfluence = (objArr, wObj, influenceRemain) => {
   const result = [...objArr];
   const arrLen = result.length;

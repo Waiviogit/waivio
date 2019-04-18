@@ -4,27 +4,37 @@ import { Checkbox, Collapse, Select } from 'antd';
 import { injectIntl } from 'react-intl';
 import { BENEFICIARY_PERCENT } from '../../helpers/constants';
 import { rewardsValues } from '../../../common/constants/rewards';
+import LinkedObjects from './LinkedObjects';
 import './AdvanceSettings.less';
 
 @injectIntl
 class AdvanceSettings extends Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
+    linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
+    weightBuffer: PropTypes.number,
     isUpdating: PropTypes.bool,
-    onChange: PropTypes.func.isRequired,
+    onSettingsChange: PropTypes.func.isRequired,
+    onPercentChange: PropTypes.func.isRequired,
   };
   static defaultProps = {
     isUpdating: false,
+    linkedObjects: [],
+    weightBuffer: 0,
   };
 
-  handleRewardChange = reward => this.props.onChange({ reward });
+  handleRewardChange = reward => this.props.onSettingsChange({ reward });
 
-  handleBeneficiaryChange = e => this.props.onChange({ beneficiary: e.target.checked });
+  handleBeneficiaryChange = e => this.props.onSettingsChange({ beneficiary: e.target.checked });
 
-  handleUpvoteChange = e => this.props.onChange({ upvote: e.target.checked });
+  handleUpvoteChange = e => this.props.onSettingsChange({ upvote: e.target.checked });
+
+  handlePercentChange = (objId, percent) => {
+    this.props.onPercentChange(objId, percent);
+  };
 
   render() {
-    const { intl, isUpdating } = this.props;
+    const { intl, isUpdating, linkedObjects, weightBuffer } = this.props;
     return (
       <Collapse>
         <Collapse.Panel
@@ -75,6 +85,12 @@ class AdvanceSettings extends Component {
               {intl.formatMessage({ id: 'like_post', defaultMessage: 'Like this post' })}
             </Checkbox>
           </div>
+          <LinkedObjects
+            title={intl.formatMessage({ id: 'object_weights', defaultMessage: 'Object weights' })}
+            linkedObjects={linkedObjects}
+            weightBuffer={weightBuffer}
+            onPercentChange={this.handlePercentChange}
+          />
         </Collapse.Panel>
       </Collapse>
     );

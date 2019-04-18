@@ -7,7 +7,7 @@ import TagsSelector from '../../components/TagsSelector/TagsSelector';
 import PolicyConfirmation from '../../components/PolicyConfirmation/PolicyConfirmation';
 import AdvanceSettings from './AdvanceSettings';
 import { splitPostContent } from '../../helpers/postHelpers';
-import { setInitialPercent } from '../../helpers/wObjInfluenceHelper';
+import { handleWeightChange, setInitialPercent } from '../../helpers/wObjInfluenceHelper';
 import './PostPreviewModal.less';
 
 const isTopicValid = topic => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(topic);
@@ -34,6 +34,7 @@ class PostPreviewModal extends Component {
       body: '',
       topics: [],
       linkedObjects: setInitialPercent(props.linkedObjects),
+      weightBuffer: 0,
       settings: {
         reward: '0',
         beneficiary: false,
@@ -56,6 +57,7 @@ class PostPreviewModal extends Component {
       isModalOpen: true,
       title: postTitle,
       body: postBody,
+      weightBuffer: 0,
       linkedObjects,
     });
   };
@@ -70,6 +72,11 @@ class PostPreviewModal extends Component {
     this.setState(prevState => ({
       settings: { ...prevState.settings, ...updatedValue },
     }));
+
+  handlePercentChange = (objId, percent) => {
+    const { linkedObjects, weightBuffer } = this.state;
+    this.setState(handleWeightChange(linkedObjects, objId, percent, weightBuffer));
+  };
 
   handleSubmit = () => {
     const { body, title, topics, settings } = this.state;
@@ -87,7 +94,7 @@ class PostPreviewModal extends Component {
   };
 
   render() {
-    const { isModalOpen, body, title, topics } = this.state;
+    const { isModalOpen, body, title, topics, linkedObjects, weightBuffer } = this.state;
     const { intl, content } = this.props;
     return (
       <React.Fragment>
@@ -127,7 +134,12 @@ class PostPreviewModal extends Component {
               policyText="Lorem ipsum dolor sit amet, enim in ut adipiscing turpis, mi interdum faucibus eleifend montes, augue viverra commodo vel placerat. Neque vitae amet consequat, proin sociis in sem, nunc fusce a facilisi per, sed sit et eget. A morbi velit proin, elit ac integer in justo, enim quis arcu arcu, magna dapibus est etiam. Nisl dapibus ut leo semper, pellentesque nec sem nec nulla, convallis dictum odio porttitor."
               onChange={this.handleConfirmedChange}
             />
-            <AdvanceSettings onChange={this.handleSettingsChange} />
+            <AdvanceSettings
+              linkedObjects={linkedObjects}
+              weightBuffer={weightBuffer}
+              onSettingsChange={this.handleSettingsChange}
+              onPercentChange={this.handlePercentChange}
+            />
             <div className="edit-post-controls">
               <Button
                 htmlType="submit"
