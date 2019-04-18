@@ -6,8 +6,8 @@ import { averageRate, avrRate } from '../../components/Sidebar/Rate/rateHelper';
 import './RatingsWrap.less';
 import { getScreenSize } from '../../reducers';
 
-const RatingsWrap = ({ ratings, screenSize }) => {
-  const isMobile = screenSize === 'xsmall';
+const RatingsWrap = ({ ratings, screenSize, showSmallVersion }) => {
+  const isMobile = screenSize === 'xsmall' || showSmallVersion;
   // _.orderBy(ratings, [ratings., 'age'], ['asc', 'desc']);
   let layout = null;
 
@@ -52,6 +52,11 @@ const RatingsWrap = ({ ratings, screenSize }) => {
 RatingsWrap.propTypes = {
   ratings: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   screenSize: PropTypes.string.isRequired,
+  showSmallVersion: PropTypes.bool,
+};
+
+RatingsWrap.defaultProps = {
+  showSmallVersion: false,
 };
 
 export default connect(state => ({
