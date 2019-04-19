@@ -4,27 +4,48 @@ import { Checkbox, Collapse, Select } from 'antd';
 import { injectIntl } from 'react-intl';
 import { BENEFICIARY_PERCENT } from '../../helpers/constants';
 import { rewardsValues } from '../../../common/constants/rewards';
+import ObjectWeights from './ObjectWeights';
 import './AdvanceSettings.less';
 
 @injectIntl
 class AdvanceSettings extends Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
+    linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
+    weightBuffer: PropTypes.number,
+    settings: PropTypes.shape({
+      reward: PropTypes.oneOf([rewardsValues.none, rewardsValues.half, rewardsValues.all]),
+      beneficiary: PropTypes.bool,
+      upvote: PropTypes.bool,
+    }).isRequired,
     isUpdating: PropTypes.bool,
-    onChange: PropTypes.func.isRequired,
+    onSettingsChange: PropTypes.func.isRequired,
+    onPercentChange: PropTypes.func.isRequired,
   };
   static defaultProps = {
     isUpdating: false,
+    linkedObjects: [],
+    weightBuffer: 0,
   };
 
-  handleRewardChange = reward => this.props.onChange({ reward });
+  handleRewardChange = reward => this.props.onSettingsChange({ reward });
 
-  handleBeneficiaryChange = e => this.props.onChange({ beneficiary: e.target.checked });
+  handleBeneficiaryChange = e => this.props.onSettingsChange({ beneficiary: e.target.checked });
 
-  handleUpvoteChange = e => this.props.onChange({ upvote: e.target.checked });
+  handleUpvoteChange = e => this.props.onSettingsChange({ upvote: e.target.checked });
+
+  handlePercentChange = (objId, percent) => {
+    this.props.onPercentChange(objId, percent);
+  };
 
   render() {
-    const { intl, isUpdating } = this.props;
+    const {
+      intl,
+      isUpdating,
+      linkedObjects,
+      weightBuffer,
+      settings: { reward, beneficiary, upvote },
+    } = this.props;
     return (
       <Collapse>
         <Collapse.Panel
@@ -38,7 +59,7 @@ class AdvanceSettings extends Component {
               {intl.formatMessage({ id: 'reward', defaultMessage: 'Reward' })}
             </div>
             <div className="rewards-settings__control">
-              <Select onChange={this.handleRewardChange} disabled={isUpdating}>
+              <Select value={reward} onChange={this.handleRewardChange} disabled={isUpdating}>
                 <Select.Option value={rewardsValues.all}>
                   {intl.formatMessage({
                     id: 'reward_option_100',
@@ -59,7 +80,11 @@ class AdvanceSettings extends Component {
           </div>
           {!isUpdating && (
             <div className="beneficiary-settings">
-              <Checkbox onChange={this.handleBeneficiaryChange} disabled={isUpdating}>
+              <Checkbox
+                checked={beneficiary}
+                onChange={this.handleBeneficiaryChange}
+                disabled={isUpdating}
+              >
                 {intl.formatMessage(
                   {
                     id: 'add_waivio_beneficiary',
@@ -71,10 +96,18 @@ class AdvanceSettings extends Component {
             </div>
           )}
           <div className="upvote-settings">
-            <Checkbox onChange={this.handleUpvoteChange} disabled={isUpdating}>
+            <Checkbox checked={upvote} onChange={this.handleUpvoteChange} disabled={isUpdating}>
               {intl.formatMessage({ id: 'like_post', defaultMessage: 'Like this post' })}
             </Checkbox>
           </div>
+          {linkedObjects.length > 1 && (
+            <ObjectWeights
+              intl={intl}
+              linkedObjects={linkedObjects}
+              weightBuffer={weightBuffer}
+              onPercentChange={this.handlePercentChange}
+            />
+          )}
         </Collapse.Panel>
       </Collapse>
     );

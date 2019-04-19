@@ -1,3 +1,59 @@
+export const setInitialPercent = linkedObjects => {
+  const len = linkedObjects && linkedObjects.length;
+  if (!len) {
+    return [];
+  } else if (len === 1) {
+    return [{ ...linkedObjects[0], percent: { max: 100, value: 100 } }];
+  }
+  const [first, ...rest] = linkedObjects;
+  const averagePercent = Math.floor(100 / len);
+  const firstPercent = 100 - averagePercent * (len - 1);
+
+  return [
+    {
+      ...first,
+      percent: {
+        max: firstPercent,
+        value: firstPercent,
+      },
+    },
+    ...rest.map(obj => ({
+      ...obj,
+      percent: {
+        max: averagePercent,
+        value: averagePercent,
+      },
+    })),
+  ];
+};
+
+export const handleWeightChange = (linkedObjects, objId, weightPercent, weightBuffer) => {
+  const currObj = linkedObjects.find(obj => obj.id === objId);
+  const deltaWeight = currObj.percent.value - weightPercent;
+  const weightBufferNext = weightBuffer + deltaWeight;
+  if (weightBufferNext >= 0) {
+    const resultArr = linkedObjects.map(obj =>
+      obj.id === objId
+        ? {
+            ...obj,
+            percent: {
+              value: weightPercent,
+              max: weightPercent + weightBufferNext,
+            },
+          }
+        : {
+            ...obj,
+            percent: {
+              value: obj.percent.value,
+              max: obj.percent.value + weightBufferNext,
+            },
+          },
+    );
+    return { linkedObjects: resultArr, weightBuffer: weightBufferNext };
+  }
+  return linkedObjects;
+};
+
 export const setInitialInfluence = (objArr, wObj, influenceRemain) => {
   const result = [...objArr];
   const arrLen = result.length;

@@ -3,22 +3,34 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { convertToRaw } from 'draft-js';
 import { Editor as MediumDraftEditor, createEditorState } from './index';
-import toMarkdown from './util/editorStateToMarkdown';
 import ImageSideButton from './components/sides/ImageSideButton';
 import SeparatorButton from './components/sides/SeparatorSideButton';
 import ObjectSideButton from './components/sides/ObjectSideButton';
+
+const SIDE_BUTTONS = [
+  {
+    title: 'Image',
+    component: ImageSideButton,
+  },
+  {
+    title: 'Separator',
+    component: SeparatorButton,
+  },
+  {
+    title: 'Object',
+    component: ObjectSideButton,
+  },
+];
 
 @injectIntl
 class Editor extends React.Component {
   static propTypes = {
     intl: PropTypes.shape(),
     // passed props:
-    onAddObject: PropTypes.func,
     onChange: PropTypes.func,
   };
   static defaultProps = {
     intl: {},
-    onAddObject: () => {},
     onChange: () => {},
   };
 
@@ -48,10 +60,8 @@ class Editor extends React.Component {
 
   handleContentChange = editorState => {
     this.onChange(editorState);
-    this.props.onChange(toMarkdown(convertToRaw(editorState.getCurrentContent())));
+    this.props.onChange(convertToRaw(editorState.getCurrentContent()));
   };
-
-  handleAddObject = object => this.props.onAddObject(object);
 
   render() {
     const { editorState, isMounted } = this.state;
@@ -64,24 +74,7 @@ class Editor extends React.Component {
             editorState={editorState}
             beforeInput={this.handleBeforeInput}
             onChange={this.handleContentChange}
-            onAddObject={this.handleAddObject}
-            sideButtons={[
-              {
-                title: 'Image',
-                component: ImageSideButton,
-              },
-              {
-                title: 'Separator',
-                component: SeparatorButton,
-              },
-              {
-                title: 'Object',
-                component: ObjectSideButton,
-                props: {
-                  onAddObject: this.handleAddObject,
-                },
-              },
-            ]}
+            sideButtons={SIDE_BUTTONS}
           />
         ) : null}
       </div>

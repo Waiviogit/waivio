@@ -79,7 +79,7 @@ export default class LinkEditComponent extends React.Component {
       return;
     }
     const position = {
-      top: selectionRect.top - relativeRect.top + 35,
+      top: selectionRect.top - relativeRect.top + 30,
       left: selectionRect.left - relativeRect.left + selectionRect.width / 2,
       transform: 'translate(-50%) scale(1)',
     };
