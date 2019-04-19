@@ -1,0 +1,52 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.CategoryItemView {
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: @white;
+  border: @base-border;
+  margin-top: 5px;
+  &__content {
+    display: flex;
+    align-items: center;
+  }
+  .anticon {
+    color: @tertiary-color;
+  }
+  &__avatar {
+    width: 70px;
+    border-radius: 8px;
+    height: 70px;
+    display: block !important;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    border: 1px solid #e9e7e7;
+  }
+  &__name {
+    display: flex;
+    align-items: center;
+    width: auto;
+    cursor: auto;
+    &-truncated {
+      margin-left: 15px;
+      color: @black;
+      font-weight: bold;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      font-size: 24px;
+      letter-spacing: -0.5px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      margin-right: 8px;
+      cursor: pointer;
+    }
+  }
+}
+
+//@import 'CatalogWrap-nightmode';
