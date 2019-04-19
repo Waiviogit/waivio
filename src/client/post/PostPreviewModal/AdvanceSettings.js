@@ -4,7 +4,7 @@ import { Checkbox, Collapse, Select } from 'antd';
 import { injectIntl } from 'react-intl';
 import { BENEFICIARY_PERCENT } from '../../helpers/constants';
 import { rewardsValues } from '../../../common/constants/rewards';
-import LinkedObjects from './LinkedObjects';
+import ObjectWeights from './ObjectWeights';
 import './AdvanceSettings.less';
 
 @injectIntl
@@ -85,8 +85,8 @@ class AdvanceSettings extends Component {
               {intl.formatMessage({ id: 'like_post', defaultMessage: 'Like this post' })}
             </Checkbox>
           </div>
-          <LinkedObjects
-            title={intl.formatMessage({ id: 'object_weights', defaultMessage: 'Object weights' })}
+          <ObjectWeights
+            intl={intl}
             linkedObjects={linkedObjects}
             weightBuffer={weightBuffer}
             onPercentChange={this.handlePercentChange}

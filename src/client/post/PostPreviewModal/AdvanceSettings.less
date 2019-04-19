@@ -1,10 +1,14 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+@padding: 8px;
 .rewards-settings {
   display: flex;
   flex-direction: row;
   align-items: center;
 
   &__label {
-    padding-right: 8px;
+    padding-right: @padding;
   }
   &__control {
     flex-grow: 1;
@@ -16,10 +20,46 @@
 
 .beneficiary-settings,
 .upvote-settings {
-  padding-top: 8px;
+  padding-top: @padding;
   .ant-checkbox-wrapper {
     .ant-checkbox {
       top: -0.2em;
     }
+  }
+}
+
+.object-weights {
+  &__header {
+    display: flex;
+    padding: @padding 0;
+    margin-top: 5px;
+
+    .title {
+      display: flex;
+      align-self: center;
+      flex-shrink: 0;
+      padding-right: @padding;
+      font-weight: 500;
+    }
+
+    .weight-buffer {
+      width: 100%;
+      padding: 0 5px 5px 5px;
+      &.hide {
+        visibility: hidden;
+      }
+      &.validation-error {
+        border: 1px solid @red;
+        box-shadow: 0 0 3px @orange, 0 0 5px @red;
+      }
+    }
+  }
+  &__buffer-validation-msg {
+    color: @red-danger;
+    text-align: right;
+  }
+  &__item {
+    padding-left: 6px;
+    text-transform: uppercase;
   }
 }
