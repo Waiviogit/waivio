@@ -71,7 +71,6 @@ class EditPost extends Component {
   }
 
   buildPost(data) {
-    const { linkedObjects } = this.state;
     const postData = {
       body: data.body,
       title: data.title,
@@ -91,10 +90,10 @@ class EditPost extends Component {
       this.props.draftPosts[this.props.draftId] &&
       this.props.draftPosts[this.props.draftId].jsonMetadata;
     const waivioData = {
-      wobjects: linkedObjects.map(obj => ({
+      wobjects: data.linkedObjects.map(obj => ({
         objectName: obj.name,
         author_permlink: obj.id,
-        percent: obj.percent || Math.floor(100 / linkedObjects.length),
+        percent: obj.percent.value,
       })),
     };
 

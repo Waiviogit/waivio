@@ -98,10 +98,7 @@ export default class Toolbar extends React.Component {
     /*
      * Main logic for setting the toolbar position.
      */
-    toolbarNode.style.top = `${selectionBoundary.top -
-      parentBoundary.top -
-      toolbarBoundary.height -
-      5}px`;
+    toolbarNode.style.top = `${selectionBoundary.bottom - parentBoundary.top + 4}px`;
     toolbarNode.style.width = `${toolbarBoundary.width}px`;
 
     // The left side of the tooltip should be:

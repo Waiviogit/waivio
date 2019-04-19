@@ -87,7 +87,7 @@ class PostPreviewModal extends Component {
   };
 
   handleSubmit = () => {
-    const { body, title, topics, settings } = this.state;
+    const { body, title, topics, linkedObjects, settings } = this.state;
     const postData = {
       body,
       title,
@@ -95,7 +95,7 @@ class PostPreviewModal extends Component {
       reward: 0,
       beneficiary: false,
       upvote: false,
-      wobjects: [],
+      linkedObjects,
       ...settings,
     };
     this.props.onSubmit(postData);
