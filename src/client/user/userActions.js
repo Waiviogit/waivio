@@ -3,6 +3,7 @@ import { getIsAuthenticated, getAuthenticatedUserName } from '../reducers';
 import { getAllFollowing } from '../helpers/apiHelpers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
+import { getUserCoordinatesByIpAdress } from '../components/Maps/mapHelper';
 
 require('isomorphic-fetch');
 
@@ -131,3 +132,11 @@ export const getNotifications = username => (dispatch, getState, { busyAPI }) =>
     },
   });
 };
+
+export const GET_USER_LOCATION = createAsyncActionType('@user/GET_USER_LOCATION');
+
+export const getCoordinates = () => dispatch =>
+  dispatch({
+    type: GET_USER_LOCATION,
+    payload: getUserCoordinatesByIpAdress(),
+  });

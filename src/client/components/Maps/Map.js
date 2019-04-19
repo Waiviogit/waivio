@@ -6,12 +6,23 @@ import { Icon, Modal } from 'antd';
 import Marker from 'pigeon-marker/react';
 import Overlay from 'pigeon-overlay';
 import classNames from 'classnames';
+import { connect } from 'react-redux';
 import { getClientWObj } from '../../adapters';
 import './Map.less';
 import { getInnerFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { mapFields, objectFields } from '../../../common/constants/listOfFields';
 import Loading from '../Icon/Loading';
+import { getUserLocation } from '../../reducers';
+import { getCoordinates } from '../../user/userActions';
 
+@connect(
+  state => ({
+    user: getUserLocation(state),
+  }),
+  {
+    getCoordinates,
+  },
+)
 class MapOS extends React.Component {
   constructor(props) {
     super(props);
@@ -31,7 +42,9 @@ class MapOS extends React.Component {
   }
 
   componentDidMount() {
-    this.setCoordinates();
+    // this.setCoordinates();
+    console.log('send');
+    this.props.getCoordinates();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -70,11 +83,11 @@ class MapOS extends React.Component {
   };
 
   setCoordinates = () => {
-    if (navigator && navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(this.showUserPosition);
-    } else {
-      this.setState({ userCoordinates: [this.props.centerLat, this.props.centerLng] });
-    }
+    // if (navigator && navigator.geolocation) {
+    //   navigator.geolocation.getCurrentPosition(this.showUserPosition);
+    // } else {
+    this.setState({ userCoordinates: [this.props.centerLat, this.props.centerLng] });
+    // }
   };
 
   showUserPosition = position => {
@@ -190,10 +203,12 @@ MapOS.defaultProps = {
   wobjects: [],
   mapHeigth: 200,
   setCoordinates: () => {},
+  getCoordinates: () => {},
 };
 
 MapOS.propTypes = {
   setCoordinates: PropTypes.func,
+  getCoordinates: PropTypes.func,
   mapHeigth: PropTypes.number,
   centerLat: PropTypes.number,
   centerLng: PropTypes.number,
