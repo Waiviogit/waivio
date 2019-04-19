@@ -223,8 +223,9 @@ export default class Toolbar extends React.Component {
     const contentState = editorState.getCurrentContent();
     const selectionState = editorState.getSelection();
     const firstBlock = contentState.getFirstBlock();
-    const currentBlock = contentState.getBlockForKey(selectionState.anchorKey);
-    return currentBlock === firstBlock;
+    const selectionStartBlock = contentState.getBlockForKey(selectionState.getStartKey());
+    const selectionEndBlock = contentState.getBlockForKey(selectionState.getEndKey());
+    return selectionStartBlock === firstBlock || selectionEndBlock === firstBlock;
   };
 
   render() {
