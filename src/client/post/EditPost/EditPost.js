@@ -10,6 +10,14 @@ import { createPostMetadata } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import ObjectCardView from '../../objectCard/ObjectCardView';
+import { Entity, toMarkdown } from '../../components/EditorExtended';
+
+const getLinkedObjects = contentStateRaw => {
+  const entities = Object.values(contentStateRaw.entityMap).filter(
+    entity => entity.type === Entity.OBJECT,
+  );
+  return entities.map(entity => entity.data.object);
+};
 
 @withRouter
 @connect(
@@ -43,17 +51,17 @@ class EditPost extends Component {
     };
 
     this.handleChangeContent = this.handleChangeContent.bind(this);
-    this.handleAddObject = this.handleAddObject.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.buildPost = this.buildPost.bind(this);
   }
 
-  handleChangeContent(content) {
-    this.setState({ content });
-  }
-
-  handleAddObject(wobj) {
-    this.setState({ linkedObjects: [...this.state.linkedObjects, wobj] });
+  handleChangeContent(rawContent) {
+    const nextState = { content: toMarkdown(rawContent) };
+    const linkedObjects = getLinkedObjects(rawContent);
+    if (this.state.linkedObjects.length !== linkedObjects.length) {
+      nextState.linkedObjects = linkedObjects;
+    }
+    this.setState(nextState);
   }
 
   handleSubmit(data) {
@@ -63,7 +71,6 @@ class EditPost extends Component {
   }
 
   buildPost(data) {
-    const { linkedObjects } = this.state;
     const postData = {
       body: data.body,
       title: data.title,
@@ -83,10 +90,10 @@ class EditPost extends Component {
       this.props.draftPosts[this.props.draftId] &&
       this.props.draftPosts[this.props.draftId].jsonMetadata;
     const waivioData = {
-      wobjects: linkedObjects.map(obj => ({
+      wobjects: data.linkedObjects.map(obj => ({
         objectName: obj.name,
         author_permlink: obj.id,
-        percent: obj.percent || Math.floor(100 / linkedObjects.length),
+        percent: obj.percent.value,
       })),
     };
 
@@ -101,10 +108,14 @@ class EditPost extends Component {
       <div className="shifted">
         <div className="post-layout container">
           <div className="center">
-            <Editor onChange={this.handleChangeContent} onAddObject={this.handleAddObject} />
-            <PostPreviewModal content={content} onSubmit={this.handleSubmit} />
+            <Editor onChange={this.handleChangeContent} />
+            <PostPreviewModal
+              content={content}
+              linkedObjects={linkedObjects}
+              onSubmit={this.handleSubmit}
+            />
             {linkedObjects.map(wObj => (
-              <ObjectCardView wObject={wObj} />
+              <ObjectCardView wObject={wObj} key={wObj.id} />
             ))}
           </div>
           <div className="rightContainer">

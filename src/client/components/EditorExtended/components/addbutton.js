@@ -46,7 +46,7 @@ export default class AddButton extends React.Component {
     }
     const block = contentState.getBlockForKey(selectionState.anchorKey);
     const bkey = block.getKey();
-    if (block.getLength() > 0) {
+    if (block.getLength() > 0 || block === contentState.getFirstBlock()) {
       this.hideBlock();
       return;
     }

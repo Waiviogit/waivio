@@ -525,6 +525,7 @@
   "type": "Type",
   "advance_settings": "Advance settings",
   "publish": "Publish",
+  "object_weights": "Object weights",
   "price_field": "Price",
   "total_ralated_payout": "Total payout for all related posts, without bidbots and upvite services"
 }

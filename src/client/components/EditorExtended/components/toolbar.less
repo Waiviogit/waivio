@@ -76,10 +76,10 @@
   &::after {
     content: '';
     position: absolute;
-    bottom: -5px;
+    top: -5px;
     left: 50%;
     margin-left: -5px;
-    border-top: 5px solid @toolbar-color;
+    border-bottom: 5px solid @toolbar-color;
     border-right: 5px solid transparent;
     border-left: 5px solid transparent;
   }
@@ -125,6 +125,8 @@
 
   &::after {
     bottom: initial;
+    border-top: 5px solid @toolbar-color;
+    border-bottom: none;
     top: -5px;
     transform: rotate(180deg);
   }
