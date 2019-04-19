@@ -40,6 +40,7 @@ export default class Toolbar extends React.Component {
     this.state = {
       showURLInput: false,
       urlInputValue: '',
+      isFirstLine: true,
     };
 
     this.onKeyDown = this.onKeyDown.bind(this);
@@ -61,6 +62,10 @@ export default class Toolbar extends React.Component {
           urlInputValue: '',
         });
       }
+    }
+    const isFirstLine = this.isFirstBlockSelected(editorState);
+    if (isFirstLine !== this.state.isFirstLine) {
+      this.setState({ isFirstLine });
     }
   }
 
@@ -214,11 +219,19 @@ export default class Toolbar extends React.Component {
     );
   }
 
+  isFirstBlockSelected = editorState => {
+    const contentState = editorState.getCurrentContent();
+    const selectionState = editorState.getSelection();
+    const firstBlock = contentState.getFirstBlock();
+    const currentBlock = contentState.getBlockForKey(selectionState.anchorKey);
+    return currentBlock === firstBlock;
+  };
+
   render() {
     const { editorState, editorEnabled, inlineButtons } = this.props;
-    const { showURLInput, urlInputValue } = this.state;
+    const { showURLInput, urlInputValue, isFirstLine } = this.state;
     let isOpen = true;
-    if (!editorEnabled || editorState.getSelection().isCollapsed()) {
+    if (!editorEnabled || editorState.getSelection().isCollapsed() || isFirstLine) {
       isOpen = false;
     }
     if (showURLInput) {
