@@ -8,6 +8,7 @@
   align-items: center;
 
   &__label {
+    font-weight: 500;
     padding-right: @padding;
   }
   &__control {
@@ -59,7 +60,12 @@
     text-align: right;
   }
   &__item {
-    padding-left: 6px;
-    text-transform: uppercase;
+    .obj-item-name {
+      padding-left: 6px;
+      text-transform: uppercase;
+    }
+    .obj-item-slider {
+      margin-top: 0;
+    }
   }
 }

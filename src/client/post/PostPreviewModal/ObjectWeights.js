@@ -36,9 +36,10 @@ class ObjectWeight extends React.PureComponent {
     const { percent } = this.state;
     const { objId, objName, percentValue } = this.props;
     return (
-      <div key={objId}>
-        <div className="object-weights__item">{`${objName} ${percent}%`}</div>
+      <div key={objId} className="object-weights__item">
+        <div className="obj-item-name">{`${objName} ${percent}%`}</div>
         <Slider
+          className="obj-item-slider"
           min={1}
           max={100}
           value={percent}

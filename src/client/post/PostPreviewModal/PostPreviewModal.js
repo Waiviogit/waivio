@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Button, Modal } from 'antd';
 import BodyContainer from '../../containers/Story/BodyContainer';
@@ -8,20 +9,27 @@ import PolicyConfirmation from '../../components/PolicyConfirmation/PolicyConfir
 import AdvanceSettings from './AdvanceSettings';
 import { splitPostContent } from '../../helpers/postHelpers';
 import { handleWeightChange, setInitialPercent } from '../../helpers/wObjInfluenceHelper';
+import { rewardsValues } from '../../../common/constants/rewards';
+import { getUpvoteSetting } from '../../reducers';
 import './PostPreviewModal.less';
 
 const isTopicValid = topic => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(topic);
 
 @injectIntl
+@connect(state => ({
+  upvoteSetting: getUpvoteSetting(state),
+}))
 class PostPreviewModal extends Component {
   static propTypes = {
     intl: PropTypes.shape(),
+    upvoteSetting: PropTypes.bool,
     content: PropTypes.string.isRequired,
     linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
     onSubmit: PropTypes.func.isRequired,
   };
   static defaultProps = {
     intl: {},
+    upvoteSetting: false,
     linkedObjects: [],
   };
 
@@ -36,9 +44,9 @@ class PostPreviewModal extends Component {
       linkedObjects: setInitialPercent(props.linkedObjects),
       weightBuffer: 0,
       settings: {
-        reward: '0',
+        reward: rewardsValues.half,
         beneficiary: false,
-        upvote: false,
+        upvote: props.upvoteSetting,
       },
       isConfirmed: false,
     };
@@ -94,7 +102,16 @@ class PostPreviewModal extends Component {
   };
 
   render() {
-    const { isModalOpen, body, title, topics, linkedObjects, weightBuffer } = this.state;
+    const {
+      isModalOpen,
+      isConfirmed,
+      body,
+      title,
+      topics,
+      settings,
+      linkedObjects,
+      weightBuffer,
+    } = this.state;
     const { intl, content } = this.props;
     return (
       <React.Fragment>
@@ -130,6 +147,7 @@ class PostPreviewModal extends Component {
             />
             <PolicyConfirmation
               className="post-preview-legal-notice"
+              isChecked={isConfirmed}
               checkboxLabel="Legal notice"
               policyText="Lorem ipsum dolor sit amet, enim in ut adipiscing turpis, mi interdum faucibus eleifend montes, augue viverra commodo vel placerat. Neque vitae amet consequat, proin sociis in sem, nunc fusce a facilisi per, sed sit et eget. A morbi velit proin, elit ac integer in justo, enim quis arcu arcu, magna dapibus est etiam. Nisl dapibus ut leo semper, pellentesque nec sem nec nulla, convallis dictum odio porttitor."
               onChange={this.handleConfirmedChange}
@@ -137,6 +155,7 @@ class PostPreviewModal extends Component {
             <AdvanceSettings
               linkedObjects={linkedObjects}
               weightBuffer={weightBuffer}
+              settings={settings}
               onSettingsChange={this.handleSettingsChange}
               onPercentChange={this.handlePercentChange}
             />
@@ -145,6 +164,7 @@ class PostPreviewModal extends Component {
                 htmlType="submit"
                 onClick={this.handleSubmit}
                 size="large"
+                disabled={!isConfirmed}
                 className="edit-post__submit-btn"
               >
                 {intl.formatMessage({ id: 'publish', defaultMessage: 'Publish' })}

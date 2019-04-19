@@ -13,6 +13,11 @@ class AdvanceSettings extends Component {
     intl: PropTypes.shape().isRequired,
     linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
     weightBuffer: PropTypes.number,
+    settings: PropTypes.shape({
+      reward: PropTypes.oneOf([rewardsValues.none, rewardsValues.half, rewardsValues.all]),
+      beneficiary: PropTypes.bool,
+      upvote: PropTypes.bool,
+    }).isRequired,
     isUpdating: PropTypes.bool,
     onSettingsChange: PropTypes.func.isRequired,
     onPercentChange: PropTypes.func.isRequired,
@@ -34,7 +39,13 @@ class AdvanceSettings extends Component {
   };
 
   render() {
-    const { intl, isUpdating, linkedObjects, weightBuffer } = this.props;
+    const {
+      intl,
+      isUpdating,
+      linkedObjects,
+      weightBuffer,
+      settings: { reward, beneficiary, upvote },
+    } = this.props;
     return (
       <Collapse>
         <Collapse.Panel
@@ -48,7 +59,7 @@ class AdvanceSettings extends Component {
               {intl.formatMessage({ id: 'reward', defaultMessage: 'Reward' })}
             </div>
             <div className="rewards-settings__control">
-              <Select onChange={this.handleRewardChange} disabled={isUpdating}>
+              <Select value={reward} onChange={this.handleRewardChange} disabled={isUpdating}>
                 <Select.Option value={rewardsValues.all}>
                   {intl.formatMessage({
                     id: 'reward_option_100',
@@ -69,7 +80,11 @@ class AdvanceSettings extends Component {
           </div>
           {!isUpdating && (
             <div className="beneficiary-settings">
-              <Checkbox onChange={this.handleBeneficiaryChange} disabled={isUpdating}>
+              <Checkbox
+                checked={beneficiary}
+                onChange={this.handleBeneficiaryChange}
+                disabled={isUpdating}
+              >
                 {intl.formatMessage(
                   {
                     id: 'add_waivio_beneficiary',
@@ -81,16 +96,18 @@ class AdvanceSettings extends Component {
             </div>
           )}
           <div className="upvote-settings">
-            <Checkbox onChange={this.handleUpvoteChange} disabled={isUpdating}>
+            <Checkbox checked={upvote} onChange={this.handleUpvoteChange} disabled={isUpdating}>
               {intl.formatMessage({ id: 'like_post', defaultMessage: 'Like this post' })}
             </Checkbox>
           </div>
-          <ObjectWeights
-            intl={intl}
-            linkedObjects={linkedObjects}
-            weightBuffer={weightBuffer}
-            onPercentChange={this.handlePercentChange}
-          />
+          {linkedObjects.length > 1 && (
+            <ObjectWeights
+              intl={intl}
+              linkedObjects={linkedObjects}
+              weightBuffer={weightBuffer}
+              onPercentChange={this.handlePercentChange}
+            />
+          )}
         </Collapse.Panel>
       </Collapse>
     );
