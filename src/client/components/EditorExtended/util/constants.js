@@ -51,6 +51,7 @@ export const KEY_COMMANDS = {
   unlink: () => 'unlink',
   toggleInline: (type = '') => `toggleinline:${type}`,
   deleteBlock: () => 'delete-block',
+  backspace: 'backspace',
 };
 
 export const ATOMIC_TYPES = {

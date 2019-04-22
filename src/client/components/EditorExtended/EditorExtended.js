@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl } from 'react-intl';
 import { convertToRaw } from 'draft-js';
 import { Editor as MediumDraftEditor, createEditorState, Block } from './index';
 import ImageSideButton from './components/sides/ImageSideButton';
@@ -22,10 +21,8 @@ const SIDE_BUTTONS = [
   },
 ];
 
-@injectIntl
 class Editor extends React.Component {
   static propTypes = {
-    intl: PropTypes.shape(),
     // passed props:
     initialContent: PropTypes.shape(),
     onChange: PropTypes.func,
@@ -35,9 +32,18 @@ class Editor extends React.Component {
     initialContent: {
       blocks: [
         {
-          key: '6p2pe',
+          key: 's_title',
           text: '',
           type: Block.STORY_TITLE,
+          depth: 0,
+          inlineStyleRanges: [],
+          entityRanges: [],
+          data: {},
+        },
+        {
+          key: 's_content',
+          text: '',
+          type: Block.UNSTYLED,
           depth: 0,
           inlineStyleRanges: [],
           entityRanges: [],
@@ -85,7 +91,7 @@ class Editor extends React.Component {
         {isMounted ? (
           <MediumDraftEditor
             ref={this.refsEditor}
-            placeholder={this.props.intl.formatMessage({ id: 'title', defaultMessage: 'Title' })}
+            placeholder=""
             editorState={editorState}
             beforeInput={this.handleBeforeInput}
             onChange={this.handleContentChange}

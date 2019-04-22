@@ -37,6 +37,33 @@
   display: none;
 }
 
+.md-RichEditor-editor {
+  .StoryFull__title {
+    span[data-offset-key^='s_title'] {
+      br {
+        content: ' ';
+
+        &::before {
+          content: 'Title';
+          color: @blue-botticelli;
+        }
+      }
+    }
+  }
+
+  .StoryFull__title + div.md-block:only-of-type {
+    span[data-offset-key] {
+      br {
+        content: ' ';
+        &::before {
+          content: 'Write you story...';
+          color: @blue-botticelli;
+        }
+      }
+    }
+  }
+}
+
 .md-RichEditor-editor .md-RichEditor-blockquote {
   border-left: 2px solid @normal-grey;
   color: @text-color;
