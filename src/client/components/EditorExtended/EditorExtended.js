@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { convertToRaw } from 'draft-js';
-import { Editor as MediumDraftEditor, createEditorState } from './index';
+import { Editor as MediumDraftEditor, createEditorState, Block } from './index';
 import ImageSideButton from './components/sides/ImageSideButton';
 import SeparatorButton from './components/sides/SeparatorSideButton';
 import ObjectSideButton from './components/sides/ObjectSideButton';
@@ -27,10 +27,25 @@ class Editor extends React.Component {
   static propTypes = {
     intl: PropTypes.shape(),
     // passed props:
+    initialContent: PropTypes.shape(),
     onChange: PropTypes.func,
   };
   static defaultProps = {
     intl: {},
+    initialContent: {
+      blocks: [
+        {
+          key: '6p2pe',
+          text: '',
+          type: Block.STORY_TITLE,
+          depth: 0,
+          inlineStyleRanges: [],
+          entityRanges: [],
+          data: {},
+        },
+      ],
+      entityMap: {},
+    },
     onChange: () => {},
   };
 
@@ -39,7 +54,7 @@ class Editor extends React.Component {
 
     this.state = {
       isMounted: false,
-      editorState: createEditorState(), // for empty content
+      editorState: createEditorState(props.initialContent), // for empty content
     };
     /*
     this.state = {

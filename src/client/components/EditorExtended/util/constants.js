@@ -23,6 +23,7 @@ export const Block = {
   TODO: 'todo',
   IMAGE: 'atomic:image',
   BREAK: 'atomic:break',
+  STORY_TITLE: 'story-title',
 };
 
 export const Inline = {
