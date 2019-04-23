@@ -40,6 +40,7 @@ export default class Toolbar extends React.Component {
     this.state = {
       showURLInput: false,
       urlInputValue: '',
+      isFirstLine: true,
     };
 
     this.onKeyDown = this.onKeyDown.bind(this);
@@ -61,6 +62,10 @@ export default class Toolbar extends React.Component {
           urlInputValue: '',
         });
       }
+    }
+    const isFirstLine = this.isFirstBlockSelected(editorState);
+    if (isFirstLine !== this.state.isFirstLine) {
+      this.setState({ isFirstLine });
     }
   }
 
@@ -98,10 +103,7 @@ export default class Toolbar extends React.Component {
     /*
      * Main logic for setting the toolbar position.
      */
-    toolbarNode.style.top = `${selectionBoundary.top -
-      parentBoundary.top -
-      toolbarBoundary.height -
-      5}px`;
+    toolbarNode.style.top = `${selectionBoundary.bottom - parentBoundary.top + 4}px`;
     toolbarNode.style.width = `${toolbarBoundary.width}px`;
 
     // The left side of the tooltip should be:
@@ -217,11 +219,20 @@ export default class Toolbar extends React.Component {
     );
   }
 
+  isFirstBlockSelected = editorState => {
+    const contentState = editorState.getCurrentContent();
+    const selectionState = editorState.getSelection();
+    const firstBlock = contentState.getFirstBlock();
+    const selectionStartBlock = contentState.getBlockForKey(selectionState.getStartKey());
+    const selectionEndBlock = contentState.getBlockForKey(selectionState.getEndKey());
+    return selectionStartBlock === firstBlock || selectionEndBlock === firstBlock;
+  };
+
   render() {
     const { editorState, editorEnabled, inlineButtons } = this.props;
-    const { showURLInput, urlInputValue } = this.state;
+    const { showURLInput, urlInputValue, isFirstLine } = this.state;
     let isOpen = true;
-    if (!editorEnabled || editorState.getSelection().isCollapsed()) {
+    if (!editorEnabled || editorState.getSelection().isCollapsed() || isFirstLine) {
       isOpen = false;
     }
     if (showURLInput) {

@@ -1,25 +1,36 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Button, Modal } from 'antd';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import TagsSelector from '../../components/TagsSelector/TagsSelector';
 import PolicyConfirmation from '../../components/PolicyConfirmation/PolicyConfirmation';
 import AdvanceSettings from './AdvanceSettings';
-import { splitPostContent } from '../../helpers/postHelpers';
+import { isContentValid, splitPostContent } from '../../helpers/postHelpers';
+import { handleWeightChange, setInitialPercent } from '../../helpers/wObjInfluenceHelper';
+import { rewardsValues } from '../../../common/constants/rewards';
+import { getUpvoteSetting } from '../../reducers';
 import './PostPreviewModal.less';
 
 const isTopicValid = topic => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(topic);
 
 @injectIntl
+@connect(state => ({
+  upvoteSetting: getUpvoteSetting(state),
+}))
 class PostPreviewModal extends Component {
   static propTypes = {
     intl: PropTypes.shape(),
+    upvoteSetting: PropTypes.bool,
     content: PropTypes.string.isRequired,
+    linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
     onSubmit: PropTypes.func.isRequired,
   };
   static defaultProps = {
     intl: {},
+    upvoteSetting: false,
+    linkedObjects: [],
   };
 
   constructor(props) {
@@ -27,11 +38,15 @@ class PostPreviewModal extends Component {
 
     this.state = {
       isModalOpen: false,
+      title: '',
+      body: '',
       topics: [],
+      linkedObjects: setInitialPercent(props.linkedObjects),
+      weightBuffer: 0,
       settings: {
-        reward: '0',
+        reward: rewardsValues.half,
         beneficiary: false,
-        upvote: false,
+        upvote: props.upvoteSetting,
       },
       isConfirmed: false,
     };
@@ -39,16 +54,21 @@ class PostPreviewModal extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     return (
-      nextState.isModalOpen || this.state.isModalOpen || !this.props.content || !nextProps.content
+      nextState.isModalOpen ||
+      this.state.isModalOpen ||
+      isContentValid(this.props.content) !== isContentValid(nextProps.content)
     );
   }
 
   showModal = () => {
     const { postTitle, postBody } = splitPostContent(this.props.content);
+    const linkedObjects = setInitialPercent(this.props.linkedObjects);
     this.setState({
       isModalOpen: true,
-      body: postBody,
       title: postTitle,
+      body: postBody,
+      weightBuffer: 0,
+      linkedObjects,
     });
   };
 
@@ -63,8 +83,13 @@ class PostPreviewModal extends Component {
       settings: { ...prevState.settings, ...updatedValue },
     }));
 
+  handlePercentChange = (objId, percent) => {
+    const { linkedObjects, weightBuffer } = this.state;
+    this.setState(handleWeightChange(linkedObjects, objId, percent, weightBuffer));
+  };
+
   handleSubmit = () => {
-    const { body, title, topics, settings } = this.state;
+    const { body, title, topics, linkedObjects, settings } = this.state;
     const postData = {
       body,
       title,
@@ -72,14 +97,23 @@ class PostPreviewModal extends Component {
       reward: 0,
       beneficiary: false,
       upvote: false,
-      wobjects: [],
+      linkedObjects,
       ...settings,
     };
     this.props.onSubmit(postData);
   };
 
   render() {
-    const { isModalOpen, body, title, topics } = this.state;
+    const {
+      isModalOpen,
+      isConfirmed,
+      body,
+      title,
+      topics,
+      settings,
+      linkedObjects,
+      weightBuffer,
+    } = this.state;
     const { intl, content } = this.props;
     return (
       <React.Fragment>
@@ -115,16 +149,24 @@ class PostPreviewModal extends Component {
             />
             <PolicyConfirmation
               className="post-preview-legal-notice"
+              isChecked={isConfirmed}
               checkboxLabel="Legal notice"
               policyText="Lorem ipsum dolor sit amet, enim in ut adipiscing turpis, mi interdum faucibus eleifend montes, augue viverra commodo vel placerat. Neque vitae amet consequat, proin sociis in sem, nunc fusce a facilisi per, sed sit et eget. A morbi velit proin, elit ac integer in justo, enim quis arcu arcu, magna dapibus est etiam. Nisl dapibus ut leo semper, pellentesque nec sem nec nulla, convallis dictum odio porttitor."
               onChange={this.handleConfirmedChange}
             />
-            <AdvanceSettings onChange={this.handleSettingsChange} />
+            <AdvanceSettings
+              linkedObjects={linkedObjects}
+              weightBuffer={weightBuffer}
+              settings={settings}
+              onSettingsChange={this.handleSettingsChange}
+              onPercentChange={this.handlePercentChange}
+            />
             <div className="edit-post-controls">
               <Button
                 htmlType="submit"
                 onClick={this.handleSubmit}
                 size="large"
+                disabled={!isConfirmed}
                 className="edit-post__submit-btn"
               >
                 {intl.formatMessage({ id: 'publish', defaultMessage: 'Publish' })}
@@ -132,7 +174,7 @@ class PostPreviewModal extends Component {
             </div>
           </Modal>
         )}
-        {content && content.length > 0 ? (
+        {isContentValid(content) ? (
           <div className="edit-post-controls">
             <Button
               htmlType="button"
