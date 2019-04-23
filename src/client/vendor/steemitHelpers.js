@@ -227,3 +227,22 @@ export const calculateEstAccountValue = (
     parseFloat(user.sbd_balance) * parseFloat(sbdRate)
   );
 };
+
+export const roundNumberToThousands = number => {
+  if (number >= 1000 && number < 1000000) {
+    const fixedNumber = (number / 1000).toFixed(1);
+    number = `${
+      fixedNumber.charAt(fixedNumber.length - 1) === '0'
+        ? fixedNumber.slice(0, fixedNumber.length - 2)
+        : fixedNumber
+    } K`;
+  } else if (number >= 1000000) {
+    const fixedBillNumber = (number / 1000000).toFixed(2);
+    number = `${
+      fixedBillNumber.charAt(fixedBillNumber.length - 1) === '0'
+        ? fixedBillNumber.slice(0, fixedBillNumber.length - 3)
+        : fixedBillNumber
+    }'B'`;
+  }
+  return number;
+};
