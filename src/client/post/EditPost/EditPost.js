@@ -19,6 +19,7 @@ import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { Entity, toMarkdown } from '../../components/EditorExtended';
 import LastDraftsContainer from '../Write/LastDraftsContainer';
+import { rewardsValues } from '../../../common/constants/rewards';
 
 const getLinkedObjects = contentStateRaw => {
   const entities = Object.values(contentStateRaw.entityMap).filter(
@@ -66,10 +67,18 @@ class EditPost extends Component {
 
     this.state = {
       content: '',
+      topics: [],
       linkedObjects: [],
+      settings: {
+        reward: rewardsValues.half,
+        beneficiary: false,
+        upvote: props.upvoteSetting,
+      },
     };
 
     this.draftId = props.draftId || uuidv4();
+    this.handleTopicsChange = this.handleTopicsChange.bind(this);
+    this.handleSettingsChange = this.handleSettingsChange.bind(this);
     this.handleChangeContent = this.handleChangeContent.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.buildPost = this.buildPost.bind(this);
@@ -85,6 +94,16 @@ class EditPost extends Component {
     // console.log('raw content:', JSON.stringify(rawContent));
     console.log('content:', nextState);
   }
+
+  handleTopicsChange = (topics, callback) => this.setState({ topics }, callback);
+
+  handleSettingsChange = (updatedValue, callback) =>
+    this.setState(
+      prevState => ({
+        settings: { ...prevState.settings, ...updatedValue },
+      }),
+      callback,
+    );
 
   handleSubmit(data) {
     const postData = this.buildPost(data);
@@ -141,8 +160,7 @@ class EditPost extends Component {
   }, 2000);
 
   render() {
-    const { content, linkedObjects } = this.state;
-    const { upvoteSetting } = this.props;
+    const { content, topics, linkedObjects, settings } = this.state;
     return (
       <div className="shifted">
         <div className="post-layout container">
@@ -150,8 +168,11 @@ class EditPost extends Component {
             <Editor onChange={this.handleChangeContent} />
             <PostPreviewModal
               content={content}
+              topics={topics}
               linkedObjects={linkedObjects}
-              upvoteSetting={upvoteSetting}
+              settings={settings}
+              onTopicsChange={this.handleTopicsChange}
+              onSettingsChange={this.handleSettingsChange}
               onSubmit={this.handleSubmit}
               onUpdate={this.saveDraft}
             />
