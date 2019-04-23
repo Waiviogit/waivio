@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { debounce, kebabCase } from 'lodash';
+import { get, debounce, kebabCase } from 'lodash';
 import uuidv4 from 'uuid/v4';
 import {
   getAuthenticatedUser,
@@ -13,7 +13,7 @@ import {
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
 import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
-import { createPostMetadata } from '../../helpers/postHelpers';
+import { getDraftContent, createPostMetadata } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import ObjectCardView from '../../objectCard/ObjectCardView';
@@ -66,6 +66,7 @@ class EditPost extends Component {
     super(props);
 
     this.state = {
+      draftContent: getDraftContent(get(props.draftPosts, props.draftId, {})),
       content: '',
       topics: [],
       linkedObjects: [],
@@ -84,6 +85,15 @@ class EditPost extends Component {
     this.buildPost = this.buildPost.bind(this);
   }
 
+  componentWillReceiveProps(nextProps) {
+    const differentDraft = this.props.draftId !== nextProps.draftId;
+    if (differentDraft) {
+      const { draftPosts, draftId } = nextProps;
+      this.setState({ draftContent: getDraftContent(get(draftPosts, draftId, {})) });
+      this.draftId = draftId;
+    }
+  }
+
   handleChangeContent(rawContent) {
     const nextState = { content: toMarkdown(rawContent) };
     const linkedObjects = getLinkedObjects(rawContent);
@@ -92,7 +102,7 @@ class EditPost extends Component {
     }
     this.setState(nextState);
     // console.log('raw content:', JSON.stringify(rawContent));
-    console.log('content:', nextState);
+    // console.log('content:', nextState);
   }
 
   handleTopicsChange = (topics, callback) => this.setState({ topics }, callback);
@@ -160,12 +170,12 @@ class EditPost extends Component {
   }, 2000);
 
   render() {
-    const { content, topics, linkedObjects, settings } = this.state;
+    const { draftContent, content, topics, linkedObjects, settings } = this.state;
     return (
       <div className="shifted">
         <div className="post-layout container">
           <div className="center">
-            <Editor onChange={this.handleChangeContent} />
+            <Editor initialContent={draftContent} onChange={this.handleChangeContent} />
             <PostPreviewModal
               content={content}
               topics={topics}

@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _, { get } from 'lodash';
 import { getHtml } from '../components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
 import { categoryRegex } from './regexHelpers';
@@ -118,6 +118,13 @@ export function splitPostContent(markdownContent) {
   return {
     postTitle: postTitle ? postTitle[0].trim() : '',
     postBody: postBody || '',
+  };
+}
+
+export function getDraftContent(draftPost) {
+  return {
+    title: get(draftPost, 'title', ''),
+    body: get(draftPost, 'body', ''),
   };
 }
 

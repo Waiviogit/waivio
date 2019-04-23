@@ -61,7 +61,7 @@ export const saveDraft = (post, redirect, intl) => dispatch =>
     },
     meta: { postId: post.id },
   }).then(() => {
-    if (redirect) dispatch(push(`/edit?draft=${post.id}`));
+    if (redirect) dispatch(push(`/editor?draft=${post.id}`));
   });
 
 export const deleteDraft = draftIds => dispatch =>
