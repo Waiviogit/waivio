@@ -121,7 +121,8 @@ export function splitPostContent(markdownContent) {
   };
 }
 
-export function getDraftContent(draftPost) {
+export function getDraftContent(draftPosts = {}, draftId) {
+  const draftPost = draftId ? draftPosts[draftId] : {};
   return {
     title: get(draftPost, 'title', ''),
     body: get(draftPost, 'body', ''),

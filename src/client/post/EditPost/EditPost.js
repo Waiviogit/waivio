@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { get, debounce, kebabCase } from 'lodash';
+import { debounce, kebabCase } from 'lodash';
 import uuidv4 from 'uuid/v4';
 import {
   getAuthenticatedUser,
@@ -66,7 +66,7 @@ class EditPost extends Component {
     super(props);
 
     this.state = {
-      draftContent: getDraftContent(get(props.draftPosts, props.draftId, {})),
+      draftContent: getDraftContent(props.draftPosts, props.draftId),
       content: '',
       topics: [],
       linkedObjects: [],
@@ -89,7 +89,7 @@ class EditPost extends Component {
     const differentDraft = this.props.draftId !== nextProps.draftId;
     if (differentDraft) {
       const { draftPosts, draftId } = nextProps;
-      this.setState({ draftContent: getDraftContent(get(draftPosts, draftId, {})) });
+      this.setState({ draftContent: getDraftContent(draftPosts, draftId) });
       this.draftId = draftId;
     }
   }

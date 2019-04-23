@@ -1,5 +1,6 @@
 import mdToAst from '@textlint/markdown-to-ast';
-import { Block } from './constants';
+import { last } from 'lodash';
+import { Block, Entity } from './constants';
 
 const defaultInlineStyles = {
   Strong: {
@@ -24,6 +25,11 @@ const defaultBlockStyles = {
   BlockQuote: 'blockquote',
 };
 
+const normalizeMd = content => {
+  const regExp = new RegExp('<center>|</center>', 'g');
+  return content.replace(regExp, '');
+};
+
 const getBlockStyleForMd = (node, blockStyles) => {
   const style = node.type;
   const ordered = node.ordered;
@@ -38,7 +44,7 @@ const getBlockStyleForMd = (node, blockStyles) => {
     node.children[0] &&
     node.children[0].type === 'Image'
   ) {
-    return 'atomic';
+    return Block.IMAGE;
   } else if (node.type === 'Paragraph' && node.raw && node.raw.match(/^\[\[\s\S+\s.*\S+\s\]\]/)) {
     return 'atomic';
   }
@@ -65,7 +71,7 @@ const joinCodeBlocks = splitMd => {
 };
 
 const splitMdBlocks = md => {
-  const splitMd = md.split('\n');
+  const splitMd = md.split('\n').map(str => str.trim());
 
   // Process the split markdown include the
   // one syntax where there's an block level opening
@@ -82,6 +88,7 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
   let text = '';
   const inlineStyleRanges = [];
   const entityRanges = [];
+  const data = {};
   const entityMap = existingEntities;
 
   const addInlineStyleRange = (offset, length, style) => {
@@ -94,7 +101,7 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
   const addLink = child => {
     const entityKey = Object.keys(entityMap).length;
     entityMap[entityKey] = {
-      type: 'LINK',
+      type: Entity.LINK,
       mutability: 'MUTABLE',
       data: {
         url: child.url,
@@ -108,21 +115,9 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
   };
 
   const addImage = child => {
-    const entityKey = Object.keys(entityMap).length;
-    entityMap[entityKey] = {
-      type: 'IMAGE',
-      mutability: 'IMMUTABLE',
-      data: {
-        url: child.url,
-        src: child.url,
-        fileName: child.alt || '',
-      },
-    };
-    entityRanges.push({
-      key: entityKey,
-      length: 1,
-      offset: text.length,
-    });
+    data.src = child.url;
+    data.alt = child.alt;
+    text = child.alt;
   };
 
   const addVideo = child => {
@@ -184,7 +179,7 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
         addInlineStyleRange(text.length, child.value.length, inlineStyles[child.type].type);
       }
       text = `${text}${
-        child.type === 'Image' || videoShortcodeRegEx.test(child.raw) ? ' ' : child.value
+        child.type === 'Image' || videoShortcodeRegEx.test(child.raw) ? '' : child.value
       }`;
     }
   };
@@ -207,6 +202,7 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
     text,
     inlineStyleRanges,
     entityRanges,
+    data,
     blockStyle,
     entityMap,
   };
@@ -226,16 +222,22 @@ function mdToDraftjs({ title = '', body = '' }, extraStyles) {
   ];
   let entityMap = {};
   if (body) {
-    const paragraphs = splitMdBlocks(body);
+    const paragraphs = splitMdBlocks(normalizeMd(body));
 
+    // eslint-disable-next-line
     paragraphs.forEach(paragraph => {
       const result = parseMdLine(paragraph, entityMap, extraStyles);
+      const prevBlock = last(blocks);
+      if (prevBlock && prevBlock.type === Block.IMAGE && prevBlock.text === result.text) {
+        return true; // skip iteration
+      }
       blocks.push({
         text: result.text,
         type: result.blockStyle,
         depth: 0,
         inlineStyleRanges: result.inlineStyleRanges,
         entityRanges: result.entityRanges,
+        data: result.data,
       });
       entityMap = result.entityMap;
     });

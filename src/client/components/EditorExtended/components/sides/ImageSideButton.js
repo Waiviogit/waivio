@@ -54,6 +54,7 @@ export default class ImageSideButton extends React.Component {
                 this.props.setEditorState(
                   addNewBlock(this.props.getEditorState(), Block.IMAGE, {
                     src: data.url,
+                    alt: data.name,
                   }),
                 );
                 hideNotification();
