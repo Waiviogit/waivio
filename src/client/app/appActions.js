@@ -48,18 +48,18 @@ export const getRewardFund = () => (dispatch, getSelection, { steemAPI }) =>
     payload: { promise: steemAPI.sendAsync('get_reward_fund', ['post']) },
   });
 
-export const getTrendingTopics = () => (dispatch, getState, { steemAPI }) => {
-  dispatch({
-    type: GET_TRENDING_TOPICS,
-    payload: {
-      promise: steemAPI.sendAsync('get_trending_tags', [undefined, 50]).then(result =>
-        Object.values(result)
-          .map(tag => tag.name)
-          .filter(tag => tag !== ''),
-      ),
-    },
-  });
-};
+// export const getTrendingTopics = () => (dispatch, getState, { steemAPI }) => {
+//   dispatch({
+//     type: GET_TRENDING_TOPICS,
+//     payload: {
+//       promise: steemAPI.sendAsync('get_trending_tags', [undefined, 50]).then(result =>
+//         Object.values(result)
+//           .map(tag => tag.name)
+//           .filter(tag => tag !== ''),
+//       ),
+//     },
+//   });
+// };
 
 export const getCryptoPriceHistory = (symbol, refresh = false) => dispatch => {
   if (refresh) {

@@ -20,13 +20,7 @@ import {
 } from './reducers';
 import { login, logout, busyLogin } from './auth/authActions';
 import { getFollowing, getFollowingObjects, getNotifications } from './user/userActions';
-import {
-  getRate,
-  getRewardFund,
-  getTrendingTopics,
-  setUsedLocale,
-  setAppUrl,
-} from './app/appActions';
+import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './app/appActions';
 import * as reblogActions from './app/Reblog/reblogActions';
 import NotificationPopup from './notifications/NotificationPopup';
 import Topnav from './components/Navigation/Topnav';
@@ -53,7 +47,6 @@ import BBackTop from './components/BBackTop';
     getNotifications,
     getRate,
     getRewardFund,
-    getTrendingTopics,
     busyLogin,
     getRebloggedList: reblogActions.getRebloggedList,
     setUsedLocale,
@@ -75,7 +68,6 @@ export default class Wrapper extends React.PureComponent {
     getRewardFund: PropTypes.func,
     getRebloggedList: PropTypes.func,
     getRate: PropTypes.func,
-    getTrendingTopics: PropTypes.func,
     getNotifications: PropTypes.func,
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
@@ -140,7 +132,6 @@ export default class Wrapper extends React.PureComponent {
     this.props.getRewardFund();
     this.props.getRebloggedList();
     this.props.getRate();
-    this.props.getTrendingTopics();
   }
 
   componentWillReceiveProps(nextProps) {
