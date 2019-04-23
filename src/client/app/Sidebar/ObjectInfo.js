@@ -19,7 +19,7 @@ import {
   getAllowedFieldsByObjType,
 } from '../../../common/constants/listOfFields';
 import Proposition from '../../components/Proposition/Proposition';
-import Map from '../../components/Maps/Map';
+import MapOS from '../../components/Maps/Map';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
 import IconButton from '../../components/IconButton';
@@ -292,17 +292,9 @@ class ObjectInfo extends React.Component {
                 map.latitude &&
                 map.longitude &&
                 isCoordinatesValid(map.latitude, map.longitude) && (
-                  <Map
-                    isMarkerShown
-                    setCoordinates={() => {}}
-                    wobject={wobject}
+                  <MapOS
+                    wobjects={{ [wobject.id]: wobject }}
                     mapHeigth={200}
-                    markers={[
-                      {
-                        lat: Number(map.latitude),
-                        lng: Number(map.longitude),
-                      },
-                    ]}
                     centerLat={Number(map.latitude)}
                     centerLng={Number(map.longitude)}
                   />
