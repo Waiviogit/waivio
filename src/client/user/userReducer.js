@@ -7,6 +7,7 @@ import { people } from '../helpers/constants';
 const initialState = {
   recommendations: [],
   recommendedObjects: [],
+  location: {},
   following: {
     list: [],
     pendingFollows: [],
@@ -118,6 +119,11 @@ export default function userReducer(state = initialState, action) {
           ...state.following,
           pendingFollows: [...state.following.pendingFollows, action.meta.username],
         },
+      };
+    case userActions.GET_USER_LOCATION.SUCCESS:
+      return {
+        ...state,
+        location: action.payload,
       };
     case userActions.FOLLOW_USER_SUCCESS:
       return {
@@ -254,3 +260,4 @@ export const getNotifications = state => state.notifications;
 export const getIsLoadingNotifications = state => state.loadingNotifications;
 export const getFetchFollowListError = state => state.fetchFollowListError;
 export const getLatestNotification = state => state.latestNotification;
+export const getUserLocation = state => state.location;

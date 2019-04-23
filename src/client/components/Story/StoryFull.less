@@ -30,17 +30,6 @@
     }
   }
 
-  &__title {
-    color: #353535;
-    font-weight: 700;
-    line-height: 1.3em;
-    font-size: 28px;
-
-    @media @small {
-      font-size: 34px;
-    }
-  }
-
   &__comments_title {
     color: @primary-color;
     font-weight: 500;
@@ -111,6 +100,18 @@
     cursor: pointer;
   }
 }
+
+.StoryFull__title {
+  color: #353535;
+  font-weight: 700;
+  line-height: 1.3em;
+  font-size: 28px;
+
+  @media @small {
+    font-size: 34px;
+  }
+}
+
 div[data-dir='rtl'] .StoryFull {
   &__header {
     &__text {

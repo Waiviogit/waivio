@@ -76,7 +76,6 @@ export const getIsPostEdited = (state, permlink) =>
 export const getRate = state => fromApp.getRate(state.app);
 export const getIsTrendingTopicsLoading = state => fromApp.getIsTrendingTopicsLoading(state.app);
 export const getRewardFund = state => fromApp.getRewardFund(state.app);
-export const getTrendingTopics = state => fromApp.getTrendingTopics(state.app);
 export const getIsFetching = state => fromApp.getIsFetching(state.app);
 export const getIsBannerClosed = state => fromApp.getIsBannerClosed(state.app);
 export const getAppUrl = state => fromApp.getAppUrl(state.app);
@@ -112,6 +111,7 @@ export const getNotifications = state => fromUser.getNotifications(state.user);
 export const getIsLoadingNotifications = state => fromUser.getIsLoadingNotifications(state.user);
 export const getFetchFollowListError = state => fromUser.getFetchFollowListError(state.user);
 export const getLatestNotification = state => fromUser.getLatestNotification(state.user);
+export const getUserLocation = state => fromUser.getUserLocation(state.user);
 
 export const getUser = (state, username) => fromUsers.getUser(state.users, username);
 export const getIsUserFetching = (state, username) =>

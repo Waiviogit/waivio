@@ -15,8 +15,9 @@ const defaultDecorators = new CompositeDecorator([
 ]);
 
 const createEditorState = (content = null, decorators = defaultDecorators) => {
+  let initialEditorState = {};
   if (content === null) {
-    return EditorState.createEmpty(decorators);
+    initialEditorState = EditorState.createEmpty(decorators);
   }
   let contentState = null;
   if (typeof content === 'string') {
@@ -24,7 +25,8 @@ const createEditorState = (content = null, decorators = defaultDecorators) => {
   } else {
     contentState = convertFromRaw(content);
   }
-  return EditorState.createWithContent(contentState, decorators);
+  initialEditorState = EditorState.createWithContent(contentState, decorators);
+  return EditorState.moveSelectionToEnd(initialEditorState);
 };
 
 export default createEditorState;

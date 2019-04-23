@@ -6,12 +6,23 @@ import { Icon, Modal } from 'antd';
 import Marker from 'pigeon-marker/react';
 import Overlay from 'pigeon-overlay';
 import classNames from 'classnames';
+import { connect } from 'react-redux';
 import { getClientWObj } from '../../adapters';
 import './Map.less';
 import { getInnerFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { mapFields, objectFields } from '../../../common/constants/listOfFields';
 import Loading from '../Icon/Loading';
+import { getUserLocation } from '../../reducers';
+import { getCoordinates } from '../../user/userActions';
 
+@connect(
+  state => ({
+    userLocation: getUserLocation(state),
+  }),
+  {
+    getCoordinates,
+  },
+)
 class MapOS extends React.Component {
   constructor(props) {
     super(props);
@@ -19,7 +30,7 @@ class MapOS extends React.Component {
     this.state = {
       infoboxData: false,
       markersLayout: null,
-      zoom: 8,
+      zoom: 12,
       userCoordinates: null,
       isFullscreenMode: false,
     };
@@ -31,11 +42,17 @@ class MapOS extends React.Component {
   }
 
   componentDidMount() {
-    this.setCoordinates();
+    this.props.getCoordinates();
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps !== this.props) this.setState({ markersLayout: this.getMarkers(nextProps) });
+    if (nextProps !== this.props) {
+      let location = [37.0902, 95];
+      if (_.size(nextProps.userLocation) > 0) {
+        location = [nextProps.userLocation.lat, nextProps.userLocation.lon];
+      }
+      this.setState({ markersLayout: this.getMarkers(nextProps), userCoordinates: location });
+    }
   }
 
   getMarkers = props =>
@@ -71,10 +88,13 @@ class MapOS extends React.Component {
 
   setCoordinates = () => {
     if (navigator && navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(this.showUserPosition);
-    } else {
-      this.setState({ userCoordinates: [this.props.centerLat, this.props.centerLng] });
+      const positionGPS = navigator.geolocation.getCurrentPosition(this.showUserPosition);
+      if (positionGPS) {
+        this.setState({ userCoordinates: positionGPS });
+        return;
+      }
     }
+    this.setState({ userCoordinates: [this.props.centerLat, this.props.centerLng] });
   };
 
   showUserPosition = position => {
@@ -189,12 +209,16 @@ MapOS.defaultProps = {
   markers: {},
   wobjects: [],
   mapHeigth: 200,
+  userLocation: {},
   setCoordinates: () => {},
+  getCoordinates: () => {},
 };
 
 MapOS.propTypes = {
   setCoordinates: PropTypes.func,
+  getCoordinates: PropTypes.func,
   mapHeigth: PropTypes.number,
+  userLocation: PropTypes.shape(),
   centerLat: PropTypes.number,
   centerLng: PropTypes.number,
 };

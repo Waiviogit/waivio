@@ -104,7 +104,7 @@ class MediumDraftEditor extends React.Component {
     showLinkEditToolbar: true,
     toolbarConfig: {},
     processURL: null,
-    handleKeyCommand: () => {},
+    handleKeyCommand: null,
     handleReturn: () => {},
     handlePastedText: () => {},
   };
@@ -324,6 +324,13 @@ class MediumDraftEditor extends React.Component {
       this._toggleInlineStyle(inline); // eslint-disable-line
       return HANDLED;
     }
+    if (
+      currentBlockType === Block.STORY_TITLE &&
+      !block.text &&
+      command === KEY_COMMANDS.backspace
+    ) {
+      return HANDLED;
+    }
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
       this.onChange(newState);
@@ -367,7 +374,7 @@ class MediumDraftEditor extends React.Component {
       const currentBlock = getCurrentBlock(editorState);
       const blockType = currentBlock.getType();
 
-      if (blockType.indexOf(Block.ATOMIC) === 0) {
+      if (blockType.indexOf(Block.ATOMIC) === 0 || blockType === Block.STORY_TITLE) {
         this.onChange(addNewBlockAt(editorState, currentBlock.getKey()));
         return HANDLED;
       }
