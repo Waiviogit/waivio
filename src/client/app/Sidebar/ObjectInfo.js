@@ -145,7 +145,11 @@ class ObjectInfo extends React.Component {
                 {fieldsCount}
               </div>
             )}
-            {content ? <div className="field-info__content">{content}</div> : null}
+            {content ? (
+              <div className="field-info__content" data-test={`${fieldName}-field-view`}>
+                {content}
+              </div>
+            ) : null}
           </React.Fragment>
         </div>
       ) : null;

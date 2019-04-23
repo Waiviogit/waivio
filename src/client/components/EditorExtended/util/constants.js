@@ -23,6 +23,7 @@ export const Block = {
   TODO: 'todo',
   IMAGE: 'atomic:image',
   BREAK: 'atomic:break',
+  STORY_TITLE: 'story-title',
 };
 
 export const Inline = {
@@ -50,6 +51,7 @@ export const KEY_COMMANDS = {
   unlink: () => 'unlink',
   toggleInline: (type = '') => `toggleinline:${type}`,
   deleteBlock: () => 'delete-block',
+  backspace: 'backspace',
 };
 
 export const ATOMIC_TYPES = {

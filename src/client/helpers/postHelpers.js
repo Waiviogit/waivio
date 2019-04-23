@@ -120,3 +120,8 @@ export function splitPostContent(markdownContent) {
     postBody: postBody || '',
   };
 }
+
+export function isContentValid(markdownContent) {
+  const { postTitle, postBody } = splitPostContent(markdownContent);
+  return postTitle && postBody && postBody.length;
+}
