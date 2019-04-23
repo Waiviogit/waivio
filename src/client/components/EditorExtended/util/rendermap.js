@@ -22,6 +22,9 @@ const RenderMap = Map({
   [Block.BREAK]: {
     element: 'div',
   },
+  [Block.STORY_TITLE]: {
+    element: 'h1',
+  },
 }).merge(DefaultDraftBlockRenderMap);
 
 export default RenderMap;

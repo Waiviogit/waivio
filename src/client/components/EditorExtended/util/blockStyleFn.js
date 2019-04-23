@@ -34,6 +34,8 @@ export default block => {
     }
     case Block.CODE:
       return `${BASE_BLOCK_CLASS} ${BASE_BLOCK_CLASS}-code-block`;
+    case Block.STORY_TITLE:
+      return `StoryFull__title`;
     default:
       return BASE_BLOCK_CLASS;
   }

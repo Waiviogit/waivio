@@ -7,7 +7,7 @@ import BodyContainer from '../../containers/Story/BodyContainer';
 import TagsSelector from '../../components/TagsSelector/TagsSelector';
 import PolicyConfirmation from '../../components/PolicyConfirmation/PolicyConfirmation';
 import AdvanceSettings from './AdvanceSettings';
-import { splitPostContent } from '../../helpers/postHelpers';
+import { isContentValid, splitPostContent } from '../../helpers/postHelpers';
 import { handleWeightChange, setInitialPercent } from '../../helpers/wObjInfluenceHelper';
 import { rewardsValues } from '../../../common/constants/rewards';
 import { getUpvoteSetting } from '../../reducers';
@@ -54,7 +54,9 @@ class PostPreviewModal extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     return (
-      nextState.isModalOpen || this.state.isModalOpen || !this.props.content || !nextProps.content
+      nextState.isModalOpen ||
+      this.state.isModalOpen ||
+      isContentValid(this.props.content) !== isContentValid(nextProps.content)
     );
   }
 
@@ -172,7 +174,7 @@ class PostPreviewModal extends Component {
             </div>
           </Modal>
         )}
-        {content && content.length > 0 ? (
+        {isContentValid(content) ? (
           <div className="edit-post-controls">
             <Button
               htmlType="button"
