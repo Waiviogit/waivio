@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { convertToRaw } from 'draft-js';
-import { Editor as MediumDraftEditor, createEditorState, Block } from './index';
+import { Editor as MediumDraftEditor, createEditorState, fromMarkdown } from './index';
 import ImageSideButton from './components/sides/ImageSideButton';
 import SeparatorButton from './components/sides/SeparatorSideButton';
 import ObjectSideButton from './components/sides/ObjectSideButton';
@@ -24,34 +24,14 @@ const SIDE_BUTTONS = [
 class Editor extends React.Component {
   static propTypes = {
     // passed props:
-    initialContent: PropTypes.shape(),
+    initialContent: PropTypes.shape({
+      title: PropTypes.string,
+      body: PropTypes.string,
+    }).isRequired,
     onChange: PropTypes.func,
   };
   static defaultProps = {
     intl: {},
-    initialContent: {
-      blocks: [
-        {
-          key: 's_title',
-          text: '',
-          type: Block.STORY_TITLE,
-          depth: 0,
-          inlineStyleRanges: [],
-          entityRanges: [],
-          data: {},
-        },
-        {
-          key: 's_content',
-          text: '',
-          type: Block.UNSTYLED,
-          depth: 0,
-          inlineStyleRanges: [],
-          entityRanges: [],
-          data: {},
-        },
-      ],
-      entityMap: {},
-    },
     onChange: () => {},
   };
 
@@ -60,13 +40,9 @@ class Editor extends React.Component {
 
     this.state = {
       isMounted: false,
-      editorState: createEditorState(props.initialContent), // for empty content
+      editorState: createEditorState(fromMarkdown(props.initialContent)),
     };
-    /*
-    this.state = {
-      editorState: createEditorState(data), // with content
-    };
-    */
+
     this.onChange = editorState => {
       this.setState({ editorState });
     };
@@ -75,6 +51,12 @@ class Editor extends React.Component {
 
   componentDidMount() {
     this.setState({ isMounted: true }, this.setFocusAfterMount); // eslint-disable-line
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.initialContent !== nextProps.initialContent) {
+      this.handleContentChange(createEditorState(fromMarkdown(nextProps.initialContent)));
+    }
   }
 
   setFocusAfterMount = () => setTimeout(() => this.refsEditor.current.focus(), 0);

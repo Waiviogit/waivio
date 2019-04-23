@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _, { get } from 'lodash';
 import { getHtml } from '../components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
 import { categoryRegex } from './regexHelpers';
@@ -121,7 +121,15 @@ export function splitPostContent(markdownContent) {
   };
 }
 
+export function getDraftContent(draftPosts = {}, draftId) {
+  const draftPost = draftId ? draftPosts[draftId] : {};
+  return {
+    title: get(draftPost, 'title', ''),
+    body: get(draftPost, 'body', ''),
+  };
+}
+
 export function isContentValid(markdownContent) {
   const { postTitle, postBody } = splitPostContent(markdownContent);
-  return postTitle && postBody && postBody.length;
+  return Boolean(postTitle && postBody.trim());
 }

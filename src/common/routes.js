@@ -69,12 +69,12 @@ const routes = [
         component: Wallet,
       },
       {
-        path: '/edit',
+        path: '/editor',
         component: Editor,
         exact: true,
       },
       {
-        path: '/editor',
+        path: '/edit',
         component: BusyEditor,
         exact: true,
       },

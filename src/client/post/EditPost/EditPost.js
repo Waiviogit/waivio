@@ -2,15 +2,24 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
-import { kebabCase } from 'lodash';
-import { getAuthenticatedUser, getDraftPosts } from '../../reducers';
-import { createPost } from '../Write/editorActions';
+import { injectIntl } from 'react-intl';
+import { debounce, kebabCase } from 'lodash';
+import uuidv4 from 'uuid/v4';
+import {
+  getAuthenticatedUser,
+  getDraftPosts,
+  getIsEditorSaving,
+  getUpvoteSetting,
+} from '../../reducers';
+import { createPost, saveDraft } from '../Write/editorActions';
 import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
-import { createPostMetadata } from '../../helpers/postHelpers';
+import { getDraftContent, createPostMetadata } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { Entity, toMarkdown } from '../../components/EditorExtended';
+import LastDraftsContainer from '../Write/LastDraftsContainer';
+import { rewardsValues } from '../../../common/constants/rewards';
 
 const getLinkedObjects = contentStateRaw => {
   const entities = Object.values(contentStateRaw.entityMap).filter(
@@ -19,40 +28,70 @@ const getLinkedObjects = contentStateRaw => {
   return entities.map(entity => entity.data.object);
 };
 
+@injectIntl
 @withRouter
 @connect(
   (state, props) => ({
     user: getAuthenticatedUser(state),
     draftPosts: getDraftPosts(state),
+    saving: getIsEditorSaving(state),
     draftId: new URLSearchParams(props.location.search).get('draft'),
+    upvoteSetting: getUpvoteSetting(state),
   }),
   {
     createPost,
+    saveDraft,
   },
 )
 class EditPost extends Component {
   static propTypes = {
+    intl: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
     draftPosts: PropTypes.shape().isRequired,
+    upvoteSetting: PropTypes.bool,
     draftId: PropTypes.string,
+    saving: PropTypes.bool,
     createPost: PropTypes.func,
+    saveDraft: PropTypes.func,
   };
   static defaultProps = {
+    upvoteSetting: false,
     draftId: '',
+    saving: false,
     createPost: () => {},
+    saveDraft: () => {},
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
+      draftContent: getDraftContent(props.draftPosts, props.draftId),
       content: '',
+      topics: [],
       linkedObjects: [],
+      settings: {
+        reward: rewardsValues.half,
+        beneficiary: false,
+        upvote: props.upvoteSetting,
+      },
     };
 
+    this.draftId = props.draftId || uuidv4();
+    this.handleTopicsChange = this.handleTopicsChange.bind(this);
+    this.handleSettingsChange = this.handleSettingsChange.bind(this);
     this.handleChangeContent = this.handleChangeContent.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.buildPost = this.buildPost.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const differentDraft = this.props.draftId !== nextProps.draftId;
+    if (differentDraft) {
+      const { draftPosts, draftId } = nextProps;
+      this.setState({ draftContent: getDraftContent(draftPosts, draftId) });
+      this.draftId = draftId;
+    }
   }
 
   handleChangeContent(rawContent) {
@@ -62,7 +101,19 @@ class EditPost extends Component {
       nextState.linkedObjects = linkedObjects;
     }
     this.setState(nextState);
+    // console.log('raw content:', JSON.stringify(rawContent));
+    // console.log('content:', nextState);
   }
+
+  handleTopicsChange = (topics, callback) => this.setState({ topics }, callback);
+
+  handleSettingsChange = (updatedValue, callback) =>
+    this.setState(
+      prevState => ({
+        settings: { ...prevState.settings, ...updatedValue },
+      }),
+      callback,
+    );
 
   handleSubmit(data) {
     const postData = this.buildPost(data);
@@ -102,24 +153,47 @@ class EditPost extends Component {
     return postData;
   }
 
+  saveDraft = debounce(data => {
+    if (this.props.saving) return;
+
+    const postData = this.buildPost(data);
+    const postBody = postData.body;
+    const id = this.props.draftId;
+    // Remove zero width space
+    const isBodyEmpty = postBody.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().length === 0;
+
+    if (isBodyEmpty) return;
+
+    const redirect = id !== this.draftId;
+
+    this.props.saveDraft({ postData, id: this.draftId }, redirect, this.props.intl);
+  }, 2000);
+
   render() {
-    const { content, linkedObjects } = this.state;
+    const { draftContent, content, topics, linkedObjects, settings } = this.state;
     return (
       <div className="shifted">
         <div className="post-layout container">
           <div className="center">
-            <Editor onChange={this.handleChangeContent} />
+            <Editor initialContent={draftContent} onChange={this.handleChangeContent} />
             <PostPreviewModal
               content={content}
+              topics={topics}
               linkedObjects={linkedObjects}
+              settings={settings}
+              onTopicsChange={this.handleTopicsChange}
+              onSettingsChange={this.handleSettingsChange}
               onSubmit={this.handleSubmit}
+              onUpdate={this.saveDraft}
             />
             {linkedObjects.map(wObj => (
               <ObjectCardView wObject={wObj} key={wObj.id} />
             ))}
           </div>
           <div className="rightContainer">
-            <div className="right">[drafts block]</div>
+            <div className="right">
+              <LastDraftsContainer />
+            </div>
           </div>
         </div>
       </div>

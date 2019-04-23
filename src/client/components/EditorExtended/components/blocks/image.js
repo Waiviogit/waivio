@@ -45,7 +45,7 @@ class ImageBlock extends React.Component {
             className="md-block-image-inner-container"
             onClick={this.focusBlock}
           >
-            <img alt={data.fileName || ''} src={src} />
+            <img alt={data.get('alt') || ''} src={src} />
           </div>
           <figcaption>
             <EditorBlock {...this.props} />

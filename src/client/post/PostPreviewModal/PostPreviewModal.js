@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Button, Modal } from 'antd';
+import { throttle } from 'lodash';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import TagsSelector from '../../components/TagsSelector/TagsSelector';
 import PolicyConfirmation from '../../components/PolicyConfirmation/PolicyConfirmation';
@@ -10,26 +10,29 @@ import AdvanceSettings from './AdvanceSettings';
 import { isContentValid, splitPostContent } from '../../helpers/postHelpers';
 import { handleWeightChange, setInitialPercent } from '../../helpers/wObjInfluenceHelper';
 import { rewardsValues } from '../../../common/constants/rewards';
-import { getUpvoteSetting } from '../../reducers';
 import './PostPreviewModal.less';
 
 const isTopicValid = topic => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(topic);
 
 @injectIntl
-@connect(state => ({
-  upvoteSetting: getUpvoteSetting(state),
-}))
 class PostPreviewModal extends Component {
   static propTypes = {
     intl: PropTypes.shape(),
-    upvoteSetting: PropTypes.bool,
+    settings: PropTypes.shape({
+      reward: PropTypes.oneOf([rewardsValues.none, rewardsValues.half, rewardsValues.all]),
+      beneficiary: PropTypes.bool,
+      upvote: PropTypes.bool,
+    }).isRequired,
     content: PropTypes.string.isRequired,
+    topics: PropTypes.arrayOf(PropTypes.string).isRequired,
     linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
+    onTopicsChange: PropTypes.func.isRequired,
+    onSettingsChange: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
+    onUpdate: PropTypes.func.isRequired,
   };
   static defaultProps = {
     intl: {},
-    upvoteSetting: false,
     linkedObjects: [],
   };
 
@@ -40,14 +43,8 @@ class PostPreviewModal extends Component {
       isModalOpen: false,
       title: '',
       body: '',
-      topics: [],
       linkedObjects: setInitialPercent(props.linkedObjects),
       weightBuffer: 0,
-      settings: {
-        reward: rewardsValues.half,
-        beneficiary: false,
-        upvote: props.upvoteSetting,
-      },
       isConfirmed: false,
     };
   }
@@ -59,6 +56,23 @@ class PostPreviewModal extends Component {
       isContentValid(this.props.content) !== isContentValid(nextProps.content)
     );
   }
+
+  onUpdate = () => {
+    throttle(this.throttledUpdate, 200, { leading: false, trailing: true })();
+  };
+
+  throttledUpdate = () => {
+    const { body, title, linkedObjects } = this.state;
+    const { topics, settings } = this.props;
+    const postData = {
+      body,
+      title,
+      topics,
+      linkedObjects,
+      ...settings,
+    };
+    this.props.onUpdate(postData);
+  };
 
   showModal = () => {
     const { postTitle, postBody } = splitPostContent(this.props.content);
@@ -74,22 +88,20 @@ class PostPreviewModal extends Component {
 
   hideModal = () => this.setState({ isModalOpen: false });
 
-  handleTopicsChange = topics => this.setState({ topics });
-
   handleConfirmedChange = isConfirmed => this.setState({ isConfirmed });
 
-  handleSettingsChange = updatedValue =>
-    this.setState(prevState => ({
-      settings: { ...prevState.settings, ...updatedValue },
-    }));
+  handleSettingsChange = updatedValue => this.props.onSettingsChange(updatedValue, this.onUpdate);
+
+  handleTopicsChange = topics => this.props.onTopicsChange(topics, this.onUpdate);
 
   handlePercentChange = (objId, percent) => {
     const { linkedObjects, weightBuffer } = this.state;
-    this.setState(handleWeightChange(linkedObjects, objId, percent, weightBuffer));
+    this.setState(handleWeightChange(linkedObjects, objId, percent, weightBuffer), this.onUpdate);
   };
 
   handleSubmit = () => {
-    const { body, title, topics, linkedObjects, settings } = this.state;
+    const { body, title, linkedObjects } = this.state;
+    const { topics, settings } = this.props;
     const postData = {
       body,
       title,
@@ -104,17 +116,8 @@ class PostPreviewModal extends Component {
   };
 
   render() {
-    const {
-      isModalOpen,
-      isConfirmed,
-      body,
-      title,
-      topics,
-      settings,
-      linkedObjects,
-      weightBuffer,
-    } = this.state;
-    const { intl, content } = this.props;
+    const { isModalOpen, isConfirmed, body, title, linkedObjects, weightBuffer } = this.state;
+    const { intl, content, topics, settings } = this.props;
     return (
       <React.Fragment>
         {isModalOpen && (
