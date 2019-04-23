@@ -137,6 +137,6 @@ export const GET_USER_LOCATION = createAsyncActionType('@user/GET_USER_LOCATION'
 
 export const getCoordinates = () => dispatch =>
   dispatch({
-    type: GET_USER_LOCATION,
+    type: GET_USER_LOCATION.ACTION,
     payload: getUserCoordinatesByIpAdress(),
   });
