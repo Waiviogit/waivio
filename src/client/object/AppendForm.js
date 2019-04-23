@@ -221,6 +221,7 @@ export default class AppendForm extends Component {
       case objectFields.avatar:
       case objectFields.background:
       case objectFields.price:
+      case objectFields.tag:
       case objectFields.email: {
         fieldBody.push(rest[currentField]);
         break;
@@ -229,10 +230,6 @@ export default class AppendForm extends Component {
         fieldBody.push(JSON.stringify(rest[objectFields.sorting]));
         break;
       }
-      // case objectFields.website: {
-      //   fieldBody.push(rest[websiteFields.link]);
-      //   break;
-      // }
       case objectFields.hashtag: {
         fieldBody = rest[objectFields.hashtag];
         break;
@@ -270,13 +267,6 @@ export default class AppendForm extends Component {
         body: bodyField,
         locale,
       };
-
-      // if (field === objectFields.website) {
-      //   fieldsObject = {
-      //     ...fieldsObject,
-      //     [websiteFields.title]: form[websiteFields.title],
-      //   };
-      // }
 
       if (field === objectFields.phone) {
         fieldsObject = {
@@ -577,6 +567,51 @@ export default class AppendForm extends Component {
                 placeholder={intl.formatMessage({
                   id: 'value_placeholder',
                   defaultMessage: 'Add value',
+                })}
+              />,
+            )}
+          </Form.Item>
+        );
+      }
+      case objectFields.tag: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.tag, {
+              rules: [
+                {
+                  transform: value => value && value.toLowerCase(),
+                },
+                {
+                  required: true,
+                  message: intl.formatMessage(
+                    {
+                      id: 'field_error',
+                      defaultMessage: 'Field is required',
+                    },
+                    { field: 'Tag' },
+                  ),
+                },
+                {
+                  max: 100,
+                  message: intl.formatMessage(
+                    {
+                      id: 'value_error_long',
+                      defaultMessage: "Value can't be longer than 100 characters.",
+                    },
+                    { value: 100 },
+                  ),
+                },
+                {
+                  validator: this.validateFieldValue,
+                },
+              ],
+            })(
+              <Input
+                className="AppendForm__title"
+                disabled={loading}
+                placeholder={intl.formatMessage({
+                  id: 'tag_placeholder',
+                  defaultMessage: 'Enter tag',
                 })}
               />,
             )}
@@ -1160,51 +1195,6 @@ export default class AppendForm extends Component {
             ))}
             {combinedFieldValidationMsg}
           </React.Fragment>
-        );
-      }
-      case objectFields.hashtag: {
-        return (
-          <Form.Item
-            extra={intl.formatMessage({
-              id: 'hashtags_extra',
-              defaultMessage:
-                'Separate #tags with commas. Only lowercase letters, numbers and hyphen character is permitted.',
-            })}
-          >
-            {getFieldDecorator(objectFields.hashtag, {
-              initialValue: [],
-              rules: [
-                {
-                  required: true,
-                  message: intl.formatMessage(
-                    {
-                      id: 'field_error',
-                      defaultMessage: 'Field is required',
-                    },
-                    { field: 'Hashtag' },
-                  ),
-                  type: 'array',
-                },
-                { validator: this.checkLengthHashtags(intl) },
-                { validator: this.checkHashtags(intl) },
-                {
-                  validator: this.validateFieldValue,
-                },
-              ],
-            })(
-              <Select
-                className="AppendForm__hashtags"
-                mode="tags"
-                placeholder={intl.formatMessage({
-                  id: 'hashtag_value_placeholder',
-                  defaultMessage: 'Add value',
-                })}
-                disabled={loading}
-                dropdownStyle={{ display: 'none' }}
-                tokenSeparators={[' ', ',']}
-              />,
-            )}
-          </Form.Item>
         );
       }
       case objectFields.phone: {

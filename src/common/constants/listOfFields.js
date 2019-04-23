@@ -15,6 +15,8 @@ export const objectFields = {
   rating: 'rating',
   listItem: 'listItem',
   price: 'price',
+  parent: 'parent',
+  tag: 'tag',
 };
 
 export const objectFieldsWithInnerData = [

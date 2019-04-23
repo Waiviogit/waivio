@@ -6,12 +6,27 @@ import { Icon, Modal } from 'antd';
 import Marker from 'pigeon-marker/react';
 import Overlay from 'pigeon-overlay';
 import classNames from 'classnames';
+import { connect } from 'react-redux';
 import { getClientWObj } from '../../adapters';
 import './Map.less';
 import { getInnerFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { mapFields, objectFields } from '../../../common/constants/listOfFields';
 import Loading from '../Icon/Loading';
+import { getUserLocation } from '../../reducers';
+import { getCoordinates } from '../../user/userActions';
 
+const defaultCoords = {
+  centerLat: 37.0902,
+  centerLng: 95.0235,
+};
+@connect(
+  state => ({
+    userLocation: getUserLocation(state),
+  }),
+  {
+    getCoordinates,
+  },
+)
 class MapOS extends React.Component {
   constructor(props) {
     super(props);
@@ -19,7 +34,7 @@ class MapOS extends React.Component {
     this.state = {
       infoboxData: false,
       markersLayout: null,
-      zoom: 8,
+      zoom: 12,
       userCoordinates: null,
       isFullscreenMode: false,
     };
@@ -27,16 +42,31 @@ class MapOS extends React.Component {
     this.setPosition = this.setPosition.bind(this);
     this.showUserPosition = this.showUserPosition.bind(this);
     this.setCoordinates = this.setCoordinates.bind(this);
+    this.setCoordByProps = this.setCoordByProps.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
   }
 
   componentDidMount() {
-    this.setCoordinates();
+    if (defaultCoords.centerLat === this.props.centerLat && _.isEmpty(this.props.userLocation)) {
+      this.props.getCoordinates();
+    } else {
+      this.setCoordByProps();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps !== this.props) this.setState({ markersLayout: this.getMarkers(nextProps) });
+    if (nextProps !== this.props) {
+      let location = [37.0902, 95];
+      if (_.size(nextProps.userLocation) > 0) {
+        location = [nextProps.userLocation.lat, nextProps.userLocation.lon];
+      }
+      this.setState({ markersLayout: this.getMarkers(nextProps), userCoordinates: location });
+    }
   }
+
+  setCoordByProps = () => {
+    this.setState({ userCoordinates: [this.props.centerLat, this.props.centerLng] });
+  };
 
   getMarkers = props =>
     _.map(props.wobjects, wobject => {
@@ -71,10 +101,13 @@ class MapOS extends React.Component {
 
   setCoordinates = () => {
     if (navigator && navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(this.showUserPosition);
-    } else {
-      this.setState({ userCoordinates: [this.props.centerLat, this.props.centerLng] });
+      const positionGPS = navigator.geolocation.getCurrentPosition(this.showUserPosition);
+      if (positionGPS) {
+        this.setState({ userCoordinates: positionGPS });
+        return;
+      }
     }
+    this.setState({ userCoordinates: [this.props.centerLat, this.props.centerLng] });
   };
 
   showUserPosition = position => {
@@ -91,17 +124,22 @@ class MapOS extends React.Component {
   incrementZoom = () => {
     this.setState({ zoom: this.state.zoom + 1 });
   };
+
   decrementZoom = () => {
     this.setState({ zoom: this.state.zoom - 1 });
   };
 
   toggleModal() {
-    this.setState({ isFullscreenMode: !this.state.isFullscreenMode });
+    this.setState({ isFullscreenMode: !this.state.isFullscreenMode, infoboxData: false });
   }
 
   render() {
-    const { mapHeigth, setCoordinates } = this.props;
+    const { mapHeigth, setCoordinates, centerLat, centerLng } = this.props;
     const { markersLayout, infoboxData, zoom, userCoordinates, isFullscreenMode } = this.state;
+    const customMarker =
+      defaultCoords.centerLat !== centerLat ? (
+        <Marker key={`${centerLat}${centerLng}`} anchor={[centerLat, centerLng]} />
+      ) : null;
     return userCoordinates ? (
       <div className="MapOS">
         <Map
@@ -113,6 +151,7 @@ class MapOS extends React.Component {
           zoomSnap={false}
         >
           {markersLayout}
+          {customMarker}
           {infoboxData && this.getOverlayLayout()}
         </Map>
         <div className="MapOS__zoom">
@@ -149,6 +188,7 @@ class MapOS extends React.Component {
                 zoomSnap={false}
               >
                 {markersLayout}
+                {customMarker}
                 {infoboxData && this.getOverlayLayout()}
               </Map>
               <div className="MapOS__zoom">
@@ -184,17 +224,20 @@ class MapOS extends React.Component {
 }
 
 MapOS.defaultProps = {
-  centerLat: 37.0902,
-  centerLng: 95,
+  ...defaultCoords,
   markers: {},
   wobjects: [],
   mapHeigth: 200,
+  userLocation: {},
   setCoordinates: () => {},
+  getCoordinates: () => {},
 };
 
 MapOS.propTypes = {
   setCoordinates: PropTypes.func,
+  getCoordinates: PropTypes.func,
   mapHeigth: PropTypes.number,
+  userLocation: PropTypes.shape(),
   centerLat: PropTypes.number,
   centerLng: PropTypes.number,
 };

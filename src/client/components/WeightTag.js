@@ -4,7 +4,7 @@ import { injectIntl } from 'react-intl';
 import { Icon } from 'antd';
 import { connect } from 'react-redux';
 import { getRate, getRewardFund } from '../reducers';
-import USDDisplay from './Utils/USDDisplay';
+import WeightDisplay from './Utils/WeightDisplay';
 
 @connect(state => ({
   rewardFund: getRewardFund(state),
@@ -35,15 +35,17 @@ class WeightTag extends React.Component {
         1000000;
       return (
         <div
+          className="Weight"
           title={intl.formatMessage({
             id: 'total_ralated_payout',
-            defaultMessage: 'Total payout for all related posts',
+            defaultMessage:
+              'Total payout for all related posts in USD, without bidbots and upvote services',
           })}
         >
           {isNaN(value) ? (
             <Icon type="loading" className="text-icon-right" />
           ) : (
-            <USDDisplay value={value} />
+            <WeightDisplay value={value} />
           )}
         </div>
       );

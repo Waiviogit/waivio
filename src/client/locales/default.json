@@ -380,6 +380,7 @@
   "suggest2": "With language",
   "suggest3": "Value",
   "value_placeholder": "Object name",
+  "tag_placeholder": "Enter tag name",
   "extend-object": "Extend",
   "current_fields1": "Current",
   "current_fields2": "fields",
@@ -484,7 +485,8 @@
   "upload_photos": "Upload photos",
   "image_submitting": "Submitting...",
   "hashtag_value_placeholder": "#Hashtags",
-  "object_field_tag": "Hashtags",
+  "object_field_tag": "Tags",
+  "object_field_parent": "Parent",
   "hashtags_error_count": "You have to add 1 to 5 #tags.",
   "hashtags_error_invalid_hashtag": "Hashtag {hashtag} is invalid.",
   "hashtags_extra": "Separate #tags with commas. Only lower-case letters, numbers and dashes are allowed.",
@@ -527,5 +529,5 @@
   "publish": "Publish",
   "object_weights": "Object weights",
   "price_field": "Price",
-  "total_ralated_payout": "Total payout for all related posts, without bidbots and upvite services"
+  "total_ralated_payout": "Total payout for all related posts in USD, without bidbots and upvote services"
 }
