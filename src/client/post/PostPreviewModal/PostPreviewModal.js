@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Button, Modal } from 'antd';
+import { throttle } from 'lodash';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import TagsSelector from '../../components/TagsSelector/TagsSelector';
 import PolicyConfirmation from '../../components/PolicyConfirmation/PolicyConfirmation';
@@ -10,15 +10,11 @@ import AdvanceSettings from './AdvanceSettings';
 import { isContentValid, splitPostContent } from '../../helpers/postHelpers';
 import { handleWeightChange, setInitialPercent } from '../../helpers/wObjInfluenceHelper';
 import { rewardsValues } from '../../../common/constants/rewards';
-import { getUpvoteSetting } from '../../reducers';
 import './PostPreviewModal.less';
 
 const isTopicValid = topic => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(topic);
 
 @injectIntl
-@connect(state => ({
-  upvoteSetting: getUpvoteSetting(state),
-}))
 class PostPreviewModal extends Component {
   static propTypes = {
     intl: PropTypes.shape(),
@@ -26,6 +22,7 @@ class PostPreviewModal extends Component {
     content: PropTypes.string.isRequired,
     linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
     onSubmit: PropTypes.func.isRequired,
+    onUpdate: PropTypes.func.isRequired,
   };
   static defaultProps = {
     intl: {},
@@ -60,6 +57,25 @@ class PostPreviewModal extends Component {
     );
   }
 
+  onUpdate = () => {
+    throttle(this.throttledUpdate, 200, { leading: false, trailing: true })();
+  };
+
+  throttledUpdate = () => {
+    const { body, title, topics, linkedObjects, settings } = this.state;
+    const postData = {
+      body,
+      title,
+      topics,
+      reward: 0,
+      beneficiary: false,
+      upvote: false,
+      linkedObjects,
+      ...settings,
+    };
+    this.props.onUpdate(postData);
+  };
+
   showModal = () => {
     const { postTitle, postBody } = splitPostContent(this.props.content);
     const linkedObjects = setInitialPercent(this.props.linkedObjects);
@@ -74,18 +90,21 @@ class PostPreviewModal extends Component {
 
   hideModal = () => this.setState({ isModalOpen: false });
 
-  handleTopicsChange = topics => this.setState({ topics });
+  handleTopicsChange = topics => this.setState({ topics }, this.onUpdate);
 
   handleConfirmedChange = isConfirmed => this.setState({ isConfirmed });
 
   handleSettingsChange = updatedValue =>
-    this.setState(prevState => ({
-      settings: { ...prevState.settings, ...updatedValue },
-    }));
+    this.setState(
+      prevState => ({
+        settings: { ...prevState.settings, ...updatedValue },
+      }),
+      this.onUpdate,
+    );
 
   handlePercentChange = (objId, percent) => {
     const { linkedObjects, weightBuffer } = this.state;
-    this.setState(handleWeightChange(linkedObjects, objId, percent, weightBuffer));
+    this.setState(handleWeightChange(linkedObjects, objId, percent, weightBuffer), this.onUpdate);
   };
 
   handleSubmit = () => {

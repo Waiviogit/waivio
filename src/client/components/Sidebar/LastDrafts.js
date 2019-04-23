@@ -11,7 +11,7 @@ const Draft = ({ draft }) => (
   <div className="LastDrafts__draft">
     <Link
       className="LastDrafts__draft__title"
-      to={{ pathname: '/editor', search: `?draft=${draft.id}` }}
+      to={{ pathname: '/edit', search: `?draft=${draft.id}` }}
     >
       {draft.title ? (
         draft.title
