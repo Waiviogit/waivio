@@ -38,6 +38,8 @@ const getBlockStyleForMd = (node, blockStyles) => {
     return 'ordered-list-item';
   } else if (style === 'Header') {
     return blockStyles[`${style}${depth}`];
+  } else if (style === 'HorizontalRule') {
+    return Block.BREAK;
   } else if (
     node.type === 'Paragraph' &&
     node.children &&
@@ -150,6 +152,9 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
         break;
       case 'Image':
         addImage(child);
+        break;
+      case 'HorizontalRule':
+        text = '';
         break;
       case 'Paragraph':
         if (videoShortcodeRegEx.test(child.raw)) {
