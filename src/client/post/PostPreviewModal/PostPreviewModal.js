@@ -90,13 +90,13 @@ class PostPreviewModal extends Component {
 
   handleConfirmedChange = isConfirmed => this.setState({ isConfirmed });
 
-  handleSettingsChange = updatedValue => this.props.onSettingsChange(updatedValue, this.onUpdate);
+  handleSettingsChange = updatedValue => this.props.onSettingsChange(updatedValue);
 
-  handleTopicsChange = topics => this.props.onTopicsChange(topics, this.onUpdate);
+  handleTopicsChange = topics => this.props.onTopicsChange(topics);
 
   handlePercentChange = (objId, percent) => {
     const { linkedObjects, weightBuffer } = this.state;
-    this.setState(handleWeightChange(linkedObjects, objId, percent, weightBuffer), this.onUpdate);
+    this.setState(handleWeightChange(linkedObjects, objId, percent, weightBuffer));
   };
 
   handleSubmit = () => {

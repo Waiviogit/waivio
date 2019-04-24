@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { debounce, find, kebabCase } from 'lodash';
+import { debounce, find, isEqual, kebabCase, throttle } from 'lodash';
 import uuidv4 from 'uuid/v4';
 import {
   getAuthenticatedUser,
@@ -15,7 +15,7 @@ import {
 import { createPost, saveDraft } from '../Write/editorActions';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
-import { getDraftContent, createPostMetadata } from '../../helpers/postHelpers';
+import { getDraftContent, createPostMetadata, splitPostContent } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import ObjectCardView from '../../objectCard/ObjectCardView';
@@ -23,6 +23,7 @@ import { Entity, toMarkdown } from '../../components/EditorExtended';
 import LastDraftsContainer from '../Write/LastDraftsContainer';
 import { rewardsValues } from '../../../common/constants/rewards';
 import { getClientWObj } from '../../adapters';
+import { setInitialPercent } from '../../helpers/wObjInfluenceHelper';
 
 const getLinkedObjects = contentStateRaw => {
   const entities = Object.values(contentStateRaw.entityMap).filter(
@@ -101,6 +102,7 @@ class EditPost extends Component {
 
   async handleChangeContent(rawContent) {
     const nextState = { content: toMarkdown(rawContent) };
+    this.handleUpdateState(nextState.content);
     const linkedObjects = getLinkedObjects(rawContent);
     if (this.state.linkedObjects.length !== linkedObjects.length) {
       nextState.linkedObjects = await this.restoreDraftObjects(linkedObjects);
@@ -124,14 +126,14 @@ class EditPost extends Component {
     return actualObjects;
   };
 
-  handleTopicsChange = (topics, callback) => this.setState({ topics }, callback);
+  handleTopicsChange = topics => this.setState({ topics }, this.handleUpdateState);
 
-  handleSettingsChange = (updatedValue, callback) =>
+  handleSettingsChange = updatedValue =>
     this.setState(
       prevState => ({
         settings: { ...prevState.settings, ...updatedValue },
       }),
-      callback,
+      this.handleUpdateState,
     );
 
   handleSubmit(data) {
@@ -140,42 +142,48 @@ class EditPost extends Component {
     this.props.createPost(postData);
   }
 
-  buildPost(data) {
+  buildPost() {
+    const { content, topics, linkedObjects, settings } = this.state;
+    const { postTitle, postBody } = splitPostContent(content);
+
     const postData = {
-      body: data.body,
-      title: data.title,
-      reward: data.reward || '0',
-      beneficiary: !!data.beneficiary,
-      upvote: !!data.upvote,
+      body: postBody,
+      title: postTitle,
       lastUpdated: Date.now(),
+      ...settings,
     };
 
     postData.parentAuthor = '';
     postData.parentPermlink = WAIVIO_PARENT_PERMLINK;
     postData.author = this.props.user.name || '';
-    postData.permlink = kebabCase(data.title);
+    postData.permlink = kebabCase(postTitle);
     // if (isUpdating) postData.isUpdating = isUpdating; // use for update post
 
     const oldMetadata =
       this.props.draftPosts[this.props.draftId] &&
       this.props.draftPosts[this.props.draftId].jsonMetadata;
     const waivioData = {
-      wobjects: data.linkedObjects.map(obj => ({
+      wobjects: setInitialPercent(linkedObjects).map(obj => ({
         objectName: obj.name,
         author_permlink: obj.id,
         percent: obj.percent.value,
       })),
     };
 
-    postData.jsonMetadata = createPostMetadata(data.body, data.topics, oldMetadata, waivioData);
+    postData.jsonMetadata = createPostMetadata(postBody, topics, oldMetadata, waivioData);
 
     return postData;
   }
 
-  saveDraft = debounce(data => {
+  handleUpdateState = nextContent => {
+    if (isEqual(this.state.content, nextContent)) return;
+    throttle(this.saveDraft, 200, { leading: false, trailing: true })();
+  };
+
+  saveDraft = debounce(() => {
     if (this.props.saving) return;
 
-    const postData = this.buildPost(data);
+    const postData = this.buildPost();
     const postBody = postData.body;
     const id = this.props.draftId;
     // Remove zero width space
@@ -195,6 +203,7 @@ class EditPost extends Component {
         <div className="post-layout container">
           <div className="center">
             <Editor initialContent={draftContent} onChange={this.handleChangeContent} />
+            <span>{this.props.saving ? 'Saving' : 'Saved'}</span>
             <PostPreviewModal
               content={content}
               topics={topics}
