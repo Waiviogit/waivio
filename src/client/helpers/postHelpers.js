@@ -144,7 +144,7 @@ export function getInitialState(props) {
       },
       content: '',
       topics: get(draftPost, 'jsonMetadata.tags', []),
-      linkedObjects: get(draftPost, 'jsonMetadata.wobj.wobjects', []),
+      linkedObjects: [],
       settings: {
         reward: draftPost.reward,
         beneficiary: draftPost.beneficiary,

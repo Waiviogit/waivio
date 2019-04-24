@@ -109,7 +109,8 @@ class EditPost extends Component {
     if (toRestore.length) {
       const locale = this.props.locale === 'auto' ? 'en-US' : this.props.locale;
       const res = await getObjectsByIds({ authorPermlinks: toRestore, locale });
-      return res.map(obj => getClientWObj(obj));
+      const restored = res.map(obj => getClientWObj(obj));
+      return [...actualObjects.filter(obj => !toRestore.includes(obj.id)), ...restored];
     }
     return actualObjects;
   };
