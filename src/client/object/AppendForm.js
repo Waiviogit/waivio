@@ -33,7 +33,7 @@ import { PRIMARY_COLOR } from '../../common/constants/waivio';
 import { getLanguageText } from '../translations';
 import QuickPostEditorFooter from '../components/QuickPostEditor/QuickPostEditorFooter';
 import { regexCoordsLatitude, regexCoordsLongitude } from '../components/Maps/mapHelper';
-import Map from '../components/Maps/Map';
+import MapAppendObject from '../components/Maps/MapAppendObject';
 import './AppendForm.less';
 import { getField } from '../objects/WaivioObject';
 import { appendObject } from '../object/appendActions';
@@ -55,6 +55,7 @@ import { followObject, rateObject } from '../object/wobjActions';
 import SortingList from '../components/DnDList/DnDList';
 import CatalogItem from './Catalog/CatalogItem';
 import { getClientWObj } from '../adapters';
+import SearchObjectsAutocomplete from '../components/EditorObject/SearchObjectsAutocomplete';
 
 @connect(
   state => ({
@@ -513,6 +514,14 @@ export default class AppendForm extends Component {
     return callback();
   };
 
+  handleAddLinkedObject = obj => {
+    if (obj && obj.id) {
+      this.props.form.setFieldsValue({
+        parent: obj.id,
+      });
+    }
+  };
+
   renderContentValue = currentField => {
     const { loading } = this.state;
     const { intl, wObject } = this.props;
@@ -615,6 +624,42 @@ export default class AppendForm extends Component {
                 })}
               />,
             )}
+          </Form.Item>
+        );
+      }
+      case objectFields.parent: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.parent, {
+              rules: [
+                {
+                  transform: value => value && value.toLowerCase(),
+                },
+                {
+                  required: true,
+                  message: intl.formatMessage(
+                    {
+                      id: 'field_error',
+                      defaultMessage: 'Field is required',
+                    },
+                    { field: 'Tag' },
+                  ),
+                },
+                {
+                  max: 100,
+                  message: intl.formatMessage(
+                    {
+                      id: 'value_error_long',
+                      defaultMessage: "Value can't be longer than 100 characters.",
+                    },
+                    { value: 100 },
+                  ),
+                },
+                {
+                  validator: this.validateFieldValue,
+                },
+              ],
+            })(<SearchObjectsAutocomplete handleSelect={this.handleAddLinkedObject} />)}
           </Form.Item>
         );
       }
@@ -1038,21 +1083,13 @@ export default class AppendForm extends Component {
                 />,
               )}
             </Form.Item>
-            <Map
-              markers={[
-                {
-                  lat: (mapFields.latitude && Number(getFieldValue(mapFields.latitude))) || 37.22,
-                  lng:
-                    (mapFields.longitude && Number(getFieldValue(mapFields.longitude))) || -101.39,
-                },
-              ]}
+            <MapAppendObject
               setCoordinates={this.setCoordinates}
-              wobjects={{ [wObject.id]: wObject }}
-              mapHeigth={400}
-              centerLat={(mapFields.latitude && Number(getFieldValue(mapFields.latitude))) || 37.22}
-              centerLng={
-                (mapFields.longitude && Number(getFieldValue(mapFields.longitude))) || -101.39
-              }
+              heigth={400}
+              center={[
+                Number(getFieldValue(mapFields.latitude)),
+                Number(getFieldValue(mapFields.longitude)),
+              ]}
             />
           </React.Fragment>
         );
