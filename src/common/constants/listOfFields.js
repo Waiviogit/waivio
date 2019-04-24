@@ -8,7 +8,6 @@ export const objectFields = {
   avatar: 'avatar',
   background: 'background',
   website: 'website',
-  hashtag: 'tag',
   phone: 'phone',
   email: 'email',
   sorting: 'sortCustom',
