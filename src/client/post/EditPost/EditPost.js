@@ -3,15 +3,17 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { debounce, kebabCase } from 'lodash';
+import { debounce, find, kebabCase } from 'lodash';
 import uuidv4 from 'uuid/v4';
 import {
   getAuthenticatedUser,
+  getLocale,
   getDraftPosts,
   getIsEditorSaving,
   getUpvoteSetting,
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
+import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
 import { getDraftContent, createPostMetadata } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
@@ -20,6 +22,7 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import { Entity, toMarkdown } from '../../components/EditorExtended';
 import LastDraftsContainer from '../Write/LastDraftsContainer';
 import { rewardsValues } from '../../../common/constants/rewards';
+import { getClientWObj } from '../../adapters';
 
 const getLinkedObjects = contentStateRaw => {
   const entities = Object.values(contentStateRaw.entityMap).filter(
@@ -33,6 +36,7 @@ const getLinkedObjects = contentStateRaw => {
 @connect(
   (state, props) => ({
     user: getAuthenticatedUser(state),
+    locale: getLocale(state),
     draftPosts: getDraftPosts(state),
     saving: getIsEditorSaving(state),
     draftId: new URLSearchParams(props.location.search).get('draft'),
@@ -47,6 +51,7 @@ class EditPost extends Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
+    locale: PropTypes.string.isRequired,
     draftPosts: PropTypes.shape().isRequired,
     upvoteSetting: PropTypes.bool,
     draftId: PropTypes.string,
@@ -94,16 +99,30 @@ class EditPost extends Component {
     }
   }
 
-  handleChangeContent(rawContent) {
+  async handleChangeContent(rawContent) {
     const nextState = { content: toMarkdown(rawContent) };
     const linkedObjects = getLinkedObjects(rawContent);
     if (this.state.linkedObjects.length !== linkedObjects.length) {
-      nextState.linkedObjects = linkedObjects;
+      nextState.linkedObjects = await this.restoreDraftObjects(linkedObjects);
     }
     this.setState(nextState);
     // console.log('raw content:', JSON.stringify(rawContent));
     // console.log('content:', nextState);
   }
+
+  restoreDraftObjects = async editorObjects => {
+    const actualObjects = editorObjects.map(obj => {
+      const prevObject = find(this.state.linkedObjects, o => o.id === obj.id);
+      return prevObject || obj;
+    });
+    const toRestore = actualObjects.filter(object => !object.type).map(o => o.id);
+    if (toRestore.length) {
+      const locale = this.props.locale === 'auto' ? 'en-US' : this.props.locale;
+      const res = await getObjectsByIds({ authorPermlinks: toRestore, locale });
+      return res.map(obj => getClientWObj(obj));
+    }
+    return actualObjects;
+  };
 
   handleTopicsChange = (topics, callback) => this.setState({ topics }, callback);
 
