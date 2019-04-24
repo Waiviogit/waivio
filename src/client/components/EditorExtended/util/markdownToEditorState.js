@@ -1,6 +1,6 @@
 import mdToAst from '@textlint/markdown-to-ast';
 import { last } from 'lodash';
-import { Block, Entity } from './constants';
+import { ATOMIC_TYPES, Block, Entity } from './constants';
 
 const defaultInlineStyles = {
   Strong: {
@@ -23,6 +23,7 @@ const defaultBlockStyles = {
   Header6: 'header-six',
   CodeBlock: 'code-block',
   BlockQuote: 'blockquote',
+  HorizontalRule: 'atomic',
 };
 
 const normalizeMd = content => {
@@ -98,6 +99,26 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
   const getRawLength = children =>
     children.reduce((prev, current) => prev + (current.value ? current.value.length : 0), 0);
 
+  const addObject = child => {
+    const entityKey = Object.keys(entityMap).length;
+    const urlParts = child.url.split('/');
+    entityMap[entityKey] = {
+      type: Entity.OBJECT,
+      mutability: 'IMMUTABLE',
+      data: {
+        url: child.url,
+        object: {
+          id: last(urlParts),
+        },
+      },
+    };
+    entityRanges.push({
+      key: entityKey,
+      length: getRawLength(child.children),
+      offset: text.length,
+    });
+  };
+
   const addLink = child => {
     const entityKey = Object.keys(entityMap).length;
     entityMap[entityKey] = {
@@ -141,15 +162,38 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
     });
   };
 
+  const addSeparator = child => {
+    const entityKey = Object.keys(entityMap).length;
+    entityMap[entityKey] = {
+      type: ATOMIC_TYPES.SEPARATOR,
+      mutability: 'IMMUTABLE',
+      data: {},
+    };
+    entityRanges.push({
+      key: entityKey,
+      length: child.raw.length,
+      offset: 0,
+    });
+  };
+
   const parseChildren = (child, style) => {
     // RegEx: [[ embed url=<anything> ]]
     const videoShortcodeRegEx = /^\[\[\s(?:embed)\s(?:url=(\S+))\s\]\]/;
+    const objectLinkRegEx = /^(https?):\/\/[^\s$\/?#]*\/(object)\/[a-z0-9-]+$/; // eslint-disable-line
     switch (child.type) {
       case 'Link':
-        addLink(child);
+        if (objectLinkRegEx.test(child.url)) {
+          addObject(child);
+        } else {
+          addLink(child);
+        }
         break;
       case 'Image':
         addImage(child);
+        break;
+      case 'HorizontalRule':
+        addSeparator(child);
+        text = child.raw;
         break;
       case 'Paragraph':
         if (videoShortcodeRegEx.test(child.raw)) {
