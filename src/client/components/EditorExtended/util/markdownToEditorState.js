@@ -306,7 +306,6 @@ function mdToDraftjs({ title = '', body = '' }, extraStyles) {
       data: {},
     });
   }
-  console.log('-->', 'PARSED');
   return {
     blocks,
     entityMap,

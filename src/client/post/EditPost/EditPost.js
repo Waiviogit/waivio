@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { debounce, find, isEqual, kebabCase, throttle } from 'lodash';
+import { debounce, find, isEqual, kebabCase, throttle, uniqBy } from 'lodash';
 import uuidv4 from 'uuid/v4';
 import {
   getAuthenticatedUser,
@@ -15,21 +15,20 @@ import {
 import { createPost, saveDraft } from '../Write/editorActions';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
-import { getDraftContent, createPostMetadata, splitPostContent } from '../../helpers/postHelpers';
+import { createPostMetadata, splitPostContent, getInitialState } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { Entity, toMarkdown } from '../../components/EditorExtended';
 import LastDraftsContainer from '../Write/LastDraftsContainer';
-import { rewardsValues } from '../../../common/constants/rewards';
 import { getClientWObj } from '../../adapters';
 import { setInitialPercent } from '../../helpers/wObjInfluenceHelper';
 
 const getLinkedObjects = contentStateRaw => {
-  const entities = Object.values(contentStateRaw.entityMap).filter(
+  const objEntities = Object.values(contentStateRaw.entityMap).filter(
     entity => entity.type === Entity.OBJECT,
   );
-  return entities.map(entity => entity.data.object);
+  return uniqBy(objEntities.map(entity => entity.data.object), 'id');
 };
 
 @injectIntl
@@ -54,7 +53,7 @@ class EditPost extends Component {
     user: PropTypes.shape().isRequired,
     locale: PropTypes.string.isRequired,
     draftPosts: PropTypes.shape().isRequired,
-    upvoteSetting: PropTypes.bool,
+    // upvoteSetting: PropTypes.bool,
     draftId: PropTypes.string,
     saving: PropTypes.bool,
     createPost: PropTypes.func,
@@ -71,17 +70,7 @@ class EditPost extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      draftContent: getDraftContent(props.draftPosts, props.draftId),
-      content: '',
-      topics: [],
-      linkedObjects: [],
-      settings: {
-        reward: rewardsValues.half,
-        beneficiary: false,
-        upvote: props.upvoteSetting,
-      },
-    };
+    this.state = getInitialState(props);
 
     this.draftId = props.draftId || uuidv4();
     this.handleTopicsChange = this.handleTopicsChange.bind(this);
@@ -94,9 +83,8 @@ class EditPost extends Component {
   componentWillReceiveProps(nextProps) {
     const differentDraft = this.props.draftId !== nextProps.draftId;
     if (differentDraft) {
-      const { draftPosts, draftId } = nextProps;
-      this.setState({ draftContent: getDraftContent(draftPosts, draftId) });
-      this.draftId = draftId;
+      this.setState(getInitialState(nextProps));
+      this.draftId = nextProps.draftId || uuidv4();
     }
   }
 
@@ -198,12 +186,13 @@ class EditPost extends Component {
 
   render() {
     const { draftContent, content, topics, linkedObjects, settings } = this.state;
+    const { draftId, saving } = this.props;
     return (
       <div className="shifted">
         <div className="post-layout container">
           <div className="center">
             <Editor initialContent={draftContent} onChange={this.handleChangeContent} />
-            <span>{this.props.saving ? 'Saving' : 'Saved'}</span>
+            {draftId && <span>{saving ? 'saving' : 'saved'}</span>}
             <PostPreviewModal
               content={content}
               topics={topics}

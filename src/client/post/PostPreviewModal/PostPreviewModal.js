@@ -177,7 +177,7 @@ class PostPreviewModal extends Component {
             </div>
           </Modal>
         )}
-        {isContentValid(content) ? (
+        {content && isContentValid(content) ? (
           <div className="edit-post-controls">
             <Button
               htmlType="button"
