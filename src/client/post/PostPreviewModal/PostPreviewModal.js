@@ -8,7 +8,7 @@ import TagsSelector from '../../components/TagsSelector/TagsSelector';
 import PolicyConfirmation from '../../components/PolicyConfirmation/PolicyConfirmation';
 import AdvanceSettings from './AdvanceSettings';
 import { isContentValid, splitPostContent } from '../../helpers/postHelpers';
-import { handleWeightChange, setInitialPercent } from '../../helpers/wObjInfluenceHelper';
+import { handleWeightChange, setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import { rewardsValues } from '../../../common/constants/rewards';
 import './PostPreviewModal.less';
 
@@ -26,14 +26,17 @@ class PostPreviewModal extends Component {
     content: PropTypes.string.isRequired,
     topics: PropTypes.arrayOf(PropTypes.string).isRequired,
     linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
+    objPercentage: PropTypes.shape(),
     onTopicsChange: PropTypes.func.isRequired,
     onSettingsChange: PropTypes.func.isRequired,
+    onPercentChange: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     onUpdate: PropTypes.func.isRequired,
   };
   static defaultProps = {
     intl: {},
     linkedObjects: [],
+    objPercentage: {},
   };
 
   constructor(props) {
@@ -43,7 +46,7 @@ class PostPreviewModal extends Component {
       isModalOpen: false,
       title: '',
       body: '',
-      linkedObjects: setInitialPercent(props.linkedObjects),
+      objPercentage: setObjPercents(props.linkedObjects, props.objPercentage),
       weightBuffer: 0,
       isConfirmed: false,
     };
@@ -76,13 +79,13 @@ class PostPreviewModal extends Component {
 
   showModal = () => {
     const { postTitle, postBody } = splitPostContent(this.props.content);
-    const linkedObjects = setInitialPercent(this.props.linkedObjects);
+    const objPercentage = setObjPercents(this.props.linkedObjects, this.props.objPercentage);
     this.setState({
       isModalOpen: true,
       title: postTitle,
       body: postBody,
       weightBuffer: 0,
-      linkedObjects,
+      objPercentage,
     });
   };
 
@@ -95,29 +98,17 @@ class PostPreviewModal extends Component {
   handleTopicsChange = topics => this.props.onTopicsChange(topics);
 
   handlePercentChange = (objId, percent) => {
-    const { linkedObjects, weightBuffer } = this.state;
-    this.setState(handleWeightChange(linkedObjects, objId, percent, weightBuffer));
+    const { objPercentage, weightBuffer } = this.state;
+    const nextState = handleWeightChange(objPercentage, objId, percent, weightBuffer);
+    this.setState(nextState);
+    if (weightBuffer === 0) this.props.onPercentChange(nextState.objPercentage);
   };
 
-  handleSubmit = () => {
-    const { body, title, linkedObjects } = this.state;
-    const { topics, settings } = this.props;
-    const postData = {
-      body,
-      title,
-      topics,
-      reward: 0,
-      beneficiary: false,
-      upvote: false,
-      linkedObjects,
-      ...settings,
-    };
-    this.props.onSubmit(postData);
-  };
+  handleSubmit = () => this.props.onSubmit();
 
   render() {
-    const { isModalOpen, isConfirmed, body, title, linkedObjects, weightBuffer } = this.state;
-    const { intl, content, topics, settings } = this.props;
+    const { isModalOpen, isConfirmed, body, title, weightBuffer, objPercentage } = this.state;
+    const { intl, content, topics, linkedObjects, settings } = this.props;
     return (
       <React.Fragment>
         {isModalOpen && (
@@ -159,6 +150,7 @@ class PostPreviewModal extends Component {
             />
             <AdvanceSettings
               linkedObjects={linkedObjects}
+              objPercentage={objPercentage}
               weightBuffer={weightBuffer}
               settings={settings}
               onSettingsChange={this.handleSettingsChange}
