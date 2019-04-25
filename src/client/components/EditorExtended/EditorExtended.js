@@ -54,15 +54,17 @@ class Editor extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({ isMounted: true }, this.setFocusAfterMount); // eslint-disable-line
-    this.restoreObjects(fromMarkdown(this.props.initialContent));
+    this.setState({ isMounted: true }); // eslint-disable-line
+    this.restoreObjects(fromMarkdown(this.props.initialContent)).then(() =>
+      this.setFocusAfterMount(),
+    );
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.initialContent !== nextProps.initialContent) {
       const rawContent = fromMarkdown(nextProps.initialContent);
       this.handleContentChange(createEditorState(rawContent));
-      this.restoreObjects(rawContent);
+      this.restoreObjects(rawContent).then(() => this.setFocusAfterMount());
     }
   }
 

@@ -122,8 +122,10 @@ export function splitPostContent(markdownContent) {
   };
 }
 
-export function getInitialState(props) {
-  let initialState = {
+export function getInitialValues(props) {
+  let permlink = null;
+  let originalBody = null;
+  let state = {
     draftContent: { title: '', body: '' },
     content: '',
     topics: [],
@@ -133,11 +135,12 @@ export function getInitialState(props) {
       beneficiary: false,
       upvote: props.upvoteSetting,
     },
+    isUpdating: false,
   };
   const { draftPosts, draftId } = props;
   const draftPost = draftPosts && draftPosts[draftId];
   if (draftId && draftPost) {
-    initialState = {
+    state = {
       draftContent: {
         title: get(draftPost, 'title', ''),
         body: get(draftPost, 'body', ''),
@@ -150,9 +153,12 @@ export function getInitialState(props) {
         beneficiary: draftPost.beneficiary,
         upvote: draftPost.upvote,
       },
+      isUpdating: Boolean(draftPost.isUpdating),
     };
+    permlink = draftPost.permlink || null;
+    originalBody = draftPost.originalBody || null;
   }
-  return initialState;
+  return { state, permlink, originalBody };
 }
 
 export function isContentValid(markdownContent) {

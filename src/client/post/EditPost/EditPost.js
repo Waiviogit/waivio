@@ -14,7 +14,7 @@ import {
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
 import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
-import { createPostMetadata, splitPostContent, getInitialState } from '../../helpers/postHelpers';
+import { createPostMetadata, splitPostContent, getInitialValues } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import ObjectCardView from '../../objectCard/ObjectCardView';
@@ -68,9 +68,12 @@ class EditPost extends Component {
   constructor(props) {
     super(props);
 
-    this.state = getInitialState(props);
+    const init = getInitialValues(props);
+    this.state = init.state;
 
     this.draftId = props.draftId || uuidv4();
+    this.permlink = init.permlink;
+    this.originalBody = init.originalBody;
     this.handleTopicsChange = this.handleTopicsChange.bind(this);
     this.handleSettingsChange = this.handleSettingsChange.bind(this);
     this.handleChangeContent = this.handleChangeContent.bind(this);
@@ -81,7 +84,10 @@ class EditPost extends Component {
   componentWillReceiveProps(nextProps) {
     const differentDraft = this.props.draftId !== nextProps.draftId;
     if (differentDraft) {
-      this.setState(getInitialState(nextProps));
+      const init = getInitialValues(nextProps);
+      this.setState(init.state);
+      this.permlink = init.permlink;
+      this.originalBody = init.originalBody;
       this.draftId = nextProps.draftId || uuidv4();
     }
   }
@@ -115,21 +121,21 @@ class EditPost extends Component {
   }
 
   buildPost() {
-    const { content, topics, linkedObjects, settings } = this.state;
+    const { content, topics, linkedObjects, settings, isUpdating } = this.state;
     const { postTitle, postBody } = splitPostContent(content);
 
     const postData = {
       body: postBody,
       title: postTitle,
       lastUpdated: Date.now(),
+      isUpdating,
       ...settings,
     };
 
     postData.parentAuthor = '';
     postData.parentPermlink = WAIVIO_PARENT_PERMLINK;
     postData.author = this.props.user.name || '';
-    postData.permlink = kebabCase(postTitle);
-    // if (isUpdating) postData.isUpdating = isUpdating; // use for update post
+    postData.permlink = this.permlink || kebabCase(postTitle);
 
     const oldMetadata =
       this.props.draftPosts[this.props.draftId] &&
@@ -143,6 +149,10 @@ class EditPost extends Component {
     };
 
     postData.jsonMetadata = createPostMetadata(postBody, topics, oldMetadata, waivioData);
+
+    if (this.originalBody) {
+      postData.originalBody = this.originalBody;
+    }
 
     return postData;
   }
