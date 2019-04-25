@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { debounce, find, isEqual, kebabCase, throttle, uniqBy } from 'lodash';
+import { debounce, has, isEqual, kebabCase, throttle, uniqBy } from 'lodash';
 import uuidv4 from 'uuid/v4';
 import {
   getAuthenticatedUser,
@@ -13,7 +13,6 @@ import {
   getUpvoteSetting,
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
-import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
 import { createPostMetadata, splitPostContent, getInitialState } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
@@ -21,12 +20,11 @@ import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { Entity, toMarkdown } from '../../components/EditorExtended';
 import LastDraftsContainer from '../Write/LastDraftsContainer';
-import { getClientWObj } from '../../adapters';
 import { setInitialPercent } from '../../helpers/wObjInfluenceHelper';
 
 const getLinkedObjects = contentStateRaw => {
   const objEntities = Object.values(contentStateRaw.entityMap).filter(
-    entity => entity.type === Entity.OBJECT,
+    entity => entity.type === Entity.OBJECT && has(entity, 'data.object.type'),
   );
   return uniqBy(objEntities.map(entity => entity.data.object), 'id');
 };
@@ -88,32 +86,17 @@ class EditPost extends Component {
     }
   }
 
-  async handleChangeContent(rawContent) {
+  handleChangeContent(rawContent) {
     const nextState = { content: toMarkdown(rawContent) };
     this.handleUpdateState(nextState.content);
     const linkedObjects = getLinkedObjects(rawContent);
     if (this.state.linkedObjects.length !== linkedObjects.length) {
-      nextState.linkedObjects = await this.restoreDraftObjects(linkedObjects);
+      nextState.linkedObjects = linkedObjects;
     }
     this.setState(nextState);
     // console.log('raw content:', JSON.stringify(rawContent));
     // console.log('content:', nextState);
   }
-
-  restoreDraftObjects = async editorObjects => {
-    const actualObjects = editorObjects.map(obj => {
-      const prevObject = find(this.state.linkedObjects, o => o.id === obj.id);
-      return prevObject || obj;
-    });
-    const toRestore = actualObjects.filter(object => !object.type).map(o => o.id);
-    if (toRestore.length) {
-      const locale = this.props.locale === 'auto' ? 'en-US' : this.props.locale;
-      const res = await getObjectsByIds({ authorPermlinks: toRestore, locale });
-      const restored = res.map(obj => getClientWObj(obj));
-      return [...actualObjects.filter(obj => !toRestore.includes(obj.id)), ...restored];
-    }
-    return actualObjects;
-  };
 
   handleTopicsChange = topics => this.setState({ topics }, this.handleUpdateState);
 
@@ -187,12 +170,16 @@ class EditPost extends Component {
 
   render() {
     const { draftContent, content, topics, linkedObjects, settings } = this.state;
-    const { draftId, saving } = this.props;
+    const { draftId, saving, locale } = this.props;
     return (
       <div className="shifted">
         <div className="post-layout container">
           <div className="center">
-            <Editor initialContent={draftContent} onChange={this.handleChangeContent} />
+            <Editor
+              initialContent={draftContent}
+              locale={locale === 'auto' ? 'en-US' : locale}
+              onChange={this.handleChangeContent}
+            />
             {draftId && <span>{saving ? 'saving' : 'saved'}</span>}
             <PostPreviewModal
               content={content}

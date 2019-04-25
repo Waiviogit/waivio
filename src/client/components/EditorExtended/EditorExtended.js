@@ -1,10 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { convertToRaw } from 'draft-js';
-import { Editor as MediumDraftEditor, createEditorState, fromMarkdown } from './index';
+import { forEach, get, has, keyBy } from 'lodash';
+import { Editor as MediumDraftEditor, createEditorState, fromMarkdown, Entity } from './index';
 import ImageSideButton from './components/sides/ImageSideButton';
 import SeparatorButton from './components/sides/SeparatorSideButton';
 import ObjectSideButton from './components/sides/ObjectSideButton';
+import { getObjectsByIds } from '../../../waivioApi/ApiClient';
+import getClientObject from '../../adapters';
 
 const SIDE_BUTTONS = [
   {
@@ -28,6 +31,7 @@ class Editor extends React.Component {
       title: PropTypes.string,
       body: PropTypes.string,
     }).isRequired,
+    locale: PropTypes.string.isRequired,
     onChange: PropTypes.func,
   };
   static defaultProps = {
@@ -51,15 +55,47 @@ class Editor extends React.Component {
 
   componentDidMount() {
     this.setState({ isMounted: true }, this.setFocusAfterMount); // eslint-disable-line
+    this.restoreObjects(fromMarkdown(this.props.initialContent));
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.initialContent !== nextProps.initialContent) {
-      this.handleContentChange(createEditorState(fromMarkdown(nextProps.initialContent)));
+      const rawContent = fromMarkdown(nextProps.initialContent);
+      this.handleContentChange(createEditorState(rawContent));
+      this.restoreObjects(rawContent);
     }
   }
 
   setFocusAfterMount = () => setTimeout(() => this.refsEditor.current.focus(), 0);
+
+  restoreObjects = async rawContent => {
+    const objectIds = Object.values(rawContent.entityMap)
+      .filter(entity => entity.type === Entity.OBJECT && has(entity, 'data.object.id'))
+      .map(entity => get(entity, 'data.object.id', ''));
+    if (objectIds.length) {
+      const response = await getObjectsByIds({
+        authorPermlinks: objectIds,
+        locale: this.props.locale,
+      });
+      const loadObjects = keyBy(response.wobjects, 'author_permlink');
+      const entityMap = {};
+      forEach(rawContent.entityMap, (value, key) => {
+        const loadedObject =
+          value.type === Entity.OBJECT && loadObjects[get(value, 'data.object.id')];
+        entityMap[key] = {
+          ...value,
+          data: loadedObject
+            ? { ...value.data, object: getClientObject(loadedObject) }
+            : { ...value.data },
+        };
+      });
+      const rawContentUpdated = {
+        blocks: [...rawContent.blocks],
+        entityMap,
+      };
+      this.handleContentChange(createEditorState(rawContentUpdated));
+    }
+  };
 
   handleContentChange = editorState => {
     this.onChange(editorState);
