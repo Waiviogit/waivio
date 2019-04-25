@@ -235,12 +235,10 @@ export default function userReducer(state = initialState, action) {
         notifications: [action.payload, ...state.notifications],
         latestNotification: action.payload,
       };
-    case userActions.GET_RECOMMENDED_OBJECTS_START:
     case userActions.GET_RECOMMENDED_OBJECTS_SUCCESS:
-    case userActions.GET_RECOMMENDED_OBJECTS_ERROR:
       return {
         ...state,
-        recommendedObjects: filterRecommendedObjects(action.payload),
+        recommendedObjects: filterRecommendedObjects(action.payload.wobjects),
       };
     default: {
       return state;

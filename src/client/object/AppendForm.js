@@ -56,6 +56,7 @@ import SortingList from '../components/DnDList/DnDList';
 import CatalogItem from './Catalog/CatalogItem';
 import { getClientWObj } from '../adapters';
 import SearchObjectsAutocomplete from '../components/EditorObject/SearchObjectsAutocomplete';
+import ObjectCardView from '../objectCard/ObjectCardView';
 
 @connect(
   state => ({
@@ -123,6 +124,7 @@ export default class AppendForm extends Component {
     isValidImage: false,
     sliderVisible: false,
     loading: false,
+    currentParent: null,
   };
 
   componentDidMount = () => {
@@ -223,6 +225,7 @@ export default class AppendForm extends Component {
       case objectFields.background:
       case objectFields.price:
       case objectFields.tag:
+      case objectFields.parent:
       case objectFields.email: {
         fieldBody.push(rest[currentField]);
         break;
@@ -519,6 +522,7 @@ export default class AppendForm extends Component {
       this.props.form.setFieldsValue({
         parent: obj.id,
       });
+      this.setState({ currentParent: obj });
     }
   };
 
@@ -642,7 +646,7 @@ export default class AppendForm extends Component {
                       id: 'field_error',
                       defaultMessage: 'Field is required',
                     },
-                    { field: 'Tag' },
+                    { field: 'Parent' },
                   ),
                 },
                 {
@@ -660,6 +664,7 @@ export default class AppendForm extends Component {
                 },
               ],
             })(<SearchObjectsAutocomplete handleSelect={this.handleAddLinkedObject} />)}
+            {this.state.currentParent && <ObjectCardView wObject={this.state.currentParent} />}
           </Form.Item>
         );
       }
