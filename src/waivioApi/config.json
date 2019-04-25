@@ -22,7 +22,8 @@
     "wobjectsWithUserWeight": "/objects_shares",
     "wobjectsExpertise": "/object_expertise",
     "getObjectTypes": "/objectTypes",
-    "objectType": "/objectType"
+    "objectType": "/objectType",
+    "generalSearch": "/generalSearch"
   },
   "production": {
     "apiPrefix": "http://waiviodev.com/api",
@@ -46,6 +47,7 @@
     "wobjectsWithUserWeight": "/objects_shares",
     "wobjectsExpertise": "/object_expertise",
     "getObjectTypes": "/objectTypes",
-    "objectType": "/objectType"
+    "objectType": "/objectType",
+    "generalSearch": "/generalSearch"
   }
 }

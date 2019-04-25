@@ -529,5 +529,8 @@
   "publish": "Publish",
   "object_weights": "Object weights",
   "price_field": "Price",
-  "total_ralated_payout": "Total payout for all related posts in USD, without bidbots and upvote services"
+  "total_ralated_payout": "Total payout for all related posts in USD, without bidbots and upvote services",
+  "users_search_title": "Users",
+  "wobjects_search_title": "Objects",
+  "wobjectType_search_title": "Types"
 }

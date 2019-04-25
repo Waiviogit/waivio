@@ -45,23 +45,9 @@ export default (state = initialState, action) => {
       };
     case searchActions.AUTO_COMPLETE_SEARCH.SUCCESS: {
       const { result, search } = action.payload;
-      const parsedResults = _.map(result, account => ({
-        ...account,
-        reputation: formatter.reputation(account.reputation),
-      }));
-      const sortedResults = _.compact(
-        _.slice(
-          _.map(
-            _.sortBy(parsedResults, 'reputation').reverse(),
-            accountDetails => accountDetails.account,
-          ),
-          0,
-          5,
-        ),
-      );
       return {
         ...state,
-        autoCompleteSearchResults: _.isEmpty(search) ? [] : sortedResults,
+        autoCompleteSearchResults: _.isEmpty(search) ? [] : result,
       };
     }
     case searchActions.SEARCH_OBJECTS.SUCCESS: {
