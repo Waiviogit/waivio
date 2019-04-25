@@ -35,38 +35,40 @@ class MapOS extends React.Component {
       infoboxData: false,
       markersLayout: null,
       zoom: 12,
-      userCoordinates: null,
+      center: null,
       isFullscreenMode: false,
+      isInitial: true,
     };
 
-    this.setPosition = this.setPosition.bind(this);
+    this.onBoundsChanged = this.onBoundsChanged.bind(this);
     this.showUserPosition = this.showUserPosition.bind(this);
     this.setCoordinates = this.setCoordinates.bind(this);
-    this.setCoordByProps = this.setCoordByProps.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
+    this.zoomButtonsLayout = this.zoomButtonsLayout.bind(this);
   }
 
   componentDidMount() {
-    if (defaultCoords.centerLat === this.props.centerLat && _.isEmpty(this.props.userLocation)) {
+    if (_.isEmpty(this.props.userLocation)) {
       this.props.getCoordinates();
-    } else {
-      this.setCoordByProps();
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps !== this.props) {
-      let location = [37.0902, 95];
-      if (_.size(nextProps.userLocation) > 0) {
-        location = [nextProps.userLocation.lat, nextProps.userLocation.lon];
-      }
-      this.setState({ markersLayout: this.getMarkers(nextProps), userCoordinates: location });
+    if (_.size(nextProps.userLocation) > 0 && this.state.isInitial) {
+      this.setState({
+        markersLayout: this.getMarkers(nextProps),
+        center: [nextProps.userLocation.lat, nextProps.userLocation.lon],
+        isInitial: false,
+      });
+    } else {
+      this.setState({
+        markersLayout: this.getMarkers(nextProps),
+        center: [nextProps.userLocation.lat, nextProps.userLocation.lon],
+      });
     }
   }
 
-  setCoordByProps = () => {
-    this.setState({ userCoordinates: [this.props.centerLat, this.props.centerLng] });
-  };
+  onBoundsChanged = ({ center, zoom }) => this.setState({ center, zoom });
 
   getMarkers = props =>
     _.map(props.wobjects, wobject => {
@@ -74,8 +76,8 @@ class MapOS extends React.Component {
       const lng = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude);
       return lat && lng ? (
         <Marker
-          key={`${lat}${lng}`}
-          anchor={[lat, lng]}
+          key={`obj${wobject.author_permlink}`}
+          anchor={[+lat, +lng]}
           payload={wobject}
           onClick={this.handleMarkerClick}
         />
@@ -95,7 +97,6 @@ class MapOS extends React.Component {
   };
 
   setPosition = () => {
-    this.setState({ userCoordinates: null });
     this.setCoordinates();
   };
 
@@ -103,15 +104,13 @@ class MapOS extends React.Component {
     if (navigator && navigator.geolocation) {
       const positionGPS = navigator.geolocation.getCurrentPosition(this.showUserPosition);
       if (positionGPS) {
-        this.setState({ userCoordinates: positionGPS });
-        return;
+        this.setState({ center: positionGPS });
       }
     }
-    this.setState({ userCoordinates: [this.props.centerLat, this.props.centerLng] });
   };
 
   showUserPosition = position => {
-    this.setState({ userCoordinates: [position.coords.latitude, position.coords.longitude] });
+    this.setState({ center: [position.coords.latitude, position.coords.longitude] });
   };
 
   handleMarkerClick = ({ payload, anchor }) => {
@@ -121,47 +120,39 @@ class MapOS extends React.Component {
     this.setState({ infoboxData: { wobject: payload, coordinates: anchor } });
   };
 
-  incrementZoom = () => {
-    this.setState({ zoom: this.state.zoom + 1 });
-  };
+  incrementZoom = () => this.setState({ zoom: this.state.zoom + 1 });
 
-  decrementZoom = () => {
-    this.setState({ zoom: this.state.zoom - 1 });
-  };
+  decrementZoom = () => this.setState({ zoom: this.state.zoom - 1 });
 
-  toggleModal() {
-    this.setState({ isFullscreenMode: !this.state.isFullscreenMode, infoboxData: false });
-  }
+  toggleModal = () => this.setState({ isFullscreenMode: !this.state.isFullscreenMode });
+
+  zoomButtonsLayout = () => (
+    <div className="MapOS__zoom">
+      <div role="presentation" className="MapOS__zoom-button" onClick={this.incrementZoom}>
+        +
+      </div>
+      <div role="presentation" className="MapOS__zoom-button" onClick={this.decrementZoom}>
+        -
+      </div>
+    </div>
+  );
 
   render() {
-    const { mapHeigth, setCoordinates, centerLat, centerLng } = this.props;
-    const { markersLayout, infoboxData, zoom, userCoordinates, isFullscreenMode } = this.state;
-    const customMarker =
-      defaultCoords.centerLat !== centerLat ? (
-        <Marker key={`${centerLat}${centerLng}`} anchor={[centerLat, centerLng]} />
-      ) : null;
-    return userCoordinates ? (
+    const { heigth } = this.props;
+    const { markersLayout, infoboxData, zoom, center, isFullscreenMode } = this.state;
+    return center ? (
       <div className="MapOS">
         <Map
-          center={userCoordinates}
+          onBoundsChanged={this.onBoundsChanged}
+          center={center}
           zoom={zoom}
-          height={mapHeigth}
-          onClick={setCoordinates}
+          height={heigth}
           animate
-          zoomSnap={false}
         >
           {markersLayout}
-          {customMarker}
           {infoboxData && this.getOverlayLayout()}
         </Map>
-        <div className="MapOS__zoom">
-          <div role="presentation" className="MapOS__zoom-button" onClick={this.incrementZoom}>
-            +
-          </div>
-          <div role="presentation" className="MapOS__zoom-button" onClick={this.decrementZoom}>
-            -
-          </div>
-        </div>
+        {this.zoomButtonsLayout()}
         <div role="presentation" className="MapOS__locateGPS" onClick={this.setPosition}>
           <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
         </div>
@@ -179,34 +170,11 @@ class MapOS extends React.Component {
             destroyOnClose
           >
             <div className="MapOS__fullscreenContent">
-              <Map
-                center={userCoordinates}
-                zoom={zoom}
-                height={'100%'}
-                onClick={setCoordinates}
-                animate
-                zoomSnap={false}
-              >
+              <Map onBoundsChanged={this.onBoundsChanged} center={center} zoom={zoom} animate>
                 {markersLayout}
-                {customMarker}
                 {infoboxData && this.getOverlayLayout()}
               </Map>
-              <div className="MapOS__zoom">
-                <div
-                  role="presentation"
-                  className="MapOS__zoom-button"
-                  onClick={this.incrementZoom}
-                >
-                  +
-                </div>
-                <div
-                  role="presentation"
-                  className="MapOS__zoom-button"
-                  onClick={this.decrementZoom}
-                >
-                  -
-                </div>
-              </div>
+              {this.zoomButtonsLayout()}
               <div role="presentation" className="MapOS__locateGPS" onClick={this.setPosition}>
                 <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
               </div>
@@ -227,19 +195,15 @@ MapOS.defaultProps = {
   ...defaultCoords,
   markers: {},
   wobjects: [],
-  mapHeigth: 200,
+  heigth: 200,
   userLocation: {},
-  setCoordinates: () => {},
   getCoordinates: () => {},
 };
 
 MapOS.propTypes = {
-  setCoordinates: PropTypes.func,
   getCoordinates: PropTypes.func,
-  mapHeigth: PropTypes.number,
+  heigth: PropTypes.number,
   userLocation: PropTypes.shape(),
-  centerLat: PropTypes.number,
-  centerLng: PropTypes.number,
 };
 
 export default MapOS;
