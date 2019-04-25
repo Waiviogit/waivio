@@ -138,7 +138,7 @@ class Story extends React.Component {
         title={`${this.props.intl.formatMessage({
           id: 'related_to_obj',
           defaultMessage: 'Related to object',
-        })} ${nameField.body} ${wobj.percent ? `(${wobj.percent}%)` : ''}`}
+        })} ${nameField.body} ${wobj.percent ? `(${wobj.percent.toFixed(2)}%)` : ''}`}
       >
         <ObjectAvatar item={wobj} size={40} />
       </Link>

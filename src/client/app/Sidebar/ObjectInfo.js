@@ -19,7 +19,6 @@ import {
   getAllowedFieldsByObjType,
 } from '../../../common/constants/listOfFields';
 import Proposition from '../../components/Proposition/Proposition';
-import MapOS from '../../components/Maps/Map';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
 import IconButton from '../../components/IconButton';
@@ -28,6 +27,7 @@ import DescriptionInfo from './DescriptionInfo';
 import CreateImage from '../../object/ObjectGallery/CreateImage';
 import './ObjectInfo.less';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
+import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 
 @connect(state => ({
   albums: getObjectAlbums(state),
@@ -70,7 +70,7 @@ class ObjectInfo extends React.Component {
     let short = '';
     let background = '';
     let photosCount = 0;
-    let hashtags = [];
+    let tags = [];
     let phones = [];
     let email = '';
 
@@ -101,8 +101,8 @@ class ObjectInfo extends React.Component {
       }
       photosCount = wobject.photos_count;
 
-      const filtered = _.filter(wobject.fields, ['name', objectFields.hashtag]);
-      hashtags = _.orderBy(filtered, ['weight'], ['desc']);
+      const filtered = _.filter(wobject.fields, ['name', objectFields.tag]);
+      tags = _.orderBy(filtered, ['weight'], ['desc']);
 
       const filteredPhones = _.filter(wobject.fields, ['name', objectFields.phone]);
       phones = _.orderBy(filteredPhones, ['weight'], ['desc']);
@@ -202,22 +202,22 @@ class ObjectInfo extends React.Component {
               <div className="field-info">
                 {accessExtend ? (
                   <React.Fragment>
-                    {hashtags.length <= 3 ? (
-                      hashtags.slice(0, 3).map(({ body }) => (
+                    {tags.length <= 3 ? (
+                      tags.slice(0, 3).map(({ body }) => (
                         <div key={body} className="tag-item">
-                          #{body}
+                          {body}
                         </div>
                       ))
                     ) : (
                       <React.Fragment>
-                        {hashtags.slice(0, 2).map(({ body }) => (
+                        {tags.slice(0, 2).map(({ body }) => (
                           <div key={body} className="tag-item">
-                            #{body}
+                            {body}
                           </div>
                         ))}
                         <Link
-                          to={`/object/${wobject.author_permlink}/updates/${objectFields.hashtag}`}
-                          onClick={() => this.handleSelectField(objectFields.hashtag)}
+                          to={`/object/${wobject.author_permlink}/updates/${objectFields.tag}`}
+                          onClick={() => this.handleSelectField(objectFields.tag)}
                         >
                           <FormattedMessage id="show_more_tags" defaultMessage="show more">
                             {value => <div className="tag-item">{value}</div>}
@@ -228,9 +228,9 @@ class ObjectInfo extends React.Component {
                   </React.Fragment>
                 ) : (
                   <React.Fragment>
-                    {hashtags.slice(0, 3).map(({ body }) => (
+                    {tags.slice(0, 3).map(({ body }) => (
                       <Tag key={body} color="volcano">
-                        #{body}
+                        {body}
                       </Tag>
                     ))}
                   </React.Fragment>
@@ -292,11 +292,9 @@ class ObjectInfo extends React.Component {
                 map.latitude &&
                 map.longitude &&
                 isCoordinatesValid(map.latitude, map.longitude) && (
-                  <MapOS
-                    wobjects={{ [wobject.id]: wobject }}
+                  <MapObjectInfo
                     mapHeigth={200}
-                    centerLat={Number(map.latitude)}
-                    centerLng={Number(map.longitude)}
+                    center={[Number(map.latitude), Number(map.longitude)]}
                   />
                 ),
             )}

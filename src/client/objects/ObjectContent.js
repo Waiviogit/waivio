@@ -15,7 +15,7 @@ export default class ObjectContent extends React.Component {
 
   componentDidMount() {
     ApiClient.getObjects({ limit: displayLimit }).then(wobjs => {
-      this.setState({ wobjs });
+      this.setState({ wobjs: wobjs.wobjects });
     });
   }
 
@@ -35,8 +35,8 @@ export default class ObjectContent extends React.Component {
         }).then(newWobjs =>
           this.setState(state => ({
             loading: false,
-            hasMore: newWobjs.length === displayLimit,
-            wobjs: state.wobjs.concat(newWobjs),
+            hasMore: newWobjs.wobjects.length === displayLimit,
+            wobjs: state.wobjs.concat(newWobjs.wobjects),
           })),
         );
       },

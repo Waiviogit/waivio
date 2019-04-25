@@ -96,7 +96,7 @@ export default class ObjectTypePage extends React.Component {
           <div className="feed-layout container">
             <Affix className="leftContainer leftContainer__user" stickPosition={72}>
               <div className="left">
-                <MapOS wobjects={this.props.type.related_wobjects} />
+                <MapOS wobjects={this.props.type.related_wobjects} heigth={200} />
               </div>
             </Affix>
             <div className="center">

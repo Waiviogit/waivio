@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _, { get } from 'lodash';
 import { getHtml } from '../components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
 import { categoryRegex } from './regexHelpers';
@@ -6,6 +6,7 @@ import { jsonParse } from './formatter';
 import DMCA from '../../common/constants/dmca.json';
 import whiteListedApps from './apps';
 import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
+import { rewardsValues } from '../../common/constants/rewards';
 
 const appVersion = require('../../../package.json').version;
 
@@ -121,7 +122,40 @@ export function splitPostContent(markdownContent) {
   };
 }
 
+export function getInitialState(props) {
+  let initialState = {
+    draftContent: { title: '', body: '' },
+    content: '',
+    topics: [],
+    linkedObjects: [],
+    settings: {
+      reward: rewardsValues.half,
+      beneficiary: false,
+      upvote: props.upvoteSetting,
+    },
+  };
+  const { draftPosts, draftId } = props;
+  const draftPost = draftPosts && draftPosts[draftId];
+  if (draftId && draftPost) {
+    initialState = {
+      draftContent: {
+        title: get(draftPost, 'title', ''),
+        body: get(draftPost, 'body', ''),
+      },
+      content: '',
+      topics: get(draftPost, 'jsonMetadata.tags', []),
+      linkedObjects: [],
+      settings: {
+        reward: draftPost.reward,
+        beneficiary: draftPost.beneficiary,
+        upvote: draftPost.upvote,
+      },
+    };
+  }
+  return initialState;
+}
+
 export function isContentValid(markdownContent) {
   const { postTitle, postBody } = splitPostContent(markdownContent);
-  return postTitle && postBody && postBody.length;
+  return Boolean(postTitle && postBody.trim());
 }
