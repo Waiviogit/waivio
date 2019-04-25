@@ -67,7 +67,7 @@ export default class ObjectTypePage extends React.Component {
     const desc = type.body;
     const canonicalUrl = `${host}/objectType/${type.name}`;
     const url = `${host}/objectType/${type.name}`;
-    const title = `Type - ${type.name}`;
+    const title = `Type - ${type.name || ''}`;
 
     return (
       <div className="ObjectTypePage">

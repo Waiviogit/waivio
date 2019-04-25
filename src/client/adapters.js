@@ -5,7 +5,7 @@ export const getClientWObj = serverWObj => {
   /* eslint-disable no-underscore-dangle */
   /* eslint-disable camelcase */
   const {
-    parents,
+    parent,
     author_permlink,
     followers_names,
     weight,
@@ -27,7 +27,7 @@ export const getClientWObj = serverWObj => {
       'https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png',
     name: getFieldWithMaxWeight(serverWObj, objectFields.name),
     title: getFieldWithMaxWeight(serverWObj, objectFields.title),
-    parents: parents || [],
+    parent: parent || '',
     weight: weight || '',
     createdAt: created_at || Date.now(),
     updatedAt: updated_at || Date.now(),

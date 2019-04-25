@@ -28,6 +28,7 @@ import CreateImage from '../../object/ObjectGallery/CreateImage';
 import './ObjectInfo.less';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 import MapObjectInfo from '../../components/Maps/MapObjectInfo';
+import ObjectCard from '../../components/Sidebar/ObjectCard';
 
 @connect(state => ({
   albums: getObjectAlbums(state),
@@ -192,6 +193,16 @@ class ObjectInfo extends React.Component {
       <React.Fragment>
         {getFieldWithMaxWeight(wobject, objectFields.name) && (
           <div className="object-sidebar">
+            {listItem(
+              objectFields.parent,
+              wobject.parent ? (
+                <ObjectCard
+                  key={wobject.parent.author_permlink}
+                  wobject={wobject.parent}
+                  showFollow={false}
+                />
+              ) : null,
+            )}
             {listItem(objectFields.description, <DescriptionInfo description={description} />)}
             {listItem(
               objectFields.rating,

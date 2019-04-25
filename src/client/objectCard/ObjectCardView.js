@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 import './ObjectCardView.less';
 import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
+import { getFieldWithMaxWeight } from '../object/wObjectHelper';
+import { objectFields as objectTypes } from '../../common/constants/listOfFields';
 
 const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => {
   const getObjectRatings = () => _.filter(wObject.fields, ['name', 'rating']);
@@ -22,6 +24,9 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
       }}
     />
   );
+  const parentName = wObject.parent
+    ? getFieldWithMaxWeight(wObject.parent, objectTypes.parent)
+    : '';
   return (
     <React.Fragment>
       <div className="ObjectCardView">
@@ -37,13 +42,11 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
               {avatarLayout(wObject.avatar)}
             </Link>
             <div className="ObjectCardView__info">
-              <div className="ObjectCardView__type">{wObject.type}</div>
+              {parentName && <div className="ObjectCardView__type">{parentName}</div>}
               <div className="ObjectCardView__name">
-                <a href={pathName} target="_blank" rel="noopener noreferrer">
-                  <div className="ObjectCardView__name-truncated" title={wObject.name}>
-                    {wObject.name}
-                  </div>
-                </a>
+                <Link to={pathName} className="ObjectCardView__name-truncated" title={wObject.name}>
+                  {wObject.name}
+                </Link>
                 {wObject.weight && <WeightTag weight={wObject.weight} rank={wObject.rank} />}
               </div>
               {ratings && <RatingsWrap ratings={ratings} showSmallVersion={showSmallVersion} />}
