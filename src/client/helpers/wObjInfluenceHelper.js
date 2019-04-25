@@ -1,57 +1,50 @@
-export const setInitialPercent = linkedObjects => {
+import { get, size, forEach } from 'lodash';
+
+export const setObjPercents = (linkedObjects, percentage) => {
   const len = linkedObjects && linkedObjects.length;
   if (!len) {
-    return [];
+    return {};
   } else if (len === 1) {
-    return [{ ...linkedObjects[0], percent: { max: 100, value: 100 } }];
+    return { [linkedObjects[0].id]: { percent: 100, max: 100 } };
+  }
+  if (
+    len === size(percentage) &&
+    linkedObjects.every(obj => Boolean(percentage[obj.id])) &&
+    Object.values(percentage).reduce((acc, curr) => acc + curr.percent, 0) === 100
+  ) {
+    const objPercentage = {};
+    forEach(percentage, (value, key) => {
+      objPercentage[key] = { ...value, max: value.percent };
+    });
+    return objPercentage;
   }
   const [first, ...rest] = linkedObjects;
   const averagePercent = Math.floor(100 / len);
   const firstPercent = 100 - averagePercent * (len - 1);
-
-  return [
-    {
-      ...first,
-      percent: {
-        max: firstPercent,
-        value: firstPercent,
-      },
+  const objPercentage = {
+    [first.id]: {
+      percent: firstPercent,
+      max: firstPercent,
     },
-    ...rest.map(obj => ({
-      ...obj,
-      percent: {
-        max: averagePercent,
-        value: averagePercent,
-      },
-    })),
-  ];
+  };
+  rest.forEach(obj => {
+    objPercentage[obj.id] = { percent: averagePercent, max: averagePercent };
+  });
+  return objPercentage;
 };
 
-export const handleWeightChange = (linkedObjects, objId, weightPercent, weightBuffer) => {
-  const currObj = linkedObjects.find(obj => obj.id === objId);
-  const deltaWeight = currObj.percent.value - weightPercent;
+export const handleWeightChange = (percentage, objId, weightPercent, weightBuffer) => {
+  const deltaWeight = get(percentage, [objId, 'percent']) - weightPercent;
   const weightBufferNext = weightBuffer + deltaWeight;
   if (weightBufferNext >= 0) {
-    const resultArr = linkedObjects.map(obj =>
-      obj.id === objId
-        ? {
-            ...obj,
-            percent: {
-              value: weightPercent,
-              max: weightPercent + weightBufferNext,
-            },
-          }
-        : {
-            ...obj,
-            percent: {
-              value: obj.percent.value,
-              max: obj.percent.value + weightBufferNext,
-            },
-          },
-    );
-    return { linkedObjects: resultArr, weightBuffer: weightBufferNext };
+    const percentageNext = {};
+    forEach(percentage, (value, key) => {
+      const percent = key === objId ? weightPercent : value.percent;
+      percentageNext[key] = { percent, max: percent + weightBufferNext };
+    });
+    return { objPercentage: percentageNext, weightBuffer: weightBufferNext };
   }
-  return linkedObjects;
+  return percentage;
 };
 
 export const setInitialInfluence = (objArr, wObj, influenceRemain) => {

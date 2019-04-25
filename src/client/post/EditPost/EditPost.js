@@ -20,7 +20,6 @@ import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { Entity, toMarkdown } from '../../components/EditorExtended';
 import LastDraftsContainer from '../Write/LastDraftsContainer';
-import { setInitialPercent } from '../../helpers/wObjInfluenceHelper';
 
 const getLinkedObjects = contentStateRaw => {
   const objEntities = Object.values(contentStateRaw.entityMap).filter(
@@ -114,14 +113,18 @@ class EditPost extends Component {
       this.handleUpdateState,
     );
 
-  handleSubmit(data) {
-    const postData = this.buildPost(data);
+  handlePercentChange = percentage => {
+    this.setState({ objPercentage: percentage }, this.handleUpdateState);
+  };
+
+  handleSubmit() {
+    const postData = this.buildPost();
     console.log('POST_DATA', postData);
     this.props.createPost(postData);
   }
 
   buildPost() {
-    const { content, topics, linkedObjects, settings, isUpdating } = this.state;
+    const { content, topics, linkedObjects, objPercentage, settings, isUpdating } = this.state;
     const { postTitle, postBody } = splitPostContent(content);
 
     const postData = {
@@ -141,10 +144,10 @@ class EditPost extends Component {
       this.props.draftPosts[this.props.draftId] &&
       this.props.draftPosts[this.props.draftId].jsonMetadata;
     const waivioData = {
-      wobjects: setInitialPercent(linkedObjects).map(obj => ({
+      wobjects: linkedObjects.map(obj => ({
         objectName: obj.name,
         author_permlink: obj.id,
-        percent: obj.percent.value,
+        percent: objPercentage[obj.id].percent,
       })),
     };
 
@@ -179,7 +182,7 @@ class EditPost extends Component {
   }, 2000);
 
   render() {
-    const { draftContent, content, topics, linkedObjects, settings } = this.state;
+    const { draftContent, content, topics, linkedObjects, objPercentage, settings } = this.state;
     const { draftId, saving, locale } = this.props;
     return (
       <div className="shifted">
@@ -195,9 +198,11 @@ class EditPost extends Component {
               content={content}
               topics={topics}
               linkedObjects={linkedObjects}
+              objPercentage={objPercentage}
               settings={settings}
               onTopicsChange={this.handleTopicsChange}
               onSettingsChange={this.handleSettingsChange}
+              onPercentChange={this.handlePercentChange}
               onSubmit={this.handleSubmit}
               onUpdate={this.saveDraft}
             />

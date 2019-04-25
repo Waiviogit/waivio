@@ -1,4 +1,4 @@
-import _, { get } from 'lodash';
+import _, { get, fromPairs } from 'lodash';
 import { getHtml } from '../components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
 import { categoryRegex } from './regexHelpers';
@@ -130,6 +130,7 @@ export function getInitialValues(props) {
     content: '',
     topics: [],
     linkedObjects: [],
+    objPercentage: {},
     settings: {
       reward: rewardsValues.half,
       beneficiary: false,
@@ -140,6 +141,7 @@ export function getInitialValues(props) {
   const { draftPosts, draftId } = props;
   const draftPost = draftPosts && draftPosts[draftId];
   if (draftId && draftPost) {
+    const draftObjects = get(draftPost, ['jsonMetadata', WAIVIO_META_FIELD_NAME, 'wobjects'], []);
     state = {
       draftContent: {
         title: get(draftPost, 'title', ''),
@@ -148,6 +150,9 @@ export function getInitialValues(props) {
       content: '',
       topics: get(draftPost, 'jsonMetadata.tags', []),
       linkedObjects: [],
+      objPercentage: fromPairs(
+        draftObjects.map(obj => [obj.author_permlink, { percent: obj.percent }]),
+      ),
       settings: {
         reward: draftPost.reward,
         beneficiary: draftPost.beneficiary,
