@@ -67,7 +67,7 @@ export default class ObjectTypePage extends React.Component {
     const desc = type.body;
     const canonicalUrl = `${host}/objectType/${type.name}`;
     const url = `${host}/objectType/${type.name}`;
-    const title = `Type - Waivio`;
+    const title = `Type - ${type.name || ''}`;
 
     return (
       <div className="ObjectTypePage">
@@ -88,7 +88,9 @@ export default class ObjectTypePage extends React.Component {
           <meta property="twitter:description" content={desc} />
           <meta
             property="twitter:image"
-            content={'https://steemit.com/images/steemit-twshare.png'}
+            content={
+              'https://cdn.steemitimages.com/DQmVRiHgKNWhWpDXSmD7ZK4G48mYkLMPcoNT8VzgXNWZ8aN/image.png'
+            }
           />
         </Helmet>
         <ScrollToTopOnMount />

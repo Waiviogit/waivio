@@ -23,6 +23,8 @@ import Popover from '../Popover';
 import Notifications from './Notifications/Notifications';
 import LanguageSettings from './LanguageSettings';
 import './Topnav.less';
+import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
+import { objectFields } from '../../../common/constants/listOfFields';
 
 @injectIntl
 @withRouter
@@ -40,7 +42,7 @@ import './Topnav.less';
 )
 class Topnav extends React.Component {
   static propTypes = {
-    autoCompleteSearchResults: PropTypes.arrayOf(PropTypes.string),
+    autoCompleteSearchResults: PropTypes.shape,
     intl: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
@@ -54,7 +56,7 @@ class Topnav extends React.Component {
   };
 
   static defaultProps = {
-    autoCompleteSearchResults: [],
+    autoCompleteSearchResults: {},
     notifications: [],
     username: undefined,
     onMenuItemClick: () => {},
@@ -309,24 +311,133 @@ class Topnav extends React.Component {
   }
 
   handleSelectOnAutoCompleteDropdown(value) {
-    this.props.history.push(`/@${value}`);
+    const type = value.slice(0, 5);
+    if (type === 'user-') this.props.history.push(`/@${value.replace('user-', '')}`);
+    else if (type === 'wobj-') {
+      if (
+        _.includes(this.props.location.pathname, '/object/') ||
+        _.includes(this.props.location.pathname, '/objectType/')
+      ) {
+        this.props.history.push(`${value.replace('wobj-', '')}`);
+      } else {
+        this.props.history.push(`object/${value.replace('wobj-', '')}`);
+      }
+    } else this.props.history.push(`/objectType/${value.replace('type-', '')}`);
   }
 
   handleOnChangeForAutoComplete(value) {
-    this.setState({
-      searchBarValue: value,
-    });
+    const type = value.slice(0, 5);
+    if (type === 'user-')
+      this.setState({
+        searchBarValue: value.replace('user-', ''),
+      });
+    else if (type === 'wobj-')
+      this.setState({
+        searchBarValue: value.replace('wobj-', ''),
+      });
+    else
+      this.setState({
+        searchBarValue: value.replace('type-', ''),
+      });
   }
+
+  usersSearchLayout(accounts) {
+    return (
+      <AutoComplete.OptGroup
+        key="usersTitle"
+        label={this.renderTitle(
+          this.props.intl.formatMessage({
+            id: 'users_search_title',
+            defaultMessage: 'Users',
+          }),
+          _.size(accounts),
+        )}
+      >
+        {_.map(accounts, option => (
+          <AutoComplete.Option
+            key={`obj${option.account}`}
+            value={`user-${option.account}`}
+            className="Topnav__search-autocomplete"
+          >
+            {option.account}
+          </AutoComplete.Option>
+        ))}
+      </AutoComplete.OptGroup>
+    );
+  }
+
+  wobjectSearchLayout(wobjects) {
+    return (
+      <AutoComplete.OptGroup
+        key="usersTitle"
+        label={this.renderTitle(
+          this.props.intl.formatMessage({
+            id: 'wobjects_search_title',
+            defaultMessage: 'Objects',
+          }),
+          _.size(wobjects),
+        )}
+      >
+        {_.map(wobjects, option => {
+          const wobjName = getFieldWithMaxWeight(option, objectFields.name);
+          return wobjName ? (
+            <AutoComplete.Option
+              key={`obj${wobjName}`}
+              value={`wobj-${option.author_permlink}`}
+              className="Topnav__search-autocomplete"
+            >
+              {wobjName}
+            </AutoComplete.Option>
+          ) : null;
+        })}
+      </AutoComplete.OptGroup>
+    );
+  }
+
+  wobjectTypeSearchLayout(objectTypes) {
+    return (
+      <AutoComplete.OptGroup
+        key="usersTitle"
+        label={this.renderTitle(
+          this.props.intl.formatMessage({
+            id: 'wobjectType_search_title',
+            defaultMessage: 'Types',
+          }),
+          _.size(objectTypes),
+        )}
+      >
+        {_.map(objectTypes, option => (
+          <AutoComplete.Option
+            key={`type${option.name}`}
+            value={`type-${option.name}`}
+            className="Topnav__search-autocomplete"
+          >
+            {option.name}
+          </AutoComplete.Option>
+        ))}
+      </AutoComplete.OptGroup>
+    );
+  }
+
+  prepareOptions(searchResults) {
+    const dataSource = [];
+    if (!_.isEmpty(searchResults.accounts))
+      dataSource.push(this.usersSearchLayout(searchResults.accounts));
+
+    if (!_.isEmpty(searchResults.wobjects))
+      dataSource.push(this.wobjectSearchLayout(searchResults.wobjects));
+
+    if (!_.isEmpty(searchResults.objectTypes))
+      dataSource.push(this.wobjectTypeSearchLayout(searchResults.objectTypes));
+    return dataSource;
+  }
+
+  renderTitle = title => <span>{title}</span>;
 
   render() {
     const { intl, autoCompleteSearchResults } = this.props;
     const { searchBarActive, searchBarValue } = this.state;
-
-    const dropdownOptions = _.map(autoCompleteSearchResults, option => (
-      <AutoComplete.Option key={option} value={option} className="Topnav__search-autocomplete">
-        {option}
-      </AutoComplete.Option>
-    ));
+    const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     const formattedAutoCompleteDropdown = _.isEmpty(dropdownOptions)
       ? dropdownOptions
       : dropdownOptions.concat([
