@@ -87,7 +87,7 @@ class MediumDraftEditor extends React.Component {
     blockStyleFn,
     rendererFn,
     editorEnabled: true,
-    spellCheck: true,
+    spellCheck: false,
     stringToTypeMap: StringToTypeMap,
     blockRenderMap: RenderMap,
     blockButtons: BLOCK_BUTTONS,
@@ -523,7 +523,9 @@ class MediumDraftEditor extends React.Component {
       toolbarConfig,
     } = this.props;
     const showAddButton = editorEnabled;
-    const editorClass = `md-RichEditor-editor${!editorEnabled ? ' md-RichEditor-readonly' : ''}`;
+    const editorClass = `md-RichEditor-editor Body Body--full${
+      !editorEnabled ? ' md-RichEditor-readonly' : ''
+    }`;
     let isCursorLink = false;
     if (editorEnabled && showLinkEditToolbar) {
       isCursorLink = isCursorBetweenLink(editorState);

@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { Helmet } from 'react-helmet';
-
 import { getFeedContent } from './feedActions';
 import { getIsLoaded, getIsAuthenticated } from '../reducers';
 import SubFeed from './SubFeed';
@@ -13,7 +13,9 @@ import Affix from '../components/Utils/Affix';
 import ScrollToTop from '../components/Utils/ScrollToTop';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import QuickPostEditor from '../components/QuickPostEditor/QuickPostEditor';
+import PostsNavigation from '../components/Navigation/PostsNavigation/PostsNavigation';
 
+@withRouter
 @connect(state => ({
   authenticated: getIsAuthenticated(state),
   loaded: getIsLoaded(state),
@@ -69,6 +71,7 @@ class Page extends React.Component {
             </Affix>
             <div className="center">
               {authenticated && <QuickPostEditor />}
+              <PostsNavigation location={this.props.location} />
               <SubFeed />
             </div>
           </div>

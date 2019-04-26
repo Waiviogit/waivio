@@ -44,6 +44,7 @@ class Editor extends React.Component {
 
     this.state = {
       isMounted: false,
+      editorEnabled: true,
       editorState: createEditorState(fromMarkdown(props.initialContent)),
     };
 
@@ -62,13 +63,17 @@ class Editor extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.initialContent !== nextProps.initialContent) {
+      this.setState({ editorEnabled: false });
       const rawContent = fromMarkdown(nextProps.initialContent);
       this.handleContentChange(createEditorState(rawContent));
       this.restoreObjects(rawContent).then(() => this.setFocusAfterMount());
     }
   }
 
-  setFocusAfterMount = () => setTimeout(() => this.refsEditor.current.focus(), 0);
+  setFocusAfterMount = () => {
+    setTimeout(() => this.refsEditor.current.focus(), 0);
+    this.setState({ editorEnabled: true });
+  };
 
   restoreObjects = async rawContent => {
     const objectIds = Object.values(rawContent.entityMap)
@@ -105,13 +110,14 @@ class Editor extends React.Component {
   };
 
   render() {
-    const { editorState, isMounted } = this.state;
+    const { editorState, isMounted, editorEnabled } = this.state;
     return (
       <div className="waiv-editor">
         {isMounted ? (
           <MediumDraftEditor
             ref={this.refsEditor}
             placeholder=""
+            editorEnabled={editorEnabled}
             editorState={editorState}
             beforeInput={this.handleBeforeInput}
             onChange={this.handleContentChange}

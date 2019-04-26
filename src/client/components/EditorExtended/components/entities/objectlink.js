@@ -13,13 +13,7 @@ export const findObjEntities = (contentBlock, callback, contentState) => {
 const ObjectLink = props => {
   const { url } = props.contentState.getEntity(props.entityKey).getData();
   return (
-    <a
-      className="object-link"
-      href={url}
-      rel="noopener noreferrer"
-      target="_blank"
-      aria-label={url}
-    >
+    <a className="object-link" href={url} rel="noopener noreferrer" aria-label={url}>
       {props.children}
     </a>
   );
