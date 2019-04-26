@@ -20,6 +20,7 @@ import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { Entity, toMarkdown } from '../../components/EditorExtended';
 import LastDraftsContainer from '../Write/LastDraftsContainer';
+import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 
 const getLinkedObjects = contentStateRaw => {
   const objEntities = Object.values(contentStateRaw.entityMap).filter(
@@ -96,7 +97,9 @@ class EditPost extends Component {
     this.handleUpdateState(nextState.content);
     const linkedObjects = getLinkedObjects(rawContent);
     if (this.state.linkedObjects.length !== linkedObjects.length) {
+      const objPercentage = setObjPercents(linkedObjects, this.state.objPercentage);
       nextState.linkedObjects = linkedObjects;
+      nextState.objPercentage = objPercentage;
     }
     this.setState(nextState);
     // console.log('raw content:', JSON.stringify(rawContent));

@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
 import { Button } from 'antd';
+import { Link } from 'react-router-dom';
 import ObjectLightbox from '../components/ObjectLightbox';
 import FollowButton from '../widgets/FollowButton';
 import { haveAccess, accessTypesArr } from '../helpers/wObjectHelper';
 import { getFieldWithMaxWeight } from '../../client/object/wObjectHelper';
-import { objectFields } from '../../common/constants/listOfFields';
+import { objectFields as objectTypes, objectFields } from '../../common/constants/listOfFields';
 import Proposition from '../components/Proposition/Proposition';
 import ObjectType from './ObjectType';
 import '../components/ObjectHeader.less';
@@ -27,11 +28,24 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, a
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
   const objectName = getFieldWithMaxWeight(wobject, objectFields.name) || wobject.default_name;
   const canEdit = accessExtend && isEditMode;
+  const parentName = wobject.parent ? getFieldWithMaxWeight(wobject.parent, objectTypes.name) : '';
   return (
     <div className={classNames('ObjectHeader', { 'ObjectHeader--cover': hasCover })} style={style}>
       <div className="ObjectHeader__container">
         <ObjectLightbox wobject={wobject} size={100} accessExtend={canEdit} />
         <div className="ObjectHeader__user">
+          {parentName && (
+            <Link
+              to={`/object/${wobject.parent.author_permlink}`}
+              title={`${intl.formatMessage({
+                id: 'GoTo',
+                defaultMessage: 'Go to',
+              })} ${parentName}`}
+              className="ObjectHeader__type"
+            >
+              {parentName}
+            </Link>
+          )}
           <div className="ObjectHeader__row">
             <div className="ObjectHeader__user__username">
               <div className="ObjectHeader__text" title={objectName}>

@@ -133,7 +133,7 @@ export function getInitialValues(props) {
     objPercentage: {},
     settings: {
       reward: rewardsValues.half,
-      beneficiary: false,
+      beneficiary: true,
       upvote: props.upvoteSetting,
     },
     isUpdating: false,

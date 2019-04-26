@@ -5,10 +5,10 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { getObjectTypes, getMoreObjectsByType } from '../../../objectTypes/objectTypesActions';
-import Loading from '../../Icon/Loading';
 import './ObjectTypes.less';
 import ObjectCard from '../ObjectCard';
 import { getobjectTypesState } from '../../../reducers';
+import ObjectTypesLoading from './ObjectTypesLoading';
 
 @connect(
   state => ({
@@ -69,8 +69,7 @@ class ObjectTypes extends React.Component {
 
     return (
       <div className="ObjectTypes">
-        {!loading &&
-          !_.isEmpty(objectTypes) &&
+        {!loading && !_.isEmpty(objectTypes) ? (
           _.map(
             objectTypes,
             objectType =>
@@ -112,8 +111,10 @@ class ObjectTypes extends React.Component {
                   </div>
                 </div>
               ),
-          )}
-        {loading && <Loading center={false} />}
+          )
+        ) : (
+          <ObjectTypesLoading center={false} />
+        )}
       </div>
     );
   }

@@ -66,7 +66,7 @@ const applyAtomicStyle = (block, entityMap, content) => {
       return `${strippedContent}***`;
     case ATOMIC_TYPES.IMAGE:
       return `${strippedContent}<center>![${text || 'image'}](${data.src})</center>\n${
-        text ? `<center>${text}</center>\n` : ''
+        text ? `<center>${text}</center>` : ''
       }`;
     // case 'draft-js-video-plugin-video':
     //   return `${strippedContent}[[ embed url=${data.url || data.src} ]]`;
