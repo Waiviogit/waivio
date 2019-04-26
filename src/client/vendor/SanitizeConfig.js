@@ -61,6 +61,36 @@ export const allowedTags = `
   .trim()
   .split(/,\s*/);
 
+export const parseLink = (appUrl, secureLinks) => (tagName, attribs) => {
+  let { href } = attribs;
+  if (!href) href = '#';
+  href = href.trim();
+  const attys = {};
+
+  const linkUrl = url.parse(href);
+  const linkWebsiteUrl = url.format({
+    protocol: linkUrl.protocol,
+    host: linkUrl.host,
+  });
+
+  const internalLink = href.indexOf('/') === 0 || appUrl === linkWebsiteUrl;
+
+  if (!internalLink) {
+    attys.target = '_blank';
+
+    if (secureLinks && knownDomains.indexOf(linkUrl.hostname) === -1) {
+      href = `/exit?url=${encodeURIComponent(href)}`;
+    }
+  }
+
+  attys.href = href;
+
+  return {
+    tagName,
+    attribs: attys,
+  };
+};
+
 // Medium insert plugin uses: div, figure, figcaption, iframe
 export default ({
   large = true,
@@ -166,34 +196,6 @@ export default ({
         attribs: attys,
       };
     },
-    a: (tagName, attribs) => {
-      let { href } = attribs;
-      if (!href) href = '#';
-      href = href.trim();
-      const attys = {};
-
-      const linkUrl = url.parse(href);
-      const linkWebsiteUrl = url.format({
-        protocol: linkUrl.protocol,
-        host: linkUrl.host,
-      });
-
-      const internalLink = href.indexOf('/') === 0 || appUrl === linkWebsiteUrl;
-
-      if (!internalLink) {
-        attys.target = '_blank';
-
-        if (secureLinks && knownDomains.indexOf(linkUrl.hostname) === -1) {
-          href = `/exit?url=${encodeURIComponent(href)}`;
-        }
-      }
-
-      attys.href = href;
-
-      return {
-        tagName,
-        attribs: attys,
-      };
-    },
+    a: parseLink(appUrl, secureLinks),
   },
 });
