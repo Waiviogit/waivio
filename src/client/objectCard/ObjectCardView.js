@@ -24,27 +24,36 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
       }}
     />
   );
-  const parentName = wObject.parent
-    ? getFieldWithMaxWeight(wObject.parent, objectTypes.parent)
-    : '';
+  const parentName = wObject.parent ? getFieldWithMaxWeight(wObject.parent, objectTypes.name) : '';
+  const goToObjTitle = wobjName =>
+    `${intl.formatMessage({
+      id: 'GoTo',
+      defaultMessage: 'Go to',
+    })} ${wobjName}`;
   return (
     <React.Fragment>
       <div className="ObjectCardView">
         <div className="ObjectCardView__content">
           <Row className="ObjectCardView__content row">
-            <Link
-              to={pathName}
-              title={`${intl.formatMessage({
-                id: 'GoTo',
-                defaultMessage: 'Go to',
-              })} ${wObject.name}`}
-            >
+            <Link to={pathName} title={goToObjTitle(wObject.name)}>
               {avatarLayout(wObject.avatar)}
             </Link>
             <div className="ObjectCardView__info">
-              {parentName && <div className="ObjectCardView__type">{parentName}</div>}
+              {parentName && (
+                <Link
+                  to={`/object/${wObject.parent.author_permlink}`}
+                  title={goToObjTitle(parentName)}
+                  className="ObjectCardView__type"
+                >
+                  {parentName}
+                </Link>
+              )}
               <div className="ObjectCardView__name">
-                <Link to={pathName} className="ObjectCardView__name-truncated" title={wObject.name}>
+                <Link
+                  to={pathName}
+                  className="ObjectCardView__name-truncated"
+                  title={goToObjTitle(wObject.name)}
+                >
                   {wObject.name}
                 </Link>
                 {wObject.weight && <WeightTag weight={wObject.weight} rank={wObject.rank} />}

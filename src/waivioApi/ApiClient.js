@@ -269,6 +269,19 @@ export const getObjectType = name =>
       .catch(error => reject(error));
   });
 
+export const getSearchResult = (text, userLimit = 5, wobjectsLimit = 5, objectTypesLimit = 5) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.generalSearch}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({ string: text, userLimit, wobjectsLimit, objectTypesLimit }),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export const getMoreObjectsByType = (type, skip, limit) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}`, {
@@ -281,4 +294,5 @@ export const getMoreObjectsByType = (type, skip, limit) =>
       .then(result => resolve({ data: result, type }))
       .catch(error => reject(error));
   });
+
 export default null;
