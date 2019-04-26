@@ -12,6 +12,7 @@ class AdvanceSettings extends Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
+    objPercentage: PropTypes.shape(),
     weightBuffer: PropTypes.number,
     settings: PropTypes.shape({
       reward: PropTypes.oneOf([rewardsValues.none, rewardsValues.half, rewardsValues.all]),
@@ -25,6 +26,7 @@ class AdvanceSettings extends Component {
   static defaultProps = {
     isUpdating: false,
     linkedObjects: [],
+    objPercentage: {},
     weightBuffer: 0,
   };
 
@@ -43,6 +45,7 @@ class AdvanceSettings extends Component {
       intl,
       isUpdating,
       linkedObjects,
+      objPercentage,
       weightBuffer,
       settings: { reward, beneficiary, upvote },
     } = this.props;
@@ -104,6 +107,7 @@ class AdvanceSettings extends Component {
             <ObjectWeights
               intl={intl}
               linkedObjects={linkedObjects}
+              objPercentage={objPercentage}
               weightBuffer={weightBuffer}
               onPercentChange={this.handlePercentChange}
             />

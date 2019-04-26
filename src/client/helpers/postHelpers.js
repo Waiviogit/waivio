@@ -1,4 +1,4 @@
-import _, { get } from 'lodash';
+import _, { get, fromPairs } from 'lodash';
 import { getHtml } from '../components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
 import { categoryRegex } from './regexHelpers';
@@ -122,22 +122,27 @@ export function splitPostContent(markdownContent) {
   };
 }
 
-export function getInitialState(props) {
-  let initialState = {
+export function getInitialValues(props) {
+  let permlink = null;
+  let originalBody = null;
+  let state = {
     draftContent: { title: '', body: '' },
     content: '',
     topics: [],
     linkedObjects: [],
+    objPercentage: {},
     settings: {
       reward: rewardsValues.half,
       beneficiary: false,
       upvote: props.upvoteSetting,
     },
+    isUpdating: false,
   };
   const { draftPosts, draftId } = props;
   const draftPost = draftPosts && draftPosts[draftId];
   if (draftId && draftPost) {
-    initialState = {
+    const draftObjects = get(draftPost, ['jsonMetadata', WAIVIO_META_FIELD_NAME, 'wobjects'], []);
+    state = {
       draftContent: {
         title: get(draftPost, 'title', ''),
         body: get(draftPost, 'body', ''),
@@ -145,14 +150,20 @@ export function getInitialState(props) {
       content: '',
       topics: get(draftPost, 'jsonMetadata.tags', []),
       linkedObjects: [],
+      objPercentage: fromPairs(
+        draftObjects.map(obj => [obj.author_permlink, { percent: obj.percent }]),
+      ),
       settings: {
         reward: draftPost.reward,
         beneficiary: draftPost.beneficiary,
         upvote: draftPost.upvote,
       },
+      isUpdating: Boolean(draftPost.isUpdating),
     };
+    permlink = draftPost.permlink || null;
+    originalBody = draftPost.originalBody || null;
   }
-  return initialState;
+  return { state, permlink, originalBody };
 }
 
 export function isContentValid(markdownContent) {

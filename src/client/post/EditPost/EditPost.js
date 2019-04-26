@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { debounce, find, isEqual, kebabCase, throttle, uniqBy } from 'lodash';
+import { debounce, has, isEqual, kebabCase, throttle, uniqBy } from 'lodash';
 import uuidv4 from 'uuid/v4';
 import {
   getAuthenticatedUser,
@@ -13,20 +13,17 @@ import {
   getUpvoteSetting,
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
-import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
-import { createPostMetadata, splitPostContent, getInitialState } from '../../helpers/postHelpers';
+import { createPostMetadata, splitPostContent, getInitialValues } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { Entity, toMarkdown } from '../../components/EditorExtended';
 import LastDraftsContainer from '../Write/LastDraftsContainer';
-import { getClientWObj } from '../../adapters';
-import { setInitialPercent } from '../../helpers/wObjInfluenceHelper';
 
 const getLinkedObjects = contentStateRaw => {
   const objEntities = Object.values(contentStateRaw.entityMap).filter(
-    entity => entity.type === Entity.OBJECT,
+    entity => entity.type === Entity.OBJECT && has(entity, 'data.object.type'),
   );
   return uniqBy(objEntities.map(entity => entity.data.object), 'id');
 };
@@ -70,9 +67,12 @@ class EditPost extends Component {
   constructor(props) {
     super(props);
 
-    this.state = getInitialState(props);
+    const init = getInitialValues(props);
+    this.state = init.state;
 
     this.draftId = props.draftId || uuidv4();
+    this.permlink = init.permlink;
+    this.originalBody = init.originalBody;
     this.handleTopicsChange = this.handleTopicsChange.bind(this);
     this.handleSettingsChange = this.handleSettingsChange.bind(this);
     this.handleChangeContent = this.handleChangeContent.bind(this);
@@ -83,37 +83,25 @@ class EditPost extends Component {
   componentWillReceiveProps(nextProps) {
     const differentDraft = this.props.draftId !== nextProps.draftId;
     if (differentDraft) {
-      this.setState(getInitialState(nextProps));
+      const init = getInitialValues(nextProps);
+      this.setState(init.state);
+      this.permlink = init.permlink;
+      this.originalBody = init.originalBody;
       this.draftId = nextProps.draftId || uuidv4();
     }
   }
 
-  async handleChangeContent(rawContent) {
+  handleChangeContent(rawContent) {
     const nextState = { content: toMarkdown(rawContent) };
     this.handleUpdateState(nextState.content);
     const linkedObjects = getLinkedObjects(rawContent);
     if (this.state.linkedObjects.length !== linkedObjects.length) {
-      nextState.linkedObjects = await this.restoreDraftObjects(linkedObjects);
+      nextState.linkedObjects = linkedObjects;
     }
     this.setState(nextState);
     // console.log('raw content:', JSON.stringify(rawContent));
     // console.log('content:', nextState);
   }
-
-  restoreDraftObjects = async editorObjects => {
-    const actualObjects = editorObjects.map(obj => {
-      const prevObject = find(this.state.linkedObjects, o => o.id === obj.id);
-      return prevObject || obj;
-    });
-    const toRestore = actualObjects.filter(object => !object.type).map(o => o.id);
-    if (toRestore.length) {
-      const locale = this.props.locale === 'auto' ? 'en-US' : this.props.locale;
-      const res = await getObjectsByIds({ authorPermlinks: toRestore, locale });
-      const restored = res.map(obj => getClientWObj(obj));
-      return [...actualObjects.filter(obj => !toRestore.includes(obj.id)), ...restored];
-    }
-    return actualObjects;
-  };
 
   handleTopicsChange = topics => this.setState({ topics }, this.handleUpdateState);
 
@@ -125,41 +113,49 @@ class EditPost extends Component {
       this.handleUpdateState,
     );
 
-  handleSubmit(data) {
-    const postData = this.buildPost(data);
+  handlePercentChange = percentage => {
+    this.setState({ objPercentage: percentage }, this.handleUpdateState);
+  };
+
+  handleSubmit() {
+    const postData = this.buildPost();
     console.log('POST_DATA', postData);
     this.props.createPost(postData);
   }
 
   buildPost() {
-    const { content, topics, linkedObjects, settings } = this.state;
+    const { content, topics, linkedObjects, objPercentage, settings, isUpdating } = this.state;
     const { postTitle, postBody } = splitPostContent(content);
 
     const postData = {
       body: postBody,
       title: postTitle,
       lastUpdated: Date.now(),
+      isUpdating,
       ...settings,
     };
 
     postData.parentAuthor = '';
     postData.parentPermlink = WAIVIO_PARENT_PERMLINK;
     postData.author = this.props.user.name || '';
-    postData.permlink = kebabCase(postTitle);
-    // if (isUpdating) postData.isUpdating = isUpdating; // use for update post
+    postData.permlink = this.permlink || kebabCase(postTitle);
 
     const oldMetadata =
       this.props.draftPosts[this.props.draftId] &&
       this.props.draftPosts[this.props.draftId].jsonMetadata;
     const waivioData = {
-      wobjects: setInitialPercent(linkedObjects).map(obj => ({
+      wobjects: linkedObjects.map(obj => ({
         objectName: obj.name,
         author_permlink: obj.id,
-        percent: obj.percent.value,
+        percent: objPercentage[obj.id].percent,
       })),
     };
 
     postData.jsonMetadata = createPostMetadata(postBody, topics, oldMetadata, waivioData);
+
+    if (this.originalBody) {
+      postData.originalBody = this.originalBody;
+    }
 
     return postData;
   }
@@ -186,21 +182,27 @@ class EditPost extends Component {
   }, 2000);
 
   render() {
-    const { draftContent, content, topics, linkedObjects, settings } = this.state;
-    const { draftId, saving } = this.props;
+    const { draftContent, content, topics, linkedObjects, objPercentage, settings } = this.state;
+    const { draftId, saving, locale } = this.props;
     return (
       <div className="shifted">
         <div className="post-layout container">
           <div className="center">
-            <Editor initialContent={draftContent} onChange={this.handleChangeContent} />
+            <Editor
+              initialContent={draftContent}
+              locale={locale === 'auto' ? 'en-US' : locale}
+              onChange={this.handleChangeContent}
+            />
             {draftId && <span>{saving ? 'saving' : 'saved'}</span>}
             <PostPreviewModal
               content={content}
               topics={topics}
               linkedObjects={linkedObjects}
+              objPercentage={objPercentage}
               settings={settings}
               onTopicsChange={this.handleTopicsChange}
               onSettingsChange={this.handleSettingsChange}
+              onPercentChange={this.handlePercentChange}
               onSubmit={this.handleSubmit}
               onUpdate={this.saveDraft}
             />

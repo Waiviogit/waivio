@@ -56,6 +56,7 @@ const ObjectWeights = ({
   intl,
   isLinkedObjectsValid,
   linkedObjects,
+  objPercentage,
   weightBuffer,
   onPercentChange,
 }) => (
@@ -94,8 +95,8 @@ const ObjectWeights = ({
         key={obj.id}
         objId={obj.id}
         objName={obj.name}
-        percentValue={obj.percent.value}
-        percentMax={obj.percent.max}
+        percentValue={objPercentage[obj.id].percent}
+        percentMax={objPercentage[obj.id].max}
         onPercentChange={onPercentChange}
       />
     ))}
@@ -106,6 +107,7 @@ ObjectWeights.propTypes = {
   intl: PropTypes.shape().isRequired,
   isLinkedObjectsValid: PropTypes.bool,
   linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
+  objPercentage: PropTypes.shape(),
   weightBuffer: PropTypes.number,
   onPercentChange: PropTypes.func,
 };
@@ -114,6 +116,7 @@ ObjectWeights.defaultProps = {
   title: null,
   isLinkedObjectsValid: true,
   linkedObjects: [],
+  objPercentage: {},
   weightBuffer: 0,
   onPercentChange: () => {},
 };
