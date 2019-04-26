@@ -125,7 +125,7 @@ export default class AddButton extends React.Component {
     this.setState({
       visible: true,
       style: {
-        top: node.offsetTop - 7,
+        top: node.offsetTop - 3,
       },
     });
   }
