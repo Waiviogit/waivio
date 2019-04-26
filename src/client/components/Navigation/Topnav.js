@@ -311,16 +311,34 @@ class Topnav extends React.Component {
   }
 
   handleSelectOnAutoCompleteDropdown(value) {
-    const type = value.slice(0, 4);
-    if (type === 'user') this.props.history.push(`/@${value.replace('user', '')}`);
-    else if (type === 'wobj') this.props.history.push(`object/${value.replace('wobj', '')}`);
-    else this.props.history.push(`/objectType/${value.replace('type', '')}`);
+    const type = value.slice(0, 5);
+    if (type === 'user-') this.props.history.push(`/@${value.replace('user-', '')}`);
+    else if (type === 'wobj-') {
+      if (
+        _.includes(this.props.location.pathname, '/object/') ||
+        _.includes(this.props.location.pathname, '/objectType/')
+      ) {
+        this.props.history.push(`${value.replace('wobj-', '')}`);
+      } else {
+        this.props.history.push(`object/${value.replace('wobj-', '')}`);
+      }
+    } else this.props.history.push(`/objectType/${value.replace('type-', '')}`);
   }
 
   handleOnChangeForAutoComplete(value) {
-    this.setState({
-      searchBarValue: value,
-    });
+    const type = value.slice(0, 5);
+    if (type === 'user-')
+      this.setState({
+        searchBarValue: value.replace('user-', ''),
+      });
+    else if (type === 'wobj-')
+      this.setState({
+        searchBarValue: value.replace('wobj-', ''),
+      });
+    else
+      this.setState({
+        searchBarValue: value.replace('type-', ''),
+      });
   }
 
   usersSearchLayout(accounts) {
@@ -338,7 +356,7 @@ class Topnav extends React.Component {
         {_.map(accounts, option => (
           <AutoComplete.Option
             key={`obj${option.account}`}
-            value={`user${option.account}`}
+            value={`user-${option.account}`}
             className="Topnav__search-autocomplete"
           >
             {option.account}
@@ -365,7 +383,7 @@ class Topnav extends React.Component {
           return wobjName ? (
             <AutoComplete.Option
               key={`obj${wobjName}`}
-              value={`wobj${option.author_permlink}`}
+              value={`wobj-${option.author_permlink}`}
               className="Topnav__search-autocomplete"
             >
               {wobjName}
@@ -391,7 +409,7 @@ class Topnav extends React.Component {
         {_.map(objectTypes, option => (
           <AutoComplete.Option
             key={`type${option.name}`}
-            value={`type${option.name}`}
+            value={`type-${option.name}`}
             className="Topnav__search-autocomplete"
           >
             {option.name}
