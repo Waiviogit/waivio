@@ -29,7 +29,11 @@ Link.propTypes = {
   children: PropTypes.node.isRequired,
   entityKey: PropTypes.string.isRequired,
   appUrl: PropTypes.string.isRequired,
-  exitPageSettings: PropTypes.bool.isRequired,
+  exitPageSettings: PropTypes.bool,
+};
+
+Link.defaultProps = {
+  exitPageSettings: true,
 };
 
 export default connect(state => ({
