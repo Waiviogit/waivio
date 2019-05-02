@@ -40,6 +40,12 @@ export const deleteEditedPost = createAction(DELETE_EDITED_POST);
 
 export const CREATE_WAIVIO_OBJECT = '@editor/CREATE_WAIVIO_OBJECT';
 
+export const UPLOAD_IMG_START = '@editor/UPLOAD_IMG_START';
+export const UPLOAD_IMG_FINISH = '@editor/UPLOAD_IMG_FINISH';
+
+export const imageUploading = () => dispatch => dispatch({ type: UPLOAD_IMG_START });
+export const imageUploaded = () => dispatch => dispatch({ type: UPLOAD_IMG_FINISH });
+
 export const saveDraft = (post, redirect, intl) => dispatch =>
   dispatch({
     type: SAVE_DRAFT,

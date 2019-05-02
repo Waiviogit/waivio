@@ -10,6 +10,7 @@ import {
   getLocale,
   getDraftPosts,
   getIsEditorSaving,
+  getIsImageUploading,
   getUpvoteSetting,
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
@@ -37,6 +38,7 @@ const getLinkedObjects = contentStateRaw => {
     locale: getLocale(state),
     draftPosts: getDraftPosts(state),
     saving: getIsEditorSaving(state),
+    imageLoading: getIsImageUploading(state),
     draftId: new URLSearchParams(props.location.search).get('draft'),
     upvoteSetting: getUpvoteSetting(state),
   }),
@@ -54,6 +56,7 @@ class EditPost extends Component {
     // upvoteSetting: PropTypes.bool,
     draftId: PropTypes.string,
     saving: PropTypes.bool,
+    imageLoading: PropTypes.bool,
     createPost: PropTypes.func,
     saveDraft: PropTypes.func,
   };
@@ -61,6 +64,7 @@ class EditPost extends Component {
     upvoteSetting: false,
     draftId: '',
     saving: false,
+    imageLoading: false,
     createPost: () => {},
     saveDraft: () => {},
   };
@@ -186,12 +190,13 @@ class EditPost extends Component {
 
   render() {
     const { draftContent, content, topics, linkedObjects, objPercentage, settings } = this.state;
-    const { draftId, saving, locale } = this.props;
+    const { draftId, saving, imageLoading, locale } = this.props;
     return (
       <div className="shifted">
         <div className="post-layout container">
           <div className="center">
             <Editor
+              enabled={!imageLoading}
               initialContent={draftContent}
               locale={locale === 'auto' ? 'en-US' : locale}
               onChange={this.handleChangeContent}

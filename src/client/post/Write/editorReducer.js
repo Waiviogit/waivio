@@ -10,6 +10,7 @@ const defaultState = {
   draftPosts: {},
   pendingDrafts: [],
   editedPosts: [],
+  loadingImg: false,
 };
 
 const editor = (state = defaultState, action) => {
@@ -97,6 +98,16 @@ const editor = (state = defaultState, action) => {
         ...state,
         pendingDrafts: state.pendingDrafts.filter(id => !action.meta.ids.includes(id)),
       };
+    case editorActions.UPLOAD_IMG_START:
+      return {
+        ...state,
+        loadingImg: true,
+      };
+    case editorActions.UPLOAD_IMG_FINISH:
+      return {
+        ...state,
+        loadingImg: false,
+      };
     default:
       return state;
   }
@@ -109,3 +120,4 @@ export const getIsEditorLoading = state => state.loading;
 export const getIsEditorSaving = state => state.saving;
 export const getPendingDrafts = state => state.pendingDrafts;
 export const getIsPostEdited = (state, permlink) => state.editedPosts.includes(permlink);
+export const getIsImgLoading = state => state.loadingImg;

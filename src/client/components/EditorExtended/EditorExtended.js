@@ -27,6 +27,7 @@ const SIDE_BUTTONS = [
 class Editor extends React.Component {
   static propTypes = {
     // passed props:
+    enabled: PropTypes.bool.isRequired,
     initialContent: PropTypes.shape({
       title: PropTypes.string,
       body: PropTypes.string,
@@ -117,7 +118,7 @@ class Editor extends React.Component {
           <MediumDraftEditor
             ref={this.refsEditor}
             placeholder=""
-            editorEnabled={editorEnabled}
+            editorEnabled={editorEnabled && this.props.enabled}
             editorState={editorState}
             beforeInput={this.handleBeforeInput}
             onChange={this.handleContentChange}
