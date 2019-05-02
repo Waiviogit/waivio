@@ -4,6 +4,7 @@ import { convertToRaw } from 'draft-js';
 import { forEach, get, has, keyBy } from 'lodash';
 import { Editor as MediumDraftEditor, createEditorState, fromMarkdown, Entity } from './index';
 import ImageSideButton from './components/sides/ImageSideButton';
+import VideoSideButton from './components/sides/VideoSideButton';
 import SeparatorButton from './components/sides/SeparatorSideButton';
 import ObjectSideButton from './components/sides/ObjectSideButton';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
@@ -13,6 +14,10 @@ const SIDE_BUTTONS = [
   {
     title: 'Image',
     component: ImageSideButton,
+  },
+  {
+    title: 'Video',
+    component: VideoSideButton,
   },
   {
     title: 'Separator',
