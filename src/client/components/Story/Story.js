@@ -37,6 +37,7 @@ import PostSellBuy from '../../../investarena/components/PostSellBuy';
 import { jsonParse } from '../../helpers/formatter';
 import PostForecast from '../../../investarena/components/PostForecast';
 import ObjectAvatar from '../ObjectAvatar';
+import {getFieldWithMaxWeight} from "../../object/wObjectHelper";
 
 @injectIntl
 @withRouter
@@ -141,8 +142,7 @@ class Story extends React.Component {
   getObjectLayout = wobj => {
     if (wobj.fields) {
       const pathName = `/object/${wobj.author_permlink}`;
-      const nameFields = _.filter(wobj.fields, o => o.name === 'name');
-      const nameField = _.maxBy(nameFields, 'weight');
+      const nameField = getFieldWithMaxWeight(wobj, 'name');
       return (
         <Link
           key={wobj.author_permlink}
@@ -157,23 +157,6 @@ class Story extends React.Component {
       );
     }
     return null;
-    const pathName = `/object/${wobj.author_permlink}`;
-    const nameFields = _.filter(wobj.fields, o => o.name === 'name');
-    const nameField = _.maxBy(nameFields, 'weight') || {
-      body: wobj.default_name || '',
-    };
-    return (
-      <Link
-        key={wobj.author_permlink}
-        to={{ pathname: pathName }}
-        title={`${this.props.intl.formatMessage({
-          id: 'related_to_obj',
-          defaultMessage: 'Related to object',
-        })} ${nameField.body} ${wobj.percent ? `(${wobj.percent.toFixed(2)}%)` : ''}`}
-      >
-        <ObjectAvatar item={wobj} size={40} />
-      </Link>
-    );
   };
   getWobjects = wobjects => {
     let i = 0;
