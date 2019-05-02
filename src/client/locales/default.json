@@ -700,9 +700,8 @@
   "no_access_to_quote": "Your broker is not provide actual data for this instrument, or your account need special access to this instrument.",
   "vote_count": "Votes: {votes}",
   "user_expertise": "Expertise",
-  "related_objects": "Related Objects",
   "object_expertise": "Object Expertise",
-  "onlyRelated": "Show only related posts"
+  "onlyRelated": "Show only related posts",
   "ready_to_publish": "Ready to publish",
   "related_objects": "Related Objects",
   "type": "Type",

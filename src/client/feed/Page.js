@@ -7,8 +7,6 @@ import { Switch } from 'antd';
 import { injectIntl } from 'react-intl';
 import { cleanFeed, getFeedContent, getUserFeedContent } from './feedActions';
 import { getIsLoaded, getIsAuthenticated, getAuthenticatedUserName } from '../reducers';
-import { getFeedContent } from './feedActions';
-import { getIsLoaded, getIsAuthenticated } from '../reducers';
 import SubFeed from './SubFeed';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
@@ -92,7 +90,7 @@ class Page extends React.Component {
 
     const shouldDisplaySelector = pathname !== '/my_feed' && pathname !== '/';
 
-    const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
+    const robots = pathname === '/' ? 'index,follow' : 'noindex,follow';
     return (
       <div>
         <Helmet>

@@ -5,7 +5,6 @@ import { categoryRegex } from './regexHelpers';
 import { jsonParse } from './formatter';
 import DMCA from '../../common/constants/dmca.json';
 import whiteListedApps from './apps';
-import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
 import { rewardsValues } from '../../common/constants/rewards';
 import { INVESTARENA_META_FIELD_NAME, WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
 

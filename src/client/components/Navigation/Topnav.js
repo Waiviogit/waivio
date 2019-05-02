@@ -502,11 +502,13 @@ class Topnav extends React.Component {
   };
 
   render() {
-    const {  intl,
+    const {
+      intl,
       autoCompleteSearchResults,
       platformName,
       isLoadingPlatform,
-      isNightMode} = this.props;
+      isNightMode,
+    } = this.props;
     const { searchBarActive, searchBarValue, isModalDeposit } = this.state;
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     const formattedAutoCompleteDropdown = _.isEmpty(dropdownOptions)

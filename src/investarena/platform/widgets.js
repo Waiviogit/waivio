@@ -161,7 +161,7 @@ export class Widgets {
       wobjs => {
         for (const i in keys) {
           const key = keys[i];
-          const wobjData = _.find(wobjs, o =>
+          const wobjData = _.find(wobjs.wobjects, o =>
             _.find(o.fields, field => field.name === 'chartid' && field.body === key),
           );
           sortedQuotesSettings[key] = quotesSettings[key];

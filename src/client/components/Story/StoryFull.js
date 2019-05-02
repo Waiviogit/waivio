@@ -508,24 +508,6 @@ class StoryFull extends React.Component {
         {isForecastValid && (
           <PostQuotation quoteSecurity={forecast.quoteSecurity} postId={forecast.postId} />
         )}
-        <div className="StoryFull__topics">
-          <Scrollbars
-            universal
-            autoHide
-            renderView={({ style, ...props }) => (
-              <div style={{ ...style, marginBottom: '-20px' }} {...props} />
-            )}
-            style={{ width: '100%', height: 46 }}
-          >
-            <div className="StoryFull__topics__content">
-              {_.uniq(tags)
-                .filter(_.isString)
-                .map(tag => (
-                  <Topic key={tag} name={tag} />
-                ))}
-            </div>
-          </Scrollbars>
-        </div>
 
         <Collapse defaultActiveKey={['1']} accordion>
           {!_.isEmpty(linkedObjects) && (
