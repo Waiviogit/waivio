@@ -310,35 +310,15 @@ class Topnav extends React.Component {
     this.debouncedSearch(value);
   }
 
-  handleSelectOnAutoCompleteDropdown(value) {
-    const type = value.slice(0, 5);
-    if (type === 'user-') this.props.history.push(`/@${value.replace('user-', '')}`);
-    else if (type === 'wobj-') {
-      if (
-        _.includes(this.props.location.pathname, '/object/') ||
-        _.includes(this.props.location.pathname, '/objectType/')
-      ) {
-        this.props.history.push(`${value.replace('wobj-', '')}`);
-      } else {
-        this.props.history.push(`object/${value.replace('wobj-', '')}`);
-      }
-    } else this.props.history.push(`/objectType/${value.replace('type-', '')}`);
+  handleSelectOnAutoCompleteDropdown(value, data) {
+    if (data.props.marker === 'user') this.props.history.push(`/@${value}`);
+    else if (data.props.marker === 'wobj') {
+      this.props.history.replace(`/object/${value}`);
+    } else this.props.history.push(`/objectType/${value}`);
   }
 
   handleOnChangeForAutoComplete(value) {
-    const type = value.slice(0, 5);
-    if (type === 'user-')
-      this.setState({
-        searchBarValue: value.replace('user-', ''),
-      });
-    else if (type === 'wobj-')
-      this.setState({
-        searchBarValue: value.replace('wobj-', ''),
-      });
-    else
-      this.setState({
-        searchBarValue: value.replace('type-', ''),
-      });
+    this.setState({ searchBarValue: value });
   }
 
   usersSearchLayout(accounts) {
@@ -355,8 +335,9 @@ class Topnav extends React.Component {
       >
         {_.map(accounts, option => (
           <AutoComplete.Option
+            marker={'user'}
             key={`obj${option.account}`}
-            value={`user-${option.account}`}
+            value={`${option.account}`}
             className="Topnav__search-autocomplete"
           >
             {option.account}
@@ -382,8 +363,9 @@ class Topnav extends React.Component {
           const wobjName = getFieldWithMaxWeight(option, objectFields.name);
           return wobjName ? (
             <AutoComplete.Option
-              key={`obj${wobjName}`}
-              value={`wobj-${option.author_permlink}`}
+              marker={'wobj'}
+              key={`wobj${wobjName}`}
+              value={`${option.author_permlink}`}
               className="Topnav__search-autocomplete"
             >
               {wobjName}
@@ -408,8 +390,9 @@ class Topnav extends React.Component {
       >
         {_.map(objectTypes, option => (
           <AutoComplete.Option
+            marker={'type'}
             key={`type${option.name}`}
-            value={`type-${option.name}`}
+            value={`${option.name}`}
             className="Topnav__search-autocomplete"
           >
             {option.name}
