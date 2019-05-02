@@ -40,6 +40,11 @@ module.exports = function createConfig(env = 'dev') {
             },
           },
         },
+        {
+          test: /\.(png|jpg|gif)$/,
+          loader: 'file-loader',
+          options: {},
+        },
       ],
     },
     plugins: [

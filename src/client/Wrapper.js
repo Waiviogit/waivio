@@ -19,19 +19,8 @@ import {
   getNightmode,
 } from './reducers';
 import { login, logout, busyLogin } from './auth/authActions';
-import {
-  getFollowing,
-  getFollowingObjects,
-  getNotifications,
-  getRecommendedObjects,
-} from './user/userActions';
-import {
-  getRate,
-  getRewardFund,
-  getTrendingTopics,
-  setUsedLocale,
-  setAppUrl,
-} from './app/appActions';
+import { getFollowing, getFollowingObjects, getNotifications } from './user/userActions';
+import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './app/appActions';
 import * as reblogActions from './app/Reblog/reblogActions';
 import NotificationPopup from './notifications/NotificationPopup';
 import Topnav from './components/Navigation/Topnav';
@@ -56,11 +45,9 @@ import { getChartsData } from '../investarena/redux/actions/chartsActions';
     logout,
     getFollowing,
     getFollowingObjects,
-    getRecommendedObjects,
     getNotifications,
     getRate,
     getRewardFund,
-    getTrendingTopics,
     busyLogin,
     getRebloggedList: reblogActions.getRebloggedList,
     setUsedLocale,
@@ -80,11 +67,9 @@ export default class Wrapper extends React.PureComponent {
     logout: PropTypes.func,
     getFollowing: PropTypes.func,
     getFollowingObjects: PropTypes.func,
-    getRecommendedObjects: PropTypes.func,
     getRewardFund: PropTypes.func,
     getRebloggedList: PropTypes.func,
     getRate: PropTypes.func,
-    getTrendingTopics: PropTypes.func,
     getNotifications: PropTypes.func,
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
@@ -100,7 +85,6 @@ export default class Wrapper extends React.PureComponent {
     logout: () => {},
     getFollowing: () => {},
     getFollowingObjects: () => {},
-    getRecommendedObjects: () => {},
     getRewardFund: () => {},
     getRebloggedList: () => {},
     getRate: () => {},
@@ -145,7 +129,6 @@ export default class Wrapper extends React.PureComponent {
     this.props.login().then(() => {
       this.props.getFollowing();
       this.props.getFollowingObjects();
-      this.props.getRecommendedObjects();
       this.props.getNotifications();
       this.props.busyLogin();
     });
@@ -153,7 +136,6 @@ export default class Wrapper extends React.PureComponent {
     this.props.getRewardFund();
     this.props.getRebloggedList();
     this.props.getRate();
-    this.props.getTrendingTopics();
     this.props.getChartsData();
   }
 

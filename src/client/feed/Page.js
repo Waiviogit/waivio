@@ -1,11 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { Helmet } from 'react-helmet';
 import { Switch } from 'antd';
 import { injectIntl } from 'react-intl';
 import { cleanFeed, getFeedContent, getUserFeedContent } from './feedActions';
 import { getIsLoaded, getIsAuthenticated, getAuthenticatedUserName } from '../reducers';
+import { getFeedContent } from './feedActions';
+import { getIsLoaded, getIsAuthenticated } from '../reducers';
 import SubFeed from './SubFeed';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
@@ -15,6 +18,7 @@ import ScrollToTop from '../components/Utils/ScrollToTop';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import QuickPostEditor from '../components/QuickPostEditor/QuickPostEditor';
 
+@withRouter
 @injectIntl
 @connect(
   state => ({
@@ -88,7 +92,7 @@ class Page extends React.Component {
 
     const shouldDisplaySelector = pathname !== '/my_feed' && pathname !== '/';
 
-    const robots = pathname === '/my_feed' ? 'index,follow' : 'noindex,follow';
+    const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
     return (
       <div>
         <Helmet>

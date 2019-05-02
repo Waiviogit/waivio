@@ -8,13 +8,25 @@ export const objectFields = {
   avatar: 'avatar',
   background: 'background',
   website: 'website',
-  hashtag: 'tag',
   phone: 'phone',
   email: 'email',
   sorting: 'sortCustom',
   rating: 'rating',
   listItem: 'listItem',
+  price: 'price',
+  parent: 'parent',
+  tag: 'tag',
 };
+
+export const objectFieldsWithInnerData = [
+  'address',
+  'map',
+  'link',
+  'website',
+  'phone',
+  'email',
+  'rating',
+];
 
 export const addressFields = {
   country: 'country',

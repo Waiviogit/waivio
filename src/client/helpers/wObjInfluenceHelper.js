@@ -1,3 +1,52 @@
+import { get, size, forEach } from 'lodash';
+
+export const setObjPercents = (linkedObjects, percentage) => {
+  const len = linkedObjects && linkedObjects.length;
+  if (!len) {
+    return {};
+  } else if (len === 1) {
+    return { [linkedObjects[0].id]: { percent: 100, max: 100 } };
+  }
+  if (
+    len === size(percentage) &&
+    linkedObjects.every(obj => Boolean(percentage[obj.id])) &&
+    Object.values(percentage).reduce((acc, curr) => acc + curr.percent, 0) === 100
+  ) {
+    const objPercentage = {};
+    forEach(percentage, (value, key) => {
+      objPercentage[key] = { ...value, max: value.percent };
+    });
+    return objPercentage;
+  }
+  const [first, ...rest] = linkedObjects;
+  const averagePercent = Math.floor(100 / len);
+  const firstPercent = 100 - averagePercent * (len - 1);
+  const objPercentage = {
+    [first.id]: {
+      percent: firstPercent,
+      max: firstPercent,
+    },
+  };
+  rest.forEach(obj => {
+    objPercentage[obj.id] = { percent: averagePercent, max: averagePercent };
+  });
+  return objPercentage;
+};
+
+export const handleWeightChange = (percentage, objId, weightPercent, weightBuffer) => {
+  const deltaWeight = get(percentage, [objId, 'percent']) - weightPercent;
+  const weightBufferNext = weightBuffer + deltaWeight;
+  if (weightBufferNext >= 0) {
+    const percentageNext = {};
+    forEach(percentage, (value, key) => {
+      const percent = key === objId ? weightPercent : value.percent;
+      percentageNext[key] = { percent, max: percent + weightBufferNext };
+    });
+    return { objPercentage: percentageNext, weightBuffer: weightBufferNext };
+  }
+  return percentage;
+};
+
 export const setInitialInfluence = (objArr, wObj, influenceRemain) => {
   const result = [...objArr];
   const arrLen = result.length;

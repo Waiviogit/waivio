@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { isEmpty, isEqual, map, forEach, uniq } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import CatalogItem from './CatalogItem';
 import { getFieldWithMaxWeight, sortListItemsBy } from '../wObjectHelper';
 import { getClientWObj, getServerWObj } from '../../adapters';
 import { objectFields } from '../../../common/constants/listOfFields';
@@ -15,6 +14,8 @@ import { getObject, getObjectsByIds } from '../../../../src/waivioApi/ApiClient'
 import * as wobjectActions from '../../../client/object/wobjectsActions';
 import { getLocale } from '../../reducers';
 import './CatalogWrap.less';
+import ObjectCardView from '../../objectCard/ObjectCardView';
+import CategoryItemView from './CategoryItemView/CategoryItemView';
 
 const getListSorting = wobj => {
   const type = wobj[objectFields.sorting] && wobj[objectFields.sorting].length ? 'custom' : 'rank';
@@ -264,32 +265,32 @@ class CatalogWrap extends React.Component {
             <div>
               {!isEmpty(listItems) ? (
                 map(listItems, listItem => {
-                  const linkTo =
-                    listItem.type === 'list'
-                      ? {
-                          pathname: `${location.pathname}`,
-                          hash: `${
-                            !location.hash
-                              ? listItem.id
-                              : `${
-                                  location.hash.includes(listItem.id)
-                                    ? `${location.hash.split(listItem.id)[0]}${listItem.id}`
-                                    : `${location.hash}/${listItem.id}`
-                                }`
-                          }`,
-                        }
-                      : { pathname: `/object/${listItem.id}` };
+                  const isList = listItem.type === 'list';
+                  const linkTo = isList
+                    ? {
+                        pathname: `${location.pathname}`,
+                        hash: `${
+                          !location.hash
+                            ? listItem.id
+                            : `${
+                                location.hash.includes(listItem.id)
+                                  ? `${location.hash.split(listItem.id)[0]}${listItem.id}`
+                                  : `${location.hash}/${listItem.id}`
+                              }`
+                        }`,
+                      }
+                    : { pathname: `/object/${listItem.id}` };
                   return (
                     <div key={`category-${listItem.id}`}>
-                      <Link
-                        to={linkTo}
-                        title={`${intl.formatMessage({
-                          id: 'GoTo',
-                          defaultMessage: 'Go to',
-                        })} ${listItem.name}`}
-                      >
-                        <CatalogItem wobject={listItem} />
-                      </Link>
+                      {isList ? (
+                        <CategoryItemView wObject={listItem} pathNameAvatar={linkTo} />
+                      ) : (
+                        <ObjectCardView
+                          wObject={listItem}
+                          showSmallVersion
+                          pathNameAvatar={linkTo}
+                        />
+                      )}
                     </div>
                   );
                 })

@@ -15,13 +15,14 @@ import {
 } from '../reducers';
 import { getObjectInfo } from './wobjectsActions';
 import { resetGallery } from '../object/ObjectGallery/galleryActions';
-import { getObjectUrl } from '../components/ObjectAvatar';
 import Error404 from '../statics/Error404';
 import WobjHero from './WobjHero';
 import LeftObjectProfileSidebar from '../app/Sidebar/LeftObjectProfileSidebar';
 import RightObjectSidebar from '../app/Sidebar/RightObjectSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
+import { getFieldWithMaxWeight } from './wObjectHelper';
+import { objectFields } from '../../common/constants/listOfFields';
 
 @withRouter
 @connect(
@@ -81,10 +82,10 @@ export default class Wobj extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { match } = this.props;
+    const { match, authenticatedUserName } = this.props;
 
     if (prevProps.match.params.name !== match.params.name) {
-      this.props.getObjectInfo(match.params.name);
+      this.props.getObjectInfo(match.params.name, authenticatedUserName);
     }
   }
 
@@ -99,13 +100,14 @@ export default class Wobj extends React.Component {
     const { authenticated, failed, authenticatedUserName: userName, wobject, match } = this.props;
     if (failed) return <Error404 />;
 
+    const objectName = getFieldWithMaxWeight(wobject, objectFields.name);
     const busyHost = global.postOrigin || 'https://waiviodev.com';
-    const desc = `Posts by ${wobject.tag}`;
-    const image = getObjectUrl(wobject);
-    const canonicalUrl = `${busyHost}/object/${wobject.tag}`;
-    const url = `${busyHost}/object/${wobject.tag}`;
-    const displayedObjectName = wobject.tag || '';
-    const title = `Object - Waivio`;
+    const desc = `Posts by ${objectName}`;
+    const image = getFieldWithMaxWeight(wobject, objectFields.avatar);
+    const canonicalUrl = `${busyHost}/object/${wobject.author_permlink}`;
+    const url = `${busyHost}/object/${wobject.author_permlink}`;
+    const displayedObjectName = objectName || '';
+    const title = `Object - ${objectName || wobject.default_name || ''}`;
 
     return (
       <div className="main-panel">
@@ -127,7 +129,10 @@ export default class Wobj extends React.Component {
           <meta property="twitter:description" content={desc} />
           <meta
             property="twitter:image"
-            content={image || 'https://steemit.com/images/steemit-twshare.png'}
+            content={
+              image ||
+              'https://cdn.steemitimages.com/DQmVRiHgKNWhWpDXSmD7ZK4G48mYkLMPcoNT8VzgXNWZ8aN/image.png'
+            }
           />
         </Helmet>
         <ScrollToTopOnMount />

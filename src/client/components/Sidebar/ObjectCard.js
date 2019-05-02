@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import ObjectAvatar from '../ObjectAvatar';
-import { getField } from '../../objects/WaivioObject';
 import FollowButton from '../../widgets/FollowButton';
 import './ObjectCard.less';
+import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 
 const ObjectCard = ({ wobject, alt, showFollow }) => {
-  const name = getField(wobject, 'name');
+  const name = getFieldWithMaxWeight(wobject, 'name');
   const pathname = `/object/${wobject.author_permlink}`;
 
   return (
@@ -17,7 +17,11 @@ const ObjectCard = ({ wobject, alt, showFollow }) => {
           <Link to={{ pathname }} title={name}>
             <ObjectAvatar item={wobject} size={34} />
           </Link>
-          <Link to={{ pathname }} title={name} className="ObjectCard__name">
+          <Link
+            to={{ pathname }}
+            title={name}
+            className={`ObjectCard__name ${showFollow ? 'ObjectCard__name-short' : ''}`}
+          >
             <span className="username">{name}</span>
           </Link>
         </div>

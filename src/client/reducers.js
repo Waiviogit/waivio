@@ -24,6 +24,7 @@ import dealsReducer from '../investarena/redux/reducers/dealsReducer';
 import modalsReducer from '../investarena/redux/reducers/modalsReducer';
 import chartsReducer from '../investarena/redux/reducers/chartsReducer';
 import wobjectReducer, * as fromObject from '../client/object/wobjectReducer';
+import objectTypesReducer, * as fromObjectTypes from '../client/objectTypes/objectTypesReducer';
 import appendReducer, * as fromAppend from '../client/object/appendReducer';
 import galleryReducer, * as fromGallery from '../client/object/ObjectGallery/galleryReducer';
 
@@ -35,6 +36,7 @@ export default () =>
     editor: editorReducer,
     posts: postsReducer,
     feed: feedReducer,
+    objectTypes: objectTypesReducer,
     user: userReducer,
     users: usersReducer,
     object: wobjectReducer,
@@ -86,7 +88,6 @@ export const getIsPostEdited = (state, permlink) =>
 export const getRate = state => fromApp.getRate(state.app);
 export const getIsTrendingTopicsLoading = state => fromApp.getIsTrendingTopicsLoading(state.app);
 export const getRewardFund = state => fromApp.getRewardFund(state.app);
-export const getTrendingTopics = state => fromApp.getTrendingTopics(state.app);
 export const getIsFetching = state => fromApp.getIsFetching(state.app);
 export const getIsBannerClosed = state => fromApp.getIsBannerClosed(state.app);
 export const getAppUrl = state => fromApp.getAppUrl(state.app);
@@ -122,6 +123,7 @@ export const getNotifications = state => fromUser.getNotifications(state.user);
 export const getIsLoadingNotifications = state => fromUser.getIsLoadingNotifications(state.user);
 export const getFetchFollowListError = state => fromUser.getFetchFollowListError(state.user);
 export const getLatestNotification = state => fromUser.getLatestNotification(state.user);
+export const getUserLocation = state => fromUser.getUserLocation(state.user);
 
 export const getUser = (state, username) => fromUsers.getUser(state.users, username);
 export const getIsUserFetching = (state, username) =>
@@ -183,6 +185,9 @@ export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectAuthor = state => fromObject.getObjectAuthor(state.object);
 export const getObjectFields = state => fromObject.getObjectFields(state.object);
 export const getRatingFields = state => fromObject.getRatingFields(state.object);
+export const getobjectTypesState = state => fromObjectTypes.getobjectTypesState(state.objectTypes);
+export const getObjectTypeState = (state, typeName) =>
+  fromObjectTypes.getobjectType(state.objectTypes, typeName);
 
 export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.append);
 

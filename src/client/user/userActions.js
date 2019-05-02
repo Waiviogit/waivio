@@ -3,6 +3,7 @@ import { getIsAuthenticated, getAuthenticatedUserName } from '../reducers';
 import { getAllFollowing } from '../helpers/apiHelpers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
+import { getUserCoordinatesByIpAdress } from '../components/Maps/mapHelper';
 
 require('isomorphic-fetch');
 
@@ -34,7 +35,7 @@ export const GET_RECOMMENDED_OBJECTS_START = '@user/GET_RECOMMENDED_OBJECTS_STAR
 export const GET_RECOMMENDED_OBJECTS_SUCCESS = '@user/GET_RECOMMENDED_OBJECTS_SUCCESS';
 export const GET_RECOMMENDED_OBJECTS_ERROR = '@user/GET_RECOMMENDED_OBJECTS_ERROR';
 
-export const getRecommendedObjects = () => dispatch =>
+export const getRecommendedObj = () => dispatch =>
   dispatch({
     type: GET_RECOMMENDED_OBJECTS,
     payload: {
@@ -131,3 +132,11 @@ export const getNotifications = username => (dispatch, getState, { busyAPI }) =>
     },
   });
 };
+
+export const GET_USER_LOCATION = createAsyncActionType('@user/GET_USER_LOCATION');
+
+export const getCoordinates = () => dispatch =>
+  dispatch({
+    type: GET_USER_LOCATION.ACTION,
+    payload: getUserCoordinatesByIpAdress(),
+  });

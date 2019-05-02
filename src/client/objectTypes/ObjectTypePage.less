@@ -1,0 +1,28 @@
+@import (reference) '../styles/modules/variables.less';
+@import (reference) '../styles/custom.less';
+
+.ObjectTypePage {
+  &__title {
+    margin-left: 15px;
+    color: @black;
+    font-size: 2em;
+    font-weight: 500;
+  }
+  .feed-layout {
+    .center {
+      float: left;
+      width: 100%;
+
+      @media @small {
+        width: calc(100% - @margin);
+      }
+
+      @media @medium {
+        width: calc(100% - (@left-width + @margin));
+        margin-left: @margin;
+      }
+    }
+  }
+}
+
+@import 'ObjectTypePage-nightmode';

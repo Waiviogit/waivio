@@ -62,6 +62,8 @@ export const createWaivioObject = postData => (dispatch, getState) => {
           type: wobj.type,
           isExtendingOpen: Boolean(wobj.isExtendingOpen),
           isPostingOpen: Boolean(wobj.isPostingOpen),
+          parentAuthor: wobj.parentAuthor,
+          parentPermlink: wobj.parentPermlink,
         };
         return ApiClient.postCreateWaivioObject(requestBody).then(response => {
           if (follow) {

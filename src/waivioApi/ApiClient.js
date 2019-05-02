@@ -29,7 +29,7 @@ export const getRecommendedObjects = () =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
     headers,
     method: 'POST',
-    body: JSON.stringify({ userLimit: 5, locale: 'en-US' }),
+    body: JSON.stringify({ userLimit: 5, locale: 'en-US', limit: 6 }),
   }).then(res => res.json());
 
 export const getObjects = ({
@@ -293,6 +293,55 @@ export const getWobjectsExpertise = (authorPermlink, skip = 0, limit = 30) =>
       .then(handleErrors)
       .then(res => res.json())
       .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.getObjectTypes}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({ limit, skip, wobjects_count }),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getObjectType = name =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.objectType}/${name}?wobjects_count=1000`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(data => resolve(data))
+      .catch(error => reject(error));
+  });
+
+export const getSearchResult = (text, userLimit = 5, wobjectsLimit = 5, objectTypesLimit = 5) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.generalSearch}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({ string: text, userLimit, wobjectsLimit, objectTypesLimit }),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getMoreObjectsByType = (type, skip, limit) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.getObjects}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({ object_types: [type], skip, limit }),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve({ data: result, type }))
       .catch(error => reject(error));
   });
 

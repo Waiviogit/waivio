@@ -1,0 +1,103 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../components/Story/StoryFull';
+
+.md-RichEditor-root {
+  background: @white;
+  box-sizing: border-box;
+  //font-family: 'Georgia', serif;
+  padding: 18px;
+  position: relative;
+  line-height: 1.4em;
+}
+
+.md-RichEditor-editor {
+  cursor: text;
+  position: relative;
+  margin: 0 auto;
+
+  h1.StoryFull__title {
+    margin-top: 0;
+  }
+}
+
+.md-RichEditor-editor .public-DraftEditorPlaceholder-root:extend(.StoryFull__title) {
+  color: @blue-botticelli;
+}
+.md-RichEditor-editor .public-DraftEditor-content {
+  //margin: 0px -15px -15px;
+  //padding: 15px;
+}
+
+.md-RichEditor-editor .public-DraftEditor-content {
+  min-height: 100px;
+}
+
+.md-RichEditor-hidePlaceholder .public-DraftEditorPlaceholder-root {
+  display: none;
+}
+
+.md-RichEditor-editor {
+  .StoryFull__title {
+    span[data-offset-key^='s_title'] {
+      br {
+        content: ' ';
+
+        &::before {
+          content: 'Title';
+          color: @blue-botticelli;
+        }
+      }
+    }
+  }
+
+  .StoryFull__title + div.md-block:only-of-type {
+    span[data-offset-key] {
+      br {
+        content: ' ';
+        &::before {
+          content: 'Write you story...';
+          color: @blue-botticelli;
+        }
+      }
+    }
+  }
+}
+
+.md-RichEditor-editor .md-RichEditor-blockquote {
+  margin: 0;
+}
+
+.md-RichEditor-blockquote {
+  a {
+    text-decoration: underline;
+  }
+}
+
+.public-DraftEditor-content {
+  .md-block:first-child {
+    margin-top: 0;
+    padding-top: 0;
+  }
+}
+
+.md-RichEditor-editor .public-DraftStyleDefault-pre {
+  background-color: rgba(0, 0, 0, 0.05);
+  //font-family: 'Inconsolata', 'Menlo', 'Consolas', monospace;
+  font-size: 16px;
+  padding: 20px;
+}
+
+.public-DraftStyleDefault-unorderedListItem,
+.public-DraftStyleDefault-orderedListItem {
+  margin-bottom: 10px;
+}
+
+.md-editor-action {
+  position: fixed;
+  top: 5px;
+  left: 5px;
+
+  button {
+    display: block;
+  }
+}

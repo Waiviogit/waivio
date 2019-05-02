@@ -1,10 +1,12 @@
-import _ from 'lodash';
+import _, { get, fromPairs } from 'lodash';
 import { getHtml } from '../components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
 import { categoryRegex } from './regexHelpers';
 import { jsonParse } from './formatter';
 import DMCA from '../../common/constants/dmca.json';
 import whiteListedApps from './apps';
+import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
+import { rewardsValues } from '../../common/constants/rewards';
 import { INVESTARENA_META_FIELD_NAME, WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
 
 const appVersion = require('../../../package.json').version;
@@ -107,4 +109,68 @@ export function createPostMetadata(body, tags, oldMetadata = {}, appData) {
   }
 
   return metaData;
+}
+
+/**
+ *
+ * @param markdownContent: string
+ * @returns Object with post's title and body - {postBody: string, postTitle: string}
+ */
+export function splitPostContent(markdownContent) {
+  const regExp = new RegExp('^(.{2,})\n'); // eslint-disable-line
+  const postTitle = regExp.exec(markdownContent);
+  const postBody = markdownContent.replace(regExp, '');
+  return {
+    postTitle: postTitle ? postTitle[0].trim() : '',
+    postBody: postBody || '',
+  };
+}
+
+export function getInitialValues(props) {
+  let permlink = null;
+  let originalBody = null;
+  let state = {
+    draftContent: { title: '', body: '' },
+    content: '',
+    topics: [],
+    linkedObjects: [],
+    objPercentage: {},
+    settings: {
+      reward: rewardsValues.half,
+      beneficiary: true,
+      upvote: props.upvoteSetting,
+    },
+    isUpdating: false,
+  };
+  const { draftPosts, draftId } = props;
+  const draftPost = draftPosts && draftPosts[draftId];
+  if (draftId && draftPost) {
+    const draftObjects = get(draftPost, ['jsonMetadata', WAIVIO_META_FIELD_NAME, 'wobjects'], []);
+    state = {
+      draftContent: {
+        title: get(draftPost, 'title', ''),
+        body: get(draftPost, 'body', ''),
+      },
+      content: '',
+      topics: get(draftPost, 'jsonMetadata.tags', []),
+      linkedObjects: [],
+      objPercentage: fromPairs(
+        draftObjects.map(obj => [obj.author_permlink, { percent: obj.percent }]),
+      ),
+      settings: {
+        reward: draftPost.reward,
+        beneficiary: draftPost.beneficiary,
+        upvote: draftPost.upvote,
+      },
+      isUpdating: Boolean(draftPost.isUpdating),
+    };
+    permlink = draftPost.permlink || null;
+    originalBody = draftPost.originalBody || null;
+  }
+  return { state, permlink, originalBody };
+}
+
+export function isContentValid(markdownContent) {
+  const { postTitle, postBody } = splitPostContent(markdownContent);
+  return Boolean(postTitle && postBody.trim());
 }

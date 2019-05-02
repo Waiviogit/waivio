@@ -27,10 +27,13 @@ class Proposition extends React.Component {
     return (
       <React.Fragment>
         <div className="proposition-line">
-          <Link to={{ pathname: `/object/${objectID}/updates/${fieldName}` }}>
+          <Link
+            to={{ pathname: `/object/${objectID}/updates/${fieldName}` }}
+            data-test={`${fieldName}-plus-button`}
+          >
             <IconButton icon={<Icon type="plus-circle" />} onClick={this.handleToggleModal} />
           </Link>
-          <div className={linkClass}>
+          <div className={linkClass} data-test={`${fieldName}-field-name`}>
             <Link
               to={`/object/${objectID}/updates/${fieldName}`}
               onClick={() => handleSelectField(fieldName)}

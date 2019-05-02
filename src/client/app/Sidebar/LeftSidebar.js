@@ -7,6 +7,7 @@ import TopInstruments from './TopInstruments';
 import MarketsList from './MarketsList';
 import SidenavUser from '../../components/Navigation/SidenavUser';
 import DealsList from './DealsList';
+import ObjectTypes from '../../components/Sidebar/ObjectTypes/ObjectTypes';
 
 const LeftSidebar = ({ quoteSettingsSorted }) => (
   <Switch>
@@ -26,6 +27,7 @@ const LeftSidebar = ({ quoteSettingsSorted }) => (
     <Route path="/settings" component={SidenavUser} />
     <Route path="/invite" component={SidenavUser} />
     <Route path="/" component={TopInstruments} />
+    {/*<Route path="/" component={ObjectTypes} />*/}
   </Switch>
 );
 

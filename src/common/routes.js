@@ -6,7 +6,8 @@ import Drafts from '../client/post/Write/Drafts';
 import Replies from '../client/replies/Replies';
 import Activity from '../client/activity/Activity';
 import Wallet from '../client/wallet/Wallet';
-import Editor from '../client/post/Write/Write';
+import BusyEditor from '../client/post/Write/Write';
+import Editor from '../client/post/EditPost/EditPost';
 import Settings from '../client/settings/Settings';
 import ProfileSettings from '../client/settings/ProfileSettings';
 import Invite from '../client/invite/Invite';
@@ -38,6 +39,7 @@ import ObjectAbout from '../client/object/ObjectAbout';
 import CatalogWrap from '../client/object/Catalog/CatalogWrap';
 import WobjExpertise from '../client/object/WobjExpertise';
 import UserExpertise from '../client/user/UserExpertise';
+import ObjectTypePage from '../client/objectTypes/ObjectTypePage';
 
 const routes = [
   {
@@ -74,6 +76,11 @@ const routes = [
         exact: true,
       },
       {
+        path: '/edit',
+        component: BusyEditor,
+        exact: true,
+      },
+      {
         path: '/settings',
         exact: true,
         component: Settings,
@@ -92,6 +99,11 @@ const routes = [
         path: '/notifications',
         exact: true,
         component: Notifications,
+      },
+      {
+        path: '/objectType/:typeName',
+        exact: true,
+        component: ObjectTypePage,
       },
       {
         path: '/@:name/(comments|followers|followed|reblogs|feed|transfers|activity|expertise)?',

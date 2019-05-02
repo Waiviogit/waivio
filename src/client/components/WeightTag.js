@@ -1,29 +1,57 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { Tag } from 'antd';
-import BTooltip from './BTooltip';
+import { Icon } from 'antd';
+import { connect } from 'react-redux';
+import { getRate, getRewardFund } from '../reducers';
+import WeightDisplay from './Utils/WeightDisplay';
 
-const WeightTag = ({ intl, weight, rank }) => (
-  <BTooltip
-    title={intl.formatMessage(
-      { id: 'weight_score_value', defaultMessage: 'Weight score: {value}' },
-      { value: weight.toFixed() },
-    )}
-  >
-    {rank && <Tag>{rank}</Tag>}
-  </BTooltip>
-);
+@connect(state => ({
+  rewardFund: getRewardFund(state),
+  rate: getRate(state),
+}))
+class WeightTag extends React.Component {
+  static propTypes = {
+    intl: PropTypes.shape().isRequired,
+    rewardFund: PropTypes.shape().isRequired,
+    rate: PropTypes.number.isRequired,
+    weight: PropTypes.number.isRequired,
+  };
 
-WeightTag.propTypes = {
-  intl: PropTypes.shape().isRequired,
-  weight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  rank: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-};
+  static defaultProps = {
+    weight: 0,
+    rank: '',
+  };
 
-WeightTag.defaultProps = {
-  weight: '',
-  rank: '',
-};
+  render() {
+    const { intl, weight, rewardFund, rate } = this.props;
+    const isFullParams =
+      weight && rewardFund && rewardFund.recent_claims && rewardFund.reward_balance && rate;
+    if (isFullParams) {
+      const value =
+        (weight / rewardFund.recent_claims) *
+        rewardFund.reward_balance.replace(' STEEM', '') *
+        rate *
+        1000000;
+      return (
+        <div
+          className="Weight"
+          title={intl.formatMessage({
+            id: 'total_ralated_payout',
+            defaultMessage:
+              'Total payout for all related posts in USD, without bidbots and upvote services',
+          })}
+        >
+          {isNaN(value) ? (
+            <Icon type="loading" className="text-icon-right" />
+          ) : (
+            <WeightDisplay value={value} />
+          )}
+        </div>
+      );
+    }
+    return null;
+  }
+}
 
 export default injectIntl(WeightTag);

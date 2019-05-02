@@ -1,25 +1,39 @@
 import _ from 'lodash';
-import { objectFields, supportedObjectFields } from '../../../src/common/constants/listOfFields';
+import {
+  supportedObjectFields,
+  objectFieldsWithInnerData,
+} from '../../../src/common/constants/listOfFields';
 import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
 
-// set innerField to "null" to get whole parsed object
-export const getFieldWithMaxWeight = (wObject, currentField, innerField) => {
-  const field = supportedObjectFields.includes(currentField);
-  if (!field || !wObject) return '';
+export const getFieldWithMaxWeight = (wObject, currentField) => {
+  if (!wObject || !currentField || !supportedObjectFields.includes(currentField)) return '';
 
   const fieldValues = _.filter(wObject.fields, ['name', currentField]);
+  if (!fieldValues.length) return '';
+
   const orderedValues = _.orderBy(fieldValues, ['weight'], ['desc']);
-  if (!orderedValues.length) return '';
 
-  const fld = orderedValues[0];
+  if (orderedValues[0].body) return orderedValues[0].body;
+  return '';
+};
 
-  if (fld.body) {
-    const parsed = _.attempt(JSON.parse, fld.body);
-    if (_.isError(parsed)) return fld.body;
-    if (!innerField) return parsed;
-    if (parsed[innerField]) return parsed[innerField];
+export const getInnerFieldWithMaxWeight = (wObject, currentField, innerField) => {
+  if (_.includes(objectFieldsWithInnerData, currentField)) {
+    const fieldBody = getFieldWithMaxWeight(wObject, currentField);
+    if (fieldBody) {
+      const parsed = _.attempt(JSON.parse, fieldBody);
+      if (_.isError(parsed)) return '';
+      if (!innerField) return parsed;
+      return parsed[innerField];
+    }
   }
   return '';
+};
+
+//
+export const getFielsByName = (wObject, currentField) => {
+  if (!supportedObjectFields.includes(currentField) || !wObject) return [];
+  return _.filter(wObject.fields, ['name', currentField]);
 };
 
 export const getField = (wObject, currentField, fieldName) => {
@@ -87,11 +101,11 @@ export const hasField = (post, fieldName, locale) => {
   );
 };
 
-export const getWebsiteField = (wObject, currentField = objectFields.website) => {
-  const wo = _.find(wObject.fields, ['name', currentField]);
-  if (!wo) return '';
-  return wo;
-};
+// export const getWebsiteField = (wObject, currentField = objectFields.website) => {
+//   const wo = _.find(wObject.fields, ['name', currentField]);
+//   if (!wo) return '';
+//   return wo;
+// };
 
 export const IMAGE_STATUS = {
   ERROR: 'error',

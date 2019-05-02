@@ -33,7 +33,7 @@ import { PRIMARY_COLOR } from '../../common/constants/waivio';
 import { getLanguageText } from '../translations';
 import QuickPostEditorFooter from '../components/QuickPostEditor/QuickPostEditorFooter';
 import { regexCoordsLatitude, regexCoordsLongitude } from '../components/Maps/mapHelper';
-import Map from '../components/Maps/Map';
+import MapAppendObject from '../components/Maps/MapAppendObject';
 import './AppendForm.less';
 import { getField } from '../objects/WaivioObject';
 import { appendObject } from '../object/appendActions';
@@ -55,6 +55,8 @@ import { followObject, rateObject } from '../object/wobjActions';
 import SortingList from '../components/DnDList/DnDList';
 import CatalogItem from './Catalog/CatalogItem';
 import { getClientWObj } from '../adapters';
+import SearchObjectsAutocomplete from '../components/EditorObject/SearchObjectsAutocomplete';
+import ObjectCardView from '../objectCard/ObjectCardView';
 
 @connect(
   state => ({
@@ -122,6 +124,7 @@ export default class AppendForm extends Component {
     isValidImage: false,
     sliderVisible: false,
     loading: false,
+    currentParent: null,
   };
 
   componentDidMount = () => {
@@ -220,16 +223,15 @@ export default class AppendForm extends Component {
       case objectFields.description:
       case objectFields.avatar:
       case objectFields.background:
+      case objectFields.price:
+      case objectFields.tag:
+      case objectFields.parent:
       case objectFields.email: {
         fieldBody.push(rest[currentField]);
         break;
       }
       case objectFields.sorting: {
         fieldBody.push(JSON.stringify(rest[objectFields.sorting]));
-        break;
-      }
-      case objectFields.website: {
-        fieldBody.push(rest[websiteFields.link]);
         break;
       }
       case objectFields.hashtag: {
@@ -255,24 +257,20 @@ export default class AppendForm extends Component {
       data.author = this.props.user.name;
       data.parentAuthor = wObject.author;
       data.parentPermlink = wObject.author_permlink;
+
       const langReadable = _.filter(LANGUAGES, { id: locale })[0].name;
+
       data.body = `@${data.author} added ${field}(${langReadable}):\n ${bodyField.replace(
         /[{}"]/g,
         '',
       )}`;
+
       data.title = '';
       let fieldsObject = {
         name: field,
         body: bodyField,
         locale,
       };
-
-      if (field === objectFields.website) {
-        fieldsObject = {
-          ...fieldsObject,
-          [websiteFields.title]: form[websiteFields.title],
-        };
-      }
 
       if (field === objectFields.phone) {
         fieldsObject = {
@@ -326,8 +324,8 @@ export default class AppendForm extends Component {
 
   setCoordinates = ({ latLng }) => {
     this.props.form.setFieldsValue({
-      [mapFields.latitude]: latLng.lat().toFixed(6),
-      [mapFields.longitude]: latLng.lng().toFixed(6),
+      [mapFields.latitude]: latLng[0].toFixed(6),
+      [mapFields.longitude]: latLng[1].toFixed(6),
     });
   };
 
@@ -519,6 +517,15 @@ export default class AppendForm extends Component {
     return callback();
   };
 
+  handleAddLinkedObject = obj => {
+    if (obj && obj.id) {
+      this.props.form.setFieldsValue({
+        parent: obj.id,
+      });
+      this.setState({ currentParent: obj });
+    }
+  };
+
   renderContentValue = currentField => {
     const { loading } = this.state;
     const { intl, wObject } = this.props;
@@ -576,6 +583,88 @@ export default class AppendForm extends Component {
                 })}
               />,
             )}
+          </Form.Item>
+        );
+      }
+      case objectFields.tag: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.tag, {
+              rules: [
+                {
+                  transform: value => value && value.toLowerCase(),
+                },
+                {
+                  required: true,
+                  message: intl.formatMessage(
+                    {
+                      id: 'field_error',
+                      defaultMessage: 'Field is required',
+                    },
+                    { field: 'Tag' },
+                  ),
+                },
+                {
+                  max: 100,
+                  message: intl.formatMessage(
+                    {
+                      id: 'value_error_long',
+                      defaultMessage: "Value can't be longer than 100 characters.",
+                    },
+                    { value: 100 },
+                  ),
+                },
+                {
+                  validator: this.validateFieldValue,
+                },
+              ],
+            })(
+              <Input
+                className="AppendForm__title"
+                disabled={loading}
+                placeholder={intl.formatMessage({
+                  id: 'tag_placeholder',
+                  defaultMessage: 'Enter tag',
+                })}
+              />,
+            )}
+          </Form.Item>
+        );
+      }
+      case objectFields.parent: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.parent, {
+              rules: [
+                {
+                  transform: value => value && value.toLowerCase(),
+                },
+                {
+                  required: true,
+                  message: intl.formatMessage(
+                    {
+                      id: 'field_error',
+                      defaultMessage: 'Field is required',
+                    },
+                    { field: 'Parent' },
+                  ),
+                },
+                {
+                  max: 100,
+                  message: intl.formatMessage(
+                    {
+                      id: 'value_error_long',
+                      defaultMessage: "Value can't be longer than 100 characters.",
+                    },
+                    { value: 100 },
+                  ),
+                },
+                {
+                  validator: this.validateFieldValue,
+                },
+              ],
+            })(<SearchObjectsAutocomplete handleSelect={this.handleAddLinkedObject} />)}
+            {this.state.currentParent && <ObjectCardView wObject={this.state.currentParent} />}
           </Form.Item>
         );
       }
@@ -690,6 +779,51 @@ export default class AppendForm extends Component {
                 placeholder={intl.formatMessage({
                   id: 'description_short',
                   defaultMessage: 'Short description',
+                })}
+              />,
+            )}
+          </Form.Item>
+        );
+      }
+      case objectFields.price: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.price, {
+              rules: [
+                {
+                  max: 100,
+                  message: intl.formatMessage(
+                    {
+                      id: 'value_error_long',
+                      defaultMessage: "Value can't be longer than 100 characters.",
+                    },
+                    { value: 100 },
+                  ),
+                },
+                {
+                  required: true,
+                  message: intl.formatMessage(
+                    {
+                      id: 'field_error',
+                      defaultMessage: 'Field is required',
+                    },
+                    { field: 'Short description' },
+                  ),
+                },
+                {
+                  validator: this.validateFieldValue,
+                },
+              ],
+            })(
+              <Input.TextArea
+                className={classNames('AppendForm__input', {
+                  'validation-error': !this.state.isSomeValue,
+                })}
+                disabled={loading}
+                autosize={{ minRows: 4, maxRows: 8 }}
+                placeholder={intl.formatMessage({
+                  id: 'price_field',
+                  defaultMessage: 'Price',
                 })}
               />,
             )}
@@ -954,16 +1088,13 @@ export default class AppendForm extends Component {
                 />,
               )}
             </Form.Item>
-            <Map
-              isMarkerShown
+            <MapAppendObject
               setCoordinates={this.setCoordinates}
-              wobject={wObject}
-              googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
-              loadingElement={<div style={{ height: `100%` }} />}
-              containerElement={<div style={{ height: `400px` }} />}
-              mapElement={<div style={{ height: `100%` }} />}
-              lat={Number(getFieldValue(mapFields.latitude)) || 37.22}
-              lng={Number(getFieldValue(mapFields.longitude)) || -101.39}
+              heigth={400}
+              center={[
+                Number(getFieldValue(mapFields.latitude)),
+                Number(getFieldValue(mapFields.longitude)),
+              ]}
             />
           </React.Fragment>
         );
@@ -1106,51 +1237,6 @@ export default class AppendForm extends Component {
             ))}
             {combinedFieldValidationMsg}
           </React.Fragment>
-        );
-      }
-      case objectFields.hashtag: {
-        return (
-          <Form.Item
-            extra={intl.formatMessage({
-              id: 'hashtags_extra',
-              defaultMessage:
-                'Separate #tags with commas. Only lowercase letters, numbers and hyphen character is permitted.',
-            })}
-          >
-            {getFieldDecorator(objectFields.hashtag, {
-              initialValue: [],
-              rules: [
-                {
-                  required: true,
-                  message: intl.formatMessage(
-                    {
-                      id: 'field_error',
-                      defaultMessage: 'Field is required',
-                    },
-                    { field: 'Hashtag' },
-                  ),
-                  type: 'array',
-                },
-                { validator: this.checkLengthHashtags(intl) },
-                { validator: this.checkHashtags(intl) },
-                {
-                  validator: this.validateFieldValue,
-                },
-              ],
-            })(
-              <Select
-                className="AppendForm__hashtags"
-                mode="tags"
-                placeholder={intl.formatMessage({
-                  id: 'hashtag_value_placeholder',
-                  defaultMessage: 'Add value',
-                })}
-                disabled={loading}
-                dropdownStyle={{ display: 'none' }}
-                tokenSeparators={[' ', ',']}
-              />,
-            )}
-          </Form.Item>
         );
       }
       case objectFields.phone: {

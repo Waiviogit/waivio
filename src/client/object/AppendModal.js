@@ -14,6 +14,7 @@ const AppendModal = ({ showModal, hideModal, locale, field, objName, intl }) => 
     footer={null}
     visible={showModal}
     onCancel={hideModal}
+    maskClosable={false}
     width={767}
     destroyOnClose
   >

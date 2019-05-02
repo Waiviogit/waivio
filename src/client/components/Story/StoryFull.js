@@ -14,7 +14,6 @@ import {
 import { Link } from 'react-router-dom';
 import { Collapse, Icon } from 'antd';
 import Lightbox from 'react-image-lightbox';
-import { Scrollbars } from 'react-custom-scrollbars';
 import { getFromMetadata, extractImageTags } from '../../helpers/parser';
 import { isPostDeleted, dropCategory } from '../../helpers/postHelpers';
 import withAuthActions from '../../auth/withAuthActions';
@@ -27,12 +26,12 @@ import BodyContainer from '../../containers/Story/BodyContainer';
 import StoryDeleted from './StoryDeleted';
 import StoryFooter from '../StoryFooter/StoryFooter';
 import Avatar from '../Avatar';
-import Topic from '../Button/Topic';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import PostFeedEmbed from './PostFeedEmbed';
 import PostedFrom from './PostedFrom';
 import './StoryFull.less';
-import PostObjectCard from '../../post/PostObjectCard/PostObjectCard';
+import ObjectCardView from '../../objectCard/ObjectCardView';
+import { getClientWObj } from '../../adapters';
 import PostForecast from './Story';
 import { jsonParse } from '../../helpers/formatter';
 import PostSellBuy from '../../../investarena/components/PostSellBuy';
@@ -227,8 +226,6 @@ class StoryFull extends React.Component {
     const parsedBody = getHtml(signedBody, {}, 'text');
 
     this.images = extractImageTags(parsedBody);
-
-    const tags = _.union(getFromMetadata(post.json_metadata, 'tags'), [post.category]);
 
     let followText = '';
 
@@ -539,9 +536,10 @@ class StoryFull extends React.Component {
               })} ${linkedObjects.length}`}
               key="1"
             >
-              {_.map(linkedObjects, wobj => (
-                <PostObjectCard key={`${wobj.author_permlink}`} wObject={wobj} />
-              ))}
+              {_.map(linkedObjects, obj => {
+                const wobj = getClientWObj(obj);
+                return <ObjectCardView key={`${wobj.id}`} wObject={wobj} />;
+              })}
             </Collapse.Panel>
           )}
           {!_.isEmpty(taggedObjects) && (
@@ -552,9 +550,10 @@ class StoryFull extends React.Component {
               })} ${taggedObjects.length}`}
               key="2"
             >
-              {_.map(taggedObjects, wobj => (
-                <PostObjectCard key={`${wobj.author_permlink}`} wObject={wobj} />
-              ))}
+              {_.map(taggedObjects, obj => {
+                const wobj = getClientWObj(obj);
+                return <ObjectCardView key={`${wobj.id}`} wObject={wobj} />;
+              })}
             </Collapse.Panel>
           )}
         </Collapse>

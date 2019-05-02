@@ -7,7 +7,11 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { haveAccess, hasType, accessTypesArr } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
-import { getFieldWithMaxWeight, getFieldsCount, getWebsiteField } from '../../object/wObjectHelper';
+import {
+  getFieldWithMaxWeight,
+  getFieldsCount,
+  getInnerFieldWithMaxWeight,
+} from '../../object/wObjectHelper';
 import {
   objectFields,
   addressFields,
@@ -15,7 +19,6 @@ import {
   getAllowedFieldsByObjType,
 } from '../../../common/constants/listOfFields';
 import Proposition from '../../components/Proposition/Proposition';
-import Map from '../../components/Maps/Map';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
 import IconButton from '../../components/IconButton';
@@ -24,6 +27,8 @@ import DescriptionInfo from './DescriptionInfo';
 import CreateImage from '../../object/ObjectGallery/CreateImage';
 import './ObjectInfo.less';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
+import MapObjectInfo from '../../components/Maps/MapObjectInfo';
+import ObjectCard from '../../components/Sidebar/ObjectCard';
 
 @connect(state => ({
   albums: getObjectAlbums(state),
@@ -33,14 +38,9 @@ class ObjectInfo extends React.Component {
   static propTypes = {
     wobject: PropTypes.shape().isRequired,
     userName: PropTypes.string.isRequired,
-    isEditMode: PropTypes.bool,
-    isAuthenticated: PropTypes.bool,
+    isEditMode: PropTypes.bool.isRequired,
+    isAuthenticated: PropTypes.bool.isRequired,
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  };
-
-  static defaultProps = {
-    isEditMode: false,
-    isAuthenticated: false,
   };
 
   state = {
@@ -63,6 +63,7 @@ class ObjectInfo extends React.Component {
     let address = '';
     let map = '';
     let description = '';
+    let price = '';
     let link = '';
     let title = '';
     let websiteFields = {};
@@ -70,34 +71,39 @@ class ObjectInfo extends React.Component {
     let short = '';
     let background = '';
     let photosCount = 0;
-    let hashtags = [];
+    let tags = [];
     let phones = [];
     let email = '';
 
-    if (wobject) {
-      addressArr = Object.values(addressFields).map(fieldName =>
-        getFieldWithMaxWeight(wobject, objectFields.address, fieldName),
-      );
+    if (_.size(wobject) > 0) {
+      const adressFields = getInnerFieldWithMaxWeight(wobject, objectFields.address);
+      addressArr = adressFields
+        ? Object.values(addressFields).map(fieldName => adressFields[fieldName])
+        : [];
       address = _.compact(addressArr).join(', ');
 
-      map = getFieldWithMaxWeight(wobject, objectFields.map, null);
+      map = getInnerFieldWithMaxWeight(wobject, objectFields.map);
 
       description = getFieldWithMaxWeight(wobject, objectFields.description);
 
-      avatar = getFieldWithMaxWeight(wobject, objectFields.avatar, null);
-      background = getFieldWithMaxWeight(wobject, objectFields.background, null);
+      avatar = getInnerFieldWithMaxWeight(wobject, objectFields.avatar);
+      background = getFieldWithMaxWeight(wobject, objectFields.background);
 
-      short = getFieldWithMaxWeight(wobject, objectFields.title, null);
+      short = getFieldWithMaxWeight(wobject, objectFields.title);
 
-      email = getFieldWithMaxWeight(wobject, objectFields.email, null);
+      email = getFieldWithMaxWeight(wobject, objectFields.email);
 
-      websiteFields = getWebsiteField(wobject);
-      title = websiteFields.title;
-      link = websiteFields.body;
+      price = getFieldWithMaxWeight(wobject, objectFields.price);
+
+      websiteFields = getInnerFieldWithMaxWeight(wobject, objectFields.website);
+      if (websiteFields) {
+        title = websiteFields.title;
+        link = websiteFields.link;
+      }
       photosCount = wobject.photos_count;
 
-      const filtered = _.filter(wobject.fields, ['name', objectFields.hashtag]);
-      hashtags = _.orderBy(filtered, ['weight'], ['desc']);
+      const filtered = _.filter(wobject.fields, ['name', objectFields.tag]);
+      tags = _.orderBy(filtered, ['weight'], ['desc']);
 
       const filteredPhones = _.filter(wobject.fields, ['name', objectFields.phone]);
       phones = _.orderBy(filteredPhones, ['weight'], ['desc']);
@@ -106,18 +112,20 @@ class ObjectInfo extends React.Component {
     if (link && link.indexOf('http://') === -1 && link.indexOf('https://') === -1) {
       link = `http://${link}`;
     }
-
-    let profile = {
-      facebook: getFieldWithMaxWeight(wobject, objectFields.link, linkFields.linkFacebook),
-      twitter: getFieldWithMaxWeight(wobject, objectFields.link, linkFields.linkTwitter),
-      youtube: getFieldWithMaxWeight(wobject, objectFields.link, linkFields.linkYouTube),
-      instagram: getFieldWithMaxWeight(wobject, objectFields.link, linkFields.linkInstagram),
-      github: getFieldWithMaxWeight(wobject, objectFields.link, linkFields.linkGitHub),
-    };
+    const linkField = getInnerFieldWithMaxWeight(wobject, objectFields.link);
+    let profile = linkField
+      ? {
+          facebook: linkField[linkFields.linkFacebook] || '',
+          twitter: linkField[linkFields.linkTwitter] || '',
+          youtube: linkField[linkFields.linkYouTube] || '',
+          instagram: linkField[linkFields.linkInstagram] || '',
+          github: linkField[linkFields.linkGitHub] || '',
+        }
+      : {};
 
     profile = _.pickBy(profile, _.identity);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
-    const objectName = getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name);
+    const objectName = getInnerFieldWithMaxWeight(wobject, objectFields.name, objectFields.name);
     const album = _.filter(albums, _.iteratee(['id', wobject.author_permlink]));
     const hasGalleryImg = wobject.preview_gallery && wobject.preview_gallery[0];
 
@@ -138,7 +146,11 @@ class ObjectInfo extends React.Component {
                 {fieldsCount}
               </div>
             )}
-            {content ? <div className="field-info__content">{content}</div> : null}
+            {content ? (
+              <div className="field-info__content" data-test={`${fieldName}-field-view`}>
+                {content}
+              </div>
+            ) : null}
           </React.Fragment>
         </div>
       ) : null;
@@ -181,6 +193,16 @@ class ObjectInfo extends React.Component {
       <React.Fragment>
         {getFieldWithMaxWeight(wobject, objectFields.name) && (
           <div className="object-sidebar">
+            {listItem(
+              objectFields.parent,
+              wobject.parent ? (
+                <ObjectCard
+                  key={wobject.parent.author_permlink}
+                  wobject={wobject.parent}
+                  showFollow={false}
+                />
+              ) : null,
+            )}
             {listItem(objectFields.description, <DescriptionInfo description={description} />)}
             {listItem(
               objectFields.rating,
@@ -191,22 +213,22 @@ class ObjectInfo extends React.Component {
               <div className="field-info">
                 {accessExtend ? (
                   <React.Fragment>
-                    {hashtags.length <= 3 ? (
-                      hashtags.slice(0, 3).map(({ body }) => (
+                    {tags.length <= 3 ? (
+                      tags.slice(0, 3).map(({ body }) => (
                         <div key={body} className="tag-item">
-                          #{body}
+                          {body}
                         </div>
                       ))
                     ) : (
                       <React.Fragment>
-                        {hashtags.slice(0, 2).map(({ body }) => (
+                        {tags.slice(0, 2).map(({ body }) => (
                           <div key={body} className="tag-item">
-                            #{body}
+                            {body}
                           </div>
                         ))}
                         <Link
-                          to={`/object/${wobject.author_permlink}/updates/${objectFields.hashtag}`}
-                          onClick={() => this.handleSelectField(objectFields.hashtag)}
+                          to={`/object/${wobject.author_permlink}/updates/${objectFields.tag}`}
+                          onClick={() => this.handleSelectField(objectFields.tag)}
                         >
                           <FormattedMessage id="show_more_tags" defaultMessage="show more">
                             {value => <div className="tag-item">{value}</div>}
@@ -217,9 +239,9 @@ class ObjectInfo extends React.Component {
                   </React.Fragment>
                 ) : (
                   <React.Fragment>
-                    {hashtags.slice(0, 3).map(({ body }) => (
+                    {tags.slice(0, 3).map(({ body }) => (
                       <Tag key={body} color="volcano">
-                        #{body}
+                        {body}
                       </Tag>
                     ))}
                   </React.Fragment>
@@ -265,6 +287,7 @@ class ObjectInfo extends React.Component {
                 )}
               </div>
             ) : null}
+            {listItem(objectFields.price, <React.Fragment>{price}</React.Fragment>)}
             {listItem(
               objectFields.address,
               address && (
@@ -280,22 +303,15 @@ class ObjectInfo extends React.Component {
                 map.latitude &&
                 map.longitude &&
                 isCoordinatesValid(map.latitude, map.longitude) && (
-                  <Map
-                    isMarkerShown
-                    setCoordinates={() => {}}
-                    wobject={wobject}
-                    googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
-                    loadingElement={<div style={{ height: `100%` }} />}
-                    containerElement={<div style={{ height: `200px` }} />}
-                    mapElement={<div style={{ height: `100%` }} />}
-                    lat={Number(map.latitude)}
-                    lng={Number(map.longitude)}
+                  <MapObjectInfo
+                    mapHeigth={200}
+                    center={[Number(map.latitude), Number(map.longitude)]}
                   />
                 ),
             )}
             {listItem(
               objectFields.website,
-              title ? (
+              title && (
                 <div className="field-website">
                   <span className="field-website__title">
                     <i className="iconfont icon-link text-icon" />
@@ -304,7 +320,7 @@ class ObjectInfo extends React.Component {
                     </a>
                   </span>
                 </div>
-              ) : null,
+              ),
             )}
             {listItem(
               objectFields.phone,
@@ -314,14 +330,14 @@ class ObjectInfo extends React.Component {
                     {phones.length <= 3 ? (
                       phones.slice(0, 3).map(({ body, number }) => (
                         <div key={number} className="phone">
-                          {body && body} <br />
                           <Icon type="phone" /> <a href={`tel:${number}`}>{number}</a>
+                          {body && body} <br />
                         </div>
                       ))
                     ) : (
                       <React.Fragment>
                         {phones.slice(0, 2).map(({ body, number }) => (
-                          <div key={number} className="phone">
+                          <div key={`${number}${body}`} className="phone">
                             {body && body} <br />
                             <Icon type="phone" /> <a href={`tel:${number}`}>{number}</a>
                           </div>

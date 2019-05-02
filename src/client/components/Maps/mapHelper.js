@@ -1,5 +1,8 @@
-export const regexCoordsLatitude = /^(\+|-)?(?:84(?:(?:\.0{1,6})?)|(?:[0-9]|[1-7][0-9]|8[0-4])(?:(?:\.[0-9]{1,6})?))$$/;
-export const regexCoordsLongitude = /^(\+|-)?((?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,6})?))$/;
+import fetch from 'isomorphic-fetch';
+import { handleErrors } from '../../../waivioApi/ApiClient';
+
+export const regexCoordsLatitude = /^(\+|-)?(?:84(?:(?:\.0{1,6})?)|(?:[0-9]|[1-7][0-9]|8[0-4])(?:(?:\.[0-9]{1,100})?))$$/;
+export const regexCoordsLongitude = /^(\+|-)?((?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,100})?))$/;
 
 export const isCoordinatesValid = (lat, lng) =>
   lat &&
@@ -10,3 +13,16 @@ export const isCoordinatesValid = (lat, lng) =>
   lng < 180 &&
   String(lat).match(regexCoordsLatitude) &&
   String(lng).match(regexCoordsLongitude);
+
+export const getUserCoordinatesByIpAdress = () =>
+  new Promise((resolve, reject) => {
+    fetch('http://ip-api.com/json', {
+      method: 'GET',
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => {
+        resolve(result);
+      })
+      .catch(error => reject(error));
+  });

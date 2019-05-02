@@ -1,0 +1,101 @@
+@import (reference) '../styles/custom.less';
+@import (reference) '../styles/modules/variables.less';
+
+@wrapPadding: 15px;
+
+.ObjectCardView {
+  .ObjectCardView-mixin(100px, 100%);
+  &__title {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100%;
+  }
+  @media @medium, @small, @large {
+    .ObjectCardView-mixin(220px, 100%);
+    &__title {
+      word-break: break-all;
+      overflow: hidden;
+      white-space: normal;
+    }
+  }
+}
+.ObjectCardView-mixin(@cardHeight, @cardWidth) {
+  @cardContentWidth: calc(@cardWidth - @cardHeight);
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid @blue-hawkesBlue;
+  border-radius: 4px;
+  margin-top: 5px;
+  padding: @wrapPadding;
+  &__content {
+    position: relative;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    height: @cardHeight;
+    outline: none;
+    width: 97%;
+
+    &.row {
+      display: flex;
+      flex-flow: row nowrap;
+      height: @cardHeight;
+      width: 100%;
+    }
+  }
+  &__info {
+    width: @cardContentWidth;
+  }
+  &__avatar {
+    width: @cardHeight;
+    margin-right: @wrapPadding;
+    border-radius: 8px;
+    //max-width: 178px;
+    height: @cardHeight;
+    display: block !important;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    border: 1px solid #e9e7e7;
+  }
+  &__type {
+    color: @blue-botticelli;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+  }
+  &__name {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    cursor: auto;
+    margin-top: 13px;
+    .Weight {
+      margin-top: 7px;
+    }
+    &-truncated {
+      width: 90%;
+      color: @black;
+      font-weight: bold;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      font-size: 24px;
+      letter-spacing: -0.5px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      margin-right: 8px;
+      cursor: pointer;
+    }
+  }
+  &__title {
+    color: @black;
+    font-size: 24px;
+  }
+}
+
+@import 'ObjectCardView-nightmode';

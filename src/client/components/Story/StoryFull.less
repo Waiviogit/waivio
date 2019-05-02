@@ -4,7 +4,9 @@
 
 .StoryFull {
   margin: 12px 0;
-
+  .ant-collapse-content-box {
+    padding: 0 !important;
+  }
   &__posted_from span.PostedFrom__text {
     top: 0;
   }
@@ -25,17 +27,6 @@
       color: #353535;
       font-weight: 700;
       line-height: 1.3em;
-    }
-  }
-
-  &__title {
-    color: #353535;
-    font-weight: 700;
-    line-height: 1.3em;
-    font-size: 28px;
-
-    @media @small {
-      font-size: 34px;
     }
   }
 
@@ -109,6 +100,18 @@
     cursor: pointer;
   }
 }
+
+.StoryFull__title {
+  color: #353535;
+  font-weight: 700;
+  line-height: 1.3em;
+  font-size: 28px;
+
+  @media @small {
+    font-size: 34px;
+  }
+}
+
 div[data-dir='rtl'] .StoryFull {
   &__header {
     &__text {

@@ -1,0 +1,102 @@
+@import (reference) '../../../styles/custom.less';
+
+@add-btn-width: 36px;
+
+.md-side-toolbar {
+  display: flex;
+  position: absolute;
+  z-index: 1;
+  left: -37px;
+  top: 0;
+  transition: all 0.1s ease;
+
+  div {
+    display: flex;
+  }
+}
+
+.md-sb-button {
+  background: @white none;
+  outline: none;
+  border: 1px solid @grey-empress;
+  color: @grey-empress;
+  cursor: pointer;
+  height: @add-btn-width;
+  width: @add-btn-width;
+  border-radius: @add-btn-width / 2;
+  font-size: 22px;
+  margin-right: 2px;
+  text-align: center;
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+  }
+
+  svg path {
+    stroke-width: 0;
+    fill: #545454;
+  }
+
+  &.action-btn {
+    border-color: @blue-botticelli;
+    line-height: 1;
+
+    &:hover {
+      border-color: @grey-mortar;
+    }
+
+    &:focus {
+      border-color: @primary-color;
+    }
+
+    //& > .iconfont {
+    //  font-size: 24px;
+    //}
+
+    & > .object-btn {
+      font-size: 24px;
+
+      svg path {
+        fill: @grey-empress;
+      }
+    }
+  }
+}
+
+.md-add-button {
+  &.md-open-button {
+    transform: rotate(45deg);
+  }
+}
+
+.md-add-btn-anim-appear {
+  transform: translate3d(-38px, 0px, 0px);
+  opacity: 0;
+}
+
+.md-add-btn-anim-appear.md-add-btn-anim-appear-active {
+  transform: translate3d(0px, 0px, 0px);
+  opacity: 1;
+  transition: all 0.2s ease-in;
+}
+
+.md-add-btn-anim-enter {
+  transform: translate3d(-38px, 0px, 0px);
+  opacity: 0;
+}
+
+.md-add-btn-anim-enter.md-add-btn-anim-enter-active {
+  opacity: 1;
+  transform: translate3d(0px, 0px, 0px);
+  transition: all 200ms ease-in;
+}
+
+.md-add-btn-anim-exit {
+  opacity: 1;
+}
+
+.md-add-btn-anim-exit.md-add-btn-anim-exit-active {
+  opacity: 0.01;
+  transition: opacity 200ms ease-in;
+}

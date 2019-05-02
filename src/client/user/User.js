@@ -165,7 +165,10 @@ export default class User extends React.Component {
           <meta property="twitter:description" content={desc} />
           <meta
             property="twitter:image"
-            content={image || 'https://steemit.com/images/steemit-twshare.png'}
+            content={
+              image ||
+              'https://cdn.steemitimages.com/DQmVRiHgKNWhWpDXSmD7ZK4G48mYkLMPcoNT8VzgXNWZ8aN/image.png'
+            }
           />
         </Helmet>
         <ScrollToTopOnMount />

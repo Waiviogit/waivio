@@ -7,7 +7,10 @@ import WeightTag from '../components/WeightTag';
 import FollowButton from '../widgets/FollowButton';
 import ObjectAvatar from '../components/ObjectAvatar';
 import './WaivioObject.less';
-import { getFieldWithMaxWeight } from '../../client/object/wObjectHelper';
+import {
+  getFieldWithMaxWeight,
+  getInnerFieldWithMaxWeight,
+} from '../../client/object/wObjectHelper';
 import { objectFields, linkFields } from '../../common/constants/listOfFields';
 
 export const getField = (item, field) => {
@@ -16,9 +19,9 @@ export const getField = (item, field) => {
 };
 
 const WaivioObject = ({ wobj }) => {
-  let website = getFieldWithMaxWeight(wobj, linkFields.website, linkFields.website);
+  let website = getInnerFieldWithMaxWeight(wobj, linkFields.website, linkFields.website);
   const location = getField(wobj, 'locationCity');
-  const name = getFieldWithMaxWeight(wobj, objectFields.name, objectFields.name);
+  const name = getFieldWithMaxWeight(wobj, objectFields.name) || wobj.default_name;
 
   if (website && website.indexOf('http://') === -1 && website.indexOf('https://') === -1) {
     website = `http://${website}`;
@@ -37,8 +40,8 @@ const WaivioObject = ({ wobj }) => {
                 <span className="WaivioObject__user__name">
                   <span className="username">{name}</span>
                 </span>
-                <WeightTag weight={wobj.weight} rank={wobj.rank} />
               </Link>
+              <WeightTag weight={wobj.weight} rank={wobj.rank} />
             </div>
             <div className="WaivioObject__user__location">
               {location && (
