@@ -16,7 +16,8 @@
     display: flex;
   }
 
-  .video-link-input {
+  .video-link-input,
+  .object-search-input {
     width: calc(100vw - @margin * 4);
 
     @media @small {
@@ -35,6 +36,24 @@
 
       @media @medium, @large {
         display: none;
+      }
+    }
+  }
+
+  .object-search-input {
+    .ant-select-selection {
+      width: 100%;
+      &__rendered {
+        width: 100%;
+        ul {
+          width: 100%;
+          li {
+            margin: 0;
+            .ant-input {
+              height: 36px;
+            }
+          }
+        }
       }
     }
   }

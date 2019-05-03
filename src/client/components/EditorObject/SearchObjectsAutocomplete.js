@@ -25,6 +25,7 @@ class SearchObjectsAutocomplete extends Component {
   static defaultProps = {
     intl: {},
     style: { width: '100%' },
+    className: '',
     searchObjectsResults: [],
     itemsIdsToOmit: [],
     searchObjects: () => {},
@@ -34,6 +35,7 @@ class SearchObjectsAutocomplete extends Component {
 
   static propTypes = {
     itemsIdsToOmit: PropTypes.arrayOf(PropTypes.string),
+    className: PropTypes.string,
     intl: PropTypes.shape(),
     style: PropTypes.shape(),
     searchObjectsResults: PropTypes.arrayOf(PropTypes.object),
@@ -121,13 +123,14 @@ class SearchObjectsAutocomplete extends Component {
     return (
       <AutoComplete
         style={style}
+        className={this.props.className}
         onChange={this.handleChange}
         onSelect={this.handleSelect}
         onSearch={this.handleSearch}
         optionLabelProp={'label'}
         placeholder={intl.formatMessage({
           id: 'objects_auto_complete_placeholder',
-          defaultMessage: 'Find',
+          defaultMessage: 'Find objects',
         })}
         value={searchString}
         allowClear

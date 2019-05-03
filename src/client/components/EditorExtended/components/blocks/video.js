@@ -7,18 +7,16 @@ const Video = ({ entityData }) => {
   const src = getSource(entityData);
   if (src) {
     return (
-      <div className="md-block-atomic-embed">
-        <div>
-          <iframe
-            title={src}
-            width="100%"
-            height={400}
-            className="video-iframe"
-            src={src}
-            frameBorder="0"
-            allowFullScreen
-          />
-        </div>
+      <div className="PostFeedEmbed__container">
+        <iframe
+          title={src}
+          width="100%"
+          height={400}
+          className="video-iframe"
+          src={src}
+          frameBorder="0"
+          allowFullScreen
+        />
       </div>
     );
   }
