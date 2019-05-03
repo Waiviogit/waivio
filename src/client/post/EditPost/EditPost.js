@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
+import { Badge } from 'antd';
 import { debounce, has, isEqual, kebabCase, throttle, uniqBy } from 'lodash';
 import uuidv4 from 'uuid/v4';
 import {
@@ -10,6 +11,7 @@ import {
   getLocale,
   getDraftPosts,
   getIsEditorSaving,
+  getIsImageUploading,
   getUpvoteSetting,
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
@@ -21,6 +23,7 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import { Entity, toMarkdown } from '../../components/EditorExtended';
 import LastDraftsContainer from '../Write/LastDraftsContainer';
 import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
+import './EditPost.less';
 
 const getLinkedObjects = contentStateRaw => {
   const objEntities = Object.values(contentStateRaw.entityMap).filter(
@@ -37,6 +40,7 @@ const getLinkedObjects = contentStateRaw => {
     locale: getLocale(state),
     draftPosts: getDraftPosts(state),
     saving: getIsEditorSaving(state),
+    imageLoading: getIsImageUploading(state),
     draftId: new URLSearchParams(props.location.search).get('draft'),
     upvoteSetting: getUpvoteSetting(state),
   }),
@@ -54,6 +58,7 @@ class EditPost extends Component {
     // upvoteSetting: PropTypes.bool,
     draftId: PropTypes.string,
     saving: PropTypes.bool,
+    imageLoading: PropTypes.bool,
     createPost: PropTypes.func,
     saveDraft: PropTypes.func,
   };
@@ -61,6 +66,7 @@ class EditPost extends Component {
     upvoteSetting: false,
     draftId: '',
     saving: false,
+    imageLoading: false,
     createPost: () => {},
     saveDraft: () => {},
   };
@@ -182,21 +188,30 @@ class EditPost extends Component {
     const redirect = id !== this.draftId;
 
     this.props.saveDraft({ postData, id: this.draftId }, redirect, this.props.intl);
-  }, 2000);
+  }, 1500);
 
   render() {
     const { draftContent, content, topics, linkedObjects, objPercentage, settings } = this.state;
-    const { draftId, saving, locale } = this.props;
+    const { draftId, saving, imageLoading, locale } = this.props;
     return (
       <div className="shifted">
         <div className="post-layout container">
           <div className="center">
             <Editor
+              enabled={!imageLoading}
               initialContent={draftContent}
               locale={locale === 'auto' ? 'en-US' : locale}
               onChange={this.handleChangeContent}
             />
-            {draftId && <span>{saving ? 'saving' : 'saved'}</span>}
+            {draftId && (
+              <div className="edit-post__saving-badge">
+                {saving ? (
+                  <Badge status="error" text="saving" />
+                ) : (
+                  <Badge status="success" text="saved" />
+                )}
+              </div>
+            )}
             <PostPreviewModal
               content={content}
               topics={topics}

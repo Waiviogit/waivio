@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import './atomic.less';
 import { ATOMIC_TYPES } from '../../util/constants';
 import SeparatorBlock from './break';
+import VideoBlock from './video';
 
 const AtomicBlock = props => {
   const { blockProps, block } = props; // eslint-disable-line
@@ -12,6 +13,8 @@ const AtomicBlock = props => {
   switch (type) {
     case ATOMIC_TYPES.SEPARATOR:
       return <SeparatorBlock />;
+    case ATOMIC_TYPES.VIDEO:
+      return <VideoBlock entityData={entity.data} />;
     default:
       return <p>No supported block for {type}</p>;
   }

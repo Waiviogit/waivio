@@ -43,7 +43,7 @@ import ObjectAvatar from '../ObjectAvatar';
 )
 class Topnav extends React.Component {
   static propTypes = {
-    autoCompleteSearchResults: PropTypes.shape,
+    autoCompleteSearchResults: PropTypes.shape(),
     intl: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,

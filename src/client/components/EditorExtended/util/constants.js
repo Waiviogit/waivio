@@ -57,6 +57,7 @@ export const KEY_COMMANDS = {
 export const ATOMIC_TYPES = {
   SEPARATOR: 'separator',
   IMAGE: 'image',
+  VIDEO: 'video',
 };
 
 export default {
