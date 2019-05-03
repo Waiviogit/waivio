@@ -107,7 +107,8 @@ class MapObjectInfo extends React.Component {
             footer={null}
             visible={isFullscreenMode}
             onCancel={this.toggleModal}
-            width={'90%'}
+            style={{ top: 0 }}
+            width={'100%'}
             wrapClassName={classNames('MapModal')}
             destroyOnClose
           >

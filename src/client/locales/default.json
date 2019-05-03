@@ -532,5 +532,8 @@
   "total_ralated_payout": "Total payout for all related posts in USD, without bidbots and upvote services",
   "users_search_title": "Users",
   "wobjects_search_title": "Objects",
-  "wobjectType_search_title": "Types"
+  "wobjectType_search_title": "Types",
+  "filters": "Filters",
+  "topRated": "Top Rated",
+  "tags": "Tags"
 }
