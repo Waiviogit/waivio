@@ -42,6 +42,31 @@
     margin: 0 auto;
   }
 
+  &__search-content-wrap {
+    display: flex;
+    align-items: center;
+  }
+  &__search-content {
+    max-width: calc(100vw - 210px);
+
+    margin-left: 10px;
+    @media @small, @medium, @large {
+      max-width: 350px;
+    }
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  &__search-content-small {
+    margin-left: 10px;
+    font-size: small;
+    color: @tertiary-color;
+  }
+  &__search-content-type {
+    @media @xsmall {
+      display: none;
+    }
+  }
   &__input-container {
     padding: 0 @base-spacing;
     position: relative;
