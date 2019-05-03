@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
+import { Badge } from 'antd';
 import { debounce, has, isEqual, kebabCase, throttle, uniqBy } from 'lodash';
 import uuidv4 from 'uuid/v4';
 import {
@@ -22,6 +23,7 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import { Entity, toMarkdown } from '../../components/EditorExtended';
 import LastDraftsContainer from '../Write/LastDraftsContainer';
 import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
+import './EditPost.less';
 
 const getLinkedObjects = contentStateRaw => {
   const objEntities = Object.values(contentStateRaw.entityMap).filter(
@@ -186,7 +188,7 @@ class EditPost extends Component {
     const redirect = id !== this.draftId;
 
     this.props.saveDraft({ postData, id: this.draftId }, redirect, this.props.intl);
-  }, 2000);
+  }, 1500);
 
   render() {
     const { draftContent, content, topics, linkedObjects, objPercentage, settings } = this.state;
@@ -201,7 +203,15 @@ class EditPost extends Component {
               locale={locale === 'auto' ? 'en-US' : locale}
               onChange={this.handleChangeContent}
             />
-            {draftId && <span>{saving ? 'saving' : 'saved'}</span>}
+            {draftId && (
+              <div className="edit-post__saving-badge">
+                {saving ? (
+                  <Badge status="error" text="saving" />
+                ) : (
+                  <Badge status="success" text="saved" />
+                )}
+              </div>
+            )}
             <PostPreviewModal
               content={content}
               topics={topics}
