@@ -50,7 +50,7 @@ class Editor extends React.Component {
 
     this.state = {
       isMounted: false,
-      editorEnabled: true,
+      editorEnabled: false,
       editorState: createEditorState(fromMarkdown(props.initialContent)),
     };
 

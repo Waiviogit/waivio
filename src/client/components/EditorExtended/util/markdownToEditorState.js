@@ -1,6 +1,7 @@
 import mdToAst from '@textlint/markdown-to-ast';
 import { last } from 'lodash';
 import { ATOMIC_TYPES, Block, Entity } from './constants';
+import { isYoutube, isVimeo, getSrc } from './videoHelper';
 
 const defaultInlineStyles = {
   Strong: {
@@ -26,6 +27,8 @@ const defaultBlockStyles = {
   HorizontalRule: 'atomic',
 };
 
+const isVideoLink = url => isYoutube(url) || isVimeo(url);
+
 const normalizeMd = content => {
   const regExp = new RegExp('<center>|</center>', 'g');
   return content.replace(regExp, '');
@@ -46,7 +49,7 @@ const getBlockStyleForMd = (node, blockStyles) => {
     node.children[0].type === 'Image'
   ) {
     return Block.IMAGE;
-  } else if (node.type === 'Paragraph' && node.raw && node.raw.match(/^\[\[\s\S+\s.*\S+\s\]\]/)) {
+  } else if (node.type === 'Paragraph' && node.raw && isVideoLink(node.raw)) {
     return 'atomic';
   }
   return blockStyles[style];
@@ -142,23 +145,24 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
   };
 
   const addVideo = child => {
-    const string = child.raw;
+    const src = child.raw;
 
     // RegEx: [[ embed url=<anything> ]]
-    const url = string.match(/^\[\[\s(?:embed)\s(?:url=(\S+))\s\]\]/)[1];
+    const url = getSrc({ src });
 
     const entityKey = Object.keys(entityMap).length;
     entityMap[entityKey] = {
-      type: 'draft-js-video-plugin-video',
+      type: ATOMIC_TYPES.VIDEO,
       mutability: 'IMMUTABLE',
       data: {
         src: url,
       },
     };
+    text = ' ';
     entityRanges.push({
       key: entityKey,
       length: 1,
-      offset: text.length,
+      offset: 0,
     });
   };
 
@@ -178,7 +182,6 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
 
   const parseChildren = (child, style) => {
     // RegEx: [[ embed url=<anything> ]]
-    const videoShortcodeRegEx = /^\[\[\s(?:embed)\s(?:url=(\S+))\s\]\]/;
     const objectLinkRegEx = /^(https?):\/\/[^\s$\/?#]*\/(object)\/[a-z0-9-]+$/; // eslint-disable-line
     switch (child.type) {
       case 'Link':
@@ -196,21 +199,21 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
         text = child.raw;
         break;
       case 'Paragraph':
-        if (videoShortcodeRegEx.test(child.raw)) {
+        if (isVideoLink(child.raw)) {
           addVideo(child);
         }
         break;
       default:
     }
 
-    if (!videoShortcodeRegEx.test(child.raw) && child.children && style) {
+    if (!isVideoLink(child.raw) && child.children && style) {
       const rawLength = getRawLength(child.children);
       addInlineStyleRange(text.length, rawLength, style.type);
       const newStyle = inlineStyles[child.type];
       child.children.forEach(grandChild => {
         parseChildren(grandChild, newStyle);
       });
-    } else if (!videoShortcodeRegEx.test(child.raw) && child.children) {
+    } else if (!isVideoLink(child.raw) && child.children) {
       const newStyle = inlineStyles[child.type];
       child.children.forEach(grandChild => {
         parseChildren(grandChild, newStyle);
@@ -222,9 +225,7 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
       if (inlineStyles[child.type]) {
         addInlineStyleRange(text.length, child.value.length, inlineStyles[child.type].type);
       }
-      text = `${text}${
-        child.type === 'Image' || videoShortcodeRegEx.test(child.raw) ? '' : child.value
-      }`;
+      text = `${text}${child.type === 'Image' || isVideoLink(child.raw) ? '' : child.value}`;
     }
   };
 
