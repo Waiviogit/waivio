@@ -230,6 +230,7 @@
   "link": "Add link",
   "image": "Add an image",
   "embed": "Add an embed",
+  "video": "Add a video",
   "add_separator": "Add a separator",
   "drafts": "Drafts",
   "drafts_empty": "You don't have any draft saved",
@@ -369,7 +370,7 @@
   "discover_more_objects": "Discover more objects",
   "weight_score_value": "Weight score: {value}",
   "editor_linked_objects": "Linked objects",
-  "objects_auto_complete_placeholder": "Find",
+  "objects_auto_complete_placeholder": "Find objects",
   "create": "create",
   "remove": "remove",
   "discover_more_objects_info": "Discover the most ranked objects of this platform",
@@ -532,5 +533,8 @@
   "total_ralated_payout": "Total payout for all related posts in USD, without bidbots and upvote services",
   "users_search_title": "Users",
   "wobjects_search_title": "Objects",
-  "wobjectType_search_title": "Types"
+  "wobjectType_search_title": "Types",
+  "filters": "Filters",
+  "topRated": "Top Rated",
+  "tags": "Tags"
 }

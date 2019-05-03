@@ -4,6 +4,7 @@ import { convertToRaw } from 'draft-js';
 import { forEach, get, has, keyBy } from 'lodash';
 import { Editor as MediumDraftEditor, createEditorState, fromMarkdown, Entity } from './index';
 import ImageSideButton from './components/sides/ImageSideButton';
+import VideoSideButton from './components/sides/VideoSideButton';
 import SeparatorButton from './components/sides/SeparatorSideButton';
 import ObjectSideButton from './components/sides/ObjectSideButton';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
@@ -13,6 +14,10 @@ const SIDE_BUTTONS = [
   {
     title: 'Image',
     component: ImageSideButton,
+  },
+  {
+    title: 'Video',
+    component: VideoSideButton,
   },
   {
     title: 'Separator',
@@ -27,6 +32,7 @@ const SIDE_BUTTONS = [
 class Editor extends React.Component {
   static propTypes = {
     // passed props:
+    enabled: PropTypes.bool.isRequired,
     initialContent: PropTypes.shape({
       title: PropTypes.string,
       body: PropTypes.string,
@@ -44,7 +50,7 @@ class Editor extends React.Component {
 
     this.state = {
       isMounted: false,
-      editorEnabled: true,
+      editorEnabled: false,
       editorState: createEditorState(fromMarkdown(props.initialContent)),
     };
 
@@ -117,7 +123,7 @@ class Editor extends React.Component {
           <MediumDraftEditor
             ref={this.refsEditor}
             placeholder=""
-            editorEnabled={editorEnabled}
+            editorEnabled={editorEnabled && this.props.enabled}
             editorState={editorState}
             beforeInput={this.handleBeforeInput}
             onChange={this.handleContentChange}

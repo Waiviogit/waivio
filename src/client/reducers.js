@@ -69,6 +69,7 @@ export const getIsPostFailed = (state, author, permlink) =>
 export const getDraftPosts = state => fromEditor.getDraftPosts(state.editor);
 export const getIsEditorLoading = state => fromEditor.getIsEditorLoading(state.editor);
 export const getIsEditorSaving = state => fromEditor.getIsEditorSaving(state.editor);
+export const getIsImageUploading = state => fromEditor.getIsImgLoading(state.editor);
 export const getPendingDrafts = state => fromEditor.getPendingDrafts(state.editor);
 export const getIsPostEdited = (state, permlink) =>
   fromEditor.getIsPostEdited(state.editor, permlink);

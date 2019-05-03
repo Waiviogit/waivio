@@ -68,7 +68,7 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, a
             <WeightTag weight={wobject.weight} rank={wobject.rank} />
           </div>
           <div className="ObjectHeader__user__username">
-            <div className="ObjectHeader__descriptionShort">
+            <div className="ObjectHeader__descriptionShort ObjectHeader__text">
               {canEdit && !descriptionShort ? (
                 <Proposition
                   objectID={wobject.author_permlink}

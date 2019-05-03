@@ -25,6 +25,7 @@ import LanguageSettings from './LanguageSettings';
 import './Topnav.less';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
+import ObjectAvatar from '../ObjectAvatar';
 
 @injectIntl
 @withRouter
@@ -42,7 +43,7 @@ import { objectFields } from '../../../common/constants/listOfFields';
 )
 class Topnav extends React.Component {
   static propTypes = {
-    autoCompleteSearchResults: PropTypes.shape,
+    autoCompleteSearchResults: PropTypes.shape(),
     intl: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
@@ -310,35 +311,15 @@ class Topnav extends React.Component {
     this.debouncedSearch(value);
   }
 
-  handleSelectOnAutoCompleteDropdown(value) {
-    const type = value.slice(0, 5);
-    if (type === 'user-') this.props.history.push(`/@${value.replace('user-', '')}`);
-    else if (type === 'wobj-') {
-      if (
-        _.includes(this.props.location.pathname, '/object/') ||
-        _.includes(this.props.location.pathname, '/objectType/')
-      ) {
-        this.props.history.push(`${value.replace('wobj-', '')}`);
-      } else {
-        this.props.history.push(`object/${value.replace('wobj-', '')}`);
-      }
-    } else this.props.history.push(`/objectType/${value.replace('type-', '')}`);
+  handleSelectOnAutoCompleteDropdown(value, data) {
+    if (data.props.marker === 'user') this.props.history.push(`/@${value}`);
+    else if (data.props.marker === 'wobj') {
+      this.props.history.replace(`/object/${value}`);
+    } else this.props.history.push(`/objectType/${value}`);
   }
 
   handleOnChangeForAutoComplete(value) {
-    const type = value.slice(0, 5);
-    if (type === 'user-')
-      this.setState({
-        searchBarValue: value.replace('user-', ''),
-      });
-    else if (type === 'wobj-')
-      this.setState({
-        searchBarValue: value.replace('wobj-', ''),
-      });
-    else
-      this.setState({
-        searchBarValue: value.replace('type-', ''),
-      });
+    this.setState({ searchBarValue: value });
   }
 
   usersSearchLayout(accounts) {
@@ -355,11 +336,15 @@ class Topnav extends React.Component {
       >
         {_.map(accounts, option => (
           <AutoComplete.Option
+            marker={'user'}
             key={`obj${option.account}`}
-            value={`user-${option.account}`}
+            value={`${option.account}`}
             className="Topnav__search-autocomplete"
           >
-            {option.account}
+            <div className="Topnav__search-content-wrap">
+              <Avatar username={option.account} size={40} />
+              <div className="Topnav__search-content">{option.account}</div>
+            </div>
           </AutoComplete.Option>
         ))}
       </AutoComplete.OptGroup>
@@ -380,13 +365,26 @@ class Topnav extends React.Component {
       >
         {_.map(wobjects, option => {
           const wobjName = getFieldWithMaxWeight(option, objectFields.name);
+          const parent = option.parent;
           return wobjName ? (
             <AutoComplete.Option
-              key={`obj${wobjName}`}
-              value={`wobj-${option.author_permlink}`}
+              marker={'wobj'}
+              key={`wobj${wobjName}`}
+              value={`${option.author_permlink}`}
               className="Topnav__search-autocomplete"
             >
-              {wobjName}
+              <div className="Topnav__search-content-wrap">
+                <ObjectAvatar item={option} size={40} />
+                <div>
+                  <div className="Topnav__search-content">{wobjName}</div>
+                  {parent && (
+                    <div className="Topnav__search-content-small">
+                      ({getFieldWithMaxWeight(parent, objectFields.name)})
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="Topnav__search-content-small">{option.object_type}</div>
             </AutoComplete.Option>
           ) : null;
         })}
@@ -408,8 +406,9 @@ class Topnav extends React.Component {
       >
         {_.map(objectTypes, option => (
           <AutoComplete.Option
+            marker={'type'}
             key={`type${option.name}`}
-            value={`type-${option.name}`}
+            value={`${option.name}`}
             className="Topnav__search-autocomplete"
           >
             {option.name}

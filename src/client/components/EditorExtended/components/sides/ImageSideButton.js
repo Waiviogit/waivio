@@ -1,16 +1,27 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
 // import { EditorState, AtomicBlockUtils } from 'draft-js';
 import { message } from 'antd';
 
 import { addNewBlock } from '../../model';
 import { Block } from '../../util/constants';
+import { imageUploading, imageUploaded } from '../../../../post/Write/editorActions';
 
 @injectIntl
+@connect(
+  null,
+  {
+    imageUploading,
+    imageUploaded,
+  },
+)
 export default class ImageSideButton extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
+    imageUploading: PropTypes.func.isRequired,
+    imageUploaded: PropTypes.func.isRequired,
     setEditorState: PropTypes.func.isRequired,
     getEditorState: PropTypes.func.isRequired,
     close: PropTypes.func.isRequired,
@@ -43,6 +54,7 @@ export default class ImageSideButton extends React.Component {
         0,
       );
 
+      this.props.imageUploading();
       fetch(`https://ipfs.busy.org/upload`, {
         method: 'POST',
         body: formData,
@@ -57,6 +69,7 @@ export default class ImageSideButton extends React.Component {
                     alt: data.name,
                   }),
                 );
+                this.props.imageUploaded();
                 hideNotification();
               }
             });
@@ -65,6 +78,7 @@ export default class ImageSideButton extends React.Component {
         })
         .catch(err => {
           console.log('err', err);
+          this.props.imageUploaded();
           message.error(
             this.props.intl.formatMessage({
               id: 'notify_uploading_iamge_error',
