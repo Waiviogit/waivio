@@ -17,6 +17,7 @@ const videoLinkInput = props => {
   };
   return (
     <Input.Search
+      className="video-link-input"
       enterButton="Enter"
       placeholder="Paste a YouTube or Vimeo video link, and press Enter"
       onSearch={handleAddVideoLink}
