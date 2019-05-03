@@ -134,17 +134,21 @@ export default class ObjectTypePage extends React.Component {
                   defaultMessage: 'Type',
                 })}: ${type.name}`}</div>
               )}
-              <div className="ObjectTypePage__tags">
-                {intl.formatMessage({
-                  id: 'filters',
-                  defaultMessage: 'Filters',
-                })}
-                :
-                <ObjectTypeFiltersTags
-                  activefilters={this.state.activefilters}
-                  setFilterValue={this.setFilterValue}
-                />
-              </div>
+              {(_.size(this.state.activefilters.tagCloud) > 0 ||
+                _.size(this.state.activefilters.ratings) > 0 ||
+                _.size(this.state.activefilters.map) > 0) && (
+                <div className="ObjectTypePage__tags">
+                  {intl.formatMessage({
+                    id: 'filters',
+                    defaultMessage: 'Filters',
+                  })}
+                  :
+                  <ObjectTypeFiltersTags
+                    activefilters={this.state.activefilters}
+                    setFilterValue={this.setFilterValue}
+                  />
+                </div>
+              )}
               {relatedObjectsLayout}
             </div>
           </div>
