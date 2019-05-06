@@ -62,6 +62,18 @@ class MapAppendObject extends React.Component {
   onBoundsChanged = ({ center, zoom, bounds, initial }) =>
     this.setState({ center, zoom, bounds, initial, userCoordinates: center });
 
+  setPosition = () => {
+    if (navigator && navigator.geolocation) {
+      const positionGPS = navigator.geolocation.getCurrentPosition(this.showUserPosition);
+      if (positionGPS) {
+        this.setState({ userCoordinates: positionGPS });
+        return true;
+      }
+    }
+    this.setState({ userCoordinates: [this.props.userLocation.lat, this.props.userLocation.lon] });
+    return true;
+  };
+
   setCoordinates = coord => {
     this.props.setCoordinates(coord);
   };
@@ -106,6 +118,14 @@ class MapAppendObject extends React.Component {
           {infoboxData && this.getOverlayLayout()}
         </Map>
         {this.zoomButtonsLayout()}
+        <div
+          role="presentation"
+          className="MapOS__locateGPS"
+          onClick={this.setPosition}
+          title="find me"
+        >
+          <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
+        </div>
       </div>
     ) : (
       <Loading />
