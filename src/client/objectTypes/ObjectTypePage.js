@@ -10,6 +10,7 @@ import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
   getObjectTypeState,
+  getScreenSize,
 } from '../reducers';
 
 import MapOS from '../components/Maps/Map';
@@ -19,6 +20,8 @@ import { getObjectType } from './objectTypesActions';
 import './ObjectTypePage.less';
 import ObjectCardView from '../objectCard/ObjectCardView';
 import { getClientWObj } from '../adapters';
+import ObjectTypeFiltersPanel from './ObjectTypeFiltersPanel/ObjectTypeFiltersPanel';
+import ObjectTypeFiltersTags from './ObjectTypeFiltersTags/ObjectTypeFiltersTags';
 
 @injectIntl
 @withRouter
@@ -27,6 +30,7 @@ import { getClientWObj } from '../adapters';
     authenticated: getIsAuthenticated(state),
     authenticatedUser: getAuthenticatedUser(state),
     authenticatedUserName: getAuthenticatedUserName(state),
+    screenSize: getScreenSize(state),
     type: getObjectTypeState(state, ownProps.match.params.typeName),
   }),
   {
@@ -39,6 +43,7 @@ export default class ObjectTypePage extends React.Component {
     intl: PropTypes.shape().isRequired,
     getObjectType: PropTypes.func.isRequired,
     type: PropTypes.shape(),
+    screenSize: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -52,36 +57,58 @@ export default class ObjectTypePage extends React.Component {
   state = {
     isEditMode: false,
     isMapFullScreen: false,
+    relatedWobjects: [],
+    activefilters: {
+      map: [],
+      tagCloud: [],
+      ratings: [],
+    },
   };
 
   componentDidMount() {
     this.props.getObjectType(this.props.match.params.typeName);
   }
 
+  setFilterValue = (filter, key) => {
+    const activefilters = this.state.activefilters;
+    if (_.includes(activefilters[key], filter)) {
+      activefilters[key] = activefilters[key].filter(value => value !== filter);
+    } else activefilters[key].push(filter);
+    this.setState({ activefilters });
+  };
+
   toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
 
   render() {
-    const { type, intl } = this.props;
+    const { type, intl, screenSize } = this.props;
 
     const host = global.postOrigin || 'https://waiviodev.com';
     const desc = type.body;
     const canonicalUrl = `${host}/objectType/${type.name}`;
     const url = `${host}/objectType/${type.name}`;
     const title = `Type - ${type.name || ''}`;
-
+    // const allFilters = {
+    //   map: ["map"],
+    //   tagCloud: [],
+    //   ratings: []
+    // };
+    const relatedObjectsLayout = _.map(type.related_wobjects, obj => {
+      const wobj = getClientWObj(obj);
+      return (
+        <ObjectCardView key={wobj.id} wObject={wobj} showSmallVersion={screenSize === 'xsmall'} />
+      );
+    });
     return (
       <div className="ObjectTypePage">
         <Helmet>
           <title>{title}</title>
           <link rel="canonical" href={canonicalUrl} />
           <meta property="description" content={desc} />
-
           <meta property="og:title" content={title} />
           <meta property="og:type" content="article" />
           <meta property="og:url" content={url} />
           <meta property="og:description" content={desc} />
           <meta property="og:site_name" content="Waivio" />
-
           <meta property="twitter:card" content={'summary'} />
           <meta property="twitter:site" content={'@waivio'} />
           <meta property="twitter:title" content={title} />
@@ -98,7 +125,11 @@ export default class ObjectTypePage extends React.Component {
           <div className="feed-layout container">
             <Affix className="leftContainer leftContainer__user" stickPosition={72}>
               <div className="left">
-                <MapOS wobjects={this.props.type.related_wobjects} heigth={200} />
+                <MapOS wobjects={type.related_wobjects} heigth={200} />
+                <ObjectTypeFiltersPanel
+                  activefilters={this.state.activefilters}
+                  setFilterValue={this.setFilterValue}
+                />
               </div>
             </Affix>
             <div className="center">
@@ -108,10 +139,22 @@ export default class ObjectTypePage extends React.Component {
                   defaultMessage: 'Type',
                 })}: ${type.name}`}</div>
               )}
-              {_.map(type.related_wobjects, obj => {
-                const wobj = getClientWObj(obj);
-                return <ObjectCardView key={wobj.id} wObject={wobj} />;
-              })}
+              {(_.size(this.state.activefilters.tagCloud) > 0 ||
+                _.size(this.state.activefilters.ratings) > 0 ||
+                _.size(this.state.activefilters.map) > 0) && (
+                <div className="ObjectTypePage__tags">
+                  {intl.formatMessage({
+                    id: 'filters',
+                    defaultMessage: 'Filters',
+                  })}
+                  :
+                  <ObjectTypeFiltersTags
+                    activefilters={this.state.activefilters}
+                    setFilterValue={this.setFilterValue}
+                  />
+                </div>
+              )}
+              {relatedObjectsLayout}
             </div>
           </div>
         </div>

@@ -16,15 +16,18 @@ export default class AddButton extends React.Component {
       style: {},
       visible: false,
       isOpen: false,
+      isControlElem: false,
     };
     this.node = null;
     this.blockKey = '';
     this.blockType = '';
     this.blockLength = -1;
+    this.sideControl = null;
 
     this.findNode = this.findNode.bind(this);
     this.hideBlock = this.hideBlock.bind(this);
     this.openToolbar = this.openToolbar.bind(this);
+    this.renderControlElem = this.renderControlElem.bind(this);
   }
 
   // To show + button only when text length == 0
@@ -83,6 +86,7 @@ export default class AddButton extends React.Component {
       this.setState({
         visible: false,
         isOpen: false,
+        isControlElem: false,
       });
     }
   }
@@ -91,6 +95,7 @@ export default class AddButton extends React.Component {
     this.setState(
       {
         isOpen: !this.state.isOpen,
+        isControlElem: false,
       },
       () => {
         // callback function
@@ -117,6 +122,7 @@ export default class AddButton extends React.Component {
       this.setState({
         visible: false,
         isOpen: false,
+        isControlElem: false,
       });
       return;
     }
@@ -128,6 +134,11 @@ export default class AddButton extends React.Component {
         top: node.offsetTop - 3,
       },
     });
+  }
+
+  renderControlElem(control) {
+    this.sideControl = control;
+    this.setState({ isControlElem: true });
   }
 
   render() {
@@ -145,33 +156,37 @@ export default class AddButton extends React.Component {
             <path d="M3 0v3h-3v2h3v3h2v-3h3v-2h-3v-3h-2z" />
           </svg>
         </button>
-        {this.state.isOpen ? (
-          <TransitionGroup>
-            {this.props.sideButtons.map(button => {
-              const Button = button.component;
-              const extraProps = button.props ? button.props : {};
-              return (
-                <CSSTransition
-                  key={button.title}
-                  classNames="md-add-btn-anim"
-                  appear
-                  timeout={{
-                    enter: 200,
-                    exit: 100,
-                    appear: 100,
-                  }}
-                >
-                  <Button
-                    {...extraProps}
-                    getEditorState={this.props.getEditorState}
-                    setEditorState={this.props.setEditorState}
-                    close={this.openToolbar}
-                  />
-                </CSSTransition>
-              );
-            })}
-          </TransitionGroup>
-        ) : null}
+        {this.state.isOpen &&
+          (this.state.isControlElem ? (
+            this.sideControl
+          ) : (
+            <TransitionGroup>
+              {this.props.sideButtons.map(button => {
+                const Button = button.component;
+                const extraProps = button.props ? button.props : {};
+                return (
+                  <CSSTransition
+                    key={button.title}
+                    classNames="md-add-btn-anim"
+                    appear
+                    timeout={{
+                      enter: 200,
+                      exit: 100,
+                      appear: 100,
+                    }}
+                  >
+                    <Button
+                      {...extraProps}
+                      getEditorState={this.props.getEditorState}
+                      setEditorState={this.props.setEditorState}
+                      close={this.openToolbar}
+                      renderControl={this.renderControlElem}
+                    />
+                  </CSSTransition>
+                );
+              })}
+            </TransitionGroup>
+          ))}
       </div>
     );
   }

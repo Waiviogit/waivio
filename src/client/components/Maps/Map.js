@@ -161,11 +161,12 @@ class MapOS extends React.Component {
         </div>
         {isFullscreenMode && (
           <Modal
+            style={{ top: 0 }}
             title={null}
             footer={null}
             visible={isFullscreenMode}
             onCancel={this.toggleModal}
-            width={'90%'}
+            width={'100%'}
             wrapClassName={classNames('MapModal')}
             destroyOnClose
           >

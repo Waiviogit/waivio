@@ -36,6 +36,7 @@ import { toggleModal } from '../../../investarena/redux/actions/modalsActions';
 import config from '../../../investarena/configApi/config';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
+import ObjectAvatar from '../ObjectAvatar';
 
 @injectIntl
 @withRouter
@@ -77,7 +78,10 @@ class Topnav extends React.Component {
   }
 
   static propTypes = {
-    autoCompleteSearchResults: PropTypes.shape(),
+    autoCompleteSearchResults: PropTypes.oneOfType([
+      PropTypes.shape(),
+      PropTypes.arrayOf(PropTypes.shape()),
+    ]),
     intl: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
@@ -412,11 +416,14 @@ class Topnav extends React.Component {
         {_.map(accounts, option => (
           <AutoComplete.Option
             marker={'user'}
-            key={`obj${option.account}`}
+            key={`user${option.account}`}
             value={`${option.account}`}
             className="Topnav__search-autocomplete"
           >
-            {option.account}
+            <div className="Topnav__search-content-wrap">
+              <Avatar username={option.account} size={40} />
+              <div className="Topnav__search-content">{option.account}</div>
+            </div>
           </AutoComplete.Option>
         ))}
       </AutoComplete.OptGroup>
@@ -426,7 +433,7 @@ class Topnav extends React.Component {
   wobjectSearchLayout(wobjects) {
     return (
       <AutoComplete.OptGroup
-        key="usersTitle"
+        key="wobjectsTitle"
         label={this.renderTitle(
           this.props.intl.formatMessage({
             id: 'wobjects_search_title',
@@ -437,6 +444,7 @@ class Topnav extends React.Component {
       >
         {_.map(wobjects, option => {
           const wobjName = getFieldWithMaxWeight(option, objectFields.name);
+          const parent = option.parent;
           return wobjName ? (
             <AutoComplete.Option
               marker={'wobj'}
@@ -444,7 +452,18 @@ class Topnav extends React.Component {
               value={`${option.author_permlink}`}
               className="Topnav__search-autocomplete"
             >
-              {wobjName}
+              <div className="Topnav__search-content-wrap">
+                <ObjectAvatar item={option} size={40} />
+                <div>
+                  <div className="Topnav__search-content">{wobjName}</div>
+                  {parent && (
+                    <div className="Topnav__search-content-small">
+                      ({getFieldWithMaxWeight(parent, objectFields.name)})
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="Topnav__search-content-small">{option.object_type}</div>
             </AutoComplete.Option>
           ) : null;
         })}
@@ -455,7 +474,7 @@ class Topnav extends React.Component {
   wobjectTypeSearchLayout(objectTypes) {
     return (
       <AutoComplete.OptGroup
-        key="usersTitle"
+        key="typesTitle"
         label={this.renderTitle(
           this.props.intl.formatMessage({
             id: 'wobjectType_search_title',

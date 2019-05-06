@@ -319,7 +319,7 @@ export const getObjectType = name =>
       .catch(error => reject(error));
   });
 
-export const getSearchResult = (text, userLimit = 5, wobjectsLimit = 5, objectTypesLimit = 5) =>
+export const getSearchResult = (text, userLimit = 3, wobjectsLimit = 5, objectTypesLimit = 5) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.generalSearch}`, {
       headers,

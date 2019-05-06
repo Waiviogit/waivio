@@ -1,6 +1,8 @@
+@import (reference) '../../../styles/modules/variables.less';
 @import (reference) '../../../styles/custom.less';
 
 @add-btn-width: 36px;
+@input-max-width: @container-width - @right-width - @margin * 3;
 
 .md-side-toolbar {
   display: flex;
@@ -13,6 +15,48 @@
   div {
     display: flex;
   }
+
+  .video-link-input,
+  .object-search-input {
+    width: calc(100vw - @margin * 4);
+
+    @media @small {
+      width: calc(100vw - @margin * 5 - @right-width);
+    }
+    @media @medium {
+      max-width: @input-max-width - @margin * 2;
+    }
+    @media @large {
+      max-width: @input-max-width;
+    }
+
+    .ant-btn {
+      height: 36px;
+      padding: 0 8px;
+
+      @media @medium, @large {
+        display: none;
+      }
+    }
+  }
+
+  .object-search-input {
+    .ant-select-selection {
+      width: 100%;
+      &__rendered {
+        width: 100%;
+        ul {
+          width: 100%;
+          li {
+            margin: 0;
+            .ant-input {
+              height: 36px;
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 .md-sb-button {
@@ -22,7 +66,7 @@
   color: @grey-empress;
   cursor: pointer;
   height: @add-btn-width;
-  width: @add-btn-width;
+  min-width: @add-btn-width;
   border-radius: @add-btn-width / 2;
   font-size: 22px;
   margin-right: 2px;
@@ -50,13 +94,15 @@
       border-color: @primary-color;
     }
 
-    //& > .iconfont {
-    //  font-size: 24px;
-    //}
+    & > .video-btn {
+      padding-left: 2px;
+      svg path {
+        fill: @grey-empress;
+      }
+    }
 
     & > .object-btn {
       font-size: 24px;
-
       svg path {
         fill: @grey-empress;
       }
