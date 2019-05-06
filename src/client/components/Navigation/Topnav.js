@@ -43,7 +43,10 @@ import ObjectAvatar from '../ObjectAvatar';
 )
 class Topnav extends React.Component {
   static propTypes = {
-    autoCompleteSearchResults: PropTypes.shape(),
+    autoCompleteSearchResults: PropTypes.oneOfType([
+      PropTypes.shape(),
+      PropTypes.arrayOf(PropTypes.shape()),
+    ]),
     intl: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
@@ -337,7 +340,7 @@ class Topnav extends React.Component {
         {_.map(accounts, option => (
           <AutoComplete.Option
             marker={'user'}
-            key={`obj${option.account}`}
+            key={`user${option.account}`}
             value={`${option.account}`}
             className="Topnav__search-autocomplete"
           >
@@ -354,7 +357,7 @@ class Topnav extends React.Component {
   wobjectSearchLayout(wobjects) {
     return (
       <AutoComplete.OptGroup
-        key="usersTitle"
+        key="wobjectsTitle"
         label={this.renderTitle(
           this.props.intl.formatMessage({
             id: 'wobjects_search_title',
@@ -395,7 +398,7 @@ class Topnav extends React.Component {
   wobjectTypeSearchLayout(objectTypes) {
     return (
       <AutoComplete.OptGroup
-        key="usersTitle"
+        key="typesTitle"
         label={this.renderTitle(
           this.props.intl.formatMessage({
             id: 'wobjectType_search_title',
