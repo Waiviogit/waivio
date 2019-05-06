@@ -17,7 +17,6 @@
   @media @medium, @small, @large {
     .ObjectCardView-mixin(220px, 100%);
     &__title {
-      word-break: break-all;
       overflow: hidden;
       white-space: normal;
     }
@@ -80,7 +79,7 @@
       margin-top: 7px;
     }
     &-truncated {
-      width: 90%;
+      width: 88%;
       color: @black;
       font-weight: bold;
       font-style: normal;
@@ -98,6 +97,7 @@
   &__title {
     color: @black;
     font-size: 24px;
+    word-break: break-word;
   }
 }
 
