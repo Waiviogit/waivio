@@ -258,9 +258,9 @@ export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3) =>
       .catch(error => reject(error));
   });
 
-export const getObjectType = name =>
+export const getObjectType = (name, count) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.objectType}/${name}?wobjects_count=1000`, {
+    fetch(`${config.apiPrefix}${config.objectType}/${name}?wobjects_count=${count || 20}`, {
       headers,
       method: 'GET',
     })

@@ -18,10 +18,9 @@ import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import { getObjectType } from './objectTypesActions';
 import './ObjectTypePage.less';
-import ObjectCardView from '../objectCard/ObjectCardView';
-import { getClientWObj } from '../adapters';
 import ObjectTypeFiltersPanel from './ObjectTypeFiltersPanel/ObjectTypeFiltersPanel';
 import ObjectTypeFiltersTags from './ObjectTypeFiltersTags/ObjectTypeFiltersTags';
+import ListObjectsByType from '../objectCard/ListObjectsByType/ListObjectsByType';
 
 @injectIntl
 @withRouter
@@ -87,17 +86,7 @@ export default class ObjectTypePage extends React.Component {
     const canonicalUrl = `${host}/objectType/${type.name}`;
     const url = `${host}/objectType/${type.name}`;
     const title = `Type - ${type.name || ''}`;
-    // const allFilters = {
-    //   map: ["map"],
-    //   tagCloud: [],
-    //   ratings: []
-    // };
-    const relatedObjectsLayout = _.map(type.related_wobjects, obj => {
-      const wobj = getClientWObj(obj);
-      return (
-        <ObjectCardView key={wobj.id} wObject={wobj} showSmallVersion={screenSize === 'xsmall'} />
-      );
-    });
+
     return (
       <div className="ObjectTypePage">
         <Helmet>
@@ -154,7 +143,12 @@ export default class ObjectTypePage extends React.Component {
                   />
                 </div>
               )}
-              {relatedObjectsLayout}
+              <ListObjectsByType
+                limit={25}
+                wobjects={type.related_wobjects}
+                typeName={this.props.match.params.typeName}
+                showSmallVersion={screenSize === 'xsmall'}
+              />
             </div>
           </div>
         </div>
