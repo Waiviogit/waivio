@@ -60,7 +60,7 @@ class MapAppendObject extends React.Component {
   }
 
   onBoundsChanged = ({ center, zoom, bounds, initial }) =>
-    this.setState({ center, zoom, bounds, initial });
+    this.setState({ center, zoom, bounds, initial, userCoordinates: center });
 
   setCoordinates = coord => {
     this.props.setCoordinates(coord);
