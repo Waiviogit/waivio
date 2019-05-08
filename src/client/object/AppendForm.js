@@ -224,7 +224,7 @@ export default class AppendForm extends Component {
       case objectFields.avatar:
       case objectFields.background:
       case objectFields.price:
-      case objectFields.tag:
+      case objectFields.tagCloud:
       case objectFields.parent:
       case objectFields.email: {
         fieldBody.push(rest[currentField]);
@@ -586,10 +586,10 @@ export default class AppendForm extends Component {
           </Form.Item>
         );
       }
-      case objectFields.tag: {
+      case objectFields.tagCloud: {
         return (
           <Form.Item>
-            {getFieldDecorator(objectFields.tag, {
+            {getFieldDecorator(objectFields.tagCloud, {
               rules: [
                 {
                   transform: value => value && value.toLowerCase(),
@@ -601,7 +601,7 @@ export default class AppendForm extends Component {
                       id: 'field_error',
                       defaultMessage: 'Field is required',
                     },
-                    { field: 'Tag' },
+                    { field: 'Tag cloud' },
                   ),
                 },
                 {
