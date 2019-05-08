@@ -4,7 +4,7 @@
 @wrapPadding: 15px;
 
 .ObjectCardView {
-  .ObjectCardView-mixin(100px, 100%);
+  .ObjectCardView-mixin(80px, 100%);
   &__title {
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -15,7 +15,7 @@
     margin-top: 5px;
   }
   @media @medium, @small, @large {
-    .ObjectCardView-mixin(220px, 100%);
+    .ObjectCardView-mixin(180px, 100%);
     &__title {
       word-break: break-all;
       overflow: hidden;
@@ -75,7 +75,7 @@
     align-items: center;
     width: 100%;
     cursor: auto;
-    margin-top: 13px;
+    margin-top: 10px;
     .Weight {
       margin-top: 7px;
     }
@@ -86,7 +86,7 @@
       font-style: normal;
       font-stretch: normal;
       line-height: normal;
-      font-size: 24px;
+      font-size: 20px;
       letter-spacing: -0.5px;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -97,7 +97,7 @@
   }
   &__title {
     color: @black;
-    font-size: 24px;
+    font-size: 20px;
   }
 }
 
