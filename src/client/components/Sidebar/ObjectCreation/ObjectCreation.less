@@ -1,0 +1,22 @@
+@import (reference) '../../../styles/custom.less';
+
+.ObjectCreation {
+  &__obj-type-item {
+    padding-bottom: 4px;
+
+    &-name {
+      cursor: pointer;
+      color: @black;
+      font-weight: bold;
+    }
+
+    &:last-of-type {
+      padding-bottom: 8px;
+    }
+    &:last-child {
+      padding-bottom: 0;
+    }
+  }
+}
+
+@import 'ObjectCreation-nightmode';

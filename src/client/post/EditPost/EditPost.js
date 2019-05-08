@@ -22,6 +22,7 @@ import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { Entity, toMarkdown } from '../../components/EditorExtended';
 import LastDraftsContainer from '../Write/LastDraftsContainer';
+import ObjectCreation from '../../components/Sidebar/ObjectCreation/ObjectCreation';
 import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import './EditPost.less';
 
@@ -230,6 +231,7 @@ class EditPost extends Component {
           </div>
           <div className="rightContainer">
             <div className="right">
+              <ObjectCreation />
               <LastDraftsContainer />
             </div>
           </div>
