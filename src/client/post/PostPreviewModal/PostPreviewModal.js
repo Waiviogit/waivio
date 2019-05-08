@@ -30,6 +30,7 @@ class PostPreviewModal extends Component {
     topics: PropTypes.arrayOf(PropTypes.string).isRequired,
     linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
     forecastValues: PropTypes.shape(),
+    isUpdating: PropTypes.bool,
     objPercentage: PropTypes.shape(),
     onTopicsChange: PropTypes.func.isRequired,
     onSettingsChange: PropTypes.func.isRequired,
@@ -43,6 +44,7 @@ class PostPreviewModal extends Component {
     linkedObjects: [],
     forecastValues: {},
     objPercentage: {},
+    isUpdating: false,
     onReadyBtnClick: () => {},
   };
 
@@ -123,7 +125,15 @@ class PostPreviewModal extends Component {
 
   render() {
     const { isModalOpen, isConfirmed, body, title, weightBuffer, objPercentage } = this.state;
-    const { intl, content, topics, linkedObjects, settings, forecastValues } = this.props;
+    const {
+      intl,
+      content,
+      topics,
+      linkedObjects,
+      settings,
+      forecastValues,
+      isUpdating,
+    } = this.props;
     const { selectForecast, ...forecastRaw } = forecastValues;
     const forecast = getForecastObject(forecastRaw, selectForecast);
     return (
@@ -179,14 +189,16 @@ class PostPreviewModal extends Component {
               policyText="Lorem ipsum dolor sit amet, enim in ut adipiscing turpis, mi interdum faucibus eleifend montes, augue viverra commodo vel placerat. Neque vitae amet consequat, proin sociis in sem, nunc fusce a facilisi per, sed sit et eget. A morbi velit proin, elit ac integer in justo, enim quis arcu arcu, magna dapibus est etiam. Nisl dapibus ut leo semper, pellentesque nec sem nec nulla, convallis dictum odio porttitor."
               onChange={this.handleConfirmedChange}
             />
-            <AdvanceSettings
-              linkedObjects={linkedObjects}
-              objPercentage={objPercentage}
-              weightBuffer={weightBuffer}
-              settings={settings}
-              onSettingsChange={this.handleSettingsChange}
-              onPercentChange={this.handlePercentChange}
-            />
+            {!isUpdating && (
+              <AdvanceSettings
+                linkedObjects={linkedObjects}
+                objPercentage={objPercentage}
+                weightBuffer={weightBuffer}
+                settings={settings}
+                onSettingsChange={this.handleSettingsChange}
+                onPercentChange={this.handlePercentChange}
+              />
+            )}
             <div className="edit-post-controls">
               <Button
                 htmlType="submit"

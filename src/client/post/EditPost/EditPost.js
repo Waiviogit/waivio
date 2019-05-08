@@ -257,6 +257,7 @@ class EditPost extends Component {
               objPercentage={objPercentage}
               settings={settings}
               forecastValues={forecastValues}
+              isUpdating={isUpdating}
               onTopicsChange={this.handleTopicsChange}
               onSettingsChange={this.handleSettingsChange}
               onPercentChange={this.handlePercentChange}
