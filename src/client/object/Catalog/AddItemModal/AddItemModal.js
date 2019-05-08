@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { Button, Icon, Modal, message, Select, Form } from 'antd';
+import { Button, Modal, message, Select, Form } from 'antd';
 import { getAppendData } from '../../../helpers/wObjectHelper';
 import { getFieldWithMaxWeight } from '../../../object/wObjectHelper';
 import { getAuthenticatedUserName, getFollowingObjectsList, getLocale } from '../../../reducers';
@@ -19,7 +19,6 @@ import { followObject } from '../../../object/wobjActions';
 import * as wobjectActions from '../../wobjectsActions';
 import * as notificationActions from '../../../app/Notification/notificationActions';
 import './AddItemModal.less';
-import IconButton from '../../../components/IconButton';
 
 @connect(
   state => ({
@@ -142,9 +141,9 @@ class AddItemModal extends Component {
     });
   };
 
-  handleCreateObject = (wobj, follow) => {
+  handleCreateObject = wobj => {
     const { intl, notify, createObject } = this.props;
-    return createObject(wobj, follow)
+    return createObject(wobj)
       .then(({ value: { parentPermlink, parentAuthor } }) => {
         notify(
           intl.formatMessage({
@@ -210,19 +209,13 @@ class AddItemModal extends Component {
       <React.Fragment>
         {isModalOpen && (
           <Modal
-            title={
-              <div className="modal-header">
-                {intl.formatMessage({
-                  id: 'list_update',
-                  defaultMessage: 'Update list',
-                })}
-                <IconButton
-                  className="modal-header__close-btn"
-                  icon={<Icon type="close" />}
-                  onClick={this.handleToggleModal}
-                />
-              </div>
-            }
+            title={intl.formatMessage({
+              id: 'list_update',
+              defaultMessage: 'Update list',
+            })}
+            closable
+            onCancel={this.handleToggleModal}
+            maskClosable={false}
             visible={isModalOpen}
             wrapClassName="add-item-modal"
             width={500}
@@ -258,7 +251,7 @@ class AddItemModal extends Component {
                   <Select
                     style={{ width: '100%' }}
                     placeholder={intl.formatMessage({ id: 'language', defaultMessage: 'Language' })}
-                    onChange={this.handleLanguageChange}
+                    // onChange={this.handleLanguageChange}
                     disabled={isLoading}
                   >
                     {languageOptions}

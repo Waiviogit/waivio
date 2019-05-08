@@ -9,6 +9,7 @@
 
   &__title {
     display: flex;
+    min-height: 42px;
     align-items: center;
     border-bottom: @base-border;
     border-top-right-radius: 0;
@@ -45,6 +46,12 @@
     &:last-of-type {
       display: none;
     }
+  }
+
+  &__more {
+    cursor: pointer;
+    color: @blue-botticelli;
+    font-weight: 500;
   }
 }
 

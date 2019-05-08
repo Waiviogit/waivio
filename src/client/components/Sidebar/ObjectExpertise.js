@@ -15,7 +15,7 @@ const ObjectExpertise = ({ username, wobject }) => {
     <div className="SidebarContentBlock">
       <h4 className="SidebarContentBlock__title">
         <i className="iconfont icon-collection SidebarContentBlock__icon" />{' '}
-        <FormattedMessage id="object_expertise" defaultMessage="Object Expertise" />
+        <FormattedMessage id="object_expertise" defaultMessage="Experts" />
       </h4>
       <div className="SidebarContentBlock__content">
         {users &&
