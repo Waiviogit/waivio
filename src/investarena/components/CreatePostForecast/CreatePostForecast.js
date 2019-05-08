@@ -7,7 +7,13 @@ import moment from 'moment';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Collapse, DatePicker, Select, Input } from 'antd';
 import { optionsAction, optionsForecast } from '../../constants/selectData';
-import { getQuoteOptions, getQuotePrice, isStopLossTakeProfitValid } from './helpers';
+import {
+  getQuoteOptions,
+  getQuotePrice,
+  isStopLossTakeProfitValid,
+  getForecastState,
+  validateForm,
+} from './helpers';
 import {
   forecastDateTimeFormat,
   maxForecastDay,
@@ -43,22 +49,23 @@ class CreatePostForecast extends Component {
     onChange: () => {},
   };
 
-  state = {
-    dateTimeValue: null,
-    quotePrice: null,
-    selectQuote: null,
-    selectRecommend: null,
-    selectForecast: null,
-    takeProfitValue: '',
-    stopLossValue: '',
-    takeProfitValueIncorrect: false,
-    stopLossValueIncorrect: false,
-    isValid: true,
-  };
+  constructor(props) {
+    super(props);
 
-  componentDidUpdate(prevProps) {
-    if (!_.isEqual(prevProps.forecastValues, this.props.forecastValues)) {
-      this.updateForecastValues(this.props.forecastValues);
+    this.state = {
+      ...getForecastState(props.forecastValues),
+      isValid: true,
+    };
+  }
+
+  // componentDidUpdate(prevProps) {
+  //   if (!_.isEqual(prevProps.forecastValues, this.props.forecastValues)) {
+  //     this.updateForecastValues(this.props.forecastValues);
+  //   }
+  // }
+  componentWillReceiveProps(nextProps) {
+    if (!_.isEqual(nextProps.forecastValues, this.props.forecastValues)) {
+      this.setState(getForecastState(nextProps.forecastValues));
     }
   }
 
@@ -89,13 +96,13 @@ class CreatePostForecast extends Component {
     return forecastObject;
   };
 
-  updateForecastValues = forecast => {
+  getForecastState = forecast => {
     const dateTimeValue = forecast.expiredAt ? moment(forecast.expiredAt).local() : null;
     const selectForecast =
       !forecast.selectForecast && Boolean(dateTimeValue)
         ? 'Custom'
         : forecast.selectForecast || null;
-    this.setState({
+    return {
       dateTimeValue,
       quotePrice: forecast.postPrice,
       selectQuote: forecast.quoteSecurity,
@@ -103,8 +110,8 @@ class CreatePostForecast extends Component {
       selectForecast,
       takeProfitValue: forecast.tpPrice || '',
       stopLossValue: forecast.slPrice || '',
-      isValid: this.validateForm(forecast.quoteSecurity, forecast.recommend, selectForecast),
-    });
+      isValid: validateForm(forecast.quoteSecurity, forecast.recommend, selectForecast),
+    };
   };
 
   validateForm = (quote, recommend, forecast) =>
@@ -124,7 +131,7 @@ class CreatePostForecast extends Component {
         stopLossValue: '',
         takeProfitValueIncorrect: false,
         stopLossValueIncorrect: false,
-        isValid: this.validateForm(selectQuote, selectRecommend, selectForecast),
+        isValid: validateForm(selectQuote, selectRecommend, selectForecast),
       }),
     );
   };
@@ -143,7 +150,7 @@ class CreatePostForecast extends Component {
         stopLossValue: '',
         takeProfitValueIncorrect: false,
         stopLossValueIncorrect: false,
-        isValid: this.validateForm(selectQuote, selectRecommend, selectForecast),
+        isValid: validateForm(selectQuote, selectRecommend, selectForecast),
       }),
     );
   };
@@ -215,7 +222,7 @@ class CreatePostForecast extends Component {
       this.getForecastObject({
         ...this.state,
         dateTimeValue: moment.utc(dateTimeValue),
-        isValid: this.validateForm(selectQuote, selectRecommend, 'Custom'),
+        isValid: validateForm(selectQuote, selectRecommend, 'Custom'),
       }),
     );
   };
@@ -228,7 +235,7 @@ class CreatePostForecast extends Component {
           ...this.state,
           selectForecast,
           dateTimeValue: moment.utc().add(minForecastMinutes, 'minute'),
-          isValid: this.validateForm(selectQuote, selectRecommend, selectForecast),
+          isValid: validateForm(selectQuote, selectRecommend, selectForecast),
         }),
       );
     } else {
@@ -236,11 +243,13 @@ class CreatePostForecast extends Component {
         this.getForecastObject({
           ...this.state,
           selectForecast,
-          isValid: this.validateForm(selectQuote, selectRecommend, selectForecast),
+          isValid: validateForm(selectQuote, selectRecommend, selectForecast),
         }),
       );
     }
   };
+
+  resetForm = () => this.props.onChange({ isValid: true });
 
   render() {
     const {
@@ -356,7 +365,7 @@ class CreatePostForecast extends Component {
                           this.state.takeProfitValueIncorrect ? ' st-create-post-danger' : ''
                         }`}
                         value={takeProfitValue}
-                        disabled={!selectRecommend || !selectQuote}
+                        disabled={!selectRecommend || !selectQuote || isUpdating}
                         onChange={e =>
                           this.handleChangeTakeProfitStopLostInputs(e, 'takeProfitValue')
                         }
@@ -376,7 +385,7 @@ class CreatePostForecast extends Component {
                           this.state.stopLossValueIncorrect ? ' st-create-post-danger' : ''
                         }`}
                         value={stopLossValue}
-                        disabled={!selectRecommend || !selectQuote}
+                        disabled={!selectRecommend || !selectQuote || isUpdating}
                         onChange={e =>
                           this.handleChangeTakeProfitStopLostInputs(e, 'stopLossValue')
                         }
@@ -393,6 +402,7 @@ class CreatePostForecast extends Component {
                       {isUpdating || this.state.selectForecast === 'Custom' ? (
                         <DatePicker
                           disabled={isUpdating}
+                          allowClear={false}
                           showTime={{ format: 'HH:mm', minuteStep: 5 }}
                           style={{ width: '100%' }}
                           locale={intl.formatMessage({ id: 'locale', defaultMessage: 'en' })}
@@ -428,6 +438,13 @@ class CreatePostForecast extends Component {
                         </Select>
                       )}
                     </div>
+                  </div>
+                  <div
+                    className="st-create-post-dropdowns-row clear"
+                    role="presentation"
+                    onClick={this.resetForm}
+                  >
+                    {intl.formatMessage({ id: 'deals.clear', defaultMessage: 'Clear' })}
                   </div>
                 </div>
               </div>

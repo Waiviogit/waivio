@@ -37,7 +37,7 @@ import PostSellBuy from '../../../investarena/components/PostSellBuy';
 import { jsonParse } from '../../helpers/formatter';
 import PostForecast from '../../../investarena/components/PostForecast';
 import ObjectAvatar from '../ObjectAvatar';
-import {getFieldWithMaxWeight} from "../../object/wObjectHelper";
+import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 
 @injectIntl
 @withRouter

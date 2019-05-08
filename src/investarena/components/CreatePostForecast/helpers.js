@@ -1,5 +1,7 @@
 import _ from 'lodash';
+import moment from 'moment';
 import { blackListQuotes } from '../../constants/blackListQuotes';
+import { forecastDateTimeFormat } from '../../constants/constantsForecast';
 
 export const getQuoteOptions = (quotesSettings, quotes) => {
   const optionsQuote = [];
@@ -44,6 +46,42 @@ export const isStopLossTakeProfitValid = (value, input, recommend, quotePrice) =
       break;
   }
   return isError || Number(value) <= 0;
+};
+
+export const getForecastObject = (forecast, selectForecast) =>
+  forecast && selectForecast && !_.isEmpty(forecast)
+    ? {
+        ...forecast,
+        createdAt: moment.utc().format(forecastDateTimeFormat),
+        expiredAt:
+          selectForecast === 'Custom'
+            ? forecast.expiredAt
+            : moment
+                .utc()
+                .add(selectForecast, 'seconds')
+                .format(forecastDateTimeFormat),
+        tpPrice: forecast.tpPrice ? parseFloat(forecast.tpPrice) : null,
+        slPrice: forecast.slPrice ? parseFloat(forecast.slPrice) : null,
+      }
+    : null;
+
+export const validateForm = (quote, recommend, forecast) =>
+  !!(quote && recommend && forecast) || !(quote || recommend || forecast);
+
+export const getForecastState = forecast => {
+  const dateTimeValue = forecast.expiredAt ? moment(forecast.expiredAt).local() : null;
+  const selectForecast =
+    !forecast.selectForecast && Boolean(dateTimeValue) ? 'Custom' : forecast.selectForecast || null;
+  return {
+    dateTimeValue,
+    quotePrice: forecast.postPrice || null,
+    selectQuote: forecast.quoteSecurity || null,
+    selectRecommend: forecast.recommend || null,
+    selectForecast,
+    takeProfitValue: forecast.tpPrice || '',
+    stopLossValue: forecast.slPrice || '',
+    isValid: validateForm(forecast.quoteSecurity, forecast.recommend, selectForecast),
+  };
 };
 
 export default null;
