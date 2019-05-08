@@ -526,6 +526,33 @@ export default class AppendForm extends Component {
     }
   };
 
+  // removeNewsFilterItem = (k) => {
+  //   const { form } = this.props;
+  //   // can use data-binding to get
+  //   const keys = form.getFieldValue('keys');
+  //   // We need at least one passenger
+  //   if (keys.length === 1) {
+  //     return;
+  //   }
+  //
+  //   // can use data-binding to set
+  //   form.setFieldsValue({
+  //     keys: keys.filter(key => key !== k),
+  //   });
+  // };
+  //
+  // addNewsFilterItem = () => {
+  //   const { form } = this.props;
+  //   // can use data-binding to get
+  //   const keys = form.getFieldValue('keys');
+  //   const nextKeys = keys.concat(id++);
+  //   // can use data-binding to set
+  //   // important! notify form to detect changes
+  //   form.setFieldsValue({
+  //     keys: nextKeys,
+  //   });
+  // };
+
   renderContentValue = currentField => {
     const { loading } = this.state;
     const { intl, wObject } = this.props;
@@ -1470,6 +1497,73 @@ export default class AppendForm extends Component {
                 />,
               )}
             </Form.Item>
+          </React.Fragment>
+        );
+      }
+      case objectFields.newsFilter: {
+        return (
+          <React.Fragment>
+            <Form.Item>
+              {getFieldDecorator(addressFields.newsFilter, {
+                rules: [
+                  {
+                    max: 100,
+                    message: intl.formatMessage(
+                      {
+                        id: 'value_error_long',
+                        defaultMessage: "Value can't be longer than 100 characters.",
+                      },
+                      { value: 100 },
+                    ),
+                  },
+                  {
+                    validator: this.validateFieldValue,
+                  },
+                ],
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'location_country',
+                    defaultMessage: 'Country',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator(addressFields.street, {
+                rules: [
+                  {
+                    max: 100,
+                    message: intl.formatMessage(
+                      {
+                        id: 'value_error_long',
+                        defaultMessage: "Value can't be longer than 100 characters.",
+                      },
+                      { value: 100 },
+                    ),
+                  },
+                  {
+                    validator: this.validateFieldValue,
+                  },
+                ],
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'location_street',
+                    defaultMessage: 'Street',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            {combinedFieldValidationMsg}
           </React.Fragment>
         );
       }
