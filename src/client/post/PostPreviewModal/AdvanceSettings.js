@@ -62,7 +62,12 @@ class AdvanceSettings extends Component {
               {intl.formatMessage({ id: 'reward', defaultMessage: 'Reward' })}
             </div>
             <div className="rewards-settings__control">
-              <Select value={reward} onChange={this.handleRewardChange} disabled={isUpdating}>
+              <Select
+                value={reward}
+                dropdownClassName="rewards-settings__dropdown"
+                onChange={this.handleRewardChange}
+                disabled={isUpdating}
+              >
                 <Select.Option value={rewardsValues.all}>
                   {intl.formatMessage({
                     id: 'reward_option_100',

@@ -10,6 +10,7 @@ import AdvanceSettings from './AdvanceSettings';
 import { isContentValid, splitPostContent } from '../../helpers/postHelpers';
 import { handleWeightChange, setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import { rewardsValues } from '../../../common/constants/rewards';
+import BBackTop from '../../components/BBackTop';
 import './PostPreviewModal.less';
 
 const isTopicValid = topic => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(topic);
@@ -38,6 +39,10 @@ class PostPreviewModal extends Component {
     linkedObjects: [],
     objPercentage: {},
   };
+
+  static findScrollElement() {
+    return document.querySelector('.post-preview-modal');
+  }
 
   constructor(props) {
     super(props);
@@ -114,7 +119,7 @@ class PostPreviewModal extends Component {
         {isModalOpen && (
           <Modal
             title={intl.formatMessage({ id: 'preview', defaultMessage: 'Preview' })}
-            style={{ top: 20 }}
+            style={{ top: 0 }}
             visible={isModalOpen}
             centered={false}
             closable
@@ -123,8 +128,10 @@ class PostPreviewModal extends Component {
             width={800}
             footer={null}
             onCancel={this.hideModal}
-            onOk={() => console.log('You are my hero!')}
+            maskStyle={{ 'z-index': '1500' }}
+            maskClosable={false}
           >
+            <BBackTop isModal target={PostPreviewModal.findScrollElement} />
             <h1 className="StoryFull__title preview">{title}</h1>
             <BodyContainer full body={body} />
             <TagsSelector

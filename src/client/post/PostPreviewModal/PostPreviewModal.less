@@ -1,3 +1,17 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.ant-modal-mask[style*='z-index: 1500'] {
+  background-color: @white !important;
+}
+.post-preview-modal.ant-modal-wrap {
+  z-index: 1500;
+
+  .ant-modal-content {
+    box-shadow: none;
+  }
+}
+
 .StoryFull__title.preview {
   //padding-bottom: 12px;
 }
@@ -11,3 +25,5 @@
   text-align: center;
   margin-top: 5px;
 }
+
+@import 'PostPreviewModal-nightmode';
