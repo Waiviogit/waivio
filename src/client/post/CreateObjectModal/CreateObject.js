@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { Form, Input, Select, Button, Modal, Icon } from 'antd';
+import { Form, Input, Select, Button, Modal } from 'antd';
 import { connect } from 'react-redux';
 import './CreateObject.less';
 import LANGUAGES from '../../translations/languages';
@@ -10,7 +10,6 @@ import { getLanguageText } from '../../translations';
 import { objectFields } from '../../../common/constants/listOfFields';
 import LikeSection from '../../object/LikeSection';
 import FollowObjectForm from '../../object/FollowObjectForm';
-import IconButton from '../../components/IconButton';
 import { getobjectTypesState } from '../../reducers';
 import { getObjectTypes } from '../../objectTypes/objectTypesActions';
 
@@ -29,15 +28,17 @@ class CreateObject extends React.Component {
     intl: PropTypes.shape().isRequired,
     form: PropTypes.shape().isRequired,
     objectTypes: PropTypes.shape(),
+    currentLocaleInList: PropTypes.shape().isRequired,
+    chosenType: PropTypes.string,
     onCreateObject: PropTypes.func.isRequired,
     getObjectTypes: PropTypes.func.isRequired,
-    currentLocaleInList: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
     currentLocaleInList: { id: 'en-US', name: '', nativeName: '' },
     wobject: { tag: '' },
     objectTypes: {},
+    chosenType: null,
     onCreateObject: () => {},
   };
 
@@ -45,9 +46,15 @@ class CreateObject extends React.Component {
     super(props);
 
     this.state = {
-      isModalOpen: false,
+      isModalOpen: Boolean(props.chosenType),
       loading: false,
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.chosenType !== nextProps.chosenType) {
+      this.setState({ isModalOpen: Boolean(nextProps.chosenType) });
+    }
   }
 
   toggleModal = () => {
@@ -85,7 +92,7 @@ class CreateObject extends React.Component {
   render() {
     const languageOptions = [];
     const { getFieldDecorator } = this.props.form;
-    const { currentLocaleInList, intl, form, objectTypes } = this.props;
+    const { currentLocaleInList, intl, form, objectTypes, chosenType } = this.props;
     const { loading } = this.state;
 
     const Option = Select.Option;
@@ -108,30 +115,26 @@ class CreateObject extends React.Component {
 
     return (
       <React.Fragment>
-        <div className="CreateObject__row align-right">
-          <span role="presentation" className="CreateObject__button" onClick={this.toggleModal}>
-            {this.props.intl.formatMessage({
-              id: 'create_new_object',
-              defaultMessage: 'create new object',
-            })}
-          </span>
-        </div>
+        {!chosenType && (
+          <div className="CreateObject__row align-right">
+            <span role="presentation" className="CreateObject__button" onClick={this.toggleModal}>
+              {this.props.intl.formatMessage({
+                id: 'create_new_object',
+                defaultMessage: 'create new object',
+              })}
+            </span>
+          </div>
+        )}
 
         {this.state.isModalOpen && (
           <Modal
-            title={
-              <div className="modal-header">
-                {this.props.intl.formatMessage({
-                  id: 'create_new_object',
-                  defaultMessage: 'Create new object',
-                })}
-                <IconButton
-                  className="modal-header__close-btn"
-                  icon={<Icon type="close" />}
-                  onClick={this.toggleModal}
-                />
-              </div>
-            }
+            title={this.props.intl.formatMessage({
+              id: 'create_new_object',
+              defaultMessage: 'Create new object',
+            })}
+            closable
+            onCancel={this.toggleModal}
+            maskClosable={false}
             visible={this.state.isModalOpen}
             wrapClassName="create-object-modal"
             confirmLoading={this.state.isCreating}
@@ -190,6 +193,7 @@ class CreateObject extends React.Component {
             </Form.Item>
             <Form.Item>
               {getFieldDecorator('type', {
+                initialValue: chosenType,
                 rules: [
                   {
                     required: true,
@@ -202,6 +206,7 @@ class CreateObject extends React.Component {
               })(
                 <Select
                   showSearch
+                  disabled={Boolean(this.props.chosenType)}
                   style={{ width: '100%' }}
                   placeholder={intl.formatMessage({
                     id: 'placeholder_obj_type',
