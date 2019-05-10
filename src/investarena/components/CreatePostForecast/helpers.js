@@ -55,7 +55,7 @@ export const getForecastObject = (forecast, selectForecast) =>
         createdAt: moment.utc().format(forecastDateTimeFormat),
         expiredAt:
           selectForecast === 'Custom'
-            ? forecast.expiredAt
+            ? moment(forecast.expiredAt).utc()
             : moment
                 .utc()
                 .add(selectForecast, 'seconds')
