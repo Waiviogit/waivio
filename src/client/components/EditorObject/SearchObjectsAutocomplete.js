@@ -31,6 +31,8 @@ class SearchObjectsAutocomplete extends Component {
     searchObjects: () => {},
     clearSearchResults: () => {},
     handleSelect: () => {},
+    rowIndex: 0,
+    ruleIndex: 0,
   };
 
   static propTypes = {
@@ -42,6 +44,8 @@ class SearchObjectsAutocomplete extends Component {
     searchObjects: PropTypes.func,
     clearSearchResults: PropTypes.func,
     handleSelect: PropTypes.func,
+    rowIndex: PropTypes.number,
+    ruleIndex: PropTypes.number,
   };
 
   constructor(props) {
@@ -91,6 +95,8 @@ class SearchObjectsAutocomplete extends Component {
         ],
         isNew: true,
       },
+      this.props.rowIndex,
+      this.props.ruleIndex,
     );
   }
   render() {

@@ -16,9 +16,11 @@ export const objectFields = {
   price: 'price',
   parent: 'parent',
   tagCloud: 'tagCloud',
+  newsFilter: 'newsFilter',
 };
 
 export const objectFieldsWithInnerData = [
+  'newsFilter',
   'address',
   'map',
   'link',

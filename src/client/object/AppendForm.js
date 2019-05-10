@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Button, Form, Input, message, Select, Avatar, Rate, Icon } from 'antd';
+import { Button, Form, Input, message, Select, Avatar, Rate, Icon, Row, Col } from 'antd';
 import {
   linkFields,
   objectFields,
@@ -57,6 +57,7 @@ import CatalogItem from './Catalog/CatalogItem';
 import { getClientWObj } from '../adapters';
 import SearchObjectsAutocomplete from '../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCardView from '../objectCard/ObjectCardView';
+import ObjectCard from '../components/Sidebar/ObjectCard';
 
 @connect(
   state => ({
@@ -125,6 +126,8 @@ export default class AppendForm extends Component {
     sliderVisible: false,
     loading: false,
     currentParent: null,
+    allowList: [[]],
+    ignoreList: [],
   };
 
   componentDidMount = () => {
@@ -230,6 +233,12 @@ export default class AppendForm extends Component {
         fieldBody.push(rest[currentField]);
         break;
       }
+      case objectFields.newsFilter: {
+        fieldBody.push(
+          JSON.stringify({ allowList: this.state.allowList, lgnoreList: this.state.ignoreList }),
+        );
+        break;
+      }
       case objectFields.sorting: {
         fieldBody.push(JSON.stringify(rest[objectFields.sorting]));
         break;
@@ -328,6 +337,98 @@ export default class AppendForm extends Component {
       [mapFields.longitude]: latLng[1].toFixed(6),
     });
   };
+
+  // News Filter Block
+
+  // eslint-disable-next-line react/sort-comp
+  addNewNewsFilterLine = () => {
+    const allowList = this.state.allowList;
+    allowList[this.state.allowList.length] = [];
+    this.setState({ allowList });
+  };
+
+  handleAddObjectToRule = (obj, rowIndex, ruleIndex) => {
+    const allowList = this.state.allowList;
+    if (obj && rowIndex >= 0 && allowList[rowIndex] && ruleIndex >= 0) {
+      // this.props.form.setFieldsValue({
+      //   allowList: obj,
+      // });
+      allowList[rowIndex][ruleIndex] = obj;
+      this.setState({ allowList });
+    }
+  };
+
+  deleteRuleItem = (rowNum, id) => {
+    const allowList = this.state.allowList;
+    allowList[rowNum] = _.filter(allowList[rowNum], o => o.id !== id);
+    this.setState({ allowList });
+  };
+
+  getNewsFilterLayout = () => {
+    const allowList = this.state.allowList;
+    const layout = (
+      <React.Fragment>
+        {_.map(allowList, (items, rowIndex) => {
+          let ruleIndex = 0;
+          const itemsIdsToOmit = [];
+          return (
+            <React.Fragment>
+              <div className="NewsFiltersRule-title">{`Filter rule ${rowIndex + 1}`}</div>
+              <Row className="NewsFiltersRule-line">
+                {_.map(items, (item, index) => {
+                  ruleIndex = index + 1;
+                  itemsIdsToOmit.push(item.id);
+                  return (
+                    <React.Fragment key={item.id}>
+                      {index > 0 && (
+                        <Col className="NewsFiltersRule-line-and" span={2}>
+                          and
+                        </Col>
+                      )}
+                      <Col className="NewsFiltersRule-line-card" span={6}>
+                        <ObjectCard wobject={item} showFollow={false} />
+                        <div className="NewsFiltersRule-line-close">
+                          <Icon
+                            type="close-circle"
+                            onClick={() => this.deleteRuleItem(rowIndex, item.id)}
+                          />
+                        </div>
+                      </Col>
+                    </React.Fragment>
+                  );
+                })}
+                {items.length < 5 && (
+                  <React.Fragment>
+                    {items.length > 0 && (
+                      <Col className="NewsFiltersRule-line-and" span={2}>
+                        and
+                      </Col>
+                    )}
+                    <Col className="NewsFiltersRule-line-search" span={6}>
+                      <SearchObjectsAutocomplete
+                        itemsIdsToOmit={itemsIdsToOmit}
+                        rowIndex={rowIndex}
+                        ruleIndex={ruleIndex}
+                        style={{ width: '100%' }}
+                        placeholder="Please select"
+                        handleSelect={this.handleAddObjectToRule}
+                      />
+                    </Col>
+                  </React.Fragment>
+                )}
+              </Row>
+            </React.Fragment>
+          );
+        })}
+        <div role="presentation" className="NewLineButton" onClick={this.addNewNewsFilterLine}>
+          <Icon type="plus-circle" />
+          Add new rule
+        </div>
+      </React.Fragment>
+    );
+    return layout || null;
+  };
+  // END News Filter Block
 
   calculateVoteWorth = value => {
     const { user, rewardFund, rate } = this.props;
@@ -1473,6 +1574,8 @@ export default class AppendForm extends Component {
           </React.Fragment>
         );
       }
+      case objectFields.newsFilter:
+        return this.getNewsFilterLayout();
       default:
         return null;
     }
