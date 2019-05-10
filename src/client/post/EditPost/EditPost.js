@@ -24,9 +24,9 @@ import { Entity, toMarkdown } from '../../components/EditorExtended';
 import LastDraftsContainer from '../Write/LastDraftsContainer';
 import ObjectCreation from '../../components/Sidebar/ObjectCreation/ObjectCreation';
 import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
-import './EditPost.less';
 import CreatePostForecast from '../../../investarena/components/CreatePostForecast';
 import { getForecastObject } from '../../../investarena/components/CreatePostForecast/helpers';
+import './EditPost.less';
 
 const getLinkedObjects = contentStateRaw => {
   const objEntities = Object.values(contentStateRaw.entityMap).filter(
@@ -101,6 +101,8 @@ class EditPost extends Component {
     }
   }
 
+  setIsPreview = () => this.setState({ isPreview: true });
+
   handleChangeContent(rawContent) {
     const nextState = { content: toMarkdown(rawContent) };
     this.handleUpdateState(nextState.content);
@@ -149,6 +151,7 @@ class EditPost extends Component {
       title: postTitle,
       lastUpdated: Date.now(),
       isUpdating,
+      draftId: this.draftId,
       ...settings,
     };
 
@@ -185,16 +188,6 @@ class EditPost extends Component {
   };
 
   handleForecastChange = forecastValues => this.setState({ forecastValues });
-  // handleForecastChange = forecastValues =>
-  //   this.setState({ forecastValues }, () => {
-  //     const { selectForecast, ...forecast } = this.state.forecastValues;
-  //     const forecastObject = getForecastObject(forecast, selectForecast);
-  //     if (isValidForecast(forecastObject)) {
-  //       this.saveDraft();
-  //     }
-  //   });
-
-  setIsPreview = () => this.setState({ isPreview: true });
 
   saveDraft = debounce(() => {
     if (this.props.saving) return;
