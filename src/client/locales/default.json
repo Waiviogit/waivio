@@ -701,7 +701,6 @@
   "no_access_to_quote": "Your broker is not provide actual data for this instrument, or your account need special access to this instrument.",
   "vote_count": "Votes: {votes}",
   "user_expertise": "Expertise",
-  "object_expertise": "Object Expertise",
   "onlyRelated": "Show only related posts",
   "ready_to_publish": "Ready to publish",
   "related_objects": "Related Objects",
@@ -717,5 +716,14 @@
   "filters": "Filters",
   "topRated": "Top Rated",
   "object_expertise": "Experts",
-  "tags": "Tags"
+  "tags": "Tags",
+  "longTermData_d1": "1d",
+  "longTermData_d7": "1w",
+  "longTermData_m": "1m",
+  "longTermData_m3": "3m",
+  "longTermData_m6": "6m",
+  "longTermData_m9": "9m",
+  "longTermData_m12": "1y",
+  "longTermData_m24": "2y",
+  "compare_profitability": "Compare Profitability"
 }
