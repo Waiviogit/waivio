@@ -59,6 +59,7 @@ class ObjectInfo extends React.Component {
 
   state = {
     longTermStatistics: {},
+    longTermStatisticsWidgets: {},
     selectedField: null,
     showModal: false,
     showMore: false,
@@ -70,19 +71,28 @@ class ObjectInfo extends React.Component {
       const chartId = getFieldWithMaxWeight(nextProps.wobject, objectFields.chartId);
       const quote = nextProps.quotes[chartId];
       if (chartId && quote) {
+        let longTermStatistics = {};
+        if(_.isEmpty(this.state.longTermStatisticsWidgets)){
         ApiClient.getInstrumentLongTermStatistics(quoteIdForWidget[chartId]).then(data => {
           if (data && !_.isError(data)) {
             const parsedData = _.attempt(JSON.parse, data);
-            let longTermStatistics = {};
             if (!_.isError(parsedData))
               longTermStatistics = getLongTermStatisticsFromWidgets(
                 parsedData,
                 nextProps.intl,
                 quote,
               );
-            if (!_.isEmpty(longTermStatistics)) this.setState({ longTermStatistics });
+            if (!_.isEmpty(longTermStatistics)) this.setState({ longTermStatistics, longTermStatisticsWidgets: parsedData});
           }
         });
+        } else {
+          longTermStatistics = getLongTermStatisticsFromWidgets(
+            this.state.longTermStatisticsWidgets,
+            nextProps.intl,
+            quote,
+          );
+          if (!_.isEmpty(longTermStatistics)) this.setState({ longTermStatistics });
+        }
       }
     }
   }
