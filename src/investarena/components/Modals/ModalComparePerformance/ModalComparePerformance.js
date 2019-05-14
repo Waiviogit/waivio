@@ -88,7 +88,10 @@ class ModalComparePerformance extends React.Component {
   handleSelectOnAutoCompleteDropdown(value, data) {
     if (data.props.marker === 'user') this.props.history.push(`/@${value}`);
     else if (data.props.marker === 'wobj') {
-      this.props.history.replace(`/object/${value}`);
+      // this.props.history.replace(`/object/${value}`);
+      const itemToCompare = _.find(this.props.autoCompleteSearchResults.wobjects, {author_permlink: value});
+
+      this.setState({itemToCompare})
     };
   }
 
@@ -201,7 +204,7 @@ class ModalComparePerformance extends React.Component {
               </div>
               <div>vs</div>
               <div className="ModalComparePerformance-item-to-compare">
-                {!itemToCompare && (
+                {_.isEmpty(itemToCompare) ? (
                   <div className="Topnav__input-container">
                     <AutoComplete
                       dropdownClassName="Topnav__search-dropdown-container"
@@ -229,9 +232,12 @@ class ModalComparePerformance extends React.Component {
                     </AutoComplete>
                     <i className="iconfont icon-search" />
                   </div>
-                )}
-                <ObjectCard wobject={item} showFollow={false} />
-                <InstrumentLongTermStatistics wobject={item} />
+                ) :
+                  <React.Fragment>
+                    <ObjectCard wobject={itemToCompare} showFollow={false} />
+                    <InstrumentLongTermStatistics wobject={itemToCompare} />
+                  </React.Fragment>
+                }
               </div>
             </div>
           </Modal>
