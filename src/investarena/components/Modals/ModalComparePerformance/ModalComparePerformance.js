@@ -10,7 +10,6 @@ import InstrumentLongTermStatistics from '../../LeftSidebar/InstrumentLongTermSt
 import ObjectCard from '../../../../client/components/Sidebar/ObjectCard';
 import {
   getAutoCompleteSearchResults,
-  getIsLoadingNotifications,
   getNightmode,
   getScreenSize,
 } from '../../../../client/reducers';
@@ -24,7 +23,6 @@ import Avatar from "../../../../client/components/Avatar";
 @connect(
   state => ({
     autoCompleteSearchResults: getAutoCompleteSearchResults(state),
-    loadingNotifications: getIsLoadingNotifications(state),
     screenSize: getScreenSize(state),
     isNightMode: getNightmode(state),
   }),
@@ -39,11 +37,9 @@ class ModalComparePerformance extends React.Component {
       PropTypes.arrayOf(PropTypes.shape()),
     ]),
     intl: PropTypes.shape().isRequired,
-    longTermStatistics: PropTypes.shape().isRequired,
+    wobject: PropTypes.shape().isRequired,
     toggleModal: PropTypes.func.isRequired,
     isModalOpen: PropTypes.bool.isRequired,
-    item: PropTypes.string.isRequired,
-    itemToCompare: PropTypes.string.isRequired,
     history: PropTypes.shape().isRequired,
     searchAutoComplete: PropTypes.func.isRequired,
   };
@@ -55,7 +51,10 @@ class ModalComparePerformance extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      item: this.props.wobject,
+      itemToCompare: {},
+    };
 
     this.handleSelectOnAutoCompleteDropdown = this.handleSelectOnAutoCompleteDropdown.bind(this);
     this.handleOnChangeForAutoComplete = this.handleOnChangeForAutoComplete.bind(this);
@@ -96,8 +95,6 @@ class ModalComparePerformance extends React.Component {
   handleOnChangeForAutoComplete(value) {
     this.setState({ searchBarValue: value });
   }
-
-  renderTitle = title => <span>{title}</span>;
 
   usersSearchLayout(accounts) {
     return (
@@ -157,18 +154,17 @@ class ModalComparePerformance extends React.Component {
       </AutoComplete.OptGroup>
     );
   }
+
+  renderTitle = title => <span>{title}</span>;
+
   render() {
     const {
       intl,
       toggleModal,
       isModalOpen,
-      item,
-      itemToCompare,
-      quotes,
-      longTermStatistics,
       autoCompleteSearchResults,
     } = this.props;
-    const { searchBarValue } = this.state;
+    const { searchBarValue, item, itemToCompare} = this.state;
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     const formattedAutoCompleteDropdown = _.isEmpty(dropdownOptions)
       ? dropdownOptions
@@ -201,7 +197,7 @@ class ModalComparePerformance extends React.Component {
             <div className="ModalComparePerformance">
               <div className="ModalComparePerformance-item">
                 <ObjectCard wobject={item} showFollow={false} />
-                <InstrumentLongTermStatistics periodsValues={longTermStatistics} />
+                <InstrumentLongTermStatistics wobject={item} />
               </div>
               <div>vs</div>
               <div className="ModalComparePerformance-item-to-compare">
@@ -235,7 +231,7 @@ class ModalComparePerformance extends React.Component {
                   </div>
                 )}
                 <ObjectCard wobject={item} showFollow={false} />
-                <InstrumentLongTermStatistics periodsValues={longTermStatistics} />
+                <InstrumentLongTermStatistics wobject={item} />
               </div>
             </div>
           </Modal>

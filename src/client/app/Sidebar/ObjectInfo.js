@@ -10,7 +10,7 @@ import SocialLinks from '../../components/SocialLinks';
 import {
   getFieldWithMaxWeight,
   getFieldsCount,
-  getInnerFieldWithMaxWeight,
+  getInnerFieldWithMaxWeight, getField,
 } from '../../object/wObjectHelper';
 import {
   objectFields,
@@ -29,10 +29,7 @@ import './ObjectInfo.less';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
-import * as ApiClient from '../../../waivioApi/ApiClient';
-import { quoteIdForWidget } from '../../../investarena/constants/constantsWidgets';
 import InstrumentLongTermStatistics from '../../../investarena/components/LeftSidebar/InstrumentLongTermStatistics/InstrumentLongTermStatistics';
-import { getLongTermStatisticsFromWidgets } from '../../../investarena/helpers/diffDateTime';
 import { getQuotesState } from '../../../investarena/redux/selectors/quotesSelectors';
 import ModalComparePerformance from '../../../investarena/components/Modals/ModalComparePerformance/ModalComparePerformance';
 
@@ -45,12 +42,10 @@ import ModalComparePerformance from '../../../investarena/components/Modals/Moda
 class ObjectInfo extends React.Component {
   static propTypes = {
     wobject: PropTypes.shape().isRequired,
-    intl: PropTypes.shape().isRequired,
     userName: PropTypes.string.isRequired,
     isEditMode: PropTypes.bool.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-    quotes: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -58,44 +53,11 @@ class ObjectInfo extends React.Component {
   };
 
   state = {
-    longTermStatistics: {},
-    longTermStatisticsWidgets: {},
     selectedField: null,
     showModal: false,
     showMore: false,
     isModalComparePerformanceOpen: false,
   };
-
-  componentWillReceiveProps(nextProps) {
-    if (!_.isEmpty(nextProps.wobject) && !_.isEmpty(nextProps.quotes)) {
-      const chartId = getFieldWithMaxWeight(nextProps.wobject, objectFields.chartId);
-      const quote = nextProps.quotes[chartId];
-      if (chartId && quote) {
-        let longTermStatistics = {};
-        if(_.isEmpty(this.state.longTermStatisticsWidgets)){
-        ApiClient.getInstrumentLongTermStatistics(quoteIdForWidget[chartId]).then(data => {
-          if (data && !_.isError(data)) {
-            const parsedData = _.attempt(JSON.parse, data);
-            if (!_.isError(parsedData))
-              longTermStatistics = getLongTermStatisticsFromWidgets(
-                parsedData,
-                nextProps.intl,
-                quote,
-              );
-            if (!_.isEmpty(longTermStatistics)) this.setState({ longTermStatistics, longTermStatisticsWidgets: parsedData});
-          }
-        });
-        } else {
-          longTermStatistics = getLongTermStatisticsFromWidgets(
-            this.state.longTermStatisticsWidgets,
-            nextProps.intl,
-            quote,
-          );
-          if (!_.isEmpty(longTermStatistics)) this.setState({ longTermStatistics });
-        }
-      }
-    }
-  }
 
   handleSelectField = field => this.setState({ selectedField: field });
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
@@ -105,7 +67,7 @@ class ObjectInfo extends React.Component {
     }));
 
   render() {
-    const { wobject, userName, albums, isAuthenticated, quotes } = this.props;
+    const { wobject, userName, albums, isAuthenticated } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const {
       showModal,
@@ -247,6 +209,8 @@ class ObjectInfo extends React.Component {
         )}
       </React.Fragment>
     );
+    const hasChartId = getField(wobject, objectFields.chartId);
+
     return (
       <React.Fragment>
         {getFieldWithMaxWeight(wobject, objectFields.name) && (
@@ -262,24 +226,24 @@ class ObjectInfo extends React.Component {
               ) : null,
             )}
             {listItem(objectFields.description, <DescriptionInfo description={description} />)}
-            <InstrumentLongTermStatistics
-              periodsValues={longTermStatistics}
-              quote={quotes[chartId]}
-            />
-            <div
-              role="presentation"
-              className="button-compare"
-              onClick={this.toggleModalPerformance}
-            >
+            {hasChartId &&
+              <InstrumentLongTermStatistics
+                wobject={wobject}
+              />
+            }
+            {hasChartId &&
+              <div
+                role="presentation"
+                className="button-compare"
+                onClick={this.toggleModalPerformance}
+              >
               Compare
-            </div>
+              </div>
+            }
             <ModalComparePerformance
-              longTermStatistics={longTermStatistics}
-              quote={quotes[chartId]}
               toggleModal={this.toggleModalPerformance}
               isModalOpen={isModalComparePerformanceOpen}
-              quotes={quotes}
-              item={wobject}
+              wobject={wobject}
             />
             {listItem(
               objectFields.rating,
