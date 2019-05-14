@@ -15,7 +15,9 @@ const InstrumentLongTermStatistics = ({ periodsValues }) => {
         {_.map(periodsValues, period => (
           <div className="PeriodStatisticsLine">
             <div className="PeriodStatisticsLine__periodName">{period.label}</div>
-            <div className={`PeriodStatisticsLine__value-${period.isUp ? 'success' : 'danger'}`}>{period.price}</div>
+            <div className={`PeriodStatisticsLine__value-${period.isUp ? 'success' : 'danger'}`}>
+              {period.price}
+            </div>
           </div>
         ))}
       </div>

@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import React from 'react';
 import './ModalComparePerformance.less';
-import InstrumentLongTermStatistics from "../../LeftSidebar/InstrumentLongTermStatistics/InstrumentLongTermStatistics";
-import ObjectCard from "../../../../client/components/Sidebar/ObjectCard";
+import InstrumentLongTermStatistics from '../../LeftSidebar/InstrumentLongTermStatistics/InstrumentLongTermStatistics';
+import ObjectCard from '../../../../client/components/Sidebar/ObjectCard';
 
 const propTypes = {
   intl: PropTypes.shape().isRequired,
@@ -15,8 +15,15 @@ const propTypes = {
   itemToCompare: PropTypes.string.isRequired,
 };
 
-const ModalComparePerformance = ({ intl, toggleModal, isModalOpen, item, itemToCompare, quotes, longTermStatistics})=> {
-
+const ModalComparePerformance = ({
+  intl,
+  toggleModal,
+  isModalOpen,
+  item,
+  itemToCompare,
+  quotes,
+  longTermStatistics,
+}) => {
   return (
     <React.Fragment>
       {isModalOpen && (
@@ -32,17 +39,13 @@ const ModalComparePerformance = ({ intl, toggleModal, isModalOpen, item, itemToC
         >
           <div className="ModalComparePerformance">
             <div className="ModalComparePerformance-item">
-              <ObjectCard wobject={item} showFollow={false}/>
-              <InstrumentLongTermStatistics
-                periodsValues={longTermStatistics}
-              />
+              <ObjectCard wobject={item} showFollow={false} />
+              <InstrumentLongTermStatistics periodsValues={longTermStatistics} />
             </div>
             <div>vs</div>
             <div className="ModalComparePerformance-item-to-compare">
-              <ObjectCard wobject={item} showFollow={false}/>
-              <InstrumentLongTermStatistics
-                periodsValues={longTermStatistics}
-              />
+              <ObjectCard wobject={item} showFollow={false} />
+              <InstrumentLongTermStatistics periodsValues={longTermStatistics} />
             </div>
           </div>
         </Modal>

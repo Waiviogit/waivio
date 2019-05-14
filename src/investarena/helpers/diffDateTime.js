@@ -1,4 +1,4 @@
-import _ from "lodash";
+import _ from 'lodash';
 import moment from 'moment';
 import { currentTime } from './currentTime';
 import { forecastDateTimeFormat } from '../constants/constantsForecast';
@@ -72,14 +72,14 @@ export function getLongTermStatisticsFromWidgets(data, intl, quote) {
   const priceNow = quote.askPrice;
   const longTermStatistics = {};
   const calcAndSetPrice = (priceBefore, period, defaultMessage) => {
-  const price = (priceNow - priceBefore) / priceBefore * 100;
-  longTermStatistics[period] = {
-    price: `${price.toFixed(2)}%`,
-    label: intl.formatMessage({id: `longTermData_${period}`, defaultMessage}),
-    isUp: price >= 0
+    const price = ((priceNow - priceBefore) / priceBefore) * 100;
+    longTermStatistics[period] = {
+      price: `${price.toFixed(2)}%`,
+      label: intl.formatMessage({ id: `longTermData_${period}`, defaultMessage }),
+      isUp: price >= 0,
+    };
   };
-  };
-  if(priceNow) {
+  if (priceNow) {
     _.forEach(data, (tradeData, index) => {
       if (tradeData.L) {
         switch (index) {

@@ -34,8 +34,7 @@ import { quoteIdForWidget } from '../../../investarena/constants/constantsWidget
 import InstrumentLongTermStatistics from '../../../investarena/components/LeftSidebar/InstrumentLongTermStatistics/InstrumentLongTermStatistics';
 import { getLongTermStatisticsFromWidgets } from '../../../investarena/helpers/diffDateTime';
 import { getQuotesState } from '../../../investarena/redux/selectors/quotesSelectors';
-import ModalComparePerformance
-  from "../../../investarena/components/Modals/ModalComparePerformance/ModalComparePerformance";
+import ModalComparePerformance from '../../../investarena/components/Modals/ModalComparePerformance/ModalComparePerformance';
 
 @injectIntl
 @connect(state => ({
@@ -90,12 +89,20 @@ class ObjectInfo extends React.Component {
 
   handleSelectField = field => this.setState({ selectedField: field });
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
-  toggleModalPerformance = () => this.setState(prevState => ({ isModalComparePerformanceOpen: !prevState.isModalComparePerformanceOpen }));
+  toggleModalPerformance = () =>
+    this.setState(prevState => ({
+      isModalComparePerformanceOpen: !prevState.isModalComparePerformanceOpen,
+    }));
 
   render() {
     const { wobject, userName, albums, isAuthenticated, quotes } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
-    const { showModal, selectedField, longTermStatistics, isModalComparePerformanceOpen } = this.state;
+    const {
+      showModal,
+      selectedField,
+      longTermStatistics,
+      isModalComparePerformanceOpen,
+    } = this.state;
     const renderFields = getAllowedFieldsByObjType(wobject.object_type);
     const isRenderGallery = !['list'].includes(wobject.object_type);
     const chartId = getFieldWithMaxWeight(wobject, objectFields.chartId);
@@ -249,7 +256,11 @@ class ObjectInfo extends React.Component {
               periodsValues={longTermStatistics}
               quote={quotes[chartId]}
             />
-            <div role="presentation" className="button-compare" onClick={this.toggleModalPerformance}>
+            <div
+              role="presentation"
+              className="button-compare"
+              onClick={this.toggleModalPerformance}
+            >
               Compare
             </div>
             <ModalComparePerformance
