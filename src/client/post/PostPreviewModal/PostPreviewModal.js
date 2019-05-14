@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Button, Modal } from 'antd';
-import { throttle } from 'lodash';
+import { throttle, isEmpty } from 'lodash';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import TagsSelector from '../../components/TagsSelector/TagsSelector';
 import PolicyConfirmation from '../../components/PolicyConfirmation/PolicyConfirmation';
@@ -12,6 +12,8 @@ import { handleWeightChange, setObjPercents } from '../../helpers/wObjInfluenceH
 import { rewardsValues } from '../../../common/constants/rewards';
 import BBackTop from '../../components/BBackTop';
 import './PostPreviewModal.less';
+import PostChart from '../../../investarena/components/PostChart';
+import { getForecastObject } from '../../../investarena/components/CreatePostForecast/helpers';
 
 const isTopicValid = topic => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(topic);
 
@@ -27,17 +29,23 @@ class PostPreviewModal extends Component {
     content: PropTypes.string.isRequired,
     topics: PropTypes.arrayOf(PropTypes.string).isRequired,
     linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
+    forecastValues: PropTypes.shape(),
+    isUpdating: PropTypes.bool,
     objPercentage: PropTypes.shape(),
     onTopicsChange: PropTypes.func.isRequired,
     onSettingsChange: PropTypes.func.isRequired,
     onPercentChange: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     onUpdate: PropTypes.func.isRequired,
+    onReadyBtnClick: PropTypes.func,
   };
   static defaultProps = {
     intl: {},
     linkedObjects: [],
+    forecastValues: {},
     objPercentage: {},
+    isUpdating: false,
+    onReadyBtnClick: () => {},
   };
 
   static findScrollElement() {
@@ -83,15 +91,19 @@ class PostPreviewModal extends Component {
   };
 
   showModal = () => {
-    const { postTitle, postBody } = splitPostContent(this.props.content);
-    const objPercentage = setObjPercents(this.props.linkedObjects, this.props.objPercentage);
-    this.setState({
-      isModalOpen: true,
-      title: postTitle,
-      body: postBody,
-      weightBuffer: 0,
-      objPercentage,
-    });
+    const { forecastValues } = this.props;
+    this.props.onReadyBtnClick();
+    if (forecastValues && forecastValues.isValid) {
+      const { postTitle, postBody } = splitPostContent(this.props.content);
+      const objPercentage = setObjPercents(this.props.linkedObjects, this.props.objPercentage);
+      this.setState({
+        isModalOpen: true,
+        title: postTitle,
+        body: postBody,
+        weightBuffer: 0,
+        objPercentage,
+      });
+    }
   };
 
   hideModal = () => this.setState({ isModalOpen: false });
@@ -113,7 +125,17 @@ class PostPreviewModal extends Component {
 
   render() {
     const { isModalOpen, isConfirmed, body, title, weightBuffer, objPercentage } = this.state;
-    const { intl, content, topics, linkedObjects, settings } = this.props;
+    const {
+      intl,
+      content,
+      topics,
+      linkedObjects,
+      settings,
+      forecastValues,
+      isUpdating,
+    } = this.props;
+    const { selectForecast, ...forecastRaw } = forecastValues;
+    const forecast = getForecastObject(forecastRaw, selectForecast);
     return (
       <React.Fragment>
         {isModalOpen && (
@@ -134,6 +156,18 @@ class PostPreviewModal extends Component {
             <BBackTop isModal target={PostPreviewModal.findScrollElement} />
             <h1 className="StoryFull__title preview">{title}</h1>
             <BodyContainer full body={body} />
+            {!isEmpty(forecast) && (
+              <PostChart
+                quoteSecurity={forecast.quoteSecurity}
+                createdAt={forecast.createdAt}
+                forecast={forecast.expiredAt}
+                recommend={forecast.recommend}
+                toggleModalPost={() => {}}
+                tpPrice={forecast.tpPrice ? forecast.tpPrice.toString() : null}
+                slPrice={forecast.slPrice ? forecast.slPrice.toString() : null}
+                expForecast={null}
+              />
+            )}
             <TagsSelector
               className="post-preview-topics"
               label={intl.formatMessage({
@@ -155,14 +189,16 @@ class PostPreviewModal extends Component {
               policyText="Lorem ipsum dolor sit amet, enim in ut adipiscing turpis, mi interdum faucibus eleifend montes, augue viverra commodo vel placerat. Neque vitae amet consequat, proin sociis in sem, nunc fusce a facilisi per, sed sit et eget. A morbi velit proin, elit ac integer in justo, enim quis arcu arcu, magna dapibus est etiam. Nisl dapibus ut leo semper, pellentesque nec sem nec nulla, convallis dictum odio porttitor."
               onChange={this.handleConfirmedChange}
             />
-            <AdvanceSettings
-              linkedObjects={linkedObjects}
-              objPercentage={objPercentage}
-              weightBuffer={weightBuffer}
-              settings={settings}
-              onSettingsChange={this.handleSettingsChange}
-              onPercentChange={this.handlePercentChange}
-            />
+            {!isUpdating && (
+              <AdvanceSettings
+                linkedObjects={linkedObjects}
+                objPercentage={objPercentage}
+                weightBuffer={weightBuffer}
+                settings={settings}
+                onSettingsChange={this.handleSettingsChange}
+                onPercentChange={this.handlePercentChange}
+              />
+            )}
             <div className="edit-post-controls">
               <Button
                 htmlType="submit"

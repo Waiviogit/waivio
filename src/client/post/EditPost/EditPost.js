@@ -24,6 +24,8 @@ import { Entity, toMarkdown } from '../../components/EditorExtended';
 import LastDraftsContainer from '../Write/LastDraftsContainer';
 import ObjectCreation from '../../components/Sidebar/ObjectCreation/ObjectCreation';
 import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
+import CreatePostForecast from '../../../investarena/components/CreatePostForecast';
+import { getForecastObject } from '../../../investarena/components/CreatePostForecast/helpers';
 import './EditPost.less';
 
 const getLinkedObjects = contentStateRaw => {
@@ -99,6 +101,8 @@ class EditPost extends Component {
     }
   }
 
+  setIsPreview = () => this.setState({ isPreview: true });
+
   handleChangeContent(rawContent) {
     const nextState = { content: toMarkdown(rawContent) };
     this.handleUpdateState(nextState.content);
@@ -113,28 +117,33 @@ class EditPost extends Component {
     // console.log('content:', nextState);
   }
 
-  handleTopicsChange = topics => this.setState({ topics }, this.handleUpdateState);
+  handleTopicsChange = topics => this.setState({ topics });
 
   handleSettingsChange = updatedValue =>
-    this.setState(
-      prevState => ({
-        settings: { ...prevState.settings, ...updatedValue },
-      }),
-      this.handleUpdateState,
-    );
+    this.setState(prevState => ({
+      settings: { ...prevState.settings, ...updatedValue },
+    }));
 
   handlePercentChange = percentage => {
-    this.setState({ objPercentage: percentage }, this.handleUpdateState);
+    this.setState({ objPercentage: percentage });
   };
 
   handleSubmit() {
     const postData = this.buildPost();
-    console.log('POST_DATA', postData);
+    // console.log('POST_DATA', postData);
     this.props.createPost(postData);
   }
 
   buildPost() {
-    const { content, topics, linkedObjects, objPercentage, settings, isUpdating } = this.state;
+    const {
+      content,
+      topics,
+      linkedObjects,
+      objPercentage,
+      settings,
+      forecastValues: { selectForecast, ...forecast },
+      isUpdating,
+    } = this.state;
     const { postTitle, postBody } = splitPostContent(content);
 
     const postData = {
@@ -142,6 +151,7 @@ class EditPost extends Component {
       title: postTitle,
       lastUpdated: Date.now(),
       isUpdating,
+      draftId: this.draftId,
       ...settings,
     };
 
@@ -161,7 +171,9 @@ class EditPost extends Component {
       })),
     };
 
-    postData.jsonMetadata = createPostMetadata(postBody, topics, oldMetadata, waivioData);
+    const appData = { waivioData, forecast: getForecastObject(forecast, selectForecast) };
+
+    postData.jsonMetadata = createPostMetadata(postBody, topics, oldMetadata, appData);
 
     if (this.originalBody) {
       postData.originalBody = this.originalBody;
@@ -171,9 +183,11 @@ class EditPost extends Component {
   }
 
   handleUpdateState = nextContent => {
-    if (isEqual(this.state.content, nextContent)) return;
+    if (!isEqual(this.state.content, nextContent)) return;
     throttle(this.saveDraft, 200, { leading: false, trailing: true })();
   };
+
+  handleForecastChange = forecastValues => this.setState({ forecastValues });
 
   saveDraft = debounce(() => {
     if (this.props.saving) return;
@@ -192,7 +206,17 @@ class EditPost extends Component {
   }, 1500);
 
   render() {
-    const { draftContent, content, topics, linkedObjects, objPercentage, settings } = this.state;
+    const {
+      draftContent,
+      content,
+      topics,
+      linkedObjects,
+      objPercentage,
+      settings,
+      forecastValues,
+      isUpdating,
+      isPreview,
+    } = this.state;
     const { draftId, saving, imageLoading, locale } = this.props;
     return (
       <div className="shifted">
@@ -213,15 +237,24 @@ class EditPost extends Component {
                 )}
               </div>
             )}
+            <CreatePostForecast
+              forecastValues={forecastValues}
+              onChange={this.handleForecastChange}
+              isPosted={isPreview}
+              isUpdating={isUpdating}
+            />
             <PostPreviewModal
               content={content}
               topics={topics}
               linkedObjects={linkedObjects}
               objPercentage={objPercentage}
               settings={settings}
+              forecastValues={forecastValues}
+              isUpdating={isUpdating}
               onTopicsChange={this.handleTopicsChange}
               onSettingsChange={this.handleSettingsChange}
               onPercentChange={this.handlePercentChange}
+              onReadyBtnClick={this.setIsPreview}
               onSubmit={this.handleSubmit}
               onUpdate={this.saveDraft}
             />

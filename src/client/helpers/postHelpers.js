@@ -140,11 +140,13 @@ export function getInitialValues(props) {
       upvote: props.upvoteSetting,
     },
     isUpdating: false,
+    forecastValues: { isValid: true },
   };
   const { draftPosts, draftId } = props;
   const draftPost = draftPosts && draftPosts[draftId];
   if (draftId && draftPost) {
     const draftObjects = get(draftPost, ['jsonMetadata', WAIVIO_META_FIELD_NAME, 'wobjects'], []);
+    const forecastValues = get(draftPost, ['jsonMetadata', INVESTARENA_META_FIELD_NAME], null);
     state = {
       draftContent: {
         title: get(draftPost, 'title', ''),
@@ -162,6 +164,9 @@ export function getInitialValues(props) {
         upvote: draftPost.upvote,
       },
       isUpdating: Boolean(draftPost.isUpdating),
+      forecastValues: forecastValues
+        ? { ...forecastValues, selectForecast: 'Custom', isValid: true }
+        : { isValid: true },
     };
     permlink = draftPost.permlink || null;
     originalBody = draftPost.originalBody || null;

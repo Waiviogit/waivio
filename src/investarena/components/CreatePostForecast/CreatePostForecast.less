@@ -12,16 +12,29 @@
   }
   .st-create-post-dropdowns {
     display: flex;
-    padding-bottom: 10px;
     flex-direction: column;
     .st-create-post-dropdowns-row {
       display: flex;
+      &.clear {
+        justify-content: flex-end;
+        margin-bottom: -15px;
+        .clear-btn {
+          color: @blue-baliHai;
+          text-transform: lowercase;
+          cursor: pointer;
+        }
+      }
       .st-create-post-select-wrap {
         width: 33.3%;
         margin-right: 10px;
         &:last-child {
           margin-right: 0;
         }
+
+        div {
+          width: 100%;
+        }
+
         .st-create-post-danger {
           border: 1px solid @red-danger;
           border-radius: 4px;

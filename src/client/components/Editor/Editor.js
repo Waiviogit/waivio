@@ -6,7 +6,6 @@ import classNames from 'classnames';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import readingTime from 'reading-time';
-import moment from 'moment';
 import { Form, Input, Select, Button, Checkbox } from 'antd';
 import BTooltip from '../BTooltip';
 import { rewardsValues } from '../../../common/constants/rewards';
@@ -16,9 +15,11 @@ import withEditor from './withEditor';
 import EditorInput from './EditorInput';
 import LinkedObjects from './LinkedObjects';
 import { getClientWObj } from '../../adapters';
+import { getForecastObject } from '../../../investarena/components/CreatePostForecast/helpers';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import { BENEFICIARY_PERCENT } from '../../helpers/constants';
+import CreatePostForecast from '../../../investarena/components/CreatePostForecast';
 import {
   WAIVIO_META_FIELD_NAME,
   INVESTARENA_META_FIELD_NAME,
@@ -30,8 +31,6 @@ import {
   removeObjInfluenceHandler,
 } from '../../helpers/wObjInfluenceHelper';
 import './Editor.less';
-import { forecastDateTimeFormat } from '../../../investarena/constants/constantsForecast';
-import CreatePostForecast from '../../../investarena/components/CreatePostForecast';
 
 @injectIntl
 @requiresLogin
@@ -199,23 +198,6 @@ class Editor extends React.Component {
     });
   }
 
-  getForecastObject = (forecast, selectForecast) =>
-    forecast && !_.isEmpty(forecast)
-      ? {
-          ...forecast,
-          createdAt: moment.utc().format(forecastDateTimeFormat),
-          expiredAt:
-            selectForecast === 'Custom'
-              ? forecast.expiredAt
-              : moment
-                  .utc()
-                  .add(selectForecast, 'seconds')
-                  .format(forecastDateTimeFormat),
-          tpPrice: forecast.tpPrice ? parseFloat(forecast.tpPrice) : null,
-          slPrice: forecast.slPrice ? parseFloat(forecast.slPrice) : null,
-        }
-      : null;
-
   resetLinkedObjects = () => this.setState({ linkedObjects: [], influenceRemain: 0 });
 
   restoreLinkedObjects(wobjects) {
@@ -285,7 +267,7 @@ class Editor extends React.Component {
     this.props.onUpdate({
       ...values,
       [WAIVIO_META_FIELD_NAME]: { wobjects },
-      [INVESTARENA_META_FIELD_NAME]: this.getForecastObject(forecast, selectForecast),
+      [INVESTARENA_META_FIELD_NAME]: getForecastObject(forecast, selectForecast),
     });
   }
 
@@ -305,7 +287,7 @@ class Editor extends React.Component {
         this.props.onSubmit({
           ...values,
           [WAIVIO_META_FIELD_NAME]: { wobjects },
-          [INVESTARENA_META_FIELD_NAME]: this.getForecastObject(forecast, selectForecast),
+          [INVESTARENA_META_FIELD_NAME]: getForecastObject(forecast, selectForecast),
         });
       }
     });
