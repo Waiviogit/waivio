@@ -13,12 +13,12 @@ import CreateObjectModal from '../../../post/CreateObjectModal/CreateObject';
 import LikeSection from '../../../object/LikeSection';
 import LANGUAGES from '../../../translations/languages';
 import { getLanguageText } from '../../../translations';
-import ListItem from '../CatalogItem';
 import FollowObjectForm from '../../FollowObjectForm';
 import { followObject } from '../../../object/wobjActions';
 import * as wobjectActions from '../../wobjectsActions';
 import * as notificationActions from '../../../app/Notification/notificationActions';
 import './AddItemModal.less';
+import ObjectCardView from '../../../objectCard/ObjectCardView';
 
 @connect(
   state => ({
@@ -218,7 +218,7 @@ class AddItemModal extends Component {
             maskClosable={false}
             visible={isModalOpen}
             wrapClassName="add-item-modal"
-            width={500}
+            width={700}
             footer={null}
             destroyOnClose
           >
@@ -258,7 +258,7 @@ class AddItemModal extends Component {
                   </Select>,
                 )}
               </Form.Item>
-              <ListItem wobject={selectedItem} />
+              <ObjectCardView wObject={selectedItem} />
               <LikeSection
                 form={form}
                 onVotePercentChange={this.handleVotePercentChange}

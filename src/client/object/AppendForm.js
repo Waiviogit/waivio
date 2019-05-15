@@ -53,7 +53,6 @@ import { getFieldWithMaxWeight } from './wObjectHelper';
 import FollowObjectForm from './FollowObjectForm';
 import { followObject, rateObject } from '../object/wobjActions';
 import SortingList from '../components/DnDList/DnDList';
-import CatalogItem from './Catalog/CatalogItem';
 import { getClientWObj } from '../adapters';
 import SearchObjectsAutocomplete from '../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCardView from '../objectCard/ObjectCardView';
@@ -981,7 +980,7 @@ export default class AppendForm extends Component {
         return (
           <React.Fragment>
             <Form.Item>
-              {getFieldDecorator(addressFields.country, {
+              {getFieldDecorator(addressFields.accommodation, {
                 rules: [
                   {
                     max: 100,
@@ -1004,38 +1003,8 @@ export default class AppendForm extends Component {
                   })}
                   disabled={loading}
                   placeholder={intl.formatMessage({
-                    id: 'location_country',
-                    defaultMessage: 'Country',
-                  })}
-                />,
-              )}
-            </Form.Item>
-            <Form.Item>
-              {getFieldDecorator(addressFields.city, {
-                rules: [
-                  {
-                    max: 100,
-                    message: intl.formatMessage(
-                      {
-                        id: 'value_error_long',
-                        defaultMessage: "Value can't be longer than 100 characters.",
-                      },
-                      { value: 100 },
-                    ),
-                  },
-                  {
-                    validator: this.validateFieldValue,
-                  },
-                ],
-              })(
-                <Input
-                  className={classNames('AppendForm__input', {
-                    'validation-error': !this.state.isSomeValue,
-                  })}
-                  disabled={loading}
-                  placeholder={intl.formatMessage({
-                    id: 'location_city',
-                    defaultMessage: 'City',
+                    id: 'location_accommodation',
+                    defaultMessage: 'Accommodation',
                   })}
                 />,
               )}
@@ -1071,7 +1040,7 @@ export default class AppendForm extends Component {
               )}
             </Form.Item>
             <Form.Item>
-              {getFieldDecorator(addressFields.accommodation, {
+              {getFieldDecorator(addressFields.city, {
                 rules: [
                   {
                     max: 100,
@@ -1094,8 +1063,38 @@ export default class AppendForm extends Component {
                   })}
                   disabled={loading}
                   placeholder={intl.formatMessage({
-                    id: 'location_accommodation',
-                    defaultMessage: 'Accommodation',
+                    id: 'location_city',
+                    defaultMessage: 'City',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator(addressFields.country, {
+                rules: [
+                  {
+                    max: 100,
+                    message: intl.formatMessage(
+                      {
+                        id: 'value_error_long',
+                        defaultMessage: "Value can't be longer than 100 characters.",
+                      },
+                      { value: 100 },
+                    ),
+                  },
+                  {
+                    validator: this.validateFieldValue,
+                  },
+                ],
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'location_country',
+                    defaultMessage: 'Country',
                   })}
                 />,
               )}
@@ -1486,7 +1485,7 @@ export default class AppendForm extends Component {
           (wObject.listItems &&
             wObject.listItems.map(item => ({
               id: item.author_permlink,
-              content: <CatalogItem wobject={getClientWObj(item)} />,
+              content: <ObjectCardView wObject={getClientWObj(item)} />,
             }))) ||
           [];
         return (
