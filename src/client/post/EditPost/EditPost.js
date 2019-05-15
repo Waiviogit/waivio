@@ -207,11 +207,13 @@ class EditPost extends Component {
     const isBodyEmpty = postBody.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().length === 0;
 
     if (isBodyEmpty) return;
-
+    if (this.state.expForecast) {
+      postData.exp_forecast = this.state.expForecast;
+    }
     const redirect = id !== this.draftId;
 
     this.props.saveDraft({ postData, id: this.draftId }, redirect, this.props.intl);
-  }, 1500);
+  }, 800);
 
   render() {
     const {
