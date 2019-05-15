@@ -4,13 +4,13 @@ import { Icon, Tag } from 'antd';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { haveAccess, hasType, accessTypesArr } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import {
   getFieldWithMaxWeight,
   getFieldsCount,
-  getInnerFieldWithMaxWeight,
+  getInnerFieldWithMaxWeight, getField,
 } from '../../object/wObjectHelper';
 import {
   objectFields,
@@ -29,10 +29,15 @@ import './ObjectInfo.less';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
+import InstrumentLongTermStatistics from '../../../investarena/components/LeftSidebar/InstrumentLongTermStatistics/InstrumentLongTermStatistics';
+import { getQuotesState } from '../../../investarena/redux/selectors/quotesSelectors';
+import ModalComparePerformance from '../../../investarena/components/Modals/ModalComparePerformance/ModalComparePerformance';
 
+@injectIntl
 @connect(state => ({
   albums: getObjectAlbums(state),
   isAuthenticated: getIsAuthenticated(state),
+  quotes: getQuotesState(state),
 }))
 class ObjectInfo extends React.Component {
   static propTypes = {
@@ -43,21 +48,36 @@ class ObjectInfo extends React.Component {
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   };
 
+  static defaultProps = {
+    quotes: {},
+  };
+
   state = {
     selectedField: null,
     showModal: false,
     showMore: false,
+    isModalComparePerformanceOpen: false,
   };
 
   handleSelectField = field => this.setState({ selectedField: field });
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
+  toggleModalPerformance = () =>
+    this.setState(prevState => ({
+      isModalComparePerformanceOpen: !prevState.isModalComparePerformanceOpen,
+    }));
 
   render() {
     const { wobject, userName, albums, isAuthenticated } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
-    const { showModal, selectedField } = this.state;
+    const {
+      showModal,
+      selectedField,
+      longTermStatistics,
+      isModalComparePerformanceOpen,
+    } = this.state;
     const renderFields = getAllowedFieldsByObjType(wobject.object_type);
     const isRenderGallery = !['list'].includes(wobject.object_type);
+    const chartId = getFieldWithMaxWeight(wobject, objectFields.chartId);
 
     let addressArr = [];
     let address = '';
@@ -102,7 +122,7 @@ class ObjectInfo extends React.Component {
       }
       photosCount = wobject.photos_count;
 
-      const filtered = _.filter(wobject.fields, ['name', objectFields.tag]);
+      const filtered = _.filter(wobject.fields, ['name', objectFields.tagCloud]);
       tags = _.orderBy(filtered, ['weight'], ['desc']);
 
       const filteredPhones = _.filter(wobject.fields, ['name', objectFields.phone]);
@@ -189,6 +209,8 @@ class ObjectInfo extends React.Component {
         )}
       </React.Fragment>
     );
+    const hasChartId = getField(wobject, objectFields.chartId);
+
     return (
       <React.Fragment>
         {getFieldWithMaxWeight(wobject, objectFields.name) && (
@@ -204,12 +226,31 @@ class ObjectInfo extends React.Component {
               ) : null,
             )}
             {listItem(objectFields.description, <DescriptionInfo description={description} />)}
+            {hasChartId &&
+              <InstrumentLongTermStatistics
+                wobject={wobject}
+              />
+            }
+            {hasChartId &&
+              <div
+                role="presentation"
+                className="button-compare"
+                onClick={this.toggleModalPerformance}
+              >
+              Compare
+              </div>
+            }
+            <ModalComparePerformance
+              toggleModal={this.toggleModalPerformance}
+              isModalOpen={isModalComparePerformanceOpen}
+              wobject={wobject}
+            />
             {listItem(
               objectFields.rating,
               <RateInfo username={userName} authorPermlink={wobject.author_permlink} />,
             )}
             {listItem(
-              objectFields.hashtag,
+              objectFields.tagCloud,
               <div className="field-info">
                 {accessExtend ? (
                   <React.Fragment>
@@ -227,8 +268,8 @@ class ObjectInfo extends React.Component {
                           </div>
                         ))}
                         <Link
-                          to={`/object/${wobject.author_permlink}/updates/${objectFields.tag}`}
-                          onClick={() => this.handleSelectField(objectFields.tag)}
+                          to={`/object/${wobject.author_permlink}/updates/${objectFields.tagCloud}`}
+                          onClick={() => this.handleSelectField(objectFields.tagCloud)}
                         >
                           <FormattedMessage id="show_more_tags" defaultMessage="show more">
                             {value => <div className="tag-item">{value}</div>}

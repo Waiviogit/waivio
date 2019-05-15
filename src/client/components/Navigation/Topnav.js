@@ -510,8 +510,6 @@ class Topnav extends React.Component {
     return dataSource;
   }
 
-  renderTitle = title => <span>{title}</span>;
-
   toggleModalBroker = () => {
     this.props.toggleModal('broker');
   };
@@ -519,6 +517,8 @@ class Topnav extends React.Component {
   toggleModalDeposit = () => {
     this.setState({ isModalDeposit: !this.state.isModalDeposit });
   };
+
+  renderTitle = title => <span>{title}</span>;
 
   render() {
     const {

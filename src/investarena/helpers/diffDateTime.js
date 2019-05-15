@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import moment from 'moment';
 import { currentTime } from './currentTime';
 import { forecastDateTimeFormat } from '../constants/constantsForecast';
@@ -65,4 +66,49 @@ export function getDataForecast() {
   const periodAfter = 604800;
   const nowDate = Date.now();
   return moment.utc(nowDate + periodAfter).format(forecastDateTimeFormat);
+}
+
+export function getLongTermStatisticsFromWidgets(data, intl, quote) {
+  const priceNow = quote.askPrice;
+  const longTermStatistics = {};
+  const calcAndSetPrice = (priceBefore, period, defaultMessage) => {
+    const price = ((priceNow - priceBefore) / priceBefore) * 100;
+    longTermStatistics[period] = {
+      price: `${price.toFixed(2)}%`,
+      label: intl.formatMessage({ id: `longTermData_${period}`, defaultMessage }),
+      isUp: price >= 0,
+    };
+  };
+  if (priceNow) {
+    _.forEach(data, (tradeData, index) => {
+      if (tradeData.L) {
+        switch (index) {
+          case 0:
+            calcAndSetPrice(tradeData.L, 'd1', '1d');
+            break;
+          case 6:
+            calcAndSetPrice(tradeData.L, 'd7', '1w');
+            break;
+          case 29:
+            calcAndSetPrice(tradeData.L, 'm1', '1m');
+            break;
+          case 89:
+            calcAndSetPrice(tradeData.L, 'm3', '3m');
+            break;
+          case 179:
+            calcAndSetPrice(tradeData.L, 'm6', '6m');
+            break;
+          case 364:
+            calcAndSetPrice(tradeData.L, 'm12', '1y');
+            break;
+          case 728:
+            calcAndSetPrice(tradeData.L, 'm24', '2y');
+            break;
+          default:
+            break;
+        }
+      }
+    });
+  }
+  return longTermStatistics;
 }

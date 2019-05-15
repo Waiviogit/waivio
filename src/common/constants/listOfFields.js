@@ -15,7 +15,8 @@ export const objectFields = {
   listItem: 'listItem',
   price: 'price',
   parent: 'parent',
-  tag: 'tag',
+  tagCloud: 'tagCloud',
+  chartId: 'chartid',
 };
 
 export const objectFieldsWithInnerData = [
