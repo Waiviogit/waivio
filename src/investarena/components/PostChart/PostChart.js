@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { get, last } from 'lodash';
+import { get, last, isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import moment from 'moment';
@@ -92,16 +92,15 @@ class PostChart extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!this.state.expired && this.chartData && this.chart) {
-      // if (nextProps.expiredBars && nextProps.expiredAt) {
-      //   this.setState(
-      //     {
-      //       expired: true,
-      //       timeScale: nextProps.expiredTimeScale || this.state.timeScale,
-      //     },
-      //     () => this.updateChartData(nextProps),
-      //   );
-      // } else
-      if (nextProps.connect && nextProps.quoteSettings && nextProps.quoteSettings.leverage) {
+      if (!isEmpty(nextProps.expForecast)) {
+        this.setState(
+          {
+            expired: true,
+            timeScale: nextProps.expiredTimeScale || this.state.timeScale,
+          },
+          () => this.updateChartData(nextProps),
+        );
+      } else if (nextProps.connect && nextProps.quoteSettings && nextProps.quoteSettings.leverage) {
         if (nextProps.quote && (!nextProps.bars || !nextProps.bars[this.state.timeScale])) {
           this.props.getChartData(this.state.timeScale);
         } else if (nextProps.bars && nextProps.bars[this.state.timeScale] && nextProps.quote) {

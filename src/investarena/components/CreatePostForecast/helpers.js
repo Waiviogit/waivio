@@ -2,6 +2,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import { blackListQuotes } from '../../constants/blackListQuotes';
 import { forecastDateTimeFormat } from '../../constants/constantsForecast';
+import { optionsForecast } from '../../constants/selectData';
 
 export const getQuoteOptions = (quotesSettings, quotes) => {
   const optionsQuote = [];
@@ -48,22 +49,45 @@ export const isStopLossTakeProfitValid = (value, input, recommend, quotePrice) =
   return isError || Number(value) <= 0;
 };
 
-export const getForecastObject = (forecast, selectForecast) =>
-  forecast && selectForecast && !_.isEmpty(forecast)
+const getExpiredAt = (selectForecast, forecastExpiredAt) => {
+  const minForecastDuration = optionsForecast[0].value;
+  const minimalForecastUTC = moment.utc().add(minForecastDuration, 'seconds');
+  const currentForecastUTC = moment(forecastExpiredAt).utc();
+  const isExpiredAtValid = currentForecastUTC > minimalForecastUTC;
+
+  switch (selectForecast) {
+    case 'Custom':
+      return isExpiredAtValid ? currentForecastUTC : minimalForecastUTC;
+    case '900':
+    case '1800':
+    case '3600':
+    case '14400':
+    case '28800':
+    case '86400':
+    case '604800':
+    case '1555200':
+    case '1814400':
+      return moment
+        .utc()
+        .add(selectForecast, 'seconds')
+        .format(forecastDateTimeFormat);
+    default:
+      return minimalForecastUTC.format(forecastDateTimeFormat);
+  }
+};
+
+export const getForecastObject = (forecast, selectForecast, isExpired = false) => {
+  if (isExpired) return forecast;
+  return forecast && selectForecast && !_.isEmpty(forecast)
     ? {
         ...forecast,
         createdAt: moment.utc().format(forecastDateTimeFormat),
-        expiredAt:
-          selectForecast === 'Custom'
-            ? moment(forecast.expiredAt).utc()
-            : moment
-                .utc()
-                .add(selectForecast, 'seconds')
-                .format(forecastDateTimeFormat),
+        expiredAt: getExpiredAt(selectForecast, forecast.expiredAt),
         tpPrice: forecast.tpPrice ? parseFloat(forecast.tpPrice) : null,
         slPrice: forecast.slPrice ? parseFloat(forecast.slPrice) : null,
       }
     : null;
+};
 
 export const validateForm = (quote, recommend, forecast) =>
   !!(quote && recommend && forecast) || !(quote || recommend || forecast);

@@ -1,4 +1,4 @@
-import _, { get, fromPairs } from 'lodash';
+import _, { get, fromPairs, isEmpty } from 'lodash';
 import { getHtml } from '../components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
 import { categoryRegex } from './regexHelpers';
@@ -141,6 +141,7 @@ export function getInitialValues(props) {
     },
     isUpdating: false,
     forecastValues: { isValid: true },
+    expForecast: null,
   };
   const { draftPosts, draftId } = props;
   const draftPost = draftPosts && draftPosts[draftId];
@@ -167,6 +168,7 @@ export function getInitialValues(props) {
       forecastValues: forecastValues
         ? { ...forecastValues, selectForecast: 'Custom', isValid: true }
         : { isValid: true },
+      expForecast: !isEmpty(draftPost.exp_forecast) ? draftPost.exp_forecast : null,
     };
     permlink = draftPost.permlink || null;
     originalBody = draftPost.originalBody || null;

@@ -14,6 +14,7 @@ import BBackTop from '../../components/BBackTop';
 import './PostPreviewModal.less';
 import PostChart from '../../../investarena/components/PostChart';
 import { getForecastObject } from '../../../investarena/components/CreatePostForecast/helpers';
+import { forecastDateTimeFormat } from '../../../investarena/constants/constantsForecast';
 
 const isTopicValid = topic => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(topic);
 
@@ -21,6 +22,7 @@ const isTopicValid = topic => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(topic);
 class PostPreviewModal extends Component {
   static propTypes = {
     intl: PropTypes.shape(),
+    isPublishing: PropTypes.bool,
     settings: PropTypes.shape({
       reward: PropTypes.oneOf([rewardsValues.none, rewardsValues.half, rewardsValues.all]),
       beneficiary: PropTypes.bool,
@@ -30,6 +32,7 @@ class PostPreviewModal extends Component {
     topics: PropTypes.arrayOf(PropTypes.string).isRequired,
     linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
     forecastValues: PropTypes.shape(),
+    expForecast: PropTypes.shape(),
     isUpdating: PropTypes.bool,
     objPercentage: PropTypes.shape(),
     onTopicsChange: PropTypes.func.isRequired,
@@ -41,8 +44,10 @@ class PostPreviewModal extends Component {
   };
   static defaultProps = {
     intl: {},
+    isPublishing: false,
     linkedObjects: [],
     forecastValues: {},
+    expForecast: null,
     objPercentage: {},
     isUpdating: false,
     onReadyBtnClick: () => {},
@@ -127,15 +132,17 @@ class PostPreviewModal extends Component {
     const { isModalOpen, isConfirmed, body, title, weightBuffer, objPercentage } = this.state;
     const {
       intl,
+      isPublishing,
       content,
       topics,
       linkedObjects,
       settings,
       forecastValues,
+      expForecast,
       isUpdating,
     } = this.props;
     const { selectForecast, ...forecastRaw } = forecastValues;
-    const forecast = getForecastObject(forecastRaw, selectForecast);
+    const forecast = getForecastObject(forecastRaw, selectForecast, !isEmpty(expForecast));
     return (
       <React.Fragment>
         {isModalOpen && (
@@ -150,7 +157,7 @@ class PostPreviewModal extends Component {
             width={800}
             footer={null}
             onCancel={this.hideModal}
-            maskStyle={{ 'z-index': '1500' }}
+            zIndex={1500}
             maskClosable={false}
           >
             <BBackTop isModal target={PostPreviewModal.findScrollElement} />
@@ -160,16 +167,21 @@ class PostPreviewModal extends Component {
               <PostChart
                 quoteSecurity={forecast.quoteSecurity}
                 createdAt={forecast.createdAt}
-                forecast={forecast.expiredAt}
+                forecast={
+                  typeof forecast.expiredAt === 'string'
+                    ? forecast.expiredAt
+                    : forecast.expiredAt.format(forecastDateTimeFormat)
+                }
                 recommend={forecast.recommend}
                 toggleModalPost={() => {}}
                 tpPrice={forecast.tpPrice ? forecast.tpPrice.toString() : null}
                 slPrice={forecast.slPrice ? forecast.slPrice.toString() : null}
-                expForecast={null}
+                expForecast={expForecast}
               />
             )}
             <TagsSelector
               className="post-preview-topics"
+              disabled={isPublishing}
               label={intl.formatMessage({
                 id: 'topics',
                 defaultMessage: 'Topics',
@@ -203,6 +215,7 @@ class PostPreviewModal extends Component {
               <Button
                 htmlType="submit"
                 onClick={this.handleSubmit}
+                loading={isPublishing}
                 size="large"
                 disabled={!isConfirmed}
                 className="edit-post__submit-btn"

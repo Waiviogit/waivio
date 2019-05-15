@@ -10,7 +10,8 @@ import SocialLinks from '../../components/SocialLinks';
 import {
   getFieldWithMaxWeight,
   getFieldsCount,
-  getInnerFieldWithMaxWeight, getField,
+  getInnerFieldWithMaxWeight,
+  getField,
 } from '../../object/wObjectHelper';
 import {
   objectFields,
@@ -226,20 +227,16 @@ class ObjectInfo extends React.Component {
               ) : null,
             )}
             {listItem(objectFields.description, <DescriptionInfo description={description} />)}
-            {hasChartId &&
-              <InstrumentLongTermStatistics
-                wobject={wobject}
-              />
-            }
-            {hasChartId &&
+            {hasChartId && <InstrumentLongTermStatistics wobject={wobject} />}
+            {hasChartId && (
               <div
                 role="presentation"
                 className="button-compare"
                 onClick={this.toggleModalPerformance}
               >
-              Compare
+                Compare
               </div>
-            }
+            )}
             <ModalComparePerformance
               toggleModal={this.toggleModalPerformance}
               isModalOpen={isModalComparePerformanceOpen}
