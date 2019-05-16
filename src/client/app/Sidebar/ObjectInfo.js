@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import {Button, Icon, Tag} from 'antd';
+import { Icon, Tag } from 'antd';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -10,7 +10,8 @@ import SocialLinks from '../../components/SocialLinks';
 import {
   getFieldWithMaxWeight,
   getFieldsCount,
-  getInnerFieldWithMaxWeight, getField,
+  getInnerFieldWithMaxWeight,
+  getField,
 } from '../../object/wObjectHelper';
 import {
   objectFields,
@@ -70,11 +71,7 @@ class ObjectInfo extends React.Component {
   render() {
     const { wobject, userName, albums, isAuthenticated } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
-    const {
-      showModal,
-      selectedField,
-      isModalComparePerformanceOpen,
-    } = this.state;
+    const { showModal, selectedField, isModalComparePerformanceOpen } = this.state;
     const renderFields = getAllowedFieldsByObjType(wobject.object_type);
     const isRenderGallery = !['list'].includes(wobject.object_type);
 
@@ -225,20 +222,22 @@ class ObjectInfo extends React.Component {
               ) : null,
             )}
             {listItem(objectFields.description, <DescriptionInfo description={description} />)}
-            {hasChartId &&
-            <React.Fragment>
-              <InstrumentLongTermStatistics
-                wobject={this.props.wobject}
-                withCompareButton
-                toggleModalPerformance={this.toggleModalPerformance}
-              />
-              {isModalComparePerformanceOpen && <ModalComparePerformance
-                toggleModal={this.toggleModalPerformance}
-                isModalOpen={isModalComparePerformanceOpen}
-                wobject={wobject}
-              />}
-            </React.Fragment>
-            }
+            {hasChartId && (
+              <React.Fragment>
+                <InstrumentLongTermStatistics
+                  wobject={this.props.wobject}
+                  withCompareButton
+                  toggleModalPerformance={this.toggleModalPerformance}
+                />
+                {isModalComparePerformanceOpen && (
+                  <ModalComparePerformance
+                    toggleModal={this.toggleModalPerformance}
+                    isModalOpen={isModalComparePerformanceOpen}
+                    wobject={wobject}
+                  />
+                )}
+              </React.Fragment>
+            )}
             {listItem(
               objectFields.rating,
               <RateInfo username={userName} authorPermlink={wobject.author_permlink} />,

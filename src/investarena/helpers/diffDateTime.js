@@ -130,19 +130,19 @@ export function getLongTermStatisticsForUser(data, intl) {
             formatData('d1', value, '1d');
             break;
           case 'd7':
-            formatData( 'd7', value, '1w');
+            formatData('d7', value, '1w');
             break;
           case 'm1':
-            formatData( 'm1', value, '1m');
+            formatData('m1', value, '1m');
             break;
           case 'm3':
-            formatData( 'm3', value, '3m');
+            formatData('m3', value, '3m');
             break;
           case 'm6':
-            formatData( 'm6', value, '6m');
+            formatData('m6', value, '6m');
             break;
           case 'm12':
-            formatData( 'm12', value, '1y');
+            formatData('m12', value, '1y');
             break;
           case 'm24':
             formatData('m24', value, '2y');

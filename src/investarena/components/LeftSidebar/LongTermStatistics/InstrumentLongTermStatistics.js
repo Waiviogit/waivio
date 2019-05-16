@@ -1,25 +1,23 @@
-import {Button} from "antd";
+import { Button } from 'antd';
 import React from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import {injectIntl} from "react-intl";
-import {withRouter} from "react-router-dom";
-import {connect} from "react-redux";
+import { injectIntl } from 'react-intl';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import './LongTermStatistics.less';
-import {getQuotesState} from "../../../redux/selectors/quotesSelectors";
-import {getFieldWithMaxWeight} from "../../../../client/object/wObjectHelper";
-import {objectFields} from "../../../../common/constants/listOfFields";
-import * as ApiClient from "../../../../waivioApi/ApiClient";
-import {quoteIdForWidget} from "../../../constants/constantsWidgets";
-import {getLongTermStatisticsFromWidgets} from "../../../helpers/diffDateTime";
+import { getQuotesState } from '../../../redux/selectors/quotesSelectors';
+import { getFieldWithMaxWeight } from '../../../../client/object/wObjectHelper';
+import { objectFields } from '../../../../common/constants/listOfFields';
+import * as ApiClient from '../../../../waivioApi/ApiClient';
+import { quoteIdForWidget } from '../../../constants/constantsWidgets';
+import { getLongTermStatisticsFromWidgets } from '../../../helpers/diffDateTime';
 
 @injectIntl
 @withRouter
-@connect(
-  state => ({
-    quotes: getQuotesState(state),
-  }),
-)
+@connect(state => ({
+  quotes: getQuotesState(state),
+}))
 class InstrumentLongTermStatistics extends React.Component {
   static propTypes = {
     wobject: PropTypes.shape().isRequired,
@@ -31,7 +29,7 @@ class InstrumentLongTermStatistics extends React.Component {
 
   static defaultProps = {
     withCompareButton: false,
-    toggleModalPerformance: ()=>{},
+    toggleModalPerformance: () => {},
   };
   constructor(props) {
     super(props);
@@ -39,23 +37,23 @@ class InstrumentLongTermStatistics extends React.Component {
       longTermStatistics: {},
       longTermStatisticsWidgets: {},
       loading: true,
-      chartId: null
+      chartId: null,
     };
   }
 
   componentWillReceiveProps(nextProps) {
     if (!_.isEmpty(nextProps.wobject) && !_.isEmpty(nextProps.quotes)) {
       let chartId = this.state.chartId;
-      if(!this.state.chartId) {
+      if (!this.state.chartId) {
         chartId = getFieldWithMaxWeight(nextProps.wobject, objectFields.chartId);
-        this.setState({chartId})
+        this.setState({ chartId });
       }
       const quote = nextProps.quotes[chartId];
       console.log(chartId);
 
       if (chartId && quote) {
         let longTermStatistics = {};
-        if(_.isEmpty(this.state.longTermStatisticsWidgets)){
+        if (_.isEmpty(this.state.longTermStatisticsWidgets)) {
           ApiClient.getInstrumentLongTermStatistics(quoteIdForWidget[chartId]).then(data => {
             if (data && !_.isError(data)) {
               const parsedData = _.attempt(JSON.parse, data);
@@ -65,7 +63,12 @@ class InstrumentLongTermStatistics extends React.Component {
                   nextProps.intl,
                   quote,
                 );
-              if (!_.isEmpty(longTermStatistics)) this.setState({ longTermStatistics, longTermStatisticsWidgets: parsedData, loading: false});
+              if (!_.isEmpty(longTermStatistics))
+                this.setState({
+                  longTermStatistics,
+                  longTermStatisticsWidgets: parsedData,
+                  loading: false,
+                });
             }
           });
         } else {
@@ -74,44 +77,46 @@ class InstrumentLongTermStatistics extends React.Component {
             nextProps.intl,
             quote,
           );
-          if (!_.isEmpty(longTermStatistics)) this.setState({ longTermStatistics, loading: false});
+          if (!_.isEmpty(longTermStatistics)) this.setState({ longTermStatistics, loading: false });
         }
       }
     }
   }
 
   render() {
-  return !this.state.loading ? (
-    <div className="InstrumentLongTermStatistics">
-      <div className="InstrumentLongTermStatistics__title">{`Performance`}</div>
-      <div>
-        {!_.isEmpty(this.state.longTermStatistics) ? <React.Fragment>
-          { _.map(this.state.longTermStatistics, period =>
-          <div key={`${period.price}${period.label}`} className="PeriodStatisticsLine">
-            <div className="PeriodStatisticsLine__periodName">{period.label}</div>
-            <div className={`PeriodStatisticsLine__value-${period.isUp ? 'success' : 'danger'}`}>
-              {period.price}
-            </div>
-          </div>
-          )}
-            {this.props.withCompareButton && <React.Fragment>
-              <Button
-              className="button-compare"
-              onClick={this.props.toggleModalPerformance}
-            >
-              {this.props.intl.formatMessage({ id: 'compare', defaultMessage: 'Compare' })}
-            </Button>
-
+    return !this.state.loading ? (
+      <div className="InstrumentLongTermStatistics">
+        <div className="InstrumentLongTermStatistics__title">{`Performance`}</div>
+        <div>
+          {!_.isEmpty(this.state.longTermStatistics) ? (
+            <React.Fragment>
+              {_.map(this.state.longTermStatistics, period => (
+                <div key={`${period.price}${period.label}`} className="PeriodStatisticsLine">
+                  <div className="PeriodStatisticsLine__periodName">{period.label}</div>
+                  <div
+                    className={`PeriodStatisticsLine__value-${period.isUp ? 'success' : 'danger'}`}
+                  >
+                    {period.price}
+                  </div>
+                </div>
+              ))}
+              {this.props.withCompareButton && (
+                <React.Fragment>
+                  <Button className="button-compare" onClick={this.props.toggleModalPerformance}>
+                    {this.props.intl.formatMessage({ id: 'compare', defaultMessage: 'Compare' })}
+                  </Button>
+                </React.Fragment>
+              )}
             </React.Fragment>
-            }
-        </React.Fragment>
-             :
-          <div>Long term statistics is unavailable for current instrument</div>
-        }
+          ) : (
+            <div>Long term statistics is unavailable for current instrument</div>
+          )}
+        </div>
       </div>
-    </div>
-  ) : <div/>;
-};
+    ) : (
+      <div />
+    );
+  }
 }
 
 export default InstrumentLongTermStatistics;
