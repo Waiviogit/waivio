@@ -133,7 +133,6 @@ class EditPost extends Component {
 
   handleSubmit() {
     const postData = this.buildPost();
-    console.log('POST_DATA', postData);
     this.props.createPost(postData);
   }
 
