@@ -98,7 +98,11 @@ class PostPreviewModal extends Component {
     });
   };
 
-  hideModal = () => this.setState({ isModalOpen: false });
+  hideModal = () => {
+    if (!this.props.isPublishing) {
+      this.setState({ isModalOpen: false });
+    }
+  };
 
   handleConfirmedChange = isConfirmed => this.setState({ isConfirmed });
 
@@ -128,7 +132,7 @@ class PostPreviewModal extends Component {
             centered={false}
             closable
             confirmLoading={false}
-            wrapClassName="post-preview-modal"
+            wrapClassName={`post-preview-modal${isPublishing ? ' publishing' : ''}`}
             width={800}
             footer={null}
             onCancel={this.hideModal}
