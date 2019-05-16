@@ -10,6 +10,16 @@
   .ant-modal-content {
     box-shadow: none;
   }
+
+  &.publishing {
+    filter: blur(2px);
+    cursor: wait;
+    .ant-modal-close,
+    .st-post-chart-wrap,
+    .ant-select-selection {
+      cursor: wait;
+    }
+  }
 }
 
 .StoryFull__title.preview {

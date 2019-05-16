@@ -81,12 +81,12 @@ export const getFeedContentByObject = (name, limit = 10) =>
       .catch(error => reject(error));
   });
 
-export const getMoreFeedContentByObject = ({ authorPermlink, startId, limit = 10 }) =>
+export const getMoreFeedContentByObject = ({ authorPermlink, skip = 0, limit = 10 }) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}/posts`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ start_id: startId, limit }),
+      body: JSON.stringify({ skip, limit }),
     })
       .then(res => res.json())
       .then(posts => resolve(posts))
