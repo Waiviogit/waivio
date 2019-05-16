@@ -361,6 +361,19 @@ export const getInstrumentLongTermStatistics = id =>
       .catch(error => reject(error));
   });
 
+export const getUserLongTermStatistics = id =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `http://waiviodev.com/investarena-api${config.userStatistics}/${id}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(res => res.json())
+      .then(data => resolve(data))
+      .catch(error => reject(error));
+  });
 // END Investarena
 
 export default null;

@@ -1,10 +1,48 @@
 @import (reference) '../../Common.less';
 
+@card-wight: 200px;
+
 .ModalComparePerformance {
+  .InstrumentLongTermStatistics{
+    width: @card-wight;
+  }
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  &__item-to-compare{
+    width: @card-wight;
+  }
+  &__item-to-compare-wrap{
+    display: flex;
+    align-items: center ;
+    justify-content: space-between;
+    position: relative;
+    .anticon-close-circle{
+      font-size: 23px;
+      position: absolute;
+      top: 6px;
+      right: 0;
+      cursor: pointer;
+      &:hover {
+        color: @primary-color;
+      }
+    }
+  }
+  .Avatar{
+    height: 34px!important;
+    width: 34px!important;
+    min-width: unset!important;
+  }
   .InstrumentLongTermStatistics {
     margin-left: 0;
+  }
+  .ant-select-auto-complete{
+    max-width: @card-wight;
+  }
+  .ObjectCard {
+
+    &:first-child {
+      width: @card-wight;
+    }
+
   }
 }

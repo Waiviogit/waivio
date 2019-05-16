@@ -1,10 +1,11 @@
+import {Button} from "antd";
 import React from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import {injectIntl} from "react-intl";
 import {withRouter} from "react-router-dom";
 import {connect} from "react-redux";
-import './InstrumentLongTermStatistics.less';
+import './LongTermStatistics.less';
 import {getQuotesState} from "../../../redux/selectors/quotesSelectors";
 import {getFieldWithMaxWeight} from "../../../../client/object/wObjectHelper";
 import {objectFields} from "../../../../common/constants/listOfFields";
@@ -22,22 +23,36 @@ import {getLongTermStatisticsFromWidgets} from "../../../helpers/diffDateTime";
 class InstrumentLongTermStatistics extends React.Component {
   static propTypes = {
     wobject: PropTypes.shape().isRequired,
+    withCompareButton: PropTypes.bool,
     quotes: PropTypes.shape().isRequired,
     intl: PropTypes.shape().isRequired,
+    toggleModalPerformance: PropTypes.func,
   };
 
+  static defaultProps = {
+    withCompareButton: false,
+    toggleModalPerformance: ()=>{},
+  };
   constructor(props) {
     super(props);
     this.state = {
       longTermStatistics: {},
       longTermStatisticsWidgets: {},
+      loading: true,
+      chartId: null
     };
   }
 
   componentWillReceiveProps(nextProps) {
     if (!_.isEmpty(nextProps.wobject) && !_.isEmpty(nextProps.quotes)) {
-      const chartId = getFieldWithMaxWeight(nextProps.wobject, objectFields.chartId);
+      let chartId = this.state.chartId;
+      if(!this.state.chartId) {
+        chartId = getFieldWithMaxWeight(nextProps.wobject, objectFields.chartId);
+        this.setState({chartId})
+      }
       const quote = nextProps.quotes[chartId];
+      console.log(chartId);
+
       if (chartId && quote) {
         let longTermStatistics = {};
         if(_.isEmpty(this.state.longTermStatisticsWidgets)){
@@ -50,7 +65,7 @@ class InstrumentLongTermStatistics extends React.Component {
                   nextProps.intl,
                   quote,
                 );
-              if (!_.isEmpty(longTermStatistics)) this.setState({ longTermStatistics, longTermStatisticsWidgets: parsedData});
+              if (!_.isEmpty(longTermStatistics)) this.setState({ longTermStatistics, longTermStatisticsWidgets: parsedData, loading: false});
             }
           });
         } else {
@@ -59,27 +74,43 @@ class InstrumentLongTermStatistics extends React.Component {
             nextProps.intl,
             quote,
           );
-          if (!_.isEmpty(longTermStatistics)) this.setState({ longTermStatistics });
+          if (!_.isEmpty(longTermStatistics)) this.setState({ longTermStatistics, loading: false});
         }
       }
     }
   }
-render() {
-  return (
+
+  render() {
+  return !this.state.loading ? (
     <div className="InstrumentLongTermStatistics">
       <div className="InstrumentLongTermStatistics__title">{`Performance`}</div>
       <div>
-        {_.map(this.state.longTermStatistics, period => (
-          <div className="PeriodStatisticsLine">
+        {!_.isEmpty(this.state.longTermStatistics) ? <React.Fragment>
+          { _.map(this.state.longTermStatistics, period =>
+          <div key={`${period.price}${period.label}`} className="PeriodStatisticsLine">
             <div className="PeriodStatisticsLine__periodName">{period.label}</div>
             <div className={`PeriodStatisticsLine__value-${period.isUp ? 'success' : 'danger'}`}>
               {period.price}
             </div>
           </div>
-        ))}
+          )}
+            {this.props.withCompareButton && <React.Fragment>
+              <Button
+              className="button-compare"
+              onClick={this.props.toggleModalPerformance}
+            >
+              {this.props.intl.formatMessage({ id: 'compare', defaultMessage: 'Compare' })}
+            </Button>
+
+            </React.Fragment>
+            }
+        </React.Fragment>
+             :
+          <div>Long term statistics is unavailable for current instrument</div>
+        }
       </div>
     </div>
-  );
+  ) : <div/>;
 };
 }
 

@@ -728,5 +728,7 @@
   "longTermData_m9": "9m",
   "longTermData_m12": "1y",
   "longTermData_m24": "2y",
+  "findComparedItem": "Item to compare",
+  "compare": "Compare",
   "compare_profitability": "Compare Profitability"
 }

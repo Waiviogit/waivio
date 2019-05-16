@@ -112,3 +112,46 @@ export function getLongTermStatisticsFromWidgets(data, intl, quote) {
   }
   return longTermStatistics;
 }
+
+export function getLongTermStatisticsForUser(data, intl) {
+  const longTermStatistics = {};
+  const formatData = (period, price, defaultMessage) => {
+    longTermStatistics[period] = {
+      price: `${price.toFixed(2)}%`,
+      label: intl.formatMessage({ id: `longTermData_${period}`, defaultMessage }),
+      isUp: price >= 0,
+    };
+  };
+  if (data) {
+    _.mapKeys(data, (value, key) => {
+      if (key) {
+        switch (key) {
+          case 'd1':
+            formatData('d1', value, '1d');
+            break;
+          case 'd7':
+            formatData( 'd7', value, '1w');
+            break;
+          case 'm1':
+            formatData( 'm1', value, '1m');
+            break;
+          case 'm3':
+            formatData( 'm3', value, '3m');
+            break;
+          case 'm6':
+            formatData( 'm6', value, '6m');
+            break;
+          case 'm12':
+            formatData( 'm12', value, '1y');
+            break;
+          case 'm24':
+            formatData('m24', value, '2y');
+            break;
+          default:
+            break;
+        }
+      }
+    });
+  }
+  return longTermStatistics;
+}

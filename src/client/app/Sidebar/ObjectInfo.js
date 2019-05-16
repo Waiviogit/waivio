@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import { Icon, Tag } from 'antd';
+import {Button, Icon, Tag} from 'antd';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -29,7 +29,7 @@ import './ObjectInfo.less';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
-import InstrumentLongTermStatistics from '../../../investarena/components/LeftSidebar/InstrumentLongTermStatistics/InstrumentLongTermStatistics';
+import InstrumentLongTermStatistics from '../../../investarena/components/LeftSidebar/LongTermStatistics/InstrumentLongTermStatistics';
 import { getQuotesState } from '../../../investarena/redux/selectors/quotesSelectors';
 import ModalComparePerformance from '../../../investarena/components/Modals/ModalComparePerformance/ModalComparePerformance';
 
@@ -42,6 +42,7 @@ import ModalComparePerformance from '../../../investarena/components/Modals/Moda
 class ObjectInfo extends React.Component {
   static propTypes = {
     wobject: PropTypes.shape().isRequired,
+    intl: PropTypes.shape().isRequired,
     userName: PropTypes.string.isRequired,
     isEditMode: PropTypes.bool.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
@@ -227,20 +228,15 @@ class ObjectInfo extends React.Component {
             {hasChartId &&
             <React.Fragment>
               <InstrumentLongTermStatistics
-                wobject={wobject}
+                wobject={this.props.wobject}
+                withCompareButton
+                toggleModalPerformance={this.toggleModalPerformance}
               />
-              <div
-                role="presentation"
-                className="button-compare"
-                onClick={this.toggleModalPerformance}
-              >
-                Compare
-              </div>
-              <ModalComparePerformance
+              {isModalComparePerformanceOpen && <ModalComparePerformance
                 toggleModal={this.toggleModalPerformance}
                 isModalOpen={isModalComparePerformanceOpen}
                 wobject={wobject}
-              />
+              />}
             </React.Fragment>
             }
             {listItem(

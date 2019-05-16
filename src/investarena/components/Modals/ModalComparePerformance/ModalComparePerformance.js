@@ -1,12 +1,11 @@
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { AutoComplete, Input, Modal } from 'antd';
+import { AutoComplete, Icon, Input, Modal } from 'antd';
 import React from 'react';
-import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import './ModalComparePerformance.less';
-import InstrumentLongTermStatistics from '../../LeftSidebar/InstrumentLongTermStatistics/InstrumentLongTermStatistics';
+import InstrumentLongTermStatistics from '../../LeftSidebar/LongTermStatistics/InstrumentLongTermStatistics';
 import ObjectCard from '../../../../client/components/Sidebar/ObjectCard';
 import {
   getAutoCompleteSearchResults,
@@ -16,10 +15,11 @@ import {
 import { searchAutoComplete } from '../../../../client/search/searchActions';
 import { getFieldWithMaxWeight } from '../../../../client/object/wObjectHelper';
 import { objectFields } from '../../../../common/constants/listOfFields';
-import Avatar from "../../../../client/components/Avatar";
+import Avatar from '../../../../client/components/Avatar';
+import UserLongTermStatistics from "../../LeftSidebar/LongTermStatistics/UserLongTermStatistics";
+import UserCard from "../../../../client/components/UserCard";
 
 @injectIntl
-@withRouter
 @connect(
   state => ({
     autoCompleteSearchResults: getAutoCompleteSearchResults(state),
@@ -40,7 +40,6 @@ class ModalComparePerformance extends React.Component {
     wobject: PropTypes.shape().isRequired,
     toggleModal: PropTypes.func.isRequired,
     isModalOpen: PropTypes.bool.isRequired,
-    history: PropTypes.shape().isRequired,
     searchAutoComplete: PropTypes.func.isRequired,
   };
 
@@ -54,6 +53,7 @@ class ModalComparePerformance extends React.Component {
     this.state = {
       item: this.props.wobject,
       itemToCompare: {},
+      isItemToCompareUser: false,
     };
 
     this.handleSelectOnAutoCompleteDropdown = this.handleSelectOnAutoCompleteDropdown.bind(this);
@@ -64,8 +64,11 @@ class ModalComparePerformance extends React.Component {
     this.wobjectSearchLayout = this.wobjectSearchLayout.bind(this);
   }
   componentWillReceiveProps(nextProps) {
-    if(!_.isEmpty(nextProps.autoCompleteSearchResults) && _.size(nextProps.autoCompleteSearchResults) !== _.size(this.props.autoCompleteSearchResults)){
-     this.prepareOptions(nextProps.autoCompleteSearchResults)
+    if (
+      !_.isEmpty(nextProps.autoCompleteSearchResults) &&
+      _.size(nextProps.autoCompleteSearchResults) !== _.size(this.props.autoCompleteSearchResults)
+    ) {
+      this.prepareOptions(nextProps.autoCompleteSearchResults);
     }
   }
 
@@ -86,13 +89,14 @@ class ModalComparePerformance extends React.Component {
   debouncedSearch = _.debounce(value => this.props.searchAutoComplete(value), 300);
 
   handleSelectOnAutoCompleteDropdown(value, data) {
-    if (data.props.marker === 'user') this.props.history.push(`/@${value}`);
-    else if (data.props.marker === 'wobj') {
-      // this.props.history.replace(`/object/${value}`);
-      const itemToCompare = _.find(this.props.autoCompleteSearchResults.wobjects, {author_permlink: value});
-
-      this.setState({itemToCompare})
-    };
+    if (data.props.marker === 'user') {
+      this.setState({ itemToCompare: value, isItemToCompareUser: true });
+    } else if (data.props.marker === 'wobj') {
+      const itemToCompare = _.find(this.props.autoCompleteSearchResults.wobjects, {
+        author_permlink: value,
+      });
+      this.setState({ itemToCompare, isItemToCompareUser: false });
+    }
   }
 
   handleOnChangeForAutoComplete(value) {
@@ -149,7 +153,7 @@ class ModalComparePerformance extends React.Component {
               value={`${option.author_permlink}`}
               className="Topnav__search-autocomplete"
             >
-              <ObjectCard wobject={option} showFollow={false} />
+              <ObjectCard wobject={option} showFollow={false} withLinks={false}/>
               <div className="Topnav__search-content-small">{option.object_type}</div>
             </AutoComplete.Option>
           ) : null;
@@ -158,91 +162,96 @@ class ModalComparePerformance extends React.Component {
     );
   }
 
+  removeItemToCompare = () => this.setState({ itemToCompare: {} });
+
+  toggleModal = () => {
+    this.props.toggleModal();
+  };
+
   renderTitle = title => <span>{title}</span>;
 
   render() {
-    const {
-      intl,
-      toggleModal,
-      isModalOpen,
-      autoCompleteSearchResults,
-    } = this.props;
-    const { searchBarValue, item, itemToCompare} = this.state;
+    const { intl, isModalOpen, autoCompleteSearchResults } = this.props;
+    const { searchBarValue, item, itemToCompare, isItemToCompareUser } = this.state;
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     const formattedAutoCompleteDropdown = _.isEmpty(dropdownOptions)
       ? dropdownOptions
       : dropdownOptions.concat([
           <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
-              <span onClick={this.hideAutoCompleteDropdown} role="presentation">
-                {intl.formatMessage(
-                  {
-                    id: 'search_all_results_for',
-                    defaultMessage: 'Search all results for {search}',
-                  },
-                  { search: searchBarValue },
-                )}
-              </span>
+            <span onClick={this.hideAutoCompleteDropdown} role="presentation">
+              {intl.formatMessage(
+                {
+                  id: 'search_all_results_for',
+                  defaultMessage: 'Search all results for {search}',
+                },
+                { search: searchBarValue },
+              )}
+            </span>
           </AutoComplete.Option>,
         ]);
     return (
-      <React.Fragment>
-        {isModalOpen && (
-          <Modal
-            title={intl.formatMessage({
-              id: 'compare_profitability',
-              defaultMessage: 'Compare profitability',
-            })}
-            visible={!!isModalOpen}
-            footer={null}
-            onCancel={toggleModal}
-            width={'500px'}
-          >
-            <div className="ModalComparePerformance">
-              <div className="ModalComparePerformance-item">
-                <ObjectCard wobject={item} showFollow={false} />
-                <InstrumentLongTermStatistics wobject={item} />
-              </div>
-              <div>vs</div>
-              <div className="ModalComparePerformance-item-to-compare">
-                {_.isEmpty(itemToCompare) ? (
-                  <div className="Topnav__input-container">
-                    <AutoComplete
-                      dropdownClassName="Topnav__search-dropdown-container"
-                      dataSource={formattedAutoCompleteDropdown}
-                      onSearch={this.handleAutoCompleteSearch}
-                      onSelect={this.handleSelectOnAutoCompleteDropdown}
-                      onChange={this.handleOnChangeForAutoComplete}
-                      defaultActiveFirstOption={false}
-                      dropdownMatchSelectWidth={false}
-                      optionLabelProp="value"
-                      value={searchBarValue}
-                    >
-                      <Input
-                        ref={ref => {
-                          this.searchInputRef = ref;
-                        }}
-                        onPressEnter={this.handleSearchForInput}
-                        placeholder={intl.formatMessage({
-                          id: 'search_placeholder',
-                          defaultMessage: 'What are you looking for?',
-                        })}
-                        autoCapitalize="off"
-                        autoCorrect="off"
-                      />
-                    </AutoComplete>
-                    <i className="iconfont icon-search" />
-                  </div>
-                ) :
-                  <React.Fragment>
-                    <ObjectCard wobject={itemToCompare} showFollow={false} />
-                    <InstrumentLongTermStatistics wobject={itemToCompare} />
-                  </React.Fragment>
-                }
-              </div>
+        <Modal
+          title={intl.formatMessage({
+            id: 'compare_profitability',
+            defaultMessage: 'Compare profitability',
+          })}
+          visible={!!isModalOpen}
+          footer={null}
+          onCancel={this.toggleModal}
+          // width={'90vw'}
+        >
+          <div className="ModalComparePerformance">
+            <div className="ModalComparePerformance-item">
+              <ObjectCard wobject={item} showFollow={false}/>
+              <InstrumentLongTermStatistics wobject={item}/>
             </div>
-          </Modal>
-        )}
-      </React.Fragment>
+            <div>vs</div>
+            <div className="ModalComparePerformance__item-to-compare">
+              {_.isEmpty(itemToCompare) ? (
+                <div className="">
+                  <AutoComplete
+                    dropdownClassName=""
+                    dataSource={formattedAutoCompleteDropdown}
+                    onSearch={this.handleAutoCompleteSearch}
+                    onSelect={this.handleSelectOnAutoCompleteDropdown}
+                    onChange={this.handleOnChangeForAutoComplete}
+                    defaultActiveFirstOption={false}
+                    dropdownMatchSelectWidth={false}
+                    optionLabelProp="value"
+                    value={searchBarValue}
+                  >
+                    <Input
+                      ref={ref => {
+                        this.searchInputRef = ref;
+                      }}
+                      onPressEnter={this.handleSearchForInput}
+                      placeholder={intl.formatMessage({
+                        id: 'findComparedItem',
+                        defaultMessage: 'Item to compare',
+                      })}
+                    />
+                  </AutoComplete>
+                </div>
+              ) : isItemToCompareUser ? (
+                <React.Fragment>
+                  <div className="ModalComparePerformance__item-to-compare-wrap">
+                    <UserCard user={{name: itemToCompare}} showFollow={false}/>
+                    <Icon type="close-circle" onClick={this.removeItemToCompare}/>
+                  </div>
+                  <UserLongTermStatistics userName={itemToCompare}/>
+                </React.Fragment>
+              ) : (
+                <React.Fragment>
+                  <div className="ModalComparePerformance__item-to-compare-wrap">
+                    <ObjectCard wobject={itemToCompare} showFollow={false}/>
+                    <Icon type="close-circle" onClick={this.removeItemToCompare}/>
+                  </div>
+                  <InstrumentLongTermStatistics wobject={itemToCompare}/>
+                </React.Fragment>
+              )}
+            </div>
+          </div>
+        </Modal>
     );
   }
 }
