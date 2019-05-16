@@ -19,6 +19,7 @@ const isTopicValid = topic => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(topic);
 class PostPreviewModal extends Component {
   static propTypes = {
     intl: PropTypes.shape(),
+    isPublishing: PropTypes.bool,
     settings: PropTypes.shape({
       reward: PropTypes.oneOf([rewardsValues.none, rewardsValues.half, rewardsValues.all]),
       beneficiary: PropTypes.bool,
@@ -36,6 +37,7 @@ class PostPreviewModal extends Component {
   };
   static defaultProps = {
     intl: {},
+    isPublishing: false,
     linkedObjects: [],
     objPercentage: {},
   };
@@ -113,7 +115,7 @@ class PostPreviewModal extends Component {
 
   render() {
     const { isModalOpen, isConfirmed, body, title, weightBuffer, objPercentage } = this.state;
-    const { intl, content, topics, linkedObjects, settings } = this.props;
+    const { intl, isPublishing, content, topics, linkedObjects, settings } = this.props;
     return (
       <React.Fragment>
         {isModalOpen && (
@@ -128,7 +130,7 @@ class PostPreviewModal extends Component {
             width={800}
             footer={null}
             onCancel={this.hideModal}
-            maskStyle={{ 'z-index': '1500' }}
+            zIndex={1500}
             maskClosable={false}
           >
             <BBackTop isModal target={PostPreviewModal.findScrollElement} />
@@ -136,6 +138,7 @@ class PostPreviewModal extends Component {
             <BodyContainer full body={body} />
             <TagsSelector
               className="post-preview-topics"
+              disabled={isPublishing}
               label={intl.formatMessage({
                 id: 'topics',
                 defaultMessage: 'Topics',
@@ -167,6 +170,7 @@ class PostPreviewModal extends Component {
               <Button
                 htmlType="submit"
                 onClick={this.handleSubmit}
+                loading={isPublishing}
                 size="large"
                 disabled={!isConfirmed}
                 className="edit-post__submit-btn"

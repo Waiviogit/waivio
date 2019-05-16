@@ -10,6 +10,7 @@ import {
   getAuthenticatedUser,
   getLocale,
   getDraftPosts,
+  getIsEditorLoading,
   getIsEditorSaving,
   getIsImageUploading,
   getUpvoteSetting,
@@ -40,6 +41,7 @@ const getLinkedObjects = contentStateRaw => {
     user: getAuthenticatedUser(state),
     locale: getLocale(state),
     draftPosts: getDraftPosts(state),
+    publishing: getIsEditorLoading(state),
     saving: getIsEditorSaving(state),
     imageLoading: getIsImageUploading(state),
     draftId: new URLSearchParams(props.location.search).get('draft'),
@@ -58,6 +60,7 @@ class EditPost extends Component {
     draftPosts: PropTypes.shape().isRequired,
     // upvoteSetting: PropTypes.bool,
     draftId: PropTypes.string,
+    publishing: PropTypes.bool,
     saving: PropTypes.bool,
     imageLoading: PropTypes.bool,
     createPost: PropTypes.func,
@@ -66,6 +69,7 @@ class EditPost extends Component {
   static defaultProps = {
     upvoteSetting: false,
     draftId: '',
+    publishing: false,
     saving: false,
     imageLoading: false,
     createPost: () => {},
@@ -193,7 +197,7 @@ class EditPost extends Component {
 
   render() {
     const { draftContent, content, topics, linkedObjects, objPercentage, settings } = this.state;
-    const { draftId, saving, imageLoading, locale } = this.props;
+    const { draftId, saving, publishing, imageLoading, locale } = this.props;
     return (
       <div className="shifted">
         <div className="post-layout container">
@@ -219,6 +223,7 @@ class EditPost extends Component {
               linkedObjects={linkedObjects}
               objPercentage={objPercentage}
               settings={settings}
+              isPublishing={publishing}
               onTopicsChange={this.handleTopicsChange}
               onSettingsChange={this.handleSettingsChange}
               onPercentChange={this.handlePercentChange}
