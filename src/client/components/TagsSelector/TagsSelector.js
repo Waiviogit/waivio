@@ -6,6 +6,7 @@ import { Select } from 'antd';
 class TagsSelector extends Component {
   static propTypes = {
     className: PropTypes.string,
+    disabled: PropTypes.bool,
     label: PropTypes.string,
     placeholder: PropTypes.string,
     tags: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -14,6 +15,7 @@ class TagsSelector extends Component {
   };
   static defaultProps = {
     className: '',
+    disabled: false,
     label: '',
     tags: [],
     placeholder: '',
@@ -33,13 +35,14 @@ class TagsSelector extends Component {
   }
 
   render() {
-    const { label, placeholder, tags, className } = this.props;
+    const { label, placeholder, tags, className, disabled } = this.props;
     return (
       <div className={classNames('tags-selector', { [className]: Boolean(className) })}>
         {label && <div className="tags-selector__label">{label}</div>}
         <Select
           mode="tags"
           style={{ width: '100%' }}
+          disabled={disabled}
           placeholder={placeholder}
           dropdownStyle={{ display: 'none' }}
           tokenSeparators={[' ', ',']}
