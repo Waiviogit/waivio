@@ -102,7 +102,7 @@ class ObjectInfo extends React.Component {
       }
       photosCount = wobject.photos_count;
 
-      const filtered = _.filter(wobject.fields, ['name', objectFields.tag]);
+      const filtered = _.filter(wobject.fields, ['name', objectFields.tagCloud]);
       tags = _.orderBy(filtered, ['weight'], ['desc']);
 
       const filteredPhones = _.filter(wobject.fields, ['name', objectFields.phone]);
@@ -209,7 +209,7 @@ class ObjectInfo extends React.Component {
               <RateInfo username={userName} authorPermlink={wobject.author_permlink} />,
             )}
             {listItem(
-              objectFields.hashtag,
+              objectFields.tagCloud,
               <div className="field-info">
                 {accessExtend ? (
                   <React.Fragment>
@@ -227,8 +227,8 @@ class ObjectInfo extends React.Component {
                           </div>
                         ))}
                         <Link
-                          to={`/object/${wobject.author_permlink}/updates/${objectFields.tag}`}
-                          onClick={() => this.handleSelectField(objectFields.tag)}
+                          to={`/object/${wobject.author_permlink}/updates/${objectFields.tagCloud}`}
+                          onClick={() => this.handleSelectField(objectFields.tagCloud)}
                         >
                           <FormattedMessage id="show_more_tags" defaultMessage="show more">
                             {value => <div className="tag-item">{value}</div>}

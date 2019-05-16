@@ -15,10 +15,12 @@ export const objectFields = {
   listItem: 'listItem',
   price: 'price',
   parent: 'parent',
-  tag: 'tag',
+  tagCloud: 'tagCloud',
+  newsFilter: 'newsFilter',
 };
 
 export const objectFieldsWithInnerData = [
+  'newsFilter',
   'address',
   'map',
   'link',
@@ -29,10 +31,10 @@ export const objectFieldsWithInnerData = [
 ];
 
 export const addressFields = {
-  country: 'country',
-  city: 'city',
-  street: 'street',
   accommodation: 'accommodation',
+  street: 'street',
+  city: 'city',
+  country: 'country',
 };
 
 export const mapFields = {

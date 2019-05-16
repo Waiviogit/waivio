@@ -42,7 +42,57 @@
       }
     }
   }
+  .NewLineButton {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    width: 20%;
+    .anticon-plus-circle {
+      color: @primary-color;
+      font-size: 23px;
+      margin: 10px 10px 10px 0;
+    }
+    &:hover {
+      color: @primary-color;
+    }
+  }
+  .NewsFiltersRule-title {
+    margin-top: 5px;
+  }
+  .NewsFiltersRule-line {
+    .ObjectCard {
+      padding-top: 10px;
+      border-bottom: none;
+    }
 
+    &-and {
+      padding: 17px 10px;
+    }
+    &-card {
+      position: relative;
+      padding-left: 5px;
+      border: @base-border;
+      border-radius: 8px;
+    }
+    &-close {
+      position: absolute;
+      top: -12px;
+      right: -12px;
+      background-color: @grey-nero;
+      .anticon {
+        font-size: 23px;
+        cursor: pointer;
+        &:hover {
+          color: @primary-color;
+        }
+      }
+    }
+    &-search {
+      padding: 10px 0;
+    }
+    padding: 10px 0;
+    border-bottom: @base-border;
+  }
   & .ant-form-item-label {
     position: relative;
     top: 8px !important;

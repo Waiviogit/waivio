@@ -10,6 +10,7 @@ import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
   getObjectTypeState,
+  getScreenSize,
 } from '../reducers';
 
 import MapOS from '../components/Maps/Map';
@@ -29,6 +30,7 @@ import ObjectTypeFiltersTags from './ObjectTypeFiltersTags/ObjectTypeFiltersTags
     authenticated: getIsAuthenticated(state),
     authenticatedUser: getAuthenticatedUser(state),
     authenticatedUserName: getAuthenticatedUserName(state),
+    screenSize: getScreenSize(state),
     type: getObjectTypeState(state, ownProps.match.params.typeName),
   }),
   {
@@ -41,6 +43,7 @@ export default class ObjectTypePage extends React.Component {
     intl: PropTypes.shape().isRequired,
     getObjectType: PropTypes.func.isRequired,
     type: PropTypes.shape(),
+    screenSize: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -77,7 +80,7 @@ export default class ObjectTypePage extends React.Component {
   toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
 
   render() {
-    const { type, intl } = this.props;
+    const { type, intl, screenSize } = this.props;
 
     const host = global.postOrigin || 'https://waiviodev.com';
     const desc = type.body;
@@ -91,7 +94,9 @@ export default class ObjectTypePage extends React.Component {
     // };
     const relatedObjectsLayout = _.map(type.related_wobjects, obj => {
       const wobj = getClientWObj(obj);
-      return <ObjectCardView key={wobj.id} wObject={wobj} />;
+      return (
+        <ObjectCardView key={wobj.id} wObject={wobj} showSmallVersion={screenSize === 'xsmall'} />
+      );
     });
     return (
       <div className="ObjectTypePage">
@@ -134,17 +139,21 @@ export default class ObjectTypePage extends React.Component {
                   defaultMessage: 'Type',
                 })}: ${type.name}`}</div>
               )}
-              <div className="ObjectTypePage__tags">
-                {intl.formatMessage({
-                  id: 'filters',
-                  defaultMessage: 'Filters',
-                })}
-                :
-                <ObjectTypeFiltersTags
-                  activefilters={this.state.activefilters}
-                  setFilterValue={this.setFilterValue}
-                />
-              </div>
+              {(_.size(this.state.activefilters.tagCloud) > 0 ||
+                _.size(this.state.activefilters.ratings) > 0 ||
+                _.size(this.state.activefilters.map) > 0) && (
+                <div className="ObjectTypePage__tags">
+                  {intl.formatMessage({
+                    id: 'filters',
+                    defaultMessage: 'Filters',
+                  })}
+                  :
+                  <ObjectTypeFiltersTags
+                    activefilters={this.state.activefilters}
+                    setFilterValue={this.setFilterValue}
+                  />
+                </div>
+              )}
               {relatedObjectsLayout}
             </div>
           </div>

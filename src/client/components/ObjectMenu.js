@@ -137,7 +137,7 @@ class ObjectMenu extends React.Component {
                 role="presentation"
                 data-key={ObjectMenu.TAB_NAME.EXPERTISE}
               >
-                <FormattedMessage id="expertise" defaultMessage="Expertise" />
+                <FormattedMessage id="experts" defaultMessage="Experts" />
               </li>
             </ul>
           </Scrollbars>
