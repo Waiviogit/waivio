@@ -10,7 +10,8 @@ import SocialLinks from '../../components/SocialLinks';
 import {
   getFieldWithMaxWeight,
   getFieldsCount,
-  getInnerFieldWithMaxWeight, getField,
+  getInnerFieldWithMaxWeight,
+  getField,
 } from '../../object/wObjectHelper';
 import {
   objectFields,

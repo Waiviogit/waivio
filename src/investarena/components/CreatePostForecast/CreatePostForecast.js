@@ -433,12 +433,10 @@ class CreatePostForecast extends Component {
                     )}
                   </div>
                 </div>
-                {!isUpdating && (
-                  <div className="st-create-post-dropdowns-row clear">
-                    <span className="clear-btn" role="presentation" onClick={this.resetForm}>
-                      {intl.formatMessage({ id: 'deals.clear', defaultMessage: 'Clear' })}
-                    </span>
-                  </div>
+                {!isUpdating && (selectQuote || selectRecommend || selectForecast) && (
+                  <span className="clear-btn" role="presentation" onClick={this.resetForm}>
+                    {intl.formatMessage({ id: 'deals.clear', defaultMessage: 'Clear' })}
+                  </span>
                 )}
               </div>
             </div>

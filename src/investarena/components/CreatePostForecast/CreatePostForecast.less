@@ -12,18 +12,13 @@
   }
   .st-create-post-dropdowns {
     display: flex;
+    position: relative;
     flex-direction: column;
+    padding-bottom: 5px;
+
     .st-create-post-dropdowns-row {
       display: flex;
-      &.clear {
-        justify-content: flex-end;
-        margin-bottom: -15px;
-        .clear-btn {
-          color: @blue-baliHai;
-          text-transform: lowercase;
-          cursor: pointer;
-        }
-      }
+
       .st-create-post-select-wrap {
         width: 33.3%;
         margin-right: 10px;
@@ -48,6 +43,18 @@
           max-width: 80% !important;
           display: block;
         }
+      }
+    }
+
+    .clear-btn {
+      position: absolute;
+      bottom: -17px;
+      right: 0;
+      color: @blue-baliHai;
+      text-transform: lowercase;
+      cursor: pointer;
+      &:hover {
+        color: @black-text;
       }
     }
   }

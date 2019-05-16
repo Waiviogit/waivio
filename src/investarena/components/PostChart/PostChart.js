@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { get, last } from 'lodash';
+import { get, last, isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import moment from 'moment';
@@ -25,6 +25,7 @@ const propTypes = {
   quoteSettings: PropTypes.shape(),
   toggleModalPost: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
+  withModalChart: PropTypes.bool,
   quoteSecurity: PropTypes.string.isRequired,
   intl: PropTypes.shape().isRequired,
   createdAt: PropTypes.string.isRequired,
@@ -37,6 +38,7 @@ const propTypes = {
 const defaultProps = {
   platformName: 'widgets',
   quote: quoteData,
+  withModalChart: true,
   quoteSettings: quoteSettingsData,
   isObjectProfile: false,
   connect: false,
@@ -92,16 +94,15 @@ class PostChart extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!this.state.expired && this.chartData && this.chart) {
-      // if (nextProps.expiredBars && nextProps.expiredAt) {
-      //   this.setState(
-      //     {
-      //       expired: true,
-      //       timeScale: nextProps.expiredTimeScale || this.state.timeScale,
-      //     },
-      //     () => this.updateChartData(nextProps),
-      //   );
-      // } else
-      if (nextProps.connect && nextProps.quoteSettings && nextProps.quoteSettings.leverage) {
+      if (!isEmpty(nextProps.expForecast)) {
+        this.setState(
+          {
+            expired: true,
+            timeScale: nextProps.expiredTimeScale || this.state.timeScale,
+          },
+          () => this.updateChartData(nextProps),
+        );
+      } else if (nextProps.connect && nextProps.quoteSettings && nextProps.quoteSettings.leverage) {
         if (nextProps.quote && (!nextProps.bars || !nextProps.bars[this.state.timeScale])) {
           this.props.getChartData(this.state.timeScale);
         } else if (nextProps.bars && nextProps.bars[this.state.timeScale] && nextProps.quote) {
@@ -132,8 +133,10 @@ class PostChart extends Component {
   }
 
   toggleModalTC = () => {
-    const { quote, quoteSettings, platformName, toggleModal } = this.props;
-    toggleModal('openDeals', { quote, quoteSettings, platformName });
+    if (this.props.withModalChart) {
+      const { quote, quoteSettings, platformName, toggleModal } = this.props;
+      toggleModal('openDeals', { quote, quoteSettings, platformName });
+    }
   };
 
   isExpiredByTime = () => moment().valueOf() > moment(this.props.forecast).valueOf();

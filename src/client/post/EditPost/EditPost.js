@@ -4,12 +4,13 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Badge } from 'antd';
-import { debounce, has, isEqual, kebabCase, throttle, uniqBy } from 'lodash';
+import { debounce, has, isEqual, isEmpty, kebabCase, throttle, uniqBy } from 'lodash';
 import uuidv4 from 'uuid/v4';
 import {
   getAuthenticatedUser,
   getLocale,
   getDraftPosts,
+  getIsEditorLoading,
   getIsEditorSaving,
   getIsImageUploading,
   getUpvoteSetting,
@@ -42,6 +43,7 @@ const getLinkedObjects = contentStateRaw => {
     user: getAuthenticatedUser(state),
     locale: getLocale(state),
     draftPosts: getDraftPosts(state),
+    publishing: getIsEditorLoading(state),
     saving: getIsEditorSaving(state),
     imageLoading: getIsImageUploading(state),
     draftId: new URLSearchParams(props.location.search).get('draft'),
@@ -60,6 +62,7 @@ class EditPost extends Component {
     draftPosts: PropTypes.shape().isRequired,
     // upvoteSetting: PropTypes.bool,
     draftId: PropTypes.string,
+    publishing: PropTypes.bool,
     saving: PropTypes.bool,
     imageLoading: PropTypes.bool,
     createPost: PropTypes.func,
@@ -68,6 +71,7 @@ class EditPost extends Component {
   static defaultProps = {
     upvoteSetting: false,
     draftId: '',
+    publishing: false,
     saving: false,
     imageLoading: false,
     createPost: () => {},
@@ -117,20 +121,22 @@ class EditPost extends Component {
     // console.log('content:', nextState);
   }
 
-  handleTopicsChange = topics => this.setState({ topics });
+  handleTopicsChange = topics => this.setState({ topics }, this.handleUpdateState);
 
   handleSettingsChange = updatedValue =>
-    this.setState(prevState => ({
-      settings: { ...prevState.settings, ...updatedValue },
-    }));
+    this.setState(
+      prevState => ({
+        settings: { ...prevState.settings, ...updatedValue },
+      }),
+      this.handleUpdateState,
+    );
 
   handlePercentChange = percentage => {
-    this.setState({ objPercentage: percentage });
+    this.setState({ objPercentage: percentage }, this.handleUpdateState);
   };
 
   handleSubmit() {
     const postData = this.buildPost();
-    // console.log('POST_DATA', postData);
     this.props.createPost(postData);
   }
 
@@ -142,6 +148,7 @@ class EditPost extends Component {
       objPercentage,
       settings,
       forecastValues: { selectForecast, ...forecast },
+      expForecast,
       isUpdating,
     } = this.state;
     const { postTitle, postBody } = splitPostContent(content);
@@ -171,7 +178,10 @@ class EditPost extends Component {
       })),
     };
 
-    const appData = { waivioData, forecast: getForecastObject(forecast, selectForecast) };
+    const appData = {
+      waivioData,
+      forecast: getForecastObject(forecast, selectForecast, !isEmpty(expForecast)),
+    };
 
     postData.jsonMetadata = createPostMetadata(postBody, topics, oldMetadata, appData);
 
@@ -183,7 +193,7 @@ class EditPost extends Component {
   }
 
   handleUpdateState = nextContent => {
-    if (!isEqual(this.state.content, nextContent)) return;
+    if (isEqual(this.state.content, nextContent)) return;
     throttle(this.saveDraft, 200, { leading: false, trailing: true })();
   };
 
@@ -199,7 +209,9 @@ class EditPost extends Component {
     const isBodyEmpty = postBody.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().length === 0;
 
     if (isBodyEmpty) return;
-
+    if (this.state.expForecast) {
+      postData.exp_forecast = this.state.expForecast;
+    }
     const redirect = id !== this.draftId;
 
     this.props.saveDraft({ postData, id: this.draftId }, redirect, this.props.intl);
@@ -214,10 +226,11 @@ class EditPost extends Component {
       objPercentage,
       settings,
       forecastValues,
+      expForecast,
       isUpdating,
       isPreview,
     } = this.state;
-    const { draftId, saving, imageLoading, locale } = this.props;
+    const { draftId, saving, publishing, imageLoading, locale } = this.props;
     return (
       <div className="shifted">
         <div className="post-layout container">
@@ -250,6 +263,8 @@ class EditPost extends Component {
               objPercentage={objPercentage}
               settings={settings}
               forecastValues={forecastValues}
+              expForecast={expForecast}
+              isPublishing={publishing}
               isUpdating={isUpdating}
               onTopicsChange={this.handleTopicsChange}
               onSettingsChange={this.handleSettingsChange}
