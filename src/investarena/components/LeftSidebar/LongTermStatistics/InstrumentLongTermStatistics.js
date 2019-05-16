@@ -49,8 +49,6 @@ class InstrumentLongTermStatistics extends React.Component {
         this.setState({ chartId });
       }
       const quote = nextProps.quotes[chartId];
-      console.log(chartId);
-
       if (chartId && quote) {
         let longTermStatistics = {};
         if (_.isEmpty(this.state.longTermStatisticsWidgets)) {
