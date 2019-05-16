@@ -73,12 +73,10 @@ class ObjectInfo extends React.Component {
     const {
       showModal,
       selectedField,
-      longTermStatistics,
       isModalComparePerformanceOpen,
     } = this.state;
     const renderFields = getAllowedFieldsByObjType(wobject.object_type);
     const isRenderGallery = !['list'].includes(wobject.object_type);
-    const chartId = getFieldWithMaxWeight(wobject, objectFields.chartId);
 
     let addressArr = [];
     let address = '';
@@ -227,8 +225,11 @@ class ObjectInfo extends React.Component {
               ) : null,
             )}
             {listItem(objectFields.description, <DescriptionInfo description={description} />)}
-            {hasChartId && <InstrumentLongTermStatistics wobject={wobject} />}
-            {hasChartId && (
+            {hasChartId &&
+            <React.Fragment>
+              <InstrumentLongTermStatistics
+                wobject={wobject}
+              />
               <div
                 role="presentation"
                 className="button-compare"
@@ -236,12 +237,13 @@ class ObjectInfo extends React.Component {
               >
                 Compare
               </div>
-            )}
-            <ModalComparePerformance
-              toggleModal={this.toggleModalPerformance}
-              isModalOpen={isModalComparePerformanceOpen}
-              wobject={wobject}
-            />
+              <ModalComparePerformance
+                toggleModal={this.toggleModalPerformance}
+                isModalOpen={isModalComparePerformanceOpen}
+                wobject={wobject}
+              />
+            </React.Fragment>
+            }
             {listItem(
               objectFields.rating,
               <RateInfo username={userName} authorPermlink={wobject.author_permlink} />,

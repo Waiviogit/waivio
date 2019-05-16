@@ -16,7 +16,7 @@ import {
 import { searchAutoComplete } from '../../../../client/search/searchActions';
 import { getFieldWithMaxWeight } from '../../../../client/object/wObjectHelper';
 import { objectFields } from '../../../../common/constants/listOfFields';
-import Avatar from '../../../../client/components/Avatar';
+import Avatar from "../../../../client/components/Avatar";
 
 @injectIntl
 @withRouter
@@ -64,11 +64,8 @@ class ModalComparePerformance extends React.Component {
     this.wobjectSearchLayout = this.wobjectSearchLayout.bind(this);
   }
   componentWillReceiveProps(nextProps) {
-    if (
-      !_.isEmpty(nextProps.autoCompleteSearchResults) &&
-      _.size(nextProps.autoCompleteSearchResults) !== _.size(this.props.autoCompleteSearchResults)
-    ) {
-      this.prepareOptions(nextProps.autoCompleteSearchResults);
+    if(!_.isEmpty(nextProps.autoCompleteSearchResults) && _.size(nextProps.autoCompleteSearchResults) !== _.size(this.props.autoCompleteSearchResults)){
+     this.prepareOptions(nextProps.autoCompleteSearchResults)
     }
   }
 
@@ -91,8 +88,11 @@ class ModalComparePerformance extends React.Component {
   handleSelectOnAutoCompleteDropdown(value, data) {
     if (data.props.marker === 'user') this.props.history.push(`/@${value}`);
     else if (data.props.marker === 'wobj') {
-      this.props.history.replace(`/object/${value}`);
-    }
+      // this.props.history.replace(`/object/${value}`);
+      const itemToCompare = _.find(this.props.autoCompleteSearchResults.wobjects, {author_permlink: value});
+
+      this.setState({itemToCompare})
+    };
   }
 
   handleOnChangeForAutoComplete(value) {
@@ -161,22 +161,27 @@ class ModalComparePerformance extends React.Component {
   renderTitle = title => <span>{title}</span>;
 
   render() {
-    const { intl, toggleModal, isModalOpen, autoCompleteSearchResults } = this.props;
-    const { searchBarValue, item, itemToCompare } = this.state;
+    const {
+      intl,
+      toggleModal,
+      isModalOpen,
+      autoCompleteSearchResults,
+    } = this.props;
+    const { searchBarValue, item, itemToCompare} = this.state;
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     const formattedAutoCompleteDropdown = _.isEmpty(dropdownOptions)
       ? dropdownOptions
       : dropdownOptions.concat([
           <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
-            <span onClick={this.hideAutoCompleteDropdown} role="presentation">
-              {intl.formatMessage(
-                {
-                  id: 'search_all_results_for',
-                  defaultMessage: 'Search all results for {search}',
-                },
-                { search: searchBarValue },
-              )}
-            </span>
+              <span onClick={this.hideAutoCompleteDropdown} role="presentation">
+                {intl.formatMessage(
+                  {
+                    id: 'search_all_results_for',
+                    defaultMessage: 'Search all results for {search}',
+                  },
+                  { search: searchBarValue },
+                )}
+              </span>
           </AutoComplete.Option>,
         ]);
     return (
@@ -199,7 +204,7 @@ class ModalComparePerformance extends React.Component {
               </div>
               <div>vs</div>
               <div className="ModalComparePerformance-item-to-compare">
-                {!itemToCompare && (
+                {_.isEmpty(itemToCompare) ? (
                   <div className="Topnav__input-container">
                     <AutoComplete
                       dropdownClassName="Topnav__search-dropdown-container"
@@ -227,9 +232,12 @@ class ModalComparePerformance extends React.Component {
                     </AutoComplete>
                     <i className="iconfont icon-search" />
                   </div>
-                )}
-                <ObjectCard wobject={item} showFollow={false} />
-                <InstrumentLongTermStatistics wobject={item} />
+                ) :
+                  <React.Fragment>
+                    <ObjectCard wobject={itemToCompare} showFollow={false} />
+                    <InstrumentLongTermStatistics wobject={itemToCompare} />
+                  </React.Fragment>
+                }
               </div>
             </div>
           </Modal>
