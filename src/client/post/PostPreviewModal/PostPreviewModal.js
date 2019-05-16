@@ -156,6 +156,7 @@ class PostPreviewModal extends Component {
             <PolicyConfirmation
               className="post-preview-legal-notice"
               isChecked={isConfirmed}
+              disabled={isPublishing}
               checkboxLabel="Legal notice"
               policyText="Lorem ipsum dolor sit amet, enim in ut adipiscing turpis, mi interdum faucibus eleifend montes, augue viverra commodo vel placerat. Neque vitae amet consequat, proin sociis in sem, nunc fusce a facilisi per, sed sit et eget. A morbi velit proin, elit ac integer in justo, enim quis arcu arcu, magna dapibus est etiam. Nisl dapibus ut leo semper, pellentesque nec sem nec nulla, convallis dictum odio porttitor."
               onChange={this.handleConfirmedChange}
