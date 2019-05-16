@@ -176,14 +176,13 @@ export const getMoreObjectPosts = ({ username, authorPermlink, limit = 10 }) => 
     return null;
   }
 
-  const lastPost = posts[feedContent[feedContent.length - 1]];
-  const startId = lastPost._id; // eslint-disable-line no-underscore-dangle
+  const skip = Object.keys(posts).length;
 
   return dispatch({
     type: GET_MORE_OBJECT_POSTS.ACTION,
     payload: ApiClient.getMoreFeedContentByObject({
       authorPermlink,
-      startId,
+      skip,
       limit,
     }),
     meta: { sortBy: 'objectPosts', category: username, limit },
