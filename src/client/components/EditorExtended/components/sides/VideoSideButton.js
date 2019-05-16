@@ -19,7 +19,7 @@ const videoLinkInput = props => {
     <Input.Search
       className="video-link-input"
       enterButton="Enter"
-      placeholder="Paste a YouTube or Vimeo video link, and press Enter"
+      placeholder="Paste a YouTube or Vimeo video link, and press Enter" // todo: add locale
       onSearch={handleAddVideoLink}
     />
   );
