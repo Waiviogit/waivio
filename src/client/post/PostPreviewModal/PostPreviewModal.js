@@ -28,6 +28,7 @@ class PostPreviewModal extends Component {
     content: PropTypes.string.isRequired,
     topics: PropTypes.arrayOf(PropTypes.string).isRequired,
     linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
+    isUpdating: PropTypes.bool,
     objPercentage: PropTypes.shape(),
     onTopicsChange: PropTypes.func.isRequired,
     onSettingsChange: PropTypes.func.isRequired,
@@ -40,6 +41,7 @@ class PostPreviewModal extends Component {
     isPublishing: false,
     linkedObjects: [],
     objPercentage: {},
+    isUpdating: false,
   };
 
   static findScrollElement() {
@@ -115,7 +117,7 @@ class PostPreviewModal extends Component {
 
   render() {
     const { isModalOpen, isConfirmed, body, title, weightBuffer, objPercentage } = this.state;
-    const { intl, isPublishing, content, topics, linkedObjects, settings } = this.props;
+    const { intl, isPublishing, content, topics, linkedObjects, settings, isUpdating } = this.props;
     return (
       <React.Fragment>
         {isModalOpen && (
@@ -158,14 +160,16 @@ class PostPreviewModal extends Component {
               policyText="Lorem ipsum dolor sit amet, enim in ut adipiscing turpis, mi interdum faucibus eleifend montes, augue viverra commodo vel placerat. Neque vitae amet consequat, proin sociis in sem, nunc fusce a facilisi per, sed sit et eget. A morbi velit proin, elit ac integer in justo, enim quis arcu arcu, magna dapibus est etiam. Nisl dapibus ut leo semper, pellentesque nec sem nec nulla, convallis dictum odio porttitor."
               onChange={this.handleConfirmedChange}
             />
-            <AdvanceSettings
-              linkedObjects={linkedObjects}
-              objPercentage={objPercentage}
-              weightBuffer={weightBuffer}
-              settings={settings}
-              onSettingsChange={this.handleSettingsChange}
-              onPercentChange={this.handlePercentChange}
-            />
+            {!isUpdating && (
+              <AdvanceSettings
+                linkedObjects={linkedObjects}
+                objPercentage={objPercentage}
+                weightBuffer={weightBuffer}
+                settings={settings}
+                onSettingsChange={this.handleSettingsChange}
+                onPercentChange={this.handlePercentChange}
+              />
+            )}
             <div className="edit-post-controls">
               <Button
                 htmlType="submit"

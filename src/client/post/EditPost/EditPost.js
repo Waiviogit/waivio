@@ -196,7 +196,15 @@ class EditPost extends Component {
   }, 1500);
 
   render() {
-    const { draftContent, content, topics, linkedObjects, objPercentage, settings } = this.state;
+    const {
+      draftContent,
+      content,
+      topics,
+      linkedObjects,
+      objPercentage,
+      settings,
+      isUpdating,
+    } = this.state;
     const { draftId, saving, publishing, imageLoading, locale } = this.props;
     return (
       <div className="shifted">
@@ -224,6 +232,7 @@ class EditPost extends Component {
               objPercentage={objPercentage}
               settings={settings}
               isPublishing={publishing}
+              isUpdating={isUpdating}
               onTopicsChange={this.handleTopicsChange}
               onSettingsChange={this.handleSettingsChange}
               onPercentChange={this.handlePercentChange}
