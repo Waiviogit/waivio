@@ -6,19 +6,6 @@ import { Icon } from 'antd';
 import { Entity } from '../../util/constants';
 import SearchObjectsAutocomplete from '../../../../../client/components/EditorObject/SearchObjectsAutocomplete';
 
-//  <Popover
-//    content={
-//      <SearchObjectsAutocomplete
-//        handleSelect={this.handleSelectObject}
-//        canCreateNewObject={false}
-//      />
-//    }
-//    title={intl.formatMessage({ id: 'add_object', defaultMessage: 'Add an object' })}
-//    overlayClassName="EditorToolbar__popover"
-//    trigger="click"
-//    placement="bottom"
-//  >
-
 const objectSearchInput = props => {
   const handleSelectObject = selectedObject => {
     const editorState = props.getEditorState();

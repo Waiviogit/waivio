@@ -121,20 +121,22 @@ class EditPost extends Component {
     // console.log('content:', nextState);
   }
 
-  handleTopicsChange = topics => this.setState({ topics });
+  handleTopicsChange = topics => this.setState({ topics }, this.handleUpdateState);
 
   handleSettingsChange = updatedValue =>
-    this.setState(prevState => ({
-      settings: { ...prevState.settings, ...updatedValue },
-    }));
+    this.setState(
+      prevState => ({
+        settings: { ...prevState.settings, ...updatedValue },
+      }),
+      this.handleUpdateState,
+    );
 
   handlePercentChange = percentage => {
-    this.setState({ objPercentage: percentage });
+    this.setState({ objPercentage: percentage }, this.handleUpdateState);
   };
 
   handleSubmit() {
     const postData = this.buildPost();
-    // console.log('POST_DATA', postData);
     this.props.createPost(postData);
   }
 
@@ -191,7 +193,7 @@ class EditPost extends Component {
   }
 
   handleUpdateState = nextContent => {
-    if (!isEqual(this.state.content, nextContent)) return;
+    if (isEqual(this.state.content, nextContent)) return;
     throttle(this.saveDraft, 200, { leading: false, trailing: true })();
   };
 
@@ -213,7 +215,7 @@ class EditPost extends Component {
     const redirect = id !== this.draftId;
 
     this.props.saveDraft({ postData, id: this.draftId }, redirect, this.props.intl);
-  }, 800);
+  }, 1500);
 
   render() {
     const {

@@ -24,6 +24,7 @@ class AdvanceSettings extends Component {
     onPercentChange: PropTypes.func.isRequired,
   };
   static defaultProps = {
+    intl: {},
     isUpdating: false,
     linkedObjects: [],
     objPercentage: {},
