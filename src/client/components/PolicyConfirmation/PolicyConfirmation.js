@@ -5,13 +5,13 @@ import { Checkbox } from 'antd';
 import './PolicyConfirmation.less';
 
 const PolicyConfirmation = props => {
-  const { isChecked, checkboxLabel, policyText, onChange, className } = props;
+  const { isChecked, checkboxLabel, policyText, onChange, className, disabled } = props;
   const handleChange = e => {
     onChange(e.target.checked);
   };
   return (
     <div className={classNames('policy-confirmation', { [className]: Boolean(className) })}>
-      <Checkbox checked={isChecked} onChange={handleChange}>
+      <Checkbox checked={isChecked} onChange={handleChange} disabled={disabled}>
         {checkboxLabel}
       </Checkbox>
       <div className="policy-confirmation__text">{policyText}</div>
@@ -21,6 +21,7 @@ const PolicyConfirmation = props => {
 
 PolicyConfirmation.propTypes = {
   isChecked: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool,
   checkboxLabel: PropTypes.string,
   policyText: PropTypes.string,
   className: PropTypes.string,
@@ -28,6 +29,7 @@ PolicyConfirmation.propTypes = {
 };
 
 PolicyConfirmation.defaultProps = {
+  disabled: false,
   checkboxLabel: 'Checkbox',
   policyText: '',
   className: '',

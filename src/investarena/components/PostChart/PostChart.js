@@ -25,6 +25,7 @@ const propTypes = {
   quoteSettings: PropTypes.shape(),
   toggleModalPost: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
+  withModalChart: PropTypes.bool,
   quoteSecurity: PropTypes.string.isRequired,
   intl: PropTypes.shape().isRequired,
   createdAt: PropTypes.string.isRequired,
@@ -37,6 +38,7 @@ const propTypes = {
 const defaultProps = {
   platformName: 'widgets',
   quote: quoteData,
+  withModalChart: true,
   quoteSettings: quoteSettingsData,
   isObjectProfile: false,
   connect: false,
@@ -131,8 +133,10 @@ class PostChart extends Component {
   }
 
   toggleModalTC = () => {
-    const { quote, quoteSettings, platformName, toggleModal } = this.props;
-    toggleModal('openDeals', { quote, quoteSettings, platformName });
+    if (this.props.withModalChart) {
+      const { quote, quoteSettings, platformName, toggleModal } = this.props;
+      toggleModal('openDeals', { quote, quoteSettings, platformName });
+    }
   };
 
   isExpiredByTime = () => moment().valueOf() > moment(this.props.forecast).valueOf();
