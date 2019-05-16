@@ -146,6 +146,7 @@ class EditPost extends Component {
       title: postTitle,
       lastUpdated: Date.now(),
       isUpdating,
+      draftId: this.draftId,
       ...settings,
     };
 
