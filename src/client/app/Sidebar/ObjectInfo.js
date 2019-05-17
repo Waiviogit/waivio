@@ -234,6 +234,7 @@ class ObjectInfo extends React.Component {
                     toggleModal={this.toggleModalPerformance}
                     isModalOpen={isModalComparePerformanceOpen}
                     wobject={wobject}
+                    isItemUser={false}
                   />
                 )}
               </React.Fragment>

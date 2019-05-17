@@ -77,7 +77,7 @@ class InstrumentLongTermStatistics extends React.Component {
           );
           if (!_.isEmpty(longTermStatistics)) this.setState({ longTermStatistics, loading: false });
         }
-      }
+      } else {this.setState({loading: false})}
     }
   }
 
@@ -107,7 +107,12 @@ class InstrumentLongTermStatistics extends React.Component {
               )}
             </React.Fragment>
           ) : (
-            <div>Long term statistics is unavailable for current instrument</div>
+            <div>{
+              this.props.intl.formatMessage({
+                id: 'unavailableStatisticsObject',
+                defaultMessage: 'Long term statistics is unavailable for current instrument',
+              })
+            }</div>
           )}
         </div>
       </div>

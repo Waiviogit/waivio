@@ -40,6 +40,7 @@ class ModalComparePerformance extends React.Component {
     wobject: PropTypes.shape().isRequired,
     toggleModal: PropTypes.func.isRequired,
     isModalOpen: PropTypes.bool.isRequired,
+    isItemUser: PropTypes.bool.isRequired,
     searchAutoComplete: PropTypes.func.isRequired,
   };
 
@@ -121,6 +122,8 @@ class ModalComparePerformance extends React.Component {
             key={`user${option.account}`}
             value={`${option.account}`}
             className="Topnav__search-autocomplete"
+            lable={option.account}
+
           >
             <div className="Topnav__search-content-wrap">
               <Avatar username={option.account} size={40} />
@@ -151,6 +154,7 @@ class ModalComparePerformance extends React.Component {
               marker={'wobj'}
               key={`wobj${wobjName}`}
               value={`${option.author_permlink}`}
+              lable={wobjName}
               className="Topnav__search-autocomplete"
             >
               <ObjectCard wobject={option} showFollow={false} withLinks={false} />
@@ -171,24 +175,9 @@ class ModalComparePerformance extends React.Component {
   renderTitle = title => <span>{title}</span>;
 
   render() {
-    const { intl, isModalOpen, autoCompleteSearchResults } = this.props;
+    const { intl, isModalOpen, autoCompleteSearchResults, isItemUser } = this.props;
     const { searchBarValue, item, itemToCompare, isItemToCompareUser } = this.state;
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
-    const formattedAutoCompleteDropdown = _.isEmpty(dropdownOptions)
-      ? dropdownOptions
-      : dropdownOptions.concat([
-          <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
-            <span onClick={this.hideAutoCompleteDropdown} role="presentation">
-              {intl.formatMessage(
-                {
-                  id: 'search_all_results_for',
-                  defaultMessage: 'Search all results for {search}',
-                },
-                { search: searchBarValue },
-              )}
-            </span>
-          </AutoComplete.Option>,
-        ]);
     return (
       <Modal
         title={intl.formatMessage({
@@ -201,23 +190,27 @@ class ModalComparePerformance extends React.Component {
         // width={'90vw'}
       >
         <div className="ModalComparePerformance">
-          <div className="ModalComparePerformance-item">
+          {isItemUser ? <div className="ModalComparePerformance-item">
+              <UserCard user={{ name: itemToCompare }} showFollow={false} />
+              <UserLongTermStatistics userName={itemToCompare} />
+          </div> :
+            <div className="ModalComparePerformance-item">
             <ObjectCard wobject={item} showFollow={false} />
             <InstrumentLongTermStatistics wobject={item} />
-          </div>
+          </div>}
           <div>vs</div>
           <div className="ModalComparePerformance__item-to-compare">
             {_.isEmpty(itemToCompare) ? (
               <div className="">
                 <AutoComplete
                   dropdownClassName=""
-                  dataSource={formattedAutoCompleteDropdown}
+                  dataSource={dropdownOptions}
                   onSearch={this.handleAutoCompleteSearch}
                   onSelect={this.handleSelectOnAutoCompleteDropdown}
                   onChange={this.handleOnChangeForAutoComplete}
                   defaultActiveFirstOption={false}
                   dropdownMatchSelectWidth={false}
-                  optionLabelProp="value"
+                  optionLabelProp="lable"
                   value={searchBarValue}
                 >
                   <Input

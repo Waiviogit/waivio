@@ -730,5 +730,7 @@
   "longTermData_m24": "2y",
   "findComparedItem": "Item to compare",
   "compare": "Compare",
-  "compare_profitability": "Compare Profitability"
+  "compare_profitability": "Compare Profitability",
+  "unavailableStatisticsObject": "Long term statistics is unavailable for current instrument",
+  "unavailableStatisticsUser": "Long term statistics is unavailable for current instrument"
 }
