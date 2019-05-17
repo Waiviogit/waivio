@@ -732,5 +732,5 @@
   "compare": "Compare",
   "compare_profitability": "Compare Profitability",
   "unavailableStatisticsObject": "Long term statistics is unavailable for current instrument",
-  "unavailableStatisticsUser": "Long term statistics is unavailable for current instrument"
+  "unavailableStatisticsUser": "The user has not written posts with forecasts"
 }

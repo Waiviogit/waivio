@@ -37,7 +37,7 @@ class ModalComparePerformance extends React.Component {
       PropTypes.arrayOf(PropTypes.shape()),
     ]),
     intl: PropTypes.shape().isRequired,
-    wobject: PropTypes.shape().isRequired,
+    item: PropTypes.oneOfType([PropTypes.shape(), PropTypes.string]).isRequired,
     toggleModal: PropTypes.func.isRequired,
     isModalOpen: PropTypes.bool.isRequired,
     isItemUser: PropTypes.bool.isRequired,
@@ -52,7 +52,7 @@ class ModalComparePerformance extends React.Component {
     super(props);
 
     this.state = {
-      item: this.props.wobject,
+      item: this.props.item,
       itemToCompare: {},
       isItemToCompareUser: false,
     };
@@ -191,8 +191,8 @@ class ModalComparePerformance extends React.Component {
       >
         <div className="ModalComparePerformance">
           {isItemUser ? <div className="ModalComparePerformance-item">
-              <UserCard user={{ name: itemToCompare }} showFollow={false} />
-              <UserLongTermStatistics userName={itemToCompare} />
+              <UserCard user={{ name: item }} showFollow={false} />
+              <UserLongTermStatistics userName={item} />
           </div> :
             <div className="ModalComparePerformance-item">
             <ObjectCard wobject={item} showFollow={false} />

@@ -10,6 +10,9 @@ import { getVoteValue } from '../../helpers/user';
 import { calculateVotingPower } from '../../vendor/steemitHelpers';
 import SocialLinks from '../../components/SocialLinks';
 import USDDisplay from '../../components/Utils/USDDisplay';
+import ModalComparePerformance from '../../../investarena/components/Modals/ModalComparePerformance/ModalComparePerformance';
+import UserLongTermStatistics
+  from "../../../investarena/components/LeftSidebar/LongTermStatistics/UserLongTermStatistics";
 
 @injectIntl
 @connect((state, ownProps) => ({
@@ -24,6 +27,15 @@ class UserInfo extends React.Component {
     rewardFund: PropTypes.shape().isRequired,
     rate: PropTypes.number.isRequired,
   };
+
+  state = {
+    isModalComparePerformanceOpen: false,
+  };
+
+  toggleModalPerformance = () =>
+    this.setState(prevState => ({
+      isModalComparePerformanceOpen: !prevState.isModalComparePerformanceOpen,
+    }));
 
   render() {
     const { intl, user, rewardFund, rate } = this.props;
@@ -125,6 +137,19 @@ class UserInfo extends React.Component {
             </div>
           </div>
         )}
+          <UserLongTermStatistics
+            userName={user.name}
+            withCompareButton
+            toggleModalPerformance={this.toggleModalPerformance}
+          />
+          {this.state.isModalComparePerformanceOpen && (
+            <ModalComparePerformance
+              toggleModal={this.toggleModalPerformance}
+              isModalOpen={this.state.isModalComparePerformanceOpen}
+              item={user.name}
+              isItemUser={true}
+            />
+          )}
       </div>
     );
   }
