@@ -49,10 +49,12 @@ class InstrumentLongTermStatistics extends React.Component {
         this.setState({ chartId });
       }
       const quote = nextProps.quotes[chartId];
-      if (chartId && quote && quoteIdForWidget[chartId]) {
+      const id = quoteIdForWidget[chartId];
+
+      if (chartId && quote && id) {
         let longTermStatistics = {};
         if (_.isEmpty(this.state.longTermStatisticsWidgets)) {
-          ApiClient.getInstrumentLongTermStatistics(quoteIdForWidget[chartId]).then(data => {
+          ApiClient.getInstrumentLongTermStatistics(id).then(data => {
             if (data && !_.isError(data)) {
               const parsedData = _.attempt(JSON.parse, data);
               if (!_.isError(parsedData))
