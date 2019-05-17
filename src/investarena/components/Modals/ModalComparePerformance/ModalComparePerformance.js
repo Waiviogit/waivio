@@ -176,7 +176,7 @@ class ModalComparePerformance extends React.Component {
 
   render() {
     const { intl, isModalOpen, autoCompleteSearchResults, isItemUser } = this.props;
-    const { searchBarValue, item, itemToCompare, isItemToCompareUser } = this.state;
+    const { searchBarValue, itemToCompare, isItemToCompareUser } = this.state;
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     return (
       <Modal
@@ -191,12 +191,12 @@ class ModalComparePerformance extends React.Component {
       >
         <div className="ModalComparePerformance">
           {isItemUser ? <div className="ModalComparePerformance-item">
-              <UserCard user={{ name: item }} showFollow={false} />
-              <UserLongTermStatistics userName={item} />
+              <UserCard user={{ name: this.state.item }} showFollow={false} />
+              <UserLongTermStatistics userName={this.state.item} />
           </div> :
             <div className="ModalComparePerformance-item">
-            <ObjectCard wobject={item} showFollow={false} />
-            <InstrumentLongTermStatistics wobject={item} />
+            <ObjectCard wobject={this.state.item} showFollow={false} />
+            <InstrumentLongTermStatistics wobject={this.state.item} />
           </div>}
           <div>vs</div>
           <div className="ModalComparePerformance__item-to-compare">
