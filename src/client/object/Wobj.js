@@ -65,16 +65,15 @@ export default class Wobj extends React.Component {
   };
 
   componentDidMount() {
-    const { match, authenticatedUserName } = this.props;
-    this.props.getObjectInfo(match.params.name, authenticatedUserName);
+    this.props.getObjectInfo(this.props.match.params.name, this.props.authenticatedUserName);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { history, match } = this.props;
+    const { history } = this.props;
     if (
       nextProps.wobject.object_type &&
       nextProps.wobject.object_type.toLowerCase() === 'list' &&
-      !match.params[0] &&
+      !this.props.match.params[0] &&
       !nextProps.match.params[0]
     ) {
       history.push(`${history.location.pathname}/list`);
@@ -82,10 +81,8 @@ export default class Wobj extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { match, authenticatedUserName } = this.props;
-
-    if (prevProps.match.params.name !== match.params.name) {
-      this.props.getObjectInfo(match.params.name, authenticatedUserName);
+    if (prevProps.match.params.name !== this.props.match.params.name) {
+      this.props.getObjectInfo(this.props.match.params.name, this.props.authenticatedUserName);
     }
   }
 
@@ -97,17 +94,17 @@ export default class Wobj extends React.Component {
 
   render() {
     const { isEditMode } = this.state;
-    const { authenticated, failed, authenticatedUserName: userName, wobject, match } = this.props;
+    const { authenticated, failed, authenticatedUserName: userName, match } = this.props;
     if (failed) return <Error404 />;
 
-    const objectName = getFieldWithMaxWeight(wobject, objectFields.name);
+    const objectName = getFieldWithMaxWeight(this.props.wobject, objectFields.name);
     const busyHost = global.postOrigin || 'https://waiviodev.com';
     const desc = `Posts by ${objectName}`;
-    const image = getFieldWithMaxWeight(wobject, objectFields.avatar);
-    const canonicalUrl = `${busyHost}/object/${wobject.author_permlink}`;
-    const url = `${busyHost}/object/${wobject.author_permlink}`;
+    const image = getFieldWithMaxWeight(this.props.wobject, objectFields.avatar);
+    const canonicalUrl = `${busyHost}/object/${this.props.wobject.author_permlink}`;
+    const url = `${busyHost}/object/${this.props.wobject.author_permlink}`;
     const displayedObjectName = objectName || '';
-    const title = `Object - ${objectName || wobject.default_name || ''}`;
+    const title = `Object - ${objectName || this.props.wobject.default_name || ''}`;
 
     return (
       <div className="main-panel">
@@ -139,8 +136,8 @@ export default class Wobj extends React.Component {
         <WobjHero
           isEditMode={isEditMode}
           authenticated={authenticated}
-          isFetching={_.isEmpty(wobject)}
-          wobject={wobject}
+          isFetching={_.isEmpty(this.props.wobject)}
+          wobject={this.props.wobject}
           username={displayedObjectName}
           onFollowClick={this.handleFollowClick}
           toggleViewEditMode={this.toggleViewEditMode}
@@ -151,18 +148,18 @@ export default class Wobj extends React.Component {
               <div className="left">
                 <LeftObjectProfileSidebar
                   isEditMode={isEditMode}
-                  wobject={wobject}
+                  wobject={this.props.wobject}
                   userName={userName}
                 />
               </div>
             </Affix>
             <Affix className="rightContainer" stickPosition={110}>
               <div className="right">
-                <RightObjectSidebar username={userName} wobject={wobject} />
+                <RightObjectSidebar username={userName} wobject={this.props.wobject} />
               </div>
             </Affix>
             <div className="center">
-              {renderRoutes(this.props.route.routes, { isEditMode, wobject, userName, match })}
+              {renderRoutes(this.props.route.routes, { isEditMode, wobject: this.props.wobject, userName, match })}
             </div>
           </div>
         </div>

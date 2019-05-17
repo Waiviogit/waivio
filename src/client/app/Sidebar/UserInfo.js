@@ -138,7 +138,7 @@ class UserInfo extends React.Component {
           </div>
         )}
           <UserLongTermStatistics
-            userName={user.name}
+            userName={this.props.user.name}
             withCompareButton
             toggleModalPerformance={this.toggleModalPerformance}
           />
@@ -146,7 +146,7 @@ class UserInfo extends React.Component {
             <ModalComparePerformance
               toggleModal={this.toggleModalPerformance}
               isModalOpen={this.state.isModalComparePerformanceOpen}
-              item={user.name}
+              item={this.props.user.name}
               isItemUser={true}
             />
           )}

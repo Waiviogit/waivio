@@ -233,7 +233,7 @@ class ObjectInfo extends React.Component {
                   <ModalComparePerformance
                     toggleModal={this.toggleModalPerformance}
                     isModalOpen={isModalComparePerformanceOpen}
-                    item={wobject}
+                    item={this.props.wobject}
                     isItemUser={false}
                   />
                 )}

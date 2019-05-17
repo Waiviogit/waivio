@@ -187,7 +187,6 @@ class ModalComparePerformance extends React.Component {
         visible={!!isModalOpen}
         footer={null}
         onCancel={this.toggleModal}
-        // width={'90vw'}
       >
         <div className="ModalComparePerformance">
           {isItemUser ? <div className="ModalComparePerformance-item">
@@ -200,6 +199,7 @@ class ModalComparePerformance extends React.Component {
           </div>}
           <div>vs</div>
           <div className="ModalComparePerformance__item-to-compare">
+            {/* eslint-disable-next-line no-nested-ternary */}
             {_.isEmpty(itemToCompare) ? (
               <div className="">
                 <AutoComplete
@@ -228,7 +228,7 @@ class ModalComparePerformance extends React.Component {
             ) : isItemToCompareUser ? (
               <React.Fragment>
                 <div className="ModalComparePerformance__item-to-compare-wrap">
-                  <UserCard user={{ name: itemToCompare }} showFollow={false} />
+                  <UserCard user={{ name: itemToCompare }} showFollow={false} withLinks={false}/>
                   <Icon type="close-circle" onClick={this.removeItemToCompare} />
                 </div>
                 <UserLongTermStatistics userName={itemToCompare} />
@@ -236,7 +236,7 @@ class ModalComparePerformance extends React.Component {
             ) : (
               <React.Fragment>
                 <div className="ModalComparePerformance__item-to-compare-wrap">
-                  <ObjectCard wobject={itemToCompare} showFollow={false} />
+                  <ObjectCard wobject={itemToCompare} showFollow={false} withLinks={false}/>
                   <Icon type="close-circle" onClick={this.removeItemToCompare} />
                 </div>
                 <InstrumentLongTermStatistics wobject={itemToCompare} />
