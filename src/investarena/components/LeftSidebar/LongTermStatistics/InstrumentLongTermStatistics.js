@@ -82,7 +82,6 @@ class InstrumentLongTermStatistics extends React.Component {
       } else {this.setState({loading: false})}
     }
   }
-
   render() {
     return !this.state.loading ? (
       <div className="InstrumentLongTermStatistics">

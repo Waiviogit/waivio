@@ -31,14 +31,12 @@ import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
 import InstrumentLongTermStatistics from '../../../investarena/components/LeftSidebar/LongTermStatistics/InstrumentLongTermStatistics';
-import { getQuotesState } from '../../../investarena/redux/selectors/quotesSelectors';
 import ModalComparePerformance from '../../../investarena/components/Modals/ModalComparePerformance/ModalComparePerformance';
 
 @injectIntl
 @connect(state => ({
   albums: getObjectAlbums(state),
   isAuthenticated: getIsAuthenticated(state),
-  quotes: getQuotesState(state),
 }))
 class ObjectInfo extends React.Component {
   static propTypes = {
@@ -48,10 +46,6 @@ class ObjectInfo extends React.Component {
     isEditMode: PropTypes.bool.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  };
-
-  static defaultProps = {
-    quotes: {},
   };
 
   state = {

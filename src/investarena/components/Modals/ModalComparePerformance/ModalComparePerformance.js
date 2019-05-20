@@ -91,10 +91,10 @@ class ModalComparePerformance extends React.Component {
 
   handleSelectOnAutoCompleteDropdown(value, data) {
     if (data.props.marker === 'user') {
-      this.setState({ itemToCompare: value, isItemToCompareUser: true });
+      this.setState({ itemToCompare: value.substr(4), isItemToCompareUser: true });
     } else if (data.props.marker === 'wobj') {
       const itemToCompare = _.find(this.props.autoCompleteSearchResults.wobjects, {
-        author_permlink: value,
+        author_permlink: data.props.permlink,
       });
       this.setState({ itemToCompare, isItemToCompareUser: false });
     }
@@ -120,10 +120,8 @@ class ModalComparePerformance extends React.Component {
           <AutoComplete.Option
             marker={'user'}
             key={`user${option.account}`}
-            value={`${option.account}`}
+            value={`user${option.account}`}
             className="Topnav__search-autocomplete"
-            lable={option.account}
-
           >
             <div className="Topnav__search-content-wrap">
               <Avatar username={option.account} size={40} />
@@ -152,9 +150,9 @@ class ModalComparePerformance extends React.Component {
           return wobjName ? (
             <AutoComplete.Option
               marker={'wobj'}
-              key={`wobj${wobjName}`}
-              value={`${option.author_permlink}`}
-              lable={wobjName}
+              permlink={option.author_permlink}
+              key={option.author_permlink}
+              value={`wobj${wobjName}`}
               className="Topnav__search-autocomplete"
             >
               <ObjectCard wobject={option} showFollow={false} withLinks={false} />
@@ -166,7 +164,7 @@ class ModalComparePerformance extends React.Component {
     );
   }
 
-  removeItemToCompare = () => this.setState({ itemToCompare: {} });
+  removeItemToCompare = () => this.setState({ itemToCompare: {}, searchBarValue: ''});
 
   toggleModal = () => {
     this.props.toggleModal();
@@ -210,7 +208,7 @@ class ModalComparePerformance extends React.Component {
                   onChange={this.handleOnChangeForAutoComplete}
                   defaultActiveFirstOption={false}
                   dropdownMatchSelectWidth={false}
-                  optionLabelProp="lable"
+                  optionLabelProp="value"
                   value={searchBarValue}
                 >
                   <Input

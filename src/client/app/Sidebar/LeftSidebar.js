@@ -27,7 +27,6 @@ const LeftSidebar = ({ quoteSettingsSorted }) => (
     <Route path="/settings" component={SidenavUser} />
     <Route path="/invite" component={SidenavUser} />
     <Route path="/" component={TopInstruments} />
-    {/*<Route path="/" component={ObjectTypes} />*/}
   </Switch>
 );
 

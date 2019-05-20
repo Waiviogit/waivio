@@ -137,12 +137,12 @@ class UserInfo extends React.Component {
             </div>
           </div>
         )}
-          <UserLongTermStatistics
+        {this.props.user.name && <UserLongTermStatistics
             userName={this.props.user.name}
             withCompareButton
             toggleModalPerformance={this.toggleModalPerformance}
-          />
-          {this.state.isModalComparePerformanceOpen && (
+          />}
+          {this.state.isModalComparePerformanceOpen && this.props.user.name && (
             <ModalComparePerformance
               toggleModal={this.toggleModalPerformance}
               isModalOpen={this.state.isModalComparePerformanceOpen}
