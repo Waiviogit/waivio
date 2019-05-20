@@ -1,7 +1,7 @@
 import { Client } from 'busyjs';
 
 function createBusyAPI() {
-  const client = new Client('ws://waiviodev.com/notifications');
+  const client = new Client('wss://waiviodev.com/notifications');
 
   client.sendAsync = (message, params) =>
     new Promise((resolve, reject) => {
