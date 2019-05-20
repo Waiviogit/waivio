@@ -315,14 +315,16 @@ class Topnav extends React.Component {
   }
 
   handleSelectOnAutoCompleteDropdown(value, data) {
-    if (data.props.marker === 'user') this.props.history.push(`/@${value}`);
-    else if (data.props.marker === 'wobj') {
-      this.props.history.replace(`/object/${value}`);
-    } else this.props.history.push(`/objectType/${value}`);
+    if (data.props.marker === 'user') {
+      this.props.history.push(`/@${value.replace('user', '')}`);
+    } else if (data.props.marker === 'wobj') {
+      this.props.history.replace(`/object/${value.replace('wobj', '')}`);
+    } else this.props.history.push(`/objectType/${value.replace('type', '')}`);
   }
 
-  handleOnChangeForAutoComplete(value) {
-    this.setState({ searchBarValue: value });
+  handleOnChangeForAutoComplete(value, data) {
+    if (data.props.marker) this.setState({ searchBarValue: value.substr(4) });
+    else this.setState({ searchBarValue: value });
   }
 
   usersSearchLayout(accounts) {
@@ -341,7 +343,7 @@ class Topnav extends React.Component {
           <AutoComplete.Option
             marker={'user'}
             key={`user${option.account}`}
-            value={`${option.account}`}
+            value={`user${option.account}`}
             className="Topnav__search-autocomplete"
           >
             <div className="Topnav__search-content-wrap">
@@ -373,7 +375,7 @@ class Topnav extends React.Component {
             <AutoComplete.Option
               marker={'wobj'}
               key={`wobj${wobjName}`}
-              value={`${option.author_permlink}`}
+              value={`wobj${option.author_permlink}`}
               className="Topnav__search-autocomplete"
             >
               <div className="Topnav__search-content-wrap">
@@ -411,7 +413,7 @@ class Topnav extends React.Component {
           <AutoComplete.Option
             marker={'type'}
             key={`type${option.name}`}
-            value={`${option.name}`}
+            value={`type${option.name}`}
             className="Topnav__search-autocomplete"
           >
             {option.name}
@@ -423,12 +425,10 @@ class Topnav extends React.Component {
 
   prepareOptions(searchResults) {
     const dataSource = [];
-    if (!_.isEmpty(searchResults.accounts))
-      dataSource.push(this.usersSearchLayout(searchResults.accounts));
-
     if (!_.isEmpty(searchResults.wobjects))
       dataSource.push(this.wobjectSearchLayout(searchResults.wobjects));
-
+    if (!_.isEmpty(searchResults.accounts))
+      dataSource.push(this.usersSearchLayout(searchResults.accounts));
     if (!_.isEmpty(searchResults.objectTypes))
       dataSource.push(this.wobjectTypeSearchLayout(searchResults.objectTypes));
     return dataSource;
