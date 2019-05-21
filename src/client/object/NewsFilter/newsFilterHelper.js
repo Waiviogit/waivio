@@ -39,7 +39,11 @@ const getAllowListLayout = self => {
                   <React.Fragment key={`allowList${ruleIndex}${item.id}`}>
                     {andLayout(index, self, isMobile)}
                     <Col className="NewsFiltersRule-line-card" span={isMobile ? 24 : 6}>
-                      <ObjectCard wobject={item} showFollow={false} />
+                      <ObjectCard
+                        wobject={{ ...item, author_permlink: item.id }}
+                        showFollow={false}
+                        isNewWindow
+                      />
                       <div className="NewsFiltersRule-line-close">
                         <Icon
                           type="close-circle"
@@ -96,7 +100,11 @@ export const getIgnoreListLayout = self => {
           <React.Fragment key={`ignoreList${item.id}`}>
             {andLayout(index, self, isMobile)}
             <Col className="NewsFiltersRule-line-card" span={isMobile ? 24 : 6}>
-              <ObjectCard wobject={item} showFollow={false} />
+              <ObjectCard
+                wobject={{ ...item, author_permlink: item.id }}
+                showFollow={false}
+                isNewWindow
+              />
               <div className="NewsFiltersRule-line-close">
                 <Icon
                   type="close-circle"
