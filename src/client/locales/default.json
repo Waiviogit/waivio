@@ -544,5 +544,6 @@
   "and": "and",
   "ignoreList": "Ignore list",
   "addNewRule": "Add new rule",
+  "at_least_one": "You should add at least one object",
   "filterRule": "FilterRule"
 }
