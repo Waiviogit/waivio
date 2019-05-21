@@ -7,7 +7,6 @@ import { injectIntl } from 'react-intl';
 import { clearSearchObjectsResults, searchObjectsAutoCompete } from '../../search/searchActions';
 import { getSearchObjectsResults } from '../../reducers';
 import { linkRegex } from '../../helpers/regexHelpers';
-import ObjectRank from '../../object/ObjectRank';
 import ObjectType from '../../object/ObjectType';
 import './SearchObjectsAutocomplete.less';
 
@@ -112,7 +111,6 @@ class SearchObjectsAutocomplete extends Component {
             {obj.name}
             <div className="obj-search-option__row">
               <ObjectType type={obj.type} />
-              <ObjectRank rank={obj.rank} />
             </div>
           </div>
           <span className="obj-search-option__text">{obj.title}</span>
