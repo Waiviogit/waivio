@@ -17,11 +17,12 @@ const andLayout = (compareItems, self, isMobile) =>
 const getAllowListLayout = self => {
   const allowList = self.state.allowList;
   const isMobile = self.props.screenSize === 'xsmall';
+  const currObjId = self.props.wObject.author_permlink;
   return (
     <React.Fragment>
       {_.map(allowList, (items, rowIndex) => {
         let ruleIndex = 0;
-        const itemsIdsToOmit = [];
+        const itemsIdsToOmit = [currObjId];
         return (
           <React.Fragment>
             <div className="NewsFiltersRule-title AppendForm__appendTitles">{`${self.props.intl.formatMessage(
@@ -69,19 +70,21 @@ const getAllowListLayout = self => {
           </React.Fragment>
         );
       })}
-      <div role="presentation" className="NewLineButton" onClick={self.addNewNewsFilterLine}>
-        <Icon type="plus-circle" />
-        {self.props.intl.formatMessage({
-          id: 'addNewRule',
-          defaultMessage: 'Add new rule',
-        })}
-      </div>
+      {allowList[0] && allowList[0].length > 0 && (
+        <div role="presentation" className="NewLineButton" onClick={self.addNewNewsFilterLine}>
+          <Icon type="plus-circle" />
+          {self.props.intl.formatMessage({
+            id: 'addNewRule',
+            defaultMessage: 'Add new rule',
+          })}
+        </div>
+      )}
     </React.Fragment>
   );
 };
 
 export const getIgnoreListLayout = self => {
-  const itemsIdsToOmit = [];
+  const itemsIdsToOmit = [self.props.wObject.author_permlink];
   const ignoreList = self.state.ignoreList;
   const isMobile = self.props.screenSize === 'xsmall';
 

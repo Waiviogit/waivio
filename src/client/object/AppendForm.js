@@ -390,7 +390,23 @@ export default class AppendForm extends Component {
     e.preventDefault();
 
     this.props.form.validateFieldsAndScroll((err, values) => {
-      if (err || this.checkRequiredField()) {
+      const { form, intl } = this.props;
+      const currentField = form.getFieldValue('currentField');
+      if (objectFields.newsFilter === currentField) {
+        const allowList = _.map(this.state.allowList, rule => _.map(rule, o => o.id)).filter(
+          sub => sub.length,
+        );
+        const ignoreList = _.map(this.state.ignoreList, o => o.id);
+        if (!_.isEmpty(allowList) || !_.isEmpty(ignoreList)) this.onSubmit(values);
+        else {
+          message.error(
+            intl.formatMessage({
+              id: 'at_least_one',
+              defaultMessage: 'You should add at least one object',
+            }),
+          );
+        }
+      } else if (err || this.checkRequiredField(form, currentField)) {
         // this.props.onError();
       } else {
         this.onSubmit(values);
@@ -398,10 +414,7 @@ export default class AppendForm extends Component {
     });
   };
 
-  checkRequiredField = () => {
-    const { form } = this.props;
-    const currentField = form.getFieldValue('currentField');
-
+  checkRequiredField = (form, currentField) => {
     let formFields = null;
     switch (currentField) {
       case objectFields.address:
