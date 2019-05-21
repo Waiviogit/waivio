@@ -235,7 +235,9 @@ export default class AppendForm extends Component {
         break;
       }
       case objectFields.newsFilter: {
-        const allowList = _.map(this.state.allowList, rule => _.map(rule, o => o.id));
+        const allowList = _.map(this.state.allowList, rule => _.map(rule, o => o.id)).filter(
+          sub => sub.length,
+        );
         const ignoreList = _.map(this.state.ignoreList, o => o.id);
         fieldBody.push(JSON.stringify({ allowList, ignoreList }));
         break;
