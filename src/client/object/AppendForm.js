@@ -27,6 +27,7 @@ import {
   getVotingPower,
   getVotePercent,
   getFollowingObjectsList,
+  getScreenSize,
 } from '../reducers';
 import LANGUAGES from '../translations/languages';
 import { PRIMARY_COLOR } from '../../common/constants/waivio';
@@ -67,6 +68,7 @@ import { getNewsFilterLayout } from './NewsFilter/newsFilterHelper';
     sliderMode: getVotingPower(state),
     defaultVotePercent: getVotePercent(state),
     followingList: getFollowingObjectsList(state),
+    screenSize: getScreenSize(state),
   }),
   { appendObject, followObject, rateObject },
 )

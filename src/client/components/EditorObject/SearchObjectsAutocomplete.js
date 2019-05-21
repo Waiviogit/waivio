@@ -31,6 +31,7 @@ class SearchObjectsAutocomplete extends Component {
     searchObjects: () => {},
     clearSearchResults: () => {},
     handleSelect: () => {},
+    allowClear: true,
     rowIndex: 0,
     ruleIndex: 0,
   };
@@ -38,6 +39,7 @@ class SearchObjectsAutocomplete extends Component {
   static propTypes = {
     itemsIdsToOmit: PropTypes.arrayOf(PropTypes.string),
     className: PropTypes.string,
+    allowClear: PropTypes.bool,
     intl: PropTypes.shape(),
     style: PropTypes.shape(),
     searchObjectsResults: PropTypes.arrayOf(PropTypes.object),
@@ -101,7 +103,7 @@ class SearchObjectsAutocomplete extends Component {
   }
   render() {
     const { searchString } = this.state;
-    const { intl, style, searchObjectsResults, itemsIdsToOmit } = this.props;
+    const { intl, style, searchObjectsResults, itemsIdsToOmit, allowClear } = this.props;
     const getObjMarkup = obj => (
       <div className="obj-search-option">
         <img className="obj-search-option__avatar" src={obj.avatar} alt={obj.title || ''} />
@@ -139,7 +141,7 @@ class SearchObjectsAutocomplete extends Component {
           defaultMessage: 'Find objects',
         })}
         value={searchString}
-        allowClear
+        allowClear={allowClear}
         autoFocus
       >
         {searchObjectsOptions}
