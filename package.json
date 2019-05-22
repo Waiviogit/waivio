@@ -81,6 +81,7 @@
     "pigeon-marker": "^0.3.4",
     "pigeon-overlay": "^0.2.3",
     "prop-types": "^15.6.1",
+    "purgecss-webpack-plugin": "^1.5.0",
     "react": "^16.2.0",
     "react-beautiful-dnd": "^10.0.4",
     "react-copy-to-clipboard": "^5.0.1",
