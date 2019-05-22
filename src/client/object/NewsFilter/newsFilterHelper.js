@@ -24,7 +24,7 @@ const getAllowListLayout = self => {
         let ruleIndex = 0;
         const itemsIdsToOmit = [currObjId];
         return (
-          <React.Fragment>
+          <React.Fragment key={`allowWrap${rowIndex}`}>
             <div className="NewsFiltersRule-title AppendForm__appendTitles">{`${self.props.intl.formatMessage(
               {
                 id: 'filterRule',
