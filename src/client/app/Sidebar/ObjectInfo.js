@@ -23,7 +23,7 @@ import Proposition from '../../components/Proposition/Proposition';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
 import IconButton from '../../components/IconButton';
-import { getIsAuthenticated, getObjectAlbums } from '../../reducers';
+import {getIsAuthenticated, getObjectAlbums, getScreenSize} from '../../reducers';
 import DescriptionInfo from './DescriptionInfo';
 import CreateImage from '../../object/ObjectGallery/CreateImage';
 import './ObjectInfo.less';
@@ -37,6 +37,8 @@ import ModalComparePerformance from '../../../investarena/components/Modals/Moda
 @connect(state => ({
   albums: getObjectAlbums(state),
   isAuthenticated: getIsAuthenticated(state),
+  screenSize: getScreenSize(state),
+
 }))
 class ObjectInfo extends React.Component {
   static propTypes = {
@@ -45,6 +47,7 @@ class ObjectInfo extends React.Component {
     userName: PropTypes.string.isRequired,
     isEditMode: PropTypes.bool.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
+    screenSize: PropTypes.bool.isRequired,
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   };
 
@@ -200,6 +203,7 @@ class ObjectInfo extends React.Component {
       </React.Fragment>
     );
     const hasChartId = getField(wobject, objectFields.chartId);
+    const isMobile = this.props.screenSize === 'xsmall';
 
     return (
       <React.Fragment>
@@ -222,8 +226,9 @@ class ObjectInfo extends React.Component {
                   wobject={this.props.wobject}
                   withCompareButton
                   toggleModalPerformance={this.toggleModalPerformance}
+                  isMobile={isMobile}
                 />
-                {isModalComparePerformanceOpen && wobject &&(
+                {isModalComparePerformanceOpen && wobject && !isMobile && (
                   <ModalComparePerformance
                     toggleModal={this.toggleModalPerformance}
                     isModalOpen={isModalComparePerformanceOpen}

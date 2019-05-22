@@ -22,6 +22,7 @@ class InstrumentLongTermStatistics extends React.Component {
   static propTypes = {
     wobject: PropTypes.shape().isRequired,
     withCompareButton: PropTypes.bool,
+    isMobile: PropTypes.bool.isRequired,
     quotes: PropTypes.shape().isRequired,
     intl: PropTypes.shape().isRequired,
     toggleModalPerformance: PropTypes.func,
@@ -99,7 +100,7 @@ class InstrumentLongTermStatistics extends React.Component {
                   </div>
                 </div>
               ))}
-              {this.props.withCompareButton && (
+              {this.props.withCompareButton && !this.props.isMobile && (
                 <React.Fragment>
                   <Button className="button-compare" onClick={this.props.toggleModalPerformance}>
                     {this.props.intl.formatMessage({ id: 'compare', defaultMessage: 'Compare' })}

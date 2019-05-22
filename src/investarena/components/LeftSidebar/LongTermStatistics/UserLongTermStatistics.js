@@ -10,8 +10,8 @@ import { getLongTermStatisticsForUser } from '../../../helpers/diffDateTime';
 @injectIntl
 class UserLongTermStatistics extends React.Component {
   static propTypes = {
-    userName: PropTypes.string.isRequired,
     intl: PropTypes.shape().isRequired,
+    isMobile: PropTypes.bool.isRequired,
     withCompareButton: PropTypes.bool,
     toggleModalPerformance: PropTypes.func,
   };
@@ -63,7 +63,7 @@ class UserLongTermStatistics extends React.Component {
                 </div>
               </div>
               ))}
-              {this.props.withCompareButton && (
+              {this.props.withCompareButton && this.props.isMobile && (
                 <React.Fragment>
                   <Button className="button-compare" onClick={this.props.toggleModalPerformance}>
                     {this.props.intl.formatMessage({ id: 'compare', defaultMessage: 'Compare' })}

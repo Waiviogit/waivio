@@ -5,7 +5,7 @@ import { Icon } from 'antd';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
 import _ from 'lodash';
 import urlParse from 'url-parse';
-import { getUser, getRewardFund, getRate } from '../../reducers';
+import {getUser, getRewardFund, getRate, getScreenSize} from '../../reducers';
 import { getVoteValue } from '../../helpers/user';
 import { calculateVotingPower } from '../../vendor/steemitHelpers';
 import SocialLinks from '../../components/SocialLinks';
@@ -19,6 +19,7 @@ import UserLongTermStatistics
   user: getUser(state, ownProps.match.params.name),
   rewardFund: getRewardFund(state),
   rate: getRate(state),
+  screenSize: getScreenSize(state),
 }))
 class UserInfo extends React.Component {
   static propTypes = {
@@ -26,6 +27,7 @@ class UserInfo extends React.Component {
     user: PropTypes.shape().isRequired,
     rewardFund: PropTypes.shape().isRequired,
     rate: PropTypes.number.isRequired,
+    screenSize: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -80,7 +82,7 @@ class UserInfo extends React.Component {
       rate,
       10000,
     );
-
+    const isMobile = this.props.screenSize === 'xsmall';
     return (
       <div>
         {user.name && (
@@ -141,8 +143,9 @@ class UserInfo extends React.Component {
             userName={this.props.user.name}
             withCompareButton
             toggleModalPerformance={this.toggleModalPerformance}
+            isMobile={isMobile}
           />}
-          {this.state.isModalComparePerformanceOpen && this.props.user.name && (
+          {this.state.isModalComparePerformanceOpen && this.props.user.name && !isMobile && (
             <ModalComparePerformance
               toggleModal={this.toggleModalPerformance}
               isModalOpen={this.state.isModalComparePerformanceOpen}
