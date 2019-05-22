@@ -1,6 +1,4 @@
 const webpack = require('webpack');
-const glob = require('glob');
-const path = require('path');
 const AssetsPlugin = require('assets-webpack-plugin');
 const CSSExtract = require('mini-css-extract-plugin');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
@@ -9,7 +7,6 @@ const WebpackBar = require('webpackbar');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const paths = require('../scripts/paths');
 // const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const PurgecssPlugin = require('purgecss-webpack-plugin');
 
 const {
   CONTENT_PORT,
@@ -25,9 +22,7 @@ module.exports = function createConfig(env = 'dev') {
   const IS_PROD = !IS_DEV;
 
   const appPath = IS_DEV ? paths.build : paths.buildPublic;
-  const PATHS = {
-    src: path.join(__dirname, 'src'),
-  };
+
   const config = {
     mode: IS_DEV ? 'development' : 'production',
     entry: [paths.client],
@@ -47,9 +42,6 @@ module.exports = function createConfig(env = 'dev') {
       new WebpackBar({
         name: 'client',
         color: '#f56be2',
-      }),
-      new PurgecssPlugin({
-        paths: glob.sync(`${PATHS.src}/*`),
       }),
       // new UglifyJsPlugin({
       //   cache: true,
