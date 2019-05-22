@@ -1,7 +1,7 @@
 {
   "appVersion": "ST Investarena Desktop v.2.0.1",
   "production": {
-    "apiPrefix": "http://waiviodev.com/",
+    "apiPrefix": "https://waiviodev.com/",
     "brokerWSUrl": {
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
@@ -15,7 +15,7 @@
     "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/"
   },
   "development": {
-    "": "http://localhost:8095/",
+    "": "https://localhost:8095/",
     "apiPrefix": "http://waiviodev.com/",
     "brokerWSUrl": {
       "maximarkets": "https://trading.maximarkets.org/stomp/",
@@ -34,12 +34,12 @@
     "brokerWSUrl": {
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
-      "widgets": "ws://192.168.1.222/wss/Server.ashx?subscriber=true"
+      "widgets": "wss://192.168.1.222/wss/Server.ashx?subscriber=true"
     },
     "webSocketUrl": "http://localhost:8082",
     "shareLinksUrl": {
-      "facebook": "http://www.facebook.com/sharer.php?u=http://localhost:3001/posts/",
-      "vkontakte": "http://vkontakte.ru/share.php?url=http://localhost:3001/posts/",
+      "facebook": "https://www.facebook.com/sharer.php?u=http://localhost:3001/posts/",
+      "vkontakte": "https://vkontakte.ru/share.php?url=http://localhost:3001/posts/",
       "odnoklassniki": "https://connect.ok.ru/offer?url=http://localhost:3001/posts/",
       "google": "https://plus.google.com/share?url=http://localhost:3001/posts/"
     },
