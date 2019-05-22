@@ -16,11 +16,12 @@ export const getObject = (authorPermlink, username) => dispatch =>
     payload: ApiClient.getObject(authorPermlink, username),
   });
 
-export const clearObject = () => dispatch =>
+export const clearObjectFromStore = () => dispatch =>
   dispatch({
     type: GET_OBJECT_SUCCESS,
     payload: {},
   });
+
 export const GET_USERS_BY_OBJECT = createAsyncActionType('@objects/GET_USERS_BY_OBJECT');
 
 export const getUsersByObject = object => dispatch =>
@@ -39,7 +40,7 @@ export const getFeedContentByObject = object => dispatch =>
   }).catch(() => {});
 
 export const getObjectInfo = (authorPermlink, username) => dispatch => {
-  dispatch(clearObject());
+  dispatch(clearObjectFromStore());
   dispatch(getObject(authorPermlink, username));
   dispatch(getAlbums(authorPermlink));
 };

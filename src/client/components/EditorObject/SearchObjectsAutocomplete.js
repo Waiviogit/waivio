@@ -7,7 +7,6 @@ import { injectIntl } from 'react-intl';
 import { clearSearchObjectsResults, searchObjectsAutoCompete } from '../../search/searchActions';
 import { getSearchObjectsResults } from '../../reducers';
 import { linkRegex } from '../../helpers/regexHelpers';
-import ObjectRank from '../../object/ObjectRank';
 import ObjectType from '../../object/ObjectType';
 import './SearchObjectsAutocomplete.less';
 
@@ -31,6 +30,7 @@ class SearchObjectsAutocomplete extends Component {
     searchObjects: () => {},
     clearSearchResults: () => {},
     handleSelect: () => {},
+    allowClear: true,
     rowIndex: 0,
     ruleIndex: 0,
   };
@@ -38,6 +38,7 @@ class SearchObjectsAutocomplete extends Component {
   static propTypes = {
     itemsIdsToOmit: PropTypes.arrayOf(PropTypes.string),
     className: PropTypes.string,
+    allowClear: PropTypes.bool,
     intl: PropTypes.shape(),
     style: PropTypes.shape(),
     searchObjectsResults: PropTypes.arrayOf(PropTypes.object),
@@ -101,7 +102,7 @@ class SearchObjectsAutocomplete extends Component {
   }
   render() {
     const { searchString } = this.state;
-    const { intl, style, searchObjectsResults, itemsIdsToOmit } = this.props;
+    const { intl, style, searchObjectsResults, itemsIdsToOmit, allowClear } = this.props;
     const getObjMarkup = obj => (
       <div className="obj-search-option">
         <img className="obj-search-option__avatar" src={obj.avatar} alt={obj.title || ''} />
@@ -110,7 +111,6 @@ class SearchObjectsAutocomplete extends Component {
             {obj.name}
             <div className="obj-search-option__row">
               <ObjectType type={obj.type} />
-              <ObjectRank rank={obj.rank} />
             </div>
           </div>
           <span className="obj-search-option__text">{obj.title}</span>
@@ -139,7 +139,7 @@ class SearchObjectsAutocomplete extends Component {
           defaultMessage: 'Find objects',
         })}
         value={searchString}
-        allowClear
+        allowClear={allowClear}
         autoFocus
       >
         {searchObjectsOptions}

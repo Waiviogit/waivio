@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Button, Form, Input, message, Select, Avatar, Rate, Icon, Row, Col } from 'antd';
+import { Button, Form, Input, message, Select, Avatar, Rate, Icon } from 'antd';
 import {
   linkFields,
   objectFields,
@@ -27,6 +27,7 @@ import {
   getVotingPower,
   getVotePercent,
   getFollowingObjectsList,
+  getScreenSize,
 } from '../reducers';
 import LANGUAGES from '../translations/languages';
 import { PRIMARY_COLOR } from '../../common/constants/waivio';
@@ -56,7 +57,7 @@ import SortingList from '../components/DnDList/DnDList';
 import { getClientWObj } from '../adapters';
 import SearchObjectsAutocomplete from '../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCardView from '../objectCard/ObjectCardView';
-import ObjectCard from '../components/Sidebar/ObjectCard';
+import { getNewsFilterLayout } from './NewsFilter/newsFilterHelper';
 
 @connect(
   state => ({
@@ -67,6 +68,7 @@ import ObjectCard from '../components/Sidebar/ObjectCard';
     sliderMode: getVotingPower(state),
     defaultVotePercent: getVotePercent(state),
     followingList: getFollowingObjectsList(state),
+    screenSize: getScreenSize(state),
   }),
   { appendObject, followObject, rateObject },
 )
@@ -233,9 +235,11 @@ export default class AppendForm extends Component {
         break;
       }
       case objectFields.newsFilter: {
-        fieldBody.push(
-          JSON.stringify({ allowList: this.state.allowList, lgnoreList: this.state.ignoreList }),
+        const allowList = _.map(this.state.allowList, rule => _.map(rule, o => o.id)).filter(
+          sub => sub.length,
         );
+        const ignoreList = _.map(this.state.ignoreList, o => o.id);
+        fieldBody.push(JSON.stringify({ allowList, ignoreList }));
         break;
       }
       case objectFields.sorting: {
@@ -349,9 +353,6 @@ export default class AppendForm extends Component {
   handleAddObjectToRule = (obj, rowIndex, ruleIndex) => {
     const allowList = this.state.allowList;
     if (obj && rowIndex >= 0 && allowList[rowIndex] && ruleIndex >= 0) {
-      // this.props.form.setFieldsValue({
-      //   allowList: obj,
-      // });
       allowList[rowIndex][ruleIndex] = obj;
       this.setState({ allowList });
     }
@@ -363,71 +364,17 @@ export default class AppendForm extends Component {
     this.setState({ allowList });
   };
 
-  getNewsFilterLayout = () => {
-    const allowList = this.state.allowList;
-    const layout = (
-      <React.Fragment>
-        {_.map(allowList, (items, rowIndex) => {
-          let ruleIndex = 0;
-          const itemsIdsToOmit = [];
-          return (
-            <React.Fragment>
-              <div className="NewsFiltersRule-title">{`Filter rule ${rowIndex + 1}`}</div>
-              <Row className="NewsFiltersRule-line">
-                {_.map(items, (item, index) => {
-                  ruleIndex = index + 1;
-                  itemsIdsToOmit.push(item.id);
-                  return (
-                    <React.Fragment key={item.id}>
-                      {index > 0 && (
-                        <Col className="NewsFiltersRule-line-and" span={2}>
-                          and
-                        </Col>
-                      )}
-                      <Col className="NewsFiltersRule-line-card" span={6}>
-                        <ObjectCard wobject={item} showFollow={false} />
-                        <div className="NewsFiltersRule-line-close">
-                          <Icon
-                            type="close-circle"
-                            onClick={() => this.deleteRuleItem(rowIndex, item.id)}
-                          />
-                        </div>
-                      </Col>
-                    </React.Fragment>
-                  );
-                })}
-                {items.length < 5 && (
-                  <React.Fragment>
-                    {items.length > 0 && (
-                      <Col className="NewsFiltersRule-line-and" span={2}>
-                        and
-                      </Col>
-                    )}
-                    <Col className="NewsFiltersRule-line-search" span={6}>
-                      <SearchObjectsAutocomplete
-                        itemsIdsToOmit={itemsIdsToOmit}
-                        rowIndex={rowIndex}
-                        ruleIndex={ruleIndex}
-                        style={{ width: '100%' }}
-                        placeholder="Please select"
-                        handleSelect={this.handleAddObjectToRule}
-                      />
-                    </Col>
-                  </React.Fragment>
-                )}
-              </Row>
-            </React.Fragment>
-          );
-        })}
-        <div role="presentation" className="NewLineButton" onClick={this.addNewNewsFilterLine}>
-          <Icon type="plus-circle" />
-          Add new rule
-        </div>
-      </React.Fragment>
-    );
-    return layout || null;
+  handleAddObjectToIgnoreList = obj => {
+    const ignoreList = this.state.ignoreList;
+    ignoreList.push(obj);
+    this.setState({ ignoreList });
   };
-  // END News Filter Block
+
+  handleRemoveObjectFromIgnoreList = obj => {
+    let ignoreList = this.state.ignoreList;
+    ignoreList = _.filter(ignoreList, o => o.id !== obj.id);
+    this.setState({ ignoreList });
+  };
 
   calculateVoteWorth = value => {
     const { user, rewardFund, rate } = this.props;
@@ -445,7 +392,23 @@ export default class AppendForm extends Component {
     e.preventDefault();
 
     this.props.form.validateFieldsAndScroll((err, values) => {
-      if (err || this.checkRequiredField()) {
+      const { form, intl } = this.props;
+      const currentField = form.getFieldValue('currentField');
+      if (objectFields.newsFilter === currentField) {
+        const allowList = _.map(this.state.allowList, rule => _.map(rule, o => o.id)).filter(
+          sub => sub.length,
+        );
+        const ignoreList = _.map(this.state.ignoreList, o => o.id);
+        if (!_.isEmpty(allowList) || !_.isEmpty(ignoreList)) this.onSubmit(values);
+        else {
+          message.error(
+            intl.formatMessage({
+              id: 'at_least_one',
+              defaultMessage: 'You should add at least one object',
+            }),
+          );
+        }
+      } else if (err || this.checkRequiredField(form, currentField)) {
         // this.props.onError();
       } else {
         this.onSubmit(values);
@@ -453,10 +416,7 @@ export default class AppendForm extends Component {
     });
   };
 
-  checkRequiredField = () => {
-    const { form } = this.props;
-    const currentField = form.getFieldValue('currentField');
-
+  checkRequiredField = (form, currentField) => {
     let formFields = null;
     switch (currentField) {
       case objectFields.address:
@@ -1574,7 +1534,7 @@ export default class AppendForm extends Component {
         );
       }
       case objectFields.newsFilter:
-        return this.getNewsFilterLayout();
+        return getNewsFilterLayout(this);
       default:
         return null;
     }
