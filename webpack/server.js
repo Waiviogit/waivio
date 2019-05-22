@@ -1,4 +1,5 @@
 const fs = require('fs');
+const glob = require('glob');
 const path = require('path');
 const webpack = require('webpack');
 const WebpackBar = require('webpackbar');
@@ -6,10 +7,13 @@ const StartServerPlugin = require('start-server-webpack-plugin');
 const paths = require('../scripts/paths');
 const { MATCH_JS, MATCH_CSS_LESS, DEFINE_PLUGIN } = require('./configUtils');
 // const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const PurgecssPlugin = require('purgecss-webpack-plugin');
 
 module.exports = function createConfig(env = 'dev') {
   const IS_DEV = env === 'dev';
-
+  const PATHS = {
+    src: path.join(__dirname, 'src'),
+  };
   const config = {
     mode: IS_DEV ? 'development' : 'production',
     target: 'node',
@@ -53,6 +57,9 @@ module.exports = function createConfig(env = 'dev') {
       new webpack.NormalModuleReplacementPlugin(MATCH_CSS_LESS, 'identity-obj-proxy'),
       new webpack.optimize.LimitChunkCountPlugin({
         maxChunks: 1,
+      }),
+      new PurgecssPlugin({
+        paths: glob.sync(`${PATHS.src}/*`),
       }),
       new WebpackBar({
         name: 'server',
