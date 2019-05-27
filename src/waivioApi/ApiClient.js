@@ -363,7 +363,7 @@ export const getInstrumentLongTermStatistics = id =>
 
 export const getUserLongTermStatistics = id =>
   new Promise((resolve, reject) => {
-    fetch(`http://waiviodev.com/investarena-api${config.userStatistics}/${id}`, {
+    fetch(`https://waiviodev.com/investarena-api${config.userStatistics}/${id}`, {
       headers,
       method: 'GET',
     })
