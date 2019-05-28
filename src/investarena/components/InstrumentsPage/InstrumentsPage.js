@@ -34,7 +34,7 @@ class InstrumentsPage extends Component {
     this.state = {
       signals: {},
       wobjs: [],
-      viewMode: 'list',
+      viewMode: 'cards',
     };
   }
 
