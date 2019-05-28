@@ -16,7 +16,7 @@ export const isCoordinatesValid = (lat, lng) =>
 
 export const getUserCoordinatesByIpAdress = () =>
   new Promise((resolve, reject) => {
-    fetch('http://ip-api.com/json', {
+    fetch('https://extreme-ip-lookup.com/json/', {
       method: 'GET',
     })
       .then(handleErrors)
