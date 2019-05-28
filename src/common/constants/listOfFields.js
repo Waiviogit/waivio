@@ -17,6 +17,8 @@ export const objectFields = {
   parent: 'parent',
   tagCloud: 'tagCloud',
   newsFilter: 'newsFilter',
+  button: 'button',
+  workTime: 'workTime',
 };
 
 export const objectFieldsWithInnerData = [
@@ -24,6 +26,7 @@ export const objectFieldsWithInnerData = [
   'address',
   'map',
   'link',
+  'button',
   'website',
   'phone',
   'email',
@@ -51,6 +54,10 @@ export const linkFields = {
 };
 
 export const websiteFields = {
+  title: 'title',
+  link: 'link',
+};
+export const buttonFields = {
   title: 'title',
   link: 'link',
 };

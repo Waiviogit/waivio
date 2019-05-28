@@ -18,6 +18,7 @@ import {
   ratingFields,
   ratePercent,
   getAllowedFieldsByObjType,
+  buttonFields,
 } from '../../common/constants/listOfFields';
 import {
   getObject,
@@ -230,6 +231,7 @@ export default class AppendForm extends Component {
       case objectFields.price:
       case objectFields.tagCloud:
       case objectFields.parent:
+      case objectFields.workTime:
       case objectFields.email: {
         fieldBody.push(rest[currentField]);
         break;
@@ -427,6 +429,9 @@ export default class AppendForm extends Component {
         break;
       case objectFields.link:
         formFields = form.getFieldsValue(Object.values(linkFields));
+        break;
+      case objectFields.button:
+        formFields = form.getFieldsValue(Object.values(buttonFields));
         break;
       default:
         break;
@@ -845,6 +850,50 @@ export default class AppendForm extends Component {
           </Form.Item>
         );
       }
+      case objectFields.workTime: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.workTime, {
+              rules: [
+                {
+                  max: 100,
+                  message: intl.formatMessage(
+                    {
+                      id: 'value_error_long',
+                      defaultMessage: "Value can't be longer than 100 characters.",
+                    },
+                    { value: 100 },
+                  ),
+                },
+                {
+                  required: true,
+                  message: intl.formatMessage(
+                    {
+                      id: 'field_error',
+                      defaultMessage: 'Field is required',
+                    },
+                    { field: 'Work time' },
+                  ),
+                },
+                {
+                  validator: this.validateFieldValue,
+                },
+              ],
+            })(
+              <Input
+                className={classNames('AppendForm__input', {
+                  'validation-error': !this.state.isSomeValue,
+                })}
+                disabled={loading}
+                placeholder={intl.formatMessage({
+                  id: 'work_time',
+                  defaultMessage: 'Work time',
+                })}
+              />,
+            )}
+          </Form.Item>
+        );
+      }
       case objectFields.price: {
         return (
           <Form.Item>
@@ -1230,6 +1279,106 @@ export default class AppendForm extends Component {
                         defaultMessage: 'Field is required',
                       },
                       { field: 'Website' },
+                    ),
+                  },
+                  {
+                    pattern: objectURLValidationRegExp,
+                    message: intl.formatMessage({
+                      id: 'website_validation',
+                      defaultMessage: 'Please enter valid website',
+                    }),
+                  },
+                  {
+                    validator: this.validateFieldValue,
+                  },
+                ],
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'profile_website',
+                    defaultMessage: 'Website',
+                  })}
+                />,
+              )}
+            </Form.Item>
+          </React.Fragment>
+        );
+      }
+      case objectFields.button: {
+        return (
+          <React.Fragment>
+            <Form.Item>
+              {getFieldDecorator(buttonFields.title, {
+                rules: [
+                  {
+                    max: 100,
+                    message: intl.formatMessage(
+                      {
+                        id: 'value_error_long',
+                        defaultMessage: "Value can't be longer than 100 characters.",
+                      },
+                      { value: 100 },
+                    ),
+                  },
+                  {
+                    required: true,
+                    message: intl.formatMessage(
+                      {
+                        id: 'field_error',
+                        defaultMessage: 'Field is required',
+                      },
+                      { field: 'Title' },
+                    ),
+                  },
+                  {
+                    pattern: websiteTitleRegExp,
+                    message: intl.formatMessage({
+                      id: 'website_symbols_validation',
+                      defaultMessage: 'Please dont use special symbols',
+                    }),
+                  },
+                  {
+                    validator: this.validateFieldValue,
+                  },
+                ],
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'title_website_placeholder',
+                    defaultMessage: 'Title',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator(buttonFields.link, {
+                rules: [
+                  {
+                    max: 255,
+                    message: intl.formatMessage(
+                      {
+                        id: 'value_error_long',
+                        defaultMessage: "Value can't be longer than 255 characters.",
+                      },
+                      { value: 255 },
+                    ),
+                  },
+                  {
+                    required: true,
+                    message: intl.formatMessage(
+                      {
+                        id: 'field_error',
+                        defaultMessage: 'Field is required',
+                      },
+                      { field: 'Button' },
                     ),
                   },
                   {
