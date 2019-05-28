@@ -25,7 +25,7 @@ export const local = (flags = 'i') =>
   );
 export const remote = (flags = 'i') =>
   new RegExp(
-    urlSet({ domain: `(?!localhost|(?:.*\\.)?steemit.com|(?:.*\\.)?busy.org)${domainPath}` }),
+    urlSet({ domain: `(?!localhost|(?:.*\\.)?steemit.com|(?:.*\\.)?waiviodev.com)${domainPath}` }),
     flags,
   );
 export const youTube = (flags = 'i') =>

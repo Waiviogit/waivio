@@ -154,6 +154,8 @@
     "minimatch": "^3.0.4",
     "postcss-loader": "^2.1.4",
     "prettier": "^1.16.4",
+    "stylelint": "^10.0.1",
+    "stylelint-config-standard": "^18.3.0",
     "start-server-webpack-plugin": "^2.2.5",
     "style-loader": "^0.21.0",
     "sw-precache-webpack-plugin": "^0.11.5",
