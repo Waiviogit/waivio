@@ -21,6 +21,7 @@ import {
 import { login, logout, busyLogin } from './auth/authActions';
 import { getFollowing, getFollowingObjects, getNotifications } from './user/userActions';
 import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './app/appActions';
+import { getPerformersStatistic } from './app/Sidebar/TopPerformers/topPerformersActions';
 import * as reblogActions from './app/Reblog/reblogActions';
 import NotificationPopup from './notifications/NotificationPopup';
 import Topnav from './components/Navigation/Topnav';
@@ -44,7 +45,8 @@ import { getChartsData } from '../investarena/redux/actions/chartsActions';
     login,
     logout,
     getFollowing,
-    getFollowingObjects,
+    // getFollowingObjects,
+    getPerformersStatistic,
     getNotifications,
     getRate,
     getRewardFund,
@@ -66,7 +68,8 @@ export default class Wrapper extends React.PureComponent {
     login: PropTypes.func,
     logout: PropTypes.func,
     getFollowing: PropTypes.func,
-    getFollowingObjects: PropTypes.func,
+    // getFollowingObjects: PropTypes.func,
+    getPerformersStatistic: PropTypes.func,
     getRewardFund: PropTypes.func,
     getRebloggedList: PropTypes.func,
     getRate: PropTypes.func,
@@ -84,7 +87,8 @@ export default class Wrapper extends React.PureComponent {
     login: () => {},
     logout: () => {},
     getFollowing: () => {},
-    getFollowingObjects: () => {},
+    // getFollowingObjects: () => {},
+    getPerformersStatistic: () => {},
     getRewardFund: () => {},
     getRebloggedList: () => {},
     getRate: () => {},
@@ -128,7 +132,8 @@ export default class Wrapper extends React.PureComponent {
   componentDidMount() {
     this.props.login().then(() => {
       this.props.getFollowing();
-      this.props.getFollowingObjects();
+      // this.props.getFollowingObjects();
+      this.props.getPerformersStatistic();
       this.props.getNotifications();
       this.props.busyLogin();
     });

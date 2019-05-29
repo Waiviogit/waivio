@@ -1,0 +1,98 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../components/Sidebar/User.less';
+
+.top-performers {
+  &__title {
+    font-weight: 700;
+    text-align: center;
+  }
+
+  &__info {
+    .tooltip {
+      display: flex;
+      align-items: center;
+
+      .text {
+        &:before {
+          content: '-';
+          margin: 0 5px 0 0;
+        }
+      }
+    }
+
+    .tooltip-better {
+      &:before {
+        content: '';
+        display: block;
+        background: repeating-linear-gradient(
+          -50deg,
+          @green,
+          @green 1px,
+          @white 2px,
+          @green-darker 4px
+        );
+        border: 1px solid @green;
+        width: 18px;
+        height: 18px;
+        float: left;
+      }
+
+      .color-text {
+        color: @green-darker;
+        padding: 0 5px;
+      }
+    }
+
+    .tooltip-worse {
+      &:before {
+        content: '';
+        display: block;
+        background: repeating-linear-gradient(
+          -50deg,
+          @red-light,
+          @red-light 1px,
+          @white 2px,
+          @red 4px
+        );
+        border: 1px solid @red-light;
+        width: 18px;
+        height: 18px;
+        float: left;
+      }
+
+      .color-text {
+        color: @red;
+        padding: 0 5px;
+      }
+    }
+  }
+
+  .performer:extend(.User) {
+    &__top:extend(.User__top) {
+    }
+
+    &__links:extend(.User__links) {
+    }
+
+    &__avatar {
+      .ObjectAvatar {
+        height: 34px;
+        width: 34px;
+        min-width: 34px;
+      }
+    }
+
+    &__name:extend(.User__name) {
+    }
+
+    &__stat-info:extend(.User__follow) {
+    }
+
+    &__divider:extend(.User__divider) {
+    }
+  }
+}
+
+.top-performers.SidebarContentBlock__content {
+  padding: 0 8px;
+}

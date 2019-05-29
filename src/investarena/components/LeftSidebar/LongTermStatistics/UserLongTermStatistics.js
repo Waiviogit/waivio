@@ -1,4 +1,4 @@
-import {Button} from "antd";
+import { Button } from 'antd';
 import React from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -30,16 +30,18 @@ class UserLongTermStatistics extends React.Component {
   }
 
   componentDidMount() {
-    this.getUserLongTermStatistics(this.props)
+    this.getUserLongTermStatistics(this.props);
   }
 
-  getUserLongTermStatistics(props){
+  getUserLongTermStatistics(props) {
     ApiClient.getUserLongTermStatistics(props.userName).then(data => {
       if (data && !_.isError(data)) {
         const longTermStatistics = getLongTermStatisticsForUser(data, this.props.intl);
         if (!_.isEmpty(data)) {
           this.setState({ longTermStatistics, loading: false });
-        } else {this.setState({ loading: false });}
+        } else {
+          this.setState({ loading: false });
+        }
       } else {
         this.setState({ loading: false });
       }
@@ -54,14 +56,14 @@ class UserLongTermStatistics extends React.Component {
           {!_.isEmpty(this.state.longTermStatistics) ? (
             <React.Fragment>
               {_.map(this.state.longTermStatistics, period => (
-              <div className="PeriodStatisticsLine" key={`${period.price}${period.label}`}>
-                <div className="PeriodStatisticsLine__periodName">{period.label}</div>
-                <div
-                  className={`PeriodStatisticsLine__value-${period.isUp ? 'success' : 'danger'}`}
-                >
-                  {period.price}
+                <div className="PeriodStatisticsLine" key={`${period.price}${period.label}`}>
+                  <div className="PeriodStatisticsLine__periodName">{period.label}</div>
+                  <div
+                    className={`PeriodStatisticsLine__value-${period.isUp ? 'success' : 'danger'}`}
+                  >
+                    {period.price}
+                  </div>
                 </div>
-              </div>
               ))}
               {this.props.withCompareButton && this.props.isMobile && (
                 <React.Fragment>
@@ -72,12 +74,11 @@ class UserLongTermStatistics extends React.Component {
               )}
             </React.Fragment>
           ) : (
-            <div>{
-              this.props.intl.formatMessage({
-              id: 'unavailableStatisticsUser',
-              defaultMessage: 'The user has not written posts with forecasts',
-            })
-              }
+            <div>
+              {this.props.intl.formatMessage({
+                id: 'unavailableStatisticsUser',
+                defaultMessage: 'The user has not written posts with forecasts',
+              })}
             </div>
           )}
         </div>

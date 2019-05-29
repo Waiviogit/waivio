@@ -23,7 +23,7 @@ import Proposition from '../../components/Proposition/Proposition';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
 import IconButton from '../../components/IconButton';
-import {getIsAuthenticated, getObjectAlbums, getScreenSize} from '../../reducers';
+import { getIsAuthenticated, getObjectAlbums, getScreenSize } from '../../reducers';
 import DescriptionInfo from './DescriptionInfo';
 import CreateImage from '../../object/ObjectGallery/CreateImage';
 import './ObjectInfo.less';
@@ -38,7 +38,6 @@ import ModalComparePerformance from '../../../investarena/components/Modals/Moda
   albums: getObjectAlbums(state),
   isAuthenticated: getIsAuthenticated(state),
   screenSize: getScreenSize(state),
-
 }))
 class ObjectInfo extends React.Component {
   static propTypes = {

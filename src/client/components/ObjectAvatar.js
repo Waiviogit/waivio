@@ -1,10 +1,8 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { DEFAULT_OBJECT_AVATAR_URL } from '../../common/constants/waivio';
 import './ObjectAvatar.less';
-
-const defaultUrl =
-  'https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png';
 
 export const getObjectUrl = item => {
   const avatarFields = _.filter(item.fields, o => o.name === 'avatar');
@@ -29,7 +27,7 @@ const ObjectAvatar = ({ item, size }) => {
   } else {
     style = {
       ...style,
-      backgroundImage: `url(${defaultUrl})`,
+      backgroundImage: `url(${DEFAULT_OBJECT_AVATAR_URL})`,
     };
   }
 

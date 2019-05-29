@@ -27,6 +27,7 @@ import wobjectReducer, * as fromObject from '../client/object/wobjectReducer';
 import objectTypesReducer, * as fromObjectTypes from '../client/objectTypes/objectTypesReducer';
 import appendReducer, * as fromAppend from '../client/object/appendReducer';
 import galleryReducer, * as fromGallery from '../client/object/ObjectGallery/galleryReducer';
+import topPerformersReducer, * as fromTopPerformers from './app/Sidebar/TopPerformers/topPerformersReducer';
 
 export default () =>
   combineReducers({
@@ -56,6 +57,7 @@ export default () =>
     modals: modalsReducer,
     append: appendReducer,
     gallery: galleryReducer,
+    topPerformers: topPerformersReducer,
   });
 
 export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);
@@ -195,3 +197,10 @@ export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.a
 export const getObjectAlbums = state => fromGallery.getObjectAlbums(state.gallery);
 export const getIsObjectAlbumsLoading = state =>
   fromGallery.getIsObjectAlbumsLoading(state.gallery);
+
+export const getPerformersStatistic = state =>
+  fromTopPerformers.getPerformersStatistic(state.topPerformers);
+export const getPerformersStatisticLoading = state =>
+  fromTopPerformers.getPerformersStatisticLoading(state.topPerformers);
+export const getPerformersStatisticLoaded = state =>
+  fromTopPerformers.getPerformersStatisticLoaded(state.topPerformers);
