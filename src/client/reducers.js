@@ -200,6 +200,8 @@ export const getIsObjectAlbumsLoading = state =>
 
 export const getPerformersStatistic = state =>
   fromTopPerformers.getPerformersStatistic(state.topPerformers);
+export const getInstrumentToCompare = state =>
+  fromTopPerformers.getInstrumentToCompare(state.topPerformers);
 export const getPerformersStatisticLoading = state =>
   fromTopPerformers.getPerformersStatisticLoading(state.topPerformers);
 export const getPerformersStatisticLoaded = state =>

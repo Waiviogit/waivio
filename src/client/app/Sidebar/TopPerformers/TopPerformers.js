@@ -4,9 +4,11 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import { Select } from 'antd';
+import { isEmpty } from 'lodash';
 import Avatar from '../../../components/Avatar';
 import {
   getPerformersStatistic,
+  getInstrumentToCompare,
   getPerformersStatisticLoaded,
   getPerformersStatisticLoading,
 } from '../../../reducers';
@@ -17,6 +19,7 @@ import './TopPerformers.less';
   isLoaded: getPerformersStatisticLoaded(state),
   isLoading: getPerformersStatisticLoading(state),
   performersStat: getPerformersStatistic(state),
+  compareWith: getInstrumentToCompare(state),
 }))
 @injectIntl
 class TopPerformers extends Component {
@@ -33,20 +36,34 @@ class TopPerformers extends Component {
       m12: PropTypes.arrayOf(PropTypes.shape()),
       m24: PropTypes.arrayOf(PropTypes.shape()),
     }),
+    compareWith: PropTypes.shape({
+      avatar: PropTypes.string,
+      d1: PropTypes.number,
+      d7: PropTypes.number,
+      m1: PropTypes.number,
+      m3: PropTypes.number,
+      m6: PropTypes.number,
+      m12: PropTypes.number,
+      m24: PropTypes.number,
+      name: PropTypes.string,
+      id: PropTypes.string,
+      type: PropTypes.string,
+    })
   };
   static defaultProps = {
     isLoaded: false,
     isLoading: false,
     performersStat: [],
+    compareWith: null,
   };
   static periods = {
     // d1: "Daily",
     d7: 'Week',
-    m1: 'Month',
+    // m1: 'Month',
     m3: 'Three Months',
-    m6: 'Six Months',
+    // m6: 'Six Months',
     m12: 'Year',
-    m24: 'Two Years',
+    // m24: 'Two Years',
   };
 
   getPerformerLinks = performer => {
@@ -83,20 +100,21 @@ class TopPerformers extends Component {
   };
 
   render() {
-    const { intl, performersStat, isLoaded } = this.props;
+    const { intl, performersStat, isLoading, compareWith } = this.props;
     const itemsToCompare = [];
 
-    return isLoaded ? (
+    return !isLoading ? (
       <div className="top-performers">
         <div className="top-performers__header">
           <div className="top-performers__title">Top performers</div>
-          <div>
-            vs. Dow Jones
-            <Select prefixCls="wia"
+          {!isEmpty(compareWith) && (<div>
+            vs. <Select
+                // prefixCls="wia"
                 className="top-performers__compare-input"
                 size="default"
                 notFoundContent={null}
                 showSearch
+                value={compareWith.name}
                 // optionLabelProp={}
                 // transitionName={}
                 // choiceTransitionName={}
@@ -104,7 +122,7 @@ class TopPerformers extends Component {
             >
               {itemsToCompare}
             </Select>
-          </div>
+          </div>)}
           <div className="top-performers__info">
             <div className="tooltip tooltip-better">
               <span className="color-text">

@@ -89,7 +89,8 @@
 
   "performers": {
     "searchInstrumentsStatistic": "/search-instruments-stats",
-    "top": "/top-performers"
+    "top": "/top-performers",
+    "instrumentStatistic": "/instrument-statistics"
   },
 
   "favorites": {
