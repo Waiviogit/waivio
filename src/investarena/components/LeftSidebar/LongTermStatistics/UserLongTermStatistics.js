@@ -65,7 +65,7 @@ class UserLongTermStatistics extends React.Component {
                   </div>
                 </div>
               ))}
-              {this.props.withCompareButton && this.props.isMobile && (
+              {this.props.withCompareButton && !this.props.isMobile && (
                 <React.Fragment>
                   <Button className="button-compare" onClick={this.props.toggleModalPerformance}>
                     {this.props.intl.formatMessage({ id: 'compare', defaultMessage: 'Compare' })}

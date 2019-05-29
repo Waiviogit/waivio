@@ -67,7 +67,7 @@ const AssetsTab = ({ intl, quoteSettingsFiltered, charts, signals, deals, viewMo
 
 AssetsTab.defaultProps = {
   quoteSettingsFiltered: [],
-  viewMode: 'list',
+  viewMode: 'cards',
   deals: {},
   signals: {},
   charts: {},
