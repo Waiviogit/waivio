@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
+import { Select } from 'antd';
 import Avatar from '../../../components/Avatar';
 import {
   getPerformersStatistic,
@@ -83,12 +84,27 @@ class TopPerformers extends Component {
 
   render() {
     const { intl, performersStat, isLoaded } = this.props;
+    const itemsToCompare = [];
 
     return isLoaded ? (
       <div className="top-performers">
         <div className="top-performers__header">
           <div className="top-performers__title">Top performers</div>
-          <div>vs. Dow Jones</div>
+          <div>
+            vs. Dow Jones
+            <Select prefixCls="wia"
+                className="top-performers__compare-input"
+                size="default"
+                notFoundContent={null}
+                showSearch
+                // optionLabelProp={}
+                // transitionName={}
+                // choiceTransitionName={}
+                // id={}
+            >
+              {itemsToCompare}
+            </Select>
+          </div>
           <div className="top-performers__info">
             <div className="tooltip tooltip-better">
               <span className="color-text">

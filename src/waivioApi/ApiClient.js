@@ -373,18 +373,6 @@ export const getUserLongTermStatistics = id =>
       .catch(error => reject(error));
   });
 
-// todo: change route
-export const getPerformersStatistics = () =>
-  new Promise((resolve, reject) => {
-    fetch(`http://localhost:8095/investarena-api/top-performers`, {
-      headers,
-      method: 'GET',
-    })
-      .then(res => res.json())
-      .then(data => resolve(data))
-      .catch(error => reject(error));
-  });
-
 // END Investarena
 
 export default null;

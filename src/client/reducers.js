@@ -23,11 +23,11 @@ import platformReducer from '../investarena/redux/reducers/platformReducer';
 import dealsReducer from '../investarena/redux/reducers/dealsReducer';
 import modalsReducer from '../investarena/redux/reducers/modalsReducer';
 import chartsReducer from '../investarena/redux/reducers/chartsReducer';
+import topPerformersReducer, * as fromTopPerformers from '../investarena/redux/reducers/topPerformersReducer';
 import wobjectReducer, * as fromObject from '../client/object/wobjectReducer';
 import objectTypesReducer, * as fromObjectTypes from '../client/objectTypes/objectTypesReducer';
 import appendReducer, * as fromAppend from '../client/object/appendReducer';
 import galleryReducer, * as fromGallery from '../client/object/ObjectGallery/galleryReducer';
-import topPerformersReducer, * as fromTopPerformers from './app/Sidebar/TopPerformers/topPerformersReducer';
 
 export default () =>
   combineReducers({

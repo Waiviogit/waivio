@@ -27,11 +27,11 @@ export const searchAskSteem = search => dispatch =>
     },
   });
 
-export const searchAutoComplete = (search, userLimit, wobjectsLimi, objectTypesLimit) => dispatch =>
+export const searchAutoComplete = (search, userLimit, wobjectsLimit, objectTypesLimit) => dispatch =>
   dispatch({
     type: AUTO_COMPLETE_SEARCH.ACTION,
     payload: {
-      promise: ApiClient.getSearchResult(search, userLimit, wobjectsLimi, objectTypesLimit).then(
+      promise: ApiClient.getSearchResult(search, userLimit, wobjectsLimit, objectTypesLimit).then(
         result => ({
           result,
           search,

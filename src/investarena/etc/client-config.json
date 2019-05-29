@@ -15,8 +15,8 @@
     "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/"
   },
   "development": {
-    "": "https://localhost:8095/",
-    "apiPrefix": "http://waiviodev.com/",
+    "apiPrefix": "http://localhost:8095/",
+    "": "https://waiviodev.com/",
     "brokerWSUrl": {
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
@@ -85,6 +85,11 @@
     "lastClosedDeals": "/get_last_closed_deal/",
     "createOpenDeals": "/create_open_deals/",
     "createClosedDeals": "/create_closed_deals/"
+  },
+
+  "performers": {
+    "searchInstrumentsStatistic": "/search-instruments-stats",
+    "top": "/top-performers"
   },
 
   "favorites": {

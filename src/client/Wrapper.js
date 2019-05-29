@@ -21,7 +21,7 @@ import {
 import { login, logout, busyLogin } from './auth/authActions';
 import { getFollowing, getFollowingObjects, getNotifications } from './user/userActions';
 import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './app/appActions';
-import { getPerformersStatistic } from './app/Sidebar/TopPerformers/topPerformersActions';
+import { getPerformersStatistic } from '../investarena/redux/actions/topPerformersActions';
 import * as reblogActions from './app/Reblog/reblogActions';
 import NotificationPopup from './notifications/NotificationPopup';
 import Topnav from './components/Navigation/Topnav';

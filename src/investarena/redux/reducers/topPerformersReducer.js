@@ -1,8 +1,9 @@
-import * as topPerformersTypes from './topPerformersActions';
+import * as topPerformersTypes from '../actions/topPerformersActions';
 
 const initialState = {
   loading: false,
   loaded: false,
+  compareWith: [],
   statistic: {
     d1: [],
     d7: [],
@@ -22,6 +23,7 @@ export default (state = initialState, action) => {
       return {
         loading: false,
         loaded: true,
+        compareWith: { ...state.compareWith },
         statistic: action.payload,
       };
     case topPerformersTypes.GET_PERFORMERS_STATS_ERROR:
