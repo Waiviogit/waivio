@@ -15,13 +15,18 @@ export const objectFields = {
   listItem: 'listItem',
   price: 'price',
   parent: 'parent',
-  tag: 'tag',
+  tagCloud: 'tagCloud',
+  newsFilter: 'newsFilter',
+  button: 'button',
+  workTime: 'workTime',
 };
 
 export const objectFieldsWithInnerData = [
+  'newsFilter',
   'address',
   'map',
   'link',
+  'button',
   'website',
   'phone',
   'email',
@@ -29,10 +34,10 @@ export const objectFieldsWithInnerData = [
 ];
 
 export const addressFields = {
-  country: 'country',
-  city: 'city',
-  street: 'street',
   accommodation: 'accommodation',
+  street: 'street',
+  city: 'city',
+  country: 'country',
 };
 
 export const mapFields = {
@@ -49,6 +54,10 @@ export const linkFields = {
 };
 
 export const websiteFields = {
+  title: 'title',
+  link: 'link',
+};
+export const buttonFields = {
   title: 'title',
   link: 'link',
 };

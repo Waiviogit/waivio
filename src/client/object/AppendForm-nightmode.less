@@ -1,0 +1,41 @@
+@import (reference) '../styles/custom.less';
+@import (reference) '../styles/modules/variables.less';
+
+.nightmode {
+  .AppendForm {
+    &__previewWrap {
+      .avatar {
+        border: @base-border;
+      }
+
+      .background {
+        background-color: @white;
+        border: 1px solid @blue-hawkesBlue;
+      }
+    }
+
+    .NewsFiltersRule-line {
+      &-card {
+        border: @base-border;
+      }
+
+      &-close {
+        background-color: @grey-nero;
+
+        .anticon {
+          color: @primary-color;
+        }
+      }
+
+      border-bottom: @base-border;
+    }
+
+    &__appendTitles {
+      color: @tertiary-color;
+    }
+
+    & > span {
+      color: @black !important;
+    }
+  }
+}

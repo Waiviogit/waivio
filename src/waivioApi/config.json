@@ -1,9 +1,9 @@
 {
   "development": {
-    "apiPrefix": "http://waiviodev.com/api",
+    "apiPrefix": "https://waiviodev.com/api",
 
     "objectsBot": {
-      "apiPrefix": "http://waiviodev.com",
+      "apiPrefix": "https://waiviodev.com",
       "": "http://localhost:8093",
       "createObject": "/objects-bot/create-object",
       "appendObject": "/objects-bot/append-object"
@@ -26,10 +26,10 @@
     "generalSearch": "/generalSearch"
   },
   "production": {
-    "apiPrefix": "http://waiviodev.com/api",
+    "apiPrefix": "https://waiviodev.com/api",
 
     "objectsBot": {
-      "apiPrefix": "http://waiviodev.com",
+      "apiPrefix": "https://waiviodev.com",
       "createObject": "/objects-bot/create-object",
       "appendObject": "/objects-bot/append-object"
     },

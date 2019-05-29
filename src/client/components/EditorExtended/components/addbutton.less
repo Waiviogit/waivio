@@ -18,6 +18,8 @@
 
   .video-link-input,
   .object-search-input {
+    background-color: @white;
+    border-radius: 5px;
     width: calc(100vw - @margin * 4);
 
     @media @small {
@@ -30,6 +32,10 @@
       max-width: @input-max-width;
     }
 
+    .ant-input:focus {
+      box-shadow: none;
+      outline: none;
+    }
     .ant-btn {
       height: 36px;
       padding: 0 8px;
@@ -146,3 +152,5 @@
   opacity: 0.01;
   transition: opacity 200ms ease-in;
 }
+
+@import './addbutton-nightmode';

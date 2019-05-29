@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Slider } from 'antd';
 import './PostObjectCard.less';
-import ObjectRank from '../../object/ObjectRank';
 import ObjectType from '../../object/ObjectType';
 import { getClientWObj } from '../../adapters';
 import Topic from '../../components/Button/Topic';
@@ -44,9 +43,6 @@ const PostObjectCard = ({ wObject }) => {
                   <div className="editor-object__rankWrap">
                     <div className="editor-object__type">
                       <ObjectType type={wObject.object_type} />
-                    </div>
-                    <div className="editor-object__rank">
-                      <ObjectRank rank={wObject.rank} />
                     </div>
                   </div>
                 )}

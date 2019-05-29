@@ -10,6 +10,7 @@ import AdvanceSettings from './AdvanceSettings';
 import { isContentValid, splitPostContent } from '../../helpers/postHelpers';
 import { handleWeightChange, setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import { rewardsValues } from '../../../common/constants/rewards';
+import BBackTop from '../../components/BBackTop';
 import './PostPreviewModal.less';
 
 const isTopicValid = topic => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(topic);
@@ -18,6 +19,7 @@ const isTopicValid = topic => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(topic);
 class PostPreviewModal extends Component {
   static propTypes = {
     intl: PropTypes.shape(),
+    isPublishing: PropTypes.bool,
     settings: PropTypes.shape({
       reward: PropTypes.oneOf([rewardsValues.none, rewardsValues.half, rewardsValues.all]),
       beneficiary: PropTypes.bool,
@@ -26,6 +28,7 @@ class PostPreviewModal extends Component {
     content: PropTypes.string.isRequired,
     topics: PropTypes.arrayOf(PropTypes.string).isRequired,
     linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
+    isUpdating: PropTypes.bool,
     objPercentage: PropTypes.shape(),
     onTopicsChange: PropTypes.func.isRequired,
     onSettingsChange: PropTypes.func.isRequired,
@@ -35,9 +38,15 @@ class PostPreviewModal extends Component {
   };
   static defaultProps = {
     intl: {},
+    isPublishing: false,
     linkedObjects: [],
     objPercentage: {},
+    isUpdating: false,
   };
+
+  static findScrollElement() {
+    return document.querySelector('.post-preview-modal');
+  }
 
   constructor(props) {
     super(props);
@@ -89,7 +98,11 @@ class PostPreviewModal extends Component {
     });
   };
 
-  hideModal = () => this.setState({ isModalOpen: false });
+  hideModal = () => {
+    if (!this.props.isPublishing) {
+      this.setState({ isModalOpen: false });
+    }
+  };
 
   handleConfirmedChange = isConfirmed => this.setState({ isConfirmed });
 
@@ -108,27 +121,30 @@ class PostPreviewModal extends Component {
 
   render() {
     const { isModalOpen, isConfirmed, body, title, weightBuffer, objPercentage } = this.state;
-    const { intl, content, topics, linkedObjects, settings } = this.props;
+    const { intl, isPublishing, content, topics, linkedObjects, settings, isUpdating } = this.props;
     return (
       <React.Fragment>
         {isModalOpen && (
           <Modal
             title={intl.formatMessage({ id: 'preview', defaultMessage: 'Preview' })}
-            style={{ top: 20 }}
+            style={{ top: 0 }}
             visible={isModalOpen}
             centered={false}
             closable
             confirmLoading={false}
-            wrapClassName="post-preview-modal"
+            wrapClassName={`post-preview-modal${isPublishing ? ' publishing' : ''}`}
             width={800}
             footer={null}
             onCancel={this.hideModal}
-            onOk={() => console.log('You are my hero!')}
+            zIndex={1500}
+            maskClosable={false}
           >
+            <BBackTop isModal target={PostPreviewModal.findScrollElement} />
             <h1 className="StoryFull__title preview">{title}</h1>
             <BodyContainer full body={body} />
             <TagsSelector
               className="post-preview-topics"
+              disabled={isPublishing}
               label={intl.formatMessage({
                 id: 'topics',
                 defaultMessage: 'Topics',
@@ -144,22 +160,26 @@ class PostPreviewModal extends Component {
             <PolicyConfirmation
               className="post-preview-legal-notice"
               isChecked={isConfirmed}
+              disabled={isPublishing}
               checkboxLabel="Legal notice"
               policyText="Lorem ipsum dolor sit amet, enim in ut adipiscing turpis, mi interdum faucibus eleifend montes, augue viverra commodo vel placerat. Neque vitae amet consequat, proin sociis in sem, nunc fusce a facilisi per, sed sit et eget. A morbi velit proin, elit ac integer in justo, enim quis arcu arcu, magna dapibus est etiam. Nisl dapibus ut leo semper, pellentesque nec sem nec nulla, convallis dictum odio porttitor."
               onChange={this.handleConfirmedChange}
             />
-            <AdvanceSettings
-              linkedObjects={linkedObjects}
-              objPercentage={objPercentage}
-              weightBuffer={weightBuffer}
-              settings={settings}
-              onSettingsChange={this.handleSettingsChange}
-              onPercentChange={this.handlePercentChange}
-            />
+            {!isUpdating && (
+              <AdvanceSettings
+                linkedObjects={linkedObjects}
+                objPercentage={objPercentage}
+                weightBuffer={weightBuffer}
+                settings={settings}
+                onSettingsChange={this.handleSettingsChange}
+                onPercentChange={this.handlePercentChange}
+              />
+            )}
             <div className="edit-post-controls">
               <Button
                 htmlType="submit"
                 onClick={this.handleSubmit}
+                loading={isPublishing}
                 size="large"
                 disabled={!isConfirmed}
                 className="edit-post__submit-btn"

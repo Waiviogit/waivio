@@ -6,7 +6,7 @@ import FollowButton from '../../widgets/FollowButton';
 import './ObjectCard.less';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 
-const ObjectCard = ({ wobject, alt, showFollow }) => {
+const ObjectCard = ({ wobject, alt, showFollow, isNewWindow }) => {
   const name = getFieldWithMaxWeight(wobject, 'name');
   const pathname = `/object/${wobject.author_permlink}`;
 
@@ -14,7 +14,7 @@ const ObjectCard = ({ wobject, alt, showFollow }) => {
     <div key={wobject.author_permlink} className="ObjectCard">
       <div className="ObjectCard__top">
         <div className="ObjectCard__links">
-          <Link to={{ pathname }} title={name}>
+          <Link to={{ pathname }} title={name} target={isNewWindow ? '_blank' : null}>
             <ObjectAvatar item={wobject} size={34} />
           </Link>
           <Link
@@ -40,11 +40,13 @@ ObjectCard.propTypes = {
   wobject: PropTypes.shape().isRequired,
   alt: PropTypes.node,
   showFollow: PropTypes.bool,
+  isNewWindow: PropTypes.bool,
 };
 
 ObjectCard.defaultProps = {
   alt: '',
   showFollow: true,
+  isNewWindow: false,
 };
 
 export default ObjectCard;

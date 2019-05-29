@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import { Icon, Tag } from 'antd';
+import { Button, Icon, Tag } from 'antd';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -66,7 +66,11 @@ class ObjectInfo extends React.Component {
     let price = '';
     let link = '';
     let title = '';
+    let workTime = '';
+    let buttonTitle = '';
+    let buttonLink = '';
     let websiteFields = {};
+    let buttonFields = {};
     let avatar = '';
     let short = '';
     let background = '';
@@ -91,6 +95,8 @@ class ObjectInfo extends React.Component {
 
       short = getFieldWithMaxWeight(wobject, objectFields.title);
 
+      workTime = getFieldWithMaxWeight(wobject, objectFields.workTime);
+
       email = getFieldWithMaxWeight(wobject, objectFields.email);
 
       price = getFieldWithMaxWeight(wobject, objectFields.price);
@@ -100,9 +106,14 @@ class ObjectInfo extends React.Component {
         title = websiteFields.title;
         link = websiteFields.link;
       }
+      buttonFields = getInnerFieldWithMaxWeight(wobject, objectFields.button);
+      if (buttonFields) {
+        buttonTitle = buttonFields.title;
+        buttonLink = buttonFields.link;
+      }
       photosCount = wobject.photos_count;
 
-      const filtered = _.filter(wobject.fields, ['name', objectFields.tag]);
+      const filtered = _.filter(wobject.fields, ['name', objectFields.tagCloud]);
       tags = _.orderBy(filtered, ['weight'], ['desc']);
 
       const filteredPhones = _.filter(wobject.fields, ['name', objectFields.phone]);
@@ -194,6 +205,14 @@ class ObjectInfo extends React.Component {
         {getFieldWithMaxWeight(wobject, objectFields.name) && (
           <div className="object-sidebar">
             {listItem(
+              objectFields.button,
+              buttonTitle && (
+                <Button type="primary" className="field-button" href={buttonLink} target={'_blank'}>
+                  {buttonTitle}
+                </Button>
+              ),
+            )}
+            {listItem(
               objectFields.parent,
               wobject.parent ? (
                 <ObjectCard
@@ -209,7 +228,7 @@ class ObjectInfo extends React.Component {
               <RateInfo username={userName} authorPermlink={wobject.author_permlink} />,
             )}
             {listItem(
-              objectFields.hashtag,
+              objectFields.tagCloud,
               <div className="field-info">
                 {accessExtend ? (
                   <React.Fragment>
@@ -227,8 +246,8 @@ class ObjectInfo extends React.Component {
                           </div>
                         ))}
                         <Link
-                          to={`/object/${wobject.author_permlink}/updates/${objectFields.tag}`}
-                          onClick={() => this.handleSelectField(objectFields.tag)}
+                          to={`/object/${wobject.author_permlink}/updates/${objectFields.tagCloud}`}
+                          onClick={() => this.handleSelectField(objectFields.tagCloud)}
                         >
                           <FormattedMessage id="show_more_tags" defaultMessage="show more">
                             {value => <div className="tag-item">{value}</div>}
@@ -288,6 +307,7 @@ class ObjectInfo extends React.Component {
               </div>
             ) : null}
             {listItem(objectFields.price, <React.Fragment>{price}</React.Fragment>)}
+            {listItem(objectFields.workTime, <React.Fragment>{workTime}</React.Fragment>)}
             {listItem(
               objectFields.address,
               address && (
