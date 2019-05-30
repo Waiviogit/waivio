@@ -4,10 +4,10 @@ import { Route, Switch } from 'react-router-dom';
 
 import UserInfo from './UserInfo';
 import TopInstruments from './TopInstruments';
+import TopPerformers from './TopPerformers/TopPerformers';
 import MarketsList from './MarketsList';
 import SidenavUser from '../../components/Navigation/SidenavUser';
 import DealsList from './DealsList';
-import ObjectTypes from '../../components/Sidebar/ObjectTypes/ObjectTypes';
 
 const LeftSidebar = ({ quoteSettingsSorted }) => (
   <Switch>
@@ -26,7 +26,7 @@ const LeftSidebar = ({ quoteSettingsSorted }) => (
     <Route path="/edit-profile" component={SidenavUser} />
     <Route path="/settings" component={SidenavUser} />
     <Route path="/invite" component={SidenavUser} />
-    <Route path="/" component={TopInstruments} />
+    <Route path="/" component={TopPerformers} />
   </Switch>
 );
 

@@ -1,0 +1,151 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../components/Sidebar/User.less';
+
+.top-performers {
+  #top-performers__compare-input-wrap {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+  }
+
+  &__compare-input,
+  &__compare-input.ant-select-open {
+    min-width: 85%;
+
+    .ant-select-selection,
+    .ant-select-selection:focus {
+      border: none;
+      box-shadow: none;
+    }
+  }
+
+  &__compare-input-dropdown.ant-select-dropdown {
+    z-index: 1040 !important;
+  }
+
+  &__title {
+    font-weight: 700;
+    text-align: center;
+  }
+
+  &__info {
+    padding-bottom: 10px;
+    .tooltip {
+      display: flex;
+      align-items: center;
+
+      .text {
+        &:before {
+          content: '-';
+          margin: 0 5px 0 0;
+        }
+      }
+    }
+
+    .tooltip-better {
+      &:before {
+        content: '';
+        display: block;
+        background: repeating-linear-gradient(
+          -50deg,
+          @green,
+          @green 1px,
+          @white 2px,
+          @green-darker 4px
+        );
+        border: 1px solid @green;
+        width: 16px;
+        height: 16px;
+        float: left;
+      }
+
+      .color-text {
+        color: @green-darker;
+        padding: 0 5px;
+      }
+    }
+
+    .tooltip-worse {
+      &:before {
+        content: '';
+        display: block;
+        background: repeating-linear-gradient(
+          -50deg,
+          @red-light,
+          @red-light 1px,
+          @white 2px,
+          @red 4px
+        );
+        border: 1px solid @red-light;
+        width: 16px;
+        height: 16px;
+        float: left;
+      }
+
+      .color-text {
+        color: @red;
+        padding: 0 5px;
+      }
+    }
+  }
+
+  &__more {
+    text-align: center;
+    color: @blue-botticelli;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.3s;
+    &:hover {
+      color: #4aa4ff;
+    }
+  }
+
+  .performer:extend(.User) {
+    &__top:extend(.User__top) {
+    }
+
+    &__links:extend(.User__links) {
+    }
+
+    &__avatar {
+      .ObjectAvatar {
+        height: 34px;
+        width: 34px;
+        min-width: 34px;
+      }
+    }
+
+    &__name:extend(.User__name) {
+    }
+
+    &__stat-info:extend(.User__follow) {
+      font-size: 15px;
+      &.success {
+        color: @green-darker;
+      }
+      &.danger {
+        color: @red;
+      }
+    }
+
+    &__divider:extend(.User__divider) {
+      margin: 8px 0;
+    }
+  }
+}
+
+.top-performers.SidebarContentBlock {
+  padding-bottom: 8px;
+  transition: all 0.5s;
+
+  .SidebarContentBlock__title {
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+
+  .SidebarContentBlock__content {
+    padding: 0 8px;
+  }
+}
+
+@import './TopPerformers-nightmode';

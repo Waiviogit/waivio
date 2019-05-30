@@ -1,0 +1,107 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../components/Sidebar/User-nightmode.less';
+
+.nightmode {
+  .top-performers {
+    &__compare-input,
+    &__compare-input.ant-select-open {
+      .ant-select-selection,
+      .ant-select-selection:focus {
+        border: none !important;
+        box-shadow: none !important;
+        background-color: transparent !important;
+      }
+    }
+
+    &__info {
+      padding-bottom: 10px;
+
+      .tooltip-better {
+        &:before {
+          content: '';
+          display: block;
+          background: repeating-linear-gradient(
+            -50deg,
+            @green-darker,
+            @green-darker 1px,
+            @grey-nero 2px,
+            @green 4px
+          );
+          border: 1px solid @green-darker;
+          width: 16px;
+          height: 16px;
+          float: left;
+        }
+
+        .color-text {
+          color: @green;
+          padding: 0 5px;
+        }
+      }
+
+      .tooltip-worse {
+        &:before {
+          content: '';
+          display: block;
+          background: repeating-linear-gradient(
+            -50deg,
+            @red,
+            @red 1px,
+            @grey-nero 2px,
+            @red-danger 4px
+          );
+          border: 1px solid @red;
+          width: 16px;
+          height: 16px;
+          float: left;
+        }
+
+        .color-text {
+          color: @red-light;
+          padding: 0 5px;
+        }
+      }
+    }
+
+    &__more {
+      color: @blue-botticelli;
+      transition: color 0.3s;
+      &:hover {
+        color: #4aa4ff;
+      }
+    }
+
+    .performer:extend(.User) {
+      &__avatar {
+        .ObjectAvatar {
+          border-color: @normal-grey;
+        }
+      }
+      &__stat-info:extend(.User__follow) {
+        &.success {
+          color: @green;
+        }
+        &.danger {
+          color: @red-light;
+        }
+      }
+
+      &__divider {
+        background-color: @normal-grey;
+        margin: 8px 0;
+      }
+    }
+  }
+
+  .top-performers.SidebarContentBlock {
+    .SidebarContentBlock__title {
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .SidebarContentBlock__content {
+      padding: 0 8px;
+    }
+  }
+
+}

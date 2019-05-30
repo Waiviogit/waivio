@@ -65,7 +65,13 @@ export default function createSsrHandler(template) {
       }
 
       return res.send(
-        renderSsrPage(store, content, assets, template, req.hostname !== 'investarena.waiviodev.com'),
+        renderSsrPage(
+          store,
+          content,
+          assets,
+          template,
+          req.hostname !== 'investarena.waiviodev.com',
+        ),
       );
     } catch (err) {
       console.error('SSR error occured, falling back to bundled application instead', err);
