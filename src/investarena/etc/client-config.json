@@ -15,8 +15,8 @@
     "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/"
   },
   "development": {
-    "apiPrefix": "http://localhost:8095/",
-    "": "https://waiviodev.com/",
+    "": "http://localhost:8095/",
+    "apiPrefix": "https://waiviodev.com/",
     "brokerWSUrl": {
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",

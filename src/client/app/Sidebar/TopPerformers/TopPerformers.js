@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Select } from 'antd';
 import cn from 'classnames';
-import { debounce, isEmpty } from 'lodash';
+import { debounce, isEmpty, size } from 'lodash';
 import Avatar from '../../../components/Avatar';
 import TopInstrumentsLoading from '../TopInstrumentsLoading';
 import {
@@ -169,45 +169,49 @@ class TopPerformers extends Component {
         <div className="top-performers__header">
           <div className="top-performers__title">Top performers</div>
           {!isEmpty(compareWith) && (
-            <div id="top-performers__compare-input-wrap">
-              vs.{' '}
-              <Select
-                className="top-performers__compare-input"
-                dropdownClassName="top-performers__compare-input-dropdown"
-                getPopupContainer={() =>
-                  document.getElementById('top-performers__compare-input-wrap')
-                }
-                size="default"
-                notFoundContent={null}
-                showSearch
-                value={compareWith.name}
-                onSearch={this.handleSearch}
-                onSelect={this.handleSelect}
-              >
-                {selectOptions}
-              </Select>
-            </div>
+            <React.Fragment>
+              <div id="top-performers__compare-input-wrap">
+                vs.{' '}
+                <Select
+                  className="top-performers__compare-input"
+                  dropdownClassName="top-performers__compare-input-dropdown"
+                  getPopupContainer={() =>
+                    document.getElementById('top-performers__compare-input-wrap')
+                  }
+                  size="default"
+                  notFoundContent={null}
+                  showSearch
+                  value={compareWith.name}
+                  onSearch={this.handleSearch}
+                  onSelect={this.handleSelect}
+                >
+                  {selectOptions}
+                </Select>
+              </div>
+              <div className="top-performers__info">
+                <div className="tooltip tooltip-better">
+                  <span className="color-text">
+                    {intl.formatMessage({ id: 'green', defaultMessage: 'Green' })}
+                  </span>
+                  <span className="text">
+                    {intl.formatMessage({ id: 'better', defaultMessage: 'better' })}
+                  </span>
+                </div>
+                <div className="tooltip tooltip-worse">
+                  <span className="color-text">
+                    {intl.formatMessage({ id: 'red', defaultMessage: 'Red' })}
+                  </span>
+                  <span className="text">
+                    {intl.formatMessage({ id: 'worse', defaultMessage: 'worse' })}
+                  </span>
+                </div>
+              </div>
+            </React.Fragment>
           )}
-          <div className="top-performers__info">
-            <div className="tooltip tooltip-better">
-              <span className="color-text">
-                {intl.formatMessage({ id: 'green', defaultMessage: 'Green' })}
-              </span>
-              <span className="text">
-                {intl.formatMessage({ id: 'better', defaultMessage: 'better' })}
-              </span>
-            </div>
-            <div className="tooltip tooltip-worse">
-              <span className="color-text">
-                {intl.formatMessage({ id: 'red', defaultMessage: 'Red' })}
-              </span>
-              <span className="text">
-                {intl.formatMessage({ id: 'worse', defaultMessage: 'worse' })}
-              </span>
-            </div>
-          </div>
         </div>
-        {Object.keys(TopPerformers.periods).map(key =>
+
+        {size(performersStat) > 0 ?
+          Object.keys(TopPerformers.periods).map(key =>
           performersStat[key] ? (
             <div className="SidebarContentBlock top-performers" key={key}>
               <div className="SidebarContentBlock__title">
@@ -225,8 +229,10 @@ class TopPerformers extends Component {
                       {getPerformerLinks(performer)}
                       <div
                         className={cn('performer__stat-info', {
-                          success: performer.id !== compareWith.id && performer[key] > compareWith[key],
-                          danger: performer.id !== compareWith.id && performer[key] < compareWith[key],
+                          success:
+                            performer.id !== compareWith.id && performer[key] > compareWith[key],
+                          danger:
+                            performer.id !== compareWith.id && performer[key] < compareWith[key],
                         })}
                       >
                         {formatPerfomance(performer[key])}
@@ -246,10 +252,12 @@ class TopPerformers extends Component {
               </div>
             </div>
           ) : null,
-        )}
+        ) : (
+          <div className="top-performers__more">NO DATA</div>
+          )}
       </div>
     ) : (
-      <TopInstrumentsLoading/>
+      <TopInstrumentsLoading />
     );
   }
 }
