@@ -41,6 +41,15 @@ export default (state = initialState, action) => {
         ...state,
         compareWith: null,
       };
+
+    case topPerformersTypes.GET_PERFORMERS_STATS_MORE_SUCCESS:
+      return {
+        ...state,
+        statistic: {
+          ...state.statistic,
+          [action.meta.period]: [...state.statistic[action.meta.period], ...action.payload],
+        },
+      };
     default:
       return state;
   }

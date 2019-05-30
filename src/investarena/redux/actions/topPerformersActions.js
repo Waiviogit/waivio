@@ -5,6 +5,9 @@ export const GET_INSTRUMENT_STAT_START = '@top-performers/GET_INSTRUMENT_STAT_ST
 export const GET_INSTRUMENT_STAT_SUCCESS = '@top-performers/GET_INSTRUMENT_STAT_SUCCESS';
 export const GET_INSTRUMENT_STAT_ERROR = '@top-performers/GET_INSTRUMENT_STAT_ERROR';
 
+export const setInstrumentToCompare = payload => dispatch =>
+  dispatch({ type: GET_INSTRUMENT_STAT_SUCCESS, payload });
+
 export const getInstrumentStatistic = authorPermlink => dispatch =>
   dispatch({
     type: GET_INSTRUMENT_STAT,
@@ -16,8 +19,9 @@ export const GET_PERFORMERS_STATS_START = '@top-performers/GET_PERFORMERS_STATS_
 export const GET_PERFORMERS_STATS_SUCCESS = '@top-performers/GET_PERFORMERS_STATS_SUCCESS';
 export const GET_PERFORMERS_STATS_ERROR = '@top-performers/GET_PERFORMERS_STATS_ERROR';
 
-export const getPerformersStatistic = () => dispatch => {
-  dispatch(getInstrumentStatistic('glvabc-dj')); // Dow Jones index
+export const getPerformersStatistic = (autorPermlink = 'glvabc-dj') => dispatch => {
+  // Dow Jones index by default
+  dispatch(getInstrumentStatistic(autorPermlink));
   return dispatch({
     type: GET_PERFORMERS_STATS,
     payload: {
@@ -25,16 +29,17 @@ export const getPerformersStatistic = () => dispatch => {
     },
   });
 };
+export const GET_PERFORMERS_STATS_MORE = '@top-performers/GET_PERFORMERS_STATS_MORE';
+export const GET_PERFORMERS_STATS_MORE_START = '@top-performers/GET_PERFORMERS_STATS_MORE_START';
+export const GET_PERFORMERS_STATS_MORE_SUCCESS =
+  '@top-performers/GET_PERFORMERS_STATS_MORE_SUCCESS';
+export const GET_PERFORMERS_STATS_MORE_ERROR = '@top-performers/GET_PERFORMERS_STATS_MORE_ERROR';
 
-// export const SEARCH_INSTRUMENTS_STAT = createAsyncActionType('@top-performers/SEARCH_INSTRUMENTS_STAT');
-//
-// export const searchInstrumentsStat = searchString => dispatch =>
-//   dispatch({
-//     type: SEARCH_INSTRUMENTS_STAT.ACTION,
-//     payload: {
-//       promise: ApiClient.searchInstrumentsStat(searchString).then(result => ({
-//         result,
-//         search: searchString,
-//       })),
-//     },
-//   });
+export const getPerformersStatsMore = (period, limit, skip) => dispatch =>
+  dispatch({
+    type: GET_PERFORMERS_STATS_MORE,
+    payload: {
+      promise: api.performers.getPerformersStatisticsForPeriod(period, limit, skip),
+    },
+    meta: { period },
+  });

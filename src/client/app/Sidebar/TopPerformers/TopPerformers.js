@@ -2,10 +2,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Select } from 'antd';
+import cn from 'classnames';
 import { debounce, isEmpty } from 'lodash';
 import Avatar from '../../../components/Avatar';
+import TopInstrumentsLoading from '../TopInstrumentsLoading';
+import {
+  setInstrumentToCompare,
+  getPerformersStatsMore,
+} from '../../../../investarena/redux/actions/topPerformersActions';
 import {
   getPerformersStatistic,
   getInstrumentToCompare,
@@ -15,6 +21,7 @@ import {
 import api from '../../../../investarena/configApi/apiResources';
 import { DEFAULT_OBJECT_AVATAR_URL } from '../../../../common/constants/waivio';
 import './TopPerformers.less';
+import { toFixNumberLength } from '../../../../investarena/helpers/calculationsHelper';
 
 const getPerformerLinks = performer => {
   switch (performer.type) {
@@ -49,17 +56,28 @@ const getPerformerLinks = performer => {
   }
 };
 
-@connect(state => ({
-  isLoaded: getPerformersStatisticLoaded(state),
-  isLoading: getPerformersStatisticLoading(state),
-  performersStat: getPerformersStatistic(state),
-  compareWith: getInstrumentToCompare(state),
-}))
+const formatPerfomance = performanceValue => {
+  const plusSign = performanceValue > 0 ? '+' : '';
+  return `${plusSign}${toFixNumberLength(performanceValue, 3)}%`;
+};
+
+@connect(
+  state => ({
+    isLoaded: getPerformersStatisticLoaded(state),
+    isLoading: getPerformersStatisticLoading(state),
+    performersStat: getPerformersStatistic(state),
+    compareWith: getInstrumentToCompare(state),
+  }),
+  {
+    getPerformersStatsMore,
+    setInstrumentToCompare,
+  },
+)
 @injectIntl
 class TopPerformers extends Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
-    // isLoaded: PropTypes.bool,
+    isLoaded: PropTypes.bool,
     isLoading: PropTypes.bool,
     performersStat: PropTypes.shape({
       d1: PropTypes.arrayOf(PropTypes.shape()),
@@ -83,19 +101,23 @@ class TopPerformers extends Component {
       id: PropTypes.string,
       type: PropTypes.string,
     }),
+    getPerformersStatsMore: PropTypes.func,
+    setInstrumentToCompare: PropTypes.func,
   };
   static defaultProps = {
     isLoaded: false,
     isLoading: false,
     performersStat: [],
     compareWith: null,
+    getPerformersStatsMore: () => {},
+    setInstrumentToCompare: () => {},
   };
   static periods = {
-    // d1: "Daily",
+    // d1: 'Daily',
     d7: 'Week',
-    // m1: 'Month',
-    m3: 'Three Months',
-    // m6: 'Six Months',
+    m1: 'Month',
+    // m3: 'Three Months',
+    m6: 'Six Months',
     m12: 'Year',
     // m24: 'Two Years',
   };
@@ -109,27 +131,40 @@ class TopPerformers extends Component {
     this.debouncedSearch = debounce(this.searchInstrumentsApiCall, 400);
   }
 
+  handleSelect = selected => {
+    const selectedInstrument = this.state.itemsToCompare.find(i => i.id === selected);
+    if (selectedInstrument) {
+      this.props.setInstrumentToCompare(selectedInstrument);
+      this.setState({ itemsToCompare: [] });
+    }
+  };
+
   handleSearch = inputString => {
     if (inputString) {
       this.debouncedSearch(inputString);
     } else {
-      this.setState({itemsToCompare: []});
+      this.setState({ itemsToCompare: [] });
     }
   };
 
   searchInstrumentsApiCall = searchString =>
     api.performers
-    .searchInstrumentsStat(searchString)
-    .then(result => this.setState({ itemsToCompare: result }));
+      .searchInstrumentsStat(searchString)
+      .then(result => this.setState({ itemsToCompare: result }));
+
+  loadMorePerformers = e => {
+    const period = e.currentTarget.id;
+    this.props.getPerformersStatsMore(period, 5, this.props.performersStat[period].length);
+  };
 
   render() {
     const { itemsToCompare } = this.state;
-    const { intl, performersStat, isLoading, compareWith } = this.props;
+    const { intl, performersStat, isLoaded, isLoading, compareWith } = this.props;
     const selectOptions = itemsToCompare.map(item => (
       <Select.Option key={item.id}>{item.name}</Select.Option>
     ));
 
-    return !isLoading ? (
+    return isLoaded && !isLoading ? (
       <div className="top-performers">
         <div className="top-performers__header">
           <div className="top-performers__title">Top performers</div>
@@ -137,7 +172,6 @@ class TopPerformers extends Component {
             <div id="top-performers__compare-input-wrap">
               vs.{' '}
               <Select
-                // prefixCls="wia"
                 className="top-performers__compare-input"
                 dropdownClassName="top-performers__compare-input-dropdown"
                 getPopupContainer={() =>
@@ -148,10 +182,7 @@ class TopPerformers extends Component {
                 showSearch
                 value={compareWith.name}
                 onSearch={this.handleSearch}
-                // optionLabelProp={}
-                // transitionName={}
-                // choiceTransitionName={}
-                // id={}
+                onSelect={this.handleSelect}
               >
                 {selectOptions}
               </Select>
@@ -178,7 +209,7 @@ class TopPerformers extends Component {
         </div>
         {Object.keys(TopPerformers.periods).map(key =>
           performersStat[key] ? (
-            <div className="SidebarContentBlock" key={key}>
+            <div className="SidebarContentBlock top-performers" key={key}>
               <div className="SidebarContentBlock__title">
                 {intl
                   .formatMessage({
@@ -187,23 +218,38 @@ class TopPerformers extends Component {
                   })
                   .toUpperCase()}
               </div>
-              <div className="SidebarContentBlock__content top-performers">
+              <div className="SidebarContentBlock__content">
                 {performersStat[key].map(performer => (
                   <div className="performer" key={performer.name}>
                     <div className="performer__top">
                       {getPerformerLinks(performer)}
-                      <div className="performer__stat-info">{performer[key]}</div>
+                      <div
+                        className={cn('performer__stat-info', {
+                          success: performer.id !== compareWith.id && performer[key] > compareWith[key],
+                          danger: performer.id !== compareWith.id && performer[key] < compareWith[key],
+                        })}
+                      >
+                        {formatPerfomance(performer[key])}
+                      </div>
                     </div>
                     <div className="performer__divider" />
                   </div>
                 ))}
+                <h4
+                  id={key}
+                  className="top-performers__more"
+                  onClick={this.loadMorePerformers}
+                  role="presentation"
+                >
+                  <FormattedMessage id="show_more" defaultMessage="Show more" />
+                </h4>
               </div>
             </div>
           ) : null,
         )}
       </div>
     ) : (
-      <div>Loading</div>
+      <TopInstrumentsLoading/>
     );
   }
 }

@@ -10,7 +10,11 @@ export default class Performers extends Base {
 
   searchInstrumentsStat(searchString, limit = 7) {
     return this.apiClient
-      .get(`${config.performers.searchInstrumentsStatistic}/${searchString}?limit=${limit}`)
+      .get(
+        `${config.performers.searchInstrumentsStatistic}/${encodeURIComponent(
+          searchString,
+        )}?limit=${limit}`,
+      )
       .then(response => response.data);
   }
 
@@ -18,6 +22,14 @@ export default class Performers extends Base {
     return new Promise((resolve, reject) => {
       this.apiClient
         .get(`${config.performers.top}`)
+        .then(response => resolve(response.data))
+        .catch(error => reject(error));
+    });
+  }
+  getPerformersStatisticsForPeriod(period = 'm1', limit = 5, skip = 0) {
+    return new Promise((resolve, reject) => {
+      this.apiClient
+        .get(`${config.performers.top}/${period}?limit=${limit}&skip=${skip}`)
         .then(response => resolve(response.data))
         .catch(error => reject(error));
     });
