@@ -2,9 +2,15 @@ import Base from './Base';
 import config from '../configApi/config';
 
 export default class Performers extends Base {
-  searchInstrumentsStat(searchString) {
+  constructor(params) {
+    super(params);
+
+    this.searchInstrumentsStat = this.searchInstrumentsStat.bind(this);
+  }
+
+  searchInstrumentsStat(searchString, limit = 7) {
     return this.apiClient
-      .get(`${config.performers.searchInstrumentsStatistic}/${searchString}`)
+      .get(`${config.performers.searchInstrumentsStatistic}/${searchString}?limit=${limit}`)
       .then(response => response.data);
   }
 

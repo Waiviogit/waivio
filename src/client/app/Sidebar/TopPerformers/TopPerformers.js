@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import { Select } from 'antd';
-import { isEmpty } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 import Avatar from '../../../components/Avatar';
 import {
   getPerformersStatistic,
@@ -15,6 +15,39 @@ import {
 import api from '../../../../investarena/configApi/apiResources';
 import { DEFAULT_OBJECT_AVATAR_URL } from '../../../../common/constants/waivio';
 import './TopPerformers.less';
+
+const getPerformerLinks = performer => {
+  switch (performer.type) {
+    case 'user':
+      return (
+        <div className="performer__links">
+          <Link to={`/@${performer.name}`} className="performer__avatar">
+            <Avatar username={performer.name} size={34} />
+          </Link>
+          <Link to={`/@${performer.name}`} title={performer.name} className="performer__name">
+            <span className="username">{performer.name}</span>
+          </Link>
+        </div>
+      );
+    case 'instrument':
+      return (
+        <div className="performer__links">
+          <Link to={`/object/${performer.id}`} className="performer__avatar">
+            <div
+              className="ObjectAvatar"
+              style={{ backgroundImage: `url(${performer.avatar || DEFAULT_OBJECT_AVATAR_URL})` }}
+              title={performer.name}
+            />
+          </Link>
+          <Link to={`/object/${performer.id}`} title={performer.name} className="performer__name">
+            <span className="username">{performer.name}</span>
+          </Link>
+        </div>
+      );
+    default:
+      return null;
+  }
+};
 
 @connect(state => ({
   isLoaded: getPerformersStatisticLoaded(state),
@@ -72,48 +105,22 @@ class TopPerformers extends Component {
 
     this.state = {
       itemsToCompare: [],
-    }
+    };
+    this.debouncedSearch = debounce(this.searchInstrumentsApiCall, 400);
   }
-
-  getPerformerLinks = performer => {
-    switch (performer.type) {
-      case 'user':
-        return (
-          <div className="performer__links">
-            <Link to={`/@${performer.name}`} className="performer__avatar">
-              <Avatar username={performer.name} size={34} />
-            </Link>
-            <Link to={`/@${performer.name}`} title={performer.name} className="performer__name">
-              <span className="username">{performer.name}</span>
-            </Link>
-          </div>
-        );
-      case 'instrument':
-        return (
-          <div className="performer__links">
-            <Link to={`/object/${performer.id}`} className="performer__avatar">
-              <div
-                className="ObjectAvatar"
-                style={{ backgroundImage: `url(${performer.avatar || DEFAULT_OBJECT_AVATAR_URL})` }}
-                title={performer.name}
-              />
-            </Link>
-            <Link to={`/object/${performer.id}`} title={performer.name} className="performer__name">
-              <span className="username">{performer.name}</span>
-            </Link>
-          </div>
-        );
-      default:
-        return null;
-    }
-  };
 
   handleSearch = inputString => {
     if (inputString) {
-      api.performers.searchInstrumentsStat(inputString)
-        .then(result => this.setState({itemsToCompare: result}))
+      this.debouncedSearch(inputString);
+    } else {
+      this.setState({itemsToCompare: []});
     }
   };
+
+  searchInstrumentsApiCall = searchString =>
+    api.performers
+    .searchInstrumentsStat(searchString)
+    .then(result => this.setState({ itemsToCompare: result }));
 
   render() {
     const { itemsToCompare } = this.state;
@@ -127,13 +134,15 @@ class TopPerformers extends Component {
         <div className="top-performers__header">
           <div className="top-performers__title">Top performers</div>
           {!isEmpty(compareWith) && (
-            <div id='top-performers__compare-input-wrap'>
+            <div id="top-performers__compare-input-wrap">
               vs.{' '}
               <Select
                 // prefixCls="wia"
                 className="top-performers__compare-input"
                 dropdownClassName="top-performers__compare-input-dropdown"
-                getPopupContainer={() => document.getElementById('top-performers__compare-input-wrap')}
+                getPopupContainer={() =>
+                  document.getElementById('top-performers__compare-input-wrap')
+                }
                 size="default"
                 notFoundContent={null}
                 showSearch
@@ -182,7 +191,7 @@ class TopPerformers extends Component {
                 {performersStat[key].map(performer => (
                   <div className="performer" key={performer.name}>
                     <div className="performer__top">
-                      {this.getPerformerLinks(performer)}
+                      {getPerformerLinks(performer)}
                       <div className="performer__stat-info">{performer[key]}</div>
                     </div>
                     <div className="performer__divider" />
@@ -198,7 +207,5 @@ class TopPerformers extends Component {
     );
   }
 }
-
-TopPerformers.propTypes = {};
 
 export default TopPerformers;
