@@ -2,6 +2,25 @@
 @import (reference) '../../../components/Sidebar/User.less';
 
 .top-performers {
+  #top-performers__compare-input-wrap {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+  }
+
+  &__compare-input, &__compare-input.ant-select-open {
+    min-width: 85%;
+
+    .ant-select-selection, .ant-select-selection:focus {
+      border: none;
+      box-shadow: none;
+    }
+  }
+
+  &__compare-input-dropdown.ant-select-dropdown {
+    z-index: 1040!important;
+  }
+
   &__title {
     font-weight: 700;
     text-align: center;

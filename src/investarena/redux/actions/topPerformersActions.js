@@ -8,9 +8,8 @@ export const GET_INSTRUMENT_STAT_ERROR = '@top-performers/GET_INSTRUMENT_STAT_ER
 export const getInstrumentStatistic = authorPermlink => dispatch =>
   dispatch({
     type: GET_INSTRUMENT_STAT,
-    payload: api.performers.getInstrumentStatistics(authorPermlink)
+    payload: api.performers.getInstrumentStatistics(authorPermlink),
   });
-
 
 export const GET_PERFORMERS_STATS = '@top-performers/GET_PERFORMERS_STATS';
 export const GET_PERFORMERS_STATS_START = '@top-performers/GET_PERFORMERS_STATS_START';
@@ -22,8 +21,8 @@ export const getPerformersStatistic = () => dispatch => {
   return dispatch({
     type: GET_PERFORMERS_STATS,
     payload: {
-      promise: api.performers.getPerformersStatistics()
-    }
+      promise: api.performers.getPerformersStatistics(),
+    },
   });
 };
 

@@ -12,6 +12,7 @@ import {
   getPerformersStatisticLoaded,
   getPerformersStatisticLoading,
 } from '../../../reducers';
+import api from '../../../../investarena/configApi/apiResources';
 import { DEFAULT_OBJECT_AVATAR_URL } from '../../../../common/constants/waivio';
 import './TopPerformers.less';
 
@@ -25,7 +26,7 @@ import './TopPerformers.less';
 class TopPerformers extends Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
-    isLoaded: PropTypes.bool,
+    // isLoaded: PropTypes.bool,
     isLoading: PropTypes.bool,
     performersStat: PropTypes.shape({
       d1: PropTypes.arrayOf(PropTypes.shape()),
@@ -48,7 +49,7 @@ class TopPerformers extends Component {
       name: PropTypes.string,
       id: PropTypes.string,
       type: PropTypes.string,
-    })
+    }),
   };
   static defaultProps = {
     isLoaded: false,
@@ -65,6 +66,14 @@ class TopPerformers extends Component {
     m12: 'Year',
     // m24: 'Two Years',
   };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      itemsToCompare: [],
+    }
+  }
 
   getPerformerLinks = performer => {
     switch (performer.type) {
@@ -99,30 +108,46 @@ class TopPerformers extends Component {
     }
   };
 
+  handleSearch = inputString => {
+    if (inputString) {
+      api.performers.searchInstrumentsStat(inputString)
+        .then(result => this.setState({itemsToCompare: result}))
+    }
+  };
+
   render() {
+    const { itemsToCompare } = this.state;
     const { intl, performersStat, isLoading, compareWith } = this.props;
-    const itemsToCompare = [];
+    const selectOptions = itemsToCompare.map(item => (
+      <Select.Option key={item.id}>{item.name}</Select.Option>
+    ));
 
     return !isLoading ? (
       <div className="top-performers">
         <div className="top-performers__header">
           <div className="top-performers__title">Top performers</div>
-          {!isEmpty(compareWith) && (<div>
-            vs. <Select
+          {!isEmpty(compareWith) && (
+            <div id='top-performers__compare-input-wrap'>
+              vs.{' '}
+              <Select
                 // prefixCls="wia"
                 className="top-performers__compare-input"
+                dropdownClassName="top-performers__compare-input-dropdown"
+                getPopupContainer={() => document.getElementById('top-performers__compare-input-wrap')}
                 size="default"
                 notFoundContent={null}
                 showSearch
                 value={compareWith.name}
+                onSearch={this.handleSearch}
                 // optionLabelProp={}
                 // transitionName={}
                 // choiceTransitionName={}
                 // id={}
-            >
-              {itemsToCompare}
-            </Select>
-          </div>)}
+              >
+                {selectOptions}
+              </Select>
+            </div>
+          )}
           <div className="top-performers__info">
             <div className="tooltip tooltip-better">
               <span className="color-text">
@@ -157,19 +182,7 @@ class TopPerformers extends Component {
                 {performersStat[key].map(performer => (
                   <div className="performer" key={performer.name}>
                     <div className="performer__top">
-                      {/* <div className="performer__links"> */}
                       {this.getPerformerLinks(performer)}
-                      {/* <Link to={`/@${performer.name}`} className="performer__avatar"> */}
-                      {/* <Avatar username={performer.name} size={34} /> */}
-                      {/* </Link> */}
-                      {/* <Link */}
-                      {/* to={`/@${performer.name}`} */}
-                      {/* title={performer.name} */}
-                      {/* className="performer__name" */}
-                      {/* > */}
-                      {/* <span className="username">{performer.name}</span> */}
-                      {/* </Link> */}
-                      {/* </div> */}
                       <div className="performer__stat-info">{performer[key]}</div>
                     </div>
                     <div className="performer__divider" />

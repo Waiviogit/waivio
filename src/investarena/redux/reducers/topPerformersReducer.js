@@ -3,7 +3,7 @@ import * as topPerformersTypes from '../actions/topPerformersActions';
 const initialState = {
   loading: false,
   loaded: false,
-  compareWith: [],
+  compareWith: null,
   statistic: {
     d1: [],
     d7: [],
@@ -30,7 +30,7 @@ export default (state = initialState, action) => {
     case topPerformersTypes.GET_PERFORMERS_STATS_ERROR:
       return initialState;
 
-      // get instrument to compare
+    // get instrument to compare
     case topPerformersTypes.GET_INSTRUMENT_STAT_SUCCESS:
       return {
         ...state,
