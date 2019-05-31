@@ -160,15 +160,11 @@ class TopPerformers extends Component {
   render() {
     const { itemsToCompare } = this.state;
     const { intl, performersStat, isLoaded, isLoading, compareWith } = this.props;
-    const selectOptions = itemsToCompare.map(item => (
-      <Select.Option key={item.id}>{item.name}</Select.Option>
-    ));
-
     return isLoaded && !isLoading ? (
       <div className="top-performers">
         <div className="top-performers__header">
           <div className="top-performers__title">Top performers</div>
-          {!isEmpty(compareWith) && (
+          {!isEmpty(compareWith) && itemsToCompare && (
             <React.Fragment>
               <div id="top-performers__compare-input-wrap">
                 vs.{' '}
@@ -185,7 +181,9 @@ class TopPerformers extends Component {
                   onSearch={this.handleSearch}
                   onSelect={this.handleSelect}
                 >
-                  {selectOptions}
+                  {itemsToCompare.map(item => (
+                    <Select.Option key={item.id}>{item.name}</Select.Option>
+                  ))}
                 </Select>
               </div>
               <div className="top-performers__info">
