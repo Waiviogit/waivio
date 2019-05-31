@@ -164,7 +164,7 @@ class ModalComparePerformance extends React.Component {
     );
   }
 
-  removeItemToCompare = () => this.setState({ itemToCompare: {}, searchBarValue: ''});
+  removeItemToCompare = () => this.setState({ itemToCompare: {}, searchBarValue: '' });
 
   toggleModal = () => {
     this.props.toggleModal();
@@ -187,14 +187,17 @@ class ModalComparePerformance extends React.Component {
         onCancel={this.toggleModal}
       >
         <div className="ModalComparePerformance">
-          {isItemUser ? <div className="ModalComparePerformance-item">
+          {isItemUser ? (
+            <div className="ModalComparePerformance-item">
               <UserCard user={{ name: this.state.item }} showFollow={false} />
               <UserLongTermStatistics userName={this.state.item} />
-          </div> :
+            </div>
+          ) : (
             <div className="ModalComparePerformance-item">
-            <ObjectCard wobject={this.state.item} showFollow={false} />
-            <InstrumentLongTermStatistics wobject={this.state.item} />
-          </div>}
+              <ObjectCard wobject={this.state.item} showFollow={false} />
+              <InstrumentLongTermStatistics wobject={this.state.item} />
+            </div>
+          )}
           <div>vs</div>
           <div className="ModalComparePerformance__item-to-compare">
             {/* eslint-disable-next-line no-nested-ternary */}
@@ -226,7 +229,7 @@ class ModalComparePerformance extends React.Component {
             ) : isItemToCompareUser ? (
               <React.Fragment>
                 <div className="ModalComparePerformance__item-to-compare-wrap">
-                  <UserCard user={{ name: itemToCompare }} showFollow={false} withLinks={false}/>
+                  <UserCard user={{ name: itemToCompare }} showFollow={false} withLinks={false} />
                   <Icon type="close-circle" onClick={this.removeItemToCompare} />
                 </div>
                 <UserLongTermStatistics userName={itemToCompare} />
@@ -234,7 +237,7 @@ class ModalComparePerformance extends React.Component {
             ) : (
               <React.Fragment>
                 <div className="ModalComparePerformance__item-to-compare-wrap">
-                  <ObjectCard wobject={itemToCompare} showFollow={false} withLinks={false}/>
+                  <ObjectCard wobject={itemToCompare} showFollow={false} withLinks={false} />
                   <Icon type="close-circle" onClick={this.removeItemToCompare} />
                 </div>
                 <InstrumentLongTermStatistics wobject={itemToCompare} />

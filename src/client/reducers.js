@@ -23,6 +23,7 @@ import platformReducer from '../investarena/redux/reducers/platformReducer';
 import dealsReducer from '../investarena/redux/reducers/dealsReducer';
 import modalsReducer from '../investarena/redux/reducers/modalsReducer';
 import chartsReducer from '../investarena/redux/reducers/chartsReducer';
+import topPerformersReducer, * as fromTopPerformers from '../investarena/redux/reducers/topPerformersReducer';
 import wobjectReducer, * as fromObject from '../client/object/wobjectReducer';
 import objectTypesReducer, * as fromObjectTypes from '../client/objectTypes/objectTypesReducer';
 import objectTypeReducer, * as fromObjectType from '../client/objectTypes/objectTypeReducer';
@@ -58,6 +59,7 @@ export default () =>
     modals: modalsReducer,
     append: appendReducer,
     gallery: galleryReducer,
+    topPerformers: topPerformersReducer,
   });
 
 export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);
@@ -196,3 +198,12 @@ export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.a
 export const getObjectAlbums = state => fromGallery.getObjectAlbums(state.gallery);
 export const getIsObjectAlbumsLoading = state =>
   fromGallery.getIsObjectAlbumsLoading(state.gallery);
+
+export const getPerformersStatistic = state =>
+  fromTopPerformers.getPerformersStatistic(state.topPerformers);
+export const getInstrumentToCompare = state =>
+  fromTopPerformers.getInstrumentToCompare(state.topPerformers);
+export const getPerformersStatisticLoading = state =>
+  fromTopPerformers.getPerformersStatisticLoading(state.topPerformers);
+export const getPerformersStatisticLoaded = state =>
+  fromTopPerformers.getPerformersStatisticLoaded(state.topPerformers);

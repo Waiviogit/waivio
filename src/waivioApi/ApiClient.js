@@ -348,7 +348,6 @@ export const getMoreObjectsByType = (type, skip, limit, filter = {}) =>
 
 // Investarena
 
-
 export const getInstrumentLongTermStatistics = id =>
   new Promise((resolve, reject) => {
     fetch(
@@ -373,6 +372,7 @@ export const getUserLongTermStatistics = id =>
       .then(data => resolve(data))
       .catch(error => reject(error));
   });
+
 // END Investarena
 
 export default null;

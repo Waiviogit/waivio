@@ -5,14 +5,13 @@ import { Icon } from 'antd';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
 import _ from 'lodash';
 import urlParse from 'url-parse';
-import {getUser, getRewardFund, getRate, getScreenSize} from '../../reducers';
+import { getUser, getRewardFund, getRate, getScreenSize } from '../../reducers';
 import { getVoteValue } from '../../helpers/user';
 import { calculateVotingPower } from '../../vendor/steemitHelpers';
 import SocialLinks from '../../components/SocialLinks';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import ModalComparePerformance from '../../../investarena/components/Modals/ModalComparePerformance/ModalComparePerformance';
-import UserLongTermStatistics
-  from "../../../investarena/components/LeftSidebar/LongTermStatistics/UserLongTermStatistics";
+import UserLongTermStatistics from '../../../investarena/components/LeftSidebar/LongTermStatistics/UserLongTermStatistics';
 
 @injectIntl
 @connect((state, ownProps) => ({
@@ -139,20 +138,22 @@ class UserInfo extends React.Component {
             </div>
           </div>
         )}
-        {this.props.user.name && <UserLongTermStatistics
+        {this.props.user.name && (
+          <UserLongTermStatistics
             userName={this.props.user.name}
             withCompareButton
             toggleModalPerformance={this.toggleModalPerformance}
             isMobile={isMobile}
-          />}
-          {this.state.isModalComparePerformanceOpen && this.props.user.name && !isMobile && (
-            <ModalComparePerformance
-              toggleModal={this.toggleModalPerformance}
-              isModalOpen={this.state.isModalComparePerformanceOpen}
-              item={this.props.user.name}
-              isItemUser={true}
-            />
-          )}
+          />
+        )}
+        {this.state.isModalComparePerformanceOpen && this.props.user.name && !isMobile && (
+          <ModalComparePerformance
+            toggleModal={this.toggleModalPerformance}
+            isModalOpen={this.state.isModalComparePerformanceOpen}
+            item={this.props.user.name}
+            isItemUser={true}
+          />
+        )}
       </div>
     );
   }

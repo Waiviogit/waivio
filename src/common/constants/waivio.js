@@ -15,3 +15,6 @@ export const WAIVIO_OBJECT_TYPE = {
 };
 
 export const PRIMARY_COLOR = '#f87007';
+
+export const DEFAULT_OBJECT_AVATAR_URL =
+  'https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png';

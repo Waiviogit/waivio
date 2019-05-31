@@ -3,6 +3,7 @@ import Deals from './Deals';
 import Charts from './Charts';
 import Signals from './Signals';
 import Authentications from './authentications/Authentications';
+import Performers from './Performers';
 import ApiClient from './ApiClient';
 
 export default function({ apiPrefix } = {}) {
@@ -13,5 +14,6 @@ export default function({ apiPrefix } = {}) {
     deals: new Deals({ apiClient: api }),
     charts: new Charts({ apiClient: api }),
     signals: new Signals({ apiClient: api }),
+    performers: new Performers({ apiClient: api }),
   };
 }

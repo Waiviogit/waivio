@@ -41,3 +41,10 @@ export function floor10(value, exp) {
 export function ceil10(value, exp) {
   return decimalAdjust('ceil', value, exp);
 }
+
+// Format number - fixed amount of digits in number
+export function toFixNumberLength(value, digitsLimit = 3) {
+  const intSigns = Math.floor(Math.abs(value)).toString().length;
+  const fractSigns = digitsLimit - intSigns;
+  return Number.parseFloat(value).toFixed(fractSigns > 0 ? fractSigns : 0);
+}
