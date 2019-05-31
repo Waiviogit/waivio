@@ -989,7 +989,7 @@ export default class AppendForm extends Component {
         return (
           <React.Fragment>
             <Form.Item>
-              {getFieldDecorator(addressFields.accommodation, {
+              {getFieldDecorator(addressFields.address, {
                 rules: [
                   {
                     max: 100,
@@ -1074,6 +1074,66 @@ export default class AppendForm extends Component {
                   placeholder={intl.formatMessage({
                     id: 'location_city',
                     defaultMessage: 'City',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator(addressFields.state, {
+                rules: [
+                  {
+                    max: 100,
+                    message: intl.formatMessage(
+                      {
+                        id: 'value_error_long',
+                        defaultMessage: "Value can't be longer than 100 characters.",
+                      },
+                      { value: 100 },
+                    ),
+                  },
+                  {
+                    validator: this.validateFieldValue,
+                  },
+                ],
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'stateProvince',
+                    defaultMessage: 'State/Province',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator(addressFields.postalCode, {
+                rules: [
+                  {
+                    max: 100,
+                    message: intl.formatMessage(
+                      {
+                        id: 'value_error_long',
+                        defaultMessage: "Value can't be longer than 100 characters.",
+                      },
+                      { value: 100 },
+                    ),
+                  },
+                  {
+                    validator: this.validateFieldValue,
+                  },
+                ],
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'postalCode',
+                    defaultMessage: 'Postal code',
                   })}
                 />,
               )}

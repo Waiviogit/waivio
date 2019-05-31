@@ -11,29 +11,34 @@ import {
   getAuthenticatedUserName,
   getObjectTypeState,
   getScreenSize,
+  getUserLocation,
 } from '../reducers';
 
 import MapOS from '../components/Maps/Map';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
-import { getObjectType } from './objectTypesActions';
+import { getObjectType, clearType } from './objectTypeActions';
 import './ObjectTypePage.less';
 import ObjectTypeFiltersPanel from './ObjectTypeFiltersPanel/ObjectTypeFiltersPanel';
 import ObjectTypeFiltersTags from './ObjectTypeFiltersTags/ObjectTypeFiltersTags';
 import ListObjectsByType from '../objectCard/ListObjectsByType/ListObjectsByType';
+import { getCoordinates } from '../user/userActions';
 
 @injectIntl
 @withRouter
 @connect(
-  (state, ownProps) => ({
+  state => ({
     authenticated: getIsAuthenticated(state),
     authenticatedUser: getAuthenticatedUser(state),
     authenticatedUserName: getAuthenticatedUserName(state),
     screenSize: getScreenSize(state),
-    type: getObjectTypeState(state, ownProps.match.params.typeName),
+    type: getObjectTypeState(state),
+    userLocation: getUserLocation(state),
   }),
   {
     getObjectType,
+    getCoordinates,
+    clearType,
   },
 )
 export default class ObjectTypePage extends React.Component {
@@ -41,7 +46,10 @@ export default class ObjectTypePage extends React.Component {
     match: PropTypes.shape().isRequired,
     intl: PropTypes.shape().isRequired,
     getObjectType: PropTypes.func.isRequired,
+    getCoordinates: PropTypes.func.isRequired,
+    clearType: PropTypes.func.isRequired,
     type: PropTypes.shape(),
+    userLocation: PropTypes.shape(),
     screenSize: PropTypes.string.isRequired,
   };
 
@@ -49,7 +57,7 @@ export default class ObjectTypePage extends React.Component {
     authenticatedUserName: '',
     loaded: false,
     failed: false,
-    getObjectType: () => {},
+    userLocation: {},
     type: {},
   };
 
@@ -62,17 +70,71 @@ export default class ObjectTypePage extends React.Component {
       tagCloud: [],
       ratings: [],
     },
+    withMap: false,
   };
 
   componentDidMount() {
-    this.props.getObjectType(this.props.match.params.typeName);
+    this.props.getObjectType(this.props.match.params.typeName, 0, {});
   }
+
+  componentWillReceiveProps(nextProps) {
+    if (!_.isEmpty(nextProps.type)) {
+      if (
+        !_.isEmpty(this.state.activefilters.map) &&
+        !_.isEmpty(nextProps.type.filters.map) &&
+        !this.state.withMap
+      ) {
+        this.setState({ filters: nextProps.type.filters });
+        this.getObjectTypeWithMap(nextProps);
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    this.props.clearType();
+  }
+
+  getObjectTypeWithMap = props => {
+    if (!_.size(this.props.userLocation)) {
+      this.props.getCoordinates();
+    } else if (!this.state.withMap) {
+      props.getObjectType(props.match.params.typeName, 0, {
+        map: {
+          coordinates: [+props.userLocation.lat, +props.userLocation.lon],
+          radius: 50000,
+        },
+      });
+      this.setState({ withMap: true });
+    }
+  };
 
   setFilterValue = (filter, key) => {
     const activefilters = this.state.activefilters;
     if (_.includes(activefilters[key], filter)) {
-      activefilters[key] = activefilters[key].filter(value => value !== filter);
-    } else activefilters[key].push(filter);
+      if (key === 'map') {
+        delete activefilters.map;
+        this.props.getObjectType(this.props.match.params.typeName, 0, activefilters);
+        this.setState({ activefilters, withMap: false });
+      } else {
+        const requestData = activefilters;
+        if (_.includes(activefilters.map, 'map')) {
+          requestData.map = {
+            coordinates: [+this.props.userLocation.lat, +this.props.userLocation.lon],
+            radius: 50000,
+          };
+        }
+        this.props.getObjectType(this.props.match.params.typeName, 0, requestData);
+        this.setState({ activefilters });
+      }
+    } else if (key === 'map') {
+      this.getObjectTypeWithMap(this.props);
+      activefilters[key] = [filter];
+      this.setState({ activefilters });
+    } else {
+      this.props.getObjectType(this.props.match.params.typeName, 0, activefilters);
+      activefilters[key].push(filter);
+      this.setState({ activefilters });
+    }
     this.setState({ activefilters });
   };
 
@@ -114,8 +176,17 @@ export default class ObjectTypePage extends React.Component {
           <div className="feed-layout container">
             <Affix className="leftContainer leftContainer__user" stickPosition={72}>
               <div className="left">
-                <MapOS wobjects={type.related_wobjects} heigth={200} />
+                {this.state.withMap &&
+                  !_.isEmpty(type.related_wobjects) &&
+                  !_.isEmpty(this.props.userLocation) && (
+                    <MapOS
+                      wobjects={this.props.type.related_wobjects}
+                      heigth={200}
+                      userLocation={this.props.userLocation}
+                    />
+                  )}
                 <ObjectTypeFiltersPanel
+                  filters={type.filters}
                   activefilters={this.state.activefilters}
                   setFilterValue={this.setFilterValue}
                 />
@@ -123,10 +194,12 @@ export default class ObjectTypePage extends React.Component {
             </Affix>
             <div className="center">
               {type.name && (
-                <div className="ObjectTypePage__title">{`${intl.formatMessage({
-                  id: 'type',
-                  defaultMessage: 'Type',
-                })}: ${type.name}`}</div>
+                <div className="ObjectTypePage__title">
+                  {`${intl.formatMessage({
+                    id: 'type',
+                    defaultMessage: 'Type',
+                  })}: ${type.name}`}
+                </div>
               )}
               {(_.size(this.state.activefilters.tagCloud) > 0 ||
                 _.size(this.state.activefilters.ratings) > 0 ||
@@ -143,12 +216,22 @@ export default class ObjectTypePage extends React.Component {
                   />
                 </div>
               )}
-              <ListObjectsByType
-                limit={25}
-                wobjects={type.related_wobjects}
-                typeName={this.props.match.params.typeName}
-                showSmallVersion={screenSize === 'xsmall'}
-              />
+              {!_.isEmpty(this.props.type.related_wobjects) ? (
+                <ListObjectsByType
+                  limit={25}
+                  getObjectType={this.props.getObjectType}
+                  wobjects={this.props.type.related_wobjects}
+                  typeName={this.props.match.params.typeName}
+                  showSmallVersion={screenSize === 'xsmall'}
+                />
+              ) : (
+                <div>
+                  {`${intl.formatMessage({
+                    id: 'noTypeObjects',
+                    defaultMessage: 'No objects matched the filters with type',
+                  })} ${type.name}`}
+                </div>
+              )}
             </div>
           </div>
         </div>

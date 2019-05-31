@@ -19,6 +19,7 @@ import settingsReducer, * as fromSettings from './settings/settingsReducer';
 import searchReducer, * as fromSearch from './search/searchReducer';
 import wobjectReducer, * as fromObject from '../client/object/wobjectReducer';
 import objectTypesReducer, * as fromObjectTypes from '../client/objectTypes/objectTypesReducer';
+import objectTypeReducer, * as fromObjectType from '../client/objectTypes/objectTypeReducer';
 import appendReducer, * as fromAppend from '../client/object/appendReducer';
 import galleryReducer, * as fromGallery from '../client/object/ObjectGallery/galleryReducer';
 
@@ -31,6 +32,7 @@ export default () =>
     posts: postsReducer,
     feed: feedReducer,
     objectTypes: objectTypesReducer,
+    objectType: objectTypeReducer,
     user: userReducer,
     users: usersReducer,
     object: wobjectReducer,
@@ -175,8 +177,7 @@ export const getObjectAuthor = state => fromObject.getObjectAuthor(state.object)
 export const getObjectFields = state => fromObject.getObjectFields(state.object);
 export const getRatingFields = state => fromObject.getRatingFields(state.object);
 export const getobjectTypesState = state => fromObjectTypes.getobjectTypesState(state.objectTypes);
-export const getObjectTypeState = (state, typeName) =>
-  fromObjectTypes.getobjectType(state.objectTypes, typeName);
+export const getObjectTypeState = state => fromObjectType.getobjectType(state.objectType);
 
 export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.append);
 

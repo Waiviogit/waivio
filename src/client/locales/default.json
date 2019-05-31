@@ -407,7 +407,7 @@
   "location_country": "Country",
   "location_city": "City",
   "location_street": "Street",
-  "location_accommodation": "Accommodation",
+  "location_accommodation": "Address",
   "post_code": "Post Code",
   "location_latitude": "Latitude",
   "location_longitude": "Longitude",
@@ -548,5 +548,8 @@
   "ignoreList": "Ignore list",
   "addNewRule": "Add new rule",
   "at_least_one": "You should add at least one object",
+  "noTypeObjects": "No objects matched the filters with type",
+  "postalCode": "Postal code",
+  "stateProvince": "State/Province",
   "filterRule": "FilterRule"
 }
