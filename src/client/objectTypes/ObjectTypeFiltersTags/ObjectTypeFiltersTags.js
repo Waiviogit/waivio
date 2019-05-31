@@ -7,7 +7,7 @@ const ObjectTypeFiltersTags = ({ activefilters, setFilterValue }) => (
   <div className="ObjectTypeFiltersTags">
     {_.map(activefilters, (filter, key) =>
       _.map(filter, item => (
-        <Tag closable onClose={() => setFilterValue(item, key)}>
+        <Tag key={item} closable onClose={() => setFilterValue(item, key)}>
           {item}
         </Tag>
       )),

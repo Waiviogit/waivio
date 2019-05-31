@@ -8,11 +8,6 @@ const feed = (state = initialState, action) => {
       return {
         ..._.keyBy(action.payload, 'name'),
       };
-    case wobjTypesActions.GET_OBJECT_TYPE.SUCCESS:
-      return {
-        ...state,
-        [action.payload.name]: action.payload,
-      };
     case wobjTypesActions.GET_MORE_OBJECTS_BY_TYPE.SUCCESS: {
       const relatedWobjects = _.keyBy(
         state[action.payload.type].related_wobjects,
@@ -34,4 +29,3 @@ const feed = (state = initialState, action) => {
 export default feed;
 
 export const getobjectTypesState = state => state;
-export const getobjectType = (state, typeName) => state[typeName];

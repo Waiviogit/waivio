@@ -6,27 +6,16 @@ import { Icon, Modal } from 'antd';
 import Marker from 'pigeon-marker/react';
 import Overlay from 'pigeon-overlay';
 import classNames from 'classnames';
-import { connect } from 'react-redux';
 import { getClientWObj } from '../../adapters';
 import './Map.less';
 import { getInnerFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { mapFields, objectFields } from '../../../common/constants/listOfFields';
 import Loading from '../Icon/Loading';
-import { getUserLocation } from '../../reducers';
-import { getCoordinates } from '../../user/userActions';
 
 const defaultCoords = {
   centerLat: 37.0902,
   centerLng: 95.0235,
 };
-@connect(
-  state => ({
-    userLocation: getUserLocation(state),
-  }),
-  {
-    getCoordinates,
-  },
-)
 class MapOS extends React.Component {
   constructor(props) {
     super(props);
@@ -34,7 +23,7 @@ class MapOS extends React.Component {
     this.state = {
       infoboxData: false,
       markersLayout: null,
-      zoom: 12,
+      zoom: 8,
       center: null,
       isFullscreenMode: false,
       isInitial: true,
@@ -47,23 +36,11 @@ class MapOS extends React.Component {
     this.zoomButtonsLayout = this.zoomButtonsLayout.bind(this);
   }
 
-  componentDidMount() {
-    if (_.isEmpty(this.props.userLocation)) {
-      this.props.getCoordinates();
-    }
-  }
-
   componentWillReceiveProps(nextProps) {
-    if (_.size(nextProps.userLocation) > 0 && this.state.isInitial) {
+    if (_.size(nextProps.wobjects) !== _.size(this.props.wobjects)) {
       this.setState({
         markersLayout: this.getMarkers(nextProps),
-        center: [nextProps.userLocation.lat, nextProps.userLocation.lon],
-        isInitial: false,
-      });
-    } else {
-      this.setState({
-        markersLayout: this.getMarkers(nextProps),
-        center: [nextProps.userLocation.lat, nextProps.userLocation.lon],
+        center: [+this.props.userLocation.lat, +this.props.userLocation.lon],
       });
     }
   }
@@ -79,7 +56,8 @@ class MapOS extends React.Component {
           key={`obj${wobject.author_permlink}`}
           anchor={[+lat, +lng]}
           payload={wobject}
-          onClick={this.handleMarkerClick}
+          onMouseOver={this.handleMarkerClick}
+          onMouseOut={this.closeInfobox}
         />
       ) : null;
     });
@@ -118,6 +96,10 @@ class MapOS extends React.Component {
       this.setState({ infoboxData: null });
     }
     this.setState({ infoboxData: { wobject: payload, coordinates: anchor } });
+  };
+
+  closeInfobox = () => {
+    this.setState({ infoboxData: null });
   };
 
   incrementZoom = () => this.setState({ zoom: this.state.zoom + 1 });
@@ -198,13 +180,12 @@ MapOS.defaultProps = {
   wobjects: [],
   heigth: 200,
   userLocation: {},
-  getCoordinates: () => {},
 };
 
 MapOS.propTypes = {
-  getCoordinates: PropTypes.func,
   heigth: PropTypes.number,
   userLocation: PropTypes.shape(),
+  wobjects: PropTypes.arrayOf(PropTypes.shape()),
 };
 
 export default MapOS;

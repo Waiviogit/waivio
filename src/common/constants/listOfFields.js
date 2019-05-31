@@ -35,9 +35,11 @@ export const objectFieldsWithInnerData = [
 ];
 
 export const addressFields = {
-  accommodation: 'accommodation',
+  address: 'address',
   street: 'street',
   city: 'city',
+  postalCode: 'postalCode',
+  state: 'state',
   country: 'country',
 };
 

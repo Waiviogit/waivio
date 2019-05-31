@@ -308,18 +308,19 @@ export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3) =>
       .catch(error => reject(error));
   });
 
-export const getObjectType = name =>
+export const getObjectType = (name, wobjects_skip = 0, filter) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.objectType}/${name}?wobjects_count=1000`, {
+    fetch(`${config.apiPrefix}${config.objectType}/${name}`, {
       headers,
-      method: 'GET',
+      method: 'POST',
+      body: JSON.stringify({ wobjects_count: 250, wobjects_skip, filter }),
     })
       .then(res => res.json())
       .then(data => resolve(data))
       .catch(error => reject(error));
   });
 
-export const getSearchResult = (text, userLimit = 3, wobjectsLimit = 5, objectTypesLimit = 5) =>
+export const getSearchResult = (text, userLimit = 3, wobjectsLimit, objectTypesLimit = 5) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.generalSearch}`, {
       headers,
@@ -332,12 +333,12 @@ export const getSearchResult = (text, userLimit = 3, wobjectsLimit = 5, objectTy
       .catch(error => reject(error));
   });
 
-export const getMoreObjectsByType = (type, skip, limit) =>
+export const getMoreObjectsByType = (type, skip, limit, filter = {}) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.getObjects}`, {
+    fetch(`${config.apiPrefix}${config.objectType}`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ object_types: [type], skip, limit }),
+      body: JSON.stringify({ object_types: [type], skip, limit, filter }),
     })
       .then(handleErrors)
       .then(res => res.json())

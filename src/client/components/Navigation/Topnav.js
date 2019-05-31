@@ -399,7 +399,7 @@ class Topnav extends React.Component {
   }
 
   handleOnChangeForAutoComplete(value, data) {
-    if (data.props.marker) this.setState({ searchBarValue: value.substr(4) });
+    if (data.props.marker) this.setState({ searchBarValue: '' });
     else this.setState({ searchBarValue: value });
   }
 
@@ -528,7 +528,7 @@ class Topnav extends React.Component {
       isLoadingPlatform,
       isNightMode,
     } = this.props;
-    const { searchBarActive, searchBarValue, isModalDeposit } = this.state;
+    const { searchBarActive, isModalDeposit } = this.state;
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     const formattedAutoCompleteDropdown = _.isEmpty(dropdownOptions)
       ? dropdownOptions
@@ -537,8 +537,8 @@ class Topnav extends React.Component {
             <Link
               to={{
                 pathname: '/search',
-                search: `?q=${searchBarValue}`,
-                state: { query: searchBarValue },
+                search: `?q=${this.state.searchBarValue}`,
+                state: { query: this.state.searchBarValue },
               }}
             >
               <span onClick={this.hideAutoCompleteDropdown} role="presentation">
@@ -547,7 +547,7 @@ class Topnav extends React.Component {
                     id: 'search_all_results_for',
                     defaultMessage: 'Search all results for {search}',
                   },
-                  { search: searchBarValue },
+                  { search: this.state.searchBarValue },
                 )}
               </span>
             </Link>
@@ -575,7 +575,7 @@ class Topnav extends React.Component {
                 defaultActiveFirstOption={false}
                 dropdownMatchSelectWidth={false}
                 optionLabelProp="value"
-                value={searchBarValue}
+                value={this.state.searchBarValue}
               >
                 <Input
                   ref={ref => {
