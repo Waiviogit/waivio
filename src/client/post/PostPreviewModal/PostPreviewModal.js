@@ -189,18 +189,17 @@ class PostPreviewModal extends Component {
             </div>
           </Modal>
         )}
-        {content && isContentValid(content) ? (
-          <div className="edit-post-controls">
-            <Button
-              htmlType="button"
-              onClick={this.showModal}
-              size="large"
-              className="edit-post-controls__publish-ready-btn"
-            >
-              {intl.formatMessage({ id: 'ready_to_publish', defaultMessage: 'Ready to publish' })}
-            </Button>
-          </div>
-        ) : null}
+        <div className="edit-post-controls">
+          <Button
+            htmlType="button"
+            disabled={!content || !isContentValid(content)}
+            onClick={this.showModal}
+            size="large"
+            className="edit-post-controls__publish-ready-btn"
+          >
+            {intl.formatMessage({ id: 'ready_to_publish', defaultMessage: 'Ready to publish' })}
+          </Button>
+        </div>
       </React.Fragment>
     );
   }
