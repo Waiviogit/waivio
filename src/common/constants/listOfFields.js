@@ -97,6 +97,7 @@ export const getAllowedFieldsByObjType = objectType => {
         objectFields.background,
         objectFields.listItem,
         objectFields.sorting,
+        objectFields.parent,
       ];
     default: {
       const excludeFields = [objectFields.sorting, objectFields.listItem];
