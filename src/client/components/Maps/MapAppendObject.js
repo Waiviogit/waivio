@@ -43,6 +43,11 @@ class MapAppendObject extends React.Component {
       _.isEmpty(this.props.userLocation)
     ) {
       this.props.getCoordinates();
+    } else {
+      // eslint-disable-next-line react/no-did-mount-set-state
+      this.setState({
+        userCoordinates: [+this.props.userLocation.lat, +this.props.userLocation.lon],
+      });
     }
   }
 
@@ -50,7 +55,7 @@ class MapAppendObject extends React.Component {
     if (nextProps !== this.props) {
       let location = defaultCoords;
       if (_.size(nextProps.userLocation) > 0 && this.state.isInitial) {
-        location = [nextProps.userLocation.lat, nextProps.userLocation.lon];
+        location = [+nextProps.userLocation.lat, +nextProps.userLocation.lon];
         this.setState({ userCoordinates: location, isInitial: false });
       } else if (!_.isNan(this.props.center[0])) {
         location = [nextProps.center[0], nextProps.center[1]];
