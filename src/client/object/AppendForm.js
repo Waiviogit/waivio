@@ -1295,13 +1295,6 @@ export default class AppendForm extends Component {
                     ),
                   },
                   {
-                    pattern: websiteTitleRegExp,
-                    message: intl.formatMessage({
-                      id: 'website_symbols_validation',
-                      defaultMessage: 'Please dont use special symbols',
-                    }),
-                  },
-                  {
                     validator: this.validateFieldValue,
                   },
                 ],

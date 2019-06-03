@@ -14,10 +14,10 @@ const feed = (state = initialState, action) => {
         'author_permlink',
       );
       const newState = state;
-      newState[action.payload.type].hasMoreWobjects = action.payload.data.hasMore;
+      newState[action.payload.type].hasMoreWobjects = action.payload.data.hasMoreWobjects;
       newState[action.payload.type].related_wobjects = {
         ...relatedWobjects,
-        ..._.keyBy(action.payload.data.wobjects, 'author_permlink'),
+        ..._.keyBy(action.payload.data.related_wobjects, 'author_permlink'),
       };
       return { ...newState };
     }

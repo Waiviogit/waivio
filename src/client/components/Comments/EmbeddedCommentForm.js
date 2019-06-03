@@ -76,15 +76,16 @@ class EmbeddedCommentForm extends React.Component {
     e.stopPropagation();
     this.setState({ isDisabledSubmit: true });
     if (this.state.body) {
-      this.props.onSubmit(this.props.parentPost, this.state.body);
+      this.props.onSubmit(this.props.parentPost, this.state.body).then(() => {
+        this.setState({ isDisabledSubmit: false });
+      });
     }
   }
 
   render() {
-    const { isLoading } = this.props;
-    const { body, bodyHTML } = this.state;
+    const { body, bodyHTML, isDisabledSubmit } = this.state;
 
-    const buttonClass = isLoading
+    const buttonClass = isDisabledSubmit
       ? 'EmbeddedCommentForm__button_disabled'
       : 'EmbeddedCommentForm__button_primary';
 
@@ -101,11 +102,11 @@ class EmbeddedCommentForm extends React.Component {
         />
         <button
           onClick={this.handleSubmit}
-          disabled={isLoading}
+          disabled={isDisabledSubmit}
           className={`EmbeddedCommentForm__button ${buttonClass}`}
         >
-          {isLoading && <Icon type="loading" />}
-          {isLoading ? (
+          {isDisabledSubmit && <Icon type="loading" />}
+          {isDisabledSubmit ? (
             <FormattedMessage id="comment_update_progress" defaultMessage="Updating" />
           ) : (
             <FormattedMessage id="comment_update_send" defaultMessage="Update comment" />

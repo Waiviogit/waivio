@@ -335,7 +335,7 @@ export const getSearchResult = (text, userLimit = 3, wobjectsLimit, objectTypesL
 
 export const getMoreObjectsByType = (type, skip, limit, filter = {}) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.objectType}`, {
+    fetch(`${config.apiPrefix}${config.objectType}/${type}`, {
       headers,
       method: 'POST',
       body: JSON.stringify({ object_types: [type], skip, limit, filter }),
