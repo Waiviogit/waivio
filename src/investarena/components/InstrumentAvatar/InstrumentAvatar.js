@@ -22,7 +22,7 @@ const InstrumentAvatar = ({ permlink, market, avatarlink }) => {
     <Link to={`/object/${permlink}`}>
       <div className="st-instrument-avatar">
         <img
-          alt="avatar"
+          alt={`https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png`}
           src={avatarlink || `/images/investarena/logoQuotes/${imageIdentifier}.png`}
         />
       </div>

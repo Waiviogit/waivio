@@ -11,13 +11,15 @@ import { getLongTermStatisticsForUser } from '../../../helpers/diffDateTime';
 class UserLongTermStatistics extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
-    isMobile: PropTypes.bool.isRequired,
+    isMobile: PropTypes.bool,
+    userName: PropTypes.string.isRequired,
     withCompareButton: PropTypes.bool,
     toggleModalPerformance: PropTypes.func,
   };
 
   static defaultProps = {
     withCompareButton: false,
+    isMobile: false,
     toggleModalPerformance: () => {},
   };
 
@@ -30,13 +32,9 @@ class UserLongTermStatistics extends React.Component {
   }
 
   componentDidMount() {
-    this.getUserLongTermStatistics(this.props);
-  }
-
-  getUserLongTermStatistics(props) {
-    ApiClient.getUserLongTermStatistics(props.userName).then(data => {
-      if (data && !_.isError(data) && !_.isEmpty(data)) {
-        const longTermStatistics = getLongTermStatisticsForUser(data[0], this.props.intl);
+    ApiClient.getUserLongTermStatistics(this.props.userName).then(data => {
+        if (data && !_.isError(data) && !_.isEmpty(data)) {
+          const longTermStatistics = getLongTermStatisticsForUser(data[0], this.props.intl);
           this.setState({ longTermStatistics, loading: false });
         } else {
           this.setState({ loading: false });

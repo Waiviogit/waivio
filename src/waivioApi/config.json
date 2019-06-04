@@ -25,7 +25,8 @@
     "getObjectTypes": "/objectTypes",
     "objectType": "/objectType",
     "generalSearch": "/generalSearch",
-    "userStatistics": "/user-statistics"
+    "userStatistics": "/user-statistics",
+    "instrumentStatistic": "/instrument-statistics"
   },
   "production": {
     "apiPrefix": "https://waiviodev.com/api",
@@ -52,6 +53,7 @@
     "getObjectTypes": "/objectTypes",
     "objectType": "/objectType",
     "generalSearch": "/generalSearch",
-    "userStatistics": "/user-statistics"
+    "userStatistics": "/user-statistics",
+    "instrumentStatistic": "/instrument-statistics"
   }
 }
