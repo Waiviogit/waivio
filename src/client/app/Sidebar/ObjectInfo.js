@@ -177,6 +177,7 @@ class ObjectInfo extends React.Component {
         </div>
         {listItem(TYPES_OF_MENU_ITEM.LIST, null)}
         {listItem(TYPES_OF_MENU_ITEM.PAGE, null)}
+        {/* {listItem(objectFields.sorting, null)} */}
       </React.Fragment>
     );
 

@@ -13,7 +13,6 @@ export const objectFields = {
   sorting: 'sortCustom',
   rating: 'rating',
   listItem: 'listItem',
-  menuItem: 'menuItem',
   price: 'price',
   parent: 'parent',
   tagCloud: 'tagCloud',
@@ -106,7 +105,8 @@ export const getAllowedFieldsByObjType = objectType => {
         objectFields.parent,
       ];
     default: {
-      const excludeFields = [objectFields.listItem];
+      // const excludeFields = [objectFields.listItem];
+      const excludeFields = [];
       return supportedObjectFields.filter(field => !excludeFields.includes(field));
     }
   }

@@ -1210,11 +1210,11 @@ export default class AppendForm extends Component {
   };
 
   render() {
-    const { currentLocale, currentField, form, followingList, wObject } = this.props;
+    const { intl, currentLocale, currentField, form, followingList, wObject } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const { loading } = this.state;
     const currentFieldName = _.includes(TYPES_OF_MENU_ITEM, currentField)
-      ? objectFields.menuItem
+      ? objectFields.listItem
       : currentField;
 
     const isCustomSortingList =
@@ -1249,9 +1249,19 @@ export default class AppendForm extends Component {
     }
 
     getAllowedFieldsByObjType(wObject.object_type).forEach(option => {
+      let intlId = option;
+      let metaInfo = '';
+      if (option === objectFields.listItem) {
+        if (_.includes(TYPES_OF_MENU_ITEM, currentField)) {
+          intlId = 'menuItem';
+          metaInfo = currentField;
+        } else return;
+      }
       fieldOptions.push(
         <Select.Option key={option} value={option} className="Topnav__search-autocomplete">
-          <FormattedMessage id={`object_field_${option}`} defaultMessage={option} />
+          <FormattedMessage id={`object_field_${intlId}`} defaultMessage={option} />
+          {metaInfo &&
+            ` (${intl.formatMessage({ id: `object_field_${metaInfo}`, defaultMessage: option })})`}
         </Select.Option>,
       );
     });
