@@ -14,6 +14,7 @@ import {
 } from '../../object/wObjectHelper';
 import {
   objectFields,
+  TYPES_OF_MENU_ITEM,
   addressFields,
   linkFields,
   getAllowedFieldsByObjType,
@@ -140,16 +141,18 @@ class ObjectInfo extends React.Component {
     const album = _.filter(albums, _.iteratee(['id', wobject.author_permlink]));
     const hasGalleryImg = wobject.preview_gallery && wobject.preview_gallery[0];
 
-    const listItem = (fieldName, content) => {
-      const fieldsCount = getFieldsCount(wobject, fieldName);
-      return renderFields.includes(fieldName) && (content || accessExtend) ? (
+    // name - name of field OR type of menu-item (TYPES_OF_MENU_ITEM)
+    const listItem = (name, content) => {
+      const fieldsCount = getFieldsCount(wobject, name);
+      const shouldDisplay = renderFields.includes(name) || _.includes(TYPES_OF_MENU_ITEM, name);
+      return shouldDisplay && (content || accessExtend) ? (
         <div className="field-info">
           <React.Fragment>
             {accessExtend && (
               <div className="field-info__title">
                 <Proposition
                   objectID={wobject.author_permlink}
-                  fieldName={fieldName}
+                  fieldName={name}
                   objName={objectName}
                   handleSelectField={this.handleSelectField}
                   selectedField={selectedField}
@@ -158,7 +161,7 @@ class ObjectInfo extends React.Component {
               </div>
             )}
             {content ? (
-              <div className="field-info__content" data-test={`${fieldName}-field-view`}>
+              <div className="field-info__content" data-test={`${name}-field-view`}>
                 {content}
               </div>
             ) : null}
@@ -166,6 +169,16 @@ class ObjectInfo extends React.Component {
         </div>
       ) : null;
     };
+
+    const menuSection = (
+      <React.Fragment>
+        <div className="object-sidebar__section-title">
+          <FormattedMessage id="menu" defaultMessage="Menu" />
+        </div>
+        {listItem(TYPES_OF_MENU_ITEM.LIST, null)}
+        {listItem(TYPES_OF_MENU_ITEM.PAGE, null)}
+      </React.Fragment>
+    );
 
     const listSection = (
       <React.Fragment>
@@ -403,6 +416,7 @@ class ObjectInfo extends React.Component {
               ),
             )}
             {listItem(objectFields.link, <SocialLinks profile={profile} />)}
+            {accessExtend && !hasType(wobject, 'list') && menuSection}
             {accessExtend && hasType(wobject, 'list') && listSection}
             {accessExtend && settingsSection}
           </div>

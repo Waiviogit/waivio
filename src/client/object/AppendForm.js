@@ -19,6 +19,7 @@ import {
   ratePercent,
   getAllowedFieldsByObjType,
   buttonFields,
+  TYPES_OF_MENU_ITEM,
 } from '../../common/constants/listOfFields';
 import {
   getObject,
@@ -1753,6 +1754,9 @@ export default class AppendForm extends Component {
     const { currentLocale, currentField, form, followingList, wObject } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const { loading } = this.state;
+    const currentFieldName = _.includes(TYPES_OF_MENU_ITEM, currentField)
+      ? objectFields.menuItem
+      : currentField;
 
     const isCustomSortingList =
       wObject.object_type &&
@@ -1777,7 +1781,7 @@ export default class AppendForm extends Component {
     });
 
     const fieldOptions = [];
-    if (currentField === 'auto') {
+    if (currentFieldName === 'auto') {
       fieldOptions.push(
         <Select.Option disabled key="auto" value="auto">
           <FormattedMessage id="select_field" defaultMessage="Select your field" />
@@ -1801,7 +1805,7 @@ export default class AppendForm extends Component {
 
         <Form.Item>
           {getFieldDecorator('currentField', {
-            initialValue: currentField,
+            initialValue: currentFieldName,
           })(
             <Select disabled={loading} style={{ width: '100%' }}>
               {fieldOptions}

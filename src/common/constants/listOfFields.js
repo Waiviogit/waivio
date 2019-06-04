@@ -13,12 +13,18 @@ export const objectFields = {
   sorting: 'sortCustom',
   rating: 'rating',
   listItem: 'listItem',
+  menuItem: 'menuItem',
   price: 'price',
   parent: 'parent',
   tagCloud: 'tagCloud',
   newsFilter: 'newsFilter',
   button: 'button',
   workTime: 'workTime',
+};
+
+export const TYPES_OF_MENU_ITEM = {
+  LIST: 'list',
+  PAGE: 'page',
 };
 
 export const objectFieldsWithInnerData = [
@@ -100,7 +106,7 @@ export const getAllowedFieldsByObjType = objectType => {
         objectFields.parent,
       ];
     default: {
-      const excludeFields = [objectFields.sorting, objectFields.listItem];
+      const excludeFields = [objectFields.listItem];
       return supportedObjectFields.filter(field => !excludeFields.includes(field));
     }
   }
