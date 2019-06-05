@@ -36,15 +36,13 @@ class PostDifference extends Component {
       } else {
         this.setState({ isExpired: true });
       }
-    } else {
-      if (nextProps.profitability !== this.state.profitability) {
+    } else if (nextProps.profitability !== this.state.profitability) {
         this.setState({
           profitability: nextProps.profitability !== undefined ? nextProps.profitability : '-',
           isProfitRed: nextProps.profitability < 0,
           isProfitGray: nextProps.profitability === '-' || nextProps.profitability === 0,
         });
       }
-    }
   }
   profit = (quoteSettings, quote) => {
     if (quote.askPrice !== '-' && quote.bidPrice !== '-') {
@@ -52,14 +50,14 @@ class PostDifference extends Component {
         return Math.trunc(
           (quote.askPrice * 1000000 - this.props.postPrice * 1000000) / quoteSettings.tickSize,
         );
-      } else {
+      } 
         return Math.trunc(
           (this.props.postPrice * 1000000 - quote.bidPrice * 1000000) / quoteSettings.tickSize,
         );
-      }
-    } else {
+      
+    } 
       return '-';
-    }
+    
   };
   estimateProfitability = props => {
     let profitability = props.profitability !== undefined ? props.profitability : '-';
@@ -85,7 +83,7 @@ class PostDifference extends Component {
             : 'st-post-profit-green'
         }
       >
-        <span className="st-post-profit-text">{this.state.profitability + ' pips'}</span>
+        <span className="st-post-profit-text">{`${this.state.profitability  } pips`}</span>
       </div>
     );
   }

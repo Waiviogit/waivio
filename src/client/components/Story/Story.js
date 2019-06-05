@@ -337,6 +337,7 @@ class Story extends React.Component {
     const isEnoughtData = !_.isEmpty(post) && !_.isEmpty(postState);
     let rebloggedUI = null;
     let isForecastValid = false;
+    let isForecastExpired = false;
     let forecast = null;
 
     if (isEnoughtData) {
@@ -344,6 +345,7 @@ class Story extends React.Component {
       forecast = _.get(jsonMetadata, 'wia', null);
       if (forecast) {
         isForecastValid = isValidForecast(forecast);
+        isForecastExpired = !_.isEmpty(post.exp_forecast);
       }
       if (!post || isPostDeleted(post)) return <div />;
 
@@ -415,7 +417,7 @@ class Story extends React.Component {
                 <PostForecast
                   quoteSecurity={forecast.quoteSecurity}
                   postForecast={forecast.expiredAt}
-                  isExpired={false}
+                  isExpired={isForecastExpired}
                   expiredAt={forecast.expiredAt}
                 />
               </div>
@@ -431,12 +433,12 @@ class Story extends React.Component {
           </div>
           {isForecastValid && (
             <PostSellBuy
-              isExpired={false}
+              isExpired={isForecastExpired}
               quoteSecurity={forecast.quoteSecurity}
               postPrice={forecast.postPrice ? forecast.postPrice.toString() : 0}
               forecast={forecast.expiredAt}
               recommend={forecast.recommend}
-              profitability={335}
+              profitability={isForecastExpired ? post.exp_forecast.profitability : 0}
             />
           )}
           <div className="Story__content">

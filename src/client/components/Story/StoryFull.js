@@ -355,8 +355,10 @@ class StoryFull extends React.Component {
     const jsonMetadata = post ? jsonParse(post.json_metadata) : {};
     const forecast = _.get(jsonMetadata, 'wia', null);
     let isForecastValid = false;
+    let isForecastExpired = false;
     if (forecast) {
       isForecastValid = isValidForecast(forecast);
+      isForecastExpired = !_.isEmpty(post.exp_forecast);
     }
     return (
       <div className="StoryFull">
@@ -445,19 +447,19 @@ class StoryFull extends React.Component {
             <PostForecast
               quoteSecurity={forecast.quoteSecurity}
               postForecast={forecast.expiredAt}
-              isExpired={false}
+              isExpired={isForecastExpired}
               expiredAt={forecast.expiredAt}
             />
           </div>
         )}
         {isForecastValid && (
           <PostSellBuy
-            isExpired={false}
+            isExpired={isForecastExpired}
             quoteSecurity={forecast.quoteSecurity}
             postPrice={forecast.postPrice ? forecast.postPrice.toString() : 0}
             forecast={forecast.expiredAt}
             recommend={forecast.recommend}
-            profitability={335}
+            profitability={isForecastExpired ? post.exp_forecast.profitability : 0}
           />
         )}
         <div className="StoryFull__content">{content}</div>
