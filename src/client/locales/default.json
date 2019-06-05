@@ -551,5 +551,10 @@
   "noTypeObjects": "No objects matched the filters with type",
   "postalCode": "Postal code",
   "stateProvince": "State/Province",
+  "newSteemAcc": "New Steem Account",
+  "instAccountCreation": "Instant Account Creation",
+  "longerWaiting": "Longer waiting time (up to 2 weeks)",
+  "bonusDelegation": "BONUS: 15 SP delegation (for 90 days)",
+  "emailAndPhoneReq": "Email and Phone Required",
   "filterRule": "FilterRule"
 }
