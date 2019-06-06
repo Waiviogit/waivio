@@ -121,7 +121,7 @@ export default class AppendForm extends Component {
     isValidImage: false,
     sliderVisible: false,
     loading: false,
-    currentParent: null,
+    selectedObject: null,
     allowList: [[]],
     ignoreList: [],
   };
@@ -136,7 +136,7 @@ export default class AppendForm extends Component {
     this.calculateVoteWorth(this.state.votePercent);
   };
 
-  onSubmit = async form => {
+  onSubmit = async formValues => {
     this.setState({ loading: true });
 
     const {
@@ -144,7 +144,7 @@ export default class AppendForm extends Component {
       wObject,
     } = this.props;
 
-    const postData = this.getNewPostData(form);
+    const postData = this.getNewPostData(formValues);
 
     /* eslint-disable no-restricted-syntax */
     for (const data of postData) {
@@ -152,13 +152,13 @@ export default class AppendForm extends Component {
         /* eslint-disable no-await-in-loop */
         const response = await this.props.appendObject(data);
 
-        if (objectFields.rating === form.currentField && form.rate) {
+        if (objectFields.rating === formValues.currentField && formValues.rate) {
           const { author, permlink } = response.value;
           await this.props.rateObject(
             author,
             permlink,
             wObject.author_permlink,
-            ratePercent[form.rate - 1],
+            ratePercent[formValues.rate - 1],
           );
         }
 
@@ -205,10 +205,10 @@ export default class AppendForm extends Component {
     }
   };
 
-  getNewPostData = form => {
+  getNewPostData = formValues => {
     const { wObject } = this.props;
     const { getFieldValue } = this.props.form;
-    const { body, preview, currentField, currentLocale, like, follow, ...rest } = form;
+    const { body, preview, currentField, currentLocale, like, follow, ...rest } = formValues;
 
     const field = getFieldValue('currentField');
     let locale = getFieldValue('currentLocale');
@@ -226,7 +226,8 @@ export default class AppendForm extends Component {
       case objectFields.tagCloud:
       case objectFields.parent:
       case objectFields.workTime:
-      case objectFields.email: {
+      case objectFields.email:
+      case objectFields.listItem: {
         fieldBody.push(rest[currentField]);
         break;
       }
@@ -283,13 +284,20 @@ export default class AppendForm extends Component {
       if (field === objectFields.phone) {
         fieldsObject = {
           ...fieldsObject,
-          [phoneFields.number]: form[phoneFields.number],
+          [phoneFields.number]: formValues[phoneFields.number],
         };
 
         data.body = `@${data.author} added ${field}(${langReadable}):\n ${bodyField.replace(
           /[{}"]/g,
           '',
-        )} ${form[phoneFields.number].replace(/[{}"]/g, '')}  `;
+        )} ${formValues[phoneFields.number].replace(/[{}"]/g, '')}  `;
+      }
+
+      if (field === objectFields.listItem) {
+        fieldsObject = {
+          ...fieldsObject,
+          alias: getFieldValue('menuItemName'),
+        };
       }
 
       data.field = fieldsObject;
@@ -576,12 +584,13 @@ export default class AppendForm extends Component {
     return callback();
   };
 
-  handleAddLinkedObject = obj => {
+  handleSelectObject = obj => {
+    const currentField = this.props.form.getFieldValue('currentField');
     if (obj && obj.id) {
       this.props.form.setFieldsValue({
-        parent: obj.id,
+        [currentField]: obj.id,
       });
-      this.setState({ currentParent: obj });
+      this.setState({ selectedObject: obj });
     }
   };
 
@@ -620,21 +629,32 @@ export default class AppendForm extends Component {
     );
 
     switch (currentField) {
-      case objectFields.menuItem: {
+      case objectFields.listItem: {
         return (
           <Form.Item>
-            {getFieldDecorator(objectFields.menuItem, {
-              rules: this.getFieldRules(objectFields.menuItem),
+            {getFieldDecorator('menuItemName', {
+              rules: this.getFieldRules(objectFields.listItem),
             })(
               <Input
                 className="AppendForm__title"
                 disabled={loading}
                 placeholder={intl.formatMessage({
-                  id: 'value_placeholder',
-                  defaultMessage: 'Add value',
+                  id: 'menu_item_placeholder',
+                  defaultMessage: 'Menu item name',
                 })}
               />,
             )}
+            {getFieldDecorator(objectFields.listItem, {
+              rules: this.getFieldRules(objectFields.listItem),
+            })(
+              <SearchObjectsAutocomplete
+                handleSelect={this.handleSelectObject}
+                objectType={
+                  this.props.currentField === TYPES_OF_MENU_ITEM.LIST ? TYPES_OF_MENU_ITEM.LIST : ''
+                }
+              />,
+            )}
+            {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
           </Form.Item>
         );
       }
@@ -677,8 +697,8 @@ export default class AppendForm extends Component {
           <Form.Item>
             {getFieldDecorator(objectFields.parent, {
               rules: this.getFieldRules(objectFields.parent),
-            })(<SearchObjectsAutocomplete handleSelect={this.handleAddLinkedObject} />)}
-            {this.state.currentParent && <ObjectCardView wObject={this.state.currentParent} />}
+            })(<SearchObjectsAutocomplete handleSelect={this.handleSelectObject} />)}
+            {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
           </Form.Item>
         );
       }

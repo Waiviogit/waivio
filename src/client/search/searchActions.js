@@ -40,11 +40,11 @@ export const searchAutoComplete = (search, userLimit, wobjectsLimi, objectTypesL
     },
   });
 
-export const searchObjectsAutoCompete = searchString => dispatch =>
+export const searchObjectsAutoCompete = (searchString, objType) => dispatch =>
   dispatch({
     type: SEARCH_OBJECTS.ACTION,
     payload: {
-      promise: ApiClient.searchObjects(searchString).then(result => ({
+      promise: ApiClient.searchObjects(searchString, objType).then(result => ({
         result,
         search: searchString,
       })),

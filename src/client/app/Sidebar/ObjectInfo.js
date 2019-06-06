@@ -79,6 +79,8 @@ class ObjectInfo extends React.Component {
     let tags = [];
     let phones = [];
     let email = '';
+    let menuLists = null;
+    let menuPages = null;
 
     if (_.size(wobject) > 0) {
       const adressFields = getInnerFieldWithMaxWeight(wobject, objectFields.address);
@@ -101,6 +103,17 @@ class ObjectInfo extends React.Component {
       email = getFieldWithMaxWeight(wobject, objectFields.email);
 
       price = getFieldWithMaxWeight(wobject, objectFields.price);
+
+      menuLists =
+        !_.isEmpty(wobject.menuItems) &&
+        wobject.menuItems.some(item => item.object_type === TYPES_OF_MENU_ITEM.LIST)
+          ? wobject.menuItems.filter(item => item.object_type === TYPES_OF_MENU_ITEM.LIST)
+          : null;
+      menuPages =
+        !_.isEmpty(wobject.menuItems) &&
+        wobject.menuItems.some(item => item.object_type !== TYPES_OF_MENU_ITEM.LIST)
+          ? wobject.menuItems.filter(item => item.object_type !== TYPES_OF_MENU_ITEM.LIST)
+          : null;
 
       websiteFields = getInnerFieldWithMaxWeight(wobject, objectFields.website);
       if (websiteFields) {
@@ -175,8 +188,26 @@ class ObjectInfo extends React.Component {
         <div className="object-sidebar__section-title">
           <FormattedMessage id="menu" defaultMessage="Menu" />
         </div>
-        {listItem(TYPES_OF_MENU_ITEM.LIST, null)}
-        {listItem(TYPES_OF_MENU_ITEM.PAGE, null)}
+        {listItem(
+          TYPES_OF_MENU_ITEM.LIST,
+          menuLists
+            ? menuLists.map(item => (
+                <div className="object-sidebar__menu-item" key={item.author_permlink}>
+                  {item.alias || 'mock alias'}
+                </div>
+              ))
+            : null,
+        )}
+        {listItem(
+          TYPES_OF_MENU_ITEM.PAGE,
+          menuPages
+            ? menuPages.map(item => (
+                <div className="object-sidebar__menu-item" key={item.author_permlink}>
+                  {item.alias || 'mock alias'}
+                </div>
+              ))
+            : null,
+        )}
         {/* {listItem(objectFields.sorting, null)} */}
       </React.Fragment>
     );
@@ -218,6 +249,7 @@ class ObjectInfo extends React.Component {
       <React.Fragment>
         {getFieldWithMaxWeight(wobject, objectFields.name) && (
           <div className="object-sidebar">
+            {!hasType(wobject, 'list') && menuSection}
             {listItem(
               objectFields.button,
               buttonTitle && (
@@ -417,7 +449,6 @@ class ObjectInfo extends React.Component {
               ),
             )}
             {listItem(objectFields.link, <SocialLinks profile={profile} />)}
-            {accessExtend && !hasType(wobject, 'list') && menuSection}
             {accessExtend && hasType(wobject, 'list') && listSection}
             {accessExtend && settingsSection}
           </div>

@@ -554,6 +554,7 @@
   "noTypeObjects": "No objects matched the filters with type",
   "postalCode": "Postal code",
   "stateProvince": "State/Province",
+  "menu_item_placeholder": "Menu item name",
   "newSteemAcc": "New Steem Account",
   "instAccountCreation": "Instant Account Creation",
   "longerWaiting": "Longer waiting time (up to 2 weeks)",
