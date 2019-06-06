@@ -217,6 +217,7 @@ class BrokerRegistration extends Component {
             type="primary"
             htmlType="submit"
             disabled={!this.state.isAgreementRead}
+            loading={this.props.isLoading}
           >
             Register
           </Button>

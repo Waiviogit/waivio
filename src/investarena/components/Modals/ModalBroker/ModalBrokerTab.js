@@ -26,14 +26,17 @@ class ModalBrokerTab extends Component {
       email: null,
     };
   }
+
   toggle = tab => {
     if (this.state.activeTab !== tab) {
       this.setState({ activeTab: tab });
     }
   };
+
   changeEmail = email => {
     this.setState({ email });
   };
+
   render() {
     return (
       <React.Fragment>

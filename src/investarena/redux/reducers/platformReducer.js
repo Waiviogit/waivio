@@ -73,7 +73,6 @@ export default function(state = initialState, action) {
       return { ...state, isLoading: true };
     case AUTHORIZE_BROKER_SUCCESS:
     case AUTHORIZE_BROKER_ERROR:
-    case REGISTER_BROKER_SUCCESS:
     case REGISTER_BROKER_ERROR:
     case FORGOT_PASS_BROKER_SUCCESS:
     case FORGOT_PASS_BROKER_ERROR:
