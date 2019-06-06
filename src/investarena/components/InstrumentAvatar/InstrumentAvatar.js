@@ -21,10 +21,7 @@ const InstrumentAvatar = ({ permlink, market, avatarlink }) => {
   return (
     <Link to={`/object/${permlink}`}>
       <div className="st-instrument-avatar">
-        <img
-          alt=""
-          src={avatarlink || `/images/investarena/logoQuotes/${imageIdentifier}.png`}
-        />
+        <img alt="" src={avatarlink || `/images/investarena/logoQuotes/${imageIdentifier}.png`} />
       </div>
     </Link>
   );

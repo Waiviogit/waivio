@@ -11,7 +11,7 @@ import { getFieldWithMaxWeight } from '../../../../client/object/wObjectHelper';
 import { objectFields } from '../../../../common/constants/listOfFields';
 import * as ApiClient from '../../../../waivioApi/ApiClient';
 import { quoteIdForWidget } from '../../../constants/constantsWidgets';
-import {getLongTermStatisticsForUser, } from '../../../helpers/diffDateTime';
+import { getLongTermStatisticsForUser } from '../../../helpers/diffDateTime';
 
 @injectIntl
 @withRouter
@@ -44,14 +44,13 @@ class InstrumentLongTermStatistics extends React.Component {
 
   componentDidMount() {
     ApiClient.getInstrumentLongTermStatistics(this.props.wobject.author_permlink).then(data => {
-        if (data && !_.isError(data) && !_.isEmpty(data)) {
-          const longTermStatistics = getLongTermStatisticsForUser(data, this.props.intl);
-          this.setState({longTermStatistics, loading: false});
-        } else {
-          this.setState({loading: false});
-        }
+      if (data && !_.isError(data) && !_.isEmpty(data)) {
+        const longTermStatistics = getLongTermStatisticsForUser(data, this.props.intl);
+        this.setState({ longTermStatistics, loading: false });
+      } else {
+        this.setState({ loading: false });
       }
-    );
+    });
   }
   // componentWillReceiveProps(nextProps) {
   //   if (!_.isEmpty(nextProps.wobject) && !_.isEmpty(nextProps.quotes)) {

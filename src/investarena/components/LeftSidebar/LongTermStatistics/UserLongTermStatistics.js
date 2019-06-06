@@ -33,14 +33,13 @@ class UserLongTermStatistics extends React.Component {
 
   componentDidMount() {
     ApiClient.getUserLongTermStatistics(this.props.userName).then(data => {
-        if (data && !_.isError(data) && !_.isEmpty(data)) {
-          const longTermStatistics = getLongTermStatisticsForUser(data[0], this.props.intl);
-          this.setState({ longTermStatistics, loading: false });
-        } else {
-          this.setState({ loading: false });
-        }
+      if (data && !_.isError(data) && !_.isEmpty(data)) {
+        const longTermStatistics = getLongTermStatisticsForUser(data[0], this.props.intl);
+        this.setState({ longTermStatistics, loading: false });
+      } else {
+        this.setState({ loading: false });
       }
-    );
+    });
   }
 
   render() {

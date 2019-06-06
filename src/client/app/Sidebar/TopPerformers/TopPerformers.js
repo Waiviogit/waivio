@@ -208,51 +208,52 @@ class TopPerformers extends Component {
           )}
         </div>
 
-        {size(performersStat) > 0 ?
+        {size(performersStat) > 0 ? (
           Object.keys(TopPerformers.periods).map(key =>
-          performersStat[key] ? (
-            <div className="SidebarContentBlock top-performers" key={key}>
-              <div className="SidebarContentBlock__title">
-                {intl
-                  .formatMessage({
-                    id: `longTermData_${key}`,
-                    defaultMessage: TopPerformers.periods[key],
-                  })
-                  .toUpperCase()}
-              </div>
-              <div className="SidebarContentBlock__content">
-                {performersStat[key].map(performer => (
-                  <div className="performer" key={performer.name}>
-                    <div className="performer__top">
-                      {getPerformerLinks(performer)}
-                      <div
-                        className={cn('performer__stat-info', {
-                          success:
-                            performer.id !== compareWith.id && performer[key] > compareWith[key],
-                          danger:
-                            performer.id !== compareWith.id && performer[key] < compareWith[key],
-                        })}
-                      >
-                        {formatPerfomance(performer[key])}
+            performersStat[key] ? (
+              <div className="SidebarContentBlock top-performers" key={key}>
+                <div className="SidebarContentBlock__title">
+                  {intl
+                    .formatMessage({
+                      id: `longTermData_${key}`,
+                      defaultMessage: TopPerformers.periods[key],
+                    })
+                    .toUpperCase()}
+                </div>
+                <div className="SidebarContentBlock__content">
+                  {performersStat[key].map(performer => (
+                    <div className="performer" key={performer.name}>
+                      <div className="performer__top">
+                        {getPerformerLinks(performer)}
+                        <div
+                          className={cn('performer__stat-info', {
+                            success:
+                              performer.id !== compareWith.id && performer[key] > compareWith[key],
+                            danger:
+                              performer.id !== compareWith.id && performer[key] < compareWith[key],
+                          })}
+                        >
+                          {formatPerfomance(performer[key])}
+                        </div>
                       </div>
+                      <div className="performer__divider" />
                     </div>
-                    <div className="performer__divider" />
-                  </div>
-                ))}
-                <h4
-                  id={key}
-                  className="top-performers__more"
-                  onClick={this.loadMorePerformers}
-                  role="presentation"
-                >
-                  <FormattedMessage id="show_more" defaultMessage="Show more" />
-                </h4>
+                  ))}
+                  <h4
+                    id={key}
+                    className="top-performers__more"
+                    onClick={this.loadMorePerformers}
+                    role="presentation"
+                  >
+                    <FormattedMessage id="show_more" defaultMessage="Show more" />
+                  </h4>
+                </div>
               </div>
-            </div>
-          ) : null,
+            ) : null,
+          )
         ) : (
           <div className="top-performers__more">NO DATA</div>
-          )}
+        )}
       </div>
     ) : (
       <TopInstrumentsLoading />

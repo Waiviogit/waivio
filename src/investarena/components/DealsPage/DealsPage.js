@@ -14,14 +14,14 @@ const propTypes = {
   match: PropTypes.shape().isRequired,
   platformName: PropTypes.string.isRequired,
   toggleModalBroker: PropTypes.func.isRequired,
-  screenSize: PropTypes.string.isRequired,
+  screenSize: PropTypes.string,
 };
 
 class DealsPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      viewMode: 'list',
+      viewMode: 'cards',
     };
   }
 
@@ -68,16 +68,16 @@ class DealsPage extends Component {
                 </SortSelector>
               </div>
             )}
-            <div className="st-instruments-details">
-              {this.props.platformName !== 'widgets' ? (
-                isClosedDealType ? (
-                  <ClosedDeals viewMode={viewMode} />
-                ) : (
-                  <OpenDeals viewMode={viewMode} />
-                )
+            {this.props.platformName !== 'widgets' ? (
+              isClosedDealType ? (
+                <ClosedDeals viewMode={viewMode} />
               ) : (
-                <div className="st-deals-wrap st-connect-to-broker-wrap">
-                  <span className="st-margin-bottom-large">
+                <OpenDeals viewMode={viewMode} />
+              )
+            ) : (
+              <div className="st-deals-wrap">
+                <div className="st-margin-bottom-large">
+                  <div className="st-connect-to-broker-wrap-text">
                     {this.props.intl.formatMessage({
                       id: 'headerAuthorized.textAttention3',
                       defaultMessage: 'To start trading, connect ',
@@ -88,10 +88,10 @@ class DealsPage extends Component {
                         defaultMessage: 'your broker',
                       })}
                     </a>
-                  </span>
+                  </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

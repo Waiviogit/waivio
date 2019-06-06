@@ -116,12 +116,12 @@ export function getDataForecast() {
 export function getLongTermStatisticsForUser(data, intl) {
   const longTermStatistics = {};
   const formatData = (period, price, defaultMessage) => {
-    if(period && price !== null){
-    longTermStatistics[period] = {
-      price: `${price.toFixed(2)}%`,
-      label: intl.formatMessage({ id: `longTermData_${period}`, defaultMessage }),
-      isUp: price >= 0,
-    };
+    if (period && price !== null) {
+      longTermStatistics[period] = {
+        price: `${price.toFixed(2)}%`,
+        label: intl.formatMessage({ id: `longTermData_${period}`, defaultMessage }),
+        isUp: price >= 0,
+      };
     }
   };
   if (data) {

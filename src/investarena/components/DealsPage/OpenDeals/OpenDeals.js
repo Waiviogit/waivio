@@ -18,13 +18,13 @@ const propTypes = {
 };
 
 const OpenDeals = ({ openDeals, intl, quotes, viewMode, quoteSettings }) => {
-  let sumPnl = 0;
-  let positiveDeals = {};
+  // let sumPnl = 0;
+  // let positiveDeals = {};
   // let positiveDealsPnl = 0;
-  let negativeDeals = {};
+  // let negativeDeals = {};
   // let negativeDealsPnl = 0;
   const getPnl = openDeal => {
-    let pnl =
+    const pnl =
       quoteSettings && quoteSettings[openDeal.security]
         ? PlatformHelper.getPnl(
             quotes[openDeal.security],
@@ -35,17 +35,16 @@ const OpenDeals = ({ openDeals, intl, quotes, viewMode, quoteSettings }) => {
     if (isNaN(pnl) || pnl === undefined) {
       return '-';
     }
-    if (pnl.toFixed(2) > 0) {
-      positiveDeals = { ...positiveDeals, [openDeal.dealId]: openDeal };
-      // positiveDealsPnl += pnl;
-    } else {
-      negativeDeals = { ...negativeDeals, [openDeal.dealId]: openDeal };
-      // negativeDealsPnl += pnl;
-    }
-    sumPnl += pnl;
-    pnl = parseFloat(pnl).toFixed(2);
+    // if (pnl.toFixed(2) > 0) {
+    //   positiveDeals = { ...positiveDeals, [openDeal.dealId]: openDeal };
+    //   positiveDealsPnl += pnl;
+    // } else {
+    //   negativeDeals = { ...negativeDeals, [openDeal.dealId]: openDeal };
+    //   negativeDealsPnl += pnl;
+    // }
+    // sumPnl += pnl;
 
-    return pnl;
+    return parseFloat(pnl).toFixed(2);
   };
   const dealsListHeader = (
     <div className="st-instr-column-wrap d-flex">

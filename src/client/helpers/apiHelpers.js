@@ -1,5 +1,5 @@
 import SteemAPI from '../steemAPI';
-import { getFeedContentByObject, getMoreFeedContentByObject} from '../../waivioApi/ApiClient';
+import { getFeedContentByObject, getMoreFeedContentByObject } from '../../waivioApi/ApiClient';
 import { jsonParse } from '../helpers/formatter';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
 
@@ -16,10 +16,14 @@ export function getDiscussionsFromAPI(sortBy, query, ApiClient) {
       return ApiClient.getFeedContent(sortBy, query);
     case 'wia_feed':
       // return getWobjectsFeed(query.limit, query.skip || 0);
-      if(query.skip && query.skip > 0) {
-        return getMoreFeedContentByObject({authorPermlink: 'vmf-wtrade', skip: query.skip || 0, limit: query.limit || 10});
+      if (query.skip && query.skip > 0) {
+        return getMoreFeedContentByObject({
+          authorPermlink: 'vmf-wtrade',
+          skip: query.skip || 0,
+          limit: query.limit || 10,
+        });
       }
-      return getFeedContentByObject('vmf-wtrade',);
+      return getFeedContentByObject('vmf-wtrade');
     default:
       return new Promise((resolve, reject) => {
         reject(new Error('There is not API endpoint defined for this sorting'));
