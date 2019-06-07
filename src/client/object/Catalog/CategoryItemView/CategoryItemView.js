@@ -36,7 +36,7 @@ const CategoryItemView = ({ wObject, pathNameAvatar, intl }) => (
 CategoryItemView.propTypes = {
   wObject: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
-  pathNameAvatar: PropTypes.string,
+  pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
 };
 
 CategoryItemView.defaultProps = {

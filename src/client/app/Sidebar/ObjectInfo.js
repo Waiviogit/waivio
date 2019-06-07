@@ -14,10 +14,13 @@ import {
 } from '../../object/wObjectHelper';
 import {
   objectFields,
+  TYPES_OF_MENU_ITEM,
   addressFields,
   linkFields,
   getAllowedFieldsByObjType,
 } from '../../../common/constants/listOfFields';
+import URL from '../../../common/constants/routing';
+import OBJECT_TYPE from '../../object/const/objectTypes';
 import Proposition from '../../components/Proposition/Proposition';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
@@ -57,7 +60,7 @@ class ObjectInfo extends React.Component {
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const { showModal, selectedField } = this.state;
     const renderFields = getAllowedFieldsByObjType(wobject.object_type);
-    const isRenderGallery = !['list'].includes(wobject.object_type);
+    const isRenderGallery = ![OBJECT_TYPE.LIST].includes(wobject.object_type);
 
     let addressArr = [];
     let address = '';
@@ -78,6 +81,8 @@ class ObjectInfo extends React.Component {
     let tags = [];
     let phones = [];
     let email = '';
+    let menuLists = null;
+    let menuPages = null;
 
     if (_.size(wobject) > 0) {
       const adressFields = getInnerFieldWithMaxWeight(wobject, objectFields.address);
@@ -100,6 +105,17 @@ class ObjectInfo extends React.Component {
       email = getFieldWithMaxWeight(wobject, objectFields.email);
 
       price = getFieldWithMaxWeight(wobject, objectFields.price);
+
+      menuLists =
+        !_.isEmpty(wobject.menuItems) &&
+        wobject.menuItems.some(item => item.object_type === TYPES_OF_MENU_ITEM.LIST)
+          ? wobject.menuItems.filter(item => item.object_type === TYPES_OF_MENU_ITEM.LIST)
+          : null;
+      menuPages =
+        !_.isEmpty(wobject.menuItems) &&
+        wobject.menuItems.some(item => item.object_type !== TYPES_OF_MENU_ITEM.LIST)
+          ? wobject.menuItems.filter(item => item.object_type !== TYPES_OF_MENU_ITEM.LIST)
+          : null;
 
       websiteFields = getInnerFieldWithMaxWeight(wobject, objectFields.website);
       if (websiteFields) {
@@ -136,20 +152,22 @@ class ObjectInfo extends React.Component {
 
     profile = _.pickBy(profile, _.identity);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
-    const objectName = getInnerFieldWithMaxWeight(wobject, objectFields.name, objectFields.name);
+    const objectName = getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name);
     const album = _.filter(albums, _.iteratee(['id', wobject.author_permlink]));
     const hasGalleryImg = wobject.preview_gallery && wobject.preview_gallery[0];
 
-    const listItem = (fieldName, content) => {
-      const fieldsCount = getFieldsCount(wobject, fieldName);
-      return renderFields.includes(fieldName) && (content || accessExtend) ? (
+    // name - name of field OR type of menu-item (TYPES_OF_MENU_ITEM)
+    const listItem = (name, content) => {
+      const fieldsCount = getFieldsCount(wobject, name);
+      const shouldDisplay = renderFields.includes(name) || _.includes(TYPES_OF_MENU_ITEM, name);
+      return shouldDisplay && (content || accessExtend) ? (
         <div className="field-info">
           <React.Fragment>
             {accessExtend && (
               <div className="field-info__title">
                 <Proposition
                   objectID={wobject.author_permlink}
-                  fieldName={fieldName}
+                  fieldName={name}
                   objName={objectName}
                   handleSelectField={this.handleSelectField}
                   selectedField={selectedField}
@@ -158,7 +176,7 @@ class ObjectInfo extends React.Component {
               </div>
             )}
             {content ? (
-              <div className="field-info__content" data-test={`${fieldName}-field-view`}>
+              <div className="field-info__content" data-test={`${name}-field-view`}>
                 {content}
               </div>
             ) : null}
@@ -166,6 +184,49 @@ class ObjectInfo extends React.Component {
         </div>
       ) : null;
     };
+
+    const menuSection = (
+      <React.Fragment>
+        <div className="object-sidebar__section-title">
+          <FormattedMessage id="menu" defaultMessage="Menu" />
+        </div>
+        <div className="object-sidebar__menu-items">
+          {listItem(
+            TYPES_OF_MENU_ITEM.LIST,
+            menuLists
+              ? menuLists.map(item => (
+                  <div className="object-sidebar__menu-item" key={item.author_permlink}>
+                    <Link
+                      to={`/object/${wobject.author_permlink}/${URL.SEGMENT.OBJ_MENU}#${
+                        item.author_permlink
+                      }`}
+                    >
+                      {item.alias || item.default_name}
+                    </Link>
+                  </div>
+                ))
+              : null,
+          )}
+          {listItem(
+            TYPES_OF_MENU_ITEM.PAGE,
+            menuPages
+              ? menuPages.map(item => (
+                  <div className="object-sidebar__menu-item" key={item.author_permlink}>
+                    <Link
+                      to={`/object/${wobject.author_permlink}/${URL.SEGMENT.OBJ_MENU}#${
+                        item.author_permlink
+                      }`}
+                    >
+                      {item.alias || item.default_name}
+                    </Link>
+                  </div>
+                ))
+              : null,
+          )}
+          {/* {listItem(objectFields.sorting, null)} */}
+        </div>
+      </React.Fragment>
+    );
 
     const listSection = (
       <React.Fragment>
@@ -204,6 +265,15 @@ class ObjectInfo extends React.Component {
       <React.Fragment>
         {getFieldWithMaxWeight(wobject, objectFields.name) && (
           <div className="object-sidebar">
+            {!hasType(wobject, OBJECT_TYPE.LIST) &&
+              wobject.menuItems &&
+              wobject.menuItems.length &&
+              menuSection}
+            {isEditMode && (
+              <div className="object-sidebar__section-title">
+                <FormattedMessage id="about" defaultMessage="About" />
+              </div>
+            )}
             {listItem(
               objectFields.button,
               buttonTitle && (
@@ -403,7 +473,7 @@ class ObjectInfo extends React.Component {
               ),
             )}
             {listItem(objectFields.link, <SocialLinks profile={profile} />)}
-            {accessExtend && hasType(wobject, 'list') && listSection}
+            {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
             {accessExtend && settingsSection}
           </div>
         )}
