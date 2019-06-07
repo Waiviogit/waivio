@@ -253,7 +253,7 @@ class CatalogWrap extends React.Component {
           </Breadcrumb>
         </div>
 
-        {isListObject && isEditMode && (
+        {wobject.object_type === OBJ_TYPE.LIST && isEditMode && (
           <div className="CatalogWrap__add-item">
             <AddItemModal
               wobject={currentList}

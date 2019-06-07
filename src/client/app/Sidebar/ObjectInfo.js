@@ -269,6 +269,11 @@ class ObjectInfo extends React.Component {
               wobject.menuItems &&
               wobject.menuItems.length &&
               menuSection}
+            {isEditMode && (
+              <div className="object-sidebar__section-title">
+                <FormattedMessage id="about" defaultMessage="About" />
+              </div>
+            )}
             {listItem(
               objectFields.button,
               buttonTitle && (
