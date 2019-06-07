@@ -27,6 +27,7 @@ class SearchObjectsAutocomplete extends Component {
     className: '',
     searchObjectsResults: [],
     itemsIdsToOmit: [],
+    objectType: '',
     searchObjects: () => {},
     clearSearchResults: () => {},
     handleSelect: () => {},
@@ -37,6 +38,7 @@ class SearchObjectsAutocomplete extends Component {
 
   static propTypes = {
     itemsIdsToOmit: PropTypes.arrayOf(PropTypes.string),
+    objectType: PropTypes.string,
     className: PropTypes.string,
     allowClear: PropTypes.bool,
     intl: PropTypes.shape(),
@@ -68,7 +70,10 @@ class SearchObjectsAutocomplete extends Component {
     );
   }
 
-  debouncedSearch = _.debounce(val => this.props.searchObjects(val), 300);
+  debouncedSearch = _.debounce(
+    (searchString, objType = '') => this.props.searchObjects(searchString, objType),
+    300,
+  );
   handleSearch(value) {
     let val = value;
     const link = val.match(linkRegex);
@@ -77,7 +82,7 @@ class SearchObjectsAutocomplete extends Component {
       val = permlink[permlink.length - 1].replace('@', '');
     }
     if (val) {
-      this.debouncedSearch(val);
+      this.debouncedSearch(val, this.props.objectType);
     }
   }
 

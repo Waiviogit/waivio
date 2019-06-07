@@ -140,11 +140,11 @@ export const getMoreUserFeedContent = ({
       .catch(error => reject(error));
   });
 
-export const searchObjects = (searchString, limit = 10) =>
+export const searchObjects = (searchString, objType = '', limit = 10) =>
   fetch(`${config.apiPrefix}${config.searchObjects}`, {
     headers,
     method: 'POST',
-    body: JSON.stringify({ search_string: searchString, limit }),
+    body: JSON.stringify({ search_string: searchString, object_type: objType, limit }),
   }).then(res => res.json());
 
 export const postAppendWaivioObject = postData =>

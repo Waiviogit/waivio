@@ -21,6 +21,11 @@ export const objectFields = {
   workTime: 'workTime',
 };
 
+export const TYPES_OF_MENU_ITEM = {
+  LIST: 'list',
+  PAGE: 'page',
+};
+
 export const objectFieldsWithInnerData = [
   'newsFilter',
   'address',
@@ -97,9 +102,11 @@ export const getAllowedFieldsByObjType = objectType => {
         objectFields.background,
         objectFields.listItem,
         objectFields.sorting,
+        objectFields.parent,
       ];
     default: {
-      const excludeFields = [objectFields.sorting, objectFields.listItem];
+      // const excludeFields = [objectFields.listItem];
+      const excludeFields = [];
       return supportedObjectFields.filter(field => !excludeFields.includes(field));
     }
   }

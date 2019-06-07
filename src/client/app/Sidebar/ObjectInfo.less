@@ -10,12 +10,27 @@
     font-weight: 500;
     text-transform: uppercase;
   }
+
+  &__menu-items {
+    padding-bottom: @content-margin;
+
+    .field-info {
+      padding: 0;
+    }
+  }
+  &__menu-item {
+    font-weight: 500;
+    a {
+      color: @text-color;
+    }
+  }
 }
 .field-button {
   width: 100%;
 }
+
 .field-info {
-  padding-bottom: 12px;
+  padding-bottom: @content-margin;
 
   &:last-child {
     padding: 0;
