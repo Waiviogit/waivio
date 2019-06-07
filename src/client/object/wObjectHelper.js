@@ -2,6 +2,7 @@ import _ from 'lodash';
 import {
   supportedObjectFields,
   objectFieldsWithInnerData,
+  TYPES_OF_MENU_ITEM,
 } from '../../../src/common/constants/listOfFields';
 import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
 
@@ -51,8 +52,19 @@ export const getField = (wObject, currentField, fieldName) => {
   return parsed ? parsed[fieldName] : wo.body;
 };
 
-export const getFieldsCount = (wObject, fieldName) =>
-  wObject && wObject.fields ? wObject.fields.filter(field => field.name === fieldName).length : 0;
+export const getFieldsCount = (wObject, fieldName) => {
+  let count = 0;
+  if (_.includes(TYPES_OF_MENU_ITEM, fieldName)) {
+    count = _.get(wObject, 'menuItems', []).filter(item =>
+      fieldName === TYPES_OF_MENU_ITEM.LIST
+        ? item.object_type === TYPES_OF_MENU_ITEM.LIST
+        : item.object_type !== TYPES_OF_MENU_ITEM.LIST,
+    ).length;
+  } else {
+    count = _.get(wObject, 'fields', []).filter(field => field.name === fieldName).length;
+  }
+  return count;
+};
 
 export const truncate = str => (str && str.length > 255 ? str.substring(0, 255) : str);
 

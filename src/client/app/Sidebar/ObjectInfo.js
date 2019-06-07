@@ -190,39 +190,41 @@ class ObjectInfo extends React.Component {
         <div className="object-sidebar__section-title">
           <FormattedMessage id="menu" defaultMessage="Menu" />
         </div>
-        {listItem(
-          TYPES_OF_MENU_ITEM.LIST,
-          menuLists
-            ? menuLists.map(item => (
-                <div className="object-sidebar__menu-item" key={item.author_permlink}>
-                  <Link
-                    to={`/object/${wobject.author_permlink}/${URL.SEGMENT.OBJ_MENU}#${
-                      item.author_permlink
-                    }`}
-                  >
-                    {item.alias || item.default_name}
-                  </Link>
-                </div>
-              ))
-            : null,
-        )}
-        {listItem(
-          TYPES_OF_MENU_ITEM.PAGE,
-          menuPages
-            ? menuPages.map(item => (
-                <div className="object-sidebar__menu-item" key={item.author_permlink}>
-                  <Link
-                    to={`/object/${wobject.author_permlink}/${URL.SEGMENT.OBJ_MENU}#${
-                      item.author_permlink
-                    }`}
-                  >
-                    {item.alias || item.default_name}
-                  </Link>
-                </div>
-              ))
-            : null,
-        )}
-        {/* {listItem(objectFields.sorting, null)} */}
+        <div className="object-sidebar__menu-items">
+          {listItem(
+            TYPES_OF_MENU_ITEM.LIST,
+            menuLists
+              ? menuLists.map(item => (
+                  <div className="object-sidebar__menu-item" key={item.author_permlink}>
+                    <Link
+                      to={`/object/${wobject.author_permlink}/${URL.SEGMENT.OBJ_MENU}#${
+                        item.author_permlink
+                      }`}
+                    >
+                      {item.alias || item.default_name}
+                    </Link>
+                  </div>
+                ))
+              : null,
+          )}
+          {listItem(
+            TYPES_OF_MENU_ITEM.PAGE,
+            menuPages
+              ? menuPages.map(item => (
+                  <div className="object-sidebar__menu-item" key={item.author_permlink}>
+                    <Link
+                      to={`/object/${wobject.author_permlink}/${URL.SEGMENT.OBJ_MENU}#${
+                        item.author_permlink
+                      }`}
+                    >
+                      {item.alias || item.default_name}
+                    </Link>
+                  </div>
+                ))
+              : null,
+          )}
+          {/* {listItem(objectFields.sorting, null)} */}
+        </div>
       </React.Fragment>
     );
 
