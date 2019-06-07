@@ -19,6 +19,7 @@ import {
   linkFields,
   getAllowedFieldsByObjType,
 } from '../../../common/constants/listOfFields';
+import OBJECT_TYPE from '../../object/const/objectTypes';
 import Proposition from '../../components/Proposition/Proposition';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
@@ -58,7 +59,7 @@ class ObjectInfo extends React.Component {
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const { showModal, selectedField } = this.state;
     const renderFields = getAllowedFieldsByObjType(wobject.object_type);
-    const isRenderGallery = !['list'].includes(wobject.object_type);
+    const isRenderGallery = ![OBJECT_TYPE.LIST].includes(wobject.object_type);
 
     let addressArr = [];
     let address = '';
@@ -249,7 +250,10 @@ class ObjectInfo extends React.Component {
       <React.Fragment>
         {getFieldWithMaxWeight(wobject, objectFields.name) && (
           <div className="object-sidebar">
-            {!hasType(wobject, 'list') && menuSection}
+            {!hasType(wobject, OBJECT_TYPE.LIST) &&
+              wobject.menuItems &&
+              wobject.menuItems.length &&
+              menuSection}
             {listItem(
               objectFields.button,
               buttonTitle && (
@@ -449,7 +453,7 @@ class ObjectInfo extends React.Component {
               ),
             )}
             {listItem(objectFields.link, <SocialLinks profile={profile} />)}
-            {accessExtend && hasType(wobject, 'list') && listSection}
+            {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
             {accessExtend && settingsSection}
           </div>
         )}
