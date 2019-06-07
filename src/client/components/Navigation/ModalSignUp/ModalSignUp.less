@@ -3,6 +3,10 @@
 
 .ModalSignUp {
   display: flex;
+  flex-direction: column;
+  @media @small, @medium, @large {
+    flex-direction: row;
+  }
   align-items: center;
   justify-content: space-between;
   &__button {
