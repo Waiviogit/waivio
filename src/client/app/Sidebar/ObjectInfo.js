@@ -19,6 +19,7 @@ import {
   linkFields,
   getAllowedFieldsByObjType,
 } from '../../../common/constants/listOfFields';
+import URL from '../../../common/constants/routing';
 import OBJECT_TYPE from '../../object/const/objectTypes';
 import Proposition from '../../components/Proposition/Proposition';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
@@ -194,7 +195,13 @@ class ObjectInfo extends React.Component {
           menuLists
             ? menuLists.map(item => (
                 <div className="object-sidebar__menu-item" key={item.author_permlink}>
-                  {item.alias || 'mock alias'}
+                  <Link
+                    to={`/object/${wobject.author_permlink}/${URL.SEGMENT.OBJ_MENU}#${
+                      item.author_permlink
+                    }`}
+                  >
+                    {item.alias || item.default_name}
+                  </Link>
                 </div>
               ))
             : null,
@@ -204,7 +211,13 @@ class ObjectInfo extends React.Component {
           menuPages
             ? menuPages.map(item => (
                 <div className="object-sidebar__menu-item" key={item.author_permlink}>
-                  {item.alias || 'mock alias'}
+                  <Link
+                    to={`/object/${wobject.author_permlink}/${URL.SEGMENT.OBJ_MENU}#${
+                      item.author_permlink
+                    }`}
+                  >
+                    {item.alias || item.default_name}
+                  </Link>
                 </div>
               ))
             : null,

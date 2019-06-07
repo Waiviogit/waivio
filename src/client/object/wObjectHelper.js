@@ -101,12 +101,6 @@ export const hasField = (post, fieldName, locale) => {
   );
 };
 
-// export const getWebsiteField = (wObject, currentField = objectFields.website) => {
-//   const wo = _.find(wObject.fields, ['name', currentField]);
-//   if (!wo) return '';
-//   return wo;
-// };
-
 export const IMAGE_STATUS = {
   ERROR: 'error',
   SUCCESS: 'success',
@@ -139,6 +133,18 @@ export const testImage = (url, callback, timeout = 3000) => {
     timedOut = true;
     callback(url, IMAGE_STATUS.TIMEOUT);
   }, timeout);
+};
+
+export const getListItems = wobj => {
+  let items = [];
+  if (wobj) {
+    if (wobj.listItems) {
+      items = wobj.listItems;
+    } else if (wobj.menuItems) {
+      items = wobj.menuItems;
+    }
+  }
+  return items;
 };
 
 /**

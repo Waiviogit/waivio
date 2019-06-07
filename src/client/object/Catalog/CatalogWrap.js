@@ -2,20 +2,22 @@ import { Breadcrumb } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import React from 'react';
 import { connect } from 'react-redux';
-import { isEmpty, isEqual, map, forEach, uniq } from 'lodash';
+import { has, isEmpty, isEqual, map, forEach, uniq } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { getFieldWithMaxWeight, sortListItemsBy } from '../wObjectHelper';
+import { getFieldWithMaxWeight, getListItems, sortListItemsBy } from '../wObjectHelper';
 import { getClientWObj, getServerWObj } from '../../adapters';
 import { objectFields } from '../../../common/constants/listOfFields';
+import OBJ_TYPE from '../const/objectTypes';
 import AddItemModal from './AddItemModal/AddItemModal';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import { getObject, getObjectsByIds } from '../../../../src/waivioApi/ApiClient';
 import * as wobjectActions from '../../../client/object/wobjectsActions';
 import { getLocale } from '../../reducers';
-import './CatalogWrap.less';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CategoryItemView from './CategoryItemView/CategoryItemView';
+import './CatalogWrap.less';
+import ObjectAvatar from '../../components/ObjectAvatar';
 
 const getListSorting = wobj => {
   const type = wobj[objectFields.sorting] && wobj[objectFields.sorting].length ? 'custom' : 'rank';
@@ -60,7 +62,8 @@ class CatalogWrap extends React.Component {
     if (!isReloadingPage && newPath !== currPath) {
       const nextListPermlink = newPath.split('/').pop() || 'list';
       const currListPermlink = currPath.split('/').pop();
-      if (nextListPermlink === 'list') {
+      const isTopLevelList = newPath.split('/').length === 1;
+      if (nextListPermlink === 'list' || isTopLevelList) {
         this.setState(this.getNextStateFromProps(nextProps));
       } else if (nextListPermlink !== currListPermlink) {
         this.getObjectFromApi(nextListPermlink, nextProps.location.hash);
@@ -105,9 +108,10 @@ class CatalogWrap extends React.Component {
 
   getNextStateFromProps = ({ wobject, location }) => {
     let sorting = {};
-    let listItems = [];
+    let sortedItems = [];
     let breadcrumb = [];
-    if (wobject && wobject.listItems) {
+    const items = getListItems(wobject);
+    if (items && items.length) {
       sorting = getListSorting(wobject);
       breadcrumb = [
         {
@@ -123,7 +127,7 @@ class CatalogWrap extends React.Component {
         getObjectsByIds({ authorPermlinks: permlinks, locale })
           .then(res =>
             permlinks.map(permlink =>
-              getClientWObj(res.find(wobj => wobj.author_permlink === permlink)),
+              getClientWObj(res.wobjects.find(wobj => wobj.author_permlink === permlink)),
             ),
           )
           .then(res => {
@@ -136,14 +140,14 @@ class CatalogWrap extends React.Component {
           });
         this.getObjectFromApi(permlinks[permlinks.length - 1], location.hash);
       } else {
-        listItems = sortListItemsBy(
-          wobject.listItems.map(item => getClientWObj(item)),
+        sortedItems = sortListItemsBy(
+          items.map(item => getClientWObj(item)),
           sorting.type,
           sorting.order,
         );
       }
     }
-    return { sort: sorting.type, listItems, breadcrumb, wobjNested: null };
+    return { sort: sorting.type, listItems: sortedItems, breadcrumb, wobjNested: null };
   };
 
   handleAddItem = listItem => {
@@ -175,6 +179,8 @@ class CatalogWrap extends React.Component {
       ...listItems.map(item => item.id),
       ...breadcrumb.map(crumb => crumb.id),
     ]);
+    const isListObject =
+      currentList.object_type === OBJ_TYPE.LIST || (!wobjNested && has(wobject, 'menuItems'));
 
     const sortSelector =
       currentList &&
@@ -215,7 +221,6 @@ class CatalogWrap extends React.Component {
           </SortSelector.Item>
         </SortSelector>
       );
-
     return (
       <div>
         <div className="CatalogWrap__breadcrumb">
@@ -227,7 +232,7 @@ class CatalogWrap extends React.Component {
                     <span className="CatalogWrap__breadcrumb__link">{crumb.name}</span>
                     <Link
                       className="CatalogWrap__breadcrumb__obj-page-link"
-                      to={{ pathname: `/object/${crumb.id}/list` }}
+                      to={{ pathname: `/object/${crumb.id}` }}
                     >
                       <i className="iconfont icon-send PostModal__icon" />
                     </Link>
@@ -248,7 +253,7 @@ class CatalogWrap extends React.Component {
           </Breadcrumb>
         </div>
 
-        {isEditMode && (
+        {isListObject && isEditMode && (
           <div className="CatalogWrap__add-item">
             <AddItemModal
               wobject={currentList}
@@ -258,57 +263,69 @@ class CatalogWrap extends React.Component {
           </div>
         )}
 
-        <div className="CatalogWrap__sort">{sortSelector}</div>
-
-        <div className="CatalogWrap">
-          {listItems.length ? (
-            <div>
-              {!isEmpty(listItems) ? (
-                map(listItems, listItem => {
-                  const isList = listItem.type === 'list';
-                  const linkTo = isList
-                    ? {
-                        pathname: `${location.pathname}`,
-                        hash: `${
-                          !location.hash
-                            ? listItem.id
-                            : `${
-                                location.hash.includes(listItem.id)
-                                  ? `${location.hash.split(listItem.id)[0]}${listItem.id}`
-                                  : `${location.hash}/${listItem.id}`
-                              }`
-                        }`,
-                      }
-                    : { pathname: `/object/${listItem.id}` };
-                  return (
-                    <div key={`category-${listItem.id}`}>
-                      {isList ? (
-                        <CategoryItemView wObject={listItem} pathNameAvatar={linkTo} />
-                      ) : (
-                        <ObjectCardView
-                          wObject={listItem}
-                          showSmallVersion
-                          pathNameAvatar={linkTo}
-                        />
-                      )}
+        {isListObject && (
+          <React.Fragment>
+            <div className="CatalogWrap__sort">{sortSelector}</div>
+            <div className="CatalogWrap">
+              {listItems.length ? (
+                <div>
+                  {!isEmpty(listItems) ? (
+                    map(listItems, listItem => {
+                      const isList = listItem.type === 'list';
+                      const linkTo = isList
+                        ? {
+                            pathname: `${location.pathname}`,
+                            hash: `${
+                              !location.hash
+                                ? listItem.id
+                                : `${
+                                    location.hash.includes(listItem.id)
+                                      ? `${location.hash.split(listItem.id)[0]}${listItem.id}`
+                                      : `${location.hash}/${listItem.id}`
+                                  }`
+                            }`,
+                          }
+                        : {
+                            pathname: `${location.pathname}`,
+                            hash: `${location.hash}/${listItem.id}`,
+                          };
+                      return (
+                        <div key={`category-${listItem.id}`}>
+                          {isList ? (
+                            <CategoryItemView wObject={listItem} pathNameAvatar={linkTo} />
+                          ) : (
+                            <ObjectCardView
+                              wObject={listItem}
+                              showSmallVersion
+                              pathNameAvatar={linkTo}
+                            />
+                          )}
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <div>
+                      {intl.formatMessage({
+                        id: 'emptyList',
+                        defaultMessage: 'This list is empty',
+                      })}
                     </div>
-                  );
-                })
+                  )}
+                </div>
               ) : (
                 <div>
-                  {intl.formatMessage({
-                    id: 'emptyList',
-                    defaultMessage: 'This list is empty',
-                  })}
+                  {intl.formatMessage({ id: 'emptyList', defaultMessage: 'This list is empty' })}
                 </div>
               )}
             </div>
-          ) : (
-            <div>
-              {intl.formatMessage({ id: 'emptyList', defaultMessage: 'This list is empty' })}
-            </div>
-          )}
-        </div>
+          </React.Fragment>
+        )}
+        {!isListObject && !isEmpty(wobjNested) && (
+          <div style={{ display: 'flex', 'flex-direction': 'column', 'align-items': 'center' }}>
+            <ObjectAvatar item={wobjNested} size={350} />
+            {wobjNested.default_name}
+          </div>
+        )}
       </div>
     );
   }

@@ -76,7 +76,7 @@ export default class Wobj extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { history, match, screenSize } = this.props;
-    if (!match.params[0] && !nextProps.match.params[0]) {
+    if (!_.isEmpty(nextProps.wobject) && !match.params[0] && !nextProps.match.params[0]) {
       if (
         nextProps.wobject.object_type &&
         nextProps.wobject.object_type.toLowerCase() === OBJECT_TYPE.LIST
