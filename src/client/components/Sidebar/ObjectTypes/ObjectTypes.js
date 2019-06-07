@@ -69,6 +69,11 @@ class ObjectTypes extends React.Component {
 
     return (
       <div className="ObjectTypes">
+        <div className="reward-button">
+          <Link to="/rewards" class="rainbow-button">
+            <FormattedMessage id="rewards" defaultMessage="Rewards" />
+          </Link>
+        </div>
         {!loading && !_.isEmpty(objectTypes) ? (
           _.map(
             objectTypes,
