@@ -81,6 +81,7 @@ class ObjectInfo extends React.Component {
     let tags = [];
     let phones = [];
     let email = '';
+    let menuItems = [];
     let menuLists = null;
     let menuPages = null;
 
@@ -106,15 +107,14 @@ class ObjectInfo extends React.Component {
 
       price = getFieldWithMaxWeight(wobject, objectFields.price);
 
+      menuItems = _.get(wobject, 'menuItems', []);
       menuLists =
-        !_.isEmpty(wobject.menuItems) &&
-        wobject.menuItems.some(item => item.object_type === TYPES_OF_MENU_ITEM.LIST)
-          ? wobject.menuItems.filter(item => item.object_type === TYPES_OF_MENU_ITEM.LIST)
+        menuItems.length && menuItems.some(item => item.object_type === TYPES_OF_MENU_ITEM.LIST)
+          ? menuItems.filter(item => item.object_type === TYPES_OF_MENU_ITEM.LIST)
           : null;
       menuPages =
-        !_.isEmpty(wobject.menuItems) &&
-        wobject.menuItems.some(item => item.object_type !== TYPES_OF_MENU_ITEM.LIST)
-          ? wobject.menuItems.filter(item => item.object_type !== TYPES_OF_MENU_ITEM.LIST)
+        menuItems.length && menuItems.some(item => item.object_type !== TYPES_OF_MENU_ITEM.LIST)
+          ? menuItems.filter(item => item.object_type !== TYPES_OF_MENU_ITEM.LIST)
           : null;
 
       websiteFields = getInnerFieldWithMaxWeight(wobject, objectFields.website);
@@ -185,45 +185,38 @@ class ObjectInfo extends React.Component {
       ) : null;
     };
 
+    const getMenuSectionLink = item => (
+      <div className="object-sidebar__menu-item" key={item.author_permlink}>
+        <Link
+          to={`/object/${wobject.author_permlink}/${URL.SEGMENT.OBJ_MENU}#${item.author_permlink}`}
+        >
+          {item.alias || item.default_name}
+        </Link>
+      </div>
+    );
     const menuSection = (
       <React.Fragment>
-        <div className="object-sidebar__section-title">
-          <FormattedMessage id="menu" defaultMessage="Menu" />
-        </div>
+        {(isEditMode || menuItems.length > 0) && (
+          <div className="object-sidebar__section-title">
+            <FormattedMessage id="menu" defaultMessage="Menu" />
+          </div>
+        )}
         <div className="object-sidebar__menu-items">
-          {listItem(
-            TYPES_OF_MENU_ITEM.LIST,
-            menuLists
-              ? menuLists.map(item => (
-                  <div className="object-sidebar__menu-item" key={item.author_permlink}>
-                    <Link
-                      to={`/object/${wobject.author_permlink}/${URL.SEGMENT.OBJ_MENU}#${
-                        item.author_permlink
-                      }`}
-                    >
-                      {item.alias || item.default_name}
-                    </Link>
-                  </div>
-                ))
-              : null,
+          {isEditMode ? (
+            <React.Fragment>
+              {listItem(
+                TYPES_OF_MENU_ITEM.LIST,
+                menuLists && menuLists.map(item => getMenuSectionLink(item)),
+              )}
+              {listItem(
+                TYPES_OF_MENU_ITEM.PAGE,
+                menuPages && menuPages.map(item => getMenuSectionLink(item)),
+              )}
+            </React.Fragment>
+          ) : (
+            menuItems.map(item => getMenuSectionLink(item))
           )}
-          {listItem(
-            TYPES_OF_MENU_ITEM.PAGE,
-            menuPages
-              ? menuPages.map(item => (
-                  <div className="object-sidebar__menu-item" key={item.author_permlink}>
-                    <Link
-                      to={`/object/${wobject.author_permlink}/${URL.SEGMENT.OBJ_MENU}#${
-                        item.author_permlink
-                      }`}
-                    >
-                      {item.alias || item.default_name}
-                    </Link>
-                  </div>
-                ))
-              : null,
-          )}
-          {/* {listItem(objectFields.sorting, null)} */}
+          {listItem(objectFields.sorting, null)}
         </div>
       </React.Fragment>
     );
@@ -265,10 +258,7 @@ class ObjectInfo extends React.Component {
       <React.Fragment>
         {getFieldWithMaxWeight(wobject, objectFields.name) && (
           <div className="object-sidebar">
-            {!hasType(wobject, OBJECT_TYPE.LIST) &&
-              wobject.menuItems &&
-              wobject.menuItems.length &&
-              menuSection}
+            {!hasType(wobject, OBJECT_TYPE.LIST) && menuSection}
             {isEditMode && (
               <div className="object-sidebar__section-title">
                 <FormattedMessage id="about" defaultMessage="About" />

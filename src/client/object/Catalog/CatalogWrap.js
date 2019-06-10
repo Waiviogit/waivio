@@ -321,7 +321,7 @@ class CatalogWrap extends React.Component {
           </React.Fragment>
         )}
         {!isListObject && !isEmpty(wobjNested) && (
-          <div style={{ display: 'flex', 'flex-direction': 'column', 'align-items': 'center' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <ObjectAvatar item={wobjNested} size={350} />
             {wobjNested.default_name}
           </div>

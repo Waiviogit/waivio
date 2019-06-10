@@ -45,7 +45,7 @@ import withEditor from '../components/Editor/withEditor';
 import { MAX_IMG_SIZE, ALLOWED_IMG_FORMATS } from '../../common/constants/validation';
 import { getHasDefaultSlider, getVoteValue } from '../helpers/user';
 import LikeSection from './LikeSection';
-import { getFieldWithMaxWeight } from './wObjectHelper';
+import { getFieldWithMaxWeight, getListItems } from './wObjectHelper';
 import FollowObjectForm from './FollowObjectForm';
 import { followObject, rateObject } from '../object/wobjActions';
 import SortingList from '../components/DnDList/DnDList';
@@ -1156,12 +1156,10 @@ export default class AppendForm extends Component {
       }
       case objectFields.sorting: {
         const listItems =
-          (wObject.listItems &&
-            wObject.listItems.map(item => ({
-              id: item.author_permlink,
-              content: <ObjectCardView wObject={getClientWObj(item)} />,
-            }))) ||
-          [];
+          getListItems(wObject).map(item => ({
+            id: item.author_permlink,
+            content: <ObjectCardView wObject={getClientWObj(item)} />,
+          })) || [];
         return (
           <React.Fragment>
             <Form.Item>
