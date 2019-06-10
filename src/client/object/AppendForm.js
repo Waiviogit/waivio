@@ -648,6 +648,8 @@ export default class AppendForm extends Component {
               rules: this.getFieldRules(objectFields.listItem),
             })(
               <SearchObjectsAutocomplete
+                className="menu-item-search"
+                itemsIdsToOmit={_.get(wObject, 'menuItems', []).map(f => f.author_permlink)}
                 handleSelect={this.handleSelectObject}
                 objectType={
                   this.props.currentField === TYPES_OF_MENU_ITEM.LIST ? TYPES_OF_MENU_ITEM.LIST : ''
