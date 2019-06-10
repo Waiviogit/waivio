@@ -147,7 +147,7 @@ export const testImage = (url, callback, timeout = 3000) => {
   }, timeout);
 };
 
-export const getListItems = wobj => {
+export const getListItems = (wobj, uniq = false) => {
   let items = [];
   if (wobj) {
     if (wobj.listItems) {
@@ -155,6 +155,9 @@ export const getListItems = wobj => {
     } else if (wobj.menuItems) {
       items = wobj.menuItems;
     }
+  }
+  if (uniq) {
+    items = _.uniqBy(items, 'author_permlink');
   }
   return items;
 };

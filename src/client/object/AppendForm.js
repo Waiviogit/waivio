@@ -1156,7 +1156,7 @@ export default class AppendForm extends Component {
       }
       case objectFields.sorting: {
         const listItems =
-          getListItems(wObject).map(item => ({
+          getListItems(wObject, true).map(item => ({
             id: item.author_permlink,
             content: <ObjectCardView wObject={getClientWObj(item)} />,
           })) || [];

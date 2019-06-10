@@ -11,6 +11,7 @@ import {
   getFieldWithMaxWeight,
   getFieldsCount,
   getInnerFieldWithMaxWeight,
+  sortListItemsBy,
 } from '../../object/wObjectHelper';
 import {
   objectFields,
@@ -28,10 +29,11 @@ import IconButton from '../../components/IconButton';
 import { getIsAuthenticated, getObjectAlbums } from '../../reducers';
 import DescriptionInfo from './DescriptionInfo';
 import CreateImage from '../../object/ObjectGallery/CreateImage';
-import './ObjectInfo.less';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
+import getClientWObject from '../../adapters';
+import './ObjectInfo.less';
 
 @connect(state => ({
   albums: getObjectAlbums(state),
@@ -110,11 +112,15 @@ class ObjectInfo extends React.Component {
       menuItems = _.get(wobject, 'menuItems', []);
       menuLists =
         menuItems.length && menuItems.some(item => item.object_type === TYPES_OF_MENU_ITEM.LIST)
-          ? menuItems.filter(item => item.object_type === TYPES_OF_MENU_ITEM.LIST)
+          ? _.uniqBy(menuItems, 'author_permlink').filter(
+              item => item.object_type === TYPES_OF_MENU_ITEM.LIST,
+            )
           : null;
       menuPages =
         menuItems.length && menuItems.some(item => item.object_type !== TYPES_OF_MENU_ITEM.LIST)
-          ? menuItems.filter(item => item.object_type !== TYPES_OF_MENU_ITEM.LIST)
+          ? _.uniqBy(menuItems, 'author_permlink').filter(
+              item => item.object_type !== TYPES_OF_MENU_ITEM.LIST,
+            )
           : null;
 
       websiteFields = getInnerFieldWithMaxWeight(wobject, objectFields.website);
@@ -202,7 +208,7 @@ class ObjectInfo extends React.Component {
           </div>
         )}
         <div className="object-sidebar__menu-items">
-          {isEditMode ? (
+          {isEditMode && (
             <React.Fragment>
               {listItem(
                 TYPES_OF_MENU_ITEM.LIST,
@@ -213,9 +219,15 @@ class ObjectInfo extends React.Component {
                 menuPages && menuPages.map(item => getMenuSectionLink(item)),
               )}
             </React.Fragment>
-          ) : (
-            menuItems.map(item => getMenuSectionLink(item))
           )}
+          {!isEditMode &&
+            sortListItemsBy(
+              menuItems.map(menuItem =>
+                getClientWObject(menuItem, ['author_permlink', 'default_name', 'alias']),
+              ),
+              'custom',
+              _.get(wobject, 'sortCustom', null),
+            ).map(item => getMenuSectionLink(item))}
           {listItem(objectFields.sorting, null)}
         </div>
       </React.Fragment>
