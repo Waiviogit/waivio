@@ -1,20 +1,16 @@
 import React from 'react';
+// import _ from 'lodash';
 import PropTypes from 'prop-types';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
-import Proposition from '../Rewards';
+import Proposition from '../Proposition/Proposition';
 
-const displayLimit = 30;
+const displayLimit = 10;
 
 export default class Propositions extends React.Component {
   static propTypes = {
     filterKey: PropTypes.string.isRequired,
-    // history: PropTypes.shape().isRequired,
-    // history: PropTypes.shape().isRequired,
-    // location: PropTypes.shape().isRequired,
-    // match: PropTypes.shape().isRequired,
-    // intl: PropTypes.shape().isRequired,
   };
 
   state = {
@@ -45,25 +41,27 @@ export default class Propositions extends React.Component {
   };
 
   handleLoadMore = () => {
-    const { propositions } = this.state;
-
-    this.setState(
-      {
-        loading: true,
-      },
-      () => {
-        const reqData = this.preparePropositionReqData();
-        reqData.skip = propositions.length;
-        ApiClient.getPropositions(reqData).then(newPropositions =>
-          this.setState(state => ({
-            loading: false,
-            hasMore:
-              newPropositions.propositions && newPropositions.propositions.length === displayLimit,
-            propositions: state.propositions.concat(propositions.propositions),
-          })),
-        );
-      },
-    );
+    const { propositions, hasMore } = this.state;
+    if (hasMore) {
+      this.setState(
+        {
+          loading: true,
+        },
+        () => {
+          const reqData = this.preparePropositionReqData();
+          reqData.skip = propositions.length;
+          ApiClient.getPropositions(reqData).then(newPropositions =>
+            this.setState(state => ({
+              loading: false,
+              hasMore:
+                newPropositions.propositions &&
+                newPropositions.propositions.length === displayLimit,
+              propositions: state.propositions.concat(newPropositions),
+            })),
+          );
+        },
+      );
+    }
   };
 
   render() {
@@ -74,16 +72,18 @@ export default class Propositions extends React.Component {
     }
 
     return (
-      <ReduxInfiniteScroll
-        elementIsScrollable={false}
-        hasMore={hasMore}
-        loadMore={this.handleLoadMore}
-        loadingMore={loading}
-        loader={<Loading />}
-      >
-        {propositions.length &&
-          propositions.map(proposition => <Proposition proposition={proposition} />)}
-      </ReduxInfiniteScroll>
+      <React.Fragment>
+        <ReduxInfiniteScroll
+          elementIsScrollable={false}
+          hasMore={hasMore}
+          loadMore={this.handleLoadMore}
+          loadingMore={loading}
+          loader={<Loading />}
+        >
+          {propositions.length &&
+            propositions.map(proposition => <Proposition proposition={proposition} />)}
+        </ReduxInfiniteScroll>
+      </React.Fragment>
     );
   }
 }

@@ -304,6 +304,7 @@ export const getPropositions = ({ limit = 30, skip = 0 }) =>
       method: 'GET',
     })
       .then(res => res.json())
+      .then(result => resolve(result.campaigns))
       .catch(error => reject(error));
   });
 
