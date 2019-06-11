@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import { Button, Icon, Tag } from 'antd';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { haveAccess, hasType, accessTypesArr } from '../../helpers/wObjectHelper';
@@ -35,12 +35,14 @@ import ObjectCard from '../../components/Sidebar/ObjectCard';
 import getClientWObject from '../../adapters';
 import './ObjectInfo.less';
 
+@withRouter
 @connect(state => ({
   albums: getObjectAlbums(state),
   isAuthenticated: getIsAuthenticated(state),
 }))
 class ObjectInfo extends React.Component {
   static propTypes = {
+    location: PropTypes.shape().isRequired,
     wobject: PropTypes.shape().isRequired,
     userName: PropTypes.string.isRequired,
     isEditMode: PropTypes.bool.isRequired,
@@ -58,7 +60,7 @@ class ObjectInfo extends React.Component {
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
 
   render() {
-    const { wobject, userName, albums, isAuthenticated } = this.props;
+    const { location, wobject, userName, albums, isAuthenticated } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const { showModal, selectedField } = this.state;
     const renderFields = getAllowedFieldsByObjType(wobject.object_type);
@@ -194,6 +196,7 @@ class ObjectInfo extends React.Component {
     const getMenuSectionLink = item => (
       <div className="object-sidebar__menu-item" key={item.author_permlink}>
         <Link
+          className={location.hash.slice(1).split('/')[0] === item.author_permlink ? 'active' : ''}
           to={`/object/${wobject.author_permlink}/${URL.SEGMENT.OBJ_MENU}#${item.author_permlink}`}
         >
           {item.alias || item.default_name}
