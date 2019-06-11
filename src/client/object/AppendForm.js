@@ -637,7 +637,7 @@ export default class AppendForm extends Component {
         return (
           <Form.Item>
             {getFieldDecorator('menuItemName', {
-              rules: this.getFieldRules(objectFields.listItem),
+              rules: this.getFieldRules(objectFields.name),
             })(
               <Input
                 className="AppendForm__title"
