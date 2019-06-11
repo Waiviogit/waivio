@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button, Form, Input, message, Select, Avatar, Rate, Icon } from 'antd';
+import { fieldsRules } from './const/appendFormConstants';
 import {
   linkFields,
   objectFields,
@@ -19,7 +20,9 @@ import {
   ratePercent,
   getAllowedFieldsByObjType,
   buttonFields,
+  TYPES_OF_MENU_ITEM,
 } from '../../common/constants/listOfFields';
+import OBJECT_TYPE from '../object/const/objectTypes';
 import {
   getObject,
   getRewardFund,
@@ -34,24 +37,16 @@ import LANGUAGES from '../translations/languages';
 import { PRIMARY_COLOR } from '../../common/constants/waivio';
 import { getLanguageText } from '../translations';
 import QuickPostEditorFooter from '../components/QuickPostEditor/QuickPostEditorFooter';
-import { regexCoordsLatitude, regexCoordsLongitude } from '../components/Maps/mapHelper';
 import MapAppendObject from '../components/Maps/MapAppendObject';
 import './AppendForm.less';
 import { getField } from '../objects/WaivioObject';
 import { appendObject } from '../object/appendActions';
 import { isValidImage } from '../helpers/image';
 import withEditor from '../components/Editor/withEditor';
-import {
-  MAX_IMG_SIZE,
-  ALLOWED_IMG_FORMATS,
-  websiteTitleRegExp,
-  objectURLValidationRegExp,
-  phoneNameValidationRegExp,
-  emailValidationRegExp,
-} from '../../common/constants/validation';
+import { MAX_IMG_SIZE, ALLOWED_IMG_FORMATS } from '../../common/constants/validation';
 import { getHasDefaultSlider, getVoteValue } from '../helpers/user';
 import LikeSection from './LikeSection';
-import { getFieldWithMaxWeight } from './wObjectHelper';
+import { getFieldWithMaxWeight, getListItems } from './wObjectHelper';
 import FollowObjectForm from './FollowObjectForm';
 import { followObject, rateObject } from '../object/wobjActions';
 import SortingList from '../components/DnDList/DnDList';
@@ -127,7 +122,7 @@ export default class AppendForm extends Component {
     isValidImage: false,
     sliderVisible: false,
     loading: false,
-    currentParent: null,
+    selectedObject: null,
     allowList: [[]],
     ignoreList: [],
   };
@@ -142,7 +137,7 @@ export default class AppendForm extends Component {
     this.calculateVoteWorth(this.state.votePercent);
   };
 
-  onSubmit = async form => {
+  onSubmit = async formValues => {
     this.setState({ loading: true });
 
     const {
@@ -150,7 +145,7 @@ export default class AppendForm extends Component {
       wObject,
     } = this.props;
 
-    const postData = this.getNewPostData(form);
+    const postData = this.getNewPostData(formValues);
 
     /* eslint-disable no-restricted-syntax */
     for (const data of postData) {
@@ -158,13 +153,13 @@ export default class AppendForm extends Component {
         /* eslint-disable no-await-in-loop */
         const response = await this.props.appendObject(data);
 
-        if (objectFields.rating === form.currentField && form.rate) {
+        if (objectFields.rating === formValues.currentField && formValues.rate) {
           const { author, permlink } = response.value;
           await this.props.rateObject(
             author,
             permlink,
             wObject.author_permlink,
-            ratePercent[form.rate - 1],
+            ratePercent[formValues.rate - 1],
           );
         }
 
@@ -211,10 +206,10 @@ export default class AppendForm extends Component {
     }
   };
 
-  getNewPostData = form => {
+  getNewPostData = formValues => {
     const { wObject } = this.props;
     const { getFieldValue } = this.props.form;
-    const { body, preview, currentField, currentLocale, like, follow, ...rest } = form;
+    const { body, preview, currentField, currentLocale, like, follow, ...rest } = formValues;
 
     const field = getFieldValue('currentField');
     let locale = getFieldValue('currentLocale');
@@ -232,7 +227,9 @@ export default class AppendForm extends Component {
       case objectFields.tagCloud:
       case objectFields.parent:
       case objectFields.workTime:
-      case objectFields.email: {
+      case objectFields.email:
+      case TYPES_OF_MENU_ITEM.PAGE:
+      case TYPES_OF_MENU_ITEM.LIST: {
         fieldBody.push(rest[currentField]);
         break;
       }
@@ -274,14 +271,14 @@ export default class AppendForm extends Component {
 
       const langReadable = _.filter(LANGUAGES, { id: locale })[0].name;
 
-      data.body = `@${data.author} added ${field}(${langReadable}):\n ${bodyField.replace(
+      data.body = `@${data.author} added ${field} (${langReadable}):\n ${bodyField.replace(
         /[{}"]/g,
         '',
       )}`;
 
       data.title = '';
       let fieldsObject = {
-        name: field,
+        name: _.includes(TYPES_OF_MENU_ITEM, field) ? objectFields.listItem : field,
         body: bodyField,
         locale,
       };
@@ -289,13 +286,21 @@ export default class AppendForm extends Component {
       if (field === objectFields.phone) {
         fieldsObject = {
           ...fieldsObject,
-          [phoneFields.number]: form[phoneFields.number],
+          [phoneFields.number]: formValues[phoneFields.number],
         };
 
         data.body = `@${data.author} added ${field}(${langReadable}):\n ${bodyField.replace(
           /[{}"]/g,
           '',
-        )} ${form[phoneFields.number].replace(/[{}"]/g, '')}  `;
+        )} ${formValues[phoneFields.number].replace(/[{}"]/g, '')}  `;
+      }
+
+      if (_.includes(TYPES_OF_MENU_ITEM, field)) {
+        fieldsObject = {
+          ...fieldsObject,
+          type: field,
+          alias: getFieldValue('menuItemName'),
+        };
       }
 
       data.field = fieldsObject;
@@ -582,13 +587,34 @@ export default class AppendForm extends Component {
     return callback();
   };
 
-  handleAddLinkedObject = obj => {
+  handleSelectObject = obj => {
+    const currentField = this.props.form.getFieldValue('currentField');
     if (obj && obj.id) {
       this.props.form.setFieldsValue({
-        parent: obj.id,
+        [currentField]: obj.id,
       });
-      this.setState({ currentParent: obj });
+      this.setState({ selectedObject: obj });
     }
+  };
+
+  getFieldRules = fieldName => {
+    const { intl } = this.props;
+    const rules = fieldsRules[fieldName] || [];
+    return rules.map(rule => {
+      if (_.has(rule, 'message')) {
+        return {
+          ...rule,
+          message: intl.formatMessage(
+            _.get(rule, 'message.intlId'),
+            _.get(rule, 'message.intlMeta'),
+          ),
+        };
+      }
+      if (_.has(rule, 'validator')) {
+        return { validator: this.validateFieldValue };
+      }
+      return rule;
+    });
   };
 
   renderContentValue = currentField => {
@@ -606,39 +632,42 @@ export default class AppendForm extends Component {
     );
 
     switch (currentField) {
+      case TYPES_OF_MENU_ITEM.PAGE:
+      case TYPES_OF_MENU_ITEM.LIST: {
+        return (
+          <Form.Item>
+            {getFieldDecorator('menuItemName', {
+              rules: this.getFieldRules(objectFields.name),
+            })(
+              <Input
+                className="AppendForm__title"
+                disabled={loading}
+                placeholder={intl.formatMessage({
+                  id: 'menu_item_placeholder',
+                  defaultMessage: 'Menu item name',
+                })}
+              />,
+            )}
+            {getFieldDecorator(currentField, {
+              rules: this.getFieldRules(objectFields.listItem),
+            })(
+              <SearchObjectsAutocomplete
+                className="menu-item-search"
+                itemsIdsToOmit={_.get(wObject, 'menuItems', []).map(f => f.author_permlink)}
+                handleSelect={this.handleSelectObject}
+                objectType={
+                  this.props.currentField === TYPES_OF_MENU_ITEM.LIST ? OBJECT_TYPE.LIST : ''
+                }
+              />,
+            )}
+            {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
+          </Form.Item>
+        );
+      }
       case objectFields.name: {
         return (
           <Form.Item>
-            {getFieldDecorator(objectFields.name, {
-              rules: [
-                {
-                  transform: value => value && value.toLowerCase(),
-                },
-                {
-                  required: true,
-                  message: intl.formatMessage(
-                    {
-                      id: 'field_error',
-                      defaultMessage: 'Field is required',
-                    },
-                    { field: 'Name' },
-                  ),
-                },
-                {
-                  max: 100,
-                  message: intl.formatMessage(
-                    {
-                      id: 'value_error_long',
-                      defaultMessage: "Value can't be longer than 100 characters.",
-                    },
-                    { value: 100 },
-                  ),
-                },
-                {
-                  validator: this.validateFieldValue,
-                },
-              ],
-            })(
+            {getFieldDecorator(objectFields.name, { rules: this.getFieldRules(objectFields.name) })(
               <Input
                 className="AppendForm__title"
                 disabled={loading}
@@ -655,34 +684,7 @@ export default class AppendForm extends Component {
         return (
           <Form.Item>
             {getFieldDecorator(objectFields.tagCloud, {
-              rules: [
-                {
-                  transform: value => value && value.toLowerCase(),
-                },
-                {
-                  required: true,
-                  message: intl.formatMessage(
-                    {
-                      id: 'field_error',
-                      defaultMessage: 'Field is required',
-                    },
-                    { field: 'Tag cloud' },
-                  ),
-                },
-                {
-                  max: 100,
-                  message: intl.formatMessage(
-                    {
-                      id: 'value_error_long',
-                      defaultMessage: "Value can't be longer than 100 characters.",
-                    },
-                    { value: 100 },
-                  ),
-                },
-                {
-                  validator: this.validateFieldValue,
-                },
-              ],
+              rules: this.getFieldRules(objectFields.tagCloud),
             })(
               <Input
                 className="AppendForm__title"
@@ -700,43 +702,15 @@ export default class AppendForm extends Component {
         return (
           <Form.Item>
             {getFieldDecorator(objectFields.parent, {
-              rules: [
-                {
-                  transform: value => value && value.toLowerCase(),
-                },
-                {
-                  required: true,
-                  message: intl.formatMessage(
-                    {
-                      id: 'field_error',
-                      defaultMessage: 'Field is required',
-                    },
-                    { field: 'Parent' },
-                  ),
-                },
-                {
-                  max: 100,
-                  message: intl.formatMessage(
-                    {
-                      id: 'value_error_long',
-                      defaultMessage: "Value can't be longer than 100 characters.",
-                    },
-                    { value: 100 },
-                  ),
-                },
-                {
-                  validator: this.validateFieldValue,
-                },
-              ],
-            })(<SearchObjectsAutocomplete handleSelect={this.handleAddLinkedObject} />)}
-            {this.state.currentParent && <ObjectCardView wObject={this.state.currentParent} />}
+              rules: this.getFieldRules(objectFields.parent),
+            })(<SearchObjectsAutocomplete handleSelect={this.handleSelectObject} />)}
+            {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
           </Form.Item>
         );
       }
       case objectFields.background:
       case objectFields.avatar: {
         const imageLink = getFieldValue(currentField);
-
         return (
           <div className="image-wrapper">
             <QuickPostEditorFooter
@@ -753,32 +727,7 @@ export default class AppendForm extends Component {
               })}
             </span>
             <Form.Item>
-              {getFieldDecorator(currentField, {
-                rules: [
-                  {
-                    required: true,
-                    message: intl.formatMessage(
-                      {
-                        id: 'field_error',
-                        defaultMessage: 'Field is required',
-                      },
-                      {
-                        field: intl.formatMessage({
-                          id: 'photo_url_placeholder',
-                          defaultMessage: 'Photo URL',
-                        }),
-                      },
-                    ),
-                  },
-                  {
-                    pattern: objectURLValidationRegExp,
-                    message: intl.formatMessage({
-                      id: 'image_link_validation',
-                      defaultMessage: 'Please enter valid link',
-                    }),
-                  },
-                ],
-              })(
+              {getFieldDecorator(currentField, { rules: this.getFieldRules(currentField) })(
                 <Input
                   className="AppendForm__title"
                   disabled={loading}
@@ -810,31 +759,7 @@ export default class AppendForm extends Component {
         return (
           <Form.Item>
             {getFieldDecorator(objectFields.title, {
-              rules: [
-                {
-                  max: 100,
-                  message: intl.formatMessage(
-                    {
-                      id: 'value_error_long',
-                      defaultMessage: "Value can't be longer than 100 characters.",
-                    },
-                    { value: 100 },
-                  ),
-                },
-                {
-                  required: true,
-                  message: intl.formatMessage(
-                    {
-                      id: 'field_error',
-                      defaultMessage: 'Field is required',
-                    },
-                    { field: 'Short description' },
-                  ),
-                },
-                {
-                  validator: this.validateFieldValue,
-                },
-              ],
+              rules: this.getFieldRules(objectFields.title),
             })(
               <Input
                 className={classNames('AppendForm__input', {
@@ -854,31 +779,7 @@ export default class AppendForm extends Component {
         return (
           <Form.Item>
             {getFieldDecorator(objectFields.workTime, {
-              rules: [
-                {
-                  max: 100,
-                  message: intl.formatMessage(
-                    {
-                      id: 'value_error_long',
-                      defaultMessage: "Value can't be longer than 100 characters.",
-                    },
-                    { value: 100 },
-                  ),
-                },
-                {
-                  required: true,
-                  message: intl.formatMessage(
-                    {
-                      id: 'field_error',
-                      defaultMessage: 'Field is required',
-                    },
-                    { field: 'Work time' },
-                  ),
-                },
-                {
-                  validator: this.validateFieldValue,
-                },
-              ],
+              rules: this.getFieldRules(objectFields.workTime),
             })(
               <Input
                 className={classNames('AppendForm__input', {
@@ -898,31 +799,7 @@ export default class AppendForm extends Component {
         return (
           <Form.Item>
             {getFieldDecorator(objectFields.price, {
-              rules: [
-                {
-                  max: 100,
-                  message: intl.formatMessage(
-                    {
-                      id: 'value_error_long',
-                      defaultMessage: "Value can't be longer than 100 characters.",
-                    },
-                    { value: 100 },
-                  ),
-                },
-                {
-                  required: true,
-                  message: intl.formatMessage(
-                    {
-                      id: 'field_error',
-                      defaultMessage: 'Field is required',
-                    },
-                    { field: 'Short description' },
-                  ),
-                },
-                {
-                  validator: this.validateFieldValue,
-                },
-              ],
+              rules: this.getFieldRules(objectFields.price),
             })(
               <Input.TextArea
                 className={classNames('AppendForm__input', {
@@ -943,31 +820,7 @@ export default class AppendForm extends Component {
         return (
           <Form.Item>
             {getFieldDecorator(objectFields.description, {
-              rules: [
-                {
-                  max: 512,
-                  message: intl.formatMessage(
-                    {
-                      id: 'value_error_long',
-                      defaultMessage: "Value can't be longer than 512 characters.",
-                    },
-                    { value: 512 },
-                  ),
-                },
-                {
-                  required: true,
-                  message: intl.formatMessage(
-                    {
-                      id: 'field_error',
-                      defaultMessage: 'Field is required',
-                    },
-                    { field: 'Full description' },
-                  ),
-                },
-                {
-                  validator: this.validateFieldValue,
-                },
-              ],
+              rules: this.getFieldRules(objectFields.description),
             })(
               <Input.TextArea
                 className={classNames('AppendForm__input', {
@@ -984,27 +837,12 @@ export default class AppendForm extends Component {
           </Form.Item>
         );
       }
-
       case objectFields.address: {
         return (
           <React.Fragment>
             <Form.Item>
               {getFieldDecorator(addressFields.address, {
-                rules: [
-                  {
-                    max: 100,
-                    message: intl.formatMessage(
-                      {
-                        id: 'value_error_long',
-                        defaultMessage: "Value can't be longer than 100 characters.",
-                      },
-                      { value: 100 },
-                    ),
-                  },
-                  {
-                    validator: this.validateFieldValue,
-                  },
-                ],
+                rules: this.getFieldRules(addressFields.address),
               })(
                 <Input
                   className={classNames('AppendForm__input', {
@@ -1020,21 +858,7 @@ export default class AppendForm extends Component {
             </Form.Item>
             <Form.Item>
               {getFieldDecorator(addressFields.street, {
-                rules: [
-                  {
-                    max: 100,
-                    message: intl.formatMessage(
-                      {
-                        id: 'value_error_long',
-                        defaultMessage: "Value can't be longer than 100 characters.",
-                      },
-                      { value: 100 },
-                    ),
-                  },
-                  {
-                    validator: this.validateFieldValue,
-                  },
-                ],
+                rules: this.getFieldRules(addressFields.street),
               })(
                 <Input
                   className={classNames('AppendForm__input', {
@@ -1050,21 +874,7 @@ export default class AppendForm extends Component {
             </Form.Item>
             <Form.Item>
               {getFieldDecorator(addressFields.city, {
-                rules: [
-                  {
-                    max: 100,
-                    message: intl.formatMessage(
-                      {
-                        id: 'value_error_long',
-                        defaultMessage: "Value can't be longer than 100 characters.",
-                      },
-                      { value: 100 },
-                    ),
-                  },
-                  {
-                    validator: this.validateFieldValue,
-                  },
-                ],
+                rules: this.getFieldRules(addressFields.city),
               })(
                 <Input
                   className={classNames('AppendForm__input', {
@@ -1080,21 +890,7 @@ export default class AppendForm extends Component {
             </Form.Item>
             <Form.Item>
               {getFieldDecorator(addressFields.state, {
-                rules: [
-                  {
-                    max: 100,
-                    message: intl.formatMessage(
-                      {
-                        id: 'value_error_long',
-                        defaultMessage: "Value can't be longer than 100 characters.",
-                      },
-                      { value: 100 },
-                    ),
-                  },
-                  {
-                    validator: this.validateFieldValue,
-                  },
-                ],
+                rules: this.getFieldRules(addressFields.state),
               })(
                 <Input
                   className={classNames('AppendForm__input', {
@@ -1110,21 +906,7 @@ export default class AppendForm extends Component {
             </Form.Item>
             <Form.Item>
               {getFieldDecorator(addressFields.postalCode, {
-                rules: [
-                  {
-                    max: 100,
-                    message: intl.formatMessage(
-                      {
-                        id: 'value_error_long',
-                        defaultMessage: "Value can't be longer than 100 characters.",
-                      },
-                      { value: 100 },
-                    ),
-                  },
-                  {
-                    validator: this.validateFieldValue,
-                  },
-                ],
+                rules: this.getFieldRules(addressFields.postalCode),
               })(
                 <Input
                   className={classNames('AppendForm__input', {
@@ -1140,21 +922,7 @@ export default class AppendForm extends Component {
             </Form.Item>
             <Form.Item>
               {getFieldDecorator(addressFields.country, {
-                rules: [
-                  {
-                    max: 100,
-                    message: intl.formatMessage(
-                      {
-                        id: 'value_error_long',
-                        defaultMessage: "Value can't be longer than 100 characters.",
-                      },
-                      { value: 100 },
-                    ),
-                  },
-                  {
-                    validator: this.validateFieldValue,
-                  },
-                ],
+                rules: this.getFieldRules(addressFields.country),
               })(
                 <Input
                   className={classNames('AppendForm__input', {
@@ -1177,31 +945,7 @@ export default class AppendForm extends Component {
           <React.Fragment>
             <Form.Item>
               {getFieldDecorator(mapFields.latitude, {
-                rules: [
-                  {
-                    pattern: regexCoordsLatitude,
-                    message: intl.formatMessage(
-                      {
-                        id: 'value_invalid_latitude',
-                        defaultMessage: 'Should be number from -85 to 85',
-                      },
-                      { value: 100 },
-                    ),
-                  },
-                  {
-                    required: true,
-                    message: intl.formatMessage(
-                      {
-                        id: 'field_error',
-                        defaultMessage: 'Field is required',
-                      },
-                      { field: 'Latitude' },
-                    ),
-                  },
-                  {
-                    validator: this.validateFieldValue,
-                  },
-                ],
+                rules: this.getFieldRules(mapFields.latitude),
               })(
                 <Input
                   onBlur={this.onUpdateCoordinate(mapFields.latitude)}
@@ -1218,31 +962,7 @@ export default class AppendForm extends Component {
             </Form.Item>
             <Form.Item>
               {getFieldDecorator(mapFields.longitude, {
-                rules: [
-                  {
-                    pattern: regexCoordsLongitude,
-                    message: intl.formatMessage(
-                      {
-                        id: 'value_invalid_longitude',
-                        defaultMessage: 'Should be number from -180 to 180',
-                      },
-                      { value: 100 },
-                    ),
-                  },
-                  {
-                    required: true,
-                    message: intl.formatMessage(
-                      {
-                        id: 'field_error',
-                        defaultMessage: 'Field is required',
-                      },
-                      { field: 'Longitude' },
-                    ),
-                  },
-                  {
-                    validator: this.validateFieldValue,
-                  },
-                ],
+                rules: this.getFieldRules(mapFields.longitude),
               })(
                 <Input
                   onBlur={this.onUpdateCoordinate(mapFields.longitude)}
@@ -1273,31 +993,7 @@ export default class AppendForm extends Component {
           <React.Fragment>
             <Form.Item>
               {getFieldDecorator(websiteFields.title, {
-                rules: [
-                  {
-                    max: 100,
-                    message: intl.formatMessage(
-                      {
-                        id: 'value_error_long',
-                        defaultMessage: "Value can't be longer than 100 characters.",
-                      },
-                      { value: 100 },
-                    ),
-                  },
-                  {
-                    required: true,
-                    message: intl.formatMessage(
-                      {
-                        id: 'field_error',
-                        defaultMessage: 'Field is required',
-                      },
-                      { field: 'Title' },
-                    ),
-                  },
-                  {
-                    validator: this.validateFieldValue,
-                  },
-                ],
+                rules: this.getFieldRules(websiteFields.title),
               })(
                 <Input
                   className={classNames('AppendForm__input', {
@@ -1313,38 +1009,7 @@ export default class AppendForm extends Component {
             </Form.Item>
             <Form.Item>
               {getFieldDecorator(websiteFields.link, {
-                rules: [
-                  {
-                    max: 255,
-                    message: intl.formatMessage(
-                      {
-                        id: 'value_error_long',
-                        defaultMessage: "Value can't be longer than 255 characters.",
-                      },
-                      { value: 255 },
-                    ),
-                  },
-                  {
-                    required: true,
-                    message: intl.formatMessage(
-                      {
-                        id: 'field_error',
-                        defaultMessage: 'Field is required',
-                      },
-                      { field: 'Website' },
-                    ),
-                  },
-                  {
-                    pattern: objectURLValidationRegExp,
-                    message: intl.formatMessage({
-                      id: 'website_validation',
-                      defaultMessage: 'Please enter valid website',
-                    }),
-                  },
-                  {
-                    validator: this.validateFieldValue,
-                  },
-                ],
+                rules: this.getFieldRules(websiteFields.link),
               })(
                 <Input
                   className={classNames('AppendForm__input', {
@@ -1366,38 +1031,7 @@ export default class AppendForm extends Component {
           <React.Fragment>
             <Form.Item>
               {getFieldDecorator(buttonFields.title, {
-                rules: [
-                  {
-                    max: 100,
-                    message: intl.formatMessage(
-                      {
-                        id: 'value_error_long',
-                        defaultMessage: "Value can't be longer than 100 characters.",
-                      },
-                      { value: 100 },
-                    ),
-                  },
-                  {
-                    required: true,
-                    message: intl.formatMessage(
-                      {
-                        id: 'field_error',
-                        defaultMessage: 'Field is required',
-                      },
-                      { field: 'Title' },
-                    ),
-                  },
-                  {
-                    pattern: websiteTitleRegExp,
-                    message: intl.formatMessage({
-                      id: 'website_symbols_validation',
-                      defaultMessage: 'Please dont use special symbols',
-                    }),
-                  },
-                  {
-                    validator: this.validateFieldValue,
-                  },
-                ],
+                rules: this.getFieldRules(buttonFields.title),
               })(
                 <Input
                   className={classNames('AppendForm__input', {
@@ -1413,38 +1047,7 @@ export default class AppendForm extends Component {
             </Form.Item>
             <Form.Item>
               {getFieldDecorator(buttonFields.link, {
-                rules: [
-                  {
-                    max: 255,
-                    message: intl.formatMessage(
-                      {
-                        id: 'value_error_long',
-                        defaultMessage: "Value can't be longer than 255 characters.",
-                      },
-                      { value: 255 },
-                    ),
-                  },
-                  {
-                    required: true,
-                    message: intl.formatMessage(
-                      {
-                        id: 'field_error',
-                        defaultMessage: 'Field is required',
-                      },
-                      { field: 'Button' },
-                    ),
-                  },
-                  {
-                    pattern: objectURLValidationRegExp,
-                    message: intl.formatMessage({
-                      id: 'website_validation',
-                      defaultMessage: 'Please enter valid website',
-                    }),
-                  },
-                  {
-                    validator: this.validateFieldValue,
-                  },
-                ],
+                rules: this.getFieldRules(buttonFields.link),
               })(
                 <Input
                   className={classNames('AppendForm__input', {
@@ -1505,30 +1108,7 @@ export default class AppendForm extends Component {
         return (
           <React.Fragment>
             <Form.Item>
-              {getFieldDecorator(phoneFields.name, {
-                rules: [
-                  {
-                    max: 100,
-                    message: intl.formatMessage(
-                      {
-                        id: 'value_error_long',
-                        defaultMessage: "Value can't be longer than 100 characters.",
-                      },
-                      { value: 100 },
-                    ),
-                  },
-                  {
-                    pattern: phoneNameValidationRegExp,
-                    message: intl.formatMessage({
-                      id: 'website_symbols_validation',
-                      defaultMessage: "Please don't use special symbols",
-                    }),
-                  },
-                  {
-                    validator: this.validateFieldValue,
-                  },
-                ],
-              })(
+              {getFieldDecorator(phoneFields.name, { rules: this.getFieldRules(phoneFields.name) })(
                 <Input
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
@@ -1543,38 +1123,7 @@ export default class AppendForm extends Component {
             </Form.Item>
             <Form.Item>
               {getFieldDecorator(phoneFields.number, {
-                rules: [
-                  {
-                    max: 100,
-                    message: intl.formatMessage(
-                      {
-                        id: 'value_error_long',
-                        defaultMessage: "Value can't be longer than 100 characters.",
-                      },
-                      { value: 100 },
-                    ),
-                  },
-                  {
-                    required: true,
-                    message: intl.formatMessage(
-                      {
-                        id: 'field_error',
-                        defaultMessage: 'Field is required',
-                      },
-                      { field: 'Phone number' },
-                    ),
-                  },
-                  {
-                    pattern: phoneNameValidationRegExp,
-                    message: intl.formatMessage({
-                      id: 'website_symbols_validation',
-                      defaultMessage: "Please don't use special symbols",
-                    }),
-                  },
-                  {
-                    validator: this.validateFieldValue,
-                  },
-                ],
+                rules: this.getFieldRules(phoneFields.number),
               })(
                 <Input
                   className={classNames('AppendForm__input', {
@@ -1595,38 +1144,7 @@ export default class AppendForm extends Component {
         return (
           <Form.Item>
             {getFieldDecorator(objectFields.email, {
-              rules: [
-                {
-                  max: 256,
-                  message: intl.formatMessage(
-                    {
-                      id: 'value_error_long',
-                      defaultMessage: "Value can't be longer than 100 characters.",
-                    },
-                    { value: 256 },
-                  ),
-                },
-                {
-                  required: true,
-                  message: intl.formatMessage(
-                    {
-                      id: 'field_error',
-                      defaultMessage: 'Field is required',
-                    },
-                    { field: 'Email address' },
-                  ),
-                },
-                {
-                  pattern: emailValidationRegExp,
-                  message: intl.formatMessage({
-                    id: 'email_append_validation',
-                    defaultMessage: 'Please enter valid email',
-                  }),
-                },
-                {
-                  validator: this.validateFieldValue,
-                },
-              ],
+              rules: this.getFieldRules(objectFields.email),
             })(
               <Input
                 className={classNames('AppendForm__input', {
@@ -1644,12 +1162,10 @@ export default class AppendForm extends Component {
       }
       case objectFields.sorting: {
         const listItems =
-          (wObject.listItems &&
-            wObject.listItems.map(item => ({
-              id: item.author_permlink,
-              content: <ObjectCardView wObject={getClientWObj(item)} />,
-            }))) ||
-          [];
+          getListItems(wObject, true).map(item => ({
+            id: item.author_permlink,
+            content: <ObjectCardView wObject={getClientWObj(item)} />,
+          })) || [];
         return (
           <React.Fragment>
             <Form.Item>
@@ -1678,32 +1194,7 @@ export default class AppendForm extends Component {
           <React.Fragment>
             <Form.Item>
               {getFieldDecorator(ratingFields.category, {
-                rules: [
-                  {
-                    max: 100,
-                    message: intl.formatMessage(
-                      {
-                        id: 'value_error_long',
-                        defaultMessage: "Value can't be longer than 100 characters.",
-                      },
-                      { value: 100 },
-                    ),
-                  },
-                  {
-                    required: true,
-                    message: intl.formatMessage(
-                      {
-                        id: 'field_error',
-                        defaultMessage: 'Field is required',
-                      },
-                      { field: 'Category' },
-                    ),
-                  },
-                  { transform: value => value && value.trim() },
-                  {
-                    validator: this.validateFieldValue,
-                  },
-                ],
+                rules: this.getFieldRules(ratingFields.category),
               })(
                 <Input
                   className={classNames('AppendForm__input', {
@@ -1743,7 +1234,7 @@ export default class AppendForm extends Component {
   };
 
   render() {
-    const { currentLocale, currentField, form, followingList, wObject } = this.props;
+    const { intl, currentLocale, currentField, form, followingList, wObject } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const { loading } = this.state;
 
@@ -1779,9 +1270,17 @@ export default class AppendForm extends Component {
     }
 
     getAllowedFieldsByObjType(wObject.object_type).forEach(option => {
+      let intlId = option;
+      let metaInfo = '';
+      if (_.includes(TYPES_OF_MENU_ITEM, option)) {
+        intlId = 'menuItem';
+        metaInfo = option;
+      }
       fieldOptions.push(
         <Select.Option key={option} value={option} className="Topnav__search-autocomplete">
-          <FormattedMessage id={`object_field_${option}`} defaultMessage={option} />
+          <FormattedMessage id={`object_field_${intlId}`} defaultMessage={option} />
+          {metaInfo &&
+            ` (${intl.formatMessage({ id: `object_field_${metaInfo}`, defaultMessage: option })})`}
         </Select.Option>,
       );
     });

@@ -22,6 +22,12 @@ export const objectFields = {
   chartId: 'chartid',
 };
 
+export const TYPES_OF_MENU_ITEM = {
+  LIST: 'menuList',
+  PAGE: 'menuPage',
+};
+export const objMenuTypes = Object.values(TYPES_OF_MENU_ITEM);
+
 export const objectFieldsWithInnerData = [
   'newsFilter',
   'address',
@@ -98,10 +104,14 @@ export const getAllowedFieldsByObjType = objectType => {
         objectFields.background,
         objectFields.listItem,
         objectFields.sorting,
+        objectFields.parent,
       ];
     default: {
-      const excludeFields = [objectFields.sorting, objectFields.listItem];
-      return supportedObjectFields.filter(field => !excludeFields.includes(field));
+      const excludeFields = [objectFields.listItem];
+      const includeFields = Object.values(TYPES_OF_MENU_ITEM);
+      return [...supportedObjectFields, ...includeFields].filter(
+        field => !excludeFields.includes(field),
+      );
     }
   }
 };

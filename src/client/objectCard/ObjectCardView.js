@@ -76,7 +76,7 @@ ObjectCardView.propTypes = {
   wObject: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
   showSmallVersion: PropTypes.bool,
-  pathNameAvatar: PropTypes.string,
+  pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
 };
 
 ObjectCardView.defaultProps = {

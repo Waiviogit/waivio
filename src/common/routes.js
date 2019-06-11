@@ -1,5 +1,6 @@
 import Wrapper from '../client/Wrapper';
-import { supportedObjectFields } from '../../src/common/constants/listOfFields';
+import { objMenuTypes, supportedObjectFields } from '../../src/common/constants/listOfFields';
+import URL from '../../src/common/constants/routing';
 
 import Bookmarks from '../client/bookmarks/Bookmarks';
 import Drafts from '../client/post/Write/Drafts';
@@ -153,9 +154,9 @@ const routes = [
         ],
       },
       {
-        path: `/object/:name/(about|gallery|updates|reviews|followers|feed|list|expertise)?/(${supportedObjectFields.join(
-          '|',
-        )}|album)?/:itemId?`,
+        path: `/object/:name/(about|gallery|updates|reviews|followers|feed|list|expertise|${
+          URL.SEGMENT.OBJ_MENU
+        })?/(${supportedObjectFields.join('|')}|${objMenuTypes.join('|')}|album)?/:itemId?`,
         component: Wobj,
         exact: true,
         routes: [
@@ -195,7 +196,7 @@ const routes = [
             component: WobjHistory,
           },
           {
-            path: '/object/:name/list/:itemId?',
+            path: `/object/:name/(list|${URL.SEGMENT.OBJ_MENU})`,
             exact: true,
             component: CatalogWrap,
           },

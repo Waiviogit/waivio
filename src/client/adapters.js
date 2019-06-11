@@ -1,7 +1,7 @@
 import { objectFields } from '../common/constants/listOfFields';
 import { getFieldWithMaxWeight } from './object/wObjectHelper';
 
-export const getClientWObj = serverWObj => {
+export const getClientWObj = (serverWObj, fieldsToInclude = []) => {
   /* eslint-disable no-underscore-dangle */
   /* eslint-disable camelcase */
   const {
@@ -20,7 +20,7 @@ export const getClientWObj = serverWObj => {
     object_type,
   } = serverWObj;
 
-  return {
+  const result = {
     id: author_permlink,
     avatar:
       getFieldWithMaxWeight(serverWObj, objectFields.avatar) ||
@@ -42,6 +42,16 @@ export const getClientWObj = serverWObj => {
     type: (object_type && object_type.toLowerCase()) || 'item',
     background: getFieldWithMaxWeight(serverWObj, objectFields.background),
   };
+
+  if (fieldsToInclude && fieldsToInclude.length) {
+    fieldsToInclude.forEach(f => {
+      if (typeof f === 'string' && serverWObj[f]) {
+        result[f] = serverWObj[f];
+      }
+    });
+  }
+
+  return result;
 };
 
 /* eslint-enable no-underscore-dangle */

@@ -12,7 +12,9 @@ import {
   getIsUserLoaded,
   getAuthenticatedUserName,
   getObject as getObjectState,
+  getScreenSize,
 } from '../reducers';
+import OBJECT_TYPE from './const/objectTypes';
 import { getObjectInfo } from './wobjectsActions';
 import { resetGallery } from '../object/ObjectGallery/galleryActions';
 import Error404 from '../statics/Error404';
@@ -33,6 +35,7 @@ import { objectFields } from '../../common/constants/listOfFields';
     loaded: getIsUserLoaded(state, ownProps.match.params.name),
     failed: getIsUserFailed(state, ownProps.match.params.name),
     wobject: getObjectState(state),
+    screenSize: getScreenSize(state),
   }),
   {
     getObjectInfo,
@@ -50,6 +53,7 @@ export default class Wobj extends React.Component {
     getObjectInfo: PropTypes.func,
     resetGallery: PropTypes.func.isRequired,
     wobject: PropTypes.shape(),
+    screenSize: PropTypes.string,
   };
 
   static defaultProps = {
@@ -58,6 +62,7 @@ export default class Wobj extends React.Component {
     failed: false,
     getObjectInfo: () => {},
     wobject: {},
+    screenSize: 'large',
   };
 
   state = {
@@ -69,14 +74,16 @@ export default class Wobj extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { history } = this.props;
-    if (
-      nextProps.wobject.object_type &&
-      nextProps.wobject.object_type.toLowerCase() === 'list' &&
-      !this.props.match.params[0] &&
-      !nextProps.match.params[0]
-    ) {
-      history.push(`${history.location.pathname}/list`);
+    const { history, match, screenSize } = this.props;
+    if (!_.isEmpty(nextProps.wobject) && !match.params[0] && !nextProps.match.params[0]) {
+      if (
+        nextProps.wobject.object_type &&
+        nextProps.wobject.object_type.toLowerCase() === OBJECT_TYPE.LIST
+      ) {
+        history.replace(`${history.location.pathname}/${OBJECT_TYPE.LIST}`);
+      } else if (screenSize !== 'large') {
+        history.replace(`${history.location.pathname}/about`);
+      }
     }
   }
 
