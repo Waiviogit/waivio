@@ -23,7 +23,8 @@
     "wobjectsExpertise": "/object_expertise",
     "getObjectTypes": "/objectTypes",
     "objectType": "/objectType",
-    "generalSearch": "/generalSearch"
+    "generalSearch": "/generalSearch",
+    "campaigns": "https://waiviodev.com/campaigns-api/campaigns"
   },
   "production": {
     "apiPrefix": "https://waiviodev.com/api",
@@ -48,6 +49,7 @@
     "wobjectsExpertise": "/object_expertise",
     "getObjectTypes": "/objectTypes",
     "objectType": "/objectType",
-    "generalSearch": "/generalSearch"
+    "generalSearch": "/generalSearch",
+    "campaigns": "/campaigns-api/campaigns"
   }
 }

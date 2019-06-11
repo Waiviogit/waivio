@@ -4,10 +4,21 @@
 .Rewards {
   width: 100%;
   &__title {
-    margin-left: 15px;
-    color: @black;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: @white;
     font-size: 2em;
     font-weight: 500;
+  }
+  &__toggler-wrap {
+    display: flex;
+    align-items: flex-end;
+    font-size: 14px;
+    color: @tertiary-color;
+    button {
+      margin-left: 15px;
+    }
   }
   .feed-layout {
     .center {

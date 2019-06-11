@@ -6,21 +6,21 @@ import './Sidenav.less';
 const SidenavRewards = () => (
   <ul className="Sidenav">
     <li>
-      <NavLink to="/" activeClassName="Sidenav__item--active">
+      <NavLink to="/rewards/active" activeClassName="Sidenav__item--active">
         {/* <i className="iconfont icon-dynamic" /> */}
-        Active(3)
+        Active (3)
       </NavLink>
     </li>
     <li>
-      <NavLink to="/reserved" activeClassName="Sidenav__item--active">
+      <NavLink to="/rewards/reserved" activeClassName="Sidenav__item--active">
         {/* <i className="iconfont icon-collection" /> */}
-        Reserved(0)
+        Reserved (0)
       </NavLink>
     </li>
     <li>
-      <NavLink to="/history" activeClassName="Sidenav__item--active">
+      <NavLink to="/rewards/history" activeClassName="Sidenav__item--active">
         {/* <i className="iconfont icon-collection" /> */}
-        History(5)
+        History (5)
       </NavLink>
     </li>
   </ul>

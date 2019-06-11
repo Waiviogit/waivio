@@ -296,4 +296,15 @@ export const getMoreObjectsByType = (type, skip, limit, filter = {}) =>
       .catch(error => reject(error));
   });
 
+export const getPropositions = ({ limit = 30, skip = 0 }) =>
+  // export const getPropositions = ({ limit = 30, locale = 'en-US', skip = 0 }) => {
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaigns}?limit=${limit}&skip=${skip}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .catch(error => reject(error));
+  });
+
 export default null;

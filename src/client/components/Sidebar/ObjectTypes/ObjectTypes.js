@@ -7,12 +7,13 @@ import { Link } from 'react-router-dom';
 import { getObjectTypes, getMoreObjectsByType } from '../../../objectTypes/objectTypesActions';
 import './ObjectTypes.less';
 import ObjectCard from '../ObjectCard';
-import { getobjectTypesState } from '../../../reducers';
+import { getAuthenticatedUserName, getobjectTypesState } from '../../../reducers';
 import ObjectTypesLoading from './ObjectTypesLoading';
 
 @connect(
   state => ({
     objectTypes: getobjectTypesState(state),
+    userName: getAuthenticatedUserName(state),
   }),
   {
     getObjectTypes,
@@ -23,6 +24,7 @@ class ObjectTypes extends React.Component {
   static propTypes = {
     objectTypes: PropTypes.shape(),
     loading: PropTypes.bool,
+    userName: PropTypes.string,
     getObjectTypes: PropTypes.func.isRequired,
     getMoreObjectsByType: PropTypes.func.isRequired,
   };
@@ -31,6 +33,7 @@ class ObjectTypes extends React.Component {
     objectTypes: {},
     topics: [],
     maxItems: 5,
+    userName: '',
     loading: false,
   };
 
@@ -64,13 +67,13 @@ class ObjectTypes extends React.Component {
     });
   };
   render() {
-    const { objectTypes, loading } = this.props;
+    const { objectTypes, loading, userName } = this.props;
     const { showedItemsCount } = this.state;
 
     return (
       <div className="ObjectTypes">
         <div className="reward-button">
-          <Link to="/rewards" class="rainbow-button">
+          <Link to={userName ? `/rewards/active` : `/rewards/all`} class="rainbow-button">
             <FormattedMessage id="rewards" defaultMessage="Rewards" />
           </Link>
         </div>
