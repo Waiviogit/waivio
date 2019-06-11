@@ -22,9 +22,10 @@ export const objectFields = {
 };
 
 export const TYPES_OF_MENU_ITEM = {
-  LIST: 'list',
-  PAGE: 'page',
+  LIST: 'menuList',
+  PAGE: 'menuPage',
 };
+export const objMenuTypes = Object.values(TYPES_OF_MENU_ITEM);
 
 export const objectFieldsWithInnerData = [
   'newsFilter',
@@ -105,9 +106,11 @@ export const getAllowedFieldsByObjType = objectType => {
         objectFields.parent,
       ];
     default: {
-      // const excludeFields = [objectFields.listItem];
-      const excludeFields = [];
-      return supportedObjectFields.filter(field => !excludeFields.includes(field));
+      const excludeFields = [objectFields.listItem];
+      const includeFields = Object.values(TYPES_OF_MENU_ITEM);
+      return [...supportedObjectFields, ...includeFields].filter(
+        field => !excludeFields.includes(field),
+      );
     }
   }
 };

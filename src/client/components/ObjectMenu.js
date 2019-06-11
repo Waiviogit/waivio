@@ -33,7 +33,7 @@ class ObjectMenu extends React.Component {
     REVIEWS: 'reviews',
     FOLLOWERS: 'followers',
     EXPERTISE: 'expertise',
-    INFO: 'info',
+    HIDDEN_TAB: 'hiddenTab',
   };
 
   constructor(props) {
@@ -141,10 +141,10 @@ class ObjectMenu extends React.Component {
                 <FormattedMessage id="experts" defaultMessage="Experts" />
               </li>
               <li
-                className={this.getItemClasses(ObjectMenu.TAB_NAME.INFO)}
+                className={this.getItemClasses(ObjectMenu.TAB_NAME.HIDDEN_TAB)}
                 onClick={this.handleClick}
                 role="presentation"
-                data-key={ObjectMenu.TAB_NAME.INFO}
+                data-key={ObjectMenu.TAB_NAME.HIDDEN_TAB}
               >
                 <FormattedMessage id="info" defaultMessage="Info" />
               </li>

@@ -1,4 +1,5 @@
 @import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables';
 
 .object-sidebar {
   padding-bottom: 50px;
@@ -12,16 +13,26 @@
   }
 
   &__menu-items {
+    text-align: center;
     padding-bottom: @content-margin;
 
     .field-info {
       padding: 0;
     }
+    @media @medium, @large {
+      text-align: left;
+    }
   }
   &__menu-item {
     font-weight: 500;
-    a {
-      color: @text-color;
+
+    @media @medium, @large {
+      a {
+        &.active {
+          color: @primary-color;
+        }
+        color: @text-color;
+      }
     }
   }
 }

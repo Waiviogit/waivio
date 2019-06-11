@@ -271,7 +271,7 @@ class CatalogWrap extends React.Component {
                 <div>
                   {!isEmpty(listItems) ? (
                     map(listItems, listItem => {
-                      const isList = listItem.type === 'list';
+                      const isList = listItem.type === OBJ_TYPE.LIST;
                       const linkTo = isList
                         ? {
                             pathname: `${location.pathname}`,
@@ -287,7 +287,9 @@ class CatalogWrap extends React.Component {
                           }
                         : {
                             pathname: `${location.pathname}`,
-                            hash: `${location.hash}/${listItem.id}`,
+                            hash: `${location.hash}${location.hash.length ? '/' : ''}${
+                              listItem.id
+                            }`,
                           };
                       return (
                         <div key={`category-${listItem.id}`}>
@@ -321,7 +323,7 @@ class CatalogWrap extends React.Component {
           </React.Fragment>
         )}
         {!isListObject && !isEmpty(wobjNested) && (
-          <div style={{ display: 'flex', 'flex-direction': 'column', 'align-items': 'center' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <ObjectAvatar item={wobjNested} size={350} />
             {wobjNested.default_name}
           </div>

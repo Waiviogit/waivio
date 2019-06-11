@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Select, Icon } from 'antd';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import _ from 'lodash';
 
 import { getPosts, getFeed, getObject, getReadLanguages, getIsAuthenticated } from '../reducers';
 import Feed from '../feed/Feed';
@@ -12,7 +13,11 @@ import {
   getFilteredContent,
 } from '../helpers/stateHelpers';
 import { getObjectComments } from '../feed/feedActions';
-import { objectFields, getAllowedFieldsByObjType } from '../../common/constants/listOfFields';
+import {
+  objectFields,
+  getAllowedFieldsByObjType,
+  TYPES_OF_MENU_ITEM,
+} from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
 import AppendModal from './AppendModal';
@@ -109,7 +114,7 @@ export default class WobjHistory extends React.Component {
     const content = getFilteredContent(
       Object.values(comments).filter(comment => commentIds.includes(comment.id)),
       ['appendObject'],
-      field,
+      _.includes(TYPES_OF_MENU_ITEM, field) ? objectFields.listItem : field,
       locale,
       sort,
     );
