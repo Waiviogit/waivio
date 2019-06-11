@@ -1,5 +1,5 @@
 const routeParts = {
-  OBJ_MENU: 'info',
+  OBJ_MENU: 'menu',
 };
 
 export default {

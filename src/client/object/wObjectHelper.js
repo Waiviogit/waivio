@@ -5,6 +5,7 @@ import {
   TYPES_OF_MENU_ITEM,
 } from '../../../src/common/constants/listOfFields';
 import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
+import OBJECT_TYPE from './const/objectTypes';
 
 export const getFieldWithMaxWeight = (wObject, currentField) => {
   if (!wObject || !currentField || !supportedObjectFields.includes(currentField)) return '';
@@ -52,13 +53,28 @@ export const getField = (wObject, currentField, fieldName) => {
   return parsed ? parsed[fieldName] : wo.body;
 };
 
+export const getListItems = (wobj, uniq = false) => {
+  let items = [];
+  if (wobj) {
+    if (wobj.listItems) {
+      items = wobj.listItems;
+    } else if (wobj.menuItems) {
+      items = wobj.menuItems;
+    }
+  }
+  if (uniq) {
+    items = _.uniqBy(items, 'author_permlink');
+  }
+  return items;
+};
+
 export const getFieldsCount = (wObject, fieldName) => {
   let count = 0;
   if (_.includes(TYPES_OF_MENU_ITEM, fieldName)) {
-    count = _.get(wObject, 'menuItems', []).filter(item =>
+    count = getListItems(wObject, true).filter(item =>
       fieldName === TYPES_OF_MENU_ITEM.LIST
-        ? item.object_type === TYPES_OF_MENU_ITEM.LIST
-        : item.object_type !== TYPES_OF_MENU_ITEM.LIST,
+        ? item.object_type === OBJECT_TYPE.LIST
+        : item.object_type !== OBJECT_TYPE.LIST,
     ).length;
   } else {
     count = _.get(wObject, 'fields', []).filter(field => field.name === fieldName).length;
@@ -145,18 +161,6 @@ export const testImage = (url, callback, timeout = 3000) => {
     timedOut = true;
     callback(url, IMAGE_STATUS.TIMEOUT);
   }, timeout);
-};
-
-export const getListItems = wobj => {
-  let items = [];
-  if (wobj) {
-    if (wobj.listItems) {
-      items = wobj.listItems;
-    } else if (wobj.menuItems) {
-      items = wobj.menuItems;
-    }
-  }
-  return items;
 };
 
 /**

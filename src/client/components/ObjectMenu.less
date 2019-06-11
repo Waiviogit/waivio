@@ -5,6 +5,10 @@
 .ObjectMenu {
   &:extend(.UserMenu all);
 
+  li[data-key='hiddenTab'] {
+    display: none;
+  }
+
   @media @medium, @large {
     li[data-key='about'] {
       display: none;

@@ -1,5 +1,5 @@
 import Wrapper from '../client/Wrapper';
-import { supportedObjectFields } from '../../src/common/constants/listOfFields';
+import { objMenuTypes, supportedObjectFields } from '../../src/common/constants/listOfFields';
 import URL from '../../src/common/constants/routing';
 
 import Bookmarks from '../client/bookmarks/Bookmarks';
@@ -154,7 +154,7 @@ const routes = [
       {
         path: `/object/:name/(about|gallery|updates|reviews|followers|feed|list|expertise|${
           URL.SEGMENT.OBJ_MENU
-        })?/(${supportedObjectFields.join('|')}|album)?/:itemId?`,
+        })?/(${supportedObjectFields.join('|')}|${objMenuTypes.join('|')}|album)?/:itemId?`,
         component: Wobj,
         exact: true,
         routes: [
