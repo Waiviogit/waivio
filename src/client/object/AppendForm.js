@@ -22,6 +22,7 @@ import {
   buttonFields,
   TYPES_OF_MENU_ITEM,
 } from '../../common/constants/listOfFields';
+import OBJECT_TYPE from '../object/const/objectTypes';
 import {
   getObject,
   getRewardFund,
@@ -227,7 +228,8 @@ export default class AppendForm extends Component {
       case objectFields.parent:
       case objectFields.workTime:
       case objectFields.email:
-      case objectFields.listItem: {
+      case TYPES_OF_MENU_ITEM.PAGE:
+      case TYPES_OF_MENU_ITEM.LIST: {
         fieldBody.push(rest[currentField]);
         break;
       }
@@ -269,14 +271,14 @@ export default class AppendForm extends Component {
 
       const langReadable = _.filter(LANGUAGES, { id: locale })[0].name;
 
-      data.body = `@${data.author} added ${field}(${langReadable}):\n ${bodyField.replace(
+      data.body = `@${data.author} added ${field} (${langReadable}):\n ${bodyField.replace(
         /[{}"]/g,
         '',
       )}`;
 
       data.title = '';
       let fieldsObject = {
-        name: field,
+        name: _.includes(TYPES_OF_MENU_ITEM, field) ? objectFields.listItem : field,
         body: bodyField,
         locale,
       };
@@ -293,9 +295,10 @@ export default class AppendForm extends Component {
         )} ${formValues[phoneFields.number].replace(/[{}"]/g, '')}  `;
       }
 
-      if (field === objectFields.listItem) {
+      if (_.includes(TYPES_OF_MENU_ITEM, field)) {
         fieldsObject = {
           ...fieldsObject,
+          type: field,
           alias: getFieldValue('menuItemName'),
         };
       }
@@ -629,7 +632,8 @@ export default class AppendForm extends Component {
     );
 
     switch (currentField) {
-      case objectFields.listItem: {
+      case TYPES_OF_MENU_ITEM.PAGE:
+      case TYPES_OF_MENU_ITEM.LIST: {
         return (
           <Form.Item>
             {getFieldDecorator('menuItemName', {
@@ -644,7 +648,7 @@ export default class AppendForm extends Component {
                 })}
               />,
             )}
-            {getFieldDecorator(objectFields.listItem, {
+            {getFieldDecorator(currentField, {
               rules: this.getFieldRules(objectFields.listItem),
             })(
               <SearchObjectsAutocomplete
@@ -652,7 +656,7 @@ export default class AppendForm extends Component {
                 itemsIdsToOmit={_.get(wObject, 'menuItems', []).map(f => f.author_permlink)}
                 handleSelect={this.handleSelectObject}
                 objectType={
-                  this.props.currentField === TYPES_OF_MENU_ITEM.LIST ? TYPES_OF_MENU_ITEM.LIST : ''
+                  this.props.currentField === TYPES_OF_MENU_ITEM.LIST ? OBJECT_TYPE.LIST : ''
                 }
               />,
             )}
@@ -1233,9 +1237,6 @@ export default class AppendForm extends Component {
     const { intl, currentLocale, currentField, form, followingList, wObject } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const { loading } = this.state;
-    const currentFieldName = _.includes(TYPES_OF_MENU_ITEM, currentField)
-      ? objectFields.listItem
-      : currentField;
 
     const isCustomSortingList =
       wObject.object_type &&
@@ -1260,7 +1261,7 @@ export default class AppendForm extends Component {
     });
 
     const fieldOptions = [];
-    if (currentFieldName === 'auto') {
+    if (currentField === 'auto') {
       fieldOptions.push(
         <Select.Option disabled key="auto" value="auto">
           <FormattedMessage id="select_field" defaultMessage="Select your field" />
@@ -1271,11 +1272,9 @@ export default class AppendForm extends Component {
     getAllowedFieldsByObjType(wObject.object_type).forEach(option => {
       let intlId = option;
       let metaInfo = '';
-      if (option === objectFields.listItem) {
-        if (_.includes(TYPES_OF_MENU_ITEM, currentField)) {
-          intlId = 'menuItem';
-          metaInfo = currentField;
-        } else return;
+      if (_.includes(TYPES_OF_MENU_ITEM, option)) {
+        intlId = 'menuItem';
+        metaInfo = option;
       }
       fieldOptions.push(
         <Select.Option key={option} value={option} className="Topnav__search-autocomplete">
@@ -1294,7 +1293,7 @@ export default class AppendForm extends Component {
 
         <Form.Item>
           {getFieldDecorator('currentField', {
-            initialValue: currentFieldName,
+            initialValue: currentField,
           })(
             <Select disabled={loading} style={{ width: '100%' }}>
               {fieldOptions}

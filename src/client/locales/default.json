@@ -457,6 +457,8 @@
   "object_field_newsFilter": "News filter",
   "object_field_button": "Button",
   "object_field_workTime": "Work time",
+  "object_field_menuPage": "Page",
+  "object_field_menuList": "List",
   "field_error": "{field} is required",
   "append_send": "Submit",
   "suggestion_add_field": "Update object",

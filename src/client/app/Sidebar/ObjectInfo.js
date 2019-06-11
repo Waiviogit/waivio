@@ -111,15 +111,15 @@ class ObjectInfo extends React.Component {
 
       menuItems = _.get(wobject, 'menuItems', []);
       menuLists =
-        menuItems.length && menuItems.some(item => item.object_type === TYPES_OF_MENU_ITEM.LIST)
+        menuItems.length && menuItems.some(item => item.object_type === OBJECT_TYPE.LIST)
           ? _.uniqBy(menuItems, 'author_permlink').filter(
-              item => item.object_type === TYPES_OF_MENU_ITEM.LIST,
+              item => item.object_type === OBJECT_TYPE.LIST,
             )
           : null;
       menuPages =
-        menuItems.length && menuItems.some(item => item.object_type !== TYPES_OF_MENU_ITEM.LIST)
+        menuItems.length && menuItems.some(item => item.object_type !== OBJECT_TYPE.LIST)
           ? _.uniqBy(menuItems, 'author_permlink').filter(
-              item => item.object_type !== TYPES_OF_MENU_ITEM.LIST,
+              item => item.object_type !== OBJECT_TYPE.LIST,
             )
           : null;
 
