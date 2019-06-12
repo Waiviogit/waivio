@@ -6,12 +6,14 @@ import {
   phoneFields,
   websiteFields,
   ratingFields,
+  TYPES_OF_MENU_ITEM,
 } from '../../../common/constants/listOfFields';
 import {
   emailValidationRegExp,
   objectURLValidationRegExp,
   phoneNameValidationRegExp,
   websiteTitleRegExp,
+  wordsWithSpaceRegExp,
 } from '../../../common/constants/validation';
 import { regexCoordsLatitude, regexCoordsLongitude } from '../../components/Maps/mapHelper';
 
@@ -28,6 +30,30 @@ export const fieldsRules = {
           defaultMessage: 'Field is required',
         },
         intlMeta: { field: 'Name' },
+      },
+    },
+    {
+      max: 100,
+      message: {
+        intlId: {
+          id: 'value_error_long',
+          defaultMessage: "Value can't be longer than 100 characters.",
+        },
+        intlMeta: { value: 100 },
+      },
+    },
+    {
+      validator: true,
+    },
+  ],
+  menuItemName: [
+    {
+      pattern: wordsWithSpaceRegExp,
+      message: {
+        intlId: {
+          id: 'website_symbols_validation',
+          defaultMessage: "Please don't use special symbols",
+        },
       },
     },
     {
@@ -84,6 +110,42 @@ export const fieldsRules = {
           defaultMessage: 'Field is required',
         },
         intlMeta: { field: 'Parent' },
+      },
+    },
+    {
+      validator: true,
+    },
+  ],
+  [TYPES_OF_MENU_ITEM.LIST]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      required: true,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'Menu item' },
+      },
+    },
+    {
+      validator: true,
+    },
+  ],
+  [TYPES_OF_MENU_ITEM.PAGE]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      required: true,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'Menu item' },
       },
     },
     {

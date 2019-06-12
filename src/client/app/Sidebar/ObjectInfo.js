@@ -231,7 +231,7 @@ class ObjectInfo extends React.Component {
               'custom',
               _.get(wobject, 'sortCustom', null),
             ).map(item => getMenuSectionLink(item))}
-          {listItem(objectFields.sorting, null)}
+          {!_.isEmpty(menuItems) && listItem(objectFields.sorting, null)}
         </div>
       </React.Fragment>
     );
