@@ -1,12 +1,11 @@
 import React from 'react';
 import { injectIntl } from 'react-intl';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import './Proposition.less';
 import UserCard from '../../components/UserCard';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
 
-// const Proposition = ({ proposition }) => {
-const Proposition = () => {
+const Proposition = ({ proposition }) => {
   const wobjectReq = {
     author_permlink: 'uwl-ichiro-japanese-restaurant',
     fields: [
@@ -59,25 +58,25 @@ const Proposition = () => {
   };
   return (
     <div className="Proposition">
-      <div className="Proposition__title">Test Proposition</div>
+      <div className="Proposition__title">{proposition.id}</div>
       <div className="Proposition__header">
-        <div className="Proposition__-type">Sponsored: Review</div>
-        <div className="Proposition__reward">Reward: $50.00</div>
+        <div className="Proposition__-type">{`Sponsored: ${proposition.type}`}</div>
+        <div className="Proposition__reward">{`Reward: $${proposition.reward}`}</div>
       </div>
       <div className="Proposition__footer">
         <div className="Proposition__author">
-          <div className="Proposition__author-title">Sponsor:</div>
-          <UserCard user={{ name: 'eugenezh' }} showFollow={false} />
+          <div className="Proposition__author-title">{`Sponsor`}:</div>
+          <UserCard user={{ name: proposition.userName }} showFollow={false} />
         </div>
-        <div>Paid rewards: 700$</div>
+        <div>{`Paid rewards`}: 700$</div>
       </div>
       <div className="Proposition__body">
         <div className="Proposition__body-description">
-          You should write review to our new dish for receiving reward.
+          {'You should write review to our new dish for receiving reward.'}
         </div>
         <div className="Proposition__body-criteria">
           <div className="Proposition__object">
-            <div className="Proposition__object-title">You should write post with object:</div>
+            <div className="Proposition__object-title">{`You should write post with object`}:</div>
             <ObjectCard wobject={wobjectAim} showFollow={false} />
           </div>
         </div>
@@ -94,7 +93,7 @@ const Proposition = () => {
 };
 
 Proposition.propTypes = {
-  // proposition: PropTypes.shape().isRequired,
+  proposition: PropTypes.shape().isRequired,
   // intl: PropTypes.shape().isRequired,
 };
 
