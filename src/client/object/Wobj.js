@@ -12,7 +12,9 @@ import {
   getIsUserLoaded,
   getAuthenticatedUserName,
   getObject as getObjectState,
+  getScreenSize,
 } from '../reducers';
+import OBJECT_TYPE from './const/objectTypes';
 import { getObjectInfo } from './wobjectsActions';
 import { resetGallery } from '../object/ObjectGallery/galleryActions';
 import Error404 from '../statics/Error404';
@@ -33,6 +35,7 @@ import { objectFields } from '../../common/constants/listOfFields';
     loaded: getIsUserLoaded(state, ownProps.match.params.name),
     failed: getIsUserFailed(state, ownProps.match.params.name),
     wobject: getObjectState(state),
+    screenSize: getScreenSize(state),
   }),
   {
     getObjectInfo,
@@ -50,6 +53,7 @@ export default class Wobj extends React.Component {
     getObjectInfo: PropTypes.func,
     resetGallery: PropTypes.func.isRequired,
     wobject: PropTypes.shape(),
+    screenSize: PropTypes.string,
   };
 
   static defaultProps = {
@@ -58,6 +62,7 @@ export default class Wobj extends React.Component {
     failed: false,
     getObjectInfo: () => {},
     wobject: {},
+    screenSize: 'large',
   };
 
   state = {
@@ -69,14 +74,16 @@ export default class Wobj extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { history } = this.props;
-    if (
-      nextProps.wobject.object_type &&
-      nextProps.wobject.object_type.toLowerCase() === 'list' &&
-      !this.props.match.params[0] &&
-      !nextProps.match.params[0]
-    ) {
-      history.push(`${history.location.pathname}/list`);
+    const { history, match, screenSize } = this.props;
+    if (!_.isEmpty(nextProps.wobject) && !match.params[0] && !nextProps.match.params[0]) {
+      if (
+        nextProps.wobject.object_type &&
+        nextProps.wobject.object_type.toLowerCase() === OBJECT_TYPE.LIST
+      ) {
+        history.replace(`${history.location.pathname}/${OBJECT_TYPE.LIST}`);
+      } else if (screenSize !== 'large') {
+        history.replace(`${history.location.pathname}/about`);
+      }
     }
   }
 
@@ -94,17 +101,17 @@ export default class Wobj extends React.Component {
 
   render() {
     const { isEditMode } = this.state;
-    const { authenticated, failed, authenticatedUserName: userName, match } = this.props;
+    const { authenticated, failed, authenticatedUserName: userName, wobject, match } = this.props;
     if (failed) return <Error404 />;
 
-    const objectName = getFieldWithMaxWeight(this.props.wobject, objectFields.name);
+    const objectName = getFieldWithMaxWeight(wobject, objectFields.name);
     const busyHost = global.postOrigin || 'https://waiviodev.com';
     const desc = `Posts by ${objectName}`;
-    const image = getFieldWithMaxWeight(this.props.wobject, objectFields.avatar);
-    const canonicalUrl = `${busyHost}/object/${this.props.wobject.author_permlink}`;
-    const url = `${busyHost}/object/${this.props.wobject.author_permlink}`;
+    const image = getFieldWithMaxWeight(wobject, objectFields.avatar);
+    const canonicalUrl = `${busyHost}/object/${wobject.author_permlink}`;
+    const url = `${busyHost}/object/${wobject.author_permlink}`;
     const displayedObjectName = objectName || '';
-    const title = `Object - ${objectName || this.props.wobject.default_name || ''}`;
+    const title = `Object - ${objectName || wobject.default_name || ''}`;
 
     return (
       <div className="main-panel">
@@ -136,8 +143,8 @@ export default class Wobj extends React.Component {
         <WobjHero
           isEditMode={isEditMode}
           authenticated={authenticated}
-          isFetching={_.isEmpty(this.props.wobject)}
-          wobject={this.props.wobject}
+          isFetching={_.isEmpty(wobject)}
+          wobject={wobject}
           username={displayedObjectName}
           onFollowClick={this.handleFollowClick}
           toggleViewEditMode={this.toggleViewEditMode}
@@ -148,23 +155,18 @@ export default class Wobj extends React.Component {
               <div className="left">
                 <LeftObjectProfileSidebar
                   isEditMode={isEditMode}
-                  wobject={this.props.wobject}
+                  wobject={wobject}
                   userName={userName}
                 />
               </div>
             </Affix>
             <Affix className="rightContainer" stickPosition={110}>
               <div className="right">
-                <RightObjectSidebar username={userName} wobject={this.props.wobject} />
+                <RightObjectSidebar username={userName} wobject={wobject} />
               </div>
             </Affix>
             <div className="center">
-              {renderRoutes(this.props.route.routes, {
-                isEditMode,
-                wobject: this.props.wobject,
-                userName,
-                match,
-              })}
+              {renderRoutes(this.props.route.routes, { isEditMode, wobject, userName, match })}
             </div>
           </div>
         </div>

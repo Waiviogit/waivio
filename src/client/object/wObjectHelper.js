@@ -2,8 +2,10 @@ import _ from 'lodash';
 import {
   supportedObjectFields,
   objectFieldsWithInnerData,
+  TYPES_OF_MENU_ITEM,
 } from '../../../src/common/constants/listOfFields';
 import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
+import OBJECT_TYPE from './const/objectTypes';
 
 export const getFieldWithMaxWeight = (wObject, currentField) => {
   if (!wObject || !currentField || !supportedObjectFields.includes(currentField)) return '';
@@ -51,8 +53,34 @@ export const getField = (wObject, currentField, fieldName) => {
   return parsed ? parsed[fieldName] : wo.body;
 };
 
-export const getFieldsCount = (wObject, fieldName) =>
-  wObject && wObject.fields ? wObject.fields.filter(field => field.name === fieldName).length : 0;
+export const getListItems = (wobj, uniq = false) => {
+  let items = [];
+  if (wobj) {
+    if (wobj.listItems) {
+      items = wobj.listItems;
+    } else if (wobj.menuItems) {
+      items = wobj.menuItems;
+    }
+  }
+  if (uniq) {
+    items = _.uniqBy(items, 'author_permlink');
+  }
+  return items;
+};
+
+export const getFieldsCount = (wObject, fieldName) => {
+  let count = 0;
+  if (_.includes(TYPES_OF_MENU_ITEM, fieldName)) {
+    count = getListItems(wObject, true).filter(item =>
+      fieldName === TYPES_OF_MENU_ITEM.LIST
+        ? item.object_type === OBJECT_TYPE.LIST
+        : item.object_type !== OBJECT_TYPE.LIST,
+    ).length;
+  } else {
+    count = _.get(wObject, 'fields', []).filter(field => field.name === fieldName).length;
+  }
+  return count;
+};
 
 export const truncate = str => (str && str.length > 255 ? str.substring(0, 255) : str);
 
@@ -100,12 +128,6 @@ export const hasField = (post, fieldName, locale) => {
     !(locale && !(field && field.locale === locale))
   );
 };
-
-// export const getWebsiteField = (wObject, currentField = objectFields.website) => {
-//   const wo = _.find(wObject.fields, ['name', currentField]);
-//   if (!wo) return '';
-//   return wo;
-// };
 
 export const IMAGE_STATUS = {
   ERROR: 'error',

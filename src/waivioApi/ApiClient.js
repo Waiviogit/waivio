@@ -171,12 +171,17 @@ export const getMoreUserFeedContent = ({
       .catch(error => reject(error));
   });
 
-export const searchObjects = (searchString, limit = 10) =>
-  fetch(`${config.apiPrefix}${config.searchObjects}`, {
+export const searchObjects = (searchString, objType = '', limit = 10) => {
+  const requestBody = { search_string: searchString, limit };
+  if (objType && typeof objType === 'string') {
+    requestBody.object_type = objType;
+  }
+  return fetch(`${config.apiPrefix}${config.searchObjects}`, {
     headers,
     method: 'POST',
-    body: JSON.stringify({ search_string: searchString, limit }),
+    body: JSON.stringify(requestBody),
   }).then(res => res.json());
+};
 
 export const postAppendWaivioObject = postData =>
   new Promise((resolve, reject) => {
@@ -335,7 +340,7 @@ export const getSearchResult = (text, userLimit = 3, wobjectsLimit, objectTypesL
 
 export const getMoreObjectsByType = (type, skip, limit, filter = {}) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.objectType}`, {
+    fetch(`${config.apiPrefix}${config.objectType}/${type}`, {
       headers,
       method: 'POST',
       body: JSON.stringify({ object_types: [type], skip, limit, filter }),

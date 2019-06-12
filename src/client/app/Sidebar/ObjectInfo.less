@@ -1,4 +1,5 @@
 @import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables';
 
 .object-sidebar {
   padding-bottom: 50px;
@@ -10,12 +11,37 @@
     font-weight: 500;
     text-transform: uppercase;
   }
+
+  &__menu-items {
+    text-align: center;
+    padding-bottom: @content-margin;
+
+    .field-info {
+      padding: 0;
+    }
+    @media @medium, @large {
+      text-align: left;
+    }
+  }
+  &__menu-item {
+    font-weight: 500;
+
+    @media @medium, @large {
+      a {
+        &.active {
+          color: @primary-color;
+        }
+        color: @text-color;
+      }
+    }
+  }
 }
 .field-button {
   width: 100%;
 }
+
 .field-info {
-  padding-bottom: 12px;
+  padding-bottom: @content-margin;
 
   &:last-child {
     padding: 0;
@@ -100,3 +126,5 @@
 .ant-tag {
   cursor: default !important;
 }
+
+@import './ObjectInfo-nightmode';
