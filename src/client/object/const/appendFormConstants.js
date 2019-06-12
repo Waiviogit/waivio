@@ -6,6 +6,7 @@ import {
   phoneFields,
   websiteFields,
   ratingFields,
+  TYPES_OF_MENU_ITEM,
 } from '../../../common/constants/listOfFields';
 import {
   emailValidationRegExp,
@@ -84,6 +85,42 @@ export const fieldsRules = {
           defaultMessage: 'Field is required',
         },
         intlMeta: { field: 'Parent' },
+      },
+    },
+    {
+      validator: true,
+    },
+  ],
+  [TYPES_OF_MENU_ITEM.LIST]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      required: true,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'Menu item' },
+      },
+    },
+    {
+      validator: true,
+    },
+  ],
+  [TYPES_OF_MENU_ITEM.PAGE]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      required: true,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'Menu item' },
       },
     },
     {
