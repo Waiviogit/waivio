@@ -13,13 +13,18 @@
     width: 100%;
     background-color: @color-white;
     border: 1px solid @border-color-base;
+    border-radius: 4px;
+
+    @media @xsmall {
+      width: calc(100% - @margin)!important;
+    }
 
     @media @small {
-      width: calc(100% - @margin) !important;
+      width: 100%!important;
     }
 
     @media @medium {
-      width: calc(100% - (@left-width + @margin)) !important;
+      width: calc(100% - (@left-width + @margin))!important;
       margin-left: @margin!important;
     }
   }

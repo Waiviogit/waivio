@@ -35,7 +35,7 @@ class ClosedDeals extends Component {
     const closedDeals = !_.isEmpty(this.props.closedDeals) ? (
       _.map(this.props.closedDeals, closedDeal => {
         totalPnL += closedDeal.pnl;
-        quoteSettings = this.props.quotesSettings[closedDeal.security] || quoteSettingsData;
+        quoteSettings = this.props.quotesSettings[closedDeal.security];
         return (
           <ClosedDeal
             key={closedDeal.dealId}

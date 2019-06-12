@@ -11,7 +11,7 @@ import { getFieldWithMaxWeight } from '../../../../client/object/wObjectHelper';
 import { objectFields } from '../../../../common/constants/listOfFields';
 import * as ApiClient from '../../../../waivioApi/ApiClient';
 import { quoteIdForWidget } from '../../../constants/constantsWidgets';
-import { getLongTermStatisticsFromWidgets } from '../../../helpers/diffDateTime';
+import { getLongTermStatisticsForUser } from '../../../helpers/diffDateTime';
 
 @injectIntl
 @withRouter
@@ -42,49 +42,41 @@ class InstrumentLongTermStatistics extends React.Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!_.isEmpty(nextProps.wobject) && !_.isEmpty(nextProps.quotes)) {
-      let chartId = this.state.chartId;
-      if (!this.state.chartId) {
-        chartId = getFieldWithMaxWeight(nextProps.wobject, objectFields.chartId);
-        this.setState({ chartId });
-      }
-      const quote = nextProps.quotes[chartId];
-      const id = quoteIdForWidget[chartId];
-
-      if (chartId && quote && id) {
-        let longTermStatistics = {};
-        if (_.isEmpty(this.state.longTermStatisticsWidgets)) {
-          ApiClient.getInstrumentLongTermStatistics(id).then(data => {
-            if (data && !_.isError(data)) {
-              const parsedData = _.attempt(JSON.parse, data);
-              if (!_.isError(parsedData))
-                longTermStatistics = getLongTermStatisticsFromWidgets(
-                  parsedData,
-                  nextProps.intl,
-                  quote,
-                );
-              if (!_.isEmpty(longTermStatistics))
-                this.setState({
-                  longTermStatistics,
-                  longTermStatisticsWidgets: parsedData,
-                  loading: false,
-                });
-            }
-          });
-        } else {
-          longTermStatistics = getLongTermStatisticsFromWidgets(
-            this.state.longTermStatisticsWidgets,
-            nextProps.intl,
-            quote,
-          );
-          if (!_.isEmpty(longTermStatistics)) this.setState({ longTermStatistics, loading: false });
-        }
+  componentDidMount() {
+    ApiClient.getInstrumentLongTermStatistics(this.props.wobject.author_permlink).then(data => {
+      if (data && !_.isError(data) && !_.isEmpty(data)) {
+        const longTermStatistics = getLongTermStatisticsForUser(data, this.props.intl);
+        this.setState({ longTermStatistics, loading: false });
       } else {
         this.setState({ loading: false });
       }
-    }
+    });
   }
+  // componentWillReceiveProps(nextProps) {
+  //   if (!_.isEmpty(nextProps.wobject) && !_.isEmpty(nextProps.quotes)) {
+  //     let chartId = this.state.chartId;
+  //     if (!this.state.chartId) {
+  //       chartId = getFieldWithMaxWeight(nextProps.wobject, objectFields.chartId);
+  //       this.setState({chartId});
+  //     }
+  //     const quote = nextProps.quotes[chartId];
+  //     const id = quoteIdForWidget[chartId];
+  //
+  //     if (chartId && quote && id) {
+  //       if (_.isEmpty(this.state.longTermStatisticsWidgets)) {
+  //         ApiClient.getInstrumentLongTermStatistics(nextProps.wobject.author_permlink).then(data => {
+  //             if (data && !_.isError(data) && !_.isEmpty(data)) {
+  //               const longTermStatistics = getLongTermStatisticsForUser(data, this.props.intl);
+  //               this.setState({longTermStatistics, loading: false});
+  //             } else {
+  //               this.setState({loading: false});
+  //             }
+  //           }
+  //         );
+  //       }
+  //     }
+  //   }
+  // }
   render() {
     return !this.state.loading ? (
       <div className="InstrumentLongTermStatistics">

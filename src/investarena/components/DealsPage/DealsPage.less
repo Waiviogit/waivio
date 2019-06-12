@@ -12,9 +12,13 @@
     width: 100%;
     background-color: @color-white;
     border: 1px solid @border-color-base;
+    border-radius: 4px;
+    @media @xsmall {
+      width: calc(100% - 10px) !important;
+    }
 
     @media @small {
-      width: calc(100% - @margin) !important;
+      width: 100% !important;
     }
 
     @media @medium {
@@ -31,6 +35,7 @@
   .st-deals-toggle-view {
     display: flex;
     justify-content: flex-end;
+    text-align: right;
     align-items: center;
     padding: 5px 15px;
     &__icon {
@@ -58,7 +63,8 @@
 
   .st-deals-wrap {
     background-color: @color-white;
-    padding: 15px;
+    padding: 5px 15px;
+    text-align: right;
     .st-instrument-title {
       .textStyle(@font-size-large, @color-black-blue, bold);
     }
@@ -67,9 +73,14 @@
       .textStyle(@font-size-medium, @color-darkest-gray, bold);
       border-radius: 0;
     }
-    &.st-connect-to-broker-wrap {
-      text-align: center;
+    .SortSelector__title,
+    .SortSelector__current {
+      color: @tertiary-color!important;
     }
+  }
+  .st-connect-to-broker-wrap-text {
+    text-align: center;
+    color: @color-black-blue;
   }
   .st-deals-avatar {
     margin-right: 10px;
@@ -249,6 +260,7 @@
   }
   .st-content-quotes {
     overflow: auto;
+    min-height: 70vh;
     &.cards-view {
       .st-deals-responsible-wrap {
         display: flex;
@@ -262,15 +274,6 @@
     flex-flow: row wrap;
     align-content: flex-start;
   }
-}
-
-.st-deals-back {
-  margin-left: 15px;
-  padding: 0 !important;
-}
-.st-deals-to-deals-wrap {
-  width: 337px;
-  justify-content: flex-end;
 }
 
 @import 'DealsPage-nightmode';

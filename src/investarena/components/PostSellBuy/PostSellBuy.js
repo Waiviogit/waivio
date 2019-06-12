@@ -43,11 +43,11 @@ const PostSellBuy = ({
   const wobj = quoteSettings.wobjData ? quoteSettings.wobjData : {};
   const recommendPost = recommend.toLowerCase();
   if (isExpired && profitability !== undefined) {
-    let data = { img: '/static/images/icons/ic_trending_flat_black_24px.svg', title: 'Neutral' };
+    let data = { img: '/images/icons/ic_trending_flat.svg', title: 'Neutral' };
     if (profitability < 0) {
-      data = { img: '/static/images/icons/ic_trending_down_black_24px.svg', title: 'Negative' };
+      data = { img: '/images/icons/ic_trending_down.svg', title: 'Negative' };
     } else if (profitability > 0) {
-      data = { img: '/static/images/icons/ic_trending_up_black_24px.svg', title: 'Positive' };
+      data = { img: '/images/icons/ic_trending_up.svg', title: 'Positive' };
     }
     profitabilityIcon = (
       <div

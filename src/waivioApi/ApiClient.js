@@ -353,19 +353,19 @@ export const getMoreObjectsByType = (type, skip, limit, filter = {}) =>
 
 // Investarena
 
-export const getInstrumentLongTermStatistics = id =>
-  new Promise((resolve, reject) => {
-    fetch(
-      `https://informer.maximarkets.org/wss/api/quotation/${id}/Day/730/?withCurrentBar=true&param=ask`,
-      {
-        headers,
-        method: 'GET',
-      },
-    )
-      .then(res => res.json())
-      .then(data => resolve(data))
-      .catch(error => reject(error));
-  });
+// export const getInstrumentLongTermStatistics = id =>
+//   new Promise((resolve, reject) => {
+//     fetch(
+//       `https://informer.maximarkets.org/wss/api/quotation/${id}/Day/730/?withCurrentBar=true&param=ask`,
+//       {
+//         headers,
+//         method: 'GET',
+//       },
+//     )
+//       .then(res => res.json())
+//       .then(data => resolve(data))
+//       .catch(error => reject(error));
+//   });
 
 export const getUserLongTermStatistics = id =>
   new Promise((resolve, reject) => {
@@ -378,6 +378,16 @@ export const getUserLongTermStatistics = id =>
       .catch(error => reject(error));
   });
 
+export const getInstrumentLongTermStatistics = id =>
+  new Promise((resolve, reject) => {
+    fetch(`https://waiviodev.com/investarena-api${config.instrumentStatistic}/${id}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(data => resolve(data))
+      .catch(error => reject(error));
+  });
 // END Investarena
 
 export default null;

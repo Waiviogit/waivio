@@ -12,6 +12,7 @@ import DealsList from './DealsList';
 const LeftSidebar = ({ quoteSettingsSorted }) => (
   <Switch>
     <Route path="/@:name/wallet" component={TopInstruments} />
+    <Route path="/my_feed" component={TopInstruments} />
     <Route path="/@:name" component={UserInfo} />
     <Route path="/object/:name" component={UserInfo} />
     <Route
