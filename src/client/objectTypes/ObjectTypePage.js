@@ -6,9 +6,9 @@ import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
 import { Helmet } from 'react-helmet';
 import {
-  getIsAuthenticated,
   getAuthenticatedUser,
   getAuthenticatedUserName,
+  getIsAuthenticated,
   getObjectTypeState,
   getScreenSize,
   getUserLocation,
@@ -17,12 +17,13 @@ import {
 import MapOS from '../components/Maps/Map';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
-import { getObjectType, clearType } from './objectTypeActions';
+import { clearType, getObjectType } from './objectTypeActions';
 import './ObjectTypePage.less';
 import ObjectTypeFiltersPanel from './ObjectTypeFiltersPanel/ObjectTypeFiltersPanel';
 import ObjectTypeFiltersTags from './ObjectTypeFiltersTags/ObjectTypeFiltersTags';
 import ListObjectsByType from '../objectCard/ListObjectsByType/ListObjectsByType';
 import { getCoordinates } from '../user/userActions';
+import Loading from '../components/Icon/Loading';
 
 @injectIntl
 @withRouter
@@ -71,6 +72,7 @@ export default class ObjectTypePage extends React.Component {
       ratings: [],
     },
     withMap: false,
+    isLoading: true,
   };
 
   componentDidMount() {
@@ -84,9 +86,9 @@ export default class ObjectTypePage extends React.Component {
         !_.isEmpty(nextProps.type.filters.map) &&
         !this.state.withMap
       ) {
-        this.setState({ filters: nextProps.type.filters });
+        this.setState({ filters: nextProps.type.filters, isLoading: false });
         this.getObjectTypeWithMap(nextProps);
-      }
+      } else this.setState({ isLoading: false });
     }
   }
 
@@ -216,6 +218,7 @@ export default class ObjectTypePage extends React.Component {
                   />
                 </div>
               )}
+              {/* eslint-disable-next-line no-nested-ternary */}
               {!_.isEmpty(this.props.type.related_wobjects) ? (
                 <ListObjectsByType
                   limit={25}
@@ -224,13 +227,15 @@ export default class ObjectTypePage extends React.Component {
                   typeName={this.props.match.params.typeName}
                   showSmallVersion={screenSize === 'xsmall'}
                 />
-              ) : (
+              ) : !this.state.isLoading ? (
                 <div>
                   {`${intl.formatMessage({
                     id: 'noTypeObjects',
                     defaultMessage: 'No objects matched the filters with type',
                   })} ${type.name}`}
                 </div>
+              ) : (
+                <Loading center />
               )}
             </div>
           </div>
