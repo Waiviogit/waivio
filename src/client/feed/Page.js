@@ -69,7 +69,7 @@ class Page extends React.Component {
             </Affix>
             <div className="center">
               {authenticated && <QuickPostEditor />}
-              <PostsNavigation location={this.props.location} />
+              <PostsNavigation location={this.props.location} authenticated={authenticated} />
               <SubFeed />
             </div>
           </div>

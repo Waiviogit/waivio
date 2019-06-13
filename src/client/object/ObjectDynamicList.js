@@ -13,10 +13,12 @@ export default class ObjectDynamicList extends React.Component {
     limit: PropTypes.number.isRequired,
     fetcher: PropTypes.func.isRequired,
     handleObjectCount: PropTypes.func,
+    isOnlyHashtags: PropTypes.bool,
   };
 
   static defaultProps = {
     handleObjectCount: () => {},
+    isOnlyHashtags: false,
   };
 
   state = {
@@ -26,7 +28,7 @@ export default class ObjectDynamicList extends React.Component {
   };
 
   handleLoadMore = () => {
-    const { fetcher, limit, handleObjectCount } = this.props;
+    const { fetcher, limit, handleObjectCount, isOnlyHashtags } = this.props;
     const { wobjects } = this.state;
 
     this.setState(
@@ -34,7 +36,7 @@ export default class ObjectDynamicList extends React.Component {
         loading: true,
       },
       () => {
-        fetcher(wobjects.length).then(newWobjects => {
+        fetcher(wobjects.length, isOnlyHashtags).then(newWobjects => {
           newWobjects.wobjects_count // eslint-disable-line no-unused-expressions
             ? this.setState(
                 state => ({

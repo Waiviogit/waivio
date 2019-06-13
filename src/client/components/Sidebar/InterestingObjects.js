@@ -1,3 +1,4 @@
+import { Icon } from 'antd';
 import React from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -31,15 +32,20 @@ class InterestingObjects extends React.Component {
   componentWillMount() {
     if (_.size(this.props.recommendedObjects) < 5) this.props.getRecommendedObj();
   }
-
   render() {
     const { recommendedObjects } = this.props;
     return _.size(recommendedObjects) >= 5 ? (
       <div className="InterestingObjects SidebarContentBlock">
         <h4 className="SidebarContentBlock__title">
-          <i className="iconfont icon-collection SidebarContentBlock__icon" />{' '}
+          <Icon type="codepen" className="SidebarContentBlock__icon" />
           <FormattedMessage id="interesting_objects" defaultMessage="Top 5 Objects" />
         </h4>
+        <button
+          onClick={this.props.getRecommendedObj}
+          className="InterestingPeople__button-refresh"
+        >
+          <i className="iconfont icon-refresh" />
+        </button>
         <div className="SidebarContentBlock__content">
           {recommendedObjects &&
             recommendedObjects.map(wobject => (
