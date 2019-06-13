@@ -1,13 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
+import { Tabs } from 'antd';
 import { withRouter } from 'react-router-dom';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import ObjectContent from './ObjectContent';
 import Affix from '../components/Utils/Affix';
-import './Objects.less';
 import SearchObjectsAutocomplete from '../components/EditorObject/SearchObjectsAutocomplete';
+import './Objects.less';
+
+const TabPane = Tabs.TabPane;
 
 const Objects = ({ intl, history }) => {
   const handleSelectObject = selected => {
@@ -35,9 +38,32 @@ const Objects = ({ intl, history }) => {
             </div>
             <SearchObjectsAutocomplete handleSelect={handleSelectObject} />
           </div>
-          <div className="Objects__content">
-            <ObjectContent />
-          </div>
+          <Tabs defaultActiveKey="1">
+            <TabPane
+              tab={
+                <span className="UserExpertise__item">
+                  <FormattedMessage id="hashtag_value_placeholder" defaultMessage="Hashtags" />
+                </span>
+              }
+              key="1"
+            >
+              <div className="Objects__content">
+                <ObjectContent isOnlyHashtags />
+              </div>
+            </TabPane>
+            <TabPane
+              tab={
+                <span className="UserExpertise__item">
+                  <FormattedMessage id="objects" defaultMessage="Objects" />
+                </span>
+              }
+              key="2"
+            >
+              <div className="Objects__content">
+                <ObjectContent />
+              </div>
+            </TabPane>
+          </Tabs>
         </div>
       </div>
     </div>
