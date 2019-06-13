@@ -39,6 +39,12 @@ class InterestingObjects extends React.Component {
         <h4 className="SidebarContentBlock__title">
           <Icon type="codepen" className="SidebarContentBlock__icon" />
           <FormattedMessage id="interesting_objects" defaultMessage="Top 5 Objects" />
+          <button
+            onClick={this.props.getRecommendedObj}
+            className="InterestingPeople__button-refresh"
+          >
+            <i className="iconfont icon-refresh" />
+          </button>
         </h4>
         <div className="SidebarContentBlock__content">
           {recommendedObjects &&
