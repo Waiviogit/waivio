@@ -635,33 +635,37 @@ export default class AppendForm extends Component {
       case TYPES_OF_MENU_ITEM.PAGE:
       case TYPES_OF_MENU_ITEM.LIST: {
         return (
-          <Form.Item>
-            {getFieldDecorator('menuItemName', {
-              rules: this.getFieldRules(objectFields.name),
-            })(
-              <Input
-                className="AppendForm__title"
-                disabled={loading}
-                placeholder={intl.formatMessage({
-                  id: 'menu_item_placeholder',
-                  defaultMessage: 'Menu item name',
-                })}
-              />,
-            )}
-            {getFieldDecorator(currentField, {
-              rules: this.getFieldRules(objectFields.listItem),
-            })(
-              <SearchObjectsAutocomplete
-                className="menu-item-search"
-                itemsIdsToOmit={_.get(wObject, 'menuItems', []).map(f => f.author_permlink)}
-                handleSelect={this.handleSelectObject}
-                objectType={
-                  this.props.currentField === TYPES_OF_MENU_ITEM.LIST ? OBJECT_TYPE.LIST : ''
-                }
-              />,
-            )}
-            {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
-          </Form.Item>
+          <React.Fragment>
+            <Form.Item>
+              {getFieldDecorator('menuItemName', {
+                rules: this.getFieldRules('menuItemName'),
+              })(
+                <Input
+                  className="AppendForm__title"
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'menu_item_placeholder',
+                    defaultMessage: 'Menu item name',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator(currentField, {
+                rules: this.getFieldRules(currentField),
+              })(
+                <SearchObjectsAutocomplete
+                  className="menu-item-search"
+                  itemsIdsToOmit={_.get(wObject, 'menuItems', []).map(f => f.author_permlink)}
+                  handleSelect={this.handleSelectObject}
+                  objectType={
+                    this.props.currentField === TYPES_OF_MENU_ITEM.LIST ? OBJECT_TYPE.LIST : ''
+                  }
+                />,
+              )}
+              {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
+            </Form.Item>
+          </React.Fragment>
         );
       }
       case objectFields.name: {
@@ -1240,7 +1244,7 @@ export default class AppendForm extends Component {
 
     const isCustomSortingList =
       wObject.object_type &&
-      wObject.object_type.toLowerCase() === 'list' &&
+      wObject.object_type.toLowerCase() === OBJECT_TYPE.LIST &&
       form.getFieldValue('currentField') === objectFields.sorting;
 
     const languageOptions = [];

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import WaivioObject from './WaivioObject';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -7,16 +8,25 @@ import Loading from '../components/Icon/Loading';
 const displayLimit = 30;
 
 export default class ObjectContent extends React.Component {
+  static propTypes = {
+    isOnlyHashtags: PropTypes.bool,
+  };
+  static defaultProps = {
+    isOnlyHashtags: false,
+  };
   state = {
     wobjs: [],
     loading: false,
     hasMore: true,
+    isOnlyHashtags: false,
   };
 
   componentDidMount() {
-    ApiClient.getObjects({ limit: displayLimit }).then(wobjs => {
-      this.setState({ wobjs: wobjs.wobjects });
-    });
+    ApiClient.getObjects({ limit: displayLimit, isOnlyHashtags: this.props.isOnlyHashtags }).then(
+      wobjs => {
+        this.setState({ wobjs: wobjs.wobjects });
+      },
+    );
   }
 
   handleLoadMore = () => {
@@ -32,6 +42,7 @@ export default class ObjectContent extends React.Component {
         ApiClient.getObjects({
           limit: displayLimit,
           skip,
+          isOnlyHashtags: this.props.isOnlyHashtags,
         }).then(newWobjs =>
           this.setState(state => ({
             loading: false,

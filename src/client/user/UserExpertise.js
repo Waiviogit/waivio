@@ -20,9 +20,15 @@ export default class UserExpertise extends React.Component {
     tagCount: 0,
   };
 
-  fetcher = skip => {
+  fetcher = (skip, isOnlyHashtags) => {
     const { match } = this.props;
-    return getWobjectsWithUserWeight(match.params.name, skip, UserExpertise.limit);
+    return getWobjectsWithUserWeight(
+      match.params.name,
+      skip,
+      UserExpertise.limit,
+      isOnlyHashtags ? ['hashtag'] : null,
+      !isOnlyHashtags ? ['hashtag'] : null,
+    );
   };
 
   objectCount = count =>
@@ -66,7 +72,12 @@ export default class UserExpertise extends React.Component {
             }
             key="2"
           >
-            Hashtags
+            <ObjectDynamicList
+              isOnlyHashtags
+              limit={UserExpertise.limit}
+              fetcher={this.fetcher}
+              handleObjectCount={this.objectCount}
+            />
           </TabPane>
         </Tabs>
       </div>
