@@ -11,6 +11,7 @@ import './SidebarContentBlock.less';
 import { getRecommendedObjects } from '../../reducers';
 import { getRecommendedObj } from '../../user/userActions';
 import RightSidebarLoading from '../../app/Sidebar/RightSidebarLoading';
+import WeightTag from '../WeightTag';
 
 @connect(
   state => ({
@@ -49,7 +50,12 @@ class InterestingObjects extends React.Component {
         <div className="SidebarContentBlock__content">
           {recommendedObjects &&
             recommendedObjects.map(wobject => (
-              <ObjectCard key={wobject.author_permlink} wobject={wobject} />
+              <ObjectCard
+                key={wobject.author_permlink}
+                wobject={wobject}
+                showFollow={false}
+                alt={<WeightTag weight={wobject.weight} />}
+              />
             ))}
           <h4 className="InterestingObjects__more">
             <Link to={'/objects'}>
