@@ -107,7 +107,6 @@ export const getFollowingObjectsList = state => fromUser.getFollowingObjectsList
 export const getPendingFollows = state => fromUser.getPendingFollows(state.user);
 export const getPendingFollowingObjects = state => fromUser.getPendingFollowingObjects(state.user);
 export const getIsFetchingFollowingList = state => fromUser.getIsFetchingFollowingList(state.user);
-export const getRecommendations = state => fromUser.getRecommendations(state.user);
 export const getRecommendedObjects = state => fromUser.getRecommendedObjects(state.user);
 export const getFollowingFetched = state => fromUser.getFollowingFetched(state.user);
 export const getNotifications = state => fromUser.getNotifications(state.user);
@@ -123,6 +122,10 @@ export const getIsUserLoaded = (state, username) =>
   fromUsers.getIsUserLoaded(state.users, username);
 export const getIsUserFailed = (state, username) =>
   fromUsers.getIsUserFailed(state.users, username);
+export const getTopExperts = state => fromUsers.getTopExperts(state.users);
+export const getTopExpertsLoading = state => fromUsers.getTopExpertsLoading(state.users);
+export const getRandomExperts = state => fromUsers.getRandomExperts(state.users);
+export const getRandomExpertsLoaded = state => fromUsers.getRandomExpertsLoaded(state.users);
 
 export const getFavoriteCategories = state => fromFavorites.getFavoriteCategories(state.favorites);
 

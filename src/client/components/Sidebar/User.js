@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Avatar from '../Avatar';
 import FollowButton from '../../widgets/FollowButton';
+import WeightTag from '../../components/WeightTag';
 import './User.less';
 
 const User = ({ user }) => (
@@ -17,7 +18,11 @@ const User = ({ user }) => (
         </Link>
       </div>
       <div className="User__follow">
-        <FollowButton following={user.name} followingType="user" secondary />
+        {user.weight && typeof user.weight === 'number' ? (
+          <WeightTag weight={user.weight} />
+        ) : (
+          <FollowButton following={user.name} followingType="user" secondary />
+        )}
       </div>
     </div>
     <div className="User__divider" />
@@ -25,7 +30,10 @@ const User = ({ user }) => (
 );
 
 User.propTypes = {
-  user: PropTypes.shape().isRequired,
+  user: PropTypes.shape({
+    name: PropTypes.string,
+    weight: PropTypes.number,
+  }).isRequired,
 };
 
 export default User;

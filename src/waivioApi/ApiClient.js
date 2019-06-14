@@ -320,4 +320,17 @@ export const getMoreObjectsByType = (type, skip, limit, filter = {}) =>
       .catch(error => reject(error));
   });
 
+export const getTopUsers = (isRandom = false, { limit, skip } = { limit: 30, skip: 0 }) => {
+  const queryString = `?${isRandom ? 'sample=true' : `limit=${limit}&skip=${skip}`}`;
+  return new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.users}${queryString}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(data => resolve(data))
+      .catch(error => reject(error));
+  });
+};
+
 export default null;

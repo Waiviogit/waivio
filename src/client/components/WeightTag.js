@@ -15,7 +15,7 @@ class WeightTag extends React.Component {
     intl: PropTypes.shape().isRequired,
     rewardFund: PropTypes.shape().isRequired,
     rate: PropTypes.number.isRequired,
-    weight: PropTypes.number.isRequired,
+    weight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   };
 
   static defaultProps = {
