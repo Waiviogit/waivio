@@ -20,7 +20,6 @@ import {
 } from './reducers';
 import { login, logout, busyLogin } from './auth/authActions';
 import { getFollowing, getFollowingObjects, getNotifications } from './user/userActions';
-import { getRandomExperts } from './user/usersActions';
 import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './app/appActions';
 import * as reblogActions from './app/Reblog/reblogActions';
 import NotificationPopup from './notifications/NotificationPopup';
@@ -47,7 +46,6 @@ import BBackTop from './components/BBackTop';
     getFollowingObjects,
     getNotifications,
     getRate,
-    getRandomExperts,
     getRewardFund,
     busyLogin,
     getRebloggedList: reblogActions.getRebloggedList,
@@ -70,7 +68,6 @@ export default class Wrapper extends React.PureComponent {
     getRewardFund: PropTypes.func,
     getRebloggedList: PropTypes.func,
     getRate: PropTypes.func,
-    getRandomExperts: PropTypes.func,
     getNotifications: PropTypes.func,
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
@@ -88,7 +85,6 @@ export default class Wrapper extends React.PureComponent {
     getRewardFund: () => {},
     getRebloggedList: () => {},
     getRate: () => {},
-    getRandomExperts: () => {},
     getTrendingTopics: () => {},
     getNotifications: () => {},
     setUsedLocale: () => {},
@@ -136,7 +132,6 @@ export default class Wrapper extends React.PureComponent {
     this.props.getRewardFund();
     this.props.getRebloggedList();
     this.props.getRate();
-    this.props.getRandomExperts();
   }
 
   componentWillReceiveProps(nextProps) {

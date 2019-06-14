@@ -6,7 +6,7 @@ const initialState = {
   topExperts: {
     list: [],
     isFetching: false,
-    fetched: false,
+    hasMore: true,
   },
   randomExperts: {
     list: [],
@@ -63,7 +63,7 @@ export default function usersReducer(state = initialState, action) {
       return {
         ...state,
         randomExperts: {
-          list: [],
+          ...state.randomExperts,
           isFetching: true,
           fetched: false,
         },
@@ -72,7 +72,7 @@ export default function usersReducer(state = initialState, action) {
       return {
         ...state,
         randomExperts: {
-          list: action.payload,
+          list: action.payload.sort((a, b) => b.weight - a.weight),
           isFetching: false,
           fetched: true,
         },
@@ -81,9 +81,35 @@ export default function usersReducer(state = initialState, action) {
       return {
         ...state,
         randomExperts: {
-          list: [],
+          ...state.randomExperts,
           isFetching: false,
           fetched: false,
+        },
+      };
+    case actions.GET_TOP_EXPERTS_START:
+      return {
+        ...state,
+        topExperts: {
+          ...state.topExperts,
+          isFetching: true,
+        },
+      };
+    case actions.GET_TOP_EXPERTS_SUCCESS:
+      return {
+        ...state,
+        topExperts: {
+          list: [...state.topExperts.list, ...action.payload],
+          isFetching: false,
+          hasMore: action.meta.limit === action.payload.length,
+        },
+      };
+    case actions.GET_TOP_EXPERTS_ERROR:
+      return {
+        ...state,
+        topExperts: {
+          ...state.topExperts,
+          isFetching: false,
+          hasMore: false,
         },
       };
     default: {
@@ -97,4 +123,6 @@ export const getIsUserFetching = (state, username) => getUser(state, username).f
 export const getIsUserLoaded = (state, username) => getUser(state, username).loaded || false;
 export const getIsUserFailed = (state, username) => getUser(state, username).failed || false;
 export const getTopExperts = state => state.topExperts.list;
+export const getTopExpertsLoading = state => state.topExperts.isFetching;
 export const getRandomExperts = state => state.randomExperts.list;
+export const getRandomExpertsLoaded = state => state.randomExperts.fetched;

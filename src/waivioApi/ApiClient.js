@@ -320,29 +320,17 @@ export const getMoreObjectsByType = (type, skip, limit, filter = {}) =>
       .catch(error => reject(error));
   });
 
-export const getTopUsers = ({ limit, skip, sample } = { limit: 50, skip: 0, sample: false }) => {
-  // const queryString = `?${sample ? 'sample=true' : `limit=${limit}&skip=${skip}`}`;
-  // return new Promise((resolve, reject) => {
-  //   fetch(`${config.apiPrefix}${config.users}${queryString}`, {
-  //     headers,
-  //     method: 'GET',
-  //   })
-  //     .then(res => res.json())
-  //     .then(data => resolve(data))
-  //     .catch(error => reject(error));
-  // })
-
-  // todo: mock
-  const users = [
-    { name: 'milklim', weight: 127345431 * limit },
-    { name: 'z1wo5', weight: 123435431 + skip },
-    { name: 'npo31', weight: 123455431 + Number(sample) },
-    { name: 'alexeygrigurko', weight: 122345431 },
-    { name: 'monterey', weight: 14234543111 },
-  ];
-  return new Promise(resolve =>
-    setTimeout(() => resolve(users.sort(() => Math.random() - 0.5)), 100),
-  );
+export const getTopUsers = (isRandom = false, { limit, skip } = { limit: 30, skip: 0 }) => {
+  const queryString = `?${isRandom ? 'sample=true' : `limit=${limit}&skip=${skip}`}`;
+  return new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.users}${queryString}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(data => resolve(data))
+      .catch(error => reject(error));
+  });
 };
 
 export default null;

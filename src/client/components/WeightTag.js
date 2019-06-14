@@ -15,7 +15,7 @@ class WeightTag extends React.Component {
     intl: PropTypes.shape().isRequired,
     rewardFund: PropTypes.shape().isRequired,
     rate: PropTypes.number.isRequired,
-    weight: PropTypes.number.isRequired,
+    weight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   };
 
   static defaultProps = {
@@ -34,7 +34,7 @@ class WeightTag extends React.Component {
         rate *
         1000000;
       return (
-        <div
+        <span
           className="Weight"
           title={intl.formatMessage({
             id: 'total_ralated_payout',
@@ -47,7 +47,7 @@ class WeightTag extends React.Component {
           ) : (
             <WeightDisplay value={value} />
           )}
-        </div>
+        </span>
       );
     }
     return null;

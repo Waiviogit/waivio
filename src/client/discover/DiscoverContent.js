@@ -1,48 +1,57 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { people } from '../helpers/constants';
 import DiscoverUser from './DiscoverUser';
-import SteemAPI from '../steemAPI';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
+import { getTopExperts as getTopExpertsApi } from '../user/usersActions';
+import { getTopExperts, getTopExpertsLoading } from '../reducers';
+import Loading from '../components/Icon/Loading';
 
 const displayLimit = 20;
 
+@connect(
+  state => ({
+    topExperts: getTopExperts(state),
+    topExpertsLoading: getTopExpertsLoading(state),
+  }),
+  {
+    getTopExperts: getTopExpertsApi,
+  },
+)
 class DiscoverContent extends React.Component {
-  state = {
-    users: [],
+  static propTypes = {
+    topExperts: PropTypes.arrayOf(
+      PropTypes.shape({
+        name: PropTypes.string,
+        weight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+        json_metadata: PropTypes.string,
+      }),
+    ).isRequired,
+    getTopExperts: PropTypes.func.isRequired,
+    topExpertsLoading: PropTypes.bool.isRequired,
   };
 
-  componentDidMount() {
-    const initialUsers = people.slice(0, displayLimit);
-    SteemAPI.sendAsync('get_accounts', [initialUsers]).then(users =>
-      this.setState({
-        users,
-      }),
-    );
-  }
-
   handleLoadMore = () => {
-    const { users } = this.state;
-    const moreUsersStartIndex = users.length;
-    const moreUsers = people.slice(moreUsersStartIndex, moreUsersStartIndex + displayLimit);
-    SteemAPI.sendAsync('get_accounts', [moreUsers]).then(moreUsersResponse =>
-      this.setState({
-        users: users.concat(moreUsersResponse),
-      }),
-    );
+    if (!this.props.topExpertsLoading) {
+      this.props.getTopExperts(displayLimit, this.props.topExperts.length);
+    }
   };
 
   render() {
-    const { users } = this.state;
-    const hasMore = users.length !== people.length;
+    const { topExperts, topExpertsLoading } = this.props;
+    const hasMore = topExperts.length !== people.length;
     return (
       <div>
         <ReduxInfiniteScroll
           hasMore={hasMore}
           loadMore={this.handleLoadMore}
           elementIsScrollable={false}
+          loadingMore={topExpertsLoading}
+          loader={<Loading />}
         >
-          {users.map(user => (
-            <DiscoverUser user={user} key={user.id} />
+          {topExperts.map(expert => (
+            <DiscoverUser user={expert} key={expert.name} />
           ))}
         </ReduxInfiniteScroll>
       </div>
