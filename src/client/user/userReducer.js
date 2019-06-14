@@ -2,10 +2,8 @@ import _ from 'lodash';
 import * as userActions from './userActions';
 import * as wobjActions from '../object/wobjActions';
 import * as appTypes from '../app/appActions';
-import { people } from '../helpers/constants';
 
 const initialState = {
-  recommendations: [],
   recommendedObjects: [],
   location: {},
   following: {
@@ -24,17 +22,6 @@ const initialState = {
   latestNotification: {},
   loadingNotifications: false,
   fetchFollowListError: false,
-};
-
-// filterRecommendations generates a random list of `count` recommendations
-// include users followed by the current user.
-const filterRecommendations = (following, count = 5) => {
-  const usernames = Object.values(following);
-  return people
-    .filter(p => !usernames.includes(p))
-    .sort(() => 0.5 - Math.random())
-    .slice(0, count)
-    .map(name => ({ name }));
 };
 
 const filterRecommendedObjects = (objects, count = 5) => {
@@ -69,7 +56,6 @@ export default function userReducer(state = initialState, action) {
     case userActions.GET_FOLLOWING_SUCCESS:
       return {
         ...state,
-        recommendations: filterRecommendations(action.payload),
         following: {
           ...state.following,
           list: action.payload,
@@ -204,12 +190,6 @@ export default function userReducer(state = initialState, action) {
         },
       };
 
-    case userActions.UPDATE_RECOMMENDATIONS:
-      return {
-        ...state,
-        recommendations: filterRecommendations(state.following.list),
-      };
-
     case userActions.GET_NOTIFICATIONS.START:
       return {
         ...state,
@@ -251,7 +231,6 @@ export const getFollowingObjectsList = state => state.followingObjects.list;
 export const getPendingFollows = state => state.following.pendingFollows;
 export const getPendingFollowingObjects = state => state.followingObjects.pendingFollows;
 export const getIsFetchingFollowingList = state => state.following.isFetching;
-export const getRecommendations = state => state.recommendations;
 export const getRecommendedObjects = state => state.recommendedObjects;
 export const getFollowingFetched = state => state.following.fetched;
 export const getNotifications = state => state.notifications;
