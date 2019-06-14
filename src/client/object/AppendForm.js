@@ -641,7 +641,7 @@ export default class AppendForm extends Component {
                 rules: this.getFieldRules('menuItemName'),
               })(
                 <Input
-                  className="AppendForm__title"
+                  className="AppendForm__input"
                   disabled={loading}
                   placeholder={intl.formatMessage({
                     id: 'menu_item_placeholder',
@@ -673,7 +673,7 @@ export default class AppendForm extends Component {
           <Form.Item>
             {getFieldDecorator(objectFields.name, { rules: this.getFieldRules(objectFields.name) })(
               <Input
-                className="AppendForm__title"
+                className="AppendForm__input"
                 disabled={loading}
                 placeholder={intl.formatMessage({
                   id: 'value_placeholder',
@@ -691,7 +691,7 @@ export default class AppendForm extends Component {
               rules: this.getFieldRules(objectFields.tagCloud),
             })(
               <Input
-                className="AppendForm__title"
+                className="AppendForm__input"
                 disabled={loading}
                 placeholder={intl.formatMessage({
                   id: 'tag_placeholder',
@@ -733,7 +733,7 @@ export default class AppendForm extends Component {
             <Form.Item>
               {getFieldDecorator(currentField, { rules: this.getFieldRules(currentField) })(
                 <Input
-                  className="AppendForm__title"
+                  className="AppendForm__input"
                   disabled={loading}
                   placeholder={intl.formatMessage({
                     id: 'photo_url_placeholder',
