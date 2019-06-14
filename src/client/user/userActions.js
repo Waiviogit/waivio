@@ -1,4 +1,3 @@
-import { createAction } from 'redux-actions';
 import { getIsAuthenticated, getAuthenticatedUserName } from '../reducers';
 import { getAllFollowing } from '../helpers/apiHelpers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
@@ -109,9 +108,6 @@ export const getFollowingObjects = username => (dispatch, getState) => {
     },
   });
 };
-
-export const UPDATE_RECOMMENDATIONS = '@user/UPDATE_RECOMMENDATIONS';
-export const updateRecommendations = createAction(UPDATE_RECOMMENDATIONS);
 
 export const GET_NOTIFICATIONS = createAsyncActionType('@user/GET_NOTIFICATIONS');
 

@@ -3,6 +3,16 @@ import * as actions from './usersActions';
 
 const initialState = {
   users: {},
+  topExperts: {
+    list: [],
+    isFetching: false,
+    fetched: false,
+  },
+  randomExperts: {
+    list: [],
+    isFetching: false,
+    fetched: false,
+  },
 };
 
 const getUserDetailsKey = username => `user-${username}`;
@@ -49,6 +59,33 @@ export default function usersReducer(state = initialState, action) {
           },
         },
       };
+    case actions.GET_RANDOM_EXPERTS_START:
+      return {
+        ...state,
+        randomExperts: {
+          list: [],
+          isFetching: true,
+          fetched: false,
+        },
+      };
+    case actions.GET_RANDOM_EXPERTS_SUCCESS:
+      return {
+        ...state,
+        randomExperts: {
+          list: action.payload,
+          isFetching: false,
+          fetched: true,
+        },
+      };
+    case actions.GET_RANDOM_EXPERTS_ERROR:
+      return {
+        ...state,
+        randomExperts: {
+          list: [],
+          isFetching: false,
+          fetched: false,
+        },
+      };
     default: {
       return state;
     }
@@ -59,3 +96,5 @@ export const getUser = (state, username) => _.get(state.users, getUserDetailsKey
 export const getIsUserFetching = (state, username) => getUser(state, username).fetching || false;
 export const getIsUserLoaded = (state, username) => getUser(state, username).loaded || false;
 export const getIsUserFailed = (state, username) => getUser(state, username).failed || false;
+export const getTopExperts = state => state.topExperts.list;
+export const getRandomExperts = state => state.randomExperts.list;

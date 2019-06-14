@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Route, Switch, withRouter } from 'react-router-dom';
-import { getIsAuthenticated, getIsAuthFetching, getRecommendations } from '../../reducers';
-import { updateRecommendations } from '../../user/userActions';
+import { getIsAuthenticated, getIsAuthFetching, getRandomExperts } from '../../reducers';
+import { getRandomExperts as getRandomExpertsApi } from '../../user/usersActions';
 import InterestingPeople from '../../components/Sidebar/InterestingPeople';
 import InterestingObjects from '../../components/Sidebar/InterestingObjects';
 import SignUp from '../../components/Sidebar/SignUp';
@@ -20,10 +20,10 @@ import ObjectWeightBlock from '../../components/Sidebar/ObjectWeightBlock';
   state => ({
     authenticated: getIsAuthenticated(state),
     isAuthFetching: getIsAuthFetching(state),
-    recommendations: getRecommendations(state),
+    randomExperts: getRandomExperts(state),
   }),
   {
-    updateRecommendations,
+    updateRandomExperts: getRandomExpertsApi,
   },
 )
 export default class RightSidebar extends React.Component {
@@ -31,19 +31,19 @@ export default class RightSidebar extends React.Component {
     authenticated: PropTypes.bool.isRequired,
     isAuthFetching: PropTypes.bool.isRequired,
     showPostRecommendation: PropTypes.bool,
-    recommendations: PropTypes.arrayOf(PropTypes.shape({ name: PropTypes.string })).isRequired,
-    updateRecommendations: PropTypes.func,
+    randomExperts: PropTypes.arrayOf(PropTypes.shape({ name: PropTypes.string })).isRequired,
+    updateRandomExperts: PropTypes.func,
     match: PropTypes.shape(),
   };
 
   static defaultProps = {
     showPostRecommendation: false,
-    updateRecommendations: () => {},
+    updateRandomExperts: () => {},
     recommendedObjects: [],
     match: {},
   };
 
-  handleInterestingPeopleRefresh = () => this.props.updateRecommendations();
+  handleRandomExpertsRefresh = () => this.props.updateRandomExperts();
 
   render() {
     const { authenticated, showPostRecommendation, isAuthFetching, match } = this.props;
@@ -73,10 +73,10 @@ export default class RightSidebar extends React.Component {
               <React.Fragment>
                 <InterestingObjects />
                 {authenticated &&
-                  (this.props.recommendations.length > 0 && !showPostRecommendation ? (
+                  (this.props.randomExperts.length > 0 && !showPostRecommendation ? (
                     <InterestingPeople
-                      users={this.props.recommendations}
-                      onRefresh={this.handleInterestingPeopleRefresh}
+                      users={this.props.randomExperts}
+                      onRefresh={this.handleRandomExpertsRefresh}
                     />
                   ) : (
                     <RightSidebarLoading />

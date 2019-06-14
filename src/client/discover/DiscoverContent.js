@@ -36,8 +36,14 @@ class DiscoverContent extends React.Component {
     const hasMore = users.length !== people.length;
     return (
       <div>
-        <ReduxInfiniteScroll hasMore={hasMore} loadMore={this.handleLoadMore}>
-          {users.map(user => <DiscoverUser user={user} key={user.id} />)}
+        <ReduxInfiniteScroll
+          hasMore={hasMore}
+          loadMore={this.handleLoadMore}
+          elementIsScrollable={false}
+        >
+          {users.map(user => (
+            <DiscoverUser user={user} key={user.id} />
+          ))}
         </ReduxInfiniteScroll>
       </div>
     );
