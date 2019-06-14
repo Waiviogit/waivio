@@ -1,20 +1,26 @@
 @import (reference) '../../styles/custom.less';
 
 .RatingsWrap {
+  margin-top: 0.5em;
+
   &__rate {
     display: flex !important;
+
     &-title {
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
       max-width: 50%;
     }
+
     align-items: center;
+
     .ant-rate {
       line-height: 0;
       font-size: 16px;
     }
   }
+
   &__divider {
     padding-left: 15px !important;
     border-left: 2px @border-style-base @border-color-base;
