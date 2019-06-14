@@ -5,99 +5,73 @@
 
 .ObjectCardView {
   .ObjectCardView-mixin(80px, 100%);
-  &__title {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    width: 100%;
-  }
+
   &__name {
     margin-top: 5px;
   }
+
   @media @medium, @small, @large {
     .ObjectCardView-mixin(180px, 100%);
-    &__title {
-      word-break: break-word;
-      overflow: hidden;
-      white-space: normal;
-    }
   }
-}
-.ObjectCardView-mixin(@cardHeight, @cardWidth) {
-  @cardContentWidth: calc(@cardWidth - @cardHeight);
-  display: flex;
-  justify-content: space-between;
-  border: 1px solid @blue-hawkesBlue;
-  border-radius: 4px;
-  margin-top: 5px;
-  padding: @wrapPadding;
-  &__content {
-    position: relative;
-    display: flex;
-    flex-flow: column nowrap;
-    align-items: center;
-    height: @cardHeight;
-    outline: none;
-    width: 97%;
 
-    &.row {
+  .ObjectCardView-mixin(@cardHeight, @cardWidth) {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid @blue-hawkesBlue;
+    border-radius: 4px;
+    margin-top: 5px;
+    &__content {
+      width: 100%;
+      position: relative;
+      display: flex;
+      flex-flow: column nowrap;
+      min-height: @cardHeight;
+      outline: none;
+      margin: @wrapPadding;
+    }
+    &__content-row {
       display: flex;
       flex-flow: row nowrap;
-      height: @cardHeight;
       width: 100%;
     }
-  }
-  &__info {
-    width: @cardContentWidth;
-  }
-  &__avatar {
-    width: @cardHeight;
-    margin-right: @wrapPadding;
-    border-radius: 8px;
-    //max-width: 178px;
-    height: @cardHeight;
-    display: block !important;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
-    border: 1px solid #e9e7e7;
-  }
-  &__type {
-    color: @blue-botticelli;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: normal;
-  }
-  &__name {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    cursor: auto;
-    margin-top: 10px;
-    .Weight {
-      margin-top: 7px;
+    &__info {
+      width: 100%;
+      word-wrap: break-word;
+      word-break: break-all;
     }
-    &-truncated {
-      width: 88%;
+    &__avatar {
+      width: @cardHeight;
+      margin-right: @wrapPadding;
+      border-radius: 8px;
+      min-height: @cardHeight;
+      display: block !important;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: 50% 50%;
+      border: 1px solid #e9e7e7;
+    }
+    &__type {
+      color: @blue-botticelli;
+      margin-bottom: 0.5em;
+    }
+    &__name {
+      cursor: auto;
+      margin-top: 10px;
+
+      &-truncated {
+        margin-right: 10px;
+        color: @black;
+        font-size: 1.2em;
+        line-height: 1.1em;
+        white-space: normal;
+        vertical-align: middle;
+      }
+    }
+    &__title {
+      margin-top: 0.5em;
       color: @black;
-      font-weight: bold;
-      font-style: normal;
-      font-stretch: normal;
-      line-height: normal;
-      font-size: 20px;
-      letter-spacing: -0.5px;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-      margin-right: 8px;
-      cursor: pointer;
+      font-size: 1.2em;
     }
-  }
-  &__title {
-    color: @black;
-    font-size: 20px;
   }
 }
 

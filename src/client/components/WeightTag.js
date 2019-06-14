@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { Icon } from 'antd';
+import { Icon, Tag } from 'antd';
 import { connect } from 'react-redux';
 import { getRate, getRewardFund } from '../reducers';
 import WeightDisplay from './Utils/WeightDisplay';
@@ -34,7 +34,7 @@ class WeightTag extends React.Component {
         rate *
         1000000;
       return (
-        <div
+        <span
           className="Weight"
           title={intl.formatMessage({
             id: 'total_ralated_payout',
@@ -45,9 +45,11 @@ class WeightTag extends React.Component {
           {isNaN(value) ? (
             <Icon type="loading" className="text-icon-right" />
           ) : (
-            <WeightDisplay value={value} />
+            <Tag>
+              <WeightDisplay value={value} />
+            </Tag>
           )}
-        </div>
+        </span>
       );
     }
     return null;
