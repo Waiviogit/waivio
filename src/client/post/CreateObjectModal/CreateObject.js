@@ -32,6 +32,7 @@ class CreateObject extends React.Component {
     chosenType: PropTypes.string,
     onCreateObject: PropTypes.func.isRequired,
     getObjectTypes: PropTypes.func.isRequired,
+    onCloseModal: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -40,6 +41,7 @@ class CreateObject extends React.Component {
     objectTypes: {},
     chosenType: null,
     onCreateObject: () => {},
+    onCloseModal: () => {},
   };
 
   constructor(props) {
@@ -56,6 +58,11 @@ class CreateObject extends React.Component {
       this.setState({ isModalOpen: Boolean(nextProps.chosenType) });
     }
   }
+
+  handleCloseModal = () => {
+    this.props.onCloseModal();
+    this.toggleModal();
+  };
 
   toggleModal = () => {
     if (!this.state.loading) {
@@ -133,7 +140,7 @@ class CreateObject extends React.Component {
               defaultMessage: 'Create new object',
             })}
             closable
-            onCancel={this.toggleModal}
+            onCancel={this.handleCloseModal}
             maskClosable={false}
             visible={this.state.isModalOpen}
             wrapClassName="create-object-modal"
