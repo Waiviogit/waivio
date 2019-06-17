@@ -17,7 +17,7 @@ import {
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
 import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
-import { createPostMetadata, splitPostContent, getInitialValues } from '../../helpers/postHelpers';
+import {createPostMetadata, splitPostContent, getInitialValues, attachPostInfo} from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import ObjectCardView from '../../objectCard/ObjectCardView';
@@ -117,8 +117,6 @@ class EditPost extends Component {
       nextState.objPercentage = objPercentage;
     }
     this.setState(nextState);
-    // console.log('raw content:', JSON.stringify(rawContent));
-    // console.log('content:', nextState);
   }
 
   handleTopicsChange = topics => this.setState({ topics }, this.handleUpdateState);
@@ -184,6 +182,10 @@ class EditPost extends Component {
     };
 
     postData.jsonMetadata = createPostMetadata(postBody, topics, oldMetadata, appData);
+
+    if (appData.forecast) {
+      postData.body = attachPostInfo(postData, appData.forecast);
+    }
 
     if (this.originalBody) {
       postData.originalBody = this.originalBody;
