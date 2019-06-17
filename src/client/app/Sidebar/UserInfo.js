@@ -26,7 +26,7 @@ class UserInfo extends React.Component {
     user: PropTypes.shape().isRequired,
     rewardFund: PropTypes.shape().isRequired,
     rate: PropTypes.number.isRequired,
-    screenSize: PropTypes.bool.isRequired,
+    screenSize: PropTypes.string.isRequired,
   };
 
   state = {
@@ -151,7 +151,7 @@ class UserInfo extends React.Component {
             toggleModal={this.toggleModalPerformance}
             isModalOpen={this.state.isModalComparePerformanceOpen}
             item={this.props.user.name}
-            isItemUser={true}
+            isItemUser
           />
         )}
       </div>
