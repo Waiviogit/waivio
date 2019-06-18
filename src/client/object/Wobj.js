@@ -77,13 +77,20 @@ export default class Wobj extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { history, match, screenSize } = this.props;
     if (!_.isEmpty(nextProps.wobject) && !match.params[0] && !nextProps.match.params[0]) {
-      if (
-        nextProps.wobject.object_type &&
-        nextProps.wobject.object_type.toLowerCase() === OBJECT_TYPE.LIST
-      ) {
-        history.replace(`${history.location.pathname}/${OBJECT_TYPE.LIST}`);
-      } else if (screenSize !== 'large') {
-        history.replace(`${history.location.pathname}/about`);
+      if (nextProps.wobject.object_type) {
+        switch (nextProps.wobject.object_type.toLowerCase()) {
+          case OBJECT_TYPE.PAGE:
+            history.replace(`${history.location.pathname}/${OBJECT_TYPE.PAGE}`);
+            break;
+          case OBJECT_TYPE.LIST:
+            history.replace(`${history.location.pathname}/${OBJECT_TYPE.LIST}`);
+            break;
+          default:
+            if (screenSize !== 'large') {
+              history.replace(`${history.location.pathname}/about`);
+            }
+            break;
+        }
       }
     }
   }

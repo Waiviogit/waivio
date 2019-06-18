@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
-import './ObjectMenu.less';
+import OBJECT_TYPE from '../object/const/objectTypes';
 import { hasType } from '../helpers/wObjectHelper';
+import './ObjectMenu.less';
 
 class ObjectMenu extends React.Component {
   static propTypes = {
@@ -29,6 +30,7 @@ class ObjectMenu extends React.Component {
     ABOUT: 'about',
     GALLERY: 'gallery',
     LIST: 'list',
+    PAGE: 'page',
     UPDATES: 'updates',
     REVIEWS: 'reviews',
     FOLLOWERS: 'followers',
@@ -58,7 +60,8 @@ class ObjectMenu extends React.Component {
   };
 
   render() {
-    const isList = hasType(this.props.wobject, 'list');
+    const isList = hasType(this.props.wobject, OBJECT_TYPE.LIST);
+    const isPage = hasType(this.props.wobject, OBJECT_TYPE.PAGE);
     return (
       <div className="ObjectMenu">
         <div className="container menu-layout">
@@ -88,6 +91,16 @@ class ObjectMenu extends React.Component {
                   data-key={ObjectMenu.TAB_NAME.LIST}
                 >
                   <FormattedMessage id="list" defaultMessage="List" />
+                </li>
+              )}
+              {isPage && (
+                <li
+                  className={this.getItemClasses(ObjectMenu.TAB_NAME.PAGE)}
+                  onClick={this.handleClick}
+                  role="presentation"
+                  data-key={ObjectMenu.TAB_NAME.PAGE}
+                >
+                  <FormattedMessage id="page" defaultMessage="Page" />
                 </li>
               )}
               <li

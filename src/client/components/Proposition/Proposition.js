@@ -4,16 +4,21 @@ import { injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
 import cn from 'classnames';
-import './Proposition.less';
 import AppendModal from '../../object/AppendModal';
 import IconButton from '../IconButton';
+import { objectFields } from '../../../common/constants/listOfFields';
+import './Proposition.less';
 
 class Proposition extends React.Component {
   state = {
     showModal: false,
   };
 
-  handleToggleModal = () => this.setState({ showModal: !this.state.showModal });
+  handleToggleModal = () => {
+    if (this.props.fieldName !== objectFields.pageContent) {
+      this.setState({ showModal: !this.state.showModal });
+    }
+  };
 
   render() {
     const {
@@ -22,11 +27,10 @@ class Proposition extends React.Component {
       fieldName,
       objectID,
       objName,
-      handleSelectField,
       selectedField,
+      handleSelectField,
     } = this.props;
     const { showModal } = this.state;
-    const linkPath = linkTo || `/object/${objectID}/updates/${fieldName}`;
 
     const linkClass = cn({
       'icon-button__text': true,
@@ -36,11 +40,17 @@ class Proposition extends React.Component {
     return (
       <React.Fragment>
         <div className="proposition-line">
-          <Link to={{ pathname: linkPath }} data-test={`${fieldName}-plus-button`}>
+          <Link
+            to={{ pathname: linkTo || `/object/${objectID}/updates/${fieldName}` }}
+            data-test={`${fieldName}-plus-button`}
+          >
             <IconButton icon={<Icon type="plus-circle" />} onClick={this.handleToggleModal} />
           </Link>
           <div className={linkClass} data-test={`${fieldName}-field-name`}>
-            <Link to={linkPath} onClick={() => handleSelectField(fieldName)}>
+            <Link
+              to={{ pathname: `/object/${objectID}/updates/${fieldName}` }}
+              onClick={handleSelectField(fieldName)}
+            >
               {intl.formatMessage({
                 id: `object_field_${fieldName}`,
                 defaultMessage: fieldName,

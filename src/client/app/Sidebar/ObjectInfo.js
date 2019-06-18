@@ -56,7 +56,8 @@ class ObjectInfo extends React.Component {
     showMore: false,
   };
 
-  handleSelectField = field => this.setState({ selectedField: field });
+  handleSelectField = field => () => this.setState({ selectedField: field });
+
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
 
   render() {
@@ -183,7 +184,7 @@ class ObjectInfo extends React.Component {
                   selectedField={selectedField}
                   linkTo={
                     name === objectFields.pageContent
-                      ? `/object/${wobject.author_permlink}/${name}`
+                      ? `/object/${wobject.author_permlink}/${OBJECT_TYPE.PAGE}`
                       : ''
                   }
                 />

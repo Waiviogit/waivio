@@ -40,6 +40,7 @@ import CatalogWrap from '../client/object/Catalog/CatalogWrap';
 import WobjExpertise from '../client/object/WobjExpertise';
 import UserExpertise from '../client/user/UserExpertise';
 import ObjectTypePage from '../client/objectTypes/ObjectTypePage';
+import ObjectOfTypePage from '../client/object/ObjectOfTypePage/ObjectOfTypePage';
 
 const routes = [
   {
@@ -161,6 +162,7 @@ const routes = [
           'followers',
           'feed',
           'expertise',
+          OBJ_TYPE.PAGE,
           OBJ_TYPE.LIST,
           URL.SEGMENT.OBJ_MENU,
         ].join('|')})?/(${[...supportedObjectFields, ...objMenuTypes, 'album'].join(
@@ -208,6 +210,11 @@ const routes = [
             path: `/object/:name/(${OBJ_TYPE.LIST}|${URL.SEGMENT.OBJ_MENU})`,
             exact: true,
             component: CatalogWrap,
+          },
+          {
+            path: `/object/:name/(${OBJ_TYPE.PAGE})`,
+            exact: true,
+            component: ObjectOfTypePage,
           },
         ],
       },
