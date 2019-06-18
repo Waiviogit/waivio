@@ -10,6 +10,8 @@ import { INVESTARENA_META_FIELD_NAME, WAIVIO_META_FIELD_NAME } from '../../commo
 
 const appVersion = require('../../../package.json').version;
 
+export const forecastPostMessage = '> This post contains [forecast for';
+
 export const isPostDeleted = post => post.title === 'deleted' && post.body === 'deleted';
 
 export const isPostTaggedNSFW = post => {
@@ -108,6 +110,12 @@ export function createPostMetadata(body, tags, oldMetadata = {}, appData) {
   }
 
   return metaData;
+}
+
+export function attachPostInfo(postData, forecast) {
+  const { author, permlink, body } = postData;
+  const msg = `\n${forecastPostMessage} ${forecast.quoteSecurity}](https://investarena.waiviodev.com/@${author}/${permlink}) `;
+  return body + msg;
 }
 
 /**
