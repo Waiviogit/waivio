@@ -20,9 +20,15 @@ export default class UserExpertise extends React.Component {
     tagCount: 0,
   };
 
-  fetcher = skip => {
+  fetcher = (skip, isOnlyHashtags) => {
     const { match } = this.props;
-    return getWobjectsWithUserWeight(match.params.name, skip, UserExpertise.limit);
+    return getWobjectsWithUserWeight(
+      match.params.name,
+      skip,
+      UserExpertise.limit,
+      isOnlyHashtags ? ['hashtag'] : null,
+      !isOnlyHashtags ? ['hashtag'] : null,
+    );
   };
 
   objectCount = count =>
@@ -38,16 +44,17 @@ export default class UserExpertise extends React.Component {
             tab={
               <React.Fragment>
                 <span className="UserExpertise__item">
-                  <FormattedMessage id="objects" defaultMessage="Objects" />
+                  <FormattedMessage id="hashtag_value_placeholder" defaultMessage="Hashtags" />
                 </span>
                 <span className="UserExpertise__badge">
-                  <FormattedNumber value={objCount} />
+                  <FormattedNumber value={tagCount} />
                 </span>
               </React.Fragment>
             }
             key="1"
           >
             <ObjectDynamicList
+              isOnlyHashtags
               limit={UserExpertise.limit}
               fetcher={this.fetcher}
               handleObjectCount={this.objectCount}
@@ -57,16 +64,20 @@ export default class UserExpertise extends React.Component {
             tab={
               <React.Fragment>
                 <span className="UserExpertise__item">
-                  <FormattedMessage id="hashtag_value_placeholder" defaultMessage="Hashtags" />
+                  <FormattedMessage id="objects" defaultMessage="Objects" />
                 </span>
                 <span className="UserExpertise__badge">
-                  <FormattedNumber value={tagCount} />
+                  <FormattedNumber value={objCount} />
                 </span>
               </React.Fragment>
             }
             key="2"
           >
-            Hashtags
+            <ObjectDynamicList
+              limit={UserExpertise.limit}
+              fetcher={this.fetcher}
+              handleObjectCount={this.objectCount}
+            />
           </TabPane>
         </Tabs>
       </div>

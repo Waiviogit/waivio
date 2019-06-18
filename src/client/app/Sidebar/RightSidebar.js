@@ -1,36 +1,27 @@
-import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Route, Switch, withRouter } from 'react-router-dom';
-import {
-  getIsAuthenticated,
-  getIsAuthFetching,
-  getRecommendations,
-  getRecommendedObjects,
-} from '../../reducers';
-import { updateRecommendations } from '../../user/userActions';
+import * as store from '../../reducers';
+import { getRandomExperts } from '../../user/usersActions';
 import InterestingPeople from '../../components/Sidebar/InterestingPeople';
-// import InterestingObjects from '../../components/Sidebar/InterestingObjects';
 import SignUp from '../../components/Sidebar/SignUp';
 import PostRecommendation from '../../components/Sidebar/PostRecommendation';
 import Loading from '../../components/Icon/Loading';
 import UserActivitySearch from '../../activity/UserActivitySearch';
 import WalletSidebar from '../../components/Sidebar/WalletSidebar';
-import FeedSidebar from '../../components/Sidebar/FeedSidebar';
-import RightSidebarLoading from './RightSidebarLoading';
 import ObjectWeightBlock from '../../components/Sidebar/ObjectWeightBlock';
 
 @withRouter
 @connect(
   state => ({
-    authenticated: getIsAuthenticated(state),
-    isAuthFetching: getIsAuthFetching(state),
-    recommendations: getRecommendations(state),
-    recommendedObjects: getRecommendedObjects(state),
+    authenticated: store.getIsAuthenticated(state),
+    isAuthFetching: store.getIsAuthFetching(state),
+    randomExperts: store.getRandomExperts(state),
+    randomExpertsLoaded: store.getRandomExpertsLoaded(state),
   }),
   {
-    updateRecommendations,
+    getRandomExperts,
   },
 )
 export default class RightSidebar extends React.Component {
@@ -38,29 +29,29 @@ export default class RightSidebar extends React.Component {
     authenticated: PropTypes.bool.isRequired,
     isAuthFetching: PropTypes.bool.isRequired,
     showPostRecommendation: PropTypes.bool,
-    recommendations: PropTypes.arrayOf(PropTypes.shape({ name: PropTypes.string })).isRequired,
-    // recommendedObjects: PropTypes.arrayOf(PropTypes.shape({ tag: PropTypes.string })).isRequired,
-    updateRecommendations: PropTypes.func,
+    randomExperts: PropTypes.arrayOf(PropTypes.shape({ name: PropTypes.string })).isRequired,
+    randomExpertsLoaded: PropTypes.bool.isRequired,
+    getRandomExperts: PropTypes.func,
     match: PropTypes.shape(),
   };
 
   static defaultProps = {
     showPostRecommendation: false,
-    updateRecommendations: () => {},
+    getRandomExperts: () => {},
     recommendedObjects: [],
     match: {},
   };
 
-  handleInterestingPeopleRefresh = () => this.props.updateRecommendations();
+  componentDidMount() {
+    if (!this.props.randomExpertsLoaded) {
+      this.props.getRandomExperts();
+    }
+  }
+
+  handleRandomExpertsRefresh = () => this.props.getRandomExperts();
 
   render() {
-    const {
-      authenticated,
-      showPostRecommendation,
-      isAuthFetching,
-      // recommendedObjects,
-      match,
-    } = this.props;
+    const { authenticated, showPostRecommendation, isAuthFetching, match } = this.props;
 
     if (isAuthFetching) {
       return <Loading />;
@@ -73,10 +64,6 @@ export default class RightSidebar extends React.Component {
           <Route path="/activity" component={UserActivitySearch} />
           <Route path="/@:name/activity" component={UserActivitySearch} />
           <Route path="/@:name/transfers" render={() => <WalletSidebar />} />
-          <Route path="/trending/:tag" component={FeedSidebar} />
-          <Route path="/created/:tag" component={FeedSidebar} />
-          <Route path="/hot/:tag" component={FeedSidebar} />
-          <Route path="/promoted/:tag" component={FeedSidebar} />
           <Route
             path="/@:name"
             render={() => authenticated && <ObjectWeightBlock username={match.params.name} />}
@@ -84,19 +71,10 @@ export default class RightSidebar extends React.Component {
           <Route
             path="/"
             render={() => (
-              <React.Fragment>
-                {authenticated &&
-                  (this.props.recommendations.length > 0 && !showPostRecommendation ? (
-                    <InterestingPeople
-                      users={this.props.recommendations}
-                      onRefresh={this.handleInterestingPeopleRefresh}
-                    />
-                  ) : (
-                    <RightSidebarLoading />
-                  ))
-                // </React.Fragment>
-                }
-              </React.Fragment>
+                <InterestingPeople
+                  users={this.props.randomExperts}
+                  onRefresh={this.handleRandomExpertsRefresh}
+                />
             )}
           />
         </Switch>
