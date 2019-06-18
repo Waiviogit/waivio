@@ -16,8 +16,17 @@ class Proposition extends React.Component {
   handleToggleModal = () => this.setState({ showModal: !this.state.showModal });
 
   render() {
-    const { intl, fieldName, objectID, objName, handleSelectField, selectedField } = this.props;
+    const {
+      intl,
+      linkTo,
+      fieldName,
+      objectID,
+      objName,
+      handleSelectField,
+      selectedField,
+    } = this.props;
     const { showModal } = this.state;
+    const linkPath = linkTo || `/object/${objectID}/updates/${fieldName}`;
 
     const linkClass = cn({
       'icon-button__text': true,
@@ -27,17 +36,11 @@ class Proposition extends React.Component {
     return (
       <React.Fragment>
         <div className="proposition-line">
-          <Link
-            to={{ pathname: `/object/${objectID}/updates/${fieldName}` }}
-            data-test={`${fieldName}-plus-button`}
-          >
+          <Link to={{ pathname: linkPath }} data-test={`${fieldName}-plus-button`}>
             <IconButton icon={<Icon type="plus-circle" />} onClick={this.handleToggleModal} />
           </Link>
           <div className={linkClass} data-test={`${fieldName}-field-name`}>
-            <Link
-              to={`/object/${objectID}/updates/${fieldName}`}
-              onClick={() => handleSelectField(fieldName)}
-            >
+            <Link to={linkPath} onClick={() => handleSelectField(fieldName)}>
               {intl.formatMessage({
                 id: `object_field_${fieldName}`,
                 defaultMessage: fieldName,
@@ -65,12 +68,14 @@ Proposition.propTypes = {
   intl: PropTypes.shape().isRequired,
   handleSelectField: PropTypes.func,
   selectedField: PropTypes.string,
+  linkTo: PropTypes.string,
 };
 
 Proposition.defaultProps = {
   fieldName: 'name',
   handleSelectField: () => {},
   selectedField: '',
+  linkTo: '',
 };
 
 export default injectIntl(Proposition);

@@ -1,6 +1,7 @@
 import Wrapper from '../client/Wrapper';
 import { objMenuTypes, supportedObjectFields } from '../../src/common/constants/listOfFields';
 import URL from '../../src/common/constants/routing';
+import OBJ_TYPE from '../client/object/const/objectTypes';
 
 import Bookmarks from '../client/bookmarks/Bookmarks';
 import Drafts from '../client/post/Write/Drafts';
@@ -152,9 +153,19 @@ const routes = [
         ],
       },
       {
-        path: `/object/:name/(about|gallery|updates|reviews|followers|feed|list|expertise|${
-          URL.SEGMENT.OBJ_MENU
-        })?/(${supportedObjectFields.join('|')}|${objMenuTypes.join('|')}|album)?/:itemId?`,
+        path: `/object/:name/(${[
+          'about',
+          'gallery',
+          'updates',
+          'reviews',
+          'followers',
+          'feed',
+          'expertise',
+          OBJ_TYPE.LIST,
+          URL.SEGMENT.OBJ_MENU,
+        ].join('|')})?/(${[...supportedObjectFields, ...objMenuTypes, 'album'].join(
+          '|',
+        )})?/:itemId?`,
         component: Wobj,
         exact: true,
         routes: [
@@ -194,7 +205,7 @@ const routes = [
             component: WobjHistory,
           },
           {
-            path: `/object/:name/(list|${URL.SEGMENT.OBJ_MENU})`,
+            path: `/object/:name/(${OBJ_TYPE.LIST}|${URL.SEGMENT.OBJ_MENU})`,
             exact: true,
             component: CatalogWrap,
           },
