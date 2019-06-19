@@ -4,26 +4,24 @@ import { Form, Checkbox } from 'antd';
 import { injectIntl } from 'react-intl';
 
 const FollowObjectForm = ({ form, intl, loading }) => (
-  <div>
-    <Form.Item
-      extra={intl.formatMessage({
-        id: 'follow_extra',
-        defaultMessage: 'Stay informed about object updates submitted by other users',
-      })}
-    >
-      {form.getFieldDecorator('follow', {
-        valuePropName: 'checked',
-        initialValue: true,
-      })(
-        <Checkbox disabled={loading}>
-          {intl.formatMessage({
-            id: 'follow',
-            defaultMessage: 'Follow',
-          })}
-        </Checkbox>,
-      )}
-    </Form.Item>
-  </div>
+  <Form.Item
+    extra={intl.formatMessage({
+      id: 'follow_extra',
+      defaultMessage: 'Stay informed about object updates submitted by other users',
+    })}
+  >
+    {form.getFieldDecorator('follow', {
+      valuePropName: 'checked',
+      initialValue: true,
+    })(
+      <Checkbox disabled={loading}>
+        {intl.formatMessage({
+          id: 'follow',
+          defaultMessage: 'Follow',
+        })}
+      </Checkbox>,
+    )}
+  </Form.Item>
 );
 
 FollowObjectForm.propTypes = {

@@ -65,9 +65,14 @@ export default class Wobj extends React.Component {
     screenSize: 'large',
   };
 
-  state = {
-    isEditMode: false,
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isEditMode: false,
+      hasLeftSidebar: props.match.params[0] !== OBJECT_TYPE.PAGE,
+    };
+  }
 
   componentDidMount() {
     const { match, authenticatedUserName } = this.props;
@@ -93,6 +98,9 @@ export default class Wobj extends React.Component {
         }
       }
     }
+    if (nextProps.match.params[0] !== this.props.match.params[0]) {
+      this.setState({ hasLeftSidebar: nextProps.match.params[0] !== OBJECT_TYPE.PAGE });
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -110,7 +118,7 @@ export default class Wobj extends React.Component {
   toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
 
   render() {
-    const { isEditMode } = this.state;
+    const { isEditMode, hasLeftSidebar } = this.state;
     const { authenticated, failed, authenticatedUserName: userName, wobject, match } = this.props;
     if (failed) return <Error404 />;
 
@@ -160,16 +168,18 @@ export default class Wobj extends React.Component {
           toggleViewEditMode={this.toggleViewEditMode}
         />
         <div className="shifted">
-          <div className="feed-layout container">
-            <Affix className="leftContainer leftContainer__user" stickPosition={72}>
-              <div className="left">
-                <LeftObjectProfileSidebar
-                  isEditMode={isEditMode}
-                  wobject={wobject}
-                  userName={userName}
-                />
-              </div>
-            </Affix>
+          <div className={`container ${hasLeftSidebar ? 'feed-layout' : 'post-layout'}`}>
+            {hasLeftSidebar && (
+              <Affix className="leftContainer leftContainer__user" stickPosition={72}>
+                <div className="left">
+                  <LeftObjectProfileSidebar
+                    isEditMode={isEditMode}
+                    wobject={wobject}
+                    userName={userName}
+                  />
+                </div>
+              </Affix>
+            )}
             <Affix className="rightContainer" stickPosition={72}>
               <div className="right">
                 <RightObjectSidebar username={userName} wobject={wobject} />

@@ -202,3 +202,12 @@ export const sortListItemsBy = (items, sortBy = 'by-name-asc', sortOrder = null)
   }
   return resultArr;
 };
+
+/** validator for pageContent field in object with type 'Page'
+ *
+ * @param pageContent - markDown string
+ */
+export function validateContent(pageContent = '') {
+  if (!pageContent) return false;
+  return true;
+}

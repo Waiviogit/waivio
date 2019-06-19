@@ -111,7 +111,7 @@ class ObjectMenu extends React.Component {
               >
                 <FormattedMessage id="reviews" defaultMessage="Reviews" />
               </li>
-              {this.props.accessExtend && (
+              {this.props.accessExtend && !isPage && (
                 <li
                   className={this.getItemClasses(ObjectMenu.TAB_NAME.GALLERY)}
                   onClick={this.handleClick}

@@ -1,0 +1,29 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.object-of-type-page {
+  background: @white;
+  border: @base-border;
+  border-radius: @border-radius-base;
+
+  &__header-controls {
+    padding: 16px;
+
+    .ant-form-item,
+    .LikeSection {
+      margin: 0;
+    }
+    .ant-checkbox {
+      top: -0.2em;
+    }
+  }
+  .md-RichEditor-editor {
+    .StoryFull__title + div.md-block {
+      span[data-offset-key] {
+        br {
+          content: none;
+        }
+      }
+    }
+  }
+}
