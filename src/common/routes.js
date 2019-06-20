@@ -50,7 +50,7 @@ const routes = [
         component: Bookmarks,
       },
       {
-        path: `/rewards/(active|reserved|history|promoted)?`,
+        path: `/rewards/(active|reserved|history|promoted)/@:userName`,
         component: Rewards,
         exact: true,
       },

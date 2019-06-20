@@ -73,7 +73,7 @@ class ObjectTypes extends React.Component {
     return (
       <div className="ObjectTypes">
         <div className="reward-button">
-          <Link to={userName ? `/rewards/active` : `/rewards/all`} class="rainbow-button">
+          <Link to={`/rewards/active/@${userName}`} className="rainbow-button">
             <FormattedMessage id="rewards" defaultMessage="Rewards" />
           </Link>
         </div>

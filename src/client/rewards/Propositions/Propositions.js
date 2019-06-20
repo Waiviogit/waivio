@@ -1,5 +1,6 @@
+import { Switch } from 'antd';
+import { injectIntl } from 'react-intl';
 import React from 'react';
-// import _ from 'lodash';
 import PropTypes from 'prop-types';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import * as ApiClient from '../../../waivioApi/ApiClient';
@@ -8,31 +9,58 @@ import Proposition from '../Proposition/Proposition';
 
 const displayLimit = 10;
 
+@injectIntl
 export default class Propositions extends React.Component {
   static propTypes = {
     filterKey: PropTypes.string.isRequired,
+    userName: PropTypes.string.isRequired,
+    intl: PropTypes.shape().isRequired,
   };
 
   state = {
     propositions: [],
     loading: false,
     hasMore: true,
+    filter: false,
   };
 
-  componentDidMount() {
-    ApiClient.getPropositions(this.preparePropositionReqData()).then(propositions => {
-      this.setState({ propositions });
-    });
+  // componentDidMount() {
+  //   ApiClient.getPropositions(this.preparePropositionReqData(this.state.filter, this.props)).then(propositions => {
+  //     this.setState({ propositions });
+  //   });
+  // }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.filterKey !== this.props.filterKey) {
+      ApiClient.getPropositions(this.preparePropositionReqData(this.state.filter, nextProps)).then(
+        propositions => {
+          this.setState({ propositions });
+        },
+      );
+    }
   }
 
-  preparePropositionReqData = () => {
-    let reqData = { limit: displayLimit };
-    switch (this.props.filterKey) {
+  toggleFilter = () => {
+    ApiClient.getPropositions(this.preparePropositionReqData(!this.state.filter, this.props)).then(
+      propositions => {
+        this.setState({ propositions, filter: !this.state.filter });
+      },
+    );
+  };
+
+  preparePropositionReqData = (filter, props) => {
+    const { userName } = props;
+    const reqData = { limit: displayLimit };
+    if (filter && userName) reqData.userName = userName;
+    switch (props.filterKey) {
       case 'active':
-        reqData = { limit: displayLimit };
+        break;
+      case 'history':
+        reqData.status = ['inactive', 'expired', 'deleted', 'payed'];
         break;
       case 'reserved':
-        reqData = { limit: displayLimit };
+        reqData.userName = userName;
+        reqData.approved = true;
         break;
       default:
         break;
@@ -48,7 +76,7 @@ export default class Propositions extends React.Component {
           loading: true,
         },
         () => {
-          const reqData = this.preparePropositionReqData();
+          const reqData = this.preparePropositionReqData(this.state.filter, this.props);
           reqData.skip = propositions.length;
           ApiClient.getPropositions(reqData).then(newPropositions =>
             this.setState(state => ({
@@ -66,23 +94,48 @@ export default class Propositions extends React.Component {
 
   render() {
     const { propositions, loading, hasMore } = this.state;
-
-    if (propositions.length === 0) {
-      return <Loading />;
-    }
+    const { intl, filterKey, userName } = this.props;
 
     return (
       <React.Fragment>
-        <ReduxInfiniteScroll
-          elementIsScrollable={false}
-          hasMore={hasMore}
-          loadMore={this.handleLoadMore}
-          loadingMore={loading}
-          loader={<Loading />}
-        >
-          {propositions.length &&
-            propositions.map(proposition => <Proposition proposition={proposition} />)}
-        </ReduxInfiniteScroll>
+        <div className="Rewards__title">
+          {`${intl.formatMessage({
+            id: 'rewards',
+            defaultMessage: 'Rewards',
+          })}`}
+          {filterKey !== 'reserved' && (
+            <div className="Rewards__toggler-wrap">
+              {`${intl.formatMessage({
+                id: 'only_for_my',
+                defaultMessage: 'Only for me',
+              })}`}
+              <Switch checked={this.state.filter} onChange={this.toggleFilter} />
+            </div>
+          )}
+        </div>
+        {!loading ? (
+          <ReduxInfiniteScroll
+            elementIsScrollable={false}
+            hasMore={hasMore}
+            loadMore={this.handleLoadMore}
+            loadingMore={loading}
+            loader={<Loading />}
+          >
+            {propositions.length !== 0
+              ? propositions.map(proposition => <Proposition proposition={proposition} />)
+              : `${intl.formatMessage(
+                  {
+                    id: 'noProposition',
+                    defaultMessage: `There are no propositions for {userName}`,
+                  },
+                  {
+                    userName,
+                  },
+                )}`}
+          </ReduxInfiniteScroll>
+        ) : (
+          <Loading />
+        )}
       </React.Fragment>
     );
   }

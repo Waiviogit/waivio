@@ -1,29 +1,50 @@
 import React from 'react';
-// import { FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { NavLink } from 'react-router-dom';
+import { withRouter } from 'react-router';
+import PropTypes from 'prop-types';
 import './Sidenav.less';
 
-const SidenavRewards = () => (
-  <ul className="Sidenav">
-    <li>
-      <NavLink to="/rewards/active" activeClassName="Sidenav__item--active">
-        {/* <i className="iconfont icon-dynamic" /> */}
-        Active (3)
-      </NavLink>
-    </li>
-    <li>
-      <NavLink to="/rewards/reserved" activeClassName="Sidenav__item--active">
-        {/* <i className="iconfont icon-collection" /> */}
-        Reserved (0)
-      </NavLink>
-    </li>
-    <li>
-      <NavLink to="/rewards/history" activeClassName="Sidenav__item--active">
-        {/* <i className="iconfont icon-collection" /> */}
-        History (5)
-      </NavLink>
-    </li>
-  </ul>
-);
+@injectIntl
+@withRouter
+export default class SidenavRewards extends React.Component {
+  propTypes = {
+    match: PropTypes.shape().isRequired,
+    // intl: PropTypes.shape().isRequired,
+  };
 
-export default SidenavRewards;
+  render() {
+    const { match } = this.props;
+    return (
+      <ul className="Sidenav">
+        <li>
+          <NavLink
+            to={`/rewards/active/@${match.params.userName}`}
+            activeClassName="Sidenav__item--active"
+          >
+            {/* <i className="iconfont icon-dynamic" /> */}
+            Active
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to={`/rewards/reserved/@${match.params.userName}`}
+            activeClassName="Sidenav__item--active"
+          >
+            {/* <i className="iconfont icon-collection" /> */}
+            Reserved
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to={`/rewards/history/@${match.params.userName}`}
+            activeClassName="Sidenav__item--active"
+          >
+            {/* <i className="iconfont icon-collection" /> */}
+            History
+          </NavLink>
+        </li>
+      </ul>
+    );
+  }
+}
