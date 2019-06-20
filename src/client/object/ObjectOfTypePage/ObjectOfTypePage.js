@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { Button, Col, Form, Row } from 'antd';
-import { isEmpty } from 'lodash';
+import { isEmpty, isEqual } from 'lodash';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import toMarkdown from '../../components/EditorExtended/util/editorStateToMarkdown';
@@ -14,13 +14,14 @@ import { getAppendData } from '../../helpers/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { splitPostContent } from '../../helpers/postHelpers';
 import { appendObject } from '../appendActions';
-import { getLocale } from '../../settings/settingsReducer';
+import { getIsAppendLoading, getLocale } from '../../reducers';
 import './ObjectOfTypePage.less';
 
 @Form.create()
 @connect(
   state => ({
     locale: getLocale(state),
+    isAppending: getIsAppendLoading(state),
   }),
   {
     appendPageContent: appendObject,
@@ -33,6 +34,7 @@ class ObjectOfTypePage extends Component {
 
     /* connect */
     locale: PropTypes.string,
+    isAppending: PropTypes.bool,
     appendPageContent: PropTypes.func.isRequired,
 
     /* passed */
@@ -44,6 +46,7 @@ class ObjectOfTypePage extends Component {
 
   static defaultProps = {
     wobject: {},
+    isAppending: false,
     locale: 'en-US',
   };
 
@@ -53,12 +56,13 @@ class ObjectOfTypePage extends Component {
     this.postContent = getFieldWithMaxWeight(props.wobject, objectFields.pageContent);
     this.state = {
       initialContent: splitPostContent(this.postContent, { titleKey: 'title', bodyKey: 'body' }),
+      isContentValid: false,
       content: '',
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!isEmpty(nextProps.wobject)) {
+    if (!isEmpty(nextProps.wobject) && !isEqual(nextProps.wobject, this.props.wobject)) {
       this.postContent = getFieldWithMaxWeight(nextProps.wobject, objectFields.pageContent);
       this.setState({
         initialContent: splitPostContent(this.postContent, { titleKey: 'title', bodyKey: 'body' }),
@@ -66,16 +70,20 @@ class ObjectOfTypePage extends Component {
     }
   }
 
-  handleChangeContent = content => {
-    this.setState({ content: toMarkdown(content) });
+  handleChangeContent = contentRaw => {
+    const content = toMarkdown(contentRaw);
+    this.setState({ content, isContentValid: validateContent(content, this.postContent) });
   };
+
+  handleVotePercentChange = votePercent => this.setState({ votePercent });
 
   handleSubmit = e => {
     e.preventDefault();
 
-    this.props.form.validateFieldsAndScroll(err => {
+    this.props.form.validateFieldsAndScroll((err, values) => {
       const { appendPageContent, locale, wobject, userName } = this.props;
-      const isContentValid = validateContent(this.state.content, this.postContent);
+      const { isContentValid, votePercent } = this.state;
+      const { follow } = values;
       if (!err && isContentValid) {
         const { postTitle, postBody } = splitPostContent(this.state.content);
         const pageContentField = {
@@ -84,14 +92,14 @@ class ObjectOfTypePage extends Component {
           locale,
         };
         const postData = getAppendData(userName, wobject, '', pageContentField);
-        appendPageContent(postData);
+        appendPageContent(postData, { follow, votePercent: votePercent * 100 });
       }
     });
   };
 
   render() {
-    const { isEditMode } = this.props;
-    const { initialContent } = this.state;
+    const { isEditMode, isAppending } = this.props;
+    const { initialContent, isContentValid } = this.state;
 
     return (
       <div className={`object-of-type-page ${isEditMode ? 'edit' : 'view'}-mode`}>
@@ -101,7 +109,7 @@ class ObjectOfTypePage extends Component {
               <Col span={20}>
                 <LikeSection
                   form={this.props.form}
-                  onVotePercentChange={percent => console.log('votePercent', percent)}
+                  onVotePercentChange={this.handleVotePercentChange}
                 />
                 <FollowObjectForm form={this.props.form} />
               </Col>
@@ -109,8 +117,8 @@ class ObjectOfTypePage extends Component {
                 <Form.Item className="object-of-type-page__submit-btn">
                   <Button
                     type="primary"
-                    loading={false}
-                    disabled={false}
+                    loading={isAppending}
+                    disabled={!isContentValid || isAppending}
                     onClick={this.handleSubmit}
                   >
                     <FormattedMessage id="submit" defaultMessage="Submit" />
@@ -122,7 +130,7 @@ class ObjectOfTypePage extends Component {
         )}
         {isEditMode ? (
           <Editor
-            enabled
+            enabled={!isAppending}
             initialContent={this.state.initialContent}
             // locale={locale === 'auto' ? 'en-US' : locale}
             locale={'en-US'}

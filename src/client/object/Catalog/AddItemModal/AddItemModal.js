@@ -14,7 +14,6 @@ import LikeSection from '../../../object/LikeSection';
 import LANGUAGES from '../../../translations/languages';
 import { getLanguageText } from '../../../translations';
 import FollowObjectForm from '../../FollowObjectForm';
-import { followObject } from '../../../object/wobjActions';
 import * as wobjectActions from '../../wobjectsActions';
 import * as notificationActions from '../../../app/Notification/notificationActions';
 import './AddItemModal.less';
@@ -28,7 +27,6 @@ import ObjectCardView from '../../../objectCard/ObjectCardView';
   }),
   {
     appendObject,
-    followObject,
     createObject: wobjectActions.createWaivioObject,
     notify: notificationActions.notify,
   },
@@ -58,7 +56,6 @@ class AddItemModal extends Component {
     locale: PropTypes.string,
     followingList: PropTypes.arrayOf(PropTypes.string),
     appendObject: PropTypes.func.isRequired,
-    followObject: PropTypes.func.isRequired,
     createObject: PropTypes.func.isRequired,
     notify: PropTypes.func.isRequired,
   };
@@ -108,13 +105,7 @@ class AddItemModal extends Component {
         const appendData = getAppendData(currentUserName, wobject, bodyMsg, fieldContent);
 
         this.props
-          .appendObject({ ...appendData, votePower: votePercent * 100 })
-          .then(() => {
-            if (form.getFieldValue('follow')) {
-              return this.props.followObject(wobject.author_permlink);
-            }
-            return Promise.resolve();
-          })
+          .appendObject(appendData, { votePower: votePercent * 100, follow: values.follow })
           .then(() => {
             this.setState({ isLoading: false });
             message.success(

@@ -1,4 +1,5 @@
 import * as actions from './wobjectsActions';
+import * as appendAction from './appendActions';
 import { RATE_WOBJECT_SUCCESS } from '../../client/object/wobjActions';
 import { objectFields } from '../../common/constants/listOfFields';
 
@@ -59,6 +60,14 @@ export default function wobjectReducer(state = initialState, action) {
         },
       };
     }
+    case appendAction.APPEND_WAIVIO_OBJECT.SUCCESS:
+      return {
+        ...state,
+        wobject: {
+          ...state.wobject,
+          fields: [...state.wobject.fields, action.payload],
+        },
+      };
     default: {
       return state;
     }
