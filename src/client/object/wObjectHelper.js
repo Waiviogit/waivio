@@ -206,8 +206,10 @@ export const sortListItemsBy = (items, sortBy = 'by-name-asc', sortOrder = null)
 /** validator for pageContent field in object with type 'Page'
  *
  * @param pageContent - markDown string
+ * @param prevPageContent - markDown string
  */
-export function validateContent(pageContent = '') {
-  if (!pageContent) return false;
+export function validateContent(pageContent = '', prevPageContent = '') {
+  if (!pageContent || pageContent === prevPageContent.trim()) return false;
+
   return true;
 }

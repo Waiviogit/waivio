@@ -3,7 +3,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { Button, Col, Form, Row } from 'antd';
+import { isEmpty } from 'lodash';
 import Editor from '../../components/EditorExtended/EditorExtended';
+import BodyContainer from '../../containers/Story/BodyContainer';
 import toMarkdown from '../../components/EditorExtended/util/editorStateToMarkdown';
 import LikeSection from '../LikeSection';
 import FollowObjectForm from '../FollowObjectForm';
@@ -48,11 +50,20 @@ class ObjectOfTypePage extends Component {
   constructor(props) {
     super(props);
 
-    const postContent = getFieldWithMaxWeight(props.wobject, objectFields.pageContent);
+    this.postContent = getFieldWithMaxWeight(props.wobject, objectFields.pageContent);
     this.state = {
-      initialContent: splitPostContent(postContent, { titleKey: 'title', bodyKey: 'body' }),
+      initialContent: splitPostContent(this.postContent, { titleKey: 'title', bodyKey: 'body' }),
       content: '',
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!isEmpty(nextProps.wobject)) {
+      this.postContent = getFieldWithMaxWeight(nextProps.wobject, objectFields.pageContent);
+      this.setState({
+        initialContent: splitPostContent(this.postContent, { titleKey: 'title', bodyKey: 'body' }),
+      });
+    }
   }
 
   handleChangeContent = content => {
@@ -64,12 +75,12 @@ class ObjectOfTypePage extends Component {
 
     this.props.form.validateFieldsAndScroll(err => {
       const { appendPageContent, locale, wobject, userName } = this.props;
-      const isContentValid = validateContent(this.state.content);
+      const isContentValid = validateContent(this.state.content, this.postContent);
       if (!err && isContentValid) {
         const { postTitle, postBody } = splitPostContent(this.state.content);
         const pageContentField = {
           name: objectFields.pageContent,
-          body: `#${postTitle}\n${postBody}`,
+          body: `${postTitle}\n${postBody}`,
           locale,
         };
         const postData = getAppendData(userName, wobject, '', pageContentField);
@@ -80,8 +91,10 @@ class ObjectOfTypePage extends Component {
 
   render() {
     const { isEditMode } = this.props;
+    const { initialContent } = this.state;
+
     return (
-      <div className="object-of-type-page">
+      <div className={`object-of-type-page ${isEditMode ? 'edit' : 'view'}-mode`}>
         {isEditMode && (
           <div className="object-of-type-page__header-controls">
             <Row type="flex" align="middle">
@@ -107,13 +120,20 @@ class ObjectOfTypePage extends Component {
             </Row>
           </div>
         )}
-        <Editor
-          enabled
-          initialContent={this.state.initialContent}
-          // locale={locale === 'auto' ? 'en-US' : locale}
-          locale={'en-US'}
-          onChange={this.handleChangeContent}
-        />
+        {isEditMode ? (
+          <Editor
+            enabled
+            initialContent={this.state.initialContent}
+            // locale={locale === 'auto' ? 'en-US' : locale}
+            locale={'en-US'}
+            onChange={this.handleChangeContent}
+          />
+        ) : (
+          <React.Fragment>
+            <h1 className="StoryFull__title preview">{initialContent.title}</h1>
+            <BodyContainer full body={initialContent.body} />
+          </React.Fragment>
+        )}
       </div>
     );
   }
