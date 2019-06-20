@@ -190,7 +190,13 @@ export default class Wobj extends React.Component {
               </div>
             </Affix>
             <div className="center">
-              {renderRoutes(this.props.route.routes, { isEditMode, wobject, userName, match })}
+              {renderRoutes(this.props.route.routes, {
+                isEditMode,
+                wobject,
+                userName,
+                match,
+                toggleViewEditMode: this.toggleViewEditMode,
+              })}
             </div>
           </div>
         </div>

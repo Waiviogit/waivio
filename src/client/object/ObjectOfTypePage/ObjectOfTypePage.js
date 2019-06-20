@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
-import { Button, Col, Form, Row } from 'antd';
+import { injectIntl } from 'react-intl';
+import { Button, Col, Form, message, Row } from 'antd';
 import { isEmpty, isEqual } from 'lodash';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import BodyContainer from '../../containers/Story/BodyContainer';
@@ -14,14 +14,16 @@ import { getAppendData } from '../../helpers/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { splitPostContent } from '../../helpers/postHelpers';
 import { appendObject } from '../appendActions';
-import { getIsAppendLoading, getLocale } from '../../reducers';
+import { getFollowingObjectsList, getIsAppendLoading, getLocale } from '../../reducers';
 import './ObjectOfTypePage.less';
 
+@injectIntl
 @Form.create()
 @connect(
   state => ({
     locale: getLocale(state),
     isAppending: getIsAppendLoading(state),
+    followingList: getFollowingObjectsList(state),
   }),
   {
     appendPageContent: appendObject,
@@ -31,23 +33,27 @@ class ObjectOfTypePage extends Component {
   static propTypes = {
     /* decorators */
     form: PropTypes.shape().isRequired,
+    intl: PropTypes.shape().isRequired,
 
     /* connect */
     locale: PropTypes.string,
     isAppending: PropTypes.bool,
     appendPageContent: PropTypes.func.isRequired,
+    followingList: PropTypes.arrayOf(PropTypes.string),
 
     /* passed */
     wobject: PropTypes.shape(),
     // match: PropTypes.shape().isRequired,
     isEditMode: PropTypes.bool.isRequired,
     userName: PropTypes.string.isRequired,
+    toggleViewEditMode: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     wobject: {},
     isAppending: false,
     locale: 'en-US',
+    followingList: [],
   };
 
   constructor(props) {
@@ -81,7 +87,7 @@ class ObjectOfTypePage extends Component {
     e.preventDefault();
 
     this.props.form.validateFieldsAndScroll((err, values) => {
-      const { appendPageContent, locale, wobject, userName } = this.props;
+      const { appendPageContent, locale, wobject, userName, intl, toggleViewEditMode } = this.props;
       const { isContentValid, votePercent } = this.state;
       const { follow } = values;
       if (!err && isContentValid) {
@@ -92,13 +98,37 @@ class ObjectOfTypePage extends Component {
           locale,
         };
         const postData = getAppendData(userName, wobject, '', pageContentField);
-        appendPageContent(postData, { follow, votePercent: votePercent * 100 });
+        appendPageContent(postData, { follow, votePercent: votePercent * 100 })
+          .then(() => {
+            message.success(
+              intl.formatMessage(
+                {
+                  id: 'added_field_to_wobject',
+                  defaultMessage: `You successfully have added the {field} field to {wobject} object`,
+                },
+                {
+                  field: objectFields.pageContent,
+                  wobject: getFieldWithMaxWeight(wobject, objectFields.name),
+                },
+              ),
+            );
+            toggleViewEditMode();
+          })
+          .catch(error => {
+            console.log('err > ', error);
+            message.error(
+              intl.formatMessage({
+                id: 'couldnt_append',
+                defaultMessage: "Couldn't add the field to object.",
+              }),
+            );
+          });
       }
     });
   };
 
   render() {
-    const { isEditMode, isAppending } = this.props;
+    const { intl, isEditMode, isAppending, locale, followingList, wobject } = this.props;
     const { initialContent, isContentValid } = this.state;
 
     return (
@@ -111,7 +141,9 @@ class ObjectOfTypePage extends Component {
                   form={this.props.form}
                   onVotePercentChange={this.handleVotePercentChange}
                 />
-                <FollowObjectForm form={this.props.form} />
+                {followingList.includes(wobject.author_permlink) ? null : (
+                  <FollowObjectForm form={this.props.form} />
+                )}
               </Col>
               <Col span={4} align="middle" justify="center">
                 <Form.Item className="object-of-type-page__submit-btn">
@@ -121,7 +153,7 @@ class ObjectOfTypePage extends Component {
                     disabled={!isContentValid || isAppending}
                     onClick={this.handleSubmit}
                   >
-                    <FormattedMessage id="submit" defaultMessage="Submit" />
+                    <span>{intl.formatMessage({ id: 'submit', defaultMessage: 'Submit' })}</span>
                   </Button>
                 </Form.Item>
               </Col>
@@ -132,8 +164,7 @@ class ObjectOfTypePage extends Component {
           <Editor
             enabled={!isAppending}
             initialContent={this.state.initialContent}
-            // locale={locale === 'auto' ? 'en-US' : locale}
-            locale={'en-US'}
+            locale={locale === 'auto' ? 'en-US' : locale}
             onChange={this.handleChangeContent}
           />
         ) : (
@@ -142,10 +173,12 @@ class ObjectOfTypePage extends Component {
             <BodyContainer full body={initialContent.body} />
             {!this.postContent && (
               <div className="object-of-type-page__empty-placeholder">
-                <FormattedMessage
-                  id="empty_object_profile"
-                  defaultMessage="This object doesn't have any"
-                />
+                <span>
+                  {intl.formatMessage({
+                    id: 'empty_object_profile',
+                    defaultMessage: "This object doesn't have any",
+                  })}
+                </span>
               </div>
             )}
           </React.Fragment>
