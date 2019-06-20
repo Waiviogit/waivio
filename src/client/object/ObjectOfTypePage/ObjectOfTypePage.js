@@ -132,6 +132,14 @@ class ObjectOfTypePage extends Component {
           <React.Fragment>
             <h1 className="StoryFull__title preview">{initialContent.title}</h1>
             <BodyContainer full body={initialContent.body} />
+            {!this.postContent && (
+              <div className="object-of-type-page__empty-placeholder">
+                <FormattedMessage
+                  id="empty_object_profile"
+                  defaultMessage="This object doesn't have any"
+                />
+              </div>
+            )}
           </React.Fragment>
         )}
       </div>
