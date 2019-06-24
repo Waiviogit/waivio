@@ -659,7 +659,9 @@ export default class AppendForm extends Component {
                   itemsIdsToOmit={_.get(wObject, 'menuItems', []).map(f => f.author_permlink)}
                   handleSelect={this.handleSelectObject}
                   objectType={
-                    this.props.currentField === TYPES_OF_MENU_ITEM.LIST ? OBJECT_TYPE.LIST : ''
+                    this.props.currentField === TYPES_OF_MENU_ITEM.LIST
+                      ? OBJECT_TYPE.LIST
+                      : OBJECT_TYPE.PAGE
                   }
                 />,
               )}
