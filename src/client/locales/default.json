@@ -558,5 +558,15 @@
   "emailAndPhoneReq": "Email and Phone Required",
   "only_for_my": "Only for me",
   "noProposition": "There are no propositions for {userName}",
-  "filterRule": "FilterRule"
+  "active": "Active",
+  "reserved": "Reserved",
+  "history": "History",
+  "assign": "Assign",
+  "discard": "Discard",
+  "filterRule": "FilterRule",
+  "assigned_successfully": "Assigned successfully",
+  "min_images_count": "You should add images, minimum",
+  "min_followers_count": "You should have followers, at least",
+  "min_posts_count": "You should be author of post, minimum",
+  "discard_successfully": "Declined successfully"
 }

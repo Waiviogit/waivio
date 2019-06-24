@@ -1,6 +1,8 @@
-import { Switch } from 'antd';
+/* eslint-disable no-underscore-dangle */
+import { message, Switch } from 'antd';
 import { injectIntl } from 'react-intl';
 import React from 'react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import * as ApiClient from '../../../waivioApi/ApiClient';
@@ -12,6 +14,8 @@ const displayLimit = 10;
 @injectIntl
 export default class Propositions extends React.Component {
   static propTypes = {
+    assignProposition: PropTypes.func.isRequired,
+    discardProposition: PropTypes.func.isRequired,
     filterKey: PropTypes.string.isRequired,
     userName: PropTypes.string.isRequired,
     intl: PropTypes.shape().isRequired,
@@ -22,19 +26,14 @@ export default class Propositions extends React.Component {
     loading: false,
     hasMore: true,
     filter: false,
+    loadingAssignDiscard: false,
   };
-
-  // componentDidMount() {
-  //   ApiClient.getPropositions(this.preparePropositionReqData(this.state.filter, this.props)).then(propositions => {
-  //     this.setState({ propositions });
-  //   });
-  // }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.filterKey !== this.props.filterKey) {
       ApiClient.getPropositions(this.preparePropositionReqData(this.state.filter, nextProps)).then(
-        propositions => {
-          this.setState({ propositions });
+        data => {
+          this.setState({ propositions: data.campaigns, hasMore: data.hasMore });
         },
       );
     }
@@ -42,10 +41,70 @@ export default class Propositions extends React.Component {
 
   toggleFilter = () => {
     ApiClient.getPropositions(this.preparePropositionReqData(!this.state.filter, this.props)).then(
-      propositions => {
-        this.setState({ propositions, filter: !this.state.filter });
+      data => {
+        this.setState({
+          propositions: data.campaigns,
+          filter: !this.state.filter,
+          hasMore: data.hasMore,
+        });
       },
     );
+  };
+
+  assignProposition = proposition => {
+    this.setState({ loadingAssignDiscard: true });
+    this.props
+      .assignProposition(proposition._id)
+      .then(() => {
+        const updatedPropositions = this.updateProposition(proposition._id, true);
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'assigned_successfully',
+            defaultMessage: 'Assigned successfully',
+          }),
+        );
+        this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
+      })
+      .catch(e => {
+        message.error(e.toString());
+        this.setState({ loadingAssignDiscard: false });
+      });
+  };
+
+  updateProposition = (propsId, isAssign) =>
+    _.map(this.state.propositions, propos => {
+      // eslint-disable-next-line no-param-reassign
+      if (propos._id === propsId) {
+        _.map(propos.users, user => {
+          if (user.name === this.props.userName) {
+            const newUser = user;
+            newUser.approved = isAssign;
+            return newUser;
+          }
+          return user;
+        });
+      }
+      return propos;
+    });
+
+  discardProposition = proposition => {
+    this.setState({ loadingAssignDiscard: true });
+    this.props
+      .discardProposition(proposition._id)
+      .then(() => {
+        const updatedPropositions = this.updateProposition(proposition._id, false);
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'discarded_successfully',
+            defaultMessage: 'Discarded successfully',
+          }),
+        );
+        this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
+      })
+      .catch(e => {
+        message.error(e.toString());
+        this.setState({ loadingAssignDiscard: false });
+      });
   };
 
   preparePropositionReqData = (filter, props) => {
@@ -81,10 +140,8 @@ export default class Propositions extends React.Component {
           ApiClient.getPropositions(reqData).then(newPropositions =>
             this.setState(state => ({
               loading: false,
-              hasMore:
-                newPropositions.propositions &&
-                newPropositions.propositions.length === displayLimit,
-              propositions: state.propositions.concat(newPropositions),
+              hasMore: newPropositions.campaigns && newPropositions.hasMore,
+              propositions: state.propositions.concat(newPropositions.campaigns),
             })),
           );
         },
@@ -93,7 +150,7 @@ export default class Propositions extends React.Component {
   };
 
   render() {
-    const { propositions, loading, hasMore } = this.state;
+    const { propositions, loading, hasMore, loadingAssignDiscard } = this.state;
     const { intl, filterKey, userName } = this.props;
 
     return (
@@ -113,29 +170,33 @@ export default class Propositions extends React.Component {
             </div>
           )}
         </div>
-        {!loading ? (
-          <ReduxInfiniteScroll
-            elementIsScrollable={false}
-            hasMore={hasMore}
-            loadMore={this.handleLoadMore}
-            loadingMore={loading}
-            loader={<Loading />}
-          >
-            {propositions.length !== 0
-              ? propositions.map(proposition => <Proposition proposition={proposition} />)
-              : `${intl.formatMessage(
-                  {
-                    id: 'noProposition',
-                    defaultMessage: `There are no propositions for {userName}`,
-                  },
-                  {
-                    userName,
-                  },
-                )}`}
-          </ReduxInfiniteScroll>
-        ) : (
-          <Loading />
-        )}
+        <ReduxInfiniteScroll
+          elementIsScrollable={false}
+          hasMore={hasMore}
+          loadMore={this.handleLoadMore}
+          loadingMore={loading}
+          loader={<Loading />}
+        >
+          {propositions.length !== 0
+            ? propositions.map(proposition => (
+                <Proposition
+                  proposition={proposition}
+                  assignProposition={this.assignProposition}
+                  discardProposition={this.discardProposition}
+                  authorizedUserName={userName}
+                  loading={loadingAssignDiscard}
+                />
+              ))
+            : `${intl.formatMessage(
+                {
+                  id: 'noProposition',
+                  defaultMessage: `There are no propositions for {userName}`,
+                },
+                {
+                  userName,
+                },
+              )}`}
+        </ReduxInfiniteScroll>
       </React.Fragment>
     );
   }

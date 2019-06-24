@@ -10,11 +10,11 @@ import './Sidenav.less';
 export default class SidenavRewards extends React.Component {
   propTypes = {
     match: PropTypes.shape().isRequired,
-    // intl: PropTypes.shape().isRequired,
+    intl: PropTypes.shape().isRequired,
   };
 
   render() {
-    const { match } = this.props;
+    const { match, intl } = this.props;
     return (
       <ul className="Sidenav">
         <li>
@@ -23,7 +23,10 @@ export default class SidenavRewards extends React.Component {
             activeClassName="Sidenav__item--active"
           >
             {/* <i className="iconfont icon-dynamic" /> */}
-            Active
+            {intl.formatMessage({
+              id: 'active',
+              defaultMessage: `Active`,
+            })}
           </NavLink>
         </li>
         <li>
@@ -32,7 +35,10 @@ export default class SidenavRewards extends React.Component {
             activeClassName="Sidenav__item--active"
           >
             {/* <i className="iconfont icon-collection" /> */}
-            Reserved
+            {intl.formatMessage({
+              id: 'reserved',
+              defaultMessage: `Reserves`,
+            })}
           </NavLink>
         </li>
         <li>
@@ -41,7 +47,10 @@ export default class SidenavRewards extends React.Component {
             activeClassName="Sidenav__item--active"
           >
             {/* <i className="iconfont icon-collection" /> */}
-            History
+            {intl.formatMessage({
+              id: 'history',
+              defaultMessage: `History`,
+            })}
           </NavLink>
         </li>
       </ul>

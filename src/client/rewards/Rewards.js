@@ -1,4 +1,3 @@
-// import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -12,21 +11,28 @@ import ScrollToTop from '../components/Utils/ScrollToTop';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import './Rewards.less';
 import Propositions from './Propositions/Propositions';
+import { assignProposition, declineProposition } from '../user/userActions';
 
 @withRouter
 @injectIntl
-@connect(state => ({
-  authenticated: getIsAuthenticated(state),
-  loaded: getIsLoaded(state),
-}))
+@connect(
+  state => ({
+    authenticated: getIsAuthenticated(state),
+    loaded: getIsLoaded(state),
+  }),
+  { assignProposition, declineProposition },
+)
 class Rewards extends React.Component {
   static propTypes = {
-    // authenticated: PropTypes.bool.isRequired,
     history: PropTypes.shape().isRequired,
+    assignProposition: PropTypes.func.isRequired,
+    declineProposition: PropTypes.func.isRequired,
     location: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
   };
-
+  static defaultProps = {
+    currentUserName: '',
+  };
   handleSortChange = key => {
     const { category } = this.props.match.params;
     if (category) {
@@ -57,7 +63,12 @@ class Rewards extends React.Component {
               </div>
             </Affix>
             <div className="center">
-              <Propositions filterKey={match.params[0]} userName={match.params.userName} />
+              <Propositions
+                filterKey={match.params[0]}
+                userName={match.params.userName}
+                assignProposition={this.props.assignProposition}
+                discardProposition={this.props.declineProposition}
+              />
             </div>
           </div>
         </div>
