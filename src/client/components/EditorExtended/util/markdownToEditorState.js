@@ -253,7 +253,7 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
   };
 };
 
-function mdToDraftjs({ title = '', body = '' }, extraStyles) {
+function mdToDraftjs({ title, body } = { title: '', body: '' }, extraStyles) {
   const blocks = [
     {
       key: 's_title',

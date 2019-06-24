@@ -14,6 +14,7 @@ import {
 import { getHasDefaultSlider, getVoteValue } from '../helpers/user';
 import './LikeSection.less';
 
+@injectIntl
 @connect(state => ({
   rewardFund: getRewardFund(state),
   rate: getRate(state),
@@ -147,4 +148,4 @@ class LikeSection extends React.Component {
   }
 }
 
-export default injectIntl(LikeSection);
+export default LikeSection;

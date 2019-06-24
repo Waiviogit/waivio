@@ -459,6 +459,7 @@
   "object_field_workTime": "Work time",
   "object_field_menuPage": "Page",
   "object_field_menuList": "List",
+  "object_field_pageContent": "Page",
   "field_error": "{field} is required",
   "append_send": "Submit",
   "suggestion_add_field": "Update object",
