@@ -19,7 +19,7 @@ import './ObjectOfTypePage.less';
 
 export const PageContentPreview = ({ content = { body: '', title: '' } }) => (
   <React.Fragment>
-    <h1 className="StoryFull__title preview">{content.title}</h1>
+    <h1 className="StoryFull__title preview bread-word">{content.title}</h1>
     <BodyContainer full body={content.body} />
   </React.Fragment>
 );
