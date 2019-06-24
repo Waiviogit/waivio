@@ -25,6 +25,7 @@ import IconButton from '../components/IconButton';
 import SortSelector from '../components/SortSelector/SortSelector';
 import './WobjHistory.less';
 import { getFieldWithMaxWeight } from './wObjectHelper';
+import OBJECT_TYPE from './const/objectTypes';
 
 @connect(
   state => ({
@@ -43,6 +44,7 @@ export default class WobjHistory extends React.Component {
     history: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     feed: PropTypes.shape().isRequired,
+    toggleViewEditMode: PropTypes.func.isRequired,
     comments: PropTypes.shape(),
     isAuthenticated: PropTypes.bool,
     getObjectComments: PropTypes.func,
@@ -86,8 +88,8 @@ export default class WobjHistory extends React.Component {
     }
     if (prevProps.object.author_permlink !== object.author_permlink) {
       this.props.getObjectComments(object.author, object.author_permlink);
-      if (match.params.field) {
-        this.handleFieldChange(match.params.field);
+      if (match.params[1]) {
+        this.handleFieldChange(match.params[1]);
       }
     }
   }
@@ -99,6 +101,16 @@ export default class WobjHistory extends React.Component {
   };
 
   handleLocaleChange = locale => this.setState({ locale });
+
+  handleAddBtnClick = () => {
+    const { history, match, object, toggleViewEditMode } = this.props;
+    if (match.params[1] === objectFields.pageContent) {
+      toggleViewEditMode(true);
+      history.push(`/object/${object.author_permlink}/${OBJECT_TYPE.PAGE}`);
+    } else {
+      this.handleToggleModal();
+    }
+  };
 
   handleToggleModal = () => {
     this.setState({ showModal: !this.state.showModal });
@@ -164,7 +176,7 @@ export default class WobjHistory extends React.Component {
             <React.Fragment>
               <IconButton
                 icon={<Icon type="plus-circle" />}
-                onClick={this.handleToggleModal}
+                onClick={this.handleAddBtnClick}
                 caption={<FormattedMessage id="add_new_proposition" defaultMessage="Add" />}
               />
               {showModal && (
