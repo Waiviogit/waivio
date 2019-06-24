@@ -17,6 +17,19 @@ import { appendObject } from '../appendActions';
 import { getFollowingObjectsList, getIsAppendLoading, getLocale } from '../../reducers';
 import './ObjectOfTypePage.less';
 
+export const PageContentPreview = ({ content = { body: '', title: '' } }) => (
+  <React.Fragment>
+    <h1 className="StoryFull__title preview">{content.title}</h1>
+    <BodyContainer full body={content.body} />
+  </React.Fragment>
+);
+PageContentPreview.propTypes = {
+  content: PropTypes.shape({
+    title: PropTypes.string,
+    body: PropTypes.string,
+  }).isRequired,
+};
+
 @injectIntl
 @Form.create()
 @connect(
@@ -169,8 +182,7 @@ class ObjectOfTypePage extends Component {
           />
         ) : (
           <React.Fragment>
-            <h1 className="StoryFull__title preview">{initialContent.title}</h1>
-            <BodyContainer full body={initialContent.body} />
+            <PageContentPreview content={initialContent} />
             {!this.postContent && (
               <div className="object-of-type-page__empty-placeholder">
                 <span>

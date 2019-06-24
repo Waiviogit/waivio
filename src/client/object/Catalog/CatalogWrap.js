@@ -5,7 +5,12 @@ import { connect } from 'react-redux';
 import { has, isEmpty, isEqual, map, forEach, uniq } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { getFieldWithMaxWeight, getListItems, sortListItemsBy } from '../wObjectHelper';
+import {
+  getFieldWithMaxWeight,
+  getListItems,
+  getListItemLink,
+  sortListItemsBy,
+} from '../wObjectHelper';
 import { getClientWObj, getServerWObj } from '../../adapters';
 import { objectFields } from '../../../common/constants/listOfFields';
 import OBJ_TYPE from '../const/objectTypes';
@@ -16,8 +21,10 @@ import * as wobjectActions from '../../../client/object/wobjectsActions';
 import { getLocale } from '../../reducers';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CategoryItemView from './CategoryItemView/CategoryItemView';
+import { hasType } from '../../helpers/wObjectHelper';
+import { PageContentPreview } from '../ObjectOfTypePage/ObjectOfTypePage';
+import { splitPostContent } from '../../helpers/postHelpers';
 import './CatalogWrap.less';
-import ObjectAvatar from '../../components/ObjectAvatar';
 
 const getListSorting = wobj => {
   const type = wobj[objectFields.sorting] && wobj[objectFields.sorting].length ? 'custom' : 'rank';
@@ -174,18 +181,18 @@ class CatalogWrap extends React.Component {
   render() {
     const { sort, wobjNested, listItems, breadcrumb } = this.state;
     const { isEditMode, wobject, intl, location } = this.props;
-    const currentList = wobjNested || wobject;
+    const currWobject = wobjNested || wobject;
     const itemsIdsToOmit = uniq([
       ...listItems.map(item => item.id),
       ...breadcrumb.map(crumb => crumb.id),
     ]);
     const isListObject =
-      currentList.object_type === OBJ_TYPE.LIST || (!wobjNested && has(wobject, 'menuItems'));
+      hasType(currWobject, OBJ_TYPE.LIST) || (!wobjNested && has(wobject, 'menuItems'));
 
     const sortSelector =
-      currentList &&
-      currentList[objectFields.sorting] &&
-      currentList[objectFields.sorting].length ? (
+      currWobject &&
+      currWobject[objectFields.sorting] &&
+      currWobject[objectFields.sorting].length ? (
         <SortSelector sort={sort} onChange={this.handleSortChange}>
           <SortSelector.Item key="custom">
             <FormattedMessage id="custom" defaultMessage="Custom" />
@@ -256,7 +263,7 @@ class CatalogWrap extends React.Component {
         {wobject.object_type === OBJ_TYPE.LIST && isEditMode && (
           <div className="CatalogWrap__add-item">
             <AddItemModal
-              wobject={currentList}
+              wobject={currWobject}
               itemsIdsToOmit={itemsIdsToOmit}
               onAddItem={this.handleAddItem}
             />
@@ -271,26 +278,8 @@ class CatalogWrap extends React.Component {
                 <div>
                   {!isEmpty(listItems) ? (
                     map(listItems, listItem => {
+                      const linkTo = getListItemLink(listItem, location);
                       const isList = listItem.type === OBJ_TYPE.LIST;
-                      const linkTo = isList
-                        ? {
-                            pathname: `${location.pathname}`,
-                            hash: `${
-                              !location.hash
-                                ? listItem.id
-                                : `${
-                                    location.hash.includes(listItem.id)
-                                      ? `${location.hash.split(listItem.id)[0]}${listItem.id}`
-                                      : `${location.hash}/${listItem.id}`
-                                  }`
-                            }`,
-                          }
-                        : {
-                            pathname: `${location.pathname}`,
-                            hash: `${location.hash}${location.hash.length ? '/' : ''}${
-                              listItem.id
-                            }`,
-                          };
                       return (
                         <div key={`category-${listItem.id}`}>
                           {isList ? (
@@ -322,11 +311,13 @@ class CatalogWrap extends React.Component {
             </div>
           </React.Fragment>
         )}
-        {!isListObject && !isEmpty(wobjNested) && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <ObjectAvatar item={wobjNested} size={350} />
-            {wobjNested.default_name}
-          </div>
+        {hasType(currWobject, OBJ_TYPE.PAGE) && !isEmpty(wobjNested) && (
+          <PageContentPreview
+            content={splitPostContent(
+              getFieldWithMaxWeight(currWobject, objectFields.pageContent),
+              { titleKey: 'title', bodyKey: 'body' },
+            )}
+          />
         )}
       </div>
     );
