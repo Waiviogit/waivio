@@ -1,21 +1,24 @@
-@import (reference) '../styles/modules/variables.less';
 @import (reference) '../styles/custom.less';
+@import (reference) '../styles/modules/variables.less';
 
-.ObjectTypePage {
-  &__tags {
-    display: flex;
-    align-items: center;
-    .ObjectTypeFiltersTags {
-      margin: 10px 0 10px 5px;
-    }
-  }
+.Rewards {
+  width: 100%;
   &__title {
-    color: @black;
-    font-size: 2em;
-    font-weight: 500;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    color: @tertiary-color;
+    font-size: 2em;
+    font-weight: 500;
+  }
+  &__toggler-wrap {
+    display: flex;
+    align-items: flex-end;
+    font-size: 14px;
+    color: @tertiary-color;
+    button {
+      margin-left: 15px;
+    }
   }
   .feed-layout {
     .center {
@@ -33,5 +36,3 @@
     }
   }
 }
-
-@import 'ObjectTypePage-nightmode';

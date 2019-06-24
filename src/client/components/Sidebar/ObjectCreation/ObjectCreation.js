@@ -60,12 +60,13 @@ class ObjectCreation extends React.Component {
     if (showedTypesCount <= loadedObjectTypesCount) {
       this.setState({ showedTypesCount: showedTypesCount + objTypesLimit, selectedType: '' });
     }
-    // todo: add hasMore flag in reducer
   };
 
   openCreateObjectModal = e => {
     this.setState({ selectedType: e.currentTarget.textContent });
   };
+
+  handleCancel = () => this.setState({ selectedType: '' });
 
   handleCreateObjectModal = objData =>
     this.props
@@ -130,7 +131,11 @@ class ObjectCreation extends React.Component {
           )}
         </div>
         {Boolean(selectedType) && (
-          <CreateObject chosenType={selectedType} onCreateObject={this.handleCreateObjectModal} />
+          <CreateObject
+            chosenType={selectedType}
+            onCloseModal={this.handleCancel}
+            onCreateObject={this.handleCreateObjectModal}
+          />
         )}
       </div>
     );

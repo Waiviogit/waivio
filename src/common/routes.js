@@ -1,6 +1,7 @@
 import Wrapper from '../client/Wrapper';
 import { objMenuTypes, supportedObjectFields } from '../../src/common/constants/listOfFields';
 import URL from '../../src/common/constants/routing';
+import OBJ_TYPE from '../client/object/const/objectTypes';
 
 import Bookmarks from '../client/bookmarks/Bookmarks';
 import Drafts from '../client/post/Write/Drafts';
@@ -39,6 +40,8 @@ import CatalogWrap from '../client/object/Catalog/CatalogWrap';
 import WobjExpertise from '../client/object/WobjExpertise';
 import UserExpertise from '../client/user/UserExpertise';
 import ObjectTypePage from '../client/objectTypes/ObjectTypePage';
+import Rewards from '../client/rewards/Rewards';
+import ObjectOfTypePage from '../client/object/ObjectOfTypePage/ObjectOfTypePage';
 
 const routes = [
   {
@@ -48,6 +51,11 @@ const routes = [
         path: '/bookmarks',
         exact: true,
         component: Bookmarks,
+      },
+      {
+        path: `/rewards/(active|reserved|history|promoted)/@:userName`,
+        component: Rewards,
+        exact: true,
       },
       {
         path: '/drafts',
@@ -152,9 +160,20 @@ const routes = [
         ],
       },
       {
-        path: `/object/:name/(about|gallery|updates|reviews|followers|feed|list|expertise|${
-          URL.SEGMENT.OBJ_MENU
-        })?/(${supportedObjectFields.join('|')}|${objMenuTypes.join('|')}|album)?/:itemId?`,
+        path: `/object/:name/(${[
+          'about',
+          'gallery',
+          'updates',
+          'reviews',
+          'followers',
+          'feed',
+          'expertise',
+          OBJ_TYPE.PAGE,
+          OBJ_TYPE.LIST,
+          URL.SEGMENT.OBJ_MENU,
+        ].join('|')})?/(${[...supportedObjectFields, ...objMenuTypes, 'album'].join(
+          '|',
+        )})?/:itemId?`,
         component: Wobj,
         exact: true,
         routes: [
@@ -194,12 +213,18 @@ const routes = [
             component: WobjHistory,
           },
           {
-            path: `/object/:name/(list|${URL.SEGMENT.OBJ_MENU})`,
+            path: `/object/:name/(${OBJ_TYPE.LIST}|${URL.SEGMENT.OBJ_MENU})`,
             exact: true,
             component: CatalogWrap,
           },
+          {
+            path: `/object/:name/(${OBJ_TYPE.PAGE})`,
+            exact: true,
+            component: ObjectOfTypePage,
+          },
         ],
       },
+
       {
         path: '/discover',
         exact: true,

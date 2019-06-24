@@ -4,19 +4,32 @@ import { injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
 import cn from 'classnames';
-import './Proposition.less';
 import AppendModal from '../../object/AppendModal';
 import IconButton from '../IconButton';
+import { objectFields } from '../../../common/constants/listOfFields';
+import './Proposition.less';
 
 class Proposition extends React.Component {
   state = {
     showModal: false,
   };
 
-  handleToggleModal = () => this.setState({ showModal: !this.state.showModal });
+  handleToggleModal = () => {
+    if (this.props.fieldName !== objectFields.pageContent) {
+      this.setState({ showModal: !this.state.showModal });
+    }
+  };
 
   render() {
-    const { intl, fieldName, objectID, objName, handleSelectField, selectedField } = this.props;
+    const {
+      intl,
+      linkTo,
+      fieldName,
+      objectID,
+      objName,
+      selectedField,
+      handleSelectField,
+    } = this.props;
     const { showModal } = this.state;
 
     const linkClass = cn({
@@ -28,15 +41,15 @@ class Proposition extends React.Component {
       <React.Fragment>
         <div className="proposition-line">
           <Link
-            to={{ pathname: `/object/${objectID}/updates/${fieldName}` }}
+            to={{ pathname: linkTo || `/object/${objectID}/updates/${fieldName}` }}
             data-test={`${fieldName}-plus-button`}
           >
             <IconButton icon={<Icon type="plus-circle" />} onClick={this.handleToggleModal} />
           </Link>
           <div className={linkClass} data-test={`${fieldName}-field-name`}>
             <Link
-              to={`/object/${objectID}/updates/${fieldName}`}
-              onClick={() => handleSelectField(fieldName)}
+              to={{ pathname: `/object/${objectID}/updates/${fieldName}` }}
+              onClick={handleSelectField(fieldName)}
             >
               {intl.formatMessage({
                 id: `object_field_${fieldName}`,
@@ -65,12 +78,14 @@ Proposition.propTypes = {
   intl: PropTypes.shape().isRequired,
   handleSelectField: PropTypes.func,
   selectedField: PropTypes.string,
+  linkTo: PropTypes.string,
 };
 
 Proposition.defaultProps = {
   fieldName: 'name',
   handleSelectField: () => {},
   selectedField: '',
+  linkTo: '',
 };
 
 export default injectIntl(Proposition);

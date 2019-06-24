@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { getField } from '../objects/WaivioObject';
 import { objectFields } from '../../common/constants/listOfFields';
+import LANGUAGES from '../translations/languages';
 
 export const accessTypesArr = ['is_extending_open', 'is_posting_open'];
 
@@ -76,11 +77,19 @@ export const hasType = (wobj, type) =>
 /* eslint-disable camelcase */
 export const getAppendData = (creator, wObj, bodyMsg, fieldContent) => {
   const { author, author_permlink } = wObj;
+  let body = bodyMsg;
+  if (!body) {
+    const langReadable = _.filter(LANGUAGES, { id: fieldContent.locale })[0].name;
+    body = `@${creator} added ${fieldContent.name} (${langReadable}):\n ${fieldContent.body.replace(
+      /[{}"]/g,
+      '',
+    )}`;
+  }
   return {
     author: creator,
     parentAuthor: author,
     parentPermlink: author_permlink,
-    body: bodyMsg,
+    body,
     title: '',
     field: fieldContent,
     permlink: `${creator}-${generatePermlink()}`,

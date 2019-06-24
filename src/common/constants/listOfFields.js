@@ -1,3 +1,5 @@
+import OBJECT_TYPE from '../../client/object/const/objectTypes';
+
 export const objectFields = {
   name: 'name',
   title: 'title',
@@ -19,6 +21,7 @@ export const objectFields = {
   newsFilter: 'newsFilter',
   button: 'button',
   workTime: 'workTime',
+  pageContent: 'pageContent',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -96,7 +99,15 @@ export const objectImageFields = ['avatar', 'background'];
 
 export const getAllowedFieldsByObjType = objectType => {
   switch (objectType && objectType.toLowerCase()) {
-    case 'list':
+    case OBJECT_TYPE.PAGE:
+      return [
+        objectFields.pageContent,
+        objectFields.title,
+        objectFields.avatar,
+        objectFields.background,
+        objectFields.parent,
+      ];
+    case OBJECT_TYPE.LIST:
       return [
         objectFields.title,
         objectFields.avatar,

@@ -459,6 +459,7 @@
   "object_field_workTime": "Work time",
   "object_field_menuPage": "Page",
   "object_field_menuList": "List",
+  "object_field_pageContent": "Page",
   "field_error": "{field} is required",
   "append_send": "Submit",
   "suggestion_add_field": "Update object",
@@ -564,5 +565,18 @@
   "emailAndPhoneReq": "Email and Phone Required",
   "filterRule": "FilterRule",
   "info": "Information",
-  "about": "About"
+  "about": "About",
+  "only_for_my": "Only for me",
+  "noProposition": "There are no propositions for {userName}",
+  "active": "Active",
+  "reserved": "Reserved",
+  "history": "History",
+  "assign": "Assign",
+  "discard": "Discard",
+  "filterRule": "FilterRule",
+  "assigned_successfully": "Assigned successfully",
+  "min_images_count": "You should add images, minimum",
+  "min_followers_count": "You should have followers, at least",
+  "min_posts_count": "You should be author of post, minimum",
+  "discard_successfully": "Declined successfully"
 }

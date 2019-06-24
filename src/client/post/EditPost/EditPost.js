@@ -113,8 +113,6 @@ class EditPost extends Component {
       nextState.objPercentage = objPercentage;
     }
     this.setState(nextState);
-    // console.log('raw content:', JSON.stringify(rawContent));
-    // console.log('content:', nextState);
   }
 
   handleTopicsChange = topics => this.setState({ topics }, this.handleUpdateState);
