@@ -83,7 +83,7 @@ export default class Wobj extends React.Component {
     const { history, match, screenSize } = this.props;
     if (!_.isEmpty(nextProps.wobject) && !match.params[0] && !nextProps.match.params[0]) {
       if (nextProps.wobject.object_type) {
-        const pageField = getFieldWithMaxWeight(nextProps, objectFields.pageContent);
+        const pageField = getFieldWithMaxWeight(nextProps.wobject, objectFields.pageContent);
         switch (nextProps.wobject.object_type.toLowerCase()) {
           case OBJECT_TYPE.PAGE:
             if (!pageField) {
