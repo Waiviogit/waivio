@@ -1,5 +1,6 @@
 import { objectFields } from '../common/constants/listOfFields';
 import { getFieldWithMaxWeight } from './object/wObjectHelper';
+import DEFAULTS from './object/const/defaultValues';
 
 export const getClientWObj = (serverWObj, fieldsToInclude = []) => {
   /* eslint-disable no-underscore-dangle */
@@ -22,9 +23,7 @@ export const getClientWObj = (serverWObj, fieldsToInclude = []) => {
 
   const result = {
     id: author_permlink,
-    avatar:
-      getFieldWithMaxWeight(serverWObj, objectFields.avatar) ||
-      'https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png',
+    avatar: getFieldWithMaxWeight(serverWObj, objectFields.avatar) || DEFAULTS.AVATAR,
     name: getFieldWithMaxWeight(serverWObj, objectFields.name),
     title: getFieldWithMaxWeight(serverWObj, objectFields.title),
     parent: parent || '',

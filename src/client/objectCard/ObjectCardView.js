@@ -3,17 +3,18 @@ import _ from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import './ObjectCardView.less';
 import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
+import DEFAULTS from '../object/const/defaultValues';
 import { objectFields as objectTypes } from '../../common/constants/listOfFields';
+import './ObjectCardView.less';
 
 const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => {
   const getObjectRatings = () => _.filter(wObject.fields, ['name', 'rating']);
   const pathName = pathNameAvatar || `/object/${wObject.id}`;
   const ratings = getObjectRatings();
-  const avatarLayout = avatar => (
+  const avatarLayout = (avatar = DEFAULTS.AVATAR) => (
     <div
       className="ObjectCardView__avatar"
       style={{

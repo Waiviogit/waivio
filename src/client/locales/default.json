@@ -563,7 +563,6 @@
   "longerWaiting": "Longer waiting time (up to 2 weeks)",
   "bonusDelegation": "BONUS: 15 SP delegation (for 90 days)",
   "emailAndPhoneReq": "Email and Phone Required",
-  "filterRule": "FilterRule",
   "info": "Information",
   "about": "About",
   "only_for_my": "Only for me",
@@ -578,5 +577,7 @@
   "min_images_count": "You should add images, minimum",
   "min_followers_count": "You should have followers, at least",
   "min_posts_count": "You should be author of post, minimum",
-  "discard_successfully": "Declined successfully"
+  "discard_successfully": "Declined successfully",
+  "create_new_page": "Create new page",
+  "create_new_list": "Create new list"
 }

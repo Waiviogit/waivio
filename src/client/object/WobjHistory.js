@@ -86,7 +86,7 @@ export default class WobjHistory extends React.Component {
     ) {
       this.handleFieldChange(this.props.match.params[1]);
     }
-    if (prevProps.object.author_permlink !== object.author_permlink) {
+    if (!_.isEmpty(object) && object.author_permlink !== prevProps.object.author_permlink) {
       this.props.getObjectComments(object.author, object.author_permlink);
       if (match.params[1]) {
         this.handleFieldChange(match.params[1]);
