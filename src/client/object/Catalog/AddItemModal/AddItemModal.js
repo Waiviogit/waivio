@@ -9,13 +9,11 @@ import { getAuthenticatedUserName, getFollowingObjectsList, getLocale } from '..
 import { appendObject } from '../../appendActions';
 import { objectFields } from '../../../../common/constants/listOfFields';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
-import CreateObjectModal from '../../../post/CreateObjectModal/CreateObject';
+import CreateObject from '../../../post/CreateObjectModal/CreateObject';
 import LikeSection from '../../../object/LikeSection';
 import LANGUAGES from '../../../translations/languages';
 import { getLanguageText } from '../../../translations';
 import FollowObjectForm from '../../FollowObjectForm';
-import * as wobjectActions from '../../wobjectsActions';
-import * as notificationActions from '../../../app/Notification/notificationActions';
 import './AddItemModal.less';
 import ObjectCardView from '../../../objectCard/ObjectCardView';
 
@@ -27,8 +25,6 @@ import ObjectCardView from '../../../objectCard/ObjectCardView';
   }),
   {
     appendObject,
-    createObject: wobjectActions.createWaivioObject,
-    notify: notificationActions.notify,
   },
 )
 @injectIntl
@@ -56,8 +52,6 @@ class AddItemModal extends Component {
     locale: PropTypes.string,
     followingList: PropTypes.arrayOf(PropTypes.string),
     appendObject: PropTypes.func.isRequired,
-    createObject: PropTypes.func.isRequired,
-    notify: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -132,48 +126,7 @@ class AddItemModal extends Component {
     });
   };
 
-  handleCreateObject = wobj => {
-    const { intl, notify, createObject } = this.props;
-    return createObject(wobj)
-      .then(({ value: { parentPermlink, parentAuthor } }) => {
-        notify(
-          intl.formatMessage({
-            id: 'create_object_success',
-            defaultMessage: 'Object has been created',
-          }),
-          'success',
-        );
-        this.handleObjectSelect({
-          id: parentPermlink,
-          author: parentAuthor,
-          avatar:
-            'https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png',
-          name: wobj.name,
-          title: '',
-          parents: [],
-          weight: '',
-          createdAt: Date.now(),
-          updatedAt: Date.now(),
-          children: [],
-          users: [],
-          userCount: 0,
-          version: 0,
-          isNew: false,
-          rank: 1,
-          type: wobj.type,
-          background: '',
-        });
-      })
-      .catch(() =>
-        notify(
-          intl.formatMessage({
-            id: 'create_object_error',
-            defaultMessage: 'Something went wrong. Object is not created',
-          }),
-          'error',
-        ),
-      );
-  };
+  handleCreateObject = wobj => this.handleObjectSelect(wobj);
 
   render() {
     const { isModalOpen, isLoading, selectedItem } = this.state;
@@ -284,7 +237,7 @@ class AddItemModal extends Component {
           handleSelect={this.handleObjectSelect}
           itemsIdsToOmit={itemsIdsToOmit}
         />
-        <CreateObjectModal onCreateObject={this.handleCreateObject} />
+        <CreateObject onCreateObject={this.handleCreateObject} />
       </React.Fragment>
     );
   }

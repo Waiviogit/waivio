@@ -4,14 +4,17 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Form, Input, Select, Button, Modal } from 'antd';
 import { connect } from 'react-redux';
-import './CreateObject.less';
 import LANGUAGES from '../../translations/languages';
 import { getLanguageText } from '../../translations';
 import { objectFields } from '../../../common/constants/listOfFields';
 import LikeSection from '../../object/LikeSection';
 import FollowObjectForm from '../../object/FollowObjectForm';
 import { getobjectTypesState } from '../../reducers';
+import { notify } from '../../app/Notification/notificationActions';
 import { getObjectTypes } from '../../objectTypes/objectTypesActions';
+import { createWaivioObject } from '../../object/wobjectsActions';
+import DEFAULTS from '../../object/const/defaultValues';
+import './CreateObject.less';
 
 @injectIntl
 @Form.create()
@@ -20,26 +23,40 @@ import { getObjectTypes } from '../../objectTypes/objectTypesActions';
     objectTypes: getobjectTypesState(state),
   }),
   {
+    createWaivioObject,
     getObjectTypes,
+    notify,
   },
 )
 class CreateObject extends React.Component {
   static propTypes = {
+    /* from decorators */
     intl: PropTypes.shape().isRequired,
     form: PropTypes.shape().isRequired,
+    /* from connect */
     objectTypes: PropTypes.shape(),
-    currentLocaleInList: PropTypes.shape().isRequired,
-    chosenType: PropTypes.string,
-    onCreateObject: PropTypes.func.isRequired,
+    createWaivioObject: PropTypes.func.isRequired,
     getObjectTypes: PropTypes.func.isRequired,
-    onCloseModal: PropTypes.func.isRequired,
+    notify: PropTypes.func.isRequired,
+    /* passed props */
+    isSingleType: PropTypes.bool,
+    isModalOpen: PropTypes.bool,
+    defaultObjectType: PropTypes.string,
+    currentLocaleInList: PropTypes.shape(),
+    withOpenModalBtn: PropTypes.bool,
+    openModalBtnText: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
+    onCreateObject: PropTypes.func,
+    onCloseModal: PropTypes.func,
   };
 
   static defaultProps = {
-    currentLocaleInList: { id: 'en-US', name: '', nativeName: '' },
-    wobject: { tag: '' },
     objectTypes: {},
-    chosenType: null,
+    currentLocaleInList: { id: 'en-US', name: '', nativeName: '' },
+    withOpenModalBtn: true,
+    isSingleType: false,
+    isModalOpen: false,
+    defaultObjectType: '',
+    openModalBtnText: '',
     onCreateObject: () => {},
     onCloseModal: () => {},
   };
@@ -48,14 +65,14 @@ class CreateObject extends React.Component {
     super(props);
 
     this.state = {
-      isModalOpen: Boolean(props.chosenType),
+      isModalOpen: false,
       loading: false,
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.chosenType !== nextProps.chosenType) {
-      this.setState({ isModalOpen: Boolean(nextProps.chosenType) });
+    if (this.props.isModalOpen !== nextProps.isModalOpen) {
+      this.setState({ isModalOpen: nextProps.isModalOpen });
     }
   }
 
@@ -90,8 +107,46 @@ class CreateObject extends React.Component {
           parentPermlink: selectedType.permlink,
         };
         this.props
-          .onCreateObject(objData)
-          .then(() => this.setState({ loading: false, isModalOpen: false }));
+          .createWaivioObject(objData)
+          .then(({ value: { parentPermlink, parentAuthor } }) => {
+            this.props.notify(
+              this.props.intl.formatMessage({
+                id: 'create_object_success',
+                defaultMessage: 'Object has been created',
+              }),
+              'success',
+            );
+            this.setState({ loading: false, isModalOpen: false });
+            this.props.onCreateObject({
+              id: parentPermlink,
+              author: parentAuthor,
+              avatar: DEFAULTS.AVATAR,
+              name: objData.name,
+              title: '',
+              parents: [],
+              weight: '',
+              createdAt: Date.now(),
+              updatedAt: Date.now(),
+              children: [],
+              users: [],
+              userCount: 0,
+              version: 0,
+              isNew: false,
+              rank: 1,
+              type: objData.type,
+              background: '',
+            });
+          })
+          .catch(() => {
+            this.props.notify(
+              this.props.intl.formatMessage({
+                id: 'create_object_error',
+                defaultMessage: 'Something went wrong. Object is not created',
+              }),
+              'error',
+            );
+            this.setState({ loading: false, isModalOpen: false });
+          });
       }
     });
   };
@@ -99,37 +154,47 @@ class CreateObject extends React.Component {
   render() {
     const languageOptions = [];
     const { getFieldDecorator } = this.props.form;
-    const { currentLocaleInList, intl, form, objectTypes, chosenType } = this.props;
+    const {
+      currentLocaleInList,
+      intl,
+      form,
+      objectTypes,
+      withOpenModalBtn,
+      openModalBtnText,
+      defaultObjectType,
+      isSingleType,
+    } = this.props;
     const { loading } = this.state;
 
     const Option = Select.Option;
 
     if (currentLocaleInList === 'auto') {
       languageOptions.push(
-        <Select.Option disabled key="auto" value="auto">
+        <Option disabled key="auto" value="auto">
           {intl.formatMessage({ id: 'select_language', defaultMessage: 'Select language' })}
-        </Select.Option>,
+        </Option>,
       );
     }
 
     LANGUAGES.forEach(lang => {
       languageOptions.push(
-        <Select.Option key={lang.id} value={lang.id}>
+        <Option key={lang.id} value={lang.id}>
           {getLanguageText(lang)}
-        </Select.Option>,
+        </Option>,
       );
     });
 
     return (
       <React.Fragment>
-        {!chosenType && (
+        {withOpenModalBtn && (
           <div className="CreateObject__row align-right">
-            <span role="presentation" className="CreateObject__button" onClick={this.toggleModal}>
-              {this.props.intl.formatMessage({
-                id: 'create_new_object',
-                defaultMessage: 'create new object',
-              })}
-            </span>
+            <div role="presentation" className="CreateObject__button" onClick={this.toggleModal}>
+              {openModalBtnText ||
+                this.props.intl.formatMessage({
+                  id: 'create_new_object',
+                  defaultMessage: 'create new object',
+                })}
+            </div>
           </div>
         )}
 
@@ -200,7 +265,7 @@ class CreateObject extends React.Component {
             </Form.Item>
             <Form.Item>
               {getFieldDecorator('type', {
-                initialValue: chosenType,
+                initialValue: defaultObjectType,
                 rules: [
                   {
                     required: true,
@@ -213,7 +278,7 @@ class CreateObject extends React.Component {
               })(
                 <Select
                   showSearch
-                  disabled={Boolean(this.props.chosenType)}
+                  disabled={isSingleType}
                   style={{ width: '100%' }}
                   placeholder={intl.formatMessage({
                     id: 'placeholder_obj_type',

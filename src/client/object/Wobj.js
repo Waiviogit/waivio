@@ -119,7 +119,13 @@ export default class Wobj extends React.Component {
     this.props.resetGallery();
   }
 
-  toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
+  toggleViewEditMode = isEditMode => {
+    if (typeof isEditMode === 'boolean') {
+      this.setState({ isEditMode });
+    } else {
+      this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
+    }
+  };
 
   render() {
     const { isEditMode, hasLeftSidebar } = this.state;

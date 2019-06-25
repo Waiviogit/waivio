@@ -8,8 +8,6 @@ import { getObjectTypes } from '../../../objectTypes/objectTypesActions';
 import { getobjectTypesState } from '../../../reducers';
 import Loading from '../../Icon/Loading';
 import CreateObject from '../../../post/CreateObjectModal/CreateObject';
-import { createWaivioObject } from '../../../object/wobjectsActions';
-import { notify } from '../../../app/Notification/notificationActions';
 import './ObjectCreation.less';
 
 const objTypesLimit = 5;
@@ -20,8 +18,6 @@ const objTypesLimit = 5;
   }),
   {
     loadObjectTypes: getObjectTypes,
-    createWaivioObject,
-    notify,
   },
 )
 @injectIntl
@@ -31,8 +27,6 @@ class ObjectCreation extends React.Component {
     // loading: PropTypes.bool,
     intl: PropTypes.shape(),
     loadObjectTypes: PropTypes.func.isRequired,
-    createWaivioObject: PropTypes.func.isRequired,
-    notify: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -62,35 +56,11 @@ class ObjectCreation extends React.Component {
     }
   };
 
-  openCreateObjectModal = e => {
+  setObjectType = e => {
     this.setState({ selectedType: e.currentTarget.textContent });
   };
 
-  handleCancel = () => this.setState({ selectedType: '' });
-
-  handleCreateObjectModal = objData =>
-    this.props
-      .createWaivioObject(objData)
-      .then(() => {
-        this.props.notify(
-          this.props.intl.formatMessage({
-            id: 'create_object_success',
-            defaultMessage: 'Object has been created',
-          }),
-          'success',
-        );
-        this.setState({ selectedType: '' });
-      })
-      .catch(() => {
-        this.props.notify(
-          this.props.intl.formatMessage({
-            id: 'create_object_error',
-            defaultMessage: 'Something went wrong. Object is not created',
-          }),
-          'error',
-        );
-        this.setState({ selectedType: '' });
-      });
+  resetSelected = () => this.setState({ selectedType: '' });
 
   render() {
     const { selectedType, showedTypesCount } = this.state;
@@ -114,7 +84,7 @@ class ObjectCreation extends React.Component {
                 className="ObjectCreation__obj-type-item"
                 key={objTypeName}
                 role="presentation"
-                onClick={this.openCreateObjectModal}
+                onClick={this.setObjectType}
               >
                 <div className="ObjectCreation__obj-type-item-name">{objTypeName}</div>
               </div>
@@ -130,13 +100,14 @@ class ObjectCreation extends React.Component {
             </h4>
           )}
         </div>
-        {Boolean(selectedType) && (
-          <CreateObject
-            chosenType={selectedType}
-            onCloseModal={this.handleCancel}
-            onCreateObject={this.handleCreateObjectModal}
-          />
-        )}
+        <CreateObject
+          isSingleType
+          withOpenModalBtn={false}
+          isModalOpen={Boolean(selectedType)}
+          defaultObjectType={selectedType}
+          onCloseModal={this.resetSelected}
+          onCreateObject={this.resetSelected}
+        />
       </div>
     );
   }
