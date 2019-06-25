@@ -116,17 +116,17 @@ class CatalogWrap extends React.Component {
   getNextStateFromProps = ({ wobject, location }) => {
     let sorting = {};
     let sortedItems = [];
-    let breadcrumb = [];
+    const breadcrumb = [];
     const items = getListItems(wobject);
     if (items && items.length) {
       sorting = getListSorting(wobject);
-      breadcrumb = [
-        {
+      if (wobject.object_type === OBJ_TYPE.LIST) {
+        breadcrumb.push({
           id: wobject.author_permlink,
           name: getFieldWithMaxWeight(wobject, objectFields.name),
           path: '',
-        },
-      ];
+        });
+      }
       if (location.hash) {
         // restore breadcrumbs from url hash
         const permlinks = location.hash.slice(1).split('/');
@@ -144,8 +144,8 @@ class CatalogWrap extends React.Component {
               path: `${location.hash.split(obj.id)[0]}${obj.id}`,
             }));
             this.setState({ breadcrumb: [...breadcrumb, ...crumbs] });
+            this.getObjectFromApi(permlinks[permlinks.length - 1], location.hash);
           });
-        this.getObjectFromApi(permlinks[permlinks.length - 1], location.hash);
       } else {
         sortedItems = sortListItemsBy(
           items.map(item => getClientWObj(item)),
@@ -234,7 +234,7 @@ class CatalogWrap extends React.Component {
           <Breadcrumb separator={'>'}>
             {map(breadcrumb, (crumb, index, crumbsArr) => (
               <Breadcrumb.Item key={`crumb-${crumb.name}`}>
-                {index && index === crumbsArr.length - 1 ? (
+                {(index || !hasType(wobject, OBJ_TYPE.LIST)) && index === crumbsArr.length - 1 ? (
                   <React.Fragment>
                     <span className="CatalogWrap__breadcrumb__link">{crumb.name}</span>
                     <Link
