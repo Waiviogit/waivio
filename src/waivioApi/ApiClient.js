@@ -333,4 +333,21 @@ export const getTopUsers = (isRandom = false, { limit, skip } = { limit: 30, ski
   });
 };
 
+export const getPropositions = ({ limit = 30, skip = 0, userName, status, approved }) =>
+  // export const getPropositions = ({ limit = 30, locale = 'en-US', skip = 0 }) => {
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.campaigns}?limit=${limit}&skip=${skip}${userName ? `&userName=${userName}` : ''}${
+        userName ? `&approved=${approved}` : ''
+      }${status ? `&status=${status}` : ''}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export default null;

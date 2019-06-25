@@ -67,15 +67,15 @@
 @tooltip-arrow-color: @grey-nero;
 
 // Layout
-@layout-body-background : transparent;
-@layout-header-background : @layout-body-background;
-@layout-header-height : 64px;
-@layout-header-padding : 0px;
-@layout-footer-padding : 24px 50px;
-@layout-sider-background : @layout-header-background;
-@layout-trigger-height : 48px;
-@layout-zero-trigger-width : 36px;
-@layout-zero-trigger-height : 42px;
+@layout-body-background: transparent;
+@layout-header-background: @layout-body-background;
+@layout-header-height: 64px;
+@layout-header-padding: 0;
+@layout-footer-padding: 24px 50px;
+@layout-sider-background: @layout-header-background;
+@layout-trigger-height: 48px;
+@layout-zero-trigger-width: 36px;
+@layout-zero-trigger-height: 42px;
 
 // Comments
 @comment-text-left-margin: 12px;
@@ -123,3 +123,37 @@
 // Post
 @post-table-background-color: rgba(128, 128, 128, 0.05);
 @color-hover-border: #954304;
+
+.reward-button {
+  margin-bottom: 15px;
+  cursor: pointer;
+  text-decoration: none;
+  color: @white;
+
+  a {
+    color: @white;
+  }
+
+  .rainbow-button {
+    width: 100%;
+    height: 30px;
+    background-image: linear-gradient(90deg, #00c0ff 0%, #ffcf00 49%, #fc4f4f 80%, #00c0ff 100%);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .rainbow-button:hover {
+    animation: slidebg 2s linear infinite;
+  }
+
+  @keyframes slidebg {
+    to {
+      background-position: 30vw;
+    }
+  }
+}

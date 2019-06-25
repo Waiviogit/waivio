@@ -40,6 +40,7 @@ import CatalogWrap from '../client/object/Catalog/CatalogWrap';
 import WobjExpertise from '../client/object/WobjExpertise';
 import UserExpertise from '../client/user/UserExpertise';
 import ObjectTypePage from '../client/objectTypes/ObjectTypePage';
+import Rewards from '../client/rewards/Rewards';
 import ObjectOfTypePage from '../client/object/ObjectOfTypePage/ObjectOfTypePage';
 
 const routes = [
@@ -50,6 +51,11 @@ const routes = [
         path: '/bookmarks',
         exact: true,
         component: Bookmarks,
+      },
+      {
+        path: `/rewards/(active|reserved|history|promoted)/@:userName`,
+        component: Rewards,
+        exact: true,
       },
       {
         path: '/drafts',
@@ -218,6 +224,7 @@ const routes = [
           },
         ],
       },
+
       {
         path: '/discover',
         exact: true,
