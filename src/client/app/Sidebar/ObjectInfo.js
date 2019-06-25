@@ -268,16 +268,6 @@ class ObjectInfo extends React.Component {
         )}
         {listItem(objectFields.title, short)}
         {listItem(
-          objectFields.parent,
-          wobject.parent ? (
-            <ObjectCard
-              key={wobject.parent.author_permlink}
-              wobject={wobject.parent}
-              showFollow={false}
-            />
-          ) : null,
-        )}
-        {listItem(
           objectFields.background,
           background ? (
             <div className="field-background">
@@ -291,6 +281,16 @@ class ObjectInfo extends React.Component {
       <React.Fragment>
         {getFieldWithMaxWeight(wobject, objectFields.name) && (
           <div className="object-sidebar">
+            {listItem(
+              objectFields.parent,
+              wobject.parent ? (
+                <ObjectCard
+                  key={wobject.parent.author_permlink}
+                  wobject={wobject.parent}
+                  showFollow={false}
+                />
+              ) : null,
+            )}
             {hasType(wobject, OBJECT_TYPE.PAGE) && listItem(objectFields.pageContent, null)}
             {isRenderMenu && menuSection}
             {isRenderAboutSection && (
