@@ -202,7 +202,7 @@ const routes = [
             component: ObjectGalleryAlbum,
           },
           {
-            path: '/object/:name/updates/:field?',
+            path: '/object/:name/updates',
             exact: true,
             component: WobjHistory,
           },
