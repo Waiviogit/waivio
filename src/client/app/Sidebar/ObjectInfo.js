@@ -205,7 +205,7 @@ class ObjectInfo extends React.Component {
       <div className="object-sidebar__menu-item" key={item.author_permlink}>
         <Link
           className={location.hash.slice(1).split('/')[0] === item.author_permlink ? 'active' : ''}
-          to={`/object/${wobject.author_permlink}/${URL.SEGMENT.OBJ_MENU}#${item.author_permlink}`}
+          to={`/object/${wobject.author_permlink}/${URL.SEGMENT.MENU}#${item.author_permlink}`}
         >
           {item.alias || getFieldWithMaxWeight(item, objectFields.name)}
         </Link>
