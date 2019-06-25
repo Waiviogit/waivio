@@ -137,21 +137,29 @@ export const getCoordinates = () => dispatch =>
     payload: getUserCoordinatesByIpAdress(),
   });
 
-export const assignProposition = id => (dispatch, getState, { steemConnectAPI }) => {
+export const assignProposition = (companyId, objId) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
   const state = getState();
   return new Promise((resolve, reject) => {
     steemConnectAPI
-      .assignProposition(getAuthenticatedUserName(state), id)
+      .assignProposition(getAuthenticatedUserName(state), companyId, objId)
       .then(() => resolve('SUCCESS'))
       .catch(error => reject(error));
   });
 };
 
-export const declineProposition = id => (dispatch, getState, { steemConnectAPI }) => {
+export const declineProposition = (companyId, objId) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
   const state = getState();
   return new Promise((resolve, reject) => {
     steemConnectAPI
-      .declineProposition(getAuthenticatedUserName(state), id)
+      .declineProposition(getAuthenticatedUserName(state), companyId, objId)
       .then(() => resolve('SUCCESS'))
       .catch(error => reject(error));
   });

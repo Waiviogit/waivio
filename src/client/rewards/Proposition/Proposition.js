@@ -24,37 +24,11 @@ const Proposition = ({
   discardProposition,
   loading,
 }) => {
-  // const wobjectReq = {
-  //   author_permlink: 'uwl-ichiro-japanese-restaurant',
-  //   fields: [
-  //     {
-  //       weight: 2,
-  //       locale: 'en-US',
-  //       _id: '5ccf5032d0555b20e13cdeb9',
-  //       creator: 'diningguide',
-  //       author: 'asd09',
-  //       permlink: 'diningguide-wxjl0rmgk0m',
-  //       name: 'avatar',
-  //       body: 'https://pbs.twimg.com/profile_images/417396599690514432/hlSwVIAz_400x400.png',
-  //     },
-  //     {
-  //       weight: 2,
-  //       locale: 'en-US',
-  //       _id: '5ccf5032d0555b20e13cdeb9',
-  //       creator: 'diningguide',
-  //       author: 'asd09',
-  //       permlink: 'diningguide-wxjl0rmgk0m',
-  //       name: 'name',
-  //       body: 'Ichiro Japanese Restaurant',
-  //     },
-  //   ],
-  // };
-
-  const assignPr = () => {
-    assignProposition(proposition);
+  const assignPr = obj => {
+    assignProposition(proposition, obj);
   };
-  const discardPr = () => {
-    discardProposition(proposition);
+  const discardPr = obj => {
+    discardProposition(proposition, obj);
   };
   const userInPropositions = _.find(proposition.users, user => user.name === authorizedUserName);
   return (
@@ -90,7 +64,35 @@ const Proposition = ({
                 {`You should write post with objects`}:
               </div>
               {_.map(proposition.objects, obj => (
-                <ObjectCard key={obj.author_permlink} wobject={obj} showFollow={false} />
+                <div className="Proposition__object-line">
+                  <ObjectCard key={obj.author_permlink} wobject={obj} showFollow={false} />
+                  {userInPropositions &&
+                    (!userInPropositions.approved ? (
+                      <Button
+                        type="primary"
+                        loading={loading}
+                        disabled={loading}
+                        onClick={() => assignPr(obj)}
+                      >
+                        {intl.formatMessage({
+                          id: 'assign',
+                          defaultMessage: `Assign`,
+                        })}
+                      </Button>
+                    ) : (
+                      <Button
+                        type="primary"
+                        loading={loading}
+                        disabled={loading}
+                        onClick={() => discardPr(obj)}
+                      >
+                        {intl.formatMessage({
+                          id: 'discard',
+                          defaultMessage: `Discard`,
+                        })}
+                      </Button>
+                    ))}
+                </div>
               ))}
             </div>
           </div>
@@ -98,34 +100,6 @@ const Proposition = ({
         <div className="Proposition__body-requirements">
           {/* <ObjectCard wobject={wobjectReq} showFollow={false}/> */}
         </div>
-        {userInPropositions &&
-          (!userInPropositions.approved ? (
-            <Button
-              className="reward-button"
-              type="primary"
-              loading={loading}
-              disabled={loading}
-              onClick={assignPr}
-            >
-              {intl.formatMessage({
-                id: 'assign',
-                defaultMessage: `Assign`,
-              })}
-            </Button>
-          ) : (
-            <Button
-              className="reward-button"
-              type="primary"
-              loading={loading}
-              disabled={loading}
-              onClick={discardPr}
-            >
-              {intl.formatMessage({
-                id: 'discard',
-                defaultMessage: `Discard`,
-              })}
-            </Button>
-          ))}
       </div>
     </div>
   );

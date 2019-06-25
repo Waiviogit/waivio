@@ -51,10 +51,10 @@ export default class Propositions extends React.Component {
     );
   };
 
-  assignProposition = proposition => {
+  assignProposition = (proposition, obj) => {
     this.setState({ loadingAssignDiscard: true });
     this.props
-      .assignProposition(proposition._id)
+      .assignProposition(proposition._id, obj.author_permlink)
       .then(() => {
         const updatedPropositions = this.updateProposition(proposition._id, true);
         message.success(
@@ -87,12 +87,16 @@ export default class Propositions extends React.Component {
       return propos;
     });
 
-  discardProposition = proposition => {
+  discardProposition = (proposition, obj) => {
     this.setState({ loadingAssignDiscard: true });
     this.props
-      .discardProposition(proposition._id)
+      .discardProposition(proposition._id, obj.author_permlink)
       .then(() => {
-        const updatedPropositions = this.updateProposition(proposition._id, false);
+        const updatedPropositions = this.updateProposition(
+          proposition._id,
+          false,
+          obj.author_permlink,
+        );
         message.success(
           this.props.intl.formatMessage({
             id: 'discarded_successfully',
