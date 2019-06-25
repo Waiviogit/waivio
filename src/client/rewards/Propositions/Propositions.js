@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { message, Switch } from 'antd';
+import { message } from 'antd';
 import { injectIntl } from 'react-intl';
 import React from 'react';
 import _ from 'lodash';
@@ -25,31 +25,16 @@ export default class Propositions extends React.Component {
     propositions: [],
     loading: false,
     hasMore: true,
-    filter: false,
     loadingAssignDiscard: false,
   };
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.filterKey !== this.props.filterKey) {
-      ApiClient.getPropositions(this.preparePropositionReqData(this.state.filter, nextProps)).then(
-        data => {
-          this.setState({ propositions: data.campaigns, hasMore: data.hasMore });
-        },
-      );
+      ApiClient.getPropositions(this.preparePropositionReqData(nextProps)).then(data => {
+        this.setState({ propositions: data.campaigns, hasMore: data.hasMore });
+      });
     }
   }
-
-  toggleFilter = () => {
-    ApiClient.getPropositions(this.preparePropositionReqData(!this.state.filter, this.props)).then(
-      data => {
-        this.setState({
-          propositions: data.campaigns,
-          filter: !this.state.filter,
-          hasMore: data.hasMore,
-        });
-      },
-    );
-  };
 
   assignProposition = (proposition, obj) => {
     this.setState({ loadingAssignDiscard: true });
@@ -111,12 +96,12 @@ export default class Propositions extends React.Component {
       });
   };
 
-  preparePropositionReqData = (filter, props) => {
+  preparePropositionReqData = props => {
     const { userName } = props;
     const reqData = { limit: displayLimit };
-    if (filter && userName) reqData.userName = userName;
     switch (props.filterKey) {
       case 'active':
+        reqData.userName = userName;
         break;
       case 'history':
         reqData.status = ['inactive', 'expired', 'deleted', 'payed'];
@@ -139,7 +124,7 @@ export default class Propositions extends React.Component {
           loading: true,
         },
         () => {
-          const reqData = this.preparePropositionReqData(this.state.filter, this.props);
+          const reqData = this.preparePropositionReqData(this.props);
           reqData.skip = propositions.length;
           ApiClient.getPropositions(reqData).then(newPropositions =>
             this.setState(state => ({
@@ -155,7 +140,7 @@ export default class Propositions extends React.Component {
 
   render() {
     const { propositions, loading, hasMore, loadingAssignDiscard } = this.state;
-    const { intl, filterKey, userName } = this.props;
+    const { intl, userName } = this.props;
 
     return (
       <React.Fragment>
@@ -164,15 +149,6 @@ export default class Propositions extends React.Component {
             id: 'rewards',
             defaultMessage: 'Rewards',
           })}`}
-          {filterKey !== 'reserved' && (
-            <div className="Rewards__toggler-wrap">
-              {`${intl.formatMessage({
-                id: 'only_for_my',
-                defaultMessage: 'Only for me',
-              })}`}
-              <Switch checked={this.state.filter} onChange={this.toggleFilter} />
-            </div>
-          )}
         </div>
         <ReduxInfiniteScroll
           elementIsScrollable={false}

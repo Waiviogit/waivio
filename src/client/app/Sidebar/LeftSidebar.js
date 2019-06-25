@@ -12,7 +12,7 @@ const LeftSidebar = () => (
     <Route path="/object/:name" component={UserInfo} />
     <Route path="/activity" component={SidenavUser} />
     <Route
-      path="/rewards/(active|reserved|history|promoted)/@:userName"
+      path="/rewards/(active|reserved|history|promoted|all)/@:userName"
       component={SidenavRewards}
     />
     <Route path="/replies" component={ObjectTypes} />

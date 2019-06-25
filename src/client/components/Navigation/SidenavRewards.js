@@ -19,6 +19,18 @@ export default class SidenavRewards extends React.Component {
       <ul className="Sidenav">
         <li>
           <NavLink
+            to={`/rewards/all/@${match.params.userName}`}
+            activeClassName="Sidenav__item--active"
+          >
+            {/* <i className="iconfont icon-dynamic" /> */}
+            {intl.formatMessage({
+              id: 'all',
+              defaultMessage: `All`,
+            })}
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
             to={`/rewards/active/@${match.params.userName}`}
             activeClassName="Sidenav__item--active"
           >
