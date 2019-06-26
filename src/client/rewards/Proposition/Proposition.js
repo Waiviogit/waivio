@@ -2,10 +2,12 @@ import _ from 'lodash';
 import React from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Button } from 'antd';
+import { Button, Collapse } from 'antd';
 import './Proposition.less';
 import UserCard from '../../components/UserCard';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
+
+const { Panel } = Collapse;
 
 const requirementsKeys = {
   minPhotos: { id: 'min_images_count', defaultMessage: 'You should add images, minimum' },
@@ -24,37 +26,11 @@ const Proposition = ({
   discardProposition,
   loading,
 }) => {
-  // const wobjectReq = {
-  //   author_permlink: 'uwl-ichiro-japanese-restaurant',
-  //   fields: [
-  //     {
-  //       weight: 2,
-  //       locale: 'en-US',
-  //       _id: '5ccf5032d0555b20e13cdeb9',
-  //       creator: 'diningguide',
-  //       author: 'asd09',
-  //       permlink: 'diningguide-wxjl0rmgk0m',
-  //       name: 'avatar',
-  //       body: 'https://pbs.twimg.com/profile_images/417396599690514432/hlSwVIAz_400x400.png',
-  //     },
-  //     {
-  //       weight: 2,
-  //       locale: 'en-US',
-  //       _id: '5ccf5032d0555b20e13cdeb9',
-  //       creator: 'diningguide',
-  //       author: 'asd09',
-  //       permlink: 'diningguide-wxjl0rmgk0m',
-  //       name: 'name',
-  //       body: 'Ichiro Japanese Restaurant',
-  //     },
-  //   ],
-  // };
-
-  const assignPr = () => {
-    assignProposition(proposition);
+  const assignPr = obj => {
+    assignProposition(proposition, obj);
   };
-  const discardPr = () => {
-    discardProposition(proposition);
+  const discardPr = obj => {
+    discardProposition(proposition, obj);
   };
   const userInPropositions = _.find(proposition.users, user => user.name === authorizedUserName);
   return (
@@ -73,59 +49,63 @@ const Proposition = ({
       </div>
       <div className="Proposition__body">
         <div className="Proposition__body-description">{proposition.description}</div>
-        <div>
-          {!_.isEmpty(proposition.requirements) &&
-            _.map(proposition.requirements, (req, reqKey) => (
-              <span>
-                {requirementsKeys[reqKey]
-                  ? `${intl.formatMessage(requirementsKeys[reqKey])} ${req}`
-                  : ''}
-              </span>
-            ))}
-        </div>
-        {!_.isEmpty(proposition.objects) && (
-          <div className="Proposition__body-criteria">
-            <div className="Proposition__object">
-              <div className="Proposition__object-title">
-                {`You should write post with objects`}:
-              </div>
-              {_.map(proposition.objects, obj => (
-                <ObjectCard key={obj.author_permlink} wobject={obj} showFollow={false} />
-              ))}
+        <Collapse>
+          <Panel header="Details" key="1">
+            <div>
+              {!_.isEmpty(proposition.requirements) &&
+                _.map(proposition.requirements, (req, reqKey) => (
+                  <span>
+                    {requirementsKeys[reqKey]
+                      ? `${intl.formatMessage(requirementsKeys[reqKey])} ${req}`
+                      : ''}
+                  </span>
+                ))}
             </div>
-          </div>
-        )}
+            {!_.isEmpty(proposition.objects) && (
+              <div className="Proposition__body-criteria">
+                <div className="Proposition__object">
+                  <div className="Proposition__object-title">
+                    {`You should write post with objects`}:
+                  </div>
+                  {_.map(proposition.objects, obj => (
+                    <div className="Proposition__object-line">
+                      <ObjectCard key={obj.author_permlink} wobject={obj} showFollow={false} />
+                      {userInPropositions &&
+                        (!_.includes(userInPropositions.approved_objects, obj.author_permlink) ? (
+                          <Button
+                            type="primary"
+                            loading={loading}
+                            disabled={loading}
+                            onClick={() => assignPr(obj)}
+                          >
+                            {intl.formatMessage({
+                              id: 'assign',
+                              defaultMessage: `Assign`,
+                            })}
+                          </Button>
+                        ) : (
+                          <Button
+                            type="primary"
+                            loading={loading}
+                            disabled={loading}
+                            onClick={() => discardPr(obj)}
+                          >
+                            {intl.formatMessage({
+                              id: 'discard',
+                              defaultMessage: `Discard`,
+                            })}
+                          </Button>
+                        ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </Panel>
+        </Collapse>
         <div className="Proposition__body-requirements">
           {/* <ObjectCard wobject={wobjectReq} showFollow={false}/> */}
         </div>
-        {userInPropositions &&
-          (!userInPropositions.approved ? (
-            <Button
-              className="reward-button"
-              type="primary"
-              loading={loading}
-              disabled={loading}
-              onClick={assignPr}
-            >
-              {intl.formatMessage({
-                id: 'assign',
-                defaultMessage: `Assign`,
-              })}
-            </Button>
-          ) : (
-            <Button
-              className="reward-button"
-              type="primary"
-              loading={loading}
-              disabled={loading}
-              onClick={discardPr}
-            >
-              {intl.formatMessage({
-                id: 'discard',
-                defaultMessage: `Discard`,
-              })}
-            </Button>
-          ))}
       </div>
     </div>
   );

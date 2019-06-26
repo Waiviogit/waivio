@@ -39,6 +39,7 @@ import WobjExpertise from '../client/object/WobjExpertise';
 import UserExpertise from '../client/user/UserExpertise';
 import ObjectTypePage from '../client/objectTypes/ObjectTypePage';
 import Rewards from '../client/rewards/Rewards';
+import CreateRewards from '../client/rewards/Create/CreateReward';
 import ObjectOfTypePage from '../client/object/ObjectOfTypePage/ObjectOfTypePage';
 
 const routes = [
@@ -51,9 +52,13 @@ const routes = [
         component: Bookmarks,
       },
       {
-        path: `/rewards/(active|reserved|history|promoted)/@:userName`,
+        path: `/rewards/(active|reserved|history|all|create)/@:userName`,
         component: Rewards,
+      },
+      {
+        path: '/rewards/create',
         exact: true,
+        component: CreateRewards,
       },
       {
         path: '/drafts',

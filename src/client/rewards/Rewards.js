@@ -24,7 +24,6 @@ import { assignProposition, declineProposition } from '../user/userActions';
 )
 class Rewards extends React.Component {
   static propTypes = {
-    history: PropTypes.shape().isRequired,
     assignProposition: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
     location: PropTypes.shape().isRequired,
@@ -33,20 +32,10 @@ class Rewards extends React.Component {
   static defaultProps = {
     currentUserName: '',
   };
-  handleSortChange = key => {
-    const { category } = this.props.match.params;
-    if (category) {
-      this.props.history.push(`/${key}/${category}`);
-    } else {
-      this.props.history.push(`/${key}`);
-    }
-  };
-
-  handleTopicClose = () => this.props.history.push('/trending');
-
   render() {
     const { location, match } = this.props;
     const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
+    const filterKey = match.params[0];
     return (
       <div className="Rewards">
         <Helmet>
@@ -64,7 +53,7 @@ class Rewards extends React.Component {
             </Affix>
             <div className="center">
               <Propositions
-                filterKey={match.params[0]}
+                filterKey={filterKey}
                 userName={match.params.userName}
                 assignProposition={this.props.assignProposition}
                 discardProposition={this.props.declineProposition}

@@ -350,4 +350,17 @@ export const getPropositions = ({ limit = 30, skip = 0, userName, status, approv
       .catch(error => reject(error));
   });
 
+export const createCampaign = data =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaigns}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export default null;
