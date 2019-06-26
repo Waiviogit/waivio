@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { convertToRaw } from 'draft-js';
-import { forEach, get, has, keyBy } from 'lodash';
+import { forEach, get, has, keyBy, isEqual } from 'lodash';
 import { Editor as MediumDraftEditor, createEditorState, fromMarkdown, Entity } from './index';
 import ImageSideButton from './components/sides/ImageSideButton';
 import VideoSideButton from './components/sides/VideoSideButton';
@@ -33,6 +33,7 @@ class Editor extends React.Component {
   static propTypes = {
     // passed props:
     enabled: PropTypes.bool.isRequired,
+    withTitle: PropTypes.bool,
     initialContent: PropTypes.shape({
       title: PropTypes.string,
       body: PropTypes.string,
@@ -42,6 +43,7 @@ class Editor extends React.Component {
   };
   static defaultProps = {
     intl: {},
+    withTitle: true,
     onChange: () => {},
   };
 
@@ -51,7 +53,7 @@ class Editor extends React.Component {
     this.state = {
       isMounted: false,
       editorEnabled: false,
-      editorState: createEditorState(fromMarkdown(props.initialContent)),
+      editorState: createEditorState(fromMarkdown(props.initialContent, props.withTitle)),
     };
 
     this.onChange = editorState => {
@@ -62,15 +64,16 @@ class Editor extends React.Component {
 
   componentDidMount() {
     this.setState({ isMounted: true }); // eslint-disable-line
-    this.restoreObjects(fromMarkdown(this.props.initialContent)).then(() =>
+    this.restoreObjects(fromMarkdown(this.props.initialContent, this.props.withTitle)).then(() =>
       this.setFocusAfterMount(),
     );
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.initialContent !== nextProps.initialContent) {
+    // debugger;
+    if (!isEqual(this.props.initialContent, nextProps.initialContent)) {
       this.setState({ editorEnabled: false });
-      const rawContent = fromMarkdown(nextProps.initialContent);
+      const rawContent = fromMarkdown(nextProps.initialContent, nextProps.withTitle);
       this.handleContentChange(createEditorState(rawContent));
       this.restoreObjects(rawContent).then(() => this.setFocusAfterMount());
     }
@@ -128,6 +131,7 @@ class Editor extends React.Component {
             beforeInput={this.handleBeforeInput}
             onChange={this.handleContentChange}
             sideButtons={SIDE_BUTTONS}
+            withTitle={this.props.withTitle}
           />
         ) : null}
       </div>

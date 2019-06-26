@@ -85,6 +85,7 @@ export default class ImageSideButton extends React.Component {
               defaultMessage: "Couldn't upload image",
             }),
           );
+          hideNotification();
         });
     }
     this.props.close();
