@@ -205,7 +205,7 @@ class ObjectInfo extends React.Component {
       <div className="object-sidebar__menu-item" key={item.author_permlink}>
         <Link
           className={location.hash.slice(1).split('/')[0] === item.author_permlink ? 'active' : ''}
-          to={`/object/${wobject.author_permlink}/${URL.SEGMENT.OBJ_MENU}#${item.author_permlink}`}
+          to={`/object/${wobject.author_permlink}/${URL.SEGMENT.MENU}#${item.author_permlink}`}
         >
           {item.alias || getFieldWithMaxWeight(item, objectFields.name)}
         </Link>
@@ -268,16 +268,6 @@ class ObjectInfo extends React.Component {
         )}
         {listItem(objectFields.title, short)}
         {listItem(
-          objectFields.parent,
-          wobject.parent ? (
-            <ObjectCard
-              key={wobject.parent.author_permlink}
-              wobject={wobject.parent}
-              showFollow={false}
-            />
-          ) : null,
-        )}
-        {listItem(
           objectFields.background,
           background ? (
             <div className="field-background">
@@ -291,6 +281,16 @@ class ObjectInfo extends React.Component {
       <React.Fragment>
         {getFieldWithMaxWeight(wobject, objectFields.name) && (
           <div className="object-sidebar">
+            {listItem(
+              objectFields.parent,
+              wobject.parent ? (
+                <ObjectCard
+                  key={wobject.parent.author_permlink}
+                  wobject={wobject.parent}
+                  showFollow={false}
+                />
+              ) : null,
+            )}
             {hasType(wobject, OBJECT_TYPE.PAGE) && listItem(objectFields.pageContent, null)}
             {isRenderMenu && menuSection}
             {isRenderAboutSection && (

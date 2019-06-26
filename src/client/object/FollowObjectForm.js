@@ -12,7 +12,7 @@ const FollowObjectForm = ({ form, intl, loading }) => (
   >
     {form.getFieldDecorator('follow', {
       valuePropName: 'checked',
-      initialValue: true,
+      initialValue: false,
     })(
       <Checkbox disabled={loading}>
         {intl.formatMessage({

@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { message, Switch } from 'antd';
+import { message } from 'antd';
 import { injectIntl } from 'react-intl';
 import React from 'react';
 import _ from 'lodash';
@@ -25,38 +25,27 @@ export default class Propositions extends React.Component {
     propositions: [],
     loading: false,
     hasMore: true,
-    filter: false,
     loadingAssignDiscard: false,
   };
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.filterKey !== this.props.filterKey) {
-      ApiClient.getPropositions(this.preparePropositionReqData(this.state.filter, nextProps)).then(
-        data => {
-          this.setState({ propositions: data.campaigns, hasMore: data.hasMore });
-        },
-      );
+      ApiClient.getPropositions(this.preparePropositionReqData(nextProps)).then(data => {
+        this.setState({ propositions: data.campaigns, hasMore: data.hasMore });
+      });
     }
   }
 
-  toggleFilter = () => {
-    ApiClient.getPropositions(this.preparePropositionReqData(!this.state.filter, this.props)).then(
-      data => {
-        this.setState({
-          propositions: data.campaigns,
-          filter: !this.state.filter,
-          hasMore: data.hasMore,
-        });
-      },
-    );
-  };
-
-  assignProposition = proposition => {
+  assignProposition = (proposition, obj) => {
     this.setState({ loadingAssignDiscard: true });
     this.props
-      .assignProposition(proposition._id)
+      .assignProposition(proposition._id, obj.author_permlink)
       .then(() => {
-        const updatedPropositions = this.updateProposition(proposition._id, true);
+        const updatedPropositions = this.updateProposition(
+          proposition._id,
+          true,
+          obj.author_permlink,
+        );
         message.success(
           this.props.intl.formatMessage({
             id: 'assigned_successfully',
@@ -71,15 +60,18 @@ export default class Propositions extends React.Component {
       });
   };
 
-  updateProposition = (propsId, isAssign) =>
+  updateProposition = (propsId, isAssign, objPermlink) =>
     _.map(this.state.propositions, propos => {
       // eslint-disable-next-line no-param-reassign
       if (propos._id === propsId) {
         _.map(propos.users, user => {
           if (user.name === this.props.userName) {
-            const newUser = user;
-            newUser.approved = isAssign;
-            return newUser;
+            if (_.includes(user.approved_objects, objPermlink)) {
+              const newUser = user;
+              newUser.approved_objects = _.filter(user.approved_objects, o => o !== objPermlink);
+              return newUser;
+            }
+            return user.approved_objects.push(objPermlink);
           }
           return user;
         });
@@ -87,12 +79,16 @@ export default class Propositions extends React.Component {
       return propos;
     });
 
-  discardProposition = proposition => {
+  discardProposition = (proposition, obj) => {
     this.setState({ loadingAssignDiscard: true });
     this.props
-      .discardProposition(proposition._id)
+      .discardProposition(proposition._id, obj.author_permlink)
       .then(() => {
-        const updatedPropositions = this.updateProposition(proposition._id, false);
+        const updatedPropositions = this.updateProposition(
+          proposition._id,
+          false,
+          obj.author_permlink,
+        );
         message.success(
           this.props.intl.formatMessage({
             id: 'discarded_successfully',
@@ -107,12 +103,12 @@ export default class Propositions extends React.Component {
       });
   };
 
-  preparePropositionReqData = (filter, props) => {
+  preparePropositionReqData = props => {
     const { userName } = props;
     const reqData = { limit: displayLimit };
-    if (filter && userName) reqData.userName = userName;
     switch (props.filterKey) {
       case 'active':
+        reqData.userName = userName;
         break;
       case 'history':
         reqData.status = ['inactive', 'expired', 'deleted', 'payed'];
@@ -135,7 +131,7 @@ export default class Propositions extends React.Component {
           loading: true,
         },
         () => {
-          const reqData = this.preparePropositionReqData(this.state.filter, this.props);
+          const reqData = this.preparePropositionReqData(this.props);
           reqData.skip = propositions.length;
           ApiClient.getPropositions(reqData).then(newPropositions =>
             this.setState(state => ({
@@ -151,7 +147,7 @@ export default class Propositions extends React.Component {
 
   render() {
     const { propositions, loading, hasMore, loadingAssignDiscard } = this.state;
-    const { intl, filterKey, userName } = this.props;
+    const { intl, userName } = this.props;
 
     return (
       <React.Fragment>
@@ -160,15 +156,6 @@ export default class Propositions extends React.Component {
             id: 'rewards',
             defaultMessage: 'Rewards',
           })}`}
-          {filterKey !== 'reserved' && (
-            <div className="Rewards__toggler-wrap">
-              {`${intl.formatMessage({
-                id: 'only_for_my',
-                defaultMessage: 'Only for me',
-              })}`}
-              <Switch checked={this.state.filter} onChange={this.toggleFilter} />
-            </div>
-          )}
         </div>
         <ReduxInfiniteScroll
           elementIsScrollable={false}

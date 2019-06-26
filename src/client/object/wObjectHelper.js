@@ -68,6 +68,31 @@ export const getListItems = (wobj, uniq = false) => {
   return items;
 };
 
+export const getListItemLink = (listItem, location) => {
+  switch (listItem.type) {
+    case OBJECT_TYPE.PAGE:
+      return {
+        pathname: `${location.pathname}`,
+        hash: `${location.hash}${location.hash.length ? '/' : ''}${listItem.id}`,
+      };
+    case OBJECT_TYPE.LIST:
+      return {
+        pathname: `${location.pathname}`,
+        hash: `${
+          !location.hash
+            ? listItem.id
+            : `${
+                location.hash.includes(listItem.id)
+                  ? `${location.hash.split(listItem.id)[0]}${listItem.id}`
+                  : `${location.hash}/${listItem.id}`
+              }`
+        }`,
+      };
+    default:
+      return { pathname: `/object/${listItem.id}` };
+  }
+};
+
 export const getFieldsCount = (wObject, fieldName) => {
   let count = 0;
   if (_.includes(TYPES_OF_MENU_ITEM, fieldName)) {
