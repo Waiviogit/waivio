@@ -71,7 +71,7 @@ const Proposition = ({
                     <div className="Proposition__object-line">
                       <ObjectCard key={obj.author_permlink} wobject={obj} showFollow={false} />
                       {userInPropositions &&
-                        (!userInPropositions.approved ? (
+                        (!_.includes(userInPropositions.approved_objects, obj.author_permlink) ? (
                           <Button
                             type="primary"
                             loading={loading}

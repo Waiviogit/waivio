@@ -41,7 +41,11 @@ export default class Propositions extends React.Component {
     this.props
       .assignProposition(proposition._id, obj.author_permlink)
       .then(() => {
-        const updatedPropositions = this.updateProposition(proposition._id, true);
+        const updatedPropositions = this.updateProposition(
+          proposition._id,
+          true,
+          obj.author_permlink,
+        );
         message.success(
           this.props.intl.formatMessage({
             id: 'assigned_successfully',
@@ -56,15 +60,18 @@ export default class Propositions extends React.Component {
       });
   };
 
-  updateProposition = (propsId, isAssign) =>
+  updateProposition = (propsId, isAssign, objPermlink) =>
     _.map(this.state.propositions, propos => {
       // eslint-disable-next-line no-param-reassign
       if (propos._id === propsId) {
         _.map(propos.users, user => {
           if (user.name === this.props.userName) {
-            const newUser = user;
-            newUser.approved = isAssign;
-            return newUser;
+            if (_.includes(user.approved_objects, objPermlink)) {
+              const newUser = user;
+              newUser.approved_objects = _.filter(user.approved_objects, o => o !== objPermlink);
+              return newUser;
+            }
+            return user.approved_objects.push(objPermlink);
           }
           return user;
         });

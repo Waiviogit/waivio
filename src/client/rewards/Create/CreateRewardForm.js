@@ -1,15 +1,26 @@
+import _ from 'lodash';
 import React from 'react';
-
+import PropTypes from 'prop-types';
 import { Form, Input, Select, Checkbox, Button, DatePicker } from 'antd';
 import * as ApiClient from '../../../waivioApi/ApiClient';
+import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
+import ObjectCardView from '../../objectCard/ObjectCardView';
 
 const { Option } = Select;
 
 @Form.create()
 class CreateRewardForm extends React.Component {
+  static propTypes = {
+    userName: PropTypes.string,
+    form: PropTypes.shape().isRequired,
+  };
+  static defaultProps = {
+    userName: '',
+  };
   state = {
     confirmDirty: false,
     autoCompleteResult: [],
+    objectsToAction: [],
   };
 
   handleSubmit = e => {
@@ -19,12 +30,12 @@ class CreateRewardForm extends React.Component {
         ApiClient.createCampaign(this.prepareSubmitData(values)).then(data => {
           this.setState({ propositions: data.campaigns, hasMore: data.hasMore });
         });
-        console.log('Received values of form: ', values);
       }
     });
   };
 
   prepareSubmitData = data => {
+    const objects = _.map(this.state.objectsToAction, o => o.id);
     const finalData = {
       guideName: this.props.userName,
       name: data.campaignName,
@@ -37,12 +48,7 @@ class CreateRewardForm extends React.Component {
         minFollowers: data.minFollowers,
         minPosts: data.maxReviews,
       },
-      objects: [
-        // "smk-seafood-udon",
-        // "kzo-chronic-tacos-granville"
-        // // 'xjn-chicken-katsu',
-        // // 'cga-french-toast'
-      ],
+      objects,
       expired_at: data.expiredAt.format(),
     };
     console.log('Received values of form: ', finalData);
@@ -68,34 +74,23 @@ class CreateRewardForm extends React.Component {
     console.log(value);
     // this.props.form.setFieldsValue({});
   };
+
+  handleAddObjectToList = obj => {
+    const objectsToAction = this.state.objectsToAction;
+    objectsToAction.push(obj);
+    this.setState({ objectsToAction });
+  };
+
+  handleDeleteObjectFromList = obj => {
+    let objectsToAction = this.state.objectsToAction;
+    objectsToAction = _.filter(objectsToAction, o => o.id !== obj.id);
+    this.setState({ objectsToAction });
+  };
+
   render() {
     const { getFieldDecorator } = this.props.form;
-
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 8 },
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 },
-      },
-    };
-    const tailFormItemLayout = {
-      wrapperCol: {
-        xs: {
-          span: 24,
-          offset: 0,
-        },
-        sm: {
-          span: 16,
-          offset: 8,
-        },
-      },
-    };
-
     return (
-      <Form {...formItemLayout} onSubmit={this.handleSubmit}>
+      <Form layout="vertical" onSubmit={this.handleSubmit}>
         <Form.Item label="Campaign name">
           {getFieldDecorator('campaignName', {
             rules: [
@@ -123,20 +118,20 @@ class CreateRewardForm extends React.Component {
             </Select>,
           )}
         </Form.Item>
-        <Form.Item label="Status">
-          {getFieldDecorator('status', {
-            rules: [{ required: true, message: 'Please select your campaign status!' }],
-          })(
-            <Select
-              placeholder="Select a option and change input text above"
-              onChange={this.handleSelectChange}
-            >
-              <Option value="inactive">Inactive</Option>
-              <Option value="active">Active</Option>
-              <Option value="deleted">Deleted</Option>
-            </Select>,
-          )}
-        </Form.Item>
+        {/* <Form.Item label="Status"> */}
+        {/* {getFieldDecorator('status', { */}
+        {/* rules: [{ required: true, message: 'Please select your campaign status!' }], */}
+        {/* })( */}
+        {/* <Select */}
+        {/* placeholder="Select a option and change input text above" */}
+        {/* onChange={this.handleSelectChange} */}
+        {/* > */}
+        {/* <Option value="inactive">Inactive</Option> */}
+        {/* <Option value="active">Active</Option> */}
+        {/* <Option value="deleted">Deleted</Option> */}
+        {/* </Select>, */}
+        {/* )}  */}
+        {/* </Form.Item> */}
         <Form.Item label="Budget">
           {getFieldDecorator('budget', {
             rules: [
@@ -144,10 +139,6 @@ class CreateRewardForm extends React.Component {
                 required: true,
                 message: 'Please set your monthly budget!',
               },
-              // {
-              //   validator: val => val <= 5000,
-              //   message: '5000 max!',
-              // },
             ],
           })(<Input type="number" />)}
           SBD per month
@@ -178,7 +169,7 @@ class CreateRewardForm extends React.Component {
           })(<Input type="number" />)}
           Days
         </Form.Item>
-        RewiewRequirements:
+        <div className="CreateReward__block-title">RewiewRequirements:</div>
         <Form.Item label="Min # of original photos">
           {getFieldDecorator('minPhotos', {
             rules: [
@@ -190,9 +181,20 @@ class CreateRewardForm extends React.Component {
           })(<Input type="number" />)}
           per review
         </Form.Item>
-        Req obj-------------------------------
-        <br />
-        Eligible users:
+        Required objects
+        <SearchObjectsAutocomplete
+          allowClear={false}
+          itemsIdsToOmit={[]}
+          style={{ width: '100%' }}
+          placeholder="Please select"
+          handleSelect={this.handleAddObjectToList}
+        />
+        <div className="CreateReward__objects-wrap">
+          {_.map(this.state.objectsToAction, obj => (
+            <ObjectCardView wObject={obj} />
+          ))}
+        </div>
+        <div className="CreateReward__block-title">Eligible users:</div>
         <Form.Item label="Min STEEM reputation">
           {getFieldDecorator('minStReputation', {
             rules: [
@@ -243,7 +245,7 @@ class CreateRewardForm extends React.Component {
             rules: [{ type: 'object', required: true, message: 'Please select time!' }],
           })(<DatePicker />)}
         </Form.Item>
-        <Form.Item {...tailFormItemLayout}>
+        <Form.Item>
           {getFieldDecorator('agreement', {
             valuePropName: 'checked',
           })(
@@ -252,7 +254,7 @@ class CreateRewardForm extends React.Component {
             </Checkbox>,
           )}
         </Form.Item>
-        <Form.Item {...tailFormItemLayout}>
+        <Form.Item>
           <Button type="primary" htmlType="submit">
             Save changes
           </Button>

@@ -3,4 +3,31 @@
 
 .CreateReward {
   width: 100%;
+
+  &__block-title {
+    font-size: 1.5em;
+    font-weight: 500;
+    margin-bottom: 5px;
+    border-top: @base-border;
+  }
+
+  &__objects-wrap {
+    margin: 15px 0;
+  }
+
+  .feed-layout {
+    .center {
+      float: left;
+      width: 100%;
+
+      @media @small {
+        width: calc(100% - @margin);
+      }
+
+      @media @medium {
+        width: calc(100% - (@left-width + @margin));
+        margin-left: @margin;
+      }
+    }
+  }
 }
