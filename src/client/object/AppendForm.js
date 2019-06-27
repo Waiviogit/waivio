@@ -1046,7 +1046,7 @@ export default class AppendForm extends Component {
           <React.Fragment>
             <Form.Item>
               {getFieldDecorator(buttonFields.title, {
-                rules: this.getFieldRules(buttonFields.title),
+                rules: this.getFieldRules('buttonTitle'),
               })(
                 <Input
                   className={classNames('AppendForm__input', {

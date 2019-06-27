@@ -79,8 +79,8 @@ const Proposition = ({
                             onClick={() => assignPr(obj)}
                           >
                             {intl.formatMessage({
-                              id: 'assign',
-                              defaultMessage: `Assign`,
+                              id: 'reserve',
+                              defaultMessage: `Reserve`,
                             })}
                           </Button>
                         ) : (
@@ -91,8 +91,8 @@ const Proposition = ({
                             onClick={() => discardPr(obj)}
                           >
                             {intl.formatMessage({
-                              id: 'discard',
-                              defaultMessage: `Discard`,
+                              id: 'release',
+                              defaultMessage: `Release`,
                             })}
                           </Button>
                         ))}
