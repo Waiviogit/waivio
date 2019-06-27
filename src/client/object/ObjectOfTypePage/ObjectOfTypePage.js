@@ -208,7 +208,7 @@ class ObjectOfTypePage extends Component {
           )}
         </div>
         {isEditMode && !isReadyToPublish && (
-          <div className="object-of-type-page__row align-center ready-publish-btn">
+          <div className="object-of-type-page__row align-center">
             <Button
               htmlType="button"
               disabled={!content || content === this.currentPageContent}

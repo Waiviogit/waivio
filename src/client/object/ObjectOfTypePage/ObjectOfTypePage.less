@@ -31,11 +31,10 @@
   }
   &__row {
     display: flex;
+    padding-top: @content-margin;
+
     &.align-center {
       justify-content: center;
-    }
-    &.ready-publish-btn {
-      padding-top: @content-margin;
     }
   }
 }
@@ -66,6 +65,10 @@
         margin-bottom: unset;
       }
     }
+    .ant-form-item {
+      margin-bottom: unset;
+    }
   }
 }
+
 @import './ObjectOfTypePage-nightmode';

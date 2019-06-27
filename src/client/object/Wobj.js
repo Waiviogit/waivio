@@ -80,13 +80,13 @@ export default class Wobj extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { history, match, screenSize } = this.props;
+    const { authenticated, history, match, screenSize } = this.props;
     if (!_.isEmpty(nextProps.wobject) && !match.params[0] && !nextProps.match.params[0]) {
       if (nextProps.wobject.object_type) {
         const pageField = getFieldWithMaxWeight(nextProps.wobject, objectFields.pageContent);
         switch (nextProps.wobject.object_type.toLowerCase()) {
           case OBJECT_TYPE.PAGE:
-            if (!pageField) {
+            if (!pageField && authenticated) {
               this.setState({ isEditMode: true });
             }
             history.replace(`${history.location.pathname}/${OBJECT_TYPE.PAGE}`);
