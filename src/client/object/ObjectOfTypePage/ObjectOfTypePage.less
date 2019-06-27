@@ -29,15 +29,43 @@
     font-size: 16px;
     font-weight: 500;
   }
-  .md-RichEditor-editor {
-    .StoryFull__title + div.md-block {
-      span[data-offset-key] {
-        br {
-          content: none;
-        }
+  &__row {
+    display: flex;
+    &.align-center {
+      justify-content: center;
+    }
+    &.ready-publish-btn {
+      padding-top: @content-margin;
+    }
+  }
+}
+.object-page-preview {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    color: @blue-botticelli;
+    font-weight: 500;
+    font-size: @font-size-base;
+    padding-bottom: @content-margin;
+    margin-bottom: 16px;
+    border-bottom: @base-border;
+  }
+  &__close-btn > .icon-button__icon {
+    color: @blue-botticelli;
+    &:hover {
+      color: @primary-color;
+    }
+  }
+  &__options {
+    .LikeSection {
+      border-top: @base-border;
+      margin-top: @content-margin;
+
+      .ant-form-item {
+        margin-top: @content-margin;
+        margin-bottom: unset;
       }
     }
   }
 }
-
 @import './ObjectOfTypePage-nightmode';

@@ -22,8 +22,7 @@ import { getLocale } from '../../reducers';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CategoryItemView from './CategoryItemView/CategoryItemView';
 import { hasType } from '../../helpers/wObjectHelper';
-import { PageContentPreview } from '../ObjectOfTypePage/ObjectOfTypePage';
-import { splitPostContent } from '../../helpers/postHelpers';
+import BodyContainer from '../../containers/Story/BodyContainer';
 import './CatalogWrap.less';
 
 const getListSorting = wobj => {
@@ -312,12 +311,7 @@ class CatalogWrap extends React.Component {
           </React.Fragment>
         )}
         {hasType(currWobject, OBJ_TYPE.PAGE) && !isEmpty(wobjNested) && (
-          <PageContentPreview
-            content={splitPostContent(
-              getFieldWithMaxWeight(currWobject, objectFields.pageContent),
-              { titleKey: 'title', bodyKey: 'body' },
-            )}
-          />
+          <BodyContainer full body={getFieldWithMaxWeight(currWobject, objectFields.pageContent)} />
         )}
       </div>
     );

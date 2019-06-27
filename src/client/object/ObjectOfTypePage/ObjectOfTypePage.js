@@ -2,33 +2,21 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { Button, Col, Form, message, Row } from 'antd';
+import { Button, Form, Icon, message } from 'antd';
 import { isEmpty, isEqual } from 'lodash';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import toMarkdown from '../../components/EditorExtended/util/editorStateToMarkdown';
 import LikeSection from '../LikeSection';
 import FollowObjectForm from '../FollowObjectForm';
-import { getFieldWithMaxWeight, validateContent } from '../wObjectHelper';
+import { getFieldWithMaxWeight } from '../wObjectHelper';
 import { getAppendData } from '../../helpers/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { splitPostContent } from '../../helpers/postHelpers';
 import { appendObject } from '../appendActions';
 import { getFollowingObjectsList, getIsAppendLoading, getLocale } from '../../reducers';
+import IconButton from '../../components/IconButton';
 import './ObjectOfTypePage.less';
-
-export const PageContentPreview = ({ content = { body: '', title: '' } }) => (
-  <React.Fragment>
-    <h1 className="StoryFull__title preview bread-word">{content.title}</h1>
-    <BodyContainer full body={content.body} />
-  </React.Fragment>
-);
-PageContentPreview.propTypes = {
-  content: PropTypes.shape({
-    title: PropTypes.string,
-    body: PropTypes.string,
-  }).isRequired,
-};
 
 @injectIntl
 @Form.create()
@@ -56,7 +44,6 @@ class ObjectOfTypePage extends Component {
 
     /* passed */
     wobject: PropTypes.shape(),
-    // match: PropTypes.shape().isRequired,
     isEditMode: PropTypes.bool.isRequired,
     userName: PropTypes.string.isRequired,
     toggleViewEditMode: PropTypes.func.isRequired,
@@ -72,26 +59,26 @@ class ObjectOfTypePage extends Component {
   constructor(props) {
     super(props);
 
-    this.postContent = getFieldWithMaxWeight(props.wobject, objectFields.pageContent);
+    this.currentPageContent = getFieldWithMaxWeight(props.wobject, objectFields.pageContent);
     this.state = {
-      initialContent: splitPostContent(this.postContent, { titleKey: 'title', bodyKey: 'body' }),
-      isContentValid: false,
-      content: '',
+      content: this.currentPageContent,
+      editorInitContent: this.currentPageContent,
+      isReadyToPublish: false,
     };
   }
 
   componentWillReceiveProps(nextProps) {
     if (!isEmpty(nextProps.wobject) && !isEqual(nextProps.wobject, this.props.wobject)) {
-      this.postContent = getFieldWithMaxWeight(nextProps.wobject, objectFields.pageContent);
+      this.currentPageContent = getFieldWithMaxWeight(nextProps.wobject, objectFields.pageContent);
       this.setState({
-        initialContent: splitPostContent(this.postContent, { titleKey: 'title', bodyKey: 'body' }),
+        editorInitContent: this.currentPageContent,
       });
     }
   }
 
   handleChangeContent = contentRaw => {
     const content = toMarkdown(contentRaw);
-    this.setState({ content, isContentValid: validateContent(content, this.postContent) });
+    this.setState({ content });
   };
 
   handleVotePercentChange = votePercent => this.setState({ votePercent });
@@ -101,9 +88,9 @@ class ObjectOfTypePage extends Component {
 
     this.props.form.validateFieldsAndScroll((err, values) => {
       const { appendPageContent, locale, wobject, userName, intl, toggleViewEditMode } = this.props;
-      const { isContentValid, votePercent } = this.state;
+      const { votePercent } = this.state;
       const { follow } = values;
-      if (!err && isContentValid) {
+      if (!err) {
         const { postTitle, postBody } = splitPostContent(this.state.content);
         const pageContentField = {
           name: objectFields.pageContent,
@@ -140,62 +127,99 @@ class ObjectOfTypePage extends Component {
     });
   };
 
+  handleReadyPublishClick = e => {
+    e.preventDefault();
+    this.setState(prevState => ({
+      isReadyToPublish: !prevState.isReadyToPublish,
+      editorInitContent: prevState.content,
+    }));
+  };
+
   render() {
-    const { intl, isEditMode, isAppending, locale, followingList, wobject } = this.props;
-    const { initialContent, isContentValid } = this.state;
+    const { intl, form, isEditMode, isAppending, locale, wobject, followingList } = this.props;
+    const { isReadyToPublish, content, editorInitContent } = this.state;
 
     return (
-      <div className={`object-of-type-page ${isEditMode ? 'edit' : 'view'}-mode`}>
-        {isEditMode && (
-          <div className="object-of-type-page__header-controls">
-            <Row type="flex" align="middle">
-              <Col span={20}>
-                <LikeSection
-                  form={this.props.form}
-                  onVotePercentChange={this.handleVotePercentChange}
-                />
-                {followingList.includes(wobject.author_permlink) ? null : (
-                  <FollowObjectForm form={this.props.form} />
-                )}
-              </Col>
-              <Col span={4} align="middle" justify="center">
-                <Form.Item className="object-of-type-page__submit-btn">
-                  <Button
-                    type="primary"
-                    loading={isAppending}
-                    disabled={!isContentValid || isAppending}
-                    onClick={this.handleSubmit}
-                  >
-                    <span>{intl.formatMessage({ id: 'submit', defaultMessage: 'Submit' })}</span>
-                  </Button>
-                </Form.Item>
-              </Col>
-            </Row>
+      <React.Fragment>
+        <div
+          className={`object-of-type-page ${
+            isEditMode && !isReadyToPublish ? 'edit' : 'view'
+          }-mode`}
+        >
+          {isEditMode ? (
+            <React.Fragment>
+              {isReadyToPublish ? (
+                <div className="object-page-preview">
+                  <div className="object-page-preview__header">
+                    <div>Preview</div>
+                    <IconButton
+                      className="object-page-preview__close-btn"
+                      disabled={isAppending}
+                      icon={<Icon type="close" />}
+                      onClick={this.handleReadyPublishClick}
+                    />
+                  </div>
+                  <BodyContainer full body={content} />
+                  <div className="object-page-preview__options">
+                    <LikeSection form={form} onVotePercentChange={this.handleVotePercentChange} />
+                    {followingList.includes(wobject.author_permlink) ? null : (
+                      <FollowObjectForm form={form} />
+                    )}
+                  </div>
+                  <div className="object-of-type-page__row align-center">
+                    <Button
+                      htmlType="submit"
+                      disabled={form.getFieldError('like')}
+                      loading={isAppending}
+                      onClick={this.handleSubmit}
+                      size="large"
+                    >
+                      {intl.formatMessage({ id: 'append_send', defaultMessage: 'Submit' })}
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="object-of-type-page__editor-wrapper">
+                  <Editor
+                    enabled={!isAppending}
+                    withTitle={false}
+                    initialContent={{ body: editorInitContent }}
+                    locale={locale === 'auto' ? 'en-US' : locale}
+                    onChange={this.handleChangeContent}
+                  />
+                </div>
+              )}
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              {this.currentPageContent ? (
+                <BodyContainer full body={this.currentPageContent} />
+              ) : (
+                <div className="object-of-type-page__empty-placeholder">
+                  <span>
+                    {intl.formatMessage({
+                      id: 'empty_object_profile',
+                      defaultMessage: "This object doesn't have any",
+                    })}
+                  </span>
+                </div>
+              )}
+            </React.Fragment>
+          )}
+        </div>
+        {isEditMode && !isReadyToPublish && (
+          <div className="object-of-type-page__row align-center ready-publish-btn">
+            <Button
+              htmlType="button"
+              disabled={!content || content === this.currentPageContent}
+              onClick={this.handleReadyPublishClick}
+              size="large"
+            >
+              {intl.formatMessage({ id: 'ready_to_publish', defaultMessage: 'Ready to publish' })}
+            </Button>
           </div>
         )}
-        {isEditMode ? (
-          <Editor
-            enabled={!isAppending}
-            initialContent={this.state.initialContent}
-            locale={locale === 'auto' ? 'en-US' : locale}
-            onChange={this.handleChangeContent}
-          />
-        ) : (
-          <React.Fragment>
-            <PageContentPreview content={initialContent} />
-            {!this.postContent && (
-              <div className="object-of-type-page__empty-placeholder">
-                <span>
-                  {intl.formatMessage({
-                    id: 'empty_object_profile',
-                    defaultMessage: "This object doesn't have any",
-                  })}
-                </span>
-              </div>
-            )}
-          </React.Fragment>
-        )}
-      </div>
+      </React.Fragment>
     );
   }
 }
