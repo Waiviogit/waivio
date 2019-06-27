@@ -7,6 +7,14 @@
   align-items: center;
   cursor: pointer;
 
+  &.disabled {
+    cursor: default;
+    opacity: 0.5;
+    .icon-button__icon:hover {
+      color: unset;
+    }
+  }
+
   &__icon,
   &__text {
     display: flex;

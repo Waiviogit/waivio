@@ -32,7 +32,7 @@ export default class AddButton extends React.Component {
 
   // To show + button only when text length == 0
   componentWillReceiveProps(newProps) {
-    const { editorState } = newProps;
+    const { editorState, withTitleLine } = newProps;
     const contentState = editorState.getCurrentContent();
     const selectionState = editorState.getSelection();
     if (
@@ -49,7 +49,7 @@ export default class AddButton extends React.Component {
     }
     const block = contentState.getBlockForKey(selectionState.anchorKey);
     const bkey = block.getKey();
-    if (block.getLength() > 0 || block === contentState.getFirstBlock()) {
+    if (block.getLength() > 0 || (withTitleLine && block === contentState.getFirstBlock())) {
       this.hideBlock();
       return;
     }
@@ -195,6 +195,7 @@ export default class AddButton extends React.Component {
 AddButton.propTypes = {
   getEditorState: PropTypes.func.isRequired,
   setEditorState: PropTypes.func.isRequired,
+  withTitleLine: PropTypes.bool.isRequired,
   focus: PropTypes.func,
   sideButtons: PropTypes.arrayOf(PropTypes.object),
 };
