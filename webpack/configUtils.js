@@ -24,18 +24,7 @@ const POSTCSS_LOADER = {
     ],
   },
 };
-console.log('process.env.STEEMCONNECT_CLIENT_ID');
-console.log(process.env.STEEMCONNECT_CLIENT_ID);
-console.log('process.env.STEEMCONNECT_HOST');
-console.log(process.env.STEEMCONNECT_HOST);
-console.log('process.env.STEEMCONNECT_REDIRECT_URL');
-console.log(process.env.STEEMCONNECT_REDIRECT_URL);
-console.log('process.env');
-console.log(process.env);
-console.log('process.env.NODE_ENV');
-console.log(process.env.NODE_ENV);
-console.log('process.env.production');
-console.log(process.env.production);
+
 const DEFINE_PLUGIN = new webpack.DefinePlugin({
   'process.env.NODE_ENV': IS_DEV ? JSON.stringify('development') : JSON.stringify('production'),
   'process.env.STEEMCONNECT_CLIENT_ID': JSON.stringify(
