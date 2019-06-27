@@ -29,7 +29,8 @@ const POSTCSS_LOADER = {
 const DEFINE_PLUGIN = new webpack.DefinePlugin({
   'process.env.NODE_ENV': IS_DEV ? JSON.stringify('development') : JSON.stringify('production'),
   'process.env.STEEMCONNECT_CLIENT_ID': JSON.stringify(
-    process.env.STEEMCONNECT_CLIENT_ID || `${nameEnv()}.com`,
+    process.env.STEEMCONNECT_CLIENT_ID ||
+      (process.env.NODE_ENV !== 'production' ? 'waiviodev.com' : 'waivio.com'),
   ),
   'process.env.STEEMCONNECT_REDIRECT_URL': JSON.stringify(
     process.env.STEEMCONNECT_REDIRECT_URL || `http://${CALLBACK_HOST_URL}/callback`,
