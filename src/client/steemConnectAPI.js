@@ -6,18 +6,7 @@ function sc2Extended() {
     baseURL: process.env.STEEMCONNECT_HOST,
     callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
   });
-  console.log('process.env.STEEMCONNECT_CLIENT_ID');
-  console.log(process.env.STEEMCONNECT_CLIENT_ID);
-  console.log('process.env.STEEMCONNECT_HOST');
-  console.log(process.env.STEEMCONNECT_HOST);
-  console.log('process.env.STEEMCONNECT_REDIRECT_URL');
-  console.log(process.env.STEEMCONNECT_REDIRECT_URL);
-  console.log('process.env');
-  console.log(process.env);
-  console.log('process.env.NODE_ENV');
-  console.log(process.env.NODE_ENV);
-  console.log('process.env.production');
-  console.log(process.env.production);
+
   const copied = Object.assign(
     Object.create(Object.getPrototypeOf(sc2api)),
     sc2api,
