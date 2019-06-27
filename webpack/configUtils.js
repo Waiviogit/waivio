@@ -6,7 +6,7 @@ const IS_DEV = process.env.NODE_ENV !== 'production';
 
 const SERVER_PORT = process.env.PORT || 3000;
 const CONTENT_PORT = IS_DEV ? SERVER_PORT + 1 : SERVER_PORT;
-const nameEnv = () => (process.env.NODE_ENV !== 'production' ? 'waiviodev' : 'waivio');
+const nameEnv = () => (process.env.NODE_ENV !== 'production' ? 'waiviodev' : 'www.waivio');
 
 const CALLBACK_HOST_URL = IS_DEV ? 'localhost:3000' : `${nameEnv()}.com`;
 
@@ -39,7 +39,7 @@ const DEFINE_PLUGIN = new webpack.DefinePlugin({
   ),
   'process.env.STEEMJS_URL': JSON.stringify(process.env.STEEMJS_URL || 'https://api.steemit.com'),
   'process.env.SIGNUP_URL': JSON.stringify(
-    process.env.SIGNUP_URL || `https://signup.steemit.com/?ref=${nameEnv()}`,
+    process.env.SIGNUP_URL || `https://signup.steemit.com/?ref=waivio`,
   ),
   'process.env.MANIFEST_PATH': JSON.stringify(paths.assets),
 });
