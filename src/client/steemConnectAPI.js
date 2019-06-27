@@ -1,11 +1,7 @@
 import sc2 from 'sc2-sdk';
 
 function sc2Extended() {
-  const sc2api = sc2.Initialize({
-    app: process.env.STEEMCONNECT_CLIENT_ID,
-    baseURL: process.env.STEEMCONNECT_HOST,
-    callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
-  });
+  console.log('START');
   console.log('process.env.STEEMCONNECT_CLIENT_ID');
   console.log(process.env.STEEMCONNECT_CLIENT_ID);
   console.log('process.env.STEEMCONNECT_HOST');
@@ -18,6 +14,14 @@ function sc2Extended() {
   console.log(process.env.NODE_ENV);
   console.log('process.env.production');
   console.log(process.env.production);
+  console.log('END');
+
+  const sc2api = sc2.Initialize({
+    app: process.env.STEEMCONNECT_CLIENT_ID,
+    baseURL: process.env.STEEMCONNECT_HOST,
+    callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
+  });
+
   const copied = Object.assign(
     Object.create(Object.getPrototypeOf(sc2api)),
     sc2api,
