@@ -7,7 +7,7 @@ const IS_DEV = process.env.NODE_ENV !== 'production';
 const SERVER_PORT = process.env.PORT || 3000;
 const CONTENT_PORT = IS_DEV ? SERVER_PORT + 1 : SERVER_PORT;
 
-const CALLBACK_HOST_URL = IS_DEV ? 'localhost:3000' : 'waiviodev.com';
+const CALLBACK_HOST_URL = IS_DEV ? 'localhost:3000' : 'waivio.com';
 
 const MATCH_JS = /\.js$/i;
 const MATCH_CSS_LESS = /\.(css|less)$/i;
@@ -28,7 +28,7 @@ const POSTCSS_LOADER = {
 const DEFINE_PLUGIN = new webpack.DefinePlugin({
   'process.env.NODE_ENV': IS_DEV ? JSON.stringify('development') : JSON.stringify('production'),
   'process.env.STEEMCONNECT_CLIENT_ID': JSON.stringify(
-    process.env.STEEMCONNECT_CLIENT_ID || 'waiviodev.com',
+    process.env.STEEMCONNECT_CLIENT_ID || 'waivio.com',
   ),
   'process.env.STEEMCONNECT_REDIRECT_URL': JSON.stringify(
     process.env.STEEMCONNECT_REDIRECT_URL || `http://${CALLBACK_HOST_URL}/callback`,
@@ -38,7 +38,7 @@ const DEFINE_PLUGIN = new webpack.DefinePlugin({
   ),
   'process.env.STEEMJS_URL': JSON.stringify(process.env.STEEMJS_URL || 'https://api.steemit.com'),
   'process.env.SIGNUP_URL': JSON.stringify(
-    process.env.SIGNUP_URL || 'https://signup.steemit.com/?ref=waiviodev',
+    process.env.SIGNUP_URL || 'https://signup.steemit.com/?ref=waivio',
   ),
   'process.env.MANIFEST_PATH': JSON.stringify(paths.assets),
 });
