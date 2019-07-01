@@ -28,10 +28,10 @@
     "campaigns": "https://waiviodev.com/campaigns-api/campaigns"
   },
   "production": {
-    "apiPrefix": "https://waiviodev.com/api",
+    "apiPrefix": "https://www.waivio.com/api",
 
     "objectsBot": {
-      "apiPrefix": "https://waiviodev.com",
+      "apiPrefix": "https://www.waivio.com",
       "createObject": "/objects-bot/create-object",
       "appendObject": "/objects-bot/append-object"
     },
