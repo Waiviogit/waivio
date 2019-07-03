@@ -1,57 +1,40 @@
 {
   "development": {
-    "apiPrefix": "https://waiviodev.com/api",
-
-    "objectsBot": {
-      "apiPrefix": "https://waiviodev.com",
-      "": "http://localhost:8093",
-      "createObject": "/objects-bot/create-object",
-      "appendObject": "/objects-bot/append-object"
-    },
-    "createObject": "/create/object",
-    "getObjects": "/wobject",
-    "searchObjects": "/wobjectSearch",
-    "getObjectFollowing": "/following_objects",
-    "getObjectFollowers": "/followers",
-    "user": "/user",
-    "users": "/users",
-    "feed": "/feed",
-    "posts": "/posts",
-    "post": "/post",
-    "followingObjects": "/following_objects",
-    "getGallery": "/gallery",
-    "wobjectsWithUserWeight": "/objects_shares",
-    "wobjectsExpertise": "/object_expertise",
-    "getObjectTypes": "/objectTypes",
-    "objectType": "/objectType",
-    "generalSearch": "/generalSearch",
-    "campaigns": "https://waiviodev.com/campaigns-api/campaigns"
+    "protocol": "https://",
+    "host": "www.waivio.com",
+    "": "waiviodev.com",
+    "": "localhost:8093"
+  },
+  "staging": {
+    "protocol": "https://",
+    "host": "waiviodev.com"
   },
   "production": {
-    "apiPrefix": "https://waiviodev.com/api",
-
-    "objectsBot": {
-      "apiPrefix": "https://waiviodev.com",
-      "createObject": "/objects-bot/create-object",
-      "appendObject": "/objects-bot/append-object"
-    },
-    "createObject": "/create/object",
-    "getObjects": "/wobject",
-    "searchObjects": "/wobjectSearch",
-    "getObjectFollowing": "/following_objects",
-    "getObjectFollowers": "/followers",
-    "user": "/user",
-    "users": "/users",
-    "feed": "/feed",
-    "posts": "/posts",
-    "post": "/post",
-    "followingObjects": "/following_objects",
-    "getGallery": "/gallery",
-    "wobjectsWithUserWeight": "/objects_shares",
-    "wobjectsExpertise": "/object_expertise",
-    "getObjectTypes": "/objectTypes",
-    "objectType": "/objectType",
-    "generalSearch": "/generalSearch",
-    "campaigns": "/campaigns-api/campaigns"
-  }
+    "protocol": "https://",
+    "host": "www.waivio.com"
+  },
+  "apiPrefix": "/api",
+  "objectsBotApiPrefix": "/objects-bot",
+  "objectsBot": {
+    "createObject": "/create-object",
+    "appendObject": "/append-object"
+  },
+  "createObject": "/create/object",
+  "getObjects": "/wobject",
+  "searchObjects": "/wobjectSearch",
+  "getObjectFollowing": "/following_objects",
+  "getObjectFollowers": "/followers",
+  "user": "/user",
+  "users": "/users",
+  "feed": "/feed",
+  "posts": "/posts",
+  "post": "/post",
+  "followingObjects": "/following_objects",
+  "getGallery": "/gallery",
+  "wobjectsWithUserWeight": "/objects_shares",
+  "wobjectsExpertise": "/object_expertise",
+  "getObjectTypes": "/objectTypes",
+  "objectType": "/objectType",
+  "generalSearch": "/generalSearch",
+  "campaigns": "/campaigns-api/campaigns"
 }

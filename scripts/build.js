@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
-process.env.NODE_ENV = 'production';
+if (!process.env.NODE_ENV) {
+  process.env.NODE_ENV = 'production';
+}
 
 const fs = require('fs-extra');
 const chalk = require('chalk');
@@ -17,7 +19,7 @@ function copyPublic() {
 }
 
 async function main() {
-  console.log(chalk.bold('Building for production'));
+  console.log(chalk.bold(`Building for ${process.env.NODE_ENV}`));
 
   fs.emptyDirSync(paths.build);
   copyPublic();
