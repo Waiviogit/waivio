@@ -2,12 +2,12 @@ const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const paths = require('../scripts/paths');
 
-const IS_DEV = process.env.NODE_ENV !== 'production';
+const IS_DEV = process.env.NODE_ENV === 'development';
 
 const SERVER_PORT = process.env.PORT || 3000;
 const CONTENT_PORT = IS_DEV ? SERVER_PORT + 1 : SERVER_PORT;
 
-const CALLBACK_HOST_URL = IS_DEV ? 'localhost:3000' : 'waiviodev.com';
+const CALLBACK_HOST_URL = IS_DEV ? 'localhost:3000' : 'waivio.com';
 
 const MATCH_JS = /\.js$/i;
 const MATCH_CSS_LESS = /\.(css|less)$/i;
@@ -25,7 +25,7 @@ const POSTCSS_LOADER = {
   },
 };
 const DEFINE_PLUGIN = new webpack.DefinePlugin({
-  'process.env.NODE_ENV': IS_DEV ? JSON.stringify('development') : JSON.stringify('production'),
+  'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
   'process.env.STEEMCONNECT_CLIENT_ID': JSON.stringify(
     process.env.STEEMCONNECT_CLIENT_ID || 'waiviodev.com',
   ),
