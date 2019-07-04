@@ -26,6 +26,7 @@ export const getClientWObj = (serverWObj, fieldsToInclude = []) => {
     avatar: getFieldWithMaxWeight(serverWObj, objectFields.avatar) || DEFAULTS.AVATAR,
     name: getFieldWithMaxWeight(serverWObj, objectFields.name),
     title: getFieldWithMaxWeight(serverWObj, objectFields.title),
+    price: getFieldWithMaxWeight(serverWObj, objectFields.price),
     parent: parent || '',
     weight: weight || '',
     createdAt: created_at || Date.now(),

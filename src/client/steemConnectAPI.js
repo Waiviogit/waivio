@@ -6,6 +6,7 @@ function sc2Extended() {
     baseURL: process.env.STEEMCONNECT_HOST,
     callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
   });
+
   const copied = Object.assign(
     Object.create(Object.getPrototypeOf(sc2api)),
     sc2api,

@@ -34,6 +34,7 @@ const POSTCSS_LOADER = {
     ],
   },
 };
+
 const DEFINE_PLUGIN = new webpack.DefinePlugin({
   'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
   'process.env.STEEMCONNECT_CLIENT_ID': JSON.stringify(
