@@ -127,10 +127,16 @@ class Story extends React.Component {
   }
   getObjectLayout = wobj => {
     const pathName = `/object/${wobj.author_permlink}`;
-    const nameFields = _.filter(wobj.fields, o => o.name === 'name');
-    const nameField = _.maxBy(nameFields, 'weight') || {
-      body: wobj.default_name || '',
-    };
+    let name = '';
+    if (wobj.objectName) {
+      name = wobj.objectName;
+    } else {
+      const nameFields = _.filter(wobj.fields, o => o.name === 'name');
+      const nameField = _.maxBy(nameFields, 'weight') || {
+        body: wobj.default_name,
+      };
+      if (nameField) name = nameField.body;
+    }
     return (
       <Link
         key={wobj.author_permlink}
@@ -138,7 +144,7 @@ class Story extends React.Component {
         title={`${this.props.intl.formatMessage({
           id: 'related_to_obj',
           defaultMessage: 'Related to object',
-        })} ${nameField.body} ${wobj.percent ? `(${wobj.percent.toFixed(2)}%)` : ''}`}
+        })} ${name} ${wobj.percent ? `(${wobj.percent.toFixed(2)}%)` : ''}`}
       >
         <ObjectAvatar item={wobj} size={40} />
       </Link>

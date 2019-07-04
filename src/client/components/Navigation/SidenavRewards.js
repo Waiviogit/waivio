@@ -37,8 +37,8 @@ export default class SidenavRewards extends React.Component {
             >
               {/* <i className="iconfont icon-dynamic" /> */}
               {intl.formatMessage({
-                id: 'active',
-                defaultMessage: `Active`,
+                id: 'eligible',
+                defaultMessage: `Eligible`,
               })}
             </NavLink>
           </li>
