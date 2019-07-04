@@ -213,7 +213,7 @@ class ObjectInfo extends React.Component {
     );
     const menuSection = (
       <React.Fragment>
-        {(isEditMode || menuItems.length > 0) && (
+        {isEditMode && (
           <div className="object-sidebar__section-title">
             <FormattedMessage id="menu" defaultMessage="Menu" />
           </div>
