@@ -108,6 +108,20 @@
   .email {
     padding-left: 28px;
   }
+
+  .price-field-view::before {
+    content: '$';
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    height: 20px;
+    width: 20px;
+    margin-right: 5px;
+    border: @border-width-base @border-style-base @border-color-base;
+    border-radius: 50%;
+    box-shadow: @text-color 0 0 2px;
+    font-weight: 600;
+  }
 }
 
 .field-info__title {

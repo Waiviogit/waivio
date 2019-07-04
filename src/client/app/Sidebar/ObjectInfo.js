@@ -192,7 +192,10 @@ class ObjectInfo extends React.Component {
               </div>
             )}
             {content ? (
-              <div className="field-info__content" data-test={`${name}-field-view`}>
+              <div
+                className={`field-info__content ${name}-field-${isEditMode ? 'edit' : 'view'}`}
+                data-test={`${name}-field-view`}
+              >
                 {content}
               </div>
             ) : null}
