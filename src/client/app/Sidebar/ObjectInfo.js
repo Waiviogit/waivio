@@ -167,6 +167,9 @@ class ObjectInfo extends React.Component {
     const album = _.filter(albums, _.iteratee(['id', wobject.author_permlink]));
     const hasGalleryImg = wobject.preview_gallery && wobject.preview_gallery[0];
 
+    const isRenderMap =
+      map && map.latitude && map.longitude && isCoordinatesValid(map.latitude, map.longitude);
+
     // name - name of field OR type of menu-item (TYPES_OF_MENU_ITEM)
     const listItem = (name, content) => {
       const fieldsCount = getFieldsCount(wobject, name);
@@ -410,20 +413,29 @@ class ObjectInfo extends React.Component {
                     <React.Fragment>
                       <i className="iconfont icon-coordinates text-icon" />
                       {address}
+                      {isRenderMap && (
+                        <a
+                          href={`https://www.google.com/maps/search/?api=1&query=${map.latitude},${
+                            map.longitude
+                          }`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="address-link"
+                        >
+                          <i className="iconfont icon-send PostModal__icon" />
+                        </a>
+                      )}
                     </React.Fragment>
                   ),
                 )}
                 {listItem(
                   objectFields.map,
-                  map &&
-                    map.latitude &&
-                    map.longitude &&
-                    isCoordinatesValid(map.latitude, map.longitude) && (
-                      <MapObjectInfo
-                        mapHeigth={200}
-                        center={[Number(map.latitude), Number(map.longitude)]}
-                      />
-                    ),
+                  isRenderMap && (
+                    <MapObjectInfo
+                      mapHeigth={200}
+                      center={[Number(map.latitude), Number(map.longitude)]}
+                    />
+                  ),
                 )}
                 {listItem(
                   objectFields.website,

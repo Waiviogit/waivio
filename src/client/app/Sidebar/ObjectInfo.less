@@ -109,13 +109,20 @@
     padding-left: 28px;
   }
 
+  .address-field-view,
+  .address-field-edit {
+    .address-link {
+      vertical-align: middle;
+    }
+  }
+
   .price-field-view::before {
     content: '$';
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    height: 20px;
-    width: 20px;
+    height: 18px;
+    width: 18px;
     margin-right: 5px;
     border: @border-width-base @border-style-base @border-color-base;
     border-radius: 50%;
