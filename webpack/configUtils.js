@@ -7,7 +7,17 @@ const IS_DEV = process.env.NODE_ENV === 'development';
 const SERVER_PORT = process.env.PORT || 3000;
 const CONTENT_PORT = IS_DEV ? SERVER_PORT + 1 : SERVER_PORT;
 
-const CALLBACK_HOST_URL = IS_DEV ? 'localhost:3000' : 'waivio.com';
+let CALLBACK_HOST_URL = 'waivio.com';
+switch (process.env.NODE_ENV) {
+  case 'development':
+    CALLBACK_HOST_URL = 'localhost:3000';
+    break;
+  case 'staging':
+    CALLBACK_HOST_URL = 'waiviodev.com';
+    break;
+  default:
+    break;
+}
 
 const MATCH_JS = /\.js$/i;
 const MATCH_CSS_LESS = /\.(css|less)$/i;
