@@ -62,6 +62,7 @@ class MediumDraftEditor extends React.Component {
       }),
     ),
     placeholder: PropTypes.string,
+    withTitle: PropTypes.bool,
     continuousBlocks: PropTypes.arrayOf(PropTypes.string),
     sideButtons: PropTypes.arrayOf(
       PropTypes.shape({
@@ -93,6 +94,7 @@ class MediumDraftEditor extends React.Component {
     blockButtons: BLOCK_BUTTONS,
     inlineButtons: INLINE_BUTTONS,
     placeholder: 'Write your story...',
+    withTitle: true,
     continuousBlocks: [Block.UNSTYLED, Block.BLOCKQUOTE, Block.OL, Block.UL, Block.CODE],
     sideButtons: [
       {
@@ -564,6 +566,7 @@ class MediumDraftEditor extends React.Component {
               setEditorState={this.onChange}
               focus={this.focus}
               sideButtons={this.props.sideButtons}
+              withTitleLine={this.props.withTitle}
             />
           )}
           {!disableToolbar && (
@@ -580,6 +583,7 @@ class MediumDraftEditor extends React.Component {
               focus={this.focus}
               blockButtons={blockButtons}
               inlineButtons={inlineButtons}
+              withTitleLine={this.props.withTitle}
             />
           )}
           {isCursorLink && (

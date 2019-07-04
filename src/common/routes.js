@@ -1,7 +1,6 @@
-import Wrapper from '../client/Wrapper';
-import { objMenuTypes, supportedObjectFields } from '../../src/common/constants/listOfFields';
 import URL from '../../src/common/constants/routing';
 
+import Wrapper from '../client/Wrapper';
 import Bookmarks from '../client/bookmarks/Bookmarks';
 import Drafts from '../client/post/Write/Drafts';
 import Replies from '../client/replies/Replies';
@@ -41,6 +40,9 @@ import CatalogWrap from '../client/object/Catalog/CatalogWrap';
 import WobjExpertise from '../client/object/WobjExpertise';
 import UserExpertise from '../client/user/UserExpertise';
 import ObjectTypePage from '../client/objectTypes/ObjectTypePage';
+import Rewards from '../client/rewards/Rewards';
+import CreateRewards from '../client/rewards/Create/CreateReward';
+import ObjectOfTypePage from '../client/object/ObjectOfTypePage/ObjectOfTypePage';
 
 const routes = [
   {
@@ -50,6 +52,15 @@ const routes = [
         path: '/bookmarks',
         exact: true,
         component: Bookmarks,
+      },
+      {
+        path: `/rewards/(active|reserved|history|all|create)/@:userName`,
+        component: Rewards,
+      },
+      {
+        path: '/rewards/create',
+        exact: true,
+        component: CreateRewards,
       },
       {
         path: '/drafts',
@@ -154,9 +165,7 @@ const routes = [
         ],
       },
       {
-        path: `/object/:name/(about|gallery|updates|reviews|followers|feed|list|expertise|${
-          URL.SEGMENT.OBJ_MENU
-        })?/(${supportedObjectFields.join('|')}|${objMenuTypes.join('|')}|album)?/:itemId?`,
+        path: `/object/:name/(${URL.WOBJ.params[0]})?/(${URL.WOBJ.params[1]})?/:itemId?`,
         component: Wobj,
         exact: true,
         routes: [
@@ -166,42 +175,48 @@ const routes = [
             component: ObjectProfile,
           },
           {
-            path: '/object/:name/about',
+            path: `/object/:name/${URL.SEGMENT.ABOUT}`,
             exact: true,
             component: ObjectAbout,
           },
           {
-            path: '/object/:name/followers',
+            path: `/object/:name/${URL.SEGMENT.FOLLOWERS}`,
             exact: true,
             component: WobjFollowers,
           },
           {
-            path: '/object/:name/gallery',
+            path: `/object/:name/${URL.SEGMENT.GALLERY}`,
             exact: true,
             component: ObjectGallery,
           },
           {
-            path: '/object/:name/expertise',
+            path: `/object/:name/${URL.SEGMENT.EXPERTISE}`,
             exact: true,
             component: WobjExpertise,
           },
           {
-            path: '/object/:name/gallery/album/:itemId',
+            path: `/object/:name/${URL.SEGMENT.GALLERY}/${URL.SEGMENT.ALBUM}/:itemId`,
             exact: true,
             component: ObjectGalleryAlbum,
           },
           {
-            path: '/object/:name/updates/:field?',
+            path: `/object/:name/${URL.SEGMENT.UPDATES}/(${URL.WOBJ.params[1]})?`,
             exact: true,
             component: WobjHistory,
           },
           {
-            path: `/object/:name/(list|${URL.SEGMENT.OBJ_MENU})`,
+            path: `/object/:name/(${URL.SEGMENT.LIST}|${URL.SEGMENT.MENU})`,
             exact: true,
             component: CatalogWrap,
           },
+          {
+            path: `/object/:name/(${URL.SEGMENT.PAGE})`,
+            exact: true,
+            component: ObjectOfTypePage,
+          },
         ],
       },
+
       {
         path: '/discover',
         exact: true,

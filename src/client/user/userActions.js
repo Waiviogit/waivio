@@ -136,3 +136,31 @@ export const getCoordinates = () => dispatch =>
     type: GET_USER_LOCATION.ACTION,
     payload: getUserCoordinatesByIpAdress(),
   });
+
+export const assignProposition = (companyId, objId) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const state = getState();
+  return new Promise((resolve, reject) => {
+    steemConnectAPI
+      .assignProposition(getAuthenticatedUserName(state), companyId, objId)
+      .then(() => resolve('SUCCESS'))
+      .catch(error => reject(error));
+  });
+};
+
+export const declineProposition = (companyId, objId) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const state = getState();
+  return new Promise((resolve, reject) => {
+    steemConnectAPI
+      .declineProposition(getAuthenticatedUserName(state), companyId, objId)
+      .then(() => resolve('SUCCESS'))
+      .catch(error => reject(error));
+  });
+};

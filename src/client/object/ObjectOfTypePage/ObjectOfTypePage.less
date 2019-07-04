@@ -1,0 +1,74 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.object-of-type-page {
+  background: @white;
+  border: @base-border;
+  border-radius: @border-radius-base;
+
+  &.view-mode {
+    padding: 16px;
+  }
+
+  &__header-controls {
+    padding: 16px;
+
+    .ant-form-item,
+    .LikeSection {
+      margin: 0;
+    }
+    .ant-checkbox {
+      top: -0.2em;
+    }
+  }
+  &__empty-placeholder {
+    display: flex;
+    justify-content: center;
+    background: transparent;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  &__row {
+    display: flex;
+    padding-top: @content-margin;
+
+    &.align-center {
+      justify-content: center;
+    }
+  }
+}
+.object-page-preview {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    color: @blue-botticelli;
+    font-weight: 500;
+    font-size: @font-size-base;
+    padding-bottom: @content-margin;
+    margin-bottom: 16px;
+    border-bottom: @base-border;
+  }
+  &__close-btn > .icon-button__icon {
+    color: @blue-botticelli;
+    &:hover {
+      color: @primary-color;
+    }
+  }
+  &__options {
+    .LikeSection {
+      border-top: @base-border;
+      margin-top: @content-margin;
+
+      .ant-form-item {
+        margin-top: @content-margin;
+        margin-bottom: unset;
+      }
+    }
+    .ant-form-item {
+      margin-bottom: unset;
+    }
+  }
+}
+
+@import './ObjectOfTypePage-nightmode';

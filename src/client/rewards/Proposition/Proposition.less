@@ -1,0 +1,62 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+@wrapPadding: 15px;
+
+.Proposition {
+  border: 1px solid @blue-hawkesBlue;
+  background-color: @white;
+  border-radius: 4px;
+  padding: @wrapPadding;
+  width: 100%;
+  margin-bottom: 15px;
+
+  &__title {
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  &__header {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__author {
+    display: flex;
+    width: 50%;
+    align-items: center;
+
+    .UserCard {
+      padding: 0;
+      margin: 0;
+      border: none;
+    }
+  }
+
+  &__author-title {
+    margin-right: 15px;
+  }
+
+  &__footer {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__object-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .ObjectCard {
+      padding: 14px 0;
+      width: 100%;
+      border: none;
+    }
+  }
+}
+
+@import 'Proposition-nightmode';

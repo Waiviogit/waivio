@@ -106,7 +106,7 @@ export const getFeedContent = (sortBy, queryData) =>
 
 export const postCreateWaivioObject = requestBody =>
   new Promise((resolve, reject) => {
-    fetch(`${config.objectsBot.apiPrefix}${config.objectsBot.createObject}`, {
+    fetch(`${config.objectsBotApiPrefix}${config.objectsBot.createObject}`, {
       method: 'POST',
       headers,
       body: JSON.stringify(requestBody),
@@ -185,7 +185,7 @@ export const searchObjects = (searchString, objType = '', limit = 10) => {
 
 export const postAppendWaivioObject = postData =>
   new Promise((resolve, reject) => {
-    fetch(`${config.objectsBot.apiPrefix}${config.objectsBot.appendObject}`, {
+    fetch(`${config.objectsBotApiPrefix}${config.objectsBot.appendObject}`, {
       headers,
       method: 'POST',
       body: JSON.stringify(postData),
@@ -278,26 +278,6 @@ export const getWobjectsWithUserWeight = (
       .catch(error => reject(error));
   });
 };
-
-export const getWobjectsFeed = (limit = 20, skip = 0) =>
-  new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.getWobjFeed}`, {
-      headers,
-      method: 'POST',
-      body: JSON.stringify({
-        skip,
-        limit,
-        filter: {
-          byApp: getFilterKey(),
-        },
-      }),
-    })
-      .then(handleErrors)
-      .then(res => res.json())
-      .then(result => resolve(result))
-      .catch(error => reject(error));
-  });
-
 export const getWobjectsExpertise = (authorPermlink, skip = 0, limit = 30) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.wobjectsExpertise}`, {
@@ -310,6 +290,7 @@ export const getWobjectsExpertise = (authorPermlink, skip = 0, limit = 30) =>
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
+
 export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjectTypes}`, {
@@ -373,6 +354,36 @@ export const getTopUsers = (isRandom = false, { limit, skip } = { limit: 30, ski
       .catch(error => reject(error));
   });
 };
+
+export const getPropositions = ({ limit = 30, skip = 0, userName, status, approved }) =>
+  // export const getPropositions = ({ limit = 30, locale = 'en-US', skip = 0 }) => {
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.campaigns}?limit=${limit}&skip=${skip}${userName ? `&userName=${userName}` : ''}${
+        userName ? `&approved=${approved}` : ''
+      }${status ? `&status=${status}` : ''}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const createCampaign = data =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaigns}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
 
 // Investarena
 

@@ -1,18 +1,24 @@
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { postAppendWaivioObject } from '../../waivioApi/ApiClient';
-import { voteObject } from './wobjActions';
+import { followObject, voteObject } from './wobjActions';
+import { getVotePercent } from '../reducers';
 
 export const APPEND_WAIVIO_OBJECT = createAsyncActionType('@editor/APPEND_WAIVIO_OBJECT');
 
-export const appendObject = postData => dispatch => {
-  const { votePower, ...rest } = postData;
-
+export const appendObject = (postData, { follow, votePower } = { follow: false }) => (
+  dispatch,
+  getState,
+) => {
+  const state = getState();
   return dispatch({
     type: APPEND_WAIVIO_OBJECT.ACTION,
     payload: {
-      promise: postAppendWaivioObject(rest).then(res => {
-        dispatch(voteObject(res.author, res.permlink, votePower));
-        return res;
+      promise: postAppendWaivioObject(postData).then(res => {
+        dispatch(voteObject(res.author, res.permlink, votePower || getVotePercent(state)));
+        if (follow) {
+          dispatch(followObject(postData.parentPermlink));
+        }
+        return { ...res, ...postData.field, creator: postData.author, weight: 1 };
       }),
     },
   });

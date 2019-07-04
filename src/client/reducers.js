@@ -140,6 +140,7 @@ export const getTopExperts = state => fromUsers.getTopExperts(state.users);
 export const getTopExpertsLoading = state => fromUsers.getTopExpertsLoading(state.users);
 export const getRandomExperts = state => fromUsers.getRandomExperts(state.users);
 export const getRandomExpertsLoaded = state => fromUsers.getRandomExpertsLoaded(state.users);
+export const getRandomExpertsLoading = state => fromUsers.getRandomExpertsLoading(state.users);
 
 export const getFavoriteCategories = state => fromFavorites.getFavoriteCategories(state.favorites);
 

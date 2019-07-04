@@ -1,7 +1,8 @@
 import { Client } from 'busyjs';
+import apiConfig from '../../waivioApi/routes';
 
 function createBusyAPI() {
-  const client = new Client('wss://waiviodev.com/notifications');
+  const client = new Client(`wss://${apiConfig[process.env.NODE_ENV].host}/notifications`);
 
   client.sendAsync = (message, params) =>
     new Promise((resolve, reject) => {
