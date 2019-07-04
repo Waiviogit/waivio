@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-if (!process.env.NODE_ENV) {
+process.env.NODE_ENV = process.argv[2];
+if (!['production', 'staging'].includes(process.env.NODE_ENV)) {
   process.env.NODE_ENV = 'production';
 }
 
