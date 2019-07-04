@@ -93,7 +93,7 @@ export const getFeedContent = (sortBy, queryData) =>
 
 export const postCreateWaivioObject = requestBody =>
   new Promise((resolve, reject) => {
-    fetch(`${config.objectsBot.apiPrefix}${config.objectsBot.createObject}`, {
+    fetch(`${config.objectsBotApiPrefix}${config.objectsBot.createObject}`, {
       method: 'POST',
       headers,
       body: JSON.stringify(requestBody),
@@ -164,7 +164,7 @@ export const searchObjects = (searchString, objType = '', limit = 10) => {
 
 export const postAppendWaivioObject = postData =>
   new Promise((resolve, reject) => {
-    fetch(`${config.objectsBot.apiPrefix}${config.objectsBot.appendObject}`, {
+    fetch(`${config.objectsBotApiPrefix}${config.objectsBot.appendObject}`, {
       headers,
       method: 'POST',
       body: JSON.stringify(postData),
