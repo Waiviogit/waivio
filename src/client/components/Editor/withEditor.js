@@ -63,12 +63,13 @@ export default function withEditor(WrappedComponent) {
       const formData = new FormData();
       formData.append('file', blob);
 
-      fetch(`https://ipfs.busy.org/upload`, {
+      // fetch(`https://ipfs.busy.org/upload`, {
+      fetch(`https://www.waivio.com/api/image`, {
         method: 'POST',
         body: formData,
       })
         .then(res => res.json())
-        .then(res => callback(res.url, blob.name))
+        .then(res => callback(res.image, blob.name))
         .catch(err => {
           console.log('err', err);
           errorCallback();

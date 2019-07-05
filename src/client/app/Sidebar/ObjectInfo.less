@@ -19,10 +19,12 @@
     .field-info {
       padding: 0;
     }
+
     @media @medium, @large {
       text-align: left;
     }
   }
+
   &__menu-item {
     font-weight: 500;
 
@@ -31,18 +33,21 @@
         &.active {
           color: @primary-color;
         }
+
         color: @text-color;
       }
     }
   }
 }
+
 .field-button {
   width: 100%;
+  overflow: hidden;
 }
 
 .field-info {
   padding-bottom: @content-margin;
-
+  word-break: break-all;
   &:last-child {
     padding: 0;
   }
@@ -55,39 +60,48 @@
     display: flex;
     align-items: center;
     margin-right: 4px;
+
     &__text {
       margin-left: 3px;
       color: @blue-botticelli;
       font-size: 16px;
       font-weight: 500;
     }
+
     a {
       height: 100%;
       display: flex;
       align-items: center;
     }
+
     &__icon {
       font-size: 23px;
     }
+
     .icon-button__text {
       a {
         color: @blue-botticelli;
         font-size: 16px;
         font-weight: 500;
       }
+
       border-bottom: 2px solid transparent;
+
       &:hover {
         a,
         span {
           color: @primary-color;
         }
+
         border-bottom: 2px solid @primary-color;
       }
+
       &.field-selected {
         a,
         span {
           color: @primary-color;
         }
+
         border-bottom: 2px solid @primary-color;
       }
     }
@@ -100,13 +114,34 @@
     text-overflow: ellipsis;
   }
 
-  .phone {
-    padding-left: 28px;
-    margin-top: -10px;
+  //.phone {
+  //  padding-left: 28px;
+  //  margin-top: -10px;
+  //}
+
+  //.email {
+  //  padding-left: 28px;
+  //}
+
+  .address-field-view,
+  .address-field-edit {
+    .address-link {
+      vertical-align: middle;
+    }
   }
 
-  .email {
-    padding-left: 28px;
+  .price-field-view::before {
+    content: '$';
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    height: 18px;
+    width: 18px;
+    margin-right: 5px;
+    border: @border-width-base @border-style-base @border-color-base;
+    border-radius: 50%;
+    box-shadow: @text-color 0 0 2px;
+    font-weight: 600;
   }
 }
 
@@ -126,6 +161,7 @@
   max-height: 180px;
   max-width: 180px;
   overflow: hidden;
+
   img {
     max-width: 180px;
   }

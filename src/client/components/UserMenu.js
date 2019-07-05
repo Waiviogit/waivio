@@ -10,6 +10,7 @@ class UserMenu extends React.Component {
     onChange: PropTypes.func,
     defaultKey: PropTypes.string,
     followers: PropTypes.number,
+    objectsSharesCount: PropTypes.number,
     following: PropTypes.number,
   };
 
@@ -17,6 +18,7 @@ class UserMenu extends React.Component {
     onChange: () => {},
     defaultKey: 'discussions',
     followers: 0,
+    objectsSharesCount: 0,
     following: 0,
   };
 
@@ -100,6 +102,9 @@ class UserMenu extends React.Component {
                 data-key="expertise"
               >
                 <FormattedMessage id="expertise" defaultMessage="Expertise" />
+                <span className="UserMenu__badge">
+                  <FormattedNumber value={this.props.objectsSharesCount || 0} />
+                </span>
               </li>
               <li
                 className={this.getItemClasses('transfers')}

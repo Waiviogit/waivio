@@ -45,7 +45,7 @@ export default class ObjectDynamicList extends React.Component {
                   wobjects: _.union(state.wobjects, newWobjects.wobjects),
                 }),
                 () => {
-                  handleObjectCount(newWobjects.wobjects_count);
+                  handleObjectCount(newWobjects.wobjects_count, isOnlyHashtags);
                 },
               )
             : this.setState(state => ({
