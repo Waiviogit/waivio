@@ -24,7 +24,7 @@ class ObjectTypes extends React.Component {
   static propTypes = {
     objectTypes: PropTypes.shape(),
     loading: PropTypes.bool,
-    userName: PropTypes.string,
+    // userName: PropTypes.string,
     getObjectTypes: PropTypes.func.isRequired,
     getMoreObjectsByType: PropTypes.func.isRequired,
   };
@@ -67,16 +67,16 @@ class ObjectTypes extends React.Component {
     });
   };
   render() {
-    const { objectTypes, loading, userName } = this.props;
+    const { objectTypes, loading } = this.props;
     const { showedItemsCount } = this.state;
 
     return (
       <div className="ObjectTypes">
-        <div className="reward-button">
-          <Link to={`/rewards/active/@${userName}`} className="rainbow-button">
-            <FormattedMessage id="rewards" defaultMessage="Rewards" />
-          </Link>
-        </div>
+        {/* <div className="reward-button"> */}
+        {/* <Link to={`/rewards/active/@${userName}`} className="rainbow-button"> */}
+        {/* <FormattedMessage id="rewards" defaultMessage="Rewards" /> */}
+        {/* </Link> */}
+        {/* </div> */}
         {!loading && !_.isEmpty(objectTypes) ? (
           _.map(
             objectTypes,
