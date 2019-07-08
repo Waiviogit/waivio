@@ -405,7 +405,10 @@ class ObjectInfo extends React.Component {
                     )}
                   </div>
                 ) : null}
-                {listItem(objectFields.price, <React.Fragment>{price}</React.Fragment>)}
+                {listItem(
+                  objectFields.price,
+                  price ? <div className="icon-price">{price}</div> : <div />,
+                )}
                 {listItem(objectFields.workTime, <React.Fragment>{workTime}</React.Fragment>)}
                 {listItem(
                   objectFields.address,

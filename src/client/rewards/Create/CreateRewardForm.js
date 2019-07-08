@@ -2,9 +2,10 @@ import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input, Select, Checkbox, Button, DatePicker } from 'antd';
-import * as ApiClient from '../../../waivioApi/ApiClient';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCardView from '../../objectCard/ObjectCardView';
+import ModalEligibleUsers from './ModalEligibleUsers/ModalEligibleUsers';
+import { createCampaign } from '../../../waivioApi/ApiClient';
 
 const { Option } = Select;
 
@@ -21,18 +22,22 @@ class CreateRewardForm extends React.Component {
     confirmDirty: false,
     autoCompleteResult: [],
     objectsToAction: [],
+    isModalEligibleUsersOpen: false,
   };
 
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        ApiClient.createCampaign(this.prepareSubmitData(values)).then(data => {
+        createCampaign(this.prepareSubmitData(values)).then(data => {
           this.setState({ propositions: data.campaigns, hasMore: data.hasMore });
         });
       }
     });
   };
+
+  toggleModalEligibleUsers = () =>
+    this.setState({ isModalEligibleUsersOpen: !this.state.isModalEligibleUsersOpen });
 
   prepareSubmitData = data => {
     const objects = _.map(this.state.objectsToAction, o => o.id);
@@ -226,6 +231,16 @@ class CreateRewardForm extends React.Component {
           })(<Input type="number" />)}
           per month
         </Form.Item>
+        <Button type="primary" onClick={this.toggleModalEligibleUsers}>
+          Show eligible users
+        </Button>
+        {this.state.isModalEligibleUsersOpen && (
+          <ModalEligibleUsers
+            toggleModal={this.toggleModalEligibleUsers}
+            isModalOpen={this.state.isModalEligibleUsersOpen}
+            userName={this.props.userName}
+          />
+        )}
         <Form.Item label="Note to reviewers">
           {getFieldDecorator('description', {
             rules: [

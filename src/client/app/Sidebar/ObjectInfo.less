@@ -48,6 +48,7 @@
 .field-info {
   padding-bottom: @content-margin;
   word-break: break-all;
+
   &:last-child {
     padding: 0;
   }
@@ -130,18 +131,20 @@
     }
   }
 
-  .price-field-view::before {
-    content: '$';
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    height: 18px;
-    width: 18px;
-    margin-right: 5px;
-    border: @border-width-base @border-style-base @border-color-base;
-    border-radius: 50%;
-    box-shadow: @text-color 0 0 2px;
-    font-weight: 600;
+  .price-field-view {
+    .icon-price::before {
+      content: '$';
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      height: 18px;
+      width: 18px;
+      margin-right: 5px;
+      border: @border-width-base @border-style-base @border-color-base;
+      border-radius: 50%;
+      box-shadow: @text-color 0 0 2px;
+      font-weight: 600;
+    }
   }
 }
 
