@@ -2,10 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import RightSidebarLoading from '../../../client/app/Sidebar/RightSidebarLoading';
 import ObjectExpertise from '../../components/Sidebar/ObjectExpertise';
+import ForecastBlock from '../../object/ForecastBlock';
 
 const RightObjectSidebar = ({ username, wobject }) =>
   wobject.users ? (
-    <ObjectExpertise username={username} wobject={wobject} />
+    <React.Fragment>
+      {' '}
+      <ObjectExpertise username={username} wobject={wobject} />{' '}
+      <ForecastBlock username={username} />{' '}
+    </React.Fragment>
   ) : (
     <RightSidebarLoading />
   );

@@ -16,7 +16,7 @@
   },
   "development": {
     "": "http://localhost:8095/",
-    "apiPrefix": "https://waiviodev.com/",
+    "apiPrefix": "https://www.waivio.com/",
     "brokerWSUrl": {
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
@@ -91,6 +91,10 @@
     "searchInstrumentsStatistic": "/search-instruments-stats",
     "top": "/top-performers",
     "instrumentStatistic": "/instrument-statistics"
+  },
+
+  "forecasts": {
+    "activeForecasts": "/active_forecasts"
   },
 
   "favorites": {

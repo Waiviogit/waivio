@@ -23,6 +23,7 @@ import platformReducer from '../investarena/redux/reducers/platformReducer';
 import dealsReducer from '../investarena/redux/reducers/dealsReducer';
 import modalsReducer from '../investarena/redux/reducers/modalsReducer';
 import chartsReducer from '../investarena/redux/reducers/chartsReducer';
+import forecastReducer, * as fromForecastReducer from '../investarena/redux/reducers/forecastReducer';
 import topPerformersReducer, * as fromTopPerformers from '../investarena/redux/reducers/topPerformersReducer';
 import wobjectReducer, * as fromObject from '../client/object/wobjectReducer';
 import objectTypesReducer, * as fromObjectTypes from '../client/objectTypes/objectTypesReducer';
@@ -60,6 +61,7 @@ export default () =>
     append: appendReducer,
     gallery: galleryReducer,
     topPerformers: topPerformersReducer,
+    forecasts: forecastReducer,
   });
 
 export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);
@@ -207,3 +209,9 @@ export const getPerformersStatisticLoading = state =>
   fromTopPerformers.getPerformersStatisticLoading(state.topPerformers);
 export const getPerformersStatisticLoaded = state =>
   fromTopPerformers.getPerformersStatisticLoaded(state.topPerformers);
+
+export const getForecastData = state => fromForecastReducer.getForecastData(state.forecasts);
+export const getForecastDataByUser = (state, userName) =>
+  fromForecastReducer.getForecastDataByUser(state.forecasts, userName);
+export const getForecastDataByQuote = (state, quote) =>
+  fromForecastReducer.getForecastDataByQuote(state.forecasts, quote);

@@ -20,7 +20,8 @@ import WalletSidebar from '../../components/Sidebar/WalletSidebar';
 import FeedSidebar from '../../components/Sidebar/FeedSidebar';
 import RightSidebarLoading from './RightSidebarLoading';
 import ObjectWeightBlock from '../../components/Sidebar/ObjectWeightBlock';
-
+import ReactionsModal from '../../components/Reactions/ReactionsModal';
+import ForecastBlock from '../../components/Sidebar/ForecastBlock';
 @withRouter
 @connect(
   state => ({
@@ -79,7 +80,15 @@ export default class RightSidebar extends React.Component {
           <Route path="/promoted/:tag" component={FeedSidebar} />
           <Route
             path="/@:name"
-            render={() => authenticated && <ObjectWeightBlock username={match.params.name} />}
+            render={() =>
+              authenticated && (
+                <React.Fragment>
+                  {' '}
+                  <ObjectWeightBlock username={match.params.name} />{' '}
+                  <ForecastBlock username={match.params.name} />{' '}
+                </React.Fragment>
+              )
+            }
           />
           <Route
             path="/"

@@ -756,5 +756,8 @@
   "emailAndPhoneReq": "Email and Phone Required",
   "filterRule": "FilterRule",
   "info": "Information",
-  "about": "About"
+  "about": "About",
+  "forecast.currentForecast" : "Current forecasts",
+  "forecast.create" : "Created:",
+  "forecast.expire" : "Expire:"
 }
