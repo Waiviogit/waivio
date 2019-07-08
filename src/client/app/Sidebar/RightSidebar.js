@@ -1,17 +1,10 @@
-import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Route, Switch, withRouter } from 'react-router-dom';
-import {
-  getIsAuthenticated,
-  getIsAuthFetching,
-  getRecommendations,
-  getRecommendedObjects,
-} from '../../reducers';
-import { updateRecommendations } from '../../user/userActions';
+import {connect} from 'react-redux';
+import {Route, Switch, withRouter} from 'react-router-dom';
+import {getIsAuthenticated, getIsAuthFetching, getRecommendations, getRecommendedObjects,} from '../../reducers';
+import {updateRecommendations} from '../../user/userActions';
 import InterestingPeople from '../../components/Sidebar/InterestingPeople';
-// import InterestingObjects from '../../components/Sidebar/InterestingObjects';
 import SignUp from '../../components/Sidebar/SignUp';
 import PostRecommendation from '../../components/Sidebar/PostRecommendation';
 import Loading from '../../components/Icon/Loading';
@@ -20,8 +13,8 @@ import WalletSidebar from '../../components/Sidebar/WalletSidebar';
 import FeedSidebar from '../../components/Sidebar/FeedSidebar';
 import RightSidebarLoading from './RightSidebarLoading';
 import ObjectWeightBlock from '../../components/Sidebar/ObjectWeightBlock';
-import ReactionsModal from '../../components/Reactions/ReactionsModal';
 import ForecastBlock from '../../components/Sidebar/ForecastBlock';
+
 @withRouter
 @connect(
   state => ({

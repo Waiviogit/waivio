@@ -1,7 +1,7 @@
 import React from 'react';
-import { Icon } from 'antd';
+import {Icon} from 'antd';
 import PropTypes from 'prop-types';
-import { injectIntl } from 'react-intl';
+import {injectIntl} from 'react-intl';
 import '../ObjectWeightBlock.less';
 import './ForecastBlock.less';
 import './ForecastBlock-nightmode.less';
@@ -12,13 +12,12 @@ class ForecastBlock extends React.Component {
   static propTypes = {
     getActiveForecasts: PropTypes.func,
     forecasts: PropTypes.shape(),
-    intl: PropTypes.shape(),
+    intl: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
     getActiveForecasts: () => {},
     forecasts: {},
-    intl: {},
   };
 
   componentDidMount() {
