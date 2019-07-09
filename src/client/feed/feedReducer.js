@@ -20,6 +20,12 @@ const initialState = {
 };
 
 const feedIdsList = (state = [], action) => {
+  const mapPostsKeys = posts => {
+    if (posts && Array.isArray(posts)) {
+      return posts.map(getPostKey);
+    }
+    return [];
+  };
   switch (action.type) {
     case feedTypes.GET_FEED_CONTENT.START:
     case feedTypes.GET_USER_FEED_CONTENT.START:
@@ -29,20 +35,26 @@ const feedIdsList = (state = [], action) => {
     case feedTypes.GET_OBJECT_POSTS.START:
       return [];
     case feedTypes.GET_USER_FEED_CONTENT.SUCCESS:
-      return action.payload.posts.map(getPostKey);
+      if (action && action.payload && action.payload.posts) {
+        return mapPostsKeys(action.payload.posts);
+      }
+      return [];
     case feedTypes.GET_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_REPLIES.SUCCESS:
     case feedTypes.GET_BOOKMARKS.SUCCESS:
     case feedTypes.GET_OBJECT_POSTS.SUCCESS:
-      return action.payload.map(getPostKey);
+      if (action && action.payload) {
+        return mapPostsKeys(action.payload);
+      }
+      return [];
     case feedTypes.GET_MORE_USER_FEED_CONTENT.SUCCESS:
-      return _.uniq([...state, ...action.payload.posts.map(getPostKey)]);
+      return _.uniq([...state, ...mapPostsKeys(action.payload.posts)]);
     case feedTypes.GET_MORE_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_MORE_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_MORE_REPLIES.SUCCESS:
     case feedTypes.GET_MORE_OBJECT_POSTS.SUCCESS:
-      return _.uniq([...state, ...action.payload.map(getPostKey)]);
+      return _.uniq([...state, ...mapPostsKeys(action.payload)]);
     default:
       return state;
   }

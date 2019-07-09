@@ -29,27 +29,27 @@ export const getRecommendedObjects = () =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
     headers,
     method: 'POST',
-    body: JSON.stringify({ userLimit: 5, locale: 'en-US', limit: 6 }),
-  }).then(res => res.json());
-
-export const getObjects = ({
-  limit = 30,
-  locale = 'en-US',
-  skip = 0,
-  invObjects,
-  requiredFields = [],
-}) =>
-  fetch(`${config.apiPrefix}${config.getObjects}`, {
-    headers,
-    method: 'POST',
     body: JSON.stringify({
-      limit,
-      locale,
-      skip,
-      object_types: invObjects ? supportedObjectTypes : [],
-      required_fields: requiredFields,
+      userLimit: 5,
+      locale: 'en-US',
+      limit: 6,
+      exclude_object_types: ['hashtag'],
+      sample: true,
     }),
   }).then(res => res.json());
+
+export const getObjects = ({ limit = 30, locale = 'en-US', skip = 0, isOnlyHashtags, invObjects,
+                             requiredFields = [], }) => {
+  const reqData = { limit, locale, skip,  object_types: invObjects ? supportedObjectTypes : [],
+    required_fields: requiredFields,};
+  if (isOnlyHashtags) reqData.object_types = ['hashtag'];
+  else reqData.exclude_object_types = ['hashtag'];
+  return fetch(`${config.apiPrefix}${config.getObjects}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify(reqData),
+  }).then(res => res.json());
+};
 
 export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US' }) =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
@@ -106,7 +106,7 @@ export const getFeedContent = (sortBy, queryData) =>
 
 export const postCreateWaivioObject = requestBody =>
   new Promise((resolve, reject) => {
-    fetch(`${config.objectsBot.apiPrefix}${config.objectsBot.createObject}`, {
+    fetch(`${config.objectsBotApiPrefix}${config.objectsBot.createObject}`, {
       method: 'POST',
       headers,
       body: JSON.stringify(requestBody),
@@ -185,7 +185,7 @@ export const searchObjects = (searchString, objType = '', limit = 10) => {
 
 export const postAppendWaivioObject = postData =>
   new Promise((resolve, reject) => {
-    fetch(`${config.objectsBot.apiPrefix}${config.objectsBot.appendObject}`, {
+    fetch(`${config.objectsBotApiPrefix}${config.objectsBot.appendObject}`, {
       headers,
       method: 'POST',
       body: JSON.stringify(postData),
@@ -256,38 +256,28 @@ export const getWobjectGallery = wobject =>
       .catch(error => reject(error));
   });
 
-export const getWobjectsWithUserWeight = (userName, skip = 0, limit = 30) =>
-  new Promise((resolve, reject) => {
+export const getWobjectsWithUserWeight = (
+  userName,
+  skip = 0,
+  limit = 30,
+  objectTypes,
+  excludeObjectTypes,
+) => {
+  const reqData = {skip, limit};
+  if (objectTypes) reqData.object_types = objectTypes;
+  if (excludeObjectTypes) reqData.exclude_object_types = excludeObjectTypes;
+  return new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.wobjectsWithUserWeight}`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ skip, limit }),
+      body: JSON.stringify(reqData),
     })
       .then(handleErrors)
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
-
-export const getWobjectsFeed = (limit = 20, skip = 0) =>
-  new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.getWobjFeed}`, {
-      headers,
-      method: 'POST',
-      body: JSON.stringify({
-        skip,
-        limit,
-        filter: {
-          byApp: getFilterKey(),
-        },
-      }),
-    })
-      .then(handleErrors)
-      .then(res => res.json())
-      .then(result => resolve(result))
-      .catch(error => reject(error));
-  });
-
+};
 export const getWobjectsExpertise = (authorPermlink, skip = 0, limit = 30) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.wobjectsExpertise}`, {
@@ -300,6 +290,7 @@ export const getWobjectsExpertise = (authorPermlink, skip = 0, limit = 30) =>
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
+
 export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjectTypes}`, {
@@ -348,6 +339,49 @@ export const getMoreObjectsByType = (type, skip, limit, filter = {}) =>
       .then(handleErrors)
       .then(res => res.json())
       .then(result => resolve({ data: result, type }))
+      .catch(error => reject(error));
+  });
+
+export const getTopUsers = (isRandom = false, { limit, skip } = { limit: 30, skip: 0 }) => {
+  const queryString = `?${isRandom ? 'sample=true' : `limit=${limit}&skip=${skip}`}`;
+  return new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.users}${queryString}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(data => resolve(data))
+      .catch(error => reject(error));
+  });
+};
+
+export const getPropositions = ({ limit = 30, skip = 0, userName, status, approved }) =>
+  // export const getPropositions = ({ limit = 30, locale = 'en-US', skip = 0 }) => {
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.campaigns}?limit=${limit}&skip=${skip}${userName ? `&userName=${userName}` : ''}${
+        userName ? `&approved=${approved}` : ''
+      }${status ? `&status=${status}` : ''}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const createCampaign = data =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaigns}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
       .catch(error => reject(error));
   });
 

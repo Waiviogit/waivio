@@ -4,29 +4,23 @@ import {connect} from 'react-redux';
 import {Route, Switch, withRouter} from 'react-router-dom';
 import {getIsAuthenticated, getIsAuthFetching, getRecommendations, getRecommendedObjects,} from '../../reducers';
 import {updateRecommendations} from '../../user/userActions';
+import { connect } from 'react-redux';
+import { Route, Switch, withRouter } from 'react-router-dom';
+import * as store from '../../reducers';
 import InterestingPeople from '../../components/Sidebar/InterestingPeople';
 import SignUp from '../../components/Sidebar/SignUp';
 import PostRecommendation from '../../components/Sidebar/PostRecommendation';
 import Loading from '../../components/Icon/Loading';
 import UserActivitySearch from '../../activity/UserActivitySearch';
 import WalletSidebar from '../../components/Sidebar/WalletSidebar';
-import FeedSidebar from '../../components/Sidebar/FeedSidebar';
-import RightSidebarLoading from './RightSidebarLoading';
 import ObjectWeightBlock from '../../components/Sidebar/ObjectWeightBlock';
 import ForecastBlock from '../../components/Sidebar/ForecastBlock';
 
 @withRouter
-@connect(
-  state => ({
-    authenticated: getIsAuthenticated(state),
-    isAuthFetching: getIsAuthFetching(state),
-    recommendations: getRecommendations(state),
-    recommendedObjects: getRecommendedObjects(state),
-  }),
-  {
-    updateRecommendations,
-  },
-)
+@connect(state => ({
+  authenticated: store.getIsAuthenticated(state),
+  isAuthFetching: store.getIsAuthFetching(state),
+}))
 export default class RightSidebar extends React.Component {
   static propTypes = {
     authenticated: PropTypes.bool.isRequired,
@@ -39,15 +33,11 @@ export default class RightSidebar extends React.Component {
 
   static defaultProps = {
     showPostRecommendation: false,
-    updateRecommendations: () => {},
-    recommendedObjects: [],
     match: {},
   };
 
-  handleInterestingPeopleRefresh = () => this.props.updateRecommendations();
-
   render() {
-    const {authenticated, showPostRecommendation, isAuthFetching, match} = this.props;
+    const { authenticated, showPostRecommendation, isAuthFetching, match } = this.props;
 
     if (isAuthFetching) {
       return <Loading />;
@@ -60,35 +50,18 @@ export default class RightSidebar extends React.Component {
           <Route path="/activity" component={UserActivitySearch} />
           <Route path="/@:name/activity" component={UserActivitySearch} />
           <Route path="/@:name/transfers" render={() => <WalletSidebar />} />
-          <Route path="/trending/:tag" component={FeedSidebar} />
-          <Route path="/created/:tag" component={FeedSidebar} />
-          <Route path="/hot/:tag" component={FeedSidebar} />
-          <Route path="/promoted/:tag" component={FeedSidebar} />
           <Route
             path="/@:name"
             render={() =>
               authenticated && (
-                <React.Fragment>
-                  <ObjectWeightBlock username={match.params.name}/>
                   <ForecastBlock username={match.params.name}/>
-                </React.Fragment>
               )
             }
           />
           <Route
             path="/"
             render={() => (
-              <React.Fragment>
-                {authenticated &&
-                  (this.props.recommendations.length > 0 && !showPostRecommendation ? (
-                    <InterestingPeople
-                      users={this.props.recommendations}
-                      onRefresh={this.handleInterestingPeopleRefresh}
-                    />
-                  ) : (
-                    <RightSidebarLoading />
-                  ))}
-              </React.Fragment>
+                <InterestingPeople />
             )}
           />
         </Switch>

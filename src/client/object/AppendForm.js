@@ -54,6 +54,7 @@ import { getClientWObj } from '../adapters';
 import SearchObjectsAutocomplete from '../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCardView from '../objectCard/ObjectCardView';
 import { getNewsFilterLayout } from './NewsFilter/newsFilterHelper';
+import CreateObject from '../post/CreateObjectModal/CreateObject';
 
 @connect(
   state => ({
@@ -396,7 +397,7 @@ export default class AppendForm extends Component {
   };
 
   handleSubmit = e => {
-    e.preventDefault();
+    if (e) e.preventDefault();
 
     this.props.form.validateFieldsAndScroll((err, values) => {
       const { form, intl } = this.props;
@@ -618,7 +619,7 @@ export default class AppendForm extends Component {
   };
 
   renderContentValue = currentField => {
-    const { loading } = this.state;
+    const { loading, selectedObject } = this.state;
     const { intl, wObject } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
 
@@ -634,6 +635,8 @@ export default class AppendForm extends Component {
     switch (currentField) {
       case TYPES_OF_MENU_ITEM.PAGE:
       case TYPES_OF_MENU_ITEM.LIST: {
+        const objectType =
+          this.props.currentField === TYPES_OF_MENU_ITEM.LIST ? OBJECT_TYPE.LIST : OBJECT_TYPE.PAGE;
         return (
           <React.Fragment>
             <Form.Item>
@@ -641,7 +644,7 @@ export default class AppendForm extends Component {
                 rules: this.getFieldRules('menuItemName'),
               })(
                 <Input
-                  className="AppendForm__title"
+                  className="AppendForm__input"
                   disabled={loading}
                   placeholder={intl.formatMessage({
                     id: 'menu_item_placeholder',
@@ -658,13 +661,21 @@ export default class AppendForm extends Component {
                   className="menu-item-search"
                   itemsIdsToOmit={_.get(wObject, 'menuItems', []).map(f => f.author_permlink)}
                   handleSelect={this.handleSelectObject}
-                  objectType={
-                    this.props.currentField === TYPES_OF_MENU_ITEM.LIST ? OBJECT_TYPE.LIST : ''
-                  }
+                  objectType={objectType}
                 />,
               )}
-              {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
+              {selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
             </Form.Item>
+            <CreateObject
+              isSingleType
+              withOpenModalBtn={!selectedObject}
+              defaultObjectType={objectType}
+              onCreateObject={this.handleSelectObject}
+              openModalBtnText={intl.formatMessage({
+                id: `create_new_${objectType}`,
+                defaultMessage: 'Create new',
+              })}
+            />
           </React.Fragment>
         );
       }
@@ -673,7 +684,7 @@ export default class AppendForm extends Component {
           <Form.Item>
             {getFieldDecorator(objectFields.name, { rules: this.getFieldRules(objectFields.name) })(
               <Input
-                className="AppendForm__title"
+                className="AppendForm__input"
                 disabled={loading}
                 placeholder={intl.formatMessage({
                   id: 'value_placeholder',
@@ -691,7 +702,7 @@ export default class AppendForm extends Component {
               rules: this.getFieldRules(objectFields.tagCloud),
             })(
               <Input
-                className="AppendForm__title"
+                className="AppendForm__input"
                 disabled={loading}
                 placeholder={intl.formatMessage({
                   id: 'tag_placeholder',
@@ -733,7 +744,7 @@ export default class AppendForm extends Component {
             <Form.Item>
               {getFieldDecorator(currentField, { rules: this.getFieldRules(currentField) })(
                 <Input
-                  className="AppendForm__title"
+                  className="AppendForm__input"
                   disabled={loading}
                   placeholder={intl.formatMessage({
                     id: 'photo_url_placeholder',
@@ -1035,7 +1046,7 @@ export default class AppendForm extends Component {
           <React.Fragment>
             <Form.Item>
               {getFieldDecorator(buttonFields.title, {
-                rules: this.getFieldRules(buttonFields.title),
+                rules: this.getFieldRules('buttonTitle'),
               })(
                 <Input
                   className={classNames('AppendForm__input', {

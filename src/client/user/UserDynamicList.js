@@ -60,11 +60,7 @@ export default class UserDynamicList extends React.Component {
           loadMore={this.handleLoadMore}
         >
           {users.map(user => (
-            <UserCard
-              key={user.name}
-              user={user}
-              alt={user.rank ? <WeightTag weight={user.weight} rank={user.rank} /> : null}
-            />
+            <UserCard key={user.name} user={user} alt={<WeightTag weight={user.weight} />} />
           ))}
         </ReduxInfiniteScroll>
         {empty && (

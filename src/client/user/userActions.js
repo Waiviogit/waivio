@@ -1,4 +1,3 @@
-import { createAction } from 'redux-actions';
 import { getIsAuthenticated, getAuthenticatedUserName } from '../reducers';
 import { getAllFollowing } from '../helpers/apiHelpers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
@@ -110,9 +109,6 @@ export const getFollowingObjects = username => (dispatch, getState) => {
   });
 };
 
-export const UPDATE_RECOMMENDATIONS = '@user/UPDATE_RECOMMENDATIONS';
-export const updateRecommendations = createAction(UPDATE_RECOMMENDATIONS);
-
 export const GET_NOTIFICATIONS = createAsyncActionType('@user/GET_NOTIFICATIONS');
 
 export const getNotifications = username => (dispatch, getState, { busyAPI }) => {
@@ -140,3 +136,31 @@ export const getCoordinates = () => dispatch =>
     type: GET_USER_LOCATION.ACTION,
     payload: getUserCoordinatesByIpAdress(),
   });
+
+export const assignProposition = (companyId, objId) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const state = getState();
+  return new Promise((resolve, reject) => {
+    steemConnectAPI
+      .assignProposition(getAuthenticatedUserName(state), companyId, objId)
+      .then(() => resolve('SUCCESS'))
+      .catch(error => reject(error));
+  });
+};
+
+export const declineProposition = (companyId, objId) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const state = getState();
+  return new Promise((resolve, reject) => {
+    steemConnectAPI
+      .declineProposition(getAuthenticatedUserName(state), companyId, objId)
+      .then(() => resolve('SUCCESS'))
+      .catch(error => reject(error));
+  });
+};

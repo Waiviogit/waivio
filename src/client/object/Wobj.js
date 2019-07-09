@@ -65,31 +65,53 @@ export default class Wobj extends React.Component {
     screenSize: 'large',
   };
 
-  state = {
-    isEditMode: false,
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isEditMode: false,
+      hasLeftSidebar: props.match.params[0] !== OBJECT_TYPE.PAGE,
+    };
+  }
 
   componentDidMount() {
-    this.props.getObjectInfo(this.props.match.params.name, this.props.authenticatedUserName);
+    const { match, authenticatedUserName } = this.props;
+    this.props.getObjectInfo(match.params.name, authenticatedUserName);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { history, match, screenSize } = this.props;
+    const { authenticated, history, match, screenSize } = this.props;
     if (!_.isEmpty(nextProps.wobject) && !match.params[0] && !nextProps.match.params[0]) {
-      if (
-        nextProps.wobject.object_type &&
-        nextProps.wobject.object_type.toLowerCase() === OBJECT_TYPE.LIST
-      ) {
-        history.replace(`${history.location.pathname}/${OBJECT_TYPE.LIST}`);
-      } else if (screenSize !== 'large') {
-        history.replace(`${history.location.pathname}/about`);
+      if (nextProps.wobject.object_type) {
+        const pageField = getFieldWithMaxWeight(nextProps.wobject, objectFields.pageContent);
+        switch (nextProps.wobject.object_type.toLowerCase()) {
+          case OBJECT_TYPE.PAGE:
+            if (!pageField && authenticated) {
+              this.setState({ isEditMode: true });
+            }
+            history.replace(`${history.location.pathname}/${OBJECT_TYPE.PAGE}`);
+            break;
+          case OBJECT_TYPE.LIST:
+            history.replace(`${history.location.pathname}/${OBJECT_TYPE.LIST}`);
+            break;
+          default:
+            if (screenSize !== 'large') {
+              history.replace(`${history.location.pathname}/about`);
+            }
+            break;
+        }
       }
+    }
+    if (nextProps.match.params[0] !== this.props.match.params[0]) {
+      this.setState({ hasLeftSidebar: nextProps.match.params[0] !== OBJECT_TYPE.PAGE });
     }
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.match.params.name !== this.props.match.params.name) {
-      this.props.getObjectInfo(this.props.match.params.name, this.props.authenticatedUserName);
+    const { match, authenticatedUserName } = this.props;
+
+    if (prevProps.match.params.name !== match.params.name) {
+      this.props.getObjectInfo(match.params.name, authenticatedUserName);
     }
   }
 
@@ -97,10 +119,16 @@ export default class Wobj extends React.Component {
     this.props.resetGallery();
   }
 
-  toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
+  toggleViewEditMode = isEditMode => {
+    if (typeof isEditMode === 'boolean') {
+      this.setState({ isEditMode });
+    } else {
+      this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
+    }
+  };
 
   render() {
-    const { isEditMode } = this.state;
+    const { isEditMode, hasLeftSidebar } = this.state;
     const { authenticated, failed, authenticatedUserName: userName, wobject, match } = this.props;
     if (failed) return <Error404 />;
 
@@ -150,23 +178,31 @@ export default class Wobj extends React.Component {
           toggleViewEditMode={this.toggleViewEditMode}
         />
         <div className="shifted">
-          <div className="feed-layout container">
-            <Affix className="leftContainer leftContainer__user" stickPosition={110}>
-              <div className="left">
-                <LeftObjectProfileSidebar
-                  isEditMode={isEditMode}
-                  wobject={wobject}
-                  userName={userName}
-                />
-              </div>
-            </Affix>
-            <Affix className="rightContainer" stickPosition={110}>
+          <div className={`container ${hasLeftSidebar ? 'feed-layout' : 'post-layout'}`}>
+            {hasLeftSidebar && (
+              <Affix className="leftContainer leftContainer__user" stickPosition={72}>
+                <div className="left">
+                  <LeftObjectProfileSidebar
+                    isEditMode={isEditMode}
+                    wobject={wobject}
+                    userName={userName}
+                  />
+                </div>
+              </Affix>
+            )}
+            <Affix className="rightContainer" stickPosition={72}>
               <div className="right">
                 <RightObjectSidebar username={userName} wobject={wobject} />
               </div>
             </Affix>
             <div className="center">
-              {renderRoutes(this.props.route.routes, { isEditMode, wobject, userName, match })}
+              {renderRoutes(this.props.route.routes, {
+                isEditMode,
+                wobject,
+                userName,
+                match,
+                toggleViewEditMode: this.toggleViewEditMode,
+              })}
             </div>
           </div>
         </div>

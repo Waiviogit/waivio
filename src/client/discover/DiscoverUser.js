@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import urlParse from 'url-parse';
 import { Link } from 'react-router-dom';
-import ReputationTag from '../components/ReputationTag';
 import Avatar from '../components/Avatar';
 import FollowButton from '../widgets/FollowButton';
+import WeightTag from '../../client/components/WeightTag';
 
 const DiscoverUser = ({ user }) => {
   const parsedJSON = _.attempt(JSON.parse, user.json_metadata);
@@ -40,7 +40,7 @@ const DiscoverUser = ({ user }) => {
                 <span className="Discover__user__name">
                   <span className="username">{name || user.name}</span>
                 </span>
-                <ReputationTag reputation={user.reputation} />
+                <WeightTag weight={user.weight} />
               </Link>
               <div className="Discover__user__follow">
                 <FollowButton following={user.name} followingType="user" />

@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet';
 import { Switch } from 'antd';
 import { injectIntl } from 'react-intl';
 import { cleanFeed, getFeedContent, getUserFeedContent } from './feedActions';
-import { getIsLoaded, getIsAuthenticated, getAuthenticatedUserName } from '../reducers';
+import { getIsAuthenticated, getAuthenticatedUserName } from '../reducers';
 import SubFeed from './SubFeed';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
@@ -22,7 +22,6 @@ import QuickPostEditor from '../components/QuickPostEditor/QuickPostEditor';
   state => ({
     authenticated: getIsAuthenticated(state),
     userName: getAuthenticatedUserName(state),
-    loaded: getIsLoaded(state),
   }),
   {
     cleanFeed,
@@ -37,7 +36,6 @@ class Page extends React.Component {
     getFeedContent: PropTypes.func.isRequired,
     getUserFeedContent: PropTypes.func.isRequired,
     userName: PropTypes.string.isRequired,
-    loaded: PropTypes.bool.isRequired,
     history: PropTypes.shape().isRequired,
     intl: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,

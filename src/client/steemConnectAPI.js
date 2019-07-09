@@ -6,6 +6,7 @@ function sc2Extended() {
     baseURL: process.env.STEEMCONNECT_HOST,
     callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
   });
+
   const copied = Object.assign(
     Object.create(Object.getPrototypeOf(sc2api)),
     sc2api,
@@ -44,6 +45,28 @@ function sc2Extended() {
           required_posting_auths: [username],
           id: 'wobj_rating',
           json: JSON.stringify({ author, permlink, author_permlink: authorPermlink, rate }),
+        };
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      assignProposition(account, campaignId, object, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [account],
+          id: 'waivio_assign_campaign',
+          json: JSON.stringify({ account, campaign_id: campaignId, object }),
+        };
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      declineProposition(account, campaignId, object, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [account],
+          id: 'waivio_decline_campaign',
+          json: JSON.stringify({ account, campaign_id: campaignId, object }),
         };
         return this.broadcast([['custom_json', params]], cb);
       },

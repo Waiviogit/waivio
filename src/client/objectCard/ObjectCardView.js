@@ -2,19 +2,19 @@ import React from 'react';
 import _ from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Row } from 'antd';
 import { Link } from 'react-router-dom';
-import './ObjectCardView.less';
 import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
+import DEFAULTS from '../object/const/defaultValues';
 import { objectFields as objectTypes } from '../../common/constants/listOfFields';
+import './ObjectCardView.less';
 
 const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => {
   const getObjectRatings = () => _.filter(wObject.fields, ['name', 'rating']);
   const pathName = pathNameAvatar || `/object/${wObject.id}`;
   const ratings = getObjectRatings();
-  const avatarLayout = avatar => (
+  const avatarLayout = (avatar = DEFAULTS.AVATAR) => (
     <div
       className="ObjectCardView__avatar"
       style={{
@@ -34,7 +34,7 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
     <React.Fragment>
       <div className="ObjectCardView">
         <div className="ObjectCardView__content">
-          <Row className="ObjectCardView__content row">
+          <div className="ObjectCardView__content-row">
             <Link to={pathName} title={goToObjTitle(wObject.name)}>
               {avatarLayout(wObject.avatar)}
             </Link>
@@ -59,13 +59,13 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
                 {wObject.weight && <WeightTag weight={wObject.weight} rank={wObject.rank} />}
               </div>
               {ratings && <RatingsWrap ratings={ratings} showSmallVersion={showSmallVersion} />}
-              {!showSmallVersion && wObject.title && (
+              {wObject.title && (
                 <div className="ObjectCardView__title" title={wObject.title}>
                   {wObject.title}
                 </div>
               )}
             </div>
-          </Row>
+          </div>
         </div>
       </div>
     </React.Fragment>

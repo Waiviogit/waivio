@@ -12,6 +12,7 @@ import { imageRegex, dtubeImageRegex, rewriteRegex } from '../../helpers/regexHe
 import htmlReady from '../../vendor/steemitHtmlReady';
 import improve from '../../helpers/improve';
 import PostFeedEmbed from './PostFeedEmbed';
+import { forecastPostMessage } from '../../helpers/postHelpers';
 import './Body.less';
 
 export const remarkable = new Remarkable({
@@ -43,6 +44,11 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
   parsedJsonMetadata.image = parsedJsonMetadata.image || [];
   if (!body) return '';
   let parsedBody = body.replace(/<!--([\s\S]+?)(-->|$)/g, '(html comment removed: $1)');
+
+
+  if(parsedBody.indexOf(forecastPostMessage) > 0) {
+    parsedBody = parsedBody.slice(0, parsedBody.indexOf(forecastPostMessage));
+  }
 
   parsedBody.replace(imageRegex, img => {
     if (_.filter(parsedJsonMetadata.image, i => i.indexOf(img) !== -1).length === 0) {
