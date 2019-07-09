@@ -4,17 +4,17 @@
 @wrapPadding: 15px;
 
 .ObjectCardView {
-  .ObjectCardView-mixin(80px, 100%);
+  font-size: 16px;
+  .ObjectCardView-mixin(0, 80px, 100%);
 
   &__name {
     margin-top: 5px;
   }
-
   @media @medium, @small, @large {
-    .ObjectCardView-mixin(180px, 100%);
+    .ObjectCardView-mixin(180px, 180px, 100%);
   }
 
-  .ObjectCardView-mixin(@cardHeight, @cardWidth) {
+  .ObjectCardView-mixin(@margin, @cardHeight, @cardWidth) {
     display: flex;
     justify-content: space-between;
     border: 1px solid @blue-hawkesBlue;
@@ -54,6 +54,13 @@
       color: @blue-botticelli;
       margin-bottom: 0.5em;
     }
+    &__price {
+      color: @blue-botticelli;
+      margin-bottom: 0.5em;
+      i {
+        margin-right: 5px;
+      }
+    }
     &__name {
       cursor: auto;
       margin-top: 10px;
@@ -65,6 +72,7 @@
         line-height: 1.1em;
         white-space: normal;
         vertical-align: middle;
+        font-weight: 600;
       }
     }
     &__title {

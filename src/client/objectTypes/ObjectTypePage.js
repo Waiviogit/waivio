@@ -231,8 +231,8 @@ export default class ObjectTypePage extends React.Component {
                 <div>
                   {`${intl.formatMessage({
                     id: 'noTypeObjects',
-                    defaultMessage: 'No objects matched the filters with type',
-                  })} ${type.name}`}
+                    defaultMessage: 'No data meets the criteria',
+                  })}`}
                 </div>
               ) : (
                 <Loading center />

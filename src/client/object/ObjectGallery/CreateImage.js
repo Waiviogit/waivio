@@ -285,7 +285,7 @@ class CreateImage extends React.Component {
                 >
                   <Upload
                     accept={acceptImageFormat}
-                    action="https://ipfs.busy.org/upload"
+                    action="https://www.waivio.com/api/image"
                     listType="picture-card"
                     fileList={fileList}
                     onPreview={this.handlePreview}

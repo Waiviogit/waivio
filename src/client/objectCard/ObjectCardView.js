@@ -1,3 +1,4 @@
+import { Icon } from 'antd';
 import React from 'react';
 import _ from 'lodash';
 import { injectIntl } from 'react-intl';
@@ -14,16 +15,22 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
   const getObjectRatings = () => _.filter(wObject.fields, ['name', 'rating']);
   const pathName = pathNameAvatar || `/object/${wObject.id}`;
   const ratings = getObjectRatings();
-  const avatarLayout = (avatar = DEFAULTS.AVATAR) => (
-    <div
-      className="ObjectCardView__avatar"
-      style={{
-        backgroundImage: `url(${avatar})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-    />
-  );
+
+  const avatarLayout = (avatar = DEFAULTS.AVATAR) => {
+    let url = avatar;
+    if (_.includes(url, 'waivio.')) url = `${url}${showSmallVersion ? '_small' : '_medium'}`;
+
+    return (
+      <div
+        className="ObjectCardView__avatar"
+        style={{
+          backgroundImage: `url(${url})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      />
+    );
+  };
   const parentName = wObject.parent ? getFieldWithMaxWeight(wObject.parent, objectTypes.name) : '';
   const goToObjTitle = wobjName =>
     `${intl.formatMessage({
@@ -63,6 +70,12 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
                 <div className="ObjectCardView__title" title={wObject.title}>
                   {wObject.title}
                 </div>
+              )}
+              {wObject.price && (
+                <span className="ObjectCardView__price" title={wObject.price}>
+                  <Icon type="dollar" />
+                  {wObject.price}
+                </span>
               )}
             </div>
           </div>

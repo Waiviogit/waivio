@@ -140,23 +140,29 @@ class Story extends React.Component {
     return true;
   }
   getObjectLayout = wobj => {
-    if (wobj.fields) {
-      const pathName = `/object/${wobj.author_permlink}`;
-      const nameField = getFieldWithMaxWeight(wobj, 'name');
-      return (
-        <Link
-          key={wobj.author_permlink}
-          to={{ pathname: pathName }}
-          title={`${this.props.intl.formatMessage({
-            id: 'related_to_obj',
-            defaultMessage: 'Related to object',
-          })} ${nameField} ${wobj.percent ? `(${wobj.percent}%)` : ''}`}
-        >
-          <ObjectAvatar item={wobj} size={40} />
-        </Link>
-      );
+    const pathName = `/object/${wobj.author_permlink}`;
+    let name = '';
+    if (wobj.objectName) {
+      name = wobj.objectName;
+    } else {
+      const nameFields = _.filter(wobj.fields, o => o.name === 'name');
+      const nameField = _.maxBy(nameFields, 'weight') || {
+        body: wobj.default_name,
+      };
+      if (nameField) name = nameField.body;
     }
-    return null;
+    return (
+      <Link
+        key={wobj.author_permlink}
+        to={{ pathname: pathName }}
+        title={`${this.props.intl.formatMessage({
+          id: 'related_to_obj',
+          defaultMessage: 'Related to object',
+        })} ${name} ${wobj.percent ? `(${wobj.percent.toFixed(2)}%)` : ''}`}
+      >
+        <ObjectAvatar item={wobj} size={40} />
+      </Link>
+    );
   };
   getWobjects = wobjects => {
     let i = 0;

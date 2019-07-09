@@ -1,8 +1,8 @@
 {
   "development": {
     "protocol": "https://",
-    "host": "www.waivio.com",
-    "": "waiviodev.com",
+    "": "www.waivio.com",
+    "host": "waiviodev.com",
     "": "localhost:8093"
   },
   "staging": {
@@ -15,6 +15,7 @@
   },
   "apiPrefix": "/api",
   "objectsBotApiPrefix": "/objects-bot",
+  "campaignApiPrefix": "/campaigns-api",
   "objectsBot": {
     "createObject": "/create-object",
     "appendObject": "/append-object"
@@ -38,5 +39,7 @@
   "generalSearch": "/generalSearch",
   "campaigns": "/campaigns-api/campaigns",
   "userStatistics": "/user-statistics",
-  "instrumentStatistic": "/instrument-statistics"
+  "instrumentStatistic": "/instrument-statistics",
+  "campaigns": "/campaigns",
+  "suitableUsers": "/suitable_users"
 }

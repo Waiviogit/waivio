@@ -118,7 +118,7 @@ export const getAllowedFieldsByObjType = objectType => {
         objectFields.parent,
       ];
     default: {
-      const excludeFields = [objectFields.listItem];
+      const excludeFields = [objectFields.listItem, objectFields.pageContent];
       const includeFields = Object.values(TYPES_OF_MENU_ITEM);
       return [...supportedObjectFields, ...includeFields].filter(
         field => !excludeFields.includes(field),

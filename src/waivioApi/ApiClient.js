@@ -356,12 +356,11 @@ export const getTopUsers = (isRandom = false, { limit, skip } = { limit: 30, ski
 };
 
 export const getPropositions = ({ limit = 30, skip = 0, userName, status, approved }) =>
-  // export const getPropositions = ({ limit = 30, locale = 'en-US', skip = 0 }) => {
   new Promise((resolve, reject) => {
     fetch(
-      `${config.campaigns}?limit=${limit}&skip=${skip}${userName ? `&userName=${userName}` : ''}${
-        userName ? `&approved=${approved}` : ''
-      }${status ? `&status=${status}` : ''}`,
+      `${config.apiPrefix}${config.campaigns}?limit=${limit}&skip=${skip}${
+        userName ? `&userName=${userName}` : ''
+      }${userName ? `&approved=${approved}` : ''}${status ? `&status=${status}` : ''}`,
       {
         headers,
         method: 'GET',
@@ -372,9 +371,25 @@ export const getPropositions = ({ limit = 30, skip = 0, userName, status, approv
       .catch(error => reject(error));
   });
 
+export const getSuitableUsers = (followsCount, postsCount) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.campaignApiPrefix}${
+        config.suitableUsers
+      }?count_follows=${followsCount}&count_posts=${postsCount}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(res => res.json())
+      .then(result => resolve(result.users))
+      .catch(error => reject(error));
+  });
+
 export const createCampaign = data =>
   new Promise((resolve, reject) => {
-    fetch(`${config.campaigns}`, {
+    fetch(`${config.campaignApiPrefix}${config.campaigns}`, {
       headers,
       method: 'POST',
       body: JSON.stringify(data),
