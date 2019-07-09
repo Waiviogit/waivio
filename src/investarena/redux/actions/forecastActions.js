@@ -1,12 +1,10 @@
 import api from '../../configApi/apiResources';
+import {createAsyncActionType} from '../../../client/helpers/stateHelpers';
 
-export const GET_FORECAST_DATA = '@forecast-data/GET_FORECAST_DATA';
-export const GET_FORECAST_DATA_START = '@forecast-data/GET_FORECAST_DATA_START';
-export const GET_FORECAST_DATA_SUCCESS = '@forecast-data/GET_FORECAST_DATA_SUCCESS';
-export const GET_FORECAST_DATA_ERROR = '@forecast-data/GET_FORECAST_DATA_ERROR';
+export const GET_FORECAST_DATA = createAsyncActionType('@forecast-data/GET_FORECAST_DATA');
 
 export const getActiveForecasts = () => dispatch =>
   dispatch({
-    type: GET_FORECAST_DATA,
+    type: GET_FORECAST_DATA.ACTION,
     payload: api.forecasts.getActiveForecasts(),
   });

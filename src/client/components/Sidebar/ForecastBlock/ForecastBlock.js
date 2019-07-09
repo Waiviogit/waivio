@@ -1,32 +1,31 @@
 import React from 'react';
-import {Icon} from 'antd';
+import _, {isEmpty} from 'lodash';
 import PropTypes from 'prop-types';
+import {Icon} from 'antd';
 import {injectIntl} from 'react-intl';
-import '../ObjectWeightBlock.less';
 import './ForecastBlock.less';
-import './ForecastBlock-nightmode.less';
 import ForecastItem from '../ForecastItem/index';
 
 @injectIntl
 class ForecastBlock extends React.Component {
   static propTypes = {
-    getActiveForecasts: PropTypes.func,
-    forecasts: PropTypes.shape(),
-    intl: PropTypes.shape().isRequired,
+    forecastsByObject: PropTypes.arrayOf(PropTypes.shape({})),
+    forecastsByUser: PropTypes.arrayOf(PropTypes.shape({})),
+    getActiveForecasts: PropTypes.func.isRequired,
+    intl: PropTypes.shape(),
+    object: PropTypes.shape(),
   };
 
   static defaultProps = {
     getActiveForecasts: () => {},
-    forecasts: {},
+    intl: {},
+    object: {},
+    forecastsByObject: [],
+    forecastsByUser: [],
   };
 
-  componentDidMount() {
-    this.props.getActiveForecasts();
-  }
-
-  render() {
-    const { forecasts, intl } = this.props;
-    return forecasts && forecasts.length ? (
+  static forecastBlock(intl, forecasts) {
+    return (
       <div className="forecasts-block">
         <h4 className="forecasts-block__header">
           <Icon type="rise" className="forecasts-block__header-icon" />
@@ -50,7 +49,24 @@ class ForecastBlock extends React.Component {
           ))}
         </div>
       </div>
-    ) : null;
+    );
+  }
+
+  componentDidMount() {
+    this.props.getActiveForecasts();
+  }
+
+  render() {
+    const {forecastsByObject, forecastsByUser, intl, object} = this.props;
+    if (!isEmpty(object)) {
+      const chartId = _.find(object.fields, ['name', 'chartid']);
+      return chartId && forecastsByObject && forecastsByObject.length
+        ? ForecastBlock.forecastBlock(intl, forecastsByObject)
+        : null;
+    }
+    return forecastsByUser && forecastsByUser.length
+      ? ForecastBlock.forecastBlock(intl, forecastsByUser)
+      : null;
   }
 }
 

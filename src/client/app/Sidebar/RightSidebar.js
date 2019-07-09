@@ -33,7 +33,6 @@ export default class RightSidebar extends React.Component {
     isAuthFetching: PropTypes.bool.isRequired,
     showPostRecommendation: PropTypes.bool,
     recommendations: PropTypes.arrayOf(PropTypes.shape({ name: PropTypes.string })).isRequired,
-    // recommendedObjects: PropTypes.arrayOf(PropTypes.shape({ tag: PropTypes.string })).isRequired,
     updateRecommendations: PropTypes.func,
     match: PropTypes.shape(),
   };
@@ -48,13 +47,7 @@ export default class RightSidebar extends React.Component {
   handleInterestingPeopleRefresh = () => this.props.updateRecommendations();
 
   render() {
-    const {
-      authenticated,
-      showPostRecommendation,
-      isAuthFetching,
-      // recommendedObjects,
-      match,
-    } = this.props;
+    const {authenticated, showPostRecommendation, isAuthFetching, match} = this.props;
 
     if (isAuthFetching) {
       return <Loading />;
@@ -76,9 +69,8 @@ export default class RightSidebar extends React.Component {
             render={() =>
               authenticated && (
                 <React.Fragment>
-                  {' '}
-                  <ObjectWeightBlock username={match.params.name} />{' '}
-                  <ForecastBlock username={match.params.name} />{' '}
+                  <ObjectWeightBlock username={match.params.name}/>
+                  <ForecastBlock username={match.params.name}/>
                 </React.Fragment>
               )
             }
@@ -95,9 +87,7 @@ export default class RightSidebar extends React.Component {
                     />
                   ) : (
                     <RightSidebarLoading />
-                  ))
-                // </React.Fragment>
-                }
+                  ))}
               </React.Fragment>
             )}
           />

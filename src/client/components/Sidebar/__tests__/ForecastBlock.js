@@ -34,10 +34,45 @@ const store = mockStore({
 });
 
 describe('<ForecastBlock />', () => {
-  it('renders component without crashing', () => {
+  const forecasts = [
+    {
+      author: 'z1wo5',
+      created_at: '2019-07-04T11:02:36.000Z',
+      forecast: '2019-07-04T15:02:36.000Z',
+      id: 'z1wo5/aud-cad',
+      permlink: 'aud-cad',
+      postPrice: 0.91708,
+      recommend: 'Sell',
+      security: 'AUDCAD',
+    },
+  ];
+  const wObject = {
+    _id: '5cb0b5b3f03c2c421e5095fd',
+    albums_count: 0,
+    app: 'waiviodev/1.0.0',
+    author: 'w7ngc',
+    author_permlink: 'iav-audcad',
+    createdAt: '2019-04-12T15:58:43.788Z',
+    creator: 'wiv01',
+    default_name: 'audcad',
+    fields: [
+      {
+        weight: 1,
+        locale: 'en-US',
+        _id: '5cb0b5b6f03c2c421e50988e',
+        creator: 'wiv01',
+        author: 'x6oc5',
+        permlink: 'wiv01-inaz24rigue',
+        name: 'chartid',
+        body: 'audcad',
+      },
+    ],
+  };
+  it('should render component without crashing', () => {
     const props = {
       username: 'z1wo5',
-      forecasts: Array(5),
+      forecastsByObject: Array(5),
+      forecastsByUser: Array(5),
       getActiveForecasts: () => {
       },
     };
@@ -45,21 +80,38 @@ describe('<ForecastBlock />', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('renders component without crashing whith props', () => {
+  it('should render component by object without crashing whith props', () => {
     const props = {
       username: 'z1wo5',
-      forecasts: [
-        {
-          author: 'z1wo5',
-          created_at: '2019-07-04T11:02:36.000Z',
-          forecast: '2019-07-04T15:02:36.000Z',
-          id: 'z1wo5/aud-cad',
-          permlink: 'aud-cad',
-          postPrice: 0.91708,
-          recommend: 'Sell',
-          security: 'AUDCAD',
-        },
-      ],
+      forecastsByObject: forecasts,
+      getActiveForecasts: () => {
+      },
+      object: wObject,
+    };
+    const component = mountWithStore(<ForecastBlock security={'AUDCAD'} {...props} />, store);
+    const mainDiv = component.find('.st-forecast-wrap');
+    console.log(component.html());
+    expect(mainDiv).toHaveLength(1);
+  });
+
+  it('should not render component by object without crashing whith props', () => {
+    const props = {
+      username: 'z1wo5',
+      forecastsByObject: [],
+      getActiveForecasts: () => {
+      },
+      object: wObject,
+    };
+    const component = mountWithStore(<ForecastBlock security={'AUDCAD'} {...props} />, store);
+    const mainDiv = component.find('.st-forecast-wrap');
+    console.log(component.html());
+    expect(mainDiv).toHaveLength(0);
+  });
+
+  it('should render component by user without crashing whith props', () => {
+    const props = {
+      username: 'z1wo5',
+      forecastsByUser: forecasts,
       getActiveForecasts: () => {
       },
     };
@@ -69,40 +121,16 @@ describe('<ForecastBlock />', () => {
     expect(mainDiv).toHaveLength(1);
   });
 
-  it('should render component in five forecasts case', () => {
+  it('should not render component by user without crashing whith props', () => {
     const props = {
       username: 'z1wo5',
-      forecasts: Array(5),
+      forecastsByUser: [],
       getActiveForecasts: () => {
       },
     };
-    const component = mountWithStore(<ForecastBlock {...props} />, store);
-    const mainDiv = component.find('.forecasts-block');
-    expect(mainDiv).toHaveLength(1);
-  });
-
-  it('should render component in more then five forecasts case', () => {
-    const props = {
-      username: 'z1wo5',
-      forecasts: Array(6),
-      getActiveForecasts: () => {
-      },
-    };
-    const component = mountWithStore(<ForecastBlock {...props} />, store);
-    const mainDiv = component.find('.forecasts-block');
+    const component = mountWithStore(<ForecastBlock security={'AUDCAD'} {...props} />, store);
+    const mainDiv = component.find('.st-forecast-wrap');
     console.log(component.html());
-    expect(mainDiv).toHaveLength(1);
-  });
-
-  it('should not render component if forecasts is empty', () => {
-    const props = {
-      username: 'z1wo5',
-      forecasts: [],
-      getActiveForecasts: () => {
-      },
-    };
-    const component = mountWithStore(<ForecastBlock {...props} />, store);
-    const mainDiv = component.find('.forecasts-block');
     expect(mainDiv).toHaveLength(0);
   });
 });

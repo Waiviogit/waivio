@@ -7,14 +7,14 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case activeForecastTypes.GET_FORECAST_DATA_SUCCESS:
+    case activeForecastTypes.GET_FORECAST_DATA.SUCCESS:
       return {
         ...state,
         forecastData: action.payload.forecasts.sort(
           (a, b) => moment(b.created_at).unix() - moment(a.created_at).unix(),
         ), // eslint-disable-line
       };
-    case activeForecastTypes.GET_FORECAST_DATA_ERROR:
+    case activeForecastTypes.GET_FORECAST_DATA.ERROR:
       return {
         ...state,
         forecastData: [],
