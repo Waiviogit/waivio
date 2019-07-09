@@ -4,6 +4,7 @@
 @wrapPadding: 15px;
 
 .ObjectCardView {
+  font-size: 16px;
   .ObjectCardView-mixin(0, 80px, 100%);
 
   &__name {
@@ -20,7 +21,7 @@
     border-radius: 4px;
     margin-top: 5px;
     &__content {
-      width: calc(100% - @margin - 30px);
+      width: 100%;
       position: relative;
       display: flex;
       flex-flow: column nowrap;
@@ -71,6 +72,7 @@
         line-height: 1.1em;
         white-space: normal;
         vertical-align: middle;
+        font-weight: 600;
       }
     }
     &__title {

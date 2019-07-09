@@ -94,6 +94,8 @@ export default class Wobj extends React.Component {
           case OBJECT_TYPE.LIST:
             history.replace(`${history.location.pathname}/${OBJECT_TYPE.LIST}`);
             break;
+          case OBJECT_TYPE.HASHTAG:
+            break;
           default:
             if (screenSize !== 'large') {
               history.replace(`${history.location.pathname}/about`);
