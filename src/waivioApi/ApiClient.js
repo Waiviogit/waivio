@@ -349,19 +349,19 @@ export const getPropositions = ({ limit = 30, skip = 0, userName, status, approv
       .catch(error => reject(error));
   });
 
-export const getSuitableUsers = ({ followsCount = 10, postsCount = 1 }) =>
+export const getSuitableUsers = (followsCount, postsCount) =>
   new Promise((resolve, reject) => {
     fetch(
       `${config.campaignApiPrefix}${
         config.suitableUsers
-      }?follows_count=${followsCount}&posts_count=${postsCount}`,
+      }?count_follows=${followsCount}&count_posts=${postsCount}`,
       {
         headers,
         method: 'GET',
       },
     )
       .then(res => res.json())
-      .then(result => resolve(result))
+      .then(result => resolve(result.users))
       .catch(error => reject(error));
   });
 

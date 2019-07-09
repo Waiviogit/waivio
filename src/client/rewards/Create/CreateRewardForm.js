@@ -220,16 +220,15 @@ class CreateRewardForm extends React.Component {
             ],
           })(<Input type="number" />)}
         </Form.Item>
-        <Form.Item label="Max # of reviews">
-          {getFieldDecorator('maxReviews', {
+        <Form.Item label="Min # of posts">
+          {getFieldDecorator('minPosts', {
             rules: [
               {
                 required: true,
-                message: 'Please set maximal count of reviews for one user!',
+                message: 'Please set minimal posts count for eligible users!',
               },
             ],
           })(<Input type="number" />)}
-          per month
         </Form.Item>
         <Button type="primary" onClick={this.toggleModalEligibleUsers}>
           Show eligible users
@@ -239,6 +238,8 @@ class CreateRewardForm extends React.Component {
             toggleModal={this.toggleModalEligibleUsers}
             isModalOpen={this.state.isModalEligibleUsersOpen}
             userName={this.props.userName}
+            followsCount={this.props.form.getFieldValue('minFollowers')}
+            postsCount={this.props.form.getFieldValue('minPosts')}
           />
         )}
         <Form.Item label="Note to reviewers">

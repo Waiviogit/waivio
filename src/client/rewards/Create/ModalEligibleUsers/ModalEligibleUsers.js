@@ -5,14 +5,8 @@ import PropTypes from 'prop-types';
 import UserDynamicList from '../../../user/UserDynamicList';
 import { getSuitableUsers } from '../../../../waivioApi/ApiClient';
 
-const ModalEligibleUsers = ({ toggleModal, isModalOpen, userName }) => {
-  // const fetcher = (previous) => {
-  const fetcher = () =>
-    // const startFrom =
-    //   previous[previous.length - 1] && previous[previous.length - 1].name
-    //     ? previous[previous.length - 1].name
-    //     : '';
-    getSuitableUsers(2, 2);
+const ModalEligibleUsers = ({ toggleModal, isModalOpen, userName, followsCount, postsCount }) => {
+  const fetcher = () => getSuitableUsers(followsCount || 0, postsCount || 0);
 
   return (
     <Modal visible={isModalOpen} footer={null} onCancel={toggleModal}>
@@ -30,6 +24,13 @@ ModalEligibleUsers.propTypes = {
   toggleModal: PropTypes.func.isRequired,
   isModalOpen: PropTypes.bool.isRequired,
   userName: PropTypes.string.isRequired,
+  followsCount: PropTypes.string,
+  postsCount: PropTypes.string,
+};
+
+ModalEligibleUsers.defaultProps = {
+  followsCount: '0',
+  postsCount: '0',
 };
 
 export default injectIntl(ModalEligibleUsers);
