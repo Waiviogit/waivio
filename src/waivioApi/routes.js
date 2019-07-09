@@ -5,6 +5,7 @@ const routes = {
   ...config,
   apiPrefix: baseUrl + config.apiPrefix,
   objectsBotApiPrefix: baseUrl + config.objectsBotApiPrefix,
+  campaignApiPrefix: baseUrl + config.campaignApiPrefix,
 };
 
 export default routes;

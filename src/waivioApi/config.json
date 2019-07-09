@@ -15,6 +15,7 @@
   },
   "apiPrefix": "/api",
   "objectsBotApiPrefix": "/objects-bot",
+  "campaignApiPrefix": "/campaigns-api",
   "objectsBot": {
     "createObject": "/create-object",
     "appendObject": "/append-object"
@@ -36,5 +37,6 @@
   "getObjectTypes": "/objectTypes",
   "objectType": "/objectType",
   "generalSearch": "/generalSearch",
-  "campaigns": "/campaigns-api/campaigns"
+  "campaigns": "/campaigns",
+  "suitableUsers": "/suitable_users"
 }
