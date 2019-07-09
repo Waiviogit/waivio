@@ -17,7 +17,8 @@ class ForecastBlock extends React.Component {
   };
 
   static defaultProps = {
-    getActiveForecasts: () => {},
+    getActiveForecasts: () => {
+    },
     intl: {},
     object: {},
     forecastsByObject: [],
@@ -28,7 +29,7 @@ class ForecastBlock extends React.Component {
     return (
       <div className="forecasts-block">
         <h4 className="forecasts-block__header">
-          <Icon type="rise" className="forecasts-block__header-icon" />
+          <Icon type="rise" className="forecasts-block__header-icon"/>
           <span>
             {intl.formatMessage({
               id: 'forecast.currentForecast',
