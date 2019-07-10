@@ -41,6 +41,7 @@ class ForecastBlock extends React.Component {
           {forecasts.slice(0, 5).map(forecast => (
             <ForecastItem
               key={forecast.id}
+              permlink={forecast.id}
               quoteSecurity={forecast.security}
               recommend={forecast.recommend}
               forecast={forecast.forecast}
