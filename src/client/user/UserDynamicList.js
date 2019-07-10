@@ -75,7 +75,7 @@ export default class UserDynamicList extends React.Component {
         </ReduxInfiniteScroll>
         {empty && (
           <div className="UserDynamicList__empty">
-            <FormattedMessage id="list_empty" defaultMessage="Nothing is there" />
+            <FormattedMessage id="list_empty" defaultMessage="No data" />
           </div>
         )}
       </div>
