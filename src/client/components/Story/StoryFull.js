@@ -20,7 +20,6 @@ import withAuthActions from '../../auth/withAuthActions';
 import { getProxyImageURL } from '../../helpers/image';
 import Popover from '../Popover';
 import BTooltip from '../BTooltip';
-import ReputationTag from '../ReputationTag';
 import { getHtml } from './Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import StoryDeleted from './StoryDeleted';
@@ -32,6 +31,7 @@ import PostedFrom from './PostedFrom';
 import './StoryFull.less';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { getClientWObj } from '../../adapters';
+import WeightTag from '../WeightTag';
 
 @injectIntl
 @withAuthActions
@@ -375,7 +375,7 @@ class StoryFull extends React.Component {
           <div className="StoryFull__header__text">
             <Link to={`/@${post.author}`}>
               <span className="username">{post.author}</span>
-              <ReputationTag reputation={post.author_reputation} />
+              <WeightTag weight={post.author_wobjects_weight} rank={post.author_rank} />
             </Link>
             <BTooltip
               title={

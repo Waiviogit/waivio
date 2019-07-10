@@ -6,7 +6,7 @@ import FollowButton from '../../widgets/FollowButton';
 import WeightTag from '../../components/WeightTag';
 import './User.less';
 
-const User = ({ user }) => (
+const User = ({ user, showFollow }) => (
   <div key={user.name} className="User">
     <div className="User__top">
       <div className="User__links">
@@ -18,11 +18,10 @@ const User = ({ user }) => (
         </Link>
       </div>
       <div className="User__follow">
-        {user.weight && typeof user.weight === 'number' ? (
-          <WeightTag weight={user.weight} />
-        ) : (
-          <FollowButton following={user.name} followingType="user" secondary />
+        {user.wobjects_weight && typeof user.wobjects_weight === 'number' && (
+          <WeightTag weight={user.wobjects_weight} />
         )}
+        {showFollow && <FollowButton following={user.name} followingType="user" secondary />}
       </div>
     </div>
     <div className="User__divider" />
@@ -32,8 +31,9 @@ const User = ({ user }) => (
 User.propTypes = {
   user: PropTypes.shape({
     name: PropTypes.string,
-    weight: PropTypes.number,
+    wobjects_weight: PropTypes.number,
   }).isRequired,
+  showFollow: PropTypes.bool.isRequired,
 };
 
 export default User;
