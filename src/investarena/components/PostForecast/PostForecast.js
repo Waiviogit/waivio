@@ -56,7 +56,7 @@ class PostForecast extends Component {
                 })
               : this.props.intl.formatMessage({
                   id: 'postForecast.expired',
-                  defaultMessage: 'Expired date',
+                  defaultMessage: 'Finish date',
                 })}
           </div>
           <div>

@@ -353,7 +353,7 @@ class Chart {
   drawExpiredText(locale, brokenStopPrices) {
     this.ctx.font = '18px Arial';
     this.ctx.fillStyle = 'white';
-    const text = 'Chart expired';
+    const text = 'Finished';
     const textWidth = this.ctx.measureText(text).width;
     const finishX = brokenStopPrices ? this.canvasWork.width : this.finishLineX;
     if (finishX - this.startLineX > textWidth) {
