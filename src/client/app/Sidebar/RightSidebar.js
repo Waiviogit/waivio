@@ -2,10 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {Route, Switch, withRouter} from 'react-router-dom';
-import {getIsAuthenticated, getIsAuthFetching, getRecommendations, getRecommendedObjects,} from '../../reducers';
-import {updateRecommendations} from '../../user/userActions';
-import { connect } from 'react-redux';
-import { Route, Switch, withRouter } from 'react-router-dom';
 import * as store from '../../reducers';
 import InterestingPeople from '../../components/Sidebar/InterestingPeople';
 import SignUp from '../../components/Sidebar/SignUp';
@@ -13,7 +9,6 @@ import PostRecommendation from '../../components/Sidebar/PostRecommendation';
 import Loading from '../../components/Icon/Loading';
 import UserActivitySearch from '../../activity/UserActivitySearch';
 import WalletSidebar from '../../components/Sidebar/WalletSidebar';
-import ObjectWeightBlock from '../../components/Sidebar/ObjectWeightBlock';
 import ForecastBlock from '../../components/Sidebar/ForecastBlock';
 
 @withRouter
@@ -26,8 +21,6 @@ export default class RightSidebar extends React.Component {
     authenticated: PropTypes.bool.isRequired,
     isAuthFetching: PropTypes.bool.isRequired,
     showPostRecommendation: PropTypes.bool,
-    recommendations: PropTypes.arrayOf(PropTypes.shape({ name: PropTypes.string })).isRequired,
-    updateRecommendations: PropTypes.func,
     match: PropTypes.shape(),
   };
 
@@ -52,18 +45,9 @@ export default class RightSidebar extends React.Component {
           <Route path="/@:name/transfers" render={() => <WalletSidebar />} />
           <Route
             path="/@:name"
-            render={() =>
-              authenticated && (
-                  <ForecastBlock username={match.params.name}/>
-              )
-            }
+            render={() => authenticated && <ForecastBlock username={match.params.name}/>}
           />
-          <Route
-            path="/"
-            render={() => (
-                <InterestingPeople />
-            )}
-          />
+          <Route path="/" render={() => <InterestingPeople/>}/>
         </Switch>
         {showPostRecommendation && <PostRecommendation isAuthFetching={isAuthFetching} />}
       </div>

@@ -23,6 +23,7 @@ class ForecastItem extends React.Component {
     postPrice: PropTypes.number.isRequired,
     forecast: PropTypes.string.isRequired,
     dateTimeCreate: PropTypes.string.isRequired,
+    permlink: PropTypes.string.isRequired,
     intl: PropTypes.shape().isRequired,
   };
 
@@ -45,6 +46,7 @@ class ForecastItem extends React.Component {
       postPrice,
       forecast,
       dateTimeCreate,
+      permlink,
       intl,
     } = this.props;
     const { visability } = this.state;
@@ -53,59 +55,54 @@ class ForecastItem extends React.Component {
       <div className="st-forecast-wrap">
         <div className={classNames('st-forecast-wrap__flipper', { enabled: visability })}>
           <div className="st-forecast-wrap__flipper-item">
-            <div className="st-front-wrap">
-              <div className="st-front-wrap__security">
-                <div className="st-front-wrap__security-quote">
-                  <Link
-                    to={`/object/${quoteSettings.wobjData.author_permlink}`}
-                    className="st-post-sell-buy-quote"
-                  >
-                    {quoteSettings.name}
-                  </Link>
-                </div>
-                <div
-                  className={`st-front-wrap__security-block st-front-wrap__security-${recommend.toLowerCase()}`}
-                >
+            <Link to={`/@${permlink}`} className="st-forecast-wrap__flipper-item-link">
+              <div className="st-front-wrap">
+                <div className="st-front-wrap__security">
+                  <div className="st-front-wrap__security-quote">{quoteSettings.name}</div>
                   <div
-                    title={intl.formatMessage({
-                      id: 'tips.recommendationType',
-                      defaultMessage: 'Forecast type',
-                    })}
-                    className={`st-front-wrap__security-block-icon-${recommend.toLowerCase()}`}
+                    className={`st-front-wrap__security-block st-front-wrap__security-${recommend.toLowerCase()}`}
                   >
-                    <FormattedMessage
-                      id={`postQuotation.recommend.${recommend}`}
-                      defaultMessage={recommend.toUpperCase()}
-                    />
-                  </div>
-                  <div
-                    title={intl.formatMessage({
-                      id: 'tips.recommendationPrice',
-                      defaultMessage: 'Price at the beginning of the forecast',
-                    })}
-                  >
-                    {quoteFormat(postPrice, quoteSettings)}
+                    <div
+                      title={intl.formatMessage({
+                        id: 'tips.recommendationType',
+                        defaultMessage: 'Forecast type',
+                      })}
+                      className={`st-front-wrap__security-block-icon-${recommend.toLowerCase()}`}
+                    >
+                      <FormattedMessage
+                        id={`postQuotation.recommend.${recommend}`}
+                        defaultMessage={recommend.toUpperCase()}
+                      />
+                    </div>
+                    <div
+                      title={intl.formatMessage({
+                        id: 'tips.recommendationPrice',
+                        defaultMessage: 'Price at the beginning of the forecast',
+                      })}
+                    >
+                      {quoteFormat(postPrice, quoteSettings)}
+                    </div>
                   </div>
                 </div>
+                <div className="st-front-wrap__price">
+                  <PostCurrentPrice
+                    quoteSettings={quoteSettings}
+                    quote={quote}
+                    recommend={recommend}
+                  />
+                </div>
+                <div className="st-front-wrap__finish-value">
+                  <PostDifference
+                    forecast={forecast}
+                    isExpired={false}
+                    postPrice={String(postPrice)}
+                    recommend={recommend}
+                    quote={quote}
+                    quoteSettings={quoteSettings}
+                  />
+                </div>
               </div>
-              <div className="st-front-wrap__price">
-                <PostCurrentPrice
-                  quoteSettings={quoteSettings}
-                  quote={quote}
-                  recommend={recommend}
-                />
-              </div>
-              <div className="st-front-wrap__finish-value">
-                <PostDifference
-                  forecast={forecast}
-                  isExpired={false}
-                  postPrice={String(postPrice)}
-                  recommend={recommend}
-                  quote={quote}
-                  quoteSettings={quoteSettings}
-                />
-              </div>
-            </div>
+            </Link>
             <div className="st-back-wrap">
               <div className="st-back-wrap__start">
                 <span>

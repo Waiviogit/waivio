@@ -1,32 +1,32 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router';
-import { connect } from 'react-redux';
-import { injectIntl } from 'react-intl';
-import { Badge } from 'antd';
-import { debounce, has, isEqual, isEmpty, kebabCase, throttle, uniqBy } from 'lodash';
+import {withRouter} from 'react-router';
+import {connect} from 'react-redux';
+import {injectIntl} from 'react-intl';
+import {Badge} from 'antd';
+import {debounce, has, isEmpty, isEqual, kebabCase, throttle, uniqBy} from 'lodash';
 import uuidv4 from 'uuid/v4';
 import {
   getAuthenticatedUser,
-  getLocale,
   getDraftPosts,
   getIsEditorLoading,
   getIsEditorSaving,
   getIsImageUploading,
+  getLocale,
   getUpvoteSetting,
 } from '../../reducers';
-import { createPost, saveDraft } from '../Write/editorActions';
-import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
-import {createPostMetadata, splitPostContent, getInitialValues, attachPostInfo} from '../../helpers/postHelpers';
+import {createPost, saveDraft} from '../Write/editorActions';
+import {WAIVIO_PARENT_PERMLINK} from '../../../common/constants/waivio';
+import {attachPostInfo, createPostMetadata, getInitialValues, splitPostContent,} from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import ObjectCardView from '../../objectCard/ObjectCardView';
-import { Entity, toMarkdown } from '../../components/EditorExtended';
+import {Entity, toMarkdown} from '../../components/EditorExtended';
 import LastDraftsContainer from '../Write/LastDraftsContainer';
 import ObjectCreation from '../../components/Sidebar/ObjectCreation/ObjectCreation';
-import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
+import {setObjPercents} from '../../helpers/wObjInfluenceHelper';
 import CreatePostForecast from '../../../investarena/components/CreatePostForecast';
-import { getForecastObject } from '../../../investarena/components/CreatePostForecast/helpers';
+import {getForecastObject} from '../../../investarena/components/CreatePostForecast/helpers';
 import './EditPost.less';
 
 const getLinkedObjects = contentStateRaw => {

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {Icon} from 'antd';
 import {injectIntl} from 'react-intl';
 import './ForecastBlock.less';
-import ForecastItem from '../ForecastItem/index';
+import ForecastItem from '../ForecastItem';
 
 @injectIntl
 class ForecastBlock extends React.Component {
@@ -61,6 +61,7 @@ class ForecastBlock extends React.Component {
     const {forecastsByObject, forecastsByUser, intl, object} = this.props;
     if (!isEmpty(object)) {
       const chartId = _.find(object.fields, ['name', 'chartid']);
+      console.log('CHART', chartId);
       return chartId && forecastsByObject && forecastsByObject.length
         ? ForecastBlock.forecastBlock(intl, forecastsByObject)
         : null;

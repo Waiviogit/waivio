@@ -6,7 +6,7 @@
 
 .quote(@quote-color) {
   background-color: @quote-color;
-  color: #ffffff;
+  color: @white;
   padding: 0 6px;
   border-radius: 5px;
   text-transform: uppercase;
@@ -35,6 +35,14 @@
     &-item {
       transition: 0.6s;
       transform-style: preserve-3d;
+
+      &-link {
+        color: @grey-gondola;
+
+        &:hover {
+          color: @grey-gondola;
+        }
+      }
     }
 
     & .st-back-wrap {
@@ -128,7 +136,7 @@
 
     &-quote {
       font-weight: bold !important;
-      font-size: 12px;
+      font-size: 14px;
     }
   }
 

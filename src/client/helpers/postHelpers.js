@@ -1,12 +1,12 @@
-import _, { get, fromPairs, isEmpty } from 'lodash';
-import { getHtml } from '../components/Story/Body';
-import { extractImageTags, extractLinks } from './parser';
-import { categoryRegex } from './regexHelpers';
-import { jsonParse } from './formatter';
+import _, {fromPairs, get, isEmpty} from 'lodash';
+import {getHtml} from '../components/Story/Body';
+import {extractImageTags, extractLinks} from './parser';
+import {categoryRegex} from './regexHelpers';
+import {jsonParse} from './formatter';
 import DMCA from '../../common/constants/dmca.json';
 import whiteListedApps from './apps';
-import { rewardsValues } from '../../common/constants/rewards';
-import { INVESTARENA_META_FIELD_NAME, WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
+import {rewardsValues} from '../../common/constants/rewards';
+import {INVESTARENA_META_FIELD_NAME, WAIVIO_META_FIELD_NAME} from '../../common/constants/waivio';
 
 const appVersion = require('../../../package.json').version;
 
@@ -114,7 +114,9 @@ export function createPostMetadata(body, tags, oldMetadata = {}, appData) {
 
 export function attachPostInfo(postData, forecast) {
   const { author, permlink, body } = postData;
-  const msg = `\n${forecastPostMessage} ${forecast.quoteSecurity}](https://investarena.waiviodev.com/@${author}/${permlink}) `;
+  const msg = `\n${forecastPostMessage} ${
+    forecast.quoteSecurity
+    }](https://investarena.waiviodev.com/@${author}/${permlink}) `;
   return body + msg;
 }
 
