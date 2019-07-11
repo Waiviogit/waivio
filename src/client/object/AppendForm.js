@@ -21,6 +21,7 @@ import {
   getAllowedFieldsByObjType,
   buttonFields,
   TYPES_OF_MENU_ITEM,
+  statusFields,
 } from '../../common/constants/listOfFields';
 import OBJECT_TYPE from '../object/const/objectTypes';
 import {
@@ -1034,6 +1035,48 @@ export default class AppendForm extends Component {
                   placeholder={intl.formatMessage({
                     id: 'profile_website',
                     defaultMessage: 'Website',
+                  })}
+                />,
+              )}
+            </Form.Item>
+          </React.Fragment>
+        );
+      }
+      case objectFields.status: {
+        return (
+          <React.Fragment>
+            <Form.Item>
+              {getFieldDecorator(statusFields.title, {
+                rules: this.getFieldRules(websiteFields.title),
+              })(
+                <Select placeholder="Select a current status" onChange={this.handleSelectChange}>
+                  <Select.Option value="unavailable">
+                    {intl.formatMessage({
+                      id: 'unavailable',
+                      defaultMessage: 'Unavailable',
+                    })}
+                  </Select.Option>
+                  <Select.Option value="relisted">
+                    {intl.formatMessage({
+                      id: 'relisted',
+                      defaultMessage: 'Relisted',
+                    })}
+                  </Select.Option>
+                </Select>,
+              )}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator(statusFields.link, {
+                rules: this.getFieldRules(websiteFields.link),
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'find',
+                    defaultMessage: 'Find',
                   })}
                 />,
               )}

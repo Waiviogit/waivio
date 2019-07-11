@@ -5,6 +5,7 @@
   &__avatar-image {
     font-size: 100px;
   }
+
   background-color: #f3f4f6;
   background-size: cover;
   background-position: center;
@@ -31,6 +32,7 @@
       margin: 0 4px;
     }
   }
+
   &--cover {
     background-color: darken(@primary-color, 25%) !important;
 
@@ -45,11 +47,13 @@
       text-shadow: 0 0 4px @black-text;
     }
   }
+
   .ObjectHeader__user__addCover {
     position: absolute;
     top: 30px;
     right: 30px;
   }
+
   &__handle {
     .ObjectHeader__follows-you {
       display: none;
@@ -76,6 +80,7 @@
   &__follows-you-cover-text-color {
     color: @white;
   }
+
   &__type {
     color: @blue-botticelli;
     font-weight: normal;
@@ -83,6 +88,16 @@
     font-stretch: normal;
     line-height: normal;
     letter-spacing: normal;
+  }
+
+  &__status-wrap {
+    font-size: 18px;
+  }
+
+  &__status-unavailable {
+    text-transform: uppercase;
+    font-weight: bold;
+    color: @red;
   }
 }
 
@@ -93,9 +108,11 @@
   padding: 16px;
   align-items: center;
   flex-direction: column;
+
   a {
     position: relative;
   }
+
   &--active {
     position: absolute;
     left: 75px;
@@ -172,6 +189,7 @@
   color: @grey-gondola;
   max-width: 76%;
   word-break: break-all;
+
   .proposition-line {
     padding-top: 5px;
   }
@@ -193,6 +211,7 @@
     align-items: initial;
     flex-direction: initial;
   }
+
   .ObjectHeader__text {
     max-width: 76%;
     text-overflow: ellipsis;
@@ -213,6 +232,7 @@
     align-items: initial;
     flex-direction: initial;
   }
+
   .ObjectHeader__extend {
     margin-left: 10px;
   }
@@ -246,12 +266,14 @@
     width: 100%;
     padding: 30px 0;
   }
+
   .ObjectHeader__text {
     max-width: 76%;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
   }
+
   .ObjectHeader__user__username {
     padding: 0;
     display: flex;
