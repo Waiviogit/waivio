@@ -7,7 +7,10 @@ import { Link } from 'react-router-dom';
 import ObjectLightbox from '../components/ObjectLightbox';
 import FollowButton from '../widgets/FollowButton';
 import { haveAccess, accessTypesArr } from '../helpers/wObjectHelper';
-import { getFieldWithMaxWeight } from '../../client/object/wObjectHelper';
+import {
+  getFieldWithMaxWeight,
+  getInnerFieldWithMaxWeight,
+} from '../../client/object/wObjectHelper';
 import { objectFields as objectTypes, objectFields } from '../../common/constants/listOfFields';
 import Proposition from '../components/Proposition/Proposition';
 import ObjectType from './ObjectType';
@@ -25,10 +28,19 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, a
     ? { backgroundImage: `url("https://steemitimages.com/2048x512/${coverImage}")` }
     : {};
   const descriptionShort = getFieldWithMaxWeight(wobject, objectFields.title);
+  const status = getInnerFieldWithMaxWeight(wobject, objectFields.status);
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
   const objectName = getFieldWithMaxWeight(wobject, objectFields.name) || wobject.default_name;
   const canEdit = accessExtend && isEditMode;
   const parentName = wobject.parent ? getFieldWithMaxWeight(wobject.parent, objectTypes.name) : '';
+
+  const getStatusLayout = stat => (
+    <span className="ObjectHeader__status-wrap">
+      <span className="ObjectHeader__status-unavailable">{status.title}</span>:{' '}
+      {stat.link && <a href={stat.link}>{stat.link}</a>}
+    </span>
+  );
+
   return (
     <div className={classNames('ObjectHeader', { 'ObjectHeader--cover': hasCover })} style={style}>
       <div className="ObjectHeader__container">
@@ -69,12 +81,15 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, a
           </div>
           <div className="ObjectHeader__user__username">
             <div className="ObjectHeader__descriptionShort">
+              {/* eslint-disable-next-line no-nested-ternary */}
               {canEdit && !descriptionShort ? (
                 <Proposition
                   objectID={wobject.author_permlink}
                   fieldName={objectFields.title}
                   objName={objectName}
                 />
+              ) : status ? (
+                getStatusLayout(status)
               ) : (
                 descriptionShort
               )}

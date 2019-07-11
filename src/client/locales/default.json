@@ -460,6 +460,7 @@
   "object_field_menuPage": "Page",
   "object_field_menuList": "List",
   "object_field_pageContent": "Page",
+  "object_field_status": "Status",
   "field_error": "{field} is required",
   "append_send": "Submit",
   "suggestion_add_field": "Update object",
@@ -579,5 +580,8 @@
   "min_posts_count": "You should be author of post, minimum",
   "discard_successfully": "Declined successfully",
   "create_new_page": "Create new page",
-  "create_new_list": "Create new list"
+  "create_new_list": "Create new list",
+  "unavailable": "Unavailable",
+  "relisted": "Relisted",
+  "find": "Find"
 }

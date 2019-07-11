@@ -22,6 +22,7 @@ export const objectFields = {
   button: 'button',
   workTime: 'workTime',
   pageContent: 'pageContent',
+  status: 'status',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -37,6 +38,7 @@ export const objectFieldsWithInnerData = [
   'link',
   'button',
   'website',
+  'status',
   'phone',
   'email',
   'rating',
@@ -68,6 +70,12 @@ export const websiteFields = {
   title: 'title',
   link: 'link',
 };
+
+export const statusFields = {
+  title: 'title',
+  link: 'link',
+};
+
 export const buttonFields = {
   title: 'title',
   link: 'link',
