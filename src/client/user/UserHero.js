@@ -72,7 +72,7 @@ const UserHero = ({
                 <UserHeader
                   username={username}
                   handle={user.name}
-                  userReputation={user.reputation}
+                  wobjWeight={user.wobjects_weight}
                   vestingShares={parseFloat(user.vesting_shares)}
                   isSameUser={isSameUser}
                   coverImage={coverImage}

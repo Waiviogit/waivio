@@ -4,16 +4,16 @@ import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { getUserRankKey, getUserRank } from '../helpers/user';
-import ReputationTag from './ReputationTag';
 import AvatarLightbox from './AvatarLightbox';
 import FollowButton from '../widgets/FollowButton';
 import Action from './Button/Action';
 import './UserHeader.less';
+import WeightTag from './WeightTag';
 
 const UserHeader = ({
   username,
   handle,
-  userReputation,
+  wobjWeight,
   vestingShares,
   isSameUser,
   coverImage,
@@ -33,7 +33,7 @@ const UserHeader = ({
           <div className="UserHeader__row">
             <h2 className="UserHeader__user__username">
               {username}
-              <ReputationTag reputation={userReputation} />
+              <WeightTag weight={wobjWeight} />
             </h2>
             <div className="UserHeader__user__buttons">
               <div
@@ -99,7 +99,7 @@ const UserHeader = ({
 UserHeader.propTypes = {
   username: PropTypes.string,
   handle: PropTypes.string,
-  userReputation: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  wobjWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   vestingShares: PropTypes.number,
   isSameUser: PropTypes.bool,
   coverImage: PropTypes.string,
@@ -112,7 +112,7 @@ UserHeader.propTypes = {
 UserHeader.defaultProps = {
   username: '',
   handle: '',
-  userReputation: '0',
+  wobjWeight: '0',
   vestingShares: 0,
   isSameUser: false,
   coverImage: '',

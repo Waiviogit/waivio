@@ -67,7 +67,11 @@ export default class UserDynamicList extends React.Component {
           {users.map(user => {
             if (!this.props.showAuthorizedUser || user.name !== this.props.userName) {
               return (
-                <UserCard key={user.name} user={user} alt={<WeightTag weight={user.weight} />} />
+                <UserCard
+                  key={user.name}
+                  user={user}
+                  alt={<WeightTag weight={user.wobjects_weight} />}
+                />
               );
             }
             return null;
@@ -75,7 +79,7 @@ export default class UserDynamicList extends React.Component {
         </ReduxInfiniteScroll>
         {empty && (
           <div className="UserDynamicList__empty">
-            <FormattedMessage id="list_empty" defaultMessage="Nothing is there" />
+            <FormattedMessage id="list_empty" defaultMessage="No data" />
           </div>
         )}
       </div>
