@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import * as authActions from '../../auth/authActions';
 import * as editorActions from './editorActions';
 import * as postActions from '../postActions';
@@ -34,7 +35,7 @@ const editor = (state = defaultState, action) => {
       if (action.meta && action.meta.refresh) return state;
       return {
         ...state,
-        draftPosts: action.payload.user_metadata.drafts || defaultState.draftPosts,
+        draftPosts: _.get(action, 'payload.user_metadata.drafts', defaultState.draftPosts),
       };
     case editorActions.NEW_POST:
       return {
