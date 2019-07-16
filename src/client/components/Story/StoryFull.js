@@ -20,7 +20,6 @@ import withAuthActions from '../../auth/withAuthActions';
 import { getProxyImageURL } from '../../helpers/image';
 import Popover from '../Popover';
 import BTooltip from '../BTooltip';
-import ReputationTag from '../ReputationTag';
 import { getHtml } from './Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import StoryDeleted from './StoryDeleted';
@@ -38,6 +37,7 @@ import PostSellBuy from '../../../investarena/components/PostSellBuy';
 import { isValidForecast } from '../../helpers/forecastHelper';
 import PostQuotation from '../../../investarena/components/PostQuotation';
 import PostChart from '../../../investarena/components/PostChart';
+import WeightTag from '../WeightTag';
 
 @injectIntl
 @withAuthActions
@@ -388,7 +388,7 @@ class StoryFull extends React.Component {
           <div className="StoryFull__header__text">
             <Link to={`/@${post.author}`}>
               <span className="username">{post.author}</span>
-              <ReputationTag reputation={post.author_reputation} />
+              <WeightTag weight={post.author_wobjects_weight} rank={post.author_rank} />
             </Link>
             <BTooltip
               title={

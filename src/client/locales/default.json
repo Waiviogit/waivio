@@ -620,6 +620,7 @@
   "object_field_menuPage": "Page",
   "object_field_menuList": "List",
   "object_field_pageContent": "Page",
+  "object_field_status": "Status",
   "field_error": "{field} is required",
   "append_send": "Submit",
   "suggestion_add_field": "Update object",
@@ -628,7 +629,7 @@
   "reviews": "News",
   "recency": "Recency",
   "object_field_backgroundImage": "Background image",
-  "gallery_list_empty": "Nothing is there. Be first to create a new one!",
+  "gallery_list_empty": "No data. Be first to create a new one!",
   "add_new_proposition": "Add",
   "add_new": "Add new",
   "add_new_album": "Add new album",
@@ -771,5 +772,8 @@
   "min_posts_count": "You should be author of post, minimum",
   "discard_successfully": "Declined successfully",
   "create_new_page": "Create new page",
-  "create_new_list": "Create new list"
+  "create_new_list": "Create new list",
+  "unavailable": "Unavailable",
+  "relisted": "Relisted",
+  "find": "Find"
 }

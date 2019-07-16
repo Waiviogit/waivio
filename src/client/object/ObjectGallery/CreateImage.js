@@ -54,7 +54,7 @@ class CreateImage extends React.Component {
 
     return {
       name: 'galleryItem',
-      body: image.response.url,
+      body: image.response.image,
       locale: 'en-US',
       id: form.getFieldValue('id'),
     };
@@ -65,12 +65,12 @@ class CreateImage extends React.Component {
     return intl.formatMessage(
       {
         id: 'append_new_image',
-        defaultMessage: `@{user} added a new image to album {album} <br /> {url}`,
+        defaultMessage: `@{user} added a new image to album {album} <br /> {image.response.image}`,
       },
       {
         user: currentUsername,
         album: selectedAlbum.body,
-        url: image.response.url,
+        url: image.response.image,
       },
     );
   };

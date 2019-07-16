@@ -14,7 +14,6 @@ import BTooltip from '../../components/BTooltip';
 import formatter from '../../helpers/steemitFormatter';
 import { MAXIMUM_UPLOAD_SIZE_HUMAN } from '../../helpers/image';
 import { sortComments } from '../../helpers/sortHelpers';
-import ReputationTag from '../../components/ReputationTag';
 import CommentForm from './CommentForm';
 import EmbeddedCommentForm from './EmbeddedCommentForm';
 import QuickCommentEditor from './QuickCommentEditor';
@@ -23,6 +22,7 @@ import BodyContainer from '../../containers/Story/BodyContainer';
 import CommentFooter from '../CommentFooter/CommentFooter';
 import HiddenCommentMessage from './HiddenCommentMessage';
 import './Comment.less';
+import WeightTag from '../WeightTag';
 
 @injectIntl
 class Comment extends React.Component {
@@ -284,7 +284,7 @@ class Comment extends React.Component {
         <div className="Comment__text">
           <Link to={`/@${comment.author}`}>
             <span className="username">{comment.author}</span>
-            <ReputationTag reputation={comment.author_reputation} />
+            <WeightTag weight={comment.author_wobjects_weight} />
             {comment.author === rootPostAuthor && (
               <BTooltip
                 title={intl.formatMessage({

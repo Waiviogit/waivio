@@ -21,15 +21,12 @@ import {
 } from '../../helpers/postHelpers';
 import withAuthActions from '../../auth/withAuthActions';
 import BTooltip from '../BTooltip';
-import ReputationTag from '../ReputationTag';
-import RankTag from '../RankTag';
 import StoryPreview from './StoryPreview';
 import StoryFooter from '../StoryFooter/StoryFooter';
 import Avatar from '../Avatar';
 import NSFWStoryPreviewMessage from './NSFWStoryPreviewMessage';
 import HiddenStoryPreviewMessage from './HiddenStoryPreviewMessage';
 import DMCARemovedMessage from './DMCARemovedMessage';
-import PostedFrom from './PostedFrom';
 import './Story.less';
 import PostChart from '../../../investarena/components/PostChart';
 import PostQuotation from '../../../investarena/components/PostQuotation';
@@ -37,7 +34,8 @@ import PostSellBuy from '../../../investarena/components/PostSellBuy';
 import { jsonParse } from '../../helpers/formatter';
 import PostForecast from '../../../investarena/components/PostForecast';
 import ObjectAvatar from '../ObjectAvatar';
-import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
+import PostedFrom from './PostedFrom';
+import WeightTag from '../WeightTag';
 
 @injectIntl
 @withRouter
@@ -396,11 +394,7 @@ class Story extends React.Component {
                     <span className="username">{post.author}</span>
                   </Link>
                 </h4>
-                {_.isNil(post.author_rank) ? (
-                  <ReputationTag reputation={post.author_reputation} />
-                ) : (
-                  <RankTag rank={post.author_rank} />
-                )}
+                <WeightTag weight={post.author_wobjects_weight} rank={post.author_rank} />
               </span>
               <span>
                 <BTooltip

@@ -358,7 +358,7 @@ export const getTopUsers = (isRandom = false, { limit, skip } = { limit: 30, ski
 export const getPropositions = ({ limit = 30, skip = 0, userName, status, approved }) =>
   new Promise((resolve, reject) => {
     fetch(
-      `${config.apiPrefix}${config.campaigns}?limit=${limit}&skip=${skip}${
+      `${config.campaignApiPrefix}${config.campaigns}?limit=${limit}&skip=${skip}${
         userName ? `&userName=${userName}` : ''
       }${userName ? `&approved=${approved}` : ''}${status ? `&status=${status}` : ''}`,
       {
