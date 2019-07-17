@@ -17,8 +17,12 @@ export default class Propositions extends React.Component {
     assignProposition: PropTypes.func.isRequired,
     discardProposition: PropTypes.func.isRequired,
     filterKey: PropTypes.string.isRequired,
-    userName: PropTypes.string.isRequired,
+    userName: PropTypes.string,
     intl: PropTypes.shape().isRequired,
+  };
+
+  static defaultProps = {
+    userName: '',
   };
 
   state = {
@@ -155,7 +159,11 @@ export default class Propositions extends React.Component {
           {`${intl.formatMessage({
             id: 'rewards',
             defaultMessage: 'Rewards',
-          })}`}
+          })} for ${userName ||
+            intl.formatMessage({
+              id: 'all',
+              defaultMessage: 'all',
+            })}`}
         </div>
         <ReduxInfiniteScroll
           elementIsScrollable={false}
@@ -172,6 +180,7 @@ export default class Propositions extends React.Component {
                   discardProposition={this.discardProposition}
                   authorizedUserName={userName}
                   loading={loadingAssignDiscard}
+                  key={proposition.id}
                 />
               ))
             : `${intl.formatMessage(

@@ -27,6 +27,7 @@ import Topnav from './components/Navigation/Topnav';
 import Transfer from './wallet/Transfer';
 import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
+import TopNavigation from './components/Navigation/TopNavigation';
 
 @withRouter
 @connect(
@@ -202,7 +203,7 @@ export default class Wrapper extends React.PureComponent {
   }
 
   render() {
-    const { user, usedLocale, translations } = this.props;
+    const { user, usedLocale, translations, username } = this.props;
 
     const language = findLanguage(usedLocale);
 
@@ -214,6 +215,9 @@ export default class Wrapper extends React.PureComponent {
               <Topnav username={user.name} onMenuItemClick={this.handleMenuItemClick} />
             </Layout.Header>
             <div className="content">
+              <div className="feed-layout container">
+                <TopNavigation authenticated={!!username} userName={username} />
+              </div>
               {renderRoutes(this.props.route.routes)}
               <Transfer />
               <PowerUpOrDown />

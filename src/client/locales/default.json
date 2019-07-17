@@ -371,7 +371,7 @@
   "weight_score_value": "Weight score: {value}",
   "editor_linked_objects": "Linked objects",
   "objects_auto_complete_placeholder": "Find objects",
-  "create": "create",
+  "create": "Create",
   "remove": "remove",
   "discover_more_objects_info": "Discover the most ranked objects of this platform",
   "updates_in_object1": "@{user} suggests adding the following fields:",
@@ -583,5 +583,6 @@
   "create_new_list": "Create new list",
   "unavailable": "Unavailable",
   "relisted": "Relisted",
-  "find": "Find"
+  "find": "Find",
+  "rewardsUser": "Select a user to display the rewards"
 }

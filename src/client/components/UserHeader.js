@@ -19,7 +19,6 @@ const UserHeader = ({
   coverImage,
   hasCover,
   isFollowing,
-  onTransferClick,
   isActive,
 }) => {
   const style = hasCover
@@ -51,17 +50,6 @@ const UserHeader = ({
                   <FollowButton following={handle} followingType="user" />
                 )}
               </div>
-              {!isSameUser && (
-                <div
-                  className={classNames('UserHeader__user__button', {
-                    'UserHeader__user__button-follows-you': isFollowing && !isSameUser,
-                  })}
-                >
-                  <Action onClick={onTransferClick}>
-                    <FormattedMessage id="transfer" defaultMessage="Transfer" />
-                  </Action>
-                </div>
-              )}
             </div>
           </div>
           <div className="UserHeader__handle-rank-container">
@@ -105,7 +93,6 @@ UserHeader.propTypes = {
   coverImage: PropTypes.string,
   hasCover: PropTypes.bool,
   isFollowing: PropTypes.bool,
-  onTransferClick: PropTypes.func,
   isActive: PropTypes.bool.isRequired,
 };
 

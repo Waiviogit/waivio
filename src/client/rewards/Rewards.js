@@ -29,9 +29,6 @@ class Rewards extends React.Component {
     location: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
   };
-  static defaultProps = {
-    currentUserName: '',
-  };
   render() {
     const { location, match } = this.props;
     const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';

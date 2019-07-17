@@ -12,7 +12,6 @@ import Affix from '../components/Utils/Affix';
 import ScrollToTop from '../components/Utils/ScrollToTop';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import QuickPostEditor from '../components/QuickPostEditor/QuickPostEditor';
-import PostsNavigation from '../components/Navigation/PostsNavigation/PostsNavigation';
 
 @withRouter
 @connect(state => ({
@@ -69,7 +68,6 @@ class Page extends React.Component {
             </Affix>
             <div className="center">
               {authenticated && <QuickPostEditor />}
-              <PostsNavigation location={this.props.location} authenticated={authenticated} />
               <SubFeed />
             </div>
           </div>
