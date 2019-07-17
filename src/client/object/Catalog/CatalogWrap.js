@@ -287,7 +287,11 @@ class CatalogWrap extends React.Component {
                           {isList ? (
                             <CategoryItemView wObject={listItem} pathNameAvatar={linkTo} />
                           ) : (
-                            <ObjectCardView wObject={listItem} pathNameAvatar={linkTo} />
+                            <ObjectCardView
+                              wObject={listItem}
+                              showSmallVersion
+                              pathNameAvatar={linkTo}
+                            />
                           )}
                         </div>
                       );

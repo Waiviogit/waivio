@@ -29,6 +29,12 @@
     padding-left: @wrapPadding;
     word-wrap: break-word;
     word-break: break-word;
+    &.small {
+      .ObjectCardView__title,
+      .ObjectCardView__name-truncated {
+        font-size: 1em;
+      }
+    }
   }
   &__avatar {
     width: 25%;
@@ -56,7 +62,8 @@
   }
   &__name {
     cursor: auto;
-    margin-top: 10px;
+    display: flex;
+    align-items: baseline;
 
     &-truncated {
       margin-right: 10px;
@@ -72,9 +79,6 @@
     margin-top: 0.5em;
     color: @black;
     font-size: 1.2em;
-  }
-  &__name {
-    margin-top: 5px;
   }
 }
 

@@ -6,8 +6,8 @@ import { averageRate, avrRate } from '../../components/Sidebar/Rate/rateHelper';
 import './RatingsWrap.less';
 import { getScreenSize } from '../../reducers';
 
-const RatingsWrap = ({ ratings, screenSize, showSmallVersion }) => {
-  const isMobile = screenSize === 'xsmall' || screenSize === 'small' || showSmallVersion;
+const RatingsWrap = ({ ratings, screenSize }) => {
+  const isMobile = screenSize === 'xsmall' || screenSize === 'small';
   // _.orderBy(ratings, [ratings., 'age'], ['asc', 'desc']);
   let layout = null;
 

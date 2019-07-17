@@ -18,7 +18,7 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
 
   const avatarLayout = (avatar = DEFAULTS.AVATAR) => {
     let url = avatar;
-    if (_.includes(url, 'waivio.')) url = `${url}${showSmallVersion ? '_small' : '_medium'}`;
+    if (_.includes(url, 'waivio.')) url = `${url}_medium`;
 
     return (
       <div
@@ -49,7 +49,7 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
             >
               {avatarLayout(wObject.avatar)}
             </Link>
-            <div className="ObjectCardView__info">
+            <div className={`ObjectCardView__info${showSmallVersion ? ' small' : ''}`}>
               {parentName && (
                 <Link
                   to={`/object/${wObject.parent.author_permlink}`}
@@ -69,7 +69,7 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
                 </Link>
                 {wObject.weight && <WeightTag weight={wObject.weight} rank={wObject.rank} />}
               </div>
-              {ratings && <RatingsWrap ratings={ratings} showSmallVersion={showSmallVersion} />}
+              {ratings && <RatingsWrap ratings={ratings} />}
               {wObject.title && (
                 <div className="ObjectCardView__title" title={wObject.title}>
                   {wObject.title}
