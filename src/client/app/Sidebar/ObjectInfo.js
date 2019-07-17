@@ -281,6 +281,19 @@ class ObjectInfo extends React.Component {
             </div>
           ) : null,
         )}
+        {listItem(
+          objectFields.status,
+          title && (
+            <div className="field-website">
+              <span className="field-website__title">
+                <i className="iconfont icon-link text-icon" />
+                <a target="_blank" rel="noopener noreferrer" href={link}>
+                  {title}
+                </a>
+              </span>
+            </div>
+          ),
+        )}
       </React.Fragment>
     );
     return (
