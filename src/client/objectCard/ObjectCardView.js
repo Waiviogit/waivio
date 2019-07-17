@@ -22,7 +22,7 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
 
     return (
       <div
-        className="ObjectCardView__avatar"
+        className="avatar-image"
         style={{
           backgroundImage: `url(${url})`,
           backgroundSize: 'cover',
@@ -42,7 +42,11 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
       <div className="ObjectCardView">
         <div className="ObjectCardView__content">
           <div className="ObjectCardView__content-row">
-            <Link to={pathName} title={goToObjTitle(wObject.name)}>
+            <Link
+              to={pathName}
+              title={goToObjTitle(wObject.name)}
+              className="ObjectCardView__avatar"
+            >
               {avatarLayout(wObject.avatar)}
             </Link>
             <div className="ObjectCardView__info">
