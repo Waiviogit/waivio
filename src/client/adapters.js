@@ -106,7 +106,7 @@ export const getServerWObj = clientWObj => {
     community: '',
     createdAt: createdAt || Date.now(),
     updatedAt: updatedAt || Date.now(),
-    fields,
+    fields: [...clientWObj.fields, ...fields],
   };
 };
 
