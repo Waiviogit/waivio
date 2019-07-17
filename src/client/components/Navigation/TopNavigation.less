@@ -1,12 +1,12 @@
-@import (reference) '../../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
 
-.PostsNavigation {
+.TopNavigation {
   display: flex;
   height: 46px;
-  background-color: white;
+  background-color: @white;
   border: solid 1px #e9e7e7;
   padding: 0 15px;
-  margin-bottom: 12px;
   &__item {
     display: inline-block;
     height: 45px;
@@ -20,10 +20,7 @@
     &--active,
     &:hover {
       color: @primary-color;
-
       border-bottom: 2px @border-style-base @primary-color;
     }
   }
 }
-
-@import 'PostsNavigation-nightmode';

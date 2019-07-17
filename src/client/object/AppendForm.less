@@ -5,7 +5,7 @@
   padding-bottom: 24px;
 
   .ant-form-item {
-    margin-bottom: 0px;
+    margin-bottom: 0;
     padding-bottom: 24px;
 
     .menu-item-search {
@@ -16,6 +16,7 @@
   &__hidden {
     display: none !important;
   }
+
   &__previewWrap {
     display: flex;
     justify-content: center;
@@ -46,22 +47,27 @@
       }
     }
   }
+
   .NewLineButton {
     display: flex;
     align-items: center;
     cursor: pointer;
+
     .anticon-plus-circle {
       color: @primary-color;
       font-size: 23px;
       margin: 10px 10px 10px 0;
     }
+
     &:hover {
       color: @primary-color;
     }
   }
+
   .NewsFiltersRule-title {
     margin-top: 5px;
   }
+
   .NewsFiltersRule-line {
     .ObjectCard {
       padding: 5px 0;
@@ -71,6 +77,7 @@
     &-and {
       padding: 17px 10px;
     }
+
     &-card {
       position: relative;
       padding-left: 5px;
@@ -78,25 +85,31 @@
       border-radius: 8px;
       margin-bottom: 10px;
     }
+
     &-close {
       position: absolute;
       top: -12px;
       right: -12px;
       background-color: @white;
+
       .anticon {
         font-size: 23px;
         cursor: pointer;
+
         &:hover {
           color: @primary-color;
         }
       }
     }
+
     &-search {
       padding: 10px 0;
     }
+
     padding: 10px 0;
     border-bottom: @base-border;
   }
+
   & .ant-form-item-label {
     position: relative;
     top: 8px !important;
@@ -128,6 +141,7 @@
     font-weight: bold;
     background-color: unset !important;
     width: 100%;
+
     &.validation-error {
       border: 1px solid @red;
       box-shadow: 0 0 3px @orange, 0 0 5px @red;
@@ -230,9 +244,11 @@ div[data-dir='rtl'] .Editor {
 .image-wrapper {
   display: flex;
   flex-direction: column;
+
   .QuickPostEditor__footer {
     padding-left: 0;
   }
+
   & > span {
     padding-left: 4px;
     margin-bottom: 16px;
