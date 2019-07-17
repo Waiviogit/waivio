@@ -333,12 +333,14 @@ export const getTopUsers = (isRandom = false, { limit, skip } = { limit: 30, ski
   });
 };
 
-export const getPropositions = ({ limit = 30, skip = 0, userName, status, approved }) =>
+export const getPropositions = ({ limit = 30, skip = 0, userName, status, approved, guideName }) =>
   new Promise((resolve, reject) => {
     fetch(
       `${config.campaignApiPrefix}${config.campaigns}?limit=${limit}&skip=${skip}${
         userName ? `&userName=${userName}` : ''
-      }${userName ? `&approved=${approved}` : ''}${status ? `&status=${status}` : ''}`,
+      }${userName ? `&approved=${approved}` : ''}${status ? `&status=${status}` : ''}${
+        guideName ? `&guideName=${guideName}` : ''
+      }`,
       {
         headers,
         method: 'GET',

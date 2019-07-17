@@ -47,7 +47,7 @@ export default class SidenavRewards extends React.Component {
       popoverVisible: false,
       searchBarValue: '',
       isModalRewardUserOpen: false,
-      currentTab: 'eligible',
+      currentTab: 'active',
     };
     this.handleSelectOnAutoCompleteDropdown = this.handleSelectOnAutoCompleteDropdown.bind(this);
     this.handleAutoCompleteSearch = this.handleAutoCompleteSearch.bind(this);
@@ -168,6 +168,18 @@ export default class SidenavRewards extends React.Component {
               </NavLink>
             </li>
           )}
+          <li>
+            <NavLink
+              to={`/rewards/created/@${match.params.userName}`}
+              activeClassName="Sidenav__item--active"
+              onClick={e => this.handleOpenModalRewardUser(e, 'created', match.params.userName)}
+            >
+              {intl.formatMessage({
+                id: 'created',
+                defaultMessage: `Created`,
+              })}
+            </NavLink>
+          </li>
         </ul>
         {this.state.isModalRewardUserOpen && (
           <Modal

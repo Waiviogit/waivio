@@ -372,6 +372,7 @@
   "editor_linked_objects": "Linked objects",
   "objects_auto_complete_placeholder": "Find objects",
   "create": "Create",
+  "created": "Created",
   "remove": "remove",
   "discover_more_objects_info": "Discover the most ranked objects of this platform",
   "updates_in_object1": "@{user} suggests adding the following fields:",
