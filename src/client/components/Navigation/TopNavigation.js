@@ -5,13 +5,13 @@ import { FormattedMessage } from 'react-intl';
 import { NavLink, withRouter } from 'react-router-dom';
 import './TopNavigation.less';
 
-const TopNavigation = ({ authenticated, match, userName }) => (
+const TopNavigation = ({ authenticated, userName }) => (
   <ul className="TopNavigation">
     {authenticated && (
       <li>
         <NavLink
           to="/"
-          isActive={() => match.params.pathname === '/'}
+          isActive={() => location.pathname === '/'}
           className="TopNavigation__item"
           activeClassName="TopNavigation__item--active"
         >
@@ -76,7 +76,6 @@ const TopNavigation = ({ authenticated, match, userName }) => (
 
 TopNavigation.propTypes = {
   authenticated: PropTypes.bool.isRequired,
-  match: PropTypes.shape().isRequired,
   userName: PropTypes.string,
 };
 

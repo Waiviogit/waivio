@@ -63,7 +63,7 @@ const posts = (state = initialState, action) => {
         ...state.postsStates,
       };
 
-      _.each(action.payload.posts, post => {
+      _.each(action.payload, post => {
         const key = getPostKey(post);
         list[key] = { ...post, id: key };
         postsStates[key] = {
