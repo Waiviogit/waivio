@@ -17,8 +17,12 @@ export default class Propositions extends React.Component {
     assignProposition: PropTypes.func.isRequired,
     discardProposition: PropTypes.func.isRequired,
     filterKey: PropTypes.string.isRequired,
-    userName: PropTypes.string.isRequired,
+    userName: PropTypes.string,
     intl: PropTypes.shape().isRequired,
+  };
+
+  static defaultProps = {
+    userName: '',
   };
 
   state = {
@@ -35,6 +39,28 @@ export default class Propositions extends React.Component {
       });
     }
   }
+
+  getTextByFilterKey = (intl, filterKey) => {
+    switch (filterKey) {
+      case 'active':
+      case 'history':
+      case 'reserved':
+        return `${intl.formatMessage({
+          id: 'rewards',
+          defaultMessage: 'Rewards',
+        })} for`;
+      case 'created':
+        return `${intl.formatMessage({
+          id: 'rewards',
+          defaultMessage: 'Rewards',
+        })} created by`;
+      default:
+        return intl.formatMessage({
+          id: 'rewards',
+          defaultMessage: 'Rewards',
+        });
+    }
+  };
 
   assignProposition = (proposition, obj) => {
     this.setState({ loadingAssignDiscard: true });
@@ -113,6 +139,9 @@ export default class Propositions extends React.Component {
       case 'history':
         reqData.status = ['inactive', 'expired', 'deleted', 'payed'];
         break;
+      case 'created':
+        reqData.guideName = userName;
+        break;
       case 'reserved':
         reqData.userName = userName;
         reqData.approved = true;
@@ -147,15 +176,16 @@ export default class Propositions extends React.Component {
 
   render() {
     const { propositions, loading, hasMore, loadingAssignDiscard } = this.state;
-    const { intl, userName } = this.props;
-
+    const { intl, userName, filterKey } = this.props;
+    const text = this.getTextByFilterKey(intl, filterKey);
     return (
       <React.Fragment>
         <div className="Rewards__title">
-          {`${intl.formatMessage({
-            id: 'rewards',
-            defaultMessage: 'Rewards',
-          })}`}
+          {`${text} ${userName ||
+            intl.formatMessage({
+              id: 'all',
+              defaultMessage: 'all',
+            })}`}
         </div>
         <ReduxInfiniteScroll
           elementIsScrollable={false}
@@ -172,12 +202,13 @@ export default class Propositions extends React.Component {
                   discardProposition={this.discardProposition}
                   authorizedUserName={userName}
                   loading={loadingAssignDiscard}
+                  key={proposition.id}
                 />
               ))
             : `${intl.formatMessage(
                 {
                   id: 'noProposition',
-                  defaultMessage: `There are no propositions for {userName}`,
+                  defaultMessage: `There are no propositions`,
                 },
                 {
                   userName,

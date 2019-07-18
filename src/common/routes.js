@@ -52,13 +52,17 @@ const routes = [
         component: Bookmarks,
       },
       {
-        path: `/rewards/(active|reserved|history|all|create)/@:userName`,
+        path: `/rewards/(active|reserved|history|create|created)/@:userName`,
         component: Rewards,
       },
       {
         path: '/rewards/create',
         exact: true,
         component: CreateRewards,
+      },
+      {
+        path: `/rewards/all`,
+        component: Rewards,
       },
       {
         path: '/drafts',

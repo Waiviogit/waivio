@@ -65,19 +65,14 @@ export const getMoreUserFeedContent = ({ userName, limit = 20 }) => (dispatch, g
 
   if (!feedContent.length || !feed || !feed.feed || !feed.feed[userName])
     return Promise.resolve(null);
-
-  const startAuthor = feed.feed[userName].startAuthor;
-  const startPermlink = feed.feed[userName].startPermlink;
-  const countWithWobj = feed.feed[userName].countWithWobj;
+  const countWithWobj = feed.feed[userName].list.length;
 
   return dispatch({
     type: GET_MORE_USER_FEED_CONTENT.ACTION,
     payload: ApiClient.getMoreUserFeedContent({
       userName,
       limit,
-      startAuthor,
-      startPermlink,
-      countWithWobj,
+      skip: countWithWobj,
     }),
     meta: { sortBy: 'feed', category: userName, limit },
   });
