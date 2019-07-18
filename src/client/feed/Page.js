@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Helmet } from 'react-helmet';
 import { getFeedContent } from './feedActions';
-import { getIsLoaded, getIsAuthenticated } from '../reducers';
+import { getIsLoaded, getIsAuthenticated, getAuthenticatedUserName } from '../reducers';
 import SubFeed from './SubFeed';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
@@ -12,18 +12,25 @@ import Affix from '../components/Utils/Affix';
 import ScrollToTop from '../components/Utils/ScrollToTop';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import QuickPostEditor from '../components/QuickPostEditor/QuickPostEditor';
+import TopNavigation from '../components/Navigation/TopNavigation';
 
 @withRouter
 @connect(state => ({
   authenticated: getIsAuthenticated(state),
+  username: getAuthenticatedUserName(state),
   loaded: getIsLoaded(state),
 }))
 class Page extends React.Component {
   static propTypes = {
     authenticated: PropTypes.bool.isRequired,
+    username: PropTypes.string.isRequired,
     history: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
+  };
+
+  static defaultProps = {
+    username: '',
   };
 
   static fetchData({ store, match }) {
@@ -43,7 +50,7 @@ class Page extends React.Component {
   handleTopicClose = () => this.props.history.push('/trending');
 
   render() {
-    const { authenticated, location } = this.props;
+    const { authenticated, location, username } = this.props;
     const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
 
     return (
@@ -54,6 +61,9 @@ class Page extends React.Component {
         </Helmet>
         <ScrollToTop />
         <ScrollToTopOnMount />
+        <div className="feed-layout container">
+          <TopNavigation authenticated={authenticated} userName={username} />
+        </div>
         <div className="shifted">
           <div className="feed-layout container">
             <Affix className="leftContainer" stickPosition={77}>
