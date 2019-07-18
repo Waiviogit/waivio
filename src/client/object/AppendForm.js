@@ -775,7 +775,7 @@ export default class AppendForm extends Component {
         return (
           <Form.Item>
             {getFieldDecorator(objectFields.title, {
-              rules: this.getFieldRules(objectFields.title),
+              rules: this.getFieldRules('objectFields.title'),
             })(
               <Input
                 className={classNames('AppendForm__input', {
@@ -1009,7 +1009,7 @@ export default class AppendForm extends Component {
           <React.Fragment>
             <Form.Item>
               {getFieldDecorator(websiteFields.title, {
-                rules: this.getFieldRules(websiteFields.title),
+                rules: this.getFieldRules('websiteFields.title'),
               })(
                 <Input
                   className={classNames('AppendForm__input', {
@@ -1025,7 +1025,7 @@ export default class AppendForm extends Component {
             </Form.Item>
             <Form.Item>
               {getFieldDecorator(websiteFields.link, {
-                rules: this.getFieldRules(websiteFields.link),
+                rules: this.getFieldRules('websiteFields.link'),
               })(
                 <Input
                   className={classNames('AppendForm__input', {
@@ -1047,7 +1047,7 @@ export default class AppendForm extends Component {
           <React.Fragment>
             <Form.Item>
               {getFieldDecorator(statusFields.title, {
-                rules: this.getFieldRules(websiteFields.title),
+                rules: this.getFieldRules('buttonFields.title'),
               })(
                 <Select placeholder="Select a current status" onChange={this.handleSelectChange}>
                   <Select.Option value="unavailable">
@@ -1067,7 +1067,7 @@ export default class AppendForm extends Component {
             </Form.Item>
             <Form.Item>
               {getFieldDecorator(statusFields.link, {
-                rules: this.getFieldRules(websiteFields.link),
+                rules: this.getFieldRules('buttonFields.link'),
               })(
                 <Input
                   className={classNames('AppendForm__input', {
@@ -1075,8 +1075,8 @@ export default class AppendForm extends Component {
                   })}
                   disabled={loading}
                   placeholder={intl.formatMessage({
-                    id: 'find',
-                    defaultMessage: 'Find',
+                    id: 'link',
+                    defaultMessage: 'Link',
                   })}
                 />,
               )}
@@ -1105,7 +1105,7 @@ export default class AppendForm extends Component {
             </Form.Item>
             <Form.Item>
               {getFieldDecorator(buttonFields.link, {
-                rules: this.getFieldRules(buttonFields.link),
+                rules: this.getFieldRules('buttonFields.link'),
               })(
                 <Input
                   className={classNames('AppendForm__input', {

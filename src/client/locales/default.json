@@ -484,6 +484,8 @@
   "number_phone_placeholder": "Phone number",
   "object_field_website": "Website",
   "website_validation": "Please enter valid website",
+  "image_link_validation": "Please enter valid link",
+  "email_append_validation": "Please enter valid email",
   "add_object": "Add object",
   "warning_message": "Object updates are posted by Waivio Bots in order to avoid technical posts in user feeds and spending limited resource credits on multiple posts by users, authors are required to upvote updates with voting power that should generate an equivalent of at least $0.001 to ensure validity of the posted content. Users receive 70% of author rewards in addition to standard curation rewards.",
   "vote_worth": "Your vote will be worth ${value} (min. $0.001)",
