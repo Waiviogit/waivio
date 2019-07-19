@@ -43,13 +43,16 @@ const getListSorting = wobj => {
 )
 class CatalogWrap extends React.Component {
   static propTypes = {
-    wobject: PropTypes.shape(),
-    locale: PropTypes.string,
+    /* from decorators */
     intl: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
-    isEditMode: PropTypes.bool.isRequired,
+    /* from connect */
+    locale: PropTypes.string,
     addItemToWobjStore: PropTypes.func.isRequired,
+    /* passed props */
+    wobject: PropTypes.shape(),
+    isEditMode: PropTypes.bool.isRequired,
   };
   static defaultProps = {
     wobject: {},

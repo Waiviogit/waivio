@@ -34,8 +34,8 @@ const feedIdsList = (state = [], action) => {
     case feedTypes.GET_OBJECT_POSTS.START:
       return [];
     case feedTypes.GET_USER_FEED_CONTENT.SUCCESS:
-      if (action && action.payload && action.payload.posts) {
-        return mapPostsKeys(action.payload.posts);
+      if (action && action.payload) {
+        return mapPostsKeys(action.payload);
       }
       return [];
     case feedTypes.GET_FEED_CONTENT.SUCCESS:
@@ -48,7 +48,7 @@ const feedIdsList = (state = [], action) => {
       }
       return [];
     case feedTypes.GET_MORE_USER_FEED_CONTENT.SUCCESS:
-      return _.uniq([...state, ...mapPostsKeys(action.payload.posts)]);
+      return _.uniq([...state, ...mapPostsKeys(action.payload)]);
     case feedTypes.GET_MORE_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_MORE_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_MORE_REPLIES.SUCCESS:
@@ -83,14 +83,10 @@ const feedCategory = (state = {}, action) => {
     case feedTypes.GET_MORE_USER_FEED_CONTENT.SUCCESS:
       return {
         ...state,
-        startAuthor: action.payload.start_author || '',
-        startPermlink: action.payload.start_permlink || '',
-        countWithWobj: action.payload.count_with_wobj || '',
         isFetching: false,
         isLoaded: true,
         failed: false,
-        // hasMore: Boolean(action.payload.posts.length < action.meta.limit || action.meta.once),
-        hasMore: Boolean(action.payload.posts.length === action.meta.limit),
+        hasMore: Boolean(action.payload.length === action.meta.limit),
         list: feedIdsList(state.list, action),
       };
     case feedTypes.GET_FEED_CONTENT.SUCCESS:

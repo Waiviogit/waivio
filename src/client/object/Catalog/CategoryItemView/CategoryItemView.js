@@ -15,18 +15,11 @@ const CategoryItemView = ({ wObject, pathNameAvatar, intl }) => (
     className="CategoryItemView"
   >
     <div className="CategoryItemView__content">
-      {wObject.avatar && (
-        <div
-          className="CategoryItemView__avatar"
-          style={{
-            backgroundImage: `url(${wObject.avatar})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        />
-      )}
       <div className="CategoryItemView__name-truncated" title={wObject.name}>
-        {wObject.name}
+        <span>{wObject.name}</span>
+        {!isNaN(wObject.listItemsCount) ? (
+          <span className="items-count">&nbsp;({wObject.listItemsCount})</span>
+        ) : null}
       </div>
     </div>
     <Icon type="right" />

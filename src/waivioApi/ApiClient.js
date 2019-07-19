@@ -127,22 +127,14 @@ export const getContent = (author, permlink) =>
       .catch(error => reject(error));
   });
 
-export const getMoreUserFeedContent = ({
-  userName,
-  limit = 10,
-  startAuthor = '',
-  startPermlink = '',
-  countWithWobj = '',
-}) =>
+export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0 }) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.feed}`, {
       headers,
       method: 'POST',
       body: JSON.stringify({
-        count_with_wobj: countWithWobj,
+        skip,
         limit,
-        start_author: startAuthor,
-        start_permlink: startPermlink,
       }),
     })
       .then(res => res.json())
@@ -333,12 +325,14 @@ export const getTopUsers = (isRandom = false, { limit, skip } = { limit: 30, ski
   });
 };
 
-export const getPropositions = ({ limit = 30, skip = 0, userName, status, approved }) =>
+export const getPropositions = ({ limit = 30, skip = 0, userName, status, approved, guideName }) =>
   new Promise((resolve, reject) => {
     fetch(
       `${config.campaignApiPrefix}${config.campaigns}?limit=${limit}&skip=${skip}${
         userName ? `&userName=${userName}` : ''
-      }${userName ? `&approved=${approved}` : ''}${status ? `&status=${status}` : ''}`,
+      }${userName ? `&approved=${approved}` : ''}${status ? `&status=${status}` : ''}${
+        guideName ? `&guideName=${guideName}` : ''
+      }`,
       {
         headers,
         method: 'GET',

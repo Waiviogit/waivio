@@ -371,7 +371,8 @@
   "weight_score_value": "Weight score: {value}",
   "editor_linked_objects": "Linked objects",
   "objects_auto_complete_placeholder": "Find objects",
-  "create": "create",
+  "create": "Create",
+  "created": "Created",
   "remove": "remove",
   "discover_more_objects_info": "Discover the most ranked objects of this platform",
   "updates_in_object1": "@{user} suggests adding the following fields:",
@@ -483,6 +484,8 @@
   "number_phone_placeholder": "Phone number",
   "object_field_website": "Website",
   "website_validation": "Please enter valid website",
+  "image_link_validation": "Please enter valid link",
+  "email_append_validation": "Please enter valid email",
   "add_object": "Add object",
   "warning_message": "Object updates are posted by Waivio Bots in order to avoid technical posts in user feeds and spending limited resource credits on multiple posts by users, authors are required to upvote updates with voting power that should generate an equivalent of at least $0.001 to ensure validity of the posted content. Users receive 70% of author rewards in addition to standard curation rewards.",
   "vote_worth": "Your vote will be worth ${value} (min. $0.001)",
@@ -583,5 +586,6 @@
   "create_new_list": "Create new list",
   "unavailable": "Unavailable",
   "relisted": "Relisted",
-  "find": "Find"
+  "find": "Find",
+  "rewardsUser": "Select a user to display the rewards"
 }
