@@ -1,6 +1,7 @@
 import { objectFields } from '../common/constants/listOfFields';
 import { getFieldWithMaxWeight } from './object/wObjectHelper';
 import DEFAULTS from './object/const/defaultValues';
+import OBJECT_TYPES from './object/const/objectTypes';
 
 export const getClientWObj = (serverWObj, fieldsToInclude = []) => {
   /* eslint-disable no-underscore-dangle */
@@ -51,6 +52,9 @@ export const getClientWObj = (serverWObj, fieldsToInclude = []) => {
     });
   }
 
+  if (result.type === OBJECT_TYPES.LIST) {
+    result.listItemsCount = serverWObj.listItemsCount || 0;
+  }
   return result;
 };
 
@@ -106,7 +110,7 @@ export const getServerWObj = clientWObj => {
     community: '',
     createdAt: createdAt || Date.now(),
     updatedAt: updatedAt || Date.now(),
-    fields,
+    fields: [...clientWObj.fields, ...fields],
   };
 };
 

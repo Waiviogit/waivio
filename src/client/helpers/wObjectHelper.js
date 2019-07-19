@@ -79,7 +79,9 @@ export const getAppendData = (creator, wObj, bodyMsg, fieldContent) => {
   const { author, author_permlink } = wObj;
   let body = bodyMsg;
   if (!body) {
-    const langReadable = _.filter(LANGUAGES, { id: fieldContent.locale })[0].name;
+    const langReadable = _.filter(LANGUAGES, {
+      id: fieldContent.locale === 'auto' ? 'en-US' : fieldContent.locale,
+    })[0].name;
     body = `@${creator} added ${fieldContent.name} (${langReadable}):\n ${fieldContent.body.replace(
       /[{}"]/g,
       '',
