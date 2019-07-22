@@ -7,16 +7,17 @@ import {
 import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
 import OBJECT_TYPE from './const/objectTypes';
 
-export const getFieldWithMaxWeight = (wObject, currentField) => {
-  if (!wObject || !currentField || !supportedObjectFields.includes(currentField)) return '';
+export const getFieldWithMaxWeight = (wObject, currentField, defaultValue = '') => {
+  if (!wObject || !currentField || !supportedObjectFields.includes(currentField))
+    return defaultValue;
 
   const fieldValues = _.filter(wObject.fields, ['name', currentField]);
-  if (!fieldValues.length) return '';
+  if (!fieldValues.length) return defaultValue;
 
   const orderedValues = _.orderBy(fieldValues, ['weight'], ['desc']);
 
   if (orderedValues[0].body) return orderedValues[0].body;
-  return '';
+  return defaultValue;
 };
 
 export const getInnerFieldWithMaxWeight = (wObject, currentField, innerField) => {
