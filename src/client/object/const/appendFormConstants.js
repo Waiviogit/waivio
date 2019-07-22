@@ -10,7 +10,6 @@ import {
   emailValidationRegExp,
   objectURLValidationRegExp,
   phoneNameValidationRegExp,
-  websiteTitleRegExp,
   wordsWithSpaceRegExp,
 } from '../../../common/constants/validation';
 import { regexCoordsLatitude, regexCoordsLongitude } from '../../components/Maps/mapHelper';
@@ -453,15 +452,15 @@ export const fieldsRules = {
         intlMeta: { field: 'Title' },
       },
     },
-    {
-      pattern: websiteTitleRegExp,
-      message: {
-        intlId: {
-          id: 'website_symbols_validation',
-          defaultMessage: 'Please dont use special symbols',
-        },
-      },
-    },
+    // {
+    //   pattern: websiteTitleRegExp,
+    //   message: {
+    //     intlId: {
+    //       id: 'website_symbols_validation',
+    //       defaultMessage: 'Please dont use special symbols',
+    //     },
+    //   },
+    // },
     {
       validator: true,
     },
@@ -521,15 +520,15 @@ export const fieldsRules = {
         intlMeta: { field: 'Title' },
       },
     },
-    {
-      pattern: websiteTitleRegExp,
-      message: {
-        intlId: {
-          id: 'website_symbols_validation',
-          defaultMessage: 'Please dont use special symbols',
-        },
-      },
-    },
+    // {
+    //   pattern: websiteTitleRegExp,
+    //   message: {
+    //     intlId: {
+    //       id: 'website_symbols_validation',
+    //       defaultMessage: 'Please dont use special symbols',
+    //     },
+    //   },
+    // },
     {
       validator: true,
     },
