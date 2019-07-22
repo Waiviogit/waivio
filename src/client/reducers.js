@@ -1,6 +1,6 @@
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
 
-import { routerReducer } from 'react-router-redux';
+import {routerReducer} from 'react-router-redux';
 
 import appReducer, * as fromApp from './app/appReducer';
 import authReducer, * as fromAuth from './auth/authReducer';
@@ -196,6 +196,7 @@ export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectAuthor = state => fromObject.getObjectAuthor(state.object);
 export const getObjectFields = state => fromObject.getObjectFields(state.object);
 export const getRatingFields = state => fromObject.getRatingFields(state.object);
+export const getObjectChartId = state => fromObject.getObjectChartId(state.object);
 export const getobjectTypesState = state => fromObjectTypes.getobjectTypesState(state.objectTypes);
 export const getObjectTypeState = state => fromObjectType.getobjectType(state.objectType);
 
@@ -215,7 +216,3 @@ export const getPerformersStatisticLoaded = state =>
   fromTopPerformers.getPerformersStatisticLoaded(state.topPerformers);
 
 export const getForecastData = state => fromForecastReducer.getForecastData(state.forecasts);
-export const getForecastDataByUser = (state, userName) =>
-  fromForecastReducer.getForecastDataByUser(state.forecasts, userName);
-export const getForecastDataByQuote = (state, quote) =>
-  fromForecastReducer.getForecastDataByQuote(state.forecasts, quote);

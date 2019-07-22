@@ -6,25 +6,29 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import React from 'react';
-import PostCurrentPrice from '../../../../investarena/components/PostSellBuy/PostCurrentPrice';
-import PostDifference from '../../../../investarena/components/PostSellBuy/PostDifference';
-import {quoteFormat} from '../../../../investarena/platform/parsingPrice';
-import {localeDate} from '../../../../investarena/helpers/diffDateTime';
+import PostCurrentPrice from '../../../investarena/components/PostSellBuy/PostCurrentPrice';
+import PostDifference from '../../../investarena/components/PostSellBuy/PostDifference';
+import {quoteFormat} from '../../../investarena/platform/parsingPrice';
+import {localeDate} from '../../../investarena/helpers/diffDateTime';
 import './ForecastItem.less';
-import quoteSettingsData from '../../../../investarena/default/quoteSettingsData';
-import quoteData from '../../../../investarena/default/quoteData';
+import quoteSettingsData from '../../../investarena/default/quoteSettingsData';
+import quoteData from '../../../investarena/default/quoteData';
 
 @injectIntl
 class ForecastItem extends React.Component {
   static propTypes = {
+    /* from decorators */
+    intl: PropTypes.shape().isRequired,
+    /* from connect */
     quoteSettings: PropTypes.shape(),
     quote: PropTypes.shape(),
+    /* passed props */
     recommend: PropTypes.string.isRequired,
     postPrice: PropTypes.number.isRequired,
     forecast: PropTypes.string.isRequired,
     dateTimeCreate: PropTypes.string.isRequired,
     permlink: PropTypes.string.isRequired,
-    intl: PropTypes.shape().isRequired,
+
   };
 
   static defaultProps = {

@@ -10,7 +10,7 @@ export default class Forecasts extends Base {
 
   getActiveForecasts(name = '', quote = '') {
     return this.apiClient
-      .get(`${config.forecasts.activeForecasts}?name=${name}&currency=${quote}`)
+      .get(`${config.forecasts.activeForecasts}?name=${name}&quote=${quote}`)
       .then(response => response.data);
   }
 }

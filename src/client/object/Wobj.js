@@ -1,30 +1,31 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
-import { renderRoutes } from 'react-router-config';
-import { Helmet } from 'react-helmet';
+import {connect} from 'react-redux';
+import {withRouter} from 'react-router';
+import {renderRoutes} from 'react-router-config';
+import {Helmet} from 'react-helmet';
 import _ from 'lodash';
 import {
-  getIsAuthenticated,
   getAuthenticatedUser,
+  getAuthenticatedUserName,
+  getIsAuthenticated,
   getIsUserFailed,
   getIsUserLoaded,
-  getAuthenticatedUserName,
   getObject as getObjectState,
-  getScreenSize,
+  getObjectChartId,
+  getScreenSize
 } from '../reducers';
 import OBJECT_TYPE from './const/objectTypes';
-import { getObjectInfo } from './wobjectsActions';
-import { resetGallery } from '../object/ObjectGallery/galleryActions';
+import {getObjectInfo} from './wobjectsActions';
+import {resetGallery} from '../object/ObjectGallery/galleryActions';
 import Error404 from '../statics/Error404';
 import WobjHero from './WobjHero';
 import LeftObjectProfileSidebar from '../app/Sidebar/LeftObjectProfileSidebar';
 import RightObjectSidebar from '../app/Sidebar/RightObjectSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
-import { getFieldWithMaxWeight } from './wObjectHelper';
-import { objectFields } from '../../common/constants/listOfFields';
+import {getFieldWithMaxWeight} from './wObjectHelper';
+import {objectFields} from '../../common/constants/listOfFields';
 
 @withRouter
 @connect(
@@ -36,6 +37,7 @@ import { objectFields } from '../../common/constants/listOfFields';
     failed: getIsUserFailed(state, ownProps.match.params.name),
     wobject: getObjectState(state),
     screenSize: getScreenSize(state),
+    chartId: getObjectChartId(state)
   }),
   {
     getObjectInfo,
@@ -54,6 +56,7 @@ export default class Wobj extends React.Component {
     resetGallery: PropTypes.func.isRequired,
     wobject: PropTypes.shape(),
     screenSize: PropTypes.string,
+    chartId: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -63,6 +66,7 @@ export default class Wobj extends React.Component {
     getObjectInfo: () => {},
     wobject: {},
     screenSize: 'large',
+    chartId: {},
   };
 
   constructor(props) {
@@ -93,6 +97,8 @@ export default class Wobj extends React.Component {
             break;
           case OBJECT_TYPE.LIST:
             history.replace(`${history.location.pathname}/${OBJECT_TYPE.LIST}`);
+            break;
+          case OBJECT_TYPE.HASHTAG:
             break;
           default:
             if (screenSize !== 'large') {
@@ -129,7 +135,14 @@ export default class Wobj extends React.Component {
 
   render() {
     const { isEditMode, hasLeftSidebar } = this.state;
-    const { authenticated, failed, authenticatedUserName: userName, wobject, match } = this.props;
+    const {
+      authenticated,
+      failed,
+      authenticatedUserName: userName,
+      wobject,
+      match,
+      chartId,
+    } = this.props;
     if (failed) return <Error404 />;
 
     const objectName = getFieldWithMaxWeight(wobject, objectFields.name);
@@ -192,7 +205,7 @@ export default class Wobj extends React.Component {
             )}
             <Affix className="rightContainer" stickPosition={72}>
               <div className="right">
-                <RightObjectSidebar username={userName} wobject={wobject} />
+                <RightObjectSidebar username={userName} wobject={wobject} quoteSecurity={chartId.body}/>
               </div>
             </Affix>
             <div className="center">
@@ -201,6 +214,7 @@ export default class Wobj extends React.Component {
                 wobject,
                 userName,
                 match,
+                chartId,
                 toggleViewEditMode: this.toggleViewEditMode,
               })}
             </div>

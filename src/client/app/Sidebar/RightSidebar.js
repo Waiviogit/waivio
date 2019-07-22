@@ -9,7 +9,7 @@ import PostRecommendation from '../../components/Sidebar/PostRecommendation';
 import Loading from '../../components/Icon/Loading';
 import UserActivitySearch from '../../activity/UserActivitySearch';
 import WalletSidebar from '../../components/Sidebar/WalletSidebar';
-import ForecastBlock from '../../components/Sidebar/ForecastBlock';
+import ForecastBlock from '../../components/ForecastBlock';
 
 @withRouter
 @connect(state => ({
@@ -45,7 +45,11 @@ export default class RightSidebar extends React.Component {
           <Route path="/@:name/transfers" render={() => <WalletSidebar />} />
           <Route
             path="/@:name"
-            render={() => authenticated && <ForecastBlock username={match.params.name}/>}
+            render={() =>
+              authenticated && (
+                <ForecastBlock username={match.params.name} renderPlace={'rightSidebar'}/>
+              )
+            }
           />
           <Route path="/" render={() => <InterestingPeople/>}/>
         </Switch>

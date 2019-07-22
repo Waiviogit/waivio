@@ -26,7 +26,3 @@ export default (state = initialState, action) => {
 };
 
 export const getForecastData = state => state.forecastData;
-export const getForecastDataByUser = (state, userName) =>
-  state.forecastData.filter(forecast => forecast.author === userName);
-export const getForecastDataByQuote = (state, quote) =>
-  state.forecastData.filter(forecast => forecast.security.toLowerCase() === quote);
