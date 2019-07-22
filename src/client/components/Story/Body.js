@@ -6,13 +6,13 @@ import classNames from 'classnames';
 import sanitizeHtml from 'sanitize-html';
 import Remarkable from 'remarkable';
 import embedjs from 'embedjs';
-import { jsonParse } from '../../helpers/formatter';
+import {jsonParse} from '../../helpers/formatter';
 import sanitizeConfig from '../../vendor/SanitizeConfig';
-import { imageRegex, dtubeImageRegex, rewriteRegex } from '../../helpers/regexHelpers';
+import {dtubeImageRegex, imageRegex, rewriteRegex} from '../../helpers/regexHelpers';
 import htmlReady from '../../vendor/steemitHtmlReady';
 import improve from '../../helpers/improve';
 import PostFeedEmbed from './PostFeedEmbed';
-import { forecastPostMessage } from '../../helpers/postHelpers';
+import {forecastPostMessage} from '../../helpers/postHelpers';
 import './Body.less';
 
 export const remarkable = new Remarkable({
@@ -45,8 +45,7 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
   if (!body) return '';
   let parsedBody = body.replace(/<!--([\s\S]+?)(-->|$)/g, '(html comment removed: $1)');
 
-
-  if(parsedBody.indexOf(forecastPostMessage) > 0) {
+  if (parsedBody.indexOf(forecastPostMessage) > 0) {
     parsedBody = parsedBody.slice(0, parsedBody.indexOf(forecastPostMessage));
   }
 

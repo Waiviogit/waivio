@@ -1,6 +1,6 @@
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
 
-import { routerReducer } from 'react-router-redux';
+import {routerReducer} from 'react-router-redux';
 
 import appReducer, * as fromApp from './app/appReducer';
 import authReducer, * as fromAuth from './auth/authReducer';
@@ -23,6 +23,7 @@ import platformReducer from '../investarena/redux/reducers/platformReducer';
 import dealsReducer from '../investarena/redux/reducers/dealsReducer';
 import modalsReducer from '../investarena/redux/reducers/modalsReducer';
 import chartsReducer from '../investarena/redux/reducers/chartsReducer';
+import forecastReducer, * as fromForecastReducer from '../investarena/redux/reducers/forecastReducer';
 import topPerformersReducer, * as fromTopPerformers from '../investarena/redux/reducers/topPerformersReducer';
 import wobjectReducer, * as fromObject from '../client/object/wobjectReducer';
 import objectTypesReducer, * as fromObjectTypes from '../client/objectTypes/objectTypesReducer';
@@ -60,6 +61,7 @@ export default () =>
     append: appendReducer,
     gallery: galleryReducer,
     topPerformers: topPerformersReducer,
+    forecasts: forecastReducer,
   });
 
 export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);
@@ -194,6 +196,7 @@ export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectAuthor = state => fromObject.getObjectAuthor(state.object);
 export const getObjectFields = state => fromObject.getObjectFields(state.object);
 export const getRatingFields = state => fromObject.getRatingFields(state.object);
+export const getObjectChartId = state => fromObject.getObjectChartId(state.object);
 export const getobjectTypesState = state => fromObjectTypes.getobjectTypesState(state.objectTypes);
 export const getObjectTypeState = state => fromObjectType.getobjectType(state.objectType);
 
@@ -211,3 +214,5 @@ export const getPerformersStatisticLoading = state =>
   fromTopPerformers.getPerformersStatisticLoading(state.topPerformers);
 export const getPerformersStatisticLoaded = state =>
   fromTopPerformers.getPerformersStatisticLoaded(state.topPerformers);
+
+export const getForecastData = state => fromForecastReducer.getForecastData(state.forecasts);

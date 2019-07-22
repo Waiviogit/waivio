@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Route, Switch, withRouter } from 'react-router-dom';
+import {connect} from 'react-redux';
+import {Route, Switch, withRouter} from 'react-router-dom';
 import * as store from '../../reducers';
 import InterestingPeople from '../../components/Sidebar/InterestingPeople';
 import SignUp from '../../components/Sidebar/SignUp';
@@ -9,7 +9,7 @@ import PostRecommendation from '../../components/Sidebar/PostRecommendation';
 import Loading from '../../components/Icon/Loading';
 import UserActivitySearch from '../../activity/UserActivitySearch';
 import WalletSidebar from '../../components/Sidebar/WalletSidebar';
-import ObjectWeightBlock from '../../components/Sidebar/ObjectWeightBlock';
+import ForecastBlock from '../../components/ForecastBlock';
 
 @withRouter
 @connect(state => ({
@@ -45,14 +45,13 @@ export default class RightSidebar extends React.Component {
           <Route path="/@:name/transfers" render={() => <WalletSidebar />} />
           <Route
             path="/@:name"
-            render={() => authenticated && <ObjectWeightBlock username={match.params.name} />}
+            render={() =>
+              authenticated && (
+                <ForecastBlock username={match.params.name} renderPlace={'rightSidebar'}/>
+              )
+            }
           />
-          <Route
-            path="/"
-            render={() => (
-                <InterestingPeople />
-            )}
-          />
+          <Route path="/" render={() => <InterestingPeople/>}/>
         </Switch>
         {showPostRecommendation && <PostRecommendation isAuthFetching={isAuthFetching} />}
       </div>

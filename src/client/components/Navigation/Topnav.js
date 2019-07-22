@@ -1,41 +1,38 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { injectIntl, FormattedMessage } from 'react-intl';
-import { withRouter, Link, NavLink } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { Menu, Icon, Input, AutoComplete, Button, Modal } from 'antd';
+import {FormattedMessage, injectIntl} from 'react-intl';
+import {Link, NavLink, withRouter} from 'react-router-dom';
+import {connect} from 'react-redux';
+import {AutoComplete, Button, Icon, Input, Menu, Modal} from 'antd';
 import classNames from 'classnames';
-import { searchAutoComplete } from '../../search/searchActions';
-import { getUpdatedSCUserMetadata } from '../../auth/authActions';
+import {searchAutoComplete} from '../../search/searchActions';
+import {getUpdatedSCUserMetadata} from '../../auth/authActions';
 import {
-  getAutoCompleteSearchResults,
-  getNotifications,
   getAuthenticatedUserSCMetaData,
+  getAutoCompleteSearchResults,
   getIsLoadingNotifications,
-  getScreenSize,
   getNightmode,
+  getNotifications,
+  getScreenSize,
 } from '../../reducers';
 import ModalBroker from '../../../investarena/components/Modals/ModalBroker';
 import ModalDealConfirmation from '../../../investarena/components/Modals/ModalDealConfirmation';
 import SteemConnect from '../../steemConnectAPI';
-import { PARSED_NOTIFICATIONS } from '../../../common/constants/notifications';
+import {PARSED_NOTIFICATIONS} from '../../../common/constants/notifications';
 import BTooltip from '../BTooltip';
 import Avatar from '../Avatar';
-import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
+import PopoverMenu, {PopoverMenuItem} from '../PopoverMenu/PopoverMenu';
 import Popover from '../Popover';
 import Notifications from './Notifications/Notifications';
 import LanguageSettings from './LanguageSettings';
 import './Topnav.less';
 import Balance from '../../../investarena/components/Header/Balance';
-import {
-  getPlatformNameState,
-  getIsLoadingPlatformState,
-} from '../../../investarena/redux/selectors/platformSelectors';
-import { toggleModal } from '../../../investarena/redux/actions/modalsActions';
+import {getIsLoadingPlatformState, getPlatformNameState,} from '../../../investarena/redux/selectors/platformSelectors';
+import {toggleModal} from '../../../investarena/redux/actions/modalsActions';
 import config from '../../../investarena/configApi/config';
-import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
-import { objectFields } from '../../../common/constants/listOfFields';
+import {getFieldWithMaxWeight} from '../../object/wObjectHelper';
+import {objectFields} from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
 import ModalSignUp from './ModalSignUp/ModalSignUp';
 
@@ -464,6 +461,7 @@ class Topnav extends React.Component {
                   )}
                 </div>
               </div>
+
               <div className="Topnav__search-content-small">{option.object_type}</div>
             </AutoComplete.Option>
           ) : null;

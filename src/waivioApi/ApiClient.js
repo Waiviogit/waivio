@@ -1,7 +1,7 @@
 import fetch from 'isomorphic-fetch';
 import config from './routes';
-import { getFollowingCount } from '../client/helpers/apiHelpers';
-import { supportedObjectTypes } from '../investarena/constants/objectsInvestarena';
+import {getFollowingCount} from '../client/helpers/apiHelpers';
+import {supportedObjectTypes} from '../investarena/constants/objectsInvestarena';
 
 const headers = {
   Accept: 'application/json',
@@ -38,10 +38,21 @@ export const getRecommendedObjects = () =>
     }),
   }).then(res => res.json());
 
-export const getObjects = ({ limit = 30, locale = 'en-US', skip = 0, isOnlyHashtags, invObjects,
-                             requiredFields = [], }) => {
-  const reqData = { limit, locale, skip,  object_types: invObjects ? supportedObjectTypes : [],
-    required_fields: requiredFields,};
+export const getObjects = ({
+                             limit = 30,
+                             locale = 'en-US',
+                             skip = 0,
+                             isOnlyHashtags,
+                             invObjects,
+                             requiredFields = [],
+                           }) => {
+  const reqData = {
+    limit,
+    locale,
+    skip,
+    object_types: invObjects ? supportedObjectTypes : [],
+    required_fields: requiredFields,
+  };
   if (isOnlyHashtags) reqData.object_types = ['hashtag'];
   else reqData.exclude_object_types = ['hashtag'];
   return fetch(`${config.apiPrefix}${config.getObjects}`, {
