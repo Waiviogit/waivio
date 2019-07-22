@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import classNames from 'classnames';
 import { haveAccess, hasType, accessTypesArr } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import {
@@ -33,6 +34,7 @@ import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
 import getClientWObject from '../../adapters';
+import LinkButton from '../../components/LinkButton/LinkButton';
 import './ObjectInfo.less';
 
 @withRouter
@@ -204,12 +206,14 @@ class ObjectInfo extends React.Component {
 
     const getMenuSectionLink = item => (
       <div className="object-sidebar__menu-item" key={item.author_permlink}>
-        <Link
-          className={location.hash.slice(1).split('/')[0] === item.author_permlink ? 'active' : ''}
+        <LinkButton
+          className={classNames('menu-btn', {
+            active: location.hash.slice(1).split('/')[0] === item.author_permlink,
+          })}
           to={`/object/${wobject.author_permlink}/${URL.SEGMENT.MENU}#${item.author_permlink}`}
         >
           {item.alias || getFieldWithMaxWeight(item, objectFields.name)}
-        </Link>
+        </LinkButton>
       </div>
     );
     const menuSection = (
