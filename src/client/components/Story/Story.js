@@ -46,7 +46,6 @@ class Story extends React.Component {
     showNSFWPosts: PropTypes.bool.isRequired,
     onActionInitiated: PropTypes.func.isRequired,
     pendingLike: PropTypes.bool,
-    pendingFlag: PropTypes.bool,
     pendingFollow: PropTypes.bool,
     pendingBookmark: PropTypes.bool,
     saving: PropTypes.bool,
@@ -66,7 +65,6 @@ class Story extends React.Component {
 
   static defaultProps = {
     pendingLike: false,
-    pendingFlag: false,
     pendingFollow: false,
     pendingBookmark: false,
     saving: false,
@@ -170,6 +168,14 @@ class Story extends React.Component {
     return returnData;
   };
 
+  getWeighForUpdates = weight => {
+    if (this.props.post.append_field_name) {
+      if (weight > 9998) return weight - 1;
+      return weight + 1;
+    }
+    return weight;
+  };
+
   handleLikeClick(post, postState, weight = 10000) {
     const { sliderMode, user, defaultVotePercent } = this.props;
     const author = post.author_original || post.author;
@@ -183,8 +189,11 @@ class Story extends React.Component {
     }
   }
 
-  handleReportClick(post, postState) {
-    const weight = postState.isReported ? 0 : -10000;
+  handleReportClick(post, postState, isRejectField) {
+    let weight = postState.isReported ? 0 : -10000;
+    if (isRejectField) {
+      weight = postState.isReported ? 0 : 9999;
+    }
     const author = post.author_original || post.author;
     this.props.votePost(post.id, author, post.permlink, weight);
   }
@@ -315,7 +324,6 @@ class Story extends React.Component {
       post,
       postState,
       pendingLike,
-      pendingFlag,
       pendingFollow,
       pendingBookmark,
       saving,
@@ -437,7 +445,7 @@ class Story extends React.Component {
               post={post}
               postState={postState}
               pendingLike={pendingLike}
-              pendingFlag={pendingFlag}
+              pendingFlag={pendingLike}
               rewardFund={rewardFund}
               ownPost={ownPost}
               singlePostVew={singlePostVew}
