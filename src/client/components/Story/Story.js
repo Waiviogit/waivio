@@ -30,6 +30,7 @@ import './Story.less';
 import ObjectAvatar from '../ObjectAvatar';
 import PostedFrom from './PostedFrom';
 import WeightTag from '../WeightTag';
+import { calculateApprovePercent } from '../../helpers/wObjectHelper';
 
 @injectIntl
 @withRouter
@@ -106,6 +107,23 @@ class Story extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
   }
+
+  getApprovalTagLayoyt = () => {
+    const percent = calculateApprovePercent(this.props.post.active_votes);
+    return (
+      <React.Fragment>
+        <Tag>
+          <span>
+            Approval:{' '}
+            <span className={`CalculatedPercent-${percent >= 70 ? 'green' : 'red'}`}>
+              {percent}%
+            </span>
+          </span>
+        </Tag>
+        <span className="MinPercent">Min 70% is required</span>
+      </React.Fragment>
+    );
+  };
 
   getDisplayStoryPreview() {
     const { post, showNSFWPosts } = this.props;
@@ -319,7 +337,7 @@ class Story extends React.Component {
 
   render() {
     const {
-      intl,
+      // intl,
       user,
       post,
       postState,
@@ -420,14 +438,7 @@ class Story extends React.Component {
                       id={`object_field_${post.append_field_name}`}
                       defaultMessage={post.append_field_name}
                     />
-                    {!_.isNil(post.append_field_weight) && (
-                      <Tag>
-                        {intl.formatMessage(
-                          { id: 'weight_score_value', defaultMessage: 'Weight: {value}' },
-                          { value: Number(post.append_field_weight).toFixed(0) },
-                        )}
-                      </Tag>
-                    )}
+                    {!_.isNil(post.append_field_weight) && this.getApprovalTagLayoyt()}
                   </React.Fragment>
                 ) : (
                   <React.Fragment>

@@ -250,7 +250,7 @@ export default class Buttons extends React.Component {
       pendingLike,
       ownPost,
       defaultVotePercent,
-      pendingFlag,
+      // pendingFlag,
     } = this.props;
 
     const isAppend = !!this.props.post.append_field_name;
@@ -329,78 +329,76 @@ export default class Buttons extends React.Component {
       <div className="Buttons">
         {isAppend ? (
           <React.Fragment>
-            <BTooltip title={likeTooltip}>
-              <a role="presentation" className={likeClass} onClick={this.handleLikeClick}>
-                {pendingLike ? (
-                  <Icon type="loading" />
-                ) : (
-                  <FormattedMessage id="approve" defaultMessage="Approve" />
-                )}
-              </a>
-            </BTooltip>
-            {upVotes.length > 0 && (
-              <span
-                className="Buttons__number Buttons__reactions-count"
-                role="presentation"
-                onClick={this.handleShowReactions}
-              >
-                <BTooltip
-                  title={
-                    <div>
-                      {upVotes.length > 0 ? (
-                        upVotesPreview
-                      ) : (
-                        <FormattedMessage id="no_approves" defaultMessage="No approves yet" />
-                      )}
-                      {upVotesMore}
-                    </div>
-                  }
-                >
-                  <FormattedNumber value={upVotes.length} />
-                  <span />
+            {pendingLike ? (
+              <Icon type="loading" />
+            ) : (
+              <React.Fragment>
+                <BTooltip title={likeTooltip}>
+                  <a role="presentation" className={likeClass} onClick={this.handleLikeClick}>
+                    <FormattedMessage id="approve" defaultMessage="Approve" />
+                  </a>
                 </BTooltip>
-              </span>
-            )}
-            <React.Fragment>
-              <BTooltip
-                title={
-                  <span>
-                    {intl.formatMessage(postState.isReported ? messageUnLiked : messageLiked)}
+                {upVotes.length > 0 && (
+                  <span
+                    className="Buttons__number Buttons__reactions-count"
+                    role="presentation"
+                    onClick={this.handleShowReactions}
+                  >
+                    <BTooltip
+                      title={
+                        <div>
+                          {upVotes.length > 0 ? (
+                            upVotesPreview
+                          ) : (
+                            <FormattedMessage id="no_approves" defaultMessage="No approves yet" />
+                          )}
+                          {upVotesMore}
+                        </div>
+                      }
+                    >
+                      <FormattedNumber value={upVotes.length} />
+                      <span />
+                    </BTooltip>
                   </span>
-                }
-              >
-                <a role="presentation" className={likeClass} onClick={this.onFlagClick}>
-                  {pendingFlag ? (
-                    <Icon type="loading" />
-                  ) : (
-                    <FormattedMessage id="reject" defaultMessage="Reject" />
-                  )}
-                </a>
-              </BTooltip>
-              {downVotes.length > 0 && (
-                <span
-                  className="Buttons__number Buttons__reactions-count"
-                  role="presentation"
-                  onClick={this.handleShowReactions}
-                >
+                )}
+                <React.Fragment>
                   <BTooltip
                     title={
-                      <div>
-                        {downVotes.length > 0 ? (
-                          upVotesPreview
-                        ) : (
-                          <FormattedMessage id="no_approves" defaultMessage="No approves yet" />
-                        )}
-                        {upVotesMore}
-                      </div>
+                      <span>
+                        {intl.formatMessage(postState.isReported ? messageUnLiked : messageLiked)}
+                      </span>
                     }
                   >
-                    <FormattedNumber value={downVotes.length} />
-                    <span />
+                    <a role="presentation" className={likeClass} onClick={this.onFlagClick}>
+                      <FormattedMessage id="reject" defaultMessage="Reject" />
+                    </a>
                   </BTooltip>
-                </span>
-              )}
-            </React.Fragment>
+                  {downVotes.length > 0 && (
+                    <span
+                      className="Buttons__number Buttons__reactions-count"
+                      role="presentation"
+                      onClick={this.handleShowReactions}
+                    >
+                      <BTooltip
+                        title={
+                          <div>
+                            {downVotes.length > 0 ? (
+                              upVotesPreview
+                            ) : (
+                              <FormattedMessage id="no_approves" defaultMessage="No approves yet" />
+                            )}
+                            {upVotesMore}
+                          </div>
+                        }
+                      >
+                        <FormattedNumber value={downVotes.length} />
+                        <span />
+                      </BTooltip>
+                    </span>
+                  )}
+                </React.Fragment>
+              </React.Fragment>
+            )}
           </React.Fragment>
         ) : (
           <React.Fragment>
