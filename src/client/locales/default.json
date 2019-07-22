@@ -169,6 +169,7 @@
   "reputation_score_value": "Reputation score: {value}",
   "original_poster": "Original poster",
   "no_likes": "No likes yet",
+  "no_approves": "No approves yet",
   "no_dislikes": "No dislikes",
   "sort_by": "Sort by",
   "sort_trending": "Trending",
@@ -587,5 +588,9 @@
   "unavailable": "Unavailable",
   "relisted": "Relisted",
   "find": "Find",
+  "approve": "Approve",
+  "reject": "Reject",
+  "vote": "Vote",
+  "unvote": "Unvote",
   "rewardsUser": "Select a user to display the rewards"
 }
