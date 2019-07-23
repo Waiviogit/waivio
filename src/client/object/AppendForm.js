@@ -641,9 +641,7 @@ export default class AppendForm extends Component {
         return (
           <React.Fragment>
             <Form.Item>
-              {getFieldDecorator('menuItemName', {
-                rules: this.getFieldRules('menuItemName'),
-              })(
+              {getFieldDecorator('menuItemName')(
                 <Input
                   className="AppendForm__input"
                   disabled={loading}
