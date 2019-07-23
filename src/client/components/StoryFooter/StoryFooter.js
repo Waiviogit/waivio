@@ -31,6 +31,7 @@ class StoryFooter extends React.Component {
     saving: PropTypes.bool,
     singlePostVew: PropTypes.bool,
     onLikeClick: PropTypes.func,
+    onReportClick: PropTypes.func.isRequired,
     onShareClick: PropTypes.func,
     onEditClick: PropTypes.func,
     handlePostPopoverMenuClick: PropTypes.func,
@@ -134,6 +135,7 @@ class StoryFooter extends React.Component {
       saving,
       singlePostVew,
       handlePostPopoverMenuClick,
+      onReportClick,
     } = this.props;
 
     return (
@@ -155,6 +157,7 @@ class StoryFooter extends React.Component {
               ownPost={ownPost}
               defaultVotePercent={defaultVotePercent}
               onLikeClick={this.handleLikeClick}
+              onReportClick={onReportClick}
               onShareClick={this.handleShareClick}
               onEditClick={this.handleEditClick}
               onCommentClick={this.toggleCommentsVisibility}
