@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import classNames from 'classnames';
 import { haveAccess, hasType, accessTypesArr } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import {
@@ -12,6 +13,7 @@ import {
   getFieldsCount,
   getInnerFieldWithMaxWeight,
   sortListItemsBy,
+  combineObjectMenu,
 } from '../../object/wObjectHelper';
 import {
   objectFields,
@@ -33,6 +35,7 @@ import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
 import getClientWObject from '../../adapters';
+import LinkButton from '../../components/LinkButton/LinkButton';
 import './ObjectInfo.less';
 
 @withRouter
@@ -202,16 +205,39 @@ class ObjectInfo extends React.Component {
       ) : null;
     };
 
-    const getMenuSectionLink = item => (
-      <div className="object-sidebar__menu-item" key={item.author_permlink}>
-        <Link
-          className={location.hash.slice(1).split('/')[0] === item.author_permlink ? 'active' : ''}
+    const getMenuSectionLink = item => {
+      let menuItem = (
+        <LinkButton
+          className={classNames('menu-btn', {
+            active: location.hash.slice(1).split('/')[0] === item.author_permlink,
+          })}
           to={`/object/${wobject.author_permlink}/${URL.SEGMENT.MENU}#${item.author_permlink}`}
         >
-          {item.alias || getFieldWithMaxWeight(item, objectFields.name)}
-        </Link>
-      </div>
-    );
+          {item.alias || item.name || getFieldWithMaxWeight(item, objectFields.name)}
+        </LinkButton>
+      );
+      switch (item.id) {
+        case TYPES_OF_MENU_ITEM.BUTTON:
+          menuItem = (
+            <Button
+              className="LinkButton menu-btn"
+              href={this.getLink(item.link)}
+              target={'_blank'}
+              block
+            >
+              {item.title}
+            </Button>
+          );
+          break;
+        default:
+          break;
+      }
+      return (
+        <div className="object-sidebar__menu-item" key={item.id || item.author_permlink}>
+          {menuItem}
+        </div>
+      );
+    };
     const menuSection = (
       <React.Fragment>
         {isEditMode && (
@@ -230,12 +256,28 @@ class ObjectInfo extends React.Component {
                 TYPES_OF_MENU_ITEM.PAGE,
                 menuPages && menuPages.map(item => getMenuSectionLink(item)),
               )}
+              {listItem(
+                objectFields.button,
+                button && button.title && button.link && (
+                  <Button
+                    type="primary"
+                    className="field-button"
+                    href={this.getLink(button.link)}
+                    target={'_blank'}
+                  >
+                    {button.title}
+                  </Button>
+                ),
+              )}
             </React.Fragment>
           )}
           {!isEditMode &&
             sortListItemsBy(
-              menuItems.map(menuItem =>
-                getClientWObject(menuItem, ['author_permlink', 'default_name', 'alias']),
+              combineObjectMenu(
+                menuItems.map(menuItem =>
+                  getClientWObject(menuItem, ['author_permlink', 'default_name', 'alias']),
+                ),
+                { button },
               ),
               'custom',
               _.get(wobject, 'sortCustom', null),
@@ -308,19 +350,6 @@ class ObjectInfo extends React.Component {
                   <div className="object-sidebar__section-title">
                     <FormattedMessage id="about" defaultMessage="About" />
                   </div>
-                )}
-                {listItem(
-                  objectFields.button,
-                  button && button.title && button.link && (
-                    <Button
-                      type="primary"
-                      className="field-button"
-                      href={this.getLink(button.link)}
-                      target={'_blank'}
-                    >
-                      {button.title}
-                    </Button>
-                  ),
                 )}
                 {listItem(objectFields.description, <DescriptionInfo description={description} />)}
                 {listItem(
