@@ -1,0 +1,19 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.dnd-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border: @base-border;
+  border-radius: 4px;
+
+  &__name {
+    font-weight: 500;
+    overflow: hidden;
+  }
+  &__type {
+    opacity: 0.7;
+  }
+}

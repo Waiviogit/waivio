@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { getClientWObj } from '../adapters';
 import {
   supportedObjectFields,
   objectFieldsWithInnerData,
@@ -54,7 +55,10 @@ export const getField = (wObject, currentField, fieldName) => {
   return parsed ? parsed[fieldName] : wo.body;
 };
 
-export const getListItems = (wobj, uniq = false) => {
+export const getListItems = (
+  wobj,
+  { uniq, isMappedToClientWobject } = { uniq: false, isMappedToClientWobject: false },
+) => {
   let items = [];
   if (wobj) {
     if (wobj.listItems) {
@@ -65,6 +69,9 @@ export const getListItems = (wobj, uniq = false) => {
   }
   if (uniq) {
     items = _.uniqBy(items, 'author_permlink');
+  }
+  if (isMappedToClientWobject) {
+    items = items.map(item => getClientWObj(item));
   }
   return items;
 };
@@ -97,7 +104,7 @@ export const getListItemLink = (listItem, location) => {
 export const getFieldsCount = (wObject, fieldName) => {
   let count = 0;
   if (_.includes(TYPES_OF_MENU_ITEM, fieldName)) {
-    count = getListItems(wObject, true).filter(item =>
+    count = getListItems(wObject, { uniq: true }).filter(item =>
       fieldName === TYPES_OF_MENU_ITEM.LIST
         ? item.object_type === OBJECT_TYPE.LIST
         : item.object_type !== OBJECT_TYPE.LIST,
@@ -239,4 +246,16 @@ export function validateContent(pageContent = '', prevPageContent = '') {
   if (!currContent || currContent === prevPageContent.trim()) return false;
 
   return true;
+}
+
+export function combineObjectMenu(menuItems, { button } = { button: null, news: null }) {
+  const result = [...menuItems];
+  if (button) {
+    result.push({
+      id: TYPES_OF_MENU_ITEM.BUTTON,
+      name: button.title,
+      link: button.link,
+    });
+  }
+  return result;
 }

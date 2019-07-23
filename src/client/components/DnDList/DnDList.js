@@ -19,7 +19,12 @@ const reorder = (list, startIndex, endIndex) => {
 
 class DnDList extends Component {
   static propTypes = {
-    listItems: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+    listItems: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string,
+        content: PropTypes.node,
+      }),
+    ).isRequired,
     accentColor: PropTypes.string,
     onChange: PropTypes.func,
   };

@@ -28,6 +28,7 @@ export const objectFields = {
 export const TYPES_OF_MENU_ITEM = {
   LIST: 'menuList',
   PAGE: 'menuPage',
+  BUTTON: 'menuButton',
 };
 export const objMenuTypes = Object.values(TYPES_OF_MENU_ITEM);
 

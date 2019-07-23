@@ -5,7 +5,7 @@ import { withRouter } from 'react-router';
 import './LinkButton.less';
 
 const LinkButton = props => {
-  const { history, to, className, size, onClick, children } = props;
+  const { history, to, className, size, onClick, match, location, ...rest } = props;
   return (
     <Button
       block
@@ -15,9 +15,8 @@ const LinkButton = props => {
         if (onClick && typeof onClick === 'function') onClick(event);
         history.push(to);
       }}
-    >
-      {children}
-    </Button>
+      {...rest}
+    />
   );
 };
 
