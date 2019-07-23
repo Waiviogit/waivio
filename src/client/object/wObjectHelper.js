@@ -253,8 +253,7 @@ export function combineObjectMenu(menuItems, { button } = { button: null, news: 
   if (button) {
     result.push({
       id: TYPES_OF_MENU_ITEM.BUTTON,
-      name: button.title,
-      link: button.link,
+      ...button,
     });
   }
   return result;

@@ -5,7 +5,7 @@ import { withRouter } from 'react-router';
 import './LinkButton.less';
 
 const LinkButton = props => {
-  const { history, to, className, size, onClick, match, location, ...rest } = props;
+  const { history, to, className, size, onClick, match, location, staticContext, ...rest } = props;
   return (
     <Button
       block

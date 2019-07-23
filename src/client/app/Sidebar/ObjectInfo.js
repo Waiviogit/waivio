@@ -213,7 +213,7 @@ class ObjectInfo extends React.Component {
           })}
           to={`/object/${wobject.author_permlink}/${URL.SEGMENT.MENU}#${item.author_permlink}`}
         >
-          {item.alias || item.name}
+          {item.alias || item.name || getFieldWithMaxWeight(item, objectFields.name)}
         </LinkButton>
       );
       switch (item.id) {
@@ -233,7 +233,7 @@ class ObjectInfo extends React.Component {
           break;
       }
       return (
-        <div className="object-sidebar__menu-item" key={item.id}>
+        <div className="object-sidebar__menu-item" key={item.id || item.author_permlink}>
           {menuItem}
         </div>
       );
