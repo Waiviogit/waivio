@@ -3,6 +3,7 @@ import {
   getFieldWithMaxWeight,
   sortListItemsBy,
   getInnerFieldWithMaxWeight,
+  getFieldsWithMaxWeight,
 } from '../wObjectHelper';
 import { WAIVIO_META_FIELD_NAME } from '../../../common/constants/waivio';
 
@@ -216,6 +217,478 @@ describe('getFieldWithMaxWeight', () => {
       ],
     };
     expect(getFieldWithMaxWeight(wObject, 'name', null)).toEqual('');
+  });
+});
+
+describe('getFieldsWithMaxWeight', () => {
+  it('should return empty object if wObj is empty', () => {
+    const wObject = {};
+    expect(getFieldsWithMaxWeight(wObject)).toEqual({});
+  });
+  it('should return empty object if wObj.fields is empty', () => {
+    const wObject = { fields: [] };
+    expect(getFieldsWithMaxWeight(wObject)).toEqual({});
+  });
+  it('should return object with actual fields', () => {
+    const wObject = {
+      fields: [
+        {
+          weight: 1,
+          locale: 'en-US',
+          _id: '5cdac71a59847a4fc774aa59',
+          creator: 'suy38',
+          author: 'suy38',
+          name: 'name',
+          body: 'milk',
+        },
+        {
+          weight: 2,
+          locale: 'en-US',
+          _id: '5ce40dbe8ca3d04633808c0e',
+          creator: 'alexeygrigurko',
+          author: 'an98r',
+          name: 'newsFilter',
+          body: 'blog',
+        },
+        {
+          weight: 2,
+          locale: 'en-US',
+          _id: '5ced27d7be601c180c285782',
+          creator: 'alexeygrigurko',
+          author: 'j5gs7',
+          name: 'website',
+          body: 'http://www.broadwaychinese.ca',
+        },
+      ],
+    };
+    const expected = {
+      name: 'milk',
+      newsFilter: 'blog',
+      website: 'http://www.broadwaychinese.ca',
+    };
+    expect(getFieldsWithMaxWeight(wObject)).toEqual(expected);
+  });
+  it('should return object with actual fields if the same fields in a row with same weight', () => {
+    const wObject = {
+      fields: [
+        {
+          weight: 1,
+          locale: 'en-US',
+          _id: '5cdac71a59847a4fc774aa59',
+          creator: 'suy38',
+          author: 'suy38',
+          name: 'name',
+          body: 'milk',
+        },
+        {
+          weight: 1,
+          locale: 'en-US',
+          _id: '5ce40b868ca3d0463374943a',
+          creator: 'alexeygrigurko',
+          author: 'b23df',
+          name: 'newsFilter',
+          body: 'steem',
+        },
+        {
+          weight: 1,
+          locale: 'en-US',
+          _id: '5ce40ca08ca3d046337a8300',
+          creator: 'alexeygrigurko',
+          author: 'vp4g5',
+          name: 'newsFilter',
+          body: 'allowList',
+        },
+        {
+          weight: 2,
+          locale: 'en-US',
+          _id: '5ced27d7be601c180c285782',
+          creator: 'alexeygrigurko',
+          author: 'j5gs7',
+          name: 'website',
+          body: 'http://www.broadwaychinese.ca',
+        },
+      ],
+    };
+    const expected = {
+      name: 'milk',
+      newsFilter: 'steem',
+      website: 'http://www.broadwaychinese.ca',
+    };
+    expect(getFieldsWithMaxWeight(wObject)).toEqual(expected);
+  });
+  it('should return object with actual fields if the same fields in a row with different weight', () => {
+    const wObject = {
+      fields: [
+        {
+          weight: 1,
+          locale: 'en-US',
+          _id: '5cdac71a59847a4fc774aa59',
+          creator: 'suy38',
+          author: 'suy38',
+          name: 'name',
+          body: 'milk',
+        },
+        {
+          weight: 1,
+          locale: 'en-US',
+          _id: '5ce40b868ca3d0463374943a',
+          creator: 'alexeygrigurko',
+          author: 'b23df',
+          name: 'newsFilter',
+          body: 'steem',
+        },
+        {
+          weight: 2,
+          locale: 'en-US',
+          _id: '5ce40ca08ca3d046337a8300',
+          creator: 'alexeygrigurko',
+          author: 'vp4g5',
+          name: 'newsFilter',
+          body: 'allowList',
+        },
+        {
+          weight: 2,
+          locale: 'en-US',
+          _id: '5ced27d7be601c180c285782',
+          creator: 'alexeygrigurko',
+          author: 'j5gs7',
+          name: 'website',
+          body: 'http://www.broadwaychinese.ca',
+        },
+      ],
+    };
+    const expected = {
+      name: 'milk',
+      newsFilter: 'allowList',
+      website: 'http://www.broadwaychinese.ca',
+    };
+    expect(getFieldsWithMaxWeight(wObject)).toEqual(expected);
+  });
+  it('should return object with actual fields if the same fields not in a row with same weight', () => {
+    const wObject = {
+      fields: [
+        {
+          weight: 1,
+          locale: 'en-US',
+          _id: '5ce40b868ca3d0463374943a',
+          creator: 'alexeygrigurko',
+          author: 'b23df',
+          name: 'newsFilter',
+          body: 'steem',
+        },
+        {
+          weight: 1,
+          locale: 'en-US',
+          _id: '5cdac71a59847a4fc774aa59',
+          creator: 'suy38',
+          author: 'suy38',
+          name: 'name',
+          body: 'milk',
+        },
+        {
+          weight: 1,
+          locale: 'en-US',
+          _id: '5ce40ca08ca3d046337a8300',
+          creator: 'alexeygrigurko',
+          author: 'vp4g5',
+          name: 'newsFilter',
+          body: 'allowList',
+        },
+        {
+          weight: 2,
+          locale: 'en-US',
+          _id: '5ced27d7be601c180c285782',
+          creator: 'alexeygrigurko',
+          author: 'j5gs7',
+          name: 'website',
+          body: 'http://www.broadwaychinese.ca',
+        },
+      ],
+    };
+    const expected = {
+      name: 'milk',
+      newsFilter: 'steem',
+      website: 'http://www.broadwaychinese.ca',
+    };
+    expect(getFieldsWithMaxWeight(wObject)).toEqual(expected);
+  });
+  it('should return object with actual fields if the same fields not in a row with different weight', () => {
+    const wObject = {
+      fields: [
+        {
+          weight: 2,
+          locale: 'en-US',
+          _id: '5ce40ca08ca3d046337a8300',
+          creator: 'alexeygrigurko',
+          author: 'vp4g5',
+          name: 'newsFilter',
+          body: 'allowList',
+        },
+        {
+          weight: 1,
+          locale: 'en-US',
+          _id: '5cdac71a59847a4fc774aa59',
+          creator: 'suy38',
+          author: 'suy38',
+          name: 'name',
+          body: 'milk',
+        },
+        {
+          weight: 1,
+          locale: 'en-US',
+          _id: '5ce40b868ca3d0463374943a',
+          creator: 'alexeygrigurko',
+          author: 'b23df',
+          name: 'newsFilter',
+          body: 'steem',
+        },
+
+        {
+          weight: 2,
+          locale: 'en-US',
+          _id: '5ced27d7be601c180c285782',
+          creator: 'alexeygrigurko',
+          author: 'j5gs7',
+          name: 'website',
+          body: 'http://www.broadwaychinese.ca',
+        },
+      ],
+    };
+    const expected = {
+      name: 'milk',
+      newsFilter: 'allowList',
+      website: 'http://www.broadwaychinese.ca',
+    };
+    expect(getFieldsWithMaxWeight(wObject)).toEqual(expected);
+  });
+  it('should return object with actual fields if the same fields, more then two, in a row with same weight', () => {
+    const wObject = {
+      fields: [
+        {
+          weight: 1,
+          locale: 'en-US',
+          _id: '5cdac71a59847a4fc774aa59',
+          creator: 'suy38',
+          author: 'suy38',
+          name: 'name',
+          body: 'milk',
+        },
+        {
+          weight: 1,
+          locale: 'en-US',
+          _id: '5ce40b868ca3d0463374943a',
+          creator: 'alexeygrigurko',
+          author: 'b23df',
+          name: 'newsFilter',
+          body: 'steem',
+        },
+        {
+          weight: 1,
+          locale: 'en-US',
+          _id: '5ce40ca08ca3d046337a8300',
+          creator: 'alexeygrigurko',
+          author: 'vp4g5',
+          name: 'newsFilter',
+          body: 'allowList',
+        },
+        {
+          weight: 1,
+          locale: 'en-US',
+          _id: '5ce40ca08ca3d046337a8300',
+          creator: 'alex',
+          author: 'vp4g5',
+          name: 'newsFilter',
+          body: 'someList',
+        },
+        {
+          weight: 2,
+          locale: 'en-US',
+          _id: '5ced27d7be601c180c285782',
+          creator: 'alexeygrigurko',
+          author: 'j5gs7',
+          name: 'website',
+          body: 'http://www.broadwaychinese.ca',
+        },
+      ],
+    };
+    const expected = {
+      name: 'milk',
+      newsFilter: 'steem',
+      website: 'http://www.broadwaychinese.ca',
+    };
+    expect(getFieldsWithMaxWeight(wObject)).toEqual(expected);
+  });
+  it('should return object with actual fields if the same fields, more then two, in a row with different weight', () => {
+    const wObject = {
+      fields: [
+        {
+          weight: 1,
+          locale: 'en-US',
+          _id: '5cdac71a59847a4fc774aa59',
+          creator: 'suy38',
+          author: 'suy38',
+          name: 'name',
+          body: 'milk',
+        },
+        {
+          weight: 1,
+          locale: 'en-US',
+          _id: '5ce40b868ca3d0463374943a',
+          creator: 'alexeygrigurko',
+          author: 'b23df',
+          name: 'newsFilter',
+          body: 'steem',
+        },
+        {
+          weight: 3,
+          locale: 'en-US',
+          _id: '5ce40b868ca3d0463374943a',
+          creator: 'alexeygrigurko',
+          author: 'b23df',
+          name: 'newsFilter',
+          body: 'sometext',
+        },
+        {
+          weight: 2,
+          locale: 'en-US',
+          _id: '5ce40ca08ca3d046337a8300',
+          creator: 'alexeygrigurko',
+          author: 'vp4g5',
+          name: 'newsFilter',
+          body: 'allowList',
+        },
+        {
+          weight: 2,
+          locale: 'en-US',
+          _id: '5ced27d7be601c180c285782',
+          creator: 'alexeygrigurko',
+          author: 'j5gs7',
+          name: 'website',
+          body: 'http://www.broadwaychinese.ca',
+        },
+      ],
+    };
+    const expected = {
+      name: 'milk',
+      newsFilter: 'sometext',
+      website: 'http://www.broadwaychinese.ca',
+    };
+    expect(getFieldsWithMaxWeight(wObject)).toEqual(expected);
+  });
+  it('should return object with actual fields if the same fields, more then two, not in a row with same weight', () => {
+    const wObject = {
+      fields: [
+        {
+          weight: 1,
+          locale: 'en-US',
+          _id: '5ce40b868ca3d0463374943a',
+          creator: 'alexeygrigurko',
+          author: 'b23df',
+          name: 'newsFilter',
+          body: 'steem',
+        },
+        {
+          weight: 1,
+          locale: 'en-US',
+          _id: '5cdac71a59847a4fc774aa59',
+          creator: 'suy38',
+          author: 'suy38',
+          name: 'name',
+          body: 'milk',
+        },
+        {
+          weight: 1,
+          locale: 'en-US',
+          _id: '5ce40ca08ca3d046337a8300',
+          creator: 'alexeygrigurko',
+          author: 'vp4g5',
+          name: 'newsFilter',
+          body: 'allowList',
+        },
+        {
+          weight: 2,
+          locale: 'en-US',
+          _id: '5ced27d7be601c180c285782',
+          creator: 'alexeygrigurko',
+          author: 'j5gs7',
+          name: 'website',
+          body: 'http://www.broadwaychinese.ca',
+        },
+        {
+          weight: 1,
+          locale: 'en-US',
+          _id: '5ce40ca08ca3d046337a8300',
+          creator: 'alexeygrigurko',
+          author: 'vp4g5',
+          name: 'newsFilter',
+          body: 'allow',
+        },
+      ],
+    };
+    const expected = {
+      name: 'milk',
+      newsFilter: 'steem',
+      website: 'http://www.broadwaychinese.ca',
+    };
+    expect(getFieldsWithMaxWeight(wObject)).toEqual(expected);
+  });
+  it('should return object with actual fields if the same fields, more then two, not in a row with different weight', () => {
+    const wObject = {
+      fields: [
+        {
+          weight: 2,
+          locale: 'en-US',
+          _id: '5ce40ca08ca3d046337a8300',
+          creator: 'alexeygrigurko',
+          author: 'vp4g5',
+          name: 'newsFilter',
+          body: 'allowList',
+        },
+        {
+          weight: 1,
+          locale: 'en-US',
+          _id: '5cdac71a59847a4fc774aa59',
+          creator: 'suy38',
+          author: 'suy38',
+          name: 'name',
+          body: 'milk',
+        },
+        {
+          weight: 1,
+          locale: 'en-US',
+          _id: '5ce40b868ca3d0463374943a',
+          creator: 'alexeygrigurko',
+          author: 'b23df',
+          name: 'newsFilter',
+          body: 'steem',
+        },
+
+        {
+          weight: 2,
+          locale: 'en-US',
+          _id: '5ced27d7be601c180c285782',
+          creator: 'alexeygrigurko',
+          author: 'j5gs7',
+          name: 'website',
+          body: 'http://www.broadwaychinese.ca',
+        },
+        {
+          weight: 4,
+          locale: 'en-US',
+          _id: '5ce40ca08ca3d046337a8300',
+          creator: 'alexeygrigurko',
+          author: 'vp4g5',
+          name: 'newsFilter',
+          body: 'allow',
+        },
+      ],
+    };
+    const expected = {
+      name: 'milk',
+      newsFilter: 'allow',
+      website: 'http://www.broadwaychinese.ca',
+    };
+    expect(getFieldsWithMaxWeight(wObject)).toEqual(expected);
   });
 });
 

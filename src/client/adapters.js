@@ -1,5 +1,5 @@
 import { objectFields } from '../common/constants/listOfFields';
-import { getFieldWithMaxWeight } from './object/wObjectHelper';
+import { getFieldWithMaxWeight, getFieldsWithMaxWeight } from './object/wObjectHelper';
 import DEFAULTS from './object/const/defaultValues';
 
 export const getClientWObj = (serverWObj, fieldsToInclude = [], defaultsFromParent = []) => {
@@ -40,9 +40,6 @@ export const getClientWObj = (serverWObj, fieldsToInclude = [], defaultsFromPare
       objectFields.avatar,
       defaultValues[objectFields.avatar],
     ),
-    name: getFieldWithMaxWeight(serverWObj, objectFields.name),
-    title: getFieldWithMaxWeight(serverWObj, objectFields.title),
-    price: getFieldWithMaxWeight(serverWObj, objectFields.price),
     parent: parent || '',
     weight: weight || '',
     createdAt: created_at || Date.now(),
@@ -56,7 +53,7 @@ export const getClientWObj = (serverWObj, fieldsToInclude = [], defaultsFromPare
     isNew: Boolean(isNew),
     rank: rank || 1,
     type: (object_type && object_type.toLowerCase()) || 'item',
-    background: getFieldWithMaxWeight(serverWObj, objectFields.background),
+    ...getFieldsWithMaxWeight(serverWObj),
   };
 
   if (fieldsToInclude && fieldsToInclude.length) {
