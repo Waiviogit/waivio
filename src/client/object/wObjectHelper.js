@@ -213,6 +213,8 @@ export const sortListItemsBy = (items, sortBy = 'by-name-asc', sortOrder = null)
     case 'by-name-desc':
       comparator = (a, b) => (a.name < b.name ? 1 : -1);
       break;
+    case 'custom':
+      break;
     case 'by-name-asc':
     default:
       comparator = (a, b) => (a.name > b.name ? 1 : -1);
@@ -248,12 +250,17 @@ export function validateContent(pageContent = '', prevPageContent = '') {
   return true;
 }
 
-export function combineObjectMenu(menuItems, { button } = { button: null, news: null }) {
+export function combineObjectMenu(menuItems, { button, news } = { button: null, news: null }) {
   const result = [...menuItems];
   if (button) {
     result.push({
       id: TYPES_OF_MENU_ITEM.BUTTON,
       ...button,
+    });
+  }
+  if (news) {
+    result.push({
+      id: TYPES_OF_MENU_ITEM.NEWS,
     });
   }
   return result;

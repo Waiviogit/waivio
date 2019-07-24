@@ -1229,6 +1229,17 @@ export default class AppendForm extends Component {
             content: <DnDListItem name={button.title} type={objectFields.button} />,
           });
         }
+        if (!_.isEmpty(wObject.newsFilter)) {
+          listItems.push({
+            id: TYPES_OF_MENU_ITEM.NEWS,
+            content: (
+              <DnDListItem
+                name={intl.formatMessage({ id: 'news', defaultMessage: 'News' })}
+                type={objectFields.newsFilter}
+              />
+            ),
+          });
+        }
         return (
           <React.Fragment>
             <Form.Item>

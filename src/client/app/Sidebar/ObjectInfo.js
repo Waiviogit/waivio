@@ -229,6 +229,18 @@ class ObjectInfo extends React.Component {
             </Button>
           );
           break;
+        case TYPES_OF_MENU_ITEM.NEWS:
+          menuItem = (
+            <LinkButton
+              className={classNames('menu-btn', {
+                active: location.pathname === `/object/${wobject.author_permlink}`,
+              })}
+              to={`/object/${wobject.author_permlink}`}
+            >
+              <FormattedMessage id="news" defaultMessage="News" />
+            </LinkButton>
+          );
+          break;
         default:
           break;
       }
@@ -259,16 +271,19 @@ class ObjectInfo extends React.Component {
               {listItem(
                 objectFields.button,
                 button && button.title && button.link && (
-                  <Button
-                    type="primary"
-                    className="field-button"
-                    href={this.getLink(button.link)}
-                    target={'_blank'}
-                  >
-                    {button.title}
-                  </Button>
+                  <div className="object-sidebar__menu-item">
+                    <Button
+                      className="LinkButton menu-btn"
+                      href={this.getLink(button.link)}
+                      target={'_blank'}
+                      block
+                    >
+                      {button.title}
+                    </Button>
+                  </div>
                 ),
               )}
+              {listItem(objectFields.newsFilter, null)}
             </React.Fragment>
           )}
           {!isEditMode &&
