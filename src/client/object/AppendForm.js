@@ -795,14 +795,15 @@ export default class AppendForm extends Component {
             {getFieldDecorator(objectFields.workTime, {
               rules: this.getFieldRules(objectFields.workTime),
             })(
-              <Input
+              <Input.TextArea
+                autosize={{ minRows: 4, maxRows: 8 }}
                 className={classNames('AppendForm__input', {
                   'validation-error': !this.state.isSomeValue,
                 })}
                 disabled={loading}
                 placeholder={intl.formatMessage({
                   id: 'work_time',
-                  defaultMessage: 'Work time',
+                  defaultMessage: 'Hours',
                 })}
               />,
             )}
