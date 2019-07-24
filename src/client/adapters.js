@@ -35,11 +35,7 @@ export const getClientWObj = (serverWObj, fieldsToInclude = [], defaultsFromPare
 
   const result = {
     id: author_permlink,
-    avatar: getFieldWithMaxWeight(
-      serverWObj,
-      objectFields.avatar,
-      defaultValues[objectFields.avatar],
-    ),
+    avatar: DEFAULTS.AVATAR,
     parent: parent || '',
     weight: weight || '',
     createdAt: created_at || Date.now(),

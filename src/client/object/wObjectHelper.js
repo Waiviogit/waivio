@@ -23,8 +23,7 @@ export const getFieldWithMaxWeight = (wObject, currentField, defaultValue = '') 
 
 export const getFieldsWithMaxWeight = wObj => {
   if (!wObj || (wObj && _.isEmpty(wObj.fields))) return {};
-  const result = {};
-  const maxWeightedObjects = wObj.fields.reduce((acc, curr) => {
+  const maxWeightedFields = wObj.fields.reduce((acc, curr) => {
     if (acc[curr.name]) {
       if (curr.weight > acc[curr.name].weight) {
         acc[curr.name] = curr;
@@ -34,11 +33,7 @@ export const getFieldsWithMaxWeight = wObj => {
     }
     return acc;
   }, {});
-
-  Object.keys(maxWeightedObjects).forEach(key => {
-    result[key] = maxWeightedObjects[key].body;
-  });
-  return result;
+  return _.mapValues(maxWeightedFields, 'body');
 };
 
 export const getInnerFieldWithMaxWeight = (wObject, currentField, innerField) => {
