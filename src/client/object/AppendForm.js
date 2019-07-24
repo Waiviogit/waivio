@@ -641,9 +641,7 @@ export default class AppendForm extends Component {
         return (
           <React.Fragment>
             <Form.Item>
-              {getFieldDecorator('menuItemName', {
-                rules: this.getFieldRules('menuItemName'),
-              })(
+              {getFieldDecorator('menuItemName')(
                 <Input
                   className="AppendForm__input"
                   disabled={loading}
@@ -1229,6 +1227,17 @@ export default class AppendForm extends Component {
           listItems.push({
             id: TYPES_OF_MENU_ITEM.BUTTON,
             content: <DnDListItem name={button.title} type={objectFields.button} />,
+          });
+        }
+        if (!_.isEmpty(wObject.newsFilter)) {
+          listItems.push({
+            id: TYPES_OF_MENU_ITEM.NEWS,
+            content: (
+              <DnDListItem
+                name={intl.formatMessage({ id: 'news', defaultMessage: 'News' })}
+                type={objectFields.newsFilter}
+              />
+            ),
           });
         }
         return (

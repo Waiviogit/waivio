@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { NavLink, withRouter } from 'react-router-dom';
 import './TopNavigation.less';
 
-const TopNavigation = ({ authenticated, userName }) => (
+const TopNavigation = ({ authenticated, userName, location }) => (
   <ul className="TopNavigation">
     {authenticated && (
       <li>
@@ -76,10 +76,14 @@ const TopNavigation = ({ authenticated, userName }) => (
 
 TopNavigation.propTypes = {
   authenticated: PropTypes.bool.isRequired,
+  location: PropTypes.shape(),
   userName: PropTypes.string,
 };
 
 TopNavigation.defaultProps = {
+  location: {
+    pathname: '/',
+  },
   userName: false,
 };
 
