@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { objectFields } from '../common/constants/listOfFields';
 import { getFieldWithMaxWeight, getFieldsWithMaxWeight } from './object/wObjectHelper';
 import DEFAULTS from './object/const/defaultValues';
@@ -51,6 +52,21 @@ export const getClientWObj = (serverWObj, fieldsToInclude = [], defaultsFromPare
     type: (object_type && object_type.toLowerCase()) || 'item',
     ...getFieldsWithMaxWeight(serverWObj),
   };
+
+  const getParentAvatar = wObj => {
+    if (wObj && wObj.parent && wObj.parent.fields) {
+      const avatar = _.find(wObj.parent.fields, ['name', 'avatar']);
+      return avatar.body;
+    }
+    return '';
+  };
+
+  if (result.avatar === DEFAULTS.AVATAR) {
+    const avatar = getParentAvatar(serverWObj);
+    if (avatar) {
+      result.avatar = avatar;
+    }
+  }
 
   if (fieldsToInclude && fieldsToInclude.length) {
     fieldsToInclude.forEach(f => {
