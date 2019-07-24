@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import { objectFields } from '../common/constants/listOfFields';
-import { getFieldWithMaxWeight, getFieldsWithMaxWeight } from './object/wObjectHelper';
+import { getFieldsWithMaxWeight } from './object/wObjectHelper';
 import DEFAULTS from './object/const/defaultValues';
 
-export const getClientWObj = (serverWObj, fieldsToInclude = [], defaultsFromParent = []) => {
+export const getClientWObj = (serverWObj, fieldsToInclude = []) => {
   /* eslint-disable no-underscore-dangle */
   /* eslint-disable camelcase */
   const {
@@ -21,18 +21,6 @@ export const getClientWObj = (serverWObj, fieldsToInclude = [], defaultsFromPare
     rank,
     object_type,
   } = serverWObj;
-
-  const defaultValues = {
-    [objectFields.avatar]: DEFAULTS.AVATAR,
-  };
-  if (defaultsFromParent && defaultsFromParent.length && parent && parent.fields) {
-    defaultsFromParent.forEach(f => {
-      const parentField = getFieldWithMaxWeight(parent, f);
-      if (parentField) {
-        defaultValues[f] = parentField;
-      }
-    });
-  }
 
   const result = {
     id: author_permlink,
