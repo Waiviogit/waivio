@@ -15,7 +15,7 @@
     "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/"
   },
   "staging": {
-    "apiPrefix": "https://waivio.com/",
+    "apiPrefix": "https://waiviodev.com/",
     "brokerWSUrl": {
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
@@ -30,7 +30,7 @@
   },
   "development": {
     "": "http://localhost:8095/",
-    "apiPrefix": "https://www.waiviodev.com/",
+    "apiPrefix": "https://waiviodev.com/",
     "brokerWSUrl": {
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
