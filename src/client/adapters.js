@@ -6,7 +6,6 @@ export const getClientWObj = (serverWObj, fieldsToInclude = []) => {
   /* eslint-disable no-underscore-dangle */
   /* eslint-disable camelcase */
   const {
-    parent,
     author_permlink,
     followers_names,
     weight,
@@ -24,7 +23,6 @@ export const getClientWObj = (serverWObj, fieldsToInclude = []) => {
   const result = {
     id: author_permlink,
     avatar: DEFAULTS.AVATAR,
-    parent: typeof parent === 'string' ? parent : getFieldsWithMaxWeight(parent),
     weight: weight || '',
     createdAt: created_at || Date.now(),
     updatedAt: updated_at || Date.now(),
@@ -40,9 +38,13 @@ export const getClientWObj = (serverWObj, fieldsToInclude = []) => {
     ...getFieldsWithMaxWeight(serverWObj),
   };
 
-  if (result.avatar === DEFAULTS.AVATAR) {
-    if (result.parent && result.parent.avatar) {
-      result.avatar = result.parent.avatar;
+  if (serverWObj.parent) {
+    result.parent = serverWObj.parent;
+    if (result.avatar === DEFAULTS.AVATAR) {
+      const parentFielldMaxWeigth = getFieldsWithMaxWeight(serverWObj.parent);
+      if (parentFielldMaxWeigth && parentFielldMaxWeigth.avatar) {
+        result.avatar = parentFielldMaxWeigth.avatar;
+      }
     }
   }
 
