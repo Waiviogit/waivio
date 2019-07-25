@@ -1,15 +1,15 @@
-import {Link} from 'react-router-dom';
-import {Icon} from 'antd';
-import {FormattedMessage, injectIntl} from 'react-intl';
-import {isEmpty} from 'lodash';
+import { Link } from 'react-router-dom';
+import { Icon } from 'antd';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { isEmpty } from 'lodash';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import React from 'react';
 import PostCurrentPrice from '../../../investarena/components/PostSellBuy/PostCurrentPrice';
 import PostDifference from '../../../investarena/components/PostSellBuy/PostDifference';
-import {quoteFormat} from '../../../investarena/platform/parsingPrice';
-import {localeDate} from '../../../investarena/helpers/diffDateTime';
+import { quoteFormat } from '../../../investarena/platform/parsingPrice';
+import { localeDate } from '../../../investarena/helpers/diffDateTime';
 import './ForecastItem.less';
 import quoteSettingsData from '../../../investarena/default/quoteSettingsData';
 import quoteData from '../../../investarena/default/quoteData';
@@ -28,7 +28,6 @@ class ForecastItem extends React.Component {
     forecast: PropTypes.string.isRequired,
     dateTimeCreate: PropTypes.string.isRequired,
     permlink: PropTypes.string.isRequired,
-
   };
 
   static defaultProps = {
@@ -40,7 +39,7 @@ class ForecastItem extends React.Component {
     visability: false,
   };
 
-  verticalFlip = () => this.setState(prevState => ({visability: !prevState.visability}));
+  verticalFlip = () => this.setState(prevState => ({ visability: !prevState.visability }));
 
   render() {
     const {
@@ -53,11 +52,11 @@ class ForecastItem extends React.Component {
       permlink,
       intl,
     } = this.props;
-    const {visability} = this.state;
+    const { visability } = this.state;
 
     return quoteSettings && !isEmpty(quoteSettings.wobjData) ? (
       <div className="st-forecast-wrap">
-        <div className={classNames('st-forecast-wrap__flipper', {enabled: visability})}>
+        <div className={classNames('st-forecast-wrap__flipper', { enabled: visability })}>
           <div className="st-forecast-wrap__flipper-item">
             <Link to={`/@${permlink}`} className="st-forecast-wrap__flipper-item-link">
               <div className="st-front-wrap">
@@ -96,21 +95,23 @@ class ForecastItem extends React.Component {
                   />
                 </div>
                 <div className="st-front-wrap__finish-value">
-                  <PostDifference
-                    forecast={forecast}
-                    isExpired={false}
-                    postPrice={String(postPrice)}
-                    recommend={recommend}
-                    quote={quote}
-                    quoteSettings={quoteSettings}
-                  />
+                  {quote.security && quoteSettings.ID ? (
+                    <PostDifference
+                      forecast={forecast}
+                      isExpired={false}
+                      postPrice={String(postPrice)}
+                      recommend={recommend}
+                      quote={quote}
+                      quoteSettings={quoteSettings}
+                    />
+                  ) : null}
                 </div>
               </div>
             </Link>
             <div className="st-back-wrap">
               <div className="st-back-wrap__start">
                 <span>
-                  {intl.formatMessage({id: 'forecast.create', defaultMessage: 'Created:'})}
+                  {intl.formatMessage({ id: 'forecast.create', defaultMessage: 'Created:' })}
                 </span>
                 <div className="st-back-wrap__start-date">
                   <div>
@@ -120,7 +121,7 @@ class ForecastItem extends React.Component {
               </div>
               <div className="st-back-wrap__finish">
                 <span>
-                  {intl.formatMessage({id: 'forecast.expire', defaultMessage: 'Expires:'})}
+                  {intl.formatMessage({ id: 'forecast.expire', defaultMessage: 'Expires:' })}
                 </span>
                 <div className="st-back-wrap__finish-date">
                   <div>{moment(forecast).format(localeDate('YYYY/MM/DD HH:mm', intl.locale))}</div>
@@ -130,7 +131,7 @@ class ForecastItem extends React.Component {
           </div>
         </div>
         <div className="st-forecast-wrap__icon">
-          <Icon type="right" onClick={this.verticalFlip} className="st-forecast-wrap__icon-img"/>
+          <Icon type="right" onClick={this.verticalFlip} className="st-forecast-wrap__icon-img" />
         </div>
       </div>
     ) : null;
