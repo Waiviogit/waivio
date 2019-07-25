@@ -91,9 +91,7 @@ class CatalogWrap extends React.Component {
         const listItems =
           (res &&
             res.listItems &&
-            res.listItems.map(item =>
-              getClientWObj(item, ['listItemsCount'], [objectFields.avatar]),
-            )) ||
+            res.listItems.map(item => getClientWObj(item, ['listItemsCount']))) ||
           [];
         this.setState(prevState => {
           let breadcrumb = [];

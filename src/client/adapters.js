@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { objectFields } from '../common/constants/listOfFields';
 import { getFieldsWithMaxWeight } from './object/wObjectHelper';
 import DEFAULTS from './object/const/defaultValues';
@@ -25,7 +24,7 @@ export const getClientWObj = (serverWObj, fieldsToInclude = []) => {
   const result = {
     id: author_permlink,
     avatar: DEFAULTS.AVATAR,
-    parent: parent || '',
+    parent: typeof parent === 'string' ? parent : getFieldsWithMaxWeight(parent),
     weight: weight || '',
     createdAt: created_at || Date.now(),
     updatedAt: updated_at || Date.now(),
@@ -41,18 +40,9 @@ export const getClientWObj = (serverWObj, fieldsToInclude = []) => {
     ...getFieldsWithMaxWeight(serverWObj),
   };
 
-  const getParentAvatar = wObj => {
-    if (wObj && wObj.parent && wObj.parent.fields) {
-      const avatar = _.find(wObj.parent.fields, ['name', 'avatar']);
-      return avatar.body;
-    }
-    return '';
-  };
-
   if (result.avatar === DEFAULTS.AVATAR) {
-    const avatar = getParentAvatar(serverWObj);
-    if (avatar) {
-      result.avatar = avatar;
+    if (result.parent && result.parent.avatar) {
+      result.avatar = result.parent.avatar;
     }
   }
 

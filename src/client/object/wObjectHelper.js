@@ -22,7 +22,7 @@ export const getFieldWithMaxWeight = (wObject, currentField, defaultValue = '') 
 };
 
 export const getFieldsWithMaxWeight = wObj => {
-  if (!wObj || (wObj && _.isEmpty(wObj.fields))) return {};
+  if (!wObj || (wObj && _.isEmpty(wObj.fields))) return '';
   const maxWeightedFields = wObj.fields.reduce((acc, curr) => {
     if (acc[curr.name]) {
       if (curr.weight > acc[curr.name].weight) {
