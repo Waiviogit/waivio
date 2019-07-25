@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import classNames from 'classnames';
 import { haveAccess, hasType, accessTypesArr } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import {
@@ -12,6 +13,7 @@ import {
   getFieldsCount,
   getInnerFieldWithMaxWeight,
   sortListItemsBy,
+  combineObjectMenu,
   getField,
 } from '../../object/wObjectHelper';
 import {
@@ -36,6 +38,7 @@ import ObjectCard from '../../components/Sidebar/ObjectCard';
 import InstrumentLongTermStatistics from '../../../investarena/components/LeftSidebar/LongTermStatistics/InstrumentLongTermStatistics';
 import ModalComparePerformance from '../../../investarena/components/Modals/ModalComparePerformance/ModalComparePerformance';
 import getClientWObject from '../../adapters';
+import LinkButton from '../../components/LinkButton/LinkButton';
 import './ObjectInfo.less';
 
 @withRouter
@@ -62,6 +65,13 @@ class ObjectInfo extends React.Component {
     isModalComparePerformanceOpen: false,
   };
 
+  getLink = link => {
+    if (link && link.indexOf('http://') === -1 && link.indexOf('https://') === -1) {
+      return `http://${link}`;
+    }
+    return link;
+  };
+
   handleSelectField = field => () => this.setState({ selectedField: field });
 
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
@@ -84,13 +94,9 @@ class ObjectInfo extends React.Component {
     let map = '';
     let description = '';
     let price = '';
-    let link = '';
-    let title = '';
     let workTime = '';
-    let buttonTitle = '';
-    let buttonLink = '';
-    let websiteFields = {};
-    let buttonFields = {};
+    let website = {};
+    let button = {};
     let avatar = '';
     let short = '';
     let background = '';
@@ -98,6 +104,7 @@ class ObjectInfo extends React.Component {
     let tags = [];
     let phones = [];
     let email = '';
+    let status = '';
     let menuItems = [];
     let menuLists = null;
     let menuPages = null;
@@ -138,16 +145,10 @@ class ObjectInfo extends React.Component {
             )
           : null;
 
-      websiteFields = getInnerFieldWithMaxWeight(wobject, objectFields.website);
-      if (websiteFields) {
-        title = websiteFields.title;
-        link = websiteFields.link;
-      }
-      buttonFields = getInnerFieldWithMaxWeight(wobject, objectFields.button);
-      if (buttonFields) {
-        buttonTitle = buttonFields.title;
-        buttonLink = buttonFields.link;
-      }
+      website = getInnerFieldWithMaxWeight(wobject, objectFields.website);
+      status = getInnerFieldWithMaxWeight(wobject, objectFields.status);
+      button = getInnerFieldWithMaxWeight(wobject, objectFields.button);
+
       photosCount = wobject.photos_count;
 
       const filtered = _.filter(wobject.fields, ['name', objectFields.tagCloud]);
@@ -157,9 +158,6 @@ class ObjectInfo extends React.Component {
       phones = _.orderBy(filteredPhones, ['weight'], ['desc']);
     }
 
-    if (link && link.indexOf('http://') === -1 && link.indexOf('https://') === -1) {
-      link = `http://${link}`;
-    }
     const linkField = getInnerFieldWithMaxWeight(wobject, objectFields.link);
     let profile = linkField
       ? {
@@ -217,16 +215,51 @@ class ObjectInfo extends React.Component {
       ) : null;
     };
 
-    const getMenuSectionLink = item => (
-      <div className="object-sidebar__menu-item" key={item.author_permlink}>
-        <Link
-          className={location.hash.slice(1).split('/')[0] === item.author_permlink ? 'active' : ''}
+    const getMenuSectionLink = item => {
+      let menuItem = (
+        <LinkButton
+          className={classNames('menu-btn', {
+            active: location.hash.slice(1).split('/')[0] === item.author_permlink,
+          })}
           to={`/object/${wobject.author_permlink}/${URL.SEGMENT.MENU}#${item.author_permlink}`}
         >
-          {item.alias || getFieldWithMaxWeight(item, objectFields.name)}
-        </Link>
-      </div>
-    );
+          {item.alias || item.name || getFieldWithMaxWeight(item, objectFields.name)}
+        </LinkButton>
+      );
+      switch (item.id) {
+        case TYPES_OF_MENU_ITEM.BUTTON:
+          menuItem = (
+            <Button
+              className="LinkButton menu-btn"
+              href={this.getLink(item.link)}
+              target={'_blank'}
+              block
+            >
+              {item.title}
+            </Button>
+          );
+          break;
+        case TYPES_OF_MENU_ITEM.NEWS:
+          menuItem = (
+            <LinkButton
+              className={classNames('menu-btn', {
+                active: location.pathname === `/object/${wobject.author_permlink}`,
+              })}
+              to={`/object/${wobject.author_permlink}`}
+            >
+              <FormattedMessage id="news" defaultMessage="News" />
+            </LinkButton>
+          );
+          break;
+        default:
+          break;
+      }
+      return (
+        <div className="object-sidebar__menu-item" key={item.id || item.author_permlink}>
+          {menuItem}
+        </div>
+      );
+    };
     const menuSection = (
       <React.Fragment>
         {isEditMode && (
@@ -245,12 +278,31 @@ class ObjectInfo extends React.Component {
                 TYPES_OF_MENU_ITEM.PAGE,
                 menuPages && menuPages.map(item => getMenuSectionLink(item)),
               )}
+              {listItem(
+                objectFields.button,
+                button && button.title && button.link && (
+                  <div className="object-sidebar__menu-item">
+                    <Button
+                      className="LinkButton menu-btn"
+                      href={this.getLink(button.link)}
+                      target={'_blank'}
+                      block
+                    >
+                      {button.title}
+                    </Button>
+                  </div>
+                ),
+              )}
+              {listItem(objectFields.newsFilter, null)}
             </React.Fragment>
           )}
           {!isEditMode &&
             sortListItemsBy(
-              menuItems.map(menuItem =>
-                getClientWObject(menuItem, ['author_permlink', 'default_name', 'alias']),
+              combineObjectMenu(
+                menuItems.map(menuItem =>
+                  getClientWObject(menuItem, ['author_permlink', 'default_name', 'alias']),
+                ),
+                { button },
               ),
               'custom',
               _.get(wobject, 'sortCustom', null),
@@ -291,6 +343,14 @@ class ObjectInfo extends React.Component {
             </div>
           ) : null,
         )}
+        {listItem(
+          objectFields.status,
+          status && status.title && (
+            <div className="field-status">
+              <span className="field-status__title">{status.title}</span>
+            </div>
+          ),
+        )}
       </React.Fragment>
     );
     const hasChartId = getField(wobject, objectFields.chartId);
@@ -318,19 +378,6 @@ class ObjectInfo extends React.Component {
                   <div className="object-sidebar__section-title">
                     <FormattedMessage id="about" defaultMessage="About" />
                   </div>
-                )}
-                {listItem(
-                  objectFields.button,
-                  buttonTitle && (
-                    <Button
-                      type="primary"
-                      className="field-button"
-                      href={buttonLink}
-                      target={'_blank'}
-                    >
-                      {buttonTitle}
-                    </Button>
-                  ),
                 )}
                 {listItem(objectFields.description, <DescriptionInfo description={description} />)}
                 {hasChartId && (
@@ -438,9 +485,9 @@ class ObjectInfo extends React.Component {
                 ) : null}
                 {listItem(
                   objectFields.price,
-                  price ? <div className="icon-price">{price}</div> : <div />,
+                  price ? <div className="icon-price">{price}</div> : null,
                 )}
-                {listItem(objectFields.workTime, <React.Fragment>{workTime}</React.Fragment>)}
+                {listItem(objectFields.workTime, <div className="field-work-time">{workTime}</div>)}
                 {listItem(
                   objectFields.address,
                   address && (
@@ -473,12 +520,16 @@ class ObjectInfo extends React.Component {
                 )}
                 {listItem(
                   objectFields.website,
-                  title && (
+                  website && website.title && website.link && (
                     <div className="field-website">
                       <span className="field-website__title">
                         <i className="iconfont icon-link text-icon" />
-                        <a target="_blank" rel="noopener noreferrer" href={link}>
-                          {title}
+                        <a
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href={this.getLink(website.link)}
+                        >
+                          {website.title}
                         </a>
                       </span>
                     </div>

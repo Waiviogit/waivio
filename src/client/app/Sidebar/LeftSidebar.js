@@ -23,9 +23,11 @@ const LeftSidebar = ({ quoteSettingsSorted }) => (
     <Route path="/deals/:dealType" component={DealsList} />
     <Route path="/activity" component={SidenavUser} />
     <Route
-      path="/rewards/(active|reserved|history|promoted|all)/@:userName"
+      path="/rewards/(active|reserved|history|promoted|created)/@:userName?"
       component={SidenavRewards}
     />
+    <Route path="/rewards/all" component={SidenavRewards} />
+    <Route path="/rewards/create" component={SidenavRewards} />
     <Route path="/replies" component={ObjectTypes} />
     <Route path="/replies" component={TopInstruments} />
     <Route path="/bookmarks" component={SidenavUser} />

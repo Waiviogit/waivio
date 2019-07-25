@@ -6,14 +6,19 @@ import { averageRate, avrRate } from '../../components/Sidebar/Rate/rateHelper';
 import './RatingsWrap.less';
 import { getScreenSize } from '../../reducers';
 
-const RatingsWrap = ({ ratings, screenSize, showSmallVersion }) => {
-  const isMobile = screenSize === 'xsmall' || showSmallVersion;
+const RatingsWrap = ({ ratings, screenSize }) => {
+  const isMobile = screenSize === 'xsmall' || screenSize === 'small';
   // _.orderBy(ratings, [ratings., 'age'], ['asc', 'desc']);
   let layout = null;
 
   const rateLayout = (colNum, rateIndex, dividerClass) => (
     <Col className={`RatingsWrap__rate ${dividerClass}`} span={colNum}>
-      <Rate allowHalf disabled value={averageRate(ratings[rateIndex])} />
+      <Rate
+        allowHalf
+        disabled
+        value={averageRate(ratings[rateIndex])}
+        className="RatingsWrap__stars"
+      />
       <div className="RatingsWrap__rate-title">{ratings[rateIndex].body}</div>
     </Col>
   );

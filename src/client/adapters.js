@@ -2,7 +2,7 @@ import { objectFields } from '../common/constants/listOfFields';
 import { getFieldWithMaxWeight } from './object/wObjectHelper';
 import DEFAULTS from './object/const/defaultValues';
 
-export const getClientWObj = (serverWObj, fieldsToInclude = []) => {
+export const getClientWObj = (serverWObj, fieldsToInclude = [], defaultsFromParent = []) => {
   /* eslint-disable no-underscore-dangle */
   /* eslint-disable camelcase */
   const {
@@ -21,9 +21,25 @@ export const getClientWObj = (serverWObj, fieldsToInclude = []) => {
     object_type,
   } = serverWObj;
 
+  const defaultValues = {
+    [objectFields.avatar]: DEFAULTS.AVATAR,
+  };
+  if (defaultsFromParent && defaultsFromParent.length && parent && parent.fields) {
+    defaultsFromParent.forEach(f => {
+      const parentField = getFieldWithMaxWeight(parent, f);
+      if (parentField) {
+        defaultValues[f] = parentField;
+      }
+    });
+  }
+
   const result = {
     id: author_permlink,
-    avatar: getFieldWithMaxWeight(serverWObj, objectFields.avatar) || DEFAULTS.AVATAR,
+    avatar: getFieldWithMaxWeight(
+      serverWObj,
+      objectFields.avatar,
+      defaultValues[objectFields.avatar],
+    ),
     name: getFieldWithMaxWeight(serverWObj, objectFields.name),
     title: getFieldWithMaxWeight(serverWObj, objectFields.title),
     price: getFieldWithMaxWeight(serverWObj, objectFields.price),
@@ -106,7 +122,7 @@ export const getServerWObj = clientWObj => {
     community: '',
     createdAt: createdAt || Date.now(),
     updatedAt: updatedAt || Date.now(),
-    fields,
+    fields: [...clientWObj.fields, ...fields],
   };
 };
 

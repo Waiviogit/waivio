@@ -2,7 +2,13 @@ import _ from 'lodash';
 
 export const getUpvotes = activeVotes => activeVotes.filter(vote => vote.percent > 0);
 
+export const getAppendUpvotes = activeVotes =>
+  activeVotes.filter(vote => vote.percent > 0 && vote.percent % 10 === 0);
+
 export const getDownvotes = activeVotes => activeVotes.filter(vote => vote.percent < 0);
+
+export const getAppendDownvotes = activeVotes =>
+  activeVotes.filter(vote => vote.percent > 0 && vote.percent % 10 !== 0);
 
 export const getFollowingUpvotes = (activeVotes, following) =>
   getUpvotes(activeVotes).filter(vote => _.includes(following, vote.voter));

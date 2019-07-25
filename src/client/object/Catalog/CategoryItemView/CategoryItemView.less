@@ -32,9 +32,10 @@
     align-items: center;
     width: auto;
     cursor: auto;
+
     &-truncated {
       margin-left: 15px;
-      color: @black;
+      color: @grey-gondola;
       font-weight: bold;
       font-style: normal;
       font-stretch: normal;
@@ -46,6 +47,14 @@
       overflow: hidden;
       margin-right: 8px;
       cursor: pointer;
+      transition: color 0.3s;
+      &:hover {
+        color: @primary-color;
+      }
+
+      .items-count {
+        font-weight: 400;
+      }
     }
   }
 }

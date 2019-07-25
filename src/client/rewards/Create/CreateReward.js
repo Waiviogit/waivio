@@ -10,6 +10,7 @@ import ScrollToTop from '../../components/Utils/ScrollToTop';
 import ScrollToTopOnMount from '../../components/Utils/ScrollToTopOnMount';
 import './CreateReward.less';
 import { assignProposition, declineProposition } from '../../user/userActions';
+import LeftSidebar from '../../app/Sidebar/LeftSidebar';
 
 @injectIntl
 @connect(
@@ -44,7 +45,9 @@ class CreateReward extends React.Component {
         <div className="shifted">
           <div className="feed-layout container">
             <Affix className="leftContainer" stickPosition={77}>
-              <div className="left">guide navbar</div>
+              <div className="left">
+                <LeftSidebar />
+              </div>
             </Affix>
             <div className="center">
               <CreateRewardForm userName={userName} />

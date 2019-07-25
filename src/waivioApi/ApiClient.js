@@ -156,22 +156,14 @@ export const getContent = (author, permlink) =>
       .catch(error => reject(error));
   });
 
-export const getMoreUserFeedContent = ({
-  userName,
-  limit = 10,
-  startAuthor = '',
-  startPermlink = '',
-  countWithWobj = '',
-}) =>
+export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0 }) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.feed}`, {
       headers,
       method: 'POST',
       body: JSON.stringify({
-        count_with_wobj: countWithWobj,
+        skip,
         limit,
-        start_author: startAuthor,
-        start_permlink: startPermlink,
         filter: {
           byApp: getFilterKey(),
         },
@@ -274,7 +266,7 @@ export const getWobjectsWithUserWeight = (
   objectTypes,
   excludeObjectTypes,
 ) => {
-  const reqData = {skip, limit};
+  const reqData = { skip, limit };
   if (objectTypes) reqData.object_types = objectTypes;
   if (excludeObjectTypes) reqData.exclude_object_types = excludeObjectTypes;
   return new Promise((resolve, reject) => {
@@ -301,7 +293,6 @@ export const getWobjectsExpertise = (authorPermlink, skip = 0, limit = 30) =>
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
-
 export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjectTypes}`, {
@@ -366,12 +357,14 @@ export const getTopUsers = (isRandom = false, { limit, skip } = { limit: 30, ski
   });
 };
 
-export const getPropositions = ({ limit = 30, skip = 0, userName, status, approved }) =>
+export const getPropositions = ({ limit = 30, skip = 0, userName, status, approved, guideName }) =>
   new Promise((resolve, reject) => {
     fetch(
       `${config.campaignApiPrefix}${config.campaigns}?limit=${limit}&skip=${skip}${
         userName ? `&userName=${userName}` : ''
-      }${userName ? `&approved=${approved}` : ''}${status ? `&status=${status}` : ''}`,
+      }${userName ? `&approved=${approved}` : ''}${status ? `&status=${status}` : ''}${
+        guideName ? `&guideName=${guideName}` : ''
+      }`,
       {
         headers,
         method: 'GET',
@@ -412,21 +405,6 @@ export const createCampaign = data =>
   });
 
 // Investarena
-
-// export const getInstrumentLongTermStatistics = id =>
-//   new Promise((resolve, reject) => {
-//     fetch(
-//       `https://informer.maximarkets.org/wss/api/quotation/${id}/Day/730/?withCurrentBar=true&param=ask`,
-//       {
-//         headers,
-//         method: 'GET',
-//       },
-//     )
-//       .then(res => res.json())
-//       .then(data => resolve(data))
-//       .catch(error => reject(error));
-//   });
-
 export const getUserLongTermStatistics = id =>
   new Promise((resolve, reject) => {
     fetch(`https://waiviodev.com/investarena-api${config.userStatistics}/${id}`, {

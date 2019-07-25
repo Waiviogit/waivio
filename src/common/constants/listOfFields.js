@@ -29,6 +29,8 @@ export const objectFields = {
 export const TYPES_OF_MENU_ITEM = {
   LIST: 'menuList',
   PAGE: 'menuPage',
+  BUTTON: 'menuButton',
+  NEWS: 'menuNews',
 };
 export const objMenuTypes = Object.values(TYPES_OF_MENU_ITEM);
 
@@ -127,7 +129,7 @@ export const getAllowedFieldsByObjType = objectType => {
       ];
     default: {
       const excludeFields = [objectFields.listItem, objectFields.pageContent];
-      const includeFields = Object.values(TYPES_OF_MENU_ITEM);
+      const includeFields = [TYPES_OF_MENU_ITEM.PAGE, TYPES_OF_MENU_ITEM.LIST];
       return [...supportedObjectFields, ...includeFields].filter(
         field => !excludeFields.includes(field),
       );
