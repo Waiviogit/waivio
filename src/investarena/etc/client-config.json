@@ -1,7 +1,21 @@
 {
   "appVersion": "ST Investarena Desktop v.2.0.1",
   "production": {
-    "apiPrefix": "https://waiviodev.com/",
+    "apiPrefix": "https://waivio.com/",
+    "brokerWSUrl": {
+      "maximarkets": "https://trading.maximarkets.org/stomp/",
+      "umarkets": "https://trading.umarkets.com/stomp/",
+      "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
+    },
+    "platformDepositUrl": {
+      "umarkets": "https://my.umarkets.com/",
+      "maximarkets": "https://myaccount.maximarkets.org/",
+      "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
+    },
+    "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/"
+  },
+  "staging": {
+    "apiPrefix": "https://waivio.com/",
     "brokerWSUrl": {
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
@@ -16,7 +30,7 @@
   },
   "development": {
     "": "http://localhost:8095/",
-    "apiPrefix": "https://www.waivio.com/",
+    "apiPrefix": "https://www.waiviodev.com/",
     "brokerWSUrl": {
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
