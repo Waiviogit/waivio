@@ -135,12 +135,12 @@ class ChartData {
     if (bars) {
       if (askBid === 'closeAsk') {
         max = upperLine
-          ? Math.max(_.maxBy(bars, 'highAsk').highAsk, upperLine)
-          : _.maxBy(bars, 'highAsk').highAsk;
+          ? Math.max(_.get(_.maxBy(bars, 'highAsk'),'highAsk', 0), upperLine)
+          : _.get(_.maxBy(bars, 'highAsk'), 'highAsk', 0);
       } else if (askBid === 'closeBid') {
         max = upperLine
-          ? Math.max(_.maxBy(bars, 'highBid').highBid, upperLine)
-          : _.maxBy(bars, 'highBid').highBid;
+          ? Math.max(_.get(_.maxBy(bars, 'highBid'), 'highBid', 0), upperLine)
+          : _.get(_.maxBy(bars, 'highBid'), 'highBid', 0);
       }
       return max;
     }
@@ -151,12 +151,12 @@ class ChartData {
     if (bars) {
       if (askBid === 'closeAsk') {
         min = lowerLine
-          ? Math.min(_.minBy(bars, 'lowAsk').lowAsk, lowerLine)
-          : _.minBy(bars, 'lowAsk').lowAsk;
+          ? Math.min(_.get(_.minBy(bars, 'lowAsk'), 'lowAsk', 0), lowerLine)
+          : _.get(_.minBy(bars, 'lowAsk'), 'lowAsk', 0);
       } else if (askBid === 'closeBid') {
         min = lowerLine
-          ? Math.min(_.minBy(bars, 'lowBid').lowBid, lowerLine)
-          : _.minBy(bars, 'lowBid').lowBid;
+          ? Math.min(_.get(_.minBy(bars, 'lowBid'), 'lowBid', 0), lowerLine)
+          : _.get(_.minBy(bars, 'lowBid'), 'lowBid', 0);
       }
       return min;
     }
