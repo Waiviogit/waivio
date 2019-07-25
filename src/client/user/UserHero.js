@@ -21,7 +21,10 @@ class UserMenuWrapper extends React.Component {
     match: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
-    objectsSharesCount: PropTypes.number.isRequired,
+    objectsSharesCount: PropTypes.number,
+  };
+  static defaultProps = {
+    objectsSharesCount: 0,
   };
 
   onChange = key => {

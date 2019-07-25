@@ -28,6 +28,9 @@ class UserInfo extends React.Component {
     rate: PropTypes.number.isRequired,
     screenSize: PropTypes.string.isRequired,
   };
+  static defaultProps = {
+    screenSize: 'medium',
+  };
 
   state = {
     isModalComparePerformanceOpen: false,
