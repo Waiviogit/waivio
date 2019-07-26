@@ -42,8 +42,8 @@ const TopNavigation = ({ authenticated }) =>
       </li>
       <li>
         <NavLink
-          to={`/objects`}
-          isActive={() => _.includes(location.pathname, '/objects')}
+          to={`/objectType/hashtag`}
+          isActive={() => _.includes(location.pathname, '/objectType/hashtag')}
           className="TopNavigation__item"
           activeClassName="TopNavigation__item--active"
         >
