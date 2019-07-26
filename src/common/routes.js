@@ -52,7 +52,8 @@ const routes = [
         component: Bookmarks,
       },
       {
-        path: `/rewards/(active|reserved|history|create|created)/@:userName`,
+        path: `/rewards/:filterKey?/@:userName?/:campaignParent?`,
+        // path: `/rewards/(active|reserved|history|create|created)?/@:userName?/:campaignParent?`,
         component: Rewards,
       },
       {
@@ -61,7 +62,7 @@ const routes = [
         component: CreateRewards,
       },
       {
-        path: `/rewards/all`,
+        path: `/rewards/:filterKey/:campaignParent?`,
         component: Rewards,
       },
       {

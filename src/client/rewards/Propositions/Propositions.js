@@ -8,8 +8,7 @@ import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
 import Proposition from '../Proposition/Proposition';
-
-const displayLimit = 10;
+import { preparePropositionReqData } from '../rewardsHelper';
 
 @injectIntl
 export default class Propositions extends React.Component {
@@ -34,7 +33,7 @@ export default class Propositions extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.filterKey !== this.props.filterKey) {
-      ApiClient.getPropositions(this.preparePropositionReqData(nextProps)).then(data => {
+      ApiClient.getPropositions(preparePropositionReqData(nextProps)).then(data => {
         this.setState({ propositions: data.campaigns, hasMore: data.hasMore });
       });
     }
@@ -129,29 +128,6 @@ export default class Propositions extends React.Component {
       });
   };
 
-  preparePropositionReqData = props => {
-    const { userName } = props;
-    const reqData = { limit: displayLimit };
-    switch (props.filterKey) {
-      case 'active':
-        reqData.userName = userName;
-        break;
-      case 'history':
-        reqData.status = ['inactive', 'expired', 'deleted', 'payed'];
-        break;
-      case 'created':
-        reqData.guideName = userName;
-        break;
-      case 'reserved':
-        reqData.userName = userName;
-        reqData.approved = true;
-        break;
-      default:
-        break;
-    }
-    return reqData;
-  };
-
   handleLoadMore = () => {
     const { propositions, hasMore } = this.state;
     if (hasMore) {
@@ -160,7 +136,7 @@ export default class Propositions extends React.Component {
           loading: true,
         },
         () => {
-          const reqData = this.preparePropositionReqData(this.props);
+          const reqData = preparePropositionReqData(this.props);
           reqData.skip = propositions.length;
           ApiClient.getPropositions(reqData).then(newPropositions =>
             this.setState(state => ({
@@ -178,6 +154,7 @@ export default class Propositions extends React.Component {
     const { propositions, loading, hasMore, loadingAssignDiscard } = this.state;
     const { intl, userName, filterKey } = this.props;
     const text = this.getTextByFilterKey(intl, filterKey);
+    // const requiredObject = propositions.find((proposition) => proposition.required_object);
     return (
       <React.Fragment>
         <div className="Rewards__title">

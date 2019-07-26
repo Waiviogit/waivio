@@ -7,7 +7,7 @@ import './TopNavigation.less';
 
 const TopNavigation = ({ authenticated, userName }) => (
   <ul className="TopNavigation">
-    {authenticated && (
+    {authenticated && location && (
       <li>
         <NavLink
           to="/"

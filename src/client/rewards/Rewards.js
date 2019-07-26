@@ -13,6 +13,7 @@ import './Rewards.less';
 import Propositions from './Propositions/Propositions';
 import { assignProposition, declineProposition } from '../user/userActions';
 import TopNavigation from '../components/Navigation/TopNavigation';
+import Campaigns from './Campaigns/Campaigns';
 
 @withRouter
 @injectIntl
@@ -39,7 +40,8 @@ class Rewards extends React.Component {
   render() {
     const { location, match, authenticated, username } = this.props;
     const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
-    const filterKey = match.params[0];
+    const filterKey = match.params.filterKey;
+    const IsRequiredObjectWrap = !match.params.campaignParent;
     return (
       <div className="Rewards">
         <Helmet>
@@ -59,12 +61,17 @@ class Rewards extends React.Component {
               </div>
             </Affix>
             <div className="center">
-              <Propositions
-                filterKey={filterKey}
-                userName={match.params.userName}
-                assignProposition={this.props.assignProposition}
-                discardProposition={this.props.declineProposition}
-              />
+              {IsRequiredObjectWrap ? (
+                <Campaigns filterKey={filterKey} userName={match.params.userName} />
+              ) : (
+                <Propositions
+                  filterKey={filterKey}
+                  userName={match.params.userName}
+                  assignProposition={this.props.assignProposition}
+                  discardProposition={this.props.declineProposition}
+                  campaignParent={match.params.campaignParent}
+                />
+              )}
             </div>
           </div>
         </div>
