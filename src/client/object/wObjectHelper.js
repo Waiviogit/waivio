@@ -21,6 +21,21 @@ export const getFieldWithMaxWeight = (wObject, currentField, defaultValue = '') 
   return defaultValue;
 };
 
+export const getFieldsWithMaxWeight = wObj => {
+  if (!wObj || (wObj && _.isEmpty(wObj.fields))) return '';
+  const maxWeightedFields = wObj.fields.reduce((acc, curr) => {
+    if (acc[curr.name]) {
+      if (curr.weight > acc[curr.name].weight) {
+        acc[curr.name] = curr;
+      }
+    } else {
+      acc[curr.name] = curr;
+    }
+    return acc;
+  }, {});
+  return _.mapValues(maxWeightedFields, 'body');
+};
+
 export const getInnerFieldWithMaxWeight = (wObject, currentField, innerField) => {
   if (_.includes(objectFieldsWithInnerData, currentField)) {
     const fieldBody = getFieldWithMaxWeight(wObject, currentField);
