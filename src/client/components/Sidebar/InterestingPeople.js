@@ -44,7 +44,8 @@ class InterestingPeople extends React.Component {
           </button>
         </h4>
         <div className="SidebarContentBlock__content">
-          {randomExperts && randomExperts.map(user => <User key={user.name} user={user} />)}
+          {randomExperts &&
+            randomExperts.map(user => <User key={user.name} user={user} showFollow={false} />)}
           <h4 className="InterestingPeople__more">
             <Link to={'/discover'}>
               <FormattedMessage id="discover_more_people" defaultMessage="Discover More People" />

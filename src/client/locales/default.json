@@ -405,7 +405,7 @@
   "preview_locale": "in {locale} locale",
   "description_short": "Short description",
   "description_full": "Full description",
-  "work_time": "Work time",
+  "work_time": "Hours",
   "location_country": "Country",
   "location_city": "City",
   "location_street": "Street",
@@ -458,7 +458,7 @@
   "object_field_price": "Price",
   "object_field_newsFilter": "News filter",
   "object_field_button": "Button",
-  "object_field_workTime": "Work time",
+  "object_field_workTime": "Hours",
   "object_field_menuPage": "Page",
   "object_field_menuList": "List",
   "object_field_pageContent": "Page",
@@ -592,5 +592,8 @@
   "reject": "Reject",
   "vote": "Vote",
   "unvote": "Unvote",
-  "rewardsUser": "Select a user to display the rewards"
+  "rewardsUser": "Select a user to display the rewards",
+  "campaigns": "Campaigns",
+  "pleaseLogin": "For more options please",
+  "news": "News"
 }

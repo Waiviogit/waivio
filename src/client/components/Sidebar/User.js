@@ -33,7 +33,10 @@ User.propTypes = {
     name: PropTypes.string,
     wobjects_weight: PropTypes.number,
   }).isRequired,
-  showFollow: PropTypes.bool.isRequired,
+  showFollow: PropTypes.bool,
+};
+User.defaultProps = {
+  showFollow: false,
 };
 
 export default User;

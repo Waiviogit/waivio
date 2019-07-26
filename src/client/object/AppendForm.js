@@ -47,11 +47,11 @@ import withEditor from '../components/Editor/withEditor';
 import { MAX_IMG_SIZE, ALLOWED_IMG_FORMATS } from '../../common/constants/validation';
 import { getHasDefaultSlider, getVoteValue } from '../helpers/user';
 import LikeSection from './LikeSection';
-import { getFieldWithMaxWeight, getListItems } from './wObjectHelper';
+import { getFieldWithMaxWeight, getInnerFieldWithMaxWeight, getListItems } from './wObjectHelper';
 import FollowObjectForm from './FollowObjectForm';
 import { followObject, rateObject } from '../object/wobjActions';
 import SortingList from '../components/DnDList/DnDList';
-import { getClientWObj } from '../adapters';
+import DnDListItem from '../components/DnDList/DnDListItem';
 import SearchObjectsAutocomplete from '../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCardView from '../objectCard/ObjectCardView';
 import { getNewsFilterLayout } from './NewsFilter/newsFilterHelper';
@@ -641,9 +641,7 @@ export default class AppendForm extends Component {
         return (
           <React.Fragment>
             <Form.Item>
-              {getFieldDecorator('menuItemName', {
-                rules: this.getFieldRules('menuItemName'),
-              })(
+              {getFieldDecorator('menuItemName')(
                 <Input
                   className="AppendForm__input"
                   disabled={loading}
@@ -797,14 +795,15 @@ export default class AppendForm extends Component {
             {getFieldDecorator(objectFields.workTime, {
               rules: this.getFieldRules(objectFields.workTime),
             })(
-              <Input
+              <Input.TextArea
+                autosize={{ minRows: 4, maxRows: 8 }}
                 className={classNames('AppendForm__input', {
                   'validation-error': !this.state.isSomeValue,
                 })}
                 disabled={loading}
                 placeholder={intl.formatMessage({
                   id: 'work_time',
-                  defaultMessage: 'Work time',
+                  defaultMessage: 'Hours',
                 })}
               />,
             )}
@@ -1220,10 +1219,28 @@ export default class AppendForm extends Component {
       }
       case objectFields.sorting: {
         const listItems =
-          getListItems(wObject, true).map(item => ({
-            id: item.author_permlink,
-            content: <ObjectCardView wObject={getClientWObj(item)} />,
+          getListItems(wObject, { uniq: true, isMappedToClientWobject: true }).map(item => ({
+            id: item.id,
+            content: <DnDListItem name={item.name} type={item.type} />,
           })) || [];
+        const button = getInnerFieldWithMaxWeight(wObject, objectFields.button);
+        if (button) {
+          listItems.push({
+            id: TYPES_OF_MENU_ITEM.BUTTON,
+            content: <DnDListItem name={button.title} type={objectFields.button} />,
+          });
+        }
+        if (!_.isEmpty(wObject.newsFilter)) {
+          listItems.push({
+            id: TYPES_OF_MENU_ITEM.NEWS,
+            content: (
+              <DnDListItem
+                name={intl.formatMessage({ id: 'news', defaultMessage: 'News' })}
+                type={objectFields.newsFilter}
+              />
+            ),
+          });
+        }
         return (
           <React.Fragment>
             <Form.Item>

@@ -1,12 +1,11 @@
 import { objectFields } from '../common/constants/listOfFields';
-import { getFieldWithMaxWeight } from './object/wObjectHelper';
+import { getFieldsWithMaxWeight } from './object/wObjectHelper';
 import DEFAULTS from './object/const/defaultValues';
 
-export const getClientWObj = (serverWObj, fieldsToInclude = [], defaultsFromParent = []) => {
+export const getClientWObj = (serverWObj, fieldsToInclude = []) => {
   /* eslint-disable no-underscore-dangle */
   /* eslint-disable camelcase */
   const {
-    parent,
     author_permlink,
     followers_names,
     weight,
@@ -21,29 +20,9 @@ export const getClientWObj = (serverWObj, fieldsToInclude = [], defaultsFromPare
     object_type,
   } = serverWObj;
 
-  const defaultValues = {
-    [objectFields.avatar]: DEFAULTS.AVATAR,
-  };
-  if (defaultsFromParent && defaultsFromParent.length && parent && parent.fields) {
-    defaultsFromParent.forEach(f => {
-      const parentField = getFieldWithMaxWeight(parent, f);
-      if (parentField) {
-        defaultValues[f] = parentField;
-      }
-    });
-  }
-
   const result = {
     id: author_permlink,
-    avatar: getFieldWithMaxWeight(
-      serverWObj,
-      objectFields.avatar,
-      defaultValues[objectFields.avatar],
-    ),
-    name: getFieldWithMaxWeight(serverWObj, objectFields.name),
-    title: getFieldWithMaxWeight(serverWObj, objectFields.title),
-    price: getFieldWithMaxWeight(serverWObj, objectFields.price),
-    parent: parent || '',
+    avatar: DEFAULTS.AVATAR,
     weight: weight || '',
     createdAt: created_at || Date.now(),
     updatedAt: updated_at || Date.now(),
@@ -56,8 +35,18 @@ export const getClientWObj = (serverWObj, fieldsToInclude = [], defaultsFromPare
     isNew: Boolean(isNew),
     rank: rank || 1,
     type: (object_type && object_type.toLowerCase()) || 'item',
-    background: getFieldWithMaxWeight(serverWObj, objectFields.background),
+    ...getFieldsWithMaxWeight(serverWObj),
   };
+
+  if (serverWObj.parent) {
+    result.parent = serverWObj.parent;
+    if (result.avatar === DEFAULTS.AVATAR) {
+      const parentFielldMaxWeigth = getFieldsWithMaxWeight(serverWObj.parent);
+      if (parentFielldMaxWeigth && parentFielldMaxWeigth.avatar) {
+        result.avatar = parentFielldMaxWeigth.avatar;
+      }
+    }
+  }
 
   if (fieldsToInclude && fieldsToInclude.length) {
     fieldsToInclude.forEach(f => {

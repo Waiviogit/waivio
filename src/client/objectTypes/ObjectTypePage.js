@@ -10,6 +10,7 @@ import {
   getAuthenticatedUserName,
   getIsAuthenticated,
   getObjectTypeState,
+  getobjectTypesState,
   getScreenSize,
   getUserLocation,
 } from '../reducers';
@@ -18,12 +19,14 @@ import MapOS from '../components/Maps/Map';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import { clearType, getObjectType } from './objectTypeActions';
+import { getObjectTypes } from './objectTypesActions';
 import './ObjectTypePage.less';
 import ObjectTypeFiltersPanel from './ObjectTypeFiltersPanel/ObjectTypeFiltersPanel';
 import ObjectTypeFiltersTags from './ObjectTypeFiltersTags/ObjectTypeFiltersTags';
 import ListObjectsByType from '../objectCard/ListObjectsByType/ListObjectsByType';
 import { getCoordinates } from '../user/userActions';
 import Loading from '../components/Icon/Loading';
+import ObjectTypesNavigation from './ObjectTypesNavigation/ObjectTypesNavigation';
 
 @injectIntl
 @withRouter
@@ -35,9 +38,11 @@ import Loading from '../components/Icon/Loading';
     screenSize: getScreenSize(state),
     type: getObjectTypeState(state),
     userLocation: getUserLocation(state),
+    objectTypes: getobjectTypesState(state),
   }),
   {
     getObjectType,
+    getObjectTypes,
     getCoordinates,
     clearType,
   },
@@ -47,7 +52,9 @@ export default class ObjectTypePage extends React.Component {
     match: PropTypes.shape().isRequired,
     intl: PropTypes.shape().isRequired,
     getObjectType: PropTypes.func.isRequired,
+    getObjectTypes: PropTypes.func.isRequired,
     getCoordinates: PropTypes.func.isRequired,
+    objectTypes: PropTypes.shape().isRequired,
     clearType: PropTypes.func.isRequired,
     type: PropTypes.shape(),
     userLocation: PropTypes.shape(),
@@ -77,9 +84,12 @@ export default class ObjectTypePage extends React.Component {
 
   componentDidMount() {
     this.props.getObjectType(this.props.match.params.typeName, 0, {});
+    if (_.isEmpty(this.props.objectTypes)) this.props.getObjectTypes(100, 0, 0);
   }
 
   componentWillReceiveProps(nextProps) {
+    if (nextProps.match.params.typeName !== this.props.match.params.typeName)
+      this.props.getObjectType(nextProps.match.params.typeName, 0, {});
     if (!_.isEmpty(nextProps.type)) {
       if (
         !_.isEmpty(this.state.activefilters.map) &&
@@ -143,7 +153,7 @@ export default class ObjectTypePage extends React.Component {
   toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
 
   render() {
-    const { type, intl, screenSize } = this.props;
+    const { type, intl, screenSize, objectTypes } = this.props;
 
     const host = global.postOrigin || 'https://waiviodev.com';
     const desc = type.body;
@@ -174,70 +184,72 @@ export default class ObjectTypePage extends React.Component {
           />
         </Helmet>
         <ScrollToTopOnMount />
-        <div className="shifted">
-          <div className="feed-layout container">
-            <Affix className="leftContainer leftContainer__user" stickPosition={72}>
-              <div className="left">
-                {this.state.withMap &&
-                  !_.isEmpty(type.related_wobjects) &&
-                  !_.isEmpty(this.props.userLocation) && (
-                    <MapOS
-                      wobjects={this.props.type.related_wobjects}
-                      heigth={200}
-                      userLocation={this.props.userLocation}
-                    />
-                  )}
-                <ObjectTypeFiltersPanel
-                  filters={type.filters}
+        <div className="feed-layout container">
+          <ObjectTypesNavigation
+            objectTypes={objectTypes}
+            typeName={this.props.match.params.typeName}
+          />
+          <Affix className="leftContainer leftContainer__user" stickPosition={112}>
+            <div className="left">
+              {this.state.withMap &&
+                !_.isEmpty(type.related_wobjects) &&
+                !_.isEmpty(this.props.userLocation) && (
+                  <MapOS
+                    wobjects={this.props.type.related_wobjects}
+                    heigth={200}
+                    userLocation={this.props.userLocation}
+                  />
+                )}
+              <ObjectTypeFiltersPanel
+                filters={type.filters}
+                activefilters={this.state.activefilters}
+                setFilterValue={this.setFilterValue}
+              />
+            </div>
+          </Affix>
+          <div className="center">
+            {type.name && (
+              <div className="ObjectTypePage__title">
+                {`${intl.formatMessage({
+                  id: 'type',
+                  defaultMessage: 'Type',
+                })}: ${type.name}`}
+              </div>
+            )}
+            {(_.size(this.state.activefilters.tagCloud) > 0 ||
+              _.size(this.state.activefilters.ratings) > 0 ||
+              _.size(this.state.activefilters.map) > 0) && (
+              <div className="ObjectTypePage__tags">
+                {intl.formatMessage({
+                  id: 'filters',
+                  defaultMessage: 'Filters',
+                })}
+                :
+                <ObjectTypeFiltersTags
                   activefilters={this.state.activefilters}
                   setFilterValue={this.setFilterValue}
                 />
               </div>
-            </Affix>
-            <div className="center">
-              {type.name && (
-                <div className="ObjectTypePage__title">
-                  {`${intl.formatMessage({
-                    id: 'type',
-                    defaultMessage: 'Type',
-                  })}: ${type.name}`}
-                </div>
-              )}
-              {(_.size(this.state.activefilters.tagCloud) > 0 ||
-                _.size(this.state.activefilters.ratings) > 0 ||
-                _.size(this.state.activefilters.map) > 0) && (
-                <div className="ObjectTypePage__tags">
-                  {intl.formatMessage({
-                    id: 'filters',
-                    defaultMessage: 'Filters',
-                  })}
-                  :
-                  <ObjectTypeFiltersTags
-                    activefilters={this.state.activefilters}
-                    setFilterValue={this.setFilterValue}
-                  />
-                </div>
-              )}
-              {/* eslint-disable-next-line no-nested-ternary */}
-              {!_.isEmpty(this.props.type.related_wobjects) ? (
-                <ListObjectsByType
-                  limit={25}
-                  getObjectType={this.props.getObjectType}
-                  wobjects={this.props.type.related_wobjects}
-                  typeName={this.props.match.params.typeName}
-                  showSmallVersion={screenSize === 'xsmall'}
-                />
-              ) : !this.state.isLoading ? (
-                <div>
-                  {`${intl.formatMessage({
-                    id: 'noTypeObjects',
-                    defaultMessage: 'No data meets the criteria',
-                  })}`}
-                </div>
-              ) : (
-                <Loading center />
-              )}
-            </div>
+            )}
+            {/* eslint-disable-next-line no-nested-ternary */}
+            {!_.isEmpty(this.props.type.related_wobjects) ? (
+              <ListObjectsByType
+                limit={25}
+                getObjectType={this.props.getObjectType}
+                wobjects={this.props.type.related_wobjects}
+                typeName={this.props.match.params.typeName}
+                showSmallVersion={screenSize === 'xsmall'}
+              />
+            ) : !this.state.isLoading ? (
+              <div>
+                {`${intl.formatMessage({
+                  id: 'noTypeObjects',
+                  defaultMessage: 'No data meets the criteria',
+                })}`}
+              </div>
+            ) : (
+              <Loading center />
+            )}
           </div>
         </div>
       </div>

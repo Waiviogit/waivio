@@ -12,29 +12,14 @@
     text-transform: uppercase;
   }
 
-  &__menu-items {
-    text-align: center;
-    padding-bottom: @content-margin;
-
-    .field-info {
-      padding: 0;
-    }
-
-    @media @medium, @large {
-      text-align: left;
-    }
-  }
-
   &__menu-item {
-    font-weight: 500;
+    .menu-btn {
+      height: 35px;
+      margin-bottom: 5px;
 
-    @media @medium, @large {
-      a {
-        &.active {
-          color: @primary-color;
-        }
-
-        color: @text-color;
+      &.active {
+        border-color: @primary-color;
+        color: @primary-color;
       }
     }
   }
@@ -178,6 +163,10 @@
 
 .field-status__title {
   text-transform: capitalize;
+}
+
+.field-work-time {
+  white-space: pre-wrap;
 }
 
 .ant-tag {

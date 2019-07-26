@@ -2,6 +2,7 @@
 
 .Sidenav {
   min-width: 150px;
+
   & > li {
     & > a {
       padding: 0 10px !important;
@@ -25,6 +26,14 @@
       }
     }
   }
+
+  .RewardsBlock-innerWord {
+    margin-left: 5px;
+  }
+
+  .RewardsBlock-logIn {
+    text-align: center;
+  }
 }
 
 div[data-dir='rtl'] .Sidenav {
@@ -43,6 +52,7 @@ div[data-dir='rtl'] .Sidenav {
   border: @border-width-base @border-style-base @border-color-base !important;
   border-radius: @border-radius-base;
   color: rgba(0, 0, 0, 0.65) !important;
+
   & > i {
     color: @primary-color;
   }
