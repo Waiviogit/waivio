@@ -18,6 +18,7 @@ export default class Propositions extends React.Component {
     filterKey: PropTypes.string.isRequired,
     userName: PropTypes.string,
     intl: PropTypes.shape().isRequired,
+    campaignParent: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -47,7 +48,7 @@ export default class Propositions extends React.Component {
         return `${intl.formatMessage({
           id: 'rewards',
           defaultMessage: 'Rewards',
-        })} for`;
+        })} from`;
       case 'created':
         return `${intl.formatMessage({
           id: 'rewards',
@@ -152,18 +153,12 @@ export default class Propositions extends React.Component {
 
   render() {
     const { propositions, loading, hasMore, loadingAssignDiscard } = this.state;
-    const { intl, userName, filterKey } = this.props;
+    const { intl, userName, filterKey, campaignParent } = this.props;
     const text = this.getTextByFilterKey(intl, filterKey);
     // const requiredObject = propositions.find((proposition) => proposition.required_object);
     return (
       <React.Fragment>
-        <div className="Rewards__title">
-          {`${text} ${userName ||
-            intl.formatMessage({
-              id: 'all',
-              defaultMessage: 'all',
-            })}`}
-        </div>
+        <div className="Rewards__title">{`${text} ${campaignParent}`}</div>
         <ReduxInfiniteScroll
           elementIsScrollable={false}
           hasMore={hasMore}
@@ -179,7 +174,7 @@ export default class Propositions extends React.Component {
                   discardProposition={this.discardProposition}
                   authorizedUserName={userName}
                   loading={loadingAssignDiscard}
-                  key={proposition.id}
+                  key={proposition._id}
                 />
               ))
             : `${intl.formatMessage(

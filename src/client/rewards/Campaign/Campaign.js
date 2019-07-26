@@ -5,11 +5,10 @@ import './Campaign.less';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
 import { getClientWObj } from '../../adapters';
 
-const Campaign = ({ proposition, filterKey, userName, history }) => {
+const Campaign = ({ proposition, filterKey, history }) => {
   const requiredObject = getClientWObj(proposition.required_object);
 
-  const goToProducts = () =>
-    history.push(`/rewards/${filterKey}/${userName ? `@${userName}/` : ''}${requiredObject.id}`);
+  const goToProducts = () => history.push(`/rewards/${filterKey}/${requiredObject.id}`);
   return (
     <div role="presentation" className="Campaign" onClick={goToProducts}>
       <ObjectCard
@@ -25,12 +24,12 @@ const Campaign = ({ proposition, filterKey, userName, history }) => {
 Campaign.propTypes = {
   proposition: PropTypes.shape().isRequired,
   filterKey: PropTypes.string.isRequired,
-  userName: PropTypes.string,
+  // userName: PropTypes.string,
   history: PropTypes.shape().isRequired,
 };
 
-Campaign.defaultProps = {
-  userName: '',
-};
+// Campaign.defaultProps = {
+//   userName: '',
+// };
 
 export default withRouter(Campaign);

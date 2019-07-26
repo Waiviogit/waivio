@@ -14,6 +14,7 @@ import Propositions from './Propositions/Propositions';
 import { assignProposition, declineProposition } from '../user/userActions';
 import TopNavigation from '../components/Navigation/TopNavigation';
 import Campaigns from './Campaigns/Campaigns';
+import CreateRewardForm from './Create/CreateRewardForm';
 
 @withRouter
 @injectIntl
@@ -37,6 +38,20 @@ class Rewards extends React.Component {
   static defaultProps = {
     username: '',
   };
+
+  campaignsLayoutWrapLayout = (IsRequiredObjectWrap, filterKey, username, match) =>
+    IsRequiredObjectWrap ? (
+      <Campaigns filterKey={filterKey} userName={username} />
+    ) : (
+      <Propositions
+        filterKey={filterKey}
+        userName={username}
+        assignProposition={this.props.assignProposition}
+        discardProposition={this.props.declineProposition}
+        campaignParent={match.params.campaignParent}
+      />
+    );
+
   render() {
     const { location, match, authenticated, username } = this.props;
     const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
@@ -61,16 +76,10 @@ class Rewards extends React.Component {
               </div>
             </Affix>
             <div className="center">
-              {IsRequiredObjectWrap ? (
-                <Campaigns filterKey={filterKey} userName={match.params.userName} />
+              {location.pathname === '/rewards/create' ? (
+                <CreateRewardForm userName={username} />
               ) : (
-                <Propositions
-                  filterKey={filterKey}
-                  userName={match.params.userName}
-                  assignProposition={this.props.assignProposition}
-                  discardProposition={this.props.declineProposition}
-                  campaignParent={match.params.campaignParent}
-                />
+                this.campaignsLayoutWrapLayout(IsRequiredObjectWrap, filterKey, username, match)
               )}
             </div>
           </div>

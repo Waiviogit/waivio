@@ -592,5 +592,7 @@
   "reject": "Reject",
   "vote": "Vote",
   "unvote": "Unvote",
-  "rewardsUser": "Select a user to display the rewards"
+  "rewardsUser": "Select a user to display the rewards",
+  "campaigns": "Campaigns",
+  "pleaseLogin": "For more options please"
 }

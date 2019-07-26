@@ -338,9 +338,11 @@ export const getPropositions = ({
     fetch(
       `${config.campaignApiPrefix}${config.campaigns}?limit=${limit}&skip=${skip}${
         userName ? `&userName=${userName}` : ''
-      }${approved ? `&approved=${approved}` : ''}${status ? `&status=${status}` : ''}${
-        guideName ? `&guideName=${guideName}` : ''
-      }${campaignParent ? `&requiredObject=${campaignParent}` : ''}`,
+      }${approved ? `&approved=${approved}` : ''}${userName ? `&currentUserName=${userName}` : ''}${
+        status ? `&status=${status}` : ''
+      }${guideName ? `&guideName=${guideName}` : ''}${
+        campaignParent ? `&requiredObject=${campaignParent}` : ''
+      }`,
       {
         headers,
         method: 'GET',
