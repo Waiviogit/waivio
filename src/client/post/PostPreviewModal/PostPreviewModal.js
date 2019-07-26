@@ -13,7 +13,7 @@ import { rewardsValues } from '../../../common/constants/rewards';
 import BBackTop from '../../components/BBackTop';
 import './PostPreviewModal.less';
 
-const isTopicValid = topic => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(topic);
+const isTopicValid = topic => /^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$/.test(topic);
 
 @injectIntl
 class PostPreviewModal extends Component {

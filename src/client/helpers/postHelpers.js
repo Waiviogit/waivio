@@ -96,7 +96,7 @@ export function createPostMetadata(body, tags, oldMetadata = {}, waivioData) {
   const images = getContentImages(parsedBody, true);
   const links = extractLinks(parsedBody);
 
-  metaData.tags = tags;
+  metaData.tags = tags.map(tag => tag.toLowerCase());
   metaData.users = users;
   metaData.links = links.slice(0, 10);
   metaData.image = images;
