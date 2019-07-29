@@ -6,7 +6,7 @@ import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Menu, Icon, Input, AutoComplete } from 'antd';
 import classNames from 'classnames';
-import { searchAutoComplete } from '../../search/searchActions';
+import { searchAutoComplete, resetSearchAutoCompete } from '../../search/searchActions';
 import { getUpdatedSCUserMetadata } from '../../auth/authActions';
 import {
   getAutoCompleteSearchResults,
@@ -40,24 +40,29 @@ import ModalSignUp from './ModalSignUp/ModalSignUp';
   {
     searchAutoComplete,
     getUpdatedSCUserMetadata,
+    resetSearchAutoCompete,
   },
 )
 class Topnav extends React.Component {
   static propTypes = {
+    /* from decorators */
+    intl: PropTypes.shape().isRequired,
+    history: PropTypes.shape().isRequired,
+    location: PropTypes.shape().isRequired,
+    /* from connect */
     autoCompleteSearchResults: PropTypes.oneOfType([
       PropTypes.shape(),
       PropTypes.arrayOf(PropTypes.shape()),
     ]),
-    intl: PropTypes.shape().isRequired,
-    location: PropTypes.shape().isRequired,
-    history: PropTypes.shape().isRequired,
-    username: PropTypes.string,
     notifications: PropTypes.arrayOf(PropTypes.shape()),
-    searchAutoComplete: PropTypes.func.isRequired,
-    getUpdatedSCUserMetadata: PropTypes.func.isRequired,
-    onMenuItemClick: PropTypes.func,
     userSCMetaData: PropTypes.shape(),
     loadingNotifications: PropTypes.bool,
+    searchAutoComplete: PropTypes.func.isRequired,
+    getUpdatedSCUserMetadata: PropTypes.func.isRequired,
+    resetSearchAutoCompete: PropTypes.func.isRequired,
+    /* passed props */
+    username: PropTypes.string,
+    onMenuItemClick: PropTypes.func,
   };
 
   static defaultProps = {
@@ -292,7 +297,7 @@ class Topnav extends React.Component {
   };
 
   hideAutoCompleteDropdown() {
-    this.props.searchAutoComplete('');
+    this.setState({ searchBarActive: false }, this.props.resetSearchAutoCompete);
   }
 
   handleSearchForInput(event) {
@@ -314,6 +319,7 @@ class Topnav extends React.Component {
   }
 
   handleSelectOnAutoCompleteDropdown(value, data) {
+    this.hideAutoCompleteDropdown();
     if (data.props.marker === 'user') {
       this.props.history.push(`/@${value.replace('user', '')}`);
     } else if (data.props.marker === 'wobj') {
