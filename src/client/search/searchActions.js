@@ -5,6 +5,7 @@ import * as ApiClient from '../../waivioApi/ApiClient';
 
 export const SEARCH_ASK_STEEM = createAsyncActionType('@search/SEARCH_ASK_STEEM');
 export const AUTO_COMPLETE_SEARCH = createAsyncActionType('@search/AUTO_COMPLETE_SEARCH');
+export const RESET_AUTO_COMPLETE_SEARCH = '@search/RESET_AUTO_COMPLETE_SEARCH';
 export const SEARCH_OBJECTS = createAsyncActionType('@search/SEARCH_OBJECTS');
 export const CLEAR_SEARCH_OBJECTS_RESULT = '@search/CLEAR_SEARCH_OBJECTS_RESULT';
 
@@ -38,6 +39,11 @@ export const searchAutoComplete = (search, userLimit, wobjectsLimi, objectTypesL
         }),
       ),
     },
+  });
+
+export const resetSearchAutoCompete = () => dispatch =>
+  dispatch({
+    type: RESET_AUTO_COMPLETE_SEARCH,
   });
 
 export const searchObjectsAutoCompete = (searchString, objType) => dispatch =>
