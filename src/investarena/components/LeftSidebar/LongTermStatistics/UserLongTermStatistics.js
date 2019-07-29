@@ -71,7 +71,7 @@ class UserLongTermStatistics extends React.Component {
             <div>
               {this.props.intl.formatMessage({
                 id: 'unavailableStatisticsUser',
-                defaultMessage: 'The user has not written posts with forecasts',
+                defaultMessage: 'The user has not written any posts with forecasts',
               })}
             </div>
           )}
