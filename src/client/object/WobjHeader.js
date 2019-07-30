@@ -35,10 +35,10 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, a
   const parentName = wobject.parent ? getFieldWithMaxWeight(wobject.parent, objectTypes.name) : '';
 
   const getStatusLayout = stat => (
-    <span className="ObjectHeader__status-wrap">
-      <span className="ObjectHeader__status-unavailable">{status.title}</span>:{' '}
-      {stat.link && <a href={stat.link}>{stat.link}</a>}
-    </span>
+    <div className="ObjectHeader__status-wrap">
+      <span className="ObjectHeader__status-unavailable">{status.title}</span>&#32;
+      {stat.link && <a href={stat.link}>{<i className="iconfont icon-send PostModal__icon" />}</a>}
+    </div>
   );
 
   return (
