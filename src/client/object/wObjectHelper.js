@@ -49,8 +49,7 @@ export const getInnerFieldWithMaxWeight = (wObject, currentField, innerField) =>
   return '';
 };
 
-//
-export const getFielsByName = (wObject, currentField) => {
+export const getFieldsByName = (wObject, currentField) => {
   if (!supportedObjectFields.includes(currentField) || !wObject) return [];
   return _.filter(wObject.fields, ['name', currentField]);
 };

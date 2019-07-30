@@ -14,7 +14,7 @@ import {
   getInnerFieldWithMaxWeight,
   sortListItemsBy,
   combineObjectMenu,
-  getFielsByName,
+  getFieldsByName,
 } from '../../object/wObjectHelper';
 import {
   objectFields,
@@ -37,6 +37,7 @@ import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
 import getClientWObject from '../../adapters';
 import LinkButton from '../../components/LinkButton/LinkButton';
+import ExpandingBlock from './ExpandingBlock';
 import './ObjectInfo.less';
 
 @withRouter
@@ -57,7 +58,6 @@ class ObjectInfo extends React.Component {
   state = {
     selectedField: null,
     showModal: false,
-    showMore: false,
   };
 
   getLink = link => {
@@ -102,7 +102,7 @@ class ObjectInfo extends React.Component {
     let menuPages = null;
 
     if (_.size(wobject) > 0) {
-      names = getFielsByName(wobject, objectFields.name).map(nameField => nameField.body);
+      names = getFieldsByName(wobject, objectFields.name).map(nameField => nameField.body);
 
       const adressFields = getInnerFieldWithMaxWeight(wobject, objectFields.address);
       addressArr = adressFields
@@ -375,11 +375,11 @@ class ObjectInfo extends React.Component {
                   names.length > 0 ? (
                     <React.Fragment>
                       {!isEditMode && <span className="field-icon">{'\u2217'}</span>}
-                      <div className="object-sidebar__names">
-                        {names.map(name => (
-                          <div key={name}>{name}</div>
-                        ))}
-                      </div>
+                      <ExpandingBlock
+                        className="object-sidebar__names"
+                        entities={names}
+                        minLines={4}
+                      />
                     </React.Fragment>
                   ) : null,
                 )}
