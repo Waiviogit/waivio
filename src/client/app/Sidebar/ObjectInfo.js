@@ -35,7 +35,7 @@ import CreateImage from '../../object/ObjectGallery/CreateImage';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
-import getClientWObject from '../../adapters';
+import { getClientWObj } from '../../adapters';
 import LinkButton from '../../components/LinkButton/LinkButton';
 import ExpandingBlock from './ExpandingBlock';
 import './ObjectInfo.less';
@@ -102,7 +102,9 @@ class ObjectInfo extends React.Component {
     let menuPages = null;
 
     if (_.size(wobject) > 0) {
-      names = getFieldsByName(wobject, objectFields.name).map(nameField => nameField.body);
+      names = getFieldsByName(wobject, objectFields.name)
+        .map(nameField => nameField.body)
+        .filter(name => name !== wobject.name);
 
       const adressFields = getInnerFieldWithMaxWeight(wobject, objectFields.address);
       addressArr = adressFields
@@ -294,7 +296,7 @@ class ObjectInfo extends React.Component {
             sortListItemsBy(
               combineObjectMenu(
                 menuItems.map(menuItem =>
-                  getClientWObject(menuItem, ['author_permlink', 'default_name', 'alias']),
+                  getClientWObj(menuItem, ['author_permlink', 'default_name', 'alias']),
                 ),
                 { button },
               ),
