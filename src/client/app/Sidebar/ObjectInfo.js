@@ -374,16 +374,16 @@ class ObjectInfo extends React.Component {
                 )}
                 {listItem(
                   objectFields.name,
-                  names.length > 0 ? (
+                  !isEditMode && names.length > 0 && (
                     <React.Fragment>
-                      {!isEditMode && <span className="field-icon">{'\u2217'}</span>}
+                      <span className="field-icon">{'\u2217'}</span>
                       <ExpandingBlock
                         className="object-sidebar__names"
                         entities={names}
                         minLines={4}
                       />
                     </React.Fragment>
-                  ) : null,
+                  ),
                 )}
                 {listItem(objectFields.description, <DescriptionInfo description={description} />)}
                 {listItem(
