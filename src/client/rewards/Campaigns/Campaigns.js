@@ -85,11 +85,14 @@ export default class Campaigns extends React.Component {
     return (
       <React.Fragment>
         <div className="Rewards__title">
-          {`${text} ${userName ||
-            intl.formatMessage({
-              id: 'all',
-              defaultMessage: 'all',
-            })}`}
+          {`${text} ${
+            filterKey !== 'all'
+              ? userName
+              : intl.formatMessage({
+                  id: 'all',
+                  defaultMessage: 'all',
+                })
+          }`}
         </div>
         <ReduxInfiniteScroll
           elementIsScrollable={false}

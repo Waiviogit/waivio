@@ -2,7 +2,7 @@ export const displayLimit = 10;
 
 export const preparePropositionReqData = props => {
   const { userName, campaignParent } = props;
-  const reqData = { limit: displayLimit, campaignParent };
+  const reqData = { limit: displayLimit, campaignParent, currentUserName: userName };
   switch (props.filterKey) {
     case 'active':
       reqData.userName = userName;

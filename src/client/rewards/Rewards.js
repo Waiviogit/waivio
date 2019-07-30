@@ -15,6 +15,7 @@ import { assignProposition, declineProposition } from '../user/userActions';
 import TopNavigation from '../components/Navigation/TopNavigation';
 import Campaigns from './Campaigns/Campaigns';
 import CreateRewardForm from './Create/CreateRewardForm';
+import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 
 @withRouter
 @injectIntl
@@ -67,22 +68,26 @@ class Rewards extends React.Component {
         <ScrollToTopOnMount />
         <div className="feed-layout container">
           <TopNavigation authenticated={authenticated} userName={username} />
-        </div>
-        <div className="shifted">
-          <div className="feed-layout container">
-            <Affix className="leftContainer" stickPosition={77}>
-              <div className="left">
-                <LeftSidebar />
-              </div>
-            </Affix>
-            <div className="center">
-              {location.pathname === '/rewards/create' ? (
-                <CreateRewardForm userName={username} />
-              ) : (
-                this.campaignsLayoutWrapLayout(IsRequiredObjectWrap, filterKey, username, match)
-              )}
+          <Affix className="leftContainer" stickPosition={122}>
+            <div className="left">
+              <LeftSidebar />
             </div>
+          </Affix>
+          <div className="center">
+            {location.pathname === '/rewards/create' ? (
+              <CreateRewardForm userName={username} />
+            ) : (
+              this.campaignsLayoutWrapLayout(IsRequiredObjectWrap, filterKey, username, match)
+            )}
           </div>
+          <Affix className="rightContainer leftContainer__user" stickPosition={122}>
+            <div className="right">
+              <RewardsFiltersPanel
+              // activefilters={this.state.activeFilters}
+              // setFilterValue={this.setFilterValue}
+              />
+            </div>
+          </Affix>
         </div>
       </div>
     );

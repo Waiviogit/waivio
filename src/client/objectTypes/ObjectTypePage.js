@@ -185,25 +185,11 @@ export default class ObjectTypePage extends React.Component {
         </Helmet>
         <ScrollToTopOnMount />
         <div className="feed-layout container">
-          <ObjectTypesNavigation
-            objectTypes={objectTypes}
-            typeName={this.props.match.params.typeName}
-          />
-          <Affix className="leftContainer leftContainer__user" stickPosition={112}>
+          <Affix className="leftContainer leftContainer__user" stickPosition={72}>
             <div className="left">
-              {this.state.withMap &&
-                !_.isEmpty(type.related_wobjects) &&
-                !_.isEmpty(this.props.userLocation) && (
-                  <MapOS
-                    wobjects={this.props.type.related_wobjects}
-                    heigth={200}
-                    userLocation={this.props.userLocation}
-                  />
-                )}
-              <ObjectTypeFiltersPanel
-                filters={type.filters}
-                activefilters={this.state.activefilters}
-                setFilterValue={this.setFilterValue}
+              <ObjectTypesNavigation
+                objectTypes={objectTypes}
+                typeName={this.props.match.params.typeName}
               />
             </div>
           </Affix>
@@ -251,6 +237,42 @@ export default class ObjectTypePage extends React.Component {
               <Loading center />
             )}
           </div>
+          <Affix className="rightContainer leftContainer__user" stickPosition={72}>
+            <div className="right">
+              {this.state.withMap &&
+                !_.isEmpty(type.related_wobjects) &&
+                !_.isEmpty(this.props.userLocation) && (
+                  <MapOS
+                    wobjects={this.props.type.related_wobjects}
+                    heigth={268}
+                    userLocation={this.props.userLocation}
+                  />
+                )}
+              <ObjectTypeFiltersPanel
+                filters={type.filters}
+                activefilters={this.state.activefilters}
+                setFilterValue={this.setFilterValue}
+              />
+            </div>
+          </Affix>
+          <Affix className="rightContainer leftContainer__user" stickPosition={72}>
+            <div className="right">
+              {this.state.withMap &&
+                !_.isEmpty(type.related_wobjects) &&
+                !_.isEmpty(this.props.userLocation) && (
+                  <MapOS
+                    wobjects={this.props.type.related_wobjects}
+                    heigth={268}
+                    userLocation={this.props.userLocation}
+                  />
+                )}
+              <ObjectTypeFiltersPanel
+                filters={type.filters}
+                activefilters={this.state.activefilters}
+                setFilterValue={this.setFilterValue}
+              />
+            </div>
+          </Affix>
         </div>
       </div>
     );

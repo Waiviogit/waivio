@@ -333,14 +333,15 @@ export const getPropositions = ({
   approved,
   guideName,
   campaignParent,
+  currentUserName,
 }) =>
   new Promise((resolve, reject) => {
     fetch(
       `${config.campaignApiPrefix}${config.campaigns}?limit=${limit}&skip=${skip}${
         userName ? `&userName=${userName}` : ''
-      }${approved ? `&approved=${approved}` : ''}${userName ? `&currentUserName=${userName}` : ''}${
-        status ? `&status=${status}` : ''
-      }${guideName ? `&guideName=${guideName}` : ''}${
+      }${approved ? `&approved=${approved}` : ''}${
+        currentUserName ? `&currentUserName=${currentUserName}` : ''
+      }${status ? `&status=${status}` : ''}${guideName ? `&guideName=${guideName}` : ''}${
         campaignParent ? `&requiredObject=${campaignParent}` : ''
       }`,
       {

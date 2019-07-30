@@ -4,13 +4,16 @@
 @wrapPadding: 15px;
 
 .Proposition {
-  border: 1px solid @blue-hawkesBlue;
-  background-color: @white;
-  border-radius: 4px;
-  padding: @wrapPadding;
-  width: 100%;
   margin-bottom: 15px;
-
+  background-color: @white;
+  .RewarsHeader {
+    &-wrap {
+      margin-top: 0;
+    }
+    &-details {
+      cursor: pointer;
+    }
+  }
   &__title {
     font-size: 20px;
     font-weight: bold;

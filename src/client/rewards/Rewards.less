@@ -3,6 +3,28 @@
 
 .Rewards {
   width: 100%;
+  .RewarsHeader {
+    &-block {
+      display: flex;
+      flex-direction: column;
+    }
+    &-wrap {
+      background-color: @white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid @blue-hawkesBlue;
+      border-bottom: none;
+    }
+
+    &-payment {
+      font-size: 22px;
+    }
+  }
+  .ObjectCardView {
+    margin-top: 0;
+  }
   &__title {
     display: flex;
     align-items: center;
@@ -18,21 +40,6 @@
     color: @tertiary-color;
     button {
       margin-left: 15px;
-    }
-  }
-  .feed-layout {
-    .center {
-      float: left;
-      width: 100%;
-
-      @media @small {
-        width: calc(100% - @margin);
-      }
-
-      @media @medium {
-        width: calc(100% - (@left-width + @margin));
-        margin-left: @margin;
-      }
     }
   }
 }

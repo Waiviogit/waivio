@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { message } from 'antd';
+import { message, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
 import React from 'react';
 import _ from 'lodash';
@@ -9,6 +9,7 @@ import * as ApiClient from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
 import Proposition from '../Proposition/Proposition';
 import { preparePropositionReqData } from '../rewardsHelper';
+import UserCard from '../../components/UserCard';
 
 @injectIntl
 export default class Propositions extends React.Component {
@@ -30,15 +31,33 @@ export default class Propositions extends React.Component {
     loading: false,
     hasMore: true,
     loadingAssignDiscard: false,
+    isModalDetailsOpen: false,
+    objectDetails: {},
+    activefilters: {},
   };
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.filterKey !== this.props.filterKey) {
+    if (nextProps.filterKey !== this.props.filterKey && this.props.userName) {
       ApiClient.getPropositions(preparePropositionReqData(nextProps)).then(data => {
         this.setState({ propositions: data.campaigns, hasMore: data.hasMore });
       });
     }
   }
+
+  // setFilterValue = (filter, key) => {
+  setFilterValue = () => {
+    // const activefilters = this.state.activefilters;
+    // if (_.includes(activefilters[key], filter)) {
+    //     const requestData = activefilters;
+    //     this.props.getObjectType(this.props.match.params.typeName, 0, requestData);
+    //     this.setState({ activefilters });
+    // } else {
+    //   this.props.getObjectType(this.props.match.params.typeName, 0, activefilters);
+    //   activefilters[key].push(filter);
+    //   this.setState({ activefilters });
+    // }
+    // this.setState({ activefilters });
+  };
 
   getTextByFilterKey = (intl, filterKey) => {
     switch (filterKey) {
@@ -129,6 +148,13 @@ export default class Propositions extends React.Component {
       });
   };
 
+  toggleModal = proposition => {
+    this.setState({
+      isModalDetailsOpen: !this.state.isModalDetailsOpen,
+      objectDetails: !this.state.isModalDetailsOpen ? { proposition } : {},
+    });
+  };
+
   handleLoadMore = () => {
     const { propositions, hasMore } = this.state;
     if (hasMore) {
@@ -152,7 +178,14 @@ export default class Propositions extends React.Component {
   };
 
   render() {
-    const { propositions, loading, hasMore, loadingAssignDiscard } = this.state;
+    const {
+      propositions,
+      loading,
+      hasMore,
+      loadingAssignDiscard,
+      isModalDetailsOpen,
+      objectDetails,
+    } = this.state;
     const { intl, userName, filterKey, campaignParent } = this.props;
     const text = this.getTextByFilterKey(intl, filterKey);
     // const requiredObject = propositions.find((proposition) => proposition.required_object);
@@ -167,16 +200,27 @@ export default class Propositions extends React.Component {
           loader={<Loading />}
         >
           {propositions.length !== 0
-            ? propositions.map(proposition => (
-                <Proposition
-                  proposition={proposition}
-                  assignProposition={this.assignProposition}
-                  discardProposition={this.discardProposition}
-                  authorizedUserName={userName}
-                  loading={loadingAssignDiscard}
-                  key={proposition._id}
-                />
-              ))
+            ? propositions.map(proposition =>
+                _.map(
+                  proposition.objects,
+                  wobj =>
+                    wobj.author_permlink && (
+                      <Proposition
+                        guideName={proposition.guideName}
+                        proposition={proposition}
+                        wobj={wobj}
+                        assignProposition={this.assignProposition}
+                        discardProposition={this.discardProposition}
+                        authorizedUserName={userName}
+                        loading={loadingAssignDiscard}
+                        key={`${proposition._id} ${wobj.author_permlink}`}
+                        isModalDetailsOpen={isModalDetailsOpen}
+                        toggleModal={this.toggleModal}
+                        assigned={propositions[0].assigned}
+                      />
+                    ),
+                ),
+              )
             : `${intl.formatMessage(
                 {
                   id: 'noProposition',
@@ -187,6 +231,36 @@ export default class Propositions extends React.Component {
                 },
               )}`}
         </ReduxInfiniteScroll>
+        {isModalDetailsOpen && (
+          <Modal
+            title={this.props.intl.formatMessage({
+              id: 'create_new_object',
+              defaultMessage: 'Create new object',
+            })}
+            closable
+            onCancel={this.toggleModal}
+            maskClosable={false}
+            visible={this.state.isModalDetailsOpen}
+            wrapClassName="create-object-modal"
+            footer={null}
+          >
+            <div className="Proposition__title">{objectDetails.name}</div>
+            <div className="Proposition__header">
+              <div className="Proposition__-type">{`Sponsored: ${objectDetails.type}`}</div>
+              <div className="Proposition__reward">{`Reward: $${objectDetails.reward}`}</div>
+            </div>
+            <div className="Proposition__footer">
+              <div className="Proposition__author">
+                <div className="Proposition__author-title">{`Sponsor`}:</div>
+                <UserCard user={{ name: objectDetails.guideName }} showFollow={false} />
+              </div>
+              <div>{`Paid rewards: ${objectDetails.payed}$ (${objectDetails.payedPercent}%)`}</div>
+            </div>
+            <div className="Proposition__body">
+              <div className="Proposition__body-description">{objectDetails.description}</div>
+            </div>
+          </Modal>
+        )}
       </React.Fragment>
     );
   }
