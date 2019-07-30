@@ -14,6 +14,7 @@ import {
   getInnerFieldWithMaxWeight,
   sortListItemsBy,
   combineObjectMenu,
+  getFielsByName,
 } from '../../object/wObjectHelper';
 import {
   objectFields,
@@ -79,6 +80,7 @@ class ObjectInfo extends React.Component {
     const isRenderAboutSection = isRenderGallery;
     const isRenderMenu = isRenderGallery;
 
+    let names = [];
     let addressArr = [];
     let address = '';
     let map = '';
@@ -100,6 +102,8 @@ class ObjectInfo extends React.Component {
     let menuPages = null;
 
     if (_.size(wobject) > 0) {
+      names = getFielsByName(wobject, objectFields.name).map(nameField => nameField.body);
+
       const adressFields = getInnerFieldWithMaxWeight(wobject, objectFields.address);
       addressArr = adressFields
         ? Object.values(addressFields).map(fieldName => adressFields[fieldName])
@@ -366,6 +370,19 @@ class ObjectInfo extends React.Component {
                     <FormattedMessage id="about" defaultMessage="About" />
                   </div>
                 )}
+                {listItem(
+                  objectFields.name,
+                  names.length > 0 ? (
+                    <React.Fragment>
+                      {!isEditMode && <span className="field-icon">{'\u2217'}</span>}
+                      <div className="object-sidebar__names">
+                        {names.map(name => (
+                          <div key={name}>{name}</div>
+                        ))}
+                      </div>
+                    </React.Fragment>
+                  ) : null,
+                )}
                 {listItem(objectFields.description, <DescriptionInfo description={description} />)}
                 {listItem(
                   objectFields.rating,
@@ -454,7 +471,12 @@ class ObjectInfo extends React.Component {
                 ) : null}
                 {listItem(
                   objectFields.price,
-                  price ? <div className="icon-price">{price}</div> : null,
+                  price ? (
+                    <React.Fragment>
+                      {!isEditMode && <span className="field-icon">$</span>}
+                      <div className="price-value">{price}</div>
+                    </React.Fragment>
+                  ) : null,
                 )}
                 {listItem(objectFields.workTime, <div className="field-work-time">{workTime}</div>)}
                 {listItem(
