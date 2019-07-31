@@ -59,6 +59,21 @@ export default (state = initialState, action) => {
           : result.map(serverWObj => getClientWObj(serverWObj)),
       };
     }
+    case searchActions.SEARCH_OBJECT_TYPES.SUCCESS: {
+      const { result, search } = action.payload;
+      return {
+        ...state,
+        searchObjectTypesResults: _.isEmpty(search) ? [] : result,
+      };
+    }
+
+    case searchActions.SEARCH_USERS.SUCCESS: {
+      const { result, search } = action.payload;
+      return {
+        ...state,
+        searchUsersResults: _.isEmpty(search) ? [] : result,
+      };
+    }
     case searchActions.CLEAR_SEARCH_OBJECTS_RESULT: {
       return {
         ...state,
@@ -74,3 +89,5 @@ export const getSearchLoading = state => state.loading;
 export const getSearchResults = state => state.searchResults;
 export const getAutoCompleteSearchResults = state => state.autoCompleteSearchResults;
 export const getSearchObjectsResults = state => state.searchObjectsResults;
+export const getSearchUsersResults = state => state.searchUsersResults;
+export const searchObjectTypesResults = state => state.searchObjectTypesResults;
