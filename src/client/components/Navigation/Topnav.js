@@ -11,8 +11,8 @@ import {
   searchObjectsAutoCompete,
   searchUsersAutoCompete,
   searchObjectTypesAutoCompete,
+  resetSearchAutoCompete
 } from '../../search/searchActions';
-import { searchAutoComplete, resetSearchAutoCompete } from '../../search/searchActions';
 import { getUpdatedSCUserMetadata } from '../../auth/authActions';
 import {
   getAutoCompleteSearchResults,
