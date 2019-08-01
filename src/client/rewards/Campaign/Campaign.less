@@ -1,0 +1,23 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+@wrapPadding: 15px;
+
+.Campaign {
+  border: 1px solid @blue-hawkesBlue;
+  background-color: @white;
+  border-radius: 4px;
+  padding: @wrapPadding;
+  width: 100%;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .ObjectCard {
+    padding: 0;
+    border: none;
+  }
+}
+
+@import 'Campaign-nightmode';

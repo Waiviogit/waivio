@@ -14,6 +14,7 @@ import {
   getInnerFieldWithMaxWeight,
   sortListItemsBy,
   combineObjectMenu,
+  getFieldsByName,
 } from '../../object/wObjectHelper';
 import {
   objectFields,
@@ -34,8 +35,9 @@ import CreateImage from '../../object/ObjectGallery/CreateImage';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
-import getClientWObject from '../../adapters';
+import { getClientWObj } from '../../adapters';
 import LinkButton from '../../components/LinkButton/LinkButton';
+import ExpandingBlock from './ExpandingBlock';
 import './ObjectInfo.less';
 
 @withRouter
@@ -56,7 +58,6 @@ class ObjectInfo extends React.Component {
   state = {
     selectedField: null,
     showModal: false,
-    showMore: false,
   };
 
   getLink = link => {
@@ -79,6 +80,7 @@ class ObjectInfo extends React.Component {
     const isRenderAboutSection = isRenderGallery;
     const isRenderMenu = isRenderGallery;
 
+    let names = [];
     let addressArr = [];
     let address = '';
     let map = '';
@@ -100,6 +102,10 @@ class ObjectInfo extends React.Component {
     let menuPages = null;
 
     if (_.size(wobject) > 0) {
+      names = getFieldsByName(wobject, objectFields.name)
+        .map(nameField => nameField.body)
+        .filter(name => name !== wobject.name);
+
       const adressFields = getInnerFieldWithMaxWeight(wobject, objectFields.address);
       addressArr = adressFields
         ? Object.values(addressFields).map(fieldName => adressFields[fieldName])
@@ -290,7 +296,7 @@ class ObjectInfo extends React.Component {
             sortListItemsBy(
               combineObjectMenu(
                 menuItems.map(menuItem =>
-                  getClientWObject(menuItem, ['author_permlink', 'default_name', 'alias']),
+                  getClientWObj(menuItem, ['author_permlink', 'default_name', 'alias']),
                 ),
                 { button },
               ),
@@ -365,6 +371,19 @@ class ObjectInfo extends React.Component {
                   <div className="object-sidebar__section-title">
                     <FormattedMessage id="about" defaultMessage="About" />
                   </div>
+                )}
+                {listItem(
+                  objectFields.name,
+                  !isEditMode && names.length > 0 && (
+                    <React.Fragment>
+                      <span className="field-icon">{'\u2217'}</span>
+                      <ExpandingBlock
+                        className="object-sidebar__names"
+                        entities={names}
+                        minLines={4}
+                      />
+                    </React.Fragment>
+                  ),
                 )}
                 {listItem(objectFields.description, <DescriptionInfo description={description} />)}
                 {listItem(
@@ -454,7 +473,12 @@ class ObjectInfo extends React.Component {
                 ) : null}
                 {listItem(
                   objectFields.price,
-                  price ? <div className="icon-price">{price}</div> : null,
+                  price ? (
+                    <React.Fragment>
+                      {!isEditMode && <span className="field-icon">$</span>}
+                      <div className="price-value">{price}</div>
+                    </React.Fragment>
+                  ) : null,
                 )}
                 {listItem(objectFields.workTime, <div className="field-work-time">{workTime}</div>)}
                 {listItem(

@@ -12,6 +12,7 @@ import {
   searchUsersAutoCompete,
   searchObjectTypesAutoCompete,
 } from '../../search/searchActions';
+import { searchAutoComplete, resetSearchAutoCompete } from '../../search/searchActions';
 import { getUpdatedSCUserMetadata } from '../../auth/authActions';
 import {
   getAutoCompleteSearchResults,
@@ -54,24 +55,29 @@ import ModalSignUp from './ModalSignUp/ModalSignUp';
     getUpdatedSCUserMetadata,
     searchUsersAutoCompete,
     searchObjectTypesAutoCompete,
+    resetSearchAutoCompete,
   },
 )
 class Topnav extends React.Component {
   static propTypes = {
+    /* from decorators */
+    intl: PropTypes.shape().isRequired,
+    history: PropTypes.shape().isRequired,
+    location: PropTypes.shape().isRequired,
+    /* from connect */
     autoCompleteSearchResults: PropTypes.oneOfType([
       PropTypes.shape(),
       PropTypes.arrayOf(PropTypes.shape()),
     ]),
-    intl: PropTypes.shape().isRequired,
-    location: PropTypes.shape().isRequired,
-    history: PropTypes.shape().isRequired,
-    username: PropTypes.string,
     notifications: PropTypes.arrayOf(PropTypes.shape()),
-    searchAutoComplete: PropTypes.func.isRequired,
-    getUpdatedSCUserMetadata: PropTypes.func.isRequired,
-    onMenuItemClick: PropTypes.func,
     userSCMetaData: PropTypes.shape(),
     loadingNotifications: PropTypes.bool,
+    searchAutoComplete: PropTypes.func.isRequired,
+    getUpdatedSCUserMetadata: PropTypes.func.isRequired,
+    resetSearchAutoCompete: PropTypes.func.isRequired,
+    /* passed props */
+    username: PropTypes.string,
+    onMenuItemClick: PropTypes.func,
     searchObjectsAutoCompete: PropTypes.shape(),
     searchUsersAutoCompete: PropTypes.shape(),
     searchObjectTypesAutoCompete: PropTypes.shape(),
@@ -352,7 +358,7 @@ class Topnav extends React.Component {
   };
 
   hideAutoCompleteDropdown() {
-    this.props.searchAutoComplete('');
+    this.setState({ searchBarActive: false }, this.props.resetSearchAutoCompete);
   }
 
   handleSearchForInput(event) {
@@ -384,6 +390,7 @@ class Topnav extends React.Component {
   }
 
   handleSelectOnAutoCompleteDropdown(value, data) {
+    this.hideAutoCompleteDropdown();
     if (value === 'All') {
       this.setState({
         searchData: '',

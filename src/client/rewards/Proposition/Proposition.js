@@ -54,7 +54,7 @@ const Proposition = ({
             <div>
               {!_.isEmpty(proposition.requirements) &&
                 _.map(proposition.requirements, (req, reqKey) => (
-                  <span>
+                  <span key={`${req} ${reqKey}`}>
                     {requirementsKeys[reqKey]
                       ? `${intl.formatMessage(requirementsKeys[reqKey])} ${req}`
                       : ''}
@@ -68,7 +68,7 @@ const Proposition = ({
                     {`You should write post with objects`}:
                   </div>
                   {_.map(proposition.objects, obj => (
-                    <div className="Proposition__object-line">
+                    <div className="Proposition__object-line" key={obj.author_permlink}>
                       <ObjectCard key={obj.author_permlink} wobject={obj} showFollow={false} />
                       {userInPropositions &&
                         (!_.includes(userInPropositions.approved_objects, obj.author_permlink) ? (

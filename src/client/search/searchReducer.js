@@ -50,6 +50,12 @@ export default (state = initialState, action) => {
         autoCompleteSearchResults: _.isEmpty(search) ? [] : result,
       };
     }
+    case searchActions.RESET_AUTO_COMPLETE_SEARCH: {
+      return {
+        ...state,
+        autoCompleteSearchResults: [],
+      };
+    }
     case searchActions.SEARCH_OBJECTS.SUCCESS: {
       const { result, search } = action.payload;
       return {

@@ -593,5 +593,6 @@
   "vote": "Vote",
   "unvote": "Unvote",
   "rewardsUser": "Select a user to display the rewards",
-  "news": "News"
+  "campaigns": "Campaigns",
+  "pleaseLogin": "For more options please"
 }

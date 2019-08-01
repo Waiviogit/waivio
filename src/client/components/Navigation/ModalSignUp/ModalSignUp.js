@@ -6,8 +6,8 @@ import './ModalSignUp.less';
 
 @injectIntl
 class ModalSignUp extends React.Component {
-  propTypes = {
-    intl: PropTypes.shape.isRequired,
+  static propTypes = {
+    intl: PropTypes.shape().isRequired,
     isButton: PropTypes.bool.isRequired,
   };
 
