@@ -111,6 +111,7 @@ class Topnav extends React.Component {
       notificationsPopoverVisible: false,
       searchData: '',
       searchValue: '',
+      dropdownOpen: false,
     };
     this.handleMoreMenuSelect = this.handleMoreMenuSelect.bind(this);
     this.handleMoreMenuVisibleChange = this.handleMoreMenuVisibleChange.bind(this);
@@ -124,13 +125,18 @@ class Topnav extends React.Component {
     this.handleOnChangeForAutoComplete = this.handleOnChangeForAutoComplete.bind(this);
     this.hideAutoCompleteDropdown = this.hideAutoCompleteDropdown.bind(this);
   }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.searchValue !== this.state.searchValue) {
+      this.debouncedSearchByUser(this.state.searchValue);
+      this.debouncedSearchByObjectTypes(this.state.searchValue);
+    }
+  }
 
   getTranformSearchCountData = searchResults => {
     const { objectTypesCount, wobjectsCounts, usersCount } = searchResults;
-    const wobjectAllCount = wobjectsCounts.reduce(
-      (accumulator, currentValue) => accumulator + currentValue.count,
-      0,
-    );
+    const wobjectAllCount = wobjectsCounts
+      ? wobjectsCounts.reduce((accumulator, currentValue) => accumulator + currentValue.count, 0)
+      : null;
     const countAllSearch = objectTypesCount + usersCount + wobjectAllCount;
     const countArr = [{ name: 'All', count: countAllSearch }];
     if (!_.isEmpty(wobjectsCounts)) {
@@ -374,20 +380,21 @@ class Topnav extends React.Component {
 
   handleAutoCompleteSearch(value) {
     this.debouncedSearch(value);
-    this.setState({ searchValue: value });
+    this.setState({ searchValue: value, dropdownOpen: true });
   }
 
   handleSelectOnAutoCompleteDropdown(value, data) {
     if (value === 'All') {
       this.setState({
         searchData: '',
+        dropdownOpen: true,
       });
-      this.debouncedSearch(this.state.searchValue, value);
       return;
     }
     if (data.props.marker === 'searchSelectBar' && data.props.type === 'wobject') {
       this.setState({
         searchData: { subtype: value, type: data.props.type },
+        dropdownOpen: true,
       });
       this.debouncedSearchByObject(this.state.searchValue, value);
       return;
@@ -395,22 +402,26 @@ class Topnav extends React.Component {
     if (data.props.marker === 'searchSelectBar' && data.props.type === 'user') {
       this.setState({
         searchData: { subtype: value, type: data.props.type },
+        dropdownOpen: true,
       });
-      this.debouncedSearchByUser(this.state.searchValue);
       return;
     }
     if (data.props.marker === 'searchSelectBar' && data.props.type === 'type') {
       this.setState({
         searchData: { subtype: value, type: data.props.type },
+        dropdownOpen: true,
       });
-      this.debouncedSearchByObjectTypes(this.state.searchValue);
+
       return;
     }
     if (data.props.marker === 'user') {
       this.props.history.push(`/@${value.replace('user', '')}`);
+      this.setState({ dropdownOpen: false });
     } else if (data.props.marker === 'wobj') {
       this.props.history.replace(`/object/${value.replace('wobj', '')}`);
+      this.setState({ dropdownOpen: false });
     } else this.props.history.push(`/objectType/${value.replace('type', '')}`);
+    this.setState({ dropdownOpen: false });
   }
 
   handleOnChangeForAutoComplete(value, data) {
@@ -567,7 +578,7 @@ class Topnav extends React.Component {
 
   render() {
     const { intl, autoCompleteSearchResults } = this.props;
-    const { searchBarActive } = this.state;
+    const { searchBarActive, dropdownOpen } = this.state;
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     const downBar = (
       <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
@@ -615,8 +626,9 @@ class Topnav extends React.Component {
                 optionLabelProp="value"
                 dropdownStyle={{ color: 'red' }}
                 value={this.state.searchBarValue}
-                open
+                open={dropdownOpen}
               >
+                {console.log('formattedAutoCompleteDropdown', formattedAutoCompleteDropdown)}
                 <Input
                   ref={ref => {
                     this.searchInputRef = ref;
