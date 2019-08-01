@@ -8,6 +8,31 @@ import {
 import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
 import OBJECT_TYPE from './const/objectTypes';
 
+export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
+  let url = pathname + hash;
+  const { type, menuItems, sortCustom } = wobj;
+  switch (type && type.toLowerCase()) {
+    case OBJECT_TYPE.PAGE:
+      url = `${pathname}/${OBJECT_TYPE.PAGE}`;
+      break;
+    case OBJECT_TYPE.LIST:
+      url = `${pathname}/${OBJECT_TYPE.LIST}`;
+      break;
+    case OBJECT_TYPE.HASHTAG:
+      break;
+    default:
+      if (menuItems) {
+        url = `${pathname}/menu#${(sortCustom &&
+          sortCustom.find(item => item !== TYPES_OF_MENU_ITEM.BUTTON)) ||
+          menuItems[0].author_permlink}`;
+      } else if (screenSize !== 'large') {
+        url = `${pathname}/about`;
+      }
+      break;
+  }
+  return url;
+};
+
 export const getFieldWithMaxWeight = (wObject, currentField, defaultValue = '') => {
   if (!wObject || !currentField || !supportedObjectFields.includes(currentField))
     return defaultValue;
