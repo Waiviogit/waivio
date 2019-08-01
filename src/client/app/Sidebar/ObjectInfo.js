@@ -280,14 +280,9 @@ class ObjectInfo extends React.Component {
           )}
           {!isEditMode &&
             sortListItemsBy(
-              combineObjectMenu(
-                menuItems.map(menuItem =>
-                  getClientWObj(menuItem, ['author_permlink', 'default_name', 'alias']),
-                ),
-                { button },
-              ),
-              'custom',
-              _.get(wobject, 'sortCustom', null),
+              combineObjectMenu(menuItems.map(menuItem => getClientWObj(menuItem)), { button }),
+              !_.isEmpty(wobject.sortCustom) ? 'custom' : '',
+              wobject && wobject.sortCustom,
             ).map(item => getMenuSectionLink(item))}
           {!_.isEmpty(menuItems) && listItem(objectFields.sorting, null)}
         </div>
