@@ -21,13 +21,20 @@
         border-color: @primary-color;
         color: @primary-color;
       }
+
+      &.field-button {
+        width: 100%;
+        overflow: hidden;
+        color: @white-gainsboro;
+        background-color: @primary-color;
+        border-color: @primary-color;
+
+        &:hover {
+          background-color: @secondary-color;
+        }
+      }
     }
   }
-}
-
-.field-button {
-  width: 100%;
-  overflow: hidden;
 }
 
 .field-info {

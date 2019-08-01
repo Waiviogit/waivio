@@ -75,6 +75,7 @@ class ObjectInfo extends React.Component {
     const { location, wobject, userName, albums, isAuthenticated } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const { showModal, selectedField } = this.state;
+    const { button, status, website } = wobject;
     const renderFields = getAllowedFieldsByObjType(wobject.object_type);
     const isRenderGallery = ![OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(wobject.object_type);
     const isRenderAboutSection = isRenderGallery;
@@ -87,8 +88,6 @@ class ObjectInfo extends React.Component {
     let description = '';
     let price = '';
     let workTime = '';
-    let website = {};
-    let button = {};
     let avatar = '';
     let short = '';
     let background = '';
@@ -96,7 +95,6 @@ class ObjectInfo extends React.Component {
     let tags = [];
     let phones = [];
     let email = '';
-    let status = '';
     let menuItems = [];
     let menuLists = null;
     let menuPages = null;
@@ -140,10 +138,6 @@ class ObjectInfo extends React.Component {
               item => item.object_type !== OBJECT_TYPE.LIST,
             )
           : null;
-
-      website = getInnerFieldWithMaxWeight(wobject, objectFields.website);
-      status = getInnerFieldWithMaxWeight(wobject, objectFields.status);
-      button = getInnerFieldWithMaxWeight(wobject, objectFields.button);
 
       photosCount = wobject.photos_count;
 
@@ -226,7 +220,7 @@ class ObjectInfo extends React.Component {
         case TYPES_OF_MENU_ITEM.BUTTON:
           menuItem = (
             <Button
-              className="LinkButton menu-btn"
+              className="LinkButton menu-btn field-button"
               href={this.getLink(item.link)}
               target={'_blank'}
               block
@@ -276,18 +270,10 @@ class ObjectInfo extends React.Component {
               )}
               {listItem(
                 objectFields.button,
-                button && button.title && button.link && (
-                  <div className="object-sidebar__menu-item">
-                    <Button
-                      className="LinkButton menu-btn"
-                      href={this.getLink(button.link)}
-                      target={'_blank'}
-                      block
-                    >
-                      {button.title}
-                    </Button>
-                  </div>
-                ),
+                button &&
+                  button.title &&
+                  button.link &&
+                  getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.BUTTON, ...button }),
               )}
               {listItem(objectFields.newsFilter, null)}
             </React.Fragment>

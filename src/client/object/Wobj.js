@@ -23,7 +23,7 @@ import LeftObjectProfileSidebar from '../app/Sidebar/LeftObjectProfileSidebar';
 import RightObjectSidebar from '../app/Sidebar/RightObjectSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
-import { getFieldWithMaxWeight } from './wObjectHelper';
+import { getFieldWithMaxWeight, getInitialUrl } from './wObjectHelper';
 import { objectFields } from '../../common/constants/listOfFields';
 
 @withRouter
@@ -80,32 +80,20 @@ export default class Wobj extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { authenticated, history, match, screenSize } = this.props;
-    if (!_.isEmpty(nextProps.wobject) && !match.params[0] && !nextProps.match.params[0]) {
-      if (nextProps.wobject.object_type) {
-        const pageField = getFieldWithMaxWeight(nextProps.wobject, objectFields.pageContent);
-        switch (nextProps.wobject.object_type.toLowerCase()) {
-          case OBJECT_TYPE.PAGE:
-            if (!pageField && authenticated) {
-              this.setState({ isEditMode: true });
-            }
-            history.replace(`${history.location.pathname}/${OBJECT_TYPE.PAGE}`);
-            break;
-          case OBJECT_TYPE.LIST:
-            history.replace(`${history.location.pathname}/${OBJECT_TYPE.LIST}`);
-            break;
-          case OBJECT_TYPE.HASHTAG:
-            break;
-          default:
-            if (screenSize !== 'large') {
-              history.replace(`${history.location.pathname}/about`);
-            }
-            break;
-        }
-      }
+    const { authenticated, history, match, screenSize, wobject } = this.props;
+    if (wobject.id !== nextProps.wobject.id && !match.params[0] && !nextProps.match.params[0]) {
+      history.replace(getInitialUrl(nextProps.wobject, screenSize, history.location));
     }
     if (nextProps.match.params[0] !== this.props.match.params[0]) {
-      this.setState({ hasLeftSidebar: nextProps.match.params[0] !== OBJECT_TYPE.PAGE });
+      const nextState = { hasLeftSidebar: nextProps.match.params[0] !== OBJECT_TYPE.PAGE };
+      if (
+        nextProps.wobject.type === OBJECT_TYPE.PAGE &&
+        authenticated &&
+        !nextProps.wobject[objectFields.pageContent]
+      ) {
+        nextState.isEditMode = true;
+      }
+      this.setState(nextState);
     }
   }
 
