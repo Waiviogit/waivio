@@ -2,7 +2,7 @@ import { objectFields } from '../common/constants/listOfFields';
 import { getFieldsWithMaxWeight } from './object/wObjectHelper';
 import DEFAULTS from './object/const/defaultValues';
 
-export const getClientWObj = (serverWObj, fieldsToInclude = []) => {
+export const getClientWObj = serverWObj => {
   /* eslint-disable no-underscore-dangle */
   /* eslint-disable camelcase */
   const {
@@ -35,14 +35,6 @@ export const getClientWObj = (serverWObj, fieldsToInclude = []) => {
         result.avatar = parentFieldMaxWeight.avatar;
       }
     }
-  }
-
-  if (fieldsToInclude && fieldsToInclude.length) {
-    fieldsToInclude.forEach(f => {
-      if (typeof f === 'string' && serverWObj[f]) {
-        result[f] = serverWObj[f];
-      }
-    });
   }
 
   return result;
