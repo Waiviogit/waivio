@@ -64,7 +64,7 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, a
                 {objectName}
               </div>
               <div className="ObjectHeader__controls">
-                <FollowButton following={wobject.author_permlink} followingType="wobject" />
+                <FollowButton following={wobject.author_permlink || ''} followingType="wobject" />
                 {accessExtend && authenticated && (
                   <Button onClick={toggleViewEditMode}>
                     {isEditMode
