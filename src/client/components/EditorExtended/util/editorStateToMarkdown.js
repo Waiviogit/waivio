@@ -135,11 +135,21 @@ function editorStateToMarkdown(raw, extraMarkdownDict) {
   // totalOffset is a difference of index position between raw string and enhanced ones
   let totalOffset = 0;
 
+  let isListType = false;
   raw.blocks.forEach((block, blockIndex) => {
     if (blockIndex !== 0) {
       returnString += '\n';
       totalOffset = 0;
+      if (
+        block.text &&
+        block.type !== 'ordered-list-item' &&
+        block.type !== 'unordered-list-item' &&
+        isListType
+      ) {
+        returnString += '\n';
+      }
     }
+    isListType = block.type === 'ordered-list-item' || block.type === 'unordered-list-item';
 
     // add block style
     returnString += getBlockStyle(block.type, appliedBlockStyles);
