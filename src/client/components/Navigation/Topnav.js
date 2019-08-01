@@ -607,8 +607,10 @@ class Topnav extends React.Component {
     );
   };
 
-  handleOnBlur = () => {
-    this.setState({ dropdownOpen: false });
+  handleOnFocusBlur = () => {
+    this.setState(state => ({
+      dropdownOpen: !state.dropdownOpen,
+    }));
   };
 
   renderTitle = title => <span>{title}</span>;
@@ -664,7 +666,8 @@ class Topnav extends React.Component {
                 dropdownStyle={{ color: 'red' }}
                 value={this.state.searchBarValue}
                 open={dropdownOpen}
-                onBlur={this.handleOnBlur}
+                onBlur={this.handleOnFocusBlur}
+                onFocus={this.handleOnFocusBlur}
               >
                 <Input
                   ref={ref => {
