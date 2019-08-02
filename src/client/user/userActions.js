@@ -137,7 +137,7 @@ export const getCoordinates = () => dispatch =>
     payload: getUserCoordinatesByIpAdress(),
   });
 
-export const assignProposition = (companyId, objId) => (
+export const assignProposition = (companyId, objsIds) => (
   dispatch,
   getState,
   { steemConnectAPI },
@@ -145,7 +145,7 @@ export const assignProposition = (companyId, objId) => (
   const state = getState();
   return new Promise((resolve, reject) => {
     steemConnectAPI
-      .assignProposition(getAuthenticatedUserName(state), companyId, objId)
+      .assignProposition(getAuthenticatedUserName(state), companyId, objsIds)
       .then(() => resolve('SUCCESS'))
       .catch(error => reject(error));
   });

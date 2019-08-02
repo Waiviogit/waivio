@@ -46,7 +46,7 @@ const Proposition = ({
 
   const buttonsLayout = () => {
     if (typeof assigned === 'boolean') {
-      return !proposition.assigned ? (
+      return !assigned ? (
         <div className="RewarsHeader-button">
           <Button
             type="primary"

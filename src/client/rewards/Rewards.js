@@ -8,13 +8,18 @@ import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
-import { getAuthenticatedUserName, getIsAuthenticated, getIsLoaded } from '../reducers';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  getIsLoaded,
+  getUserLocation,
+} from '../reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTop from '../components/Utils/ScrollToTop';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import './Rewards.less';
-import { assignProposition, declineProposition } from '../user/userActions';
+import { assignProposition, declineProposition, getCoordinates } from '../user/userActions';
 import TopNavigation from '../components/Navigation/TopNavigation';
 import CreateRewardForm from './Create/CreateRewardForm';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
@@ -25,6 +30,7 @@ import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
 import Avatar from '../components/Avatar';
+import MapOS from '../components/Maps/Map';
 
 @withRouter
 @injectIntl
@@ -33,13 +39,16 @@ import Avatar from '../components/Avatar';
     authenticated: getIsAuthenticated(state),
     loaded: getIsLoaded(state),
     username: getAuthenticatedUserName(state),
+    userLocation: getUserLocation(state),
   }),
-  { assignProposition, declineProposition },
+  { assignProposition, declineProposition, getCoordinates },
 )
 class Rewards extends React.Component {
   static propTypes = {
     assignProposition: PropTypes.func.isRequired,
+    getCoordinates: PropTypes.func.isRequired,
     // declineProposition: PropTypes.func.isRequired,
+    userLocation: PropTypes.shape(),
     authenticated: PropTypes.bool.isRequired,
     username: PropTypes.string.isRequired,
     location: PropTypes.shape().isRequired,
@@ -49,6 +58,7 @@ class Rewards extends React.Component {
 
   static defaultProps = {
     username: '',
+    userLocation: {},
   };
 
   state = {
@@ -62,6 +72,12 @@ class Rewards extends React.Component {
     objectDetails: {},
     activeFilters: { sponsors: [], campaignsTypes: [] },
   };
+
+  componentDidMount() {
+    if (!_.size(this.props.userLocation)) {
+      this.props.getCoordinates();
+    }
+  }
 
   componentWillReceiveProps(nextProps) {
     if (
@@ -79,6 +95,8 @@ class Rewards extends React.Component {
       });
     }
   }
+  getRequiredObjects = () =>
+    _.map(this.state.propositions, proposition => proposition.required_object);
 
   getTextByFilterKey = (intl, filterKey) => {
     switch (filterKey) {
@@ -116,7 +134,7 @@ class Rewards extends React.Component {
   assignProposition = (proposition, obj) => {
     this.setState({ loadingAssignDiscard: true });
     this.props
-      .assignProposition(proposition._id, obj.author_permlink)
+      .assignProposition(proposition._id, [obj.author_permlink])
       .then(() => {
         const updatedPropositions = this.updateProposition(
           proposition._id,
@@ -217,7 +235,7 @@ class Rewards extends React.Component {
                 guide={proposition.guide}
                 proposition={proposition}
                 wobj={wobj.object}
-                assignProposition={this.assignProposition}
+                assignProposition={() => this.assignProposition(proposition, wobj.object)}
                 discardProposition={this.discardProposition}
                 authorizedUserName={userName}
                 loading={loadingAssignDiscard}
@@ -238,7 +256,7 @@ class Rewards extends React.Component {
 
   handleLoadMore = () => {
     const { propositions, hasMore } = this.state;
-    if (hasMore) {
+    if (hasMore && this.props.username) {
       this.setState(
         {
           loading: true,
@@ -306,6 +324,15 @@ class Rewards extends React.Component {
           </div>
           <Affix className="rightContainer leftContainer__user" stickPosition={122}>
             <div className="right">
+              {// this.state.withMap &&
+              // !_.isEmpty(type.related_wobjects) &&
+              !_.isEmpty(this.props.userLocation) && (
+                <MapOS
+                  wobjects={this.getRequiredObjects()}
+                  heigth={268}
+                  userLocation={this.props.userLocation}
+                />
+              )}
               {!_.isEmpty(sponsors) && (
                 <RewardsFiltersPanel
                   campaignsTypes={campaignsTypes}

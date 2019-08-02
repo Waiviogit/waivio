@@ -27,6 +27,7 @@ import ListObjectsByType from '../objectCard/ListObjectsByType/ListObjectsByType
 import { getCoordinates } from '../user/userActions';
 import Loading from '../components/Icon/Loading';
 import ObjectTypesNavigation from './ObjectTypesNavigation/ObjectTypesNavigation';
+import TopNavigation from '../components/Navigation/TopNavigation';
 
 @injectIntl
 @withRouter
@@ -52,6 +53,8 @@ export default class ObjectTypePage extends React.Component {
     match: PropTypes.shape().isRequired,
     intl: PropTypes.shape().isRequired,
     getObjectType: PropTypes.func.isRequired,
+    authenticated: PropTypes.bool.isRequired,
+    authenticatedUserName: PropTypes.string,
     getObjectTypes: PropTypes.func.isRequired,
     getCoordinates: PropTypes.func.isRequired,
     objectTypes: PropTypes.shape().isRequired,
@@ -153,7 +156,14 @@ export default class ObjectTypePage extends React.Component {
   toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
 
   render() {
-    const { type, intl, screenSize, objectTypes } = this.props;
+    const {
+      type,
+      intl,
+      screenSize,
+      objectTypes,
+      authenticated,
+      authenticatedUserName,
+    } = this.props;
 
     const host = global.postOrigin || 'https://waiviodev.com';
     const desc = type.body;
@@ -185,7 +195,8 @@ export default class ObjectTypePage extends React.Component {
         </Helmet>
         <ScrollToTopOnMount />
         <div className="feed-layout container">
-          <Affix className="leftContainer leftContainer__user" stickPosition={72}>
+          <TopNavigation authenticated={authenticated} userName={authenticatedUserName} />
+          <Affix className="leftContainer leftContainer__user" stickPosition={122}>
             <div className="left">
               <ObjectTypesNavigation
                 objectTypes={objectTypes}
@@ -237,7 +248,7 @@ export default class ObjectTypePage extends React.Component {
               <Loading center />
             )}
           </div>
-          <Affix className="rightContainer leftContainer__user" stickPosition={72}>
+          <Affix className="rightContainer leftContainer__user" stickPosition={122}>
             <div className="right">
               {this.state.withMap &&
                 !_.isEmpty(type.related_wobjects) &&
