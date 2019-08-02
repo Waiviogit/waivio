@@ -281,19 +281,27 @@ div[data-dir='rtl'] .Topnav {
     max-width: 500px;
   }
 
-  //height: 28px;
   max-width: 300px;
   display: flex;
   flex-wrap: wrap;
   text-transform: capitalize;
 }
 
+.ant-select-dropdown-menu :first-child > ul :first-child {
+  color: @orange-light;
+}
+
 .ant-select-dropdown-menu :first-child > ul > li {
+  margin-top: 5px;
   margin-left: 5px;
   border-radius: 4px !important;
-  border: 1px solid #e9e7e7;
-  background: #fafafa;
+  border: 1px solid @white-gainsboro;
+  background: @white-smoke;
   overflow: visible;
+}
+
+.ant-select-dropdown-menu :first-child > .ant-select-dropdown-menu-item-group-title {
+  height: 0px;
 }
 
 .Topnav__search-autocomplete.ant-select-dropdown-menu-item-active {
