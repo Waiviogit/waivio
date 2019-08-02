@@ -8,6 +8,8 @@ export const AUTO_COMPLETE_SEARCH = createAsyncActionType('@search/AUTO_COMPLETE
 export const RESET_AUTO_COMPLETE_SEARCH = '@search/RESET_AUTO_COMPLETE_SEARCH';
 export const SEARCH_OBJECTS = createAsyncActionType('@search/SEARCH_OBJECTS');
 export const CLEAR_SEARCH_OBJECTS_RESULT = '@search/CLEAR_SEARCH_OBJECTS_RESULT';
+export const SEARCH_USERS = createAsyncActionType('@search/SEARCH_USERS');
+export const SEARCH_OBJECT_TYPES = createAsyncActionType('@search/SEARCH_OBJECT_TYPES');
 
 export const searchAskSteem = search => dispatch =>
   dispatch({
@@ -51,6 +53,28 @@ export const searchObjectsAutoCompete = (searchString, objType) => dispatch =>
     type: SEARCH_OBJECTS.ACTION,
     payload: {
       promise: ApiClient.searchObjects(searchString, objType).then(result => ({
+        result,
+        search: searchString,
+      })),
+    },
+  });
+
+export const searchUsersAutoCompete = (userName, limit) => dispatch =>
+  dispatch({
+    type: SEARCH_USERS.ACTION,
+    payload: {
+      promise: ApiClient.searchUsers(userName, limit).then(result => ({
+        result,
+        search: userName,
+      })),
+    },
+  });
+
+export const searchObjectTypesAutoCompete = (searchString, objType) => dispatch =>
+  dispatch({
+    type: SEARCH_OBJECT_TYPES.ACTION,
+    payload: {
+      promise: ApiClient.searchObjectTypes(searchString, objType).then(result => ({
         result,
         search: searchString,
       })),
