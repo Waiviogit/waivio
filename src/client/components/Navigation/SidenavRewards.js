@@ -41,12 +41,11 @@ export default class SidenavRewards extends React.Component {
       <React.Fragment>
         <ul className="Sidenav">
           <div className="RewardsBlock-title">
-            {intl
-              .formatMessage({
-                id: 'rewards',
-                defaultMessage: `Rewards`,
-              })
-              .toUpperCase()}
+            {intl.formatMessage({
+              id: 'rewards',
+              defaultMessage: `Rewards`,
+            })}
+            :
           </div>
           <li>
             <NavLink to={'/rewards/all'} activeClassName="Sidenav__item--active">
@@ -82,14 +81,12 @@ export default class SidenavRewards extends React.Component {
                   })}
                 </NavLink>
               </li>
-              ------------------------------
               <div className="RewardsBlock-title">
-                {intl
-                  .formatMessage({
-                    id: 'campaigns',
-                    defaultMessage: `Campaigns`,
-                  })
-                  .toUpperCase()}
+                {intl.formatMessage({
+                  id: 'campaigns',
+                  defaultMessage: `Campaigns`,
+                })}
+                :
               </div>
               <li>
                 <NavLink to={`/rewards/create`} activeClassName="Sidenav__item--active">

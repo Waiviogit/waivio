@@ -1,8 +1,14 @@
 @import (reference) '../../styles/modules/variables.less';
 @import (reference) '../../styles/custom.less';
 
-.ObjectTypeFiltersPanel {
+.RewardsFiltersPanel {
   border-radius: 4px;
+
+  &__title-text {
+    font-weight: 800;
+    margin: 10px 0;
+  }
+
   &__title {
     display: flex;
     min-height: 42px;
@@ -15,6 +21,7 @@
     font-size: 16px;
     font-weight: 500;
   }
+
   &__container {
     padding: 5px 15px 15px 15px;
     border: @base-border;
@@ -42,4 +49,4 @@
   }
 }
 
-@import 'ObjectTypeFiltersPanel-nightmode';
+@import 'RewardsFiltersPanel-nightmode';

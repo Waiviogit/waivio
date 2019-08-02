@@ -23,6 +23,7 @@
   "createObject": "/create/object",
   "getObjects": "/wobject",
   "searchObjects": "/wobjectSearch",
+  "objectTypesSearch" : "/ObjectTypesSearch",
   "getObjectFollowing": "/following_objects",
   "getObjectFollowers": "/followers",
   "user": "/user",
@@ -38,5 +39,6 @@
   "objectType": "/objectType",
   "generalSearch": "/generalSearch",
   "campaigns": "/campaigns",
-  "suitableUsers": "/suitable_users"
+  "suitableUsers": "/suitable_users",
+  "search": "/search"
 }
