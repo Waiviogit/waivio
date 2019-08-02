@@ -1,21 +1,30 @@
+/* eslint-disable no-underscore-dangle */
+import { message, Modal } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
-import { getIsLoaded, getIsAuthenticated, getAuthenticatedUserName } from '../reducers';
+import { Link } from 'react-router-dom';
+import _ from 'lodash';
+import { getAuthenticatedUserName, getIsAuthenticated, getIsLoaded } from '../reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTop from '../components/Utils/ScrollToTop';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import './Rewards.less';
-import Propositions from './Propositions/Propositions';
 import { assignProposition, declineProposition } from '../user/userActions';
 import TopNavigation from '../components/Navigation/TopNavigation';
-import Campaigns from './Campaigns/Campaigns';
 import CreateRewardForm from './Create/CreateRewardForm';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
+import * as ApiClient from '../../waivioApi/ApiClient';
+import { preparePropositionReqData } from './rewardsHelper';
+import Loading from '../components/Icon/Loading';
+import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
+import Proposition from './Proposition/Proposition';
+import Campaign from './Campaign/Campaign';
+import Avatar from '../components/Avatar';
 
 @withRouter
 @injectIntl
@@ -30,31 +39,238 @@ import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 class Rewards extends React.Component {
   static propTypes = {
     assignProposition: PropTypes.func.isRequired,
-    declineProposition: PropTypes.func.isRequired,
+    // declineProposition: PropTypes.func.isRequired,
     authenticated: PropTypes.bool.isRequired,
     username: PropTypes.string.isRequired,
     location: PropTypes.shape().isRequired,
+    intl: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
   };
+
   static defaultProps = {
     username: '',
   };
 
-  campaignsLayoutWrapLayout = (IsRequiredObjectWrap, filterKey, username, match) =>
-    IsRequiredObjectWrap ? (
-      <Campaigns filterKey={filterKey} userName={username} />
-    ) : (
-      <Propositions
-        filterKey={filterKey}
-        userName={username}
-        assignProposition={this.props.assignProposition}
-        discardProposition={this.props.declineProposition}
-        campaignParent={match.params.campaignParent}
-      />
-    );
+  state = {
+    loading: false,
+    loadingAssignDiscard: false,
+    hasMore: true,
+    propositions: [],
+    sponsors: [],
+    campaignsTypes: [],
+    isModalDetailsOpen: false,
+    objectDetails: {},
+    activeFilters: { sponsors: [], campaignsTypes: [] },
+  };
+
+  componentWillReceiveProps(nextProps) {
+    if (
+      (nextProps.match.params.filterKey !== this.props.match.params.filterKey ||
+        nextProps.match.params.campaignParent !== this.props.match.params.campaignParent) &&
+      this.props.username
+    ) {
+      ApiClient.getPropositions(preparePropositionReqData(nextProps)).then(data => {
+        this.setState({
+          propositions: data.campaigns,
+          hasMore: data.hasMore,
+          sponsors: data.sponsors,
+          campaignsTypes: data.campaigns_types,
+        });
+      });
+    }
+  }
+
+  getTextByFilterKey = (intl, filterKey) => {
+    switch (filterKey) {
+      case 'active':
+      case 'history':
+      case 'reserved':
+        return `${intl.formatMessage({
+          id: 'rewards',
+          defaultMessage: 'Rewards',
+        })} for`;
+      case 'created':
+        return `${intl.formatMessage({
+          id: 'rewards',
+          defaultMessage: 'Rewards',
+        })} created by`;
+      default:
+        return intl.formatMessage({
+          id: 'rewards',
+          defaultMessage: 'Rewards',
+        });
+    }
+  };
+
+  setFilterValue = (filter, key) => {
+    const activefilters = this.state.activeFilters;
+    if (_.includes(activefilters[key], filter)) {
+      _.remove(activefilters[key], f => f === filter);
+    } else {
+      activefilters[key].push(filter);
+    }
+    this.setState({ activefilters });
+  };
+
+  // For Propositions
+  assignProposition = (proposition, obj) => {
+    this.setState({ loadingAssignDiscard: true });
+    this.props
+      .assignProposition(proposition._id, obj.author_permlink)
+      .then(() => {
+        const updatedPropositions = this.updateProposition(
+          proposition._id,
+          true,
+          obj.author_permlink,
+        );
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'assigned_successfully',
+            defaultMessage: 'Assigned successfully',
+          }),
+        );
+        this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
+      })
+      .catch(e => {
+        message.error(e.toString());
+        this.setState({ loadingAssignDiscard: false });
+      });
+  };
+  updateProposition = (propsId, isAssign, objPermlink) =>
+    _.map(this.state.propositions, propos => {
+      // eslint-disable-next-line no-param-reassign
+      if (propos._id === propsId) {
+        _.map(propos.users, user => {
+          if (user.name === this.props.username) {
+            if (_.includes(user.approved_objects, objPermlink)) {
+              const newUser = user;
+              newUser.approved_objects = _.filter(user.approved_objects, o => o !== objPermlink);
+              return newUser;
+            }
+            return user.approved_objects.push(objPermlink);
+          }
+          return user;
+        });
+      }
+      return propos;
+    });
+
+  toggleModal = proposition => {
+    this.setState({
+      isModalDetailsOpen: !this.state.isModalDetailsOpen,
+      objectDetails: !this.state.isModalDetailsOpen ? proposition : {},
+    });
+  };
+
+  discardProposition = (proposition, obj) => {
+    this.setState({ loadingAssignDiscard: true });
+    this.discardProposition(proposition._id, obj.author_permlink)
+      .then(() => {
+        const updatedPropositions = this.updateProposition(
+          proposition._id,
+          false,
+          obj.author_permlink,
+        );
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'discarded_successfully',
+            defaultMessage: 'Discarded successfully',
+          }),
+        );
+        this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
+      })
+      .catch(e => {
+        message.error(e.toString());
+        this.setState({ loadingAssignDiscard: false });
+      });
+  };
+  // END Propositions
+
+  campaignsLayoutWrapLayout = (IsRequiredObjectWrap, filterKey, userName) => {
+    const { propositions, isModalDetailsOpen, loadingAssignDiscard } = this.state;
+    const { intl } = this.props;
+    if (_.size(propositions) !== 0) {
+      if (IsRequiredObjectWrap) {
+        return _.map(
+          propositions,
+          proposition =>
+            proposition &&
+            proposition.required_object && (
+              <Campaign
+                proposition={proposition}
+                filterKey={filterKey}
+                key={`${proposition.required_object.author_permlink}${
+                  proposition.required_object.createdAt
+                }`}
+                userName={userName}
+              />
+            ),
+        );
+      }
+      return _.map(propositions, proposition =>
+        _.map(
+          proposition.objects,
+          wobj =>
+            wobj.object &&
+            wobj.object.author_permlink && (
+              <Proposition
+                guide={proposition.guide}
+                proposition={proposition}
+                wobj={wobj.object}
+                assignProposition={this.assignProposition}
+                discardProposition={this.discardProposition}
+                authorizedUserName={userName}
+                loading={loadingAssignDiscard}
+                key={`${proposition._id} ${wobj.object.author_permlink}`}
+                isModalDetailsOpen={isModalDetailsOpen}
+                toggleModal={this.toggleModal}
+                assigned={wobj.assigned}
+              />
+            ),
+        ),
+      );
+    }
+    return `${intl.formatMessage(
+      { id: 'noProposition', defaultMessage: `There are no propositions` },
+      { userName },
+    )}`;
+  };
+
+  handleLoadMore = () => {
+    const { propositions, hasMore } = this.state;
+    if (hasMore) {
+      this.setState(
+        {
+          loading: true,
+        },
+        () => {
+          const reqData = preparePropositionReqData(this.props);
+          reqData.skip = propositions.length;
+          ApiClient.getPropositions(reqData).then(newPropositions =>
+            this.setState({
+              loading: false,
+              hasMore: newPropositions.campaigns && newPropositions.hasMore,
+              propositions: this.state.propositions.concat(newPropositions.campaigns),
+              sponsors: newPropositions.sponsors,
+              campaignsTypes: newPropositions.campaigns_types,
+            }),
+          );
+        },
+      );
+    }
+  };
 
   render() {
     const { location, match, authenticated, username } = this.props;
+    const {
+      sponsors,
+      loading,
+      hasMore,
+      isModalDetailsOpen,
+      objectDetails,
+      campaignsTypes,
+      activeFilters,
+    } = this.state;
     const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
     const filterKey = match.params.filterKey;
     const IsRequiredObjectWrap = !match.params.campaignParent;
@@ -77,18 +293,67 @@ class Rewards extends React.Component {
             {location.pathname === '/rewards/create' ? (
               <CreateRewardForm userName={username} />
             ) : (
-              this.campaignsLayoutWrapLayout(IsRequiredObjectWrap, filterKey, username, match)
+              <ReduxInfiniteScroll
+                elementIsScrollable={false}
+                hasMore={hasMore}
+                loadMore={this.handleLoadMore}
+                loadingMore={loading}
+                loader={<Loading />}
+              >
+                {this.campaignsLayoutWrapLayout(IsRequiredObjectWrap, filterKey, username, match)}
+              </ReduxInfiniteScroll>
             )}
           </div>
           <Affix className="rightContainer leftContainer__user" stickPosition={122}>
             <div className="right">
-              <RewardsFiltersPanel
-              // activefilters={this.state.activeFilters}
-              // setFilterValue={this.setFilterValue}
-              />
+              {!_.isEmpty(sponsors) && (
+                <RewardsFiltersPanel
+                  campaignsTypes={campaignsTypes}
+                  sponsors={sponsors}
+                  activeFilters={activeFilters}
+                  setFilterValue={this.setFilterValue}
+                />
+              )}
             </div>
           </Affix>
         </div>
+        {isModalDetailsOpen && !_.isEmpty(objectDetails) && (
+          <Modal
+            title={this.props.intl.formatMessage({
+              id: 'details',
+              defaultMessage: 'Details',
+            })}
+            closable
+            onCancel={this.toggleModal}
+            maskClosable={false}
+            visible={this.state.isModalDetailsOpen}
+            wrapClassName="Rewards-modal"
+            footer={null}
+          >
+            <div className="Proposition__title">{objectDetails.name}</div>
+            <div className="Proposition__header">
+              <div className="Proposition__-type">{`Sponsored: ${objectDetails.type}`}</div>
+              <div className="Proposition__reward">{`Reward: $${objectDetails.reward}`}</div>
+            </div>
+            <div className="Proposition__footer">
+              <div className="Proposition__author">
+                <div className="Proposition__author-title">{`Sponsor`}:</div>
+                <div className="Rewards-modal__user-card">
+                  <Link to={`/@${objectDetails.guide.name}`}>
+                    <Avatar username={objectDetails.guide.name} size={34} />
+                  </Link>
+                  <Link to={`/@${objectDetails.guide.name}`} title={objectDetails.guide.name}>
+                    <span className="username">{objectDetails.guide.name}</span>
+                  </Link>
+                </div>
+              </div>
+              <div>{`Paid rewards: ${objectDetails.payed}$ (${objectDetails.payedPercent}%)`}</div>
+            </div>
+            <div className="Proposition__body">
+              <div className="Proposition__body-description">{objectDetails.description}</div>
+            </div>
+          </Modal>
+        )}
       </div>
     );
   }

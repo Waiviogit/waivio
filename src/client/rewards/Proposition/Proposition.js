@@ -3,12 +3,11 @@ import React from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Button } from 'antd';
+import { Link } from 'react-router-dom';
 import './Proposition.less';
-// import UserCard from '../../components/UserCard';
-// import ObjectCard from '../../components/Sidebar/ObjectCard';
 import { getClientWObj } from '../../adapters';
 import ObjectCardView from '../../objectCard/ObjectCardView';
-import UserCard from '../../components/UserCard';
+import Avatar from '../../components/Avatar';
 
 // const { Panel } = Collapse;
 
@@ -28,7 +27,6 @@ const Proposition = ({
   assignProposition,
   discardProposition,
   loading,
-  guideName,
   wobj,
   toggleModal,
   assigned,
@@ -45,6 +43,47 @@ const Proposition = ({
   const discardPr = obj => {
     discardProposition(proposition, obj);
   };
+
+  const buttonsLayout = () => {
+    if (typeof assigned === 'boolean') {
+      return !proposition.assigned ? (
+        <div className="RewarsHeader-button">
+          <Button
+            type="primary"
+            loading={loading}
+            disabled={loading}
+            onClick={() => assignPr(proposedWobj)}
+          >
+            {intl.formatMessage({
+              id: 'reserve',
+              defaultMessage: `Reserve`,
+            })}
+          </Button>
+          {`${intl.formatMessage({
+            id: 'for',
+            defaultMessage: `for`,
+          })} ${'N'} ${intl.formatMessage({
+            id: 'days',
+            defaultMessage: `days`,
+          })}`}
+        </div>
+      ) : (
+        <Button
+          type="primary"
+          loading={loading}
+          disabled={loading}
+          onClick={() => discardPr(proposedWobj)}
+        >
+          {intl.formatMessage({
+            id: 'release',
+            defaultMessage: `Release`,
+          })}
+        </Button>
+      );
+    }
+    return <div />;
+  };
+
   return (
     <div className="Proposition">
       <div className="RewarsHeader-block">
@@ -58,47 +97,27 @@ const Proposition = ({
             defaultMessage: `Rewards`,
           })}:`}</span>
         </div>
-        <div className="RewarsHeader-wrap">
-          <UserCard user={{ name: guideName }} showFollow={false} />
-          <span className="RewarsHeader-payment">$8.2 </span>
+        <div className="RewarsHeader-wrap-second">
+          <div className="RewarsHeader__user-card">
+            <Link to={`/@${proposition.guide.name}`}>
+              <Avatar username={proposition.guide.name} size={34} />
+            </Link>
+            <Link to={`/@${proposition.guide.name}`} title={proposition.guide.name}>
+              <div className="RewarsHeader__user-card-alias">{proposition.guide.alias}</div>
+              <div className="RewarsHeader__user-card-username">{`@${
+                proposition.guide.name
+              } (${intl.formatMessage({
+                id: 'paid',
+                defaultMessage: `paid`,
+              })} $${proposition.guide.total_payed})`}</div>
+            </Link>
+          </div>
+          <span className="RewarsHeader-payment">{`$${proposition.reward}`}</span>
         </div>
       </div>
       <ObjectCardView wObject={proposedWobj} key={proposedWobj.id} />
-      <div className="RewarsHeader-wrap">
-        {typeof assigned === 'boolean' && !proposition.assigned ? (
-          <div className="RewarsHeader-button">
-            <Button
-              type="primary"
-              loading={loading}
-              disabled={loading}
-              onClick={() => assignPr(proposedWobj)}
-            >
-              {intl.formatMessage({
-                id: 'reserve',
-                defaultMessage: `Reserve`,
-              })}
-            </Button>
-            {`${intl.formatMessage({
-              id: 'for',
-              defaultMessage: `for`,
-            })} ${5} ${intl.formatMessage({
-              id: 'days',
-              defaultMessage: `days`,
-            })}`}
-          </div>
-        ) : (
-          <Button
-            type="primary"
-            loading={loading}
-            disabled={loading}
-            onClick={() => discardPr(proposedWobj)}
-          >
-            {intl.formatMessage({
-              id: 'release',
-              defaultMessage: `Release`,
-            })}
-          </Button>
-        )}
+      <div className="RewardsFooter-wrap">
+        {buttonsLayout()}
         <a role="presentation" className="RewardsHeader" onClick={toggleModalDetails}>
           {intl.formatMessage({
             id: 'details',
@@ -116,15 +135,15 @@ Proposition.propTypes = {
   assignProposition: PropTypes.func.isRequired,
   discardProposition: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
-  assigned: PropTypes.oneOfType([PropTypes.bool, PropTypes.null]).isRequired,
+  assigned: PropTypes.bool,
   toggleModal: PropTypes.func.isRequired,
-  guideName: PropTypes.string.isRequired,
   // authorizedUserName: PropTypes.string,
   intl: PropTypes.shape().isRequired,
 };
 
 Proposition.defaultProps = {
   authorizedUserName: '',
+  assigned: null,
 };
 
 export default injectIntl(Proposition);

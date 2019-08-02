@@ -255,24 +255,6 @@ export default class ObjectTypePage extends React.Component {
               />
             </div>
           </Affix>
-          <Affix className="rightContainer leftContainer__user" stickPosition={72}>
-            <div className="right">
-              {this.state.withMap &&
-                !_.isEmpty(type.related_wobjects) &&
-                !_.isEmpty(this.props.userLocation) && (
-                  <MapOS
-                    wobjects={this.props.type.related_wobjects}
-                    heigth={268}
-                    userLocation={this.props.userLocation}
-                  />
-                )}
-              <ObjectTypeFiltersPanel
-                filters={type.filters}
-                activefilters={this.state.activefilters}
-                setFilterValue={this.setFilterValue}
-              />
-            </div>
-          </Affix>
         </div>
       </div>
     );

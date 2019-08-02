@@ -15,10 +15,14 @@ const Campaign = ({ proposition, filterKey, history, intl }) => {
     <div role="presentation" className="Campaign" onClick={goToProducts}>
       <div className="RewarsHeader-wrap">
         {`${intl.formatMessage({
-          id: 'rewards_for_rewiews',
-          defaultMessage: `Rewards for rewiew`,
+          id: 'rewards_for_reviews',
+          defaultMessage: `Rewards for review`,
         })}:`}
-        <span className="RewarsHeader-payment">{'$8.2 >'}</span>
+        <span className="RewarsHeader-payment">
+          {`$${proposition.min_reward} ${
+            proposition.max_reward !== proposition.min_reward ? ` - $${proposition.max_reward}` : ''
+          } >`}
+        </span>
       </div>
       <ObjectCardView wObject={requiredObject} key={requiredObject.id} />
     </div>
