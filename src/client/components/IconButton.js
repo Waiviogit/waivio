@@ -9,7 +9,7 @@ const IconButton = props => {
     <div
       className={classNames('icon-button', { [className]: Boolean(className), disabled })}
       role="presentation"
-      onClick={!disabled && onClick}
+      onClick={disabled ? undefined : onClick}
     >
       <div className="icon-button__icon">{icon}</div>
       {caption && <div className="icon-button__text">{caption}</div>}

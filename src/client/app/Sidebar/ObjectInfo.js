@@ -14,6 +14,7 @@ import {
   getInnerFieldWithMaxWeight,
   sortListItemsBy,
   combineObjectMenu,
+  getFieldsByName,
 } from '../../object/wObjectHelper';
 import {
   objectFields,
@@ -34,8 +35,9 @@ import CreateImage from '../../object/ObjectGallery/CreateImage';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
-import getClientWObject from '../../adapters';
+import { getClientWObj } from '../../adapters';
 import LinkButton from '../../components/LinkButton/LinkButton';
+import ExpandingBlock from './ExpandingBlock';
 import './ObjectInfo.less';
 
 @withRouter
@@ -56,7 +58,6 @@ class ObjectInfo extends React.Component {
   state = {
     selectedField: null,
     showModal: false,
-    showMore: false,
   };
 
   getLink = link => {
@@ -74,19 +75,19 @@ class ObjectInfo extends React.Component {
     const { location, wobject, userName, albums, isAuthenticated } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const { showModal, selectedField } = this.state;
+    const { button, status, website } = wobject;
     const renderFields = getAllowedFieldsByObjType(wobject.object_type);
     const isRenderGallery = ![OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(wobject.object_type);
     const isRenderAboutSection = isRenderGallery;
     const isRenderMenu = isRenderGallery;
 
+    let names = [];
     let addressArr = [];
     let address = '';
     let map = '';
     let description = '';
     let price = '';
     let workTime = '';
-    let website = {};
-    let button = {};
     let avatar = '';
     let short = '';
     let background = '';
@@ -94,12 +95,15 @@ class ObjectInfo extends React.Component {
     let tags = [];
     let phones = [];
     let email = '';
-    let status = '';
     let menuItems = [];
     let menuLists = null;
     let menuPages = null;
 
     if (_.size(wobject) > 0) {
+      names = getFieldsByName(wobject, objectFields.name)
+        .map(nameField => nameField.body)
+        .filter(name => name !== wobject.name);
+
       const adressFields = getInnerFieldWithMaxWeight(wobject, objectFields.address);
       addressArr = adressFields
         ? Object.values(addressFields).map(fieldName => adressFields[fieldName])
@@ -134,10 +138,6 @@ class ObjectInfo extends React.Component {
               item => item.object_type !== OBJECT_TYPE.LIST,
             )
           : null;
-
-      website = getInnerFieldWithMaxWeight(wobject, objectFields.website);
-      status = getInnerFieldWithMaxWeight(wobject, objectFields.status);
-      button = getInnerFieldWithMaxWeight(wobject, objectFields.button);
 
       photosCount = wobject.photos_count;
 
@@ -220,7 +220,7 @@ class ObjectInfo extends React.Component {
         case TYPES_OF_MENU_ITEM.BUTTON:
           menuItem = (
             <Button
-              className="LinkButton menu-btn"
+              className="LinkButton menu-btn field-button"
               href={this.getLink(item.link)}
               target={'_blank'}
               block
@@ -270,32 +270,19 @@ class ObjectInfo extends React.Component {
               )}
               {listItem(
                 objectFields.button,
-                button && button.title && button.link && (
-                  <div className="object-sidebar__menu-item">
-                    <Button
-                      className="LinkButton menu-btn"
-                      href={this.getLink(button.link)}
-                      target={'_blank'}
-                      block
-                    >
-                      {button.title}
-                    </Button>
-                  </div>
-                ),
+                button &&
+                  button.title &&
+                  button.link &&
+                  getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.BUTTON, ...button }),
               )}
               {listItem(objectFields.newsFilter, null)}
             </React.Fragment>
           )}
           {!isEditMode &&
             sortListItemsBy(
-              combineObjectMenu(
-                menuItems.map(menuItem =>
-                  getClientWObject(menuItem, ['author_permlink', 'default_name', 'alias']),
-                ),
-                { button },
-              ),
-              'custom',
-              _.get(wobject, 'sortCustom', null),
+              combineObjectMenu(menuItems.map(menuItem => getClientWObj(menuItem)), { button }),
+              !_.isEmpty(wobject.sortCustom) ? 'custom' : '',
+              wobject && wobject.sortCustom,
             ).map(item => getMenuSectionLink(item))}
           {!_.isEmpty(menuItems) && listItem(objectFields.sorting, null)}
         </div>
@@ -365,6 +352,19 @@ class ObjectInfo extends React.Component {
                   <div className="object-sidebar__section-title">
                     <FormattedMessage id="about" defaultMessage="About" />
                   </div>
+                )}
+                {listItem(
+                  objectFields.name,
+                  !isEditMode && names.length > 0 && (
+                    <React.Fragment>
+                      <span className="field-icon">{'\u2217'}</span>
+                      <ExpandingBlock
+                        className="object-sidebar__names"
+                        entities={names}
+                        minLines={4}
+                      />
+                    </React.Fragment>
+                  ),
                 )}
                 {listItem(objectFields.description, <DescriptionInfo description={description} />)}
                 {listItem(
@@ -454,7 +454,12 @@ class ObjectInfo extends React.Component {
                 ) : null}
                 {listItem(
                   objectFields.price,
-                  price ? <div className="icon-price">{price}</div> : null,
+                  price ? (
+                    <React.Fragment>
+                      {!isEditMode && <span className="field-icon">$</span>}
+                      <div className="price-value">{price}</div>
+                    </React.Fragment>
+                  ) : null,
                 )}
                 {listItem(objectFields.workTime, <div className="field-work-time">{workTime}</div>)}
                 {listItem(

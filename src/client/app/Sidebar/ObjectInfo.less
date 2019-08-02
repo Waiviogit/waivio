@@ -21,13 +21,20 @@
         border-color: @primary-color;
         color: @primary-color;
       }
+
+      &.field-button {
+        width: 100%;
+        overflow: hidden;
+        color: @white-gainsboro;
+        background-color: @primary-color;
+        border-color: @primary-color;
+
+        &:hover {
+          background-color: @secondary-color;
+        }
+      }
     }
   }
-}
-
-.field-button {
-  width: 100%;
-  overflow: hidden;
 }
 
 .field-info {
@@ -116,24 +123,23 @@
     }
   }
 
+  .name-field-view,
   .price-field-view {
     display: flex;
     align-items: baseline;
-    &::before {
-      content: '$';
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      height: 18px;
-      width: 18px;
-      min-width: 18px;
-      margin-right: 5px;
+    .field-icon {
+      font-weight: 600;
+      text-align: center;
+      height: 19px;
+      line-height: 17px;
+      width: 19px;
+      min-width: 19px;
       border: @border-width-base @border-style-base @border-color-base;
       border-radius: 50%;
       box-shadow: @text-color 0 0 2px;
-      font-weight: 600;
+      margin-right: 5px;
     }
-    .icon-price {
+    .price-value {
       white-space: pre-wrap;
     }
   }
