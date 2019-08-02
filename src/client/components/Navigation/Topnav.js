@@ -111,6 +111,7 @@ class Topnav extends React.Component {
     USER: 'user',
     WOBJ: 'wobj',
     TYPE: 'type',
+    SELECT_BAR: 'searchSelectBar',
   };
 
   constructor(props) {
@@ -140,7 +141,10 @@ class Topnav extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.searchBarValue !== this.state.searchBarValue) {
+    if (
+      prevState.searchBarValue !== this.state.searchBarValue &&
+      this.state.searchBarValue !== ''
+    ) {
       this.debouncedSearchByUser(this.state.searchBarValue);
       this.debouncedSearchByObjectTypes(this.state.searchBarValue);
     }
@@ -398,74 +402,63 @@ class Topnav extends React.Component {
   }
 
   handleSelectOnAutoCompleteDropdown(value, data) {
-    if (value === 'All') {
-      this.setState({
-        searchData: '',
-        dropdownOpen: true,
-        currentItem: value,
-      });
-      return;
-    }
-    if (data.props.marker === 'searchSelectBar' && data.props.type === 'wobject') {
-      this.setState({
-        searchData: {
-          subtype: value,
-          type: data.props.type,
-        },
-        dropdownOpen: true,
-        currentItem: value,
-      });
-      this.debouncedSearchByObject(this.state.searchBarValue, value);
-      return;
-    }
-    if (data.props.marker === 'searchSelectBar' && data.props.type === 'user') {
-      this.setState({
-        searchData: {
-          subtype: value,
-          type: data.props.type,
-        },
-        dropdownOpen: true,
-        currentItem: value,
-      });
-      return;
-    }
-    if (data.props.marker === 'searchSelectBar' && data.props.type === 'type') {
-      this.setState({
-        searchData: {
-          subtype: value,
-          type: data.props.type,
-        },
-        dropdownOpen: true,
-        currentItem: value,
-      });
+    if (data.props.marker === Topnav.markers.SELECT_BAR) {
+      const optionValue = value.split('#')[1];
+      if (value === `${Topnav.markers.SELECT_BAR}#All`) {
+        this.setState({
+          searchData: '',
+          dropdownOpen: true,
+          currentItem: optionValue,
+        });
+        return;
+      }
 
-      return;
-    }
-    if (data.props.marker !== 'searchSelectBar') {
-      this.hideAutoCompleteDropdown();
+      const nextState = {
+        searchData: {
+          subtype: optionValue,
+          type: data.props.type,
+        },
+        dropdownOpen: true,
+        currentItem: optionValue,
+      };
+      if (data.props.type === 'wobject') {
+        this.setState(nextState);
+        this.debouncedSearchByObject(this.state.searchBarValue, optionValue);
+        return;
+      }
+
+      if (data.props.type === 'user' || data.props.type === 'type') {
+        this.setState(nextState);
+        return;
+      }
     }
 
-    if (data.props.marker === 'user') {
-      this.props.history.push(`/@${value.replace('user', '')}`);
-      this.setState({ dropdownOpen: false });
-      this.hideAutoCompleteDropdown();
-    } else if (data.props.marker === 'wobj') {
-      this.props.history.replace(`/object/${value.replace('wobj', '')}`);
-      this.setState({ dropdownOpen: false });
-      this.hideAutoCompleteDropdown();
-    } else this.props.history.push(`/objectType/${value.replace('type', '')}`);
+    let redirectUrl = '';
+    switch (data.props.marker) {
+      case Topnav.markers.USER:
+        redirectUrl = `/@${value.replace('user', '')}`;
+        break;
+      case Topnav.markers.WOBJ:
+        redirectUrl = `/object/${value.replace('wobj', '')}`;
+        break;
+      default:
+        redirectUrl = `/objectType/${value.replace('type', '')}`;
+    }
+
+    this.props.history.push(redirectUrl);
     this.setState({ dropdownOpen: false });
     this.hideAutoCompleteDropdown();
   }
 
   handleOnChangeForAutoComplete(value, data) {
+    console.log('DATA', value, data);
     if (
       data.props.marker === Topnav.markers.TYPE ||
       data.props.marker === Topnav.markers.USER ||
       data.props.marker === Topnav.markers.WOBJ
     )
       this.setState({ searchBarValue: '' });
-    else if (data.props.marker !== 'searchSelectBar') {
+    else if (data.props.marker !== Topnav.markers.SELECT_BAR) {
       this.setState({ searchBarValue: value, searchData: '', currentItem: 'All' });
     }
   }
@@ -484,7 +477,7 @@ class Topnav extends React.Component {
       >
         {_.map(accounts, option => (
           <AutoComplete.Option
-            marker={'user'}
+            marker={Topnav.markers.USER}
             key={`user${option.account}`}
             value={`user${option.account}`}
             className="Topnav__search-autocomplete"
@@ -516,7 +509,7 @@ class Topnav extends React.Component {
           const parent = option.parent;
           return wobjName ? (
             <AutoComplete.Option
-              marker={'wobj'}
+              marker={Topnav.markers.WOBJ}
               key={`wobj${wobjName}`}
               value={`wobj${option.author_permlink}`}
               className="Topnav__search-autocomplete"
@@ -554,7 +547,7 @@ class Topnav extends React.Component {
       >
         {_.map(objectTypes, option => (
           <AutoComplete.Option
-            marker={'type'}
+            marker={Topnav.markers.TYPE}
             key={`type${option.name}`}
             value={`type${option.name}`}
             className="Topnav__search-autocomplete"
@@ -597,12 +590,12 @@ class Topnav extends React.Component {
   searchSelectBar = searchResults => {
     const options = this.getTranformSearchCountData(searchResults);
     return (
-      <AutoComplete.OptGroup key="searchSelectBar" label=" ">
+      <AutoComplete.OptGroup key={Topnav.markers.SELECT_BAR} label=" ">
         {_.map(options, option => (
           <AutoComplete.Option
-            marker={'searchSelectBar'}
+            marker={Topnav.markers.SELECT_BAR}
             key={`type${option.name}`}
-            value={`${option.name}`}
+            value={`${Topnav.markers.SELECT_BAR}#${option.name}`}
             type={option.type}
             className={this.changeItemClass(option.name)}
           >
