@@ -1,18 +1,26 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import { NavLink } from 'react-router-dom';
 import './ObjectTypesNavigation.less';
 
-const ObjectTypesNavigation = ({ objectTypes, typeName }) => (
-  <ul className="ObjectTypesNavigation">
+const ObjectTypesNavigation = ({ objectTypes, typeName, intl }) => (
+  <ul className="ObjectTypesNavigation Sidenav">
+    <div className="RewardsBlock-title">
+      {intl.formatMessage({
+        id: 'objects',
+        defaultMessage: `Objects`,
+      })}
+      :
+    </div>
     {_.map(objectTypes, type => (
       <li key={`${type.name}key`}>
         <NavLink
           to={`/objectType/${type.name}`}
           isActive={() => typeName === type.name}
           className="ObjectTypesNavigation__item"
-          activeClassName="ObjectTypesNavigation__item--active"
+          activeClassName="Sidenav__item--active"
         >
           {type.name}
         </NavLink>
@@ -23,7 +31,8 @@ const ObjectTypesNavigation = ({ objectTypes, typeName }) => (
 
 ObjectTypesNavigation.propTypes = {
   objectTypes: PropTypes.shape().isRequired,
+  intl: PropTypes.shape().isRequired,
   typeName: PropTypes.string.isRequired,
 };
 
-export default ObjectTypesNavigation;
+export default injectIntl(ObjectTypesNavigation);

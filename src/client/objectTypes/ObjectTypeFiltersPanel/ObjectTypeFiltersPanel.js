@@ -2,7 +2,7 @@ import { Checkbox } from 'antd';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import './ObjectTypeFiltersPanel.less';
 
 const ObjectTypeFiltersPanel = ({ activefilters, setFilterValue }) => {
@@ -16,6 +16,10 @@ const ObjectTypeFiltersPanel = ({ activefilters, setFilterValue }) => {
   return (
     <div className="ObjectTypeFiltersPanel">
       <div className="ObjectTypeFiltersPanel__container">
+        <div className="ObjectTypeFiltersPanel__title">
+          <i className="iconfont icon-trysearchlist SidebarContentBlock__icon" />
+          <FormattedMessage id="filter" defaultMessage="Filter" />
+        </div>
         {filterLayout('map', 'map', _.includes(activefilters.map, 'map'))}
       </div>
       <div>--- another filters(soon) ---</div>
