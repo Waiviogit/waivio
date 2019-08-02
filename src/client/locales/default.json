@@ -594,5 +594,11 @@
   "unvote": "Unvote",
   "rewardsUser": "Select a user to display the rewards",
   "campaigns": "Campaigns",
-  "pleaseLogin": "For more options please"
+  "pleaseLogin": "For more options please",
+  "rewards_for_reviews": "Rewards for reviews",
+  "reward_requested_by": "Reviews requested by",
+  "details": "Details",
+  "filter_rewards": "Filter rewards",
+  "sponsors": "Sponsors",
+  "rewards_for": "Rewards for"
 }
