@@ -106,6 +106,7 @@ class Topnav extends React.Component {
       window.scrollTo(0, 0);
     }
   }
+
   static markers = {
     USER: 'user',
     WOBJ: 'wobj',
@@ -121,9 +122,9 @@ class Topnav extends React.Component {
       searchBarValue: '',
       notificationsPopoverVisible: false,
       searchData: '',
-      searchValue: '',
+      currentItem: 'All',
       dropdownOpen: false,
-      focus: false,
+      selectColor: false,
     };
     this.handleMoreMenuSelect = this.handleMoreMenuSelect.bind(this);
     this.handleMoreMenuVisibleChange = this.handleMoreMenuVisibleChange.bind(this);
@@ -137,10 +138,11 @@ class Topnav extends React.Component {
     this.handleOnChangeForAutoComplete = this.handleOnChangeForAutoComplete.bind(this);
     this.hideAutoCompleteDropdown = this.hideAutoCompleteDropdown.bind(this);
   }
+
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.searchValue !== this.state.searchValue) {
-      this.debouncedSearchByUser(this.state.searchValue);
-      this.debouncedSearchByObjectTypes(this.state.searchValue);
+    if (prevState.searchBarValue !== this.state.searchBarValue) {
+      this.debouncedSearchByUser(this.state.searchBarValue);
+      this.debouncedSearchByObjectTypes(this.state.searchBarValue);
     }
   }
 
@@ -400,6 +402,7 @@ class Topnav extends React.Component {
       this.setState({
         searchData: '',
         dropdownOpen: true,
+        currentItem: value,
       });
       return;
     }
@@ -408,11 +411,11 @@ class Topnav extends React.Component {
         searchData: {
           subtype: value,
           type: data.props.type,
-          searchValue: this.state.searchBarValue,
         },
         dropdownOpen: true,
+        currentItem: value,
       });
-      this.debouncedSearchByObject(this.state.searchValue, value);
+      this.debouncedSearchByObject(this.state.searchBarValue, value);
       return;
     }
     if (data.props.marker === 'searchSelectBar' && data.props.type === 'user') {
@@ -420,9 +423,9 @@ class Topnav extends React.Component {
         searchData: {
           subtype: value,
           type: data.props.type,
-          searchValue: this.state.searchBarValue,
         },
         dropdownOpen: true,
+        currentItem: value,
       });
       return;
     }
@@ -431,9 +434,9 @@ class Topnav extends React.Component {
         searchData: {
           subtype: value,
           type: data.props.type,
-          searchValue: this.state.searchBarValue,
         },
         dropdownOpen: true,
+        currentItem: value,
       });
 
       return;
@@ -445,11 +448,14 @@ class Topnav extends React.Component {
     if (data.props.marker === 'user') {
       this.props.history.push(`/@${value.replace('user', '')}`);
       this.setState({ dropdownOpen: false });
+      this.hideAutoCompleteDropdown();
     } else if (data.props.marker === 'wobj') {
       this.props.history.replace(`/object/${value.replace('wobj', '')}`);
       this.setState({ dropdownOpen: false });
+      this.hideAutoCompleteDropdown();
     } else this.props.history.push(`/objectType/${value.replace('type', '')}`);
     this.setState({ dropdownOpen: false });
+    this.hideAutoCompleteDropdown();
   }
 
   handleOnChangeForAutoComplete(value, data) {
@@ -460,8 +466,7 @@ class Topnav extends React.Component {
     )
       this.setState({ searchBarValue: '' });
     else if (data.props.marker !== 'searchSelectBar') {
-      this.setState({ searchBarValue: value });
-      this.setState({ searchData: '' });
+      this.setState({ searchBarValue: value, searchData: '', currentItem: 'All' });
     }
   }
 
@@ -599,6 +604,7 @@ class Topnav extends React.Component {
             key={`type${option.name}`}
             value={`${option.name}`}
             type={option.type}
+            className={this.changeItemClass(option.name)}
           >
             {`${option.name}(${option.count})`}
           </AutoComplete.Option>
@@ -607,10 +613,23 @@ class Topnav extends React.Component {
     );
   };
 
-  handleOnFocusBlur = () => {
-    this.setState(state => ({
-      dropdownOpen: !state.dropdownOpen,
-    }));
+  changeItemClass = key =>
+    classNames('ant-select-dropdown-menu-item', {
+      'Topnav__search-selected-active': this.state.currentItem === key,
+    });
+
+  handleOnBlur = () => {
+    this.setState({
+      dropdownOpen: false,
+      searchData: '',
+      searchBarValue: '',
+      currentItem: 'All',
+    });
+    this.hideAutoCompleteDropdown();
+  };
+
+  handleOnFocus = () => {
+    this.setState({ dropdownOpen: true });
   };
 
   renderTitle = title => <span>{title}</span>;
@@ -628,7 +647,13 @@ class Topnav extends React.Component {
             state: { query: this.state.searchBarValue },
           }}
         >
-          <span onClick={this.hideAutoCompleteDropdown} role="presentation">
+          <span
+            onClick={() => {
+              this.hideAutoCompleteDropdown();
+              this.handleOnBlur();
+            }}
+            role="presentation"
+          >
             {intl.formatMessage(
               {
                 id: 'search_all_results_for',
@@ -666,8 +691,8 @@ class Topnav extends React.Component {
                 dropdownStyle={{ color: 'red' }}
                 value={this.state.searchBarValue}
                 open={dropdownOpen}
-                onBlur={this.handleOnFocusBlur}
-                onFocus={this.handleOnFocusBlur}
+                onBlur={this.handleOnBlur}
+                onFocus={this.handleOnFocus}
               >
                 <Input
                   ref={ref => {
