@@ -78,9 +78,9 @@ class Topnav extends React.Component {
     /* passed props */
     username: PropTypes.string,
     onMenuItemClick: PropTypes.func,
-    searchObjectsAutoCompete: PropTypes.func,
-    searchUsersAutoCompete: PropTypes.func,
-    searchObjectTypesAutoCompete: PropTypes.func,
+    searchObjectsAutoCompete: PropTypes.func.isRequired,
+    searchUsersAutoCompete: PropTypes.func.isRequired,
+    searchObjectTypesAutoCompete: PropTypes.func.isRequired,
     searchByObject: PropTypes.arrayOf(PropTypes.shape()),
     searchByUser: PropTypes.arrayOf(PropTypes.shape()),
     searchByObjectType: PropTypes.arrayOf(PropTypes.shape()),
@@ -96,9 +96,6 @@ class Topnav extends React.Component {
     onMenuItemClick: () => {},
     userSCMetaData: {},
     loadingNotifications: false,
-    searchObjectsAutoCompete: () => {},
-    searchUsersAutoCompete: () => {},
-    searchObjectTypesAutoCompete: () => {},
   };
 
   static handleScrollToTop() {
