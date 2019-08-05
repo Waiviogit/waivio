@@ -81,7 +81,7 @@ export default class Invite extends React.Component {
             <div className="Invite">
               <div className="Invite__icon-container" />
               <h1 className="Invite__title">
-                <FormattedMessage id="invite_title" defaultMessage="Don't use Busy alone!" />
+                <FormattedMessage id="invite_title" defaultMessage="Don't use Waivio alone!" />
               </h1>
               <p className="Invite__description">
                 <FormattedMessage
