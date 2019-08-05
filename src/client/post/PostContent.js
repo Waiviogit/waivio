@@ -229,7 +229,7 @@ class PostContent extends React.Component {
           <meta property="og:url" content={url} />
           <meta property="og:image" content={image} />
           <meta property="og:description" content={desc} />
-          <meta property="og:site_name" content="Busy" />
+          <meta property="og:site_name" content="Waivio" />
           <meta property="article:tag" content={category} />
           <meta property="article:published_time" content={created} />
           <meta property="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
