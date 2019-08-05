@@ -5,6 +5,7 @@ import { createAsyncActionType } from '../helpers/stateHelpers';
 import { addNewNotification } from '../app/appActions';
 import { getFollowing } from '../user/userActions';
 import { BUSY_API_TYPES } from '../../common/constants/notifications';
+import { getAuthenticatedUserMetadata } from '../../waivioApi/ApiClient';
 
 export const LOGIN = '@auth/LOGIN';
 export const LOGIN_START = '@auth/LOGIN_START';
@@ -23,7 +24,7 @@ export const BUSY_LOGIN = createAsyncActionType('@auth/BUSY_LOGIN');
 
 const loginError = createAction(LOGIN_ERROR);
 
-export const login = () => (dispatch, getState, { steemConnectAPI }) => {
+export const login = () => async (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
 
   let promise = Promise.resolve(null);
@@ -33,7 +34,13 @@ export const login = () => (dispatch, getState, { steemConnectAPI }) => {
   } else if (!steemConnectAPI.options.accessToken) {
     promise = Promise.reject(new Error('There is not accessToken present'));
   } else {
-    promise = steemConnectAPI.me().catch(() => dispatch(loginError()));
+    try {
+      const account = await steemConnectAPI.me();
+      const userMetadata = await getAuthenticatedUserMetadata(account.name);
+      promise = Promise.resolve({ ...account, user_metadata: userMetadata });
+    } catch (e) {
+      dispatch(loginError());
+    }
   }
 
   return dispatch({
