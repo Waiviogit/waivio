@@ -24,7 +24,7 @@ const settings = (state = initialState, action) => {
       if (action.payload.user_metadata && action.payload.user_metadata.settings) {
         const {
           locale,
-          readLanguages,
+          postLocales,
           votingPower,
           votePercent,
           showNSFWPosts,
@@ -37,7 +37,7 @@ const settings = (state = initialState, action) => {
         return {
           ...state,
           locale: locale || initialState.locale,
-          readLanguages: readLanguages || initialState.readLanguages,
+          readLanguages: postLocales || initialState.readLanguages,
           votingPower: votingPower || initialState.votingPower,
           votePercent: votePercent || initialState.votePercent,
           showNSFWPosts: showNSFWPosts || initialState.showNSFWPosts,
