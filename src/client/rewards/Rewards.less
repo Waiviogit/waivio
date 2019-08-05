@@ -4,13 +4,14 @@
 .Rewards {
   width: 100%;
 
-  .RewarsHeader,
+  .RewardsHeader,
   .RewardsFooter {
     &-button {
       button {
         margin-right: 10px;
       }
     }
+
     &-block {
       display: flex;
       flex-direction: column;
@@ -23,10 +24,28 @@
       align-items: center;
       padding: 10px;
       border: 1px solid @blue-hawkesBlue;
+
+      .anticon {
+        font-size: 26px;
+        margin-right: 5px;
+      }
     }
 
     &-payment {
       font-size: 22px;
+    }
+
+    &__top-line {
+      display: flex;
+      align-items: center;
+      color: @blue-baliHai;
+
+      &-button {
+        border: 2px solid @blue-baliHai;
+        border-radius: 17px;
+        padding: 0 8px;
+        color: @blue-baliHai;
+      }
     }
   }
 

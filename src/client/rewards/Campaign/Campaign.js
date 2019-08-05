@@ -13,12 +13,12 @@ const Campaign = ({ proposition, filterKey, history, intl }) => {
   const goToProducts = () => history.push(`/rewards/${filterKey}/${requiredObject.id}`);
   return (
     <div role="presentation" className="Campaign" onClick={goToProducts}>
-      <div className="RewarsHeader-wrap">
+      <div className="RewardsHeader-wrap">
         {`${intl.formatMessage({
           id: 'rewards_for_reviews',
           defaultMessage: `Rewards for review`,
         })}:`}
-        <span className="RewarsHeader-payment">
+        <span className="RewardsHeader-payment">
           {`$${proposition.min_reward} ${
             proposition.max_reward !== proposition.min_reward ? ` - $${proposition.max_reward}` : ''
           } >`}

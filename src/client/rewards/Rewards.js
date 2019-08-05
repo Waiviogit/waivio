@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { message, Modal } from 'antd';
+import { Icon, message, Modal } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -279,7 +279,7 @@ class Rewards extends React.Component {
   };
 
   render() {
-    const { location, match, authenticated, username } = this.props;
+    const { location, match, authenticated, username, intl } = this.props;
     const {
       sponsors,
       loading,
@@ -327,11 +327,28 @@ class Rewards extends React.Component {
               {// this.state.withMap &&
               // !_.isEmpty(type.related_wobjects) &&
               !_.isEmpty(this.props.userLocation) && (
-                <MapOS
-                  wobjects={this.getRequiredObjects()}
-                  heigth={268}
-                  userLocation={this.props.userLocation}
-                />
+                <React.Fragment>
+                  <div className="RewardsHeader-wrap">
+                    <div className="RewardsHeader__top-line">
+                      <Icon type="compass" />
+                      {intl.formatMessage({
+                        id: 'map',
+                        defaultMessage: 'Map',
+                      })}
+                    </div>
+                    <div className="RewardsHeader__top-line-button">
+                      {intl.formatMessage({
+                        id: 'search_area',
+                        defaultMessage: 'Search area',
+                      })}
+                    </div>
+                  </div>
+                  <MapOS
+                    wobjects={this.getRequiredObjects()}
+                    heigth={268}
+                    userLocation={this.props.userLocation}
+                  />
+                </React.Fragment>
               )}
               {!_.isEmpty(sponsors) && (
                 <RewardsFiltersPanel

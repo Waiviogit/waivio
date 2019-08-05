@@ -86,8 +86,8 @@ const Proposition = ({
 
   return (
     <div className="Proposition">
-      <div className="RewarsHeader-block">
-        <div className="RewarsHeader-wrap">
+      <div className="RewardsHeader-block">
+        <div className="RewardsHeader-wrap">
           {`${intl.formatMessage({
             id: 'reward_requested_by',
             defaultMessage: `Reviews requested by`,
@@ -97,14 +97,14 @@ const Proposition = ({
             defaultMessage: `Rewards`,
           })}:`}</span>
         </div>
-        <div className="RewarsHeader-wrap-second">
-          <div className="RewarsHeader__user-card">
+        <div className="RewardsHeader-wrap-second">
+          <div className="RewardsHeader__user-card">
             <Link to={`/@${proposition.guide.name}`}>
               <Avatar username={proposition.guide.name} size={34} />
             </Link>
             <Link to={`/@${proposition.guide.name}`} title={proposition.guide.name}>
-              <div className="RewarsHeader__user-card-alias">{proposition.guide.alias}</div>
-              <div className="RewarsHeader__user-card-username">{`@${
+              <div className="RewardsHeader__user-card-alias">{proposition.guide.alias}</div>
+              <div className="RewardsHeader__user-card-username">{`@${
                 proposition.guide.name
               } (${intl.formatMessage({
                 id: 'paid',
