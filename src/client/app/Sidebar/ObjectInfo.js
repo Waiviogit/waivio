@@ -100,8 +100,8 @@ class ObjectInfo extends React.Component {
 
     if (_.size(wobject) > 0) {
       names = getFieldsByName(wobject, objectFields.name)
-        .map(nameField => nameField.body)
-        .filter(name => name !== wobject.name);
+        .filter(nameFld => nameFld.body !== wobject.name)
+        .map(nameFld => <div key={nameFld.permlink}>{nameFld.body}</div>);
 
       const adressFields = getInnerFieldWithMaxWeight(wobject, objectFields.address);
       addressArr = adressFields
