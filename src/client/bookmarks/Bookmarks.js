@@ -10,7 +10,7 @@ import {
   getFeedLoadingFromState,
   getFeedHasMoreFromState,
 } from '../helpers/stateHelpers';
-import { reload } from '../auth/authActions';
+import { getUserMetadata } from '../user/usersActions';
 import { getBookmarks } from '../feed/feedActions';
 import { showPostModal } from '../app/appActions';
 import Affix from '../components/Utils/Affix';
@@ -28,7 +28,7 @@ import PostModal from '../post/PostModalContainer';
     pendingBookmarks: getPendingBookmarks(state),
     reloading: getIsReloading(state),
   }),
-  { getBookmarks, reload, showPostModal },
+  { getBookmarks, getUserMetadata, showPostModal },
 )
 export default class Bookmarks extends React.Component {
   static propTypes = {
@@ -38,18 +38,18 @@ export default class Bookmarks extends React.Component {
     reloading: PropTypes.bool,
     pendingBookmarks: PropTypes.arrayOf(PropTypes.string),
     getBookmarks: PropTypes.func,
-    reload: PropTypes.func,
+    getUserMetadata: PropTypes.func,
   };
 
   static defaultProps = {
     reloading: false,
     pendingBookmarks: [],
     getBookmarks: () => {},
-    reload: () => {},
+    getUserMetadata: () => {},
   };
 
   componentDidMount() {
-    this.props.reload().then(() => this.props.getBookmarks());
+    this.props.getUserMetadata().then(() => this.props.getBookmarks());
   }
 
   componentWillReceiveProps(nextProps) {
