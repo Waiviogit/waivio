@@ -1,12 +1,13 @@
 import omit from 'lodash/omit';
 import SteemConnect from '../steemConnectAPI';
+import { getAuthenticatedUserMetadata, updateUserMetadata } from '../../waivioApi/ApiClient';
 
-const getMetadata = () => SteemConnect.me().then(resp => resp.user_metadata);
+const getMetadata = userName => getAuthenticatedUserMetadata(userName);
 
-export const saveSettingsMetadata = settings =>
-  getMetadata()
+export const saveSettingsMetadata = (userName, settings) =>
+  getMetadata(userName)
     .then(metadata =>
-      SteemConnect.updateUserMetadata({
+      updateUserMetadata(userName, {
         ...metadata,
         settings: {
           ...metadata.settings,

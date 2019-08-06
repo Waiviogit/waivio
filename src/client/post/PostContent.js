@@ -6,7 +6,6 @@ import { push } from 'react-router-redux';
 import _ from 'lodash';
 import { Helmet } from 'react-helmet';
 import sanitize from 'sanitize-html';
-import { getHasDefaultSlider } from '../helpers/user';
 import { dropCategory, isBannedPost } from '../helpers/postHelpers';
 import {
   getAuthenticatedUser,
@@ -78,7 +77,7 @@ class PostContent extends React.Component {
     defaultVotePercent: PropTypes.number.isRequired,
     appUrl: PropTypes.string.isRequired,
     bookmarks: PropTypes.shape(),
-    sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
+    sliderMode: PropTypes.bool,
     editPost: PropTypes.func,
     toggleBookmark: PropTypes.func,
     votePost: PropTypes.func,
@@ -96,7 +95,7 @@ class PostContent extends React.Component {
     followingList: [],
     pendingFollows: [],
     bookmarks: {},
-    sliderMode: 'auto',
+    sliderMode: false,
     editPost: () => {},
     toggleBookmark: () => {},
     votePost: () => {},
@@ -122,8 +121,8 @@ class PostContent extends React.Component {
   }
 
   handleLikeClick = (post, postState, weight = 10000) => {
-    const { sliderMode, user, defaultVotePercent } = this.props;
-    if (sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user))) {
+    const { sliderMode, defaultVotePercent } = this.props;
+    if (sliderMode) {
       this.props.votePost(post.id, post.author, post.permlink, weight);
     } else if (postState.isLiked) {
       this.props.votePost(post.id, post.author, post.permlink, 0);

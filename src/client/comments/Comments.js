@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { find } from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { getHasDefaultSlider } from '../helpers/user';
 import {
   getAuthenticatedUser,
   getComments,
@@ -50,7 +49,7 @@ export default class Comments extends React.Component {
     user: PropTypes.shape().isRequired,
     rewardFund: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
-    sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
+    sliderMode: PropTypes.bool,
     username: PropTypes.string,
     post: PropTypes.shape(),
     comments: PropTypes.shape(),
@@ -71,7 +70,7 @@ export default class Comments extends React.Component {
 
   static defaultProps = {
     username: undefined,
-    sliderMode: 'auto',
+    sliderMode: false,
     post: {},
     comments: {},
     commentsList: {},
@@ -118,7 +117,7 @@ export default class Comments extends React.Component {
     const { commentsList, sliderMode, user, defaultVotePercent } = this.props;
     const userVote = find(commentsList[id].active_votes, { voter: user.name }) || {};
 
-    if (sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user))) {
+    if (sliderMode) {
       this.props.voteComment(id, weight, 'like');
     } else if (userVote.percent > 0) {
       this.props.voteComment(id, 0, 'like');
