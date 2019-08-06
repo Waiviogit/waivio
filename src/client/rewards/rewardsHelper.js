@@ -1,12 +1,17 @@
 export const displayLimit = 10;
 
-export const preparePropositionReqData = props => {
+export const preparePropositionReqData = (props, coordinates, radius) => {
   const { username, match } = props;
+
   const reqData = {
     limit: displayLimit,
     campaignParent: match.params.campaignParent,
     currentUserName: username,
   };
+  if (coordinates && coordinates.length > 0 && radius) {
+    reqData.coordinates = coordinates;
+    reqData.radius = radius;
+  }
   switch (match.params.filterKey) {
     case 'active':
       reqData.userName = username;

@@ -3,7 +3,7 @@ import React from 'react';
 import { Progress } from 'antd';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { averageRate, rateCount } from './rateHelper';
+import { rateCount } from './rateHelper';
 import { ratePercent } from '../../../../common/constants/listOfFields';
 import './StarRating.less';
 
@@ -59,31 +59,11 @@ class StarRating extends React.Component {
 
   render() {
     const { field } = this.props;
-    const rating = averageRate(field);
     const votes = rateCount(field);
 
     return (
       <React.Fragment>
         <div className="StarRating__info">
-          <div>
-            {this.props.intl
-              .formatMessage({
-                id: 'rate_overall',
-                defaultMessage: 'Overall',
-              })
-              .toUpperCase()}
-          </div>
-          <div>
-            {this.props.intl.formatMessage(
-              {
-                id: 'rate_average_count',
-                defaultMessage: 'Rating: {count}',
-              },
-              {
-                count: rating.toFixed(2),
-              },
-            )}
-          </div>
           <div>
             {this.props.intl.formatMessage(
               {

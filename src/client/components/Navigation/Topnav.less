@@ -271,19 +271,22 @@ div[data-dir='rtl'] .Topnav {
 }
 
 .ant-select-dropdown-menu :first-child > ul {
+  @media @xsmall {
+    max-width: 240px;
+  }
+
   @media @small {
     max-width: 265px;
   }
 
   @media @medium {
-    max-width: 250px;
+    max-width: 420px;
   }
 
   @media @large {
     max-width: 495px;
   }
 
-  max-width: 300px;
   display: flex;
   flex-wrap: wrap;
   margin-left: 5px;

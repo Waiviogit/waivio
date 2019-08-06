@@ -41,10 +41,20 @@
       color: @blue-baliHai;
 
       &-button {
-        border: 2px solid @blue-baliHai;
+        border: 1px solid @blue-baliHai;
         border-radius: 17px;
         padding: 0 8px;
         color: @blue-baliHai;
+        cursor: pointer;
+        &:hover {
+          border-color: @primary-color;
+          color: @primary-color;
+        }
+      }
+
+      &-button-active {
+        border-color: @primary-color!important;
+        color: @primary-color!important;
       }
     }
   }
