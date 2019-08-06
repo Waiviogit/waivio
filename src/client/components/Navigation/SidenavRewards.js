@@ -43,7 +43,7 @@ export default class SidenavRewards extends React.Component {
           <div className="RewardsBlock-title">
             {intl.formatMessage({
               id: 'rewards',
-              defaultMessage: `Rewards`,
+              defaultMessage: `rewards`,
             })}
             :
           </div>
