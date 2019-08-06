@@ -50,12 +50,12 @@ function sc2Extended() {
       },
     },
     {
-      assignProposition(account, campaignId, object, cb) {
+      assignProposition(account, campaignId, objects, cb) {
         const params = {
           required_auths: [],
           required_posting_auths: [account],
           id: 'waivio_assign_campaign',
-          json: JSON.stringify({ account, campaign_id: campaignId, object }),
+          json: JSON.stringify({ account, campaign_id: campaignId, approved_objects: objects }),
         };
         return this.broadcast([['custom_json', params]], cb);
       },

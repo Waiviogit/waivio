@@ -89,10 +89,7 @@ class CatalogWrap extends React.Component {
     getObject(permlink)
       .then(res => {
         const listItems =
-          (res &&
-            res.listItems &&
-            res.listItems.map(item => getClientWObj(item, ['listItemsCount']))) ||
-          [];
+          (res && res.listItems && res.listItems.map(item => getClientWObj(item))) || [];
         this.setState(prevState => {
           let breadcrumb = [];
           if (prevState.breadcrumb.some(crumb => crumb.path.includes(permlink))) {

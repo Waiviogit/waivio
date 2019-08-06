@@ -208,7 +208,7 @@
   "editor": "Editor",
   "preview": "Preview",
   "reward": "Reward",
-  "rewards": "Rewards",
+  "rewards": "rewards",
   "reward_option_100": "100% Steem Power",
   "reward_option_50": "50% SBD and 50% SP",
   "reward_option_0": "Declined",
@@ -595,5 +595,12 @@
   "rewardsUser": "Select a user to display the rewards",
   "campaigns": "Campaigns",
   "pleaseLogin": "For more options please",
-  "news": "News"
+  "rewards_for_reviews": "Rewards for reviews",
+  "reward_requested_by": "Reviews requested by",
+  "details": "Details",
+  "filter_rewards": "Filter rewards",
+  "sponsors": "Sponsors",
+  "search_area": "Search area",
+  "map": "Map",
+  "rewards_for": "Rewards for"
 }

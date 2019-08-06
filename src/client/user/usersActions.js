@@ -1,6 +1,7 @@
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { getAccountWithFollowingCount as getAccountWithFollowingCountAPI } from '../helpers/apiHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
+import { getAuthenticatedUserName } from '../reducers';
 
 export const GET_ACCOUNT = createAsyncActionType('@users/GET_ACCOUNT');
 
@@ -40,3 +41,17 @@ export const getTopExperts = (limit = 20, skip = 0) => dispatch =>
     payload: ApiClient.getTopUsers(false, { limit, skip }),
     meta: { limit },
   });
+
+export const GET_USER_METADATA = createAsyncActionType('@users/GET_USER_METADATA');
+
+export const getUserMetadata = () => (dispatch, getState) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+  if (userName) {
+    return dispatch({
+      type: GET_USER_METADATA.ACTION,
+      payload: ApiClient.getAuthenticatedUserMetadata(userName),
+    });
+  }
+  return dispatch({ type: GET_USER_METADATA.ERROR, payload: Promise.resolve(null) });
+};

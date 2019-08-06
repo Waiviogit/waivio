@@ -2,6 +2,7 @@ import * as actions from './wobjectsActions';
 import * as appendAction from './appendActions';
 import { RATE_WOBJECT_SUCCESS } from '../../client/object/wobjActions';
 import { objectFields } from '../../common/constants/listOfFields';
+import { getClientWObj } from '../adapters';
 
 const initialState = {
   wobject: {},
@@ -23,7 +24,7 @@ export default function wobjectReducer(state = initialState, action) {
     case actions.GET_OBJECT_SUCCESS:
       return {
         ...state,
-        wobject: action.payload,
+        wobject: getClientWObj(action.payload),
         isFetching: false,
       };
     case actions.ADD_ITEM_TO_LIST:

@@ -1,20 +1,27 @@
 export const displayLimit = 10;
 
-export const preparePropositionReqData = props => {
-  const { userName, campaignParent } = props;
-  const reqData = { limit: displayLimit, campaignParent };
-  switch (props.filterKey) {
+export const preparePropositionReqData = ({ username, match, coordinates, radius }) => {
+  const reqData = {
+    limit: displayLimit,
+    campaignParent: match.params.campaignParent,
+    currentUserName: username,
+  };
+  if (coordinates && coordinates.length > 0 && radius) {
+    reqData.coordinates = coordinates;
+    reqData.radius = radius;
+  }
+  switch (match.params.filterKey) {
     case 'active':
-      reqData.userName = userName;
+      reqData.userName = username;
       break;
     case 'history':
       reqData.status = ['inactive', 'expired', 'deleted', 'payed'];
       break;
     case 'created':
-      reqData.guideName = userName;
+      reqData.guideName = username;
       break;
     case 'reserved':
-      reqData.userName = userName;
+      reqData.userName = username;
       reqData.approved = true;
       break;
     default:

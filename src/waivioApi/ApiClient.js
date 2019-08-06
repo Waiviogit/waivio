@@ -1,4 +1,6 @@
+import _ from 'lodash';
 import fetch from 'isomorphic-fetch';
+import Cookie from 'js-cookie';
 import config from './routes';
 import { getFollowingCount } from '../client/helpers/apiHelpers';
 
@@ -142,12 +144,37 @@ export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0 }) =>
       .catch(error => reject(error));
   });
 
-export const searchObjects = (searchString, objType = '', limit = 10) => {
+export const searchObjects = (searchString, objType = '', limit = 15) => {
   const requestBody = { search_string: searchString, limit };
   if (objType && typeof objType === 'string') {
     requestBody.object_type = objType;
   }
   return fetch(`${config.apiPrefix}${config.searchObjects}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify(requestBody),
+  }).then(res => res.json());
+};
+
+export const searchUsers = (searchString, limit = 15) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.apiPrefix}${config.users}${
+        config.search
+      }?searchString=${searchString}&limit=${limit}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(res => res.json())
+      .then(posts => resolve(posts))
+      .catch(error => reject(error));
+  });
+
+export const searchObjectTypes = (searchString, limit = 15, skip) => {
+  const requestBody = { search_string: searchString, limit, skip };
+  return fetch(`${config.apiPrefix}${config.objectTypesSearch}`, {
     headers,
     method: 'POST',
     body: JSON.stringify(requestBody),
@@ -333,15 +360,23 @@ export const getPropositions = ({
   approved,
   guideName,
   campaignParent,
+  currentUserName,
+  radius,
+  coordinates,
 }) =>
   new Promise((resolve, reject) => {
+    const withMap = !_.isEmpty(coordinates) && radius;
     fetch(
       `${config.campaignApiPrefix}${config.campaigns}?limit=${limit}&skip=${skip}${
         userName ? `&userName=${userName}` : ''
-      }${approved ? `&approved=${approved}` : ''}${userName ? `&currentUserName=${userName}` : ''}${
-        status ? `&status=${status}` : ''
-      }${guideName ? `&guideName=${guideName}` : ''}${
+      }${approved ? `&approved=${approved}` : ''}${
+        currentUserName ? `&currentUserName=${currentUserName}` : ''
+      }${status ? `&status=${status}` : ''}${guideName ? `&guideName=${guideName}` : ''}${
         campaignParent ? `&requiredObject=${campaignParent}` : ''
+      }${
+        withMap
+          ? `&radius=${radius}&coordinates[]=${coordinates[0]}&coordinates[]=${coordinates[1]}`
+          : ''
       }`,
       {
         headers,
@@ -381,5 +416,20 @@ export const createCampaign = data =>
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
+
+export const getAuthenticatedUserMetadata = userName =>
+  fetch(`${config.apiPrefix}${config.user}/${userName}${config.userMetadata}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => _.omit(res.user_metadata, '_id'));
+
+export const updateUserMetadata = (userName, data) =>
+  fetch(`${config.apiPrefix}${config.user}/${userName}${config.userMetadata}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'PUT',
+    body: JSON.stringify({ user_metadata: data }),
+  }).then(res => res.json());
 
 export default null;
