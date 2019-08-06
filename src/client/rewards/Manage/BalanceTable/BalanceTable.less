@@ -1,0 +1,46 @@
+@import (reference) '../../../styles/modules/variables.less';
+@import (reference) '../../../styles/custom.less';
+
+.BalanceTable {
+  @media @small {
+    min-width: 400px;
+  }
+
+  @media @medium {
+    min-width: 460px;
+  }
+
+  @media @large {
+    min-width: 815px;
+  }
+
+  border: 1px solid #000000;
+  text-align: center !important;
+  border-collapse: collapse;
+  table-layout: fixed;
+
+  & td {
+    border: 1px solid #000000;
+    padding: 5px 4px;
+    width: 25%;
+  }
+
+  & th {
+    text-align: center !important;
+    border: 1px solid #000000;
+    padding: 5px 4px;
+    width: 25%;
+  }
+
+  & thead th {
+    font-size: larger;
+    font-weight: 500;
+    color: #000000;
+    text-align: left;
+  }
+
+  & tbody td {
+    font-size: larger;
+    font-weight: 500;
+  }
+}

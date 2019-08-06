@@ -332,7 +332,7 @@ class Rewards extends React.Component {
     if (location.pathname === '/rewards/create') {
       return <CreateRewardForm userName={username} />;
     } else if (location.pathname === '/rewards/manage') {
-      return <Manage />;
+      return <Manage userName={username} />;
     }
     return (
       <ReduxInfiniteScroll
@@ -348,19 +348,15 @@ class Rewards extends React.Component {
   };
 
   render() {
-    const { location, match, authenticated, username, intl } = this.props;
+    const { location, authenticated, username, intl } = this.props;
     const {
       sponsors,
-      loading,
-      hasMore,
       isModalDetailsOpen,
       objectDetails,
       campaignsTypes,
       activeFilters,
     } = this.state;
     const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
-    const filterKey = match.params.filterKey;
-    const IsRequiredObjectWrap = !match.params.campaignParent;
     const isCreate = location.pathname === '/rewards/create';
     return (
       <div className="Rewards">
@@ -377,68 +373,56 @@ class Rewards extends React.Component {
               <LeftSidebar />
             </div>
           </Affix>
-          <div className="center">
-            {isCreate ? (
-              <CreateRewardForm userName={username} />
-            ) : (
-              <ReduxInfiniteScroll
-                elementIsScrollable={false}
-                hasMore={hasMore}
-                loadMore={this.handleLoadMore}
-                loadingMore={loading}
-                loader={<Loading />}
-              >
-                {this.campaignsLayoutWrapLayout(IsRequiredObjectWrap, filterKey, username, match)}
-              </ReduxInfiniteScroll>
-            )}
-          </div>
-          <Affix className="rightContainer leftContainer__user" stickPosition={122}>
-            <div className="right">
-              {// this.state.withMap &&
-              // !_.isEmpty(type.related_wobjects) &&
-              !_.isEmpty(this.props.userLocation) && !isCreate && (
-                <React.Fragment>
-                  <div className="RewardsHeader-wrap">
-                    <div className="RewardsHeader__top-line">
-                      <Icon type="compass" />
-                      {intl.formatMessage({
-                        id: 'map',
-                        defaultMessage: 'Map',
-                      })}
+          <div className="center">{this.campaignItemsWrap(location)}</div>
+          {location.pathname !== '/rewards/manage' ? (
+            <Affix className="rightContainer leftContainer__user" stickPosition={122}>
+              <div className="right">
+                {// this.state.withMap &&
+                // !_.isEmpty(type.related_wobjects) &&
+                !_.isEmpty(this.props.userLocation) && !isCreate && (
+                  <React.Fragment>
+                    <div className="RewardsHeader-wrap">
+                      <div className="RewardsHeader__top-line">
+                        <Icon type="compass" />
+                        {intl.formatMessage({
+                          id: 'map',
+                          defaultMessage: 'Map',
+                        })}
+                      </div>
+                      <div
+                        role="presentation"
+                        className={`RewardsHeader__top-line-button ${
+                          !_.isEmpty(this.state.coordinates)
+                            ? 'RewardsHeader__top-line-button-active'
+                            : ''
+                        }`}
+                        onClick={this.setCoordinates}
+                      >
+                        {intl.formatMessage({
+                          id: 'search_area',
+                          defaultMessage: 'Search area',
+                        })}
+                      </div>
                     </div>
-                    <div
-                      role="presentation"
-                      className={`RewardsHeader__top-line-button ${
-                        !_.isEmpty(this.state.coordinates)
-                          ? 'RewardsHeader__top-line-button-active'
-                          : ''
-                      }`}
-                      onClick={this.setCoordinates}
-                    >
-                      {intl.formatMessage({
-                        id: 'search_area',
-                        defaultMessage: 'Search area',
-                      })}
-                    </div>
-                  </div>
-                  <MapOS
-                    wobjects={this.getRequiredObjects()}
-                    heigth={268}
-                    userLocation={this.props.userLocation}
-                    onMarkerClick={this.goToCampaign}
+                    <MapOS
+                      wobjects={this.getRequiredObjects()}
+                      heigth={268}
+                      userLocation={this.props.userLocation}
+                      onMarkerClick={this.goToCampaign}
+                    />
+                  </React.Fragment>
+                )}
+                {!_.isEmpty(sponsors) && !isCreate && (
+                  <RewardsFiltersPanel
+                    campaignsTypes={campaignsTypes}
+                    sponsors={sponsors}
+                    activeFilters={activeFilters}
+                    setFilterValue={this.setFilterValue}
                   />
-                </React.Fragment>
-              )}
-              {!_.isEmpty(sponsors) && !isCreate && (
-                <RewardsFiltersPanel
-                  campaignsTypes={campaignsTypes}
-                  sponsors={sponsors}
-                  activeFilters={activeFilters}
-                  setFilterValue={this.setFilterValue}
-                />
-              )}
-            </div>
-          </Affix>
+                )}
+              </div>
+            </Affix>
+          ) : null}
         </div>
         {isModalDetailsOpen && !_.isEmpty(objectDetails) && (
           <Modal

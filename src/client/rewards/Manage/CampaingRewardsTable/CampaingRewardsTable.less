@@ -1,0 +1,39 @@
+@import (reference) '../../../styles/modules/variables.less';
+@import (reference) '../../../styles/custom.less';
+
+.Camping-rewards {
+  @media @large {
+    min-width: 815px;
+  }
+
+  border: 1px solid #000000;
+  text-align: center;
+  border-collapse: collapse;
+  table-layout: fixed;
+
+  & th {
+    border: 1px solid #000000;
+    vertical-align: top;
+  }
+
+  & td {
+    border: 1px solid #000000;
+  }
+
+  & thead th {
+    font-size: 15px;
+    font-weight: bold;
+  }
+
+  &__basicWidth {
+    width: 8% !important;
+  }
+
+  &__mediumWidth {
+    width: 10% !important;
+  }
+
+  &__maxWidth {
+    width: 17% !important;
+  }
+}

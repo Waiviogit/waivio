@@ -39,6 +39,7 @@
   "objectType": "/objectType",
   "generalSearch": "/generalSearch",
   "campaigns": "/campaigns",
+  "dashboard": "/dashboard",
   "suitableUsers": "/suitable_users",
   "search": "/search"
 }
