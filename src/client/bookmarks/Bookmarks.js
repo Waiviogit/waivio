@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { getFeed, getPosts, getPendingBookmarks, getIsReloading } from '../reducers';
+import { getFeed, getPosts, getPendingBookmarks, getIsBookmarksLoading } from '../reducers';
 import Feed from '../feed/Feed';
 import {
   getFeedFromState,
@@ -26,7 +26,7 @@ import PostModal from '../post/PostModalContainer';
     feed: getFeed(state),
     posts: getPosts(state),
     pendingBookmarks: getPendingBookmarks(state),
-    reloading: getIsReloading(state),
+    isBookmarksLoading: getIsBookmarksLoading(state),
   }),
   { getBookmarks, getUserMetadata, showPostModal },
 )
@@ -35,14 +35,14 @@ export default class Bookmarks extends React.Component {
     intl: PropTypes.shape().isRequired,
     feed: PropTypes.shape().isRequired,
     showPostModal: PropTypes.func.isRequired,
-    reloading: PropTypes.bool,
+    isBookmarksLoading: PropTypes.bool,
     pendingBookmarks: PropTypes.arrayOf(PropTypes.string),
     getBookmarks: PropTypes.func,
     getUserMetadata: PropTypes.func,
   };
 
   static defaultProps = {
-    reloading: false,
+    isBookmarksLoading: false,
     pendingBookmarks: [],
     getBookmarks: () => {},
     getUserMetadata: () => {},
@@ -59,15 +59,15 @@ export default class Bookmarks extends React.Component {
   }
 
   render() {
-    const { intl, reloading, feed } = this.props;
+    const { intl, isBookmarksLoading, feed } = this.props;
 
     const content = getFeedFromState('bookmarks', 'all', feed);
-    const isFetching = getFeedLoadingFromState('bookmarks', 'all', feed) || reloading;
+    const isFetching = getFeedLoadingFromState('bookmarks', 'all', feed) || isBookmarksLoading;
     const hasMore = getFeedHasMoreFromState('bookmarks', 'all', feed);
     const loadContentAction = () => null;
     const loadMoreContentAction = () => null;
 
-    const noBookmarks = !reloading && !isFetching && !content.length;
+    const noBookmarks = !isBookmarksLoading && !isFetching && !content.length;
 
     return (
       <div className="shifted">

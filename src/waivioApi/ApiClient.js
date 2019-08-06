@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
-import { omit } from 'lodash';
 import config from './routes';
 import { getFollowingCount } from '../client/helpers/apiHelpers';
 
@@ -424,7 +423,7 @@ export const getAuthenticatedUserMetadata = userName =>
     method: 'GET',
   })
     .then(res => res.json())
-    .then(res => omit(res.user_metadata, '_id'));
+    .then(res => _.omit(res.user_metadata, '_id'));
 
 export const updateUserMetadata = (userName, data) =>
   fetch(`${config.apiPrefix}${config.user}/${userName}${config.userMetadata}`, {

@@ -20,9 +20,10 @@ const settings = (state = initialState, action) => {
   switch (action.type) {
     case GET_USER_METADATA.SUCCESS:
       if (action.payload && action.payload.settings) {
-        return action.payload.settings;
+        return { ...action.payload.settings, loading: false };
       }
-      return state;
+      return { ...state, loading: false };
+    case GET_USER_METADATA.START:
     case settingsTypes.SAVE_SETTINGS_START:
       return {
         ...state,
@@ -34,6 +35,7 @@ const settings = (state = initialState, action) => {
         ...action.payload,
         loading: false,
       };
+    case GET_USER_METADATA.ERROR:
     case settingsTypes.SAVE_SETTINGS_ERROR:
       return {
         ...state,
