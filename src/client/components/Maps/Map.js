@@ -58,6 +58,9 @@ class MapOS extends React.Component {
           payload={wobject}
           onMouseOver={this.handleMarkerClick}
           onMouseOut={this.closeInfobox}
+          onClick={() => {
+            props.onMarkerClick(wobject.author_permlink);
+          }}
         />
       ) : null;
     });
@@ -66,7 +69,7 @@ class MapOS extends React.Component {
     const wobj = getClientWObj(this.state.infoboxData.wobject);
     return (
       <Overlay anchor={this.state.infoboxData.coordinates} offset={[-12, 35]}>
-        <div className="MapOS__overlay-wrap">
+        <div role="presentation" className="MapOS__overlay-wrap">
           <img src={wobj.avatar} width={35} height={35} alt="" />
           <div className="MapOS__overlay-wrap-name">{wobj.name}</div>
         </div>

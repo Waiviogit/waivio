@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import fetch from 'isomorphic-fetch';
 import config from './routes';
 import { getFollowingCount } from '../client/helpers/apiHelpers';
@@ -359,8 +360,11 @@ export const getPropositions = ({
   guideName,
   campaignParent,
   currentUserName,
+  radius,
+  coordinates,
 }) =>
   new Promise((resolve, reject) => {
+    const withMap = !_.isEmpty(coordinates) && radius;
     fetch(
       `${config.campaignApiPrefix}${config.campaigns}?limit=${limit}&skip=${skip}${
         userName ? `&userName=${userName}` : ''
@@ -368,6 +372,10 @@ export const getPropositions = ({
         currentUserName ? `&currentUserName=${currentUserName}` : ''
       }${status ? `&status=${status}` : ''}${guideName ? `&guideName=${guideName}` : ''}${
         campaignParent ? `&requiredObject=${campaignParent}` : ''
+      }${
+        withMap
+          ? `&radius=${radius}&coordinates[]=${coordinates[0]}&coordinates[]=${coordinates[1]}`
+          : ''
       }`,
       {
         headers,

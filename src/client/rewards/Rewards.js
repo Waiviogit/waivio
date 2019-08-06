@@ -50,6 +50,7 @@ class Rewards extends React.Component {
     // declineProposition: PropTypes.func.isRequired,
     userLocation: PropTypes.shape(),
     authenticated: PropTypes.bool.isRequired,
+    history: PropTypes.shape().isRequired,
     username: PropTypes.string.isRequired,
     location: PropTypes.shape().isRequired,
     intl: PropTypes.shape().isRequired,
@@ -67,6 +68,8 @@ class Rewards extends React.Component {
     hasMore: true,
     propositions: [],
     sponsors: [],
+    radius: 5000000,
+    coordinates: [],
     campaignsTypes: [],
     isModalDetailsOpen: false,
     objectDetails: {},
@@ -85,7 +88,9 @@ class Rewards extends React.Component {
         nextProps.match.params.campaignParent !== this.props.match.params.campaignParent) &&
       this.props.username
     ) {
-      ApiClient.getPropositions(preparePropositionReqData(nextProps)).then(data => {
+      ApiClient.getPropositions(
+        preparePropositionReqData(nextProps, this.state.coordinates, this.state.radius),
+      ).then(data => {
         this.setState({
           propositions: data.campaigns,
           hasMore: data.hasMore,
@@ -128,6 +133,37 @@ class Rewards extends React.Component {
       activefilters[key].push(filter);
     }
     this.setState({ activefilters });
+  };
+
+  setCoordinates = () => {
+    if (_.isEmpty(this.state.coordinates)) {
+      ApiClient.getPropositions(
+        preparePropositionReqData(
+          this.props,
+          [+this.props.userLocation.lat, +this.props.userLocation.lon],
+          this.state.radius,
+        ),
+      ).then(data => {
+        this.setState({
+          propositions: data.campaigns,
+          hasMore: data.hasMore,
+          sponsors: data.sponsors,
+          campaignsTypes: data.campaigns_types,
+          coordinates: [+this.props.userLocation.lat, +this.props.userLocation.lon],
+        });
+      });
+    } else
+      ApiClient.getPropositions(preparePropositionReqData(this.props, [], this.state.radius)).then(
+        data => {
+          this.setState({
+            propositions: data.campaigns,
+            hasMore: data.hasMore,
+            sponsors: data.sponsors,
+            campaignsTypes: data.campaigns_types,
+            coordinates: [],
+          });
+        },
+      );
   };
 
   // For Propositions
@@ -254,6 +290,10 @@ class Rewards extends React.Component {
     )}`;
   };
 
+  goToCampaign = WobjPermlink => {
+    this.props.history.push(`/rewards/active/${WobjPermlink}`);
+  };
+
   handleLoadMore = () => {
     const { propositions, hasMore } = this.state;
     if (hasMore && this.props.username) {
@@ -262,7 +302,11 @@ class Rewards extends React.Component {
           loading: true,
         },
         () => {
-          const reqData = preparePropositionReqData(this.props);
+          const reqData = preparePropositionReqData(
+            this.props,
+            this.state.coordinates,
+            this.state.radius,
+          );
           reqData.skip = propositions.length;
           ApiClient.getPropositions(reqData).then(newPropositions =>
             this.setState({
@@ -292,6 +336,7 @@ class Rewards extends React.Component {
     const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
     const filterKey = match.params.filterKey;
     const IsRequiredObjectWrap = !match.params.campaignParent;
+    const isCreate = location.pathname === '/rewards/create';
     return (
       <div className="Rewards">
         <Helmet>
@@ -308,7 +353,7 @@ class Rewards extends React.Component {
             </div>
           </Affix>
           <div className="center">
-            {location.pathname === '/rewards/create' ? (
+            {isCreate ? (
               <CreateRewardForm userName={username} />
             ) : (
               <ReduxInfiniteScroll
@@ -326,7 +371,7 @@ class Rewards extends React.Component {
             <div className="right">
               {// this.state.withMap &&
               // !_.isEmpty(type.related_wobjects) &&
-              !_.isEmpty(this.props.userLocation) && (
+              !_.isEmpty(this.props.userLocation) && !isCreate && (
                 <React.Fragment>
                   <div className="RewardsHeader-wrap">
                     <div className="RewardsHeader__top-line">
@@ -336,7 +381,15 @@ class Rewards extends React.Component {
                         defaultMessage: 'Map',
                       })}
                     </div>
-                    <div className="RewardsHeader__top-line-button">
+                    <div
+                      role="presentation"
+                      className={`RewardsHeader__top-line-button ${
+                        !_.isEmpty(this.state.coordinates)
+                          ? 'RewardsHeader__top-line-button-active'
+                          : ''
+                      }`}
+                      onClick={this.setCoordinates}
+                    >
                       {intl.formatMessage({
                         id: 'search_area',
                         defaultMessage: 'Search area',
@@ -347,10 +400,11 @@ class Rewards extends React.Component {
                     wobjects={this.getRequiredObjects()}
                     heigth={268}
                     userLocation={this.props.userLocation}
+                    onMarkerClick={this.goToCampaign}
                   />
                 </React.Fragment>
               )}
-              {!_.isEmpty(sponsors) && (
+              {!_.isEmpty(sponsors) && !isCreate && (
                 <RewardsFiltersPanel
                   campaignsTypes={campaignsTypes}
                   sponsors={sponsors}
