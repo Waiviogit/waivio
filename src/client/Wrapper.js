@@ -20,6 +20,7 @@ import {
 } from './reducers';
 import { login, logout, busyLogin } from './auth/authActions';
 import { getFollowing, getFollowingObjects, getNotifications } from './user/userActions';
+import { getUserMetadata } from './user/usersActions';
 import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './app/appActions';
 import * as reblogActions from './app/Reblog/reblogActions';
 import NotificationPopup from './notifications/NotificationPopup';
@@ -42,6 +43,7 @@ import BBackTop from './components/BBackTop';
   {
     login,
     logout,
+    getUserMetadata,
     getFollowing,
     getFollowingObjects,
     getNotifications,
@@ -69,6 +71,7 @@ export default class Wrapper extends React.PureComponent {
     getRebloggedList: PropTypes.func,
     getRate: PropTypes.func,
     getNotifications: PropTypes.func,
+    getUserMetadata: PropTypes.func,
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
     nightmode: PropTypes.bool,
@@ -87,6 +90,7 @@ export default class Wrapper extends React.PureComponent {
     getRate: () => {},
     getTrendingTopics: () => {},
     getNotifications: () => {},
+    getUserMetadata: () => {},
     setUsedLocale: () => {},
     busyLogin: () => {},
     nightmode: false,
@@ -100,6 +104,7 @@ export default class Wrapper extends React.PureComponent {
       host: req.get('host'),
     });
 
+    store.dispatch(getUserMetadata());
     store.dispatch(setAppUrl(appUrl));
 
     const state = store.getState();
@@ -127,6 +132,7 @@ export default class Wrapper extends React.PureComponent {
       this.props.getFollowingObjects();
       this.props.getNotifications();
       this.props.busyLogin();
+      this.props.getUserMetadata();
     });
 
     this.props.getRewardFund();
