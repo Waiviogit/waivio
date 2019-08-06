@@ -31,6 +31,7 @@ import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
 import Avatar from '../components/Avatar';
 import MapOS from '../components/Maps/Map';
+import Manage from './Manage/Manage';
 
 @withRouter
 @injectIntl
@@ -95,6 +96,7 @@ class Rewards extends React.Component {
       });
     }
   }
+
   getRequiredObjects = () =>
     _.map(this.state.propositions, proposition => proposition.required_object);
 
@@ -278,20 +280,39 @@ class Rewards extends React.Component {
     }
   };
 
+  campaignItemsWrap = location => {
+    const { match, username } = this.props;
+    const { loading, hasMore } = this.state;
+    const filterKey = match.params.filterKey;
+    const IsRequiredObjectWrap = !match.params.campaignParent;
+    if (location.pathname === '/rewards/create') {
+      return <CreateRewardForm userName={username} />;
+    } else if (location.pathname === '/rewards/manage') {
+      return <Manage />;
+    }
+    return (
+      <ReduxInfiniteScroll
+        elementIsScrollable={false}
+        hasMore={hasMore}
+        loadMore={this.handleLoadMore}
+        loadingMore={loading}
+        loader={<Loading />}
+      >
+        {this.campaignsLayoutWrapLayout(IsRequiredObjectWrap, filterKey, username, match)}
+      </ReduxInfiniteScroll>
+    );
+  };
+
   render() {
-    const { location, match, authenticated, username, intl } = this.props;
+    const { location, authenticated, username, intl } = this.props;
     const {
       sponsors,
-      loading,
-      hasMore,
       isModalDetailsOpen,
       objectDetails,
       campaignsTypes,
       activeFilters,
     } = this.state;
     const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
-    const filterKey = match.params.filterKey;
-    const IsRequiredObjectWrap = !match.params.campaignParent;
     return (
       <div className="Rewards">
         <Helmet>
@@ -307,59 +328,47 @@ class Rewards extends React.Component {
               <LeftSidebar />
             </div>
           </Affix>
-          <div className="center">
-            {location.pathname === '/rewards/create' ? (
-              <CreateRewardForm userName={username} />
-            ) : (
-              <ReduxInfiniteScroll
-                elementIsScrollable={false}
-                hasMore={hasMore}
-                loadMore={this.handleLoadMore}
-                loadingMore={loading}
-                loader={<Loading />}
-              >
-                {this.campaignsLayoutWrapLayout(IsRequiredObjectWrap, filterKey, username, match)}
-              </ReduxInfiniteScroll>
-            )}
-          </div>
-          <Affix className="rightContainer leftContainer__user" stickPosition={122}>
-            <div className="right">
-              {// this.state.withMap &&
-              // !_.isEmpty(type.related_wobjects) &&
-              !_.isEmpty(this.props.userLocation) && (
-                <React.Fragment>
-                  <div className="RewardsHeader-wrap">
-                    <div className="RewardsHeader__top-line">
-                      <Icon type="compass" />
-                      {intl.formatMessage({
-                        id: 'map',
-                        defaultMessage: 'Map',
-                      })}
+          <div className="center">{this.campaignItemsWrap(location)}</div>
+          {location.pathname !== '/rewards/manage' ? (
+            <Affix className="rightContainer leftContainer__user" stickPosition={122}>
+              <div className="right">
+                {// this.state.withMap &&
+                // !_.isEmpty(type.related_wobjects) &&
+                !_.isEmpty(this.props.userLocation) && (
+                  <React.Fragment>
+                    <div className="RewardsHeader-wrap">
+                      <div className="RewardsHeader__top-line">
+                        <Icon type="compass" />
+                        {intl.formatMessage({
+                          id: 'map',
+                          defaultMessage: 'Map',
+                        })}
+                      </div>
+                      <div className="RewardsHeader__top-line-button">
+                        {intl.formatMessage({
+                          id: 'search_area',
+                          defaultMessage: 'Search area',
+                        })}
+                      </div>
                     </div>
-                    <div className="RewardsHeader__top-line-button">
-                      {intl.formatMessage({
-                        id: 'search_area',
-                        defaultMessage: 'Search area',
-                      })}
-                    </div>
-                  </div>
-                  <MapOS
-                    wobjects={this.getRequiredObjects()}
-                    heigth={268}
-                    userLocation={this.props.userLocation}
+                    <MapOS
+                      wobjects={this.getRequiredObjects()}
+                      heigth={268}
+                      userLocation={this.props.userLocation}
+                    />
+                  </React.Fragment>
+                )}
+                {!_.isEmpty(sponsors) && (
+                  <RewardsFiltersPanel
+                    campaignsTypes={campaignsTypes}
+                    sponsors={sponsors}
+                    activeFilters={activeFilters}
+                    setFilterValue={this.setFilterValue}
                   />
-                </React.Fragment>
-              )}
-              {!_.isEmpty(sponsors) && (
-                <RewardsFiltersPanel
-                  campaignsTypes={campaignsTypes}
-                  sponsors={sponsors}
-                  activeFilters={activeFilters}
-                  setFilterValue={this.setFilterValue}
-                />
-              )}
-            </div>
-          </Affix>
+                )}
+              </div>
+            </Affix>
+          ) : null}
         </div>
         {isModalDetailsOpen && !_.isEmpty(objectDetails) && (
           <Modal
