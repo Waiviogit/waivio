@@ -138,7 +138,7 @@ class PostContent extends React.Component {
 
   handleShareClick = post => this.props.reblog(post.id);
 
-  handleSaveClick = post => this.props.toggleBookmark(post.id, post.author, post.permlink);
+  handleSaveClick = post => this.props.toggleBookmark(post.id);
 
   handleFollowClick = post => {
     const isFollowed = this.props.followingList.includes(post.author);

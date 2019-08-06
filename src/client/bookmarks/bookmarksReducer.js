@@ -2,7 +2,7 @@ import * as bookmarksActions from './bookmarksActions';
 import { GET_USER_METADATA } from '../user/usersActions';
 
 const initialState = {
-  list: {},
+  list: [],
   pendingBookmarks: [],
 };
 
