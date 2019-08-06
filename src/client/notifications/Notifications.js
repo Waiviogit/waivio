@@ -9,7 +9,7 @@ import * as notificationConstants from '../../common/constants/notifications';
 import { getUpdatedSCUserMetadata } from '../auth/authActions';
 import { getNotifications } from '../user/userActions';
 import {
-  getAuthenticatedUserSCMetaData,
+  getAuthenticateduserMetaData,
   getNotifications as getNotificationsState,
   getIsLoadingNotifications,
   getAuthenticatedUserName,
@@ -32,19 +32,19 @@ class Notifications extends React.Component {
     getNotifications: PropTypes.func.isRequired,
     notifications: PropTypes.arrayOf(PropTypes.shape()),
     currentAuthUsername: PropTypes.string,
-    userSCMetaData: PropTypes.shape(),
+    userMetaData: PropTypes.shape(),
   };
 
   static defaultProps = {
     notifications: [],
     currentAuthUsername: '',
-    userSCMetaData: {},
+    userMetaData: {},
   };
 
   componentDidMount() {
-    const { userSCMetaData, notifications } = this.props;
+    const { userMetaData, notifications } = this.props;
 
-    if (_.isEmpty(userSCMetaData)) {
+    if (_.isEmpty(userMetaData)) {
       this.props.getUpdatedSCUserMetadata();
     }
 
@@ -54,8 +54,8 @@ class Notifications extends React.Component {
   }
 
   render() {
-    const { notifications, currentAuthUsername, userSCMetaData, loadingNotifications } = this.props;
-    const lastSeenTimestamp = _.get(userSCMetaData, 'notifications_last_timestamp');
+    const { notifications, currentAuthUsername, userMetaData, loadingNotifications } = this.props;
+    const lastSeenTimestamp = _.get(userMetaData, 'notifications_last_timestamp');
 
     return (
       <div className="shifted">
@@ -128,15 +128,14 @@ class Notifications extends React.Component {
                     return null;
                 }
               })}
-              {_.isEmpty(notifications) &&
-                !loadingNotifications && (
-                  <div className="Notification Notification__empty">
-                    <FormattedMessage
-                      id="notifications_empty_message"
-                      defaultMessage="You currently have no notifications."
-                    />
-                  </div>
-                )}
+              {_.isEmpty(notifications) && !loadingNotifications && (
+                <div className="Notification Notification__empty">
+                  <FormattedMessage
+                    id="notifications_empty_message"
+                    defaultMessage="You currently have no notifications."
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -148,7 +147,7 @@ class Notifications extends React.Component {
 export default connect(
   state => ({
     notifications: getNotificationsState(state),
-    userSCMetaData: getAuthenticatedUserSCMetaData(state),
+    userMetaData: getAuthenticateduserMetaData(state),
     currentAuthUsername: getAuthenticatedUserName(state),
     loadingNotifications: getIsLoadingNotifications(state),
   }),

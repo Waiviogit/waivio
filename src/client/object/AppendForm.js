@@ -45,7 +45,7 @@ import { appendObject } from '../object/appendActions';
 import { isValidImage } from '../helpers/image';
 import withEditor from '../components/Editor/withEditor';
 import { MAX_IMG_SIZE, ALLOWED_IMG_FORMATS } from '../../common/constants/validation';
-import { getHasDefaultSlider, getVoteValue } from '../helpers/user';
+import { getVoteValue } from '../helpers/user';
 import LikeSection from './LikeSection';
 import { getFieldWithMaxWeight, getInnerFieldWithMaxWeight, getListItems } from './wObjectHelper';
 import FollowObjectForm from './FollowObjectForm';
@@ -88,7 +88,7 @@ export default class AppendForm extends Component {
     user: PropTypes.shape(),
     rewardFund: PropTypes.shape(),
     rate: PropTypes.number,
-    sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
+    sliderMode: PropTypes.bool,
     defaultVotePercent: PropTypes.number.isRequired,
     followingList: PropTypes.arrayOf(PropTypes.string),
     rateObject: PropTypes.func,
@@ -109,7 +109,7 @@ export default class AppendForm extends Component {
     user: {},
     rewardFund: {},
     rate: 1,
-    sliderMode: 'auto',
+    sliderMode: false,
     defaultVotePercent: 100,
     followingList: [],
     rateObject: () => {},
@@ -130,8 +130,7 @@ export default class AppendForm extends Component {
   };
 
   componentDidMount = () => {
-    const { sliderMode, user } = this.props;
-    if (sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user))) {
+    if (this.props.sliderMode) {
       if (!this.state.sliderVisible) {
         this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
       }
@@ -544,9 +543,8 @@ export default class AppendForm extends Component {
   };
 
   handleLikeClick = () => {
-    const { sliderMode, user } = this.props;
     this.setState({
-      sliderVisible: sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user)),
+      sliderVisible: this.props.sliderMode,
     });
   };
 

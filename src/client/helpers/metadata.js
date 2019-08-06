@@ -1,12 +1,13 @@
-import omit from 'lodash/omit';
+import { omit } from 'lodash';
 import SteemConnect from '../steemConnectAPI';
+import { getAuthenticatedUserMetadata, updateUserMetadata } from '../../waivioApi/ApiClient';
 
-const getMetadata = () => SteemConnect.me().then(resp => resp.user_metadata);
+const getMetadata = userName => getAuthenticatedUserMetadata(userName);
 
-export const saveSettingsMetadata = settings =>
-  getMetadata()
+export const saveSettingsMetadata = (userName, settings) =>
+  getMetadata(userName)
     .then(metadata =>
-      SteemConnect.updateUserMetadata({
+      updateUserMetadata(userName, {
         ...metadata,
         settings: {
           ...metadata.settings,
@@ -49,15 +50,14 @@ export const deleteDraftMetadata = draftIds =>
     )
     .then(resp => resp.user_metadata.drafts);
 
-export const toggleBookmarkMetadata = (id, author, permlink) =>
-  getMetadata()
+const getUpdatedBookmarks = (bookmarks, postId) =>
+  bookmarks.includes(postId) ? bookmarks.filter(b => b !== postId) : [...bookmarks, postId];
+export const toggleBookmarkMetadata = (userName, postId) =>
+  getMetadata(userName)
     .then(metadata =>
-      SteemConnect.updateUserMetadata({
+      updateUserMetadata(userName, {
         ...metadata,
-        bookmarks:
-          metadata.bookmarks && metadata.bookmarks[id]
-            ? omit(metadata.bookmarks, id)
-            : { ...metadata.bookmarks, [id]: { id, author, permlink } },
+        bookmarks: getUpdatedBookmarks(metadata.bookmarks, postId),
       }),
     )
     .then(resp => resp.user_metadata.bookmarks);
