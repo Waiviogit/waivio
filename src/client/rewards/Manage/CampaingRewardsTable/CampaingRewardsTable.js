@@ -40,35 +40,35 @@ const CampaingRewardsTable = props => {
               defaultMessage: `Type`,
             })}
           </th>
-          <th colSpan="2">
+          <th className="Camping-rewards__hide" colSpan="2">
             {intl.formatMessage({ id: 'budgetTarget', defaultMessage: `Budget target****` })}
           </th>
-          <th colSpan="3">
+          <th className="Camping-rewards__hide" colSpan="3">
             {intl.formatMessage({ id: 'currentMonth', defaultMessage: `Current month` })}
           </th>
-          <th className="Camping-rewards__mediumWidth" rowSpan="3">
+          <th className="Camping-rewards__mediumWidth Camping-rewards__hide" rowSpan="3">
             {intl.formatMessage({ id: 'remaining', defaultMessage: `Remaining` })}
           </th>
         </tr>
         <tr>
-          <th className="Camping-rewards__basicWidth" rowSpan="2">
+          <th className="Camping-rewards__basicWidth Camping-rewards__hide" rowSpan="2">
             <p>{intl.formatMessage({ id: 'monthly', defaultMessage: `Monthly` })}</p>
             <p>(SBD)</p>
           </th>
-          <th className="Camping-rewards__basicWidth" rowSpan="2">
+          <th className="Camping-rewards__basicWidth Camping-rewards__hide" rowSpan="2">
             <p>{intl.formatMessage({ id: 'rewardCampaning', defaultMessage: `Reward` })}</p>
             <p>(SBD)</p>
           </th>
-          <th className="Camping-rewards__basicWidth" rowSpan="2">
+          <th className="Camping-rewards__basicWidth Camping-rewards__hide" rowSpan="2">
             {intl.formatMessage({ id: 'reserved', defaultMessage: `Reserved` })}
           </th>
-          <th className="Camping-rewards__basicWidth" rowSpan="2">
+          <th className="Camping-rewards__basicWidth Camping-rewards__hide" rowSpan="2">
             {intl.formatMessage({
               id: 'payable',
               defaultMessage: `Payable`,
             })}
           </th>
-          <th className="Camping-rewards__basicWidth" rowSpan="2">
+          <th className="Camping-rewards__basicWidth Camping-rewards__hide" rowSpan="2">
             {intl.formatMessage({
               id: 'paid',
               defaultMessage: `Paid`,
@@ -84,7 +84,7 @@ const CampaingRewardsTable = props => {
             </td>
             <td>{current.name}</td>
             <td>
-              {!campaigns ? (
+              {!checked ? (
                 <Link to={`/rewards/edit}`} title={'Edit'}>
                   <span>Edit</span>
                 </Link>
@@ -92,12 +92,12 @@ const CampaingRewardsTable = props => {
             </td>
             <td>{current.status}</td>
             <td>{current.type}</td>
-            <td>{current.budget}</td>
-            <td>{current.reward}</td>
-            <td>{current.reserved}</td>
-            <td>{current.payable}</td>
-            <td>{current.payed}</td>
-            <td>{current.remaining}</td>
+            <td className="Camping-rewards__hide">{current.budget.toFixed(2)}</td>
+            <td className="Camping-rewards__hide">{current.reward.toFixed(2)}</td>
+            <td className="Camping-rewards__hide">{current.reserved}</td>
+            <td className="Camping-rewards__hide">{current.payable}</td>
+            <td className="Camping-rewards__hide">{current.payed}</td>
+            <td className="Camping-rewards__hide">{current.remaining}</td>
           </tr>
         ))}
       </tbody>

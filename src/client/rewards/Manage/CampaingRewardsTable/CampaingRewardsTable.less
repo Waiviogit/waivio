@@ -2,12 +2,9 @@
 @import (reference) '../../../styles/custom.less';
 
 .Camping-rewards {
-  @media @large {
-    min-width: 815px;
-  }
-
   border: 1px solid #000000;
   text-align: center;
+  text-transform: capitalize;
   border-collapse: collapse;
   table-layout: fixed;
 
@@ -17,6 +14,7 @@
   }
 
   & td {
+    font-size: 15px;
     border: 1px solid #000000;
   }
 
@@ -36,4 +34,76 @@
   &__maxWidth {
     width: 17% !important;
   }
+}
+
+.Camping-rewards > tbody > tr :first-child {
+  top: -3px;
+}
+
+.hide-element() {
+  .Camping-rewards__hide {
+    display: none;
+  }
+
+  .Camping-rewards__basicWidth .Camping-rewards__hide {
+    display: none;
+  }
+
+  .Camping-rewards__mediumWidth .Camping-rewards__hide {
+    display: none;
+  }
+}
+
+.show-element() {
+  .Camping-rewards__hide {
+    display: table-cell;
+  }
+
+  .Camping-rewards__basicWidth .Camping-rewards__hide {
+    display: table-cell;
+  }
+
+  .Camping-rewards__mediumWidth .Camping-rewards__hide {
+    display: table-cell;
+  }
+}
+
+@media only screen and (min-width: 320px) {
+  .Camping-rewards {
+    max-width: 310px;
+  }
+
+  .hide-element();
+}
+
+@media only screen and (min-width: 375px) {
+  .Camping-rewards {
+    max-width: 365px;
+  }
+
+  .hide-element();
+}
+
+@media only screen and (min-width: 414px) {
+  .Camping-rewards {
+    max-width: 404px;
+  }
+
+  .hide-element();
+}
+
+@media @small {
+  .Camping-rewards {
+    max-width: 720px;
+  }
+
+  .show-element();
+}
+
+@media @medium {
+  .Camping-rewards {
+    max-width: 768px;
+  }
+
+  .show-element();
 }

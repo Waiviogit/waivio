@@ -3,21 +3,18 @@
 
 .BalanceTable {
   @media @small {
-    min-width: 400px;
+    min-width: 720px;
   }
 
   @media @medium {
-    min-width: 460px;
-  }
-
-  @media @large {
-    min-width: 815px;
+    min-width: 768px;
   }
 
   border: 1px solid #000000;
   text-align: center !important;
   border-collapse: collapse;
   table-layout: fixed;
+  font-size: large;
 
   & td {
     border: 1px solid #000000;
@@ -33,14 +30,33 @@
   }
 
   & thead th {
-    font-size: larger;
     font-weight: 500;
     color: #000000;
     text-align: left;
   }
 
   & tbody td {
-    font-size: larger;
     font-weight: 500;
+  }
+}
+
+@media only screen and (min-width: 320px) {
+  .BalanceTable {
+    max-width: 310px;
+    font-size: medium;
+  }
+}
+
+@media only screen and (min-width: 375px) {
+  .BalanceTable {
+    max-width: 365px;
+    font-size: large;
+  }
+}
+
+@media only screen and (min-width: 414px) {
+  .BalanceTable {
+    max-width: 404px;
+    font-size: large;
   }
 }
