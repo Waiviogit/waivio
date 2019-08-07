@@ -182,8 +182,8 @@ class EditPost extends Component {
   saveDraft = debounce(() => {
     if (this.props.saving) return;
 
-    const postData = this.buildPost();
-    const postBody = postData.body;
+    const draft = this.buildPost();
+    const postBody = draft.body;
     const id = this.props.draftId;
     // Remove zero width space
     const isBodyEmpty = postBody.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().length === 0;
@@ -192,7 +192,7 @@ class EditPost extends Component {
 
     const redirect = id !== this.draftId;
 
-    this.props.saveDraft({ postData, id: this.draftId }, redirect, this.props.intl);
+    this.props.saveDraft(draft, redirect, this.props.intl);
   }, 1500);
 
   render() {

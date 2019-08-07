@@ -28,17 +28,14 @@ export const setLocaleMetadata = locale =>
     .then(resp => resp.user_metadata.locale);
 
 export const addDraftMetadata = draft =>
-  getMetadata()
+  getMetadata(draft.author)
     .then(metadata =>
-      SteemConnect.updateUserMetadata({
+      updateUserMetadata(draft.author, {
         ...metadata,
-        drafts: {
-          ...metadata.drafts,
-          [draft.id]: draft.postData,
-        },
-      }),
+        drafts: [...metadata.drafts.filter(d => d.draftId !== draft.draftId), draft],
+      }).catch(e => e.message),
     )
-    .then(resp => resp.user_metadata.drafts[draft.id]);
+    .then(() => draft);
 
 export const deleteDraftMetadata = draftIds =>
   getMetadata()
