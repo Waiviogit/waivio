@@ -1,4 +1,3 @@
-import { omit } from 'lodash';
 import SteemConnect from '../steemConnectAPI';
 import { getAuthenticatedUserMetadata, updateUserMetadata } from '../../waivioApi/ApiClient';
 
@@ -37,12 +36,12 @@ export const addDraftMetadata = draft =>
     )
     .then(() => draft);
 
-export const deleteDraftMetadata = draftIds =>
-  getMetadata()
+export const deleteDraftMetadata = (draftIds, userName) =>
+  getMetadata(userName)
     .then(metadata =>
-      SteemConnect.updateUserMetadata({
+      updateUserMetadata(userName, {
         ...metadata,
-        drafts: omit(metadata.drafts, draftIds),
+        drafts: metadata.drafts.filter(d => !draftIds.includes(d.draftId)),
       }),
     )
     .then(resp => resp.user_metadata.drafts);

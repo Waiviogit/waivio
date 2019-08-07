@@ -59,7 +59,7 @@ class EditPost extends Component {
     intl: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
     locale: PropTypes.string.isRequired,
-    draftPosts: PropTypes.shape().isRequired,
+    draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     // upvoteSetting: PropTypes.bool,
     draftId: PropTypes.string,
     publishing: PropTypes.bool,
@@ -154,9 +154,8 @@ class EditPost extends Component {
     postData.author = this.props.user.name || '';
     postData.permlink = this.permlink || kebabCase(postTitle);
 
-    const oldMetadata =
-      this.props.draftPosts[this.props.draftId] &&
-      this.props.draftPosts[this.props.draftId].jsonMetadata;
+    const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
+    const oldMetadata = currDraft && currDraft.jsonMetadata;
     const waivioData = {
       wobjects: linkedObjects.map(obj => ({
         objectName: obj.name,
@@ -191,7 +190,6 @@ class EditPost extends Component {
     if (isBodyEmpty) return;
 
     const redirect = id !== this.draftId;
-
     this.props.saveDraft(draft, redirect, this.props.intl);
   }, 1500);
 
