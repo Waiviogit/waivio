@@ -6,6 +6,7 @@ import { injectIntl } from 'react-intl';
 import { Badge } from 'antd';
 import { debounce, has, isEqual, kebabCase, throttle, uniqBy } from 'lodash';
 import uuidv4 from 'uuid/v4';
+import requiresLogin from '../../auth/requiresLogin';
 import {
   getAuthenticatedUser,
   getLocale,
@@ -35,6 +36,7 @@ const getLinkedObjects = contentStateRaw => {
 };
 
 @injectIntl
+@requiresLogin
 @withRouter
 @connect(
   (state, props) => ({
