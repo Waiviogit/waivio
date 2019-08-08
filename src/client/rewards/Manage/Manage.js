@@ -11,11 +11,10 @@ import BalanceTable from './BalanceTable/BalanceTable';
 class Manage extends React.Component {
   static propTypes = {
     userName: PropTypes.string,
-    intl: PropTypes.shape(),
+    intl: PropTypes.shape().isRequired,
   };
   static defaultProps = {
     userName: '',
-    intl: {},
   };
   state = {
     campaigns: [],
