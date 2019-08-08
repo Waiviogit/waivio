@@ -23,15 +23,15 @@
     font-weight: bold;
   }
 
-  &__basicWidth {
+  &.basicWidth {
     width: 8% !important;
   }
 
-  &__mediumWidth {
+  &.mediumWidth {
     width: 10% !important;
   }
 
-  &__maxWidth {
+  &.maxWidth {
     width: 17% !important;
   }
 }
@@ -41,29 +41,29 @@
 }
 
 .hide-element() {
-  .Camping-rewards__hide {
+  .Camping-rewards .hide-element {
     display: none;
   }
 
-  .Camping-rewards__basicWidth .Camping-rewards__hide {
+  .Camping-rewards.basicWidth .hide-element {
     display: none;
   }
 
-  .Camping-rewards__mediumWidth .Camping-rewards__hide {
+  .Camping-rewards.mediumWidth .hide-element {
     display: none;
   }
 }
 
 .show-element() {
-  .Camping-rewards__hide {
+  .Camping-rewards .hide-element {
     display: table-cell;
   }
 
-  .Camping-rewards__basicWidth .Camping-rewards__hide {
+  .Camping-rewards.basicWidth .hide-element {
     display: table-cell;
   }
 
-  .Camping-rewards__mediumWidth .Camping-rewards__hide {
+  .Camping-rewards.mediumWidth .hide-element {
     display: table-cell;
   }
 }

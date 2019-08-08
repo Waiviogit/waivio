@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import './Manage.less';
 import * as ApiClient from '../../../waivioApi/ApiClient';
@@ -120,6 +121,14 @@ class Manage extends React.Component {
             </div>
           </div>
         </div>
+        <button className="Manage__button">
+          <Link to={`/rewards/create`}>
+            {intl.formatMessage({
+              id: 'createNewCampaign',
+              defaultMessage: `Create new campaign`,
+            })}{' '}
+          </Link>
+        </button>
       </div>
     );
   }
