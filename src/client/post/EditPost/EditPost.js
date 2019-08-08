@@ -4,8 +4,9 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Badge } from 'antd';
-import { debounce, has, isEqual, kebabCase, throttle, uniqBy } from 'lodash';
+import { debounce, has, kebabCase, throttle, uniqBy } from 'lodash';
 import uuidv4 from 'uuid/v4';
+import requiresLogin from '../../auth/requiresLogin';
 import {
   getAuthenticatedUser,
   getLocale,
@@ -35,6 +36,7 @@ const getLinkedObjects = contentStateRaw => {
 };
 
 @injectIntl
+@requiresLogin
 @withRouter
 @connect(
   (state, props) => ({
@@ -57,7 +59,7 @@ class EditPost extends Component {
     intl: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
     locale: PropTypes.string.isRequired,
-    draftPosts: PropTypes.shape().isRequired,
+    draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     // upvoteSetting: PropTypes.bool,
     draftId: PropTypes.string,
     publishing: PropTypes.bool,
@@ -105,14 +107,15 @@ class EditPost extends Component {
 
   handleChangeContent(rawContent) {
     const nextState = { content: toMarkdown(rawContent) };
-    this.handleUpdateState(nextState.content);
     const linkedObjects = getLinkedObjects(rawContent);
     if (this.state.linkedObjects.length !== linkedObjects.length) {
       const objPercentage = setObjPercents(linkedObjects, this.state.objPercentage);
       nextState.linkedObjects = linkedObjects;
       nextState.objPercentage = objPercentage;
     }
-    this.setState(nextState);
+    if (this.state.content !== nextState.content) {
+      this.setState(nextState, this.handleUpdateState);
+    }
   }
 
   handleTopicsChange = topics => this.setState({ topics }, this.handleUpdateState);
@@ -152,9 +155,8 @@ class EditPost extends Component {
     postData.author = this.props.user.name || '';
     postData.permlink = this.permlink || kebabCase(postTitle);
 
-    const oldMetadata =
-      this.props.draftPosts[this.props.draftId] &&
-      this.props.draftPosts[this.props.draftId].jsonMetadata;
+    const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
+    const oldMetadata = currDraft && currDraft.jsonMetadata;
     const waivioData = {
       wobjects: linkedObjects.map(obj => ({
         objectName: obj.name,
@@ -172,16 +174,13 @@ class EditPost extends Component {
     return postData;
   }
 
-  handleUpdateState = nextContent => {
-    if (isEqual(this.state.content, nextContent)) return;
-    throttle(this.saveDraft, 200, { leading: false, trailing: true })();
-  };
+  handleUpdateState = () => throttle(this.saveDraft, 200, { leading: false, trailing: true })();
 
   saveDraft = debounce(() => {
     if (this.props.saving) return;
 
-    const postData = this.buildPost();
-    const postBody = postData.body;
+    const draft = this.buildPost();
+    const postBody = draft.body;
     const id = this.props.draftId;
     // Remove zero width space
     const isBodyEmpty = postBody.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().length === 0;
@@ -189,8 +188,7 @@ class EditPost extends Component {
     if (isBodyEmpty) return;
 
     const redirect = id !== this.draftId;
-
-    this.props.saveDraft({ postData, id: this.draftId }, redirect, this.props.intl);
+    this.props.saveDraft(draft, redirect, this.props.intl);
   }, 1500);
 
   render() {

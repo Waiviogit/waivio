@@ -1,4 +1,3 @@
-import { omit } from 'lodash';
 import SteemConnect from '../steemConnectAPI';
 import { getAuthenticatedUserMetadata, updateUserMetadata } from '../../waivioApi/ApiClient';
 
@@ -28,24 +27,21 @@ export const setLocaleMetadata = locale =>
     .then(resp => resp.user_metadata.locale);
 
 export const addDraftMetadata = draft =>
-  getMetadata()
+  getMetadata(draft.author)
     .then(metadata =>
-      SteemConnect.updateUserMetadata({
+      updateUserMetadata(draft.author, {
         ...metadata,
-        drafts: {
-          ...metadata.drafts,
-          [draft.id]: draft.postData,
-        },
-      }),
+        drafts: [...metadata.drafts.filter(d => d.draftId !== draft.draftId), draft],
+      }).catch(e => e.message),
     )
-    .then(resp => resp.user_metadata.drafts[draft.id]);
+    .then(() => draft);
 
-export const deleteDraftMetadata = draftIds =>
-  getMetadata()
+export const deleteDraftMetadata = (draftIds, userName) =>
+  getMetadata(userName)
     .then(metadata =>
-      SteemConnect.updateUserMetadata({
+      updateUserMetadata(userName, {
         ...metadata,
-        drafts: omit(metadata.drafts, draftIds),
+        drafts: metadata.drafts.filter(d => !draftIds.includes(d.draftId)),
       }),
     )
     .then(resp => resp.user_metadata.drafts);

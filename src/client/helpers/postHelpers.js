@@ -118,9 +118,9 @@ export function splitPostContent(
   markdownContent,
   { titleKey, bodyKey } = { titleKey: 'postTitle', bodyKey: 'postBody' },
 ) {
-  const regExp = new RegExp('^(.{2,})\n'); // eslint-disable-line
+  const regExp = new RegExp('^(.+)\n'); // eslint-disable-line
   const postTitle = regExp.exec(markdownContent);
-  const postBody = markdownContent.replace(regExp, '');
+  const postBody = postTitle && markdownContent.replace(regExp, '');
   return {
     [titleKey]: postTitle ? postTitle[0].trim() : '',
     [bodyKey]: postBody || '',
@@ -144,7 +144,7 @@ export function getInitialValues(props) {
     isUpdating: false,
   };
   const { draftPosts, draftId } = props;
-  const draftPost = draftPosts && draftPosts[draftId];
+  const draftPost = draftPosts.find(d => d.draftId === draftId);
   if (draftId && draftPost) {
     const draftObjects = get(draftPost, ['jsonMetadata', WAIVIO_META_FIELD_NAME, 'wobjects'], []);
     state = {
