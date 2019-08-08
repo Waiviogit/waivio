@@ -64,11 +64,6 @@ export default (state = initialState, action) => {
         ...state,
         userMetaData: action.payload,
       };
-    case types.UPDATE_SC2_USER_METADATA.SUCCESS:
-      return {
-        ...state,
-        userMetaData: action.payload.user_metadata,
-      };
     default:
       return state;
   }
