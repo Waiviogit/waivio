@@ -47,7 +47,7 @@ const getLinkedObjects = contentStateRaw => {
     saving: getIsEditorSaving(state),
     imageLoading: getIsImageUploading(state),
     draftId: new URLSearchParams(props.location.search).get('draft'),
-    isNewPost: new URLSearchParams(props.location.search).get('newPost'),
+    isNewPost: new URLSearchParams(props.location.search).get('newPost') === 'true',
     upvoteSetting: getUpvoteSetting(state),
   }),
   {
