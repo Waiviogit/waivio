@@ -92,12 +92,12 @@ const CampaingRewardsTable = props => {
             </td>
             <td>{current.status}</td>
             <td>{current.type}</td>
-            <td className="hide-element">{current.budget.toFixed(2)}</td>
-            <td className="hide-element">{current.reward.toFixed(2)}</td>
-            <td className="hide-element">{current.reserved}</td>
-            <td className="hide-element">{current.payable}</td>
-            <td className="hide-element">{current.payed}</td>
-            <td className="hide-element">{current.remaining}</td>
+            <td className="Camping-rewards hide-element">{current.budget.toFixed(2)}</td>
+            <td className="Camping-rewards hide-element">{current.reward.toFixed(2)}</td>
+            <td className="Camping-rewards hide-element">{current.reserved}</td>
+            <td className="Camping-rewards hide-element">{current.payable}</td>
+            <td className="Camping-rewards hide-element">{current.payed}</td>
+            <td className="Camping-rewards hide-element">{current.remaining}</td>
           </tr>
         ))}
       </tbody>
