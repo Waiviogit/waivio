@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
 import * as notificationConstants from '../../common/constants/notifications';
-import { getUpdatedSCUserMetadata } from '../auth/authActions';
+import { getUserMetadata } from '../user/usersActions';
 import { getNotifications } from '../user/userActions';
 import {
   getAuthenticateduserMetaData,
@@ -28,7 +28,7 @@ import './Notifications.less';
 class Notifications extends React.Component {
   static propTypes = {
     loadingNotifications: PropTypes.bool.isRequired,
-    getUpdatedSCUserMetadata: PropTypes.func.isRequired,
+    getUpdatedUserMetadata: PropTypes.func.isRequired,
     getNotifications: PropTypes.func.isRequired,
     notifications: PropTypes.arrayOf(PropTypes.shape()),
     currentAuthUsername: PropTypes.string,
@@ -45,7 +45,7 @@ class Notifications extends React.Component {
     const { userMetaData, notifications } = this.props;
 
     if (_.isEmpty(userMetaData)) {
-      this.props.getUpdatedSCUserMetadata();
+      this.props.getUpdatedUserMetadata();
     }
 
     if (_.isEmpty(notifications)) {
@@ -152,7 +152,7 @@ export default connect(
     loadingNotifications: getIsLoadingNotifications(state),
   }),
   {
-    getUpdatedSCUserMetadata,
+    getUpdatedUserMetadata: getUserMetadata,
     getNotifications,
   },
 )(requiresLogin(Notifications));
