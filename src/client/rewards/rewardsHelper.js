@@ -1,10 +1,15 @@
 export const displayLimit = 10;
 
-export const preparePropositionReqData = ({ username, match, coordinates, radius }) => {
+export const rewardPostContainerData = {
+  author: 'monterey',
+  permlink: 'test-post',
+};
+export const preparePropositionReqData = ({ username, match, coordinates, radius, sort }) => {
   const reqData = {
     limit: displayLimit,
     campaignParent: match.params.campaignParent,
     currentUserName: username,
+    sort,
   };
   if (coordinates && coordinates.length > 0 && radius) {
     reqData.coordinates = coordinates;

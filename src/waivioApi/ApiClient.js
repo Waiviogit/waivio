@@ -355,7 +355,7 @@ export const getTopUsers = (isRandom = false, { limit, skip } = { limit: 30, ski
 export const getPropositions = ({
   limit = 30,
   skip = 0,
-  userName,
+  userName = '',
   status,
   approved,
   guideName,
@@ -363,6 +363,7 @@ export const getPropositions = ({
   currentUserName,
   radius,
   coordinates,
+  sort,
 }) =>
   new Promise((resolve, reject) => {
     const withMap = !_.isEmpty(coordinates) && radius;
@@ -377,7 +378,7 @@ export const getPropositions = ({
         withMap
           ? `&radius=${radius}&coordinates[]=${coordinates[0]}&coordinates[]=${coordinates[1]}`
           : ''
-      }`,
+      }${sort ? `&sort=${sort}` : ''}`,
       {
         headers,
         method: 'GET',
