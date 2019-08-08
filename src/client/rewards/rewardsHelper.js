@@ -1,8 +1,6 @@
 export const displayLimit = 10;
 
-export const preparePropositionReqData = (props, coordinates, radius) => {
-  const { username, match } = props;
-
+export const preparePropositionReqData = ({ username, match, coordinates, radius }) => {
   const reqData = {
     limit: displayLimit,
     campaignParent: match.params.campaignParent,

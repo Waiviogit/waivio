@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import fetch from 'isomorphic-fetch';
+import Cookie from 'js-cookie';
 import config from './routes';
 import { getFollowingCount } from '../client/helpers/apiHelpers';
 
@@ -426,5 +427,20 @@ export const getCampaignsByGuideName = guideName =>
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
+
+export const getAuthenticatedUserMetadata = userName =>
+  fetch(`${config.apiPrefix}${config.user}/${userName}${config.userMetadata}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => _.omit(res.user_metadata, '_id'));
+
+export const updateUserMetadata = (userName, data) =>
+  fetch(`${config.apiPrefix}${config.user}/${userName}${config.userMetadata}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'PUT',
+    body: JSON.stringify({ user_metadata: data }),
+  }).then(res => res.json());
 
 export default null;

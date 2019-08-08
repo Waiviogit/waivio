@@ -11,7 +11,7 @@ import {
   getVotePercent,
   getVotingPower,
 } from '../reducers';
-import { getHasDefaultSlider, getVoteValue } from '../helpers/user';
+import { getVoteValue } from '../helpers/user';
 import './LikeSection.less';
 
 @injectIntl
@@ -29,7 +29,7 @@ class LikeSection extends React.Component {
     disabled: PropTypes.bool,
 
     intl: PropTypes.shape().isRequired,
-    sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
+    sliderMode: PropTypes.bool,
     defaultVotePercent: PropTypes.number,
     user: PropTypes.shape(),
     rewardFund: PropTypes.shape(),
@@ -37,7 +37,7 @@ class LikeSection extends React.Component {
   };
 
   static defaultProps = {
-    sliderMode: 'auto',
+    sliderMode: false,
     defaultVotePercent: 100,
     user: {},
     rewardFund: {},
@@ -55,8 +55,7 @@ class LikeSection extends React.Component {
   }
 
   componentDidMount = () => {
-    const { sliderMode, user } = this.props;
-    if (sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user))) {
+    if (this.props.sliderMode) {
       if (!this.state.sliderVisible) {
         this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
       }
@@ -79,8 +78,7 @@ class LikeSection extends React.Component {
   };
 
   handleLikeClick = () => {
-    const { sliderMode, user } = this.props;
-    if (sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user))) {
+    if (this.props.sliderMode) {
       if (!this.state.sliderVisible) {
         this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
       }

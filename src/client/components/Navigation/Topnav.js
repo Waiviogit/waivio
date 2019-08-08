@@ -18,7 +18,7 @@ import {
   getAutoCompleteSearchResults,
   getSearchObjectsResults,
   getNotifications,
-  getAuthenticatedUserSCMetaData,
+  getAuthenticateduserMetaData,
   getIsLoadingNotifications,
   getSearchUsersResults,
   searchObjectTypesResults,
@@ -46,7 +46,7 @@ import ModalSignUp from './ModalSignUp/ModalSignUp';
     searchByUser: getSearchUsersResults(state),
     searchByObjectType: searchObjectTypesResults(state),
     notifications: getNotifications(state),
-    userSCMetaData: getAuthenticatedUserSCMetaData(state),
+    userMetaData: getAuthenticateduserMetaData(state),
     loadingNotifications: getIsLoadingNotifications(state),
   }),
   {
@@ -70,7 +70,7 @@ class Topnav extends React.Component {
       PropTypes.arrayOf(PropTypes.shape()),
     ]),
     notifications: PropTypes.arrayOf(PropTypes.shape()),
-    userSCMetaData: PropTypes.shape(),
+    userMetaData: PropTypes.shape(),
     loadingNotifications: PropTypes.bool,
     searchAutoComplete: PropTypes.func.isRequired,
     getUpdatedSCUserMetadata: PropTypes.func.isRequired,
@@ -94,7 +94,7 @@ class Topnav extends React.Component {
     notifications: [],
     username: undefined,
     onMenuItemClick: () => {},
-    userSCMetaData: {},
+    userMetaData: {},
     loadingNotifications: false,
   };
 
@@ -228,9 +228,9 @@ class Topnav extends React.Component {
   };
 
   menuForLoggedIn = () => {
-    const { intl, username, notifications, userSCMetaData, loadingNotifications } = this.props;
+    const { intl, username, notifications, userMetaData, loadingNotifications } = this.props;
     const { searchBarActive, notificationsPopoverVisible, popoverVisible } = this.state;
-    const lastSeenTimestamp = _.get(userSCMetaData, 'notifications_last_timestamp');
+    const lastSeenTimestamp = _.get(userMetaData, 'notifications_last_timestamp');
     const notificationsCount = _.isUndefined(lastSeenTimestamp)
       ? _.size(notifications)
       : _.size(
@@ -256,7 +256,7 @@ class Topnav extends React.Component {
               title={intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })}
               mouseEnterDelay={1}
             >
-              <Link to="/editor" className="Topnav__link Topnav__link--action">
+              <Link to="/editor?newPost=true" className="Topnav__link Topnav__link--action">
                 <i className="iconfont icon-write" />
               </Link>
             </BTooltip>

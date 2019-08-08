@@ -27,6 +27,7 @@
   "getObjectFollowing": "/following_objects",
   "getObjectFollowers": "/followers",
   "user": "/user",
+  "userMetadata": "/userMetadata",
   "users": "/users",
   "feed": "/feed",
   "posts": "/posts",
