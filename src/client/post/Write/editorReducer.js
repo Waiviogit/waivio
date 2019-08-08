@@ -1,14 +1,13 @@
-import _ from 'lodash';
-import * as authActions from '../../auth/authActions';
 import * as editorActions from './editorActions';
 import * as postActions from '../postActions';
+import { GET_USER_METADATA } from '../../user/usersActions';
 
 const defaultState = {
   loading: false,
   error: null,
   success: false,
   saving: false,
-  draftPosts: {},
+  draftPosts: [],
   pendingDrafts: [],
   editedPosts: [],
   loadingImg: false,
@@ -31,12 +30,14 @@ const editor = (state = defaultState, action) => {
         ...state,
         editedPosts: state.editedPosts.filter(post => post !== action.payload),
       };
-    case authActions.LOGIN_SUCCESS:
-      if (action.meta && action.meta.refresh) return state;
-      return {
-        ...state,
-        draftPosts: _.get(action, 'payload.user_metadata.drafts', defaultState.draftPosts),
-      };
+    case GET_USER_METADATA.SUCCESS:
+      if (action.payload && action.payload.drafts) {
+        return {
+          ...state,
+          draftPosts: action.payload.drafts,
+        };
+      }
+      return state;
     case editorActions.NEW_POST:
       return {
         ...state,
@@ -74,7 +75,10 @@ const editor = (state = defaultState, action) => {
     case editorActions.SAVE_DRAFT_SUCCESS:
       return {
         ...state,
-        draftPosts: { ...state.draftPosts, [action.meta.postId]: action.payload },
+        draftPosts: [
+          ...state.draftPosts.filter(d => d.draftId !== action.meta.postId),
+          action.payload,
+        ],
         saving: false,
       };
     case editorActions.SAVE_DRAFT_ERROR:

@@ -33,7 +33,7 @@ const mapStateToProps = (state, { id }) => {
   const postState = {
     isReblogged: getRebloggedList(state).includes(post.id),
     isReblogging: getPendingReblogs(state).includes(post.id),
-    isSaved: !!getBookmarks(state)[post.id],
+    isSaved: getBookmarks(state).includes(post.id),
     isLiked: isAppend ? userVote.percent % 10 === 0 && userVote.percent > 0 : userVote.percent > 0,
     isReported: isAppend ? userVote.percent % 10 > 0 && userVote.percent > 0 : userVote.percent < 0,
     userFollowed: getFollowingList(state).includes(post.author),

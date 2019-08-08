@@ -13,7 +13,7 @@ export default class UserDynamicList extends React.Component {
     limit: PropTypes.number.isRequired,
     fetcher: PropTypes.func.isRequired,
     showAuthorizedUser: PropTypes.bool,
-    userName: PropTypes.stringd,
+    userName: PropTypes.string,
   };
   static defaultProps = {
     showAuthorizedUser: false,

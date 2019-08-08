@@ -8,7 +8,7 @@ const initialStateMock = {
   isReloading: false,
   loaded: false,
   user: {},
-  userSCMetaData: {},
+  userMetaData: {},
 };
 
 describe('authReducer', () => {

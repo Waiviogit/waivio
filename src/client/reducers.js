@@ -54,8 +54,8 @@ export const getIsLoaded = state => fromAuth.getIsLoaded(state.auth);
 export const getIsReloading = state => fromAuth.getIsReloading(state.auth);
 export const getAuthenticatedUser = state => fromAuth.getAuthenticatedUser(state.auth);
 export const getAuthenticatedUserName = state => fromAuth.getAuthenticatedUserName(state.auth);
-export const getAuthenticatedUserSCMetaData = state =>
-  fromAuth.getAuthenticatedUserSCMetaData(state.auth);
+export const getAuthenticateduserMetaData = state =>
+  fromAuth.getAuthenticateduserMetaData(state.auth);
 
 export const getPosts = state => fromPosts.getPosts(state.posts);
 export const getPostContent = (state, author, permlink) =>
@@ -98,6 +98,7 @@ export const getCommentsPendingVotes = state =>
 
 export const getBookmarks = state => fromBookmarks.getBookmarks(state.bookmarks);
 export const getPendingBookmarks = state => fromBookmarks.getPendingBookmarks(state.bookmarks);
+export const getIsBookmarksLoading = state => fromBookmarks.getIsLoading(state.bookmarks);
 
 export const getRebloggedList = state => fromReblog.getRebloggedList(state.reblog);
 export const getPendingReblogs = state => fromReblog.getPendingReblogs(state.reblog);

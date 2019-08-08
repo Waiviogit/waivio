@@ -32,6 +32,7 @@ import Campaign from './Campaign/Campaign';
 import Avatar from '../components/Avatar';
 import MapOS from '../components/Maps/Map';
 import Manage from './Manage/Manage';
+import RewardBreadcrumb from './RewardsBreadcrumb/RewardBreadcrumb';
 
 @withRouter
 @injectIntl
@@ -65,11 +66,12 @@ class Rewards extends React.Component {
 
   state = {
     loading: false,
+    loadingCampaigns: false,
     loadingAssignDiscard: false,
     hasMore: true,
     propositions: [],
     sponsors: [],
-    radius: 5000000,
+    radius: 50000,
     coordinates: [],
     campaignsTypes: [],
     isModalDetailsOpen: false,
@@ -84,22 +86,20 @@ class Rewards extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (
-      (nextProps.match.params.filterKey !== this.props.match.params.filterKey ||
-        nextProps.match.params.campaignParent !== this.props.match.params.campaignParent) &&
-      this.props.username
-    ) {
-      ApiClient.getPropositions(
-        preparePropositionReqData(nextProps, this.state.coordinates, this.state.radius),
-      ).then(data => {
-        this.setState({
-          propositions: data.campaigns,
-          hasMore: data.hasMore,
-          sponsors: data.sponsors,
-          campaignsTypes: data.campaigns_types,
+    const { match } = nextProps;
+    if (match.params.filterKey !== 'create') {
+      const { username } = this.props;
+      const { radius, coordinates } = this.state;
+      if (
+        (match.params.filterKey !== this.props.match.params.filterKey ||
+          nextProps.match.params.campaignParent !== this.props.match.params.campaignParent) &&
+        this.props.username
+      ) {
+        this.setState({ loadingCampaigns: true }, () => {
+          this.getPropositions({ username, match, coordinates, radius });
         });
-      });
-    }
+      }
+    } else this.setState({ propositions: [{}] }); // for map, not equal propositions
   }
 
   getRequiredObjects = () =>
@@ -127,6 +127,39 @@ class Rewards extends React.Component {
     }
   };
 
+  getCampaignsLayout = (
+    hasMore,
+    IsRequiredObjectWrap,
+    loading,
+    filterKey,
+    username,
+    match,
+    propositions,
+  ) =>
+    !this.state.loadingCampaigns ? (
+      <React.Fragment>
+        <RewardBreadcrumb
+          tabText={this.getTextByFilterKey(this.props.intl, filterKey)}
+          filterKey={filterKey}
+          reqObject={
+            !IsRequiredObjectWrap && propositions && propositions[0]
+              ? propositions[0].required_object
+              : null
+          }
+        />
+        <ReduxInfiniteScroll
+          elementIsScrollable={false}
+          hasMore={hasMore}
+          loadMore={this.handleLoadMore}
+          loadingMore={loading}
+          loader={<Loading />}
+        >
+          {this.campaignsLayoutWrapLayout(IsRequiredObjectWrap, filterKey, username, match)}
+        </ReduxInfiniteScroll>
+      </React.Fragment>
+    ) : (
+      <Loading />
+    );
   setFilterValue = (filter, key) => {
     const activefilters = this.state.activeFilters;
     if (_.includes(activefilters[key], filter)) {
@@ -137,35 +170,35 @@ class Rewards extends React.Component {
     this.setState({ activefilters });
   };
 
-  setCoordinates = () => {
-    if (_.isEmpty(this.state.coordinates)) {
-      ApiClient.getPropositions(
-        preparePropositionReqData(
-          this.props,
-          [+this.props.userLocation.lat, +this.props.userLocation.lon],
-          this.state.radius,
-        ),
-      ).then(data => {
-        this.setState({
-          propositions: data.campaigns,
-          hasMore: data.hasMore,
-          sponsors: data.sponsors,
-          campaignsTypes: data.campaigns_types,
-          coordinates: [+this.props.userLocation.lat, +this.props.userLocation.lon],
-        });
+  getPropositions = ({ username, match, coordinates, radius }) => {
+    ApiClient.getPropositions(
+      preparePropositionReqData({ username, match, coordinates, radius }),
+    ).then(data => {
+      this.setState({
+        propositions: data.campaigns,
+        hasMore: data.hasMore,
+        sponsors: data.sponsors,
+        campaignsTypes: data.campaigns_types,
+        coordinates,
+        radius,
+        loadingCampaigns: false,
+        loading: false,
       });
-    } else
-      ApiClient.getPropositions(preparePropositionReqData(this.props, [], this.state.radius)).then(
-        data => {
-          this.setState({
-            propositions: data.campaigns,
-            hasMore: data.hasMore,
-            sponsors: data.sponsors,
-            campaignsTypes: data.campaigns_types,
-            coordinates: [],
-          });
-        },
-      );
+    });
+  };
+
+  setCoordinates = () => {
+    const { username, match } = this.props;
+    const { radius, coordinates } = this.state;
+    this.setState({ loadingCampaigns: true });
+    if (_.isEmpty(coordinates)) {
+      this.getPropositions({
+        username,
+        match,
+        coordinates: [+this.props.userLocation.lat, +this.props.userLocation.lon],
+        radius,
+      });
+    } else this.getPropositions({ username, match, coordinates: [], radius });
   };
 
   // For Propositions
@@ -245,28 +278,30 @@ class Rewards extends React.Component {
   campaignsLayoutWrapLayout = (IsRequiredObjectWrap, filterKey, userName) => {
     const { propositions, isModalDetailsOpen, loadingAssignDiscard } = this.state;
     const { intl } = this.props;
+    let tmp = 0;
     if (_.size(propositions) !== 0) {
       if (IsRequiredObjectWrap) {
-        return _.map(
-          propositions,
-          proposition =>
+        return _.map(propositions, proposition => {
+          tmp += 1;
+          return (
             proposition &&
             proposition.required_object && (
               <Campaign
                 proposition={proposition}
                 filterKey={filterKey}
-                key={`${proposition.required_object.author_permlink}${
+                key={`${tmp}${proposition.required_object.author_permlink}${
                   proposition.required_object.createdAt
                 }`}
                 userName={userName}
               />
-            ),
-        );
+            )
+          );
+        });
       }
       return _.map(propositions, proposition =>
-        _.map(
-          proposition.objects,
-          wobj =>
+        _.map(proposition.objects, wobj => {
+          tmp += 1;
+          return (
             wobj.object &&
             wobj.object.author_permlink && (
               <Proposition
@@ -277,13 +312,14 @@ class Rewards extends React.Component {
                 discardProposition={this.discardProposition}
                 authorizedUserName={userName}
                 loading={loadingAssignDiscard}
-                key={`${proposition._id} ${wobj.object.author_permlink}`}
+                key={`${tmp}${wobj.object.author_permlink}`}
                 isModalDetailsOpen={isModalDetailsOpen}
                 toggleModal={this.toggleModal}
                 assigned={wobj.assigned}
               />
-            ),
-        ),
+            )
+          );
+        }),
       );
     }
     return `${intl.formatMessage(
@@ -297,18 +333,15 @@ class Rewards extends React.Component {
   };
 
   handleLoadMore = () => {
-    const { propositions, hasMore } = this.state;
+    const { propositions, hasMore, radius, coordinates } = this.state;
+    const { username, match } = this.props;
     if (hasMore && this.props.username) {
       this.setState(
         {
           loading: true,
         },
         () => {
-          const reqData = preparePropositionReqData(
-            this.props,
-            this.state.coordinates,
-            this.state.radius,
-          );
+          const reqData = preparePropositionReqData({ username, match, coordinates, radius });
           reqData.skip = propositions.length;
           ApiClient.getPropositions(reqData).then(newPropositions =>
             this.setState({
@@ -326,7 +359,7 @@ class Rewards extends React.Component {
 
   campaignItemsWrap = location => {
     const { match, username } = this.props;
-    const { loading, hasMore } = this.state;
+    const { loading, hasMore, propositions } = this.state;
     const filterKey = match.params.filterKey;
     const IsRequiredObjectWrap = !match.params.campaignParent;
     if (location.pathname === '/rewards/create') {
@@ -334,16 +367,14 @@ class Rewards extends React.Component {
     } else if (location.pathname === '/rewards/manage') {
       return <Manage userName={username} />;
     }
-    return (
-      <ReduxInfiniteScroll
-        elementIsScrollable={false}
-        hasMore={hasMore}
-        loadMore={this.handleLoadMore}
-        loadingMore={loading}
-        loader={<Loading />}
-      >
-        {this.campaignsLayoutWrapLayout(IsRequiredObjectWrap, filterKey, username, match)}
-      </ReduxInfiniteScroll>
+    return this.getCampaignsLayout(
+      hasMore,
+      IsRequiredObjectWrap,
+      loading,
+      filterKey,
+      username,
+      match,
+      propositions,
     );
   };
 
@@ -377,9 +408,7 @@ class Rewards extends React.Component {
           {location.pathname !== '/rewards/manage' ? (
             <Affix className="rightContainer leftContainer__user" stickPosition={122}>
               <div className="right">
-                {// this.state.withMap &&
-                // !_.isEmpty(type.related_wobjects) &&
-                !_.isEmpty(this.props.userLocation) && !isCreate && (
+                {!_.isEmpty(this.props.userLocation) && !isCreate && (
                   <React.Fragment>
                     <div className="RewardsHeader-wrap">
                       <div className="RewardsHeader__top-line">

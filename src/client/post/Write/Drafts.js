@@ -29,7 +29,7 @@ class Drafts extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     reloading: PropTypes.bool,
-    draftPosts: PropTypes.shape().isRequired,
+    draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     pendingDrafts: PropTypes.arrayOf(PropTypes.string),
     reload: PropTypes.func,
   };
@@ -63,7 +63,7 @@ class Drafts extends React.Component {
     const { checked } = e.target;
 
     this.setState({
-      selectedDrafts: checked ? Object.keys(draftPosts) : [],
+      selectedDrafts: checked ? draftPosts.map(d => d.draftId) : [],
     });
   }
 
@@ -88,11 +88,8 @@ class Drafts extends React.Component {
   render() {
     const { intl, reloading, draftPosts, pendingDrafts } = this.props;
     const { showModalDelete, selectedDrafts } = this.state;
-    const sortedDraftPosts = _.sortBy(
-      _.map(draftPosts, (draft, id) => ({ ...draft, id })),
-      draft => new Date(draft.lastUpdated),
-    ).reverse();
-    const noDrafts = !reloading && _.size(draftPosts) === 0;
+    const sortedDraftPosts = _.sortBy(draftPosts, draft => new Date(draft.lastUpdated)).reverse();
+    const noDrafts = !reloading && draftPosts.length === 0;
 
     return (
       <div className="Drafts shifted">
@@ -121,7 +118,7 @@ class Drafts extends React.Component {
             {!reloading && _.size(draftPosts) !== 0 && (
               <div className="Drafts__toolbar">
                 <Checkbox
-                  checked={_.isEqual(selectedDrafts, Object.keys(draftPosts))}
+                  checked={_.isEqual(selectedDrafts, draftPosts.map(d => d.draftId))}
                   onChange={this.handleCheckAll}
                 />
                 <div>
@@ -147,11 +144,11 @@ class Drafts extends React.Component {
             {!reloading &&
               _.map(sortedDraftPosts, draft => (
                 <DraftRow
-                  key={draft.id}
+                  key={draft.draftId}
                   draft={draft}
-                  id={draft.id}
-                  selected={selectedDrafts.includes(draft.id)}
-                  pending={pendingDrafts.includes(draft.id)}
+                  id={draft.draftId}
+                  selected={selectedDrafts.includes(draft.draftId)}
+                  pending={pendingDrafts.includes(draft.draftId)}
                   onCheck={this.handleCheck}
                 />
               ))}

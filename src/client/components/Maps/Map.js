@@ -37,7 +37,7 @@ class MapOS extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (_.size(nextProps.wobjects) !== _.size(this.props.wobjects)) {
+    if (!_.isEqual(nextProps.wobjects, this.props.wobjects)) {
       this.setState({
         markersLayout: this.getMarkers(nextProps),
         center: [+this.props.userLocation.lat, +this.props.userLocation.lon],
