@@ -47,6 +47,7 @@ const getLinkedObjects = contentStateRaw => {
     saving: getIsEditorSaving(state),
     imageLoading: getIsImageUploading(state),
     draftId: new URLSearchParams(props.location.search).get('draft'),
+    isNewPost: new URLSearchParams(props.location.search).get('newPost'),
     upvoteSetting: getUpvoteSetting(state),
   }),
   {
@@ -57,9 +58,12 @@ const getLinkedObjects = contentStateRaw => {
 class EditPost extends Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
+    history: PropTypes.shape().isRequired,
+    location: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
     locale: PropTypes.string.isRequired,
     draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+    isNewPost: PropTypes.bool.isRequired,
     // upvoteSetting: PropTypes.bool,
     draftId: PropTypes.string,
     publishing: PropTypes.bool,
@@ -96,24 +100,26 @@ class EditPost extends Component {
 
   componentWillReceiveProps(nextProps) {
     const differentDraft = this.props.draftId !== nextProps.draftId;
-    if (differentDraft) {
+    if (differentDraft || (!this.props.isNewPost && nextProps.isNewPost)) {
       const init = getInitialValues(nextProps);
-      this.setState(init.state);
-      this.permlink = init.permlink;
-      this.originalBody = init.originalBody;
-      this.draftId = nextProps.draftId || uuidv4();
+      this.setState(init.state, () => {
+        this.permlink = init.permlink;
+        this.originalBody = init.originalBody;
+        this.draftId = nextProps.draftId || uuidv4();
+      });
     }
   }
 
   handleChangeContent(rawContent) {
     const nextState = { content: toMarkdown(rawContent) };
     const linkedObjects = getLinkedObjects(rawContent);
-    if (this.state.linkedObjects.length !== linkedObjects.length) {
+    const isLinkedObjectsChanged = this.state.linkedObjects.length !== linkedObjects.length;
+    if (isLinkedObjectsChanged) {
       const objPercentage = setObjPercents(linkedObjects, this.state.objPercentage);
       nextState.linkedObjects = linkedObjects;
       nextState.objPercentage = objPercentage;
     }
-    if (this.state.content !== nextState.content) {
+    if (this.state.content !== nextState.content || isLinkedObjectsChanged) {
       this.setState(nextState, this.handleUpdateState);
     }
   }
@@ -181,14 +187,20 @@ class EditPost extends Component {
 
     const draft = this.buildPost();
     const postBody = draft.body;
-    const id = this.props.draftId;
     // Remove zero width space
     const isBodyEmpty = postBody.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().length === 0;
-
     if (isBodyEmpty) return;
 
-    const redirect = id !== this.draftId;
+    const id = this.props.draftId;
+    const redirect = id && id !== this.draftId;
+
     this.props.saveDraft(draft, redirect, this.props.intl);
+
+    if (this.props.isNewPost) {
+      this.setState({ draftContent: { title: draft.title, body: draft.body } }, () =>
+        this.props.history.push({ pathname: this.props.location.pathname, search: '' }),
+      );
+    }
   }, 1500);
 
   render() {
@@ -201,7 +213,7 @@ class EditPost extends Component {
       settings,
       isUpdating,
     } = this.state;
-    const { draftId, saving, publishing, imageLoading, locale } = this.props;
+    const { saving, publishing, imageLoading, locale, draftPosts } = this.props;
     return (
       <div className="shifted">
         <div className="post-layout container">
@@ -212,7 +224,7 @@ class EditPost extends Component {
               locale={locale === 'auto' ? 'en-US' : locale}
               onChange={this.handleChangeContent}
             />
-            {draftId && (
+            {draftPosts.some(d => d.draftId === this.draftId) && (
               <div className="edit-post__saving-badge">
                 {saving ? (
                   <Badge status="error" text="saving" />
