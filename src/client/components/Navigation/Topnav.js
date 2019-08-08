@@ -448,7 +448,6 @@ class Topnav extends React.Component {
   }
 
   handleOnChangeForAutoComplete(value, data) {
-    console.log('DATA', value, data);
     if (
       data.props.marker === Topnav.markers.TYPE ||
       data.props.marker === Topnav.markers.USER ||
