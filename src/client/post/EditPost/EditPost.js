@@ -4,7 +4,7 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Badge } from 'antd';
-import { debounce, has, isEqual, kebabCase, throttle, uniqBy } from 'lodash';
+import { debounce, has, kebabCase, throttle, uniqBy } from 'lodash';
 import uuidv4 from 'uuid/v4';
 import requiresLogin from '../../auth/requiresLogin';
 import {
@@ -107,14 +107,15 @@ class EditPost extends Component {
 
   handleChangeContent(rawContent) {
     const nextState = { content: toMarkdown(rawContent) };
-    this.handleUpdateState(nextState.content);
     const linkedObjects = getLinkedObjects(rawContent);
     if (this.state.linkedObjects.length !== linkedObjects.length) {
       const objPercentage = setObjPercents(linkedObjects, this.state.objPercentage);
       nextState.linkedObjects = linkedObjects;
       nextState.objPercentage = objPercentage;
     }
-    this.setState(nextState);
+    if (this.state.content !== nextState.content) {
+      this.setState(nextState, this.handleUpdateState);
+    }
   }
 
   handleTopicsChange = topics => this.setState({ topics }, this.handleUpdateState);
@@ -173,10 +174,7 @@ class EditPost extends Component {
     return postData;
   }
 
-  handleUpdateState = nextContent => {
-    if (isEqual(this.state.content, nextContent)) return;
-    throttle(this.saveDraft, 200, { leading: false, trailing: true })();
-  };
+  handleUpdateState = () => throttle(this.saveDraft, 200, { leading: false, trailing: true })();
 
   saveDraft = debounce(() => {
     if (this.props.saving) return;
