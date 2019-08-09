@@ -58,10 +58,10 @@ export const toggleBookmarkMetadata = (userName, postId) =>
     )
     .then(resp => resp.user_metadata.bookmarks);
 
-export const saveNotificationsLastTimestamp = lastTimestamp =>
-  getMetadata()
+export const saveNotificationsLastTimestamp = (lastTimestamp, userName) =>
+  getMetadata(userName)
     .then(metadata =>
-      SteemConnect.updateUserMetadata({
+      updateUserMetadata(userName, {
         ...metadata,
         notifications_last_timestamp: lastTimestamp,
       }),

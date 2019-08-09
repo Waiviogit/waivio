@@ -47,7 +47,7 @@ const getLinkedObjects = contentStateRaw => {
     saving: getIsEditorSaving(state),
     imageLoading: getIsImageUploading(state),
     draftId: new URLSearchParams(props.location.search).get('draft'),
-    isNewPost: new URLSearchParams(props.location.search).get('newPost'),
+    isNewPost: new URLSearchParams(props.location.search).get('newPost') === 'true',
     upvoteSetting: getUpvoteSetting(state),
   }),
   {
@@ -63,7 +63,7 @@ class EditPost extends Component {
     user: PropTypes.shape().isRequired,
     locale: PropTypes.string.isRequired,
     draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-    isNewPost: PropTypes.bool.isRequired,
+    isNewPost: PropTypes.bool,
     // upvoteSetting: PropTypes.bool,
     draftId: PropTypes.string,
     publishing: PropTypes.bool,
@@ -78,6 +78,7 @@ class EditPost extends Component {
     publishing: false,
     saving: false,
     imageLoading: false,
+    isNewPost: false,
     createPost: () => {},
     saveDraft: () => {},
   };

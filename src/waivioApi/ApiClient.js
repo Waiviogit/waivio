@@ -418,6 +418,17 @@ export const createCampaign = data =>
       .catch(error => reject(error));
   });
 
+export const getCampaignsByGuideName = guideName =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.campaigns}${config.dashboard}/${guideName}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export const getAuthenticatedUserMetadata = userName =>
   fetch(`${config.apiPrefix}${config.user}/${userName}${config.userMetadata}`, {
     headers: { ...headers, 'access-token': Cookie.get('access_token') },

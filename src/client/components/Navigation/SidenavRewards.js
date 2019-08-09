@@ -104,6 +104,14 @@ export default class SidenavRewards extends React.Component {
                   })}
                 </NavLink>
               </li>
+              <li>
+                <NavLink to={`/rewards/manage`} activeClassName="Sidenav__item--active">
+                  {intl.formatMessage({
+                    id: 'manage',
+                    defaultMessage: `Manage`,
+                  })}
+                </NavLink>
+              </li>
             </React.Fragment>
           ) : (
             <span className="RewardsBlock-logIn">
