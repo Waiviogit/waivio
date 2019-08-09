@@ -428,13 +428,18 @@ export const getCampaignsByGuideName = guideName =>
       .catch(error => reject(error));
   });
 
-export const getAuthenticatedUserMetadata = userName =>
-  fetch(`${config.apiPrefix}${config.user}/${userName}${config.userMetadata}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+export const getAuthenticatedUserMetadata = (
+  userName,
+  accessToken = Cookie.get('access_token'),
+) => {
+  const { apiPrefix, user, userMetadata } = config;
+  return fetch(`${apiPrefix}${user}/${userName}${userMetadata}`, {
+    headers: { ...headers, 'access-token': accessToken },
     method: 'GET',
   })
     .then(res => res.json())
     .then(res => _.omit(res.user_metadata, '_id'));
+};
 
 export const updateUserMetadata = (userName, data) =>
   fetch(`${config.apiPrefix}${config.user}/${userName}${config.userMetadata}`, {
@@ -442,5 +447,10 @@ export const updateUserMetadata = (userName, data) =>
     method: 'PUT',
     body: JSON.stringify({ user_metadata: data }),
   }).then(res => res.json());
+
+// injected as extra argument in Redux Thunk
+export const waivioAPI = {
+  getAuthenticatedUserMetadata,
+};
 
 export default null;

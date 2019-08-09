@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { getFeed, getPosts, getPendingBookmarks, getIsBookmarksLoading } from '../reducers';
+import { getFeed, getPosts, getPendingBookmarks, getIsReloading } from '../reducers';
 import Feed from '../feed/Feed';
 import {
   getFeedFromState,
   getFeedLoadingFromState,
   getFeedHasMoreFromState,
 } from '../helpers/stateHelpers';
-import { getUserMetadata } from '../user/usersActions';
+import { reload } from '../auth/authActions';
 import { getBookmarks } from '../feed/feedActions';
 import { showPostModal } from '../app/appActions';
 import Affix from '../components/Utils/Affix';
@@ -26,30 +26,30 @@ import PostModal from '../post/PostModalContainer';
     feed: getFeed(state),
     posts: getPosts(state),
     pendingBookmarks: getPendingBookmarks(state),
-    isBookmarksLoading: getIsBookmarksLoading(state),
+    reloading: getIsReloading(state),
   }),
-  { getBookmarks, getUserMetadata, showPostModal },
+  { getBookmarks, reload, showPostModal },
 )
 export default class Bookmarks extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     feed: PropTypes.shape().isRequired,
     showPostModal: PropTypes.func.isRequired,
-    isBookmarksLoading: PropTypes.bool,
+    reloading: PropTypes.bool,
     pendingBookmarks: PropTypes.arrayOf(PropTypes.string),
     getBookmarks: PropTypes.func,
-    getUserMetadata: PropTypes.func,
+    reload: PropTypes.func,
   };
 
   static defaultProps = {
-    isBookmarksLoading: false,
+    reloading: false,
     pendingBookmarks: [],
     getBookmarks: () => {},
-    getUserMetadata: () => {},
+    reload: () => {},
   };
 
   componentDidMount() {
-    this.props.getUserMetadata().then(() => this.props.getBookmarks());
+    this.props.reload().then(() => this.props.getBookmarks());
   }
 
   componentWillReceiveProps(nextProps) {
@@ -59,15 +59,15 @@ export default class Bookmarks extends React.Component {
   }
 
   render() {
-    const { intl, isBookmarksLoading, feed } = this.props;
+    const { intl, reloading, feed } = this.props;
 
     const content = getFeedFromState('bookmarks', 'all', feed);
-    const isFetching = getFeedLoadingFromState('bookmarks', 'all', feed) || isBookmarksLoading;
+    const isFetching = getFeedLoadingFromState('bookmarks', 'all', feed) || reloading;
     const hasMore = getFeedHasMoreFromState('bookmarks', 'all', feed);
     const loadContentAction = () => null;
     const loadMoreContentAction = () => null;
 
-    const noBookmarks = !isBookmarksLoading && !isFetching && !content.length;
+    const noBookmarks = !reloading && !isFetching && !content.length;
 
     return (
       <div className="shifted">
