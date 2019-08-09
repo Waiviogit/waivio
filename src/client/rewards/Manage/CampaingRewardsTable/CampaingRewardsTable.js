@@ -8,6 +8,8 @@ import './CampaingRewardsTable.less';
 
 const CampaingRewardsTable = props => {
   const { intl, campaigns } = props;
+  const threeStarSings = '***';
+  const fourStarSings = '****';
   const checked = campaigns.status === 'active' || campaigns.status === 'payed';
   return (
     <table className="Camping-rewards">
@@ -26,7 +28,7 @@ const CampaingRewardsTable = props => {
             })}
           </th>
           <th className="Camping-rewards basicWidth" rowSpan="3">
-            {intl.formatMessage({ id: 'editCampaning', defaultMessage: `Edit***` })}
+            {intl.formatMessage({ id: 'edit', defaultMessage: `Edit` }) + threeStarSings}
           </th>
           <th className="Camping-rewards mediumWidth" rowSpan="3">
             {intl.formatMessage({
@@ -41,10 +43,11 @@ const CampaingRewardsTable = props => {
             })}
           </th>
           <th className="Camping-rewards hide-element" colSpan="2">
-            {intl.formatMessage({ id: 'budgetTarget', defaultMessage: `Budget target****` })}
+            {intl.formatMessage({ id: 'budget_target', defaultMessage: `Budget target` }) +
+              fourStarSings}
           </th>
           <th className="Camping-rewards hide-element" colSpan="3">
-            {intl.formatMessage({ id: 'currentMonth', defaultMessage: `Current month` })}
+            {intl.formatMessage({ id: 'current_month', defaultMessage: `Current month` })}
           </th>
           <th className="Camping-rewards mediumWidth hide-element" rowSpan="3">
             {intl.formatMessage({ id: 'remaining', defaultMessage: `Remaining` })}
@@ -56,7 +59,7 @@ const CampaingRewardsTable = props => {
             <p>(SBD)</p>
           </th>
           <th className="Camping-rewards basicWidth hide-element" rowSpan="2">
-            <p>{intl.formatMessage({ id: 'rewardCampaning', defaultMessage: `Reward` })}</p>
+            <p>{intl.formatMessage({ id: 'reward', defaultMessage: `Reward` })}</p>
             <p>(SBD)</p>
           </th>
           <th className="Camping-rewards basicWidth hide-element" rowSpan="2">

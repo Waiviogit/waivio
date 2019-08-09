@@ -47,25 +47,29 @@ class Manage extends React.Component {
 
   balanceContent = () => {
     const { intl } = this.props;
+    const oneStarSign = '* ';
+    const twoStarSigns = '** ';
     return (
       <React.Fragment>
         <div>
           {intl.formatMessage({
-            id: 'campaignsBeSuspended',
+            id: 'campaigns_be_suspended',
             defaultMessage: `All campaigns will be suspended if:`,
           })}
         </div>
         <div>
-          {intl.formatMessage({
-            id: 'accountsPayableExeed',
-            defaultMessage: `* accounts payable exeed 30 days`,
-          })}
+          {oneStarSign +
+            intl.formatMessage({
+              id: 'accounts_payable_exeed',
+              defaultMessage: `accounts payable exeed 30 days`,
+            })}
         </div>
         <div>
-          {intl.formatMessage({
-            id: 'remainingBalanceIsNotSufficient',
-            defaultMessage: `** the remaining balance i snot sufficient to cover outstanding obligations`,
-          })}
+          {twoStarSigns +
+            intl.formatMessage({
+              id: 'remaining_balance_is_not_sufficient',
+              defaultMessage: `the remaining balance i snot sufficient to cover outstanding obligations`,
+            })}
         </div>
       </React.Fragment>
     );
@@ -73,19 +77,23 @@ class Manage extends React.Component {
 
   rewardsCampaignContent = () => {
     const { intl } = this.props;
+    const threeStarSigns = '*** ';
+    const fourStarSigns = '**** ';
     return (
       <React.Fragment>
         <div>
-          {intl.formatMessage({
-            id: 'onlyInactiveCampaogns',
-            defaultMessage: `*** Only inactive campaogns can be edited`,
-          })}
+          {threeStarSigns +
+            intl.formatMessage({
+              id: 'only_inactive_campaogns',
+              defaultMessage: `Only inactive campaogns can be edited`,
+            })}
         </div>
         <div>
-          {intl.formatMessage({
-            id: 'campaignBudgetsCalcualted',
-            defaultMessage: `**** Campaign budgets calcualted from the 1st day of each month`,
-          })}
+          {fourStarSigns +
+            intl.formatMessage({
+              id: 'campaign_budgets_calcualted',
+              defaultMessage: `Campaign budgets calcualted from the 1st day of each month`,
+            })}
         </div>
       </React.Fragment>
     );
