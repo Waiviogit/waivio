@@ -38,8 +38,7 @@ export const login = () => (dispatch, getState, { steemConnectAPI, waivioAPI }) 
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(
           scUserData.name,
           steemConnectAPI.options.accessToken,
-        ); // eslint-disable-line
-        console.log('userMetaData -->', userMetaData);
+        );
         resolve({ ...scUserData, userMetaData });
       } catch (e) {
         reject(e);
