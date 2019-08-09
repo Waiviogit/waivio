@@ -1,5 +1,7 @@
+import { get } from 'lodash';
 import * as editorActions from './editorActions';
 import * as postActions from '../postActions';
+import * as authActions from '../../auth/authActions';
 import { GET_USER_METADATA } from '../../user/usersActions';
 
 const defaultState = {
@@ -29,6 +31,12 @@ const editor = (state = defaultState, action) => {
       return {
         ...state,
         editedPosts: state.editedPosts.filter(post => post !== action.payload),
+      };
+    case authActions.LOGIN_SUCCESS:
+      if (action.meta && action.meta.refresh) return state;
+      return {
+        ...state,
+        draftPosts: get(action, ['payload', 'userMetaData', 'drafts'], defaultState.draftPosts),
       };
     case GET_USER_METADATA.SUCCESS:
       if (action.payload && action.payload.drafts) {
