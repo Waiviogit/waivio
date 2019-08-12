@@ -19,6 +19,7 @@ const initialState = {
   cryptosPriceHistory: {},
   showPostModal: false,
   currentShownPost: {},
+  screenSize: 'large',
 };
 
 export default (state = initialState, action) => {

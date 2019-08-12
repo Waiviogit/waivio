@@ -205,29 +205,31 @@ export default class ObjectTypePage extends React.Component {
             </div>
           </Affix>
           <div className="center">
-            {type.name && (
-              <div className="ObjectTypePage__title">
-                {`${intl.formatMessage({
-                  id: 'type',
-                  defaultMessage: 'Type',
-                })}: ${type.name}`}
-              </div>
-            )}
-            {(_.size(this.state.activefilters.tagCloud) > 0 ||
-              _.size(this.state.activefilters.ratings) > 0 ||
-              _.size(this.state.activefilters.map) > 0) && (
-              <div className="ObjectTypePage__tags">
-                {intl.formatMessage({
-                  id: 'filters',
-                  defaultMessage: 'Filters',
-                })}
-                :
-                <ObjectTypeFiltersTags
-                  activefilters={this.state.activefilters}
-                  setFilterValue={this.setFilterValue}
-                />
-              </div>
-            )}
+            <div className="ObjectTypePage__filters">
+              {type.name && (
+                <div className="ObjectTypePage__title">
+                  {`${intl.formatMessage({
+                    id: 'type',
+                    defaultMessage: 'Type',
+                  })}: ${type.name}`}
+                </div>
+              )}
+              {(_.size(this.state.activefilters.tagCloud) > 0 ||
+                _.size(this.state.activefilters.ratings) > 0 ||
+                _.size(this.state.activefilters.map) > 0) && (
+                <div className="ObjectTypePage__tags">
+                  {intl.formatMessage({
+                    id: 'filters',
+                    defaultMessage: 'Filters',
+                  })}
+                  :
+                  <ObjectTypeFiltersTags
+                    activefilters={this.state.activefilters}
+                    setFilterValue={this.setFilterValue}
+                  />
+                </div>
+              )}
+            </div>
             {/* eslint-disable-next-line no-nested-ternary */}
             {!_.isEmpty(this.props.type.related_wobjects) ? (
               <ListObjectsByType
