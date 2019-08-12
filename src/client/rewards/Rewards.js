@@ -84,7 +84,7 @@ class Rewards extends React.Component {
     campaignsTypes: [],
     isModalDetailsOpen: false,
     objectDetails: {},
-    activeFilters: { sponsors: [], campaignsTypes: [] },
+    activeFilters: { guideNames: [], types: [] },
   };
 
   componentDidMount() {
@@ -97,14 +97,14 @@ class Rewards extends React.Component {
     const { match } = nextProps;
     if (match.params.filterKey !== 'create') {
       const { username } = this.props;
-      const { radius, coordinates, sort } = this.state;
+      const { radius, coordinates, sort, activeFilters } = this.state;
       if (
         (match.params.filterKey !== this.props.match.params.filterKey ||
           nextProps.match.params.campaignParent !== this.props.match.params.campaignParent) &&
         this.props.username
       ) {
         this.setState({ loadingCampaigns: true }, () => {
-          this.getPropositions({ username, match, coordinates, radius, sort });
+          this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
         });
       }
     } else this.setState({ propositions: [{}] }); // for map, not equal propositions
@@ -180,6 +180,7 @@ class Rewards extends React.Component {
     ) : (
       <Loading />
     );
+
   setFilterValue = (filter, key) => {
     const activefilters = this.state.activeFilters;
     if (_.includes(activefilters[key], filter)) {
@@ -190,9 +191,17 @@ class Rewards extends React.Component {
     this.setState({ activefilters });
   };
 
-  getPropositions = ({ username, match, coordinates, radius, sort }) => {
+  getPropositions = ({ username, match, coordinates, radius, sort, activeFilters }) => {
     ApiClient.getPropositions(
-      preparePropositionReqData({ username, match, coordinates, radius, sort }),
+      preparePropositionReqData({
+        username,
+        match,
+        coordinates,
+        radius,
+        sort,
+        guideNames: activeFilters.guideNames,
+        types: activeFilters.types,
+      }),
     ).then(data => {
       this.setState({
         propositions: data.campaigns,
@@ -210,7 +219,7 @@ class Rewards extends React.Component {
 
   setCoordinates = () => {
     const { username, match } = this.props;
-    const { radius, coordinates, sort } = this.state;
+    const { radius, coordinates, sort, activeFilters } = this.state;
     this.setState({ loadingCampaigns: true });
     this.getPropositions({
       username,
@@ -220,14 +229,15 @@ class Rewards extends React.Component {
         : [],
       radius,
       sort,
+      activeFilters,
     });
   };
 
   handleSortChange = sort => {
-    const { radius, coordinates } = this.state;
+    const { radius, coordinates, activeFilters } = this.state;
     const { username, match } = this.props;
     this.setState({ loadingCampaigns: true });
-    this.getPropositions({ username, match, coordinates, radius, sort });
+    this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
   };
 
   // For Propositions
@@ -362,7 +372,7 @@ class Rewards extends React.Component {
   };
 
   handleLoadMore = () => {
-    const { propositions, hasMore, radius, coordinates, sort } = this.state;
+    const { propositions, hasMore, radius, coordinates, sort, activeFilters } = this.state;
     const { username, match } = this.props;
     if (hasMore && this.props.username) {
       this.setState(
@@ -379,6 +389,8 @@ class Rewards extends React.Component {
               propositions: this.state.propositions.concat(newPropositions.campaigns),
               sponsors: newPropositions.sponsors,
               campaignsTypes: newPropositions.campaigns_types,
+              guideNames: activeFilters.guideNames,
+              types: activeFilters.types,
             }),
           );
         },
@@ -434,7 +446,7 @@ class Rewards extends React.Component {
             </div>
           </Affix>
           <div className="center">{this.campaignItemsWrap(location)}</div>
-          {location.pathname !== '/rewards/manage' ? (
+          {location.pathname !== '/rewards/manage' && (
             <Affix className="rightContainer leftContainer__user" stickPosition={122}>
               <div className="right">
                 {!_.isEmpty(this.props.userLocation) && !isCreate && (
@@ -480,7 +492,7 @@ class Rewards extends React.Component {
                 )}
               </div>
             </Affix>
-          ) : null}
+          )}
         </div>
         {isModalDetailsOpen && !_.isEmpty(objectDetails) && (
           <Modal

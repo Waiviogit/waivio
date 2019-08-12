@@ -27,7 +27,7 @@ const RewardsFiltersPanel = ({ sponsors, activeFilters, setFilterValue, campaign
           })}:`}
         </div>
         {_.map(campaignsTypes, type =>
-          filterLayout(type, 'campaignsTypes', _.includes(activeFilters.campaignsTypes, type)),
+          filterLayout(type, 'types', _.includes(activeFilters.types, type)),
         )}
         <div className="RewardsFiltersPanel__title-text">
           {`${intl.formatMessage({
@@ -36,7 +36,7 @@ const RewardsFiltersPanel = ({ sponsors, activeFilters, setFilterValue, campaign
           })}:`}
         </div>
         {_.map(sponsors, sponsor =>
-          filterLayout(sponsor, 'sponsors', _.includes(activeFilters.sponsors, sponsor)),
+          filterLayout(sponsor, 'guideNames', _.includes(activeFilters.guideNames, sponsor)),
         )}
       </div>
     </div>

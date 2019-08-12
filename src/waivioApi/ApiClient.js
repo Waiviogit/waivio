@@ -358,7 +358,7 @@ export const getPropositions = ({
   userName = '',
   status,
   approved,
-  guideName,
+  guideNames,
   campaignParent,
   currentUserName,
   radius,
@@ -372,7 +372,7 @@ export const getPropositions = ({
         userName ? `&userName=${userName}` : ''
       }${approved ? `&approved=${approved}` : ''}${
         currentUserName ? `&currentUserName=${currentUserName}` : ''
-      }${status ? `&status=${status}` : ''}${guideName ? `&guideName=${guideName}` : ''}${
+      }${status ? `&status=${status}` : ''}${guideNames ? `&guideNames=${[guideNames]}` : ''}${
         campaignParent ? `&requiredObject=${campaignParent}` : ''
       }${
         withMap
@@ -384,6 +384,49 @@ export const getPropositions = ({
         method: 'GET',
       },
     )
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getPropositimons = ({
+  limit = 30,
+  skip = 0,
+  userName = '',
+  status,
+  approved,
+  guideNames,
+  types,
+  campaignParent,
+  currentUserName,
+  radius,
+  coordinates,
+  sort,
+}) =>
+  new Promise((resolve, reject) => {
+    const reqData = {
+      limit,
+      skip,
+      userName,
+      status,
+      approved,
+      guideNames,
+      types,
+      campaignParent,
+      currentUserName,
+      sort,
+    };
+
+    if (!_.isEmpty(coordinates) && radius) {
+      reqData.radius = radius;
+      reqData.coordinates = coordinates;
+    }
+
+    fetch(`${config.campaignApiPrefix}${config.campaigns}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify(reqData),
+    })
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));

@@ -139,7 +139,7 @@ export const getCoordinates = () => dispatch =>
     payload: getUserCoordinatesByIpAdress(),
   });
 
-export const assignProposition = (companyAuthor, companyPermlink, companyId, objPermlink) => (
+export const assignProposition = ({ companyAuthor, companyPermlink, companyId, objPermlink }) => (
   dispatch,
   getState,
   { steemConnectAPI },
@@ -206,7 +206,7 @@ export const activateCampaign = company => (dispatch, getState, { steemConnectAP
       author: username,
       permlink: `reserve-${'bla'}-${generatePermlink()}`,
       title: 'reserve object for rewards',
-      body: `Campaign ${company.name} was activated by ${username}`,
+      body: `Campaign ${company.name} was activated by ${username} `,
       json_metadata: JSON.stringify({
         waivioRewards: { type: 'waivio_activate_campaign', campaign_id: company.id },
       }),

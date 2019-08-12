@@ -4,7 +4,15 @@ export const rewardPostContainerData = {
   author: 'monterey',
   permlink: 'test-post',
 };
-export const preparePropositionReqData = ({ username, match, coordinates, radius, sort }) => {
+export const preparePropositionReqData = ({
+  username,
+  match,
+  coordinates,
+  radius,
+  sort,
+  types,
+  guideNames,
+}) => {
   const reqData = {
     limit: displayLimit,
     campaignParent: match.params.campaignParent,
@@ -14,6 +22,10 @@ export const preparePropositionReqData = ({ username, match, coordinates, radius
   if (coordinates && coordinates.length > 0 && radius) {
     reqData.coordinates = coordinates;
     reqData.radius = radius;
+  }
+  if (types && guideNames) {
+    reqData.types = types;
+    reqData.guideNames = guideNames;
   }
   switch (match.params.filterKey) {
     case 'active':
