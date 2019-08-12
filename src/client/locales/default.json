@@ -602,5 +602,21 @@
   "sponsors": "Sponsors",
   "search_area": "Search area",
   "map": "Map",
-  "rewards_for": "Rewards for"
+  "active": "Active",
+  "camping": "Camping",
+  "status": "Status",
+  "budget_target": "Budget target",
+  "current_month": "Current month",
+  "remaining": "Remaining",
+  "monthly": "Monthly",
+  "payable": "Payable",
+  "paid": "Paid",
+  "balanace": "Balanace",
+  "campaigns_be_suspended": "All campaigns will be suspended if:",
+  "accounts_payable_exeed": "accounts payable exeed 30 days",
+  "remaining_balance_is_not_sufficient": "the remaining balance i snot sufficient to cover outstanding obligations",
+  "only_inactive_campaogns": "Only inactive campaogns can be edited",
+  "campaign_budgets_calcualted": "Campaign budgets calcualted from the 1st day of each month",
+  "rewards_for": "Rewards for",
+  "date": "date"
 }

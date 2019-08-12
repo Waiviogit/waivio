@@ -24,7 +24,7 @@ const Proposition = ({
   intl,
   proposition,
   // authorizedUserName,
-  assignProposition,
+  // assignProposition,
   discardProposition,
   loading,
   wobj,
@@ -33,8 +33,9 @@ const Proposition = ({
 }) => {
   const proposedWobj = getClientWObj(wobj);
 
-  const assignPr = obj => {
-    assignProposition(proposition, obj);
+  // const assignPr = obj => {
+  const assignPr = () => {
+    // assignProposition({companyAuthor: 'monterey', companyPermlink: '', companyId, objPermlink});
   };
 
   const toggleModalDetails = () => {
@@ -45,43 +46,41 @@ const Proposition = ({
   };
 
   const buttonsLayout = () => {
-    if (typeof assigned === 'boolean') {
-      return !assigned ? (
-        <div className="RewarsHeader-button">
-          <Button
-            type="primary"
-            loading={loading}
-            disabled={loading}
-            onClick={() => assignPr(proposedWobj)}
-          >
-            {intl.formatMessage({
-              id: 'reserve',
-              defaultMessage: `Reserve`,
-            })}
-          </Button>
-          {`${intl.formatMessage({
-            id: 'for',
-            defaultMessage: `for`,
-          })} ${'N'} ${intl.formatMessage({
-            id: 'days',
-            defaultMessage: `days`,
-          })}`}
-        </div>
-      ) : (
+    if (typeof assigned !== 'boolean') return <div />;
+    return !assigned ? (
+      <div className="RewardsHeader-button">
         <Button
           type="primary"
           loading={loading}
           disabled={loading}
-          onClick={() => discardPr(proposedWobj)}
+          onClick={() => assignPr(proposedWobj)}
         >
           {intl.formatMessage({
-            id: 'release',
-            defaultMessage: `Release`,
+            id: 'reserve',
+            defaultMessage: `Reserve`,
           })}
         </Button>
-      );
-    }
-    return <div />;
+        {`${intl.formatMessage({
+          id: 'for',
+          defaultMessage: `for`,
+        })} ${'N'} ${intl.formatMessage({
+          id: 'days',
+          defaultMessage: `days`,
+        })}`}
+      </div>
+    ) : (
+      <Button
+        type="primary"
+        loading={loading}
+        disabled={loading}
+        onClick={() => discardPr(proposedWobj)}
+      >
+        {intl.formatMessage({
+          id: 'release',
+          defaultMessage: `Release`,
+        })}
+      </Button>
+    );
   };
 
   return (
@@ -132,7 +131,7 @@ const Proposition = ({
 Proposition.propTypes = {
   proposition: PropTypes.shape().isRequired,
   wobj: PropTypes.shape().isRequired,
-  assignProposition: PropTypes.func.isRequired,
+  // assignProposition: PropTypes.func.isRequired,
   discardProposition: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
   assigned: PropTypes.bool,

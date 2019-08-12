@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { NavLink, withRouter } from 'react-router-dom';
 import './TopNavigation.less';
 
-const TopNavigation = ({ authenticated }) =>
+const TopNavigation = ({ authenticated, location }) =>
   location && (
     <ul className="TopNavigation">
       {authenticated && (

@@ -4,8 +4,9 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Badge } from 'antd';
-import { debounce, has, isEqual, kebabCase, throttle, uniqBy } from 'lodash';
+import { debounce, has, kebabCase, throttle, uniqBy } from 'lodash';
 import uuidv4 from 'uuid/v4';
+import requiresLogin from '../../auth/requiresLogin';
 import {
   getAuthenticatedUser,
   getLocale,
@@ -35,6 +36,7 @@ const getLinkedObjects = contentStateRaw => {
 };
 
 @injectIntl
+@requiresLogin
 @withRouter
 @connect(
   (state, props) => ({
@@ -45,6 +47,7 @@ const getLinkedObjects = contentStateRaw => {
     saving: getIsEditorSaving(state),
     imageLoading: getIsImageUploading(state),
     draftId: new URLSearchParams(props.location.search).get('draft'),
+    isNewPost: new URLSearchParams(props.location.search).get('newPost') === 'true',
     upvoteSetting: getUpvoteSetting(state),
   }),
   {
@@ -55,9 +58,12 @@ const getLinkedObjects = contentStateRaw => {
 class EditPost extends Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
+    history: PropTypes.shape().isRequired,
+    location: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
     locale: PropTypes.string.isRequired,
-    draftPosts: PropTypes.shape().isRequired,
+    draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+    isNewPost: PropTypes.bool,
     // upvoteSetting: PropTypes.bool,
     draftId: PropTypes.string,
     publishing: PropTypes.bool,
@@ -72,6 +78,7 @@ class EditPost extends Component {
     publishing: false,
     saving: false,
     imageLoading: false,
+    isNewPost: false,
     createPost: () => {},
     saveDraft: () => {},
   };
@@ -94,25 +101,28 @@ class EditPost extends Component {
 
   componentWillReceiveProps(nextProps) {
     const differentDraft = this.props.draftId !== nextProps.draftId;
-    if (differentDraft) {
+    if (differentDraft || (!this.props.isNewPost && nextProps.isNewPost)) {
       const init = getInitialValues(nextProps);
-      this.setState(init.state);
-      this.permlink = init.permlink;
-      this.originalBody = init.originalBody;
-      this.draftId = nextProps.draftId || uuidv4();
+      this.setState(init.state, () => {
+        this.permlink = init.permlink;
+        this.originalBody = init.originalBody;
+        this.draftId = nextProps.draftId || uuidv4();
+      });
     }
   }
 
   handleChangeContent(rawContent) {
     const nextState = { content: toMarkdown(rawContent) };
-    this.handleUpdateState(nextState.content);
     const linkedObjects = getLinkedObjects(rawContent);
-    if (this.state.linkedObjects.length !== linkedObjects.length) {
+    const isLinkedObjectsChanged = this.state.linkedObjects.length !== linkedObjects.length;
+    if (isLinkedObjectsChanged) {
       const objPercentage = setObjPercents(linkedObjects, this.state.objPercentage);
       nextState.linkedObjects = linkedObjects;
       nextState.objPercentage = objPercentage;
     }
-    this.setState(nextState);
+    if (this.state.content !== nextState.content || isLinkedObjectsChanged) {
+      this.setState(nextState, this.handleUpdateState);
+    }
   }
 
   handleTopicsChange = topics => this.setState({ topics }, this.handleUpdateState);
@@ -152,9 +162,8 @@ class EditPost extends Component {
     postData.author = this.props.user.name || '';
     postData.permlink = this.permlink || kebabCase(postTitle);
 
-    const oldMetadata =
-      this.props.draftPosts[this.props.draftId] &&
-      this.props.draftPosts[this.props.draftId].jsonMetadata;
+    const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
+    const oldMetadata = currDraft && currDraft.jsonMetadata;
     const waivioData = {
       wobjects: linkedObjects.map(obj => ({
         objectName: obj.name,
@@ -172,25 +181,27 @@ class EditPost extends Component {
     return postData;
   }
 
-  handleUpdateState = nextContent => {
-    if (isEqual(this.state.content, nextContent)) return;
-    throttle(this.saveDraft, 200, { leading: false, trailing: true })();
-  };
+  handleUpdateState = () => throttle(this.saveDraft, 200, { leading: false, trailing: true })();
 
   saveDraft = debounce(() => {
     if (this.props.saving) return;
 
-    const postData = this.buildPost();
-    const postBody = postData.body;
-    const id = this.props.draftId;
+    const draft = this.buildPost();
+    const postBody = draft.body;
     // Remove zero width space
     const isBodyEmpty = postBody.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().length === 0;
-
     if (isBodyEmpty) return;
 
-    const redirect = id !== this.draftId;
+    const id = this.props.draftId;
+    const redirect = id && id !== this.draftId;
 
-    this.props.saveDraft({ postData, id: this.draftId }, redirect, this.props.intl);
+    this.props.saveDraft(draft, redirect, this.props.intl);
+
+    if (this.props.isNewPost) {
+      this.setState({ draftContent: { title: draft.title, body: draft.body } }, () =>
+        this.props.history.push({ pathname: this.props.location.pathname, search: '' }),
+      );
+    }
   }, 1500);
 
   render() {
@@ -203,7 +214,7 @@ class EditPost extends Component {
       settings,
       isUpdating,
     } = this.state;
-    const { draftId, saving, publishing, imageLoading, locale } = this.props;
+    const { saving, publishing, imageLoading, locale, draftPosts } = this.props;
     return (
       <div className="shifted">
         <div className="post-layout container">
@@ -214,7 +225,7 @@ class EditPost extends Component {
               locale={locale === 'auto' ? 'en-US' : locale}
               onChange={this.handleChangeContent}
             />
-            {draftId && (
+            {draftPosts.some(d => d.draftId === this.draftId) && (
               <div className="edit-post__saving-badge">
                 {saving ? (
                   <Badge status="error" text="saving" />

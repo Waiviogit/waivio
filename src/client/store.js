@@ -8,7 +8,7 @@ import history from './history';
 import errorMiddleware from './helpers/errorMiddleware';
 import createReducer from './reducers';
 
-export default steemConnectAPI => {
+export default (steemConnectAPI, waivioAPI) => {
   let preloadedState;
   if (typeof window !== 'undefined') {
     /* eslint-disable no-underscore-dangle */
@@ -24,6 +24,7 @@ export default steemConnectAPI => {
     }),
     thunk.withExtraArgument({
       steemAPI,
+      waivioAPI,
       steemConnectAPI,
       busyAPI: createBusyAPI(),
     }),

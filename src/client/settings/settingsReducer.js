@@ -1,4 +1,5 @@
 import * as settingsTypes from './settingsActions';
+import * as authTypes from '../auth/authActions';
 import { GET_USER_METADATA } from '../user/usersActions';
 import { rewardsValues } from '../../common/constants/rewards';
 
@@ -18,6 +19,12 @@ const initialState = {
 
 const settings = (state = initialState, action) => {
   switch (action.type) {
+    case authTypes.LOGIN_SUCCESS:
+      if (action.meta && action.meta.refresh) return state;
+      if (action.payload.userMetaData && action.payload.userMetaData.settings) {
+        return { ...state, ...action.payload.userMetaData.settings };
+      }
+      return state;
     case GET_USER_METADATA.SUCCESS:
       if (action.payload && action.payload.settings) {
         return { ...action.payload.settings, loading: false };

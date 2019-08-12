@@ -29,6 +29,7 @@ export default (state = initialState, action) => {
         isAuthenticated: true,
         loaded: true,
         user: action.payload.account || state.user,
+        userMetaData: action.payload.userMetaData,
       };
     case types.LOGIN_ERROR:
       return {
@@ -63,11 +64,6 @@ export default (state = initialState, action) => {
       return {
         ...state,
         userMetaData: action.payload,
-      };
-    case types.UPDATE_SC2_USER_METADATA.SUCCESS:
-      return {
-        ...state,
-        userMetaData: action.payload.user_metadata,
       };
     default:
       return state;

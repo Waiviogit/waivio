@@ -355,14 +355,15 @@ export const getTopUsers = (isRandom = false, { limit, skip } = { limit: 30, ski
 export const getPropositions = ({
   limit = 30,
   skip = 0,
-  userName,
+  userName = '',
   status,
   approved,
-  guideName,
+  guideNames,
   campaignParent,
   currentUserName,
   radius,
   coordinates,
+  sort,
 }) =>
   new Promise((resolve, reject) => {
     const withMap = !_.isEmpty(coordinates) && radius;
@@ -371,18 +372,61 @@ export const getPropositions = ({
         userName ? `&userName=${userName}` : ''
       }${approved ? `&approved=${approved}` : ''}${
         currentUserName ? `&currentUserName=${currentUserName}` : ''
-      }${status ? `&status=${status}` : ''}${guideName ? `&guideName=${guideName}` : ''}${
+      }${status ? `&status=${status}` : ''}${guideNames ? `&guideNames=${[guideNames]}` : ''}${
         campaignParent ? `&requiredObject=${campaignParent}` : ''
       }${
         withMap
           ? `&radius=${radius}&coordinates[]=${coordinates[0]}&coordinates[]=${coordinates[1]}`
           : ''
-      }`,
+      }${sort ? `&sort=${sort}` : ''}`,
       {
         headers,
         method: 'GET',
       },
     )
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getPropositimons = ({
+  limit = 30,
+  skip = 0,
+  userName = '',
+  status,
+  approved,
+  guideNames,
+  types,
+  campaignParent,
+  currentUserName,
+  radius,
+  coordinates,
+  sort,
+}) =>
+  new Promise((resolve, reject) => {
+    const reqData = {
+      limit,
+      skip,
+      userName,
+      status,
+      approved,
+      guideNames,
+      types,
+      campaignParent,
+      currentUserName,
+      sort,
+    };
+
+    if (!_.isEmpty(coordinates) && radius) {
+      reqData.radius = radius;
+      reqData.coordinates = coordinates;
+    }
+
+    fetch(`${config.campaignApiPrefix}${config.campaigns}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify(reqData),
+    })
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));
@@ -417,13 +461,29 @@ export const createCampaign = data =>
       .catch(error => reject(error));
   });
 
-export const getAuthenticatedUserMetadata = userName =>
-  fetch(`${config.apiPrefix}${config.user}/${userName}${config.userMetadata}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+export const getCampaignsByGuideName = guideName =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.campaigns}${config.dashboard}/${guideName}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getAuthenticatedUserMetadata = (
+  userName,
+  accessToken = Cookie.get('access_token'),
+) => {
+  const { apiPrefix, user, userMetadata } = config;
+  return fetch(`${apiPrefix}${user}/${userName}${userMetadata}`, {
+    headers: { ...headers, 'access-token': accessToken },
     method: 'GET',
   })
     .then(res => res.json())
     .then(res => _.omit(res.user_metadata, '_id'));
+};
 
 export const updateUserMetadata = (userName, data) =>
   fetch(`${config.apiPrefix}${config.user}/${userName}${config.userMetadata}`, {
@@ -431,5 +491,10 @@ export const updateUserMetadata = (userName, data) =>
     method: 'PUT',
     body: JSON.stringify({ user_metadata: data }),
   }).then(res => res.json());
+
+// injected as extra argument in Redux Thunk
+export const waivioAPI = {
+  getAuthenticatedUserMetadata,
+};
 
 export default null;

@@ -13,7 +13,7 @@ import {
   searchObjectTypesAutoCompete,
   resetSearchAutoCompete,
 } from '../../search/searchActions';
-import { getUpdatedSCUserMetadata } from '../../auth/authActions';
+import { getUserMetadata } from '../../user/usersActions';
 import {
   getAutoCompleteSearchResults,
   getSearchObjectsResults,
@@ -52,7 +52,7 @@ import ModalSignUp from './ModalSignUp/ModalSignUp';
   {
     searchObjectsAutoCompete,
     searchAutoComplete,
-    getUpdatedSCUserMetadata,
+    getUserMetadata,
     searchUsersAutoCompete,
     searchObjectTypesAutoCompete,
     resetSearchAutoCompete,
@@ -73,7 +73,7 @@ class Topnav extends React.Component {
     userMetaData: PropTypes.shape(),
     loadingNotifications: PropTypes.bool,
     searchAutoComplete: PropTypes.func.isRequired,
-    getUpdatedSCUserMetadata: PropTypes.func.isRequired,
+    getUserMetadata: PropTypes.func.isRequired,
     resetSearchAutoCompete: PropTypes.func.isRequired,
     /* passed props */
     username: PropTypes.string,
@@ -256,7 +256,7 @@ class Topnav extends React.Component {
               title={intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })}
               mouseEnterDelay={1}
             >
-              <Link to="/editor" className="Topnav__link Topnav__link--action">
+              <Link to="/editor?newPost=true" className="Topnav__link Topnav__link--action">
                 <i className="iconfont icon-write" />
               </Link>
             </BTooltip>
@@ -278,7 +278,7 @@ class Topnav extends React.Component {
                     currentAuthUsername={username}
                     lastSeenTimestamp={lastSeenTimestamp}
                     loadingNotifications={loadingNotifications}
-                    getUpdatedSCUserMetadata={this.props.getUpdatedSCUserMetadata}
+                    getUpdatedUserMetadata={this.props.getUserMetadata}
                   />
                 }
                 visible={notificationsPopoverVisible}
@@ -448,7 +448,6 @@ class Topnav extends React.Component {
   }
 
   handleOnChangeForAutoComplete(value, data) {
-    console.log('DATA', value, data);
     if (
       data.props.marker === Topnav.markers.TYPE ||
       data.props.marker === Topnav.markers.USER ||
