@@ -7,7 +7,7 @@ import './ObjectTypesNavigation.less';
 
 const ObjectTypesNavigation = ({ objectTypes, typeName, intl }) => (
   <ul className="ObjectTypesNavigation Sidenav">
-    <div className="RewardsBlock-title">
+    <div className="Sidenav__section-title">
       {intl.formatMessage({
         id: 'objects',
         defaultMessage: `Objects`,
@@ -15,7 +15,7 @@ const ObjectTypesNavigation = ({ objectTypes, typeName, intl }) => (
       :
     </div>
     {_.map(objectTypes, type => (
-      <li key={`${type.name}key`}>
+      <li key={`${type.name}key`} className="ttc">
         <NavLink
           to={`/objectType/${type.name}`}
           isActive={() => typeName === type.name}
