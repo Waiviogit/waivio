@@ -6,11 +6,11 @@ import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
 import { Helmet } from 'react-helmet';
 import {
-  getAuthenticatedUser,
   getAuthenticatedUserName,
   getIsAuthenticated,
   getObjectTypeState,
-  getobjectTypesState,
+  getObjectTypesList,
+  getObjectTypesLoading,
   getScreenSize,
   getUserLocation,
 } from '../reducers';
@@ -34,12 +34,12 @@ import TopNavigation from '../components/Navigation/TopNavigation';
 @connect(
   state => ({
     authenticated: getIsAuthenticated(state),
-    authenticatedUser: getAuthenticatedUser(state),
     authenticatedUserName: getAuthenticatedUserName(state),
     screenSize: getScreenSize(state),
     type: getObjectTypeState(state),
     userLocation: getUserLocation(state),
-    objectTypes: getobjectTypesState(state),
+    typesList: getObjectTypesList(state),
+    isTypesLoading: getObjectTypesLoading(state),
   }),
   {
     getObjectType,
@@ -57,7 +57,8 @@ export default class ObjectTypePage extends React.Component {
     authenticatedUserName: PropTypes.string,
     getObjectTypes: PropTypes.func.isRequired,
     getCoordinates: PropTypes.func.isRequired,
-    objectTypes: PropTypes.shape().isRequired,
+    typesList: PropTypes.shape().isRequired,
+    isTypesLoading: PropTypes.bool.isRequired,
     clearType: PropTypes.func.isRequired,
     type: PropTypes.shape(),
     userLocation: PropTypes.shape(),
@@ -87,7 +88,7 @@ export default class ObjectTypePage extends React.Component {
 
   componentDidMount() {
     this.props.getObjectType(this.props.match.params.typeName, 0, {});
-    if (_.isEmpty(this.props.objectTypes)) this.props.getObjectTypes(100, 0, 0);
+    if (_.isEmpty(this.props.typesList)) this.props.getObjectTypes(100, 0, 0);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -160,7 +161,8 @@ export default class ObjectTypePage extends React.Component {
       type,
       intl,
       screenSize,
-      objectTypes,
+      typesList,
+      isTypesLoading,
       authenticated,
       authenticatedUserName,
     } = this.props;
@@ -199,35 +201,38 @@ export default class ObjectTypePage extends React.Component {
           <Affix className="leftContainer leftContainer__user" stickPosition={122}>
             <div className="left">
               <ObjectTypesNavigation
-                objectTypes={objectTypes}
+                objectTypes={typesList}
                 typeName={this.props.match.params.typeName}
+                isLoading={isTypesLoading}
               />
             </div>
           </Affix>
           <div className="center">
-            {type.name && (
-              <div className="ObjectTypePage__title">
-                {`${intl.formatMessage({
-                  id: 'type',
-                  defaultMessage: 'Type',
-                })}: ${type.name}`}
-              </div>
-            )}
-            {(_.size(this.state.activefilters.tagCloud) > 0 ||
-              _.size(this.state.activefilters.ratings) > 0 ||
-              _.size(this.state.activefilters.map) > 0) && (
-              <div className="ObjectTypePage__tags">
-                {intl.formatMessage({
-                  id: 'filters',
-                  defaultMessage: 'Filters',
-                })}
-                :
-                <ObjectTypeFiltersTags
-                  activefilters={this.state.activefilters}
-                  setFilterValue={this.setFilterValue}
-                />
-              </div>
-            )}
+            <div className="ObjectTypePage__filters">
+              {type.name && (
+                <div className="ObjectTypePage__title">
+                  {`${intl.formatMessage({
+                    id: 'type',
+                    defaultMessage: 'Type',
+                  })}: ${type.name}`}
+                </div>
+              )}
+              {(_.size(this.state.activefilters.tagCloud) > 0 ||
+                _.size(this.state.activefilters.ratings) > 0 ||
+                _.size(this.state.activefilters.map) > 0) && (
+                <div className="ObjectTypePage__tags">
+                  {intl.formatMessage({
+                    id: 'filters',
+                    defaultMessage: 'Filters',
+                  })}
+                  :
+                  <ObjectTypeFiltersTags
+                    activefilters={this.state.activefilters}
+                    setFilterValue={this.setFilterValue}
+                  />
+                </div>
+              )}
+            </div>
             {/* eslint-disable-next-line no-nested-ternary */}
             {!_.isEmpty(this.props.type.related_wobjects) ? (
               <ListObjectsByType

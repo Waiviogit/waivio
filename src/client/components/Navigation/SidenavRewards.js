@@ -40,7 +40,7 @@ export default class SidenavRewards extends React.Component {
     return (
       <React.Fragment>
         <ul className="Sidenav">
-          <div className="RewardsBlock-title">
+          <div className="Sidenav__section-title">
             {intl.formatMessage({
               id: 'rewards',
               defaultMessage: `rewards`,
@@ -81,7 +81,7 @@ export default class SidenavRewards extends React.Component {
                   })}
                 </NavLink>
               </li>
-              <div className="RewardsBlock-title">
+              <div className="Sidenav__section-title">
                 {intl.formatMessage({
                   id: 'campaigns',
                   defaultMessage: `Campaigns`,
@@ -114,12 +114,12 @@ export default class SidenavRewards extends React.Component {
               </li>
             </React.Fragment>
           ) : (
-            <span className="RewardsBlock-logIn">
+            <span className="tc">
               {intl.formatMessage({
                 id: 'pleaseLogin',
                 defaultMessage: `For more options please`,
               })}
-              <a href={SteemConnect.getLoginURL(next)} className="RewardsBlock-innerWord">
+              <a href={SteemConnect.getLoginURL(next)} className="ml1">
                 {intl.formatMessage({
                   id: 'login',
                   defaultMessage: `log in`,
