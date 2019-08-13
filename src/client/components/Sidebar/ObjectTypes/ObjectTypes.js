@@ -7,12 +7,12 @@ import { Link } from 'react-router-dom';
 import { getObjectTypes, getMoreObjectsByType } from '../../../objectTypes/objectTypesActions';
 import './ObjectTypes.less';
 import ObjectCard from '../ObjectCard';
-import { getAuthenticatedUserName, getobjectTypesState } from '../../../reducers';
+import { getAuthenticatedUserName, getObjectTypesList } from '../../../reducers';
 import ObjectTypesLoading from './ObjectTypesLoading';
 
 @connect(
   state => ({
-    objectTypes: getobjectTypesState(state),
+    objectTypes: getObjectTypesList(state),
     userName: getAuthenticatedUserName(state),
   }),
   {

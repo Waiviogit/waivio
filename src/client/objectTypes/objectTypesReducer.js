@@ -37,4 +37,5 @@ const feed = (state = initialState, action) => {
 
 export default feed;
 
-export const getobjectTypesState = state => state.list;
+export const getObjectTypesList = state => state.list;
+export const getObjectTypesLoading = state => state.fetching;
