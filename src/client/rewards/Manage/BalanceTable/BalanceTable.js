@@ -4,18 +4,14 @@ import './BalanceTable.less';
 
 const BalanceTable = props => {
   const { intl, budgetTotal } = props;
-  const oneStarSign = '*';
-  const twoStarSigns = '**';
   return (
     <table className="BalanceTable">
       <thead>
         <tr>
           <th>{intl.formatMessage({ id: 'balanace', defaultMessage: `Balanace` })}</th>
-          <th>{intl.formatMessage({ id: 'payable', defaultMessage: `Payable` }) + oneStarSign}</th>
+          <th>{intl.formatMessage({ id: 'payable', defaultMessage: `Payable` })}*</th>
           <th>{intl.formatMessage({ id: 'reserved', defaultMessage: `Reserved` })}</th>
-          <th>
-            {intl.formatMessage({ id: 'remaining', defaultMessage: `Remaining` }) + twoStarSigns}
-          </th>
+          <th>{intl.formatMessage({ id: 'remaining', defaultMessage: `Remaining` })}**</th>
         </tr>
       </thead>
       <tbody>
