@@ -15,7 +15,7 @@ export const preparePropositionReqData = ({
 }) => {
   const reqData = {
     limit: displayLimit,
-    campaignParent: match.params.campaignParent,
+    requiredObject: match.params.campaignParent,
     currentUserName: username,
     sort,
   };

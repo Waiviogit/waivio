@@ -365,7 +365,7 @@ export const getPropositions = ({
   approved,
   guideNames,
   types,
-  campaignParent,
+  requiredObject,
   currentUserName,
   radius,
   coordinates,
@@ -377,7 +377,7 @@ export const getPropositions = ({
       skip,
       status,
       approved,
-      campaignParent,
+      requiredObject,
       currentUserName,
       sort,
     };
