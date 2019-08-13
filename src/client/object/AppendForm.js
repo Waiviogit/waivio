@@ -132,6 +132,7 @@ export default class AppendForm extends Component {
   componentDidMount = () => {
     if (this.props.sliderMode) {
       if (!this.state.sliderVisible) {
+        // eslint-disable-next-line react/no-did-mount-set-state
         this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
       }
     }

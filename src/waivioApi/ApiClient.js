@@ -360,34 +360,41 @@ export const getTopUsers = (isRandom = false, { limit, skip } = { limit: 30, ski
 export const getPropositions = ({
   limit = 30,
   skip = 0,
-  userName,
+  userName = '',
   status,
   approved,
-  guideName,
-  campaignParent,
+  guideNames,
+  types,
+  requiredObject,
   currentUserName,
   radius,
   coordinates,
+  sort,
 }) =>
   new Promise((resolve, reject) => {
-    const withMap = !_.isEmpty(coordinates) && radius;
-    fetch(
-      `${config.campaignApiPrefix}${config.campaigns}?limit=${limit}&skip=${skip}${
-        userName ? `&userName=${userName}` : ''
-      }${approved ? `&approved=${approved}` : ''}${
-        currentUserName ? `&currentUserName=${currentUserName}` : ''
-      }${status ? `&status=${status}` : ''}${guideName ? `&guideName=${guideName}` : ''}${
-        campaignParent ? `&requiredObject=${campaignParent}` : ''
-      }${
-        withMap
-          ? `&radius=${radius}&coordinates[]=${coordinates[0]}&coordinates[]=${coordinates[1]}`
-          : ''
-      }`,
-      {
-        headers,
-        method: 'GET',
-      },
-    )
+    const reqData = {
+      limit,
+      skip,
+      status,
+      approved,
+      requiredObject,
+      currentUserName,
+      sort,
+    };
+
+    if (!_.isEmpty(coordinates) && radius) {
+      reqData.radius = radius;
+      reqData.coordinates = coordinates;
+    }
+    if (!_.isEmpty(guideNames)) reqData.guideNames = guideNames;
+    if (!_.isEmpty(types)) reqData.types = types;
+    if (!_.isEmpty(userName)) reqData.userName = userName;
+
+    fetch(`${config.campaignApiPrefix}${config.campaigns}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify(reqData),
+    })
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));

@@ -15,7 +15,7 @@ import {
   getScreenSize,
 } from '../reducers';
 import OBJECT_TYPE from './const/objectTypes';
-import { getObjectInfo } from './wobjectsActions';
+import { getObject, getObjectInfo } from './wobjectsActions';
 import { resetGallery } from '../object/ObjectGallery/galleryActions';
 import Error404 from '../statics/Error404';
 import WobjHero from './WobjHero';
@@ -64,6 +64,10 @@ export default class Wobj extends React.Component {
     wobject: {},
     screenSize: 'large',
   };
+
+  static fetchData({ store, match }) {
+    return store.dispatch(getObject(match.params.name));
+  }
 
   constructor(props) {
     super(props);
@@ -123,13 +127,13 @@ export default class Wobj extends React.Component {
     if (failed) return <Error404 />;
 
     const objectName = getFieldWithMaxWeight(wobject, objectFields.name);
-    const busyHost = global.postOrigin || 'https://waiviodev.com';
-    const desc = `Posts by ${objectName}`;
+    const waivioHost = global.postOrigin || 'https://waiviodev.com';
+    const desc = `${objectName || ''}`;
     const image = getFieldWithMaxWeight(wobject, objectFields.avatar);
-    const canonicalUrl = `${busyHost}/object/${wobject.author_permlink}`;
-    const url = `${busyHost}/object/${wobject.author_permlink}`;
+    const canonicalUrl = `${waivioHost}/object/${match.params.name}`;
+    const url = `${waivioHost}/object/${match.params.name}`;
     const displayedObjectName = objectName || '';
-    const title = `Object - ${objectName || wobject.default_name || ''}`;
+    const title = `${objectName || wobject.default_name || ''}`;
 
     return (
       <div className="main-panel">
@@ -137,16 +141,14 @@ export default class Wobj extends React.Component {
           <title>{title}</title>
           <link rel="canonical" href={canonicalUrl} />
           <meta property="description" content={desc} />
-
           <meta property="og:title" content={title} />
           <meta property="og:type" content="article" />
           <meta property="og:url" content={url} />
           <meta property="og:image" content={image} />
           <meta property="og:description" content={desc} />
           <meta property="og:site_name" content="Waivio" />
-
           <meta property="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
-          <meta property="twitter:site" content={'@steemit'} />
+          <meta property="twitter:site" content={'@waivio'} />
           <meta property="twitter:title" content={title} />
           <meta property="twitter:description" content={desc} />
           <meta

@@ -22,6 +22,7 @@ import objectTypesReducer, * as fromObjectTypes from '../client/objectTypes/obje
 import objectTypeReducer, * as fromObjectType from '../client/objectTypes/objectTypeReducer';
 import appendReducer, * as fromAppend from '../client/object/appendReducer';
 import galleryReducer, * as fromGallery from '../client/object/ObjectGallery/galleryReducer';
+import modalReducer, * as fromModal from '../client/components/ModalWindow/modalReducer';
 
 export default history =>
   combineReducers({
@@ -46,6 +47,7 @@ export default history =>
     search: searchReducer,
     append: appendReducer,
     gallery: galleryReducer,
+    modal: modalReducer,
   });
 
 export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);
@@ -186,6 +188,8 @@ export const getObjectTypesList = state => fromObjectTypes.getObjectTypesList(st
 export const getObjectTypesLoading = state =>
   fromObjectTypes.getObjectTypesLoading(state.objectTypes);
 export const getObjectTypeState = state => fromObjectType.getobjectType(state.objectType);
+
+export const getModalVisability = state => fromModal.getModalVisability(state.modal);
 
 export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.append);
 
