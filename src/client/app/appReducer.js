@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { LOCATION_CHANGE } from 'react-router-redux/reducer';
+import { LOCATION_CHANGE } from 'connected-react-router';
 import * as appTypes from './appActions';
 import * as postActions from '../post/postActions';
 import { getCryptoPriceIncreaseDetails } from '../helpers/cryptosHelper';

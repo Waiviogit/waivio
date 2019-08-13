@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 
-import { routerReducer } from 'react-router-redux';
+import { connectRouter } from 'connected-react-router';
 
 import appReducer, * as fromApp from './app/appReducer';
 import authReducer, * as fromAuth from './auth/authReducer';
@@ -23,7 +23,7 @@ import objectTypeReducer, * as fromObjectType from '../client/objectTypes/object
 import appendReducer, * as fromAppend from '../client/object/appendReducer';
 import galleryReducer, * as fromGallery from '../client/object/ObjectGallery/galleryReducer';
 
-export default () =>
+export default history =>
   combineReducers({
     app: appReducer,
     auth: authReducer,
@@ -40,7 +40,7 @@ export default () =>
     bookmarks: bookmarksReducer,
     favorites: favoritesReducer,
     reblog: reblogReducers,
-    router: routerReducer,
+    router: connectRouter(history),
     wallet: walletReducer,
     settings: settingsReducer,
     search: searchReducer,

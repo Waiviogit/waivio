@@ -6,7 +6,7 @@ export const GET_MORE_OBJECTS_BY_TYPE = createAsyncActionType(
   '@objectTypes/GET_MORE_OBJECTS_BY_TYPE',
 );
 
-export const getObjectTypes = (limit = 9, skip = 0, wobjectsCount = 3) => dispatch => {
+export const getObjectTypes = (limit = 100, skip = 0, wobjectsCount = 3) => dispatch => {
   dispatch({
     type: GET_OBJECT_TYPES.ACTION,
     payload: ApiClient.getObjectTypes(limit, skip, wobjectsCount),
