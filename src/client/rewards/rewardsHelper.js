@@ -46,3 +46,25 @@ export const preparePropositionReqData = ({
   }
   return reqData;
 };
+
+export const getTextByFilterKey = (intl, filterKey) => {
+  switch (filterKey) {
+    case 'active':
+    case 'history':
+    case 'reserved':
+      return `${intl.formatMessage({
+        id: 'rewards',
+        defaultMessage: 'Rewards',
+      })} for`;
+    case 'created':
+      return `${intl.formatMessage({
+        id: 'rewards',
+        defaultMessage: 'Rewards',
+      })} created by`;
+    default:
+      return intl.formatMessage({
+        id: 'rewards',
+        defaultMessage: 'Rewards',
+      });
+  }
+};
