@@ -48,9 +48,7 @@ export default class Invite extends React.Component {
   createInviteURL() {
     const { authenticatedUserName } = this.props;
     if (typeof window !== 'undefined') {
-      const inviteURL = `${window.location.protocol}//${
-        window.location.host
-      }/i/@${authenticatedUserName}`;
+      const inviteURL = `${window.location.protocol}//${window.location.host}/i/@${authenticatedUserName}`;
       this.setState({ inviteURL });
     }
   }
