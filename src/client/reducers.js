@@ -100,7 +100,6 @@ export const getCommentsPendingVotes = state =>
 
 export const getBookmarks = state => fromBookmarks.getBookmarks(state.bookmarks);
 export const getPendingBookmarks = state => fromBookmarks.getPendingBookmarks(state.bookmarks);
-export const getIsBookmarksLoading = state => fromBookmarks.getIsLoading(state.bookmarks);
 
 export const getRebloggedList = state => fromReblog.getRebloggedList(state.reblog);
 export const getPendingReblogs = state => fromReblog.getPendingReblogs(state.reblog);

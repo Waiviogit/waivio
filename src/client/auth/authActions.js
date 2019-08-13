@@ -22,7 +22,7 @@ export const BUSY_LOGIN = createAsyncActionType('@auth/BUSY_LOGIN');
 
 const loginError = createAction(LOGIN_ERROR);
 
-export const login = () => (dispatch, getState, { steemConnectAPI }) => {
+export const login = () => (dispatch, getState, { steemConnectAPI, waivioAPI }) => {
   const state = getState();
 
   let promise = Promise.resolve(null);
@@ -32,9 +32,19 @@ export const login = () => (dispatch, getState, { steemConnectAPI }) => {
   } else if (!steemConnectAPI.options.accessToken) {
     promise = Promise.reject(new Error('There is not accessToken present'));
   } else {
-    promise = steemConnectAPI.me().catch(() => dispatch(loginError()));
+    promise = new Promise(async (resolve, reject) => {
+      try {
+        const scUserData = await steemConnectAPI.me();
+        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(
+          scUserData.name,
+          steemConnectAPI.options.accessToken,
+        );
+        resolve({ ...scUserData, userMetaData });
+      } catch (e) {
+        reject(e);
+      }
+    });
   }
-
   return dispatch({
     type: LOGIN,
     payload: {
@@ -43,7 +53,10 @@ export const login = () => (dispatch, getState, { steemConnectAPI }) => {
     meta: {
       refresh: getIsLoaded(state),
     },
-  }).catch(() => dispatch(loginError()));
+  }).catch(e => {
+    console.warn(e);
+    dispatch(loginError());
+  });
 };
 
 export const getCurrentUserFollowing = () => dispatch => dispatch(getFollowing());

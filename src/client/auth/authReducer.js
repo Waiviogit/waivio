@@ -29,6 +29,7 @@ export default (state = initialState, action) => {
         isAuthenticated: true,
         loaded: true,
         user: action.payload.account || state.user,
+        userMetaData: action.payload.userMetaData,
       };
     case types.LOGIN_ERROR:
       return {

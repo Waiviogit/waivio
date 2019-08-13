@@ -6,6 +6,7 @@ import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
 
 import sc2 from 'sc2-sdk';
+import { waivioAPI } from '../../waivioApi/ApiClient';
 import getStore from '../../client/store';
 import routes from '../../common/routes';
 import renderSsrPage from '../renderers/ssrRenderer';
@@ -27,17 +28,16 @@ function createTimeout(timeout, promise) {
 export default function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     try {
-      const api = sc2.Initialize({
+      const sc2Api = sc2.Initialize({
         app: process.env.STEEMCONNECT_CLIENT_ID,
         baseURL: process.env.STEEMCONNECT_HOST,
         callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
       });
-
       if (req.cookies.access_token) {
-        api.setAccessToken(req.cookies.access_token);
+        sc2Api.setAccessToken(req.cookies.access_token);
       }
 
-      const store = getStore(api);
+      const store = getStore(sc2Api, waivioAPI);
 
       const branch = matchRoutes(routes, req.url.split('?')[0]);
       const promises = branch.map(({ route, match }) => {
