@@ -14,6 +14,7 @@ import DraftRow from './DraftRow';
 import DeleteDraftModal from './DeleteDraftModal';
 import requiresLogin from '../../auth/requiresLogin';
 import './Drafts.less';
+import TopNavigation from '../../components/Navigation/TopNavigation';
 
 @requiresLogin
 @injectIntl
@@ -32,6 +33,7 @@ class Drafts extends React.Component {
     draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     pendingDrafts: PropTypes.arrayOf(PropTypes.string),
     reload: PropTypes.func,
+    userName: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -86,17 +88,18 @@ class Drafts extends React.Component {
   }
 
   render() {
-    const { intl, reloading, draftPosts, pendingDrafts } = this.props;
+    const { intl, reloading, draftPosts, pendingDrafts, userName } = this.props;
     const { showModalDelete, selectedDrafts } = this.state;
     const sortedDraftPosts = _.sortBy(draftPosts, draft => new Date(draft.lastUpdated)).reverse();
     const noDrafts = !reloading && draftPosts.length === 0;
 
     return (
-      <div className="Drafts shifted">
+      <div className="Drafts">
         <Helmet>
           <title>{intl.formatMessage({ id: 'drafts', defaultMessage: 'Drafts' })} - Waivio</title>
         </Helmet>
         <div className="drafts-layout container">
+          <TopNavigation authenticated userName={userName} />
           <Affix className="leftContainer" stickPosition={77}>
             <div className="left">
               <LeftSidebar />

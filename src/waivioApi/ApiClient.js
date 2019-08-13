@@ -331,7 +331,12 @@ export const getMoreObjectsByType = (type, skip, limit, filter = {}) =>
     fetch(`${config.apiPrefix}${config.objectType}/${type}`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ object_types: [type], skip, limit, filter }),
+      body: JSON.stringify({
+        object_types: [type],
+        wobjects_skip: skip,
+        wobjects_count: limit,
+        filter,
+      }),
     })
       .then(handleErrors)
       .then(res => res.json())
@@ -359,45 +364,8 @@ export const getPropositions = ({
   status,
   approved,
   guideNames,
-  campaignParent,
-  currentUserName,
-  radius,
-  coordinates,
-  sort,
-}) =>
-  new Promise((resolve, reject) => {
-    const withMap = !_.isEmpty(coordinates) && radius;
-    fetch(
-      `${config.campaignApiPrefix}${config.campaigns}?limit=${limit}&skip=${skip}${
-        userName ? `&userName=${userName}` : ''
-      }${approved ? `&approved=${approved}` : ''}${
-        currentUserName ? `&currentUserName=${currentUserName}` : ''
-      }${status ? `&status=${status}` : ''}${guideNames ? `&guideNames=${[guideNames]}` : ''}${
-        campaignParent ? `&requiredObject=${campaignParent}` : ''
-      }${
-        withMap
-          ? `&radius=${radius}&coordinates[]=${coordinates[0]}&coordinates[]=${coordinates[1]}`
-          : ''
-      }${sort ? `&sort=${sort}` : ''}`,
-      {
-        headers,
-        method: 'GET',
-      },
-    )
-      .then(res => res.json())
-      .then(result => resolve(result))
-      .catch(error => reject(error));
-  });
-
-export const getPropositimons = ({
-  limit = 30,
-  skip = 0,
-  userName = '',
-  status,
-  approved,
-  guideNames,
   types,
-  campaignParent,
+  requiredObject,
   currentUserName,
   radius,
   coordinates,
@@ -407,12 +375,9 @@ export const getPropositimons = ({
     const reqData = {
       limit,
       skip,
-      userName,
       status,
       approved,
-      guideNames,
-      types,
-      campaignParent,
+      requiredObject,
       currentUserName,
       sort,
     };
@@ -421,6 +386,9 @@ export const getPropositimons = ({
       reqData.radius = radius;
       reqData.coordinates = coordinates;
     }
+    if (!_.isEmpty(guideNames)) reqData.guideNames = guideNames;
+    if (!_.isEmpty(types)) reqData.types = types;
+    if (!_.isEmpty(userName)) reqData.userName = userName;
 
     fetch(`${config.campaignApiPrefix}${config.campaigns}`, {
       headers,
