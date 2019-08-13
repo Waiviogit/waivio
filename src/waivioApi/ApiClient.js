@@ -331,7 +331,12 @@ export const getMoreObjectsByType = (type, skip, limit, filter = {}) =>
     fetch(`${config.apiPrefix}${config.objectType}/${type}`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ object_types: [type], skip, limit, filter }),
+      body: JSON.stringify({
+        object_types: [type],
+        wobjects_skip: skip,
+        wobjects_count: limit,
+        filter,
+      }),
     })
       .then(handleErrors)
       .then(res => res.json())

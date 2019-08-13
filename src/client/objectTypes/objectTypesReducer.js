@@ -26,6 +26,7 @@ const feed = (state = initialState, action) => {
           [type]: {
             ...typeObject,
             related_wobjects: [...typeObject.related_wobjects, ...data.related_wobjects],
+            hasMoreWobjects: Boolean(data.hasMoreWobjects),
           },
         },
       };
