@@ -13,4 +13,9 @@ if (typeof window !== 'undefined' && window.analytics) {
   }
 }
 
+export const createHistory = (initialUrl = '/') =>
+  typeof window === 'undefined'
+    ? createMemoryHistory({ initialEntries: [initialUrl], initialIndex: 0 })
+    : createBrowserHistory();
+
 export default history;
