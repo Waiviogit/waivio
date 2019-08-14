@@ -8,12 +8,7 @@ import { Helmet } from 'react-helmet';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
-import {
-  getAuthenticatedUserName,
-  getIsAuthenticated,
-  getIsLoaded,
-  getUserLocation,
-} from '../reducers';
+import { getAuthenticatedUserName, getIsLoaded, getUserLocation } from '../reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTop from '../components/Utils/ScrollToTop';
@@ -25,7 +20,6 @@ import {
   getCoordinates,
   activateCampaign,
 } from '../user/userActions';
-import TopNavigation from '../components/Navigation/TopNavigation';
 import CreateRewardForm from './Create/CreateRewardForm';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -44,7 +38,6 @@ import MapWrap from '../components/Maps/MapWrap/MapWrap';
 @injectIntl
 @connect(
   state => ({
-    authenticated: getIsAuthenticated(state),
     loaded: getIsLoaded(state),
     username: getAuthenticatedUserName(state),
     userLocation: getUserLocation(state),
@@ -57,7 +50,6 @@ class Rewards extends React.Component {
     // activateCampaign: PropTypes.func.isRequired,
     // declineProposition: PropTypes.func.isRequired,
     userLocation: PropTypes.shape(),
-    authenticated: PropTypes.bool.isRequired,
     getCoordinates: PropTypes.func.isRequired,
     history: PropTypes.shape().isRequired,
     username: PropTypes.string.isRequired,
@@ -315,9 +307,7 @@ class Rewards extends React.Component {
               <Campaign
                 proposition={proposition}
                 filterKey={filterKey}
-                key={`${tmp}${proposition.required_object.author_permlink}${
-                  proposition.required_object.createdAt
-                }`}
+                key={`${tmp}${proposition.required_object.author_permlink}${proposition.required_object.createdAt}`}
                 userName={userName}
               />
             )
@@ -407,7 +397,7 @@ class Rewards extends React.Component {
   };
 
   render() {
-    const { location, authenticated, username } = this.props;
+    const { location } = this.props;
     const {
       sponsors,
       isModalDetailsOpen,
@@ -426,7 +416,6 @@ class Rewards extends React.Component {
         <ScrollToTop />
         <ScrollToTopOnMount />
         <div className="feed-layout container">
-          <TopNavigation authenticated={authenticated} userName={username} />
           <Affix className="leftContainer" stickPosition={122}>
             <div className="left">
               <LeftSidebar />

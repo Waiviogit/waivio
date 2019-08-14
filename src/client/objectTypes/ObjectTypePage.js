@@ -6,8 +6,6 @@ import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
 import { Helmet } from 'react-helmet';
 import {
-  getAuthenticatedUserName,
-  getIsAuthenticated,
   getObjectTypeState,
   getObjectTypesList,
   getObjectTypesLoading,
@@ -27,14 +25,11 @@ import ListObjectsByType from '../objectCard/ListObjectsByType/ListObjectsByType
 import { getCoordinates } from '../user/userActions';
 import Loading from '../components/Icon/Loading';
 import ObjectTypesNavigation from './ObjectTypesNavigation/ObjectTypesNavigation';
-import TopNavigation from '../components/Navigation/TopNavigation';
 
 @injectIntl
 @withRouter
 @connect(
   state => ({
-    authenticated: getIsAuthenticated(state),
-    authenticatedUserName: getAuthenticatedUserName(state),
     screenSize: getScreenSize(state),
     type: getObjectTypeState(state),
     userLocation: getUserLocation(state),
@@ -53,8 +48,6 @@ export default class ObjectTypePage extends React.Component {
     match: PropTypes.shape().isRequired,
     intl: PropTypes.shape().isRequired,
     getObjectType: PropTypes.func.isRequired,
-    authenticated: PropTypes.bool.isRequired,
-    authenticatedUserName: PropTypes.string,
     getObjectTypes: PropTypes.func.isRequired,
     getCoordinates: PropTypes.func.isRequired,
     typesList: PropTypes.shape().isRequired,
@@ -66,7 +59,6 @@ export default class ObjectTypePage extends React.Component {
   };
 
   static defaultProps = {
-    authenticatedUserName: '',
     loaded: false,
     failed: false,
     userLocation: {},
@@ -88,7 +80,7 @@ export default class ObjectTypePage extends React.Component {
 
   componentDidMount() {
     this.props.getObjectType(this.props.match.params.typeName, 0, {});
-    if (_.isEmpty(this.props.typesList)) this.props.getObjectTypes(100, 0, 0);
+    if (_.isEmpty(this.props.typesList)) this.props.getObjectTypes();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -157,15 +149,7 @@ export default class ObjectTypePage extends React.Component {
   toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
 
   render() {
-    const {
-      type,
-      intl,
-      screenSize,
-      typesList,
-      isTypesLoading,
-      authenticated,
-      authenticatedUserName,
-    } = this.props;
+    const { type, intl, screenSize, typesList, isTypesLoading } = this.props;
 
     const host = global.postOrigin || 'https://waiviodev.com';
     const desc = type.body;
@@ -197,7 +181,6 @@ export default class ObjectTypePage extends React.Component {
         </Helmet>
         <ScrollToTopOnMount />
         <div className="feed-layout container">
-          <TopNavigation authenticated={authenticated} userName={authenticatedUserName} />
           <Affix className="leftContainer leftContainer__user" stickPosition={122}>
             <div className="left">
               <ObjectTypesNavigation
