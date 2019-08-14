@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
-import { LocaleProvider, Layout } from 'antd';
+import { Affix, LocaleProvider, Layout } from 'antd';
 import enUS from 'antd/lib/locale-provider/en_US';
 import Cookie from 'js-cookie';
 import { findLanguage, getRequestLocale, getBrowserLocale, loadLanguage } from './translations';
@@ -13,6 +13,7 @@ import {
   getIsLoaded,
   getAuthenticatedUser,
   getAuthenticatedUserName,
+  getIsAuthenticated,
   getLocale,
   getUsedLocale,
   getTranslations,
@@ -27,6 +28,7 @@ import Topnav from './components/Navigation/Topnav';
 import Transfer from './wallet/Transfer';
 import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
+import TopNavigation from './components/Navigation/TopNavigation';
 
 @withRouter
 @connect(
@@ -34,6 +36,7 @@ import BBackTop from './components/BBackTop';
     loaded: getIsLoaded(state),
     user: getAuthenticatedUser(state),
     username: getAuthenticatedUserName(state),
+    isAuthenticated: getIsAuthenticated(state),
     usedLocale: getUsedLocale(state),
     translations: getTranslations(state),
     locale: getLocale(state),
@@ -56,6 +59,7 @@ export default class Wrapper extends React.PureComponent {
   static propTypes = {
     route: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
+    isAuthenticated: PropTypes.bool.isRequired,
     locale: PropTypes.string.isRequired,
     history: PropTypes.shape().isRequired,
     usedLocale: PropTypes.string,
@@ -202,7 +206,7 @@ export default class Wrapper extends React.PureComponent {
   }
 
   render() {
-    const { user, usedLocale, translations } = this.props;
+    const { user, isAuthenticated, usedLocale, translations, history } = this.props;
 
     const language = findLanguage(usedLocale);
 
@@ -214,6 +218,9 @@ export default class Wrapper extends React.PureComponent {
               <Topnav username={user.name} onMenuItemClick={this.handleMenuItemClick} />
             </Layout.Header>
             <div className="content">
+              <Affix offsetTop={0}>
+                <TopNavigation authenticated={isAuthenticated} location={history.location} />
+              </Affix>
               {renderRoutes(this.props.route.routes)}
               <Transfer />
               <PowerUpOrDown />
