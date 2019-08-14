@@ -307,9 +307,7 @@ class Rewards extends React.Component {
               <Campaign
                 proposition={proposition}
                 filterKey={filterKey}
-                key={`${tmp}${proposition.required_object.author_permlink}${
-                  proposition.required_object.createdAt
-                }`}
+                key={`${tmp}${proposition.required_object.author_permlink}${proposition.required_object.createdAt}`}
                 userName={userName}
               />
             )

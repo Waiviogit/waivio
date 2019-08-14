@@ -4,11 +4,12 @@ import { applyMiddleware, createStore, compose } from 'redux';
 import { routerMiddleware } from 'connected-react-router';
 import steemAPI from './steemAPI';
 import createBusyAPI from '../common/services/createBusyAPI';
-import history from './history';
+import { createHistory } from './history';
 import errorMiddleware from './helpers/errorMiddleware';
 import createReducer from './reducers';
 
-export default (steemConnectAPI, waivioAPI) => {
+export default (steemConnectAPI, waivioAPI, currUrl) => {
+  const history = createHistory(currUrl);
   let preloadedState;
   if (typeof window !== 'undefined') {
     /* eslint-disable no-underscore-dangle */
