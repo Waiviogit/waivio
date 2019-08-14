@@ -159,9 +159,7 @@ export const searchObjects = (searchString, objType = '', limit = 15) => {
 export const searchUsers = (searchString, limit = 15) =>
   new Promise((resolve, reject) => {
     fetch(
-      `${config.apiPrefix}${config.users}${
-        config.search
-      }?searchString=${searchString}&limit=${limit}`,
+      `${config.apiPrefix}${config.users}${config.search}?searchString=${searchString}&limit=${limit}`,
       {
         headers,
         method: 'GET',
@@ -403,9 +401,7 @@ export const getPropositions = ({
 export const getSuitableUsers = (followsCount, postsCount) =>
   new Promise((resolve, reject) => {
     fetch(
-      `${config.campaignApiPrefix}${
-        config.suitableUsers
-      }?count_follows=${followsCount}&count_posts=${postsCount}`,
+      `${config.campaignApiPrefix}${config.suitableUsers}?count_follows=${followsCount}&count_posts=${postsCount}`,
       {
         headers,
         method: 'GET',

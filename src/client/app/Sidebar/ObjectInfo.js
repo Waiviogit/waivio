@@ -460,9 +460,7 @@ class ObjectInfo extends React.Component {
                   {address}
                   {isRenderMap && (
                     <a
-                      href={`https://www.google.com/maps/search/?api=1&query=${map.latitude},${
-                        map.longitude
-                      }`}
+                      href={`https://www.google.com/maps/search/?api=1&query=${map.latitude},${map.longitude}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="address-link"

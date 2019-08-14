@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
-import { Affix, LocaleProvider, Layout } from 'antd';
+import { Affix, ConfigProvider, Layout } from 'antd';
 import enUS from 'antd/lib/locale-provider/en_US';
 import Cookie from 'js-cookie';
 import { findLanguage, getRequestLocale, getBrowserLocale, loadLanguage } from './translations';
@@ -212,7 +212,7 @@ export default class Wrapper extends React.PureComponent {
 
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
-        <LocaleProvider locale={enUS}>
+        <ConfigProvider locale={enUS}>
           <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
             <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
               <Topnav username={user.name} onMenuItemClick={this.handleMenuItemClick} />
@@ -228,7 +228,7 @@ export default class Wrapper extends React.PureComponent {
               <BBackTop className="primary-modal" />
             </div>
           </Layout>
-        </LocaleProvider>
+        </ConfigProvider>
       </IntlProvider>
     );
   }
