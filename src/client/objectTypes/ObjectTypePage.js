@@ -80,7 +80,7 @@ export default class ObjectTypePage extends React.Component {
 
   componentDidMount() {
     this.props.getObjectType(this.props.match.params.typeName, 0, {});
-    if (_.isEmpty(this.props.typesList)) this.props.getObjectTypes(100, 0, 0);
+    if (_.isEmpty(this.props.typesList)) this.props.getObjectTypes();
   }
 
   componentWillReceiveProps(nextProps) {
