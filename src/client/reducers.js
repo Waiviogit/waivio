@@ -201,7 +201,7 @@ export const getObjectAuthor = state => fromObject.getObjectAuthor(state.object)
 export const getObjectFields = state => fromObject.getObjectFields(state.object);
 export const getRatingFields = state => fromObject.getRatingFields(state.object);
 export const getObjectChartId = state => fromObject.getObjectChartId(state.object);
-export const getobjectTypesState = state => fromObjectTypes.getobjectTypesState(state.objectTypes);
+
 export const getObjectTypesList = state => fromObjectTypes.getObjectTypesList(state.objectTypes);
 export const getObjectTypesLoading = state =>
   fromObjectTypes.getObjectTypesLoading(state.objectTypes);

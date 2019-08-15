@@ -83,7 +83,6 @@ class ObjectInfo extends React.Component {
     const { location, wobject, userName, albums, isAuthenticated } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const { showModal, selectedField, isModalComparePerformanceOpen } = this.state;
-    const { showModal, selectedField } = this.state;
     const { button, status, website } = wobject;
     const renderFields = getAllowedFieldsByObjType(wobject.object_type);
     const isRenderGallery = ![OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(wobject.object_type);

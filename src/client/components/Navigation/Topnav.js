@@ -23,6 +23,7 @@ import {
   getSearchUsersResults,
   searchObjectTypesResults,
   getScreenSize,
+  getNightmode,
 } from '../../reducers';
 import ModalBroker from '../../../investarena/components/Modals/ModalBroker';
 import ModalDealConfirmation from '../../../investarena/components/Modals/ModalDealConfirmation';
@@ -109,6 +110,8 @@ class Topnav extends React.Component {
     platformName: PropTypes.string.isRequired,
     isLoadingPlatform: PropTypes.bool.isRequired,
     isNightMode: PropTypes.bool.isRequired,
+    screenSize: PropTypes.string,
+    toggleModal: PropTypes.func.isRequired,
     /* passed props */
     username: PropTypes.string,
     onMenuItemClick: PropTypes.func,
@@ -179,7 +182,7 @@ class Topnav extends React.Component {
     this.setSelectedPage();
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     if (prevProps.location.pathname !== this.props.location.pathname) {
       this.setSelectedPage();
     }
