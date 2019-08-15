@@ -37,7 +37,6 @@
   "getObjectTypes": "/objectTypes",
   "objectType": "/objectType",
   "generalSearch": "/generalSearch",
-  "campaigns": "/campaigns-api/campaigns",
   "userStatistics": "/user-statistics",
   "instrumentStatistic": "/instrument-statistics",
   "campaigns": "/campaigns",
