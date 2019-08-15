@@ -13,10 +13,16 @@ const { Option } = Select;
 class CreateRewardForm extends React.Component {
   static propTypes = {
     userName: PropTypes.string,
+    user: PropTypes.shape(),
     form: PropTypes.shape().isRequired,
+    intl: PropTypes.shape(),
+    currentSteemDollalPrice: PropTypes.shape(),
   };
   static defaultProps = {
     userName: '',
+    user: {},
+    intl: {},
+    currentSteemDollalPrice: {},
   };
   state = {
     confirmDirty: false,
@@ -100,7 +106,122 @@ class CreateRewardForm extends React.Component {
     this.setState({ objectsToAction });
   };
 
+  compareBudgetValues = (rule, value, callback) => {
+    const { user, currentSteemDollalPrice, intl } = this.props;
+    const userUSDBalance = parseFloat(user.balance) * currentSteemDollalPrice;
+    if (value <= 0 && value !== '') {
+      callback(
+        intl.formatMessage({
+          id: 'budget_more_than_zero',
+          defaultMessage: 'Budget should be more than zero',
+        }),
+      );
+    } else if (userUSDBalance < value) {
+      callback(
+        intl.formatMessage({
+          id: 'budget_overprices_wallet_balance',
+          defaultMessage: 'Budget overprices your wallet balance',
+        }),
+      );
+    } else {
+      callback();
+    }
+  };
+  compareRewardAndBudget = (rule, value, callback) => {
+    const { form, intl } = this.props;
+    const budgetValue = form.getFieldValue('budget');
+    if (value <= 0 && value !== '') {
+      callback(
+        intl.formatMessage({
+          id: 'reward_more_than_zero',
+          defaultMessage: 'Reward should be more than zero',
+        }),
+      );
+    } else if (budgetValue < value) {
+      callback(
+        intl.formatMessage({
+          id: 'reward_not_exceed_budget',
+          defaultMessage: 'Reward should not exceed the budget',
+        }),
+      );
+    } else {
+      callback();
+    }
+  };
+
+  checkReservationPeriod = (rule, value, callback) => {
+    const { intl } = this.props;
+    if (value < 1 && value !== '') {
+      callback(
+        intl.formatMessage({
+          id: 'reserve_period_period_one_day',
+          defaultMessage: 'Reservation period must be at least one day',
+        }),
+      );
+    } else {
+      callback();
+    }
+  };
+
+  checkPhotosQuantity = (rule, value, callback) => {
+    const { intl } = this.props;
+    if (value < 1 && value !== '') {
+      callback(
+        intl.formatMessage({
+          id: 'must_have_one_photo',
+          defaultMessage: 'Must have at least one photo',
+        }),
+      );
+    } else {
+      callback();
+    }
+  };
+
+  checkSteemReputation = (rule, value, callback) => {
+    const { intl } = this.props;
+
+    if ((value < -100 || value > 100) && value !== '') {
+      callback(
+        intl.formatMessage({
+          id: 'must_have_one_photo',
+          defaultMessage: 'Reputation should be from -100 to 100',
+        }),
+      );
+    } else {
+      callback();
+    }
+  };
+
+  checkFollowersQuantity = (rule, value, callback) => {
+    const { intl } = this.props;
+    if (value < 0) {
+      callback(
+        intl.formatMessage({
+          id: 'not_less_zero_followes',
+          defaultMessage: 'Should not be less than zero followes',
+        }),
+      );
+    } else {
+      callback();
+    }
+  };
+
+  checkExpireDate = (rule, value, callback) => {
+    const { intl } = this.props;
+    if (value.unix() * 1000 - Date.now() < 86400000) {
+      callback(
+        intl.formatMessage({
+          id: 'not_less_one_day',
+          defaultMessage: 'Should not be less than one day',
+        }),
+      );
+    } else {
+      callback();
+    }
+  };
+
   render() {
+    const { intl } = this.props;
     const { getFieldDecorator } = this.props.form;
     return (
       <Form layout="vertical" onSubmit={this.handleSubmit}>
@@ -112,8 +233,11 @@ class CreateRewardForm extends React.Component {
                 message: 'Please input your Campaign name!',
               },
               {
-                max: 50,
-                message: 'Campaign name must be no longer then 50 symbols!',
+                max: 100,
+                message: intl.formatMessage({
+                  id: 'campaign_name_error_long',
+                  defaultMessage: 'Campaign name must be no longer then 100 symbols',
+                }),
               },
             ],
           })(<Input />)}
@@ -152,6 +276,9 @@ class CreateRewardForm extends React.Component {
                 required: true,
                 message: 'Please set your monthly budget!',
               },
+              {
+                validator: this.compareBudgetValues,
+              },
             ],
           })(<Input type="number" />)}
           SBD per month
@@ -163,10 +290,9 @@ class CreateRewardForm extends React.Component {
                 required: true,
                 message: 'Please set a reward!',
               },
-              // {
-              //   validator: val => val <= 500,
-              //   message: 'Please should not be more then 500',
-              // },
+              {
+                validator: this.compareRewardAndBudget,
+              },
             ],
           })(<Input type="number" />)}
           SBD per review
@@ -177,6 +303,9 @@ class CreateRewardForm extends React.Component {
               {
                 required: true,
                 message: 'Please set a period!',
+              },
+              {
+                validator: this.checkReservationPeriod,
               },
             ],
           })(<Input type="number" />)}
@@ -189,6 +318,9 @@ class CreateRewardForm extends React.Component {
               {
                 required: true,
                 message: 'Please set minimal count of photos!',
+              },
+              {
+                validator: this.checkPhotosQuantity,
               },
             ],
           })(<Input type="number" />)}
@@ -228,6 +360,9 @@ class CreateRewardForm extends React.Component {
                 required: true,
                 message: 'Please set minimal reputation for eligible users!',
               },
+              {
+                validator: this.checkSteemReputation,
+              },
             ],
           })(<Input type="number" />)}
         </Form.Item>
@@ -237,6 +372,9 @@ class CreateRewardForm extends React.Component {
               {
                 required: true,
                 message: 'Please set minimal followers count for eligible users!',
+              },
+              {
+                validator: this.checkFollowersQuantity,
               },
             ],
           })(<Input type="number" />)}
@@ -279,7 +417,16 @@ class CreateRewardForm extends React.Component {
         </Form.Item>
         <Form.Item label="Expired automatically at">
           {getFieldDecorator('expiredAt', {
-            rules: [{ type: 'object', required: true, message: 'Please select time!' }],
+            rules: [
+              {
+                type: 'object',
+                required: true,
+                message: 'Please select time!',
+              },
+              {
+                validator: this.checkExpireDate,
+              },
+            ],
           })(<DatePicker />)}
         </Form.Item>
         <Form.Item>

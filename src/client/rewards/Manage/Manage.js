@@ -47,8 +47,6 @@ class Manage extends React.Component {
 
   balanceContent = () => {
     const { intl } = this.props;
-    const oneStarSign = '* ';
-    const twoStarSigns = '** ';
     return (
       <React.Fragment>
         <div>
@@ -58,18 +56,18 @@ class Manage extends React.Component {
           })}
         </div>
         <div>
-          {oneStarSign +
-            intl.formatMessage({
-              id: 'accounts_payable_exeed',
-              defaultMessage: `accounts payable exeed 30 days`,
-            })}
+          *{' '}
+          {intl.formatMessage({
+            id: 'accounts_payable_exeed',
+            defaultMessage: `accounts payable exeed 30 days`,
+          })}
         </div>
         <div>
-          {twoStarSigns +
-            intl.formatMessage({
-              id: 'remaining_balance_is_not_sufficient',
-              defaultMessage: `the remaining balance i snot sufficient to cover outstanding obligations`,
-            })}
+          **{' '}
+          {intl.formatMessage({
+            id: 'remaining_balance_is_not_sufficient',
+            defaultMessage: `the remaining balance is not sufficient to cover outstanding obligations`,
+          })}
         </div>
       </React.Fragment>
     );
@@ -77,23 +75,21 @@ class Manage extends React.Component {
 
   rewardsCampaignContent = () => {
     const { intl } = this.props;
-    const threeStarSigns = '*** ';
-    const fourStarSigns = '**** ';
     return (
       <React.Fragment>
         <div>
-          {threeStarSigns +
-            intl.formatMessage({
-              id: 'only_inactive_campaogns',
-              defaultMessage: `Only inactive campaogns can be edited`,
-            })}
+          ***{' '}
+          {intl.formatMessage({
+            id: 'only_inactive_campaigns',
+            defaultMessage: `Only inactive campaigns can be edited`,
+          })}
         </div>
         <div>
-          {fourStarSigns +
-            intl.formatMessage({
-              id: 'campaign_budgets_calcualted',
-              defaultMessage: `Campaign budgets calcualted from the 1st day of each month`,
-            })}
+          ****{' '}
+          {intl.formatMessage({
+            id: 'campaign_budgets_calcualted',
+            defaultMessage: `Campaign budgets calcualted from the 1st day of each month`,
+          })}
         </div>
       </React.Fragment>
     );
@@ -122,7 +118,7 @@ class Manage extends React.Component {
                 defaultMessage: `Manage rewards campaign`,
               })}
             </div>
-            <CampaingRewardsTable intl={intl} campaigns={campaigns} />
+            <CampaingRewardsTable key={'campaingRewardsTable'} intl={intl} campaigns={campaigns} />
             <div className="Manage__rewards-campaign-wrap-text-content">
               {rewardsCampaignContent}
             </div>
