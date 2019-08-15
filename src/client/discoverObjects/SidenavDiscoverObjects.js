@@ -3,22 +3,21 @@ import { useSelector, shallowEqual } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
-import { getCurrentLocation, getObjectTypesList, getObjectTypesLoading } from '../../reducers';
-import SkeletonCustom from '../../components/Skeleton/SkeletonCustom';
-import './ObjectTypesNavigation.less';
+import { getCurrentLocation, getObjectTypesList, getObjectTypesLoading } from '../reducers';
+import SkeletonCustom from '../components/Skeleton/SkeletonCustom';
 
-const ObjectTypesNavigation = () => {
+const SidenavDiscoverObjects = () => {
   const { pathname } = useSelector(getCurrentLocation);
   const isLoading = useSelector(getObjectTypesLoading);
   const objectTypes = useSelector(getObjectTypesList, shallowEqual);
   return (
-    <ul className="ObjectTypesNavigation Sidenav">
+    <ul className="sidenav-discover-objects Sidenav">
       <div className="Sidenav__section-title">
         <FormattedMessage id="objects" defaultMessage="Objects" />:
       </div>
       {isLoading ? (
         <SkeletonCustom
-          className="object-types-navigation-loader"
+          className="sidenav-discover-objects"
           isLoading={isLoading}
           randomWidth
           rows={9}
@@ -26,11 +25,11 @@ const ObjectTypesNavigation = () => {
         />
       ) : (
         _.map(objectTypes, type => (
-          <li key={`${type.name}key`} className="ttc">
+          <li key={`${type.author}/${type.permlink}`} className="ttc">
             <NavLink
-              to={`/objectType/${type.name}`}
+              to={`/discover-objects/${type.name}`}
               isActive={() => pathname.includes(type.name)}
-              className="ObjectTypesNavigation__item"
+              className="sidenav-discover-objects__item"
               activeClassName="Sidenav__item--active"
             >
               {type.name}
@@ -42,4 +41,4 @@ const ObjectTypesNavigation = () => {
   );
 };
 
-export default ObjectTypesNavigation;
+export default SidenavDiscoverObjects;

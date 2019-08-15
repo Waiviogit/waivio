@@ -184,6 +184,7 @@ export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectAuthor = state => fromObject.getObjectAuthor(state.object);
 export const getObjectFields = state => fromObject.getObjectFields(state.object);
 export const getRatingFields = state => fromObject.getRatingFields(state.object);
+
 export const getObjectTypesList = state => fromObjectTypes.getObjectTypesList(state.objectTypes);
 export const getObjectTypesLoading = state =>
   fromObjectTypes.getObjectTypesLoading(state.objectTypes);
@@ -196,3 +197,5 @@ export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.a
 export const getObjectAlbums = state => fromGallery.getObjectAlbums(state.gallery);
 export const getIsObjectAlbumsLoading = state =>
   fromGallery.getIsObjectAlbumsLoading(state.gallery);
+
+export const getCurrentLocation = state => state.router.location;
