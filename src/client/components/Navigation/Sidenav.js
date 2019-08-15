@@ -29,7 +29,7 @@ Sidenav.propTypes = {
       name: PropTypes.string.isRequired,
       linkTo: PropTypes.string.isRequired,
       intl: PropTypes.shape({ id: PropTypes.string, defaultMessage: PropTypes.string }).isRequired,
-      badge: PropTypes.oneOf(PropTypes.string, PropTypes.number),
+      badge: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
       isHidden: PropTypes.bool,
     }),
   ),

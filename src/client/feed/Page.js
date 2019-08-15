@@ -36,11 +36,15 @@ class Page extends React.Component {
     cleanFeed: PropTypes.func.isRequired,
     getFeedContent: PropTypes.func.isRequired,
     getUserFeedContent: PropTypes.func.isRequired,
-    userName: PropTypes.string.isRequired,
     history: PropTypes.shape().isRequired,
     intl: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
+    userName: PropTypes.string,
+  };
+
+  static defaultProps = {
+    userName: '',
   };
 
   static fetchData({ store, match }) {
