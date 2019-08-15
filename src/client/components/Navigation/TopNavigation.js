@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './TopNavigation.less';
 
 const LINKS = [
@@ -19,63 +20,67 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
     <ul className="TopNavigation">
       {authenticated && (
         <li>
-          <NavLink
+          <Link
             to="/"
-            exact
-            className="TopNavigation__item"
-            activeClassName="TopNavigation__item--active"
+            className={classNames('TopNavigation__item', {
+              'TopNavigation__item--active': pathname === '/',
+            })}
           >
             <FormattedMessage id="feed" defaultMessage="Feed" />
-          </NavLink>
+          </Link>
         </li>
       )}
       <li>
-        <NavLink
+        <Link
           to="/trending"
-          exact
-          className="TopNavigation__item"
-          activeClassName="TopNavigation__item--active"
+          className={classNames('TopNavigation__item', {
+            'TopNavigation__item--active': pathname.includes('/trending'),
+          })}
         >
           <FormattedMessage id="news" defaultMessage="News" />
-        </NavLink>
+        </Link>
       </li>
       <li>
-        <NavLink
+        <Link
           to={authenticated ? `/rewards/active` : `/rewards/all`}
-          className="TopNavigation__item"
-          activeClassName="TopNavigation__item--active"
+          className={classNames('TopNavigation__item', {
+            'TopNavigation__item--active': pathname.includes('/rewards'),
+          })}
         >
           <FormattedMessage id="rewards" defaultMessage="Rewards" />
-        </NavLink>
+        </Link>
       </li>
       <li>
-        <NavLink
+        <Link
           to={`/objectType/hashtag`}
-          className="TopNavigation__item"
-          activeClassName="TopNavigation__item--active"
+          className={classNames('TopNavigation__item', {
+            'TopNavigation__item--active': pathname.includes('/objectType'),
+          })}
         >
           <FormattedMessage id="discover" defaultMessage="Discover" />
-        </NavLink>
+        </Link>
       </li>
       {authenticated && (
         <li>
-          <NavLink
+          <Link
             to={`/activity`}
-            className="TopNavigation__item"
-            activeClassName="TopNavigation__item--active"
+            className={classNames('TopNavigation__item', {
+              'TopNavigation__item--active': pathname === '/activity',
+            })}
           >
             <FormattedMessage id="activity" defaultMessage="Activity" />
-          </NavLink>
+          </Link>
         </li>
       )}
       <li>
-        <NavLink
+        <Link
           to={`/object/ylr-waivio`}
-          className="TopNavigation__item"
-          activeClassName="TopNavigation__item--active"
+          className={classNames('TopNavigation__item', {
+            'TopNavigation__item--active': pathname.includes('/object/ylr-waivio'),
+          })}
         >
           <FormattedMessage id="about" defaultMessage="About" />
-        </NavLink>
+        </Link>
       </li>
     </ul>
   ) : null;
