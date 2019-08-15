@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getIsAuthFetching, getIsAuthenticated } from '../reducers';
+import { getIsAuthFetching, getIsAuthenticated, getAuthenticatedUserName } from '../reducers';
 import Loading from '../components/Icon/Loading';
 import Error401 from '../statics/Error401';
 
@@ -10,7 +10,7 @@ function getDisplayName(WrappedComponent) {
 }
 
 export default function requiresLogin(WrappedComponent) {
-  const Component = ({ authenticated, fetching, ...props }) => {
+  const Component = ({ authenticated, fetching, userName, ...props }) => {
     if (fetching) {
       return (
         <div className="main-panel">
@@ -21,7 +21,7 @@ export default function requiresLogin(WrappedComponent) {
     if (!authenticated) {
       return <Error401 />;
     }
-    return <WrappedComponent {...props} />;
+    return <WrappedComponent userName={userName} {...props} />;
   };
 
   Component.displayName = `RequiresLogin(${getDisplayName(WrappedComponent)})`;
@@ -29,11 +29,13 @@ export default function requiresLogin(WrappedComponent) {
   Component.propTypes = {
     authenticated: PropTypes.bool.isRequired,
     fetching: PropTypes.bool.isRequired,
+    userName: PropTypes.string.isRequired,
   };
 
   const mapStateToProps = state => ({
     fetching: getIsAuthFetching(state),
     authenticated: getIsAuthenticated(state),
+    userName: getAuthenticatedUserName(state),
   });
 
   return connect(mapStateToProps)(Component);

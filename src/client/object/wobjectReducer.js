@@ -1,14 +1,13 @@
-import _ from 'lodash';
 import * as actions from './wobjectsActions';
 import * as appendAction from './appendActions';
-import {RATE_WOBJECT_SUCCESS} from '../../client/object/wobjActions';
-import {objectFields} from '../../common/constants/listOfFields';
-
+import { RATE_WOBJECT_SUCCESS } from '../../client/object/wobjActions';
+import { objectFields } from '../../common/constants/listOfFields';
+import { getClientWObj } from '../adapters';
 
 const initialState = {
   wobject: {},
   isFetching: false,
-  chartIdTest: {},
+  chartId: {},
 };
 
 const getByChartId = wobj => _.find(wobj.fields, ['name', 'chartid']);
@@ -28,7 +27,7 @@ export default function wobjectReducer(state = initialState, action) {
     case actions.GET_OBJECT_SUCCESS:
       return {
         ...state,
-        wobject: action.payload,
+        wobject: getClientWObj(action.payload),
         isFetching: false,
         chartId: getByChartId(action.payload),
       };
@@ -56,11 +55,11 @@ export default function wobjectReducer(state = initialState, action) {
           fields: state.wobject.fields.map(field =>
             field.permlink === action.meta.permlink
               ? {
-                ...field,
-                rating_votes: isNewVote(field)
-                  ? (field.rating_votes && [...field.rating_votes, vote]) || [vote]
-                  : field.rating_votes.map(rv => (rv.voter === action.meta.voter ? vote : rv)),
-              }
+                  ...field,
+                  rating_votes: isNewVote(field)
+                    ? (field.rating_votes && [...field.rating_votes, vote]) || [vote]
+                    : field.rating_votes.map(rv => (rv.voter === action.meta.voter ? vote : rv)),
+                }
               : field,
           ),
         },

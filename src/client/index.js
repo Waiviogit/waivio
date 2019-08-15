@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { message } from 'antd';
 import Cookie from 'js-cookie';
 import steemConnectAPI from './steemConnectAPI';
+import { waivioAPI } from '../waivioApi/ApiClient';
 import history from './history';
 import getStore from './store';
 import AppHost from './AppHost';
@@ -23,7 +24,7 @@ if (accessToken) {
   steemConnectAPI.setAccessToken(accessToken);
 }
 
-const store = getStore(steemConnectAPI);
+const store = getStore(steemConnectAPI, waivioAPI);
 
 message.config({
   top: 62,

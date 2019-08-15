@@ -22,7 +22,12 @@ class CreateRewardForm extends React.Component {
     confirmDirty: false,
     autoCompleteResult: [],
     objectsToAction: [],
+    requiredObject: {},
     isModalEligibleUsersOpen: false,
+  };
+
+  setRequiredObject = obj => {
+    this.setState({ requiredObject: obj });
   };
 
   handleSubmit = e => {
@@ -42,6 +47,7 @@ class CreateRewardForm extends React.Component {
   prepareSubmitData = data => {
     const objects = _.map(this.state.objectsToAction, o => o.id);
     const finalData = {
+      requiredObject: this.state.requiredObject.author_permlink,
       guideName: this.props.userName,
       name: data.campaignName,
       description: data.description,
@@ -49,9 +55,11 @@ class CreateRewardForm extends React.Component {
       budget: data.budget,
       reward: data.reward,
       requirements: { minPhotos: data.minPhotos },
+      blacklist_users: [],
+      whitelist_users: [],
       userRequirements: {
         minFollowers: data.minFollowers,
-        minPosts: data.maxReviews,
+        minPosts: data.minPosts,
       },
       objects,
       expired_at: data.expiredAt.format(),
@@ -174,7 +182,7 @@ class CreateRewardForm extends React.Component {
           })(<Input type="number" />)}
           Days
         </Form.Item>
-        <div className="CreateReward__block-title">RewiewRequirements:</div>
+        <div className="CreateReward__block-title">ReviewRequirements:</div>
         <Form.Item label="Min # of original photos">
           {getFieldDecorator('minPhotos', {
             rules: [
@@ -186,7 +194,20 @@ class CreateRewardForm extends React.Component {
           })(<Input type="number" />)}
           per review
         </Form.Item>
-        Required objects
+        Required object (Your business object)
+        <SearchObjectsAutocomplete
+          allowClear={false}
+          itemsIdsToOmit={[]}
+          style={{ width: '100%' }}
+          placeholder="Please select"
+          handleSelect={this.setRequiredObject}
+        />
+        <div className="CreateReward__objects-wrap">
+          {!_.isEmpty(this.state.requiredObject) && (
+            <ObjectCardView wObject={this.state.requiredObject} />
+          )}
+        </div>
+        Objects to review
         <SearchObjectsAutocomplete
           allowClear={false}
           itemsIdsToOmit={[]}

@@ -3,8 +3,10 @@ import {
   getFieldWithMaxWeight,
   sortListItemsBy,
   getInnerFieldWithMaxWeight,
+  getFieldsWithMaxWeight,
 } from '../wObjectHelper';
 import { WAIVIO_META_FIELD_NAME } from '../../../common/constants/waivio';
+import * as mockObject from '../__mock__/mockData';
 
 describe('hasField', () => {
   it('should return true if field exist', () => {
@@ -216,6 +218,101 @@ describe('getFieldWithMaxWeight', () => {
       ],
     };
     expect(getFieldWithMaxWeight(wObject, 'name', null)).toEqual('');
+  });
+});
+
+describe('getFieldsWithMaxWeight', () => {
+  it('should return empty object if wObj is empty', () => {
+    const wObject = {};
+    expect(getFieldsWithMaxWeight(wObject)).toEqual({});
+  });
+  it('should return empty object if wObj.fields is empty', () => {
+    const wObject = { fields: [] };
+    expect(getFieldsWithMaxWeight(wObject)).toEqual({});
+  });
+  it('should return object with actual fields', () => {
+    const expected = {
+      name: 'milk',
+      newsFilter: 'blog',
+      website: 'http://www.broadwaychinese.ca',
+    };
+    expect(getFieldsWithMaxWeight(mockObject.SampleWObject)).toEqual(expected);
+  });
+  it('should return object with actual fields if the same fields in a row with same weight', () => {
+    const expected = {
+      name: 'milk',
+      newsFilter: 'steem',
+      website: 'http://www.broadwaychinese.ca',
+    };
+    expect(getFieldsWithMaxWeight(mockObject.wObjectInRowDataWithSameWeigth)).toEqual(expected);
+  });
+  it('should return object with actual fields if the same fields in a row with different weight', () => {
+    const expected = {
+      name: 'milk',
+      newsFilter: 'allowList',
+      website: 'http://www.broadwaychinese.ca',
+    };
+    expect(getFieldsWithMaxWeight(mockObject.wObjectInRowDataWithDifferentWeigth)).toEqual(
+      expected,
+    );
+  });
+  it('should return object with actual fields if the same fields not in a row with same weight', () => {
+    const expected = {
+      name: 'milk',
+      newsFilter: 'steem',
+      website: 'http://www.broadwaychinese.ca',
+    };
+    expect(getFieldsWithMaxWeight(mockObject.wObjectNotInRowDataWithSameWeigth)).toEqual(expected);
+  });
+  it('should return object with actual fields if the same fields not in a row with different weight', () => {
+    const expected = {
+      name: 'milk',
+      newsFilter: 'allowList',
+      website: 'http://www.broadwaychinese.ca',
+    };
+    expect(getFieldsWithMaxWeight(mockObject.wObjectNotInRowDataWithDifferentWeigth)).toEqual(
+      expected,
+    );
+  });
+  it('should return object with actual fields if the same fields, more then two, in a row with same weight', () => {
+    const expected = {
+      name: 'milk',
+      newsFilter: 'steem',
+      website: 'http://www.broadwaychinese.ca',
+    };
+    expect(getFieldsWithMaxWeight(mockObject.wObjectMoreTwoObjInRowDataWithSameWeigth)).toEqual(
+      expected,
+    );
+  });
+  it('should return object with actual fields if the same fields, more then two, in a row with different weight', () => {
+    const expected = {
+      name: 'milk',
+      newsFilter: 'sometext',
+      website: 'http://www.broadwaychinese.ca',
+    };
+    expect(
+      getFieldsWithMaxWeight(mockObject.wObjectMoreTwoObjInRowDataWithDifferentWeigth),
+    ).toEqual(expected);
+  });
+  it('should return object with actual fields if the same fields, more then two, not in a row with same weight', () => {
+    const expected = {
+      name: 'milk',
+      newsFilter: 'steem',
+      website: 'http://www.broadwaychinese.ca',
+    };
+    expect(getFieldsWithMaxWeight(mockObject.wObjectMoreTwoObjNotInRowDataWithSameWeigth)).toEqual(
+      expected,
+    );
+  });
+  it('should return object with actual fields if the same fields, more then two, not in a row with different weight', () => {
+    const expected = {
+      name: 'milk',
+      newsFilter: 'allow',
+      website: 'http://www.broadwaychinese.ca',
+    };
+    expect(
+      getFieldsWithMaxWeight(mockObject.wObjectMoreTwoObjNotInRowDataWithDifferentWeigth),
+    ).toEqual(expected);
   });
 });
 

@@ -4,9 +4,35 @@ import {
   supportedObjectFields,
   objectFieldsWithInnerData,
   TYPES_OF_MENU_ITEM,
+  objectFields,
 } from '../../../src/common/constants/listOfFields';
 import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
 import OBJECT_TYPE from './const/objectTypes';
+
+export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
+  let url = pathname + hash;
+  const { type, menuItems, sortCustom } = wobj;
+  switch (type && type.toLowerCase()) {
+    case OBJECT_TYPE.PAGE:
+      url = `${pathname}/${OBJECT_TYPE.PAGE}`;
+      break;
+    case OBJECT_TYPE.LIST:
+      url = `${pathname}/${OBJECT_TYPE.LIST}`;
+      break;
+    case OBJECT_TYPE.HASHTAG:
+      break;
+    default:
+      if (menuItems) {
+        url = `${pathname}/menu#${(sortCustom &&
+          sortCustom.find(item => item !== TYPES_OF_MENU_ITEM.BUTTON)) ||
+          menuItems[0].author_permlink}`;
+      } else if (screenSize !== 'large') {
+        url = `${pathname}/about`;
+      }
+      break;
+  }
+  return url;
+};
 
 export const getFieldWithMaxWeight = (wObject, currentField, defaultValue = '') => {
   if (!wObject || !currentField || !supportedObjectFields.includes(currentField))
@@ -19,6 +45,37 @@ export const getFieldWithMaxWeight = (wObject, currentField, defaultValue = '') 
 
   if (orderedValues[0].body) return orderedValues[0].body;
   return defaultValue;
+};
+
+export const getFieldsWithMaxWeight = wObj => {
+  const complexFields = [
+    objectFields.button,
+    objectFields.address,
+    objectFields.website,
+    objectFields.link,
+    objectFields.status,
+  ];
+  if (!wObj || (wObj && _.isEmpty(wObj.fields))) return '';
+  let maxWeightedFields = wObj.fields
+    .filter(f => !Object.keys(wObj).includes(f.name))
+    .reduce((acc, curr) => {
+      if (acc[curr.name]) {
+        if (curr.weight > acc[curr.name].weight) {
+          acc[curr.name] = curr;
+        }
+      } else {
+        acc[curr.name] = curr;
+      }
+      return acc;
+    }, {});
+  maxWeightedFields = _.mapValues(maxWeightedFields, 'body');
+  complexFields.forEach(field => {
+    if (maxWeightedFields[field]) {
+      const parsed = _.attempt(JSON.parse, maxWeightedFields[field]);
+      if (!_.isError(parsed)) maxWeightedFields[field] = parsed;
+    }
+  });
+  return maxWeightedFields;
 };
 
 export const getInnerFieldWithMaxWeight = (wObject, currentField, innerField) => {
@@ -34,8 +91,7 @@ export const getInnerFieldWithMaxWeight = (wObject, currentField, innerField) =>
   return '';
 };
 
-//
-export const getFielsByName = (wObject, currentField) => {
+export const getFieldsByName = (wObject, currentField) => {
   if (!supportedObjectFields.includes(currentField) || !wObject) return [];
   return _.filter(wObject.fields, ['name', currentField]);
 };
@@ -205,6 +261,7 @@ export const testImage = (url, callback, timeout = 3000) => {
  */
 export const sortListItemsBy = (items, sortBy = 'by-name-asc', sortOrder = null) => {
   if (!items || !items.length) return [];
+  if (!sortBy) return items;
   let comparator;
   switch (sortBy) {
     case 'rank':

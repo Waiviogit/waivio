@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
-import _ from 'lodash';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Select, Radio, Checkbox } from 'antd';
@@ -31,7 +30,7 @@ import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
 import './Settings.less';
 import packageJson from '../../../package.json';
-import SteemConnect from '../steemConnectAPI';
+import TopNavigation from '../components/Navigation/TopNavigation';
 
 @requiresLogin
 @injectIntl
@@ -57,7 +56,7 @@ export default class Settings extends React.Component {
     reloading: PropTypes.bool,
     locale: PropTypes.string,
     readLanguages: PropTypes.arrayOf(PropTypes.string),
-    votingPower: PropTypes.string,
+    votingPower: PropTypes.bool,
     votePercent: PropTypes.number,
     loading: PropTypes.bool,
     showNSFWPosts: PropTypes.bool,
@@ -68,13 +67,14 @@ export default class Settings extends React.Component {
     notify: PropTypes.func,
     upvoteSetting: PropTypes.bool,
     exitPageSetting: PropTypes.bool,
+    userName: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
     reloading: false,
     locale: 'auto',
     readLanguages: [],
-    votingPower: 'auto',
+    votingPower: false,
     votePercent: 10000,
     loading: false,
     showNSFWPosts: false,
@@ -90,18 +90,19 @@ export default class Settings extends React.Component {
   constructor(props) {
     super(props);
     this.handleUpvoteSettingChange = this.handleUpvoteSettingChange.bind(this);
-  }
 
-  state = {
-    locale: 'auto',
-    readLanguages: [],
-    votingPower: 'auto',
-    votePercent: 10000,
-    showNSFWPosts: false,
-    nightmode: false,
-    rewriteLinks: false,
-    exitPageSetting: true,
-  };
+    this.state = {
+      locale: props.locale,
+      readLanguages: props.readLanguages,
+      votingPower: props.votingPower,
+      votePercent: props.votePercent,
+      showNSFWPosts: props.showNSFWPosts,
+      nightmode: props.nightmode,
+      rewriteLinks: props.rewriteLinks,
+      exitPageSetting: props.upvoteSetting,
+      upvoteSetting: props.exitPageSetting,
+    };
+  }
 
   componentWillMount() {
     this.setState({
@@ -160,24 +161,17 @@ export default class Settings extends React.Component {
   }
 
   handleSave = () => {
-    if (!_.isEqual(this.state.readLanguages, this.props.readLanguages)) {
-      const win = window.open(
-        SteemConnect.sign('profile-update', { readLanguages: this.state.readLanguages }),
-        '_blank',
-      );
-      win.focus();
-    }
     this.props
       .saveSettings({
         locale: this.state.locale,
-        readLanguages: this.state.readLanguages,
         votingPower: this.state.votingPower,
-        votePercent: this.state.votePercent * 100,
         showNSFWPosts: this.state.showNSFWPosts,
         nightmode: this.state.nightmode,
         rewriteLinks: this.state.rewriteLinks,
-        upvoteSetting: this.state.upvoteSetting,
         exitPageSetting: this.state.exitPageSetting,
+        upvoteSetting: this.state.upvoteSetting,
+        postLocales: this.state.readLanguages,
+        votePercent: this.state.votePercent * 100,
       })
       .then(() =>
         this.props.notify(
@@ -195,10 +189,7 @@ export default class Settings extends React.Component {
   handleNightmode = event => this.setState({ nightmode: event.target.checked });
   handleRewriteLinksChange = event => this.setState({ rewriteLinks: event.target.checked });
   handleExitPageSettingChange = event => this.setState({ exitPageSetting: event.target.checked });
-
-  handleUpvoteSettingChange(event) {
-    this.setState({ upvoteSetting: event.target.checked });
-  }
+  handleUpvoteSettingChange = event => this.setState({ upvoteSetting: event.target.checked });
 
   render() {
     const {
@@ -210,6 +201,7 @@ export default class Settings extends React.Component {
       showNSFWPosts: initialShowNSFWPosts,
       nightmode: initialNightmode,
       loading,
+      userName,
     } = this.props;
     const {
       votingPower,
@@ -244,13 +236,14 @@ export default class Settings extends React.Component {
     });
 
     return (
-      <div className="shifted">
+      <React.Fragment>
         <Helmet>
           <title>
             {intl.formatMessage({ id: 'settings', defaultMessage: 'Settings' })} - Waivio
           </title>
         </Helmet>
         <div className="settings-layout container">
+          <TopNavigation authenticated userName={userName} />
           <Affix className="leftContainer" stickPosition={77}>
             <div className="left">
               <LeftSidebar />
@@ -279,10 +272,10 @@ export default class Settings extends React.Component {
                     value={votingPower}
                     onChange={this.handleVotingPowerChange}
                   >
-                    <Radio value="off">
+                    <Radio value={false}>
                       <FormattedMessage id="voting_power_off" defaultMessage="Disable slider" />
                     </Radio>
-                    <Radio value="on">
+                    <Radio value={Boolean(true)}>
                       <FormattedMessage id="voting_power_on" defaultMessage="Enable slider" />
                     </Radio>
                   </Radio.Group>
@@ -311,7 +304,7 @@ export default class Settings extends React.Component {
                   <p>
                     <FormattedMessage
                       id="language_info"
-                      defaultMessage="What language do you want to use on Busy?"
+                      defaultMessage="What language do you want to use on Waivio?"
                     />
                   </p>
                   <Select
@@ -467,7 +460,7 @@ export default class Settings extends React.Component {
             )}
           </div>
         </div>
-      </div>
+      </React.Fragment>
     );
   }
 }

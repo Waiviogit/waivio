@@ -1,14 +1,15 @@
-import _ from 'lodash';
-import * as authActions from '../../auth/authActions';
+import { get } from 'lodash';
 import * as editorActions from './editorActions';
 import * as postActions from '../postActions';
+import * as authActions from '../../auth/authActions';
+import { GET_USER_METADATA } from '../../user/usersActions';
 
 const defaultState = {
   loading: false,
   error: null,
   success: false,
   saving: false,
-  draftPosts: {},
+  draftPosts: [],
   pendingDrafts: [],
   editedPosts: [],
   loadingImg: false,
@@ -35,8 +36,16 @@ const editor = (state = defaultState, action) => {
       if (action.meta && action.meta.refresh) return state;
       return {
         ...state,
-        draftPosts: _.get(action, 'payload.user_metadata.drafts', defaultState.draftPosts),
+        draftPosts: get(action, ['payload', 'userMetaData', 'drafts'], defaultState.draftPosts),
       };
+    case GET_USER_METADATA.SUCCESS:
+      if (action.payload && action.payload.drafts) {
+        return {
+          ...state,
+          draftPosts: action.payload.drafts,
+        };
+      }
+      return state;
     case editorActions.NEW_POST:
       return {
         ...state,
@@ -74,7 +83,10 @@ const editor = (state = defaultState, action) => {
     case editorActions.SAVE_DRAFT_SUCCESS:
       return {
         ...state,
-        draftPosts: { ...state.draftPosts, [action.meta.postId]: action.payload },
+        draftPosts: [
+          ...state.draftPosts.filter(d => d.draftId !== action.meta.postId),
+          action.payload,
+        ],
         saving: false,
       };
     case editorActions.SAVE_DRAFT_ERROR:

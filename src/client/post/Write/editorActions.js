@@ -1,6 +1,6 @@
 import assert from 'assert';
 import Cookie from 'js-cookie';
-import { push } from 'react-router-redux';
+import { push } from 'connected-react-router';
 import { createAction } from 'redux-actions';
 import {
   BENEFICIARY_ACCOUNT,
@@ -13,6 +13,7 @@ import { rewardsValues } from '../../../common/constants/rewards';
 import { createPermlink, getBodyPatchIfSmaller } from '../../vendor/steemitHelpers';
 import { saveSettings } from '../../settings/settingsActions';
 import { notify } from '../../app/Notification/notificationActions';
+import { getAuthenticatedUserName } from '../../reducers';
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -46,11 +47,11 @@ export const UPLOAD_IMG_FINISH = '@editor/UPLOAD_IMG_FINISH';
 export const imageUploading = () => dispatch => dispatch({ type: UPLOAD_IMG_START });
 export const imageUploaded = () => dispatch => dispatch({ type: UPLOAD_IMG_FINISH });
 
-export const saveDraft = (post, redirect, intl) => dispatch =>
+export const saveDraft = (draft, redirect, intl) => dispatch =>
   dispatch({
     type: SAVE_DRAFT,
     payload: {
-      promise: addDraftMetadata(post).catch(err => {
+      promise: addDraftMetadata(draft).catch(err => {
         const isLoggedOut = err.error === 'invalid_grant';
 
         const errorMessage = intl.formatMessage({
@@ -65,30 +66,45 @@ export const saveDraft = (post, redirect, intl) => dispatch =>
         throw new Error();
       }),
     },
-    meta: { postId: post.id },
+    meta: { postId: draft.draftId },
   }).then(() => {
-    if (redirect) dispatch(push(`/editor?draft=${post.id}`));
+    if (redirect) dispatch(push(`/editor?draft=${draft.draftId}`));
   });
 
-export const deleteDraft = draftIds => dispatch =>
-  dispatch({
+export const deleteDraft = draftIds => (dispatch, getState) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+  if (!userName) dispatch({ type: DELETE_DRAFT_ERROR });
+
+  return dispatch({
     type: DELETE_DRAFT,
     payload: {
-      promise: deleteDraftMetadata(draftIds),
+      promise: deleteDraftMetadata(draftIds, userName),
     },
     meta: { ids: draftIds },
   });
+};
 
-export const editPost = (post, intl) => dispatch => {
-  const jsonMetadata = jsonParse(post.json_metadata);
+export const editPost = (
+  { id, author, permlink, title, body, json_metadata, parent_author, parent_permlink, reward }, // eslint-disable-line
+  intl,
+) => dispatch => {
+  const jsonMetadata = jsonParse(json_metadata);
   const draft = {
-    ...post,
-    originalBody: post.body,
-    jsonMetadata,
-    lastUpdated: new Date(),
+    author,
+    body,
+    draftId: id,
     isUpdating: true,
+    jsonMetadata,
+    lastUpdated: Date.now(),
+    originalBody: body,
+    parentAuthor: parent_author,
+    parentPermlink: parent_permlink,
+    permlink,
+    reward,
+    title,
   };
-  dispatch(saveDraft({ postData: draft, id: post.id }, true, intl));
+  dispatch(saveDraft(draft, true, intl));
 };
 
 const requiredFields = 'parentAuthor,parentPermlink,author,permlink,title,body,jsonMetadata'.split(

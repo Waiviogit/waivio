@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { get, size } from 'lodash';
 import { getDiscussionsFromAPI } from '../helpers/apiHelpers';
 import {
   createAsyncActionType,
@@ -94,7 +94,7 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
   if (!feedContent.length) return Promise.resolve(null);
 
   const lastPost = posts[feedContent[feedContent.length - 1]];
-  const skip = feed.wia_feed && feed.wia_feed.all ? _.size(feed.wia_feed.all.list) : 0;
+  const skip = feed.wia_feed && feed.wia_feed.all ? size(feed.wia_feed.all.list) : 0;
 
   const startAuthor = lastPost.author;
   const startPermlink = lastPost.permlink;
@@ -263,29 +263,28 @@ export const getMoreReplies = () => (dispatch, getState, { steemAPI }) => {
  * Use async await to load all the posts of bookmarked from steemAPI and returns a Promise
  *
  * @param bookmarks from localStorage only contain author and permlink
- * @param steemAPI
  * @returns Promise - bookmarksData
  */
 async function getBookmarksData(bookmarks) {
   const bookmarksData = [];
-  for (let idx = 0; idx < Object.keys(bookmarks).length; idx += 1) {
-    const postId = Object.keys(bookmarks)[idx];
-
-    const postData = ApiClient.getContent(bookmarks[postId].author, bookmarks[postId].permlink);
+  for (let idx = 0; idx < bookmarks.length; idx += 1) {
+    const [author, permlink] = bookmarks[idx].split('/');
+    const postData = ApiClient.getContent(author, permlink);
     bookmarksData.push(postData);
   }
   return Promise.all(bookmarksData.sort((a, b) => a.timestamp - b.timestamp).reverse());
 }
 
-export const getBookmarks = () => (dispatch, getState, { steemAPI }) => {
+export const getBookmarks = () => (dispatch, getState) => {
   const state = getState();
+  const loaded = get(getFeed(state), ['bookmarks', 'all', 'list'], []);
   const bookmarks = getBookmarksSelector(state);
-
+  if (loaded.length && loaded.length === bookmarks.length) {
+    return;
+  }
   dispatch({
     type: GET_BOOKMARKS.ACTION,
-    payload: getBookmarksData(bookmarks, steemAPI).then(posts =>
-      posts.filter(post => post.id !== 0),
-    ),
+    payload: getBookmarksData(bookmarks).then(posts => posts.filter(post => post.id !== 0)),
     meta: {
       sortBy: 'bookmarks',
       category: 'all',

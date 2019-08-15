@@ -8,7 +8,7 @@ import VideoSideButton from './components/sides/VideoSideButton';
 import SeparatorButton from './components/sides/SeparatorSideButton';
 import ObjectSideButton from './components/sides/ObjectSideButton';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
-import getClientObject from '../../adapters';
+import { getClientWObj } from '../../adapters';
 
 const SIDE_BUTTONS = [
   {
@@ -100,7 +100,7 @@ class Editor extends React.Component {
         entityMap[key] = {
           ...value,
           data: loadedObject
-            ? { ...value.data, object: getClientObject(loadedObject) }
+            ? { ...value.data, object: getClientWObj(loadedObject) }
             : { ...value.data },
         };
       });

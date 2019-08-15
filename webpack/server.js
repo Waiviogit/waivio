@@ -70,6 +70,11 @@ module.exports = function createConfig(env = 'dev') {
         name: 'server.js',
       }),
     ];
+    config.resolve = {
+      alias: {
+        'react-dom': '@hot-loader/react-dom',
+      },
+    };
   }
 
   return config;

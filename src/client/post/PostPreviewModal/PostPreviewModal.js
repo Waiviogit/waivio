@@ -16,7 +16,7 @@ import PostChart from '../../../investarena/components/PostChart';
 import { getForecastObject } from '../../../investarena/components/CreatePostForecast/helpers';
 import { forecastDateTimeFormat } from '../../../investarena/constants/constantsForecast';
 
-const isTopicValid = topic => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(topic);
+const isTopicValid = topic => /^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$/.test(topic);
 
 @injectIntl
 class PostPreviewModal extends Component {

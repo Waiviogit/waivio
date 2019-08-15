@@ -24,7 +24,7 @@ class MapOS extends React.Component {
       infoboxData: false,
       markersLayout: null,
       zoom: 8,
-      center: null,
+      center: [+this.props.userLocation.lat, +this.props.userLocation.lon],
       isFullscreenMode: false,
       isInitial: true,
     };
@@ -37,15 +37,18 @@ class MapOS extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (_.size(nextProps.wobjects) !== _.size(this.props.wobjects)) {
+    if (!_.isEqual(nextProps.wobjects, this.props.wobjects)) {
       this.setState({
         markersLayout: this.getMarkers(nextProps),
-        center: [+this.props.userLocation.lat, +this.props.userLocation.lon],
+        // center: [+this.props.userLocation.lat, +this.props.userLocation.lon],
       });
     }
   }
 
-  onBoundsChanged = ({ center, zoom }) => this.setState({ center, zoom });
+  onBoundsChanged = ({ center, zoom }) => {
+    this.props.setArea({ center, zoom });
+    this.setState({ center, zoom });
+  };
 
   getMarkers = props =>
     _.map(props.wobjects, wobject => {
@@ -58,6 +61,9 @@ class MapOS extends React.Component {
           payload={wobject}
           onMouseOver={this.handleMarkerClick}
           onMouseOut={this.closeInfobox}
+          onClick={() => {
+            props.onMarkerClick(wobject.author_permlink);
+          }}
         />
       ) : null;
     });
@@ -66,7 +72,7 @@ class MapOS extends React.Component {
     const wobj = getClientWObj(this.state.infoboxData.wobject);
     return (
       <Overlay anchor={this.state.infoboxData.coordinates} offset={[-12, 35]}>
-        <div className="MapOS__overlay-wrap">
+        <div role="presentation" className="MapOS__overlay-wrap">
           <img src={wobj.avatar} width={35} height={35} alt="" />
           <div className="MapOS__overlay-wrap-name">{wobj.name}</div>
         </div>
@@ -102,9 +108,10 @@ class MapOS extends React.Component {
     this.setState({ infoboxData: null });
   };
 
-  incrementZoom = () => this.setState({ zoom: this.state.zoom + 1 });
+  incrementZoom = () =>
+    this.state.zoom < 20 ? this.setState({ zoom: this.state.zoom + 1 }) : null;
 
-  decrementZoom = () => this.setState({ zoom: this.state.zoom - 1 });
+  decrementZoom = () => (this.state.zoom > 0 ? this.setState({ zoom: this.state.zoom - 1 }) : null);
 
   toggleModal = () => this.setState({ isFullscreenMode: !this.state.isFullscreenMode });
 
@@ -174,18 +181,20 @@ class MapOS extends React.Component {
   }
 }
 
-MapOS.defaultProps = {
-  ...defaultCoords,
-  markers: {},
-  wobjects: [],
-  heigth: 200,
-  userLocation: {},
-};
-
 MapOS.propTypes = {
   heigth: PropTypes.number,
   userLocation: PropTypes.shape(),
   wobjects: PropTypes.arrayOf(PropTypes.shape()),
+  setArea: PropTypes.func,
+};
+
+MapOS.defaultProps = {
+  ...defaultCoords,
+  markers: {},
+  wobjects: [],
+  setArea: () => {},
+  heigth: 200,
+  userLocation: {},
 };
 
 export default MapOS;

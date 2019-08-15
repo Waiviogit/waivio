@@ -86,7 +86,7 @@ const UserHero = ({
                 />
               )}
               <UserMenuWrapper
-                objectsSharesCount={user.objects_shares_count}
+                objectsSharesCount={user.objects_shares_count || 0}
                 followers={user.follower_count}
                 following={followingCount}
               />

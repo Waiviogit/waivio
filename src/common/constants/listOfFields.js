@@ -112,6 +112,7 @@ export const getAllowedFieldsByObjType = objectType => {
   switch (objectType && objectType.toLowerCase()) {
     case OBJECT_TYPE.PAGE:
       return [
+        objectFields.name,
         objectFields.pageContent,
         objectFields.title,
         objectFields.avatar,
@@ -120,6 +121,7 @@ export const getAllowedFieldsByObjType = objectType => {
       ];
     case OBJECT_TYPE.LIST:
       return [
+        objectFields.name,
         objectFields.title,
         objectFields.avatar,
         objectFields.background,

@@ -1,4 +1,6 @@
+import _ from 'lodash';
 import fetch from 'isomorphic-fetch';
+import Cookie from 'js-cookie';
 import config from './routes';
 import {getFollowingCount} from '../client/helpers/apiHelpers';
 import {supportedObjectTypes} from '../investarena/constants/objectsInvestarena';
@@ -174,12 +176,35 @@ export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0 }) =>
       .catch(error => reject(error));
   });
 
-export const searchObjects = (searchString, objType = '', limit = 10) => {
+export const searchObjects = (searchString, objType = '', limit = 15) => {
   const requestBody = { search_string: searchString, limit };
   if (objType && typeof objType === 'string') {
     requestBody.object_type = objType;
   }
   return fetch(`${config.apiPrefix}${config.searchObjects}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify(requestBody),
+  }).then(res => res.json());
+};
+
+export const searchUsers = (searchString, limit = 15) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.apiPrefix}${config.users}${config.search}?searchString=${searchString}&limit=${limit}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(res => res.json())
+      .then(posts => resolve(posts))
+      .catch(error => reject(error));
+  });
+
+export const searchObjectTypes = (searchString, limit = 15, skip) => {
+  const requestBody = { search_string: searchString, limit, skip };
+  return fetch(`${config.apiPrefix}${config.objectTypesSearch}`, {
     headers,
     method: 'POST',
     body: JSON.stringify(requestBody),
@@ -336,7 +361,12 @@ export const getMoreObjectsByType = (type, skip, limit, filter = {}) =>
     fetch(`${config.apiPrefix}${config.objectType}/${type}`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ object_types: [type], skip, limit, filter }),
+      body: JSON.stringify({
+        object_types: [type],
+        wobjects_skip: skip,
+        wobjects_count: limit,
+        filter,
+      }),
     })
       .then(handleErrors)
       .then(res => res.json())
@@ -357,19 +387,44 @@ export const getTopUsers = (isRandom = false, { limit, skip } = { limit: 30, ski
   });
 };
 
-export const getPropositions = ({ limit = 30, skip = 0, userName, status, approved, guideName }) =>
+export const getPropositions = ({
+  limit = 30,
+  skip = 0,
+  userName = '',
+  status,
+  approved,
+  guideNames,
+  types,
+  requiredObject,
+  currentUserName,
+  radius,
+  coordinates,
+  sort,
+}) =>
   new Promise((resolve, reject) => {
-    fetch(
-      `${config.campaignApiPrefix}${config.campaigns}?limit=${limit}&skip=${skip}${
-        userName ? `&userName=${userName}` : ''
-      }${userName ? `&approved=${approved}` : ''}${status ? `&status=${status}` : ''}${
-        guideName ? `&guideName=${guideName}` : ''
-      }`,
-      {
-        headers,
-        method: 'GET',
-      },
-    )
+    const reqData = {
+      limit,
+      skip,
+      status,
+      approved,
+      requiredObject,
+      currentUserName,
+      sort,
+    };
+
+    if (!_.isEmpty(coordinates) && radius) {
+      reqData.radius = radius;
+      reqData.coordinates = coordinates;
+    }
+    if (!_.isEmpty(guideNames)) reqData.guideNames = guideNames;
+    if (!_.isEmpty(types)) reqData.types = types;
+    if (!_.isEmpty(userName)) reqData.userName = userName;
+
+    fetch(`${config.campaignApiPrefix}${config.campaigns}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify(reqData),
+    })
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));
@@ -378,9 +433,7 @@ export const getPropositions = ({ limit = 30, skip = 0, userName, status, approv
 export const getSuitableUsers = (followsCount, postsCount) =>
   new Promise((resolve, reject) => {
     fetch(
-      `${config.campaignApiPrefix}${
-        config.suitableUsers
-      }?count_follows=${followsCount}&count_posts=${postsCount}`,
+      `${config.campaignApiPrefix}${config.suitableUsers}?count_follows=${followsCount}&count_posts=${postsCount}`,
       {
         headers,
         method: 'GET',
@@ -403,6 +456,42 @@ export const createCampaign = data =>
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
+
+export const getCampaignsByGuideName = guideName =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.campaigns}${config.dashboard}/${guideName}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getAuthenticatedUserMetadata = (
+  userName,
+  accessToken = Cookie.get('access_token'),
+) => {
+  const { apiPrefix, user, userMetadata } = config;
+  return fetch(`${apiPrefix}${user}/${userName}${userMetadata}`, {
+    headers: { ...headers, 'access-token': accessToken },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => _.omit(res.user_metadata, '_id'));
+};
+
+export const updateUserMetadata = (userName, data) =>
+  fetch(`${config.apiPrefix}${config.user}/${userName}${config.userMetadata}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'PUT',
+    body: JSON.stringify({ user_metadata: data }),
+  }).then(res => res.json());
+
+// injected as extra argument in Redux Thunk
+export const waivioAPI = {
+  getAuthenticatedUserMetadata,
+};
 
 // Investarena
 export const getUserLongTermStatistics = id =>

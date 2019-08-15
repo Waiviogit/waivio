@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Helmet } from 'react-helmet';
+import { getFeedContent } from './feedActions';
+import { getIsLoaded, getIsAuthenticated } from '../reducers';
 import { Switch } from 'antd';
 import { injectIntl } from 'react-intl';
 import { cleanFeed, getFeedContent, getUserFeedContent } from './feedActions';
@@ -21,6 +23,7 @@ import QuickPostEditor from '../components/QuickPostEditor/QuickPostEditor';
 @connect(
   state => ({
     authenticated: getIsAuthenticated(state),
+    loaded: getIsLoaded(state),
     userName: getAuthenticatedUserName(state),
   }),
   {

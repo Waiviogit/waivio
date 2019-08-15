@@ -3,6 +3,72 @@
 
 .Rewards {
   width: 100%;
+  .RewardBreadcrumb {
+    .ant-breadcrumb {
+      font-size: 2em;
+      font-weight: 500;
+    }
+  }
+
+  .RewardsHeader,
+  .RewardsFooter {
+    &-button {
+      button {
+        margin-right: 10px;
+      }
+    }
+
+    &-block {
+      display: flex;
+      flex-direction: column;
+    }
+
+    &-wrap {
+      background-color: @white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid @blue-hawkesBlue;
+
+      .anticon {
+        font-size: 26px;
+        margin-right: 5px;
+      }
+    }
+
+    &-payment {
+      font-size: 22px;
+    }
+
+    &__top-line {
+      display: flex;
+      align-items: center;
+      color: @blue-baliHai;
+
+      &-button {
+        border: 1px solid @blue-baliHai;
+        border-radius: 17px;
+        padding: 0 8px;
+        color: @blue-baliHai;
+        cursor: pointer;
+        &:hover {
+          border-color: @primary-color;
+          color: @primary-color;
+        }
+      }
+
+      &-button-active {
+        border-color: @primary-color!important;
+        color: @primary-color!important;
+      }
+    }
+  }
+
+  .ObjectCardView {
+    margin-top: 0;
+  }
+
   &__title {
     display: flex;
     align-items: center;
@@ -11,28 +77,22 @@
     font-size: 2em;
     font-weight: 500;
   }
+
   &__toggler-wrap {
     display: flex;
     align-items: flex-end;
     font-size: 14px;
     color: @tertiary-color;
+
     button {
       margin-left: 15px;
     }
   }
-  .feed-layout {
-    .center {
-      float: left;
-      width: 100%;
+}
 
-      @media @small {
-        width: calc(100% - @margin);
-      }
-
-      @media @medium {
-        width: calc(100% - (@left-width + @margin));
-        margin-left: @margin;
-      }
-    }
+.Rewards-modal {
+  &__user-card {
+    display: flex;
+    align-items: center;
   }
 }

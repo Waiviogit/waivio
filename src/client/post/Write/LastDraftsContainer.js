@@ -4,12 +4,9 @@ import { getDraftPosts, getIsLoaded } from '../../reducers';
 import LastDrafts from '../../components/Sidebar/LastDrafts';
 
 const mapStateToProps = state => {
-  const drafts = _.map(getDraftPosts(state), (draft, id) => ({
-    id,
-    ...draft,
-  }));
-
-  const sortedDrafts = _.orderBy(drafts, draft => new Date(draft.lastUpdated), ['desc']);
+  const sortedDrafts = _.orderBy(getDraftPosts(state), draft => new Date(draft.lastUpdated), [
+    'desc',
+  ]);
 
   return {
     loaded: getIsLoaded(state),

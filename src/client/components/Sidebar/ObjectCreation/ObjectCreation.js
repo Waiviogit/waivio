@@ -5,7 +5,7 @@ import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import { Icon } from 'antd';
 import { getObjectTypes } from '../../../objectTypes/objectTypesActions';
-import { getobjectTypesState } from '../../../reducers';
+import { getObjectTypesList } from '../../../reducers';
 import Loading from '../../Icon/Loading';
 import CreateObject from '../../../post/CreateObjectModal/CreateObject';
 import './ObjectCreation.less';
@@ -14,7 +14,7 @@ const objTypesLimit = 5;
 
 @connect(
   state => ({
-    objectTypes: getobjectTypesState(state),
+    objectTypes: getObjectTypesList(state),
   }),
   {
     loadObjectTypes: getObjectTypes,

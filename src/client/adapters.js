@@ -1,70 +1,40 @@
 import { objectFields } from '../common/constants/listOfFields';
-import { getFieldWithMaxWeight } from './object/wObjectHelper';
+import { getFieldsWithMaxWeight } from './object/wObjectHelper';
 import DEFAULTS from './object/const/defaultValues';
 
-export const getClientWObj = (serverWObj, fieldsToInclude = [], defaultsFromParent = []) => {
+export const getClientWObj = serverWObj => {
   /* eslint-disable no-underscore-dangle */
   /* eslint-disable camelcase */
   const {
-    parent,
     author_permlink,
     followers_names,
     weight,
     created_at,
     updated_at,
-    __v,
-    users,
-    children,
     user_count,
-    isNew,
-    rank,
     object_type,
   } = serverWObj;
 
-  const defaultValues = {
-    [objectFields.avatar]: DEFAULTS.AVATAR,
-  };
-  if (defaultsFromParent && defaultsFromParent.length && parent && parent.fields) {
-    defaultsFromParent.forEach(f => {
-      const parentField = getFieldWithMaxWeight(parent, f);
-      if (parentField) {
-        defaultValues[f] = parentField;
-      }
-    });
-  }
-
   const result = {
     id: author_permlink,
-    avatar: getFieldWithMaxWeight(
-      serverWObj,
-      objectFields.avatar,
-      defaultValues[objectFields.avatar],
-    ),
-    name: getFieldWithMaxWeight(serverWObj, objectFields.name),
-    title: getFieldWithMaxWeight(serverWObj, objectFields.title),
-    price: getFieldWithMaxWeight(serverWObj, objectFields.price),
-    parent: parent || '',
+    avatar: DEFAULTS.AVATAR,
     weight: weight || '',
     createdAt: created_at || Date.now(),
     updatedAt: updated_at || Date.now(),
-    children: children || [],
-    users: users || [],
     userCount: user_count || 0,
-    fields: serverWObj.fields,
-    version: __v || 0,
     followersNames: followers_names,
-    isNew: Boolean(isNew),
-    rank: rank || 1,
     type: (object_type && object_type.toLowerCase()) || 'item',
-    background: getFieldWithMaxWeight(serverWObj, objectFields.background),
+    ...getFieldsWithMaxWeight(serverWObj),
+    ...serverWObj,
   };
 
-  if (fieldsToInclude && fieldsToInclude.length) {
-    fieldsToInclude.forEach(f => {
-      if (typeof f === 'string' && serverWObj[f]) {
-        result[f] = serverWObj[f];
+  if (serverWObj.parent) {
+    if (result.avatar === DEFAULTS.AVATAR) {
+      const parentFieldMaxWeight = getFieldsWithMaxWeight(serverWObj.parent);
+      if (parentFieldMaxWeight && parentFieldMaxWeight.avatar) {
+        result.avatar = parentFieldMaxWeight.avatar;
       }
-    });
+    }
   }
 
   return result;
@@ -81,7 +51,6 @@ export const getServerWObj = clientWObj => {
     name,
     type,
     rank,
-    version,
     createdAt,
     updatedAt,
     parents,
@@ -113,7 +82,6 @@ export const getServerWObj = clientWObj => {
     creator,
     default_name: name,
     object_type: type,
-    __v: version,
     rank: rank || 1,
     weight: weight || '',
     parents: parents && parents.length ? parents : [],
@@ -126,4 +94,4 @@ export const getServerWObj = clientWObj => {
   };
 };
 
-export default getClientWObj;
+export default null;

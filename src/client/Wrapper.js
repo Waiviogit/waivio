@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
-import { LocaleProvider, Layout } from 'antd';
+import { ConfigProvider, Layout } from 'antd';
 import enUS from 'antd/lib/locale-provider/en_US';
 import Cookie from 'js-cookie';
 import { findLanguage, getRequestLocale, getBrowserLocale, loadLanguage } from './translations';
@@ -13,6 +13,7 @@ import {
   getIsLoaded,
   getAuthenticatedUser,
   getAuthenticatedUserName,
+  getIsAuthenticated,
   getLocale,
   getUsedLocale,
   getTranslations,
@@ -36,6 +37,7 @@ import { getChartsData } from '../investarena/redux/actions/chartsActions';
     loaded: getIsLoaded(state),
     user: getAuthenticatedUser(state),
     username: getAuthenticatedUserName(state),
+    isAuthenticated: getIsAuthenticated(state),
     usedLocale: getUsedLocale(state),
     translations: getTranslations(state),
     locale: getLocale(state),
@@ -60,6 +62,7 @@ export default class Wrapper extends React.PureComponent {
   static propTypes = {
     route: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
+    isAuthenticated: PropTypes.bool.isRequired,
     locale: PropTypes.string.isRequired,
     history: PropTypes.shape().isRequired,
     usedLocale: PropTypes.string,
@@ -218,7 +221,7 @@ export default class Wrapper extends React.PureComponent {
 
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
-        <LocaleProvider locale={enUS}>
+        <ConfigProvider locale={enUS}>
           <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
             <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
               <Topnav username={user.name} onMenuItemClick={this.handleMenuItemClick} />
@@ -231,7 +234,7 @@ export default class Wrapper extends React.PureComponent {
               <BBackTop className="primary-modal" />
             </div>
           </Layout>
-        </LocaleProvider>
+        </ConfigProvider>
       </IntlProvider>
     );
   }

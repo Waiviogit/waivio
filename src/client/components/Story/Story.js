@@ -58,7 +58,7 @@ class Story extends React.Component {
     saving: PropTypes.bool,
     ownPost: PropTypes.bool,
     singlePostVew: PropTypes.bool,
-    sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
+    sliderMode: PropTypes.bool,
     history: PropTypes.shape(),
     showPostModal: PropTypes.func,
     votePost: PropTypes.func,
@@ -77,8 +77,8 @@ class Story extends React.Component {
     saving: false,
     ownPost: false,
     singlePostVew: false,
+    sliderMode: false,
     showNSFWPosts: false,
-    sliderMode: 'auto',
     history: {},
     user: {},
     postState: {},
@@ -208,10 +208,10 @@ class Story extends React.Component {
   };
 
   handleLikeClick(post, postState, weight = 10000) {
-    const { sliderMode, user, defaultVotePercent } = this.props;
+    const { sliderMode, defaultVotePercent } = this.props;
     const author = post.author_original || post.author;
 
-    if (sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user))) {
+    if (sliderMode) {
       this.props.votePost(post.id, author, post.permlink, weight);
     } else if (postState.isLiked) {
       this.props.votePost(post.id, author, post.permlink, 0);

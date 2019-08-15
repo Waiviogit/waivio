@@ -45,7 +45,7 @@ import { appendObject } from '../object/appendActions';
 import { isValidImage } from '../helpers/image';
 import withEditor from '../components/Editor/withEditor';
 import { MAX_IMG_SIZE, ALLOWED_IMG_FORMATS } from '../../common/constants/validation';
-import { getHasDefaultSlider, getVoteValue } from '../helpers/user';
+import { getVoteValue } from '../helpers/user';
 import LikeSection from './LikeSection';
 import { getFieldWithMaxWeight, getInnerFieldWithMaxWeight, getListItems } from './wObjectHelper';
 import FollowObjectForm from './FollowObjectForm';
@@ -88,7 +88,7 @@ export default class AppendForm extends Component {
     user: PropTypes.shape(),
     rewardFund: PropTypes.shape(),
     rate: PropTypes.number,
-    sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
+    sliderMode: PropTypes.bool,
     defaultVotePercent: PropTypes.number.isRequired,
     followingList: PropTypes.arrayOf(PropTypes.string),
     rateObject: PropTypes.func,
@@ -109,7 +109,7 @@ export default class AppendForm extends Component {
     user: {},
     rewardFund: {},
     rate: 1,
-    sliderMode: 'auto',
+    sliderMode: false,
     defaultVotePercent: 100,
     followingList: [],
     rateObject: () => {},
@@ -130,9 +130,9 @@ export default class AppendForm extends Component {
   };
 
   componentDidMount = () => {
-    const { sliderMode, user } = this.props;
-    if (sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user))) {
+    if (this.props.sliderMode) {
       if (!this.state.sliderVisible) {
+        // eslint-disable-next-line react/no-did-mount-set-state
         this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
       }
     }
@@ -213,9 +213,7 @@ export default class AppendForm extends Component {
     const { getFieldValue } = this.props.form;
     const { body, preview, currentField, currentLocale, like, follow, ...rest } = formValues;
 
-    const field = getFieldValue('currentField');
-    let locale = getFieldValue('currentLocale');
-    if (locale === 'auto') locale = 'en-US';
+    const locale = currentLocale === 'auto' ? 'en-US' : currentLocale;
     let fieldBody = [];
     const postData = [];
 
@@ -264,43 +262,51 @@ export default class AppendForm extends Component {
         break;
     }
 
+    const getAppendMsg = (author, appendValue) => {
+      const langReadable = _.filter(LANGUAGES, { id: locale })[0].name;
+      switch (currentField) {
+        case objectFields.avatar:
+        case objectFields.background:
+          return `@${author} added ${currentField} (${langReadable}):\n ![${currentField}](${appendValue})`;
+        case objectFields.phone:
+          return `@${author} added ${currentField}(${langReadable}):\n ${appendValue.replace(
+            /[{}"]/g,
+            '',
+          )} ${formValues[phoneFields.number].replace(/[{}"]/g, '')}  `;
+        default:
+          return `@${author} added ${currentField} (${langReadable}):\n ${appendValue.replace(
+            /[{}"]/g,
+            '',
+          )}`;
+      }
+    };
+
     fieldBody.forEach(bodyField => {
       const data = {};
 
       data.author = this.props.user.name;
       data.parentAuthor = wObject.author;
       data.parentPermlink = wObject.author_permlink;
-
-      const langReadable = _.filter(LANGUAGES, { id: locale })[0].name;
-
-      data.body = `@${data.author} added ${field} (${langReadable}):\n ${bodyField.replace(
-        /[{}"]/g,
-        '',
-      )}`;
+      data.body = getAppendMsg(data.author, bodyField);
 
       data.title = '';
       let fieldsObject = {
-        name: _.includes(TYPES_OF_MENU_ITEM, field) ? objectFields.listItem : field,
+        name: _.includes(TYPES_OF_MENU_ITEM, currentField) ? objectFields.listItem : currentField,
         body: bodyField,
         locale,
       };
 
-      if (field === objectFields.phone) {
+      if (currentField === objectFields.phone) {
         fieldsObject = {
           ...fieldsObject,
           [phoneFields.number]: formValues[phoneFields.number],
         };
-
-        data.body = `@${data.author} added ${field}(${langReadable}):\n ${bodyField.replace(
-          /[{}"]/g,
-          '',
-        )} ${formValues[phoneFields.number].replace(/[{}"]/g, '')}  `;
       }
 
-      if (_.includes(TYPES_OF_MENU_ITEM, field)) {
+      if (_.includes(TYPES_OF_MENU_ITEM, currentField)) {
         fieldsObject = {
           ...fieldsObject,
-          type: field,
+          type: currentField,
           alias: getFieldValue('menuItemName'),
         };
       }
@@ -538,9 +544,8 @@ export default class AppendForm extends Component {
   };
 
   handleLikeClick = () => {
-    const { sliderMode, user } = this.props;
     this.setState({
-      sliderVisible: sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user)),
+      sliderVisible: this.props.sliderMode,
     });
   };
 

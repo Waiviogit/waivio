@@ -86,6 +86,11 @@ module.exports = function createConfig(env = 'dev') {
   if (IS_DEV) {
     config.entry = ['webpack-dev-server/client', 'webpack/hot/dev-server', ...config.entry];
     config.plugins = [...config.plugins, new webpack.HotModuleReplacementPlugin()];
+    config.resolve = {
+      alias: {
+        'react-dom': '@hot-loader/react-dom',
+      },
+    };
   }
 
   if (IS_PROD) {
