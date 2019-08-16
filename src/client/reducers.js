@@ -188,7 +188,9 @@ export const getRatingFields = state => fromObject.getRatingFields(state.object)
 export const getObjectTypesList = state => fromObjectTypes.getObjectTypesList(state.objectTypes);
 export const getObjectTypesLoading = state =>
   fromObjectTypes.getObjectTypesLoading(state.objectTypes);
-export const getObjectTypeState = state => fromObjectType.getobjectType(state.objectType);
+
+export const getObjectTypeState = state => fromObjectType.getObjectType(state.objectType);
+export const getObjectTypeLoading = state => fromObjectType.getObjectTypeLoading(state.objectType);
 
 export const getModalVisability = state => fromModal.getModalVisability(state.modal);
 

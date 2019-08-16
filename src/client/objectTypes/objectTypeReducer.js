@@ -1,18 +1,32 @@
 import * as wobjTypeActions from './objectTypeActions';
 
-const initialState = {};
-const feed = (state = initialState, action) => {
+const initialState = {
+  data: {},
+  activeFilters: {},
+  fetching: false,
+};
+const objectType = (state = initialState, action) => {
   switch (action.type) {
+    case wobjTypeActions.GET_OBJECT_TYPE.START:
+      return {
+        ...state,
+        fetching: true,
+      };
     case wobjTypeActions.GET_OBJECT_TYPE.SUCCESS:
-      return action.payload;
+      return {
+        ...state,
+        data: action.payload,
+        fetching: false,
+      };
     case wobjTypeActions.CLEAR_OBJECT_TYPE:
       return initialState;
+    case wobjTypeActions.GET_OBJECT_TYPE.ERROR:
     default:
       return state;
   }
 };
 
-export default feed;
+export default objectType;
 
-export const getobjectTypesState = state => state;
-export const getobjectType = state => state;
+export const getObjectType = state => state.data;
+export const getObjectTypeLoading = state => state.fetching;
