@@ -302,8 +302,8 @@ class CreateRewardForm extends React.Component {
             >
               <Option value="reviews">
                 {intl.formatMessage({
-                  id: 'rewiews',
-                  defaultMessage: 'Rewiews',
+                  id: 'reviews',
+                  defaultMessage: 'Reviews',
                 })}
               </Option>
               <Option value="activity">
