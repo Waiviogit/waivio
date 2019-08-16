@@ -5,16 +5,14 @@ import { injectIntl } from 'react-intl';
 import Affix from '../components/Utils/Affix';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
-import requiresLogin from '../auth/requiresLogin';
-import TopNavigation from '../components/Navigation/TopNavigation';
+import DiscoverObjectsContent from './DiscoverObjectsContent';
 
-const Activity = ({ intl, userName }) => (
+const DiscoverObjects = ({ intl, match }) => (
   <React.Fragment>
     <Helmet>
-      <title>{intl.formatMessage({ id: 'activity', defaultMessage: 'Activity' })} - Waivio</title>
+      <title>{intl.formatMessage({ id: 'discover', defaultMessage: 'Discover' })} - Waivio</title>
     </Helmet>
     <div className="feed-layout container">
-      <TopNavigation authenticated userName={userName} />
       <Affix className="leftContainer" stickPosition={77}>
         <div className="left">
           <LeftSidebar />
@@ -25,14 +23,20 @@ const Activity = ({ intl, userName }) => (
           <RightSidebar />
         </div>
       </Affix>
-      <div className="center">Discover Objects</div>
+      <div className="center">
+        <div className="discover-objects__title">
+          {intl.formatMessage({ id: 'object', defaultMessage: 'Object:' })}:&nbsp;
+          {match.params.typeName}
+        </div>
+        {<DiscoverObjectsContent typeName={match.params.typeName} key={match.url} />}
+      </div>
     </div>
   </React.Fragment>
 );
 
-Activity.propTypes = {
+DiscoverObjects.propTypes = {
   intl: PropTypes.shape().isRequired,
-  userName: PropTypes.string.isRequired,
+  match: PropTypes.shape().isRequired,
 };
 
-export default requiresLogin(injectIntl(Activity));
+export default injectIntl(DiscoverObjects);
