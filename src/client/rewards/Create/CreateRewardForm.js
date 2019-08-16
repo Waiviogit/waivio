@@ -36,23 +36,8 @@ class CreateRewardForm extends React.Component {
     hasReviewObject: false,
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.requiredObject !== this.state.requiredObject) {
-      if (!_.isEmpty(this.state.requiredObject)) {
-        // eslint-disable-next-line react/no-did-update-set-state
-        this.setState({ hasRequireObject: false });
-      }
-    }
-    if (prevState.objectsToAction !== this.state.objectsToAction) {
-      if (!_.isEmpty(this.state.objectsToAction)) {
-        // eslint-disable-next-line react/no-did-update-set-state
-        this.setState({ hasReviewObject: false });
-      }
-    }
-  }
-
   setRequiredObject = obj => {
-    this.setState({ requiredObject: obj });
+    this.setState({ requiredObject: obj, hasRequireObject: false });
   };
 
   handleSubmit = e => {
@@ -119,9 +104,10 @@ class CreateRewardForm extends React.Component {
   };
 
   handleAddObjectToList = obj => {
-    const objectsToAction = this.state.objectsToAction;
-    objectsToAction.push(obj);
-    this.setState({ objectsToAction });
+    this.setState({
+      objectsToAction: [...this.state.objectsToAction, obj],
+      hasReviewObject: false,
+    });
   };
 
   handleDeleteObjectFromList = obj => {
@@ -190,11 +176,11 @@ class CreateRewardForm extends React.Component {
 
   checkPhotosQuantity = (rule, value, callback) => {
     const { intl } = this.props;
-    if (value < 1 && value !== '') {
+    if (value < 0 && value !== '') {
       callback(
         intl.formatMessage({
-          id: 'must_have_one_photo',
-          defaultMessage: 'Must have at least one photo',
+          id: 'not_less_zero_photos',
+          defaultMessage: 'Should not be less than zero photos',
         }),
       );
     } else {

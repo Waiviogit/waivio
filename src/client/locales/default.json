@@ -624,7 +624,7 @@
   "reward_more_than_zero": "Reward should be more than zero",
   "reward_not_exceed_budget": "Reward should not exceed the budget",
   "reserve_period_period_one_day": "Reservation period must be at least one day",
-  "must_have_one_photo": "Must have at least one photo",
+  "not_less_zero_photos": "Should not be less than zero photos",
   "not_less_zero_followes": "Should not be less than zero followes",
   "not_less_one_day": "Should not be less than one day",
   "campaign_name": "Campaign name",
