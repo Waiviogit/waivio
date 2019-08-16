@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import './ObjectExpertise.less';
 import UserCard from '../UserCard';
-import WeightTag from '../WeightTag';
 
 const ObjectExpertise = ({ username, wobject }) => {
   const { users, user } = wobject;
@@ -19,24 +18,12 @@ const ObjectExpertise = ({ username, wobject }) => {
       </h4>
       <div className="SidebarContentBlock__content">
         {users &&
-          _.map(_.slice(users, 0, 5), u => (
-            <UserCard
-              key={u.name}
-              user={u}
-              showFollow={false}
-              alt={<WeightTag rank={u.rank} weight={u.weight} />}
-            />
-          ))}
+          _.map(_.slice(users, 0, 5), u => <UserCard key={u.name} user={u} showFollow={false} />)}
 
         {!isUserInTopFive && user && (
           <React.Fragment>
             <div className="ObjectExpertise__dots">...</div>
-            <UserCard
-              key={user.name}
-              user={user}
-              showFollow={false}
-              alt={<WeightTag rank={user.rank.toString()} weight={user.weight} />}
-            />
+            <UserCard key={user.name} user={user} showFollow={false} />
           </React.Fragment>
         )}
 
