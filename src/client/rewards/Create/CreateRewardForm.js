@@ -251,7 +251,12 @@ class CreateRewardForm extends React.Component {
     const { hasRequireObject, hasReviewObject } = this.state;
     return (
       <Form layout="vertical" onSubmit={this.handleSubmit}>
-        <Form.Item label="Campaign name">
+        <Form.Item
+          label={intl.formatMessage({
+            id: 'campaign_name',
+            defaultMessage: 'Campaign name',
+          })}
+        >
           {getFieldDecorator('campaignName', {
             rules: [
               {
@@ -271,7 +276,12 @@ class CreateRewardForm extends React.Component {
             ],
           })(<Input />)}
         </Form.Item>
-        <Form.Item label="Campaign Type">
+        <Form.Item
+          label={intl.formatMessage({
+            id: 'campaign_type',
+            defaultMessage: 'Campaign type',
+          })}
+        >
           {getFieldDecorator('type', {
             rules: [
               {
@@ -284,7 +294,10 @@ class CreateRewardForm extends React.Component {
             ],
           })(
             <Select
-              placeholder="Select a option and change input text above"
+              placeholder={intl.formatMessage({
+                id: 'select_option_change_input_text',
+                defaultMessage: 'Select an option and change input text above',
+              })}
               onChange={this.handleSelectChange}
             >
               <Option value="reviews">
@@ -316,7 +329,12 @@ class CreateRewardForm extends React.Component {
         {/* </Select>, */}
         {/* )}  */}
         {/* </Form.Item> */}
-        <Form.Item label="Budget">
+        <Form.Item
+          label={intl.formatMessage({
+            id: 'budget',
+            defaultMessage: 'Budget',
+          })}
+        >
           {getFieldDecorator('budget', {
             rules: [
               {
@@ -331,9 +349,17 @@ class CreateRewardForm extends React.Component {
               },
             ],
           })(<Input type="number" />)}
-          SBD per month
+          {intl.formatMessage({
+            id: 'sbd_per_month',
+            defaultMessage: 'SBD per month',
+          })}
         </Form.Item>
-        <Form.Item label="Reward">
+        <Form.Item
+          label={intl.formatMessage({
+            id: 'reward',
+            defaultMessage: 'Reward',
+          })}
+        >
           {getFieldDecorator('reward', {
             rules: [
               {
@@ -353,7 +379,12 @@ class CreateRewardForm extends React.Component {
             defaultMessage: 'SBD per review',
           })}
         </Form.Item>
-        <Form.Item label="Reservation period">
+        <Form.Item
+          label={intl.formatMessage({
+            id: 'reservation_period',
+            defaultMessage: 'Reservation period',
+          })}
+        >
           {getFieldDecorator('reservationPeriod', {
             rules: [
               {
@@ -368,7 +399,10 @@ class CreateRewardForm extends React.Component {
               },
             ],
           })(<Input type="number" />)}
-          Days
+          {intl.formatMessage({
+            id: 'days',
+            defaultMessage: 'Days',
+          })}
         </Form.Item>
         <div className="CreateReward__block-title">
           {intl.formatMessage({
@@ -377,7 +411,12 @@ class CreateRewardForm extends React.Component {
           })}
           :
         </div>
-        <Form.Item label="Min # of original photos">
+        <Form.Item
+          label={intl.formatMessage({
+            id: 'min_original_photos',
+            defaultMessage: 'Min # of original photos',
+          })}
+        >
           {getFieldDecorator('minPhotos', {
             rules: [
               {
@@ -456,7 +495,12 @@ class CreateRewardForm extends React.Component {
           })}
           :
         </div>
-        <Form.Item label="Min STEEM reputation">
+        <Form.Item
+          label={intl.formatMessage({
+            id: 'min_steem_reputation',
+            defaultMessage: 'Min STEEM reputation',
+          })}
+        >
           {getFieldDecorator('minStReputation', {
             rules: [
               {
@@ -472,7 +516,12 @@ class CreateRewardForm extends React.Component {
             ],
           })(<Input type="number" />)}
         </Form.Item>
-        <Form.Item label="Min followers">
+        <Form.Item
+          label={intl.formatMessage({
+            id: 'min_followers',
+            defaultMessage: 'Min followers',
+          })}
+        >
           {getFieldDecorator('minFollowers', {
             rules: [
               {
@@ -488,7 +537,12 @@ class CreateRewardForm extends React.Component {
             ],
           })(<Input type="number" />)}
         </Form.Item>
-        <Form.Item label="Min # of posts">
+        <Form.Item
+          label={intl.formatMessage({
+            id: 'min_posts',
+            defaultMessage: 'Min # of posts',
+          })}
+        >
           {getFieldDecorator('minPosts', {
             rules: [
               {
@@ -516,7 +570,12 @@ class CreateRewardForm extends React.Component {
             postsCount={this.props.form.getFieldValue('minPosts')}
           />
         )}
-        <Form.Item label="Note to reviewers">
+        <Form.Item
+          label={intl.formatMessage({
+            id: 'note_reviewers',
+            defaultMessage: 'Note to reviewers',
+          })}
+        >
           {getFieldDecorator('description', {
             rules: [
               {
@@ -536,7 +595,12 @@ class CreateRewardForm extends React.Component {
             ],
           })(<Input.TextArea />)}
         </Form.Item>
-        <Form.Item label="Expired automatically at">
+        <Form.Item
+          label={intl.formatMessage({
+            id: 'expired_automatically',
+            defaultMessage: 'Expired automatically at',
+          })}
+        >
           {getFieldDecorator('expiredAt', {
             rules: [
               {
