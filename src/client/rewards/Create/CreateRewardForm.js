@@ -245,6 +245,20 @@ class CreateRewardForm extends React.Component {
     }
   };
 
+  checkPostsQuantity = (rule, value, callback) => {
+    const { intl } = this.props;
+    if (value < 0) {
+      callback(
+        intl.formatMessage({
+          id: 'not_less_zero_posts',
+          defaultMessage: 'Should not be less than zero posts',
+        }),
+      );
+    } else {
+      callback();
+    }
+  };
+
   render() {
     const { intl } = this.props;
     const { getFieldDecorator } = this.props.form;
@@ -263,7 +277,7 @@ class CreateRewardForm extends React.Component {
                 required: true,
                 message: intl.formatMessage({
                   id: 'input_campaign_name',
-                  defaultMessage: 'Please input your Campaign name!',
+                  defaultMessage: 'Please, input your Campaign name!',
                 }),
               },
               {
@@ -552,6 +566,9 @@ class CreateRewardForm extends React.Component {
                   defaultMessage: 'Please set minimal posts count for eligible users!',
                 }),
               },
+              {
+                validator: this.checkPostsQuantity,
+              },
             ],
           })(<Input type="number" />)}
         </Form.Item>
@@ -583,13 +600,6 @@ class CreateRewardForm extends React.Component {
                 message: intl.formatMessage({
                   id: 'campaign_description_longer_50_symbols',
                   defaultMessage: 'Campaign description should be no longer then 50 symbols!',
-                }),
-              },
-              {
-                required: true,
-                message: intl.formatMessage({
-                  id: 'set_minimal_followers_for_users',
-                  defaultMessage: 'Please set minimal followers count for eligible users!',
                 }),
               },
             ],

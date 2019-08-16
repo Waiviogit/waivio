@@ -653,9 +653,9 @@
   "min_steem_reputation": "Min STEEM reputation",
   "set_minimal_reputation_for_users": "Please, set minimal reputation for eligible users!",
   "min_followers": "Min followers",
-  "set_minimal_followers_for_users": "Please set minimal followers count for eligible users!",
+  "set_minimal_followers_for_users": "Please, set minimal followers count for eligible users!",
   "min_posts": "Min # of posts",
-  "set_minimal_posts_for_users": "Please set minimal posts count for eligible users!",
+  "set_minimal_posts_for_users": "Please, set minimal posts count for eligible users!",
   "show_eligible_users": "Show eligible users",
   "note_reviewers": "Note to reviewers",
   "campaign_description_longer_50_symbols": "Campaign description should be no longer then 50 symbols!",
@@ -663,6 +663,6 @@
   "select_time": "Please, select time!",
   "have_read": "I have read the",
   "agreement": "agreement",
-  "save_changes": "Save changes"
-
+  "save_changes": "Save changes",
+  "not_less_zero_posts": "Should not be less than zero posts"
 }
