@@ -20,7 +20,6 @@ class WeightTag extends React.Component {
 
   static defaultProps = {
     weight: 0,
-    rank: '',
   };
 
   render() {

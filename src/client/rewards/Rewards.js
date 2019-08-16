@@ -15,10 +15,10 @@ import ScrollToTop from '../components/Utils/ScrollToTop';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import './Rewards.less';
 import {
+  activateCampaign,
   assignProposition,
   declineProposition,
   getCoordinates,
-  activateCampaign,
 } from '../user/userActions';
 import CreateRewardForm from './Create/CreateRewardForm';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
@@ -296,28 +296,26 @@ class Rewards extends React.Component {
   campaignsLayoutWrapLayout = (IsRequiredObjectWrap, filterKey, userName) => {
     const { propositions, isModalDetailsOpen, loadingAssignDiscard } = this.state;
     const { intl } = this.props;
-    let tmp = 0;
     if (_.size(propositions) !== 0) {
       if (IsRequiredObjectWrap) {
-        return _.map(propositions, proposition => {
-          tmp += 1;
-          return (
+        return _.map(
+          propositions,
+          proposition =>
             proposition &&
             proposition.required_object && (
               <Campaign
                 proposition={proposition}
                 filterKey={filterKey}
-                key={`${tmp}${proposition.required_object.author_permlink}${proposition.required_object.createdAt}`}
+                key={`${proposition.required_object.author_permlink}${proposition.required_object.createdAt}`}
                 userName={userName}
               />
-            )
-          );
-        });
+            ),
+        );
       }
       return _.map(propositions, proposition =>
-        _.map(proposition.objects, wobj => {
-          tmp += 1;
-          return (
+        _.map(
+          proposition.objects,
+          wobj =>
             wobj.object &&
             wobj.object.author_permlink && (
               <Proposition
@@ -328,14 +326,13 @@ class Rewards extends React.Component {
                 discardProposition={this.discardProposition}
                 authorizedUserName={userName}
                 loading={loadingAssignDiscard}
-                key={`${tmp}${wobj.object.author_permlink}`}
+                key={`${wobj.object.author_permlink}`}
                 isModalDetailsOpen={isModalDetailsOpen}
                 toggleModal={this.toggleModal}
                 assigned={wobj.assigned}
               />
-            )
-          );
-        }),
+            ),
+        ),
       );
     }
     return `${intl.formatMessage(
