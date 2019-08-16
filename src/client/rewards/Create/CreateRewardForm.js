@@ -256,7 +256,10 @@ class CreateRewardForm extends React.Component {
             rules: [
               {
                 required: true,
-                message: 'Please input your Campaign name!',
+                message: intl.formatMessage({
+                  id: 'input_campaign_name',
+                  defaultMessage: 'Please input your Campaign name!',
+                }),
               },
               {
                 max: 100,
@@ -270,14 +273,32 @@ class CreateRewardForm extends React.Component {
         </Form.Item>
         <Form.Item label="Campaign Type">
           {getFieldDecorator('type', {
-            rules: [{ required: true, message: 'Please select your campaign type!' }],
+            rules: [
+              {
+                required: true,
+                message: intl.formatMessage({
+                  id: 'select_campaign_type',
+                  defaultMessage: 'Please, select your campaign type!',
+                }),
+              },
+            ],
           })(
             <Select
               placeholder="Select a option and change input text above"
               onChange={this.handleSelectChange}
             >
-              <Option value="reviews">Rewiews</Option>
-              <Option value="activity">Activity</Option>
+              <Option value="reviews">
+                {intl.formatMessage({
+                  id: 'rewiews',
+                  defaultMessage: 'Rewiews',
+                })}
+              </Option>
+              <Option value="activity">
+                {intl.formatMessage({
+                  id: 'activity',
+                  defaultMessage: 'Activity',
+                })}
+              </Option>
             </Select>,
           )}
         </Form.Item>
@@ -300,7 +321,10 @@ class CreateRewardForm extends React.Component {
             rules: [
               {
                 required: true,
-                message: 'Please set your monthly budget!',
+                message: intl.formatMessage({
+                  id: 'set_monthly_budget',
+                  defaultMessage: 'Please, set your monthly budget!',
+                }),
               },
               {
                 validator: this.compareBudgetValues,
@@ -314,21 +338,30 @@ class CreateRewardForm extends React.Component {
             rules: [
               {
                 required: true,
-                message: 'Please set a reward!',
+                message: intl.formatMessage({
+                  id: 'set_reward',
+                  defaultMessage: 'Please, set a reward!',
+                }),
               },
               {
                 validator: this.compareRewardAndBudget,
               },
             ],
           })(<Input type="number" />)}
-          SBD per review
+          {intl.formatMessage({
+            id: 'sbd_per_review',
+            defaultMessage: 'SBD per review',
+          })}
         </Form.Item>
         <Form.Item label="Reservation period">
           {getFieldDecorator('reservationPeriod', {
             rules: [
               {
                 required: true,
-                message: 'Please set a period!',
+                message: intl.formatMessage({
+                  id: 'set_period',
+                  defaultMessage: 'Please, set a period!',
+                }),
               },
               {
                 validator: this.checkReservationPeriod,
@@ -337,22 +370,37 @@ class CreateRewardForm extends React.Component {
           })(<Input type="number" />)}
           Days
         </Form.Item>
-        <div className="CreateReward__block-title">ReviewRequirements:</div>
+        <div className="CreateReward__block-title">
+          {intl.formatMessage({
+            id: 'review_requirements',
+            defaultMessage: 'Review requirements',
+          })}
+          :
+        </div>
         <Form.Item label="Min # of original photos">
           {getFieldDecorator('minPhotos', {
             rules: [
               {
                 required: true,
-                message: 'Please set minimal count of photos!',
+                message: intl.formatMessage({
+                  id: 'set_minimal_photos!',
+                  defaultMessage: 'Please, set minimal count of photos!',
+                }),
               },
               {
                 validator: this.checkPhotosQuantity,
               },
             ],
           })(<Input type="number" />)}
-          per review
+          {intl.formatMessage({
+            id: 'per_review',
+            defaultMessage: 'per review',
+          })}
         </Form.Item>
-        Required object (Your business object)
+        {intl.formatMessage({
+          id: 'required_business_object',
+          defaultMessage: 'Required object (Your business object)',
+        })}
         <SearchObjectsAutocomplete
           allowClear={false}
           itemsIdsToOmit={[]}
@@ -365,14 +413,20 @@ class CreateRewardForm extends React.Component {
             'enable-require': hasRequireObject,
           })}
         >
-          Please, select an object
+          {intl.formatMessage({
+            id: 'select_object',
+            defaultMessage: 'Please, select an object',
+          })}
         </div>
         <div className="CreateReward__objects-wrap">
           {!_.isEmpty(this.state.requiredObject) && (
             <ObjectCardView wObject={this.state.requiredObject} />
           )}
         </div>
-        Objects to review
+        {intl.formatMessage({
+          id: 'objects_review',
+          defaultMessage: 'Objects to review',
+        })}
         <SearchObjectsAutocomplete
           allowClear={false}
           itemsIdsToOmit={[]}
@@ -385,20 +439,32 @@ class CreateRewardForm extends React.Component {
             'enable-review': hasReviewObject,
           })}
         >
-          Please, select one object or more
+          {intl.formatMessage({
+            id: 'select_more_object',
+            defaultMessage: 'Please, select one object or more',
+          })}
         </div>
         <div className="CreateReward__objects-wrap">
           {_.map(this.state.objectsToAction, obj => (
             <ObjectCardView wObject={obj} />
           ))}
         </div>
-        <div className="CreateReward__block-title">Eligible users:</div>
+        <div className="CreateReward__block-title">
+          {intl.formatMessage({
+            id: 'eligible_users',
+            defaultMessage: 'Eligible users',
+          })}
+          :
+        </div>
         <Form.Item label="Min STEEM reputation">
           {getFieldDecorator('minStReputation', {
             rules: [
               {
                 required: true,
-                message: 'Please set minimal reputation for eligible users!',
+                message: intl.formatMessage({
+                  id: 'set_minimal_reputation_for_users',
+                  defaultMessage: 'Please, set minimal reputation for eligible users!',
+                }),
               },
               {
                 validator: this.checkSteemReputation,
@@ -411,7 +477,10 @@ class CreateRewardForm extends React.Component {
             rules: [
               {
                 required: true,
-                message: 'Please set minimal followers count for eligible users!',
+                message: intl.formatMessage({
+                  id: 'set_minimal_followers_for_users',
+                  defaultMessage: 'Please set minimal followers count for eligible users!',
+                }),
               },
               {
                 validator: this.checkFollowersQuantity,
@@ -424,13 +493,19 @@ class CreateRewardForm extends React.Component {
             rules: [
               {
                 required: true,
-                message: 'Please set minimal posts count for eligible users!',
+                message: intl.formatMessage({
+                  id: 'set_minimal_posts_for_users',
+                  defaultMessage: 'Please set minimal posts count for eligible users!',
+                }),
               },
             ],
           })(<Input type="number" />)}
         </Form.Item>
         <Button type="primary" onClick={this.toggleModalEligibleUsers}>
-          Show eligible users
+          {intl.formatMessage({
+            id: 'show_eligible_users',
+            defaultMessage: 'Show eligible users',
+          })}
         </Button>
         {this.state.isModalEligibleUsersOpen && (
           <ModalEligibleUsers
@@ -446,11 +521,17 @@ class CreateRewardForm extends React.Component {
             rules: [
               {
                 max: 250,
-                message: 'Campaign description should be no longer then 50 symbols!',
+                message: intl.formatMessage({
+                  id: 'campaign_description_longer_50_symbols',
+                  defaultMessage: 'Campaign description should be no longer then 50 symbols!',
+                }),
               },
               {
                 required: true,
-                message: 'Please set minimal followers count for eligible users!',
+                message: intl.formatMessage({
+                  id: 'set_minimal_followers_for_users',
+                  defaultMessage: 'Please set minimal followers count for eligible users!',
+                }),
               },
             ],
           })(<Input.TextArea />)}
@@ -461,7 +542,10 @@ class CreateRewardForm extends React.Component {
               {
                 type: 'object',
                 required: true,
-                message: 'Please select time!',
+                message: intl.formatMessage({
+                  id: 'select_time',
+                  defaultMessage: 'Please, select time!',
+                }),
               },
               {
                 validator: this.checkExpireDate,
@@ -474,13 +558,26 @@ class CreateRewardForm extends React.Component {
             valuePropName: 'checked',
           })(
             <Checkbox>
-              I have read the <a href="">agreement</a>
+              {intl.formatMessage({
+                id: 'have_read',
+                defaultMessage: 'I have read the',
+              })}
+              <a href="">
+                {' '}
+                {intl.formatMessage({
+                  id: 'agreement',
+                  defaultMessage: 'agreement',
+                })}
+              </a>
             </Checkbox>,
           )}
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">
-            Save changes
+            {intl.formatMessage({
+              id: 'save_changes',
+              defaultMessage: 'Save changes',
+            })}
           </Button>
         </Form.Item>
       </Form>
