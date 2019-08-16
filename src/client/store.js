@@ -1,14 +1,15 @@
-import promiseMiddleware from 'redux-promise-middleware';
+import { createPromise } from 'redux-promise-middleware';
 import thunk from 'redux-thunk';
 import { applyMiddleware, createStore, compose } from 'redux';
-import { routerMiddleware } from 'react-router-redux';
+import { routerMiddleware } from 'connected-react-router';
 import steemAPI from './steemAPI';
 import createBusyAPI from '../common/services/createBusyAPI';
-import history from './history';
+import { createHistory } from './history';
 import errorMiddleware from './helpers/errorMiddleware';
 import createReducer from './reducers';
 
-export default (steemConnectAPI, waivioAPI) => {
+export default (steemConnectAPI, waivioAPI, currUrl) => {
+  const history = createHistory(currUrl);
   let preloadedState;
   if (typeof window !== 'undefined') {
     /* eslint-disable no-underscore-dangle */
@@ -19,7 +20,7 @@ export default (steemConnectAPI, waivioAPI) => {
 
   const middleware = [
     errorMiddleware,
-    promiseMiddleware({
+    createPromise({
       promiseTypeSuffixes: ['START', 'SUCCESS', 'ERROR'],
     }),
     thunk.withExtraArgument({
@@ -40,5 +41,5 @@ export default (steemConnectAPI, waivioAPI) => {
     enhancer = compose(applyMiddleware(...middleware));
   }
 
-  return createStore(createReducer(), preloadedState, enhancer);
+  return createStore(createReducer(history), preloadedState, enhancer);
 };

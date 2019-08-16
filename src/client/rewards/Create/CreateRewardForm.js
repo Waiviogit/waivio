@@ -1,11 +1,13 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { Form, Input, Select, Checkbox, Button, DatePicker } from 'antd';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import ModalEligibleUsers from './ModalEligibleUsers/ModalEligibleUsers';
 import { createCampaign } from '../../../waivioApi/ApiClient';
+import './CreateReward.less';
 
 const { Option } = Select;
 
@@ -30,7 +32,24 @@ class CreateRewardForm extends React.Component {
     objectsToAction: [],
     requiredObject: {},
     isModalEligibleUsersOpen: false,
+    hasRequireObject: false,
+    hasReviewObject: false,
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.requiredObject !== this.state.requiredObject) {
+      if (!_.isEmpty(this.state.requiredObject)) {
+        // eslint-disable-next-line react/no-did-update-set-state
+        this.setState({ hasRequireObject: false });
+      }
+    }
+    if (prevState.objectsToAction !== this.state.objectsToAction) {
+      if (!_.isEmpty(this.state.objectsToAction)) {
+        // eslint-disable-next-line react/no-did-update-set-state
+        this.setState({ hasReviewObject: false });
+      }
+    }
+  }
 
   setRequiredObject = obj => {
     this.setState({ requiredObject: obj });
@@ -39,10 +58,16 @@ class CreateRewardForm extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
+      if (!err && !_.isEmpty(this.state.requiredObject) && !_.isEmpty(this.state.objectsToAction)) {
         createCampaign(this.prepareSubmitData(values)).then(data => {
           this.setState({ propositions: data.campaigns, hasMore: data.hasMore });
         });
+      } else if (_.isEmpty(this.state.requiredObject) && _.isEmpty(this.state.objectsToAction)) {
+        this.setState({ hasRequireObject: true, hasReviewObject: true });
+      } else if (_.isEmpty(this.state.requiredObject)) {
+        this.setState({ hasRequireObject: true, hasReviewObject: false });
+      } else if (_.isEmpty(this.state.objectsToAction)) {
+        this.setState({ hasRequireObject: false, hasReviewObject: true });
       }
     });
   };
@@ -70,7 +95,6 @@ class CreateRewardForm extends React.Component {
       objects,
       expired_at: data.expiredAt.format(),
     };
-    console.log('Received values of form: ', finalData);
     return finalData;
   };
 
@@ -127,6 +151,7 @@ class CreateRewardForm extends React.Component {
       callback();
     }
   };
+
   compareRewardAndBudget = (rule, value, callback) => {
     const { form, intl } = this.props;
     const budgetValue = form.getFieldValue('budget');
@@ -223,6 +248,7 @@ class CreateRewardForm extends React.Component {
   render() {
     const { intl } = this.props;
     const { getFieldDecorator } = this.props.form;
+    const { hasRequireObject, hasReviewObject } = this.state;
     return (
       <Form layout="vertical" onSubmit={this.handleSubmit}>
         <Form.Item label="Campaign name">
@@ -334,6 +360,13 @@ class CreateRewardForm extends React.Component {
           placeholder="Please select"
           handleSelect={this.setRequiredObject}
         />
+        <div
+          className={classNames('CreateReward__object-message-validate', {
+            'enable-require': hasRequireObject,
+          })}
+        >
+          Please, select an object
+        </div>
         <div className="CreateReward__objects-wrap">
           {!_.isEmpty(this.state.requiredObject) && (
             <ObjectCardView wObject={this.state.requiredObject} />
@@ -347,6 +380,13 @@ class CreateRewardForm extends React.Component {
           placeholder="Please select"
           handleSelect={this.handleAddObjectToList}
         />
+        <div
+          className={classNames('CreateReward__object-message-validate', {
+            'enable-review': hasReviewObject,
+          })}
+        >
+          Please, select one object or more
+        </div>
         <div className="CreateReward__objects-wrap">
           {_.map(this.state.objectsToAction, obj => (
             <ObjectCardView wObject={obj} />

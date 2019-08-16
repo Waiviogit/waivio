@@ -1,6 +1,6 @@
 import assert from 'assert';
 import Cookie from 'js-cookie';
-import { push } from 'react-router-redux';
+import { push } from 'connected-react-router';
 import { createAction } from 'redux-actions';
 import {
   BENEFICIARY_ACCOUNT,

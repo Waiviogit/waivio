@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import './Manage.less';
@@ -7,11 +8,22 @@ import * as ApiClient from '../../../waivioApi/ApiClient';
 import CampaingRewardsTable from './CampaingRewardsTable/CampaingRewardsTable';
 import BalanceTable from './BalanceTable/BalanceTable';
 
+import { getModalVisability } from '../../reducers';
+import { setModalVisibility } from '../../components/ModalWindow/modalActions';
+
 @injectIntl
+@connect(
+  state => ({
+    visibility: getModalVisability(state),
+  }),
+  { setModalVisibility },
+)
 class Manage extends React.Component {
   static propTypes = {
     userName: PropTypes.string,
     intl: PropTypes.shape().isRequired,
+    visibility: PropTypes.shape().isRequired,
+    setModalVisibility: PropTypes.func.isRequired,
   };
   static defaultProps = {
     userName: '',
@@ -52,8 +64,9 @@ class Manage extends React.Component {
         <div>
           {intl.formatMessage({
             id: 'campaigns_be_suspended',
-            defaultMessage: `All campaigns will be suspended if:`,
+            defaultMessage: `All campaigns will be suspended if`,
           })}
+          :
         </div>
         <div>
           *{' '}
@@ -96,7 +109,8 @@ class Manage extends React.Component {
   };
 
   render() {
-    const { intl } = this.props;
+    // eslint-disable-next-line no-shadow
+    const { intl, setModalVisibility, visibility } = this.props;
     const { budgetTotal, campaigns } = this.state;
     const balanceContent = this.balanceContent();
     const rewardsCampaignContent = this.rewardsCampaignContent();
@@ -118,7 +132,12 @@ class Manage extends React.Component {
                 defaultMessage: `Manage rewards campaign`,
               })}
             </div>
-            <CampaingRewardsTable key={'campaingRewardsTable'} intl={intl} campaigns={campaigns} />
+            <CampaingRewardsTable
+              intl={intl}
+              campaigns={campaigns}
+              visibility={visibility}
+              setModalVisibility={setModalVisibility}
+            />
             <div className="Manage__rewards-campaign-wrap-text-content">
               {rewardsCampaignContent}
             </div>

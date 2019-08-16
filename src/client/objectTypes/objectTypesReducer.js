@@ -1,25 +1,35 @@
 import _ from 'lodash';
-import * as wobjTypesActions from './objectTypesActions';
+import { GET_OBJECT_TYPES, GET_MORE_OBJECTS_BY_TYPE } from './objectTypesActions';
 
-const initialState = {};
+const initialState = {
+  fetching: false,
+  list: {},
+};
+
 const feed = (state = initialState, action) => {
   switch (action.type) {
-    case wobjTypesActions.GET_OBJECT_TYPES.SUCCESS:
+    case GET_OBJECT_TYPES.START:
+      return { ...state, fetching: true };
+    case GET_OBJECT_TYPES.SUCCESS:
       return {
-        ..._.keyBy(action.payload, 'name'),
+        ...state,
+        fetching: false,
+        list: { ...state.list, ..._.keyBy(action.payload, 'name') },
       };
-    case wobjTypesActions.GET_MORE_OBJECTS_BY_TYPE.SUCCESS: {
-      const relatedWobjects = _.keyBy(
-        state[action.payload.type].related_wobjects,
-        'author_permlink',
-      );
-      const newState = state;
-      newState[action.payload.type].hasMoreWobjects = action.payload.data.hasMoreWobjects;
-      newState[action.payload.type].related_wobjects = {
-        ...relatedWobjects,
-        ..._.keyBy(action.payload.data.related_wobjects, 'author_permlink'),
+    case GET_MORE_OBJECTS_BY_TYPE.SUCCESS: {
+      const { type, data } = action.payload;
+      const typeObject = state.list[type];
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [type]: {
+            ...typeObject,
+            related_wobjects: [...typeObject.related_wobjects, ...data.related_wobjects],
+            hasMoreWobjects: Boolean(data.hasMoreWobjects),
+          },
+        },
       };
-      return { ...newState };
     }
     default:
       return state;
@@ -28,4 +38,5 @@ const feed = (state = initialState, action) => {
 
 export default feed;
 
-export const getobjectTypesState = state => state;
+export const getObjectTypesList = state => state.list;
+export const getObjectTypesLoading = state => state.fetching;

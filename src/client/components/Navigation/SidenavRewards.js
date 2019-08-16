@@ -15,6 +15,7 @@ import SteemConnect from '../../steemConnectAPI';
 export default class SidenavRewards extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
+    location: PropTypes.shape().isRequired,
     authenticated: PropTypes.bool.isRequired,
   };
 
@@ -35,12 +36,12 @@ export default class SidenavRewards extends React.Component {
   }
 
   render() {
+    const { intl, authenticated, location } = this.props;
     const next = location.pathname.length > 1 ? location.pathname : '';
-    const { intl, authenticated } = this.props;
     return (
       <React.Fragment>
         <ul className="Sidenav">
-          <div className="RewardsBlock-title">
+          <div className="Sidenav__section-title">
             {intl.formatMessage({
               id: 'rewards',
               defaultMessage: `rewards`,
@@ -81,7 +82,7 @@ export default class SidenavRewards extends React.Component {
                   })}
                 </NavLink>
               </li>
-              <div className="RewardsBlock-title">
+              <div className="Sidenav__section-title">
                 {intl.formatMessage({
                   id: 'campaigns',
                   defaultMessage: `Campaigns`,
@@ -114,12 +115,12 @@ export default class SidenavRewards extends React.Component {
               </li>
             </React.Fragment>
           ) : (
-            <span className="RewardsBlock-logIn">
+            <span className="tc">
               {intl.formatMessage({
                 id: 'pleaseLogin',
                 defaultMessage: `For more options please`,
               })}
-              <a href={SteemConnect.getLoginURL(next)} className="RewardsBlock-innerWord">
+              <a href={SteemConnect.getLoginURL(next)} className="ml1">
                 {intl.formatMessage({
                   id: 'login',
                   defaultMessage: `log in`,

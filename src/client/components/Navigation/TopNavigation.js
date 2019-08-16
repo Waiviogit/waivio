@@ -1,87 +1,100 @@
-import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
-import { NavLink, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './TopNavigation.less';
 
-const TopNavigation = ({ authenticated, location }) =>
-  location && (
+const LINKS = [
+  '/trending',
+  '/rewards',
+  '/objectType',
+  '/discover-objects',
+  '/activity',
+  '/object/ylr-waivio',
+];
+
+const TopNavigation = ({ authenticated, location: { pathname } }) => {
+  const isRouteMathed = pathname === '/' || LINKS.some(link => pathname.includes(link));
+  return isRouteMathed ? (
     <ul className="TopNavigation">
       {authenticated && (
         <li>
-          <NavLink
+          <Link
             to="/"
-            isActive={() => location.pathname === '/'}
-            className="TopNavigation__item"
-            activeClassName="TopNavigation__item--active"
+            className={classNames('TopNavigation__item', {
+              'TopNavigation__item--active': pathname === '/',
+            })}
           >
             <FormattedMessage id="feed" defaultMessage="Feed" />
-          </NavLink>
+          </Link>
         </li>
       )}
       <li>
-        <NavLink
+        <Link
           to="/trending"
-          isActive={() => location.pathname === '/trending'}
-          className="TopNavigation__item"
-          activeClassName="TopNavigation__item--active"
+          className={classNames('TopNavigation__item', {
+            'TopNavigation__item--active': pathname.includes('/trending'),
+          })}
         >
           <FormattedMessage id="news" defaultMessage="News" />
-        </NavLink>
+        </Link>
       </li>
       <li>
-        <NavLink
+        <Link
           to={authenticated ? `/rewards/active` : `/rewards/all`}
-          isActive={() => _.includes(location.pathname, '/rewards/')}
-          className="TopNavigation__item"
-          activeClassName="TopNavigation__item--active"
+          className={classNames('TopNavigation__item', {
+            'TopNavigation__item--active': pathname.includes('/rewards'),
+          })}
         >
           <FormattedMessage id="rewards" defaultMessage="Rewards" />
-        </NavLink>
+        </Link>
       </li>
       <li>
-        <NavLink
+        <Link
           to={`/objectType/hashtag`}
-          isActive={() => _.includes(location.pathname, '/objectType/hashtag')}
-          className="TopNavigation__item"
-          activeClassName="TopNavigation__item--active"
+          className={classNames('TopNavigation__item', {
+            'TopNavigation__item--active': pathname.includes('/objectType'),
+          })}
         >
           <FormattedMessage id="discover" defaultMessage="Discover" />
-        </NavLink>
+        </Link>
       </li>
       {authenticated && (
         <li>
-          <NavLink
+          <Link
             to={`/activity`}
-            isActive={() => _.includes(location.pathname, '/activity')}
-            className="TopNavigation__item"
-            activeClassName="TopNavigation__item--active"
+            className={classNames('TopNavigation__item', {
+              'TopNavigation__item--active': pathname === '/activity',
+            })}
           >
             <FormattedMessage id="activity" defaultMessage="Activity" />
-          </NavLink>
+          </Link>
         </li>
       )}
       <li>
-        <NavLink
+        <Link
           to={`/object/ylr-waivio`}
-          isActive={() => _.includes(location.pathname, '/object/ylr-waivio')}
-          className="TopNavigation__item"
-          activeClassName="TopNavigation__item--active"
+          className={classNames('TopNavigation__item', {
+            'TopNavigation__item--active': pathname.includes('/object/ylr-waivio'),
+          })}
         >
           <FormattedMessage id="about" defaultMessage="About" />
-        </NavLink>
+        </Link>
       </li>
     </ul>
-  );
+  ) : null;
+};
 
 TopNavigation.propTypes = {
   authenticated: PropTypes.bool.isRequired,
-  userName: PropTypes.string,
+  location: PropTypes.shape(),
 };
 
 TopNavigation.defaultProps = {
-  userName: false,
+  location: {
+    pathname: '',
+  },
 };
 
-export default withRouter(TopNavigation);
+export default TopNavigation;

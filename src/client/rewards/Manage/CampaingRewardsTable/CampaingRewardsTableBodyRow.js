@@ -4,10 +4,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './CampaingRewardsTable.less';
 
-const CampaingRewardsTableRow = ({ currentItem, checked }) => (
+const CampaingRewardsTableRow = ({ currentItem, checked, setModalVisibility }) => (
   <tr>
     <td>
-      <Checkbox defaultChecked={checked} disabled />
+      <Checkbox
+        defaultChecked={checked}
+        onChange={e => (e.target.checked ? setModalVisibility() : null)}
+      />
     </td>
     <td>{currentItem.name}</td>
     <td>
@@ -29,6 +32,7 @@ const CampaingRewardsTableRow = ({ currentItem, checked }) => (
 );
 
 CampaingRewardsTableRow.propTypes = {
+  setModalVisibility: PropTypes.func.isRequired,
   currentItem: PropTypes.shape().isRequired,
   checked: PropTypes.bool.isRequired,
 };
