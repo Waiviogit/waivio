@@ -24,7 +24,7 @@ const objectType = (state = initialState, action) => {
           ...state.filteredObjects,
           ...relatedWobjects.map(wObj => getClientWObj(wObj)),
         ],
-        hasMoreRelatedObjects: relatedWobjects.length === action.meta.limit,
+        hasMoreRelatedObjects: Boolean(hasMoreWobjects),
         fetching: false,
       };
     }
@@ -42,3 +42,4 @@ export const getObjectType = state => state.data;
 export const getObjectTypeLoading = state => state.fetching;
 export const getFilteredObjects = state => state.filteredObjects;
 export const getHasMoreRelatedObjects = state => state.hasMoreRelatedObjects;
+export const getAvailableFilters = state => state.filters;

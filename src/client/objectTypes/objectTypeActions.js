@@ -8,7 +8,6 @@ export const getObjectTypeMore = (name, { limit = 15, skip = 0, filter = {} }) =
   dispatch({
     type: GET_OBJECT_TYPE.ACTION,
     payload: ApiClient.getObjectType(name, { limit, skip, filter }),
-    meta: { limit },
   });
 };
 
