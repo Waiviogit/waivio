@@ -24,11 +24,7 @@ const DiscoverObjects = ({ intl, match }) => (
         </div>
       </Affix>
       <div className="center">
-        <div className="discover-objects__title">
-          {intl.formatMessage({ id: 'object', defaultMessage: 'Object:' })}:&nbsp;
-          {match.params.typeName}
-        </div>
-        {<DiscoverObjectsContent typeName={match.params.typeName} key={match.url} />}
+        {<DiscoverObjectsContent typeName={match.params.typeName} key={match.url} intl={intl} />}
       </div>
     </div>
   </React.Fragment>

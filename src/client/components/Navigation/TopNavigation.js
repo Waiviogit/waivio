@@ -52,7 +52,7 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
       </li>
       <li>
         <Link
-          to={`/objectType/hashtag`}
+          to={`/discover-objects/hashtag`}
           className={classNames('TopNavigation__item', {
             'TopNavigation__item--active': pathname.includes('/objectType'),
           })}
@@ -80,17 +80,6 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
           })}
         >
           <FormattedMessage id="about" defaultMessage="About" />
-        </Link>
-      </li>
-
-      <li>
-        <Link
-          to={`/discover-objects/hashtag`}
-          className={classNames('TopNavigation__item', {
-            'TopNavigation__item--active': pathname.includes('/discover-objects'),
-          })}
-        >
-          <FormattedMessage id="discover_objects" defaultMessage="🔥" />
         </Link>
       </li>
     </ul>
