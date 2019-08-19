@@ -9,21 +9,21 @@ import CampaingRewardsTable from './CampaingRewardsTable/CampaingRewardsTable';
 import BalanceTable from './BalanceTable/BalanceTable';
 
 import { getModalVisability } from '../../reducers';
-import { setModalVisability } from '../../components/ModalWindow/modalActions';
+import { setModalVisibility } from '../../components/ModalWindow/modalActions';
 
 @injectIntl
 @connect(
   state => ({
     visibility: getModalVisability(state),
   }),
-  { setModalVisability },
+  { setModalVisibility },
 )
 class Manage extends React.Component {
   static propTypes = {
     userName: PropTypes.string,
     intl: PropTypes.shape().isRequired,
     visibility: PropTypes.shape().isRequired,
-    setModalVisability: PropTypes.func.isRequired,
+    setModalVisibility: PropTypes.func.isRequired,
   };
   static defaultProps = {
     userName: '',
@@ -69,7 +69,7 @@ class Manage extends React.Component {
           :
         </div>
         <div>
-          *
+          *{' '}
           {intl.formatMessage({
             id: 'accounts_payable_exeed',
             defaultMessage: `accounts payable exeed 30 days`,
@@ -79,7 +79,7 @@ class Manage extends React.Component {
           **{' '}
           {intl.formatMessage({
             id: 'remaining_balance_is_not_sufficient',
-            defaultMessage: `the remaining balance i snot sufficient to cover outstanding obligations`,
+            defaultMessage: `the remaining balance is not sufficient to cover outstanding obligations`,
           })}
         </div>
       </React.Fragment>
@@ -110,7 +110,7 @@ class Manage extends React.Component {
 
   render() {
     // eslint-disable-next-line no-shadow
-    const { intl, setModalVisability, visibility } = this.props;
+    const { intl, setModalVisibility, visibility } = this.props;
     const { budgetTotal, campaigns } = this.state;
     const balanceContent = this.balanceContent();
     const rewardsCampaignContent = this.rewardsCampaignContent();
@@ -136,7 +136,7 @@ class Manage extends React.Component {
               intl={intl}
               campaigns={campaigns}
               visibility={visibility}
-              setModalVisability={setModalVisability}
+              setModalVisibility={setModalVisibility}
             />
             <div className="Manage__rewards-campaign-wrap-text-content">
               {rewardsCampaignContent}

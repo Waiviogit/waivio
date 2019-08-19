@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import { connect } from 'react-redux';
 import { getModalVisability } from '../../reducers';
-import { setModalVisability } from './modalActions';
+import { setModalVisibility } from './modalActions';
 
 @connect(
   state => ({
     visibility: getModalVisability(state),
   }),
-  { setModalVisability },
+  { setModalVisability: setModalVisibility },
 )
 class ModalWindow extends React.Component {
   static propTypes = {

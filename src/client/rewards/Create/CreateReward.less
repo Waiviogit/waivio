@@ -15,6 +15,11 @@
     margin: 15px 0;
   }
 
+  &__object-message-validate {
+    color: @red-danger !important;
+    display: none !important;
+  }
+
   .feed-layout {
     .center {
       float: left;
@@ -30,4 +35,12 @@
       }
     }
   }
+}
+
+.CreateReward__object-message-validate.enable-require {
+  display: block !important;
+}
+
+.CreateReward__object-message-validate.enable-review {
+  display: block !important;
 }
