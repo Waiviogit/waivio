@@ -5,17 +5,17 @@ import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import './TopNavigation.less';
 
-const LINKS = [
-  '/trending',
-  '/rewards',
-  '/objectType',
-  '/discover-objects',
-  '/activity',
-  '/object/ylr-waivio',
-];
+const LINKS = {
+  TRENDING: '/trending',
+  REWARDS: '/rewards',
+  DISCOVER: '/discover-objects',
+  ACTIVITY: '/activity',
+  ABOUT: '/object/ylr-waivio',
+};
 
 const TopNavigation = ({ authenticated, location: { pathname } }) => {
-  const isRouteMathed = pathname === '/' || LINKS.some(link => pathname.includes(link));
+  const isRouteMathed =
+    pathname === '/' || Object.values(LINKS).some(url => pathname.includes(url));
   return isRouteMathed ? (
     <ul className="TopNavigation">
       {authenticated && (
@@ -32,9 +32,9 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
       )}
       <li>
         <Link
-          to="/trending"
+          to={LINKS.TRENDING}
           className={classNames('TopNavigation__item', {
-            'TopNavigation__item--active': pathname.includes('/trending'),
+            'TopNavigation__item--active': pathname.includes(LINKS.TRENDING),
           })}
         >
           <FormattedMessage id="news" defaultMessage="News" />
@@ -42,9 +42,9 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
       </li>
       <li>
         <Link
-          to={authenticated ? `/rewards/active` : `/rewards/all`}
+          to={authenticated ? `${LINKS.REWARDS}/active` : `${LINKS.REWARDS}/all`}
           className={classNames('TopNavigation__item', {
-            'TopNavigation__item--active': pathname.includes('/rewards'),
+            'TopNavigation__item--active': pathname.includes(LINKS.REWARDS),
           })}
         >
           <FormattedMessage id="rewards" defaultMessage="Rewards" />
@@ -52,9 +52,9 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
       </li>
       <li>
         <Link
-          to={`/discover-objects/hashtag`}
+          to={`${LINKS.DISCOVER}/hashtag`}
           className={classNames('TopNavigation__item', {
-            'TopNavigation__item--active': pathname.includes('/objectType'),
+            'TopNavigation__item--active': pathname.includes(LINKS.DISCOVER),
           })}
         >
           <FormattedMessage id="discover" defaultMessage="Discover" />
@@ -63,9 +63,9 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
       {authenticated && (
         <li>
           <Link
-            to={`/activity`}
+            to={LINKS.ACTIVITY}
             className={classNames('TopNavigation__item', {
-              'TopNavigation__item--active': pathname === '/activity',
+              'TopNavigation__item--active': pathname === LINKS.ACTIVITY,
             })}
           >
             <FormattedMessage id="activity" defaultMessage="Activity" />
@@ -74,9 +74,9 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
       )}
       <li>
         <Link
-          to={`/object/ylr-waivio`}
+          to={LINKS.ABOUT}
           className={classNames('TopNavigation__item', {
-            'TopNavigation__item--active': pathname.includes('/object/ylr-waivio'),
+            'TopNavigation__item--active': pathname.includes(LINKS.ABOUT),
           })}
         >
           <FormattedMessage id="about" defaultMessage="About" />
