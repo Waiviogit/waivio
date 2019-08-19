@@ -208,7 +208,8 @@ export const activateCampaign = company => (dispatch, getState, { steemConnectAP
       title: 'reserve object for rewards',
       body: `Campaign ${company.name} was activated by ${username} `,
       json_metadata: JSON.stringify({
-        waivioRewards: { type: 'waivio_activate_campaign', campaign_id: company.id },
+        // eslint-disable-next-line no-underscore-dangle
+        waivioRewards: { type: 'waivio_activate_campaign', campaign_id: company._id },
       }),
     },
   ];

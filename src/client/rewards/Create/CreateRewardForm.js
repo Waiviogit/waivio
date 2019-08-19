@@ -398,6 +398,7 @@ class CreateRewardForm extends React.Component {
                 validator: this.checkReservationPeriod,
               },
             ],
+            initialValue: 3,
           })(<Input type="number" />)}
           {intl.formatMessage({
             id: 'days',
@@ -430,6 +431,7 @@ class CreateRewardForm extends React.Component {
                 validator: this.checkPhotosQuantity,
               },
             ],
+            initialValue: 1,
           })(<Input type="number" />)}
           {intl.formatMessage({
             id: 'per_review',
@@ -514,6 +516,7 @@ class CreateRewardForm extends React.Component {
                 validator: this.checkSteemReputation,
               },
             ],
+            initialValue: -10,
           })(<Input type="number" />)}
         </Form.Item>
         <Form.Item
@@ -535,6 +538,7 @@ class CreateRewardForm extends React.Component {
                 validator: this.checkFollowersQuantity,
               },
             ],
+            initialValue: 0,
           })(<Input type="number" />)}
         </Form.Item>
         <Form.Item
@@ -556,6 +560,7 @@ class CreateRewardForm extends React.Component {
                 validator: this.checkPostsQuantity,
               },
             ],
+            initialValue: 0,
           })(<Input type="number" />)}
         </Form.Item>
         <Button type="primary" onClick={this.toggleModalEligibleUsers}>

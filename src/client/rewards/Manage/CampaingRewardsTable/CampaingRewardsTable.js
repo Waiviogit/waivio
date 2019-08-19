@@ -4,14 +4,13 @@ import PropTypes from 'prop-types';
 import '../Manage.less';
 import './CampaingRewardsTable.less';
 import CampaingRewardsTableRow from './CampaingRewardsTableBodyRow';
-import ModalWindow from '../../../components/ModalWindow/ModalWindow';
 
 const CampaingRewardsTable = props => {
-  const { intl, campaigns, visibility, setModalVisibility } = props;
+  const { intl, campaigns, activateCampaign } = props;
   const isChecked = campaigns.status === 'active' || campaigns.status === 'payed';
+
   return (
     <div>
-      {visibility && <ModalWindow />}
       <table className="Campaing-rewards">
         <thead>
           <tr>
@@ -83,11 +82,11 @@ const CampaingRewardsTable = props => {
         <tbody>
           {_.map(campaigns, current => (
             <CampaingRewardsTableRow
+              activateCampaign={activateCampaign}
               // eslint-disable-next-line no-underscore-dangle
               key={current._id}
               currentItem={current}
               checked={isChecked}
-              setModalVisibility={setModalVisibility}
             />
           ))}
         </tbody>
@@ -99,14 +98,12 @@ const CampaingRewardsTable = props => {
 CampaingRewardsTable.propTypes = {
   campaigns: PropTypes.arrayOf(PropTypes.shape()),
   intl: PropTypes.shape(),
-  visibility: PropTypes.shape(),
-  setModalVisibility: PropTypes.func.isRequired,
+  activateCampaign: PropTypes.func.isRequired,
 };
 
 CampaingRewardsTable.defaultProps = {
   campaigns: [],
   intl: {},
-  visibility: {},
 };
 
 export default CampaingRewardsTable;

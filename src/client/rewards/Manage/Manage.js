@@ -7,23 +7,18 @@ import './Manage.less';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import CampaingRewardsTable from './CampaingRewardsTable/CampaingRewardsTable';
 import BalanceTable from './BalanceTable/BalanceTable';
-
-import { getModalVisability } from '../../reducers';
-import { setModalVisibility } from '../../components/ModalWindow/modalActions';
+import { activateCampaign } from '../../user/userActions';
 
 @injectIntl
 @connect(
-  state => ({
-    visibility: getModalVisability(state),
-  }),
-  { setModalVisibility },
+  null,
+  { activateCampaign },
 )
 class Manage extends React.Component {
   static propTypes = {
     userName: PropTypes.string,
     intl: PropTypes.shape().isRequired,
-    visibility: PropTypes.shape().isRequired,
-    setModalVisibility: PropTypes.func.isRequired,
+    activateCampaign: PropTypes.func.isRequired,
   };
   static defaultProps = {
     userName: '',
@@ -110,7 +105,7 @@ class Manage extends React.Component {
 
   render() {
     // eslint-disable-next-line no-shadow
-    const { intl, setModalVisibility, visibility } = this.props;
+    const { intl, activateCampaign } = this.props;
     const { budgetTotal, campaigns } = this.state;
     const balanceContent = this.balanceContent();
     const rewardsCampaignContent = this.rewardsCampaignContent();
@@ -133,10 +128,9 @@ class Manage extends React.Component {
               })}
             </div>
             <CampaingRewardsTable
+              activateCampaign={activateCampaign}
               intl={intl}
               campaigns={campaigns}
-              visibility={visibility}
-              setModalVisibility={setModalVisibility}
             />
             <div className="Manage__rewards-campaign-wrap-text-content">
               {rewardsCampaignContent}
