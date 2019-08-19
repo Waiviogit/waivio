@@ -8,17 +8,7 @@ import './Proposition.less';
 import { getClientWObj } from '../../adapters';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import Avatar from '../../components/Avatar';
-
-// const { Panel } = Collapse;
-
-// const requirementsKeys = {
-//   minPhotos: { id: 'min_images_count', defaultMessage: 'You should add images, minimum' },
-//   minFollowers: {
-//     id: 'min_followers_count',
-//     defaultMessage: 'You should have followers, at least',
-//   },
-//   minPosts: { id: 'min_posts_count', defaultMessage: 'You should be author of post, minimum' },
-// };
+import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
 
 const Proposition = ({
   intl,
@@ -116,13 +106,24 @@ const Proposition = ({
       </div>
       <ObjectCardView wObject={proposedWobj} key={proposedWobj.id} />
       <div className="RewardsFooter-wrap">
-        {buttonsLayout()}
-        <a role="presentation" className="RewardsHeader" onClick={toggleModalDetails}>
-          {intl.formatMessage({
-            id: 'details',
-            defaultMessage: `Details`,
-          })}
-        </a>
+        {proposition.permlink && typeof proposition.permlink === 'object' && assigned === true ? (
+          <CampaignFooter
+            post={proposition.permlink}
+            requiredObjectPermlink={proposition.required_object.author_permlink}
+            // postState={{ fetching: false, loaded: true, failed: false }}
+            buttonsLayout={buttonsLayout()}
+          />
+        ) : (
+          <React.Fragment>
+            {buttonsLayout()}
+            <a role="presentation" className="RewardsHeader" onClick={toggleModalDetails}>
+              {intl.formatMessage({
+                id: 'details',
+                defaultMessage: `Details`,
+              })}
+            </a>
+          </React.Fragment>
+        )}
       </div>
     </div>
   );

@@ -414,7 +414,7 @@ export const getSuitableUsers = (followsCount, postsCount) =>
 
 export const createCampaign = data =>
   new Promise((resolve, reject) => {
-    fetch(`${config.campaignApiPrefix}${config.campaigns}`, {
+    fetch(`${config.campaignApiPrefix}${config.createCampaign}`, {
       headers,
       method: 'POST',
       body: JSON.stringify(data),
