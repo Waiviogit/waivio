@@ -106,7 +106,7 @@ const Proposition = ({
       </div>
       <ObjectCardView wObject={proposedWobj} key={proposedWobj.id} />
       <div className="RewardsFooter-wrap">
-        {proposition.permlink && typeof proposition.permlink === 'object' ? (
+        {proposition.permlink && typeof proposition.permlink === 'object' && assigned === true ? (
           <CampaignFooter
             post={proposition.permlink}
             requiredObjectPermlink={proposition.required_object.author_permlink}

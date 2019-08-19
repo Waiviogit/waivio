@@ -41,7 +41,6 @@ class CampaignFooter extends React.Component {
     saving: PropTypes.bool,
     singlePostVew: PropTypes.bool,
     onLikeClick: PropTypes.func,
-    onEditClick: PropTypes.func,
   };
 
   static defaultProps = {
@@ -56,7 +55,6 @@ class CampaignFooter extends React.Component {
     sliderMode: false,
     onLikeClick: () => {},
     onShareClick: () => {},
-    onEditClick: () => {},
     handlePostPopoverMenuClick: () => {},
   };
 
@@ -152,8 +150,6 @@ class CampaignFooter extends React.Component {
       this.props.onLikeClick(this.props.post, this.props.postState, this.state.sliderValue * 100);
     });
   };
-
-  handleEditClick = () => this.props.onEditClick(this.props.post);
 
   handleSliderCancel = () => this.setState({ sliderVisible: false });
 
