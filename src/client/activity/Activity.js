@@ -7,15 +7,13 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import UserActivity from './UserActivity';
 import RightSidebar from '../app/Sidebar/RightSidebar';
 import requiresLogin from '../auth/requiresLogin';
-import TopNavigation from '../components/Navigation/TopNavigation';
 
-const Activity = ({ intl, userName }) => (
-  <React.Fragment>
+const Activity = ({ intl }) => (
+  <div className="shifted">
     <Helmet>
       <title>{intl.formatMessage({ id: 'activity', defaultMessage: 'Activity' })} - Waivio</title>
     </Helmet>
     <div className="feed-layout container">
-      <TopNavigation authenticated userName={userName} />
       <Affix className="leftContainer" stickPosition={77}>
         <div className="left">
           <LeftSidebar />
@@ -30,12 +28,11 @@ const Activity = ({ intl, userName }) => (
         <UserActivity isCurrentUser />
       </div>
     </div>
-  </React.Fragment>
+  </div>
 );
 
 Activity.propTypes = {
   intl: PropTypes.shape().isRequired,
-  userName: PropTypes.string.isRequired,
 };
 
 export default requiresLogin(injectIntl(Activity));
