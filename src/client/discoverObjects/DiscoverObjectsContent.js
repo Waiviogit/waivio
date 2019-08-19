@@ -66,9 +66,11 @@ class DiscoverObjectsContent extends Component {
     const { intl, isFetching, typeName, filteredObjects, hasMoreObjects } = this.props;
     return (
       <React.Fragment>
-        <div className="discover-objects__title">
-          {intl.formatMessage({ id: 'object', defaultMessage: 'Object' })}:&nbsp;
-          {typeName}
+        <div className="discover-objects__title f4 fw5">
+          <span className="ttc">
+            {intl.formatMessage({ id: 'objects', defaultMessage: 'Objects' })}:&nbsp;
+          </span>
+          <span className="ttc">{typeName}</span>
         </div>
         {filteredObjects.length ? (
           <ReduxInfiniteScroll

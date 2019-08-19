@@ -8,9 +8,11 @@ import RightSidebar from '../app/Sidebar/RightSidebar';
 import DiscoverObjectsContent from './DiscoverObjectsContent';
 
 const DiscoverObjects = ({ intl, match }) => (
-  <React.Fragment>
+  <div className="shifted">
     <Helmet>
-      <title>{intl.formatMessage({ id: 'discover', defaultMessage: 'Discover' })} - Waivio</title>
+      <title>
+        {intl.formatMessage({ id: 'objects_title', defaultMessage: 'Discover objects' })} - Waivio
+      </title>
     </Helmet>
     <div className="feed-layout container">
       <Affix className="leftContainer" stickPosition={77}>
@@ -27,7 +29,7 @@ const DiscoverObjects = ({ intl, match }) => (
         {<DiscoverObjectsContent typeName={match.params.typeName} key={match.url} intl={intl} />}
       </div>
     </div>
-  </React.Fragment>
+  </div>
 );
 
 DiscoverObjects.propTypes = {
