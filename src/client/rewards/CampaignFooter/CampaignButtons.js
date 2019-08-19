@@ -29,11 +29,13 @@ export default class CampaignButtons extends React.Component {
     postState: PropTypes.shape().isRequired,
     buttonsLayout: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
+    requiredObjectPermlink: PropTypes.string.isRequired,
     onActionInitiated: PropTypes.func.isRequired,
     ownPost: PropTypes.bool,
     pendingLike: PropTypes.bool,
     pendingFlag: PropTypes.bool,
     pendingFollow: PropTypes.bool,
+    pendingFollowObject: PropTypes.bool,
     saving: PropTypes.bool,
     onLikeClick: PropTypes.func,
     onCommentClick: PropTypes.func,
@@ -45,6 +47,7 @@ export default class CampaignButtons extends React.Component {
     pendingLike: false,
     pendingFlag: false,
     pendingFollow: false,
+    pendingFollowObject: false,
     pendingBookmark: false,
     saving: false,
     onLikeClick: () => {},
@@ -78,6 +81,18 @@ export default class CampaignButtons extends React.Component {
       });
     }
   }
+  getFollowText(isFollowed, permlink) {
+    if (isFollowed) {
+      return this.props.intl.formatMessage(
+        { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
+        { username: permlink },
+      );
+    }
+    return this.props.intl.formatMessage(
+      { id: 'follow_username', defaultMessage: 'Follow {username}' },
+      { username: permlink },
+    );
+  }
 
   handleLikeClick() {
     this.props.onActionInitiated(this.props.onLikeClick);
@@ -105,27 +120,17 @@ export default class CampaignButtons extends React.Component {
     const {
       pendingFlag,
       pendingFollow,
+      pendingFollowObject,
       saving,
       postState,
-      intl,
       post,
       handlePostPopoverMenuClick,
       ownPost,
+      requiredObjectPermlink,
     } = this.props;
     const { isReported } = postState;
-    let followText = '';
-
-    if (postState.userFollowed) {
-      followText = intl.formatMessage(
-        { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
-        { username: post.author },
-      );
-    } else if (!postState.userFollowed) {
-      followText = intl.formatMessage(
-        { id: 'follow_username', defaultMessage: 'Follow {username}' },
-        { username: post.author },
-      );
-    }
+    const followText = this.getFollowText(postState.userFollowed, post.author);
+    const followObjText = this.getFollowText(postState.objectFollowed, requiredObjectPermlink);
 
     let popoverMenu = [];
 
@@ -151,13 +156,13 @@ export default class CampaignButtons extends React.Component {
     if (!ownPost) {
       popoverMenu = [
         ...popoverMenu,
-        <PopoverMenuItem key="followObject" disabled={pendingFollow}>
-          {pendingFollow ? (
+        <PopoverMenuItem key="followObject" disabled={pendingFollowObject}>
+          {pendingFollowObject ? (
             <Icon type="loading" />
           ) : (
             <Icon type="codepen" className="CampaignFooter__button-icon" />
           )}
-          {followText}
+          {followObjText}
         </PopoverMenuItem>,
       ];
     }

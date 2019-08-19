@@ -11,6 +11,7 @@ import {
   getRewardFund,
   getVotePercent,
   getFollowingObjectsList,
+  getPendingFollowingObjects,
 } from '../../reducers';
 import { voteCommentFromRewards as votePost } from '../../post/postActions';
 import { followUser, unfollowUser } from '../../user/userActions';
@@ -41,6 +42,7 @@ const mapStateToProps = (state, { post, requiredObjectPermlink }) => {
     pendingLike,
     pendingFlag,
     pendingFollow: getPendingFollows(state).includes(post.author),
+    pendingFollowObject: getPendingFollowingObjects(state).includes(requiredObjectPermlink),
     ownPost: user.name === post.author,
     sliderMode: getVotingPower(state),
     rewardFund: getRewardFund(state),

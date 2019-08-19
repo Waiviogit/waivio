@@ -37,6 +37,7 @@ class CampaignFooter extends React.Component {
     sliderMode: PropTypes.bool,
     pendingLike: PropTypes.bool,
     pendingFollow: PropTypes.bool,
+    pendingFollowObject: PropTypes.bool,
     saving: PropTypes.bool,
     singlePostVew: PropTypes.bool,
     onLikeClick: PropTypes.func,
@@ -48,6 +49,7 @@ class CampaignFooter extends React.Component {
     pendingFlag: false,
     ownPost: false,
     pendingFollow: false,
+    pendingFollowObject: false,
     pendingBookmark: false,
     saving: false,
     singlePostVew: false,
@@ -184,7 +186,9 @@ class CampaignFooter extends React.Component {
       pendingFollow,
       saving,
       singlePostVew,
+      pendingFollowObject,
       buttonsLayout,
+      requiredObjectPermlink,
     } = this.props;
 
     return (
@@ -200,6 +204,7 @@ class CampaignFooter extends React.Component {
               postState={postState}
               pendingLike={pendingLike}
               pendingFollow={pendingFollow}
+              pendingFollowObject={pendingFollowObject}
               saving={saving}
               ownPost={ownPost}
               defaultVotePercent={defaultVotePercent}
@@ -208,6 +213,7 @@ class CampaignFooter extends React.Component {
               onCommentClick={this.toggleCommentsVisibility}
               handlePostPopoverMenuClick={this.handlePostPopoverMenuClick}
               buttonsLayout={buttonsLayout}
+              requiredObjectPermlink={requiredObjectPermlink}
             />
           )}
         </div>
