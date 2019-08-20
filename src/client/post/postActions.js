@@ -64,3 +64,26 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
     meta: { postId, voter, weight },
   });
 };
+
+export const voteCommentFromRewards = (postId, author, permlink, weight = 10000) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const { auth } = getState();
+  const voter = auth.user.name;
+
+  return steemConnectAPI.vote(voter, author, permlink, weight).then(res => {
+    if (window.analytics) {
+      window.analytics.track('Vote', {
+        category: 'vote',
+        label: 'submit',
+        value: 1,
+      });
+    }
+
+    // Delay to make sure you get the latest data (unknown issue with API)
+    setTimeout(() => dispatch(getContent(author, permlink, true)), 1000);
+    return res;
+  });
+};

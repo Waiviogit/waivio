@@ -8,17 +8,23 @@ import { Helmet } from 'react-helmet';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
-import { getAuthenticatedUserName, getIsLoaded, getUserLocation } from '../reducers';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+  getCryptosPriceHistory,
+  getIsLoaded,
+  getUserLocation,
+} from '../reducers';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTop from '../components/Utils/ScrollToTop';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import './Rewards.less';
 import {
+  activateCampaign,
   assignProposition,
   declineProposition,
   getCoordinates,
-  activateCampaign,
 } from '../user/userActions';
 import CreateRewardForm from './Create/CreateRewardForm';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
@@ -41,6 +47,8 @@ import MapWrap from '../components/Maps/MapWrap/MapWrap';
     loaded: getIsLoaded(state),
     username: getAuthenticatedUserName(state),
     userLocation: getUserLocation(state),
+    cryptosPriceHistory: getCryptosPriceHistory(state),
+    user: getAuthenticatedUser(state),
   }),
   { assignProposition, declineProposition, getCoordinates, activateCampaign },
 )
@@ -53,9 +61,11 @@ class Rewards extends React.Component {
     getCoordinates: PropTypes.func.isRequired,
     history: PropTypes.shape().isRequired,
     username: PropTypes.string.isRequired,
+    user: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
     intl: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
+    cryptosPriceHistory: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -296,28 +306,26 @@ class Rewards extends React.Component {
   campaignsLayoutWrapLayout = (IsRequiredObjectWrap, filterKey, userName) => {
     const { propositions, isModalDetailsOpen, loadingAssignDiscard } = this.state;
     const { intl } = this.props;
-    let tmp = 0;
     if (_.size(propositions) !== 0) {
       if (IsRequiredObjectWrap) {
-        return _.map(propositions, proposition => {
-          tmp += 1;
-          return (
+        return _.map(
+          propositions,
+          proposition =>
             proposition &&
             proposition.required_object && (
               <Campaign
                 proposition={proposition}
                 filterKey={filterKey}
-                key={`${tmp}${proposition.required_object.author_permlink}${proposition.required_object.createdAt}`}
+                key={`${proposition.required_object.author_permlink}${proposition.required_object.createdAt}`}
                 userName={userName}
               />
-            )
-          );
-        });
+            ),
+        );
       }
       return _.map(propositions, proposition =>
-        _.map(proposition.objects, wobj => {
-          tmp += 1;
-          return (
+        _.map(
+          proposition.objects,
+          wobj =>
             wobj.object &&
             wobj.object.author_permlink && (
               <Proposition
@@ -328,14 +336,13 @@ class Rewards extends React.Component {
                 discardProposition={this.discardProposition}
                 authorizedUserName={userName}
                 loading={loadingAssignDiscard}
-                key={`${tmp}${wobj.object.author_permlink}`}
+                key={`${wobj.object.author_permlink}`}
                 isModalDetailsOpen={isModalDetailsOpen}
                 toggleModal={this.toggleModal}
                 assigned={wobj.assigned}
               />
-            )
-          );
-        }),
+            ),
+        ),
       );
     }
     return `${intl.formatMessage(
@@ -376,12 +383,23 @@ class Rewards extends React.Component {
   };
 
   campaignItemsWrap = location => {
-    const { match, username } = this.props;
+    const { match, username, intl, cryptosPriceHistory, user } = this.props;
     const { loading, hasMore, propositions } = this.state;
     const filterKey = match.params.filterKey;
     const IsRequiredObjectWrap = !match.params.campaignParent;
+    const currentSteemDollalPrice =
+      cryptosPriceHistory && cryptosPriceHistory.SBD && cryptosPriceHistory.SBD.priceDetails
+        ? cryptosPriceHistory.SBD.priceDetails.currentUSDPrice
+        : '-';
     if (location.pathname === '/rewards/create') {
-      return <CreateRewardForm userName={username} />;
+      return (
+        <CreateRewardForm
+          userName={username}
+          user={user}
+          intl={intl}
+          currentSteemDollalPrice={currentSteemDollalPrice}
+        />
+      );
     } else if (location.pathname === '/rewards/manage') {
       return <Manage userName={username} />;
     }
