@@ -28,6 +28,55 @@
 
   &__content {
     padding: 0 16px;
+
+    .sidebar-search-filters {
+      &__title {
+        color: @black;
+        cursor: pointer;
+        display: flex;
+        flex-direction: row;
+        font-weight: bold;
+        text-transform: capitalize;
+        align-items: center;
+
+        &__icon {
+          color: @blue-botticelli;
+          margin-left: auto;
+
+          .iconfont {
+            font-size: 22px !important;
+          }
+        }
+      }
+
+      &__content {
+        color: @grey-mortar;
+        font-weight: 500;
+      }
+
+      &__item {
+        padding: 3px 0;
+
+        > input {
+          margin-right: 10px;
+        }
+
+        .ant-checkbox-wrapper {
+          font-size: 5px;
+        }
+
+        &__label {
+          font-size: 16px;
+        }
+      }
+
+      &__divider {
+        width: 100%;
+        height: 1px;
+        margin: 12px 0;
+        background-color: @white-gainsboro;
+      }
+    }
   }
 
   &__icon {
@@ -59,6 +108,16 @@ div[data-dir='rtl'] .SidebarContentBlock {
   &__icon {
     margin-right: 0px;
     margin-left: 5px;
+  }
+}
+
+div[data-dir='rtl'] .sidebar-search-filters {
+  text-align: right;
+  &__title {
+    &__icon {
+      margin-right: auto;
+      margin-left: 0;
+    }
   }
 }
 
