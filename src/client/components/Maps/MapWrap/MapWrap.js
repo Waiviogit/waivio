@@ -5,6 +5,7 @@ import { Icon } from 'antd';
 import _ from 'lodash';
 import MapOS from '../Map';
 import { calculateAreaRadius } from '../mapHelper';
+import './MapWrap.less';
 
 @injectIntl
 class MapWrap extends React.Component {
@@ -58,9 +59,9 @@ class MapWrap extends React.Component {
     const { intl, userLocation, onMarkerClick, wobjects } = this.props;
     const { isFilterOn } = this.state;
     return (
-      <React.Fragment>
-        <div className="RewardsHeader-wrap">
-          <div className="RewardsHeader__top-line">
+      <div className="map-wrap">
+        <div className="map-wrap__header">
+          <div className="map-wrap__header-title">
             <Icon type="compass" />
             {intl.formatMessage({
               id: 'map',
@@ -69,9 +70,7 @@ class MapWrap extends React.Component {
           </div>
           <div
             role="presentation"
-            className={`RewardsHeader__top-line-button ${
-              isFilterOn ? 'RewardsHeader__top-line-button-active' : ''
-            }`}
+            className={`map-wrap__header-btn${isFilterOn ? ' active' : ''}`}
             onClick={this.getAreaSearchData}
           >
             {intl.formatMessage({
@@ -87,7 +86,7 @@ class MapWrap extends React.Component {
           onMarkerClick={onMarkerClick}
           setArea={this.setArea}
         />
-      </React.Fragment>
+      </div>
     );
   }
 }
