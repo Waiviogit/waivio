@@ -299,12 +299,15 @@ export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3) =>
       .catch(error => reject(error));
   });
 
-export const getObjectType = (name, wobjects_skip = 0, filter) =>
+export const getObjectType = (
+  name,
+  { limit: wobjects_count, skip: wobjects_skip, filter }, // eslint-disable-line
+) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.objectType}/${name}`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ wobjects_count: 250, wobjects_skip, filter }),
+      body: JSON.stringify({ wobjects_count, wobjects_skip, filter }),
     })
       .then(res => res.json())
       .then(data => resolve(data))
