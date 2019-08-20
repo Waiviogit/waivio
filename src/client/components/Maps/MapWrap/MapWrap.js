@@ -5,6 +5,7 @@ import { Icon } from 'antd';
 import _ from 'lodash';
 import MapOS from '../Map';
 import { calculateAreaRadius } from '../mapHelper';
+import Loading from '../../Icon/Loading';
 import './MapWrap.less';
 
 @injectIntl
@@ -79,13 +80,22 @@ class MapWrap extends React.Component {
             })}
           </div>
         </div>
-        <MapOS
-          wobjects={wobjects}
-          heigth={268}
-          userLocation={userLocation}
-          onMarkerClick={onMarkerClick}
-          setArea={this.setArea}
-        />
+        {_.isEmpty(userLocation) ? (
+          <div
+            className="ant-card-loading-block flex justify-center items-center"
+            style={{ height: 268, width: '100%' }}
+          >
+            <Loading />
+          </div>
+        ) : (
+          <MapOS
+            wobjects={wobjects}
+            heigth={268}
+            userLocation={userLocation}
+            onMarkerClick={onMarkerClick}
+            setArea={this.setArea}
+          />
+        )}
       </div>
     );
   }

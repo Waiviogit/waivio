@@ -1,5 +1,151 @@
 // see more options - http://tachyons.io/docs/table-of-properties/
 
+//region FLEXBOX
+.flex {
+  display: flex;
+}
+.inline-flex {
+  display: inline-flex;
+}
+/* 1. Fix for Chrome 44 bug.
+ * https://code.google.com/p/chromium/issues/detail?id=506893 */
+.flex-auto {
+  flex: 1 1 auto;
+  min-width: 0; /* 1 */
+  min-height: 0; /* 1 */
+}
+.flex-none {
+  flex: none;
+}
+.flex-column {
+  flex-direction: column;
+}
+.flex-row {
+  flex-direction: row;
+}
+.flex-wrap {
+  flex-wrap: wrap;
+}
+.flex-nowrap {
+  flex-wrap: nowrap;
+}
+.flex-wrap-reverse {
+  flex-wrap: wrap-reverse;
+}
+.flex-column-reverse {
+  flex-direction: column-reverse;
+}
+.flex-row-reverse {
+  flex-direction: row-reverse;
+}
+.items-start {
+  align-items: flex-start;
+}
+.items-end {
+  align-items: flex-end;
+}
+.items-center {
+  align-items: center;
+}
+.items-baseline {
+  align-items: baseline;
+}
+.items-stretch {
+  align-items: stretch;
+}
+.self-start {
+  align-self: flex-start;
+}
+.self-end {
+  align-self: flex-end;
+}
+.self-center {
+  align-self: center;
+}
+.self-baseline {
+  align-self: baseline;
+}
+.self-stretch {
+  align-self: stretch;
+}
+.justify-start {
+  justify-content: flex-start;
+}
+.justify-end {
+  justify-content: flex-end;
+}
+.justify-center {
+  justify-content: center;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.justify-around {
+  justify-content: space-around;
+}
+.content-start {
+  align-content: flex-start;
+}
+.content-end {
+  align-content: flex-end;
+}
+.content-center {
+  align-content: center;
+}
+.content-between {
+  align-content: space-between;
+}
+.content-around {
+  align-content: space-around;
+}
+.content-stretch {
+  align-content: stretch;
+}
+.order-0 {
+  order: 0;
+}
+.order-1 {
+  order: 1;
+}
+.order-2 {
+  order: 2;
+}
+.order-3 {
+  order: 3;
+}
+.order-4 {
+  order: 4;
+}
+.order-5 {
+  order: 5;
+}
+.order-6 {
+  order: 6;
+}
+.order-7 {
+  order: 7;
+}
+.order-8 {
+  order: 8;
+}
+.order-last {
+  order: 99999;
+}
+.flex-grow-0 {
+  flex-grow: 0;
+}
+.flex-grow-1 {
+  flex-grow: 1;
+}
+.flex-shrink-0 {
+  flex-shrink: 0;
+}
+.flex-shrink-1 {
+  flex-shrink: 1;
+}
+//endregion
+
+//region SPACING [padding | margin]
 /*
    SPACING
    An eight step powers of two scale ranging from 0 to 16rem.
@@ -145,17 +291,9 @@
 .mh6 { margin-left: 8rem; margin-right: 8rem; }
 .mh7 { margin-left: 16rem; margin-right: 16rem; }
 */
+//endregion
 
-/*
-  TEXT ALIGN
-  Base
-    t = text-align
-  Modifiers
-    l = left
-    r = right
-    c = center
-    j = justify
-*/
+// region TEXT ALIGN
 .tl {
   text-align: left;
 }
@@ -168,8 +306,9 @@
 .tj {
   text-align: justify;
 }
+//endregion
 
-/* TEXT TRANSFORM - begin*/
+//region TEXT TRANSFORM
 .ttc {
   text-transform: capitalize;
 }
@@ -178,9 +317,9 @@
 }
 //.ttu { text-transform: uppercase; }
 //.ttn { text-transform: none; }
-/* TEXT TRANSFORM - end*/
+//endregion
 
-/* FONT WEIGHT - begin */
+//region FONT WEIGHT
 //.fw1 {
 //  font-weight: 100;
 //}
@@ -208,9 +347,9 @@
 .fw9 {
   font-weight: 900;
 }
-/* FONT WEIGHT - end */
+//endregion
 
-/* FONT SIZE - begin */
+//region FONT SIZE
 .f1 {
   font-size: 3rem;
 }
@@ -232,4 +371,4 @@
 .f7 {
   font-size: 0.75rem;
 }
-/* FONT SIZE - end */
+//endregion
