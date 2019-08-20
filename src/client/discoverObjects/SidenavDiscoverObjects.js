@@ -21,14 +21,24 @@ const SidenavDiscoverObjects = () => {
       </div>
       {isLoading ? (
         <SkeletonCustom
-          className="sidenav-discover-objects"
+          className="sidenav-discover-objects__loading"
           isLoading={isLoading}
           randomWidth
-          rows={9}
+          rows={typesLimit + 1}
           width={170}
         />
       ) : (
         <React.Fragment>
+          <li key="all-types" className="ttc">
+            <NavLink
+              to={`/objects`}
+              // isActive={() => pathname.includes(type.name)}
+              className="sidenav-discover-objects__item"
+              activeClassName="Sidenav__item--active"
+            >
+              <FormattedMessage id="all" defaultMessage="All" />
+            </NavLink>
+          </li>
           {Object.values(objectTypes)
             .slice(0, displayedTypesCount)
             .map(type => (
