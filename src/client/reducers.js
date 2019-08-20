@@ -194,6 +194,8 @@ export const getObjectTypeLoading = state => fromObjectType.getObjectTypeLoading
 export const getFilteredObjects = state => fromObjectType.getFilteredObjects(state.objectType);
 export const getHasMoreRelatedObjects = state =>
   fromObjectType.getHasMoreRelatedObjects(state.objectType);
+export const getAvailableFilters = state => fromObjectType.getAvailableFilters(state.objectType);
+export const getActiveFilters = state => fromObjectType.getActiveFilters(state.objectType);
 
 export const getModalVisability = state => fromModal.getModalVisability(state.modal);
 
