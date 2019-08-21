@@ -60,37 +60,29 @@ export default class WobjHistory extends React.Component {
     object: {},
   };
 
-  state = {
-    showModal: false,
-    sort: 'recency',
-  };
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const { match } = nextProps;
+    const { field } = prevState;
+    if (field !== match.params[1]) {
+      return { field: match.params[1] };
+    }
+    return null;
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      field: props.match.params[1] || '',
+      showModal: false,
+      sort: 'recency',
+    };
+  }
 
   componentDidMount() {
-    const { object, match } = this.props;
+    const { object } = this.props;
 
     if (object && object.author && object.author_permlink) {
       this.props.getObjectComments(object.author, object.author_permlink);
-      if (match.params[1]) {
-        this.handleFieldChange(match.params[1]);
-      }
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    const { object, match } = this.props;
-
-    if (
-      // compare field-name
-      prevProps.match.params[1] !== match.params[1] &&
-      this.state.field !== match.params[1]
-    ) {
-      this.handleFieldChange(this.props.match.params[1]);
-    }
-    if (!_.isEmpty(object) && object.author_permlink !== prevProps.object.author_permlink) {
-      this.props.getObjectComments(object.author, object.author_permlink);
-      if (match.params[1]) {
-        this.handleFieldChange(match.params[1]);
-      }
     }
   }
 
