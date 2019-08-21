@@ -3,9 +3,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Checkbox } from 'antd';
-import { get, map, uniq } from 'lodash';
+import { get, isEmpty, map, uniq } from 'lodash';
 import { getAvailableFilters, getActiveFilters, getUserLocation } from '../reducers';
 import { setActiveFilters } from '../objectTypes/objectTypeActions';
+import { getCoordinates } from '../user/userActions';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import '../components/Sidebar/SidebarContentBlock.less';
 
@@ -17,6 +18,7 @@ const DiscoverObjectsFilters = ({ intl, match }) => {
   const activeFilters = useSelector(getActiveFilters);
   // state
   const [collapsedFilters, setCollapsed] = useState([]);
+
   const handleDisplayFilter = filterName => () => {
     if (collapsedFilters.includes(filterName)) {
       setCollapsed(collapsedFilters.filter(f => f !== filterName));
@@ -24,6 +26,11 @@ const DiscoverObjectsFilters = ({ intl, match }) => {
       setCollapsed([...collapsedFilters, filterName]);
     }
   };
+
+  if (isEmpty(userLocation)) {
+    dispatch(getCoordinates());
+  }
+
   const handleOnChangeCheckbox = e => {
     const { name: filterItem, value: filterName, checked } = e.target;
     const updatedFilters = {
@@ -34,6 +41,7 @@ const DiscoverObjectsFilters = ({ intl, match }) => {
     };
     dispatch(setActiveFilters(updatedFilters));
   };
+
   const hasFilters = !['hashtag', 'list', 'page'].some(type => type === match.params.objectType);
   return hasFilters ? (
     <div className="discover-objects-filters">
