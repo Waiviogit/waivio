@@ -37,7 +37,7 @@ import ObjectAbout from '../client/object/ObjectAbout';
 import CatalogWrap from '../client/object/Catalog/CatalogWrap';
 import WobjExpertise from '../client/object/WobjExpertise';
 import UserExpertise from '../client/user/UserExpertise';
-import ObjectTypePage from '../client/objectTypes/ObjectTypePage';
+import DiscoverObjects from '../client/discoverObjects/DiscoverObjects';
 import Rewards from '../client/rewards/Rewards';
 import CreateRewardForm from '../client/rewards/Create/CreateRewardForm';
 import ObjectOfTypePage from '../client/object/ObjectOfTypePage/ObjectOfTypePage';
@@ -116,9 +116,9 @@ const routes = [
         component: Notifications,
       },
       {
-        path: '/objectType/:typeName',
+        path: '/discover-objects/:typeName',
         exact: true,
-        component: ObjectTypePage,
+        component: DiscoverObjects,
       },
       {
         path: '/@:name/(comments|followers|followed|reblogs|feed|transfers|activity|expertise)?',
