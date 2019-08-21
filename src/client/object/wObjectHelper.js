@@ -309,15 +309,15 @@ export function validateContent(pageContent = '', prevPageContent = '') {
 
 export function combineObjectMenu(menuItems, { button, news } = { button: null, news: null }) {
   const result = [...menuItems];
+  if (news) {
+    result.push({
+      id: TYPES_OF_MENU_ITEM.NEWS,
+    });
+  }
   if (button) {
     result.push({
       id: TYPES_OF_MENU_ITEM.BUTTON,
       ...button,
-    });
-  }
-  if (news) {
-    result.push({
-      id: TYPES_OF_MENU_ITEM.NEWS,
     });
   }
   return result;
