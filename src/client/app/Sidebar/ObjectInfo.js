@@ -75,7 +75,7 @@ class ObjectInfo extends React.Component {
     const { location, wobject, userName, albums, isAuthenticated } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const { showModal, selectedField } = this.state;
-    const { button, status, website } = wobject;
+    const { button, status, website, newsFilter } = wobject;
     const renderFields = getAllowedFieldsByObjType(wobject.object_type);
     const isRenderGallery = ![OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(wobject.object_type);
     const isRenderMenu = isRenderGallery;
@@ -273,12 +273,18 @@ class ObjectInfo extends React.Component {
                   button.link &&
                   getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.BUTTON, ...button }),
               )}
-              {listItem(objectFields.newsFilter, null)}
+              {listItem(
+                objectFields.newsFilter,
+                newsFilter && getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.NEWS }),
+              )}
             </React.Fragment>
           )}
           {!isEditMode &&
             sortListItemsBy(
-              combineObjectMenu(menuItems.map(menuItem => getClientWObj(menuItem)), { button }),
+              combineObjectMenu(menuItems.map(menuItem => getClientWObj(menuItem)), {
+                button,
+                news: Boolean(newsFilter),
+              }),
               !_.isEmpty(wobject.sortCustom) ? 'custom' : '',
               wobject && wobject.sortCustom,
             ).map(item => getMenuSectionLink(item))}
