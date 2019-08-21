@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import {Route, Switch, withRouter} from 'react-router-dom';
+import { connect } from 'react-redux';
+import { Route, Switch, withRouter } from 'react-router-dom';
 import * as store from '../../reducers';
 import InterestingPeople from '../../components/Sidebar/InterestingPeople';
 import SignUp from '../../components/Sidebar/SignUp';
@@ -42,16 +42,16 @@ export default class RightSidebar extends React.Component {
         <Switch>
           <Route path="/activity" component={UserActivitySearch} />
           <Route path="/@:name/activity" component={UserActivitySearch} />
-          <Route path="/@:name/transfers" render={() => <WalletSidebar />} />
+          <Route path="/@:name/transfers" render={() => <WalletSidebar  match={match}/>} />
           <Route
             path="/@:name"
             render={() =>
               authenticated && (
-                <ForecastBlock username={match.params.name} renderPlace={'rightSidebar'}/>
+                <ForecastBlock username={match.params.name} renderPlace={'rightSidebar'} />
               )
             }
           />
-          <Route path="/" render={() => <InterestingPeople/>}/>
+          <Route path="/" render={() => <InterestingPeople />} />
         </Switch>
         {showPostRecommendation && <PostRecommendation isAuthFetching={isAuthFetching} />}
       </div>

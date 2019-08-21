@@ -2,7 +2,7 @@ import configureMockStore from 'redux-mock-store';
 import React from 'react';
 import thunk from 'redux-thunk';
 import ForecastBlock from '../ForecastBlock/ForecastBlock';
-import {mountWithStore, shallowWithStore} from './shallowWrapper';
+import { mountWithStore, shallowWithStore } from './shallowWrapper';
 
 const mockStore = configureMockStore([thunk]);
 const store = mockStore({
@@ -93,7 +93,6 @@ describe('<ForecastBlock />', () => {
     expect(mainDiv).toHaveLength(1);
   });
 
-
   it("should not render component by object in rightObjectSidebar if it's chart object", () => {
     const props = {
       username: 'z1wo5',
@@ -119,7 +118,7 @@ describe('<ForecastBlock />', () => {
     const props = {
       username: 'z1wo5',
       quoteSecurity: 'AUDCAD',
-      forecasts: forecast
+      forecasts: forecast,
     };
     const component = mountWithStore(<ForecastBlock {...props} />, store);
     const mainDiv = component.find('.st-forecast-wrap');
@@ -147,7 +146,6 @@ describe('<ForecastBlock />', () => {
     expect(mainDiv).toHaveLength(0);
   });
 
-
   it('should render component by user without quoteSecurity with username in rightSidebar with props', () => {
     const props = {
       username: 'z1wo5',
@@ -173,7 +171,7 @@ describe('<ForecastBlock />', () => {
   it('should not render component by user without quoteSecurity with username without rander place with props', () => {
     const props = {
       username: 'z1wo5',
-      forecasts: forecast
+      forecasts: forecast,
     };
     const component = mountWithStore(<ForecastBlock {...props} />, store);
     const mainDiv = component.find('.st-forecast-wrap');
@@ -231,5 +229,4 @@ describe('<ForecastBlock />', () => {
     const mainDiv = component.find('.st-forecast-wrap');
     expect(mainDiv).toHaveLength(0);
   });
-
 });

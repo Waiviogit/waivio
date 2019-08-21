@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import {FormattedMessage, injectIntl} from 'react-intl';
-import {Link, NavLink, withRouter} from 'react-router-dom';
-import {connect} from 'react-redux';
-import {AutoComplete, Button, Icon, Input, Menu, Modal} from 'antd';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { Link, NavLink, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { AutoComplete, Button, Icon, Input, Menu, Modal } from 'antd';
 import classNames from 'classnames';
 import {
   searchAutoComplete,
@@ -37,11 +37,14 @@ import Notifications from './Notifications/Notifications';
 import LanguageSettings from './LanguageSettings';
 import './Topnav.less';
 import Balance from '../../../investarena/components/Header/Balance';
-import {getIsLoadingPlatformState, getPlatformNameState,} from '../../../investarena/redux/selectors/platformSelectors';
-import {toggleModal} from '../../../investarena/redux/actions/modalsActions';
+import {
+  getIsLoadingPlatformState,
+  getPlatformNameState,
+} from '../../../investarena/redux/selectors/platformSelectors';
+import { toggleModal } from '../../../investarena/redux/actions/modalsActions';
 import config from '../../../investarena/configApi/config';
-import {getFieldWithMaxWeight} from '../../object/wObjectHelper';
-import {objectFields} from '../../../common/constants/listOfFields';
+import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
+import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
 import ModalSignUp from './ModalSignUp/ModalSignUp';
 
@@ -265,7 +268,7 @@ class Topnav extends React.Component {
   handleClickMenu = e => this.setState({ selectedPage: e.key });
 
   menuForLoggedOut = () => {
-    const { location } = this.props;
+    const { location, intl } = this.props;
     const { searchBarActive } = this.state;
     const next = location.pathname.length > 1 ? location.pathname : '';
 
@@ -277,7 +280,7 @@ class Topnav extends React.Component {
       >
         <Menu className="Topnav__menu-container__menu" mode="horizontal">
           <Menu.Item key="signup">
-            <ModalSignUp isButton={false} />
+            <ModalSignUp isButton={false} intl={intl} />
           </Menu.Item>
           <Menu.Item key="divider" disabled>
             |
@@ -296,7 +299,15 @@ class Topnav extends React.Component {
   };
 
   menuForLoggedIn = () => {
-    const { intl, username, notifications, userMetaData, loadingNotifications } = this.props;
+    const {
+      intl,
+      username,
+      notifications,
+      userMetaData,
+      loadingNotifications,
+      platformName,
+      isLoadingPlatform,
+    } = this.props;
     const { searchBarActive, notificationsPopoverVisible, popoverVisible } = this.state;
     const lastSeenTimestamp = _.get(userMetaData, 'notifications_last_timestamp');
     const notificationsCount = _.isUndefined(lastSeenTimestamp)
@@ -379,7 +390,15 @@ class Topnav extends React.Component {
               onVisibleChange={this.handleMoreMenuVisibleChange}
               overlayStyle={{ position: 'fixed' }}
               content={
-                <PopoverMenu onSelect={this.handleMoreMenuSelect}>
+                <PopoverMenu
+                  onSelect={this.handleMoreMenuSelect}
+                  intl={intl}
+                  platformName={platformName}
+                  isLoadingPlatform={isLoadingPlatform}
+                  toggleModalDeposit={this.toggleModalDeposit}
+                  toggleModalBroker={this.toggleModalBroker}
+                  handleMoreMenuVisibleChange={this.handleMoreMenuVisibleChange}
+                >
                   <PopoverMenuItem key="my-profile" fullScreenHidden>
                     <FormattedMessage id="my_profile" defaultMessage="My profile" />
                   </PopoverMenuItem>

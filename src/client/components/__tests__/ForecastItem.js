@@ -2,7 +2,7 @@ import configureMockStore from 'redux-mock-store';
 import React from 'react';
 import thunk from 'redux-thunk';
 import ForecastItem from '../ForecastItem/ForecastItem';
-import {mountWithStore, shallowWithStore} from './shallowWrapper';
+import { mountWithStore, shallowWithStore } from './shallowWrapper';
 
 const mockStore = configureMockStore([thunk]);
 const store = mockStore({});
@@ -11,7 +11,7 @@ describe('<ForecastItem />', () => {
   const propsWhithWobj = {
     dateTimeCreate: '2019-07-04T11:02:36.000Z',
     forecast: '2019-07-04T15:02:36.000Z',
-    intl: {locale: 'en'},
+    intl: { locale: 'en' },
     postPrice: 0.91708,
     quoteSecurity: 'AUDCAD',
     recommend: 'Sell',
@@ -46,7 +46,7 @@ describe('<ForecastItem />', () => {
   const propsWhithoutWobj = {
     dateTimeCreate: '2019-07-04T11:02:36.000Z',
     forecast: '2019-07-04T15:02:36.000Z',
-    intl: {locale: 'en'},
+    intl: { locale: 'en' },
     postPrice: 0.91708,
     quoteSecurity: 'AUDCAD',
     recommend: 'Sell',

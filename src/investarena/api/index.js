@@ -16,6 +16,6 @@ export default function({ apiPrefix } = {}) {
     charts: new Charts({ apiClient: api }),
     signals: new Signals({ apiClient: api }),
     performers: new Performers({ apiClient: api }),
-    forecasts: new Forecasts({apiClient: api}),
+    forecasts: new Forecasts({ apiClient: api }),
   };
 }

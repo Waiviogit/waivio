@@ -1,25 +1,29 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import {withRouter} from 'react-router-dom';
-import {FormattedMessage} from 'react-intl';
-import {Icon} from 'antd';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
+import { Icon } from 'antd';
 
 import Feed from '../feed/Feed';
-import {getFeed, getIsAuthenticated, getNightmode, getObject} from '../reducers';
-import {getFeedFromState, getFeedHasMoreFromState, getFeedLoadingFromState,} from '../helpers/stateHelpers';
-import {getMoreObjectPosts, getObjectPosts} from '../feed/feedActions';
-import {showPostModal} from '../app/appActions';
+import { getFeed, getIsAuthenticated, getNightmode, getObject } from '../reducers';
+import {
+  getFeedFromState,
+  getFeedHasMoreFromState,
+  getFeedLoadingFromState,
+} from '../helpers/stateHelpers';
+import { getMoreObjectPosts, getObjectPosts } from '../feed/feedActions';
+import { showPostModal } from '../app/appActions';
 import PostModal from '../post/PostModalContainer';
 import IconButton from '../components/IconButton';
 import './ObjectProfile.less';
 import PostChart from '../../investarena/components/PostChart';
-import {getIsLoadingPlatformState} from '../../investarena/redux/selectors/platformSelectors';
-import {getDataCreatedAt, getDataForecast} from '../../investarena/helpers/diffDateTime';
-import {supportedObjectTypes} from '../../investarena/constants/objectsInvestarena';
+import { getIsLoadingPlatformState } from '../../investarena/redux/selectors/platformSelectors';
+import { getDataCreatedAt, getDataForecast } from '../../investarena/helpers/diffDateTime';
+import { supportedObjectTypes } from '../../investarena/constants/objectsInvestarena';
 import PostQuotation from '../../investarena/components/PostQuotation/PostQuotation';
-import {quoteIdForWidget} from '../../investarena/constants/constantsWidgets';
+import { quoteIdForWidget } from '../../investarena/constants/constantsWidgets';
 
 @withRouter
 @connect(
@@ -156,9 +160,9 @@ export default class ObjectProfile extends React.Component {
                 }}
                 src={`//informer.maximarkets.org/widgetsws/AnalizeID.html?Period=60&typemode=${
                   isNightMode ? 'first' : 'second'
-                  }&font=OpenSans-Regular&css=${isNightMode ? 'darkGroup' : 'defaultGroup'}&rowsID=${
+                }&font=OpenSans-Regular&css=${isNightMode ? 'darkGroup' : 'defaultGroup'}&rowsID=${
                   quoteIdForWidget[chartId.body]
-                  }&defaultId=190&time=global&lang=en`}
+                }&defaultId=190&time=global&lang=en`}
               />
             </div>
           )}

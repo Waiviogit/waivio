@@ -1,9 +1,9 @@
-import {Modal} from 'antd';
+import { Modal } from 'antd';
 import React from 'react';
-import {injectIntl} from 'react-intl';
+import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import UserDynamicList from '../../../user/UserDynamicList';
-import {getSuitableUsers} from '../../../../waivioApi/ApiClient';
+import { getSuitableUsers } from '../../../../waivioApi/ApiClient';
 
 const ModalEligibleUsers = ({ toggleModal, isModalOpen, userName, followsCount, postsCount }) => {
   const fetcher = () => getSuitableUsers(followsCount || 0, postsCount || 0);
