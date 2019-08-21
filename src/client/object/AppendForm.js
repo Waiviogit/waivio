@@ -1069,22 +1069,24 @@ export default class AppendForm extends Component {
                 </Select>,
               )}
             </Form.Item>
-            <Form.Item>
-              {getFieldDecorator(statusFields.link, {
-                rules: this.getFieldRules('buttonFields.link'),
-              })(
-                <Input
-                  className={classNames('AppendForm__input', {
-                    'validation-error': !this.state.isSomeValue,
-                  })}
-                  disabled={loading}
-                  placeholder={intl.formatMessage({
-                    id: 'link',
-                    defaultMessage: 'Link',
-                  })}
-                />,
-              )}
-            </Form.Item>
+            {this.props.form.getFieldValue(statusFields.title) === 'relisted' && (
+              <Form.Item>
+                {getFieldDecorator(statusFields.link, {
+                  rules: this.getFieldRules('buttonFields.link'),
+                })(
+                  <Input
+                    className={classNames('AppendForm__input', {
+                      'validation-error': !this.state.isSomeValue,
+                    })}
+                    disabled={loading}
+                    placeholder={intl.formatMessage({
+                      id: 'link',
+                      defaultMessage: 'Link',
+                    })}
+                  />,
+                )}
+              </Form.Item>
+            )}
           </React.Fragment>
         );
       }
