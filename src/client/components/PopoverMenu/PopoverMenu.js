@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Button } from 'antd';
 import PopoverMenuItem from './PopoverMenuItem';
 import './PopoverMenu.less';
+import './PopoverMenuItem.less';
 
 const PopoverMenu = ({
   children,
@@ -27,29 +28,31 @@ const PopoverMenu = ({
 
   return (
     <ul className="PopoverMenu">
-      <li>
-        {platformName !== 'widgets' && !isLoadingPlatform ? (
-          <React.Fragment>
-            <img
-              role="presentation"
-              title={platformName}
-              onClick={brokerOnClickHandler}
-              className="st-header__image"
-              src={`/images/investarena/${platformName}.png`}
-              alt="broker"
-            />
-            <Button type="primary" onClick={depositOnClickHandler}>
-              {intl.formatMessage({ id: 'headerAuthorized.deposit', defaultMessage: 'Deposit' })}
+      <li className="PopoverMenu full-screen-hidden">
+        <div className="PopoverMenu__connect-container">
+          {platformName !== 'widgets' && !isLoadingPlatform ? (
+            <div className="PopoverMenu__connect-container-logout">
+              <img
+                role="presentation"
+                title={platformName}
+                onClick={brokerOnClickHandler}
+                className="st-header__image"
+                src={`/images/investarena/${platformName}.png`}
+                alt="broker"
+              />
+              <Button type="primary" onClick={depositOnClickHandler}>
+                {intl.formatMessage({ id: 'headerAuthorized.deposit', defaultMessage: 'Deposit' })}
+              </Button>
+            </div>
+          ) : (
+            <Button type="primary" onClick={brokerOnClickHandler}>
+              {intl.formatMessage({
+                id: 'headerAuthorized.connectToBroker',
+                defaultMessage: 'Connect to broker',
+              })}
             </Button>
-          </React.Fragment>
-        ) : (
-          <Button type="primary" onClick={brokerOnClickHandler}>
-            {intl.formatMessage({
-              id: 'headerAuthorized.connectToBroker',
-              defaultMessage: 'Connect to broker',
-            })}
-          </Button>
-        )}
+          )}
+        </div>
       </li>
       {React.Children.map(children, child => {
         const { children: itemChildren, ...otherProps } = child.props;
@@ -74,18 +77,24 @@ PopoverMenu.propTypes = {
   children: PropTypes.node,
   onSelect: PropTypes.func,
   bold: PropTypes.bool,
-  intl: PropTypes.shape().isRequired,
-  platformName: PropTypes.string.isRequired,
-  isLoadingPlatform: PropTypes.bool.isRequired,
-  toggleModalBroker: PropTypes.func.isRequired,
-  handleMoreMenuVisibleChange: PropTypes.func.isRequired,
-  toggleModalDeposit: PropTypes.func.isRequired
+  intl: PropTypes.shape(),
+  platformName: PropTypes.string,
+  isLoadingPlatform: PropTypes.bool,
+  toggleModalBroker: PropTypes.func,
+  handleMoreMenuVisibleChange: PropTypes.func,
+  toggleModalDeposit: PropTypes.func,
 };
 
 PopoverMenu.defaultProps = {
   children: null,
   onSelect: () => {},
   bold: true,
+  intl: {},
+  platformName: '',
+  isLoadingPlatform: false,
+  toggleModalBroker: () => {},
+  handleMoreMenuVisibleChange: () => {},
+  toggleModalDeposit: () => {},
 };
 
 export default PopoverMenu;

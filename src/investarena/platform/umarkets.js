@@ -2,7 +2,6 @@ import _ from 'lodash';
 import { message } from 'antd';
 import Cookies from 'js-cookie';
 import Stomp from 'stompjs';
-// eslint-disable-next-line import/extensions
 import SockJS from 'sockjs-client/dist/sockjs.js';
 import { CMD, HOURS } from './platformData';
 import {
@@ -28,7 +27,7 @@ import * as ApiClient from '../../waivioApi/ApiClient';
 import { objectFields } from '../../common/constants/listOfFields';
 import { getFieldWithMaxWeight } from '../../client/object/wObjectHelper';
 
-export default class Umarkets {
+export class Umarkets {
   constructor() {
     this.accountCurrency = 'USD';
     this.currentAccount = '';
@@ -77,8 +76,6 @@ export default class Umarkets {
     );
   }
   createSockJS() {
-
-    // eslint-disable-next-line radix
     const websrv = parseInt(localStorage.getItem('WEBSRV'));
     const url = `${config[process.env.NODE_ENV].brokerWSUrl[this.platformName]}websrv${websrv}`;
     return new SockJS(url);
@@ -216,7 +213,6 @@ export default class Umarkets {
   onWebSocketMessage(mes) {
     const result = JSON.parse(mes.body);
     if (result.type === 'response' || result.type === 'update') {
-      // eslint-disable-next-line default-case
       switch (result.cmd) {
         case CMD.getUserRates:
           this.parseUserRates(result);
@@ -252,7 +248,6 @@ export default class Umarkets {
           break;
       }
     } else if (result.type === 'event') {
-      // eslint-disable-next-line default-case
       switch (result.name) {
         case 'deal_opened_by_market_order':
           this.parseOpenByMarketOrder(result);
@@ -304,7 +299,6 @@ export default class Umarkets {
         timestamp: q.timestamp,
         state: this.statesQuotes[q.security],
       };
-      // eslint-disable-next-line no-prototype-builtins
       if (this.hasOwnProperty('publish')) {
         this.publish(q.security, this.quotes[q.security]);
       }
@@ -329,7 +323,6 @@ export default class Umarkets {
     keys.sort();
     ApiClient.getObjects({ limit: 500, invObjects: true, requiredFields: ['chartid'] }).then(
       wobjs => {
-        // eslint-disable-next-line guard-for-in,no-restricted-syntax
         for (const i in keys) {
           const key = keys[i];
           const wobjData = _.find(wobjs.wobjects, o =>
@@ -383,7 +376,6 @@ export default class Umarkets {
     const timeScale = chart.barType;
     const bars = chart.bars;
     this.dispatch(getChartDataSuccess({ quoteSecurity, timeScale, bars }));
-    // eslint-disable-next-line no-prototype-builtins
     if (this.hasOwnProperty('publish')) {
       this.publish(`ChartData${quoteSecurity}`, { quoteSecurity, timeScale, bars });
     }
@@ -392,11 +384,8 @@ export default class Umarkets {
     const content = _.sortBy(result.content, 'dealSequenceNumber').reverse();
     const openDeals = {};
     const data = { open_deals: [] };
-    // eslint-disable-next-line array-callback-return
     content.map(openDeal => {
-      // eslint-disable-next-line no-param-reassign
       openDeal.openPrice /= 1000000;
-      // eslint-disable-next-line no-param-reassign
       openDeal.amount /= 1000000;
       openDeals[openDeal.dealId] = openDeal;
       data.open_deals.push({
@@ -416,15 +405,10 @@ export default class Umarkets {
     if (!this.getClosedDealsForStatistics) {
       const content = _.sortBy(result.content.closedDeals, 'closeTime').reverse();
       const closedDeals = {};
-      // eslint-disable-next-line array-callback-return
       content.map(closeDeal => {
-        // eslint-disable-next-line no-param-reassign
         closeDeal.amount /= 1000000;
-        // eslint-disable-next-line no-param-reassign
         closeDeal.pnl /= 1000000;
-        // eslint-disable-next-line no-param-reassign
         closeDeal.openPrice /= 1000000;
-        // eslint-disable-next-line no-param-reassign
         closeDeal.closePrice /= 1000000;
         closedDeals[closeDeal.dealId] = closeDeal;
       });
@@ -437,7 +421,6 @@ export default class Umarkets {
       );
       if (contentFilter.length > 0) {
         const data = { closed_deals: [] };
-        // eslint-disable-next-line array-callback-return
         content.map(closeDeal => {
           data.closed_deals.push({
             deal_id: closeDeal.dealId,
@@ -478,7 +461,6 @@ export default class Umarkets {
       message.error('Not trading time');
     }
   }
-  // eslint-disable-next-line class-methods-use-this
   parseCloseMarketOrderResult(result) {
     if (result.response === 'NOT_TRADING_TIME') {
       message.error('Not trading time');
@@ -486,7 +468,6 @@ export default class Umarkets {
       message.error('Wait 60 seconds after opening deal to close');
     }
   }
-  // eslint-disable-next-line class-methods-use-this
   parseChangeMarketOrderResult(result) {
     if (result.response === 'NOT_TRADING_TIME') {
       message.error('Not trading time');
