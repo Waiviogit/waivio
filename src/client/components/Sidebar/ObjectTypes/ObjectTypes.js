@@ -80,7 +80,7 @@ class ObjectTypes extends React.Component {
                         ) : (
                           <div />
                         )}
-                        <Link to={`/objectType/${objectType.name}`}>
+                        <Link to={`/discover-objects/${objectType.name}`}>
                           <FormattedMessage id="explore" defaultMessage="Explore" />
                         </Link>
                       </div>

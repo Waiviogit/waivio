@@ -439,7 +439,7 @@ class Topnav extends React.Component {
         redirectUrl = `/object/${value.replace('wobj', '')}`;
         break;
       default:
-        redirectUrl = `/objectType/${value.replace('type', '')}`;
+        redirectUrl = `/discover-objects/${value.replace('type', '')}`;
     }
 
     this.props.history.push(redirectUrl);

@@ -37,7 +37,6 @@ import ObjectAbout from '../client/object/ObjectAbout';
 import CatalogWrap from '../client/object/Catalog/CatalogWrap';
 import WobjExpertise from '../client/object/WobjExpertise';
 import UserExpertise from '../client/user/UserExpertise';
-// import ObjectTypePage from '../client/objectTypes/ObjectTypePage';
 import DiscoverObjects from '../client/discoverObjects/DiscoverObjects';
 import Rewards from '../client/rewards/Rewards';
 import CreateRewardForm from '../client/rewards/Create/CreateRewardForm';
@@ -116,11 +115,6 @@ const routes = [
         exact: true,
         component: Notifications,
       },
-      // {
-      //   path: '/objectType/:typeName',
-      //   exact: true,
-      //   component: ObjectTypePage,
-      // },
       {
         path: '/discover-objects/:typeName',
         exact: true,

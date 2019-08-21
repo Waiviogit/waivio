@@ -6,6 +6,7 @@ import Affix from '../components/Utils/Affix';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
 import DiscoverObjectsContent from './DiscoverObjectsContent';
+import './DiscoverObjects.less';
 
 const DiscoverObjects = ({ intl, match }) => (
   <div className="shifted">

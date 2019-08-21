@@ -1,0 +1,23 @@
+@import (reference) '../styles/custom.less';
+@import (reference) '../styles/modules/variables';
+
+/*  SidenavDiscoverObjects  */
+.sidenav-discover-objects {
+  &__show-more {
+    text-transform: lowercase;
+    text-decoration: underline;
+    padding-left: 10px;
+    &:hover {
+      color: @black;
+      cursor: pointer;
+    }
+  }
+
+  &__loading {
+    padding-top: 10px;
+    .ant-skeleton-content .ant-skeleton-paragraph > li {
+      height: 22px;
+      padding-top: 16px;
+    }
+  }
+}

@@ -1,0 +1,37 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.map-wrap {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: @white;
+    border: 1px solid @blue-hawkesBlue;
+    padding: 10px;
+
+    .anticon {
+      font-size: 26px;
+      margin-right: 5px;
+    }
+  }
+
+  &__header-title {
+    display: flex;
+    align-items: center;
+    color: @blue-baliHai;
+  }
+
+  &__header-btn {
+    border: 1px solid @blue-baliHai;
+    border-radius: 17px;
+    padding: 0 8px;
+    color: @blue-baliHai;
+    cursor: pointer;
+    &:hover,
+    &.active {
+      border-color: @primary-color;
+      color: @primary-color;
+    }
+  }
+}
