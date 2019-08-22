@@ -375,7 +375,7 @@ class StoryFull extends React.Component {
           <div className="StoryFull__header__text">
             <Link to={`/@${post.author}`}>
               <span className="username">{post.author}</span>
-              <WeightTag weight={post.author_wobjects_weight} rank={post.author_rank} />
+              <WeightTag weight={post.author_wobjects_weight} />
             </Link>
             <BTooltip
               title={

@@ -56,7 +56,7 @@ class ObjectWeightBlock extends React.Component {
                 key={wobject.author_permlink}
                 wobject={wobject}
                 showFollow={false}
-                alt={<WeightTag weight={wobject.user_weight} rank={wobject.rank} />}
+                alt={<WeightTag weight={wobject.user_weight} />}
               />
             ))}
           {wObjectsCount > 5 && (
