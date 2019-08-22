@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { Form, Input, Select, Checkbox, Button, DatePicker } from 'antd';
+import { Button, Checkbox, DatePicker, Form, Input, Select } from 'antd';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import ModalEligibleUsers from './ModalEligibleUsers/ModalEligibleUsers';
@@ -62,7 +62,7 @@ class CreateRewardForm extends React.Component {
 
   prepareSubmitData = data => {
     const objects = _.map(this.state.objectsToAction, o => o.id);
-    const finalData = {
+    return {
       requiredObject: this.state.requiredObject.author_permlink,
       guideName: this.props.userName,
       name: data.campaignName,
@@ -80,7 +80,6 @@ class CreateRewardForm extends React.Component {
       objects,
       expired_at: data.expiredAt.format(),
     };
-    return finalData;
   };
 
   handleConfirmBlur = e => {
@@ -245,6 +244,21 @@ class CreateRewardForm extends React.Component {
     }
   };
 
+  checkNameFieldIsEmpty = (rule, value, callback) => {
+    const { intl } = this.props;
+    if (value !== '' && (value === null || value.match(/^ *$/) !== null)) {
+      callback(
+        intl.formatMessage({
+          id: 'not_valid_campaign_name',
+          defaultMessage:
+            "This doesn't seem to be valid campaign name. Only alphanumeric characters, hyphens, underscores and dots are allowed.",
+        }),
+      );
+    } else {
+      callback();
+    }
+  };
+
   render() {
     const { intl } = this.props;
     const { getFieldDecorator } = this.props.form;
@@ -254,7 +268,7 @@ class CreateRewardForm extends React.Component {
         <Form.Item
           label={intl.formatMessage({
             id: 'campaign_name',
-            defaultMessage: 'Campaign name',
+            defaultMessage: 'campaign name',
           })}
         >
           {getFieldDecorator('campaignName', {
@@ -272,6 +286,9 @@ class CreateRewardForm extends React.Component {
                   id: 'campaign_name_error_long',
                   defaultMessage: 'Campaign name must be no longer then 100 symbols',
                 }),
+              },
+              {
+                validator: this.checkNameFieldIsEmpty,
               },
             ],
           })(<Input />)}
@@ -398,7 +415,7 @@ class CreateRewardForm extends React.Component {
                 validator: this.checkReservationPeriod,
               },
             ],
-            initialValue: 3,
+            initialValue: 1,
           })(<Input type="number" />)}
           {intl.formatMessage({
             id: 'days',
@@ -431,17 +448,19 @@ class CreateRewardForm extends React.Component {
                 validator: this.checkPhotosQuantity,
               },
             ],
-            initialValue: 1,
+            initialValue: 0,
           })(<Input type="number" />)}
           {intl.formatMessage({
             id: 'per_review',
             defaultMessage: 'per review',
           })}
         </Form.Item>
-        {intl.formatMessage({
-          id: 'required_business_object',
-          defaultMessage: 'Required object (Your business object)',
-        })}
+        <div className="CreateReward__item-title ant-form-item-required">
+          {intl.formatMessage({
+            id: 'required_business_object',
+            defaultMessage: 'Required object (Your business object)',
+          })}
+        </div>
         <SearchObjectsAutocomplete
           allowClear={false}
           itemsIdsToOmit={[]}
@@ -464,10 +483,12 @@ class CreateRewardForm extends React.Component {
             <ObjectCardView wObject={this.state.requiredObject} />
           )}
         </div>
-        {intl.formatMessage({
-          id: 'objects_review',
-          defaultMessage: 'Objects to review',
-        })}
+        <div className="CreateReward__item-title ant-form-item-required">
+          {intl.formatMessage({
+            id: 'objects_review',
+            defaultMessage: 'Objects to review',
+          })}
+        </div>
         <SearchObjectsAutocomplete
           allowClear={false}
           itemsIdsToOmit={[]}
@@ -612,21 +633,32 @@ class CreateRewardForm extends React.Component {
                   defaultMessage: 'Please, select time!',
                 }),
               },
-              {
+              /* {
                 validator: this.checkExpireDate,
-              },
+              }, */
             ],
           })(<DatePicker />)}
         </Form.Item>
         <Form.Item>
           {getFieldDecorator('agreement', {
+            rules: [
+              {
+                required: true,
+                message: intl.formatMessage({
+                  id: 'read_agreement',
+                  defaultMessage: 'Please, read the agreement and check this field',
+                }),
+              },
+            ],
             valuePropName: 'checked',
           })(
             <Checkbox>
-              {intl.formatMessage({
-                id: 'have_read',
-                defaultMessage: 'I have read the',
-              })}
+              <span className="CreateReward__item-title ant-form-item-required">
+                {intl.formatMessage({
+                  id: 'have_read',
+                  defaultMessage: 'I have read the',
+                })}
+              </span>
               <a href="">
                 {' '}
                 {intl.formatMessage({
