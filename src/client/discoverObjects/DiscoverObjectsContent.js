@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { isEmpty, map } from 'lodash';
 import { connect } from 'react-redux';
 import { Button, Modal, Tag } from 'antd';
-import { updateActiveFilters } from './helper';
+import { isNeedFilters, updateActiveFilters } from './helper';
 import {
   getActiveFilters,
   getObjectTypesList,
@@ -22,6 +22,12 @@ import Loading from '../components/Icon/Loading';
 import ObjectCardView from '../objectCard/ObjectCardView';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import DiscoverObjectsFilters from './DiscoverFiltersSidebar/FiltersContainer';
+import SidenavDiscoverObjects from './SidenavDiscoverObjects';
+
+const modalName = {
+  FILTERS: 'filters',
+  OBJECTS: 'objects',
+};
 
 @connect(
   state => ({
@@ -61,10 +67,15 @@ class DiscoverObjectsContent extends Component {
     typeName: '',
   };
 
-  state = {
-    isModalOpen: false,
-    modalTitle: 'none',
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      hasFilters: isNeedFilters(props.typeName),
+      isModalOpen: false,
+      modalTitle: '',
+    };
+  }
 
   componentDidMount() {
     const { dispatchGetObjectType, dispatchGetObjectTypes, typeName, typesList } = this.props;
@@ -79,8 +90,17 @@ class DiscoverObjectsContent extends Component {
     });
   };
 
-  // handleAddTag = ()
-  showFiltersModal = () => this.setState({ isModalOpen: true, modalTitle: 'filters' });
+  showFiltersModal = () =>
+    this.setState({
+      isModalOpen: true,
+      modalTitle: modalName.FILTERS,
+    });
+
+  showTypesModal = () =>
+    this.setState({
+      isModalOpen: true,
+      modalTitle: modalName.OBJECTS,
+    });
 
   closeModal = () => this.setState({ isModalOpen: false });
 
@@ -92,7 +112,7 @@ class DiscoverObjectsContent extends Component {
   };
 
   render() {
-    const { isModalOpen, modalTitle } = this.state;
+    const { hasFilters, isModalOpen, modalTitle } = this.state;
     const {
       intl,
       isFetching,
@@ -111,41 +131,45 @@ class DiscoverObjectsContent extends Component {
             <span className="ttc">{typeName}</span>&nbsp;
             <span className="discover-objects-header__selector">
               (
-              <span className="underline">
+              <span className="underline" role="presentation" onClick={this.showTypesModal}>
                 {intl.formatMessage({ id: 'change', defaultMessage: 'change' })}
               </span>
               )
             </span>
           </div>
-          <div className="discover-objects-header__tags-block">
-            <span className="discover-objects-header__topic ttc">
-              {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
-            </span>
-            {map(activeFilters, (filterValues, filterName) =>
-              filterValues.map(filterValue => (
-                <Tag
-                  className="ttc"
-                  key={`${filterName}:${filterValue}`}
-                  closable
-                  onClose={this.handleRemoveTag(filterName, filterValue)}
+          {hasFilters ? (
+            <React.Fragment>
+              <div className="discover-objects-header__tags-block">
+                <span className="discover-objects-header__topic ttc">
+                  {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
+                </span>
+                {map(activeFilters, (filterValues, filterName) =>
+                  filterValues.map(filterValue => (
+                    <Tag
+                      className="ttc"
+                      key={`${filterName}:${filterValue}`}
+                      closable
+                      onClose={this.handleRemoveTag(filterName, filterValue)}
+                    >
+                      {filterValue}
+                    </Tag>
+                  )),
+                )}
+                <span
+                  className="discover-objects-header__selector underline ttl"
+                  role="presentation"
+                  onClick={this.showFiltersModal}
                 >
-                  {filterValue}
-                </Tag>
-              )),
-            )}
-            <span
-              className="discover-objects-header__selector underline ttl"
-              role="presentation"
-              onClick={this.showFiltersModal}
-            >
-              {intl.formatMessage({ id: 'add_new_proposition', defaultMessage: 'Add' })}
-            </span>
-          </div>
-          <div className="discover-objects-header__toggle-map tc">
-            <Button icon="compass" size="large">
-              {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
-            </Button>
-          </div>
+                  {intl.formatMessage({ id: 'add_new_proposition', defaultMessage: 'Add' })}
+                </span>
+              </div>
+              <div className="discover-objects-header__toggle-map tc">
+                <Button icon="compass" size="large">
+                  {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
+                </Button>
+              </div>
+            </React.Fragment>
+          ) : null}
         </div>
         {filteredObjects.length ? (
           <ReduxInfiniteScroll
@@ -164,20 +188,22 @@ class DiscoverObjectsContent extends Component {
         ) : (
           <Loading />
         )}
-        <Modal
-          className="discover-filters-modal"
-          footer={null}
-          title={intl.formatMessage({
-            id: modalTitle,
-            defaultMessage: modalTitle,
-          })}
-          closable
-          visible={isModalOpen}
-          onOk={this.closeModal}
-          onCancel={this.closeModal}
-        >
-          <DiscoverObjectsFilters intl={intl} />
-        </Modal>
+        {modalTitle ? (
+          <Modal
+            className="discover-filters-modal"
+            footer={null}
+            title={intl.formatMessage({
+              id: modalTitle,
+              defaultMessage: modalTitle,
+            })}
+            closable
+            visible={isModalOpen}
+            onCancel={this.closeModal}
+          >
+            {modalTitle === modalName.FILTERS && <DiscoverObjectsFilters intl={intl} />}
+            {modalTitle === modalName.OBJECTS && <SidenavDiscoverObjects withTitle={false} />}
+          </Modal>
+        ) : null}
       </React.Fragment>
     );
   }

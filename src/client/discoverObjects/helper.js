@@ -9,6 +9,11 @@ export function updateActiveFilters(activeFilters, filter, value, isActive) {
   };
 }
 
+export function isNeedFilters(objectType) {
+  return !['hashtag', 'list', 'page'].some(type => type === objectType);
+}
+
 export default {
   updateActiveFilters,
+  isNeedFilters,
 };

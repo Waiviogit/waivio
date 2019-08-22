@@ -2,7 +2,8 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { isEmpty } from 'lodash';
+import { isEmpty, memoize } from 'lodash';
+import { isNeedFilters } from '../helper';
 import { getUserLocation } from '../../reducers';
 import { getCoordinates } from '../../user/userActions';
 import MapWrap from '../../components/Maps/MapWrap/MapWrap';
@@ -18,8 +19,8 @@ const DiscoverFiltersSidebar = ({ intl, match }) => {
     dispatch(getCoordinates());
   }
 
-  const hasFilters = !['hashtag', 'list', 'page'].some(type => type === match.params.objectType);
-  return hasFilters ? (
+  const hasFilters = memoize(isNeedFilters);
+  return hasFilters(match.params.objectType) ? (
     <div className="discover-objects-filters">
       <MapWrap
         wobjects={[]}
