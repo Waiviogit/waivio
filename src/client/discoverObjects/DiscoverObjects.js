@@ -26,7 +26,7 @@ const DiscoverObjects = ({ intl, match }) => (
           <RightSidebar />
         </div>
       </Affix>
-      <div className="center">
+      <div className="center discover-objects">
         {<DiscoverObjectsContent typeName={match.params.typeName} key={match.url} intl={intl} />}
       </div>
     </div>

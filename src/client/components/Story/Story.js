@@ -396,7 +396,7 @@ class Story extends React.Component {
                     <span className="username">{post.author}</span>
                   </Link>
                 </h4>
-                <WeightTag weight={post.author_wobjects_weight} rank={post.author_rank} />
+                <WeightTag weight={post.author_wobjects_weight} />
               </span>
               <span>
                 <BTooltip

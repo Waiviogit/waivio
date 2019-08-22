@@ -3,8 +3,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import './ObjectExpertise.less';
 import UserCard from '../UserCard';
+import WeightTag from '../WeightTag';
+import './ObjectExpertise.less';
 
 const ObjectExpertise = ({ username, wobject }) => {
   const { users, user } = wobject;
@@ -18,12 +19,24 @@ const ObjectExpertise = ({ username, wobject }) => {
       </h4>
       <div className="SidebarContentBlock__content">
         {users &&
-          _.map(_.slice(users, 0, 5), u => <UserCard key={u.name} user={u} showFollow={false} />)}
+          _.map(_.slice(users, 0, 5), u => (
+            <UserCard
+              key={u.name}
+              user={u}
+              showFollow={false}
+              alt={<WeightTag weight={u.weight} />}
+            />
+          ))}
 
         {!isUserInTopFive && user && (
           <React.Fragment>
             <div className="ObjectExpertise__dots">...</div>
-            <UserCard key={user.name} user={user} showFollow={false} />
+            <UserCard
+              key={user.name}
+              user={user}
+              showFollow={false}
+              alt={<WeightTag weight={user.weight} />}
+            />
           </React.Fragment>
         )}
 
