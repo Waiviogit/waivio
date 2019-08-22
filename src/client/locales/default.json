@@ -602,6 +602,7 @@
   "sponsors": "Sponsors",
   "search_area": "Search area",
   "map": "Map",
+  "view_map": "View map",
   "active": "Active",
   "campaing": "Campaing",
   "status": "Status",
@@ -664,5 +665,6 @@
   "have_read": "I have read the",
   "agreement": "agreement",
   "save_changes": "Save changes",
-  "not_less_zero_posts": "Should not be less than zero posts"
+  "not_less_zero_posts": "Should not be less than zero posts",
+  "change": "change"
 }

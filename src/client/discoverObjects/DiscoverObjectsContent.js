@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty, map } from 'lodash';
 import { connect } from 'react-redux';
-import { Tag } from 'antd';
+import { Button, Tag } from 'antd';
 import { updateActiveFilters } from './helper';
 import {
   getActiveFilters,
@@ -91,28 +91,45 @@ class DiscoverObjectsContent extends Component {
     } = this.props;
     return (
       <React.Fragment>
-        <div className="discover-objects__title">
-          <span className="discover-objects__topic ttc">
-            {intl.formatMessage({ id: 'objects', defaultMessage: 'Objects' })}:&nbsp;
-          </span>
-          <span className="ttc">{typeName}</span>
-        </div>
-        <div className="discover-objects__tags-block">
-          <span className="discover-objects__topic ttc">
-            {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
-          </span>
-          {map(activeFilters, (filterValues, filterName) =>
-            filterValues.map(filterValue => (
-              <Tag
-                className="ttc"
-                key={`${filterName}:${filterValue}`}
-                closable
-                onClose={this.handleRemoveTag(filterName, filterValue)}
-              >
-                {filterValue}
-              </Tag>
-            )),
-          )}
+        <div className="discover-objects-header">
+          <div className="discover-objects-header__title">
+            <span className="discover-objects-header__topic ttc">
+              {intl.formatMessage({ id: 'objects', defaultMessage: 'Objects' })}:&nbsp;
+            </span>
+            <span className="ttc">{typeName}</span>&nbsp;
+            <span className="discover-objects-header__selector">
+              (
+              <span className="underline">
+                {intl.formatMessage({ id: 'change', defaultMessage: 'change' })}
+              </span>
+              )
+            </span>
+          </div>
+          <div className="discover-objects-header__tags-block">
+            <span className="discover-objects-header__topic ttc">
+              {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
+            </span>
+            {map(activeFilters, (filterValues, filterName) =>
+              filterValues.map(filterValue => (
+                <Tag
+                  className="ttc"
+                  key={`${filterName}:${filterValue}`}
+                  closable
+                  onClose={this.handleRemoveTag(filterName, filterValue)}
+                >
+                  {filterValue}
+                </Tag>
+              )),
+            )}
+            <span className="discover-objects-header__selector underline ttl">
+              {intl.formatMessage({ id: 'add_new_proposition', defaultMessage: 'Add' })}
+            </span>
+          </div>
+          <div className="discover-objects-header__toggle-map tc">
+            <Button icon="compass" size="large">
+              {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
+            </Button>
+          </div>
         </div>
         {filteredObjects.length ? (
           <ReduxInfiniteScroll

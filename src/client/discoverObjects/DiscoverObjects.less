@@ -2,18 +2,37 @@
 @import (reference) '../styles/modules/variables';
 
 //region DiscoverObjectsContent
-.discover-objects {
+.discover-objects-header {
+  padding: 0 12px;
+
+  &__title {
+    font-weight: 500;
+    @media @medium, @large {
+      font-size: 1.25rem;
+    }
+  }
   &__topic {
     font-weight: 600;
     padding-right: 5px;
+    @media @medium, @large {
+      font-weight: 500;
+    }
   }
-  &__title {
-    font-weight: 500;
-    padding: 0 12px;
+  &__selector {
+    font-size: 0.9rem;
+    font-weight: 400;
+    &:hover {
+      color: @primary-color;
+    }
+    @media @medium, @large {
+      display: none;
+    }
   }
+  &__toggle-map {
+    padding: 10px 0 5px 0;
+  }
+  &__toggle-map,
   &__tags-block {
-    padding: 0 12px;
-
     @media @small, @medium, @large {
       display: none;
     }
