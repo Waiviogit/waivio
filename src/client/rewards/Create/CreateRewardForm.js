@@ -8,6 +8,7 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import ModalEligibleUsers from './ModalEligibleUsers/ModalEligibleUsers';
 import { createCampaign } from '../../../waivioApi/ApiClient';
 import './CreateReward.less';
+import ReviewObjectItem from './ReviewObjectItem';
 
 const { Option } = Select;
 
@@ -16,15 +17,16 @@ class CreateRewardForm extends React.Component {
   static propTypes = {
     userName: PropTypes.string,
     user: PropTypes.shape(),
-    form: PropTypes.shape().isRequired,
+    form: PropTypes.shape(),
     intl: PropTypes.shape(),
-    currentSteemDollalPrice: PropTypes.shape(),
+    currentSteemDollarPrice: PropTypes.number,
   };
   static defaultProps = {
     userName: '',
     user: {},
     intl: {},
-    currentSteemDollalPrice: {},
+    form: {},
+    currentSteemDollarPrice: 0,
   };
   state = {
     confirmDirty: false,
@@ -45,8 +47,10 @@ class CreateRewardForm extends React.Component {
   };
 
   removeReviewObject = obj => {
-    console.log('OBJ', obj);
-    this.setState({ objectsToAction: this.state.objectsToAction.filter(el => el.id !== obj.id) });
+    this.setState({
+      objectsToAction: this.state.objectsToAction.filter(el => el.id !== obj.id),
+      hasReviewObject: false,
+    });
   };
 
   handleSubmit = e => {
@@ -125,8 +129,8 @@ class CreateRewardForm extends React.Component {
   };
 
   compareBudgetValues = (rule, value, callback) => {
-    const { user, currentSteemDollalPrice, intl } = this.props;
-    const userUSDBalance = parseFloat(user.balance) * currentSteemDollalPrice;
+    const { user, currentSteemDollarPrice, intl } = this.props;
+    const userUSDBalance = parseFloat(user.balance) * currentSteemDollarPrice;
     if (value <= 0 && value !== '') {
       callback(
         intl.formatMessage({
@@ -476,6 +480,7 @@ class CreateRewardForm extends React.Component {
           style={{ width: '100%' }}
           placeholder="Please select"
           handleSelect={this.setRequiredObject}
+          isPermlinkValue={false}
         />
         <div
           className={classNames('CreateReward__object-message-validate', {
@@ -509,6 +514,7 @@ class CreateRewardForm extends React.Component {
           style={{ width: '100%' }}
           placeholder="Please select"
           handleSelect={this.handleAddObjectToList}
+          isPermlinkValue={false}
         />
         <div
           className={classNames('CreateReward__object-message-validate', {
@@ -522,12 +528,11 @@ class CreateRewardForm extends React.Component {
         </div>
         <div className="CreateReward__objects-wrap">
           {_.map(this.state.objectsToAction, obj => (
-            <React.Fragment>
-              <div className="CreateReward__objects-wrap-close-circle">
-                <Icon type="close-circle" onClick={() => this.removeReviewObject(obj)} />
-              </div>
-              <ObjectCardView wObject={obj} />
-            </React.Fragment>
+            <ReviewObjectItem
+              key={obj.id}
+              object={obj}
+              removeReviewObject={this.removeReviewObject}
+            />
           ))}
         </div>
         <div className="CreateReward__block-title">

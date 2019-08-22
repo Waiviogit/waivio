@@ -387,21 +387,21 @@ class Rewards extends React.Component {
     const { loading, hasMore, propositions } = this.state;
     const filterKey = match.params.filterKey;
     const IsRequiredObjectWrap = !match.params.campaignParent;
-    const currentSteemDollalPrice =
+    const currentSteemDollarPrice =
       cryptosPriceHistory && cryptosPriceHistory.SBD && cryptosPriceHistory.SBD.priceDetails
         ? cryptosPriceHistory.SBD.priceDetails.currentUSDPrice
-        : '-';
+        : 0;
     if (location.pathname === '/rewards/create') {
       return (
         <CreateRewardForm
           userName={username}
           user={user}
           intl={intl}
-          currentSteemDollalPrice={currentSteemDollalPrice}
+          currentSteemDollarPrice={currentSteemDollarPrice}
         />
       );
     } else if (location.pathname === '/rewards/manage') {
-      return <Manage userName={username} />;
+      return <Manage intl={intl} userName={username} />;
     }
     return this.getCampaignsLayout(
       hasMore,

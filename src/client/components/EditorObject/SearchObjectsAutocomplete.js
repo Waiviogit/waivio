@@ -34,6 +34,7 @@ class SearchObjectsAutocomplete extends Component {
     allowClear: true,
     rowIndex: 0,
     ruleIndex: 0,
+    isPermlinkValue: true,
   };
 
   static propTypes = {
@@ -49,6 +50,7 @@ class SearchObjectsAutocomplete extends Component {
     handleSelect: PropTypes.func,
     rowIndex: PropTypes.number,
     ruleIndex: PropTypes.number,
+    isPermlinkValue: PropTypes.bool,
   };
 
   constructor(props) {
@@ -88,6 +90,9 @@ class SearchObjectsAutocomplete extends Component {
 
   handleSelect(objId) {
     this.setState({ isOptionSelected: true });
+    if (!this.props.isPermlinkValue) {
+      this.setState({ searchString: '' });
+    }
     this.props.clearSearchResults();
     const selectedObject = this.props.searchObjectsResults.find(obj => obj.id === objId);
     this.props.handleSelect(
