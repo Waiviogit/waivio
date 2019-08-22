@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty, map } from 'lodash';
 import { connect } from 'react-redux';
-import { Button, Tag } from 'antd';
+import { Button, Modal, Tag } from 'antd';
 import { updateActiveFilters } from './helper';
 import {
   getActiveFilters,
@@ -21,6 +21,7 @@ import { getObjectTypes } from '../objectTypes/objectTypesActions';
 import Loading from '../components/Icon/Loading';
 import ObjectCardView from '../objectCard/ObjectCardView';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
+import DiscoverObjectsFilters from './DiscoverFiltersSidebar/FiltersContainer';
 
 @connect(
   state => ({
@@ -60,6 +61,11 @@ class DiscoverObjectsContent extends Component {
     typeName: '',
   };
 
+  state = {
+    isModalOpen: false,
+    modalTitle: 'none',
+  };
+
   componentDidMount() {
     const { dispatchGetObjectType, dispatchGetObjectTypes, typeName, typesList } = this.props;
     dispatchGetObjectType(typeName, {});
@@ -73,6 +79,11 @@ class DiscoverObjectsContent extends Component {
     });
   };
 
+  // handleAddTag = ()
+  showFiltersModal = () => this.setState({ isModalOpen: true, modalTitle: 'filters' });
+
+  closeModal = () => this.setState({ isModalOpen: false });
+
   handleRemoveTag = (filter, filterValue) => e => {
     const { activeFilters, dispatchSetActiveFilters } = this.props;
     e.preventDefault();
@@ -81,6 +92,7 @@ class DiscoverObjectsContent extends Component {
   };
 
   render() {
+    const { isModalOpen, modalTitle } = this.state;
     const {
       intl,
       isFetching,
@@ -121,7 +133,11 @@ class DiscoverObjectsContent extends Component {
                 </Tag>
               )),
             )}
-            <span className="discover-objects-header__selector underline ttl">
+            <span
+              className="discover-objects-header__selector underline ttl"
+              role="presentation"
+              onClick={this.showFiltersModal}
+            >
               {intl.formatMessage({ id: 'add_new_proposition', defaultMessage: 'Add' })}
             </span>
           </div>
@@ -148,6 +164,20 @@ class DiscoverObjectsContent extends Component {
         ) : (
           <Loading />
         )}
+        <Modal
+          className="discover-filters-modal"
+          footer={null}
+          title={intl.formatMessage({
+            id: modalTitle,
+            defaultMessage: modalTitle,
+          })}
+          closable
+          visible={isModalOpen}
+          onOk={this.closeModal}
+          onCancel={this.closeModal}
+        >
+          <DiscoverObjectsFilters intl={intl} />
+        </Modal>
       </React.Fragment>
     );
   }

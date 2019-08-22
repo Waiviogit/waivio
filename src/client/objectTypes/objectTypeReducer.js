@@ -7,7 +7,7 @@ const initialState = {
   filteredObjects: [],
   filters: {
     top_rated: ['presentation', 'taste', 'value'],
-    cuisine: ['American', 'Asian', 'BBQ', 'Italian', 'Russian', 'Georgian'],
+    cuisine: ['American', 'Asian', 'BBQ', 'Italian', 'Russian', 'Georgian', 'USA'],
     ingredients: ['Beef', 'Fish', 'Chicken'],
   },
   activeFilters: {},
