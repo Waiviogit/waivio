@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { Button, Checkbox, DatePicker, Form, Input, Select } from 'antd';
+import { Button, Checkbox, DatePicker, Form, Icon, Input, Select } from 'antd';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import ModalEligibleUsers from './ModalEligibleUsers/ModalEligibleUsers';
@@ -38,6 +38,15 @@ class CreateRewardForm extends React.Component {
 
   setRequiredObject = obj => {
     this.setState({ requiredObject: obj, hasRequireObject: false });
+  };
+
+  removeRequiredObject = () => {
+    this.setState({ requiredObject: {}, hasRequireObject: true });
+  };
+
+  removeReviewObject = obj => {
+    console.log('OBJ', obj);
+    this.setState({ objectsToAction: this.state.objectsToAction.filter(el => el.id !== obj.id) });
   };
 
   handleSubmit = e => {
@@ -218,7 +227,7 @@ class CreateRewardForm extends React.Component {
 
   checkExpireDate = (rule, value, callback) => {
     const { intl } = this.props;
-    if (value.unix() * 1000 - Date.now() < 86400000) {
+    if (value && value.unix() * 1000 - Date.now() < 86400000) {
       callback(
         intl.formatMessage({
           id: 'not_less_one_day',
@@ -246,7 +255,7 @@ class CreateRewardForm extends React.Component {
 
   checkNameFieldIsEmpty = (rule, value, callback) => {
     const { intl } = this.props;
-    if (value !== '' && (value === null || value.match(/^ *$/) !== null)) {
+    if (value && value.match(/^ *$/) !== null) {
       callback(
         intl.formatMessage({
           id: 'not_valid_campaign_name',
@@ -480,7 +489,12 @@ class CreateRewardForm extends React.Component {
         </div>
         <div className="CreateReward__objects-wrap">
           {!_.isEmpty(this.state.requiredObject) && (
-            <ObjectCardView wObject={this.state.requiredObject} />
+            <React.Fragment>
+              <div className="CreateReward__objects-wrap-close-circle">
+                <Icon type="close-circle" onClick={this.removeRequiredObject} />
+              </div>
+              <ObjectCardView wObject={this.state.requiredObject} />
+            </React.Fragment>
           )}
         </div>
         <div className="CreateReward__item-title ant-form-item-required">
@@ -508,7 +522,12 @@ class CreateRewardForm extends React.Component {
         </div>
         <div className="CreateReward__objects-wrap">
           {_.map(this.state.objectsToAction, obj => (
-            <ObjectCardView wObject={obj} />
+            <React.Fragment>
+              <div className="CreateReward__objects-wrap-close-circle">
+                <Icon type="close-circle" onClick={() => this.removeReviewObject(obj)} />
+              </div>
+              <ObjectCardView wObject={obj} />
+            </React.Fragment>
           ))}
         </div>
         <div className="CreateReward__block-title">
@@ -633,9 +652,9 @@ class CreateRewardForm extends React.Component {
                   defaultMessage: 'Please, select time!',
                 }),
               },
-              /* {
+              {
                 validator: this.checkExpireDate,
-              }, */
+              },
             ],
           })(<DatePicker />)}
         </Form.Item>
