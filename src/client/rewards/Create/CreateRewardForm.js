@@ -111,6 +111,7 @@ class CreateRewardForm extends React.Component {
       requirements: { minPhotos: data.minPhotos },
       blacklist_users: [],
       whitelist_users: [],
+      count_reservation_days: data.reservationPeriod,
       userRequirements: {
         minFollowers: data.minFollowers,
         minPosts: data.minPosts,

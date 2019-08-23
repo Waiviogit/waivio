@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import './CampaingRewardsTable.less';
 
 const CampaingRewardsTableRow = ({ currentItem, checked, activateCampaign }) => {
-  const [isModalOpen, toggleModal] = useState(0);
+  const [isModalOpen, toggleModal] = useState(false);
   const activateCamp = () => {
     activateCampaign(currentItem).then(toggleModal(false));
   };

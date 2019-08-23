@@ -1,17 +1,22 @@
 import _ from 'lodash';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import UserCard from '../UserCard';
 import WeightTag from '../WeightTag';
 import './ObjectExpertise.less';
+import { getWobjectsExpertise } from '../../../waivioApi/ApiClient';
+import RightSidebarLoading from '../../app/Sidebar/RightSidebarLoading';
 
 const ObjectExpertise = ({ username, wobject }) => {
-  const { users, user } = wobject;
-  const isUserInTopFive = users.slice(0, 5).find(u => u.name === username);
-
-  return (
+  const [experts, setExperts] = useState({ user: {}, users: [] });
+  const { users, user } = experts;
+  const isUserInTopFive = users.find(u => u.name === username);
+  useEffect(() => {
+    getWobjectsExpertise(username, wobject.author_permlink, 0, 5).then(data => setExperts(data));
+  }, [wobject.author_permlink]);
+  return !_.isEmpty(users) ? (
     <div className="SidebarContentBlock">
       <h4 className="SidebarContentBlock__title">
         <i className="iconfont icon-collection SidebarContentBlock__icon" />{' '}
@@ -51,6 +56,8 @@ const ObjectExpertise = ({ username, wobject }) => {
         )}
       </div>
     </div>
+  ) : (
+    <RightSidebarLoading />
   );
 };
 

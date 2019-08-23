@@ -177,10 +177,10 @@ export const declineProposition = ({ companyAuthor, companyPermlink, companyId, 
   const commentOp = [
     'comment',
     {
-      parent_author: rewardPostContainerData.author,
-      parent_permlink: rewardPostContainerData.permlink,
+      parent_author: companyAuthor,
+      parent_permlink: companyPermlink,
       author: username,
-      permlink: `reserve-${companyId}-${generatePermlink()}`,
+      permlink: `reject-${companyId}-${generatePermlink()}`,
       title: 'reject object for rewards',
       body: `User @${username} reject [object](https://www.waivio.com/object/${objPermlink}), from [campaign](https://www.waivio.com/@${companyAuthor}/${companyPermlink})`,
       json_metadata: JSON.stringify({

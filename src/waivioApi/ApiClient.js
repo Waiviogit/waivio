@@ -274,12 +274,12 @@ export const getWobjectsWithUserWeight = (
       .catch(error => reject(error));
   });
 };
-export const getWobjectsExpertise = (authorPermlink, skip = 0, limit = 30) =>
+export const getWobjectsExpertise = (user, authorPermlink, skip = 0, limit = 30) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.wobjectsExpertise}`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ skip, limit }),
+      body: JSON.stringify({ skip, limit, user }),
     })
       .then(handleErrors)
       .then(res => res.json())
