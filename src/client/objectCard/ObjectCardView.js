@@ -67,7 +67,7 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
                 >
                   {wObject.name}
                 </Link>
-                {wObject.weight && <WeightTag weight={wObject.weight} rank={wObject.rank} />}
+                {wObject.weight && <WeightTag weight={wObject.weight} />}
               </div>
               {ratings && <RatingsWrap ratings={ratings} />}
               {wObject.title && (

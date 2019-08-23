@@ -1,7 +1,46 @@
 @import (reference) '../styles/custom.less';
 @import (reference) '../styles/modules/variables';
 
-/*  SidenavDiscoverObjects  */
+//region DiscoverObjectsContent
+.discover-objects-header {
+  padding: 0 12px;
+
+  &__title {
+    font-weight: 500;
+    @media @medium, @large {
+      font-size: 1.25rem;
+    }
+  }
+  &__topic {
+    font-weight: 600;
+    padding-right: 5px;
+    @media @medium, @large {
+      font-weight: 500;
+    }
+  }
+  &__selector {
+    font-size: 0.9rem;
+    font-weight: 400;
+    &:hover {
+      color: @primary-color;
+    }
+    @media @medium, @large {
+      display: none;
+    }
+  }
+  &__toggle-map {
+    padding: 10px 0 5px 0;
+  }
+  &__toggle-map,
+  &__tags-block {
+    @media @small, @medium, @large {
+      display: none;
+    }
+  }
+}
+//endregion
+
+//region  SidenavDiscoverObjects
 .sidenav-discover-objects {
   &__show-more {
     text-transform: lowercase;
@@ -21,3 +60,4 @@
     }
   }
 }
+//endregion

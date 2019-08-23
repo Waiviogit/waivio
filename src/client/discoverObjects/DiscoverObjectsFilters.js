@@ -3,7 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Checkbox } from 'antd';
-import { get, isEmpty, map, uniq } from 'lodash';
+import { get, isEmpty, map } from 'lodash';
+import { updateActiveFilters } from './helper';
 import { getAvailableFilters, getActiveFilters, getUserLocation } from '../reducers';
 import { setActiveFilters } from '../objectTypes/objectTypeActions';
 import { getCoordinates } from '../user/userActions';
@@ -32,13 +33,8 @@ const DiscoverObjectsFilters = ({ intl, match }) => {
   }
 
   const handleOnChangeCheckbox = e => {
-    const { name: filterItem, value: filterName, checked } = e.target;
-    const updatedFilters = {
-      ...activeFilters,
-      [filterName]: checked
-        ? uniq([...activeFilters[filterName], filterItem])
-        : activeFilters[filterName].filter(f => f !== filterItem),
-    };
+    const { name: filterValue, value: filter, checked } = e.target;
+    const updatedFilters = updateActiveFilters(activeFilters, filter, filterValue, checked);
     dispatch(setActiveFilters(updatedFilters));
   };
 
