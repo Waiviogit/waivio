@@ -419,6 +419,7 @@ export const createCampaign = data =>
   new Promise((resolve, reject) => {
     fetch(`${config.campaignApiPrefix}${config.createCampaign}`, {
       headers,
+      mode: 'no-cors',
       method: 'POST',
       body: JSON.stringify(data),
     })

@@ -280,7 +280,7 @@ class CreateRewardForm extends React.Component {
   render() {
     const { intl } = this.props;
     const { getFieldDecorator } = this.props.form;
-    const { hasRequireObject, hasReviewObject } = this.state;
+    const { hasRequireObject, hasReviewObject, loading } = this.state;
     return (
       <Form layout="vertical" onSubmit={this.handleSubmit}>
         <Form.Item
@@ -309,7 +309,7 @@ class CreateRewardForm extends React.Component {
                 validator: this.checkNameFieldIsEmpty,
               },
             ],
-          })(<Input />)}
+          })(<Input disabled={loading} />)}
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({
@@ -334,6 +334,7 @@ class CreateRewardForm extends React.Component {
                 defaultMessage: 'Select an option and change input text above',
               })}
               onChange={this.handleSelectChange}
+              disabled={loading}
             >
               <Option value="reviews">
                 {intl.formatMessage({
@@ -383,7 +384,7 @@ class CreateRewardForm extends React.Component {
                 validator: this.compareBudgetValues,
               },
             ],
-          })(<Input type="number" />)}
+          })(<Input type="number" disabled={loading} />)}
           {intl.formatMessage({
             id: 'sbd_per_month',
             defaultMessage: 'SBD per month',
@@ -408,7 +409,7 @@ class CreateRewardForm extends React.Component {
                 validator: this.compareRewardAndBudget,
               },
             ],
-          })(<Input type="number" />)}
+          })(<Input type="number" disabled={loading} />)}
           {intl.formatMessage({
             id: 'sbd_per_review',
             defaultMessage: 'SBD per review',
@@ -434,7 +435,7 @@ class CreateRewardForm extends React.Component {
               },
             ],
             initialValue: 1,
-          })(<Input type="number" />)}
+          })(<Input type="number" disabled={loading} />)}
           {intl.formatMessage({
             id: 'days',
             defaultMessage: 'Days',
@@ -467,7 +468,7 @@ class CreateRewardForm extends React.Component {
               },
             ],
             initialValue: 0,
-          })(<Input type="number" />)}
+          })(<Input type="number" disabled={loading} />)}
           {intl.formatMessage({
             id: 'per_review',
             defaultMessage: 'per review',
@@ -567,7 +568,7 @@ class CreateRewardForm extends React.Component {
               },
             ],
             initialValue: -10,
-          })(<Input type="number" />)}
+          })(<Input type="number" disabled={loading} />)}
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({
@@ -589,7 +590,7 @@ class CreateRewardForm extends React.Component {
               },
             ],
             initialValue: 0,
-          })(<Input type="number" />)}
+          })(<Input type="number" disabled={loading} />)}
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({
@@ -611,9 +612,9 @@ class CreateRewardForm extends React.Component {
               },
             ],
             initialValue: 0,
-          })(<Input type="number" />)}
+          })(<Input type="number" disabled={loading} />)}
         </Form.Item>
-        <Button type="primary" onClick={this.toggleModalEligibleUsers}>
+        <Button type="primary" disabled={loading} onClick={this.toggleModalEligibleUsers}>
           {intl.formatMessage({
             id: 'show_eligible_users',
             defaultMessage: 'Show eligible users',
@@ -644,7 +645,7 @@ class CreateRewardForm extends React.Component {
                 }),
               },
             ],
-          })(<Input.TextArea />)}
+          })(<Input.TextArea disabled={loading} />)}
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({
@@ -681,7 +682,7 @@ class CreateRewardForm extends React.Component {
             ],
             valuePropName: 'checked',
           })(
-            <Checkbox>
+            <Checkbox disabled={loading}>
               <span className="CreateReward__item-title ant-form-item-required">
                 {intl.formatMessage({
                   id: 'have_read',
@@ -699,7 +700,7 @@ class CreateRewardForm extends React.Component {
           )}
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit" disabled={this.state.loading}>
+          <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>
             {intl.formatMessage({
               id: 'create',
               defaultMessage: 'Create',
