@@ -153,9 +153,9 @@ export const assignProposition = ({ companyAuthor, companyPermlink, companyId, o
       author: username,
       permlink: `reserve-${companyId}-${generatePermlink()}`,
       title: 'reserve object for rewards',
-      body: `User ${username} reserve object: ${objPermlink}, from campaign ${companyId}`,
+      body: `User @${username} reserve [object](https://www.waivio.com/object/${objPermlink}), from [campaign](https://www.waivio.com/@${companyAuthor}/${companyPermlink})`,
       json_metadata: JSON.stringify({
-        waivioRewards: { type: 'waivio_assign_campaign', object: objPermlink },
+        waivioRewards: { type: 'waivio_assign_campaign', approved_object: objPermlink },
       }),
     },
   ];
@@ -168,7 +168,7 @@ export const assignProposition = ({ companyAuthor, companyPermlink, companyId, o
   });
 };
 
-export const declineProposition = (companyAuthor, companyPermlink, companyId, objPermlink) => (
+export const declineProposition = ({ companyAuthor, companyPermlink, companyId, objPermlink }) => (
   dispatch,
   getState,
   { steemConnectAPI },
@@ -182,7 +182,7 @@ export const declineProposition = (companyAuthor, companyPermlink, companyId, ob
       author: username,
       permlink: `reserve-${companyId}-${generatePermlink()}`,
       title: 'reject object for rewards',
-      body: `User ${username} reject object: ${objPermlink}, from campaign ${companyId}`,
+      body: `User @${username} reject [object](https://www.waivio.com/object/${objPermlink}), from [campaign](https://www.waivio.com/@${companyAuthor}/${companyPermlink})`,
       json_metadata: JSON.stringify({
         waivioRewards: { type: 'waivio_decline_campaign', approved_object: objPermlink },
       }),
@@ -204,8 +204,8 @@ export const activateCampaign = company => (dispatch, getState, { steemConnectAP
       parent_author: rewardPostContainerData.author,
       parent_permlink: rewardPostContainerData.permlink,
       author: username,
-      permlink: `reserve-${'bla'}-${generatePermlink()}`,
-      title: 'reserve object for rewards',
+      permlink: `activate-${rewardPostContainerData.author}-${generatePermlink()}`,
+      title: 'activate object for rewards',
       body: `Campaign ${company.name} was activated by ${username} `,
       json_metadata: JSON.stringify({
         // eslint-disable-next-line no-underscore-dangle
