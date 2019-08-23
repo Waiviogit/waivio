@@ -35,7 +35,7 @@ class Comment extends React.Component {
     sort: PropTypes.oneOf(['BEST', 'NEWEST', 'OLDEST', 'AUTHOR_REPUTATION']),
     rewardFund: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
-    sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
+    sliderMode: PropTypes.bool,
     rootPostAuthor: PropTypes.string,
     commentsChildren: PropTypes.shape(),
     pendingVotes: PropTypes.arrayOf(
@@ -53,7 +53,7 @@ class Comment extends React.Component {
 
   static defaultProps = {
     sort: 'BEST',
-    sliderMode: 'auto',
+    sliderMode: false,
     rootPostAuthor: undefined,
     commentsChildren: undefined,
     pendingVotes: [],
