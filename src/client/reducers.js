@@ -93,6 +93,8 @@ export const getFeed = state => fromFeed.getFeed(state.feed);
 
 export const getComments = state => fromComments.getComments(state.comments);
 export const getCommentsList = state => fromComments.getCommentsList(state.comments);
+export const getCommentContent = (state, author, permlink) =>
+  fromComments.getCommentContent(state.comments, author, permlink);
 export const getCommentsPendingVotes = state =>
   fromComments.getCommentsPendingVotes(state.comments);
 

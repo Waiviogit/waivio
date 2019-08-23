@@ -56,7 +56,7 @@ class Rewards extends React.Component {
   static propTypes = {
     assignProposition: PropTypes.func.isRequired,
     // activateCampaign: PropTypes.func.isRequired,
-    // declineProposition: PropTypes.func.isRequired,
+    declineProposition: PropTypes.func.isRequired,
     userLocation: PropTypes.shape(),
     getCoordinates: PropTypes.func.isRequired,
     history: PropTypes.shape().isRequired,
@@ -230,16 +230,12 @@ class Rewards extends React.Component {
   };
 
   // Propositions
-  assignProposition = (proposition, obj) => {
+  assignProposition = ({ companyAuthor, companyPermlink, companyId, objPermlink }) => {
     this.setState({ loadingAssignDiscard: true });
     this.props
-      .assignProposition(proposition._id, [obj.author_permlink])
+      .assignProposition({ companyAuthor, companyPermlink, companyId, objPermlink })
       .then(() => {
-        const updatedPropositions = this.updateProposition(
-          proposition._id,
-          true,
-          obj.author_permlink,
-        );
+        const updatedPropositions = this.updateProposition(companyId, true, objPermlink);
         message.success(
           this.props.intl.formatMessage({
             id: 'assigned_successfully',
@@ -279,15 +275,12 @@ class Rewards extends React.Component {
     });
   };
 
-  discardProposition = (proposition, obj) => {
+  discardProposition = ({ companyAuthor, companyPermlink, companyId, objPermlink }) => {
     this.setState({ loadingAssignDiscard: true });
-    this.discardProposition(proposition._id, obj.author_permlink)
+    this.props
+      .declineProposition({ companyAuthor, companyPermlink, companyId, objPermlink })
       .then(() => {
-        const updatedPropositions = this.updateProposition(
-          proposition._id,
-          false,
-          obj.author_permlink,
-        );
+        const updatedPropositions = this.updateProposition(companyId, false, objPermlink);
         message.success(
           this.props.intl.formatMessage({
             id: 'discarded_successfully',
@@ -332,7 +325,8 @@ class Rewards extends React.Component {
                 guide={proposition.guide}
                 proposition={proposition}
                 wobj={wobj.object}
-                assignProposition={() => this.assignProposition(proposition, wobj.object)}
+                assignCommentPermlink={wobj.permlink}
+                assignProposition={this.assignProposition}
                 discardProposition={this.discardProposition}
                 authorizedUserName={userName}
                 loading={loadingAssignDiscard}

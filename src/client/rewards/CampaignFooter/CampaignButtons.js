@@ -31,12 +31,9 @@ export default class CampaignButtons extends React.Component {
     defaultVotePercent: PropTypes.number.isRequired,
     requiredObjectPermlink: PropTypes.string.isRequired,
     onActionInitiated: PropTypes.func.isRequired,
-    ownPost: PropTypes.bool,
     pendingLike: PropTypes.bool,
-    pendingFlag: PropTypes.bool,
     pendingFollow: PropTypes.bool,
     pendingFollowObject: PropTypes.bool,
-    saving: PropTypes.bool,
     onLikeClick: PropTypes.func,
     onCommentClick: PropTypes.func,
     handlePostPopoverMenuClick: PropTypes.func,
@@ -118,73 +115,34 @@ export default class CampaignButtons extends React.Component {
 
   renderPostPopoverMenu() {
     const {
-      pendingFlag,
       pendingFollow,
       pendingFollowObject,
-      saving,
       postState,
       post,
       handlePostPopoverMenuClick,
-      ownPost,
       requiredObjectPermlink,
     } = this.props;
-    const { isReported } = postState;
     const followText = this.getFollowText(postState.userFollowed, post.author);
     const followObjText = this.getFollowText(postState.objectFollowed, requiredObjectPermlink);
 
     let popoverMenu = [];
 
-    if (ownPost && !post.author_original) {
-      popoverMenu = [
-        ...popoverMenu,
-        <PopoverMenuItem key="edit">
-          {saving ? <Icon type="loading" /> : <i className="iconfont icon-write" />}
-          <FormattedMessage id="edit_post" defaultMessage="Edit post" />
-        </PopoverMenuItem>,
-      ];
-    }
-
-    if (!ownPost) {
-      popoverMenu = [
-        ...popoverMenu,
-        <PopoverMenuItem key="follow" disabled={pendingFollow}>
-          {pendingFollow ? <Icon type="loading" /> : <i className="iconfont icon-people" />}
-          {followText}
-        </PopoverMenuItem>,
-      ];
-    }
-    if (!ownPost) {
-      popoverMenu = [
-        ...popoverMenu,
-        <PopoverMenuItem key="followObject" disabled={pendingFollowObject}>
-          {pendingFollowObject ? (
-            <Icon type="loading" />
-          ) : (
-            <Icon type="codepen" className="CampaignFooter__button-icon" />
-          )}
-          {followObjText}
-        </PopoverMenuItem>,
-      ];
-    }
-
     popoverMenu = [
       ...popoverMenu,
-      <PopoverMenuItem key="report">
-        {pendingFlag ? (
+      <PopoverMenuItem key="follow" disabled={pendingFollow}>
+        {pendingFollow ? <Icon type="loading" /> : <i className="iconfont icon-people" />}
+        {followText}
+      </PopoverMenuItem>,
+    ];
+    popoverMenu = [
+      ...popoverMenu,
+      <PopoverMenuItem key="followObject" disabled={pendingFollowObject}>
+        {pendingFollowObject ? (
           <Icon type="loading" />
         ) : (
-          <i
-            className={classNames('iconfont', {
-              'icon-flag': !postState.isReported,
-              'icon-flag_fill': postState.isReported,
-            })}
-          />
+          <Icon type="codepen" className="CampaignFooter__button-icon" />
         )}
-        {isReported ? (
-          <FormattedMessage id="unflag_post" defaultMessage="Unflag post" />
-        ) : (
-          <FormattedMessage id="flag_post" defaultMessage="Flag post" />
-        )}
+        {followObjText}
       </PopoverMenuItem>,
     ];
 
