@@ -20,11 +20,11 @@ import { resetGallery } from '../object/ObjectGallery/galleryActions';
 import Error404 from '../statics/Error404';
 import WobjHero from './WobjHero';
 import LeftObjectProfileSidebar from '../app/Sidebar/LeftObjectProfileSidebar';
-import RightObjectSidebar from '../app/Sidebar/RightObjectSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import { getFieldWithMaxWeight, getInitialUrl } from './wObjectHelper';
 import { objectFields } from '../../common/constants/listOfFields';
+import ObjectExpertise from '../components/Sidebar/ObjectExpertise';
 
 @withRouter
 @connect(
@@ -184,7 +184,7 @@ export default class Wobj extends React.Component {
             )}
             <Affix className="rightContainer" stickPosition={72}>
               <div className="right">
-                <RightObjectSidebar username={userName} wobject={wobject} />
+                <ObjectExpertise username={userName} wobject={wobject} />
               </div>
             </Affix>
             <div className="center">
