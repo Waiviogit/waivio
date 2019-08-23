@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { Button, Checkbox, DatePicker, Form, Icon, Input, Select } from 'antd';
+import { Button, Checkbox, DatePicker, Form, Icon, Input, Select, message } from 'antd';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import ModalEligibleUsers from './ModalEligibleUsers/ModalEligibleUsers';
@@ -43,14 +43,28 @@ class CreateRewardForm extends React.Component {
     this.setState({ requiredObject: obj, hasRequireObject: false });
   };
 
+  getObjectsToOmit = () => {
+    const objectsToOmit = [];
+    if (!_.isEmpty(this.state.requiredObject)) {
+      objectsToOmit.push(this.state.requiredObject.id);
+    }
+    if (!_.isEmpty(this.state.objectsToAction)) {
+      _.map(this.state.objectsToAction, obj => objectsToOmit.push(obj.id));
+    }
+    return objectsToOmit;
+  };
+
   removeRequiredObject = () => {
     this.setState({ requiredObject: {}, hasRequireObject: true });
   };
 
   removeReviewObject = obj => {
-    this.setState({
-      objectsToAction: this.state.objectsToAction.filter(el => el.id !== obj.id),
-      hasReviewObject: false,
+    this.setState(prevState => {
+      const objectList = prevState.objectsToAction.filter(el => el.id !== obj.id);
+      return {
+        objectsToAction: objectList,
+        hasReviewObject: !objectList.length,
+      };
     });
   };
 
@@ -59,19 +73,25 @@ class CreateRewardForm extends React.Component {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err && !_.isEmpty(this.state.requiredObject) && !_.isEmpty(this.state.objectsToAction)) {
-        createCampaign(this.prepareSubmitData(values)).then(data => {
-          this.setState({ propositions: data.campaigns, hasMore: data.hasMore, loading: false });
-        });
-      } else if (_.isEmpty(this.state.requiredObject) && _.isEmpty(this.state.objectsToAction)) {
-        this.setState({ hasRequireObject: true, hasReviewObject: true });
-      } else if (_.isEmpty(this.state.requiredObject)) {
-        this.setState({ hasRequireObject: true, hasReviewObject: false });
-      } else if (_.isEmpty(this.state.objectsToAction)) {
-        this.setState({ hasRequireObject: false, hasReviewObject: true });
+        createCampaign(this.prepareSubmitData(values))
+          .then(data => {
+            this.setState({ propositions: data.campaigns, hasMore: data.hasMore, loading: false });
+            message.success("Campaign 'Name' - has been created");
+          })
+          .catch(error => {
+            console.log(error);
+            message.error("Can't crate campaign 'Name', try again later");
+            this.setState({ loading: false });
+          });
       }
       if (err) {
         this.setState({ loading: false });
       }
+      this.setState({
+        hasRequireObject: _.isEmpty(this.state.requiredObject),
+        hasReviewObject: _.isEmpty(this.state.objectsToAction),
+        loading: false,
+      });
     });
   };
 
@@ -80,7 +100,7 @@ class CreateRewardForm extends React.Component {
 
   prepareSubmitData = data => {
     const objects = _.map(this.state.objectsToAction, o => o.id);
-    return {
+    const finalData = {
       requiredObject: this.state.requiredObject.author_permlink,
       guideName: this.props.userName,
       name: data.campaignName,
@@ -98,6 +118,7 @@ class CreateRewardForm extends React.Component {
       objects,
       expired_at: data.expiredAt.format(),
     };
+    return finalData;
   };
 
   handleConfirmBlur = e => {
@@ -135,7 +156,7 @@ class CreateRewardForm extends React.Component {
 
   compareBudgetValues = (rule, value, callback) => {
     const { user, currentSteemDollarPrice, intl } = this.props;
-    const userUSDBalance = parseFloat(user.balance) * currentSteemDollarPrice;
+    const userUSDBalance = parseFloat(user.sbd_balance) * currentSteemDollarPrice;
     if (value <= 0 && value !== '') {
       callback(
         intl.formatMessage({
@@ -482,11 +503,12 @@ class CreateRewardForm extends React.Component {
         </div>
         <SearchObjectsAutocomplete
           allowClear={false}
-          itemsIdsToOmit={[]}
+          itemsIdsToOmit={this.getObjectsToOmit()}
           style={{ width: '100%' }}
           placeholder="Please select"
           handleSelect={this.setRequiredObject}
           isPermlinkValue={false}
+          disabled={loading}
         />
         <div
           className={classNames('CreateReward__object-message-validate', {
@@ -501,8 +523,12 @@ class CreateRewardForm extends React.Component {
         <div className="CreateReward__objects-wrap">
           {!_.isEmpty(this.state.requiredObject) && (
             <React.Fragment>
-              <div className="CreateReward__objects-wrap-close-circle">
-                <Icon type="close-circle" onClick={this.removeRequiredObject} />
+              <div
+                className={classNames('CreateReward__objects-wrap-close-circle', {
+                  'disable-element': loading || !_.isEmpty(this.state.objectsToAction),
+                })}
+              >
+                <Icon type="close-circle" onClick={!loading ? this.removeRequiredObject : null} />
               </div>
               <ObjectCardView wObject={this.state.requiredObject} />
             </React.Fragment>
@@ -516,11 +542,12 @@ class CreateRewardForm extends React.Component {
         </div>
         <SearchObjectsAutocomplete
           allowClear={false}
-          itemsIdsToOmit={[]}
+          itemsIdsToOmit={this.getObjectsToOmit()}
           style={{ width: '100%' }}
           placeholder="Please select"
           handleSelect={this.handleAddObjectToList}
           isPermlinkValue={false}
+          disabled={loading || _.isEmpty(this.state.requiredObject)}
         />
         <div
           className={classNames('CreateReward__object-message-validate', {
@@ -537,6 +564,7 @@ class CreateRewardForm extends React.Component {
             <ReviewObjectItem
               key={obj.id}
               object={obj}
+              loading={loading}
               removeReviewObject={this.removeReviewObject}
             />
           ))}

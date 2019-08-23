@@ -35,6 +35,7 @@ class SearchObjectsAutocomplete extends Component {
     rowIndex: 0,
     ruleIndex: 0,
     isPermlinkValue: true,
+    disabled: false,
   };
 
   static propTypes = {
@@ -51,6 +52,7 @@ class SearchObjectsAutocomplete extends Component {
     rowIndex: PropTypes.number,
     ruleIndex: PropTypes.number,
     isPermlinkValue: PropTypes.bool,
+    disabled: PropTypes.bool,
   };
 
   constructor(props) {
@@ -112,7 +114,7 @@ class SearchObjectsAutocomplete extends Component {
   }
   render() {
     const { searchString } = this.state;
-    const { intl, style, searchObjectsResults, itemsIdsToOmit, allowClear } = this.props;
+    const { intl, style, searchObjectsResults, itemsIdsToOmit, allowClear, disabled } = this.props;
     const getObjMarkup = obj => (
       <div className="obj-search-option">
         <img className="obj-search-option__avatar" src={obj.avatar} alt={obj.title || ''} />
@@ -151,6 +153,7 @@ class SearchObjectsAutocomplete extends Component {
         value={searchString}
         allowClear={allowClear}
         autoFocus
+        disabled={disabled}
       >
         {searchObjectsOptions}
       </AutoComplete>
