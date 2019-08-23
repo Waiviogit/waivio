@@ -5,7 +5,7 @@ import { categoryRegex } from './regexHelpers';
 import { jsonParse } from './formatter';
 import DMCA from '../../common/constants/dmca.json';
 import whiteListedApps from './apps';
-import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
+import { WAIVIO_META_FIELD_NAME, WAIVIO_PARENT_PERMLINK } from '../../common/constants/waivio';
 import { rewardsValues } from '../../common/constants/rewards';
 
 const appVersion = require('../../../package.json').version;
@@ -131,6 +131,7 @@ export function getInitialValues(props) {
   let permlink = null;
   let originalBody = null;
   let state = {
+    parentPermlink: WAIVIO_PARENT_PERMLINK,
     draftContent: { title: '', body: '' },
     content: '',
     topics: [],
@@ -147,13 +148,15 @@ export function getInitialValues(props) {
   const draftPost = draftPosts.find(d => d.draftId === draftId);
   if (draftId && draftPost) {
     const draftObjects = get(draftPost, ['jsonMetadata', WAIVIO_META_FIELD_NAME, 'wobjects'], []);
+    const tags = get(draftPost, ['jsonMetadata', 'tags'], []);
     state = {
+      parentPermlink: draftPost.parentPermlink || WAIVIO_PARENT_PERMLINK,
       draftContent: {
         title: get(draftPost, 'title', ''),
         body: get(draftPost, 'body', ''),
       },
       content: '',
-      topics: get(draftPost, 'jsonMetadata.tags', []),
+      topics: typeof tags === 'string' ? [tags] : tags,
       linkedObjects: [],
       objPercentage: fromPairs(
         draftObjects.map(obj => [obj.author_permlink, { percent: obj.percent }]),
