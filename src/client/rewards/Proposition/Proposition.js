@@ -30,8 +30,8 @@ const Proposition = ({
   const proposedWobj = getClientWObj(wobj);
   const assignPr = obj => {
     assignProposition({
-      companyAuthor: proposition.guide.alias,
-      companyPermlink: proposition.permlink,
+      companyAuthor: proposition.guide.name,
+      companyPermlink: proposition.activation_permlink,
       companyId: proposition._id,
       objPermlink: obj.author_permlink,
     });
@@ -47,8 +47,8 @@ const Proposition = ({
 
   const discardPr = obj => {
     discardProposition({
-      companyAuthor: proposition.guide.alias,
-      companyPermlink: proposition.permlink,
+      companyAuthor: proposition.guide.name,
+      companyPermlink: proposition.activation_permlink,
       companyId: proposition._id,
       objPermlink: obj.author_permlink,
     });
@@ -69,16 +69,18 @@ const Proposition = ({
             defaultMessage: `Reserve`,
           })}
         </Button>
-        {`${intl.formatMessage({
-          id: 'for',
-          defaultMessage: `for`,
-        })} ${'N'} ${intl.formatMessage({
-          id: 'days',
-          defaultMessage: `days`,
-        })}`}
+        {proposition.count_reservation_days &&
+          `${intl.formatMessage({
+            id: 'for',
+            defaultMessage: `for`,
+          })} ${proposition.count_reservation_days} (${intl.formatMessage({
+            id: 'days',
+            defaultMessage: `days`,
+          })})`}
       </div>
     ) : (
       <Button
+        className="Release-button"
         type="primary"
         loading={loading}
         disabled={loading}
@@ -125,7 +127,7 @@ const Proposition = ({
       </div>
       <ObjectCardView wObject={proposedWobj} key={proposedWobj.id} />
       <div className="RewardsFooter-wrap">
-        {proposition.permlink && assigned === true && !_.isEmpty(post) ? (
+        {proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (
           <CampaignFooter
             post={post}
             wObject={proposedWobj}
