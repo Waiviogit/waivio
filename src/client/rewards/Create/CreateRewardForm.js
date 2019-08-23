@@ -36,6 +36,7 @@ class CreateRewardForm extends React.Component {
     isModalEligibleUsersOpen: false,
     hasRequireObject: false,
     hasReviewObject: false,
+    loading: false,
   };
 
   setRequiredObject = obj => {
@@ -54,11 +55,12 @@ class CreateRewardForm extends React.Component {
   };
 
   handleSubmit = e => {
+    this.setState({ loading: true });
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err && !_.isEmpty(this.state.requiredObject) && !_.isEmpty(this.state.objectsToAction)) {
         createCampaign(this.prepareSubmitData(values)).then(data => {
-          this.setState({ propositions: data.campaigns, hasMore: data.hasMore });
+          this.setState({ propositions: data.campaigns, hasMore: data.hasMore, loading: false });
         });
       } else if (_.isEmpty(this.state.requiredObject) && _.isEmpty(this.state.objectsToAction)) {
         this.setState({ hasRequireObject: true, hasReviewObject: true });
@@ -66,6 +68,9 @@ class CreateRewardForm extends React.Component {
         this.setState({ hasRequireObject: true, hasReviewObject: false });
       } else if (_.isEmpty(this.state.objectsToAction)) {
         this.setState({ hasRequireObject: false, hasReviewObject: true });
+      }
+      if (err) {
+        this.setState({ loading: false });
       }
     });
   };
@@ -694,10 +699,10 @@ class CreateRewardForm extends React.Component {
           )}
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" disabled={this.state.loading}>
             {intl.formatMessage({
-              id: 'save_changes',
-              defaultMessage: 'Save changes',
+              id: 'create',
+              defaultMessage: 'Create',
             })}
           </Button>
         </Form.Item>
