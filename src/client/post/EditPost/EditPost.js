@@ -17,7 +17,6 @@ import {
   getUpvoteSetting,
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
-import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
 import { createPostMetadata, splitPostContent, getInitialValues } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
@@ -145,7 +144,15 @@ class EditPost extends Component {
   }
 
   buildPost() {
-    const { content, topics, linkedObjects, objPercentage, settings, isUpdating } = this.state;
+    const {
+      parentPermlink,
+      content,
+      topics,
+      linkedObjects,
+      objPercentage,
+      settings,
+      isUpdating,
+    } = this.state;
     const { postTitle, postBody } = splitPostContent(content);
 
     const postData = {
@@ -158,7 +165,7 @@ class EditPost extends Component {
     };
 
     postData.parentAuthor = '';
-    postData.parentPermlink = WAIVIO_PARENT_PERMLINK;
+    postData.parentPermlink = parentPermlink;
     postData.author = this.props.user.name || '';
     postData.permlink = this.permlink || kebabCase(postTitle);
 

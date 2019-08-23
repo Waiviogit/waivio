@@ -8,8 +8,8 @@ import { createHistory } from './history';
 import errorMiddleware from './helpers/errorMiddleware';
 import createReducer from './reducers';
 
-export default (steemConnectAPI, waivioAPI, currUrl) => {
-  const history = createHistory(currUrl);
+export default (steemConnectAPI, waivioAPI, currUrl, historyPassed) => {
+  const history = historyPassed || createHistory(currUrl);
   let preloadedState;
   if (typeof window !== 'undefined') {
     /* eslint-disable no-underscore-dangle */

@@ -1,6 +1,7 @@
-// import _ from 'lodash';
-import React from 'react';
+/* eslint-disable */
+import React, { useEffect } from 'react';
 import { injectIntl } from 'react-intl';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
@@ -9,30 +10,48 @@ import { getClientWObj } from '../../adapters';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import Avatar from '../../components/Avatar';
 import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
+import { getSingleComment } from '../../comments/commentsActions';
+import { getCommentContent } from '../../reducers';
+import { connect } from 'react-redux';
 
 const Proposition = ({
   intl,
   proposition,
-  // authorizedUserName,
-  // assignProposition,
+  assignProposition,
+  assignCommentPermlink,
   discardProposition,
   loading,
   wobj,
   toggleModal,
   assigned,
+  post,
+  getSingleComment,
 }) => {
   const proposedWobj = getClientWObj(wobj);
-
-  // const assignPr = obj => {
-  const assignPr = () => {
-    // assignProposition({companyAuthor: 'monterey', companyPermlink: '', companyId, objPermlink});
+  const assignPr = obj => {
+    assignProposition({
+      companyAuthor: proposition.guide.alias,
+      companyPermlink: proposition.permlink,
+      companyId: proposition._id,
+      objPermlink: obj.author_permlink,
+    });
   };
+
+  useEffect(() => {
+    getSingleComment(proposition.guide.name, assignCommentPermlink);
+  }, []);
 
   const toggleModalDetails = () => {
     toggleModal(proposition);
   };
+
   const discardPr = obj => {
-    discardProposition(proposition, obj);
+    discardProposition({
+      companyAuthor: proposition.guide.alias,
+      companyPermlink: proposition.permlink,
+      companyId: proposition._id,
+      objPermlink: obj.author_permlink,
+    });
   };
 
   const buttonsLayout = () => {
@@ -106,11 +125,11 @@ const Proposition = ({
       </div>
       <ObjectCardView wObject={proposedWobj} key={proposedWobj.id} />
       <div className="RewardsFooter-wrap">
-        {proposition.permlink && typeof proposition.permlink === 'object' && assigned === true ? (
+        {proposition.permlink && assigned === true && !_.isEmpty(post) ? (
           <CampaignFooter
-            post={proposition.permlink}
+            post={post}
+            wObject={proposedWobj}
             requiredObjectPermlink={proposition.required_object.author_permlink}
-            // postState={{ fetching: false, loaded: true, failed: false }}
             buttonsLayout={buttonsLayout()}
           />
         ) : (
@@ -132,18 +151,31 @@ const Proposition = ({
 Proposition.propTypes = {
   proposition: PropTypes.shape().isRequired,
   wobj: PropTypes.shape().isRequired,
-  // assignProposition: PropTypes.func.isRequired,
+  assignProposition: PropTypes.func.isRequired,
   discardProposition: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
   assigned: PropTypes.bool,
+  assignCommentPermlink: PropTypes.string,
   toggleModal: PropTypes.func.isRequired,
   // authorizedUserName: PropTypes.string,
   intl: PropTypes.shape().isRequired,
+  post: PropTypes.shape(),
 };
 
 Proposition.defaultProps = {
   authorizedUserName: '',
+  post: {},
   assigned: null,
 };
 
-export default injectIntl(Proposition);
+export default connect(
+  (state, ownProps) => ({
+    post:
+      ownProps.proposition.guide.name &&
+      ownProps.assignCommentPermlink &&
+      !_.isEmpty(state.comments.comments)
+        ? getCommentContent(state, ownProps.proposition.guide.name, ownProps.assignCommentPermlink)
+        : {},
+  }),
+  { getSingleComment },
+)(injectIntl(Proposition));
