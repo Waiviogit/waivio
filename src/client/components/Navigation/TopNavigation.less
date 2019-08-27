@@ -8,7 +8,7 @@
   background-color: @white;
   border: solid 1px @blue-botticelli;
   padding: 0 15px;
-  &__item {
+  &__link {
     display: inline-block;
     height: 45px;
     margin-right: 12px;
@@ -22,6 +22,14 @@
     &:hover {
       color: @primary-color;
       border-bottom: 2px @border-style-base @primary-color;
+    }
+  }
+  &__item {
+    @media @small {
+      transform: translateX(-(@right-width / 2));
+    }
+    @media @medium, @large {
+      transform: translateX((@left-width - @right-width) / 2);
     }
   }
 }
