@@ -157,7 +157,7 @@ class CreateRewardForm extends React.Component {
 
   compareBudgetValues = (rule, value, callback) => {
     const { user, currentSteemDollarPrice, intl } = this.props;
-    const userUSDBalance = parseFloat(user.balance) * currentSteemDollarPrice;
+    const userUSDBalance = parseFloat(user.sbd_balance) * currentSteemDollarPrice;
     if (value <= 0 && value !== '') {
       callback(
         intl.formatMessage({
