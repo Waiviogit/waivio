@@ -2,12 +2,13 @@ import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { Form, Input, Select, Checkbox, Button, DatePicker } from 'antd';
+import { Button, Checkbox, DatePicker, Form, Icon, Input, Select, message } from 'antd';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import ModalEligibleUsers from './ModalEligibleUsers/ModalEligibleUsers';
 import { createCampaign } from '../../../waivioApi/ApiClient';
 import './CreateReward.less';
+import ReviewObjectItem from './ReviewObjectItem';
 
 const { Option } = Select;
 
@@ -16,15 +17,16 @@ class CreateRewardForm extends React.Component {
   static propTypes = {
     userName: PropTypes.string,
     user: PropTypes.shape(),
-    form: PropTypes.shape().isRequired,
+    form: PropTypes.shape(),
     intl: PropTypes.shape(),
-    currentSteemDollalPrice: PropTypes.shape(),
+    currentSteemDollarPrice: PropTypes.number,
   };
   static defaultProps = {
     userName: '',
     user: {},
     intl: {},
-    currentSteemDollalPrice: {},
+    form: {},
+    currentSteemDollarPrice: 0,
   };
   state = {
     confirmDirty: false,
@@ -34,26 +36,62 @@ class CreateRewardForm extends React.Component {
     isModalEligibleUsersOpen: false,
     hasRequireObject: false,
     hasReviewObject: false,
+    loading: false,
   };
 
   setRequiredObject = obj => {
     this.setState({ requiredObject: obj, hasRequireObject: false });
   };
 
+  getObjectsToOmit = () => {
+    const objectsToOmit = [];
+    if (!_.isEmpty(this.state.requiredObject)) {
+      objectsToOmit.push(this.state.requiredObject.id);
+    }
+    if (!_.isEmpty(this.state.objectsToAction)) {
+      _.map(this.state.objectsToAction, obj => objectsToOmit.push(obj.id));
+    }
+    return objectsToOmit;
+  };
+
+  removeRequiredObject = () => {
+    this.setState({ requiredObject: {}, hasRequireObject: true });
+  };
+
+  removeReviewObject = obj => {
+    this.setState(prevState => {
+      const objectList = prevState.objectsToAction.filter(el => el.id !== obj.id);
+      return {
+        objectsToAction: objectList,
+        hasReviewObject: !objectList.length,
+      };
+    });
+  };
+
   handleSubmit = e => {
+    this.setState({ loading: true });
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err && !_.isEmpty(this.state.requiredObject) && !_.isEmpty(this.state.objectsToAction)) {
-        createCampaign(this.prepareSubmitData(values)).then(data => {
-          this.setState({ propositions: data.campaigns, hasMore: data.hasMore });
-        });
-      } else if (_.isEmpty(this.state.requiredObject) && _.isEmpty(this.state.objectsToAction)) {
-        this.setState({ hasRequireObject: true, hasReviewObject: true });
-      } else if (_.isEmpty(this.state.requiredObject)) {
-        this.setState({ hasRequireObject: true, hasReviewObject: false });
-      } else if (_.isEmpty(this.state.objectsToAction)) {
-        this.setState({ hasRequireObject: false, hasReviewObject: true });
+        createCampaign(this.prepareSubmitData(values))
+          .then(data => {
+            this.setState({ propositions: data.campaigns, hasMore: data.hasMore, loading: false });
+            message.success("Campaign 'Name' - has been created");
+          })
+          .catch(error => {
+            console.log(error);
+            message.error("Can't crate campaign 'Name', try again later");
+            this.setState({ loading: false });
+          });
       }
+      if (err) {
+        this.setState({ loading: false });
+      }
+      this.setState({
+        hasRequireObject: _.isEmpty(this.state.requiredObject),
+        hasReviewObject: _.isEmpty(this.state.objectsToAction),
+        loading: false,
+      });
     });
   };
 
@@ -73,6 +111,7 @@ class CreateRewardForm extends React.Component {
       requirements: { minPhotos: data.minPhotos },
       blacklist_users: [],
       whitelist_users: [],
+      count_reservation_days: data.reservationPeriod,
       userRequirements: {
         minFollowers: data.minFollowers,
         minPosts: data.minPosts,
@@ -117,8 +156,8 @@ class CreateRewardForm extends React.Component {
   };
 
   compareBudgetValues = (rule, value, callback) => {
-    const { user, currentSteemDollalPrice, intl } = this.props;
-    const userUSDBalance = parseFloat(user.balance) * currentSteemDollalPrice;
+    const { user, currentSteemDollarPrice, intl } = this.props;
+    const userUSDBalance = parseFloat(user.balance) * currentSteemDollarPrice;
     if (value <= 0 && value !== '') {
       callback(
         intl.formatMessage({
@@ -219,7 +258,7 @@ class CreateRewardForm extends React.Component {
 
   checkExpireDate = (rule, value, callback) => {
     const { intl } = this.props;
-    if (value.unix() * 1000 - Date.now() < 86400000) {
+    if (value && value.unix() * 1000 - Date.now() < 86400000) {
       callback(
         intl.formatMessage({
           id: 'not_less_one_day',
@@ -245,16 +284,31 @@ class CreateRewardForm extends React.Component {
     }
   };
 
+  checkNameFieldIsEmpty = (rule, value, callback) => {
+    const { intl } = this.props;
+    if (value && value.match(/^ *$/) !== null) {
+      callback(
+        intl.formatMessage({
+          id: 'not_valid_campaign_name',
+          defaultMessage:
+            "This doesn't seem to be valid campaign name. Only alphanumeric characters, hyphens, underscores and dots are allowed.",
+        }),
+      );
+    } else {
+      callback();
+    }
+  };
+
   render() {
     const { intl } = this.props;
     const { getFieldDecorator } = this.props.form;
-    const { hasRequireObject, hasReviewObject } = this.state;
+    const { hasRequireObject, hasReviewObject, loading } = this.state;
     return (
       <Form layout="vertical" onSubmit={this.handleSubmit}>
         <Form.Item
           label={intl.formatMessage({
             id: 'campaign_name',
-            defaultMessage: 'Campaign name',
+            defaultMessage: 'campaign name',
           })}
         >
           {getFieldDecorator('campaignName', {
@@ -273,8 +327,11 @@ class CreateRewardForm extends React.Component {
                   defaultMessage: 'Campaign name must be no longer then 100 symbols',
                 }),
               },
+              {
+                validator: this.checkNameFieldIsEmpty,
+              },
             ],
-          })(<Input />)}
+          })(<Input disabled={loading} />)}
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({
@@ -299,6 +356,7 @@ class CreateRewardForm extends React.Component {
                 defaultMessage: 'Select an option and change input text above',
               })}
               onChange={this.handleSelectChange}
+              disabled={loading}
             >
               <Option value="reviews">
                 {intl.formatMessage({
@@ -348,7 +406,7 @@ class CreateRewardForm extends React.Component {
                 validator: this.compareBudgetValues,
               },
             ],
-          })(<Input type="number" />)}
+          })(<Input type="number" disabled={loading} />)}
           {intl.formatMessage({
             id: 'sbd_per_month',
             defaultMessage: 'SBD per month',
@@ -373,7 +431,7 @@ class CreateRewardForm extends React.Component {
                 validator: this.compareRewardAndBudget,
               },
             ],
-          })(<Input type="number" />)}
+          })(<Input type="number" disabled={loading} />)}
           {intl.formatMessage({
             id: 'sbd_per_review',
             defaultMessage: 'SBD per review',
@@ -398,8 +456,8 @@ class CreateRewardForm extends React.Component {
                 validator: this.checkReservationPeriod,
               },
             ],
-            initialValue: 3,
-          })(<Input type="number" />)}
+            initialValue: 1,
+          })(<Input type="number" disabled={loading} />)}
           {intl.formatMessage({
             id: 'days',
             defaultMessage: 'Days',
@@ -431,23 +489,27 @@ class CreateRewardForm extends React.Component {
                 validator: this.checkPhotosQuantity,
               },
             ],
-            initialValue: 1,
-          })(<Input type="number" />)}
+            initialValue: 0,
+          })(<Input type="number" disabled={loading} />)}
           {intl.formatMessage({
             id: 'per_review',
             defaultMessage: 'per review',
           })}
         </Form.Item>
-        {intl.formatMessage({
-          id: 'required_business_object',
-          defaultMessage: 'Required object (Your business object)',
-        })}
+        <div className="CreateReward__item-title ant-form-item-required">
+          {intl.formatMessage({
+            id: 'required_business_object',
+            defaultMessage: 'Required object (Your business object)',
+          })}
+        </div>
         <SearchObjectsAutocomplete
           allowClear={false}
-          itemsIdsToOmit={[]}
+          itemsIdsToOmit={this.getObjectsToOmit()}
           style={{ width: '100%' }}
           placeholder="Please select"
           handleSelect={this.setRequiredObject}
+          isPermlinkValue={false}
+          disabled={loading}
         />
         <div
           className={classNames('CreateReward__object-message-validate', {
@@ -461,19 +523,32 @@ class CreateRewardForm extends React.Component {
         </div>
         <div className="CreateReward__objects-wrap">
           {!_.isEmpty(this.state.requiredObject) && (
-            <ObjectCardView wObject={this.state.requiredObject} />
+            <React.Fragment>
+              <div
+                className={classNames('CreateReward__objects-wrap-close-circle', {
+                  'disable-element': loading || !_.isEmpty(this.state.objectsToAction),
+                })}
+              >
+                <Icon type="close-circle" onClick={!loading ? this.removeRequiredObject : null} />
+              </div>
+              <ObjectCardView wObject={this.state.requiredObject} />
+            </React.Fragment>
           )}
         </div>
-        {intl.formatMessage({
-          id: 'objects_review',
-          defaultMessage: 'Objects to review',
-        })}
+        <div className="CreateReward__item-title ant-form-item-required">
+          {intl.formatMessage({
+            id: 'objects_review',
+            defaultMessage: 'Objects to review',
+          })}
+        </div>
         <SearchObjectsAutocomplete
           allowClear={false}
-          itemsIdsToOmit={[]}
+          itemsIdsToOmit={this.getObjectsToOmit()}
           style={{ width: '100%' }}
           placeholder="Please select"
           handleSelect={this.handleAddObjectToList}
+          isPermlinkValue={false}
+          disabled={loading || _.isEmpty(this.state.requiredObject)}
         />
         <div
           className={classNames('CreateReward__object-message-validate', {
@@ -487,7 +562,12 @@ class CreateRewardForm extends React.Component {
         </div>
         <div className="CreateReward__objects-wrap">
           {_.map(this.state.objectsToAction, obj => (
-            <ObjectCardView wObject={obj} />
+            <ReviewObjectItem
+              key={obj.id}
+              object={obj}
+              loading={loading}
+              removeReviewObject={this.removeReviewObject}
+            />
           ))}
         </div>
         <div className="CreateReward__block-title">
@@ -517,7 +597,7 @@ class CreateRewardForm extends React.Component {
               },
             ],
             initialValue: -10,
-          })(<Input type="number" />)}
+          })(<Input type="number" disabled={loading} />)}
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({
@@ -539,7 +619,7 @@ class CreateRewardForm extends React.Component {
               },
             ],
             initialValue: 0,
-          })(<Input type="number" />)}
+          })(<Input type="number" disabled={loading} />)}
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({
@@ -561,9 +641,9 @@ class CreateRewardForm extends React.Component {
               },
             ],
             initialValue: 0,
-          })(<Input type="number" />)}
+          })(<Input type="number" disabled={loading} />)}
         </Form.Item>
-        <Button type="primary" onClick={this.toggleModalEligibleUsers}>
+        <Button type="primary" disabled={loading} onClick={this.toggleModalEligibleUsers}>
           {intl.formatMessage({
             id: 'show_eligible_users',
             defaultMessage: 'Show eligible users',
@@ -594,7 +674,7 @@ class CreateRewardForm extends React.Component {
                 }),
               },
             ],
-          })(<Input.TextArea />)}
+          })(<Input.TextArea disabled={loading} />)}
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({
@@ -620,13 +700,24 @@ class CreateRewardForm extends React.Component {
         </Form.Item>
         <Form.Item>
           {getFieldDecorator('agreement', {
+            rules: [
+              {
+                required: true,
+                message: intl.formatMessage({
+                  id: 'read_agreement',
+                  defaultMessage: 'Please, read the agreement and check this field',
+                }),
+              },
+            ],
             valuePropName: 'checked',
           })(
-            <Checkbox>
-              {intl.formatMessage({
-                id: 'have_read',
-                defaultMessage: 'I have read the',
-              })}
+            <Checkbox disabled={loading}>
+              <span className="CreateReward__item-title ant-form-item-required">
+                {intl.formatMessage({
+                  id: 'have_read',
+                  defaultMessage: 'I have read the',
+                })}
+              </span>
               <a href="">
                 {' '}
                 {intl.formatMessage({
@@ -638,10 +729,10 @@ class CreateRewardForm extends React.Component {
           )}
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>
             {intl.formatMessage({
-              id: 'save_changes',
-              defaultMessage: 'Save changes',
+              id: 'create',
+              defaultMessage: 'Create',
             })}
           </Button>
         </Form.Item>

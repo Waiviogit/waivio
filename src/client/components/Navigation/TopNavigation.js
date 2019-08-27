@@ -19,10 +19,10 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
   return isRouteMathed ? (
     <ul className="TopNavigation">
       {authenticated && (
-        <li>
+        <li className="TopNavigation__item">
           <Link
             to="/"
-            className={classNames('TopNavigation__item', {
+            className={classNames('TopNavigation__link', {
               'TopNavigation__item--active': pathname === '/',
             })}
           >
@@ -30,30 +30,30 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
           </Link>
         </li>
       )}
-      <li>
+      <li className="TopNavigation__item">
         <Link
           to={LINKS.TRENDING}
-          className={classNames('TopNavigation__item', {
+          className={classNames('TopNavigation__link', {
             'TopNavigation__item--active': pathname.includes(LINKS.TRENDING),
           })}
         >
           <FormattedMessage id="news" defaultMessage="News" />
         </Link>
       </li>
-      <li>
+      <li className="TopNavigation__item">
         <Link
           to={authenticated ? `${LINKS.REWARDS}/active` : `${LINKS.REWARDS}/all`}
-          className={classNames('TopNavigation__item', {
+          className={classNames('TopNavigation__link', {
             'TopNavigation__item--active': pathname.includes(LINKS.REWARDS),
           })}
         >
           <FormattedMessage id="rewards" defaultMessage="Rewards" />
         </Link>
       </li>
-      <li>
+      <li className="TopNavigation__item">
         <Link
           to={`${LINKS.DISCOVER}/hashtag`}
-          className={classNames('TopNavigation__item', {
+          className={classNames('TopNavigation__link', {
             'TopNavigation__item--active': pathname.includes(LINKS.DISCOVER),
           })}
         >
@@ -61,10 +61,10 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
         </Link>
       </li>
       {authenticated && (
-        <li>
+        <li className="TopNavigation__item">
           <Link
             to={LINKS.ACTIVITY}
-            className={classNames('TopNavigation__item', {
+            className={classNames('TopNavigation__link', {
               'TopNavigation__item--active': pathname === LINKS.ACTIVITY,
             })}
           >
@@ -72,10 +72,10 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
           </Link>
         </li>
       )}
-      <li>
+      <li className="TopNavigation__item">
         <Link
           to={LINKS.ABOUT}
-          className={classNames('TopNavigation__item', {
+          className={classNames('TopNavigation__link', {
             'TopNavigation__item--active': pathname.includes(LINKS.ABOUT),
           })}
         >

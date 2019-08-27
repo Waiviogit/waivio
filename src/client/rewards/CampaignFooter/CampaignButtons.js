@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import take from 'lodash/take';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
 import { Link } from 'react-router-dom';
-import { Icon, Modal } from 'antd';
+import { Icon } from 'antd';
 import classNames from 'classnames';
 import withAuthActions from '../../auth/withAuthActions';
 import { sortVotes } from '../../helpers/sortHelpers';
@@ -212,12 +212,8 @@ export default class CampaignButtons extends React.Component {
 
     const likeClass = classNames({ active: postState.isLiked, Buttons__link: true });
 
-    const messageLiked = isAppend
-      ? { id: 'vote', defaultMessage: 'vote' }
-      : { id: 'like', defaultMessage: 'Like' };
-    const messageUnLiked = isAppend
-      ? { id: 'unvote', defaultMessage: 'Unvote' }
-      : { id: 'unlike', defaultMessage: 'Unlike' };
+    const messageLiked = { id: 'like', defaultMessage: 'Like' };
+    const messageUnLiked = { id: 'unlike', defaultMessage: 'Unlike' };
     let likeTooltip = <span>{intl.formatMessage(messageLiked)}</span>;
     if (postState.isLiked) {
       likeTooltip = <span>{intl.formatMessage(messageUnLiked)}</span>;
@@ -236,121 +232,43 @@ export default class CampaignButtons extends React.Component {
     }
     return (
       <div className="Buttons">
-        {isAppend ? (
-          <React.Fragment>
-            {pendingLike ? (
-              <Icon type="loading" />
-            ) : (
-              <React.Fragment>
-                {buttonsLayout}
-                <BTooltip title={likeTooltip}>
-                  <a role="presentation" className={likeClass} onClick={this.handleLikeClick}>
-                    <FormattedMessage id="approve" defaultMessage="Approve" />
-                  </a>
-                </BTooltip>
-                {upVotes.length > 0 && (
-                  <span
-                    className="Buttons__number Buttons__reactions-count"
-                    role="presentation"
-                    onClick={this.handleShowReactions}
-                  >
-                    <BTooltip
-                      title={
-                        <div>
-                          {upVotes.length > 0 ? (
-                            upVotesPreview
-                          ) : (
-                            <FormattedMessage id="no_approves" defaultMessage="No approves yet" />
-                          )}
-                          {upVotesMore}
-                        </div>
-                      }
-                    >
-                      <FormattedNumber value={upVotes.length} />
-                      <span />
-                    </BTooltip>
-                  </span>
-                )}
-                <React.Fragment>
-                  <BTooltip
-                    title={
-                      <span>
-                        {intl.formatMessage(postState.isReported ? messageUnLiked : messageLiked)}
-                      </span>
-                    }
-                  >
-                    <a role="presentation" className={likeClass} onClick={this.onFlagClick}>
-                      <FormattedMessage id="reject" defaultMessage="Reject" />
-                    </a>
-                  </BTooltip>
-                  {downVotes.length > 0 && (
-                    <span
-                      className="Buttons__number Buttons__reactions-count"
-                      role="presentation"
-                      onClick={this.handleShowReactions}
-                    >
-                      <BTooltip
-                        title={
-                          <div>
-                            {downVotes.length > 0 ? (
-                              upVotesPreview
-                            ) : (
-                              <FormattedMessage id="no_approves" defaultMessage="No approves yet" />
-                            )}
-                            {upVotesMore}
-                          </div>
-                        }
-                      >
-                        <FormattedNumber value={downVotes.length} />
-                        <span />
-                      </BTooltip>
-                    </span>
-                  )}
-                </React.Fragment>
-              </React.Fragment>
-            )}
-          </React.Fragment>
-        ) : (
-          <React.Fragment>
-            <BTooltip title={likeTooltip}>
-              <a role="presentation" className={likeClass} onClick={this.handleLikeClick}>
-                {pendingLike ? (
-                  <Icon type="loading" />
-                ) : (
-                  <i
-                    className={`iconfont icon-${
-                      this.state.sliderVisible ? 'right' : 'praise_fill'
-                    }`}
-                  />
-                )}
-              </a>
-            </BTooltip>
-            {post.active_votes.length > 0 && (
-              <span
-                className="Buttons__number Buttons__reactions-count"
-                role="presentation"
-                onClick={this.handleShowReactions}
+        <React.Fragment>
+          {buttonsLayout}
+          <BTooltip title={likeTooltip}>
+            <a role="presentation" className={likeClass} onClick={this.handleLikeClick}>
+              {pendingLike ? (
+                <Icon type="loading" />
+              ) : (
+                <i
+                  className={`iconfont icon-${this.state.sliderVisible ? 'right' : 'praise_fill'}`}
+                />
+              )}
+            </a>
+          </BTooltip>
+          {post.active_votes.length > 0 && (
+            <span
+              className="Buttons__number Buttons__reactions-count"
+              role="presentation"
+              onClick={this.handleShowReactions}
+            >
+              <BTooltip
+                title={
+                  <div>
+                    {upVotes.length > 0 ? (
+                      upVotesPreview
+                    ) : (
+                      <FormattedMessage id="no_likes" defaultMessage="No likes yet" />
+                    )}
+                    {upVotesMore}
+                  </div>
+                }
               >
-                <BTooltip
-                  title={
-                    <div>
-                      {upVotes.length > 0 ? (
-                        upVotesPreview
-                      ) : (
-                        <FormattedMessage id="no_likes" defaultMessage="No likes yet" />
-                      )}
-                      {upVotesMore}
-                    </div>
-                  }
-                >
-                  <FormattedNumber value={upVotes.length} />
-                  <span />
-                </BTooltip>
-              </span>
-            )}
-          </React.Fragment>
-        )}
-
+                <FormattedNumber value={upVotes.length} />
+                <span />
+              </BTooltip>
+            </span>
+          )}
+        </React.Fragment>
         <BTooltip title={intl.formatMessage({ id: 'comment', defaultMessage: 'Comment' })}>
           <a className="Buttons__link" role="presentation" onClick={this.handleCommentsClick}>
             <i className="iconfont icon-message_fill" />
@@ -359,26 +277,7 @@ export default class CampaignButtons extends React.Component {
         <span className="Buttons__number">
           {post.children > 0 && <FormattedNumber value={post.children} />}
         </span>
-        {!isAppend && this.renderPostPopoverMenu()}
-        {!postState.isReblogged && (
-          <Modal
-            title={intl.formatMessage({
-              id: 'reblog_modal_title',
-              defaultMessage: 'Reblog this post?',
-            })}
-            visible={this.state.shareModalVisible}
-            confirmLoading={this.state.shareModalLoading}
-            okText={intl.formatMessage({ id: 'reblog', defaultMessage: 'Reblog' })}
-            cancelText={intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' })}
-            onOk={this.handleShareOk}
-            onCancel={this.handleShareCancel}
-          >
-            <FormattedMessage
-              id="reblog_modal_content"
-              defaultMessage="This post will appear on your personal feed. This action cannot be reversed."
-            />
-          </Modal>
-        )}
+        {this.renderPostPopoverMenu()}
         <ReactionsModal
           visible={this.state.reactionsModalVisible}
           upVotes={upVotes}

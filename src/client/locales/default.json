@@ -629,7 +629,7 @@
   "not_less_zero_followes": "Should not be less than zero followes",
   "not_less_one_day": "Should not be less than one day",
   "campaign_name": "Campaign name",
-  "input_campaign_name": "Please input your Campaign name!",
+  "input_campaign_name": "Please input your campaign name!",
   "campaign_name_error_long": "Campaign name must be no longer then 100 symbols",
   "campaign_type": "Campaign type",
   "select_campaign_type": "Please, select your campaign type!",
@@ -664,7 +664,8 @@
   "select_time": "Please, select time!",
   "have_read": "I have read the",
   "agreement": "agreement",
-  "save_changes": "Save changes",
+  "change": "change",
   "not_less_zero_posts": "Should not be less than zero posts",
-  "change": "change"
+  "read_agreement": "Please, read the agreement and check this field",
+  "not_valid_campaign_name": "This doesn't seem to be valid campaign name. Only alphanumeric characters, hyphens, underscores and dots are allowed."
 }

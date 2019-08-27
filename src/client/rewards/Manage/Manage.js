@@ -18,10 +18,11 @@ class Manage extends React.Component {
   static propTypes = {
     userName: PropTypes.string,
     intl: PropTypes.shape().isRequired,
-    activateCampaign: PropTypes.func.isRequired,
+    activateCampaign: PropTypes.func,
   };
   static defaultProps = {
     userName: '',
+    activateCampaign: () => {},
   };
   state = {
     campaigns: [],

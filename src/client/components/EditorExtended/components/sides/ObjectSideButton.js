@@ -5,6 +5,7 @@ import { EditorState, Modifier } from 'draft-js';
 import { Icon } from 'antd';
 import { Entity } from '../../util/constants';
 import SearchObjectsAutocomplete from '../../../../../client/components/EditorObject/SearchObjectsAutocomplete';
+import * as apiConfig from '../../../../../waivioApi/config.json';
 
 const objectSearchInput = props => {
   const handleSelectObject = selectedObject => {
@@ -13,7 +14,7 @@ const objectSearchInput = props => {
     const selectionState = editorState.getSelection();
     const contentStateWithEntity = contentState.createEntity(Entity.OBJECT, 'IMMUTABLE', {
       object: selectedObject,
-      url: `${document.location.origin}/object/${selectedObject.id}`,
+      url: `${apiConfig.production.protocol}${apiConfig.production.host}/object/${selectedObject.id}`,
     });
     const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
     contentState = Modifier.insertText(
