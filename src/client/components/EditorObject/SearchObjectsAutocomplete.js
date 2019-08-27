@@ -70,7 +70,9 @@ class SearchObjectsAutocomplete extends Component {
     if (!value) this.props.clearSearchResults();
     const searchString = value.toLowerCase();
     this.setState(prevState =>
-      prevState.isOptionSelected ? { searchString: '', isOptionSelected: false } : { searchString },
+      prevState.isOptionSelected && this.props.isPermlinkValue
+        ? { searchString: '', isOptionSelected: false }
+        : { searchString },
     );
   }
 

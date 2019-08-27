@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { Button, Checkbox, DatePicker, Form, Icon, Input, Select, message } from 'antd';
+import { Button, Checkbox, DatePicker, Form, Icon, Input, message, Select } from 'antd';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import ModalEligibleUsers from './ModalEligibleUsers/ModalEligibleUsers';
@@ -100,7 +100,7 @@ class CreateRewardForm extends React.Component {
 
   prepareSubmitData = data => {
     const objects = _.map(this.state.objectsToAction, o => o.id);
-    const finalData = {
+    return {
       requiredObject: this.state.requiredObject.author_permlink,
       guideName: this.props.userName,
       name: data.campaignName,
@@ -119,7 +119,6 @@ class CreateRewardForm extends React.Component {
       objects,
       expired_at: data.expiredAt.format(),
     };
-    return finalData;
   };
 
   handleConfirmBlur = e => {
@@ -139,6 +138,7 @@ class CreateRewardForm extends React.Component {
 
   handleSelectChange = value => {
     console.log(value);
+
     // this.props.form.setFieldsValue({});
   };
 
@@ -529,7 +529,14 @@ class CreateRewardForm extends React.Component {
                   'disable-element': loading || !_.isEmpty(this.state.objectsToAction),
                 })}
               >
-                <Icon type="close-circle" onClick={!loading ? this.removeRequiredObject : null} />
+                <Icon
+                  type="close-circle"
+                  onClick={
+                    !loading && _.isEmpty(this.state.objectsToAction)
+                      ? this.removeRequiredObject
+                      : null
+                  }
+                />
               </div>
               <ObjectCardView wObject={this.state.requiredObject} />
             </React.Fragment>
