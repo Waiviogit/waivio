@@ -72,15 +72,16 @@ class CreateRewardForm extends React.Component {
     this.setState({ loading: true });
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
+      console.log('values', values);
       if (!err && !_.isEmpty(this.state.requiredObject) && !_.isEmpty(this.state.objectsToAction)) {
         createCampaign(this.prepareSubmitData(values))
           .then(data => {
             this.setState({ propositions: data.campaigns, hasMore: data.hasMore, loading: false });
-            message.success("Campaign 'Name' - has been created");
+            message.success(`Campaign '${values.campaignName}' - has been created`);
           })
           .catch(error => {
             console.log(error);
-            message.error("Can't crate campaign 'Name', try again later");
+            message.error(`Can't crate campaign '${values.campaignName}', try again later`);
             this.setState({ loading: false });
           });
       }
@@ -406,7 +407,7 @@ class CreateRewardForm extends React.Component {
                 validator: this.compareBudgetValues,
               },
             ],
-          })(<Input type="number" disabled={loading} />)}
+          })(<Input type="number" disabled={loading} step={0.1} />)}
           {intl.formatMessage({
             id: 'sbd_per_month',
             defaultMessage: 'SBD per month',
@@ -431,7 +432,7 @@ class CreateRewardForm extends React.Component {
                 validator: this.compareRewardAndBudget,
               },
             ],
-          })(<Input type="number" disabled={loading} />)}
+          })(<Input type="number" disabled={loading} step={0.1} />)}
           {intl.formatMessage({
             id: 'sbd_per_review',
             defaultMessage: 'SBD per review',
