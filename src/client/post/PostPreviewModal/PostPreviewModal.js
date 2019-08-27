@@ -114,7 +114,7 @@ class PostPreviewModal extends Component {
     const { objPercentage, weightBuffer } = this.state;
     const nextState = handleWeightChange(objPercentage, objId, percent, weightBuffer);
     this.setState(nextState);
-    if (weightBuffer === 0) this.props.onPercentChange(nextState.objPercentage);
+    if (nextState.weightBuffer === 0) this.props.onPercentChange(nextState.objPercentage);
   };
 
   handleSubmit = () => this.props.onSubmit();
