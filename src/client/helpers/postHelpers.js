@@ -1,3 +1,4 @@
+import uuidv4 from 'uuid/v4';
 import _, { get, fromPairs } from 'lodash';
 import { getHtml } from '../components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
@@ -128,9 +129,8 @@ export function splitPostContent(
 }
 
 export function getInitialValues(props) {
-  let permlink = null;
-  let originalBody = null;
   let state = {
+    draftId: uuidv4(),
     parentPermlink: WAIVIO_PARENT_PERMLINK,
     draftContent: { title: '', body: '' },
     content: '',
@@ -143,6 +143,8 @@ export function getInitialValues(props) {
       upvote: props.upvoteSetting,
     },
     isUpdating: false,
+    permlink: null,
+    originalBody: null,
   };
   const { draftPosts, draftId } = props;
   const draftPost = draftPosts.find(d => d.draftId === draftId);
@@ -150,6 +152,7 @@ export function getInitialValues(props) {
     const draftObjects = get(draftPost, ['jsonMetadata', WAIVIO_META_FIELD_NAME, 'wobjects'], []);
     const tags = get(draftPost, ['jsonMetadata', 'tags'], []);
     state = {
+      draftId: props.draftId,
       parentPermlink: draftPost.parentPermlink || WAIVIO_PARENT_PERMLINK,
       draftContent: {
         title: get(draftPost, 'title', ''),
@@ -167,11 +170,11 @@ export function getInitialValues(props) {
         upvote: draftPost.upvote,
       },
       isUpdating: Boolean(draftPost.isUpdating),
+      permlink: draftPost.permlink || null,
+      originalBody: draftPost.originalBody || null,
     };
-    permlink = draftPost.permlink || null;
-    originalBody = draftPost.originalBody || null;
   }
-  return { state, permlink, originalBody };
+  return { state };
 }
 
 export function isContentValid(markdownContent) {
