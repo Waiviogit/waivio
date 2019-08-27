@@ -8,6 +8,7 @@ import DMCA from '../../common/constants/dmca.json';
 import whiteListedApps from './apps';
 import { WAIVIO_META_FIELD_NAME, WAIVIO_PARENT_PERMLINK } from '../../common/constants/waivio';
 import { rewardsValues } from '../../common/constants/rewards';
+import * as apiConfig from '../../waivioApi/config.json';
 
 const appVersion = require('../../../package.json').version;
 
@@ -128,11 +129,22 @@ export function splitPostContent(
   };
 }
 
-export function getInitialValues(props) {
+export function getInitialState(props) {
   let state = {
     draftId: uuidv4(),
     parentPermlink: WAIVIO_PARENT_PERMLINK,
-    draftContent: { title: '', body: '' },
+    draftContent: {
+      title: '',
+      body: props.initObjects
+        ? props.initObjects.reduce((acc, curr) => {
+            const matches = curr.match(/^\[(?<name>.+)\]\((?<permlink>\S+)\)/);
+            if (matches.groups && matches.groups.name && matches.groups.permlink) {
+              return `${acc}[${matches.groups.name}](${apiConfig.production.protocol}${apiConfig.production.host}/object/${matches.groups.permlink})\n`;
+            }
+            return acc;
+          }, '')
+        : '',
+    },
     content: '',
     topics: [],
     linkedObjects: [],
@@ -174,7 +186,7 @@ export function getInitialValues(props) {
       originalBody: draftPost.originalBody || null,
     };
   }
-  return { state };
+  return state;
 }
 
 export function isContentValid(markdownContent) {

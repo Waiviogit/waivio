@@ -83,7 +83,7 @@ export default class ObjectProfile extends React.Component {
   handleCreatePost = () => {
     const { history, object } = this.props;
     if (object && object.author_permlink) {
-      history.push(`/editor?object=${object.author_permlink}`);
+      history.push(`/editor?object=[${object.name}](${object.author_permlink})`);
     }
   };
 

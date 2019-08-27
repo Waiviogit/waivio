@@ -16,7 +16,7 @@ import {
   getUpvoteSetting,
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
-import { createPostMetadata, splitPostContent, getInitialValues } from '../../helpers/postHelpers';
+import { createPostMetadata, splitPostContent, getInitialState } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import ObjectCardView from '../../objectCard/ObjectCardView';
@@ -45,7 +45,7 @@ const getLinkedObjects = contentStateRaw => {
     saving: getIsEditorSaving(state),
     imageLoading: getIsImageUploading(state),
     draftId: new URLSearchParams(props.location.search).get('draft'),
-    isNewPost: new URLSearchParams(props.location.search).get('newPost') === 'true',
+    initObjects: new URLSearchParams(props.location.search).getAll('object'),
     upvoteSetting: getUpvoteSetting(state),
   }),
   {
@@ -72,7 +72,6 @@ class EditPost extends Component {
     publishing: false,
     saving: false,
     imageLoading: false,
-    isNewPost: false,
     createPost: () => {},
     saveDraft: () => {},
   };
@@ -80,8 +79,7 @@ class EditPost extends Component {
   constructor(props) {
     super(props);
 
-    const init = getInitialValues(props);
-    this.state = init.state;
+    this.state = getInitialState(props);
 
     this.handleTopicsChange = this.handleTopicsChange.bind(this);
     this.handleSettingsChange = this.handleSettingsChange.bind(this);
@@ -92,15 +90,14 @@ class EditPost extends Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.draftId && nextProps.draftId !== prevState.draftId) {
-      const init = getInitialValues(nextProps);
-      return init.state;
+      return getInitialState(nextProps);
     } else if (nextProps.draftId === null && prevState.draftId) {
-      const init = getInitialValues(nextProps);
+      const nextState = getInitialState(nextProps);
       nextProps.history.push({
         pathname: nextProps.location.pathname,
-        search: `draft=${init.state.draftId}`,
+        search: `draft=${nextState.draftId}`,
       });
-      return init.state;
+      return nextState;
     }
     return null;
   }
@@ -197,14 +194,13 @@ class EditPost extends Component {
     const isBodyEmpty = postBody.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().length === 0;
     if (isBodyEmpty) return;
 
-    const id = this.props.draftId;
-    const redirect = id && id !== this.state.draftId;
+    const redirect = this.props.draftId !== this.state.draftId;
 
     this.props.saveDraft(draft, redirect, this.props.intl);
 
-    if (!this.props.draftPosts.includes(d => d.draftId === this.props.draftId)) {
-      this.setState({ draftContent: { title: draft.title, body: draft.body } });
-    }
+    // if (!this.props.draftPosts.includes(d => d.draftId === this.props.draftId)) {
+    //   this.setState({ draftContent: { title: draft.title, body: draft.body } });
+    // }
   }, 1500);
 
   render() {
