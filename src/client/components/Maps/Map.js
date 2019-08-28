@@ -7,10 +7,10 @@ import Marker from 'pigeon-marker/react';
 import Overlay from 'pigeon-overlay';
 import classNames from 'classnames';
 import { getClientWObj } from '../../adapters';
-import './Map.less';
 import { getInnerFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { mapFields, objectFields } from '../../../common/constants/listOfFields';
 import Loading from '../Icon/Loading';
+import './Map.less';
 
 const defaultCoords = {
   centerLat: 37.0902,
@@ -22,7 +22,7 @@ class MapOS extends React.Component {
 
     this.state = {
       infoboxData: false,
-      markersLayout: null,
+      markersLayout: this.getMarkers(props),
       zoom: 8,
       center: [+this.props.userLocation.lat, +this.props.userLocation.lon],
       isFullscreenMode: false,
@@ -51,22 +51,24 @@ class MapOS extends React.Component {
   };
 
   getMarkers = props =>
-    _.map(props.wobjects, wobject => {
-      const lat = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.latitude);
-      const lng = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude);
-      return lat && lng ? (
-        <Marker
-          key={`obj${wobject.author_permlink}`}
-          anchor={[+lat, +lng]}
-          payload={wobject}
-          onMouseOver={this.handleMarkerClick}
-          onMouseOut={this.closeInfobox}
-          onClick={() => {
-            props.onMarkerClick(wobject.author_permlink);
-          }}
-        />
-      ) : null;
-    });
+    !_.isEmpty(props.wobjects)
+      ? _.map(props.wobjects, wobject => {
+          const lat = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.latitude);
+          const lng = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude);
+          return lat && lng ? (
+            <Marker
+              key={`obj${wobject.author_permlink}`}
+              anchor={[+lat, +lng]}
+              payload={wobject}
+              onMouseOver={this.handleMarkerClick}
+              onMouseOut={this.closeInfobox}
+              onClick={() => {
+                props.onMarkerClick(wobject.author_permlink);
+              }}
+            />
+          ) : null;
+        })
+      : null;
 
   getOverlayLayout = () => {
     const wobj = getClientWObj(this.state.infoboxData.wobject);
