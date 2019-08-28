@@ -36,6 +36,7 @@ class SearchObjectsAutocomplete extends Component {
     ruleIndex: 0,
     isPermlinkValue: true,
     disabled: false,
+    placeholder: '',
   };
 
   static propTypes = {
@@ -53,6 +54,7 @@ class SearchObjectsAutocomplete extends Component {
     ruleIndex: PropTypes.number,
     isPermlinkValue: PropTypes.bool,
     disabled: PropTypes.bool,
+    placeholder: PropTypes.string,
   };
 
   constructor(props) {
@@ -148,10 +150,14 @@ class SearchObjectsAutocomplete extends Component {
         onSelect={this.handleSelect}
         onSearch={this.handleSearch}
         optionLabelProp={'label'}
-        placeholder={intl.formatMessage({
-          id: 'objects_auto_complete_placeholder',
-          defaultMessage: 'Find objects',
-        })}
+        placeholder={
+          !this.props.placeholder
+            ? intl.formatMessage({
+                id: 'objects_auto_complete_placeholder',
+                defaultMessage: 'Find objects',
+              })
+            : this.props.placeholder
+        }
         value={searchString}
         allowClear={allowClear}
         autoFocus

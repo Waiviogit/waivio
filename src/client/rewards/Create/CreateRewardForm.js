@@ -205,8 +205,8 @@ class CreateRewardForm extends React.Component {
     if (value < 1 && value !== '') {
       callback(
         intl.formatMessage({
-          id: 'reserve_period_period_one_day',
-          defaultMessage: 'Reservation period must be at least one day',
+          id: 'reserve_period_one_day',
+          defaultMessage: 'The reservation period must be at least one day',
         }),
       );
     } else {
@@ -262,8 +262,8 @@ class CreateRewardForm extends React.Component {
     if (value && value.unix() * 1000 - Date.now() < 86400000) {
       callback(
         intl.formatMessage({
-          id: 'not_less_one_day',
-          defaultMessage: 'Should not be less than one day',
+          id: 'expiry_date_after_current',
+          defaultMessage: 'The expiry date must be after the current date',
         }),
       );
     } else {
@@ -450,7 +450,7 @@ class CreateRewardForm extends React.Component {
         <Form.Item
           label={intl.formatMessage({
             id: 'reservation_period',
-            defaultMessage: 'Reservation period',
+            defaultMessage: 'Maximum reservation period (days)',
           })}
         >
           {getFieldDecorator('reservationPeriod', {
@@ -469,21 +469,21 @@ class CreateRewardForm extends React.Component {
             initialValue: 1,
           })(<Input type="number" disabled={loading} />)}
           {intl.formatMessage({
-            id: 'days',
-            defaultMessage: 'Days',
+            id: 'budget_reduced_amount_rewards_reserved',
+            defaultMessage: 'The available budget is reduced by the amount of rewards reserved',
           })}
         </Form.Item>
         <div className="CreateReward__block-title">
           {intl.formatMessage({
-            id: 'review_requirements',
-            defaultMessage: 'Review requirements',
+            id: 'eligible_reviews',
+            defaultMessage: 'Eligible reviews (post requirements)',
           })}
           :
         </div>
         <Form.Item
           label={intl.formatMessage({
             id: 'min_original_photos',
-            defaultMessage: 'Min # of original photos',
+            defaultMessage: 'Minimum number of original photos (per review)',
           })}
         >
           {getFieldDecorator('minPhotos', {
@@ -492,7 +492,7 @@ class CreateRewardForm extends React.Component {
                 required: true,
                 message: intl.formatMessage({
                   id: 'set_minimal_photos!',
-                  defaultMessage: 'Please, set minimal count of photos!',
+                  defaultMessage: 'Please, set minimal count of photos, or set zero value!',
                 }),
               },
               {
@@ -501,22 +501,21 @@ class CreateRewardForm extends React.Component {
             ],
             initialValue: 0,
           })(<Input type="number" disabled={loading} />)}
-          {intl.formatMessage({
-            id: 'per_review',
-            defaultMessage: 'per review',
-          })}
         </Form.Item>
         <div className="CreateReward__item-title ant-form-item-required">
           {intl.formatMessage({
-            id: 'required_business_object',
-            defaultMessage: 'Required object (Your business object)',
+            id: 'link_parent_object',
+            defaultMessage: 'Link to the primary (parent) object',
           })}
         </div>
         <SearchObjectsAutocomplete
           allowClear={false}
           itemsIdsToOmit={this.getObjectsToOmit()}
           style={{ width: '100%' }}
-          placeholder="Please select"
+          placeholder={intl.formatMessage({
+            id: 'object_auto_complete_placeholder',
+            defaultMessage: 'Find object',
+          })}
           handleSelect={this.setRequiredObject}
           isPermlinkValue={false}
           disabled={loading}
@@ -528,9 +527,13 @@ class CreateRewardForm extends React.Component {
         >
           {intl.formatMessage({
             id: 'select_object',
-            defaultMessage: 'Please, select an object',
+            defaultMessage: 'Select the primary object',
           })}
         </div>
+        {intl.formatMessage({
+          id: 'example_parent_object',
+          defaultMessage: 'Example: business, brand, restaurant, etc.',
+        })}
         <div className="CreateReward__objects-wrap">
           {!_.isEmpty(this.state.requiredObject) && (
             <React.Fragment>
@@ -554,15 +557,14 @@ class CreateRewardForm extends React.Component {
         </div>
         <div className="CreateReward__item-title ant-form-item-required">
           {intl.formatMessage({
-            id: 'objects_review',
-            defaultMessage: 'Objects to review',
+            id: 'link_secondary_objects',
+            defaultMessage: 'Link to one of the secondary objects',
           })}
         </div>
         <SearchObjectsAutocomplete
           allowClear={false}
           itemsIdsToOmit={this.getObjectsToOmit()}
           style={{ width: '100%' }}
-          placeholder="Please select"
           handleSelect={this.handleAddObjectToList}
           isPermlinkValue={false}
           disabled={loading || _.isEmpty(this.state.requiredObject)}
@@ -574,9 +576,13 @@ class CreateRewardForm extends React.Component {
         >
           {intl.formatMessage({
             id: 'select_more_object',
-            defaultMessage: 'Please, select one object or more',
+            defaultMessage: 'Select one or more secondary objects',
           })}
         </div>
+        {intl.formatMessage({
+          id: 'example_secondary_object',
+          defaultMessage: 'Example: product, service, dish, etc.',
+        })}
         <div className="CreateReward__objects-wrap">
           {_.map(this.state.objectsToAction, obj => (
             <ReviewObjectItem
@@ -695,8 +701,8 @@ class CreateRewardForm extends React.Component {
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({
-            id: 'expired_automatically',
-            defaultMessage: 'Expired automatically at',
+            id: 'campaign_expiry_date',
+            defaultMessage: 'Campaign expiry date',
           })}
         >
           {getFieldDecorator('expiredAt', {
