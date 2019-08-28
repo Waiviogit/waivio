@@ -13,7 +13,7 @@ import { rewardsValues } from '../../../common/constants/rewards';
 import BBackTop from '../../components/BBackTop';
 import './PostPreviewModal.less';
 
-const isTopicValid = topic => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(topic);
+const isTopicValid = topic => /^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$/.test(topic);
 
 @injectIntl
 class PostPreviewModal extends Component {
@@ -114,7 +114,7 @@ class PostPreviewModal extends Component {
     const { objPercentage, weightBuffer } = this.state;
     const nextState = handleWeightChange(objPercentage, objId, percent, weightBuffer);
     this.setState(nextState);
-    if (weightBuffer === 0) this.props.onPercentChange(nextState.objPercentage);
+    if (nextState.weightBuffer === 0) this.props.onPercentChange(nextState.objPercentage);
   };
 
   handleSubmit = () => this.props.onSubmit();

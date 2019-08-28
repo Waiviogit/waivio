@@ -37,8 +37,6 @@ export const getTotalShares = user =>
     (parseFloat(user.to_withdraw) - parseFloat(user.withdrawn)) / 100000,
   );
 
-export const getHasDefaultSlider = user => getTotalShares(user) >= 10000000;
-
 export const getVoteValue = (user, recentClaims, rewardBalance, rate, weight = 10000) =>
   calculateVoteValue(
     getTotalShares(user),

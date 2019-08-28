@@ -1,11 +1,12 @@
 import * as settingsTypes from './settingsActions';
 import * as authTypes from '../auth/authActions';
+import { GET_USER_METADATA } from '../user/usersActions';
 import { rewardsValues } from '../../common/constants/rewards';
 
 const initialState = {
   locale: 'auto',
   readLanguages: [],
-  votingPower: 'auto',
+  votingPower: false,
   votePercent: 10000,
   showNSFWPosts: false,
   nightmode: false,
@@ -19,39 +20,17 @@ const initialState = {
 const settings = (state = initialState, action) => {
   switch (action.type) {
     case authTypes.LOGIN_SUCCESS:
-    case authTypes.RELOAD_SUCCESS:
       if (action.meta && action.meta.refresh) return state;
-      if (action.payload.user_metadata && action.payload.user_metadata.settings) {
-        const {
-          locale,
-          readLanguages,
-          votingPower,
-          votePercent,
-          showNSFWPosts,
-          nightmode,
-          rewriteLinks,
-          upvoteSetting,
-          exitPageSetting,
-          rewardSetting,
-        } = action.payload.user_metadata.settings;
-        return {
-          ...state,
-          locale: locale || initialState.locale,
-          readLanguages: readLanguages || initialState.readLanguages,
-          votingPower: votingPower || initialState.votingPower,
-          votePercent: votePercent || initialState.votePercent,
-          showNSFWPosts: showNSFWPosts || initialState.showNSFWPosts,
-          nightmode: nightmode || initialState.nightmode,
-          rewriteLinks:
-            typeof rewriteLinks === 'boolean' ? rewriteLinks : initialState.rewriteLinks,
-          upvoteSetting:
-            typeof upvoteSetting === 'boolean' ? upvoteSetting : initialState.upvoteSetting,
-          exitPageSetting:
-            typeof exitPageSetting === 'boolean' ? exitPageSetting : initialState.exitPageSetting,
-          rewardSetting: rewardSetting || initialState.rewardSetting,
-        };
+      if (action.payload.userMetaData && action.payload.userMetaData.settings) {
+        return { ...state, ...action.payload.userMetaData.settings };
       }
       return state;
+    case GET_USER_METADATA.SUCCESS:
+      if (action.payload && action.payload.settings) {
+        return { ...action.payload.settings, loading: false };
+      }
+      return { ...state, loading: false };
+    case GET_USER_METADATA.START:
     case settingsTypes.SAVE_SETTINGS_START:
       return {
         ...state,
@@ -63,6 +42,7 @@ const settings = (state = initialState, action) => {
         ...action.payload,
         loading: false,
       };
+    case GET_USER_METADATA.ERROR:
     case settingsTypes.SAVE_SETTINGS_ERROR:
       return {
         ...state,

@@ -1,0 +1,52 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.RewardsFiltersPanel {
+  border-radius: 4px;
+
+  &__title-text {
+    font-weight: 800;
+    margin: 10px 0;
+  }
+
+  &__title {
+    display: flex;
+    min-height: 42px;
+    align-items: center;
+    border-bottom: @base-border;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    margin-bottom: 12px;
+    color: @blue-baliHai;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  &__container {
+    padding: 5px 15px 15px 15px;
+    border: @base-border;
+    background-color: @white;
+  }
+
+  &__item-wrap {
+    display: flex;
+    align-items: center;
+  }
+
+  &__name {
+    margin-left: 5px;
+    max-width: 90px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  &__title {
+    display: flex;
+    color: @blue-baliHai;
+    margin: 0 0 11px 0;
+    font-weight: 500;
+    border-bottom: @base-border;
+  }
+}
+
+@import 'RewardsFiltersPanel-nightmode';

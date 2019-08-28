@@ -1,3 +1,4 @@
+import { get } from 'lodash';
 import { getDiscussionsFromAPI } from '../helpers/apiHelpers';
 import {
   createAsyncActionType,
@@ -65,19 +66,14 @@ export const getMoreUserFeedContent = ({ userName, limit = 20 }) => (dispatch, g
 
   if (!feedContent.length || !feed || !feed.feed || !feed.feed[userName])
     return Promise.resolve(null);
-
-  const startAuthor = feed.feed[userName].startAuthor;
-  const startPermlink = feed.feed[userName].startPermlink;
-  const countWithWobj = feed.feed[userName].countWithWobj;
+  const countWithWobj = feed.feed[userName].list.length;
 
   return dispatch({
     type: GET_MORE_USER_FEED_CONTENT.ACTION,
     payload: ApiClient.getMoreUserFeedContent({
       userName,
       limit,
-      startAuthor,
-      startPermlink,
-      countWithWobj,
+      skip: countWithWobj,
     }),
     meta: { sortBy: 'feed', category: userName, limit },
   });
@@ -256,29 +252,28 @@ export const getMoreReplies = () => (dispatch, getState, { steemAPI }) => {
  * Use async await to load all the posts of bookmarked from steemAPI and returns a Promise
  *
  * @param bookmarks from localStorage only contain author and permlink
- * @param steemAPI
  * @returns Promise - bookmarksData
  */
 async function getBookmarksData(bookmarks) {
   const bookmarksData = [];
-  for (let idx = 0; idx < Object.keys(bookmarks).length; idx += 1) {
-    const postId = Object.keys(bookmarks)[idx];
-
-    const postData = ApiClient.getContent(bookmarks[postId].author, bookmarks[postId].permlink);
+  for (let idx = 0; idx < bookmarks.length; idx += 1) {
+    const [author, permlink] = bookmarks[idx].split('/');
+    const postData = ApiClient.getContent(author, permlink);
     bookmarksData.push(postData);
   }
   return Promise.all(bookmarksData.sort((a, b) => a.timestamp - b.timestamp).reverse());
 }
 
-export const getBookmarks = () => (dispatch, getState, { steemAPI }) => {
+export const getBookmarks = () => (dispatch, getState) => {
   const state = getState();
+  const loaded = get(getFeed(state), ['bookmarks', 'all', 'list'], []);
   const bookmarks = getBookmarksSelector(state);
-
+  if (loaded.length && loaded.length === bookmarks.length) {
+    return;
+  }
   dispatch({
     type: GET_BOOKMARKS.ACTION,
-    payload: getBookmarksData(bookmarks, steemAPI).then(posts =>
-      posts.filter(post => post.id !== 0),
-    ),
+    payload: getBookmarksData(bookmarks).then(posts => posts.filter(post => post.id !== 0)),
     meta: {
       sortBy: 'bookmarks',
       category: 'all',

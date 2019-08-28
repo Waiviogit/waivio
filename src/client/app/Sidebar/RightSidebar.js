@@ -12,6 +12,7 @@ import UserActivitySearch from '../../activity/UserActivitySearch';
 import WalletSidebar from '../../components/Sidebar/WalletSidebar';
 import FeedSidebar from '../../components/Sidebar/FeedSidebar';
 import ObjectWeightBlock from '../../components/Sidebar/ObjectWeightBlock';
+import DiscoverFiltersSidebar from '../../discoverObjects/DiscoverFiltersSidebar/DiscoverFiltersSidebar';
 
 @withRouter
 @connect(state => ({
@@ -53,6 +54,7 @@ export default class RightSidebar extends React.Component {
             path="/@:name"
             render={() => authenticated && <ObjectWeightBlock username={match.params.name} />}
           />
+          <Route path="/discover-objects/:objectType" component={DiscoverFiltersSidebar} />
           <Route
             path="/"
             render={() => (

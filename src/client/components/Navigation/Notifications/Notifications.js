@@ -25,7 +25,7 @@ class Notifications extends React.Component {
     lastSeenTimestamp: PropTypes.number,
     currentAuthUsername: PropTypes.string,
     onNotificationClick: PropTypes.func,
-    getUpdatedSCUserMetadata: PropTypes.func,
+    getUpdatedUserMetadata: PropTypes.func,
   };
 
   static defaultProps = {
@@ -34,7 +34,7 @@ class Notifications extends React.Component {
     lastSeenTimestamp: 0,
     currentAuthUsername: '',
     onNotificationClick: () => {},
-    getUpdatedSCUserMetadata: () => {},
+    getUpdatedUserMetadata: () => {},
   };
 
   constructor(props) {
@@ -52,12 +52,14 @@ class Notifications extends React.Component {
   }
 
   componentDidMount() {
-    const { notifications, lastSeenTimestamp } = this.props;
+    const { notifications, lastSeenTimestamp, currentAuthUsername } = this.props;
     const latestNotification = _.get(notifications, 0);
     const timestamp = _.get(latestNotification, 'timestamp');
 
     if (timestamp > lastSeenTimestamp) {
-      saveNotificationsLastTimestamp(timestamp).then(() => this.props.getUpdatedSCUserMetadata());
+      saveNotificationsLastTimestamp(timestamp, currentAuthUsername).then(() =>
+        this.props.getUpdatedUserMetadata(),
+      );
     }
   }
 
@@ -77,7 +79,9 @@ class Notifications extends React.Component {
       const timestamp = _.get(latestNotification, 'timestamp');
 
       if (timestamp > nextProps.lastSeenTimestamp) {
-        saveNotificationsLastTimestamp(timestamp).then(() => this.props.getUpdatedSCUserMetadata());
+        saveNotificationsLastTimestamp(timestamp, this.props.currentAuthUsername).then(() =>
+          this.props.getUpdatedUserMetadata(),
+        );
       }
     }
   }

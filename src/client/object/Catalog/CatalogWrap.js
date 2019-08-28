@@ -23,6 +23,7 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import CategoryItemView from './CategoryItemView/CategoryItemView';
 import { hasType } from '../../helpers/wObjectHelper';
 import BodyContainer from '../../containers/Story/BodyContainer';
+import Loading from '../../components/Icon/Loading';
 import './CatalogWrap.less';
 
 const getListSorting = wobj => {
@@ -43,13 +44,16 @@ const getListSorting = wobj => {
 )
 class CatalogWrap extends React.Component {
   static propTypes = {
-    wobject: PropTypes.shape(),
-    locale: PropTypes.string,
+    /* from decorators */
     intl: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
-    isEditMode: PropTypes.bool.isRequired,
+    /* from connect */
+    locale: PropTypes.string,
     addItemToWobjStore: PropTypes.func.isRequired,
+    /* passed props */
+    wobject: PropTypes.shape(),
+    isEditMode: PropTypes.bool.isRequired,
   };
   static defaultProps = {
     wobject: {},
@@ -81,35 +85,39 @@ class CatalogWrap extends React.Component {
   }
 
   getObjectFromApi = (permlink, path) => {
-    getObject(permlink).then(res => {
-      const listItems =
-        (res && res.listItems && res.listItems.map(item => getClientWObj(item))) || [];
-      this.setState(prevState => {
-        let breadcrumb = [];
-        if (prevState.breadcrumb.some(crumb => crumb.path.includes(permlink))) {
-          forEach(prevState.breadcrumb, crumb => {
-            breadcrumb.push(crumb);
-            return !crumb.path.includes(permlink);
-          });
-        } else {
-          breadcrumb = [
-            ...prevState.breadcrumb,
-            {
-              id: res.author_permlink,
-              name: getFieldWithMaxWeight(res, objectFields.name),
-              path,
-            },
-          ];
-        }
-        const sorting = getListSorting(res);
-        return {
-          sort: sorting.type,
-          wobjNested: res,
-          listItems: sortListItemsBy(listItems, sorting.type, sorting.order),
-          breadcrumb,
-        };
-      });
-    });
+    this.setState({ loading: true });
+    getObject(permlink)
+      .then(res => {
+        const listItems =
+          (res && res.listItems && res.listItems.map(item => getClientWObj(item))) || [];
+        this.setState(prevState => {
+          let breadcrumb = [];
+          if (prevState.breadcrumb.some(crumb => crumb.path.includes(permlink))) {
+            forEach(prevState.breadcrumb, crumb => {
+              breadcrumb.push(crumb);
+              return !crumb.path.includes(permlink);
+            });
+          } else {
+            breadcrumb = [
+              ...prevState.breadcrumb,
+              {
+                id: res.author_permlink,
+                name: getFieldWithMaxWeight(res, objectFields.name),
+                path,
+              },
+            ];
+          }
+          const sorting = getListSorting(res);
+          return {
+            sort: sorting.type,
+            wobjNested: res,
+            listItems: sortListItemsBy(listItems, sorting.type, sorting.order),
+            breadcrumb,
+            loading: false,
+          };
+        });
+      })
+      .catch(() => this.setState({ loading: false }));
   };
 
   getNextStateFromProps = ({ wobject, location }) => {
@@ -127,6 +135,7 @@ class CatalogWrap extends React.Component {
         });
       }
       if (location.hash) {
+        this.setState({ loading: true });
         // restore breadcrumbs from url hash
         const permlinks = location.hash.slice(1).split('/');
         const locale = this.props.locale === 'auto' ? 'en-US' : this.props.locale;
@@ -178,7 +187,7 @@ class CatalogWrap extends React.Component {
   };
 
   render() {
-    const { sort, wobjNested, listItems, breadcrumb } = this.state;
+    const { sort, wobjNested, listItems, breadcrumb, loading } = this.state;
     const { isEditMode, wobject, intl, location } = this.props;
     const currWobject = wobjNested || wobject;
     const itemsIdsToOmit = uniq([
@@ -273,7 +282,9 @@ class CatalogWrap extends React.Component {
           <React.Fragment>
             <div className="CatalogWrap__sort">{sortSelector}</div>
             <div className="CatalogWrap">
-              {listItems.length ? (
+              {loading ? (
+                <Loading />
+              ) : (
                 <div>
                   {!isEmpty(listItems) ? (
                     map(listItems, listItem => {
@@ -301,10 +312,6 @@ class CatalogWrap extends React.Component {
                       })}
                     </div>
                   )}
-                </div>
-              ) : (
-                <div>
-                  {intl.formatMessage({ id: 'emptyList', defaultMessage: 'This list is empty' })}
                 </div>
               )}
             </div>

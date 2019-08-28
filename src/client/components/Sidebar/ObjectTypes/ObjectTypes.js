@@ -5,15 +5,15 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { getObjectTypes, getMoreObjectsByType } from '../../../objectTypes/objectTypesActions';
-import './ObjectTypes.less';
 import ObjectCard from '../ObjectCard';
-import { getAuthenticatedUserName, getobjectTypesState } from '../../../reducers';
+import { getObjectTypesList, getObjectTypesLoading } from '../../../reducers';
 import ObjectTypesLoading from './ObjectTypesLoading';
+import './ObjectTypes.less';
 
 @connect(
   state => ({
-    objectTypes: getobjectTypesState(state),
-    userName: getAuthenticatedUserName(state),
+    objectTypes: getObjectTypesList(state),
+    isTypesLoading: getObjectTypesLoading(state),
   }),
   {
     getObjectTypes,
@@ -23,61 +23,31 @@ import ObjectTypesLoading from './ObjectTypesLoading';
 class ObjectTypes extends React.Component {
   static propTypes = {
     objectTypes: PropTypes.shape(),
-    loading: PropTypes.bool,
-    // userName: PropTypes.string,
+    isTypesLoading: PropTypes.bool.isRequired,
     getObjectTypes: PropTypes.func.isRequired,
     getMoreObjectsByType: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     objectTypes: {},
-    topics: [],
-    maxItems: 5,
-    userName: '',
-    loading: false,
   };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      showMore: false,
-      showedItemsCount: 3,
-    };
-  }
 
   componentDidMount() {
-    if (_.size(this.props.objectTypes) < 5) this.props.getObjectTypes();
+    if (_.size(this.props.objectTypes) < 5) this.props.getObjectTypes(100, 0, 3);
   }
 
-  getMoreObjectsByType(type, skip) {
-    if (skip <= this.state.showedItemsCount) {
-      this.props.getMoreObjectsByType(type, skip);
-    }
-    this.setState({ showedItemsCount: this.state.showedItemsCount + 10 });
-  }
+  getMoreObjectsByType = (type, skip) => this.props.getMoreObjectsByType(type, skip, 10);
 
-  getTypesLayout = objectType => {
-    let tmp = 0;
-    return _.map(objectType.related_wobjects, wobject => {
-      if (tmp < this.state.showedItemsCount) {
-        tmp += 1;
-        return <ObjectCard key={wobject.author_permlink} wobject={wobject} showFollow={false} />;
-      }
-      return null;
-    });
-  };
+  getTypesLayout = objectType =>
+    objectType.related_wobjects.map(wobject => (
+      <ObjectCard key={wobject.author_permlink} wobject={wobject} showFollow={false} />
+    ));
+
   render() {
-    const { objectTypes, loading } = this.props;
-    const { showedItemsCount } = this.state;
-
+    const { objectTypes, isTypesLoading } = this.props;
     return (
       <div className="ObjectTypes">
-        {/* <div className="reward-button"> */}
-        {/* <Link to={`/rewards/active/@${userName}`} className="rainbow-button"> */}
-        {/* <FormattedMessage id="rewards" defaultMessage="Rewards" /> */}
-        {/* </Link> */}
-        {/* </div> */}
-        {!loading && !_.isEmpty(objectTypes) ? (
+        {!isTypesLoading ? (
           _.map(
             objectTypes,
             objectType =>
@@ -94,8 +64,7 @@ class ObjectTypes extends React.Component {
                     {this.getTypesLayout(objectType)}
                     {objectType.name && objectType.permlink && (
                       <div className="ObjectTypes__buttons">
-                        {objectType.hasMoreWobjects ||
-                        showedItemsCount < objectType.related_wobjects.length ? (
+                        {objectType.hasMoreWobjects ? (
                           <a
                             role="presentation"
                             onClick={() =>
@@ -111,7 +80,7 @@ class ObjectTypes extends React.Component {
                         ) : (
                           <div />
                         )}
-                        <Link to={`/objectType/${objectType.name}`}>
+                        <Link to={`/discover-objects/${objectType.name}`}>
                           <FormattedMessage id="explore" defaultMessage="Explore" />
                         </Link>
                       </div>
@@ -121,7 +90,7 @@ class ObjectTypes extends React.Component {
               ),
           )
         ) : (
-          <ObjectTypesLoading center={false} />
+          <ObjectTypesLoading />
         )}
       </div>
     );

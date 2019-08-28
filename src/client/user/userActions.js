@@ -3,6 +3,8 @@ import { getAllFollowing } from '../helpers/apiHelpers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getUserCoordinatesByIpAdress } from '../components/Maps/mapHelper';
+import { rewardPostContainerData } from '../rewards/rewardsHelper';
+import { generatePermlink } from '../helpers/wObjectHelper';
 
 require('isomorphic-fetch');
 
@@ -137,29 +139,84 @@ export const getCoordinates = () => dispatch =>
     payload: getUserCoordinatesByIpAdress(),
   });
 
-export const assignProposition = (companyId, objId) => (
+export const assignProposition = ({ companyAuthor, companyPermlink, companyId, objPermlink }) => (
   dispatch,
   getState,
   { steemConnectAPI },
 ) => {
-  const state = getState();
+  const username = getAuthenticatedUserName(getState());
+  const commentOp = [
+    'comment',
+    {
+      parent_author: companyAuthor,
+      parent_permlink: companyPermlink,
+      author: username,
+      permlink: `reserve-${companyId}-${generatePermlink()}`,
+      title: 'reserve object for rewards',
+      body: `User @${username} reserve [object](https://www.waivio.com/object/${objPermlink}), from [campaign](https://www.waivio.com/@${companyAuthor}/${companyPermlink})`,
+      json_metadata: JSON.stringify({
+        waivioRewards: { type: 'waivio_assign_campaign', approved_object: objPermlink },
+      }),
+    },
+  ];
+
   return new Promise((resolve, reject) => {
     steemConnectAPI
-      .assignProposition(getAuthenticatedUserName(state), companyId, objId)
+      .broadcast([commentOp])
       .then(() => resolve('SUCCESS'))
       .catch(error => reject(error));
   });
 };
 
-export const declineProposition = (companyId, objId) => (
+export const declineProposition = ({ companyAuthor, companyPermlink, companyId, objPermlink }) => (
   dispatch,
   getState,
   { steemConnectAPI },
 ) => {
-  const state = getState();
+  const username = getAuthenticatedUserName(getState());
+  const commentOp = [
+    'comment',
+    {
+      parent_author: companyAuthor,
+      parent_permlink: companyPermlink,
+      author: username,
+      permlink: `reject-${companyId}-${generatePermlink()}`,
+      title: 'reject object for rewards',
+      body: `User @${username} reject [object](https://www.waivio.com/object/${objPermlink}), from [campaign](https://www.waivio.com/@${companyAuthor}/${companyPermlink})`,
+      json_metadata: JSON.stringify({
+        waivioRewards: { type: 'waivio_decline_campaign', approved_object: objPermlink },
+      }),
+    },
+  ];
+
   return new Promise((resolve, reject) => {
     steemConnectAPI
-      .declineProposition(getAuthenticatedUserName(state), companyId, objId)
+      .broadcast([commentOp])
+      .then(() => resolve('SUCCESS'))
+      .catch(error => reject(error));
+  });
+};
+export const activateCampaign = company => (dispatch, getState, { steemConnectAPI }) => {
+  const username = getAuthenticatedUserName(getState());
+  const commentOp = [
+    'comment',
+    {
+      parent_author: rewardPostContainerData.author,
+      parent_permlink: rewardPostContainerData.permlink,
+      author: username,
+      permlink: `activate-${rewardPostContainerData.author}-${generatePermlink()}`,
+      title: 'activate object for rewards',
+      body: `Campaign ${company.name} was activated by ${username} `,
+      json_metadata: JSON.stringify({
+        // eslint-disable-next-line no-underscore-dangle
+        waivioRewards: { type: 'waivio_activate_campaign', campaign_id: company._id },
+      }),
+    },
+  ];
+
+  return new Promise((resolve, reject) => {
+    steemConnectAPI
+      .broadcast([commentOp])
       .then(() => resolve('SUCCESS'))
       .catch(error => reject(error));
   });

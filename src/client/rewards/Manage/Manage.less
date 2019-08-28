@@ -1,0 +1,66 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.Manage {
+  display: flex;
+  position: absolute;
+  top: 70px;
+  flex-direction: column;
+  min-width: 310px;
+  padding-left: 5px;
+
+  &__account-balance-wrap {
+    &-title {
+      font-weight: 500;
+      margin-bottom: 10px;
+      font-size: x-large;
+    }
+
+    &-text-content {
+      font-weight: 500;
+      padding-left: 10px;
+    }
+  }
+
+  &__rewards-campaign-wrap {
+    margin-top: 20px;
+
+    &-title {
+      font-weight: 500;
+      margin-bottom: 10px;
+      font-size: x-large;
+    }
+
+    &-text-content {
+      font-weight: 500;
+      padding-left: 10px;
+    }
+  }
+
+  &__button {
+    margin: 30px 0 15px 0;
+    width: 180px;
+    height: 40px;
+    border-radius: 4px !important;
+    border: 1px solid @white-gainsboro;
+    background: @white-smoke;
+    color: @orange-light;
+
+    &:hover {
+      border-color: @white-smoke;
+      background-color: @white;
+    }
+  }
+}
+
+.Manage__account-balance-wrap-text-content :nth-child(2) {
+  padding-left: 50px;
+}
+
+.Manage__account-balance-wrap-text-content :nth-child(3) {
+  padding-left: 42px;
+}
+
+.Manage__rewards-campaign-wrap-text-content :first-child {
+  padding-left: 7px;
+}

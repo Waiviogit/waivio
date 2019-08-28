@@ -3,7 +3,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Icon, Tag, Rate, Row, Col } from 'antd';
+import { Icon, Rate, Row, Col } from 'antd';
 // import {Slider, Icon, Tag, Rate, Row, Col} from 'antd';
 import '../../post/PostObjectCard/PostObjectCard.less';
 // import ObjectRank from '../../object/ObjectRank';
@@ -116,7 +116,6 @@ class EditorObject extends React.Component {
                   <div className="editor-object__truncated" title={wObject.name}>
                     {wObject.name}
                   </div>
-                  {wObject.rank && <Tag>{wObject.rank}</Tag>}
                 </a>
                 {ratings && this.getRatingsMarkDown(ratings)}
                 {wObject.title && (

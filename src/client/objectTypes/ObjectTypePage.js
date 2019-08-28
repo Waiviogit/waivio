@@ -6,10 +6,9 @@ import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
 import { Helmet } from 'react-helmet';
 import {
-  getAuthenticatedUser,
-  getAuthenticatedUserName,
-  getIsAuthenticated,
   getObjectTypeState,
+  getObjectTypesList,
+  getObjectTypesLoading,
   getScreenSize,
   getUserLocation,
 } from '../reducers';
@@ -17,27 +16,29 @@ import {
 import MapOS from '../components/Maps/Map';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
-import { clearType, getObjectType } from './objectTypeActions';
+import { clearType, getObjectTypeInitial } from './objectTypeActions';
+import { getObjectTypes } from './objectTypesActions';
 import './ObjectTypePage.less';
 import ObjectTypeFiltersPanel from './ObjectTypeFiltersPanel/ObjectTypeFiltersPanel';
 import ObjectTypeFiltersTags from './ObjectTypeFiltersTags/ObjectTypeFiltersTags';
 import ListObjectsByType from '../objectCard/ListObjectsByType/ListObjectsByType';
 import { getCoordinates } from '../user/userActions';
 import Loading from '../components/Icon/Loading';
+import ObjectTypesNavigation from './ObjectTypesNavigation/ObjectTypesNavigation';
 
 @injectIntl
 @withRouter
 @connect(
   state => ({
-    authenticated: getIsAuthenticated(state),
-    authenticatedUser: getAuthenticatedUser(state),
-    authenticatedUserName: getAuthenticatedUserName(state),
     screenSize: getScreenSize(state),
     type: getObjectTypeState(state),
     userLocation: getUserLocation(state),
+    typesList: getObjectTypesList(state),
+    isTypesLoading: getObjectTypesLoading(state),
   }),
   {
-    getObjectType,
+    getObjectType: getObjectTypeInitial,
+    getObjectTypes,
     getCoordinates,
     clearType,
   },
@@ -47,7 +48,10 @@ export default class ObjectTypePage extends React.Component {
     match: PropTypes.shape().isRequired,
     intl: PropTypes.shape().isRequired,
     getObjectType: PropTypes.func.isRequired,
+    getObjectTypes: PropTypes.func.isRequired,
     getCoordinates: PropTypes.func.isRequired,
+    typesList: PropTypes.shape().isRequired,
+    isTypesLoading: PropTypes.bool.isRequired,
     clearType: PropTypes.func.isRequired,
     type: PropTypes.shape(),
     userLocation: PropTypes.shape(),
@@ -55,7 +59,6 @@ export default class ObjectTypePage extends React.Component {
   };
 
   static defaultProps = {
-    authenticatedUserName: '',
     loaded: false,
     failed: false,
     userLocation: {},
@@ -77,9 +80,12 @@ export default class ObjectTypePage extends React.Component {
 
   componentDidMount() {
     this.props.getObjectType(this.props.match.params.typeName, 0, {});
+    if (_.isEmpty(this.props.typesList)) this.props.getObjectTypes();
   }
 
   componentWillReceiveProps(nextProps) {
+    if (nextProps.match.params.typeName !== this.props.match.params.typeName)
+      this.props.getObjectType(nextProps.match.params.typeName, 0, {});
     if (!_.isEmpty(nextProps.type)) {
       if (
         !_.isEmpty(this.state.activefilters.map) &&
@@ -143,7 +149,7 @@ export default class ObjectTypePage extends React.Component {
   toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
 
   render() {
-    const { type, intl, screenSize } = this.props;
+    const { type, intl, screenSize, typesList, isTypesLoading } = this.props;
 
     const host = global.postOrigin || 'https://waiviodev.com';
     const desc = type.body;
@@ -174,27 +180,18 @@ export default class ObjectTypePage extends React.Component {
           />
         </Helmet>
         <ScrollToTopOnMount />
-        <div className="shifted">
-          <div className="feed-layout container">
-            <Affix className="leftContainer leftContainer__user" stickPosition={72}>
-              <div className="left">
-                {this.state.withMap &&
-                  !_.isEmpty(type.related_wobjects) &&
-                  !_.isEmpty(this.props.userLocation) && (
-                    <MapOS
-                      wobjects={this.props.type.related_wobjects}
-                      heigth={200}
-                      userLocation={this.props.userLocation}
-                    />
-                  )}
-                <ObjectTypeFiltersPanel
-                  filters={type.filters}
-                  activefilters={this.state.activefilters}
-                  setFilterValue={this.setFilterValue}
-                />
-              </div>
-            </Affix>
-            <div className="center">
+        <div className="feed-layout container">
+          <Affix className="leftContainer leftContainer__user" stickPosition={122}>
+            <div className="left">
+              <ObjectTypesNavigation
+                objectTypes={typesList}
+                typeName={this.props.match.params.typeName}
+                isLoading={isTypesLoading}
+              />
+            </div>
+          </Affix>
+          <div className="center">
+            <div className="ObjectTypePage__filters">
               {type.name && (
                 <div className="ObjectTypePage__title">
                   {`${intl.formatMessage({
@@ -218,27 +215,45 @@ export default class ObjectTypePage extends React.Component {
                   />
                 </div>
               )}
-              {/* eslint-disable-next-line no-nested-ternary */}
-              {!_.isEmpty(this.props.type.related_wobjects) ? (
-                <ListObjectsByType
-                  limit={25}
-                  getObjectType={this.props.getObjectType}
-                  wobjects={this.props.type.related_wobjects}
-                  typeName={this.props.match.params.typeName}
-                  showSmallVersion={screenSize === 'xsmall'}
-                />
-              ) : !this.state.isLoading ? (
-                <div>
-                  {`${intl.formatMessage({
-                    id: 'noTypeObjects',
-                    defaultMessage: 'No data meets the criteria',
-                  })}`}
-                </div>
-              ) : (
-                <Loading center />
-              )}
             </div>
+            {/* eslint-disable-next-line no-nested-ternary */}
+            {!_.isEmpty(this.props.type.related_wobjects) ? (
+              <ListObjectsByType
+                limit={25}
+                getObjectType={this.props.getObjectType}
+                wobjects={this.props.type.related_wobjects}
+                typeName={this.props.match.params.typeName}
+                showSmallVersion={screenSize === 'xsmall'}
+              />
+            ) : !this.state.isLoading ? (
+              <div>
+                {`${intl.formatMessage({
+                  id: 'noTypeObjects',
+                  defaultMessage: 'No data meets the criteria',
+                })}`}
+              </div>
+            ) : (
+              <Loading center />
+            )}
           </div>
+          <Affix className="rightContainer leftContainer__user" stickPosition={122}>
+            <div className="right">
+              {this.state.withMap &&
+                !_.isEmpty(type.related_wobjects) &&
+                !_.isEmpty(this.props.userLocation) && (
+                  <MapOS
+                    wobjects={this.props.type.related_wobjects}
+                    heigth={268}
+                    userLocation={this.props.userLocation}
+                  />
+                )}
+              <ObjectTypeFiltersPanel
+                filters={type.filters}
+                activefilters={this.state.activefilters}
+                setFilterValue={this.setFilterValue}
+              />
+            </div>
+          </Affix>
         </div>
       </div>
     );

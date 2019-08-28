@@ -4,8 +4,8 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Badge } from 'antd';
-import { debounce, has, isEqual, kebabCase, throttle, uniqBy } from 'lodash';
-import uuidv4 from 'uuid/v4';
+import { debounce, has, kebabCase, throttle, uniqBy } from 'lodash';
+import requiresLogin from '../../auth/requiresLogin';
 import {
   getAuthenticatedUser,
   getLocale,
@@ -16,8 +16,7 @@ import {
   getUpvoteSetting,
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
-import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
-import { createPostMetadata, splitPostContent, getInitialValues } from '../../helpers/postHelpers';
+import { createPostMetadata, splitPostContent, getInitialState } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import ObjectCardView from '../../objectCard/ObjectCardView';
@@ -35,6 +34,7 @@ const getLinkedObjects = contentStateRaw => {
 };
 
 @injectIntl
+@requiresLogin
 @withRouter
 @connect(
   (state, props) => ({
@@ -45,6 +45,7 @@ const getLinkedObjects = contentStateRaw => {
     saving: getIsEditorSaving(state),
     imageLoading: getIsImageUploading(state),
     draftId: new URLSearchParams(props.location.search).get('draft'),
+    initObjects: new URLSearchParams(props.location.search).getAll('object'),
     upvoteSetting: getUpvoteSetting(state),
   }),
   {
@@ -57,8 +58,7 @@ class EditPost extends Component {
     intl: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
     locale: PropTypes.string.isRequired,
-    draftPosts: PropTypes.shape().isRequired,
-    // upvoteSetting: PropTypes.bool,
+    draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     draftId: PropTypes.string,
     publishing: PropTypes.bool,
     saving: PropTypes.bool,
@@ -79,12 +79,8 @@ class EditPost extends Component {
   constructor(props) {
     super(props);
 
-    const init = getInitialValues(props);
-    this.state = init.state;
+    this.state = getInitialState(props);
 
-    this.draftId = props.draftId || uuidv4();
-    this.permlink = init.permlink;
-    this.originalBody = init.originalBody;
     this.handleTopicsChange = this.handleTopicsChange.bind(this);
     this.handleSettingsChange = this.handleSettingsChange.bind(this);
     this.handleChangeContent = this.handleChangeContent.bind(this);
@@ -92,27 +88,32 @@ class EditPost extends Component {
     this.buildPost = this.buildPost.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    const differentDraft = this.props.draftId !== nextProps.draftId;
-    if (differentDraft) {
-      const init = getInitialValues(nextProps);
-      this.setState(init.state);
-      this.permlink = init.permlink;
-      this.originalBody = init.originalBody;
-      this.draftId = nextProps.draftId || uuidv4();
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.draftId && nextProps.draftId !== prevState.draftId) {
+      return getInitialState(nextProps);
+    } else if (nextProps.draftId === null && prevState.draftId) {
+      const nextState = getInitialState(nextProps);
+      nextProps.history.push({
+        pathname: nextProps.location.pathname,
+        search: `draft=${nextState.draftId}`,
+      });
+      return nextState;
     }
+    return null;
   }
 
   handleChangeContent(rawContent) {
     const nextState = { content: toMarkdown(rawContent) };
-    this.handleUpdateState(nextState.content);
     const linkedObjects = getLinkedObjects(rawContent);
-    if (this.state.linkedObjects.length !== linkedObjects.length) {
+    const isLinkedObjectsChanged = this.state.linkedObjects.length !== linkedObjects.length;
+    if (isLinkedObjectsChanged) {
       const objPercentage = setObjPercents(linkedObjects, this.state.objPercentage);
       nextState.linkedObjects = linkedObjects;
       nextState.objPercentage = objPercentage;
     }
-    this.setState(nextState);
+    if (this.state.content !== nextState.content || isLinkedObjectsChanged) {
+      this.setState(nextState, this.handleUpdateState);
+    }
   }
 
   handleTopicsChange = topics => this.setState({ topics }, this.handleUpdateState);
@@ -135,7 +136,18 @@ class EditPost extends Component {
   }
 
   buildPost() {
-    const { content, topics, linkedObjects, objPercentage, settings, isUpdating } = this.state;
+    const {
+      draftId,
+      parentPermlink,
+      content,
+      topics,
+      linkedObjects,
+      objPercentage,
+      settings,
+      isUpdating,
+      permlink,
+      originalBody,
+    } = this.state;
     const { postTitle, postBody } = splitPostContent(content);
 
     const postData = {
@@ -143,18 +155,17 @@ class EditPost extends Component {
       title: postTitle,
       lastUpdated: Date.now(),
       isUpdating,
-      draftId: this.draftId,
+      draftId,
       ...settings,
     };
 
     postData.parentAuthor = '';
-    postData.parentPermlink = WAIVIO_PARENT_PERMLINK;
+    postData.parentPermlink = parentPermlink;
     postData.author = this.props.user.name || '';
-    postData.permlink = this.permlink || kebabCase(postTitle);
+    postData.permlink = permlink || kebabCase(postTitle);
 
-    const oldMetadata =
-      this.props.draftPosts[this.props.draftId] &&
-      this.props.draftPosts[this.props.draftId].jsonMetadata;
+    const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
+    const oldMetadata = currDraft && currDraft.jsonMetadata;
     const waivioData = {
       wobjects: linkedObjects.map(obj => ({
         objectName: obj.name,
@@ -165,32 +176,31 @@ class EditPost extends Component {
 
     postData.jsonMetadata = createPostMetadata(postBody, topics, oldMetadata, waivioData);
 
-    if (this.originalBody) {
-      postData.originalBody = this.originalBody;
+    if (originalBody) {
+      postData.originalBody = originalBody;
     }
 
     return postData;
   }
 
-  handleUpdateState = nextContent => {
-    if (isEqual(this.state.content, nextContent)) return;
-    throttle(this.saveDraft, 200, { leading: false, trailing: true })();
-  };
+  handleUpdateState = () => throttle(this.saveDraft, 200, { leading: false, trailing: true })();
 
   saveDraft = debounce(() => {
     if (this.props.saving) return;
 
-    const postData = this.buildPost();
-    const postBody = postData.body;
-    const id = this.props.draftId;
+    const draft = this.buildPost();
+    const postBody = draft.body;
     // Remove zero width space
     const isBodyEmpty = postBody.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().length === 0;
-
     if (isBodyEmpty) return;
 
-    const redirect = id !== this.draftId;
+    const redirect = this.props.draftId !== this.state.draftId;
 
-    this.props.saveDraft({ postData, id: this.draftId }, redirect, this.props.intl);
+    this.props.saveDraft(draft, redirect, this.props.intl);
+
+    // if (!this.props.draftPosts.includes(d => d.draftId === this.props.draftId)) {
+    //   this.setState({ draftContent: { title: draft.title, body: draft.body } });
+    // }
   }, 1500);
 
   render() {
@@ -203,7 +213,7 @@ class EditPost extends Component {
       settings,
       isUpdating,
     } = this.state;
-    const { draftId, saving, publishing, imageLoading, locale } = this.props;
+    const { saving, publishing, imageLoading, locale, draftPosts } = this.props;
     return (
       <div className="shifted">
         <div className="post-layout container">
@@ -214,7 +224,7 @@ class EditPost extends Component {
               locale={locale === 'auto' ? 'en-US' : locale}
               onChange={this.handleChangeContent}
             />
-            {draftId && (
+            {draftPosts.some(d => d.draftId === this.state.draftId) && (
               <div className="edit-post__saving-badge">
                 {saving ? (
                   <Badge status="error" text="saving" />

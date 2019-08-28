@@ -91,9 +91,19 @@
   padding: 20px;
 }
 
-.public-DraftStyleDefault-unorderedListItem,
-.public-DraftStyleDefault-orderedListItem {
-  margin-bottom: 10px;
+.Body {
+  .public-DraftStyleDefault-unorderedListItem,
+  .public-DraftStyleDefault-orderedListItem {
+    &::before {
+      left: -30px;
+    }
+  }
+  .public-DraftStyleDefault-depth0.public-DraftStyleDefault-listLTR {
+    margin-left: 0;
+  }
+  .public-DraftStyleDefault-ol.public-DraftStyleDefault-ul {
+    margin-top: 1.5rem;
+  }
 }
 
 .md-editor-action {

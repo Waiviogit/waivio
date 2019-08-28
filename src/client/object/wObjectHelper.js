@@ -1,22 +1,81 @@
 import _ from 'lodash';
+import { getClientWObj } from '../adapters';
 import {
   supportedObjectFields,
   objectFieldsWithInnerData,
   TYPES_OF_MENU_ITEM,
+  objectFields,
 } from '../../../src/common/constants/listOfFields';
 import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
 import OBJECT_TYPE from './const/objectTypes';
 
-export const getFieldWithMaxWeight = (wObject, currentField) => {
-  if (!wObject || !currentField || !supportedObjectFields.includes(currentField)) return '';
+export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
+  let url = pathname + hash;
+  const { type, menuItems, sortCustom } = wobj;
+  switch (type && type.toLowerCase()) {
+    case OBJECT_TYPE.PAGE:
+      url = `${pathname}/${OBJECT_TYPE.PAGE}`;
+      break;
+    case OBJECT_TYPE.LIST:
+      url = `${pathname}/${OBJECT_TYPE.LIST}`;
+      break;
+    case OBJECT_TYPE.HASHTAG:
+      break;
+    default:
+      if (menuItems) {
+        url = `${pathname}/menu#${(sortCustom &&
+          sortCustom.find(item => item !== TYPES_OF_MENU_ITEM.BUTTON)) ||
+          menuItems[0].author_permlink}`;
+      } else if (screenSize !== 'large') {
+        url = `${pathname}/about`;
+      }
+      break;
+  }
+  return url;
+};
+
+export const getFieldWithMaxWeight = (wObject, currentField, defaultValue = '') => {
+  if (!wObject || !currentField || !supportedObjectFields.includes(currentField))
+    return defaultValue;
 
   const fieldValues = _.filter(wObject.fields, ['name', currentField]);
-  if (!fieldValues.length) return '';
+  if (!fieldValues.length) return defaultValue;
 
   const orderedValues = _.orderBy(fieldValues, ['weight'], ['desc']);
 
   if (orderedValues[0].body) return orderedValues[0].body;
-  return '';
+  return defaultValue;
+};
+
+export const getFieldsWithMaxWeight = wObj => {
+  const complexFields = [
+    objectFields.button,
+    objectFields.address,
+    objectFields.website,
+    objectFields.link,
+    objectFields.status,
+  ];
+  if (!wObj || (wObj && _.isEmpty(wObj.fields))) return '';
+  let maxWeightedFields = wObj.fields
+    .filter(f => !Object.keys(wObj).includes(f.name))
+    .reduce((acc, curr) => {
+      if (acc[curr.name]) {
+        if (curr.weight > acc[curr.name].weight) {
+          acc[curr.name] = curr;
+        }
+      } else {
+        acc[curr.name] = curr;
+      }
+      return acc;
+    }, {});
+  maxWeightedFields = _.mapValues(maxWeightedFields, 'body');
+  complexFields.forEach(field => {
+    if (maxWeightedFields[field]) {
+      const parsed = _.attempt(JSON.parse, maxWeightedFields[field]);
+      if (!_.isError(parsed)) maxWeightedFields[field] = parsed;
+    }
+  });
+  return maxWeightedFields;
 };
 
 export const getInnerFieldWithMaxWeight = (wObject, currentField, innerField) => {
@@ -32,8 +91,7 @@ export const getInnerFieldWithMaxWeight = (wObject, currentField, innerField) =>
   return '';
 };
 
-//
-export const getFielsByName = (wObject, currentField) => {
+export const getFieldsByName = (wObject, currentField) => {
   if (!supportedObjectFields.includes(currentField) || !wObject) return [];
   return _.filter(wObject.fields, ['name', currentField]);
 };
@@ -53,7 +111,10 @@ export const getField = (wObject, currentField, fieldName) => {
   return parsed ? parsed[fieldName] : wo.body;
 };
 
-export const getListItems = (wobj, uniq = false) => {
+export const getListItems = (
+  wobj,
+  { uniq, isMappedToClientWobject } = { uniq: false, isMappedToClientWobject: false },
+) => {
   let items = [];
   if (wobj) {
     if (wobj.listItems) {
@@ -64,6 +125,9 @@ export const getListItems = (wobj, uniq = false) => {
   }
   if (uniq) {
     items = _.uniqBy(items, 'author_permlink');
+  }
+  if (isMappedToClientWobject) {
+    items = items.map(item => getClientWObj(item));
   }
   return items;
 };
@@ -96,7 +160,7 @@ export const getListItemLink = (listItem, location) => {
 export const getFieldsCount = (wObject, fieldName) => {
   let count = 0;
   if (_.includes(TYPES_OF_MENU_ITEM, fieldName)) {
-    count = getListItems(wObject, true).filter(item =>
+    count = getListItems(wObject, { uniq: true }).filter(item =>
       fieldName === TYPES_OF_MENU_ITEM.LIST
         ? item.object_type === OBJECT_TYPE.LIST
         : item.object_type !== OBJECT_TYPE.LIST,
@@ -197,6 +261,7 @@ export const testImage = (url, callback, timeout = 3000) => {
  */
 export const sortListItemsBy = (items, sortBy = 'by-name-asc', sortOrder = null) => {
   if (!items || !items.length) return [];
+  if (!sortBy) return items;
   let comparator;
   switch (sortBy) {
     case 'rank':
@@ -204,6 +269,8 @@ export const sortListItemsBy = (items, sortBy = 'by-name-asc', sortOrder = null)
       break;
     case 'by-name-desc':
       comparator = (a, b) => (a.name < b.name ? 1 : -1);
+      break;
+    case 'custom':
       break;
     case 'by-name-asc':
     default:
@@ -238,4 +305,20 @@ export function validateContent(pageContent = '', prevPageContent = '') {
   if (!currContent || currContent === prevPageContent.trim()) return false;
 
   return true;
+}
+
+export function combineObjectMenu(menuItems, { button, news } = { button: null, news: null }) {
+  const result = [...menuItems];
+  if (news) {
+    result.push({
+      id: TYPES_OF_MENU_ITEM.NEWS,
+    });
+  }
+  if (button) {
+    result.push({
+      id: TYPES_OF_MENU_ITEM.BUTTON,
+      ...button,
+    });
+  }
+  return result;
 }

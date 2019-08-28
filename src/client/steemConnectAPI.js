@@ -49,28 +49,6 @@ function sc2Extended() {
         return this.broadcast([['custom_json', params]], cb);
       },
     },
-    {
-      assignProposition(account, campaignId, object, cb) {
-        const params = {
-          required_auths: [],
-          required_posting_auths: [account],
-          id: 'waivio_assign_campaign',
-          json: JSON.stringify({ account, campaign_id: campaignId, object }),
-        };
-        return this.broadcast([['custom_json', params]], cb);
-      },
-    },
-    {
-      declineProposition(account, campaignId, object, cb) {
-        const params = {
-          required_auths: [],
-          required_posting_auths: [account],
-          id: 'waivio_decline_campaign',
-          json: JSON.stringify({ account, campaign_id: campaignId, object }),
-        };
-        return this.broadcast([['custom_json', params]], cb);
-      },
-    },
   );
 
   return copied;

@@ -79,7 +79,9 @@ export const getAppendData = (creator, wObj, bodyMsg, fieldContent) => {
   const { author, author_permlink } = wObj;
   let body = bodyMsg;
   if (!body) {
-    const langReadable = _.filter(LANGUAGES, { id: fieldContent.locale })[0].name;
+    const langReadable = _.filter(LANGUAGES, {
+      id: fieldContent.locale === 'auto' ? 'en-US' : fieldContent.locale,
+    })[0].name;
     body = `@${creator} added ${fieldContent.name} (${langReadable}):\n ${fieldContent.body.replace(
       /[{}"]/g,
       '',
@@ -97,5 +99,19 @@ export const getAppendData = (creator, wObj, bodyMsg, fieldContent) => {
     wobjectName: getField(wObj, objectFields.name),
   };
 };
+
+export const calculateApprovePercent = votes => {
+  if (!_.isEmpty(votes)) {
+    const filteredByOriginalFlag = votes.filter(vote => vote.percent > 0);
+    if (!_.isEmpty(filteredByOriginalFlag)) {
+      const onlyApproved = filteredByOriginalFlag.filter(vote => vote.percent % 10 === 0);
+      if (!_.isEmpty(onlyApproved)) {
+        return (onlyApproved.length / filteredByOriginalFlag.length) * 100;
+      }
+    }
+  }
+  return 0;
+};
+
 /* eslint-enable no-underscore-dangle */
 /* eslint-enable camelcase */

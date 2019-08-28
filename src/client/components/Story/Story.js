@@ -11,7 +11,6 @@ import {
 import { Link, withRouter } from 'react-router-dom';
 import { Tag } from 'antd';
 import formatter from '../../helpers/steemitFormatter';
-import { getHasDefaultSlider } from '../../helpers/user';
 import {
   isPostDeleted,
   isPostTaggedNSFW,
@@ -30,6 +29,7 @@ import './Story.less';
 import ObjectAvatar from '../ObjectAvatar';
 import PostedFrom from './PostedFrom';
 import WeightTag from '../WeightTag';
+import { calculateApprovePercent } from '../../helpers/wObjectHelper';
 
 @injectIntl
 @withRouter
@@ -46,13 +46,12 @@ class Story extends React.Component {
     showNSFWPosts: PropTypes.bool.isRequired,
     onActionInitiated: PropTypes.func.isRequired,
     pendingLike: PropTypes.bool,
-    pendingFlag: PropTypes.bool,
     pendingFollow: PropTypes.bool,
     pendingBookmark: PropTypes.bool,
     saving: PropTypes.bool,
     ownPost: PropTypes.bool,
     singlePostVew: PropTypes.bool,
-    sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
+    sliderMode: PropTypes.bool,
     history: PropTypes.shape(),
     showPostModal: PropTypes.func,
     votePost: PropTypes.func,
@@ -66,13 +65,12 @@ class Story extends React.Component {
 
   static defaultProps = {
     pendingLike: false,
-    pendingFlag: false,
     pendingFollow: false,
     pendingBookmark: false,
     saving: false,
     ownPost: false,
     singlePostVew: false,
-    sliderMode: 'auto',
+    sliderMode: false,
     history: {},
     match: { params: {} },
     showPostModal: () => {},
@@ -108,6 +106,23 @@ class Story extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
   }
+
+  getApprovalTagLayoyt = () => {
+    const percent = calculateApprovePercent(this.props.post.active_votes);
+    return (
+      <React.Fragment>
+        <Tag>
+          <span>
+            Approval:{' '}
+            <span className={`CalculatedPercent-${percent >= 70 ? 'green' : 'red'}`}>
+              {percent}%
+            </span>
+          </span>
+        </Tag>
+        <span className="MinPercent">Min 70% is required</span>
+      </React.Fragment>
+    );
+  };
 
   getDisplayStoryPreview() {
     const { post, showNSFWPosts } = this.props;
@@ -170,11 +185,19 @@ class Story extends React.Component {
     return returnData;
   };
 
+  getWeighForUpdates = weight => {
+    if (this.props.post.append_field_name) {
+      if (weight > 9998) return weight - 1;
+      return weight + 1;
+    }
+    return weight;
+  };
+
   handleLikeClick(post, postState, weight = 10000) {
-    const { sliderMode, user, defaultVotePercent } = this.props;
+    const { sliderMode, defaultVotePercent } = this.props;
     const author = post.author_original || post.author;
 
-    if (sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user))) {
+    if (sliderMode) {
       this.props.votePost(post.id, author, post.permlink, weight);
     } else if (postState.isLiked) {
       this.props.votePost(post.id, author, post.permlink, 0);
@@ -183,8 +206,11 @@ class Story extends React.Component {
     }
   }
 
-  handleReportClick(post, postState) {
-    const weight = postState.isReported ? 0 : -10000;
+  handleReportClick(post, postState, isRejectField) {
+    let weight = postState.isReported ? 0 : -10000;
+    if (isRejectField) {
+      weight = postState.isReported ? 0 : 9999;
+    }
     const author = post.author_original || post.author;
     this.props.votePost(post.id, author, post.permlink, weight);
   }
@@ -310,12 +336,11 @@ class Story extends React.Component {
 
   render() {
     const {
-      intl,
+      // intl,
       user,
       post,
       postState,
       pendingLike,
-      pendingFlag,
       pendingFollow,
       pendingBookmark,
       saving,
@@ -371,7 +396,7 @@ class Story extends React.Component {
                     <span className="username">{post.author}</span>
                   </Link>
                 </h4>
-                <WeightTag weight={post.author_wobjects_weight} rank={post.author_rank} />
+                <WeightTag weight={post.author_wobjects_weight} />
               </span>
               <span>
                 <BTooltip
@@ -412,14 +437,7 @@ class Story extends React.Component {
                       id={`object_field_${post.append_field_name}`}
                       defaultMessage={post.append_field_name}
                     />
-                    {!_.isNil(post.append_field_weight) && (
-                      <Tag>
-                        {intl.formatMessage(
-                          { id: 'weight_score_value', defaultMessage: 'Weight: {value}' },
-                          { value: Number(post.append_field_weight).toFixed(0) },
-                        )}
-                      </Tag>
-                    )}
+                    {!_.isNil(post.append_field_weight) && this.getApprovalTagLayoyt()}
                   </React.Fragment>
                 ) : (
                   <React.Fragment>
@@ -437,7 +455,7 @@ class Story extends React.Component {
               post={post}
               postState={postState}
               pendingLike={pendingLike}
-              pendingFlag={pendingFlag}
+              pendingFlag={pendingLike}
               rewardFund={rewardFund}
               ownPost={ownPost}
               singlePostVew={singlePostVew}

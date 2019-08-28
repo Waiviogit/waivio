@@ -1,5 +1,4 @@
-import createBrowserHistory from 'history/createBrowserHistory';
-import createMemoryHistory from 'history/createMemoryHistory';
+import { createBrowserHistory, createMemoryHistory } from 'history';
 
 const history = typeof window === 'undefined' ? createMemoryHistory() : createBrowserHistory();
 
@@ -13,5 +12,10 @@ if (typeof window !== 'undefined' && window.analytics) {
     console.log('Logging error', err);
   }
 }
+
+export const createHistory = (initialUrl = '/') =>
+  typeof window === 'undefined'
+    ? createMemoryHistory({ initialEntries: [initialUrl], initialIndex: 0 })
+    : createBrowserHistory();
 
 export default history;

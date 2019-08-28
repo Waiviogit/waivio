@@ -1,0 +1,37 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.TopNavigation {
+  display: flex;
+  height: 46px;
+  justify-content: center;
+  background-color: @white;
+  border: solid 1px @white-gainsboro;
+  padding: 0 15px;
+  &__link {
+    display: inline-block;
+    height: 45px;
+    margin-right: 12px;
+    cursor: pointer;
+    color: @blue-botticelli;
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
+    line-height: 45px;
+    &--active,
+    &:hover {
+      color: @primary-color;
+      border-bottom: 2px @border-style-base @primary-color;
+    }
+  }
+  &__item {
+    @media @small {
+      transform: translateX(-(@right-width / 2));
+    }
+    @media @medium, @large {
+      transform: translateX((@left-width - @right-width) / 2);
+    }
+  }
+}
+
+@import './TopNavigation-nightmode';

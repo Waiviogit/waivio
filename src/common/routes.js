@@ -37,9 +37,9 @@ import ObjectAbout from '../client/object/ObjectAbout';
 import CatalogWrap from '../client/object/Catalog/CatalogWrap';
 import WobjExpertise from '../client/object/WobjExpertise';
 import UserExpertise from '../client/user/UserExpertise';
-import ObjectTypePage from '../client/objectTypes/ObjectTypePage';
+import DiscoverObjects from '../client/discoverObjects/DiscoverObjects';
 import Rewards from '../client/rewards/Rewards';
-import CreateRewards from '../client/rewards/Create/CreateReward';
+import CreateRewardForm from '../client/rewards/Create/CreateRewardForm';
 import ObjectOfTypePage from '../client/object/ObjectOfTypePage/ObjectOfTypePage';
 
 const routes = [
@@ -52,13 +52,18 @@ const routes = [
         component: Bookmarks,
       },
       {
-        path: `/rewards/(active|reserved|history|all|create)/@:userName`,
+        path: `/rewards/:filterKey/:campaignParent?`,
+        // path: `/rewards/(active|reserved|history|create|created)?/@:userName?/:campaignParent?`,
         component: Rewards,
       },
       {
         path: '/rewards/create',
         exact: true,
-        component: CreateRewards,
+        component: CreateRewardForm,
+      },
+      {
+        path: `/rewards/:filterKey/:campaignParent?`,
+        component: Rewards,
       },
       {
         path: '/drafts',
@@ -111,9 +116,9 @@ const routes = [
         component: Notifications,
       },
       {
-        path: '/objectType/:typeName',
+        path: '/discover-objects/:typeName',
         exact: true,
-        component: ObjectTypePage,
+        component: DiscoverObjects,
       },
       {
         path: '/@:name/(comments|followers|followed|reblogs|feed|transfers|activity|expertise)?',

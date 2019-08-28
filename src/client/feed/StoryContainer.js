@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { push } from 'connected-react-router';
 import Story from '../components/Story/Story';
 import {
   getAuthenticatedUser,
@@ -29,13 +29,13 @@ const mapStateToProps = (state, { id }) => {
   const post = getPosts(state)[id];
 
   const userVote = _.find(post.active_votes, { voter: user.name }) || {};
-
+  const isAppend = !!post.append_field_name;
   const postState = {
     isReblogged: getRebloggedList(state).includes(post.id),
     isReblogging: getPendingReblogs(state).includes(post.id),
-    isSaved: !!getBookmarks(state)[post.id],
-    isLiked: userVote.percent > 0,
-    isReported: userVote.percent < 0,
+    isSaved: getBookmarks(state).includes(post.id),
+    isLiked: isAppend ? userVote.percent % 10 === 0 && userVote.percent > 0 : userVote.percent > 0,
+    isReported: isAppend ? userVote.percent % 10 > 0 && userVote.percent > 0 : userVote.percent < 0,
     userFollowed: getFollowingList(state).includes(post.author),
   };
 
@@ -63,12 +63,15 @@ const mapStateToProps = (state, { id }) => {
   };
 };
 
-export default connect(mapStateToProps, {
-  votePost,
-  toggleBookmark,
-  editPost,
-  reblog,
-  followUser,
-  unfollowUser,
-  push,
-})(Story);
+export default connect(
+  mapStateToProps,
+  {
+    votePost,
+    toggleBookmark,
+    editPost,
+    reblog,
+    followUser,
+    unfollowUser,
+    push,
+  },
+)(Story);
