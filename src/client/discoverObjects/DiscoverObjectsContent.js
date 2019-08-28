@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty, map } from 'lodash';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import { Button, Modal, Tag } from 'antd';
 import { isNeedFilters, updateActiveFilters } from './helper';
@@ -86,7 +86,7 @@ class DiscoverObjectsContent extends Component {
   componentDidMount() {
     const { dispatchGetObjectType, dispatchGetObjectTypes, typeName, typesList } = this.props;
     dispatchGetObjectType(typeName);
-    if (isEmpty(typesList)) dispatchGetObjectTypes();
+    if (_.isEmpty(typesList)) dispatchGetObjectTypes();
   }
 
   loadMoreRelatedObjects = () => {
@@ -125,7 +125,7 @@ class DiscoverObjectsContent extends Component {
       typeName,
       hasMap,
       availableFilters,
-      activeFilters,
+      activeFilters: { map, ...chosenFilters },
       filteredObjects,
       hasMoreObjects,
     } = this.props;
@@ -147,12 +147,12 @@ class DiscoverObjectsContent extends Component {
           </div>
           {isTypeHasFilters ? (
             <React.Fragment>
-              {!isEmpty(availableFilters) ? (
+              {!_.isEmpty(availableFilters) ? (
                 <div className="discover-objects-header__tags-block">
                   <span className="discover-objects-header__topic ttc">
                     {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
                   </span>
-                  {map(activeFilters, (filterValues, filterName) =>
+                  {_.map(chosenFilters, (filterValues, filterName) =>
                     filterValues.map(filterValue => (
                       <Tag
                         className="ttc"
@@ -175,7 +175,11 @@ class DiscoverObjectsContent extends Component {
               ) : null}
               {hasMap ? (
                 <div className="discover-objects-header__toggle-map tc">
-                  <Button icon="compass" size="large">
+                  <Button
+                    icon="compass"
+                    size="large"
+                    className={_.isEmpty(map) ? 'map-btn' : 'map-btn active'}
+                  >
                     {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
                   </Button>
                 </div>
@@ -183,7 +187,7 @@ class DiscoverObjectsContent extends Component {
             </React.Fragment>
           ) : null}
         </div>
-        {filteredObjects.length ? (
+        {!_.isEmpty(filteredObjects) ? (
           <ReduxInfiniteScroll
             className="Feed"
             loadMore={this.loadMoreRelatedObjects}
@@ -198,7 +202,14 @@ class DiscoverObjectsContent extends Component {
             ))}
           </ReduxInfiniteScroll>
         ) : (
-          <Loading />
+          (isFetching && <Loading />) || (
+            <div className="tc">
+              {intl.formatMessage({
+                id: 'no_results_found_for_search',
+                defaultMessage: 'No results were found for your filters.',
+              })}
+            </div>
+          )
         )}
         {modalTitle ? (
           <Modal

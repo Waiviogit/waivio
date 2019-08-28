@@ -40,6 +40,6 @@ export const setActiveFilters = filters => dispatch => {
 export const setFiltersAndLoad = filters => (dispatch, getState) => {
   dispatch(setActiveFilters(filters)).then(() => {
     const typeName = getTypeName(getState());
-    dispatch(getObjectType(typeName));
+    if (typeName) dispatch(getObjectType(typeName));
   });
 };
