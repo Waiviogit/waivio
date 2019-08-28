@@ -71,8 +71,8 @@ class CreateRewardForm extends React.Component {
   handleSubmit = e => {
     this.setState({ loading: true });
     e.preventDefault();
+    this.checkOptionFields();
     this.props.form.validateFieldsAndScroll((err, values) => {
-      console.log('values', values);
       if (!err && !_.isEmpty(this.state.requiredObject) && !_.isEmpty(this.state.objectsToAction)) {
         createCampaign(this.prepareSubmitData(values))
           .then(data => {
@@ -234,8 +234,8 @@ class CreateRewardForm extends React.Component {
     if ((value < -100 || value > 100) && value !== '') {
       callback(
         intl.formatMessage({
-          id: 'must_have_one_photo',
-          defaultMessage: 'Reputation should be from -100 to 100',
+          id: 'steem_reputation_from_100_to_100',
+          defaultMessage: 'The Steem reputation must be from -100 to 100',
         }),
       );
     } else {
@@ -248,8 +248,8 @@ class CreateRewardForm extends React.Component {
     if (value < 0) {
       callback(
         intl.formatMessage({
-          id: 'not_less_zero_followes',
-          defaultMessage: 'Should not be less than zero followes',
+          id: 'not_less_zero_followers',
+          defaultMessage: 'Number of followers cannot be negative',
         }),
       );
     } else {
@@ -277,7 +277,7 @@ class CreateRewardForm extends React.Component {
       callback(
         intl.formatMessage({
           id: 'not_less_zero_posts',
-          defaultMessage: 'Should not be less than zero posts',
+          defaultMessage: 'Number of posts cannot be negative',
         }),
       );
     } else {
@@ -297,6 +297,34 @@ class CreateRewardForm extends React.Component {
       );
     } else {
       callback();
+    }
+  };
+
+  checkOptionFields = () => {
+    const minPhotos = this.props.form.getFieldValue('minPhotos');
+    const minSteemReputation = this.props.form.getFieldValue('minSteemReputation');
+    const minFollowers = this.props.form.getFieldValue('minFollowers');
+    const minPosts = this.props.form.getFieldValue('minPhotos');
+
+    if (minPhotos === '') {
+      this.props.form.setFieldsValue({
+        minPhotos: 0,
+      });
+    }
+    if (minSteemReputation === '') {
+      this.props.form.setFieldsValue({
+        minSteemReputation: -100,
+      });
+    }
+    if (minFollowers === '') {
+      this.props.form.setFieldsValue({
+        minFollowers: 0,
+      });
+    }
+    if (minPosts === '') {
+      this.props.form.setFieldsValue({
+        minPosts: 0,
+      });
     }
   };
 
@@ -499,13 +527,6 @@ class CreateRewardForm extends React.Component {
           {getFieldDecorator('minPhotos', {
             rules: [
               {
-                required: true,
-                message: intl.formatMessage({
-                  id: 'set_minimal_photos!',
-                  defaultMessage: 'Please, set minimal count of photos, or set zero value!',
-                }),
-              },
-              {
                 validator: this.checkPhotosQuantity,
               },
             ],
@@ -617,68 +638,65 @@ class CreateRewardForm extends React.Component {
         <Form.Item
           label={intl.formatMessage({
             id: 'min_steem_reputation',
-            defaultMessage: 'Min STEEM reputation',
+            defaultMessage: 'Minimum Steem reputation (optional)',
           })}
         >
-          {getFieldDecorator('minStReputation', {
+          {getFieldDecorator('minSteemReputation', {
             rules: [
-              {
-                required: true,
-                message: intl.formatMessage({
-                  id: 'set_minimal_reputation_for_users',
-                  defaultMessage: 'Please, set minimal reputation for eligible users!',
-                }),
-              },
               {
                 validator: this.checkSteemReputation,
               },
             ],
-            initialValue: -10,
+            initialValue: 25,
           })(<Input type="number" disabled={loading} />)}
+          <div className="CreateReward__field-caption">
+            {intl.formatMessage({
+              id: 'users_steem_start_reputation',
+              defaultMessage: 'New users on Steem start with reputation of 25',
+            })}
+          </div>
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({
             id: 'min_followers',
-            defaultMessage: 'Min followers',
+            defaultMessage: 'Minimum number of followers (optional)',
           })}
         >
           {getFieldDecorator('minFollowers', {
             rules: [
-              {
-                required: true,
-                message: intl.formatMessage({
-                  id: 'set_minimal_followers_for_users',
-                  defaultMessage: 'Please set minimal followers count for eligible users!',
-                }),
-              },
               {
                 validator: this.checkFollowersQuantity,
               },
             ],
             initialValue: 0,
           })(<Input type="number" disabled={loading} />)}
+          <div className="CreateReward__field-caption">
+            {intl.formatMessage({
+              id: 'users_start_with_zero_followers',
+              defaultMessage: 'New users start with 0 followers',
+            })}
+          </div>
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({
             id: 'min_posts',
-            defaultMessage: 'Min # of posts',
+            defaultMessage: 'Minimum number of posts (optional)',
           })}
         >
           {getFieldDecorator('minPosts', {
             rules: [
-              {
-                required: true,
-                message: intl.formatMessage({
-                  id: 'set_minimal_posts_for_users',
-                  defaultMessage: 'Please set minimal posts count for eligible users!',
-                }),
-              },
               {
                 validator: this.checkPostsQuantity,
               },
             ],
             initialValue: 0,
           })(<Input type="number" disabled={loading} />)}
+          <div className="CreateReward__field-caption">
+            {intl.formatMessage({
+              id: 'users_start_with_zero_posts',
+              defaultMessage: 'New users start with 0 posts',
+            })}
+          </div>
         </Form.Item>
         <Button type="primary" disabled={loading} onClick={this.toggleModalEligibleUsers}>
           {intl.formatMessage({
@@ -698,7 +716,7 @@ class CreateRewardForm extends React.Component {
         <Form.Item
           label={intl.formatMessage({
             id: 'note_reviewers',
-            defaultMessage: 'Note to reviewers',
+            defaultMessage: 'Additional review requirements (optional)',
           })}
         >
           {getFieldDecorator('description', {
@@ -712,6 +730,13 @@ class CreateRewardForm extends React.Component {
               },
             ],
           })(<Input.TextArea disabled={loading} />)}
+          <div className="CreateReward__field-caption">
+            {intl.formatMessage({
+              id: 'note_shown_to_users_of_reward',
+              defaultMessage:
+                'This note will be shown to users at the time of reservation of the reward',
+            })}
+          </div>
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({
