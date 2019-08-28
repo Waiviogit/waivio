@@ -333,10 +333,12 @@ class CreateRewardForm extends React.Component {
               },
             ],
           })(<Input disabled={loading} />)}
-          {intl.formatMessage({
-            id: 'campaign_names_used_internal_reports',
-            defaultMessage: 'Campaign names are used only for internal reports',
-          })}
+          <div className="CreateReward__field-caption">
+            {intl.formatMessage({
+              id: 'campaign_names_used_internal_reports',
+              defaultMessage: 'Campaign names are used only for internal reports',
+            })}
+          </div>
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({
@@ -377,10 +379,12 @@ class CreateRewardForm extends React.Component {
               {/* </Option> */}
             </Select>,
           )}
-          {intl.formatMessage({
-            id: 'specific_campaign_parameters_type',
-            defaultMessage: 'The campaign parameters are specific to the type of campaign',
-          })}
+          <div className="CreateReward__field-caption">
+            {intl.formatMessage({
+              id: 'specific_campaign_parameters_type',
+              defaultMessage: 'The campaign parameters are specific to the type of campaign',
+            })}
+          </div>
         </Form.Item>
         {/* <Form.Item label="Status"> */}
         {/* {getFieldDecorator('status', { */}
@@ -416,10 +420,12 @@ class CreateRewardForm extends React.Component {
               },
             ],
           })(<Input type="number" disabled={loading} step={0.1} />)}
-          {intl.formatMessage({
-            id: 'unused_portion_not_accumulate',
-            defaultMessage: 'The unused portion of the budget does not accumulate',
-          })}
+          <div className="CreateReward__field-caption">
+            {intl.formatMessage({
+              id: 'unused_portion_not_accumulate',
+              defaultMessage: 'The unused portion of the budget does not accumulate',
+            })}
+          </div>
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({
@@ -441,11 +447,13 @@ class CreateRewardForm extends React.Component {
               },
             ],
           })(<Input type="number" disabled={loading} step={0.1} />)}
-          {intl.formatMessage({
-            id: 'reward_portion_using_upvotes_registered_accounts',
-            defaultMessage:
-              'Portion of the reward can be paid using upvotes from registered accounts',
-          })}
+          <div className="CreateReward__field-caption">
+            {intl.formatMessage({
+              id: 'reward_portion_using_upvotes_registered_accounts',
+              defaultMessage:
+                'Portion of the reward can be paid using upvotes from registered accounts',
+            })}
+          </div>
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({
@@ -468,10 +476,12 @@ class CreateRewardForm extends React.Component {
             ],
             initialValue: 1,
           })(<Input type="number" disabled={loading} />)}
-          {intl.formatMessage({
-            id: 'budget_reduced_amount_rewards_reserved',
-            defaultMessage: 'The available budget is reduced by the amount of rewards reserved',
-          })}
+          <div className="CreateReward__field-caption">
+            {intl.formatMessage({
+              id: 'budget_reduced_amount_rewards_reserved',
+              defaultMessage: 'The available budget is reduced by the amount of rewards reserved',
+            })}
+          </div>
         </Form.Item>
         <div className="CreateReward__block-title">
           {intl.formatMessage({
@@ -530,10 +540,12 @@ class CreateRewardForm extends React.Component {
             defaultMessage: 'Select the primary object',
           })}
         </div>
-        {intl.formatMessage({
-          id: 'example_parent_object',
-          defaultMessage: 'Example: business, brand, restaurant, etc.',
-        })}
+        <div className="CreateReward__field-caption">
+          {intl.formatMessage({
+            id: 'example_parent_object',
+            defaultMessage: 'Example: business, brand, restaurant, etc.',
+          })}
+        </div>
         <div className="CreateReward__objects-wrap">
           {!_.isEmpty(this.state.requiredObject) && (
             <React.Fragment>
@@ -579,10 +591,12 @@ class CreateRewardForm extends React.Component {
             defaultMessage: 'Select one or more secondary objects',
           })}
         </div>
-        {intl.formatMessage({
-          id: 'example_secondary_object',
-          defaultMessage: 'Example: product, service, dish, etc.',
-        })}
+        <div className="CreateReward__field-caption">
+          {intl.formatMessage({
+            id: 'example_secondary_object',
+            defaultMessage: 'Example: product, service, dish, etc.',
+          })}
+        </div>
         <div className="CreateReward__objects-wrap">
           {_.map(this.state.objectsToAction, obj => (
             <ReviewObjectItem
