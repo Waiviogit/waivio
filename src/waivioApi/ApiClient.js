@@ -301,13 +301,13 @@ export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3) =>
 
 export const getObjectType = (
   name,
-  { limit: wobjects_count, skip: wobjects_skip, filter }, // eslint-disable-line
+  { limit: wobjects_count, skip: wobjects_skip, filter, sort }, // eslint-disable-line
 ) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.objectType}/${name}`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ wobjects_count, wobjects_skip, filter }),
+      body: JSON.stringify({ wobjects_count, wobjects_skip, filter, sort }),
     })
       .then(res => res.json())
       .then(data => resolve(data))
