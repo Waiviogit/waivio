@@ -170,7 +170,7 @@ class CreateRewardForm extends React.Component {
       callback(
         intl.formatMessage({
           id: 'budget_overprices_wallet_balance',
-          defaultMessage: 'Budget overprices your wallet balance',
+          defaultMessage: 'Budget should not exceed your SBD wallet balance',
         }),
       );
     } else {
@@ -192,7 +192,7 @@ class CreateRewardForm extends React.Component {
       callback(
         intl.formatMessage({
           id: 'reward_not_exceed_budget',
-          defaultMessage: 'Reward should not exceed the budget',
+          defaultMessage: 'The reward should not exceed the budget',
         }),
       );
     } else {
@@ -325,7 +325,7 @@ class CreateRewardForm extends React.Component {
                 max: 100,
                 message: intl.formatMessage({
                   id: 'campaign_name_error_long',
-                  defaultMessage: 'Campaign name must be no longer then 100 symbols',
+                  defaultMessage: 'The name of the campaign should not exceed 100 symbols',
                 }),
               },
               {
@@ -333,6 +333,10 @@ class CreateRewardForm extends React.Component {
               },
             ],
           })(<Input disabled={loading} />)}
+          {intl.formatMessage({
+            id: 'campaign_names_used_internal_reports',
+            defaultMessage: 'Campaign names are used only for internal reports',
+          })}
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({
@@ -353,8 +357,8 @@ class CreateRewardForm extends React.Component {
           })(
             <Select
               placeholder={intl.formatMessage({
-                id: 'select_option_change_input_text',
-                defaultMessage: 'Select an option and change input text above',
+                id: 'select_campaign_type_option',
+                defaultMessage: 'Select campaign type',
               })}
               onChange={this.handleSelectChange}
               disabled={loading}
@@ -365,14 +369,18 @@ class CreateRewardForm extends React.Component {
                   defaultMessage: 'Reviews',
                 })}
               </Option>
-              <Option value="activity">
-                {intl.formatMessage({
-                  id: 'activity',
-                  defaultMessage: 'Activity',
-                })}
-              </Option>
+              {/* <Option value="activity"> */}
+              {/*  {intl.formatMessage({ */}
+              {/*    id: 'activity', */}
+              {/*    defaultMessage: 'Activity', */}
+              {/*  })} */}
+              {/* </Option> */}
             </Select>,
           )}
+          {intl.formatMessage({
+            id: 'specific_campaign_parameters_type',
+            defaultMessage: 'The campaign parameters are specific to the type of campaign',
+          })}
         </Form.Item>
         {/* <Form.Item label="Status"> */}
         {/* {getFieldDecorator('status', { */}
@@ -390,8 +398,8 @@ class CreateRewardForm extends React.Component {
         {/* </Form.Item> */}
         <Form.Item
           label={intl.formatMessage({
-            id: 'budget',
-            defaultMessage: 'Budget',
+            id: 'campaign_budget',
+            defaultMessage: 'Campaign budget (monthly, SBD)',
           })}
         >
           {getFieldDecorator('budget', {
@@ -409,14 +417,14 @@ class CreateRewardForm extends React.Component {
             ],
           })(<Input type="number" disabled={loading} step={0.1} />)}
           {intl.formatMessage({
-            id: 'sbd_per_month',
-            defaultMessage: 'SBD per month',
+            id: 'unused_portion_not_accumulate',
+            defaultMessage: 'The unused portion of the budget does not accumulate',
           })}
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({
-            id: 'reward',
-            defaultMessage: 'Reward',
+            id: 'reward_per_review_SBD',
+            defaultMessage: 'Reward (per review, SBD)',
           })}
         >
           {getFieldDecorator('reward', {
@@ -434,8 +442,9 @@ class CreateRewardForm extends React.Component {
             ],
           })(<Input type="number" disabled={loading} step={0.1} />)}
           {intl.formatMessage({
-            id: 'sbd_per_review',
-            defaultMessage: 'SBD per review',
+            id: 'reward_portion_using_upvotes_registered_accounts',
+            defaultMessage:
+              'Portion of the reward can be paid using upvotes from registered accounts',
           })}
         </Form.Item>
         <Form.Item
