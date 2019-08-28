@@ -196,6 +196,8 @@ export const getHasMoreRelatedObjects = state =>
   fromObjectType.getHasMoreRelatedObjects(state.objectType);
 export const getAvailableFilters = state => fromObjectType.getAvailableFilters(state.objectType);
 export const getActiveFilters = state => fromObjectType.getActiveFilters(state.objectType);
+export const getTypeName = state => fromObjectType.getTypeName(state.objectType);
+export const getHasMap = state => fromObjectType.getHasMap(state.objectType);
 
 export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.append);
 

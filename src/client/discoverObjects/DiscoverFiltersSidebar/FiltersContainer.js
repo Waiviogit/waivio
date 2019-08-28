@@ -3,14 +3,13 @@ import PropTypes from 'prop-types';
 import { get, map } from 'lodash';
 import { Checkbox } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { getActiveFilters, getAvailableFilters } from '../../reducers';
+import { getActiveFilters } from '../../reducers';
 import { updateActiveFilters } from '../helper';
-import { setActiveFilters } from '../../objectTypes/objectTypeActions';
+import { setFiltersAndLoad } from '../../objectTypes/objectTypeActions';
 
-const FiltersContainer = ({ intl }) => {
+const FiltersContainer = ({ intl, filters }) => {
   // redux-store
   const dispatch = useDispatch();
-  const filters = useSelector(getAvailableFilters);
   const activeFilters = useSelector(getActiveFilters);
 
   // state
@@ -26,7 +25,7 @@ const FiltersContainer = ({ intl }) => {
   const handleOnChangeCheckbox = e => {
     const { name: filterValue, value: filter, checked } = e.target;
     const updatedFilters = updateActiveFilters(activeFilters, filter, filterValue, checked);
-    dispatch(setActiveFilters(updatedFilters));
+    dispatch(setFiltersAndLoad(updatedFilters));
   };
 
   return (
@@ -83,6 +82,7 @@ const FiltersContainer = ({ intl }) => {
 
 FiltersContainer.propTypes = {
   intl: PropTypes.shape().isRequired,
+  filters: PropTypes.shape().isRequired,
 };
 
 export default FiltersContainer;

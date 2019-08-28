@@ -11,11 +11,12 @@ import {
   getObjectTypeLoading,
   getFilteredObjects,
   getHasMoreRelatedObjects,
+  getAvailableFilters,
 } from '../reducers';
 import {
+  getObjectTypeInitial,
   getObjectType,
-  getObjectTypeMore,
-  setActiveFilters,
+  setFiltersAndLoad,
 } from '../objectTypes/objectTypeActions';
 import { getObjectTypes } from '../objectTypes/objectTypesActions';
 import Loading from '../components/Icon/Loading';
@@ -31,6 +32,7 @@ const modalName = {
 
 @connect(
   state => ({
+    availableFilters: getAvailableFilters(state),
     activeFilters: getActiveFilters(state),
     typesList: getObjectTypesList(state),
     theType: getObjectTypeState(state),
@@ -39,15 +41,16 @@ const modalName = {
     hasMoreObjects: getHasMoreRelatedObjects(state),
   }),
   {
-    dispatchGetObjectType: getObjectType,
-    dispatchGetObjectTypeMore: getObjectTypeMore,
+    dispatchGetObjectType: getObjectTypeInitial,
+    dispatchGetObjectTypeMore: getObjectType,
     dispatchGetObjectTypes: getObjectTypes,
-    dispatchSetActiveFilters: setActiveFilters,
+    dispatchSetActiveFilters: setFiltersAndLoad,
   },
 )
 class DiscoverObjectsContent extends Component {
   static propTypes = {
     /* from connect */
+    availableFilters: PropTypes.shape().isRequired,
     activeFilters: PropTypes.shape().isRequired,
     typesList: PropTypes.shape().isRequired,
     theType: PropTypes.shape().isRequired,
@@ -79,7 +82,7 @@ class DiscoverObjectsContent extends Component {
 
   componentDidMount() {
     const { dispatchGetObjectType, dispatchGetObjectTypes, typeName, typesList } = this.props;
-    dispatchGetObjectType(typeName, {});
+    dispatchGetObjectType(typeName);
     if (isEmpty(typesList)) dispatchGetObjectTypes();
   }
 
@@ -117,6 +120,7 @@ class DiscoverObjectsContent extends Component {
       intl,
       isFetching,
       typeName,
+      availableFilters,
       activeFilters,
       filteredObjects,
       hasMoreObjects,
@@ -200,7 +204,9 @@ class DiscoverObjectsContent extends Component {
             visible={isModalOpen}
             onCancel={this.closeModal}
           >
-            {modalTitle === modalName.FILTERS && <DiscoverObjectsFilters intl={intl} />}
+            {modalTitle === modalName.FILTERS && (
+              <DiscoverObjectsFilters intl={intl} filters={availableFilters} />
+            )}
             {modalTitle === modalName.OBJECTS && <SidenavDiscoverObjects withTitle={false} />}
           </Modal>
         ) : null}

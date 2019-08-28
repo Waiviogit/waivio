@@ -16,7 +16,7 @@ import {
 import MapOS from '../components/Maps/Map';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
-import { clearType, getObjectType } from './objectTypeActions';
+import { clearType, getObjectTypeInitial } from './objectTypeActions';
 import { getObjectTypes } from './objectTypesActions';
 import './ObjectTypePage.less';
 import ObjectTypeFiltersPanel from './ObjectTypeFiltersPanel/ObjectTypeFiltersPanel';
@@ -37,7 +37,7 @@ import ObjectTypesNavigation from './ObjectTypesNavigation/ObjectTypesNavigation
     isTypesLoading: getObjectTypesLoading(state),
   }),
   {
-    getObjectType,
+    getObjectType: getObjectTypeInitial,
     getObjectTypes,
     getCoordinates,
     clearType,

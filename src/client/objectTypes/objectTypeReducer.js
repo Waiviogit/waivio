@@ -1,16 +1,13 @@
-import { isEmpty, reduce } from 'lodash';
+import { get, isEmpty, omit, reduce } from 'lodash';
 import * as wobjTypeActions from './objectTypeActions';
 import { getClientWObj } from '../adapters';
 
 const initialState = {
   data: {},
   filteredObjects: [],
-  filters: {
-    top_rated: ['presentation', 'taste', 'value'],
-    cuisine: ['American', 'Asian', 'BBQ', 'Italian', 'Russian', 'Georgian', 'USA'],
-    ingredients: ['Beef', 'Fish', 'Chicken'],
-  },
+  filtersList: {},
   activeFilters: {},
+  map: false,
   fetching: false,
   hasMoreRelatedObjects: true,
 };
@@ -28,10 +25,10 @@ const objectType = (state = initialState, action) => {
         filters,
         ...data
       } = action.payload;
-      const allFilt = { ...state.filters, ...filters }; // todo: remove mock in future
+      const filtersList = filters ? omit(filters, ['map']) : {};
       const activeFilters = isEmpty(state.activeFilters)
         ? reduce(
-            allFilt,
+            filtersList,
             (result, value, key) => {
               result[key] = []; // eslint-disable-line
               return result;
@@ -42,8 +39,9 @@ const objectType = (state = initialState, action) => {
       return {
         ...state,
         data,
-        filters: allFilt,
+        filtersList,
         activeFilters,
+        map: Boolean(filters && !isEmpty(filters.map)),
         filteredObjects: [
           ...state.filteredObjects,
           ...relatedWobjects.map(wObj => getClientWObj(wObj)),
@@ -55,6 +53,7 @@ const objectType = (state = initialState, action) => {
     case wobjTypeActions.UPDATE_ACTIVE_FILTERS:
       return {
         ...state,
+        filteredObjects: [],
         activeFilters: action.payload,
       };
     case wobjTypeActions.CLEAR_OBJECT_TYPE:
@@ -71,5 +70,7 @@ export const getObjectType = state => state.data;
 export const getObjectTypeLoading = state => state.fetching;
 export const getFilteredObjects = state => state.filteredObjects;
 export const getHasMoreRelatedObjects = state => state.hasMoreRelatedObjects;
-export const getAvailableFilters = state => state.filters;
+export const getAvailableFilters = state => state.filtersList;
 export const getActiveFilters = state => state.activeFilters;
+export const getTypeName = state => get(state, ['data', 'name'], '');
+export const getHasMap = state => state.map;
