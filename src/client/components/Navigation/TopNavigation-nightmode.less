@@ -1,15 +1,19 @@
 @import (reference) '../../styles/modules/variables.less';
 @import (reference) '../../styles/custom.less';
 
-.TopNavigation {
-  background-color: @grey-nero;
-  border: none;
-  &__item {
-    color: #99aab5;
-    &--active,
-    &:hover {
-      color: @primary-color;
-      border-bottom: 2px @border-style-base @primary-color;
+.nightmode {
+  .TopNavigation {
+    background-color: @grey-nero;
+    border: none;
+
+    &__item {
+      color: #99aab5;
+
+      &--active,
+      &:hover {
+        color: @primary-color;
+        border-bottom: 2px @border-style-base @primary-color;
+      }
     }
   }
 }

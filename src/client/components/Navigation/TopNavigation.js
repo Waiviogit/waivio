@@ -23,7 +23,7 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
           <Link
             to="/"
             className={classNames('TopNavigation__link', {
-              'TopNavigation__item--active': pathname === '/',
+              'TopNavigation__link--active': pathname === '/',
             })}
           >
             <FormattedMessage id="feed" defaultMessage="Feed" />
@@ -34,7 +34,7 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
         <Link
           to={LINKS.TRENDING}
           className={classNames('TopNavigation__link', {
-            'TopNavigation__item--active': pathname.includes(LINKS.TRENDING),
+            'TopNavigation__link--active': pathname.includes(LINKS.TRENDING),
           })}
         >
           <FormattedMessage id="news" defaultMessage="News" />
@@ -44,7 +44,7 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
         <Link
           to={authenticated ? `${LINKS.REWARDS}/active` : `${LINKS.REWARDS}/all`}
           className={classNames('TopNavigation__link', {
-            'TopNavigation__item--active': pathname.includes(LINKS.REWARDS),
+            'TopNavigation__link--active': pathname.includes(LINKS.REWARDS),
           })}
         >
           <FormattedMessage id="rewards" defaultMessage="Rewards" />
@@ -54,7 +54,7 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
         <Link
           to={`${LINKS.DISCOVER}/hashtag`}
           className={classNames('TopNavigation__link', {
-            'TopNavigation__item--active': pathname.includes(LINKS.DISCOVER),
+            'TopNavigation__link--active': pathname.includes(LINKS.DISCOVER),
           })}
         >
           <FormattedMessage id="discover" defaultMessage="Discover" />
@@ -65,7 +65,7 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
           <Link
             to={LINKS.ACTIVITY}
             className={classNames('TopNavigation__link', {
-              'TopNavigation__item--active': pathname === LINKS.ACTIVITY,
+              'TopNavigation__link--active': pathname === LINKS.ACTIVITY,
             })}
           >
             <FormattedMessage id="activity" defaultMessage="Activity" />
@@ -76,7 +76,7 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
         <Link
           to={LINKS.ABOUT}
           className={classNames('TopNavigation__link', {
-            'TopNavigation__item--active': pathname.includes(LINKS.ABOUT),
+            'TopNavigation__link--active': pathname.includes(LINKS.ABOUT),
           })}
         >
           <FormattedMessage id="about" defaultMessage="About" />
