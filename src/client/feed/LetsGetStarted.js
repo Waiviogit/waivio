@@ -187,7 +187,7 @@ class LetsGetStarted extends React.Component {
               isLoading={isAuthFetching}
               iconClassName="icon-order"
             />
-            <Link to="/editor?newPost=true">
+            <Link to="/editor">
               <span
                 className={classNames('LetsGetStarted__action__text', {
                   LetsGetStarted__action__completed: hasPost,

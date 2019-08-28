@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty, map } from 'lodash';
 import { connect } from 'react-redux';
-import { Button, Tag } from 'antd';
-import { updateActiveFilters } from './helper';
+import { Button, Modal, Tag } from 'antd';
+import { isNeedFilters, updateActiveFilters } from './helper';
 import {
   getActiveFilters,
   getObjectTypesList,
@@ -11,19 +11,28 @@ import {
   getObjectTypeLoading,
   getFilteredObjects,
   getHasMoreRelatedObjects,
+  getAvailableFilters,
 } from '../reducers';
 import {
+  getObjectTypeInitial,
   getObjectType,
-  getObjectTypeMore,
-  setActiveFilters,
+  setFiltersAndLoad,
 } from '../objectTypes/objectTypeActions';
 import { getObjectTypes } from '../objectTypes/objectTypesActions';
 import Loading from '../components/Icon/Loading';
 import ObjectCardView from '../objectCard/ObjectCardView';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
+import DiscoverObjectsFilters from './DiscoverFiltersSidebar/FiltersContainer';
+import SidenavDiscoverObjects from './SidenavDiscoverObjects';
+
+const modalName = {
+  FILTERS: 'filters',
+  OBJECTS: 'objects',
+};
 
 @connect(
   state => ({
+    availableFilters: getAvailableFilters(state),
     activeFilters: getActiveFilters(state),
     typesList: getObjectTypesList(state),
     theType: getObjectTypeState(state),
@@ -32,15 +41,16 @@ import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
     hasMoreObjects: getHasMoreRelatedObjects(state),
   }),
   {
-    dispatchGetObjectType: getObjectType,
-    dispatchGetObjectTypeMore: getObjectTypeMore,
+    dispatchGetObjectType: getObjectTypeInitial,
+    dispatchGetObjectTypeMore: getObjectType,
     dispatchGetObjectTypes: getObjectTypes,
-    dispatchSetActiveFilters: setActiveFilters,
+    dispatchSetActiveFilters: setFiltersAndLoad,
   },
 )
 class DiscoverObjectsContent extends Component {
   static propTypes = {
     /* from connect */
+    availableFilters: PropTypes.shape().isRequired,
     activeFilters: PropTypes.shape().isRequired,
     typesList: PropTypes.shape().isRequired,
     theType: PropTypes.shape().isRequired,
@@ -60,9 +70,19 @@ class DiscoverObjectsContent extends Component {
     typeName: '',
   };
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      hasFilters: isNeedFilters(props.typeName),
+      isModalOpen: false,
+      modalTitle: '',
+    };
+  }
+
   componentDidMount() {
     const { dispatchGetObjectType, dispatchGetObjectTypes, typeName, typesList } = this.props;
-    dispatchGetObjectType(typeName, {});
+    dispatchGetObjectType(typeName);
     if (isEmpty(typesList)) dispatchGetObjectTypes();
   }
 
@@ -73,6 +93,20 @@ class DiscoverObjectsContent extends Component {
     });
   };
 
+  showFiltersModal = () =>
+    this.setState({
+      isModalOpen: true,
+      modalTitle: modalName.FILTERS,
+    });
+
+  showTypesModal = () =>
+    this.setState({
+      isModalOpen: true,
+      modalTitle: modalName.OBJECTS,
+    });
+
+  closeModal = () => this.setState({ isModalOpen: false });
+
   handleRemoveTag = (filter, filterValue) => e => {
     const { activeFilters, dispatchSetActiveFilters } = this.props;
     e.preventDefault();
@@ -81,10 +115,12 @@ class DiscoverObjectsContent extends Component {
   };
 
   render() {
+    const { hasFilters, isModalOpen, modalTitle } = this.state;
     const {
       intl,
       isFetching,
       typeName,
+      availableFilters,
       activeFilters,
       filteredObjects,
       hasMoreObjects,
@@ -99,37 +135,45 @@ class DiscoverObjectsContent extends Component {
             <span className="ttc">{typeName}</span>&nbsp;
             <span className="discover-objects-header__selector">
               (
-              <span className="underline">
+              <span className="underline" role="presentation" onClick={this.showTypesModal}>
                 {intl.formatMessage({ id: 'change', defaultMessage: 'change' })}
               </span>
               )
             </span>
           </div>
-          <div className="discover-objects-header__tags-block">
-            <span className="discover-objects-header__topic ttc">
-              {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
-            </span>
-            {map(activeFilters, (filterValues, filterName) =>
-              filterValues.map(filterValue => (
-                <Tag
-                  className="ttc"
-                  key={`${filterName}:${filterValue}`}
-                  closable
-                  onClose={this.handleRemoveTag(filterName, filterValue)}
+          {hasFilters ? (
+            <React.Fragment>
+              <div className="discover-objects-header__tags-block">
+                <span className="discover-objects-header__topic ttc">
+                  {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
+                </span>
+                {map(activeFilters, (filterValues, filterName) =>
+                  filterValues.map(filterValue => (
+                    <Tag
+                      className="ttc"
+                      key={`${filterName}:${filterValue}`}
+                      closable
+                      onClose={this.handleRemoveTag(filterName, filterValue)}
+                    >
+                      {filterValue}
+                    </Tag>
+                  )),
+                )}
+                <span
+                  className="discover-objects-header__selector underline ttl"
+                  role="presentation"
+                  onClick={this.showFiltersModal}
                 >
-                  {filterValue}
-                </Tag>
-              )),
-            )}
-            <span className="discover-objects-header__selector underline ttl">
-              {intl.formatMessage({ id: 'add_new_proposition', defaultMessage: 'Add' })}
-            </span>
-          </div>
-          <div className="discover-objects-header__toggle-map tc">
-            <Button icon="compass" size="large">
-              {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
-            </Button>
-          </div>
+                  {intl.formatMessage({ id: 'add_new_proposition', defaultMessage: 'Add' })}
+                </span>
+              </div>
+              <div className="discover-objects-header__toggle-map tc">
+                <Button icon="compass" size="large">
+                  {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
+                </Button>
+              </div>
+            </React.Fragment>
+          ) : null}
         </div>
         {filteredObjects.length ? (
           <ReduxInfiniteScroll
@@ -148,6 +192,24 @@ class DiscoverObjectsContent extends Component {
         ) : (
           <Loading />
         )}
+        {modalTitle ? (
+          <Modal
+            className="discover-filters-modal"
+            footer={null}
+            title={intl.formatMessage({
+              id: modalTitle,
+              defaultMessage: modalTitle,
+            })}
+            closable
+            visible={isModalOpen}
+            onCancel={this.closeModal}
+          >
+            {modalTitle === modalName.FILTERS && (
+              <DiscoverObjectsFilters intl={intl} filters={availableFilters} />
+            )}
+            {modalTitle === modalName.OBJECTS && <SidenavDiscoverObjects withTitle={false} />}
+          </Modal>
+        ) : null}
       </React.Fragment>
     );
   }

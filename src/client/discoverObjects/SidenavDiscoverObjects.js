@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { useSelector, shallowEqual } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
@@ -7,7 +8,7 @@ import { getCurrentLocation, getObjectTypesList, getObjectTypesLoading } from '.
 import SkeletonCustom from '../components/Skeleton/SkeletonCustom';
 
 const typesLimit = 9;
-const SidenavDiscoverObjects = () => {
+const SidenavDiscoverObjects = ({ withTitle }) => {
   // redux-store
   const { pathname } = useSelector(getCurrentLocation);
   const isLoading = useSelector(getObjectTypesLoading);
@@ -16,9 +17,11 @@ const SidenavDiscoverObjects = () => {
   const [displayedTypesCount, setTypesCount] = useState(typesLimit);
   return (
     <ul className="sidenav-discover-objects Sidenav">
-      <div className="Sidenav__section-title">
-        <FormattedMessage id="objects" defaultMessage="Objects" />:
-      </div>
+      {withTitle && (
+        <div className="Sidenav__section-title">
+          <FormattedMessage id="objects" defaultMessage="Objects" />:
+        </div>
+      )}
       {isLoading ? (
         <SkeletonCustom
           className="sidenav-discover-objects__loading"
@@ -66,6 +69,13 @@ const SidenavDiscoverObjects = () => {
       )}
     </ul>
   );
+};
+
+SidenavDiscoverObjects.propTypes = {
+  withTitle: PropTypes.bool,
+};
+SidenavDiscoverObjects.defaultProps = {
+  withTitle: true,
 };
 
 export default SidenavDiscoverObjects;
