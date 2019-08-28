@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty, map } from 'lodash';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import { Button, Modal, Tag } from 'antd';
 import { isNeedFilters, updateActiveFilters } from './helper';
@@ -12,6 +12,7 @@ import {
   getFilteredObjects,
   getHasMoreRelatedObjects,
   getAvailableFilters,
+  getHasMap,
 } from '../reducers';
 import {
   getObjectTypeInitial,
@@ -36,6 +37,7 @@ const modalName = {
     activeFilters: getActiveFilters(state),
     typesList: getObjectTypesList(state),
     theType: getObjectTypeState(state),
+    hasMap: getHasMap(state),
     filteredObjects: getFilteredObjects(state),
     isFetching: getObjectTypeLoading(state),
     hasMoreObjects: getHasMoreRelatedObjects(state),
@@ -54,6 +56,7 @@ class DiscoverObjectsContent extends Component {
     activeFilters: PropTypes.shape().isRequired,
     typesList: PropTypes.shape().isRequired,
     theType: PropTypes.shape().isRequired,
+    hasMap: PropTypes.bool.isRequired,
     filteredObjects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     isFetching: PropTypes.bool.isRequired,
     hasMoreObjects: PropTypes.bool.isRequired,
@@ -74,7 +77,7 @@ class DiscoverObjectsContent extends Component {
     super(props);
 
     this.state = {
-      hasFilters: isNeedFilters(props.typeName),
+      isTypeHasFilters: isNeedFilters(props.typeName),
       isModalOpen: false,
       modalTitle: '',
     };
@@ -83,7 +86,7 @@ class DiscoverObjectsContent extends Component {
   componentDidMount() {
     const { dispatchGetObjectType, dispatchGetObjectTypes, typeName, typesList } = this.props;
     dispatchGetObjectType(typeName);
-    if (isEmpty(typesList)) dispatchGetObjectTypes();
+    if (_.isEmpty(typesList)) dispatchGetObjectTypes();
   }
 
   loadMoreRelatedObjects = () => {
@@ -115,13 +118,14 @@ class DiscoverObjectsContent extends Component {
   };
 
   render() {
-    const { hasFilters, isModalOpen, modalTitle } = this.state;
+    const { isTypeHasFilters, isModalOpen, modalTitle } = this.state;
     const {
       intl,
       isFetching,
       typeName,
+      hasMap,
       availableFilters,
-      activeFilters,
+      activeFilters: { map, ...chosenFilters },
       filteredObjects,
       hasMoreObjects,
     } = this.props;
@@ -141,41 +145,49 @@ class DiscoverObjectsContent extends Component {
               )
             </span>
           </div>
-          {hasFilters ? (
+          {isTypeHasFilters ? (
             <React.Fragment>
-              <div className="discover-objects-header__tags-block">
-                <span className="discover-objects-header__topic ttc">
-                  {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
-                </span>
-                {map(activeFilters, (filterValues, filterName) =>
-                  filterValues.map(filterValue => (
-                    <Tag
-                      className="ttc"
-                      key={`${filterName}:${filterValue}`}
-                      closable
-                      onClose={this.handleRemoveTag(filterName, filterValue)}
-                    >
-                      {filterValue}
-                    </Tag>
-                  )),
-                )}
-                <span
-                  className="discover-objects-header__selector underline ttl"
-                  role="presentation"
-                  onClick={this.showFiltersModal}
-                >
-                  {intl.formatMessage({ id: 'add_new_proposition', defaultMessage: 'Add' })}
-                </span>
-              </div>
-              <div className="discover-objects-header__toggle-map tc">
-                <Button icon="compass" size="large">
-                  {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
-                </Button>
-              </div>
+              {!_.isEmpty(availableFilters) ? (
+                <div className="discover-objects-header__tags-block">
+                  <span className="discover-objects-header__topic ttc">
+                    {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
+                  </span>
+                  {_.map(chosenFilters, (filterValues, filterName) =>
+                    filterValues.map(filterValue => (
+                      <Tag
+                        className="ttc"
+                        key={`${filterName}:${filterValue}`}
+                        closable
+                        onClose={this.handleRemoveTag(filterName, filterValue)}
+                      >
+                        {filterValue}
+                      </Tag>
+                    )),
+                  )}
+                  <span
+                    className="discover-objects-header__selector underline ttl"
+                    role="presentation"
+                    onClick={this.showFiltersModal}
+                  >
+                    {intl.formatMessage({ id: 'add_new_proposition', defaultMessage: 'Add' })}
+                  </span>
+                </div>
+              ) : null}
+              {hasMap ? (
+                <div className="discover-objects-header__toggle-map tc">
+                  <Button
+                    icon="compass"
+                    size="large"
+                    className={_.isEmpty(map) ? 'map-btn' : 'map-btn active'}
+                  >
+                    {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
+                  </Button>
+                </div>
+              ) : null}
             </React.Fragment>
           ) : null}
         </div>
-        {filteredObjects.length ? (
+        {!_.isEmpty(filteredObjects) ? (
           <ReduxInfiniteScroll
             className="Feed"
             loadMore={this.loadMoreRelatedObjects}
@@ -190,7 +202,14 @@ class DiscoverObjectsContent extends Component {
             ))}
           </ReduxInfiniteScroll>
         ) : (
-          <Loading />
+          (isFetching && <Loading />) || (
+            <div className="tc">
+              {intl.formatMessage({
+                id: 'no_results_found_for_search',
+                defaultMessage: 'No results were found for your filters.',
+              })}
+            </div>
+          )
         )}
         {modalTitle ? (
           <Modal
