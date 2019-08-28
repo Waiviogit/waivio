@@ -21,8 +21,8 @@ const DiscoverFiltersSidebar = ({ intl, match }) => {
     dispatch(getCoordinates());
   }
 
-  const hasFilters = memoize(isNeedFilters);
-  return hasFilters(match.params.objectType) ? (
+  const isTypeHasFilters = memoize(isNeedFilters);
+  return isTypeHasFilters(match.params.objectType) ? (
     <div className="discover-objects-filters">
       {hasMap ? (
         <MapWrap
