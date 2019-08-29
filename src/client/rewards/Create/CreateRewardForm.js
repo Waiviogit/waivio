@@ -791,12 +791,15 @@ class CreateRewardForm extends React.Component {
           )}
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>
-            {intl.formatMessage({
-              id: 'create',
-              defaultMessage: 'Create',
-            })}
-          </Button>
+          <div className="CreateReward__block-button">
+            <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>
+              {intl.formatMessage({
+                id: 'create',
+                defaultMessage: 'Create',
+              })}
+            </Button>
+            <span>Once created, the campaign can be activated in the Campaigns/Manage tab.</span>
+          </div>
         </Form.Item>
       </Form>
     );
