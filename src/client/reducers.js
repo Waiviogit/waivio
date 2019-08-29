@@ -22,6 +22,7 @@ import objectTypesReducer, * as fromObjectTypes from '../client/objectTypes/obje
 import objectTypeReducer, * as fromObjectType from '../client/objectTypes/objectTypeReducer';
 import appendReducer, * as fromAppend from '../client/object/appendReducer';
 import galleryReducer, * as fromGallery from '../client/object/ObjectGallery/galleryReducer';
+import mapReducer, * as fromMap from '../client/components/Maps/mapReducer';
 
 export default history =>
   combineReducers({
@@ -46,6 +47,7 @@ export default history =>
     search: searchReducer,
     append: appendReducer,
     gallery: galleryReducer,
+    map: mapReducer,
   });
 
 export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);
@@ -206,3 +208,5 @@ export const getIsObjectAlbumsLoading = state =>
   fromGallery.getIsObjectAlbumsLoading(state.gallery);
 
 export const getCurrentLocation = state => state.router.location;
+
+export const getIsMapModalOpen = state => fromMap.getIsMapModalOpen(state.map);

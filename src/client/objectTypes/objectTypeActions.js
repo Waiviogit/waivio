@@ -3,7 +3,7 @@ import { getActiveFilters, getTypeName } from '../reducers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 
 export const GET_OBJECT_TYPE = createAsyncActionType('@objectType/GET_OBJECT_TYPE');
-export const CLEAR_OBJECT_TYPE = 'CLEAR_OBJECT_TYPE';
+export const CLEAR_OBJECT_TYPE = '@objectType/CLEAR_OBJECT_TYPE';
 export const UPDATE_ACTIVE_FILTERS = '@objectType/UPDATE_ACTIVE_FILTERS';
 
 export const getObjectType = (
