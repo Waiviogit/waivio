@@ -62,7 +62,7 @@ class CatalogWrap extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = this.getNextStateFromProps(props);
+    this.state = this.getNextStateFromProps(props, true);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -120,7 +120,7 @@ class CatalogWrap extends React.Component {
       .catch(() => this.setState({ loading: false }));
   };
 
-  getNextStateFromProps = ({ wobject, location }) => {
+  getNextStateFromProps = ({ wobject, location }, isInitialState = false) => {
     let sorting = {};
     let sortedItems = [];
     const breadcrumb = [];
@@ -135,7 +135,7 @@ class CatalogWrap extends React.Component {
         });
       }
       if (location.hash) {
-        this.setState({ loading: true });
+        if (!isInitialState) this.setState({ loading: true });
         // restore breadcrumbs from url hash
         const permlinks = location.hash.slice(1).split('/');
         const locale = this.props.locale === 'auto' ? 'en-US' : this.props.locale;
@@ -151,7 +151,7 @@ class CatalogWrap extends React.Component {
               name: obj.name,
               path: `${location.hash.split(obj.id)[0]}${obj.id}`,
             }));
-            this.setState({ breadcrumb: [...breadcrumb, ...crumbs] });
+            if (!isInitialState) this.setState({ breadcrumb: [...breadcrumb, ...crumbs] });
             this.getObjectFromApi(permlinks[permlinks.length - 1], location.hash);
           });
       } else {
