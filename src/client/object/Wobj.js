@@ -172,7 +172,11 @@ export default class Wobj extends React.Component {
         <div className="shifted">
           <div className={`container ${hasLeftSidebar ? 'feed-layout' : 'post-layout'}`}>
             {hasLeftSidebar && (
-              <Affix className="leftContainer leftContainer__user" stickPosition={72}>
+              <Affix
+                key={match.params.name}
+                className="leftContainer leftContainer__user"
+                stickPosition={72}
+              >
                 <div className="left">
                   <LeftObjectProfileSidebar
                     isEditMode={isEditMode}
