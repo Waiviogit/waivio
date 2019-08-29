@@ -19,6 +19,7 @@ import {
   getObjectType,
   setFiltersAndLoad,
 } from '../objectTypes/objectTypeActions';
+import { setMapFullscreenMode } from '../components/Maps/mapActions';
 import { getObjectTypes } from '../objectTypes/objectTypesActions';
 import Loading from '../components/Icon/Loading';
 import ObjectCardView from '../objectCard/ObjectCardView';
@@ -47,6 +48,7 @@ const modalName = {
     dispatchGetObjectTypeMore: getObjectType,
     dispatchGetObjectTypes: getObjectTypes,
     dispatchSetActiveFilters: setFiltersAndLoad,
+    dispatchSetMapFullscreenMode: setMapFullscreenMode,
   },
 )
 class DiscoverObjectsContent extends Component {
@@ -64,6 +66,7 @@ class DiscoverObjectsContent extends Component {
     dispatchGetObjectTypeMore: PropTypes.func.isRequired,
     dispatchGetObjectTypes: PropTypes.func.isRequired,
     dispatchSetActiveFilters: PropTypes.func.isRequired,
+    dispatchSetMapFullscreenMode: PropTypes.func.isRequired,
     /* passed props */
     intl: PropTypes.shape().isRequired,
     typeName: PropTypes.string,
@@ -116,6 +119,8 @@ class DiscoverObjectsContent extends Component {
     const updatedFilters = updateActiveFilters(activeFilters, filter, filterValue, false);
     dispatchSetActiveFilters(updatedFilters);
   };
+
+  showMap = () => this.props.dispatchSetMapFullscreenMode(true);
 
   render() {
     const { isTypeHasFilters, isModalOpen, modalTitle } = this.state;
@@ -179,6 +184,7 @@ class DiscoverObjectsContent extends Component {
                     icon="compass"
                     size="large"
                     className={_.isEmpty(map) ? 'map-btn' : 'map-btn active'}
+                    onClick={this.showMap}
                   >
                     {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
                   </Button>
