@@ -7,6 +7,7 @@ const initialState = {
   filteredObjects: [],
   filtersList: {},
   activeFilters: {},
+  sort: 'weight',
   map: false,
   fetching: false,
   hasMoreRelatedObjects: true,
@@ -56,6 +57,12 @@ const objectType = (state = initialState, action) => {
         filteredObjects: [],
         activeFilters: action.payload,
       };
+    case wobjTypeActions.CHANGE_SORTING:
+      return {
+        ...state,
+        filteredObjects: [],
+        sort: action.payload,
+      };
     case wobjTypeActions.CLEAR_OBJECT_TYPE:
       return initialState;
     case wobjTypeActions.GET_OBJECT_TYPE.ERROR:
@@ -74,3 +81,4 @@ export const getAvailableFilters = state => state.filtersList;
 export const getActiveFilters = state => state.activeFilters;
 export const getTypeName = state => get(state, ['data', 'name'], '');
 export const getHasMap = state => state.map;
+export const getSorting = state => state.sort;
