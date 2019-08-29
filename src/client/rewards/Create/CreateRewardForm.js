@@ -93,7 +93,6 @@ class CreateRewardForm extends React.Component {
     e.preventDefault();
     this.checkOptionFields();
     this.props.form.validateFieldsAndScroll((err, values) => {
-      console.log('values', values);
       if (!err && !_.isEmpty(this.state.requiredObject) && !_.isEmpty(this.state.objectsToAction)) {
         createCampaign(this.prepareSubmitData(values))
           .then(data => {
@@ -122,6 +121,8 @@ class CreateRewardForm extends React.Component {
 
   prepareSubmitData = data => {
     const objects = _.map(this.state.objectsToAction, o => o.id);
+    const pageObjects =
+      this.state.pageObjects.length !== 0 ? _.map(this.state.pageObjects, o => o.id) : [];
     return {
       requiredObject: this.state.requiredObject.author_permlink,
       guideName: this.props.userName,
@@ -139,6 +140,7 @@ class CreateRewardForm extends React.Component {
         minPosts: data.minPosts,
       },
       objects,
+      pageObjects,
       expired_at: data.expiredAt.format(),
     };
   };
@@ -262,6 +264,20 @@ class CreateRewardForm extends React.Component {
         intl.formatMessage({
           id: 'not_less_five_commission_value',
           defaultMessage: 'Commissions must not be less than 5%',
+        }),
+      );
+    } else {
+      callback();
+    }
+  };
+
+  checkMinExpertise = (rule, value, callback) => {
+    const { intl } = this.props;
+    if (value < 0 && value !== '') {
+      callback(
+        intl.formatMessage({
+          id: 'reputation_cannot_be_negative',
+          defaultMessage: 'The Waivio reputation cannot be negative',
         }),
       );
     } else {
@@ -699,6 +715,26 @@ class CreateRewardForm extends React.Component {
         </Form.Item>
         <Form.Item
           label={intl.formatMessage({
+            id: 'minimum_waivio_expertise',
+            defaultMessage: 'Minimum Waivio expertise (optional)',
+          })}
+        >
+          {getFieldDecorator('minExpertise', {
+            rules: [
+              {
+                validator: this.checkMinExpertise,
+              },
+            ],
+          })(<Input type="number" disabled={loading} />)}
+          <div className="CreateReward__field-caption">
+            {intl.formatMessage({
+              id: 'users_start_with_zero_expertise',
+              defaultMessage: 'New users on Waivio start with expertise of 0',
+            })}
+          </div>
+        </Form.Item>
+        <Form.Item
+          label={intl.formatMessage({
             id: 'min_followers',
             defaultMessage: 'Minimum number of followers (optional)',
           })}
@@ -878,30 +914,31 @@ class CreateRewardForm extends React.Component {
             ],
             valuePropName: 'checked',
           })(
-            <React.Fragment>
-              <Checkbox disabled={loading} />{' '}
-              <span className="CreateReward__item-title ant-form-item-required">
-                {intl.formatMessage({
-                  id: 'agree_to_the',
-                  defaultMessage: 'I agree to the',
-                })}
-              </span>
-              <a href="https://waiviodev.com/object/xrj-terms-and-conditions">
-                {' '}
-                {intl.formatMessage({
-                  id: 'terms_and_conditions',
-                  defaultMessage: 'Terms and Conditions',
-                })}
-              </a>
-              <span className="CreateReward__item-title simple-text">
-                {' '}
-                {intl.formatMessage({
-                  id: 'service_acknowledge_campaign_not_violate_laws',
-                  defaultMessage:
-                    'of the service and acknowledge that this campaign does not violate any laws of British Columbia, Canada.',
-                })}
-              </span>
-            </React.Fragment>,
+            <Checkbox disabled={loading}>
+              <React.Fragment>
+                <span className="CreateReward__item-title ant-form-item-required">
+                  {intl.formatMessage({
+                    id: 'agree_to_the',
+                    defaultMessage: 'I agree to the',
+                  })}
+                </span>
+                <a href="https://waiviodev.com/object/xrj-terms-and-conditions">
+                  {' '}
+                  {intl.formatMessage({
+                    id: 'terms_and_conditions',
+                    defaultMessage: 'Terms and Conditions',
+                  })}
+                </a>
+                <span className="CreateReward__item-title simple-text">
+                  {' '}
+                  {intl.formatMessage({
+                    id: 'service_acknowledge_campaign_not_violate_laws',
+                    defaultMessage:
+                      'of the service and acknowledge that this campaign does not violate any laws of British Columbia, Canada.',
+                  })}
+                </span>
+              </React.Fragment>
+            </Checkbox>,
           )}
         </Form.Item>
         <Form.Item

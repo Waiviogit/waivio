@@ -689,5 +689,7 @@
   "link_agreement": "Link to the agreement (page object, optional)",
   "agree_to_pay_following_commissions_waivio)": "I agree to pay the following commissions to Waivio and partners",
   "commissions_must_paid_within_14_days": "Commissions and rewards to users must be paid in full within 14 days from the occurrence of payment obligations",
-  "not_less_five_commission_value": "Commissions must not be less than 5%"
+  "not_less_five_commission_value": "Commissions must not be less than 5%",
+  "minimum_waivio_expertise": "Minimum Waivio expertise (optional)",
+  "users_start_with_zero_expertise": "New users on Waivio start with expertise of 0"
 }
