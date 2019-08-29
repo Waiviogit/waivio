@@ -668,6 +668,7 @@ export default class AppendForm extends Component {
                   objectType={objectType}
                 />,
               )}
+              {console.log(objectType)}
               {selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
             </Form.Item>
             <CreateObject

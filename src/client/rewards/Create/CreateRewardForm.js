@@ -2,13 +2,23 @@ import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { Button, Checkbox, DatePicker, Form, Icon, Input, message, Select } from 'antd';
+import {
+  Button,
+  Checkbox,
+  DatePicker,
+  Form,
+  Icon,
+  Input,
+  message,
+  Select,
+  InputNumber,
+} from 'antd';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCardView from '../../objectCard/ObjectCardView';
-import ModalEligibleUsers from './ModalEligibleUsers/ModalEligibleUsers';
 import { createCampaign } from '../../../waivioApi/ApiClient';
 import './CreateReward.less';
 import ReviewObjectItem from './ReviewObjectItem';
+import OBJECT_TYPE from '../../object/const/objectTypes';
 
 const { Option } = Select;
 
@@ -33,6 +43,7 @@ class CreateRewardForm extends React.Component {
     autoCompleteResult: [],
     objectsToAction: [],
     requiredObject: {},
+    pageObjects: [],
     isModalEligibleUsersOpen: false,
     hasRequireObject: false,
     hasReviewObject: false,
@@ -68,11 +79,21 @@ class CreateRewardForm extends React.Component {
     });
   };
 
+  removePageObject = obj => {
+    this.setState(prevState => {
+      const objectList = prevState.pageObjects.filter(el => el.id !== obj.id);
+      return {
+        pageObjects: objectList,
+      };
+    });
+  };
+
   handleSubmit = e => {
     this.setState({ loading: true });
     e.preventDefault();
     this.checkOptionFields();
     this.props.form.validateFieldsAndScroll((err, values) => {
+      console.log('values', values);
       if (!err && !_.isEmpty(this.state.requiredObject) && !_.isEmpty(this.state.objectsToAction)) {
         createCampaign(this.prepareSubmitData(values))
           .then(data => {
@@ -150,6 +171,12 @@ class CreateRewardForm extends React.Component {
     });
   };
 
+  handleAddPageObject = obj => {
+    this.setState({
+      pageObjects: [...this.state.pageObjects, obj],
+    });
+  };
+
   handleDeleteObjectFromList = obj => {
     let objectsToAction = this.state.objectsToAction;
     objectsToAction = _.filter(objectsToAction, o => o.id !== obj.id);
@@ -221,6 +248,20 @@ class CreateRewardForm extends React.Component {
         intl.formatMessage({
           id: 'not_less_zero_photos',
           defaultMessage: 'Should not be less than zero photos',
+        }),
+      );
+    } else {
+      callback();
+    }
+  };
+
+  checkCommissionValue = (rule, value, callback) => {
+    const { intl } = this.props;
+    if (value < 5 && value !== '') {
+      callback(
+        intl.formatMessage({
+          id: 'not_less_five_commission_value',
+          defaultMessage: 'Commissions must not be less than 5%',
         }),
       );
     } else {
@@ -698,21 +739,32 @@ class CreateRewardForm extends React.Component {
             })}
           </div>
         </Form.Item>
-        <Button type="primary" disabled={loading} onClick={this.toggleModalEligibleUsers}>
-          {intl.formatMessage({
-            id: 'show_eligible_users',
-            defaultMessage: 'Show eligible users',
-          })}
-        </Button>
-        {this.state.isModalEligibleUsersOpen && (
-          <ModalEligibleUsers
-            toggleModal={this.toggleModalEligibleUsers}
-            isModalOpen={this.state.isModalEligibleUsersOpen}
-            userName={this.props.userName}
-            followsCount={this.props.form.getFieldValue('minFollowers')}
-            postsCount={this.props.form.getFieldValue('minPosts')}
-          />
-        )}
+        <Form.Item>
+          <h3 className="CreateReward header">
+            {intl.formatMessage({
+              id: 'legal',
+              defaultMessage: 'Legal',
+            })}
+            :
+          </h3>
+          <p>
+            {intl.formatMessage({
+              id: 'reward_payments_made_directly_waivio_provide_information',
+              defaultMessage:
+                'All reward payments are made directly to users by the campaign creator. Waivio and other partners provide information and discovery services only',
+            })}
+            .
+          </p>
+          <br />
+          <p>
+            {intl.formatMessage({
+              id: 'can_add_link_agreement_govern_relationships',
+              defaultMessage:
+                'Here you can add a link to the agreement, which will govern the relationship between you and participating users',
+            })}
+            .
+          </p>
+        </Form.Item>
         <Form.Item
           label={intl.formatMessage({
             id: 'note_reviewers',
@@ -724,8 +776,8 @@ class CreateRewardForm extends React.Component {
               {
                 max: 250,
                 message: intl.formatMessage({
-                  id: 'campaign_description_longer_50_symbols',
-                  defaultMessage: 'Campaign description should be no longer then 50 symbols!',
+                  id: 'campaign_description_longer_250_symbols',
+                  defaultMessage: 'Campaign description should be no longer then 250 symbols!',
                 }),
               },
             ],
@@ -760,6 +812,59 @@ class CreateRewardForm extends React.Component {
             ],
           })(<DatePicker />)}
         </Form.Item>
+        <div className="CreateReward__item-title simple-text">
+          {intl.formatMessage({
+            id: 'link_agreement',
+            defaultMessage: 'Link to the agreement (page object, optional)',
+          })}
+        </div>
+        <SearchObjectsAutocomplete
+          className="menu-item-search"
+          itemsIdsToOmit={
+            !_.isEmpty(this.state.pageObjects) ? _.map(this.state.pageObjects, obj => obj.id) : []
+          }
+          placeholder="Find page object"
+          handleSelect={this.handleAddPageObject}
+          objectType={OBJECT_TYPE.PAGE}
+          isPermlinkValue={false}
+          disabled={loading}
+        />
+        <div className="CreateReward__objects-wrap">
+          {_.map(this.state.pageObjects, obj => (
+            <ReviewObjectItem
+              key={obj.id}
+              object={obj}
+              loading={loading}
+              removeReviewObject={this.removePageObject}
+            />
+          ))}
+        </div>
+        <Form.Item
+          label={intl.formatMessage({
+            id: 'legal_notice_users_user',
+            defaultMessage: 'Legal notice to users (optional)',
+          })}
+        >
+          {getFieldDecorator('usersLegalNotice', {
+            rules: [
+              {
+                max: 250,
+                message: intl.formatMessage({
+                  id: 'campaign_description_longer_250_symbols',
+                  defaultMessage: 'Campaign description should be no longer then 250 symbols!',
+                }),
+              },
+            ],
+          })(<Input.TextArea disabled={loading} />)}
+          <div className="CreateReward__field-caption">
+            {intl.formatMessage({
+              id: 'note_draw_users_attention_specific_terms',
+              defaultMessage:
+                'This note may be used to draw users attention to the specific terms and conditions of the agreement',
+            })}
+            .
+          </div>
+        </Form.Item>
         <Form.Item>
           {getFieldDecorator('agreement', {
             rules: [
@@ -773,22 +878,62 @@ class CreateRewardForm extends React.Component {
             ],
             valuePropName: 'checked',
           })(
-            <Checkbox disabled={loading}>
+            <React.Fragment>
+              <Checkbox disabled={loading} />{' '}
               <span className="CreateReward__item-title ant-form-item-required">
                 {intl.formatMessage({
-                  id: 'have_read',
-                  defaultMessage: 'I have read the',
+                  id: 'agree_to_the',
+                  defaultMessage: 'I agree to the',
                 })}
               </span>
-              <a href="">
+              <a href="https://waiviodev.com/object/xrj-terms-and-conditions">
                 {' '}
                 {intl.formatMessage({
-                  id: 'agreement',
-                  defaultMessage: 'agreement',
+                  id: 'terms_and_conditions',
+                  defaultMessage: 'Terms and Conditions',
                 })}
               </a>
-            </Checkbox>,
+              <span className="CreateReward__item-title simple-text">
+                {' '}
+                {intl.formatMessage({
+                  id: 'service_acknowledge_campaign_not_violate_laws',
+                  defaultMessage:
+                    'of the service and acknowledge that this campaign does not violate any laws of British Columbia, Canada.',
+                })}
+              </span>
+            </React.Fragment>,
           )}
+        </Form.Item>
+        <Form.Item
+          label={intl.formatMessage({
+            id: 'agree_to_pay_following_commissions_waivio)',
+            defaultMessage: 'I agree to pay the following commissions to Waivio and partners',
+          })}
+        >
+          {getFieldDecorator('commissionAgreement', {
+            rules: [
+              {
+                validator: this.checkCommissionValue,
+              },
+            ],
+            initialValue: 5,
+          })(
+            <InputNumber
+              className="CreateReward ant-input-number"
+              defaultValue={100}
+              min={5}
+              max={100}
+              formatter={value => `${value}%`}
+              parser={value => value.replace('%', '')}
+            />,
+          )}
+          <div className="CreateReward__field-caption">
+            {intl.formatMessage({
+              id: 'commissions_must_paid_within_14_days',
+              defaultMessage:
+                'Commissions and rewards to users must be paid in full within 14 days from the occurrence of payment obligations',
+            })}
+          </div>
         </Form.Item>
         <Form.Item>
           <div className="CreateReward__block-button">
