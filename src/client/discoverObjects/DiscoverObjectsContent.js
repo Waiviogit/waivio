@@ -17,6 +17,7 @@ import {
 import {
   getObjectTypeInitial,
   getObjectType,
+  clearType,
   setFiltersAndLoad,
 } from '../objectTypes/objectTypeActions';
 import { setMapFullscreenMode } from '../components/Maps/mapActions';
@@ -45,6 +46,7 @@ const modalName = {
   }),
   {
     dispatchGetObjectType: getObjectTypeInitial,
+    dispatchClearObjectTypeStore: clearType,
     dispatchGetObjectTypeMore: getObjectType,
     dispatchGetObjectTypes: getObjectTypes,
     dispatchSetActiveFilters: setFiltersAndLoad,
@@ -63,6 +65,7 @@ class DiscoverObjectsContent extends Component {
     isFetching: PropTypes.bool.isRequired,
     hasMoreObjects: PropTypes.bool.isRequired,
     dispatchGetObjectType: PropTypes.func.isRequired,
+    dispatchClearObjectTypeStore: PropTypes.func.isRequired,
     dispatchGetObjectTypeMore: PropTypes.func.isRequired,
     dispatchGetObjectTypes: PropTypes.func.isRequired,
     dispatchSetActiveFilters: PropTypes.func.isRequired,
@@ -90,6 +93,10 @@ class DiscoverObjectsContent extends Component {
     const { dispatchGetObjectType, dispatchGetObjectTypes, typeName, typesList } = this.props;
     dispatchGetObjectType(typeName);
     if (_.isEmpty(typesList)) dispatchGetObjectTypes();
+  }
+
+  componentWillUnmount() {
+    this.props.dispatchClearObjectTypeStore();
   }
 
   loadMoreRelatedObjects = () => {
