@@ -7,8 +7,8 @@ import { injectIntl } from 'react-intl';
 import { clearSearchObjectsResults, searchObjectsAutoCompete } from '../../search/searchActions';
 import { getSearchObjectsResults } from '../../reducers';
 import { linkRegex } from '../../helpers/regexHelpers';
-import ObjectType from '../../object/ObjectType';
 import './SearchObjectsAutocomplete.less';
+import ObjectSearchCard from '../ObjectSearchCard/ObjectSearchCard';
 
 @injectIntl
 @connect(
@@ -37,6 +37,7 @@ class SearchObjectsAutocomplete extends Component {
     isPermlinkValue: true,
     disabled: false,
     placeholder: '',
+    parentPermlink: '',
   };
 
   static propTypes = {
@@ -55,6 +56,7 @@ class SearchObjectsAutocomplete extends Component {
     isPermlinkValue: PropTypes.bool,
     disabled: PropTypes.bool,
     placeholder: PropTypes.string,
+    parentPermlink: PropTypes.string,
   };
 
   constructor(props) {
@@ -79,7 +81,7 @@ class SearchObjectsAutocomplete extends Component {
   }
 
   debouncedSearch = _.debounce(
-    (searchString, objType = '') => this.props.searchObjects(searchString, objType),
+    (searchString, objType = '', parent) => this.props.searchObjects(searchString, objType, parent),
     300,
   );
   handleSearch(value) {
@@ -90,7 +92,7 @@ class SearchObjectsAutocomplete extends Component {
       val = permlink[permlink.length - 1].replace('@', '');
     }
     if (val) {
-      this.debouncedSearch(val, this.props.objectType);
+      this.debouncedSearch(val, this.props.objectType, this.props.parentPermlink);
     }
   }
 
@@ -119,26 +121,12 @@ class SearchObjectsAutocomplete extends Component {
   render() {
     const { searchString } = this.state;
     const { intl, style, searchObjectsResults, itemsIdsToOmit, allowClear, disabled } = this.props;
-    const getObjMarkup = obj => (
-      <div className="obj-search-option">
-        <img className="obj-search-option__avatar" src={obj.avatar} alt={obj.title || ''} />
-        <div className="obj-search-option__info">
-          <div className="obj-search-option__text">
-            {obj.name}
-            <div className="obj-search-option__row">
-              <ObjectType type={obj.type} />
-            </div>
-          </div>
-          <span className="obj-search-option__text">{obj.title}</span>
-        </div>
-      </div>
-    );
     const searchObjectsOptions = searchString
       ? searchObjectsResults
           .filter(obj => !itemsIdsToOmit.includes(obj.id))
           .map(obj => (
-            <AutoComplete.Option key={obj.id} label={obj.id}>
-              {getObjMarkup(obj)}
+            <AutoComplete.Option key={obj.id} label={obj.id} className="obj-search-option item">
+              <ObjectSearchCard object={obj} name={obj.name} type={obj.type} />
             </AutoComplete.Option>
           ))
       : [];

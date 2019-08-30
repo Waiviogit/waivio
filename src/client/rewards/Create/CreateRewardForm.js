@@ -48,10 +48,15 @@ class CreateRewardForm extends React.Component {
     hasRequireObject: false,
     hasReviewObject: false,
     loading: false,
+    parentPermlink: '',
   };
 
   setRequiredObject = obj => {
-    this.setState({ requiredObject: obj, hasRequireObject: false });
+    this.setState({
+      requiredObject: obj,
+      hasRequireObject: false,
+      parentPermlink: obj.author_permlink,
+    });
   };
 
   getObjectsToOmit = () => {
@@ -659,6 +664,7 @@ class CreateRewardForm extends React.Component {
           handleSelect={this.handleAddObjectToList}
           isPermlinkValue={false}
           disabled={loading || _.isEmpty(this.state.requiredObject)}
+          parentPermlink={this.state.parentPermlink}
         />
         <div
           className={classNames('CreateReward__object-message-validate', {

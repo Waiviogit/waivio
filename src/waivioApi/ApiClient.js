@@ -144,8 +144,8 @@ export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0 }) =>
       .catch(error => reject(error));
   });
 
-export const searchObjects = (searchString, objType = '', limit = 15) => {
-  const requestBody = { search_string: searchString, limit };
+export const searchObjects = (searchString, objType = '', forParent, limit = 15) => {
+  const requestBody = { search_string: searchString, forParent, limit };
   if (objType && typeof objType === 'string') {
     requestBody.object_type = objType;
   }
