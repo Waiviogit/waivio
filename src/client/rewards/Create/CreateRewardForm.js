@@ -547,6 +547,13 @@ class CreateRewardForm extends React.Component {
             })}
           </div>
         </Form.Item>
+        <div className="CreateReward__item-title simple-text">
+          {intl.formatMessage({
+            id: 'registered_upvoting_accounts',
+            defaultMessage: 'Registered upvoting accounts besides @sponsor (optional)',
+          })}
+        </div>
+
         <Form.Item
           label={intl.formatMessage({
             id: 'reservation_period',

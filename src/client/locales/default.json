@@ -700,5 +700,6 @@
   "friday_cut": "Fri",
   "saturday_cut": "Sat",
   "target_days_for_reviews": "Target days for reviews",
-  "reservation_period_will_dynamically_adjusted": "Reservation period will be dynamically adjusted to match target days"
+  "reservation_period_will_dynamically_adjusted": "Reservation period will be dynamically adjusted to match target days",
+  "registered_upvoting_accounts": "Registered upvoting accounts besides @sponsor (optional)"
 }
