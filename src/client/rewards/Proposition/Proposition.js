@@ -13,6 +13,7 @@ import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
 import { getSingleComment } from '../../comments/commentsActions';
 import { getCommentContent } from '../../reducers';
 import { connect } from 'react-redux';
+import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 
 const Proposition = ({
   intl,
@@ -36,7 +37,11 @@ const Proposition = ({
       objPermlink: obj.author_permlink,
     });
   };
-
+  const requiredObjectName = getFieldWithMaxWeight(
+    proposition.required_object,
+    'name',
+    proposition.required_object.author_permlink,
+  );
   useEffect(() => {
     getSingleComment(proposition.guide.name, assignCommentPermlink);
   }, []);
@@ -52,46 +57,6 @@ const Proposition = ({
       companyId: proposition._id,
       objPermlink: obj.author_permlink,
     });
-  };
-
-  const buttonsLayout = () => {
-    if (typeof assigned !== 'boolean') return <div />;
-    return !assigned ? (
-      <div className="RewardsHeader-button">
-        <Button
-          type="primary"
-          loading={loading}
-          disabled={loading}
-          onClick={() => assignPr(proposedWobj)}
-        >
-          {intl.formatMessage({
-            id: 'reserve',
-            defaultMessage: `Reserve`,
-          })}
-        </Button>
-        {proposition.count_reservation_days &&
-          `${intl.formatMessage({
-            id: 'for',
-            defaultMessage: `for`,
-          })} ${proposition.count_reservation_days} (${intl.formatMessage({
-            id: 'days',
-            defaultMessage: `days`,
-          })})`}
-      </div>
-    ) : (
-      <Button
-        className="Release-button"
-        type="primary"
-        loading={loading}
-        disabled={loading}
-        onClick={() => discardPr(proposedWobj)}
-      >
-        {intl.formatMessage({
-          id: 'release',
-          defaultMessage: `Release`,
-        })}
-      </Button>
-    );
   };
 
   return (
@@ -130,13 +95,36 @@ const Proposition = ({
         {proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (
           <CampaignFooter
             post={post}
-            wObject={proposedWobj}
+            proposedWobj={proposedWobj}
             requiredObjectPermlink={proposition.required_object.author_permlink}
-            buttonsLayout={buttonsLayout()}
+            requiredObjectName={requiredObjectName}
+            discardPr={discardPr}
           />
         ) : (
           <React.Fragment>
-            {buttonsLayout()}
+            {!assigned && (
+              <div className="RewardsHeader-button">
+                <Button
+                  type="primary"
+                  loading={loading}
+                  disabled={loading}
+                  onClick={() => assignPr(proposedWobj)}
+                >
+                  {intl.formatMessage({
+                    id: 'reserve',
+                    defaultMessage: `Reserve`,
+                  })}
+                </Button>
+                {proposition.count_reservation_days &&
+                  `${intl.formatMessage({
+                    id: 'for',
+                    defaultMessage: `for`,
+                  })} ${proposition.count_reservation_days} (${intl.formatMessage({
+                    id: 'days',
+                    defaultMessage: `days`,
+                  })})`}
+              </div>
+            )}
             <a role="presentation" className="RewardsHeader" onClick={toggleModalDetails}>
               {intl.formatMessage({
                 id: 'details',
@@ -159,7 +147,6 @@ Proposition.propTypes = {
   assigned: PropTypes.bool,
   assignCommentPermlink: PropTypes.string,
   toggleModal: PropTypes.func.isRequired,
-  // authorizedUserName: PropTypes.string,
   intl: PropTypes.shape().isRequired,
   post: PropTypes.shape(),
 };
