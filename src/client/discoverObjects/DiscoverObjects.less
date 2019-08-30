@@ -38,6 +38,18 @@
     }
   }
 }
+.discover-filters-modal.ant-modal {
+  min-width: 100vw;
+  .ant-modal-content {
+    min-height: 100vh;
+  }
+  @media @small {
+    position: absolute;
+    left: 0;
+    min-width: unset;
+    max-width: 240px;
+  }
+}
 //endregion
 
 //region  SidenavDiscoverObjects
@@ -47,7 +59,7 @@
     text-decoration: underline;
     padding-left: 10px;
     &:hover {
-      color: @black;
+      color: @primary-color;
       cursor: pointer;
     }
   }

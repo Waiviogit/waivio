@@ -94,7 +94,6 @@ const UserWalletSummary = ({
         <FormattedMessage id="steem" defaultMessage="Steem" />
       </div>
       <div className="UserWalletSummary__value">
-        {console.log('NAME', user)}
         {loading ? (
           <Loading />
         ) : (

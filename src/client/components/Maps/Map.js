@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import _ from 'lodash';
 import React from 'react';
 import Map from 'pigeon-maps';
@@ -7,25 +8,34 @@ import Marker from 'pigeon-marker/react';
 import Overlay from 'pigeon-overlay';
 import classNames from 'classnames';
 import { getClientWObj } from '../../adapters';
-import './Map.less';
 import { getInnerFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { mapFields, objectFields } from '../../../common/constants/listOfFields';
 import Loading from '../Icon/Loading';
+import { getIsMapModalOpen } from '../../reducers';
+import { setMapFullscreenMode } from './mapActions';
+import './Map.less';
 
 const defaultCoords = {
   centerLat: 37.0902,
   centerLng: 95.0235,
 };
+@connect(
+  state => ({
+    isFullscreenMode: getIsMapModalOpen(state),
+  }),
+  {
+    setMapFullscreenMode,
+  },
+)
 class MapOS extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       infoboxData: false,
-      markersLayout: null,
+      markersLayout: this.getMarkers(props),
       zoom: 8,
       center: [+this.props.userLocation.lat, +this.props.userLocation.lon],
-      isFullscreenMode: false,
       isInitial: true,
     };
 
@@ -51,22 +61,24 @@ class MapOS extends React.Component {
   };
 
   getMarkers = props =>
-    _.map(props.wobjects, wobject => {
-      const lat = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.latitude);
-      const lng = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude);
-      return lat && lng ? (
-        <Marker
-          key={`obj${wobject.author_permlink}`}
-          anchor={[+lat, +lng]}
-          payload={wobject}
-          onMouseOver={this.handleMarkerClick}
-          onMouseOut={this.closeInfobox}
-          onClick={() => {
-            props.onMarkerClick(wobject.author_permlink);
-          }}
-        />
-      ) : null;
-    });
+    !_.isEmpty(props.wobjects)
+      ? _.map(props.wobjects, wobject => {
+          const lat = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.latitude);
+          const lng = getInnerFieldWithMaxWeight(wobject, objectFields.map, mapFields.longitude);
+          return lat && lng ? (
+            <Marker
+              key={`obj${wobject.author_permlink}`}
+              anchor={[+lat, +lng]}
+              payload={wobject}
+              onMouseOver={this.handleMarkerClick}
+              onMouseOut={this.closeInfobox}
+              onClick={() => {
+                props.onMarkerClick(wobject.author_permlink);
+              }}
+            />
+          ) : null;
+        })
+      : null;
 
   getOverlayLayout = () => {
     const wobj = getClientWObj(this.state.infoboxData.wobject);
@@ -113,7 +125,7 @@ class MapOS extends React.Component {
 
   decrementZoom = () => (this.state.zoom > 0 ? this.setState({ zoom: this.state.zoom - 1 }) : null);
 
-  toggleModal = () => this.setState({ isFullscreenMode: !this.state.isFullscreenMode });
+  toggleModal = () => this.props.setMapFullscreenMode(!this.props.isFullscreenMode);
 
   zoomButtonsLayout = () => (
     <div className="MapOS__zoom">
@@ -127,8 +139,8 @@ class MapOS extends React.Component {
   );
 
   render() {
-    const { heigth } = this.props;
-    const { markersLayout, infoboxData, zoom, center, isFullscreenMode } = this.state;
+    const { heigth, isFullscreenMode } = this.props;
+    const { markersLayout, infoboxData, zoom, center } = this.state;
     return center ? (
       <div className="MapOS">
         <Map
@@ -182,10 +194,12 @@ class MapOS extends React.Component {
 }
 
 MapOS.propTypes = {
+  isFullscreenMode: PropTypes.bool.isRequired,
   heigth: PropTypes.number,
   userLocation: PropTypes.shape(),
   wobjects: PropTypes.arrayOf(PropTypes.shape()),
   setArea: PropTypes.func,
+  setMapFullscreenMode: PropTypes.func.isRequired,
 };
 
 MapOS.defaultProps = {

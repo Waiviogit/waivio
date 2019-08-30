@@ -19,64 +19,64 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
   return isRouteMathed ? (
     <ul className="TopNavigation">
       {authenticated && (
-        <li>
+        <li className="TopNavigation__item">
           <Link
             to="/"
-            className={classNames('TopNavigation__item', {
-              'TopNavigation__item--active': pathname === '/',
+            className={classNames('TopNavigation__link', {
+              'TopNavigation__link--active': pathname === '/',
             })}
           >
             <FormattedMessage id="feed" defaultMessage="Feed" />
           </Link>
         </li>
       )}
-      <li>
+      <li className="TopNavigation__item">
         <Link
           to={LINKS.TRENDING}
-          className={classNames('TopNavigation__item', {
-            'TopNavigation__item--active': pathname.includes(LINKS.TRENDING),
+          className={classNames('TopNavigation__link', {
+            'TopNavigation__link--active': pathname.includes(LINKS.TRENDING),
           })}
         >
           <FormattedMessage id="news" defaultMessage="News" />
         </Link>
       </li>
-      <li>
+      <li className="TopNavigation__item">
         <Link
           to={authenticated ? `${LINKS.REWARDS}/active` : `${LINKS.REWARDS}/all`}
-          className={classNames('TopNavigation__item', {
-            'TopNavigation__item--active': pathname.includes(LINKS.REWARDS),
+          className={classNames('TopNavigation__link', {
+            'TopNavigation__link--active': pathname.includes(LINKS.REWARDS),
           })}
         >
           <FormattedMessage id="rewards" defaultMessage="Rewards" />
         </Link>
       </li>
-      <li>
+      <li className="TopNavigation__item">
         <Link
           to={`${LINKS.DISCOVER}/hashtag`}
-          className={classNames('TopNavigation__item', {
-            'TopNavigation__item--active': pathname.includes(LINKS.DISCOVER),
+          className={classNames('TopNavigation__link', {
+            'TopNavigation__link--active': pathname.includes(LINKS.DISCOVER),
           })}
         >
           <FormattedMessage id="discover" defaultMessage="Discover" />
         </Link>
       </li>
       {authenticated && (
-        <li>
+        <li className="TopNavigation__item">
           <Link
             to={LINKS.ACTIVITY}
-            className={classNames('TopNavigation__item', {
-              'TopNavigation__item--active': pathname === LINKS.ACTIVITY,
+            className={classNames('TopNavigation__link', {
+              'TopNavigation__link--active': pathname === LINKS.ACTIVITY,
             })}
           >
             <FormattedMessage id="activity" defaultMessage="Activity" />
           </Link>
         </li>
       )}
-      <li>
+      <li className="TopNavigation__item">
         <Link
           to={LINKS.ABOUT}
-          className={classNames('TopNavigation__item', {
-            'TopNavigation__item--active': pathname.includes(LINKS.ABOUT),
+          className={classNames('TopNavigation__link', {
+            'TopNavigation__link--active': pathname.includes(LINKS.ABOUT),
           })}
         >
           <FormattedMessage id="about" defaultMessage="About" />
