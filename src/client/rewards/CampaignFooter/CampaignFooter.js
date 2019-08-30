@@ -1,4 +1,3 @@
-/* eslint-disable react/no-did-mount-set-state */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -72,7 +71,7 @@ class CampaignFooter extends React.Component {
     this.handlePostPopoverMenuClick = this.handlePostPopoverMenuClick.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const { user, post, defaultVotePercent } = this.props;
     if (user) {
       const userVote = find(post.active_votes, { voter: user.name }) || {};
