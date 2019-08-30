@@ -3,7 +3,7 @@ import { postAppendWaivioObject } from '../../waivioApi/ApiClient';
 import { followObject, voteObject } from './wobjActions';
 import { getVotePercent } from '../reducers';
 
-export const APPEND_WAIVIO_OBJECT = createAsyncActionType('@editor/APPEND_WAIVIO_OBJECT');
+export const APPEND_WAIVIO_OBJECT = createAsyncActionType('@append/APPEND_WAIVIO_OBJECT');
 
 export const appendObject = (postData, { follow, votePower } = { follow: false }) => (
   dispatch,
