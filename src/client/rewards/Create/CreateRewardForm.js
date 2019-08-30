@@ -316,7 +316,8 @@ class CreateRewardForm extends React.Component {
 
   checkExpireDate = (rule, value, callback) => {
     const { intl } = this.props;
-    if (value && value.unix() * 1000 - Date.now() < 86400000) {
+    const currentDay = new Date().getDate();
+    if ((value && value.unix() * 1000 < Date.now()) || value.date() === currentDay) {
       callback(
         intl.formatMessage({
           id: 'expiry_date_after_current',
