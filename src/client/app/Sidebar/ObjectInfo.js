@@ -144,18 +144,14 @@ class ObjectInfo extends React.Component {
 
       price = getFieldWithMaxWeight(wobject, objectFields.price);
 
-      menuItems = _.get(wobject, 'menuItems', []);
+      menuItems = _.uniqBy(_.get(wobject, 'menuItems', []), 'author_permlink');
       menuLists =
         menuItems.length && menuItems.some(item => item.object_type === OBJECT_TYPE.LIST)
-          ? _.uniqBy(menuItems, 'author_permlink').filter(
-              item => item.object_type === OBJECT_TYPE.LIST,
-            )
+          ? menuItems.filter(item => item.object_type === OBJECT_TYPE.LIST)
           : null;
       menuPages =
-        menuItems.length && menuItems.some(item => item.object_type !== OBJECT_TYPE.LIST)
-          ? _.uniqBy(menuItems, 'author_permlink').filter(
-              item => item.object_type !== OBJECT_TYPE.LIST,
-            )
+        menuItems.length && menuItems.some(item => item.object_type !== OBJECT_TYPE.PAGE)
+          ? menuItems.filter(item => item.object_type !== OBJECT_TYPE.PAGE)
           : null;
 
       photosCount = wobject.photos_count;
