@@ -19,6 +19,7 @@ import { createCampaign } from '../../../waivioApi/ApiClient';
 import './CreateReward.less';
 import ReviewObjectItem from './ReviewObjectItem';
 import OBJECT_TYPE from '../../object/const/objectTypes';
+import TargetDaysTable from './TargetDaysTable/TargetDaysTable';
 
 const { Option } = Select;
 
@@ -571,6 +572,21 @@ class CreateRewardForm extends React.Component {
             {intl.formatMessage({
               id: 'budget_reduced_amount_rewards_reserved',
               defaultMessage: 'The available budget is reduced by the amount of rewards reserved',
+            })}
+          </div>
+        </Form.Item>
+        <Form.Item
+          label={intl.formatMessage({
+            id: 'target_days_for_reviews',
+            defaultMessage: 'Target days for reviews',
+          })}
+        >
+          <TargetDaysTable intl={intl} />
+          <div className="CreateReward__field-caption">
+            {intl.formatMessage({
+              id: 'reservation_period_will_dynamically_adjusted',
+              defaultMessage:
+                'Reservation period will be dynamically adjusted to match target days',
             })}
           </div>
         </Form.Item>

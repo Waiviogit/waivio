@@ -621,7 +621,7 @@
   "campaign_budgets_calcualted": "Campaign budgets calcualted from the 1st day of each month",
   "rewards_for": "Rewards for",
   "date": "date",
-  "budget_more_than_zero" : "Budget should be more than zero",
+  "budget_more_than_zero": "Budget should be more than zero",
   "budget_overprices_wallet_balance": "Budget should not exceed your SBD wallet balance",
   "reward_more_than_zero": "Reward should be more than zero",
   "reward_not_exceed_budget": "The reward should not exceed the budget",
@@ -674,7 +674,7 @@
   "specific_campaign_parameters_type": "The campaign parameters are specific to the type of campaign",
   "unused_portion_not_accumulate": "The unused portion of the budget does not accumulate",
   "reward_per_review_SBD": "Reward (per review, SBD)",
-  "reward_portion_using_upvotes_registered_accounts":"Portion of the reward can be paid using upvotes from registered accounts",
+  "reward_portion_using_upvotes_registered_accounts": "Portion of the reward can be paid using upvotes from registered accounts",
   "budget_reduced_amount_rewards_reserved": "The available budget is reduced by the amount of rewards reserved",
   "note_shown_to_users_of_reward": "This note will be shown to users at the time of reservation of the reward",
   "steem_reputation_from_100_to_100": "The Steem reputation must be from -100 to 100",
@@ -691,5 +691,14 @@
   "commissions_must_paid_within_14_days": "Commissions and rewards to users must be paid in full within 14 days from the occurrence of payment obligations",
   "not_less_five_commission_value": "Commissions must not be less than 5%",
   "minimum_waivio_expertise": "Minimum Waivio expertise (optional)",
-  "users_start_with_zero_expertise": "New users on Waivio start with expertise of 0"
+  "users_start_with_zero_expertise": "New users on Waivio start with expertise of 0",
+  "sunday_cut": "Sun",
+  "monday_cut": "Mon",
+  "tuesday_cut": "Tue",
+  "wednesday_cut": "Wed",
+  "thursday_cut": "Thu",
+  "friday_cut": "Fri",
+  "saturday_cut": "Sat",
+  "target_days_for_reviews": "Target days for reviews",
+  "reservation_period_will_dynamically_adjusted": "Reservation period will be dynamically adjusted to match target days"
 }
