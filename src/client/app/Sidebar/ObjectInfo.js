@@ -67,6 +67,26 @@ class ObjectInfo extends React.Component {
     return link;
   };
 
+  getFieldLayout = (fieldName, params) => {
+    switch (fieldName) {
+      case objectFields.phone:
+        return (
+          <div key={params.number} className="flex">
+            <div className="self-start pr1">
+              <Icon type="phone" />
+            </div>
+            <div className="flex flex-column">
+              {Boolean(params.body) && <div className="phone-title">{params.body}</div>}
+              <a href={`tel:${params.number}`}>{params.number}</a>
+            </div>
+          </div>
+        );
+      default:
+        break;
+    }
+    return null;
+  };
+
   handleSelectField = field => () => this.setState({ selectedField: field });
 
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
@@ -505,20 +525,18 @@ class ObjectInfo extends React.Component {
                 {accessExtend ? (
                   <React.Fragment>
                     {phones.length <= 3 ? (
-                      phones.slice(0, 3).map(({ body, number }) => (
-                        <div key={number} className="phone">
-                          <Icon type="phone" /> <a href={`tel:${number}`}>{number}</a>
-                          {body && body} <br />
-                        </div>
-                      ))
+                      phones
+                        .slice(0, 3)
+                        .map(({ body, number }) =>
+                          this.getFieldLayout(objectFields.phone, { body, number }),
+                        )
                     ) : (
                       <React.Fragment>
-                        {phones.slice(0, 2).map(({ body, number }) => (
-                          <div key={`${number}${body}`} className="phone">
-                            {body && body} <br />
-                            <Icon type="phone" /> <a href={`tel:${number}`}>{number}</a>
-                          </div>
-                        ))}
+                        {phones
+                          .slice(0, 2)
+                          .map(({ body, number }) =>
+                            this.getFieldLayout(objectFields.phone, { body, number }),
+                          )}
                         <Link
                           to={`/object/${wobject.author_permlink}/updates/${objectFields.phone}`}
                           onClick={() => this.handleSelectField(objectFields.phone)}
@@ -532,12 +550,11 @@ class ObjectInfo extends React.Component {
                   </React.Fragment>
                 ) : (
                   <React.Fragment>
-                    {phones.slice(0, 3).map(({ body, number }) => (
-                      <div key={number}>
-                        {body && body} <br />
-                        <Icon type="phone" /> <a href={`tel:${number}`}>{number}</a>
-                      </div>
-                    ))}
+                    {phones
+                      .slice(0, 3)
+                      .map(({ body, number }) =>
+                        this.getFieldLayout(objectFields.phone, { body, number }),
+                      )}
                   </React.Fragment>
                 )}
               </div>,
