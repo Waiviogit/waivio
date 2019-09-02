@@ -194,21 +194,23 @@ class MapOS extends React.Component {
 }
 
 MapOS.propTypes = {
-  isFullscreenMode: PropTypes.bool.isRequired,
+  isFullscreenMode: PropTypes.bool,
   heigth: PropTypes.number,
   userLocation: PropTypes.shape(),
   wobjects: PropTypes.arrayOf(PropTypes.shape()),
   setArea: PropTypes.func,
-  setMapFullscreenMode: PropTypes.func.isRequired,
+  setMapFullscreenMode: PropTypes.func,
 };
 
 MapOS.defaultProps = {
   ...defaultCoords,
+  isFullscreenMode: false,
   markers: {},
   wobjects: [],
-  setArea: () => {},
   heigth: 200,
   userLocation: {},
+  setArea: () => {},
+  setMapFullscreenMode: () => {},
 };
 
 export default MapOS;
