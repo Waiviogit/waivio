@@ -104,11 +104,11 @@ class CreateRewardForm extends React.Component {
         createCampaign(this.prepareSubmitData(values))
           .then(data => {
             this.setState({ propositions: data.campaigns, hasMore: data.hasMore, loading: false });
-            message.success(`Campaign '${values.campaignName}' - has been created`);
+            message.success(`'${values.campaignName}' rewards campaign has been created.`);
           })
           .catch(error => {
             console.log(error);
-            message.error(`Can't crate campaign '${values.campaignName}', try again later`);
+            message.error(`${values.campaignName}'rewards campaign has been rejected`);
             this.setState({ loading: false });
           });
       }
