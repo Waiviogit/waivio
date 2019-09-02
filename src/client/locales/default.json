@@ -570,7 +570,7 @@
   "info": "Information",
   "about": "About",
   "only_for_my": "Only for me",
-  "noProposition": "There are no propositions for {userName}",
+  "noProposition": "No reward matches the criteria for user @{userName}",
   "eligible": "Eligible",
   "reserved": "Reserved",
   "history": "History",
@@ -640,7 +640,7 @@
   "sbd_per_review": "SBD per review",
   "reservation_period": "Reservation period",
   "set_period": "Please, set a period!",
-  "days": "Days",
+  "days": "days",
   "review_requirements": "Review requirements",
   "min_original_photos": "Min # of original photos",
   "set_minimal_photos!": "Please, set minimal count of photos!",
@@ -681,4 +681,8 @@
   "upvote": "Upvote",
   "action": "Action",
   "notes": "Notes"
+  "activate_campaign": "Activate rewards campaign",
+  "campaign_terms": "The terms and conditions of the rewards campaign {campaignName} will be published on Steem blockchain",
+  "not_valid_campaign_name": "This doesn't seem to be valid campaign name. Only alphanumeric characters, hyphens, underscores and dots are allowed.",
+  "filter-rating": "Top rated"
 }

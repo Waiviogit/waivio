@@ -40,8 +40,10 @@ const FiltersContainer = ({ intl, filters }) => {
                 role="presentation"
                 onClick={handleDisplayFilter(filterName)}
               >
-                <span>{intl.formatMessage({ id: filterName, defaultMessage: filterName })}</span>
-                <span className="sidebar-search-filters__title__icon">
+                <span className="sidebar-search-filters__title-text">
+                  {intl.formatMessage({ id: `filter-${filterName}`, defaultMessage: filterName })}
+                </span>
+                <span className="sidebar-search-filters__title-icon">
                   {isCollapsed ? (
                     <i className="iconfont icon-addition" />
                   ) : (

@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { message, Modal } from 'antd';
+import { message, Modal, Tag } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -88,6 +88,7 @@ class Rewards extends React.Component {
     isModalDetailsOpen: false,
     objectDetails: {},
     activeFilters: { guideNames: [], types: [] },
+    isSearchAreaFilter: false,
   };
 
   componentDidMount() {
@@ -102,9 +103,9 @@ class Rewards extends React.Component {
       const { username } = this.props;
       const { radius, coordinates, sort, activeFilters } = this.state;
       if (
-        (match.params.filterKey !== this.props.match.params.filterKey ||
-          nextProps.match.params.campaignParent !== this.props.match.params.campaignParent) &&
-        username
+        match.params.filterKey !== this.props.match.params.filterKey ||
+        nextProps.match.params.campaignParent !== this.props.match.params.campaignParent ||
+        nextProps.username !== username
       ) {
         this.setState({ loadingCampaigns: true }, () => {
           this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
@@ -119,7 +120,7 @@ class Rewards extends React.Component {
   getAreaSearchData = ({ radius, coordinates }) => {
     const { username, match } = this.props;
     const { sort, activeFilters } = this.state;
-    this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+    this.getPropositions({ username, match, area: coordinates, radius, sort, activeFilters });
   };
 
   getCampaignsLayout = (
@@ -142,6 +143,11 @@ class Rewards extends React.Component {
               : null
           }
         />
+        {this.state.isSearchAreaFilter && (
+          <Tag className="ttc" key="search-area-filter" closable onClose={this.resetMapFilter}>
+            <FormattedMessage id="search_area" defaultMessage="Search area" />
+          </Tag>
+        )}
         <SortSelector sort={this.state.sort} onChange={this.handleSortChange}>
           <SortSelector.Item key="reward">
             <FormattedMessage id="rewards" defaultMessage="rewards">
@@ -181,12 +187,13 @@ class Rewards extends React.Component {
     this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
   };
 
-  getPropositions = ({ username, match, coordinates, radius, sort, activeFilters }) => {
+  getPropositions = ({ username, match, coordinates, area, radius, sort, activeFilters }) => {
     ApiClient.getPropositions(
       preparePropositionReqData({
         username,
         match,
         coordinates,
+        area,
         radius,
         sort,
         guideNames: activeFilters.guideNames,
@@ -200,6 +207,7 @@ class Rewards extends React.Component {
         campaignsTypes: data.campaigns_types,
         coordinates,
         radius,
+        isSearchAreaFilter: Boolean(area),
         sort,
         loadingCampaigns: false,
         loading: false,
@@ -222,6 +230,8 @@ class Rewards extends React.Component {
       activeFilters,
     });
   };
+
+  resetMapFilter = () => this.setState({ isSearchAreaFilter: false });
 
   handleSortChange = sort => {
     const { radius, coordinates, activeFilters } = this.state;
@@ -341,7 +351,10 @@ class Rewards extends React.Component {
       );
     }
     return `${intl.formatMessage(
-      { id: 'noProposition', defaultMessage: `There are no propositions` },
+      {
+        id: 'noProposition',
+        defaultMessage: `No reward matches the criteria for user @{userName}`,
+      },
       { userName },
     )}`;
   };
@@ -420,6 +433,7 @@ class Rewards extends React.Component {
       objectDetails,
       campaignsTypes,
       activeFilters,
+      isSearchAreaFilter,
     } = this.state;
     const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
     const isCreate = location.pathname === '/rewards/create';
@@ -448,6 +462,7 @@ class Rewards extends React.Component {
                       userLocation={this.props.userLocation}
                       onMarkerClick={this.goToCampaign}
                       getAreaSearchData={this.getAreaSearchData}
+                      isFilterOn={isSearchAreaFilter}
                     />
                   </React.Fragment>
                 )}

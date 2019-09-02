@@ -31,20 +31,25 @@
 
     .sidebar-search-filters {
       &__title {
-        color: @black;
-        cursor: pointer;
         display: flex;
         flex-direction: row;
-        font-weight: bold;
-        text-transform: capitalize;
         align-items: center;
 
-        &__icon {
-          color: @blue-botticelli;
-          margin-left: auto;
+        span {
+          color: @black;
+          cursor: pointer;
+          font-weight: bold;
 
-          .iconfont {
-            font-size: 22px !important;
+          &::first-letter {
+            text-transform: uppercase;
+          }
+          &.sidebar-search-filters__title-icon {
+            color: @blue-botticelli;
+            margin-left: auto;
+
+            .iconfont {
+              font-size: 22px !important;
+            }
           }
         }
       }
