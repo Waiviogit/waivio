@@ -36,6 +36,13 @@
     @media @small, @medium, @large {
       display: none;
     }
+    &.common {
+      display: none;
+
+      @media @small, @medium, @large {
+        display: block;
+      }
+    }
   }
 }
 .discover-filters-modal.ant-modal {

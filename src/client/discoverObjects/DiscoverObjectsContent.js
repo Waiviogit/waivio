@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import _, { isEmpty, omit } from 'lodash';
 import { connect } from 'react-redux';
 import { Button, Modal, Tag } from 'antd';
 import { isNeedFilters, updateActiveFilters } from './helper';
@@ -92,7 +92,7 @@ class DiscoverObjectsContent extends Component {
   componentDidMount() {
     const { dispatchGetObjectType, dispatchGetObjectTypes, typeName, typesList } = this.props;
     dispatchGetObjectType(typeName);
-    if (_.isEmpty(typesList)) dispatchGetObjectTypes();
+    if (isEmpty(typesList)) dispatchGetObjectTypes();
   }
 
   componentWillUnmount() {
@@ -127,6 +127,12 @@ class DiscoverObjectsContent extends Component {
     dispatchSetActiveFilters(updatedFilters);
   };
 
+  resetMapFilter = () => {
+    const { activeFilters, dispatchSetActiveFilters } = this.props;
+    const updatedFilters = omit(activeFilters, ['map']);
+    dispatchSetActiveFilters(updatedFilters);
+  };
+
   showMap = () => this.props.dispatchSetMapFullscreenMode(true);
 
   render() {
@@ -157,13 +163,30 @@ class DiscoverObjectsContent extends Component {
               )
             </span>
           </div>
+          <div className="discover-objects-header__tags-block common">
+            {map && (
+              <Tag className="ttc" key="search-area-filter" closable onClose={this.resetMapFilter}>
+                {intl.formatMessage({ id: 'search_area', defaultMessage: 'Search area' })}
+              </Tag>
+            )}
+          </div>
           {isTypeHasFilters ? (
             <React.Fragment>
-              {!_.isEmpty(availableFilters) ? (
+              {!isEmpty(availableFilters) ? (
                 <div className="discover-objects-header__tags-block">
                   <span className="discover-objects-header__topic ttc">
                     {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
                   </span>
+                  {map && (
+                    <Tag
+                      className="ttc"
+                      key="search-area-filter"
+                      closable
+                      onClose={this.resetMapFilter}
+                    >
+                      {intl.formatMessage({ id: 'search_area', defaultMessage: 'Search area' })}
+                    </Tag>
+                  )}
                   {_.map(chosenFilters, (filterValues, filterName) =>
                     filterValues.map(filterValue => (
                       <Tag
@@ -190,7 +213,7 @@ class DiscoverObjectsContent extends Component {
                   <Button
                     icon="compass"
                     size="large"
-                    className={_.isEmpty(map) ? 'map-btn' : 'map-btn active'}
+                    className={isEmpty(map) ? 'map-btn' : 'map-btn active'}
                     onClick={this.showMap}
                   >
                     {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
@@ -200,7 +223,7 @@ class DiscoverObjectsContent extends Component {
             </React.Fragment>
           ) : null}
         </div>
-        {!_.isEmpty(filteredObjects) ? (
+        {!isEmpty(filteredObjects) ? (
           <ReduxInfiniteScroll
             className="Feed"
             loadMore={this.loadMoreRelatedObjects}
