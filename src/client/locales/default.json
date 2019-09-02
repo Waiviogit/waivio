@@ -522,7 +522,6 @@
   "add_catalog_item": "@{currentUserName} added category <strong>{category}</strong> to catalog.",
   "related_to_object": "Related to object",
   "emptyList": "This list is empty",
-  "add_list_item": "@{user} added {itemType} <strong>{itemValue}</strong> to the list.",
   "list": "list",
   "list_update": "Update list",
   "add_waivio_beneficiary": "Share {share}% of this post rewards with Waivio",
@@ -621,8 +620,8 @@
   "campaign_budgets_calcualted": "Campaign budgets calcualted from the 1st day of each month",
   "rewards_for": "Rewards for",
   "date": "date",
-  "budget_more_than_zero": "Budget should be more than zero",
-  "budget_overprices_wallet_balance": "Budget should not exceed your SBD wallet balance",
+  "budget_more_than_zero" : "Budget should be more than zero",
+  "budget_overprices_wallet_balance": "Budget overprices your wallet balance",
   "reward_more_than_zero": "Reward should be more than zero",
   "reward_not_exceed_budget": "The reward should not exceed the budget",
   "reserve_period_one_day": "The reservation period must be at least one day",
@@ -701,5 +700,6 @@
   "saturday_cut": "Sat",
   "target_days_for_reviews": "Target days for reviews",
   "reservation_period_will_dynamically_adjusted": "Reservation period will be dynamically adjusted to match target days",
-  "registered_upvoting_accounts": "Registered upvoting accounts besides @sponsor (optional)"
+  "registered_upvoting_accounts": "Registered upvoting accounts besides @sponsor (optional)",
+  "write_review": "Write a review"
 }

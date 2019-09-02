@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Button, Modal, message, Select, Form } from 'antd';
+import _ from 'lodash';
 import { getAppendData } from '../../../helpers/wObjectHelper';
 import { getFieldWithMaxWeight } from '../../../object/wObjectHelper';
 import { getAuthenticatedUserName, getFollowingObjectsList, getLocale } from '../../../reducers';
@@ -14,8 +15,9 @@ import LikeSection from '../../../object/LikeSection';
 import LANGUAGES from '../../../translations/languages';
 import { getLanguageText } from '../../../translations';
 import FollowObjectForm from '../../FollowObjectForm';
-import './AddItemModal.less';
 import ObjectCardView from '../../../objectCard/ObjectCardView';
+import apiConfig from '../../../../waivioApi/config.json';
+import './AddItemModal.less';
 
 @connect(
   state => ({
@@ -79,17 +81,9 @@ class AddItemModal extends Component {
     form.validateFields((err, values) => {
       if (!err && !this.state.isLoading) {
         this.setState({ isLoading: true });
-        const bodyMsg = intl.formatMessage(
-          {
-            id: 'add_list_item',
-            defaultMessage: `@{user} added {itemType} <strong>{itemValue}</strong> to the list.`,
-          },
-          {
-            user: currentUserName,
-            itemType: selectedItem.type === 'list' ? 'nested list' : 'object',
-            itemValue: selectedItem.name,
-          },
-        );
+        const langReadable = _.filter(LANGUAGES, { id: values.locale })[0].name;
+        const objectUrl = `${apiConfig.production.protocol}${apiConfig.production.host}/object/${selectedItem.id}`;
+        const bodyMsg = `@${currentUserName} added list-item (${langReadable}):\n[${selectedItem.name} (type: ${selectedItem.type})](${objectUrl})`;
         const fieldContent = {
           name: 'listItem',
           body: selectedItem.id,

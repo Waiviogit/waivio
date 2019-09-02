@@ -22,9 +22,10 @@ class CampaignFooter extends React.Component {
     user: PropTypes.shape().isRequired,
     post: PropTypes.shape().isRequired,
     postState: PropTypes.shape().isRequired,
-    buttonsLayout: PropTypes.shape().isRequired,
     rewardFund: PropTypes.shape().isRequired,
+    proposedWobj: PropTypes.shape().isRequired,
     requiredObjectPermlink: PropTypes.string.isRequired,
+    requiredObjectName: PropTypes.string.isRequired,
     rate: PropTypes.number.isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
     votePost: PropTypes.func.isRequired,
@@ -129,13 +130,16 @@ class CampaignFooter extends React.Component {
   }
 
   clickMenuItem(key) {
-    const { post } = this.props;
+    const { post, proposedWobj } = this.props;
     switch (key) {
       case 'follow':
         this.handleFollowClick(post);
         break;
       case 'followObject':
         this.handleFollowObjectClick(post);
+        break;
+      case 'release':
+        this.discardPr(proposedWobj);
         break;
       default:
     }
@@ -183,8 +187,9 @@ class CampaignFooter extends React.Component {
       saving,
       singlePostVew,
       pendingFollowObject,
-      buttonsLayout,
+      proposedWobj,
       requiredObjectPermlink,
+      requiredObjectName,
     } = this.props;
 
     return (
@@ -208,8 +213,10 @@ class CampaignFooter extends React.Component {
               onEditClick={this.handleEditClick}
               onCommentClick={this.toggleCommentsVisibility}
               handlePostPopoverMenuClick={this.handlePostPopoverMenuClick}
-              buttonsLayout={buttonsLayout}
               requiredObjectPermlink={requiredObjectPermlink}
+              requiredObjectName={requiredObjectName}
+              proposedObjectName={proposedWobj.name}
+              proposedObjectPermlink={proposedWobj.author_permlink}
             />
           )}
         </div>
