@@ -17,6 +17,8 @@ class MapWrap extends React.Component {
     getAreaSearchData: PropTypes.func,
     userLocation: PropTypes.shape().isRequired,
     isFilterOn: PropTypes.bool,
+    customControl: PropTypes.node,
+    onCustomControlClick: PropTypes.func,
   };
 
   static defaultProps = {
@@ -24,6 +26,8 @@ class MapWrap extends React.Component {
     userLocation: {},
     center: [],
     isFilterOn: false,
+    customControl: null,
+    onCustomControlClick: () => {},
   };
 
   state = {
@@ -48,8 +52,21 @@ class MapWrap extends React.Component {
     this.setState({ center, zoom });
   };
 
+  handleCustomControlClick = () => {
+    const { zoom, center } = this.state;
+    const { onCustomControlClick } = this.props;
+    if (_.isEmpty(center)) {
+      onCustomControlClick({
+        radius: 500000000,
+        coordinates: [+this.props.userLocation.lat, +this.props.userLocation.lon],
+      });
+    } else {
+      onCustomControlClick({ radius: calculateAreaRadius(zoom, 270, center), coordinates: center });
+    }
+  };
+
   render() {
-    const { intl, userLocation, onMarkerClick, wobjects, isFilterOn } = this.props;
+    const { intl, userLocation, onMarkerClick, wobjects, isFilterOn, customControl } = this.props;
     return (
       <div className="map-wrap">
         <div className="map-wrap__header">
@@ -85,6 +102,8 @@ class MapWrap extends React.Component {
             userLocation={userLocation}
             onMarkerClick={onMarkerClick}
             setArea={this.setArea}
+            customControl={customControl}
+            onCustomControlClick={this.handleCustomControlClick}
           />
         )}
       </div>

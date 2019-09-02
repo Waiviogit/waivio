@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { Icon } from 'antd';
 import { isEmpty, memoize } from 'lodash';
 import { isNeedFilters } from '../helper';
 import {
@@ -13,6 +14,7 @@ import {
   getHasMap,
 } from '../../reducers';
 import { setFiltersAndLoad } from '../../objectTypes/objectTypeActions';
+import { setMapFullscreenMode } from '../../components/Maps/mapActions';
 import { getCoordinates } from '../../user/userActions';
 import MapWrap from '../../components/Maps/MapWrap/MapWrap';
 import FiltersContainer from './FiltersContainer';
@@ -33,6 +35,11 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
 
   const setSearchArea = map => dispatch(setFiltersAndLoad({ ...activeFilters, map }));
 
+  const handleMapSearchClick = map => {
+    setSearchArea(map);
+    dispatch(setMapFullscreenMode(false));
+  };
+
   const handleMapMarkerClick = permlink => history.push(`/object/${permlink}`);
 
   const wobjectsWithMap = wobjects.filter(wobj => !isEmpty(wobj.map));
@@ -47,6 +54,8 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
           getAreaSearchData={setSearchArea}
           userLocation={userLocation}
           isFilterOn={'map' in activeFilters}
+          customControl={<Icon type="search" style={{ fontSize: '25px', color: '#000000' }} />}
+          onCustomControlClick={handleMapSearchClick}
         />
       ) : null}
       {!isEmpty(filters) ? (
