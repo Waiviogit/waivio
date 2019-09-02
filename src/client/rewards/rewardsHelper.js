@@ -39,9 +39,6 @@ export const preparePropositionReqData = ({
     case 'history':
       reqData.status = ['inactive', 'expired', 'deleted', 'payed'];
       break;
-    case 'created':
-      reqData.guideName = username;
-      break;
     case 'reserved':
       reqData.userName = username;
       reqData.approved = true;

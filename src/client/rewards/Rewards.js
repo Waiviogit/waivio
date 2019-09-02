@@ -102,9 +102,9 @@ class Rewards extends React.Component {
       const { username } = this.props;
       const { radius, coordinates, sort, activeFilters } = this.state;
       if (
-        (match.params.filterKey !== this.props.match.params.filterKey ||
-          nextProps.match.params.campaignParent !== this.props.match.params.campaignParent) &&
-        username
+        match.params.filterKey !== this.props.match.params.filterKey ||
+        nextProps.match.params.campaignParent !== this.props.match.params.campaignParent ||
+        nextProps.username !== username
       ) {
         this.setState({ loadingCampaigns: true }, () => {
           this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
@@ -350,7 +350,10 @@ class Rewards extends React.Component {
       );
     }
     return `${intl.formatMessage(
-      { id: 'noProposition', defaultMessage: `There are no propositions` },
+      {
+        id: 'noProposition',
+        defaultMessage: `No reward matches the criteria for user @{userName}`,
+      },
       { userName },
     )}`;
   };

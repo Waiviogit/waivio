@@ -7,8 +7,6 @@ import CampaingRewardsTableRow from './CampaingRewardsTableBodyRow';
 
 const CampaingRewardsTable = props => {
   const { intl, campaigns, activateCampaign } = props;
-  const isChecked = campaigns.status === 'active' || campaigns.status === 'payed';
-
   return (
     <div>
       <table className="Campaing-rewards">
@@ -86,7 +84,6 @@ const CampaingRewardsTable = props => {
               // eslint-disable-next-line no-underscore-dangle
               key={current._id}
               currentItem={current}
-              checked={isChecked}
             />
           ))}
         </tbody>
