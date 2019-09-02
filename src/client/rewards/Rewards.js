@@ -39,6 +39,7 @@ import Manage from './Manage/Manage';
 import RewardBreadcrumb from './RewardsBreadcrumb/RewardBreadcrumb';
 import SortSelector from '../components/SortSelector/SortSelector';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
+import MatchBot from './MatchBot/MatchBot';
 
 @withRouter
 @injectIntl
@@ -396,7 +397,10 @@ class Rewards extends React.Component {
       );
     } else if (location.pathname === '/rewards/manage') {
       return <Manage intl={intl} userName={username} />;
+    } else if (location.pathname === '/rewards/match-bot') {
+      return <MatchBot intl={intl} userName={username} />;
     }
+
     return this.getCampaignsLayout(
       hasMore,
       IsRequiredObjectWrap,
@@ -434,7 +438,7 @@ class Rewards extends React.Component {
             </div>
           </Affix>
           <div className="center">{this.campaignItemsWrap(location)}</div>
-          {location.pathname !== '/rewards/manage' && (
+          {location.pathname !== '/rewards/manage' && location.pathname !== '/rewards/match-bot' && (
             <Affix className="rightContainer leftContainer__user" stickPosition={122}>
               <div className="right">
                 {!_.isEmpty(this.props.userLocation) && !isCreate && (

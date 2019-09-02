@@ -16,6 +16,7 @@ const LeftSidebar = () => (
     <Route path="/rewards/all" component={SidenavRewards} />
     <Route path="/rewards/create" component={SidenavRewards} />
     <Route path="/rewards/manage" component={SidenavRewards} />
+    <Route path="/rewards/match-bot" component={SidenavRewards} />
     <Route path="/discover-objects/:typeName" component={SidenavDiscoverObjects} />
     <Route path="/replies" component={ObjectTypes} />
     <Route path="/bookmarks" component={SidenavUser} />
