@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { isEmpty, memoize, omit } from 'lodash';
+import { isEmpty, memoize } from 'lodash';
 import { isNeedFilters } from '../helper';
 import {
   getAvailableFilters,
@@ -31,13 +31,7 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
     dispatch(getCoordinates());
   }
 
-  const setSearchArea = map => {
-    const updatedFilters =
-      map.radius === 0 && isEmpty(map.coordinates)
-        ? omit(activeFilters, ['map'])
-        : { ...activeFilters, map };
-    dispatch(setFiltersAndLoad(updatedFilters));
-  };
+  const setSearchArea = map => dispatch(setFiltersAndLoad({ ...activeFilters, map }));
 
   const handleMapMarkerClick = permlink => history.push(`/object/${permlink}`);
 
@@ -52,6 +46,7 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
           onMarkerClick={handleMapMarkerClick}
           getAreaSearchData={setSearchArea}
           userLocation={userLocation}
+          isFilterOn={'map' in activeFilters}
         />
       ) : null}
       {!isEmpty(filters) ? (

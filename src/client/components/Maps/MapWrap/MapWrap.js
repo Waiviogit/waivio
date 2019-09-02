@@ -16,40 +16,32 @@ class MapWrap extends React.Component {
     onMarkerClick: PropTypes.func.isRequired,
     getAreaSearchData: PropTypes.func,
     userLocation: PropTypes.shape().isRequired,
+    isFilterOn: PropTypes.bool,
   };
 
   static defaultProps = {
     getAreaSearchData: () => {},
     userLocation: {},
     center: [],
+    isFilterOn: false,
   };
 
   state = {
-    isFilterOn: false,
     center: [],
     zoom: 8,
   };
 
   getAreaSearchData = () => {
-    const { zoom, center, isFilterOn } = this.state;
+    const { zoom, center } = this.state;
     const { getAreaSearchData } = this.props;
-    if (!isFilterOn) {
-      if (_.isEmpty(center)) {
-        getAreaSearchData({
-          radius: 500000000,
-          coordinates: [+this.props.userLocation.lat, +this.props.userLocation.lon],
-        });
-      } else {
-        getAreaSearchData({ radius: calculateAreaRadius(zoom, 270, center), coordinates: center });
-      }
-    } else {
+    if (_.isEmpty(center)) {
       getAreaSearchData({
-        radius: 0,
-        coordinates: [],
+        radius: 500000000,
+        coordinates: [+this.props.userLocation.lat, +this.props.userLocation.lon],
       });
+    } else {
+      getAreaSearchData({ radius: calculateAreaRadius(zoom, 270, center), coordinates: center });
     }
-
-    this.setState({ isFilterOn: !isFilterOn });
   };
 
   setArea = ({ center, zoom }) => {
@@ -57,8 +49,7 @@ class MapWrap extends React.Component {
   };
 
   render() {
-    const { intl, userLocation, onMarkerClick, wobjects } = this.props;
-    const { isFilterOn } = this.state;
+    const { intl, userLocation, onMarkerClick, wobjects, isFilterOn } = this.props;
     return (
       <div className="map-wrap">
         <div className="map-wrap__header">
