@@ -30,6 +30,7 @@ export const preparePropositionReqData = ({
   switch (match.params.filterKey) {
     case 'active':
       reqData.userName = username;
+      reqData.approved = false;
       break;
     case 'history':
       reqData.status = ['inactive', 'expired', 'deleted', 'payed'];
