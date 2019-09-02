@@ -611,7 +611,7 @@
   "monthly": "Monthly",
   "payable": "Payable",
   "paid": "Paid",
-  "balanace": "Balanace",
+  "balance": "Balance",
   "campaigns_be_suspended": "All campaigns will be suspended if",
   "accounts_payable_exeed": "accounts payable exeed 30 days",
   "remaining_balance_is_not_sufficient": "the remaining balance is not sufficient to cover outstanding obligations",
@@ -676,5 +676,9 @@
   "way_user_receive_SBD_rewards": "This way, the user will receive 0.50 SBD in author's rewards and the direct payment can be reduced to 4.50 SBD",
   "third_party_campaign_sponsors_must_pre_register_match_bot_sponsor_in_campaign": "Important: Third-party campaign sponsors must pre-register match bot sponsor in each campaign so that its vote value is subtracted from the direct obligations",
   "minimum_voting_power": "Minimum voting power: 80% (change)",
-  "match_bot_will_upvote_eligible_posts_only_if_VP": "Match bot will upvote eligible posts only if VP on the account exceeds the set value"
+  "match_bot_will_upvote_eligible_posts_only_if_VP": "Match bot will upvote eligible posts only if VP on the account exceeds the set value",
+  "sponsor": "Sponsor",
+  "upvote": "Upvote",
+  "action": "Action",
+  "notes": "Notes"
 }
