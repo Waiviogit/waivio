@@ -1,10 +1,11 @@
 import { Checkbox, Modal, message } from 'antd';
 import { Link } from 'react-router-dom';
 import React, { useState } from 'react';
+import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import './CampaingRewardsTable.less';
 
-const CampaingRewardsTableRow = ({ currentItem, activateCampaign }) => {
+const CampaingRewardsTableRow = ({ currentItem, activateCampaign, intl }) => {
   const [isModalOpen, toggleModal] = useState(false);
   const [isLoading, setLoad] = useState(false);
   const isChecked = currentItem.status === 'active' || currentItem.status === 'payed';
@@ -52,7 +53,10 @@ const CampaingRewardsTableRow = ({ currentItem, activateCampaign }) => {
       </tr>
       <Modal
         closable
-        title={`Activate campaign?`}
+        title={intl.formatMessage({
+          id: 'activate_campaign',
+          defaultMessage: `Activate rewards campaign`,
+        })}
         maskClosable={false}
         visible={isModalOpen}
         onOk={activateCamp}
@@ -62,7 +66,10 @@ const CampaingRewardsTableRow = ({ currentItem, activateCampaign }) => {
           toggleModal(false);
         }}
       >
-        Activate?
+        {intl.formatMessage({
+          id: 'campaign_terms',
+          defaultMessage: `The terms and conditions of the rewards campaign {campaignName} will be published on Steem blockchain`,
+        })}
       </Modal>
     </React.Fragment>
   );
@@ -71,6 +78,7 @@ const CampaingRewardsTableRow = ({ currentItem, activateCampaign }) => {
 CampaingRewardsTableRow.propTypes = {
   activateCampaign: PropTypes.func.isRequired,
   currentItem: PropTypes.shape().isRequired,
+  intl: PropTypes.shape().isRequired,
 };
 
-export default CampaingRewardsTableRow;
+export default injectIntl(CampaingRewardsTableRow);
