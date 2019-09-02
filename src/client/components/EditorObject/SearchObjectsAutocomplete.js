@@ -38,6 +38,7 @@ class SearchObjectsAutocomplete extends Component {
     disabled: false,
     placeholder: '',
     parentPermlink: '',
+    autoFocus: true,
   };
 
   static propTypes = {
@@ -57,6 +58,7 @@ class SearchObjectsAutocomplete extends Component {
     disabled: PropTypes.bool,
     placeholder: PropTypes.string,
     parentPermlink: PropTypes.string,
+    autoFocus: PropTypes.bool,
   };
 
   constructor(props) {
@@ -120,7 +122,15 @@ class SearchObjectsAutocomplete extends Component {
   }
   render() {
     const { searchString } = this.state;
-    const { intl, style, searchObjectsResults, itemsIdsToOmit, allowClear, disabled } = this.props;
+    const {
+      intl,
+      style,
+      searchObjectsResults,
+      itemsIdsToOmit,
+      allowClear,
+      disabled,
+      autoFocus,
+    } = this.props;
     const searchObjectsOptions = searchString
       ? searchObjectsResults
           .filter(obj => !itemsIdsToOmit.includes(obj.id))
@@ -148,7 +158,7 @@ class SearchObjectsAutocomplete extends Component {
         }
         value={searchString}
         allowClear={allowClear}
-        autoFocus
+        autoFocus={autoFocus}
         disabled={disabled}
       >
         {searchObjectsOptions}

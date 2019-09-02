@@ -20,6 +20,7 @@ import './CreateReward.less';
 import ReviewObjectItem from './ReviewObjectItem';
 import OBJECT_TYPE from '../../object/const/objectTypes';
 import TargetDaysTable from './TargetDaysTable/TargetDaysTable';
+import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 
 const { Option } = Select;
 
@@ -553,7 +554,7 @@ class CreateRewardForm extends React.Component {
             defaultMessage: 'Registered upvoting accounts besides @sponsor (optional)',
           })}
         </div>
-
+        <SearchUsersAutocomplete />
         <Form.Item
           label={intl.formatMessage({
             id: 'reservation_period',
@@ -688,6 +689,7 @@ class CreateRewardForm extends React.Component {
           isPermlinkValue={false}
           disabled={loading || _.isEmpty(this.state.requiredObject)}
           parentPermlink={this.state.parentPermlink}
+          autoFocus={false}
         />
         <div
           className={classNames('CreateReward__object-message-validate', {
@@ -894,6 +896,7 @@ class CreateRewardForm extends React.Component {
           objectType={OBJECT_TYPE.PAGE}
           isPermlinkValue={false}
           disabled={loading}
+          autoFocus={false}
         />
         <div className="CreateReward__objects-wrap">
           {_.map(this.state.pageObjects, obj => (
