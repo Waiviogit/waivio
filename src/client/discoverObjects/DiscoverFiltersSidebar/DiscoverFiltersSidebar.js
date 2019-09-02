@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { isEmpty, memoize, omit } from 'lodash';
@@ -72,4 +73,4 @@ DiscoverFiltersSidebar.propTypes = {
   match: PropTypes.shape().isRequired,
 };
 
-export default injectIntl(DiscoverFiltersSidebar);
+export default injectIntl(withRouter(DiscoverFiltersSidebar));
