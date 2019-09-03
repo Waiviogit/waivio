@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import './Manage.less';
 import * as ApiClient from '../../../waivioApi/ApiClient';
-import CampaingRewardsTable from './CampaingRewardsTable/CampaingRewardsTable';
+import CampaignRewardsTable from './CampaignRewardsTable/CampaignRewardsTable';
 import BalanceTable from './BalanceTable/BalanceTable';
 import { activateCampaign } from '../../user/userActions';
 
@@ -128,7 +128,7 @@ class Manage extends React.Component {
                 defaultMessage: `Manage rewards campaign`,
               })}
             </div>
-            <CampaingRewardsTable
+            <CampaignRewardsTable
               activateCampaign={activateCampaign}
               intl={intl}
               campaigns={campaigns}

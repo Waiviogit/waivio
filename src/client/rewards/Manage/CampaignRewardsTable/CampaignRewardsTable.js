@@ -2,77 +2,71 @@ import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import '../Manage.less';
-import './CampaingRewardsTable.less';
-import CampaingRewardsTableRow from './CampaingRewardsTableBodyRow';
+import './CampaignRewardsTable.less';
+import CampaingRewardsTableRow from './CampaignRewardsTableBodyRow';
 
-const CampaingRewardsTable = props => {
+const CampaignRewardsTable = props => {
   const { intl, campaigns, activateCampaign } = props;
   return (
     <div>
-      <table className="Campaing-rewards">
+      <table className="Campaign-rewards">
         <thead>
           <tr>
-            <th className="Campaing-rewards basicWidth" rowSpan="3">
+            <th className="Campaign-rewards basicWidth" rowSpan="3">
               {intl.formatMessage({
                 id: 'active',
                 defaultMessage: `Active`,
               })}
             </th>
-            <th className="Campaing-rewards maxWidth" rowSpan="3">
+            <th className="Campaign-rewards maxWidth" rowSpan="3">
               {intl.formatMessage({
                 id: 'campaing',
-                defaultMessage: `Campaing`,
+                defaultMessage: `Campaign`,
               })}
             </th>
-            <th className="Campaing-rewards basicWidth" rowSpan="3">
+            <th className="Campaign-rewards basicWidth" rowSpan="3">
               {intl.formatMessage({ id: 'edit', defaultMessage: `Edit` })}
               ***
             </th>
-            <th className="Campaing-rewards mediumWidth" rowSpan="3">
+            <th className="Campaign-rewards mediumWidth" rowSpan="3">
               {intl.formatMessage({
                 id: 'status',
                 defaultMessage: `Status`,
               })}
             </th>
-            <th className="Campaing-rewards basicWidth" rowSpan="3">
+            <th className="Campaign-rewards basicWidth" rowSpan="3">
               {intl.formatMessage({
                 id: 'type',
                 defaultMessage: `Type`,
               })}
             </th>
-            <th className="Campaing-rewards hide-element" colSpan="2">
+            <th className="Campaign-rewards hide-element" colSpan="2">
               {intl.formatMessage({ id: 'budget_target', defaultMessage: `Budget target` })}
               ****
             </th>
-            <th className="Campaing-rewards hide-element" colSpan="3">
+            <th className="Campaign-rewards hide-element" colSpan="3">
               {intl.formatMessage({ id: 'current_month', defaultMessage: `Current month` })}
             </th>
-            <th className="Campaing-rewards mediumWidth hide-element" rowSpan="3">
+            <th className="Campaign-rewards mediumWidth hide-element" rowSpan="3">
               {intl.formatMessage({ id: 'remaining', defaultMessage: `Remaining` })}
             </th>
           </tr>
           <tr>
-            <th className="Campaing-rewards basicWidth hide-element" rowSpan="2">
+            <th className="Campaign-rewards basicWidth hide-element" rowSpan="2">
               <p>{intl.formatMessage({ id: 'monthly', defaultMessage: `Monthly` })}</p>
               <p>(SBD)</p>
             </th>
-            <th className="Campaing-rewards basicWidth hide-element" rowSpan="2">
+            <th className="Campaign-rewards basicWidth hide-element" rowSpan="2">
               <p>{intl.formatMessage({ id: 'reward', defaultMessage: `Reward` })}</p>
               <p>(SBD)</p>
             </th>
-            <th className="Campaing-rewards basicWidth hide-element" rowSpan="2">
+            <th className="Campaign-rewards basicWidth hide-element" rowSpan="2">
               {intl.formatMessage({ id: 'reserved', defaultMessage: `Reserved` })}
             </th>
-            <th className="Campaing-rewards basicWidth hide-element" rowSpan="2">
+            <th className="Campaign-rewards basicWidth hide-element" rowSpan="2">
               {intl.formatMessage({
                 id: 'payable',
                 defaultMessage: `Payable`,
-              })}
-            </th>
-            <th className="Campaing-rewards basicWidth hide-element" rowSpan="2">
-              {intl.formatMessage({
-                id: 'paid',
-                defaultMessage: `Paid`,
               })}
             </th>
           </tr>
@@ -92,15 +86,15 @@ const CampaingRewardsTable = props => {
   );
 };
 
-CampaingRewardsTable.propTypes = {
+CampaignRewardsTable.propTypes = {
   campaigns: PropTypes.arrayOf(PropTypes.shape()),
   intl: PropTypes.shape(),
   activateCampaign: PropTypes.func.isRequired,
 };
 
-CampaingRewardsTable.defaultProps = {
+CampaignRewardsTable.defaultProps = {
   campaigns: [],
   intl: {},
 };
 
-export default CampaingRewardsTable;
+export default CampaignRewardsTable;
