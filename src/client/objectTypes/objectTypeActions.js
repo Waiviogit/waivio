@@ -24,18 +24,15 @@ export const getObjectType = (name, { limit = 15, skip = 0 } = { limit: 15, skip
   dispatch({
     type: GET_OBJECT_TYPE.ACTION,
     payload: ApiClient.getObjectType(name, { limit, skip, filter: activeFilters, sort }),
+    meta: {
+      initialLoad: skip === 0,
+    },
   });
 };
 
 export const clearType = () => dispatch => {
   dispatch({ type: CLEAR_OBJECT_TYPE });
   return Promise.resolve();
-};
-
-export const getObjectTypeInitial = name => dispatch => {
-  dispatch(clearType()).then(() => {
-    dispatch(getObjectType(name));
-  });
 };
 
 export const setActiveFilters = filters => dispatch => {
