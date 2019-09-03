@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import './MatchBot.less';
 import MatchBotTable from './MatchBotTable/MatchBotTable';
 
@@ -82,6 +83,15 @@ const MatchBot = ({ intl }) => {
           '{id:1, isActive: true, name: "sponsor_1", upvote: 100, action: "edit", notes: "some note"}'
         }
       </div>
+      <button className="MatchBot__button">
+        {/* Mock link */}
+        <Link to={`/rewards/create-rule`}>
+          {intl.formatMessage({
+            id: 'createNewCampaign',
+            defaultMessage: `Create new rule`,
+          })}{' '}
+        </Link>
+      </button>
     </div>
   );
 };
