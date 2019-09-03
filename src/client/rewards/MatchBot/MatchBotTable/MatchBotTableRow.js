@@ -1,6 +1,7 @@
 import React from 'react';
 import { Checkbox } from 'antd';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 const MatchBotTableRow = ({ sponsor }) => (
   <React.Fragment>
@@ -10,7 +11,11 @@ const MatchBotTableRow = ({ sponsor }) => (
       </td>
       <td>{sponsor.name}</td>
       <td>{sponsor.upvote}%</td>
-      <td>{sponsor.action}</td>
+      <td>
+        <Link to={`/rewards/edit-rule`} title={'Edit'}>
+          <span>{sponsor.action}</span>
+        </Link>
+      </td>
       <td>{sponsor.notes}</td>
     </tr>
   </React.Fragment>
