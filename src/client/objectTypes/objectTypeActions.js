@@ -1,5 +1,5 @@
 import { createAsyncActionType } from '../helpers/stateHelpers';
-import { getActiveFilters, getTypeName, getObjectTypeSorting } from '../reducers';
+import { getActiveFilters, getTypeName, getObjectTypeSorting, getUserLocation } from '../reducers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 
 export const GET_OBJECT_TYPE = createAsyncActionType('@objectType/GET_OBJECT_TYPE');
@@ -12,23 +12,27 @@ export const getObjectType = (name, { limit = 15, skip = 0 } = { limit: 15, skip
   getState,
 ) => {
   const state = getState();
-  const activeFilters = getActiveFilters(state);
+  const activeFilters = { ...getActiveFilters(state) };
   const sort = getObjectTypeSorting(state);
+  if (sort === 'proximity' && !activeFilters.map) {
+    const userLocation = getUserLocation(state);
+    activeFilters.map = {
+      coordinates: [Number(userLocation.lat), Number(userLocation.lon)],
+      radius: 50000000,
+    };
+  }
   dispatch({
     type: GET_OBJECT_TYPE.ACTION,
     payload: ApiClient.getObjectType(name, { limit, skip, filter: activeFilters, sort }),
+    meta: {
+      initialLoad: skip === 0,
+    },
   });
 };
 
 export const clearType = () => dispatch => {
   dispatch({ type: CLEAR_OBJECT_TYPE });
   return Promise.resolve();
-};
-
-export const getObjectTypeInitial = name => dispatch => {
-  dispatch(clearType()).then(() => {
-    dispatch(getObjectType(name));
-  });
 };
 
 export const setActiveFilters = filters => dispatch => {

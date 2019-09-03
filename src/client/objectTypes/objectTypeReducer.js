@@ -26,6 +26,12 @@ const objectType = (state = initialState, action) => {
         filters,
         ...data
       } = action.payload;
+      let filteredObjects = [
+        ...state.filteredObjects,
+        ...relatedWobjects.map(wObj => getClientWObj(wObj)),
+      ];
+      if (action.meta.initialLoad)
+        filteredObjects = relatedWobjects.map(wObj => getClientWObj(wObj));
       const filtersList = filters ? omit(filters, ['map']) : {};
       const activeFilters = isEmpty(state.activeFilters)
         ? reduce(
@@ -43,10 +49,7 @@ const objectType = (state = initialState, action) => {
         filtersList,
         activeFilters,
         map: Boolean(filters && !isEmpty(filters.map)),
-        filteredObjects: [
-          ...state.filteredObjects,
-          ...relatedWobjects.map(wObj => getClientWObj(wObj)),
-        ],
+        filteredObjects,
         hasMoreRelatedObjects: Boolean(hasMoreWobjects),
         fetching: false,
       };
