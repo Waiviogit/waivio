@@ -7,7 +7,7 @@ import { size } from 'lodash';
 import { getCurrentLocation, getObjectTypesList, getObjectTypesLoading } from '../reducers';
 import SkeletonCustom from '../components/Skeleton/SkeletonCustom';
 
-const typesLimit = 9;
+const typesLimit = 29;
 const SidenavDiscoverObjects = ({ withTitle }) => {
   // redux-store
   const { pathname } = useSelector(getCurrentLocation);
