@@ -5,6 +5,10 @@
 .discover-objects-header {
   padding: 0 12px;
 
+  .SortSelector {
+    align-self: flex-end;
+  }
+
   &__title {
     font-weight: 500;
     @media @medium, @large {
@@ -35,6 +39,13 @@
   &__tags-block {
     @media @small, @medium, @large {
       display: none;
+    }
+    &.common {
+      display: none;
+
+      @media @small, @medium, @large {
+        display: block;
+      }
     }
   }
 }

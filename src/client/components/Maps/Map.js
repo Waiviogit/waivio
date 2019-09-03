@@ -139,7 +139,7 @@ class MapOS extends React.Component {
   );
 
   render() {
-    const { heigth, isFullscreenMode } = this.props;
+    const { heigth, isFullscreenMode, customControl, onCustomControlClick } = this.props;
     const { markersLayout, infoboxData, zoom, center } = this.state;
     return center ? (
       <div className="MapOS">
@@ -183,6 +183,15 @@ class MapOS extends React.Component {
               <div role="presentation" className="MapOS__fullScreen" onClick={this.toggleModal}>
                 <Icon type="fullscreen-exit" style={{ fontSize: '25px', color: '#000000' }} />
               </div>
+              {customControl && typeof onCustomControlClick === 'function' ? (
+                <div
+                  role="presentation"
+                  className="MapOS__icon-customized"
+                  onClick={onCustomControlClick}
+                >
+                  {customControl}
+                </div>
+              ) : null}
             </div>
           </Modal>
         )}
@@ -194,21 +203,27 @@ class MapOS extends React.Component {
 }
 
 MapOS.propTypes = {
-  isFullscreenMode: PropTypes.bool.isRequired,
+  isFullscreenMode: PropTypes.bool,
   heigth: PropTypes.number,
   userLocation: PropTypes.shape(),
   wobjects: PropTypes.arrayOf(PropTypes.shape()),
+  customControl: PropTypes.node,
+  onCustomControlClick: PropTypes.func,
   setArea: PropTypes.func,
-  setMapFullscreenMode: PropTypes.func.isRequired,
+  setMapFullscreenMode: PropTypes.func,
 };
 
 MapOS.defaultProps = {
   ...defaultCoords,
+  isFullscreenMode: false,
   markers: {},
   wobjects: [],
-  setArea: () => {},
   heigth: 200,
   userLocation: {},
+  customControl: null,
+  setArea: () => {},
+  setMapFullscreenMode: () => {},
+  onCustomControlClick: () => {},
 };
 
 export default MapOS;

@@ -461,7 +461,7 @@ class CreateRewardForm extends React.Component {
           })(<Input type="number" disabled={loading} />)}
           {intl.formatMessage({
             id: 'days',
-            defaultMessage: 'Days',
+            defaultMessage: 'days',
           })}
         </Form.Item>
         <div className="CreateReward__block-title">

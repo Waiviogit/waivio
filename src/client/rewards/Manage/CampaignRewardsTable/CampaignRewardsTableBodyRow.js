@@ -1,10 +1,11 @@
 import { Checkbox, Modal, message } from 'antd';
 import { Link } from 'react-router-dom';
 import React, { useState } from 'react';
+import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import './CampaingRewardsTable.less';
+import './CampaignRewardsTable.less';
 
-const CampaingRewardsTableRow = ({ currentItem, activateCampaign }) => {
+const CampaignRewardsTableRow = ({ currentItem, activateCampaign, intl }) => {
   const [isModalOpen, toggleModal] = useState(false);
   const [isLoading, setLoad] = useState(false);
   const isChecked = currentItem.status === 'active' || currentItem.status === 'payed';
@@ -43,16 +44,18 @@ const CampaingRewardsTableRow = ({ currentItem, activateCampaign }) => {
         </td>
         <td>{currentItem.status}</td>
         <td>{currentItem.type}</td>
-        <td className="Campaing-rewards hide-element">{currentItem.budget.toFixed(2)}</td>
-        <td className="Campaing-rewards hide-element">{currentItem.reward.toFixed(2)}</td>
-        <td className="Campaing-rewards hide-element">{currentItem.reserved}</td>
-        <td className="Campaing-rewards hide-element">{currentItem.payable}</td>
-        <td className="Campaing-rewards hide-element">{currentItem.payed}</td>
-        <td className="Campaing-rewards hide-element">{currentItem.remaining}</td>
+        <td className="Campaign-rewards hide-element">{currentItem.budget.toFixed(2)}</td>
+        <td className="Campaign-rewards hide-element">{currentItem.reward.toFixed(2)}</td>
+        <td className="Campaign-rewards hide-element">{currentItem.reserved}</td>
+        <td className="Campaign-rewards hide-element">{currentItem.payable}</td>
+        <td className="Campaign-rewards hide-element">{currentItem.remaining}</td>
       </tr>
       <Modal
         closable
-        title={`Activate campaign?`}
+        title={intl.formatMessage({
+          id: 'activate_campaign',
+          defaultMessage: `Activate rewards campaign`,
+        })}
         maskClosable={false}
         visible={isModalOpen}
         onOk={activateCamp}
@@ -62,15 +65,24 @@ const CampaingRewardsTableRow = ({ currentItem, activateCampaign }) => {
           toggleModal(false);
         }}
       >
-        Activate?
+        {intl.formatMessage(
+          {
+            id: 'campaign_terms',
+            defaultMessage: `The terms and conditions of the rewards campaign ${currentItem.name} will be published on Steem blockchain`,
+          },
+          {
+            campaignName: currentItem.name,
+          },
+        )}
       </Modal>
     </React.Fragment>
   );
 };
 
-CampaingRewardsTableRow.propTypes = {
+CampaignRewardsTableRow.propTypes = {
   activateCampaign: PropTypes.func.isRequired,
   currentItem: PropTypes.shape().isRequired,
+  intl: PropTypes.shape().isRequired,
 };
 
-export default CampaingRewardsTableRow;
+export default injectIntl(CampaignRewardsTableRow);
