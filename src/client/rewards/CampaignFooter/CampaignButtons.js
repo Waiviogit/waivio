@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import take from 'lodash/take';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
 import { Link } from 'react-router-dom';
-import { Icon } from 'antd';
+import { Button, Icon } from 'antd';
 import classNames from 'classnames';
 import withAuthActions from '../../auth/withAuthActions';
 import { sortVotes } from '../../helpers/sortHelpers';
@@ -27,9 +27,11 @@ export default class CampaignButtons extends React.Component {
     intl: PropTypes.shape().isRequired,
     post: PropTypes.shape().isRequired,
     postState: PropTypes.shape().isRequired,
-    buttonsLayout: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
     requiredObjectPermlink: PropTypes.string.isRequired,
+    requiredObjectName: PropTypes.string.isRequired,
+    proposedObjectPermlink: PropTypes.string.isRequired,
+    proposedObjectName: PropTypes.string.isRequired,
     onActionInitiated: PropTypes.func.isRequired,
     pendingLike: PropTypes.bool,
     pendingFollow: PropTypes.bool,
@@ -146,6 +148,18 @@ export default class CampaignButtons extends React.Component {
       </PopoverMenuItem>,
     ];
 
+    popoverMenu = [
+      ...popoverMenu,
+      <PopoverMenuItem key="release" disabled={pendingFollow}>
+        <i
+          className={classNames('iconfont', {
+            'icon-flag': !postState.isReported,
+            'icon-flag_fill': postState.isReported,
+          })}
+        />
+        {this.props.intl.formatMessage({ id: 'unfollow_username', defaultMessage: 'Release' })}
+      </PopoverMenuItem>,
+    ];
     return (
       <Popover
         placement="bottomRight"
@@ -162,7 +176,17 @@ export default class CampaignButtons extends React.Component {
   }
 
   render() {
-    const { intl, post, postState, pendingLike, defaultVotePercent, buttonsLayout } = this.props;
+    const {
+      intl,
+      post,
+      postState,
+      pendingLike,
+      defaultVotePercent,
+      requiredObjectPermlink,
+      requiredObjectName,
+      proposedObjectPermlink,
+      proposedObjectName,
+    } = this.props;
 
     const isAppend = !!this.props.post.append_field_name;
 
@@ -233,7 +257,16 @@ export default class CampaignButtons extends React.Component {
     return (
       <div className="Buttons">
         <React.Fragment>
-          {buttonsLayout}
+          <Button
+            className="WriteReview-button"
+            href={`/editor?object=[${requiredObjectName}](${requiredObjectPermlink})&object=[${proposedObjectName}](${proposedObjectPermlink})`}
+            type="primary"
+          >
+            {intl.formatMessage({
+              id: 'write_review',
+              defaultMessage: `Write a review`,
+            })}
+          </Button>
           <BTooltip title={likeTooltip}>
             <a role="presentation" className={likeClass} onClick={this.handleLikeClick}>
               {pendingLike ? (

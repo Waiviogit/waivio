@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import _, { isEmpty, omit } from 'lodash';
 import { connect } from 'react-redux';
 import { Button, Modal, Tag } from 'antd';
 import { isNeedFilters, updateActiveFilters } from './helper';
@@ -18,6 +18,7 @@ import {
 import {
   getObjectTypeInitial,
   getObjectType,
+  clearType,
   setFiltersAndLoad,
   changeSortingAndLoad,
 } from '../objectTypes/objectTypeActions';
@@ -53,6 +54,7 @@ const SORT_OPTIONS = {
   }),
   {
     dispatchGetObjectType: getObjectTypeInitial,
+    dispatchClearObjectTypeStore: clearType,
     dispatchGetObjectTypeMore: getObjectType,
     dispatchGetObjectTypes: getObjectTypes,
     dispatchSetActiveFilters: setFiltersAndLoad,
@@ -73,6 +75,7 @@ class DiscoverObjectsContent extends Component {
     isFetching: PropTypes.bool.isRequired,
     hasMoreObjects: PropTypes.bool.isRequired,
     dispatchGetObjectType: PropTypes.func.isRequired,
+    dispatchClearObjectTypeStore: PropTypes.func.isRequired,
     dispatchGetObjectTypeMore: PropTypes.func.isRequired,
     dispatchGetObjectTypes: PropTypes.func.isRequired,
     dispatchSetActiveFilters: PropTypes.func.isRequired,
@@ -100,7 +103,11 @@ class DiscoverObjectsContent extends Component {
   componentDidMount() {
     const { dispatchGetObjectType, dispatchGetObjectTypes, typeName, typesList } = this.props;
     dispatchGetObjectType(typeName);
-    if (_.isEmpty(typesList)) dispatchGetObjectTypes();
+    if (isEmpty(typesList)) dispatchGetObjectTypes();
+  }
+
+  componentWillUnmount() {
+    this.props.dispatchClearObjectTypeStore();
   }
 
   loadMoreRelatedObjects = () => {
@@ -130,6 +137,12 @@ class DiscoverObjectsContent extends Component {
     const { activeFilters, dispatchSetActiveFilters } = this.props;
     e.preventDefault();
     const updatedFilters = updateActiveFilters(activeFilters, filter, filterValue, false);
+    dispatchSetActiveFilters(updatedFilters);
+  };
+
+  resetMapFilter = () => {
+    const { activeFilters, dispatchSetActiveFilters } = this.props;
+    const updatedFilters = omit(activeFilters, ['map']);
     dispatchSetActiveFilters(updatedFilters);
   };
 
@@ -184,13 +197,30 @@ class DiscoverObjectsContent extends Component {
             </span>
             {_.size(SORT_OPTIONS) - Number(!hasMap) > 1 ? sortSelector : null}
           </div>
+          <div className="discover-objects-header__tags-block common">
+            {map && (
+              <Tag className="ttc" key="search-area-filter" closable onClose={this.resetMapFilter}>
+                {intl.formatMessage({ id: 'search_area', defaultMessage: 'Search area' })}
+              </Tag>
+            )}
+          </div>
           {isTypeHasFilters ? (
             <React.Fragment>
-              {!_.isEmpty(availableFilters) ? (
+              {!isEmpty(availableFilters) ? (
                 <div className="discover-objects-header__tags-block">
                   <span className="discover-objects-header__topic ttc">
                     {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
                   </span>
+                  {map && (
+                    <Tag
+                      className="ttc"
+                      key="search-area-filter"
+                      closable
+                      onClose={this.resetMapFilter}
+                    >
+                      {intl.formatMessage({ id: 'search_area', defaultMessage: 'Search area' })}
+                    </Tag>
+                  )}
                   {_.map(chosenFilters, (filterValues, filterName) =>
                     filterValues.map(filterValue => (
                       <Tag
@@ -217,7 +247,7 @@ class DiscoverObjectsContent extends Component {
                   <Button
                     icon="compass"
                     size="large"
-                    className={_.isEmpty(map) ? 'map-btn' : 'map-btn active'}
+                    className={isEmpty(map) ? 'map-btn' : 'map-btn active'}
                     onClick={this.showMap}
                   >
                     {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
@@ -227,7 +257,7 @@ class DiscoverObjectsContent extends Component {
             </React.Fragment>
           ) : null}
         </div>
-        {!_.isEmpty(filteredObjects) ? (
+        {!isEmpty(filteredObjects) ? (
           <ReduxInfiniteScroll
             className="Feed"
             loadMore={this.loadMoreRelatedObjects}

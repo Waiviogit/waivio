@@ -1,0 +1,59 @@
+@import (reference) '../styles/custom.less';
+
+.nightmode {
+  .Rewards {
+    .RewardBreadcrumb {
+      .ant-breadcrumb-link {
+        color: @primary-color;
+        &:hover {
+          color: @color-hover-border;
+        }
+        &:not(a) {
+          color: @blue-baliHai;
+          &:hover {
+            color: @blue-baliHai;
+          }
+        }
+      }
+    }
+
+    .ant-breadcrumb-separator {
+      color: @blue-baliHai;
+    }
+
+    .RewardsHeader,
+    .RewardsFooter {
+      &-wrap {
+        background-color: @grey-nero;
+        border: @border-width-base @border-style-base @normal-grey;
+      }
+
+      &__top-line {
+        color: @blue-baliHai;
+
+        &-button {
+          border: @border-width-base @border-style-base @normal-grey;
+          color: @blue-baliHai;
+
+          &:hover {
+            border-color: @primary-color;
+            color: @primary-color;
+          }
+        }
+
+        &-button-active {
+          border-color: @primary-color !important;
+          color: @primary-color !important;
+        }
+      }
+    }
+
+    &__title {
+      color: @blue-baliHai;
+    }
+
+    &__toggler-wrap {
+      color: @blue-baliHai;
+    }
+  }
+}

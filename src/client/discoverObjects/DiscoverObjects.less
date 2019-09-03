@@ -40,6 +40,13 @@
     @media @small, @medium, @large {
       display: none;
     }
+    &.common {
+      display: none;
+
+      @media @small, @medium, @large {
+        display: block;
+      }
+    }
   }
 }
 .discover-filters-modal.ant-modal {
@@ -63,7 +70,7 @@
     text-decoration: underline;
     padding-left: 10px;
     &:hover {
-      color: @black;
+      color: @primary-color;
       cursor: pointer;
     }
   }

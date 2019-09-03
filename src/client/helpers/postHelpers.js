@@ -137,9 +137,11 @@ export function getInitialState(props) {
       title: '',
       body: props.initObjects
         ? props.initObjects.reduce((acc, curr) => {
-            const matches = curr.match(/^\[(?<name>.+)\]\((?<permlink>\S+)\)/);
-            if (matches.groups && matches.groups.name && matches.groups.permlink) {
-              return `${acc}[${matches.groups.name}](${apiConfig.production.protocol}${apiConfig.production.host}/object/${matches.groups.permlink})\n`;
+            const matches = curr.match(/^\[(.+)\]\((\S+)\)/);
+            if (matches[1] && matches[2]) {
+              return `${acc}[${matches[1]}](${apiConfig.production.protocol}${
+                apiConfig.production.host
+              }/object/${matches[2]})\n`;
             }
             return acc;
           }, '')

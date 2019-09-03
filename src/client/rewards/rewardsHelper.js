@@ -8,6 +8,7 @@ export const preparePropositionReqData = ({
   username,
   match,
   coordinates,
+  area,
   radius,
   sort,
   types,
@@ -19,8 +20,11 @@ export const preparePropositionReqData = ({
     currentUserName: username,
     sort,
   };
-  if (coordinates && coordinates.length > 0 && radius) {
+  if (coordinates && coordinates.length > 0) {
     reqData.coordinates = coordinates;
+  }
+  if (area && area.length > 0 && radius) {
+    reqData.area = area;
     reqData.radius = radius;
   }
   if (types && guideNames) {
@@ -30,12 +34,10 @@ export const preparePropositionReqData = ({
   switch (match.params.filterKey) {
     case 'active':
       reqData.userName = username;
+      reqData.approved = false;
       break;
     case 'history':
       reqData.status = ['inactive', 'expired', 'deleted', 'payed'];
-      break;
-    case 'created':
-      reqData.guideName = username;
       break;
     case 'reserved':
       reqData.userName = username;
