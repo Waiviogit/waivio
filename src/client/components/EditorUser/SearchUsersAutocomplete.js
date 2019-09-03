@@ -7,9 +7,7 @@ import _ from 'lodash';
 import { clearSearchObjectsResults, searchUsersAutoCompete } from '../../search/searchActions';
 import { getSearchUsersResults } from '../../reducers';
 import './SearchUsersAutocomplete.less';
-// import ObjectSearchCard from '../ObjectSearchCard/ObjectSearchCard';
-
-import { linkRegex } from '../../helpers/regexHelpers';
+import Avatar from '../Avatar';
 
 @injectIntl
 @connect(
@@ -26,6 +24,7 @@ class SearchUsersAutocomplete extends React.Component {
     intl: {},
     searchUsersResults: [],
     searchUsers: () => {},
+    handleSelect: () => {},
     itemsIdsToOmit: [],
     placeholder: '',
     disabled: false,
@@ -33,55 +32,47 @@ class SearchUsersAutocomplete extends React.Component {
   };
   static propTypes = {
     intl: PropTypes.shape,
-    searchUsersResults: PropTypes.shape,
+    searchUsersResults: PropTypes.arrayOf(PropTypes.shape),
     searchUsers: PropTypes.func,
+    handleSelect: PropTypes.func,
     itemsIdsToOmit: PropTypes.arrayOf(PropTypes.string),
     placeholder: PropTypes.string,
     disabled: PropTypes.bool,
     autoFocus: PropTypes.bool,
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      searchString: '',
-      isOptionSelected: false,
-    };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSearch = this.handleSearch.bind(this);
-    this.debouncedSearchByUser = this.debouncedSearchByUser.bind(this);
-    // this.handleSelect = this.handleSelect.bind(this);
-  }
+  state = {
+    searchString: '',
+    isOptionSelected: false,
+  };
 
   debouncedSearchByUser = _.debounce(searchString => this.props.searchUsers(searchString));
 
-  handleSearch(value) {
-    let val = value;
-    const link = val.match(linkRegex);
-    if (link && link.length > 0 && link[0] !== '') {
-      const permlink = link[0].split('/');
-      val = permlink[permlink.length - 1].replace('@', '');
-    }
-    if (val) {
-      this.debouncedSearchByUser(val);
-    }
-  }
+  handleSearch = value => {
+    this.debouncedSearchByUser(value);
+  };
 
-  handleChange(value) {
+  handleChange = value => {
     this.setState({ searchString: value });
-  }
+  };
+
+  handleSelect = value => {
+    this.props.handleSelect(value);
+    this.setState({ searchString: '' });
+  };
 
   render() {
     const { searchString } = this.state;
     const { intl, searchUsersResults, itemsIdsToOmit, disabled, autoFocus } = this.props;
-    console.log('searchUsersResults', searchString);
     const searchUsersOptions = searchString
       ? searchUsersResults
-          .filter(obj => !itemsIdsToOmit.includes(obj.id))
+          .filter(obj => !itemsIdsToOmit.includes(obj.account))
           .map(obj => (
-            <AutoComplete.Option key={obj.id} label={obj.id} className="obj-search-option item">
-              {console.log(obj)}
-              {/* <ObjectSearchCard object={obj} name={obj.name} type={obj.type}/> */}
+            <AutoComplete.Option key={obj.account} label={obj.account} className="SearchUser item">
+              <div className="SearchUser">
+                <Avatar username={obj.account} size={40} />
+                <div className="SearchUser__content">{obj.account}</div>
+              </div>
             </AutoComplete.Option>
           ))
       : [];

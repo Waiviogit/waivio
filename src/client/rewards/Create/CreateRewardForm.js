@@ -44,6 +44,7 @@ class CreateRewardForm extends React.Component {
     confirmDirty: false,
     autoCompleteResult: [],
     objectsToAction: [],
+    sponsorsToAction: [],
     requiredObject: {},
     pageObjects: [],
     isModalEligibleUsersOpen: false,
@@ -103,8 +104,8 @@ class CreateRewardForm extends React.Component {
       if (!err && !_.isEmpty(this.state.requiredObject) && !_.isEmpty(this.state.objectsToAction)) {
         createCampaign(this.prepareSubmitData(values))
           .then(data => {
-            this.setState({ propositions: data.campaigns, hasMore: data.hasMore, loading: false });
             message.success(`'${values.campaignName}' rewards campaign has been created.`);
+            this.setState({ propositions: data.campaigns, hasMore: data.hasMore, loading: false });
           })
           .catch(error => {
             console.log(error);
@@ -177,6 +178,12 @@ class CreateRewardForm extends React.Component {
     this.setState({
       objectsToAction: [...this.state.objectsToAction, obj],
       hasReviewObject: false,
+    });
+  };
+
+  handleAddSponsorToList = obj => {
+    this.setState({
+      sponsorsToAction: [...this.state.sponsorsToAction, obj],
     });
   };
 
@@ -554,7 +561,21 @@ class CreateRewardForm extends React.Component {
             defaultMessage: 'Registered upvoting accounts besides @sponsor (optional)',
           })}
         </div>
-        <SearchUsersAutocomplete />
+        <SearchUsersAutocomplete
+          allowClear={false}
+          disabled={loading}
+          handleSelect={this.handleAddSponsorToList}
+          itemsIdsToOmit={
+            !_.isEmpty(this.state.sponsorsToAction)
+              ? _.map(this.state.sponsorsToAction, obj => obj)
+              : []
+          }
+          placeholder={intl.formatMessage({
+            id: 'sponsor_auto_complete_placeholder',
+            defaultMessage: 'Find sponsor',
+          })}
+          style={{ width: '100%' }}
+        />
         <Form.Item
           label={intl.formatMessage({
             id: 'reservation_period',

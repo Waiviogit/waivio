@@ -1,0 +1,25 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.SearchUser {
+  display: flex;
+  align-items: center;
+
+  &__content {
+    margin-left: 10px;
+    max-width: calc(100vw - 210px);
+
+    @media @small, @medium, @large {
+      max-width: 350px;
+    }
+
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+}
+
+.SearchUser.item {
+  border-bottom: 1px solid @white-gainsboro;
+  padding: 10px 14px;
+}
