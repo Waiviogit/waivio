@@ -196,7 +196,12 @@ class DiscoverObjectsContent extends Component {
           </div>
           <div className="discover-objects-header__tags-block common">
             {map && (
-              <Tag className="ttc" key="search-area-filter" closable onClose={this.resetMapFilter}>
+              <Tag
+                className="search-area-filter"
+                key="search-area-filter"
+                closable
+                onClose={this.resetMapFilter}
+              >
                 {intl.formatMessage({ id: 'search_area', defaultMessage: 'Search area' })}
               </Tag>
             )}
@@ -210,7 +215,7 @@ class DiscoverObjectsContent extends Component {
                   </span>
                   {map && (
                     <Tag
-                      className="ttc"
+                      className="search-area-filter"
                       key="search-area-filter"
                       closable
                       onClose={this.resetMapFilter}
