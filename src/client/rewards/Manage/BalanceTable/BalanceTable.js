@@ -16,10 +16,10 @@ const BalanceTable = props => {
       </thead>
       <tbody>
         <tr>
-          <td>{budgetTotal.sum_budget}</td>
-          <td>{budgetTotal.sum_payable}</td>
-          <td>{budgetTotal.sum_reserved}</td>
-          <td>{budgetTotal.remaining}</td>
+          <td>{budgetTotal.sum_budget ? budgetTotal.sum_budget.toFixed(2) : '0.00'}</td>
+          <td>{budgetTotal.sum_payable ? budgetTotal.sum_payable.toFixed(2) : '0.00'}</td>
+          <td>{budgetTotal.sum_reserved ? budgetTotal.sum_reserved.toFixed(2) : '0.00'}</td>
+          <td>{budgetTotal.remaining ? budgetTotal.remaining.toFixed(2) : '0.00'}</td>
         </tr>
       </tbody>
     </table>
