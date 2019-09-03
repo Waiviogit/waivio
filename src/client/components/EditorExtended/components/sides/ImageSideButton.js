@@ -55,18 +55,18 @@ export default class ImageSideButton extends React.Component {
       );
 
       this.props.imageUploading();
-      fetch(`https://ipfs.busy.org/upload`, {
+      fetch(`https://www.waivio.com/api/image`, {
         method: 'POST',
         body: formData,
       })
         .then(response => {
           if (response.status === 200) {
             return response.json().then(data => {
-              if (data.url) {
+              if (data.image) {
                 this.props.setEditorState(
                   addNewBlock(this.props.getEditorState(), Block.IMAGE, {
-                    src: data.url,
-                    alt: data.name,
+                    src: data.image,
+                    alt: file.name,
                   }),
                 );
                 this.props.imageUploaded();

@@ -6,6 +6,7 @@ import { Button, Modal, Tag } from 'antd';
 import { isNeedFilters, updateActiveFilters } from './helper';
 import {
   getActiveFilters,
+  getObjectTypeSorting,
   getObjectTypesList,
   getObjectTypeState,
   getObjectTypeLoading,
@@ -19,6 +20,7 @@ import {
   getObjectType,
   clearType,
   setFiltersAndLoad,
+  changeSortingAndLoad,
 } from '../objectTypes/objectTypeActions';
 import { setMapFullscreenMode } from '../components/Maps/mapActions';
 import { getObjectTypes } from '../objectTypes/objectTypesActions';
@@ -27,16 +29,22 @@ import ObjectCardView from '../objectCard/ObjectCardView';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import DiscoverObjectsFilters from './DiscoverFiltersSidebar/FiltersContainer';
 import SidenavDiscoverObjects from './SidenavDiscoverObjects';
+import SortSelector from '../components/SortSelector/SortSelector';
 
 const modalName = {
   FILTERS: 'filters',
   OBJECTS: 'objects',
+};
+const SORT_OPTIONS = {
+  WEIGHT: 'weight',
+  PROXIMITY: 'proximity',
 };
 
 @connect(
   state => ({
     availableFilters: getAvailableFilters(state),
     activeFilters: getActiveFilters(state),
+    sort: getObjectTypeSorting(state),
     typesList: getObjectTypesList(state),
     theType: getObjectTypeState(state),
     hasMap: getHasMap(state),
@@ -50,6 +58,7 @@ const modalName = {
     dispatchGetObjectTypeMore: getObjectType,
     dispatchGetObjectTypes: getObjectTypes,
     dispatchSetActiveFilters: setFiltersAndLoad,
+    dispatchChangeSorting: changeSortingAndLoad,
     dispatchSetMapFullscreenMode: setMapFullscreenMode,
   },
 )
@@ -58,6 +67,7 @@ class DiscoverObjectsContent extends Component {
     /* from connect */
     availableFilters: PropTypes.shape().isRequired,
     activeFilters: PropTypes.shape().isRequired,
+    sort: PropTypes.string.isRequired,
     typesList: PropTypes.shape().isRequired,
     theType: PropTypes.shape().isRequired,
     hasMap: PropTypes.bool.isRequired,
@@ -69,6 +79,7 @@ class DiscoverObjectsContent extends Component {
     dispatchGetObjectTypeMore: PropTypes.func.isRequired,
     dispatchGetObjectTypes: PropTypes.func.isRequired,
     dispatchSetActiveFilters: PropTypes.func.isRequired,
+    dispatchChangeSorting: PropTypes.func.isRequired,
     dispatchSetMapFullscreenMode: PropTypes.func.isRequired,
     /* passed props */
     intl: PropTypes.shape().isRequired,
@@ -120,6 +131,8 @@ class DiscoverObjectsContent extends Component {
 
   closeModal = () => this.setState({ isModalOpen: false });
 
+  handleChangeSorting = sorting => this.props.dispatchChangeSorting(sorting);
+
   handleRemoveTag = (filter, filterValue) => e => {
     const { activeFilters, dispatchSetActiveFilters } = this.props;
     e.preventDefault();
@@ -144,24 +157,45 @@ class DiscoverObjectsContent extends Component {
       hasMap,
       availableFilters,
       activeFilters: { map, ...chosenFilters },
+      sort,
       filteredObjects,
       hasMoreObjects,
     } = this.props;
+
+    const sortSelector = hasMap ? (
+      <SortSelector sort={sort} onChange={this.handleChangeSorting}>
+        <SortSelector.Item key={SORT_OPTIONS.WEIGHT}>
+          {intl.formatMessage({ id: 'rank', defaultMessage: 'Rank' })}
+        </SortSelector.Item>
+        <SortSelector.Item key={SORT_OPTIONS.PROXIMITY}>
+          {intl.formatMessage({ id: 'proximity', defaultMessage: 'Proximity' })}
+        </SortSelector.Item>
+      </SortSelector>
+    ) : (
+      <SortSelector sort="weight" onChange={e => console.log('onSortChange', e)}>
+        <SortSelector.Item key={SORT_OPTIONS.WEIGHT}>
+          {intl.formatMessage({ id: 'rank', defaultMessage: 'Rank' })}
+        </SortSelector.Item>
+      </SortSelector>
+    );
     return (
       <React.Fragment>
         <div className="discover-objects-header">
-          <div className="discover-objects-header__title">
-            <span className="discover-objects-header__topic ttc">
-              {intl.formatMessage({ id: 'objects', defaultMessage: 'Objects' })}:&nbsp;
-            </span>
-            <span className="ttc">{typeName}</span>&nbsp;
-            <span className="discover-objects-header__selector">
-              (
-              <span className="underline" role="presentation" onClick={this.showTypesModal}>
-                {intl.formatMessage({ id: 'change', defaultMessage: 'change' })}
+          <div className="flex justify-between">
+            <span className="discover-objects-header__title">
+              <span className="discover-objects-header__topic ttc">
+                {intl.formatMessage({ id: 'objects', defaultMessage: 'Objects' })}:&nbsp;
               </span>
-              )
+              <span className="ttc">{typeName}</span>&nbsp;
+              <span className="discover-objects-header__selector">
+                (
+                <span className="underline" role="presentation" onClick={this.showTypesModal}>
+                  {intl.formatMessage({ id: 'change', defaultMessage: 'change' })}
+                </span>
+                )
+              </span>
             </span>
+            {_.size(SORT_OPTIONS) - Number(!hasMap) > 1 ? sortSelector : null}
           </div>
           <div className="discover-objects-header__tags-block common">
             {map && (
