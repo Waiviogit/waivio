@@ -65,10 +65,15 @@ const CampaignRewardsTableRow = ({ currentItem, activateCampaign, intl }) => {
           toggleModal(false);
         }}
       >
-        {intl.formatMessage({
-          id: 'campaign_terms',
-          defaultMessage: `The terms and conditions of the rewards campaign {campaignName} will be published on Steem blockchain`,
-        })}
+        {intl.formatMessage(
+          {
+            id: 'campaign_terms',
+            defaultMessage: `The terms and conditions of the rewards campaign ${currentItem.name} will be published on Steem blockchain`,
+          },
+          {
+            campaignName: currentItem.name,
+          },
+        )}
       </Modal>
     </React.Fragment>
   );

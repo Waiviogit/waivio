@@ -44,7 +44,7 @@ const CampaignRewardsTable = props => {
               {intl.formatMessage({ id: 'budget_target', defaultMessage: `Budget target` })}
               ****
             </th>
-            <th className="Campaign-rewards hide-element" colSpan="3">
+            <th className="Campaign-rewards hide-element" colSpan="2">
               {intl.formatMessage({ id: 'current_month', defaultMessage: `Current month` })}
             </th>
             <th className="Campaign-rewards mediumWidth hide-element" rowSpan="3">
@@ -65,8 +65,8 @@ const CampaignRewardsTable = props => {
             </th>
             <th className="Campaign-rewards basicWidth hide-element" rowSpan="2">
               {intl.formatMessage({
-                id: 'payable',
-                defaultMessage: `Payable`,
+                id: 'completed',
+                defaultMessage: `Completed`,
               })}
             </th>
           </tr>
