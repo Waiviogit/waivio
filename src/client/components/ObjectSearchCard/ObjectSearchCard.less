@@ -1,0 +1,74 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.object-search-card {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+
+  &__content-avatar {
+    display: block !important;
+    min-width: 40px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    border: 1px solid @white-gainsboro;
+    width: 40px;
+    height: 40px;
+  }
+
+  &__content-info {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-start;
+  }
+
+  &__content-name {
+    padding-left: 5px;
+    white-space: nowrap;
+    width: 80%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__content-text {
+    font-size: small;
+    color: @tertiary-color;
+    padding-left: 5px;
+    white-space: nowrap;
+    width: 80%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__content-text-nav {
+    font-size: small;
+    color: @tertiary-color;
+    padding-left: 5px;
+    white-space: nowrap;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @media @small {
+      max-width: 150px;
+    }
+
+    @media @medium {
+      max-width: 250px;
+    }
+
+    @media @large {
+      max-width: 270px;
+    }
+  }
+
+  &__content-type {
+    font-size: small;
+    color: @tertiary-color;
+    margin-left: 10px;
+  }
+}

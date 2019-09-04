@@ -16,7 +16,6 @@ import {
   getHasMap,
 } from '../reducers';
 import {
-  getObjectTypeInitial,
   getObjectType,
   clearType,
   setFiltersAndLoad,
@@ -53,9 +52,8 @@ const SORT_OPTIONS = {
     hasMoreObjects: getHasMoreRelatedObjects(state),
   }),
   {
-    dispatchGetObjectType: getObjectTypeInitial,
     dispatchClearObjectTypeStore: clearType,
-    dispatchGetObjectTypeMore: getObjectType,
+    dispatchGetObjectType: getObjectType,
     dispatchGetObjectTypes: getObjectTypes,
     dispatchSetActiveFilters: setFiltersAndLoad,
     dispatchChangeSorting: changeSortingAndLoad,
@@ -76,7 +74,6 @@ class DiscoverObjectsContent extends Component {
     hasMoreObjects: PropTypes.bool.isRequired,
     dispatchGetObjectType: PropTypes.func.isRequired,
     dispatchClearObjectTypeStore: PropTypes.func.isRequired,
-    dispatchGetObjectTypeMore: PropTypes.func.isRequired,
     dispatchGetObjectTypes: PropTypes.func.isRequired,
     dispatchSetActiveFilters: PropTypes.func.isRequired,
     dispatchChangeSorting: PropTypes.func.isRequired,
@@ -102,7 +99,7 @@ class DiscoverObjectsContent extends Component {
 
   componentDidMount() {
     const { dispatchGetObjectType, dispatchGetObjectTypes, typeName, typesList } = this.props;
-    dispatchGetObjectType(typeName);
+    dispatchGetObjectType(typeName, { skip: 0 });
     if (isEmpty(typesList)) dispatchGetObjectTypes();
   }
 
@@ -111,8 +108,8 @@ class DiscoverObjectsContent extends Component {
   }
 
   loadMoreRelatedObjects = () => {
-    const { dispatchGetObjectTypeMore, theType, filteredObjects } = this.props;
-    dispatchGetObjectTypeMore(theType.name, {
+    const { dispatchGetObjectType, theType, filteredObjects } = this.props;
+    dispatchGetObjectType(theType.name, {
       skip: filteredObjects.length || 0,
     });
   };
@@ -199,7 +196,12 @@ class DiscoverObjectsContent extends Component {
           </div>
           <div className="discover-objects-header__tags-block common">
             {map && (
-              <Tag className="ttc" key="search-area-filter" closable onClose={this.resetMapFilter}>
+              <Tag
+                className="search-area-filter"
+                key="search-area-filter"
+                closable
+                onClose={this.resetMapFilter}
+              >
                 {intl.formatMessage({ id: 'search_area', defaultMessage: 'Search area' })}
               </Tag>
             )}
@@ -213,7 +215,7 @@ class DiscoverObjectsContent extends Component {
                   </span>
                   {map && (
                     <Tag
-                      className="ttc"
+                      className="search-area-filter"
                       key="search-area-filter"
                       closable
                       onClose={this.resetMapFilter}

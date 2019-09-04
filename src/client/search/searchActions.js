@@ -48,11 +48,11 @@ export const resetSearchAutoCompete = () => dispatch =>
     type: RESET_AUTO_COMPLETE_SEARCH,
   });
 
-export const searchObjectsAutoCompete = (searchString, objType) => dispatch =>
+export const searchObjectsAutoCompete = (searchString, objType, forParent) => dispatch =>
   dispatch({
     type: SEARCH_OBJECTS.ACTION,
     payload: {
-      promise: ApiClient.searchObjects(searchString, objType).then(result => ({
+      promise: ApiClient.searchObjects(searchString, objType, forParent).then(result => ({
         result,
         search: searchString,
       })),

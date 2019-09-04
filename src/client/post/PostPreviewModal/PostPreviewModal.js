@@ -147,11 +147,11 @@ class PostPreviewModal extends Component {
               disabled={isPublishing}
               label={intl.formatMessage({
                 id: 'topics',
-                defaultMessage: 'Topics',
+                defaultMessage: 'HashTags(topics)',
               })}
               placeholder={intl.formatMessage({
                 id: 'topics_placeholder',
-                defaultMessage: 'Add story topics here',
+                defaultMessage: 'Add hashtags (without #) here',
               })}
               tags={topics}
               validator={isTopicValid}
@@ -162,7 +162,11 @@ class PostPreviewModal extends Component {
               isChecked={isConfirmed}
               disabled={isPublishing}
               checkboxLabel="Legal notice"
-              policyText="Lorem ipsum dolor sit amet, enim in ut adipiscing turpis, mi interdum faucibus eleifend montes, augue viverra commodo vel placerat. Neque vitae amet consequat, proin sociis in sem, nunc fusce a facilisi per, sed sit et eget. A morbi velit proin, elit ac integer in justo, enim quis arcu arcu, magna dapibus est etiam. Nisl dapibus ut leo semper, pellentesque nec sem nec nulla, convallis dictum odio porttitor."
+              policyText={intl.formatMessage({
+                id: 'legal_notice_create_post',
+                defaultMessage:
+                  '"I understand that this post will be published on the Steem social blockchain and that it could be reproduced on many websites around the world. I also acknowledge that the content and images in this post do not infringe the rights of other parties."',
+              })}
               onChange={this.handleConfirmedChange}
             />
             {!isUpdating && (
