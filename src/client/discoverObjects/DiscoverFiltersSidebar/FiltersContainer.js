@@ -5,6 +5,7 @@ import { Checkbox } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { getActiveFilters } from '../../reducers';
 import { updateActiveFilters } from '../helper';
+import { sortStrings } from '../../helpers/sortHelpers';
 import { setFiltersAndLoad } from '../../objectTypes/objectTypeActions';
 
 const FiltersContainer = ({ intl, filters }) => {
@@ -53,7 +54,7 @@ const FiltersContainer = ({ intl, filters }) => {
               </div>
               {!isCollapsed ? (
                 <div className="sidebar-search-filters__content">
-                  {filterValues.map(value => {
+                  {sortStrings(filterValues).map(value => {
                     const isChecked = get(activeFilters, [filterName], []).some(
                       active => active === value,
                     );

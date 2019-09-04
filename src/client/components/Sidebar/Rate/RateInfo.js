@@ -68,7 +68,7 @@ class RateInfo extends React.Component {
 
   render() {
     const { username, ratingFields } = this.props;
-    const rankingList = _.orderBy(ratingFields, ['weight'], ['desc']);
+    const rankingList = _.sortBy(ratingFields, ['body']);
     const ratingByCategoryFields = ratingFields.find(
       field => field.permlink === this.state.field.permlink,
     );
