@@ -1,0 +1,44 @@
+@import (reference) '../styles/custom.less';
+@import (reference) '../styles/modules/variables.less';
+
+.UserCardView {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid @blue-hawkesBlue;
+  border-radius: 4px;
+
+  &__content {
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-flow: column nowrap;
+    min-height: 80px;
+    outline: none;
+    margin: 12px;
+
+    &-row {
+      display: flex;
+      flex-flow: row nowrap;
+      width: 100%;
+    }
+
+    &--name-wrap {
+      margin-left: 5px;
+      cursor: auto;
+      display: flex;
+      align-items: baseline;
+    }
+
+    &--user-name {
+      margin-right: 10px;
+      color: @black;
+      font-size: medium;
+      line-height: 1.1em;
+      white-space: normal;
+      vertical-align: middle;
+      font-weight: 600;
+    }
+  }
+}

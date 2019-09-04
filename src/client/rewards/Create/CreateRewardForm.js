@@ -17,7 +17,7 @@ import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjec
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { createCampaign } from '../../../waivioApi/ApiClient';
 import './CreateReward.less';
-import ReviewObjectItem from './ReviewObjectItem';
+import ReviewItem from './ReviewItem';
 import OBJECT_TYPE from '../../object/const/objectTypes';
 import TargetDaysTable from './TargetDaysTable/TargetDaysTable';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
@@ -52,6 +52,7 @@ class CreateRewardForm extends React.Component {
     hasReviewObject: false,
     loading: false,
     parentPermlink: '',
+    compensationAccount: {},
   };
 
   setRequiredObject = obj => {
@@ -96,6 +97,19 @@ class CreateRewardForm extends React.Component {
     });
   };
 
+  removeSponsorObject = obj => {
+    this.setState(prevState => {
+      const objectList = prevState.sponsorsToAction.filter(el => el.account !== obj.account);
+      return {
+        sponsorsToAction: objectList,
+      };
+    });
+  };
+
+  removeCompensationAccount = () => {
+    this.setState({ compensationAccount: {} });
+  };
+
   handleSubmit = e => {
     this.setState({ loading: true });
     e.preventDefault();
@@ -131,6 +145,7 @@ class CreateRewardForm extends React.Component {
     const objects = _.map(this.state.objectsToAction, o => o.id);
     const pageObjects =
       this.state.pageObjects.length !== 0 ? _.map(this.state.pageObjects, o => o.id) : [];
+    const sponsorAccounts = _.map(this.state.sponsorsToAction, o => o.account);
     return {
       requiredObject: this.state.requiredObject.author_permlink,
       guideName: this.props.userName,
@@ -149,6 +164,8 @@ class CreateRewardForm extends React.Component {
       },
       objects,
       pageObjects,
+      compensationAccount: this.state.compensationAccount && this.state.compensationAccount.account,
+      sponsorAccounts,
       expired_at: data.expiredAt.format(),
     };
   };
@@ -182,15 +199,22 @@ class CreateRewardForm extends React.Component {
   };
 
   handleAddSponsorToList = obj => {
-    this.setState({
-      sponsorsToAction: [...this.state.sponsorsToAction, obj],
-    });
+    const sponsors = [...this.state.sponsorsToAction, obj];
+    if (sponsors.length <= 5) {
+      this.setState({
+        sponsorsToAction: sponsors,
+      });
+    }
   };
 
   handleAddPageObject = obj => {
     this.setState({
       pageObjects: [...this.state.pageObjects, obj],
     });
+  };
+
+  handleSetCompensationAccount = obj => {
+    this.setState({ compensationAccount: obj });
   };
 
   handleDeleteObjectFromList = obj => {
@@ -331,7 +355,7 @@ class CreateRewardForm extends React.Component {
   checkExpireDate = (rule, value, callback) => {
     const { intl } = this.props;
     const currentDay = new Date().getDate();
-    if ((value && value.unix() * 1000 < Date.now()) || value.date() === currentDay) {
+    if ((value && value.unix() * 1000 < Date.now()) || (value && value.date() === currentDay)) {
       callback(
         intl.formatMessage({
           id: 'expiry_date_after_current',
@@ -561,13 +585,19 @@ class CreateRewardForm extends React.Component {
             defaultMessage: 'Registered upvoting accounts besides @sponsor (optional)',
           })}
         </div>
+        <div className="CreateReward__item-title simple-text">
+          {intl.formatMessage({
+            id: 'up_to_5_comma_delimited)',
+            defaultMessage: '(up to 5, comma delimited)',
+          })}
+        </div>
         <SearchUsersAutocomplete
           allowClear={false}
           disabled={loading}
           handleSelect={this.handleAddSponsorToList}
           itemsIdsToOmit={
             !_.isEmpty(this.state.sponsorsToAction)
-              ? _.map(this.state.sponsorsToAction, obj => obj)
+              ? _.map(this.state.sponsorsToAction, obj => obj.account)
               : []
           }
           placeholder={intl.formatMessage({
@@ -576,6 +606,58 @@ class CreateRewardForm extends React.Component {
           })}
           style={{ width: '100%' }}
         />
+        <div className="CreateReward__field-caption">
+          {intl.formatMessage({
+            id: 'value_of_upvotes_can_be_accumulated_on_compensation_account',
+            defaultMessage:
+              'The value of upvotes can be accumulated on a dedicated compensation account',
+          })}
+        </div>
+        <div className="CreateReward__objects-wrap">
+          {_.map(this.state.sponsorsToAction, user => (
+            <ReviewItem
+              key={user}
+              object={user}
+              loading={loading}
+              removeReviewObject={this.removeSponsorObject}
+              isUser
+            />
+          ))}
+        </div>
+        <div className="CreateReward__item-title simple-text">
+          {intl.formatMessage({
+            id: 'compensation_account_optional',
+            defaultMessage: 'Compensation account (optional)',
+          })}
+        </div>
+        <SearchUsersAutocomplete
+          allowClear={false}
+          disabled={loading}
+          handleSelect={this.handleSetCompensationAccount}
+          placeholder={intl.formatMessage({
+            id: 'compensation_account_auto_complete_placeholder',
+            defaultMessage: 'Find compensation account',
+          })}
+          style={{ width: '100%' }}
+        />
+        <div className="CreateReward__field-caption">
+          {intl.formatMessage({
+            id: 'accumulates_value_of_upvotes_from_registered_upvoting_accounts',
+            defaultMessage: 'Accumulates the value of upvotes from registered upvoting accounts',
+          })}
+        </div>
+        {!_.isEmpty(this.state.compensationAccount) ? (
+          <div className="CreateReward__objects-wrap">
+            <ReviewItem
+              key={this.state.compensationAccount}
+              object={this.state.compensationAccount}
+              loading={loading}
+              removeReviewObject={this.removeCompensationAccount}
+              isUser
+            />
+          </div>
+        ) : null}
+
         <Form.Item
           label={intl.formatMessage({
             id: 'reservation_period',
@@ -730,7 +812,7 @@ class CreateRewardForm extends React.Component {
         </div>
         <div className="CreateReward__objects-wrap">
           {_.map(this.state.objectsToAction, obj => (
-            <ReviewObjectItem
+            <ReviewItem
               key={obj.id}
               object={obj}
               loading={loading}
@@ -921,7 +1003,7 @@ class CreateRewardForm extends React.Component {
         />
         <div className="CreateReward__objects-wrap">
           {_.map(this.state.pageObjects, obj => (
-            <ReviewObjectItem
+            <ReviewItem
               key={obj.id}
               object={obj}
               loading={loading}

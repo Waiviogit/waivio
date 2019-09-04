@@ -57,7 +57,8 @@ class SearchUsersAutocomplete extends React.Component {
   };
 
   handleSelect = value => {
-    this.props.handleSelect(value);
+    const selectedUsers = this.props.searchUsersResults.find(obj => obj.account === value);
+    this.props.handleSelect(selectedUsers);
     this.setState({ searchString: '' });
   };
 

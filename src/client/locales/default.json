@@ -719,5 +719,10 @@
   "registered_upvoting_accounts": "Registered upvoting accounts besides @sponsor (optional)",
   "write_review": "Write a review",
   "sponsor_auto_complete_placeholder": "Find sponsor",
-  "users_auto_complete_placeholder": "Find users"
+  "users_auto_complete_placeholder": "Find users",
+  "up_to_5_comma_delimited": "(up to 5, comma delimited)",
+  "value_of_upvotes_can_be_accumulated_on_compensation_account": "The value of upvotes can be accumulated on a dedicated compensation account",
+  "compensation_account_optional": "Compensation account (optional)",
+  "accumulates_value_of_upvotes_from_registered_upvoting_accounts": "Accumulates the value of upvotes from registered upvoting accounts",
+  "compensation_account_auto_complete_placeholder": "Find compensation account"
 }
