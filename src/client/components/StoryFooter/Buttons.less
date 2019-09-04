@@ -7,13 +7,23 @@
 
   &__reactions-count {
     cursor: pointer;
+
     &:hover {
       color: @primary-color;
     }
   }
 
+  .active {
+    color: @primary-color !important;
+
+    &:hover {
+      color: @secondary-color !important;
+    }
+  }
+
   &__link {
     color: @blue-botticelli;
+    cursor: pointer;
     transition: none;
     margin-right: 5px;
 
