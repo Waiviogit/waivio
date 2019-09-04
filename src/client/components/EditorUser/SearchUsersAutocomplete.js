@@ -31,7 +31,7 @@ class SearchUsersAutocomplete extends React.Component {
     autoFocus: true,
   };
   static propTypes = {
-    intl: PropTypes.shape,
+    intl: PropTypes.shape(),
     searchUsersResults: PropTypes.arrayOf(PropTypes.shape),
     searchUsers: PropTypes.func,
     handleSelect: PropTypes.func,

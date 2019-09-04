@@ -116,6 +116,7 @@ class CreateRewardForm extends React.Component {
     this.checkOptionFields();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err && !_.isEmpty(this.state.requiredObject) && !_.isEmpty(this.state.objectsToAction)) {
+        console.log('prepareSubmitData', this.prepareSubmitData(values));
         createCampaign(this.prepareSubmitData(values))
           .then(data => {
             message.success(`'${values.campaignName}' rewards campaign has been created.`);
@@ -161,7 +162,11 @@ class CreateRewardForm extends React.Component {
       userRequirements: {
         minFollowers: data.minFollowers,
         minPosts: data.minPosts,
+        minExpertise: data.minExpertise,
+        minSteemReputation: data.minSteemReputation,
       },
+      usersLegalNotice: data.usersLegalNotice,
+      commissionAgreement: data.commissionAgreement,
       objects,
       pageObjects,
       compensationAccount: this.state.compensationAccount && this.state.compensationAccount.account,
@@ -922,18 +927,16 @@ class CreateRewardForm extends React.Component {
             {intl.formatMessage({
               id: 'reward_payments_made_directly_waivio_provide_information',
               defaultMessage:
-                'All reward payments are made directly to users by the campaign creator. Waivio and other partners provide information and discovery services only',
+                'All reward payments are made directly to users by the campaign creator. Waivio and other partners provide information and discovery services only.',
             })}
-            .
           </p>
           <br />
           <p>
             {intl.formatMessage({
               id: 'can_add_link_agreement_govern_relationships',
               defaultMessage:
-                'Here you can add a link to the agreement, which will govern the relationship between you and participating users',
+                'Here you can add a link to the agreement, which will govern the relationship between you and participating users.',
             })}
-            .
           </p>
         </Form.Item>
         <Form.Item
@@ -1055,18 +1058,16 @@ class CreateRewardForm extends React.Component {
                 <span className="CreateReward__item-title ant-form-item-required">
                   {intl.formatMessage({
                     id: 'agree_to_the',
-                    defaultMessage: 'I agree to the',
+                    defaultMessage: 'I agree to the ',
                   })}
                 </span>
                 <a href="https://waiviodev.com/object/xrj-terms-and-conditions">
-                  {' '}
                   {intl.formatMessage({
                     id: 'terms_and_conditions',
-                    defaultMessage: 'Terms and Conditions',
+                    defaultMessage: 'Terms and Conditions ',
                   })}
                 </a>
                 <span className="CreateReward__item-title simple-text">
-                  {' '}
                   {intl.formatMessage({
                     id: 'service_acknowledge_campaign_not_violate_laws',
                     defaultMessage:
@@ -1093,7 +1094,6 @@ class CreateRewardForm extends React.Component {
           })(
             <InputNumber
               className="CreateReward ant-input-number"
-              defaultValue={100}
               min={5}
               max={100}
               formatter={value => `${value}%`}
