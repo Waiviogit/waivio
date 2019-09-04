@@ -5,23 +5,28 @@ import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import './Manage.less';
 import * as ApiClient from '../../../waivioApi/ApiClient';
-import CampaingRewardsTable from './CampaingRewardsTable/CampaingRewardsTable';
+import CampaignRewardsTable from './CampaignRewardsTable/CampaignRewardsTable';
 import BalanceTable from './BalanceTable/BalanceTable';
 import { activateCampaign } from '../../user/userActions';
+import { getAuthenticatedUser } from '../../reducers';
 
 @injectIntl
 @connect(
-  null,
+  state => ({
+    user: getAuthenticatedUser(state),
+  }),
   { activateCampaign },
 )
 class Manage extends React.Component {
   static propTypes = {
     userName: PropTypes.string,
     intl: PropTypes.shape().isRequired,
+    user: PropTypes.shape(),
     activateCampaign: PropTypes.func,
   };
   static defaultProps = {
     userName: '',
+    user: {},
     activateCampaign: () => {},
   };
   state = {
@@ -106,7 +111,7 @@ class Manage extends React.Component {
 
   render() {
     // eslint-disable-next-line no-shadow
-    const { intl, activateCampaign } = this.props;
+    const { intl, activateCampaign, user } = this.props;
     const { budgetTotal, campaigns } = this.state;
     const balanceContent = this.balanceContent();
     const rewardsCampaignContent = this.rewardsCampaignContent();
@@ -119,7 +124,7 @@ class Manage extends React.Component {
               defaultMessage: `Account balance (SBD)`,
             })}
           </div>
-          <BalanceTable intl={intl} budgetTotal={budgetTotal} />
+          <BalanceTable intl={intl} budgetTotal={budgetTotal} user={user} />
           <div className="Manage__account-balance-wrap-text-content">{balanceContent}</div>
           <div className="Manage__rewards-campaign-wrap">
             <div className="Manage__rewards-campaign-wrap-title">
@@ -128,7 +133,7 @@ class Manage extends React.Component {
                 defaultMessage: `Manage rewards campaign`,
               })}
             </div>
-            <CampaingRewardsTable
+            <CampaignRewardsTable
               activateCampaign={activateCampaign}
               intl={intl}
               campaigns={campaigns}

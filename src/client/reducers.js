@@ -200,6 +200,7 @@ export const getAvailableFilters = state => fromObjectType.getAvailableFilters(s
 export const getActiveFilters = state => fromObjectType.getActiveFilters(state.objectType);
 export const getTypeName = state => fromObjectType.getTypeName(state.objectType);
 export const getHasMap = state => fromObjectType.getHasMap(state.objectType);
+export const getObjectTypeSorting = state => fromObjectType.getSorting(state.objectType);
 
 export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.append);
 

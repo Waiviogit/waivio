@@ -254,7 +254,7 @@ class UserActivitySearch extends React.Component {
                 onClick={this.handleGeneralFiltersDisplay}
               >
                 <FormattedMessage id="general" defaultMessage="general" />
-                <span className="sidebar-search-filters__title__icon">
+                <span className="sidebar-search-filters__title-icon">
                   {showGeneral ? (
                     <i className="iconfont icon-offline" />
                   ) : (
@@ -275,7 +275,7 @@ class UserActivitySearch extends React.Component {
                 onClick={this.handleFinanceFiltersDisplay}
               >
                 <FormattedMessage id="finance" defaultMessage="finance" />
-                <span className="sidebar-search-filters__title__icon">
+                <span className="sidebar-search-filters__title-icon">
                   {showFinance ? (
                     <i className="iconfont icon-offline" />
                   ) : (
@@ -296,7 +296,7 @@ class UserActivitySearch extends React.Component {
                 onClick={this.handleRewardsFilterDisplay}
               >
                 <FormattedMessage id="rewards" defaultMessage="Rewards" />
-                <span className="sidebar-search-filters__title__icon">
+                <span className="sidebar-search-filters__title-icon">
                   {showRewards ? (
                     <i className="iconfont icon-offline" />
                   ) : (

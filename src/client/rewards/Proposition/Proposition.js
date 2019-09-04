@@ -119,10 +119,10 @@ const Proposition = ({
                   `${intl.formatMessage({
                     id: 'for',
                     defaultMessage: `for`,
-                  })} ${proposition.count_reservation_days} (${intl.formatMessage({
+                  })} ${proposition.count_reservation_days} ${intl.formatMessage({
                     id: 'days',
                     defaultMessage: `days`,
-                  })})`}
+                  })}`}
               </div>
             )}
             <a role="presentation" className="RewardsHeader" onClick={toggleModalDetails}>
