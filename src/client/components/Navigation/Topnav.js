@@ -395,7 +395,7 @@ class Topnav extends React.Component {
 
   handleAutoCompleteSearch(value) {
     this.debouncedSearch(value);
-    this.setState({ searchValue: value, dropdownOpen: true });
+    this.setState({ dropdownOpen: true });
   }
 
   handleSelectOnAutoCompleteDropdown(value, data) {
