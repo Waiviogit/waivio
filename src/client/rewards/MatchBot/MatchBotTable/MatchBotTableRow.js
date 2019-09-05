@@ -12,7 +12,7 @@ const MatchBotTableRow = ({ sponsor }) => (
       <td>{sponsor.name}</td>
       <td>{sponsor.upvote}%</td>
       <td>
-        <Link to={`/rewards/edit-rule`} title={'Edit'}>
+        <Link to={`/rewards/edit-rule`} title="Edit">
           <span>{sponsor.action}</span>
         </Link>
       </td>

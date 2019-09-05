@@ -399,30 +399,31 @@ class Rewards extends React.Component {
       cryptosPriceHistory && cryptosPriceHistory.SBD && cryptosPriceHistory.SBD.priceDetails
         ? cryptosPriceHistory.SBD.priceDetails.currentUSDPrice
         : 0;
-    if (location.pathname === '/rewards/create') {
-      return (
-        <CreateRewardForm
-          userName={username}
-          user={user}
-          intl={intl}
-          currentSteemDollarPrice={currentSteemDollarPrice}
-        />
-      );
-    } else if (location.pathname === '/rewards/manage') {
-      return <Manage intl={intl} userName={username} />;
-    } else if (location.pathname === '/rewards/match-bot') {
-      return <MatchBot intl={intl} userName={username} />;
+    switch (location.pathname) {
+      case '/rewards/create':
+        return (
+          <CreateRewardForm
+            userName={username}
+            user={user}
+            intl={intl}
+            currentSteemDollarPrice={currentSteemDollarPrice}
+          />
+        );
+      case '/rewards/manage':
+        return <Manage intl={intl} userName={username} />;
+      case '/rewards/match-bot':
+        return <MatchBot intl={intl} userName={username} />;
+      default:
+        return this.getCampaignsLayout(
+          hasMore,
+          IsRequiredObjectWrap,
+          loading,
+          filterKey,
+          username,
+          match,
+          propositions,
+        );
     }
-
-    return this.getCampaignsLayout(
-      hasMore,
-      IsRequiredObjectWrap,
-      loading,
-      filterKey,
-      username,
-      match,
-      propositions,
-    );
   };
 
   render() {

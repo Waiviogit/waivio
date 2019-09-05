@@ -34,12 +34,11 @@ const MatchBotTable = ({ intl, sponsors }) => (
 );
 
 MatchBotTable.propTypes = {
-  intl: PropTypes.shape(),
+  intl: PropTypes.shape().isRequired,
   sponsors: PropTypes.arrayOf(PropTypes.shape()),
 };
 
 MatchBotTable.defaultProps = {
-  intl: {},
   sponsors: [],
 };
 
