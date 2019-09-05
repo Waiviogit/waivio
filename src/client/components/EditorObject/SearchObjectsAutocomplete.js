@@ -37,7 +37,7 @@ class SearchObjectsAutocomplete extends Component {
     isPermlinkValue: true,
     disabled: false,
     placeholder: '',
-    parentPermlink: '',
+    parentPermlink: null,
     autoFocus: true,
   };
 
