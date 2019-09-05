@@ -374,8 +374,8 @@ class Topnav extends React.Component {
     const value = event.target.value;
     this.hideAutoCompleteDropdown();
     this.props.history.push({
-      pathname: '/search',
-      search: `q=${value}`,
+      pathname: '/discover-objects',
+      search: `search=${value}`,
       state: {
         query: value,
       },
@@ -395,7 +395,7 @@ class Topnav extends React.Component {
         break;
       case 'type':
       default:
-        redirectUrl = '/objects';
+        redirectUrl = `/discover-objects?search=${searchValue}`;
         break;
     }
     this.props.history.push(redirectUrl);
@@ -648,7 +648,7 @@ class Topnav extends React.Component {
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     const downBar = (
       <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
-        <div onClick={this.handleSearchAllResultsClick} role="presentation">
+        <div className="search-btn" onClick={this.handleSearchAllResultsClick} role="presentation">
           {intl.formatMessage(
             {
               id: 'search_all_results_for',

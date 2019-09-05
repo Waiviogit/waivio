@@ -43,3 +43,15 @@
     border-radius: @border-radius-base;
   }
 }
+
+.view-as-link(@color: @orange-hot, @color-hover: #ff9130) {
+  color: @color;
+  text-decoration: none;
+  background-color: transparent;
+  outline: none;
+  cursor: pointer;
+  transition: color 0.3s;
+  &:hover {
+    color: @color-hover;
+  }
+}
