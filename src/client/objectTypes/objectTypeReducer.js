@@ -7,6 +7,7 @@ const initialState = {
   filteredObjects: [],
   filtersList: {},
   activeFilters: {},
+  sort: 'weight',
   map: false,
   fetching: false,
   hasMoreRelatedObjects: true,
@@ -25,6 +26,12 @@ const objectType = (state = initialState, action) => {
         filters,
         ...data
       } = action.payload;
+      let filteredObjects = [
+        ...state.filteredObjects,
+        ...relatedWobjects.map(wObj => getClientWObj(wObj)),
+      ];
+      if (action.meta.initialLoad)
+        filteredObjects = relatedWobjects.map(wObj => getClientWObj(wObj));
       const filtersList = filters ? omit(filters, ['map']) : {};
       const activeFilters = isEmpty(state.activeFilters)
         ? reduce(
@@ -42,10 +49,7 @@ const objectType = (state = initialState, action) => {
         filtersList,
         activeFilters,
         map: Boolean(filters && !isEmpty(filters.map)),
-        filteredObjects: [
-          ...state.filteredObjects,
-          ...relatedWobjects.map(wObj => getClientWObj(wObj)),
-        ],
+        filteredObjects,
         hasMoreRelatedObjects: Boolean(hasMoreWobjects),
         fetching: false,
       };
@@ -55,6 +59,12 @@ const objectType = (state = initialState, action) => {
         ...state,
         filteredObjects: [],
         activeFilters: action.payload,
+      };
+    case wobjTypeActions.CHANGE_SORTING:
+      return {
+        ...state,
+        filteredObjects: [],
+        sort: action.payload,
       };
     case wobjTypeActions.CLEAR_OBJECT_TYPE:
       return initialState;
@@ -74,3 +84,4 @@ export const getAvailableFilters = state => state.filtersList;
 export const getActiveFilters = state => state.activeFilters;
 export const getTypeName = state => get(state, ['data', 'name'], '');
 export const getHasMap = state => state.map;
+export const getSorting = state => state.sort;

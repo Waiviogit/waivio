@@ -115,7 +115,7 @@ class Story extends React.Component {
           <span>
             Approval:{' '}
             <span className={`CalculatedPercent-${percent >= 70 ? 'green' : 'red'}`}>
-              {percent}%
+              {percent.toFixed(2)}%
             </span>
           </span>
         </Tag>

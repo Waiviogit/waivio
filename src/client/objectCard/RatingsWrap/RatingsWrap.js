@@ -1,5 +1,6 @@
 import React from 'react';
 import { Col, Rate, Row } from 'antd';
+import { sortBy } from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { averageRate, avrRate } from '../../components/Sidebar/Rate/rateHelper';
@@ -8,7 +9,8 @@ import { getScreenSize } from '../../reducers';
 
 const RatingsWrap = ({ ratings, screenSize }) => {
   const isMobile = screenSize === 'xsmall' || screenSize === 'small';
-  // _.orderBy(ratings, [ratings., 'age'], ['asc', 'desc']);
+  // _.orderBy(sortedRatings, [sortedRatings., 'age'], ['asc', 'desc']);
+  const sortedRatings = sortBy(ratings, ['body']);
   let layout = null;
 
   const rateLayout = (colNum, rateIndex, dividerClass) => (
@@ -16,24 +18,24 @@ const RatingsWrap = ({ ratings, screenSize }) => {
       <Rate
         allowHalf
         disabled
-        value={averageRate(ratings[rateIndex])}
+        value={averageRate(sortedRatings[rateIndex])}
         className="RatingsWrap__stars"
       />
-      <div className="RatingsWrap__rate-title">{ratings[rateIndex].body}</div>
+      <div className="RatingsWrap__rate-title">{sortedRatings[rateIndex].body}</div>
     </Col>
   );
-  if (ratings[0]) {
+  if (sortedRatings[0]) {
     if (!isMobile) {
       layout = (
         <div className="RatingsWrap">
           <Row>
-            {rateLayout(ratings[1] ? 12 : 24, 0, '')}
-            {ratings[1] && rateLayout(12, 1, 'RatingsWrap__divider')}
+            {rateLayout(sortedRatings[1] ? 12 : 24, 0, '')}
+            {sortedRatings[1] && rateLayout(12, 1, 'RatingsWrap__divider')}
           </Row>
-          {ratings[2] && (
+          {sortedRatings[2] && (
             <Row>
-              {rateLayout(ratings[3] ? 12 : 24, 2, '')}
-              {ratings[3] && rateLayout(12, 3, 'RatingsWrap__divider')}
+              {rateLayout(sortedRatings[3] ? 12 : 24, 2, '')}
+              {sortedRatings[3] && rateLayout(12, 3, 'RatingsWrap__divider')}
             </Row>
           )}
         </div>
@@ -42,9 +44,9 @@ const RatingsWrap = ({ ratings, screenSize }) => {
       layout = (
         <div className="RatingsWrap">
           <div className="RatingsWrap-rate">
-            <Rate allowHalf disabled value={avrRate(ratings)} />
+            <Rate allowHalf disabled value={avrRate(sortedRatings)} />
             {/* <div className="RatingsWrap__rate-title"> */}
-            {/* {`(${ratings.length})`} */}
+            {/* {`(${sortedRatings.length})`} */}
             {/* </div> */}
           </div>
         </div>

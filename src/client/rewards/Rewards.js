@@ -150,13 +150,18 @@ class Rewards extends React.Component {
         )}
         <SortSelector sort={this.state.sort} onChange={this.handleSortChange}>
           <SortSelector.Item key="reward">
-            <FormattedMessage id="rewards" defaultMessage="rewards">
-              {msg => msg.toUpperCase()}
+            <FormattedMessage id="amount_sort" defaultMessage="amount">
+              {msg => msg}
             </FormattedMessage>
           </SortSelector.Item>
           <SortSelector.Item key="date">
-            <FormattedMessage id="date" defaultMessage="date">
-              {msg => msg.toUpperCase()}
+            <FormattedMessage id="expiry_sort" defaultMessage="expiry">
+              {msg => msg}
+            </FormattedMessage>
+          </SortSelector.Item>
+          <SortSelector.Item key="proximity">
+            <FormattedMessage id="proximity_sort" defaultMessage="proximity">
+              {msg => msg}
             </FormattedMessage>
           </SortSelector.Item>
         </SortSelector>
