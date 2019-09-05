@@ -1,5 +1,11 @@
 import { createAsyncActionType } from '../helpers/stateHelpers';
-import { getActiveFilters, getTypeName, getObjectTypeSorting, getUserLocation } from '../reducers';
+import {
+  getActiveFilters,
+  getTypeName,
+  getObjectTypeSorting,
+  getUserLocation,
+  getQueryString,
+} from '../reducers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 
 export const GET_OBJECT_TYPE = createAsyncActionType('@objectType/GET_OBJECT_TYPE');
@@ -14,12 +20,17 @@ export const getObjectType = (name, { limit = 15, skip = 0 } = { limit: 15, skip
   const state = getState();
   const activeFilters = { ...getActiveFilters(state) };
   const sort = getObjectTypeSorting(state);
+  const searchString = new URLSearchParams(getQueryString(state)).get('search');
+
   if (sort === 'proximity' && !activeFilters.map) {
     const userLocation = getUserLocation(state);
     activeFilters.map = {
       coordinates: [Number(userLocation.lat), Number(userLocation.lon)],
       radius: 50000000,
     };
+  }
+  if (searchString) {
+    activeFilters.searchString = searchString;
   }
   dispatch({
     type: GET_OBJECT_TYPE.ACTION,

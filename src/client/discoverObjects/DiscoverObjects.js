@@ -6,11 +6,12 @@ import Affix from '../components/Utils/Affix';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import DiscoverFiltersSidebar from './DiscoverFiltersSidebar/DiscoverFiltersSidebar';
 import DiscoverObjectsContent from './DiscoverObjectsContent';
-import './DiscoverObjects.less';
 import ObjectsContainer from '../objects/ObjectsContainer';
+import './DiscoverObjects.less';
 
-const DiscoverObjects = ({ intl, match }) => {
+const DiscoverObjects = ({ intl, history, match }) => {
   const isTypeChosen = Boolean(match.params.typeName);
+  const { pathname, search } = history.location;
   return (
     <div className="shifted">
       <Helmet>
@@ -33,7 +34,12 @@ const DiscoverObjects = ({ intl, match }) => {
         )}
         <div className={`discover-objects${isTypeChosen ? ' center' : ''}`}>
           {match.params.typeName ? (
-            <DiscoverObjectsContent typeName={match.params.typeName} key={match.url} intl={intl} />
+            <DiscoverObjectsContent
+              history={history}
+              typeName={match.params.typeName}
+              key={pathname + search}
+              intl={intl}
+            />
           ) : (
             <ObjectsContainer />
           )}
@@ -45,6 +51,7 @@ const DiscoverObjects = ({ intl, match }) => {
 
 DiscoverObjects.propTypes = {
   intl: PropTypes.shape().isRequired,
+  history: PropTypes.shape().isRequired,
   match: PropTypes.shape().isRequired,
 };
 
