@@ -51,11 +51,10 @@ const getCommentsChildrenLists = apiRes => {
 /**
  * Fetches comments from blockchain.
  * @param {number} postId Id of post to fetch comments from
- * @param {boolean} reload If set to true isFetching won't be set to true
+ * @param originalAuthor is bot name of append object comment
  * preventing loading icon to be dispalyed
- * @param {object} focusedComment Object with author and permlink to which focus after loading
  */
-export const getComments = postId => (dispatch, getState, { steemAPI }) => {
+export const getComments = (postId, originalAuthor) => (dispatch, getState, { steemAPI }) => {
   const { posts, comments } = getState();
 
   const content = posts.list[postId] || comments.comments[postId];
@@ -66,7 +65,7 @@ export const getComments = postId => (dispatch, getState, { steemAPI }) => {
     type: GET_COMMENTS,
     payload: {
       promise: steemAPI
-        .sendAsync('get_state', [`/${category}/@${author}/${permlink}`])
+        .sendAsync('get_state', [`/${category}/@${originalAuthor || author}/${permlink}`])
         .then(apiRes => ({
           rootCommentsList: getRootCommentsList(apiRes),
           commentsChildrenList: getCommentsChildrenLists(apiRes),

@@ -34,8 +34,8 @@ const SidenavDiscoverObjects = ({ withTitle }) => {
         <React.Fragment>
           <li key="all-types" className="ttc">
             <NavLink
-              to={`/objects`}
-              // isActive={() => pathname.includes(type.name)}
+              to={`/discover-objects`}
+              isActive={() => pathname === '/discover-objects'}
               className="sidenav-discover-objects__item"
               activeClassName="Sidenav__item--active"
             >
