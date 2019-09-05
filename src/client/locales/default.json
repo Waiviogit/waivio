@@ -668,7 +668,6 @@
   "change": "change",
   "not_less_zero_posts": "Number of posts cannot be negative",
   "read_agreement": "Please, read the agreement and check this field",
-  "not_valid_campaign_name": "This doesn't seem to be valid campaign name. Only alphanumeric characters, hyphens, underscores and dots are allowed.",
   "sponsor_match_bot": "@Sponsor match bot",
   "match_bot": "Match bot",
   "match_bot_designed_offset_portion_of_direct_rewards": "Match bot is designed to offset portion of direct rewards with upvotes.",
@@ -725,13 +724,10 @@
   "compensation_account_optional": "Compensation account (optional)",
   "accumulates_value_of_upvotes_from_registered_upvoting_accounts": "Accumulates the value of upvotes from registered upvoting accounts",
   "compensation_account_auto_complete_placeholder": "Find compensation account",
-  "activate_campaign": "Activate rewards campaign",
   "amount_sort": "amount",
   "expiry_sort": "expiry",
   "proximity_sort": "proximity",
-  "campaign_terms": "The terms and conditions of the rewards campaign {campaignName} will be published on Steem blockchain",
   "not_valid_campaign_name": "This doesn't seem to be valid campaign name. Only alphanumeric characters, hyphens, underscores and dots are allowed.",
-  "filter-rating": "Top rated",
   "legal_notice_create_post": "I understand that this post will be published on the Steem social blockchain and that it could be reproduced on many websites around the world. I also acknowledge that the content and images in this post do not infringe the rights of other parties.",
   "proximity": "Proximity"
 }
