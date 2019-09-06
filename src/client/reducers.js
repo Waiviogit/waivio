@@ -30,7 +30,6 @@ import objectTypesReducer, * as fromObjectTypes from '../client/objectTypes/obje
 import objectTypeReducer, * as fromObjectType from '../client/objectTypes/objectTypeReducer';
 import appendReducer, * as fromAppend from '../client/object/appendReducer';
 import galleryReducer, * as fromGallery from '../client/object/ObjectGallery/galleryReducer';
-import modalReducer, * as fromModal from '../client/components/ModalWindow/modalReducer';
 import mapReducer, * as fromMap from '../client/components/Maps/mapReducer';
 
 export default history =>
@@ -62,7 +61,6 @@ export default history =>
     modals: modalsReducer,
     append: appendReducer,
     gallery: galleryReducer,
-    modal: modalReducer,
     topPerformers: topPerformersReducer,
     forecasts: forecastReducer,
     map: mapReducer,

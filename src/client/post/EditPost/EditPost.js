@@ -4,7 +4,7 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Badge } from 'antd';
-import { debounce, has, kebabCase, throttle, uniqBy } from 'lodash';
+import { debounce, has, kebabCase, throttle, uniqBy, isEmpty } from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
 import {
   getAuthenticatedUser,
@@ -16,7 +16,12 @@ import {
   getUpvoteSetting,
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
-import { createPostMetadata, splitPostContent, getInitialState } from '../../helpers/postHelpers';
+import {
+  createPostMetadata,
+  splitPostContent,
+  getInitialState,
+  attachPostInfo,
+} from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import ObjectCardView from '../../objectCard/ObjectCardView';
@@ -25,6 +30,8 @@ import LastDraftsContainer from '../Write/LastDraftsContainer';
 import ObjectCreation from '../../components/Sidebar/ObjectCreation/ObjectCreation';
 import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import './EditPost.less';
+import CreatePostForecast from '../../../investarena/components/CreatePostForecast';
+import { getForecastObject } from '../../../investarena/components/CreatePostForecast/helpers';
 
 const getLinkedObjects = contentStateRaw => {
   const objEntities = Object.values(contentStateRaw.entityMap).filter(
@@ -210,12 +217,12 @@ class EditPost extends Component {
     const isBodyEmpty = postBody.replace(/[\u200B-\u200D\uFEFF]/g, '').trim().length === 0;
     if (isBodyEmpty) return;
 
-    const redirect = this.props.draftId !== this.state.draftId;
-    if (this.state.expForecast) {
-      postData.exp_forecast = this.state.expForecast;
-    }
     const id = this.props.draftId;
-    const redirect = id && id !== this.draftId;
+
+    const redirect = id !== this.draftId;
+    if (this.state.expForecast) {
+      draft.exp_forecast = this.state.expForecast;
+    }
 
     this.props.saveDraft(draft, redirect, this.props.intl);
 
