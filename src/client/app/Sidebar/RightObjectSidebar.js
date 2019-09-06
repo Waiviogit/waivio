@@ -8,11 +8,11 @@ const RightObjectSidebar = ({ username, wobject, quoteSecurity }) =>
   wobject.users ? (
     <React.Fragment>
       <ObjectExpertise username={username} wobject={wobject} />
-      <ForecastBlock
+      {quoteSecurity && <ForecastBlock
         username={username}
         renderPlace={'rightObjectSidebar'}
         quoteSecurity={quoteSecurity}
-      />
+      />}
     </React.Fragment>
   ) : (
     <RightSidebarLoading />
@@ -21,7 +21,10 @@ const RightObjectSidebar = ({ username, wobject, quoteSecurity }) =>
 RightObjectSidebar.propTypes = {
   username: PropTypes.string.isRequired,
   wobject: PropTypes.shape().isRequired,
-  quoteSecurity: PropTypes.string.isRequired,
+  quoteSecurity: PropTypes.string,
 };
 
+RightObjectSidebar.defaultProps = {
+  quoteSecurity: '',
+};
 export default RightObjectSidebar;

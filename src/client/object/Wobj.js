@@ -202,7 +202,7 @@ export default class Wobj extends React.Component {
                 <RightObjectSidebar
                   username={userName}
                   wobject={wobject}
-                  quoteSecurity={chartId.body}
+                  quoteSecurity={chartId.body || ""}
                 />
               </div>
             </Affix>

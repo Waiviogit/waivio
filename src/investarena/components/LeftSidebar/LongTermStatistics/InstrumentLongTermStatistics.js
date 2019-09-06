@@ -7,10 +7,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import './LongTermStatistics.less';
 import { getQuotesState } from '../../../redux/selectors/quotesSelectors';
-import { getFieldWithMaxWeight } from '../../../../client/object/wObjectHelper';
-import { objectFields } from '../../../../common/constants/listOfFields';
 import * as ApiClient from '../../../../waivioApi/ApiClient';
-import { quoteIdForWidget } from '../../../constants/constantsWidgets';
 import { getLongTermStatisticsForUser } from '../../../helpers/diffDateTime';
 
 @injectIntl
@@ -52,31 +49,7 @@ class InstrumentLongTermStatistics extends React.Component {
       }
     });
   }
-  // componentWillReceiveProps(nextProps) {
-  //   if (!_.isEmpty(nextProps.wobject) && !_.isEmpty(nextProps.quotes)) {
-  //     let chartId = this.state.chartId;
-  //     if (!this.state.chartId) {
-  //       chartId = getFieldWithMaxWeight(nextProps.wobject, objectFields.chartId);
-  //       this.setState({chartId});
-  //     }
-  //     const quote = nextProps.quotes[chartId];
-  //     const id = quoteIdForWidget[chartId];
-  //
-  //     if (chartId && quote && id) {
-  //       if (_.isEmpty(this.state.longTermStatisticsWidgets)) {
-  //         ApiClient.getInstrumentLongTermStatistics(nextProps.wobject.author_permlink).then(data => {
-  //             if (data && !_.isError(data) && !_.isEmpty(data)) {
-  //               const longTermStatistics = getLongTermStatisticsForUser(data, this.props.intl);
-  //               this.setState({longTermStatistics, loading: false});
-  //             } else {
-  //               this.setState({loading: false});
-  //             }
-  //           }
-  //         );
-  //       }
-  //     }
-  //   }
-  // }
+
   render() {
     return !this.state.loading ? (
       <div className="InstrumentLongTermStatistics">

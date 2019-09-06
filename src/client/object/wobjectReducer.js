@@ -1,3 +1,4 @@
+import {find} from 'lodash';
 import * as actions from './wobjectsActions';
 import * as appendAction from './appendActions';
 import { RATE_WOBJECT_SUCCESS } from '../../client/object/wobjActions';
@@ -10,7 +11,7 @@ const initialState = {
   chartId: {},
 };
 
-const getByChartId = wobj => _.find(wobj.fields, ['name', 'chartid']);
+const getByChartId = wobj => find(wobj.fields, ['name', 'chartid']);
 
 export default function wobjectReducer(state = initialState, action) {
   switch (action.type) {
