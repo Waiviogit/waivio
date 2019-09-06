@@ -67,6 +67,7 @@ export const optionsPrivacy = [
 export const optionsPlatform = [
   { value: BROKER.UMARKETS, label: 'Umarkets' },
   { value: BROKER.MAXIMARKETS, label: 'Maximarkets' },
+  { value: BROKER.MAXITRADE, label: 'Maxitrade' },
 ];
 
 export const optionsChartType = [

@@ -5,6 +5,7 @@
     "brokerWSUrl": {
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
+      "maxitrade": "https://trading.maxitrade.com/stomp/",
       "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
     },
     "platformDepositUrl": {
@@ -40,8 +41,7 @@
       "umarkets": "https://my.umarkets.com/",
       "maximarkets": "https://myaccount.maximarkets.org/"
     },
-    "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/",
-    "": "http://localhost:8082"
+    "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/"
   },
   "test": {
     "apiPrefix": "http://localhost:3000/",
