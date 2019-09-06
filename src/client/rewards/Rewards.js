@@ -439,7 +439,6 @@ class Rewards extends React.Component {
       objectDetails,
       campaignsTypes,
       activeFilters,
-      isSearchAreaFilter,
     } = this.state;
     const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
     const isCreate = location.pathname === '/rewards/create';
@@ -468,7 +467,6 @@ class Rewards extends React.Component {
                       userLocation={this.props.userLocation}
                       onMarkerClick={this.goToCampaign}
                       getAreaSearchData={this.getAreaSearchData}
-                      isFilterOn={isSearchAreaFilter}
                     />
                   </React.Fragment>
                 )}

@@ -40,7 +40,7 @@ const SORT_OPTIONS = {
 };
 
 @connect(
-  state => ({
+  (state, props) => ({
     availableFilters: getAvailableFilters(state),
     activeFilters: getActiveFilters(state),
     sort: getObjectTypeSorting(state),
@@ -50,6 +50,7 @@ const SORT_OPTIONS = {
     filteredObjects: getFilteredObjects(state),
     isFetching: getObjectTypeLoading(state),
     hasMoreObjects: getHasMoreRelatedObjects(state),
+    searchString: new URLSearchParams(props.history.location.search).get('search'),
   }),
   {
     dispatchClearObjectTypeStore: clearType,
@@ -63,6 +64,7 @@ const SORT_OPTIONS = {
 class DiscoverObjectsContent extends Component {
   static propTypes = {
     /* from connect */
+    searchString: PropTypes.string,
     availableFilters: PropTypes.shape().isRequired,
     activeFilters: PropTypes.shape().isRequired,
     sort: PropTypes.string.isRequired,
@@ -80,10 +82,12 @@ class DiscoverObjectsContent extends Component {
     dispatchSetMapFullscreenMode: PropTypes.func.isRequired,
     /* passed props */
     intl: PropTypes.shape().isRequired,
+    history: PropTypes.shape().isRequired,
     typeName: PropTypes.string,
   };
 
   static defaultProps = {
+    searchString: '',
     typeName: '',
   };
 
@@ -106,6 +110,31 @@ class DiscoverObjectsContent extends Component {
   componentWillUnmount() {
     this.props.dispatchClearObjectTypeStore();
   }
+
+  getCommonFiltersLayout = () => (
+    <React.Fragment>
+      {this.props.searchString && (
+        <Tag
+          className="filter-highlighted"
+          key="search-string-filter"
+          closable
+          onClose={this.resetNameSearchFilter}
+        >
+          {this.props.searchString}
+        </Tag>
+      )}
+      {this.props.activeFilters.map ? (
+        <Tag
+          className="filter-highlighted"
+          key="map-search-area-filter"
+          closable
+          onClose={this.resetMapFilter}
+        >
+          {this.props.intl.formatMessage({ id: 'search_area', defaultMessage: 'Search area' })}
+        </Tag>
+      ) : null}
+    </React.Fragment>
+  );
 
   loadMoreRelatedObjects = () => {
     const { dispatchGetObjectType, theType, filteredObjects } = this.props;
@@ -142,6 +171,8 @@ class DiscoverObjectsContent extends Component {
     const updatedFilters = omit(activeFilters, ['map']);
     dispatchSetActiveFilters(updatedFilters);
   };
+
+  resetNameSearchFilter = () => this.props.history.push(this.props.history.location.pathname);
 
   showMap = () => this.props.dispatchSetMapFullscreenMode(true);
 
@@ -195,16 +226,7 @@ class DiscoverObjectsContent extends Component {
             {_.size(SORT_OPTIONS) - Number(!hasMap) > 1 ? sortSelector : null}
           </div>
           <div className="discover-objects-header__tags-block common">
-            {map && (
-              <Tag
-                className="search-area-filter"
-                key="search-area-filter"
-                closable
-                onClose={this.resetMapFilter}
-              >
-                {intl.formatMessage({ id: 'search_area', defaultMessage: 'Search area' })}
-              </Tag>
-            )}
+            {this.getCommonFiltersLayout()}
           </div>
           {isTypeHasFilters ? (
             <React.Fragment>
@@ -213,16 +235,7 @@ class DiscoverObjectsContent extends Component {
                   <span className="discover-objects-header__topic ttc">
                     {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
                   </span>
-                  {map && (
-                    <Tag
-                      className="search-area-filter"
-                      key="search-area-filter"
-                      closable
-                      onClose={this.resetMapFilter}
-                    >
-                      {intl.formatMessage({ id: 'search_area', defaultMessage: 'Search area' })}
-                    </Tag>
-                  )}
+                  {this.getCommonFiltersLayout()}
                   {_.map(chosenFilters, (filterValues, filterName) =>
                     filterValues.map(filterValue => (
                       <Tag
