@@ -1,6 +1,11 @@
 @import (reference) '../../styles/custom.less';
 
 .nightmode {
+  .CreateReward {
+    &__block-title {
+      border-top: 1px solid @blue-heather;
+    }
+  }
   .CreateReward__item-title.ant-form-item-required {
     color: @white-smoke;
     opacity: 1;
@@ -9,7 +14,48 @@
     color: @white-smoke;
     opacity: 1;
   }
+  .CreateReward.ant-input-number {
+    background-color: @grey-nero;
+    border: 1px solid @normal-grey;
+    color: @white-smoke;
+  }
   .ant-calendar-picker-icon {
     color: @white-smoke !important;
+  }
+  .ant-calendar {
+    background-color: @grey-nero;
+    border: 1px solid @normal-grey;
+    color: @white-smoke;
+  }
+  .ant-calendar-input {
+    background-color: @grey-nero;
+  }
+  .ant-calendar-month-select {
+    color: @white-smoke !important;
+  }
+  .ant-calendar-year-select {
+    color: @white-smoke !important;
+  }
+  .ant-calendar-input-wrap {
+    border-bottom: 1px solid @normal-grey;
+  }
+  .ant-calendar-header {
+    border-bottom: 1px solid @normal-grey;
+  }
+  .ant-calendar-footer {
+    border-top: 1px solid @normal-grey;
+  }
+  .ant-calendar-date {
+    color: @black-text;
+    background: @normal-grey;
+  }
+  .ant-calendar-selected-day .ant-calendar-date {
+    background: @normal-grey;
+  }
+  .ant-checkbox-inner {
+    background-color: @grey-nero;
+  }
+  .ant-calendar-cell.ant-calendar-next-month-btn-day > .ant-calendar-date {
+    color: @normal-grey;
   }
 }
