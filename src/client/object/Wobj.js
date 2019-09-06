@@ -188,7 +188,9 @@ export default class Wobj extends React.Component {
             )}
             <Affix className="rightContainer" stickPosition={72}>
               <div className="right">
-                <ObjectExpertise username={userName} wobject={wobject} />
+                {wobject.author_permlink && (
+                  <ObjectExpertise username={userName} wobject={wobject} />
+                )}
               </div>
             </Affix>
             <div className="center">
