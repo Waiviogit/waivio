@@ -20,7 +20,7 @@
     color: @white-smoke;
   }
   .ant-calendar-picker-icon {
-    color: @white-smoke !important;
+    color: white;
   }
   .ant-calendar {
     background-color: @grey-nero;
@@ -57,5 +57,24 @@
   }
   .ant-calendar-cell.ant-calendar-next-month-btn-day > .ant-calendar-date {
     color: @normal-grey;
+  }
+  .has-error .ant-input,
+  .has-error .ant-input:hover {
+    background-color: @grey-nero;
+  }
+  .anticon.anticon-close-circle.ant-calendar-picker-clear {
+    background-color: transparent;
+    display: flex;
+    margin-right: 20px;
+    color: @black-text;
+  }
+  .ant-select-dropdown-menu-item:hover:not(.ant-select-dropdown-menu-item-disabled) {
+    background-color: #32373c;
+  }
+  .ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled) {
+    background-color: #32373c;
+  }
+  .ant-select-dropdown-menu-item:first-child {
+    border-radius: 4px 4px 0 0;
   }
 }

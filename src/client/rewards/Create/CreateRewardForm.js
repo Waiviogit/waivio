@@ -984,7 +984,7 @@ class CreateRewardForm extends React.Component {
                 validator: this.checkExpireDate,
               },
             ],
-          })(<DatePicker className="Date" />)}
+          })(<DatePicker />)}
         </Form.Item>
         <div className="CreateReward__item-title simple-text">
           {intl.formatMessage({
