@@ -15,6 +15,7 @@ import SteemConnect from '../../steemConnectAPI';
 export default class SidenavRewards extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
+    location: PropTypes.shape().isRequired,
     authenticated: PropTypes.bool.isRequired,
   };
 
@@ -35,8 +36,8 @@ export default class SidenavRewards extends React.Component {
   }
 
   render() {
+    const { intl, authenticated, location } = this.props;
     const next = location.pathname.length > 1 ? location.pathname : '';
-    const { intl, authenticated } = this.props;
     return (
       <React.Fragment>
         <ul className="Sidenav">
@@ -93,14 +94,6 @@ export default class SidenavRewards extends React.Component {
                   {intl.formatMessage({
                     id: 'create',
                     defaultMessage: `Create`,
-                  })}
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to={`/rewards/created`} activeClassName="Sidenav__item--active">
-                  {intl.formatMessage({
-                    id: 'created',
-                    defaultMessage: `Created`,
                   })}
                 </NavLink>
               </li>

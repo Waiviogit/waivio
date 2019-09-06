@@ -71,6 +71,26 @@ class ObjectInfo extends React.Component {
     return link;
   };
 
+  getFieldLayout = (fieldName, params) => {
+    switch (fieldName) {
+      case objectFields.phone:
+        return (
+          <div key={params.number} className="flex">
+            <div className="self-start pr1">
+              <Icon type="phone" />
+            </div>
+            <div className="flex flex-column">
+              {Boolean(params.body) && <div className="phone-title">{params.body}</div>}
+              <a href={`tel:${params.number}`}>{params.number}</a>
+            </div>
+          </div>
+        );
+      default:
+        break;
+    }
+    return null;
+  };
+
   handleSelectField = field => () => this.setState({ selectedField: field });
 
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
@@ -83,7 +103,7 @@ class ObjectInfo extends React.Component {
     const { location, wobject, userName, albums, isAuthenticated } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const { showModal, selectedField, isModalComparePerformanceOpen } = this.state;
-    const { button, status, website } = wobject;
+    const { button, status, website, newsFilter } = wobject;
     const renderFields = getAllowedFieldsByObjType(wobject.object_type);
     const isRenderGallery = ![OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(wobject.object_type);
     const isRenderMenu = isRenderGallery;
@@ -132,18 +152,14 @@ class ObjectInfo extends React.Component {
 
       price = getFieldWithMaxWeight(wobject, objectFields.price);
 
-      menuItems = _.get(wobject, 'menuItems', []);
+      menuItems = _.uniqBy(_.get(wobject, 'menuItems', []), 'author_permlink');
       menuLists =
         menuItems.length && menuItems.some(item => item.object_type === OBJECT_TYPE.LIST)
-          ? _.uniqBy(menuItems, 'author_permlink').filter(
-              item => item.object_type === OBJECT_TYPE.LIST,
-            )
+          ? menuItems.filter(item => item.object_type === OBJECT_TYPE.LIST)
           : null;
       menuPages =
-        menuItems.length && menuItems.some(item => item.object_type !== OBJECT_TYPE.LIST)
-          ? _.uniqBy(menuItems, 'author_permlink').filter(
-              item => item.object_type !== OBJECT_TYPE.LIST,
-            )
+        menuItems.length && menuItems.some(item => item.object_type !== OBJECT_TYPE.PAGE)
+          ? menuItems.filter(item => item.object_type !== OBJECT_TYPE.PAGE)
           : null;
 
       photosCount = wobject.photos_count;
@@ -281,12 +297,18 @@ class ObjectInfo extends React.Component {
                   button.link &&
                   getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.BUTTON, ...button }),
               )}
-              {listItem(objectFields.newsFilter, null)}
+              {listItem(
+                objectFields.newsFilter,
+                newsFilter && getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.NEWS }),
+              )}
             </React.Fragment>
           )}
           {!isEditMode &&
             sortListItemsBy(
-              combineObjectMenu(menuItems.map(menuItem => getClientWObj(menuItem)), { button }),
+              combineObjectMenu(menuItems.map(menuItem => getClientWObj(menuItem)), {
+                button,
+                news: Boolean(newsFilter),
+              }),
               !_.isEmpty(wobject.sortCustom) ? 'custom' : '',
               wobject && wobject.sortCustom,
             ).map(item => getMenuSectionLink(item))}
@@ -528,20 +550,18 @@ class ObjectInfo extends React.Component {
                 {accessExtend ? (
                   <React.Fragment>
                     {phones.length <= 3 ? (
-                      phones.slice(0, 3).map(({ body, number }) => (
-                        <div key={number} className="phone">
-                          <Icon type="phone" /> <a href={`tel:${number}`}>{number}</a>
-                          {body && body} <br />
-                        </div>
-                      ))
+                      phones
+                        .slice(0, 3)
+                        .map(({ body, number }) =>
+                          this.getFieldLayout(objectFields.phone, { body, number }),
+                        )
                     ) : (
                       <React.Fragment>
-                        {phones.slice(0, 2).map(({ body, number }) => (
-                          <div key={`${number}${body}`} className="phone">
-                            {body && body} <br />
-                            <Icon type="phone" /> <a href={`tel:${number}`}>{number}</a>
-                          </div>
-                        ))}
+                        {phones
+                          .slice(0, 2)
+                          .map(({ body, number }) =>
+                            this.getFieldLayout(objectFields.phone, { body, number }),
+                          )}
                         <Link
                           to={`/object/${wobject.author_permlink}/updates/${objectFields.phone}`}
                           onClick={() => this.handleSelectField(objectFields.phone)}
@@ -555,12 +575,11 @@ class ObjectInfo extends React.Component {
                   </React.Fragment>
                 ) : (
                   <React.Fragment>
-                    {phones.slice(0, 3).map(({ body, number }) => (
-                      <div key={number}>
-                        {body && body} <br />
-                        <Icon type="phone" /> <a href={`tel:${number}`}>{number}</a>
-                      </div>
-                    ))}
+                    {phones
+                      .slice(0, 3)
+                      .map(({ body, number }) =>
+                        this.getFieldLayout(objectFields.phone, { body, number }),
+                      )}
                   </React.Fragment>
                 )}
               </div>,

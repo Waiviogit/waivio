@@ -58,7 +58,7 @@ class StoryFull extends React.Component {
     commentCount: PropTypes.number,
     saving: PropTypes.bool,
     ownPost: PropTypes.bool,
-    sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
+    sliderMode: PropTypes.bool,
     onFollowClick: PropTypes.func,
     onSaveClick: PropTypes.func,
     onReportClick: PropTypes.func,
@@ -76,7 +76,7 @@ class StoryFull extends React.Component {
     commentCount: 0,
     saving: false,
     ownPost: false,
-    sliderMode: 'auto',
+    sliderMode: false,
     onFollowClick: () => {},
     onSaveClick: () => {},
     onReportClick: () => {},
@@ -388,7 +388,7 @@ class StoryFull extends React.Component {
           <div className="StoryFull__header__text">
             <Link to={`/@${post.author}`}>
               <span className="username">{post.author}</span>
-              <WeightTag weight={post.author_wobjects_weight} rank={post.author_rank} />
+              <WeightTag weight={post.author_wobjects_weight} />
             </Link>
             <BTooltip
               title={

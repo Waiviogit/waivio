@@ -1,0 +1,34 @@
+@import (reference) '../../../styles/modules/variables.less';
+@import (reference) '../../../styles/custom.less';
+
+.TargetDaysTable {
+  width: 100%;
+  border: 1px solid @black;
+  text-align: center !important;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: small;
+
+  & td {
+    border: 1px solid @black;
+    padding: 5px 4px;
+    width: 25%;
+  }
+
+  & th {
+    text-align: center !important;
+    border: 1px solid @black;
+    padding: 5px 4px;
+    width: 25%;
+  }
+
+  & thead th {
+    font-weight: 500;
+    color: @black;
+    text-align: left;
+  }
+
+  & tbody td {
+    font-weight: 500;
+  }
+}

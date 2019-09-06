@@ -5,28 +5,29 @@ import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import './Manage.less';
 import * as ApiClient from '../../../waivioApi/ApiClient';
-import CampaingRewardsTable from './CampaingRewardsTable/CampaingRewardsTable';
+import CampaignRewardsTable from './CampaignRewardsTable/CampaignRewardsTable';
 import BalanceTable from './BalanceTable/BalanceTable';
-
-import { getModalVisability } from '../../reducers';
-import { setModalVisability } from '../../components/ModalWindow/modalActions';
+import { activateCampaign } from '../../user/userActions';
+import { getAuthenticatedUser } from '../../reducers';
 
 @injectIntl
 @connect(
   state => ({
-    visibility: getModalVisability(state),
+    user: getAuthenticatedUser(state),
   }),
-  { setModalVisability },
+  { activateCampaign },
 )
 class Manage extends React.Component {
   static propTypes = {
     userName: PropTypes.string,
     intl: PropTypes.shape().isRequired,
-    visibility: PropTypes.shape().isRequired,
-    setModalVisability: PropTypes.func.isRequired,
+    user: PropTypes.shape(),
+    activateCampaign: PropTypes.func,
   };
   static defaultProps = {
     userName: '',
+    user: {},
+    activateCampaign: () => {},
   };
   state = {
     campaigns: [],
@@ -69,7 +70,7 @@ class Manage extends React.Component {
           :
         </div>
         <div>
-          *
+          *{' '}
           {intl.formatMessage({
             id: 'accounts_payable_exeed',
             defaultMessage: `accounts payable exeed 30 days`,
@@ -79,7 +80,7 @@ class Manage extends React.Component {
           **{' '}
           {intl.formatMessage({
             id: 'remaining_balance_is_not_sufficient',
-            defaultMessage: `the remaining balance i snot sufficient to cover outstanding obligations`,
+            defaultMessage: `the remaining balance is not sufficient to cover outstanding obligations`,
           })}
         </div>
       </React.Fragment>
@@ -110,7 +111,7 @@ class Manage extends React.Component {
 
   render() {
     // eslint-disable-next-line no-shadow
-    const { intl, setModalVisability, visibility } = this.props;
+    const { intl, activateCampaign, user } = this.props;
     const { budgetTotal, campaigns } = this.state;
     const balanceContent = this.balanceContent();
     const rewardsCampaignContent = this.rewardsCampaignContent();
@@ -123,7 +124,7 @@ class Manage extends React.Component {
               defaultMessage: `Account balance (SBD)`,
             })}
           </div>
-          <BalanceTable intl={intl} budgetTotal={budgetTotal} />
+          <BalanceTable intl={intl} budgetTotal={budgetTotal} user={user} />
           <div className="Manage__account-balance-wrap-text-content">{balanceContent}</div>
           <div className="Manage__rewards-campaign-wrap">
             <div className="Manage__rewards-campaign-wrap-title">
@@ -132,11 +133,10 @@ class Manage extends React.Component {
                 defaultMessage: `Manage rewards campaign`,
               })}
             </div>
-            <CampaingRewardsTable
+            <CampaignRewardsTable
+              activateCampaign={activateCampaign}
               intl={intl}
               campaigns={campaigns}
-              visibility={visibility}
-              setModalVisability={setModalVisability}
             />
             <div className="Manage__rewards-campaign-wrap-text-content">
               {rewardsCampaignContent}

@@ -3,7 +3,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Breadcrumb } from 'antd';
-import { Link } from 'react-router-dom';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 
 const rewardText = {
@@ -27,9 +26,7 @@ const RewardBreadcrumb = ({ intl, filterKey, reqObject }) => {
       <Breadcrumb separator={'>'}>
         {objName ? (
           <React.Fragment>
-            <Breadcrumb.Item>
-              <Link to={`/rewards/${filterKey}`}>{breadCrumbText}</Link>
-            </Breadcrumb.Item>
+            <Breadcrumb.Item href={`/rewards/${filterKey}`}>{breadCrumbText}</Breadcrumb.Item>
             <Breadcrumb.Item>{objName}</Breadcrumb.Item>
           </React.Fragment>
         ) : (

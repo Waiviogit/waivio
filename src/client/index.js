@@ -24,7 +24,7 @@ if (accessToken) {
   steemConnectAPI.setAccessToken(accessToken);
 }
 
-const store = getStore(steemConnectAPI, waivioAPI);
+const store = getStore(steemConnectAPI, waivioAPI, '/', history);
 
 message.config({
   top: 62,

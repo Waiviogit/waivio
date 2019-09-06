@@ -89,7 +89,10 @@ export default class Comments extends React.Component {
 
   componentDidMount() {
     if (this.props.show && this.props.post.children !== 0) {
-      this.props.getComments(this.props.post.id);
+      this.props.getComments(
+        this.props.post.id,
+        this.props.post.append_field_name ? this.props.post.author_original : null,
+      );
     }
   }
 
@@ -97,7 +100,10 @@ export default class Comments extends React.Component {
     const { post, show } = this.props;
 
     if (nextProps.show && (nextProps.post.id !== post.id || !show)) {
-      this.props.getComments(nextProps.post.id);
+      this.props.getComments(
+        nextProps.post.id,
+        this.props.post.append_field_name ? this.props.post.author_original : null,
+      );
     }
   }
 
@@ -151,7 +157,7 @@ export default class Comments extends React.Component {
       rewardFund,
       defaultVotePercent,
     } = this.props;
-    const postId = post.id;
+    const postId = post.append_field_name ? `${post.author_original}/${post.permlink}` : post.id;
     let rootLevelComments = [];
 
     const parentNode = comments.childrenById[postId];

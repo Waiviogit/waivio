@@ -7,6 +7,7 @@ import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button, Form, Input, message, Select, Avatar, Rate, Icon } from 'antd';
 import { fieldsRules } from './const/appendFormConstants';
+import apiConfig from '../../waivioApi/config.json';
 import {
   linkFields,
   objectFields,
@@ -273,6 +274,15 @@ export default class AppendForm extends Component {
             /[{}"]/g,
             '',
           )} ${formValues[phoneFields.number].replace(/[{}"]/g, '')}  `;
+        case TYPES_OF_MENU_ITEM.PAGE:
+        case TYPES_OF_MENU_ITEM.LIST: {
+          const alias = getFieldValue('menuItemName');
+          const displayName = `${this.state.selectedObject.name} (type: ${this.state.selectedObject.type})`;
+          const objectUrl = `${apiConfig.production.protocol}${apiConfig.production.host}/object/${appendValue}`;
+          return `@${author} added ${currentField} (${langReadable}):\n[${displayName}](${objectUrl})${
+            alias ? ` as "${alias}"` : ''
+          }`;
+        }
         default:
           return `@${author} added ${currentField} (${langReadable}):\n ${appendValue.replace(
             /[{}"]/g,
@@ -668,6 +678,7 @@ export default class AppendForm extends Component {
                   objectType={objectType}
                 />,
               )}
+              {console.log(objectType)}
               {selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
             </Form.Item>
             <CreateObject
@@ -1069,22 +1080,24 @@ export default class AppendForm extends Component {
                 </Select>,
               )}
             </Form.Item>
-            <Form.Item>
-              {getFieldDecorator(statusFields.link, {
-                rules: this.getFieldRules('buttonFields.link'),
-              })(
-                <Input
-                  className={classNames('AppendForm__input', {
-                    'validation-error': !this.state.isSomeValue,
-                  })}
-                  disabled={loading}
-                  placeholder={intl.formatMessage({
-                    id: 'link',
-                    defaultMessage: 'Link',
-                  })}
-                />,
-              )}
-            </Form.Item>
+            {this.props.form.getFieldValue(statusFields.title) === 'relisted' && (
+              <Form.Item>
+                {getFieldDecorator(statusFields.link, {
+                  rules: this.getFieldRules('buttonFields.link'),
+                })(
+                  <Input
+                    className={classNames('AppendForm__input', {
+                      'validation-error': !this.state.isSomeValue,
+                    })}
+                    disabled={loading}
+                    placeholder={intl.formatMessage({
+                      id: 'link',
+                      defaultMessage: 'Link',
+                    })}
+                  />,
+                )}
+              </Form.Item>
+            )}
           </React.Fragment>
         );
       }

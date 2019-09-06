@@ -42,6 +42,7 @@
   "userStatistics": "/user-statistics",
   "instrumentStatistic": "/instrument-statistics",
   "campaigns": "/campaigns",
+  "createCampaign": "/create_campaign",
   "dashboard": "/dashboard",
   "suitableUsers": "/suitable_users",
   "search": "/search"

@@ -8,8 +8,8 @@ import { createHistory } from './history';
 import errorMiddleware from './helpers/errorMiddleware';
 import createReducer from './reducers';
 
-export default (steemConnectAPI, waivioAPI, currUrl) => {
-  const history = createHistory(currUrl);
+export default (steemConnectAPI, waivioAPI, currUrl, historyPassed) => {
+  const history = historyPassed || createHistory(currUrl);
   let preloadedState;
   if (typeof window !== 'undefined') {
     /* eslint-disable no-underscore-dangle */
@@ -41,5 +41,14 @@ export default (steemConnectAPI, waivioAPI, currUrl) => {
     enhancer = compose(applyMiddleware(...middleware));
   }
 
-  return createStore(createReducer(history), preloadedState, enhancer);
+  const store = createStore(createReducer(history), preloadedState, enhancer);
+
+  // Hot reloading
+  if (module.hot) {
+    module.hot.accept('./reducers', () => {
+      store.replaceReducer(createReducer(history));
+    });
+  }
+
+  return store;
 };

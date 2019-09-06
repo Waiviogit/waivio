@@ -8,6 +8,7 @@ import MarketsList from './MarketsList';
 import SidenavUser from '../../components/Navigation/SidenavUser';
 import ObjectTypes from '../../components/Sidebar/ObjectTypes/ObjectTypes';
 import SidenavRewards from '../../components/Navigation/SidenavRewards';
+import SidenavDiscoverObjects from '../../discoverObjects/SidenavDiscoverObjects';
 import DealsList from './DealsList';
 
 const LeftSidebar = ({ quoteSettingsSorted }) => (
@@ -26,6 +27,7 @@ const LeftSidebar = ({ quoteSettingsSorted }) => (
     <Route path="/rewards/all" component={SidenavRewards} />
     <Route path="/rewards/create" component={SidenavRewards} />
     <Route path="/rewards/manage" component={SidenavRewards} />
+    <Route path="/discover-objects/:typeName" component={SidenavDiscoverObjects} />
     <Route path="/replies" component={ObjectTypes} />
     <Route path="/replies" component={TopInstruments} />
     <Route path="/bookmarks" component={SidenavUser} />

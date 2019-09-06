@@ -1,16 +1,25 @@
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import {withRouter} from 'react-router-dom';
-import {FormattedMessage} from 'react-intl';
-import {Icon} from 'antd';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
+import { Icon } from 'antd';
 
 import Feed from '../feed/Feed';
 import {getFeed, getIsAuthenticated, getNightmode, getObject} from '../reducers';
 import {getFeedFromState, getFeedHasMoreFromState, getFeedLoadingFromState,} from '../helpers/stateHelpers';
 import {getMoreObjectPosts, getObjectPosts} from '../feed/feedActions';
 import {showPostModal} from '../app/appActions';
+import { getFeed, getIsAuthenticated, getObject } from '../reducers';
+import {
+  getFeedLoadingFromState,
+  getFeedHasMoreFromState,
+  getFeedFromState,
+} from '../helpers/stateHelpers';
+import { getClientWObj } from '../adapters';
+import { getObjectPosts, getMoreObjectPosts } from '../feed/feedActions';
+import { showPostModal } from '../app/appActions';
 import PostModal from '../post/PostModalContainer';
 import IconButton from '../components/IconButton';
 import './ObjectProfile.less';
@@ -93,7 +102,12 @@ export default class ObjectProfile extends React.Component {
   handleCreatePost = () => {
     const { history, object } = this.props;
     if (object && object.author_permlink) {
-      history.push(`/editor?newPost=true&object=${object.author_permlink}`);
+      let redirectUrl = `/editor?object=[${object.name}](${object.author_permlink})`;
+      if (!isEmpty(object.parent)) {
+        const parentObject = getClientWObj(object.parent);
+        redirectUrl += `&object=[${parentObject.name}](${parentObject.author_permlink})`;
+      }
+      history.push(redirectUrl);
     }
   };
 
@@ -163,7 +177,7 @@ export default class ObjectProfile extends React.Component {
             </div>
           )}
           {isAuthenticated && (
-            <div className="object-profile__row align-right">
+            <div className="object-profile__row justify-end">
               <IconButton
                 icon={<Icon type="plus-circle" />}
                 onClick={this.handleCreatePost}
@@ -173,7 +187,7 @@ export default class ObjectProfile extends React.Component {
               />
             </div>
           )}
-          {!_.isEmpty(content) || isFetching ? (
+          {!isEmpty(content) || isFetching ? (
             <Feed
               content={content}
               isFetching={isFetching}
@@ -182,7 +196,7 @@ export default class ObjectProfile extends React.Component {
               showPostModal={this.props.showPostModal}
             />
           ) : (
-            <div className="object-profile__row align-center">
+            <div className="object-profile__row justify-center">
               <FormattedMessage
                 id="empty_object_profile"
                 defaultMessage="This object doesn't have any"

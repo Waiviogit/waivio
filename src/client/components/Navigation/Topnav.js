@@ -325,7 +325,7 @@ class Topnav extends React.Component {
               title={intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })}
               mouseEnterDelay={1}
             >
-              <Link to="/editor?newPost=true" className="Topnav__link Topnav__link--action">
+              <Link to="/editor" className="Topnav__link Topnav__link--action">
                 <i className="iconfont icon-write" />
               </Link>
             </BTooltip>
@@ -509,7 +509,7 @@ class Topnav extends React.Component {
         redirectUrl = `/object/${value.replace('wobj', '')}`;
         break;
       default:
-        redirectUrl = `/objectType/${value.replace('type', '')}`;
+        redirectUrl = `/discover-objects/${value.replace('type', '')}`;
     }
 
     this.props.history.push(redirectUrl);

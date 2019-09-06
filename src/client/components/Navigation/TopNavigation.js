@@ -5,78 +5,78 @@ import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import './TopNavigation.less';
 
-const LINKS = [
-  '/trending',
-  '/rewards',
-  '/objectType',
-  '/discover-objects',
-  '/activity',
-  '/object/ylr-waivio',
-];
+const LINKS = {
+  TRENDING: '/trending',
+  REWARDS: '/rewards',
+  DISCOVER: '/discover-objects',
+  ACTIVITY: '/activity',
+  ABOUT: '/object/ylr-waivio',
+};
 
 const TopNavigation = ({ authenticated, location: { pathname } }) => {
-  const isRouteMathed = pathname === '/' || LINKS.some(link => pathname.includes(link));
+  const isRouteMathed =
+    pathname === '/' || Object.values(LINKS).some(url => pathname.includes(url));
   return isRouteMathed ? (
     <ul className="TopNavigation">
       {authenticated && (
-        <li>
+        <li className="TopNavigation__item">
           <Link
             to="/"
-            className={classNames('TopNavigation__item', {
-              'TopNavigation__item--active': pathname === '/',
+            className={classNames('TopNavigation__link', {
+              'TopNavigation__link--active': pathname === '/',
             })}
           >
             <FormattedMessage id="feed" defaultMessage="Feed" />
           </Link>
         </li>
       )}
-      <li>
+      <li className="TopNavigation__item">
         <Link
-          to="/trending"
-          className={classNames('TopNavigation__item', {
-            'TopNavigation__item--active': pathname.includes('/trending'),
+          to={LINKS.TRENDING}
+          className={classNames('TopNavigation__link', {
+            'TopNavigation__link--active': pathname.includes(LINKS.TRENDING),
           })}
         >
           <FormattedMessage id="news" defaultMessage="News" />
         </Link>
       </li>
-      <li>
+      <li className="TopNavigation__item">
         <Link
-          to={authenticated ? `/rewards/active` : `/rewards/all`}
-          className={classNames('TopNavigation__item', {
-            'TopNavigation__item--active': pathname.includes('/rewards'),
+          to={authenticated ? `${LINKS.REWARDS}/active` : `${LINKS.REWARDS}/all`}
+          className={classNames('TopNavigation__link', {
+            'TopNavigation__link--active': pathname.includes(LINKS.REWARDS),
           })}
         >
           <FormattedMessage id="rewards" defaultMessage="Rewards" />
         </Link>
       </li>
-      <li>
+      <li className="TopNavigation__item">
         <Link
-          to={`/objectType/hashtag`}
-          className={classNames('TopNavigation__item', {
-            'TopNavigation__item--active': pathname.includes('/objectType'),
+          to={`${LINKS.DISCOVER}/hashtag`}
+          className={classNames('TopNavigation__link', {
+            'TopNavigation__link--active': pathname.includes(LINKS.DISCOVER),
           })}
         >
           <FormattedMessage id="discover" defaultMessage="Discover" />
         </Link>
       </li>
       {authenticated && (
-        <li>
+        <li className="TopNavigation__item">
           <Link
-            to={`/activity`}
-            className={classNames('TopNavigation__item', {
-              'TopNavigation__item--active': pathname === '/activity',
+            to={LINKS.ACTIVITY}
+            className={classNames('TopNavigation__link', {
+              'TopNavigation__link--active': pathname === LINKS.ACTIVITY,
             })}
           >
             <FormattedMessage id="activity" defaultMessage="Activity" />
           </Link>
         </li>
       )}
-      <li>
+      <li className="TopNavigation__item">
         <Link
-          to={`/object/ylr-waivio`}
-          className={classNames('TopNavigation__item', {
-            'TopNavigation__item--active': pathname.includes('/object/ylr-waivio'),
+          to={LINKS.ABOUT}
+          className={classNames('TopNavigation__link', {
+            'TopNavigation__link--active': pathname.includes(LINKS.ABOUT),
           })}
         >
           <FormattedMessage id="about" defaultMessage="About" />

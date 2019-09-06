@@ -1,6 +1,7 @@
-// import _ from 'lodash';
-import React from 'react';
+/* eslint-disable */
+import React, { useEffect } from 'react';
 import { injectIntl } from 'react-intl';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
@@ -8,79 +9,54 @@ import './Proposition.less';
 import { getClientWObj } from '../../adapters';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import Avatar from '../../components/Avatar';
-
-// const { Panel } = Collapse;
-
-// const requirementsKeys = {
-//   minPhotos: { id: 'min_images_count', defaultMessage: 'You should add images, minimum' },
-//   minFollowers: {
-//     id: 'min_followers_count',
-//     defaultMessage: 'You should have followers, at least',
-//   },
-//   minPosts: { id: 'min_posts_count', defaultMessage: 'You should be author of post, minimum' },
-// };
+import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
+import { getSingleComment } from '../../comments/commentsActions';
+import { getCommentContent } from '../../reducers';
+import { connect } from 'react-redux';
+import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 
 const Proposition = ({
   intl,
   proposition,
-  // authorizedUserName,
-  // assignProposition,
+  assignProposition,
+  assignCommentPermlink,
   discardProposition,
   loading,
   wobj,
   toggleModal,
   assigned,
+  post,
+  getSingleComment,
 }) => {
   const proposedWobj = getClientWObj(wobj);
-
-  // const assignPr = obj => {
-  const assignPr = () => {
-    // assignProposition({companyAuthor: 'monterey', companyPermlink: '', companyId, objPermlink});
+  const assignPr = obj => {
+    assignProposition({
+      companyAuthor: proposition.guide.name,
+      companyPermlink: proposition.activation_permlink,
+      companyId: proposition._id,
+      objPermlink: obj.author_permlink,
+    });
   };
+  const requiredObjectName = getFieldWithMaxWeight(
+    proposition.required_object,
+    'name',
+    proposition.required_object.author_permlink,
+  );
+  useEffect(() => {
+    getSingleComment(proposition.guide.name, assignCommentPermlink);
+  }, []);
 
   const toggleModalDetails = () => {
     toggleModal(proposition);
   };
-  const discardPr = obj => {
-    discardProposition(proposition, obj);
-  };
 
-  const buttonsLayout = () => {
-    if (typeof assigned !== 'boolean') return <div />;
-    return !assigned ? (
-      <div className="RewardsHeader-button">
-        <Button
-          type="primary"
-          loading={loading}
-          disabled={loading}
-          onClick={() => assignPr(proposedWobj)}
-        >
-          {intl.formatMessage({
-            id: 'reserve',
-            defaultMessage: `Reserve`,
-          })}
-        </Button>
-        {`${intl.formatMessage({
-          id: 'for',
-          defaultMessage: `for`,
-        })} ${'N'} ${intl.formatMessage({
-          id: 'days',
-          defaultMessage: `days`,
-        })}`}
-      </div>
-    ) : (
-      <Button
-        type="primary"
-        loading={loading}
-        disabled={loading}
-        onClick={() => discardPr(proposedWobj)}
-      >
-        {intl.formatMessage({
-          id: 'release',
-          defaultMessage: `Release`,
-        })}
-      </Button>
-    );
+  const discardPr = obj => {
+    discardProposition({
+      companyAuthor: proposition.guide.name,
+      companyPermlink: proposition.activation_permlink,
+      companyId: proposition._id,
+      objPermlink: obj.author_permlink,
+    });
   };
 
   return (
@@ -116,13 +92,47 @@ const Proposition = ({
       </div>
       <ObjectCardView wObject={proposedWobj} key={proposedWobj.id} />
       <div className="RewardsFooter-wrap">
-        {buttonsLayout()}
-        <a role="presentation" className="RewardsHeader" onClick={toggleModalDetails}>
-          {intl.formatMessage({
-            id: 'details',
-            defaultMessage: `Details`,
-          })}
-        </a>
+        {proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (
+          <CampaignFooter
+            post={post}
+            proposedWobj={proposedWobj}
+            requiredObjectPermlink={proposition.required_object.author_permlink}
+            requiredObjectName={requiredObjectName}
+            discardPr={discardPr}
+          />
+        ) : (
+          <React.Fragment>
+            {!assigned && (
+              <div className="RewardsHeader-button">
+                <Button
+                  type="primary"
+                  loading={loading}
+                  disabled={loading}
+                  onClick={() => assignPr(proposedWobj)}
+                >
+                  {intl.formatMessage({
+                    id: 'reserve',
+                    defaultMessage: `Reserve`,
+                  })}
+                </Button>
+                {proposition.count_reservation_days &&
+                  `${intl.formatMessage({
+                    id: 'for',
+                    defaultMessage: `for`,
+                  })} ${proposition.count_reservation_days} ${intl.formatMessage({
+                    id: 'days',
+                    defaultMessage: `days`,
+                  })}`}
+              </div>
+            )}
+            <a role="presentation" className="RewardsHeader" onClick={toggleModalDetails}>
+              {intl.formatMessage({
+                id: 'details',
+                defaultMessage: `Details`,
+              })}
+            </a>
+          </React.Fragment>
+        )}
       </div>
     </div>
   );
@@ -131,18 +141,30 @@ const Proposition = ({
 Proposition.propTypes = {
   proposition: PropTypes.shape().isRequired,
   wobj: PropTypes.shape().isRequired,
-  // assignProposition: PropTypes.func.isRequired,
+  assignProposition: PropTypes.func.isRequired,
   discardProposition: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
   assigned: PropTypes.bool,
+  assignCommentPermlink: PropTypes.string,
   toggleModal: PropTypes.func.isRequired,
-  // authorizedUserName: PropTypes.string,
   intl: PropTypes.shape().isRequired,
+  post: PropTypes.shape(),
 };
 
 Proposition.defaultProps = {
   authorizedUserName: '',
+  post: {},
   assigned: null,
 };
 
-export default injectIntl(Proposition);
+export default connect(
+  (state, ownProps) => ({
+    post:
+      ownProps.proposition.guide.name &&
+      ownProps.assignCommentPermlink &&
+      !_.isEmpty(state.comments.comments)
+        ? getCommentContent(state, ownProps.proposition.guide.name, ownProps.assignCommentPermlink)
+        : {},
+  }),
+  { getSingleComment },
+)(injectIntl(Proposition));

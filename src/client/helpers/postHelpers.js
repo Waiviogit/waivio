@@ -6,7 +6,7 @@ import {jsonParse} from './formatter';
 import DMCA from '../../common/constants/dmca.json';
 import whiteListedApps from './apps';
 import {rewardsValues} from '../../common/constants/rewards';
-import {INVESTARENA_META_FIELD_NAME, WAIVIO_META_FIELD_NAME} from '../../common/constants/waivio';
+import {INVESTARENA_META_FIELD_NAME, WAIVIO_META_FIELD_NAME, WAIVIO_PARENT_PERMLINK} from '../../common/constants/waivio';
 
 const appVersion = require('../../../package.json').version;
 
@@ -140,11 +140,24 @@ export function splitPostContent(
   };
 }
 
-export function getInitialValues(props) {
-  let permlink = null;
-  let originalBody = null;
+export function getInitialState(props) {
   let state = {
-    draftContent: { title: '', body: '' },
+    draftId: uuidv4(),
+    parentPermlink: WAIVIO_PARENT_PERMLINK,
+    draftContent: {
+      title: '',
+      body: props.initObjects
+        ? props.initObjects.reduce((acc, curr) => {
+            const matches = curr.match(/^\[(.+)\]\((\S+)\)/);
+            if (matches[1] && matches[2]) {
+              return `${acc}[${matches[1]}](${apiConfig.production.protocol}${
+                apiConfig.production.host
+              }/object/${matches[2]})\n`;
+            }
+            return acc;
+          }, '')
+        : '',
+    },
     content: '',
     topics: [],
     linkedObjects: [],
@@ -155,6 +168,8 @@ export function getInitialValues(props) {
       upvote: props.upvoteSetting,
     },
     isUpdating: false,
+    permlink: null,
+    originalBody: null,
     forecastValues: { isValid: true },
     expForecast: null,
   };
@@ -162,14 +177,17 @@ export function getInitialValues(props) {
   const draftPost = draftPosts.find(d => d.draftId === draftId);
   if (draftId && draftPost) {
     const draftObjects = get(draftPost, ['jsonMetadata', WAIVIO_META_FIELD_NAME, 'wobjects'], []);
+    const tags = get(draftPost, ['jsonMetadata', 'tags'], []);
     const forecastValues = get(draftPost, ['jsonMetadata', INVESTARENA_META_FIELD_NAME], null);
     state = {
+      draftId: props.draftId,
+      parentPermlink: draftPost.parentPermlink || WAIVIO_PARENT_PERMLINK,
       draftContent: {
         title: get(draftPost, 'title', ''),
         body: get(draftPost, 'body', ''),
       },
       content: '',
-      topics: get(draftPost, 'jsonMetadata.tags', []),
+      topics: typeof tags === 'string' ? [tags] : tags,
       linkedObjects: [],
       objPercentage: fromPairs(
         draftObjects.map(obj => [obj.author_permlink, { percent: obj.percent }]),
@@ -184,11 +202,11 @@ export function getInitialValues(props) {
         ? { ...forecastValues, selectForecast: 'Custom', isValid: true }
         : { isValid: true },
       expForecast: !isEmpty(draftPost.exp_forecast) ? draftPost.exp_forecast : null,
+      permlink: draftPost.permlink || null,
+      originalBody: draftPost.originalBody || null,
     };
-    permlink = draftPost.permlink || null;
-    originalBody = draftPost.originalBody || null;
   }
-  return { state, permlink, originalBody };
+  return state;
 }
 
 export function isContentValid(markdownContent) {

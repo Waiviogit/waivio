@@ -176,8 +176,8 @@ export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0 }) =>
       .catch(error => reject(error));
   });
 
-export const searchObjects = (searchString, objType = '', limit = 15) => {
-  const requestBody = { search_string: searchString, limit };
+export const searchObjects = (searchString, objType = '', forParent, limit = 15) => {
+  const requestBody = { search_string: searchString, forParent, limit };
   if (objType && typeof objType === 'string') {
     requestBody.object_type = objType;
   }
@@ -306,12 +306,12 @@ export const getWobjectsWithUserWeight = (
       .catch(error => reject(error));
   });
 };
-export const getWobjectsExpertise = (authorPermlink, skip = 0, limit = 30) =>
+export const getWobjectsExpertise = (user, authorPermlink, skip = 0, limit = 30) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.wobjectsExpertise}`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ skip, limit }),
+      body: JSON.stringify({ skip, limit, user }),
     })
       .then(handleErrors)
       .then(res => res.json())
@@ -331,12 +331,15 @@ export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3) =>
       .catch(error => reject(error));
   });
 
-export const getObjectType = (name, wobjects_skip = 0, filter) =>
+export const getObjectType = (
+  name,
+  { limit: wobjects_count, skip: wobjects_skip, filter, sort }, // eslint-disable-line
+) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.objectType}/${name}`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ wobjects_count: 250, wobjects_skip, filter }),
+      body: JSON.stringify({ wobjects_count, wobjects_skip, filter, sort }),
     })
       .then(res => res.json())
       .then(data => resolve(data))
@@ -398,6 +401,7 @@ export const getPropositions = ({
   requiredObject,
   currentUserName,
   radius,
+  area,
   coordinates,
   sort,
 }) =>
@@ -412,9 +416,12 @@ export const getPropositions = ({
       sort,
     };
 
-    if (!_.isEmpty(coordinates) && radius) {
-      reqData.radius = radius;
+    if (!_.isEmpty(coordinates)) {
       reqData.coordinates = coordinates;
+    }
+    if (!_.isEmpty(area) && radius) {
+      reqData.radius = radius;
+      reqData.area = area;
     }
     if (!_.isEmpty(guideNames)) reqData.guideNames = guideNames;
     if (!_.isEmpty(types)) reqData.types = types;
@@ -446,7 +453,7 @@ export const getSuitableUsers = (followsCount, postsCount) =>
 
 export const createCampaign = data =>
   new Promise((resolve, reject) => {
-    fetch(`${config.campaignApiPrefix}${config.campaigns}`, {
+    fetch(`${config.campaignApiPrefix}${config.createCampaign}`, {
       headers,
       method: 'POST',
       body: JSON.stringify(data),

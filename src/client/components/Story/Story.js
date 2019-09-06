@@ -129,7 +129,7 @@ class Story extends React.Component {
           <span>
             Approval:{' '}
             <span className={`CalculatedPercent-${percent >= 70 ? 'green' : 'red'}`}>
-              {percent}%
+              {percent.toFixed(2)}%
             </span>
           </span>
         </Tag>
@@ -420,7 +420,7 @@ class Story extends React.Component {
                     <span className="username">{post.author}</span>
                   </Link>
                 </h4>
-                <WeightTag weight={post.author_wobjects_weight} rank={post.author_rank} />
+                <WeightTag weight={post.author_wobjects_weight} />
               </span>
               <span>
                 <BTooltip

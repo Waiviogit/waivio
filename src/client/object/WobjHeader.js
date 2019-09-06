@@ -77,7 +77,7 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, a
           </div>
           <div className="ObjectHeader__info">
             <ObjectType type={wobject.object_type} />
-            <WeightTag weight={wobject.weight} rank={wobject.rank} />
+            <WeightTag weight={wobject.weight} />
           </div>
           <div className="ObjectHeader__user__username">
             <div className="ObjectHeader__descriptionShort">
