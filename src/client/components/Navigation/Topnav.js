@@ -447,13 +447,32 @@ class Topnav extends React.Component {
     const value = event.target.value;
     this.hideAutoCompleteDropdown();
     this.props.history.push({
-      pathname: '/search',
-      search: `q=${value}`,
+      pathname: '/discover-objects',
+      search: `search=${value}`,
       state: {
         query: value,
       },
     });
   }
+
+  handleSearchAllResultsClick = () => {
+    const { searchData, searchValue } = this.state;
+    this.handleOnBlur();
+    let redirectUrl = '';
+    switch (searchData.type) {
+      case 'wobject':
+        redirectUrl = `/discover-objects/${searchData.subtype}?search=${searchValue}`;
+        break;
+      case 'user':
+        redirectUrl = `/search?q=${searchValue}`;
+        break;
+      case 'type':
+      default:
+        redirectUrl = `/discover-objects?search=${searchValue}`;
+        break;
+    }
+    this.props.history.push(redirectUrl);
+  };
 
   debouncedSearch = _.debounce(value => this.props.searchAutoComplete(value, 3, 15), 300);
   debouncedSearchByObject = _.debounce((searchString, objType) =>
@@ -688,19 +707,19 @@ class Topnav extends React.Component {
       'Topnav__search-selected-active': this.state.currentItem === key,
     });
 
-  handleOnBlur = () => {
-    this.setState({
-      dropdownOpen: false,
-      searchData: '',
-      searchBarValue: '',
-      currentItem: 'All',
-    });
-    this.hideAutoCompleteDropdown();
-  };
+  handleOnBlur = () =>
+    this.setState(
+      {
+        dropdownOpen: false,
+        searchData: '',
+        searchBarValue: '',
+        currentItem: 'All',
+        searchBarActive: false,
+      },
+      this.props.resetSearchAutoCompete,
+    );
 
-  handleOnFocus = () => {
-    this.setState({ dropdownOpen: true });
-  };
+  handleOnFocus = () => this.setState({ dropdownOpen: true });
 
   renderTitle = title => <span>{title}</span>;
 
@@ -716,29 +735,15 @@ class Topnav extends React.Component {
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     const downBar = (
       <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
-        <Link
-          to={{
-            pathname: '/search',
-            search: `?q=${this.state.searchBarValue}`,
-            state: { query: this.state.searchBarValue },
-          }}
-        >
-          <span
-            onClick={() => {
-              this.hideAutoCompleteDropdown();
-              this.handleOnBlur();
-            }}
-            role="presentation"
-          >
-            {intl.formatMessage(
-              {
-                id: 'search_all_results_for',
-                defaultMessage: 'Search all results for {search}',
-              },
-              { search: this.state.searchBarValue },
-            )}
-          </span>
-        </Link>
+        <div className="search-btn" onClick={this.handleSearchAllResultsClick} role="presentation">
+          {intl.formatMessage(
+            {
+              id: 'search_all_results_for',
+              defaultMessage: 'Search all results for {search}',
+            },
+            { search: this.state.searchBarValue },
+          )}
+        </div>
       </AutoComplete.Option>
     );
     const formattedAutoCompleteDropdown = _.isEmpty(dropdownOptions)

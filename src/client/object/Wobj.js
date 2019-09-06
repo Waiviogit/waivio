@@ -199,11 +199,11 @@ export default class Wobj extends React.Component {
             )}
             <Affix className="rightContainer" stickPosition={72}>
               <div className="right">
-                <RightObjectSidebar
+                {wobject.author_permlink && <RightObjectSidebar
                   username={userName}
                   wobject={wobject}
                   quoteSecurity={chartId.body || ""}
-                />
+                />}
               </div>
             </Affix>
             <div className="center">

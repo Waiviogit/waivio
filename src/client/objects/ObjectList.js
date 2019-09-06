@@ -7,7 +7,7 @@ import Loading from '../components/Icon/Loading';
 
 const displayLimit = 30;
 
-export default class ObjectContent extends React.Component {
+export default class ObjectList extends React.Component {
   static propTypes = {
     isOnlyHashtags: PropTypes.bool,
   };

@@ -1,5 +1,6 @@
 @import (reference) '../../styles/modules/variables.less';
 @import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/mixins.less';
 
 @base-spacing: 0;
 
@@ -396,6 +397,10 @@ div[data-dir='rtl'] .Topnav {
   background-color: @white-darker;
   padding: 10px 14px;
   cursor: default !important;
+
+  .search-btn {
+    .view-as-link();
+  }
 }
 
 .Topnav__search-dropdown-container .ant-select-dropdown-menu {

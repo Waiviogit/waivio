@@ -226,6 +226,7 @@ export const getIsObjectAlbumsLoading = state =>
   fromGallery.getIsObjectAlbumsLoading(state.gallery);
 
 export const getCurrentLocation = state => state.router.location;
+export const getQueryString = state => state.router.location.search;
 
 export const getIsMapModalOpen = state => fromMap.getIsMapModalOpen(state.map);
 
