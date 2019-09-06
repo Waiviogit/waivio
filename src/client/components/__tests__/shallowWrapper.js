@@ -1,8 +1,8 @@
-import {mount, shallow} from 'enzyme';
-import {IntlProvider} from 'react-intl';
-import {Provider} from 'react-redux';
+import { mount, shallow } from 'enzyme';
+import { IntlProvider } from 'react-intl';
+import { Provider } from 'react-redux';
 import React from 'react';
-import {MemoryRouter as Router} from 'react-router-dom';
+import { MemoryRouter as Router } from 'react-router-dom';
 
 export const shallowWithStore = (component, store) =>
   shallow(

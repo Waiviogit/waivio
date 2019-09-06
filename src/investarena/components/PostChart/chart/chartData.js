@@ -135,7 +135,7 @@ class ChartData {
     if (bars) {
       if (askBid === 'closeAsk') {
         max = upperLine
-          ? Math.max(_.get(_.maxBy(bars, 'highAsk'),'highAsk', 0), upperLine)
+          ? Math.max(_.get(_.maxBy(bars, 'highAsk'), 'highAsk', 0), upperLine)
           : _.get(_.maxBy(bars, 'highAsk'), 'highAsk', 0);
       } else if (askBid === 'closeBid') {
         max = upperLine

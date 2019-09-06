@@ -192,9 +192,7 @@ export class Umarkets {
         this.stompClient.send(
           '/exchange/CMD/',
           {},
-          `{"sid":"${this.sid}", "umid": "${this.um_session}", "cmd" : "${
-            CMD.getChartData
-          }", "array": ${chartsArr}}`,
+          `{"sid":"${this.sid}", "umid": "${this.um_session}", "cmd" : "${CMD.getChartData}", "array": ${chartsArr}}`,
         );
       }
     }
@@ -205,9 +203,7 @@ export class Umarkets {
         this.stompClient.send(
           '/exchange/CMD/',
           {},
-          `{"sid": "${this.sid}", "umid": "${
-            this.um_session
-          }", "cmd": "${cmd}", "params": ${params}}`,
+          `{"sid": "${this.sid}", "umid": "${this.um_session}", "cmd": "${cmd}", "params": ${params}}`,
         );
       } catch (e) {
         // console.log('Stomp error ' + e.name + ':' + e.message + '\n' + e.stack);

@@ -4,10 +4,10 @@ import RightSidebarLoading from '../../../client/app/Sidebar/RightSidebarLoading
 import ObjectExpertise from '../../components/Sidebar/ObjectExpertise';
 import ForecastBlock from '../../components/ForecastBlock';
 
-const RightObjectSidebar = ({username, wobject, quoteSecurity}) =>
+const RightObjectSidebar = ({ username, wobject, quoteSecurity }) =>
   wobject.users ? (
     <React.Fragment>
-      <ObjectExpertise username={username} wobject={wobject}/>
+      <ObjectExpertise username={username} wobject={wobject} />
       <ForecastBlock
         username={username}
         renderPlace={'rightObjectSidebar'}

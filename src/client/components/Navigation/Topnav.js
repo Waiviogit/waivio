@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import {FormattedMessage, injectIntl} from 'react-intl';
-import {Link, NavLink, withRouter} from 'react-router-dom';
-import {connect} from 'react-redux';
-import {AutoComplete, Button, Icon, Input, Menu, Modal} from 'antd';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { Link, NavLink, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { AutoComplete, Button, Icon, Input, Menu, Modal } from 'antd';
 import classNames from 'classnames';
 import {
   searchAutoComplete,
@@ -37,11 +37,14 @@ import Notifications from './Notifications/Notifications';
 import LanguageSettings from './LanguageSettings';
 import './Topnav.less';
 import Balance from '../../../investarena/components/Header/Balance';
-import {getIsLoadingPlatformState, getPlatformNameState,} from '../../../investarena/redux/selectors/platformSelectors';
-import {toggleModal} from '../../../investarena/redux/actions/modalsActions';
+import {
+  getIsLoadingPlatformState,
+  getPlatformNameState,
+} from '../../../investarena/redux/selectors/platformSelectors';
+import { toggleModal } from '../../../investarena/redux/actions/modalsActions';
 import config from '../../../investarena/configApi/config';
-import {getFieldWithMaxWeight} from '../../object/wObjectHelper';
-import {objectFields} from '../../../common/constants/listOfFields';
+import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
+import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
 import ModalSignUp from './ModalSignUp/ModalSignUp';
 

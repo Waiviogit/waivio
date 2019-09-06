@@ -6,13 +6,13 @@ import classNames from 'classnames';
 import sanitizeHtml from 'sanitize-html';
 import Remarkable from 'remarkable';
 import embedjs from 'embedjs';
-import {jsonParse} from '../../helpers/formatter';
+import { jsonParse } from '../../helpers/formatter';
 import sanitizeConfig from '../../vendor/SanitizeConfig';
-import {dtubeImageRegex, imageRegex, rewriteRegex} from '../../helpers/regexHelpers';
+import { dtubeImageRegex, imageRegex, rewriteRegex } from '../../helpers/regexHelpers';
 import htmlReady from '../../vendor/steemitHtmlReady';
 import improve from '../../helpers/improve';
 import PostFeedEmbed from './PostFeedEmbed';
-import {forecastPostMessage} from '../../helpers/postHelpers';
+import { forecastPostMessage } from '../../helpers/postHelpers';
 import './Body.less';
 
 export const remarkable = new Remarkable({

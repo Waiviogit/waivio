@@ -1,7 +1,7 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import React from 'react';
-import {makeGetQuoteSettingsState} from '../../../investarena/redux/selectors/quotesSettingsSelectors';
-import {makeGetQuoteState} from '../../../investarena/redux/selectors/quotesSelectors';
+import { makeGetQuoteSettingsState } from '../../../investarena/redux/selectors/quotesSettingsSelectors';
+import { makeGetQuoteState } from '../../../investarena/redux/selectors/quotesSelectors';
 import ForecastItem from './ForecastItem';
 
 const ForecastItemContainer = props => <ForecastItem {...props} />;
