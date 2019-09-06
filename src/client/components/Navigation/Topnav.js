@@ -684,6 +684,7 @@ class Topnav extends React.Component {
                 onFocus={this.handleOnFocus}
               >
                 <Input
+                  className="CLASS"
                   ref={ref => {
                     this.searchInputRef = ref;
                   }}

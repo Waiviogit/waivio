@@ -17,7 +17,7 @@
       }
       input {
         color: @white-smoke;
-        border: @border-width-base @border-style-base @normal-grey;
+        //border: @border-width-base @border-style-base @normal-grey;
 
         &:hover,
         &:focus {
@@ -66,4 +66,20 @@
   .Topnav__search-all-results {
     background-color: @grey-nero;
   }
+
+  .ant-select-dropdown-menu :first-child > ul > li {
+    border: 1px solid @normal-grey;
+    background: @grey-nero;
+  }
+
+  .ant-select-dropdown-menu :first-child > ul > .ant-select-dropdown-menu-item-active {
+    &:hover {
+      border-color: @normal-grey;
+      background-color: #32373c;
+    }
+  }
+
+  /*.ant-select-auto-complete.ant-select .ant-input:focus, .ant-select-auto-complete.ant-select .ant-input:hover {
+    border-right-width: 5px;
+  }*/
 }
