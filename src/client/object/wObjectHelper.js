@@ -78,6 +78,31 @@ export const getFieldsWithMaxWeight = wObj => {
   return maxWeightedFields;
 };
 
+export const getNameAvatarFieldsWithMaxWeight = wObj => {
+  const complexFields = [objectFields.name, objectFields.avatar];
+  if (!wObj || (wObj && _.isEmpty(wObj.fields))) return '';
+  let maxWeightedFields = wObj.fields
+    .filter(f => !Object.keys(wObj).includes(f.name))
+    .reduce((acc, curr) => {
+      if (acc[curr.name]) {
+        if (curr.weight > acc[curr.name].weight) {
+          acc[curr.name] = curr;
+        }
+      } else {
+        acc[curr.name] = curr;
+      }
+      return acc;
+    }, {});
+  maxWeightedFields = _.mapValues(maxWeightedFields, 'body');
+  complexFields.forEach(field => {
+    if (maxWeightedFields[field]) {
+      const parsed = _.attempt(JSON.parse, maxWeightedFields[field]);
+      if (!_.isError(parsed)) maxWeightedFields[field] = parsed;
+    }
+  });
+  return maxWeightedFields;
+};
+
 export const getInnerFieldWithMaxWeight = (wObject, currentField, innerField) => {
   if (_.includes(objectFieldsWithInnerData, currentField)) {
     const fieldBody = getFieldWithMaxWeight(wObject, currentField);
