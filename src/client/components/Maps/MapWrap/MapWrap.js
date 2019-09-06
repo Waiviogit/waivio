@@ -16,7 +16,6 @@ class MapWrap extends React.Component {
     onMarkerClick: PropTypes.func.isRequired,
     getAreaSearchData: PropTypes.func,
     userLocation: PropTypes.shape().isRequired,
-    isFilterOn: PropTypes.bool,
     customControl: PropTypes.node,
     onCustomControlClick: PropTypes.func,
   };
@@ -25,7 +24,6 @@ class MapWrap extends React.Component {
     getAreaSearchData: () => {},
     userLocation: {},
     center: [],
-    isFilterOn: false,
     customControl: null,
     onCustomControlClick: () => {},
   };
@@ -66,7 +64,7 @@ class MapWrap extends React.Component {
   };
 
   render() {
-    const { intl, userLocation, onMarkerClick, wobjects, isFilterOn, customControl } = this.props;
+    const { intl, userLocation, onMarkerClick, wobjects, customControl } = this.props;
     return (
       <div className="map-wrap">
         <div className="map-wrap__header">
@@ -79,7 +77,7 @@ class MapWrap extends React.Component {
           </div>
           <div
             role="presentation"
-            className={`map-wrap__header-btn${isFilterOn ? ' active' : ''}`}
+            className={'map-wrap__header-btn'}
             onClick={this.getAreaSearchData}
           >
             {intl.formatMessage({
