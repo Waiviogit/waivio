@@ -290,7 +290,7 @@ export const getWobjectsExpertise = (user, authorPermlink, skip = 0, limit = 30)
 export const getAuthorsChildWobjects = (authorPermlink, skip = 0, limit = 30) =>
   new Promise((resolve, reject) =>
     fetch(
-      `${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.childWobjects}}?limit=${limit}&skip=${skip}`,
+      `${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.childWobjects}?limit=${limit}&skip=${skip}`,
       {
         headers,
         method: 'GET',
