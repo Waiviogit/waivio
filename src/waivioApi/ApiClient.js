@@ -287,10 +287,10 @@ export const getWobjectsExpertise = (user, authorPermlink, skip = 0, limit = 30)
       .catch(error => reject(error));
   });
 
-export const getAuthorsChildWobjects = (authorPermlink, skip = 0, limit = 30) => {
-  return new Promise((resolve, reject) => {
+export const getAuthorsChildWobjects = (authorPermlink, skip = 0, limit = 30) =>
+  new Promise((resolve, reject) =>
     fetch(
-      `${config.apiPrefix}${config.getObjects}/${authorPermlink}/child_wobjects?limit=${limit}&skip=${skip}`,
+      `${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.childWobjects}?limit=${limit}&skip=${skip}`,
       {
         headers,
         method: 'GET',
@@ -299,9 +299,8 @@ export const getAuthorsChildWobjects = (authorPermlink, skip = 0, limit = 30) =>
       .then(handleErrors)
       .then(res => res.json())
       .then(result => resolve(result))
-      .catch(error => reject(error));
-  });
-};
+      .catch(error => reject(error)),
+  );
 
 export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3) =>
   new Promise((resolve, reject) => {

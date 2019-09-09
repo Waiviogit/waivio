@@ -24,8 +24,10 @@ const ObjectsRelated = ({ wobject }) => {
 
   const getInitialWobjects = () => {
     getAuthorsChildWobjects(wobject.author_permlink, skipValue, 5)
-      .then(data => setObjectsWithMaxFields((prevState, props) => prevState===props ? [] : data))
-      .catch(e => setObjectsWithMaxFields([]));
+      .then(data =>
+        setObjectsWithMaxFields((prevState, props) => (prevState === props ? [] : data)),
+      )
+      .catch(setObjectsWithMaxFields([]));
   };
 
   useEffect(() => {
@@ -58,20 +60,18 @@ const ObjectsRelated = ({ wobject }) => {
       />
     ));
 
-    const renderButtons = (eventHandler) => {
-      return (
-        <React.Fragment>
-          <h4 className="ObjectsRelated__more">
-            <div onClick={eventHandler}>
-              <FormattedMessage id="show_more" defaultMessage="Show more" />
-            </div>
-            <div>
-              <FormattedMessage id="explore" defaultMessage="Explore" />
-            </div>
-          </h4>
-        </React.Fragment>
-      )
-    };
+    const renderButtons = eventHandler => (
+      <React.Fragment>
+        <h4 className="ObjectsRelated__more">
+          <div role="presentation" onClick={eventHandler}>
+            <FormattedMessage id="show_more" defaultMessage="Show more" />
+          </div>
+          <div>
+            <FormattedMessage id="explore" defaultMessage="Explore" />
+          </div>
+        </h4>
+      </React.Fragment>
+    );
 
     renderCard = (
       <div className="SidebarContentBlock">
@@ -79,9 +79,7 @@ const ObjectsRelated = ({ wobject }) => {
           <i className="iconfont icon-collection SidebarContentBlock__icon" />{' '}
           <FormattedMessage id="object_related" defaultMessage="Related" />
         </h4>
-        <div className="SidebarContentBlock__content">
-          {renderObjects}
-        </div>
+        <div className="SidebarContentBlock__content">{renderObjects}</div>
         {renderButtons(() => setShowModal(true))}
         <Modal
           title="Related"
@@ -101,7 +99,7 @@ const ObjectsRelated = ({ wobject }) => {
 };
 
 ObjectsRelated.propTypes = {
-  wobject: PropTypes.object.isRequired,
+  wobject: PropTypes.shape().isRequired,
 };
 
 export default ObjectsRelated;

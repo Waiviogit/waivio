@@ -193,9 +193,7 @@ export default class Wobj extends React.Component {
                   <ObjectExpertise username={userName} wobject={wobject} />
                 )}
               </div>
-              <div>
-                {wobject.author_permlink && (<ObjectsRelated wobject={wobject} />)}
-              </div>
+              <div>{wobject.author_permlink && <ObjectsRelated wobject={wobject} />}</div>
             </Affix>
             <div className="center">
               {renderRoutes(this.props.route.routes, {
