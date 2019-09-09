@@ -68,6 +68,10 @@ export const optionsPlatform = [
   { value: BROKER.UMARKETS, label: 'Umarkets' },
   { value: BROKER.MAXIMARKETS, label: 'Maximarkets' },
   { value: BROKER.MAXITRADE, label: 'Maxitrade' },
+  { value: BROKER.TRADEALLCRYPTO, label: 'TradeAllCrypto' },
+  { value: BROKER["770CAPITAL"], label: '770Capital' },
+  { value: BROKER.DOWMARKETS, label: 'dowMarkets' },
+  { value: BROKER.LIMEFX, label: 'limeFX' },
 ];
 
 export const optionsChartType = [
