@@ -25,6 +25,7 @@ import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import { getFieldWithMaxWeight, getInitialUrl } from './wObjectHelper';
 import { objectFields } from '../../common/constants/listOfFields';
 import ObjectExpertise from '../components/Sidebar/ObjectExpertise';
+import ObjectsRelated from '../components/Sidebar/ObjectsRelated';
 
 @withRouter
 @connect(
@@ -192,6 +193,7 @@ export default class Wobj extends React.Component {
                   <ObjectExpertise username={userName} wobject={wobject} />
                 )}
               </div>
+              <div>{wobject.author_permlink && <ObjectsRelated wobject={wobject} />}</div>
             </Affix>
             <div className="center">
               {renderRoutes(this.props.route.routes, {
