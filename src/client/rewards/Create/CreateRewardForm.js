@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
+import { injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import {
   Button,
@@ -26,6 +27,7 @@ import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAuto
 const { Option } = Select;
 @withRouter
 @Form.create()
+@injectIntl
 class CreateRewardForm extends React.Component {
   static propTypes = {
     userName: PropTypes.string,
@@ -124,7 +126,6 @@ class CreateRewardForm extends React.Component {
               propositions: data.campaigns,
               hasMore: data.hasMore,
               loading: false,
-              isSubmit: true,
             });
             this.manageRedirect();
           })
