@@ -116,7 +116,6 @@ class CreateRewardForm extends React.Component {
     this.checkOptionFields();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err && !_.isEmpty(this.state.requiredObject) && !_.isEmpty(this.state.objectsToAction)) {
-        console.log('prepareSubmitData', this.prepareSubmitData(values));
         createCampaign(this.prepareSubmitData(values))
           .then(data => {
             message.success(`'${values.campaignName}' rewards campaign has been created.`);
