@@ -408,7 +408,6 @@ class Rewards extends React.Component {
         <CreateRewardForm
           userName={username}
           user={user}
-          intl={intl}
           currentSteemDollarPrice={currentSteemDollarPrice}
         />
       );
