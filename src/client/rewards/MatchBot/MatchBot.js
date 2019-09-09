@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import './MatchBot.less';
 import MatchBotTable from './MatchBotTable/MatchBotTable';
@@ -78,4 +79,4 @@ MatchBot.propTypes = {
   intl: PropTypes.shape().isRequired,
 };
 
-export default MatchBot;
+export default injectIntl(MatchBot);

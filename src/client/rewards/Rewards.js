@@ -396,7 +396,7 @@ class Rewards extends React.Component {
   };
 
   campaignItemsWrap = location => {
-    const { match, username, intl, cryptosPriceHistory, user } = this.props;
+    const { match, username, cryptosPriceHistory, user } = this.props;
     const { loading, hasMore, propositions } = this.state;
     const filterKey = match.params.filterKey;
     const IsRequiredObjectWrap = !match.params.campaignParent;
@@ -410,14 +410,13 @@ class Rewards extends React.Component {
           <CreateRewardForm
             userName={username}
             user={user}
-            intl={intl}
             currentSteemDollarPrice={currentSteemDollarPrice}
           />
         );
       case '/rewards/manage':
-        return <Manage intl={intl} userName={username} />;
+        return <Manage userName={username} />;
       case '/rewards/match-bot':
-        return <MatchBot intl={intl} userName={username} />;
+        return <MatchBot userName={username} />;
       default:
         return this.getCampaignsLayout(
           hasMore,
