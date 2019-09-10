@@ -12,6 +12,7 @@ import {
   WAIVIO_META_FIELD_NAME,
   WAIVIO_PARENT_PERMLINK,
 } from '../../common/constants/waivio';
+import * as apiConfig from '../../waivioApi/config.json';
 
 const appVersion = require('../../../package.json').version;
 
