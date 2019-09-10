@@ -38,11 +38,7 @@ export const CLEAN_FEED = 'CLEAN_FEED';
 export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) => dispatch =>
   dispatch({
     type: GET_FEED_CONTENT.ACTION,
-    payload: getDiscussionsFromAPI(
-      sortBy,
-      { category: sortBy, tag: category, limit, sortBy },
-      ApiClient,
-    ),
+    payload: getDiscussionsFromAPI(sortBy, { tag: category, limit }, ApiClient),
     meta: {
       sortBy,
       category: category || 'all',

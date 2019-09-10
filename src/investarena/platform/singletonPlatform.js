@@ -8,7 +8,7 @@ const platforms = {
   maxitrade: Umarkets,
   tradeallcrypto: Umarkets,
   tradiva: Umarkets,
-  "770capital": Umarkets,
+  '770capital': Umarkets,
   dowmarkets: Umarkets,
   limefx: Umarkets,
   widgets: Widgets,
