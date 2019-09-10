@@ -1,3 +1,4 @@
+import uuidv4 from 'uuid/v4';
 import _, { fromPairs, get, isEmpty } from 'lodash';
 import { getHtml } from '../components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';

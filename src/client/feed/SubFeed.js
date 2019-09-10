@@ -79,8 +79,9 @@ class SubFeed extends React.Component {
       if (fetched) return;
       this.props.getUserFeedContent(user.name);
     } else {
-      const sortBy = 'wia_feed';
-      const category = match.url === '/' ? 'all' : match.params.category;
+      const withAppFilter = !localStorage.getItem('isAppFilterOff');
+      const sortBy = withAppFilter ? 'feed' : 'trending';
+      const category = withAppFilter ? 'wia_feed' : 'all';
       const fetched = getFeedFetchedFromState(sortBy, category, feed);
       if (fetched) return;
       this.props.getFeedContent(sortBy, category);
@@ -110,9 +111,12 @@ class SubFeed extends React.Component {
         this.props.getUserFeedContent(user.name);
       }
     } else if (match.url === '/' && match.url !== this.props.match.url) {
-      const fetching = getFeedLoadingFromState('wia_feed', 'all', feed);
+      const withAppFilter = !localStorage.getItem('isAppFilterOff');
+      const sortBy = withAppFilter ? 'feed' : 'trending';
+      const category = withAppFilter ? 'wia_feed' : 'all';
+      const fetching = getFeedLoadingFromState(sortBy, category, feed);
       if (!fetching) {
-        this.props.getFeedContent('wia_feed', 'all');
+        this.props.getFeedContent(sortBy, category);
       }
     } else if (oldSortBy !== newSortBy || oldCategory !== newCategory || (!wasLoaded && isLoaded)) {
       const fetching = getFeedLoadingFromState(newSortBy || 'trending', newCategory, feed);
@@ -143,17 +147,11 @@ class SubFeed extends React.Component {
       failed = getUserFeedFailedFromState(user.name, feed);
       loadMoreContent = () => this.props.getMoreUserFeedContent(user.name);
     } else {
-      let sortBy = 'trending';
-      let category = 'all';
+      const withAppFilter = !localStorage.getItem('isAppFilterOff');
 
-      if (match.url === '/') {
-        sortBy = 'wia_feed';
-        hasMore = true;
-      } else {
-        sortBy = match.params.sortBy || 'trending';
-        category = match.params.category;
-        hasMore = getFeedHasMoreFromState(sortBy, category, feed);
-      }
+      const sortBy = withAppFilter ? 'feed' : 'trending';
+      const category = withAppFilter ? 'wia_feed' : 'all';
+      hasMore = getFeedHasMoreFromState(sortBy, category, feed);
 
       content = getFeedFromState(sortBy, category, feed);
       isFetching = getFeedLoadingFromState(sortBy, category, feed);

@@ -1,4 +1,4 @@
-import {find} from 'lodash';
+import { find } from 'lodash';
 import * as actions from './wobjectsActions';
 import * as appendAction from './appendActions';
 import { RATE_WOBJECT_SUCCESS } from '../../client/object/wobjActions';
