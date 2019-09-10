@@ -6,6 +6,8 @@
   .InstrumentLongTermStatistics {
     width: @card-wight;
   }
+  &__search-autocomplete {
+  }
   display: flex;
   justify-content: space-between;
   &__item-to-compare {
@@ -33,6 +35,7 @@
     min-width: unset !important;
   }
   .InstrumentLongTermStatistics {
+    margin-top: 10px;
     margin-left: 0;
   }
   .ant-select-auto-complete {
@@ -44,4 +47,32 @@
       width: @card-wight;
     }
   }
+}
+
+.ModalComparePerformance__search-autocomplete.ant-select-dropdown-menu-item-active {
+  background-color: @white;
+  &:hover {
+    background-color: @white-darker;
+  }
+}
+
+.ModalComparePerformance__search-autocomplete.ant-select-dropdown-menu-item {
+  max-width: 200px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  font-weight: bold;
+  border-bottom: @base-border;
+  padding: 10px 10px;
+}
+.ModalComparePerformance__search-autocomplete > .ObjectCard > .ObjectCard__top > .ObjectCard__link {
+  width: 140px;
+}
+
+.ModalComparePerformance__search-autocomplete > .ObjectCard {
+  padding: 0;
+}
+
+.ModalComparePerformance__search-autocomplete > .Topnav__search-content-small {
+  display: none;
 }

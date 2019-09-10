@@ -153,7 +153,7 @@ class ModalComparePerformance extends React.Component {
               permlink={option.author_permlink}
               key={option.author_permlink}
               value={`wobj${wobjName}`}
-              className="Topnav__search-autocomplete"
+              className="ModalComparePerformance__search-autocomplete"
             >
               <ObjectCard wobject={option} showFollow={false} withLinks={false} />
               <div className="Topnav__search-content-small">{option.object_type}</div>
