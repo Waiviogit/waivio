@@ -5,11 +5,24 @@
     "brokerWSUrl": {
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
+      "maxitrade": "https://trading.maxitrade.com/stomp/",
+      "tradeallcrypto": "https://trading.tradeallcrypto.com/stomp/",
+      "tradiva": "https://trading.tradiva.com/stomp/",
+      "770capital": "https://trading.770capital.com/stomp/",
+      "dowmarkets": "https://trading.dowmarkets.com/stomp/",
+      "limefx": "https://trading.limefx.com/stomp/",
+
       "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
     },
     "platformDepositUrl": {
       "umarkets": "https://my.umarkets.com/",
       "maximarkets": "https://myaccount.maximarkets.org/",
+      "maxitrade": "https://myaccount.maxitrade.com/",
+      "tradeallcrypto": "https://myaccount.tradeallcrypto.com/",
+      "tradiva": "https://myaccount.tradiva.com/",
+      "770capital": "https://myaccount.770capital.com/",
+      "dowmarkets": "https://myaccount.dowmarkets.com/",
+      "limefx": "https://myaccount.limefx.com/",
       "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
     },
     "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/"
@@ -19,11 +32,23 @@
     "brokerWSUrl": {
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
+      "maxitrade": "https://trading.maxitrade.com/stomp/",
+      "tradeallcrypto": "https://trading.tradeallcrypto.com/stomp/",
+      "tradiva": "https://trading.tradiva.com/stomp/",
+      "770capital": "https://trading.770capital.com/stomp/",
+      "dowmarkets": "https://trading.dowmarkets.com/stomp/",
+      "limefx": "https://trading.limefx.com/stomp/",
       "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
     },
     "platformDepositUrl": {
       "umarkets": "https://my.umarkets.com/",
       "maximarkets": "https://myaccount.maximarkets.org/",
+      "maxitrade": "https://myaccount.maxitrade.com/",
+      "tradeallcrypto": "https://myaccount.tradeallcrypto.com/",
+      "tradiva": "https://myaccount.tradiva.com/",
+      "770capital": "https://myaccount.770capital.com/",
+      "dowmarkets": "https://myaccount.dowmarkets.com/",
+      "limefx": "https://myaccount.limefx.com/",
       "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
     },
     "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/"
@@ -34,14 +59,19 @@
     "brokerWSUrl": {
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
+      "maxitrade": "https://trading.maxitrade.com/stomp/",
+      "tradeallcrypto": "https://trading.tradeallcrypto.com/stomp/",
+      "tradiva": "https://trading.tradiva.com/stomp/",
+      "770capital": "https://trading.770capital.com/stomp/",
+      "dowmarkets": "https://trading.dowmarkets.com/stomp/",
+      "limefx": "https://trading.limefx.com/stomp/",
       "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
     },
     "platformDepositUrl": {
       "umarkets": "https://my.umarkets.com/",
       "maximarkets": "https://myaccount.maximarkets.org/"
     },
-    "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/",
-    "": "http://localhost:8082"
+    "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/"
   },
   "test": {
     "apiPrefix": "http://localhost:3000/",

@@ -5,6 +5,12 @@ import { Widgets } from './widgets';
 const platforms = {
   umarkets: Umarkets,
   maximarkets: Umarkets,
+  maxitrade: Umarkets,
+  tradeallcrypto: Umarkets,
+  tradiva: Umarkets,
+  "770capital": Umarkets,
+  dowmarkets: Umarkets,
+  limefx: Umarkets,
   widgets: Widgets,
 };
 
