@@ -10,7 +10,7 @@ const propTypes = {
   openDeals: PropTypes.object.isRequired,
   quotes: PropTypes.object.isRequired,
   viewMode: PropTypes.oneOf(['list', 'cards']),
-  quoteSettings: PropTypes.object.isRequired,
+  quotesSettings: PropTypes.object.isRequired,
 };
 
 const OpenDealsContainer = props => <OpenDeals {...props} />;
@@ -20,7 +20,7 @@ OpenDealsContainer.propTypes = propTypes;
 function mapStateToProps(state) {
   return {
     openDeals: getOpenDealsState(state),
-    quoteSettings: getQuotesSettingsState(state),
+    quotesSettings: getQuotesSettingsState(state),
     quotes: getQuotesState(state),
   };
 }

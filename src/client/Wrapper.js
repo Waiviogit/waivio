@@ -13,7 +13,6 @@ import {
   getIsLoaded,
   getAuthenticatedUser,
   getAuthenticatedUserName,
-  getIsAuthenticated,
   getLocale,
   getUsedLocale,
   getTranslations,
@@ -37,7 +36,6 @@ import { getChartsData } from '../investarena/redux/actions/chartsActions';
     loaded: getIsLoaded(state),
     user: getAuthenticatedUser(state),
     username: getAuthenticatedUserName(state),
-    isAuthenticated: getIsAuthenticated(state),
     usedLocale: getUsedLocale(state),
     translations: getTranslations(state),
     locale: getLocale(state),
@@ -47,7 +45,7 @@ import { getChartsData } from '../investarena/redux/actions/chartsActions';
     login,
     logout,
     getFollowing,
-    // getFollowingObjects,
+    getFollowingObjects,
     getPerformersStatistic,
     getNotifications,
     getRate,
@@ -62,7 +60,6 @@ export default class Wrapper extends React.PureComponent {
   static propTypes = {
     route: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
-    isAuthenticated: PropTypes.bool.isRequired,
     locale: PropTypes.string.isRequired,
     history: PropTypes.shape().isRequired,
     usedLocale: PropTypes.string,
@@ -71,7 +68,7 @@ export default class Wrapper extends React.PureComponent {
     login: PropTypes.func,
     logout: PropTypes.func,
     getFollowing: PropTypes.func,
-    // getFollowingObjects: PropTypes.func,
+    getFollowingObjects: PropTypes.func,
     getPerformersStatistic: PropTypes.func,
     getRewardFund: PropTypes.func,
     getRebloggedList: PropTypes.func,
@@ -90,7 +87,7 @@ export default class Wrapper extends React.PureComponent {
     login: () => {},
     logout: () => {},
     getFollowing: () => {},
-    // getFollowingObjects: () => {},
+    getFollowingObjects: () => {},
     getPerformersStatistic: () => {},
     getRewardFund: () => {},
     getRebloggedList: () => {},
@@ -135,7 +132,7 @@ export default class Wrapper extends React.PureComponent {
   componentDidMount() {
     this.props.login().then(() => {
       this.props.getFollowing();
-      // this.props.getFollowingObjects();
+      this.props.getFollowingObjects();
       this.props.getPerformersStatistic();
       this.props.getNotifications();
       this.props.busyLogin();

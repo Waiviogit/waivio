@@ -7,14 +7,14 @@ import { Select } from 'antd';
 import ClosedDeal from './ClosedDeal/index';
 import { currencyFormat } from '../../../platform/numberFormat';
 import { optionsPeriod } from '../../../constants/selectData';
-import quoteSettingsData from '../../../default/quoteSettingsData';
 import { singleton } from '../../../platform/singletonPlatform';
 import './ClosedDeals.less';
+import OpenDealLoading from "../OpenDeals/OpenDeal/OpenDealLoading";
 
 const Option = Select.Option;
 
 const propTypes = {
-  quotesSettings: PropTypes.shape(),
+  quotesSettings: PropTypes.shape().isRequired,
   closedDeals: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
   viewMode: PropTypes.oneOf(['list', 'cards']),
@@ -30,25 +30,27 @@ class ClosedDeals extends Component {
     singleton.platform.getClosedDeals(newValue);
   };
   render() {
+    const {closedDeals, quotesSettings, viewMode, intl} = this.props;
     let totalPnL = 0;
     let quoteSettings = null;
-    const closedDeals = !_.isEmpty(this.props.closedDeals) ? (
-      _.map(this.props.closedDeals, closedDeal => {
+    let closedDealsLayout = <OpenDealLoading type={viewMode}/>;
+    if(!_.isEmpty(quotesSettings)) closedDealsLayout = !_.isEmpty(closedDeals) ? (
+      _.map(closedDeals, closedDeal => {
         totalPnL += closedDeal.pnl;
-        quoteSettings = this.props.quotesSettings[closedDeal.security];
+        quoteSettings = quotesSettings[closedDeal.security];
         return (
           <ClosedDeal
             key={closedDeal.dealId}
             quoteSecurity={closedDeal.security}
             quoteSettings={quoteSettings}
             closedDeal={closedDeal}
-            viewMode={this.props.viewMode}
+            viewMode={viewMode}
           />
         );
       })
     ) : (
       <div className="sr-close-deals-not-present">
-        {this.props.intl.formatMessage({
+        {intl.formatMessage({
           id: 'closeDeals.notPresent',
           defaultMessage: 'You do not have closed deals for this period',
         })}
@@ -59,29 +61,29 @@ class ClosedDeals extends Component {
         <div className="st-id-title">ID:</div>
         <div className="st-instrument-avatar-closed-title" />
         <div className="st-instruments-text-title">
-          {this.props.intl.formatMessage({ id: 'assets.instrument' })}
+          {intl.formatMessage({ id: 'assets.instrument' })}
         </div>
         <div className="st-opened-title">
-          {this.props.intl.formatMessage({ id: 'deals.openTime', defaultMessage: 'Opening time' })}
+          {intl.formatMessage({ id: 'deals.openTime', defaultMessage: 'Opening time' })}
         </div>
         <div className="st-opened-title">
-          {this.props.intl.formatMessage({ id: 'deals.closeTime', defaultMessage: 'Closing time' })}
+          {intl.formatMessage({ id: 'deals.closeTime', defaultMessage: 'Closing time' })}
         </div>
         <div className="st-price-title">
-          {this.props.intl.formatMessage({
+          {intl.formatMessage({
             id: 'deals.openPrice',
             defaultMessage: 'Opening price',
           })}
         </div>
         <div className="st-price-title">
-          {this.props.intl.formatMessage({
+          {intl.formatMessage({
             id: 'deals.closePrice',
             defaultMessage: 'Closing price',
           })}
         </div>
         <div className="st-pnl-title">P&L:</div>
         <div className="st-commission-title">
-          {this.props.intl.formatMessage({ id: 'deals.commission', defaultMessage: 'Commission' })}
+          {intl.formatMessage({ id: 'deals.commission', defaultMessage: 'Commission' })}
         </div>
       </div>
     );
@@ -101,7 +103,7 @@ class ClosedDeals extends Component {
           </Select>
           <span className="st-closed-deals-total-pnl-wrap">
             <span className="st-margin-right-small">
-              {this.props.intl.formatMessage({ id: 'deals.totalPnL', defaultMessage: 'Total P&L' })}
+              {intl.formatMessage({ id: 'deals.totalPnL', defaultMessage: 'Total P&L' })}
               :{' '}
             </span>
             <span className={totalPnL < 0 ? 'st-deal-pl-red' : 'st-deal-pl-green'}>
@@ -109,14 +111,14 @@ class ClosedDeals extends Component {
             </span>
           </span>
         </div>
-        {this.props.viewMode === 'list' && dealsListHeader}
+        {viewMode === 'list' && dealsListHeader}
         <div
           className={classNames('st-closed-deals-block', {
-            'list-view': this.props.viewMode === 'list',
-            'cards-view': this.props.viewMode === 'cards',
+            'list-view': viewMode === 'list',
+            'cards-view': viewMode === 'cards',
           })}
         >
-          <div className="st-content-quotes-closed">{closedDeals}</div>
+          <div className="st-content-quotes-closed">{closedDealsLayout}</div>
         </div>
       </div>
     );

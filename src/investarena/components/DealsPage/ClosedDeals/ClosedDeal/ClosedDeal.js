@@ -7,17 +7,10 @@ import { currencyFormat, numberFormat } from '../../../../platform/numberFormat'
 import InstrumentAvatar from '../../../InstrumentAvatar/InstrumentAvatar';
 import { PlatformHelper } from '../../../../platform/platformHelper';
 import { quoteFormat } from '../../../../platform/parsingPrice';
-import OpenDealLoading from '../../OpenDeals/OpenDeal/OpenDealLoading';
 
-const propTypes = {
-  quoteSettings: PropTypes.shape(),
-  closedDeal: PropTypes.shape().isRequired,
-  intl: PropTypes.shape().isRequired,
-  viewMode: PropTypes.oneOf(['list', 'cards']),
-};
 
 const ClosedDeal = ({ quoteSettings, closedDeal, intl, viewMode }) => {
-  if (quoteSettings && quoteSettings.wobjData && closedDeal) {
+  if (quoteSettings.wobjData && closedDeal) {
     const direction = closedDeal.side === 'LONG' || closedDeal.side === 'BUY' ? 'buy' : 'sell';
     const directionCaption = (
       <div className={`st-type st-deal-direction-${direction}`}>{direction}</div>
@@ -148,13 +141,20 @@ const ClosedDeal = ({ quoteSettings, closedDeal, intl, viewMode }) => {
           </div>
         );
     }
-  } else return <OpenDealLoading type={viewMode} />;
+  }
+  return null;
+};
+
+ClosedDeal.propTypes = {
+  quoteSettings: PropTypes.shape(),
+  closedDeal: PropTypes.shape().isRequired,
+  intl: PropTypes.shape().isRequired,
+  viewMode: PropTypes.oneOf(['list', 'cards']),
 };
 
 ClosedDeal.defaultProps = {
   viewMode: 'list',
+  quoteSettings: {},
 };
-
-ClosedDeal.propTypes = propTypes;
 
 export default injectIntl(ClosedDeal);

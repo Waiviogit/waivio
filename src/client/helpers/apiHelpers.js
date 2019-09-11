@@ -2,13 +2,13 @@ import SteemAPI from '../steemAPI';
 import { jsonParse } from '../helpers/formatter';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
 
-export function getDiscussionsFromAPI(sortBy, { tag, limit }, ApiClient) {
+export function getDiscussionsFromAPI(sortBy, { tag, ...queryParams }, ApiClient) {
   switch (sortBy) {
     case 'feed':
       if (tag === 'wia_feed') {
         return ApiClient.getMoreFeedContentByObject({
           authorPermlink: 'vmf-wtrade',
-          limit: limit || 10,
+          limit: queryParams.limit || 10,
         });
       }
     case 'hot': // eslint-disable-line no-fallthrough
@@ -21,7 +21,7 @@ export function getDiscussionsFromAPI(sortBy, { tag, limit }, ApiClient) {
       const query = {
         category: sortBy,
         sortBy,
-        limit: limit || 10,
+        ...queryParams,
       };
       if (tag !== 'all') query.tag = tag;
       return ApiClient.getFeedContent(sortBy, query);
