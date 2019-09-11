@@ -25,7 +25,7 @@ import { updateQuotes } from '../redux/actions/quotesActions';
 import { updateQuotesSettings } from '../redux/actions/quotesSettingsActions';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { objectFields } from '../../common/constants/listOfFields';
-import { getFieldWithMaxWeight } from '../../client/object/wObjectHelper';
+import {mutateObject} from "./platformHelper";
 
 export class Umarkets {
   constructor() {
@@ -236,10 +236,10 @@ export class Umarkets {
           this.parseChartData(result);
           break;
         case CMD.sendCloseMarketOrder:
-          this.parseCloseMarketOrderResult(result);
+          Umarkets.parseCloseMarketOrderResult(result);
           break;
         case CMD.changeOpenDeal:
-          this.parseChangeMarketOrderResult(result);
+          Umarkets.parseChangeMarketOrderResult(result);
           break;
         case CMD.sendOpenMarketOrder:
         case CMD.openMarketOrderRejected:
@@ -321,32 +321,33 @@ export class Umarkets {
     const sortedQuotesSettings = {};
     const currentTime = Date.now();
     keys.sort();
-    ApiClient.getObjects({ limit: 500, invObjects: true, requiredFields: ['chartid'] }).then(
-      wobjs => {
-        for (const i in keys) {
-          const key = keys[i];
-          const wobjData = _.find(wobjs.wobjects, o =>
-            _.find(o.fields, field => field.name === 'chartid' && field.body === key),
-          );
-          sortedQuotesSettings[key] = quotesSettings[key];
-          if (sortedQuotesSettings[key].market === 'CryptoCurrency')
-            sortedQuotesSettings[key].market = 'Crypto';
-          sortedQuotesSettings[key].keyName = key;
-          if (wobjData) {
-            sortedQuotesSettings[key].wobjData = {
-              avatarlink: getFieldWithMaxWeight(wobjData, objectFields.avatar),
-              author_permlink: wobjData.author_permlink,
-            };
-          }
-          sortedQuotesSettings[key].isSession = _.some(
-            tradingSessions[sortedQuotesSettings[key].calendarCodeId],
-            item => currentTime < item.sessionEnd && currentTime > item.sessionStart,
-          );
+    ApiClient.getObjects({
+      limit: 500,
+      invObjects: true,
+      requiredFields: [objectFields.chartId],
+    }).then(wobjs => {
+      const wobjWithChart = mutateObject(wobjs.wobjects);
+      for (const i in keys) {
+        const key = keys[i];
+        const wobjData = _.find(
+          wobjWithChart,
+          o => o.chartId === key,
+        );
+        sortedQuotesSettings[key] = quotesSettings[key];
+        if (sortedQuotesSettings[key].market === 'CryptoCurrency')
+          sortedQuotesSettings[key].market = 'Crypto';
+        sortedQuotesSettings[key].keyName = key;
+        if (wobjData) {
+          sortedQuotesSettings[key].wobjData = wobjData;
         }
-        this.quotesSettings = sortedQuotesSettings;
-        this.dispatch(updateQuotesSettings(this.quotesSettings));
-      },
-    );
+        sortedQuotesSettings[key].isSession = _.some(
+          tradingSessions[sortedQuotesSettings[key].calendarCodeId],
+          item => currentTime < item.sessionEnd && currentTime > item.sessionStart,
+        );
+      }
+      this.quotesSettings = sortedQuotesSettings;
+      this.dispatch(updateQuotesSettings(this.quotesSettings));
+    });
     if (content.accounts && content.currentAccountName) {
       this.dispatch(
         updateUserAccounts({
@@ -461,14 +462,14 @@ export class Umarkets {
       message.error('Not trading time');
     }
   }
-  parseCloseMarketOrderResult(result) {
+  static parseCloseMarketOrderResult(result) {
     if (result.response === 'NOT_TRADING_TIME') {
       message.error('Not trading time');
     } else if (result.response === 'CLOSE_DEAL_INTERVAL_IS_TOO_SMALL') {
       message.error('Wait 60 seconds after opening deal to close');
     }
   }
-  parseChangeMarketOrderResult(result) {
+  static parseChangeMarketOrderResult(result) {
     if (result.response === 'NOT_TRADING_TIME') {
       message.error('Not trading time');
     } else if (result.response === 'INVALID_ORDER_PRICE') {

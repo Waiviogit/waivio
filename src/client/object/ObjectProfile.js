@@ -47,22 +47,20 @@ export default class ObjectProfile extends React.Component {
     history: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     showPostModal: PropTypes.func.isRequired,
-    limit: PropTypes.number,
     isAuthenticated: PropTypes.bool.isRequired,
-    isLoadingPlatform: PropTypes.bool,
     isNightMode: PropTypes.bool.isRequired,
-    getObjectPosts: PropTypes.func,
-    getMoreObjectPosts: PropTypes.func,
-    chartId: PropTypes.shape(),
+    getObjectPosts: PropTypes.func.isRequired,
+    getMoreObjectPosts: PropTypes.func.isRequired,
+    limit: PropTypes.number,
+    chartId: PropTypes.string,
+    isLoadingPlatform: PropTypes.bool,
   };
 
   static defaultProps = {
     limit: 10,
     location: {},
     isLoadingPlatform: true,
-    chartId: {},
-    getObjectPosts: () => {},
-    getMoreObjectPosts: () => {},
+    chartId: '',
   };
 
   componentDidMount() {
@@ -139,10 +137,10 @@ export default class ObjectProfile extends React.Component {
     return (
       <React.Fragment>
         <div className="object-profile">
-          {showChart && chartId && chartId.body && (
+          {showChart && chartId && (
             <div className="object-profile__trade">
               <PostChart
-                quoteSecurity={chartId.body}
+                quoteSecurity={chartId}
                 createdAt={createdAt}
                 forecast={forecast}
                 recommend={'Buy'}
@@ -152,7 +150,7 @@ export default class ObjectProfile extends React.Component {
                 expForecast={null}
                 isObjectProfile
               />
-              <PostQuotation quoteSecurity={chartId.body} />
+              <PostQuotation quoteSecurity={chartId} />
               <iframe
                 title="analysis"
                 style={{
@@ -166,7 +164,7 @@ export default class ObjectProfile extends React.Component {
                 src={`//informer.maximarkets.org/widgetsws/AnalizeID.html?Period=60&typemode=${
                   isNightMode ? 'first' : 'second'
                 }&font=OpenSans-Regular&css=${isNightMode ? 'darkGroup' : 'defaultGroup'}&rowsID=${
-                  quoteIdForWidget[chartId.body]
+                  quoteIdForWidget[chartId]
                 }&defaultId=190&time=global&lang=en`}
               />
             </div>

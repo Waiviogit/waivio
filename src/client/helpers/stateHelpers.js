@@ -164,3 +164,21 @@ export const createAsyncActionType = type => ({
 export const getUserDetailsKey = username => `user-${username}`;
 export const getPostKey = post => `${post.author}/${post.permlink}`;
 export const getParentKey = post => `${post.parent_author}/${post.parent_permlink}`;
+
+export const makeCancelable = promise => {
+  let hasCanceled = false;
+
+  const wrappedPromise = new Promise((resolve, reject) => {
+    promise.then(
+      val => (hasCanceled ? reject({ isCanceled: true }) : resolve(val)),
+      error => (hasCanceled ? reject({ isCanceled: true }) : reject(error)),
+    );
+  });
+
+  return {
+    promise: wrappedPromise,
+    cancel() {
+      hasCanceled = true;
+    },
+  };
+};

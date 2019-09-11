@@ -4,31 +4,26 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
 import './LongTermStatistics.less';
-import { getQuotesState } from '../../../redux/selectors/quotesSelectors';
 import * as ApiClient from '../../../../waivioApi/ApiClient';
 import { getLongTermStatisticsForUser } from '../../../helpers/diffDateTime';
+import { makeCancelable } from '../../../../client/helpers/stateHelpers';
 
 @injectIntl
 @withRouter
-@connect(state => ({
-  quotes: getQuotesState(state),
-}))
 class InstrumentLongTermStatistics extends React.Component {
   static propTypes = {
     wobject: PropTypes.shape().isRequired,
     withCompareButton: PropTypes.bool,
     isMobile: PropTypes.bool.isRequired,
-    quotes: PropTypes.shape().isRequired,
     intl: PropTypes.shape().isRequired,
-    toggleModalPerformance: PropTypes.func,
+    toggleModalPerformance: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     withCompareButton: false,
-    toggleModalPerformance: () => {},
   };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -40,8 +35,8 @@ class InstrumentLongTermStatistics extends React.Component {
   }
 
   componentDidMount() {
-    ApiClient.getInstrumentLongTermStatistics(this.props.wobject.author_permlink).then(data => {
-      if (data && !_.isError(data) && !_.isEmpty(data)) {
+    this.cancelablePromise.promise.then(data => {
+      if (!_.isEmpty(data) && !_.isError(data)) {
         const longTermStatistics = getLongTermStatisticsForUser(data, this.props.intl);
         this.setState({ longTermStatistics, loading: false });
       } else {
@@ -49,6 +44,14 @@ class InstrumentLongTermStatistics extends React.Component {
       }
     });
   }
+
+  componentWillUnmount() {
+    this.cancelablePromise.cancel();
+  }
+
+  cancelablePromise = makeCancelable(
+    ApiClient.getInstrumentLongTermStatistics(this.props.wobject.author_permlink),
+  );
 
   render() {
     return !this.state.loading ? (
