@@ -3,46 +3,32 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
-// import { currencyFormat } from '../../../platform/numberFormat';
-// import ModalCloseAll from '../../Modals/ModalsOpenDeal/ModalCloseAll/ModalCloseAll';
-import OpenDeal from './OpenDeal/index';
 import { PlatformHelper } from '../../../platform/platformHelper';
 import './OpenDeals.less';
+import OpenDealLoading from '../ClosedDeals/ClosedDeal/ClosedDeal';
+import OpenDeal from './OpenDeal';
 
 const propTypes = {
   openDeals: PropTypes.shape().isRequired,
   quotes: PropTypes.shape().isRequired,
-  quoteSettings: PropTypes.shape().isRequired,
+  quotesSettings: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
-  viewMode: PropTypes.oneOf(['list', 'cards']),
+  viewMode: PropTypes.oneOf(['list', 'cards']).isRequired,
 };
 
-const OpenDeals = ({ openDeals, intl, quotes, viewMode, quoteSettings }) => {
-  // let sumPnl = 0;
-  // let positiveDeals = {};
-  // let positiveDealsPnl = 0;
-  // let negativeDeals = {};
-  // let negativeDealsPnl = 0;
+const OpenDeals = ({ openDeals, intl, quotes, viewMode, quotesSettings }) => {
   const getPnl = openDeal => {
     const pnl =
-      quoteSettings && quoteSettings[openDeal.security]
+      quotesSettings && quotesSettings[openDeal.security]
         ? PlatformHelper.getPnl(
             quotes[openDeal.security],
             openDeal,
-            quoteSettings[openDeal.security],
+        quotesSettings[openDeal.security],
           )
         : 0;
     if (isNaN(pnl) || pnl === undefined) {
       return '-';
     }
-    // if (pnl.toFixed(2) > 0) {
-    //   positiveDeals = { ...positiveDeals, [openDeal.dealId]: openDeal };
-    //   positiveDealsPnl += pnl;
-    // } else {
-    //   negativeDeals = { ...negativeDeals, [openDeal.dealId]: openDeal };
-    //   negativeDealsPnl += pnl;
-    // }
-    // sumPnl += pnl;
 
     return parseFloat(pnl).toFixed(2);
   };
@@ -78,49 +64,31 @@ const OpenDeals = ({ openDeals, intl, quotes, viewMode, quoteSettings }) => {
             'cards-view': viewMode === 'cards',
           })}
         >
-          <div className="st-deals-responsible-wrap">
-            {!_.isEmpty(openDeals) ? (
-              _.map(openDeals, openDeal => (
-                <OpenDeal
-                  key={openDeal.dealId}
-                  quoteSecurity={openDeal.security}
-                  openDeal={openDeal}
-                  dealPnL={getPnl(openDeal)}
-                  viewMode={viewMode}
-                />
-              ))
-            ) : (
-              <div className="sr-open-deals-not-present">
-                {intl.formatMessage({
-                  id: 'openDeals.notPresent',
-                  defaultMessage: 'You do not have open deals',
-                })}
-              </div>
-            )}
-          </div>
+          {quotesSettings ? (
+            <div className="st-deals-responsible-wrap">
+              {!_.isEmpty(openDeals) ? (
+                _.map(openDeals, openDeal => (
+                  <OpenDeal
+                    key={openDeal.dealId}
+                    quoteSecurity={openDeal.security}
+                    openDeal={openDeal}
+                    dealPnL={getPnl(openDeal)}
+                    viewMode={viewMode}
+                  />
+                ))
+              ) : (
+                <div className="sr-open-deals-not-present">
+                  {intl.formatMessage({
+                    id: 'openDeals.notPresent',
+                    defaultMessage: 'You do not have open deals',
+                  })}
+                </div>
+              )}
+            </div>
+          ) : (
+            <OpenDealLoading type={viewMode} />
+          )}
         </div>
-        {/* <div className="d-flex justify-content-end"> */}
-        {/* <div className="st-close-deals-row d-flex justify-content-between"> */}
-        {/* {openDeals && <ModalCloseAll */}
-        {/* openDeals={openDeals} */}
-        {/* sumPnl={currencyFormat(parseFloat(sumPnl).toFixed(2))} */}
-        {/* buttonClass='st-close-all' */}
-        {/* allMarker='CloseAll' */}
-        {/* />} */}
-        {/* {positiveDeals && <ModalCloseAll openDeals={positiveDeals} */}
-        {/* title={intl.formatMessage({ id: 'deals.positive', defaultMessage: 'deals with positive P&L' })} */}
-        {/* sumPnl={currencyFormat(parseFloat(positiveDealsPnl).toFixed(2))} */}
-        {/* buttonClass='st-close-positive' */}
-        {/* allMarker='CloseAllProfitable' */}
-        {/* />} */}
-        {/* {negativeDeals && <ModalCloseAll openDeals={negativeDeals} */}
-        {/* title={intl.formatMessage({ id: 'deals.negative', defaultMessage: 'deals with negative P&L' })} */}
-        {/* sumPnl={currencyFormat(parseFloat(negativeDealsPnl).toFixed(2))} */}
-        {/* buttonClass='st-close-negative' */}
-        {/* allMarker='CloseAllLosing' */}
-        {/* />} */}
-        {/* </div> */}
-        {/* </div> */}
       </div>
     </div>
   );

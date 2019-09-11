@@ -13,7 +13,6 @@ import { PlatformHelper } from '../../../../platform/platformHelper';
 import quoteData from '../../../../default/quoteData';
 import { quoteFormat } from '../../../../platform/parsingPrice';
 import './OpenDeal.less';
-import OpenDealLoading from './OpenDealLoading';
 
 const propTypes = {
   quote: PropTypes.shape(),
@@ -24,7 +23,7 @@ const propTypes = {
 };
 
 const OpenDeal = ({ intl, quote, quoteSettings, openDeal, dealPnL, viewMode }) => {
-  if (quoteSettings && !_.isEmpty(quoteSettings.wobjData)) {
+  if (quoteSettings && !_.isEmpty(quoteSettings.wobjData && openDeal)) {
     const quoteDeal = quote || quoteData;
     const direction = openDeal.side === 'LONG' || openDeal.side === 'BUY' ? 'buy' : 'sell';
     const marketPrice =
@@ -171,7 +170,7 @@ const OpenDeal = ({ intl, quote, quoteSettings, openDeal, dealPnL, viewMode }) =
           </div>
         );
     }
-  } else return <OpenDealLoading type={viewMode} />;
+  } else return null;
 };
 
 OpenDeal.propTypes = propTypes;
