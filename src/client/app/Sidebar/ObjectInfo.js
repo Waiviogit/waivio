@@ -14,7 +14,8 @@ import {
   getInnerFieldWithMaxWeight,
   sortListItemsBy,
   combineObjectMenu,
-  getFieldsByName, getField,
+  getFieldsByName,
+  getField,
 } from '../../object/wObjectHelper';
 import {
   objectFields,

@@ -1,3 +1,4 @@
+import uuidv4 from 'uuid/v4';
 import _, { fromPairs, get, isEmpty } from 'lodash';
 import { getHtml } from '../components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
@@ -11,6 +12,7 @@ import {
   WAIVIO_META_FIELD_NAME,
   WAIVIO_PARENT_PERMLINK,
 } from '../../common/constants/waivio';
+import * as apiConfig from '../../waivioApi/config.json';
 
 const appVersion = require('../../../package.json').version;
 

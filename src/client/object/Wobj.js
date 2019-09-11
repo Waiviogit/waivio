@@ -56,7 +56,7 @@ export default class Wobj extends React.Component {
     resetGallery: PropTypes.func.isRequired,
     wobject: PropTypes.shape(),
     screenSize: PropTypes.string,
-    chartId: PropTypes.shape(),
+    chartId: PropTypes.string,
   };
 
   static defaultProps = {
@@ -66,7 +66,7 @@ export default class Wobj extends React.Component {
     getObjectInfo: () => {},
     wobject: {},
     screenSize: 'large',
-    chartId: {},
+    chartId: "",
   };
 
   static fetchData({ store, match }) {
@@ -202,7 +202,7 @@ export default class Wobj extends React.Component {
                 {wobject.author_permlink && <RightObjectSidebar
                   username={userName}
                   wobject={wobject}
-                  quoteSecurity={chartId.body || ""}
+                  quoteSecurity={chartId || ""}
                 />}
               </div>
             </Affix>

@@ -57,9 +57,11 @@ class Page extends React.Component {
   };
 
   componentDidMount() {
-    this.setState({
-      checked: !localStorage.getItem('isAppFilterOff'),
-    });
+    const isAppFilterOn = !localStorage.getItem('isAppFilterOff');
+    if (isAppFilterOn !== this.state.checked) {
+      this.reloadContent(isAppFilterOn);
+      this.setState({ checked: isAppFilterOn });
+    }
   }
 
   handleSortChange = key => {
@@ -72,15 +74,27 @@ class Page extends React.Component {
   };
 
   handleTopicClose = () => this.props.history.push('/trending');
-  handleChangeFeed = () => {
-    this.state.checked
-      ? localStorage.setItem('isAppFilterOff', `true`)
-      : localStorage.removeItem('isAppFilterOff');
+  handleChangeFeed = isAppFilterOn => {
+    this.setState({ checked: isAppFilterOn });
+    if (isAppFilterOn) {
+      if (localStorage) localStorage.removeItem('isAppFilterOff');
+    } else if (localStorage) {
+      localStorage.setItem('isAppFilterOff', `true`);
+    }
+    this.reloadContent(isAppFilterOn);
+  };
+
+  reloadContent = isAppFilterOn => {
     this.props.cleanFeed();
-    this.props.match.path === '/'
-      ? this.props.getFeedContent({ sortBy: 'wia_feed', category: null, limit: 10 })
-      : this.props.getUserFeedContent({ userName: this.props.userName, limit: 10 });
-    this.setState({ checked: !this.state.checked });
+    if (this.props.match.path === '/') {
+      this.props.getFeedContent({
+        sortBy: isAppFilterOn ? 'feed' : 'trending',
+        category: isAppFilterOn ? 'wia_feed' : 'all',
+        limit: 10,
+      });
+    } else {
+      this.props.getUserFeedContent({ userName: this.props.userName, limit: 10 });
+    }
   };
 
   render() {
@@ -90,7 +104,7 @@ class Page extends React.Component {
       match,
     } = this.props;
     const { category, sortBy } = match.params;
-    const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
+    const robots = pathname === '/' ? 'index,follow' : 'noindex,follow';
 
     const shouldDisplaySelector = pathname !== '/my_feed' && pathname !== '/';
 

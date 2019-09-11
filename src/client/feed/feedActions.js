@@ -38,17 +38,14 @@ export const CLEAN_FEED = 'CLEAN_FEED';
 export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) => dispatch =>
   dispatch({
     type: GET_FEED_CONTENT.ACTION,
-    payload: getDiscussionsFromAPI(
-      sortBy,
-      { category: sortBy, tag: category, limit, sortBy },
-      ApiClient,
-    ),
+    payload: getDiscussionsFromAPI(sortBy, { tag: category, limit }, ApiClient),
     meta: {
       sortBy,
       category: category || 'all',
       limit,
     },
   });
+
 export const cleanFeed = () => dispatch =>
   dispatch({
     type: CLEAN_FEED,
@@ -94,7 +91,7 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
   if (!feedContent.length) return Promise.resolve(null);
 
   const lastPost = posts[feedContent[feedContent.length - 1]];
-  const skip = feed.wia_feed && feed.wia_feed.all ? size(feed.wia_feed.all.list) : 0;
+  const skip = size(get(feed, [sortBy, category, 'list'], []));
 
   const startAuthor = lastPost.author;
   const startPermlink = lastPost.permlink;
@@ -103,9 +100,9 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
     category: sortBy,
     tag: category,
   };
-  if (sortBy === 'wia_feed') {
+  if (sortBy === 'feed' && category === 'wia_feed') {
     query.skip = skip;
-    query.limit = limit;
+    query.limit = limit + 1;
   } else {
     query.limit = limit + 1;
     query.start_author = startAuthor;

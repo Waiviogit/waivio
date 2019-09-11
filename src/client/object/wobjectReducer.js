@@ -1,17 +1,18 @@
-import {find} from 'lodash';
+import { find } from 'lodash';
 import * as actions from './wobjectsActions';
 import * as appendAction from './appendActions';
 import { RATE_WOBJECT_SUCCESS } from '../../client/object/wobjActions';
-import { objectFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
+import {objectFields as supportedFields, objectFields, TYPES_OF_MENU_ITEM} from '../../common/constants/listOfFields';
 import { getClientWObj } from '../adapters';
+import {getFieldWithMaxWeight} from "./wObjectHelper";
 
 const initialState = {
   wobject: {},
   isFetching: false,
-  chartId: {},
+  chartId: '',
 };
 
-const getByChartId = wobj => find(wobj.fields, ['name', 'chartid']);
+const getByChartId = wobj => getFieldWithMaxWeight(wobj, supportedFields.chartId);
 
 export default function wobjectReducer(state = initialState, action) {
   switch (action.type) {

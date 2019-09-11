@@ -30,22 +30,46 @@ const localStorageKeys = [
 ];
 const cookiesData = ['platformName'];
 
-// export function getBroker () {
-//     return () => {
-//         return api.brokers.getBroker()
-//             .then(({ data }) => {
-//                 return data;
-//             });
-//     };
-// }
-// export function getBrokers () {
-//     return () => {
-//         return api.brokers.getBrokers()
-//             .then(({ data }) => {
-//                 return data;
-//             });
-//     };
-// }
+export function authorizeBrokerRequest() {
+  return { type: AUTHORIZE_BROKER_REQUEST };
+}
+
+export function authorizeBrokerSuccess() {
+  return { type: AUTHORIZE_BROKER_SUCCESS };
+}
+
+export function authorizeBrokerError() {
+  return { type: AUTHORIZE_BROKER_ERROR };
+}
+
+export function registerBrokerRequest() {
+  return { type: REGISTER_BROKER_REQUEST };
+}
+
+export function registerBrokerSuccess() {
+  return { type: REGISTER_BROKER_SUCCESS };
+}
+
+export function registerBrokerError() {
+  return { type: REGISTER_BROKER_ERROR };
+}
+
+export function forgotBrokerPassRequest() {
+  return { type: FORGOT_PASS_BROKER_REQUEST };
+}
+
+export function forgotBrokerPassSuccess() {
+  return { type: FORGOT_PASS_BROKER_SUCCESS };
+}
+
+export function forgotBrokerPassError() {
+  return { type: FORGOT_PASS_BROKER_ERROR };
+}
+
+export function disconnectTokenSuccess() {
+  return { type: DISCONNECT_TOKEN_SUCCESS };
+}
+
 export function authorizeBroker(data) {
   return dispatch => {
     dispatch(authorizeBrokerRequest());
@@ -145,42 +169,4 @@ export function forgotPassBroker(data) {
   };
 }
 
-export function authorizeBrokerRequest() {
-  return { type: AUTHORIZE_BROKER_REQUEST };
-}
 
-export function authorizeBrokerSuccess() {
-  return { type: AUTHORIZE_BROKER_SUCCESS };
-}
-
-export function authorizeBrokerError() {
-  return { type: AUTHORIZE_BROKER_ERROR };
-}
-
-export function registerBrokerRequest() {
-  return { type: REGISTER_BROKER_REQUEST };
-}
-
-export function registerBrokerSuccess() {
-  return { type: REGISTER_BROKER_SUCCESS };
-}
-
-export function registerBrokerError() {
-  return { type: REGISTER_BROKER_ERROR };
-}
-
-export function forgotBrokerPassRequest() {
-  return { type: FORGOT_PASS_BROKER_REQUEST };
-}
-
-export function forgotBrokerPassSuccess() {
-  return { type: FORGOT_PASS_BROKER_SUCCESS };
-}
-
-export function forgotBrokerPassError() {
-  return { type: FORGOT_PASS_BROKER_ERROR };
-}
-
-export function disconnectTokenSuccess() {
-  return { type: DISCONNECT_TOKEN_SUCCESS };
-}

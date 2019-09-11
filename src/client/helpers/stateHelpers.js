@@ -3,7 +3,7 @@ import { hasActionType, hasField } from '../object/wObjectHelper';
 export const getFeedFromState = (sortBy, category = 'all', state) => {
   switch (sortBy) {
     case 'feed':
-    case 'wia_feed':
+    case 'trending':
     case 'comments':
     case 'blog':
     case 'bookmarks':
@@ -19,7 +19,7 @@ export const getFeedFromState = (sortBy, category = 'all', state) => {
 export const getFeedLoadingFromState = (sortBy, category = 'all', feedState) => {
   switch (sortBy) {
     case 'feed':
-    case 'wia_feed':
+    case 'trending':
     case 'comments':
     case 'blog':
     case 'bookmarks':
@@ -35,7 +35,7 @@ export const getFeedLoadingFromState = (sortBy, category = 'all', feedState) => 
 export const getFeedFetchedFromState = (sortBy, category = 'all', feedState) => {
   switch (sortBy) {
     case 'feed':
-    case 'wia_feed':
+    case 'trending':
     case 'comments':
     case 'blog':
     case 'bookmarks':
@@ -51,7 +51,7 @@ export const getFeedFetchedFromState = (sortBy, category = 'all', feedState) => 
 export const getFeedHasMoreFromState = (sortBy, listName = 'all', feedState) => {
   switch (sortBy) {
     case 'feed':
-    case 'wia_feed':
+    case 'trending':
     case 'cashout':
     case 'comments':
     case 'blog':
@@ -68,7 +68,7 @@ export const getFeedHasMoreFromState = (sortBy, listName = 'all', feedState) => 
 export const getFeedFailedFromState = (sortBy, listName = 'all', feedState) => {
   switch (sortBy) {
     case 'feed':
-    case 'wia_feed':
+    case 'trending':
     case 'cashout':
     case 'comments':
     case 'blog':
@@ -164,3 +164,21 @@ export const createAsyncActionType = type => ({
 export const getUserDetailsKey = username => `user-${username}`;
 export const getPostKey = post => `${post.author}/${post.permlink}`;
 export const getParentKey = post => `${post.parent_author}/${post.parent_permlink}`;
+
+export const makeCancelable = promise => {
+  let hasCanceled = false;
+
+  const wrappedPromise = new Promise((resolve, reject) => {
+    promise.then(
+      val => (hasCanceled ? reject({ isCanceled: true }) : resolve(val)),
+      error => (hasCanceled ? reject({ isCanceled: true }) : reject(error)),
+    );
+  });
+
+  return {
+    promise: wrappedPromise,
+    cancel() {
+      hasCanceled = true;
+    },
+  };
+};
