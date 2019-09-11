@@ -25,7 +25,6 @@ import { updateQuotes } from '../redux/actions/quotesActions';
 import { updateQuotesSettings } from '../redux/actions/quotesSettingsActions';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { objectFields } from '../../common/constants/listOfFields';
-import { getFieldWithMaxWeight } from '../../client/object/wObjectHelper';
 import {mutateObject} from "./platformHelper";
 
 export class Umarkets {
