@@ -89,7 +89,6 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
   const feedContent = getFeedFromState(sortBy, category, feed);
 
   if (!feedContent.length) return Promise.resolve(null);
-
   const lastPost = posts[feedContent[feedContent.length - 1]];
   const skip = size(get(feed, [sortBy, category, 'list'], []));
 
@@ -97,7 +96,6 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
   const startPermlink = lastPost.permlink;
 
   const query = {
-    category: sortBy,
     tag: category,
   };
   if (sortBy === 'feed' && category === 'wia_feed') {
@@ -108,7 +106,6 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
     query.start_author = startAuthor;
     query.start_permlink = startPermlink;
   }
-
   return dispatch({
     type: GET_MORE_FEED_CONTENT.ACTION,
     payload: getDiscussionsFromAPI(sortBy, query, ApiClient).then(postsData => postsData.slice(1)),
