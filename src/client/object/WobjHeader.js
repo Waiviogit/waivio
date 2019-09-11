@@ -24,9 +24,7 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, a
     objectFields.background,
   );
   const hasCover = !!coverImage;
-  const style = hasCover
-    ? { backgroundImage: `url("https://steemitimages.com/2048x512/${coverImage}")` }
-    : {};
+  const style = {};
   const descriptionShort = getFieldWithMaxWeight(wobject, objectFields.title);
   const status = getInnerFieldWithMaxWeight(wobject, objectFields.status);
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);

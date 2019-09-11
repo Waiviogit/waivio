@@ -11,7 +11,7 @@ import { updateQuotes } from '../redux/actions/quotesActions';
 import { updateQuotesSettings } from '../redux/actions/quotesSettingsActions';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { objectFields } from '../../common/constants/listOfFields';
-import { getFieldWithMaxWeight } from '../../client/object/wObjectHelper';
+import {mutateObject} from "./platformHelper";
 
 export class Widgets {
   constructor() {
@@ -114,12 +114,7 @@ export class Widgets {
       );
     }
   }
-  // getFavorites () {
-  //     this.dispatch(getFavorites());
-  // }
-  // updateFavorite (quoteSecurity) {
-  //     this.dispatch(updateFavorite(quoteSecurity));
-  // }
+
   parseRates(msg) {
     const data = {};
     if (msg.args) {
@@ -157,20 +152,18 @@ export class Widgets {
     const keys = Object.keys(quotesSettings);
     const sortedQuotesSettings = {};
     keys.sort();
-    ApiClient.getObjects({ limit: 500, invObjects: true, requiredFields: ['chartid'] }).then(
+    ApiClient.getObjects({ limit: 500, invObjects: true, requiredFields: [objectFields.chartId] }).then(
       wobjs => {
+        const wobjWithChart = mutateObject(wobjs.wobjects);
         for (const i in keys) {
           const key = keys[i];
-          const wobjData = _.find(wobjs.wobjects, o =>
-            _.find(o.fields, field => field.name === 'chartid' && field.body === key),
+          const wobjData = _.find(
+            wobjWithChart,
+            o => o.chartId === key,
           );
-          sortedQuotesSettings[key] = quotesSettings[key];
-
           if (wobjData) {
-            sortedQuotesSettings[key].wobjData = {
-              avatarlink: getFieldWithMaxWeight(wobjData, objectFields.avatar),
-              author_permlink: wobjData.author_permlink,
-            };
+            sortedQuotesSettings[key] = quotesSettings[key];
+            sortedQuotesSettings[key].wobjData = wobjData;
           }
         }
         this.quotesSettings = sortedQuotesSettings;
