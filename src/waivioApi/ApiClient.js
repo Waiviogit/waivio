@@ -47,6 +47,7 @@ export const getObjects = ({
   isOnlyHashtags,
   invObjects,
   requiredFields = [],
+  userLimit = 0,
 }) => {
   const reqData = {
     limit,
@@ -54,6 +55,7 @@ export const getObjects = ({
     skip,
     object_types: invObjects ? supportedObjectTypes : [],
     required_fields: requiredFields,
+    user_limit: userLimit
   };
   if (isOnlyHashtags) reqData.object_types = ['hashtag'];
   else reqData.exclude_object_types = ['hashtag'];
