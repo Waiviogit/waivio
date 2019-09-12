@@ -153,7 +153,7 @@ export class Widgets {
     const sortedQuotesSettings = {};
     keys.sort();
     ApiClient.getObjects({
-      limit: 500,
+      limit: 300,
       invObjects: true,
       requiredFields: [objectFields.chartId],
     }).then(wobjs => {

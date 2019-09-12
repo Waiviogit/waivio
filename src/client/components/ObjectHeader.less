@@ -45,6 +45,7 @@
     .ObjectHeader__descriptionShort {
       color: @white !important;
       text-shadow: 0 0 4px @black-text;
+      word-break: break-word;
     }
   }
 
@@ -199,8 +200,7 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
-  color: @white;
-  text-shadow: 1px 1px 0 @black;
+  align-items: center;
 }
 
 @media @small {
@@ -300,6 +300,12 @@
 
   .ObjectHeader__info {
     justify-content: flex-start;
+  }
+}
+
+@media only screen and (min-width: 320px) {
+  .ObjectHeader__text {
+    text-align: center;
   }
 }
 
