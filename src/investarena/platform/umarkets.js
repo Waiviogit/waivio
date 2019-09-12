@@ -322,7 +322,7 @@ export class Umarkets {
     const currentTime = Date.now();
     keys.sort();
     ApiClient.getObjects({
-      limit: 500,
+      limit: 300,
       invObjects: true,
       requiredFields: [objectFields.chartId],
     }).then(wobjs => {

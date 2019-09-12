@@ -70,7 +70,7 @@ class InstrumentsPage extends Component {
       : 'crypto';
     const quoteSettingsSorted = {};
     Object.entries(quoteSettings).forEach(([key, value]) => {
-      if (value.wobjData) {
+      if (value.wobjData && value.priceRounding) {
         const marketName = value.market.toLowerCase();
         quoteSettingsSorted[marketName] = quoteSettingsSorted[marketName]
           ? [...quoteSettingsSorted[marketName], { ...value, keyName: key }]

@@ -45,5 +45,6 @@
   "createCampaign": "/create_campaign",
   "dashboard": "/dashboard",
   "suitableUsers": "/suitable_users",
-  "search": "/search"
+  "search": "/search",
+  "childWobjects": "/child_wobjects"
 }
