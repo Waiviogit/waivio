@@ -9,7 +9,7 @@ import { currencyFormat } from '../../../platform/numberFormat';
 import { optionsPeriod } from '../../../constants/selectData';
 import { singleton } from '../../../platform/singletonPlatform';
 import './ClosedDeals.less';
-import OpenDealLoading from "../OpenDeals/OpenDeal/OpenDealLoading";
+import OpenDealLoading from '../OpenDeals/OpenDeal/OpenDealLoading';
 
 const Option = Select.Option;
 
@@ -30,32 +30,33 @@ class ClosedDeals extends Component {
     singleton.platform.getClosedDeals(newValue);
   };
   render() {
-    const {closedDeals, quotesSettings, viewMode, intl} = this.props;
+    const { closedDeals, quotesSettings, viewMode, intl } = this.props;
     let totalPnL = 0;
     let quoteSettings = null;
-    let closedDealsLayout = <OpenDealLoading type={viewMode}/>;
-    if(!_.isEmpty(quotesSettings)) closedDealsLayout = !_.isEmpty(closedDeals) ? (
-      _.map(closedDeals, closedDeal => {
-        totalPnL += closedDeal.pnl;
-        quoteSettings = quotesSettings[closedDeal.security];
-        return (
-          <ClosedDeal
-            key={closedDeal.dealId}
-            quoteSecurity={closedDeal.security}
-            quoteSettings={quoteSettings}
-            closedDeal={closedDeal}
-            viewMode={viewMode}
-          />
-        );
-      })
-    ) : (
-      <div className="sr-close-deals-not-present">
-        {intl.formatMessage({
-          id: 'closeDeals.notPresent',
-          defaultMessage: 'You do not have closed deals for this period',
-        })}
-      </div>
-    );
+    let closedDealsLayout = <OpenDealLoading type={viewMode} />;
+    if (!_.isEmpty(quotesSettings))
+      closedDealsLayout = !_.isEmpty(closedDeals) ? (
+        _.map(closedDeals, closedDeal => {
+          totalPnL += closedDeal.pnl;
+          quoteSettings = quotesSettings[closedDeal.security];
+          return (
+            <ClosedDeal
+              key={closedDeal.dealId}
+              quoteSecurity={closedDeal.security}
+              quoteSettings={quoteSettings}
+              closedDeal={closedDeal}
+              viewMode={viewMode}
+            />
+          );
+        })
+      ) : (
+        <div className="sr-close-deals-not-present">
+          {intl.formatMessage({
+            id: 'closeDeals.notPresent',
+            defaultMessage: 'You do not have closed deals for this period',
+          })}
+        </div>
+      );
     const dealsListHeader = (
       <div className="st-instr-column-wrap d-flex">
         <div className="st-id-title">ID:</div>
@@ -103,8 +104,7 @@ class ClosedDeals extends Component {
           </Select>
           <span className="st-closed-deals-total-pnl-wrap">
             <span className="st-margin-right-small">
-              {intl.formatMessage({ id: 'deals.totalPnL', defaultMessage: 'Total P&L' })}
-              :{' '}
+              {intl.formatMessage({ id: 'deals.totalPnL', defaultMessage: 'Total P&L' })}:{' '}
             </span>
             <span className={totalPnL < 0 ? 'st-deal-pl-red' : 'st-deal-pl-green'}>
               {currencyFormat(totalPnL)}

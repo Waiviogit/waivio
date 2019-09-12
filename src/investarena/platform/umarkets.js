@@ -25,7 +25,7 @@ import { updateQuotes } from '../redux/actions/quotesActions';
 import { updateQuotesSettings } from '../redux/actions/quotesSettingsActions';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { objectFields } from '../../common/constants/listOfFields';
-import {mutateObject} from "./platformHelper";
+import { mutateObject } from './platformHelper';
 
 export class Umarkets {
   constructor() {
@@ -329,10 +329,7 @@ export class Umarkets {
       const wobjWithChart = mutateObject(wobjs.wobjects);
       for (const i in keys) {
         const key = keys[i];
-        const wobjData = _.find(
-          wobjWithChart,
-          o => o.chartId === key,
-        );
+        const wobjData = _.find(wobjWithChart, o => o.chartId === key);
         sortedQuotesSettings[key] = quotesSettings[key];
         if (sortedQuotesSettings[key].market === 'CryptoCurrency')
           sortedQuotesSettings[key].market = 'Crypto';
