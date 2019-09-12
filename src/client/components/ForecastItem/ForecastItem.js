@@ -11,8 +11,6 @@ import PostDifference from '../../../investarena/components/PostSellBuy/PostDiff
 import { quoteFormat } from '../../../investarena/platform/parsingPrice';
 import { localeDate } from '../../../investarena/helpers/diffDateTime';
 import './ForecastItem.less';
-import quoteSettingsData from '../../../investarena/default/quoteSettingsData';
-import quoteData from '../../../investarena/default/quoteData';
 
 @injectIntl
 class ForecastItem extends React.Component {
@@ -31,8 +29,8 @@ class ForecastItem extends React.Component {
   };
 
   static defaultProps = {
-    quoteSettings: quoteSettingsData,
-    quote: quoteData,
+    quoteSettings: {},
+    quote: {},
   };
 
   state = {
