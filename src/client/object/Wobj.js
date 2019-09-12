@@ -66,7 +66,7 @@ export default class Wobj extends React.Component {
     getObjectInfo: () => {},
     wobject: {},
     screenSize: 'large',
-    chartId: "",
+    chartId: '',
   };
 
   static fetchData({ store, match }) {
@@ -199,11 +199,13 @@ export default class Wobj extends React.Component {
             )}
             <Affix className="rightContainer" stickPosition={72}>
               <div className="right">
-                {wobject.author_permlink && <RightObjectSidebar
-                  username={userName}
-                  wobject={wobject}
-                  quoteSecurity={chartId || ""}
-                />}
+                {wobject.author_permlink && (
+                  <RightObjectSidebar
+                    username={userName}
+                    wobject={wobject}
+                    quoteSecurity={chartId || ''}
+                  />
+                )}
               </div>
             </Affix>
             <div className="center">

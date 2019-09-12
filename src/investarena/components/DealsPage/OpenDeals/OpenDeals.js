@@ -23,7 +23,7 @@ const OpenDeals = ({ openDeals, intl, quotes, viewMode, quotesSettings }) => {
         ? PlatformHelper.getPnl(
             quotes[openDeal.security],
             openDeal,
-        quotesSettings[openDeal.security],
+            quotesSettings[openDeal.security],
           )
         : 0;
     if (isNaN(pnl) || pnl === undefined) {

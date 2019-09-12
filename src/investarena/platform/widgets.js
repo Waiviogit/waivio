@@ -11,7 +11,7 @@ import { updateQuotes } from '../redux/actions/quotesActions';
 import { updateQuotesSettings } from '../redux/actions/quotesSettingsActions';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { objectFields } from '../../common/constants/listOfFields';
-import {mutateObject} from "./platformHelper";
+import { mutateObject } from './platformHelper';
 
 export class Widgets {
   constructor() {
@@ -152,24 +152,23 @@ export class Widgets {
     const keys = Object.keys(quotesSettings);
     const sortedQuotesSettings = {};
     keys.sort();
-    ApiClient.getObjects({ limit: 300, invObjects: true, requiredFields: [objectFields.chartId] }).then(
-      wobjs => {
-        const wobjWithChart = mutateObject(wobjs.wobjects);
-        for (const i in keys) {
-          const key = keys[i];
-          const wobjData = _.find(
-            wobjWithChart,
-            o => o.chartId === key,
-          );
-          if (wobjData) {
-            sortedQuotesSettings[key] = quotesSettings[key];
-            sortedQuotesSettings[key].wobjData = wobjData;
-          }
+    ApiClient.getObjects({
+      limit: 300,
+      invObjects: true,
+      requiredFields: [objectFields.chartId],
+    }).then(wobjs => {
+      const wobjWithChart = mutateObject(wobjs.wobjects);
+      for (const i in keys) {
+        const key = keys[i];
+        const wobjData = _.find(wobjWithChart, o => o.chartId === key);
+        if (wobjData) {
+          sortedQuotesSettings[key] = quotesSettings[key];
+          sortedQuotesSettings[key].wobjData = wobjData;
         }
-        this.quotesSettings = sortedQuotesSettings;
-        this.dispatch(updateQuotesSettings(this.quotesSettings));
-      },
-    );
+      }
+      this.quotesSettings = sortedQuotesSettings;
+      this.dispatch(updateQuotesSettings(this.quotesSettings));
+    });
   }
   parseChartData(msg) {
     if (msg.args) {

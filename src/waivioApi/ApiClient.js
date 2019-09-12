@@ -5,12 +5,14 @@ import config from './routes';
 import { getFollowingCount } from '../client/helpers/apiHelpers';
 import { supportedObjectTypes } from '../investarena/constants/objectsInvestarena';
 
+const filterKey = 'investarena';
+
 const headers = {
+  app: filterKey,
   Accept: 'application/json',
   'Content-Type': 'application/json',
 };
 
-const filterKey = 'investarena';
 
 const getFilterKey = () => {
   if (localStorage) {
@@ -76,7 +78,10 @@ export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US' }) =>
 export const getObject = (authorPermlink, username) => {
   const query = `?required_fields=chartid${username ? `&user=${username}` : ''}`;
 
-  return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${query}`).then(res =>
+  return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${query}`, {
+    headers,
+    method: 'GET',
+  }).then(res =>
     res.json(),
   );
 };
@@ -278,7 +283,10 @@ export const getAccountWithFollowingCount = username =>
 
 export const getWobjectGallery = wobject =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.getObjects}/${wobject}${config.getGallery}`)
+    fetch(`${config.apiPrefix}${config.getObjects}/${wobject}${config.getGallery}`, {
+      headers,
+      method: 'GET',
+    })
       .then(handleErrors)
       .then(res => res.json())
       .then(result => resolve(result))

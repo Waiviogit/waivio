@@ -1,4 +1,14 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
 .PopoverMenu {
+  &__connect-container {
+    &-logout {
+      display: flex;
+      align-items: center;
+    }
+  }
+
   & .iconfont,
   & .anticon {
     vertical-align: -2px;
@@ -14,10 +24,27 @@
   }
 }
 
-div[data-dir='rtl'] .PopoverMenu {
+div[ data-dir = 'rtl' ] .PopoverMenu {
   text-align: right;
+
   & .anticon {
-    margin-right: 0px;
+    margin-right: 0;
     margin-left: 8px;
   }
+}
+
+.PopoverMenu.full-screen-hidden {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid #e9e7e7;
+  height: 50px !important;
+
+  @media @small {
+    display: none;
+  }
+}
+
+.PopoverMenu__connect-container-logout > img {
+  margin-right: 20px;
 }
