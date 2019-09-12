@@ -729,5 +729,6 @@
   "legal_notice_create_post": "I understand that this post will be published on the Steem social blockchain and that it could be reproduced on many websites around the world. I also acknowledge that the content and images in this post do not infringe the rights of other parties.",
   "proximity": "Proximity",
   "reserve_campaign": "Reserve rewards campaign",
-  "reserve_campaign_accept": "Do you want to reserve rewards campaign?"
+  "reserve_campaign_accept": "Do you want to reserve rewards campaign?",
+  "cannot_activate_company": "You cannot activate the company at the moment"
 }

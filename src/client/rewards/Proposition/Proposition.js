@@ -27,10 +27,10 @@ const Proposition = ({
   assigned,
   post,
   getSingleComment,
+  setReservedObject,
 }) => {
   const proposedWobj = getClientWObj(wobj);
   const assignPr = () => {
-    // console.log("OBJ", obj);
     assignProposition({
       companyAuthor: proposition.guide.name,
       companyPermlink: proposition.activation_permlink,
@@ -67,6 +67,7 @@ const Proposition = ({
   };
 
   const modalOnOklHandler = () => {
+    setReservedObject(proposition.required_object.author_permlink);
     assignPr();
     openModal(false);
   };
@@ -150,31 +151,6 @@ const Proposition = ({
           </React.Fragment>
         )}
       </div>
-      {/*<Modal*/}
-      {/*  closable*/}
-      {/*  title={intl.formatMessage({*/}
-      {/*    id: 'activate_campaign',*/}
-      {/*    defaultMessage: `Activate rewards campaign`,*/}
-      {/*  })}*/}
-      {/*  maskClosable={false}*/}
-      {/*  visible={isModalOpen}*/}
-      {/*  onOk={activateCamp}*/}
-      {/*  okButtonProps={{ disabled: isLoading, loading: isLoading }}*/}
-      {/*  cancelButtonProps={{ disabled: isLoading }}*/}
-      {/*  onCancel={() => {*/}
-      {/*    toggleModal(false);*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  {intl.formatMessage(*/}
-      {/*    {*/}
-      {/*      id: 'campaign_terms',*/}
-      {/*      defaultMessage: `The terms and conditions of the rewards campaign ${currentItem.name} will be published on Steem blockchain`,*/}
-      {/*    },*/}
-      {/*    {*/}
-      {/*      campaignName: currentItem.name,*/}
-      {/*    },*/}
-      {/*  )}*/}
-      {/*</Modal>*/}
       <Modal
         closable
         maskClosable={false}

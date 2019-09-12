@@ -89,6 +89,7 @@ class Rewards extends React.Component {
     objectDetails: {},
     activeFilters: { guideNames: [], types: [] },
     isSearchAreaFilter: false,
+    reservedObject: {},
   };
 
   componentDidMount() {
@@ -113,6 +114,10 @@ class Rewards extends React.Component {
       }
     } else this.setState({ propositions: [{}] }); // for map, not equal propositions
   }
+
+  setReservedObject = obj => {
+    this.setState({ reservedObject: obj });
+  };
 
   getRequiredObjects = () =>
     _.map(this.state.propositions, proposition => proposition.required_object);
@@ -259,9 +264,15 @@ class Rewards extends React.Component {
           }),
         );
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
+        this.props.history.push(`/rewards/reserved/${this.state.reservedObject}`);
       })
-      .catch(e => {
-        message.error(e.toString());
+      .catch(() => {
+        message.error(
+          this.props.intl.formatMessage({
+            id: 'cannot_activate_company',
+            defaultMessage: 'You cannot activate the company at the moment',
+          }),
+        );
         this.setState({ loadingAssignDiscard: false });
       });
   };
@@ -350,6 +361,7 @@ class Rewards extends React.Component {
                 isModalDetailsOpen={isModalDetailsOpen}
                 toggleModal={this.toggleModal}
                 assigned={wobj.assigned}
+                setReservedObject={this.setReservedObject}
               />
             ),
         ),
