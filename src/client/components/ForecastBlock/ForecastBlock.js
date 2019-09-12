@@ -40,8 +40,7 @@ class ForecastBlock extends React.Component {
     } = this.props;
     if (quoteSecurity) {
       getActiveForecastsByObject();
-    }
-    if (!quoteSecurity && username) {
+    } else if (username) {
       getActiveForecastsByUser();
     }
   }
