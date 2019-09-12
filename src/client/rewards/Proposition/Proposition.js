@@ -1,9 +1,9 @@
 /* eslint-disable */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Button } from 'antd';
+import { Button, Modal } from 'antd';
 import { Link } from 'react-router-dom';
 import './Proposition.less';
 import { getClientWObj } from '../../adapters';
@@ -29,12 +29,12 @@ const Proposition = ({
   getSingleComment,
 }) => {
   const proposedWobj = getClientWObj(wobj);
-  const assignPr = obj => {
+  const assignPr = () => {
     assignProposition({
       companyAuthor: proposition.guide.name,
       companyPermlink: proposition.activation_permlink,
       companyId: proposition._id,
-      objPermlink: obj.author_permlink,
+      objPermlink: wobj.author_permlink,
     });
   };
   const requiredObjectName = getFieldWithMaxWeight(
@@ -57,6 +57,21 @@ const Proposition = ({
       companyId: proposition._id,
       objPermlink: obj.author_permlink,
     });
+  };
+
+  const [isModalOpen, openModal] = useState(false);
+
+  const reserveOnClickHandler = () => {
+    openModal(!isModalOpen);
+  };
+
+  const modalOnOklHandler = () => {
+    assignPr();
+    openModal(false);
+  };
+
+  const modalOnCancelHandler = () => {
+    openModal(false);
   };
 
   return (
@@ -108,7 +123,7 @@ const Proposition = ({
                   type="primary"
                   loading={loading}
                   disabled={loading}
-                  onClick={() => assignPr(proposedWobj)}
+                  onClick={reserveOnClickHandler}
                 >
                   {intl.formatMessage({
                     id: 'reserve',
@@ -134,6 +149,22 @@ const Proposition = ({
           </React.Fragment>
         )}
       </div>
+      <Modal
+        closable
+        maskClosable={false}
+        title={intl.formatMessage({
+          id: 'reserve_campaign',
+          defaultMessage: `Reserve rewards campaign`,
+        })}
+        visible={isModalOpen}
+        onOk={modalOnOklHandler}
+        onCancel={modalOnCancelHandler}
+      >
+        {intl.formatMessage({
+          id: 'reserve_campaign_accept',
+          defaultMessage: `Do you want to reserve rewards campaign?`,
+        })}
+      </Modal>
     </div>
   );
 };
@@ -166,5 +197,7 @@ export default connect(
         ? getCommentContent(state, ownProps.proposition.guide.name, ownProps.assignCommentPermlink)
         : {},
   }),
-  { getSingleComment },
+  {
+    getSingleComment,
+  },
 )(injectIntl(Proposition));
