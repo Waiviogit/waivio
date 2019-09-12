@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
-import './MatchBot.less';
 import MatchBotTable from './MatchBotTable/MatchBotTable';
+import './MatchBot.less';
 
 const MatchBot = ({ intl }) => {
   // Mock

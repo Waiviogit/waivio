@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import './MatchBotTable.less';
 import MatchBotTableRow from './MatchBotTableRow';
+import './MatchBotTable.less';
 
 const MatchBotTable = ({ intl, sponsors }) => (
   <table className="MatchBotTable">
