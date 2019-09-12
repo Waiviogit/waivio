@@ -76,7 +76,9 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, a
             </div>
           </div>
           <div className="ObjectHeader__info">
-            <ObjectType type={wobject.object_type} />
+            <Link to={`/discover-objects/${wobject.object_type}`}>
+              <ObjectType type={wobject.object_type} />
+            </Link>
             <WeightTag weight={wobject.weight} />
           </div>
           <div className="ObjectHeader__user__username">
