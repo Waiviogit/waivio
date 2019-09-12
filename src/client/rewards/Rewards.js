@@ -263,8 +263,8 @@ class Rewards extends React.Component {
             defaultMessage: 'Assigned successfully',
           }),
         );
-        this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
         this.props.history.push(`/rewards/reserved/${this.state.reservedObject}`);
+        this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })
       .catch(() => {
         message.error(
@@ -314,6 +314,7 @@ class Rewards extends React.Component {
             defaultMessage: 'Discarded successfully',
           }),
         );
+        this.props.history.push(`/rewards/active`);
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })
       .catch(e => {
