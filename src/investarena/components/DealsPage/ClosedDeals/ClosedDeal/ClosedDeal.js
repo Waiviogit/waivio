@@ -8,7 +8,6 @@ import InstrumentAvatar from '../../../InstrumentAvatar/InstrumentAvatar';
 import { PlatformHelper } from '../../../../platform/platformHelper';
 import { quoteFormat } from '../../../../platform/parsingPrice';
 
-
 const ClosedDeal = ({ quoteSettings, closedDeal, intl, viewMode }) => {
   if (quoteSettings.wobjData && closedDeal) {
     const direction = closedDeal.side === 'LONG' || closedDeal.side === 'BUY' ? 'buy' : 'sell';
