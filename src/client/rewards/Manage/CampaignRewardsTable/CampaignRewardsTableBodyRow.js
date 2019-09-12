@@ -37,7 +37,7 @@ const CampaignRewardsTableRow = ({ currentItem, activateCampaign, intl }) => {
         <td>{currentItem.name}</td>
         <td>
           {!isChecked && (
-            <Link to={`/rewards/edit}`} title={'Edit'}>
+            <Link to={`/rewards/edit}`} title="Edit">
               <span>Edit</span>
             </Link>
           )}
