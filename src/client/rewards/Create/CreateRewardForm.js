@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
+import { injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import {
   Button,
@@ -23,20 +25,21 @@ import TargetDaysTable from './TargetDaysTable/TargetDaysTable';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 
 const { Option } = Select;
-
+@withRouter
 @Form.create()
+@injectIntl
 class CreateRewardForm extends React.Component {
   static propTypes = {
     userName: PropTypes.string,
     user: PropTypes.shape(),
     form: PropTypes.shape(),
-    intl: PropTypes.shape(),
+    intl: PropTypes.shape().isRequired,
+    history: PropTypes.shape().isRequired,
     currentSteemDollarPrice: PropTypes.number,
   };
   static defaultProps = {
     userName: '',
     user: {},
-    intl: {},
     form: {},
     currentSteemDollarPrice: 0,
   };
@@ -116,11 +119,15 @@ class CreateRewardForm extends React.Component {
     this.checkOptionFields();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err && !_.isEmpty(this.state.requiredObject) && !_.isEmpty(this.state.objectsToAction)) {
-        console.log('prepareSubmitData', this.prepareSubmitData(values));
         createCampaign(this.prepareSubmitData(values))
           .then(data => {
             message.success(`'${values.campaignName}' rewards campaign has been created.`);
-            this.setState({ propositions: data.campaigns, hasMore: data.hasMore, loading: false });
+            this.setState({
+              propositions: data.campaigns,
+              hasMore: data.hasMore,
+              loading: false,
+            });
+            this.manageRedirect();
           })
           .catch(error => {
             console.log(error);
@@ -427,6 +434,10 @@ class CreateRewardForm extends React.Component {
         minPosts: 0,
       });
     }
+  };
+
+  manageRedirect = () => {
+    this.props.history.push('/rewards/manage');
   };
 
   render() {
@@ -984,7 +995,7 @@ class CreateRewardForm extends React.Component {
                 validator: this.checkExpireDate,
               },
             ],
-          })(<DatePicker />)}
+          })(<DatePicker allowClear={false} />)}
         </Form.Item>
         <div className="CreateReward__item-title simple-text">
           {intl.formatMessage({
