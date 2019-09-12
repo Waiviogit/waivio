@@ -94,7 +94,11 @@ class SearchObjectsAutocomplete extends Component {
       val = permlink[permlink.length - 1].replace('@', '');
     }
     if (val) {
-      this.debouncedSearch(val, this.props.objectType, this.props.parentPermlink);
+      this.debouncedSearch(
+        val,
+        this.props.objectType,
+        this.props.parentPermlink ? this.props.parentPermlink : null,
+      );
     }
   }
 
