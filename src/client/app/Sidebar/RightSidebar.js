@@ -42,7 +42,7 @@ export default class RightSidebar extends React.Component {
         <Switch>
           <Route path="/activity" component={UserActivitySearch} />
           <Route path="/@:name/activity" component={UserActivitySearch} />
-          <Route path="/@:name/transfers" render={() => <WalletSidebar />} />
+          <Route path="/@:name/transfers" render={() => <WalletSidebar match={match} />} />
           <Route
             path="/@:name"
             render={() =>

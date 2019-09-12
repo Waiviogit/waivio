@@ -268,7 +268,7 @@ class Topnav extends React.Component {
   handleClickMenu = e => this.setState({ selectedPage: e.key });
 
   menuForLoggedOut = () => {
-    const { location } = this.props;
+    const { location, intl } = this.props;
     const { searchBarActive } = this.state;
     const next = location.pathname.length > 1 ? location.pathname : '';
 
@@ -280,7 +280,7 @@ class Topnav extends React.Component {
       >
         <Menu className="Topnav__menu-container__menu" mode="horizontal">
           <Menu.Item key="signup">
-            <ModalSignUp isButton={false} />
+            <ModalSignUp isButton={false} intl={intl} />
           </Menu.Item>
           <Menu.Item key="divider" disabled>
             |
@@ -299,7 +299,15 @@ class Topnav extends React.Component {
   };
 
   menuForLoggedIn = () => {
-    const { intl, username, notifications, userMetaData, loadingNotifications } = this.props;
+    const {
+      intl,
+      username,
+      notifications,
+      userMetaData,
+      loadingNotifications,
+      platformName,
+      isLoadingPlatform,
+    } = this.props;
     const { searchBarActive, notificationsPopoverVisible, popoverVisible } = this.state;
     const lastSeenTimestamp = _.get(userMetaData, 'notifications_last_timestamp');
     const notificationsCount = _.isUndefined(lastSeenTimestamp)
@@ -382,7 +390,15 @@ class Topnav extends React.Component {
               onVisibleChange={this.handleMoreMenuVisibleChange}
               overlayStyle={{ position: 'fixed' }}
               content={
-                <PopoverMenu onSelect={this.handleMoreMenuSelect}>
+                <PopoverMenu
+                  onSelect={this.handleMoreMenuSelect}
+                  intl={intl}
+                  platformName={platformName}
+                  isLoadingPlatform={isLoadingPlatform}
+                  toggleModalDeposit={this.toggleModalDeposit}
+                  toggleModalBroker={this.toggleModalBroker}
+                  handleMoreMenuVisibleChange={this.handleMoreMenuVisibleChange}
+                >
                   <PopoverMenuItem key="my-profile" fullScreenHidden>
                     <FormattedMessage id="my_profile" defaultMessage="My profile" />
                   </PopoverMenuItem>
