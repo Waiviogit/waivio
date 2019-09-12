@@ -145,10 +145,9 @@ export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0 }) =>
   });
 
 export const searchObjects = (searchString, objType = '', forParent, limit = 15) => {
-  const requestBody = { search_string: searchString, forParent, limit };
-  if (objType && typeof objType === 'string') {
-    requestBody.object_type = objType;
-  }
+  const requestBody = { search_string: searchString, limit };
+  if (objType && typeof objType === 'string') requestBody.object_type = objType;
+  if (forParent && typeof forParent === 'string') requestBody.forParent = forParent;
   return fetch(`${config.apiPrefix}${config.searchObjects}`, {
     headers,
     method: 'POST',
