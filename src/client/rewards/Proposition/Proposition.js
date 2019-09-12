@@ -27,6 +27,7 @@ const Proposition = ({
   assigned,
   post,
   getSingleComment,
+  setReservedObject,
 }) => {
   const proposedWobj = getClientWObj(wobj);
   const assignPr = () => {
@@ -66,6 +67,7 @@ const Proposition = ({
   };
 
   const modalOnOklHandler = () => {
+    setReservedObject(proposition.required_object.author_permlink);
     assignPr();
     openModal(false);
   };
