@@ -56,6 +56,15 @@ class CreateRewardForm extends React.Component {
     loading: false,
     parentPermlink: '',
     compensationAccount: {},
+    targetDays: {
+      monday: false,
+      tuesday: false,
+      wednesday: false,
+      thursday: false,
+      friday: false,
+      saturday: false,
+      sunday: false,
+    },
   };
 
   setRequiredObject = obj => {
@@ -64,6 +73,12 @@ class CreateRewardForm extends React.Component {
       hasRequireObject: false,
       parentPermlink: obj.author_permlink,
     });
+  };
+
+  setTargetDays = targetDay => {
+    const currentTargetDays = this.state.targetDays;
+    currentTargetDays[`${targetDay}`] = !currentTargetDays[`${targetDay}`];
+    this.setState((this.state.targetDays = currentTargetDays));
   };
 
   getObjectsToOmit = () => {
@@ -179,6 +194,7 @@ class CreateRewardForm extends React.Component {
       compensationAccount: this.state.compensationAccount && this.state.compensationAccount.account,
       sponsorAccounts,
       expired_at: data.expiredAt.format(),
+      targetDays: this.state.targetDays,
     };
   };
 
@@ -708,7 +724,7 @@ class CreateRewardForm extends React.Component {
             defaultMessage: 'Target days for reviews',
           })}
         >
-          <TargetDaysTable intl={intl} />
+          <TargetDaysTable setTargetDays={this.setTargetDays} />
           <div className="CreateReward__field-caption">
             {intl.formatMessage({
               id: 'reservation_period_will_dynamically_adjusted',
