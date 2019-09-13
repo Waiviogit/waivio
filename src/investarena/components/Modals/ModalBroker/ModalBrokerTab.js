@@ -16,6 +16,7 @@ const propTypes = {
   toggleModal: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   platformName: PropTypes.string.isRequired,
+  intl: PropTypes.shape().isRequired,
 };
 
 class ModalBrokerTab extends Component {
