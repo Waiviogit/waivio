@@ -25,6 +25,7 @@ import TargetDaysTable from './TargetDaysTable/TargetDaysTable';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 
 const { Option } = Select;
+
 @withRouter
 @Form.create()
 @injectIntl
@@ -76,9 +77,12 @@ class CreateRewardForm extends React.Component {
   };
 
   setTargetDays = targetDay => () => {
-    const currentTargetDays = { ...this.state.targetDays };
-    currentTargetDays[`${targetDay}`] = !currentTargetDays[`${targetDay}`];
-    this.setState({ targetDays: currentTargetDays });
+    this.setState({
+      targetDays: {
+        ...this.state.targetDays,
+        [targetDay]: !this.state.targetDays[targetDay],
+      },
+    });
   };
 
   getObjectsToOmit = () => {
