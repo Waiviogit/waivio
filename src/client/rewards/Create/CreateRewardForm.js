@@ -76,9 +76,9 @@ class CreateRewardForm extends React.Component {
   };
 
   setTargetDays = targetDay => {
-    const currentTargetDays = this.state.targetDays;
+    const currentTargetDays = { ...this.state.targetDays };
     currentTargetDays[`${targetDay}`] = !currentTargetDays[`${targetDay}`];
-    this.setState((this.state.targetDays = currentTargetDays));
+    this.setState({ targetDays: currentTargetDays });
   };
 
   getObjectsToOmit = () => {
