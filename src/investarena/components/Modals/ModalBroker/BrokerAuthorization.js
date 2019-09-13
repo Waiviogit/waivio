@@ -14,7 +14,7 @@ const propTypes = {
   disconnectBroker: PropTypes.func.isRequired,
   changeEmail: PropTypes.func.isRequired,
   brokerConnected: PropTypes.bool.isRequired,
-  intl: PropTypes.object.isRequired,
+  intl: PropTypes.shape().isRequired,
 };
 
 const FormItem = Form.Item;

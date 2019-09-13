@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'antd';
+import { injectIntl } from 'react-intl';
 import PopoverMenuItem from './PopoverMenuItem';
 import './PopoverMenu.less';
 import './PopoverMenuItem.less';
@@ -97,5 +98,5 @@ PopoverMenu.defaultProps = {
   toggleModalDeposit: () => {},
 };
 
-export default PopoverMenu;
+export default injectIntl(PopoverMenu);
 export { PopoverMenuItem };
