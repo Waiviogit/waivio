@@ -10,25 +10,25 @@ const TargetDaysTable = ({ intl, setTargetDays }) => (
       <thead>
         <tr>
           <th>
-            <Checkbox onChange={() => setTargetDays('sunday')} />
+            <Checkbox onChange={setTargetDays('sunday')} />
           </th>
           <th>
-            <Checkbox onChange={() => setTargetDays('monday')} />
+            <Checkbox onChange={setTargetDays('monday')} />
           </th>
           <th>
-            <Checkbox onChange={() => setTargetDays('tuesday')} />
+            <Checkbox onChange={setTargetDays('tuesday')} />
           </th>
           <th>
-            <Checkbox onChange={() => setTargetDays('wednesday')} />
+            <Checkbox onChange={setTargetDays('wednesday')} />
           </th>
           <th>
-            <Checkbox onChange={() => setTargetDays('thursday')} />
+            <Checkbox onChange={setTargetDays('thursday')} />
           </th>
           <th>
-            <Checkbox onChange={() => setTargetDays('friday')} />
+            <Checkbox onChange={setTargetDays('friday')} />
           </th>
           <th>
-            <Checkbox onChange={() => setTargetDays('saturday')} />
+            <Checkbox onChange={setTargetDays('saturday')} />
           </th>
         </tr>
       </thead>
