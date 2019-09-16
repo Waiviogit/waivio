@@ -145,10 +145,9 @@ export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0 }) =>
   });
 
 export const searchObjects = (searchString, objType = '', forParent, limit = 15) => {
-  const requestBody = { search_string: searchString, forParent, limit };
-  if (objType && typeof objType === 'string') {
-    requestBody.object_type = objType;
-  }
+  const requestBody = { search_string: searchString, limit };
+  if (objType && typeof objType === 'string') requestBody.object_type = objType;
+  if (forParent && typeof forParent === 'string') requestBody.forParent = forParent;
   return fetch(`${config.apiPrefix}${config.searchObjects}`, {
     headers,
     method: 'POST',
@@ -288,9 +287,9 @@ export const getWobjectsExpertise = (user, authorPermlink, skip = 0, limit = 30)
   });
 
 export const getAuthorsChildWobjects = (authorPermlink, skip = 0, limit = 30) =>
-  new Promise((resolve, reject) => {
+  new Promise((resolve, reject) =>
     fetch(
-      `${config.apiPrefix}${config.getObjects}/${authorPermlink}/child_wobjects?limit=${limit}&skip=${skip}`,
+      `${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.childWobjects}?limit=${limit}&skip=${skip}`,
       {
         headers,
         method: 'GET',
@@ -299,8 +298,8 @@ export const getAuthorsChildWobjects = (authorPermlink, skip = 0, limit = 30) =>
       .then(handleErrors)
       .then(res => res.json())
       .then(result => resolve(result))
-      .catch(error => reject(error));
-  });
+      .catch(error => reject(error)),
+  );
 
 export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3) =>
   new Promise((resolve, reject) => {

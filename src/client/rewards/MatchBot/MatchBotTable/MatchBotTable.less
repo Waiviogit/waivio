@@ -1,25 +1,20 @@
 @import (reference) '../../../styles/modules/variables.less';
 @import (reference) '../../../styles/custom.less';
 
-.TargetDaysTable {
-  width: 100%;
+.MatchBotTable {
   border: 1px solid @black;
   text-align: center !important;
   border-collapse: collapse;
   table-layout: fixed;
-  font-size: small;
+  font-size: medium;
 
   & td {
     border: 1px solid @black;
-    padding: 5px 4px;
-    width: 25%;
   }
 
   & th {
     text-align: center !important;
     border: 1px solid @black;
-    padding: 5px 4px;
-    width: 25%;
   }
 
   & thead th {
@@ -30,7 +25,21 @@
 
   & tbody td {
     font-weight: 500;
+    font-size: small;
+    padding: 3px 2px;
+  }
+
+  &.basicWidth {
+    width: 9% !important;
+  }
+
+  &.mediumWidth {
+    width: 33% !important;
+  }
+
+  &.maxWidth {
+    width: 40% !important;
   }
 }
 
-@import 'TargetDaysTable-nightmode';
+@import 'MatchBotTable-nightmode';

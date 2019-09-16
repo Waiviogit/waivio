@@ -4,9 +4,21 @@
 .nightmode {
   .ant-select-dropdown-menu-item {
     background-color: @grey-nero;
-    color: @white;
+    color: @white-smoke;
+    border-bottom: @border-width-base @border-style-base @normal-grey;
+
     &:hover {
-      background-color: @normal-grey;
+      background-color: @blue-darkGrayish;
     }
+  }
+
+  .obj-search-option.item.ant-select-dropdown-menu-item-active {
+    &:hover {
+      background-color: @blue-darkGrayish;
+    }
+  }
+
+  .obj-search-option.item.ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled) {
+    background-color: @blue-darkGrayish;
   }
 }
