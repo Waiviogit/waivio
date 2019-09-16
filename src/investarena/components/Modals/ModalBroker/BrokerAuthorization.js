@@ -129,7 +129,7 @@ class BrokerAuthorization extends Component {
         )}
         <div className="d-flex justify-content-between">
           {!this.props.brokerConnected ? (
-            <span onClick={() => {}} className="st-modal-broker-authorization-text-click">
+            <span className="st-modal-broker-authorization-text-click">
               {this.props.intl.formatMessage({
                 id: 'modalBroker.forgotPassword',
                 defaultMessage: 'Forgot password?',

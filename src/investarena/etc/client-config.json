@@ -146,7 +146,13 @@
 
   "logonWithToken": {
     "maximarkets": "https://publicapi.maximarkets.org/account/logonWithToken?token=",
-    "umarkets": "https://api.umarkets.com/account/logonWithToken?token="
+    "umarkets": "https://api.umarkets.com/account/logonWithToken?token=",
+    "maxitrade": "https://api.maxitrade.com/account/logonWithToken?token=",
+    "tradeallcrypto": "https://api.tradeallcrypto.com/account/logonWithToken?token=",
+    "tradiva": "https://api.tradiva.com/account/logonWithToken?token=",
+    "770capital": "https://api.770capital.com/account/logonWithToken?token=",
+    "dowmarkets": "https://api.dowmarkets.com/account/logonWithToken?token=",
+    "limefx": "https://api.limefx.com/account/logonWithToken?token="
   },
   "signals": {
     "getSignals": "https://informer.maximarkets.org/wss/signals"
