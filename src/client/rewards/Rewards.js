@@ -39,6 +39,7 @@ import Manage from './Manage/Manage';
 import RewardBreadcrumb from './RewardsBreadcrumb/RewardBreadcrumb';
 import SortSelector from '../components/SortSelector/SortSelector';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
+import MatchBot from './MatchBot/MatchBot';
 
 @withRouter
 @injectIntl
@@ -88,6 +89,7 @@ class Rewards extends React.Component {
     objectDetails: {},
     activeFilters: { guideNames: [], types: [] },
     isSearchAreaFilter: false,
+    reservedObject: {},
   };
 
   componentDidMount() {
@@ -112,6 +114,10 @@ class Rewards extends React.Component {
       }
     } else this.setState({ propositions: [{}] }); // for map, not equal propositions
   }
+
+  setReservedObject = obj => {
+    this.setState({ reservedObject: obj });
+  };
 
   getRequiredObjects = () =>
     _.map(this.state.propositions, proposition => proposition.required_object);
@@ -257,10 +263,16 @@ class Rewards extends React.Component {
             defaultMessage: 'Assigned successfully',
           }),
         );
+        this.props.history.push(`/rewards/reserved/${this.state.reservedObject}`);
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })
-      .catch(e => {
-        message.error(e.toString());
+      .catch(() => {
+        message.error(
+          this.props.intl.formatMessage({
+            id: 'cannot_activate_company',
+            defaultMessage: 'You cannot activate the company at the moment',
+          }),
+        );
         this.setState({ loadingAssignDiscard: false });
       });
   };
@@ -302,6 +314,7 @@ class Rewards extends React.Component {
             defaultMessage: 'Discarded successfully',
           }),
         );
+        this.props.history.push(`/rewards/active`);
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })
       .catch(e => {
@@ -349,6 +362,7 @@ class Rewards extends React.Component {
                 isModalDetailsOpen={isModalDetailsOpen}
                 toggleModal={this.toggleModal}
                 assigned={wobj.assigned}
+                setReservedObject={this.setReservedObject}
               />
             ),
         ),
@@ -395,7 +409,7 @@ class Rewards extends React.Component {
   };
 
   campaignItemsWrap = location => {
-    const { match, username, intl, cryptosPriceHistory, user } = this.props;
+    const { match, username, cryptosPriceHistory, user } = this.props;
     const { loading, hasMore, propositions } = this.state;
     const filterKey = match.params.filterKey;
     const IsRequiredObjectWrap = !match.params.campaignParent;
@@ -403,27 +417,30 @@ class Rewards extends React.Component {
       cryptosPriceHistory && cryptosPriceHistory.SBD && cryptosPriceHistory.SBD.priceDetails
         ? cryptosPriceHistory.SBD.priceDetails.currentUSDPrice
         : 0;
-    if (location.pathname === '/rewards/create') {
-      return (
-        <CreateRewardForm
-          userName={username}
-          user={user}
-          intl={intl}
-          currentSteemDollarPrice={currentSteemDollarPrice}
-        />
-      );
-    } else if (location.pathname === '/rewards/manage') {
-      return <Manage intl={intl} userName={username} />;
+    switch (location.pathname) {
+      case '/rewards/create':
+        return (
+          <CreateRewardForm
+            userName={username}
+            user={user}
+            currentSteemDollarPrice={currentSteemDollarPrice}
+          />
+        );
+      case '/rewards/manage':
+        return <Manage userName={username} />;
+      case '/rewards/match-bot':
+        return <MatchBot userName={username} />;
+      default:
+        return this.getCampaignsLayout(
+          hasMore,
+          IsRequiredObjectWrap,
+          loading,
+          filterKey,
+          username,
+          match,
+          propositions,
+        );
     }
-    return this.getCampaignsLayout(
-      hasMore,
-      IsRequiredObjectWrap,
-      loading,
-      filterKey,
-      username,
-      match,
-      propositions,
-    );
   };
 
   render() {
@@ -452,7 +469,7 @@ class Rewards extends React.Component {
             </div>
           </Affix>
           <div className="center">{this.campaignItemsWrap(location)}</div>
-          {location.pathname !== '/rewards/manage' && (
+          {location.pathname !== '/rewards/manage' && location.pathname !== '/rewards/match-bot' && (
             <Affix className="rightContainer leftContainer__user" stickPosition={122}>
               <div className="right">
                 {!_.isEmpty(this.props.userLocation) && !isCreate && (
