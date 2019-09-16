@@ -48,8 +48,7 @@
       "tradiva": "https://myaccount.tradiva.com/",
       "770capital": "https://myaccount.770capital.com/",
       "dowmarkets": "https://myaccount.dowmarkets.com/",
-      "limefx": "https://myaccount.limefx.com/",
-      "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
+      "limefx": "https://myaccount.limefx.com/"
     },
     "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/"
   },
@@ -69,7 +68,13 @@
     },
     "platformDepositUrl": {
       "umarkets": "https://my.umarkets.com/",
-      "maximarkets": "https://myaccount.maximarkets.org/"
+      "maximarkets": "https://myaccount.maximarkets.org/",
+      "maxitrade": "https://myaccount.maxitrade.com/",
+      "tradeallcrypto": "https://myaccount.tradeallcrypto.com/",
+      "tradiva": "https://myaccount.tradiva.com/",
+      "770capital": "https://myaccount.770capital.com/",
+      "dowmarkets": "https://myaccount.dowmarkets.com/",
+      "limefx": "https://myaccount.limefx.com/"
     },
     "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/"
   },
