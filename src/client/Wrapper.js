@@ -232,7 +232,7 @@ export default class Wrapper extends React.PureComponent {
               <Transfer />
               <PowerUpOrDown />
               <NotificationPopup />
-              <BBackTop openChat={this.openChat} className="primary-modal" />
+              <BBackTop openChat={this.openChat} isChat={isChat} className="primary-modal" />
               <Chat visibility={isChat} />
             </div>
           </Layout>
