@@ -23,7 +23,7 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
     <ul className="TopNavigation">
       <li className="TopNavigation__item">
         <Link
-          to={authenticated ? '/' : LINKS.FEED_TRENDING}
+          to="/"
           className={classNames('TopNavigation__link', {
             'TopNavigation__link--active':
               pathname === '/' || FEED_URLS.some(feedUrl => pathname.includes(feedUrl)),
