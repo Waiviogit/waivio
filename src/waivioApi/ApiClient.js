@@ -70,12 +70,13 @@ export const getFeedContentByObject = (name, limit = 10) =>
       .catch(error => reject(error));
   });
 
-export const getMoreFeedContentByObject = ({ authorPermlink, skip = 0, limit = 10 }) =>
+// eslint-disable-next-line camelcase
+export const getMoreFeedContentByObject = ({ authorPermlink, skip = 0, limit = 10, user_name }) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}/posts`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ skip, limit }),
+      body: JSON.stringify({ skip, limit, user_name }),
     })
       .then(res => res.json())
       .then(posts => resolve(posts))
