@@ -25,7 +25,7 @@ import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import { getFieldWithMaxWeight, getInitialUrl } from './wObjectHelper';
 import { objectFields } from '../../common/constants/listOfFields';
 import ObjectExpertise from '../components/Sidebar/ObjectExpertise';
-import ObjectsRelated from '../components/Sidebar/ObjectsRelated';
+import ObjectsRelated from '../components/Sidebar/ObjectsRelated/ObjectsRelated';
 
 @withRouter
 @connect(
