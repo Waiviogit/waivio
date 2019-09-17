@@ -721,6 +721,7 @@
   "compensation_account_optional": "Compensation account (optional)",
   "accumulates_value_of_upvotes_from_registered_upvoting_accounts": "Accumulates the value of upvotes from registered upvoting accounts",
   "compensation_account_auto_complete_placeholder": "Find compensation account",
+  "user_auto_complete_placeholder": "Find user",
   "activate_campaign": "Activate rewards campaign",
   "amount_sort": "amount",
   "expiry_sort": "expiry",

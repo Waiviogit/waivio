@@ -1,20 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 import './Chat.less';
 
-const Chat = ({ visibility }) => {
-  console.log('visibility', visibility);
-  return (
-    <div
-      className={classNames('Chat', {
-        'hide-element': visibility,
-      })}
-    >
-      Wellcome to the chat
+const Chat = ({ visibility }) => (
+  <div
+    className={classNames('Chat', {
+      'hide-element': visibility,
+    })}
+  >
+    <div className="Chat__conversations-wrap">
+      <SearchUsersAutocomplete allowClear={false} style={{ width: '100%' }} />
     </div>
-  );
-};
+  </div>
+);
 
 Chat.propTypes = {
   visibility: PropTypes.bool.isRequired,
