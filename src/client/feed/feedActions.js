@@ -152,6 +152,7 @@ export const getMoreObjectPosts = ({ username, authorPermlink, limit = 10 }) => 
   const state = getState();
   const feed = getFeed(state);
   const posts = getPosts(state);
+  const userName = getAuthenticatedUserName(state);
 
   const feedContent = getFeedFromState('objectPosts', username, feed);
   const isLoading = getFeedLoadingFromState('objectPosts', username, feed);
@@ -168,6 +169,7 @@ export const getMoreObjectPosts = ({ username, authorPermlink, limit = 10 }) => 
       authorPermlink,
       skip,
       limit,
+      userName,
     }),
     meta: { sortBy: 'objectPosts', category: username, limit },
   });
