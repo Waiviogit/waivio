@@ -1,0 +1,18 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.Chat {
+  position: fixed;
+  width: 360px;
+  height: calc(((100% - 20px) - 70px) - 25px) !important;
+  bottom: 50px;
+  max-height: 460px;
+  left: 200px;
+  z-index: 1500;
+  border: 1px solid black;
+  border-radius: 10px;
+  background-color: @white-ghostWhite;
+}
+.Chat.hide-element {
+  display: none;
+}

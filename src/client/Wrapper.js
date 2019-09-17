@@ -29,6 +29,7 @@ import Transfer from './wallet/Transfer';
 import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
+import Chat from './components/Chat/Chat';
 
 @withRouter
 @connect(
@@ -120,7 +121,9 @@ export default class Wrapper extends React.PureComponent {
 
   constructor(props) {
     super(props);
-
+    this.state = {
+      isChat: false,
+    };
     this.loadLocale = this.loadLocale.bind(this);
     this.handleMenuItemClick = this.handleMenuItemClick.bind(this);
   }
@@ -205,9 +208,13 @@ export default class Wrapper extends React.PureComponent {
     }
   }
 
+  openChat = () => {
+    this.setState({ isChat: !this.state.isChat });
+  };
+
   render() {
     const { user, isAuthenticated, usedLocale, translations, history } = this.props;
-
+    const { isChat } = this.state;
     const language = findLanguage(usedLocale);
 
     return (
@@ -225,7 +232,8 @@ export default class Wrapper extends React.PureComponent {
               <Transfer />
               <PowerUpOrDown />
               <NotificationPopup />
-              <BBackTop className="primary-modal" />
+              <BBackTop openChat={this.openChat} className="primary-modal" />
+              <Chat visibility={isChat} />
             </div>
           </Layout>
         </ConfigProvider>
