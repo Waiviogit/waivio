@@ -10,34 +10,50 @@ import RightSidebarLoading from '../../../app/Sidebar/RightSidebarLoading';
 import ObjectCard from '../ObjectCard';
 
 const ObjectsRelated = ({ wobject }) => {
-  const [objectsWithMaxFields, setObjectsWithMaxFields] = useState({ objects: [], loading: true });
+  const [objectsState, setObjectsState] = useState({
+    objects: [],
+    loading: true,
+    skip: 0,
+    hasNext: true,
+  });
   const [showModal, setShowModal] = useState(false);
-  const [skipValue, setSkipValue] = useState(0);
+  // const [skipValue, setSkipValue] = useState(0);
 
   const getInitialWobjects = () => {
-    getAuthorsChildWobjects(wobject.author_permlink, skipValue, 5)
-      .then(data => setObjectsWithMaxFields({ objects: [...data], loading: false }))
-      .catch(() => setObjectsWithMaxFields({ loading: false }));
+    getAuthorsChildWobjects(wobject.author_permlink, objectsState.skip, 5)
+      .then(data =>
+        setObjectsState({
+          objects: [...data],
+          loading: false,
+          skip: 5,
+          hasNext: data.length === 5,
+        }),
+      )
+      .catch(() => setObjectsState({ loading: false }));
   };
 
   const getWobjects = () => {
-    const skip = skipValue + 5;
-    getAuthorsChildWobjects(wobject.author_permlink, skip, 5).then(data => {
-      setObjectsWithMaxFields({ objects: [...objectsWithMaxFields.objects, ...data] });
-      setSkipValue(skipValue + 5);
-    });
+    getAuthorsChildWobjects(wobject.author_permlink, objectsState.skip, 5)
+      .then(data => {
+        setObjectsState({
+          objects: [...objectsState.objects, ...data],
+          skip: objectsState.skip + 5,
+          hasNext: data.length === 5,
+        });
+      })
+      .catch(() => setObjectsState({ ...objectsState, hasNext: false }));
   };
 
   useEffect(() => {
     getInitialWobjects();
-    return () => setObjectsWithMaxFields([]) && setSkipValue(0);
+    return () => setObjectsState({ objects: [], loading: true, skip: 0, hasNext: true });
   }, [wobject.author_permlink]);
 
   let renderCard = <RightSidebarLoading id="RightSidebarLoading" />;
 
-  if (!objectsWithMaxFields.loading) {
-    if (!_.isEmpty(objectsWithMaxFields.objects)) {
-      const renderObjects = objectsWithMaxFields.objects
+  if (!objectsState.loading) {
+    if (!_.isEmpty(objectsState.objects)) {
+      const renderObjects = objectsState.objects
         .slice(0, 5)
         .map(item => (
           <ObjectCard
@@ -50,7 +66,7 @@ const ObjectsRelated = ({ wobject }) => {
           />
         ));
 
-      const renderObjectsModal = objectsWithMaxFields.objects.map(item => (
+      const renderObjectsModal = objectsState.objects.map(item => (
         <ObjectCard
           key={item.author_permlink}
           wobject={item}
@@ -60,12 +76,12 @@ const ObjectsRelated = ({ wobject }) => {
         />
       ));
 
-      const renderButtons = eventHandler => (
+      const renderButtons = () => (
         <React.Fragment>
           <h4 className="ObjectsRelated__more">
             {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-            <div>
-              <FormattedMessage id="show_more" defaultMessage="Show more" onClick={eventHandler} />
+            <div onClick={() => setShowModal(true)} id="show_more_div">
+              <FormattedMessage id="show_more" defaultMessage="Show more" />
             </div>
             <div>
               <FormattedMessage id="explore" defaultMessage="Explore" />
@@ -74,6 +90,12 @@ const ObjectsRelated = ({ wobject }) => {
         </React.Fragment>
       );
 
+      const onWheelHandler = () => {
+        if (objectsState.hasNext) {
+          getWobjects();
+        }
+      };
+
       renderCard = (
         <div className="SidebarContentBlock" data-test="objectsRelatedComponent">
           <h4 className="SidebarContentBlock__title">
@@ -81,22 +103,22 @@ const ObjectsRelated = ({ wobject }) => {
             <FormattedMessage id="object_related" defaultMessage="Related" />
           </h4>
           <div className="SidebarContentBlock__content">{renderObjects}</div>
-          {renderButtons(() => setShowModal(true))}
-          <Modal
-            title="Related"
-            visible={showModal}
-            onOk={() => setShowModal(false)}
-            onCancel={() => setShowModal(false)}
-            id="ObjectRelated__Modal"
-            onWheel={() => getWobjects()}
-          >
-            {renderObjectsModal}
-            {renderButtons(() => getWobjects())}
-          </Modal>
+          {renderButtons()}
+          <div onWheel={onWheelHandler}>
+            <Modal
+              title="Related"
+              visible={showModal}
+              onOk={() => setShowModal(false)}
+              onCancel={() => setShowModal(false)}
+              id="ObjectRelated__Modal"
+            >
+              {renderObjectsModal}
+            </Modal>
+          </div>
         </div>
       );
     } else {
-      renderCard = <div>Empty</div>;
+      renderCard = null;
     }
   }
 
@@ -105,7 +127,7 @@ const ObjectsRelated = ({ wobject }) => {
 
 ObjectsRelated.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
-  wobject: PropTypes.object.isRequired,
+  wobject: PropTypes.shape.isRequired,
 };
 
 export default ObjectsRelated;

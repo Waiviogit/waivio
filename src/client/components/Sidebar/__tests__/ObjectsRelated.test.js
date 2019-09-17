@@ -65,7 +65,7 @@ describe('ObjectsRelated component', () => {
     act(() => {
       wrapper.update();
       wrapper
-        .find('#show_more')
+        .find('#show_more_div')
         .props()
         .onClick();
     });
@@ -81,7 +81,7 @@ describe('ObjectsRelated component', () => {
     act(() => {
       wrapper.update();
       wrapper
-        .find('#show_more')
+        .find('#show_more_div')
         .props()
         .onClick();
     });
@@ -90,22 +90,7 @@ describe('ObjectsRelated component', () => {
       wrapper.update();
     });
     const modal = wrapper.find('#ObjectRelated__Modal').first();
-    expect(modal.prop('children')[0]).toHaveLength(3);
-  });
-
-  it('should change showModal to true when Show more button is clicked', async () => {
-    // const promise = setupMockStates(['objectsWithMaxFields', 'showModal', 'skipValue']);
-    act(() => {
-      wrapper.update();
-      wrapper
-        .find('#show_more')
-        .props()
-        .onClick();
-    });
-
-    act(() => {
-      wrapper.update();
-    });
+    expect(modal.prop('children')).toHaveLength(3);
   });
 });
 
@@ -120,5 +105,6 @@ describe('ObjectsRelated component', () => {
 //     b(true);
 //
 //     expect(states.showModal).toEqual(true);
+//   });
 //   });
 // });
