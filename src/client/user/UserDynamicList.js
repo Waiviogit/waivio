@@ -5,15 +5,15 @@ import _ from 'lodash';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import UserCard from '../components/UserCard';
 import Loading from '../components/Icon/Loading';
-import './UserDynamicList.less';
 import WeightTag from '../components/WeightTag';
+import './UserDynamicList.less';
 
 export default class UserDynamicList extends React.Component {
   static propTypes = {
     limit: PropTypes.number.isRequired,
     fetcher: PropTypes.func.isRequired,
     showAuthorizedUser: PropTypes.bool,
-    userName: PropTypes.stringd,
+    userName: PropTypes.string,
   };
   static defaultProps = {
     showAuthorizedUser: false,
@@ -67,11 +67,7 @@ export default class UserDynamicList extends React.Component {
           {users.map(user => {
             if (!this.props.showAuthorizedUser || user.name !== this.props.userName) {
               return (
-                <UserCard
-                  key={user.name}
-                  user={user}
-                  alt={<WeightTag weight={user.wobjects_weight} />}
-                />
+                <UserCard key={user.name} user={user} alt={<WeightTag weight={user.weight} />} />
               );
             }
             return null;

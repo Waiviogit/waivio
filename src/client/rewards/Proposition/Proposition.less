@@ -4,12 +4,46 @@
 @wrapPadding: 15px;
 
 .Proposition {
-  border: 1px solid @blue-hawkesBlue;
-  background-color: @white;
-  border-radius: 4px;
-  padding: @wrapPadding;
-  width: 100%;
   margin-bottom: 15px;
+  background-color: @white;
+
+  .RewardsHeader {
+    &-block {
+      border: 1px solid @blue-hawkesBlue;
+    }
+
+    &-wrap {
+      padding-bottom: 0;
+      margin-top: 0;
+      border: none;
+    }
+
+    &-wrap-second {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 10px;
+    }
+
+    &-details {
+      cursor: pointer;
+    }
+
+    &__user-card {
+      display: flex;
+      align-items: center;
+
+      &-username {
+        margin-left: 10px;
+        color: @normal-grey;
+      }
+
+      &-alias {
+        margin-left: 10px;
+        font-weight: bold;
+        color: @black;
+      }
+    }
+  }
 
   &__title {
     font-size: 20px;
@@ -44,6 +78,7 @@
     width: 100%;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 10px;
   }
 
   &__object-line {
@@ -56,6 +91,10 @@
       width: 100%;
       border: none;
     }
+  }
+
+  .WriteReview-button {
+    margin-right: 15px;
   }
 }
 

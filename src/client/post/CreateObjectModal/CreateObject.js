@@ -9,7 +9,7 @@ import { getLanguageText } from '../../translations';
 import { objectFields } from '../../../common/constants/listOfFields';
 import LikeSection from '../../object/LikeSection';
 import FollowObjectForm from '../../object/FollowObjectForm';
-import { getobjectTypesState } from '../../reducers';
+import { getObjectTypesList } from '../../reducers';
 import { notify } from '../../app/Notification/notificationActions';
 import { getObjectTypes } from '../../objectTypes/objectTypesActions';
 import { createWaivioObject } from '../../object/wobjectsActions';
@@ -20,7 +20,7 @@ import './CreateObject.less';
 @Form.create()
 @connect(
   state => ({
-    objectTypes: getobjectTypesState(state),
+    objectTypes: getObjectTypesList(state),
   }),
   {
     createWaivioObject,

@@ -7,7 +7,7 @@ import Payout from './Payout';
 import Buttons from './Buttons';
 import Confirmation from './Confirmation';
 import Comments from '../../../client/comments/Comments';
-import { getHasDefaultSlider, getVoteValue } from '../../helpers/user';
+import { getVoteValue } from '../../helpers/user';
 import { getRate } from '../../reducers';
 import './StoryFooter.less';
 
@@ -23,7 +23,7 @@ class StoryFooter extends React.Component {
     rate: PropTypes.number.isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
     ownPost: PropTypes.bool,
-    sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
+    sliderMode: PropTypes.bool,
     pendingLike: PropTypes.bool,
     pendingFlag: PropTypes.bool,
     pendingFollow: PropTypes.bool,
@@ -31,6 +31,7 @@ class StoryFooter extends React.Component {
     saving: PropTypes.bool,
     singlePostVew: PropTypes.bool,
     onLikeClick: PropTypes.func,
+    onReportClick: PropTypes.func.isRequired,
     onShareClick: PropTypes.func,
     onEditClick: PropTypes.func,
     handlePostPopoverMenuClick: PropTypes.func,
@@ -44,7 +45,7 @@ class StoryFooter extends React.Component {
     pendingBookmark: false,
     saving: false,
     singlePostVew: false,
-    sliderMode: 'auto',
+    sliderMode: false,
     onLikeClick: () => {},
     onShareClick: () => {},
     onEditClick: () => {},
@@ -80,8 +81,7 @@ class StoryFooter extends React.Component {
   }
 
   handleLikeClick = () => {
-    const { sliderMode, user } = this.props;
-    if (sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user))) {
+    if (this.props.sliderMode) {
       if (!this.state.sliderVisible) {
         this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
       }
@@ -134,6 +134,7 @@ class StoryFooter extends React.Component {
       saving,
       singlePostVew,
       handlePostPopoverMenuClick,
+      onReportClick,
     } = this.props;
 
     return (
@@ -155,6 +156,7 @@ class StoryFooter extends React.Component {
               ownPost={ownPost}
               defaultVotePercent={defaultVotePercent}
               onLikeClick={this.handleLikeClick}
+              onReportClick={onReportClick}
               onShareClick={this.handleShareClick}
               onEditClick={this.handleEditClick}
               onCommentClick={this.toggleCommentsVisibility}

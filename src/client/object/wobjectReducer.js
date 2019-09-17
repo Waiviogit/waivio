@@ -1,7 +1,8 @@
 import * as actions from './wobjectsActions';
 import * as appendAction from './appendActions';
 import { RATE_WOBJECT_SUCCESS } from '../../client/object/wobjActions';
-import { objectFields } from '../../common/constants/listOfFields';
+import { objectFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
+import { getClientWObj } from '../adapters';
 
 const initialState = {
   wobject: {},
@@ -23,7 +24,7 @@ export default function wobjectReducer(state = initialState, action) {
     case actions.GET_OBJECT_SUCCESS:
       return {
         ...state,
-        wobject: action.payload,
+        wobject: getClientWObj(action.payload),
         isFetching: false,
       };
     case actions.ADD_ITEM_TO_LIST:
@@ -60,14 +61,34 @@ export default function wobjectReducer(state = initialState, action) {
         },
       };
     }
-    case appendAction.APPEND_WAIVIO_OBJECT.SUCCESS:
+    case appendAction.APPEND_WAIVIO_OBJECT.SUCCESS: {
+      const { payload } = action;
+      if (payload.name === 'listItem') {
+        const listItemsKey =
+          payload.type === TYPES_OF_MENU_ITEM.PAGE || payload.type === TYPES_OF_MENU_ITEM.LIST
+            ? 'menuItems'
+            : 'listItems';
+        const listItems = state.wobject[listItemsKey]
+          ? [...state.wobject[listItemsKey], payload]
+          : [payload];
+        return {
+          ...state,
+          wobject: {
+            ...state.wobject,
+            fields: [...state.wobject.fields, payload],
+            [listItemsKey]: listItems,
+          },
+        };
+      }
+
       return {
         ...state,
         wobject: {
           ...state.wobject,
-          fields: [...state.wobject.fields, action.payload],
+          fields: [...state.wobject.fields, payload],
         },
       };
+    }
     default: {
       return state;
     }

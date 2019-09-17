@@ -18,12 +18,11 @@ export const RELOAD_ERROR = '@auth/RELOAD_ERROR';
 
 export const LOGOUT = '@auth/LOGOUT';
 
-export const UPDATE_SC2_USER_METADATA = createAsyncActionType('@auth/UPDATE_SC2_USER_METADATA');
 export const BUSY_LOGIN = createAsyncActionType('@auth/BUSY_LOGIN');
 
 const loginError = createAction(LOGIN_ERROR);
 
-export const login = () => (dispatch, getState, { steemConnectAPI }) => {
+export const login = () => (dispatch, getState, { steemConnectAPI, waivioAPI }) => {
   const state = getState();
 
   let promise = Promise.resolve(null);
@@ -33,9 +32,19 @@ export const login = () => (dispatch, getState, { steemConnectAPI }) => {
   } else if (!steemConnectAPI.options.accessToken) {
     promise = Promise.reject(new Error('There is not accessToken present'));
   } else {
-    promise = steemConnectAPI.me().catch(() => dispatch(loginError()));
+    promise = new Promise(async (resolve, reject) => {
+      try {
+        const scUserData = await steemConnectAPI.me();
+        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(
+          scUserData.name,
+          steemConnectAPI.options.accessToken,
+        );
+        resolve({ ...scUserData, userMetaData });
+      } catch (e) {
+        reject(e);
+      }
+    });
   }
-
   return dispatch({
     type: LOGIN,
     payload: {
@@ -44,7 +53,10 @@ export const login = () => (dispatch, getState, { steemConnectAPI }) => {
     meta: {
       refresh: getIsLoaded(state),
     },
-  }).catch(() => dispatch(loginError()));
+  }).catch(e => {
+    console.warn(e);
+    dispatch(loginError());
+  });
 };
 
 export const getCurrentUserFollowing = () => dispatch => dispatch(getFollowing());
@@ -65,14 +77,6 @@ export const logout = () => (dispatch, getState, { steemConnectAPI }) => {
     type: LOGOUT,
   });
 };
-
-export const getUpdatedSCUserMetadata = () => (dispatch, getState, { steemConnectAPI }) =>
-  dispatch({
-    type: UPDATE_SC2_USER_METADATA.ACTION,
-    payload: {
-      promise: steemConnectAPI.me(),
-    },
-  });
 
 export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
   const accessToken = Cookie.get('access_token');

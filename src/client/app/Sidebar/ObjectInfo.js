@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import classNames from 'classnames';
 import { haveAccess, hasType, accessTypesArr } from '../../helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
 import {
@@ -12,6 +13,8 @@ import {
   getFieldsCount,
   getInnerFieldWithMaxWeight,
   sortListItemsBy,
+  combineObjectMenu,
+  getFieldsByName,
 } from '../../object/wObjectHelper';
 import {
   objectFields,
@@ -32,7 +35,9 @@ import CreateImage from '../../object/ObjectGallery/CreateImage';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
-import getClientWObject from '../../adapters';
+import { getClientWObj } from '../../adapters';
+import LinkButton from '../../components/LinkButton/LinkButton';
+import ExpandingBlock from './ExpandingBlock';
 import './ObjectInfo.less';
 
 @withRouter
@@ -53,7 +58,6 @@ class ObjectInfo extends React.Component {
   state = {
     selectedField: null,
     showModal: false,
-    showMore: false,
   };
 
   getLink = link => {
@@ -61,6 +65,26 @@ class ObjectInfo extends React.Component {
       return `http://${link}`;
     }
     return link;
+  };
+
+  getFieldLayout = (fieldName, params) => {
+    switch (fieldName) {
+      case objectFields.phone:
+        return (
+          <div key={params.number} className="flex">
+            <div className="self-start pr1">
+              <Icon type="phone" />
+            </div>
+            <div className="flex flex-column">
+              {Boolean(params.body) && <div className="phone-title">{params.body}</div>}
+              <a href={`tel:${params.number}`}>{params.number}</a>
+            </div>
+          </div>
+        );
+      default:
+        break;
+    }
+    return null;
   };
 
   handleSelectField = field => () => this.setState({ selectedField: field });
@@ -71,19 +95,18 @@ class ObjectInfo extends React.Component {
     const { location, wobject, userName, albums, isAuthenticated } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const { showModal, selectedField } = this.state;
+    const { button, status, website, newsFilter } = wobject;
     const renderFields = getAllowedFieldsByObjType(wobject.object_type);
     const isRenderGallery = ![OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(wobject.object_type);
-    const isRenderAboutSection = isRenderGallery;
     const isRenderMenu = isRenderGallery;
 
+    let names = [];
     let addressArr = [];
     let address = '';
     let map = '';
     let description = '';
     let price = '';
     let workTime = '';
-    let website = {};
-    let button = {};
     let avatar = '';
     let short = '';
     let background = '';
@@ -91,12 +114,15 @@ class ObjectInfo extends React.Component {
     let tags = [];
     let phones = [];
     let email = '';
-    let status = '';
     let menuItems = [];
     let menuLists = null;
     let menuPages = null;
 
     if (_.size(wobject) > 0) {
+      names = getFieldsByName(wobject, objectFields.name)
+        .filter(nameFld => nameFld.body !== wobject.name)
+        .map(nameFld => <div key={nameFld.permlink}>{nameFld.body}</div>);
+
       const adressFields = getInnerFieldWithMaxWeight(wobject, objectFields.address);
       addressArr = adressFields
         ? Object.values(addressFields).map(fieldName => adressFields[fieldName])
@@ -118,23 +144,15 @@ class ObjectInfo extends React.Component {
 
       price = getFieldWithMaxWeight(wobject, objectFields.price);
 
-      menuItems = _.get(wobject, 'menuItems', []);
+      menuItems = _.uniqBy(_.get(wobject, 'menuItems', []), 'author_permlink');
       menuLists =
         menuItems.length && menuItems.some(item => item.object_type === OBJECT_TYPE.LIST)
-          ? _.uniqBy(menuItems, 'author_permlink').filter(
-              item => item.object_type === OBJECT_TYPE.LIST,
-            )
+          ? menuItems.filter(item => item.object_type === OBJECT_TYPE.LIST)
           : null;
       menuPages =
-        menuItems.length && menuItems.some(item => item.object_type !== OBJECT_TYPE.LIST)
-          ? _.uniqBy(menuItems, 'author_permlink').filter(
-              item => item.object_type !== OBJECT_TYPE.LIST,
-            )
+        menuItems.length && menuItems.some(item => item.object_type !== OBJECT_TYPE.PAGE)
+          ? menuItems.filter(item => item.object_type !== OBJECT_TYPE.PAGE)
           : null;
-
-      website = getInnerFieldWithMaxWeight(wobject, objectFields.website);
-      status = getInnerFieldWithMaxWeight(wobject, objectFields.status);
-      button = getInnerFieldWithMaxWeight(wobject, objectFields.button);
 
       photosCount = wobject.photos_count;
 
@@ -158,7 +176,6 @@ class ObjectInfo extends React.Component {
 
     profile = _.pickBy(profile, _.identity);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
-    const objectName = getFieldWithMaxWeight(wobject, objectFields.name, objectFields.name);
     const album = _.filter(albums, _.iteratee(['id', wobject.author_permlink]));
     const hasGalleryImg = wobject.preview_gallery && wobject.preview_gallery[0];
 
@@ -177,7 +194,7 @@ class ObjectInfo extends React.Component {
                 <Proposition
                   objectID={wobject.author_permlink}
                   fieldName={name}
-                  objName={objectName}
+                  objName={wobject.name}
                   handleSelectField={this.handleSelectField}
                   selectedField={selectedField}
                   linkTo={
@@ -202,16 +219,51 @@ class ObjectInfo extends React.Component {
       ) : null;
     };
 
-    const getMenuSectionLink = item => (
-      <div className="object-sidebar__menu-item" key={item.author_permlink}>
-        <Link
-          className={location.hash.slice(1).split('/')[0] === item.author_permlink ? 'active' : ''}
+    const getMenuSectionLink = item => {
+      let menuItem = (
+        <LinkButton
+          className={classNames('menu-btn', {
+            active: location.hash.slice(1).split('/')[0] === item.author_permlink,
+          })}
           to={`/object/${wobject.author_permlink}/${URL.SEGMENT.MENU}#${item.author_permlink}`}
         >
-          {item.alias || getFieldWithMaxWeight(item, objectFields.name)}
-        </Link>
-      </div>
-    );
+          {item.alias || item.name || getFieldWithMaxWeight(item, objectFields.name)}
+        </LinkButton>
+      );
+      switch (item.id) {
+        case TYPES_OF_MENU_ITEM.BUTTON:
+          menuItem = (
+            <Button
+              className="LinkButton menu-btn field-button"
+              href={this.getLink(item.link)}
+              target={'_blank'}
+              block
+            >
+              {item.title}
+            </Button>
+          );
+          break;
+        case TYPES_OF_MENU_ITEM.NEWS:
+          menuItem = (
+            <LinkButton
+              className={classNames('menu-btn', {
+                active: location.pathname === `/object/${wobject.author_permlink}`,
+              })}
+              to={`/object/${wobject.author_permlink}`}
+            >
+              <FormattedMessage id="news" defaultMessage="News" />
+            </LinkButton>
+          );
+          break;
+        default:
+          break;
+      }
+      return (
+        <div className="object-sidebar__menu-item" key={item.id || item.author_permlink}>
+          {menuItem}
+        </div>
+      );
+    };
     const menuSection = (
       <React.Fragment>
         {isEditMode && (
@@ -230,15 +282,27 @@ class ObjectInfo extends React.Component {
                 TYPES_OF_MENU_ITEM.PAGE,
                 menuPages && menuPages.map(item => getMenuSectionLink(item)),
               )}
+              {listItem(
+                objectFields.button,
+                button &&
+                  button.title &&
+                  button.link &&
+                  getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.BUTTON, ...button }),
+              )}
+              {listItem(
+                objectFields.newsFilter,
+                newsFilter && getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.NEWS }),
+              )}
             </React.Fragment>
           )}
           {!isEditMode &&
             sortListItemsBy(
-              menuItems.map(menuItem =>
-                getClientWObject(menuItem, ['author_permlink', 'default_name', 'alias']),
-              ),
-              'custom',
-              _.get(wobject, 'sortCustom', null),
+              combineObjectMenu(menuItems.map(menuItem => getClientWObj(menuItem)), {
+                button,
+                news: Boolean(newsFilter),
+              }),
+              !_.isEmpty(wobject.sortCustom) ? 'custom' : '',
+              wobject && wobject.sortCustom,
             ).map(item => getMenuSectionLink(item))}
           {!_.isEmpty(menuItems) && listItem(objectFields.sorting, null)}
         </div>
@@ -288,7 +352,7 @@ class ObjectInfo extends React.Component {
     );
     return (
       <React.Fragment>
-        {getFieldWithMaxWeight(wobject, objectFields.name) && (
+        {wobject && wobject.name && (
           <div className="object-sidebar">
             {listItem(
               objectFields.parent,
@@ -302,229 +366,213 @@ class ObjectInfo extends React.Component {
             )}
             {hasType(wobject, OBJECT_TYPE.PAGE) && listItem(objectFields.pageContent, null)}
             {isRenderMenu && menuSection}
-            {isRenderAboutSection && (
-              <React.Fragment>
-                {isEditMode && (
-                  <div className="object-sidebar__section-title">
-                    <FormattedMessage id="about" defaultMessage="About" />
-                  </div>
-                )}
-                {listItem(
-                  objectFields.button,
-                  button && button.title && button.link && (
-                    <Button
-                      type="primary"
-                      className="field-button"
-                      href={this.getLink(button.link)}
-                      target={'_blank'}
-                    >
-                      {button.title}
-                    </Button>
-                  ),
-                )}
-                {listItem(objectFields.description, <DescriptionInfo description={description} />)}
-                {listItem(
-                  objectFields.rating,
-                  <RateInfo username={userName} authorPermlink={wobject.author_permlink} />,
-                )}
-                {listItem(
-                  objectFields.tagCloud,
-                  <div className="field-info">
-                    {accessExtend ? (
-                      <React.Fragment>
-                        {tags.length <= 3 ? (
-                          tags.slice(0, 3).map(({ body }) => (
-                            <div key={body} className="tag-item">
-                              {body}
-                            </div>
-                          ))
-                        ) : (
-                          <React.Fragment>
-                            {tags.slice(0, 2).map(({ body }) => (
-                              <div key={body} className="tag-item">
-                                {body}
-                              </div>
-                            ))}
-                            <Link
-                              to={`/object/${wobject.author_permlink}/updates/${
-                                objectFields.tagCloud
-                              }`}
-                              onClick={() => this.handleSelectField(objectFields.tagCloud)}
-                            >
-                              <FormattedMessage id="show_more_tags" defaultMessage="show more">
-                                {value => <div className="tag-item">{value}</div>}
-                              </FormattedMessage>
-                            </Link>
-                          </React.Fragment>
-                        )}
-                      </React.Fragment>
+            {isEditMode && (
+              <div className="object-sidebar__section-title">
+                <FormattedMessage id="about" defaultMessage="About" />
+              </div>
+            )}
+            {listItem(
+              objectFields.name,
+              !isEditMode && names.length > 0 && (
+                <React.Fragment>
+                  <span className="field-icon">{'\u2217'}</span>
+                  <ExpandingBlock className="object-sidebar__names" entities={names} minLines={4} />
+                </React.Fragment>
+              ),
+            )}
+            {listItem(objectFields.description, <DescriptionInfo description={description} />)}
+            {listItem(
+              objectFields.rating,
+              <RateInfo username={userName} authorPermlink={wobject.author_permlink} />,
+            )}
+            {listItem(
+              objectFields.tagCloud,
+              <div className="field-info">
+                {accessExtend ? (
+                  <React.Fragment>
+                    {tags.length <= 3 ? (
+                      tags.slice(0, 3).map(({ body }) => (
+                        <div key={body} className="tag-item">
+                          {body}
+                        </div>
+                      ))
                     ) : (
                       <React.Fragment>
-                        {tags.slice(0, 3).map(({ body }) => (
-                          <Tag key={body} color="volcano">
+                        {tags.slice(0, 2).map(({ body }) => (
+                          <div key={body} className="tag-item">
                             {body}
-                          </Tag>
+                          </div>
                         ))}
+                        <Link
+                          to={`/object/${wobject.author_permlink}/updates/${objectFields.tagCloud}`}
+                          onClick={() => this.handleSelectField(objectFields.tagCloud)}
+                        >
+                          <FormattedMessage id="show_more_tags" defaultMessage="show more">
+                            {value => <div className="tag-item">{value}</div>}
+                          </FormattedMessage>
+                        </Link>
                       </React.Fragment>
                     )}
-                  </div>,
+                  </React.Fragment>
+                ) : (
+                  <React.Fragment>
+                    {tags.slice(0, 3).map(({ body }) => (
+                      <Tag key={body} color="volcano">
+                        {body}
+                      </Tag>
+                    ))}
+                  </React.Fragment>
                 )}
-                {isRenderGallery && (hasGalleryImg || accessExtend) ? (
-                  <div className="field-info">
-                    {accessExtend && (
-                      <div className="proposition-line">
-                        <Link
-                          to={{ pathname: `/object/${wobject.author_permlink}/gallery` }}
-                          onClick={() => this.handleSelectField('gallery')}
-                        >
-                          <IconButton
-                            icon={<Icon type="plus-circle" />}
-                            onClick={this.handleToggleModal}
-                          />
-                          <div
-                            className={`icon-button__text ${
-                              selectedField === 'gallery' ? 'field-selected' : ''
-                            }`}
-                          >
-                            <FormattedMessage id="object_field_gallery" defaultMessage="Gallery" />
-                          </div>
-                        </Link>
-                        <span className="proposition-line__text">{photosCount}</span>
-                        {showModal && (
-                          <CreateImage
-                            albums={albums}
-                            selectedAlbum={album[0]}
-                            showModal={showModal}
-                            hideModal={this.handleToggleModal}
-                          />
-                        )}
+              </div>,
+            )}
+            {isRenderGallery && (hasGalleryImg || accessExtend) ? (
+              <div className="field-info">
+                {accessExtend && (
+                  <div className="proposition-line">
+                    <Link
+                      to={{ pathname: `/object/${wobject.author_permlink}/gallery` }}
+                      onClick={() => this.handleSelectField('gallery')}
+                    >
+                      <IconButton
+                        icon={<Icon type="plus-circle" />}
+                        onClick={this.handleToggleModal}
+                      />
+                      <div
+                        className={`icon-button__text ${
+                          selectedField === 'gallery' ? 'field-selected' : ''
+                        }`}
+                      >
+                        <FormattedMessage id="object_field_gallery" defaultMessage="Gallery" />
                       </div>
-                    )}
-                    {hasGalleryImg && (
-                      <PicturesCarousel
-                        pics={wobject.preview_gallery}
-                        objectID={wobject.author_permlink}
+                    </Link>
+                    <span className="proposition-line__text">{photosCount}</span>
+                    {showModal && (
+                      <CreateImage
+                        albums={albums}
+                        selectedAlbum={album[0]}
+                        showModal={showModal}
+                        hideModal={this.handleToggleModal}
                       />
                     )}
                   </div>
-                ) : null}
-                {listItem(
-                  objectFields.price,
-                  price ? <div className="icon-price">{price}</div> : null,
                 )}
-                {listItem(objectFields.workTime, <React.Fragment>{workTime}</React.Fragment>)}
-                {listItem(
-                  objectFields.address,
-                  address && (
-                    <React.Fragment>
-                      <i className="iconfont icon-coordinates text-icon" />
-                      {address}
-                      {isRenderMap && (
-                        <a
-                          href={`https://www.google.com/maps/search/?api=1&query=${map.latitude},${
-                            map.longitude
-                          }`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="address-link"
-                        >
-                          <i className="iconfont icon-send PostModal__icon" />
-                        </a>
-                      )}
-                    </React.Fragment>
-                  ),
+                {hasGalleryImg && (
+                  <PicturesCarousel
+                    pics={wobject.preview_gallery}
+                    objectID={wobject.author_permlink}
+                  />
                 )}
-                {listItem(
-                  objectFields.map,
-                  isRenderMap && (
-                    <MapObjectInfo
-                      mapHeigth={200}
-                      center={[Number(map.latitude), Number(map.longitude)]}
-                    />
-                  ),
-                )}
-                {listItem(
-                  objectFields.website,
-                  website && website.title && website.link && (
-                    <div className="field-website">
-                      <span className="field-website__title">
-                        <i className="iconfont icon-link text-icon" />
-                        <a
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          href={this.getLink(website.link)}
-                        >
-                          {website.title}
-                        </a>
-                      </span>
-                    </div>
-                  ),
-                )}
-                {listItem(
-                  objectFields.phone,
-                  <div className="field-info">
-                    {accessExtend ? (
-                      <React.Fragment>
-                        {phones.length <= 3 ? (
-                          phones.slice(0, 3).map(({ body, number }) => (
-                            <div key={number} className="phone">
-                              <Icon type="phone" /> <a href={`tel:${number}`}>{number}</a>
-                              {body && body} <br />
-                            </div>
-                          ))
-                        ) : (
-                          <React.Fragment>
-                            {phones.slice(0, 2).map(({ body, number }) => (
-                              <div key={`${number}${body}`} className="phone">
-                                {body && body} <br />
-                                <Icon type="phone" /> <a href={`tel:${number}`}>{number}</a>
-                              </div>
-                            ))}
-                            <Link
-                              to={`/object/${wobject.author_permlink}/updates/${
-                                objectFields.phone
-                              }`}
-                              onClick={() => this.handleSelectField(objectFields.phone)}
-                            >
-                              <FormattedMessage id="show_more_tags" defaultMessage="show more">
-                                {value => <div className="phone">{value}</div>}
-                              </FormattedMessage>
-                            </Link>
-                          </React.Fragment>
-                        )}
-                      </React.Fragment>
+              </div>
+            ) : null}
+            {listItem(
+              objectFields.price,
+              price ? (
+                <React.Fragment>
+                  {!isEditMode && <span className="field-icon">$</span>}
+                  <div className="price-value">{price}</div>
+                </React.Fragment>
+              ) : null,
+            )}
+            {listItem(objectFields.workTime, <div className="field-work-time">{workTime}</div>)}
+            {listItem(
+              objectFields.address,
+              address && (
+                <React.Fragment>
+                  <i className="iconfont icon-coordinates text-icon" />
+                  {address}
+                  {isRenderMap && (
+                    <a
+                      href={`https://www.google.com/maps/search/?api=1&query=${map.latitude},${map.longitude}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="address-link"
+                    >
+                      <i className="iconfont icon-send PostModal__icon" />
+                    </a>
+                  )}
+                </React.Fragment>
+              ),
+            )}
+            {listItem(
+              objectFields.map,
+              isRenderMap && (
+                <MapObjectInfo
+                  mapHeigth={200}
+                  center={[Number(map.latitude), Number(map.longitude)]}
+                />
+              ),
+            )}
+            {listItem(
+              objectFields.website,
+              website && website.title && website.link && (
+                <div className="field-website">
+                  <span className="field-website__title">
+                    <i className="iconfont icon-link text-icon" />
+                    <a target="_blank" rel="noopener noreferrer" href={this.getLink(website.link)}>
+                      {website.title}
+                    </a>
+                  </span>
+                </div>
+              ),
+            )}
+            {listItem(
+              objectFields.phone,
+              <div className="field-info">
+                {accessExtend ? (
+                  <React.Fragment>
+                    {phones.length <= 3 ? (
+                      phones
+                        .slice(0, 3)
+                        .map(({ body, number }) =>
+                          this.getFieldLayout(objectFields.phone, { body, number }),
+                        )
                     ) : (
                       <React.Fragment>
-                        {phones.slice(0, 3).map(({ body, number }) => (
-                          <div key={number}>
-                            {body && body} <br />
-                            <Icon type="phone" /> <a href={`tel:${number}`}>{number}</a>
-                          </div>
-                        ))}
+                        {phones
+                          .slice(0, 2)
+                          .map(({ body, number }) =>
+                            this.getFieldLayout(objectFields.phone, { body, number }),
+                          )}
+                        <Link
+                          to={`/object/${wobject.author_permlink}/updates/${objectFields.phone}`}
+                          onClick={() => this.handleSelectField(objectFields.phone)}
+                        >
+                          <FormattedMessage id="show_more_tags" defaultMessage="show more">
+                            {value => <div className="phone">{value}</div>}
+                          </FormattedMessage>
+                        </Link>
                       </React.Fragment>
                     )}
-                  </div>,
-                )}
-                {listItem(
-                  objectFields.email,
-                  email && (
-                    <div className="field-info">
-                      {accessExtend ? (
-                        <div className="email">
-                          <Icon type="mail" /> {email}
-                        </div>
-                      ) : (
-                        <React.Fragment>
-                          <Icon type="mail" />
-                          <a href={`mailto:${email}`}> {email}</a>
-                        </React.Fragment>
+                  </React.Fragment>
+                ) : (
+                  <React.Fragment>
+                    {phones
+                      .slice(0, 3)
+                      .map(({ body, number }) =>
+                        this.getFieldLayout(objectFields.phone, { body, number }),
                       )}
-                    </div>
-                  ),
+                  </React.Fragment>
                 )}
-                {listItem(objectFields.link, <SocialLinks profile={profile} />)}
-              </React.Fragment>
+              </div>,
             )}
+            {listItem(
+              objectFields.email,
+              email && (
+                <div className="field-info">
+                  {accessExtend ? (
+                    <div className="email">
+                      <Icon type="mail" /> {email}
+                    </div>
+                  ) : (
+                    <React.Fragment>
+                      <Icon type="mail" />
+                      <a href={`mailto:${email}`}> {email}</a>
+                    </React.Fragment>
+                  )}
+                </div>
+              ),
+            )}
+            {listItem(objectFields.link, <SocialLinks profile={profile} />)}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
             {accessExtend && settingsSection}
           </div>

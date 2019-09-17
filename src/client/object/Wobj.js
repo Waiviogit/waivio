@@ -15,16 +15,17 @@ import {
   getScreenSize,
 } from '../reducers';
 import OBJECT_TYPE from './const/objectTypes';
-import { getObjectInfo } from './wobjectsActions';
+import { getObject, getObjectInfo } from './wobjectsActions';
 import { resetGallery } from '../object/ObjectGallery/galleryActions';
 import Error404 from '../statics/Error404';
 import WobjHero from './WobjHero';
 import LeftObjectProfileSidebar from '../app/Sidebar/LeftObjectProfileSidebar';
-import RightObjectSidebar from '../app/Sidebar/RightObjectSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
-import { getFieldWithMaxWeight } from './wObjectHelper';
+import { getFieldWithMaxWeight, getInitialUrl } from './wObjectHelper';
 import { objectFields } from '../../common/constants/listOfFields';
+import ObjectExpertise from '../components/Sidebar/ObjectExpertise';
+import ObjectsRelated from '../components/Sidebar/ObjectsRelated';
 
 @withRouter
 @connect(
@@ -65,6 +66,10 @@ export default class Wobj extends React.Component {
     screenSize: 'large',
   };
 
+  static fetchData({ store, match }) {
+    return store.dispatch(getObject(match.params.name));
+  }
+
   constructor(props) {
     super(props);
 
@@ -80,32 +85,20 @@ export default class Wobj extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { authenticated, history, match, screenSize } = this.props;
-    if (!_.isEmpty(nextProps.wobject) && !match.params[0] && !nextProps.match.params[0]) {
-      if (nextProps.wobject.object_type) {
-        const pageField = getFieldWithMaxWeight(nextProps.wobject, objectFields.pageContent);
-        switch (nextProps.wobject.object_type.toLowerCase()) {
-          case OBJECT_TYPE.PAGE:
-            if (!pageField && authenticated) {
-              this.setState({ isEditMode: true });
-            }
-            history.replace(`${history.location.pathname}/${OBJECT_TYPE.PAGE}`);
-            break;
-          case OBJECT_TYPE.LIST:
-            history.replace(`${history.location.pathname}/${OBJECT_TYPE.LIST}`);
-            break;
-          case OBJECT_TYPE.HASHTAG:
-            break;
-          default:
-            if (screenSize !== 'large') {
-              history.replace(`${history.location.pathname}/about`);
-            }
-            break;
-        }
-      }
+    const { authenticated, history, match, screenSize, wobject } = this.props;
+    if (wobject.id !== nextProps.wobject.id && !match.params[0] && !nextProps.match.params[0]) {
+      history.replace(getInitialUrl(nextProps.wobject, screenSize, history.location));
     }
     if (nextProps.match.params[0] !== this.props.match.params[0]) {
-      this.setState({ hasLeftSidebar: nextProps.match.params[0] !== OBJECT_TYPE.PAGE });
+      const nextState = { hasLeftSidebar: nextProps.match.params[0] !== OBJECT_TYPE.PAGE };
+      if (
+        nextProps.wobject.type === OBJECT_TYPE.PAGE &&
+        authenticated &&
+        !nextProps.wobject[objectFields.pageContent]
+      ) {
+        nextState.isEditMode = true;
+      }
+      this.setState(nextState);
     }
   }
 
@@ -135,13 +128,13 @@ export default class Wobj extends React.Component {
     if (failed) return <Error404 />;
 
     const objectName = getFieldWithMaxWeight(wobject, objectFields.name);
-    const busyHost = global.postOrigin || 'https://waiviodev.com';
-    const desc = `Posts by ${objectName}`;
+    const waivioHost = global.postOrigin || 'https://waiviodev.com';
+    const desc = `${objectName || ''}`;
     const image = getFieldWithMaxWeight(wobject, objectFields.avatar);
-    const canonicalUrl = `${busyHost}/object/${wobject.author_permlink}`;
-    const url = `${busyHost}/object/${wobject.author_permlink}`;
+    const canonicalUrl = `${waivioHost}/object/${match.params.name}`;
+    const url = `${waivioHost}/object/${match.params.name}`;
     const displayedObjectName = objectName || '';
-    const title = `Object - ${objectName || wobject.default_name || ''}`;
+    const title = `${objectName || wobject.default_name || ''}`;
 
     return (
       <div className="main-panel">
@@ -149,16 +142,14 @@ export default class Wobj extends React.Component {
           <title>{title}</title>
           <link rel="canonical" href={canonicalUrl} />
           <meta property="description" content={desc} />
-
           <meta property="og:title" content={title} />
           <meta property="og:type" content="article" />
           <meta property="og:url" content={url} />
           <meta property="og:image" content={image} />
           <meta property="og:description" content={desc} />
           <meta property="og:site_name" content="Waivio" />
-
           <meta property="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
-          <meta property="twitter:site" content={'@steemit'} />
+          <meta property="twitter:site" content={'@waivio'} />
           <meta property="twitter:title" content={title} />
           <meta property="twitter:description" content={desc} />
           <meta
@@ -182,7 +173,11 @@ export default class Wobj extends React.Component {
         <div className="shifted">
           <div className={`container ${hasLeftSidebar ? 'feed-layout' : 'post-layout'}`}>
             {hasLeftSidebar && (
-              <Affix className="leftContainer leftContainer__user" stickPosition={72}>
+              <Affix
+                key={match.params.name}
+                className="leftContainer leftContainer__user"
+                stickPosition={72}
+              >
                 <div className="left">
                   <LeftObjectProfileSidebar
                     isEditMode={isEditMode}
@@ -194,8 +189,11 @@ export default class Wobj extends React.Component {
             )}
             <Affix className="rightContainer" stickPosition={72}>
               <div className="right">
-                <RightObjectSidebar username={userName} wobject={wobject} />
+                {wobject.author_permlink && (
+                  <ObjectExpertise username={userName} wobject={wobject} />
+                )}
               </div>
+              <div>{wobject.author_permlink && <ObjectsRelated wobject={wobject} />}</div>
             </Affix>
             <div className="center">
               {renderRoutes(this.props.route.routes, {

@@ -1,0 +1,28 @@
+@import (reference) '../../styles/custom.less';
+
+.CampaignFooter {
+  width: 100%;
+
+  .Buttons {
+    display: flex;
+    align-items: center;
+  }
+
+  &__actions {
+    position: relative;
+    height: 46px;
+    line-height: 46px;
+  }
+
+  &__dislike:before {
+    display: inline-block;
+    transform: rotate(180deg);
+  }
+
+  &__button-icon {
+    color: @blue-baliHai;
+    font-size: 22px !important;
+    margin-right: 5px;
+    vertical-align: -2px;
+  }
+}

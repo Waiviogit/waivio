@@ -7,6 +7,7 @@ import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button, Form, Input, message, Select, Avatar, Rate, Icon } from 'antd';
 import { fieldsRules } from './const/appendFormConstants';
+import apiConfig from '../../waivioApi/config.json';
 import {
   linkFields,
   objectFields,
@@ -45,13 +46,13 @@ import { appendObject } from '../object/appendActions';
 import { isValidImage } from '../helpers/image';
 import withEditor from '../components/Editor/withEditor';
 import { MAX_IMG_SIZE, ALLOWED_IMG_FORMATS } from '../../common/constants/validation';
-import { getHasDefaultSlider, getVoteValue } from '../helpers/user';
+import { getVoteValue } from '../helpers/user';
 import LikeSection from './LikeSection';
-import { getFieldWithMaxWeight, getListItems } from './wObjectHelper';
+import { getFieldWithMaxWeight, getInnerFieldWithMaxWeight, getListItems } from './wObjectHelper';
 import FollowObjectForm from './FollowObjectForm';
 import { followObject, rateObject } from '../object/wobjActions';
 import SortingList from '../components/DnDList/DnDList';
-import { getClientWObj } from '../adapters';
+import DnDListItem from '../components/DnDList/DnDListItem';
 import SearchObjectsAutocomplete from '../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCardView from '../objectCard/ObjectCardView';
 import { getNewsFilterLayout } from './NewsFilter/newsFilterHelper';
@@ -88,7 +89,7 @@ export default class AppendForm extends Component {
     user: PropTypes.shape(),
     rewardFund: PropTypes.shape(),
     rate: PropTypes.number,
-    sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
+    sliderMode: PropTypes.bool,
     defaultVotePercent: PropTypes.number.isRequired,
     followingList: PropTypes.arrayOf(PropTypes.string),
     rateObject: PropTypes.func,
@@ -109,7 +110,7 @@ export default class AppendForm extends Component {
     user: {},
     rewardFund: {},
     rate: 1,
-    sliderMode: 'auto',
+    sliderMode: false,
     defaultVotePercent: 100,
     followingList: [],
     rateObject: () => {},
@@ -130,9 +131,9 @@ export default class AppendForm extends Component {
   };
 
   componentDidMount = () => {
-    const { sliderMode, user } = this.props;
-    if (sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user))) {
+    if (this.props.sliderMode) {
       if (!this.state.sliderVisible) {
+        // eslint-disable-next-line react/no-did-mount-set-state
         this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
       }
     }
@@ -213,9 +214,7 @@ export default class AppendForm extends Component {
     const { getFieldValue } = this.props.form;
     const { body, preview, currentField, currentLocale, like, follow, ...rest } = formValues;
 
-    const field = getFieldValue('currentField');
-    let locale = getFieldValue('currentLocale');
-    if (locale === 'auto') locale = 'en-US';
+    const locale = currentLocale === 'auto' ? 'en-US' : currentLocale;
     let fieldBody = [];
     const postData = [];
 
@@ -264,43 +263,60 @@ export default class AppendForm extends Component {
         break;
     }
 
+    const getAppendMsg = (author, appendValue) => {
+      const langReadable = _.filter(LANGUAGES, { id: locale })[0].name;
+      switch (currentField) {
+        case objectFields.avatar:
+        case objectFields.background:
+          return `@${author} added ${currentField} (${langReadable}):\n ![${currentField}](${appendValue})`;
+        case objectFields.phone:
+          return `@${author} added ${currentField}(${langReadable}):\n ${appendValue.replace(
+            /[{}"]/g,
+            '',
+          )} ${formValues[phoneFields.number].replace(/[{}"]/g, '')}  `;
+        case TYPES_OF_MENU_ITEM.PAGE:
+        case TYPES_OF_MENU_ITEM.LIST: {
+          const alias = getFieldValue('menuItemName');
+          const displayName = `${this.state.selectedObject.name} (type: ${this.state.selectedObject.type})`;
+          const objectUrl = `${apiConfig.production.protocol}${apiConfig.production.host}/object/${appendValue}`;
+          return `@${author} added ${currentField} (${langReadable}):\n[${displayName}](${objectUrl})${
+            alias ? ` as "${alias}"` : ''
+          }`;
+        }
+        default:
+          return `@${author} added ${currentField} (${langReadable}):\n ${appendValue.replace(
+            /[{}"]/g,
+            '',
+          )}`;
+      }
+    };
+
     fieldBody.forEach(bodyField => {
       const data = {};
 
       data.author = this.props.user.name;
       data.parentAuthor = wObject.author;
       data.parentPermlink = wObject.author_permlink;
-
-      const langReadable = _.filter(LANGUAGES, { id: locale })[0].name;
-
-      data.body = `@${data.author} added ${field} (${langReadable}):\n ${bodyField.replace(
-        /[{}"]/g,
-        '',
-      )}`;
+      data.body = getAppendMsg(data.author, bodyField);
 
       data.title = '';
       let fieldsObject = {
-        name: _.includes(TYPES_OF_MENU_ITEM, field) ? objectFields.listItem : field,
+        name: _.includes(TYPES_OF_MENU_ITEM, currentField) ? objectFields.listItem : currentField,
         body: bodyField,
         locale,
       };
 
-      if (field === objectFields.phone) {
+      if (currentField === objectFields.phone) {
         fieldsObject = {
           ...fieldsObject,
           [phoneFields.number]: formValues[phoneFields.number],
         };
-
-        data.body = `@${data.author} added ${field}(${langReadable}):\n ${bodyField.replace(
-          /[{}"]/g,
-          '',
-        )} ${formValues[phoneFields.number].replace(/[{}"]/g, '')}  `;
       }
 
-      if (_.includes(TYPES_OF_MENU_ITEM, field)) {
+      if (_.includes(TYPES_OF_MENU_ITEM, currentField)) {
         fieldsObject = {
           ...fieldsObject,
-          type: field,
+          type: currentField,
           alias: getFieldValue('menuItemName'),
         };
       }
@@ -538,9 +554,8 @@ export default class AppendForm extends Component {
   };
 
   handleLikeClick = () => {
-    const { sliderMode, user } = this.props;
     this.setState({
-      sliderVisible: sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user)),
+      sliderVisible: this.props.sliderMode,
     });
   };
 
@@ -641,9 +656,7 @@ export default class AppendForm extends Component {
         return (
           <React.Fragment>
             <Form.Item>
-              {getFieldDecorator('menuItemName', {
-                rules: this.getFieldRules('menuItemName'),
-              })(
+              {getFieldDecorator('menuItemName')(
                 <Input
                   className="AppendForm__input"
                   disabled={loading}
@@ -665,6 +678,7 @@ export default class AppendForm extends Component {
                   objectType={objectType}
                 />,
               )}
+              {console.log(objectType)}
               {selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
             </Form.Item>
             <CreateObject
@@ -797,14 +811,15 @@ export default class AppendForm extends Component {
             {getFieldDecorator(objectFields.workTime, {
               rules: this.getFieldRules(objectFields.workTime),
             })(
-              <Input
+              <Input.TextArea
+                autosize={{ minRows: 4, maxRows: 8 }}
                 className={classNames('AppendForm__input', {
                   'validation-error': !this.state.isSomeValue,
                 })}
                 disabled={loading}
                 placeholder={intl.formatMessage({
                   id: 'work_time',
-                  defaultMessage: 'Work time',
+                  defaultMessage: 'Hours',
                 })}
               />,
             )}
@@ -1065,22 +1080,24 @@ export default class AppendForm extends Component {
                 </Select>,
               )}
             </Form.Item>
-            <Form.Item>
-              {getFieldDecorator(statusFields.link, {
-                rules: this.getFieldRules('buttonFields.link'),
-              })(
-                <Input
-                  className={classNames('AppendForm__input', {
-                    'validation-error': !this.state.isSomeValue,
-                  })}
-                  disabled={loading}
-                  placeholder={intl.formatMessage({
-                    id: 'link',
-                    defaultMessage: 'Link',
-                  })}
-                />,
-              )}
-            </Form.Item>
+            {this.props.form.getFieldValue(statusFields.title) === 'relisted' && (
+              <Form.Item>
+                {getFieldDecorator(statusFields.link, {
+                  rules: this.getFieldRules('buttonFields.link'),
+                })(
+                  <Input
+                    className={classNames('AppendForm__input', {
+                      'validation-error': !this.state.isSomeValue,
+                    })}
+                    disabled={loading}
+                    placeholder={intl.formatMessage({
+                      id: 'link',
+                      defaultMessage: 'Link',
+                    })}
+                  />,
+                )}
+              </Form.Item>
+            )}
           </React.Fragment>
         );
       }
@@ -1220,10 +1237,28 @@ export default class AppendForm extends Component {
       }
       case objectFields.sorting: {
         const listItems =
-          getListItems(wObject, true).map(item => ({
-            id: item.author_permlink,
-            content: <ObjectCardView wObject={getClientWObj(item)} />,
+          getListItems(wObject, { uniq: true, isMappedToClientWobject: true }).map(item => ({
+            id: item.id,
+            content: <DnDListItem name={item.name} type={item.type} />,
           })) || [];
+        const button = getInnerFieldWithMaxWeight(wObject, objectFields.button);
+        if (button) {
+          listItems.push({
+            id: TYPES_OF_MENU_ITEM.BUTTON,
+            content: <DnDListItem name={button.title} type={objectFields.button} />,
+          });
+        }
+        if (!_.isEmpty(wObject.newsFilter)) {
+          listItems.push({
+            id: TYPES_OF_MENU_ITEM.NEWS,
+            content: (
+              <DnDListItem
+                name={intl.formatMessage({ id: 'news', defaultMessage: 'News' })}
+                type={objectFields.newsFilter}
+              />
+            ),
+          });
+        }
         return (
           <React.Fragment>
             <Form.Item>

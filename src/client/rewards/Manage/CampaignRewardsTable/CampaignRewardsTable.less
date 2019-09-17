@@ -1,0 +1,111 @@
+@import (reference) '../../../styles/modules/variables.less';
+@import (reference) '../../../styles/custom.less';
+
+.Campaign-rewards {
+  border: 1px solid @black;
+  text-align: center;
+  text-transform: capitalize;
+  border-collapse: collapse;
+  table-layout: fixed;
+
+  & th {
+    border: 1px solid @black;
+    vertical-align: top;
+  }
+
+  & td {
+    font-size: 15px;
+    border: 1px solid @black;
+  }
+
+  & thead th {
+    font-size: 15px;
+    font-weight: bold;
+  }
+
+  &.basicWidth {
+    width: 8% !important;
+  }
+
+  &.mediumWidth {
+    width: 10% !important;
+  }
+
+  &.maxWidth {
+    width: 17% !important;
+  }
+}
+
+.Campaign-rewards > tbody > tr :first-child {
+  top: -3px;
+}
+
+.hide-element() {
+  .Campaign-rewards .hide-element {
+    display: none;
+  }
+
+  .Campaign-rewards.basicWidth .hide-element {
+    display: none;
+  }
+
+  .Campaign-rewards.mediumWidth .hide-element {
+    display: none;
+  }
+}
+
+.show-element() {
+  .Campaign-rewards .hide-element {
+    display: table-cell;
+  }
+
+  .Campaign-rewards.basicWidth .hide-element {
+    display: table-cell;
+  }
+
+  .Campaign-rewards.mediumWidth .hide-element {
+    display: table-cell;
+  }
+}
+
+@media only screen and (min-width: 320px) {
+  .Campaign-rewards {
+    max-width: 310px;
+  }
+
+  .hide-element();
+}
+
+@media only screen and (min-width: 375px) {
+  .Campaign-rewards {
+    max-width: 365px;
+  }
+
+  .hide-element();
+}
+
+@media only screen and (min-width: 414px) {
+  .Campaign-rewards {
+    max-width: 404px;
+  }
+
+  .hide-element();
+}
+
+@media @small {
+  .Campaign-rewards {
+    max-width: 720px;
+  }
+
+  .show-element();
+}
+
+@media @medium {
+  .Campaign-rewards {
+    max-width: 768px;
+  }
+
+  .show-element();
+}
+
+@import 'CampaingRewardsTable-nigthmode';

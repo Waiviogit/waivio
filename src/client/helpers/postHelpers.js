@@ -1,3 +1,4 @@
+import uuidv4 from 'uuid/v4';
 import _, { get, fromPairs } from 'lodash';
 import { getHtml } from '../components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
@@ -5,8 +6,9 @@ import { categoryRegex } from './regexHelpers';
 import { jsonParse } from './formatter';
 import DMCA from '../../common/constants/dmca.json';
 import whiteListedApps from './apps';
-import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
+import { WAIVIO_META_FIELD_NAME, WAIVIO_PARENT_PERMLINK } from '../../common/constants/waivio';
 import { rewardsValues } from '../../common/constants/rewards';
+import * as apiConfig from '../../waivioApi/config.json';
 
 const appVersion = require('../../../package.json').version;
 
@@ -96,7 +98,7 @@ export function createPostMetadata(body, tags, oldMetadata = {}, waivioData) {
   const images = getContentImages(parsedBody, true);
   const links = extractLinks(parsedBody);
 
-  metaData.tags = tags;
+  metaData.tags = tags.map(tag => tag.toLowerCase());
   metaData.users = users;
   metaData.links = links.slice(0, 10);
   metaData.image = images;
@@ -118,20 +120,33 @@ export function splitPostContent(
   markdownContent,
   { titleKey, bodyKey } = { titleKey: 'postTitle', bodyKey: 'postBody' },
 ) {
-  const regExp = new RegExp('^(.{2,})\n'); // eslint-disable-line
+  const regExp = new RegExp('^(.+)\n'); // eslint-disable-line
   const postTitle = regExp.exec(markdownContent);
-  const postBody = markdownContent.replace(regExp, '');
+  const postBody = postTitle && markdownContent.replace(regExp, '');
   return {
     [titleKey]: postTitle ? postTitle[0].trim() : '',
     [bodyKey]: postBody || '',
   };
 }
 
-export function getInitialValues(props) {
-  let permlink = null;
-  let originalBody = null;
+export function getInitialState(props) {
   let state = {
-    draftContent: { title: '', body: '' },
+    draftId: uuidv4(),
+    parentPermlink: WAIVIO_PARENT_PERMLINK,
+    draftContent: {
+      title: '',
+      body: props.initObjects
+        ? props.initObjects.reduce((acc, curr) => {
+            const matches = curr.match(/^\[(.+)\]\((\S+)\)/);
+            if (matches[1] && matches[2]) {
+              return `${acc}[${matches[1]}](${apiConfig.production.protocol}${
+                apiConfig.production.host
+              }/object/${matches[2]})\n`;
+            }
+            return acc;
+          }, '')
+        : '',
+    },
     content: '',
     topics: [],
     linkedObjects: [],
@@ -142,18 +157,23 @@ export function getInitialValues(props) {
       upvote: props.upvoteSetting,
     },
     isUpdating: false,
+    permlink: null,
+    originalBody: null,
   };
   const { draftPosts, draftId } = props;
-  const draftPost = draftPosts && draftPosts[draftId];
+  const draftPost = draftPosts.find(d => d.draftId === draftId);
   if (draftId && draftPost) {
     const draftObjects = get(draftPost, ['jsonMetadata', WAIVIO_META_FIELD_NAME, 'wobjects'], []);
+    const tags = get(draftPost, ['jsonMetadata', 'tags'], []);
     state = {
+      draftId: props.draftId,
+      parentPermlink: draftPost.parentPermlink || WAIVIO_PARENT_PERMLINK,
       draftContent: {
         title: get(draftPost, 'title', ''),
         body: get(draftPost, 'body', ''),
       },
       content: '',
-      topics: get(draftPost, 'jsonMetadata.tags', []),
+      topics: typeof tags === 'string' ? [tags] : tags,
       linkedObjects: [],
       objPercentage: fromPairs(
         draftObjects.map(obj => [obj.author_permlink, { percent: obj.percent }]),
@@ -164,11 +184,11 @@ export function getInitialValues(props) {
         upvote: draftPost.upvote,
       },
       isUpdating: Boolean(draftPost.isUpdating),
+      permlink: draftPost.permlink || null,
+      originalBody: draftPost.originalBody || null,
     };
-    permlink = draftPost.permlink || null;
-    originalBody = draftPost.originalBody || null;
   }
-  return { state, permlink, originalBody };
+  return state;
 }
 
 export function isContentValid(markdownContent) {

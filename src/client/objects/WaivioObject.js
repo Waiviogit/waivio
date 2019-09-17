@@ -41,7 +41,7 @@ const WaivioObject = ({ wobj }) => {
                   <span className="username">{name}</span>
                 </span>
               </Link>
-              <WeightTag weight={wobj.weight} rank={wobj.rank} />
+              <WeightTag weight={wobj.weight} />
             </div>
             <div className="WaivioObject__user__location">
               {location && (

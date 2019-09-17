@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import { LOCATION_CHANGE } from 'react-router-redux/reducer';
+import { LOCATION_CHANGE } from 'connected-react-router';
 import * as appTypes from './appActions';
-import * as authActions from '../auth/authActions';
 import * as postActions from '../post/postActions';
 import { getCryptoPriceIncreaseDetails } from '../helpers/cryptosHelper';
+import { GET_USER_METADATA } from '../user/usersActions';
 
 const initialState = {
   isFetching: false,
@@ -19,18 +19,16 @@ const initialState = {
   cryptosPriceHistory: {},
   showPostModal: false,
   currentShownPost: {},
+  screenSize: 'large',
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case authActions.LOGIN_SUCCESS:
-      if (action.meta && action.meta.refresh) return state;
-      return {
-        ...state,
-        locale:
-          (action.payload.user_metadata && action.payload.user_metadata.locale) ||
-          initialState.locale,
-      };
+    case GET_USER_METADATA.SUCCESS:
+      if (action.payload && action.payload.settings && action.payload.settings.locale) {
+        return { ...state, locale: action.payload.settings.locale };
+      }
+      return state;
     case appTypes.RATE_REQUEST.SUCCESS:
       return {
         ...state,

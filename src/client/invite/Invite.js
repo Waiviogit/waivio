@@ -14,6 +14,7 @@ import TwitterShare from '../components/Button/TwitterShare';
 import EmailShare from '../components/Button/EmailShare';
 import { REFERRAL_PERCENT } from '../helpers/constants';
 import './Invite.less';
+import TopNavigation from '../components/Navigation/TopNavigation';
 
 @requiresLogin
 @injectIntl
@@ -48,9 +49,7 @@ export default class Invite extends React.Component {
   createInviteURL() {
     const { authenticatedUserName } = this.props;
     if (typeof window !== 'undefined') {
-      const inviteURL = `${window.location.protocol}//${
-        window.location.host
-      }/i/@${authenticatedUserName}`;
+      const inviteURL = `${window.location.protocol}//${window.location.host}/i/@${authenticatedUserName}`;
       this.setState({ inviteURL });
     }
   }
@@ -60,18 +59,19 @@ export default class Invite extends React.Component {
   }
 
   render() {
-    const { intl } = this.props;
+    const { intl, authenticatedUserName } = this.props;
     const buttonLabel = this.state.copied ? (
       <FormattedMessage id="invite_copied" defaultMessage="Copied" />
     ) : (
       <FormattedMessage id="invite_copy_link" defaultMessage="Copy link" />
     );
     return (
-      <div className="shifted">
+      <React.Fragment>
         <Helmet>
           <title>{intl.formatMessage({ id: 'invite', defaultMessage: 'Invite' })} - Waivio</title>
         </Helmet>
         <div className="settings-layout container">
+          <TopNavigation authenticated userName={authenticatedUserName} />
           <Affix className="leftContainer" stickPosition={77}>
             <div className="left">
               <LeftSidebar />
@@ -81,7 +81,7 @@ export default class Invite extends React.Component {
             <div className="Invite">
               <div className="Invite__icon-container" />
               <h1 className="Invite__title">
-                <FormattedMessage id="invite_title" defaultMessage="Don't use Busy alone!" />
+                <FormattedMessage id="invite_title" defaultMessage="Don't use Waivio alone!" />
               </h1>
               <p className="Invite__description">
                 <FormattedMessage
@@ -131,7 +131,7 @@ export default class Invite extends React.Component {
             </div>
           </div>
         </div>
-      </div>
+      </React.Fragment>
     );
   }
 }

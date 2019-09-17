@@ -2,11 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { push } from 'connected-react-router';
 import _ from 'lodash';
 import { Helmet } from 'react-helmet';
 import sanitize from 'sanitize-html';
-import { getHasDefaultSlider } from '../helpers/user';
 import { dropCategory, isBannedPost } from '../helpers/postHelpers';
 import {
   getAuthenticatedUser,
@@ -77,8 +76,8 @@ class PostContent extends React.Component {
     rewardFund: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
     appUrl: PropTypes.string.isRequired,
-    bookmarks: PropTypes.shape(),
-    sliderMode: PropTypes.oneOf(['on', 'off', 'auto']),
+    bookmarks: PropTypes.arrayOf(PropTypes.string),
+    sliderMode: PropTypes.bool,
     editPost: PropTypes.func,
     toggleBookmark: PropTypes.func,
     votePost: PropTypes.func,
@@ -95,8 +94,8 @@ class PostContent extends React.Component {
     pendingReblogs: [],
     followingList: [],
     pendingFollows: [],
-    bookmarks: {},
-    sliderMode: 'auto',
+    bookmarks: [],
+    sliderMode: false,
     editPost: () => {},
     toggleBookmark: () => {},
     votePost: () => {},
@@ -122,8 +121,8 @@ class PostContent extends React.Component {
   }
 
   handleLikeClick = (post, postState, weight = 10000) => {
-    const { sliderMode, user, defaultVotePercent } = this.props;
-    if (sliderMode === 'on' || (sliderMode === 'auto' && getHasDefaultSlider(user))) {
+    const { sliderMode, defaultVotePercent } = this.props;
+    if (sliderMode) {
       this.props.votePost(post.id, post.author, post.permlink, weight);
     } else if (postState.isLiked) {
       this.props.votePost(post.id, post.author, post.permlink, 0);
@@ -139,7 +138,7 @@ class PostContent extends React.Component {
 
   handleShareClick = post => this.props.reblog(post.id);
 
-  handleSaveClick = post => this.props.toggleBookmark(post.id, post.author, post.permlink);
+  handleSaveClick = post => this.props.toggleBookmark(post.id);
 
   handleFollowClick = post => {
     const isFollowed = this.props.followingList.includes(post.author);
@@ -190,7 +189,7 @@ class PostContent extends React.Component {
     const postState = {
       isReblogged: reblogList.includes(content.id),
       isReblogging: pendingReblogs.includes(content.id),
-      isSaved: !!bookmarks[content.id],
+      isSaved: bookmarks.includes(content.id),
       isLiked: userVote.percent > 0,
       isReported: userVote.percent < 0,
       userFollowed: followingList.includes(content.author),
@@ -229,7 +228,7 @@ class PostContent extends React.Component {
           <meta property="og:url" content={url} />
           <meta property="og:image" content={image} />
           <meta property="og:description" content={desc} />
-          <meta property="og:site_name" content="Busy" />
+          <meta property="og:site_name" content="Waivio" />
           <meta property="article:tag" content={category} />
           <meta property="article:published_time" content={created} />
           <meta property="twitter:card" content={image ? 'summary_large_image' : 'summary'} />

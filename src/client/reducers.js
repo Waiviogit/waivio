@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 
-import { routerReducer } from 'react-router-redux';
+import { connectRouter } from 'connected-react-router';
 
 import appReducer, * as fromApp from './app/appReducer';
 import authReducer, * as fromAuth from './auth/authReducer';
@@ -22,8 +22,9 @@ import objectTypesReducer, * as fromObjectTypes from '../client/objectTypes/obje
 import objectTypeReducer, * as fromObjectType from '../client/objectTypes/objectTypeReducer';
 import appendReducer, * as fromAppend from '../client/object/appendReducer';
 import galleryReducer, * as fromGallery from '../client/object/ObjectGallery/galleryReducer';
+import mapReducer, * as fromMap from '../client/components/Maps/mapReducer';
 
-export default () =>
+export default history =>
   combineReducers({
     app: appReducer,
     auth: authReducer,
@@ -40,12 +41,13 @@ export default () =>
     bookmarks: bookmarksReducer,
     favorites: favoritesReducer,
     reblog: reblogReducers,
-    router: routerReducer,
+    router: connectRouter(history),
     wallet: walletReducer,
     settings: settingsReducer,
     search: searchReducer,
     append: appendReducer,
     gallery: galleryReducer,
+    map: mapReducer,
   });
 
 export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);
@@ -54,8 +56,8 @@ export const getIsLoaded = state => fromAuth.getIsLoaded(state.auth);
 export const getIsReloading = state => fromAuth.getIsReloading(state.auth);
 export const getAuthenticatedUser = state => fromAuth.getAuthenticatedUser(state.auth);
 export const getAuthenticatedUserName = state => fromAuth.getAuthenticatedUserName(state.auth);
-export const getAuthenticatedUserSCMetaData = state =>
-  fromAuth.getAuthenticatedUserSCMetaData(state.auth);
+export const getAuthenticateduserMetaData = state =>
+  fromAuth.getAuthenticateduserMetaData(state.auth);
 
 export const getPosts = state => fromPosts.getPosts(state.posts);
 export const getPostContent = (state, author, permlink) =>
@@ -93,6 +95,8 @@ export const getFeed = state => fromFeed.getFeed(state.feed);
 
 export const getComments = state => fromComments.getComments(state.comments);
 export const getCommentsList = state => fromComments.getCommentsList(state.comments);
+export const getCommentContent = (state, author, permlink) =>
+  fromComments.getCommentContent(state.comments, author, permlink);
 export const getCommentsPendingVotes = state =>
   fromComments.getCommentsPendingVotes(state.comments);
 
@@ -175,16 +179,36 @@ export const getSearchResults = state => fromSearch.getSearchResults(state.searc
 export const getAutoCompleteSearchResults = state =>
   fromSearch.getAutoCompleteSearchResults(state.search);
 export const getSearchObjectsResults = state => fromSearch.getSearchObjectsResults(state.search);
+export const getSearchUsersResults = state => fromSearch.getSearchUsersResults(state.search);
+export const searchObjectTypesResults = state => fromSearch.searchObjectTypesResults(state.search);
 
 export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectAuthor = state => fromObject.getObjectAuthor(state.object);
 export const getObjectFields = state => fromObject.getObjectFields(state.object);
 export const getRatingFields = state => fromObject.getRatingFields(state.object);
-export const getobjectTypesState = state => fromObjectTypes.getobjectTypesState(state.objectTypes);
-export const getObjectTypeState = state => fromObjectType.getobjectType(state.objectType);
+
+export const getObjectTypesList = state => fromObjectTypes.getObjectTypesList(state.objectTypes);
+export const getObjectTypesLoading = state =>
+  fromObjectTypes.getObjectTypesLoading(state.objectTypes);
+
+export const getObjectTypeState = state => fromObjectType.getObjectType(state.objectType);
+export const getObjectTypeLoading = state => fromObjectType.getObjectTypeLoading(state.objectType);
+export const getFilteredObjects = state => fromObjectType.getFilteredObjects(state.objectType);
+export const getHasMoreRelatedObjects = state =>
+  fromObjectType.getHasMoreRelatedObjects(state.objectType);
+export const getAvailableFilters = state => fromObjectType.getAvailableFilters(state.objectType);
+export const getActiveFilters = state => fromObjectType.getActiveFilters(state.objectType);
+export const getTypeName = state => fromObjectType.getTypeName(state.objectType);
+export const getHasMap = state => fromObjectType.getHasMap(state.objectType);
+export const getObjectTypeSorting = state => fromObjectType.getSorting(state.objectType);
 
 export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.append);
 
 export const getObjectAlbums = state => fromGallery.getObjectAlbums(state.gallery);
 export const getIsObjectAlbumsLoading = state =>
   fromGallery.getIsObjectAlbumsLoading(state.gallery);
+
+export const getCurrentLocation = state => state.router.location;
+export const getQueryString = state => state.router.location.search;
+
+export const getIsMapModalOpen = state => fromMap.getIsMapModalOpen(state.map);

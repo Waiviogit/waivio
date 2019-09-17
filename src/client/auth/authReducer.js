@@ -1,4 +1,5 @@
 import * as types from './authActions';
+import { GET_USER_METADATA } from '../user/usersActions';
 
 const initialState = {
   isAuthenticated: false,
@@ -6,7 +7,7 @@ const initialState = {
   isReloading: false,
   loaded: false,
   user: {},
-  userSCMetaData: {},
+  userMetaData: {},
 };
 
 export default (state = initialState, action) => {
@@ -28,7 +29,7 @@ export default (state = initialState, action) => {
         isAuthenticated: true,
         loaded: true,
         user: action.payload.account || state.user,
-        userSCMetaData: action.payload.user_metadata,
+        userMetaData: action.payload.userMetaData,
       };
     case types.LOGIN_ERROR:
       return {
@@ -59,10 +60,10 @@ export default (state = initialState, action) => {
         isAuthenticated: false,
         user: {},
       };
-    case types.UPDATE_SC2_USER_METADATA.SUCCESS:
+    case GET_USER_METADATA.SUCCESS:
       return {
         ...state,
-        userSCMetaData: action.payload.user_metadata,
+        userMetaData: action.payload,
       };
     default:
       return state;
@@ -75,4 +76,4 @@ export const getIsLoaded = state => state.loaded;
 export const getIsReloading = state => state.isReloading;
 export const getAuthenticatedUser = state => state.user;
 export const getAuthenticatedUserName = state => state.user.name;
-export const getAuthenticatedUserSCMetaData = state => state.userSCMetaData;
+export const getAuthenticateduserMetaData = state => state.userMetaData;

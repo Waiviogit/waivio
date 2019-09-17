@@ -1,0 +1,64 @@
+@import (reference) '../../../styles/modules/variables.less';
+@import (reference) '../../../styles/custom.less';
+
+.BalanceTable {
+  @media @small {
+    min-width: 720px;
+  }
+
+  @media @medium {
+    min-width: 768px;
+  }
+
+  border: 1px solid @black;
+  text-align: center !important;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: large;
+
+  & td {
+    border: 1px solid @black;
+    padding: 5px 4px;
+    width: 25%;
+  }
+
+  & th {
+    text-align: center !important;
+    border: 1px solid @black;
+    padding: 5px 4px;
+    width: 25%;
+  }
+
+  & thead th {
+    font-weight: 500;
+    color: @black;
+    text-align: left;
+  }
+
+  & tbody td {
+    font-weight: 500;
+  }
+}
+
+@media only screen and (min-width: 320px) {
+  .BalanceTable {
+    max-width: 310px;
+    font-size: medium;
+  }
+}
+
+@media only screen and (min-width: 375px) {
+  .BalanceTable {
+    max-width: 365px;
+    font-size: large;
+  }
+}
+
+@media only screen and (min-width: 414px) {
+  .BalanceTable {
+    max-width: 404px;
+    font-size: large;
+  }
+}
+
+@import 'BalanceTable-nightmode';

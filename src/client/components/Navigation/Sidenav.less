@@ -2,6 +2,7 @@
 
 .Sidenav {
   min-width: 150px;
+
   & > li {
     & > a {
       padding: 0 10px !important;
@@ -25,6 +26,12 @@
       }
     }
   }
+
+  .Sidenav__section-title {
+    font-weight: 800;
+    margin-bottom: 10px;
+    text-transform: capitalize;
+  }
 }
 
 div[data-dir='rtl'] .Sidenav {
@@ -43,8 +50,12 @@ div[data-dir='rtl'] .Sidenav {
   border: @border-width-base @border-style-base @border-color-base !important;
   border-radius: @border-radius-base;
   color: rgba(0, 0, 0, 0.65) !important;
+
   & > i {
     color: @primary-color;
+  }
+  &.sidenav-discover-objects__item {
+    color: @primary-color !important;
   }
 }
 

@@ -7,8 +7,8 @@ import { injectIntl } from 'react-intl';
 import { clearSearchObjectsResults, searchObjectsAutoCompete } from '../../search/searchActions';
 import { getSearchObjectsResults } from '../../reducers';
 import { linkRegex } from '../../helpers/regexHelpers';
-import ObjectType from '../../object/ObjectType';
 import './SearchObjectsAutocomplete.less';
+import ObjectSearchCard from '../ObjectSearchCard/ObjectSearchCard';
 
 @injectIntl
 @connect(
@@ -34,6 +34,11 @@ class SearchObjectsAutocomplete extends Component {
     allowClear: true,
     rowIndex: 0,
     ruleIndex: 0,
+    isPermlinkValue: true,
+    disabled: false,
+    placeholder: '',
+    parentPermlink: '',
+    autoFocus: true,
   };
 
   static propTypes = {
@@ -49,6 +54,11 @@ class SearchObjectsAutocomplete extends Component {
     handleSelect: PropTypes.func,
     rowIndex: PropTypes.number,
     ruleIndex: PropTypes.number,
+    isPermlinkValue: PropTypes.bool,
+    disabled: PropTypes.bool,
+    placeholder: PropTypes.string,
+    parentPermlink: PropTypes.string,
+    autoFocus: PropTypes.bool,
   };
 
   constructor(props) {
@@ -66,28 +76,34 @@ class SearchObjectsAutocomplete extends Component {
     if (!value) this.props.clearSearchResults();
     const searchString = value.toLowerCase();
     this.setState(prevState =>
-      prevState.isOptionSelected ? { searchString: '', isOptionSelected: false } : { searchString },
+      prevState.isOptionSelected && this.props.isPermlinkValue
+        ? { searchString: '', isOptionSelected: false }
+        : { searchString },
     );
   }
 
   debouncedSearch = _.debounce(
-    (searchString, objType = '') => this.props.searchObjects(searchString, objType),
+    (searchString, objType = '', parent) => this.props.searchObjects(searchString, objType, parent),
     300,
   );
   handleSearch(value) {
     let val = value;
+    const parentPermlink = this.props.parentPermlink ? this.props.parentPermlink : null;
     const link = val.match(linkRegex);
     if (link && link.length > 0 && link[0] !== '') {
       const permlink = link[0].split('/');
       val = permlink[permlink.length - 1].replace('@', '');
     }
     if (val) {
-      this.debouncedSearch(val, this.props.objectType);
+      this.debouncedSearch(val, this.props.objectType, parentPermlink);
     }
   }
 
   handleSelect(objId) {
     this.setState({ isOptionSelected: true });
+    if (!this.props.isPermlinkValue) {
+      this.setState({ searchString: '' });
+    }
     this.props.clearSearchResults();
     const selectedObject = this.props.searchObjectsResults.find(obj => obj.id === objId);
     this.props.handleSelect(
@@ -107,27 +123,21 @@ class SearchObjectsAutocomplete extends Component {
   }
   render() {
     const { searchString } = this.state;
-    const { intl, style, searchObjectsResults, itemsIdsToOmit, allowClear } = this.props;
-    const getObjMarkup = obj => (
-      <div className="obj-search-option">
-        <img className="obj-search-option__avatar" src={obj.avatar} alt={obj.title || ''} />
-        <div className="obj-search-option__info">
-          <div className="obj-search-option__text">
-            {obj.name}
-            <div className="obj-search-option__row">
-              <ObjectType type={obj.type} />
-            </div>
-          </div>
-          <span className="obj-search-option__text">{obj.title}</span>
-        </div>
-      </div>
-    );
+    const {
+      intl,
+      style,
+      searchObjectsResults,
+      itemsIdsToOmit,
+      allowClear,
+      disabled,
+      autoFocus,
+    } = this.props;
     const searchObjectsOptions = searchString
       ? searchObjectsResults
           .filter(obj => !itemsIdsToOmit.includes(obj.id))
           .map(obj => (
-            <AutoComplete.Option key={obj.id} label={obj.id}>
-              {getObjMarkup(obj)}
+            <AutoComplete.Option key={obj.id} label={obj.id} className="obj-search-option item">
+              <ObjectSearchCard object={obj} name={obj.name} type={obj.type} />
             </AutoComplete.Option>
           ))
       : [];
@@ -139,13 +149,18 @@ class SearchObjectsAutocomplete extends Component {
         onSelect={this.handleSelect}
         onSearch={this.handleSearch}
         optionLabelProp={'label'}
-        placeholder={intl.formatMessage({
-          id: 'objects_auto_complete_placeholder',
-          defaultMessage: 'Find objects',
-        })}
+        placeholder={
+          !this.props.placeholder
+            ? intl.formatMessage({
+                id: 'objects_auto_complete_placeholder',
+                defaultMessage: 'Find objects',
+              })
+            : this.props.placeholder
+        }
         value={searchString}
         allowClear={allowClear}
-        autoFocus
+        autoFocus={autoFocus}
+        disabled={disabled}
       >
         {searchObjectsOptions}
       </AutoComplete>

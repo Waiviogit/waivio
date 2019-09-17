@@ -23,9 +23,11 @@
   "createObject": "/create/object",
   "getObjects": "/wobject",
   "searchObjects": "/wobjectSearch",
+  "objectTypesSearch" : "/ObjectTypesSearch",
   "getObjectFollowing": "/following_objects",
   "getObjectFollowers": "/followers",
   "user": "/user",
+  "userMetadata": "/userMetadata",
   "users": "/users",
   "feed": "/feed",
   "posts": "/posts",
@@ -38,5 +40,9 @@
   "objectType": "/objectType",
   "generalSearch": "/generalSearch",
   "campaigns": "/campaigns",
-  "suitableUsers": "/suitable_users"
+  "createCampaign": "/create_campaign",
+  "dashboard": "/dashboard",
+  "suitableUsers": "/suitable_users",
+  "search": "/search",
+  "childWobjects": "/child_wobjects"
 }

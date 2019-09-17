@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import {
   getAuthenticatedUserName,
   getFollowingList,
@@ -24,12 +25,16 @@ import Follow from '../components/Button/Follow';
         ? getPendingFollows(state)
         : getPendingFollowingObjects(state),
   }),
-  {
-    followUser,
-    followObject,
-    unfollowUser,
-    unfollowObject,
-  },
+  dispatch =>
+    bindActionCreators(
+      {
+        followUser,
+        followObject,
+        unfollowUser,
+        unfollowObject,
+      },
+      dispatch,
+    ),
 )
 class FollowButton extends React.Component {
   static propTypes = {

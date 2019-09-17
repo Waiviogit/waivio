@@ -6,8 +6,8 @@ import './ModalSignUp.less';
 
 @injectIntl
 class ModalSignUp extends React.Component {
-  propTypes = {
-    intl: PropTypes.shape.isRequired,
+  static propTypes = {
+    intl: PropTypes.shape().isRequired,
     isButton: PropTypes.bool.isRequired,
   };
 
@@ -63,8 +63,8 @@ class ModalSignUp extends React.Component {
             title="Register a Waivio Account"
             data-name="Waivio"
             data-image="https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png"
-            data-referrer="monterey"
-            href="https://widget.steem.ninja/widget.html?referrer=monterey"
+            data-referrer="waivio"
+            href="https://widget.steem.ninja/widget.html?referrer=waivio"
             className="ninja-widget"
           />
         </div>
@@ -92,7 +92,7 @@ class ModalSignUp extends React.Component {
             <div className="ModalSignUp">
               {this.getSignUpInfo(
                 'https://cdn.steemitimages.com/DQmdbfH5akvanZk8Ntw92iEgcREkV8kv4uqxioTxDJLrHwD/steem-ninja.png',
-                'https://account.steem.ninja',
+                'https://account.steem.ninja/?ref=waivio',
                 '$2.50',
                 this.props.intl.formatMessage({
                   id: 'newSteemAcc',

@@ -10,7 +10,6 @@ import {
   emailValidationRegExp,
   objectURLValidationRegExp,
   phoneNameValidationRegExp,
-  wordsWithSpaceRegExp,
 } from '../../../common/constants/validation';
 import { regexCoordsLatitude, regexCoordsLongitude } from '../../components/Maps/mapHelper';
 
@@ -27,30 +26,6 @@ export const fieldsRules = {
           defaultMessage: 'Field is required',
         },
         intlMeta: { field: 'Name' },
-      },
-    },
-    {
-      max: 100,
-      message: {
-        intlId: {
-          id: 'value_error_long',
-          defaultMessage: "Value can't be longer than 100 characters.",
-        },
-        intlMeta: { value: 100 },
-      },
-    },
-    {
-      validator: true,
-    },
-  ],
-  menuItemName: [
-    {
-      pattern: wordsWithSpaceRegExp,
-      message: {
-        intlId: {
-          id: 'website_symbols_validation',
-          defaultMessage: "Please don't use special symbols",
-        },
       },
     },
     {

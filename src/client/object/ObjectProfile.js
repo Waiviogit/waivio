@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -13,6 +13,7 @@ import {
   getFeedHasMoreFromState,
   getFeedFromState,
 } from '../helpers/stateHelpers';
+import { getClientWObj } from '../adapters';
 import { getObjectPosts, getMoreObjectPosts } from '../feed/feedActions';
 import { showPostModal } from '../app/appActions';
 import PostModal from '../post/PostModalContainer';
@@ -82,7 +83,14 @@ export default class ObjectProfile extends React.Component {
 
   handleCreatePost = () => {
     const { history, object } = this.props;
-    history.push(`/editor?object=${object.author_permlink}`);
+    if (object && object.author_permlink) {
+      let redirectUrl = `/editor?object=[${object.name}](${object.author_permlink})`;
+      if (!isEmpty(object.parent)) {
+        const parentObject = getClientWObj(object.parent);
+        redirectUrl += `&object=[${parentObject.name}](${parentObject.author_permlink})`;
+      }
+      history.push(redirectUrl);
+    }
   };
 
   render() {
@@ -103,7 +111,7 @@ export default class ObjectProfile extends React.Component {
       <React.Fragment>
         <div className="object-profile">
           {isAuthenticated && (
-            <div className="object-profile__row align-right">
+            <div className="object-profile__row justify-end">
               <IconButton
                 icon={<Icon type="plus-circle" />}
                 onClick={this.handleCreatePost}
@@ -113,7 +121,7 @@ export default class ObjectProfile extends React.Component {
               />
             </div>
           )}
-          {!_.isEmpty(content) || isFetching ? (
+          {!isEmpty(content) || isFetching ? (
             <Feed
               content={content}
               isFetching={isFetching}
@@ -122,7 +130,7 @@ export default class ObjectProfile extends React.Component {
               showPostModal={this.props.showPostModal}
             />
           ) : (
-            <div className="object-profile__row align-center">
+            <div className="object-profile__row justify-center">
               <FormattedMessage
                 id="empty_object_profile"
                 defaultMessage="This object doesn't have any"

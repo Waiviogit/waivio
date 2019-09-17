@@ -30,7 +30,7 @@ class InterestingObjects extends React.Component {
     objects: [],
   };
 
-  componentWillMount() {
+  componentDidMount() {
     if (_.size(this.props.recommendedObjects) < 5) this.props.getRecommendedObj();
   }
   render() {

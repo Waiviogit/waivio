@@ -1,0 +1,20 @@
+@import (reference) '../../styles/custom.less';
+
+.ant-btn.LinkButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  & > span {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  &.active,
+  &:hover {
+    border-color: @primary-color;
+    color: @primary-color;
+  }
+}
+
+@import './LinkButton-nightmode';

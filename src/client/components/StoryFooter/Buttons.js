@@ -1,19 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import take from 'lodash/take';
-import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
+import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { Icon, Modal } from 'antd';
 import classNames from 'classnames';
 import withAuthActions from '../../auth/withAuthActions';
 import { sortVotes } from '../../helpers/sortHelpers';
-import { getUpvotes, getDownvotes } from '../../helpers/voteHelpers';
+import { getDownvotes, getUpvotes } from '../../helpers/voteHelpers';
 import Popover from '../Popover';
 import BTooltip from '../BTooltip';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import ReactionsModal from '../Reactions/ReactionsModal';
 import USDDisplay from '../Utils/USDDisplay';
 import './Buttons.less';
+import AppendObjButtons from './AppendObjButtons';
 
 @injectIntl
 @withAuthActions
@@ -24,6 +25,7 @@ export default class Buttons extends React.Component {
     postState: PropTypes.shape().isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
     onActionInitiated: PropTypes.func.isRequired,
+    onReportClick: PropTypes.func.isRequired,
     ownPost: PropTypes.bool,
     pendingLike: PropTypes.bool,
     pendingFlag: PropTypes.bool,
@@ -55,6 +57,7 @@ export default class Buttons extends React.Component {
     this.state = {
       shareModalVisible: false,
       shareModalLoading: false,
+      sliderVisible: false,
       reactionsModalVisible: false,
       loadingEdit: false,
     };
@@ -66,8 +69,9 @@ export default class Buttons extends React.Component {
     this.handleShareCancel = this.handleShareCancel.bind(this);
     this.handleShowReactions = this.handleShowReactions.bind(this);
     this.handleCloseReactions = this.handleCloseReactions.bind(this);
-    this.handleFlagClick = this.handleFlagClick.bind(this);
+    this.onFlagClick = this.onFlagClick.bind(this);
     this.handleCommentsClick = this.handleCommentsClick.bind(this);
+    this.renderPostPopoverMenu = this.renderPostPopoverMenu.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -81,6 +85,12 @@ export default class Buttons extends React.Component {
     }
   }
 
+  onFlagClick() {
+    if (this.props.post.append_field_name) {
+      this.props.onReportClick(this.props.post, this.props.postState, true);
+    } else this.props.handlePostPopoverMenuClick('report');
+  }
+
   handleLikeClick() {
     this.props.onActionInitiated(this.props.onLikeClick);
   }
@@ -89,10 +99,6 @@ export default class Buttons extends React.Component {
     e.preventDefault();
     e.stopPropagation();
     this.props.onCommentClick();
-  }
-
-  handleFlagClick() {
-    this.props.handlePostPopoverMenuClick('report');
   }
 
   shareClick() {
@@ -235,7 +241,17 @@ export default class Buttons extends React.Component {
   }
 
   render() {
-    const { intl, post, postState, pendingLike, ownPost, defaultVotePercent } = this.props;
+    const {
+      intl,
+      post,
+      postState,
+      pendingLike,
+      ownPost,
+      defaultVotePercent,
+      // pendingFlag,
+    } = this.props;
+
+    const isAppend = !!this.props.post.append_field_name;
 
     const upVotes = getUpvotes(post.active_votes).sort(sortVotes);
     const downVotes = getDownvotes(post.active_votes)
@@ -249,19 +265,20 @@ export default class Buttons extends React.Component {
     const voteRshares = post.active_votes.reduce((a, b) => a + parseFloat(b.rshares), 0);
     const ratio = voteRshares > 0 ? totalPayout / voteRshares : 0;
 
-    const upVotesPreview = take(upVotes, 10).map(vote => (
-      <p key={vote.voter}>
-        <Link to={`/@${vote.voter}`}>{vote.voter}</Link>
+    const upVotesPreview = votes =>
+      take(votes, 10).map(vote => (
+        <p key={vote.voter}>
+          <Link to={`/@${vote.voter}`}>{vote.voter}</Link>
 
-        {vote.rshares * ratio > 0.01 && (
-          <span style={{ opacity: '0.5' }}>
-            {' '}
-            <USDDisplay value={vote.rshares * ratio} />
-          </span>
-        )}
-      </p>
-    ));
-    const upVotesDiff = upVotes.length - upVotesPreview.length;
+          {vote.rshares * ratio > 0.01 && (
+            <span style={{ opacity: '0.5' }}>
+              <USDDisplay value={vote.rshares * ratio} />
+            </span>
+          )}
+        </p>
+      ));
+
+    const upVotesDiff = upVotes.length - upVotesPreview(upVotes).length;
     const upVotesMore = upVotesDiff > 0 && (
       <p>
         <a role="presentation" onClick={this.handleShowReactions}>
@@ -279,9 +296,12 @@ export default class Buttons extends React.Component {
 
     const showReblogLink = !ownPost && post.parent_author === '';
 
-    let likeTooltip = <span>{intl.formatMessage({ id: 'like' })}</span>;
+    const messageLiked = { id: 'like', defaultMessage: 'Like' };
+    const messageUnLiked = { id: 'unlike', defaultMessage: 'Unlike' };
+
+    let likeTooltip = <span>{intl.formatMessage(messageLiked)}</span>;
     if (postState.isLiked) {
-      likeTooltip = <span>{intl.formatMessage({ id: 'unlike', defaultMessage: 'Unlike' })}</span>;
+      likeTooltip = <span>{intl.formatMessage(messageUnLiked)}</span>;
     } else if (defaultVotePercent !== 10000) {
       likeTooltip = (
         <span>
@@ -295,43 +315,72 @@ export default class Buttons extends React.Component {
         </span>
       );
     }
-
     return (
       <div className="Buttons">
-        <BTooltip title={likeTooltip}>
-          <a role="presentation" className={likeClass} onClick={this.handleLikeClick}>
-            {pendingLike ? (
-              <Icon type="loading" />
-            ) : (
-              <i
-                className={`iconfont icon-${this.state.sliderVisible ? 'right' : 'praise_fill'}`}
-              />
-            )}
-          </a>
-        </BTooltip>
-        {post.active_votes.length > 0 && (
-          <span
-            className="Buttons__number Buttons__reactions-count"
-            role="presentation"
-            onClick={this.handleShowReactions}
-          >
-            <BTooltip
-              title={
-                <div>
-                  {upVotes.length > 0 ? (
-                    upVotesPreview
-                  ) : (
-                    <FormattedMessage id="no_likes" defaultMessage="No likes yet" />
-                  )}
-                  {upVotesMore}
-                </div>
-              }
-            >
-              <FormattedNumber value={upVotes.length} />
-              <span />
+        {isAppend ? (
+          <AppendObjButtons
+            post={post}
+            postState={postState}
+            likeTooltip={likeTooltip}
+            handleLikeClick={this.handleLikeClick}
+            pendingLike={pendingLike}
+            upVotesPreview={upVotesPreview}
+            upVotesMore={upVotesMore}
+            onFlagClick={this.onFlagClick}
+            handleShowReactions={this.handleShowReactions}
+            handleCommentsClick={this.handleCommentsClick}
+            ratio={ratio}
+            handleCloseReactions={this.handleCloseReactions}
+            reactionsModalVisible={this.state.reactionsModalVisible}
+          />
+        ) : (
+          <React.Fragment>
+            <ReactionsModal
+              visible={this.state.reactionsModalVisible}
+              upVotes={upVotes}
+              ratio={ratio}
+              downVotes={downVotes}
+              onClose={this.handleCloseReactions}
+            />
+            <BTooltip title={likeTooltip}>
+              <a role="presentation" className={likeClass} onClick={this.handleLikeClick}>
+                {pendingLike ? (
+                  <Icon type="loading" />
+                ) : (
+                  <i
+                    className={`iconfont icon-${
+                      this.state.sliderVisible ? 'right' : 'praise_fill'
+                    }`}
+                  />
+                )}
+              </a>
             </BTooltip>
-          </span>
+            {post.active_votes.length > 0 && (
+              <span
+                className="Buttons__number Buttons__reactions-count"
+                role="presentation"
+                onClick={this.handleShowReactions}
+              >
+                <BTooltip
+                  title={
+                    <div>
+                      {upVotes.length > 0 ? (
+                        upVotesPreview(upVotes)
+                      ) : (
+                        <FormattedMessage id="no_likes" defaultMessage="No likes yet" />
+                      )}
+                      {upVotesMore}
+                    </div>
+                  }
+                >
+                  <FormattedNumber value={upVotes.length} />
+                  <span />
+                </BTooltip>
+              </span>
+            )}
+          </React.Fragment>
         )}
+
         <BTooltip title={intl.formatMessage({ id: 'comment', defaultMessage: 'Comment' })}>
           <a className="Buttons__link" role="presentation" onClick={this.handleCommentsClick}>
             <i className="iconfont icon-message_fill" />
@@ -372,13 +421,6 @@ export default class Buttons extends React.Component {
             />
           </Modal>
         )}
-        <ReactionsModal
-          visible={this.state.reactionsModalVisible}
-          upVotes={upVotes}
-          ratio={ratio}
-          downVotes={downVotes}
-          onClose={this.handleCloseReactions}
-        />
       </div>
     );
   }

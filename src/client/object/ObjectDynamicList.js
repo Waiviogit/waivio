@@ -75,7 +75,7 @@ export default class ObjectDynamicList extends React.Component {
             <ObjectCard
               key={wo.author_permlink}
               wobject={wo}
-              alt={<WeightTag weight={wo.user_weight} rank={wo.rank} />}
+              alt={<WeightTag weight={wo.user_weight} />}
             />
           ))}
         </ReduxInfiniteScroll>
