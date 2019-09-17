@@ -99,6 +99,7 @@ const SidebarMenu = ({ intl, location }) => {
             </li>
             <li className="collapsible-block__item">
               <NavLink
+                disabled
                 to={'/updates'}
                 className="sidenav-discover-objects__item"
                 isActive={() => location.pathname === '/updates'}

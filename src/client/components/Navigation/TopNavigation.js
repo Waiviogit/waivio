@@ -6,38 +6,30 @@ import { Link } from 'react-router-dom';
 import './TopNavigation.less';
 
 const LINKS = {
-  TRENDING: '/trending',
+  FEED_TRENDING: '/trending',
+  FEED_HOT: '/hot',
+  FEED_PROMOTED: '/promoted',
   REWARDS: '/rewards',
   DISCOVER: '/discover-objects',
   ACTIVITY: '/activity',
   ABOUT: '/object/ylr-waivio',
 };
+const FEED_URLS = [LINKS.FEED_HOT, LINKS.FEED_PROMOTED, LINKS.FEED_TRENDING];
 
 const TopNavigation = ({ authenticated, location: { pathname } }) => {
   const isRouteMathed =
     pathname === '/' || Object.values(LINKS).some(url => pathname.includes(url));
   return isRouteMathed ? (
     <ul className="TopNavigation">
-      {authenticated && (
-        <li className="TopNavigation__item">
-          <Link
-            to="/"
-            className={classNames('TopNavigation__link', {
-              'TopNavigation__link--active': pathname === '/',
-            })}
-          >
-            <FormattedMessage id="feed" defaultMessage="Feed" />
-          </Link>
-        </li>
-      )}
       <li className="TopNavigation__item">
         <Link
-          to={LINKS.TRENDING}
+          to={authenticated ? '/' : LINKS.FEED_TRENDING}
           className={classNames('TopNavigation__link', {
-            'TopNavigation__link--active': pathname.includes(LINKS.TRENDING),
+            'TopNavigation__link--active':
+              pathname === '/' || FEED_URLS.some(feedUrl => pathname.includes(feedUrl)),
           })}
         >
-          <FormattedMessage id="news" defaultMessage="News" />
+          <FormattedMessage id="feed" defaultMessage="Feed" />
         </Link>
       </li>
       <li className="TopNavigation__item">
