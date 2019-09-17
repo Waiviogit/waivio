@@ -42,16 +42,6 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
       </li>
       <li className="TopNavigation__item">
         <Link
-          to={authenticated ? `${LINKS.REWARDS}/active` : `${LINKS.REWARDS}/all`}
-          className={classNames('TopNavigation__link', {
-            'TopNavigation__link--active': pathname.includes(LINKS.REWARDS),
-          })}
-        >
-          <FormattedMessage id="rewards" defaultMessage="Rewards" />
-        </Link>
-      </li>
-      <li className="TopNavigation__item">
-        <Link
           to={`${LINKS.DISCOVER}/hashtag`}
           className={classNames('TopNavigation__link', {
             'TopNavigation__link--active': pathname.includes(LINKS.DISCOVER),
