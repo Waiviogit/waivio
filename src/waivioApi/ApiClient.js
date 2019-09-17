@@ -1,3 +1,4 @@
+/* eslint-disable */
 import _ from 'lodash';
 import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
@@ -58,12 +59,12 @@ export const getObject = (authorPermlink, username) => {
 export const getUsersByObject = object =>
   fetch(`${config.apiPrefix}${config.getObjects}/${object}`).then(res => res.json());
 
-export const getFeedContentByObject = (name, limit = 10) =>
+export const getFeedContentByObject = (name, limit = 10, user_languages) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${name}/posts`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ limit }),
+      body: JSON.stringify({ limit, user_languages }),
     })
       .then(res => res.json())
       .then(posts => resolve(posts))
@@ -71,12 +72,17 @@ export const getFeedContentByObject = (name, limit = 10) =>
   });
 
 // eslint-disable-next-line camelcase
-export const getMoreFeedContentByObject = ({ authorPermlink, skip = 0, limit = 10, user_name }) =>
+export const getMoreFeedContentByObject = ({
+  authorPermlink,
+  skip = 0,
+  limit = 10,
+  user_languages,
+}) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}/posts`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ skip, limit, user_name }),
+      body: JSON.stringify({ skip, limit, user_languages }),
     })
       .then(res => res.json())
       .then(posts => resolve(posts))
