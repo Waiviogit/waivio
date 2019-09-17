@@ -29,6 +29,7 @@
   "logout": "Logout",
   "my_profile": "My profile",
   "feed": "Feed",
+  "my_feed": "My feed",
   "feed_empty": "Oops! This feed empty",
   "empty_user_profile": "This user doesn't have any story published yet.",
   "empty_comments": "There are no comments yet.",
