@@ -1,4 +1,5 @@
-import { get } from 'lodash';
+/* eslint-disable camelcase */
+import { isEmpty, get } from 'lodash';
 import { getDiscussionsFromAPI } from '../helpers/apiHelpers';
 import {
   createAsyncActionType,
@@ -11,6 +12,8 @@ import {
   getPosts,
   getBookmarks as getBookmarksSelector,
   getObject,
+  getLocale,
+  getReadLanguages,
 } from '../reducers';
 
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -32,6 +35,17 @@ export const GET_BOOKMARKS = createAsyncActionType('@bookmarks/GET_BOOKMARKS');
 
 export const GET_OBJECT_POSTS = createAsyncActionType('@object/GET_OBJECT_POSTS');
 export const GET_MORE_OBJECT_POSTS = createAsyncActionType('@object/GET_MORE_OBJECT_POSTS');
+
+const getUserLocalesArray = getState => {
+  let locales = ['en-US'];
+  const state = getState();
+  const readLanguages = getReadLanguages(state);
+  if (isEmpty(readLanguages)) {
+    const interfaceLanguage = getLocale(state);
+    if (interfaceLanguage && interfaceLanguage !== 'auto') locales = [interfaceLanguage];
+  } else locales = readLanguages;
+  return locales;
+};
 
 export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) => dispatch =>
   dispatch({
@@ -137,10 +151,11 @@ export const getObjectComments = (author, permlink, category = 'waivio-object') 
   });
 };
 
-export const getObjectPosts = ({ username, object, limit = 10 }) => dispatch => {
+export const getObjectPosts = ({ username, object, limit = 10 }) => (dispatch, getState) => {
+  const readLanguages = getUserLocalesArray(getState);
   dispatch({
     type: GET_OBJECT_POSTS.ACTION,
-    payload: ApiClient.getFeedContentByObject(object, limit),
+    payload: ApiClient.getFeedContentByObject(object, limit, readLanguages),
     meta: { sortBy: 'objectPosts', category: username, limit },
   });
 };
@@ -152,7 +167,7 @@ export const getMoreObjectPosts = ({ username, authorPermlink, limit = 10 }) => 
   const state = getState();
   const feed = getFeed(state);
   const posts = getPosts(state);
-  const userName = getAuthenticatedUserName(state);
+  const user_languages = getUserLocalesArray(getState);
 
   const feedContent = getFeedFromState('objectPosts', username, feed);
   const isLoading = getFeedLoadingFromState('objectPosts', username, feed);
@@ -169,7 +184,7 @@ export const getMoreObjectPosts = ({ username, authorPermlink, limit = 10 }) => 
       authorPermlink,
       skip,
       limit,
-      userName,
+      user_languages,
     }),
     meta: { sortBy: 'objectPosts', category: username, limit },
   });
