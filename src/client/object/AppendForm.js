@@ -1183,7 +1183,7 @@ export default class AppendForm extends Component {
         return (
           <React.Fragment>
             <Form.Item>
-              {getFieldDecorator(phoneFields.name, { rules: this.getFieldRules(phoneFields.name) })(
+              {getFieldDecorator(phoneFields.name, { rules: this.getFieldRules('phoneName') })(
                 <Input
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,

@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { objectFields } from '../common/constants/listOfFields';
 import { getFieldsWithMaxWeight } from './object/wObjectHelper';
 import DEFAULTS from './object/const/defaultValues';
@@ -15,6 +16,7 @@ export const getClientWObj = serverWObj => {
     object_type,
   } = serverWObj;
 
+  if (!serverWObj || isEmpty(serverWObj)) return {};
   const result = {
     id: author_permlink,
     avatar: DEFAULTS.AVATAR,

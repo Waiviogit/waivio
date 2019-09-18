@@ -31,20 +31,20 @@ const FiltersContainer = ({ intl, filters }) => {
 
   return (
     <div className="SidebarContentBlock__content">
-      <div className="sidebar-search-filters">
+      <div className="collapsible-block">
         {map(filters, (filterValues, filterName) => {
           const isCollapsed = collapsedFilters.includes(filterName);
           return (
-            <div key={filterName} className="sidebar-search-filters__container">
+            <div key={filterName} className="collapsible-block__container">
               <div
-                className="sidebar-search-filters__title"
+                className="collapsible-block__title"
                 role="presentation"
                 onClick={handleDisplayFilter(filterName)}
               >
-                <span className="sidebar-search-filters__title-text">
+                <span className="collapsible-block__title-text">
                   {intl.formatMessage({ id: `filter-${filterName}`, defaultMessage: filterName })}
                 </span>
-                <span className="sidebar-search-filters__title-icon">
+                <span className="collapsible-block__title-icon">
                   {isCollapsed ? (
                     <i className="iconfont icon-addition" />
                   ) : (
@@ -53,20 +53,20 @@ const FiltersContainer = ({ intl, filters }) => {
                 </span>
               </div>
               {!isCollapsed ? (
-                <div className="sidebar-search-filters__content">
+                <div className="collapsible-block__content">
                   {sortStrings(filterValues).map(value => {
                     const isChecked = get(activeFilters, [filterName], []).some(
                       active => active === value,
                     );
                     return (
-                      <div key={filterName + value} className="sidebar-search-filters__item">
+                      <div key={filterName + value} className="collapsible-block__item">
                         <Checkbox
                           name={value}
                           value={filterName}
                           onChange={handleOnChangeCheckbox}
                           checked={isChecked}
                         >
-                          <span className="sidebar-search-filters__item__label ttc">
+                          <span className="collapsible-block__item__label ttc">
                             {intl.formatMessage({ id: value, defaultMessage: value })}
                           </span>
                         </Checkbox>
