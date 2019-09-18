@@ -110,33 +110,33 @@ describe('getFieldWithMaxWeight', () => {
     const result = {
       weight: 794,
       name: 'address',
-      body: { country: 'resultValue' },
+      body: '{"country":"resultValue"}',
     };
     const wObject = {
       fields: [
         {
           weight: 793,
           name: 'address',
-          body: { country: 'bla' },
+          body: '{"country":"bla"}',
         },
         result,
       ],
     };
-    expect(getFieldWithMaxWeight(wObject, 'address', null)).toEqual({ country: 'resultValue' });
+    expect(getFieldWithMaxWeight(wObject, 'address', null)).toEqual('{"country":"resultValue"}');
   });
   //
   it('should return "" if field body empty', () => {
     const result = {
       weight: 794,
       name: 'address',
-      body: {},
+      body: '',
     };
     const wObject = {
       fields: [
         {
           weight: 793,
           name: 'address',
-          body: { country: 'bla' },
+          body: '{"country":"bla""}',
         },
         result,
       ],
