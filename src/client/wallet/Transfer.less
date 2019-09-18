@@ -29,7 +29,7 @@
       &:hover {
         outline: none !important;
         box-shadow: none !important;
-        + .ant-input-group-wrapper {
+        .ant-input-group-wrapper {
           .Transfer__usd-value {
             border: @border-width-base @border-style-base @primary-color;
             border-right: 0;
@@ -38,10 +38,6 @@
             border: @border-width-base @border-style-base @primary-color;
           }
         }
-      }
-
-      @media @medium {
-        width: 100% !important;
       }
     }
 
@@ -69,7 +65,7 @@
   .has-error {
     .Transfer__amount {
       .Transfer__usd-value {
-        border: @border-width-base @border-style-base @red-6 !important;
+        //border: @border-width-base @border-style-base @red-6 !important;
         border-right: 0 !important;
         border-left: 0 !important;
       }
@@ -82,13 +78,13 @@
   &__usd-value {
     border-left: 0 !important;
     border-radius: 0 !important;
-    pointer-events: none;
+    //pointer-events: none;
     text-align: right;
     color: @blue-heather !important;
     width: 100% !important;
 
     @media @medium {
-      width: 105px !important;
+      min-width: 105px !important;
     }
   }
 }
