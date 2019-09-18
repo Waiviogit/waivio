@@ -7,10 +7,12 @@ ShallowWrapper {
     defaultKey="comments"
     followers={42}
     following={21}
+    objectsSharesCount={0}
     onChange={[Function]}
   />,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
+    "checkPropTypes": [Function],
     "getNode": [Function],
     "render": [Function],
     "simulateError": [Function],
@@ -113,6 +115,25 @@ ShallowWrapper {
               >
                 <FormattedNumber
                   value={21}
+                />
+              </span>
+            </li>
+            <li
+              className="UserMenu__item"
+              data-key="expertise"
+              onClick={[Function]}
+              role="presentation"
+            >
+              <FormattedMessage
+                defaultMessage="Expertise"
+                id="expertise"
+                values={Object {}}
+              />
+              <span
+                className="UserMenu__badge"
+              >
+                <FormattedNumber
+                  value={0}
                 />
               </span>
             </li>
@@ -245,6 +266,25 @@ ShallowWrapper {
               </li>
               <li
                 className="UserMenu__item"
+                data-key="expertise"
+                onClick={[Function]}
+                role="presentation"
+              >
+                <FormattedMessage
+                  defaultMessage="Expertise"
+                  id="expertise"
+                  values={Object {}}
+                />
+                <span
+                  className="UserMenu__badge"
+                >
+                  <FormattedNumber
+                    value={0}
+                  />
+                </span>
+              </li>
+              <li
+                className="UserMenu__item"
                 data-key="transfers"
                 onClick={[Function]}
                 role="presentation"
@@ -363,6 +403,25 @@ ShallowWrapper {
               </li>
               <li
                 className="UserMenu__item"
+                data-key="expertise"
+                onClick={[Function]}
+                role="presentation"
+              >
+                <FormattedMessage
+                  defaultMessage="Expertise"
+                  id="expertise"
+                  values={Object {}}
+                />
+                <span
+                  className="UserMenu__badge"
+                >
+                  <FormattedNumber
+                    value={0}
+                  />
+                </span>
+              </li>
+              <li
+                className="UserMenu__item"
                 data-key="transfers"
                 onClick={[Function]}
                 role="presentation"
@@ -466,6 +525,25 @@ ShallowWrapper {
                   >
                     <FormattedNumber
                       value={21}
+                    />
+                  </span>
+                </li>,
+                <li
+                  className="UserMenu__item"
+                  data-key="expertise"
+                  onClick={[Function]}
+                  role="presentation"
+                >
+                  <FormattedMessage
+                    defaultMessage="Expertise"
+                    id="expertise"
+                    values={Object {}}
+                  />
+                  <span
+                    className="UserMenu__badge"
+                  >
+                    <FormattedNumber
+                      value={0}
                     />
                   </span>
                 </li>,
@@ -697,6 +775,72 @@ ShallowWrapper {
                 "key": undefined,
                 "nodeType": "host",
                 "props": Object {
+                  "children": Array [
+                    <FormattedMessage
+                      defaultMessage="Expertise"
+                      id="expertise"
+                      values={Object {}}
+                    />,
+                    <span
+                      className="UserMenu__badge"
+                    >
+                      <FormattedNumber
+                        value={0}
+                      />
+                    </span>,
+                  ],
+                  "className": "UserMenu__item",
+                  "data-key": "expertise",
+                  "onClick": [Function],
+                  "role": "presentation",
+                },
+                "ref": null,
+                "rendered": Array [
+                  Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "class",
+                    "props": Object {
+                      "defaultMessage": "Expertise",
+                      "id": "expertise",
+                      "values": Object {},
+                    },
+                    "ref": null,
+                    "rendered": null,
+                    "type": [Function],
+                  },
+                  Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "host",
+                    "props": Object {
+                      "children": <FormattedNumber
+                        value={0}
+                      />,
+                      "className": "UserMenu__badge",
+                    },
+                    "ref": null,
+                    "rendered": Object {
+                      "instance": null,
+                      "key": undefined,
+                      "nodeType": "class",
+                      "props": Object {
+                        "value": 0,
+                      },
+                      "ref": null,
+                      "rendered": null,
+                      "type": [Function],
+                    },
+                    "type": "span",
+                  },
+                ],
+                "type": "li",
+              },
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "host",
+                "props": Object {
                   "children": <FormattedMessage
                     defaultMessage="Wallet"
                     id="wallet"
@@ -866,6 +1010,25 @@ ShallowWrapper {
               </li>
               <li
                 className="UserMenu__item"
+                data-key="expertise"
+                onClick={[Function]}
+                role="presentation"
+              >
+                <FormattedMessage
+                  defaultMessage="Expertise"
+                  id="expertise"
+                  values={Object {}}
+                />
+                <span
+                  className="UserMenu__badge"
+                >
+                  <FormattedNumber
+                    value={0}
+                  />
+                </span>
+              </li>
+              <li
+                className="UserMenu__item"
                 data-key="transfers"
                 onClick={[Function]}
                 role="presentation"
@@ -993,6 +1156,25 @@ ShallowWrapper {
                 </li>
                 <li
                   className="UserMenu__item"
+                  data-key="expertise"
+                  onClick={[Function]}
+                  role="presentation"
+                >
+                  <FormattedMessage
+                    defaultMessage="Expertise"
+                    id="expertise"
+                    values={Object {}}
+                  />
+                  <span
+                    className="UserMenu__badge"
+                  >
+                    <FormattedNumber
+                      value={0}
+                    />
+                  </span>
+                </li>
+                <li
+                  className="UserMenu__item"
                   data-key="transfers"
                   onClick={[Function]}
                   role="presentation"
@@ -1111,6 +1293,25 @@ ShallowWrapper {
                 </li>
                 <li
                   className="UserMenu__item"
+                  data-key="expertise"
+                  onClick={[Function]}
+                  role="presentation"
+                >
+                  <FormattedMessage
+                    defaultMessage="Expertise"
+                    id="expertise"
+                    values={Object {}}
+                  />
+                  <span
+                    className="UserMenu__badge"
+                  >
+                    <FormattedNumber
+                      value={0}
+                    />
+                  </span>
+                </li>
+                <li
+                  className="UserMenu__item"
                   data-key="transfers"
                   onClick={[Function]}
                   role="presentation"
@@ -1214,6 +1415,25 @@ ShallowWrapper {
                     >
                       <FormattedNumber
                         value={21}
+                      />
+                    </span>
+                  </li>,
+                  <li
+                    className="UserMenu__item"
+                    data-key="expertise"
+                    onClick={[Function]}
+                    role="presentation"
+                  >
+                    <FormattedMessage
+                      defaultMessage="Expertise"
+                      id="expertise"
+                      values={Object {}}
+                    />
+                    <span
+                      className="UserMenu__badge"
+                    >
+                      <FormattedNumber
+                        value={0}
                       />
                     </span>
                   </li>,
@@ -1445,6 +1665,72 @@ ShallowWrapper {
                   "key": undefined,
                   "nodeType": "host",
                   "props": Object {
+                    "children": Array [
+                      <FormattedMessage
+                        defaultMessage="Expertise"
+                        id="expertise"
+                        values={Object {}}
+                      />,
+                      <span
+                        className="UserMenu__badge"
+                      >
+                        <FormattedNumber
+                          value={0}
+                        />
+                      </span>,
+                    ],
+                    "className": "UserMenu__item",
+                    "data-key": "expertise",
+                    "onClick": [Function],
+                    "role": "presentation",
+                  },
+                  "ref": null,
+                  "rendered": Array [
+                    Object {
+                      "instance": null,
+                      "key": undefined,
+                      "nodeType": "class",
+                      "props": Object {
+                        "defaultMessage": "Expertise",
+                        "id": "expertise",
+                        "values": Object {},
+                      },
+                      "ref": null,
+                      "rendered": null,
+                      "type": [Function],
+                    },
+                    Object {
+                      "instance": null,
+                      "key": undefined,
+                      "nodeType": "host",
+                      "props": Object {
+                        "children": <FormattedNumber
+                          value={0}
+                        />,
+                        "className": "UserMenu__badge",
+                      },
+                      "ref": null,
+                      "rendered": Object {
+                        "instance": null,
+                        "key": undefined,
+                        "nodeType": "class",
+                        "props": Object {
+                          "value": 0,
+                        },
+                        "ref": null,
+                        "rendered": null,
+                        "type": [Function],
+                      },
+                      "type": "span",
+                    },
+                  ],
+                  "type": "li",
+                },
+                Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "host",
+                  "props": Object {
                     "children": <FormattedMessage
                       defaultMessage="Wallet"
                       id="wallet"
@@ -1517,11 +1803,18 @@ ShallowWrapper {
     "adapter": ReactSixteenAdapter {
       "options": Object {
         "enableComponentDidUpdateOnSetState": true,
+        "legacyContextMode": "parent",
         "lifecycles": Object {
           "componentDidUpdate": Object {
             "onSetState": true,
           },
-          "getDerivedStateFromProps": true,
+          "getChildContext": Object {
+            "calledByRenderer": false,
+          },
+          "getDerivedStateFromError": true,
+          "getDerivedStateFromProps": Object {
+            "hasShouldComponentUpdateBug": false,
+          },
           "getSnapshotBeforeUpdate": true,
           "setState": Object {
             "skipsComponentDidUpdateOnNullish": true,
@@ -1529,6 +1822,9 @@ ShallowWrapper {
         },
       },
     },
+    Symbol(enzyme.__providerValues__): undefined,
   },
+  Symbol(enzyme.__providerValues__): Map {},
+  Symbol(enzyme.__childContext__): null,
 }
 `;

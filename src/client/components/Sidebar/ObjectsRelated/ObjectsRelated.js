@@ -127,7 +127,7 @@ const ObjectsRelated = ({ wobject }) => {
 
 ObjectsRelated.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
-  wobject: PropTypes.shape.isRequired,
+  wobject: PropTypes.shape().isRequired,
 };
 
 export default ObjectsRelated;

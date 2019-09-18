@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { mount, shallow } from 'enzyme';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';

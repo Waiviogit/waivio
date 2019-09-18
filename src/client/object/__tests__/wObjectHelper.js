@@ -110,14 +110,14 @@ describe('getFieldWithMaxWeight', () => {
     const result = {
       weight: 794,
       name: 'address',
-      body: '{"country":"resultValue"}',
+      body: { country: 'resultValue' },
     };
     const wObject = {
       fields: [
         {
           weight: 793,
           name: 'address',
-          body: '{"country":"bla"}',
+          body: { country: 'bla' },
         },
         result,
       ],
@@ -129,19 +129,19 @@ describe('getFieldWithMaxWeight', () => {
     const result = {
       weight: 794,
       name: 'address',
-      body: '{}',
+      body: {},
     };
     const wObject = {
       fields: [
         {
           weight: 793,
           name: 'address',
-          body: '{"country":"bla"}',
+          body: { country: 'bla' },
         },
         result,
       ],
     };
-    expect(getFieldWithMaxWeight(wObject, 'address', 'country')).toEqual('');
+    expect(getFieldWithMaxWeight(wObject, 'address')).toEqual('');
   });
   it('should return "" without field body', () => {
     const result = {
@@ -159,7 +159,7 @@ describe('getFieldWithMaxWeight', () => {
         result,
       ],
     };
-    expect(getFieldWithMaxWeight(wObject, 'address', 'country')).toEqual('');
+    expect(getFieldWithMaxWeight(wObject, 'address')).toEqual('');
   });
   it('should return field body if single', () => {
     const result = {
@@ -170,7 +170,7 @@ describe('getFieldWithMaxWeight', () => {
     const wObject = {
       fields: [result],
     };
-    expect(getFieldWithMaxWeight(wObject, 'name', null)).toEqual(result.body);
+    expect(getFieldWithMaxWeight(wObject, 'name')).toEqual(result.body);
   });
   it('should return "" if field unsupported', () => {
     const result = {
@@ -188,18 +188,18 @@ describe('getFieldWithMaxWeight', () => {
         result,
       ],
     };
-    expect(getFieldWithMaxWeight(wObject, 'Unsupported', null)).toEqual('');
+    expect(getFieldWithMaxWeight(wObject, 'Unsupported')).toEqual('');
   });
   it('should return "" if wObject not exist', () => {
-    expect(getFieldWithMaxWeight(null, 'name', null)).toEqual('');
+    expect(getFieldWithMaxWeight(null, 'name')).toEqual('');
   });
   it('should return "" if fields not exist', () => {
     const wObject = {};
-    expect(getFieldWithMaxWeight(wObject, 'name', null)).toEqual('');
+    expect(getFieldWithMaxWeight(wObject, 'name')).toEqual('');
   });
   it('should return "" if fields empty', () => {
     const wObject = { fields: [] };
-    expect(getFieldWithMaxWeight(wObject, 'name', null)).toEqual('');
+    expect(getFieldWithMaxWeight(wObject, 'name')).toEqual('');
   });
   it('should return "" if field not exist ', () => {
     const result = {
@@ -217,18 +217,18 @@ describe('getFieldWithMaxWeight', () => {
         result,
       ],
     };
-    expect(getFieldWithMaxWeight(wObject, 'name', null)).toEqual('');
+    expect(getFieldWithMaxWeight(wObject, 'name')).toEqual('');
   });
 });
 
 describe('getFieldsWithMaxWeight', () => {
   it('should return empty object if wObj is empty', () => {
     const wObject = {};
-    expect(getFieldsWithMaxWeight(wObject)).toEqual({});
+    expect(getFieldsWithMaxWeight(wObject)).toEqual('');
   });
   it('should return empty object if wObj.fields is empty', () => {
     const wObject = { fields: [] };
-    expect(getFieldsWithMaxWeight(wObject)).toEqual({});
+    expect(getFieldsWithMaxWeight(wObject)).toEqual('');
   });
   it('should return object with actual fields', () => {
     const expected = {
@@ -331,8 +331,8 @@ describe('sortListItemsBy', () => {
       .map(item => item.value);
   });
   it('should return the the same items instance', () => {
-    items = {};
-    expect(sortListItemsBy(items, 'noMatter')).toBe(items);
+    items = [];
+    expect(sortListItemsBy(items, 'noMatter')).toEqual(items);
   });
   it('should sort items by type (lists first) and name by default', () => {
     expect(sortListItemsBy(items)).toEqual([list1, list2, list3, obj1, obj2]);
@@ -347,8 +347,8 @@ describe('sortListItemsBy', () => {
     expect(sortListItemsBy(items, 'rank')).toEqual([list2, list3, list1, obj1, obj2]);
   });
   it('should sort items by type (lists first) and rank (by name if ranks are equal)', () => {
-    const withSameRank1 = { ...obj1, name: obj1.name.slice(0, -2) };
-    const withSameRank2 = { ...obj1, name: `${obj1.name}-1` };
+    const withSameRank1 = { ...obj1, id: 'id_obj', name: obj1.name.slice(0, -2) };
+    const withSameRank2 = { ...obj1, id: 'id_obj-1', name: `${obj1.name}-1` };
     expect(sortListItemsBy([...items, withSameRank1, withSameRank2], 'rank')).toEqual([
       list2,
       list3,
@@ -359,8 +359,14 @@ describe('sortListItemsBy', () => {
       obj2,
     ]);
   });
-  it('should sort items by default if custom sort and sort order is not defined', () => {
-    expect(sortListItemsBy(items, 'custom')).toEqual([list1, list2, list3, obj1, obj2]);
+  it('should not sort if custom sort is defined and sort order is not defined', () => {
+    expect(sortListItemsBy([list1, list2, list3, obj1, obj2], 'custom')).toEqual([
+      list1,
+      list2,
+      list3,
+      obj1,
+      obj2,
+    ]);
   });
   it('should sort items according sortOrder', () => {
     const expected = [obj2, list3, list1, obj1, list2];
