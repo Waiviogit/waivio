@@ -1,9 +1,6 @@
 import React from 'react';
 import { mountWithIntl } from 'enzyme-react-intl';
 import { act } from 'react-dom/test-utils';
-// import setupMockStates from 'jest-react-hooks-mock';
-
-// import finaly from './eventually';
 import ObjectsRelated from '../ObjectsRelated/ObjectsRelated';
 
 jest.mock('../../../../waivioApi/ApiClient');
