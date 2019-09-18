@@ -122,7 +122,7 @@ describe('getFieldWithMaxWeight', () => {
         result,
       ],
     };
-    expect(getFieldWithMaxWeight(wObject, 'address', null)).toEqual({ country: 'resultValue' });
+    expect(getFieldWithMaxWeight(wObject, 'address', null)).toEqual('{"country":"resultValue"}');
   });
   //
   it('should return "" if field body empty', () => {

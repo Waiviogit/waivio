@@ -4,14 +4,16 @@ import Helmet from 'react-helmet';
 import { injectIntl } from 'react-intl';
 import Affix from '../components/Utils/Affix';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
-import DiscoverFiltersSidebar from './DiscoverFiltersSidebar/DiscoverFiltersSidebar';
+// import DiscoverFiltersSidebar from './DiscoverFiltersSidebar/DiscoverFiltersSidebar';
 import DiscoverObjectsContent from './DiscoverObjectsContent';
 import ObjectsContainer from '../objects/ObjectsContainer';
 import './DiscoverObjects.less';
+import ObjectExpertiseByType from '../components/Sidebar/ObjectExpertiseByType/ObjectExpertiseByType';
 
 const DiscoverObjects = ({ intl, history, match }) => {
   const isTypeChosen = Boolean(match.params.typeName);
   const { pathname, search } = history.location;
+  console.log('Started!');
   return (
     <div className="shifted">
       <Helmet>
@@ -28,7 +30,7 @@ const DiscoverObjects = ({ intl, history, match }) => {
         {isTypeChosen && (
           <Affix className="rightContainer" stickPosition={77}>
             <div className="right">
-              <DiscoverFiltersSidebar />
+              <ObjectExpertiseByType typeName={match.params.typeName} />
             </div>
           </Affix>
         )}
