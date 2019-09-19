@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Button, Modal } from 'antd';
+import { Button, message, Modal } from 'antd';
 import { Link } from 'react-router-dom';
 import './Proposition.less';
 import { getClientWObj } from '../../adapters';
@@ -14,6 +14,7 @@ import { getSingleComment } from '../../comments/commentsActions';
 import { getCommentContent } from '../../reducers';
 import { connect } from 'react-redux';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
+import { reserveActivatedCampaign } from '../../../waivioApi/ApiClient';
 
 const Proposition = ({
   intl,
@@ -67,9 +68,33 @@ const Proposition = ({
   };
 
   const modalOnOklHandler = () => {
-    setReservedObject(proposition.required_object.author_permlink);
-    assignPr();
-    openModal(false);
+    const reserveData = {
+      campaign_permlink: proposition.activation_permlink,
+      approved_object: wobj.author_permlink,
+      user_name: proposition.guide.name,
+      permlink: proposition._id,
+    };
+    reserveActivatedCampaign(reserveData)
+      .then(data => {
+        console.log(data);
+        setReservedObject(proposition.required_object.author_permlink);
+        assignPr();
+        message.success(
+          intl.formatMessage({
+            id: 'assigned_successfully',
+            defaultMessage: 'Assigned successfully',
+          }),
+        );
+        openModal(false);
+      })
+      .catch(() => {
+        message.error(
+          intl.formatMessage({
+            id: 'cannot_activate_company',
+            defaultMessage: 'You cannot activate the company at the moment',
+          }),
+        );
+      });
   };
 
   const modalOnCancelHandler = () => {

@@ -46,6 +46,7 @@
   "campaigns": "/campaigns",
   "createCampaign": "/create_campaign",
   "activation": "/validate_activation",
+  "reservation": "/validate_reservation",
   "dashboard": "/dashboard",
   "suitableUsers": "/suitable_users",
   "search": "/search",

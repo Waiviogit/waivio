@@ -257,22 +257,10 @@ class Rewards extends React.Component {
       .assignProposition({ companyAuthor, companyPermlink, companyId, objPermlink })
       .then(() => {
         const updatedPropositions = this.updateProposition(companyId, true, objPermlink);
-        message.success(
-          this.props.intl.formatMessage({
-            id: 'assigned_successfully',
-            defaultMessage: 'Assigned successfully',
-          }),
-        );
         this.props.history.push(`/rewards/reserved/${this.state.reservedObject}`);
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })
       .catch(() => {
-        message.error(
-          this.props.intl.formatMessage({
-            id: 'cannot_activate_company',
-            defaultMessage: 'You cannot activate the company at the moment',
-          }),
-        );
         this.setState({ loadingAssignDiscard: false });
       });
   };
