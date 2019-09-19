@@ -1,34 +1,34 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import { Checkbox } from 'antd';
 import './TargetDaysTable.less';
 
-const TargetDaysTable = props => {
-  const { intl } = props;
-  return (
+const TargetDaysTable = ({ intl, setTargetDays }) => (
+  <React.Fragment>
     <table className="TargetDaysTable">
       <thead>
         <tr>
           <th>
-            <Checkbox />
+            <Checkbox onChange={setTargetDays('sunday')} />
           </th>
           <th>
-            <Checkbox />
+            <Checkbox onChange={setTargetDays('monday')} />
           </th>
           <th>
-            <Checkbox />
+            <Checkbox onChange={setTargetDays('tuesday')} />
           </th>
           <th>
-            <Checkbox />
+            <Checkbox onChange={setTargetDays('wednesday')} />
           </th>
           <th>
-            <Checkbox />
+            <Checkbox onChange={setTargetDays('thursday')} />
           </th>
           <th>
-            <Checkbox />
+            <Checkbox onChange={setTargetDays('friday')} />
           </th>
           <th>
-            <Checkbox />
+            <Checkbox onChange={setTargetDays('saturday')} />
           </th>
         </tr>
       </thead>
@@ -44,15 +44,12 @@ const TargetDaysTable = props => {
         </tr>
       </tbody>
     </table>
-  );
-};
+  </React.Fragment>
+);
 
 TargetDaysTable.propTypes = {
-  intl: PropTypes.shape(),
+  intl: PropTypes.shape().isRequired,
+  setTargetDays: PropTypes.func.isRequired,
 };
 
-TargetDaysTable.defaultProps = {
-  intl: {},
-};
-
-export default TargetDaysTable;
+export default injectIntl(TargetDaysTable);

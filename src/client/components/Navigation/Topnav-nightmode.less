@@ -54,7 +54,7 @@
 
   .Topnav__search-autocomplete.ant-select-dropdown-menu-item-active {
     &:hover {
-      background-color: #32373c;
+      background-color: @blue-darkGrayish;
     }
   }
 
@@ -65,5 +65,17 @@
 
   .Topnav__search-all-results {
     background-color: @grey-nero;
+  }
+
+  .ant-select-dropdown-menu :first-child > ul > li {
+    border: 1px solid @normal-grey;
+    background: @grey-nero;
+  }
+
+  .ant-select-dropdown-menu :first-child > ul > .ant-select-dropdown-menu-item-active {
+    &:hover {
+      border-color: @normal-grey;
+      background-color: @blue-darkGrayish;
+    }
   }
 }

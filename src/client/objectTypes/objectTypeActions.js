@@ -13,7 +13,15 @@ export const CLEAR_OBJECT_TYPE = '@objectType/CLEAR_OBJECT_TYPE';
 export const UPDATE_ACTIVE_FILTERS = '@objectType/UPDATE_ACTIVE_FILTERS';
 export const CHANGE_SORTING = '@objectType/CHANGE_SORTING';
 
-export const getObjectType = (name, { limit = 15, skip = 0 } = { limit: 15, skip: 0 }) => (
+/**
+ * Action to get wobject of specific type with related wobjects
+ *
+ * @param {string} typeName - name of the Object Type
+ * @param {number} limit - count of wobjects to return
+ * @param {number} skip - count of skipping objects (for infinite scroll)
+ * @returns {Function} - dispatch action
+ */
+export const getObjectType = (typeName, { limit = 15, skip = 0 } = { limit: 15, skip: 0 }) => (
   dispatch,
   getState,
 ) => {
@@ -22,6 +30,7 @@ export const getObjectType = (name, { limit = 15, skip = 0 } = { limit: 15, skip
   const sort = getObjectTypeSorting(state);
   const searchString = new URLSearchParams(getQueryString(state)).get('search');
 
+  // if use sort by proximity, require to use map filter
   if (sort === 'proximity' && !activeFilters.map) {
     const userLocation = getUserLocation(state);
     activeFilters.map = {
@@ -34,7 +43,7 @@ export const getObjectType = (name, { limit = 15, skip = 0 } = { limit: 15, skip
   }
   dispatch({
     type: GET_OBJECT_TYPE.ACTION,
-    payload: ApiClient.getObjectType(name, { limit, skip, filter: activeFilters, sort }),
+    payload: ApiClient.getObjectType(typeName, { limit, skip, filter: activeFilters, sort }),
     meta: {
       initialLoad: skip === 0,
     },
