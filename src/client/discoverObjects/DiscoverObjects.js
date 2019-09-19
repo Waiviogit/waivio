@@ -8,7 +8,7 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import DiscoverObjectsContent from './DiscoverObjectsContent';
 import ObjectsContainer from '../objects/ObjectsContainer';
 import './DiscoverObjects.less';
-import ObjectExpertiseByType from '../components/Sidebar/ObjectExpertiseByType/ObjectExpertiseByType';
+import RightSidebar from '../app/Sidebar/RightSidebar';
 
 const DiscoverObjects = ({ intl, history, match }) => {
   const isTypeChosen = Boolean(match.params.typeName);
@@ -30,7 +30,7 @@ const DiscoverObjects = ({ intl, history, match }) => {
         {isTypeChosen && (
           <Affix className="rightContainer" stickPosition={77}>
             <div className="right">
-              <ObjectExpertiseByType typeName={match.params.typeName} />
+              <RightSidebar />
             </div>
           </Affix>
         )}

@@ -3,13 +3,15 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
+import { Link } from 'react-router-dom';
 import WeightTag from '../../WeightTag';
 import './ObjectExpertiseByType.less';
 import RightSidebarLoading from '../../../app/Sidebar/RightSidebarLoading';
 import UserCard from '../../UserCard';
 import { getObjectExpertiseByType } from '../../../../waivioApi/ApiClient';
 
-const ObjectExpertiseByType = ({ typeName }) => {
+const ObjectExpertiseByType = ({ match }) => {
+  const typeName = match.params.typeName;
   const [objectsState, setObjectsState] = useState({
     experts: [],
     loading: true,
@@ -18,16 +20,16 @@ const ObjectExpertiseByType = ({ typeName }) => {
     hasNext: true,
   });
   const [showModal, setShowModal] = useState(false);
+  // eslint-disable-next-line prefer-const
+  let { skip, limit } = objectsState;
 
   const getExperts = () => {
-    const { skip, limit } = objectsState;
     getObjectExpertiseByType(typeName, skip, limit)
       .then(data => {
         setObjectsState({
           ...objectsState,
           experts: [...objectsState.experts, ...data],
           skip: skip + limit,
-          loading: false,
           hasNext: data.length === 5,
         });
       })
@@ -35,9 +37,20 @@ const ObjectExpertiseByType = ({ typeName }) => {
   };
 
   useEffect(() => {
-    getExperts();
+    skip = 0;
+    getObjectExpertiseByType(typeName, skip, limit)
+      .then(data => {
+        setObjectsState({
+          ...objectsState,
+          experts: [...data],
+          skip: skip + limit,
+          loading: false,
+          hasNext: data.length === 5,
+        });
+      })
+      .catch(() => setObjectsState({ ...objectsState, hasNext: false, loading: false }));
     return () => setObjectsState({ experts: [], loading: true, skip: 0, limit: 5, hasNext: true });
-  }, []);
+  }, [match.params.typeName]);
 
   let renderCard = <RightSidebarLoading id="RightSidebarLoading" />;
 
@@ -70,9 +83,9 @@ const ObjectExpertiseByType = ({ typeName }) => {
             <div onClick={() => setShowModal(true)} id="show_more_div">
               <FormattedMessage id="show_more" defaultMessage="Show more" />
             </div>
-            <div>
+            <Link to={'/discover'}>
               <FormattedMessage id="explore" defaultMessage="Explore" />
-            </div>
+            </Link>
           </h4>
         </React.Fragment>
       );
@@ -84,10 +97,10 @@ const ObjectExpertiseByType = ({ typeName }) => {
       };
 
       renderCard = (
-        <div className="SidebarContentBlock">
+        <div className="SidebarContentBlock" key={typeName}>
           <h4 className="SidebarContentBlock__title">
             <i className="iconfont icon-collection SidebarContentBlock__icon" />{' '}
-            <FormattedMessage id="object_related" defaultMessage="Related" />
+            <FormattedMessage id="object_related" defaultMessage="Type Experts" />
           </h4>
           <div className="SidebarContentBlock__content">{renderObjects}</div>
           {renderButtons()}

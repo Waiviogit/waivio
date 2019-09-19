@@ -297,7 +297,7 @@ export const getWobjectsExpertise = (user, authorPermlink, skip = 0, limit = 30)
 export const getObjectExpertiseByType = (objectType, skip = 0, limit = 5) =>
   new Promise((resolve, reject) => {
     fetch(
-      `${config.apiPrefix}${config.objectType}/${objectType}/${config.wobjectsExpertise}?limit=${limit}&skip=${skip}`,
+      `${config.apiPrefix}${config.objectType}/${objectType}${config.typeExpertise}?limit=${limit}&skip=${skip}`,
       {
         headers,
         method: 'GET',

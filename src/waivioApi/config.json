@@ -40,6 +40,7 @@
   "getGallery": "/gallery",
   "wobjectsWithUserWeight": "/objects_shares",
   "wobjectsExpertise": "/object_expertise",
+  "typeExpertise": "/expertise",
   "getObjectTypes": "/objectTypes",
   "objectType": "/objectType",
   "generalSearch": "/generalSearch",
