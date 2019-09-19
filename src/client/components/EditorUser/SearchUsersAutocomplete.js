@@ -71,6 +71,7 @@ class SearchUsersAutocomplete extends React.Component {
           .map(obj => (
             <AutoComplete.Option key={obj.account} label={obj.account} className="SearchUser item">
               <div className="SearchUser">
+                {console.log('result', obj)}
                 <Avatar username={obj.account} size={40} />
                 <div className="SearchUser__content">{obj.account}</div>
               </div>
