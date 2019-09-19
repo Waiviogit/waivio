@@ -9,6 +9,8 @@ export function getDiscussionsFromAPI(sortBy, { tag, ...queryParams }, ApiClient
         return ApiClient.getMoreFeedContentByObject({
           authorPermlink: 'vmf-wtrade',
           limit: queryParams.limit || 10,
+          skip: queryParams.skip,
+          user_languages: queryParams.user_languages,
         });
       }
     case 'hot': // eslint-disable-line no-fallthrough

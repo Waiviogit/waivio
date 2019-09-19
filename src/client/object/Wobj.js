@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 import {
   getIsAuthenticated,
   getAuthenticatedUser,
@@ -16,7 +16,7 @@ import {
   getScreenSize,
 } from '../reducers';
 import OBJECT_TYPE from './const/objectTypes';
-import { getObject, getObjectInfo } from './wobjectsActions';
+import { clearObjectFromStore, getObject, getObjectInfo } from './wobjectsActions';
 import { resetGallery } from '../object/ObjectGallery/galleryActions';
 import Error404 from '../statics/Error404';
 import WobjHero from './WobjHero';
@@ -40,6 +40,7 @@ import { objectFields } from '../../common/constants/listOfFields';
     chartId: getObjectChartId(state),
   }),
   {
+    clearObjectFromStore,
     getObjectInfo,
     resetGallery,
   },
@@ -56,6 +57,7 @@ export default class Wobj extends React.Component {
     resetGallery: PropTypes.func.isRequired,
     wobject: PropTypes.shape(),
     screenSize: PropTypes.string,
+    clearObjectFromStore: PropTypes.func,
     chartId: PropTypes.string,
   };
 
@@ -66,6 +68,7 @@ export default class Wobj extends React.Component {
     getObjectInfo: () => {},
     wobject: {},
     screenSize: 'large',
+    clearObjectFromStore: () => {},
     chartId: '',
   };
 
@@ -77,20 +80,26 @@ export default class Wobj extends React.Component {
     super(props);
 
     this.state = {
-      isEditMode: false,
+      isEditMode:
+        props.wobject.type === OBJECT_TYPE.PAGE &&
+        props.authenticated &&
+        !props.wobject[objectFields.pageContent],
       hasLeftSidebar: props.match.params[0] !== OBJECT_TYPE.PAGE,
     };
   }
 
   componentDidMount() {
-    const { match, authenticatedUserName } = this.props;
-    this.props.getObjectInfo(match.params.name, authenticatedUserName);
+    const { authenticatedUserName, match, wobject } = this.props;
+    if (isEmpty(wobject)) {
+      this.props.getObjectInfo(match.params.name, authenticatedUserName);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    const { authenticated, history, match, screenSize, wobject } = this.props;
-    if (wobject.id !== nextProps.wobject.id && !match.params[0] && !nextProps.match.params[0]) {
-      history.replace(getInitialUrl(nextProps.wobject, screenSize, history.location));
+    const { authenticated, history, screenSize, wobject } = this.props;
+    if (nextProps.wobject.id !== wobject.id && !nextProps.match.params[0]) {
+      const nextUrl = getInitialUrl(nextProps.wobject, screenSize, history.location);
+      if (nextUrl !== history.location.pathname) history.replace(nextUrl);
     }
     if (nextProps.match.params[0] !== this.props.match.params[0]) {
       const nextState = { hasLeftSidebar: nextProps.match.params[0] !== OBJECT_TYPE.PAGE };
@@ -106,8 +115,7 @@ export default class Wobj extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { match, authenticatedUserName } = this.props;
-
+    const { authenticatedUserName, match } = this.props;
     if (prevProps.match.params.name !== match.params.name) {
       this.props.getObjectInfo(match.params.name, authenticatedUserName);
     }
@@ -115,6 +123,7 @@ export default class Wobj extends React.Component {
 
   componentWillUnmount() {
     this.props.resetGallery();
+    this.props.clearObjectFromStore();
   }
 
   toggleViewEditMode = isEditMode => {
@@ -129,11 +138,11 @@ export default class Wobj extends React.Component {
     const { isEditMode, hasLeftSidebar } = this.state;
     const {
       authenticated,
-      failed,
       authenticatedUserName: userName,
-      wobject,
-      match,
       chartId,
+      failed,
+      match,
+      wobject,
     } = this.props;
     if (failed) return <Error404 />;
 
@@ -174,7 +183,7 @@ export default class Wobj extends React.Component {
         <WobjHero
           isEditMode={isEditMode}
           authenticated={authenticated}
-          isFetching={_.isEmpty(wobject)}
+          isFetching={isEmpty(wobject)}
           wobject={wobject}
           username={displayedObjectName}
           onFollowClick={this.handleFollowClick}

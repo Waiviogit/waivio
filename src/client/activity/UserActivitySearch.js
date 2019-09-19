@@ -221,14 +221,14 @@ class UserActivitySearch extends React.Component {
 
   renderFilters(filterTypes) {
     return _.map(filterTypes, filter => (
-      <div key={filter.id} className="sidebar-search-filters__item">
+      <div key={filter.id} className="collapsible-block__item">
         <Checkbox
           name={filter.id}
           value={filter.value}
           onChange={this.handleOnChangeCheckbox}
           checked={this.state.checked[filter.id]}
         >
-          <span className="sidebar-search-filters__item__label">
+          <span className="collapsible-block__item__label">
             <FormattedMessage id={filter.messageId} defaultMessage={filter.defaultMessage} />
           </span>
         </Checkbox>
@@ -246,15 +246,15 @@ class UserActivitySearch extends React.Component {
           <FormattedMessage id="filter_activities" defaultMessage="Filter Activities" />
         </h4>
         <div className="SidebarContentBlock__content">
-          <div className="sidebar-search-filters">
-            <div className="sidebar-search-filters__container">
+          <div className="collapsible-block">
+            <div className="collapsible-block__container">
               <div
                 role="presentation"
-                className="sidebar-search-filters__title"
+                className="collapsible-block__title"
                 onClick={this.handleGeneralFiltersDisplay}
               >
                 <FormattedMessage id="general" defaultMessage="general" />
-                <span className="sidebar-search-filters__title-icon">
+                <span className="collapsible-block__title-icon">
                   {showGeneral ? (
                     <i className="iconfont icon-offline" />
                   ) : (
@@ -263,19 +263,19 @@ class UserActivitySearch extends React.Component {
                 </span>
               </div>
               {showGeneral && (
-                <div className="sidebar-search-filters__content">
+                <div className="collapsible-block__content">
                   {this.renderFilters(generalFilters)}
                 </div>
               )}
             </div>
-            <div className="sidebar-search-filters__container">
+            <div className="collapsible-block__container">
               <div
                 role="presentation"
-                className="sidebar-search-filters__title"
+                className="collapsible-block__title"
                 onClick={this.handleFinanceFiltersDisplay}
               >
                 <FormattedMessage id="finance" defaultMessage="finance" />
-                <span className="sidebar-search-filters__title-icon">
+                <span className="collapsible-block__title-icon">
                   {showFinance ? (
                     <i className="iconfont icon-offline" />
                   ) : (
@@ -284,19 +284,19 @@ class UserActivitySearch extends React.Component {
                 </span>
               </div>
               {showFinance && (
-                <div className="sidebar-search-filters__content">
+                <div className="collapsible-block__content">
                   {this.renderFilters(financeFilters)}
                 </div>
               )}
             </div>
-            <div className="sidebar-search-filters__container">
+            <div className="collapsible-block__container">
               <div
                 role="presentation"
-                className="sidebar-search-filters__title"
+                className="collapsible-block__title"
                 onClick={this.handleRewardsFilterDisplay}
               >
                 <FormattedMessage id="rewards" defaultMessage="Rewards" />
-                <span className="sidebar-search-filters__title-icon">
+                <span className="collapsible-block__title-icon">
                   {showRewards ? (
                     <i className="iconfont icon-offline" />
                   ) : (
@@ -305,7 +305,7 @@ class UserActivitySearch extends React.Component {
                 </span>
               </div>
               {showRewards && (
-                <div className="sidebar-search-filters__content">
+                <div className="collapsible-block__content">
                   {this.renderFilters(rewardsFilters)}
                 </div>
               )}

@@ -62,7 +62,7 @@ export default settings;
 
 export const getIsLoading = state => state.loading;
 export const getLocale = state => state.locale;
-export const getReadLanguages = state => state.readLanguages;
+export const getReadLanguages = state => state.postLocales;
 export const getVotingPower = state => state.votingPower;
 export const getVotePercent = state => state.votePercent;
 export const getShowNSFWPosts = state => state.showNSFWPosts;

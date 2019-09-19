@@ -23,6 +23,7 @@ ShallowWrapper {
   />,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
+    "checkPropTypes": [Function],
     "getNode": [Function],
     "render": [Function],
     "simulateError": [Function],
@@ -72,7 +73,6 @@ ShallowWrapper {
           className="LatestComments__more"
         >
           <Link
-            replace={false}
             to="/latest-comments"
           >
             <FormattedMessage
@@ -129,7 +129,6 @@ ShallowWrapper {
             className="LatestComments__more"
           >
             <Link
-              replace={false}
               to="/latest-comments"
             >
               <FormattedMessage
@@ -248,7 +247,6 @@ ShallowWrapper {
           "nodeType": "host",
           "props": Object {
             "children": <Link
-              replace={false}
               to="/latest-comments"
             >
               <FormattedMessage
@@ -270,7 +268,6 @@ ShallowWrapper {
                 id="see_all_comments"
                 values={Object {}}
               />,
-              "replace": false,
               "to": "/latest-comments",
             },
             "ref": null,
@@ -340,7 +337,6 @@ ShallowWrapper {
             className="LatestComments__more"
           >
             <Link
-              replace={false}
               to="/latest-comments"
             >
               <FormattedMessage
@@ -397,7 +393,6 @@ ShallowWrapper {
               className="LatestComments__more"
             >
               <Link
-                replace={false}
                 to="/latest-comments"
               >
                 <FormattedMessage
@@ -516,7 +511,6 @@ ShallowWrapper {
             "nodeType": "host",
             "props": Object {
               "children": <Link
-                replace={false}
                 to="/latest-comments"
               >
                 <FormattedMessage
@@ -538,7 +532,6 @@ ShallowWrapper {
                   id="see_all_comments"
                   values={Object {}}
                 />,
-                "replace": false,
                 "to": "/latest-comments",
               },
               "ref": null,
@@ -569,11 +562,18 @@ ShallowWrapper {
     "adapter": ReactSixteenAdapter {
       "options": Object {
         "enableComponentDidUpdateOnSetState": true,
+        "legacyContextMode": "parent",
         "lifecycles": Object {
           "componentDidUpdate": Object {
             "onSetState": true,
           },
-          "getDerivedStateFromProps": true,
+          "getChildContext": Object {
+            "calledByRenderer": false,
+          },
+          "getDerivedStateFromError": true,
+          "getDerivedStateFromProps": Object {
+            "hasShouldComponentUpdateBug": false,
+          },
           "getSnapshotBeforeUpdate": true,
           "setState": Object {
             "skipsComponentDidUpdateOnNullish": true,
@@ -581,6 +581,8 @@ ShallowWrapper {
         },
       },
     },
+    Symbol(enzyme.__providerValues__): undefined,
   },
+  Symbol(enzyme.__providerValues__): Map {},
 }
 `;

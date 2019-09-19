@@ -93,7 +93,7 @@ class ForecastItem extends React.Component {
                   />
                 </div>
                 <div className="st-front-wrap__finish-value">
-                  {quote.security && quoteSettings.ID ? (
+                  {quote.security && quoteSettings.ID && (
                     <PostDifference
                       forecast={forecast}
                       isExpired={false}
@@ -102,7 +102,7 @@ class ForecastItem extends React.Component {
                       quote={quote}
                       quoteSettings={quoteSettings}
                     />
-                  ) : null}
+                  )}
                 </div>
               </div>
             </Link>
