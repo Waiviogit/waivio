@@ -196,7 +196,11 @@ export const declineProposition = ({ companyAuthor, companyPermlink, companyId, 
       .catch(error => reject(error));
   });
 };
-export const activateCampaign = company => (dispatch, getState, { steemConnectAPI }) => {
+export const activateCampaign = (company, campaignPermlink) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
   const username = getAuthenticatedUserName(getState());
   const commentOp = [
     'comment',
@@ -204,7 +208,7 @@ export const activateCampaign = company => (dispatch, getState, { steemConnectAP
       parent_author: rewardPostContainerData.author,
       parent_permlink: rewardPostContainerData.permlink,
       author: username,
-      permlink: `activate-${rewardPostContainerData.author}-${generatePermlink()}`,
+      permlink: campaignPermlink,
       title: 'activate object for rewards',
       body: `Campaign ${company.name} was activated by ${username} `,
       json_metadata: JSON.stringify({
@@ -213,6 +217,8 @@ export const activateCampaign = company => (dispatch, getState, { steemConnectAP
       }),
     },
   ];
+
+  console.log('commentOp', commentOp);
 
   return new Promise((resolve, reject) => {
     steemConnectAPI

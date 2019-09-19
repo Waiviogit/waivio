@@ -135,8 +135,8 @@ class Manage extends React.Component {
             </div>
             <CampaignRewardsTable
               activateCampaign={activateCampaign}
-              intl={intl}
               campaigns={campaigns}
+              userName={user.name}
             />
             <div className="Manage__rewards-campaign-wrap-text-content">
               {rewardsCampaignContent}
