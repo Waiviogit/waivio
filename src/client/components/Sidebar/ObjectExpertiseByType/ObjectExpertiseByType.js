@@ -7,40 +7,36 @@ import WeightTag from '../../WeightTag';
 import './ObjectExpertiseByType.less';
 import RightSidebarLoading from '../../../app/Sidebar/RightSidebarLoading';
 import UserCard from '../../UserCard';
+import { getObjectExpertiseByType } from '../../../../waivioApi/ApiClient';
 
 const ObjectExpertiseByType = ({ typeName }) => {
-  console.log('Type Name:', typeName);
-
-  // eslint-disable-next-line no-unused-vars
   const [objectsState, setObjectsState] = useState({
-    experts: [
-      { name: 'blocktrades', weight: 1505893859.8626847 },
-      { name: 'zaku', weight: 1306784628.9575205 },
-      { name: 'exyle', weight: 1151773051.6096184 },
-      { name: 'ocd', weight: 975369373.4495138 },
-      { name: 'steemmonsters', weight: 895798629.6185874 },
-    ],
-    loading: false,
+    experts: [],
+    loading: true,
     skip: 0,
+    limit: 5,
     hasNext: true,
   });
   const [showModal, setShowModal] = useState(false);
 
   const getExperts = () => {
-    // getObjectsExpertiseByType(typeName, objectsState.skip, 5)
-    //   .then(data => {
-    //     setObjectsState({
-    //       experts: [...objectsState.experts, ...data],
-    //       skip: objectsState.skip + 5,
-    //       hasNext: data.length === 5,
-    //     });
-    //   })
-    //   .catch(() => setObjectsState({ ...objectsState, hasNext: false }));
+    const { skip, limit } = objectsState;
+    getObjectExpertiseByType(typeName, skip, limit)
+      .then(data => {
+        setObjectsState({
+          ...objectsState,
+          experts: [...objectsState.experts, ...data],
+          skip: skip + limit,
+          loading: false,
+          hasNext: data.length === 5,
+        });
+      })
+      .catch(() => setObjectsState({ ...objectsState, hasNext: false, loading: false }));
   };
 
   useEffect(() => {
-    // getExperts();
-    // return () => setObjectsState({ experts: [], loading: true, skip: 0, hasNext: true });
+    getExperts();
+    return () => setObjectsState({ experts: [], loading: true, skip: 0, limit: 5, hasNext: true });
   }, []);
 
   let renderCard = <RightSidebarLoading id="RightSidebarLoading" />;
@@ -88,20 +84,19 @@ const ObjectExpertiseByType = ({ typeName }) => {
       };
 
       renderCard = (
-        <div className="SidebarContentBlock" data-test="objectsRelatedComponent">
+        <div className="SidebarContentBlock">
           <h4 className="SidebarContentBlock__title">
             <i className="iconfont icon-collection SidebarContentBlock__icon" />{' '}
             <FormattedMessage id="object_related" defaultMessage="Related" />
           </h4>
           <div className="SidebarContentBlock__content">{renderObjects}</div>
           {renderButtons()}
-          <div onWheel={onWheelHandler}>
+          <div id="ObjectExpertiseByType__Modal" onWheel={onWheelHandler}>
             <Modal
               title="Related"
               visible={showModal}
               onOk={() => setShowModal(false)}
               onCancel={() => setShowModal(false)}
-              id="ObjectRelated__Modal"
             >
               {renderObjectsModal}
             </Modal>

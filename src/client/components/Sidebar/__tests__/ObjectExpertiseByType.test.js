@@ -1,24 +1,20 @@
 import React from 'react';
 import { mountWithIntl } from 'enzyme-react-intl';
 import { act } from 'react-dom/test-utils';
-import ObjectsRelated from '../ObjectsRelated/ObjectsRelated';
+import ObjectExpertiseByType from '../ObjectExpertiseByType/ObjectExpertiseByType';
 
 jest.mock('../../../../waivioApi/ApiClient');
-jest.mock('../ObjectCard', () => () => <div className="ObjectCard" />);
+jest.mock('../../UserCard', () => () => <div className="UserCard" />);
 
-describe('ObjectsRelated component', () => {
+describe('ObjectExpertiseByType component', () => {
   let wrapper;
 
   beforeEach(() => {
     const props = {
-      wobject: {
-        author_permlink: 'iwh-sushi-mura',
-      },
+      typeName: 'test',
     };
 
-    act(() => {
-      wrapper = mountWithIntl(<ObjectsRelated {...props} />);
-    });
+    wrapper = mountWithIntl(<ObjectExpertiseByType {...props} />);
   });
 
   afterEach(() => jest.clearAllMocks());
@@ -27,14 +23,14 @@ describe('ObjectsRelated component', () => {
     act(() => {
       wrapper.update();
     });
-    expect(wrapper.prop('wobject')).toEqual({ author_permlink: 'iwh-sushi-mura' });
+    expect(wrapper.prop('typeName')).toEqual('test');
   });
 
   it('Should render placeholder first', () => {
     expect(wrapper.find('#RightSidebarLoading').length).toEqual(1);
   });
 
-  it('should render a block with related objects', () => {
+  it('should render a block with experts', () => {
     act(() => {
       wrapper.update();
     });
@@ -42,19 +38,19 @@ describe('ObjectsRelated component', () => {
     expect(component).toHaveLength(1);
   });
 
-  it('Should render proper number of ObjectCard components', () => {
+  it('Should render proper number of UserCard components', () => {
     act(() => {
       wrapper.update();
     });
-    const objectCard = wrapper.find('.ObjectCard');
-    expect(objectCard).toHaveLength(3);
+    const objectCard = wrapper.find('.UserCard');
+    expect(objectCard).toHaveLength(5);
   });
 
-  it('should render Show more a Explore buttons', async () => {
+  it('should render Show more and Explore buttons', async () => {
     act(() => {
       wrapper.update();
     });
-    const buttons = wrapper.find('.ObjectsRelated__more');
+    const buttons = wrapper.find('.ObjectExpertiseByType__more');
     expect(buttons).toHaveLength(1);
   });
 
@@ -70,7 +66,7 @@ describe('ObjectsRelated component', () => {
     act(() => {
       wrapper.update();
     });
-    const modal = wrapper.find('#ObjectRelated__Modal').first();
+    const modal = wrapper.find('#ObjectExpertiseByType__Modal').childAt(0);
     expect(modal.prop('visible')).toBe(true);
   });
 
@@ -86,22 +82,17 @@ describe('ObjectsRelated component', () => {
     act(() => {
       wrapper.update();
     });
-    const modal = wrapper.find('#ObjectRelated__Modal').first();
-    expect(modal.prop('children')).toHaveLength(3);
+
+    await wrapper
+      .find('#ObjectExpertiseByType__Modal')
+      .props()
+      .onWheel();
+
+    act(() => {
+      wrapper.update();
+    });
+
+    const userCards = wrapper.find('#ObjectExpertiseByType__Modal').find('.UserCard');
+    expect(userCards).toHaveLength(8);
   });
 });
-
-// describe('Test', () => {
-//   it('run it', async () => {
-//     const promise = setupMockStates(['objectsWithMaxFields', 'showModal', 'skipValue']);
-//
-//     shallow(<ObjectsRelated wobject={{ author_permlink: 'iwh-sushi-mura' }} />);
-//
-//     const [states, [a, b, c]] = await promise;
-//
-//     b(true);
-//
-//     expect(states.showModal).toEqual(true);
-//   });
-//   });
-// });
