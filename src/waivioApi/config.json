@@ -5,6 +5,10 @@
     "host": "waiviodev.com",
     "": "localhost:8093"
   },
+  "test": {
+    "protocol": "https://",
+    "host": "waiviodev.com"
+  },
   "staging": {
     "protocol": "https://",
     "host": "waiviodev.com"

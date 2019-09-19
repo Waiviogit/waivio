@@ -101,7 +101,7 @@ class EditPost extends Component {
       return getInitialState(nextProps);
     } else if (nextProps.draftId === null && prevState.draftId) {
       const nextState = getInitialState(nextProps);
-      nextProps.history.push({
+      nextProps.history.replace({
         pathname: nextProps.location.pathname,
         search: `draft=${nextState.draftId}`,
       });

@@ -472,19 +472,19 @@ class Topnav extends React.Component {
   }
 
   handleSearchAllResultsClick = () => {
-    const { searchData, searchValue } = this.state;
+    const { searchData, searchBarValue } = this.state;
     this.handleOnBlur();
     let redirectUrl = '';
     switch (searchData.type) {
       case 'wobject':
-        redirectUrl = `/discover-objects/${searchData.subtype}?search=${searchValue}`;
+        redirectUrl = `/discover-objects/${searchData.subtype}?search=${searchBarValue}`;
         break;
       case 'user':
-        redirectUrl = `/search?q=${searchValue}`;
+        redirectUrl = `/search?q=${searchBarValue}`;
         break;
       case 'type':
       default:
-        redirectUrl = `/discover-objects?search=${searchValue}`;
+        redirectUrl = `/discover-objects?search=${searchBarValue}`;
         break;
     }
     this.props.history.push(redirectUrl);
@@ -503,7 +503,7 @@ class Topnav extends React.Component {
 
   handleAutoCompleteSearch(value) {
     this.debouncedSearch(value);
-    this.setState({ searchValue: value, dropdownOpen: true });
+    this.setState({ dropdownOpen: true });
   }
 
   handleSelectOnAutoCompleteDropdown(value, data) {

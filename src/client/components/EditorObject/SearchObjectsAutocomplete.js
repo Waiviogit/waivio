@@ -88,13 +88,14 @@ class SearchObjectsAutocomplete extends Component {
   );
   handleSearch(value) {
     let val = value;
+    const parentPermlink = this.props.parentPermlink ? this.props.parentPermlink : null;
     const link = val.match(linkRegex);
     if (link && link.length > 0 && link[0] !== '') {
       const permlink = link[0].split('/');
       val = permlink[permlink.length - 1].replace('@', '');
     }
     if (val) {
-      this.debouncedSearch(val, this.props.objectType, this.props.parentPermlink);
+      this.debouncedSearch(val, this.props.objectType, parentPermlink);
     }
   }
 
