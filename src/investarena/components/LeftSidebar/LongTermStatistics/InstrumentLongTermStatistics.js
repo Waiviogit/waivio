@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import './LongTermStatistics.less';
-import * as ApiClient from '../../../../waivioApi/ApiClient';
+import api from '../../../../investarena/configApi/apiResources';
 import { getLongTermStatisticsForUser } from '../../../helpers/diffDateTime';
 import { makeCancelable } from '../../../../client/helpers/stateHelpers';
 
@@ -50,7 +50,7 @@ class InstrumentLongTermStatistics extends React.Component {
   }
 
   cancelablePromise = makeCancelable(
-    ApiClient.getInstrumentLongTermStatistics(this.props.wobject.author_permlink),
+    api.performers.getInstrumentStatistics(this.props.wobject.author_permlink),
   );
 
   render() {
