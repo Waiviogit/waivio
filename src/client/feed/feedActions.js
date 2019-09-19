@@ -1,4 +1,5 @@
-import { get } from 'lodash';
+/* eslint-disable camelcase */
+import { isEmpty, get } from 'lodash';
 import { getDiscussionsFromAPI } from '../helpers/apiHelpers';
 import {
   createAsyncActionType,
@@ -11,6 +12,8 @@ import {
   getPosts,
   getBookmarks as getBookmarksSelector,
   getObject,
+  getLocale,
+  getReadLanguages,
 } from '../reducers';
 
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -33,12 +36,28 @@ export const GET_BOOKMARKS = createAsyncActionType('@bookmarks/GET_BOOKMARKS');
 export const GET_OBJECT_POSTS = createAsyncActionType('@object/GET_OBJECT_POSTS');
 export const GET_MORE_OBJECT_POSTS = createAsyncActionType('@object/GET_MORE_OBJECT_POSTS');
 
-export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) => dispatch =>
+const getUserLocalesArray = getState => {
+  let locales = ['en-US'];
+  const state = getState();
+  const readLanguages = getReadLanguages(state);
+  if (isEmpty(readLanguages)) {
+    const interfaceLanguage = getLocale(state);
+    if (interfaceLanguage && interfaceLanguage !== 'auto') locales = [interfaceLanguage];
+  } else locales = readLanguages;
+  return locales;
+};
+
+export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) => (
+  dispatch,
+  getState,
+) => {
+  const user_languages = getUserLocalesArray(getState);
+
   dispatch({
     type: GET_FEED_CONTENT.ACTION,
     payload: getDiscussionsFromAPI(
       sortBy,
-      { category: sortBy, tag: category, limit, sortBy },
+      { category: sortBy, tag: category, limit, sortBy, user_languages },
       ApiClient,
     ),
     meta: {
@@ -47,22 +66,26 @@ export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) =>
       limit,
     },
   });
+};
 
-export const getUserFeedContent = ({ userName, limit = 20 }) => dispatch =>
+export const getUserFeedContent = ({ userName, limit = 20 }) => (dispatch, getState) => {
+  const user_languages = getUserLocalesArray(getState);
   dispatch({
     type: GET_USER_FEED_CONTENT.ACTION,
-    payload: ApiClient.getUserFeedContent(userName, limit),
+    payload: ApiClient.getUserFeedContent(userName, limit, user_languages),
     meta: {
       sortBy: 'feed',
       category: userName,
       limit,
     },
   });
+};
 
 export const getMoreUserFeedContent = ({ userName, limit = 20 }) => (dispatch, getState) => {
   const state = getState();
   const feed = getFeed(state);
   const feedContent = getFeedFromState('feed', userName, feed);
+  const user_languages = getUserLocalesArray(getState);
 
   if (!feedContent.length || !feed || !feed.feed || !feed.feed[userName])
     return Promise.resolve(null);
@@ -74,6 +97,7 @@ export const getMoreUserFeedContent = ({ userName, limit = 20 }) => (dispatch, g
       userName,
       limit,
       skip: countWithWobj,
+      user_languages,
     }),
     meta: { sortBy: 'feed', category: userName, limit },
   });
@@ -83,6 +107,7 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
   const feed = getFeed(state);
   const posts = getPosts(state);
   const feedContent = getFeedFromState(sortBy, category, feed);
+  const user_languages = getUserLocalesArray(getState);
 
   if (!feedContent.length) return Promise.resolve(null);
 
@@ -101,6 +126,7 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
         limit: limit + 1,
         start_author: startAuthor,
         start_permlink: startPermlink,
+        user_languages,
       },
       ApiClient,
     ).then(postsData => postsData.slice(1)),
@@ -137,10 +163,11 @@ export const getObjectComments = (author, permlink, category = 'waivio-object') 
   });
 };
 
-export const getObjectPosts = ({ username, object, limit = 10 }) => dispatch => {
+export const getObjectPosts = ({ username, object, limit = 10 }) => (dispatch, getState) => {
+  const readLanguages = getUserLocalesArray(getState);
   dispatch({
     type: GET_OBJECT_POSTS.ACTION,
-    payload: ApiClient.getFeedContentByObject(object, limit),
+    payload: ApiClient.getFeedContentByObject(object, limit, readLanguages),
     meta: { sortBy: 'objectPosts', category: username, limit },
   });
 };
@@ -152,6 +179,7 @@ export const getMoreObjectPosts = ({ username, authorPermlink, limit = 10 }) => 
   const state = getState();
   const feed = getFeed(state);
   const posts = getPosts(state);
+  const user_languages = getUserLocalesArray(getState);
 
   const feedContent = getFeedFromState('objectPosts', username, feed);
   const isLoading = getFeedLoadingFromState('objectPosts', username, feed);
@@ -168,6 +196,7 @@ export const getMoreObjectPosts = ({ username, authorPermlink, limit = 10 }) => 
       authorPermlink,
       skip,
       limit,
+      user_languages,
     }),
     meta: { sortBy: 'objectPosts', category: username, limit },
   });
