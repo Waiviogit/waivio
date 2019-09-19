@@ -3,24 +3,34 @@
 
 .Chat {
   position: fixed;
-  width: 560px;
+  display: flex;
+  width: 1560px;
   height: calc(((100% - 20px) - 70px) - 25px) !important;
   bottom: 50px;
   max-height: 460px;
   left: 200px;
-  z-index: 1500;
+  z-index: 1200;
   border: 1px solid black;
   border-radius: 10px;
   background-color: @white-ghostWhite;
 
   &__conversations-wrap {
-    width: 50%;
+    width: 30%;
     padding: 15px;
-    height: 700px;
+    height: 100%;
     overflow: auto;
     border-right: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  &__messages-wrap {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
   }
 }
 .Chat.hide-element {
   display: none;
+}
+.Chat__messages-wrap > iframe {
+  height: 100%;
 }
