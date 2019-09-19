@@ -47,12 +47,17 @@ const getUserLocalesArray = getState => {
   return locales;
 };
 
-export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) => dispatch =>
+export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) => (
+  dispatch,
+  getState,
+) => {
+  const user_languages = getUserLocalesArray(getState);
+
   dispatch({
     type: GET_FEED_CONTENT.ACTION,
     payload: getDiscussionsFromAPI(
       sortBy,
-      { category: sortBy, tag: category, limit, sortBy },
+      { category: sortBy, tag: category, limit, sortBy, user_languages },
       ApiClient,
     ),
     meta: {
@@ -61,22 +66,26 @@ export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) =>
       limit,
     },
   });
+};
 
-export const getUserFeedContent = ({ userName, limit = 20 }) => dispatch =>
+export const getUserFeedContent = ({ userName, limit = 20 }) => (dispatch, getState) => {
+  const user_languages = getUserLocalesArray(getState);
   dispatch({
     type: GET_USER_FEED_CONTENT.ACTION,
-    payload: ApiClient.getUserFeedContent(userName, limit),
+    payload: ApiClient.getUserFeedContent(userName, limit, user_languages),
     meta: {
       sortBy: 'feed',
       category: userName,
       limit,
     },
   });
+};
 
 export const getMoreUserFeedContent = ({ userName, limit = 20 }) => (dispatch, getState) => {
   const state = getState();
   const feed = getFeed(state);
   const feedContent = getFeedFromState('feed', userName, feed);
+  const user_languages = getUserLocalesArray(getState);
 
   if (!feedContent.length || !feed || !feed.feed || !feed.feed[userName])
     return Promise.resolve(null);
@@ -88,6 +97,7 @@ export const getMoreUserFeedContent = ({ userName, limit = 20 }) => (dispatch, g
       userName,
       limit,
       skip: countWithWobj,
+      user_languages,
     }),
     meta: { sortBy: 'feed', category: userName, limit },
   });
@@ -97,6 +107,7 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
   const feed = getFeed(state);
   const posts = getPosts(state);
   const feedContent = getFeedFromState(sortBy, category, feed);
+  const user_languages = getUserLocalesArray(getState);
 
   if (!feedContent.length) return Promise.resolve(null);
 
@@ -115,6 +126,7 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
         limit: limit + 1,
         start_author: startAuthor,
         start_permlink: startPermlink,
+        user_languages,
       },
       ApiClient,
     ).then(postsData => postsData.slice(1)),

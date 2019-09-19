@@ -113,12 +113,12 @@ export const postCreateWaivioObject = requestBody =>
       .catch(error => reject(error));
   });
 
-export const getUserFeedContent = (feedUserName, limit = 10) =>
+export const getUserFeedContent = (feedUserName, limit = 10, user_languages) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${feedUserName}${config.feed}`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ limit }),
+      body: JSON.stringify({ limit, user_languages }),
     })
       .then(res => res.json())
       .then(posts => resolve(posts))
@@ -136,7 +136,7 @@ export const getContent = (author, permlink) =>
       .catch(error => reject(error));
   });
 
-export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0 }) =>
+export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0, user_languages }) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.feed}`, {
       headers,
@@ -144,6 +144,7 @@ export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0 }) =>
       body: JSON.stringify({
         skip,
         limit,
+        user_languages,
       }),
     })
       .then(res => res.json())
@@ -337,11 +338,11 @@ export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3) =>
   });
 
 export const getObjectType = (
-  name,
+  typeName,
   { limit: wobjects_count, skip: wobjects_skip, filter, sort }, // eslint-disable-line
 ) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.objectType}/${name}`, {
+    fetch(`${config.apiPrefix}${config.objectType}/${typeName}`, {
       headers,
       method: 'POST',
       body: JSON.stringify({ wobjects_count, wobjects_skip, filter, sort }),
