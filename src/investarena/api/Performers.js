@@ -35,6 +35,15 @@ export default class Performers extends Base {
     });
   }
 
+  getUserStatistics(userName) {
+    return new Promise((resolve, reject) => {
+      this.apiClient
+        .get(`${config.performers.userStatistics}/${userName}`)
+        .then(response => resolve(response.data))
+        .catch(error => reject(error));
+    });
+  }
+
   getInstrumentStatistics(autorPermlink) {
     return new Promise((resolve, reject) => {
       this.apiClient

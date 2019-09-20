@@ -139,7 +139,8 @@
   "performers": {
     "searchInstrumentsStatistic": "/search-instruments-stats",
     "top": "/top-performers",
-    "instrumentStatistic": "/instrument-statistics"
+    "instrumentStatistic": "/instrument-statistics",
+    "userStatistics": "/user-statistics"
   },
   "forecasts": {
     "activeForecasts": "/active_forecasts"

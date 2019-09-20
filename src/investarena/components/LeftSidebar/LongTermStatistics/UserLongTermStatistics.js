@@ -3,9 +3,10 @@ import React from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import './LongTermStatistics.less';
-import * as ApiClient from '../../../../waivioApi/ApiClient';
+import api from '../../../../investarena/configApi/apiResources';
 import { getLongTermStatisticsForUser } from '../../../helpers/diffDateTime';
+import { makeCancelable } from "../../../../client/helpers/stateHelpers";
+import './LongTermStatistics.less';
 
 @injectIntl
 class UserLongTermStatistics extends React.Component {
@@ -32,15 +33,23 @@ class UserLongTermStatistics extends React.Component {
   }
 
   componentDidMount() {
-    ApiClient.getUserLongTermStatistics(this.props.userName).then(data => {
+    this.cancelablePromise.promise.then(data => {
       if (data && !_.isError(data) && !_.isEmpty(data)) {
-        const longTermStatistics = getLongTermStatisticsForUser(data[0], this.props.intl);
+        const longTermStatistics = getLongTermStatisticsForUser(data, this.props.intl);
         this.setState({ longTermStatistics, loading: false });
       } else {
         this.setState({ loading: false });
       }
     });
   }
+
+  componentWillUnmount() {
+    this.cancelablePromise.cancel();
+  }
+
+  cancelablePromise = makeCancelable(
+    api.performers.getUserStatistics(this.props.userName),
+  );
 
   render() {
     return !this.state.loading ? (
