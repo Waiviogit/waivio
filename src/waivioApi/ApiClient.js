@@ -534,28 +534,4 @@ export const waivioAPI = {
   getAuthenticatedUserMetadata,
 };
 
-// Investarena
-export const getUserLongTermStatistics = id =>
-  new Promise((resolve, reject) => {
-    fetch(`https://waiviodev.com/investarena-api${config.userStatistics}/${id}`, {
-      headers,
-      method: 'GET',
-    })
-      .then(res => res.json())
-      .then(data => resolve(data))
-      .catch(error => reject(error));
-  });
-
-export const getInstrumentLongTermStatistics = id =>
-  new Promise((resolve, reject) => {
-    fetch(`https://waiviodev.com/investarena-api${config.instrumentStatistic}/${id}`, {
-      headers,
-      method: 'GET',
-    })
-      .then(res => res.json())
-      .then(data => resolve(data))
-      .catch(error => reject(error));
-  });
-// END Investarena
-
 export default null;
