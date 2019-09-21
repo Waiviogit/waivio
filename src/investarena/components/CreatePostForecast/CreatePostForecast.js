@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { isEqual } from 'lodash';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import moment from 'moment';
@@ -8,45 +8,47 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { Collapse, DatePicker, Select, Input } from 'antd';
 import { optionsAction, optionsForecast } from '../../constants/selectData';
 import {
-  getQuoteOptions,
   getQuotePrice,
   isStopLossTakeProfitValid,
   getForecastState,
+  getEditorForecast,
   validateForm,
 } from './helpers';
-import {
-  forecastDateTimeFormat,
-  maxForecastDay,
-  minForecastMinutes,
-} from '../../constants/constantsForecast';
+import { maxForecastDay, minForecastMinutes } from '../../constants/constantsForecast';
 import { ceil10, floor10 } from '../../helpers/calculationsHelper';
 import { getQuotesSettingsState } from '../../../investarena/redux/selectors/quotesSettingsSelectors';
-import { getQuotesState } from '../../../investarena/redux/selectors/quotesSelectors';
+import {
+  makeGetQuoteState,
+  makeGetInstrumentsDropdownOptions,
+} from '../../../investarena/redux/selectors/quotesSelectors';
 import './CreatePostForecast.less';
 
 @injectIntl
-@connect(state => ({
+@connect((state, ownProps) => ({
   quotesSettings: getQuotesSettingsState(state),
-  quotes: getQuotesState(state),
+  optionsQuote: makeGetInstrumentsDropdownOptions()(state),
+  quoteSelected: makeGetQuoteState()(state, ownProps.forecastValues),
 }))
 class CreatePostForecast extends Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     quotesSettings: PropTypes.shape(),
-    quotes: PropTypes.shape(),
+    quoteSelected: PropTypes.shape(),
     isPosted: PropTypes.bool,
     isUpdating: PropTypes.bool,
     forecastValues: PropTypes.shape(),
     onChange: PropTypes.func,
+    optionsQuote: PropTypes.arrayOf(PropTypes.shape()),
   };
 
   static defaultProps = {
     quotesSettings: {},
-    quotes: {},
+    quoteSelected: {},
     isPosted: false,
     isUpdating: false,
     forecastValues: {},
     onChange: () => {},
+    optionsQuote: [],
   };
 
   constructor(props) {
@@ -55,64 +57,42 @@ class CreatePostForecast extends Component {
     this.state = {
       ...getForecastState(props.forecastValues),
       isValid: true,
+      updatesFrozen: false,
     };
   }
 
-  // componentDidUpdate(prevProps) {
-  //   if (!_.isEqual(prevProps.forecastValues, this.props.forecastValues)) {
-  //     this.updateForecastValues(this.props.forecastValues);
-  //   }
-  // }
-  componentWillReceiveProps(nextProps) {
-    if (!_.isEqual(nextProps.forecastValues, this.props.forecastValues)) {
-      this.setState(getForecastState(nextProps.forecastValues));
+  static getDerivedStateFromProps(
+    nextProps,
+    { updatesFrozen, takeProfitValueIncorrect, stopLossValueIncorrect, ...prevState },
+  ) {
+    const nextState = getForecastState(nextProps.forecastValues);
+    if (!isEqual(nextState, prevState)) {
+      return nextState;
     }
+    if (!updatesFrozen) {
+      const nextQuotePrice = getQuotePrice(prevState.selectRecommend, nextProps.quoteSelected);
+      if (nextQuotePrice && nextQuotePrice !== prevState.quotePrice) {
+        nextProps.onChange(
+          getEditorForecast(
+            {
+              ...prevState,
+              quotePrice: nextQuotePrice,
+            },
+            nextProps.quotesSettings,
+          ),
+        );
+      }
+    }
+    return null;
   }
 
-  getForecastObject = forecast => {
-    const { quotesSettings } = this.props;
-    const {
-      selectQuote,
-      selectRecommend,
-      selectForecast,
-      dateTimeValue,
-      quotePrice,
-      stopLossValue,
-      takeProfitValue,
-      isValid,
-    } = forecast;
-    const price = parseFloat(quotePrice);
-    const forecastObject = {
-      quoteSecurity: selectQuote,
-      market: selectQuote ? quotesSettings[selectQuote].market : '',
-      recommend: selectRecommend,
-      postPrice: !isNaN(price) ? price : null,
-      selectForecast,
-      expiredAt: dateTimeValue ? dateTimeValue.format(forecastDateTimeFormat) : null,
-      isValid,
-    };
-    if (takeProfitValue) forecastObject.tpPrice = takeProfitValue;
-    if (stopLossValue) forecastObject.slPrice = stopLossValue;
-    return forecastObject;
-  };
-
-  getForecastState = forecast => {
-    const dateTimeValue = forecast.expiredAt ? moment(forecast.expiredAt).local() : null;
-    const selectForecast =
-      !forecast.selectForecast && Boolean(dateTimeValue)
-        ? 'Custom'
-        : forecast.selectForecast || null;
-    return {
-      dateTimeValue,
-      quotePrice: forecast.postPrice,
-      selectQuote: forecast.quoteSecurity,
-      selectRecommend: forecast.recommend,
-      selectForecast,
-      takeProfitValue: forecast.tpPrice || '',
-      stopLossValue: forecast.slPrice || '',
-      isValid: validateForm(forecast.quoteSecurity, forecast.recommend, selectForecast),
-    };
-  };
+  shouldComponentUpdate(nextProps, nextState) {
+    return (
+      !isEqual(nextProps.forecastValues, this.props.forecastValues) ||
+      (!nextState.updatesFrozen && !isEqual(nextProps.quoteSelected, this.props.quoteSelected)) ||
+      (!this.props.optionsQuote.length && nextProps.optionsQuote.length)
+    );
+  }
 
   validateForm = (quote, recommend, forecast) =>
     !!(quote && recommend && forecast) || !(quote || recommend || forecast);
@@ -120,59 +100,69 @@ class CreatePostForecast extends Component {
   updateValueQuote = selectQuote => {
     const { selectRecommend, selectForecast } = this.state;
     const quotePrice = this.state.selectRecommend
-      ? getQuotePrice(selectQuote, this.state.selectRecommend, this.props.quotes)
+      ? getQuotePrice(this.state.selectRecommend, this.props.quoteSelected)
       : null;
+    this.setState({ updatesFrozen: false });
     this.props.onChange(
-      this.getForecastObject({
-        ...this.state,
-        quotePrice,
-        selectQuote,
-        takeProfitValue: '',
-        stopLossValue: '',
-        takeProfitValueIncorrect: false,
-        stopLossValueIncorrect: false,
-        isValid: validateForm(selectQuote, selectRecommend, selectForecast),
-      }),
+      getEditorForecast(
+        {
+          ...this.state,
+          quotePrice,
+          selectQuote,
+          takeProfitValue: '',
+          stopLossValue: '',
+          takeProfitValueIncorrect: false,
+          stopLossValueIncorrect: false,
+          isValid: validateForm(selectQuote, selectRecommend, selectForecast),
+        },
+        this.props.quotesSettings,
+      ),
     );
   };
 
   updateValueRecommend = selectRecommend => {
     const { selectQuote, selectForecast } = this.state;
     const quotePrice = this.state.selectQuote
-      ? getQuotePrice(this.state.selectQuote, selectRecommend, this.props.quotes)
+      ? getQuotePrice(selectRecommend, this.props.quoteSelected)
       : null;
     this.props.onChange(
-      this.getForecastObject({
-        ...this.state,
-        quotePrice,
-        selectRecommend,
-        takeProfitValue: '',
-        stopLossValue: '',
-        takeProfitValueIncorrect: false,
-        stopLossValueIncorrect: false,
-        isValid: validateForm(selectQuote, selectRecommend, selectForecast),
-      }),
+      getEditorForecast(
+        {
+          ...this.state,
+          quotePrice,
+          selectRecommend,
+          takeProfitValue: '',
+          stopLossValue: '',
+          takeProfitValueIncorrect: false,
+          stopLossValueIncorrect: false,
+          isValid: validateForm(selectQuote, selectRecommend, selectForecast),
+        },
+        this.props.quotesSettings,
+      ),
     );
   };
 
   handleChangeTakeProfitStopLostInputs = (event, input) => {
     const value = event.target.value;
     if (!isNaN(value)) {
-      const { selectQuote, selectRecommend } = this.state;
+      const { selectRecommend } = this.state;
       this.setState(
         {
           [`${input}Incorrect`]: isStopLossTakeProfitValid(
             value,
             input,
             selectRecommend,
-            getQuotePrice(selectQuote, selectRecommend, this.props.quotes),
+            getQuotePrice(selectRecommend, this.props.quoteSelected),
           ),
         },
         this.props.onChange(
-          this.getForecastObject({
-            ...this.state,
-            [input]: value,
-          }),
+          getEditorForecast(
+            {
+              ...this.state,
+              [input]: value,
+            },
+            this.props.quotesSettings,
+          ),
         ),
       );
     }
@@ -180,8 +170,8 @@ class CreatePostForecast extends Component {
 
   handleFocusTakeProfitStopLostInputs = input => {
     if (this.state[input]) return;
-    const { selectQuote, selectRecommend } = this.state;
-    let initialValue = getQuotePrice(selectQuote, selectRecommend, this.props.quotes);
+    const { selectRecommend } = this.state;
+    let initialValue = getQuotePrice(selectRecommend, this.props.quoteSelected);
 
     switch (selectRecommend) {
       case 'Buy':
@@ -206,10 +196,13 @@ class CreatePostForecast extends Component {
           return prevState;
         },
         this.props.onChange(
-          this.getForecastObject({
-            ...this.state,
-            [input]: initialValue,
-          }),
+          getEditorForecast(
+            {
+              ...this.state,
+              [input]: initialValue,
+            },
+            this.props.quotesSettings,
+          ),
         ),
       );
     }
@@ -219,11 +212,14 @@ class CreatePostForecast extends Component {
     const { selectQuote, selectRecommend } = this.state;
     this.setState({ dateTimeValue });
     this.props.onChange(
-      this.getForecastObject({
-        ...this.state,
-        dateTimeValue: moment.utc(dateTimeValue),
-        isValid: validateForm(selectQuote, selectRecommend, 'Custom'),
-      }),
+      getEditorForecast(
+        {
+          ...this.state,
+          dateTimeValue: moment.utc(dateTimeValue),
+          isValid: validateForm(selectQuote, selectRecommend, 'Custom'),
+        },
+        this.props.quotesSettings,
+      ),
     );
   };
 
@@ -231,25 +227,33 @@ class CreatePostForecast extends Component {
     const { selectQuote, selectRecommend } = this.state;
     if (selectForecast === 'Custom') {
       this.props.onChange(
-        this.getForecastObject({
-          ...this.state,
-          selectForecast,
-          dateTimeValue: moment.utc().add(minForecastMinutes, 'minute'),
-          isValid: validateForm(selectQuote, selectRecommend, selectForecast),
-        }),
+        getEditorForecast(
+          {
+            ...this.state,
+            selectForecast,
+            dateTimeValue: moment.utc().add(minForecastMinutes, 'minute'),
+            isValid: validateForm(selectQuote, selectRecommend, selectForecast),
+          },
+          this.props.quotesSettings,
+        ),
       );
     } else {
       this.props.onChange(
-        this.getForecastObject({
-          ...this.state,
-          selectForecast,
-          isValid: validateForm(selectQuote, selectRecommend, selectForecast),
-        }),
+        getEditorForecast(
+          {
+            ...this.state,
+            selectForecast,
+            isValid: validateForm(selectQuote, selectRecommend, selectForecast),
+          },
+          this.props.quotesSettings,
+        ),
       );
     }
   };
 
   resetForm = () => this.props.onChange({ isValid: true });
+
+  freezeUpdates = quote => this.setState({ updatesFrozen: !quote });
 
   render() {
     const {
@@ -260,9 +264,9 @@ class CreatePostForecast extends Component {
       takeProfitValue,
       dateTimeValue,
       isValid,
+      quotePrice,
     } = this.state;
-    const { intl, isPosted, quotes, quotesSettings, isUpdating } = this.props;
-    const optionsQuote = getQuoteOptions(quotesSettings, quotes);
+    const { intl, isPosted, isUpdating, optionsQuote } = this.props;
     return (
       <div className="st-create-post-optional">
         <Collapse defaultActiveKey={['1']} bordered>
@@ -297,12 +301,16 @@ class CreatePostForecast extends Component {
                         'st-create-post-danger': isPosted && !isValid && !selectQuote,
                       })}
                       disabled={isUpdating}
+                      filterOption
+                      optionFilterProp="title"
                       onChange={this.updateValueQuote}
+                      onFocus={this.freezeUpdates}
+                      onBlur={this.freezeUpdates}
                       value={selectQuote}
                       showSearch
                     >
                       {optionsQuote.map(option => (
-                        <Select.Option key={option.value} value={option.value}>
+                        <Select.Option key={option.value} value={option.value} title={option.label}>
                           {option.label}
                         </Select.Option>
                       ))}
@@ -342,7 +350,7 @@ class CreatePostForecast extends Component {
                     <Input
                       className="st-create-post-quotation"
                       type="text"
-                      value={this.state.quotePrice}
+                      value={quotePrice}
                       disabled
                     />
                   </div>
