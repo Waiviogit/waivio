@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import api from '../../../../investarena/configApi/apiResources';
 import { getLongTermStatisticsForUser } from '../../../helpers/diffDateTime';
-import { makeCancelable } from "../../../../client/helpers/stateHelpers";
+import { makeCancelable } from '../../../../client/helpers/stateHelpers';
 import './LongTermStatistics.less';
 
 @injectIntl
@@ -47,9 +47,7 @@ class UserLongTermStatistics extends React.Component {
     this.cancelablePromise.cancel();
   }
 
-  cancelablePromise = makeCancelable(
-    api.performers.getUserStatistics(this.props.userName),
-  );
+  cancelablePromise = makeCancelable(api.performers.getUserStatistics(this.props.userName));
 
   render() {
     return !this.state.loading ? (

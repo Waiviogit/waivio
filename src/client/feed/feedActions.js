@@ -56,11 +56,7 @@ export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) =>
   const user_languages = getUserLocalesArray(getState);
   dispatch({
     type: GET_FEED_CONTENT.ACTION,
-    payload: getDiscussionsFromAPI(
-      sortBy,
-      {tag: category, limit, user_languages },
-      ApiClient,
-    ),
+    payload: getDiscussionsFromAPI(sortBy, { tag: category, limit, user_languages }, ApiClient),
     meta: {
       sortBy,
       category: category || 'all',
