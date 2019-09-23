@@ -14,7 +14,6 @@ const headers = {
   'Content-Type': 'application/json',
 };
 
-
 const getFilterKey = () => {
   if (localStorage) {
     const isAppFilterOff = localStorage.getItem('isAppFilterOff');
@@ -58,7 +57,7 @@ export const getObjects = ({
     skip,
     object_types: invObjects ? supportedObjectTypes : [],
     required_fields: requiredFields,
-    user_limit: userLimit
+    user_limit: userLimit,
   };
   if (isOnlyHashtags) reqData.object_types = ['hashtag'];
   else reqData.exclude_object_types = ['hashtag'];
@@ -82,9 +81,7 @@ export const getObject = (authorPermlink, username) => {
   return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${query}`, {
     headers,
     method: 'GET',
-  }).then(res =>
-    res.json(),
-  );
+  }).then(res => res.json());
 };
 
 export const getUsersByObject = object =>
