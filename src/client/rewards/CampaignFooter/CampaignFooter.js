@@ -1,17 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { injectIntl } from 'react-intl';
+import { Modal } from 'antd';
 import find from 'lodash/find';
 import Slider from '../../components/Slider/Slider';
 import Payout from '../../components/StoryFooter/Payout';
 import CampaignButtons from './CampaignButtons';
 import Comments from '../../comments/Comments';
 import { getVoteValue } from '../../helpers/user';
-import './CampaignFooter.less';
 import { getRate, getAppUrl } from '../../reducers';
 import Confirmation from '../../components/StoryFooter/Confirmation';
 import withAuthActions from '../../auth/withAuthActions';
+import './CampaignFooter.less';
 
+@injectIntl
 @withAuthActions
 @connect(state => ({
   rate: getRate(state),
@@ -24,6 +27,7 @@ class CampaignFooter extends React.Component {
     postState: PropTypes.shape().isRequired,
     rewardFund: PropTypes.shape().isRequired,
     proposedWobj: PropTypes.shape().isRequired,
+    intl: PropTypes.shape().isRequired,
     requiredObjectPermlink: PropTypes.string.isRequired,
     requiredObjectName: PropTypes.string.isRequired,
     rate: PropTypes.number.isRequired,
@@ -69,6 +73,7 @@ class CampaignFooter extends React.Component {
       commentsVisible: !props.post.children,
       sliderValue: 100,
       voteWorth: 0,
+      modalVisible: false,
     };
     this.handlePostPopoverMenuClick = this.handlePostPopoverMenuClick.bind(this);
   }
@@ -132,7 +137,7 @@ class CampaignFooter extends React.Component {
   }
 
   clickMenuItem(key) {
-    const { post, proposedWobj, discardPr } = this.props;
+    const { post } = this.props;
     switch (key) {
       case 'follow':
         this.handleFollowClick(post);
@@ -141,11 +146,21 @@ class CampaignFooter extends React.Component {
         this.handleFollowObjectClick(post);
         break;
       case 'release':
-        discardPr(proposedWobj);
+        this.modalOnOklHandler();
         break;
       default:
     }
   }
+
+  modalOnOklHandler = () => {
+    const { proposedWobj, discardPr } = this.props;
+    this.setState({ modalVisible: true });
+    discardPr(proposedWobj);
+  };
+
+  modalOnCancelHandler = () => {
+    this.setState({ modalVisible: false });
+  };
 
   handlePostPopoverMenuClick(key) {
     this.props.onActionInitiated(this.clickMenuItem.bind(this, key));
@@ -178,7 +193,7 @@ class CampaignFooter extends React.Component {
   };
 
   render() {
-    const { commentsVisible } = this.state;
+    const { commentsVisible, modalVisible } = this.state;
     const {
       post,
       postState,
@@ -192,8 +207,9 @@ class CampaignFooter extends React.Component {
       proposedWobj,
       requiredObjectPermlink,
       requiredObjectName,
+      intl,
     } = this.props;
-
+    console.log('hello');
     return (
       <div className="CampaignFooter">
         <div className="CampaignFooter__actions">
@@ -232,6 +248,22 @@ class CampaignFooter extends React.Component {
         {!singlePostVew && (
           <Comments show={commentsVisible} isQuickComments={!singlePostVew} post={post} />
         )}
+        <Modal
+          closable
+          maskClosable={false}
+          title={intl.formatMessage({
+            id: 'reject_campaign',
+            defaultMessage: `Reject rewards campaign`,
+          })}
+          visible={modalVisible}
+          onOk={this.modalOnOklHandler}
+          onCancel={this.modalOnCancelHandler}
+        >
+          {intl.formatMessage({
+            id: 'reject_campaign_accept',
+            defaultMessage: `Do you want to reject rewards campaign?`,
+          })}
+        </Modal>
       </div>
     );
   }
