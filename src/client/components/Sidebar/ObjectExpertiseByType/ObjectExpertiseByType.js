@@ -104,7 +104,7 @@ const ObjectExpertiseByType = ({ match }) => {
           </h4>
           <div className="SidebarContentBlock__content">{renderObjects}</div>
           {renderButtons()}
-          <div id="ObjectExpertiseByType__Modal" onWheel={onWheelHandler}>
+          <div id="ObjectExpertiseByType__Modal" onWheel={_.throttle(onWheelHandler, 150)}>
             <Modal
               title="Related"
               visible={showModal}
