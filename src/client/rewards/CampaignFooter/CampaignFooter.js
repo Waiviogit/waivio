@@ -209,7 +209,7 @@ class CampaignFooter extends React.Component {
       requiredObjectName,
       intl,
     } = this.props;
-    console.log('hello');
+
     return (
       <div className="CampaignFooter">
         <div className="CampaignFooter__actions">
