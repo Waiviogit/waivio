@@ -4,7 +4,7 @@ import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Button, message, Modal } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import './Proposition.less';
 import { getClientWObj } from '../../adapters';
 import ObjectCardView from '../../objectCard/ObjectCardView';
@@ -15,6 +15,8 @@ import { getCommentContent } from '../../reducers';
 import { connect } from 'react-redux';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { reserveActivatedCampaign } from '../../../waivioApi/ApiClient';
+import { rejectReservationCampaign } from '../../../waivioApi/ApiClient';
+import { generatePermlink } from '../../helpers/wObjectHelper';
 
 const Proposition = ({
   intl,
@@ -29,16 +31,9 @@ const Proposition = ({
   post,
   getSingleComment,
   setReservedObject,
+  setReserved,
 }) => {
   const proposedWobj = getClientWObj(wobj);
-  const assignPr = () => {
-    assignProposition({
-      companyAuthor: proposition.guide.name,
-      companyPermlink: proposition.activation_permlink,
-      companyId: proposition._id,
-      objPermlink: wobj.author_permlink,
-    });
-  };
   const requiredObjectName = getFieldWithMaxWeight(
     proposition.required_object,
     'name',
@@ -53,12 +48,24 @@ const Proposition = ({
   };
 
   const discardPr = obj => {
-    discardProposition({
-      companyAuthor: proposition.guide.name,
-      companyPermlink: proposition.activation_permlink,
-      companyId: proposition._id,
-      objPermlink: obj.author_permlink,
-    });
+    const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
+    const rejectData = {
+      campaign_permlink: proposition.activation_permlink,
+      user_name: proposition.guide.name,
+      reservation_permlink: proposition.objects[0].permlink,
+      unreservation_permlink: unreservationPermlink,
+    };
+    rejectReservationCampaign(rejectData)
+      .then(() => {
+        discardProposition({
+          companyAuthor: proposition.guide.name,
+          companyPermlink: proposition.activation_permlink,
+          objPermlink: obj.author_permlink,
+          reservationPermlink: rejectData.reservation_permlink,
+          unreservationPermlink,
+        });
+      })
+      .catch(error => console.log(error));
   };
 
   const [isModalOpen, openModal] = useState(false);
@@ -72,13 +79,18 @@ const Proposition = ({
       campaign_permlink: proposition.activation_permlink,
       approved_object: wobj.author_permlink,
       user_name: proposition.guide.name,
-      permlink: proposition._id,
+      reservation_permlink: proposition._id,
     };
+    setReservedObject(proposition.required_object.author_permlink);
+    setReserved();
     reserveActivatedCampaign(reserveData)
-      .then(data => {
-        console.log(data);
-        setReservedObject(proposition.required_object.author_permlink);
-        assignPr();
+      .then(() => {
+        assignProposition({
+          companyAuthor: proposition.guide.name,
+          companyPermlink: proposition.activation_permlink,
+          companyId: proposition._id,
+          objPermlink: wobj.author_permlink,
+        });
         message.success(
           intl.formatMessage({
             id: 'assigned_successfully',
@@ -100,7 +112,6 @@ const Proposition = ({
   const modalOnCancelHandler = () => {
     openModal(false);
   };
-
   return (
     <div className="Proposition">
       <div className="RewardsHeader-block">
@@ -141,6 +152,7 @@ const Proposition = ({
             requiredObjectPermlink={proposition.required_object.author_permlink}
             requiredObjectName={requiredObjectName}
             discardPr={discardPr}
+            proposition={proposition}
           />
         ) : (
           <React.Fragment>
@@ -227,4 +239,4 @@ export default connect(
   {
     getSingleComment,
   },
-)(injectIntl(Proposition));
+)(injectIntl(withRouter(Proposition)));

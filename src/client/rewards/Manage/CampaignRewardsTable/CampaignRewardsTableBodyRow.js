@@ -22,16 +22,14 @@ const CampaignRewardsTableRow = ({ currentItem, activateCampaign, userName, intl
   const activateCamp = () => {
     setLoad(true);
     validateActivationCampaign(validateData)
-      .then(data => {
-        console.log(data);
+      .then(() => {
         activateCampaign(currentItem, validateData.permlink).then(() => {
           toggleModal(false);
           message.success(`Campaign '${currentItem.name}' - has been activated`);
           setLoad(false);
         });
       })
-      .catch(error => {
-        console.log(error);
+      .catch(() => {
         message.error(`Can't activate campaign'${currentItem.name}', try again later`);
         setLoad(false);
       });
