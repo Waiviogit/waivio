@@ -1,24 +1,26 @@
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
+
 import WeightTag from '../../WeightTag';
-import './ObjectExpertiseByType.less';
 import RightSidebarLoading from '../../../app/Sidebar/RightSidebarLoading';
 import UserCard from '../../UserCard';
 import { getObjectExpertiseByType } from '../../../../waivioApi/ApiClient';
+import './ObjectExpertiseByType.less';
+
+const initialState = {
+  experts: [],
+  loading: true,
+  skip: 0,
+  limit: 5,
+  hasNext: true,
+};
 
 const ObjectExpertiseByType = ({ match }) => {
   const typeName = match.params.typeName;
-  const [objectsState, setObjectsState] = useState({
-    experts: [],
-    loading: true,
-    skip: 0,
-    limit: 5,
-    hasNext: true,
-  });
+  const [objectsState, setObjectsState] = useState(initialState);
   const [showModal, setShowModal] = useState(false);
   // eslint-disable-next-line prefer-const
   let { skip, limit } = objectsState;
@@ -48,8 +50,8 @@ const ObjectExpertiseByType = ({ match }) => {
           hasNext: data.length === 5,
         });
       })
-      .catch(() => setObjectsState({ ...objectsState, hasNext: false, loading: false }));
-    return () => setObjectsState({ experts: [], loading: true, skip: 0, limit: 5, hasNext: true });
+      .catch(() => setObjectsState({ ...initialState, loading: false }));
+    return () => setObjectsState(initialState);
   }, [match.params.typeName]);
 
   let renderCard = <RightSidebarLoading id="RightSidebarLoading" />;
@@ -104,7 +106,7 @@ const ObjectExpertiseByType = ({ match }) => {
           </h4>
           <div className="SidebarContentBlock__content">{renderObjects}</div>
           {renderButtons()}
-          <div id="ObjectExpertiseByType__Modal" onWheel={_.throttle(onWheelHandler, 150)}>
+          <div id="ObjectExpertiseByType__Modal" onWheel={_.throttle(onWheelHandler, 120)}>
             <Modal
               title="Related"
               visible={showModal}
@@ -122,10 +124,6 @@ const ObjectExpertiseByType = ({ match }) => {
   }
 
   return renderCard;
-};
-
-ObjectExpertiseByType.propTypes = {
-  typeName: PropTypes.string.isRequired,
 };
 
 export default ObjectExpertiseByType;
