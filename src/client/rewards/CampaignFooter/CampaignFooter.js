@@ -146,15 +146,19 @@ class CampaignFooter extends React.Component {
         this.handleFollowObjectClick(post);
         break;
       case 'release':
-        this.modalOnOklHandler();
+        this.showRejectModal();
         break;
       default:
     }
   }
 
+  showRejectModal = () => {
+    this.setState({ modalVisible: true });
+  };
+
   modalOnOklHandler = () => {
     const { proposedWobj, discardPr } = this.props;
-    this.setState({ modalVisible: true });
+    this.setState({ modalVisible: false });
     discardPr(proposedWobj);
   };
 
