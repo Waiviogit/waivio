@@ -42,6 +42,7 @@ class CampaignFooter extends React.Component {
     saving: PropTypes.bool,
     singlePostVew: PropTypes.bool,
     onLikeClick: PropTypes.func,
+    discardPr: PropTypes.func,
   };
 
   static defaultProps = {
@@ -57,6 +58,7 @@ class CampaignFooter extends React.Component {
     onLikeClick: () => {},
     onShareClick: () => {},
     handlePostPopoverMenuClick: () => {},
+    discardPr: () => {},
   };
 
   constructor(props) {
@@ -130,7 +132,7 @@ class CampaignFooter extends React.Component {
   }
 
   clickMenuItem(key) {
-    const { post, proposedWobj } = this.props;
+    const { post, proposedWobj, discardPr } = this.props;
     switch (key) {
       case 'follow':
         this.handleFollowClick(post);
@@ -139,7 +141,7 @@ class CampaignFooter extends React.Component {
         this.handleFollowObjectClick(post);
         break;
       case 'release':
-        this.discardPr(proposedWobj);
+        discardPr(proposedWobj);
         break;
       default:
     }

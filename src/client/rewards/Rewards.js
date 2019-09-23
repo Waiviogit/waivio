@@ -40,6 +40,7 @@ import RewardBreadcrumb from './RewardsBreadcrumb/RewardBreadcrumb';
 import SortSelector from '../components/SortSelector/SortSelector';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import MatchBot from './MatchBot/MatchBot';
+import { generatePermlink } from '../helpers/wObjectHelper';
 
 @withRouter
 @injectIntl
@@ -90,6 +91,7 @@ class Rewards extends React.Component {
     activeFilters: { guideNames: [], types: [] },
     isSearchAreaFilter: false,
     reservedObject: {},
+    isReserved: false,
   };
 
   componentDidMount() {
@@ -114,9 +116,28 @@ class Rewards extends React.Component {
       }
     } else this.setState({ propositions: [{}] }); // for map, not equal propositions
   }
+  componentDidUpdate() {
+    const { username, match } = this.props;
+    const { radius, coordinates, sort, activeFilters, isReserved, propositions } = this.state;
+    if (isReserved) {
+      this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+      if (
+        propositions.length &&
+        propositions[0].objects &&
+        propositions[0].objects.length &&
+        propositions[0].objects[0].permlink !== null
+      ) {
+        this.setReserved();
+      }
+    }
+  }
 
   setReservedObject = obj => {
     this.setState({ reservedObject: obj });
+  };
+
+  setReserved = () => {
+    this.setState({ isReserved: !this.state.isReserved });
   };
 
   getRequiredObjects = () =>
@@ -252,13 +273,14 @@ class Rewards extends React.Component {
 
   // Propositions
   assignProposition = ({ companyAuthor, companyPermlink, companyId, objPermlink }) => {
-    this.setState({ loadingAssignDiscard: true });
+    const resPerlink = `reserve-${companyId}-${generatePermlink()}`;
+    this.setState({ loadingAssignDiscard: true, reservationPerlink: resPerlink });
     this.props
-      .assignProposition({ companyAuthor, companyPermlink, companyId, objPermlink })
+      .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPerlink })
       .then(() => {
         const updatedPropositions = this.updateProposition(companyId, true, objPermlink);
-        this.props.history.push(`/rewards/reserved/${this.state.reservedObject}`);
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
+        this.props.history.push(`/rewards/reserved/${this.state.reservedObject}`);
       })
       .catch(() => {
         this.setState({ loadingAssignDiscard: false });
@@ -290,10 +312,24 @@ class Rewards extends React.Component {
     });
   };
 
-  discardProposition = ({ companyAuthor, companyPermlink, companyId, objPermlink }) => {
+  discardProposition = ({
+    companyAuthor,
+    companyPermlink,
+    companyId,
+    objPermlink,
+    unreservationPermlink,
+    reservationPermlink,
+  }) => {
     this.setState({ loadingAssignDiscard: true });
     this.props
-      .declineProposition({ companyAuthor, companyPermlink, companyId, objPermlink })
+      .declineProposition({
+        companyAuthor,
+        companyPermlink,
+        companyId,
+        objPermlink,
+        unreservationPermlink,
+        reservationPermlink,
+      })
       .then(() => {
         const updatedPropositions = this.updateProposition(companyId, false, objPermlink);
         message.success(
@@ -351,6 +387,7 @@ class Rewards extends React.Component {
                 toggleModal={this.toggleModal}
                 assigned={wobj.assigned}
                 setReservedObject={this.setReservedObject}
+                setReserved={this.setReserved}
               />
             ),
         ),

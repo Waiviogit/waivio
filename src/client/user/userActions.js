@@ -168,11 +168,13 @@ export const assignProposition = ({ companyAuthor, companyPermlink, companyId, o
   });
 };
 
-export const declineProposition = ({ companyAuthor, companyPermlink, companyId, objPermlink }) => (
-  dispatch,
-  getState,
-  { steemConnectAPI },
-) => {
+export const declineProposition = ({
+  companyAuthor,
+  companyPermlink,
+  objPermlink,
+  unreservationPermlink,
+  reservationPermlink,
+}) => (dispatch, getState, { steemConnectAPI }) => {
   const username = getAuthenticatedUserName(getState());
   const commentOp = [
     'comment',
@@ -180,15 +182,18 @@ export const declineProposition = ({ companyAuthor, companyPermlink, companyId, 
       parent_author: companyAuthor,
       parent_permlink: companyPermlink,
       author: username,
-      permlink: `reject-${companyId}-${generatePermlink()}`,
+      permlink: unreservationPermlink,
       title: 'reject object for rewards',
       body: `User @${username} reject [object](https://www.waivio.com/object/${objPermlink}), from [campaign](https://www.waivio.com/@${companyAuthor}/${companyPermlink})`,
       json_metadata: JSON.stringify({
-        waivioRewards: { type: 'waivio_decline_campaign', approved_object: objPermlink },
+        waivioRewards: {
+          type: 'waivio_reject_object_campaign',
+          reservation_permlink: reservationPermlink,
+        },
       }),
     },
   ];
-
+  console.log('DATA', commentOp);
   return new Promise((resolve, reject) => {
     steemConnectAPI
       .broadcast([commentOp])
