@@ -4,8 +4,7 @@ import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Button, message, Modal } from 'antd';
-import { Link, withRouter } from 'react-router-dom';
-import './Proposition.less';
+import { Link } from 'react-router-dom';
 import { getClientWObj } from '../../adapters';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import Avatar from '../../components/Avatar';
@@ -17,6 +16,7 @@ import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { reserveActivatedCampaign } from '../../../waivioApi/ApiClient';
 import { rejectReservationCampaign } from '../../../waivioApi/ApiClient';
 import { generatePermlink } from '../../helpers/wObjectHelper';
+import './Proposition.less';
 
 const Proposition = ({
   intl,
@@ -237,4 +237,4 @@ export default connect(
   {
     getSingleComment,
   },
-)(injectIntl(withRouter(Proposition)));
+)(injectIntl(Proposition));

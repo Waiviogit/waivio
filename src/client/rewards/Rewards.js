@@ -248,10 +248,10 @@ class Rewards extends React.Component {
 
   // Propositions
   assignProposition = ({ companyAuthor, companyPermlink, companyId, objPermlink }) => {
-    const resPerlink = `reserve-${companyId}-${generatePermlink()}`;
-    this.setState({ loadingAssignDiscard: true, reservationPerlink: resPerlink });
+    const resPermlink = `reserve-${companyId}-${generatePermlink()}`;
+    this.setState({ loadingAssignDiscard: true });
     this.props
-      .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPerlink })
+      .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink })
       .then(() => {
         const updatedPropositions = this.updateProposition(companyId, true, objPermlink);
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });

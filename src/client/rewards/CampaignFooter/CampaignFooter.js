@@ -146,24 +146,20 @@ class CampaignFooter extends React.Component {
         this.handleFollowObjectClick(post);
         break;
       case 'release':
-        this.showRejectModal();
+        this.toggleModal();
         break;
       default:
     }
   }
 
-  showRejectModal = () => {
-    this.setState({ modalVisible: true });
+  toggleModal = () => {
+    this.setState({ modalVisible: !this.state.modalVisible });
   };
 
   modalOnOklHandler = () => {
     const { proposedWobj, discardPr } = this.props;
-    this.setState({ modalVisible: false });
+    this.toggleModal();
     discardPr(proposedWobj);
-  };
-
-  modalOnCancelHandler = () => {
-    this.setState({ modalVisible: false });
   };
 
   handlePostPopoverMenuClick(key) {
@@ -261,7 +257,7 @@ class CampaignFooter extends React.Component {
           })}
           visible={modalVisible}
           onOk={this.modalOnOklHandler}
-          onCancel={this.modalOnCancelHandler}
+          onCancel={this.toggleModal}
         >
           {intl.formatMessage({
             id: 'reject_campaign_accept',
