@@ -40,6 +40,7 @@ import RewardBreadcrumb from './RewardsBreadcrumb/RewardBreadcrumb';
 import SortSelector from '../components/SortSelector/SortSelector';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import MatchBot from './MatchBot/MatchBot';
+import { generatePermlink } from '../helpers/wObjectHelper';
 
 @withRouter
 @injectIntl
@@ -89,7 +90,6 @@ class Rewards extends React.Component {
     objectDetails: {},
     activeFilters: { guideNames: [], types: [] },
     isSearchAreaFilter: false,
-    reservedObject: {},
   };
 
   componentDidMount() {
@@ -114,10 +114,6 @@ class Rewards extends React.Component {
       }
     } else this.setState({ propositions: [{}] }); // for map, not equal propositions
   }
-
-  setReservedObject = obj => {
-    this.setState({ reservedObject: obj });
-  };
 
   getRequiredObjects = () =>
     _.map(this.state.propositions, proposition => proposition.required_object);
@@ -252,35 +248,23 @@ class Rewards extends React.Component {
 
   // Propositions
   assignProposition = ({ companyAuthor, companyPermlink, companyId, objPermlink }) => {
+    const resPermlink = `reserve-${companyId}-${generatePermlink()}`;
     this.setState({ loadingAssignDiscard: true });
     this.props
-      .assignProposition({ companyAuthor, companyPermlink, companyId, objPermlink })
+      .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink })
       .then(() => {
         const updatedPropositions = this.updateProposition(companyId, true, objPermlink);
-        message.success(
-          this.props.intl.formatMessage({
-            id: 'assigned_successfully',
-            defaultMessage: 'Assigned successfully',
-          }),
-        );
-        this.props.history.push(`/rewards/reserved/${this.state.reservedObject}`);
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })
       .catch(() => {
-        message.error(
-          this.props.intl.formatMessage({
-            id: 'cannot_activate_company',
-            defaultMessage: 'You cannot activate the company at the moment',
-          }),
-        );
         this.setState({ loadingAssignDiscard: false });
       });
   };
   updateProposition = (propsId, isAssign, objPermlink) =>
-    _.map(this.state.propositions, propos => {
+    _.map(this.state.propositions, proposition => {
       // eslint-disable-next-line no-param-reassign
-      if (propos._id === propsId) {
-        _.map(propos.users, user => {
+      if (proposition._id === propsId) {
+        _.map(proposition.users, user => {
           if (user.name === this.props.username) {
             if (_.includes(user.approved_objects, objPermlink)) {
               const newUser = user;
@@ -292,7 +276,7 @@ class Rewards extends React.Component {
           return user;
         });
       }
-      return propos;
+      return proposition;
     });
 
   toggleModal = proposition => {
@@ -302,10 +286,24 @@ class Rewards extends React.Component {
     });
   };
 
-  discardProposition = ({ companyAuthor, companyPermlink, companyId, objPermlink }) => {
+  discardProposition = ({
+    companyAuthor,
+    companyPermlink,
+    companyId,
+    objPermlink,
+    unreservationPermlink,
+    reservationPermlink,
+  }) => {
     this.setState({ loadingAssignDiscard: true });
     this.props
-      .declineProposition({ companyAuthor, companyPermlink, companyId, objPermlink })
+      .declineProposition({
+        companyAuthor,
+        companyPermlink,
+        companyId,
+        objPermlink,
+        unreservationPermlink,
+        reservationPermlink,
+      })
       .then(() => {
         const updatedPropositions = this.updateProposition(companyId, false, objPermlink);
         message.success(
@@ -343,6 +341,7 @@ class Rewards extends React.Component {
             ),
         );
       }
+
       return _.map(propositions, proposition =>
         _.map(
           proposition.objects,
@@ -362,7 +361,6 @@ class Rewards extends React.Component {
                 isModalDetailsOpen={isModalDetailsOpen}
                 toggleModal={this.toggleModal}
                 assigned={wobj.assigned}
-                setReservedObject={this.setReservedObject}
               />
             ),
         ),

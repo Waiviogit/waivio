@@ -168,7 +168,39 @@ export const assignProposition = ({ companyAuthor, companyPermlink, companyId, o
   });
 };
 
-export const declineProposition = ({ companyAuthor, companyPermlink, companyId, objPermlink }) => (
+export const declineProposition = ({
+  companyAuthor,
+  companyPermlink,
+  objPermlink,
+  unreservationPermlink,
+  reservationPermlink,
+}) => (dispatch, getState, { steemConnectAPI }) => {
+  const username = getAuthenticatedUserName(getState());
+  const commentOp = [
+    'comment',
+    {
+      parent_author: companyAuthor,
+      parent_permlink: companyPermlink,
+      author: username,
+      permlink: unreservationPermlink,
+      title: 'reject object for rewards',
+      body: `User @${username} reject [object](https://www.waivio.com/object/${objPermlink}), from [campaign](https://www.waivio.com/@${companyAuthor}/${companyPermlink})`,
+      json_metadata: JSON.stringify({
+        waivioRewards: {
+          type: 'waivio_reject_object_campaign',
+          reservation_permlink: reservationPermlink,
+        },
+      }),
+    },
+  ];
+  return new Promise((resolve, reject) => {
+    steemConnectAPI
+      .broadcast([commentOp])
+      .then(() => resolve('SUCCESS'))
+      .catch(error => reject(error));
+  });
+};
+export const activateCampaign = (company, campaignPermlink) => (
   dispatch,
   getState,
   { steemConnectAPI },
@@ -177,34 +209,10 @@ export const declineProposition = ({ companyAuthor, companyPermlink, companyId, 
   const commentOp = [
     'comment',
     {
-      parent_author: companyAuthor,
-      parent_permlink: companyPermlink,
-      author: username,
-      permlink: `reject-${companyId}-${generatePermlink()}`,
-      title: 'reject object for rewards',
-      body: `User @${username} reject [object](https://www.waivio.com/object/${objPermlink}), from [campaign](https://www.waivio.com/@${companyAuthor}/${companyPermlink})`,
-      json_metadata: JSON.stringify({
-        waivioRewards: { type: 'waivio_decline_campaign', approved_object: objPermlink },
-      }),
-    },
-  ];
-
-  return new Promise((resolve, reject) => {
-    steemConnectAPI
-      .broadcast([commentOp])
-      .then(() => resolve('SUCCESS'))
-      .catch(error => reject(error));
-  });
-};
-export const activateCampaign = company => (dispatch, getState, { steemConnectAPI }) => {
-  const username = getAuthenticatedUserName(getState());
-  const commentOp = [
-    'comment',
-    {
       parent_author: rewardPostContainerData.author,
       parent_permlink: rewardPostContainerData.permlink,
       author: username,
-      permlink: `activate-${rewardPostContainerData.author}-${generatePermlink()}`,
+      permlink: campaignPermlink,
       title: 'activate object for rewards',
       body: `Campaign ${company.name} was activated by ${username} `,
       json_metadata: JSON.stringify({

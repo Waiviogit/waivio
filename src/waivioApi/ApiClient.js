@@ -455,6 +455,42 @@ export const createCampaign = data =>
       .catch(error => reject(error));
   });
 
+export const validateActivationCampaign = data =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.activation}`, {
+      headers: headers,
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const reserveActivatedCampaign = data =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.reservation}`, {
+      headers: headers,
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const rejectReservationCampaign = data =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.rejectReservation}`, {
+      headers: headers,
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export const getCampaignsByGuideName = guideName =>
   new Promise((resolve, reject) => {
     fetch(`${config.campaignApiPrefix}${config.campaigns}${config.dashboard}/${guideName}`, {
