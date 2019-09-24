@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { message, Modal, Tag } from 'antd';
+import { Modal, Tag } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -306,17 +306,11 @@ class Rewards extends React.Component {
       })
       .then(() => {
         const updatedPropositions = this.updateProposition(companyId, false, objPermlink);
-        message.success(
-          this.props.intl.formatMessage({
-            id: 'discarded_successfully',
-            defaultMessage: 'Discarded successfully',
-          }),
-        );
         this.props.history.push(`/rewards/active`);
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })
       .catch(e => {
-        message.error(e.toString());
+        console.log(e.toString());
         this.setState({ loadingAssignDiscard: false });
       });
   };
