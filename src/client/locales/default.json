@@ -199,6 +199,7 @@
   "title_placeholder": "Add title",
   "title_error_empty": "Please enter a title.",
   "title_error_too_long": "Title can't be longer than 255 characters.",
+  "link_error_empty":  "Please enter a url.",
   "topics": "Hashtags (topics)",
   "topics_placeholder": "Add hashtags (without #) here",
   "topics_extra": "Separate topics with commas. Only lowercase letters, numbers and hyphen character is permitted.",
@@ -731,5 +732,8 @@
   "proximity": "Proximity",
   "reserve_campaign": "Reserve rewards campaign",
   "reserve_campaign_accept": "Do you want to reserve rewards campaign?",
-  "cannot_activate_company": "You cannot activate the company at the moment"
+  "cannot_activate_campaign": "You cannot activate the campaign at the moment",
+  "reject_campaign": "Reject rewards campaign",
+  "reject_campaign_accept": "Do you want to reject rewards campaign?",
+  "cannot_reject_campaign": "You cannot reject the campaign at the moment"
 }

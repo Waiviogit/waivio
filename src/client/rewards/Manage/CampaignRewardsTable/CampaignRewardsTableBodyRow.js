@@ -3,22 +3,35 @@ import { Link } from 'react-router-dom';
 import React, { useState } from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import { rewardPostContainerData } from '../../../rewards/rewardsHelper';
+import { generatePermlink } from '../../../helpers/wObjectHelper';
+import { validateActivationCampaign } from '../../../../waivioApi/ApiClient';
 import './CampaignRewardsTable.less';
 
-const CampaignRewardsTableRow = ({ currentItem, activateCampaign, intl }) => {
+const CampaignRewardsTableRow = ({ currentItem, activateCampaign, userName, intl }) => {
   const [isModalOpen, toggleModal] = useState(false);
   const [isLoading, setLoad] = useState(false);
   const isChecked = currentItem.status === 'active' || currentItem.status === 'payed';
+  const validateData = {
+    // eslint-disable-next-line no-underscore-dangle
+    campaign_id: currentItem._id,
+    guide_name: userName,
+    permlink: `activate-${rewardPostContainerData.author}-${generatePermlink()}`,
+  };
+
   const activateCamp = () => {
     setLoad(true);
-    activateCampaign(currentItem)
+    validateActivationCampaign(validateData)
       .then(() => {
-        toggleModal(false);
-        setLoad(false);
-        message.success(`Campaign '${currentItem.name}' - has been activated`);
+        activateCampaign(currentItem, validateData.permlink).then(() => {
+          toggleModal(false);
+          message.success(`Campaign '${currentItem.name}' - has been activated`);
+          setLoad(false);
+        });
       })
       .catch(() => {
         message.error(`Can't activate campaign'${currentItem.name}', try again later`);
+        setLoad(false);
       });
   };
   const handleChangeCheckbox = e => {
@@ -83,6 +96,7 @@ CampaignRewardsTableRow.propTypes = {
   activateCampaign: PropTypes.func.isRequired,
   currentItem: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
+  userName: PropTypes.string.isRequired,
 };
 
 export default injectIntl(CampaignRewardsTableRow);

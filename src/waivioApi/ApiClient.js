@@ -294,6 +294,21 @@ export const getWobjectsExpertise = (user, authorPermlink, skip = 0, limit = 30)
       .catch(error => reject(error));
   });
 
+export const getObjectExpertiseByType = (objectType, skip = 0, limit = 5) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.apiPrefix}${config.objectType}/${objectType}${config.typeExpertise}?limit=${limit}&skip=${skip}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export const getAuthorsChildWobjects = (authorPermlink, skip = 0, limit = 30) =>
   new Promise((resolve, reject) =>
     fetch(
@@ -450,6 +465,42 @@ export const createCampaign = data =>
       body: JSON.stringify(data),
     })
       .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const validateActivationCampaign = data =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.activation}`, {
+      headers: headers,
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const reserveActivatedCampaign = data =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.reservation}`, {
+      headers: headers,
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const rejectReservationCampaign = data =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.rejectReservation}`, {
+      headers: headers,
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));
