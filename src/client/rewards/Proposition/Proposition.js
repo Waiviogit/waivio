@@ -55,6 +55,12 @@ const Proposition = ({
     };
     rejectReservationCampaign(rejectData)
       .then(() => {
+        message.success(
+          intl.formatMessage({
+            id: 'discarded_successfully',
+            defaultMessage: 'Discarded successfully',
+          }),
+        );
         discardProposition({
           companyAuthor: proposition.guide.name,
           companyPermlink: proposition.activation_permlink,
@@ -63,7 +69,14 @@ const Proposition = ({
           unreservationPermlink,
         });
       })
-      .catch(error => console.log(error));
+      .catch(() => {
+        message.error(
+          intl.formatMessage({
+            id: 'cannot_reject_campaign',
+            defaultMessage: 'You cannot reject the campaign at the moment',
+          }),
+        );
+      });
   };
 
   const [isModalOpen, openModal] = useState(false);
@@ -82,18 +95,18 @@ const Proposition = ({
     };
     reserveActivatedCampaign(reserveData)
       .then(() => {
-        assignProposition({
-          companyAuthor: proposition.guide.name,
-          companyPermlink: proposition.activation_permlink,
-          companyId: proposition._id,
-          objPermlink: wobj.author_permlink,
-        });
         message.success(
           intl.formatMessage({
             id: 'assigned_successfully',
             defaultMessage: 'Assigned successfully',
           }),
         );
+        assignProposition({
+          companyAuthor: proposition.guide.name,
+          companyPermlink: proposition.activation_permlink,
+          companyId: proposition._id,
+          objPermlink: wobj.author_permlink,
+        });
         openModal(false);
         setReservation(true);
       })

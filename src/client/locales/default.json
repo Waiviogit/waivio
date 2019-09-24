@@ -731,7 +731,8 @@
   "proximity": "Proximity",
   "reserve_campaign": "Reserve rewards campaign",
   "reserve_campaign_accept": "Do you want to reserve rewards campaign?",
-  "cannot_activate_company": "You cannot activate the company at the moment",
+  "cannot_activate_campaign": "You cannot activate the campaign at the moment",
   "reject_campaign": "Reject rewards campaign",
-  "reject_campaign_accept": "Do you want to reject rewards campaign?"
+  "reject_campaign_accept": "Do you want to reject rewards campaign?",
+  "cannot_reject_campaign": "You cannot reject the campaign at the moment"
 }
