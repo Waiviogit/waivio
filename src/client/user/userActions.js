@@ -193,7 +193,6 @@ export const declineProposition = ({
       }),
     },
   ];
-  console.log('DATA', commentOp);
   return new Promise((resolve, reject) => {
     steemConnectAPI
       .broadcast([commentOp])
@@ -222,8 +221,6 @@ export const activateCampaign = (company, campaignPermlink) => (
       }),
     },
   ];
-
-  console.log('commentOp', commentOp);
 
   return new Promise((resolve, reject) => {
     steemConnectAPI

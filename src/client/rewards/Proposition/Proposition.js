@@ -30,8 +30,6 @@ const Proposition = ({
   assigned,
   post,
   getSingleComment,
-  setReservedObject,
-  setReserved,
 }) => {
   const proposedWobj = getClientWObj(wobj);
   const requiredObjectName = getFieldWithMaxWeight(
@@ -69,6 +67,7 @@ const Proposition = ({
   };
 
   const [isModalOpen, openModal] = useState(false);
+  const [isReserved, setReservation] = useState(false);
 
   const reserveOnClickHandler = () => {
     openModal(!isModalOpen);
@@ -81,8 +80,6 @@ const Proposition = ({
       user_name: proposition.guide.name,
       reservation_permlink: proposition._id,
     };
-    setReservedObject(proposition.required_object.author_permlink);
-    setReserved();
     reserveActivatedCampaign(reserveData)
       .then(() => {
         assignProposition({
@@ -98,6 +95,7 @@ const Proposition = ({
           }),
         );
         openModal(false);
+        setReservation(true);
       })
       .catch(() => {
         message.error(
@@ -156,7 +154,7 @@ const Proposition = ({
           />
         ) : (
           <React.Fragment>
-            {!assigned && (
+            {!assigned && !isReserved && (
               <div className="RewardsHeader-button">
                 <Button
                   type="primary"

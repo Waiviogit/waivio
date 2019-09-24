@@ -464,7 +464,7 @@ class CreateRewardForm extends React.Component {
   render() {
     const { intl } = this.props;
     const { getFieldDecorator } = this.props.form;
-    const { hasRequireObject, hasReviewObject, loading } = this.state;
+    const { hasRequireObject, hasReviewObject, loading, targetDays } = this.state;
     return (
       <Form layout="vertical" onSubmit={this.handleSubmit}>
         <Form.Item
@@ -729,7 +729,7 @@ class CreateRewardForm extends React.Component {
             defaultMessage: 'Target days for reviews',
           })}
         >
-          <TargetDaysTable setTargetDays={this.setTargetDays} />
+          <TargetDaysTable targetDays={targetDays} setTargetDays={this.setTargetDays} />
           <div className="CreateReward__field-caption">
             {intl.formatMessage({
               id: 'reservation_period_will_dynamically_adjusted',

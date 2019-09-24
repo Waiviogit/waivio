@@ -90,8 +90,6 @@ class Rewards extends React.Component {
     objectDetails: {},
     activeFilters: { guideNames: [], types: [] },
     isSearchAreaFilter: false,
-    reservedObject: {},
-    isReserved: false,
   };
 
   componentDidMount() {
@@ -116,29 +114,6 @@ class Rewards extends React.Component {
       }
     } else this.setState({ propositions: [{}] }); // for map, not equal propositions
   }
-  componentDidUpdate() {
-    const { username, match } = this.props;
-    const { radius, coordinates, sort, activeFilters, isReserved, propositions } = this.state;
-    if (isReserved) {
-      this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
-      if (
-        propositions.length &&
-        propositions[0].objects &&
-        propositions[0].objects.length &&
-        propositions[0].objects[0].permlink !== null
-      ) {
-        this.setReserved();
-      }
-    }
-  }
-
-  setReservedObject = obj => {
-    this.setState({ reservedObject: obj });
-  };
-
-  setReserved = () => {
-    this.setState({ isReserved: !this.state.isReserved });
-  };
 
   getRequiredObjects = () =>
     _.map(this.state.propositions, proposition => proposition.required_object);
@@ -280,17 +255,16 @@ class Rewards extends React.Component {
       .then(() => {
         const updatedPropositions = this.updateProposition(companyId, true, objPermlink);
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
-        this.props.history.push(`/rewards/reserved/${this.state.reservedObject}`);
       })
       .catch(() => {
         this.setState({ loadingAssignDiscard: false });
       });
   };
   updateProposition = (propsId, isAssign, objPermlink) =>
-    _.map(this.state.propositions, propos => {
+    _.map(this.state.propositions, proposition => {
       // eslint-disable-next-line no-param-reassign
-      if (propos._id === propsId) {
-        _.map(propos.users, user => {
+      if (proposition._id === propsId) {
+        _.map(proposition.users, user => {
           if (user.name === this.props.username) {
             if (_.includes(user.approved_objects, objPermlink)) {
               const newUser = user;
@@ -302,7 +276,7 @@ class Rewards extends React.Component {
           return user;
         });
       }
-      return propos;
+      return proposition;
     });
 
   toggleModal = proposition => {
@@ -367,6 +341,7 @@ class Rewards extends React.Component {
             ),
         );
       }
+
       return _.map(propositions, proposition =>
         _.map(
           proposition.objects,
@@ -386,8 +361,6 @@ class Rewards extends React.Component {
                 isModalDetailsOpen={isModalDetailsOpen}
                 toggleModal={this.toggleModal}
                 assigned={wobj.assigned}
-                setReservedObject={this.setReservedObject}
-                setReserved={this.setReserved}
               />
             ),
         ),
