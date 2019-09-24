@@ -89,6 +89,14 @@
     font-stretch: normal;
     line-height: normal;
     letter-spacing: normal;
+    width: fit-content;
+    align-self: flex-start;
+    @media only screen and (min-width: 320px), @xsmall, @small {
+      align-self: center;
+    }
+    @media @medium, @large {
+      align-self: flex-start;
+    }
   }
 
   &__status-wrap {
