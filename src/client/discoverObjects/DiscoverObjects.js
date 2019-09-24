@@ -4,10 +4,10 @@ import Helmet from 'react-helmet';
 import { injectIntl } from 'react-intl';
 import Affix from '../components/Utils/Affix';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
-import DiscoverFiltersSidebar from './DiscoverFiltersSidebar/DiscoverFiltersSidebar';
 import DiscoverObjectsContent from './DiscoverObjectsContent';
 import ObjectsContainer from '../objects/ObjectsContainer';
 import './DiscoverObjects.less';
+import RightSidebar from '../app/Sidebar/RightSidebar';
 
 const DiscoverObjects = ({ intl, history, match }) => {
   const isTypeChosen = Boolean(match.params.typeName);
@@ -28,7 +28,7 @@ const DiscoverObjects = ({ intl, history, match }) => {
         {isTypeChosen && (
           <Affix className="rightContainer" stickPosition={77}>
             <div className="right">
-              <DiscoverFiltersSidebar />
+              <RightSidebar />
             </div>
           </Affix>
         )}

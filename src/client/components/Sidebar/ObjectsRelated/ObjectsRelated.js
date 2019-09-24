@@ -104,7 +104,7 @@ const ObjectsRelated = ({ wobject }) => {
           </h4>
           <div className="SidebarContentBlock__content">{renderObjects}</div>
           {renderButtons()}
-          <div onWheel={onWheelHandler}>
+          <div onWheel={_.throttle(onWheelHandler, 100)}>
             <Modal
               title="Related"
               visible={showModal}
