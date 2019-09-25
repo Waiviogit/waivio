@@ -228,3 +228,33 @@ export const activateCampaign = (company, campaignPermlink) => (
       .catch(error => reject(error));
   });
 };
+
+export const inactivateCampaign = (company, inactivatePermlink) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const username = getAuthenticatedUserName(getState());
+  const commentOp = [
+    'comment',
+    {
+      parent_author: username,
+      parent_permlink: company.activation_permlink,
+      author: username,
+      permlink: inactivatePermlink,
+      title: 'unactivate object for rewards',
+      body: `Campaign ${company.name} was inactivated by ${username} `,
+      json_metadata: JSON.stringify({
+        // eslint-disable-next-line no-underscore-dangle
+        waivioRewards: { type: 'waivio_stop_campaign', campaign_id: company._id },
+      }),
+    },
+  ];
+
+  return new Promise((resolve, reject) => {
+    steemConnectAPI
+      .broadcast([commentOp])
+      .then(() => resolve('SUCCESS'))
+      .catch(error => reject(error));
+  });
+};

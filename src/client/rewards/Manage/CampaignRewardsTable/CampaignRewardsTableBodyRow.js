@@ -5,10 +5,19 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { rewardPostContainerData } from '../../../rewards/rewardsHelper';
 import { generatePermlink } from '../../../helpers/wObjectHelper';
-import { validateActivationCampaign } from '../../../../waivioApi/ApiClient';
+import {
+  validateActivationCampaign,
+  validateInactivationCampaign,
+} from '../../../../waivioApi/ApiClient';
 import './CampaignRewardsTable.less';
 
-const CampaignRewardsTableRow = ({ currentItem, activateCampaign, userName, intl }) => {
+const CampaignRewardsTableRow = ({
+  currentItem,
+  activateCampaign,
+  inactivateCampaign,
+  userName,
+  intl,
+}) => {
   const [isModalOpen, toggleModal] = useState(false);
   const [isLoading, setLoad] = useState(false);
   const isChecked = currentItem.status === 'active' || currentItem.status === 'payed';
@@ -17,6 +26,14 @@ const CampaignRewardsTableRow = ({ currentItem, activateCampaign, userName, intl
     campaign_id: currentItem._id,
     guide_name: userName,
     permlink: `activate-${rewardPostContainerData.author}-${generatePermlink()}`,
+  };
+
+  const validateInactivationData = {
+    // eslint-disable-next-line no-underscore-dangle
+    campaign_permlink: currentItem.activation_permlink,
+    guide_name: userName,
+    // eslint-disable-next-line no-underscore-dangle
+    permlink: `deactivation-${currentItem._id}-${generatePermlink()}`,
   };
 
   const activateCamp = () => {
@@ -35,18 +52,28 @@ const CampaignRewardsTableRow = ({ currentItem, activateCampaign, userName, intl
       });
   };
 
-  const deactivateCamp = () => {
-    setLoad(true);
+  const inactivateCamp = () => {
+    toggleModal(false);
+    validateInactivationCampaign(validateInactivationData)
+      .then(() => {
+        inactivateCampaign(currentItem, validateInactivationData.permlink).then(() => {
+          toggleModal(false);
+          message.success(`Campaign '${currentItem.name}' - has been inactivated`);
+          setLoad(false);
+        });
+      })
+      .catch(() => {
+        message.error(`Can't activate campaign'${currentItem.name}', try again later`);
+        setLoad(false);
+      });
   };
 
-  console.log('current', currentItem);
-
   const handleChangeCheckbox = e => {
-    console.log(e.target.checked);
     if (e.target.checked) {
       e.preventDefault();
       toggleModal(true);
     } else {
+      e.preventDefault();
       toggleModal(true);
     }
   };
@@ -88,7 +115,7 @@ const CampaignRewardsTableRow = ({ currentItem, activateCampaign, userName, intl
         }
         maskClosable={false}
         visible={isModalOpen}
-        onOk={!isChecked ? activateCamp : deactivateCamp}
+        onOk={!isChecked ? activateCamp : inactivateCamp}
         okButtonProps={{ disabled: isLoading, loading: isLoading }}
         cancelButtonProps={{ disabled: isLoading }}
         onCancel={() => {
@@ -121,6 +148,7 @@ const CampaignRewardsTableRow = ({ currentItem, activateCampaign, userName, intl
 
 CampaignRewardsTableRow.propTypes = {
   activateCampaign: PropTypes.func.isRequired,
+  inactivateCampaign: PropTypes.func.isRequired,
   currentItem: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
   userName: PropTypes.string.isRequired,
