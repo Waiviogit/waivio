@@ -736,6 +736,6 @@
   "cannot_activate_campaign": "You cannot activate the campaign at the moment",
   "reject_campaign": "Reject rewards campaign",
   "reject_campaign_accept": "Do you want to reject rewards campaign?",
-  "deactivate_campaign": "Deactivate rewards campaign"
+  "deactivate_campaign": "Deactivate rewards campaign",
   "cannot_reject_campaign": "You cannot reject the campaign at the moment"
 }
