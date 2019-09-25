@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
 import { isEmpty, get } from 'lodash';
-import { getDiscussionsFromAPI } from '../helpers/apiHelpers';
 import {
   createAsyncActionType,
   getFeedFromState,
@@ -55,11 +54,13 @@ export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) =>
 
   dispatch({
     type: GET_FEED_CONTENT.ACTION,
-    payload: getDiscussionsFromAPI(
-      sortBy,
-      { category: sortBy, tag: category, limit, sortBy, user_languages },
-      ApiClient,
-    ),
+    payload: ApiClient.getFeedContent(sortBy, {
+      category: sortBy,
+      tag: category,
+      skip: 0,
+      limit,
+      user_languages,
+    }),
     meta: {
       sortBy,
       category: category || 'all',
@@ -105,31 +106,20 @@ export const getMoreUserFeedContent = ({ userName, limit = 20 }) => (dispatch, g
 export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatch, getState) => {
   const state = getState();
   const feed = getFeed(state);
-  const posts = getPosts(state);
   const feedContent = getFeedFromState(sortBy, category, feed);
   const user_languages = getUserLocalesArray(getState);
 
   if (!feedContent.length) return Promise.resolve(null);
 
-  const lastPost = posts[feedContent[feedContent.length - 1]];
-
-  const startAuthor = lastPost.author;
-  const startPermlink = lastPost.permlink;
-
   return dispatch({
     type: GET_MORE_FEED_CONTENT.ACTION,
-    payload: getDiscussionsFromAPI(
-      sortBy,
-      {
-        category: sortBy,
-        tag: category,
-        limit: limit + 1,
-        start_author: startAuthor,
-        start_permlink: startPermlink,
-        user_languages,
-      },
-      ApiClient,
-    ).then(postsData => postsData.slice(1)),
+    payload: ApiClient.getFeedContent(sortBy, {
+      category: sortBy,
+      tag: category,
+      skip: feedContent.length,
+      limit,
+      user_languages,
+    }),
     meta: {
       sortBy,
       category: category || 'all',

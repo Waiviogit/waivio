@@ -224,11 +224,11 @@ describe('getFieldWithMaxWeight', () => {
 describe('getFieldsWithMaxWeight', () => {
   it('should return empty object if wObj is empty', () => {
     const wObject = {};
-    expect(getFieldsWithMaxWeight(wObject)).toEqual('');
+    expect(getFieldsWithMaxWeight(wObject)).toEqual(null);
   });
   it('should return empty object if wObj.fields is empty', () => {
     const wObject = { fields: [] };
-    expect(getFieldsWithMaxWeight(wObject)).toEqual('');
+    expect(getFieldsWithMaxWeight(wObject)).toEqual(null);
   });
   it('should return object with actual fields', () => {
     const expected = {

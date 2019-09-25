@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import LANGUAGES from '../translations/languages';
 import { getClientWObj } from '../adapters';
 import {
   supportedObjectFields,
@@ -47,7 +48,18 @@ export const getFieldWithMaxWeight = (wObject, currentField, defaultValue = '') 
   return defaultValue;
 };
 
-export const getFieldsWithMaxWeight = wObj => {
+export const getFieldsWithMaxWeight = (wObj, usedLocale = 'en-US', defaultLocale = 'en-US') => {
+  if (!wObj || (wObj && _.isEmpty(wObj.fields))) return null;
+
+  const usedLang =
+    LANGUAGES.find(language => language.variants.indexOf(usedLocale) !== -1) || LANGUAGES[0];
+  const LOCALES = {
+    CURRENT: usedLang.id,
+    DEFAULT: defaultLocale,
+    OTHER: 'otherLanguages',
+  };
+  const localesToFilter = new Set(Object.values(LOCALES));
+  // fields with complex body - contains serialized objects, need to parse
   const complexFields = [
     objectFields.button,
     objectFields.address,
@@ -55,19 +67,40 @@ export const getFieldsWithMaxWeight = wObj => {
     objectFields.link,
     objectFields.status,
   ];
-  if (!wObj || (wObj && _.isEmpty(wObj.fields))) return '';
-  let maxWeightedFields = wObj.fields
-    .filter(f => !Object.keys(wObj).includes(f.name))
-    .reduce((acc, curr) => {
-      if (acc[curr.name]) {
-        if (curr.weight > acc[curr.name].weight) {
+
+  const fieldsByLocale = {
+    [LOCALES.CURRENT]: [],
+    [LOCALES.DEFAULT]: [],
+    [LOCALES.OTHER]: [],
+  };
+
+  wObj.fields
+    .filter(f => !Object.keys(wObj).includes(f.name)) // skip fields which already exist as wObj properties
+    .forEach(field => {
+      const fieldLang = LANGUAGES.find(language => language.variants.indexOf(field.locale) !== -1);
+      if (fieldLang && localesToFilter.has(fieldLang.id)) {
+        fieldsByLocale[field.locale].push(field);
+      } else {
+        fieldsByLocale.otherLanguages.push(field);
+      }
+    });
+
+  let maxWeightedFields = {};
+  localesToFilter.forEach(locale => {
+    fieldsByLocale[locale]
+      .filter(field => !Object.keys(maxWeightedFields).includes(field.name))
+      .reduce((acc, curr) => {
+        if (acc[curr.name]) {
+          if (curr.weight > acc[curr.name].weight) {
+            acc[curr.name] = curr;
+          }
+        } else {
           acc[curr.name] = curr;
         }
-      } else {
-        acc[curr.name] = curr;
-      }
-      return acc;
-    }, {});
+        return acc;
+      }, maxWeightedFields);
+  });
+
   maxWeightedFields = _.mapValues(maxWeightedFields, 'body');
   complexFields.forEach(field => {
     if (maxWeightedFields[field]) {
