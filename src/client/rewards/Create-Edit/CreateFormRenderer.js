@@ -1,0 +1,404 @@
+import React from "react";
+import {Button, Checkbox, DatePicker, Form, Input, InputNumber, Select} from "antd";
+import PropTypes from "prop-types";
+import _ from "lodash";
+import {Link} from 'react-router-dom';
+import OBJECT_TYPE from "../../object/const/objectTypes";
+import SearchUsersAutocomplete from "../../components/EditorUser/SearchUsersAutocomplete";
+import TargetDaysTable from "./TargetDaysTable/TargetDaysTable";
+import SearchObjectsAutocomplete from "../../components/EditorObject/SearchObjectsAutocomplete";
+import ReviewItem from "./ReviewItem";
+import {validatorMessagesCreator, validatorsCreator} from './validators';
+import fieldsData from './fieldsData';
+
+const { Option } = Select;
+
+const CreateFormRenderer = (props) => {
+    const {
+      campaignData,
+      handlers,
+      currentSteemDollarPrice,
+      user,
+      sponsorsToAction,
+      compensationAccount,
+      primaryObject,
+      objectsToAction,
+      pageObjects,
+      loading,
+      hasRequireObject,
+      parentPermlink,
+      hasReviewObject,
+      getFieldValue,
+      getFieldDecorator
+    } = props;
+
+    const messages = validatorMessagesCreator(handlers.messageFactory);
+    const validators = validatorsCreator(user, currentSteemDollarPrice, messages, getFieldValue, primaryObject, objectsToAction);
+    const fields = fieldsData(handlers.messageFactory, validators, campaignData);
+
+    const notEnoughMoneyWarn = parseFloat(user.sbd_balance) * currentSteemDollarPrice <= 0 ? <div className='notEnoughMoneyWarn'>
+      {handlers.messageFactory('balance_more_than_zero', 'Campaign could not be created. Your balance should be more than zero.')}
+    </div> : null;
+
+    const renderCompensationAccount = !_.isEmpty(compensationAccount) ? (
+      <div className="CreateReward__objects-wrap">
+        <ReviewItem
+          key={compensationAccount}
+          object={compensationAccount}
+          loading={loading}
+          removeReviewObject={handlers.removeCompensationAccount}
+          isUser
+        />
+      </div>
+    ) : null;
+
+    const sponsorsIdsToOmit = !_.isEmpty(sponsorsToAction) ? _.map(sponsorsToAction, obj => obj.account) : [];
+
+    const renderSponsorsList = !_.isEmpty(sponsorsToAction) ? _.map(sponsorsToAction, sponsor => (
+      <ReviewItem
+        key={sponsor.account}
+        object={sponsor}
+        loading={loading}
+        removeReviewObject={handlers.removeSponsorObject}
+        isUser
+      />
+    )) : null;
+
+    const renderPrimaryObject = !_.isEmpty(primaryObject) && (
+      <ReviewItem
+        key={primaryObject.id}
+        object={primaryObject}
+        loading={loading}
+        removeReviewObject={handlers.removePrimaryObject}
+      />
+    );
+
+    const renderSecondaryObjects = !_.isEmpty(objectsToAction) ? _.map(objectsToAction, obj => (
+      <ReviewItem
+        key={obj.id}
+        object={obj}
+        loading={loading}
+        removeReviewObject={handlers.removeSecondaryObject}
+      />
+    )) : null;
+
+    const pageObjectsIdsToOmit = !_.isEmpty(pageObjects) ? _.map(pageObjects, obj => obj.id) : [];
+
+    const renderPageObjectsList = !_.isEmpty(pageObjects) ? _.map(pageObjects, obj => (
+      <ReviewItem
+        key={obj.id}
+        object={obj}
+        loading={loading}
+        removeReviewObject={handlers.removePageObject}
+      />
+    )) : null;
+
+    return (
+      <React.Fragment>
+        {notEnoughMoneyWarn}
+        <Form layout="vertical" onSubmit={handlers.handleSubmit}>
+          <Form.Item label={fields.campaignName.label}>
+            {
+              getFieldDecorator(fields.campaignName.name, { rules: fields.campaignName.rules,})(<Input disabled={loading} />)
+            }
+            <div className="CreateReward__field-caption">
+              {fields.campaignName.caption}
+            </div>
+          </Form.Item>
+
+          <Form.Item label={fields.campaignType.label}>
+            {getFieldDecorator(fields.campaignType.name, { rules: fields.campaignType.rules,})
+            (
+              <Select placeholder={fields.campaignType.select} onChange={handlers.handleSelectChange} disabled={loading}>
+                <Option value="reviews">
+                  {fields.campaignType.options.reviews}
+                </Option>
+              </Select>
+            )}
+            <div className="CreateReward__field-caption">
+              {fields.campaignType.caption}
+            </div>
+          </Form.Item>
+
+          <Form.Item label={fields.budget.label}>
+            {
+              getFieldDecorator(fields.budget.name, { rules: fields.budget.rules,})(<Input type="number" disabled={loading} step={0.1} />)
+            }
+            <div className="CreateReward__field-caption">
+              {fields.budget.caption}
+            </div>
+          </Form.Item>
+
+          <Form.Item label={fields.reward.label}>
+            {
+              getFieldDecorator(fields.reward.name, { rules: fields.reward.rules,})(<Input type="number" disabled={loading} step={0.1} />)
+            }
+            <div className="CreateReward__field-caption">
+              {fields.reward.caption}
+            </div>
+          </Form.Item>
+
+          <Form.Item label={fields.findSponsors.label}>
+            {
+              getFieldDecorator(fields.findSponsors.name)
+              (<SearchUsersAutocomplete
+                allowClear={false}
+                disabled={loading}
+                handleSelect={handlers.handleAddSponsorToList}
+                itemsIdsToOmit={sponsorsIdsToOmit}
+                placeholder={fields.findSponsors.placeholder}
+                style={{ width: '100%' }}
+              />)
+            }
+            <div className="CreateReward__field-caption">
+              {fields.findSponsors.caption}
+            </div>
+            <div className="CreateReward__objects-wrap">
+              {renderSponsorsList}
+            </div>
+          </Form.Item>
+
+          <Form.Item label={fields.compensationAccount.label}>
+            {
+              getFieldDecorator(fields.compensationAccount.name)
+              (<SearchUsersAutocomplete
+                allowClear={false}
+                disabled={loading}
+                handleSelect={handlers.handleSetCompensationAccount}
+                placeholder={fields.compensationAccount.placeholder}
+                style={{ width: '100%' }}
+              />)
+            }
+            <div className="CreateReward__field-caption">
+              {fields.compensationAccount.caption}
+            </div>
+            <div className="CreateReward__objects-wrap">
+              {renderCompensationAccount}
+            </div>
+          </Form.Item>
+
+          <Form.Item label={fields.reservationPeriod.label}>
+            {
+              getFieldDecorator(fields.reservationPeriod.name, {rules: fields.reservationPeriod.rules, initialValue: fields.reservationPeriod.initialValue,})(
+                <Input type="number" disabled={loading} />
+              )
+            }
+            <div className="CreateReward__field-caption">
+              {fields.reservationPeriod.caption}
+            </div>
+          </Form.Item>
+
+          <Form.Item label={fields.setTargetDays.label}>
+            {
+              getFieldDecorator(fields.setTargetDays.name)(<TargetDaysTable setTargetDays={handlers.setTargetDays} />)
+            }
+            <div className="CreateReward__field-caption">
+              {fields.setTargetDays.caption}
+            </div>
+          </Form.Item>
+
+          <div className="CreateReward__block-title">
+            {handlers.messageFactory('eligible_reviews','Eligible reviews (post requirements)')}
+            :
+          </div>
+
+          <Form.Item label={fields.minPhotos.label}>
+            {
+              getFieldDecorator(fields.minPhotos.name, {rules: fields.minPhotos.rules, initialValue: fields.minPhotos.initialValue,})(
+                <Input type="number" disabled={loading} />
+              )
+            }
+          </Form.Item>
+
+          <Form.Item label={fields.primaryObject.label} >
+            {getFieldDecorator(fields.primaryObject.name, {rules: fields.primaryObject.rules})(
+              <SearchObjectsAutocomplete
+                allowClear={false}
+                itemsIdsToOmit={handlers.getObjectsToOmit()}
+                style={{ width: '100%' }}
+                placeholder={fields.primaryObject.placeholder}
+                handleSelect={handlers.setPrimaryObject}
+                isPermlinkValue={false}
+                disabled={loading}
+              />
+            )}
+            <div className="CreateReward__field-caption">
+              {fields.primaryObject.caption}
+            </div>
+            <div className="CreateReward__objects-wrap">
+              {renderPrimaryObject}
+            </div>
+          </Form.Item>
+
+          <Form.Item label={fields.secondaryObject.label} >
+            {getFieldDecorator( fields.secondaryObject.name, {rules: fields.secondaryObject.rules})(
+              <SearchObjectsAutocomplete
+                allowClear={false}
+                itemsIdsToOmit={handlers.getObjectsToOmit()}
+                style={{ width: '100%' }}
+                handleSelect={handlers.handleAddSecondaryObjectToList}
+                isPermlinkValue={false}
+                disabled={loading || _.isEmpty(primaryObject)}
+                parentPermlink={parentPermlink}
+                autoFocus={false}
+              />
+            )}
+            <div className="CreateReward__field-caption">
+              {fields.secondaryObject.caption}
+            </div>
+            <div className="CreateReward__objects-wrap">
+              {renderSecondaryObjects}
+            </div>
+          </Form.Item>
+
+          <Form.Item label={fields.expiredAt.label}>
+            {
+              getFieldDecorator(fields.expiredAt.name, {rules: fields.expiredAt.rules,})(<DatePicker allowClear={false} />)
+            }
+          </Form.Item>
+
+          <div className="CreateReward__block-title">
+            {handlers.messageFactory('eligible_users','Eligible users')}
+            :
+          </div>
+
+          <Form.Item label={fields.minSteemReputation.label}>
+            {
+              getFieldDecorator(fields.minSteemReputation.name, {rules: fields.minSteemReputation.rules, initialValue: fields.minSteemReputation.initialValue,})(
+                <Input type="number" disabled={loading} />
+              )
+            }
+            <div className="CreateReward__field-caption">
+              {fields.minSteemReputation.caption}
+            </div>
+          </Form.Item>
+
+          <Form.Item label={fields.minExpertise.label}>
+            {
+              getFieldDecorator(fields.minExpertise.name, {rules: fields.minExpertise.rules,})(<Input type="number" disabled={loading} />)
+            }
+            <div className="CreateReward__field-caption">
+              {fields.minExpertise.caption}
+            </div>
+          </Form.Item>
+
+          <Form.Item label={fields.minFollowers.label}>
+            {
+              getFieldDecorator(fields.minFollowers.name, {rules: fields.minFollowers.rules, initialValue: fields.minFollowers.initialValue,})(
+                <Input type="number" disabled={loading} />
+              )
+            }
+            <div className="CreateReward__field-caption">
+              {fields.minFollowers.caption}
+            </div>
+          </Form.Item>
+
+          <Form.Item label={fields.minPosts.label}>
+            {
+              getFieldDecorator(fields.minPosts.name, {rules: fields.minPosts.rules, initialValue: fields.minPosts.initialValue,})(
+                <Input type="number" disabled={loading} />
+              )
+            }
+            <div className="CreateReward__field-caption">
+              {fields.minPosts.caption}
+            </div>
+          </Form.Item>
+
+          <Form.Item>
+            <h3 className="CreateReward header">{fields.legalInfo.header}</h3>
+            <p>{fields.legalInfo.p_1}</p>
+            <br />
+            <p>{fields.legalInfo.p_2}</p>
+          </Form.Item>
+
+          <Form.Item label={fields.description.label}>
+            {
+              getFieldDecorator(fields.description.name, {rules: fields.description.rules,})(<Input.TextArea disabled={loading} />)
+            }
+            <div className="CreateReward__field-caption">
+              {fields.description.caption}
+            </div>
+          </Form.Item>
+
+          <Form.Item label={fields.agreement.label}>
+            {
+              getFieldDecorator(fields.agreement.name)
+              (<SearchObjectsAutocomplete
+                className="menu-item-search"
+                itemsIdsToOmit={pageObjectsIdsToOmit}
+                placeholder={fields.agreement.placeholder}
+                handleSelect={handlers.handleAddPageObject}
+                objectType={OBJECT_TYPE.PAGE}
+                isPermlinkValue={false}
+                disabled={loading}
+                autoFocus={false}
+              />)
+            }
+            <div className="CreateReward__objects-wrap">
+              {renderPageObjectsList}
+            </div>
+          </Form.Item>
+
+          <Form.Item label={fields.usersLegalNotice.label}>
+            {
+              getFieldDecorator(fields.usersLegalNotice.name, {rules: fields.usersLegalNotice.rules,})(<Input.TextArea disabled={loading} />)
+            }
+            <div className="CreateReward__field-caption">
+              {fields.usersLegalNotice.caption}
+              .
+            </div>
+          </Form.Item>
+
+          <Form.Item>
+            {getFieldDecorator(fields.checkboxAgree.name, {
+              rules: fields.checkboxAgree.rules,
+              valuePropName: fields.checkboxAgree.valuePropName,
+            })(
+              <Checkbox disabled={loading}>
+                <span className="CreateReward__item-title ant-form-item-required">
+                  {fields.checkboxAgree.textBeforeLink}
+                  <Link to={fields.checkboxAgree.link.to}>
+                    {fields.checkboxAgree.link.text}
+                  </Link>
+                  {fields.checkboxAgree.textAfterLink}
+                </span>
+              </Checkbox>,
+            )}
+          </Form.Item>
+
+          <Form.Item label={fields.commissionToWaivio.label}>
+            {getFieldDecorator(fields.commissionToWaivio.name, {
+              rules: fields.commissionToWaivio.rules,
+              initialValue: fields.commissionToWaivio.initialValue,
+            })(
+              <InputNumber
+                className="CreateReward ant-input-number"
+                min={5}
+                max={100}
+                formatter={value => `${value}%`}
+                parser={value => value.replace('%', '')}
+              />,
+            )}
+            <div className="CreateReward__field-caption">
+              {fields.commissionToWaivio.caption}
+            </div>
+          </Form.Item>
+
+          <div className="CreateReward__block-button">
+            <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>
+              {fields.createButton.text}
+            </Button>
+            <span>{fields.createButton.spanText}</span>
+          </div>
+        </Form>
+      </React.Fragment>
+
+    )
+};
+
+CreateFormRenderer.propTypes = {
+  user: PropTypes.shape().isRequired,
+  handlers: PropTypes.shape().isRequired
+};
+
+export  default CreateFormRenderer;

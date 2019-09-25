@@ -4,9 +4,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Link } from 'react-router-dom';
+import { Link, Route, Switch } from 'react-router-dom';
 import _ from 'lodash';
 import {
   getAuthenticatedUser,
@@ -26,7 +27,7 @@ import {
   declineProposition,
   getCoordinates,
 } from '../user/userActions';
-import CreateRewardForm from './Create/CreateRewardForm';
+import CreateRewardForm from './Create-Edit/CreateRewardForm';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getTextByFilterKey, preparePropositionReqData } from './rewardsHelper';
@@ -40,6 +41,7 @@ import RewardBreadcrumb from './RewardsBreadcrumb/RewardBreadcrumb';
 import SortSelector from '../components/SortSelector/SortSelector';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import MatchBot from './MatchBot/MatchBot';
+import SidebarMenu from "../components/Sidebar/SidebarMenu";
 
 @withRouter
 @injectIntl
@@ -128,61 +130,7 @@ class Rewards extends React.Component {
     this.getPropositions({ username, match, area: coordinates, radius, sort, activeFilters });
   };
 
-  getCampaignsLayout = (
-    hasMore,
-    IsRequiredObjectWrap,
-    loading,
-    filterKey,
-    username,
-    match,
-    propositions,
-  ) =>
-    !this.state.loadingCampaigns ? (
-      <React.Fragment>
-        <RewardBreadcrumb
-          tabText={getTextByFilterKey(this.props.intl, filterKey)}
-          filterKey={filterKey}
-          reqObject={
-            !IsRequiredObjectWrap && propositions && propositions[0]
-              ? propositions[0].required_object
-              : null
-          }
-        />
-        {this.state.isSearchAreaFilter && (
-          <Tag className="ttc" key="search-area-filter" closable onClose={this.resetMapFilter}>
-            <FormattedMessage id="search_area" defaultMessage="Search area" />
-          </Tag>
-        )}
-        <SortSelector sort={this.state.sort} onChange={this.handleSortChange}>
-          <SortSelector.Item key="reward">
-            <FormattedMessage id="amount_sort" defaultMessage="amount">
-              {msg => msg}
-            </FormattedMessage>
-          </SortSelector.Item>
-          <SortSelector.Item key="date">
-            <FormattedMessage id="expiry_sort" defaultMessage="expiry">
-              {msg => msg}
-            </FormattedMessage>
-          </SortSelector.Item>
-          <SortSelector.Item key="proximity">
-            <FormattedMessage id="proximity_sort" defaultMessage="proximity">
-              {msg => msg}
-            </FormattedMessage>
-          </SortSelector.Item>
-        </SortSelector>
-        <ReduxInfiniteScroll
-          elementIsScrollable={false}
-          hasMore={hasMore}
-          loadMore={this.handleLoadMore}
-          loadingMore={loading}
-          loader={<Loading />}
-        >
-          {this.campaignsLayoutWrapLayout(IsRequiredObjectWrap, filterKey, username, match)}
-        </ReduxInfiniteScroll>
-      </React.Fragment>
-    ) : (
-      <Loading />
-    );
+
 
   setFilterValue = (filter, key) => {
     const { username, match } = this.props;
@@ -407,53 +355,104 @@ class Rewards extends React.Component {
       );
     }
   };
-
-  campaignItemsWrap = location => {
-    const { match, username, cryptosPriceHistory, user } = this.props;
-    const { loading, hasMore, propositions } = this.state;
-    const filterKey = match.params.filterKey;
-    const IsRequiredObjectWrap = !match.params.campaignParent;
-    const currentSteemDollarPrice =
-      cryptosPriceHistory && cryptosPriceHistory.SBD && cryptosPriceHistory.SBD.priceDetails
-        ? cryptosPriceHistory.SBD.priceDetails.currentUSDPrice
-        : 0;
-    switch (location.pathname) {
-      case '/rewards/create':
-        return (
-          <CreateRewardForm
-            userName={username}
-            user={user}
-            currentSteemDollarPrice={currentSteemDollarPrice}
-          />
-        );
-      case '/rewards/manage':
-        return <Manage userName={username} />;
-      case '/rewards/match-bot':
-        return <MatchBot userName={username} />;
-      default:
-        return this.getCampaignsLayout(
-          hasMore,
-          IsRequiredObjectWrap,
-          loading,
-          filterKey,
-          username,
-          match,
-          propositions,
-        );
-    }
-  };
+  //
+  // campaignItemsWrap = () => {
+  //   const { match, username, cryptosPriceHistory, user } = this.props;
+  //   const { loading, hasMore, propositions } = this.state;
+  //   const filterKey = match.params.filterKey;
+  //   const IsRequiredObjectWrap = !match.params.campaignParent;
+  //   const currentSteemDollarPrice =
+  //     cryptosPriceHistory && cryptosPriceHistory.SBD && cryptosPriceHistory.SBD.priceDetails
+  //       ? cryptosPriceHistory.SBD.priceDetails.currentUSDPrice
+  //       : 0;
+  //   return  (
+  //     <Switch>
+  //       <Route path="/rewards/create" render={() =><CreateRewardForm userName={username} user={user} currentSteemDollarPrice={currentSteemDollarPrice}/>} />
+  //       <Route path="/rewards/edit/#:campaignId" render={() =><CreateRewardForm userName={username} user={user} currentSteemDollarPrice={currentSteemDollarPrice} edit/>} />
+  //       <Route path="/rewards/manage" render={() =><Manage userName={username} />} />
+  //       <Route path="/rewards/match-bot" render={() =><MatchBot userName={username} />} />
+  //       <Route path="/:filterKey/:campaignParent?" render={() => this.getCampaignsLayout(hasMore, IsRequiredObjectWrap, loading, filterKey, username, match, propositions)} />
+  //     </Switch>
+  //   );
+  //   switch (location.pathname) {
+  //     case '/rewards/create':
+  //       return (
+  //         <CreateRewardForm
+  //           userName={username}
+  //           user={user}
+  //           currentSteemDollarPrice={currentSteemDollarPrice}
+  //         />
+  //       );
+  //     case '/rewards/edit/#:campaignId':
+  //       return (
+  //         <CreateRewardForm
+  //           userName={username}
+  //           user={user}
+  //           currentSteemDollarPrice={currentSteemDollarPrice}
+  //           edit
+  //         />
+  //       );
+  //     case '/rewards/manage':
+  //       return <Manage userName={username} />;
+  //     case '/rewards/match-bot':
+  //       return <MatchBot userName={username} />;
+  //     default:
+  //       return this.getCampaignsLayout(
+  //         hasMore,
+  //         IsRequiredObjectWrap,
+  //         loading,
+  //         filterKey,
+  //         username,
+  //         match,
+  //         propositions,
+  //       );
+  //   }
+  // };
 
   render() {
-    const { location } = this.props;
+    const { location, intl, match, username, cryptosPriceHistory, user } = this.props;
     const {
       sponsors,
       isModalDetailsOpen,
       objectDetails,
       campaignsTypes,
       activeFilters,
+      isSearchAreaFilter,
+      hasMore,
+      loading,
+      propositions,
+      sort,
+      loadingCampaigns
     } = this.state;
+
+    const IsRequiredObjectWrap = !match.params.campaignParent;
+    const filterKey = match.params.filterKey;
     const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
     const isCreate = location.pathname === '/rewards/create';
+    const currentSteemDollarPrice =
+      cryptosPriceHistory && cryptosPriceHistory.SBD && cryptosPriceHistory.SBD.priceDetails
+        ? cryptosPriceHistory.SBD.priceDetails.currentUSDPrice
+        : 0;
+    const renderedRoutes = renderRoutes(this.props.route.routes, {
+      user,
+      currentSteemDollarPrice,
+      hasMore,
+      IsRequiredObjectWrap,
+      loading,
+      filterKey,
+      userName: username,
+      match,
+      propositions,
+      intl,
+      isSearchAreaFilter,
+      resetMapFilter: this.resetMapFilter,
+      sort,
+      handleSortChange: this.handleSortChange,
+      loadingCampaigns,
+      campaignsLayoutWrapLayout: this.campaignsLayoutWrapLayout,
+      handleLoadMore: this.handleLoadMore,
+    });
+
     return (
       <div className="Rewards">
         <Helmet>
@@ -468,7 +467,9 @@ class Rewards extends React.Component {
               <LeftSidebar />
             </div>
           </Affix>
-          <div className="center">{this.campaignItemsWrap(location)}</div>
+          {/*<div className="center">{this.campaignItemsWrap(location)}</div>*/}
+          <div className="center">{renderedRoutes}</div>
+
           {location.pathname !== '/rewards/manage' && location.pathname !== '/rewards/match-bot' && (
             <Affix className="rightContainer leftContainer__user" stickPosition={122}>
               <div className="right">

@@ -37,8 +37,9 @@ const CampaignRewardsTableRow = ({ currentItem, activateCampaign, intl }) => {
         <td>{currentItem.name}</td>
         <td>
           {!isChecked && (
-            <Link to={`/rewards/edit}`} title="Edit">
-              <span>Edit</span>
+            // eslint-disable-next-line no-underscore-dangle
+            <Link to={`/rewards/edit/#${currentItem._id}`} title="Edit">
+              Edit
             </Link>
           )}
         </td>

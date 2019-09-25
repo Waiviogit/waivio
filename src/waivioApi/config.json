@@ -44,6 +44,7 @@
   "objectType": "/objectType",
   "generalSearch": "/generalSearch",
   "campaigns": "/campaigns",
+  "campaign": "/campaign",
   "createCampaign": "/create_campaign",
   "dashboard": "/dashboard",
   "suitableUsers": "/suitable_users",
