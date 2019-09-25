@@ -53,7 +53,7 @@ const CampaignRewardsTableRow = ({
   };
 
   const inactivateCamp = () => {
-    toggleModal(false);
+    setLoad(true);
     validateInactivationCampaign(validateInactivationData)
       .then(() => {
         inactivateCampaign(currentItem, validateInactivationData.permlink).then(() => {
@@ -63,7 +63,7 @@ const CampaignRewardsTableRow = ({
         });
       })
       .catch(() => {
-        message.error(`Can't activate campaign'${currentItem.name}', try again later`);
+        message.error(`Can't inactivate campaign'${currentItem.name}', try again later`);
         setLoad(false);
       });
   };
