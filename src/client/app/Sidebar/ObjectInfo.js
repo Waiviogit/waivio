@@ -96,8 +96,8 @@ class ObjectInfo extends React.Component {
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const { showModal, selectedField } = this.state;
     const { button, status, website, newsFilter } = wobject;
-    const renderFields = getAllowedFieldsByObjType(wobject.object_type);
-    const isRenderGallery = ![OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(wobject.object_type);
+    const renderFields = getAllowedFieldsByObjType(wobject.type);
+    const isRenderGallery = ![OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(wobject.type);
     const isRenderMenu = isRenderGallery;
 
     let names = [];
