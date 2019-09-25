@@ -111,6 +111,7 @@ const Proposition = ({
   const modalOnCancelHandler = () => {
     openModal(false);
   };
+
   return (
     <div className="Proposition">
       <div className="RewardsHeader-block">
@@ -155,7 +156,7 @@ const Proposition = ({
           />
         ) : (
           <React.Fragment>
-            {!assigned && !isReserved && (
+            {assigned !== null && !assigned && !isReserved && (
               <div className="RewardsHeader-button">
                 <Button
                   type="primary"
