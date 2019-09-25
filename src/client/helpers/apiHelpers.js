@@ -2,24 +2,6 @@ import SteemAPI from '../steemAPI';
 import { jsonParse } from '../helpers/formatter';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
 
-export function getDiscussionsFromAPI(sortBy, query, ApiClient) {
-  switch (sortBy) {
-    case 'feed':
-    case 'hot':
-    case 'created':
-    case 'active':
-    case 'trending':
-    case 'blog':
-    case 'comments':
-    case 'promoted':
-      return ApiClient.getFeedContent(sortBy, query);
-    default:
-      return new Promise((resolve, reject) => {
-        reject(new Error('There is not API endpoint defined for this sorting'));
-      });
-  }
-}
-
 export const getAccount = username =>
   SteemAPI.sendAsync('get_accounts', [[username]]).then(result => {
     if (result.length) {

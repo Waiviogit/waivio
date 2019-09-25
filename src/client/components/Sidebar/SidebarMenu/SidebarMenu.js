@@ -81,12 +81,12 @@ const SidebarMenu = ({ intl }) => {
             </li>
             <li className="collapsible-block__item">
               <NavLink
-                to={'/promoted'}
+                to={'/created'}
                 className="sidenav-discover-objects__item"
                 isActive={checkIsActive}
                 activeClassName="Sidenav__item--active"
               >
-                <FormattedMessage id="sort_promoted" defaultMessage="Promoted" />
+                <FormattedMessage id="sort_created" defaultMessage="New" />
               </NavLink>
             </li>
           </ul>
