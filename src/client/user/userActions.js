@@ -4,7 +4,6 @@ import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getUserCoordinatesByIpAdress } from '../components/Maps/mapHelper';
 import { rewardPostContainerData } from '../rewards/rewardsHelper';
-import { generatePermlink } from '../helpers/wObjectHelper';
 
 require('isomorphic-fetch');
 
@@ -139,7 +138,7 @@ export const getCoordinates = () => dispatch =>
     payload: getUserCoordinatesByIpAdress(),
   });
 
-export const assignProposition = ({ companyAuthor, companyPermlink, companyId, objPermlink }) => (
+export const assignProposition = ({ companyAuthor, companyPermlink, resPermlink, objPermlink }) => (
   dispatch,
   getState,
   { steemConnectAPI },
@@ -151,7 +150,7 @@ export const assignProposition = ({ companyAuthor, companyPermlink, companyId, o
       parent_author: companyAuthor,
       parent_permlink: companyPermlink,
       author: username,
-      permlink: `reserve-${companyId}-${generatePermlink()}`,
+      permlink: resPermlink,
       title: 'reserve object for rewards',
       body: `User @${username} reserve [object](https://www.waivio.com/object/${objPermlink}), from [campaign](https://www.waivio.com/@${companyAuthor}/${companyPermlink})`,
       json_metadata: JSON.stringify({

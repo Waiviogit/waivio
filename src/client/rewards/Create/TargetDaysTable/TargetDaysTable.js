@@ -29,7 +29,6 @@ const TargetDaysTable = ({ intl, setTargetDays, targetDays }) => (
           </th>
           <th>
             <Checkbox checked={targetDays.saturday} onChange={setTargetDays('saturday')} />
-            <Checkbox checked={targetDays.saturday} onChange={setTargetDays('saturday')} />
           </th>
         </tr>
       </thead>

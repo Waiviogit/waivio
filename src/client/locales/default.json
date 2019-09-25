@@ -197,9 +197,9 @@
   "markdown_supported": "Styling with markdown supported",
   "title": "Title",
   "title_placeholder": "Add title",
-  "title_error_empty": "Please enter a title.",
+  "title_error_empty": "Please enter a title",
   "title_error_too_long": "Title can't be longer than 255 characters.",
-  "link_error_empty":  "Please enter a url.",
+  "link_error_empty":  "Please enter the URL",
   "topics": "Hashtags (topics)",
   "topics_placeholder": "Add hashtags (without #) here",
   "topics_extra": "Separate topics with commas. Only lowercase letters, numbers and hyphen character is permitted.",
@@ -676,6 +676,7 @@
   "action": "Action",
   "notes": "Notes",
   "campaign_terms": "The terms and conditions of the rewards campaign {campaignName} will be published on Steem blockchain",
+  "deactivate_campaign_terms": "The terms and conditions of the rewards campaign {campaignName} will be stopped on Steem blockchain",
   "filter-rating": "Top rated",
   "campaign_names_used_internal_reports": "Campaign names are used only for internal reports",
   "specific_campaign_parameters_type": "The campaign parameters are specific to the type of campaign",
@@ -734,5 +735,6 @@
   "reserve_campaign_accept": "Do you want to reserve rewards campaign?",
   "cannot_activate_company": "You cannot activate the company at the moment",
   "reject_campaign": "Reject rewards campaign",
-  "reject_campaign_accept": "Do you want to reject rewards campaign?"
+  "reject_campaign_accept": "Do you want to reject rewards campaign?",
+  "deactivate_campaign": "Deactivate rewards campaign"
 }

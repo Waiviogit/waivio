@@ -30,6 +30,7 @@ const Proposition = ({
   assigned,
   post,
   getSingleComment,
+  authorizedUserName,
 }) => {
   const proposedWobj = getClientWObj(wobj);
   const requiredObjectName = getFieldWithMaxWeight(
@@ -77,15 +78,15 @@ const Proposition = ({
     const reserveData = {
       campaign_permlink: proposition.activation_permlink,
       approved_object: wobj.author_permlink,
-      user_name: proposition.guide.name,
-      reservation_permlink: proposition._id,
+      user_name: authorizedUserName,
+      reservation_permlink: `reserve-${proposition._id}-${generatePermlink()}`,
     };
     reserveActivatedCampaign(reserveData)
       .then(() => {
         assignProposition({
           companyAuthor: proposition.guide.name,
           companyPermlink: proposition.activation_permlink,
-          companyId: proposition._id,
+          resPermlink: reserveData.reservation_permlink,
           objPermlink: wobj.author_permlink,
         });
         message.success(

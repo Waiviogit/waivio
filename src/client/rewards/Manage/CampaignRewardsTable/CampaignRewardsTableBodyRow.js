@@ -12,7 +12,7 @@ const CampaignRewardsTableRow = ({ currentItem, activateCampaign, userName, intl
   const [isModalOpen, toggleModal] = useState(false);
   const [isLoading, setLoad] = useState(false);
   const isChecked = currentItem.status === 'active' || currentItem.status === 'payed';
-  const validateData = {
+  const validateActivationData = {
     // eslint-disable-next-line no-underscore-dangle
     campaign_id: currentItem._id,
     guide_name: userName,
@@ -21,9 +21,9 @@ const CampaignRewardsTableRow = ({ currentItem, activateCampaign, userName, intl
 
   const activateCamp = () => {
     setLoad(true);
-    validateActivationCampaign(validateData)
+    validateActivationCampaign(validateActivationData)
       .then(() => {
-        activateCampaign(currentItem, validateData.permlink).then(() => {
+        activateCampaign(currentItem, validateActivationData.permlink).then(() => {
           toggleModal(false);
           message.success(`Campaign '${currentItem.name}' - has been activated`);
           setLoad(false);
@@ -34,9 +34,19 @@ const CampaignRewardsTableRow = ({ currentItem, activateCampaign, userName, intl
         setLoad(false);
       });
   };
+
+  const deactivateCamp = () => {
+    setLoad(true);
+  };
+
+  console.log('current', currentItem);
+
   const handleChangeCheckbox = e => {
+    console.log(e.target.checked);
     if (e.target.checked) {
       e.preventDefault();
+      toggleModal(true);
+    } else {
       toggleModal(true);
     }
   };
@@ -65,28 +75,45 @@ const CampaignRewardsTableRow = ({ currentItem, activateCampaign, userName, intl
       </tr>
       <Modal
         closable
-        title={intl.formatMessage({
-          id: 'activate_campaign',
-          defaultMessage: `Activate rewards campaign`,
-        })}
+        title={
+          !isChecked
+            ? intl.formatMessage({
+                id: 'activate_campaign',
+                defaultMessage: `Activate rewards campaign`,
+              })
+            : intl.formatMessage({
+                id: 'deactivate_campaign',
+                defaultMessage: `Deactivate rewards campaign`,
+              })
+        }
         maskClosable={false}
         visible={isModalOpen}
-        onOk={activateCamp}
+        onOk={!isChecked ? activateCamp : deactivateCamp}
         okButtonProps={{ disabled: isLoading, loading: isLoading }}
         cancelButtonProps={{ disabled: isLoading }}
         onCancel={() => {
           toggleModal(false);
         }}
       >
-        {intl.formatMessage(
-          {
-            id: 'campaign_terms',
-            defaultMessage: `The terms and conditions of the rewards campaign ${currentItem.name} will be published on Steem blockchain`,
-          },
-          {
-            campaignName: currentItem.name,
-          },
-        )}
+        {!isChecked
+          ? intl.formatMessage(
+              {
+                id: 'campaign_terms',
+                defaultMessage: `The terms and conditions of the rewards campaign ${currentItem.name} will be published on Steem blockchain`,
+              },
+              {
+                campaignName: currentItem.name,
+              },
+            )
+          : intl.formatMessage(
+              {
+                id: 'deactivate_campaign_terms',
+                defaultMessage: `The terms and conditions of the rewards campaign ${currentItem.name} will be stopped on Steem blockchain`,
+              },
+              {
+                campaignName: currentItem.name,
+              },
+            )}
       </Modal>
     </React.Fragment>
   );

@@ -41,7 +41,7 @@ class FormattedLink extends React.Component {
                   required: true,
                   message: intl.formatMessage({
                     id: 'title_error_empty',
-                    defaultMessage: 'title_error_empty',
+                    defaultMessage: 'Please enter a title',
                   }),
                 },
                 {
@@ -74,7 +74,7 @@ class FormattedLink extends React.Component {
                   required: true,
                   message: intl.formatMessage({
                     id: 'link_error_empty',
-                    defaultMessage: 'Please enter a url.',
+                    defaultMessage: 'Please enter the URL',
                   }),
                 },
                 {
