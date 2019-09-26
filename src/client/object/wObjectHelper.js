@@ -298,7 +298,7 @@ export const sortListItemsBy = (items, sortBy = 'by-name-asc', sortOrder = null)
   let comparator;
   switch (sortBy) {
     case 'rank':
-      comparator = (a, b) => b.rank - a.rank || (a.name > b.name ? 1 : -1);
+      comparator = (a, b) => b.weight - a.weight || (a.name >= b.name ? 1 : -1);
       break;
     case 'by-name-desc':
       comparator = (a, b) => (a.name < b.name ? 1 : -1);
