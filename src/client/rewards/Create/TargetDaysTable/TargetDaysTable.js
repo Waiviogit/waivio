@@ -4,31 +4,31 @@ import { injectIntl } from 'react-intl';
 import { Checkbox } from 'antd';
 import './TargetDaysTable.less';
 
-const TargetDaysTable = ({ intl, setTargetDays }) => (
+const TargetDaysTable = ({ intl, setTargetDays, targetDays }) => (
   <React.Fragment>
     <table className="TargetDaysTable">
       <thead>
         <tr>
           <th>
-            <Checkbox onChange={setTargetDays('sunday')} />
+            <Checkbox checked={targetDays.sunday} onChange={setTargetDays('sunday')} />
           </th>
           <th>
-            <Checkbox onChange={setTargetDays('monday')} />
+            <Checkbox checked={targetDays.monday} onChange={setTargetDays('monday')} />
           </th>
           <th>
-            <Checkbox onChange={setTargetDays('tuesday')} />
+            <Checkbox checked={targetDays.tuesday} onChange={setTargetDays('tuesday')} />
           </th>
           <th>
-            <Checkbox onChange={setTargetDays('wednesday')} />
+            <Checkbox checked={targetDays.wednesday} onChange={setTargetDays('wednesday')} />
           </th>
           <th>
-            <Checkbox onChange={setTargetDays('thursday')} />
+            <Checkbox checked={targetDays.thursday} onChange={setTargetDays('thursday')} />
           </th>
           <th>
-            <Checkbox onChange={setTargetDays('friday')} />
+            <Checkbox checked={targetDays.friday} onChange={setTargetDays('friday')} />
           </th>
           <th>
-            <Checkbox onChange={setTargetDays('saturday')} />
+            <Checkbox checked={targetDays.saturday} onChange={setTargetDays('saturday')} />
           </th>
         </tr>
       </thead>
@@ -50,6 +50,7 @@ const TargetDaysTable = ({ intl, setTargetDays }) => (
 TargetDaysTable.propTypes = {
   intl: PropTypes.shape().isRequired,
   setTargetDays: PropTypes.func.isRequired,
+  targetDays: PropTypes.shape().isRequired,
 };
 
 export default injectIntl(TargetDaysTable);

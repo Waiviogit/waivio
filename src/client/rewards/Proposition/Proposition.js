@@ -3,9 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Button, Modal } from 'antd';
+import { Button, message, Modal } from 'antd';
 import { Link } from 'react-router-dom';
-import './Proposition.less';
 import { getClientWObj } from '../../adapters';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import Avatar from '../../components/Avatar';
@@ -14,6 +13,10 @@ import { getSingleComment } from '../../comments/commentsActions';
 import { getCommentContent } from '../../reducers';
 import { connect } from 'react-redux';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
+import { reserveActivatedCampaign } from '../../../waivioApi/ApiClient';
+import { rejectReservationCampaign } from '../../../waivioApi/ApiClient';
+import { generatePermlink } from '../../helpers/wObjectHelper';
+import './Proposition.less';
 
 const Proposition = ({
   intl,
@@ -27,17 +30,9 @@ const Proposition = ({
   assigned,
   post,
   getSingleComment,
-  setReservedObject,
+  authorizedUserName,
 }) => {
   const proposedWobj = getClientWObj(wobj);
-  const assignPr = () => {
-    assignProposition({
-      companyAuthor: proposition.guide.name,
-      companyPermlink: proposition.activation_permlink,
-      companyId: proposition._id,
-      objPermlink: wobj.author_permlink,
-    });
-  };
   const requiredObjectName = getFieldWithMaxWeight(
     proposition.required_object,
     'name',
@@ -52,24 +47,78 @@ const Proposition = ({
   };
 
   const discardPr = obj => {
-    discardProposition({
-      companyAuthor: proposition.guide.name,
-      companyPermlink: proposition.activation_permlink,
-      companyId: proposition._id,
-      objPermlink: obj.author_permlink,
-    });
+    const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
+    const rejectData = {
+      campaign_permlink: proposition.activation_permlink,
+      user_name: proposition.guide.name,
+      reservation_permlink: proposition.objects[0].permlink,
+      unreservation_permlink: unreservationPermlink,
+    };
+    rejectReservationCampaign(rejectData)
+      .then(() => {
+        message.success(
+          intl.formatMessage({
+            id: 'discarded_successfully',
+            defaultMessage: 'Discarded successfully',
+          }),
+        );
+        discardProposition({
+          companyAuthor: proposition.guide.name,
+          companyPermlink: proposition.activation_permlink,
+          objPermlink: obj.author_permlink,
+          reservationPermlink: rejectData.reservation_permlink,
+          unreservationPermlink,
+        });
+      })
+      .catch(() => {
+        message.error(
+          intl.formatMessage({
+            id: 'cannot_reject_campaign',
+            defaultMessage: 'You cannot reject the campaign at the moment',
+          }),
+        );
+      });
   };
 
   const [isModalOpen, openModal] = useState(false);
+  const [isReserved, setReservation] = useState(false);
 
   const reserveOnClickHandler = () => {
     openModal(!isModalOpen);
   };
 
   const modalOnOklHandler = () => {
-    setReservedObject(proposition.required_object.author_permlink);
-    assignPr();
-    openModal(false);
+    const reserveData = {
+      campaign_permlink: proposition.activation_permlink,
+      approved_object: wobj.author_permlink,
+      user_name: authorizedUserName,
+      reservation_permlink: `reserve-${proposition._id}-${generatePermlink()}`,
+    };
+    reserveActivatedCampaign(reserveData)
+      .then(() => {
+        message.success(
+          intl.formatMessage({
+            id: 'assigned_successfully',
+            defaultMessage: 'Assigned successfully',
+          }),
+        );
+        assignProposition({
+          companyAuthor: proposition.guide.name,
+          companyPermlink: proposition.activation_permlink,
+          resPermlink: reserveData.reservation_permlink,
+          objPermlink: wobj.author_permlink,
+        });
+        openModal(false);
+        setReservation(true);
+      })
+      .catch(() => {
+        message.error(
+          intl.formatMessage({
+            id: 'cannot_activate_company',
+            defaultMessage: 'You cannot activate the company at the moment',
+          }),
+        );
+      });
   };
 
   const modalOnCancelHandler = () => {
@@ -116,10 +165,11 @@ const Proposition = ({
             requiredObjectPermlink={proposition.required_object.author_permlink}
             requiredObjectName={requiredObjectName}
             discardPr={discardPr}
+            proposition={proposition}
           />
         ) : (
           <React.Fragment>
-            {!assigned && (
+            {assigned !== null && !assigned && !isReserved && (
               <div className="RewardsHeader-button">
                 <Button
                   type="primary"

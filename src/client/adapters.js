@@ -1,8 +1,9 @@
+import { isEmpty } from 'lodash';
 import { objectFields } from '../common/constants/listOfFields';
 import { getFieldsWithMaxWeight } from './object/wObjectHelper';
 import DEFAULTS from './object/const/defaultValues';
 
-export const getClientWObj = serverWObj => {
+export const getClientWObj = (serverWObj, usedLocale = 'en-US') => {
   /* eslint-disable no-underscore-dangle */
   /* eslint-disable camelcase */
   const {
@@ -15,6 +16,7 @@ export const getClientWObj = serverWObj => {
     object_type,
   } = serverWObj;
 
+  if (!serverWObj || isEmpty(serverWObj)) return {};
   const result = {
     id: author_permlink,
     avatar: DEFAULTS.AVATAR,
@@ -24,7 +26,7 @@ export const getClientWObj = serverWObj => {
     userCount: user_count || 0,
     followersNames: followers_names,
     type: (object_type && object_type.toLowerCase()) || 'item',
-    ...getFieldsWithMaxWeight(serverWObj),
+    ...getFieldsWithMaxWeight(serverWObj, usedLocale),
     ...serverWObj,
   };
 

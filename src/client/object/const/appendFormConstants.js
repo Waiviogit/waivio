@@ -542,7 +542,7 @@ export const fieldsRules = {
       validator: true,
     },
   ],
-  [phoneFields.name]: [
+  phoneName: [
     {
       max: 100,
       message: {

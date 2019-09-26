@@ -5,6 +5,10 @@
     "host": "waiviodev.com",
     "": "localhost:8093"
   },
+  "test": {
+    "protocol": "https://",
+    "host": "waiviodev.com"
+  },
   "staging": {
     "protocol": "https://",
     "host": "waiviodev.com"
@@ -36,11 +40,16 @@
   "getGallery": "/gallery",
   "wobjectsWithUserWeight": "/objects_shares",
   "wobjectsExpertise": "/object_expertise",
+  "typeExpertise": "/expertise",
   "getObjectTypes": "/objectTypes",
   "objectType": "/objectType",
   "generalSearch": "/generalSearch",
   "campaigns": "/campaigns",
   "createCampaign": "/create_campaign",
+  "activation": "/validate_activation",
+  "inactivation": "/validate_inactivation",
+  "reservation": "/validate_reservation",
+  "rejectReservation": "/validate_reject_reservation",
   "dashboard": "/dashboard",
   "suitableUsers": "/suitable_users",
   "search": "/search",
