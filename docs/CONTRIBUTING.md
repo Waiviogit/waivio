@@ -234,21 +234,23 @@ Remember to use the same `id` and `defaultMessage` in default.json file and comp
 
 ## Team
 
-| Roman           | Konstantin | Vladimir | Max| Alex
-| ----- |---| --- | --- | ---
-| ![][waiviogit] | ![][konstantin1390]         | ![][milklim]       | ![][maksimoancha] | ![][grigurkoalexey] 
-| [@waiviogit] | [@konstantin1390]     | [@milklim] | [@maksimoancha] | [@grigurkoalexey] 
+| Roman           | Konstantin | Vladimir | Eugene | Max | Alex |
+|---|---|---|---|---|---|
+| ![][waiviogit] | ![][konstantin1390] | ![][milklim] | ![][eugenezherebilov] | ![][maksimoancha] | ![][grigurkoalexey] 
+| [@waiviogit] | [@konstantin1390] | [@milklim] | [@eugenezherebilov] | [@maksimoancha] | [@grigurkoalexey] 
 
 [@waiviogit]: https://github.com/waiviogit
 [@konstantin1390]: https://github.com/konstantin1390
 [@milklim]: https://github.com/milklim
 [@maksimoancha]: https://github.com/maksimoancha
 [@grigurkoalexey]: https://github.com/grigurkoalexey
+[@eugenezherebilov]: https://github.com/eugenezherebilov
 [client src]: ../src/client
 [server src]: ../src/server
 [default.json]: ../src/client/locales/default.json
-[waiviogit]: https://avatars.githubusercontent.com/waiviogit?size=56
-[konstantin1390]: https://avatars.githubusercontent.com/konstantin1390?size=56
-[milklim]: https://avatars.githubusercontent.com/milklim?size=56
-[maksimoancha]: https://avatars.githubusercontent.com/maksimoancha?size=56
-[grigurkoalexey]: https://avatars.githubusercontent.com/grigurkoalexey?size=56
+[waiviogit]: https://avatars.githubusercontent.com/waiviogit?size=150
+[konstantin1390]: https://avatars.githubusercontent.com/konstantin1390?size=150
+[milklim]: https://avatars.githubusercontent.com/milklim?size=130
+[maksimoancha]: https://avatars.githubusercontent.com/maksimoancha?size=150
+[grigurkoalexey]: https://avatars.githubusercontent.com/grigurkoalexey?size=150
+[eugenezherebilov]: https://avatars.githubusercontent.com/eugenezherebilov?size=150
