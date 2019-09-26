@@ -196,7 +196,7 @@ export const getFieldsCount = (wObject, fieldName) => {
     count = getListItems(wObject, { uniq: true }).filter(item =>
       fieldName === TYPES_OF_MENU_ITEM.LIST
         ? item.object_type === OBJECT_TYPE.LIST
-        : item.object_type !== OBJECT_TYPE.LIST,
+        : item.object_type === OBJECT_TYPE.PAGE,
     ).length;
   } else {
     count = _.get(wObject, 'fields', []).filter(field => field.name === fieldName).length;
