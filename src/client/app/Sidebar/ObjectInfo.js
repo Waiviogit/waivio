@@ -150,8 +150,8 @@ class ObjectInfo extends React.Component {
           ? menuItems.filter(item => item.object_type === OBJECT_TYPE.LIST)
           : null;
       menuPages =
-        menuItems.length && menuItems.some(item => item.object_type !== OBJECT_TYPE.PAGE)
-          ? menuItems.filter(item => item.object_type !== OBJECT_TYPE.PAGE)
+        menuItems.length && menuItems.some(item => item.object_type === OBJECT_TYPE.PAGE)
+          ? menuItems.filter(item => item.object_type === OBJECT_TYPE.PAGE)
           : null;
 
       photosCount = wobject.photos_count;

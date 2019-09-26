@@ -4,7 +4,6 @@ import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getUserCoordinatesByIpAdress } from '../components/Maps/mapHelper';
 import { rewardPostContainerData } from '../rewards/rewardsHelper';
-import { generatePermlink } from '../helpers/wObjectHelper';
 
 require('isomorphic-fetch');
 
@@ -139,7 +138,7 @@ export const getCoordinates = () => dispatch =>
     payload: getUserCoordinatesByIpAdress(),
   });
 
-export const assignProposition = ({ companyAuthor, companyPermlink, companyId, objPermlink }) => (
+export const assignProposition = ({ companyAuthor, companyPermlink, resPermlink, objPermlink }) => (
   dispatch,
   getState,
   { steemConnectAPI },
@@ -151,7 +150,7 @@ export const assignProposition = ({ companyAuthor, companyPermlink, companyId, o
       parent_author: companyAuthor,
       parent_permlink: companyPermlink,
       author: username,
-      permlink: `reserve-${companyId}-${generatePermlink()}`,
+      permlink: resPermlink,
       title: 'reserve object for rewards',
       body: `User @${username} reserve [object](https://www.waivio.com/object/${objPermlink}), from [campaign](https://www.waivio.com/@${companyAuthor}/${companyPermlink})`,
       json_metadata: JSON.stringify({
@@ -218,6 +217,36 @@ export const activateCampaign = (company, campaignPermlink) => (
       json_metadata: JSON.stringify({
         // eslint-disable-next-line no-underscore-dangle
         waivioRewards: { type: 'waivio_activate_campaign', campaign_id: company._id },
+      }),
+    },
+  ];
+
+  return new Promise((resolve, reject) => {
+    steemConnectAPI
+      .broadcast([commentOp])
+      .then(() => resolve('SUCCESS'))
+      .catch(error => reject(error));
+  });
+};
+
+export const inactivateCampaign = (company, inactivatePermlink) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const username = getAuthenticatedUserName(getState());
+  const commentOp = [
+    'comment',
+    {
+      parent_author: username,
+      parent_permlink: company.activation_permlink,
+      author: username,
+      permlink: inactivatePermlink,
+      title: 'unactivate object for rewards',
+      body: `Campaign ${company.name} was inactivated by ${username} `,
+      json_metadata: JSON.stringify({
+        // eslint-disable-next-line no-underscore-dangle
+        waivioRewards: { type: 'waivio_stop_campaign', campaign_id: company._id },
       }),
     },
   ];

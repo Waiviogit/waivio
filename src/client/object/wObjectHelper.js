@@ -196,7 +196,7 @@ export const getFieldsCount = (wObject, fieldName) => {
     count = getListItems(wObject, { uniq: true }).filter(item =>
       fieldName === TYPES_OF_MENU_ITEM.LIST
         ? item.object_type === OBJECT_TYPE.LIST
-        : item.object_type !== OBJECT_TYPE.LIST,
+        : item.object_type === OBJECT_TYPE.PAGE,
     ).length;
   } else {
     count = _.get(wObject, 'fields', []).filter(field => field.name === fieldName).length;
@@ -298,7 +298,7 @@ export const sortListItemsBy = (items, sortBy = 'by-name-asc', sortOrder = null)
   let comparator;
   switch (sortBy) {
     case 'rank':
-      comparator = (a, b) => b.rank - a.rank || (a.name > b.name ? 1 : -1);
+      comparator = (a, b) => b.weight - a.weight || (a.name >= b.name ? 1 : -1);
       break;
     case 'by-name-desc':
       comparator = (a, b) => (a.name < b.name ? 1 : -1);

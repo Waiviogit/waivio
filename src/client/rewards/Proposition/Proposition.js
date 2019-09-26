@@ -30,6 +30,7 @@ const Proposition = ({
   assigned,
   post,
   getSingleComment,
+  authorizedUserName,
 }) => {
   const proposedWobj = getClientWObj(wobj);
   const requiredObjectName = getFieldWithMaxWeight(
@@ -90,8 +91,8 @@ const Proposition = ({
     const reserveData = {
       campaign_permlink: proposition.activation_permlink,
       approved_object: wobj.author_permlink,
-      user_name: proposition.guide.name,
-      reservation_permlink: proposition._id,
+      user_name: authorizedUserName,
+      reservation_permlink: `reserve-${proposition._id}-${generatePermlink()}`,
     };
     reserveActivatedCampaign(reserveData)
       .then(() => {
@@ -104,7 +105,7 @@ const Proposition = ({
         assignProposition({
           companyAuthor: proposition.guide.name,
           companyPermlink: proposition.activation_permlink,
-          companyId: proposition._id,
+          resPermlink: reserveData.reservation_permlink,
           objPermlink: wobj.author_permlink,
         });
         openModal(false);
@@ -123,6 +124,7 @@ const Proposition = ({
   const modalOnCancelHandler = () => {
     openModal(false);
   };
+
   return (
     <div className="Proposition">
       <div className="RewardsHeader-block">
@@ -167,7 +169,7 @@ const Proposition = ({
           />
         ) : (
           <React.Fragment>
-            {!assigned && !isReserved && (
+            {assigned !== null && !assigned && !isReserved && (
               <div className="RewardsHeader-button">
                 <Button
                   type="primary"
