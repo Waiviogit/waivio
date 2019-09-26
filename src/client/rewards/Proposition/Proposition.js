@@ -39,7 +39,7 @@ const Proposition = ({
     proposition.required_object.author_permlink,
   );
   useEffect(() => {
-    getSingleComment(proposition.guide.name, assignCommentPermlink);
+    getSingleComment(authorizedUserName, assignCommentPermlink);
   }, []);
 
   const toggleModalDetails = () => {
@@ -92,7 +92,7 @@ const Proposition = ({
       campaign_permlink: proposition.activation_permlink,
       approved_object: wobj.author_permlink,
       user_name: authorizedUserName,
-      reservation_permlink: `reserve-${proposition._id}-${generatePermlink()}`,
+      reservation_permlink: `reserve-${generatePermlink()}`,
     };
     reserveActivatedCampaign(reserveData)
       .then(() => {
@@ -243,10 +243,10 @@ Proposition.defaultProps = {
 export default connect(
   (state, ownProps) => ({
     post:
-      ownProps.proposition.guide.name &&
+      ownProps.authorizedUserName &&
       ownProps.assignCommentPermlink &&
       !_.isEmpty(state.comments.comments)
-        ? getCommentContent(state, ownProps.proposition.guide.name, ownProps.assignCommentPermlink)
+        ? getCommentContent(state, ownProps.authorizedUserName, ownProps.assignCommentPermlink)
         : {},
   }),
   {
