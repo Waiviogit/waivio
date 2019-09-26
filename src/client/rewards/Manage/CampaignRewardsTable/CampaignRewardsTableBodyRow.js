@@ -21,14 +21,14 @@ const CampaignRewardsTableRow = ({
   const [isModalOpen, toggleModal] = useState(false);
   const [isLoading, setLoad] = useState(false);
   const isChecked = currentItem.status === 'active' || currentItem.status === 'payed';
-  const validateActivationData = {
+  const activationCampaignData = {
     // eslint-disable-next-line no-underscore-dangle
     campaign_id: currentItem._id,
     guide_name: userName,
     permlink: `activate-${rewardPostContainerData.author}-${generatePermlink()}`,
   };
 
-  const validateInactivationData = {
+  const inactivationCampaignData = {
     // eslint-disable-next-line no-underscore-dangle
     campaign_permlink: currentItem.activation_permlink,
     guide_name: userName,
@@ -38,9 +38,9 @@ const CampaignRewardsTableRow = ({
 
   const activateCamp = () => {
     setLoad(true);
-    validateActivationCampaign(validateActivationData)
+    validateActivationCampaign(activationCampaignData)
       .then(() => {
-        activateCampaign(currentItem, validateActivationData.permlink).then(() => {
+        activateCampaign(currentItem, activationCampaignData.permlink).then(() => {
           toggleModal(false);
           message.success(`Campaign '${currentItem.name}' - has been activated`);
           setLoad(false);
@@ -54,9 +54,9 @@ const CampaignRewardsTableRow = ({
 
   const inactivateCamp = () => {
     setLoad(true);
-    validateInactivationCampaign(validateInactivationData)
+    validateInactivationCampaign(inactivationCampaignData)
       .then(() => {
-        inactivateCampaign(currentItem, validateInactivationData.permlink).then(() => {
+        inactivateCampaign(currentItem, inactivationCampaignData.permlink).then(() => {
           toggleModal(false);
           message.success(`Campaign '${currentItem.name}' - has been inactivated`);
           setLoad(false);
