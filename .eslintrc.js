@@ -26,7 +26,6 @@ module.exports = {
           '**/__tests__/*.js',
           'scripts/**/*.js',
           'webpack/**/*.js',
-          'src/client/stories/**/*.js',
         ],
       },
     ],

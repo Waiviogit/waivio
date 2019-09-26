@@ -1,4 +1,4 @@
-## Contributing to Busy
+## Contributing to Waivio
 
 Want to get involved in Busy development? Thanks! There are plenty of ways you can help!
 
@@ -34,7 +34,7 @@ Guidelines for bug reports:
 
 1. **Use the GitHub issue search** &mdash; check if the issue has already been reported.
 
-2. **Check if the issue has been fixed** &mdash; try to reproduce it on [the staging server](https://staging.busy.org/).
+2. **Check if the issue has been fixed** &mdash; try to reproduce it on [the staging server](https://waiviodev.com/).
 
 3. **Isolate the problem** &mdash; ideally create a reduced test case and a live example.
 
@@ -234,17 +234,17 @@ Remember to use the same `id` and `defaultMessage` in default.json file and comp
 
 ## Team
 
-| Fabien                     | Sekhmet              | JM               |
+| Waiviogit           | Konstantin             | JM               |
 | -------------------------- | -------------------- | ---------------- |
-| ![][bonustrack]            | ![][sekhmet]         | ![][jm90m]       |
-| [@bonustrack][@bonustrack] | [@Sekhmet][@sekhmet] | [@jm90m][@jm90m] |
+| ![][waiviogit]            | ![][konstantin1390]         | ![][milklim]       |
+| [[@waiviogit]             | [@konstantin1390]     | [@jm90m][@milklim] |
 
-[@bonustrack]: https://github.com/bonustrack
-[@sekhmet]: https://github.com/sekhmet
+[@waiviogit]: https://github.com/waiviogit
+[@konstantin1390]: https://github.com/konstantin1390
 [@jm90m]: https://github.com/jm90m
 [client src]: ../src/client
 [server src]: ../src/server
 [default.json]: ../src/client/locales/default.json
-[bonustrack]: https://avatars.githubusercontent.com/bonustrack?size=56
-[sekhmet]: https://avatars.githubusercontent.com/sekhmet?size=56
-[jm90m]: https://avatars.githubusercontent.com/jm90m?size=56
+[waiviogit]: https://avatars.githubusercontent.com/waiviogit?size=56
+[konstantin1390]: https://avatars.githubusercontent.com/konstantin1390?size=56
+[milklim]: https://avatars.githubusercontent.com/milklim?size=56
