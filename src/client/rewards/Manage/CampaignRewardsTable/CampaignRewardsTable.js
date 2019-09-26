@@ -6,7 +6,13 @@ import CampaignRewardsTableRow from './CampaignRewardsTableBodyRow';
 import '../Manage.less';
 import './CampaignRewardsTable.less';
 
-const CampaignRewardsTable = ({ intl, campaigns, activateCampaign, userName }) => (
+const CampaignRewardsTable = ({
+  intl,
+  campaigns,
+  activateCampaign,
+  inactivateCampaign,
+  userName,
+}) => (
   <div>
     <table className="Campaign-rewards">
       <thead>
@@ -74,6 +80,7 @@ const CampaignRewardsTable = ({ intl, campaigns, activateCampaign, userName }) =
         {_.map(campaigns, current => (
           <CampaignRewardsTableRow
             activateCampaign={activateCampaign}
+            inactivateCampaign={inactivateCampaign}
             // eslint-disable-next-line no-underscore-dangle
             key={current._id}
             currentItem={current}
@@ -89,6 +96,7 @@ CampaignRewardsTable.propTypes = {
   campaigns: PropTypes.arrayOf(PropTypes.shape()),
   intl: PropTypes.shape().isRequired,
   activateCampaign: PropTypes.func.isRequired,
+  inactivateCampaign: PropTypes.func.isRequired,
   userName: PropTypes.string.isRequired,
 };
 

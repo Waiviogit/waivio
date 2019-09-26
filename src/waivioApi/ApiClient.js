@@ -482,6 +482,18 @@ export const validateActivationCampaign = data =>
       .catch(error => reject(error));
   });
 
+export const validateInactivationCampaign = data =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.inactivation}`, {
+      headers: headers,
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export const reserveActivatedCampaign = data =>
   new Promise((resolve, reject) => {
     fetch(`${config.campaignApiPrefix}${config.reservation}`, {
