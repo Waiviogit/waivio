@@ -122,7 +122,7 @@ export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = tr
     }),
     meta: {
       sortBy: 'blog',
-      category: 'all',
+      category: userName,
       limit,
     },
   });
