@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import WeightTag from '../../WeightTag';
 import RightSidebarLoading from '../../../app/Sidebar/RightSidebarLoading';
@@ -124,6 +125,10 @@ const ObjectExpertiseByType = ({ match }) => {
   }
 
   return renderCard;
+};
+
+ObjectExpertiseByType.propTypes = {
+  match: PropTypes.shape().isRequired,
 };
 
 export default ObjectExpertiseByType;
