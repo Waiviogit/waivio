@@ -1,15 +1,15 @@
-import React from "react";
-import {Tag} from "antd";
-import {FormattedMessage} from "react-intl";
-import {getTextByFilterKey} from "./rewardsHelper";
+import React from 'react';
+import { Tag } from 'antd';
+import { FormattedMessage } from 'react-intl';
+import PropTypes from 'prop-types';
 
-import RewardBreadcrumb from "./RewardsBreadcrumb/RewardBreadcrumb";
-import SortSelector from "../components/SortSelector/SortSelector";
-import ReduxInfiniteScroll from "../vendor/ReduxInfiniteScroll";
-import Loading from "../components/Icon/Loading";
+import { getTextByFilterKey } from './rewardsHelper';
+import RewardBreadcrumb from './RewardsBreadcrumb/RewardBreadcrumb';
+import SortSelector from '../components/SortSelector/SortSelector';
+import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
+import Loading from '../components/Icon/Loading';
 
-
-const FilteredRewardsList = (props) => {
+const FilteredRewardsList = props => {
   const {
     hasMore,
     IsRequiredObjectWrap,
@@ -25,7 +25,7 @@ const FilteredRewardsList = (props) => {
     handleSortChange,
     loadingCampaigns,
     campaignsLayoutWrapLayout,
-    handleLoadMore
+    handleLoadMore,
   } = props;
 
   return !loadingCampaigns ? (
@@ -41,7 +41,7 @@ const FilteredRewardsList = (props) => {
       />
       {isSearchAreaFilter && (
         <Tag className="ttc" key="search-area-filter" closable onClose={resetMapFilter}>
-          <FormattedMessage id="search_area" defaultMessage="Search area"/>
+          <FormattedMessage id="search_area" defaultMessage="Search area" />
         </Tag>
       )}
       <SortSelector sort={sort} onChange={handleSortChange}>
@@ -66,14 +66,41 @@ const FilteredRewardsList = (props) => {
         hasMore={hasMore}
         loadMore={handleLoadMore}
         loadingMore={loading}
-        loader={<Loading/>}
+        loader={<Loading />}
       >
         {campaignsLayoutWrapLayout(IsRequiredObjectWrap, filterKey, username, match)}
       </ReduxInfiniteScroll>
     </React.Fragment>
   ) : (
-    <Loading/>
+    <Loading />
   );
+};
+
+FilteredRewardsList.defaultProps = {
+  hasMore: false,
+  propositions: [],
+  isSearchAreaFilter: false,
+  sort: 'reward',
+  loadingCampaigns: false,
+  loading: false,
+};
+
+FilteredRewardsList.propTypes = {
+  hasMore: PropTypes.bool,
+  IsRequiredObjectWrap: PropTypes.bool.isRequired,
+  loading: PropTypes.bool,
+  filterKey: PropTypes.string.isRequired,
+  username: PropTypes.string.isRequired,
+  match: PropTypes.shape.isRequired,
+  propositions: PropTypes.bool,
+  intl: PropTypes.shape.isRequired,
+  isSearchAreaFilter: PropTypes.bool,
+  resetMapFilter: PropTypes.func.isRequired,
+  sort: PropTypes.bool,
+  handleSortChange: PropTypes.func.isRequired,
+  loadingCampaigns: PropTypes.bool,
+  campaignsLayoutWrapLayout: PropTypes.func.isRequired,
+  handleLoadMore: PropTypes.func.isRequired,
 };
 
 export default FilteredRewardsList;

@@ -1,13 +1,13 @@
 /* eslint-disable no-underscore-dangle */
-import { message, Modal, Tag } from 'antd';
+import { message, Modal } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { Link, Route, Switch } from 'react-router-dom';
+import { injectIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import {
   getAuthenticatedUser,
@@ -27,21 +27,13 @@ import {
   declineProposition,
   getCoordinates,
 } from '../user/userActions';
-import CreateRewardForm from './Create-Edit/CreateRewardForm';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { getTextByFilterKey, preparePropositionReqData } from './rewardsHelper';
-import Loading from '../components/Icon/Loading';
-import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
+import { preparePropositionReqData } from './rewardsHelper';
 import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
 import Avatar from '../components/Avatar';
-import Manage from './Manage/Manage';
-import RewardBreadcrumb from './RewardsBreadcrumb/RewardBreadcrumb';
-import SortSelector from '../components/SortSelector/SortSelector';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
-import MatchBot from './MatchBot/MatchBot';
-import SidebarMenu from "../components/Sidebar/SidebarMenu";
 
 @withRouter
 @injectIntl
@@ -129,8 +121,6 @@ class Rewards extends React.Component {
     const { sort, activeFilters } = this.state;
     this.getPropositions({ username, match, area: coordinates, radius, sort, activeFilters });
   };
-
-
 
   setFilterValue = (filter, key) => {
     const { username, match } = this.props;
@@ -355,59 +345,6 @@ class Rewards extends React.Component {
       );
     }
   };
-  //
-  // campaignItemsWrap = () => {
-  //   const { match, username, cryptosPriceHistory, user } = this.props;
-  //   const { loading, hasMore, propositions } = this.state;
-  //   const filterKey = match.params.filterKey;
-  //   const IsRequiredObjectWrap = !match.params.campaignParent;
-  //   const currentSteemDollarPrice =
-  //     cryptosPriceHistory && cryptosPriceHistory.SBD && cryptosPriceHistory.SBD.priceDetails
-  //       ? cryptosPriceHistory.SBD.priceDetails.currentUSDPrice
-  //       : 0;
-  //   return  (
-  //     <Switch>
-  //       <Route path="/rewards/create" render={() =><CreateRewardForm userName={username} user={user} currentSteemDollarPrice={currentSteemDollarPrice}/>} />
-  //       <Route path="/rewards/edit/#:campaignId" render={() =><CreateRewardForm userName={username} user={user} currentSteemDollarPrice={currentSteemDollarPrice} edit/>} />
-  //       <Route path="/rewards/manage" render={() =><Manage userName={username} />} />
-  //       <Route path="/rewards/match-bot" render={() =><MatchBot userName={username} />} />
-  //       <Route path="/:filterKey/:campaignParent?" render={() => this.getCampaignsLayout(hasMore, IsRequiredObjectWrap, loading, filterKey, username, match, propositions)} />
-  //     </Switch>
-  //   );
-  //   switch (location.pathname) {
-  //     case '/rewards/create':
-  //       return (
-  //         <CreateRewardForm
-  //           userName={username}
-  //           user={user}
-  //           currentSteemDollarPrice={currentSteemDollarPrice}
-  //         />
-  //       );
-  //     case '/rewards/edit/#:campaignId':
-  //       return (
-  //         <CreateRewardForm
-  //           userName={username}
-  //           user={user}
-  //           currentSteemDollarPrice={currentSteemDollarPrice}
-  //           edit
-  //         />
-  //       );
-  //     case '/rewards/manage':
-  //       return <Manage userName={username} />;
-  //     case '/rewards/match-bot':
-  //       return <MatchBot userName={username} />;
-  //     default:
-  //       return this.getCampaignsLayout(
-  //         hasMore,
-  //         IsRequiredObjectWrap,
-  //         loading,
-  //         filterKey,
-  //         username,
-  //         match,
-  //         propositions,
-  //       );
-  //   }
-  // };
 
   render() {
     const { location, intl, match, username, cryptosPriceHistory, user } = this.props;
@@ -422,7 +359,7 @@ class Rewards extends React.Component {
       loading,
       propositions,
       sort,
-      loadingCampaigns
+      loadingCampaigns,
     } = this.state;
 
     const IsRequiredObjectWrap = !match.params.campaignParent;
@@ -433,6 +370,7 @@ class Rewards extends React.Component {
       cryptosPriceHistory && cryptosPriceHistory.SBD && cryptosPriceHistory.SBD.priceDetails
         ? cryptosPriceHistory.SBD.priceDetails.currentUSDPrice
         : 0;
+
     const renderedRoutes = renderRoutes(this.props.route.routes, {
       user,
       currentSteemDollarPrice,
@@ -467,10 +405,9 @@ class Rewards extends React.Component {
               <LeftSidebar />
             </div>
           </Affix>
-          {/*<div className="center">{this.campaignItemsWrap(location)}</div>*/}
           <div className="center">{renderedRoutes}</div>
 
-          {location.pathname !== '/rewards/manage' && location.pathname !== '/rewards/match-bot' && (
+          {match.path === '/rewards/:filterKey/:campaignParent?' && (
             <Affix className="rightContainer leftContainer__user" stickPosition={122}>
               <div className="right">
                 {!_.isEmpty(this.props.userLocation) && !isCreate && (
@@ -536,5 +473,11 @@ class Rewards extends React.Component {
     );
   }
 }
+
+Rewards.propTypes = {
+  route: PropTypes.shape({
+    routes: PropTypes.shape(),
+  }).isRequired,
+};
 
 export default Rewards;

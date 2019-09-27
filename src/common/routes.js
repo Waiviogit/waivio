@@ -55,7 +55,10 @@ const routes = [
         component: Bookmarks,
       },
       {
-        path: ['/rewards/(create|manage|match-bot|edit)/#:campaignId?', '/rewards/:filterKey/:campaignParent?'],
+        path: [
+          '/rewards/(create|manage|match-bot|edit)/:campaignId?',
+          '/rewards/:filterKey/:campaignParent?',
+        ],
         exact: true,
         component: Rewards,
         routes: [
@@ -75,7 +78,7 @@ const routes = [
             component: MatchBotCampaign,
           },
           {
-            path: '/rewards/edit/#:campaignId',
+            path: '/rewards/edit/:campaignId',
             exact: true,
             component: CreateRewardForm,
           },
@@ -84,7 +87,7 @@ const routes = [
             exact: true,
             component: FilteredRewardsList,
           },
-        ]
+        ],
       },
       // {
       //   path: `/rewards/:filterKey/:campaignParent?`,

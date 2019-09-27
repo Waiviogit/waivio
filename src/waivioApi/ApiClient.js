@@ -468,9 +468,9 @@ export const getCampaignsByGuideName = guideName =>
 
 export const getCampaignById = campaignId =>
   new Promise((resolve, reject) => {
-    fetch( `${config.campaignApiPrefix}${config.campaign}/${campaignId}`, {
+    fetch(`${config.campaignApiPrefix}${config.campaign}/${campaignId}`, {
       headers,
-      method: 'GET'
+      method: 'GET',
     })
       .then(res => res.json())
       .then(result => resolve(result))

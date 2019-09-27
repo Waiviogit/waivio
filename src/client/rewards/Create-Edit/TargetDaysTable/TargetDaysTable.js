@@ -4,31 +4,59 @@ import { injectIntl } from 'react-intl';
 import { Checkbox } from 'antd';
 import './TargetDaysTable.less';
 
-const TargetDaysTable = ({ intl, setTargetDays }) => (
+const TargetDaysTable = ({ intl, setTargetDays, initialValues, disabled }) => (
   <React.Fragment>
     <table className="TargetDaysTable">
       <thead>
         <tr>
           <th>
-            <Checkbox onChange={setTargetDays('sunday')} />
+            <Checkbox
+              onChange={setTargetDays('sunday')}
+              checked={initialValues.sunday}
+              disabled={disabled}
+            />
           </th>
           <th>
-            <Checkbox onChange={setTargetDays('monday')} />
+            <Checkbox
+              onChange={setTargetDays('monday')}
+              checked={initialValues.monday}
+              disabled={disabled}
+            />
           </th>
           <th>
-            <Checkbox onChange={setTargetDays('tuesday')} />
+            <Checkbox
+              onChange={setTargetDays('tuesday')}
+              checked={initialValues.tuesday}
+              disabled={disabled}
+            />
           </th>
           <th>
-            <Checkbox onChange={setTargetDays('wednesday')} />
+            <Checkbox
+              onChange={setTargetDays('wednesday')}
+              checked={initialValues.wednesday}
+              disabled={disabled}
+            />
           </th>
           <th>
-            <Checkbox onChange={setTargetDays('thursday')} />
+            <Checkbox
+              onChange={setTargetDays('thursday')}
+              checked={initialValues.thursday}
+              disabled={disabled}
+            />
           </th>
           <th>
-            <Checkbox onChange={setTargetDays('friday')} />
+            <Checkbox
+              onChange={setTargetDays('friday')}
+              checked={initialValues.friday}
+              disabled={disabled}
+            />
           </th>
           <th>
-            <Checkbox onChange={setTargetDays('saturday')} />
+            <Checkbox
+              onChange={setTargetDays('saturday')}
+              checked={initialValues.saturday}
+              disabled={disabled}
+            />
           </th>
         </tr>
       </thead>
@@ -47,9 +75,32 @@ const TargetDaysTable = ({ intl, setTargetDays }) => (
   </React.Fragment>
 );
 
+TargetDaysTable.defaultProps = {
+  disabled: false,
+  initialValues: {
+    monday: false,
+    tuesday: false,
+    wednesday: false,
+    thursday: false,
+    friday: false,
+    saturday: false,
+    sunday: false,
+  },
+};
+
 TargetDaysTable.propTypes = {
   intl: PropTypes.shape().isRequired,
   setTargetDays: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+  initialValues: PropTypes.shape({
+    monday: PropTypes.bool,
+    tuesday: PropTypes.bool,
+    wednesday: PropTypes.bool,
+    thursday: PropTypes.bool,
+    friday: PropTypes.bool,
+    saturday: PropTypes.bool,
+    sunday: PropTypes.bool,
+  }),
 };
 
 export default injectIntl(TargetDaysTable);
