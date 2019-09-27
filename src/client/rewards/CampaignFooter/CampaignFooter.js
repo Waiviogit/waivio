@@ -27,6 +27,7 @@ class CampaignFooter extends React.Component {
     postState: PropTypes.shape().isRequired,
     rewardFund: PropTypes.shape().isRequired,
     proposedWobj: PropTypes.shape().isRequired,
+    proposition: PropTypes.shape().isRequired,
     intl: PropTypes.shape().isRequired,
     requiredObjectPermlink: PropTypes.string.isRequired,
     requiredObjectName: PropTypes.string.isRequired,
@@ -208,6 +209,7 @@ class CampaignFooter extends React.Component {
       requiredObjectPermlink,
       requiredObjectName,
       intl,
+      proposition,
     } = this.props;
 
     return (
@@ -235,6 +237,7 @@ class CampaignFooter extends React.Component {
               requiredObjectName={requiredObjectName}
               proposedObjectName={proposedWobj.name}
               proposedObjectPermlink={proposedWobj.author_permlink}
+              propositionId={proposition._id} // eslint-disable-line
             />
           )}
         </div>

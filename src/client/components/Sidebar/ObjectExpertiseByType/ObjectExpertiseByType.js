@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
-import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import WeightTag from '../../WeightTag';
 import RightSidebarLoading from '../../../app/Sidebar/RightSidebarLoading';
@@ -79,17 +79,12 @@ const ObjectExpertiseByType = ({ match }) => {
       ));
 
       const renderButtons = () => (
-        <React.Fragment>
-          <h4 className="ObjectExpertiseByType__more">
-            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-            <div onClick={() => setShowModal(true)} id="show_more_div">
-              <FormattedMessage id="show_more" defaultMessage="Show more" />
-            </div>
-            <Link to={'/discover'}>
-              <FormattedMessage id="explore" defaultMessage="Explore" />
-            </Link>
-          </h4>
-        </React.Fragment>
+        <h4 className="ObjectExpertiseByType__more">
+          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+          <div onClick={() => setShowModal(true)} id="show_more_div">
+            <FormattedMessage id="show_more" defaultMessage="Show more" />
+          </div>
+        </h4>
       );
 
       const onWheelHandler = () => {
@@ -102,7 +97,7 @@ const ObjectExpertiseByType = ({ match }) => {
         <div className="SidebarContentBlock" key={typeName}>
           <h4 className="SidebarContentBlock__title">
             <i className="iconfont icon-collection SidebarContentBlock__icon" />{' '}
-            <FormattedMessage id="object_related" defaultMessage="Type Experts" />
+            <FormattedMessage id="related_to_object" defaultMessage="Type Experts" />
           </h4>
           <div className="SidebarContentBlock__content">{renderObjects}</div>
           {renderButtons()}
@@ -124,6 +119,10 @@ const ObjectExpertiseByType = ({ match }) => {
   }
 
   return renderCard;
+};
+
+ObjectExpertiseByType.propTypes = {
+  match: PropTypes.shape().isRequired,
 };
 
 export default ObjectExpertiseByType;
