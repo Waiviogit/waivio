@@ -41,6 +41,7 @@ import SortSelector from '../components/SortSelector/SortSelector';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import MatchBot from './MatchBot/MatchBot';
 import { generatePermlink } from '../helpers/wObjectHelper';
+import Payables from './Payables/Payables';
 
 @withRouter
 @injectIntl
@@ -88,7 +89,7 @@ class Rewards extends React.Component {
     campaignsTypes: [],
     isModalDetailsOpen: false,
     objectDetails: {},
-    activeFilters: { guideNames: [], types: [] },
+    activeFilters: { guideNames: [], types: [], payables: [] },
     isSearchAreaFilter: false,
   };
 
@@ -420,6 +421,8 @@ class Rewards extends React.Component {
         );
       case '/rewards/manage':
         return <Manage userName={username} />;
+      case '/rewards/payables':
+        return <Payables userName={username} />;
       case '/rewards/match-bot':
         return <MatchBot userName={username} />;
       default:
@@ -464,22 +467,25 @@ class Rewards extends React.Component {
           {location.pathname !== '/rewards/manage' && location.pathname !== '/rewards/match-bot' && (
             <Affix className="rightContainer leftContainer__user" stickPosition={122}>
               <div className="right">
-                {!_.isEmpty(this.props.userLocation) && !isCreate && (
-                  <React.Fragment>
-                    <MapWrap
-                      wobjects={this.getRequiredObjects()}
-                      userLocation={this.props.userLocation}
-                      onMarkerClick={this.goToCampaign}
-                      getAreaSearchData={this.getAreaSearchData}
-                    />
-                  </React.Fragment>
-                )}
+                {!_.isEmpty(this.props.userLocation) &&
+                  !isCreate &&
+                  location.pathname !== '/rewards/payables' && (
+                    <React.Fragment>
+                      <MapWrap
+                        wobjects={this.getRequiredObjects()}
+                        userLocation={this.props.userLocation}
+                        onMarkerClick={this.goToCampaign}
+                        getAreaSearchData={this.getAreaSearchData}
+                      />
+                    </React.Fragment>
+                  )}
                 {!_.isEmpty(sponsors) && !isCreate && (
                   <RewardsFiltersPanel
                     campaignsTypes={campaignsTypes}
                     sponsors={sponsors}
                     activeFilters={activeFilters}
                     setFilterValue={this.setFilterValue}
+                    location={location}
                   />
                 )}
               </div>

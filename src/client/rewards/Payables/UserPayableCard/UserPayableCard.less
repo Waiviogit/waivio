@@ -1,0 +1,33 @@
+@import (reference) '../../../styles/modules/variables.less';
+@import (reference) '../../../styles/custom.less';
+
+.UserPayableCard {
+  display: flex;
+  align-items: center;
+  border: 1px solid @white-gainsboro;
+  background-color: @white;
+  padding: 10px 14px;
+
+  &__content {
+    flex-direction: column;
+    margin-left: 10px;
+    max-width: calc(100vw - 210px);
+
+    &-alias-name {
+      font-weight: bold;
+    }
+
+    &-name {
+      font-weight: 500;
+      color: @blue-botticelli;
+    }
+
+    @media @small, @medium, @large {
+      max-width: 350px;
+    }
+
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+}

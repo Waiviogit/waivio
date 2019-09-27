@@ -737,5 +737,7 @@
   "reject_campaign": "Reject rewards campaign",
   "reject_campaign_accept": "Do you want to reject rewards campaign?",
   "deactivate_campaign": "Deactivate rewards campaign",
-  "cannot_reject_campaign": "You cannot reject the campaign at the moment"
+  "cannot_reject_campaign": "You cannot reject the campaign at the moment",
+  "payables_page_payables": "Payables",
+  "payables_page_total": "Total"
 }

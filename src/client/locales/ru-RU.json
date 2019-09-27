@@ -354,5 +354,7 @@
   "amount_currency": "{amount} {currency}",
   "save_draft_error": "Couldn't save this draft. Make sure you are connected to the internet and don't have too much drafts already",
   "draft_save_auth_error": "Couldn't save this draft, because you are logged out. Please backup your post and log in again.",
-  "version": "Version: {version}"
+  "version": "Version: {version}",
+  "payables_page_payables": "Задолженность",
+  "payables_page_total": "Сумма"
 }
