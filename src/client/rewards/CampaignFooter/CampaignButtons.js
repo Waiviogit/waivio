@@ -261,8 +261,10 @@ export default class CampaignButtons extends React.Component {
       <div className="Buttons">
         <React.Fragment>
           <LinkButton
+            block={false}
             className="WriteReview-button"
             to={`/editor?object=[${requiredObjectName}](${requiredObjectPermlink})&object=[${proposedObjectName}](${proposedObjectPermlink})&campaign=${propositionId}`}
+            type="primary"
           >
             {intl.formatMessage({
               id: 'write_review',
