@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import take from 'lodash/take';
+import { take } from 'lodash';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
 import { Link } from 'react-router-dom';
-import { Button, Icon } from 'antd';
+import { Icon } from 'antd';
 import classNames from 'classnames';
+import LinkButton from '../../components/LinkButton/LinkButton';
 import withAuthActions from '../../auth/withAuthActions';
 import { sortVotes } from '../../helpers/sortHelpers';
 import {
@@ -27,6 +28,7 @@ export default class CampaignButtons extends React.Component {
     intl: PropTypes.shape().isRequired,
     post: PropTypes.shape().isRequired,
     postState: PropTypes.shape().isRequired,
+    propositionId: PropTypes.string.isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
     requiredObjectPermlink: PropTypes.string.isRequired,
     requiredObjectName: PropTypes.string.isRequired,
@@ -186,6 +188,7 @@ export default class CampaignButtons extends React.Component {
       requiredObjectName,
       proposedObjectPermlink,
       proposedObjectName,
+      propositionId,
     } = this.props;
 
     const isAppend = !!this.props.post.append_field_name;
@@ -257,16 +260,15 @@ export default class CampaignButtons extends React.Component {
     return (
       <div className="Buttons">
         <React.Fragment>
-          <Button
+          <LinkButton
             className="WriteReview-button"
-            href={`/editor?object=[${requiredObjectName}](${requiredObjectPermlink})&object=[${proposedObjectName}](${proposedObjectPermlink})`}
-            type="primary"
+            to={`/editor?object=[${requiredObjectName}](${requiredObjectPermlink})&object=[${proposedObjectName}](${proposedObjectPermlink})&campaign=${propositionId}`}
           >
             {intl.formatMessage({
               id: 'write_review',
               defaultMessage: `Write a review`,
             })}
-          </Button>
+          </LinkButton>
           <BTooltip title={likeTooltip}>
             <a role="presentation" className={likeClass} onClick={this.handleLikeClick}>
               {pendingLike ? (
