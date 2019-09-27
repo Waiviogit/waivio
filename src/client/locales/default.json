@@ -737,5 +737,12 @@
   "reject_campaign": "Reject rewards campaign",
   "reject_campaign_accept": "Do you want to reject rewards campaign?",
   "deactivate_campaign": "Deactivate rewards campaign",
-  "cannot_reject_campaign": "You cannot reject the campaign at the moment"
+  "cannot_reject_campaign": "You cannot reject the campaign at the moment",
+  "discover": "discover",
+  "personal": "personal",
+  "custom_json": "custom_json",
+  "comment_options": "comment_options",
+  "for_days": "for",
+  "legal_notice_users_user": "Legal notice to users (optional)",
+  "manage": "Manage"
 }
