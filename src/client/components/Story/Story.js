@@ -156,7 +156,7 @@ class Story extends React.Component {
         key={wobj.author_permlink}
         to={{ pathname: pathName }}
         title={`${this.props.intl.formatMessage({
-          id: 'related_to_obj',
+          id: 'related_to_object',
           defaultMessage: 'Related to object',
         })} ${name} ${wobj.percent ? `(${wobj.percent.toFixed(2)}%)` : ''}`}
       >

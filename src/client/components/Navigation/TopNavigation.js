@@ -8,13 +8,14 @@ import './TopNavigation.less';
 const LINKS = {
   FEED_TRENDING: '/trending',
   FEED_HOT: '/hot',
+  FEED_NEW: '/created',
   FEED_PROMOTED: '/promoted',
   REWARDS: '/rewards',
   DISCOVER: '/discover-objects',
   ACTIVITY: '/activity',
   ABOUT: '/object/ylr-waivio',
 };
-const FEED_URLS = [LINKS.FEED_HOT, LINKS.FEED_PROMOTED, LINKS.FEED_TRENDING];
+const FEED_URLS = [LINKS.FEED_HOT, LINKS.FEED_NEW, LINKS.FEED_TRENDING];
 
 const TopNavigation = ({ authenticated, location: { pathname } }) => {
   const isRouteMathed =

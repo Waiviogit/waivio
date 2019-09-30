@@ -739,5 +739,12 @@
   "deactivate_campaign": "Deactivate rewards campaign",
   "cannot_reject_campaign": "You cannot reject the campaign at the moment",
   "payables_page_payables": "Payables",
-  "payables_page_total": "Total"
+  "payables_page_total": "Total",
+  "discover": "discover",
+  "personal": "personal",
+  "custom_json": "custom_json",
+  "comment_options": "comment_options",
+  "for_days": "for",
+  "legal_notice_users_user": "Legal notice to users (optional)",
+  "manage": "Manage"
 }

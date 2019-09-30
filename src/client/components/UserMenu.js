@@ -101,7 +101,7 @@ class UserMenu extends React.Component {
                 role="presentation"
                 data-key="expertise"
               >
-                <FormattedMessage id="expertise" defaultMessage="Expertise" />
+                <FormattedMessage id="user_expertise" defaultMessage="Expertise" />
                 <span className="UserMenu__badge">
                   <FormattedNumber value={this.props.objectsSharesCount || 0} />
                 </span>

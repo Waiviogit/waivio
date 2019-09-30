@@ -623,7 +623,7 @@ class CreateRewardForm extends React.Component {
         </div>
         <div className="CreateReward__item-title simple-text">
           {intl.formatMessage({
-            id: 'up_to_5_comma_delimited)',
+            id: 'up_to_5_comma_delimited',
             defaultMessage: '(up to 5, comma delimited)',
           })}
         </div>
