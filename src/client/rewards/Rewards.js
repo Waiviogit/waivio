@@ -40,7 +40,6 @@ import RewardBreadcrumb from './RewardsBreadcrumb/RewardBreadcrumb';
 import SortSelector from '../components/SortSelector/SortSelector';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import MatchBot from './MatchBot/MatchBot';
-import { generatePermlink } from '../helpers/wObjectHelper';
 import Payables from './Payables/Payables';
 
 @withRouter
@@ -248,8 +247,7 @@ class Rewards extends React.Component {
   };
 
   // Propositions
-  assignProposition = ({ companyAuthor, companyPermlink, companyId, objPermlink }) => {
-    const resPermlink = `reserve-${companyId}-${generatePermlink()}`;
+  assignProposition = ({ companyAuthor, companyPermlink, resPermlink, objPermlink, companyId }) => {
     this.setState({ loadingAssignDiscard: true });
     this.props
       .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink })
