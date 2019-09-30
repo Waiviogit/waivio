@@ -131,6 +131,7 @@ export function splitPostContent(
 
 export function getInitialState(props) {
   let state = {
+    campaign: props.campaignId ? { id: props.campaignId } : null,
     draftId: uuidv4(),
     parentPermlink: WAIVIO_PARENT_PERMLINK,
     draftContent: {

@@ -4,8 +4,9 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Badge } from 'antd';
-import { debounce, has, kebabCase, throttle, uniqBy } from 'lodash';
+import { get, debounce, has, isEmpty, kebabCase, throttle, uniqBy } from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
+import { getCampaignById } from '../../../waivioApi/ApiClient';
 import {
   getAuthenticatedUser,
   getLocale,
@@ -14,7 +15,9 @@ import {
   getIsEditorSaving,
   getIsImageUploading,
   getUpvoteSetting,
+  getUser,
 } from '../../reducers';
+import { getUserAccount } from '../../user/usersActions';
 import { createPost, saveDraft } from '../Write/editorActions';
 import { createPostMetadata, splitPostContent, getInitialState } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
@@ -39,11 +42,13 @@ const getLinkedObjects = contentStateRaw => {
 @connect(
   (state, props) => ({
     user: getAuthenticatedUser(state),
+    userAccount: getUser(state, get(props, ['user', 'name'], '')),
     locale: getLocale(state),
     draftPosts: getDraftPosts(state),
     publishing: getIsEditorLoading(state),
     saving: getIsEditorSaving(state),
     imageLoading: getIsImageUploading(state),
+    campaignId: new URLSearchParams(props.location.search).get('campaign'),
     draftId: new URLSearchParams(props.location.search).get('draft'),
     initObjects: new URLSearchParams(props.location.search).getAll('object'),
     upvoteSetting: getUpvoteSetting(state),
@@ -51,23 +56,28 @@ const getLinkedObjects = contentStateRaw => {
   {
     createPost,
     saveDraft,
+    getUserAccount,
   },
 )
 class EditPost extends Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
+    userAccount: PropTypes.shape().isRequired, // eslint-disable-line
     locale: PropTypes.string.isRequired,
     draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+    campaignId: PropTypes.string, // eslint-disable-line
     draftId: PropTypes.string,
     publishing: PropTypes.bool,
     saving: PropTypes.bool,
     imageLoading: PropTypes.bool,
     createPost: PropTypes.func,
     saveDraft: PropTypes.func,
+    getUserAccount: PropTypes.func.isRequired,
   };
   static defaultProps = {
     upvoteSetting: false,
+    campaignId: '',
     draftId: '',
     publishing: false,
     saving: false,
@@ -99,7 +109,27 @@ class EditPost extends Component {
       });
       return nextState;
     }
+    if (!isEmpty(nextProps.userAccount) && isEmpty(prevState.reviewer)) {
+      const { count_posts, follower_count, wobjects_weight } = nextProps.userAccount; // eslint-disable-line
+      return {
+        reviewer: {
+          expertise: wobjects_weight,
+          followersCount: follower_count,
+          postsCount: count_posts,
+        },
+      };
+    }
     return null;
+  }
+
+  componentDidMount() {
+    const { campaign } = this.state;
+    if (campaign && campaign.id) {
+      this.props.getUserAccount(get(this.props, ['user', 'name'], ''));
+      getCampaignById(campaign.id)
+        .then(campaignData => this.setState({ campaign: campaignData }))
+        .catch(error => console.log('Failed to get campaign data:', error));
+    }
   }
 
   handleChangeContent(rawContent) {
