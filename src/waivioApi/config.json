@@ -45,6 +45,7 @@
   "getObjectTypes": "/objectTypes",
   "objectType": "/objectType",
   "generalSearch": "/generalSearch",
+  "campaign": "/campaign",
   "campaigns": "/campaigns",
   "createCampaign": "/create_campaign",
   "activation": "/validate_activation",
