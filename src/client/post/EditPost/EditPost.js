@@ -4,18 +4,18 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Badge } from 'antd';
-import { get, debounce, has, isEmpty, kebabCase, throttle, uniqBy } from 'lodash';
+import { debounce, has, isEmpty, kebabCase, throttle, uniqBy } from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
 import { getCampaignById } from '../../../waivioApi/ApiClient';
 import {
   getAuthenticatedUser,
+  getUser,
   getLocale,
   getDraftPosts,
   getIsEditorLoading,
   getIsEditorSaving,
   getIsImageUploading,
   getUpvoteSetting,
-  getUser,
 } from '../../reducers';
 import { getUserAccount } from '../../user/usersActions';
 import { createPost, saveDraft } from '../Write/editorActions';
@@ -42,7 +42,7 @@ const getLinkedObjects = contentStateRaw => {
 @connect(
   (state, props) => ({
     user: getAuthenticatedUser(state),
-    userAccount: getUser(state, get(props, ['user', 'name'], '')),
+    userAccount: getUser(state, props.userName),
     locale: getLocale(state),
     draftPosts: getDraftPosts(state),
     publishing: getIsEditorLoading(state),
@@ -63,6 +63,7 @@ class EditPost extends Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
+    userName: PropTypes.string.isRequired,
     userAccount: PropTypes.shape().isRequired, // eslint-disable-line
     locale: PropTypes.string.isRequired,
     draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
@@ -109,7 +110,7 @@ class EditPost extends Component {
       });
       return nextState;
     }
-    if (!isEmpty(nextProps.userAccount) && isEmpty(prevState.reviewer)) {
+    if (nextProps.userAccount && nextProps.userAccount.name && isEmpty(prevState.reviewer)) {
       const { count_posts, follower_count, wobjects_weight } = nextProps.userAccount; // eslint-disable-line
       return {
         reviewer: {
@@ -125,7 +126,7 @@ class EditPost extends Component {
   componentDidMount() {
     const { campaign } = this.state;
     if (campaign && campaign.id) {
-      this.props.getUserAccount(get(this.props, ['user', 'name'], ''));
+      this.props.getUserAccount(this.props.userName);
       getCampaignById(campaign.id)
         .then(campaignData => this.setState({ campaign: campaignData }))
         .catch(error => console.log('Failed to get campaign data:', error));
@@ -241,6 +242,8 @@ class EditPost extends Component {
       linkedObjects,
       objPercentage,
       settings,
+      reviewer,
+      campaign,
       isUpdating,
     } = this.state;
     const { saving, publishing, imageLoading, locale, draftPosts } = this.props;
@@ -263,20 +266,6 @@ class EditPost extends Component {
                 )}
               </div>
             )}
-            <PostPreviewModal
-              content={content}
-              topics={topics}
-              linkedObjects={linkedObjects}
-              objPercentage={objPercentage}
-              settings={settings}
-              isPublishing={publishing}
-              isUpdating={isUpdating}
-              onTopicsChange={this.handleTopicsChange}
-              onSettingsChange={this.handleSettingsChange}
-              onPercentChange={this.handlePercentChange}
-              onSubmit={this.handleSubmit}
-              onUpdate={this.saveDraft}
-            />
             {linkedObjects.map(wObj => (
               <ObjectCardView wObject={wObj} key={wObj.id} />
             ))}
@@ -288,6 +277,21 @@ class EditPost extends Component {
             </div>
           </div>
         </div>
+        <PostPreviewModal
+          content={content}
+          topics={topics}
+          linkedObjects={linkedObjects}
+          objPercentage={objPercentage}
+          settings={settings}
+          reviewData={reviewer && campaign ? { reviewer, campaign } : null}
+          isPublishing={publishing}
+          isUpdating={isUpdating}
+          onTopicsChange={this.handleTopicsChange}
+          onSettingsChange={this.handleSettingsChange}
+          onPercentChange={this.handlePercentChange}
+          onSubmit={this.handleSubmit}
+          onUpdate={this.saveDraft}
+        />
       </div>
     );
   }
