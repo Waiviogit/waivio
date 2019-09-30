@@ -1,6 +1,7 @@
 import React from 'react';
 import { mountWithIntl } from 'enzyme-react-intl';
 import { act } from 'react-dom/test-utils';
+import { BrowserRouter as Router } from 'react-router-dom';
 import ObjectExpertiseByType from '../ObjectExpertiseByType/ObjectExpertiseByType';
 
 jest.mock('../../../../waivioApi/ApiClient');
@@ -11,10 +12,18 @@ describe('ObjectExpertiseByType component', () => {
 
   beforeEach(() => {
     const props = {
-      typeName: 'test',
+      match: {
+        params: {
+          typeName: 'test',
+        },
+      },
     };
 
-    wrapper = mountWithIntl(<ObjectExpertiseByType {...props} />);
+    wrapper = mountWithIntl(
+      <Router>
+        <ObjectExpertiseByType {...props} />
+      </Router>,
+    );
   });
 
   afterEach(() => jest.clearAllMocks());
@@ -23,7 +32,7 @@ describe('ObjectExpertiseByType component', () => {
     act(() => {
       wrapper.update();
     });
-    expect(wrapper.prop('typeName')).toEqual('test');
+    expect(wrapper.props().children.props.match.params).toEqual({ typeName: 'test' });
   });
 
   it('Should render placeholder first', () => {

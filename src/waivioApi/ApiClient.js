@@ -100,6 +100,25 @@ export const getFeedContent = (sortBy, queryData) =>
       .catch(error => reject(error));
   });
 
+export const getUserProfileBlog = (
+  userName,
+  { startAuthor = '', startPermlink = '', limit = 10 },
+) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.user}/${userName}${config.blog}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({
+        limit,
+        start_author: startAuthor,
+        start_permlink: startPermlink,
+      }),
+    })
+      .then(res => res.json())
+      .then(posts => resolve(posts))
+      .catch(error => reject(error));
+  });
+
 export const postCreateWaivioObject = requestBody =>
   new Promise((resolve, reject) => {
     fetch(`${config.objectsBotApiPrefix}${config.objectsBot.createObject}`, {
