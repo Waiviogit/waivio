@@ -8,7 +8,7 @@ import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
-import _ from 'lodash';
+import _, { isEmpty, map } from 'lodash';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
@@ -20,7 +20,6 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTop from '../components/Utils/ScrollToTop';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
-import './Rewards.less';
 import {
   activateCampaign,
   assignProposition,
@@ -35,6 +34,7 @@ import Campaign from './Campaign/Campaign';
 import Avatar from '../components/Avatar';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import { generatePermlink } from '../helpers/wObjectHelper';
+import './Rewards.less';
 
 @withRouter
 @injectIntl
@@ -110,7 +110,7 @@ class Rewards extends React.Component {
   }
 
   getRequiredObjects = () =>
-    _.map(this.state.propositions, proposition => proposition.required_object);
+    map(this.state.propositions, proposition => proposition.required_object);
 
   getAreaSearchData = ({ radius, coordinates }) => {
     const { username, match } = this.props;
@@ -166,7 +166,7 @@ class Rewards extends React.Component {
     this.getPropositions({
       username,
       match,
-      coordinates: _.isEmpty(coordinates)
+      coordinates: isEmpty(coordinates)
         ? [+this.props.userLocation.lat, +this.props.userLocation.lon]
         : coordinates,
       radius,
@@ -199,10 +199,10 @@ class Rewards extends React.Component {
       });
   };
   updateProposition = (propsId, isAssign, objPermlink) =>
-    _.map(this.state.propositions, proposition => {
+    map(this.state.propositions, proposition => {
       // eslint-disable-next-line no-param-reassign
       if (proposition._id === propsId) {
-        _.map(proposition.users, user => {
+        map(proposition.users, user => {
           if (user.name === this.props.username) {
             if (_.includes(user.approved_objects, objPermlink)) {
               const newUser = user;
@@ -259,7 +259,7 @@ class Rewards extends React.Component {
     const { intl } = this.props;
     if (_.size(propositions) !== 0) {
       if (IsRequiredObjectWrap) {
-        return _.map(
+        return map(
           propositions,
           proposition =>
             proposition &&
@@ -274,8 +274,8 @@ class Rewards extends React.Component {
         );
       }
 
-      return _.map(propositions, proposition =>
-        _.map(
+      return map(propositions, proposition =>
+        map(
           proposition.objects,
           wobj =>
             wobj.object &&
@@ -402,7 +402,7 @@ class Rewards extends React.Component {
           {match.path === '/rewards/:filterKey/:campaignParent?' && (
             <Affix className="rightContainer leftContainer__user" stickPosition={122}>
               <div className="right">
-                {!_.isEmpty(this.props.userLocation) && !isCreate && (
+                {!isEmpty(this.props.userLocation) && !isCreate && (
                   <React.Fragment>
                     <MapWrap
                       wobjects={this.getRequiredObjects()}
@@ -412,7 +412,7 @@ class Rewards extends React.Component {
                     />
                   </React.Fragment>
                 )}
-                {!_.isEmpty(sponsors) && !isCreate && (
+                {!isEmpty(sponsors) && !isCreate && (
                   <RewardsFiltersPanel
                     campaignsTypes={campaignsTypes}
                     sponsors={sponsors}
@@ -424,7 +424,7 @@ class Rewards extends React.Component {
             </Affix>
           )}
         </div>
-        {isModalDetailsOpen && !_.isEmpty(objectDetails) && (
+        {isModalDetailsOpen && !isEmpty(objectDetails) && (
           <Modal
             title={this.props.intl.formatMessage({
               id: 'details',
@@ -467,9 +467,7 @@ class Rewards extends React.Component {
 }
 
 Rewards.propTypes = {
-  route: PropTypes.shape({
-    routes: PropTypes.shape(),
-  }).isRequired,
+  route: PropTypes.shape().isRequired,
 };
 
 export default Rewards;

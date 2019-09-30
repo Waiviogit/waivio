@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 
 export const validatorMessagesCreator = messageFactory => ({
   budgetToZero: messageFactory('budget_more_than_zero', 'Budget should be more than zero'),
@@ -55,12 +55,12 @@ export const validatorsCreator = (
 ) => ({
   checkPrimaryObject: (rule, value, callback) => {
     // eslint-disable-next-line no-unused-expressions
-    _.isEmpty(requiredObject) ? callback(messages.checkPrimaryObject) : callback();
+    isEmpty(requiredObject) ? callback(messages.checkPrimaryObject) : callback();
   },
 
   checkSecondaryObject: (rule, value, callback) => {
     // eslint-disable-next-line no-unused-expressions
-    _.isEmpty(objectsToAction) ? callback(messages.checkSecondaryObject) : callback();
+    isEmpty(objectsToAction) ? callback(messages.checkSecondaryObject) : callback();
   },
 
   checkReservationPeriod: (rule, value, callback) => {

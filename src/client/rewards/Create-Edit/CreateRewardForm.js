@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { isEmpty, map } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -7,9 +7,9 @@ import { injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Form, message } from 'antd';
 import { createCampaign, getCampaignById, getObjectsByIds } from '../../../waivioApi/ApiClient';
-import './CreateReward.less';
 import CreateFormRenderer from './CreateFormRenderer';
 import { getClientWObj } from '../../adapters';
+import './CreateReward.less';
 
 @withRouter
 @Form.create()
@@ -64,66 +64,52 @@ class CreateRewardForm extends React.Component {
     commissionToWaivio: 5,
     campaignId: null,
     isCampaignActive: false,
-
-    // confirmDirty: false,
-    // autoCompleteResult: [],
-    // isModalEligibleUsersOpen: false,
-    // hasRequireObject: false,
-    // hasReviewObject: false,
   };
 
   componentDidMount = async () => {
     if (this.props.match.params.campaignId) {
+      // eslint-disable-next-line react/no-did-mount-set-state
+      this.setState({ loading: true });
+
       const campaign = await getCampaignById(this.props.match.params.campaignId);
 
-      let primaryObject = await getObjectsByIds({
+      const primaryObject = getObjectsByIds({
         authorPermlinks: [campaign.campaign.requiredObject],
       });
-      primaryObject = getClientWObj(primaryObject.wobjects[0]);
 
-      let secondaryObjects = await getObjectsByIds({
-        authorPermlinks: [...campaign.campaign.objects],
-      });
-      secondaryObjects = secondaryObjects.wobjects.map(obj => getClientWObj(obj));
+      const secondaryObjects = getObjectsByIds({ authorPermlinks: [...campaign.campaign.objects] });
 
-      let sponsors = [];
-      if (!_.isEmpty(campaign.campaign.match_bots)) {
-        sponsors = await getObjectsByIds({ authorPermlinks: [...campaign.campaign.match_bots] });
-        sponsors = sponsors.wobjects.map(obj => getClientWObj(obj));
-      }
       const expiredAt = moment(new Date(campaign.campaign.expired_at));
 
       const isCampaignActive = campaign.campaign.status === 'active';
 
-      console.log(isCampaignActive);
+      let sponsors;
+      if (!isEmpty(campaign.campaign.match_bots)) {
+        sponsors = await getObjectsByIds({ authorPermlinks: [...campaign.campaign.match_bots] });
+      }
 
-      // eslint-disable-next-line react/no-did-mount-set-state
-      this.setState({
-        campaignName: campaign.campaign.name,
-        campaignType: campaign.campaign.type,
-        budget: campaign.campaign.budget,
-        reward: campaign.campaign.reward,
-        primaryObject,
-        secondaryObjectsList: secondaryObjects,
-        sponsorsList: sponsors,
-        reservationPeriod: campaign.campaign.count_reservation_days,
-        minFollowers: campaign.campaign.userRequirements.minFollowers,
-        minPosts: campaign.campaign.userRequirements.minPosts,
-        targetDays: campaign.campaign.reservation_timetable,
-        minPhotos: campaign.campaign.requirements.minPhotos,
-        description: campaign.campaign.description,
-        expiredAt,
-        // eslint-disable-next-line no-underscore-dangle
-        campaignId: campaign.campaign._id,
-        isCampaignActive,
-
-        // usersLegalNotice: data.,
-        // agreement: data.,
-        // commissionToWaivio: data.
-        // minSteemReputation: data.,
-        // minExpertise: data.ll,
-        // compensationAccount: data.,
-        // pageObjects: data.,
+      Promise.all([primaryObject, secondaryObjects, sponsors]).then(values => {
+        // eslint-disable-next-line react/no-did-mount-set-state
+        this.setState({
+          loading: false,
+          campaignName: campaign.campaign.name,
+          campaignType: campaign.campaign.type,
+          budget: campaign.campaign.budget,
+          reward: campaign.campaign.reward,
+          primaryObject: getClientWObj(values[0].wobjects[0]),
+          secondaryObjectsList: values[1].wobjects.map(obj => getClientWObj(obj)),
+          sponsorsList: !isEmpty(sponsors) ? values[2].wobjects.map(obj => getClientWObj(obj)) : [],
+          reservationPeriod: campaign.campaign.count_reservation_days,
+          minFollowers: campaign.campaign.userRequirements.minFollowers,
+          minPosts: campaign.campaign.userRequirements.minPosts,
+          targetDays: campaign.campaign.reservation_timetable,
+          minPhotos: campaign.campaign.requirements.minPhotos,
+          description: campaign.campaign.description,
+          // eslint-disable-next-line no-underscore-dangle
+          campaignId: campaign.campaign._id,
+          expiredAt,
+          isCampaignActive,
+        });
       });
     }
   };
@@ -141,9 +127,9 @@ class CreateRewardForm extends React.Component {
   };
 
   prepareSubmitData = (data, userName) => {
-    const objects = _.map(data.secondaryObject, o => o.id);
-    const pageObjects = data.agreement.length !== 0 ? _.map(data.agreement.length, o => o.id) : [];
-    const sponsorAccounts = _.map(data.sponsorsList, o => o.account);
+    const objects = map(data.secondaryObject, o => o.id);
+    const pageObjects = data.agreement.length !== 0 ? map(data.agreement.length, o => o.id) : [];
+    const sponsorAccounts = map(data.sponsorsList, o => o.account);
 
     return {
       requiredObject: data.primaryObject.author_permlink,
@@ -180,107 +166,108 @@ class CreateRewardForm extends React.Component {
     this.props.history.push('/rewards/manage');
   };
 
+  handleSetState = (stateData, callbackData) => {
+    const { setFieldValue } = this.props.form;
+    this.setState({ ...stateData }, () => setFieldValue(callbackData));
+  };
+
   handlers = {
-    handleAddSponsorToList: async obj => {
+    handleAddSponsorToList: obj => {
       const sponsors = [...this.state.sponsorsList, obj];
+
       if (sponsors.length <= 5) {
-        await this.setState({
-          sponsorsList: [...sponsors],
-        });
-        this.props.form.setFieldsValue({ sponsorsList: this.state.sponsorsList });
+        this.handleSetState(
+          { sponsorsList: [...sponsors] },
+          { sponsorsList: this.state.sponsorsList },
+        );
       }
     },
 
     removeSponsorObject: async obj => {
-      await this.setState(prevState => {
-        const objectList = prevState.sponsorsList.filter(el => el.account !== obj.account);
-        return {
-          sponsorsList: objectList,
-        };
-      });
-      this.props.form.setFieldsValue({ sponsorsList: this.state.sponsorsList });
+      this.setState(
+        prevState => {
+          const objectList = prevState.sponsorsList.filter(el => el.account !== obj.account);
+          return {
+            sponsorsList: objectList,
+          };
+        },
+        () => this.props.form.setFieldsValue({ sponsorsList: this.state.sponsorsList }),
+      );
     },
 
     setPrimaryObject: obj => {
-      this.setState({
-        primaryObject: obj,
-        // hasRequireObject: false,
-        parentPermlink: obj.author_permlink,
-      });
-      this.props.form.setFieldsValue({ primaryObject: obj });
+      this.handleSetState(
+        { primaryObject: obj, parentPermlink: obj.author_permlink },
+        { primaryObject: obj },
+      );
     },
 
     removePrimaryObject: () => {
-      this.setState({
-        primaryObject: {},
-        // hasRequireObject: true
-      });
-      this.props.form.setFieldsValue({ primaryObject: {} });
+      this.handleSetState({}, { primaryObject: {} });
     },
 
     handleAddSecondaryObjectToList: async obj => {
-      await this.setState({
-        secondaryObjectsList: [...this.state.secondaryObjectsList, obj],
-        // hasReviewObject: false,
-      });
-      this.props.form.setFieldsValue({ secondaryObject: this.state.secondaryObjectsList });
+      this.handleSetState(
+        { secondaryObjectsList: [...this.state.secondaryObjectsList, obj] },
+        { primaryObject: { secondaryObject: this.state.secondaryObjectsList } },
+      );
     },
 
     removeSecondaryObject: async obj => {
-      await this.setState(prevState => {
-        const objectList = prevState.secondaryObjectsList.filter(el => el.id !== obj.id);
-        return {
-          secondaryObjectsList: objectList,
-          // hasReviewObject: !objectList.length,
-        };
-      });
-      this.props.form.setFieldsValue({ secondaryObject: this.state.secondaryObjectsList });
+      this.setState(
+        prevState => {
+          const objectList = prevState.secondaryObjectsList.filter(el => el.id !== obj.id);
+          return {
+            secondaryObjectsList: objectList,
+          };
+        },
+        () => this.props.form.setFieldsValue({ secondaryObject: this.state.secondaryObjectsList }),
+      );
     },
 
     handleSetCompensationAccount: obj => {
-      this.setState({ compensationAccount: obj });
-      this.props.form.setFieldsValue({ compensationAccount: obj });
+      this.handleSetState({ compensationAccount: obj }, { compensationAccount: obj });
     },
 
     removeCompensationAccount: () => {
-      this.setState({ compensationAccount: {} });
-      this.props.form.setFieldsValue({ compensationAccount: {} });
+      this.handleSetState({ compensationAccount: {} }, { compensationAccount: {} });
     },
 
     handleAddPageObject: async obj => {
-      await this.setState({
-        pageObjects: [...this.state.pageObjects, obj],
-      });
-      this.props.form.setFieldsValue({ agreement: this.state.pageObjects });
+      this.handleSetState(
+        { pageObjects: [...this.state.pageObjects, obj] },
+        { agreement: this.state.pageObjects },
+      );
     },
 
     removePageObject: async obj => {
-      await this.setState(prevState => {
-        const objectList = prevState.pageObjects.filter(el => el.id !== obj.id);
-        return {
-          pageObjects: objectList,
-        };
-      });
-      this.props.form.setFieldsValue({ agreement: this.state.pageObjects });
+      this.setState(
+        prevState => {
+          const objectList = prevState.pageObjects.filter(el => el.id !== obj.id);
+          return {
+            pageObjects: objectList,
+          };
+        },
+        () => this.props.form.setFieldsValue({ agreement: this.state.pageObjects }),
+      );
     },
 
     setTargetDays: targetDay => async () => {
-      await this.setState({
-        targetDays: {
-          ...this.state.targetDays,
-          [targetDay]: !this.state.targetDays[targetDay],
+      this.handleSetState(
+        {
+          targetDays: { ...this.state.targetDays, [targetDay]: !this.state.targetDays[targetDay] },
         },
-      });
-      this.props.form.setFieldsValue({ targetDays: this.state.targetDays });
+        { targetDays: this.state.targetDays },
+      );
     },
 
     getObjectsToOmit: () => {
       const objectsToOmit = [];
-      if (!_.isEmpty(this.state.primaryObject)) {
+      if (!isEmpty(this.state.primaryObject)) {
         objectsToOmit.push(this.state.primaryObject.id);
       }
-      if (!_.isEmpty(this.state.secondaryObjectsList)) {
-        _.map(this.state.secondaryObjectsList, obj => objectsToOmit.push(obj.id));
+      if (!isEmpty(this.state.secondaryObjectsList)) {
+        map(this.state.secondaryObjectsList, obj => objectsToOmit.push(obj.id));
       }
       return objectsToOmit;
     },
@@ -290,16 +277,11 @@ class CreateRewardForm extends React.Component {
       e.preventDefault();
       this.checkOptionFields();
       this.props.form.validateFieldsAndScroll((err, values) => {
-        console.log('Submit', values);
-        if (!err && !_.isEmpty(values.primaryObject) && !_.isEmpty(values.secondaryObject)) {
+        if (!err && !isEmpty(values.primaryObject) && !isEmpty(values.secondaryObject)) {
           createCampaign(this.prepareSubmitData(values, this.props.userName))
-            .then(data => {
+            .then(() => {
               message.success(`'${values.campaignName}' rewards campaign has been created.`);
-              this.setState({
-                propositions: data.campaigns,
-                hasMore: data.hasMore,
-                loading: false,
-              });
+              this.setState({ loading: false });
               this.manageRedirect();
             })
             .catch(error => {
@@ -311,11 +293,7 @@ class CreateRewardForm extends React.Component {
         if (err) {
           this.setState({ loading: false });
         }
-        this.setState({
-          // hasRequireObject: _.isEmpty(this.state.primaryObject),
-          // hasReviewObject: _.isEmpty(this.state.secondaryObjectsList),
-          loading: false,
-        });
+        this.setState({ loading: false });
       });
     },
 
@@ -328,33 +306,10 @@ class CreateRewardForm extends React.Component {
     },
 
     handleSelectChange: () => {},
-
-    // handleDeleteObjectFromList: obj => {
-    //   let secondaryObjectsList = this.state.secondaryObjectsList;
-    //   secondaryObjectsList = _.filter(secondaryObjectsList, o => o.id !== obj.id);
-    //   this.setState({secondaryObjectsList});
-    // },
-
-    // toggleModalEligibleUsers: () => this.setState({isModalEligibleUsersOpen: !this.state.isModalEligibleUsersOpen}),
-
-    // handleConfirmBlur: e => {
-    //   const {value} = e.target;
-    //   this.setState({confirmDirty: this.state.confirmDirty || !!value});
-    // },
-
-    // handleWebsiteChange: value => {
-    //   let autoCompleteResult;
-    //   if (!value) {
-    //     autoCompleteResult = [];
-    //   } else {
-    //     autoCompleteResult = ['.com', '.org', '.net'].map(domain => `${value}${domain}`);
-    //   }
-    //   this.setState({autoCompleteResult});
-    // },
   };
 
   render() {
-    const { user, currentSteemDollarPrice } = this.props;
+    const { user, currentSteemDollarPrice, form } = this.props;
     const {
       campaignName,
       campaignType,
@@ -410,8 +365,8 @@ class CreateRewardForm extends React.Component {
         pageObjects={pageObjects}
         loading={loading}
         parentPermlink={parentPermlink}
-        getFieldDecorator={this.props.form.getFieldDecorator}
-        getFieldValue={this.props.form.getFieldValue}
+        getFieldDecorator={form.getFieldDecorator}
+        getFieldValue={form.getFieldValue}
         commissionToWaivio={commissionToWaivio}
         campaignId={campaignId}
         isCampaignActive={isCampaignActive}
