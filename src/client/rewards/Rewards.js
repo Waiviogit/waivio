@@ -89,6 +89,7 @@ class Rewards extends React.Component {
     isModalDetailsOpen: false,
     objectDetails: {},
     activeFilters: { guideNames: [], types: [], payables: [] },
+    activePayableFilters: [],
     isSearchAreaFilter: false,
   };
 
@@ -191,6 +192,19 @@ class Rewards extends React.Component {
     }
     this.setState({ loadingCampaigns: true });
     this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+  };
+
+  setPayablesFilterValue = filter => {
+    const activeFilters = [...this.state.activePayableFilters];
+    if (_.find(activeFilters, ['filterName', filter.filterName])) {
+      this.setState({
+        activePayableFilters: activeFilters.filter(f => f.filterName !== filter.filterName),
+      });
+    } else {
+      activeFilters.push(filter);
+      this.setState({ activePayableFilters: activeFilters });
+    }
+    this.setState({ loadingCampaigns: true });
   };
 
   getPropositions = ({ username, match, coordinates, area, radius, sort, activeFilters }) => {
@@ -401,7 +415,7 @@ class Rewards extends React.Component {
 
   campaignItemsWrap = location => {
     const { match, username, cryptosPriceHistory, user } = this.props;
-    const { loading, hasMore, propositions } = this.state;
+    const { loading, hasMore, propositions, activePayableFilters } = this.state;
     const filterKey = match.params.filterKey;
     const IsRequiredObjectWrap = !match.params.campaignParent;
     const currentSteemDollarPrice =
@@ -420,7 +434,13 @@ class Rewards extends React.Component {
       case '/rewards/manage':
         return <Manage userName={username} />;
       case '/rewards/payables':
-        return <Payables userName={username} currentSteemDollarPrice={currentSteemDollarPrice} />;
+        return (
+          <Payables
+            userName={username}
+            currentSteemDollarPrice={currentSteemDollarPrice}
+            filterData={activePayableFilters}
+          />
+        );
       case '/rewards/match-bot':
         return <MatchBot userName={username} />;
       default:
@@ -444,6 +464,7 @@ class Rewards extends React.Component {
       objectDetails,
       campaignsTypes,
       activeFilters,
+      activePayableFilters,
     } = this.state;
     const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
     const isCreate = location.pathname === '/rewards/create';
@@ -482,7 +503,9 @@ class Rewards extends React.Component {
                     campaignsTypes={campaignsTypes}
                     sponsors={sponsors}
                     activeFilters={activeFilters}
+                    activePayableFilters={activePayableFilters}
                     setFilterValue={this.setFilterValue}
+                    setPayablesFilterValue={this.setPayablesFilterValue}
                     location={location}
                   />
                 )}

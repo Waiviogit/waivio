@@ -6,8 +6,9 @@ import UserPayableCard from './UserPayableCard/UserPayableCrad';
 import './Payables.less';
 import { getLenders } from '../../../waivioApi/ApiClient';
 
-const Payables = ({ intl, userName, currentSteemDollarPrice }) => {
+const Payables = ({ intl, userName, currentSteemDollarPrice, filterData }) => {
   const [lenders, setLenders] = useState({});
+  console.log(filterData);
   useEffect(() => {
     getLenders(userName)
       .then(data => setLenders(data))
@@ -48,6 +49,7 @@ Payables.propTypes = {
   intl: PropTypes.shape().isRequired,
   userName: PropTypes.string.isRequired,
   currentSteemDollarPrice: PropTypes.number.isRequired,
+  filterData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 
 export default injectIntl(Payables);

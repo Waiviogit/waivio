@@ -8,8 +8,10 @@ import './RewardsFiltersPanel.less';
 const RewardsFiltersPanel = ({
   sponsors,
   activeFilters,
+  activePayableFilters,
   setFilterValue,
   campaignsTypes,
+  setPayablesFilterValue,
   intl,
   location,
 }) => {
@@ -20,7 +22,17 @@ const RewardsFiltersPanel = ({
     </div>
   );
 
-  const payablesFilterData = [`Over 15 days`, `Over 10 sbd`];
+  const filterPayablesLayout = (obj, key, checked) => (
+    <div key={`${key}-${obj.filterName}`} className="RewardsFiltersPanel__item-wrap">
+      <Checkbox onChange={() => setPayablesFilterValue(obj, key)} checked={checked} />
+      <div className="RewardsFiltersPanel__name">{obj.filterName}</div>
+    </div>
+  );
+
+  const payablesFilterData = [
+    { filterName: `Over 15 days`, days: 15 },
+    { filterName: `Over 10 sbd`, money: 10 },
+  ];
   return (
     <div className="RewardsFiltersPanel">
       <div className="RewardsFiltersPanel__container">
@@ -58,7 +70,11 @@ const RewardsFiltersPanel = ({
               })}:`}
             </div>
             {_.map(payablesFilterData, payable =>
-              filterLayout(payable, 'payables', _.includes(activeFilters.payables, payable)),
+              filterPayablesLayout(
+                payable,
+                'payables',
+                !!_.find(activePayableFilters, ['filterName', payable.filterName]),
+              ),
             )}
           </React.Fragment>
         )}
@@ -74,6 +90,8 @@ RewardsFiltersPanel.propTypes = {
   intl: PropTypes.shape().isRequired,
   setFilterValue: PropTypes.func.isRequired,
   location: PropTypes.shape().isRequired,
+  setPayablesFilterValue: PropTypes.func.isRequired,
+  activePayableFilters: PropTypes.shape().isRequired,
   // intl: PropTypes.shape().isRequired,
 };
 
