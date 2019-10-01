@@ -89,25 +89,6 @@ const routes = [
           },
         ],
       },
-      // {
-      //   path: `/rewards/:filterKey/:campaignParent?`,
-      //   // path: `/rewards/(active|reserved|history|create|created)?/@:userName?/:campaignParent?`,
-      //   component: Rewards,
-      // },
-      // {
-      //   path: '/rewards/create',
-      //   exact: true,
-      //   component: CreateRewardForm,
-      // },
-      // {
-      //   path: '/rewards/edit/:campaignId',
-      //   exact: true,
-      //   component: CreateRewardForm,
-      // },
-      // {
-      //   path: `/rewards/:filterKey/:campaignParent?`,
-      //   component: Rewards,
-      // },
       {
         path: '/drafts',
         exact: true,
