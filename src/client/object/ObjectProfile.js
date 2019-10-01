@@ -52,7 +52,6 @@ export default class ObjectProfile extends React.Component {
     getObjectPosts: PropTypes.func.isRequired,
     getMoreObjectPosts: PropTypes.func.isRequired,
     limit: PropTypes.number,
-    chartId: PropTypes.string,
     isLoadingPlatform: PropTypes.bool,
   };
 
@@ -60,7 +59,6 @@ export default class ObjectProfile extends React.Component {
     limit: 10,
     location: {},
     isLoadingPlatform: true,
-    chartId: '',
   };
 
   componentDidMount() {
@@ -105,15 +103,7 @@ export default class ObjectProfile extends React.Component {
   };
 
   render() {
-    const {
-      feed,
-      limit,
-      isLoadingPlatform,
-      object,
-      isNightMode,
-      isAuthenticated,
-      chartId,
-    } = this.props;
+    const { feed, limit, isLoadingPlatform, object, isNightMode, isAuthenticated } = this.props;
     const wobjectname = this.props.match.params.name;
     const content = getFeedFromState('objectPosts', wobjectname, feed);
     const isFetching = getFeedLoadingFromState('objectPosts', wobjectname, feed);
@@ -137,10 +127,10 @@ export default class ObjectProfile extends React.Component {
     return (
       <React.Fragment>
         <div className="object-profile">
-          {showChart && chartId && (
+          {showChart && object.chartid && (
             <div className="object-profile__trade">
               <PostChart
-                quoteSecurity={chartId}
+                quoteSecurity={object.chartid}
                 createdAt={createdAt}
                 forecast={forecast}
                 recommend={'Buy'}
@@ -150,7 +140,7 @@ export default class ObjectProfile extends React.Component {
                 expForecast={null}
                 isObjectProfile
               />
-              <PostQuotation quoteSecurity={chartId} />
+              <PostQuotation quoteSecurity={object.chartid} />
               <iframe
                 title="analysis"
                 style={{
@@ -164,7 +154,7 @@ export default class ObjectProfile extends React.Component {
                 src={`//informer.maximarkets.org/widgetsws/AnalizeID.html?Period=60&typemode=${
                   isNightMode ? 'first' : 'second'
                 }&font=OpenSans-Regular&css=${isNightMode ? 'darkGroup' : 'defaultGroup'}&rowsID=${
-                  quoteIdForWidget[chartId]
+                  quoteIdForWidget[object.chartid]
                 }&defaultId=190&time=global&lang=en`}
               />
             </div>

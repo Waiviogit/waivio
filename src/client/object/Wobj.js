@@ -12,7 +12,6 @@ import {
   getIsUserFailed,
   getIsUserLoaded,
   getObject as getObjectState,
-  getObjectChartId,
   getScreenSize,
 } from '../reducers';
 import OBJECT_TYPE from './const/objectTypes';
@@ -38,7 +37,6 @@ import ObjectsRelated from '../components/Sidebar/ObjectsRelated/ObjectsRelated'
     failed: getIsUserFailed(state, ownProps.match.params.name),
     wobject: getObjectState(state),
     screenSize: getScreenSize(state),
-    chartId: getObjectChartId(state),
   }),
   {
     clearObjectFromStore,
@@ -59,7 +57,6 @@ export default class Wobj extends React.Component {
     wobject: PropTypes.shape(),
     screenSize: PropTypes.string,
     clearObjectFromStore: PropTypes.func,
-    chartId: PropTypes.string,
   };
 
   static defaultProps = {
@@ -70,7 +67,6 @@ export default class Wobj extends React.Component {
     wobject: {},
     screenSize: 'large',
     clearObjectFromStore: () => {},
-    chartId: '',
   };
 
   static fetchData({ store, match }) {
@@ -137,14 +133,7 @@ export default class Wobj extends React.Component {
 
   render() {
     const { isEditMode, hasLeftSidebar } = this.state;
-    const {
-      authenticated,
-      authenticatedUserName: userName,
-      chartId,
-      failed,
-      match,
-      wobject,
-    } = this.props;
+    const { authenticated, authenticatedUserName: userName, failed, match, wobject } = this.props;
     if (failed) return <Error404 />;
 
     const objectName = wobject.name || wobject.default_name || '';
@@ -212,7 +201,7 @@ export default class Wobj extends React.Component {
                   <RightObjectSidebar
                     username={userName}
                     wobject={wobject}
-                    quoteSecurity={chartId || ''}
+                    quoteSecurity={wobject.chartid || ''}
                   />
                 )}
               </div>
@@ -224,7 +213,6 @@ export default class Wobj extends React.Component {
                 wobject,
                 userName,
                 match,
-                chartId,
                 toggleViewEditMode: this.toggleViewEditMode,
               })}
             </div>

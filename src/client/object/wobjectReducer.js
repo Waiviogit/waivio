@@ -1,17 +1,12 @@
-import { find } from 'lodash';
 import * as actions from './wobjectsActions';
 import * as appendAction from './appendActions';
 import { RATE_WOBJECT_SUCCESS } from '../../client/object/wobjActions';
-import { getFieldWithMaxWeight } from './wObjectHelper';
 import { objectFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
 
 const initialState = {
   wobject: {},
   isFetching: false,
-  chartId: '',
 };
-
-const getByChartId = wobj => wobj.chartid; // todo: check prop in adapter
 
 export default function wobjectReducer(state = initialState, action) {
   switch (action.type) {
@@ -30,7 +25,6 @@ export default function wobjectReducer(state = initialState, action) {
         ...state,
         wobject: action.payload,
         isFetching: false,
-        chartId: getByChartId(action.payload),
       };
     case actions.ADD_ITEM_TO_LIST:
       return {
@@ -111,4 +105,4 @@ export const getObjectAuthor = state => state.author;
 export const getObjectFields = state => state.wobject.fields;
 export const getRatingFields = state =>
   getObjectFields(state).filter(field => field.name === objectFields.rating);
-export const getObjectChartId = state => state.chartId;
+export const getObjectChartId = state => state.chartid;

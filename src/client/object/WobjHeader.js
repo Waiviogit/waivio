@@ -69,9 +69,7 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, a
             </div>
           </div>
           <div className="ObjectHeader__info">
-            <Link to={`/markets/${wobject.object_type}`}>
-              <ObjectType type={wobject.object_type} />
-            </Link>
+            <ObjectType type={wobject.object_type} />
             <WeightTag weight={wobject.weight} />
           </div>
           <div className="ObjectHeader__user__username">

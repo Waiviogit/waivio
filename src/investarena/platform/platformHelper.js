@@ -1,8 +1,7 @@
 import _ from 'lodash';
 import { numberFormat } from './numberFormat';
 import { singleton } from './singletonPlatform';
-import { getFieldWithMaxWeight } from '../../client/object/wObjectHelper';
-import { objectFields } from '../../common/constants/listOfFields';
+import { getClientWObj } from "../../client/adapters";
 
 export class PlatformHelper {
   static getMargin(quote, quoteSettings, amount) {
@@ -498,14 +497,11 @@ export class PlatformHelper {
   }
 }
 
-export const mutateObject = wobjects => {
-  const mutetedWobjects = [];
-  _.forEach(wobjects, wobject => {
-    const chartId = getFieldWithMaxWeight(wobject, objectFields.chartId);
-    const avatarlink = getFieldWithMaxWeight(wobject, objectFields.avatar) || '';
-    // eslint-disable-next-line camelcase
-    const author_permlink = wobject.author_permlink;
-    if (chartId) mutetedWobjects.push({ avatarlink, chartId, author_permlink });
-  });
-  return mutetedWobjects;
-};
+export const mutateObject = wobjects => wobjects
+  .map(wobj => getClientWObj(wobj))
+  .filter(wobj => Boolean(wobj.chartid))
+  .map(wobj => ({
+    avatarlink: wobj.avatar,
+    chartId: wobj.chartid,
+    author_permlink: wobj.id,
+  }));

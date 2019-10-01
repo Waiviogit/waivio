@@ -317,31 +317,29 @@ export class Umarkets {
     const quotesSettings = content.securitySettings;
     const tradingSessions = content.tradingSessions;
     this.userSettings = content;
-    const keys = Object.keys(quotesSettings);
     const sortedQuotesSettings = {};
     const currentTime = Date.now();
-    keys.sort();
     ApiClient.getObjects({
       limit: 300,
       invObjects: true,
       requiredFields: [objectFields.chartId],
     }).then(wobjs => {
       const wobjWithChart = mutateObject(wobjs.wobjects);
-      for (const i in keys) {
-        const key = keys[i];
-        const wobjData = _.find(wobjWithChart, o => o.chartId === key);
-        sortedQuotesSettings[key] = quotesSettings[key];
-        if (sortedQuotesSettings[key].market === 'CryptoCurrency')
-          sortedQuotesSettings[key].market = 'Crypto';
-        sortedQuotesSettings[key].keyName = key;
+      Object.keys(quotesSettings).sort().forEach(key => {
+        const wobjData = wobjWithChart.find(o => o.chartId === key);
         if (wobjData) {
-          sortedQuotesSettings[key].wobjData = wobjData;
+          sortedQuotesSettings[key] = {
+            ...quotesSettings[key],
+            keyName: key,
+            isSession: _.some(
+              tradingSessions[quotesSettings[key].calendarCodeId],
+              item => currentTime < item.sessionEnd && currentTime > item.sessionStart,
+            ),
+            market: quotesSettings[key].market === 'CryptoCurrency' ? 'Crypto' : quotesSettings[key].market,
+            wobjData,
+          };
         }
-        sortedQuotesSettings[key].isSession = _.some(
-          tradingSessions[sortedQuotesSettings[key].calendarCodeId],
-          item => currentTime < item.sessionEnd && currentTime > item.sessionStart,
-        );
-      }
+      });
       this.quotesSettings = sortedQuotesSettings;
       this.dispatch(updateQuotesSettings(this.quotesSettings));
     });

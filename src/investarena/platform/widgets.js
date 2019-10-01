@@ -149,23 +149,22 @@ export class Widgets {
   }
   parseSettings(msg) {
     const quotesSettings = JSON.parse(msg.args);
-    const keys = Object.keys(quotesSettings);
     const sortedQuotesSettings = {};
-    keys.sort();
     ApiClient.getObjects({
       limit: 300,
       invObjects: true,
       requiredFields: [objectFields.chartId],
-    }).then(wobjs => {
-      const wobjWithChart = mutateObject(wobjs.wobjects);
-      for (const i in keys) {
-        const key = keys[i];
-        const wobjData = _.find(wobjWithChart, o => o.chartId === key);
-        if (wobjData) {
-          sortedQuotesSettings[key] = quotesSettings[key];
-          sortedQuotesSettings[key].wobjData = wobjData;
-        }
-      }
+    }).then(res => {
+      const wobjWithChart = mutateObject(res.wobjects);
+      Object.keys(quotesSettings).sort().forEach(key => {
+          const wobjData = wobjWithChart.find(o => o.chartId === key);
+          if (wobjData) {
+            sortedQuotesSettings[key] = {
+              ...quotesSettings[key],
+              wobjData,
+            };
+          }
+      });
       this.quotesSettings = sortedQuotesSettings;
       this.dispatch(updateQuotesSettings(this.quotesSettings));
     });

@@ -15,7 +15,6 @@ import {
   sortListItemsBy,
   combineObjectMenu,
   getFieldsByName,
-  getField,
 } from '../../object/wObjectHelper';
 import {
   objectFields,
@@ -359,7 +358,6 @@ class ObjectInfo extends React.Component {
         )}
       </React.Fragment>
     );
-    const hasChartId = getField(wobject, objectFields.chartId);
     const isMobile = this.props.screenSize === 'xsmall';
 
     return (
@@ -393,7 +391,7 @@ class ObjectInfo extends React.Component {
               ),
             )}
             {listItem(objectFields.description, <DescriptionInfo description={description} />)}
-            {hasChartId && (
+            {wobject.chartid && (
               <React.Fragment>
                 <InstrumentLongTermStatistics
                   wobject={this.props.wobject}
