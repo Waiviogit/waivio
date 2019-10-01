@@ -317,11 +317,11 @@ describe('getFieldsWithMaxWeight', () => {
 });
 
 describe('sortListItemsBy', () => {
-  const obj1 = { id: 'id_obj1', type: 'item', name: 'obj-1', rank: 22 };
-  const obj2 = { id: 'id_obj2', type: 'crypto', name: 'obj-2', rank: 11 };
-  const list1 = { id: 'id_lst1', type: 'list', name: 'list-1', rank: 77 };
-  const list2 = { id: 'id_lst2', type: 'list', name: 'list-2', rank: 99 };
-  const list3 = { id: 'id_lst3', type: 'list', name: 'list-3', rank: 88 };
+  const obj1 = { id: 'id_obj1', type: 'item', name: 'obj-1', weight: 22 };
+  const obj2 = { id: 'id_obj2', type: 'crypto', name: 'obj-2', weight: 11 };
+  const list1 = { id: 'id_lst1', type: 'list', name: 'list-1', weight: 77 };
+  const list2 = { id: 'id_lst2', type: 'list', name: 'list-2', weight: 99 };
+  const list3 = { id: 'id_lst3', type: 'list', name: 'list-3', weight: 88 };
 
   let items = [];
   beforeEach(() => {
@@ -343,10 +343,10 @@ describe('sortListItemsBy', () => {
   it('should sort items by type (lists first) and name desc', () => {
     expect(sortListItemsBy(items, 'by-name-desc')).toEqual([list3, list2, list1, obj2, obj1]);
   });
-  it('should sort items by type (lists first) and rank', () => {
+  it('should sort items by type (lists first) and weight', () => {
     expect(sortListItemsBy(items, 'rank')).toEqual([list2, list3, list1, obj1, obj2]);
   });
-  it('should sort items by type (lists first) and rank (by name if ranks are equal)', () => {
+  it('should sort items by type (lists first) and weight (by name if ranks are equal)', () => {
     const withSameRank1 = { ...obj1, id: 'id_obj', name: obj1.name.slice(0, -2) };
     const withSameRank2 = { ...obj1, id: 'id_obj-1', name: `${obj1.name}-1` };
     expect(sortListItemsBy([...items, withSameRank1, withSameRank2], 'rank')).toEqual([
