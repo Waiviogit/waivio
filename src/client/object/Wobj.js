@@ -6,11 +6,11 @@ import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { isEmpty } from 'lodash';
 import {
-  getIsAuthenticated,
   getAuthenticatedUser,
+  getAuthenticatedUserName,
+  getIsAuthenticated,
   getIsUserFailed,
   getIsUserLoaded,
-  getAuthenticatedUserName,
   getObject as getObjectState,
   getObjectChartId,
   getScreenSize,
@@ -24,8 +24,9 @@ import LeftObjectProfileSidebar from '../app/Sidebar/LeftObjectProfileSidebar';
 import RightObjectSidebar from '../app/Sidebar/RightObjectSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
-import { getFieldWithMaxWeight, getInitialUrl } from './wObjectHelper';
+import { getInitialUrl } from './wObjectHelper';
 import { objectFields } from '../../common/constants/listOfFields';
+import ObjectsRelated from '../components/Sidebar/ObjectsRelated/ObjectsRelated';
 
 @withRouter
 @connect(
@@ -146,22 +147,21 @@ export default class Wobj extends React.Component {
     } = this.props;
     if (failed) return <Error404 />;
 
-    const objectName = getFieldWithMaxWeight(wobject, objectFields.name);
+    const objectName = wobject.name || wobject.default_name || '';
     const waivioHost = global.postOrigin || 'https://investarena.waiviodev.com';
     const desc = `${objectName || ''}`;
-    const image = getFieldWithMaxWeight(wobject, objectFields.avatar);
+    const image = wobject.avatar;
     const canonicalUrl = `${waivioHost}/object/${match.params.name}`;
     const url = `${waivioHost}/object/${match.params.name}`;
     const displayedObjectName = objectName || '';
-    const title = `${objectName || wobject.default_name || ''}`;
 
     return (
       <div className="main-panel">
         <Helmet>
-          <title>{title}</title>
+          <title>{objectName}</title>
           <link rel="canonical" href={canonicalUrl} />
           <meta property="description" content={desc} />
-          <meta property="og:title" content={title} />
+          <meta property="og:title" content={objectName} />
           <meta property="og:type" content="article" />
           <meta property="og:url" content={url} />
           <meta property="og:image" content={image} />
@@ -169,7 +169,7 @@ export default class Wobj extends React.Component {
           <meta property="og:site_name" content="Waivio" />
           <meta property="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
           <meta property="twitter:site" content={'@waivio'} />
-          <meta property="twitter:title" content={title} />
+          <meta property="twitter:title" content={objectName} />
           <meta property="twitter:description" content={desc} />
           <meta
             property="twitter:image"
@@ -216,6 +216,7 @@ export default class Wobj extends React.Component {
                   />
                 )}
               </div>
+              <div>{wobject.author_permlink && <ObjectsRelated wobject={wobject} />}</div>
             </Affix>
             <div className="center">
               {renderRoutes(this.props.route.routes, {

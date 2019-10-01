@@ -109,7 +109,7 @@ export const supportedObjectFields = Object.values(objectFields);
 export const objectImageFields = ['avatar', 'background'];
 
 export const getAllowedFieldsByObjType = objectType => {
-  switch (objectType && objectType.toLowerCase()) {
+  switch (objectType) {
     case OBJECT_TYPE.PAGE:
       return [
         objectFields.name,

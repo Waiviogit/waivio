@@ -2,38 +2,39 @@ import SteemAPI from '../steemAPI';
 import { jsonParse } from '../helpers/formatter';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
 
-export function getDiscussionsFromAPI(sortBy, { tag, ...queryParams }, ApiClient) {
-  switch (sortBy) {
-    case 'feed':
-      if (tag === 'wia_feed') {
-        return ApiClient.getMoreFeedContentByObject({
-          authorPermlink: 'vmf-wtrade',
-          limit: queryParams.limit || 10,
-          skip: queryParams.skip,
-          user_languages: queryParams.user_languages,
-        });
-      }
-    case 'hot': // eslint-disable-line no-fallthrough
-    case 'created':
-    case 'active':
-    case 'trending':
-    case 'blog':
-    case 'comments':
-    case 'promoted': {
-      const query = {
-        category: sortBy,
-        sortBy,
-        ...queryParams,
-      };
-      if (tag !== 'all') query.tag = tag;
-      return ApiClient.getFeedContent(sortBy, query);
-    }
-    default:
-      return new Promise((resolve, reject) => {
-        reject(new Error('There is not API endpoint defined for this sorting'));
-      });
-  }
-}
+// todo: fix feed
+// export function getDiscussionsFromAPI(sortBy, { tag, ...queryParams }, ApiClient) {
+//   switch (sortBy) {
+//     case 'feed':
+//       if (tag === 'wia_feed') {
+//         return ApiClient.getMoreFeedContentByObject({
+//           authorPermlink: 'vmf-wtrade',
+//           limit: queryParams.limit || 10,
+//           skip: queryParams.skip,
+//           user_languages: queryParams.user_languages,
+//         });
+//       }
+//     case 'hot': // eslint-disable-line no-fallthrough
+//     case 'created':
+//     case 'active':
+//     case 'trending':
+//     case 'blog':
+//     case 'comments':
+//     case 'promoted': {
+//       const query = {
+//         category: sortBy,
+//         sortBy,
+//         ...queryParams,
+//       };
+//       if (tag !== 'all') query.tag = tag;
+//       return ApiClient.getFeedContent(sortBy, query);
+//     }
+//     default:
+//       return new Promise((resolve, reject) => {
+//         reject(new Error('There is not API endpoint defined for this sorting'));
+//       });
+//   }
+// }
 
 export const getAccount = username =>
   SteemAPI.sendAsync('get_accounts', [[username]]).then(result => {
