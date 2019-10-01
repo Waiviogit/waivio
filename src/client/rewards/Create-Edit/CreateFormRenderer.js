@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Checkbox, DatePicker, Form, Input, InputNumber, Select } from 'antd';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { isEmpty, map } from 'lodash';
 import { Link } from 'react-router-dom';
 import OBJECT_TYPE from '../../object/const/objectTypes';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
@@ -76,7 +76,7 @@ const CreateFormRenderer = props => {
     </div>
   ) : null;
 
-  const renderCompensationAccount = !_.isEmpty(compensationAccount) ? (
+  const renderCompensationAccount = !isEmpty(compensationAccount) ? (
     <div className="CreateReward__objects-wrap">
       <ReviewItem
         key={compensationAccount}
@@ -88,10 +88,10 @@ const CreateFormRenderer = props => {
     </div>
   ) : null;
 
-  const sponsorsIdsToOmit = !_.isEmpty(sponsorsList) ? _.map(sponsorsList, obj => obj.account) : [];
+  const sponsorsIdsToOmit = !isEmpty(sponsorsList) ? map(sponsorsList, obj => obj.account) : [];
 
-  const renderSponsorsList = !_.isEmpty(sponsorsList)
-    ? _.map(sponsorsList, sponsor => (
+  const renderSponsorsList = !isEmpty(sponsorsList)
+    ? map(sponsorsList, sponsor => (
         <ReviewItem
           key={sponsor.account}
           object={sponsor}
@@ -102,7 +102,7 @@ const CreateFormRenderer = props => {
       ))
     : null;
 
-  const renderPrimaryObject = !_.isEmpty(primaryObject) && (
+  const renderPrimaryObject = !isEmpty(primaryObject) && (
     <ReviewItem
       key={primaryObject.id}
       object={primaryObject}
@@ -111,8 +111,8 @@ const CreateFormRenderer = props => {
     />
   );
 
-  const renderSecondaryObjects = !_.isEmpty(secondaryObjectsList)
-    ? _.map(secondaryObjectsList, obj => (
+  const renderSecondaryObjects = !isEmpty(secondaryObjectsList)
+    ? map(secondaryObjectsList, obj => (
         <ReviewItem
           key={obj.id}
           object={obj}
@@ -122,10 +122,10 @@ const CreateFormRenderer = props => {
       ))
     : null;
 
-  const pageObjectsIdsToOmit = !_.isEmpty(pageObjects) ? _.map(pageObjects, obj => obj.id) : [];
+  const pageObjectsIdsToOmit = !isEmpty(pageObjects) ? map(pageObjects, obj => obj.id) : [];
 
-  const renderPageObjectsList = !_.isEmpty(pageObjects)
-    ? _.map(pageObjects, obj => (
+  const renderPageObjectsList = !isEmpty(pageObjects)
+    ? map(pageObjects, obj => (
         <ReviewItem
           key={obj.id}
           object={obj}
@@ -156,7 +156,11 @@ const CreateFormRenderer = props => {
       {notEnoughMoneyWarn}
       {activeCampaignWarn}
 
-      <Form layout="vertical" onSubmit={handlers.handleSubmit}>
+      <Form
+        layout="vertical"
+        onSubmit={handlers.handleSubmit}
+        className={loading && 'CreateReward__loading'}
+      >
         <Form.Item label={fields.campaignName.label}>
           {getFieldDecorator(fields.campaignName.name, {
             rules: fields.campaignName.rules,
@@ -286,7 +290,7 @@ const CreateFormRenderer = props => {
               style={{ width: '100%' }}
               handleSelect={handlers.handleAddSecondaryObjectToList}
               isPermlinkValue={false}
-              disabled={disabled || _.isEmpty(primaryObject)}
+              disabled={disabled || isEmpty(primaryObject)}
               parentPermlink={parentPermlink}
               autoFocus={false}
             />,
@@ -496,7 +500,7 @@ CreateFormRenderer.propTypes = {
   }).isRequired,
   currentSteemDollarPrice: PropTypes.number,
   user: PropTypes.shape(),
-  sponsorsList: PropTypes.arrayOf(PropTypes.object),
+  sponsorsList: PropTypes.arrayOf(PropTypes.shape()),
   secondaryObjectsList: PropTypes.arrayOf(PropTypes.object),
   pageObjects: PropTypes.arrayOf(PropTypes.object),
   compensationAccount: PropTypes.shape(),

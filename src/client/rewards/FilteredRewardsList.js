@@ -15,7 +15,7 @@ const FilteredRewardsList = props => {
     IsRequiredObjectWrap,
     loading,
     filterKey,
-    username,
+    userName,
     match,
     propositions,
     intl,
@@ -68,7 +68,7 @@ const FilteredRewardsList = props => {
         loadingMore={loading}
         loader={<Loading />}
       >
-        {campaignsLayoutWrapLayout(IsRequiredObjectWrap, filterKey, username, match)}
+        {campaignsLayoutWrapLayout(IsRequiredObjectWrap, filterKey, userName, match)}
       </ReduxInfiniteScroll>
     </React.Fragment>
   ) : (
@@ -90,13 +90,13 @@ FilteredRewardsList.propTypes = {
   IsRequiredObjectWrap: PropTypes.bool.isRequired,
   loading: PropTypes.bool,
   filterKey: PropTypes.string.isRequired,
-  username: PropTypes.string.isRequired,
-  match: PropTypes.shape.isRequired,
-  propositions: PropTypes.bool,
-  intl: PropTypes.shape.isRequired,
+  userName: PropTypes.string.isRequired,
+  match: PropTypes.shape().isRequired,
+  propositions: PropTypes.arrayOf(PropTypes.shape()),
+  intl: PropTypes.shape().isRequired,
   isSearchAreaFilter: PropTypes.bool,
   resetMapFilter: PropTypes.func.isRequired,
-  sort: PropTypes.bool,
+  sort: PropTypes.string,
   handleSortChange: PropTypes.func.isRequired,
   loadingCampaigns: PropTypes.bool,
   campaignsLayoutWrapLayout: PropTypes.func.isRequired,
