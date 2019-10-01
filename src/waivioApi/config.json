@@ -46,6 +46,7 @@
   "objectType": "/objectType",
   "generalSearch": "/generalSearch",
   "campaigns": "/campaigns",
+  "campaign": "/campaign",
   "createCampaign": "/create_campaign",
   "activation": "/validate_activation",
   "inactivation": "/validate_inactivation",
