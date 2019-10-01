@@ -740,6 +740,7 @@
   "cannot_reject_campaign": "You cannot reject the campaign at the moment",
   "payables_page_payables": "Payables",
   "payables_page_total": "Total",
+  "payables_page_sbd": "SBD",
   "discover": "discover",
   "personal": "personal",
   "custom_json": "custom_json",

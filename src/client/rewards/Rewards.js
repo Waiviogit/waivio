@@ -420,7 +420,7 @@ class Rewards extends React.Component {
       case '/rewards/manage':
         return <Manage userName={username} />;
       case '/rewards/payables':
-        return <Payables userName={username} />;
+        return <Payables userName={username} currentSteemDollarPrice={currentSteemDollarPrice} />;
       case '/rewards/match-bot':
         return <MatchBot userName={username} />;
       default:

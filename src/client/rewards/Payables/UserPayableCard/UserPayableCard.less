@@ -7,17 +7,23 @@
   border: 1px solid @white-gainsboro;
   background-color: @white;
   padding: 10px 14px;
+  justify-content: space-between;
+  margin-bottom: 10px;
 
   &__content {
-    flex-direction: column;
-    margin-left: 10px;
-    max-width: calc(100vw - 210px);
+    display: flex;
+    align-items: center;
+    &-name-wrap {
+      margin-left: 10px;
+      max-width: calc(100vw - 210px);
+      flex-direction: column;
+    }
 
-    &-alias-name {
+    &-name-wrap-alias {
       font-weight: bold;
     }
 
-    &-name {
+    &-name-wrap-name {
       font-weight: 500;
       color: @blue-botticelli;
     }
@@ -30,4 +36,17 @@
     overflow: hidden;
     white-space: nowrap;
   }
+
+  &__end-wrap {
+    display: flex;
+    align-items: center;
+    &-payable {
+      padding-right: 14px;
+      font-size: medium;
+      font-weight: 500;
+    }
+  }
+}
+.UserPayableCard__end-wrap-icon :hover {
+  cursor: pointer;
 }
