@@ -315,7 +315,7 @@
   "display_nsfw_posts_details": "You can enable all posts tagged with NSFW to be shown as default.",
   "display_nsfw_posts": "Display NSFW Posts",
   "rewrite_links": "Rewrite links",
-  "rewrite_links_details": "You can enable this option to replace Steemit.com links with Waivio.org links.",
+  "rewrite_links_details": "You can enable this option to replace Steemit.com links with Waivio.com links.",
   "use_beta": "Use Waivio beta",
   "use_beta_details": "You can enable this option to use Waivio beta by default.",
   "enable_exit_page": "Enable exit page",
