@@ -7,7 +7,6 @@ ShallowWrapper {
     defaultKey="comments"
     followers={42}
     following={21}
-    objectsSharesCount={0}
     onChange={[Function]}
   />,
   Symbol(enzyme.__renderer__): Object {
@@ -126,16 +125,9 @@ ShallowWrapper {
             >
               <FormattedMessage
                 defaultMessage="Expertise"
-                id="expertise"
+                id="user_expertise"
                 values={Object {}}
               />
-              <span
-                className="UserMenu__badge"
-              >
-                <FormattedNumber
-                  value={0}
-                />
-              </span>
             </li>
             <li
               className="UserMenu__item"
@@ -272,16 +264,9 @@ ShallowWrapper {
               >
                 <FormattedMessage
                   defaultMessage="Expertise"
-                  id="expertise"
+                  id="user_expertise"
                   values={Object {}}
                 />
-                <span
-                  className="UserMenu__badge"
-                >
-                  <FormattedNumber
-                    value={0}
-                  />
-                </span>
               </li>
               <li
                 className="UserMenu__item"
@@ -409,16 +394,9 @@ ShallowWrapper {
               >
                 <FormattedMessage
                   defaultMessage="Expertise"
-                  id="expertise"
+                  id="user_expertise"
                   values={Object {}}
                 />
-                <span
-                  className="UserMenu__badge"
-                >
-                  <FormattedNumber
-                    value={0}
-                  />
-                </span>
               </li>
               <li
                 className="UserMenu__item"
@@ -536,16 +514,9 @@ ShallowWrapper {
                 >
                   <FormattedMessage
                     defaultMessage="Expertise"
-                    id="expertise"
+                    id="user_expertise"
                     values={Object {}}
                   />
-                  <span
-                    className="UserMenu__badge"
-                  >
-                    <FormattedNumber
-                      value={0}
-                    />
-                  </span>
                 </li>,
                 <li
                   className="UserMenu__item"
@@ -775,65 +746,30 @@ ShallowWrapper {
                 "key": undefined,
                 "nodeType": "host",
                 "props": Object {
-                  "children": Array [
-                    <FormattedMessage
-                      defaultMessage="Expertise"
-                      id="expertise"
-                      values={Object {}}
-                    />,
-                    <span
-                      className="UserMenu__badge"
-                    >
-                      <FormattedNumber
-                        value={0}
-                      />
-                    </span>,
-                  ],
+                  "children": <FormattedMessage
+                    defaultMessage="Expertise"
+                    id="user_expertise"
+                    values={Object {}}
+                  />,
                   "className": "UserMenu__item",
                   "data-key": "expertise",
                   "onClick": [Function],
                   "role": "presentation",
                 },
                 "ref": null,
-                "rendered": Array [
-                  Object {
-                    "instance": null,
-                    "key": undefined,
-                    "nodeType": "class",
-                    "props": Object {
-                      "defaultMessage": "Expertise",
-                      "id": "expertise",
-                      "values": Object {},
-                    },
-                    "ref": null,
-                    "rendered": null,
-                    "type": [Function],
+                "rendered": Object {
+                  "instance": null,
+                  "key": undefined,
+                  "nodeType": "class",
+                  "props": Object {
+                    "defaultMessage": "Expertise",
+                    "id": "user_expertise",
+                    "values": Object {},
                   },
-                  Object {
-                    "instance": null,
-                    "key": undefined,
-                    "nodeType": "host",
-                    "props": Object {
-                      "children": <FormattedNumber
-                        value={0}
-                      />,
-                      "className": "UserMenu__badge",
-                    },
-                    "ref": null,
-                    "rendered": Object {
-                      "instance": null,
-                      "key": undefined,
-                      "nodeType": "class",
-                      "props": Object {
-                        "value": 0,
-                      },
-                      "ref": null,
-                      "rendered": null,
-                      "type": [Function],
-                    },
-                    "type": "span",
-                  },
-                ],
+                  "ref": null,
+                  "rendered": null,
+                  "type": [Function],
+                },
                 "type": "li",
               },
               Object {
@@ -1016,16 +952,9 @@ ShallowWrapper {
               >
                 <FormattedMessage
                   defaultMessage="Expertise"
-                  id="expertise"
+                  id="user_expertise"
                   values={Object {}}
                 />
-                <span
-                  className="UserMenu__badge"
-                >
-                  <FormattedNumber
-                    value={0}
-                  />
-                </span>
               </li>
               <li
                 className="UserMenu__item"
@@ -1162,16 +1091,9 @@ ShallowWrapper {
                 >
                   <FormattedMessage
                     defaultMessage="Expertise"
-                    id="expertise"
+                    id="user_expertise"
                     values={Object {}}
                   />
-                  <span
-                    className="UserMenu__badge"
-                  >
-                    <FormattedNumber
-                      value={0}
-                    />
-                  </span>
                 </li>
                 <li
                   className="UserMenu__item"
@@ -1299,16 +1221,9 @@ ShallowWrapper {
                 >
                   <FormattedMessage
                     defaultMessage="Expertise"
-                    id="expertise"
+                    id="user_expertise"
                     values={Object {}}
                   />
-                  <span
-                    className="UserMenu__badge"
-                  >
-                    <FormattedNumber
-                      value={0}
-                    />
-                  </span>
                 </li>
                 <li
                   className="UserMenu__item"
@@ -1426,16 +1341,9 @@ ShallowWrapper {
                   >
                     <FormattedMessage
                       defaultMessage="Expertise"
-                      id="expertise"
+                      id="user_expertise"
                       values={Object {}}
                     />
-                    <span
-                      className="UserMenu__badge"
-                    >
-                      <FormattedNumber
-                        value={0}
-                      />
-                    </span>
                   </li>,
                   <li
                     className="UserMenu__item"
@@ -1665,65 +1573,30 @@ ShallowWrapper {
                   "key": undefined,
                   "nodeType": "host",
                   "props": Object {
-                    "children": Array [
-                      <FormattedMessage
-                        defaultMessage="Expertise"
-                        id="expertise"
-                        values={Object {}}
-                      />,
-                      <span
-                        className="UserMenu__badge"
-                      >
-                        <FormattedNumber
-                          value={0}
-                        />
-                      </span>,
-                    ],
+                    "children": <FormattedMessage
+                      defaultMessage="Expertise"
+                      id="user_expertise"
+                      values={Object {}}
+                    />,
                     "className": "UserMenu__item",
                     "data-key": "expertise",
                     "onClick": [Function],
                     "role": "presentation",
                   },
                   "ref": null,
-                  "rendered": Array [
-                    Object {
-                      "instance": null,
-                      "key": undefined,
-                      "nodeType": "class",
-                      "props": Object {
-                        "defaultMessage": "Expertise",
-                        "id": "expertise",
-                        "values": Object {},
-                      },
-                      "ref": null,
-                      "rendered": null,
-                      "type": [Function],
+                  "rendered": Object {
+                    "instance": null,
+                    "key": undefined,
+                    "nodeType": "class",
+                    "props": Object {
+                      "defaultMessage": "Expertise",
+                      "id": "user_expertise",
+                      "values": Object {},
                     },
-                    Object {
-                      "instance": null,
-                      "key": undefined,
-                      "nodeType": "host",
-                      "props": Object {
-                        "children": <FormattedNumber
-                          value={0}
-                        />,
-                        "className": "UserMenu__badge",
-                      },
-                      "ref": null,
-                      "rendered": Object {
-                        "instance": null,
-                        "key": undefined,
-                        "nodeType": "class",
-                        "props": Object {
-                          "value": 0,
-                        },
-                        "ref": null,
-                        "rendered": null,
-                        "type": [Function],
-                      },
-                      "type": "span",
-                    },
-                  ],
+                    "ref": null,
+                    "rendered": null,
+                    "type": [Function],
+                  },
                   "type": "li",
                 },
                 Object {
