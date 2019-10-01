@@ -30,8 +30,8 @@ const RewardsFiltersPanel = ({
   );
 
   const payablesFilterData = [
-    { filterName: `Over 15 days`, days: 15 },
-    { filterName: `Over 10 sbd`, money: 10 },
+    { filterName: `Over 15 days`, value: 15 },
+    { filterName: `Over 10 sbd`, value: 10 },
   ];
   return (
     <div className="RewardsFiltersPanel">

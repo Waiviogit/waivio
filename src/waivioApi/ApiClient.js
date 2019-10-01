@@ -561,13 +561,18 @@ export const getAuthenticatedUserMetadata = (
     .then(res => _.omit(res.user_metadata, '_id'));
 };
 
-export const getLenders = (sponsor, user) => {
+export const getLenders = ({ sponsor, user, filters }) => {
+  const payable = filters && filters.payable ? `&payable=${filters.payable}` : ``;
+  const days = filters && filters.days ? `&days=${filters.days}` : ``;
   const isUser = !user ? `?sponsor=${sponsor}` : `?sponsor=${sponsor}&userName=${user}`;
   return new Promise((resolve, reject) => {
-    fetch(`${config.campaignApiPrefix}${config.payables}${isUser}`, {
-      headers,
-      method: 'GET',
-    })
+    fetch(
+      `${config.campaignApiPrefix}${config.payments}${config.payables}${isUser}${days}${payable}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));

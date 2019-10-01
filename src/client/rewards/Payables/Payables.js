@@ -7,13 +7,24 @@ import './Payables.less';
 import { getLenders } from '../../../waivioApi/ApiClient';
 
 const Payables = ({ intl, userName, currentSteemDollarPrice, filterData }) => {
+  const payableFilters = {};
+  _.map(filterData, f => {
+    if (f.value === 15) {
+      payableFilters.days = 15;
+    }
+    if (f.value === 10) {
+      payableFilters.payable = 10;
+    }
+  });
   const [lenders, setLenders] = useState({});
-  console.log(filterData);
   useEffect(() => {
-    getLenders(userName)
+    getLenders({
+      sponsor: userName,
+      filters: payableFilters,
+    })
       .then(data => setLenders(data))
       .catch(e => console.log(e));
-  }, []);
+  }, [filterData]);
   const fakeUserData = [{ userName: 'siamcat', aliasName: 'TasteemFundationWeKu', debt: 13.1 }];
   return (
     <div className="Payables">
