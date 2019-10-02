@@ -167,8 +167,8 @@ class CreateRewardForm extends React.Component {
   };
 
   handleSetState = (stateData, callbackData) => {
-    const { setFieldValue } = this.props.form;
-    this.setState({ ...stateData }, () => setFieldValue(callbackData));
+    const { setFieldsValue } = this.props.form;
+    this.setState({ ...stateData }, () => setFieldsValue(callbackData));
   };
 
   handlers = {
