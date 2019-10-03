@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import _ from 'lodash';
 import PaymentTableRow from './PaymentTableRow';
 import './PaymentTable.less';
 
-const PaymentTable = ({ intl, sponsor }) => (
+const PaymentTable = ({ intl, sponsors }) => (
   <table className="PaymentTable">
     <thead>
       <tr>
@@ -26,14 +27,17 @@ const PaymentTable = ({ intl, sponsor }) => (
       </tr>
     </thead>
     <tbody>
-      <PaymentTableRow sponsor={sponsor} />
+      {_.map(sponsors, sponsor => (
+        // eslint-disable-next-line no-underscore-dangle
+        <PaymentTableRow key={sponsor._id} sponsor={sponsor} />
+      ))}
     </tbody>
   </table>
 );
 
 PaymentTable.propTypes = {
   intl: PropTypes.shape().isRequired,
-  sponsor: PropTypes.shape().isRequired,
+  sponsors: PropTypes.shape().isRequired,
 };
 
 export default injectIntl(PaymentTable);

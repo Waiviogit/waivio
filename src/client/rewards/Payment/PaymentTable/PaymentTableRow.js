@@ -7,7 +7,7 @@ import './PaymentTable.less';
 
 const PaymentTableRow = ({ intl, sponsor }) => (
   <tr>
-    <td>{formatDate(sponsor[0].createdAt)}</td>
+    <td>{formatDate(sponsor.createdAt)}</td>
     <td>
       <div className="PaymentTable__action-column">
         <div>
@@ -20,22 +20,22 @@ const PaymentTableRow = ({ intl, sponsor }) => (
           {intl.formatMessage(
             {
               id: 'paymentTable_review_by_user',
-              defaultMessage: `by @${sponsor[0].userName} (requested by @${sponsor[0].sponsor})`,
+              defaultMessage: `by @${sponsor.userName} (requested by @${sponsor.sponsor})`,
             },
             {
-              campaignName: sponsor[0].userName,
+              campaignName: sponsor.userName,
             },
           )}
         </div>
-        {sponsor && sponsor[0].details ? (
+        {sponsor && sponsor.details ? (
           <React.Fragment>
             <p>
               {`-`}
-              {sponsor[0].details.main_object}
+              {sponsor.details.main_object}
             </p>
             <p>
               {`-`}
-              {sponsor[0].details.review_object}
+              {sponsor.details.review_object}
             </p>
           </React.Fragment>
         ) : null}

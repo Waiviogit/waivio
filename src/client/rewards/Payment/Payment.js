@@ -20,7 +20,6 @@ const Payment = ({ userName, paymentUser, intl }) => {
       })
       .catch(e => console.log(e));
   }, []);
-  console.log('sponsor', sponsors);
   return (
     <div className="Payment">
       <div className="Payment__title">
@@ -30,7 +29,7 @@ const Payment = ({ userName, paymentUser, intl }) => {
         })}
         {` > @${userName} (${payable} SBD)`}
       </div>
-      {!_.isEmpty(sponsors) ? <PaymentTable sponsor={sponsors} /> : null}
+      {!_.isEmpty(sponsors) ? <PaymentTable sponsors={sponsors} /> : null}
     </div>
   );
 };
