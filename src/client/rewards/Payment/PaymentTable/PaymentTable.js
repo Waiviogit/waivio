@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import PaymentTableRow from './PaymentTableRow';
 import './PaymentTable.less';
 
 const PaymentTable = ({ intl, sponsor }) => (
@@ -25,20 +26,14 @@ const PaymentTable = ({ intl, sponsor }) => (
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>{sponsor}</td>
-        <td>2</td>
-        <td>3</td>
-        <td>4</td>
-        <td>5</td>
-      </tr>
+      <PaymentTableRow sponsor={sponsor} />
     </tbody>
   </table>
 );
 
 PaymentTable.propTypes = {
   intl: PropTypes.shape().isRequired,
-  sponsor: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  sponsor: PropTypes.shape().isRequired,
 };
 
 export default injectIntl(PaymentTable);

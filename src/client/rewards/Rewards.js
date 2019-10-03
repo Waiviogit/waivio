@@ -41,6 +41,7 @@ import SortSelector from '../components/SortSelector/SortSelector';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import MatchBot from './MatchBot/MatchBot';
 import Payables from './Payables/Payables';
+import Payment from './Payment/Payment';
 
 @withRouter
 @injectIntl
@@ -91,6 +92,7 @@ class Rewards extends React.Component {
     activeFilters: { guideNames: [], types: [], payables: [] },
     activePayableFilters: [],
     isSearchAreaFilter: false,
+    paymentUser: '',
   };
 
   componentDidMount() {
@@ -115,6 +117,8 @@ class Rewards extends React.Component {
       }
     } else this.setState({ propositions: [{}] }); // for map, not equal propositions
   }
+
+  setPaymentUser = user => this.setState({ paymentUser: user });
 
   getRequiredObjects = () =>
     _.map(this.state.propositions, proposition => proposition.required_object);
@@ -415,7 +419,7 @@ class Rewards extends React.Component {
 
   campaignItemsWrap = location => {
     const { match, username, cryptosPriceHistory, user } = this.props;
-    const { loading, hasMore, propositions, activePayableFilters } = this.state;
+    const { loading, hasMore, propositions, activePayableFilters, paymentUser } = this.state;
     const filterKey = match.params.filterKey;
     const IsRequiredObjectWrap = !match.params.campaignParent;
     const currentSteemDollarPrice =
@@ -424,13 +428,7 @@ class Rewards extends React.Component {
         : 0;
     switch (location.pathname) {
       case '/rewards/create':
-        return (
-          <CreateRewardForm
-            userName={username}
-            user={user}
-            currentSteemDollarPrice={currentSteemDollarPrice}
-          />
-        );
+        return <CreateRewardForm userName={username} user={user} />;
       case '/rewards/manage':
         return <Manage userName={username} />;
       case '/rewards/payables':
@@ -439,8 +437,11 @@ class Rewards extends React.Component {
             userName={username}
             currentSteemDollarPrice={currentSteemDollarPrice}
             filterData={activePayableFilters}
+            setPaymentUser={this.setPaymentUser}
           />
         );
+      case `/rewards/payables/@${paymentUser}`:
+        return <Payment userName={username} paymentUser={paymentUser} />;
       case '/rewards/match-bot':
         return <MatchBot userName={username} />;
       default:
@@ -465,6 +466,7 @@ class Rewards extends React.Component {
       campaignsTypes,
       activeFilters,
       activePayableFilters,
+      paymentUser,
     } = this.state;
     const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
     const isCreate = location.pathname === '/rewards/create';
@@ -483,35 +485,37 @@ class Rewards extends React.Component {
             </div>
           </Affix>
           <div className="center">{this.campaignItemsWrap(location)}</div>
-          {location.pathname !== '/rewards/manage' && location.pathname !== '/rewards/match-bot' && (
-            <Affix className="rightContainer leftContainer__user" stickPosition={122}>
-              <div className="right">
-                {!_.isEmpty(this.props.userLocation) &&
-                  !isCreate &&
-                  location.pathname !== '/rewards/payables' && (
-                    <React.Fragment>
-                      <MapWrap
-                        wobjects={this.getRequiredObjects()}
-                        userLocation={this.props.userLocation}
-                        onMarkerClick={this.goToCampaign}
-                        getAreaSearchData={this.getAreaSearchData}
-                      />
-                    </React.Fragment>
+          {location.pathname !== '/rewards/manage' &&
+            location.pathname !== '/rewards/match-bot' &&
+            location.pathname !== `/rewards/payables/@${paymentUser}` && (
+              <Affix className="rightContainer leftContainer__user" stickPosition={122}>
+                <div className="right">
+                  {!_.isEmpty(this.props.userLocation) &&
+                    !isCreate &&
+                    location.pathname !== '/rewards/payables' && (
+                      <React.Fragment>
+                        <MapWrap
+                          wobjects={this.getRequiredObjects()}
+                          userLocation={this.props.userLocation}
+                          onMarkerClick={this.goToCampaign}
+                          getAreaSearchData={this.getAreaSearchData}
+                        />
+                      </React.Fragment>
+                    )}
+                  {!_.isEmpty(sponsors) && !isCreate && (
+                    <RewardsFiltersPanel
+                      campaignsTypes={campaignsTypes}
+                      sponsors={sponsors}
+                      activeFilters={activeFilters}
+                      activePayableFilters={activePayableFilters}
+                      setFilterValue={this.setFilterValue}
+                      setPayablesFilterValue={this.setPayablesFilterValue}
+                      location={location}
+                    />
                   )}
-                {!_.isEmpty(sponsors) && !isCreate && (
-                  <RewardsFiltersPanel
-                    campaignsTypes={campaignsTypes}
-                    sponsors={sponsors}
-                    activeFilters={activeFilters}
-                    activePayableFilters={activePayableFilters}
-                    setFilterValue={this.setFilterValue}
-                    setPayablesFilterValue={this.setPayablesFilterValue}
-                    location={location}
-                  />
-                )}
-              </div>
-            </Affix>
-          )}
+                </div>
+              </Affix>
+            )}
         </div>
         {isModalDetailsOpen && !_.isEmpty(objectDetails) && (
           <Modal

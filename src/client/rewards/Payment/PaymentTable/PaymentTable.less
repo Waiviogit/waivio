@@ -1,5 +1,5 @@
-@import (reference) '../../styles/modules/variables.less';
-@import (reference) '../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+@import (reference) '../../../styles/custom.less';
 
 .PaymentTable {
   border: 1px solid @black;
@@ -7,12 +7,14 @@
   border-collapse: collapse;
   table-layout: fixed;
   font-size: medium;
+  width: 80%;
 
   & td {
     border: 1px solid @black;
   }
 
   & th {
+    vertical-align: top;
     text-align: center !important;
     border: 1px solid @black;
   }
@@ -40,4 +42,16 @@
   &.maxWidth {
     width: 40% !important;
   }
+
+  &__action-column {
+    text-align: start;
+  }
+}
+
+.PaymentTable__action-column > div > span {
+  font-weight: bold;
+}
+
+.PaymentTable__action-column > p {
+  margin-left: 20px;
 }

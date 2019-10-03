@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
+import { getLenders } from '../../../waivioApi/ApiClient';
 import UserPayableCard from './UserPayableCard/UserPayableCrad';
 import './Payables.less';
-import { getLenders } from '../../../waivioApi/ApiClient';
 
-const Payables = ({ intl, userName, currentSteemDollarPrice, filterData }) => {
+const Payables = ({ intl, userName, currentSteemDollarPrice, filterData, setPaymentUser }) => {
   const payableFilters = {};
   _.map(filterData, f => {
     if (f.value === 15) {
@@ -25,6 +25,7 @@ const Payables = ({ intl, userName, currentSteemDollarPrice, filterData }) => {
       .then(data => setLenders(data))
       .catch(e => console.log(e));
   }, [filterData]);
+
   const fakeUserData = [{ userName: 'siamcat', aliasName: 'TasteemFundationWeKu', debt: 13.1 }];
   return (
     <div className="Payables">
@@ -47,10 +48,10 @@ const Payables = ({ intl, userName, currentSteemDollarPrice, filterData }) => {
         {`(US$ ${(currentSteemDollarPrice * lenders.payable).toFixed(2)})`}
       </div>
       {_.map(fakeUserData, user => (
-        <UserPayableCard user={user} />
+        <UserPayableCard user={user} setPaymentUser={setPaymentUser} />
       ))}
       {_.map(lenders.histories, user => (
-        <UserPayableCard user={user} />
+        <UserPayableCard user={user} setPaymentUser={setPaymentUser} />
       ))}
     </div>
   );
@@ -61,6 +62,7 @@ Payables.propTypes = {
   userName: PropTypes.string.isRequired,
   currentSteemDollarPrice: PropTypes.number.isRequired,
   filterData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  setPaymentUser: PropTypes.func.isRequired,
 };
 
 export default injectIntl(Payables);

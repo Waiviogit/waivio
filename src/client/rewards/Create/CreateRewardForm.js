@@ -36,13 +36,11 @@ class CreateRewardForm extends React.Component {
     form: PropTypes.shape(),
     intl: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
-    currentSteemDollarPrice: PropTypes.number,
   };
   static defaultProps = {
     userName: '',
     user: {},
     form: {},
-    currentSteemDollarPrice: 0,
   };
   state = {
     confirmDirty: false,
@@ -256,8 +254,8 @@ class CreateRewardForm extends React.Component {
   };
 
   compareBudgetValues = (rule, value, callback) => {
-    const { user, currentSteemDollarPrice, intl } = this.props;
-    const userUSDBalance = parseFloat(user.sbd_balance) * currentSteemDollarPrice;
+    const { user, intl } = this.props;
+    const userUSDBalance = parseFloat(user.sbd_balance);
     if (value <= 0 && value !== '') {
       callback(
         intl.formatMessage({
