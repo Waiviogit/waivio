@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import PaymentTable from './PaymentTable/PaymentTable';
@@ -23,11 +24,34 @@ const Payment = ({ userName, paymentUser, intl }) => {
   return (
     <div className="Payment">
       <div className="Payment__title">
+        <div className="Payment__title-payment">
+          {intl.formatMessage({
+            id: 'payables_page_payables',
+            defaultMessage: 'Payables',
+          })}
+          {` > @${userName} (${payable} SBD)`}
+        </div>
+        <div className="Payment__title-pay">
+          <Link to={'/rewards/pay-now'}>
+            {intl.formatMessage({
+              id: 'payables_page_pay_now',
+              defaultMessage: 'Pay now',
+            })}
+          </Link>
+        </div>
+      </div>
+      <div className="Payment__information-row">
+        <div className="Payment__information-row-important">
+          {intl.formatMessage({
+            id: 'payables_page_important',
+            defaultMessage: 'Important',
+          })}
+          :
+        </div>
         {intl.formatMessage({
-          id: 'payables_page_payables',
-          defaultMessage: 'Payables',
+          id: 'payables_page_transfers_with_hashtag_included',
+          defaultMessage: 'Only transfer with hashtag "#waivio" are included',
         })}
-        {` > @${userName} (${payable} SBD)`}
       </div>
       {!_.isEmpty(sponsors) ? <PaymentTable sponsors={sponsors} /> : null}
     </div>
