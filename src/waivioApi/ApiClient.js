@@ -518,11 +518,41 @@ export const rejectReservationCampaign = data =>
       .catch(error => reject(error));
   });
 
+export const getFilteredCampaignsByGuideName = (guideName, status) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.campaigns}`, {
+      headers: headers,
+      method: 'POST',
+      body: JSON.stringify({
+        guideNames: [guideName],
+        status: status,
+      }),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export const getCampaignsByGuideName = guideName =>
   new Promise((resolve, reject) => {
     fetch(`${config.campaignApiPrefix}${config.campaigns}${config.dashboard}/${guideName}`, {
       headers,
       method: 'GET',
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getCampaignByGuideNameAndObject = (guideName, object) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.campaigns}`, {
+      headers: headers,
+      method: 'POST',
+      body: JSON.stringify({
+        guideNames: [guideName],
+        requiredObject: object,
+      }),
     })
       .then(res => res.json())
       .then(result => resolve(result))

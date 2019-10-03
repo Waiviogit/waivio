@@ -1,4 +1,4 @@
-import { isEmpty, map } from 'lodash';
+import { isEmpty, map, includes } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -73,20 +73,37 @@ class CreateRewardForm extends React.Component {
 
       const campaign = await getCampaignById(this.props.match.params.campaignId);
 
-      const primaryObject = getObjectsByIds({
-        authorPermlinks: [campaign.campaign.requiredObject],
-      });
-
-      const secondaryObjects = getObjectsByIds({ authorPermlinks: [...campaign.campaign.objects] });
-
       const expiredAt = moment(new Date(campaign.campaign.expired_at));
 
       const isCampaignActive = campaign.campaign.status === 'active';
 
+      let combinedObjects;
       let sponsors;
       if (!isEmpty(campaign.campaign.match_bots)) {
-        sponsors = await getObjectsByIds({ authorPermlinks: [...campaign.campaign.match_bots] });
+        combinedObjects = await getObjectsByIds({
+          authorPermlinks: [
+            ...campaign.campaign.match_bots,
+            campaign.campaign.requiredObject,
+            ...campaign.campaign.objects,
+          ],
+        });
+
+        sponsors = combinedObjects.wobjects.filter(wobj =>
+          includes(campaign.campaign.sponsors, wobj.author_permlink),
+        );
       }
+
+      combinedObjects = await getObjectsByIds({
+        authorPermlinks: [campaign.campaign.requiredObject, ...campaign.campaign.objects],
+      });
+
+      const primaryObject = combinedObjects.wobjects.filter(
+        wobj => wobj.author_permlink === campaign.campaign.requiredObject,
+      )[0];
+
+      const secondaryObjects = combinedObjects.wobjects.filter(wobj =>
+        includes(campaign.campaign.objects, wobj.author_permlink),
+      );
 
       Promise.all([primaryObject, secondaryObjects, sponsors]).then(values => {
         // eslint-disable-next-line react/no-did-mount-set-state
@@ -96,9 +113,9 @@ class CreateRewardForm extends React.Component {
           campaignType: campaign.campaign.type,
           budget: campaign.campaign.budget,
           reward: campaign.campaign.reward,
-          primaryObject: getClientWObj(values[0].wobjects[0]),
-          secondaryObjectsList: values[1].wobjects.map(obj => getClientWObj(obj)),
-          sponsorsList: !isEmpty(sponsors) ? values[2].wobjects.map(obj => getClientWObj(obj)) : [],
+          primaryObject: getClientWObj(values[0]),
+          secondaryObjectsList: values[1].map(obj => getClientWObj(obj)),
+          sponsorsList: !isEmpty(sponsors) ? values[2].map(obj => getClientWObj(obj)) : [],
           reservationPeriod: campaign.campaign.count_reservation_days,
           minFollowers: campaign.campaign.userRequirements.minFollowers,
           minPosts: campaign.campaign.userRequirements.minPosts,
@@ -232,7 +249,6 @@ class CreateRewardForm extends React.Component {
     },
 
     handleAddPageObject: obj => {
-      console.log(obj);
       this.setState({ pageObjects: [...this.state.pageObjects, obj] }, () =>
         this.props.form.setFieldsValue({ agreement: this.state.pageObjects }),
       );
@@ -251,11 +267,11 @@ class CreateRewardForm extends React.Component {
     },
 
     setTargetDays: targetDay => () => {
-      this.handleSetState(
+      this.setState(
         {
           targetDays: { ...this.state.targetDays, [targetDay]: !this.state.targetDays[targetDay] },
         },
-        { targetDays: this.state.targetDays },
+        () => this.props.form.setFieldsValue({ targetDays: this.state.targetDays }),
       );
     },
 
