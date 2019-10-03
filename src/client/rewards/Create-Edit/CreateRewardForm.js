@@ -176,14 +176,13 @@ class CreateRewardForm extends React.Component {
       const sponsors = [...this.state.sponsorsList, obj];
 
       if (sponsors.length <= 5) {
-        this.handleSetState(
-          { sponsorsList: [...sponsors] },
-          { sponsorsList: this.state.sponsorsList },
+        this.setState({ sponsorsList: [...sponsors] }, () =>
+          this.props.form.setFieldsValue({ sponsorsList: this.state.sponsorsList }),
         );
       }
     },
 
-    removeSponsorObject: async obj => {
+    removeSponsorObject: obj => {
       this.setState(
         prevState => {
           const objectList = prevState.sponsorsList.filter(el => el.account !== obj.account);
@@ -203,17 +202,16 @@ class CreateRewardForm extends React.Component {
     },
 
     removePrimaryObject: () => {
-      this.handleSetState({}, { primaryObject: {} });
+      this.handleSetState({ primaryObject: {} }, { primaryObject: {} });
     },
 
-    handleAddSecondaryObjectToList: async obj => {
-      this.handleSetState(
-        { secondaryObjectsList: [...this.state.secondaryObjectsList, obj] },
-        { primaryObject: { secondaryObject: this.state.secondaryObjectsList } },
+    handleAddSecondaryObjectToList: obj => {
+      this.setState({ secondaryObjectsList: [...this.state.secondaryObjectsList, obj] }, () =>
+        this.props.form.setFieldsValue({ secondaryObject: this.state.secondaryObjectsList }),
       );
     },
 
-    removeSecondaryObject: async obj => {
+    removeSecondaryObject: obj => {
       this.setState(
         prevState => {
           const objectList = prevState.secondaryObjectsList.filter(el => el.id !== obj.id);
@@ -233,14 +231,14 @@ class CreateRewardForm extends React.Component {
       this.handleSetState({ compensationAccount: {} }, { compensationAccount: {} });
     },
 
-    handleAddPageObject: async obj => {
-      this.handleSetState(
-        { pageObjects: [...this.state.pageObjects, obj] },
-        { agreement: this.state.pageObjects },
+    handleAddPageObject: obj => {
+      console.log(obj);
+      this.setState({ pageObjects: [...this.state.pageObjects, obj] }, () =>
+        this.props.form.setFieldsValue({ agreement: this.state.pageObjects }),
       );
     },
 
-    removePageObject: async obj => {
+    removePageObject: obj => {
       this.setState(
         prevState => {
           const objectList = prevState.pageObjects.filter(el => el.id !== obj.id);
@@ -252,7 +250,7 @@ class CreateRewardForm extends React.Component {
       );
     },
 
-    setTargetDays: targetDay => async () => {
+    setTargetDays: targetDay => () => {
       this.handleSetState(
         {
           targetDays: { ...this.state.targetDays, [targetDay]: !this.state.targetDays[targetDay] },
