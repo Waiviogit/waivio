@@ -42,11 +42,8 @@ const Payables = ({ intl, userName, currentSteemDollarPrice, filterData, setPaym
             id: 'payables_page_total',
             defaultMessage: 'Total',
           })}
-          : {lenders && lenders.payable && lenders.payable.toFixed(2)}{' '}
-          {intl.formatMessage({
-            id: 'payables_sbd',
-            defaultMessage: 'SBD',
-          })}{' '}
+          : {lenders && lenders.payable && lenders.payable.toFixed(2)}
+          {' SBD '}
           {currentSteemDollarPrice
             ? `(US$ ${(currentSteemDollarPrice * lenders.payable).toFixed(2)})`
             : ''}

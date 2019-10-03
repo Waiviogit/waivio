@@ -368,7 +368,19 @@
   "hero_banner_title_3": "Зарабатываете вознаграждения в Steem",
   "amount_currency": "{amount} {currency}",
   "payables_page_payables": "Задолженность",
-  "payables_page_total": "Сумма",
+  "payables_page_total": "Общая сумма",
+  "payables_page_pay_all": "Оплатить все",
+  "payables_page_pay_now": "Заплатить сейчас",
+  "payables_page_important": "Важно",
+  "payables_page_transfers_with_hashtag_included": "Только перевод с хэштегом \"#waivio\" включен",
+  "paymentTable_data": "Дата",
+  "paymentTable_action": "Действие",
+  "paymentTable_details": "Детали",
+  "paymentTable_amount": "Сумма SBD",
+  "paymentTable_balance": "Баланс SBD",
+  "paymentTable_review": "Обзор",
+  "paymentTable_review_by_user": "от @{userName} (оп запросу @{sponsorName})",
+  "paymentTable_reservation": "Резервирование",
   "save_draft_error": "Не удалось сохранить этот черновик. Убедитесь, что вы подключены к Интернету и не слишком много текста",
   "draft_save_auth_error": "Не удалось сохранить этот черновик, поскольку вы вышли из системы. Пожалуйста, сделайте резервную копию вашего сообщения и войдите снова.",
   "version": "Версия: {version}",
@@ -748,5 +760,6 @@
   "comment_options": "comment_options",
   "for_days": "на",
   "legal_notice_users_user": "Обратите внимание(необязательно)",
-  "manage": "Управлять"
+  "manage": "Управлять",
+  "payables": "Задолженность"
 }

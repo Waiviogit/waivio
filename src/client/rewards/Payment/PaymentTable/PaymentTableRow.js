@@ -23,7 +23,8 @@ const PaymentTableRow = ({ intl, sponsor }) => (
               defaultMessage: `by @${sponsor.userName} (requested by @${sponsor.sponsor})`,
             },
             {
-              campaignName: sponsor.userName,
+              userName: sponsor.userName,
+              sponsorName: sponsor.sponsor,
             },
           )}
         </div>
@@ -43,10 +44,20 @@ const PaymentTableRow = ({ intl, sponsor }) => (
     </td>
     <td>
       <p>
-        <Link to={`/reservation`}>Reservation</Link>
+        <Link to={`/reservation`}>
+          {intl.formatMessage({
+            id: 'paymentTable_reservation',
+            defaultMessage: `Reservation`,
+          })}
+        </Link>
       </p>
       <p>
-        <Link to={`/review`}>Review</Link>
+        <Link to={`/review`}>
+          {intl.formatMessage({
+            id: 'paymentTable_review',
+            defaultMessage: `Review`,
+          })}
+        </Link>
       </p>
     </td>
     <td>{sponsor.amount_sbd}</td>
