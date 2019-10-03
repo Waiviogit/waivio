@@ -50,7 +50,7 @@ const PaymentTableRow = ({ intl, sponsor }) => (
       </p>
     </td>
     <td>{sponsor.amount_sbd}</td>
-    <td>{sponsor.balance}</td>
+    <td className="PaymentTable__balance-column">{sponsor.balance}</td>
   </tr>
 );
 
