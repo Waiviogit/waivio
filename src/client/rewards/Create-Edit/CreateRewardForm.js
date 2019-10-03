@@ -79,6 +79,7 @@ class CreateRewardForm extends React.Component {
 
       let combinedObjects;
       let sponsors;
+
       if (!isEmpty(campaign.campaign.match_bots)) {
         combinedObjects = await getObjectsByIds({
           authorPermlinks: [
@@ -91,15 +92,15 @@ class CreateRewardForm extends React.Component {
         sponsors = combinedObjects.wobjects.filter(wobj =>
           includes(campaign.campaign.sponsors, wobj.author_permlink),
         );
+      } else {
+        combinedObjects = await getObjectsByIds({
+          authorPermlinks: [campaign.campaign.requiredObject, ...campaign.campaign.objects],
+        });
       }
 
-      combinedObjects = await getObjectsByIds({
-        authorPermlinks: [campaign.campaign.requiredObject, ...campaign.campaign.objects],
-      });
-
-      const primaryObject = combinedObjects.wobjects.filter(
+      const primaryObject = combinedObjects.wobjects.find(
         wobj => wobj.author_permlink === campaign.campaign.requiredObject,
-      )[0];
+      );
 
       const secondaryObjects = combinedObjects.wobjects.filter(wobj =>
         includes(campaign.campaign.objects, wobj.author_permlink),
