@@ -27,7 +27,6 @@ const Payables = ({ intl, userName, currentSteemDollarPrice, filterData, setPaym
       .catch(e => console.log(e));
   }, [filterData]);
 
-  const fakeUserData = [{ userName: 'siamcat', aliasName: 'TasteemFundationWeKu', debt: 13.1 }];
   return (
     <div className="Payables">
       <div className="Payables__main-title">
@@ -49,19 +48,17 @@ const Payables = ({ intl, userName, currentSteemDollarPrice, filterData, setPaym
             : ''}
         </div>
         <div className="Payables__information-row-pay">
-          <Link to={'/rewards/pay-now'}>
+          <Link to={'/rewards/pay-all'}>
             {intl.formatMessage({
               id: 'payables_page_pay_all',
               defaultMessage: 'Pay all',
             })}
+            (mock)
           </Link>
         </div>
       </div>
-      {_.map(fakeUserData, user => (
-        <UserPayableCard user={user} setPaymentUser={setPaymentUser} />
-      ))}
       {_.map(lenders.histories, user => (
-        <UserPayableCard user={user} setPaymentUser={setPaymentUser} />
+        <UserPayableCard key={user.userName} user={user} setPaymentUser={setPaymentUser} />
       ))}
     </div>
   );

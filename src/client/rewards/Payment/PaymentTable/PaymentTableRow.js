@@ -44,19 +44,21 @@ const PaymentTableRow = ({ intl, sponsor }) => (
     </td>
     <td>
       <p>
-        <Link to={`/reservation`}>
+        <Link to={`/rewards/reserved`}>
           {intl.formatMessage({
             id: 'paymentTable_reservation',
             defaultMessage: `Reservation`,
-          })}
+          })}{' '}
+          (mock)
         </Link>
       </p>
       <p>
-        <Link to={`/review`}>
+        <Link to={`/rewards/review`}>
           {intl.formatMessage({
             id: 'paymentTable_review',
             defaultMessage: `Review`,
-          })}
+          })}{' '}
+          (mock)
         </Link>
       </p>
     </td>

@@ -37,6 +37,7 @@ const Payment = ({ userName, paymentUser, intl }) => {
               id: 'payables_page_pay_now',
               defaultMessage: 'Pay now',
             })}
+            (mock)
           </Link>
         </div>
       </div>

@@ -26,6 +26,7 @@ const UserPayableCard = ({ intl, user, setPaymentUser, history }) => {
                   id: 'payables_page_pay_now',
                   defaultMessage: 'Pay now',
                 })}
+                (mock)
               </Link>
             </div>
           </div>

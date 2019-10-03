@@ -91,7 +91,7 @@ RewardsFiltersPanel.propTypes = {
   setFilterValue: PropTypes.func.isRequired,
   location: PropTypes.shape().isRequired,
   setPayablesFilterValue: PropTypes.func.isRequired,
-  activePayableFilters: PropTypes.shape().isRequired,
+  activePayableFilters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   // intl: PropTypes.shape().isRequired,
 };
 
