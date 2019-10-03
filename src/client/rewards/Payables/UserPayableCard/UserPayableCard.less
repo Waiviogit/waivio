@@ -17,13 +17,21 @@
       margin-left: 10px;
       max-width: calc(100vw - 210px);
       flex-direction: column;
+      &-alias {
+        font-weight: bold;
+      }
+      &-row {
+        display: flex;
+        font-size: medium;
+        &-name {
+          font-weight: 500;
+          color: @blue-botticelli;
+          padding-right: 10px;
+        }
+      }
     }
 
-    &-name-wrap-alias {
-      font-weight: bold;
-    }
-
-    &-name-wrap-name {
+    &-name {
       font-weight: 500;
       color: @blue-botticelli;
     }

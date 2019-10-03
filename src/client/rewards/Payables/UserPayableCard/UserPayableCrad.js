@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
+import { injectIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
 import Avatar from '../../../components/Avatar';
 import './UserPayableCard.less';
 
-const UserPayableCard = ({ user, setPaymentUser, history }) => {
+const UserPayableCard = ({ intl, user, setPaymentUser, history }) => {
   const handleSetUser = () => {
     setPaymentUser(user.userName);
     history.push(`/rewards/payables/@${user.userName}`);
@@ -16,7 +18,17 @@ const UserPayableCard = ({ user, setPaymentUser, history }) => {
         <Avatar username={user.userName} size={40} />
         <div className="UserPayableCard__content-name-wrap">
           <div className="UserPayableCard__content-name-wrap-alias"> {user.aliasName}</div>
-          <div className="UserPayableCard__content-name-wrap-name"> {`@${user.userName}`}</div>
+          <div className="UserPayableCard__content-name-wrap-row">
+            <div className="UserPayableCard__content-name-wrap-row-name">{`@${user.userName}`}</div>
+            <div className="UserPayableCard__content-name-wrap-row-pay">
+              <Link to={'/rewards/pay-now'}>
+                {intl.formatMessage({
+                  id: 'payables_page_pay_now',
+                  defaultMessage: 'Pay now',
+                })}
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
       <div className="UserPayableCard__end-wrap">
@@ -33,9 +45,10 @@ const UserPayableCard = ({ user, setPaymentUser, history }) => {
 };
 
 UserPayableCard.propTypes = {
+  intl: PropTypes.shape().isRequired,
   setPaymentUser: PropTypes.func.isRequired,
   user: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
 };
 
-export default withRouter(UserPayableCard);
+export default withRouter(injectIntl(UserPayableCard));
