@@ -11,6 +11,10 @@
     border-top: @base-border;
   }
 
+  &__loading {
+    filter: blur(2px);
+  }
+
   &__field-caption {
     font-size: 13px;
   }
@@ -92,6 +96,12 @@
 
 .CreateReward.ant-input-number {
   width: 100%;
+}
+
+.notEnoughMoneyWarn {
+  font-size: 1.2em;
+  margin: 20px auto;
+  color: #f5222d;
 }
 
 @import 'CreateReward-nightmode';
