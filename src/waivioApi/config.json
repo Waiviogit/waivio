@@ -24,6 +24,7 @@
     "createObject": "/create-object",
     "appendObject": "/append-object"
   },
+  "blog": "/blog",
   "createObject": "/create/object",
   "getObjects": "/wobject",
   "searchObjects": "/wobjectSearch",

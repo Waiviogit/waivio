@@ -124,6 +124,7 @@ export const getIsUserLoaded = (state, username) => getUser(state, username).loa
 export const getIsUserFailed = (state, username) => getUser(state, username).failed || false;
 export const getTopExperts = state => state.topExperts.list;
 export const getTopExpertsLoading = state => state.topExperts.isFetching;
+export const getTopExpertsHasMore = state => state.topExperts.hasMore;
 export const getRandomExperts = state => state.randomExperts.list;
 export const getRandomExpertsLoaded = state => state.randomExperts.fetched;
 export const getRandomExpertsLoading = state => state.randomExperts.isFetching;

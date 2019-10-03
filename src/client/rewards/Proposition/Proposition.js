@@ -184,7 +184,7 @@ const Proposition = ({
                 </Button>
                 {proposition.count_reservation_days &&
                   `${intl.formatMessage({
-                    id: 'for',
+                    id: 'for_days',
                     defaultMessage: `for`,
                   })} ${proposition.count_reservation_days} ${intl.formatMessage({
                     id: 'days',
