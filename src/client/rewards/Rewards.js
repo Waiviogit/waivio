@@ -1,13 +1,14 @@
 /* eslint-disable no-underscore-dangle */
-import { message, Modal, Tag } from 'antd';
+import { Modal } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
-import _ from 'lodash';
+import _, { isEmpty, map } from 'lodash';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
@@ -19,26 +20,21 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTop from '../components/Utils/ScrollToTop';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
-import './Rewards.less';
 import {
   activateCampaign,
   assignProposition,
   declineProposition,
   getCoordinates,
 } from '../user/userActions';
-import CreateRewardForm from './Create/CreateRewardForm';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { getTextByFilterKey, preparePropositionReqData } from './rewardsHelper';
-import Loading from '../components/Icon/Loading';
-import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
+import { preparePropositionReqData } from './rewardsHelper';
 import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
 import Avatar from '../components/Avatar';
-import Manage from './Manage/Manage';
-import RewardBreadcrumb from './RewardsBreadcrumb/RewardBreadcrumb';
-import SortSelector from '../components/SortSelector/SortSelector';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
+import { generatePermlink } from '../helpers/wObjectHelper';
+import './Rewards.less';
 
 @withRouter
 @injectIntl
@@ -114,69 +110,13 @@ class Rewards extends React.Component {
   }
 
   getRequiredObjects = () =>
-    _.map(this.state.propositions, proposition => proposition.required_object);
+    map(this.state.propositions, proposition => proposition.required_object);
 
   getAreaSearchData = ({ radius, coordinates }) => {
     const { username, match } = this.props;
     const { sort, activeFilters } = this.state;
     this.getPropositions({ username, match, area: coordinates, radius, sort, activeFilters });
   };
-
-  getCampaignsLayout = (
-    hasMore,
-    IsRequiredObjectWrap,
-    loading,
-    filterKey,
-    username,
-    match,
-    propositions,
-  ) =>
-    !this.state.loadingCampaigns ? (
-      <React.Fragment>
-        <RewardBreadcrumb
-          tabText={getTextByFilterKey(this.props.intl, filterKey)}
-          filterKey={filterKey}
-          reqObject={
-            !IsRequiredObjectWrap && propositions && propositions[0]
-              ? propositions[0].required_object
-              : null
-          }
-        />
-        {this.state.isSearchAreaFilter && (
-          <Tag className="ttc" key="search-area-filter" closable onClose={this.resetMapFilter}>
-            <FormattedMessage id="search_area" defaultMessage="Search area" />
-          </Tag>
-        )}
-        <SortSelector sort={this.state.sort} onChange={this.handleSortChange}>
-          <SortSelector.Item key="reward">
-            <FormattedMessage id="amount_sort" defaultMessage="amount">
-              {msg => msg}
-            </FormattedMessage>
-          </SortSelector.Item>
-          <SortSelector.Item key="date">
-            <FormattedMessage id="expiry_sort" defaultMessage="expiry">
-              {msg => msg}
-            </FormattedMessage>
-          </SortSelector.Item>
-          <SortSelector.Item key="proximity">
-            <FormattedMessage id="proximity_sort" defaultMessage="proximity">
-              {msg => msg}
-            </FormattedMessage>
-          </SortSelector.Item>
-        </SortSelector>
-        <ReduxInfiniteScroll
-          elementIsScrollable={false}
-          hasMore={hasMore}
-          loadMore={this.handleLoadMore}
-          loadingMore={loading}
-          loader={<Loading />}
-        >
-          {this.campaignsLayoutWrapLayout(IsRequiredObjectWrap, filterKey, username, match)}
-        </ReduxInfiniteScroll>
-      </React.Fragment>
-    ) : (
-      <Loading />
-    );
 
   setFilterValue = (filter, key) => {
     const { username, match } = this.props;
@@ -226,7 +166,7 @@ class Rewards extends React.Component {
     this.getPropositions({
       username,
       match,
-      coordinates: _.isEmpty(coordinates)
+      coordinates: isEmpty(coordinates)
         ? [+this.props.userLocation.lat, +this.props.userLocation.lon]
         : coordinates,
       radius,
@@ -246,29 +186,23 @@ class Rewards extends React.Component {
 
   // Propositions
   assignProposition = ({ companyAuthor, companyPermlink, companyId, objPermlink }) => {
+    const resPermlink = `reserve-${companyId}-${generatePermlink()}`;
     this.setState({ loadingAssignDiscard: true });
     this.props
-      .assignProposition({ companyAuthor, companyPermlink, companyId, objPermlink })
+      .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink })
       .then(() => {
         const updatedPropositions = this.updateProposition(companyId, true, objPermlink);
-        message.success(
-          this.props.intl.formatMessage({
-            id: 'assigned_successfully',
-            defaultMessage: 'Assigned successfully',
-          }),
-        );
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })
-      .catch(e => {
-        message.error(e.toString());
+      .catch(() => {
         this.setState({ loadingAssignDiscard: false });
       });
   };
   updateProposition = (propsId, isAssign, objPermlink) =>
-    _.map(this.state.propositions, propos => {
+    map(this.state.propositions, proposition => {
       // eslint-disable-next-line no-param-reassign
-      if (propos._id === propsId) {
-        _.map(propos.users, user => {
+      if (proposition._id === propsId) {
+        map(proposition.users, user => {
           if (user.name === this.props.username) {
             if (_.includes(user.approved_objects, objPermlink)) {
               const newUser = user;
@@ -280,7 +214,7 @@ class Rewards extends React.Component {
           return user;
         });
       }
-      return propos;
+      return proposition;
     });
 
   toggleModal = proposition => {
@@ -290,22 +224,31 @@ class Rewards extends React.Component {
     });
   };
 
-  discardProposition = ({ companyAuthor, companyPermlink, companyId, objPermlink }) => {
+  discardProposition = ({
+    companyAuthor,
+    companyPermlink,
+    companyId,
+    objPermlink,
+    unreservationPermlink,
+    reservationPermlink,
+  }) => {
     this.setState({ loadingAssignDiscard: true });
     this.props
-      .declineProposition({ companyAuthor, companyPermlink, companyId, objPermlink })
+      .declineProposition({
+        companyAuthor,
+        companyPermlink,
+        companyId,
+        objPermlink,
+        unreservationPermlink,
+        reservationPermlink,
+      })
       .then(() => {
         const updatedPropositions = this.updateProposition(companyId, false, objPermlink);
-        message.success(
-          this.props.intl.formatMessage({
-            id: 'discarded_successfully',
-            defaultMessage: 'Discarded successfully',
-          }),
-        );
+        this.props.history.push(`/rewards/active`);
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })
       .catch(e => {
-        message.error(e.toString());
+        console.log(e.toString());
         this.setState({ loadingAssignDiscard: false });
       });
   };
@@ -316,7 +259,7 @@ class Rewards extends React.Component {
     const { intl } = this.props;
     if (_.size(propositions) !== 0) {
       if (IsRequiredObjectWrap) {
-        return _.map(
+        return map(
           propositions,
           proposition =>
             proposition &&
@@ -330,8 +273,9 @@ class Rewards extends React.Component {
             ),
         );
       }
-      return _.map(propositions, proposition =>
-        _.map(
+
+      return map(propositions, proposition =>
+        map(
           proposition.objects,
           wobj =>
             wobj.object &&
@@ -394,49 +338,51 @@ class Rewards extends React.Component {
     }
   };
 
-  campaignItemsWrap = location => {
-    const { match, username, intl, cryptosPriceHistory, user } = this.props;
-    const { loading, hasMore, propositions } = this.state;
-    const filterKey = match.params.filterKey;
-    const IsRequiredObjectWrap = !match.params.campaignParent;
-    const currentSteemDollarPrice =
-      cryptosPriceHistory && cryptosPriceHistory.SBD && cryptosPriceHistory.SBD.priceDetails
-        ? cryptosPriceHistory.SBD.priceDetails.currentUSDPrice
-        : 0;
-    if (location.pathname === '/rewards/create') {
-      return (
-        <CreateRewardForm
-          userName={username}
-          user={user}
-          intl={intl}
-          currentSteemDollarPrice={currentSteemDollarPrice}
-        />
-      );
-    } else if (location.pathname === '/rewards/manage') {
-      return <Manage intl={intl} userName={username} />;
-    }
-    return this.getCampaignsLayout(
-      hasMore,
-      IsRequiredObjectWrap,
-      loading,
-      filterKey,
-      username,
-      match,
-      propositions,
-    );
-  };
-
   render() {
-    const { location } = this.props;
+    const { location, intl, match, username, cryptosPriceHistory, user } = this.props;
     const {
       sponsors,
       isModalDetailsOpen,
       objectDetails,
       campaignsTypes,
       activeFilters,
+      isSearchAreaFilter,
+      hasMore,
+      loading,
+      propositions,
+      sort,
+      loadingCampaigns,
     } = this.state;
+
+    const IsRequiredObjectWrap = !match.params.campaignParent;
+    const filterKey = match.params.filterKey;
     const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
     const isCreate = location.pathname === '/rewards/create';
+    const currentSteemDollarPrice =
+      cryptosPriceHistory && cryptosPriceHistory.SBD && cryptosPriceHistory.SBD.priceDetails
+        ? cryptosPriceHistory.SBD.priceDetails.currentUSDPrice
+        : 0;
+
+    const renderedRoutes = renderRoutes(this.props.route.routes, {
+      user,
+      currentSteemDollarPrice,
+      hasMore,
+      IsRequiredObjectWrap,
+      loading,
+      filterKey,
+      userName: username,
+      match,
+      propositions,
+      intl,
+      isSearchAreaFilter,
+      resetMapFilter: this.resetMapFilter,
+      sort,
+      handleSortChange: this.handleSortChange,
+      loadingCampaigns,
+      campaignsLayoutWrapLayout: this.campaignsLayoutWrapLayout,
+      handleLoadMore: this.handleLoadMore,
+    });
+
     return (
       <div className="Rewards">
         <Helmet>
@@ -451,11 +397,12 @@ class Rewards extends React.Component {
               <LeftSidebar />
             </div>
           </Affix>
-          <div className="center">{this.campaignItemsWrap(location)}</div>
-          {location.pathname !== '/rewards/manage' && (
+          <div className="center">{renderedRoutes}</div>
+
+          {match.path === '/rewards/:filterKey/:campaignParent?' && (
             <Affix className="rightContainer leftContainer__user" stickPosition={122}>
               <div className="right">
-                {!_.isEmpty(this.props.userLocation) && !isCreate && (
+                {!isEmpty(this.props.userLocation) && !isCreate && (
                   <React.Fragment>
                     <MapWrap
                       wobjects={this.getRequiredObjects()}
@@ -465,7 +412,7 @@ class Rewards extends React.Component {
                     />
                   </React.Fragment>
                 )}
-                {!_.isEmpty(sponsors) && !isCreate && (
+                {!isEmpty(sponsors) && !isCreate && (
                   <RewardsFiltersPanel
                     campaignsTypes={campaignsTypes}
                     sponsors={sponsors}
@@ -477,7 +424,7 @@ class Rewards extends React.Component {
             </Affix>
           )}
         </div>
-        {isModalDetailsOpen && !_.isEmpty(objectDetails) && (
+        {isModalDetailsOpen && !isEmpty(objectDetails) && (
           <Modal
             title={this.props.intl.formatMessage({
               id: 'details',
@@ -518,5 +465,9 @@ class Rewards extends React.Component {
     );
   }
 }
+
+Rewards.propTypes = {
+  route: PropTypes.shape().isRequired,
+};
 
 export default Rewards;

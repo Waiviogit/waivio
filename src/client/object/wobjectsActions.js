@@ -4,18 +4,23 @@ import { getAlbums } from '../object/ObjectGallery/galleryActions';
 import { createPermlink } from '../vendor/steemitHelpers';
 import { generateRandomString } from '../helpers/wObjectHelper';
 import { followObject, voteObject } from './wobjActions';
+import { getUsedLocale } from '../reducers';
+import { getClientWObj } from '../adapters';
 
 export const GET_OBJECT = '@objects/GET_OBJECT';
 export const GET_OBJECT_START = '@objects/GET_OBJECT_START';
 export const GET_OBJECT_ERROR = '@objects/GET_OBJECT_ERROR';
 export const GET_OBJECT_SUCCESS = '@objects/GET_OBJECT_SUCCESS';
 
-export const getObject = (authorPermlink, username) => dispatch =>
-  dispatch({
+export const getObject = (authorPermlink, username) => (dispatch, getState) => {
+  const usedLocale = getUsedLocale(getState());
+  return dispatch({
     type: GET_OBJECT,
-    payload: ApiClient.getObject(authorPermlink, username),
+    payload: ApiClient.getObject(authorPermlink, username)
+      .then(wobj => getClientWObj(wobj, usedLocale))
+      .catch(err => console.log(err)),
   });
-
+};
 export const clearObjectFromStore = () => dispatch =>
   dispatch({
     type: GET_OBJECT_SUCCESS,

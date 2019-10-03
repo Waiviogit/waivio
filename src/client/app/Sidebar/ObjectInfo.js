@@ -15,7 +15,6 @@ import {
   sortListItemsBy,
   combineObjectMenu,
   getFieldsByName,
-  getField,
 } from '../../object/wObjectHelper';
 import {
   objectFields,
@@ -105,8 +104,8 @@ class ObjectInfo extends React.Component {
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const { showModal, selectedField, isModalComparePerformanceOpen } = this.state;
     const { button, status, website, newsFilter } = wobject;
-    const renderFields = getAllowedFieldsByObjType(wobject.object_type);
-    const isRenderGallery = ![OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(wobject.object_type);
+    const renderFields = getAllowedFieldsByObjType(wobject.type);
+    const isRenderGallery = ![OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(wobject.type);
     const isRenderMenu = isRenderGallery;
 
     let names = [];
@@ -159,8 +158,8 @@ class ObjectInfo extends React.Component {
           ? menuItems.filter(item => item.object_type === OBJECT_TYPE.LIST)
           : null;
       menuPages =
-        menuItems.length && menuItems.some(item => item.object_type !== OBJECT_TYPE.PAGE)
-          ? menuItems.filter(item => item.object_type !== OBJECT_TYPE.PAGE)
+        menuItems.length && menuItems.some(item => item.object_type === OBJECT_TYPE.PAGE)
+          ? menuItems.filter(item => item.object_type === OBJECT_TYPE.PAGE)
           : null;
 
       photosCount = wobject.photos_count;
@@ -359,7 +358,6 @@ class ObjectInfo extends React.Component {
         )}
       </React.Fragment>
     );
-    const hasChartId = getField(wobject, objectFields.chartId);
     const isMobile = this.props.screenSize === 'xsmall';
 
     return (
@@ -393,7 +391,7 @@ class ObjectInfo extends React.Component {
               ),
             )}
             {listItem(objectFields.description, <DescriptionInfo description={description} />)}
-            {hasChartId && (
+            {wobject.chartid && (
               <React.Fragment>
                 <InstrumentLongTermStatistics
                   wobject={this.props.wobject}

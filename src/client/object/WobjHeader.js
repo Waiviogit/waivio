@@ -1,46 +1,41 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
-import ObjectLightbox from '../components/ObjectLightbox';
+
 import FollowButton from '../widgets/FollowButton';
-import { haveAccess, accessTypesArr } from '../helpers/wObjectHelper';
-import {
-  getFieldWithMaxWeight,
-  getInnerFieldWithMaxWeight,
-} from '../../client/object/wObjectHelper';
-import { objectFields as objectTypes, objectFields } from '../../common/constants/listOfFields';
-import Proposition from '../components/Proposition/Proposition';
+import ObjectLightbox from '../components/ObjectLightbox';
 import ObjectType from './ObjectType';
-import '../components/ObjectHeader.less';
+import Proposition from '../components/Proposition/Proposition';
 import WeightTag from '../components/WeightTag';
+import DEFAULTS from '../object/const/defaultValues';
+import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
+import { getClientWObj } from '../adapters';
+import { objectFields } from '../../common/constants/listOfFields';
+import '../components/ObjectHeader.less';
 
 const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, authenticated }) => {
-  const coverImage = getFieldWithMaxWeight(
-    wobject,
-    objectFields.background,
-    objectFields.background,
-  );
-  const hasCover = !!coverImage;
-  const style = {};
-  const descriptionShort = getFieldWithMaxWeight(wobject, objectFields.title);
-  const status = getInnerFieldWithMaxWeight(wobject, objectFields.status);
+  const coverImage = wobject.background || DEFAULTS.BACKGROUND;
+  const style = { backgroundImage: `url("${coverImage}")` };
+  const descriptionShort = wobject.title || '';
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
-  const objectName = getFieldWithMaxWeight(wobject, objectFields.name) || wobject.default_name;
   const canEdit = accessExtend && isEditMode;
-  const parentName = wobject.parent ? getFieldWithMaxWeight(wobject.parent, objectTypes.name) : '';
+  const parentName = wobject.parent
+    ? getClientWObj(wobject.parent, intl.locale)[objectFields.name]
+    : '';
 
-  const getStatusLayout = stat => (
+  const getStatusLayout = statusField => (
     <div className="ObjectHeader__status-wrap">
-      <span className="ObjectHeader__status-unavailable">{status.title}</span>&#32;
-      {stat.link && <a href={stat.link}>{<i className="iconfont icon-send PostModal__icon" />}</a>}
+      <span className="ObjectHeader__status-unavailable">{statusField.title}</span>&#32;
+      {statusField.link && (
+        <a href={statusField.link}>{<i className="iconfont icon-send PostModal__icon" />}</a>
+      )}
     </div>
   );
 
   return (
-    <div className={classNames('ObjectHeader', { 'ObjectHeader--cover': hasCover })} style={style}>
+    <div className="ObjectHeader ObjectHeader--cover" style={style}>
       <div className="ObjectHeader__container">
         <ObjectLightbox wobject={wobject} size={100} accessExtend={canEdit} />
         <div className="ObjectHeader__user">
@@ -58,8 +53,8 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, a
           )}
           <div className="ObjectHeader__row">
             <div className="ObjectHeader__user__username">
-              <div className="ObjectHeader__text" title={objectName}>
-                {objectName}
+              <div className="ObjectHeader__text" title={wobject.name}>
+                {wobject.name}
               </div>
               <div className="ObjectHeader__controls">
                 <FollowButton following={wobject.author_permlink || ''} followingType="wobject" />
@@ -84,21 +79,21 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, a
                 <Proposition
                   objectID={wobject.author_permlink}
                   fieldName={objectFields.title}
-                  objName={objectName}
+                  objName={wobject.name}
                 />
-              ) : status ? (
-                getStatusLayout(status)
+              ) : wobject.status ? (
+                getStatusLayout(wobject.status)
               ) : (
                 descriptionShort
               )}
             </div>
           </div>
-          {canEdit && !hasCover && (
+          {canEdit && !wobject[objectFields.background] && (
             <div className="ObjectHeader__user__addCover">
               <Proposition
                 objectID={wobject.author_permlink}
                 fieldName={objectFields.background}
-                objName={objectName}
+                objName={wobject.name}
               />
             </div>
           )}

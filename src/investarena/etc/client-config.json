@@ -1,7 +1,7 @@
 {
   "appVersion": "ST Investarena Desktop v.2.0.1",
   "production": {
-    "apiPrefix": "https://www.waivio.com/",
+    "apiPrefix": "https://4cast.in/",
     "brokerWSUrl": {
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
@@ -28,7 +28,7 @@
     "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/"
   },
   "staging": {
-    "apiPrefix": "https://waiviodev.com/",
+    "apiPrefix": "https://investarena.waiviodev.com/",
     "brokerWSUrl": {
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
@@ -48,14 +48,13 @@
       "tradiva": "https://myaccount.tradiva.com/",
       "770capital": "https://myaccount.770capital.com/",
       "dowmarkets": "https://myaccount.dowmarkets.com/",
-      "limefx": "https://myaccount.limefx.com/",
-      "widgets": "wss://informer.maximarkets.org/wss/Server.ashx?subscriber=true"
+      "limefx": "https://myaccount.limefx.com/"
     },
     "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/"
   },
   "development": {
     "": "http://localhost:8095/",
-    "apiPrefix": "https://waiviodev.com/",
+    "apiPrefix": "https://investarena.waiviodev.com/",
     "brokerWSUrl": {
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
@@ -69,7 +68,13 @@
     },
     "platformDepositUrl": {
       "umarkets": "https://my.umarkets.com/",
-      "maximarkets": "https://myaccount.maximarkets.org/"
+      "maximarkets": "https://myaccount.maximarkets.org/",
+      "maxitrade": "https://myaccount.maxitrade.com/",
+      "tradeallcrypto": "https://myaccount.tradeallcrypto.com/",
+      "tradiva": "https://myaccount.tradiva.com/",
+      "770capital": "https://myaccount.770capital.com/",
+      "dowmarkets": "https://myaccount.dowmarkets.com/",
+      "limefx": "https://myaccount.limefx.com/"
     },
     "webSocketUrl": "https://wss.socialtrading.uat.pp.ua/"
   },
@@ -134,7 +139,8 @@
   "performers": {
     "searchInstrumentsStatistic": "/search-instruments-stats",
     "top": "/top-performers",
-    "instrumentStatistic": "/instrument-statistics"
+    "instrumentStatistic": "/instrument-statistics",
+    "userStatistics": "/user-statistics"
   },
   "forecasts": {
     "activeForecasts": "/active_forecasts"
@@ -146,7 +152,13 @@
 
   "logonWithToken": {
     "maximarkets": "https://publicapi.maximarkets.org/account/logonWithToken?token=",
-    "umarkets": "https://api.umarkets.com/account/logonWithToken?token="
+    "umarkets": "https://api.umarkets.com/account/logonWithToken?token=",
+    "maxitrade": "https://api.maxitrade.com/account/logonWithToken?token=",
+    "tradeallcrypto": "https://api.tradeallcrypto.com/account/logonWithToken?token=",
+    "tradiva": "https://api.tradiva.com/account/logonWithToken?token=",
+    "770capital": "https://api.770capital.com/account/logonWithToken?token=",
+    "dowmarkets": "https://api.dowmarkets.com/account/logonWithToken?token=",
+    "limefx": "https://api.limefx.com/account/logonWithToken?token="
   },
   "signals": {
     "getSignals": "https://informer.maximarkets.org/wss/signals"

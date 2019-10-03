@@ -1,3 +1,4 @@
+/* eslint-disable */
 import _ from 'lodash';
 import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
@@ -12,7 +13,6 @@ const headers = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
 };
-
 
 const getFilterKey = () => {
   if (localStorage) {
@@ -57,7 +57,7 @@ export const getObjects = ({
     skip,
     object_types: invObjects ? supportedObjectTypes : [],
     required_fields: requiredFields,
-    user_limit: userLimit
+    user_limit: userLimit,
   };
   if (isOnlyHashtags) reqData.object_types = ['hashtag'];
   else reqData.exclude_object_types = ['hashtag'];
@@ -81,32 +81,36 @@ export const getObject = (authorPermlink, username) => {
   return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${query}`, {
     headers,
     method: 'GET',
-  }).then(res =>
-    res.json(),
-  );
+  }).then(res => res.json());
 };
 
 export const getUsersByObject = object =>
   fetch(`${config.apiPrefix}${config.getObjects}/${object}`).then(res => res.json());
 
-export const getFeedContentByObject = (name, limit = 10) =>
+export const getFeedContentByObject = (name, limit = 10, user_languages) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${name}/posts`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ limit }),
+      body: JSON.stringify({ limit, user_languages }),
     })
       .then(res => res.json())
       .then(posts => resolve(posts))
       .catch(error => reject(error));
   });
 
-export const getMoreFeedContentByObject = ({ authorPermlink, skip = 0, limit = 10 }) =>
+// eslint-disable-next-line camelcase
+export const getMoreFeedContentByObject = ({
+  authorPermlink,
+  skip = 0,
+  limit = 10,
+  user_languages,
+}) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}/posts`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ skip, limit }),
+      body: JSON.stringify({ skip, limit, user_languages }),
     })
       .then(res => res.json())
       .then(posts => resolve(posts))
@@ -118,6 +122,25 @@ export const getFeedContent = (sortBy, queryData) =>
       headers,
       method: 'POST',
       body: JSON.stringify(queryData),
+    })
+      .then(res => res.json())
+      .then(posts => resolve(posts))
+      .catch(error => reject(error));
+  });
+
+export const getUserProfileBlog = (
+  userName,
+  { startAuthor = '', startPermlink = '', limit = 10 },
+) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.user}/${userName}${config.blog}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({
+        limit,
+        start_author: startAuthor,
+        start_permlink: startPermlink,
+      }),
     })
       .then(res => res.json())
       .then(posts => resolve(posts))
@@ -137,13 +160,14 @@ export const postCreateWaivioObject = requestBody =>
       .catch(error => reject(error));
   });
 
-export const getUserFeedContent = (feedUserName, limit = 10) =>
+export const getUserFeedContent = (feedUserName, limit = 10, user_languages) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${feedUserName}${config.feed}`, {
       headers,
       method: 'POST',
       body: JSON.stringify({
         limit,
+        user_languages,
         filter: {
           byApp: getFilterKey(),
         },
@@ -165,7 +189,7 @@ export const getContent = (author, permlink) =>
       .catch(error => reject(error));
   });
 
-export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0 }) =>
+export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0, user_languages }) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.feed}`, {
       headers,
@@ -173,6 +197,7 @@ export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0 }) =>
       body: JSON.stringify({
         skip,
         limit,
+        user_languages,
         filter: {
           byApp: getFilterKey(),
         },
@@ -328,6 +353,21 @@ export const getWobjectsExpertise = (user, authorPermlink, skip = 0, limit = 30)
       .catch(error => reject(error));
   });
 
+export const getObjectExpertiseByType = (objectType, skip = 0, limit = 5) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.apiPrefix}${config.objectType}/${objectType}${config.typeExpertise}?limit=${limit}&skip=${skip}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export const getAuthorsChildWobjects = (authorPermlink, skip = 0, limit = 30) =>
   new Promise((resolve, reject) =>
     fetch(
@@ -357,11 +397,11 @@ export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3) =>
   });
 
 export const getObjectType = (
-  name,
+  typeName,
   { limit: wobjects_count, skip: wobjects_skip, filter, sort }, // eslint-disable-line
 ) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.objectType}/${name}`, {
+    fetch(`${config.apiPrefix}${config.objectType}/${typeName}`, {
       headers,
       method: 'POST',
       body: JSON.stringify({ wobjects_count, wobjects_skip, filter, sort }),
@@ -489,9 +529,68 @@ export const createCampaign = data =>
       .catch(error => reject(error));
   });
 
+export const validateActivationCampaign = data =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.activation}`, {
+      headers: headers,
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const validateInactivationCampaign = data =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.inactivation}`, {
+      headers: headers,
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const reserveActivatedCampaign = data =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.reservation}`, {
+      headers: headers,
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const rejectReservationCampaign = data =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.rejectReservation}`, {
+      headers: headers,
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export const getCampaignsByGuideName = guideName =>
   new Promise((resolve, reject) => {
     fetch(`${config.campaignApiPrefix}${config.campaigns}${config.dashboard}/${guideName}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getCampaignById = campaignId =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.campaign}/${campaignId}`, {
       headers,
       method: 'GET',
     })
@@ -524,29 +623,5 @@ export const updateUserMetadata = (userName, data) =>
 export const waivioAPI = {
   getAuthenticatedUserMetadata,
 };
-
-// Investarena
-export const getUserLongTermStatistics = id =>
-  new Promise((resolve, reject) => {
-    fetch(`https://waiviodev.com/investarena-api${config.userStatistics}/${id}`, {
-      headers,
-      method: 'GET',
-    })
-      .then(res => res.json())
-      .then(data => resolve(data))
-      .catch(error => reject(error));
-  });
-
-export const getInstrumentLongTermStatistics = id =>
-  new Promise((resolve, reject) => {
-    fetch(`https://waiviodev.com/investarena-api${config.instrumentStatistic}/${id}`, {
-      headers,
-      method: 'GET',
-    })
-      .then(res => res.json())
-      .then(data => resolve(data))
-      .catch(error => reject(error));
-  });
-// END Investarena
 
 export default null;

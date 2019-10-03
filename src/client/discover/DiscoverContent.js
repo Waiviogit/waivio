@@ -1,11 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { people } from '../helpers/constants';
 import DiscoverUser from './DiscoverUser';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import { getTopExperts as getTopExpertsApi } from '../user/usersActions';
-import { getTopExperts, getTopExpertsLoading } from '../reducers';
+import { getTopExperts, getTopExpertsLoading, getTopExpertsHasMore } from '../reducers';
 import Loading from '../components/Icon/Loading';
 
 const displayLimit = 20;
@@ -14,6 +13,7 @@ const displayLimit = 20;
   state => ({
     topExperts: getTopExperts(state),
     topExpertsLoading: getTopExpertsLoading(state),
+    hasMoreExperts: getTopExpertsHasMore(state),
   }),
   {
     getTopExperts: getTopExpertsApi,
@@ -30,6 +30,7 @@ class DiscoverContent extends React.Component {
     ).isRequired,
     getTopExperts: PropTypes.func.isRequired,
     topExpertsLoading: PropTypes.bool.isRequired,
+    hasMoreExperts: PropTypes.bool.isRequired,
   };
 
   handleLoadMore = () => {
@@ -39,12 +40,11 @@ class DiscoverContent extends React.Component {
   };
 
   render() {
-    const { topExperts, topExpertsLoading } = this.props;
-    const hasMore = topExperts.length !== people.length;
+    const { topExperts, topExpertsLoading, hasMoreExperts } = this.props;
     return (
       <div>
         <ReduxInfiniteScroll
-          hasMore={hasMore}
+          hasMore={hasMoreExperts}
           loadMore={this.handleLoadMore}
           elementIsScrollable={false}
           loadingMore={topExpertsLoading}

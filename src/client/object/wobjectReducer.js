@@ -1,22 +1,12 @@
-import { find } from 'lodash';
 import * as actions from './wobjectsActions';
 import * as appendAction from './appendActions';
 import { RATE_WOBJECT_SUCCESS } from '../../client/object/wobjActions';
-import {
-  objectFields as supportedFields,
-  objectFields,
-  TYPES_OF_MENU_ITEM,
-} from '../../common/constants/listOfFields';
-import { getClientWObj } from '../adapters';
-import { getFieldWithMaxWeight } from './wObjectHelper';
+import { objectFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
 
 const initialState = {
   wobject: {},
   isFetching: false,
-  chartId: '',
 };
-
-const getByChartId = wobj => getFieldWithMaxWeight(wobj, supportedFields.chartId);
 
 export default function wobjectReducer(state = initialState, action) {
   switch (action.type) {
@@ -33,9 +23,8 @@ export default function wobjectReducer(state = initialState, action) {
     case actions.GET_OBJECT_SUCCESS:
       return {
         ...state,
-        wobject: getClientWObj(action.payload),
+        wobject: action.payload,
         isFetching: false,
-        chartId: getByChartId(action.payload),
       };
     case actions.ADD_ITEM_TO_LIST:
       return {
@@ -73,20 +62,26 @@ export default function wobjectReducer(state = initialState, action) {
     }
     case appendAction.APPEND_WAIVIO_OBJECT.SUCCESS: {
       const { payload } = action;
-      if (payload.name === 'listItem') {
-        const listItemsKey =
-          payload.type === TYPES_OF_MENU_ITEM.PAGE || payload.type === TYPES_OF_MENU_ITEM.LIST
-            ? 'menuItems'
-            : 'listItems';
-        const listItems = state.wobject[listItemsKey]
-          ? [...state.wobject[listItemsKey], payload]
-          : [payload];
+      // check menu item appending; type uses for menuItems only. (type values: 'menuList' or 'menuPage')
+      if (
+        payload.name === 'listItem' &&
+        [TYPES_OF_MENU_ITEM.LIST, TYPES_OF_MENU_ITEM.PAGE].includes(payload.type)
+      ) {
+        const menuItem = {
+          author_permlink: payload.body,
+          alias: payload.alias,
+          name: payload.alias,
+          object_type: payload.type.slice(4).toLowerCase(),
+        };
+        const menuItems = state.wobject.menuItems
+          ? [...state.wobject.menuItems, menuItem]
+          : [menuItem];
         return {
           ...state,
           wobject: {
             ...state.wobject,
             fields: [...state.wobject.fields, payload],
-            [listItemsKey]: listItems,
+            menuItems,
           },
         };
       }
@@ -110,4 +105,4 @@ export const getObjectAuthor = state => state.author;
 export const getObjectFields = state => state.wobject.fields;
 export const getRatingFields = state =>
   getObjectFields(state).filter(field => field.name === objectFields.rating);
-export const getObjectChartId = state => state.chartId;
+export const getObjectChartId = state => state.chartid;

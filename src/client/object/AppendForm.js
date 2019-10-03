@@ -317,7 +317,7 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           type: currentField,
-          alias: getFieldValue('menuItemName'),
+          alias: getFieldValue('menuItemName') || this.state.selectedObject.name,
         };
       }
 
@@ -678,7 +678,6 @@ export default class AppendForm extends Component {
                   objectType={objectType}
                 />,
               )}
-              {console.log(objectType)}
               {selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
             </Form.Item>
             <CreateObject
@@ -1183,7 +1182,7 @@ export default class AppendForm extends Component {
         return (
           <React.Fragment>
             <Form.Item>
-              {getFieldDecorator(phoneFields.name, { rules: this.getFieldRules(phoneFields.name) })(
+              {getFieldDecorator(phoneFields.name, { rules: this.getFieldRules('phoneName') })(
                 <Input
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import LANGUAGES from '../translations/languages';
 import { getClientWObj } from '../adapters';
 import {
   supportedObjectFields,
@@ -40,14 +41,25 @@ export const getFieldWithMaxWeight = (wObject, currentField, defaultValue = '') 
 
   const fieldValues = _.filter(wObject.fields, ['name', currentField]);
   if (!fieldValues.length) return defaultValue;
-  if(fieldValues[0].upvotedByModerator) return fieldValues[0].body;
+  if (fieldValues[0].upvotedByModerator) return fieldValues[0].body;
   const orderedValues = _.orderBy(fieldValues, ['weight'], ['desc']);
 
-  if (orderedValues[0].body) return orderedValues[0].body;
+  if (!_.isEmpty(orderedValues[0].body)) return orderedValues[0].body;
   return defaultValue;
 };
 
-export const getFieldsWithMaxWeight = wObj => {
+export const getFieldsWithMaxWeight = (wObj, usedLocale = 'en-US', defaultLocale = 'en-US') => {
+  if (!wObj || (wObj && _.isEmpty(wObj.fields))) return null;
+
+  const usedLang =
+    LANGUAGES.find(language => language.variants.indexOf(usedLocale) !== -1) || LANGUAGES[0];
+  const LOCALES = {
+    CURRENT: usedLang.id,
+    DEFAULT: defaultLocale,
+    OTHER: 'otherLanguages',
+  };
+  const localesToFilter = new Set(Object.values(LOCALES));
+  // fields with complex body - contains serialized objects, need to parse
   const complexFields = [
     objectFields.button,
     objectFields.address,
@@ -55,19 +67,40 @@ export const getFieldsWithMaxWeight = wObj => {
     objectFields.link,
     objectFields.status,
   ];
-  if (!wObj || (wObj && _.isEmpty(wObj.fields))) return '';
-  let maxWeightedFields = wObj.fields
-    .filter(f => !Object.keys(wObj).includes(f.name))
-    .reduce((acc, curr) => {
-      if (acc[curr.name]) {
-        if (curr.weight > acc[curr.name].weight) {
+
+  const fieldsByLocale = {
+    [LOCALES.CURRENT]: [],
+    [LOCALES.DEFAULT]: [],
+    [LOCALES.OTHER]: [],
+  };
+
+  wObj.fields
+    .filter(f => !Object.keys(wObj).includes(f.name)) // skip fields which already exist as wObj properties
+    .forEach(field => {
+      const fieldLang = LANGUAGES.find(language => language.variants.indexOf(field.locale) !== -1);
+      if (fieldLang && localesToFilter.has(fieldLang.id)) {
+        fieldsByLocale[field.locale].push(field);
+      } else {
+        fieldsByLocale.otherLanguages.push(field);
+      }
+    });
+
+  let maxWeightedFields = {};
+  localesToFilter.forEach(locale => {
+    fieldsByLocale[locale]
+      .filter(field => !Object.keys(maxWeightedFields).includes(field.name))
+      .reduce((acc, curr) => {
+        if (acc[curr.name]) {
+          if (curr.weight > acc[curr.name].weight) {
+            acc[curr.name] = curr;
+          }
+        } else {
           acc[curr.name] = curr;
         }
-      } else {
-        acc[curr.name] = curr;
-      }
-      return acc;
-    }, {});
+        return acc;
+      }, maxWeightedFields);
+  });
+
   maxWeightedFields = _.mapValues(maxWeightedFields, 'body');
   complexFields.forEach(field => {
     if (maxWeightedFields[field]) {
@@ -163,7 +196,7 @@ export const getFieldsCount = (wObject, fieldName) => {
     count = getListItems(wObject, { uniq: true }).filter(item =>
       fieldName === TYPES_OF_MENU_ITEM.LIST
         ? item.object_type === OBJECT_TYPE.LIST
-        : item.object_type !== OBJECT_TYPE.LIST,
+        : item.object_type === OBJECT_TYPE.PAGE,
     ).length;
   } else {
     count = _.get(wObject, 'fields', []).filter(field => field.name === fieldName).length;
@@ -265,7 +298,7 @@ export const sortListItemsBy = (items, sortBy = 'by-name-asc', sortOrder = null)
   let comparator;
   switch (sortBy) {
     case 'rank':
-      comparator = (a, b) => b.rank - a.rank || (a.name > b.name ? 1 : -1);
+      comparator = (a, b) => b.weight - a.weight || (a.name >= b.name ? 1 : -1);
       break;
     case 'by-name-desc':
       comparator = (a, b) => (a.name < b.name ? 1 : -1);

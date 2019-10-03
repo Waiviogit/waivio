@@ -1,29 +1,19 @@
 import _ from 'lodash';
 import moment from 'moment';
-import { blackListQuotes } from '../../constants/blackListQuotes';
 import { forecastDateTimeFormat } from '../../constants/constantsForecast';
 import { optionsForecast } from '../../constants/selectData';
 
-export const getQuoteOptions = (quotesSettings, quotes) => {
-  const optionsQuote = [];
-  if (_.size(quotesSettings) !== 0) {
-    _.map(quotesSettings, (item, key) => {
-      if (quotes[key] && Number(quotes[key].askPrice) !== 0 && !blackListQuotes.includes(key)) {
-        optionsQuote.push({ value: key, label: item.name });
-      }
-    });
+export const getQuotePrice = (recommend, quoteSelected) => {
+  if (!quoteSelected) return null;
+  const { askPrice, bidPrice } = quoteSelected;
+  switch (recommend) {
+    case 'Buy':
+      return !isNaN(askPrice) ? parseFloat(askPrice) : null;
+    case 'Sell':
+      return !isNaN(bidPrice) ? parseFloat(bidPrice) : null;
+    default:
+      return null;
   }
-  return optionsQuote;
-};
-
-export const getQuotePrice = (quote, recommend, quoteList) => {
-  let quotePrice = null;
-  if (quote && recommend === 'Buy' && quoteList[quote]) {
-    quotePrice = quoteList[quote].askPrice;
-  } else if (quote && recommend === 'Sell' && quoteList[quote]) {
-    quotePrice = quoteList[quote].bidPrice;
-  }
-  return quotePrice;
 };
 
 export const isStopLossTakeProfitValid = (value, input, recommend, quotePrice) => {
@@ -106,6 +96,32 @@ export const getForecastState = forecast => {
     stopLossValue: forecast.slPrice || '',
     isValid: validateForm(forecast.quoteSecurity, forecast.recommend, selectForecast),
   };
+};
+
+export const getEditorForecast = (forecast, quotesSettings) => {
+  const {
+    selectQuote,
+    selectRecommend,
+    selectForecast,
+    dateTimeValue,
+    quotePrice,
+    stopLossValue,
+    takeProfitValue,
+    isValid,
+  } = forecast;
+  const price = parseFloat(quotePrice);
+  const forecastObject = {
+    quoteSecurity: selectQuote,
+    market: selectQuote ? quotesSettings[selectQuote].market : '',
+    recommend: selectRecommend,
+    postPrice: !isNaN(price) ? price : null,
+    selectForecast,
+    expiredAt: dateTimeValue ? dateTimeValue.format(forecastDateTimeFormat) : null,
+    isValid,
+  };
+  if (takeProfitValue) forecastObject.tpPrice = takeProfitValue;
+  if (stopLossValue) forecastObject.slPrice = stopLossValue;
+  return forecastObject;
 };
 
 export default null;

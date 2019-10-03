@@ -144,6 +144,7 @@ export const getIsUserFailed = (state, username) =>
   fromUsers.getIsUserFailed(state.users, username);
 export const getTopExperts = state => fromUsers.getTopExperts(state.users);
 export const getTopExpertsLoading = state => fromUsers.getTopExpertsLoading(state.users);
+export const getTopExpertsHasMore = state => fromUsers.getTopExpertsHasMore(state.users);
 export const getRandomExperts = state => fromUsers.getRandomExperts(state.users);
 export const getRandomExpertsLoaded = state => fromUsers.getRandomExpertsLoaded(state.users);
 export const getRandomExpertsLoading = state => fromUsers.getRandomExpertsLoading(state.users);
@@ -202,7 +203,6 @@ export const getObject = state => fromObject.getObjectState(state.object);
 export const getObjectAuthor = state => fromObject.getObjectAuthor(state.object);
 export const getObjectFields = state => fromObject.getObjectFields(state.object);
 export const getRatingFields = state => fromObject.getRatingFields(state.object);
-export const getObjectChartId = state => fromObject.getObjectChartId(state.object);
 
 export const getObjectTypesList = state => fromObjectTypes.getObjectTypesList(state.objectTypes);
 export const getObjectTypesLoading = state =>

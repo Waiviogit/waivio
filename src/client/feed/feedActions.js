@@ -1,5 +1,5 @@
-import { get, size } from 'lodash';
-import { getDiscussionsFromAPI } from '../helpers/apiHelpers';
+/* eslint-disable camelcase */
+import { isEmpty, get } from 'lodash';
 import {
   createAsyncActionType,
   getFeedFromState,
@@ -11,6 +11,8 @@ import {
   getPosts,
   getBookmarks as getBookmarksSelector,
   getObject,
+  getLocale,
+  getReadLanguages,
 } from '../reducers';
 
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -35,16 +37,116 @@ export const GET_MORE_OBJECT_POSTS = createAsyncActionType('@object/GET_MORE_OBJ
 
 export const CLEAN_FEED = 'CLEAN_FEED';
 
-export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) => dispatch =>
+const getUserLocalesArray = getState => {
+  let locales = ['en-US'];
+  const state = getState();
+  const readLanguages = getReadLanguages(state);
+  if (isEmpty(readLanguages)) {
+    const interfaceLanguage = getLocale(state);
+    if (interfaceLanguage && interfaceLanguage !== 'auto') locales = [interfaceLanguage];
+  } else locales = readLanguages;
+  return locales;
+};
+
+export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) => (
+  dispatch,
+  getState,
+) => {
+  const user_languages = getUserLocalesArray(getState);
+
+  const doApiRequest = () => {
+    if (category === 'wia_feed') {
+      return ApiClient.getFeedContentByObject('vmf-wtrade', limit, user_languages);
+    }
+    return ApiClient.getFeedContent(sortBy, {
+      category: sortBy,
+      tag: category,
+      skip: 0,
+      limit,
+      user_languages,
+    })
+  };
+
   dispatch({
     type: GET_FEED_CONTENT.ACTION,
-    payload: getDiscussionsFromAPI(sortBy, { tag: category, limit }, ApiClient),
+    payload: doApiRequest(),
     meta: {
       sortBy,
       category: category || 'all',
       limit,
     },
   });
+};
+
+export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatch, getState) => {
+  const state = getState();
+  const feed = getFeed(state);
+  const feedContent = getFeedFromState(sortBy, category, feed);
+  const user_languages = getUserLocalesArray(getState);
+
+  if (!feedContent.length) return Promise.resolve(null);
+
+  const doApiRequest = () => {
+    if (category === 'wia_feed') {
+      return ApiClient.getMoreFeedContentByObject({
+        authorPermlink: 'vmf-wtrade',
+        skip: feedContent.length,
+        limit,
+        user_languages,
+      });
+    }
+    return ApiClient.getFeedContent(sortBy, {
+      category: sortBy,
+      tag: category,
+      skip: feedContent.length,
+      limit,
+      user_languages,
+    })
+  };
+  return dispatch({
+    type: GET_MORE_FEED_CONTENT.ACTION,
+    payload: doApiRequest(),
+    meta: {
+      sortBy,
+      category: category || 'all',
+      limit,
+    },
+  });
+};
+
+export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = true }) => (
+  dispatch,
+  getState,
+) => {
+  let startAuthor = '';
+  let startPermlink = '';
+  if (!initialLoad) {
+    const state = getState();
+    const feed = getFeed(state);
+    const posts = getPosts(state);
+    const feedContent = getFeedFromState('blog', userName, feed);
+
+    if (!feedContent.length) return Promise.resolve(null);
+
+    const lastPost = posts[feedContent[feedContent.length - 1]];
+
+    startAuthor = lastPost.author;
+    startPermlink = lastPost.permlink;
+  }
+  return dispatch({
+    type: initialLoad ? GET_FEED_CONTENT.ACTION : GET_MORE_FEED_CONTENT.ACTION,
+    payload: ApiClient.getUserProfileBlog(userName, {
+      startAuthor,
+      startPermlink,
+      limit,
+    }),
+    meta: {
+      sortBy: 'blog',
+      category: userName,
+      limit,
+    },
+  });
+};
 
 export const cleanFeed = () => dispatch =>
   dispatch({
@@ -52,21 +154,24 @@ export const cleanFeed = () => dispatch =>
     payload: '',
   });
 
-export const getUserFeedContent = ({ userName, limit = 20 }) => dispatch =>
+export const getUserFeedContent = ({ userName, limit = 20 }) => (dispatch, getState) => {
+  const user_languages = getUserLocalesArray(getState);
   dispatch({
     type: GET_USER_FEED_CONTENT.ACTION,
-    payload: ApiClient.getUserFeedContent(userName, limit),
+    payload: ApiClient.getUserFeedContent(userName, limit, user_languages),
     meta: {
       sortBy: 'feed',
       category: userName,
       limit,
     },
   });
+};
 
 export const getMoreUserFeedContent = ({ userName, limit = 20 }) => (dispatch, getState) => {
   const state = getState();
   const feed = getFeed(state);
   const feedContent = getFeedFromState('feed', userName, feed);
+  const user_languages = getUserLocalesArray(getState);
 
   if (!feedContent.length || !feed || !feed.feed || !feed.feed[userName])
     return Promise.resolve(null);
@@ -78,42 +183,9 @@ export const getMoreUserFeedContent = ({ userName, limit = 20 }) => (dispatch, g
       userName,
       limit,
       skip: countWithWobj,
+      user_languages,
     }),
     meta: { sortBy: 'feed', category: userName, limit },
-  });
-};
-export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatch, getState) => {
-  const state = getState();
-  const feed = getFeed(state);
-  const posts = getPosts(state);
-  const feedContent = getFeedFromState(sortBy, category, feed);
-
-  if (!feedContent.length) return Promise.resolve(null);
-  const lastPost = posts[feedContent[feedContent.length - 1]];
-  const skip = size(get(feed, [sortBy, category, 'list'], []));
-
-  const startAuthor = lastPost.author;
-  const startPermlink = lastPost.permlink;
-
-  const query = {
-    tag: category,
-  };
-  if (sortBy === 'feed' && category === 'wia_feed') {
-    query.skip = skip;
-    query.limit = limit + 1;
-  } else {
-    query.limit = limit + 1;
-    query.start_author = startAuthor;
-    query.start_permlink = startPermlink;
-  }
-  return dispatch({
-    type: GET_MORE_FEED_CONTENT.ACTION,
-    payload: getDiscussionsFromAPI(sortBy, query, ApiClient).then(postsData => postsData.slice(1)),
-    meta: {
-      sortBy,
-      category: category || 'all',
-      limit,
-    },
   });
 };
 
@@ -142,10 +214,11 @@ export const getObjectComments = (author, permlink, category = 'waivio-object') 
   });
 };
 
-export const getObjectPosts = ({ username, object, limit = 10 }) => dispatch => {
+export const getObjectPosts = ({ username, object, limit = 10 }) => (dispatch, getState) => {
+  const readLanguages = getUserLocalesArray(getState);
   dispatch({
     type: GET_OBJECT_POSTS.ACTION,
-    payload: ApiClient.getFeedContentByObject(object, limit),
+    payload: ApiClient.getFeedContentByObject(object, limit, readLanguages),
     meta: { sortBy: 'objectPosts', category: username, limit },
   });
 };
@@ -157,6 +230,7 @@ export const getMoreObjectPosts = ({ username, authorPermlink, limit = 10 }) => 
   const state = getState();
   const feed = getFeed(state);
   const posts = getPosts(state);
+  const user_languages = getUserLocalesArray(getState);
 
   const feedContent = getFeedFromState('objectPosts', username, feed);
   const isLoading = getFeedLoadingFromState('objectPosts', username, feed);
@@ -173,6 +247,7 @@ export const getMoreObjectPosts = ({ username, authorPermlink, limit = 10 }) => 
       authorPermlink,
       skip,
       limit,
+      user_languages,
     }),
     meta: { sortBy: 'objectPosts', category: username, limit },
   });
