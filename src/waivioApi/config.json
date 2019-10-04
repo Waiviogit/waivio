@@ -55,5 +55,7 @@
   "dashboard": "/dashboard",
   "suitableUsers": "/suitable_users",
   "search": "/search",
-  "childWobjects": "/child_wobjects"
+  "childWobjects": "/child_wobjects",
+  "payables": "/payables",
+  "payments": "/payments"
 }
