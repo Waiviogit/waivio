@@ -81,7 +81,7 @@ class Rewards extends React.Component {
     campaignsTypes: [],
     isModalDetailsOpen: false,
     objectDetails: {},
-    activeFilters: { guideNames: [], types: [], payables: [] },
+    activeFilters: { guideNames: [], types: [] },
     activePayableFilters: [],
     isSearchAreaFilter: false,
   };
@@ -141,7 +141,6 @@ class Rewards extends React.Component {
       activeFilters.push(filter);
       this.setState({ activePayableFilters: activeFilters });
     }
-    this.setState({ loadingCampaigns: true });
   };
 
   getPropositions = ({ username, match, coordinates, area, radius, sort, activeFilters }) => {

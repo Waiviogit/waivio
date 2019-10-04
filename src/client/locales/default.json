@@ -752,6 +752,8 @@
   "paymentTable_review": "Review",
   "paymentTable_review_by_user": "by @{userName} (requested by @{sponsorName})",
   "paymentTable_reservation": "Reservation",
+  "filter_days": "Over {days} days",
+  "filter_payable": "Over {payable} SBD",
   "discover": "discover",
   "personal": "personal",
   "custom_json": "custom_json",

@@ -4,18 +4,14 @@ import { injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import { getLenders } from '../../../waivioApi/ApiClient';
-import UserPayableCard from './UserPayableCard/UserPayableCrad';
+import UserPayableCard from './UserPayableCard/UserPayableCard';
 import './Payables.less';
 
 const Payables = ({ intl, userName, currentSteemDollarPrice, filterData }) => {
   const payableFilters = {};
   _.map(filterData, f => {
-    if (f.value === 15) {
-      payableFilters.days = 15;
-    }
-    if (f.value === 10) {
-      payableFilters.payable = 10;
-    }
+    payableFilters.days = f.filterName === 'days' ? f.value : '';
+    payableFilters.payable = f.filterName === 'payable' ? f.value : '';
   });
   const [lenders, setLenders] = useState({});
   useEffect(() => {

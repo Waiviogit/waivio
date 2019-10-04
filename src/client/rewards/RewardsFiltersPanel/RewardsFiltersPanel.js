@@ -22,17 +22,23 @@ const RewardsFiltersPanel = ({
     </div>
   );
 
-  const filterPayablesLayout = (obj, key, checked) => (
-    <div key={`${key}-${obj.filterName}`} className="RewardsFiltersPanel__item-wrap">
-      <Checkbox onChange={() => setPayablesFilterValue(obj, key)} checked={checked} />
-      <div className="RewardsFiltersPanel__name">{obj.filterName}</div>
+  const filterPaymentLayout = (obj, checked) => (
+    <div key={`${obj.filterName}`} className="RewardsFiltersPanel__item-wrap">
+      <Checkbox onChange={() => setPayablesFilterValue(obj)} checked={checked} />
+      <div className="RewardsFiltersPanel__name">
+        {intl.formatMessage(
+          { id: `filter_${obj.filterName}`, defaultMessage: obj.defaultMessage },
+          { days: 15, payable: 10 },
+        )}
+      </div>
     </div>
   );
 
   const payablesFilterData = [
-    { filterName: `Over 15 days`, value: 15 },
-    { filterName: `Over 10 sbd`, value: 10 },
+    { filterName: 'days', value: 15, defaultMessage: `Over ${15} days` },
+    { filterName: 'payable', value: 10, defaultMessage: `Over ${10} SBD` },
   ];
+
   return (
     <div className="RewardsFiltersPanel">
       <div className="RewardsFiltersPanel__container">
@@ -70,9 +76,8 @@ const RewardsFiltersPanel = ({
               })}:`}
             </div>
             {_.map(payablesFilterData, payable =>
-              filterPayablesLayout(
+              filterPaymentLayout(
                 payable,
-                'payables',
                 !!_.find(activePayableFilters, ['filterName', payable.filterName]),
               ),
             )}
@@ -92,7 +97,6 @@ RewardsFiltersPanel.propTypes = {
   location: PropTypes.shape().isRequired,
   setPayablesFilterValue: PropTypes.func.isRequired,
   activePayableFilters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  // intl: PropTypes.shape().isRequired,
 };
 
 RewardsFiltersPanel.defaultProps = {
