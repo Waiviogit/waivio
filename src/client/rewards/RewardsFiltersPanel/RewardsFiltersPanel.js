@@ -28,7 +28,7 @@ const RewardsFiltersPanel = ({
       <div className="RewardsFiltersPanel__name">
         {intl.formatMessage(
           { id: `filter_${obj.filterName}`, defaultMessage: obj.defaultMessage },
-          { days: 15, payable: 10 },
+          { value: obj.value },
         )}
       </div>
     </div>
@@ -78,7 +78,7 @@ const RewardsFiltersPanel = ({
             {_.map(payablesFilterData, payable =>
               filterPaymentLayout(
                 payable,
-                !!_.find(activePayableFilters, ['filterName', payable.filterName]),
+                activePayableFilters.some(f => f.filterName === payable.filterName),
               ),
             )}
           </React.Fragment>
