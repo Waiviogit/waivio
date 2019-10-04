@@ -21,7 +21,6 @@ class UserMenuWrapper extends React.Component {
     match: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
-    objectsSharesCount: PropTypes.number.isRequired,
   };
 
   onChange = key => {
@@ -82,11 +81,7 @@ const UserHero = ({
                   isActive={isUserActive(user)}
                 />
               )}
-              <UserMenuWrapper
-                objectsSharesCount={user.objects_shares_count || 0}
-                followers={user.follower_count}
-                following={followingCount}
-              />
+              <UserMenuWrapper followers={user.follower_count} following={followingCount} />
             </div>
           )}
         />
