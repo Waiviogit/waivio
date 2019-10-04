@@ -325,21 +325,26 @@ export class Umarkets {
       requiredFields: [objectFields.chartId],
     }).then(wobjs => {
       const wobjWithChart = mutateObject(wobjs.wobjects);
-      Object.keys(quotesSettings).sort().forEach(key => {
-        const wobjData = wobjWithChart.find(o => o.chartId === key);
-        if (wobjData) {
-          sortedQuotesSettings[key] = {
-            ...quotesSettings[key],
-            keyName: key,
-            isSession: _.some(
-              tradingSessions[quotesSettings[key].calendarCodeId],
-              item => currentTime < item.sessionEnd && currentTime > item.sessionStart,
-            ),
-            market: quotesSettings[key].market === 'CryptoCurrency' ? 'Crypto' : quotesSettings[key].market,
-            wobjData,
-          };
-        }
-      });
+      Object.keys(quotesSettings)
+        .sort()
+        .forEach(key => {
+          const wobjData = wobjWithChart.find(o => o.chartId === key);
+          if (wobjData) {
+            sortedQuotesSettings[key] = {
+              ...quotesSettings[key],
+              keyName: key,
+              isSession: _.some(
+                tradingSessions[quotesSettings[key].calendarCodeId],
+                item => currentTime < item.sessionEnd && currentTime > item.sessionStart,
+              ),
+              market:
+                quotesSettings[key].market === 'CryptoCurrency'
+                  ? 'Crypto'
+                  : quotesSettings[key].market,
+              wobjData,
+            };
+          }
+        });
       this.quotesSettings = sortedQuotesSettings;
       this.dispatch(updateQuotesSettings(this.quotesSettings));
     });
