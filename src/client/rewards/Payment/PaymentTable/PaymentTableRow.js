@@ -11,7 +11,7 @@ const PaymentTableRow = ({ intl, sponsor }) => (
     <td>
       <div className="PaymentTable__action-column">
         <div>
-          <span>
+          <span className="PaymentTable__action-column fw6">
             {intl.formatMessage({
               id: 'paymentTable_review',
               defaultMessage: `Review`,
@@ -29,16 +29,16 @@ const PaymentTableRow = ({ intl, sponsor }) => (
           )}
         </div>
         {sponsor && sponsor.details ? (
-          <React.Fragment>
-            <p>
+          <div className="PaymentTable__action-column ml3">
+            <div>
               {`-`}
               {sponsor.details.main_object}
-            </p>
-            <p>
+            </div>
+            <div>
               {`-`}
               {sponsor.details.review_object}
-            </p>
-          </React.Fragment>
+            </div>
+          </div>
         ) : null}
       </div>
     </td>
