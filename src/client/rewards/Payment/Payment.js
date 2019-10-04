@@ -7,13 +7,14 @@ import PaymentTable from './PaymentTable/PaymentTable';
 import { getLenders } from '../../../waivioApi/ApiClient';
 import './Payment.less';
 
-const Payment = ({ userName, paymentUser, intl }) => {
+const Payment = ({ match, intl, userName }) => {
   const [sponsors, setSponsors] = useState({});
   const [payable, setPayable] = useState({});
+
   useEffect(() => {
     getLenders({
       sponsor: userName,
-      user: paymentUser,
+      user: match.params.userName,
     })
       .then(data => {
         setSponsors(data.histories);
@@ -61,8 +62,8 @@ const Payment = ({ userName, paymentUser, intl }) => {
 
 Payment.propTypes = {
   intl: PropTypes.shape().isRequired,
+  match: PropTypes.shape().isRequired,
   userName: PropTypes.string.isRequired,
-  paymentUser: PropTypes.string.isRequired,
 };
 
 export default injectIntl(Payment);

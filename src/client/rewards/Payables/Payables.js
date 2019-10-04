@@ -7,7 +7,7 @@ import { getLenders } from '../../../waivioApi/ApiClient';
 import UserPayableCard from './UserPayableCard/UserPayableCrad';
 import './Payables.less';
 
-const Payables = ({ intl, userName, currentSteemDollarPrice, filterData, setPaymentUser }) => {
+const Payables = ({ intl, userName, currentSteemDollarPrice, filterData }) => {
   const payableFilters = {};
   _.map(filterData, f => {
     if (f.value === 15) {
@@ -58,7 +58,7 @@ const Payables = ({ intl, userName, currentSteemDollarPrice, filterData, setPaym
         </div>
       </div>
       {_.map(lenders.histories, user => (
-        <UserPayableCard key={user.userName} user={user} setPaymentUser={setPaymentUser} />
+        <UserPayableCard key={user.userName} user={user} />
       ))}
     </div>
   );
@@ -69,7 +69,6 @@ Payables.propTypes = {
   userName: PropTypes.string.isRequired,
   currentSteemDollarPrice: PropTypes.number.isRequired,
   filterData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  setPaymentUser: PropTypes.func.isRequired,
 };
 
 export default injectIntl(Payables);

@@ -84,7 +84,6 @@ class Rewards extends React.Component {
     activeFilters: { guideNames: [], types: [], payables: [] },
     activePayableFilters: [],
     isSearchAreaFilter: false,
-    paymentUser: '',
   };
 
   componentDidMount() {
@@ -109,8 +108,6 @@ class Rewards extends React.Component {
       }
     } else this.setState({ propositions: [{}] }); // for map, not equal propositions
   }
-
-  setPaymentUser = user => this.setState({ paymentUser: user });
 
   getRequiredObjects = () =>
     map(this.state.propositions, proposition => proposition.required_object);
@@ -366,7 +363,6 @@ class Rewards extends React.Component {
       loading,
       propositions,
       activePayableFilters,
-      paymentUser,
       sort,
       loadingCampaigns,
     } = this.state;
@@ -399,8 +395,6 @@ class Rewards extends React.Component {
       campaignsLayoutWrapLayout: this.campaignsLayoutWrapLayout,
       handleLoadMore: this.handleLoadMore,
       filterData: activePayableFilters,
-      setPaymentUser: this.setPaymentUser,
-      paymentUser,
     });
 
     return (

@@ -7,9 +7,8 @@ import { Icon } from 'antd';
 import Avatar from '../../../components/Avatar';
 import './UserPayableCard.less';
 
-const UserPayableCard = ({ intl, user, setPaymentUser, history }) => {
+const UserPayableCard = ({ intl, user, history }) => {
   const handleSetUser = () => {
-    setPaymentUser(user.userName);
     history.push(`/rewards/payables/@${user.userName}`);
   };
   return (
@@ -47,7 +46,6 @@ const UserPayableCard = ({ intl, user, setPaymentUser, history }) => {
 
 UserPayableCard.propTypes = {
   intl: PropTypes.shape().isRequired,
-  setPaymentUser: PropTypes.func.isRequired,
   user: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
 };
