@@ -411,22 +411,34 @@ class Rewards extends React.Component {
             </div>
           </Affix>
           <div className="center">{renderedRoutes}</div>
-          {(match.path === '/rewards/:filterKey/:campaignParent?' ||
-            match.path === '/rewards/payables') && (
+          {match.path === '/rewards/payables' && (
             <Affix className="rightContainer leftContainer__user" stickPosition={122}>
               <div className="right">
-                {!isEmpty(this.props.userLocation) &&
-                  !isCreate &&
-                  match.path !== '/rewards/payables' && (
-                    <React.Fragment>
-                      <MapWrap
-                        wobjects={this.getRequiredObjects()}
-                        userLocation={this.props.userLocation}
-                        onMarkerClick={this.goToCampaign}
-                        getAreaSearchData={this.getAreaSearchData}
-                      />
-                    </React.Fragment>
-                  )}
+                <RewardsFiltersPanel
+                  campaignsTypes={campaignsTypes}
+                  sponsors={sponsors}
+                  activeFilters={activeFilters}
+                  activePayableFilters={activePayableFilters}
+                  setFilterValue={this.setFilterValue}
+                  setPayablesFilterValue={this.setPayablesFilterValue}
+                  location={location}
+                />
+              </div>
+            </Affix>
+          )}
+          {match.path === '/rewards/:filterKey/:campaignParent?' && (
+            <Affix className="rightContainer leftContainer__user" stickPosition={122}>
+              <div className="right">
+                {!isEmpty(this.props.userLocation) && !isCreate && (
+                  <React.Fragment>
+                    <MapWrap
+                      wobjects={this.getRequiredObjects()}
+                      userLocation={this.props.userLocation}
+                      onMarkerClick={this.goToCampaign}
+                      getAreaSearchData={this.getAreaSearchData}
+                    />
+                  </React.Fragment>
+                )}
                 {!isEmpty(sponsors) && !isCreate && (
                   <RewardsFiltersPanel
                     campaignsTypes={campaignsTypes}
