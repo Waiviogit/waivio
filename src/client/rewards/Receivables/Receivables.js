@@ -4,72 +4,67 @@ import { injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import { getLenders } from '../../../waivioApi/ApiClient';
-import PayableCard from './PayableCard/PayableCard';
-import './Payables.less';
+import PayableCard from '../Payables/PayableCard/PayableCard';
+import './Receivables.less';
 
-const Payables = ({ intl, userName, currentSteemDollarPrice, filterData }) => {
+const Receivables = ({ intl, currentSteemDollarPrice, filterData }) => {
   const payableFilters = {};
   _.map(filterData, f => {
     payableFilters.days = f.filterName === 'days' ? f.value : '';
     payableFilters.payable = f.filterName === 'payable' ? f.value : '';
   });
-  const [lenders, setLenders] = useState({});
+  const [sponsors, setSponsors] = useState({});
   useEffect(() => {
-    getLenders({
-      sponsor: userName,
-      filters: payableFilters,
-    })
-      .then(data => setLenders(data))
+    getLenders('')
+      .then(data => setSponsors(data))
       .catch(e => console.log(e));
   }, [filterData]);
-
   return (
-    <div className="Payables">
-      <div className="Payables__main-title">
+    <div className="Receivables">
+      <div className="Receivables__main-title">
         {intl.formatMessage({
-          id: 'payables_page_payables',
-          defaultMessage: 'Payables',
+          id: 'receivables_page_payables',
+          defaultMessage: 'Receivables',
         })}
       </div>
-      <div className="Payables__information-row">
-        <div className="Payables__information-row-total-title">
+      <div className="Receivables__information-row">
+        <div className="Receivables__information-row-total-title">
           {intl.formatMessage({
-            id: 'payables_page_total',
+            id: 'receivables_page_total',
             defaultMessage: 'Total',
           })}
-          : {lenders && lenders.payable && lenders.payable.toFixed(2)}
+          : {sponsors && sponsors.payable && sponsors.payable.toFixed(2)}
           {' SBD '}
           {currentSteemDollarPrice
-            ? `(US$ ${(currentSteemDollarPrice * lenders.payable).toFixed(2)})`
+            ? `(US$ ${(currentSteemDollarPrice * sponsors.payable).toFixed(2)})`
             : ''}
         </div>
-        <div className="Payables__information-row-pay">
+        <div className="Receivables__information-row-pay">
           <Link to={'/rewards/pay-all'}>
             {intl.formatMessage({
-              id: 'payables_page_pay_all',
+              id: 'receivables_page_pay_all',
               defaultMessage: 'Pay all',
             })}
             (mock)
           </Link>
         </div>
       </div>
-      {_.map(lenders.histories, user => (
+      {_.map(sponsors.histories, sponsor => (
         <PayableCard
-          key={user.userName}
-          name={user.userName}
-          payable={user.payable}
-          alias={user.alias}
+          key={sponsor.userName}
+          name={sponsor.guideName}
+          payable={sponsor.payable}
+          alias={sponsor.alias}
         />
       ))}
     </div>
   );
 };
 
-Payables.propTypes = {
+Receivables.propTypes = {
   intl: PropTypes.shape().isRequired,
-  userName: PropTypes.string.isRequired,
   currentSteemDollarPrice: PropTypes.number.isRequired,
   filterData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 
-export default injectIntl(Payables);
+export default injectIntl(Receivables);

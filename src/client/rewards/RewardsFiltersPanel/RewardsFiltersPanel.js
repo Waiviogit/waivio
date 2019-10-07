@@ -34,9 +34,14 @@ const RewardsFiltersPanel = ({
     </div>
   );
 
+  const filterValues = {
+    days: location.pathname === '/rewards/payables' ? 15 : 30,
+    payable: location.pathname === '/rewards/payables' ? 10 : 20,
+  };
+
   const payablesFilterData = [
-    { filterName: 'days', value: 15, defaultMessage: `Over {value} days` },
-    { filterName: 'payable', value: 10, defaultMessage: `Over {value} SBD` },
+    { filterName: 'days', value: filterValues.days, defaultMessage: `Over {value} days` },
+    { filterName: 'payable', value: filterValues.payable, defaultMessage: `Over {value} SBD` },
   ];
 
   return (
@@ -46,7 +51,8 @@ const RewardsFiltersPanel = ({
           <i className="iconfont icon-trysearchlist SidebarContentBlock__icon" />
           <FormattedMessage id="filter_rewards" defaultMessage="Filter rewards" />
         </div>
-        {location.pathname !== '/rewards/payables' ? (
+        {location.pathname !== '/rewards/payables' &&
+        location.pathname !== '/rewards/receivables' ? (
           <React.Fragment>
             <div className="RewardsFiltersPanel__title-text">
               {`${intl.formatMessage({

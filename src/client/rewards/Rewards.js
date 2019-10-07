@@ -411,7 +411,7 @@ class Rewards extends React.Component {
             </div>
           </Affix>
           <div className="center">{renderedRoutes}</div>
-          {match.path === '/rewards/payables' && (
+          {(match.path === '/rewards/payables' || match.path === '/rewards/receivables') && (
             <Affix className="rightContainer leftContainer__user" stickPosition={122}>
               <div className="right">
                 <RewardsFiltersPanel
