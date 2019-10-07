@@ -7,15 +7,18 @@ import { getLenders } from '../../../waivioApi/ApiClient';
 import PayableCard from '../Payables/PayableCard/PayableCard';
 import './Receivables.less';
 
-const Receivables = ({ intl, currentSteemDollarPrice, filterData }) => {
+const Receivables = ({ intl, userName, currentSteemDollarPrice, filterData }) => {
   const payableFilters = {};
   _.map(filterData, f => {
-    payableFilters.days = f.filterName === 'days' ? f.value : '';
-    payableFilters.payable = f.filterName === 'payable' ? f.value : '';
+    payableFilters[`${f.filterName}`] = f.value;
   });
   const [sponsors, setSponsors] = useState({});
   useEffect(() => {
-    getLenders('')
+    getLenders({
+      sponsor: '',
+      user: userName,
+      filters: payableFilters,
+    })
       .then(data => setSponsors(data))
       .catch(e => console.log(e));
   }, [filterData]);
@@ -51,10 +54,11 @@ const Receivables = ({ intl, currentSteemDollarPrice, filterData }) => {
       </div>
       {_.map(sponsors.histories, sponsor => (
         <PayableCard
-          key={sponsor.userName}
+          key={sponsor.guideName}
           name={sponsor.guideName}
           payable={sponsor.payable}
           alias={sponsor.alias}
+          path={`/rewards/receivables/@${sponsor.guideName}`}
         />
       ))}
     </div>
@@ -64,6 +68,7 @@ const Receivables = ({ intl, currentSteemDollarPrice, filterData }) => {
 Receivables.propTypes = {
   intl: PropTypes.shape().isRequired,
   currentSteemDollarPrice: PropTypes.number.isRequired,
+  userName: PropTypes.string.isRequired,
   filterData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 

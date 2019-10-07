@@ -10,8 +10,7 @@ import './Payables.less';
 const Payables = ({ intl, userName, currentSteemDollarPrice, filterData }) => {
   const payableFilters = {};
   _.map(filterData, f => {
-    payableFilters.days = f.filterName === 'days' ? f.value : '';
-    payableFilters.payable = f.filterName === 'payable' ? f.value : '';
+    payableFilters[`${f.filterName}`] = f.value;
   });
   const [lenders, setLenders] = useState({});
   useEffect(() => {
@@ -22,7 +21,6 @@ const Payables = ({ intl, userName, currentSteemDollarPrice, filterData }) => {
       .then(data => setLenders(data))
       .catch(e => console.log(e));
   }, [filterData]);
-
   return (
     <div className="Payables">
       <div className="Payables__main-title">
@@ -59,6 +57,7 @@ const Payables = ({ intl, userName, currentSteemDollarPrice, filterData }) => {
           name={user.userName}
           payable={user.payable}
           alias={user.alias}
+          path={`/rewards/payables/@${user.userName}`}
         />
       ))}
     </div>

@@ -7,19 +7,19 @@ import { Icon } from 'antd';
 import Avatar from '../../../components/Avatar';
 import './PayableCard.less';
 
-const PayableCard = ({ intl, payable, name, alias, history }) => {
+const PayableCard = ({ intl, payable, name, alias, history, path }) => {
   const handleSetUser = () => {
-    history.push(`/rewards/payables/@${name}`);
+    history.push(path);
   };
   return (
-    <div className="UserPayableCard">
-      <div className="UserPayableCard__content">
+    <div className="PayableCard">
+      <div className="PayableCard__content">
         <Avatar username={name} size={40} />
-        <div className="UserPayableCard__content-name-wrap">
-          <div className="UserPayableCard__content-name-wrap-alias"> {alias}</div>
-          <div className="UserPayableCard__content-name-wrap-row">
-            <div className="UserPayableCard__content-name-wrap-row-name">{`@${name}`}</div>
-            <div className="UserPayableCard__content-name-wrap-row-pay">
+        <div className="PayableCard__content-name-wrap">
+          <div className="PayableCard__content-name-wrap-alias"> {alias}</div>
+          <div className="PayableCard__content-name-wrap-row">
+            <div className="PayableCard__content-name-wrap-row-name">{`@${name}`}</div>
+            <div className="PayableCard__content-name-wrap-row-pay">
               <Link to={'/rewards/pay-now'}>
                 {intl.formatMessage({
                   id: 'payables_page_pay_now',
@@ -31,12 +31,12 @@ const PayableCard = ({ intl, payable, name, alias, history }) => {
           </div>
         </div>
       </div>
-      <div className="UserPayableCard__end-wrap">
-        <div className="UserPayableCard__end-wrap-payable">
+      <div className="PayableCard__end-wrap">
+        <div className="PayableCard__end-wrap-payable">
           {' '}
           {`${payable && payable.toFixed(2)} SBD`}
         </div>
-        <div className="UserPayableCard__end-wrap-icon">
+        <div className="PayableCard__end-wrap-icon">
           <Icon type="right" onClick={handleSetUser} />
         </div>
       </div>
@@ -50,6 +50,7 @@ PayableCard.propTypes = {
   name: PropTypes.string.isRequired,
   alias: PropTypes.string.isRequired,
   history: PropTypes.shape().isRequired,
+  path: PropTypes.string.isRequired,
 };
 
 export default withRouter(injectIntl(PayableCard));

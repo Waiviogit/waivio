@@ -606,7 +606,7 @@ export const getLenders = ({ sponsor, user, filters }) => {
   const isSponsor = sponsor ? `?sponsor=${sponsor}` : '';
   const payable = filters && filters.payable ? `&payable=${filters.payable}` : '';
   const days = filters && filters.days ? `&days=${filters.days}` : '';
-  const isUser = user ? `&userName=${user}` : '';
+  const isUser = user ? (sponsor ? `&userName=${user}` : `?userName=${user}`) : '';
   return new Promise((resolve, reject) => {
     fetch(
       `${config.campaignApiPrefix}${config.payments}${config.payables}${isSponsor}${isUser}${days}${payable}`,

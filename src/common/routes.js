@@ -63,6 +63,7 @@ const routes = [
           '/rewards/payables',
           '/rewards/receivables',
           '/rewards/payables/@:userName',
+          '/rewards/receivables/@:userName',
           '/rewards/:filterKey/:campaignParent?',
         ],
         exact: true,
@@ -90,6 +91,11 @@ const routes = [
           },
           {
             path: '/rewards/payables/@:userName',
+            exact: true,
+            component: PaymentCampaign,
+          },
+          {
+            path: '/rewards/receivables/@:userName',
             exact: true,
             component: PaymentCampaign,
           },
