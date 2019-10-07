@@ -35,8 +35,8 @@ const RewardsFiltersPanel = ({
   );
 
   const payablesFilterData = [
-    { filterName: 'days', value: 15, defaultMessage: `Over ${15} days` },
-    { filterName: 'payable', value: 10, defaultMessage: `Over ${10} SBD` },
+    { filterName: 'days', value: 15, defaultMessage: `Over {value} days` },
+    { filterName: 'payable', value: 10, defaultMessage: `Over {value} SBD` },
   ];
 
   return (
