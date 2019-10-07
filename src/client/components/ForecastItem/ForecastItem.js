@@ -92,18 +92,18 @@ class ForecastItem extends React.Component {
                     recommend={recommend}
                   />
                 </div>
-                <div className="st-front-wrap__finish-value">
-                  {quote.security && quoteSettings.ID && (
-                    <PostDifference
-                      forecast={forecast}
-                      isExpired={false}
-                      postPrice={String(postPrice)}
-                      recommend={recommend}
-                      quote={quote}
-                      quoteSettings={quoteSettings}
-                    />
-                  )}
-                </div>
+                {/* <div className="st-front-wrap__finish-value"> */}
+                  {/* {quote.security && quoteSettings.ID && ( */}
+                    {/* <PostDifference */}
+                      {/* forecast={forecast} */}
+                      {/* isExpired={false} */}
+                      {/* postPrice={String(postPrice)} */}
+                      {/* recommend={recommend} */}
+                      {/* quote={quote} */}
+                      {/* quoteSettings={quoteSettings} */}
+                    {/* /> */}
+                  {/* )} */}
+                {/* </div> */}
               </div>
             </Link>
             <div className="st-back-wrap">
