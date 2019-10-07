@@ -3,19 +3,23 @@
     "protocol": "https://",
     "": "www.waivio.com",
     "host": "waiviodev.com",
-    "": "localhost:8093"
+    "": "localhost:8093",
+    "appName": "development"
   },
   "test": {
     "protocol": "https://",
-    "host": "waiviodev.com"
+    "host": "waiviodev.com",
+    "appName": "test"
   },
   "staging": {
     "protocol": "https://",
-    "host": "waiviodev.com"
+    "host": "waiviodev.com",
+    "appName": "waiviodev"
   },
   "production": {
     "protocol": "https://",
-    "host": "www.waivio.com"
+    "host": "www.waivio.com",
+    "appName": "waivio"
   },
   "apiPrefix": "/api",
   "objectsBotApiPrefix": "/objects-bot",
