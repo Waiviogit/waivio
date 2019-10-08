@@ -103,8 +103,8 @@ class QuickPostEditor extends React.Component {
     };
 
     const metaData = {
-      community: 'waiviodev',
-      app: `waiviodev/${version}`,
+      community: WAIVIO_PARENT_PERMLINK,
+      app: `${WAIVIO_PARENT_PERMLINK}}/${version}`,
       format: 'markdown',
     };
 
