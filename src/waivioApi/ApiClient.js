@@ -100,6 +100,25 @@ export const getFeedContent = (sortBy, queryData) =>
       .catch(error => reject(error));
   });
 
+export const getUserProfileBlog = (
+  userName,
+  { startAuthor = '', startPermlink = '', limit = 10 },
+) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.user}/${userName}${config.blog}`, {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({
+        limit,
+        start_author: startAuthor,
+        start_permlink: startPermlink,
+      }),
+    })
+      .then(res => res.json())
+      .then(posts => resolve(posts))
+      .catch(error => reject(error));
+  });
+
 export const postCreateWaivioObject = requestBody =>
   new Promise((resolve, reject) => {
     fetch(`${config.objectsBotApiPrefix}${config.objectsBot.createObject}`, {
@@ -470,9 +489,98 @@ export const createCampaign = data =>
       .catch(error => reject(error));
   });
 
+export const validateActivationCampaign = data =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.activation}`, {
+      headers: headers,
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const validateInactivationCampaign = data =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.inactivation}`, {
+      headers: headers,
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const reserveActivatedCampaign = data =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.reservation}`, {
+      headers: headers,
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const rejectReservationCampaign = data =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.rejectReservation}`, {
+      headers: headers,
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getFilteredCampaignsByGuideName = (guideName, status) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.campaigns}`, {
+      headers: headers,
+      method: 'POST',
+      body: JSON.stringify({
+        guideNames: [guideName],
+        status: status,
+      }),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export const getCampaignsByGuideName = guideName =>
   new Promise((resolve, reject) => {
     fetch(`${config.campaignApiPrefix}${config.campaigns}${config.dashboard}/${guideName}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getCampaignByGuideNameAndObject = (guideName, object) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.campaigns}`, {
+      headers: headers,
+      method: 'POST',
+      body: JSON.stringify({
+        guideNames: [guideName],
+        requiredObject: object,
+      }),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getCampaignById = campaignId =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.campaign}/${campaignId}`, {
       headers,
       method: 'GET',
     })
@@ -492,6 +600,24 @@ export const getAuthenticatedUserMetadata = (
   })
     .then(res => res.json())
     .then(res => _.omit(res.user_metadata, '_id'));
+};
+
+export const getLenders = ({ sponsor, user, filters }) => {
+  const payable = filters && filters.payable ? `&payable=${filters.payable}` : ``;
+  const days = filters && filters.days ? `&days=${filters.days}` : ``;
+  const isUser = !user ? `?sponsor=${sponsor}` : `?sponsor=${sponsor}&userName=${user}`;
+  return new Promise((resolve, reject) => {
+    fetch(
+      `${config.campaignApiPrefix}${config.payments}${config.payables}${isUser}${days}${payable}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
 };
 
 export const updateUserMetadata = (userName, data) =>

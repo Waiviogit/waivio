@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
 import { isEmpty, get } from 'lodash';
-import { getDiscussionsFromAPI } from '../helpers/apiHelpers';
 import {
   createAsyncActionType,
   getFeedFromState,
@@ -55,14 +54,75 @@ export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) =>
 
   dispatch({
     type: GET_FEED_CONTENT.ACTION,
-    payload: getDiscussionsFromAPI(
-      sortBy,
-      { category: sortBy, tag: category, limit, sortBy, user_languages },
-      ApiClient,
-    ),
+    payload: ApiClient.getFeedContent(sortBy, {
+      category: sortBy,
+      tag: category,
+      skip: 0,
+      limit,
+      user_languages,
+    }),
     meta: {
       sortBy,
       category: category || 'all',
+      limit,
+    },
+  });
+};
+
+export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatch, getState) => {
+  const state = getState();
+  const feed = getFeed(state);
+  const feedContent = getFeedFromState(sortBy, category, feed);
+  const user_languages = getUserLocalesArray(getState);
+
+  if (!feedContent.length) return Promise.resolve(null);
+
+  return dispatch({
+    type: GET_MORE_FEED_CONTENT.ACTION,
+    payload: ApiClient.getFeedContent(sortBy, {
+      category: sortBy,
+      tag: category,
+      skip: feedContent.length,
+      limit,
+      user_languages,
+    }),
+    meta: {
+      sortBy,
+      category: category || 'all',
+      limit,
+    },
+  });
+};
+
+export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = true }) => (
+  dispatch,
+  getState,
+) => {
+  let startAuthor = '';
+  let startPermlink = '';
+  if (!initialLoad) {
+    const state = getState();
+    const feed = getFeed(state);
+    const posts = getPosts(state);
+    const feedContent = getFeedFromState('blog', userName, feed);
+
+    if (!feedContent.length) return Promise.resolve(null);
+
+    const lastPost = posts[feedContent[feedContent.length - 1]];
+
+    startAuthor = lastPost.author;
+    startPermlink = lastPost.permlink;
+  }
+  return dispatch({
+    type: initialLoad ? GET_FEED_CONTENT.ACTION : GET_MORE_FEED_CONTENT.ACTION,
+    payload: ApiClient.getUserProfileBlog(userName, {
+      startAuthor,
+      startPermlink,
+      limit,
+    }),
+    meta: {
+      sortBy: 'blog',
+      category: userName,
       limit,
     },
   });
@@ -100,41 +160,6 @@ export const getMoreUserFeedContent = ({ userName, limit = 20 }) => (dispatch, g
       user_languages,
     }),
     meta: { sortBy: 'feed', category: userName, limit },
-  });
-};
-export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatch, getState) => {
-  const state = getState();
-  const feed = getFeed(state);
-  const posts = getPosts(state);
-  const feedContent = getFeedFromState(sortBy, category, feed);
-  const user_languages = getUserLocalesArray(getState);
-
-  if (!feedContent.length) return Promise.resolve(null);
-
-  const lastPost = posts[feedContent[feedContent.length - 1]];
-
-  const startAuthor = lastPost.author;
-  const startPermlink = lastPost.permlink;
-
-  return dispatch({
-    type: GET_MORE_FEED_CONTENT.ACTION,
-    payload: getDiscussionsFromAPI(
-      sortBy,
-      {
-        category: sortBy,
-        tag: category,
-        limit: limit + 1,
-        start_author: startAuthor,
-        start_permlink: startPermlink,
-        user_languages,
-      },
-      ApiClient,
-    ).then(postsData => postsData.slice(1)),
-    meta: {
-      sortBy,
-      category: category || 'all',
-      limit,
-    },
   });
 };
 

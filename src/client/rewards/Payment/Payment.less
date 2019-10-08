@@ -1,0 +1,35 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.Payment {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  width: 100%;
+
+  &__title {
+    display: flex;
+    padding: 25px 0 25px;
+    align-items: center;
+
+    &-payment {
+      font-size: x-large;
+      padding-right: 10px;
+    }
+
+    &-pay {
+      font-size: medium;
+      font-weight: 500;
+      text-decoration: underline;
+    }
+  }
+
+  &__information-row {
+    display: flex;
+
+    &-important {
+      color: @orange-hot;
+      padding-right: 5px;
+    }
+  }
+}

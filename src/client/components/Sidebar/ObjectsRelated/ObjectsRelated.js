@@ -77,17 +77,12 @@ const ObjectsRelated = ({ wobject }) => {
       ));
 
       const renderButtons = () => (
-        <React.Fragment>
-          <h4 className="ObjectsRelated__more">
-            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-            <div onClick={() => setShowModal(true)} id="show_more_div">
-              <FormattedMessage id="show_more" defaultMessage="Show more" />
-            </div>
-            <div>
-              <FormattedMessage id="explore" defaultMessage="Explore" />
-            </div>
-          </h4>
-        </React.Fragment>
+        <h4 className="ObjectsRelated__more">
+          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+          <div onClick={() => setShowModal(true)} id="show_more_div">
+            <FormattedMessage id="show_more" defaultMessage="Show more" />
+          </div>
+        </h4>
       );
 
       const onWheelHandler = () => {
@@ -100,7 +95,7 @@ const ObjectsRelated = ({ wobject }) => {
         <div className="SidebarContentBlock" data-test="objectsRelatedComponent">
           <h4 className="SidebarContentBlock__title">
             <i className="iconfont icon-collection SidebarContentBlock__icon" />{' '}
-            <FormattedMessage id="object_related" defaultMessage="Related" />
+            <FormattedMessage id="related_to_object" defaultMessage="Related" />
           </h4>
           <div className="SidebarContentBlock__content">{renderObjects}</div>
           {renderButtons()}
