@@ -1,5 +1,5 @@
 import uuidv4 from 'uuid/v4';
-import _, { get, fromPairs } from 'lodash';
+import _, { fromPairs, get } from 'lodash';
 import { getHtml } from '../components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
 import { categoryRegex } from './regexHelpers';
@@ -71,9 +71,10 @@ export function getContentImages(content, parsed = false) {
 }
 
 export function createPostMetadata(body, tags, oldMetadata = {}, waivioData) {
+  const appName = apiConfig[process.env.NODE_ENV].appName || 'waiviodev';
   let metaData = {
-    community: 'waiviodev',
-    app: `waiviodev/${appVersion}`,
+    community: appName,
+    app: `${appName}/${appVersion}`,
     format: 'markdown',
   };
 

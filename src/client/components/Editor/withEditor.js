@@ -12,6 +12,7 @@ import * as api from '../../../waivioApi/ApiClient';
 import { voteObject, followObject } from '../../object/wobjActions';
 import { createPermlink } from '../../vendor/steemitHelpers';
 import { generateRandomString } from '../../helpers/wObjectHelper';
+import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
 
 function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
@@ -100,7 +101,12 @@ export default function withEditor(WrappedComponent) {
     handleCreateObject = async (obj, callback, errorCallback) => {
       const { formatMessage } = this.props.intl;
 
-      const permlink = await createPermlink(obj.id, this.props.user.name, '', 'waiviodev');
+      const permlink = await createPermlink(
+        obj.id,
+        this.props.user.name,
+        '',
+        WAIVIO_PARENT_PERMLINK,
+      );
 
       const requestBody = {
         author: this.props.user.name,

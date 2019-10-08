@@ -162,6 +162,6 @@
     "webpack-dev-server": "3.1.4",
     "webpackbar": "^2.6.1"
   },
-  "repository": "https://github.com/adcpm/busy.git",
+  "repository": "https://github.com/Waiviogit/waivio.git",
   "license": "MIT"
 }
