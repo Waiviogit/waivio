@@ -10,6 +10,7 @@ import RightSidebarLoading from '../../../app/Sidebar/RightSidebarLoading';
 import UserCard from '../../UserCard';
 import { getObjectExpertiseByType } from '../../../../waivioApi/ApiClient';
 import './ObjectExpertiseByType.less';
+import DiscoverFiltersSidebar from '../../../discoverObjects/DiscoverFiltersSidebar/DiscoverFiltersSidebar';
 
 const initialState = {
   experts: [],
@@ -124,7 +125,12 @@ const ObjectExpertiseByType = ({ match }) => {
     }
   }
 
-  return renderCard;
+  return (
+    <React.Fragment>
+      {renderCard}
+      <DiscoverFiltersSidebar />
+    </React.Fragment>
+  );
 };
 
 ObjectExpertiseByType.propTypes = {
