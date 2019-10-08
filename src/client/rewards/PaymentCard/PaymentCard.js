@@ -22,7 +22,7 @@ const PaymentCard = ({ intl, payable, name, alias, history, path }) => {
             <div className="PaymentCard__content-name-wrap-row-pay">
               <Link to={'/rewards/pay-now'}>
                 {intl.formatMessage({
-                  id: 'payables_page_pay_now',
+                  id: 'debts_pay_now',
                   defaultMessage: 'Pay now',
                 })}
                 (mock)

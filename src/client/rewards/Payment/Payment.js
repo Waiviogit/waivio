@@ -28,11 +28,11 @@ const Payment = ({ match, intl, userName }) => {
   const titleName =
     match.path === '/rewards/payables/@:userName'
       ? intl.formatMessage({
-          id: 'payables_page_payables',
+          id: 'payment_page_payables',
           defaultMessage: 'Payables',
         })
       : intl.formatMessage({
-          id: 'receivables_page_payables',
+          id: 'payment_page_receivables',
           defaultMessage: 'Receivables',
         });
 
@@ -46,7 +46,7 @@ const Payment = ({ match, intl, userName }) => {
         <div className="Payment__title-pay">
           <Link to={'/rewards/pay-now'}>
             {intl.formatMessage({
-              id: 'payables_page_pay_now',
+              id: 'payment_page_pay_now',
               defaultMessage: 'Pay now',
             })}
             (mock)
@@ -56,13 +56,13 @@ const Payment = ({ match, intl, userName }) => {
       <div className="Payment__information-row">
         <div className="Payment__information-row-important">
           {intl.formatMessage({
-            id: 'payables_page_important',
+            id: 'payment_page_important',
             defaultMessage: 'Important',
           })}
           :
         </div>
         {intl.formatMessage({
-          id: 'payables_page_transfers_with_hashtag_included',
+          id: 'payment_page_transfers_with_hashtag_included',
           defaultMessage: 'Only transfer with hashtag "#waivio" are included',
         })}
       </div>
