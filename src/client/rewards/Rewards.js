@@ -33,7 +33,6 @@ import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
 import Avatar from '../components/Avatar';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
-import { generatePermlink } from '../helpers/wObjectHelper';
 import './Rewards.less';
 
 @withRouter
@@ -83,6 +82,7 @@ class Rewards extends React.Component {
     isModalDetailsOpen: false,
     objectDetails: {},
     activeFilters: { guideNames: [], types: [] },
+    activePayableFilters: [],
     isSearchAreaFilter: false,
   };
 
@@ -129,6 +129,18 @@ class Rewards extends React.Component {
     }
     this.setState({ loadingCampaigns: true });
     this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+  };
+
+  setPayablesFilterValue = filter => {
+    const activeFilters = [...this.state.activePayableFilters];
+    if (_.find(activeFilters, ['filterName', filter.filterName])) {
+      this.setState({
+        activePayableFilters: activeFilters.filter(f => f.filterName !== filter.filterName),
+      });
+    } else {
+      activeFilters.push(filter);
+      this.setState({ activePayableFilters: activeFilters });
+    }
   };
 
   getPropositions = ({ username, match, coordinates, area, radius, sort, activeFilters }) => {
@@ -185,8 +197,7 @@ class Rewards extends React.Component {
   };
 
   // Propositions
-  assignProposition = ({ companyAuthor, companyPermlink, companyId, objPermlink }) => {
-    const resPermlink = `reserve-${companyId}-${generatePermlink()}`;
+  assignProposition = ({ companyAuthor, companyPermlink, resPermlink, objPermlink, companyId }) => {
     this.setState({ loadingAssignDiscard: true });
     this.props
       .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink })
@@ -350,6 +361,7 @@ class Rewards extends React.Component {
       hasMore,
       loading,
       propositions,
+      activePayableFilters,
       sort,
       loadingCampaigns,
     } = this.state;
@@ -381,6 +393,7 @@ class Rewards extends React.Component {
       loadingCampaigns,
       campaignsLayoutWrapLayout: this.campaignsLayoutWrapLayout,
       handleLoadMore: this.handleLoadMore,
+      filterData: activePayableFilters,
     });
 
     return (
@@ -398,33 +411,38 @@ class Rewards extends React.Component {
             </div>
           </Affix>
           <div className="center">{renderedRoutes}</div>
-
-          {match.path === '/rewards/:filterKey/:campaignParent?' && (
+          {(match.path === '/rewards/:filterKey/:campaignParent?' ||
+            match.path === '/rewards/payables') && (
             <Affix className="rightContainer leftContainer__user" stickPosition={122}>
               <div className="right">
-                {!isEmpty(this.props.userLocation) && !isCreate && (
-                  <React.Fragment>
-                    <MapWrap
-                      wobjects={this.getRequiredObjects()}
-                      userLocation={this.props.userLocation}
-                      onMarkerClick={this.goToCampaign}
-                      getAreaSearchData={this.getAreaSearchData}
-                    />
-                  </React.Fragment>
-                )}
+                {!isEmpty(this.props.userLocation) &&
+                  !isCreate &&
+                  match.path !== '/rewards/payables' && (
+                    <React.Fragment>
+                      <MapWrap
+                        wobjects={this.getRequiredObjects()}
+                        userLocation={this.props.userLocation}
+                        onMarkerClick={this.goToCampaign}
+                        getAreaSearchData={this.getAreaSearchData}
+                      />
+                    </React.Fragment>
+                  )}
                 {!isEmpty(sponsors) && !isCreate && (
                   <RewardsFiltersPanel
                     campaignsTypes={campaignsTypes}
                     sponsors={sponsors}
                     activeFilters={activeFilters}
+                    activePayableFilters={activePayableFilters}
                     setFilterValue={this.setFilterValue}
+                    setPayablesFilterValue={this.setPayablesFilterValue}
+                    location={location}
                   />
                 )}
               </div>
             </Affix>
           )}
         </div>
-        {isModalDetailsOpen && !isEmpty(objectDetails) && (
+        {isModalDetailsOpen && !_.isEmpty(objectDetails) && (
           <Modal
             title={this.props.intl.formatMessage({
               id: 'details',
