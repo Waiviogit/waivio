@@ -434,14 +434,12 @@ class Rewards extends React.Component {
             <Affix className="rightContainer leftContainer__user" stickPosition={122}>
               <div className="right">
                 {!isEmpty(this.props.userLocation) && !isCreate && (
-                  <React.Fragment>
-                    <MapWrap
-                      wobjects={this.getRequiredObjects()}
-                      userLocation={this.props.userLocation}
-                      onMarkerClick={this.goToCampaign}
-                      getAreaSearchData={this.getAreaSearchData}
-                    />
-                  </React.Fragment>
+                  <MapWrap
+                    wobjects={this.getRequiredObjects()}
+                    userLocation={this.props.userLocation}
+                    onMarkerClick={this.goToCampaign}
+                    getAreaSearchData={this.getAreaSearchData}
+                  />
                 )}
                 {!isEmpty(sponsors) && !isCreate && (
                   <RewardsFiltersPanel

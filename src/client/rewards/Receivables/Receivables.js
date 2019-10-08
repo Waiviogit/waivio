@@ -8,7 +8,7 @@ import Debts from '../Debts/Debts';
 const ReceivablesContainer = ({ userName, currentSteemDollarPrice, filterData, location }) => {
   const payableFilters = {};
   _.map(filterData, f => {
-    payableFilters[`${f.filterName}`] = f.value;
+    payableFilters[f.filterName] = f.value;
   });
   const [sponsors, setSponsors] = useState({});
   useEffect(() => {
