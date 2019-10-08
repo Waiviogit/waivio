@@ -55,8 +55,8 @@ export default class RightSidebar extends React.Component {
             path="/discover-objects/:typeName"
             render={() => (
               <React.Fragment>
-                <ObjectExpertiseByType match={match} />
                 <DiscoverFiltersSidebar />
+                <ObjectExpertiseByType match={match} />
               </React.Fragment>
             )}
           />
