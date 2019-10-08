@@ -37,7 +37,7 @@ const PaymentTable = ({ intl, sponsors }) => (
 
 PaymentTable.propTypes = {
   intl: PropTypes.shape().isRequired,
-  sponsors: PropTypes.shape().isRequired,
+  sponsors: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 
 export default injectIntl(PaymentTable);

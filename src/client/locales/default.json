@@ -765,5 +765,6 @@
   "for_days": "for",
   "legal_notice_users_user": "Legal notice to users (optional)",
   "manage": "Manage",
-  "payables": "Payables"
+  "sidenav_rewards_payables": "Payables",
+  "sidenav_rewards_receivables": "Receivables"
 }

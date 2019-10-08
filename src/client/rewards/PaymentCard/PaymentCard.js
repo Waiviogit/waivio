@@ -48,9 +48,13 @@ PaymentCard.propTypes = {
   intl: PropTypes.shape().isRequired,
   payable: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
-  alias: PropTypes.string.isRequired,
+  alias: PropTypes.string,
   history: PropTypes.shape().isRequired,
   path: PropTypes.string.isRequired,
+};
+
+PaymentCard.defaultProps = {
+  alias: '',
 };
 
 export default withRouter(injectIntl(PaymentCard));
