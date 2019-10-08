@@ -3,6 +3,24 @@
 .Sidenav {
   min-width: 150px;
 
+  &__messages {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  &__notifications-count {
+    display: flex;
+    height: 25px;
+    min-width: 25px;
+    border-radius: 50%;
+    background-color: @primary-color;
+    color: @white;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+  }
+
   & > li {
     & > a {
       padding: 0 10px !important;

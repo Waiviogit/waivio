@@ -70,3 +70,11 @@ export const getTextByFilterKey = (intl, filterKey) => {
       });
   }
 };
+
+export const formatDate = date => {
+  const dt = new Date(date);
+  const day = `0${dt.getDate()}`.slice(-2);
+  const month = `0${dt.getMonth() + 1}`.slice(-2);
+  const year = dt.getFullYear();
+  return `${day}-${month}-${year}`;
+};
