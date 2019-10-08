@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import { getLenders } from '../../../waivioApi/ApiClient';
-import './Payables.less';
 import Debts from '../Debts/Debts';
 
 const PayablesContainer = ({ userName, currentSteemDollarPrice, filterData, location }) => {

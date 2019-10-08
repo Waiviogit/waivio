@@ -34,14 +34,17 @@ const RewardsFiltersPanel = ({
     </div>
   );
 
-  const filterValues = {
-    days: location.pathname === '/rewards/payables' ? 15 : 30,
-    payable: location.pathname === '/rewards/payables' ? 10 : 20,
-  };
-
   const payablesFilterData = [
-    { filterName: 'days', value: filterValues.days, defaultMessage: `Over {value} days` },
-    { filterName: 'payable', value: filterValues.payable, defaultMessage: `Over {value} SBD` },
+    {
+      filterName: 'days',
+      value: location.pathname === '/rewards/payables' ? 15 : 30,
+      defaultMessage: `Over {value} days`,
+    },
+    {
+      filterName: 'payable',
+      value: location.pathname === '/rewards/payables' ? 10 : 20,
+      defaultMessage: `Over {value} SBD`,
+    },
   ];
 
   return (

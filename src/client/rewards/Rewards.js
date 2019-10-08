@@ -94,6 +94,10 @@ class Rewards extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { match } = nextProps;
+
+    if (match.path !== this.props.match.path) {
+      this.setState({ activePayableFilters: [] });
+    }
     if (match.params.filterKey !== 'create') {
       const { username } = this.props;
       const { radius, coordinates, sort, activeFilters } = this.state;
