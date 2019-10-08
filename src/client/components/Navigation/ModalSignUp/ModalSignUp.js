@@ -23,7 +23,7 @@ class ModalSignUp extends React.Component {
     const script = document.createElement('script');
 
     script.src = 'https://widget.steem.ninja/ninja.js';
-    script.async = true;
+    // script.async = true;
 
     document.body.appendChild(script);
   }
