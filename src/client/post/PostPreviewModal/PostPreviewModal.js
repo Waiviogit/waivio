@@ -64,8 +64,9 @@ class PostPreviewModal extends Component {
       objPercentage: setObjPercents(props.linkedObjects, props.objPercentage),
       weightBuffer: 0,
       isConfirmed: false,
+      // Check review modal
       isCheckReviewModalOpen: false,
-      isReviewValid: true,
+      isReviewValid: false,
     };
   }
 

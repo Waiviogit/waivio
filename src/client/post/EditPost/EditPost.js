@@ -111,9 +111,10 @@ class EditPost extends Component {
       return nextState;
     }
     if (nextProps.userAccount && nextProps.userAccount.name && isEmpty(prevState.reviewer)) {
-      const { count_posts, follower_count, wobjects_weight } = nextProps.userAccount; // eslint-disable-line
+      const { count_posts, follower_count, name, wobjects_weight } = nextProps.userAccount; // eslint-disable-line
       return {
         reviewer: {
+          name,
           expertise: wobjects_weight,
           followersCount: follower_count,
           postsCount: count_posts,
@@ -164,6 +165,7 @@ class EditPost extends Component {
   handleSubmit() {
     const postData = this.buildPost();
     this.props.createPost(postData);
+    // alert(postData.title);
   }
 
   buildPost() {
@@ -266,6 +268,21 @@ class EditPost extends Component {
                 )}
               </div>
             )}
+            <PostPreviewModal
+              content={content}
+              topics={topics}
+              linkedObjects={linkedObjects}
+              objPercentage={objPercentage}
+              settings={settings}
+              reviewData={reviewer && campaign ? { reviewer, campaign } : null}
+              isPublishing={publishing}
+              isUpdating={isUpdating}
+              onTopicsChange={this.handleTopicsChange}
+              onSettingsChange={this.handleSettingsChange}
+              onPercentChange={this.handlePercentChange}
+              onSubmit={this.handleSubmit}
+              onUpdate={this.saveDraft}
+            />
             {linkedObjects.map(wObj => (
               <ObjectCardView wObject={wObj} key={wObj.id} />
             ))}
@@ -277,21 +294,6 @@ class EditPost extends Component {
             </div>
           </div>
         </div>
-        <PostPreviewModal
-          content={content}
-          topics={topics}
-          linkedObjects={linkedObjects}
-          objPercentage={objPercentage}
-          settings={settings}
-          reviewData={reviewer && campaign ? { reviewer, campaign } : null}
-          isPublishing={publishing}
-          isUpdating={isUpdating}
-          onTopicsChange={this.handleTopicsChange}
-          onSettingsChange={this.handleSettingsChange}
-          onPercentChange={this.handlePercentChange}
-          onSubmit={this.handleSubmit}
-          onUpdate={this.saveDraft}
-        />
       </div>
     );
   }

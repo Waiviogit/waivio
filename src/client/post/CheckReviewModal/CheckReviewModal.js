@@ -1,17 +1,36 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Modal } from 'antd';
+import { get } from 'lodash';
+import { Button, Icon, Modal } from 'antd';
 import './CheckReviewModal.less';
+
+const getReviewRequirements = (campaign, authorName) => [
+  {
+    type: 'postRequirements',
+    minPhotos: get(campaign, ['requirements', 'minPhotos'], 0),
+    primaryObject: get(
+      campaign.users.find(user => user.status === 'assigned' && user.name === authorName),
+      'object_permlink',
+      '',
+    ),
+    secondaryObject: campaign.requiredObject,
+  },
+  {
+    type: 'authorRequirements',
+    minExpertise: get(campaign, ['userRequirements', 'minExpertise'], 0), // todo: check backend key
+    minFollowers: get(campaign, ['userRequirements', 'minFollowers'], 0),
+    minPosts: get(campaign, ['userRequirements', 'minPosts'], 0),
+  },
+];
 
 const CheckReviewModal = ({
   intl,
   isCheckReviewModalOpen,
   isReviewValid,
-  reviewData,
+  reviewData: { campaign, reviewer },
   onCancel,
 }) => {
-  const { campaign } = reviewData;
-  const hideModal = () => console.log('--> hide modal');
+  const reviewRequirements = getReviewRequirements(campaign, reviewer.name);
   const modalBody = isReviewValid ? (
     <React.Fragment>
       <div className="check-review-modal__paragraph">
@@ -50,15 +69,38 @@ const CheckReviewModal = ({
       </div>
       <div className="check-review-modal__buttons">
         <Button htmlType="button" onClick={() => console.log('Submit >')} size="large">
-          {intl.formatMessage({ id: 'submit', defaultMessage: 'Submit[hc]' })}
+          {intl.formatMessage({ id: 'submit', defaultMessage: 'Submit' })}
         </Button>
-        <Button htmlType="button" onClick={hideModal} size="large">
-          {intl.formatMessage({ id: 'edit', defaultMessage: 'Edit[hc]' })}
+        <Button htmlType="button" onClick={onCancel} size="large">
+          {intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' })}
         </Button>
       </div>
     </React.Fragment>
   ) : (
-    <React.Fragment>Review is not Valid</React.Fragment>
+    <React.Fragment>
+      <div className="check-review-modal__paragraph fw5">
+        This review does not meet some of the formal requirements.
+      </div>
+      {reviewRequirements.map(requirement => {
+        const { type, ...requireOptions } = requirement;
+        return (
+          <div className="check-review-modal__list">
+            <div className="check-review-modal__list-title fw5">{type}</div>
+            {Object.keys(requireOptions).map(optionName => (
+              <div className="check-review-modal__list-item">
+                <Icon type="check-square" />
+                {optionName} - {requireOptions[optionName]}
+              </div>
+            ))}
+          </div>
+        );
+      })}
+      <div className="check-review-modal__buttons">
+        <Button htmlType="button" onClick={onCancel} size="large">
+          {intl.formatMessage({ id: 'edit', defaultMessage: 'EDIT' })}
+        </Button>
+      </div>
+    </React.Fragment>
   );
   return (
     <Modal
