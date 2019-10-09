@@ -222,9 +222,11 @@ class PostPreviewModal extends Component {
         {reviewData && (
           <CheckReviewModal
             intl={intl}
+            postBody={body}
             isCheckReviewModalOpen={this.state.isCheckReviewModalOpen}
             isReviewValid={this.state.isReviewValid}
             reviewData={reviewData}
+            linkedObjects={linkedObjects}
             onCancel={this.hideCheckReviewModal}
             // onEdit={}
             // onSubmit={}
