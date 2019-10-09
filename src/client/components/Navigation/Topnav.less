@@ -14,9 +14,13 @@
   &__brand {
     font-weight: bold;
     letter-spacing: 0.5px;
-
     &-icon {
-      height: 50px;
+      height: 78px;
+      margin-top: 10px;
+      display: none;
+      @media @medium, @large {
+        display: initial;
+      }
     }
   }
 
@@ -245,6 +249,9 @@
     color: @white-gainsboro;
     font-weight: bold;
     line-height: 38px;
+    @media @medium, @large {
+      margin-left: 200px;
+    }
 
     .ant-menu-item {
       &-selected {
