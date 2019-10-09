@@ -37,6 +37,7 @@ const CheckReviewModal = ({
   linkedObjects,
   onCancel,
   onEdit,
+  onSubmit,
 }) => {
   const { postRequirements, authorRequirements } = getReviewRequirements(campaign, reviewer.name);
   const secondaryObject = linkedObjects.find(obj => obj.id === postRequirements.secondaryObject);
@@ -105,7 +106,7 @@ const CheckReviewModal = ({
           ).
         </div>
         <div className="check-review-modal__buttons">
-          <Button htmlType="button" onClick={() => console.log('Submit >')} size="large">
+          <Button htmlType="button" onClick={onSubmit} size="large">
             {intl.formatMessage({ id: 'submit', defaultMessage: 'Submit' })}
           </Button>
           <Button htmlType="button" onClick={onCancel} size="large">
@@ -230,6 +231,7 @@ CheckReviewModal.propTypes = {
   linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
   onCancel: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
 };
 
 CheckReviewModal.defaultProps = {

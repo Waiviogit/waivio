@@ -130,6 +130,10 @@ class PostPreviewModal extends Component {
     if (nextState.weightBuffer === 0) this.props.onPercentChange(nextState.objPercentage);
   };
 
+  handleReviewSubmit = () => {
+    this.setState({ isCheckReviewModalOpen: false }, this.props.onSubmit);
+  };
+
   handleSubmit = () => {
     if (this.props.reviewData) {
       this.setState({ isCheckReviewModalOpen: true });
@@ -231,7 +235,7 @@ class PostPreviewModal extends Component {
             linkedObjects={linkedObjects}
             onCancel={this.hideCheckReviewModal}
             onEdit={this.showEditor}
-            // onSubmit={}
+            onSubmit={this.handleReviewSubmit}
           />
         )}
         <div className="edit-post-controls">
