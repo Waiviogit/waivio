@@ -763,5 +763,20 @@
   "manage": "Управлять",
   "payables": "Задолженность",
   "filter_days": "Больше {days} дней",
-  "filter_payment": "Больше {payment} SBP"
+  "filter_payment": "Больше {payment} SBP",
+  "submit": "Отправить",
+  "check_review_requirements_title": "Данный обзор не соответствует некоторым требованиям.",
+  "check_review_post_requirements": "Требования к посту",
+  "check_review_author_requirements": "Требования к автору",
+  "check_review_minPhotos": "Минимум {minPhotos} оригинальных фото объекта {secondaryObjectName}",
+  "check_review_secondaryObject": "Ссылка на {secondaryObjectName}: {secondaryObjectUrl}",
+  "check_review_primaryObject": "Ссылка на {primaryObjectName}: {primaryObjectUrl}",
+  "check_review_minExpertise": "Минимальная общая экспертиза: {minExpertise}",
+  "check_review_minFollowers": "Минимальное количество подписчиков: {minFollowers}",
+  "check_review_minPosts": "Минимальное количество публикаций: {minPosts}",
+  "check_review_agreement_part_1": "This review meets all the technical requirements of",
+  "check_review_the_reservation": "the reservation",
+  "check_review_agreement_part_2": "and entitles you to specified rewards. The sponsor reserves the right to review all submissions manually before paying the rewards.",
+  "check_review_agreement_part_3": "In many jurisdictions, readers should be informed that the review has been partially sponsored. In order to meet these requirements, the following notice will be added to your post:",
+  "check_review_post_add_text": "This review was sponsored in part by"
 }
