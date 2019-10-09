@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import React from 'react';
 import PostCurrentPrice from '../../../investarena/components/PostSellBuy/PostCurrentPrice';
-import PostDifference from '../../../investarena/components/PostSellBuy/PostDifference';
+// import PostDifference from '../../../investarena/components/PostSellBuy/PostDifference';
 import { quoteFormat } from '../../../investarena/platform/parsingPrice';
 import { localeDate } from '../../../investarena/helpers/diffDateTime';
 import './ForecastItem.less';
