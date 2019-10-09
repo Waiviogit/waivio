@@ -19,15 +19,6 @@ class ModalSignUp extends React.Component {
     this.openNinjaModal = this.openNinjaModal.bind(this);
   }
 
-  componentDidMount() {
-    const script = document.createElement('script');
-
-    script.src = 'https://widget.steem.ninja/ninja.js';
-    script.async = true;
-
-    document.body.appendChild(script);
-  }
-
   getSignUpInfo = (imageLink, imageRoute, price, aim, result, features, isNinja) => (
     <div className="SignUpCard">
       <div className="SignUpCard__line">
