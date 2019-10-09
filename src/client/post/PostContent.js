@@ -177,8 +177,8 @@ class PostContent extends React.Component {
     if (isBannedPost(content)) return <DMCARemovedMessage className="center" />;
 
     const postMetaData = jsonParse(content.json_metadata);
-    const busyHost = appUrl || 'https://waiviodev.com';
-    let canonicalHost = busyHost;
+    const waivioHost = appUrl || 'https://waiviodev.com';
+    let canonicalHost = waivioHost;
 
     if (postMetaData && _.indexOf(postMetaData.app, 'steemit') === 0) {
       canonicalHost = 'https://steemit.com';
@@ -212,7 +212,7 @@ class PostContent extends React.Component {
     const desc = `${_.truncate(bodyText, { length: 143 })} by ${author}`;
     const image = postMetaImage || getAvatarURL(author) || '/images/logo.png';
     const canonicalUrl = `${canonicalHost}${dropCategory(content.url)}`;
-    const url = `${busyHost}${dropCategory(content.url)}`;
+    const url = `${waivioHost}${dropCategory(content.url)}`;
     const ampUrl = `${url}/amp`;
     const metaTitle = `${title} - Waivio`;
 
@@ -232,7 +232,7 @@ class PostContent extends React.Component {
           <meta property="article:tag" content={category} />
           <meta property="article:published_time" content={created} />
           <meta property="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
-          <meta property="twitter:site" content={'@busyorg'} />
+          <meta property="twitter:site" content={'@waivio'} />
           <meta property="twitter:title" content={metaTitle} />
           <meta property="twitter:description" content={desc} />
           <meta property="twitter:image" content={image} />

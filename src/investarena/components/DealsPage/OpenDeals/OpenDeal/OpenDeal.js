@@ -77,7 +77,7 @@ const OpenDeal = ({ intl, quote, quoteSettings, openDeal, dealPnL, viewMode }) =
       <div className="st-opened">
         <div className="d-flex align-items-center justify-content-between">
           <div className="st-open-deal-header-item-title">
-            {intl.formatMessage({ id: 'deals.from', defaultMessage: 'from' })}
+            {intl.formatMessage({ id: 'deals.from', defaultMessage: 'from' })}&nbsp;
           </div>
           <div className="st-open-deal-header-item-title">
             {moment(openDeal.openTime).format('DD.MM, HH:mm')}
@@ -85,7 +85,7 @@ const OpenDeal = ({ intl, quote, quoteSettings, openDeal, dealPnL, viewMode }) =
         </div>
         <div className="d-flex align-items-center justify-content-between">
           <div className="st-open-deal-header-item-title">
-            {intl.formatMessage({ id: 'deals.till', defaultMessage: 'till' })}
+            {intl.formatMessage({ id: 'deals.till', defaultMessage: 'till' })}&nbsp;
           </div>
           <div className="st-open-deal-header-item-title">
             {moment(openDeal.goodTillDate).format('DD.MM, HH:mm')}

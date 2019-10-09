@@ -1,4 +1,4 @@
-import { isEmpty, map } from 'lodash';
+import { isEmpty, map, includes } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -73,20 +73,38 @@ class CreateRewardForm extends React.Component {
 
       const campaign = await getCampaignById(this.props.match.params.campaignId);
 
-      const primaryObject = getObjectsByIds({
-        authorPermlinks: [campaign.campaign.requiredObject],
-      });
-
-      const secondaryObjects = getObjectsByIds({ authorPermlinks: [...campaign.campaign.objects] });
-
       const expiredAt = moment(new Date(campaign.campaign.expired_at));
 
       const isCampaignActive = campaign.campaign.status === 'active';
 
+      let combinedObjects;
       let sponsors;
+
       if (!isEmpty(campaign.campaign.match_bots)) {
-        sponsors = await getObjectsByIds({ authorPermlinks: [...campaign.campaign.match_bots] });
+        combinedObjects = await getObjectsByIds({
+          authorPermlinks: [
+            ...campaign.campaign.match_bots,
+            campaign.campaign.requiredObject,
+            ...campaign.campaign.objects,
+          ],
+        });
+
+        sponsors = combinedObjects.wobjects.filter(wobj =>
+          includes(campaign.campaign.sponsors, wobj.author_permlink),
+        );
+      } else {
+        combinedObjects = await getObjectsByIds({
+          authorPermlinks: [campaign.campaign.requiredObject, ...campaign.campaign.objects],
+        });
       }
+
+      const primaryObject = combinedObjects.wobjects.find(
+        wobj => wobj.author_permlink === campaign.campaign.requiredObject,
+      );
+
+      const secondaryObjects = combinedObjects.wobjects.filter(wobj =>
+        includes(campaign.campaign.objects, wobj.author_permlink),
+      );
 
       Promise.all([primaryObject, secondaryObjects, sponsors]).then(values => {
         // eslint-disable-next-line react/no-did-mount-set-state
@@ -96,9 +114,9 @@ class CreateRewardForm extends React.Component {
           campaignType: campaign.campaign.type,
           budget: campaign.campaign.budget,
           reward: campaign.campaign.reward,
-          primaryObject: getClientWObj(values[0].wobjects[0]),
-          secondaryObjectsList: values[1].wobjects.map(obj => getClientWObj(obj)),
-          sponsorsList: !isEmpty(sponsors) ? values[2].wobjects.map(obj => getClientWObj(obj)) : [],
+          primaryObject: getClientWObj(values[0]),
+          secondaryObjectsList: values[1].map(obj => getClientWObj(obj)),
+          sponsorsList: !isEmpty(sponsors) ? values[2].map(obj => getClientWObj(obj)) : [],
           reservationPeriod: campaign.campaign.count_reservation_days,
           minFollowers: campaign.campaign.userRequirements.minFollowers,
           minPosts: campaign.campaign.userRequirements.minPosts,
@@ -167,8 +185,8 @@ class CreateRewardForm extends React.Component {
   };
 
   handleSetState = (stateData, callbackData) => {
-    const { setFieldValue } = this.props.form;
-    this.setState({ ...stateData }, () => setFieldValue(callbackData));
+    const { setFieldsValue } = this.props.form;
+    this.setState({ ...stateData }, () => setFieldsValue(callbackData));
   };
 
   handlers = {
@@ -176,14 +194,13 @@ class CreateRewardForm extends React.Component {
       const sponsors = [...this.state.sponsorsList, obj];
 
       if (sponsors.length <= 5) {
-        this.handleSetState(
-          { sponsorsList: [...sponsors] },
-          { sponsorsList: this.state.sponsorsList },
+        this.setState({ sponsorsList: [...sponsors] }, () =>
+          this.props.form.setFieldsValue({ sponsorsList: this.state.sponsorsList }),
         );
       }
     },
 
-    removeSponsorObject: async obj => {
+    removeSponsorObject: obj => {
       this.setState(
         prevState => {
           const objectList = prevState.sponsorsList.filter(el => el.account !== obj.account);
@@ -203,17 +220,16 @@ class CreateRewardForm extends React.Component {
     },
 
     removePrimaryObject: () => {
-      this.handleSetState({}, { primaryObject: {} });
+      this.handleSetState({ primaryObject: {} }, { primaryObject: {} });
     },
 
-    handleAddSecondaryObjectToList: async obj => {
-      this.handleSetState(
-        { secondaryObjectsList: [...this.state.secondaryObjectsList, obj] },
-        { primaryObject: { secondaryObject: this.state.secondaryObjectsList } },
+    handleAddSecondaryObjectToList: obj => {
+      this.setState({ secondaryObjectsList: [...this.state.secondaryObjectsList, obj] }, () =>
+        this.props.form.setFieldsValue({ secondaryObject: this.state.secondaryObjectsList }),
       );
     },
 
-    removeSecondaryObject: async obj => {
+    removeSecondaryObject: obj => {
       this.setState(
         prevState => {
           const objectList = prevState.secondaryObjectsList.filter(el => el.id !== obj.id);
@@ -233,14 +249,13 @@ class CreateRewardForm extends React.Component {
       this.handleSetState({ compensationAccount: {} }, { compensationAccount: {} });
     },
 
-    handleAddPageObject: async obj => {
-      this.handleSetState(
-        { pageObjects: [...this.state.pageObjects, obj] },
-        { agreement: this.state.pageObjects },
+    handleAddPageObject: obj => {
+      this.setState({ pageObjects: [...this.state.pageObjects, obj] }, () =>
+        this.props.form.setFieldsValue({ agreement: this.state.pageObjects }),
       );
     },
 
-    removePageObject: async obj => {
+    removePageObject: obj => {
       this.setState(
         prevState => {
           const objectList = prevState.pageObjects.filter(el => el.id !== obj.id);
@@ -252,12 +267,12 @@ class CreateRewardForm extends React.Component {
       );
     },
 
-    setTargetDays: targetDay => async () => {
-      this.handleSetState(
+    setTargetDays: targetDay => () => {
+      this.setState(
         {
           targetDays: { ...this.state.targetDays, [targetDay]: !this.state.targetDays[targetDay] },
         },
-        { targetDays: this.state.targetDays },
+        () => this.props.form.setFieldsValue({ targetDays: this.state.targetDays }),
       );
     },
 

@@ -10,9 +10,9 @@ export default (state = initialState, action) => {
     case activeForecastTypes.GET_FORECAST_DATA.SUCCESS:
       return {
         ...state,
-        forecastData: action.payload.forecasts.sort(
-          (a, b) => moment(b.created_at).unix() - moment(a.created_at).unix(),
-        ), // eslint-disable-line
+        forecastData: action.payload.forecasts
+          .filter(f => moment(f.forecast) > moment())
+          .sort((a, b) => moment(b.created_at).unix() - moment(a.created_at).unix()), // eslint-disable-line
       };
     case activeForecastTypes.GET_FORECAST_DATA.ERROR:
       return {

@@ -771,10 +771,9 @@ class Topnav extends React.Component {
         <ModalDealConfirmation />
         <div className="topnav-layout">
           <div className={classNames('left', { 'Topnav__mobile-hidden': searchBarActive })}>
-            <Link className="Topnav__brand" to="/">
-              WTrade
+            <Link to="/"  className="Topnav__brand">
+              <img alt='InvestArena' src="/images/logo-brand.png" className="Topnav__brand-icon"/>
             </Link>
-            <span className="Topnav__version">beta</span>
           </div>
           <div className={classNames('center', { mobileVisible: searchBarActive })}>
             <div className="Topnav__input-container">

@@ -1,4 +1,3 @@
-const chalk = require('chalk');
 const CLIEngine = require('eslint').CLIEngine;
 const getChangedFiles = require('../utils/getChangedFiles');
 const intersect = require('../utils/intersect');
@@ -34,9 +33,6 @@ function lintFiles() {
 
 console.log(onlyChanged ? 'Linting changed files...' : 'Linting files...');
 
-if (lintFiles()) {
-  console.log(chalk.green('Lint passed.'));
-} else {
-  console.log(chalk.red('Lint failed.'));
+if (!lintFiles()) {
   process.exit(1);
 }

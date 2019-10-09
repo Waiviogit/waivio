@@ -77,9 +77,10 @@ export function getContentImages(content, parsed = false) {
 }
 
 export function createPostMetadata(body, tags, oldMetadata = {}, appData) {
+  const appName = apiConfig[process.env.NODE_ENV].appName || 'waiviodev';
   let metaData = {
-    community: 'waiviodev',
-    app: `waiviodev/${appVersion}`,
+    community: appName,
+    app: `${appName}/${appVersion}`,
     format: 'markdown',
   };
 

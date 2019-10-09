@@ -85,11 +85,7 @@ const UserHero = ({
                   isActive={isUserActive(user)}
                 />
               )}
-              <UserMenuWrapper
-                objectsSharesCount={user.objects_shares_count || 0}
-                followers={user.follower_count}
-                following={followingCount}
-              />
+              <UserMenuWrapper followers={user.follower_count} following={followingCount} />
             </div>
           )}
         />

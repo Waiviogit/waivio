@@ -65,7 +65,8 @@ export default class ImageSideButton extends React.Component {
               if (data.image) {
                 this.props.setEditorState(
                   addNewBlock(this.props.getEditorState(), Block.IMAGE, {
-                    src: data.image,
+                    // fix for issue with loading large images to digital-ocean
+                    src: `${data.image.startsWith('http') ? data.image : `https://${data.image}`}`,
                     alt: file.name,
                   }),
                 );

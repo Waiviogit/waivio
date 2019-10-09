@@ -69,13 +69,11 @@ class BrokerAuthorization extends Component {
             })}
             disabled={this.props.brokerConnected}
           >
-            {_.map(optionsPlatform, option => {
-              return (
-                <Option key={option.value} value={option.value}>
-                  {option.label}
-                </Option>
-              );
-            })}
+            {_.map(optionsPlatform, option => (
+              <Option key={option.value} value={option.value}>
+                {option.label}
+              </Option>
+            ))}
           </Select>,
         )}
         {!this.props.brokerConnected ? (
@@ -128,16 +126,18 @@ class BrokerAuthorization extends Component {
           </FormItem>
         )}
         <div className="d-flex justify-content-between">
-          {!this.props.brokerConnected ? (
-            <span className="st-modal-broker-authorization-text-click">
-              {this.props.intl.formatMessage({
-                id: 'modalBroker.forgotPassword',
-                defaultMessage: 'Forgot password?',
-              })}
-            </span>
-          ) : (
-            <span />
-          )}
+          {/* todo: hided forgot password link */}
+          {/* {!this.props.brokerConnected ? ( */}
+          {/* <span className="st-modal-broker-authorization-text-click"> */}
+          {/* {this.props.intl.formatMessage({ */}
+          {/* id: 'modalBroker.forgotPassword', */}
+          {/* defaultMessage: 'Forgot password?', */}
+          {/* })} */}
+          {/* </span> */}
+          {/* ) : ( */}
+          {/* <span /> */}
+          {/* )} */}
+          <span />
           <Checkbox onChange={this.handleOneClickTrading} checked={this.state.checked}>
             {this.props.intl.formatMessage({
               id: 'modalBroker.oneClickTrade',
