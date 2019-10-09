@@ -4,12 +4,11 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Badge } from 'antd';
-import { debounce, has, isEmpty, kebabCase, throttle, uniqBy } from 'lodash';
+import { debounce, has, kebabCase, throttle, uniqBy } from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
 import { getCampaignById } from '../../../waivioApi/ApiClient';
 import {
   getAuthenticatedUser,
-  getUser,
   getLocale,
   getDraftPosts,
   getIsEditorLoading,
@@ -17,7 +16,6 @@ import {
   getIsImageUploading,
   getUpvoteSetting,
 } from '../../reducers';
-import { getUserAccount } from '../../user/usersActions';
 import { createPost, saveDraft } from '../Write/editorActions';
 import { createPostMetadata, splitPostContent, getInitialState } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
@@ -42,7 +40,6 @@ const getLinkedObjects = contentStateRaw => {
 @connect(
   (state, props) => ({
     user: getAuthenticatedUser(state),
-    userAccount: getUser(state, props.userName),
     locale: getLocale(state),
     draftPosts: getDraftPosts(state),
     publishing: getIsEditorLoading(state),
@@ -56,7 +53,6 @@ const getLinkedObjects = contentStateRaw => {
   {
     createPost,
     saveDraft,
-    getUserAccount,
   },
 )
 class EditPost extends Component {
@@ -64,7 +60,6 @@ class EditPost extends Component {
     intl: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
     userName: PropTypes.string.isRequired,
-    userAccount: PropTypes.shape().isRequired, // eslint-disable-line
     locale: PropTypes.string.isRequired,
     draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     campaignId: PropTypes.string, // eslint-disable-line
@@ -74,7 +69,6 @@ class EditPost extends Component {
     imageLoading: PropTypes.bool,
     createPost: PropTypes.func,
     saveDraft: PropTypes.func,
-    getUserAccount: PropTypes.func.isRequired,
   };
   static defaultProps = {
     upvoteSetting: false,
@@ -110,26 +104,14 @@ class EditPost extends Component {
       });
       return nextState;
     }
-    if (nextProps.userAccount && nextProps.userAccount.name && isEmpty(prevState.reviewer)) {
-      const { count_posts, follower_count, name, wobjects_weight } = nextProps.userAccount; // eslint-disable-line
-      return {
-        reviewer: {
-          name,
-          expertise: wobjects_weight,
-          followersCount: follower_count,
-          postsCount: count_posts,
-        },
-      };
-    }
     return null;
   }
 
   componentDidMount() {
     const { campaign } = this.state;
     if (campaign && campaign.id) {
-      this.props.getUserAccount(this.props.userName);
       getCampaignById(campaign.id)
-        .then(campaignData => this.setState({ campaign: campaignData }))
+        .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
         .catch(error => console.log('Failed to get campaign data:', error));
     }
   }
@@ -165,12 +147,12 @@ class EditPost extends Component {
   handleSubmit() {
     const postData = this.buildPost();
     this.props.createPost(postData);
-    // alert(postData.title);
   }
 
   buildPost() {
     const {
       draftId,
+      campaign,
       parentPermlink,
       content,
       topics,
@@ -191,6 +173,13 @@ class EditPost extends Component {
       draftId,
       ...settings,
     };
+
+    if (campaign && campaign.alias) {
+      postData.body += `\n***\n${this.props.intl.formatMessage({
+        id: `check_review_post_add_text`,
+        defaultMessage: 'This review was sponsored in part by',
+      })} ${campaign.alias} ([@${campaign.guideName}](/@${campaign.guideName}))`;
+    }
 
     postData.parentAuthor = '';
     postData.parentPermlink = parentPermlink;
@@ -244,7 +233,6 @@ class EditPost extends Component {
       linkedObjects,
       objPercentage,
       settings,
-      reviewer,
       campaign,
       isUpdating,
     } = this.state;
@@ -274,7 +262,11 @@ class EditPost extends Component {
               linkedObjects={linkedObjects}
               objPercentage={objPercentage}
               settings={settings}
-              reviewData={reviewer && campaign ? { reviewer, campaign } : null}
+              reviewData={
+                campaign && campaign.fetched
+                  ? { campaign, reviewer: { name: this.props.userName } }
+                  : null
+              }
               isPublishing={publishing}
               isUpdating={isUpdating}
               onTopicsChange={this.handleTopicsChange}

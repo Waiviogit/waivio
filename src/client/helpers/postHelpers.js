@@ -171,6 +171,7 @@ export function getInitialState(props) {
     const draftObjects = get(draftPost, ['jsonMetadata', WAIVIO_META_FIELD_NAME, 'wobjects'], []);
     const tags = get(draftPost, ['jsonMetadata', 'tags'], []);
     state = {
+      campaign: draftPost.campaignId ? { id: draftPost.campaignId } : null,
       draftId: props.draftId,
       parentPermlink: draftPost.parentPermlink || WAIVIO_PARENT_PERMLINK,
       draftContent: {
