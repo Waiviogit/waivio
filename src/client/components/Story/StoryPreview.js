@@ -23,8 +23,15 @@ const StoryPreview = ({ post }) => {
   const jsonMetadata = jsonParse(post.json_metadata);
   let imagePath = '';
 
-  if (jsonMetadata && jsonMetadata.image && jsonMetadata.image[0]) {
-    imagePath = getProxyImageURL(jsonMetadata.image[0], 'preview');
+  if (jsonMetadata) {
+    if (jsonMetadata.image && jsonMetadata.image[0]) {
+      imagePath = getProxyImageURL(jsonMetadata.image[0], 'preview');
+    } else if (
+      jsonMetadata.wobj &&
+      _.includes(['galleryItem', 'avatar', 'background'], jsonMetadata.wobj.field.name)
+    ) {
+      imagePath = jsonMetadata.wobj.field.body;
+    }
   } else {
     const contentImages = getContentImages(post.body);
     if (contentImages.length) {
