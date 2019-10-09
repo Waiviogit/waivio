@@ -467,7 +467,7 @@
   "object_field_pageContent": "Page",
   "object_field_status": "Status",
   "object_field_galleryItem": "Gallery item",
-  "object_field_galleryAlbum": "Gallery Album",
+  "object_field_galleryAlbum": "Gallery album",
   "field_error": "{field} is required",
   "append_send": "Submit",
   "suggestion_add_field": "Update object",
