@@ -1,0 +1,53 @@
+@import (reference) '../../../styles/modules/variables.less';
+@import (reference) '../../../styles/custom.less';
+
+.PaymentTable {
+  border: 1px solid @black;
+  text-align: center !important;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: medium;
+  width: 80%;
+
+  & td {
+    border: 1px solid @black;
+  }
+
+  & th {
+    vertical-align: top;
+    text-align: center !important;
+    border: 1px solid @black;
+  }
+
+  & thead th {
+    font-weight: 500;
+    color: @black;
+    text-align: left;
+  }
+
+  & tbody td {
+    font-weight: 500;
+    font-size: small;
+    padding: 3px 2px;
+  }
+
+  &.basicWidth {
+    width: 9%;
+  }
+
+  &.mediumWidth {
+    width: 33%;
+  }
+
+  &.maxWidth {
+    width: 40%;
+  }
+
+  &__action-column {
+    text-align: start;
+  }
+
+  &__balance-column {
+    font-weight: bold !important;
+  }
+}

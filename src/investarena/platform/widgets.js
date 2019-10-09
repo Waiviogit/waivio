@@ -156,7 +156,9 @@ export class Widgets {
       requiredFields: [objectFields.chartId],
     }).then(res => {
       const wobjWithChart = mutateObject(res.wobjects);
-      Object.keys(quotesSettings).sort().forEach(key => {
+      Object.keys(quotesSettings)
+        .sort()
+        .forEach(key => {
           const wobjData = wobjWithChart.find(o => o.chartId === key);
           if (wobjData) {
             sortedQuotesSettings[key] = {
@@ -164,7 +166,7 @@ export class Widgets {
               wobjData,
             };
           }
-      });
+        });
       this.quotesSettings = sortedQuotesSettings;
       this.dispatch(updateQuotesSettings(this.quotesSettings));
     });

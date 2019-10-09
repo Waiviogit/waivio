@@ -577,11 +577,41 @@ export const rejectReservationCampaign = data =>
       .catch(error => reject(error));
   });
 
+export const getFilteredCampaignsByGuideName = (guideName, status) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.campaigns}`, {
+      headers: headers,
+      method: 'POST',
+      body: JSON.stringify({
+        guideNames: [guideName],
+        status: status,
+      }),
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export const getCampaignsByGuideName = guideName =>
   new Promise((resolve, reject) => {
     fetch(`${config.campaignApiPrefix}${config.campaigns}${config.dashboard}/${guideName}`, {
       headers,
       method: 'GET',
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getCampaignByGuideNameAndObject = (guideName, object) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.campaigns}`, {
+      headers: headers,
+      method: 'POST',
+      body: JSON.stringify({
+        guideNames: [guideName],
+        requiredObject: object,
+      }),
     })
       .then(res => res.json())
       .then(result => resolve(result))
@@ -610,6 +640,24 @@ export const getAuthenticatedUserMetadata = (
   })
     .then(res => res.json())
     .then(res => _.omit(res.user_metadata, '_id'));
+};
+
+export const getLenders = ({ sponsor, user, filters }) => {
+  const payable = filters && filters.payable ? `&payable=${filters.payable}` : ``;
+  const days = filters && filters.days ? `&days=${filters.days}` : ``;
+  const isUser = !user ? `?sponsor=${sponsor}` : `?sponsor=${sponsor}&userName=${user}`;
+  return new Promise((resolve, reject) => {
+    fetch(
+      `${config.campaignApiPrefix}${config.payments}${config.payables}${isUser}${days}${payable}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
 };
 
 export const updateUserMetadata = (userName, data) =>

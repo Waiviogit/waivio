@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
 import Feed from '../feed/Feed';
 import PostModal from '../post/PostModalContainer';
 import { getFeed } from '../reducers';
@@ -55,13 +56,19 @@ export default class UserProfilePosts extends React.Component {
 
     return (
       <React.Fragment>
-        <Feed
-          content={content}
-          isFetching={isFetching}
-          hasMore={hasMore}
-          loadMoreContent={loadMoreContentAction}
-          showPostModal={this.props.showPostModal}
-        />
+        {content && content.length || isFetching ? (
+          <Feed
+            content={content}
+            isFetching={isFetching}
+            hasMore={hasMore}
+            loadMoreContent={loadMoreContentAction}
+            showPostModal={this.props.showPostModal}
+          />
+        ) : (
+            <div className="Comments__empty">
+              <FormattedMessage id="empty_comments" defaultMessage="There are no comments yet." />
+            </div>
+        )}
         <PostModal />
       </React.Fragment>
     );

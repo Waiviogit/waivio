@@ -103,7 +103,7 @@ class BrokerRegistration extends Component {
 
     return (
       <Form onSubmit={this.handleSubmit}>
-        <FormItem {...formItemLayout} label={<span>Platform&nbsp;</span>}>
+        <FormItem {...formItemLayout} label={<span>Platform</span>}>
           {getFieldDecorator('platform', {
             initialValue: optionsPlatform[0].value,
           })(
@@ -125,12 +125,12 @@ class BrokerRegistration extends Component {
             </Select>,
           )}
         </FormItem>
-        <FormItem {...formItemLayout} label={<span>First name&nbsp;</span>}>
+        <FormItem {...formItemLayout} label={<span>First name</span>}>
           {getFieldDecorator('firstName', {
             rules: [{ required: true, message: 'Please input your firstName!', whitespace: true }],
           })(<Input />)}
         </FormItem>
-        <FormItem {...formItemLayout} label={<span>Last name&nbsp;</span>}>
+        <FormItem {...formItemLayout} label={<span>Last name</span>}>
           {getFieldDecorator('lastName', {
             rules: [{ required: true, message: 'Please input your lastName!', whitespace: true }],
           })(<Input />)}

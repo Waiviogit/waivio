@@ -97,7 +97,7 @@ const ObjectExpertiseByType = ({ match }) => {
         <div className="SidebarContentBlock" key={typeName}>
           <h4 className="SidebarContentBlock__title">
             <i className="iconfont icon-collection SidebarContentBlock__icon" />{' '}
-            <FormattedMessage id="related_to_object" defaultMessage="Type Experts" />
+            <FormattedMessage id="type_experts" defaultMessage="Type Experts" />
           </h4>
           <div className="SidebarContentBlock__content">{renderObjects}</div>
           {renderButtons()}

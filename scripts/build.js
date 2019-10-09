@@ -6,7 +6,6 @@ if (!['production', 'staging'].includes(process.env.NODE_ENV)) {
 }
 
 const fs = require('fs-extra');
-// const chalk = require('chalk');
 const webpack = require('webpack');
 const paths = require('./paths');
 

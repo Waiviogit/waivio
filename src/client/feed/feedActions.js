@@ -64,7 +64,7 @@ export const getFeedContent = ({ sortBy = 'trending', category, limit = 20 }) =>
       skip: 0,
       limit,
       user_languages,
-    })
+    });
   };
 
   dispatch({
@@ -101,7 +101,7 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
       skip: feedContent.length,
       limit,
       user_languages,
-    })
+    });
   };
   return dispatch({
     type: GET_MORE_FEED_CONTENT.ACTION,

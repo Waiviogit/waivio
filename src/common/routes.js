@@ -45,6 +45,8 @@ import CreateRewardForm from '../client/rewards/Create-Edit/CreateRewardForm';
 import FilteredRewardsList from '../client/rewards/FilteredRewardsList';
 import ManageCampaign from '../client/rewards/Manage/Manage';
 import MatchBotCampaign from '../client/rewards/MatchBot/MatchBot';
+import PayablesCampaign from '../client/rewards/Payables/Payables';
+import PaymentCampaign from '../client/rewards/Payment/Payment';
 import ObjectOfTypePage from '../client/object/ObjectOfTypePage/ObjectOfTypePage';
 
 const routes = [
@@ -59,6 +61,8 @@ const routes = [
       {
         path: [
           '/rewards/(create|manage|match-bot|edit)/:campaignId?',
+          '/rewards/payables',
+          '/rewards/payables/@:userName',
           '/rewards/:filterKey/:campaignParent?',
         ],
         exact: true,
@@ -73,6 +77,16 @@ const routes = [
             path: '/rewards/manage',
             exact: true,
             component: ManageCampaign,
+          },
+          {
+            path: '/rewards/payables',
+            exact: true,
+            component: PayablesCampaign,
+          },
+          {
+            path: '/rewards/payables/@:userName',
+            exact: true,
+            component: PaymentCampaign,
           },
           {
             path: '/rewards/match-bot',
