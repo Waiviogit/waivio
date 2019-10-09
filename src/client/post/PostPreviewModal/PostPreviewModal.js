@@ -115,6 +115,8 @@ class PostPreviewModal extends Component {
 
   hideCheckReviewModal = () => this.setState({ isCheckReviewModalOpen: false });
 
+  showEditor = () => this.setState({ isCheckReviewModalOpen: false, isModalOpen: false });
+
   handleConfirmedChange = isConfirmed => this.setState({ isConfirmed });
 
   handleSettingsChange = updatedValue => this.props.onSettingsChange(updatedValue);
@@ -228,7 +230,7 @@ class PostPreviewModal extends Component {
             reviewData={reviewData}
             linkedObjects={linkedObjects}
             onCancel={this.hideCheckReviewModal}
-            // onEdit={}
+            onEdit={this.showEditor}
             // onSubmit={}
           />
         )}

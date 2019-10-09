@@ -36,6 +36,7 @@ const CheckReviewModal = ({
   reviewData: { campaign, reviewer },
   linkedObjects,
   onCancel,
+  onEdit,
 }) => {
   const { postRequirements, authorRequirements } = getReviewRequirements(campaign, reviewer.name);
   const secondaryObject = linkedObjects.find(obj => obj.id === postRequirements.secondaryObject);
@@ -91,6 +92,8 @@ const CheckReviewModal = ({
             })}
           </span>
           &nbsp;
+          {campaign.alias}
+          &nbsp; (
           <a
             href={`/@${campaign.guideName}`}
             title={campaign.guideName}
@@ -99,6 +102,7 @@ const CheckReviewModal = ({
           >
             @{campaign.guideName}
           </a>
+          ).
         </div>
         <div className="check-review-modal__buttons">
           <Button htmlType="button" onClick={() => console.log('Submit >')} size="large">
@@ -116,7 +120,6 @@ const CheckReviewModal = ({
             id: `check_review_requirements_title`,
             defaultMessage: 'This review does not meet some of the formal requirements.',
           })}
-          :
         </div>
         <div className="check-review-modal__list">
           <div className="check-review-modal__list-title fw5">
@@ -191,8 +194,8 @@ const CheckReviewModal = ({
           </div>
         </div>
         <div className="check-review-modal__buttons">
-          <Button htmlType="button" onClick={onCancel} size="large">
-            {intl.formatMessage({ id: 'edit', defaultMessage: 'EDIT' })}
+          <Button htmlType="button" onClick={onEdit} size="large">
+            {intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
           </Button>
         </div>
       </React.Fragment>
@@ -226,6 +229,7 @@ CheckReviewModal.propTypes = {
   }),
   linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
   onCancel: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
 };
 
 CheckReviewModal.defaultProps = {
