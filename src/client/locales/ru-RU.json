@@ -774,9 +774,9 @@
   "check_review_minExpertise": "Минимальная общая экспертиза: {minExpertise}",
   "check_review_minFollowers": "Минимальное количество подписчиков: {minFollowers}",
   "check_review_minPosts": "Минимальное количество публикаций: {minPosts}",
-  "check_review_agreement_part_1": "This review meets all the technical requirements of",
-  "check_review_the_reservation": "the reservation",
-  "check_review_agreement_part_2": "and entitles you to specified rewards. The sponsor reserves the right to review all submissions manually before paying the rewards.",
-  "check_review_agreement_part_3": "In many jurisdictions, readers should be informed that the review has been partially sponsored. In order to meet these requirements, the following notice will be added to your post:",
-  "check_review_post_add_text": "This review was sponsored in part by"
+  "check_review_agreement_part_1": "Данный обзор отвечает всем техническим требованиям",
+  "check_review_the_reservation": "резервирования",
+  "check_review_agreement_part_2": "и дает Вам право на указанные вознаграждения. Спонсор оставляет за собой право пересмотреть все материалы вручную перед выплатой вознаграждения.",
+  "check_review_agreement_part_3": "Во многих юрисдикциях читатели должны быть проинформированы о том, что обзор был частично спонсирован. Чтобы соответствовать этим требованиям, к вашему сообщению будет добавлено следующее уведомление:",
+  "check_review_post_add_text": "Данный обзор был частично спонсирован пользователем"
 }
