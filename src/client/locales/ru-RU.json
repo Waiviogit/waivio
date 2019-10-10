@@ -763,5 +763,12 @@
   "longTermData_d7": "Неделя",
   "longTermData_m1": "Месяц",
   "longTermData_m6": "Полгода",
-  "longTermData_m12": "Год"
+  "longTermData_m12": "Год",
+  "onlyRelated": "Показать только похожие посты",
+  "wia.followingInstruments": "Cледующие инструменты",
+  "wia.cryptos": "Крипто",
+  "wia.currencies": "Валюта",
+  "wia.commodities": "Товары",
+  "modalAssets.stocks": "Акции",
+  "modalAssets.indices": "Индексы"
 }
