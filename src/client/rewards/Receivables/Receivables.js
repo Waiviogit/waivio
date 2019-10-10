@@ -5,39 +5,40 @@ import _ from 'lodash';
 import { getLenders } from '../../../waivioApi/ApiClient';
 import Debts from '../Debts/Debts';
 
-const PayablesContainer = ({ userName, currentSteemDollarPrice, filterData, location }) => {
+const ReceivablesContainer = ({ userName, currentSteemDollarPrice, filterData, location }) => {
   const payableFilters = {};
   _.map(filterData, f => {
     payableFilters[f.filterName] = f.value;
   });
-  const [lenders, setLenders] = useState({});
+  const [sponsors, setSponsors] = useState({});
   useEffect(() => {
     getLenders({
-      sponsor: userName,
+      sponsor: '',
+      user: userName,
       filters: payableFilters,
     })
-      .then(data => setLenders(data))
+      .then(data => setSponsors(data))
       .catch(e => console.log(e));
   }, [filterData]);
   return (
     <Debts
       userName={userName}
       currentSteemDollarPrice={currentSteemDollarPrice}
-      debtObjsData={lenders}
+      debtObjsData={sponsors}
       componentLocation={location.pathname}
     />
   );
 };
 
-PayablesContainer.propTypes = {
+ReceivablesContainer.propTypes = {
   location: PropTypes.shape().isRequired,
-  userName: PropTypes.string.isRequired,
   currentSteemDollarPrice: PropTypes.number.isRequired,
+  userName: PropTypes.string.isRequired,
   filterData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 
-PayablesContainer.defaultProps = {
+ReceivablesContainer.defaultProps = {
   filterData: [],
 };
 
-export default injectIntl(PayablesContainer);
+export default injectIntl(ReceivablesContainer);

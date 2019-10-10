@@ -75,6 +75,14 @@ export default class SidenavRewards extends React.Component {
                 </NavLink>
               </li>
               <li>
+                <NavLink to={`/rewards/receivables`} activeClassName="Sidenav__item--active">
+                  {intl.formatMessage({
+                    id: 'sidenav_rewards_receivables',
+                    defaultMessage: `Receivables`,
+                  })}
+                </NavLink>
+              </li>
+              <li>
                 <NavLink to={`/rewards/history`} activeClassName="Sidenav__item--active">
                   {intl.formatMessage({
                     id: 'history',
@@ -108,7 +116,7 @@ export default class SidenavRewards extends React.Component {
               <li>
                 <NavLink to={`/rewards/payables`} activeClassName="Sidenav__item--active">
                   {intl.formatMessage({
-                    id: 'payables',
+                    id: 'sidenav_rewards_payables',
                     defaultMessage: `Payables`,
                   })}
                 </NavLink>

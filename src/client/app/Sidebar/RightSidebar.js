@@ -13,6 +13,7 @@ import WalletSidebar from '../../components/Sidebar/WalletSidebar';
 import FeedSidebar from '../../components/Sidebar/FeedSidebar';
 import ObjectWeightBlock from '../../components/Sidebar/ObjectWeightBlock';
 import ObjectExpertiseByType from '../../components/Sidebar/ObjectExpertiseByType/ObjectExpertiseByType';
+import DiscoverFiltersSidebar from '../../discoverObjects/DiscoverFiltersSidebar/DiscoverFiltersSidebar';
 
 @withRouter
 @connect(state => ({
@@ -50,7 +51,15 @@ export default class RightSidebar extends React.Component {
           <Route path="/created/:tag" component={FeedSidebar} />
           <Route path="/hot/:tag" component={FeedSidebar} />
           <Route path="/promoted/:tag" component={FeedSidebar} />
-          <Route path="/discover-objects/:typeName" component={ObjectExpertiseByType} />
+          <Route
+            path="/discover-objects/:typeName"
+            render={() => (
+              <React.Fragment>
+                <DiscoverFiltersSidebar />
+                <ObjectExpertiseByType match={match} />
+              </React.Fragment>
+            )}
+          />
           <Route
             path="/@:name"
             render={() => authenticated && <ObjectWeightBlock username={match.params.name} />}

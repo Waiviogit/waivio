@@ -603,12 +603,13 @@ export const getAuthenticatedUserMetadata = (
 };
 
 export const getLenders = ({ sponsor, user, filters }) => {
-  const payable = filters && filters.payable ? `&payable=${filters.payable}` : ``;
-  const days = filters && filters.days ? `&days=${filters.days}` : ``;
-  const isUser = !user ? `?sponsor=${sponsor}` : `?sponsor=${sponsor}&userName=${user}`;
+  const isSponsor = sponsor ? `?sponsor=${sponsor}` : '';
+  const payable = filters && filters.payable ? `&payable=${filters.payable}` : '';
+  const days = filters && filters.days ? `&days=${filters.days}` : '';
+  const isUser = user ? (sponsor ? `&userName=${user}` : `?userName=${user}`) : '';
   return new Promise((resolve, reject) => {
     fetch(
-      `${config.campaignApiPrefix}${config.payments}${config.payables}${isUser}${days}${payable}`,
+      `${config.campaignApiPrefix}${config.payments}${config.payables}${isSponsor}${isUser}${days}${payable}`,
       {
         headers,
         method: 'GET',
