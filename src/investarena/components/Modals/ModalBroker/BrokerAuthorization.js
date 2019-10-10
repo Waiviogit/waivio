@@ -112,8 +112,20 @@ class BrokerAuthorization extends Component {
           <FormItem>
             {getFieldDecorator('password', {
               rules: [
-                { required: true, message: 'Please input your Password!' },
-                { min: 5, message: 'Require more then 5 symbols' },
+                {
+                  required: true,
+                  message: this.props.intl.formatMessage({
+                    id: 'broker_modal_enter_password',
+                    defaultMessage: 'Please input your Password!',
+                  }),
+                },
+                {
+                  min: 5,
+                  message: this.props.intl.formatMessage({
+                    id: 'broker_modal_valid_password',
+                    defaultMessage: 'Require more then 5 symbols',
+                  }),
+                },
               ],
             })(
               <Input

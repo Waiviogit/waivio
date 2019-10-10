@@ -964,5 +964,10 @@
   "worse": "Worse",
   "week": "Week",
   "month": "Month",
-  "six_month": "Six month"
+  "six_month": "Six month",
+  "image_modal_add": "Add",
+  "image_modal_cancel": "Cancel",
+  "broker_modal_broker_settings": "Broker Settings",
+  "broker_modal_enter_password": "Please input your Password!",
+  "broker_modal_valid_password": "Require more then 5 symbols"
 }
