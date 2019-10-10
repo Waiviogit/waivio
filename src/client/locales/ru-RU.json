@@ -811,5 +811,13 @@
   "broker_modal_register": "Зарегистрироваться",
   "broker_modal_confirm_same_password": "Пароли должны быть идентичными",
   "broker_modal_valid_phone_number": "Пожалуйста, введите номер телефона",
-  "broker_modal_valid_numbers_phone_number": "Номер должен состоять не менее чем из 8 цифр"
+  "broker_modal_valid_numbers_phone_number": "Номер должен состоять не менее чем из 8 цифр",
+  "createPost.titleForecast": "Ваш прогноз (опционально)",
+  "createPost.selectTitle.instrument": "Инструмент",
+  "createPost.selectTitle.recommend": "Я рекомендую",
+  "createPost.selectTitle.price": "Цена",
+  "createPost.selectLabel.default": "Выбрать",
+  "modalTakeProfit.header.title": "Тейк профит",
+  "modalStopLoss.header.title": "Стоп лосс",
+  "createPost.selectTitle.forecast": "Продолжительность прогноза"
 }

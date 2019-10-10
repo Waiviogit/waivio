@@ -427,7 +427,7 @@
   "modalBroker.selectConnectionName": "modalBroker.selectConnectionName",
   "modalBroker.connectTo": "Connect to:",
   "modalBroker.forgotPassword": "Forgot password?",
-  "tooltip.empty": "Please fill in this field",
+  "tooltip.empty": "Please fill in this field!",
   "authorizationForm.emailPlaceholder": "Email",
   "authorizationForm.passwordPlaceholder": "Password",
   "tooltip.emailValid": "Please enter a valid email",
