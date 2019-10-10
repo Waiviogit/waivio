@@ -489,6 +489,8 @@
   "object_field_menuList": "Список",
   "object_field_pageContent": "Страница",
   "object_field_status": "Статус",
+  "object_field_galleryItem": "Элемент галереи",
+  "object_field_galleryAlbum": "Альбом галереи",
   "field_error": "требуется {field}",
   "append_send": "Подтвердить",
   "suggestion_add_field": "Обновить объект",
