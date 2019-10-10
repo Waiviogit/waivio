@@ -30,6 +30,10 @@
   "my_profile": "Мой профиль",
   "feed": "Лента",
   "my_feed": "Моя лента",
+  "home": "На главную",
+  "markets": "Торговля",
+  "my_deals": "Мои сделки",
+  "open_deals": "Открытые сделки",
   "feed_empty": "Ой! В этой ленте ничего нет",
   "empty_user_profile": "У этого пользователя пока нет каких-либо опубликованных постов.",
   "empty_comments": "Пока нет комментариев.",
@@ -748,5 +752,16 @@
   "for_days": "на",
   "legal_notice_users_user": "Обратите внимание(необязательно)",
   "custom": "Польз.",
-  "manage": "Управлять"
+  "manage": "Управлять",
+  "headerAuthorized.connectToBroker": "Подключиться к брокеру",
+  "top_performers": "Лучшие участники",
+  "green": "Зеленый",
+  "red": "Красный",
+  "better": "Лучше",
+  "worse": "Хуже",
+  "week": "Неделя",
+  "longTermData_d7": "Неделя",
+  "longTermData_m1": "Месяц",
+  "longTermData_m6": "Полгода",
+  "longTermData_m12": "Год"
 }

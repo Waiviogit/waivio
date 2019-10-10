@@ -163,7 +163,9 @@ class TopPerformers extends Component {
     return isLoaded && !isLoading ? (
       <div className="top-performers">
         <div className="top-performers__header">
-          <div className="top-performers__title">Top performers</div>
+          <div className="top-performers__title">
+            {intl.formatMessage({ id: 'top_performers', defaultMessage: 'Top performers' })}
+          </div>
           {!isEmpty(compareWith) && itemsToCompare && (
             <React.Fragment>
               <div id="top-performers__compare-input-wrap">
@@ -207,7 +209,7 @@ class TopPerformers extends Component {
             </React.Fragment>
           )}
         </div>
-
+        {console.log('period', TopPerformers.periods)}
         {size(performersStat) > 0 ? (
           Object.keys(TopPerformers.periods).map(key =>
             performersStat[key] ? (
