@@ -107,6 +107,7 @@ const Proposition = ({
           companyPermlink: proposition.activation_permlink,
           resPermlink: reserveData.reservation_permlink,
           objPermlink: wobj.author_permlink,
+          companyId: proposition._id,
         });
         openModal(false);
         setReservation(true);
