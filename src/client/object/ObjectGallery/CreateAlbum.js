@@ -1,11 +1,60 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Form, Input, Modal } from 'antd';
+import { Button, Form, Input, message, Modal } from 'antd';
+import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
+
 import { objectNameValidationRegExp } from '../../../common/constants/validation';
+import { prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelper';
+import { getAuthenticatedUserName, getIsAppendLoading, getObject } from '../../reducers';
+import { appendObject } from '../appendActions';
+import { addAlbumToStore } from './galleryActions';
 import './CreateAlbum.less';
 
-const CreateAlbum = ({ showModal, hideModal, handleSubmit, form, loading, intl }) => {
+const CreateAlbum = ({
+  showModal,
+  hideModal,
+  form,
+  loading,
+  intl,
+  currentUsername,
+  wObject,
+  // eslint-disable-next-line no-shadow
+  appendObject,
+  // eslint-disable-next-line no-shadow
+  addAlbumToStore,
+}) => {
+  const handleSubmit = async formData => {
+    const data = prepareAlbumData(formData, currentUsername, wObject);
+    const album = prepareAlbumToStore(data);
+
+    try {
+      const { author } = await appendObject(data);
+      await addAlbumToStore({ ...album, author });
+      hideModal();
+      // this.handleToggleModal();
+      message.success(
+        intl.formatMessage(
+          {
+            id: 'gallery_add_album_success',
+            defaultMessage: 'You successfully have created the {albumName} album',
+          },
+          {
+            albumName: formData.galleryAlbum,
+          },
+        ),
+      );
+    } catch (err) {
+      message.error(
+        intl.formatMessage({
+          id: 'gallery_add_album_failure',
+          defaultMessage: "Couldn't create the album.",
+        }),
+      );
+      console.log('err', err);
+    }
+  };
+
   const handleOnClick = e => {
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => !err && handleSubmit(values));
@@ -82,10 +131,31 @@ const CreateAlbum = ({ showModal, hideModal, handleSubmit, form, loading, intl }
 CreateAlbum.propTypes = {
   showModal: PropTypes.bool.isRequired,
   hideModal: PropTypes.func.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
   intl: PropTypes.shape().isRequired,
   form: PropTypes.shape().isRequired,
+  currentUsername: PropTypes.string.isRequired,
+  wObject: PropTypes.shape().isRequired,
+  appendObject: PropTypes.func.isRequired,
+  addAlbumToStore: PropTypes.func.isRequired,
 };
 
-export default injectIntl(Form.create()(CreateAlbum));
+const mapStateToProps = state => ({
+  loading: getIsAppendLoading(state),
+  currentUsername: getAuthenticatedUserName(state),
+  wObject: getObject(state),
+});
+
+const mapDispatchToProps = dispatch => ({
+  addAlbumToStore: album => dispatch(addAlbumToStore(album)),
+  appendObject: wObject => dispatch(appendObject(wObject)),
+});
+
+export default injectIntl(
+  Form.create()(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps,
+    )(CreateAlbum),
+  ),
+);

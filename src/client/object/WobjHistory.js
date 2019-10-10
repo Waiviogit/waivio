@@ -34,6 +34,7 @@ import './WobjHistory.less';
 import { getFieldWithMaxWeight } from './wObjectHelper';
 import OBJECT_TYPE from './const/objectTypes';
 import CreateImage from './ObjectGallery/CreateImage';
+import CreateAlbum from './ObjectGallery/CreateAlbum';
 
 @connect(
   state => ({
@@ -85,6 +86,7 @@ export default class WobjHistory extends React.Component {
       field: props.match.params[1] || '',
       showModal: false,
       showModalGalleryItem: false,
+      showModalGalleryAlbum: false,
       sort: 'recency',
     };
   }
@@ -118,6 +120,8 @@ export default class WobjHistory extends React.Component {
   handleToggleModal = () => {
     if (this.state.field === 'galleryItem') {
       this.setState(prevState => ({ showModalGalleryItem: !prevState.showModalGalleryItem }));
+    } else if (this.state.field === 'galleryAlbum') {
+      this.setState(prevState => ({ showModalGalleryAlbum: !prevState.showModalGalleryAlbum }));
     } else {
       this.setState({ showModal: !this.state.showModal });
     }
@@ -126,7 +130,14 @@ export default class WobjHistory extends React.Component {
   handleSortChange = sort => this.setState({ sort });
 
   render() {
-    const { field, locale, showModal, showModalGalleryItem, sort } = this.state;
+    const {
+      field,
+      locale,
+      showModal,
+      showModalGalleryItem,
+      showModalGalleryAlbum,
+      sort,
+    } = this.state;
     const { feed, object, comments, readLanguages, isAuthenticated, albums } = this.props;
 
     const commentIds = getFeedFromState('comments', object.author, feed);
@@ -192,6 +203,7 @@ export default class WobjHistory extends React.Component {
                 showModal={showModalGalleryItem}
                 hideModal={this.handleToggleModal}
               />
+              <CreateAlbum showModal={showModalGalleryAlbum} hideModal={this.handleToggleModal} />
               {showModal && (
                 <AppendModal
                   showModal={showModal}

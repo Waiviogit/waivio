@@ -15,7 +15,7 @@ class WobjMenuWrapper extends React.Component {
     history: PropTypes.shape().isRequired,
     wobject: PropTypes.shape().isRequired,
     username: PropTypes.string.isRequired,
-    albumsAndImagesCount: PropTypes.arrayOf(PropTypes.shape()),
+    albumsAndImagesCount: PropTypes.number,
   };
 
   static defaultProps = {
@@ -99,7 +99,7 @@ WobjHero.propTypes = {
   isFollowing: PropTypes.bool,
   wobject: PropTypes.shape(),
   toggleViewEditMode: PropTypes.func,
-  albumsAndImagesCount: PropTypes.arrayOf(PropTypes.shape()),
+  albumsAndImagesCount: PropTypes.number,
 };
 
 WobjHero.defaultProps = {
