@@ -153,8 +153,7 @@ const CreateFormRenderer = props => {
   );
 
   return (
-    <React.Fragment>
-      <br />
+    <div className="CreateRewardForm shifted">
       {notEnoughMoneyWarn}
       {activeCampaignWarn}
 
@@ -426,8 +425,7 @@ const CreateFormRenderer = props => {
 
         {button}
       </Form>
-      <br />
-    </React.Fragment>
+    </div>
   );
 };
 
