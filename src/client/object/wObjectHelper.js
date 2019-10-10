@@ -222,8 +222,11 @@ export const hasActionType = (post, actionTypes = ['createObject', 'appendObject
 };
 
 export const mapObjectAppends = (comments, wObj, albums) => {
+  const galleryImages = [];
+  albums.map(album => album.items.map(item => galleryImages.push(item)));
+
   const filteredComments = Object.values(comments).filter(comment => hasActionType(comment));
-  return [...wObj.fields, ...wObj.preview_gallery, ...albums].map(field => {
+  return [...wObj.fields, ...galleryImages, ...albums].map(field => {
     const matchComment = filteredComments.find(
       comment => comment.permlink === field.permlink && comment.author === field.author,
     );
