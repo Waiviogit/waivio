@@ -415,6 +415,19 @@ export const getTopUsers = (isRandom = false, { limit, skip } = { limit: 30, ski
   });
 };
 
+//region Campaigns Requests
+
+export const getCampaignById = campaignId =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.campaign}/${campaignId}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(response => resolve(response.campaign))
+      .catch(error => reject(error));
+  });
+
 export const getPropositions = ({
   limit = 30,
   skip = 0,
@@ -578,16 +591,7 @@ export const getCampaignByGuideNameAndObject = (guideName, object) =>
       .catch(error => reject(error));
   });
 
-export const getCampaignById = campaignId =>
-  new Promise((resolve, reject) => {
-    fetch(`${config.campaignApiPrefix}${config.campaign}/${campaignId}`, {
-      headers,
-      method: 'GET',
-    })
-      .then(res => res.json())
-      .then(result => resolve(result))
-      .catch(error => reject(error));
-  });
+//endregion
 
 export const getAuthenticatedUserMetadata = (
   userName,
