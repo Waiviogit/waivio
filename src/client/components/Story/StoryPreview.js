@@ -28,7 +28,8 @@ const StoryPreview = ({ post }) => {
       imagePath = getProxyImageURL(jsonMetadata.image[0], 'preview');
     } else if (
       jsonMetadata.wobj &&
-      _.includes(['galleryItem', 'avatar', 'background'], jsonMetadata.wobj.field.name)
+      jsonMetadata.wobj.field &&
+      ['galleryItem', 'avatar', 'background'].includes(jsonMetadata.wobj.field.name)
     ) {
       imagePath = jsonMetadata.wobj.field.body;
     }

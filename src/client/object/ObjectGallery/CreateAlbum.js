@@ -19,18 +19,16 @@ const CreateAlbum = ({
   intl,
   currentUsername,
   wObject,
-  // eslint-disable-next-line no-shadow
-  appendObject,
-  // eslint-disable-next-line no-shadow
-  addAlbumToStore,
+  appendObjectDispatch,
+  addAlbumToStoreDispatch,
 }) => {
   const handleSubmit = async formData => {
     const data = prepareAlbumData(formData, currentUsername, wObject);
     const album = prepareAlbumToStore(data);
 
     try {
-      const { author } = await appendObject(data);
-      await addAlbumToStore({ ...album, author });
+      const { author } = await appendObjectDispatch(data);
+      await addAlbumToStoreDispatch({ ...album, author });
       hideModal();
       // this.handleToggleModal();
       message.success(
@@ -136,8 +134,8 @@ CreateAlbum.propTypes = {
   form: PropTypes.shape().isRequired,
   currentUsername: PropTypes.string.isRequired,
   wObject: PropTypes.shape().isRequired,
-  appendObject: PropTypes.func.isRequired,
-  addAlbumToStore: PropTypes.func.isRequired,
+  appendObjectDispatch: PropTypes.func.isRequired,
+  addAlbumToStoreDispatch: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -147,8 +145,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  addAlbumToStore: album => dispatch(addAlbumToStore(album)),
-  appendObject: wObject => dispatch(appendObject(wObject)),
+  addAlbumToStoreDispatch: album => dispatch(addAlbumToStore(album)),
+  appendObjectDispatch: wObject => dispatch(appendObject(wObject)),
 });
 
 export default injectIntl(
