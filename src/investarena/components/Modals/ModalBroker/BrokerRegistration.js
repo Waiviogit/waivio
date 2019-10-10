@@ -103,7 +103,13 @@ class BrokerRegistration extends Component {
 
     return (
       <Form onSubmit={this.handleSubmit}>
-        <FormItem {...formItemLayout} label={<span>Platform</span>}>
+        <FormItem
+          {...formItemLayout}
+          label={this.props.intl.formatMessage({
+            id: 'broker_modal_enter_platform',
+            defaultMessage: 'Platform',
+          })}
+        >
           {getFieldDecorator('platform', {
             initialValue: optionsPlatform[0].value,
           })(
@@ -125,54 +131,135 @@ class BrokerRegistration extends Component {
             </Select>,
           )}
         </FormItem>
-        <FormItem {...formItemLayout} label={<span>First name</span>}>
+        <FormItem
+          {...formItemLayout}
+          label={this.props.intl.formatMessage({
+            id: 'broker_modal_enter_first_name',
+            defaultMessage: 'First name',
+          })}
+        >
           {getFieldDecorator('firstName', {
-            rules: [{ required: true, message: 'Please input your firstName!', whitespace: true }],
+            rules: [
+              {
+                required: true,
+                message: this.props.intl.formatMessage({
+                  id: 'broker_modal_valid_first_name',
+                  defaultMessage: 'Please input your first name!',
+                }),
+                whitespace: true,
+              },
+            ],
           })(<Input />)}
         </FormItem>
-        <FormItem {...formItemLayout} label={<span>Last name</span>}>
+        <FormItem
+          {...formItemLayout}
+          label={this.props.intl.formatMessage({
+            id: 'broker_modal_enter_last_name',
+            defaultMessage: 'Last name',
+          })}
+        >
           {getFieldDecorator('lastName', {
-            rules: [{ required: true, message: 'Please input your lastName!', whitespace: true }],
+            rules: [
+              {
+                required: true,
+                message: this.props.intl.formatMessage({
+                  id: 'broker_modal_valid_last_name',
+                  defaultMessage: 'Please input your last name!',
+                }),
+                whitespace: true,
+              },
+            ],
           })(<Input />)}
         </FormItem>
-        <FormItem {...formItemLayout} label="E-mail">
+        <FormItem
+          {...formItemLayout}
+          label={this.props.intl.formatMessage({
+            id: 'broker_modal_enter_e-mail',
+            defaultMessage: 'E-mail',
+          })}
+        >
           {getFieldDecorator('email', {
             rules: [
               {
                 type: 'email',
-                message: 'The input is not valid E-mail!',
+                message: this.props.intl.formatMessage({
+                  id: 'tooltip.emailValid',
+                  defaultMessage: 'Please enter a valid email',
+                }),
               },
               {
                 required: true,
-                message: 'Please input your E-mail!',
+                message: this.props.intl.formatMessage({
+                  id: 'tooltip.empty',
+                  defaultMessage: 'Please fill in this field',
+                }),
               },
             ],
           })(<Input />)}
         </FormItem>
-        <FormItem {...formItemLayout} label="Password">
+        <FormItem
+          {...formItemLayout}
+          label={this.props.intl.formatMessage({
+            id: 'broker_modal_enter_passowrd',
+            defaultMessage: 'Password',
+          })}
+        >
           {getFieldDecorator('password', {
             rules: [
               {
                 required: true,
-                message: 'Please input your password!',
+                message: this.props.intl.formatMessage({
+                  id: 'broker_modal_enter_password',
+                  defaultMessage: 'Please input your Password!',
+                }),
               },
               {
                 validator: this.validateToNextPassword,
               },
-              { min: 5, message: 'Require more then 5 symbols' },
+              {
+                min: 5,
+                message: this.props.intl.formatMessage({
+                  id: 'broker_modal_valid_password',
+                  defaultMessage: 'Require more then 5 symbols',
+                }),
+              },
             ],
           })(<Input type="password" />)}
         </FormItem>
-        <FormItem {...formItemLayout} label="Confirmation">
+        <FormItem
+          {...formItemLayout}
+          label={this.props.intl.formatMessage({
+            id: 'broker_modal_enter_confirmation',
+            defaultMessage: 'Confirmation',
+          })}
+        >
           {getFieldDecorator('confirm', {
             rules: [
-              { required: true, message: 'Please confirm your password!' },
+              {
+                required: true,
+                message: this.props.intl.formatMessage({
+                  id: 'broker_modal_confirm_password',
+                  defaultMessage: 'Please confirm your password!',
+                }),
+              },
               { validator: this.compareToFirstPassword },
-              { min: 5, message: 'Require more then 5 symbols' },
+              {
+                min: 5,
+                message: this.props.intl.formatMessage({
+                  id: 'broker_modal_valid_password',
+                  defaultMessage: 'Require more then 5 symbols',
+                }),
+              },
             ],
           })(<Input type="password" onBlur={this.handleConfirmBlur} />)}
         </FormItem>
-        <FormItem {...formItemLayout} label={<span>Country&nbsp;</span>}>
+        <FormItem
+          {...formItemLayout}
+          label={this.props.intl.formatMessage({
+            id: 'broker_modal_enter_country',
+            defaultMessage: 'Country',
+          })}
+        >
           {getFieldDecorator('country', {
             initialValue: 'US',
           })(
@@ -194,7 +281,13 @@ class BrokerRegistration extends Component {
             </Select>,
           )}
         </FormItem>
-        <FormItem {...formItemLayout} label="Phone Number">
+        <FormItem
+          {...formItemLayout}
+          label={this.props.intl.formatMessage({
+            id: 'broker_modal_enter_phone_number',
+            defaultMessage: 'Phone Number',
+          })}
+        >
           {getFieldDecorator('phone', {
             rules: [
               { required: true, message: 'Please input your phone number!' },
@@ -205,9 +298,15 @@ class BrokerRegistration extends Component {
         </FormItem>
         <FormItem {...tailFormItemLayout}>
           <Checkbox className="d-flex align-items-center" onClick={this.handleReadChange}>
-            I have read the{' '}
+            {this.props.intl.formatMessage({
+              id: 'broker_modal_i_have_read',
+              defaultMessage: 'I have read the',
+            })}{' '}
             <a href={agreements[this.state.platformName]} target="_blank" rel="noopener noreferrer">
-              agreement
+              {this.props.intl.formatMessage({
+                id: 'broker_modal_agreement',
+                defaultMessage: 'agreement',
+              })}
             </a>
           </Checkbox>
         </FormItem>
@@ -219,7 +318,10 @@ class BrokerRegistration extends Component {
             disabled={!this.state.isAgreementRead}
             loading={this.props.isLoading}
           >
-            Register
+            {this.props.intl.formatMessage({
+              id: 'broker_modal_register',
+              defaultMessage: 'Register',
+            })}
           </Button>
         </FormItem>
       </Form>

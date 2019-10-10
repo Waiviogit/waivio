@@ -969,5 +969,18 @@
   "image_modal_cancel": "Cancel",
   "broker_modal_broker_settings": "Broker Settings",
   "broker_modal_enter_password": "Please input your Password!",
-  "broker_modal_valid_password": "Require more then 5 symbols"
+  "broker_modal_valid_password": "Require more then 5 symbols",
+  "broker_modal_valid_first_name": "Please input your first name!",
+  "broker_modal_enter_first_name": "First name",
+  "broker_modal_valid_last_name":  "Please input your last name!",
+  "broker_modal_enter_e-mail": "E-mail",
+  "broker_modal_enter_passowrd": "Passowrd",
+  "broker_modal_enter_confirmation": "Confirmation",
+  "broker_modal_confirm_password": "Please confirm your password!",
+  "broker_modal_enter_country": "Country",
+  "broker_modal_enter_phone_number": "Phone number",
+  "broker_modal_enter_platform": "Platform",
+  "broker_modal_i_have_read": "I have read the ",
+  "broker_modal_agreement": "agreement",
+  "broker_modal_register": "Register"
 }
