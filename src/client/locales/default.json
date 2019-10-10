@@ -972,7 +972,7 @@
   "broker_modal_valid_password": "Require more then 5 symbols",
   "broker_modal_valid_first_name": "Please input your first name!",
   "broker_modal_enter_first_name": "First name",
-  "broker_modal_valid_last_name":  "Please input your last name!",
+  "broker_modal_valid_last_name": "Please input your last name!",
   "broker_modal_enter_e-mail": "E-mail",
   "broker_modal_enter_passowrd": "Passowrd",
   "broker_modal_enter_confirmation": "Confirmation",
@@ -982,5 +982,8 @@
   "broker_modal_enter_platform": "Platform",
   "broker_modal_i_have_read": "I have read the ",
   "broker_modal_agreement": "agreement",
-  "broker_modal_register": "Register"
+  "broker_modal_register": "Register",
+  "broker_modal_confirm_same_password": "Two passwords that you enter is inconsistent!",
+  "broker_modal_valid_phone_number": "Please input your phone number!",
+  "broker_modal_valid_numbers_phone_number": "Require more then 8 numbers"
 }

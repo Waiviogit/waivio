@@ -48,7 +48,12 @@ class BrokerRegistration extends Component {
   compareToFirstPassword = (rule, value, callback) => {
     const form = this.props.form;
     if (value && value !== form.getFieldValue('password')) {
-      callback('Two passwords that you enter is inconsistent!');
+      callback(
+        this.props.intl.formatMessage({
+          id: 'broker_modal_confirm_same_password',
+          defaultMessage: 'Two passwords that you enter is inconsistent!',
+        }),
+      );
     } else {
       callback();
     }
@@ -243,13 +248,6 @@ class BrokerRegistration extends Component {
                 }),
               },
               { validator: this.compareToFirstPassword },
-              {
-                min: 5,
-                message: this.props.intl.formatMessage({
-                  id: 'broker_modal_valid_password',
-                  defaultMessage: 'Require more then 5 symbols',
-                }),
-              },
             ],
           })(<Input type="password" onBlur={this.handleConfirmBlur} />)}
         </FormItem>
@@ -290,8 +288,20 @@ class BrokerRegistration extends Component {
         >
           {getFieldDecorator('phone', {
             rules: [
-              { required: true, message: 'Please input your phone number!' },
-              { min: 8, message: 'Require more then 8 numbers' },
+              {
+                required: true,
+                message: this.props.intl.formatMessage({
+                  id: 'broker_modal_valid_phone_number',
+                  defaultMessage: 'Please input your phone number!',
+                }),
+              },
+              {
+                min: 8,
+                message: this.props.intl.formatMessage({
+                  id: 'broker_modal_valid_numbers_phone_number',
+                  defaultMessage: 'Require more then 8 numbers',
+                }),
+              },
               // { type: 'number', message: 'Only numbers' }
             ],
           })(<Input addonBefore={prefixSelector} style={{ width: '100%' }} />)}
