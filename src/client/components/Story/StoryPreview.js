@@ -17,6 +17,7 @@ import {
 } from './StoryHelper';
 import { getHtml } from './Body';
 import { getProxyImageURL } from '../../helpers/image';
+import { objectFields } from '../../../common/constants/listOfFields';
 
 const StoryPreview = ({ post }) => {
   if (!post) return '';
@@ -29,7 +30,9 @@ const StoryPreview = ({ post }) => {
     } else if (
       jsonMetadata.wobj &&
       jsonMetadata.wobj.field &&
-      ['galleryItem', 'avatar', 'background'].includes(jsonMetadata.wobj.field.name)
+      [objectFields.galleryItem, objectFields.avatar, objectFields.background].includes(
+        jsonMetadata.wobj.field.name,
+      )
     ) {
       imagePath = jsonMetadata.wobj.field.body;
     }

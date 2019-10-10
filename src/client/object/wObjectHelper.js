@@ -223,7 +223,7 @@ export const hasActionType = (post, actionTypes = ['createObject', 'appendObject
 
 export const mapObjectAppends = (comments, wObj, albums) => {
   const galleryImages = [];
-  albums.forEach(album => album.items.map(item => galleryImages.push(item)));
+  albums.forEach(album => album.items.forEach(item => galleryImages.push(item)));
 
   const filteredComments = Object.values(comments).filter(comment => hasActionType(comment));
   return [...wObj.fields, ...galleryImages, ...albums].map(field => {

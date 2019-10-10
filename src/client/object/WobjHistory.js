@@ -118,9 +118,9 @@ export default class WobjHistory extends React.Component {
   };
 
   handleToggleModal = () => {
-    if (this.state.field === 'galleryItem') {
+    if (this.state.field === objectFields.galleryItem) {
       this.setState(prevState => ({ showModalGalleryItem: !prevState.showModalGalleryItem }));
-    } else if (this.state.field === 'galleryAlbum') {
+    } else if (this.state.field === objectFields.galleryAlbum) {
       this.setState(prevState => ({ showModalGalleryAlbum: !prevState.showModalGalleryAlbum }));
     } else {
       this.setState({ showModal: !this.state.showModal });
