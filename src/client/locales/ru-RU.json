@@ -768,7 +768,7 @@
   "longTermData_m9": "9 месяцев",
   "longTermData_m12": "Год",
   "longTermData_m24": "2 года",
-  "onlyRelated": "Показать только похожие посты",
+  "onlyRelated": "Показать только связанные посты",
   "wia.followingInstruments": "Cледующие инструменты",
   "wia.cryptos": "Крипто",
   "wia.currencies": "Валюта",
@@ -864,5 +864,10 @@
   "dealsSelect.last60Days": "Последние 60 дней",
   "dealsSelect.last90Days": "Последние 90 дней",
   "dealsSelect.last3Months": "Последние 3 месяца",
-  "dealsSelect.last6Months": "Последние полгода"
+  "dealsSelect.last6Months": "Последние полгода",
+  "create_album_valid_enter_name": "Пожалуйста, введите наименование альбома",
+  "album_send_progress": "Предоставление",
+  "album_append_send": "Создать",
+  "image_send_progress": "Предоставление",
+  "image_append_send": "Загрузить"
 }

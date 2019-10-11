@@ -988,5 +988,10 @@
   "broker_modal_valid_numbers_phone_number": "Require more then 8 numbers",
   "performance": "Performance",
   "story_approval": "Approval:",
-  "story_min_70_is_required": "Min 70% is required"
+  "story_min_70_is_required": "Min 70% is required",
+  "create_album_valid_enter_name": "Please, enter name of album",
+  "album_send_progress": "Submitting",
+  "album_append_send": "Create",
+  "image_send_progress": "Submitting",
+  "image_append_send": "Submit image"
 }

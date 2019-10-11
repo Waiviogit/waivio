@@ -29,13 +29,10 @@ const CreateAlbum = ({ showModal, hideModal, handleSubmit, form, loading, intl }
             rules: [
               {
                 required: true,
-                message: intl.formatMessage(
-                  {
-                    id: 'field_error',
-                    defaultMessage: 'Field is required',
-                  },
-                  { field: 'Album' },
-                ),
+                message: intl.formatMessage({
+                  id: 'create_album_valid_enter_name',
+                  defaultMessage: 'Please, enter name of album',
+                }),
               },
               {
                 max: 100,
