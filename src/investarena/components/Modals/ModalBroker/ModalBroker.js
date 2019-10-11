@@ -1,6 +1,7 @@
 import { Modal } from 'antd';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { injectIntl } from 'react-intl';
 import ModalBrokerTab from '../ModalBroker/ModalBrokerTab';
 import './ModalBroker.less';
 
@@ -17,7 +18,10 @@ const propTypes = {
 
 const ModalBroker = props => (
   <Modal
-    title="Broker Settings"
+    title={props.intl.formatMessage({
+      id: 'broker_modal_broker_settings',
+      defaultMessage: 'Broker Settings',
+    })}
     visible={props.isOpen}
     footer={null}
     onCancel={props.toggleModal}
@@ -37,4 +41,4 @@ const ModalBroker = props => (
 
 ModalBroker.propTypes = propTypes;
 
-export default ModalBroker;
+export default injectIntl(ModalBroker);
