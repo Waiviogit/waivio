@@ -2,6 +2,10 @@
 @import (reference) '../../../components/Sidebar/User.less';
 
 .top-performers {
+  &__header {
+    padding-bottom: 6px;
+  }
+
   &__title {
     font-weight: 700;
     text-align: center;
@@ -14,7 +18,7 @@
     cursor: pointer;
     transition: color 0.3s;
     &:hover {
-      color: #4aa4ff;
+      color: @primary-color;
     }
   }
 

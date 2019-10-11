@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import cn from 'classnames';
 import { size } from 'lodash';
 import Avatar from '../../../components/Avatar';
@@ -14,8 +14,8 @@ import {
   getPerformersStatisticLoading,
 } from '../../../reducers';
 import { DEFAULT_OBJECT_AVATAR_URL } from '../../../../common/constants/waivio';
-import './TopPerformers.less';
 import { toFixNumberLength } from '../../../../investarena/helpers/calculationsHelper';
+import './TopPerformers.less';
 
 const getPerformerLinks = performer => {
   switch (performer.type) {
@@ -50,7 +50,7 @@ const getPerformerLinks = performer => {
   }
 };
 
-const formatPerfomance = performanceValue => {
+const formatPerformance = performanceValue => {
   const plusSign = performanceValue > 0 ? '+' : '';
   return `${plusSign}${toFixNumberLength(performanceValue, 3)}%`;
 };
@@ -99,14 +99,6 @@ class TopPerformers extends Component {
     // m24: 'Two Years',
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      itemsToCompare: [],
-    };
-  }
-
   loadMorePerformers = e => {
     const period = e.currentTarget.id;
     this.props.getPerformersStatsMore(period, 5, this.props.performersStat[period].length);
@@ -144,20 +136,20 @@ class TopPerformers extends Component {
                             danger: performer[key] < 0,
                           })}
                         >
-                          {formatPerfomance(performer[key])}
+                          {formatPerformance(performer[key])}
                         </div>
                       </div>
                       <div className="performer__divider" />
                     </div>
                   ))}
-                  <h4
+                  <div
                     id={key}
                     className="top-performers__more"
                     onClick={this.loadMorePerformers}
                     role="presentation"
                   >
-                    <FormattedMessage id="show_more" defaultMessage="Show more" />
-                  </h4>
+                    {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}
+                  </div>
                 </div>
               </div>
             ) : null,
