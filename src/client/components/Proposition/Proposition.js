@@ -63,7 +63,6 @@ class Proposition extends React.Component {
             objName={objName}
             showModal={showModal}
             hideModal={this.handleToggleModal}
-            locale={'en-US'}
             field={fieldName}
           />
         )}
