@@ -830,5 +830,14 @@
   "compare_profitability": "Cравнить доходность",
   "forecast.currentForecast": "Текущие прогнозы",
   "forecast.create": "Создан:",
-  "forecast.expire": "Истекает:"
+  "forecast.expire": "Истекает:",
+  "approval": "Одобрение:",
+  "story_min_70_is_required": "Требуется минимум 70%",
+  "postForecast.expired": "Дата окончания",
+  "postSellBuy.profitability": "Доходность:",
+  "assets.instrument": "Инструмент",
+  "assets.dailyChange": "Изменения за день",
+  "assets.amount": "Количество",
+  "assets.sell": "Продать",
+  "assets.buy": "Купить"
 }

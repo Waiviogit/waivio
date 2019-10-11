@@ -986,5 +986,7 @@
   "broker_modal_confirm_same_password": "Two passwords that you enter is inconsistent!",
   "broker_modal_valid_phone_number": "Please input your phone number!",
   "broker_modal_valid_numbers_phone_number": "Require more then 8 numbers",
-  "performance": "Performance"
+  "performance": "Performance",
+  "story_approval": "Approval:",
+  "story_min_70_is_required": "Min 70% is required"
 }

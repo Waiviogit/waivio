@@ -11,7 +11,6 @@ import {
 import { Link, withRouter } from 'react-router-dom';
 import { Tag } from 'antd';
 import formatter from '../../helpers/steemitFormatter';
-import { getHasDefaultSlider } from '../../helpers/user';
 import { isValidForecast } from '../../helpers/forecastHelper';
 import {
   isPostDeleted,
@@ -127,13 +126,21 @@ class Story extends React.Component {
       <React.Fragment>
         <Tag>
           <span>
-            Approval:{' '}
+            {this.props.intl.formatMessage({
+              id: 'approval',
+              defaultMessage: 'Approval',
+            })}
             <span className={`CalculatedPercent-${percent >= 70 ? 'green' : 'red'}`}>
               {percent.toFixed(2)}%
             </span>
           </span>
         </Tag>
-        <span className="MinPercent">Min 70% is required</span>
+        <span className="MinPercent">
+          {this.props.intl.formatMessage({
+            id: 'story_min_70_is_required',
+            defaultMessage: 'Min 70% is required',
+          })}
+        </span>
       </React.Fragment>
     );
   };
@@ -153,6 +160,7 @@ class Story extends React.Component {
 
     return true;
   }
+
   getObjectLayout = wobj => {
     const pathName = `/object/${wobj.author_permlink}`;
     let name = '';
