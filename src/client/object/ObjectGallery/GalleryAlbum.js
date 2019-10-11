@@ -5,7 +5,6 @@ import { Card } from 'antd';
 import './GalleryAlbum.less';
 
 const GalleryAlbum = ({ album }) => {
-  console.log('album body', album.body);
   const albumItem = _.max(album.items, item => item.weight) || {
     body: '/images/icons/no-image.png',
   };
