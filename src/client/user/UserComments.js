@@ -56,7 +56,7 @@ export default class UserProfilePosts extends React.Component {
 
     return (
       <React.Fragment>
-        {content && content.length || isFetching ? (
+        {(content && content.length) || isFetching ? (
           <Feed
             content={content}
             isFetching={isFetching}
@@ -65,9 +65,9 @@ export default class UserProfilePosts extends React.Component {
             showPostModal={this.props.showPostModal}
           />
         ) : (
-            <div className="Comments__empty">
-              <FormattedMessage id="empty_comments" defaultMessage="There are no comments yet." />
-            </div>
+          <div className="Comments__empty">
+            <FormattedMessage id="empty_comments" defaultMessage="There are no comments yet." />
+          </div>
         )}
         <PostModal />
       </React.Fragment>
