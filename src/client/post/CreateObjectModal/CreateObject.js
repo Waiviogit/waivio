@@ -9,7 +9,7 @@ import { getLanguageText } from '../../translations';
 import { objectFields } from '../../../common/constants/listOfFields';
 import LikeSection from '../../object/LikeSection';
 import FollowObjectForm from '../../object/FollowObjectForm';
-import { getObjectTypesList } from '../../reducers';
+import { getSuitableLanguage, getObjectTypesList } from '../../reducers';
 import { notify } from '../../app/Notification/notificationActions';
 import { getObjectTypes } from '../../objectTypes/objectTypesActions';
 import { createWaivioObject } from '../../object/wobjectsActions';
@@ -21,6 +21,7 @@ import './CreateObject.less';
 @connect(
   state => ({
     objectTypes: getObjectTypesList(state),
+    locale: getSuitableLanguage(state),
   }),
   {
     createWaivioObject,
@@ -35,6 +36,7 @@ class CreateObject extends React.Component {
     form: PropTypes.shape().isRequired,
     /* from connect */
     objectTypes: PropTypes.shape(),
+    locale: PropTypes.string.isRequired,
     createWaivioObject: PropTypes.func.isRequired,
     getObjectTypes: PropTypes.func.isRequired,
     notify: PropTypes.func.isRequired,
@@ -42,7 +44,6 @@ class CreateObject extends React.Component {
     isSingleType: PropTypes.bool,
     isModalOpen: PropTypes.bool,
     defaultObjectType: PropTypes.string,
-    currentLocaleInList: PropTypes.shape(),
     withOpenModalBtn: PropTypes.bool,
     openModalBtnText: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
     onCreateObject: PropTypes.func,
@@ -51,7 +52,7 @@ class CreateObject extends React.Component {
 
   static defaultProps = {
     objectTypes: {},
-    currentLocaleInList: { id: 'en-US', name: '', nativeName: '' },
+    locale: 'en-US',
     withOpenModalBtn: true,
     isSingleType: false,
     isModalOpen: false,
@@ -155,7 +156,7 @@ class CreateObject extends React.Component {
     const languageOptions = [];
     const { getFieldDecorator } = this.props.form;
     const {
-      currentLocaleInList,
+      locale,
       intl,
       form,
       objectTypes,
@@ -167,14 +168,6 @@ class CreateObject extends React.Component {
     const { loading } = this.state;
 
     const Option = Select.Option;
-
-    if (currentLocaleInList === 'auto') {
-      languageOptions.push(
-        <Option disabled key="auto" value="auto">
-          {intl.formatMessage({ id: 'select_language', defaultMessage: 'Select language' })}
-        </Option>,
-      );
-    }
 
     LANGUAGES.forEach(lang => {
       languageOptions.push(
@@ -247,7 +240,7 @@ class CreateObject extends React.Component {
             </Form.Item>
             <Form.Item>
               {getFieldDecorator('locale', {
-                initialValue: this.props.currentLocaleInList.id,
+                initialValue: locale,
                 rules: [
                   {
                     required: true,

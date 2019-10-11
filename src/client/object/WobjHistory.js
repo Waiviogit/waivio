@@ -208,7 +208,7 @@ export default class WobjHistory extends React.Component {
                 <AppendModal
                   showModal={showModal}
                   hideModal={this.handleToggleModal}
-                  locale={this.state.locale}
+                  chosenLocale={this.state.locale}
                   field={this.state.field}
                   objName={objName}
                 />
