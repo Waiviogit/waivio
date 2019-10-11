@@ -3,22 +3,16 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Select } from 'antd';
 import cn from 'classnames';
-import { debounce, isEmpty, size } from 'lodash';
+import { size } from 'lodash';
 import Avatar from '../../../components/Avatar';
 import TopInstrumentsLoading from '../TopInstrumentsLoading';
-import {
-  setInstrumentToCompare,
-  getPerformersStatsMore,
-} from '../../../../investarena/redux/actions/topPerformersActions';
+import { getPerformersStatsMore } from '../../../../investarena/redux/actions/topPerformersActions';
 import {
   getPerformersStatistic,
-  getInstrumentToCompare,
   getPerformersStatisticLoaded,
   getPerformersStatisticLoading,
 } from '../../../reducers';
-import api from '../../../../investarena/configApi/apiResources';
 import { DEFAULT_OBJECT_AVATAR_URL } from '../../../../common/constants/waivio';
 import './TopPerformers.less';
 import { toFixNumberLength } from '../../../../investarena/helpers/calculationsHelper';
@@ -66,11 +60,9 @@ const formatPerfomance = performanceValue => {
     isLoaded: getPerformersStatisticLoaded(state),
     isLoading: getPerformersStatisticLoading(state),
     performersStat: getPerformersStatistic(state),
-    compareWith: getInstrumentToCompare(state),
   }),
   {
     getPerformersStatsMore,
-    setInstrumentToCompare,
   },
 )
 @injectIntl
@@ -88,21 +80,7 @@ class TopPerformers extends Component {
       m12: PropTypes.arrayOf(PropTypes.shape()),
       m24: PropTypes.arrayOf(PropTypes.shape()),
     }),
-    compareWith: PropTypes.shape({
-      avatar: PropTypes.string,
-      d1: PropTypes.number,
-      d7: PropTypes.number,
-      m1: PropTypes.number,
-      m3: PropTypes.number,
-      m6: PropTypes.number,
-      m12: PropTypes.number,
-      m24: PropTypes.number,
-      name: PropTypes.string,
-      id: PropTypes.string,
-      type: PropTypes.string,
-    }),
     getPerformersStatsMore: PropTypes.func,
-    setInstrumentToCompare: PropTypes.func,
   };
   static defaultProps = {
     isLoaded: false,
@@ -110,7 +88,6 @@ class TopPerformers extends Component {
     performersStat: [],
     compareWith: null,
     getPerformersStatsMore: () => {},
-    setInstrumentToCompare: () => {},
   };
   static periods = {
     // d1: 'Daily',
@@ -128,29 +105,7 @@ class TopPerformers extends Component {
     this.state = {
       itemsToCompare: [],
     };
-    this.debouncedSearch = debounce(this.searchInstrumentsApiCall, 400);
   }
-
-  handleSelect = selected => {
-    const selectedInstrument = this.state.itemsToCompare.find(i => i.id === selected);
-    if (selectedInstrument) {
-      this.props.setInstrumentToCompare(selectedInstrument);
-      this.setState({ itemsToCompare: [] });
-    }
-  };
-
-  handleSearch = inputString => {
-    if (inputString) {
-      this.debouncedSearch(inputString);
-    } else {
-      this.setState({ itemsToCompare: [] });
-    }
-  };
-
-  searchInstrumentsApiCall = searchString =>
-    api.performers
-      .searchInstrumentsStat(searchString)
-      .then(result => this.setState({ itemsToCompare: result }));
 
   loadMorePerformers = e => {
     const period = e.currentTarget.id;
@@ -158,56 +113,13 @@ class TopPerformers extends Component {
   };
 
   render() {
-    const { itemsToCompare } = this.state;
-    const { intl, performersStat, isLoaded, isLoading, compareWith } = this.props;
+    const { intl, performersStat, isLoaded, isLoading } = this.props;
     return isLoaded && !isLoading ? (
       <div className="top-performers">
         <div className="top-performers__header">
           <div className="top-performers__title">
             {intl.formatMessage({ id: 'top_performers', defaultMessage: 'Top performers' })}
           </div>
-          {!isEmpty(compareWith) && itemsToCompare && (
-            <React.Fragment>
-              <div id="top-performers__compare-input-wrap">
-                vs.{' '}
-                <Select
-                  className="top-performers__compare-input"
-                  dropdownClassName="top-performers__compare-input-dropdown"
-                  getPopupContainer={() =>
-                    document.getElementById('top-performers__compare-input-wrap')
-                  }
-                  size="default"
-                  notFoundContent={null}
-                  showSearch
-                  value={compareWith.name}
-                  onSearch={this.handleSearch}
-                  onSelect={this.handleSelect}
-                >
-                  {itemsToCompare.map(item => (
-                    <Select.Option key={item.id}>{item.name}</Select.Option>
-                  ))}
-                </Select>
-              </div>
-              <div className="top-performers__info">
-                <div className="tooltip tooltip-better">
-                  <span className="color-text">
-                    {intl.formatMessage({ id: 'green', defaultMessage: 'Green' })}
-                  </span>
-                  <span className="text">
-                    {intl.formatMessage({ id: 'better', defaultMessage: 'better' })}
-                  </span>
-                </div>
-                <div className="tooltip tooltip-worse">
-                  <span className="color-text">
-                    {intl.formatMessage({ id: 'red', defaultMessage: 'Red' })}
-                  </span>
-                  <span className="text">
-                    {intl.formatMessage({ id: 'worse', defaultMessage: 'worse' })}
-                  </span>
-                </div>
-              </div>
-            </React.Fragment>
-          )}
         </div>
         {size(performersStat) > 0 ? (
           Object.keys(TopPerformers.periods).map(key =>
@@ -228,10 +140,8 @@ class TopPerformers extends Component {
                         {getPerformerLinks(performer)}
                         <div
                           className={cn('performer__stat-info', {
-                            success:
-                              performer.id !== compareWith.id && performer[key] > compareWith[key],
-                            danger:
-                              performer.id !== compareWith.id && performer[key] < compareWith[key],
+                            success: performer[key] > 0,
+                            danger: performer[key] < 0,
                           })}
                         >
                           {formatPerfomance(performer[key])}
