@@ -839,5 +839,9 @@
   "assets.dailyChange": "Изменения за день",
   "assets.amount": "Количество",
   "assets.sell": "Продать",
-  "assets.buy": "Купить"
+  "assets.buy": "Купить",
+  "headerAuthorized.p&l": "P&L",
+  "headerAuthorized.balance": "Баланс",
+  "headerAuthorized.freeBalance": "Свободный баланс",
+  "headerAuthorized.deposit": "Депозит"
 }
