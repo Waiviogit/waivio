@@ -209,7 +209,6 @@ class TopPerformers extends Component {
             </React.Fragment>
           )}
         </div>
-        {console.log('period', TopPerformers.periods)}
         {size(performersStat) > 0 ? (
           Object.keys(TopPerformers.periods).map(key =>
             performersStat[key] ? (

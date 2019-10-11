@@ -985,5 +985,6 @@
   "broker_modal_register": "Register",
   "broker_modal_confirm_same_password": "Two passwords that you enter is inconsistent!",
   "broker_modal_valid_phone_number": "Please input your phone number!",
-  "broker_modal_valid_numbers_phone_number": "Require more then 8 numbers"
+  "broker_modal_valid_numbers_phone_number": "Require more then 8 numbers",
+  "performance": "Performance"
 }

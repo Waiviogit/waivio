@@ -760,10 +760,14 @@
   "better": "Лучше",
   "worse": "Хуже",
   "week": "Неделя",
+  "longTermData_d1": "День",
+  "longTermData_m3": "3 месяца",
   "longTermData_d7": "Неделя",
   "longTermData_m1": "Месяц",
   "longTermData_m6": "Полгода",
+  "longTermData_m9": "9 месяцев",
   "longTermData_m12": "Год",
+  "longTermData_m24": "2 года",
   "onlyRelated": "Показать только похожие посты",
   "wia.followingInstruments": "Cледующие инструменты",
   "wia.cryptos": "Крипто",
@@ -819,5 +823,12 @@
   "createPost.selectLabel.default": "Выбрать",
   "modalTakeProfit.header.title": "Тейк профит",
   "modalStopLoss.header.title": "Стоп лосс",
-  "createPost.selectTitle.forecast": "Продолжительность прогноза"
+  "createPost.selectTitle.forecast": "Продолжительность прогноза",
+  "unavailableStatisticsUser": "Пользователь не написал ни одного поста с прогнозами",
+  "performance": "Представление",
+  "compare": "Сравнить",
+  "compare_profitability": "Cравнить доходность",
+  "forecast.currentForecast": "Текущие прогнозы",
+  "forecast.create": "Создан:",
+  "forecast.expire": "Истекает:"
 }
