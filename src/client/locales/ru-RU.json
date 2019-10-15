@@ -473,6 +473,7 @@
   "object_field_menuList": "Список",
   "object_field_pageContent": "Страница",
   "object_field_status": "Статус",
+  "object_field_chartid": "Чарт ID",
   "field_error": "Требуется {field}",
   "append_send": "Подтвердить",
   "suggestion_add_field": "Обновить объект",
@@ -869,5 +870,7 @@
   "album_send_progress": "Предоставление",
   "album_append_send": "Создать",
   "image_send_progress": "Предоставление",
-  "image_append_send": "Загрузить"
+  "image_append_send": "Загрузить",
+  "no_access_to_quote": "Ваш брокер не предоставляет фактических данных для этого инструмента, или для вашей учетной записи необходим специальный доступ к этому инструменту.",
+  "menu": "Меню"
 }
