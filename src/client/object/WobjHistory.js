@@ -5,7 +5,14 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 
-import { getPosts, getFeed, getObject, getReadLanguages, getIsAuthenticated } from '../reducers';
+import {
+  getPosts,
+  getFeed,
+  getObject,
+  getReadLanguages,
+  getIsAuthenticated,
+  getObjectAlbums,
+} from '../reducers';
 import Feed from '../feed/Feed';
 import {
   getFeedFromState,
@@ -26,6 +33,8 @@ import SortSelector from '../components/SortSelector/SortSelector';
 import './WobjHistory.less';
 import { getFieldWithMaxWeight } from './wObjectHelper';
 import OBJECT_TYPE from './const/objectTypes';
+import CreateImage from './ObjectGallery/CreateImage';
+import CreateAlbum from './ObjectGallery/CreateAlbum';
 
 @connect(
   state => ({
@@ -34,6 +43,7 @@ import OBJECT_TYPE from './const/objectTypes';
     object: getObject(state),
     readLanguages: getReadLanguages(state),
     isAuthenticated: getIsAuthenticated(state),
+    albums: getObjectAlbums(state),
   }),
   {
     getObjectComments,
@@ -45,6 +55,7 @@ export default class WobjHistory extends React.Component {
     match: PropTypes.shape().isRequired,
     feed: PropTypes.shape().isRequired,
     toggleViewEditMode: PropTypes.func.isRequired,
+    albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     comments: PropTypes.shape(),
     isAuthenticated: PropTypes.bool,
     getObjectComments: PropTypes.func,
@@ -74,6 +85,8 @@ export default class WobjHistory extends React.Component {
     this.state = {
       field: props.match.params[1] || '',
       showModal: false,
+      showModalGalleryItem: false,
+      showModalGalleryAlbum: false,
       sort: 'recency',
     };
   }
@@ -105,14 +118,27 @@ export default class WobjHistory extends React.Component {
   };
 
   handleToggleModal = () => {
-    this.setState({ showModal: !this.state.showModal });
+    if (this.state.field === objectFields.galleryItem) {
+      this.setState(prevState => ({ showModalGalleryItem: !prevState.showModalGalleryItem }));
+    } else if (this.state.field === objectFields.galleryAlbum) {
+      this.setState(prevState => ({ showModalGalleryAlbum: !prevState.showModalGalleryAlbum }));
+    } else {
+      this.setState({ showModal: !this.state.showModal });
+    }
   };
 
   handleSortChange = sort => this.setState({ sort });
 
   render() {
-    const { field, locale, showModal, sort } = this.state;
-    const { feed, object, comments, readLanguages, isAuthenticated } = this.props;
+    const {
+      field,
+      locale,
+      showModal,
+      showModalGalleryItem,
+      showModalGalleryAlbum,
+      sort,
+    } = this.state;
+    const { feed, object, comments, readLanguages, isAuthenticated, albums } = this.props;
 
     const commentIds = getFeedFromState('comments', object.author, feed);
     const content = getFilteredContent(
@@ -171,11 +197,18 @@ export default class WobjHistory extends React.Component {
                 onClick={this.handleAddBtnClick}
                 caption={<FormattedMessage id="add_new_proposition" defaultMessage="Add" />}
               />
+              <CreateImage
+                albums={albums}
+                selectedAlbum={albums[1]}
+                showModal={showModalGalleryItem}
+                hideModal={this.handleToggleModal}
+              />
+              <CreateAlbum showModal={showModalGalleryAlbum} hideModal={this.handleToggleModal} />
               {showModal && (
                 <AppendModal
                   showModal={showModal}
                   hideModal={this.handleToggleModal}
-                  locale={this.state.locale}
+                  chosenLocale={this.state.locale}
                   field={this.state.field}
                   objName={objName}
                 />

@@ -45,6 +45,7 @@ const CreateFormRenderer = props => {
     commissionToWaivio,
     campaignId,
     isCampaignActive,
+    iAgree,
   } = props;
 
   const messages = validatorMessagesCreator(handlers.messageFactory);
@@ -152,7 +153,7 @@ const CreateFormRenderer = props => {
   );
 
   return (
-    <React.Fragment>
+    <div className="CreateRewardForm shifted">
       {notEnoughMoneyWarn}
       {activeCampaignWarn}
 
@@ -392,6 +393,7 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.checkboxAgree.name, {
             rules: fields.checkboxAgree.rules,
             valuePropName: fields.checkboxAgree.valuePropName,
+            initialValue: iAgree,
           })(
             <Checkbox disabled={disabled}>
               <span className="CreateReward__item-title ant-form-item-required">
@@ -423,7 +425,7 @@ const CreateFormRenderer = props => {
 
         {button}
       </Form>
-    </React.Fragment>
+    </div>
   );
 };
 
@@ -462,6 +464,7 @@ CreateFormRenderer.defaultProps = {
   agreement: null,
   commissionToWaivio: 5,
   campaignId: null,
+  iAgree: false,
 };
 
 CreateFormRenderer.propTypes = {
@@ -511,6 +514,7 @@ CreateFormRenderer.propTypes = {
   getFieldDecorator: PropTypes.func.isRequired,
   campaignId: PropTypes.string,
   isCampaignActive: PropTypes.bool.isRequired,
+  iAgree: PropTypes.bool,
 };
 
 export default CreateFormRenderer;
