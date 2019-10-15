@@ -2,11 +2,14 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { Form, Input, Select, Checkbox, Button } from 'antd';
+import { Form, Input, Select, Checkbox, Button, Radio } from 'antd';
 import { optionsPlatform } from '../../../constants/selectData';
 import { country } from '../../../constants/countryData';
 import { phoneCode } from '../../../constants/phoneCodeData';
 import { agreements } from '../../../configApi/licenseAgreements';
+import ObjectCardView from '../../../../client/objectCard/ObjectCardView';
+import { getClientWObj } from '../../../../client/adapters';
+import { getObjectsByIds } from '../../../../waivioApi/ApiClient';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -16,15 +19,27 @@ const propTypes = {
   registerBroker: PropTypes.func.isRequired,
   authorizeBroker: PropTypes.func.isRequired,
   changeEmail: PropTypes.func.isRequired,
-  intl: PropTypes.object.isRequired,
+  intl: PropTypes.shape().isRequired,
+  form: PropTypes.shape().isRequired,
 };
 
 class BrokerRegistration extends Component {
   state = {
     confirmDirty: false,
     isAgreementRead: false,
-    currentCountryValue: 'US',
-    platformName: 'umarkets',
+    currentCountryValue: '',
+    platformName: '',
+    platformsWobjects: {},
+    stepNumber: 1,
+  };
+
+  componentDidMount = async () => {
+    const permlinksArray = [];
+    optionsPlatform.forEach(platform => {
+      permlinksArray.push(platform.permlink);
+    });
+    const wobjectsArray = await getObjectsByIds({ authorPermlinks: permlinksArray });
+    this.setState({ platformsWobjects: wobjectsArray.wobjects });
   };
 
   handleSubmit = e => {
@@ -69,7 +84,19 @@ class BrokerRegistration extends Component {
     this.setState({ currentCountryValue: e });
   };
   changePlatform = e => {
-    this.setState({ platformName: e });
+    this.setState({ platformName: e.target.value });
+  };
+
+  handleStepForeward = () => {
+    if (this.state.stepNumber === 1 && !_.isEmpty(this.state.currentCountryValue))
+      this.setState({ stepNumber: 2 });
+    if (this.state.stepNumber === 2 && !_.isEmpty(this.state.platformName))
+      this.setState({ stepNumber: 3 });
+  };
+
+  handleStepBack = () => {
+    this.state.stepNumber === 2 && this.setState({ stepNumber: 1, currentCountryValue: '' });
+    this.state.stepNumber === 3 && this.setState({ stepNumber: 2, platformName: '' });
   };
 
   render() {
@@ -101,30 +128,80 @@ class BrokerRegistration extends Component {
       initialValue: phoneCode[this.state.currentCountryValue],
     })(<Select showArrow={false} style={{ width: 70 }} disabled={true} />);
 
-    return (
-      <Form onSubmit={this.handleSubmit}>
-        <FormItem {...formItemLayout} label={<span>Platform</span>}>
+    const firstStepRenderer = () => (
+      <FormItem {...formItemLayout} label={<span>Country&nbsp;</span>}>
+        {getFieldDecorator('country', {
+          initialValue: '',
+        })(
+          <Select
+            showSearch
+            style={{ width: '100%' }}
+            placeholder={this.props.intl.formatMessage({
+              id: 'tooltip.empty',
+              defaultMessage: 'Please fill in this field',
+            })}
+            onChange={this.handleCountryValueChange}
+            filterOption={(input, option) =>
+              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {_.map(country[this.props.intl.locale], (option, key) => (
+              <Option key={key} value={key}>
+                {option}
+              </Option>
+            ))}
+          </Select>,
+        )}
+      </FormItem>
+    );
+
+    const secondStepRenderer = () => (
+      <div>
+        <FormItem {...formItemLayout}>
           {getFieldDecorator('platform', {
-            initialValue: optionsPlatform[0].value,
+            // initialValue: optionsPlatform[0].value,
           })(
-            <Select
+            <Radio.Group
               style={{ width: '100%' }}
               placeholder={this.props.intl.formatMessage({
                 id: 'tooltip.empty',
                 defaultMessage: 'Please fill in this field',
               })}
               onChange={this.changePlatform}
+              className="BrokerRegistration__radiogroup"
             >
               {_.map(optionsPlatform, option => {
-                return (
-                  <Option key={option.value} value={option.value}>
-                    {option.label}
-                  </Option>
-                );
+                if (option.countries.includes(this.state.currentCountryValue)) {
+                  const platformWobject = this.state.platformsWobjects.find(
+                    item => item.author_permlink === option.permlink,
+                  );
+                  const platformClientWobject = getClientWObj(platformWobject);
+                  return (
+                    <Radio
+                      key={option.value}
+                      value={option.value}
+                      className="BrokerRegistration__checkbox"
+                    >
+                      <a
+                        href={`https://www.waivio.com/object/${option.permlink}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <span>Broker page</span>
+                      </a>
+                      <ObjectCardView wObject={platformClientWobject} showSmallVersion />
+                    </Radio>
+                  );
+                }
               })}
-            </Select>,
+            </Radio.Group>,
           )}
         </FormItem>
+      </div>
+    );
+
+    const thirdStepRenderer = () => (
+      <React.Fragment>
         <FormItem {...formItemLayout} label={<span>First name</span>}>
           {getFieldDecorator('firstName', {
             rules: [{ required: true, message: 'Please input your firstName!', whitespace: true }],
@@ -172,28 +249,7 @@ class BrokerRegistration extends Component {
             ],
           })(<Input type="password" onBlur={this.handleConfirmBlur} />)}
         </FormItem>
-        <FormItem {...formItemLayout} label={<span>Country&nbsp;</span>}>
-          {getFieldDecorator('country', {
-            initialValue: 'US',
-          })(
-            <Select
-              style={{ width: '100%' }}
-              placeholder={this.props.intl.formatMessage({
-                id: 'tooltip.empty',
-                defaultMessage: 'Please fill in this field',
-              })}
-              onChange={this.handleCountryValueChange}
-            >
-              {_.map(country['en'], (option, key) => {
-                return (
-                  <Option key={key} value={key}>
-                    {option}
-                  </Option>
-                );
-              })}
-            </Select>,
-          )}
-        </FormItem>
+
         <FormItem {...formItemLayout} label="Phone Number">
           {getFieldDecorator('phone', {
             rules: [
@@ -222,7 +278,30 @@ class BrokerRegistration extends Component {
             Register
           </Button>
         </FormItem>
-      </Form>
+      </React.Fragment>
+    );
+
+    return (
+      <React.Fragment>
+        <Form onSubmit={this.handleSubmit}>
+          {this.state.stepNumber === 1
+            ? firstStepRenderer()
+            : this.state.stepNumber === 2
+            ? secondStepRenderer()
+            : this.state.stepNumber === 3
+            ? thirdStepRenderer()
+            : null}
+        </Form>
+        <div className="BrokerRegistration__buttons">
+          <Button onClick={this.handleStepBack} disabled={this.state.stepNumber === 1}>
+            Back
+          </Button>
+          <div>{`Step ${this.state.stepNumber} of 3`}</div>
+          <Button onClick={this.handleStepForeward} disabled={this.state.stepNumber === 3}>
+            Next
+          </Button>
+        </div>
+      </React.Fragment>
     );
   }
 }

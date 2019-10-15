@@ -65,14 +65,56 @@ export const optionsPrivacy = [
 ];
 
 export const optionsPlatform = [
-  { value: BROKER.UMARKETS, label: 'Umarkets' },
-  { value: BROKER.MAXIMARKETS, label: 'Maximarkets' },
-  { value: BROKER.MAXITRADE, label: 'Maxitrade' },
-  { value: BROKER.TRADEALLCRYPTO, label: 'TradeAllCrypto' },
-  { value: BROKER.TRADIVA, label: 'Tradiva' },
-  { value: BROKER['770CAPITAL'], label: '770Capital' },
-  { value: BROKER.DOWMARKETS, label: 'DowMarkets' },
-  { value: BROKER.LIMEFX, label: 'LimeFX' },
+  {
+    value: BROKER.UMARKETS,
+    label: 'Umarkets',
+    permlink: 'prj-4e4ges-umarkets',
+    countries: ['GB', 'RU', 'AD'],
+  },
+  {
+    value: BROKER.MAXIMARKETS,
+    label: 'Maximarkets',
+    permlink: 'wsp-maximarkets',
+    countries: ['GB', 'RU'],
+  },
+  {
+    value: BROKER.MAXITRADE,
+    label: 'Maxitrade',
+    permlink: 'lir-maxitrade',
+    countries: ['GB', 'RU'],
+  },
+  {
+    value: BROKER.TRADEALLCRYPTO,
+    label: 'TradeAllCrypto',
+    permlink: 'ftt-tradeallcrypto',
+    countries: ['GB', 'RU'],
+  },
+  { value: BROKER.TRADIVA, label: 'Tradiva', permlink: 'wqt-tradiva', countries: ['GB', 'RU'] },
+  {
+    value: BROKER['770CAPITAL'],
+    label: '770Capital',
+    permlink: 'gkm-770capital',
+    countries: ['GB', 'RU'],
+  },
+  {
+    value: BROKER.DOWMARKETS,
+    label: 'DowMarkets',
+    permlink: 'mrp-dowmarkets',
+    countries: ['GB', 'RU'],
+  },
+  { value: BROKER.LIMEFX, label: 'LimeFX', permlink: 'xfx-limefx', countries: ['GB', 'RU'] },
+  {
+    value: BROKER.FINVERSIA,
+    label: 'Finversia',
+    permlink: 'lwc-finversia',
+    countries: ['GB', 'RU'],
+  },
+  {
+    value: BROKER.LEXATRADE,
+    label: 'LexaTrade',
+    permlink: 'fqt-lexatrade',
+    countries: ['GB', 'RU'],
+  },
 ];
 
 export const optionsChartType = [

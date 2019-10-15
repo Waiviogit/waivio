@@ -8,4 +8,6 @@ export const BROKER = {
   '770CAPITAL': '770capital',
   DOWMARKETS: 'dowmarkets',
   LIMEFX: 'limefx',
+  FINVERSIA: 'finverdia',
+  LEXATRADE: 'lexatrade',
 };
