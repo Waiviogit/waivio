@@ -52,6 +52,7 @@ import ObjectOfTypePage from '../client/object/ObjectOfTypePage/ObjectOfTypePage
 const routes = [
   {
     component: Wrapper,
+    path: ['/landing/:id', '/'],
     routes: [
       {
         path: '/bookmarks',
@@ -291,7 +292,7 @@ const routes = [
         component: ExitPage,
       },
       {
-        path: '/',
+        path: ['/landing/:id', '/'],
         exact: true,
         component: Page,
       },

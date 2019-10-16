@@ -160,11 +160,17 @@
     "dowmarkets": "https://api.dowmarkets.com/account/logonWithToken?token=",
     "limefx": "https://api.limefx.com/account/logonWithToken?token="
   },
+
   "signals": {
     "getSignals": "https://informer.maximarkets.org/wss/signals"
   },
 
   "charts": {
     "getChartsData": "https://informer.maximarkets.org/wss/quotation/getstatisticshistory"
+  },
+
+  "promoCampaign": {
+    "waivio": "https://waiviodev.com",
+    "promo": "/promo-api/accounts"
   }
 }

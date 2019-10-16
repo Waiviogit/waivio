@@ -29,6 +29,7 @@ import Transfer from './wallet/Transfer';
 import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
 import { getChartsData } from '../investarena/redux/actions/chartsActions';
+import investarenaApi from '../investarena/configApi/apiResources';
 
 @withRouter
 @connect(
@@ -78,6 +79,7 @@ export default class Wrapper extends React.PureComponent {
     busyLogin: PropTypes.func,
     nightmode: PropTypes.bool,
     getChartsData: PropTypes.func,
+    match: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -142,6 +144,10 @@ export default class Wrapper extends React.PureComponent {
     this.props.getRebloggedList();
     this.props.getRate();
     this.props.getChartsData();
+
+    // Functional for user tracking after mailing
+    const { match } = this.props;
+    if (match.params.id) investarenaApi.userTracker.setTempUserId(match.params.id);
   }
 
   componentWillReceiveProps(nextProps) {

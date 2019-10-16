@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import SteemConnect from '../steemConnectAPI';
 import './LoginModal.less';
+import investarenaApi from '../../investarena/configApi/apiResources';
 
 class LoginModal extends React.Component {
   static propTypes = {
@@ -26,6 +27,11 @@ class LoginModal extends React.Component {
   handleSignup() {
     window.open(process.env.SIGNUP_URL);
     this.props.handleLoginModalCancel();
+
+    // Functional for user tracking after mailing
+    console.log('User clicked a sign up link');
+    const tempUserId = localStorage.getItem('tempUserId');
+    if (tempUserId) investarenaApi.userTracker.sendUserSignUpPlace(tempUserId, 'ModalSignUp');
   }
 
   render() {

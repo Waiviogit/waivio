@@ -6,6 +6,8 @@ import Authentications from './authentications/Authentications';
 import Performers from './Performers';
 import Forecasts from './Forecasts';
 import ApiClient from './ApiClient';
+import UserTracker from './userTracker';
+import config from '../configApi/config';
 
 export default function({ apiPrefix } = {}) {
   const api = new ApiClient({ prefix: apiPrefix });
@@ -17,5 +19,8 @@ export default function({ apiPrefix } = {}) {
     signals: new Signals({ apiClient: api }),
     performers: new Performers({ apiClient: api }),
     forecasts: new Forecasts({ apiClient: api }),
+    userTracker: new UserTracker({
+      apiClient: new ApiClient({ prefix: config.promoCampaign.waivio }),
+    }),
   };
 }
