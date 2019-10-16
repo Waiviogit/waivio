@@ -2,91 +2,13 @@
 @import (reference) '../../../components/Sidebar/User.less';
 
 .top-performers {
-  #top-performers__compare-input-wrap {
-    display: flex;
-    align-items: baseline;
-    justify-content: flex-end;
-  }
-
-  &__compare-input,
-  &__compare-input.ant-select-open {
-    min-width: 85%;
-
-    .ant-select-selection,
-    .ant-select-selection:focus {
-      border: none;
-      box-shadow: none;
-    }
-  }
-
-  &__compare-input-dropdown.ant-select-dropdown {
-    z-index: 1040 !important;
+  &__header {
+    padding-bottom: 6px;
   }
 
   &__title {
     font-weight: 700;
     text-align: center;
-  }
-
-  &__info {
-    padding-bottom: 10px;
-    .tooltip {
-      display: flex;
-      align-items: center;
-
-      .text {
-        &:before {
-          content: '-';
-          margin: 0 5px 0 0;
-        }
-      }
-    }
-
-    .tooltip-better {
-      &:before {
-        content: '';
-        display: block;
-        background: repeating-linear-gradient(
-          -50deg,
-          @green,
-          @green 1px,
-          @white 2px,
-          @green-darker 4px
-        );
-        border: 1px solid @green;
-        width: 16px;
-        height: 16px;
-        float: left;
-      }
-
-      .color-text {
-        color: @green-darker;
-        padding: 0 5px;
-      }
-    }
-
-    .tooltip-worse {
-      &:before {
-        content: '';
-        display: block;
-        background: repeating-linear-gradient(
-          -50deg,
-          @red-light,
-          @red-light 1px,
-          @white 2px,
-          @red 4px
-        );
-        border: 1px solid @red-light;
-        width: 16px;
-        height: 16px;
-        float: left;
-      }
-
-      .color-text {
-        color: @red;
-        padding: 0 5px;
-      }
-    }
   }
 
   &__more {
@@ -96,7 +18,7 @@
     cursor: pointer;
     transition: color 0.3s;
     &:hover {
-      color: #4aa4ff;
+      color: @primary-color;
     }
   }
 
