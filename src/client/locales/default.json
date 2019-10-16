@@ -627,6 +627,7 @@
   "object_field_menuList": "List",
   "object_field_pageContent": "Page",
   "object_field_status": "Status",
+  "object_field_chartid": "Chart ID",
   "field_error": "{field} is required",
   "append_send": "Submit",
   "suggestion_add_field": "Update object",
@@ -984,5 +985,12 @@
   "broker_modal_confirm_same_password": "Two passwords that you enter is inconsistent!",
   "broker_modal_valid_phone_number": "Please input your phone number!",
   "broker_modal_valid_numbers_phone_number": "Require more then 8 numbers",
-  "performance": "Performance"
+  "performance": "Performance",
+  "story_approval": "Approval:",
+  "story_min_70_is_required": "Min 70% is required",
+  "create_album_valid_enter_name": "Please, enter name of album",
+  "album_send_progress": "Submitting",
+  "album_append_send": "Create",
+  "image_send_progress": "Submitting",
+  "image_append_send": "Submit image"
 }
