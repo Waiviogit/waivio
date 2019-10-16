@@ -7,9 +7,15 @@ const UserStatistics = () => (
     <div className="UserStatistics__title">Forecast accuracy</div>
     <div className="UserStatistics__accuracy">
       <UserAccuracyChart period={'day'} />
-      <UserAccuracyChart period={'week'} />
-      <UserAccuracyChart period={'month'} />
-      <UserAccuracyChart period={'year'} />
+      <div className="UserStatistics__accuracy-item border">
+        <UserAccuracyChart period={'week'} />
+      </div>
+      <div className="UserStatistics__accuracy-item border">
+        <UserAccuracyChart period={'month'} />
+      </div>
+      <div className="UserStatistics__accuracy-item border">
+        <UserAccuracyChart period={'year'} />
+      </div>
     </div>
   </div>
 );
