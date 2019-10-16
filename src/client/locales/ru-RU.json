@@ -868,5 +868,10 @@
   "image_send_progress": "Предоставление",
   "image_append_send": "Загрузить",
   "no_access_to_quote": "Ваш брокер не предоставляет фактических данных для этого инструмента, или для вашей учетной записи необходим специальный доступ к этому инструменту.",
-  "menu": "Меню"
+  "menu": "Меню",
+  "user_statistics_forecast_accuracy": "Точность прогноза",
+  "user_statistics_per_day": "За день",
+  "user_statistics_per_week": "За неделю",
+  "user_statistics_per_month": "За месяц",
+  "user_statistics_per_year": "За год"
 }

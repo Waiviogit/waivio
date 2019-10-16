@@ -993,5 +993,10 @@
   "album_send_progress": "Submitting",
   "album_append_send": "Create",
   "image_send_progress": "Submitting",
-  "image_append_send": "Submit image"
+  "image_append_send": "Submit image",
+  "user_statistics_forecast_accuracy": "Forecast accuracy",
+  "user_statistics_per_day": "per day",
+  "user_statistics_per_week": "per week",
+  "user_statistics_per_month": "per month",
+  "user_statistics_per_year": "per year"
 }

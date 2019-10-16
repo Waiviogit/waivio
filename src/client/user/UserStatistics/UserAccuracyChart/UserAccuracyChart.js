@@ -1,10 +1,11 @@
 import React from 'react';
 import { PieChart } from 'react-easy-chart';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import './UserAccuracyChart.less';
 
-const UserAccuracyChart = ({ period, value }) => {
+const UserAccuracyChart = ({ period, value, intl }) => {
   return (
     <div className="UserAccuracyChart">
       <PieChart
@@ -21,7 +22,11 @@ const UserAccuracyChart = ({ period, value }) => {
           unsuccess: value < 50,
         })}
       >{`${value}%`}</div>
-      <div className="UserAccuracyChart__period">{`per ${period}`}</div>
+      <div className="UserAccuracyChart__period">
+        {intl.formatMessage({
+          id: `user_statistics_per_${period}`,
+        })}
+      </div>
     </div>
   );
 };
@@ -30,4 +35,4 @@ UserAccuracyChart.propTypes = {
   period: PropTypes.string.isRequired,
 };
 
-export default UserAccuracyChart;
+export default injectIntl(UserAccuracyChart);
