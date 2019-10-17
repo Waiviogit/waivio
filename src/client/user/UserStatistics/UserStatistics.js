@@ -27,7 +27,7 @@ const UserStatistics = () => {
     },
   };
   return (
-    <div>
+    <div className="UserStatistics">
       <UserStatisticContainer accuracy={mockObj} contentType={'forecast'} />
       <UserStatisticContainer accuracy={mockObj} contentType={'profitability'} />
     </div>

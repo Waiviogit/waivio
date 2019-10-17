@@ -76,9 +76,9 @@ const UserStatisticContainer = ({ intl, contentType, accuracy }) => (
 );
 
 UserStatisticContainer.propTypes = {
-  intl: PropTypes.string.isRequired,
+  intl: PropTypes.shape().isRequired,
   contentType: PropTypes.string.isRequired,
-  accuracy: PropTypes.string.isRequired,
+  accuracy: PropTypes.shape().isRequired,
 };
 
 export default injectIntl(UserStatisticContainer);

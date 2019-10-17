@@ -18,7 +18,7 @@ const UserProfitability = ({ profit }) => {
 };
 
 UserProfitability.propTypes = {
-  profit: PropTypes.string.isRequired,
+  profit: PropTypes.number.isRequired,
 };
 
 export default UserProfitability;
