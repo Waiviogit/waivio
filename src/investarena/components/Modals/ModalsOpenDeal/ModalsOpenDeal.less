@@ -3,16 +3,19 @@
 .modalOpenDealStyle () {
   .modal-content {
     background-color: @color-white;
+
     .modal-header {
       background-color: #16254c;
       color: @color-white;
       height: 40px;
+
       .close {
         outline: none;
         cursor: pointer;
         color: @color-white;
       }
     }
+
     .modal-body {
       padding: 15px;
     }
@@ -27,7 +30,7 @@
     justify-content: center;
   }
   .st-modals-value-amount {
-    .textStyle(@font-size-small, @color-black-blue, normal);
+    .textStyle(@font-size-small, @tertiary-color, normal);
     align-self: center;
     margin-top: 9px;
   }
@@ -62,6 +65,7 @@
   }
   .st-modal-checkbox-wrap {
     line-height: 0;
+    align-items: center;
   }
   .toggle > div:hover {
     box-shadow: 0 0 5px @color-blue;
@@ -120,15 +124,18 @@
   .textStyle(@font-size-small, @color-darkest-gray, normal);
   align-self: center;
 }
+
 .st-modals-value {
   .textStyle(@font-size-small, @color-black-blue, normal);
   align-self: center;
 }
+
 .st-modals-header-value {
   .textStyle(@font-size-small, @color-black-blue, bold);
   align-self: center;
   text-align: right;
 }
+
 .st-modals-price {
   .textStyle(@font-size-small, @color-black-blue, bold);
   align-self: center;
