@@ -1,9 +1,9 @@
 import React from 'react';
 import { injectIntl } from 'react-intl';
-import UserAccuracyChart from './UserAccuracyChart/UserAccuracyChart';
+import UserForecastAccuracy from './UserForecastAccuracy/UserForecastAccuracy';
 import './UserStatistics.less';
 
-const UserStatistics = ({ intl }) => {
+const UserStatistics = () => {
   const mockObj = {
     d1: {
       percent: 89,
@@ -27,27 +27,8 @@ const UserStatistics = ({ intl }) => {
     },
   };
   return (
-    <div className="UserStatistics">
-      <div className="UserStatistics__title">
-        {intl.formatMessage({
-          id: 'user_statistics_forecast_accuracy',
-          defaultMessage: 'Forecast accuracy',
-        })}
-      </div>
-      <div className="UserStatistics__accuracy">
-        <div className="UserStatistics__accuracy-item">
-          <UserAccuracyChart value={mockObj.d1.percent} period={'day'} />
-        </div>
-        <div className="UserStatistics__accuracy-item border">
-          <UserAccuracyChart value={mockObj.d7.percent} period={'week'} />
-        </div>
-        <div className="UserStatistics__accuracy-item border">
-          <UserAccuracyChart value={mockObj.m1.percent} period={'month'} />
-        </div>
-        <div className="UserStatistics__accuracy-item border">
-          <UserAccuracyChart value={mockObj.m12.percent} period={'year'} />
-        </div>
-      </div>
+    <div>
+      <UserForecastAccuracy accuracy={mockObj} />
     </div>
   );
 };
