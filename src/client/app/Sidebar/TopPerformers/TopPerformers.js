@@ -108,11 +108,6 @@ class TopPerformers extends Component {
     const { intl, performersStat, isLoaded, isLoading } = this.props;
     return isLoaded && !isLoading ? (
       <div className="top-performers">
-        <div className="top-performers__header">
-          <div className="top-performers__title">
-            {intl.formatMessage({ id: 'top_performers', defaultMessage: 'Top performers' })}
-          </div>
-        </div>
         {size(performersStat) > 0 ? (
           Object.keys(TopPerformers.periods).map(key =>
             performersStat[key] ? (
