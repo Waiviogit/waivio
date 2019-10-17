@@ -3,21 +3,23 @@
 
 .TopNavigation {
   display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  line-height: normal;
   height: 46px;
+  width: 100%;
   justify-content: center;
-  background-color: @white;
-  border: solid 1px @white-gainsboro;
-  padding: 0 15px;
+  background-color: transparent;
+  border: none;
+  overflow: hidden;
   &__link {
     display: inline-block;
-    height: 45px;
-    margin-right: 12px;
+    height: 100%;
     cursor: pointer;
     color: @blue-botticelli;
     font-size: 16px;
     font-weight: 500;
     text-transform: uppercase;
-    line-height: 45px;
     &--active,
     &:hover {
       color: @primary-color;
@@ -25,11 +27,9 @@
     }
   }
   &__item {
-    @media @small {
-      transform: translateX(-(@right-width / 2));
-    }
-    @media @medium, @large {
-      transform: translateX((@left-width - @right-width) / 2);
+    height: 23px;
+    &:not(:last-child) {
+      margin-right: 12px;
     }
   }
 }

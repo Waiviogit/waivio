@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Link, NavLink, withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { AutoComplete, Button, Icon, Input, Menu, Modal } from 'antd';
+import { AutoComplete, Icon, Input, Menu } from 'antd';
 import classNames from 'classnames';
 import {
   searchAutoComplete,
@@ -24,6 +24,7 @@ import {
   searchObjectTypesResults,
   getScreenSize,
   getNightmode,
+  getIsAuthenticated,
 } from '../../reducers';
 import ModalBroker from '../../../investarena/components/Modals/ModalBroker';
 import ModalDealConfirmation from '../../../investarena/components/Modals/ModalDealConfirmation';
@@ -36,23 +37,23 @@ import Popover from '../Popover';
 import Notifications from './Notifications/Notifications';
 import LanguageSettings from './LanguageSettings';
 import './Topnav.less';
-import Balance from '../../../investarena/components/Header/Balance';
 import {
   getIsLoadingPlatformState,
   getPlatformNameState,
 } from '../../../investarena/redux/selectors/platformSelectors';
 import { toggleModal } from '../../../investarena/redux/actions/modalsActions';
-import config from '../../../investarena/configApi/config';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
 import ModalSignUp from './ModalSignUp/ModalSignUp';
+import TopNavigation from "./TopNavigation";
 
 @injectIntl
 @withRouter
 @connect(
   state => ({
     autoCompleteSearchResults: getAutoCompleteSearchResults(state),
+    isAuthenticated: getIsAuthenticated(state),
     searchByObject: getSearchObjectsResults(state),
     searchByUser: getSearchUsersResults(state),
     searchByObjectType: searchObjectTypesResults(state),
@@ -75,25 +76,6 @@ import ModalSignUp from './ModalSignUp/ModalSignUp';
   },
 )
 class Topnav extends React.Component {
-  static get MENU_ITEMS() {
-    return {
-      HOME: 'home',
-      MY_FEED: 'myFeed',
-      MARKETS: 'markets',
-      DEALS: 'deals',
-      CLOSEDDEALS: 'closedDeals',
-    };
-  }
-
-  static get ROUTES_MAP() {
-    return {
-      [this.MENU_ITEMS.HOME]: ['/'],
-      [this.MENU_ITEMS.MY_FEED]: ['/my_feed'],
-      [this.MENU_ITEMS.MARKETS]: ['/markets/'],
-      [this.MENU_ITEMS.DEALS]: ['/deals/'],
-    };
-  }
-
   static propTypes = {
     /* from decorators */
     intl: PropTypes.shape().isRequired,
@@ -104,6 +86,7 @@ class Topnav extends React.Component {
       PropTypes.shape(),
       PropTypes.arrayOf(PropTypes.shape()),
     ]),
+    isAuthenticated: PropTypes.bool.isRequired,
     notifications: PropTypes.arrayOf(PropTypes.shape()),
     userMetaData: PropTypes.shape(),
     loadingNotifications: PropTypes.bool,
@@ -112,7 +95,7 @@ class Topnav extends React.Component {
     resetSearchAutoCompete: PropTypes.func.isRequired,
     platformName: PropTypes.string.isRequired,
     isLoadingPlatform: PropTypes.bool.isRequired,
-    isNightMode: PropTypes.bool.isRequired,
+    // isNightMode: PropTypes.bool.isRequired,
     screenSize: PropTypes.string,
     toggleModal: PropTypes.func.isRequired,
     /* passed props */
@@ -177,18 +160,10 @@ class Topnav extends React.Component {
     this.handleSearchForInput = this.handleSearchForInput.bind(this);
     this.handleOnChangeForAutoComplete = this.handleOnChangeForAutoComplete.bind(this);
     this.hideAutoCompleteDropdown = this.hideAutoCompleteDropdown.bind(this);
-    this.setSelectedPage = this.setSelectedPage.bind(this);
     this.handleClickMenu = this.handleClickMenu.bind(this);
   }
 
-  componentDidMount() {
-    this.setSelectedPage();
-  }
-
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.location.pathname !== this.props.location.pathname) {
-      this.setSelectedPage();
-    }
     if (
       prevState.searchBarValue !== this.state.searchBarValue &&
       this.state.searchBarValue !== ''
@@ -196,24 +171,6 @@ class Topnav extends React.Component {
       this.debouncedSearchByUser(this.state.searchBarValue);
       this.debouncedSearchByObjectTypes(this.state.searchBarValue);
     }
-  }
-
-  setSelectedPage() {
-    const {
-      location: { pathname },
-      username,
-    } = this.props;
-    let currPage = Topnav.MENU_ITEMS.HOME;
-    if ((pathname !== '/' && username) || (pathname !== '/my_feed' && !username)) {
-      Object.keys(Topnav.ROUTES_MAP).forEach(key => {
-        const routeList = Topnav.ROUTES_MAP[key];
-        if (routeList.some(route => pathname.includes(`${route}`))) {
-          currPage = key;
-        }
-      });
-    }
-
-    this.setState({ selectedPage: currPage });
   }
 
   getTranformSearchCountData = searchResults => {
@@ -742,12 +699,14 @@ class Topnav extends React.Component {
   render() {
     const {
       intl,
+      isAuthenticated,
       autoCompleteSearchResults,
-      platformName,
-      isLoadingPlatform,
-      isNightMode,
+      screenSize,
+      // platformName,
+      // isLoadingPlatform,
+      // isNightMode,
     } = this.props;
-    const { searchBarActive, isModalDeposit, dropdownOpen } = this.state;
+    const { searchBarActive, dropdownOpen } = this.state;
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     const downBar = (
       <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
@@ -765,7 +724,7 @@ class Topnav extends React.Component {
     const formattedAutoCompleteDropdown = _.isEmpty(dropdownOptions)
       ? dropdownOptions
       : dropdownOptions.concat([downBar]);
-    const isMobile = this.props.screenSize === 'xsmall' || this.props.screenSize === 'small';
+    const isMobile = screenSize !== 'large';
     return (
       <div className="Topnav">
         <ModalDealConfirmation />
@@ -807,6 +766,9 @@ class Topnav extends React.Component {
               </AutoComplete>
               <i className="iconfont icon-search" />
             </div>
+            <div className="Topnav__horizontal-menu">
+              <TopNavigation authenticated={isAuthenticated} location={this.props.history.location} isMobile={isMobile}/>
+            </div>
           </div>
           <div className="right">
             <button
@@ -824,114 +786,6 @@ class Topnav extends React.Component {
             </button>
             {this.content()}
           </div>
-        </div>
-        <div className="topnav-layout main-nav">
-          <Menu
-            selectedKeys={[this.state.selectedPage]}
-            onClick={this.handleClickMenu}
-            mode="horizontal"
-          >
-            <Menu.Item key={Topnav.MENU_ITEMS.HOME}>
-              <NavLink to="/">
-                {intl.formatMessage({ id: 'home', defaultMessage: 'Home' }).toUpperCase()}
-              </NavLink>
-            </Menu.Item>
-            <Menu.Item key={Topnav.MENU_ITEMS.MY_FEED} disabled={!this.props.username}>
-              <NavLink to="/my_feed">
-                {intl.formatMessage({ id: 'my_feed', defaultMessage: 'My feed' }).toUpperCase()}
-              </NavLink>
-            </Menu.Item>
-            <Menu.Item key={Topnav.MENU_ITEMS.MARKETS}>
-              <NavLink to="/markets/crypto">
-                {intl.formatMessage({ id: 'markets', defaultMessage: 'Markets' }).toUpperCase()}
-              </NavLink>
-            </Menu.Item>
-            <Menu.Item key={Topnav.MENU_ITEMS.DEALS} disabled={!this.props.username}>
-              <NavLink to="/deals/open">
-                {!isMobile
-                  ? intl.formatMessage({ id: 'my_deals', defaultMessage: 'My deals' }).toUpperCase()
-                  : intl
-                      .formatMessage({ id: 'open_deals', defaultMessage: 'Open deals' })
-                      .toUpperCase()}
-              </NavLink>
-            </Menu.Item>
-            {isMobile && (
-              <Menu.Item key={Topnav.MENU_ITEMS.CLOSEDDEALS}>
-                <NavLink to="/deals/closed">
-                  {intl
-                    .formatMessage({ id: 'closed_deals', defaultMessage: 'Closed deals' })
-                    .toUpperCase()}
-                </NavLink>
-              </Menu.Item>
-            )}
-          </Menu>
-          {platformName !== 'widgets' && !isLoadingPlatform ? (
-            <div className="st-header-broker-balance-pl-wrap">
-              <div className="st-balance-wrap">
-                <div className="st-balance-text">
-                  {intl.formatMessage({ id: 'headerAuthorized.p&l', defaultMessage: 'P&L deals' })}:
-                </div>
-                <div className="st-balance-amount">
-                  <Balance balanceType="unrealizedPnl" />
-                </div>
-              </div>
-              <div className="st-balance-border">
-                <div className="st-balance-text">
-                  {intl.formatMessage({
-                    id: 'headerAuthorized.balance',
-                    defaultMessage: 'Balance',
-                  })}
-                  :
-                </div>
-                <div className="st-balance-amount">
-                  <Balance balanceType="balance" />
-                </div>
-              </div>
-              <Button type="primary" onClick={this.toggleModalDeposit}>
-                {intl.formatMessage({ id: 'headerAuthorized.deposit', defaultMessage: 'Deposit' })}
-              </Button>
-              <Modal
-                title={intl.formatMessage({
-                  id: 'headerAuthorized.deposit',
-                  defaultMessage: 'Deposit',
-                })}
-                footer={null}
-                visible={isModalDeposit}
-                onCancel={this.toggleModalDeposit}
-                width={1250}
-                wrapClassName={'st-header-deposit-modal'}
-                destroyOnClose
-              >
-                <iframe
-                  title="depositFrame"
-                  src={`${
-                    config[process.env.NODE_ENV].platformDepositUrl[this.props.platformName]
-                  }?${isNightMode ? 'style=wp&' : ''}mode=popup&lang=en#deposit`}
-                  width="1200px"
-                  height="696px"
-                />
-              </Modal>
-              <img
-                role="presentation"
-                title={platformName}
-                onClick={this.toggleModalBroker}
-                className="st-header__image"
-                src={`/images/investarena/${platformName}.png`}
-                alt="broker"
-              />
-            </div>
-          ) : (
-            this.props.username && (
-              <div className="st-header-broker-balance-pl-wrap">
-                <Button type="primary" onClick={this.toggleModalBroker}>
-                  {intl.formatMessage({
-                    id: 'headerAuthorized.connectToBroker',
-                    defaultMessage: 'Connect to broker',
-                  })}
-                </Button>
-              </div>
-            )
-          )}
         </div>
       </div>
     );

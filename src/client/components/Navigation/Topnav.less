@@ -9,13 +9,13 @@
   background-color: @black;
   height: 96px;
   line-height: 52px;
-  border-bottom: @base-border;
+  border-bottom: none;
 
   &__brand {
     font-weight: bold;
     letter-spacing: 0.5px;
     &-icon {
-      height: 78px;
+      max-width: 100%;
       margin-top: 10px;
       display: none;
       @media @medium, @large {
@@ -78,7 +78,7 @@
   &__input-container {
     padding: 0 @base-spacing;
     position: relative;
-    height: 55px;
+    height: 50px;
     display: flex;
     margin-left: 15px;
 

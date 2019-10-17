@@ -1,48 +1,85 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { memoize } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import './TopNavigation.less';
 
 const LINKS = {
-  FEED_TRENDING: '/trending',
-  FEED_HOT: '/hot',
-  FEED_NEW: '/created',
-  FEED_PROMOTED: '/promoted',
-  REWARDS: '/rewards',
+  MY_FEED: '/my_feed',
   DISCOVER: '/discover-objects',
-  ACTIVITY: '/activity',
-  ABOUT: '/object/ylr-waivio',
+  MARKETS: '/markets',
+  DEALS: '/deals',
+  ABOUT: '/object/xqa-about-investarena',
 };
-const FEED_URLS = [LINKS.FEED_HOT, LINKS.FEED_NEW, LINKS.FEED_TRENDING];
 
-const TopNavigation = ({ authenticated, location: { pathname } }) => {
-  const isRouteMathed =
-    pathname === '/' || Object.values(LINKS).some(url => pathname.includes(url));
-  return isRouteMathed ? (
+const getDealsLinks = (isMobile, pathname) => (
+  isMobile ? (
+    <React.Fragment>
+      <li className="TopNavigation__item">
+        <Link
+          to={`${LINKS.DEALS}/open`}
+          className={classNames('TopNavigation__link', {
+            'TopNavigation__link--active': pathname === `${LINKS.DEALS}/open`,
+          })}
+        >
+          <FormattedMessage id="open_deals" defaultMessage="!Open deals"/>
+        </Link>
+      </li>
+      <li className="TopNavigation__item">
+        <Link
+          to={`${LINKS.DEALS}/closed`}
+          className={classNames('TopNavigation__link', {
+            'TopNavigation__link--active': pathname === `${LINKS.DEALS}/closed`,
+          })}
+        >
+          <FormattedMessage id="closed_deals" defaultMessage="!Closed deals"/>
+        </Link>
+      </li>
+    </React.Fragment>
+  ) : (
+    <li className="TopNavigation__item">
+      <Link
+        to={`${LINKS.DEALS}/open`}
+        className={classNames('TopNavigation__link', {
+          'TopNavigation__link--active': pathname.includes(LINKS.DEALS),
+        })}
+      >
+        <FormattedMessage id="my_deals" defaultMessage="!My deals" />
+      </Link>
+    </li>
+  )
+);
+
+const TopNavigation = ({ authenticated, location: { pathname }, isMobile }) => {
+  const renderDealsLinks = memoize(getDealsLinks);
+  return (
     <ul className="TopNavigation">
       <li className="TopNavigation__item">
         <Link
           to="/"
           className={classNames('TopNavigation__link', {
             'TopNavigation__link--active':
-              pathname === '/' || FEED_URLS.some(feedUrl => pathname.includes(feedUrl)),
+              pathname === '/',
           })}
         >
-          <FormattedMessage id="feed" defaultMessage="Feed" />
+          <FormattedMessage id="home" defaultMessage="Home" />
         </Link>
       </li>
-      <li className="TopNavigation__item">
-        <Link
-          to={authenticated ? `${LINKS.REWARDS}/active` : `${LINKS.REWARDS}/all`}
-          className={classNames('TopNavigation__link', {
-            'TopNavigation__link--active': pathname.includes(LINKS.REWARDS),
-          })}
-        >
-          <FormattedMessage id="rewards" defaultMessage="Rewards" />
-        </Link>
-      </li>
+      {authenticated && (
+        <li className="TopNavigation__item">
+          <Link
+            to={LINKS.MY_FEED}
+            className={classNames('TopNavigation__link', {
+              'TopNavigation__link--active': pathname === LINKS.MY_FEED,
+
+            })}
+          >
+            <FormattedMessage id="my_feed" defaultMessage="My feed" />
+          </Link>
+        </li>
+      )}
       <li className="TopNavigation__item">
         <Link
           to={`${LINKS.DISCOVER}/hashtag`}
@@ -53,18 +90,17 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
           <FormattedMessage id="discover" defaultMessage="Discover" />
         </Link>
       </li>
-      {authenticated && (
-        <li className="TopNavigation__item">
-          <Link
-            to={LINKS.ACTIVITY}
-            className={classNames('TopNavigation__link', {
-              'TopNavigation__link--active': pathname === LINKS.ACTIVITY,
-            })}
-          >
-            <FormattedMessage id="activity" defaultMessage="Activity" />
-          </Link>
-        </li>
-      )}
+      <li className="TopNavigation__item">
+        <Link
+          to={`${LINKS.MARKETS}/crypto`}
+          className={classNames('TopNavigation__link', {
+            'TopNavigation__link--active': pathname.includes(LINKS.MARKETS),
+          })}
+        >
+          <FormattedMessage id="markets" defaultMessage="Markets" />
+        </Link>
+      </li>
+      {authenticated && renderDealsLinks(isMobile, pathname) }
       <li className="TopNavigation__item">
         <Link
           to={LINKS.ABOUT}
@@ -76,18 +112,20 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
         </Link>
       </li>
     </ul>
-  ) : null;
+  )
 };
 
 TopNavigation.propTypes = {
   authenticated: PropTypes.bool.isRequired,
   location: PropTypes.shape(),
+  isMobile: PropTypes.bool,
 };
 
 TopNavigation.defaultProps = {
   location: {
     pathname: '',
   },
+  isMobile: true,
 };
 
 export default TopNavigation;
