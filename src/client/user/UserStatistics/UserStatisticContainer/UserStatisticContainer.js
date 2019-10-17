@@ -1,8 +1,9 @@
 import React from 'react';
 import { injectIntl } from 'react-intl';
-import UserAccuracyChart from '../UserAccuracyChart/UserAccuracyChart';
-import './UserStatisticContainer.less';
 import PropTypes from 'prop-types';
+import UserAccuracyChart from '../UserAccuracyChart/UserAccuracyChart';
+import UserProfitability from '../UserProfitability/UserProfitability';
+import './UserStatisticContainer.less';
 
 const UserStatisticContainer = ({ intl, contentType, accuracy }) => (
   <div className="UserStatisticContainer">
@@ -19,7 +20,11 @@ const UserStatisticContainer = ({ intl, contentType, accuracy }) => (
     </div>
     <div className="UserStatisticContainer__period">
       <div className="UserStatisticContainer__period-item">
-        {contentType === 'forecast' ? <UserAccuracyChart value={accuracy.d1.percent} /> : null}
+        {contentType === 'forecast' ? (
+          <UserAccuracyChart value={accuracy.d1.percent} />
+        ) : (
+          <UserProfitability profit={accuracy.d1.pips} />
+        )}
         <div className="UserStatisticContainer__period-item-value">
           {intl.formatMessage({
             id: 'user_statistics_per_day',
@@ -28,7 +33,11 @@ const UserStatisticContainer = ({ intl, contentType, accuracy }) => (
         </div>
       </div>
       <div className="UserStatisticContainer__period-item border">
-        {contentType === 'forecast' ? <UserAccuracyChart value={accuracy.d7.percent} /> : null}
+        {contentType === 'forecast' ? (
+          <UserAccuracyChart value={accuracy.d7.percent} />
+        ) : (
+          <UserProfitability profit={accuracy.d7.pips} />
+        )}
         <div className="UserStatisticContainer__period-item-value">
           {intl.formatMessage({
             id: 'user_statistics_per_week',
@@ -37,7 +46,11 @@ const UserStatisticContainer = ({ intl, contentType, accuracy }) => (
         </div>
       </div>
       <div className="UserStatisticContainer__period-item border">
-        {contentType === 'forecast' ? <UserAccuracyChart value={accuracy.m1.percent} /> : null}
+        {contentType === 'forecast' ? (
+          <UserAccuracyChart value={accuracy.m1.percent} />
+        ) : (
+          <UserProfitability profit={accuracy.m1.pips} />
+        )}
         <div className="UserStatisticContainer__period-item-value">
           {intl.formatMessage({
             id: 'user_statistics_per_month',
@@ -46,7 +59,11 @@ const UserStatisticContainer = ({ intl, contentType, accuracy }) => (
         </div>
       </div>
       <div className="UserStatisticContainer__period-item border">
-        {contentType === 'forecast' ? <UserAccuracyChart value={accuracy.m12.percent} /> : null}
+        {contentType === 'forecast' ? (
+          <UserAccuracyChart value={accuracy.m12.percent} />
+        ) : (
+          <UserProfitability profit={accuracy.m12.pips} />
+        )}
         <div className="UserStatisticContainer__period-item-value">
           {intl.formatMessage({
             id: 'user_statistics_per_year',
