@@ -30,7 +30,7 @@ class LoginModal extends React.Component {
 
     // Functional for user tracking after mailing
     const tempUserId = localStorage.getItem('tempUserId');
-    if (tempUserId) investarenaApi.userTracker.sendUserSignUpPlace(tempUserId, 'ModalSignUp');
+    if (tempUserId) investarenaApi.userTracker.sendUserSignUpPlace(tempUserId, 'LoginModal');
   }
 
   render() {
