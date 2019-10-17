@@ -12,8 +12,8 @@ const UserAccuracyChart = ({ value }) => {
         size={100}
         innerHoleSize={80}
         data={[
-          { key: `success${value}`, value: value, color: '#54d2a0' },
-          { key: `unsuccess${value}`, value: 100 - value, color: '#d9534f' },
+          { key: `success$`, value: value, color: '#54d2a0' },
+          { key: `unsuccess`, value: 100 - value, color: '#d9534f' },
         ]}
       />
       <div
