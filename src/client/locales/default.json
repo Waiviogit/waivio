@@ -998,5 +998,6 @@
   "user_statistics_per_day": "per day",
   "user_statistics_per_week": "per week",
   "user_statistics_per_month": "per month",
-  "user_statistics_per_year": "per year"
+  "user_statistics_per_year": "per year",
+  "user_statistics_profitability_per_post": "Profitability per post"
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { injectIntl } from 'react-intl';
-import UserForecastAccuracy from './UserForecastAccuracy/UserForecastAccuracy';
+import UserStatisticContainer from './UserStatisticContainer/UserStatisticContainer';
 import './UserStatistics.less';
 
 const UserStatistics = () => {
@@ -28,7 +28,7 @@ const UserStatistics = () => {
   };
   return (
     <div>
-      <UserForecastAccuracy accuracy={mockObj} />
+      <UserStatisticContainer accuracy={mockObj} contentType={'forecast'} />
     </div>
   );
 };

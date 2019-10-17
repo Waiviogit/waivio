@@ -882,5 +882,6 @@
   "user_statistics_per_day": "За день",
   "user_statistics_per_week": "За неделю",
   "user_statistics_per_month": "За месяц",
-  "user_statistics_per_year": "За год"
+  "user_statistics_per_year": "За год",
+  "user_statistics_profitability_per_post": "Прибыльность по постам"
 }

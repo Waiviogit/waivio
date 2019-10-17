@@ -5,7 +5,7 @@ import { injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import './UserAccuracyChart.less';
 
-const UserAccuracyChart = ({ period, value, intl }) => {
+const UserAccuracyChart = ({ period, value }) => {
   return (
     <div className="UserAccuracyChart">
       <PieChart
@@ -22,11 +22,6 @@ const UserAccuracyChart = ({ period, value, intl }) => {
           unsuccess: value < 50,
         })}
       >{`${value}%`}</div>
-      <div className="UserAccuracyChart__period">
-        {intl.formatMessage({
-          id: `user_statistics_per_${period}`,
-        })}
-      </div>
     </div>
   );
 };
