@@ -51,7 +51,6 @@ class ModalSignUp extends React.Component {
   toggleModal = () => {
     // Functional for user tracking after mailing
     if (!this.state.isOpen) {
-      console.log('User opened a sign up modal');
       const tempUserId = localStorage.getItem('tempUserId');
       if (tempUserId) investarenaApi.userTracker.sendUserSignUpPlace(tempUserId, 'ModalSignUp');
     }

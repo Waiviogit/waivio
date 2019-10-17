@@ -29,7 +29,6 @@ class LoginModal extends React.Component {
     this.props.handleLoginModalCancel();
 
     // Functional for user tracking after mailing
-    console.log('User clicked a sign up link');
     const tempUserId = localStorage.getItem('tempUserId');
     if (tempUserId) investarenaApi.userTracker.sendUserSignUpPlace(tempUserId, 'ModalSignUp');
   }

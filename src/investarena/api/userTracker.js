@@ -5,14 +5,14 @@ import config from '../configApi/config';
 export default class UserTracker extends Base {
   setTempUserId(id) {
     localStorage.setItem('tempUserId', id);
-    const postData = { params: { email: id, followed: true } };
+    const postData = { email: id, followed: true };
     return this.apiClient
       .post(config.promoCampaign.promo, postData)
       .then(response => ({ status: response.status, error: response.error }));
   }
 
   sendUserSignUpPlace(id, key) {
-    const postData = { params: { email: id, registare_by: key } };
+    const postData = { email: id, registered_by: key } ;
     return this.apiClient
       .post(config.promoCampaign.promo, postData)
       .then(response => ({ status: response.status, error: response.error }));
