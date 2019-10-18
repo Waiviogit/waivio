@@ -763,6 +763,7 @@ class Topnav extends React.Component {
                 trigger="click"
                 overlayClassName="nav-menu-mobile"
                 visible={popoverMobileMenuVisible}
+                onVisibleChange={this.handleMobileMenuVisibleChange}
                 content={
                   <TopNavigation
                     authenticated={isAuthenticated}
