@@ -1,15 +1,14 @@
 import React from 'react';
 import { injectIntl } from 'react-intl';
-import { map } from 'lodash';
+// import { map } from 'lodash';
 import PropTypes from 'prop-types';
 import './UserForecastInstruments.less';
-import { PieChart, Legend } from 'react-easy-chart';
 
-const UserForecastInstruments = ({ intl, forecasts }) => {
-  const chartData = map(forecasts, forecast => ({
-    key: `${forecast.forecastName}`,
-    value: forecast.count,
-  }));
+const UserForecastInstruments = ({ intl }) => {
+  // const chartData = map(forecasts, forecast => ({
+  //   key: `${forecast.forecastName}`,
+  //   value: forecast.count,
+  // }));
   return (
     <div className="UserForecastInstruments">
       <div className="UserForecastInstruments__title">
@@ -19,8 +18,8 @@ const UserForecastInstruments = ({ intl, forecasts }) => {
         })}
       </div>
       <div>
-        <PieChart size={500} labels data={chartData} />
-        <Legend data={chartData} dataId={'key'} />
+        {/*<PieChart size={500} labels data={chartData} />*/}
+        {/*<Legend data={chartData} dataId={'key'} />*/}
       </div>
     </div>
   );
