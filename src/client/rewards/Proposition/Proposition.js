@@ -96,12 +96,6 @@ const Proposition = ({
     };
     reserveActivatedCampaign(reserveData)
       .then(() => {
-        message.success(
-          intl.formatMessage({
-            id: 'assigned_successfully',
-            defaultMessage: 'Assigned successfully',
-          }),
-        );
         assignProposition({
           companyAuthor: proposition.guide.name,
           companyPermlink: proposition.activation_permlink,
@@ -115,8 +109,8 @@ const Proposition = ({
       .catch(() => {
         message.error(
           intl.formatMessage({
-            id: 'cannot_activate_company',
-            defaultMessage: 'You cannot activate the company at the moment',
+            id: 'cannot_reserve_company',
+            defaultMessage: 'You cannot reserve the campaign at the moment',
           }),
         );
       });
