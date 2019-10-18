@@ -993,5 +993,6 @@
   "album_append_send": "Create",
   "image_send_progress": "Submitting",
   "image_append_send": "Submit image",
-  "disconnect_broker": "Disconnect broker"
+  "disconnect_broker": "Disconnect broker",
+  "menu": "Menu"
 }

@@ -145,7 +145,8 @@ class Topnav extends React.Component {
 
     this.state = {
       searchBarActive: false,
-      popoverVisible: false,
+      popoverMobileMenuVisible: false,
+      popoverProfileVisible: false,
       popoverBrokerVisible: false,
       searchBarValue: '',
       notificationsPopoverVisible: false,
@@ -157,7 +158,8 @@ class Topnav extends React.Component {
     };
     this.handleMoreMenuSelect = this.handleMoreMenuSelect.bind(this);
     this.handleBrokerMenuSelect = this.handleBrokerMenuSelect.bind(this);
-    this.handleMoreMenuVisibleChange = this.handleMoreMenuVisibleChange.bind(this);
+    this.handleMobileMenuVisibleChange = this.handleMobileMenuVisibleChange.bind(this);
+    this.handleProfileMenuVisibleChange = this.handleProfileMenuVisibleChange.bind(this);
     this.handleBrokerMenuVisibleChange = this.handleBrokerMenuVisibleChange.bind(this);
     this.handleNotificationsPopoverVisibleChange = this.handleNotificationsPopoverVisibleChange.bind(
       this,
@@ -207,7 +209,7 @@ class Topnav extends React.Component {
   };
 
   handleMoreMenuSelect(key) {
-    this.setState({ popoverVisible: false }, () => {
+    this.setState({ popoverProfileVisible: false }, () => {
       this.props.onMenuItemClick(key);
     });
   }
@@ -227,8 +229,12 @@ class Topnav extends React.Component {
     }
   }
 
-  handleMoreMenuVisibleChange(visible) {
-    this.setState({ popoverVisible: visible });
+  handleMobileMenuVisibleChange() {
+    this.setState({ popoverMobileMenuVisible: !this.state.popoverMobileMenuVisible });
+  }
+
+  handleProfileMenuVisibleChange(visible) {
+    this.setState({ popoverProfileVisible: visible });
   }
 
   handleBrokerMenuVisibleChange(visible) {
@@ -284,7 +290,7 @@ class Topnav extends React.Component {
 
   menuForLoggedIn = () => {
     const { intl, username, notifications, userMetaData, loadingNotifications } = this.props;
-    const { searchBarActive, notificationsPopoverVisible, popoverVisible } = this.state;
+    const { searchBarActive, notificationsPopoverVisible, popoverProfileVisible } = this.state;
     const lastSeenTimestamp = _.get(userMetaData, 'notifications_last_timestamp');
     const notificationsCount = _.isUndefined(lastSeenTimestamp)
       ? _.size(notifications)
@@ -362,8 +368,8 @@ class Topnav extends React.Component {
             <PopoverContainer
               placement="bottom"
               trigger="click"
-              visible={popoverVisible}
-              onVisibleChange={this.handleMoreMenuVisibleChange}
+              visible={popoverProfileVisible}
+              onVisibleChange={this.handleProfileMenuVisibleChange}
               overlayStyle={{ position: 'fixed' }}
               content={
                 <PopoverMenu onSelect={this.handleMoreMenuSelect}>
@@ -717,11 +723,15 @@ class Topnav extends React.Component {
       isLoadingPlatform,
       isNightMode,
     } = this.props;
-    const { searchBarActive, isModalDeposit, dropdownOpen, popoverBrokerVisible } = this.state;
-    const brandLogoPath =
-      screenSize === 'xsmall' || screenSize === 'small'
-        ? '/images/icons/icon-72x72.png'
-        : '/images/logo-brand.png';
+    const {
+      searchBarActive,
+      isModalDeposit,
+      dropdownOpen,
+      popoverMobileMenuVisible,
+      popoverBrokerVisible,
+    } = this.state;
+    const isMobile = screenSize === 'xsmall' || screenSize === 'small';
+    const brandLogoPath = isMobile ? '/images/icons/icon-72x72.png' : '/images/logo-brand.png';
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     const downBar = (
       <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
@@ -739,7 +749,6 @@ class Topnav extends React.Component {
     const formattedAutoCompleteDropdown = _.isEmpty(dropdownOptions)
       ? dropdownOptions
       : dropdownOptions.concat([downBar]);
-    const isMobile = screenSize !== 'large';
     return (
       <div className="Topnav">
         <ModalDealConfirmation />
@@ -748,6 +757,33 @@ class Topnav extends React.Component {
             <Link to="/" className="Topnav__brand">
               <img alt="InvestArena" src={brandLogoPath} className="Topnav__brand-icon" />
             </Link>
+            {isMobile && (
+              <Popover
+                placement="top"
+                trigger="click"
+                overlayClassName="nav-menu-mobile"
+                visible={popoverMobileMenuVisible}
+                content={
+                  <TopNavigation
+                    authenticated={isAuthenticated}
+                    location={this.props.history.location}
+                    isMobile
+                    onMenuClick={this.handleMobileMenuVisibleChange}
+                  />
+                }
+              >
+                <Button
+                  className="mobile-menu-btn"
+                  type="primary"
+                  onClick={this.handleMobileMenuVisibleChange}
+                >
+                  {intl.formatMessage({
+                    id: 'menu',
+                    defaultMessage: 'Menu',
+                  })}
+                </Button>
+              </Popover>
+            )}
           </div>
           <div className={classNames('center', { mobileVisible: searchBarActive })}>
             <div className="Topnav__input-container">
@@ -785,7 +821,7 @@ class Topnav extends React.Component {
               <TopNavigation
                 authenticated={isAuthenticated}
                 location={this.props.history.location}
-                isMobile={isMobile}
+                isMobile={isMobile || screenSize === 'medium'}
               />
             </div>
           </div>

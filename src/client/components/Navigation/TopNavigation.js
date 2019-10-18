@@ -51,10 +51,10 @@ const getDealsLinks = (isMobile, pathname) =>
     </li>
   );
 
-const TopNavigation = ({ authenticated, location: { pathname }, isMobile }) => {
+const TopNavigation = ({ authenticated, location: { pathname }, isMobile, onMenuClick }) => {
   const renderDealsLinks = memoize(getDealsLinks);
   return (
-    <ul className="TopNavigation">
+    <ul className="TopNavigation" role="presentation" onClick={onMenuClick}>
       <li className="TopNavigation__item">
         <Link
           to="/"
@@ -116,6 +116,7 @@ TopNavigation.propTypes = {
   authenticated: PropTypes.bool.isRequired,
   location: PropTypes.shape(),
   isMobile: PropTypes.bool,
+  onMenuClick: PropTypes.func,
 };
 
 TopNavigation.defaultProps = {
@@ -123,6 +124,7 @@ TopNavigation.defaultProps = {
     pathname: '',
   },
   isMobile: true,
+  onMenuClick: () => {},
 };
 
 export default TopNavigation;

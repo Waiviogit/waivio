@@ -2,15 +2,17 @@
 @import (reference) '../../styles/custom.less';
 
 .TopNavigation {
-  display: none;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  line-height: normal;
-  height: 46px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  line-height: 35px;
+  height: auto;
   width: 100%;
   justify-content: center;
   background-color: transparent;
-  border: none;
+  border-bottom: @base-border;
+  padding-bottom: 10px;
   overflow: hidden;
   &__link {
     display: inline-block;
@@ -27,13 +29,23 @@
     }
   }
   &__item {
-    height: 23px;
-    &:not(:last-child) {
-      margin-right: 12px;
+    height: 30px;
+    @media @small, @medium, @large {
+      height: 23px;
+      &:not(:last-child) {
+        margin-right: 12px;
+      }
     }
   }
   @media @small, @medium, @large {
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    line-height: normal;
+    height: 46px;
+    border: none;
+    padding: 0;
   }
 }
 
