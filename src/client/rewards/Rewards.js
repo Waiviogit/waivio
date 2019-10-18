@@ -219,19 +219,21 @@ class Rewards extends React.Component {
         this.setState({ loadingAssignDiscard: false });
       });
   };
+
+  // eslint-disable-next-line consistent-return
   updateProposition = (propsId, isAssign, objPermlink) => {
     // eslint-disable-next-line no-param-reassign
-    const newProp = { ...this.state.propositions[0] };
-    if (newProp._id === propsId) {
-      newProp.objects.forEach(object => {
+    const newPropos = { ...this.state.propositions[0] };
+    if (newPropos._id === propsId) {
+      newPropos.objects.forEach((object, index) => {
         if (object.object.author_permlink === objPermlink) {
-          newProp.object.assigned = isAssign;
+          newPropos.objects[index].assigned = isAssign;
         } else {
-          newProp.object.assigned = null;
+          newPropos.objects[index].assigned = null;
         }
       });
     }
-    this.setState({ propositions: [newProp] });
+    return [newPropos];
   };
 
   toggleModal = proposition => {
