@@ -244,69 +244,54 @@
     margin-left: 5px;
   }
 
-  .main-nav > .ant-menu-horizontal {
-    border: 0;
-    color: @white-gainsboro;
-    font-weight: bold;
-    line-height: 38px;
-    @media @medium, @large {
-      margin-left: 200px;
-    }
-
-    .ant-menu-item {
-      &-selected {
-        a {
-          color: @primary-color;
-        }
-      }
-
-      &-disabled {
-        display: none;
-      }
-    }
-
-    a {
-      color: @white-gainsboro;
-      font-weight: bold;
-    }
-  }
-
-  .main-nav {
-    display: block;
-    position: absolute;
-    width: 100%;
-    bottom: 0;
+  .right.bottom-row {
+    top: 48px;
 
     .st-header-broker-balance-pl-wrap {
-      display: none;
+      height: 46px;
+      line-height: normal;
+
+      position: unset;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
 
       .st-header__image {
-        margin-left: 10px;
-        width: 30px;
-        height: 30px;
+        margin: 0 3px;
+        width: 33px;
+        min-width: 33px;
+        height: 33px;
         cursor: pointer;
+      }
+
+      a.Topnav__link.dropdown-icon {
+        color: @tertiary-color !important;
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        padding: 0 3px;
+
+        &.Topnav__link--action {
+          margin-top: 7px;
+        }
+
+        &:hover {
+          color: @quaternary-color !important;
+        }
       }
     }
 
-    @media @small, @medium, @large {
-      position: unset;
+    .st-header-broker-balance-pl-wrap {
+      color: @white;
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
+      align-items: center;
 
-      .st-header-broker-balance-pl-wrap {
-        color: @white;
+      .st-balance-border {
+        padding: 0 5px;
+        border-left: 1px solid @white;
         display: flex;
-        justify-content: space-between;
-        height: 32px;
-        align-items: center;
-
-        .st-balance-border {
-          padding: 0 10px;
-          border-left: 1px solid @white;
-          display: flex;
-          flex-direction: column;
-          line-height: 14px;
-        }
+        flex-direction: column;
+        line-height: 14px;
       }
     }
   }

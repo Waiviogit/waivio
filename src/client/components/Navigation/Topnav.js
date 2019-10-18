@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { AutoComplete, Icon, Input, Menu } from 'antd';
+import { AutoComplete, Button, Icon, Input, Menu, Modal, Popover } from 'antd';
 import classNames from 'classnames';
 import {
   searchAutoComplete,
@@ -14,6 +14,8 @@ import {
   resetSearchAutoCompete,
 } from '../../search/searchActions';
 import { getUserMetadata } from '../../user/usersActions';
+import { toggleModal } from '../../../investarena/redux/actions/modalsActions';
+import { disconnectBroker } from '../../../investarena/redux/actions/brokersActions';
 import {
   getAutoCompleteSearchResults,
   getSearchObjectsResults,
@@ -33,20 +35,21 @@ import { PARSED_NOTIFICATIONS } from '../../../common/constants/notifications';
 import BTooltip from '../BTooltip';
 import Avatar from '../Avatar';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
-import Popover from '../Popover';
+import PopoverContainer from '../Popover';
 import Notifications from './Notifications/Notifications';
 import LanguageSettings from './LanguageSettings';
-import './Topnav.less';
+import Balance from '../../../investarena/components/Header/Balance';
 import {
   getIsLoadingPlatformState,
   getPlatformNameState,
 } from '../../../investarena/redux/selectors/platformSelectors';
-import { toggleModal } from '../../../investarena/redux/actions/modalsActions';
+import config from '../../../investarena/configApi/config';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
 import ModalSignUp from './ModalSignUp/ModalSignUp';
-import TopNavigation from "./TopNavigation";
+import TopNavigation from './TopNavigation';
+import './Topnav.less';
 
 @injectIntl
 @withRouter
@@ -66,6 +69,7 @@ import TopNavigation from "./TopNavigation";
     isLoadingPlatform: getIsLoadingPlatformState(state),
   }),
   {
+    disconnectBroker,
     searchObjectsAutoCompete,
     searchAutoComplete,
     getUserMetadata,
@@ -95,9 +99,10 @@ class Topnav extends React.Component {
     resetSearchAutoCompete: PropTypes.func.isRequired,
     platformName: PropTypes.string.isRequired,
     isLoadingPlatform: PropTypes.bool.isRequired,
-    // isNightMode: PropTypes.bool.isRequired,
+    isNightMode: PropTypes.bool.isRequired,
     screenSize: PropTypes.string,
     toggleModal: PropTypes.func.isRequired,
+    disconnectBroker: PropTypes.func.isRequired,
     /* passed props */
     username: PropTypes.string,
     onMenuItemClick: PropTypes.func,
@@ -141,6 +146,7 @@ class Topnav extends React.Component {
     this.state = {
       searchBarActive: false,
       popoverVisible: false,
+      popoverBrokerVisible: false,
       searchBarValue: '',
       notificationsPopoverVisible: false,
       selectedPage: '',
@@ -150,7 +156,9 @@ class Topnav extends React.Component {
       selectColor: false,
     };
     this.handleMoreMenuSelect = this.handleMoreMenuSelect.bind(this);
+    this.handleBrokerMenuSelect = this.handleBrokerMenuSelect.bind(this);
     this.handleMoreMenuVisibleChange = this.handleMoreMenuVisibleChange.bind(this);
+    this.handleBrokerMenuVisibleChange = this.handleBrokerMenuVisibleChange.bind(this);
     this.handleNotificationsPopoverVisibleChange = this.handleNotificationsPopoverVisibleChange.bind(
       this,
     );
@@ -204,8 +212,27 @@ class Topnav extends React.Component {
     });
   }
 
+  handleBrokerMenuSelect(key) {
+    switch (key) {
+      case 'deposit':
+        this.setState({ popoverBrokerVisible: false, isModalDeposit: true });
+        break;
+      case 'broker-disconnect':
+        this.setState({ popoverBrokerVisible: false }, () => {
+          this.props.disconnectBroker('broker');
+        });
+        break;
+      default:
+        break;
+    }
+  }
+
   handleMoreMenuVisibleChange(visible) {
     this.setState({ popoverVisible: visible });
+  }
+
+  handleBrokerMenuVisibleChange(visible) {
+    this.setState({ popoverBrokerVisible: visible });
   }
 
   handleNotificationsPopoverVisibleChange(visible) {
@@ -256,15 +283,7 @@ class Topnav extends React.Component {
   };
 
   menuForLoggedIn = () => {
-    const {
-      intl,
-      username,
-      notifications,
-      userMetaData,
-      loadingNotifications,
-      platformName,
-      isLoadingPlatform,
-    } = this.props;
+    const { intl, username, notifications, userMetaData, loadingNotifications } = this.props;
     const { searchBarActive, notificationsPopoverVisible, popoverVisible } = this.state;
     const lastSeenTimestamp = _.get(userMetaData, 'notifications_last_timestamp');
     const notificationsCount = _.isUndefined(lastSeenTimestamp)
@@ -305,7 +324,7 @@ class Topnav extends React.Component {
               overlayClassName="Topnav__notifications-tooltip"
               mouseEnterDelay={1}
             >
-              <Popover
+              <PopoverContainer
                 placement="bottomRight"
                 trigger="click"
                 content={
@@ -331,7 +350,7 @@ class Topnav extends React.Component {
                     <i className="iconfont icon-remind" />
                   )}
                 </a>
-              </Popover>
+              </PopoverContainer>
             </BTooltip>
           </Menu.Item>
           <Menu.Item key="user" className="Topnav__item-user">
@@ -340,22 +359,14 @@ class Topnav extends React.Component {
             </Link>
           </Menu.Item>
           <Menu.Item key="more" className="Topnav__menu--icon">
-            <Popover
+            <PopoverContainer
               placement="bottom"
               trigger="click"
               visible={popoverVisible}
               onVisibleChange={this.handleMoreMenuVisibleChange}
               overlayStyle={{ position: 'fixed' }}
               content={
-                <PopoverMenu
-                  onSelect={this.handleMoreMenuSelect}
-                  intl={intl}
-                  platformName={platformName}
-                  isLoadingPlatform={isLoadingPlatform}
-                  toggleModalDeposit={this.toggleModalDeposit}
-                  toggleModalBroker={this.toggleModalBroker}
-                  handleMoreMenuVisibleChange={this.handleMoreMenuVisibleChange}
-                >
+                <PopoverMenu onSelect={this.handleMoreMenuSelect}>
                   <PopoverMenuItem key="my-profile" fullScreenHidden>
                     <FormattedMessage id="my_profile" defaultMessage="My profile" />
                   </PopoverMenuItem>
@@ -396,7 +407,7 @@ class Topnav extends React.Component {
                 <Icon type="caret-down" />
                 <Icon type="bars" />
               </a>
-            </Popover>
+            </PopoverContainer>
           </Menu.Item>
         </Menu>
       </div>
@@ -702,11 +713,11 @@ class Topnav extends React.Component {
       isAuthenticated,
       autoCompleteSearchResults,
       screenSize,
-      // platformName,
-      // isLoadingPlatform,
-      // isNightMode,
+      platformName,
+      isLoadingPlatform,
+      isNightMode,
     } = this.props;
-    const { searchBarActive, dropdownOpen } = this.state;
+    const { searchBarActive, isModalDeposit, dropdownOpen, popoverBrokerVisible } = this.state;
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     const downBar = (
       <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
@@ -767,7 +778,11 @@ class Topnav extends React.Component {
               <i className="iconfont icon-search" />
             </div>
             <div className="Topnav__horizontal-menu">
-              <TopNavigation authenticated={isAuthenticated} location={this.props.history.location} isMobile={isMobile}/>
+              <TopNavigation
+                authenticated={isAuthenticated}
+                location={this.props.history.location}
+                isMobile={isMobile}
+              />
             </div>
           </div>
           <div className="right">
@@ -785,6 +800,106 @@ class Topnav extends React.Component {
               />
             </button>
             {this.content()}
+          </div>
+          <div className="right bottom-row">
+            {platformName !== 'widgets' && !isLoadingPlatform ? (
+              <div className="st-header-broker-balance-pl-wrap">
+                <div className="st-balance-wrap">
+                  <div className="st-balance-text">
+                    {intl.formatMessage({
+                      id: 'headerAuthorized.p&l',
+                      defaultMessage: 'P&L deals',
+                    })}
+                    :
+                  </div>
+                  <div className="st-balance-amount">
+                    <Balance balanceType="unrealizedPnl" />
+                  </div>
+                </div>
+                <div className="st-balance-border">
+                  <div className="st-balance-text">
+                    {intl.formatMessage({
+                      id: 'headerAuthorized.balance',
+                      defaultMessage: 'Balance',
+                    })}
+                    :
+                  </div>
+                  <div className="st-balance-amount">
+                    <Balance balanceType="balance" />
+                  </div>
+                </div>
+                <Modal
+                  title={intl.formatMessage({
+                    id: 'headerAuthorized.deposit',
+                    defaultMessage: 'Deposit',
+                  })}
+                  footer={null}
+                  visible={isModalDeposit}
+                  onCancel={this.toggleModalDeposit}
+                  width={1250}
+                  wrapClassName={'st-header-deposit-modal'}
+                  destroyOnClose
+                >
+                  <iframe
+                    title="depositFrame"
+                    src={`${
+                      config[process.env.NODE_ENV].platformDepositUrl[this.props.platformName]
+                    }?${isNightMode ? 'style=wp&' : ''}mode=popup&lang=en#deposit`}
+                    width="1200px"
+                    height="696px"
+                  />
+                </Modal>
+                <img
+                  role="presentation"
+                  title={platformName}
+                  onClick={this.toggleModalBroker}
+                  className="st-header__image"
+                  src={`/images/investarena/${platformName}.png`}
+                  alt="broker"
+                />
+                <Popover
+                  placement="bottom"
+                  trigger="click"
+                  visible={popoverBrokerVisible}
+                  onVisibleChange={this.handleBrokerMenuVisibleChange}
+                  overlayStyle={{ position: 'fixed' }}
+                  content={
+                    <div>
+                      <div className="Popover__overlay" />
+                      <PopoverMenu onSelect={this.handleBrokerMenuSelect}>
+                        <PopoverMenuItem key="deposit">
+                          <FormattedMessage
+                            id="headerAuthorized.deposit"
+                            defaultMessage="Deposit"
+                          />
+                        </PopoverMenuItem>
+                        <PopoverMenuItem key="broker-disconnect">
+                          <FormattedMessage
+                            id="disconnect_broker"
+                            defaultMessage="Disconnect Broker"
+                          />
+                        </PopoverMenuItem>
+                      </PopoverMenu>
+                    </div>
+                  }
+                >
+                  <a className="Topnav__link dropdown-icon">
+                    <Icon type="caret-down" />
+                  </a>
+                </Popover>
+              </div>
+            ) : (
+              this.props.username && (
+                <div className="st-header-broker-balance-pl-wrap">
+                  <Button type="primary" onClick={this.toggleModalBroker}>
+                    {intl.formatMessage({
+                      id: 'headerAuthorized.connectToBroker',
+                      defaultMessage: 'Connect to broker',
+                    })}
+                  </Button>
+                </div>
+              )
+            )}
           </div>
         </div>
       </div>

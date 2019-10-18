@@ -14,7 +14,7 @@ const LINKS = {
   ABOUT: '/object/xqa-about-investarena',
 };
 
-const getDealsLinks = (isMobile, pathname) => (
+const getDealsLinks = (isMobile, pathname) =>
   isMobile ? (
     <React.Fragment>
       <li className="TopNavigation__item">
@@ -24,7 +24,7 @@ const getDealsLinks = (isMobile, pathname) => (
             'TopNavigation__link--active': pathname === `${LINKS.DEALS}/open`,
           })}
         >
-          <FormattedMessage id="open_deals" defaultMessage="!Open deals"/>
+          <FormattedMessage id="open_deals" defaultMessage="!Open deals" />
         </Link>
       </li>
       <li className="TopNavigation__item">
@@ -34,7 +34,7 @@ const getDealsLinks = (isMobile, pathname) => (
             'TopNavigation__link--active': pathname === `${LINKS.DEALS}/closed`,
           })}
         >
-          <FormattedMessage id="closed_deals" defaultMessage="!Closed deals"/>
+          <FormattedMessage id="closed_deals" defaultMessage="!Closed deals" />
         </Link>
       </li>
     </React.Fragment>
@@ -49,8 +49,7 @@ const getDealsLinks = (isMobile, pathname) => (
         <FormattedMessage id="my_deals" defaultMessage="!My deals" />
       </Link>
     </li>
-  )
-);
+  );
 
 const TopNavigation = ({ authenticated, location: { pathname }, isMobile }) => {
   const renderDealsLinks = memoize(getDealsLinks);
@@ -60,8 +59,7 @@ const TopNavigation = ({ authenticated, location: { pathname }, isMobile }) => {
         <Link
           to="/"
           className={classNames('TopNavigation__link', {
-            'TopNavigation__link--active':
-              pathname === '/',
+            'TopNavigation__link--active': pathname === '/',
           })}
         >
           <FormattedMessage id="home" defaultMessage="Home" />
@@ -73,7 +71,6 @@ const TopNavigation = ({ authenticated, location: { pathname }, isMobile }) => {
             to={LINKS.MY_FEED}
             className={classNames('TopNavigation__link', {
               'TopNavigation__link--active': pathname === LINKS.MY_FEED,
-
             })}
           >
             <FormattedMessage id="my_feed" defaultMessage="My feed" />
@@ -100,7 +97,7 @@ const TopNavigation = ({ authenticated, location: { pathname }, isMobile }) => {
           <FormattedMessage id="markets" defaultMessage="Markets" />
         </Link>
       </li>
-      {authenticated && renderDealsLinks(isMobile, pathname) }
+      {authenticated && renderDealsLinks(isMobile, pathname)}
       <li className="TopNavigation__item">
         <Link
           to={LINKS.ABOUT}
@@ -112,7 +109,7 @@ const TopNavigation = ({ authenticated, location: { pathname }, isMobile }) => {
         </Link>
       </li>
     </ul>
-  )
+  );
 };
 
 TopNavigation.propTypes = {

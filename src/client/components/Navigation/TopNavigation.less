@@ -2,7 +2,7 @@
 @import (reference) '../../styles/custom.less';
 
 .TopNavigation {
-  display: flex;
+  display: none;
   flex-wrap: wrap;
   align-items: flex-end;
   line-height: normal;
@@ -31,6 +31,9 @@
     &:not(:last-child) {
       margin-right: 12px;
     }
+  }
+  @media @small, @medium, @large {
+    display: flex;
   }
 }
 
