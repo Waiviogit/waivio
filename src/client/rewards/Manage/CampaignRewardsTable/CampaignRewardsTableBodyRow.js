@@ -82,7 +82,7 @@ const CampaignRewardsTableRow = ({
   return (
     <React.Fragment>
       <tr>
-        <td className="Campaign-rewards checkbox">
+        <td>
           <Checkbox checked={isChecked} onChange={handleChangeCheckbox} disabled={isInactive} />
         </td>
         <td>{currentItem.name}</td>
