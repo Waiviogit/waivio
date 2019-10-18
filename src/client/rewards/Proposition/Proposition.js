@@ -56,12 +56,6 @@ const Proposition = ({
     };
     rejectReservationCampaign(rejectData)
       .then(() => {
-        message.success(
-          intl.formatMessage({
-            id: 'discarded_successfully',
-            defaultMessage: 'Discarded successfully',
-          }),
-        );
         discardProposition({
           companyAuthor: proposition.guide.name,
           companyPermlink: proposition.activation_permlink,

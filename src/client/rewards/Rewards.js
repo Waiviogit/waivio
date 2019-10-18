@@ -270,12 +270,24 @@ class Rewards extends React.Component {
         reservationPermlink,
       })
       .then(() => {
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'discarded_successfully',
+            defaultMessage: 'Discarded successfully',
+          }),
+        );
         const updatedPropositions = this.updateProposition(companyId, false, objPermlink);
         this.props.history.push(`/rewards/active`);
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })
       .catch(e => {
         console.log(e.toString());
+        message.error(
+          this.props.intl.formatMessage({
+            id: 'cannot_reject_campaign',
+            defaultMessage: 'You cannot reject the campaign at the moment',
+          }),
+        );
         this.setState({ loadingAssignDiscard: false });
       });
   };
