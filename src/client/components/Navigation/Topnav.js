@@ -718,6 +718,10 @@ class Topnav extends React.Component {
       isNightMode,
     } = this.props;
     const { searchBarActive, isModalDeposit, dropdownOpen, popoverBrokerVisible } = this.state;
+    const brandLogoPath =
+      screenSize === 'xsmall' || screenSize === 'small'
+        ? '/images/icons/icon-72x72.png'
+        : '/images/logo-brand.png';
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     const downBar = (
       <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
@@ -742,7 +746,7 @@ class Topnav extends React.Component {
         <div className="topnav-layout">
           <div className={classNames('left', { 'Topnav__mobile-hidden': searchBarActive })}>
             <Link to="/" className="Topnav__brand">
-              <img alt="InvestArena" src="/images/logo-brand.png" className="Topnav__brand-icon" />
+              <img alt="InvestArena" src={brandLogoPath} className="Topnav__brand-icon" />
             </Link>
           </div>
           <div className={classNames('center', { mobileVisible: searchBarActive })}>
