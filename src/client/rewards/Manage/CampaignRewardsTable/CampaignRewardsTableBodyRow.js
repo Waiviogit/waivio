@@ -21,6 +21,7 @@ const CampaignRewardsTableRow = ({
   const [isModalOpen, toggleModal] = useState(false);
   const [isLoading, setLoad] = useState(false);
   const isChecked = currentItem.status === 'active' || currentItem.status === 'payed';
+  const isInactive = currentItem.status === 'inactive';
   const activationCampaignData = {
     // eslint-disable-next-line no-underscore-dangle
     campaign_id: currentItem._id,
@@ -81,8 +82,8 @@ const CampaignRewardsTableRow = ({
   return (
     <React.Fragment>
       <tr>
-        <td>
-          <Checkbox checked={isChecked} onChange={handleChangeCheckbox} />
+        <td className="Campaign-rewards checkbox">
+          <Checkbox checked={isChecked} onChange={handleChangeCheckbox} disabled={isInactive} />
         </td>
         <td>{currentItem.name}</td>
         <td>
