@@ -877,18 +877,18 @@ class Topnav extends React.Component {
                   footer={null}
                   visible={isModalDeposit}
                   onCancel={this.toggleModalDeposit}
-                  width={1250}
-                  wrapClassName={'st-header-deposit-modal'}
+                  wrapClassName="fullscreen-mode"
                   destroyOnClose
                 >
-                  <iframe
-                    title="depositFrame"
-                    src={`${
-                      config[process.env.NODE_ENV].platformDepositUrl[this.props.platformName]
-                    }?${isNightMode ? 'style=wp&' : ''}mode=popup&lang=en#deposit`}
-                    width="1200px"
-                    height="696px"
-                  />
+                  <div className="fs-content-wrapper">
+                    <iframe
+                      title="depositFrame"
+                      className="fs-embedded-content"
+                      src={`${
+                        config[process.env.NODE_ENV].platformDepositUrl[this.props.platformName]
+                      }?${isNightMode ? 'style=wp&' : ''}mode=popup&lang=en#deposit`}
+                    />
+                  </div>
                 </Modal>
                 <img
                   role="presentation"
