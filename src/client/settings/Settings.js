@@ -28,9 +28,8 @@ import RawSlider from '../components/Slider/RawSlider';
 import requiresLogin from '../auth/requiresLogin';
 import LANGUAGES from '../translations/languages';
 import { getLanguageText } from '../translations';
-import './Settings.less';
 import packageJson from '../../../package.json';
-import TopNavigation from '../components/Navigation/TopNavigation';
+import './Settings.less';
 
 @requiresLogin
 @injectIntl
@@ -67,7 +66,6 @@ export default class Settings extends React.Component {
     notify: PropTypes.func,
     upvoteSetting: PropTypes.bool,
     exitPageSetting: PropTypes.bool,
-    userName: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -201,7 +199,6 @@ export default class Settings extends React.Component {
       showNSFWPosts: initialShowNSFWPosts,
       nightmode: initialNightmode,
       loading,
-      userName,
     } = this.props;
     const {
       votingPower,
@@ -243,7 +240,6 @@ export default class Settings extends React.Component {
           </title>
         </Helmet>
         <div className="settings-layout container">
-          <TopNavigation authenticated userName={userName} />
           <Affix className="leftContainer" stickPosition={77}>
             <div className="left">
               <LeftSidebar />

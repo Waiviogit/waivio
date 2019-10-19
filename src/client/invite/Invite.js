@@ -14,7 +14,6 @@ import TwitterShare from '../components/Button/TwitterShare';
 import EmailShare from '../components/Button/EmailShare';
 import { REFERRAL_PERCENT } from '../helpers/constants';
 import './Invite.less';
-import TopNavigation from '../components/Navigation/TopNavigation';
 
 @requiresLogin
 @injectIntl
@@ -59,7 +58,7 @@ export default class Invite extends React.Component {
   }
 
   render() {
-    const { intl, authenticatedUserName } = this.props;
+    const { intl } = this.props;
     const buttonLabel = this.state.copied ? (
       <FormattedMessage id="invite_copied" defaultMessage="Copied" />
     ) : (
@@ -71,7 +70,6 @@ export default class Invite extends React.Component {
           <title>{intl.formatMessage({ id: 'invite', defaultMessage: 'Invite' })} - Waivio</title>
         </Helmet>
         <div className="settings-layout container">
-          <TopNavigation authenticated userName={authenticatedUserName} />
           <Affix className="leftContainer" stickPosition={115}>
             <div className="left">
               <LeftSidebar />
