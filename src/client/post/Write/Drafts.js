@@ -97,12 +97,12 @@ class Drafts extends React.Component {
           <title>{intl.formatMessage({ id: 'drafts', defaultMessage: 'Drafts' })} - Waivio</title>
         </Helmet>
         <div className="drafts-layout container">
-          <Affix className="leftContainer" stickPosition={115}>
+          <Affix className="leftContainer" stickPosition={116}>
             <div className="left">
               <LeftSidebar />
             </div>
           </Affix>
-          <div className="center">
+          <div className="center shifted">
             <div>
               <h1>
                 <FormattedMessage id="drafts" defaultMessage="Drafts" />

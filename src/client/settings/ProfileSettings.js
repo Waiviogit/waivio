@@ -148,7 +148,7 @@ export default class ProfileSettings extends React.Component {
           </title>
         </Helmet>
         <div className="settings-layout container">
-          <Affix className="leftContainer" stickPosition={77}>
+          <Affix className="leftContainer" stickPosition={116}>
             <div className="left">
               <LeftSidebar />
             </div>

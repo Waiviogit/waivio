@@ -60,7 +60,7 @@ class Notifications extends React.Component {
     return (
       <div className="shifted">
         <div className="feed-layout container">
-          <Affix className="leftContainer" stickPosition={77}>
+          <Affix className="leftContainer" stickPosition={116}>
             <div className="left">
               <LeftSidebar />
             </div>

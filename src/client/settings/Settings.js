@@ -233,14 +233,14 @@ export default class Settings extends React.Component {
     });
 
     return (
-      <React.Fragment>
+      <div className="shifted">
         <Helmet>
           <title>
             {intl.formatMessage({ id: 'settings', defaultMessage: 'Settings' })} - Waivio
           </title>
         </Helmet>
         <div className="settings-layout container">
-          <Affix className="leftContainer" stickPosition={77}>
+          <Affix className="leftContainer" stickPosition={116}>
             <div className="left">
               <LeftSidebar />
             </div>
@@ -456,7 +456,7 @@ export default class Settings extends React.Component {
             )}
           </div>
         </div>
-      </React.Fragment>
+      </div>
     );
   }
 }

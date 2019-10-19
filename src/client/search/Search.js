@@ -90,7 +90,7 @@ class Search extends React.Component {
         <Helmet>
           <title>{intl.formatMessage({ id: 'search', defaultMessage: 'Search' })} - Waivio</title>
         </Helmet>
-        <Affix className="leftContainer" stickPosition={115}>
+        <Affix className="leftContainer" stickPosition={116}>
           <div className="left">
             <LeftSidebar />
           </div>

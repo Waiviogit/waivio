@@ -70,7 +70,7 @@ export default class Invite extends React.Component {
           <title>{intl.formatMessage({ id: 'invite', defaultMessage: 'Invite' })} - Waivio</title>
         </Helmet>
         <div className="settings-layout container">
-          <Affix className="leftContainer" stickPosition={115}>
+          <Affix className="leftContainer" stickPosition={116}>
             <div className="left">
               <LeftSidebar />
             </div>

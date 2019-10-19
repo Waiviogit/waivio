@@ -70,19 +70,19 @@ export default class Bookmarks extends React.Component {
     const noBookmarks = !reloading && !isFetching && !content.length;
 
     return (
-      <React.Fragment>
+      <div className="shifted">
         <Helmet>
           <title>
             {intl.formatMessage({ id: 'bookmarks', defaultMessage: 'Bookmarks' })} - Waivio
           </title>
         </Helmet>
         <div className="feed-layout container">
-          <Affix className="leftContainer" stickPosition={77}>
+          <Affix className="leftContainer" stickPosition={116}>
             <div className="left">
               <LeftSidebar />
             </div>
           </Affix>
-          <Affix className="rightContainer" stickPosition={77}>
+          <Affix className="rightContainer" stickPosition={116}>
             <div className="right">
               <RightSidebar />
             </div>
@@ -109,7 +109,7 @@ export default class Bookmarks extends React.Component {
           </div>
         </div>
         <PostModal />
-      </React.Fragment>
+      </div>
     );
   }
 }
