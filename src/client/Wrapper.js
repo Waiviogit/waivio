@@ -217,7 +217,7 @@ export default class Wrapper extends React.PureComponent {
     const language = findLanguage(usedLocale);
 
     return (
-      <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
+      <IntlProvider locale={language.localeData} messages={translations}>
         <ConfigProvider locale={enUS}>
           <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
             <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>

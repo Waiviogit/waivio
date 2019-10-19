@@ -1,8 +1,9 @@
 import * as apiConfig from '../../waivioApi/config.json';
 
+export const APP_NAME = apiConfig[process.env.NODE_ENV].appName || 'waiviodev';
 export const WAIVIO_META_FIELD_NAME = 'wobj';
 export const INVESTARENA_META_FIELD_NAME = 'wia';
-export const WAIVIO_PARENT_PERMLINK = apiConfig[process.env.NODE_ENV].appName || 'waiviodev';
+export const WAIVIO_PARENT_PERMLINK = APP_NAME;
 
 export const MAX_NEW_OBJECTS_NUMBER = 5;
 
