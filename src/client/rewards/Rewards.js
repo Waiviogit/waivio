@@ -201,7 +201,13 @@ class Rewards extends React.Component {
   };
 
   // Propositions
-  assignProposition = ({ companyAuthor, companyPermlink, resPermlink, objPermlink, companyId }) => {
+  assignPropositionHandler = ({
+    companyAuthor,
+    companyPermlink,
+    resPermlink,
+    objPermlink,
+    companyId,
+  }) => {
     this.setState({ loadingAssignDiscard: true });
     this.props
       .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink })
@@ -225,24 +231,22 @@ class Rewards extends React.Component {
         this.setState({ loadingAssignDiscard: false });
       });
   };
-  updateProposition = (propsId, isAssign, objPermlink) =>
-    map(this.state.propositions, proposition => {
-      // eslint-disable-next-line no-param-reassign
-      if (proposition._id === propsId) {
-        map(proposition.users, user => {
-          if (user.name === this.props.username) {
-            if (_.includes(user.approved_objects, objPermlink)) {
-              const newUser = user;
-              newUser.approved_objects = _.filter(user.approved_objects, o => o !== objPermlink);
-              return newUser;
-            }
-            return user.approved_objects.push(objPermlink);
-          }
-          return user;
-        });
-      }
-      return proposition;
-    });
+
+  // eslint-disable-next-line consistent-return
+  updateProposition = (propsId, isAssign, objPermlink) => {
+    // eslint-disable-next-line no-param-reassign
+    const newPropos = { ...this.state.propositions[0] };
+    if (newPropos._id === propsId) {
+      newPropos.objects.forEach((object, index) => {
+        if (object.object.author_permlink === objPermlink) {
+          newPropos.objects[index].assigned = isAssign;
+        } else {
+          newPropos.objects[index].assigned = null;
+        }
+      });
+    }
+    return [newPropos];
+  };
 
   toggleModal = proposition => {
     this.setState({
@@ -324,7 +328,7 @@ class Rewards extends React.Component {
                 proposition={proposition}
                 wobj={wobj.object}
                 assignCommentPermlink={wobj.permlink}
-                assignProposition={this.assignProposition}
+                assignProposition={this.assignPropositionHandler}
                 discardProposition={this.discardProposition}
                 authorizedUserName={userName}
                 loading={loadingAssignDiscard}
