@@ -5,7 +5,7 @@ import { Pie } from 'react-chartjs-2';
 import { prepareForecastsData } from '../../usersHelper';
 import './UserForecastInstruments.less';
 
-const UserForecastInstruments = ({ intl, forecasts, nightmode }) => {
+const UserForecastInstruments = ({ intl, forecasts }) => {
   const forecastsData = prepareForecastsData(forecasts);
 
   const data = {
@@ -14,7 +14,7 @@ const UserForecastInstruments = ({ intl, forecasts, nightmode }) => {
       {
         data: forecastsData.counts,
         backgroundColor: forecastsData.colors,
-        borderColor: nightmode ? '#24292e' : '#ffff',
+        borderColor: 'transparent',
       },
     ],
   };
@@ -23,7 +23,7 @@ const UserForecastInstruments = ({ intl, forecasts, nightmode }) => {
     legend: {
       position: 'bottom',
       labels: {
-        fontColor: nightmode ? '#f2f2f2' : 'rgba(0, 0, 0, 0.65)',
+        fontColor: '#99aab5',
       },
     },
     maintainAspectRatio: false,
@@ -47,7 +47,6 @@ const UserForecastInstruments = ({ intl, forecasts, nightmode }) => {
 UserForecastInstruments.propTypes = {
   intl: PropTypes.shape().isRequired,
   forecasts: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  nightmode: PropTypes.bool.isRequired,
 };
 
 export default injectIntl(UserForecastInstruments);

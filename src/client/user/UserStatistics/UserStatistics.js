@@ -1,13 +1,10 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import UserStatisticContainer from './UserStatisticContainer/UserStatisticContainer';
 import UserForecastInstruments from './UserForecastInstruments/UserForecastInstruments';
 import './UserStatistics.less';
 
-
 const UserStatistics = () => {
-  const isNightmode = useSelector(state => state.settings.nightmode);
   const mockAccuracyObj = {
     d1: {
       percent: 89,
@@ -37,17 +34,9 @@ const UserStatistics = () => {
   ];
   return (
     <div className="UserStatistics">
-      <UserStatisticContainer
-        accuracy={mockAccuracyObj}
-        contentType={'forecast'}
-        nightmode={isNightmode}
-      />
-      <UserStatisticContainer
-        accuracy={mockAccuracyObj}
-        contentType={'profitability'}
-        nightmode={isNightmode}
-      />
-      <UserForecastInstruments forecasts={mockInstrumentsObj} nightmode={isNightmode} />
+      <UserStatisticContainer accuracy={mockAccuracyObj} contentType={'forecast'} />
+      <UserStatisticContainer accuracy={mockAccuracyObj} contentType={'profitability'} />
+      <UserForecastInstruments forecasts={mockInstrumentsObj} />
     </div>
   );
 };

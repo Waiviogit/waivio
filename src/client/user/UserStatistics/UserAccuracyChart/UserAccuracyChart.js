@@ -5,14 +5,14 @@ import classNames from 'classnames';
 import { Doughnut } from 'react-chartjs-2';
 import './UserAccuracyChart.less';
 
-const UserAccuracyChart = ({ value, nightmode }) => {
+const UserAccuracyChart = ({ value }) => {
   const data = {
     labels: [],
     datasets: [
       {
         data: [value, 100 - value],
         backgroundColor: ['#54d2a0', '#d9534f'],
-        borderColor: nightmode ? '#24292e' : '#fff',
+        borderColor: 'transparent',
       },
     ],
   };
@@ -44,7 +44,6 @@ const UserAccuracyChart = ({ value, nightmode }) => {
 
 UserAccuracyChart.propTypes = {
   value: PropTypes.number.isRequired,
-  nightmode: PropTypes.bool.isRequired,
 };
 
 export default injectIntl(UserAccuracyChart);

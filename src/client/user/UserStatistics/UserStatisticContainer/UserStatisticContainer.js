@@ -5,7 +5,7 @@ import UserAccuracyChart from '../UserAccuracyChart/UserAccuracyChart';
 import UserProfitability from '../UserProfitability/UserProfitability';
 import './UserStatisticContainer.less';
 
-const UserStatisticContainer = ({ intl, contentType, accuracy, nightmode }) => (
+const UserStatisticContainer = ({ intl, contentType, accuracy }) => (
   <div className="UserStatisticContainer">
     <div className="UserStatisticContainer__title">
       {contentType === 'forecast'
@@ -21,7 +21,7 @@ const UserStatisticContainer = ({ intl, contentType, accuracy, nightmode }) => (
     <div className="UserStatisticContainer__period">
       <div className="UserStatisticContainer__period-item">
         {contentType === 'forecast' ? (
-          <UserAccuracyChart value={accuracy.d1.percent} nightmode={nightmode} />
+          <UserAccuracyChart value={accuracy.d1.percent} />
         ) : (
           <UserProfitability profit={accuracy.d1.pips} />
         )}
@@ -34,7 +34,7 @@ const UserStatisticContainer = ({ intl, contentType, accuracy, nightmode }) => (
       </div>
       <div className="UserStatisticContainer__period-item border">
         {contentType === 'forecast' ? (
-          <UserAccuracyChart value={accuracy.d7.percent} nightmode={nightmode} />
+          <UserAccuracyChart value={accuracy.d7.percent} />
         ) : (
           <UserProfitability profit={accuracy.d7.pips} />
         )}
@@ -47,7 +47,7 @@ const UserStatisticContainer = ({ intl, contentType, accuracy, nightmode }) => (
       </div>
       <div className="UserStatisticContainer__period-item border">
         {contentType === 'forecast' ? (
-          <UserAccuracyChart value={accuracy.m1.percent} nightmode={nightmode} />
+          <UserAccuracyChart value={accuracy.m1.percent} />
         ) : (
           <UserProfitability profit={accuracy.m1.pips} />
         )}
@@ -60,7 +60,7 @@ const UserStatisticContainer = ({ intl, contentType, accuracy, nightmode }) => (
       </div>
       <div className="UserStatisticContainer__period-item border">
         {contentType === 'forecast' ? (
-          <UserAccuracyChart value={accuracy.m12.percent} nightmode={nightmode} />
+          <UserAccuracyChart value={accuracy.m12.percent} />
         ) : (
           <UserProfitability profit={accuracy.m12.pips} />
         )}
@@ -79,7 +79,6 @@ UserStatisticContainer.propTypes = {
   intl: PropTypes.shape().isRequired,
   contentType: PropTypes.string.isRequired,
   accuracy: PropTypes.shape().isRequired,
-  nightmode: PropTypes.bool.isRequired,
 };
 
 export default injectIntl(UserStatisticContainer);
