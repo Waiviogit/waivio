@@ -2,7 +2,6 @@ import React from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Pie } from 'react-chartjs-2';
-import 'chartjs-plugin-annotation';
 import { getForecastsData } from '../../usersHelper';
 import './UserForecastInstruments.less';
 
@@ -15,7 +14,7 @@ const UserForecastInstruments = ({ intl, forecasts, nightmode }) => {
       {
         data: forecastsData.counts,
         backgroundColor: forecastsData.colors,
-        borderColor: nightmode ? '#24292e' : '#fff',
+        borderColor: nightmode ? '#24292e' : '#ffff',
       },
     ],
   };

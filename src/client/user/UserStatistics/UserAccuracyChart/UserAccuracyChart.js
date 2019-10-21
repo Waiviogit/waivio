@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import { Doughnut } from 'react-chartjs-2';
-import 'chartjs-plugin-annotation';
 import './UserAccuracyChart.less';
 
 const UserAccuracyChart = ({ value, nightmode }) => {
