@@ -1,14 +1,30 @@
 import React from 'react';
 import { injectIntl } from 'react-intl';
-// import { map } from 'lodash';
 import PropTypes from 'prop-types';
+import { Pie } from 'react-chartjs-2';
+import 'chartjs-plugin-annotation';
+import { getForecastsData } from '../../usersHelper';
 import './UserForecastInstruments.less';
 
-const UserForecastInstruments = ({ intl }) => {
-  // const chartData = map(forecasts, forecast => ({
-  //   key: `${forecast.forecastName}`,
-  //   value: forecast.count,
-  // }));
+const UserForecastInstruments = ({ intl, forecasts }) => {
+  const forecastsData = getForecastsData(forecasts);
+
+  const data = {
+    labels: forecastsData.labels,
+    datasets: [
+      {
+        data: forecastsData.counts,
+        backgroundColor: forecastsData.colors,
+      },
+    ],
+  };
+
+  const options = {
+    legend: {
+      position: 'bottom',
+    },
+  };
+
   return (
     <div className="UserForecastInstruments">
       <div className="UserForecastInstruments__title">
@@ -18,8 +34,7 @@ const UserForecastInstruments = ({ intl }) => {
         })}
       </div>
       <div>
-        {/*<PieChart size={500} labels data={chartData} />*/}
-        {/*<Legend data={chartData} dataId={'key'} />*/}
+        <Pie data={data} options={options} width={'100%'} />
       </div>
     </div>
   );
