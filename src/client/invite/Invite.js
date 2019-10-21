@@ -65,7 +65,7 @@ export default class Invite extends React.Component {
       <FormattedMessage id="invite_copy_link" defaultMessage="Copy link" />
     );
     return (
-      <React.Fragment>
+      <div className="shifted">
         <Helmet>
           <title>{intl.formatMessage({ id: 'invite', defaultMessage: 'Invite' })} - Waivio</title>
         </Helmet>
@@ -129,7 +129,7 @@ export default class Invite extends React.Component {
             </div>
           </div>
         </div>
-      </React.Fragment>
+      </div>
     );
   }
 }

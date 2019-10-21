@@ -141,7 +141,7 @@ export default class ProfileSettings extends React.Component {
     ));
 
     return (
-      <React.Fragment>
+      <div className="shifted">
         <Helmet>
           <title>
             {intl.formatMessage({ id: 'edit_profile', defaultMessage: 'Edit profile' })} - Waivio
@@ -306,7 +306,7 @@ export default class ProfileSettings extends React.Component {
             </Form>
           </div>
         </div>
-      </React.Fragment>
+      </div>
     );
   }
 }
