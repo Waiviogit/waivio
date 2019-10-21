@@ -114,7 +114,7 @@ class InstrumentsPage extends Component {
     return (
       <div className="st-instr-page">
         <div className="feed-layout container">
-          <Affix className="leftContainer" stickPosition={115}>
+          <Affix className="leftContainer" stickPosition={116}>
             <div className="left">
               <LeftSidebar quoteSettingsSorted={quoteSettingsSorted} />
             </div>

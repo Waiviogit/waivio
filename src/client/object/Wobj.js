@@ -184,7 +184,7 @@ export default class Wobj extends React.Component {
               <Affix
                 key={match.params.name}
                 className="leftContainer leftContainer__user"
-                stickPosition={72}
+                stickPosition={116}
               >
                 <div className="left">
                   <LeftObjectProfileSidebar
@@ -195,7 +195,7 @@ export default class Wobj extends React.Component {
                 </div>
               </Affix>
             )}
-            <Affix className="rightContainer" stickPosition={72}>
+            <Affix className="rightContainer" stickPosition={116}>
               <div className="right">
                 {wobject.author_permlink && (
                   <RightObjectSidebar

@@ -2,6 +2,7 @@ import { isEmpty } from 'lodash';
 import { objectFields } from '../common/constants/listOfFields';
 import { getFieldsWithMaxWeight } from './object/wObjectHelper';
 import DEFAULTS from './object/const/defaultValues';
+import { APP_NAME } from '../common/constants/waivio';
 
 export const getClientWObj = (serverWObj, usedLocale = 'en-US') => {
   /* eslint-disable no-underscore-dangle */
@@ -42,17 +43,23 @@ export const getClientWObj = (serverWObj, usedLocale = 'en-US') => {
   return result;
 };
 
-/* eslint-enable no-underscore-dangle */
-/* eslint-enable camelcase */
-
 export const getServerWObj = clientWObj => {
+  const serverCalculatedFields = [
+    'parent',
+    'map',
+    'listItems',
+    'menuItems',
+    'sortCustom',
+    'preview_gallery',
+    'album_count',
+    'photos_count',
+  ];
   const {
     id,
     author,
     creator,
     name,
     type,
-    rank,
     createdAt,
     updatedAt,
     parents,
@@ -62,6 +69,8 @@ export const getServerWObj = clientWObj => {
     avatar,
     title,
     background,
+    is_posting_open,
+    is_extending_open,
   } = clientWObj;
   const fields = [
     {
@@ -78,22 +87,34 @@ export const getServerWObj = clientWObj => {
   if (background) {
     fields.push({ name: objectFields.background, body: background });
   }
-  return {
+  const serverObject = {
+    app: app || APP_NAME,
     author_permlink: id,
     author,
     creator,
     default_name: name,
     object_type: type,
-    rank: rank || 1,
     weight: weight || '',
     parents: parents && parents.length ? parents : [],
     children: children && children.length ? children : [],
-    app: app || 'waiviodev/1.0.0',
     community: '',
-    createdAt: createdAt || Date.now(),
-    updatedAt: updatedAt || Date.now(),
+    created_at: createdAt || Date.now(),
+    updated_at: updatedAt || Date.now(),
     fields: [...clientWObj.fields, ...fields],
+    is_posting_open,
+    is_extending_open,
   };
+
+  serverCalculatedFields.forEach(f => {
+    if (typeof f === 'string' && clientWObj[f]) {
+      serverObject[f] = clientWObj[f];
+    }
+  });
+
+  return serverObject;
 };
+
+/* eslint-enable no-underscore-dangle */
+/* eslint-enable camelcase */
 
 export default null;

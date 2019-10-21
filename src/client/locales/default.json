@@ -952,7 +952,7 @@
   "paymentTable_reservation": "Reservation",
   "filter_days": "Over {value} days",
   "filter_payable": "Over {value} SBD",
-  "discover": "discover",
+  "discover": "Discover",
   "personal": "personal",
   "custom_json": "custom_json",
   "comment_options": "comment_options",
@@ -1000,4 +1000,6 @@
   "user_statistics_per_month": "per month",
   "user_statistics_per_year": "per year",
   "user_statistics_profitability_per_post": "Profitability per post"
+  "menu": "Menu",
+  "disconnect_broker": "Disconnect broker"
 }

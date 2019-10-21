@@ -18,7 +18,6 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
 import requiresLogin from '../auth/requiresLogin';
 import PostModal from '../post/PostModalContainer';
-import TopNavigation from '../components/Navigation/TopNavigation';
 
 @requiresLogin
 @injectIntl
@@ -39,7 +38,6 @@ export default class Bookmarks extends React.Component {
     reloading: PropTypes.bool,
     pendingBookmarks: PropTypes.arrayOf(PropTypes.string),
     getBookmarks: PropTypes.func,
-    userName: PropTypes.string.isRequired,
     reload: PropTypes.func,
   };
 
@@ -61,7 +59,7 @@ export default class Bookmarks extends React.Component {
   }
 
   render() {
-    const { intl, reloading, feed, userName } = this.props;
+    const { intl, reloading, feed } = this.props;
 
     const content = getFeedFromState('bookmarks', 'all', feed);
     const isFetching = getFeedLoadingFromState('bookmarks', 'all', feed) || reloading;
@@ -72,20 +70,19 @@ export default class Bookmarks extends React.Component {
     const noBookmarks = !reloading && !isFetching && !content.length;
 
     return (
-      <React.Fragment>
+      <div className="shifted">
         <Helmet>
           <title>
             {intl.formatMessage({ id: 'bookmarks', defaultMessage: 'Bookmarks' })} - Waivio
           </title>
         </Helmet>
         <div className="feed-layout container">
-          <TopNavigation authenticated userName={userName} />
-          <Affix className="leftContainer" stickPosition={77}>
+          <Affix className="leftContainer" stickPosition={116}>
             <div className="left">
               <LeftSidebar />
             </div>
           </Affix>
-          <Affix className="rightContainer" stickPosition={77}>
+          <Affix className="rightContainer" stickPosition={116}>
             <div className="right">
               <RightSidebar />
             </div>
@@ -112,7 +109,7 @@ export default class Bookmarks extends React.Component {
           </div>
         </div>
         <PostModal />
-      </React.Fragment>
+      </div>
     );
   }
 }
