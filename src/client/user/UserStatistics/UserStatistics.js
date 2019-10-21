@@ -27,7 +27,7 @@ const UserStatistics = () => {
       counts: { pos: 12, neg: 5 },
     },
   };
-  const mockForecastObj = [
+  const mockInstrumentsObj = [
     { forecastName: 'AUD/CAD', count: 24 },
     { forecastName: 'Apple', count: 45 },
     { forecastName: 'Bitcoin', count: 54 },
@@ -36,7 +36,7 @@ const UserStatistics = () => {
     <div className="UserStatistics">
       <UserStatisticContainer accuracy={mockAccuracyObj} contentType={'forecast'} />
       <UserStatisticContainer accuracy={mockAccuracyObj} contentType={'profitability'} />
-      <UserForecastInstruments forecasts={mockForecastObj} />
+      <UserForecastInstruments forecasts={mockInstrumentsObj} />
     </div>
   );
 };
