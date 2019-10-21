@@ -2,11 +2,11 @@ import React from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Pie } from 'react-chartjs-2';
-import { getForecastsData } from '../../usersHelper';
+import { prepareForecastsData } from '../../usersHelper';
 import './UserForecastInstruments.less';
 
 const UserForecastInstruments = ({ intl, forecasts, nightmode }) => {
-  const forecastsData = getForecastsData(forecasts);
+  const forecastsData = prepareForecastsData(forecasts);
 
   const data = {
     labels: forecastsData.labels,
@@ -26,6 +26,7 @@ const UserForecastInstruments = ({ intl, forecasts, nightmode }) => {
         fontColor: nightmode ? '#f2f2f2' : 'rgba(0, 0, 0, 0.65)',
       },
     },
+    maintainAspectRatio: false,
   };
 
   return (
@@ -37,7 +38,7 @@ const UserForecastInstruments = ({ intl, forecasts, nightmode }) => {
         })}
       </div>
       <div className="UserForecastInstruments__chart">
-        <Pie data={data} options={options} width={60} height={60} />
+        <Pie data={data} options={options} width={300} height={300} />
       </div>
     </div>
   );

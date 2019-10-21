@@ -25,11 +25,12 @@ const UserAccuracyChart = ({ value, nightmode }) => {
     },
     hover: { mode: null },
     cutoutPercentage: 75,
+    maintainAspectRatio: false,
   };
   return (
     <div className="UserAccuracy">
       <div className="UserAccuracy__chart">
-        <Doughnut data={data} options={options} width={30} height={30} />
+        <Doughnut data={data} options={options} width={95} height={95} />
       </div>
       <div
         className={classNames('UserAccuracy__value', {

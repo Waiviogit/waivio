@@ -7,7 +7,7 @@ export const getRandomColor = () => {
   return color;
 };
 
-export const getForecastsData = forecasts => {
+export const prepareForecastsData = forecasts => {
   const forecastData = {
     labels: [],
     counts: [],

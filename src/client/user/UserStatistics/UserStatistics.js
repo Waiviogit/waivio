@@ -2,8 +2,9 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import UserStatisticContainer from './UserStatisticContainer/UserStatisticContainer';
-import './UserStatistics.less';
 import UserForecastInstruments from './UserForecastInstruments/UserForecastInstruments';
+import './UserStatistics.less';
+
 
 const UserStatistics = () => {
   const isNightmode = useSelector(state => state.settings.nightmode);
