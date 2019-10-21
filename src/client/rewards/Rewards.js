@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { Modal } from 'antd';
+import { message, Modal } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -212,10 +212,22 @@ class Rewards extends React.Component {
     this.props
       .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink })
       .then(() => {
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'assigned_successfully',
+            defaultMessage: 'Assigned successfully',
+          }),
+        );
         const updatedPropositions = this.updateProposition(companyId, true, objPermlink);
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })
       .catch(() => {
+        message.error(
+          this.props.intl.formatMessage({
+            id: 'cannot_reserve_company',
+            defaultMessage: 'You cannot reserve the campaign at the moment',
+          }),
+        );
         this.setState({ loadingAssignDiscard: false });
       });
   };
@@ -262,12 +274,24 @@ class Rewards extends React.Component {
         reservationPermlink,
       })
       .then(() => {
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'discarded_successfully',
+            defaultMessage: 'Discarded successfully',
+          }),
+        );
         const updatedPropositions = this.updateProposition(companyId, false, objPermlink);
         this.props.history.push(`/rewards/active`);
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })
       .catch(e => {
         console.log(e.toString());
+        message.error(
+          this.props.intl.formatMessage({
+            id: 'cannot_reject_campaign',
+            defaultMessage: 'You cannot reject the campaign at the moment',
+          }),
+        );
         this.setState({ loadingAssignDiscard: false });
       });
   };
