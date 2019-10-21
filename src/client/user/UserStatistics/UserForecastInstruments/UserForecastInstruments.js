@@ -33,8 +33,8 @@ const UserForecastInstruments = ({ intl, forecasts }) => {
           defaultMessage: 'Forecasts by instruments',
         })}
       </div>
-      <div>
-        <Pie data={data} options={options} width={'100%'} />
+      <div className="UserForecastInstruments__chart">
+        <Pie data={data} options={options} width="60%" height="60%"/>
       </div>
     </div>
   );
