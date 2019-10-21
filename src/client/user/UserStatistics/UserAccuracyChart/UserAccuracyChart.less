@@ -1,6 +1,6 @@
 @import (reference) '../../../styles/custom.less';
 
-.UserAccuracyChart {
+.UserAccuracy {
   display: flex;
   position: relative;
   padding: 5px 15px;
@@ -12,16 +12,15 @@
     font-weight: bold;
     margin-top: 30px;
   }
-  &__period {
-    padding: 5px 0 5px 0;
-    font-weight: bold;
+  &__chart {
+    width: 95px;
   }
 }
 
-.UserAccuracyChart__value.success {
+.UserAccuracy__value.success {
   color: @green;
 }
 
-.UserAccuracyChart__value.unsuccess {
+.UserAccuracy__value.unsuccess {
   color: @red;
 }

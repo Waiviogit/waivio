@@ -22,7 +22,7 @@ const UserStatistics = () => {
       counts: { pos: 12, neg: 5 },
     },
     m12: {
-      percent: 24,
+      percent: 25,
       pips: 1234,
       counts: { pos: 12, neg: 5 },
     },

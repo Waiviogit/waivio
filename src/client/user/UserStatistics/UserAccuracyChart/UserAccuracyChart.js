@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl } from 'react-intl';
+import {injectIntl} from 'react-intl';
 import classNames from 'classnames';
-import { Doughnut } from 'react-chartjs-2';
+import {Doughnut} from 'react-chartjs-2';
 import 'chartjs-plugin-annotation';
 import './UserAccuracyChart.less';
 
-const UserAccuracyChart = ({ value }) => {
+const UserAccuracyChart = ({value}) => {
   const data = {
     labels: [],
     datasets: [
@@ -23,13 +23,16 @@ const UserAccuracyChart = ({ value }) => {
     tooltips: {
       enabled: false,
     },
-    cutoutPercentage: 80,
+    hover: {mode: null},
+    cutoutPercentage: 75,
   };
   return (
-    <div className="UserAccuracyChart">
-      <Doughnut data={data} options={options} width={'30%'} height={'30%'} />
+    <div className="UserAccuracy">
+      <div className="UserAccuracy__chart">
+        <Doughnut data={data} options={options} width={'30%'} height={'30%'}/>
+      </div>
       <div
-        className={classNames('UserAccuracyChart__value', {
+        className={classNames('UserAccuracy__value', {
           success: value > 50,
           unsuccess: value < 50,
         })}
