@@ -14,7 +14,7 @@ const Objects = ({ intl }) => (
       </title>
     </Helmet>
     <div className="feed-layout container">
-      <Affix className="leftContainer" stickPosition={77}>
+      <Affix className="leftContainer" stickPosition={116}>
         <div className="left">
           <LeftSidebar />
         </div>

@@ -42,7 +42,7 @@ const ModalTakeProfitBody = ({
       </span>
       <div className="st-margin-bottom-middle st-modal-tp">
         <span className="st-modal-tp-line">
-          <div className="d-flex align-content-center st-modal-checkbox-wrap">
+          <div className="d-flex st-modal-checkbox-wrap">
             <span className={isAmountTP ? 'st-modals-value' : 'st-modals-title'}>
               {intl.formatMessage({ id: 'deals.amount', defaultMessage: 'Amount' })}
             </span>

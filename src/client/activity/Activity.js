@@ -14,12 +14,12 @@ const Activity = ({ intl }) => (
       <title>{intl.formatMessage({ id: 'activity', defaultMessage: 'Activity' })} - Waivio</title>
     </Helmet>
     <div className="feed-layout container">
-      <Affix className="leftContainer" stickPosition={77}>
+      <Affix className="leftContainer" stickPosition={116}>
         <div className="left">
           <LeftSidebar />
         </div>
       </Affix>
-      <Affix className="rightContainer" stickPosition={77}>
+      <Affix className="rightContainer" stickPosition={116}>
         <div className="right">
           <RightSidebar />
         </div>

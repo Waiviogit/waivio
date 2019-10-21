@@ -8,6 +8,7 @@ import DMCA from '../../common/constants/dmca.json';
 import whiteListedApps from './apps';
 import { rewardsValues } from '../../common/constants/rewards';
 import {
+  APP_NAME,
   INVESTARENA_META_FIELD_NAME,
   WAIVIO_META_FIELD_NAME,
   WAIVIO_PARENT_PERMLINK,
@@ -77,10 +78,9 @@ export function getContentImages(content, parsed = false) {
 }
 
 export function createPostMetadata(body, tags, oldMetadata = {}, appData) {
-  const appName = apiConfig[process.env.NODE_ENV].appName || 'waiviodev';
   let metaData = {
-    community: appName,
-    app: `${appName}/${appVersion}`,
+    community: APP_NAME,
+    app: `${APP_NAME}/${appVersion}`,
     format: 'markdown',
   };
 
