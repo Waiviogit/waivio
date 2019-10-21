@@ -27,6 +27,7 @@
   "replies": "Replies",
   "settings": "Settings",
   "logout": "Logout",
+  "statistics": "Statistics",
   "my_profile": "My profile",
   "feed": "Feed",
   "my_feed": "My feed",
@@ -993,6 +994,13 @@
   "album_append_send": "Create",
   "image_send_progress": "Submitting",
   "image_append_send": "Submit image",
+  "user_statistics_forecast_accuracy": "Forecast accuracy",
+  "user_statistics_per_day": "per day",
+  "user_statistics_per_week": "per week",
+  "user_statistics_per_month": "per month",
+  "user_statistics_per_year": "per year",
+  "user_statistics_profitability_per_post": "Profitability per post",
+  "user_statistics_forecast_instruments": "Forecasts by instruments",
   "menu": "Menu",
   "disconnect_broker": "Disconnect broker"
 }
