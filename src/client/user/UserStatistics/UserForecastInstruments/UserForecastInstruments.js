@@ -6,7 +6,7 @@ import 'chartjs-plugin-annotation';
 import { getForecastsData } from '../../usersHelper';
 import './UserForecastInstruments.less';
 
-const UserForecastInstruments = ({ intl, forecasts }) => {
+const UserForecastInstruments = ({ intl, forecasts, nightmode }) => {
   const forecastsData = getForecastsData(forecasts);
 
   const data = {
@@ -15,6 +15,7 @@ const UserForecastInstruments = ({ intl, forecasts }) => {
       {
         data: forecastsData.counts,
         backgroundColor: forecastsData.colors,
+        borderColor: nightmode ? '#24292e' : '#fff',
       },
     ],
   };
@@ -22,6 +23,9 @@ const UserForecastInstruments = ({ intl, forecasts }) => {
   const options = {
     legend: {
       position: 'bottom',
+      labels: {
+        fontColor: nightmode ? '#f2f2f2' : 'rgba(0, 0, 0, 0.65)',
+      },
     },
   };
 
@@ -34,7 +38,7 @@ const UserForecastInstruments = ({ intl, forecasts }) => {
         })}
       </div>
       <div className="UserForecastInstruments__chart">
-        <Pie data={data} options={options} width="60%" height="60%"/>
+        <Pie data={data} options={options} width={60} height={60} />
       </div>
     </div>
   );
@@ -42,7 +46,8 @@ const UserForecastInstruments = ({ intl, forecasts }) => {
 
 UserForecastInstruments.propTypes = {
   intl: PropTypes.shape().isRequired,
-  forecasts: PropTypes.shape().isRequired,
+  forecasts: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  nightmode: PropTypes.bool.isRequired,
 };
 
 export default injectIntl(UserForecastInstruments);
