@@ -47,6 +47,7 @@ import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
 import ModalSignUp from './ModalSignUp/ModalSignUp';
+import { getUserProfileBlog } from '../../../waivioApi/ApiClient';
 
 @injectIntl
 @withRouter
@@ -161,6 +162,7 @@ class Topnav extends React.Component {
       searchBarValue: '',
       notificationsPopoverVisible: false,
       selectedPage: '',
+      hotNewsPopoverVisible: false,
       searchData: '',
       currentItem: 'All',
       dropdownOpen: false,
@@ -251,6 +253,16 @@ class Topnav extends React.Component {
     this.setState({ popoverVisible: visible });
   }
 
+  handleHotNewsPopoverVisibleChange = () => {
+    this.setState(prevState => ({ hotNewsPopoverVisible: !prevState.hotNewsPopoverVisible }));
+    // eslint-disable-next-line no-unused-vars
+    const posts = getUserProfileBlog('blocktrades', {
+      startAuthor: '',
+      startPermlink: '',
+      limit: 2,
+    });
+  };
+
   handleNotificationsPopoverVisibleChange(visible) {
     if (visible) {
       this.setState({ notificationsPopoverVisible: visible });
@@ -308,7 +320,12 @@ class Topnav extends React.Component {
       platformName,
       isLoadingPlatform,
     } = this.props;
-    const { searchBarActive, notificationsPopoverVisible, popoverVisible } = this.state;
+    const {
+      searchBarActive,
+      notificationsPopoverVisible,
+      popoverVisible,
+      hotNewsPopoverVisible,
+    } = this.state;
     const lastSeenTimestamp = _.get(userMetaData, 'notifications_last_timestamp');
     const notificationsCount = _.isUndefined(lastSeenTimestamp)
       ? _.size(notifications)
@@ -330,6 +347,30 @@ class Topnav extends React.Component {
       >
         <ModalBroker />
         <Menu selectedKeys={[]} className="Topnav__menu-container__menu" mode="horizontal">
+          <Menu.Item key="hot">
+            <BTooltip
+              placement="bottom"
+              title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
+              mouseEnterDelay={1}
+            >
+              <Popover
+                placement="bottomRight"
+                trigger="click"
+                content={
+                  <React.Fragment>
+                    <div>Title 1</div>
+                    <div>Title 2</div>
+                  </React.Fragment>
+                }
+                visible={hotNewsPopoverVisible}
+                onVisibleChange={this.handleHotNewsPopoverVisibleChange}
+                overlayClassName="Notifications__popover-overlay"
+                title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
+              >
+                <Icon type="fire" theme="filled" style={{ fontSize: '26px', marginRight: '0' }} />
+              </Popover>
+            </BTooltip>
+          </Menu.Item>
           <Menu.Item key="write">
             <BTooltip
               placement="bottom"
