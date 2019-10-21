@@ -2,7 +2,6 @@ import * as actions from './wobjectsActions';
 import * as appendAction from './appendActions';
 import { RATE_WOBJECT_SUCCESS } from '../../client/object/wobjActions';
 import { objectFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
-import { getClientWObj } from '../adapters';
 
 const initialState = {
   wobject: {},
@@ -24,7 +23,7 @@ export default function wobjectReducer(state = initialState, action) {
     case actions.GET_OBJECT_SUCCESS:
       return {
         ...state,
-        wobject: getClientWObj(action.payload),
+        wobject: action.payload,
         isFetching: false,
       };
     case actions.ADD_ITEM_TO_LIST:
@@ -63,20 +62,26 @@ export default function wobjectReducer(state = initialState, action) {
     }
     case appendAction.APPEND_WAIVIO_OBJECT.SUCCESS: {
       const { payload } = action;
-      if (payload.name === 'listItem') {
-        const listItemsKey =
-          payload.type === TYPES_OF_MENU_ITEM.PAGE || payload.type === TYPES_OF_MENU_ITEM.LIST
-            ? 'menuItems'
-            : 'listItems';
-        const listItems = state.wobject[listItemsKey]
-          ? [...state.wobject[listItemsKey], payload]
-          : [payload];
+      // check menu item appending; type uses for menuItems only. (type values: 'menuList' or 'menuPage')
+      if (
+        payload.name === 'listItem' &&
+        [TYPES_OF_MENU_ITEM.LIST, TYPES_OF_MENU_ITEM.PAGE].includes(payload.type)
+      ) {
+        const menuItem = {
+          author_permlink: payload.body,
+          alias: payload.alias,
+          name: payload.alias,
+          object_type: payload.type.slice(4).toLowerCase(),
+        };
+        const menuItems = state.wobject.menuItems
+          ? [...state.wobject.menuItems, menuItem]
+          : [menuItem];
         return {
           ...state,
           wobject: {
             ...state.wobject,
             fields: [...state.wobject.fields, payload],
-            [listItemsKey]: listItems,
+            menuItems,
           },
         };
       }

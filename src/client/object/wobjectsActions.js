@@ -4,18 +4,24 @@ import { getAlbums } from '../object/ObjectGallery/galleryActions';
 import { createPermlink } from '../vendor/steemitHelpers';
 import { generateRandomString } from '../helpers/wObjectHelper';
 import { followObject, voteObject } from './wobjActions';
+import { getUsedLocale } from '../reducers';
+import { getClientWObj } from '../adapters';
+import { WAIVIO_PARENT_PERMLINK } from '../../common/constants/waivio';
 
 export const GET_OBJECT = '@objects/GET_OBJECT';
 export const GET_OBJECT_START = '@objects/GET_OBJECT_START';
 export const GET_OBJECT_ERROR = '@objects/GET_OBJECT_ERROR';
 export const GET_OBJECT_SUCCESS = '@objects/GET_OBJECT_SUCCESS';
 
-export const getObject = (authorPermlink, username) => dispatch =>
-  dispatch({
+export const getObject = (authorPermlink, username) => (dispatch, getState) => {
+  const usedLocale = getUsedLocale(getState());
+  return dispatch({
     type: GET_OBJECT,
-    payload: ApiClient.getObject(authorPermlink, username),
+    payload: ApiClient.getObject(authorPermlink, username)
+      .then(wobj => getClientWObj(wobj, usedLocale))
+      .catch(err => console.log(err)),
   });
-
+};
 export const clearObjectFromStore = () => dispatch =>
   dispatch({
     type: GET_OBJECT_SUCCESS,
@@ -58,28 +64,30 @@ export const createWaivioObject = postData => (dispatch, getState) => {
   return dispatch({
     type: CREATE_WOBJECT,
     payload: {
-      promise: createPermlink(wobj.id, auth.user.name, '', 'waiviodev').then(permlink => {
-        const requestBody = {
-          author: auth.user.name,
-          title: `${wobj.name} - waivio object`,
-          body: `Waivio object "${wobj.name}" has been created`,
-          permlink: `${generateRandomString(3).toLowerCase()}-${permlink}`,
-          objectName: wobj.name,
-          locale: wobj.locale || settings.locale === 'auto' ? 'en-US' : settings.locale,
-          type: wobj.type,
-          isExtendingOpen: Boolean(wobj.isExtendingOpen),
-          isPostingOpen: Boolean(wobj.isPostingOpen),
-          parentAuthor: wobj.parentAuthor,
-          parentPermlink: wobj.parentPermlink,
-        };
-        return ApiClient.postCreateWaivioObject(requestBody).then(response => {
-          if (follow) {
-            dispatch(followObject(response.permlink));
-          }
-          dispatch(voteObject(response.author, response.permlink, votePower));
-          return response;
-        });
-      }),
+      promise: createPermlink(wobj.id, auth.user.name, '', WAIVIO_PARENT_PERMLINK).then(
+        permlink => {
+          const requestBody = {
+            author: auth.user.name,
+            title: `${wobj.name} - waivio object`,
+            body: `Waivio object "${wobj.name}" has been created`,
+            permlink: `${generateRandomString(3).toLowerCase()}-${permlink}`,
+            objectName: wobj.name,
+            locale: wobj.locale || settings.locale === 'auto' ? 'en-US' : settings.locale,
+            type: wobj.type,
+            isExtendingOpen: Boolean(wobj.isExtendingOpen),
+            isPostingOpen: Boolean(wobj.isPostingOpen),
+            parentAuthor: wobj.parentAuthor,
+            parentPermlink: wobj.parentPermlink,
+          };
+          return ApiClient.postCreateWaivioObject(requestBody).then(response => {
+            if (follow) {
+              dispatch(followObject(response.permlink));
+            }
+            dispatch(voteObject(response.author, response.permlink, votePower));
+            return response;
+          });
+        },
+      ),
     },
   });
 };

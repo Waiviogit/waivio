@@ -128,6 +128,7 @@ export const getIsUserFailed = (state, username) =>
   fromUsers.getIsUserFailed(state.users, username);
 export const getTopExperts = state => fromUsers.getTopExperts(state.users);
 export const getTopExpertsLoading = state => fromUsers.getTopExpertsLoading(state.users);
+export const getTopExpertsHasMore = state => fromUsers.getTopExpertsHasMore(state.users);
 export const getRandomExperts = state => fromUsers.getRandomExperts(state.users);
 export const getRandomExpertsLoaded = state => fromUsers.getRandomExpertsLoaded(state.users);
 export const getRandomExpertsLoading = state => fromUsers.getRandomExpertsLoading(state.users);
@@ -208,7 +209,17 @@ export const getObjectAlbums = state => fromGallery.getObjectAlbums(state.galler
 export const getIsObjectAlbumsLoading = state =>
   fromGallery.getIsObjectAlbumsLoading(state.gallery);
 
+export const getIsMapModalOpen = state => fromMap.getIsMapModalOpen(state.map);
+
+// common selectors
+
 export const getCurrentLocation = state => state.router.location;
 export const getQueryString = state => state.router.location.search;
 
-export const getIsMapModalOpen = state => fromMap.getIsMapModalOpen(state.map);
+export const getSuitableLanguage = state => {
+  const settingsLocale = getLocale(state);
+  if (settingsLocale !== 'auto') return settingsLocale;
+
+  const usedLocale = getUsedLocale(state);
+  return usedLocale || 'en-US';
+};

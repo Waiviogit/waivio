@@ -6,12 +6,13 @@ import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { isEmpty } from 'lodash';
 import {
-  getIsAuthenticated,
   getAuthenticatedUser,
+  getAuthenticatedUserName,
+  getIsAuthenticated,
   getIsUserFailed,
   getIsUserLoaded,
-  getAuthenticatedUserName,
   getObject as getObjectState,
+  getObjectAlbums,
   getScreenSize,
 } from '../reducers';
 import OBJECT_TYPE from './const/objectTypes';
@@ -22,7 +23,7 @@ import WobjHero from './WobjHero';
 import LeftObjectProfileSidebar from '../app/Sidebar/LeftObjectProfileSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
-import { getFieldWithMaxWeight, getInitialUrl } from './wObjectHelper';
+import { getInitialUrl } from './wObjectHelper';
 import { objectFields } from '../../common/constants/listOfFields';
 import ObjectExpertise from '../components/Sidebar/ObjectExpertise';
 import ObjectsRelated from '../components/Sidebar/ObjectsRelated/ObjectsRelated';
@@ -37,6 +38,7 @@ import ObjectsRelated from '../components/Sidebar/ObjectsRelated/ObjectsRelated'
     failed: getIsUserFailed(state, ownProps.match.params.name),
     wobject: getObjectState(state),
     screenSize: getScreenSize(state),
+    albums: getObjectAlbums(state),
   }),
   {
     clearObjectFromStore,
@@ -57,6 +59,7 @@ export default class Wobj extends React.Component {
     wobject: PropTypes.shape(),
     screenSize: PropTypes.string,
     clearObjectFromStore: PropTypes.func,
+    albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   };
 
   static defaultProps = {
@@ -133,25 +136,36 @@ export default class Wobj extends React.Component {
 
   render() {
     const { isEditMode, hasLeftSidebar } = this.state;
-    const { authenticated, failed, authenticatedUserName: userName, match, wobject } = this.props;
+    const {
+      authenticated,
+      failed,
+      authenticatedUserName: userName,
+      match,
+      wobject,
+      albums,
+    } = this.props;
     if (failed) return <Error404 />;
 
-    const objectName = getFieldWithMaxWeight(wobject, objectFields.name);
+    const objectName = wobject.name || wobject.default_name || '';
     const waivioHost = global.postOrigin || 'https://waiviodev.com';
     const desc = `${objectName || ''}`;
-    const image = getFieldWithMaxWeight(wobject, objectFields.avatar);
+    const image = wobject.avatar;
     const canonicalUrl = `${waivioHost}/object/${match.params.name}`;
     const url = `${waivioHost}/object/${match.params.name}`;
     const displayedObjectName = objectName || '';
-    const title = `${objectName || wobject.default_name || ''}`;
+    let albumsAndImagesCount;
+    if (!isEmpty(albums)) {
+      albumsAndImagesCount =
+        albums.length - 1 + albums.reduce((acc, curr) => acc + curr.items.length, 0);
+    }
 
     return (
       <div className="main-panel">
         <Helmet>
-          <title>{title}</title>
+          <title>{objectName}</title>
           <link rel="canonical" href={canonicalUrl} />
           <meta property="description" content={desc} />
-          <meta property="og:title" content={title} />
+          <meta property="og:title" content={objectName} />
           <meta property="og:type" content="article" />
           <meta property="og:url" content={url} />
           <meta property="og:image" content={image} />
@@ -159,7 +173,7 @@ export default class Wobj extends React.Component {
           <meta property="og:site_name" content="Waivio" />
           <meta property="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
           <meta property="twitter:site" content={'@waivio'} />
-          <meta property="twitter:title" content={title} />
+          <meta property="twitter:title" content={objectName} />
           <meta property="twitter:description" content={desc} />
           <meta
             property="twitter:image"
@@ -178,6 +192,7 @@ export default class Wobj extends React.Component {
           username={displayedObjectName}
           onFollowClick={this.handleFollowClick}
           toggleViewEditMode={this.toggleViewEditMode}
+          albumsAndImagesCount={albumsAndImagesCount}
         />
         <div className="shifted">
           <div className={`container ${hasLeftSidebar ? 'feed-layout' : 'post-layout'}`}>

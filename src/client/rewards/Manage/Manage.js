@@ -7,7 +7,7 @@ import './Manage.less';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import CampaignRewardsTable from './CampaignRewardsTable/CampaignRewardsTable';
 import BalanceTable from './BalanceTable/BalanceTable';
-import { activateCampaign } from '../../user/userActions';
+import { activateCampaign, inactivateCampaign } from '../../user/userActions';
 import { getAuthenticatedUser } from '../../reducers';
 import { jsonParse } from '../../helpers/formatter';
 
@@ -16,7 +16,7 @@ import { jsonParse } from '../../helpers/formatter';
   state => ({
     user: getAuthenticatedUser(state),
   }),
-  { activateCampaign },
+  { activateCampaign, inactivateCampaign },
 )
 class Manage extends React.Component {
   static propTypes = {
@@ -24,11 +24,13 @@ class Manage extends React.Component {
     intl: PropTypes.shape().isRequired,
     user: PropTypes.shape(),
     activateCampaign: PropTypes.func,
+    inactivateCampaign: PropTypes.func,
   };
   static defaultProps = {
     userName: '',
     user: {},
     activateCampaign: () => {},
+    inactivateCampaign: () => {},
   };
   state = {
     campaigns: [],
@@ -120,7 +122,7 @@ class Manage extends React.Component {
 
   render() {
     // eslint-disable-next-line no-shadow
-    const { intl, activateCampaign, user } = this.props;
+    const { intl, activateCampaign, inactivateCampaign, user } = this.props;
     const { budgetTotal, campaigns } = this.state;
     const balanceContent = this.balanceContent();
     const rewardsCampaignContent = this.rewardsCampaignContent();
@@ -144,8 +146,9 @@ class Manage extends React.Component {
             </div>
             <CampaignRewardsTable
               activateCampaign={activateCampaign}
-              intl={intl}
+              inactivateCampaign={inactivateCampaign}
               campaigns={campaigns}
+              userName={user.name}
             />
             <div className="Manage__rewards-campaign-wrap-text-content">
               {rewardsCampaignContent}

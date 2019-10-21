@@ -1,11 +1,10 @@
 // Based on by:
 // https://github.com/facebook/react/blob/dd8b387b69d73f9e8ed4f995ccb3cd927c0d33e3/scripts/shared/listChangedFiles.js
 
-const chalk = require('chalk');
 const execFileSync = require('child_process').execFileSync;
 
 function exec(command, args) {
-  console.log(chalk.dim(`> ${[command].concat(args).join(' ')}`));
+  console.log(`> ${[command].concat(args).join(' ')}`);
   const options = {
     cwd: process.cwd(),
     env: process.env,

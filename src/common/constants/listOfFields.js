@@ -23,6 +23,8 @@ export const objectFields = {
   workTime: 'workTime',
   pageContent: 'pageContent',
   status: 'status',
+  galleryItem: 'galleryItem',
+  galleryAlbum: 'galleryAlbum',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -108,7 +110,7 @@ export const supportedObjectFields = Object.values(objectFields);
 export const objectImageFields = ['avatar', 'background'];
 
 export const getAllowedFieldsByObjType = objectType => {
-  switch (objectType && objectType.toLowerCase()) {
+  switch (objectType) {
     case OBJECT_TYPE.PAGE:
       return [
         objectFields.name,
@@ -117,6 +119,8 @@ export const getAllowedFieldsByObjType = objectType => {
         objectFields.avatar,
         objectFields.background,
         objectFields.parent,
+        objectFields.galleryItem,
+        objectFields.galleryAlbum,
       ];
     case OBJECT_TYPE.LIST:
       return [
@@ -127,6 +131,8 @@ export const getAllowedFieldsByObjType = objectType => {
         objectFields.listItem,
         objectFields.sorting,
         objectFields.parent,
+        objectFields.galleryItem,
+        objectFields.galleryAlbum,
       ];
     default: {
       const excludeFields = [objectFields.listItem, objectFields.pageContent];

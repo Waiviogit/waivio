@@ -1,5 +1,5 @@
 import uuidv4 from 'uuid/v4';
-import _, { get, fromPairs } from 'lodash';
+import _, { fromPairs, get } from 'lodash';
 import { getHtml } from '../components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
 import { categoryRegex } from './regexHelpers';
@@ -71,9 +71,10 @@ export function getContentImages(content, parsed = false) {
 }
 
 export function createPostMetadata(body, tags, oldMetadata = {}, waivioData) {
+  const appName = apiConfig[process.env.NODE_ENV].appName || 'waiviodev';
   let metaData = {
-    community: 'waiviodev',
-    app: `waiviodev/${appVersion}`,
+    community: appName,
+    app: `${appName}/${appVersion}`,
     format: 'markdown',
   };
 
@@ -129,8 +130,14 @@ export function splitPostContent(
   };
 }
 
+export function getObjectUrl(objPermlink) {
+  if (!objPermlink) return '';
+  return `${apiConfig.production.protocol}${apiConfig.production.host}/object/${objPermlink}`;
+}
+
 export function getInitialState(props) {
   let state = {
+    campaign: props.campaignId ? { id: props.campaignId } : null,
     draftId: uuidv4(),
     parentPermlink: WAIVIO_PARENT_PERMLINK,
     draftContent: {
@@ -139,9 +146,7 @@ export function getInitialState(props) {
         ? props.initObjects.reduce((acc, curr) => {
             const matches = curr.match(/^\[(.+)\]\((\S+)\)/);
             if (matches[1] && matches[2]) {
-              return `${acc}[${matches[1]}](${apiConfig.production.protocol}${
-                apiConfig.production.host
-              }/object/${matches[2]})\n`;
+              return `${acc}[${matches[1]}](${getObjectUrl(matches[2])})\n`;
             }
             return acc;
           }, '')
@@ -166,6 +171,7 @@ export function getInitialState(props) {
     const draftObjects = get(draftPost, ['jsonMetadata', WAIVIO_META_FIELD_NAME, 'wobjects'], []);
     const tags = get(draftPost, ['jsonMetadata', 'tags'], []);
     state = {
+      campaign: draftPost.campaignId ? { id: draftPost.campaignId } : null,
       draftId: props.draftId,
       parentPermlink: draftPost.parentPermlink || WAIVIO_PARENT_PERMLINK,
       draftContent: {

@@ -11,7 +11,7 @@ import {
   getFeedHasMoreFromState,
   getFeedFromState,
 } from '../helpers/stateHelpers';
-import { getFeedContent, getMoreFeedContent } from '../feed/feedActions';
+import { getUserProfileBlogPosts } from '../feed/feedActions';
 import { showPostModal } from '../app/appActions';
 import EmptyUserProfile from '../statics/EmptyUserProfile';
 import EmptyUserOwnProfile from '../statics/EmptyUserOwnProfile';
@@ -25,8 +25,7 @@ import PostModal from '../post/PostModalContainer';
     feed: getFeed(state),
   }),
   {
-    getFeedContent,
-    getMoreFeedContent,
+    getUserProfileBlogPosts,
     showPostModal,
   },
 )
@@ -38,26 +37,20 @@ export default class UserProfile extends React.Component {
     match: PropTypes.shape().isRequired,
     showPostModal: PropTypes.func.isRequired,
     limit: PropTypes.number,
-    getFeedContent: PropTypes.func,
-    getMoreFeedContent: PropTypes.func,
+    getUserProfileBlogPosts: PropTypes.func,
   };
 
   static defaultProps = {
     limit: 10,
     location: {},
-    getFeedContent: () => {},
-    getMoreFeedContent: () => {},
+    getUserProfileBlogPosts: () => {},
   };
 
   componentDidMount() {
     const { match, limit } = this.props;
     const { name } = match.params;
 
-    this.props.getFeedContent({
-      sortBy: 'blog',
-      category: name,
-      limit,
-    });
+    this.props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
   }
 
   render() {
@@ -69,11 +62,7 @@ export default class UserProfile extends React.Component {
     const fetched = getFeedFetchedFromState('blog', username, feed);
     const hasMore = getFeedHasMoreFromState('blog', username, feed);
     const loadMoreContentAction = () =>
-      this.props.getMoreFeedContent({
-        sortBy: 'blog',
-        category: username,
-        limit,
-      });
+      this.props.getUserProfileBlogPosts(username, { limit, initialLoad: false });
 
     return (
       <div>

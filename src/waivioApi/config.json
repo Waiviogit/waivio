@@ -3,19 +3,23 @@
     "protocol": "https://",
     "": "www.waivio.com",
     "host": "waiviodev.com",
-    "": "localhost:8093"
+    "": "localhost:8093",
+    "appName": "development"
   },
   "test": {
     "protocol": "https://",
-    "host": "waiviodev.com"
+    "host": "waiviodev.com",
+    "appName": "test"
   },
   "staging": {
     "protocol": "https://",
-    "host": "waiviodev.com"
+    "host": "waiviodev.com",
+    "appName": "waiviodev"
   },
   "production": {
     "protocol": "https://",
-    "host": "www.waivio.com"
+    "host": "www.waivio.com",
+    "appName": "waivio"
   },
   "apiPrefix": "/api",
   "objectsBotApiPrefix": "/objects-bot",
@@ -24,6 +28,7 @@
     "createObject": "/create-object",
     "appendObject": "/append-object"
   },
+  "blog": "/blog",
   "createObject": "/create/object",
   "getObjects": "/wobject",
   "searchObjects": "/wobjectSearch",
@@ -40,13 +45,21 @@
   "getGallery": "/gallery",
   "wobjectsWithUserWeight": "/objects_shares",
   "wobjectsExpertise": "/object_expertise",
+  "typeExpertise": "/expertise",
   "getObjectTypes": "/objectTypes",
   "objectType": "/objectType",
   "generalSearch": "/generalSearch",
   "campaigns": "/campaigns",
+  "campaign": "/campaign",
   "createCampaign": "/create_campaign",
+  "activation": "/validate_activation",
+  "inactivation": "/validate_inactivation",
+  "reservation": "/validate_reservation",
+  "rejectReservation": "/validate_reject_reservation",
   "dashboard": "/dashboard",
   "suitableUsers": "/suitable_users",
   "search": "/search",
-  "childWobjects": "/child_wobjects"
+  "childWobjects": "/child_wobjects",
+  "payables": "/payables",
+  "payments": "/payments"
 }

@@ -1,0 +1,61 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.PaymentCard {
+  display: flex;
+  align-items: center;
+  border: 1px solid @white-gainsboro;
+  background-color: @white;
+  padding: 10px 14px;
+  justify-content: space-between;
+  margin-bottom: 10px;
+
+  &__content {
+    display: flex;
+    align-items: center;
+    &-name-wrap {
+      margin-left: 10px;
+      max-width: calc(100vw - 210px);
+      flex-direction: column;
+      &-alias {
+        font-weight: bold;
+      }
+      &-row {
+        display: flex;
+        font-size: medium;
+        &-name {
+          font-weight: 500;
+          color: @blue-botticelli;
+          padding-right: 10px;
+        }
+      }
+    }
+
+    &-name {
+      font-weight: 500;
+      color: @blue-botticelli;
+    }
+
+    @media @small, @medium, @large {
+      max-width: 350px;
+    }
+
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  &__end-wrap {
+    display: flex;
+    align-items: center;
+    &-payable {
+      padding-right: 14px;
+      font-size: medium;
+      font-weight: 500;
+    }
+  }
+}
+
+.PaymentCard__end-wrap-icon :hover {
+  cursor: pointer;
+}

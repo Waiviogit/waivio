@@ -6,7 +6,6 @@ if (!['production', 'staging'].includes(process.env.NODE_ENV)) {
 }
 
 const fs = require('fs-extra');
-const chalk = require('chalk');
 const webpack = require('webpack');
 const paths = require('./paths');
 
@@ -20,7 +19,7 @@ function copyPublic() {
 }
 
 async function main() {
-  console.log(chalk.bold(`Building for ${process.env.NODE_ENV}`));
+  console.log(`Building for ${process.env.NODE_ENV}`);
 
   fs.emptyDirSync(paths.build);
   copyPublic();
