@@ -302,7 +302,7 @@ class Write extends React.Component {
     return (
       <div className="shifted">
         <div className="post-layout container">
-          <Affix className="rightContainer" stickPosition={115}>
+          <Affix className="rightContainer" stickPosition={116}>
             <div className="right">
               <LastDraftsContainer />
             </div>

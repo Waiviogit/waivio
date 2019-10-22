@@ -48,6 +48,7 @@ import MatchBotCampaign from '../client/rewards/MatchBot/MatchBot';
 import PayablesCampaign from '../client/rewards/Payables/Payables';
 import PaymentCampaign from '../client/rewards/Payment/Payment';
 import ObjectOfTypePage from '../client/object/ObjectOfTypePage/ObjectOfTypePage';
+import UserStatistics from '../client/user/UserStatistics/UserStatistics';
 
 const routes = [
   {
@@ -161,7 +162,8 @@ const routes = [
         component: DiscoverObjects,
       },
       {
-        path: '/@:name/(comments|followers|followed|reblogs|feed|transfers|activity|expertise)?',
+        path:
+          '/@:name/(comments|followers|followed|reblogs|feed|transfers|activity|expertise|statistics)?',
         component: User,
         exact: true,
         routes: [
@@ -204,6 +206,11 @@ const routes = [
             path: '/@:name/expertise',
             exact: true,
             component: UserExpertise,
+          },
+          {
+            path: '/@:name/statistics',
+            exact: true,
+            component: UserStatistics,
           },
         ],
       },
