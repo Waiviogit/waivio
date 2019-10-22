@@ -50,6 +50,7 @@ import ObjectAvatar from '../ObjectAvatar';
 import ModalSignUp from './ModalSignUp/ModalSignUp';
 import TopNavigation from './TopNavigation';
 import './Topnav.less';
+import { getUserProfileBlog } from '../../../waivioApi/ApiClient';
 
 @injectIntl
 @withRouter
@@ -156,6 +157,7 @@ class Topnav extends React.Component {
       currentItem: 'All',
       dropdownOpen: false,
       selectColor: false,
+      hotPosts: [],
     };
     this.handleMoreMenuSelect = this.handleMoreMenuSelect.bind(this);
     this.handleBrokerMenuSelect = this.handleBrokerMenuSelect.bind(this);
@@ -242,14 +244,17 @@ class Topnav extends React.Component {
     this.setState({ popoverBrokerVisible: visible });
   }
 
-  handleHotNewsPopoverVisibleChange = () => {
+  handleHotNewsPopoverVisibleChange = async () => {
     this.setState(prevState => ({ hotNewsPopoverVisible: !prevState.hotNewsPopoverVisible }));
     // eslint-disable-next-line no-unused-vars
-    const posts = getUserProfileBlog('blocktrades', {
-      startAuthor: '',
-      startPermlink: '',
-      limit: 2,
-    });
+    if (_.isEmpty(this.state.hotPosts)) {
+      const posts = await getUserProfileBlog('blocktrades', {
+        startAuthor: '',
+        startPermlink: '',
+        limit: 2,
+      });
+      this.setState({ hotPosts: posts });
+    }
   };
 
   handleNotificationsPopoverVisibleChange(visible) {
@@ -301,7 +306,13 @@ class Topnav extends React.Component {
 
   menuForLoggedIn = () => {
     const { intl, username, notifications, userMetaData, loadingNotifications } = this.props;
-    const { searchBarActive, notificationsPopoverVisible, popoverProfileVisible,hotNewsPopoverVisible } = this.state;
+    const {
+      searchBarActive,
+      notificationsPopoverVisible,
+      popoverProfileVisible,
+      hotNewsPopoverVisible,
+      hotPosts,
+    } = this.state;
     const lastSeenTimestamp = _.get(userMetaData, 'notifications_last_timestamp');
     const notificationsCount = _.isUndefined(lastSeenTimestamp)
       ? _.size(notifications)
@@ -333,10 +344,13 @@ class Topnav extends React.Component {
                 placement="bottomRight"
                 trigger="click"
                 content={
-                  <React.Fragment>
-                    <div>Title 1</div>
-                    <div>Title 2</div>
-                  </React.Fragment>
+                  <div className="Topnav__hot-news">
+                    {!_.isEmpty(hotPosts) &&
+                      hotPosts.map(post => (
+                        <div className="Topnav__hot-news-item">{post.title}</div>
+                      ))}
+                    <div className="Topnav__hot-news-item">Link to page with iframe</div>
+                  </div>
                 }
                 visible={hotNewsPopoverVisible}
                 onVisibleChange={this.handleHotNewsPopoverVisibleChange}
