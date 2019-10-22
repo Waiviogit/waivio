@@ -5,7 +5,14 @@ import classNames from 'classnames';
 import './Chat/Chat';
 import './BBackTop.less';
 
-export default function BBackTop({ className, isModal, isChat, openChat, ...otherProps }) {
+export default function BBackTop({
+  className,
+  isModal,
+  isChat,
+  authentication,
+  openChat,
+  ...otherProps
+}) {
   return (
     <div className="BBackTop">
       <div
@@ -17,14 +24,16 @@ export default function BBackTop({ className, isModal, isChat, openChat, ...othe
           <i className="iconfont icon-back-top" />
         </BackTop>
       </div>
-      <div className="BBackTop__chat-button">
-        <Button
-          onClick={openChat}
-          type="primary"
-          shape="circle"
-          icon={isChat ? 'message' : 'close'}
-        />
-      </div>
+      {authentication ? (
+        <div className="BBackTop__chat-button">
+          <Button
+            onClick={openChat}
+            type="primary"
+            shape="circle"
+            icon={!isChat ? 'message' : 'close'}
+          />
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -34,6 +43,7 @@ BBackTop.propTypes = {
   isModal: PropTypes.bool,
   isChat: PropTypes.bool.isRequired,
   openChat: PropTypes.func.isRequired,
+  authentication: PropTypes.bool.isRequired,
 };
 
 BBackTop.defaultProps = {

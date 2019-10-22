@@ -4,7 +4,7 @@
 .Chat {
   position: fixed;
   display: flex;
-  width: 1560px;
+  width: 360px;
   height: calc(((100% - 20px) - 70px) - 25px) !important;
   bottom: 50px;
   max-height: 460px;
@@ -14,15 +14,8 @@
   border-radius: 10px;
   background-color: @white-ghostWhite;
 
-  &__conversations-wrap {
-    width: 30%;
-    padding: 15px;
-    height: 100%;
-    overflow: auto;
-    border-right: 1px solid rgba(0, 0, 0, 0.1);
-  }
-  &__messages-wrap {
-    width: 70%;
+  &__wrap {
+    width: 100%;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -31,6 +24,6 @@
 .Chat.hide-element {
   display: none;
 }
-.Chat__messages-wrap > iframe {
+.Chat__wrap > iframe {
   height: 100%;
 }

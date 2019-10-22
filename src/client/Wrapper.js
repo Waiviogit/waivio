@@ -216,7 +216,6 @@ export default class Wrapper extends React.PureComponent {
     const { user, isAuthenticated, usedLocale, translations, history } = this.props;
     const { isChat } = this.state;
     const language = findLanguage(usedLocale);
-
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
         <ConfigProvider locale={enUS}>
@@ -232,8 +231,13 @@ export default class Wrapper extends React.PureComponent {
               <Transfer />
               <PowerUpOrDown />
               <NotificationPopup />
-              <BBackTop openChat={this.openChat} isChat={isChat} className="primary-modal" />
-              <Chat visibility={isChat} />
+              <BBackTop
+                openChat={this.openChat}
+                isChat={isChat}
+                className="primary-modal"
+                authentication={isAuthenticated}
+              />
+              {isAuthenticated ? <Chat visibility={isChat} /> : null}
             </div>
           </Layout>
         </ConfigProvider>

@@ -9,7 +9,6 @@ import CampaignRewardsTable from './CampaignRewardsTable/CampaignRewardsTable';
 import BalanceTable from './BalanceTable/BalanceTable';
 import { activateCampaign, inactivateCampaign } from '../../user/userActions';
 import { getAuthenticatedUser } from '../../reducers';
-import { jsonParse } from '../../helpers/formatter';
 
 @injectIntl
 @connect(
@@ -38,14 +37,6 @@ class Manage extends React.Component {
   };
 
   componentDidMount() {
-    const manageData = { source: 'manage', message: 'hello from manage' };
-    window.addEventListener('message', event => {
-      if (typeof event.data === 'string' && jsonParse(event.data).source === 'chat') {
-        console.log('DATA_MANAGE', jsonParse(event.data).message);
-        event.source.postMessage(JSON.stringify(manageData));
-        console.log('Печеньки чата', window.top.document.cookie);
-      }
-    });
     const { userName } = this.props;
     if (userName) {
       ApiClient.getCampaignsByGuideName(userName).then(data => {
