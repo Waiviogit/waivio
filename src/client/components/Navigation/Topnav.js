@@ -349,7 +349,13 @@ class Topnav extends React.Component {
                       hotPosts.map(post => (
                         <div className="Topnav__hot-news-item">{post.title}</div>
                       ))}
-                    <div className="Topnav__hot-news-item">Link to page with iframe</div>
+                    <Link
+                      to="/economical-calendar"
+                      className="Topnav__hot-news-item"
+                      onClick={this.handleHotNewsPopoverVisibleChange}
+                    >
+                      Economical calendar
+                    </Link>
                   </div>
                 }
                 visible={hotNewsPopoverVisible}

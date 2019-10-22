@@ -49,6 +49,7 @@ import PayablesCampaign from '../client/rewards/Payables/Payables';
 import PaymentCampaign from '../client/rewards/Payment/Payment';
 import ObjectOfTypePage from '../client/object/ObjectOfTypePage/ObjectOfTypePage';
 import UserStatistics from '../client/user/UserStatistics/UserStatistics';
+import EconomicalCalendar from '../investarena/components/EconomicalCalendar/EconomicalCalendar';
 
 const routes = [
   {
@@ -58,6 +59,11 @@ const routes = [
         path: '/bookmarks',
         exact: true,
         component: Bookmarks,
+      },
+      {
+        path: '/economical-calendar',
+        exact: true,
+        component: EconomicalCalendar,
       },
       {
         path: [
