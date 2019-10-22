@@ -1,0 +1,41 @@
+@import (reference) '../../../styles/custom.less';
+
+.UserStatisticContainer {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  background-color: @white;
+  border: 1px solid @white-gainsboro;
+  border-radius: 4px;
+  margin-bottom: 10px;
+
+  &__title {
+    padding: 8px 0 8px 0;
+    font-weight: bold;
+  }
+
+  &__period {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+
+    &-item {
+      width: 25%;
+      border-top: 1px solid @white-gainsboro;
+      &-value {
+        text-align: center;
+        padding: 0 0 5px 0;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+.UserStatisticContainer__period-item.border {
+  width: 25%;
+  border-top: 1px solid @white-gainsboro;
+  border-left: 1px solid @white-gainsboro;
+}
+
+@import 'UserStatisticContainer-nightmode';
