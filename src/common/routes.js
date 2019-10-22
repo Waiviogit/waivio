@@ -157,7 +157,7 @@ const routes = [
         component: Notifications,
       },
       {
-        path: '/discover-objects/:typeName?',
+        path: '/discover-objects/:typeName',
         exact: true,
         component: DiscoverObjects,
       },

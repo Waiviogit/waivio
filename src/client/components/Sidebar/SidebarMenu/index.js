@@ -11,6 +11,7 @@ const menuConfig = {
   [menuSections.STEEM]: {
     name: menuSections.STEEM,
     intlId: 'steem',
+    isCollapsible: true,
     isCollapsed: false,
     items: [
       {
@@ -34,6 +35,7 @@ const menuConfig = {
   [menuSections.PERSONAL]: {
     name: menuSections.PERSONAL,
     intlId: 'personal',
+    isCollapsible: true,
     isCollapsed: false,
     requireAuth: true,
     items: [

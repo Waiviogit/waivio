@@ -30,13 +30,46 @@ const SidebarMenu = ({ intl, menuConfig }) => {
   // local state
   const [menuState, dispatch] = useReducer(sidebarMenuReducer, menuConfig);
 
-  const toggleBlock = blockName => () =>
-    dispatch({ type: actionType.TOGGLE_BLOCK, payload: { block: blockName } });
+  const toggleBlock = section => () =>
+    dispatch({ type: actionType.TOGGLE_BLOCK, payload: { block: section.name } });
 
   const checkIsActive = (match, location) => {
     if (!match) return false;
     return match.url !== '' && location.pathname.includes(match.url);
   };
+
+  const getSectionTitle = menuSection =>
+    menuSection.isCollapsible ? (
+      <div
+        className="collapsible-block__title"
+        role="presentation"
+        onClick={toggleBlock(menuSection)}
+      >
+        <span className="collapsible-block__title-text">
+          {intl.formatMessage({ id: menuSection.intlId, defaultMessage: menuSection.name })}
+        </span>
+        <span className="collapsible-block__title-icon">
+          {menuSection.isCollapsed ? (
+            <i className="iconfont icon-addition" />
+          ) : (
+            <i className="iconfont icon-offline" />
+          )}
+        </span>
+      </div>
+    ) : (
+      <NavLink
+        to={menuSection.linkTo}
+        className="collapsible-block__title"
+        isActive={checkIsActive}
+      >
+        <span className="collapsible-block__title-text">
+          {intl.formatMessage({ id: menuSection.intlId, defaultMessage: menuSection.name })}
+        </span>
+        <span className="collapsible-block__title-icon hidden">
+          <i className="iconfont icon-addition" />
+        </span>
+      </NavLink>
+    );
 
   const getSectionContent = menuSection => (
     <ul className="Sidenav collapsible-block__content">
@@ -64,23 +97,8 @@ const SidebarMenu = ({ intl, menuConfig }) => {
       {Object.values(menuState).map(section =>
         !section.requireAuth || authenticated ? (
           <div className={`collapsible-block__${section.name}-section`} key={section.name}>
-            <div
-              className="collapsible-block__title"
-              role="presentation"
-              onClick={toggleBlock(section.name)}
-            >
-              <span className="collapsible-block__title-text">
-                {intl.formatMessage({ id: section.intlId, defaultMessage: section.name })}
-              </span>
-              <span className="collapsible-block__title-icon">
-                {section.isCollapsed ? (
-                  <i className="iconfont icon-addition" />
-                ) : (
-                  <i className="iconfont icon-offline" />
-                )}
-              </span>
-            </div>
-            {!section.isCollapsed ? getSectionContent(section) : null}
+            {getSectionTitle(section)}
+            {section.isCollapsible && !section.isCollapsed ? getSectionContent(section) : null}
           </div>
         ) : null,
       )}
