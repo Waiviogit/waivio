@@ -1002,5 +1002,15 @@
   "user_statistics_profitability_per_post": "Profitability per post",
   "user_statistics_forecast_instruments": "Forecasts by instruments",
   "menu": "Menu",
-  "disconnect_broker": "Disconnect broker"
+  "disconnect_broker": "Disconnect broker",
+  "brokers": "Brokers",
+  "hashtags": "Hashtags",
+  "umarkets": "Umarkets",
+  "maximarkets": "Maximarkets",
+  "maxitrade": "Maxitrade",
+  "tradeallcrypto": "TradeAllCrypto",
+  "tradiva": "Tradiva",
+  "770capital": "770 capital",
+  "dowmarkets": "DowMarkets",
+  "limefx": "LimeFX"
 }

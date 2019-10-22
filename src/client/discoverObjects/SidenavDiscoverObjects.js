@@ -23,33 +23,33 @@ const menuConfig = {
   },
   [menuSections.ASSETS]: {
     name: menuSections.ASSETS,
-    intlId: 'assets',
+    intlId: 'sidebar.nav.assets',
     isCollapsible: true,
     isCollapsed: false,
     items: [
       {
         name: 'Commodities',
-        intlId: 'commodities',
+        intlId: 'wia.commodities',
         linkTo: '/discover-objects/commodity',
       },
       {
         name: 'Cryptocurrencies',
-        intlId: 'cryptocurrencies',
+        intlId: 'modalAssets.cryptocurrencies',
         linkTo: '/discover-objects/crypto',
       },
       {
         name: 'Currencies',
-        intlId: 'currencies',
+        intlId: 'wia.currencies',
         linkTo: '/discover-objects/currency',
       },
       {
         name: 'Indices',
-        intlId: 'indices',
+        intlId: 'modalAssets.indices',
         linkTo: '/discover-objects/indices',
       },
       {
         name: 'Stocks',
-        intlId: 'stocks',
+        intlId: 'modalAssets.stocks',
         linkTo: '/discover-objects/stocks',
       },
     ],
@@ -105,7 +105,7 @@ const menuConfig = {
   },
   [menuSections.HASHTAGS]: {
     name: menuSections.HASHTAGS,
-    intlId: menuSections.HASHTAGS,
+    intlId: 'hashtags',
     isCollapsible: false,
     linkTo: '/discover-objects/hashtag',
     items: [],
