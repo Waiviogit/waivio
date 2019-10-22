@@ -1,7 +1,10 @@
+import { get, isEmpty } from 'lodash';
 import * as actions from './wobjectsActions';
 import * as appendAction from './appendActions';
+import { SET_USED_LOCALE } from '../app/appActions';
 import { RATE_WOBJECT_SUCCESS } from '../../client/object/wobjActions';
 import { objectFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
+import { getClientWObj, getServerWObj } from '../adapters';
 
 const initialState = {
   wobject: {},
@@ -94,6 +97,16 @@ export default function wobjectReducer(state = initialState, action) {
         },
       };
     }
+    case SET_USED_LOCALE: {
+      if (!isEmpty(state.wobject)) {
+        const usedLocale = action.payload.id;
+        return {
+          ...state,
+          wobject: getClientWObj(getServerWObj(state.wobject), usedLocale),
+        };
+      }
+      return state;
+    }
     default: {
       return state;
     }
@@ -102,7 +115,7 @@ export default function wobjectReducer(state = initialState, action) {
 
 export const getObjectState = state => state.wobject;
 export const getObjectAuthor = state => state.author;
-export const getObjectFields = state => state.wobject.fields;
+export const getObjectFields = state => get(state, ['wobject', 'fields'], []);
 export const getRatingFields = state =>
   getObjectFields(state).filter(field => field.name === objectFields.rating);
 export const getObjectChartId = state => state.chartid;

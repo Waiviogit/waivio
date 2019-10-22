@@ -1,0 +1,26 @@
+@import (reference) '../../../styles/custom.less';
+
+.UserAccuracy {
+  display: flex;
+  position: relative;
+  padding: 5px 15px;
+  flex-direction: column;
+  align-items: center;
+  &__value {
+    position: absolute;
+    font-size: x-large;
+    font-weight: bold;
+    margin-top: 30px;
+  }
+  &__chart {
+    width: 95px;
+  }
+}
+
+.UserAccuracy__value.success {
+  color: @green;
+}
+
+.UserAccuracy__value.unsuccess {
+  color: @red;
+}

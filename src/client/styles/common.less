@@ -1,4 +1,5 @@
 @import (reference) './custom.less';
+@import (reference) './modules/variables';
 
 body {
   overflow-x: hidden;
@@ -254,6 +255,58 @@ ul {
   overflow: hidden;
   white-space: nowrap;
   max-width: 95%;
+}
+
+/** fullscreen modal
+* using: add "fullscreen-mode" wrap class for Modal, add "fs-content-wrapper" and "fs-embedded-content" classes for modal content
+   <Modal wrapClassName="fullscreen-mode">
+     <div className="fs-content-wrapper">
+       <iframe className="fs-embedded-content" />
+     </div>
+   </Modal>
+*/
+.ant-modal-wrap.fullscreen-mode {
+  .ant-modal {
+    @media @medium {
+      width: @medium-bp !important;
+      position: fixed;
+      top: 10px;
+      right: 0;
+      left: 0;
+    }
+    @media @large {
+      width: @large-bp !important;
+    }
+    max-width: 100vw;
+    height: 100vh;
+    .ant-modal-content {
+      height: 100%;
+      .ant-modal-header {
+        height: 55px;
+      }
+      .ant-modal-body {
+        position: absolute;
+        top: 55px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 0;
+        .fs-content-wrapper {
+          position: relative;
+          height: 100%;
+          width: 100%;
+          .fs-embedded-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+          }
+        }
+      }
+    }
+  }
 }
 
 @import 'common-nightmode';
