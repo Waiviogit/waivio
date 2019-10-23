@@ -834,6 +834,7 @@
   "wia.commodities": "Товары",
   "modalAssets.stocks": "Акции",
   "modalAssets.indices": "Индексы",
+  "modalAssets.cryptocurrencies": "Криптовалюты",
   "sidebar.nav.assets": "Инструменты",
   "sidebar.nav.deals": "Сделки",
   "deals.closeAll": "Закрыть сделку",
@@ -979,5 +980,15 @@
   "user_statistics_per_month": "За месяц",
   "user_statistics_per_year": "За год",
   "user_statistics_profitability_per_post": "Прибыльность по постам",
-  "user_statistics_forecast_instruments": "Прогнозы по инструментам"
+  "user_statistics_forecast_instruments": "Прогнозы по инструментам",
+  "brokers": "Брокеры",
+  "hashtags": "Хештеги",
+  "umarkets": "Umarkets",
+  "maximarkets": "Maximarkets",
+  "maxitrade": "Maxitrade",
+  "tradeallcrypto": "TradeAllCrypto",
+  "tradiva": "Tradiva",
+  "770capital": "770 capital",
+  "dowmarkets": "DowMarkets",
+  "limefx": "LimeFX"
 }

@@ -10,7 +10,7 @@ import './DiscoverObjects.less';
 import RightSidebar from '../app/Sidebar/RightSidebar';
 
 const DiscoverObjects = ({ intl, history, match }) => {
-  const isTypeChosen = Boolean(match.params.typeName);
+  const isTypeChosen = Boolean(match.params.typeName !== 'show_all');
   const { pathname, search } = history.location;
   return (
     <div className="shifted">
@@ -33,7 +33,7 @@ const DiscoverObjects = ({ intl, history, match }) => {
           </Affix>
         )}
         <div className={`discover-objects${isTypeChosen ? ' center' : ''}`}>
-          {match.params.typeName ? (
+          {isTypeChosen ? (
             <DiscoverObjectsContent
               history={history}
               typeName={match.params.typeName}
