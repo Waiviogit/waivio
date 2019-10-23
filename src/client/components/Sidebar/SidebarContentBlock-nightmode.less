@@ -28,10 +28,10 @@
     &__content {
       .collapsible-block {
         &__title {
-          span {
-            color: @blue-botticelli;
+          &.active > .collapsible-block__title-text {
+            border-bottom: 1px solid @blue-botticelli;
           }
-          &.collapsible-block__title-icon {
+          span {
             color: @blue-botticelli;
           }
         }

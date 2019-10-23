@@ -79,8 +79,8 @@ export const getForecastObject = (forecast, selectForecast, isExpired = false) =
     : null;
 };
 
-export const validateForm = (quote, recommend, forecast) =>
-  !!(quote && recommend && forecast) || !(quote || recommend || forecast);
+export const validateForm = (quote, recommend, forecast, tpError, slError) =>
+  !!(quote && recommend && forecast && !tpError && !slError) || !(quote || recommend || forecast);
 
 export const getForecastState = forecast => {
   const dateTimeValue = forecast.expiredAt ? moment(forecast.expiredAt).local() : null;
@@ -107,7 +107,8 @@ export const getEditorForecast = (forecast, quotesSettings) => {
     quotePrice,
     stopLossValue,
     takeProfitValue,
-    isValid,
+    takeProfitValueIncorrect,
+    stopLossValueIncorrect,
   } = forecast;
   const price = parseFloat(quotePrice);
   const forecastObject = {
@@ -117,7 +118,7 @@ export const getEditorForecast = (forecast, quotesSettings) => {
     postPrice: !isNaN(price) ? price : null,
     selectForecast,
     expiredAt: dateTimeValue ? dateTimeValue.format(forecastDateTimeFormat) : null,
-    isValid,
+    isValid: validateForm(selectQuote, selectRecommend, selectForecast, takeProfitValueIncorrect, stopLossValueIncorrect),
   };
   if (takeProfitValue) forecastObject.tpPrice = takeProfitValue;
   if (stopLossValue) forecastObject.slPrice = stopLossValue;
