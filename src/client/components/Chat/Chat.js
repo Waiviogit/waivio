@@ -25,7 +25,7 @@ class Chat extends React.Component {
     const initData = {
       cmd: 'init',
       args: {
-        username: `monterey`,
+        username: `${this.props.userName}`,
       },
     };
 
