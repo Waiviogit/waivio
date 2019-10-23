@@ -59,7 +59,6 @@ const menuConfig = {
     intlId: 'brokers',
     isCollapsible: true,
     isCollapsed: true,
-    requireAuth: true,
     items: [
       {
         name: '770Capital',

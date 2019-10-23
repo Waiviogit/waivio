@@ -74,7 +74,9 @@ const SidebarMenu = ({ intl, menuConfig }) => {
   const getSectionContent = menuSection => (
     <ul className="Sidenav collapsible-block__content">
       {menuSection.items.map(sectionItem => {
-        const linkTo = authenticated ? sectionItem.linkTo : sectionItem.unauthLink;
+        const linkTo = authenticated
+          ? sectionItem.linkTo
+          : sectionItem.unauthLink || sectionItem.linkTo;
         return linkTo ? (
           <li className="collapsible-block__item" key={sectionItem.name}>
             <NavLink
