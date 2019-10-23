@@ -45,6 +45,7 @@ import CreateRewardForm from '../client/rewards/Create-Edit/CreateRewardForm';
 import FilteredRewardsList from '../client/rewards/FilteredRewardsList';
 import ManageCampaign from '../client/rewards/Manage/Manage';
 import MatchBotCampaign from '../client/rewards/MatchBot/MatchBot';
+import ReceivablesCampaign from '../client/rewards/Receivables/Receivables';
 import PayablesCampaign from '../client/rewards/Payables/Payables';
 import PaymentCampaign from '../client/rewards/Payment/Payment';
 import ObjectOfTypePage from '../client/object/ObjectOfTypePage/ObjectOfTypePage';
@@ -63,7 +64,9 @@ const routes = [
         path: [
           '/rewards/(create|manage|match-bot|edit)/:campaignId?',
           '/rewards/payables',
+          '/rewards/receivables',
           '/rewards/payables/@:userName',
+          '/rewards/receivables/@:userName',
           '/rewards/:filterKey/:campaignParent?',
         ],
         exact: true,
@@ -80,12 +83,22 @@ const routes = [
             component: ManageCampaign,
           },
           {
+            path: '/rewards/receivables',
+            exact: true,
+            component: ReceivablesCampaign,
+          },
+          {
             path: '/rewards/payables',
             exact: true,
             component: PayablesCampaign,
           },
           {
             path: '/rewards/payables/@:userName',
+            exact: true,
+            component: PaymentCampaign,
+          },
+          {
+            path: '/rewards/receivables/@:userName',
             exact: true,
             component: PaymentCampaign,
           },
