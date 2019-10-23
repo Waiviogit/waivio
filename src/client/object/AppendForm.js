@@ -284,6 +284,31 @@ export default class AppendForm extends Component {
             alias ? ` as "${alias}"` : ''
           }`;
         }
+        case objectFields.newsFilter: {
+          let rulesAllow = `\n`;
+          let rulesIgnore = '';
+          let rulesCounter = 0;
+
+          this.state.allowList.forEach(rule => {
+            if (!_.isEmpty(rule)) {
+              rulesAllow += `\n Filter rule #${rulesCounter + 1}:`;
+              rule.forEach(item => {
+                rulesAllow += ` <a href="https://waiviodev.com/object/${item.id}">${item.id}</a>,`;
+              });
+              // eslint-disable-next-line no-plusplus
+              rulesCounter++;
+            }
+          });
+
+          this.state.ignoreList.forEach((rule, index) => {
+            if (!_.isEmpty(rule)) {
+              rulesIgnore = '\nIgnore list:';
+              const dotOrComma = this.state.ignoreList.length - 1 === index ? '.' : ',';
+              rulesIgnore += ` <a href="https://waiviodev.com/object/${rule.id}">${rule.id}</a>${dotOrComma}`;
+            }
+          });
+          return `@${author} added ${currentField} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
+        }
         default:
           return `@${author} added ${currentField} (${langReadable}):\n ${appendValue.replace(
             /[{}"]/g,
@@ -304,7 +329,7 @@ export default class AppendForm extends Component {
       let fieldsObject = {
         name: _.includes(TYPES_OF_MENU_ITEM, currentField) ? objectFields.listItem : currentField,
         body: bodyField,
-        currentLocale,
+        locale: currentLocale,
       };
 
       if (currentField === objectFields.phone) {
