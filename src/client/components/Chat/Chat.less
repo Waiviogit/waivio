@@ -4,16 +4,27 @@
 .Chat {
   position: fixed;
   display: flex;
-  width: 560px;
-  height: calc(((100% - 20px) - 70px) - 25px) !important;
-  bottom: 50px;
+  width: 90%;
+  margin: 5%;
+  //height: calc(((100% - 20px) - 70px) - 25px) !important;
+  bottom: 10%;
+  height: 75%;
   max-height: 460px;
-  left: 200px;
   z-index: 1200;
   border-radius: 10px;
   background-color: @white-ghostWhite;
   box-shadow: 0 0 4px 4px #99aab5;
   overflow: hidden;
+  @media @xsmall {
+    height: 100%;
+    max-height: 560px;
+  }
+  @media @large {
+    max-height: 460px;
+    width: 40%;
+    right: 25%;
+    bottom: 0;
+  }
 
   &__wrap {
     width: 100%;
@@ -22,9 +33,11 @@
     height: 100%;
   }
 }
+
 .Chat.hide-element {
   display: none;
 }
+
 .Chat__wrap > iframe {
   height: 100%;
 }

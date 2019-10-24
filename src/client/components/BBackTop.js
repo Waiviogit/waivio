@@ -20,20 +20,20 @@ export default function BBackTop({
           'BBackTop__container--shifted': isModal,
         })}
       >
+        {authentication ? (
+          <div className="BBackTop__chat-button">
+            <Button
+              onClick={openChat}
+              type="primary"
+              shape="circle"
+              icon={!isChat ? 'message' : 'close'}
+            />
+          </div>
+        ) : null}
         <BackTop className="BBackTop_button" {...otherProps}>
           <i className="iconfont icon-back-top" />
         </BackTop>
       </div>
-      {authentication ? (
-        <div className="BBackTop__chat-button">
-          <Button
-            onClick={openChat}
-            type="primary"
-            shape="circle"
-            icon={!isChat ? 'message' : 'close'}
-          />
-        </div>
-      ) : null}
     </div>
   );
 }

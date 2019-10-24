@@ -29,8 +29,6 @@ class Chat extends React.Component {
       cmd: 'auth_connection',
       args: {
         user_name: userName,
-        block_number: 1,
-        transaction_id: '',
       },
     };
 
@@ -55,6 +53,9 @@ class Chat extends React.Component {
               .then(() => this.sendChatRequestData(initResponseData));
             break;
           case 'auth_connection_response':
+            console.log(event.data.args.status);
+            break;
+          case 'start_chat_response':
             console.log(event.data.args.status);
             break;
           case 'new_event':
