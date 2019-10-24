@@ -305,7 +305,7 @@ export default class AppendForm extends Component {
             if (!_.isEmpty(rule)) {
               rulesIgnore = '\nIgnore list:';
               const dotOrComma = this.state.ignoreList.length - 1 === index ? '.' : ',';
-              rulesIgnore += ` <a href="https://waiviodev.com/object/${rule.id}">${rule.id}</a>${dotOrComma}`;
+              rulesIgnore += ` <a href="${baseUrl}/object/${rule.id}">${rule.id}</a>${dotOrComma}`;
             }
           });
           return `@${author} added ${currentField} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
