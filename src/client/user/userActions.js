@@ -30,6 +30,12 @@ export const followUser = username => (dispatch, getState, { steemConnectAPI }) 
   });
 };
 
+export const CHANGE_CHAT_CONDITION = '@user/CHANGE_CHAT_CONDITION';
+export const changeChatCondition = () => dispatch =>
+  dispatch({
+    type: CHANGE_CHAT_CONDITION,
+  });
+
 export const GET_RECOMMENDED_OBJECTS = '@user/GET_RECOMMENDED_OBJECTS';
 export const GET_RECOMMENDED_OBJECTS_START = '@user/GET_RECOMMENDED_OBJECTS_START';
 export const GET_RECOMMENDED_OBJECTS_SUCCESS = '@user/GET_RECOMMENDED_OBJECTS_SUCCESS';

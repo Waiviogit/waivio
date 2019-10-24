@@ -22,6 +22,7 @@ const initialState = {
   latestNotification: {},
   loadingNotifications: false,
   fetchFollowListError: false,
+  isChatOpen: false,
 };
 
 const filterRecommendedObjects = (objects, count = 5) => {
@@ -220,6 +221,11 @@ export default function userReducer(state = initialState, action) {
         ...state,
         recommendedObjects: filterRecommendedObjects(action.payload.wobjects),
       };
+    case userActions.CHANGE_CHAT_CONDITION:
+      return {
+        ...state,
+        isChatOpen: !state.isChatOpen,
+      };
     default: {
       return state;
     }
@@ -238,3 +244,4 @@ export const getIsLoadingNotifications = state => state.loadingNotifications;
 export const getFetchFollowListError = state => state.fetchFollowListError;
 export const getLatestNotification = state => state.latestNotification;
 export const getUserLocation = state => state.location;
+export const getChatCondition = state => state.isChatOpen;
