@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
+import { Button } from 'antd';
 import { getUserRankKey, getUserRank } from '../helpers/user';
 import AvatarLightbox from './AvatarLightbox';
 import FollowButton from '../widgets/FollowButton';
 import Action from './Button/Action';
-import './UserHeader.less';
 import WeightTag from './WeightTag';
+import './UserHeader.less';
 
 const UserHeader = ({
   username,
@@ -49,6 +50,9 @@ const UserHeader = ({
                 ) : (
                   <FollowButton following={handle} followingType="user" />
                 )}
+              </div>
+              <div className="UserHeader__user-chat-button">
+                <Button type="primary" shape="circle" icon="message" />
               </div>
             </div>
           </div>
