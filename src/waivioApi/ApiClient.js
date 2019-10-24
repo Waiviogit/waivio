@@ -591,21 +591,6 @@ export const getCampaignByGuideNameAndObject = (guideName, object) =>
       .catch(error => reject(error));
   });
 
-//endregion
-
-export const getAuthenticatedUserMetadata = (
-  userName,
-  accessToken = Cookie.get('access_token'),
-) => {
-  const { apiPrefix, user, userMetadata } = config;
-  return fetch(`${apiPrefix}${user}/${userName}${userMetadata}`, {
-    headers: { ...headers, 'access-token': accessToken },
-    method: 'GET',
-  })
-    .then(res => res.json())
-    .then(res => _.omit(res.user_metadata, '_id'));
-};
-
 export const getLenders = ({ sponsor, user, filters }) => {
   const isSponsor = sponsor ? `?sponsor=${sponsor}` : '';
   const payable = filters && filters.payable ? `&payable=${filters.payable}` : '';
@@ -624,6 +609,18 @@ export const getLenders = ({ sponsor, user, filters }) => {
       .catch(error => reject(error));
   });
 };
+//endregion
+
+//region UserMetadata Requests
+export const getAuthenticatedUserMetadata = userName => {
+  const { apiPrefix, user, userMetadata } = config;
+  return fetch(`${apiPrefix}${user}/${userName}${userMetadata}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => _.omit(res.user_metadata, '_id'));
+};
 
 export const updateUserMetadata = (userName, data) =>
   fetch(`${config.apiPrefix}${config.user}/${userName}${config.userMetadata}`, {
@@ -631,6 +628,7 @@ export const updateUserMetadata = (userName, data) =>
     method: 'PUT',
     body: JSON.stringify({ user_metadata: data }),
   }).then(res => res.json());
+//endregion
 
 // injected as extra argument in Redux Thunk
 export const waivioAPI = {
