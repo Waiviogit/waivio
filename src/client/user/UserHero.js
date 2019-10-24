@@ -70,6 +70,7 @@ const UserHero = ({
               ) : (
                 <UserHeader
                   username={username}
+                  authenticated={authenticated}
                   handle={user.name}
                   wobjWeight={user.wobjects_weight}
                   vestingShares={parseFloat(user.vesting_shares)}

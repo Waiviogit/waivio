@@ -123,7 +123,6 @@ export default class Wrapper extends React.PureComponent {
     super(props);
     this.state = {
       isChat: false,
-      isConnectionStart: false,
     };
     this.loadLocale = this.loadLocale.bind(this);
     this.handleMenuItemClick = this.handleMenuItemClick.bind(this);
@@ -210,12 +209,12 @@ export default class Wrapper extends React.PureComponent {
   }
 
   openChat = () => {
-    this.setState({ isChat: !this.state.isChat, isConnectionStart: true });
+    this.setState({ isChat: !this.state.isChat });
   };
 
   render() {
     const { user, isAuthenticated, usedLocale, translations, history } = this.props;
-    const { isChat, isConnectionStart } = this.state;
+    const { isChat } = this.state;
     const language = findLanguage(usedLocale);
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
@@ -238,9 +237,7 @@ export default class Wrapper extends React.PureComponent {
                 className="primary-modal"
                 authentication={isAuthenticated}
               />
-              {isAuthenticated ? (
-                <Chat visibility={isChat} connectionStart={isConnectionStart} />
-              ) : null}
+              {isAuthenticated ? <Chat visibility={isChat} /> : null}
             </div>
           </Layout>
         </ConfigProvider>

@@ -13,6 +13,7 @@ import './UserHeader.less';
 
 const UserHeader = ({
   username,
+  authenticated,
   handle,
   wobjWeight,
   vestingShares,
@@ -51,9 +52,11 @@ const UserHeader = ({
                   <FollowButton following={handle} followingType="user" />
                 )}
               </div>
-              <div className="UserHeader__user-chat-button">
-                <Button type="primary" shape="circle" icon="message" />
-              </div>
+              {authenticated ? (
+                <div className="UserHeader__user-chat-button">
+                  <Button type="primary" shape="circle" icon="message" />
+                </div>
+              ) : null}
             </div>
           </div>
           <div className="UserHeader__handle-rank-container">
@@ -90,6 +93,7 @@ const UserHeader = ({
 
 UserHeader.propTypes = {
   username: PropTypes.string,
+  authenticated: PropTypes.bool.isRequired,
   handle: PropTypes.string,
   wobjWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   vestingShares: PropTypes.number,

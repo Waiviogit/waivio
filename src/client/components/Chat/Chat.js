@@ -19,12 +19,16 @@ class Chat extends React.Component {
     visibility: PropTypes.bool.isRequired,
     setSessionId: PropTypes.func.isRequired,
     userName: PropTypes.string.isRequired,
-    connectionStart: PropTypes.bool.isRequired,
+  };
+
+  state = {
+    connectionStart: false,
   };
 
   componentDidMount() {
     const { userName } = this.props;
-
+    // eslint-disable-next-line react/no-did-mount-set-state
+    this.setState({ connectionStart: true });
     const initResponseData = {
       cmd: 'auth_connection',
       args: {
@@ -72,7 +76,8 @@ class Chat extends React.Component {
   };
 
   render() {
-    const { visibility, connectionStart } = this.props;
+    const { visibility } = this.props;
+    const { connectionStart } = this.state;
     return (
       <div
         className={classNames('Chat', {
