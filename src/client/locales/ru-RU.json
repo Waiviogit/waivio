@@ -759,6 +759,7 @@
   "reserve_campaign": "Резервная кампания наград",
   "reserve_campaign_accept": "Хотите зарезервировать компанию наград?",
   "cannot_activate_campaign": "Вы не можете активировать кампанию в данный момент",
+  "cannot_reserve_company": "Вы не можете зарезервировать кампанию в данный момент",
   "reject_campaign": "Снять резервацию",
   "reject_campaign_accept": "Вы хотите снять резервацию вознаграждения?",
   "deactivate_campaign": "Деактивировать кампанию наград",

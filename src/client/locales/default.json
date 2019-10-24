@@ -736,6 +736,7 @@
   "reserve_campaign": "Reserve rewards campaign",
   "reserve_campaign_accept": "Do you want to reserve rewards campaign?",
   "cannot_activate_campaign": "You cannot activate the campaign at the moment",
+  "cannot_reserve_company": "You cannot reserve the campaign at the moment",
   "reject_campaign": "Release reservation",
   "reject_campaign_accept": "Do you want to release this reservation?",
   "deactivate_campaign": "Deactivate rewards campaign",
