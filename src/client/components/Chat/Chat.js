@@ -49,7 +49,6 @@ class Chat extends React.Component {
             this.props
               .setSessionId(event.data.args.session_id)
               .then(data => {
-                initResponseData.cmd = 'auth_connection';
                 initResponseData.args.transaction_id = data.value.result.id;
                 initResponseData.args.block_number = data.value.result.block_num;
               })
