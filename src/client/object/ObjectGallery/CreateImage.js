@@ -234,7 +234,7 @@ class CreateImage extends React.Component {
         <Form className="CreateImage" layout="vertical">
           <Form.Item>
             {form.getFieldDecorator('id', {
-              initialValue: selectedAlbum.id,
+              initialValue: selectedAlbum ? selectedAlbum.id : 'Choose an album',
               rules: [
                 {
                   required: true,
@@ -352,7 +352,7 @@ CreateImage.propTypes = {
   hideModal: PropTypes.func.isRequired,
   intl: PropTypes.shape().isRequired,
   form: PropTypes.shape().isRequired,
-  selectedAlbum: PropTypes.shape().isRequired,
+  selectedAlbum: PropTypes.shape(),
   albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   currentUsername: PropTypes.shape(),
   wObject: PropTypes.shape(),
@@ -361,6 +361,7 @@ CreateImage.propTypes = {
 };
 
 CreateImage.defaultProps = {
+  selectedAlbum: null,
   currentUsername: {},
   wObject: {},
   appendObject: () => {},

@@ -2,57 +2,27 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
-import { Icon, Col, Row, message } from 'antd';
+import { Icon, Col, Row } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import Loading from '../../components/Icon/Loading';
 import GalleryAlbum from './GalleryAlbum';
 import './ObjectGallery.less';
 import CreateAlbum from './CreateAlbum';
-import {
-  getAuthenticatedUserName,
-  getIsObjectAlbumsLoading,
-  getObject,
-  getObjectAlbums,
-  getIsAppendLoading,
-  getIsAuthenticated,
-} from '../../reducers';
-import * as appendActions from '../appendActions';
-import * as galleryActions from './galleryActions';
+import { getIsObjectAlbumsLoading, getObjectAlbums, getIsAuthenticated } from '../../reducers';
 import IconButton from '../../components/IconButton';
-import { prepareAlbumData, prepareAlbumToStore } from '../../helpers/wObjectHelper';
 
 @injectIntl
-@connect(
-  state => ({
-    currentUsername: getAuthenticatedUserName(state),
-    wObject: getObject(state),
-    loadingAlbum: getIsAppendLoading(state),
-    loading: getIsObjectAlbumsLoading(state),
-    albums: getObjectAlbums(state),
-    isAuthenticated: getIsAuthenticated(state),
-  }),
-  dispatch =>
-    bindActionCreators(
-      {
-        addAlbumToStore: album => galleryActions.addAlbumToStore(album),
-        appendObject: wObject => appendActions.appendObject(wObject),
-      },
-      dispatch,
-    ),
-)
+@connect(state => ({
+  loading: getIsObjectAlbumsLoading(state),
+  albums: getObjectAlbums(state),
+  isAuthenticated: getIsAuthenticated(state),
+}))
 export default class ObjectGallery extends Component {
   static propTypes = {
     match: PropTypes.shape().isRequired,
-    currentUsername: PropTypes.string.isRequired,
-    wObject: PropTypes.shape().isRequired,
-    appendObject: PropTypes.func.isRequired,
-    loadingAlbum: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
-    intl: PropTypes.shape().isRequired,
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-    addAlbumToStore: PropTypes.func.isRequired,
   };
 
   state = {
@@ -65,40 +35,9 @@ export default class ObjectGallery extends Component {
       showModal: !prevState.showModal,
     }));
 
-  handleCreateAlbum = async form => {
-    const { currentUsername, wObject, appendObject, intl, addAlbumToStore } = this.props;
-    const data = prepareAlbumData(form, currentUsername, wObject);
-    const album = prepareAlbumToStore(data);
-
-    try {
-      const { author } = await appendObject(data);
-      await addAlbumToStore({ ...album, author });
-      this.handleToggleModal();
-      message.success(
-        intl.formatMessage(
-          {
-            id: 'gallery_add_album_success',
-            defaultMessage: 'You successfully have created the {albumName} album',
-          },
-          {
-            albumName: form.galleryAlbum,
-          },
-        ),
-      );
-    } catch (err) {
-      message.error(
-        intl.formatMessage({
-          id: 'gallery_add_album_failure',
-          defaultMessage: "Couldn't create the album.",
-        }),
-      );
-      console.log('err', err);
-    }
-  };
-
   render() {
     const { showModal } = this.state;
-    const { match, loadingAlbum, albums, loading, isAuthenticated } = this.props;
+    const { match, albums, loading, isAuthenticated } = this.props;
     if (loading) return <Loading center />;
     const empty = albums.length === 0;
 
@@ -113,12 +52,7 @@ export default class ObjectGallery extends Component {
                 caption={<FormattedMessage id="add_new_album" defaultMessage="Add new album" />}
               />
               {showModal && (
-                <CreateAlbum
-                  showModal={showModal}
-                  hideModal={this.handleToggleModal}
-                  handleSubmit={this.handleCreateAlbum}
-                  loading={loadingAlbum}
-                />
+                <CreateAlbum showModal={showModal} hideModal={this.handleToggleModal} />
               )}
             </div>
           </div>

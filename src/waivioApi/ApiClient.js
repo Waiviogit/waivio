@@ -455,6 +455,19 @@ export const getTopUsers = (isRandom = false, { limit, skip } = { limit: 30, ski
   });
 };
 
+//region Campaigns Requests
+
+export const getCampaignById = campaignId =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.campaign}/${campaignId}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(response => resolve(response.campaign))
+      .catch(error => reject(error));
+  });
+
 export const getPropositions = ({
   limit = 30,
   skip = 0,
@@ -618,16 +631,7 @@ export const getCampaignByGuideNameAndObject = (guideName, object) =>
       .catch(error => reject(error));
   });
 
-export const getCampaignById = campaignId =>
-  new Promise((resolve, reject) => {
-    fetch(`${config.campaignApiPrefix}${config.campaign}/${campaignId}`, {
-      headers,
-      method: 'GET',
-    })
-      .then(res => res.json())
-      .then(result => resolve(result))
-      .catch(error => reject(error));
-  });
+//endregion
 
 export const getAuthenticatedUserMetadata = (
   userName,
@@ -643,12 +647,13 @@ export const getAuthenticatedUserMetadata = (
 };
 
 export const getLenders = ({ sponsor, user, filters }) => {
-  const payable = filters && filters.payable ? `&payable=${filters.payable}` : ``;
-  const days = filters && filters.days ? `&days=${filters.days}` : ``;
-  const isUser = !user ? `?sponsor=${sponsor}` : `?sponsor=${sponsor}&userName=${user}`;
+  const isSponsor = sponsor ? `?sponsor=${sponsor}` : '';
+  const payable = filters && filters.payable ? `&payable=${filters.payable}` : '';
+  const days = filters && filters.days ? `&days=${filters.days}` : '';
+  const isUser = user ? (sponsor ? `&userName=${user}` : `?userName=${user}`) : '';
   return new Promise((resolve, reject) => {
     fetch(
-      `${config.campaignApiPrefix}${config.payments}${config.payables}${isUser}${days}${payable}`,
+      `${config.campaignApiPrefix}${config.payments}${config.payables}${isSponsor}${isUser}${days}${payable}`,
       {
         headers,
         method: 'GET',
