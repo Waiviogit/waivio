@@ -19,20 +19,22 @@ class Chat extends React.Component {
     visibility: PropTypes.bool.isRequired,
     setSessionId: PropTypes.func.isRequired,
     userName: PropTypes.string.isRequired,
+    connectionStart: PropTypes.bool.isRequired,
   };
 
   componentDidMount() {
+    const { userName } = this.props;
     const initData = {
       cmd: 'init',
       args: {
-        username: `${this.props.userName}`,
+        username: `${userName}`,
       },
     };
 
     const initResponseData = {
       cmd: 'auth_connection',
       args: {
-        user_name: `${this.props.userName}`,
+        user_name: `${userName}`,
         block_number: 1,
         transaction_id: '',
       },
@@ -47,7 +49,6 @@ class Chat extends React.Component {
           case 'init_response':
             this.props
               .setSessionId(event.data.args.session_id)
-              // eslint-disable-next-line react/no-did-mount-set-state
               .then(data => {
                 initResponseData.args.transaction_id = data.value.result.id;
                 initResponseData.args.block_number = data.value.result.block_num;
@@ -71,21 +72,20 @@ class Chat extends React.Component {
   };
 
   render() {
+    const { visibility, connectionStart } = this.props;
     return (
       <div
         className={classNames('Chat', {
-          'hide-element': !this.props.visibility,
+          'hide-element': !visibility,
         })}
       >
         <div className="Chat__wrap">
-          {this.props.visibility ? (
+          {connectionStart ? (
             <iframe
               src="https://stchat.cf/app.html"
               /* eslint no-return-assign: "error" */
               ref={f => (this.ifr = f)}
               title="frame"
-              sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-top-navigation"
-              name="sandbox"
             />
           ) : null}
         </div>
