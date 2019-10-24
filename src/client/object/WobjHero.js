@@ -14,6 +14,11 @@ class WobjMenuWrapper extends React.Component {
     history: PropTypes.shape().isRequired,
     wobject: PropTypes.shape().isRequired,
     username: PropTypes.string.isRequired,
+    albumsAndImagesCount: PropTypes.number,
+  };
+
+  static defaultProps = {
+    albumsAndImagesCount: 0,
   };
 
   onChange = key => {
@@ -28,7 +33,7 @@ class WobjMenuWrapper extends React.Component {
     const currentKey = current || 'reviews';
     let fieldsCount = 0;
     if (this.props.wobject && this.props.wobject.fields && this.props.wobject.fields.length) {
-      fieldsCount = this.props.wobject.fields.length;
+      fieldsCount = this.props.wobject.fields.length + this.props.albumsAndImagesCount;
     }
     const accessExtend = haveAccess(this.props.wobject, this.props.username, accessTypesArr[0]);
     return (
@@ -51,6 +56,7 @@ const WobjHero = ({
   username,
   isFollowing,
   toggleViewEditMode,
+  albumsAndImagesCount,
 }) => (
   <React.Fragment>
     <Switch>
@@ -74,6 +80,7 @@ const WobjHero = ({
               followers={wobject.followers_count || 0}
               wobject={wobject}
               username={username}
+              albumsAndImagesCount={albumsAndImagesCount}
             />
           </React.Fragment>
         )}
@@ -90,6 +97,7 @@ WobjHero.propTypes = {
   isFollowing: PropTypes.bool,
   wobject: PropTypes.shape(),
   toggleViewEditMode: PropTypes.func,
+  albumsAndImagesCount: PropTypes.number,
 };
 
 WobjHero.defaultProps = {
@@ -98,6 +106,7 @@ WobjHero.defaultProps = {
   isFollowing: false,
   isPopoverVisible: false,
   wobject: {},
+  albumsAndImagesCount: 0,
   onTransferClick: () => {},
   toggleViewEditMode: () => {},
 };

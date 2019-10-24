@@ -7,6 +7,7 @@ import BodyContainer from '../../containers/Story/BodyContainer';
 import TagsSelector from '../../components/TagsSelector/TagsSelector';
 import PolicyConfirmation from '../../components/PolicyConfirmation/PolicyConfirmation';
 import AdvanceSettings from './AdvanceSettings';
+import CheckReviewModal from '../CheckReviewModal/CheckReviewModal';
 import { isContentValid, splitPostContent } from '../../helpers/postHelpers';
 import { handleWeightChange, setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import { rewardsValues } from '../../../common/constants/rewards';
@@ -33,6 +34,10 @@ class PostPreviewModal extends Component {
     linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
     forecastValues: PropTypes.shape(),
     expForecast: PropTypes.shape(),
+    reviewData: PropTypes.shape({
+      reviewer: PropTypes.shape(),
+      campaign: PropTypes.shape(),
+    }),
     isUpdating: PropTypes.bool,
     objPercentage: PropTypes.shape(),
     onTopicsChange: PropTypes.func.isRequired,
@@ -49,6 +54,7 @@ class PostPreviewModal extends Component {
     forecastValues: {},
     expForecast: null,
     objPercentage: {},
+    reviewData: null,
     isUpdating: false,
     onReadyBtnClick: () => {},
   };
@@ -67,6 +73,9 @@ class PostPreviewModal extends Component {
       objPercentage: setObjPercents(props.linkedObjects, props.objPercentage),
       weightBuffer: 0,
       isConfirmed: false,
+      // Check review modal
+      isCheckReviewModalOpen: false,
+      isReviewValid: false,
     };
   }
 
@@ -97,7 +106,7 @@ class PostPreviewModal extends Component {
 
   showModal = () => {
     const { forecastValues } = this.props;
-    this.props.onReadyBtnClick();
+    this.props.onReadyBtnClick(true);
     if (forecastValues && forecastValues.isValid) {
       const { postTitle, postBody } = splitPostContent(this.props.content);
       const objPercentage = setObjPercents(this.props.linkedObjects, this.props.objPercentage);
@@ -113,9 +122,13 @@ class PostPreviewModal extends Component {
 
   hideModal = () => {
     if (!this.props.isPublishing) {
-      this.setState({ isModalOpen: false });
+      this.setState({ isModalOpen: false }, this.props.onReadyBtnClick(false));
     }
   };
+
+  hideCheckReviewModal = () => this.setState({ isCheckReviewModalOpen: false });
+
+  showEditor = () => this.setState({ isCheckReviewModalOpen: false, isModalOpen: false });
 
   handleConfirmedChange = isConfirmed => this.setState({ isConfirmed });
 
@@ -130,7 +143,17 @@ class PostPreviewModal extends Component {
     if (nextState.weightBuffer === 0) this.props.onPercentChange(nextState.objPercentage);
   };
 
-  handleSubmit = () => this.props.onSubmit();
+  handleReviewSubmit = () => {
+    this.setState({ isCheckReviewModalOpen: false }, this.props.onSubmit);
+  };
+
+  handleSubmit = () => {
+    if (this.props.reviewData) {
+      this.setState({ isCheckReviewModalOpen: true });
+    } else {
+      this.props.onSubmit();
+    }
+  };
 
   render() {
     const { isModalOpen, isConfirmed, body, title, weightBuffer, objPercentage } = this.state;
@@ -140,6 +163,7 @@ class PostPreviewModal extends Component {
       content,
       topics,
       linkedObjects,
+      reviewData,
       settings,
       forecastValues,
       expForecast,
@@ -234,6 +258,19 @@ class PostPreviewModal extends Component {
               </Button>
             </div>
           </Modal>
+        )}
+        {reviewData && (
+          <CheckReviewModal
+            intl={intl}
+            postBody={body}
+            isCheckReviewModalOpen={this.state.isCheckReviewModalOpen}
+            isReviewValid={this.state.isReviewValid}
+            reviewData={reviewData}
+            linkedObjects={linkedObjects}
+            onCancel={this.hideCheckReviewModal}
+            onEdit={this.showEditor}
+            onSubmit={this.handleReviewSubmit}
+          />
         )}
         <div className="edit-post-controls">
           <Button

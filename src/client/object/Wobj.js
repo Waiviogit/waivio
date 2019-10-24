@@ -12,6 +12,7 @@ import {
   getIsUserFailed,
   getIsUserLoaded,
   getObject as getObjectState,
+  getObjectAlbums,
   getScreenSize,
 } from '../reducers';
 import OBJECT_TYPE from './const/objectTypes';
@@ -37,6 +38,7 @@ import ObjectsRelated from '../components/Sidebar/ObjectsRelated/ObjectsRelated'
     failed: getIsUserFailed(state, ownProps.match.params.name),
     wobject: getObjectState(state),
     screenSize: getScreenSize(state),
+    albums: getObjectAlbums(state),
   }),
   {
     clearObjectFromStore,
@@ -57,6 +59,7 @@ export default class Wobj extends React.Component {
     wobject: PropTypes.shape(),
     screenSize: PropTypes.string,
     clearObjectFromStore: PropTypes.func,
+    albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   };
 
   static defaultProps = {
@@ -133,7 +136,14 @@ export default class Wobj extends React.Component {
 
   render() {
     const { isEditMode, hasLeftSidebar } = this.state;
-    const { authenticated, authenticatedUserName: userName, failed, match, wobject } = this.props;
+    const {
+      authenticated,
+      failed,
+      authenticatedUserName: userName,
+      match,
+      wobject,
+      albums,
+    } = this.props;
     if (failed) return <Error404 />;
 
     const objectName = wobject.name || wobject.default_name || '';
@@ -143,6 +153,11 @@ export default class Wobj extends React.Component {
     const canonicalUrl = `${waivioHost}/object/${match.params.name}`;
     const url = `${waivioHost}/object/${match.params.name}`;
     const displayedObjectName = objectName || '';
+    let albumsAndImagesCount;
+    if (!isEmpty(albums)) {
+      albumsAndImagesCount =
+        albums.length - 1 + albums.reduce((acc, curr) => acc + curr.items.length, 0);
+    }
 
     return (
       <div className="main-panel">
@@ -177,6 +192,7 @@ export default class Wobj extends React.Component {
           username={displayedObjectName}
           onFollowClick={this.handleFollowClick}
           toggleViewEditMode={this.toggleViewEditMode}
+          albumsAndImagesCount={albumsAndImagesCount}
         />
         <div className="shifted">
           <div className={`container ${hasLeftSidebar ? 'feed-layout' : 'post-layout'}`}>
