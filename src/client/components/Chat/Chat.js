@@ -24,17 +24,11 @@ class Chat extends React.Component {
 
   componentDidMount() {
     const { userName } = this.props;
-    const initData = {
-      cmd: 'init',
-      args: {
-        username: `${userName}`,
-      },
-    };
 
     const initResponseData = {
       cmd: 'auth_connection',
       args: {
-        user_name: `${userName}`,
+        user_name: userName,
         block_number: 1,
         transaction_id: '',
       },
@@ -44,12 +38,18 @@ class Chat extends React.Component {
       if (event && event.data && event.origin === 'https://stchat.cf') {
         switch (event.data.cmd) {
           case 'connected':
-            this.sendChatRequestData(initData);
+            this.sendChatRequestData({
+              cmd: 'init',
+              args: {
+                username: userName,
+              },
+            });
             break;
           case 'init_response':
             this.props
               .setSessionId(event.data.args.session_id)
               .then(data => {
+                initResponseData.cmd = 'auth_connection';
                 initResponseData.args.transaction_id = data.value.result.id;
                 initResponseData.args.block_number = data.value.result.block_num;
               })
