@@ -118,12 +118,12 @@ class Page extends React.Component {
         <ScrollToTopOnMount />
         <div className="shifted">
           <div className="feed-layout container">
-            <Affix className="leftContainer" stickPosition={115}>
+            <Affix className="leftContainer" stickPosition={116}>
               <div className="left">
                 <LeftSidebar />
               </div>
             </Affix>
-            <Affix className="rightContainer" stickPosition={115}>
+            <Affix className="rightContainer" stickPosition={116}>
               <div className="right">
                 <RightSidebar />
               </div>

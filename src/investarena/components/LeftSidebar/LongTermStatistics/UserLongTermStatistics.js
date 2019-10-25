@@ -52,7 +52,9 @@ class UserLongTermStatistics extends React.Component {
   render() {
     return !this.state.loading ? (
       <div className="InstrumentLongTermStatistics">
-        <div className="InstrumentLongTermStatistics__title">{`Performance`}</div>
+        <div className="InstrumentLongTermStatistics__title">
+          {this.props.intl.formatMessage({ id: 'performance', defaultMessage: `Performance` })}
+        </div>
         <div>
           {!_.isEmpty(this.state.longTermStatistics) ? (
             <React.Fragment>

@@ -67,12 +67,12 @@ class Replies extends React.Component {
           <title>{intl.formatMessage({ id: 'replies', defaultMessage: 'Replies' })} - Waivio</title>
         </Helmet>
         <div className="feed-layout container">
-          <Affix className="leftContainer" stickPosition={77}>
+          <Affix className="leftContainer" stickPosition={116}>
             <div className="left">
               <LeftSidebar />
             </div>
           </Affix>
-          <Affix className="rightContainer" stickPosition={77}>
+          <Affix className="rightContainer" stickPosition={116}>
             <div className="right">
               <RightSidebar />
             </div>
