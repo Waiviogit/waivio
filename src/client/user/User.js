@@ -17,6 +17,7 @@ import {
 import { openTransfer } from '../wallet/walletActions';
 import { getUserAccount } from './usersActions';
 import { changeChatCondition } from './userActions';
+import { setPostMessageAction } from '../components/Chat/chatActions';
 import { getAvatarURL } from '../components/Avatar';
 import Error404 from '../statics/Error404';
 import UserHero from './UserHero';
@@ -39,6 +40,7 @@ import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
     getUserAccount,
     openTransfer,
     changeChatCondition,
+    setPostMessageAction,
   },
 )
 export default class User extends React.Component {
@@ -55,6 +57,7 @@ export default class User extends React.Component {
     openTransfer: PropTypes.func,
     changeChatCondition: PropTypes.func.isRequired,
     isChat: PropTypes.bool.isRequired,
+    setPostMessageAction: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -183,6 +186,7 @@ export default class User extends React.Component {
             authenticated={authenticated}
             user={user}
             changeChatCondition={this.props.changeChatCondition}
+            setPostMessageAction={this.props.setPostMessageAction}
             isChat={this.props.isChat}
             username={displayedUsername}
             isSameUser={isSameUser}

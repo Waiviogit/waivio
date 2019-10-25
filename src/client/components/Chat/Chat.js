@@ -2,11 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
+import { getPostMessageType, getPostMessageData } from '../../reducers';
 import { setSessionId } from './chatActions';
 import './Chat.less';
 
 @connect(
-  null,
+  state => ({
+    postMessageType: getPostMessageType(state),
+    postMessageData: getPostMessageData(state),
+  }),
   {
     setSessionId,
   },
@@ -15,6 +19,8 @@ class Chat extends React.Component {
   static propTypes = {
     visibility: PropTypes.bool.isRequired,
     setSessionId: PropTypes.func.isRequired,
+    postMessageType: PropTypes.string.isRequired,
+    postMessageData: PropTypes.string.isRequired,
     userName: PropTypes.string.isRequired,
   };
 
@@ -23,35 +29,18 @@ class Chat extends React.Component {
   };
 
   componentDidMount() {
-    const { userName } = this.props;
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({ connectionStart: true });
-    const initResponseData = {
-      cmd: 'auth_connection',
-      args: {
-        user_name: userName,
-      },
-    };
-
     window.addEventListener('message', event => {
       if (event && event.data && event.origin === 'https://stchat.cf') {
         switch (event.data.cmd) {
           case 'connected':
-            this.sendChatRequestData({
-              cmd: 'init',
-              args: {
-                username: userName,
-              },
-            });
+            this.sendChatRequestData('connected');
             break;
           case 'init_response':
             this.props
               .setSessionId(event.data.args.session_id)
-              .then(data => {
-                initResponseData.args.transaction_id = data.value.result.id;
-                initResponseData.args.block_number = data.value.result.block_num;
-              })
-              .then(() => this.sendChatRequestData(initResponseData));
+              .then(data => this.sendChatRequestData('init_response', data));
             break;
           case 'auth_connection_response':
             console.log(event.data.args.status);
@@ -68,8 +57,36 @@ class Chat extends React.Component {
     });
   }
 
-  sendChatRequestData = data => {
-    this.ifr.contentWindow.postMessage(data, 'https://stchat.cf');
+  componentDidUpdate(prevProps) {
+    if (prevProps.postMessageType !== this.props.postMessageType) {
+      this.sendChatRequestData(this.props.postMessageType);
+    }
+  }
+
+  sendChatRequestData = (messageType, data) => {
+    const requestData = {
+      cmd: 'init',
+      args: {
+        user_name: this.props.userName,
+      },
+    };
+    switch (messageType) {
+      case 'connected':
+        this.ifr.contentWindow.postMessage(requestData, 'https://stchat.cf');
+        break;
+      case 'init_response':
+        requestData.cmd = 'auth_connection';
+        requestData.args.transaction_id = data.value.result.id;
+        requestData.args.block_number = data.value.result.block_num;
+        this.ifr.contentWindow.postMessage(requestData, 'https://stchat.cf');
+        break;
+      case 'start_chat':
+        requestData.cmd = 'start_chat';
+        requestData.args.partner = this.props.postMessageData;
+        this.ifr.contentWindow.postMessage(requestData, 'https://stchat.cf');
+        break;
+      default:
+    }
   };
 
   render() {

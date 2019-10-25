@@ -10,3 +10,11 @@ export const setSessionId = sessionId => (dispatch, getState, { steemConnectAPI 
       promise: steemConnectAPI.settingSessionId(sessionId),
     },
   });
+
+export const SET_POSTMESSAGE_ACTION = '@wobj/SET_POSTMESSAGE_ACTION';
+
+export const setPostMessageAction = (messageType, data) => dispatch =>
+  dispatch({
+    type: SET_POSTMESSAGE_ACTION,
+    payload: { messageType, data },
+  });

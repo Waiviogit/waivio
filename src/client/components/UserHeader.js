@@ -24,10 +24,15 @@ const UserHeader = ({
   isActive,
   changeChatCondition,
   isChat,
+  setPostMessageAction,
 }) => {
   const style = hasCover
     ? { backgroundImage: `url("https://steemitimages.com/2048x512/${coverImage}")` }
     : {};
+  const sendData = () => {
+    setPostMessageAction('start_chat', handle);
+    changeChatCondition();
+  };
   return (
     <div className={classNames('UserHeader', { 'UserHeader--cover': hasCover })} style={style}>
       <div className="UserHeader__container">
@@ -56,12 +61,7 @@ const UserHeader = ({
               </div>
               {authenticated && !isChat ? (
                 <div className="UserHeader__user-chat-button">
-                  <Button
-                    onClick={changeChatCondition}
-                    type="primary"
-                    shape="circle"
-                    icon="message"
-                  />
+                  <Button onClick={sendData} type="primary" shape="circle" icon="message" />
                 </div>
               ) : null}
             </div>
@@ -111,6 +111,7 @@ UserHeader.propTypes = {
   isActive: PropTypes.bool.isRequired,
   changeChatCondition: PropTypes.func.isRequired,
   isChat: PropTypes.bool.isRequired,
+  setPostMessageAction: PropTypes.func.isRequired,
 };
 
 UserHeader.defaultProps = {

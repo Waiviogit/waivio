@@ -56,6 +56,7 @@ const UserHero = ({
   onTransferClick,
   changeChatCondition,
   isChat,
+  setPostMessageAction,
 }) => {
   const objectsFollowingCount = user.objects_following_count ? user.objects_following_count : 0;
   const followingCount = user.following_count + objectsFollowingCount;
@@ -84,6 +85,7 @@ const UserHero = ({
                   isFollowing={isFollowing}
                   onTransferClick={onTransferClick}
                   isActive={isUserActive(user)}
+                  setPostMessageAction={setPostMessageAction}
                 />
               )}
               <UserMenuWrapper followers={user.follower_count} following={followingCount} />
@@ -107,6 +109,7 @@ UserHero.propTypes = {
   onTransferClick: PropTypes.func,
   changeChatCondition: PropTypes.func.isRequired,
   isChat: PropTypes.bool.isRequired,
+  setPostMessageAction: PropTypes.func.isRequired,
 };
 
 UserHero.defaultProps = {
