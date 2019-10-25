@@ -36,6 +36,7 @@ const DiscoverObjects = ({ intl, history, match }) => {
           {match.params.typeName ? (
             <DiscoverObjectsContent
               history={history}
+              match={match}
               typeName={match.params.typeName}
               key={pathname + search}
               intl={intl}
