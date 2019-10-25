@@ -2,14 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-import { getAuthenticatedUserName } from '../../reducers';
 import { setSessionId } from './chatActions';
 import './Chat.less';
 
 @connect(
-  state => ({
-    userName: getAuthenticatedUserName(state),
-  }),
+  null,
   {
     setSessionId,
   },

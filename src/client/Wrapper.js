@@ -18,9 +18,15 @@ import {
   getUsedLocale,
   getTranslations,
   getNightmode,
+  getChatCondition,
 } from './reducers';
 import { login, logout, busyLogin } from './auth/authActions';
-import { getFollowing, getFollowingObjects, getNotifications } from './user/userActions';
+import {
+  changeChatCondition,
+  getFollowing,
+  getFollowingObjects,
+  getNotifications,
+} from './user/userActions';
 import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './app/appActions';
 import * as reblogActions from './app/Reblog/reblogActions';
 import NotificationPopup from './notifications/NotificationPopup';
@@ -42,6 +48,7 @@ import Chat from './components/Chat/Chat';
     translations: getTranslations(state),
     locale: getLocale(state),
     nightmode: getNightmode(state),
+    isChat: getChatCondition(state),
   }),
   {
     login,
@@ -54,6 +61,7 @@ import Chat from './components/Chat/Chat';
     busyLogin,
     getRebloggedList: reblogActions.getRebloggedList,
     setUsedLocale,
+    changeChatCondition,
   },
 )
 export default class Wrapper extends React.PureComponent {
@@ -77,6 +85,8 @@ export default class Wrapper extends React.PureComponent {
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
     nightmode: PropTypes.bool,
+    isChat: PropTypes.bool.isRequired,
+    changeChatCondition: PropTypes.func,
   };
 
   static defaultProps = {
@@ -94,6 +104,7 @@ export default class Wrapper extends React.PureComponent {
     getNotifications: () => {},
     setUsedLocale: () => {},
     busyLogin: () => {},
+    changeChatCondition: () => {},
     nightmode: false,
   };
 
@@ -121,9 +132,6 @@ export default class Wrapper extends React.PureComponent {
 
   constructor(props) {
     super(props);
-    this.state = {
-      isChat: false,
-    };
     this.loadLocale = this.loadLocale.bind(this);
     this.handleMenuItemClick = this.handleMenuItemClick.bind(this);
   }
@@ -208,13 +216,16 @@ export default class Wrapper extends React.PureComponent {
     }
   }
 
-  openChat = () => {
-    this.setState({ isChat: !this.state.isChat });
-  };
-
   render() {
-    const { user, isAuthenticated, usedLocale, translations, history } = this.props;
-    const { isChat } = this.state;
+    const {
+      user,
+      isAuthenticated,
+      usedLocale,
+      translations,
+      history,
+      isChat,
+      username,
+    } = this.props;
     const language = findLanguage(usedLocale);
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
@@ -232,12 +243,12 @@ export default class Wrapper extends React.PureComponent {
               <PowerUpOrDown />
               <NotificationPopup />
               <BBackTop
-                openChat={this.openChat}
+                openChat={this.props.changeChatCondition}
                 isChat={isChat}
                 className="primary-modal"
                 authentication={isAuthenticated}
               />
-              {isAuthenticated ? <Chat visibility={isChat} /> : null}
+              {isAuthenticated ? <Chat visibility={isChat} userName={username} /> : null}
             </div>
           </Layout>
         </ConfigProvider>
