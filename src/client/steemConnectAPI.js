@@ -50,10 +50,10 @@ function sc2Extended() {
       },
     },
     {
-      settingSessionId(sessionId, cb) {
+      settingSessionId(username, sessionId, cb) {
         const params = {
           required_auths: [],
-          required_posting_auths: ['asd09'],
+          required_posting_auths: [username],
           id: 'session_id',
           json: JSON.stringify({ session_id: sessionId }),
         };

@@ -1,15 +1,20 @@
+import { getAuthenticatedUserName } from '../../reducers';
+
 export const SET_SESSION_ID = '@wobj/SET_SESSION_ID';
 export const SET_SESSION_ID_START = '@wobj/SET_SESSION_ID_START';
 export const SET_SESSION_ID_ERROR = '@wobj/SET_SESSION_ID_ERROR';
 export const SET_SESSION_ID_SUCCESS = '@wobj/SET_SESSION_ID_SUCCESS';
 
-export const setSessionId = sessionId => (dispatch, getState, { steemConnectAPI }) =>
-  dispatch({
+export const setSessionId = sessionId => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+  const username = getAuthenticatedUserName(state);
+  return dispatch({
     type: SET_SESSION_ID,
     payload: {
-      promise: steemConnectAPI.settingSessionId(sessionId),
+      promise: steemConnectAPI.settingSessionId(username, sessionId),
     },
   });
+};
 
 export const SET_POSTMESSAGE_ACTION = '@wobj/SET_POSTMESSAGE_ACTION';
 
