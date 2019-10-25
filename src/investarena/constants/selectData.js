@@ -124,7 +124,7 @@ export const optionsPlatform = [
     label: 'LexaTrade',
     permlink: 'fqt-lexatrade',
     excludedCountries: ['IL', 'US', 'UA', 'PR', 'UY', 'RO', 'IE', 'LV', 'LT'],
-    languages:['PL', 'EN', 'ES'],
+    languages: ['PL', 'EN', 'ES'],
   },
 ];
 

@@ -1,15 +1,15 @@
 import _ from 'lodash';
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {injectIntl} from 'react-intl';
-import {Button, Checkbox, Form, Input, Radio, Select} from 'antd';
-import {optionsPlatform} from '../../../constants/selectData';
-import {country} from '../../../constants/countryData';
-import {phoneCode} from '../../../constants/phoneCodeData';
-import {agreements} from '../../../configApi/licenseAgreements';
+import { injectIntl } from 'react-intl';
+import { Button, Checkbox, Form, Input, Radio, Select } from 'antd';
+import { optionsPlatform } from '../../../constants/selectData';
+import { country } from '../../../constants/countryData';
+import { phoneCode } from '../../../constants/phoneCodeData';
+import { agreements } from '../../../configApi/licenseAgreements';
 import ObjectCardView from '../../../../client/objectCard/ObjectCardView';
-import {getClientWObj} from '../../../../client/adapters';
-import {getObjectsByIds} from '../../../../waivioApi/ApiClient';
+import { getClientWObj } from '../../../../client/adapters';
+import { getObjectsByIds } from '../../../../waivioApi/ApiClient';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -39,29 +39,8 @@ class BrokerRegistration extends Component {
       permlinksArray.push(platform.permlink);
     });
     const wobjectsArray = await getObjectsByIds({ authorPermlinks: permlinksArray });
+    // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({ platformsWobjects: wobjectsArray.wobjects });
-  };
-
-  compareToFirstPassword = (rule, value, callback) => {
-    const form = this.props.form;
-    if (value && value !== form.getFieldValue('password')) {
-      callback(
-        this.props.intl.formatMessage({
-          id: 'broker_modal_confirm_same_password',
-          defaultMessage: 'Two passwords that you enter is inconsistent!',
-        }),
-      );
-    } else {
-      callback();
-    }
-  };
-
-  validateToNextPassword = (rule, value, callback) => {
-    const form = this.props.form;
-    if (value && this.state.confirmDirty) {
-      form.validateFields(['confirm'], { force: true });
-    }
-    callback();
   };
 
   handleReadChange = () => {
@@ -82,11 +61,15 @@ class BrokerRegistration extends Component {
   };
 
   handleStepBack = () => {
-    this.state.stepNumber === 2 && this.setState({ stepNumber: 1, currentCountryValue: '' });
-    this.state.stepNumber === 3 && this.setState({ stepNumber: 2, platformName: '' });
+    const { stepNumber } = this.state;
+    stepNumber === 2 && this.setState({ stepNumber: 1, currentCountryValue: '' });
+    stepNumber === 3 && this.setState({ stepNumber: 2, platformName: '' });
   };
 
-  isExcludedCountry = _.every(optionsPlatform, option => option.excludedCountries.includes(this.state.currentCountryValue));
+  isExcludedCountry = () =>
+    _.every(optionsPlatform, option =>
+      option.excludedCountries.includes(this.state.currentCountryValue),
+    );
 
   formItemLayout = {
     labelCol: {
@@ -114,92 +97,124 @@ class BrokerRegistration extends Component {
 
   getFieldDecorator = this.props.form.getFieldDecorator;
 
-  // prefixSelector ;
+  prefixSelector = () => {};
+
+  compareToFirstPassword = (rule, value, callback) => {
+    const form = this.props.form;
+    if (value && value !== form.getFieldValue('password')) {
+      callback(
+        this.props.intl.formatMessage({
+          id: 'broker_modal_confirm_same_password',
+          defaultMessage: 'Two passwords that you enter is inconsistent!',
+        }),
+      );
+    } else {
+      callback();
+    }
+  };
+
+  validateToNextPassword = (rule, value, callback) => {
+    const form = this.props.form;
+    if (value && this.state.confirmDirty) {
+      form.validateFields(['confirm'], { force: true });
+    }
+    callback();
+  };
 
   firstStepRenderer = () => (
-      <FormItem {...this.formItemLayout} label={this.props.intl.formatMessage({
+    <FormItem
+      {...this.formItemLayout}
+      label={this.props.intl.formatMessage({
         id: 'broker_modal_enter_country',
         defaultMessage: 'Country',
-      })}>
-        {this.getFieldDecorator('country', {
-          initialValue: '',
-        })(
-          <Select
-            showSearch
-            style={{width: '100%'}}
+      })}
+    >
+      {this.getFieldDecorator('country', {
+        initialValue: '',
+      })(
+        <Select
+          showSearch
+          style={{ width: '100%' }}
+          placeholder={this.props.intl.formatMessage({
+            id: 'tooltip.empty',
+            defaultMessage: 'Please fill in this field',
+          })}
+          onChange={this.handleCountryValueChange}
+          filterOption={(input, option) =>
+            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+        >
+          {_.map(country[this.props.intl.locale], (option, key) => (
+            <Option key={key} value={key}>
+              {option}
+            </Option>
+          ))}
+        </Select>,
+      )}
+    </FormItem>
+  );
+
+  secondStepRenderer = () => (
+    <FormItem
+      {...this.formItemLayout}
+      label={this.props.intl.formatMessage({
+        id: 'broker_modal_enter_platform',
+        defaultMessage: 'Platform',
+      })}
+    >
+      {this.getFieldDecorator('platform')(
+        this.isExcludedCountry() ? (
+          <div>No service provider available in your country</div>
+        ) : (
+          <Radio.Group
+            style={{ width: '100%' }}
             placeholder={this.props.intl.formatMessage({
               id: 'tooltip.empty',
               defaultMessage: 'Please fill in this field',
             })}
-            onChange={this.handleCountryValueChange}
-            filterOption={(input, option) =>
-              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
+            onChange={this.changePlatform}
+            className="BrokerRegistration__radiogroup"
           >
-            {_.map(country[this.props.intl.locale], (option, key) => (
-              <Option key={key} value={key}>
-                {option}
-              </Option>
-            ))}
-          </Select>,
-        )}
-      </FormItem>
-    );
-
-  secondStepRenderer = () => (
-      <FormItem {...this.formItemLayout} label={this.props.intl.formatMessage({
-        id: 'broker_modal_enter_platform',
-        defaultMessage: 'Platform',
-      })}
-      >
-        {this.getFieldDecorator('platform')(
-          this.isExcludedCountry ? <div>No service provider available in your country</div>
-            : (
-              <Radio.Group
-                style={{width: '100%'}}
-                placeholder={this.props.intl.formatMessage({
-                  id: 'tooltip.empty',
-                  defaultMessage: 'Please fill in this field',
-                })}
-                onChange={this.changePlatform}
-                className="BrokerRegistration__radiogroup"
-              >
-                {_.map(optionsPlatform, option => {
-                  if (!option.excludedCountries.includes(this.state.currentCountryValue)) {
-                    const platformWobject = this.state.platformsWobjects.find(
-                      item => item.author_permlink === option.permlink,
-                    );
-                    const platformClientWobject = getClientWObj(platformWobject);
-                    return (
-                      <Radio
-                        key={option.value}
-                        value={option.value}
-                        className="BrokerRegistration__checkbox"
-                      >
-                        <a
-                          href={`https://www.waivio.com/object/${option.permlink}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <span>Languages: {option.languages.join(', ')}</span>
-                        </a>
-                        <ObjectCardView wObject={platformClientWobject} showSmallVersion/>
-                      </Radio>
-                    );
-                  }
-                })}
-              </Radio.Group>
-            )
-        )}
-      </FormItem>
+            {/* eslint-disable-next-line consistent-return */}
+            {_.map(optionsPlatform, option => {
+              if (!option.excludedCountries.includes(this.state.currentCountryValue)) {
+                const platformWobject = this.state.platformsWobjects.find(
+                  item => item.author_permlink === option.permlink,
+                );
+                const platformClientWobject = getClientWObj(platformWobject);
+                return (
+                  <Radio
+                    key={option.value}
+                    value={option.value}
+                    className="BrokerRegistration__checkbox"
+                  >
+                    <a
+                      href={`https://www.waivio.com/object/${option.permlink}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <span>Languages: {option.languages.join(', ')}</span>
+                    </a>
+                    <ObjectCardView wObject={platformClientWobject} showSmallVersion />
+                  </Radio>
+                );
+              }
+            })}
+          </Radio.Group>
+        ),
+      )}
+    </FormItem>
   );
 
   thirdStepRenderer = () => (
     <React.Fragment>
-      <FormItem {...this.formItemLayout} label={this.props.intl.formatMessage({
-        id: 'broker_modal_enter_first_name',
-        defaultMessage: 'First name',
-      })}>
+      <FormItem
+        {...this.formItemLayout}
+        label={this.props.intl.formatMessage({
+          id: 'broker_modal_enter_first_name',
+          defaultMessage: 'First name',
+        })}
+      >
         {this.getFieldDecorator('firstName', {
           rules: [
             {
@@ -309,10 +324,13 @@ class BrokerRegistration extends Component {
         })(<Input type="password" onBlur={this.handleConfirmBlur} />)}
       </FormItem>
 
-      <FormItem {...this.formItemLayout} label={this.props.intl.formatMessage({
-        id: 'broker_modal_enter_phone_number',
-        defaultMessage: 'Phone Number',
-      })}>
+      <FormItem
+        {...this.formItemLayout}
+        label={this.props.intl.formatMessage({
+          id: 'broker_modal_enter_phone_number',
+          defaultMessage: 'Phone Number',
+        })}
+      >
         {this.getFieldDecorator('phone', {
           rules: [
             {
@@ -332,10 +350,13 @@ class BrokerRegistration extends Component {
             // { type: 'number', message: 'Only numbers' }
           ],
         })(
-          <Input addonBefore={this.getFieldDecorator(
-          'phoneCountry', {initialValue: phoneCode[this.state.currentCountryValue],})
-          (<Select showArrow={false} style={{ width: 70 }} disabled={true} />)} style={{ width: '100%' }} />)
-        }
+          <Input
+            addonBefore={this.getFieldDecorator('phoneCountry', {
+              initialValue: phoneCode[this.state.currentCountryValue],
+            })(<Select showArrow={false} style={{ width: 70 }} disabled />)}
+            style={{ width: '100%' }}
+          />,
+        )}
       </FormItem>
       <FormItem {...this.tailFormItemLayout}>
         <Checkbox className="d-flex align-items-center" onClick={this.handleReadChange}>
@@ -375,34 +396,33 @@ class BrokerRegistration extends Component {
   };
 
   render() {
+    const { stepNumber } = this.state;
     return (
       <React.Fragment>
         <Form onSubmit={this.handleSubmit}>
-          {this.state.stepNumber === 1
-            ? this.firstStepRenderer()
-            : this.state.stepNumber === 2
-              ? this.secondStepRenderer()
-              : this.state.stepNumber === 3
-                ? (
-                  <React.Fragment>
-                    {this.thirdStepRenderer()}
-                    <FormItem {...this.tailFormItemLayout}>
-                      <Button
-                        className="w-100"
-                        type="primary"
-                        htmlType="submit"
-                        disabled={!this.state.isAgreementRead}
-                        loading={this.props.isLoading}
-                      >
-                        {this.props.intl.formatMessage({
-                          id: 'broker_modal_register',
-                          defaultMessage: 'Register',
-                        })}
-                      </Button>
-                    </FormItem>
-                  </React.Fragment>
-                )
-                : null}
+          {stepNumber === 1 ? (
+            this.firstStepRenderer()
+          ) : stepNumber === 2 ? (
+            this.secondStepRenderer()
+          ) : stepNumber === 3 ? (
+            <React.Fragment>
+              {this.thirdStepRenderer()}
+              <FormItem {...this.tailFormItemLayout}>
+                <Button
+                  className="w-100"
+                  type="primary"
+                  htmlType="submit"
+                  disabled={!this.state.isAgreementRead}
+                  loading={this.props.isLoading}
+                >
+                  {this.props.intl.formatMessage({
+                    id: 'broker_modal_register',
+                    defaultMessage: 'Register',
+                  })}
+                </Button>
+              </FormItem>
+            </React.Fragment>
+          ) : null}
         </Form>
         <div className="BrokerRegistration__buttons">
           <Button onClick={this.handleStepBack} disabled={this.state.stepNumber === 1}>
