@@ -58,7 +58,10 @@ class Chat extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.postMessageType !== this.props.postMessageType) {
+    if (
+      prevProps.postMessageType !== this.props.postMessageType ||
+      prevProps.postMessageType !== this.props.postMessageData
+    ) {
       this.sendChatRequestData(this.props.postMessageType);
     }
   }
