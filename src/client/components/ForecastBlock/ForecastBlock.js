@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { Icon } from 'antd';
 import { injectIntl } from 'react-intl';
-import './ForecastBlock.less';
 import ForecastItem from '../ForecastItem/index';
+import './ForecastBlock.less';
 
 @injectIntl
 class ForecastBlock extends React.Component {
