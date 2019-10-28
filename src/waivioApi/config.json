@@ -61,5 +61,6 @@
   "search": "/search",
   "childWobjects": "/child_wobjects",
   "payables": "/payables",
-  "payments": "/payments"
+  "payments": "/payments",
+  "app": "/app"
 }
