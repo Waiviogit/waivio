@@ -7,8 +7,8 @@ import './UserAccuracyChart.less';
 
 const UserAccuracyChart = ({ value }) => {
   const data = [
-    { name: 'unsuccess', value: 100 - value, fill: '#d9534f' },
     { name: 'success', value: value, fill: '#54d2a0' },
+    { name: 'unsuccess', value: 100 - value, fill: '#d9534f' }
   ];
   return (
     <div className="UserAccuracy">
