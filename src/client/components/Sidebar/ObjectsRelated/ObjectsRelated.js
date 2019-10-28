@@ -103,7 +103,7 @@ const ObjectsRelated = ({ wobject }) => {
             <Modal
               title="Related"
               visible={showModal}
-              onOk={() => setShowModal(false)}
+              footer={null}
               onCancel={() => setShowModal(false)}
               id="ObjectRelated__Modal"
             >

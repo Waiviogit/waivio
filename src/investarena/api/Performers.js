@@ -6,6 +6,7 @@ export default class Performers extends Base {
     super(params);
 
     this.searchInstrumentsStat = this.searchInstrumentsStat.bind(this);
+    this.getMostProfitableUsers = this.getMostProfitableUsers.bind(this);
   }
 
   searchInstrumentsStat(searchString, limit = 7) {
@@ -48,6 +49,15 @@ export default class Performers extends Base {
     return new Promise((resolve, reject) => {
       this.apiClient
         .get(`${config.performers.instrumentStatistic}/${autorPermlink}`)
+        .then(response => resolve(response.data))
+        .catch(error => reject(error));
+    });
+  }
+
+  getMostProfitableUsers(chartId) {
+    return new Promise((resolve, reject) => {
+      this.apiClient
+        .get(`${config.performers.instrumentPerformers}/${chartId}`)
         .then(response => resolve(response.data))
         .catch(error => reject(error));
     });
