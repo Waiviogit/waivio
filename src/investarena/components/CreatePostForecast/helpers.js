@@ -118,7 +118,13 @@ export const getEditorForecast = (forecast, quotesSettings) => {
     postPrice: !isNaN(price) ? price : null,
     selectForecast,
     expiredAt: dateTimeValue ? dateTimeValue.format(forecastDateTimeFormat) : null,
-    isValid: validateForm(selectQuote, selectRecommend, selectForecast, takeProfitValueIncorrect, stopLossValueIncorrect),
+    isValid: validateForm(
+      selectQuote,
+      selectRecommend,
+      selectForecast,
+      takeProfitValueIncorrect,
+      stopLossValueIncorrect,
+    ),
   };
   if (takeProfitValue) forecastObject.tpPrice = takeProfitValue;
   if (stopLossValue) forecastObject.slPrice = stopLossValue;

@@ -1,36 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import { PieChart, Pie } from 'recharts';
 import classNames from 'classnames';
-import { Doughnut } from 'react-chartjs-2';
 import './UserAccuracyChart.less';
 
 const UserAccuracyChart = ({ value }) => {
-  const data = {
-    labels: [],
-    datasets: [
-      {
-        data: [value, 100 - value],
-        backgroundColor: ['#54d2a0', '#d9534f'],
-        borderColor: 'transparent',
-      },
-    ],
-  };
-  const options = {
-    legend: {
-      display: false,
-    },
-    tooltips: {
-      enabled: false,
-    },
-    hover: { mode: null },
-    cutoutPercentage: 75,
-    maintainAspectRatio: false,
-  };
+  const data = [
+    { name: 'unsuccess', value: 100 - value, fill: '#d9534f' },
+    { name: 'success', value: value, fill: '#54d2a0' },
+  ];
   return (
     <div className="UserAccuracy">
       <div className="UserAccuracy__chart">
-        <Doughnut data={data} options={options} width={95} height={95} />
+        <PieChart width={95} height={95}>
+          <Pie data={data} innerRadius={35} outerRadius={45} stroke="transparent"/>
+        </PieChart>
       </div>
       <div
         className={classNames('UserAccuracy__value', {
