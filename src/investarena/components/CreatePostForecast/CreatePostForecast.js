@@ -90,7 +90,7 @@ class CreatePostForecast extends Component {
       !isEqual(nextProps.forecastValues, this.props.forecastValues) ||
       (!nextState.updatesFrozen && !isEqual(nextProps.quoteSelected, this.props.quoteSelected)) ||
       (!this.props.optionsQuote.length && nextProps.optionsQuote.length) ||
-        this.props.isPosted !== nextProps.isPosted
+      this.props.isPosted !== nextProps.isPosted
     );
   }
 
@@ -142,7 +142,7 @@ class CreatePostForecast extends Component {
     const value = event.target.value;
     if (!isNaN(value)) {
       const { selectRecommend } = this.state;
-      const propName =`${input}Incorrect`;
+      const propName = `${input}Incorrect`;
       const propValue = isStopLossTakeProfitValid(
         value,
         input,
@@ -245,10 +245,14 @@ class CreatePostForecast extends Component {
     }
   };
 
-  resetForm = () => this.setState({
-    takeProfitValueIncorrect: false,
-    stopLossValueIncorrect: false,
-  }, this.props.onChange({ isValid: true }));
+  resetForm = () =>
+    this.setState(
+      {
+        takeProfitValueIncorrect: false,
+        stopLossValueIncorrect: false,
+      },
+      this.props.onChange({ isValid: true }),
+    );
 
   freezeUpdates = quote => this.setState({ updatesFrozen: !quote });
 
