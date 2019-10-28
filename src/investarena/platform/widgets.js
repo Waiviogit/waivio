@@ -10,7 +10,7 @@ import { getChartDataSuccess } from '../redux/actions/chartsActions';
 import { updateQuotes } from '../redux/actions/quotesActions';
 import { updateQuotesSettings } from '../redux/actions/quotesSettingsActions';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { objectFields } from '../../common/constants/listOfFields';
+import { CHART_ID } from '../constants/objectsInvestarena';
 import { mutateObject } from './platformHelper';
 
 export class Widgets {
@@ -153,7 +153,7 @@ export class Widgets {
     ApiClient.getObjects({
       limit: 300,
       invObjects: true,
-      requiredFields: [objectFields.chartId],
+      requiredFields: CHART_ID,
     }).then(res => {
       const wobjWithChart = mutateObject(res.wobjects);
       Object.keys(quotesSettings)
