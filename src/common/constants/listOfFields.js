@@ -21,7 +21,6 @@ export const objectFields = {
   newsFilter: 'newsFilter',
   button: 'button',
   workTime: 'workTime',
-  chartId: 'chartid',
   pageContent: 'pageContent',
   status: 'status',
   galleryItem: 'galleryItem',

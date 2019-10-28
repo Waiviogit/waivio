@@ -153,7 +153,7 @@ export class Widgets {
     ApiClient.getObjects({
       limit: 300,
       invObjects: true,
-      requiredFields: CHART_ID,
+      requiredFields: [CHART_ID],
     }).then(res => {
       const wobjWithChart = mutateObject(res.wobjects);
       Object.keys(quotesSettings)
