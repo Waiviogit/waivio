@@ -7,26 +7,26 @@ import { connect } from 'react-redux';
 import { AutoComplete, Button, Icon, Input, Menu, Modal, Popover } from 'antd';
 import classNames from 'classnames';
 import {
+  resetSearchAutoCompete,
   searchAutoComplete,
   searchObjectsAutoCompete,
-  searchUsersAutoCompete,
   searchObjectTypesAutoCompete,
-  resetSearchAutoCompete,
+  searchUsersAutoCompete,
 } from '../../search/searchActions';
 import { getUserMetadata } from '../../user/usersActions';
 import { toggleModal } from '../../../investarena/redux/actions/modalsActions';
 import { disconnectBroker } from '../../../investarena/redux/actions/brokersActions';
 import {
-  getAutoCompleteSearchResults,
-  getSearchObjectsResults,
-  getNotifications,
   getAuthenticateduserMetaData,
+  getAutoCompleteSearchResults,
+  getIsAuthenticated,
   getIsLoadingNotifications,
+  getNightmode,
+  getNotifications,
+  getScreenSize,
+  getSearchObjectsResults,
   getSearchUsersResults,
   searchObjectTypesResults,
-  getScreenSize,
-  getNightmode,
-  getIsAuthenticated,
 } from '../../reducers';
 import ModalBroker from '../../../investarena/components/Modals/ModalBroker';
 import ModalDealConfirmation from '../../../investarena/components/Modals/ModalDealConfirmation';
@@ -49,8 +49,8 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
 import ModalSignUp from './ModalSignUp/ModalSignUp';
 import TopNavigation from './TopNavigation';
+import { getTopPosts } from '../../../waivioApi/ApiClient';
 import './Topnav.less';
-import { getUserProfileBlog } from '../../../waivioApi/ApiClient';
 
 @injectIntl
 @withRouter
@@ -157,7 +157,8 @@ class Topnav extends React.Component {
       currentItem: 'All',
       dropdownOpen: false,
       selectColor: false,
-      hotPosts: [],
+      dailyChosenPost: '',
+      weeklyChosenPost: '',
     };
     this.handleMoreMenuSelect = this.handleMoreMenuSelect.bind(this);
     this.handleBrokerMenuSelect = this.handleBrokerMenuSelect.bind(this);
@@ -246,14 +247,15 @@ class Topnav extends React.Component {
 
   handleHotNewsPopoverVisibleChange = async () => {
     this.setState(prevState => ({ hotNewsPopoverVisible: !prevState.hotNewsPopoverVisible }));
-    // eslint-disable-next-line no-unused-vars
-    if (_.isEmpty(this.state.hotPosts)) {
-      const posts = await getUserProfileBlog('blocktrades', {
-        startAuthor: '',
-        startPermlink: '',
-        limit: 2,
-      });
-      this.setState({ hotPosts: posts });
+    if (_.isEmpty(this.state.dailyChosenPost)) {
+      getTopPosts()
+        .then(data => {
+          this.setState({
+            dailyChosenPost: data.daily_chosen_post,
+            weeklyChosenPost: data.weekly_chosen_post,
+          });
+        })
+        .catch(error => console.error(error));
     }
   };
 
@@ -311,7 +313,6 @@ class Topnav extends React.Component {
       notificationsPopoverVisible,
       popoverProfileVisible,
       hotNewsPopoverVisible,
-      hotPosts,
     } = this.state;
     const lastSeenTimestamp = _.get(userMetaData, 'notifications_last_timestamp');
     const notificationsCount = _.isUndefined(lastSeenTimestamp)
@@ -326,6 +327,7 @@ class Topnav extends React.Component {
         );
     const displayBadge = notificationsCount > 0;
     const notificationsCountDisplay = notificationsCount > 99 ? '99+' : notificationsCount;
+    const { dailyChosenPost, weeklyChosenPost } = this.state;
     return (
       <div
         className={classNames('Topnav__menu-container', {
@@ -345,10 +347,20 @@ class Topnav extends React.Component {
                 trigger="click"
                 content={
                   <div className="Topnav__hot-news">
-                    {!_.isEmpty(hotPosts) &&
-                      hotPosts.map(post => (
-                        <div className="Topnav__hot-news-item">{post.title}</div>
-                      ))}
+                    <Link
+                      to={`/@${dailyChosenPost.author}/${dailyChosenPost.permlink}`}
+                      className="Topnav__hot-news-item"
+                      onClick={this.handleHotNewsPopoverVisibleChange}
+                    >
+                      {dailyChosenPost.title}
+                    </Link>
+                    <Link
+                      to={`/@${weeklyChosenPost.author}/${weeklyChosenPost.permlink}`}
+                      className="Topnav__hot-news-item"
+                      onClick={this.handleHotNewsPopoverVisibleChange}
+                    >
+                      {weeklyChosenPost.title}
+                    </Link>
                     <Link
                       to="/economical-calendar"
                       className="Topnav__hot-news-item"
