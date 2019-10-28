@@ -11,7 +11,7 @@ const LINKS = {
   DISCOVER: '/discover-objects',
   MARKETS: '/markets',
   DEALS: '/deals',
-  ABOUT: '/object/xqa-about-investarena',
+  ABOUT: '/object/oul-investarena/menu',
 };
 
 const getDealsLinks = (isMobile, pathname) =>

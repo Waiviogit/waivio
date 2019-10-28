@@ -455,6 +455,19 @@ export const getTopUsers = (isRandom = false, { limit, skip } = { limit: 30, ski
   });
 };
 
+//region Campaigns Requests
+
+export const getCampaignById = campaignId =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.campaign}/${campaignId}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(response => resolve(response.campaign))
+      .catch(error => reject(error));
+  });
+
 export const getPropositions = ({
   limit = 30,
   skip = 0,
@@ -618,37 +631,14 @@ export const getCampaignByGuideNameAndObject = (guideName, object) =>
       .catch(error => reject(error));
   });
 
-export const getCampaignById = campaignId =>
-  new Promise((resolve, reject) => {
-    fetch(`${config.campaignApiPrefix}${config.campaign}/${campaignId}`, {
-      headers,
-      method: 'GET',
-    })
-      .then(res => res.json())
-      .then(result => resolve(result))
-      .catch(error => reject(error));
-  });
-
-export const getAuthenticatedUserMetadata = (
-  userName,
-  accessToken = Cookie.get('access_token'),
-) => {
-  const { apiPrefix, user, userMetadata } = config;
-  return fetch(`${apiPrefix}${user}/${userName}${userMetadata}`, {
-    headers: { ...headers, 'access-token': accessToken },
-    method: 'GET',
-  })
-    .then(res => res.json())
-    .then(res => _.omit(res.user_metadata, '_id'));
-};
-
 export const getLenders = ({ sponsor, user, filters }) => {
-  const payable = filters && filters.payable ? `&payable=${filters.payable}` : ``;
-  const days = filters && filters.days ? `&days=${filters.days}` : ``;
-  const isUser = !user ? `?sponsor=${sponsor}` : `?sponsor=${sponsor}&userName=${user}`;
+  const isSponsor = sponsor ? `?sponsor=${sponsor}` : '';
+  const payable = filters && filters.payable ? `&payable=${filters.payable}` : '';
+  const days = filters && filters.days ? `&days=${filters.days}` : '';
+  const isUser = user ? (sponsor ? `&userName=${user}` : `?userName=${user}`) : '';
   return new Promise((resolve, reject) => {
     fetch(
-      `${config.campaignApiPrefix}${config.payments}${config.payables}${isUser}${days}${payable}`,
+      `${config.campaignApiPrefix}${config.payments}${config.payables}${isSponsor}${isUser}${days}${payable}`,
       {
         headers,
         method: 'GET',
@@ -659,6 +649,18 @@ export const getLenders = ({ sponsor, user, filters }) => {
       .catch(error => reject(error));
   });
 };
+//endregion
+
+//region UserMetadata Requests
+export const getAuthenticatedUserMetadata = userName => {
+  const { apiPrefix, user, userMetadata } = config;
+  return fetch(`${apiPrefix}${user}/${userName}${userMetadata}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => _.omit(res.user_metadata, '_id'));
+};
 
 export const updateUserMetadata = (userName, data) =>
   fetch(`${config.apiPrefix}${config.user}/${userName}${config.userMetadata}`, {
@@ -666,6 +668,7 @@ export const updateUserMetadata = (userName, data) =>
     method: 'PUT',
     body: JSON.stringify({ user_metadata: data }),
   }).then(res => res.json());
+//endregion
 
 // injected as extra argument in Redux Thunk
 export const waivioAPI = {

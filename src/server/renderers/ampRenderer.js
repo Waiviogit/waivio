@@ -63,7 +63,7 @@ function getContext(post, body, appUrl) {
     },
     publisher: {
       '@type': 'Organization',
-      name: 'Waivio.com',
+      name: 'Investarena.com',
       logo: {
         '@type': 'ImageObject',
         url: `${appUrl}/images/logo-brand.png`,

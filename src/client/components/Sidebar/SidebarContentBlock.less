@@ -34,7 +34,9 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-
+        &.active > .collapsible-block__title-text {
+          border-bottom: 1px solid @black;
+        }
         span {
           color: @black;
           cursor: pointer;
@@ -46,7 +48,9 @@
           &.collapsible-block__title-icon {
             color: @blue-botticelli;
             margin-left: auto;
-
+            &.hidden {
+              visibility: hidden;
+            }
             .iconfont {
               font-size: 22px !important;
             }
