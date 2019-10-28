@@ -29,6 +29,7 @@ import Transfer from './wallet/Transfer';
 import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
 import { getChartsData } from '../investarena/redux/actions/chartsActions';
+import EntryModal from './components/EntryModal/EntryModal';
 
 @withRouter
 @connect(
@@ -229,6 +230,7 @@ export default class Wrapper extends React.PureComponent {
               <PowerUpOrDown />
               <NotificationPopup />
               <BBackTop className="primary-modal" />
+              <EntryModal />
             </div>
           </Layout>
         </ConfigProvider>

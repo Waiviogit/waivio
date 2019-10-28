@@ -62,6 +62,7 @@ class CreateRewardForm extends React.Component {
     usersLegalNotice: '',
     agreement: {},
     commissionToWaivio: 5,
+    iAgree: false,
     campaignId: null,
     isCampaignActive: false,
   };
@@ -109,6 +110,7 @@ class CreateRewardForm extends React.Component {
       Promise.all([primaryObject, secondaryObjects, sponsors]).then(values => {
         // eslint-disable-next-line react/no-did-mount-set-state
         this.setState({
+          iAgree: true,
           loading: false,
           campaignName: campaign.campaign.name,
           campaignType: campaign.campaign.type,
@@ -351,6 +353,7 @@ class CreateRewardForm extends React.Component {
       usersLegalNotice,
       agreement,
       campaignId,
+      iAgree,
     } = this.state;
 
     return (
@@ -385,6 +388,7 @@ class CreateRewardForm extends React.Component {
         commissionToWaivio={commissionToWaivio}
         campaignId={campaignId}
         isCampaignActive={isCampaignActive}
+        iAgree={iAgree}
       />
     );
   }

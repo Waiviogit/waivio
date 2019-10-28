@@ -18,8 +18,8 @@
   },
   "production": {
     "protocol": "https://",
-    "host": "www.waivio.com",
-    "appName": "waivio"
+    "host": "investarena.com",
+    "appName": "investarena"
   },
   "apiPrefix": "/api",
   "objectsBotApiPrefix": "/objects-bot",
