@@ -22,6 +22,7 @@ import {
   addressFields,
   linkFields,
   getAllowedFieldsByObjType,
+  getObjectSettings,
 } from '../../../common/constants/listOfFields';
 import URL from '../../../common/constants/routing';
 import OBJECT_TYPE from '../../object/const/objectTypes';
@@ -105,8 +106,7 @@ class ObjectInfo extends React.Component {
     const { showModal, selectedField, isModalComparePerformanceOpen } = this.state;
     const { button, status, website, newsFilter } = wobject;
     const renderFields = getAllowedFieldsByObjType(wobject.type);
-    const isRenderGallery = ![OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(wobject.type);
-    const isRenderMenu = isRenderGallery;
+    const { withGallery, withMenu, withSettingsBlock } = getObjectSettings(wobject.type);
 
     let names = [];
     let addressArr = [];
@@ -375,7 +375,7 @@ class ObjectInfo extends React.Component {
               ) : null,
             )}
             {hasType(wobject, OBJECT_TYPE.PAGE) && listItem(objectFields.pageContent, null)}
-            {isRenderMenu && menuSection}
+            {withMenu && menuSection}
             {isEditMode && (
               <div className="object-sidebar__section-title">
                 <FormattedMessage id="about" defaultMessage="About" />
@@ -453,7 +453,7 @@ class ObjectInfo extends React.Component {
                 )}
               </div>,
             )}
-            {isRenderGallery && (hasGalleryImg || accessExtend) ? (
+            {withGallery && (hasGalleryImg || accessExtend) ? (
               <div className="field-info">
                 {accessExtend && (
                   <div className="proposition-line">
@@ -602,7 +602,7 @@ class ObjectInfo extends React.Component {
             )}
             {listItem(objectFields.link, <SocialLinks profile={profile} />)}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
-            {accessExtend && settingsSection}
+            {accessExtend && withSettingsBlock && settingsSection}
           </div>
         )}
       </React.Fragment>

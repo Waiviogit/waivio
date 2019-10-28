@@ -1,4 +1,5 @@
 import OBJECT_TYPE from '../../client/object/const/objectTypes';
+import investArena from '../../investarena/constants/objectsInvestarena';
 
 export const objectFields = {
   name: 'name',
@@ -109,7 +110,15 @@ export const supportedObjectFields = Object.values(objectFields);
 
 export const objectImageFields = ['avatar', 'background'];
 
+export const getObjectSettings = objectType => {
+  const withGallery = ![...investArena.supportedTypes, OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(objectType);
+  const withMenu = ![OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(objectType);
+  const withSettingsBlock = ![...investArena.supportedTypes].includes(objectType);
+  return { withGallery, withMenu, withSettingsBlock };
+};
+
 export const getAllowedFieldsByObjType = objectType => {
+  const includeFields = [TYPES_OF_MENU_ITEM.PAGE, TYPES_OF_MENU_ITEM.LIST];
   switch (objectType) {
     case OBJECT_TYPE.PAGE:
       return [
@@ -119,8 +128,6 @@ export const getAllowedFieldsByObjType = objectType => {
         objectFields.avatar,
         objectFields.background,
         objectFields.parent,
-        objectFields.galleryItem,
-        objectFields.galleryAlbum,
       ];
     case OBJECT_TYPE.LIST:
       return [
@@ -131,12 +138,15 @@ export const getAllowedFieldsByObjType = objectType => {
         objectFields.listItem,
         objectFields.sorting,
         objectFields.parent,
-        objectFields.galleryItem,
-        objectFields.galleryAlbum,
       ];
+    case OBJECT_TYPE.CRYPTO:
+    case OBJECT_TYPE.CURRENCIES:
+    case OBJECT_TYPE.COMMODITY:
+    case OBJECT_TYPE.STOCKS:
+    case OBJECT_TYPE.INDICES:
+      return [...investArena.supportedFields, ...includeFields];
     default: {
       const excludeFields = [objectFields.listItem, objectFields.pageContent];
-      const includeFields = [TYPES_OF_MENU_ITEM.PAGE, TYPES_OF_MENU_ITEM.LIST];
       return [...supportedObjectFields, ...includeFields].filter(
         field => !excludeFields.includes(field),
       );

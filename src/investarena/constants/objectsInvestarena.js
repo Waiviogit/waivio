@@ -11,9 +11,9 @@ export const supportedObjectTypes = [
   OBJ_TYPE.INDICES,
 ];
 export const supportedObjectFields = [
-  objectFields.listItem,
   objectFields.button,
   objectFields.name,
+  objectFields.newsFilter,
   objectFields.parent,
   objectFields.rating,
   objectFields.tagCloud,
