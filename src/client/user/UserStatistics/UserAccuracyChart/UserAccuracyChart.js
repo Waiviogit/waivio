@@ -1,21 +1,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { PieChart, Pie } from 'recharts';
+import Chart from 'react-google-charts';
 import classNames from 'classnames';
 import './UserAccuracyChart.less';
 
 const UserAccuracyChart = ({ value }) => {
-  const data = [
-    { name: 'unsuccess', value: 100 - value, fill: '#d9534f' },
-    { name: 'success', value: value, fill: '#54d2a0' },
-  ];
+  const data = [['', ''], ['success', value], ['unsuccess', 100 - value]];
+  const options = {
+    pieHole: 0.75,
+    slices: [
+      {
+        color: '#54d2a0',
+      },
+      {
+        color: '#d9534f',
+      },
+    ],
+    enableInteractivity: false,
+    tooltip: 'none',
+    legend: 'none',
+    pieSliceText: 'none',
+    chartArea: {
+      left: 0,
+      top: 0,
+      width: '100%',
+      height: '100%',
+    },
+  };
   return (
     <div className="UserAccuracy">
       <div className="UserAccuracy__chart">
-        <PieChart width={95} height={95}>
-          <Pie data={data} innerRadius={35} outerRadius={45} stroke="transparent"/>
-        </PieChart>
+        <Chart width={'100%'} height={'95px'} chartType="PieChart" data={data} options={options} />
       </div>
       <div
         className={classNames('UserAccuracy__value', {
