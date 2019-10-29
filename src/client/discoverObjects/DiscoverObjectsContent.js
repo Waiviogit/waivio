@@ -29,6 +29,7 @@ import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import DiscoverObjectsFilters from './DiscoverFiltersSidebar/FiltersContainer';
 import SidenavDiscoverObjects from './SidenavDiscoverObjects';
 import SortSelector from '../components/SortSelector/SortSelector';
+import InstrumentCardView from '../../investarena/components/InstrumentsPage/Instrument/InstrumentCardView/InstrumentCardView';
 
 const modalName = {
   FILTERS: 'filters',
@@ -84,6 +85,7 @@ class DiscoverObjectsContent extends Component {
     intl: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
     typeName: PropTypes.string,
+    match: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -188,6 +190,7 @@ class DiscoverObjectsContent extends Component {
       sort,
       filteredObjects,
       hasMoreObjects,
+      match,
     } = this.props;
 
     const sortSelector = hasMap ? (
@@ -206,6 +209,25 @@ class DiscoverObjectsContent extends Component {
         </SortSelector.Item>
       </SortSelector>
     );
+
+    const tradingtypes = ['commodity', 'crypto', 'currency', 'indices', 'stocks'];
+
+    let objectsRenderer;
+
+    if (tradingtypes.includes(match.params.typeName)) {
+      const validFilteredObjects = !_.isEmpty(filteredObjects)
+        ? filteredObjects.filter(obj => !_.isEmpty(obj.chartid))
+        : [];
+      objectsRenderer = validFilteredObjects.map(wObj => (
+        <InstrumentCardView key={wObj.id} wObject={wObj} showSmallVersion />
+      ));
+    } else {
+      objectsRenderer = filteredObjects.map(wObj => (
+        <ObjectCardView key={wObj.id} wObject={wObj} showSmallVersion intl={intl} />
+      ));
+    }
+
+    // const validFilteredObjects = !_.isEmpty(filteredObjects) ? filteredObjects.filter(obj => !_.isEmpty(obj.chartid)) : []
     return (
       <React.Fragment>
         <div className="discover-objects-header">
@@ -282,9 +304,7 @@ class DiscoverObjectsContent extends Component {
             elementIsScrollable={false}
             threshold={1500}
           >
-            {filteredObjects.map(wObj => (
-              <ObjectCardView key={wObj.id} wObject={wObj} showSmallVersion intl={intl} />
-            ))}
+            {objectsRenderer}
           </ReduxInfiniteScroll>
         ) : (
           (isFetching && <Loading />) || (
