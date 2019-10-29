@@ -431,8 +431,7 @@ export default class AppendForm extends Component {
   };
 
   handleRemoveObjectFromIgnoreList = obj => {
-    let ignoreList = this.state.ignoreList;
-    ignoreList = _.filter(ignoreList, o => o.id !== obj.id);
+    const ignoreList = _.filter(this.state.ignoreList, o => o.id !== obj.id);
     this.setState({ ignoreList });
   };
   // endregion
