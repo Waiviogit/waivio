@@ -7,26 +7,26 @@ import { connect } from 'react-redux';
 import { AutoComplete, Button, Icon, Input, Menu, Modal, Popover } from 'antd';
 import classNames from 'classnames';
 import {
+  resetSearchAutoCompete,
   searchAutoComplete,
   searchObjectsAutoCompete,
-  searchUsersAutoCompete,
   searchObjectTypesAutoCompete,
-  resetSearchAutoCompete,
+  searchUsersAutoCompete,
 } from '../../search/searchActions';
 import { getUserMetadata } from '../../user/usersActions';
 import { toggleModal } from '../../../investarena/redux/actions/modalsActions';
 import { disconnectBroker } from '../../../investarena/redux/actions/brokersActions';
 import {
-  getAutoCompleteSearchResults,
-  getSearchObjectsResults,
-  getNotifications,
   getAuthenticateduserMetaData,
+  getAutoCompleteSearchResults,
+  getIsAuthenticated,
   getIsLoadingNotifications,
+  getNightmode,
+  getNotifications,
+  getScreenSize,
+  getSearchObjectsResults,
   getSearchUsersResults,
   searchObjectTypesResults,
-  getScreenSize,
-  getNightmode,
-  getIsAuthenticated,
 } from '../../reducers';
 import ModalBroker from '../../../investarena/components/Modals/ModalBroker';
 import ModalDealConfirmation from '../../../investarena/components/Modals/ModalDealConfirmation';
@@ -49,6 +49,7 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
 import ModalSignUp from './ModalSignUp/ModalSignUp';
 import TopNavigation from './TopNavigation';
+import { getTopPosts } from '../../../waivioApi/ApiClient';
 import './Topnav.less';
 
 @injectIntl
@@ -151,10 +152,13 @@ class Topnav extends React.Component {
       searchBarValue: '',
       notificationsPopoverVisible: false,
       selectedPage: '',
+      hotNewsPopoverVisible: false,
       searchData: '',
       currentItem: 'All',
       dropdownOpen: false,
       selectColor: false,
+      dailyChosenPost: '',
+      weeklyChosenPost: '',
     };
     this.handleMoreMenuSelect = this.handleMoreMenuSelect.bind(this);
     this.handleBrokerMenuSelect = this.handleBrokerMenuSelect.bind(this);
@@ -241,6 +245,20 @@ class Topnav extends React.Component {
     this.setState({ popoverBrokerVisible: visible });
   }
 
+  handleHotNewsPopoverVisibleChange = async () => {
+    this.setState(prevState => ({ hotNewsPopoverVisible: !prevState.hotNewsPopoverVisible }));
+    if (_.isEmpty(this.state.dailyChosenPost)) {
+      getTopPosts()
+        .then(data => {
+          this.setState({
+            dailyChosenPost: data.daily_chosen_post,
+            weeklyChosenPost: data.weekly_chosen_post,
+          });
+        })
+        .catch(error => console.error(error));
+    }
+  };
+
   handleNotificationsPopoverVisibleChange(visible) {
     if (visible) {
       this.setState({ notificationsPopoverVisible: visible });
@@ -290,7 +308,12 @@ class Topnav extends React.Component {
 
   menuForLoggedIn = () => {
     const { intl, username, notifications, userMetaData, loadingNotifications } = this.props;
-    const { searchBarActive, notificationsPopoverVisible, popoverProfileVisible } = this.state;
+    const {
+      searchBarActive,
+      notificationsPopoverVisible,
+      popoverProfileVisible,
+      hotNewsPopoverVisible,
+    } = this.state;
     const lastSeenTimestamp = _.get(userMetaData, 'notifications_last_timestamp');
     const notificationsCount = _.isUndefined(lastSeenTimestamp)
       ? _.size(notifications)
@@ -304,6 +327,7 @@ class Topnav extends React.Component {
         );
     const displayBadge = notificationsCount > 0;
     const notificationsCountDisplay = notificationsCount > 99 ? '99+' : notificationsCount;
+    const { dailyChosenPost, weeklyChosenPost } = this.state;
     return (
       <div
         className={classNames('Topnav__menu-container', {
@@ -312,6 +336,49 @@ class Topnav extends React.Component {
       >
         <ModalBroker />
         <Menu selectedKeys={[]} className="Topnav__menu-container__menu" mode="horizontal">
+          <Menu.Item key="hot">
+            <BTooltip
+              placement="bottom"
+              title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
+              mouseEnterDelay={1}
+            >
+              <PopoverContainer
+                placement="bottomRight"
+                trigger="click"
+                content={
+                  <div className="Topnav__hot-news">
+                    <Link
+                      to={`/@${dailyChosenPost.author}/${dailyChosenPost.permlink}`}
+                      className="Topnav__hot-news-item"
+                      onClick={this.handleHotNewsPopoverVisibleChange}
+                    >
+                      {dailyChosenPost.title}
+                    </Link>
+                    <Link
+                      to={`/@${weeklyChosenPost.author}/${weeklyChosenPost.permlink}`}
+                      className="Topnav__hot-news-item"
+                      onClick={this.handleHotNewsPopoverVisibleChange}
+                    >
+                      {weeklyChosenPost.title}
+                    </Link>
+                    <Link
+                      to="/economical-calendar"
+                      className="Topnav__hot-news-item"
+                      onClick={this.handleHotNewsPopoverVisibleChange}
+                    >
+                      Economical calendar
+                    </Link>
+                  </div>
+                }
+                visible={hotNewsPopoverVisible}
+                onVisibleChange={this.handleHotNewsPopoverVisibleChange}
+                overlayClassName="Notifications__popover-overlay"
+                title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
+              >
+                <Icon type="fire" theme="filled" style={{ fontSize: '26px', marginRight: '0' }} />
+              </PopoverContainer>
+            </BTooltip>
+          </Menu.Item>
           <Menu.Item key="write">
             <BTooltip
               placement="bottom"

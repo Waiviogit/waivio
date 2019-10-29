@@ -670,6 +670,17 @@ export const updateUserMetadata = (userName, data) =>
   }).then(res => res.json());
 //endregion
 
+export const getTopPosts = () =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.app}/${config.production.appName}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 // injected as extra argument in Redux Thunk
 export const waivioAPI = {
   getAuthenticatedUserMetadata,
