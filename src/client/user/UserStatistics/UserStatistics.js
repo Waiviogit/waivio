@@ -9,17 +9,17 @@ const UserStatistics = () => {
     d1: {
       percent: 89,
       pips: 1222,
-      counts: { pos: 12, neg: 5 },
+      counts: { pos: 24, neg: 51 },
     },
     d7: {
       percent: 38,
       pips: -47,
-      counts: { pos: 12, neg: 5 },
+      counts: { pos: 75, neg: 15 },
     },
     m1: {
       percent: 54,
       pips: 98,
-      counts: { pos: 12, neg: 5 },
+      counts: { pos: 58, neg: 9 },
     },
     m12: {
       percent: 25,
