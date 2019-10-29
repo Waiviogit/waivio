@@ -66,6 +66,7 @@ export const getFieldsWithMaxWeight = (wObj, usedLocale = 'en-US', defaultLocale
     objectFields.website,
     objectFields.link,
     objectFields.status,
+    objectFields.newsFilter,
   ];
 
   const fieldsByLocale = {
