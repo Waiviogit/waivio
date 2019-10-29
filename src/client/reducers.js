@@ -121,6 +121,7 @@ export const getFetchFollowListError = state => fromUser.getFetchFollowListError
 export const getLatestNotification = state => fromUser.getLatestNotification(state.user);
 export const getUserLocation = state => fromUser.getUserLocation(state.user);
 export const getChatCondition = state => fromUser.getChatCondition(state.user);
+export const getChatConnectionCondition = state => fromUser.getChatConnectionCondition(state.user);
 
 export const getPostMessageType = state => fromChat.getPostMessageType(state.chat);
 export const getPostMessageData = state => fromChat.getPostMessageData(state.chat);

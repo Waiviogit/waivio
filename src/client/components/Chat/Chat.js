@@ -2,17 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
-import { getPostMessageType, getPostMessageData } from '../../reducers';
-import { setSessionId } from './chatActions';
+import { getPostMessageType, getPostMessageData, getChatConnectionCondition } from '../../reducers';
+import { setSessionId, setDefaultCondition } from './chatActions';
 import './Chat.less';
 
 @connect(
   state => ({
     postMessageType: getPostMessageType(state),
     postMessageData: getPostMessageData(state),
+    isConnectionStart: getChatConnectionCondition(state),
   }),
   {
     setSessionId,
+    setDefaultCondition,
   },
 )
 class Chat extends React.Component {
@@ -22,15 +24,15 @@ class Chat extends React.Component {
     postMessageType: PropTypes.string.isRequired,
     postMessageData: PropTypes.string.isRequired,
     userName: PropTypes.string.isRequired,
+    isConnectionStart: PropTypes.bool.isRequired,
+    setDefaultCondition: PropTypes.func.isRequired,
   };
 
   state = {
-    connectionStart: false,
+    isAuthorized: false,
   };
 
   componentDidMount() {
-    // eslint-disable-next-line react/no-did-mount-set-state
-    this.setState({ connectionStart: true });
     window.addEventListener('message', event => {
       if (event && event.data && event.origin === 'https://stchat.cf') {
         switch (event.data.cmd) {
@@ -44,6 +46,8 @@ class Chat extends React.Component {
             break;
           case 'auth_connection_response':
             console.log(event.data.args.status);
+            // eslint-disable-next-line react/no-did-mount-set-state
+            this.setState({ isAuthorized: true });
             break;
           case 'start_chat_response':
             console.log(event.data.args.status);
@@ -62,9 +66,17 @@ class Chat extends React.Component {
       prevProps.postMessageType !== this.props.postMessageType ||
       prevProps.postMessageType !== this.props.postMessageData
     ) {
-      this.sendChatRequestData(this.props.postMessageType);
+      if (this.props.postMessageType === 'start_chat') {
+        this.sendChatRequestData(this.props.postMessageType);
+      }
     }
   }
+
+  setConditionOnHideChat = () => {
+    if (!this.props.visibility) {
+      this.props.setDefaultCondition();
+    }
+  };
 
   sendChatRequestData = (messageType, data) => {
     const requestData = {
@@ -93,8 +105,8 @@ class Chat extends React.Component {
   };
 
   render() {
-    const { visibility } = this.props;
-    const { connectionStart } = this.state;
+    const { visibility, isConnectionStart } = this.props;
+    this.setConditionOnHideChat();
     return (
       <div
         className={classNames('Chat', {
@@ -102,14 +114,14 @@ class Chat extends React.Component {
         })}
       >
         <div className="Chat__wrap">
-          {connectionStart ? (
+          {isConnectionStart && (
             <iframe
               src="https://stchat.cf/app.html"
               /* eslint no-return-assign: "error" */
               ref={f => (this.ifr = f)}
               title="frame"
             />
-          ) : null}
+          )}
         </div>
       </div>
     );

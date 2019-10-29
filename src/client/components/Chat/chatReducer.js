@@ -13,6 +13,12 @@ export default function chatReducer(state = initialState, action) {
         postMessageType: action.payload.messageType,
         data: action.payload.data,
       };
+    case chatActions.SET_DEFAULT_CONDITION:
+      return {
+        ...state,
+        postMessageType: '',
+        data: '',
+      };
     default: {
       return state;
     }

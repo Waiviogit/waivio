@@ -23,3 +23,10 @@ export const setPostMessageAction = (messageType, data) => dispatch =>
     type: SET_POSTMESSAGE_ACTION,
     payload: { messageType, data },
   });
+
+export const SET_DEFAULT_CONDITION = '@wobj/SET_DEFAULT_CONDITION';
+export const setDefaultCondition = () => dispatch => {
+  dispatch({
+    type: SET_DEFAULT_CONDITION,
+  });
+};
