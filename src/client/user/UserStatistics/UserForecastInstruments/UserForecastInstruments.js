@@ -1,33 +1,31 @@
 import React from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-// import { Pie } from 'react-chartjs-2';
-// import { prepareForecastsData } from '../../usersHelper';
+import Chart from 'react-google-charts';
+import { prepareData } from '../../usersHelper';
 import './UserForecastInstruments.less';
 
-const UserForecastInstruments = ({ intl }) => {
-  // const forecastsData = prepareForecastsData(forecasts);
-
-  // const data = {
-  //   labels: forecastsData.labels,
-  //   datasets: [
-  //     {
-  //       data: forecastsData.counts,
-  //       backgroundColor: forecastsData.colors,
-  //       borderColor: 'transparent',
-  //     },
-  //   ],
-  // };
-
-  // const options = {
-  //   legend: {
-  //     position: 'bottom',
-  //     labels: {
-  //       fontColor: '#99aab5',
-  //     },
-  //   },
-  //   maintainAspectRatio: false,
-  // };
+const UserForecastInstruments = ({ intl, forecasts }) => {
+  const forecastsData = prepareData(forecasts);
+  const options = {
+    pieSliceText: 'none',
+    backgroundColor: 'transparent',
+    pieSliceBorderColor: 'transparent',
+    chartArea: {
+      left: 0,
+      top: 20,
+      width: '100%',
+      height: '80%',
+    },
+    legend: {
+      position: 'bottom',
+      alignment: 'center',
+      textStyle: {
+        color: '#99aab5',
+        fontSize: 14,
+      },
+    },
+  };
 
   return (
     <div className="UserForecastInstruments">
@@ -38,7 +36,13 @@ const UserForecastInstruments = ({ intl }) => {
         })}
       </div>
       <div className="UserForecastInstruments__chart">
-        {/* <Pie data={data} options={options} width={300} height={300} /> */}
+        <Chart
+          width={'500px'}
+          height={'400px'}
+          chartType="PieChart"
+          data={forecastsData}
+          options={options}
+        />
       </div>
     </div>
   );

@@ -9,6 +9,8 @@ const UserAccuracyChart = ({ value }) => {
   const data = [['', ''], ['success', value], ['unsuccess', 100 - value]];
   const options = {
     pieHole: 0.75,
+    backgroundColor: 'transparent',
+    pieSliceBorderColor: 'transparent',
     slices: [
       {
         color: '#54d2a0',

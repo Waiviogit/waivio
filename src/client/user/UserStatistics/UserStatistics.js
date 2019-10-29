@@ -1,7 +1,7 @@
 import React from 'react';
 import { injectIntl } from 'react-intl';
 import UserStatisticContainer from './UserStatisticContainer/UserStatisticContainer';
-// import UserForecastInstruments from './UserForecastInstruments/UserForecastInstruments';
+import UserForecastInstruments from './UserForecastInstruments/UserForecastInstruments';
 import './UserStatistics.less';
 
 const UserStatistics = () => {
@@ -27,16 +27,16 @@ const UserStatistics = () => {
       counts: { pos: 12, neg: 5 },
     },
   };
-  // const mockInstrumentsObj = [
-  //   { forecastName: 'AUD/CAD', count: 24 },
-  //   { forecastName: 'Apple', count: 45 },
-  //   { forecastName: 'Bitcoin', count: 54 },
-  // ];
+  const mockInstrumentsObj = [
+    { forecastName: 'AUD/CAD', count: 24 },
+    { forecastName: 'Apple', count: 45 },
+    { forecastName: 'Bitcoin', count: 54 },
+  ];
   return (
     <div className="UserStatistics">
       <UserStatisticContainer accuracy={mockAccuracyObj} contentType={'forecast'} />
       <UserStatisticContainer accuracy={mockAccuracyObj} contentType={'profitability'} />
-      {/* <UserForecastInstruments forecasts={mockInstrumentsObj} /> */}
+      <UserForecastInstruments forecasts={mockInstrumentsObj} />
     </div>
   );
 };
