@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { numberFormat } from './numberFormat';
 import { singleton } from './singletonPlatform';
 import { getClientWObj } from '../../client/adapters';
+import { CHART_ID } from '../constants/objectsInvestarena';
 
 export class PlatformHelper {
   static getMargin(quote, quoteSettings, amount) {
@@ -500,9 +501,9 @@ export class PlatformHelper {
 export const mutateObject = wobjects =>
   wobjects
     .map(wobj => getClientWObj(wobj))
-    .filter(wobj => Boolean(wobj.chartid))
+    .filter(wobj => Boolean(wobj[CHART_ID]))
     .map(wobj => ({
       avatarlink: wobj.avatar,
-      chartId: wobj.chartid,
+      chartId: wobj[CHART_ID],
       author_permlink: wobj.id,
     }));

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ObjectExpertise from '../../components/Sidebar/ObjectExpertise';
 import ForecastBlock from '../../components/ForecastBlock';
+import MostProfitableUsers from '../../components/Sidebar/mostProfitableUsers/mostProfitableUsers';
 
 const RightObjectSidebar = ({ username, wobject, quoteSecurity }) => (
   <React.Fragment>
@@ -13,6 +14,7 @@ const RightObjectSidebar = ({ username, wobject, quoteSecurity }) => (
         quoteSecurity={quoteSecurity}
       />
     )}
+    <MostProfitableUsers chartid={wobject.chartid} />
   </React.Fragment>
 );
 RightObjectSidebar.propTypes = {
