@@ -40,7 +40,7 @@ const menuConfig = {
       {
         name: 'Currencies',
         intlId: 'wia.currencies',
-        linkTo: '/discover-objects/currency',
+        linkTo: '/discover-objects/currencies',
       },
       {
         name: 'Indices',

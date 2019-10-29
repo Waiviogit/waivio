@@ -24,6 +24,7 @@ import {
 } from '../../../common/constants/listOfFields';
 import URL from '../../../common/constants/routing';
 import OBJECT_TYPE from '../../object/const/objectTypes';
+import { CHART_ID } from '../../../investarena/constants/objectsInvestarena';
 import Proposition from '../../components/Proposition/Proposition';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
@@ -40,7 +41,6 @@ import { getClientWObj } from '../../adapters';
 import LinkButton from '../../components/LinkButton/LinkButton';
 import ExpandingBlock from './ExpandingBlock';
 import './ObjectInfo.less';
-import { CHART_ID } from "../../../investarena/constants/objectsInvestarena";
 
 @withRouter
 @connect(state => ({

@@ -20,3 +20,11 @@ export const prepareForecastsData = forecasts => {
   });
   return forecastData;
 };
+
+export const prepareData = forecasts => {
+  const forecastData = [['', '']];
+  forecasts.forEach(forecast => {
+    forecastData.push([forecast.forecastName, forecast.count]);
+  });
+  return forecastData;
+};

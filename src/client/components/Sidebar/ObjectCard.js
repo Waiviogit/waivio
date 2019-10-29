@@ -7,7 +7,9 @@ import './ObjectCard.less';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 
 const ObjectCard = ({ wobject, alt, showFollow, isNewWindow, withLinks }) => {
-  const name = getFieldWithMaxWeight(wobject, 'name');
+  const name = wobject
+    ? wobject.name || getFieldWithMaxWeight(wobject, 'name', wobject.default_name)
+    : '';
   const pathname = `/object/${wobject.author_permlink}`;
 
   return (
