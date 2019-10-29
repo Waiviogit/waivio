@@ -3,6 +3,7 @@ import _ from 'lodash';
 import React from 'react';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
+import Loading from '../../components/Icon/Loading';
 
 const andLayout = (compareItems, self, isMobile) =>
   compareItems > 0 && !isMobile ? (
@@ -134,15 +135,18 @@ export const getIgnoreListLayout = self => {
   return layout || null;
 };
 
-export const getNewsFilterLayout = self => (
-  <React.Fragment>
-    {getAllowListLayout(self)}
-    <div className="AppendForm__appendTitles">
-      {self.props.intl.formatMessage({
-        id: 'ignoreList',
-        defaultMessage: 'Ignore list',
-      })}
-    </div>
-    {getIgnoreListLayout(self)}
-  </React.Fragment>
-);
+export const getNewsFilterLayout = (self, filterRestoring) =>
+  filterRestoring ? (
+    <Loading />
+  ) : (
+    <React.Fragment>
+      {getAllowListLayout(self)}
+      <div className="AppendForm__appendTitles">
+        {self.props.intl.formatMessage({
+          id: 'ignoreList',
+          defaultMessage: 'Ignore list',
+        })}
+      </div>
+      {getIgnoreListLayout(self)}
+    </React.Fragment>
+  );

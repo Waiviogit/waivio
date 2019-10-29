@@ -1,7 +1,7 @@
 {
-  "name": "Waivio",
-  "short_name": "Waivio",
-  "description": "Waivio is a decentralized social network based on Steem blockchain",
+  "name": "InvestArena",
+  "short_name": "InvestArena",
+  "description": "InvestArena is a decentralized social network based on Steem blockchain",
   "theme_color": "#4757b2",
   "background_color": "#fcfcff",
   "display": "standalone",
