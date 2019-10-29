@@ -55,6 +55,7 @@ import SearchObjectsAutocomplete from '../components/EditorObject/SearchObjectsA
 import ObjectCardView from '../objectCard/ObjectCardView';
 import { getNewsFilterLayout } from './NewsFilter/newsFilterHelper';
 import CreateObject from '../post/CreateObjectModal/CreateObject';
+import { baseUrl } from '../../waivioApi/routes';
 import './AppendForm.less';
 
 @connect(
@@ -293,7 +294,7 @@ export default class AppendForm extends Component {
             if (!_.isEmpty(rule)) {
               rulesAllow += `\n Filter rule #${rulesCounter + 1}:`;
               rule.forEach(item => {
-                rulesAllow += ` <a href="https://waiviodev.com/object/${item.id}">${item.id}</a>,`;
+                rulesAllow += ` <a href="${baseUrl}/object/${item.id}">${item.id}</a>,`;
               });
               // eslint-disable-next-line no-plusplus
               rulesCounter++;
@@ -304,7 +305,7 @@ export default class AppendForm extends Component {
             if (!_.isEmpty(rule)) {
               rulesIgnore = '\nIgnore list:';
               const dotOrComma = this.state.ignoreList.length - 1 === index ? '.' : ',';
-              rulesIgnore += ` <a href="https://waiviodev.com/object/${rule.id}">${rule.id}</a>${dotOrComma}`;
+              rulesIgnore += ` <a href="${baseUrl}/object/${rule.id}">${rule.id}</a>${dotOrComma}`;
             }
           });
           return `@${author} added ${currentField} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
