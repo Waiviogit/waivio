@@ -21,7 +21,7 @@ const UserStatisticContainer = ({ intl, contentType, accuracy }) => (
     <div className="UserStatisticContainer__period">
       <div className="UserStatisticContainer__period-item">
         {contentType === 'forecast' ? (
-          <UserAccuracyChart value={accuracy.d1.percent} />
+          <UserAccuracyChart statisticsData={accuracy.d1} />
         ) : (
           <UserProfitability statisticsData={accuracy.d1} />
         )}
@@ -34,7 +34,7 @@ const UserStatisticContainer = ({ intl, contentType, accuracy }) => (
       </div>
       <div className="UserStatisticContainer__period-item border">
         {contentType === 'forecast' ? (
-          <UserAccuracyChart value={accuracy.d7.percent} />
+          <UserAccuracyChart statisticsData={accuracy.d7} />
         ) : (
           <UserProfitability statisticsData={accuracy.d7} />
         )}
@@ -47,7 +47,7 @@ const UserStatisticContainer = ({ intl, contentType, accuracy }) => (
       </div>
       <div className="UserStatisticContainer__period-item border">
         {contentType === 'forecast' ? (
-          <UserAccuracyChart value={accuracy.m1.percent} />
+          <UserAccuracyChart statisticsData={accuracy.m1} />
         ) : (
           <UserProfitability statisticsData={accuracy.m1} />
         )}
@@ -60,7 +60,7 @@ const UserStatisticContainer = ({ intl, contentType, accuracy }) => (
       </div>
       <div className="UserStatisticContainer__period-item border">
         {contentType === 'forecast' ? (
-          <UserAccuracyChart value={accuracy.m12.percent} />
+          <UserAccuracyChart statisticsData={accuracy.m12} />
         ) : (
           <UserProfitability statisticsData={accuracy.m12} />
         )}
