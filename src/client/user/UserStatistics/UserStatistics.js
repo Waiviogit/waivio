@@ -20,13 +20,13 @@ const UserStatistics = ({ match }) => {
   ];
   return (
     <div className="UserStatistics">
-      {isEmpty(statAccuracyData) && (
+      {!isEmpty(statAccuracyData) && (
         <React.Fragment>
           <UserStatisticContainer accuracy={statAccuracyData} contentType={'forecast'} />
           <UserStatisticContainer accuracy={statAccuracyData} contentType={'profitability'} />
         </React.Fragment>
       )}
-      {isEmpty(mockInstrumentsData) && <UserForecastInstruments forecasts={mockInstrumentsData} />}
+      {!isEmpty(mockInstrumentsData) && <UserForecastInstruments forecasts={mockInstrumentsData} />}
     </div>
   );
 };
