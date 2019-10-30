@@ -8,7 +8,6 @@ import {
   getActiveFilters,
   getObjectTypeSorting,
   getObjectTypesList,
-  getObjectTypeState,
   getObjectTypeLoading,
   getFilteredObjects,
   getHasMoreRelatedObjects,
@@ -30,6 +29,7 @@ import DiscoverObjectsFilters from './DiscoverFiltersSidebar/FiltersContainer';
 import SidenavDiscoverObjects from './SidenavDiscoverObjects';
 import SortSelector from '../components/SortSelector/SortSelector';
 import InstrumentCardView from '../../investarena/components/InstrumentsPage/Instrument/InstrumentCardView/InstrumentCardView';
+import { BROKER } from '../../investarena/constants/platform';
 
 const modalName = {
   FILTERS: 'filters',
@@ -46,7 +46,6 @@ const SORT_OPTIONS = {
     activeFilters: getActiveFilters(state),
     sort: getObjectTypeSorting(state),
     typesList: getObjectTypesList(state),
-    theType: getObjectTypeState(state),
     hasMap: getHasMap(state),
     filteredObjects: getFilteredObjects(state),
     isFetching: getObjectTypeLoading(state),
@@ -70,7 +69,6 @@ class DiscoverObjectsContent extends Component {
     activeFilters: PropTypes.shape().isRequired,
     sort: PropTypes.string.isRequired,
     typesList: PropTypes.shape().isRequired,
-    theType: PropTypes.shape().isRequired,
     hasMap: PropTypes.bool.isRequired,
     filteredObjects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     isFetching: PropTypes.bool.isRequired,
@@ -85,7 +83,6 @@ class DiscoverObjectsContent extends Component {
     intl: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
     typeName: PropTypes.string,
-    match: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -104,8 +101,8 @@ class DiscoverObjectsContent extends Component {
   }
 
   componentDidMount() {
-    const { dispatchGetObjectType, dispatchGetObjectTypes, typeName, typesList } = this.props;
-    dispatchGetObjectType(typeName, { skip: 0 });
+    const { dispatchGetObjectType, dispatchGetObjectTypes, typesList, typeName } = this.props;
+    dispatchGetObjectType(this.typeNameReplacer(typeName), { skip: 0 });
     if (isEmpty(typesList)) dispatchGetObjectTypes();
   }
 
@@ -138,9 +135,15 @@ class DiscoverObjectsContent extends Component {
     </React.Fragment>
   );
 
+  // eslint-disable-next-line class-methods-use-this
+  typeNameReplacer(name) {
+    if (name === 'brokers') return 'business';
+    return name;
+  }
+
   loadMoreRelatedObjects = () => {
-    const { dispatchGetObjectType, typeName, filteredObjects } = this.props;
-    dispatchGetObjectType(typeName, {
+    const { dispatchGetObjectType, filteredObjects, typeName } = this.props;
+    dispatchGetObjectType(this.typeNameReplacer(typeName), {
       skip: filteredObjects.length || 0,
     });
   };
@@ -190,7 +193,6 @@ class DiscoverObjectsContent extends Component {
       sort,
       filteredObjects,
       hasMoreObjects,
-      match,
     } = this.props;
 
     const sortSelector = hasMap ? (
@@ -214,7 +216,7 @@ class DiscoverObjectsContent extends Component {
 
     let objectsRenderer;
 
-    if (tradingtypes.includes(match.params.typeName)) {
+    if (tradingtypes.includes(typeName)) {
       const validFilteredObjects = !_.isEmpty(filteredObjects)
         ? filteredObjects.filter(obj => !_.isEmpty(obj.chartid))
         : [];
@@ -226,13 +228,17 @@ class DiscoverObjectsContent extends Component {
           quoteSecurity={wObj.chartid}
         />
       ));
+    } else if (typeName === 'brokers') {
+      const brokerNames = Object.values(BROKER);
+      objectsRenderer = filteredObjects
+        .filter(obj => brokerNames.includes(obj.name.toLowerCase()))
+        .map(wObj => <ObjectCardView key={wObj.id} wObject={wObj} showSmallVersion intl={intl} />);
     } else {
       objectsRenderer = filteredObjects.map(wObj => (
         <ObjectCardView key={wObj.id} wObject={wObj} showSmallVersion intl={intl} />
       ));
     }
 
-    // const validFilteredObjects = !_.isEmpty(filteredObjects) ? filteredObjects.filter(obj => !_.isEmpty(obj.chartid)) : []
     return (
       <React.Fragment>
         <div className="discover-objects-header">
