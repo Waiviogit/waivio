@@ -1,4 +1,16 @@
-import _ from 'lodash';
+import {
+  attempt,
+  get,
+  groupBy,
+  filter,
+  find,
+  includes,
+  isEmpty,
+  isError,
+  mapValues,
+  orderBy,
+  uniqBy,
+} from 'lodash';
 import { getClientWObj } from '../adapters';
 import {
   supportedObjectFields,
@@ -38,12 +50,12 @@ export const getFieldWithMaxWeight = (wObject, currentField, defaultValue = '') 
   if (!wObject || !currentField || !supportedObjectFields.includes(currentField))
     return defaultValue;
 
-  const fieldValues = _.filter(wObject.fields, ['name', currentField]);
+  const fieldValues = filter(wObject.fields, ['name', currentField]);
   if (!fieldValues.length) return defaultValue;
 
-  const orderedValues = _.orderBy(fieldValues, ['weight'], ['desc']);
+  const orderedValues = orderBy(fieldValues, ['weight'], ['desc']);
 
-  if (!_.isEmpty(orderedValues[0].body)) {
+  if (!isEmpty(orderedValues[0].body)) {
     const upvotedByModerator = orderedValues.find(field => field.upvotedByModerator);
     return upvotedByModerator ? upvotedByModerator.body : orderedValues[0].body;
   }
@@ -51,7 +63,7 @@ export const getFieldWithMaxWeight = (wObject, currentField, defaultValue = '') 
 };
 
 export const getFieldsWithMaxWeight = (wObj, usedLocale = 'en-US', defaultLocale = 'en-US') => {
-  if (!wObj || (wObj && _.isEmpty(wObj.fields))) return null;
+  if (!wObj || (wObj && isEmpty(wObj.fields))) return null;
 
   const LOCALES = {
     CURRENT: usedLocale,
@@ -86,14 +98,12 @@ export const getFieldsWithMaxWeight = (wObj, usedLocale = 'en-US', defaultLocale
       }
     });
 
-  let maxWeightedFields = _.chain(wObj.fields.filter(f => f.upvotedByModerator))
-    .orderBy('weight', 'desc')
-    .groupBy('name')
-    .mapValues(
-      fieldsArr =>
-        fieldsArr.find(f => f.locale === usedLocale || f.locale === defaultLocale) || fieldsArr[0],
-    )
-    .value();
+  // firstly, looking for fields upvoted by moderator
+  let maxWeightedFields = mapValues(
+    groupBy(orderBy(wObj.fields.filter(f => f.upvotedByModerator), 'weight', 'desc'), 'name'),
+    fieldsArr =>
+      fieldsArr.find(f => f.locale === usedLocale || f.locale === defaultLocale) || fieldsArr[0],
+  );
   localesToFilter.forEach(locale => {
     fieldsByLocale[locale]
       .filter(field => !Object.keys(maxWeightedFields).includes(field.name))
@@ -109,22 +119,22 @@ export const getFieldsWithMaxWeight = (wObj, usedLocale = 'en-US', defaultLocale
       }, maxWeightedFields);
   });
 
-  maxWeightedFields = _.mapValues(maxWeightedFields, 'body');
+  maxWeightedFields = mapValues(maxWeightedFields, 'body');
   complexFields.forEach(field => {
     if (maxWeightedFields[field]) {
-      const parsed = _.attempt(JSON.parse, maxWeightedFields[field]);
-      if (!_.isError(parsed)) maxWeightedFields[field] = parsed;
+      const parsed = attempt(JSON.parse, maxWeightedFields[field]);
+      if (!isError(parsed)) maxWeightedFields[field] = parsed;
     }
   });
   return maxWeightedFields;
 };
 
 export const getInnerFieldWithMaxWeight = (wObject, currentField, innerField) => {
-  if (_.includes(objectFieldsWithInnerData, currentField)) {
+  if (includes(objectFieldsWithInnerData, currentField)) {
     const fieldBody = getFieldWithMaxWeight(wObject, currentField);
     if (fieldBody) {
-      const parsed = _.attempt(JSON.parse, fieldBody);
-      if (_.isError(parsed)) return '';
+      const parsed = attempt(JSON.parse, fieldBody);
+      if (isError(parsed)) return '';
       if (!innerField) return parsed;
       return parsed[innerField];
     }
@@ -134,11 +144,11 @@ export const getInnerFieldWithMaxWeight = (wObject, currentField, innerField) =>
 
 export const getFieldsByName = (wObject, currentField) => {
   if (!supportedObjectFields.includes(currentField) || !wObject) return [];
-  return _.filter(wObject.fields, ['name', currentField]);
+  return filter(wObject.fields, ['name', currentField]);
 };
 
 export const getField = (wObject, currentField, fieldName) => {
-  const wo = _.find(wObject.fields, ['name', currentField]);
+  const wo = find(wObject.fields, ['name', currentField]);
 
   if (!wo) return '';
 
@@ -165,7 +175,7 @@ export const getListItems = (
     }
   }
   if (uniq) {
-    items = _.uniqBy(items, 'author_permlink');
+    items = uniqBy(items, 'author_permlink');
   }
   if (isMappedToClientWobject) {
     items = items.map(item => getClientWObj(item));
@@ -200,14 +210,14 @@ export const getListItemLink = (listItem, location) => {
 
 export const getFieldsCount = (wObject, fieldName) => {
   let count = 0;
-  if (_.includes(TYPES_OF_MENU_ITEM, fieldName)) {
+  if (includes(TYPES_OF_MENU_ITEM, fieldName)) {
     count = getListItems(wObject, { uniq: true }).filter(item =>
       fieldName === TYPES_OF_MENU_ITEM.LIST
         ? item.object_type === OBJECT_TYPE.LIST
         : item.object_type === OBJECT_TYPE.PAGE,
     ).length;
   } else {
-    count = _.get(wObject, 'fields', []).filter(field => field.name === fieldName).length;
+    count = get(wObject, 'fields', []).filter(field => field.name === fieldName).length;
   }
   return count;
 };
@@ -251,8 +261,8 @@ export const mapObjectAppends = (comments, wObj, albums) => {
 };
 
 export const hasField = (post, fieldName, locale) => {
-  const parsedMetadata = post && post.json_metadata && _.attempt(JSON.parse, post.json_metadata);
-  if (!parsedMetadata || _.isError(parsedMetadata)) return false;
+  const parsedMetadata = post && post.json_metadata && attempt(JSON.parse, post.json_metadata);
+  if (!parsedMetadata || isError(parsedMetadata)) return false;
 
   const field =
     parsedMetadata[WAIVIO_META_FIELD_NAME] && parsedMetadata[WAIVIO_META_FIELD_NAME].field;
@@ -321,7 +331,7 @@ export const sortListItemsBy = (items, sortBy = 'by-name-asc', sortOrder = null)
       comparator = (a, b) => (a.name > b.name ? 1 : -1);
       break;
   }
-  const sorted = _.uniqBy(items, 'id').sort(comparator);
+  const sorted = uniqBy(items, 'id').sort(comparator);
   const resultArr = [
     ...sorted.filter(item => item.type === 'list'),
     ...sorted.filter(item => item.type !== 'list'),
