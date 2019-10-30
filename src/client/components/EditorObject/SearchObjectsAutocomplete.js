@@ -153,7 +153,7 @@ class SearchObjectsAutocomplete extends Component {
           !this.props.placeholder
             ? intl.formatMessage({
                 id: 'objects_auto_complete_placeholder',
-                defaultMessage: 'Find objects',
+                defaultMessage: 'Find topics',
               })
             : this.props.placeholder
         }

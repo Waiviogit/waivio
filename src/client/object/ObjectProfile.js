@@ -166,7 +166,7 @@ export default class ObjectProfile extends React.Component {
             <div className="object-profile__row justify-center">
               <FormattedMessage
                 id="empty_object_profile"
-                defaultMessage="This object doesn't have any"
+                defaultMessage="This topic doesn't have any"
               />
             </div>
           )}

@@ -143,7 +143,7 @@ class Page extends React.Component {
                 <div className="feed-layout__text">
                   {this.props.intl.formatMessage({
                     id: 'onlyRelated',
-                    defaultMessage: 'Show only related posts',
+                    defaultMessage: 'Only trade topics',
                   })}
                 </div>
                 <Switch

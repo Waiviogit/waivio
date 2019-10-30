@@ -167,5 +167,8 @@
 
   "charts": {
     "getChartsData": "https://informer.maximarkets.org/wss/quotation/getstatisticshistory"
+  },
+  "statistics": {
+    "getUserStatistics": "/user-summary-statistics/"
   }
 }

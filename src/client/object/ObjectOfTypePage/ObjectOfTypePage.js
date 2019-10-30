@@ -104,7 +104,7 @@ class ObjectOfTypePage extends Component {
               intl.formatMessage(
                 {
                   id: 'added_field_to_wobject',
-                  defaultMessage: `You successfully have added the {field} field to {wobject} object`,
+                  defaultMessage: `You successfully have added the {field} field to {wobject} topic`,
                 },
                 {
                   field: objectFields.pageContent,
@@ -119,7 +119,7 @@ class ObjectOfTypePage extends Component {
             message.error(
               intl.formatMessage({
                 id: 'couldnt_append',
-                defaultMessage: "Couldn't add the field to object.",
+                defaultMessage: "Couldn't add the field to topic.",
               }),
             );
           });
@@ -199,7 +199,7 @@ class ObjectOfTypePage extends Component {
                   <span>
                     {intl.formatMessage({
                       id: 'empty_object_profile',
-                      defaultMessage: "This object doesn't have any",
+                      defaultMessage: "This topic doesn't have any",
                     })}
                   </span>
                 </div>

@@ -185,7 +185,7 @@ class CreateObject extends React.Component {
               {openModalBtnText ||
                 this.props.intl.formatMessage({
                   id: 'create_new_object',
-                  defaultMessage: 'create new object',
+                  defaultMessage: 'create new topic',
                 })}
             </div>
           </div>
@@ -195,7 +195,7 @@ class CreateObject extends React.Component {
           <Modal
             title={this.props.intl.formatMessage({
               id: 'create_new_object',
-              defaultMessage: 'Create new object',
+              defaultMessage: 'Create new topic',
             })}
             closable
             onCancel={this.handleCloseModal}
@@ -223,7 +223,7 @@ class CreateObject extends React.Component {
                     required: true,
                     message: intl.formatMessage({
                       id: 'name_required',
-                      defaultMessage: 'Please enter name for new object',
+                      defaultMessage: 'Please enter name for new topic',
                     }),
                   },
                 ],
@@ -264,7 +264,7 @@ class CreateObject extends React.Component {
                     required: true,
                     message: intl.formatMessage({
                       id: 'validation_object_type',
-                      defaultMessage: 'Please select object type!',
+                      defaultMessage: 'Please select topic type!',
                     }),
                   },
                 ],

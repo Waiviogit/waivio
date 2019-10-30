@@ -229,7 +229,7 @@ class Write extends React.Component {
       initialWavioData: {
         wobjects: [
           {
-            objectName: 'init object',
+            objectName: 'init topic',
             author_permlink: objectPermlink,
             percent: 100,
             isNew: false,

@@ -828,7 +828,7 @@
   "longTermData_m9": "9 месяцев",
   "longTermData_m12": "Год",
   "longTermData_m24": "2 года",
-  "onlyRelated": "Показать только связанные посты",
+  "onlyRelated": "Только торговая тематика",
   "wia.followingInstruments": "Cледующие инструменты",
   "wia.cryptos": "Крипто",
   "wia.currencies": "Валюта",
@@ -991,5 +991,7 @@
   "tradiva": "Tradiva",
   "770capital": "770 capital",
   "dowmarkets": "DowMarkets",
-  "limefx": "LimeFX"
+  "limefx": "LimeFX",
+  "hot_news": "Антуальные новости",
+  "signUp": "Регистрация"
 }

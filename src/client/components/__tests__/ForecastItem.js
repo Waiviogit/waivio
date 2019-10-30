@@ -80,13 +80,13 @@ describe('<ForecastItem />', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('should render component if proporties is exist in quoteSettings object', () => {
+  it('should render component if proporties is exist in quoteSettings topic', () => {
     const component = mountWithStore(<ForecastItem {...propsWhithWobj} />, store);
     const mainDiv = component.find('.st-forecast-wrap');
     expect(mainDiv).toHaveLength(1);
   });
 
-  it('should render component if proporties is not exist in quoteSettings object', () => {
+  it('should render component if proporties is not exist in quoteSettings topic', () => {
     const component = mountWithStore(<ForecastItem {...propsWhithoutWobj} />, store);
     const mainDiv = component.find('.st-forecast-wrap');
     expect(mainDiv).toHaveLength(0);

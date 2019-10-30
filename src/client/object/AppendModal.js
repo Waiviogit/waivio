@@ -9,7 +9,7 @@ const AppendModal = ({ showModal, hideModal, chosenLocale, field, objName, intl 
   <Modal
     title={`${intl.formatMessage({
       id: 'suggestion_add_field',
-      defaultMessage: 'Update object',
+      defaultMessage: 'Update topic',
     })}: ${objName}`}
     footer={null}
     visible={showModal}
