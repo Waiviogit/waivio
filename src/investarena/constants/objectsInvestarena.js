@@ -19,7 +19,7 @@ export const supportedObjectFields = [
   objectFields.tagCloud,
   objectFields.workTime,
 ];
-export const typesWithChartId = ['crypto', 'currency', 'commodity', 'stock', 'index'];
+export const typesWithChartId = ['crypto', 'currencies', 'commodity', 'stock', 'index'];
 
 export const marketNames = [
   {
@@ -28,8 +28,8 @@ export const marketNames = [
     intl: { id: 'wia.cryptos', defaultMessage: 'Cryptos' },
   },
   {
-    name: 'Currency',
-    names: ['currency'],
+    name: 'Currencies',
+    names: ['currencies'],
     intl: { id: 'wia.currencies', defaultMessage: 'Currencies' },
   },
   {

@@ -9,7 +9,7 @@ import './TopNavigation.less';
 const LINKS = {
   MY_FEED: '/my_feed',
   DISCOVER: '/discover-objects',
-  MARKETS: '/markets',
+  // MARKETS: '/markets',
   DEALS: '/deals',
   ABOUT: '/object/oul-investarena/menu',
 };
@@ -85,16 +85,6 @@ const TopNavigation = ({ authenticated, location: { pathname }, isMobile, onMenu
           })}
         >
           <FormattedMessage id="discover" defaultMessage="Discover" />
-        </Link>
-      </li>
-      <li className="TopNavigation__item">
-        <Link
-          to={`${LINKS.MARKETS}/crypto`}
-          className={classNames('TopNavigation__link', {
-            'TopNavigation__link--active': pathname.includes(LINKS.MARKETS),
-          })}
-        >
-          <FormattedMessage id="markets" defaultMessage="Markets" />
         </Link>
       </li>
       {authenticated && renderDealsLinks(isMobile, pathname)}
