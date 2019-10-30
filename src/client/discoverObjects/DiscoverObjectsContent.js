@@ -139,8 +139,8 @@ class DiscoverObjectsContent extends Component {
   );
 
   loadMoreRelatedObjects = () => {
-    const { dispatchGetObjectType, theType, filteredObjects } = this.props;
-    dispatchGetObjectType(theType.name, {
+    const { dispatchGetObjectType, typeName, filteredObjects } = this.props;
+    dispatchGetObjectType(typeName, {
       skip: filteredObjects.length || 0,
     });
   };
