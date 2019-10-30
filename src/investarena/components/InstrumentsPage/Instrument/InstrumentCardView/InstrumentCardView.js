@@ -4,6 +4,7 @@ import _ from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import withTrade from '../../../HOC/withTrade';
 import RatingsWrap from '../../../../../client/objectCard/RatingsWrap/RatingsWrap';
 import WeightTag from '../../../../../client/components/WeightTag';
 import { getFieldWithMaxWeight } from '../../../../../client/object/wObjectHelper';
@@ -12,7 +13,14 @@ import { objectFields as objectTypes } from '../../../../../common/constants/lis
 import TradeButtons from '../../TradeButtons/TradeButtons';
 import './instrumentCardView.less';
 
-const InstrumentCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => {
+const InstrumentCardView = ({
+  wObject,
+  showSmallVersion,
+  pathNameAvatar,
+  intl,
+  quote,
+  quoteSettings,
+}) => {
   const getObjectRatings = () => _.filter(wObject.fields, ['name', 'rating']);
   const pathName = pathNameAvatar || `/object/${wObject.id}`;
   const ratings = getObjectRatings();
@@ -38,6 +46,10 @@ const InstrumentCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl })
       id: 'GoTo',
       defaultMessage: 'Go to',
     })} ${wobjName}`;
+
+  const showTradeButtons =
+    !_.isEmpty(quoteSettings) && !_.isEmpty(quote) && quote.bidPrice !== 0 && quote.askPrice !== 0;
+
   return (
     <React.Fragment>
       <div className="InstrumentCardView">
@@ -84,10 +96,12 @@ const InstrumentCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl })
                 </span>
               )}
             </div>
-            <TradeButtons
-              className="st-assets-buttons st-trade-buttons-asset-page-wrap"
-              quoteSecurity={wObject.chartid}
-            />
+            {showTradeButtons && (
+              <TradeButtons
+                className="st-assets-buttons st-trade-buttons-asset-page-wrap"
+                quoteSecurity={wObject.chartid}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -100,6 +114,8 @@ InstrumentCardView.propTypes = {
   intl: PropTypes.shape().isRequired,
   showSmallVersion: PropTypes.bool,
   pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
+  quote: PropTypes.shape().isRequired,
+  quoteSettings: PropTypes.shape().isRequired,
 };
 
 InstrumentCardView.defaultProps = {
@@ -107,4 +123,4 @@ InstrumentCardView.defaultProps = {
   pathNameAvatar: '',
 };
 
-export default injectIntl(InstrumentCardView);
+export default injectIntl(withTrade(InstrumentCardView));
