@@ -111,7 +111,9 @@ export const supportedObjectFields = Object.values(objectFields);
 export const objectImageFields = ['avatar', 'background'];
 
 export const getObjectSettings = objectType => {
-  const withGallery = ![...investArena.supportedTypes, OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(objectType);
+  const withGallery = ![...investArena.supportedTypes, OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(
+    objectType,
+  );
   const withMenu = ![OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(objectType);
   const withSettingsBlock = ![...investArena.supportedTypes].includes(objectType);
   return { withGallery, withMenu, withSettingsBlock };

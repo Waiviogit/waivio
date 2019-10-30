@@ -210,7 +210,7 @@ class DiscoverObjectsContent extends Component {
       </SortSelector>
     );
 
-    const tradingtypes = ['commodity', 'crypto', 'currency', 'indices', 'stocks'];
+    const tradingtypes = ['commodity', 'crypto', 'currencies', 'indices', 'stocks'];
 
     let objectsRenderer;
 

@@ -65,7 +65,7 @@ const TradeButtonsAssets = props => {
             <div className="st-trade-buttons-amount">
               <div className="stl-trade-buttons-deal-wrap">
                 <div
-                  className="st-assets-inc-button st-trade-buttons-more-deal"
+                  className="st-assets-inc-button st-trade-buttons-less-deal"
                   onClick={props.handleClickLess}
                 >
                   &ndash;
@@ -78,7 +78,7 @@ const TradeButtonsAssets = props => {
                   value={props.amount}
                 />
                 <div
-                  className="st-assets-inc-button st-trade-buttons-less-deal"
+                  className="st-assets-inc-button st-trade-buttons-more-deal"
                   onClick={props.handleClickMore}
                 >
                   +
