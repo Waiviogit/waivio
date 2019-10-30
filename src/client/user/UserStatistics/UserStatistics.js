@@ -7,28 +7,26 @@ import api from '../../../investarena/configApi/apiResources';
 import './UserStatistics.less';
 
 const UserStatistics = ({ match }) => {
-  const [statData, setStatData] = useState({});
+  const [statAccuracyData, setStatAccuracyData] = useState({});
   useEffect(() => {
     api.statistics
       .getUserStatistics(match.params.name)
-      .then(response => setStatData(response.data));
+      .then(response => setStatAccuracyData(response.data));
   }, []);
-  const mockInstrumentsObj = [
+  const mockInstrumentsData = [
     { forecastName: 'AUD/CAD', count: 24 },
     { forecastName: 'Apple', count: 45 },
     { forecastName: 'Bitcoin', count: 54 },
   ];
   return (
     <div className="UserStatistics">
-      {!isEmpty(statData) && (
-        <UserStatisticContainer accuracy={statData} contentType={'forecast'} />
+      {isEmpty(statAccuracyData) && (
+        <React.Fragment>
+          <UserStatisticContainer accuracy={statAccuracyData} contentType={'forecast'} />
+          <UserStatisticContainer accuracy={statAccuracyData} contentType={'profitability'} />
+        </React.Fragment>
       )}
-      {!isEmpty(statData) && (
-        <UserStatisticContainer accuracy={statData} contentType={'profitability'} />
-      )}
-      {!isEmpty(statData) && (
-        <UserForecastInstruments forecasts={mockInstrumentsObj} />
-      )}
+      {isEmpty(mockInstrumentsData) && <UserForecastInstruments forecasts={mockInstrumentsData} />}
     </div>
   );
 };
