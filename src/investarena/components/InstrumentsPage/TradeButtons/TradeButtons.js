@@ -20,7 +20,7 @@ const propTypes = {
   handleKeyPressInput: PropTypes.func.isRequired,
 };
 
-const TradeButtonsAssets = props => {
+const TradeButtons = props => {
   let divWrap;
   const quote = props.quote || quoteData;
   const quoteSettings = props.quoteSettings || quoteSettingsData;
@@ -102,6 +102,6 @@ const TradeButtonsAssets = props => {
   );
 };
 
-TradeButtonsAssets.propTypes = propTypes;
+TradeButtons.propTypes = propTypes;
 
-export default injectIntl(withTrade(TradeButtonsAssets));
+export default injectIntl(withTrade(TradeButtons));
