@@ -1,36 +1,39 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import Chart from 'react-google-charts';
 import classNames from 'classnames';
-import { Doughnut } from 'react-chartjs-2';
 import './UserAccuracyChart.less';
 
 const UserAccuracyChart = ({ value }) => {
-  const data = {
-    labels: [],
-    datasets: [
+  const data = [['', ''], ['success', value], ['unsuccess', 100 - value]];
+  const options = {
+    pieHole: 0.75,
+    backgroundColor: 'transparent',
+    pieSliceBorderColor: 'transparent',
+    slices: [
       {
-        data: [value, 100 - value],
-        backgroundColor: ['#54d2a0', '#d9534f'],
-        borderColor: 'transparent',
+        color: '#54d2a0',
+      },
+      {
+        color: '#d9534f',
       },
     ],
-  };
-  const options = {
-    legend: {
-      display: false,
+    enableInteractivity: false,
+    tooltip: 'none',
+    legend: 'none',
+    pieSliceText: 'none',
+    chartArea: {
+      left: 0,
+      top: 0,
+      width: '100%',
+      height: '100%',
     },
-    tooltips: {
-      enabled: false,
-    },
-    hover: { mode: null },
-    cutoutPercentage: 75,
-    maintainAspectRatio: false,
   };
   return (
     <div className="UserAccuracy">
       <div className="UserAccuracy__chart">
-        <Doughnut data={data} options={options} width={95} height={95} />
+        <Chart width={'100%'} height={'95px'} chartType="PieChart" data={data} options={options} />
       </div>
       <div
         className={classNames('UserAccuracy__value', {
