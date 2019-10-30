@@ -101,18 +101,18 @@ export default (messageFactory, validators) => ({
   },
   primaryObject: {
     name: 'primaryObject',
-    label: messageFactory('link_parent_object', 'Link to the primary (parent) object'),
+    label: messageFactory('link_parent_object', 'Link to the primary (parent) topic'),
     rules: [
       {
         validator: validators.checkPrimaryObject,
       },
     ],
-    placeholder: messageFactory('object_auto_complete_placeholder', 'Find object'),
+    placeholder: messageFactory('object_auto_complete_placeholder', 'Find topic'),
     caption: messageFactory('example_parent_object', 'Example: business, brand, restaurant, etc.'),
   },
   secondaryObject: {
     name: 'secondaryObject',
-    label: messageFactory('link_secondary_objects', 'Link to one of the secondary objects'),
+    label: messageFactory('link_secondary_objects', 'Link to one of the secondary topics'),
     rules: [
       {
         validator: validators.checkSecondaryObject,
@@ -261,8 +261,8 @@ export default (messageFactory, validators) => ({
   },
   agreement: {
     name: 'agreement',
-    label: messageFactory('link_agreement', 'Link to the agreement (page object, optional)'),
-    placeholder: messageFactory('page_object_placeholder', 'Find page object'),
+    label: messageFactory('link_agreement', 'Link to the agreement (page topic, optional)'),
+    placeholder: messageFactory('page_object_placeholder', 'Find page topic'),
   },
   checkboxAgree: {
     name: 'checkboxAgree',
@@ -313,7 +313,7 @@ export default (messageFactory, validators) => ({
     text: messageFactory('edit_button_text', 'Edit'),
     spanText: messageFactory(
       'edit_button_span_text',
-      'Once edited, the campaign can be activated in the Campaigns/Manage tab.',
+      'Once saved, the campaign can be activated in the Campaigns/Manage tab.',
     ),
   },
 });

@@ -7,7 +7,7 @@ const FollowObjectForm = ({ form, intl, loading }) => (
   <Form.Item
     extra={intl.formatMessage({
       id: 'follow_extra',
-      defaultMessage: 'Stay informed about object updates submitted by other users',
+      defaultMessage: 'Stay informed about topic updates submitted by other users',
     })}
   >
     {form.getFieldDecorator('follow', {

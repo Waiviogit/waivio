@@ -12,7 +12,7 @@ const initialStateMock = {
 };
 
 describe('authReducer', () => {
-  it('is expected to return an object', () => {
+  it('is expected to return an topic', () => {
     expect(authReducer(undefined, {})).to.be.an('object');
   });
   it('is expected to return initial state on undefined action', () => {

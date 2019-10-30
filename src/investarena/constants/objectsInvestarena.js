@@ -1,5 +1,25 @@
-export const supportedObjectTypes = ['crypto', 'currencies', 'commodity', 'stocks', 'indices'];
-export const typesWithChartId = ['crypto', 'currency', 'commodity', 'stock', 'index'];
+import OBJ_TYPE from '../../client/object/const/objectTypes';
+import { objectFields } from '../../common/constants/listOfFields';
+
+export const CHART_ID = 'chartid';
+
+export const supportedObjectTypes = [
+  OBJ_TYPE.CRYPTO,
+  OBJ_TYPE.CURRENCIES,
+  OBJ_TYPE.COMMODITY,
+  OBJ_TYPE.STOCKS,
+  OBJ_TYPE.INDICES,
+];
+export const supportedObjectFields = [
+  objectFields.button,
+  objectFields.name,
+  objectFields.newsFilter,
+  objectFields.parent,
+  objectFields.rating,
+  objectFields.tagCloud,
+  objectFields.workTime,
+];
+export const typesWithChartId = ['crypto', 'currencies', 'commodity', 'stock', 'index'];
 
 export const marketNames = [
   {
@@ -8,8 +28,8 @@ export const marketNames = [
     intl: { id: 'wia.cryptos', defaultMessage: 'Cryptos' },
   },
   {
-    name: 'Currency',
-    names: ['currency'],
+    name: 'Currencies',
+    names: ['currencies'],
     intl: { id: 'wia.currencies', defaultMessage: 'Currencies' },
   },
   {
@@ -28,3 +48,10 @@ export const marketNames = [
     intl: { id: 'modalAssets.indices', defaultMessage: 'Indicies' },
   },
 ];
+
+const investArena = {
+  supportedTypes: supportedObjectTypes,
+  supportedFields: supportedObjectFields,
+};
+
+export default investArena;

@@ -17,7 +17,6 @@ import Affix from '../components/Utils/Affix';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import requiresLogin from '../auth/requiresLogin';
 import './Settings.less';
-import TopNavigation from '../components/Navigation/TopNavigation';
 
 const FormItem = Form.Item;
 
@@ -52,7 +51,6 @@ export default class ProfileSettings extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     form: PropTypes.shape().isRequired,
-    userName: PropTypes.string.isRequired,
     onImageUpload: PropTypes.func,
     onImageInvalid: PropTypes.func,
   };
@@ -108,7 +106,7 @@ export default class ProfileSettings extends React.Component {
   }
 
   render() {
-    const { intl, form, userName } = this.props;
+    const { intl, form } = this.props;
     const { bodyHTML } = this.state;
     const { getFieldDecorator } = form;
 
@@ -143,15 +141,14 @@ export default class ProfileSettings extends React.Component {
     ));
 
     return (
-      <React.Fragment>
+      <div className="shifted">
         <Helmet>
           <title>
             {intl.formatMessage({ id: 'edit_profile', defaultMessage: 'Edit profile' })} - Waivio
           </title>
         </Helmet>
         <div className="settings-layout container">
-          <TopNavigation authenticated userName={userName} />
-          <Affix className="leftContainer" stickPosition={77}>
+          <Affix className="leftContainer" stickPosition={116}>
             <div className="left">
               <LeftSidebar />
             </div>
@@ -309,7 +306,7 @@ export default class ProfileSettings extends React.Component {
             </Form>
           </div>
         </div>
-      </React.Fragment>
+      </div>
     );
   }
 }

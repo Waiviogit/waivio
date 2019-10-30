@@ -122,6 +122,14 @@ class AddImageModal extends React.Component {
         visible={visible}
         onCancel={this.handleCancelModal}
         onOk={this.handleOk}
+        okText={intl.formatMessage({
+          id: 'image_modal_add',
+          defaultMessage: 'Add',
+        })}
+        cancelText={intl.formatMessage({
+          id: 'image_modal_cancel',
+          defaultMessage: 'Cancel',
+        })}
       >
         <div className="image-wrapper">
           <QuickPostEditorFooter

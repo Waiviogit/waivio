@@ -17,14 +17,25 @@ import {
 } from './StoryHelper';
 import { getHtml } from './Body';
 import { getProxyImageURL } from '../../helpers/image';
+import { objectFields } from '../../../common/constants/listOfFields';
 
 const StoryPreview = ({ post }) => {
   if (!post) return '';
   const jsonMetadata = jsonParse(post.json_metadata);
   let imagePath = '';
 
-  if (jsonMetadata && jsonMetadata.image && jsonMetadata.image[0]) {
-    imagePath = getProxyImageURL(jsonMetadata.image[0], 'preview');
+  if (jsonMetadata) {
+    if (jsonMetadata.image && jsonMetadata.image[0]) {
+      imagePath = getProxyImageURL(jsonMetadata.image[0], 'preview');
+    } else if (
+      jsonMetadata.wobj &&
+      jsonMetadata.wobj.field &&
+      [objectFields.galleryItem, objectFields.avatar, objectFields.background].includes(
+        jsonMetadata.wobj.field.name,
+      )
+    ) {
+      imagePath = jsonMetadata.wobj.field.body;
+    }
   } else {
     const contentImages = getContentImages(post.body);
     if (contentImages.length) {

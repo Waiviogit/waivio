@@ -1,0 +1,170 @@
+@import (reference) '../../Common.less';
+@import (reference) '../../../../client/styles/modules/variables';
+
+.st-trade-buttons-asset-page-wrap {
+  .stl-trade-buttons-wrap {
+    width: 100%;
+    margin: auto;
+    z-index: 1;
+    transition: all 0.45s ease-in-out;
+    color: @color-black;
+    .st-trade-buttons-deal-wrap {
+      margin: 3px;
+      display: flex;
+    }
+    .st-trade-buttons-header {
+      .sessionIndicator;
+      .st-trade-buttons-quote {
+        color: @color-black;
+        font-weight: bold;
+        &:hover {
+          color: @color-dark-blue;
+          text-decoration: underline;
+        }
+      }
+      .st-trade-buttons-icon-point-green {
+        .st-icon-point(@color-green, rollGreen);
+      }
+      .st-trade-buttons-icon-point-red {
+        .st-icon-point(@color-red, rollRed);
+      }
+    }
+    .st-trade-buttons-container {
+      .st-daily-change {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 45px;
+        font-size: 20px;
+        font-weight: bold;
+      }
+      .st-trade-buttons-amount {
+        .st-trade-buttons-action-block {
+          text-align: center;
+          border-radius: 3px;
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 90px;
+          cursor: pointer;
+          color: @color-white;
+          &::after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            padding-top: 53px;
+            border-bottom: 1px solid #ddd;
+          }
+        }
+        .st-assets-inc-button {
+          widows: 100%;
+          outline: none;
+          font-size: 19px;
+          background-color: @color-light-gray;
+          border: none;
+          font-weight: bold;
+          border-radius: 4px;
+          &:hover {
+            cursor: pointer;
+            color: @color-blue;
+          }
+        }
+        input {
+          outline: none;
+          font-size: 15px;
+          background-color: @color-light-gray;
+          border-style: none;
+          text-align: center;
+          max-width: 60px;
+          font-weight: bold;
+        }
+      }
+    }
+    .stl-trade-buttons-deal-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+      justify-content: center;
+    }
+    .st-trade-buttons-opacity-on {
+      opacity: 1;
+    }
+    .st-trade-buttons-opacity-off {
+      opacity: 0.65;
+    }
+  }
+  .st-trade-buttons-footer {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: space-between;
+    @media @small {
+      margin-top: 10px;
+    }
+    .st-trade-buttons-action-span {
+      font-size: 12px;
+    }
+    .st-trade-buttons-action-block {
+      max-width: 140px;
+      min-width: 90px;
+      text-align: center;
+      border-radius: 3px;
+      cursor: pointer;
+      color: @color-white;
+    }
+  }
+}
+
+.st-trade-buttons-less-deal {
+  width: 100%;
+  @media @small {
+    width: 20px;
+  }
+}
+.st-trade-buttons-more-deal {
+  width: 100%;
+  @media @small {
+    width: 20px;
+  }
+}
+
+.TradeButtons__quote {
+  display: none;
+  font-weight: bold;
+  font-size: 15px;
+  width: 50px;
+  @media @small {
+    display: block;
+  }
+}
+
+.TradeButtons__arrow {
+  display: none;
+  @media @small {
+    display: block;
+  }
+}
+
+#tradeBtn {
+  width: 100%;
+}
+
+.short {
+  color: @red;
+
+  & > svg {
+    color: @red;
+  }
+}
+
+.long {
+  color: @green;
+
+  & > svg {
+    color: @green;
+  }
+}
+
+@import 'TradeButtons-nightmode.less';

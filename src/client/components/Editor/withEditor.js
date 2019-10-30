@@ -110,8 +110,8 @@ export default function withEditor(WrappedComponent) {
 
       const requestBody = {
         author: this.props.user.name,
-        title: `${obj.name} - waivio object`,
-        body: `Waivio object "${obj.name}" has been created`,
+        title: `${obj.name} - InvestArena topic`,
+        body: `InvestArena topic "${obj.name}" has been created`,
         permlink: `${generateRandomString(3).toLowerCase()}-${permlink}`,
         objectName: obj.name,
         locale: obj.locale || this.props.locale === 'auto' ? 'en-US' : this.props.locale,

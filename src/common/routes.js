@@ -45,9 +45,12 @@ import CreateRewardForm from '../client/rewards/Create-Edit/CreateRewardForm';
 import FilteredRewardsList from '../client/rewards/FilteredRewardsList';
 import ManageCampaign from '../client/rewards/Manage/Manage';
 import MatchBotCampaign from '../client/rewards/MatchBot/MatchBot';
+import ReceivablesCampaign from '../client/rewards/Receivables/Receivables';
 import PayablesCampaign from '../client/rewards/Payables/Payables';
 import PaymentCampaign from '../client/rewards/Payment/Payment';
 import ObjectOfTypePage from '../client/object/ObjectOfTypePage/ObjectOfTypePage';
+import UserStatistics from '../client/user/UserStatistics/UserStatistics';
+import EconomicalCalendar from '../investarena/components/EconomicalCalendar/EconomicalCalendar';
 
 const routes = [
   {
@@ -59,10 +62,17 @@ const routes = [
         component: Bookmarks,
       },
       {
+        path: '/economical-calendar',
+        exact: true,
+        component: EconomicalCalendar,
+      },
+      {
         path: [
           '/rewards/(create|manage|match-bot|edit)/:campaignId?',
           '/rewards/payables',
+          '/rewards/receivables',
           '/rewards/payables/@:userName',
+          '/rewards/receivables/@:userName',
           '/rewards/:filterKey/:campaignParent?',
         ],
         exact: true,
@@ -79,12 +89,22 @@ const routes = [
             component: ManageCampaign,
           },
           {
+            path: '/rewards/receivables',
+            exact: true,
+            component: ReceivablesCampaign,
+          },
+          {
             path: '/rewards/payables',
             exact: true,
             component: PayablesCampaign,
           },
           {
             path: '/rewards/payables/@:userName',
+            exact: true,
+            component: PaymentCampaign,
+          },
+          {
+            path: '/rewards/receivables/@:userName',
             exact: true,
             component: PaymentCampaign,
           },
@@ -156,12 +176,13 @@ const routes = [
         component: Notifications,
       },
       {
-        path: '/discover-objects/:typeName?',
+        path: '/discover-objects/:typeName',
         exact: true,
         component: DiscoverObjects,
       },
       {
-        path: '/@:name/(comments|followers|followed|reblogs|feed|transfers|activity|expertise)?',
+        path:
+          '/@:name/(comments|followers|followed|reblogs|feed|transfers|activity|expertise|statistics)?',
         component: User,
         exact: true,
         routes: [
@@ -204,6 +225,11 @@ const routes = [
             path: '/@:name/expertise',
             exact: true,
             component: UserExpertise,
+          },
+          {
+            path: '/@:name/statistics',
+            exact: true,
+            component: UserStatistics,
           },
         ],
       },

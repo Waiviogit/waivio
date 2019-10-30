@@ -5,11 +5,11 @@ import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import AppendForm from './AppendForm';
 
-const AppendModal = ({ showModal, hideModal, locale, field, objName, intl }) => (
+const AppendModal = ({ showModal, hideModal, chosenLocale, field, objName, intl }) => (
   <Modal
     title={`${intl.formatMessage({
       id: 'suggestion_add_field',
-      defaultMessage: 'Update object',
+      defaultMessage: 'Update topic',
     })}: ${objName}`}
     footer={null}
     visible={showModal}
@@ -18,7 +18,12 @@ const AppendModal = ({ showModal, hideModal, locale, field, objName, intl }) => 
     width={767}
     destroyOnClose
   >
-    <AppendForm hideModal={hideModal} currentLocale={locale} currentField={field} />
+    <AppendForm
+      chosenLocale={chosenLocale}
+      currentField={field}
+      hideModal={hideModal}
+      intl={intl}
+    />
   </Modal>
 );
 
@@ -26,7 +31,7 @@ AppendModal.propTypes = {
   showModal: PropTypes.bool.isRequired,
   hideModal: PropTypes.func.isRequired,
   field: PropTypes.string,
-  locale: PropTypes.string,
+  chosenLocale: PropTypes.string,
   objName: PropTypes.string,
   intl: PropTypes.shape().isRequired,
 };
@@ -34,7 +39,7 @@ AppendModal.propTypes = {
 AppendModal.defaultProps = {
   showModal: false,
   field: 'auto',
-  locale: 'en-US',
+  chosenLocale: '',
   objName: '',
 };
 

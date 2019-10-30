@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { Icon } from 'antd';
 import { injectIntl } from 'react-intl';
-import './ForecastBlock.less';
 import ForecastItem from '../ForecastItem/index';
+import './ForecastBlock.less';
 
 @injectIntl
 class ForecastBlock extends React.Component {
   static propTypes = {
     /* from decorators */
-    intl: PropTypes.shape(),
+    intl: PropTypes.shape().isRequired,
     /* from connect */
     forecasts: PropTypes.arrayOf(PropTypes.shape({})),
     /* passed props */
@@ -22,7 +22,6 @@ class ForecastBlock extends React.Component {
   };
 
   static defaultProps = {
-    intl: {},
     forecasts: [],
     username: '',
     quoteSecurity: '',
@@ -45,12 +44,12 @@ class ForecastBlock extends React.Component {
     }
   }
 
-  forecastBlock = (intl, forecasts) => (
+  forecastBlock = forecasts => (
     <div className="forecasts-block">
       <h4 className="forecasts-block__header">
         <Icon type="rise" className="forecasts-block__header-icon" />
         <span>
-          {intl.formatMessage({
+          {this.props.intl.formatMessage({
             id: 'forecast.currentForecast',
             defaultMessage: 'Current forecasts',
           })}
@@ -73,17 +72,17 @@ class ForecastBlock extends React.Component {
   );
 
   render() {
-    const { forecasts, intl, renderPlace, quoteSecurity } = this.props;
+    const { forecasts, renderPlace, quoteSecurity } = this.props;
     if (
       renderPlace === 'rightObjectSidebar' &&
       !_.isEmpty(quoteSecurity) &&
       forecasts &&
       forecasts.length
     ) {
-      return this.forecastBlock(intl, forecasts);
+      return this.forecastBlock(forecasts);
     }
     if (renderPlace === 'rightSidebar' && forecasts && forecasts.length) {
-      return this.forecastBlock(intl, forecasts);
+      return this.forecastBlock(forecasts);
     }
     return null;
   }

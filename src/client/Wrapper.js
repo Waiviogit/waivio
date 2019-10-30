@@ -29,6 +29,7 @@ import Transfer from './wallet/Transfer';
 import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
 import { getChartsData } from '../investarena/redux/actions/chartsActions';
+import EntryModal from './components/EntryModal/EntryModal';
 
 @withRouter
 @connect(
@@ -217,7 +218,7 @@ export default class Wrapper extends React.PureComponent {
     const language = findLanguage(usedLocale);
 
     return (
-      <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
+      <IntlProvider locale={language.localeData} messages={translations}>
         <ConfigProvider locale={enUS}>
           <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
             <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
@@ -229,6 +230,7 @@ export default class Wrapper extends React.PureComponent {
               <PowerUpOrDown />
               <NotificationPopup />
               <BBackTop className="primary-modal" />
+              <EntryModal />
             </div>
           </Layout>
         </ConfigProvider>

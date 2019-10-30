@@ -141,22 +141,6 @@ export default class ObjectProfile extends React.Component {
                 isObjectProfile
               />
               <PostQuotation quoteSecurity={object.chartid} />
-              <iframe
-                title="analysis"
-                style={{
-                  width: '100%',
-                  height: '213px',
-                  border: 'none',
-                  overflow: 'hidden',
-                  background: isNightMode ? '#24292e' : 'white',
-                  padding: '10px 10px 0 10px',
-                }}
-                src={`//informer.maximarkets.org/widgetsws/AnalizeID.html?Period=60&typemode=${
-                  isNightMode ? 'first' : 'second'
-                }&font=OpenSans-Regular&css=${isNightMode ? 'darkGroup' : 'defaultGroup'}&rowsID=${
-                  quoteIdForWidget[object.chartid]
-                }&defaultId=190&time=global&lang=en`}
-              />
             </div>
           )}
           {isAuthenticated && (
@@ -182,7 +166,7 @@ export default class ObjectProfile extends React.Component {
             <div className="object-profile__row justify-center">
               <FormattedMessage
                 id="empty_object_profile"
-                defaultMessage="This object doesn't have any"
+                defaultMessage="This topic doesn't have any"
               />
             </div>
           )}

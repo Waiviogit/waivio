@@ -11,7 +11,6 @@ import SocialLinks from '../../components/SocialLinks';
 import {
   getFieldWithMaxWeight,
   getFieldsCount,
-  getInnerFieldWithMaxWeight,
   sortListItemsBy,
   combineObjectMenu,
   getFieldsByName,
@@ -19,17 +18,18 @@ import {
 import {
   objectFields,
   TYPES_OF_MENU_ITEM,
-  addressFields,
   linkFields,
   getAllowedFieldsByObjType,
+  getObjectSettings,
 } from '../../../common/constants/listOfFields';
 import URL from '../../../common/constants/routing';
 import OBJECT_TYPE from '../../object/const/objectTypes';
+import { CHART_ID } from '../../../investarena/constants/objectsInvestarena';
 import Proposition from '../../components/Proposition/Proposition';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
 import IconButton from '../../components/IconButton';
-import { getIsAuthenticated, getObjectAlbums } from '../../reducers';
+import { getIsAuthenticated, getObjectAlbums, getScreenSize } from '../../reducers';
 import DescriptionInfo from './DescriptionInfo';
 import CreateImage from '../../object/ObjectGallery/CreateImage';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
@@ -46,22 +46,27 @@ import './ObjectInfo.less';
 @connect(state => ({
   albums: getObjectAlbums(state),
   isAuthenticated: getIsAuthenticated(state),
+  screenSize: getScreenSize(state),
 }))
 class ObjectInfo extends React.Component {
   static propTypes = {
+    // decorators
     location: PropTypes.shape().isRequired,
-    wobject: PropTypes.shape().isRequired,
-    userName: PropTypes.string.isRequired,
-    isEditMode: PropTypes.bool.isRequired,
-    isAuthenticated: PropTypes.bool.isRequired,
+    // from connect
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+    isAuthenticated: PropTypes.bool.isRequired,
+    screenSize: PropTypes.string.isRequired,
+    // router extra props
+    isEditMode: PropTypes.bool.isRequired,
+    userName: PropTypes.string.isRequired,
+    wobject: PropTypes.shape().isRequired,
   };
 
   state = {
+    isModalComparePerformanceOpen: false,
     selectedField: null,
     showModal: false,
     showMore: false,
-    isModalComparePerformanceOpen: false,
   };
 
   getLink = link => {
@@ -105,18 +110,16 @@ class ObjectInfo extends React.Component {
     const { showModal, selectedField, isModalComparePerformanceOpen } = this.state;
     const { button, status, website, newsFilter } = wobject;
     const renderFields = getAllowedFieldsByObjType(wobject.type);
-    const isRenderGallery = ![OBJECT_TYPE.LIST, OBJECT_TYPE.PAGE].includes(wobject.type);
-    const isRenderMenu = isRenderGallery;
+    const { withGallery, withMenu, withSettingsBlock } = getObjectSettings(wobject.type);
 
     let names = [];
-    let addressArr = [];
     let address = '';
     let map = '';
     let description = '';
     let price = '';
     let workTime = '';
     let avatar = '';
-    let short = '';
+    let title = '';
     let background = '';
     let photosCount = 0;
     let tags = [];
@@ -131,26 +134,23 @@ class ObjectInfo extends React.Component {
         .filter(nameFld => nameFld.body !== wobject.name)
         .map(nameFld => <div key={nameFld.permlink}>{nameFld.body}</div>);
 
-      const adressFields = getInnerFieldWithMaxWeight(wobject, objectFields.address);
-      addressArr = adressFields
-        ? Object.values(addressFields).map(fieldName => adressFields[fieldName])
-        : [];
-      address = _.compact(addressArr).join(', ');
+      address = _.compact(Object.values(_.get(wobject, [objectFields.address], {}))).join(', ');
 
-      map = getInnerFieldWithMaxWeight(wobject, objectFields.map);
+      map = _.get(wobject, [objectFields.map], '');
 
-      description = getFieldWithMaxWeight(wobject, objectFields.description);
+      description = _.get(wobject, [objectFields.description], '');
 
-      avatar = getInnerFieldWithMaxWeight(wobject, objectFields.avatar);
-      background = getFieldWithMaxWeight(wobject, objectFields.background);
+      avatar = _.get(wobject, [objectFields.avatar], '');
 
-      short = getFieldWithMaxWeight(wobject, objectFields.title);
+      background = _.get(wobject, [objectFields.background], '');
 
-      workTime = getFieldWithMaxWeight(wobject, objectFields.workTime);
+      title = _.get(wobject, [objectFields.title], '');
 
-      email = getFieldWithMaxWeight(wobject, objectFields.email);
+      workTime = _.get(wobject, [objectFields.workTime]);
 
-      price = getFieldWithMaxWeight(wobject, objectFields.price);
+      email = _.get(wobject, [objectFields.email], '');
+
+      price = _.get(wobject, [objectFields.price]);
 
       menuItems = _.uniqBy(_.get(wobject, 'menuItems', []), 'author_permlink');
       menuLists =
@@ -162,16 +162,16 @@ class ObjectInfo extends React.Component {
           ? menuItems.filter(item => item.object_type === OBJECT_TYPE.PAGE)
           : null;
 
-      photosCount = wobject.photos_count;
+      photosCount = _.get(wobject, ['photos_count'], 0);
 
-      const filtered = _.filter(wobject.fields, ['name', objectFields.tagCloud]);
-      tags = _.orderBy(filtered, ['weight'], ['desc']);
+      const filteredTags = _.filter(wobject.fields, ['name', objectFields.tagCloud]);
+      tags = _.orderBy(filteredTags, ['weight'], ['desc']);
 
       const filteredPhones = _.filter(wobject.fields, ['name', objectFields.phone]);
       phones = _.orderBy(filteredPhones, ['weight'], ['desc']);
     }
 
-    const linkField = getInnerFieldWithMaxWeight(wobject, objectFields.link);
+    const linkField = _.get(wobject, [objectFields.link], '');
     let profile = linkField
       ? {
           facebook: linkField[linkFields.linkFacebook] || '',
@@ -235,7 +235,7 @@ class ObjectInfo extends React.Component {
           })}
           to={`/object/${wobject.author_permlink}/${URL.SEGMENT.MENU}#${item.author_permlink}`}
         >
-          {item.alias || item.name || getFieldWithMaxWeight(item, objectFields.name)}
+          {item.alias || getFieldWithMaxWeight(item, objectFields.name) || item.default_name}
         </LinkButton>
       );
       switch (item.id) {
@@ -339,7 +339,7 @@ class ObjectInfo extends React.Component {
             </div>
           ) : null,
         )}
-        {listItem(objectFields.title, short)}
+        {listItem(objectFields.title, title)}
         {listItem(
           objectFields.background,
           background ? (
@@ -375,7 +375,7 @@ class ObjectInfo extends React.Component {
               ) : null,
             )}
             {hasType(wobject, OBJECT_TYPE.PAGE) && listItem(objectFields.pageContent, null)}
-            {isRenderMenu && menuSection}
+            {withMenu && menuSection}
             {isEditMode && (
               <div className="object-sidebar__section-title">
                 <FormattedMessage id="about" defaultMessage="About" />
@@ -391,7 +391,7 @@ class ObjectInfo extends React.Component {
               ),
             )}
             {listItem(objectFields.description, <DescriptionInfo description={description} />)}
-            {wobject.chartid && (
+            {wobject[CHART_ID] && (
               <React.Fragment>
                 <InstrumentLongTermStatistics
                   wobject={this.props.wobject}
@@ -453,7 +453,7 @@ class ObjectInfo extends React.Component {
                 )}
               </div>,
             )}
-            {isRenderGallery && (hasGalleryImg || accessExtend) ? (
+            {withGallery && (hasGalleryImg || accessExtend) ? (
               <div className="field-info">
                 {accessExtend && (
                   <div className="proposition-line">
@@ -602,7 +602,7 @@ class ObjectInfo extends React.Component {
             )}
             {listItem(objectFields.link, <SocialLinks profile={profile} />)}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
-            {accessExtend && settingsSection}
+            {accessExtend && withSettingsBlock && settingsSection}
           </div>
         )}
       </React.Fragment>

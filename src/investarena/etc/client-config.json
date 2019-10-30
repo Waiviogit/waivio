@@ -140,7 +140,8 @@
     "searchInstrumentsStatistic": "/search-instruments-stats",
     "top": "/top-performers",
     "instrumentStatistic": "/instrument-statistics",
-    "userStatistics": "/user-statistics"
+    "userStatistics": "/user-statistics",
+    "instrumentPerformers": "/instrument-performers"
   },
   "forecasts": {
     "activeForecasts": "/active_forecasts"
@@ -166,5 +167,8 @@
 
   "charts": {
     "getChartsData": "https://informer.maximarkets.org/wss/quotation/getstatisticshistory"
+  },
+  "statistics": {
+    "getUserStatistics": "/user-summary-statistics/"
   }
 }

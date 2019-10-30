@@ -225,15 +225,23 @@ export const getObjectAlbums = state => fromGallery.getObjectAlbums(state.galler
 export const getIsObjectAlbumsLoading = state =>
   fromGallery.getIsObjectAlbumsLoading(state.gallery);
 
+export const getIsMapModalOpen = state => fromMap.getIsMapModalOpen(state.map);
+
+// common selectors
+
 export const getCurrentLocation = state => state.router.location;
 export const getQueryString = state => state.router.location.search;
 
-export const getIsMapModalOpen = state => fromMap.getIsMapModalOpen(state.map);
+export const getSuitableLanguage = state => {
+  const settingsLocale = getLocale(state);
+  if (settingsLocale !== 'auto') return settingsLocale;
+
+  const usedLocale = getUsedLocale(state);
+  return usedLocale || 'en-US';
+};
 
 export const getPerformersStatistic = state =>
   fromTopPerformers.getPerformersStatistic(state.topPerformers);
-export const getInstrumentToCompare = state =>
-  fromTopPerformers.getInstrumentToCompare(state.topPerformers);
 export const getPerformersStatisticLoading = state =>
   fromTopPerformers.getPerformersStatisticLoading(state.topPerformers);
 export const getPerformersStatisticLoaded = state =>

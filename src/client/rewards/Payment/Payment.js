@@ -11,31 +11,42 @@ const Payment = ({ match, intl, userName }) => {
   const [sponsors, setSponsors] = useState({});
   const [payable, setPayable] = useState({});
 
+  const requestParams = {
+    sponsor: match.path === '/rewards/payables/@:userName' ? userName : match.params.userName,
+    user: match.path === '/rewards/payables/@:userName' ? match.params.userName : userName,
+  };
+
   useEffect(() => {
-    getLenders({
-      sponsor: userName,
-      user: match.params.userName,
-    })
+    getLenders(requestParams)
       .then(data => {
         setSponsors(data.histories);
         setPayable(data.payable);
       })
       .catch(e => console.log(e));
   }, []);
+
+  const titleName =
+    match.path === '/rewards/payables/@:userName'
+      ? intl.formatMessage({
+          id: 'payment_page_payables',
+          defaultMessage: 'Payables',
+        })
+      : intl.formatMessage({
+          id: 'payment_page_receivables',
+          defaultMessage: 'Receivables',
+        });
+
   return (
     <div className="Payment">
       <div className="Payment__title">
         <div className="Payment__title-payment">
-          {intl.formatMessage({
-            id: 'payables_page_payables',
-            defaultMessage: 'Payables',
-          })}
+          {titleName}
           {` > @${userName} (${payable} SBD)`}
         </div>
         <div className="Payment__title-pay">
           <Link to={'/rewards/pay-now'}>
             {intl.formatMessage({
-              id: 'payables_page_pay_now',
+              id: 'payment_page_pay_now',
               defaultMessage: 'Pay now',
             })}
             (mock)
@@ -45,13 +56,13 @@ const Payment = ({ match, intl, userName }) => {
       <div className="Payment__information-row">
         <div className="Payment__information-row-important">
           {intl.formatMessage({
-            id: 'payables_page_important',
+            id: 'payment_page_important',
             defaultMessage: 'Important',
           })}
           :
         </div>
         {intl.formatMessage({
-          id: 'payables_page_transfers_with_hashtag_included',
+          id: 'payment_page_transfers_with_hashtag_included',
           defaultMessage: 'Only transfer with hashtag "#waivio" are included',
         })}
       </div>

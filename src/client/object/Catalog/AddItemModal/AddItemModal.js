@@ -6,7 +6,11 @@ import { Button, Modal, message, Select, Form } from 'antd';
 import _ from 'lodash';
 import { getAppendData } from '../../../helpers/wObjectHelper';
 import { getFieldWithMaxWeight } from '../../../object/wObjectHelper';
-import { getAuthenticatedUserName, getFollowingObjectsList, getLocale } from '../../../reducers';
+import {
+  getAuthenticatedUserName,
+  getFollowingObjectsList,
+  getSuitableLanguage,
+} from '../../../reducers';
 import { appendObject } from '../../appendActions';
 import { objectFields } from '../../../../common/constants/listOfFields';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
@@ -22,7 +26,7 @@ import './AddItemModal.less';
 @connect(
   state => ({
     currentUserName: getAuthenticatedUserName(state),
-    locale: getLocale(state),
+    locale: getSuitableLanguage(state),
     followingList: getFollowingObjectsList(state),
   }),
   {
@@ -225,7 +229,7 @@ class AddItemModal extends Component {
           </Modal>
         )}
         <div className="modal-content__row align-left tittle">
-          {intl.formatMessage({ id: 'add_object', defaultMessage: 'Add object' })}
+          {intl.formatMessage({ id: 'add_object', defaultMessage: 'Add topic' })}
         </div>
         <SearchObjectsAutocomplete
           handleSelect={this.handleObjectSelect}

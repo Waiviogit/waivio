@@ -13,6 +13,7 @@ import {
   getObject,
   getLocale,
   getReadLanguages,
+  getObjectAlbums,
 } from '../reducers';
 
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -205,11 +206,12 @@ export const getObjectComments = (author, permlink, category = 'waivio-object') 
 ) => {
   const state = getState();
   const wobject = getObject(state);
+  const albums = getObjectAlbums(state);
   return dispatch({
     type: GET_USER_COMMENTS.ACTION,
     payload: steemAPI
       .sendAsync('get_state', [`/${category}/@${author}/${permlink}`])
-      .then(apiRes => mapObjectAppends(apiRes.content, wobject)),
+      .then(apiRes => mapObjectAppends(apiRes.content, wobject, albums)),
     meta: { sortBy: 'comments', category: author, limit: 10 },
   });
 };
