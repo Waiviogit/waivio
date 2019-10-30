@@ -723,7 +723,7 @@
   "vote_count": "Votes: {votes}",
   "user_expertise": "Expertise",
   "experts": "Experts",
-  "onlyRelated": "Show only related posts",
+  "onlyRelated": "Only trade topics",
   "ready_to_publish": "Ready to publish",
   "related_objects": "Related",
   "type": "Type",
