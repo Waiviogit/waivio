@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _, { compact, flatten, keyBy, union } from 'lodash';
 import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -56,6 +56,8 @@ import ObjectCardView from '../objectCard/ObjectCardView';
 import { getNewsFilterLayout } from './NewsFilter/newsFilterHelper';
 import CreateObject from '../post/CreateObjectModal/CreateObject';
 import { baseUrl } from '../../waivioApi/routes';
+import { getObjectsByIds } from '../../waivioApi/ApiClient';
+import { getClientWObj } from '../adapters';
 import './AppendForm.less';
 
 @connect(
@@ -128,20 +130,26 @@ export default class AppendForm extends Component {
     isValidImage: false,
     sliderVisible: false,
     loading: false,
+    restoring: false,
     selectedObject: null,
     allowList: [[]],
     ignoreList: [],
   };
 
+  /* eslint-disable react/no-did-mount-set-state */
   componentDidMount = () => {
-    if (this.props.sliderMode) {
+    const { sliderMode, wObject } = this.props;
+    if (sliderMode) {
       if (!this.state.sliderVisible) {
-        // eslint-disable-next-line react/no-did-mount-set-state
         this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
       }
     }
     this.calculateVoteWorth(this.state.votePercent);
+    if (wObject[objectFields.newsFilter]) {
+      this.setState({ restoring: true }, this.restoreNewsFilterObjects);
+    }
   };
+  /* eslint-enable react/no-did-mount-set-state */
 
   onSubmit = async formValues => {
     this.setState({ loading: true });
@@ -174,7 +182,7 @@ export default class AppendForm extends Component {
         message.error(
           this.props.intl.formatMessage({
             id: 'couldnt_append',
-            defaultMessage: "Couldn't add the field to object.",
+            defaultMessage: "Couldn't add the field to topic.",
           }),
         );
         console.log(e);
@@ -193,7 +201,7 @@ export default class AppendForm extends Component {
       this.props.intl.formatMessage(
         {
           id: 'added_field_to_wobject',
-          defaultMessage: `You successfully have added the {field} field to {wobject} object`,
+          defaultMessage: `You successfully have added the {field} field to {wobject} topic`,
         },
         {
           field: getFieldValue('currentField'),
@@ -393,17 +401,17 @@ export default class AppendForm extends Component {
     });
   };
 
-  // News Filter Block
+  // region News Filter Block
 
   // eslint-disable-next-line react/sort-comp
   addNewNewsFilterLine = () => {
-    const allowList = this.state.allowList;
+    const allowList = [...this.state.allowList];
     allowList[this.state.allowList.length] = [];
     this.setState({ allowList });
   };
 
   handleAddObjectToRule = (obj, rowIndex, ruleIndex) => {
-    const allowList = this.state.allowList;
+    const allowList = [...this.state.allowList];
     if (obj && rowIndex >= 0 && allowList[rowIndex] && ruleIndex >= 0) {
       allowList[rowIndex][ruleIndex] = obj;
       this.setState({ allowList });
@@ -411,22 +419,22 @@ export default class AppendForm extends Component {
   };
 
   deleteRuleItem = (rowNum, id) => {
-    const allowList = this.state.allowList;
+    const allowList = [...this.state.allowList];
     allowList[rowNum] = _.filter(allowList[rowNum], o => o.id !== id);
     this.setState({ allowList });
   };
 
   handleAddObjectToIgnoreList = obj => {
-    const ignoreList = this.state.ignoreList;
+    const ignoreList = [...this.state.ignoreList];
     ignoreList.push(obj);
     this.setState({ ignoreList });
   };
 
   handleRemoveObjectFromIgnoreList = obj => {
-    let ignoreList = this.state.ignoreList;
-    ignoreList = _.filter(ignoreList, o => o.id !== obj.id);
+    const ignoreList = _.filter(this.state.ignoreList, o => o.id !== obj.id);
     this.setState({ ignoreList });
   };
+  // endregion
 
   calculateVoteWorth = value => {
     const { user, rewardFund, rate } = this.props;
@@ -456,7 +464,7 @@ export default class AppendForm extends Component {
           message.error(
             intl.formatMessage({
               id: 'at_least_one',
-              defaultMessage: 'You should add at least one object',
+              defaultMessage: 'You should add at least one topic',
             }),
           );
         }
@@ -657,6 +665,34 @@ export default class AppendForm extends Component {
       }
       return rule;
     });
+  };
+
+  restoreNewsFilterObjects = () => {
+    const { wObject, usedLocale } = this.props;
+    const objectIds = union(
+      flatten(wObject[objectFields.newsFilter].allowList),
+      flatten(wObject[objectFields.newsFilter].ignoreList),
+    );
+    getObjectsByIds({ authorPermlinks: objectIds, locale: usedLocale })
+      .then(res => {
+        const clientWobjects = keyBy(
+          res.wobjects.map(serverObj => getClientWObj(serverObj)),
+          'author_permlink',
+        );
+        const allowList = wObject[objectFields.newsFilter].allowList.map(rule =>
+          compact(rule.map(id => clientWobjects[id])),
+        );
+        const ignoreList = compact(
+          wObject[objectFields.newsFilter].ignoreList.map(
+            ignoredObjectId => clientWobjects[ignoredObjectId],
+          ),
+        );
+        this.setState({ allowList, ignoreList, restoring: false });
+      })
+      .catch(error => {
+        console.log('News filter restoring failed', error.message);
+        this.setState({ restoring: false });
+      });
   };
 
   renderContentValue = currentField => {
@@ -1344,7 +1380,7 @@ export default class AppendForm extends Component {
         );
       }
       case objectFields.newsFilter:
-        return getNewsFilterLayout(this);
+        return getNewsFilterLayout(this, this.state.restoring);
       default:
         return null;
     }
@@ -1361,7 +1397,7 @@ export default class AppendForm extends Component {
       wObject,
     } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
-    const { loading } = this.state;
+    const { loading, restoring } = this.state;
 
     const isCustomSortingList =
       wObject.object_type &&
@@ -1457,7 +1493,12 @@ export default class AppendForm extends Component {
 
         {getFieldValue('currentField') !== 'auto' && (
           <Form.Item className="AppendForm__bottom__submit">
-            <Button type="primary" loading={loading} disabled={loading} onClick={this.handleSubmit}>
+            <Button
+              type="primary"
+              loading={loading}
+              disabled={loading || restoring}
+              onClick={this.handleSubmit}
+            >
               <FormattedMessage
                 id={loading ? 'post_send_progress' : 'append_send'}
                 defaultMessage={loading ? 'Submitting' : 'Suggest'}

@@ -74,7 +74,7 @@ class ObjectSideButton extends Component {
         className="md-sb-button action-btn"
         title={intl.formatMessage({
           id: 'add_object',
-          defaultMessage: 'Add an object',
+          defaultMessage: 'Add topic',
         })}
         onClick={this.onClick}
       >

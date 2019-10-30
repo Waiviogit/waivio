@@ -193,7 +193,7 @@
   "topics": "Témy",
   "topics_placeholder": "Pridať príbeh témy tu",
   "topics_extra": "Samostatné témy s čiarkami. Len malé písmená, čísla a pomlčky znak je povolené.",
-  "topics_error_empty": "Please enter topics",
+  "topics_error_empty": "Please enter hashtags",
   "topics_error_count": "Musíte pridať 1 až 5 tém.",
   "topics_error_invalid_topic": "Téma {topic} je neplatný.",
   "story_placeholder": "Napíšte svoj príbeh...",

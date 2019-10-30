@@ -151,7 +151,7 @@ export const assignProposition = ({ companyAuthor, companyPermlink, resPermlink,
       parent_permlink: companyPermlink,
       author: username,
       permlink: resPermlink,
-      title: 'reserve object for rewards',
+      title: 'reserve topic for rewards',
       body: `User @${username} reserve [object](https://www.waivio.com/object/${objPermlink}), from [campaign](https://www.waivio.com/@${companyAuthor}/${companyPermlink})`,
       json_metadata: JSON.stringify({
         waivioRewards: { type: 'waivio_assign_campaign', approved_object: objPermlink },
@@ -182,7 +182,7 @@ export const declineProposition = ({
       parent_permlink: companyPermlink,
       author: username,
       permlink: unreservationPermlink,
-      title: 'reject object for rewards',
+      title: 'reject topic for rewards',
       body: `User @${username} reject [object](https://www.waivio.com/object/${objPermlink}), from [campaign](https://www.waivio.com/@${companyAuthor}/${companyPermlink})`,
       json_metadata: JSON.stringify({
         waivioRewards: {
@@ -212,7 +212,7 @@ export const activateCampaign = (company, campaignPermlink) => (
       parent_permlink: rewardPostContainerData.permlink,
       author: username,
       permlink: campaignPermlink,
-      title: 'activate object for rewards',
+      title: 'activate topic for rewards',
       body: `Campaign ${company.name} was activated by ${username} `,
       json_metadata: JSON.stringify({
         // eslint-disable-next-line no-underscore-dangle
@@ -242,7 +242,7 @@ export const inactivateCampaign = (company, inactivatePermlink) => (
       parent_permlink: company.activation_permlink,
       author: username,
       permlink: inactivatePermlink,
-      title: 'unactivate object for rewards',
+      title: 'unactivate topic for rewards',
       body: `Campaign ${company.name} was inactivated by ${username} `,
       json_metadata: JSON.stringify({
         // eslint-disable-next-line no-underscore-dangle

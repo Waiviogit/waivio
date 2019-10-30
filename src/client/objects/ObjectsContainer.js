@@ -19,7 +19,7 @@ const ObjectsContainer = ({ history }) => {
     <div className="Objects">
       <div className="Objects__title">
         <div className="Objects__message">
-          <FormattedMessage id="objects_title" defaultMessage="Discover more objects" />
+          <FormattedMessage id="objects_title" defaultMessage="Discover more topics" />
         </div>
         <SearchObjectsAutocomplete handleSelect={handleSelectObject} />
       </div>

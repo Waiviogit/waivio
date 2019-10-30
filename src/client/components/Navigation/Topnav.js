@@ -375,7 +375,7 @@ class Topnav extends React.Component {
                 overlayClassName="Notifications__popover-overlay"
                 title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
               >
-                <Icon type="fire" theme="filled" style={{ fontSize: '26px', marginRight: '0' }} />
+                <Icon type="fire" className="Topnav__fire-icon" />
               </PopoverContainer>
             </BTooltip>
           </Menu.Item>

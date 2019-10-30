@@ -23,7 +23,7 @@ export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
     case OBJECT_TYPE.HASHTAG:
       break;
     default:
-      if (menuItems) {
+      if (menuItems && menuItems.length) {
         url = `${pathname}/menu#${(sortCustom &&
           sortCustom.find(item => item !== TYPES_OF_MENU_ITEM.BUTTON)) ||
           menuItems[0].author_permlink}`;
@@ -66,6 +66,7 @@ export const getFieldsWithMaxWeight = (wObj, usedLocale = 'en-US', defaultLocale
     objectFields.website,
     objectFields.link,
     objectFields.status,
+    objectFields.newsFilter,
   ];
 
   const fieldsByLocale = {
