@@ -439,12 +439,12 @@ class Editor extends React.Component {
           title={
             <FormattedMessage
               id="linked_objects_tooltip"
-              defaultMessage="Add objects those described in the post, and set the value of belonging"
+              defaultMessage="Add topics those described in the post, and set the value of belonging"
             />
           }
         >
           <label className="Editor__label" htmlFor="title">
-            <FormattedMessage id="add_object" defaultMessage="Add object" />
+            <FormattedMessage id="add_object" defaultMessage="Add topic" />
           </label>
         </BTooltip>
       </div>

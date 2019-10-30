@@ -16,7 +16,7 @@ const DiscoverObjects = ({ intl, history, match }) => {
     <div className="shifted">
       <Helmet>
         <title>
-          {intl.formatMessage({ id: 'objects_title', defaultMessage: 'Discover objects' })} - Waivio
+          {intl.formatMessage({ id: 'objects_title', defaultMessage: 'Discover topics' })} - Waivio
         </title>
       </Helmet>
       <div className="feed-layout container">

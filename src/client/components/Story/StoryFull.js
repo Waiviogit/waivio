@@ -516,7 +516,7 @@ class StoryFull extends React.Component {
             <Collapse.Panel
               header={`${intl.formatMessage({
                 id: 'linked_objects',
-                defaultMessage: 'Linked objects',
+                defaultMessage: 'Linked topics',
               })} ${linkedObjects.length}`}
               key="1"
             >

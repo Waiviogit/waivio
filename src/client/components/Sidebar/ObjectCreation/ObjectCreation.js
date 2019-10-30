@@ -73,7 +73,7 @@ class ObjectCreation extends React.Component {
           <Icon type="codepen" className="SidebarContentBlock__icon" />
           {this.props.intl.formatMessage({
             id: 'create_new_object',
-            defaultMessage: 'Create new object',
+            defaultMessage: 'Create new topic',
           })}
         </h4>
         <div className="SidebarContentBlock__content">

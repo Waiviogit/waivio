@@ -182,7 +182,7 @@ export default class AppendForm extends Component {
         message.error(
           this.props.intl.formatMessage({
             id: 'couldnt_append',
-            defaultMessage: "Couldn't add the field to object.",
+            defaultMessage: "Couldn't add the field to topic.",
           }),
         );
         console.log(e);
@@ -201,7 +201,7 @@ export default class AppendForm extends Component {
       this.props.intl.formatMessage(
         {
           id: 'added_field_to_wobject',
-          defaultMessage: `You successfully have added the {field} field to {wobject} object`,
+          defaultMessage: `You successfully have added the {field} field to {wobject} topic`,
         },
         {
           field: getFieldValue('currentField'),
@@ -464,7 +464,7 @@ export default class AppendForm extends Component {
           message.error(
             intl.formatMessage({
               id: 'at_least_one',
-              defaultMessage: 'You should add at least one object',
+              defaultMessage: 'You should add at least one topic',
             }),
           );
         }

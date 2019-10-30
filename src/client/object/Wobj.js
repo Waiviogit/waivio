@@ -172,7 +172,7 @@ export default class Wobj extends React.Component {
           <meta property="og:description" content={desc} />
           <meta property="og:site_name" content="Waivio" />
           <meta property="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
-          <meta property="twitter:site" content={'@waivio'} />
+          <meta property="twitter:site" content={'@investArena'} />
           <meta property="twitter:title" content={objectName} />
           <meta property="twitter:description" content={desc} />
           <meta

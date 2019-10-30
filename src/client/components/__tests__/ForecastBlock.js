@@ -81,7 +81,7 @@ describe('<ForecastBlock />', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it("should render component by object with props in rightObjectSidebar if it's chart object", () => {
+  it("should render component by topic with props in rightObjectSidebar if it's chart topic", () => {
     const props = {
       username: 'z1wo5',
       quoteSecurity: 'AUDCAD',
@@ -93,7 +93,7 @@ describe('<ForecastBlock />', () => {
     expect(mainDiv).toHaveLength(1);
   });
 
-  it("should not render component by object in rightObjectSidebar if it's chart object", () => {
+  it("should not render component by topic in rightObjectSidebar if it's chart topic", () => {
     const props = {
       username: 'z1wo5',
       quoteSecurity: 'AUDCAD',
@@ -104,7 +104,7 @@ describe('<ForecastBlock />', () => {
     expect(mainDiv).toHaveLength(0);
   });
 
-  it("should not render component by object without render place if it's chart object", () => {
+  it("should not render component by topic without render place if it's chart topic", () => {
     const props = {
       username: 'z1wo5',
       quoteSecurity: 'AUDCAD',
@@ -114,7 +114,7 @@ describe('<ForecastBlock />', () => {
     expect(mainDiv).toHaveLength(0);
   });
 
-  it("should not render component by object without render place with props if it's chart object", () => {
+  it("should not render component by topic without render place with props if it's chart topic", () => {
     const props = {
       username: 'z1wo5',
       quoteSecurity: 'AUDCAD',
@@ -125,7 +125,7 @@ describe('<ForecastBlock />', () => {
     expect(mainDiv).toHaveLength(0);
   });
 
-  it("should not render component by object in rightObjectSidebar if it's not chart object", () => {
+  it("should not render component by topic in rightObjectSidebar if it's not chart topic", () => {
     const props = {
       username: 'z1wo5',
       quoteSecurity: '',
@@ -136,7 +136,7 @@ describe('<ForecastBlock />', () => {
     expect(mainDiv).toHaveLength(0);
   });
 
-  it("should not render component by object without render place if it's not chart object", () => {
+  it("should not render component by topic without render place if it's not chart topic", () => {
     const props = {
       username: 'z1wo5',
       quoteSecurity: '',

@@ -222,15 +222,15 @@ describe('getFieldWithMaxWeight', () => {
 });
 
 describe('getFieldsWithMaxWeight', () => {
-  it('should return empty object if wObj is empty', () => {
+  it('should return empty topic if wObj is empty', () => {
     const wObject = {};
     expect(getFieldsWithMaxWeight(wObject)).toEqual(null);
   });
-  it('should return empty object if wObj.fields is empty', () => {
+  it('should return empty topic if wObj.fields is empty', () => {
     const wObject = { fields: [] };
     expect(getFieldsWithMaxWeight(wObject)).toEqual(null);
   });
-  it('should return object with actual fields', () => {
+  it('should return topic with actual fields', () => {
     const expected = {
       name: 'milk',
       newsFilter: 'blog',
@@ -238,7 +238,7 @@ describe('getFieldsWithMaxWeight', () => {
     };
     expect(getFieldsWithMaxWeight(mockObject.SampleWObject)).toEqual(expected);
   });
-  it('should return object with actual fields if the same fields in a row with same weight', () => {
+  it('should return topic with actual fields if the same fields in a row with same weight', () => {
     const expected = {
       name: 'milk',
       newsFilter: 'steem',
@@ -246,7 +246,7 @@ describe('getFieldsWithMaxWeight', () => {
     };
     expect(getFieldsWithMaxWeight(mockObject.wObjectInRowDataWithSameWeigth)).toEqual(expected);
   });
-  it('should return object with actual fields if the same fields in a row with different weight', () => {
+  it('should return topic with actual fields if the same fields in a row with different weight', () => {
     const expected = {
       name: 'milk',
       newsFilter: 'allowList',
@@ -256,7 +256,7 @@ describe('getFieldsWithMaxWeight', () => {
       expected,
     );
   });
-  it('should return object with actual fields if the same fields not in a row with same weight', () => {
+  it('should return topic with actual fields if the same fields not in a row with same weight', () => {
     const expected = {
       name: 'milk',
       newsFilter: 'steem',
@@ -264,7 +264,7 @@ describe('getFieldsWithMaxWeight', () => {
     };
     expect(getFieldsWithMaxWeight(mockObject.wObjectNotInRowDataWithSameWeigth)).toEqual(expected);
   });
-  it('should return object with actual fields if the same fields not in a row with different weight', () => {
+  it('should return topic with actual fields if the same fields not in a row with different weight', () => {
     const expected = {
       name: 'milk',
       newsFilter: 'allowList',
@@ -274,7 +274,7 @@ describe('getFieldsWithMaxWeight', () => {
       expected,
     );
   });
-  it('should return object with actual fields if the same fields, more then two, in a row with same weight', () => {
+  it('should return topic with actual fields if the same fields, more then two, in a row with same weight', () => {
     const expected = {
       name: 'milk',
       newsFilter: 'steem',
@@ -284,7 +284,7 @@ describe('getFieldsWithMaxWeight', () => {
       expected,
     );
   });
-  it('should return object with actual fields if the same fields, more then two, in a row with different weight', () => {
+  it('should return topic with actual fields if the same fields, more then two, in a row with different weight', () => {
     const expected = {
       name: 'milk',
       newsFilter: 'sometext',
@@ -294,7 +294,7 @@ describe('getFieldsWithMaxWeight', () => {
       getFieldsWithMaxWeight(mockObject.wObjectMoreTwoObjInRowDataWithDifferentWeigth),
     ).toEqual(expected);
   });
-  it('should return object with actual fields if the same fields, more then two, not in a row with same weight', () => {
+  it('should return topic with actual fields if the same fields, more then two, not in a row with same weight', () => {
     const expected = {
       name: 'milk',
       newsFilter: 'steem',
@@ -304,7 +304,7 @@ describe('getFieldsWithMaxWeight', () => {
       expected,
     );
   });
-  it('should return object with actual fields if the same fields, more then two, not in a row with different weight', () => {
+  it('should return topic with actual fields if the same fields, more then two, not in a row with different weight', () => {
     const expected = {
       name: 'milk',
       newsFilter: 'allow',
