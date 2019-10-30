@@ -6,8 +6,8 @@ import './UserProfitability.less';
 const UserProfitability = ({ statisticsData }) => (
   <div
     className={classNames('UserProfitability', {
-      success: statisticsData.successful_count > 0,
-      unsuccess: statisticsData.failed_count < 0,
+      success: statisticsData.pips > 0,
+      unsuccess: statisticsData.pips < 0,
     })}
   >
     <div className="UserProfitability tooltip">
