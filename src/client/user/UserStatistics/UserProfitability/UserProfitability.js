@@ -10,6 +10,7 @@ const UserProfitability = ({ statisticsData }) => (
       unsuccess: statisticsData.pips < 0,
     })}
   >
+    {console.log(' statisticsData.failed_count', statisticsData.failed_count)}
     <div className="UserProfitability tooltip">
       <div className="UserProfitability__value">{`${statisticsData.pips}`}</div>
       <div className="UserProfitability tooltiptext">

@@ -5,9 +5,12 @@ import UserStatisticContainer from './UserStatisticContainer/UserStatisticContai
 import UserForecastInstruments from './UserForecastInstruments/UserForecastInstruments';
 import api from '../../../investarena/configApi/apiResources';
 import './UserStatistics.less';
+import UserInstrumentsTable from './UserInstrumentsTable/UserInstrumentsTable';
 
 const UserStatistics = ({ match }) => {
   const [statAccuracyData, setStatAccuracyData] = useState({});
+  const [sortOptions, setSortOptions] = useState({});
+  console.log(sortOptions);
   useEffect(() => {
     api.statistics
       .getUserStatistics(match.params.name)
@@ -27,6 +30,7 @@ const UserStatistics = ({ match }) => {
         </React.Fragment>
       )}
       {!isEmpty(mockInstrumentsData) && <UserForecastInstruments forecasts={mockInstrumentsData} />}
+      <UserInstrumentsTable setSortOptions={setSortOptions} />
     </div>
   );
 };
