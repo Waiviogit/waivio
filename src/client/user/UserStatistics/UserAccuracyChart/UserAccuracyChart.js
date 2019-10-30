@@ -6,10 +6,13 @@ import classNames from 'classnames';
 import './UserAccuracyChart.less';
 
 const UserAccuracyChart = ({ statisticsData }) => {
-  const percent = parseInt(
-    (100 * statisticsData.successful_count) /
-      (statisticsData.successful_count + statisticsData.failed_count),
-  );
+  const percent =
+    statisticsData.successful_count === 0
+      ? 0
+      : parseInt(
+          (100 * statisticsData.successful_count) /
+            (statisticsData.successful_count + statisticsData.failed_count),
+        );
   const data = [['', ''], ['success', percent], ['unsuccess', 100 - percent]];
   const options = {
     pieHole: 0.75,
