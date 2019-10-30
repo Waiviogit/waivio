@@ -26,7 +26,9 @@ const UserStatistics = ({ match }) => {
       {!isEmpty(statData) && (
         <UserStatisticContainer accuracy={statData} contentType={'profitability'} />
       )}
-      <UserForecastInstruments forecasts={mockInstrumentsObj} />
+      {!isEmpty(statData) && (
+        <UserForecastInstruments forecasts={mockInstrumentsObj} />
+      )}
     </div>
   );
 };
