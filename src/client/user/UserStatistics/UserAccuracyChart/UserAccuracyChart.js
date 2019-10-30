@@ -5,8 +5,12 @@ import Chart from 'react-google-charts';
 import classNames from 'classnames';
 import './UserAccuracyChart.less';
 
-const UserAccuracyChart = ({ value }) => {
-  const data = [['', ''], ['success', value], ['unsuccess', 100 - value]];
+const UserAccuracyChart = ({ statisticsData }) => {
+  const percent = parseInt(
+    (100 * statisticsData.successful_count) /
+      (statisticsData.successful_count + statisticsData.failed_count),
+  );
+  const data = [['', ''], ['success', percent], ['unsuccess', 100 - percent]];
   const options = {
     pieHole: 0.75,
     backgroundColor: 'transparent',
@@ -37,16 +41,16 @@ const UserAccuracyChart = ({ value }) => {
       </div>
       <div
         className={classNames('UserAccuracy__value', {
-          success: value > 50,
-          unsuccess: value < 50,
+          success: percent > 50,
+          unsuccess: percent < 50,
         })}
-      >{`${value}%`}</div>
+      >{`${percent}%`}</div>
     </div>
   );
 };
 
 UserAccuracyChart.propTypes = {
-  value: PropTypes.number.isRequired,
+  statisticsData: PropTypes.shape().isRequired,
 };
 
 export default injectIntl(UserAccuracyChart);

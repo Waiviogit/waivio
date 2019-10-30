@@ -37,7 +37,7 @@ const UserForecastInstruments = ({ intl, forecasts }) => {
       </div>
       <div className="UserForecastInstruments__chart">
         <Chart
-          width={'500px'}
+          width={'100%'}
           height={'400px'}
           chartType="PieChart"
           data={forecastsData}
