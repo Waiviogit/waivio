@@ -41,10 +41,13 @@ export const getFieldWithMaxWeight = (wObject, currentField, defaultValue = '') 
 
   const fieldValues = _.filter(wObject.fields, ['name', currentField]);
   if (!fieldValues.length) return defaultValue;
-  if (fieldValues[0].upvotedByModerator) return fieldValues[0].body;
+
   const orderedValues = _.orderBy(fieldValues, ['weight'], ['desc']);
 
-  if (!_.isEmpty(orderedValues[0].body)) return orderedValues[0].body;
+  if (!_.isEmpty(orderedValues[0].body)) {
+    const upvotedByModerator = orderedValues.find(field => field.upvotedByModerator);
+    return upvotedByModerator ? upvotedByModerator.body : orderedValues[0].body;
+  }
   return defaultValue;
 };
 
