@@ -1,5 +1,5 @@
 @import (reference) '../../../styles/custom.less';
-
+@import (reference) '../../../styles/modules/variables.less';
 .UserAccuracy {
   display: flex;
   position: relative;
@@ -15,7 +15,10 @@
   &__chart {
     display: flex;
     justify-content: center;
-    width: 95px;
+    width: 78px;
+    @media @xsmall {
+      width: 95px;
+    }
   }
 }
 
