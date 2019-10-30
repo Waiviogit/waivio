@@ -139,8 +139,8 @@ class DiscoverObjectsContent extends Component {
   );
 
   loadMoreRelatedObjects = () => {
-    const { dispatchGetObjectType, theType, filteredObjects } = this.props;
-    dispatchGetObjectType(theType.name, {
+    const { dispatchGetObjectType, typeName, filteredObjects } = this.props;
+    dispatchGetObjectType(typeName, {
       skip: filteredObjects.length || 0,
     });
   };
@@ -219,7 +219,12 @@ class DiscoverObjectsContent extends Component {
         ? filteredObjects.filter(obj => !_.isEmpty(obj.chartid))
         : [];
       objectsRenderer = validFilteredObjects.map(wObj => (
-        <InstrumentCardView key={wObj.id} wObject={wObj} showSmallVersion />
+        <InstrumentCardView
+          key={wObj.id}
+          wObject={wObj}
+          showSmallVersion
+          quoteSecurity={wObj.chartid}
+        />
       ));
     } else {
       objectsRenderer = filteredObjects.map(wObj => (
