@@ -229,7 +229,7 @@ class AddItemModal extends Component {
           </Modal>
         )}
         <div className="modal-content__row align-left tittle">
-          {intl.formatMessage({ id: 'add_object', defaultMessage: 'Add object' })}
+          {intl.formatMessage({ id: 'add_object', defaultMessage: 'Add topic' })}
         </div>
         <SearchObjectsAutocomplete
           handleSelect={this.handleObjectSelect}

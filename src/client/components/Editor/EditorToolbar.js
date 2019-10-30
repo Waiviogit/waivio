@@ -120,7 +120,7 @@ const EditorToolbar = ({ intl, onSelect, onSelectLinkedObject }) => {
               canCreateNewObject={false}
             />
           }
-          title={intl.formatMessage({ id: 'add_object', defaultMessage: 'Add object' })}
+          title={intl.formatMessage({ id: 'add_object', defaultMessage: 'Add topic' })}
           overlayClassName="EditorToolbar__popover"
           trigger="hover"
           placement="bottom"

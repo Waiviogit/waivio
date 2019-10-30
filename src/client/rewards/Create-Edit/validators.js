@@ -41,8 +41,8 @@ export const validatorMessagesCreator = messageFactory => ({
     'not_valid_campaign_name',
     'Invalid campaign name. Only alphanumeric characters, hyphens, underscores and dots are allowed',
   ),
-  checkPrimaryObject: messageFactory('select_prim_object', 'Add the primary object'),
-  checkSecondaryObject: messageFactory('add_secondary_object', 'Add the secondary object'),
+  checkPrimaryObject: messageFactory('select_prim_object', 'Add the primary topic'),
+  checkSecondaryObject: messageFactory('add_secondary_object', 'Add the secondary topic'),
 });
 
 export const validatorsCreator = (
