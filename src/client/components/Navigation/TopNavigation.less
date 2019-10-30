@@ -20,7 +20,6 @@
     cursor: pointer;
     color: @blue-botticelli;
     font-size: 16px;
-    font-weight: 500;
     &--active,
     &:hover {
       color: @primary-color;
@@ -30,7 +29,9 @@
   &__item {
     height: 30px;
     @media @small, @medium, @large {
-      height: 23px;
+      height: 45px;
+      padding-top: 10px;
+      font-weight: bold;
       &:not(:last-child) {
         margin-right: 12px;
       }
