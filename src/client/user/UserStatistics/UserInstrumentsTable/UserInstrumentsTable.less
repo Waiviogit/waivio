@@ -40,11 +40,14 @@
   display: flex;
   width: 100%;
   justify-content: space-around;
+  font-weight: bold;
   padding: 10px;
   &__instruments {
+    display: flex;
+    align-items: center;
     text-align: left;
     width: 33%;
-    padding-left: 10%;
+    padding-left: 5%;
   }
   &__deals {
     width: 33%;
@@ -54,4 +57,12 @@
     width: 33%;
     text-align: center;
   }
+}
+
+.UserInstrumentsTableRow__profit.success {
+  color: @green;
+}
+
+.UserInstrumentsTableRow__profit.unsuccess {
+  color: @red;
 }

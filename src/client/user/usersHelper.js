@@ -24,7 +24,7 @@ export const prepareForecastsData = forecasts => {
 export const prepareData = forecasts => {
   const forecastData = [['', '']];
   forecasts.forEach(forecast => {
-    forecastData.push([forecast.quote, forecast.count]);
+    forecastData.push([forecast.name, forecast.count]);
   });
   return forecastData;
 };

@@ -26,6 +26,7 @@ const UserStatisticsContainer = ({ match }) => {
         ...instrument,
         name: quotes[instrument.quote].name,
         wobjData: quotes[instrument.quote].wobjData,
+        market: quotes[instrument.quote].market,
       }));
   };
 
