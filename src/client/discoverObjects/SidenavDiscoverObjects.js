@@ -59,49 +59,6 @@ const menuConfig = {
     intlId: 'brokers',
     isCollapsible: false,
     linkTo: '/discover-objects/brokers',
-    // isCollapsed: true,
-    // items: [
-    //   {
-    //     name: '770Capital',
-    //     intlId: BROKER['770CAPITAL'],
-    //     linkTo: '/object/gkm-770capital',
-    //   },
-    //   {
-    //     name: 'DowMarkets',
-    //     intlId: BROKER.DOWMARKETS,
-    //     linkTo: '/object/mrp-dowmarkets',
-    //   },
-    //   {
-    //     name: 'LimeFx',
-    //     intlId: BROKER.LIMEFX,
-    //     linkTo: '/object/xfx-limefx',
-    //   },
-    //   {
-    //     name: 'Maximarkets',
-    //     intlId: BROKER.MAXIMARKETS,
-    //     linkTo: '/object/wsp-maximarkets',
-    //   },
-    //   {
-    //     name: 'Maxitrade',
-    //     intlId: BROKER.MAXITRADE,
-    //     linkTo: '/object/lir-maxitrade',
-    //   },
-    //   {
-    //     name: 'TradeAllCrypto',
-    //     intlId: BROKER.TRADEALLCRYPTO,
-    //     linkTo: '/object/ftt-tradeallcrypto',
-    //   },
-    //   {
-    //     name: 'Tradiva',
-    //     intlId: BROKER.TRADIVA,
-    //     linkTo: '/object/wqt-tradiva',
-    //   },
-    //   {
-    //     name: 'Umarkets',
-    //     intlId: BROKER.UMARKETS,
-    //     linkTo: '/object/prj-4e4ges-umarkets',
-    //   },
-    // ],
   },
   [menuSections.HASHTAGS]: {
     name: menuSections.HASHTAGS,
