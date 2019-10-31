@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { compact, concat, get, isEmpty, map, sortBy } from 'lodash';
 import * as searchActions from './searchActions';
 import formatter from '../helpers/steemitFormatter';
 import { getClientWObj } from '../adapters';
@@ -20,16 +20,16 @@ export default (state = initialState, action) => {
         searchError: false,
       };
     case searchActions.SEARCH_ASK_STEEM.SUCCESS: {
-      const askSteemResults = _.get(action.payload, 0, []);
-      const steemLookupResults = _.get(action.payload, 1, []);
-      const parsedSteemLookupResults = _.map(steemLookupResults, accountDetails => ({
+      const askSteemResults = get(action.payload, 0, []);
+      const steemLookupResults = get(action.payload, 1, []);
+      const parsedSteemLookupResults = map(steemLookupResults, accountDetails => ({
         ...accountDetails,
         reputation: formatter.reputation(accountDetails.reputation),
         name: accountDetails.account,
         type: 'user',
       }));
-      const sortedSteemLookupResults = _.sortBy(parsedSteemLookupResults, 'reputation').reverse();
-      const searchResults = _.compact(_.concat(sortedSteemLookupResults, askSteemResults));
+      const sortedSteemLookupResults = sortBy(parsedSteemLookupResults, 'reputation').reverse();
+      const searchResults = compact(concat(sortedSteemLookupResults, askSteemResults));
       return {
         ...state,
         searchResults,
@@ -47,7 +47,7 @@ export default (state = initialState, action) => {
       const { result, search } = action.payload;
       return {
         ...state,
-        autoCompleteSearchResults: _.isEmpty(search) ? [] : result,
+        autoCompleteSearchResults: isEmpty(search) ? [] : result,
       };
     }
     case searchActions.RESET_AUTO_COMPLETE_SEARCH: {
@@ -57,12 +57,12 @@ export default (state = initialState, action) => {
       };
     }
     case searchActions.SEARCH_OBJECTS.SUCCESS: {
-      const { result, search } = action.payload;
+      const { result, search, locale } = action.payload;
       return {
         ...state,
-        searchObjectsResults: _.isEmpty(search)
+        searchObjectsResults: isEmpty(search)
           ? []
-          : result.map(serverWObj => getClientWObj(serverWObj)),
+          : result.map(serverWObj => getClientWObj(serverWObj, locale)),
       };
     }
     case searchActions.SEARCH_OBJECTS.ERROR: {
@@ -72,7 +72,7 @@ export default (state = initialState, action) => {
       const { result, search } = action.payload;
       return {
         ...state,
-        searchObjectTypesResults: _.isEmpty(search) ? [] : result,
+        searchObjectTypesResults: isEmpty(search) ? [] : result,
       };
     }
 
@@ -80,7 +80,7 @@ export default (state = initialState, action) => {
       const { result, search } = action.payload;
       return {
         ...state,
-        searchUsersResults: _.isEmpty(search) ? [] : result,
+        searchUsersResults: isEmpty(search) ? [] : result,
       };
     }
     case searchActions.CLEAR_SEARCH_OBJECTS_RESULT: {
