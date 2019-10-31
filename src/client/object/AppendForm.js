@@ -287,7 +287,7 @@ export default class AppendForm extends Component {
         }
         case objectFields.newsFilter: {
           let rulesAllow = `\n`;
-          let rulesIgnore = '';
+          let rulesIgnore = '\nIgnore list:';
           let rulesCounter = 0;
 
           this.state.allowList.forEach(rule => {
@@ -303,7 +303,6 @@ export default class AppendForm extends Component {
 
           this.state.ignoreList.forEach((rule, index) => {
             if (!_.isEmpty(rule)) {
-              rulesIgnore = '\nIgnore list:';
               const dotOrComma = this.state.ignoreList.length - 1 === index ? '.' : ',';
               rulesIgnore += ` <a href="${baseUrl}/object/${rule.id}">${rule.id}</a>${dotOrComma}`;
             }
