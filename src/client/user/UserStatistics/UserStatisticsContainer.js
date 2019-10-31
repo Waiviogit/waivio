@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { intersectionBy, forEach, isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 import api from '../../../investarena/configApi/apiResources';
 import UserStatistics from './UserStatistics';
 
 const UserStatisticsContainer = ({ match }) => {
   const [statAccuracyData, setStatAccuracyData] = useState({});
   const [sortOptions, setSortOptions] = useState({});
-  const [statInstrumentsData, setStatInstrumentsData] = useState({});
+  const [statInstrumentsData, setStatInstrumentsData] = useState([]);
   const quotes = useSelector(state => state.quotesSettings);
   const parseOption = () => {
     const parsedOptions = {};
@@ -20,12 +20,13 @@ const UserStatisticsContainer = ({ match }) => {
   };
 
   const prepareInstrumentsData = (quotes, statData) => {
-    const parseQuotes = [];
-    forEach(quotes, q => {
-      q.quote = q.keyName;
-      parseQuotes.push(q);
-    });
-    return intersectionBy(statData, parseQuotes, 'quote');
+    return statData
+      .filter(instrument => Boolean(quotes[instrument.quote]))
+      .map(instrument => ({
+        ...instrument,
+        name: quotes[instrument.quote].name,
+        wobjData: quotes[instrument.quote].wobjData,
+      }));
   };
 
   const parsedInstrumentsData =
