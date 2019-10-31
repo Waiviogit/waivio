@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -16,6 +16,7 @@ import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { reserveActivatedCampaign } from '../../../waivioApi/ApiClient';
 import { rejectReservationCampaign } from '../../../waivioApi/ApiClient';
 import { generatePermlink } from '../../helpers/wObjectHelper';
+import { UsedLocaleContext } from '../../Wrapper';
 import './Proposition.less';
 
 const Proposition = ({
@@ -32,7 +33,8 @@ const Proposition = ({
   getSingleComment,
   authorizedUserName,
 }) => {
-  const proposedWobj = getClientWObj(wobj);
+  const usedLocale = useContext(UsedLocaleContext);
+  const proposedWobj = getClientWObj(wobj, usedLocale);
   const requiredObjectName = getFieldWithMaxWeight(
     proposition.required_object,
     'name',

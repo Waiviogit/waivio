@@ -29,7 +29,7 @@ import Proposition from '../../components/Proposition/Proposition';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
 import IconButton from '../../components/IconButton';
-import { getIsAuthenticated, getObjectAlbums } from '../../reducers';
+import { getIsAuthenticated, getObjectAlbums, getSuitableLanguage } from '../../reducers';
 import DescriptionInfo from './DescriptionInfo';
 import CreateImage from '../../object/ObjectGallery/CreateImage';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
@@ -44,6 +44,7 @@ import './ObjectInfo.less';
 @connect(state => ({
   albums: getObjectAlbums(state),
   isAuthenticated: getIsAuthenticated(state),
+  usedLocale: getSuitableLanguage(state),
 }))
 class ObjectInfo extends React.Component {
   static propTypes = {
@@ -53,6 +54,7 @@ class ObjectInfo extends React.Component {
     isEditMode: PropTypes.bool.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+    usedLocale: PropTypes.string.isRequired,
   };
 
   state = {
@@ -92,7 +94,7 @@ class ObjectInfo extends React.Component {
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
 
   render() {
-    const { location, wobject, userName, albums, isAuthenticated } = this.props;
+    const { location, wobject, userName, albums, isAuthenticated, usedLocale } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const { showModal, selectedField } = this.state;
     const { button, status, website, newsFilter } = wobject;
@@ -297,7 +299,7 @@ class ObjectInfo extends React.Component {
           )}
           {!isEditMode &&
             sortListItemsBy(
-              combineObjectMenu(menuItems.map(menuItem => getClientWObj(menuItem)), {
+              combineObjectMenu(menuItems.map(menuItem => getClientWObj(menuItem, usedLocale)), {
                 button,
                 news: Boolean(newsFilter),
               }),

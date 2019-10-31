@@ -20,6 +20,7 @@ const objectType = (state = initialState, action) => {
         fetching: true,
       };
     case wobjTypeActions.GET_OBJECT_TYPE.SUCCESS: {
+      const { initialLoad, locale } = action.meta;
       const {
         related_wobjects: relatedWobjects,
         hasMoreWobjects,
@@ -28,10 +29,9 @@ const objectType = (state = initialState, action) => {
       } = action.payload;
       let filteredObjects = [
         ...state.filteredObjects,
-        ...relatedWobjects.map(wObj => getClientWObj(wObj)),
+        ...relatedWobjects.map(wObj => getClientWObj(wObj, locale)),
       ];
-      if (action.meta.initialLoad)
-        filteredObjects = relatedWobjects.map(wObj => getClientWObj(wObj));
+      if (initialLoad) filteredObjects = relatedWobjects.map(wObj => getClientWObj(wObj, locale));
       const filtersList = filters ? omit(filters, ['map']) : {};
       const activeFilters = isEmpty(state.activeFilters)
         ? reduce(
