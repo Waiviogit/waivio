@@ -1,11 +1,14 @@
 import _ from 'lodash';
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Avatar from '../components/Avatar';
 import WeightTag from '../components/WeightTag';
 import FollowButton from '../widgets/FollowButton';
 import ObjectAvatar from '../components/ObjectAvatar';
+import { addressFields, objectFields, websiteFields } from '../../common/constants/listOfFields';
+import { UsedLocaleContext } from '../Wrapper';
+import { getClientWObj } from '../adapters';
 import './WaivioObject.less';
 import {
   getFieldWithMaxWeight,
@@ -19,26 +22,34 @@ export const getField = (item, field) => {
 };
 
 const WaivioObject = ({ wobj }) => {
-  let website = getInnerFieldWithMaxWeight(wobj, linkFields.website, linkFields.website);
-  const location = getField(wobj, 'locationCity');
-  const name = getFieldWithMaxWeight(wobj, objectFields.name) || wobj.default_name;
+  const usedLocale = useContext(UsedLocaleContext);
+  const wObject = getClientWObj(wobj, usedLocale);
+  const { address, default_name: defaultName, name, website } = wObject;
 
-  if (website && website.indexOf('http://') === -1 && website.indexOf('https://') === -1) {
-    website = `http://${website}`;
+  const objectName = name || defaultName;
+  const websiteTitle = (website && website[websiteFields.title]) || objectFields.website;
+  let websiteLink = website && website[websiteFields.link];
+  if (
+    websiteLink &&
+    websiteLink.indexOf('http://') === -1 &&
+    websiteLink.indexOf('https://') === -1
+  ) {
+    websiteLink = `http://${websiteLink}`;
   }
+  const location = address && address[addressFields.city];
   const pathName = `/object/${wobj.author_permlink}`;
   return (
     <div key={wobj.author_permlink} className="WaivioObject__user">
       <div className="WaivioObject__user__content">
         <div className="WaivioObject__user__links">
-          <Link to={{ pathname: pathName }} title={name}>
+          <Link to={{ pathname: pathName }} title={objectName}>
             <ObjectAvatar item={wobj} size={34} />
           </Link>
           <div className="WaivioObject__user__profile">
             <div className="WaivioObject__user__profile__header">
               <Link to={{ pathname: pathName }}>
                 <span className="WaivioObject__user__name">
-                  <span className="username">{name}</span>
+                  <span className="username">{objectName}</span>
                 </span>
               </Link>
               <WeightTag weight={wobj.weight} />
@@ -50,11 +61,11 @@ const WaivioObject = ({ wobj }) => {
                   {`${location} `}
                 </span>
               )}
-              {website && (
+              {websiteLink && (
                 <span>
                   <i className="iconfont icon-link text-icon" />
-                  <a target="_blank" rel="noopener noreferrer" href={website}>
-                    Link to website
+                  <a target="_blank" rel="noopener noreferrer" href={websiteLink}>
+                    {websiteTitle}
                   </a>
                 </span>
               )}
