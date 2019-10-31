@@ -1,51 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { injectIntl } from 'react-intl';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
-import UserStatisticContainer from './UserAccuracyContainer/UserAccuracyContainer';
+import UserAccuracyContainer from './UserAccuracyContainer/UserAccuracyContainer';
 import UserForecastInstruments from './UserForecastInstruments/UserForecastInstruments';
-import api from '../../../investarena/configApi/apiResources';
-import './UserStatistics.less';
 import UserInstrumentsTable from './UserInstrumentsTable/UserInstrumentsTable';
+import './UserStatistics.less';
 
-const UserStatistics = ({ match }) => {
-  const [statAccuracyData, setStatAccuracyData] = useState({});
-  const [sortOptions, setSortOptions] = useState({});
-  const [statInstrumentsData, setStatInstrumentsData] = useState({});
-
-  const parseOption = () => {
-    const parsedOptions = {};
-    if (!isEmpty(sortOptions)) {
-      parsedOptions.sortDirection = sortOptions.isActive ? -1 : 1;
-      parsedOptions.sortBy = sortOptions.currentItem;
-    }
-    return parsedOptions;
-  };
-
-  useEffect(() => {
-    const instrumentsSortOptions = parseOption();
-    api.statistics
-      .getUserStatistics(match.params.name)
-      .then(response => setStatAccuracyData(response.data));
-    api.statistics
-      .getUserInstrumentStatistics(match.params.name, instrumentsSortOptions)
-      .then(response => setStatInstrumentsData(response.data));
-  }, [sortOptions]);
+const UserStatistics = ({ accuracy, forecasts, setSortOptions }) => {
   return (
     <div className="UserStatistics">
-      {!isEmpty(statAccuracyData) && (
+      {!isEmpty(accuracy) && (
         <React.Fragment>
-          <UserStatisticContainer accuracy={statAccuracyData} contentType={'forecast'} />
-          <UserStatisticContainer accuracy={statAccuracyData} contentType={'profitability'} />
+          <UserAccuracyContainer accuracy={accuracy} contentType={'forecast'} />
+          <UserAccuracyContainer accuracy={accuracy} contentType={'profitability'} />
         </React.Fragment>
       )}
-      {!isEmpty(statInstrumentsData) && (
+      {!isEmpty(forecasts) && (
         <React.Fragment>
-          <UserForecastInstruments forecasts={statInstrumentsData} />
-          <UserInstrumentsTable forecasts={statInstrumentsData} setSortOptions={setSortOptions} />
+          <UserForecastInstruments forecasts={forecasts} />
+          <UserInstrumentsTable forecasts={forecasts} setSortOptions={setSortOptions} />
         </React.Fragment>
       )}
     </div>
   );
 };
 
-export default injectIntl(UserStatistics);
+UserStatistics.propTypes = {
+  forecasts: PropTypes.shape().isRequired,
+  accuracy: PropTypes.shape().isRequired,
+  setSortOptions: PropTypes.func.isRequired,
+};
+
+export default UserStatistics;
