@@ -28,7 +28,6 @@ import Avatar from '../Avatar';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import PostFeedEmbed from './PostFeedEmbed';
 import PostedFrom from './PostedFrom';
-import './StoryFull.less';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { getClientWObj } from '../../adapters';
 import PostForecast from './Story';
@@ -38,6 +37,8 @@ import { isValidForecast } from '../../helpers/forecastHelper';
 import PostQuotation from '../../../investarena/components/PostQuotation';
 import PostChart from '../../../investarena/components/PostChart';
 import WeightTag from '../WeightTag';
+import { UsedLocaleContext } from '../../Wrapper';
+import './StoryFull.less';
 
 @injectIntl
 @withAuthActions
@@ -65,6 +66,8 @@ class StoryFull extends React.Component {
     onLikeClick: PropTypes.func,
     onShareClick: PropTypes.func,
     onEditClick: PropTypes.func,
+    /* from context */
+    usedLocale: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -205,6 +208,7 @@ class StoryFull extends React.Component {
       onLikeClick,
       onShareClick,
       onEditClick,
+      usedLocale,
     } = this.props;
 
     const taggedObjects = [];
@@ -521,7 +525,7 @@ class StoryFull extends React.Component {
               key="1"
             >
               {_.map(linkedObjects, obj => {
-                const wobj = getClientWObj(obj);
+                const wobj = getClientWObj(obj, usedLocale);
                 return <ObjectCardView key={`${wobj.id}`} wObject={wobj} />;
               })}
             </Collapse.Panel>
@@ -535,7 +539,7 @@ class StoryFull extends React.Component {
               key="2"
             >
               {_.map(taggedObjects, obj => {
-                const wobj = getClientWObj(obj);
+                const wobj = getClientWObj(obj, usedLocale);
                 return <ObjectCardView key={`${wobj.id}`} wObject={wobj} />;
               })}
             </Collapse.Panel>
@@ -565,4 +569,8 @@ class StoryFull extends React.Component {
   }
 }
 
-export default StoryFull;
+export default props => (
+  <UsedLocaleContext.Consumer>
+    {context => <StoryFull {...props} usedLocale={context} />}
+  </UsedLocaleContext.Consumer>
+);

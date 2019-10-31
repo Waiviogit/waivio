@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { Icon } from 'antd';
 import Feed from '../feed/Feed';
-import { getFeed, getIsAuthenticated, getNightmode, getObject } from '../reducers';
+import { getFeed, getIsAuthenticated, getObject, getSuitableLanguage } from '../reducers';
 import {
   getFeedFromState,
   getFeedHasMoreFromState,
@@ -22,7 +22,6 @@ import { getIsLoadingPlatformState } from '../../investarena/redux/selectors/pla
 import { getDataCreatedAt, getDataForecast } from '../../investarena/helpers/diffDateTime';
 import { supportedObjectTypes } from '../../investarena/constants/objectsInvestarena';
 import PostQuotation from '../../investarena/components/PostQuotation/PostQuotation';
-import { quoteIdForWidget } from '../../investarena/constants/constantsWidgets';
 import './ObjectProfile.less';
 
 @withRouter
@@ -32,7 +31,7 @@ import './ObjectProfile.less';
     object: getObject(state),
     isAuthenticated: getIsAuthenticated(state),
     isLoadingPlatform: getIsLoadingPlatformState(state),
-    isNightMode: getNightmode(state),
+    usedLocale: getSuitableLanguage(state),
   }),
   {
     getObjectPosts,
@@ -48,17 +47,18 @@ export default class ObjectProfile extends React.Component {
     match: PropTypes.shape().isRequired,
     showPostModal: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
-    isNightMode: PropTypes.bool.isRequired,
     getObjectPosts: PropTypes.func.isRequired,
     getMoreObjectPosts: PropTypes.func.isRequired,
     limit: PropTypes.number,
     isLoadingPlatform: PropTypes.bool,
+    usedLocale: PropTypes.string,
   };
 
   static defaultProps = {
     limit: 10,
     location: {},
     isLoadingPlatform: true,
+    usedLocale: 'en-US',
   };
 
   componentDidMount() {
@@ -91,11 +91,11 @@ export default class ObjectProfile extends React.Component {
   }
 
   handleCreatePost = () => {
-    const { history, object } = this.props;
+    const { history, object, usedLocale } = this.props;
     if (object && object.author_permlink) {
       let redirectUrl = `/editor?object=[${object.name}](${object.author_permlink})`;
       if (!isEmpty(object.parent)) {
-        const parentObject = getClientWObj(object.parent);
+        const parentObject = getClientWObj(object.parent, usedLocale);
         redirectUrl += `&object=[${parentObject.name}](${parentObject.author_permlink})`;
       }
       history.push(redirectUrl);
@@ -103,7 +103,7 @@ export default class ObjectProfile extends React.Component {
   };
 
   render() {
-    const { feed, limit, isLoadingPlatform, object, isNightMode, isAuthenticated } = this.props;
+    const { feed, limit, isLoadingPlatform, object, isAuthenticated } = this.props;
     const wobjectname = this.props.match.params.name;
     const content = getFeedFromState('objectPosts', wobjectname, feed);
     const isFetching = getFeedLoadingFromState('objectPosts', wobjectname, feed);
