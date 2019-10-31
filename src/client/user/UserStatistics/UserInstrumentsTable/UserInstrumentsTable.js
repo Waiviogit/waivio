@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl } from 'react-intl';
 import { map } from 'lodash';
 import './UserInstrumentsTable.less';
 import UserInstrumentsTableHeader from './UserInstrumentsTableHeader';
@@ -11,7 +10,7 @@ const UserInstrumentsTable = ({ setSortOptions, forecasts }) => {
     <div className="UserInstrumentsTable">
       <UserInstrumentsTableHeader setSortOptions={setSortOptions} />
       {map(forecasts, forecast => (
-        <UserInstrumentsTableRow forecast={forecast} />
+        <UserInstrumentsTableRow forecast={forecast} quoteSecurity={forecast.quote} />
       ))}
     </div>
   );
@@ -21,4 +20,4 @@ UserInstrumentsTable.propTypes = {
   setSortOptions: PropTypes.func.isRequired,
 };
 
-export default injectIntl(UserInstrumentsTable);
+export default UserInstrumentsTable;
