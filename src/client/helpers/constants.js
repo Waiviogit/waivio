@@ -1,4 +1,4 @@
-export const BENEFICIARY_ACCOUNT = 'waiviodev';
+export const BENEFICIARY_ACCOUNT = 'investarena';
 export const BENEFICIARY_PERCENT = 1000;
 export const REFERRAL_PERCENT = 1000;
 
