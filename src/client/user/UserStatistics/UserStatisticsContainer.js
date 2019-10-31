@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
-import api from '../../../investarena/configApi/apiResources';
+import { prepareInstrumentsData } from '../usersHelper';
 import UserStatistics from './UserStatistics';
+import api from '../../../investarena/configApi/apiResources';
 
 const UserStatisticsContainer = ({ match }) => {
   const [statAccuracyData, setStatAccuracyData] = useState({});
@@ -17,17 +18,6 @@ const UserStatisticsContainer = ({ match }) => {
       parsedOptions.sortBy = sortOptions.currentItem;
     }
     return parsedOptions;
-  };
-
-  const prepareInstrumentsData = (quotes, statData) => {
-    return statData
-      .filter(instrument => Boolean(quotes[instrument.quote]))
-      .map(instrument => ({
-        ...instrument,
-        name: quotes[instrument.quote].name,
-        wobjData: quotes[instrument.quote].wobjData,
-        market: quotes[instrument.quote].market,
-      }));
   };
 
   const parsedInstrumentsData =
