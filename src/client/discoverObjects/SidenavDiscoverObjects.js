@@ -5,7 +5,6 @@ import { FormattedMessage } from 'react-intl';
 import { getObjectTypesLoading } from '../reducers';
 import SkeletonCustom from '../components/Skeleton/SkeletonCustom';
 import SidebarMenu from '../components/Sidebar/SidebarMenu/SidebarMenu';
-import { BROKER } from '../../investarena/constants/platform';
 
 const menuSections = {
   ALL: 'All',
