@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './UserInstrumentsTable.less';
+import { Link } from 'react-router-dom';
 import InstrumentAvatar from '../../../../investarena/components/InstrumentAvatar';
 import classNames from 'classnames';
+import './UserInstrumentsTable.less';
 
 const UserInstrumentsTableRow = ({ forecast }) => {
   return (
@@ -13,7 +14,12 @@ const UserInstrumentsTableRow = ({ forecast }) => {
           market={forecast.market}
           permlink={forecast.wobjData.author_permlink}
         />
-        {forecast.name}
+        <Link
+          to={`/object/${forecast.wobjData.author_permlink}`}
+          className="st-post-sell-buy-quote"
+        >
+          {forecast.name}
+        </Link>
       </div>
       <div className="UserInstrumentsTableRow__deals">{forecast.count}</div>
       <div
