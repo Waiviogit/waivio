@@ -11,7 +11,7 @@ const UserInstrumentsTableHeader = ({ setSortOptions }) => {
   const onClickHandler = item => {
     setCurrentItem(item);
     setIsActive(!isActive);
-    setSortOptions(currentItem, isActive);
+    setSortOptions({ currentItem: item, isActive });
   };
   return (
     <div className="UserInstrumentsTableHeader">
@@ -53,7 +53,7 @@ const UserInstrumentsTableHeader = ({ setSortOptions }) => {
 };
 
 UserInstrumentsTableHeader.propTypes = {
-  statisticsData: PropTypes.func.isRequired,
+  setSortOptions: PropTypes.func.isRequired,
 };
 
 export default injectIntl(UserInstrumentsTableHeader);
