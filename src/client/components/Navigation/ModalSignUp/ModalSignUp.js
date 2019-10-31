@@ -60,8 +60,8 @@ class ModalSignUp extends React.Component {
             ref={a => {
               this.authorizeViaNinja = a;
             }}
-            title="Register a Waivio Account"
-            data-name="Waivio"
+            title="Register a InvestArena Account"
+            data-name="InvestArena"
             data-image="https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png"
             data-referrer="waivio"
             href="https://widget.steem.ninja/widget.html?referrer=waivio"

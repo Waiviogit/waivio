@@ -5,7 +5,6 @@ import { FormattedMessage } from 'react-intl';
 import { getObjectTypesLoading } from '../reducers';
 import SkeletonCustom from '../components/Skeleton/SkeletonCustom';
 import SidebarMenu from '../components/Sidebar/SidebarMenu/SidebarMenu';
-import { BROKER } from '../../investarena/constants/platform';
 
 const menuSections = {
   ALL: 'All',
@@ -57,50 +56,8 @@ const menuConfig = {
   [menuSections.BROKERS]: {
     name: menuSections.BROKERS,
     intlId: 'brokers',
-    isCollapsible: true,
-    isCollapsed: true,
-    items: [
-      {
-        name: '770Capital',
-        intlId: BROKER['770CAPITAL'],
-        linkTo: '/object/gkm-770capital',
-      },
-      {
-        name: 'DowMarkets',
-        intlId: BROKER.DOWMARKETS,
-        linkTo: '/object/mrp-dowmarkets',
-      },
-      {
-        name: 'LimeFx',
-        intlId: BROKER.LIMEFX,
-        linkTo: '/object/xfx-limefx',
-      },
-      {
-        name: 'Maximarkets',
-        intlId: BROKER.MAXIMARKETS,
-        linkTo: '/object/wsp-maximarkets',
-      },
-      {
-        name: 'Maxitrade',
-        intlId: BROKER.MAXITRADE,
-        linkTo: '/object/lir-maxitrade',
-      },
-      {
-        name: 'TradeAllCrypto',
-        intlId: BROKER.TRADEALLCRYPTO,
-        linkTo: '/object/ftt-tradeallcrypto',
-      },
-      {
-        name: 'Tradiva',
-        intlId: BROKER.TRADIVA,
-        linkTo: '/object/wqt-tradiva',
-      },
-      {
-        name: 'Umarkets',
-        intlId: BROKER.UMARKETS,
-        linkTo: '/object/prj-4e4ges-umarkets',
-      },
-    ],
+    isCollapsible: false,
+    linkTo: '/discover-objects/brokers',
   },
   [menuSections.HASHTAGS]: {
     name: menuSections.HASHTAGS,

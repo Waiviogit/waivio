@@ -143,7 +143,7 @@ export default class User extends React.Component {
     const image = getAvatarURL(username) || '/images/logo.png';
     const canonicalUrl = `${waivioHost}/@${username}`;
     const url = `${waivioHost}/@${username}`;
-    const title = `${displayedUsername} - Waivio`;
+    const title = `${displayedUsername} - InvestArena`;
 
     const isSameUser = authenticated && authenticatedUser.name === username;
 
@@ -158,7 +158,7 @@ export default class User extends React.Component {
           <meta property="og:url" content={url} />
           <meta property="og:image" content={image} />
           <meta property="og:description" content={desc} />
-          <meta property="og:site_name" content="Waivio" />
+          <meta property="og:site_name" content="InvestArena" />
           <meta property="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
           <meta property="twitter:site" content={'@steemit'} />
           <meta property="twitter:title" content={title} />

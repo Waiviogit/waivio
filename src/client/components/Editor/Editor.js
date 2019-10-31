@@ -624,7 +624,7 @@ class Editor extends React.Component {
               <Checkbox onChange={this.onUpdate} disabled={isUpdating}>
                 <FormattedMessage
                   id="add_waivio_beneficiary"
-                  defaultMessage="Share {share}% of this post rewards with Waivio"
+                  defaultMessage="Share {share}% of this post rewards with InvestArena"
                   values={{
                     share: BENEFICIARY_PERCENT / 100,
                   }}

@@ -56,13 +56,11 @@ export const resetSearchAutoCompete = () => dispatch =>
 export const searchObjectsAutoCompete = (searchString, objType, forParent) => dispatch =>
   dispatch({
     type: SEARCH_OBJECTS.ACTION,
-    payload: {
-      promise: ApiClient.searchObjects(searchString, objType, forParent).then(result => ({
-        result,
-        search: searchString,
-      })),
-    },
-  });
+    payload: ApiClient.searchObjects(searchString, objType, forParent).then(result => ({
+      result,
+      search: searchString,
+    })),
+  }).catch(error => console.log('Object search >', error.message));
 
 export const searchUsersAutoCompete = (userName, limit) => dispatch =>
   dispatch({

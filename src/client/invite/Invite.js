@@ -84,7 +84,7 @@ export default class Invite extends React.Component {
               <p className="Invite__description">
                 <FormattedMessage
                   id="invite_info"
-                  defaultMessage="Onboard new users on Waivio today using the link below and get {percent}% of their rewards for {days} days."
+                  defaultMessage="Onboard new users on InvestArena today using the link below and get {percent}% of their rewards for {days} days."
                   values={{
                     percent: REFERRAL_PERCENT / 100,
                     days: 30,
@@ -106,7 +106,7 @@ export default class Invite extends React.Component {
                   text={intl.formatMessage(
                     {
                       id: 'invite_share',
-                      defaultMessage: 'Join me today on Waivio and get rewarded to blog {link}',
+                      defaultMessage: 'Join me today on InvestArena and get rewarded to blog {link}',
                     },
                     {
                       link: '',
@@ -118,7 +118,7 @@ export default class Invite extends React.Component {
                   text={intl.formatMessage(
                     {
                       id: 'invite_share',
-                      defaultMessage: 'Join me today on Waivio and get rewarded to blog {link}',
+                      defaultMessage: 'Join me today on InvestArena and get rewarded to blog {link}',
                     },
                     {
                       link: this.state.inviteURL,

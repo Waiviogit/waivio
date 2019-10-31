@@ -65,6 +65,9 @@ export default (state = initialState, action) => {
           : result.map(serverWObj => getClientWObj(serverWObj)),
       };
     }
+    case searchActions.SEARCH_OBJECTS.ERROR: {
+      return initialState;
+    }
     case searchActions.SEARCH_OBJECT_TYPES.SUCCESS: {
       const { result, search } = action.payload;
       return {
