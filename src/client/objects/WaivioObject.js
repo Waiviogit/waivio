@@ -10,16 +10,6 @@ import { addressFields, objectFields, websiteFields } from '../../common/constan
 import { UsedLocaleContext } from '../Wrapper';
 import { getClientWObj } from '../adapters';
 import './WaivioObject.less';
-import {
-  getFieldWithMaxWeight,
-  getInnerFieldWithMaxWeight,
-} from '../../client/object/wObjectHelper';
-import { objectFields, linkFields } from '../../common/constants/listOfFields';
-
-export const getField = (item, field) => {
-  const wo = _.find(item.fields, ['name', field]);
-  return wo ? wo.body : null;
-};
 
 const WaivioObject = ({ wobj }) => {
   const usedLocale = useContext(UsedLocaleContext);
