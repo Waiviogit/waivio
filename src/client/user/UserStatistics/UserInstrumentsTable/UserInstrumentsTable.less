@@ -15,13 +15,14 @@
 .UserInstrumentsTableHeader {
   display: flex;
   width: 100%;
-  justify-content: space-between;
+  justify-content: space-around;
   padding: 10px;
   border-bottom: 1px solid @white-gainsboro;
 
   &__item {
     display: flex;
-
+    justify-content: center;
+    width: 33%;
     &-icon {
       padding-right: 5px;
     }
@@ -36,4 +37,21 @@
 }
 
 .UserInstrumentsTableRow {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  padding: 10px;
+  &__instruments {
+    text-align: left;
+    width: 33%;
+    padding-left: 10%;
+  }
+  &__deals {
+    width: 33%;
+    text-align: center;
+  }
+  &__profit {
+    width: 33%;
+    text-align: center;
+  }
 }

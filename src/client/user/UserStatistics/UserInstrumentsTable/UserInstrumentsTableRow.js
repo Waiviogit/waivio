@@ -1,10 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl } from 'react-intl';
+import {injectIntl} from 'react-intl';
 import './UserInstrumentsTable.less';
 
-const UserInstrumentsTableRow = ({ forecast }) => {
-  return <div>{forecast.pips}</div>;
+const UserInstrumentsTableRow = ({forecast}) => {
+  return (
+    <div className="UserInstrumentsTableRow">
+      <div className="UserInstrumentsTableRow__instruments">
+        {forecast.quote}
+      </div>
+      <div className="UserInstrumentsTableRow__deals">
+        {forecast.count}
+      </div>
+      <div className="UserInstrumentsTableRow__profit">
+        {forecast.pips}
+      </div>
+    </div>
+  );
 };
 
 UserInstrumentsTableRow.propTypes = {

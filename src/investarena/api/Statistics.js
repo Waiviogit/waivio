@@ -1,5 +1,6 @@
 import Base from './Base';
 import config from '../configApi/config';
+import {isEmpty} from 'lodash';
 
 export default class Statistics extends Base {
   getUserStatistics(userName) {
@@ -7,9 +8,9 @@ export default class Statistics extends Base {
       .get(`${config.statistics.getUserStatistics}${userName}`, {}, {})
       .then(response => response);
   }
-  getUserInstrumentStatistics(userName) {
+  getUserInstrumentStatistics(userName, sortOptions) {
     return this.apiClient
-      .get(`${config.statistics.getUserInstrumentStatistics}${userName}`, {}, {})
+      .get(`${config.statistics.getUserInstrumentStatistics}${userName}?limit=200${!isEmpty(sortOptions) ? `&sortBy=${sortOptions.sortBy}&sortDirection=${sortOptions.sortDirection}`:''}`, {}, {})
       .then(response => response);
   }
 }

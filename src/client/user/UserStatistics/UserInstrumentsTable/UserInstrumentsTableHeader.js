@@ -17,34 +17,34 @@ const UserInstrumentsTableHeader = ({ setSortOptions }) => {
     <div className="UserInstrumentsTableHeader">
       <div
         className={classNames('UserInstrumentsTableHeader__item', {
-          active: currentItem === 'instrument',
+          active: currentItem === 'quote',
         })}
-        onClick={() => onClickHandler('instrument')}
+        onClick={() => onClickHandler('quote')}
       >
         <div className="UserInstrumentsTableHeader__item-icon">
-          <Icon type={currentItem === 'instrument' && isActive ? 'down' : 'up'} />
+          <Icon type={currentItem === 'quote' && isActive ? 'down' : 'up'} />
         </div>
         <div className="UserInstrumentsTableHeader__item-content">Instrument</div>
       </div>
       <div
         className={classNames('UserInstrumentsTableHeader__item', {
-          active: currentItem === 'deals',
+          active: currentItem === 'count',
         })}
-        onClick={() => onClickHandler('deals')}
+        onClick={() => onClickHandler('count')}
       >
         <div className="UserInstrumentsTableHeader__item-icon">
-          <Icon type={currentItem === 'deals' && isActive ? 'down' : 'up'} />
+          <Icon type={currentItem === 'count' && isActive ? 'down' : 'up'} />
         </div>
         <div className="UserInstrumentsTableHeader__item-content">Deals</div>
       </div>
       <div
         className={classNames('UserInstrumentsTableHeader__item', {
-          active: currentItem === 'profit',
+          active: currentItem === 'pips',
         })}
-        onClick={() => onClickHandler('profit')}
+        onClick={() => onClickHandler('pips')}
       >
         <div className="UserInstrumentsTableHeader__item-icon">
-          <Icon type={currentItem === 'profit' && isActive ? 'down' : 'up'} />
+          <Icon type={currentItem === 'pips' && isActive ? 'down' : 'up'} />
         </div>
         <div className="UserInstrumentsTableHeader__item-content">Profit</div>
       </div>

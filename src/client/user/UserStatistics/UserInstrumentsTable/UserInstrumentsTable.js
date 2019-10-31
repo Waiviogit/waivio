@@ -9,7 +9,7 @@ import UserInstrumentsTableRow from './UserInstrumentsTableRow';
 const UserInstrumentsTable = ({ setSortOptions, forecasts }) => {
   return (
     <div className="UserInstrumentsTable">
-      <UserInstrumentsTableHeader forecasts={forecasts} setSortOptions={setSortOptions} />
+      <UserInstrumentsTableHeader setSortOptions={setSortOptions} />
       {map(forecasts, forecast => (
         <UserInstrumentsTableRow forecast={forecast} />
       ))}
