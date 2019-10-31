@@ -300,7 +300,7 @@ export default class Settings extends React.Component {
                   <p>
                     <FormattedMessage
                       id="language_info"
-                      defaultMessage="What language do you want to use on Waivio?"
+                      defaultMessage="What language do you want to use on InvestArena?"
                     />
                   </p>
                   <Select
@@ -387,7 +387,7 @@ export default class Settings extends React.Component {
                   <p>
                     <FormattedMessage
                       id="rewrite_links_details"
-                      defaultMessage="You can enable this option to replace Steemit.com links with Waivio links."
+                      defaultMessage="You can enable this option to replace Steemit.com links with InvestArena links."
                     />
                   </p>
                   <div className="Settings__section__checkbox">

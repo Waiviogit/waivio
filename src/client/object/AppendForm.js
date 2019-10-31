@@ -39,7 +39,7 @@ import { PRIMARY_COLOR } from '../../common/constants/waivio';
 import { getLanguageText } from '../translations';
 import QuickPostEditorFooter from '../components/QuickPostEditor/QuickPostEditorFooter';
 import MapAppendObject from '../components/Maps/MapAppendObject';
-import { getField } from '../objects/WaivioObject';
+import { getField } from '../helpers/wObjectHelper';
 import { appendObject } from '../object/appendActions';
 import { isValidImage } from '../helpers/image';
 import withEditor from '../components/Editor/withEditor';
@@ -295,7 +295,7 @@ export default class AppendForm extends Component {
         }
         case objectFields.newsFilter: {
           let rulesAllow = `\n`;
-          let rulesIgnore = '';
+          let rulesIgnore = '\nIgnore list:';
           let rulesCounter = 0;
 
           this.state.allowList.forEach(rule => {
@@ -311,7 +311,6 @@ export default class AppendForm extends Component {
 
           this.state.ignoreList.forEach((rule, index) => {
             if (!_.isEmpty(rule)) {
-              rulesIgnore = '\nIgnore list:';
               const dotOrComma = this.state.ignoreList.length - 1 === index ? '.' : ',';
               rulesIgnore += ` <a href="${baseUrl}/object/${rule.id}">${rule.id}</a>${dotOrComma}`;
             }

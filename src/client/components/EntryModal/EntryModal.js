@@ -54,7 +54,7 @@ const EntryModal = () => {
         <span>-</span>
         <span>Любишь писать</span>
         <span className="EntryModal fw6">посты?</span>
-        <span className="EntryModal invest-title">Invest</span>
+        <span className="EntryModal invest-title pl1">Invest</span>
         <span className="EntryModal arena-title">Arena</span>
         <span>любит за это</span>
         <span className="EntryModal fw6">платить!</span>
