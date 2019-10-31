@@ -5,14 +5,13 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { bindActionCreators } from 'redux';
 import { Button, Form, Select, Modal, Upload, Icon, message, Spin } from 'antd';
-import './CreateImage.less';
 import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
-import { getField } from '../../objects/WaivioObject';
 import { getAuthenticatedUserName, getObject } from '../../reducers';
 import { objectFields } from '../../../common/constants/listOfFields';
 import * as galleryActions from './galleryActions';
 import * as appendActions from '../appendActions';
-import { prepareImageToStore, generatePermlink } from '../../helpers/wObjectHelper';
+import { getField, generatePermlink, prepareImageToStore } from '../../helpers/wObjectHelper';
+import './CreateImage.less';
 
 @connect(
   state => ({

@@ -381,7 +381,7 @@ class Story extends React.Component {
     if (isEnoughtData) {
       const jsonMetadata = jsonParse(post.json_metadata);
       forecast = _.get(jsonMetadata, 'wia', null);
-      if (forecast) {
+      if (forecast && !_.isEmpty(post.forecast)) {
         isForecastValid = isValidForecast(forecast);
         isForecastExpired = !_.isEmpty(post.exp_forecast);
       }

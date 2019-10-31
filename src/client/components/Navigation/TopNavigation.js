@@ -79,7 +79,7 @@ const TopNavigation = ({ authenticated, location: { pathname }, isMobile, onMenu
       )}
       <li className="TopNavigation__item">
         <Link
-          to={`${LINKS.DISCOVER}/hashtag`}
+          to={`${LINKS.DISCOVER}/crypto`}
           className={classNames('TopNavigation__link', {
             'TopNavigation__link--active': pathname.includes(LINKS.DISCOVER),
           })}

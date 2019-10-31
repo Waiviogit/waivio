@@ -139,7 +139,7 @@ class LikeSection extends React.Component {
         <div className="warning-wrapper">
           <FormattedMessage
             id="warning_message"
-            defaultMessage="Object updates are posted by Waivio Bots in order to avoid technical posts in user feeds and spending limited resource credits on multiple posts by users, authors are required to upvote updates with voting power that should generate an equivalent of at least $0.001 to ensure validity of the posted content. Users receive 70% of author rewards in addition to standard curation rewards."
+            defaultMessage="Object updates are posted by InvestArena Bots in order to avoid technical posts in user feeds and spending limited resource credits on multiple posts by users, authors are required to upvote updates with voting power that should generate an equivalent of at least $0.001 to ensure validity of the posted content. Users receive 70% of author rewards in addition to standard curation rewards."
           />
         </div>
       </div>

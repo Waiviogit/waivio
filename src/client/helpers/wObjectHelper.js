@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import { getField } from '../objects/WaivioObject';
 import { objectFields } from '../../common/constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 
@@ -25,6 +24,11 @@ export const generatePermlink = () =>
   Math.random()
     .toString(36)
     .substring(2);
+
+export const getField = (item, field) => {
+  const wo = _.find(item.fields, ['name', field]);
+  return wo ? wo.body : null;
+};
 
 export const prepareAlbumData = (form, currentUsername, wObject) => {
   const data = {};

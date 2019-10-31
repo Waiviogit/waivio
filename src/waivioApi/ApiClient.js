@@ -24,7 +24,7 @@ const getFilterKey = () => {
 
 export function handleErrors(response) {
   if (!response.ok) {
-    throw Error(response.statusText);
+    throw new Error(response.statusText);
   }
   return response;
 }
@@ -209,14 +209,16 @@ export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0, user_la
   });
 
 export const searchObjects = (searchString, objType = '', forParent, limit = 15) => {
-  const requestBody = { search_string: searchString, limit };
+  const requestBody = { search_string: searchString, limit, sortByApp: "investarena" };
   if (objType && typeof objType === 'string') requestBody.object_type = objType;
   if (forParent && typeof forParent === 'string') requestBody.forParent = forParent;
   return fetch(`${config.apiPrefix}${config.searchObjects}`, {
     headers,
     method: 'POST',
     body: JSON.stringify(requestBody),
-  }).then(res => res.json());
+  })
+    .then(handleErrors)
+    .then(res => res.json());
 };
 
 export const searchUsers = (searchString, limit = 15) =>
@@ -416,7 +418,13 @@ export const getSearchResult = (text, userLimit = 3, wobjectsLimit, objectTypesL
     fetch(`${config.apiPrefix}${config.generalSearch}`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ string: text, userLimit, wobjectsLimit, objectTypesLimit }),
+      body: JSON.stringify({
+        string: text,
+        userLimit,
+        wobjectsLimit,
+        objectTypesLimit,
+        sortByApp: 'investarena',
+      }),
     })
       .then(handleErrors)
       .then(res => res.json())

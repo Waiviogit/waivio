@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
-import './Campaign.less';
-// import ObjectCard from '../../components/Sidebar/ObjectCard';
 import { getClientWObj } from '../../adapters';
 import ObjectCardView from '../../objectCard/ObjectCardView';
+import { UsedLocaleContext } from '../../Wrapper';
+import './Campaign.less';
 
 const Campaign = ({ proposition, filterKey, history, intl }) => {
-  const requiredObject = getClientWObj(proposition.required_object);
+  const usedLocale = useContext(UsedLocaleContext);
+  const requiredObject = getClientWObj(proposition.required_object, usedLocale);
 
   const goToProducts = () => history.push(`/rewards/${filterKey}/${requiredObject.id}`);
   return (

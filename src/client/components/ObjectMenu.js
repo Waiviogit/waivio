@@ -5,6 +5,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import OBJECT_TYPE from '../object/const/objectTypes';
 import { hasType } from '../helpers/wObjectHelper';
+import { getObjectSettings } from '../../common/constants/listOfFields';
 import './ObjectMenu.less';
 
 class ObjectMenu extends React.Component {
@@ -60,8 +61,10 @@ class ObjectMenu extends React.Component {
   };
 
   render() {
-    const isList = hasType(this.props.wobject, OBJECT_TYPE.LIST);
-    const isPage = hasType(this.props.wobject, OBJECT_TYPE.PAGE);
+    const { wobject } = this.props;
+    const { withGallery } = getObjectSettings(wobject && wobject.object_type);
+    const isList = hasType(wobject, OBJECT_TYPE.LIST);
+    const isPage = hasType(wobject, OBJECT_TYPE.PAGE);
     return (
       <div className="ObjectMenu">
         <div className="container menu-layout">
@@ -111,7 +114,7 @@ class ObjectMenu extends React.Component {
               >
                 <FormattedMessage id="reviews" defaultMessage="Reviews" />
               </li>
-              {this.props.accessExtend && !isPage && (
+              {this.props.accessExtend && withGallery && (
                 <li
                   className={this.getItemClasses(ObjectMenu.TAB_NAME.GALLERY)}
                   onClick={this.handleClick}

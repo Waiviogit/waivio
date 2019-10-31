@@ -177,7 +177,7 @@ export default (messageFactory, validators) => ({
     ],
     caption: messageFactory(
       'users_start_with_zero_expertise',
-      'New users on Waivio start with expertise of 0',
+      'New users on InvestArena start with expertise of 0',
     ),
   },
   minFollowers: {
@@ -290,7 +290,7 @@ export default (messageFactory, validators) => ({
     name: 'commissionToWaivio',
     label: messageFactory(
       'agree_to_pay_following_commissions_waivio',
-      'I agree to pay the following commissions to Waivio and partners',
+      'I agree to pay the following commissions to InvestArena and partners',
     ),
     rules: [
       {

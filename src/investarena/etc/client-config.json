@@ -1,7 +1,7 @@
 {
-  "appVersion": "ST Investarena Desktop v.2.0.1",
+  "appVersion": "ST Investarena v.1.0.0",
   "production": {
-    "apiPrefix": "https://4cast.in/",
+    "apiPrefix": "https://investarena.com/",
     "brokerWSUrl": {
       "maximarkets": "https://trading.maximarkets.org/stomp/",
       "umarkets": "https://trading.umarkets.com/stomp/",
