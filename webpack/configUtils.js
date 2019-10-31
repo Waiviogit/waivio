@@ -7,7 +7,7 @@ const IS_DEV = process.env.NODE_ENV === 'development';
 const SERVER_PORT = process.env.PORT || 3000;
 const CONTENT_PORT = IS_DEV ? SERVER_PORT + 1 : SERVER_PORT;
 
-let CALLBACK_HOST_URL = '4cast.in';
+let CALLBACK_HOST_URL = 'investarena.com';
 switch (process.env.NODE_ENV) {
   case 'development':
     CALLBACK_HOST_URL = 'localhost:3000';
