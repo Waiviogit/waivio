@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Button } from 'antd';
@@ -13,16 +13,18 @@ import DEFAULTS from '../object/const/defaultValues';
 import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
 import { getClientWObj } from '../adapters';
 import { objectFields } from '../../common/constants/listOfFields';
+import { UsedLocaleContext } from '../Wrapper';
 import '../components/ObjectHeader.less';
 
 const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, authenticated }) => {
+  const usedLocale = useContext(UsedLocaleContext);
   const coverImage = wobject.background || DEFAULTS.BACKGROUND;
   const style = { backgroundImage: `url("${coverImage}")` };
   const descriptionShort = wobject.title || '';
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
   const canEdit = accessExtend && isEditMode;
   const parentName = wobject.parent
-    ? getClientWObj(wobject.parent, intl.locale)[objectFields.name]
+    ? getClientWObj(wobject.parent, usedLocale)[objectFields.name]
     : '';
 
   const getStatusLayout = statusField => (

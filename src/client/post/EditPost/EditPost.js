@@ -9,12 +9,12 @@ import requiresLogin from '../../auth/requiresLogin';
 import { getCampaignById } from '../../../waivioApi/ApiClient';
 import {
   getAuthenticatedUser,
-  getLocale,
   getDraftPosts,
   getIsEditorLoading,
   getIsEditorSaving,
   getIsImageUploading,
   getUpvoteSetting,
+  getSuitableLanguage,
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
 import { createPostMetadata, splitPostContent, getInitialState } from '../../helpers/postHelpers';
@@ -40,7 +40,7 @@ const getLinkedObjects = contentStateRaw => {
 @connect(
   (state, props) => ({
     user: getAuthenticatedUser(state),
-    locale: getLocale(state),
+    locale: getSuitableLanguage(state),
     draftPosts: getDraftPosts(state),
     publishing: getIsEditorLoading(state),
     saving: getIsEditorSaving(state),
@@ -244,7 +244,7 @@ class EditPost extends Component {
             <Editor
               enabled={!imageLoading}
               initialContent={draftContent}
-              locale={locale === 'auto' ? 'en-US' : locale}
+              locale={locale}
               onChange={this.handleChangeContent}
             />
             {draftPosts.some(d => d.draftId === this.state.draftId) && (

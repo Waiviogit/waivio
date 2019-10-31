@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { getAccountReputation, getAllSearchResultPages } from '../helpers/apiHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
+import { getSuitableLanguage } from '../reducers';
 
 export const SEARCH_ASK_STEEM = createAsyncActionType('@search/SEARCH_ASK_STEEM');
 export const AUTO_COMPLETE_SEARCH = createAsyncActionType('@search/AUTO_COMPLETE_SEARCH');
@@ -48,16 +49,21 @@ export const resetSearchAutoCompete = () => dispatch =>
     type: RESET_AUTO_COMPLETE_SEARCH,
   });
 
-export const searchObjectsAutoCompete = (searchString, objType, forParent) => dispatch =>
+export const searchObjectsAutoCompete = (searchString, objType, forParent) => (
+  dispatch,
+  getState,
+) => {
+  const state = getState();
+  const usedLocale = getSuitableLanguage(state);
   dispatch({
     type: SEARCH_OBJECTS.ACTION,
-    payload: {
-      promise: ApiClient.searchObjects(searchString, objType, forParent).then(result => ({
-        result,
-        search: searchString,
-      })),
-    },
-  });
+    payload: ApiClient.searchObjects(searchString, objType, forParent).then(result => ({
+      result,
+      search: searchString,
+      locale: usedLocale,
+    })),
+  }).catch(error => console.log('Object search >', error.message));
+};
 
 export const searchUsersAutoCompete = (userName, limit) => dispatch =>
   dispatch({

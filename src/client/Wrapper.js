@@ -30,6 +30,8 @@ import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
 
+export const UsedLocaleContext = React.createContext('en-US');
+
 @withRouter
 @connect(
   state => ({
@@ -213,21 +215,23 @@ export default class Wrapper extends React.PureComponent {
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
         <ConfigProvider locale={enUS}>
-          <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
-            <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
-              <Topnav username={user.name} onMenuItemClick={this.handleMenuItemClick} />
-            </Layout.Header>
-            <div className="content">
-              <Affix offsetTop={0}>
-                <TopNavigation authenticated={isAuthenticated} location={history.location} />
-              </Affix>
-              {renderRoutes(this.props.route.routes)}
-              <Transfer />
-              <PowerUpOrDown />
-              <NotificationPopup />
-              <BBackTop className="primary-modal" />
-            </div>
-          </Layout>
+          <UsedLocaleContext.Provider value={usedLocale}>
+            <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
+              <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
+                <Topnav username={user.name} onMenuItemClick={this.handleMenuItemClick} />
+              </Layout.Header>
+              <div className="content">
+                <Affix offsetTop={0}>
+                  <TopNavigation authenticated={isAuthenticated} location={history.location} />
+                </Affix>
+                {renderRoutes(this.props.route.routes)}
+                <Transfer />
+                <PowerUpOrDown />
+                <NotificationPopup />
+                <BBackTop className="primary-modal" />
+              </div>
+            </Layout>
+          </UsedLocaleContext.Provider>
         </ConfigProvider>
       </IntlProvider>
     );

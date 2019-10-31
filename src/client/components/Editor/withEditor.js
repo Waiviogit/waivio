@@ -4,10 +4,9 @@ import { connect } from 'react-redux';
 import { message } from 'antd';
 import filesize from 'filesize';
 import { injectIntl } from 'react-intl';
-import { getAuthenticatedUser } from '../../reducers';
+import { getAuthenticatedUser, getSuitableLanguage } from '../../reducers';
 import { MAXIMUM_UPLOAD_SIZE } from '../../helpers/image';
 import { getClientWObj } from '../../adapters';
-import { getLocale } from '../../settings/settingsReducer';
 import * as api from '../../../waivioApi/ApiClient';
 import { voteObject, followObject } from '../../object/wobjActions';
 import { createPermlink } from '../../vendor/steemitHelpers';
@@ -22,7 +21,7 @@ export default function withEditor(WrappedComponent) {
   @connect(
     state => ({
       user: getAuthenticatedUser(state),
-      locale: getLocale(state),
+      locale: getSuitableLanguage(state),
     }),
     {
       voteObject,
@@ -42,16 +41,16 @@ export default function withEditor(WrappedComponent) {
     };
 
     static defaultProps = {
-      locale: 'auto',
+      locale: 'en-US',
       voteObject: () => {},
       followObject: () => {},
     };
 
     getObjectsByAuthorPermlinks = objectIds => {
-      const locale = this.props.locale === 'auto' ? 'en-US' : this.props.locale;
+      const { locale } = this.props.locale;
       return api
         .getObjectsByIds({ authorPermlinks: objectIds, locale })
-        .then(res => res.map(obj => getClientWObj(obj)));
+        .then(res => res.map(obj => getClientWObj(obj, locale)));
     };
 
     handleImageUpload = (blob, callback, errorCallback) => {
