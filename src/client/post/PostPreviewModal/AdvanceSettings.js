@@ -97,7 +97,7 @@ class AdvanceSettings extends Component {
                 {intl.formatMessage(
                   {
                     id: 'add_waivio_beneficiary',
-                    defaultMessage: 'Share {share}% of this post rewards with Waivio',
+                    defaultMessage: 'Share {share}% of this post rewards with InvestArena',
                   },
                   { share: BENEFICIARY_PERCENT / 100 },
                 )}

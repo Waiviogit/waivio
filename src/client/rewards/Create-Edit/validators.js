@@ -22,7 +22,7 @@ export const validatorMessagesCreator = messageFactory => ({
   ),
   minExpertise: messageFactory(
     'reputation_cannot_be_negative',
-    'The Waivio reputation cannot be negative',
+    'The InvestArena reputation cannot be negative',
   ),
   steemReputation: messageFactory(
     'steem_reputation_from_100_to_100',

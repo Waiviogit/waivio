@@ -24,7 +24,7 @@ const getFilterKey = () => {
 
 export function handleErrors(response) {
   if (!response.ok) {
-    throw Error(response.statusText);
+    throw new Error(response.statusText);
   }
   return response;
 }
@@ -216,7 +216,9 @@ export const searchObjects = (searchString, objType = '', forParent, limit = 15)
     headers,
     method: 'POST',
     body: JSON.stringify(requestBody),
-  }).then(res => res.json());
+  })
+    .then(handleErrors)
+    .then(res => res.json());
 };
 
 export const searchUsers = (searchString, limit = 15) =>
