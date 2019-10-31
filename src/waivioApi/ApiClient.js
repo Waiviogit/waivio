@@ -418,7 +418,13 @@ export const getSearchResult = (text, userLimit = 3, wobjectsLimit, objectTypesL
     fetch(`${config.apiPrefix}${config.generalSearch}`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ string: text, userLimit, wobjectsLimit, objectTypesLimit, sortByApp: "investarena" }),
+      body: JSON.stringify({
+        string: text,
+        userLimit,
+        wobjectsLimit,
+        objectTypesLimit,
+        sortByApp: 'investarena',
+      }),
     })
       .then(handleErrors)
       .then(res => res.json())
