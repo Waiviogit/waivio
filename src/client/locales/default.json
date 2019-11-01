@@ -1040,5 +1040,5 @@
   "dowmarkets": "DowMarkets",
   "limefx": "LimeFX",
   "onlyForecasts": "Only topics with forecasts",
-  "empty_my_feed": "Your feed is empty because you are not following any user or theme."
+  "empty_my_feed": "Your feed is empty because you are not following any user or topic."
 }
