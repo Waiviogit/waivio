@@ -27,24 +27,21 @@ const UserStatisticsContainer = ({ match }) => {
       : [];
 
   useEffect(() => {
-    api.statistics
-      .getUserStatistics(match.params.name)
-      .then(response => setStatAccuracyData(response.data));
-  }, []);
-
-  useEffect(() => {
     const instrumentsSortOptions = parseOption();
-    api.statistics
-      .getUserStatistics(match.params.name)
-      .then(response => setStatAccuracyData(response.data));
     api.statistics
       .getUserInstrumentStatistics(match.params.name, instrumentsSortOptions)
       .then(response => setStatInstrumentsData(response.data));
   }, [sortOptions]);
 
+  useEffect(() => {
+    api.statistics
+      .getUserStatistics(match.params.name)
+      .then(response => setStatAccuracyData(response.data));
+  }, []);
+
   return (
     <React.Fragment>
-      {statAccuracyData && statInstrumentsData && (
+      {!isEmpty(statAccuracyData) && !!statInstrumentsData.length && (
         <UserStatistics
           accuracy={statAccuracyData}
           forecasts={parsedInstrumentsData}
