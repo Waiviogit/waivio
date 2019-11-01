@@ -9,6 +9,7 @@ import { Form, message } from 'antd';
 import { createCampaign, getCampaignById, getObjectsByIds } from '../../../waivioApi/ApiClient';
 import CreateFormRenderer from './CreateFormRenderer';
 import { getClientWObj } from '../../adapters';
+import { UsedLocaleContext } from '../../Wrapper';
 import './CreateReward.less';
 
 @withRouter
@@ -18,6 +19,7 @@ class CreateRewardForm extends React.Component {
   static propTypes = {
     userName: PropTypes.string,
     user: PropTypes.shape(),
+    usedLocale: PropTypes.string,
     form: PropTypes.shape(),
     intl: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
@@ -27,6 +29,7 @@ class CreateRewardForm extends React.Component {
   static defaultProps = {
     userName: '',
     user: {},
+    usedLocale: 'en-US',
     form: {},
     currentSteemDollarPrice: 0,
   };
@@ -116,9 +119,11 @@ class CreateRewardForm extends React.Component {
           campaignType: campaign.campaign.type,
           budget: campaign.campaign.budget,
           reward: campaign.campaign.reward,
-          primaryObject: getClientWObj(values[0]),
-          secondaryObjectsList: values[1].map(obj => getClientWObj(obj)),
-          sponsorsList: !isEmpty(sponsors) ? values[2].map(obj => getClientWObj(obj)) : [],
+          primaryObject: getClientWObj(values[0], this.props.usedLocale),
+          secondaryObjectsList: values[1].map(obj => getClientWObj(obj, this.props.usedLocale)),
+          sponsorsList: !isEmpty(sponsors)
+            ? values[2].map(obj => getClientWObj(obj, this.props.usedLocale))
+            : [],
           reservationPeriod: campaign.campaign.count_reservation_days,
           minFollowers: campaign.campaign.userRequirements.minFollowers,
           minPosts: campaign.campaign.userRequirements.minPosts,
@@ -394,4 +399,8 @@ class CreateRewardForm extends React.Component {
   }
 }
 
-export default CreateRewardForm;
+export default props => (
+  <UsedLocaleContext.Consumer>
+    {context => <CreateRewardForm {...props} usedLocale={context} />}
+  </UsedLocaleContext.Consumer>
+);

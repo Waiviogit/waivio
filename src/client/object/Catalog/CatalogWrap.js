@@ -18,7 +18,7 @@ import AddItemModal from './AddItemModal/AddItemModal';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import { getObject, getObjectsByIds } from '../../../../src/waivioApi/ApiClient';
 import * as wobjectActions from '../../../client/object/wobjectsActions';
-import { getLocale } from '../../reducers';
+import { getSuitableLanguage } from '../../reducers';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CategoryItemView from './CategoryItemView/CategoryItemView';
 import { hasType } from '../../helpers/wObjectHelper';
@@ -36,7 +36,7 @@ const getListSorting = wobj => {
 @injectIntl
 @connect(
   state => ({
-    locale: getLocale(state),
+    locale: getSuitableLanguage(state),
   }),
   {
     addItemToWobjStore: wobjectActions.addListItem,
@@ -89,7 +89,10 @@ class CatalogWrap extends React.Component {
     getObject(permlink)
       .then(res => {
         const listItems =
-          (res && res.listItems && res.listItems.map(item => getClientWObj(item))) || [];
+          (res &&
+            res.listItems &&
+            res.listItems.map(item => getClientWObj(item, this.props.locale))) ||
+          [];
         this.setState(prevState => {
           let breadcrumb = [];
           if (prevState.breadcrumb.some(crumb => crumb.path.includes(permlink))) {
@@ -138,11 +141,11 @@ class CatalogWrap extends React.Component {
         if (!isInitialState) this.setState({ loading: true });
         // restore breadcrumbs from url hash
         const permlinks = location.hash.slice(1).split('/');
-        const locale = this.props.locale === 'auto' ? 'en-US' : this.props.locale;
+        const { locale } = this.props;
         getObjectsByIds({ authorPermlinks: permlinks, locale })
           .then(res =>
             permlinks.map(permlink =>
-              getClientWObj(res.wobjects.find(wobj => wobj.author_permlink === permlink)),
+              getClientWObj(res.wobjects.find(wobj => wobj.author_permlink === permlink), locale),
             ),
           )
           .then(res => {
@@ -156,7 +159,7 @@ class CatalogWrap extends React.Component {
           });
       } else {
         sortedItems = sortListItemsBy(
-          items.map(item => getClientWObj(item)),
+          items.map(item => getClientWObj(item, this.props.locale)),
           sorting.type,
           sorting.order,
         );

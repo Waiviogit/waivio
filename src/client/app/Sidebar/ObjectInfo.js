@@ -29,7 +29,12 @@ import Proposition from '../../components/Proposition/Proposition';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
 import IconButton from '../../components/IconButton';
-import { getIsAuthenticated, getObjectAlbums, getScreenSize } from '../../reducers';
+import {
+  getIsAuthenticated,
+  getObjectAlbums,
+  getScreenSize,
+  getSuitableLanguage,
+} from '../../reducers';
 import DescriptionInfo from './DescriptionInfo';
 import CreateImage from '../../object/ObjectGallery/CreateImage';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
@@ -47,6 +52,7 @@ import './ObjectInfo.less';
   albums: getObjectAlbums(state),
   isAuthenticated: getIsAuthenticated(state),
   screenSize: getScreenSize(state),
+  usedLocale: getSuitableLanguage(state),
 }))
 class ObjectInfo extends React.Component {
   static propTypes = {
@@ -56,6 +62,7 @@ class ObjectInfo extends React.Component {
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
     screenSize: PropTypes.string.isRequired,
+    usedLocale: PropTypes.string.isRequired,
     // router extra props
     isEditMode: PropTypes.bool.isRequired,
     userName: PropTypes.string.isRequired,
@@ -105,7 +112,7 @@ class ObjectInfo extends React.Component {
     }));
 
   render() {
-    const { location, wobject, userName, albums, isAuthenticated } = this.props;
+    const { location, wobject, userName, albums, isAuthenticated, usedLocale } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const { showModal, selectedField, isModalComparePerformanceOpen } = this.state;
     const { button, status, website, newsFilter } = wobject;
@@ -305,7 +312,7 @@ class ObjectInfo extends React.Component {
           )}
           {!isEditMode &&
             sortListItemsBy(
-              combineObjectMenu(menuItems.map(menuItem => getClientWObj(menuItem)), {
+              combineObjectMenu(menuItems.map(menuItem => getClientWObj(menuItem, usedLocale)), {
                 button,
                 news: Boolean(newsFilter),
               }),
