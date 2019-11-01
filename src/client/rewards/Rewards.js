@@ -431,7 +431,7 @@ class Rewards extends React.Component {
     return (
       <div className="Rewards">
         <Helmet>
-          <title>Waivio</title>
+          <title>InvestArena</title>
           <meta name="robots" content={robots} />
         </Helmet>
         <ScrollToTop />

@@ -1,6 +1,6 @@
-# Waivio 🚀
+# InvestArena 🚀
 
-Waivio is an Open Source social network and communications platform which extends itself to a variety of rich features and functionality including free digital payments and a marketplace for goods and services.
+InvestArena is an Open Source social network and communications platform which extends itself to a variety of rich features and functionality including free digital payments and a marketplace for goods and services.
 
 ## Preview
 
