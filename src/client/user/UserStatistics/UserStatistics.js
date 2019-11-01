@@ -1,34 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { injectIntl } from 'react-intl';
-import { isEmpty } from 'lodash';
-import UserStatisticContainer from './UserStatisticContainer/UserStatisticContainer';
+import React from 'react';
+import PropTypes from 'prop-types';
+import UserAccuracyContainer from './UserAccuracyContainer/UserAccuracyContainer';
 import UserForecastInstruments from './UserForecastInstruments/UserForecastInstruments';
-import api from '../../../investarena/configApi/apiResources';
+import UserInstrumentsTable from './UserInstrumentsTable/UserInstrumentsTable';
 import './UserStatistics.less';
 
-const UserStatistics = ({ match }) => {
-  const [statAccuracyData, setStatAccuracyData] = useState({});
-  useEffect(() => {
-    api.statistics
-      .getUserStatistics(match.params.name)
-      .then(response => setStatAccuracyData(response.data));
-  }, []);
-  const mockInstrumentsData = [
-    { forecastName: 'AUD/CAD', count: 24 },
-    { forecastName: 'Apple', count: 45 },
-    { forecastName: 'Bitcoin', count: 54 },
-  ];
-  return (
-    <div className="UserStatistics">
-      {!isEmpty(statAccuracyData) && (
-        <React.Fragment>
-          <UserStatisticContainer accuracy={statAccuracyData} contentType={'forecast'} />
-          <UserStatisticContainer accuracy={statAccuracyData} contentType={'profitability'} />
-        </React.Fragment>
-      )}
-      {!isEmpty(mockInstrumentsData) && <UserForecastInstruments forecasts={mockInstrumentsData} />}
-    </div>
-  );
+const UserStatistics = ({ accuracy, forecasts, setSortOptions }) => (
+  <div className="UserStatistics">
+    <UserAccuracyContainer accuracy={accuracy} contentType={'forecast'} />
+    <UserAccuracyContainer accuracy={accuracy} contentType={'profitability'} />
+    <UserForecastInstruments forecasts={forecasts} />
+    <UserInstrumentsTable forecasts={forecasts} setSortOptions={setSortOptions} />
+  </div>
+);
+
+UserStatistics.propTypes = {
+  forecasts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  accuracy: PropTypes.shape().isRequired,
+  setSortOptions: PropTypes.func.isRequired,
 };
 
-export default injectIntl(UserStatistics);
+export default UserStatistics;

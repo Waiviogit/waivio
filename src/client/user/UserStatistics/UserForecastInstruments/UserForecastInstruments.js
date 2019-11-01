@@ -32,7 +32,7 @@ const UserForecastInstruments = ({ intl, forecasts }) => {
       <div className="UserForecastInstruments__title">
         {intl.formatMessage({
           id: 'user_statistics_forecast_instruments',
-          defaultMessage: 'Forecasts by instruments',
+          defaultMessage: 'Number of forecasts by instruments',
         })}
       </div>
       <div className="UserForecastInstruments__chart">
