@@ -5,7 +5,7 @@ import { injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import './UserInstrumentsTable.less';
 
-const UserInstrumentsTableHeader = ({ setSortOptions }) => {
+const UserInstrumentsTableHeader = ({ setSortOptions, intl }) => {
   const [currentItem, setCurrentItem] = useState('');
   const [isActive, setIsActive] = useState(false);
   const onClickHandler = item => {
@@ -24,7 +24,12 @@ const UserInstrumentsTableHeader = ({ setSortOptions }) => {
         <div className="UserInstrumentsTableHeader__item-icon">
           <Icon type={currentItem === 'quote' && isActive ? 'down' : 'up'} />
         </div>
-        <div className="UserInstrumentsTableHeader__item-content">Instrument</div>
+        <div className="UserInstrumentsTableHeader__item-content">
+          {intl.formatMessage({
+            id: 'user_statistics_instrument',
+            defaultMessage: 'Instruments',
+          })}
+        </div>
       </div>
       <div
         className={classNames('UserInstrumentsTableHeader__item', {
@@ -35,7 +40,12 @@ const UserInstrumentsTableHeader = ({ setSortOptions }) => {
         <div className="UserInstrumentsTableHeader__item-icon">
           <Icon type={currentItem === 'count' && isActive ? 'down' : 'up'} />
         </div>
-        <div className="UserInstrumentsTableHeader__item-content">Deals</div>
+        <div className="UserInstrumentsTableHeader__item-content">
+          {intl.formatMessage({
+            id: 'user_statistics_deals',
+            defaultMessage: 'Deals',
+          })}
+        </div>
       </div>
       <div
         className={classNames('UserInstrumentsTableHeader__item', {
@@ -46,7 +56,12 @@ const UserInstrumentsTableHeader = ({ setSortOptions }) => {
         <div className="UserInstrumentsTableHeader__item-icon">
           <Icon type={currentItem === 'pips' && isActive ? 'down' : 'up'} />
         </div>
-        <div className="UserInstrumentsTableHeader__item-content">Profit</div>
+        <div className="UserInstrumentsTableHeader__item-content">
+          {intl.formatMessage({
+            id: 'user_statistics_profit',
+            defaultMessage: 'Profit',
+          })}
+        </div>
       </div>
     </div>
   );
@@ -54,6 +69,7 @@ const UserInstrumentsTableHeader = ({ setSortOptions }) => {
 
 UserInstrumentsTableHeader.propTypes = {
   setSortOptions: PropTypes.func.isRequired,
+  intl: PropTypes.shape().isRequired,
 };
 
 export default injectIntl(UserInstrumentsTableHeader);
