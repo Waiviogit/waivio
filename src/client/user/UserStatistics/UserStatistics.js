@@ -1,18 +1,39 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {injectIntl} from "react-intl";
+import { isEmpty } from 'lodash';
 import UserAccuracyContainer from './UserAccuracyContainer/UserAccuracyContainer';
 import UserForecastInstruments from './UserForecastInstruments/UserForecastInstruments';
 import UserInstrumentsTable from './UserInstrumentsTable/UserInstrumentsTable';
 import './UserStatistics.less';
 
-const UserStatistics = ({ accuracy, forecasts, setSortOptions }) => (
-  <div className="UserStatistics">
-    <UserAccuracyContainer accuracy={accuracy} contentType={'forecast'} />
-    <UserAccuracyContainer accuracy={accuracy} contentType={'profitability'} />
-    <UserForecastInstruments forecasts={forecasts} />
-    <UserInstrumentsTable forecasts={forecasts} setSortOptions={setSortOptions} />
-  </div>
-);
+
+const UserStatistics = ({ accuracy, forecasts, setSortOptions, intl }) => {
+  return (
+    <div className="UserStatistics">
+      {!isEmpty(accuracy) && (
+        <React.Fragment>
+          <UserAccuracyContainer accuracy={accuracy} contentType={'forecast'} />
+          <UserAccuracyContainer accuracy={accuracy} contentType={'profitability'} />
+        </React.Fragment>
+      )}
+      {!isEmpty(forecasts) && (
+        <React.Fragment>
+          <UserForecastInstruments forecasts={forecasts} />
+          <UserInstrumentsTable forecasts={forecasts} setSortOptions={setSortOptions} />
+        </React.Fragment>
+      )}
+      {isEmpty(forecasts) && isEmpty(accuracy) && (
+        <div className="UserStatistics empty-data">
+          {intl.formatMessage({
+            id: 'user_statistics_no_data',
+            defaultMessage: 'There is no statistics data yet',
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
 
 UserStatistics.propTypes = {
   forecasts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
@@ -20,4 +41,4 @@ UserStatistics.propTypes = {
   setSortOptions: PropTypes.func.isRequired,
 };
 
-export default UserStatistics;
+export default injectIntl(UserStatistics);

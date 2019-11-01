@@ -111,7 +111,7 @@ class Page extends React.Component {
     return (
       <div>
         <Helmet>
-          <title>Waivio</title>
+          <title>InvestArena</title>
           <meta name="robots" content={robots} />
         </Helmet>
         <ScrollToTop />

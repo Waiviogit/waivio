@@ -42,8 +42,8 @@ const UserInstrumentsTableHeader = ({ setSortOptions, intl }) => {
         </div>
         <div className="UserInstrumentsTableHeader__item-content">
           {intl.formatMessage({
-            id: 'user_statistics_deals',
-            defaultMessage: 'Deals',
+            id: 'user_statistics_forecasts',
+            defaultMessage: 'Forecasts',
           })}
         </div>
       </div>

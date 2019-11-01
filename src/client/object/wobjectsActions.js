@@ -69,7 +69,7 @@ export const createWaivioObject = postData => (dispatch, getState) => {
           const requestBody = {
             author: auth.user.name,
             title: `${wobj.name} - investArena topic`,
-            body: `Waivio topic "${wobj.name}" has been created`,
+            body: `InvestArena topic "${wobj.name}" has been created`,
             permlink: `${generateRandomString(3).toLowerCase()}-${permlink}`,
             objectName: wobj.name,
             locale: wobj.locale || settings.locale === 'auto' ? 'en-US' : settings.locale,
