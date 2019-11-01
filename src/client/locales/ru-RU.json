@@ -993,5 +993,6 @@
   "dowmarkets": "DowMarkets",
   "limefx": "LimeFX",
   "hot_news": "Антуальные новости",
-  "signUp": "Регистрация"
+  "signUp": "Регистрация",
+  "onlyForecasts": "Только посты с прогнозами"
 }

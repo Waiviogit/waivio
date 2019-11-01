@@ -149,6 +149,22 @@ export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = tr
   });
 };
 
+export const getUserProfileBlogPostsWithForecasts = (
+  userName,
+  initialLoad = true,
+  skip = 0,
+  limit = 10,
+) => dispatch =>
+  dispatch({
+    type: initialLoad ? GET_FEED_CONTENT.ACTION : GET_MORE_FEED_CONTENT.ACTION,
+    payload: ApiClient.getUserProfileBlogForecasts(userName, skip, limit),
+    meta: {
+      sortBy: 'blog',
+      category: userName,
+      limit,
+    },
+  });
+
 export const cleanFeed = () => dispatch =>
   dispatch({
     type: CLEAN_FEED,

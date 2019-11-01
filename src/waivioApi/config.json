@@ -62,5 +62,6 @@
   "childWobjects": "/child_wobjects",
   "payables": "/payables",
   "payments": "/payments",
-  "app": "/app"
+  "app": "/app",
+  "withForecastByUser": "with-forecast-by-user"
 }

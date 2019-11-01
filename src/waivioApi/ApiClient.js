@@ -3,6 +3,7 @@ import _ from 'lodash';
 import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
 import config from './routes';
+import { baseUrl as investarenaConfig } from '../investarena/configApi/apiResources';
 import { getFollowingCount } from '../client/helpers/apiHelpers';
 import { supportedObjectTypes } from '../investarena/constants/objectsInvestarena';
 
@@ -147,6 +148,20 @@ export const getUserProfileBlog = (
       .catch(error => reject(error));
   });
 
+export const getUserProfileBlogForecasts = (userName, skip, limit) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${investarenaConfig}${config.posts}/${config.withForecastByUser}/${userName}?skip=${skip}&limit=${limit}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(res => res.json())
+      .then(posts => resolve(posts))
+      .catch(error => reject(error));
+  });
+
 export const postCreateWaivioObject = requestBody =>
   new Promise((resolve, reject) => {
     fetch(`${config.objectsBotApiPrefix}${config.objectsBot.createObject}`, {
@@ -209,7 +224,7 @@ export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0, user_la
   });
 
 export const searchObjects = (searchString, objType = '', forParent, limit = 15) => {
-  const requestBody = { search_string: searchString, limit, sortByApp: "investarena" };
+  const requestBody = { search_string: searchString, limit, sortByApp: 'investarena' };
   if (objType && typeof objType === 'string') requestBody.object_type = objType;
   if (forParent && typeof forParent === 'string') requestBody.forParent = forParent;
   return fetch(`${config.apiPrefix}${config.searchObjects}`, {
@@ -418,7 +433,13 @@ export const getSearchResult = (text, userLimit = 3, wobjectsLimit, objectTypesL
     fetch(`${config.apiPrefix}${config.generalSearch}`, {
       headers,
       method: 'POST',
-      body: JSON.stringify({ string: text, userLimit, wobjectsLimit, objectTypesLimit, sortByApp: "investarena" }),
+      body: JSON.stringify({
+        string: text,
+        userLimit,
+        wobjectsLimit,
+        objectTypesLimit,
+        sortByApp: 'investarena',
+      }),
     })
       .then(handleErrors)
       .then(res => res.json())
