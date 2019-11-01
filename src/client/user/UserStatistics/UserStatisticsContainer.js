@@ -11,7 +11,6 @@ const UserStatisticsContainer = ({ match }) => {
   const [sortOptions, setSortOptions] = useState({});
   const [statInstrumentsData, setStatInstrumentsData] = useState([]);
   const quotes = useSelector(state => state.quotesSettings);
-
   const parseOption = () => {
     const parsedOptions = {};
     if (!isEmpty(sortOptions)) {
@@ -21,17 +20,12 @@ const UserStatisticsContainer = ({ match }) => {
     return parsedOptions;
   };
 
-  const parsedInstrumentsData =
-    quotes && !isEmpty(statInstrumentsData)
-      ? prepareInstrumentsData(quotes, statInstrumentsData)
-      : [];
-
   useEffect(() => {
     const instrumentsSortOptions = parseOption();
     api.statistics
       .getUserInstrumentStatistics(match.params.name, instrumentsSortOptions)
       .then(response => setStatInstrumentsData(response.data));
-  }, [sortOptions]);
+  }, [sortOptions, quotes]);
 
   useEffect(() => {
     api.statistics
@@ -39,15 +33,17 @@ const UserStatisticsContainer = ({ match }) => {
       .then(response => setStatAccuracyData(response.data));
   }, []);
 
+  const parsedInstrumentsData =
+    !isEmpty(quotes) && !isEmpty(statInstrumentsData)
+      ? prepareInstrumentsData(quotes, statInstrumentsData)
+      : [];
   return (
     <React.Fragment>
-      {!isEmpty(statAccuracyData) && !!statInstrumentsData.length && (
-        <UserStatistics
-          accuracy={statAccuracyData}
-          forecasts={parsedInstrumentsData}
-          setSortOptions={setSortOptions}
-        />
-      )}
+      <UserStatistics
+        accuracy={statAccuracyData}
+        forecasts={parsedInstrumentsData}
+        setSortOptions={setSortOptions}
+      />
     </React.Fragment>
   );
 };
