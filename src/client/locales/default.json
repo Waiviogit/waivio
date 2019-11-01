@@ -1038,5 +1038,6 @@
   "tradiva": "Tradiva",
   "770capital": "770 capital",
   "dowmarkets": "DowMarkets",
-  "limefx": "LimeFX"
+  "limefx": "LimeFX",
+  "onlyForecasts": "Only topics with forecasts"
 }
