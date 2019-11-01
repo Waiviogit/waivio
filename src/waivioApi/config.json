@@ -18,7 +18,7 @@
   },
   "production": {
     "protocol": "https://",
-    "host": "investarena.com",
+    "host": "www.waivio.com",
     "appName": "investarena"
   },
   "apiPrefix": "/api",
