@@ -981,7 +981,11 @@
   "user_statistics_per_month": "За месяц",
   "user_statistics_per_year": "За год",
   "user_statistics_profitability_per_post": "Прибыльность по постам",
-  "user_statistics_forecast_instruments": "Прогнозы по инструментам",
+  "user_statistics_forecast_instruments": "Количество прогнозов по инструментам",
+  "user_statistics_instrument": "Инструмент",
+  "user_statistics_forecasts": "Прогнозы",
+  "user_statistics_profit": "Прибыль",
+  "user_statistics_no_data": "Пока нет статистических данных",
   "brokers": "Брокеры",
   "hashtags": "Хештеги",
   "umarkets": "Umarkets",
@@ -994,5 +998,6 @@
   "limefx": "LimeFX",
   "hot_news": "Антуальные новости",
   "signUp": "Регистрация",
-  "onlyForecasts": "Только посты с прогнозами"
+  "onlyForecasts": "Только посты с прогнозами",
+  "empty_my_feed": "Ваша лента пуста, потому что вы не подписаны ни на одного пользователя или тему."
 }

@@ -10,7 +10,7 @@ const Objects = ({ intl }) => (
   <div className="shifted">
     <Helmet>
       <title>
-        {intl.formatMessage({ id: 'objects_title', defaultMessage: 'objects_title' })} - Waivio
+        {intl.formatMessage({ id: 'objects_title', defaultMessage: 'objects_title' })} - InvestArena
       </title>
     </Helmet>
     <div className="feed-layout container">

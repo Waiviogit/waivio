@@ -1,34 +1,44 @@
-import React, { useEffect, useState } from 'react';
-import { injectIntl } from 'react-intl';
+import React from 'react';
+import PropTypes from 'prop-types';
+import {injectIntl} from "react-intl";
 import { isEmpty } from 'lodash';
-import UserStatisticContainer from './UserStatisticContainer/UserStatisticContainer';
+import UserAccuracyContainer from './UserAccuracyContainer/UserAccuracyContainer';
 import UserForecastInstruments from './UserForecastInstruments/UserForecastInstruments';
-import api from '../../../investarena/configApi/apiResources';
+import UserInstrumentsTable from './UserInstrumentsTable/UserInstrumentsTable';
 import './UserStatistics.less';
 
-const UserStatistics = ({ match }) => {
-  const [statAccuracyData, setStatAccuracyData] = useState({});
-  useEffect(() => {
-    api.statistics
-      .getUserStatistics(match.params.name)
-      .then(response => setStatAccuracyData(response.data));
-  }, []);
-  const mockInstrumentsData = [
-    { forecastName: 'AUD/CAD', count: 24 },
-    { forecastName: 'Apple', count: 45 },
-    { forecastName: 'Bitcoin', count: 54 },
-  ];
+
+const UserStatistics = ({ accuracy, forecasts, setSortOptions, intl }) => {
   return (
     <div className="UserStatistics">
-      {!isEmpty(statAccuracyData) && (
+      {!isEmpty(accuracy) && (
         <React.Fragment>
-          <UserStatisticContainer accuracy={statAccuracyData} contentType={'forecast'} />
-          <UserStatisticContainer accuracy={statAccuracyData} contentType={'profitability'} />
+          <UserAccuracyContainer accuracy={accuracy} contentType={'forecast'} />
+          <UserAccuracyContainer accuracy={accuracy} contentType={'profitability'} />
         </React.Fragment>
       )}
-      {!isEmpty(mockInstrumentsData) && <UserForecastInstruments forecasts={mockInstrumentsData} />}
+      {!isEmpty(forecasts) && (
+        <React.Fragment>
+          <UserForecastInstruments forecasts={forecasts} />
+          <UserInstrumentsTable forecasts={forecasts} setSortOptions={setSortOptions} />
+        </React.Fragment>
+      )}
+      {isEmpty(forecasts) && isEmpty(accuracy) && (
+        <div className="UserStatistics empty-data">
+          {intl.formatMessage({
+            id: 'user_statistics_no_data',
+            defaultMessage: 'There is no statistics data yet',
+          })}
+        </div>
+      )}
     </div>
   );
+};
+
+UserStatistics.propTypes = {
+  forecasts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  accuracy: PropTypes.shape().isRequired,
+  setSortOptions: PropTypes.func.isRequired,
 };
 
 export default injectIntl(UserStatistics);

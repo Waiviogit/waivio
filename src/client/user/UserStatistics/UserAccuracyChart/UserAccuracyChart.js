@@ -44,7 +44,7 @@ const UserAccuracyChart = ({ statisticsData }) => {
       </div>
       <div
         className={classNames('UserAccuracy__value', {
-          success: percent > 50,
+          success: percent >= 50,
           unsuccess: percent < 50,
         })}
       >{`${percent}%`}</div>

@@ -13,12 +13,11 @@ import {
   getFeedHasMoreFromState,
   getFeedFromState,
 } from '../helpers/stateHelpers';
-import { getUserProfileBlogPosts } from '../feed/feedActions';
+import { getUserProfileBlogPosts, getUserProfileBlogPostsWithForecasts } from '../feed/feedActions';
 import { showPostModal } from '../app/appActions';
 import EmptyUserProfile from '../statics/EmptyUserProfile';
 import EmptyUserOwnProfile from '../statics/EmptyUserOwnProfile';
 import PostModal from '../post/PostModalContainer';
-import api from '../../investarena/configApi/apiResources';
 
 @withRouter
 @connect(
@@ -29,6 +28,7 @@ import api from '../../investarena/configApi/apiResources';
   }),
   {
     getUserProfileBlogPosts,
+    getUserProfileBlogPostsWithForecasts,
     showPostModal,
   },
 )
@@ -41,16 +41,20 @@ class UserProfile extends React.Component {
     showPostModal: PropTypes.func.isRequired,
     limit: PropTypes.number,
     getUserProfileBlogPosts: PropTypes.func,
+    getUserProfileBlogPostsWithForecasts: PropTypes.func,
+    intl: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
     limit: 10,
     location: {},
     getUserProfileBlogPosts: () => {},
+    getUserProfileBlogPostsWithForecasts: () => {},
   };
 
   state = {
     checked: false,
+    skip: 0,
   };
 
   componentDidMount() {
@@ -60,22 +64,36 @@ class UserProfile extends React.Component {
     this.props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
   }
 
-  handleSwitchChange() {
-    this.setState({ checked: !this.state.checked });
-  }
+  onSwitchChange = isAppFilterOn => {
+    const { match, limit } = this.props;
+    const { skip } = this.state;
+    this.setState({ checked: isAppFilterOn });
+
+    if (isAppFilterOn) {
+      this.props.getUserProfileBlogPostsWithForecasts(match.params.name, true, skip, limit);
+      this.setState(prevState => ({ skip: prevState.skip + limit }));
+    } else {
+      this.props.getUserProfileBlogPosts(match.params.name, { limit, initialLoad: true });
+    }
+  };
 
   render() {
     const { authenticated, authenticatedUser, feed, limit } = this.props;
     const username = this.props.match.params.name;
     const isOwnProfile = authenticated && username === authenticatedUser.name;
-    const content = this.state.checked
-      ? api.forecasts.getPostsWithForecastByUser('autochartisc')
-      : getFeedFromState('blog', username, feed);
+    const content = getFeedFromState('blog', username, feed);
     const isFetching = getFeedLoadingFromState('blog', username, feed);
     const fetched = getFeedFetchedFromState('blog', username, feed);
     const hasMore = getFeedHasMoreFromState('blog', username, feed);
-    const loadMoreContentAction = () =>
-      this.props.getUserProfileBlogPosts(username, { limit, initialLoad: false });
+    const loadMoreContentAction = () => {
+      const { skip } = this.state;
+      if (this.state.checked) {
+        this.props.getUserProfileBlogPostsWithForecasts(username, false, skip, limit);
+        this.setState(prevState => ({ skip: prevState.skip + limit }));
+      } else {
+        this.props.getUserProfileBlogPosts(username, { limit, initialLoad: false });
+      }
+    };
 
     return (
       <div>
@@ -89,7 +107,7 @@ class UserProfile extends React.Component {
             </div>
             <Switch
               defaultChecked
-              onChange={() => this.setState({ shecked: !this.state.checked })}
+              onChange={this.onSwitchChange}
               checked={this.state.checked}
               size="small"
             />

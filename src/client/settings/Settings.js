@@ -236,7 +236,7 @@ export default class Settings extends React.Component {
       <div className="shifted">
         <Helmet>
           <title>
-            {intl.formatMessage({ id: 'settings', defaultMessage: 'Settings' })} - Waivio
+            {intl.formatMessage({ id: 'settings', defaultMessage: 'Settings' })} - InvestArena
           </title>
         </Helmet>
         <div className="settings-layout container">

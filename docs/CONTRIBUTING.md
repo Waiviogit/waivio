@@ -1,4 +1,4 @@
-## Contributing to Waivio
+## Contributing to InvestArena
 
 Want to get involved in Busy development? Thanks! There are plenty of ways you can help!
 
