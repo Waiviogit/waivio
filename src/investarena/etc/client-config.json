@@ -170,5 +170,10 @@
   },
   "statistics": {
     "getUserStatistics": "/user-summary-statistics/"
+  },
+
+  "posts": {
+    "withForecastByUser": "/posts/with-forecast-by-user",
+    "withForecastBywobject": "/posts/with-forecast-by-wobject"
   }
 }

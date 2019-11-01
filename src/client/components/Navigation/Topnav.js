@@ -250,10 +250,12 @@ class Topnav extends React.Component {
     if (_.isEmpty(this.state.dailyChosenPost)) {
       getTopPosts()
         .then(data => {
-          this.setState({
-            dailyChosenPost: data.daily_chosen_post,
-            weeklyChosenPost: data.weekly_chosen_post,
-          });
+          if (!_.isEmpty(data.daily_chosen_post) && !_.isEmpty(data.weekly_chosen_post)) {
+            this.setState({
+              dailyChosenPost: data.daily_chosen_post,
+              weeklyChosenPost: data.weekly_chosen_post,
+            });
+          }
         })
         .catch(error => console.error(error));
     }
@@ -347,20 +349,24 @@ class Topnav extends React.Component {
                 trigger="click"
                 content={
                   <div className="Topnav__hot-news">
-                    <Link
-                      to={`/@${dailyChosenPost.author}/${dailyChosenPost.permlink}`}
-                      className="Topnav__hot-news-item"
-                      onClick={this.handleHotNewsPopoverVisibleChange}
-                    >
-                      {dailyChosenPost.title}
-                    </Link>
-                    <Link
-                      to={`/@${weeklyChosenPost.author}/${weeklyChosenPost.permlink}`}
-                      className="Topnav__hot-news-item"
-                      onClick={this.handleHotNewsPopoverVisibleChange}
-                    >
-                      {weeklyChosenPost.title}
-                    </Link>
+                    {!_.isEmpty(dailyChosenPost) && (
+                      <Link
+                        to={`/@${dailyChosenPost.author}/${dailyChosenPost.permlink}`}
+                        className="Topnav__hot-news-item"
+                        onClick={this.handleHotNewsPopoverVisibleChange}
+                      >
+                        {dailyChosenPost.title}
+                      </Link>
+                    )}
+                    {!_.isEmpty(weeklyChosenPost) && (
+                      <Link
+                        to={`/@${weeklyChosenPost.author}/${weeklyChosenPost.permlink}`}
+                        className="Topnav__hot-news-item"
+                        onClick={this.handleHotNewsPopoverVisibleChange}
+                      >
+                        {weeklyChosenPost.title}
+                      </Link>
+                    )}
                     <Link
                       to="/economical-calendar"
                       className="Topnav__hot-news-item"
