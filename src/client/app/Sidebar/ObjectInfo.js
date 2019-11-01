@@ -29,7 +29,12 @@ import Proposition from '../../components/Proposition/Proposition';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
 import IconButton from '../../components/IconButton';
-import { getIsAuthenticated, getObjectAlbums, getScreenSize, getSuitableLanguage } from '../../reducers';
+import {
+  getIsAuthenticated,
+  getObjectAlbums,
+  getScreenSize,
+  getSuitableLanguage,
+} from '../../reducers';
 import DescriptionInfo from './DescriptionInfo';
 import CreateImage from '../../object/ObjectGallery/CreateImage';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
