@@ -9,11 +9,13 @@ const UserInstrumentsTableRow = ({ forecast }) => {
   return (
     <div className="UserInstrumentsTableRow">
       <div className="UserInstrumentsTableRow__instruments">
-        <InstrumentAvatar
-          avatarlink={forecast.wobjData.avatarlink}
-          market={forecast.market}
-          permlink={forecast.wobjData.author_permlink}
-        />
+        <div className="UserInstrumentsTableRow__instruments-icon">
+          <InstrumentAvatar
+            avatarlink={forecast.wobjData.avatarlink}
+            market={forecast.market}
+            permlink={forecast.wobjData.author_permlink}
+          />
+        </div>
         <Link
           to={`/object/${forecast.wobjData.author_permlink}`}
           className="st-post-sell-buy-quote"

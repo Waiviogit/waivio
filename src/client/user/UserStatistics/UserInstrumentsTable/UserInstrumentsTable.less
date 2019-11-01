@@ -9,14 +9,14 @@
   background-color: @white;
   border: 1px solid @white-gainsboro;
   border-radius: 4px;
-  margin-bottom: 10px;
+  margin-bottom: 0.5rem;
 }
 
 .UserInstrumentsTableHeader {
   display: flex;
   width: 100%;
   justify-content: space-around;
-  padding: 10px;
+  padding: 0.5rem;
   border-bottom: 1px solid @white-gainsboro;
 
   &__item {
@@ -24,7 +24,7 @@
     justify-content: center;
     width: 33%;
     &-icon {
-      padding-right: 5px;
+      padding-right: 0.2rem;
     }
     &-content {
       font-weight: bold;
@@ -41,13 +41,16 @@
   width: 100%;
   justify-content: space-around;
   font-weight: bold;
-  padding: 10px;
+  padding: 0.5rem;
   &__instruments {
     display: flex;
     align-items: center;
     text-align: left;
     width: 33%;
     padding-left: 5%;
+    &-icon {
+      margin-right: 0.3rem;
+    }
   }
   &__deals {
     width: 33%;
@@ -66,3 +69,5 @@
 .UserInstrumentsTableRow__profit.unsuccess {
   color: @red;
 }
+
+@import 'UserInstrumentsTable-nightmode';

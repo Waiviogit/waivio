@@ -11,6 +11,7 @@ const UserStatisticsContainer = ({ match }) => {
   const [sortOptions, setSortOptions] = useState({});
   const [statInstrumentsData, setStatInstrumentsData] = useState([]);
   const quotes = useSelector(state => state.quotesSettings);
+
   const parseOption = () => {
     const parsedOptions = {};
     if (!isEmpty(sortOptions)) {
@@ -24,6 +25,12 @@ const UserStatisticsContainer = ({ match }) => {
     quotes && !isEmpty(statInstrumentsData)
       ? prepareInstrumentsData(quotes, statInstrumentsData)
       : [];
+
+  useEffect(() => {
+    api.statistics
+      .getUserStatistics(match.params.name)
+      .then(response => setStatAccuracyData(response.data));
+  }, []);
 
   useEffect(() => {
     const instrumentsSortOptions = parseOption();
