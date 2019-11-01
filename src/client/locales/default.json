@@ -1040,5 +1040,6 @@
   "770capital": "770 capital",
   "dowmarkets": "DowMarkets",
   "limefx": "LimeFX",
-  "onlyForecasts": "Only topics with forecasts"
+  "onlyForecasts": "Only topics with forecasts",
+  "empty_my_feed": "Your feed is empty because you are not following any user or topic."
 }

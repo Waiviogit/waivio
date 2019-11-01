@@ -67,7 +67,7 @@ const mostProfitableUsers = ({ chartid }) => {
 };
 
 mostProfitableUsers.propTypes = {
-  chartid: PropTypes.number.isRequired,
+  chartid: PropTypes.string.isRequired,
 };
 
 export default mostProfitableUsers;
