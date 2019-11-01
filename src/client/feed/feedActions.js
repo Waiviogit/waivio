@@ -271,6 +271,18 @@ export const getMoreObjectPosts = ({ username, authorPermlink, limit = 10 }) => 
   });
 };
 
+export const getObjectPostsWithForecasts = (
+  wobjectPermlink,
+  initialLoad = true,
+  skip = 0,
+  limit = 10,
+) => dispatch =>
+  dispatch({
+    type: initialLoad ? GET_OBJECT_POSTS.ACTION : GET_MORE_OBJECT_POSTS.ACTION,
+    payload: ApiClient.getFeedContentWithForecastsByObject(wobjectPermlink, skip, limit),
+    meta: { sortBy: 'objectPosts', category: wobjectPermlink, limit },
+  });
+
 export const getMoreUserComments = ({ username, limit = 20 }) => (
   dispatch,
   getState,

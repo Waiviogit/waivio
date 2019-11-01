@@ -63,5 +63,6 @@
   "payables": "/payables",
   "payments": "/payments",
   "app": "/app",
-  "withForecastByUser": "with-forecast-by-user"
+  "withForecastByUser": "with-forecast-by-user",
+  "withForecastByWobject": "with-forecast-by-wobject"
 }

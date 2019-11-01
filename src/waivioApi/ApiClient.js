@@ -117,6 +117,21 @@ export const getMoreFeedContentByObject = ({
       .then(posts => resolve(posts))
       .catch(error => reject(error));
   });
+
+export const getFeedContentWithForecastsByObject = (objectPermlink, skip, limit) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${investarenaConfig}${config.posts}/${config.withForecastByWobject}/${objectPermlink}?skip=${skip}&limit=${limit}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(res => res.json())
+      .then(posts => resolve(posts))
+      .catch(error => reject(error));
+  });
+
 export const getFeedContent = (sortBy, queryData) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.posts}`, {

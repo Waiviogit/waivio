@@ -170,6 +170,7 @@ class SubFeed extends React.Component {
         {isAuthHomeFeed && <LetsGetStarted />}
         {empty && <ScrollToTop />}
         <Feed
+          empty={empty}
           content={content}
           isFetching={isFetching}
           hasMore={hasMore}
