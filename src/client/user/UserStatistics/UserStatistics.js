@@ -1,12 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {injectIntl} from "react-intl";
+import { isEmpty } from 'lodash';
 import UserAccuracyContainer from './UserAccuracyContainer/UserAccuracyContainer';
 import UserForecastInstruments from './UserForecastInstruments/UserForecastInstruments';
 import UserInstrumentsTable from './UserInstrumentsTable/UserInstrumentsTable';
 import './UserStatistics.less';
-import { isEmpty } from 'lodash';
 
-const UserStatistics = ({ accuracy, forecasts, setSortOptions }) => {
+
+const UserStatistics = ({ accuracy, forecasts, setSortOptions, intl }) => {
   return (
     <div className="UserStatistics">
       {!isEmpty(accuracy) && (
@@ -39,4 +41,4 @@ UserStatistics.propTypes = {
   setSortOptions: PropTypes.func.isRequired,
 };
 
-export default UserStatistics;
+export default injectIntl(UserStatistics);
