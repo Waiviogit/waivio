@@ -1,0 +1,81 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.UserInstrumentsTable {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  background-color: @white;
+  border: 1px solid @white-gainsboro;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.UserInstrumentsTableHeader {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  padding: 0.5rem;
+  border-bottom: 1px solid @white-gainsboro;
+
+  &__item {
+    display: flex;
+    justify-content: center;
+    width: 33%;
+
+    &-icon {
+      padding-right: 0.2rem;
+    }
+
+    &-content {
+      font-weight: bold;
+    }
+  }
+}
+
+.UserInstrumentsTableHeader__item.active {
+  color: @blue-dodgerBlue;
+}
+
+.UserInstrumentsTableRow {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  font-weight: bold;
+  padding: 0.5rem;
+  align-items: center;
+  &__instruments {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    width: 33%;
+    @media @small {
+      padding-left: 1rem;
+    }
+
+    &-icon {
+      margin-right: 0.3rem;
+    }
+  }
+
+  &__deals {
+    width: 33%;
+    text-align: center;
+  }
+
+  &__profit {
+    width: 33%;
+    text-align: center;
+  }
+}
+
+.UserInstrumentsTableRow__profit.success {
+  color: @green;
+}
+
+.UserInstrumentsTableRow__profit.unsuccess {
+  color: @red;
+}
+
+@import 'UserInstrumentsTable-nightmode';
