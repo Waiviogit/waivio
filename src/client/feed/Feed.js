@@ -13,7 +13,7 @@ const Feed = ({ content, isFetching, hasMore, loadMoreContent, showPostModal, em
       <div>
         {intl.formatMessage({
           id: 'empty_my_feed',
-          defaultMessage: 'Your feed is empty because you are not following any user or theme',
+          defaultMessage: 'Your feed is empty because you are not following any user or topic',
         })}
       </div>
       <Link to="/discover-objects/show_all">
