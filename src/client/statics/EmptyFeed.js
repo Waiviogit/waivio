@@ -1,12 +1,27 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
 
-const EmptyFeed = () => (
-  <div className="text-center">
-    <h3>
-      <FormattedMessage id="feed_empty" defaultMessage="Oops! This feed empty." />
-    </h3>
-  </div>
-);
+const EmptyFeed = ({ intl }) => {
+  const message = (
+    <React.Fragment>
+      <div className="text-center">
+        {intl.formatMessage({
+          id: 'empty_my_feed',
+          defaultMessage: 'Your feed is empty because you are not following any user or topic',
+        })}
+      </div>
+      <div className="text-center">
+        <Link to="/discover-objects/show_all">
+          {intl.formatMessage({
+            id: 'objects_title',
+            defaultMessage: 'Discover topics',
+          })}
+        </Link>
+      </div>
+    </React.Fragment>
+  );
+  return message;
+};
 
-export default EmptyFeed;
+export default injectIntl(EmptyFeed);
