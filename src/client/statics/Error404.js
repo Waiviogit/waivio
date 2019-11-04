@@ -13,7 +13,8 @@ const Error404 = ({ intl, staticContext }) => {
     <div className="ErrorPage container">
       <Helmet>
         <title>
-          {intl.formatMessage({ id: 'page_not_found', defaultMessage: 'Page not found' })} - Waivio
+          {intl.formatMessage({ id: 'page_not_found', defaultMessage: 'Page not found' })} -
+          InvestArena
         </title>
       </Helmet>
       <h1>

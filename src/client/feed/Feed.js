@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import StoryContainer from './StoryContainer';
 import StoryLoading from '../components/Story/StoryLoading';
@@ -37,4 +38,4 @@ Feed.defaultProps = {
   showPostModal: () => {},
 };
 
-export default Feed;
+export default injectIntl(Feed);

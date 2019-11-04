@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import { Icon } from 'antd';
+import { Icon, Switch } from 'antd';
 import Feed from '../feed/Feed';
 import { getFeed, getIsAuthenticated, getObject, getSuitableLanguage } from '../reducers';
 import {
@@ -12,7 +12,11 @@ import {
   getFeedHasMoreFromState,
   getFeedLoadingFromState,
 } from '../helpers/stateHelpers';
-import { getMoreObjectPosts, getObjectPosts } from '../feed/feedActions';
+import {
+  getMoreObjectPosts,
+  getObjectPosts,
+  getObjectPostsWithForecasts,
+} from '../feed/feedActions';
 import { getClientWObj } from '../adapters';
 import { showPostModal } from '../app/appActions';
 import PostModal from '../post/PostModalContainer';
@@ -36,10 +40,11 @@ import './ObjectProfile.less';
   {
     getObjectPosts,
     getMoreObjectPosts,
+    getObjectPostsWithForecasts,
     showPostModal,
   },
 )
-export default class ObjectProfile extends React.Component {
+class ObjectProfile extends React.Component {
   static propTypes = {
     feed: PropTypes.shape().isRequired,
     object: PropTypes.shape().isRequired,
@@ -49,6 +54,7 @@ export default class ObjectProfile extends React.Component {
     isAuthenticated: PropTypes.bool.isRequired,
     getObjectPosts: PropTypes.func.isRequired,
     getMoreObjectPosts: PropTypes.func.isRequired,
+    getObjectPostsWithForecasts: PropTypes.func.isRequired,
     limit: PropTypes.number,
     isLoadingPlatform: PropTypes.bool,
     usedLocale: PropTypes.string,
@@ -59,6 +65,11 @@ export default class ObjectProfile extends React.Component {
     location: {},
     isLoadingPlatform: true,
     usedLocale: 'en-US',
+  };
+
+  state = {
+    checked: false,
+    skip: 0,
   };
 
   componentDidMount() {
@@ -90,6 +101,20 @@ export default class ObjectProfile extends React.Component {
     }
   }
 
+  onSwitchChange = isAppFilterOn => {
+    const { match, limit } = this.props;
+    const { name } = match.params;
+    const { skip } = this.state;
+    this.setState({ checked: isAppFilterOn });
+
+    if (isAppFilterOn) {
+      this.props.getObjectPostsWithForecasts(name, true, skip, limit);
+      this.setState(prevState => ({ skip: prevState.skip + limit }));
+    } else {
+      this.props.getObjectPosts({ object: name, username: name, limit });
+    }
+  };
+
   handleCreatePost = () => {
     const { history, object, usedLocale } = this.props;
     if (object && object.author_permlink) {
@@ -113,13 +138,21 @@ export default class ObjectProfile extends React.Component {
     const showChart =
       !isLoadingPlatform &&
       some(supportedObjectTypes, objectType => objectType === object.object_type);
+
     const loadMoreContentAction = () => {
-      this.props.getMoreObjectPosts({
-        username: wobjectname,
-        authorPermlink: wobjectname,
-        limit,
-      });
+      const { skip } = this.state;
+      if (this.state.checked) {
+        this.props.getObjectPostsWithForecasts(wobjectname, false, skip, limit);
+        this.setState(prevState => ({ skip: prevState.skip + limit }));
+      } else {
+        this.props.getMoreObjectPosts({
+          username: wobjectname,
+          authorPermlink: wobjectname,
+          limit,
+        });
+      }
     };
+
     if (showChart) {
       createdAt = getDataCreatedAt();
       forecast = getDataForecast();
@@ -154,6 +187,17 @@ export default class ObjectProfile extends React.Component {
               />
             </div>
           )}
+          <div className="feed-layout__switcher">
+            <div className="feed-layout__text">
+              <FormattedMessage id="onlyForecasts" defaultMessage="Only topics with forecasts" />
+            </div>
+            <Switch
+              defaultChecked
+              onChange={this.onSwitchChange}
+              checked={this.state.checked}
+              size="small"
+            />
+          </div>
           {!isEmpty(content) || isFetching ? (
             <Feed
               content={content}
@@ -176,3 +220,5 @@ export default class ObjectProfile extends React.Component {
     );
   }
 }
+
+export default ObjectProfile;

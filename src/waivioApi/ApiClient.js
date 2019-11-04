@@ -3,6 +3,7 @@ import _ from 'lodash';
 import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
 import config from './routes';
+import { baseUrl as investarenaConfig } from '../investarena/configApi/apiResources';
 import { getFollowingCount } from '../client/helpers/apiHelpers';
 import { supportedObjectTypes } from '../investarena/constants/objectsInvestarena';
 
@@ -116,6 +117,21 @@ export const getMoreFeedContentByObject = ({
       .then(posts => resolve(posts))
       .catch(error => reject(error));
   });
+
+export const getFeedContentWithForecastsByObject = (objectPermlink, skip, limit) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${investarenaConfig}${config.posts}/${config.withForecastByWobject}/${objectPermlink}?skip=${skip}&limit=${limit}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(res => res.json())
+      .then(posts => resolve(posts))
+      .catch(error => reject(error));
+  });
+
 export const getFeedContent = (sortBy, queryData) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.posts}`, {
@@ -142,6 +158,20 @@ export const getUserProfileBlog = (
         start_permlink: startPermlink,
       }),
     })
+      .then(res => res.json())
+      .then(posts => resolve(posts))
+      .catch(error => reject(error));
+  });
+
+export const getUserProfileBlogForecasts = (userName, skip, limit) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${investarenaConfig}${config.posts}/${config.withForecastByUser}/${userName}?skip=${skip}&limit=${limit}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
       .then(res => res.json())
       .then(posts => resolve(posts))
       .catch(error => reject(error));

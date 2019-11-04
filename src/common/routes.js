@@ -49,7 +49,7 @@ import ReceivablesCampaign from '../client/rewards/Receivables/Receivables';
 import PayablesCampaign from '../client/rewards/Payables/Payables';
 import PaymentCampaign from '../client/rewards/Payment/Payment';
 import ObjectOfTypePage from '../client/object/ObjectOfTypePage/ObjectOfTypePage';
-import UserStatistics from '../client/user/UserStatistics/UserStatistics';
+import UserStatisticsContainer from '../client/user/UserStatistics/UserStatisticsContainer';
 import EconomicalCalendar from '../investarena/components/EconomicalCalendar/EconomicalCalendar';
 
 const routes = [
@@ -229,7 +229,7 @@ const routes = [
           {
             path: '/@:name/statistics',
             exact: true,
-            component: UserStatistics,
+            component: UserStatisticsContainer,
           },
         ],
       },
@@ -253,11 +253,11 @@ const routes = [
             exact: true,
             component: WobjFollowers,
           },
-          {
-            path: `/object/:name/${URL.SEGMENT.GALLERY}`,
-            exact: true,
-            component: ObjectGallery,
-          },
+          // {
+          //   path: `/object/:name/${URL.SEGMENT.GALLERY}`,
+          //   exact: true,
+          //   component: ObjectGallery,
+          // },
           {
             path: `/object/:name/${URL.SEGMENT.EXPERTISE}`,
             exact: true,

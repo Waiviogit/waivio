@@ -11,7 +11,7 @@ import requiresLogin from '../auth/requiresLogin';
 const Wallet = ({ intl }) => (
   <div className="shifted">
     <Helmet>
-      <title>{intl.formatMessage({ id: 'wallet', defaultMessage: 'Wallet' })} - Waivio</title>
+      <title>{intl.formatMessage({ id: 'wallet', defaultMessage: 'Wallet' })} - InvestArena</title>
     </Helmet>
     <div className="feed-layout container">
       <Affix className="leftContainer" stickPosition={116}>

@@ -197,13 +197,13 @@ export default class WobjHistory extends React.Component {
                 onClick={this.handleAddBtnClick}
                 caption={<FormattedMessage id="add_new_proposition" defaultMessage="Add" />}
               />
-              <CreateImage
-                albums={albums}
-                selectedAlbum={albums[1]}
-                showModal={showModalGalleryItem}
-                hideModal={this.handleToggleModal}
-              />
-              <CreateAlbum showModal={showModalGalleryAlbum} hideModal={this.handleToggleModal} />
+              {/*<CreateImage*/}
+              {/*  albums={albums}*/}
+              {/*  selectedAlbum={albums[1]}*/}
+              {/*  showModal={showModalGalleryItem}*/}
+              {/*  hideModal={this.handleToggleModal}*/}
+              {/*/>*/}
+              {/*<CreateAlbum showModal={showModalGalleryAlbum} hideModal={this.handleToggleModal} />*/}
               {showModal && (
                 <AppendModal
                   showModal={showModal}
