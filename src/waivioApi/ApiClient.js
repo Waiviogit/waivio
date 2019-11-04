@@ -51,9 +51,11 @@ export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US' }) =>
 export const getObject = (authorPermlink, username) => {
   const query = username ? `?user=${username}` : '';
 
-  return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${query}`).then(res =>
-    res.json(),
-  );
+  return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${query}`, {
+    headers: {
+      app: config.appName,
+    },
+  }).then(res => res.json());
 };
 
 export const getUsersByObject = object =>
