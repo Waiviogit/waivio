@@ -460,7 +460,7 @@ class ObjectInfo extends React.Component {
                 )}
               </div>,
             )}
-            {withGallery && (hasGalleryImg || accessExtend) ? (
+            {withGallery && (hasGalleryImg || accessExtend) && false ? (
               <div className="field-info">
                 {accessExtend && (
                   <div className="proposition-line">
