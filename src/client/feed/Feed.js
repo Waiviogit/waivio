@@ -7,20 +7,20 @@ import StoryLoading from '../components/Story/StoryLoading';
 import './Feed.less';
 
 const Feed = ({ content, isFetching, hasMore, loadMoreContent, showPostModal }) => (
-    <ReduxInfiniteScroll
-      className="Feed"
-      loadMore={loadMoreContent}
-      loader={<StoryLoading />}
-      loadingMore={isFetching}
-      hasMore={hasMore}
-      elementIsScrollable={false}
-      threshold={1500}
-    >
-      {content.map(id => (
-        <StoryContainer key={id} id={id} showPostModal={showPostModal} singlePostVew={false} />
-      ))}
-    </ReduxInfiniteScroll>
-  );
+  <ReduxInfiniteScroll
+    className="Feed"
+    loadMore={loadMoreContent}
+    loader={<StoryLoading />}
+    loadingMore={isFetching}
+    hasMore={hasMore}
+    elementIsScrollable={false}
+    threshold={1500}
+  >
+    {content.map(id => (
+      <StoryContainer key={id} id={id} showPostModal={showPostModal} singlePostVew={false} />
+    ))}
+  </ReduxInfiniteScroll>
+);
 
 Feed.propTypes = {
   showPostModal: PropTypes.func,

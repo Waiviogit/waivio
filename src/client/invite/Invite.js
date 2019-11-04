@@ -67,7 +67,9 @@ export default class Invite extends React.Component {
     return (
       <div className="shifted">
         <Helmet>
-          <title>{intl.formatMessage({ id: 'invite', defaultMessage: 'Invite' })} - InvestArena</title>
+          <title>
+            {intl.formatMessage({ id: 'invite', defaultMessage: 'Invite' })} - InvestArena
+          </title>
         </Helmet>
         <div className="settings-layout container">
           <Affix className="leftContainer" stickPosition={116}>
