@@ -14,7 +14,7 @@ import {
   WAIVIO_PARENT_PERMLINK,
 } from '../../common/constants/waivio';
 import { baseUrl } from '../../waivioApi/routes';
-import { invArena } from "../../investarena/configApi/apiResources";
+import { invArena } from '../../investarena/configApi/apiResources';
 
 const appVersion = require('../../../package.json').version;
 
