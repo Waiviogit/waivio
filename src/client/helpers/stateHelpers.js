@@ -117,7 +117,7 @@ export const getUserFeedLoadingFromState = (username, feedState) =>
   getFeedLoadingFromState('feed', username, feedState);
 
 export const getUserFeedFetchedFromState = (username, feedState) =>
-  getFeedLoadingFromState('feed', username, feedState);
+  getFeedFetchedFromState('feed', username, feedState);
 
 export const getUserFeedFailedFromState = (username, feedState) =>
   getFeedFailedFromState('feed', username, feedState);
