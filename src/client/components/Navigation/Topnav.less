@@ -280,6 +280,16 @@
 
   .right.bottom-row {
     top: 48px;
+    width: 100%;
+    margin-right: 0;
+    display: flex;
+    justify-content: center;
+    @media @small {
+      display: block;
+      width: 270px;
+      margin-right: 16px;
+      top: 48px;
+    }
 
     .st-header-broker-balance-pl-wrap {
       height: 46px;

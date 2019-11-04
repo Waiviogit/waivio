@@ -338,6 +338,7 @@ class Topnav extends React.Component {
       notificationsPopoverVisible,
       popoverProfileVisible,
       hotNewsPopoverVisible,
+      popoverBrokerVisible,
     } = this.state;
     const lastSeenTimestamp = _.get(userMetaData, 'notifications_last_timestamp');
     const notificationsCount = _.isUndefined(lastSeenTimestamp)
@@ -366,14 +367,52 @@ class Topnav extends React.Component {
             {isMobile && (
               <React.Fragment>
                 {platformName !== 'widgets' && !isLoadingPlatform ? (
-                  <img
-                    className="Topnav__icon-broker"
-                    onClick={this.handleOnClickBrokerIcon}
-                    role="presentation"
-                    title={platformName}
-                    src={`/images/investarena/${platformName}.png`}
-                    alt="broker"
-                  />
+                  <Popover
+                    placement="bottom"
+                    trigger="click"
+                    visible={popoverBrokerVisible}
+                    onVisibleChange={this.handleOnClickBrokerIcon}
+                    overlayStyle={{ position: 'fixed' }}
+                    content={
+                      <div>
+                        <div className="Popover__overlay" />
+                        <PopoverMenu onSelect={this.handleBrokerMenuSelect}>
+                          <PopoverMenuItem key="deposit">
+                            <FormattedMessage
+                              id="headerAuthorized.deposit"
+                              defaultMessage="Deposit"
+                            />
+                          </PopoverMenuItem>
+                          <PopoverMenuItem key="openDeals">
+                            <FormattedMessage
+                              id="headerAuthorized.openDeals"
+                              defaultMessage="Open deals"
+                            />
+                          </PopoverMenuItem>
+                          <PopoverMenuItem key="closedDeals">
+                            <FormattedMessage
+                              id="headerAuthorized.closedDeals"
+                              defaultMessage="Closed deals"
+                            />
+                          </PopoverMenuItem>
+                          <PopoverMenuItem key="broker-disconnect">
+                            <FormattedMessage
+                              id="disconnect_broker"
+                              defaultMessage="Disconnect Broker"
+                            />
+                          </PopoverMenuItem>
+                        </PopoverMenu>
+                      </div>
+                    }
+                  >
+                    <img
+                      className="Topnav__icon-broker"
+                      role="presentation"
+                      title={platformName}
+                      src={`/images/investarena/${platformName}.png`}
+                      alt="broker"
+                    />
+                  </Popover>
                 ) : (
                   <div
                     className="Topnav__item-broker"
@@ -386,53 +425,55 @@ class Topnav extends React.Component {
               </React.Fragment>
             )}
           </Menu.Item>
-          <Menu.Item key="hot">
-            <BTooltip
-              placement="bottom"
-              title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
-              mouseEnterDelay={1}
-            >
-              <PopoverContainer
-                placement="bottomRight"
-                trigger="click"
-                content={
-                  <div className="Topnav__hot-news">
-                    {!_.isEmpty(dailyChosenPost) && (
-                      <Link
-                        to={`/@${dailyChosenPost.author}/${dailyChosenPost.permlink}`}
-                        className="Topnav__hot-news-item"
-                        onClick={this.handleHotNewsPopoverVisibleChange}
-                      >
-                        {dailyChosenPost.title}
-                      </Link>
-                    )}
-                    {!_.isEmpty(weeklyChosenPost) && (
-                      <Link
-                        to={`/@${weeklyChosenPost.author}/${weeklyChosenPost.permlink}`}
-                        className="Topnav__hot-news-item"
-                        onClick={this.handleHotNewsPopoverVisibleChange}
-                      >
-                        {weeklyChosenPost.title}
-                      </Link>
-                    )}
-                    <Link
-                      to="/economical-calendar"
-                      className="Topnav__hot-news-item"
-                      onClick={this.handleHotNewsPopoverVisibleChange}
-                    >
-                      Economical calendar
-                    </Link>
-                  </div>
-                }
-                visible={hotNewsPopoverVisible}
-                onVisibleChange={this.handleHotNewsPopoverVisibleChange}
-                overlayClassName="Notifications__popover-overlay"
+          {!isMobile && (
+            <Menu.Item key="hot">
+              <BTooltip
+                placement="bottom"
                 title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
+                mouseEnterDelay={1}
               >
-                <Icon type="fire" className="Topnav__fire-icon" />
-              </PopoverContainer>
-            </BTooltip>
-          </Menu.Item>
+                <PopoverContainer
+                  placement="bottomRight"
+                  trigger="click"
+                  content={
+                    <div className="Topnav__hot-news">
+                      {!_.isEmpty(dailyChosenPost) && (
+                        <Link
+                          to={`/@${dailyChosenPost.author}/${dailyChosenPost.permlink}`}
+                          className="Topnav__hot-news-item"
+                          onClick={this.handleHotNewsPopoverVisibleChange}
+                        >
+                          {dailyChosenPost.title}
+                        </Link>
+                      )}
+                      {!_.isEmpty(weeklyChosenPost) && (
+                        <Link
+                          to={`/@${weeklyChosenPost.author}/${weeklyChosenPost.permlink}`}
+                          className="Topnav__hot-news-item"
+                          onClick={this.handleHotNewsPopoverVisibleChange}
+                        >
+                          {weeklyChosenPost.title}
+                        </Link>
+                      )}
+                      <Link
+                        to="/economical-calendar"
+                        className="Topnav__hot-news-item"
+                        onClick={this.handleHotNewsPopoverVisibleChange}
+                      >
+                        Economical calendar
+                      </Link>
+                    </div>
+                  }
+                  visible={hotNewsPopoverVisible}
+                  onVisibleChange={this.handleHotNewsPopoverVisibleChange}
+                  overlayClassName="Notifications__popover-overlay"
+                  title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
+                >
+                  <Icon type="fire" className="Topnav__fire-icon" />
+                </PopoverContainer>
+              </BTooltip>
+            </Menu.Item>
+          )}
           <Menu.Item key="write">
             <BTooltip
               placement="bottom"
@@ -1019,56 +1060,60 @@ class Topnav extends React.Component {
                     />
                   </div>
                 </Modal>
-                <img
-                  role="presentation"
-                  title={platformName}
-                  onClick={this.toggleModalBroker}
-                  className="st-header__image"
-                  src={`/images/investarena/${platformName}.png`}
-                  alt="broker"
-                />
-                <Popover
-                  placement="bottom"
-                  trigger="click"
-                  visible={popoverBrokerVisible}
-                  onVisibleChange={this.handleBrokerMenuVisibleChange}
-                  overlayStyle={{ position: 'fixed' }}
-                  content={
-                    <div>
-                      <div className="Popover__overlay" />
-                      <PopoverMenu onSelect={this.handleBrokerMenuSelect}>
-                        <PopoverMenuItem key="deposit">
-                          <FormattedMessage
-                            id="headerAuthorized.deposit"
-                            defaultMessage="Deposit"
-                          />
-                        </PopoverMenuItem>
-                        <PopoverMenuItem key="openDeals">
-                          <FormattedMessage
-                            id="headerAuthorized.openDeals"
-                            defaultMessage="Open deals"
-                          />
-                        </PopoverMenuItem>
-                        <PopoverMenuItem key="closedDeals">
-                          <FormattedMessage
-                            id="headerAuthorized.closedDeals"
-                            defaultMessage="Closed deals"
-                          />
-                        </PopoverMenuItem>
-                        <PopoverMenuItem key="broker-disconnect">
-                          <FormattedMessage
-                            id="disconnect_broker"
-                            defaultMessage="Disconnect Broker"
-                          />
-                        </PopoverMenuItem>
-                      </PopoverMenu>
-                    </div>
-                  }
-                >
-                  <a className="Topnav__link dropdown-icon">
-                    <Icon type="caret-down" />
-                  </a>
-                </Popover>
+                {!isMobile && (
+                  <React.Fragment>
+                    <img
+                      role="presentation"
+                      title={platformName}
+                      onClick={this.toggleModalBroker}
+                      className="st-header__image"
+                      src={`/images/investarena/${platformName}.png`}
+                      alt="broker"
+                    />
+                    <Popover
+                      placement="bottom"
+                      trigger="click"
+                      visible={popoverBrokerVisible}
+                      onVisibleChange={this.handleBrokerMenuVisibleChange}
+                      overlayStyle={{ position: 'fixed' }}
+                      content={
+                        <div>
+                          <div className="Popover__overlay" />
+                          <PopoverMenu onSelect={this.handleBrokerMenuSelect}>
+                            <PopoverMenuItem key="deposit">
+                              <FormattedMessage
+                                id="headerAuthorized.deposit"
+                                defaultMessage="Deposit"
+                              />
+                            </PopoverMenuItem>
+                            <PopoverMenuItem key="openDeals">
+                              <FormattedMessage
+                                id="headerAuthorized.openDeals"
+                                defaultMessage="Open deals"
+                              />
+                            </PopoverMenuItem>
+                            <PopoverMenuItem key="closedDeals">
+                              <FormattedMessage
+                                id="headerAuthorized.closedDeals"
+                                defaultMessage="Closed deals"
+                              />
+                            </PopoverMenuItem>
+                            <PopoverMenuItem key="broker-disconnect">
+                              <FormattedMessage
+                                id="disconnect_broker"
+                                defaultMessage="Disconnect Broker"
+                              />
+                            </PopoverMenuItem>
+                          </PopoverMenu>
+                        </div>
+                      }
+                    >
+                      <a className="Topnav__link dropdown-icon">
+                        <Icon type="caret-down" />
+                      </a>
+                    </Popover>
+                  </React.Fragment>
+                )}
               </div>
             ) : (
               this.props.username && (
