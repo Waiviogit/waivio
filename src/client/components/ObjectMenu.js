@@ -62,7 +62,8 @@ class ObjectMenu extends React.Component {
 
   render() {
     const { wobject } = this.props;
-    const { withGallery } = getObjectSettings(wobject && wobject.object_type);
+    // const { withGallery } = getObjectSettings(wobject && wobject.object_type);
+    const { withGallery } = false;
     const isList = hasType(wobject, OBJECT_TYPE.LIST);
     const isPage = hasType(wobject, OBJECT_TYPE.PAGE);
     return (
