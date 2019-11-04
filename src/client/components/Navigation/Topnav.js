@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import {FormattedMessage, injectIntl} from 'react-intl';
-import {Link, withRouter} from 'react-router-dom';
-import {connect} from 'react-redux';
-import {AutoComplete, Button, Icon, Input, Menu, Modal, Popover} from 'antd';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { Link, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { AutoComplete, Button, Icon, Input, Menu, Modal, Popover } from 'antd';
 import classNames from 'classnames';
 import {
   resetSearchAutoCompete,
@@ -13,9 +13,9 @@ import {
   searchObjectTypesAutoCompete,
   searchUsersAutoCompete,
 } from '../../search/searchActions';
-import {getUserMetadata} from '../../user/usersActions';
-import {toggleModal} from '../../../investarena/redux/actions/modalsActions';
-import {disconnectBroker} from '../../../investarena/redux/actions/brokersActions';
+import { getUserMetadata } from '../../user/usersActions';
+import { toggleModal } from '../../../investarena/redux/actions/modalsActions';
+import { disconnectBroker } from '../../../investarena/redux/actions/brokersActions';
 import {
   getAuthenticateduserMetaData,
   getAutoCompleteSearchResults,
@@ -31,10 +31,10 @@ import {
 import ModalBroker from '../../../investarena/components/Modals/ModalBroker';
 import ModalDealConfirmation from '../../../investarena/components/Modals/ModalDealConfirmation';
 import SteemConnect from '../../steemConnectAPI';
-import {PARSED_NOTIFICATIONS} from '../../../common/constants/notifications';
+import { PARSED_NOTIFICATIONS } from '../../../common/constants/notifications';
 import BTooltip from '../BTooltip';
 import Avatar from '../Avatar';
-import PopoverMenu, {PopoverMenuItem} from '../PopoverMenu/PopoverMenu';
+import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import PopoverContainer from '../Popover';
 import Notifications from './Notifications/Notifications';
 import LanguageSettings from './LanguageSettings';
@@ -44,12 +44,12 @@ import {
   getPlatformNameState,
 } from '../../../investarena/redux/selectors/platformSelectors';
 import config from '../../../investarena/configApi/config';
-import {getFieldWithMaxWeight} from '../../object/wObjectHelper';
-import {objectFields} from '../../../common/constants/listOfFields';
+import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
+import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
 import ModalSignUp from './ModalSignUp/ModalSignUp';
 import TopNavigation from './TopNavigation';
-import {getTopPosts} from '../../../waivioApi/ApiClient';
+import { getTopPosts } from '../../../waivioApi/ApiClient';
 import './Topnav.less';
 
 @injectIntl
@@ -122,8 +122,7 @@ class Topnav extends React.Component {
     searchByObjectType: [],
     notifications: [],
     username: undefined,
-    onMenuItemClick: () => {
-    },
+    onMenuItemClick: () => {},
     userMetaData: {},
     loadingNotifications: false,
     screenSize: 'medium',
@@ -188,13 +187,17 @@ class Topnav extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.setState({ popoverBrokerVisible: false });
+  }
+
   getTranformSearchCountData = searchResults => {
-    const {objectTypesCount, wobjectsCounts, usersCount} = searchResults;
+    const { objectTypesCount, wobjectsCounts, usersCount } = searchResults;
     const wobjectAllCount = wobjectsCounts
       ? wobjectsCounts.reduce((accumulator, currentValue) => accumulator + currentValue.count, 0)
       : null;
     const countAllSearch = objectTypesCount + usersCount + wobjectAllCount;
-    const countArr = [{name: 'All', count: countAllSearch}];
+    const countArr = [{ name: 'All', count: countAllSearch }];
     if (!_.isEmpty(wobjectsCounts)) {
       _.forEach(wobjectsCounts, current => {
         const obj = {};
@@ -205,16 +208,16 @@ class Topnav extends React.Component {
       });
     }
     if (objectTypesCount) {
-      countArr.push({name: 'Types', count: objectTypesCount, type: 'type'});
+      countArr.push({ name: 'Types', count: objectTypesCount, type: 'type' });
     }
     if (usersCount) {
-      countArr.push({name: 'Users', count: usersCount, type: 'user'});
+      countArr.push({ name: 'Users', count: usersCount, type: 'user' });
     }
     return countArr;
   };
 
   handleMoreMenuSelect(key) {
-    this.setState({popoverProfileVisible: false}, () => {
+    this.setState({ popoverProfileVisible: false }, () => {
       this.props.onMenuItemClick(key);
     });
   }
@@ -222,10 +225,10 @@ class Topnav extends React.Component {
   handleBrokerMenuSelect(key) {
     switch (key) {
       case 'deposit':
-        this.setState({popoverBrokerVisible: false, isModalDeposit: true});
+        this.setState({ popoverBrokerVisible: false, isModalDeposit: true });
         break;
       case 'broker-disconnect':
-        this.setState({popoverBrokerVisible: false}, () => {
+        this.setState({ popoverBrokerVisible: false }, () => {
           this.props.disconnectBroker('broker');
         });
         break;
@@ -235,19 +238,19 @@ class Topnav extends React.Component {
   }
 
   handleMobileMenuVisibleChange() {
-    this.setState({popoverMobileMenuVisible: !this.state.popoverMobileMenuVisible});
+    this.setState({ popoverMobileMenuVisible: !this.state.popoverMobileMenuVisible });
   }
 
   handleProfileMenuVisibleChange(visible) {
-    this.setState({popoverProfileVisible: visible});
+    this.setState({ popoverProfileVisible: visible });
   }
 
   handleBrokerMenuVisibleChange(visible) {
-    this.setState({popoverBrokerVisible: visible});
+    this.setState({ popoverBrokerVisible: visible });
   }
 
   handleHotNewsPopoverVisibleChange = async () => {
-    this.setState(prevState => ({hotNewsPopoverVisible: !prevState.hotNewsPopoverVisible}));
+    this.setState(prevState => ({ hotNewsPopoverVisible: !prevState.hotNewsPopoverVisible }));
     if (_.isEmpty(this.state.dailyChosenPost)) {
       getTopPosts()
         .then(data => {
@@ -264,7 +267,7 @@ class Topnav extends React.Component {
 
   handleNotificationsPopoverVisibleChange(visible) {
     if (visible) {
-      this.setState({notificationsPopoverVisible: visible});
+      this.setState({ notificationsPopoverVisible: visible });
     } else {
       this.handleCloseNotificationsPopover();
     }
@@ -276,11 +279,11 @@ class Topnav extends React.Component {
     });
   }
 
-  handleClickMenu = e => this.setState({selectedPage: e.key});
+  handleClickMenu = e => this.setState({ selectedPage: e.key });
 
   menuForLoggedOut = () => {
-    const {location, intl} = this.props;
-    const {searchBarActive} = this.state;
+    const { location, intl } = this.props;
+    const { searchBarActive } = this.state;
     const next = location.pathname.length > 1 ? location.pathname : '';
 
     return (
@@ -291,18 +294,18 @@ class Topnav extends React.Component {
       >
         <Menu className="Topnav__menu-container__menu" mode="horizontal">
           <Menu.Item key="signup">
-            <ModalSignUp isButton={false} intl={intl}/>
+            <ModalSignUp isButton={false} intl={intl} />
           </Menu.Item>
           <Menu.Item key="divider" disabled>
             |
           </Menu.Item>
           <Menu.Item key="login">
             <a href={SteemConnect.getLoginURL(next)}>
-              <FormattedMessage id="login" defaultMessage="Log in"/>
+              <FormattedMessage id="login" defaultMessage="Log in" />
             </a>
           </Menu.Item>
           <Menu.Item key="language">
-            <LanguageSettings/>
+            <LanguageSettings />
           </Menu.Item>
         </Menu>
       </div>
@@ -310,7 +313,16 @@ class Topnav extends React.Component {
   };
 
   menuForLoggedIn = () => {
-    const {intl, username, notifications, userMetaData, loadingNotifications} = this.props;
+    const {
+      intl,
+      username,
+      notifications,
+      userMetaData,
+      loadingNotifications,
+      platformName,
+      isLoadingPlatform,
+      screenSize,
+    } = this.props;
     const {
       searchBarActive,
       notificationsPopoverVisible,
@@ -321,33 +333,53 @@ class Topnav extends React.Component {
     const notificationsCount = _.isUndefined(lastSeenTimestamp)
       ? _.size(notifications)
       : _.size(
-        _.filter(
-          notifications,
-          notification =>
-            lastSeenTimestamp < notification.timestamp &&
-            _.includes(PARSED_NOTIFICATIONS, notification.type),
-        ),
-      );
+          _.filter(
+            notifications,
+            notification =>
+              lastSeenTimestamp < notification.timestamp &&
+              _.includes(PARSED_NOTIFICATIONS, notification.type),
+          ),
+        );
+    const isMobile = screenSize === 'xsmall' || screenSize === 'small';
     const displayBadge = notificationsCount > 0;
     const notificationsCountDisplay = notificationsCount > 99 ? '99+' : notificationsCount;
-    const {dailyChosenPost, weeklyChosenPost} = this.state;
+    const { dailyChosenPost, weeklyChosenPost } = this.state;
     return (
       <div
         className={classNames('Topnav__menu-container', {
           'Topnav__mobile-hidden': searchBarActive,
         })}
       >
-        <ModalBroker/>
+        <ModalBroker />
         <Menu selectedKeys={[]} className="Topnav__menu-container__menu" mode="horizontal">
-          <Menu.Item key="broker" >
-            <div className="Topnav__item-broker">
-              B
-            </div>
+          <Menu.Item key="broker">
+            {isMobile && (
+              <React.Fragment>
+                {platformName !== 'widgets' && !isLoadingPlatform ? (
+                  <img
+                    className="Topnav__icon-broker"
+                    onClick={this.handleOnClickBrokerIcon}
+                    role="presentation"
+                    title={platformName}
+                    src={`/images/investarena/${platformName}.png`}
+                    alt="broker"
+                  />
+                ) : (
+                  <div
+                    className="Topnav__item-broker"
+                    onClick={this.handleOnClickBrokerIcon}
+                    role="presentation"
+                  >
+                    B
+                  </div>
+                )}
+              </React.Fragment>
+            )}
           </Menu.Item>
           <Menu.Item key="hot">
             <BTooltip
               placement="bottom"
-              title={intl.formatMessage({id: 'hot_news', defaultMessage: 'Hot news'})}
+              title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
               mouseEnterDelay={1}
             >
               <PopoverContainer
@@ -385,27 +417,27 @@ class Topnav extends React.Component {
                 visible={hotNewsPopoverVisible}
                 onVisibleChange={this.handleHotNewsPopoverVisibleChange}
                 overlayClassName="Notifications__popover-overlay"
-                title={intl.formatMessage({id: 'hot_news', defaultMessage: 'Hot news'})}
+                title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
               >
-                <Icon type="fire" className="Topnav__fire-icon"/>
+                <Icon type="fire" className="Topnav__fire-icon" />
               </PopoverContainer>
             </BTooltip>
           </Menu.Item>
           <Menu.Item key="write">
             <BTooltip
               placement="bottom"
-              title={intl.formatMessage({id: 'write_post', defaultMessage: 'Write post'})}
+              title={intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })}
               mouseEnterDelay={1}
             >
               <Link to="/editor" className="Topnav__link Topnav__link--action">
-                <i className="iconfont icon-write"/>
+                <i className="iconfont icon-write" />
               </Link>
             </BTooltip>
           </Menu.Item>
           <Menu.Item key="notifications" className="Topnav__item--badge">
             <BTooltip
               placement="bottom"
-              title={intl.formatMessage({id: 'notifications', defaultMessage: 'Notifications'})}
+              title={intl.formatMessage({ id: 'notifications', defaultMessage: 'Notifications' })}
               overlayClassName="Topnav__notifications-tooltip"
               mouseEnterDelay={1}
             >
@@ -426,13 +458,13 @@ class Topnav extends React.Component {
                 visible={notificationsPopoverVisible}
                 onVisibleChange={this.handleNotificationsPopoverVisibleChange}
                 overlayClassName="Notifications__popover-overlay"
-                title={intl.formatMessage({id: 'notifications', defaultMessage: 'Notifications'})}
+                title={intl.formatMessage({ id: 'notifications', defaultMessage: 'Notifications' })}
               >
                 <a className="Topnav__link Topnav__link--light Topnav__link--action">
                   {displayBadge ? (
                     <div className="Topnav__notifications-count">{notificationsCountDisplay}</div>
                   ) : (
-                    <i className="iconfont icon-remind"/>
+                    <i className="iconfont icon-remind" />
                   )}
                 </a>
               </PopoverContainer>
@@ -440,7 +472,7 @@ class Topnav extends React.Component {
           </Menu.Item>
           <Menu.Item key="user" className="Topnav__item-user">
             <Link className="Topnav__user" to={`/@${username}`} onClick={Topnav.handleScrollToTop}>
-              <Avatar username={username} size={36}/>
+              <Avatar username={username} size={36} />
             </Link>
           </Menu.Item>
           <Menu.Item key="more" className="Topnav__menu--icon">
@@ -449,48 +481,48 @@ class Topnav extends React.Component {
               trigger="click"
               visible={popoverProfileVisible}
               onVisibleChange={this.handleProfileMenuVisibleChange}
-              overlayStyle={{position: 'fixed'}}
+              overlayStyle={{ position: 'fixed' }}
               content={
                 <PopoverMenu onSelect={this.handleMoreMenuSelect}>
                   <PopoverMenuItem key="my-profile" fullScreenHidden>
-                    <FormattedMessage id="my_profile" defaultMessage="My profile"/>
+                    <FormattedMessage id="my_profile" defaultMessage="My profile" />
                   </PopoverMenuItem>
                   <PopoverMenuItem key="feed" fullScreenHidden>
-                    <FormattedMessage id="feed" defaultMessage="Feed"/>
+                    <FormattedMessage id="feed" defaultMessage="Feed" />
                   </PopoverMenuItem>
                   <PopoverMenuItem key="news" fullScreenHidden>
-                    <FormattedMessage id="news" defaultMessage="News"/>
+                    <FormattedMessage id="news" defaultMessage="News" />
                   </PopoverMenuItem>
                   <PopoverMenuItem key="objects" fullScreenHidden>
-                    <FormattedMessage id="objects" defaultMessage="Objects"/>
+                    <FormattedMessage id="objects" defaultMessage="Objects" />
                   </PopoverMenuItem>
                   <PopoverMenuItem key="replies" fullScreenHidden>
-                    <FormattedMessage id="replies" defaultMessage="Replies"/>
+                    <FormattedMessage id="replies" defaultMessage="Replies" />
                   </PopoverMenuItem>
                   <PopoverMenuItem key="wallet" fullScreenHidden>
-                    <FormattedMessage id="wallet" defaultMessage="Wallet"/>
+                    <FormattedMessage id="wallet" defaultMessage="Wallet" />
                   </PopoverMenuItem>
                   <PopoverMenuItem key="activity">
-                    <FormattedMessage id="activity" defaultMessage="Activity"/>
+                    <FormattedMessage id="activity" defaultMessage="Activity" />
                   </PopoverMenuItem>
                   <PopoverMenuItem key="bookmarks">
-                    <FormattedMessage id="bookmarks" defaultMessage="Bookmarks"/>
+                    <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" />
                   </PopoverMenuItem>
                   <PopoverMenuItem key="drafts">
-                    <FormattedMessage id="drafts" defaultMessage="Drafts"/>
+                    <FormattedMessage id="drafts" defaultMessage="Drafts" />
                   </PopoverMenuItem>
                   <PopoverMenuItem key="settings">
-                    <FormattedMessage id="settings" defaultMessage="Settings"/>
+                    <FormattedMessage id="settings" defaultMessage="Settings" />
                   </PopoverMenuItem>
                   <PopoverMenuItem key="logout">
-                    <FormattedMessage id="logout" defaultMessage="Logout"/>
+                    <FormattedMessage id="logout" defaultMessage="Logout" />
                   </PopoverMenuItem>
                 </PopoverMenu>
               }
             >
               <a className="Topnav__link">
-                <Icon type="caret-down"/>
-                <Icon type="bars"/>
+                <Icon type="caret-down" />
+                <Icon type="bars" />
               </a>
             </PopoverContainer>
           </Menu.Item>
@@ -502,14 +534,14 @@ class Topnav extends React.Component {
   content = () => (this.props.username ? this.menuForLoggedIn() : this.menuForLoggedOut());
 
   handleMobileSearchButtonClick = () => {
-    const {searchBarActive} = this.state;
-    this.setState({searchBarActive: !searchBarActive}, () => {
+    const { searchBarActive } = this.state;
+    this.setState({ searchBarActive: !searchBarActive }, () => {
       this.searchInputRef.input.focus();
     });
   };
 
   hideAutoCompleteDropdown() {
-    this.setState({searchBarActive: false}, this.props.resetSearchAutoCompete);
+    this.setState({ searchBarActive: false }, this.props.resetSearchAutoCompete);
   }
 
   handleSearchForInput(event) {
@@ -525,7 +557,7 @@ class Topnav extends React.Component {
   }
 
   handleSearchAllResultsClick = () => {
-    const {searchData, searchBarValue} = this.state;
+    const { searchData, searchBarValue } = this.state;
     this.handleOnBlur();
     let redirectUrl = '';
     switch (searchData.type) {
@@ -556,7 +588,7 @@ class Topnav extends React.Component {
 
   handleAutoCompleteSearch(value) {
     this.debouncedSearch(value);
-    this.setState({dropdownOpen: true});
+    this.setState({ dropdownOpen: true });
   }
 
   handleSelectOnAutoCompleteDropdown(value, data) {
@@ -604,7 +636,7 @@ class Topnav extends React.Component {
     }
 
     this.props.history.push(redirectUrl);
-    this.setState({dropdownOpen: false});
+    this.setState({ dropdownOpen: false });
     this.hideAutoCompleteDropdown();
   }
 
@@ -614,11 +646,19 @@ class Topnav extends React.Component {
       data.props.marker === Topnav.markers.USER ||
       data.props.marker === Topnav.markers.WOBJ
     )
-      this.setState({searchBarValue: ''});
+      this.setState({ searchBarValue: '' });
     else if (data.props.marker !== Topnav.markers.SELECT_BAR) {
-      this.setState({searchBarValue: value, searchData: '', currentItem: 'All'});
+      this.setState({ searchBarValue: value, searchData: '', currentItem: 'All' });
     }
   }
+
+  handleOnClickBrokerIcon = () => {
+    if (this.props.platformName !== 'widgets') {
+      this.handleBrokerMenuVisibleChange(!this.state.popoverBrokerVisible);
+    } else {
+      this.toggleModalBroker();
+    }
+  };
 
   usersSearchLayout(accounts) {
     return (
@@ -640,7 +680,7 @@ class Topnav extends React.Component {
             className="Topnav__search-autocomplete"
           >
             <div className="Topnav__search-content-wrap">
-              <Avatar username={option.account} size={40}/>
+              <Avatar username={option.account} size={40} />
               <div className="Topnav__search-content">{option.account}</div>
             </div>
           </AutoComplete.Option>
@@ -672,7 +712,7 @@ class Topnav extends React.Component {
               className="Topnav__search-autocomplete"
             >
               <div className="Topnav__search-content-wrap">
-                <ObjectAvatar item={option} size={40}/>
+                <ObjectAvatar item={option} size={40} />
                 <div>
                   <div className="Topnav__search-content">{wobjName}</div>
                   {parent && (
@@ -717,8 +757,8 @@ class Topnav extends React.Component {
   }
 
   prepareOptions(searchResults) {
-    const {searchData} = this.state;
-    const {searchByObject, searchByUser, searchByObjectType} = this.props;
+    const { searchData } = this.state;
+    const { searchByObject, searchByUser, searchByObjectType } = this.props;
     const dataSource = [];
     if (!_.isEmpty(searchResults)) {
       dataSource.push(this.searchSelectBar(searchResults));
@@ -768,7 +808,7 @@ class Topnav extends React.Component {
   };
 
   toggleModalDeposit = () => {
-    this.setState({isModalDeposit: !this.state.isModalDeposit});
+    this.setState({ isModalDeposit: !this.state.isModalDeposit });
   };
 
   changeItemClass = key =>
@@ -788,7 +828,7 @@ class Topnav extends React.Component {
       this.props.resetSearchAutoCompete,
     );
 
-  handleOnFocus = () => this.setState({dropdownOpen: true});
+  handleOnFocus = () => this.setState({ dropdownOpen: true });
 
   renderTitle = title => <span>{title}</span>;
 
@@ -820,7 +860,7 @@ class Topnav extends React.Component {
               id: 'search_all_results_for',
               defaultMessage: 'Search all results for {search}',
             },
-            {search: this.state.searchBarValue},
+            { search: this.state.searchBarValue },
           )}
         </div>
       </AutoComplete.Option>
@@ -830,11 +870,11 @@ class Topnav extends React.Component {
       : dropdownOptions.concat([downBar]);
     return (
       <div className="Topnav">
-        <ModalDealConfirmation/>
+        <ModalDealConfirmation />
         <div className="topnav-layout">
-          <div className={classNames('left', {'Topnav__mobile-hidden': searchBarActive})}>
+          <div className={classNames('left', { 'Topnav__mobile-hidden': searchBarActive })}>
             <Link to="/" className="Topnav__brand">
-              <img alt="InvestArena" src={brandLogoPath} className="Topnav__brand-icon"/>
+              <img alt="InvestArena" src={brandLogoPath} className="Topnav__brand-icon" />
             </Link>
             {isMobile && (
               <Popover
@@ -865,7 +905,7 @@ class Topnav extends React.Component {
               </Popover>
             )}
           </div>
-          <div className={classNames('center', {mobileVisible: searchBarActive})}>
+          <div className={classNames('center', { mobileVisible: searchBarActive })}>
             <div className="Topnav__input-container">
               <AutoComplete
                 dropdownClassName="Topnav__search-dropdown-container"
@@ -876,7 +916,7 @@ class Topnav extends React.Component {
                 defaultActiveFirstOption={false}
                 dropdownMatchSelectWidth={false}
                 optionLabelProp="value"
-                dropdownStyle={{color: 'red'}}
+                dropdownStyle={{ color: 'red' }}
                 value={this.state.searchBarValue}
                 open={dropdownOpen}
                 onBlur={this.handleOnBlur}
@@ -895,14 +935,14 @@ class Topnav extends React.Component {
                   autoCorrect="off"
                 />
               </AutoComplete>
-              <i className="iconfont icon-search"/>
+              <i className="iconfont icon-search" />
             </div>
             <div className="Topnav__horizontal-menu">
-              {/*<TopNavigation*/}
-              {/*  authenticated={isAuthenticated}*/}
-              {/*  location={this.props.history.location}*/}
-              {/*  isMobile={isMobile || screenSize === 'medium'}*/}
-              {/*/>*/}
+              {/* <TopNavigation */}
+              {/*  authenticated={isAuthenticated} */}
+              {/*  location={this.props.history.location} */}
+              {/*  isMobile={isMobile || screenSize === 'medium'} */}
+              {/* /> */}
             </div>
           </div>
           <div className="right">
@@ -933,7 +973,7 @@ class Topnav extends React.Component {
                     :
                   </div>
                   <div className="st-balance-amount">
-                    <Balance balanceType="unrealizedPnl"/>
+                    <Balance balanceType="unrealizedPnl" />
                   </div>
                 </div>
                 <div className="st-balance-border">
@@ -945,7 +985,7 @@ class Topnav extends React.Component {
                     :
                   </div>
                   <div className="st-balance-amount">
-                    <Balance balanceType="balance"/>
+                    <Balance balanceType="balance" />
                   </div>
                 </div>
                 <Modal
@@ -982,10 +1022,10 @@ class Topnav extends React.Component {
                   trigger="click"
                   visible={popoverBrokerVisible}
                   onVisibleChange={this.handleBrokerMenuVisibleChange}
-                  overlayStyle={{position: 'fixed'}}
+                  overlayStyle={{ position: 'fixed' }}
                   content={
                     <div>
-                      <div className="Popover__overlay"/>
+                      <div className="Popover__overlay" />
                       <PopoverMenu onSelect={this.handleBrokerMenuSelect}>
                         <PopoverMenuItem key="deposit">
                           <FormattedMessage
@@ -1004,7 +1044,7 @@ class Topnav extends React.Component {
                   }
                 >
                   <a className="Topnav__link dropdown-icon">
-                    <Icon type="caret-down"/>
+                    <Icon type="caret-down" />
                   </a>
                 </Popover>
               </div>
