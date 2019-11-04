@@ -14,6 +14,7 @@ import { createPermlink, getBodyPatchIfSmaller } from '../../vendor/steemitHelpe
 import { saveSettings } from '../../settings/settingsActions';
 import { notify } from '../../app/Notification/notificationActions';
 import { getAuthenticatedUserName } from '../../reducers';
+import { attachPostInfo } from '../../helpers/postHelpers';
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -215,24 +216,26 @@ export function createPost(postData) {
       : createPermlink(title, author, parentAuthor, parentPermlink);
     const state = getState();
     const authUser = state.auth.user;
-    const newBody = isUpdating ? getBodyPatchIfSmaller(postData.originalBody, body) : body;
+    getPermLink.then(permlink => {
+      const newBody = isUpdating
+        ? getBodyPatchIfSmaller(postData.originalBody, body)
+        : attachPostInfo(postData, permlink);
 
-    dispatch(saveSettings({ upvoteSetting: upvote, rewardSetting: reward }));
+      dispatch(saveSettings({ upvoteSetting: upvote, rewardSetting: reward }));
 
-    let referral;
-    if (Cookie.get('referral')) {
-      const accountCreatedDaysAgo =
-        (new Date().getTime() - new Date(`${authUser.created}Z`).getTime()) / 1000 / 60 / 60 / 24;
-      if (accountCreatedDaysAgo < 30) {
-        referral = Cookie.get('referral');
+      let referral;
+      if (Cookie.get('referral')) {
+        const accountCreatedDaysAgo =
+          (new Date().getTime() - new Date(`${authUser.created}Z`).getTime()) / 1000 / 60 / 60 / 24;
+        if (accountCreatedDaysAgo < 30) {
+          referral = Cookie.get('referral');
+        }
       }
-    }
 
-    dispatch({
-      type: CREATE_POST,
-      payload: {
-        promise: getPermLink.then(permlink =>
-          broadcastComment(
+      dispatch({
+        type: CREATE_POST,
+        payload: {
+          promise: broadcastComment(
             steemConnectAPI,
             isUpdating,
             parentAuthor,
@@ -263,8 +266,8 @@ export function createPost(postData) {
             }
             return result;
           }),
-        ),
-      },
+        },
+      });
     });
   };
 }

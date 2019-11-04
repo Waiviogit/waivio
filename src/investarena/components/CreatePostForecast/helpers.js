@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { get, isEmpty } from 'lodash';
 import moment from 'moment';
 import { forecastDateTimeFormat } from '../../constants/constantsForecast';
 import { optionsForecast } from '../../constants/selectData';
@@ -68,7 +68,7 @@ const getExpiredAt = (selectForecast, forecastExpiredAt) => {
 
 export const getForecastObject = (forecast, selectForecast, isExpired = false) => {
   if (isExpired) return forecast;
-  return forecast && selectForecast && !_.isEmpty(forecast)
+  return forecast && selectForecast && !isEmpty(forecast)
     ? {
         ...forecast,
         createdAt: moment.utc().format(forecastDateTimeFormat),
@@ -110,10 +110,11 @@ export const getEditorForecast = (forecast, quotesSettings) => {
     takeProfitValueIncorrect,
     stopLossValueIncorrect,
   } = forecast;
+  const quoteSettings = get(quotesSettings, [selectQuote], null);
   const price = parseFloat(quotePrice);
   const forecastObject = {
     quoteSecurity: selectQuote,
-    market: selectQuote ? quotesSettings[selectQuote].market : '',
+    market: quoteSettings && quoteSettings.market,
     recommend: selectRecommend,
     postPrice: !isNaN(price) ? price : null,
     selectForecast,
@@ -125,6 +126,7 @@ export const getEditorForecast = (forecast, quotesSettings) => {
       takeProfitValueIncorrect,
       stopLossValueIncorrect,
     ),
+    wobjData: quoteSettings && { ...quoteSettings.wobjData, name: quoteSettings.name },
   };
   if (takeProfitValue) forecastObject.tpPrice = takeProfitValue;
   if (stopLossValue) forecastObject.slPrice = stopLossValue;

@@ -18,7 +18,7 @@ import { invArena } from '../../investarena/configApi/apiResources';
 
 const appVersion = require('../../../package.json').version;
 
-export const forecastPostMessage = '> This post contains forecast for';
+export const forecastPostMessage = '> This post contains';
 
 export const isPostDeleted = post => post.title === 'deleted' && post.body === 'deleted';
 
@@ -120,10 +120,15 @@ export function createPostMetadata(body, tags, oldMetadata = {}, appData) {
   return metaData;
 }
 
-export function attachPostInfo(postData, forecast) {
-  const { author, permlink, body } = postData;
-  const msg = `\n${forecastPostMessage} [${forecast.quoteSecurity}](${invArena.baseUrl}/@${author}/${permlink}) `;
-  return body + msg;
+export function attachPostInfo(postData, permlink) {
+  const { jsonMetadata, author, body } = postData;
+  let additionalMsg = '';
+  const forecast = jsonMetadata[INVESTARENA_META_FIELD_NAME];
+  if (forecast && forecast.wobjData) {
+    const { author_permlink: objectPermlink, name } = forecast.wobjData;
+    additionalMsg += `\n${forecastPostMessage} [forecast](${invArena.baseUrl}@${author}/${permlink}) for [${name}](${invArena.baseUrl}object/${objectPermlink})`;
+  }
+  return body + additionalMsg;
 }
 
 /**
