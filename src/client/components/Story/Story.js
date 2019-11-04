@@ -109,6 +109,7 @@ class Story extends React.Component {
 
   getApprovalTagLayoyt = () => {
     const percent = calculateApprovePercent(this.props.post.active_votes);
+    const { formatMessage } = this.props.intl;
     return (
       <React.Fragment>
         <Tag>
@@ -120,9 +121,13 @@ class Story extends React.Component {
           </span>
         </Tag>
         {this.props.post.upvotedByModerator ? (
-          <span className="Story__approvedByAdmin">Approved by admin</span>
+          <span className="Story__approvedByAdmin">
+            {formatMessage({ id: 'approved_by_admin', defaultMessage: 'Approved by admin' })}
+          </span>
         ) : (
-          <span className="MinPercent">Min 70% is required</span>
+          <span className="MinPercent">
+            {formatMessage({ id: 'min_70_is_required', defaultMessage: 'Min 70% is required' })}
+          </span>
         )}
       </React.Fragment>
     );
