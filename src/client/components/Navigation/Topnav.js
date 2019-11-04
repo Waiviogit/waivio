@@ -227,6 +227,16 @@ class Topnav extends React.Component {
       case 'deposit':
         this.setState({ popoverBrokerVisible: false, isModalDeposit: true });
         break;
+      case 'openDeals':
+        this.setState({ popoverBrokerVisible: false }, () => {
+          this.props.history.push('/deals/open');
+        });
+        break;
+      case 'closedDeals':
+        this.setState({ popoverBrokerVisible: false }, () => {
+          this.props.history.push('/deals/closed');
+        });
+        break;
       case 'broker-disconnect':
         this.setState({ popoverBrokerVisible: false }, () => {
           this.props.disconnectBroker('broker');
@@ -1031,6 +1041,18 @@ class Topnav extends React.Component {
                           <FormattedMessage
                             id="headerAuthorized.deposit"
                             defaultMessage="Deposit"
+                          />
+                        </PopoverMenuItem>
+                        <PopoverMenuItem key="openDeals">
+                          <FormattedMessage
+                            id="headerAuthorized.openDeals"
+                            defaultMessage="Open deals"
+                          />
+                        </PopoverMenuItem>
+                        <PopoverMenuItem key="closedDeals">
+                          <FormattedMessage
+                            id="headerAuthorized.closedDeals"
+                            defaultMessage="Closed deals"
                           />
                         </PopoverMenuItem>
                         <PopoverMenuItem key="broker-disconnect">
