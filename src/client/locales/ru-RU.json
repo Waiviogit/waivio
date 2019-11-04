@@ -944,6 +944,8 @@
   "headerAuthorized.balance": "Баланс",
   "headerAuthorized.freeBalance": "Свободный баланс",
   "headerAuthorized.deposit": "Депозит",
+  "headerAuthorized.openDeals": "Открытые сделки",
+  "headerAuthorized.closedDeals": "Закрытые сделки",
   "deals.opened": "Сделка открыта",
   "deals.price": "Стоимость",
   "deals.cumPnl": "Общий P&L",

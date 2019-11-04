@@ -148,6 +148,7 @@ class Topnav extends React.Component {
       searchBarActive: false,
       popoverMobileMenuVisible: false,
       popoverProfileVisible: false,
+      burgerMenuVisible: false,
       popoverBrokerVisible: false,
       searchBarValue: '',
       notificationsPopoverVisible: false,
@@ -222,6 +223,11 @@ class Topnav extends React.Component {
     });
   }
 
+  handleBurgerMenuSelect = key =>
+    this.setState({ burgerMenuVisible: false }, () => {
+      this.props.onMenuItemClick(key);
+    });
+
   handleBrokerMenuSelect(key) {
     switch (key) {
       case 'deposit':
@@ -254,6 +260,8 @@ class Topnav extends React.Component {
   handleProfileMenuVisibleChange(visible) {
     this.setState({ popoverProfileVisible: visible });
   }
+
+  handleBurgerMenuVisibleChange = visible => this.setState({ burgerMenuVisible: visible });
 
   handleBrokerMenuVisibleChange(visible) {
     this.setState({ popoverBrokerVisible: visible });
@@ -337,6 +345,7 @@ class Topnav extends React.Component {
       searchBarActive,
       notificationsPopoverVisible,
       popoverProfileVisible,
+      burgerMenuVisible,
       hotNewsPopoverVisible,
       popoverBrokerVisible,
     } = this.state;
@@ -522,50 +531,88 @@ class Topnav extends React.Component {
             </BTooltip>
           </Menu.Item>
           <Menu.Item key="user" className="Topnav__item-user">
-            <Link className="Topnav__user" to={`/@${username}`} onClick={Topnav.handleScrollToTop}>
-              <Avatar username={username} size={36} />
-            </Link>
+            {!isMobile ? (
+              <Link
+                className="Topnav__user"
+                to={`/@${username}`}
+                onClick={Topnav.handleScrollToTop}
+              >
+                <Avatar username={username} size={36} />
+              </Link>
+            ) : (
+              <PopoverContainer
+                placement="bottom"
+                trigger="click"
+                visible={popoverProfileVisible}
+                onVisibleChange={this.handleProfileMenuVisibleChange}
+                overlayStyle={{ position: 'fixed' }}
+                content={
+                  <PopoverMenu onSelect={this.handleMoreMenuSelect}>
+                    <PopoverMenuItem key="my-profile" fullScreenHidden>
+                      <FormattedMessage id="my_profile" defaultMessage="My profile" /> {/**/}
+                    </PopoverMenuItem>
+                    <PopoverMenuItem key="replies" fullScreenHidden>
+                      <FormattedMessage id="replies" defaultMessage="Replies" /> {/**/}
+                    </PopoverMenuItem>
+                    <PopoverMenuItem key="activity">
+                      <FormattedMessage id="activity" defaultMessage="Activity" /> {/**/}
+                    </PopoverMenuItem>
+                    <PopoverMenuItem key="bookmarks">
+                      <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" /> {/**/}
+                    </PopoverMenuItem>
+                    <PopoverMenuItem key="drafts">
+                      <FormattedMessage id="drafts" defaultMessage="Drafts" /> {/**/}
+                    </PopoverMenuItem>
+                    <PopoverMenuItem key="settings">
+                      <FormattedMessage id="settings" defaultMessage="Settings" /> {/**/}
+                    </PopoverMenuItem>
+                    <PopoverMenuItem key="logout">
+                      <FormattedMessage id="logout" defaultMessage="Logout" /> {/**/}
+                    </PopoverMenuItem>
+                  </PopoverMenu>
+                }
+              >
+                {' '}
+                <a className="Topnav__link">
+                  <Avatar username={username} size={36} />
+                </a>
+              </PopoverContainer>
+            )}
           </Menu.Item>
           <Menu.Item key="more" className="Topnav__menu--icon">
             <PopoverContainer
               placement="bottom"
               trigger="click"
-              visible={popoverProfileVisible}
-              onVisibleChange={this.handleProfileMenuVisibleChange}
+              visible={burgerMenuVisible}
+              onVisibleChange={this.handleBurgerMenuVisibleChange}
               overlayStyle={{ position: 'fixed' }}
               content={
-                <PopoverMenu onSelect={this.handleMoreMenuSelect}>
-                  <PopoverMenuItem key="my-profile" fullScreenHidden>
-                    <FormattedMessage id="my_profile" defaultMessage="My profile" />
-                  </PopoverMenuItem>
+                <PopoverMenu onSelect={this.handleBurgerMenuSelect}>
                   <PopoverMenuItem key="feed" fullScreenHidden>
-                    <FormattedMessage id="feed" defaultMessage="Feed" />
+                    <FormattedMessage id="home" defaultMessage="Home" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="news" fullScreenHidden>
-                    <FormattedMessage id="news" defaultMessage="News" />
+                  <PopoverMenuItem key="myFeed" fullScreenHidden>
+                    <FormattedMessage id="my_feed" defaultMessage="My feed" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="objects" fullScreenHidden>
-                    <FormattedMessage id="objects" defaultMessage="Objects" />
+                  <PopoverMenuItem key="discover-objects" fullScreenHidden>
+                    <FormattedMessage id="discover" defaultMessage="Discover" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="replies" fullScreenHidden>
-                    <FormattedMessage id="replies" defaultMessage="Replies" />
+                  <PopoverMenuItem key="about" fullScreenHidden>
+                    <FormattedMessage id="about" defaultMessage="About" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="wallet" fullScreenHidden>
-                    <FormattedMessage id="wallet" defaultMessage="Wallet" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="activity">
+                  <PopoverMenuItem key="activity" mobileScreenHidden>
                     <FormattedMessage id="activity" defaultMessage="Activity" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="bookmarks">
+                  <PopoverMenuItem key="bookmarks" mobileScreenHidden>
                     <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="drafts">
+                  <PopoverMenuItem key="drafts" mobileScreenHidden>
                     <FormattedMessage id="drafts" defaultMessage="Drafts" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="settings">
+                  <PopoverMenuItem key="settings" mobileScreenHidden>
                     <FormattedMessage id="settings" defaultMessage="Settings" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="logout">
+                  <PopoverMenuItem key="logout" mobileScreenHidden>
                     <FormattedMessage id="logout" defaultMessage="Logout" />
                   </PopoverMenuItem>
                 </PopoverMenu>
@@ -989,11 +1036,11 @@ class Topnav extends React.Component {
               <i className="iconfont icon-search" />
             </div>
             <div className="Topnav__horizontal-menu">
-              {/* <TopNavigation */}
-              {/*  authenticated={isAuthenticated} */}
-              {/*  location={this.props.history.location} */}
-              {/*  isMobile={isMobile || screenSize === 'medium'} */}
-              {/* /> */}
+              <TopNavigation
+                authenticated={isAuthenticated}
+                location={this.props.history.location}
+                isMobile={isMobile || screenSize === 'medium'}
+              />
             </div>
           </div>
           <div className="right">
@@ -1086,13 +1133,13 @@ class Topnav extends React.Component {
                                 defaultMessage="Deposit"
                               />
                             </PopoverMenuItem>
-                            <PopoverMenuItem key="openDeals">
+                            <PopoverMenuItem key="openDeals" fullScreenHidden>
                               <FormattedMessage
                                 id="headerAuthorized.openDeals"
                                 defaultMessage="Open deals"
                               />
                             </PopoverMenuItem>
-                            <PopoverMenuItem key="closedDeals">
+                            <PopoverMenuItem key="closedDeals" fullScreenHidden>
                               <FormattedMessage
                                 id="headerAuthorized.closedDeals"
                                 defaultMessage="Closed deals"

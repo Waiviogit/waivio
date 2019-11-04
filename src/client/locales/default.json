@@ -665,6 +665,8 @@
   "headerAuthorized.p&l": "P&L deals",
   "headerAuthorized.balance": "Balance",
   "headerAuthorized.freeBalance": "Free balance",
+  "headerAuthorized.openDeals": "Open deals",
+  "headerAuthorized.closedDeals": "Closed deals",
   "markets": "Markets",
   "my_steem": "My steem",
   "cards": "Cards",
