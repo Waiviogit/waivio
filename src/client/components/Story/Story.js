@@ -25,11 +25,11 @@ import Avatar from '../Avatar';
 import NSFWStoryPreviewMessage from './NSFWStoryPreviewMessage';
 import HiddenStoryPreviewMessage from './HiddenStoryPreviewMessage';
 import DMCARemovedMessage from './DMCARemovedMessage';
-import './Story.less';
 import ObjectAvatar from '../ObjectAvatar';
 import PostedFrom from './PostedFrom';
 import WeightTag from '../WeightTag';
 import { calculateApprovePercent } from '../../helpers/wObjectHelper';
+import './Story.less';
 
 @injectIntl
 @withRouter
@@ -119,7 +119,11 @@ class Story extends React.Component {
             </span>
           </span>
         </Tag>
-        <span className="MinPercent">Min 70% is required</span>
+        {this.props.post.upvotedByModerator ? (
+          <span className="Story__approvedByAdmin">Approved by admin</span>
+        ) : (
+          <span className="MinPercent">Min 70% is required</span>
+        )}
       </React.Fragment>
     );
   };
