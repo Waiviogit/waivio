@@ -372,6 +372,65 @@ class Topnav extends React.Component {
       >
         <ModalBroker />
         <Menu selectedKeys={[]} className="Topnav__menu-container__menu" mode="horizontal">
+          <Menu.Item key="hot">
+            <BTooltip
+              placement="bottom"
+              title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
+              mouseEnterDelay={1}
+            >
+              <PopoverContainer
+                placement="bottomRight"
+                trigger="click"
+                content={
+                  <div className="Topnav__hot-news">
+                    {!_.isEmpty(dailyChosenPost) && (
+                      <Link
+                        to={`/@${dailyChosenPost.author}/${dailyChosenPost.permlink}`}
+                        className="Topnav__hot-news-item"
+                        onClick={this.handleHotNewsPopoverVisibleChange}
+                      >
+                        {dailyChosenPost.title}
+                      </Link>
+                    )}
+                    {!_.isEmpty(weeklyChosenPost) && (
+                      <Link
+                        to={`/@${weeklyChosenPost.author}/${weeklyChosenPost.permlink}`}
+                        className="Topnav__hot-news-item"
+                        onClick={this.handleHotNewsPopoverVisibleChange}
+                      >
+                        {weeklyChosenPost.title}
+                      </Link>
+                    )}
+                    <Link
+                      to="/economical-calendar"
+                      className="Topnav__hot-news-item"
+                      onClick={this.handleHotNewsPopoverVisibleChange}
+                    >
+                      Economical calendar
+                    </Link>
+                  </div>
+                }
+                visible={hotNewsPopoverVisible}
+                onVisibleChange={this.handleHotNewsPopoverVisibleChange}
+                overlayClassName="Notifications__popover-overlay"
+                title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
+              >
+                {!isMobile && <Icon type="fire" className="Topnav__fire-icon" />}
+              </PopoverContainer>
+            </BTooltip>
+          </Menu.Item>
+
+          <Menu.Item key="write">
+            <BTooltip
+              placement="bottom"
+              title={intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })}
+              mouseEnterDelay={1}
+            >
+              <Link to="/editor" className="Topnav__link Topnav__link--action">
+                <i className="iconfont icon-write" />
+              </Link>
+            </BTooltip>
+          </Menu.Item>
           <Menu.Item key="broker">
             {isMobile && (
               <React.Fragment>
@@ -434,66 +493,6 @@ class Topnav extends React.Component {
               </React.Fragment>
             )}
           </Menu.Item>
-          {!isMobile && (
-            <Menu.Item key="hot">
-              <BTooltip
-                placement="bottom"
-                title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
-                mouseEnterDelay={1}
-              >
-                <PopoverContainer
-                  placement="bottomRight"
-                  trigger="click"
-                  content={
-                    <div className="Topnav__hot-news">
-                      {!_.isEmpty(dailyChosenPost) && (
-                        <Link
-                          to={`/@${dailyChosenPost.author}/${dailyChosenPost.permlink}`}
-                          className="Topnav__hot-news-item"
-                          onClick={this.handleHotNewsPopoverVisibleChange}
-                        >
-                          {dailyChosenPost.title}
-                        </Link>
-                      )}
-                      {!_.isEmpty(weeklyChosenPost) && (
-                        <Link
-                          to={`/@${weeklyChosenPost.author}/${weeklyChosenPost.permlink}`}
-                          className="Topnav__hot-news-item"
-                          onClick={this.handleHotNewsPopoverVisibleChange}
-                        >
-                          {weeklyChosenPost.title}
-                        </Link>
-                      )}
-                      <Link
-                        to="/economical-calendar"
-                        className="Topnav__hot-news-item"
-                        onClick={this.handleHotNewsPopoverVisibleChange}
-                      >
-                        Economical calendar
-                      </Link>
-                    </div>
-                  }
-                  visible={hotNewsPopoverVisible}
-                  onVisibleChange={this.handleHotNewsPopoverVisibleChange}
-                  overlayClassName="Notifications__popover-overlay"
-                  title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
-                >
-                  <Icon type="fire" className="Topnav__fire-icon" />
-                </PopoverContainer>
-              </BTooltip>
-            </Menu.Item>
-          )}
-          <Menu.Item key="write">
-            <BTooltip
-              placement="bottom"
-              title={intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })}
-              mouseEnterDelay={1}
-            >
-              <Link to="/editor" className="Topnav__link Topnav__link--action">
-                <i className="iconfont icon-write" />
-              </Link>
-            </BTooltip>
-          </Menu.Item>
           <Menu.Item key="notifications" className="Topnav__item--badge">
             <BTooltip
               placement="bottom"
@@ -549,25 +548,28 @@ class Topnav extends React.Component {
                 content={
                   <PopoverMenu onSelect={this.handleMoreMenuSelect}>
                     <PopoverMenuItem key="my-profile" fullScreenHidden>
-                      <FormattedMessage id="my_profile" defaultMessage="My profile" /> {/**/}
+                      <FormattedMessage id="my_profile" defaultMessage="My profile" />
                     </PopoverMenuItem>
                     <PopoverMenuItem key="replies" fullScreenHidden>
-                      <FormattedMessage id="replies" defaultMessage="Replies" /> {/**/}
+                      <FormattedMessage id="replies" defaultMessage="Replies" />
+                    </PopoverMenuItem>
+                    <PopoverMenuItem key="wallet">
+                      <FormattedMessage id="wallet" defaultMessage="Wallet" />
                     </PopoverMenuItem>
                     <PopoverMenuItem key="activity">
-                      <FormattedMessage id="activity" defaultMessage="Activity" /> {/**/}
+                      <FormattedMessage id="activity" defaultMessage="Activity" />
                     </PopoverMenuItem>
                     <PopoverMenuItem key="bookmarks">
-                      <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" /> {/**/}
+                      <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" />
                     </PopoverMenuItem>
                     <PopoverMenuItem key="drafts">
-                      <FormattedMessage id="drafts" defaultMessage="Drafts" /> {/**/}
+                      <FormattedMessage id="drafts" defaultMessage="Drafts" />
                     </PopoverMenuItem>
                     <PopoverMenuItem key="settings">
-                      <FormattedMessage id="settings" defaultMessage="Settings" /> {/**/}
+                      <FormattedMessage id="settings" defaultMessage="Settings" />
                     </PopoverMenuItem>
                     <PopoverMenuItem key="logout">
-                      <FormattedMessage id="logout" defaultMessage="Logout" /> {/**/}
+                      <FormattedMessage id="logout" defaultMessage="Logout" />
                     </PopoverMenuItem>
                   </PopoverMenu>
                 }
@@ -593,6 +595,11 @@ class Topnav extends React.Component {
                   </PopoverMenuItem>
                   <PopoverMenuItem key="myFeed" fullScreenHidden>
                     <FormattedMessage id="my_feed" defaultMessage="My feed" />
+                  </PopoverMenuItem>
+                  <PopoverMenuItem key="actualNews" fullScreenHidden>
+                    <div onClick={this.handleHotNewsPopoverVisibleChange}>
+                      <FormattedMessage id="actualNews" defaultMessage="Actual news" />
+                    </div>
                   </PopoverMenuItem>
                   <PopoverMenuItem key="discover-objects" fullScreenHidden>
                     <FormattedMessage id="discover" defaultMessage="Discover" />
@@ -944,7 +951,7 @@ class Topnav extends React.Component {
       searchBarActive,
       isModalDeposit,
       dropdownOpen,
-      popoverMobileMenuVisible,
+      // popoverMobileMenuVisible,
       popoverBrokerVisible,
     } = this.state;
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
@@ -1008,11 +1015,13 @@ class Topnav extends React.Component {
               <i className="iconfont icon-search" />
             </div>
             <div className="Topnav__horizontal-menu">
-              <TopNavigation
-                authenticated={isAuthenticated}
-                location={this.props.history.location}
-                isMobile={isMobile || screenSize === 'medium'}
-              />
+              {!isMobile && (
+                <TopNavigation
+                  authenticated={isAuthenticated}
+                  location={this.props.history.location}
+                  isMobile={isMobile || screenSize === 'medium'}
+                />
+              )}
             </div>
           </div>
           <div className="right">
