@@ -1116,7 +1116,8 @@ class Topnav extends React.Component {
                 )}
               </div>
             ) : (
-              this.props.username && (
+              this.props.username &&
+              !isMobile && (
                 <div className="st-header-broker-balance-pl-wrap">
                   <Button type="primary" onClick={this.toggleModalBroker}>
                     {intl.formatMessage({
