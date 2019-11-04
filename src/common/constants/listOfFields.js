@@ -24,8 +24,8 @@ export const objectFields = {
   workTime: 'workTime',
   pageContent: 'pageContent',
   status: 'status',
-  galleryItem: 'galleryItem',
-  galleryAlbum: 'galleryAlbum',
+  // galleryItem: 'galleryItem',
+  // galleryAlbum: 'galleryAlbum',
 };
 
 export const TYPES_OF_MENU_ITEM = {

@@ -253,11 +253,11 @@ const routes = [
             exact: true,
             component: WobjFollowers,
           },
-          {
-            path: `/object/:name/${URL.SEGMENT.GALLERY}`,
-            exact: true,
-            component: ObjectGallery,
-          },
+          // {
+          //   path: `/object/:name/${URL.SEGMENT.GALLERY}`,
+          //   exact: true,
+          //   component: ObjectGallery,
+          // },
           {
             path: `/object/:name/${URL.SEGMENT.EXPERTISE}`,
             exact: true,
