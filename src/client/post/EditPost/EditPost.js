@@ -4,9 +4,9 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Badge } from 'antd';
-import { debounce, has, kebabCase, throttle, uniqBy, isEmpty } from 'lodash';
+import { get, compact, debounce, has, isEmpty, isEqual, kebabCase, throttle, uniqBy } from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
-import { getCampaignById } from '../../../waivioApi/ApiClient';
+import { getCampaignById, getObject } from '../../../waivioApi/ApiClient';
 import {
   getAuthenticatedUser,
   getDraftPosts,
@@ -17,12 +17,7 @@ import {
   getSuitableLanguage,
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
-import {
-  createPostMetadata,
-  splitPostContent,
-  getInitialState,
-  attachPostInfo,
-} from '../../helpers/postHelpers';
+import { createPostMetadata, splitPostContent, getInitialState } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import ObjectCardView from '../../objectCard/ObjectCardView';
@@ -32,14 +27,8 @@ import ObjectCreation from '../../components/Sidebar/ObjectCreation/ObjectCreati
 import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import CreatePostForecast from '../../../investarena/components/CreatePostForecast';
 import { getForecastObject } from '../../../investarena/components/CreatePostForecast/helpers';
+import { getClientWObj } from '../../adapters';
 import './EditPost.less';
-
-const getLinkedObjects = contentStateRaw => {
-  const objEntities = Object.values(contentStateRaw.entityMap).filter(
-    entity => entity.type === Entity.OBJECT && has(entity, 'data.object.type'),
-  );
-  return uniqBy(objEntities.map(entity => entity.data.object), 'id');
-};
 
 @injectIntl
 @requiresLogin
@@ -125,18 +114,38 @@ class EditPost extends Component {
 
   setIsPreview = isPreview => this.setState({ isPreview });
 
+  getLinkedObjects = async contentStateRaw => {
+    const { forecastValues, linkedObjects } = this.state;
+    const { isValid, wobjData } = forecastValues;
+    const objEntities = Object.values(contentStateRaw.entityMap).filter(
+      entity => entity.type === Entity.OBJECT && has(entity, 'data.object.type'),
+    );
+
+    const forecastObjectId = get(wobjData, ['author_permlink'], '');
+    let forecastObject = linkedObjects.find(obj => obj.id === forecastObjectId);
+
+    if (!forecastObject && isValid && forecastObjectId) {
+      const serverObject = await getObject(forecastObjectId);
+      forecastObject = getClientWObj(serverObject, this.props.locale);
+    }
+    return compact(
+      uniqBy([forecastObject, ...objEntities.map(entity => entity.data.object)], 'id'),
+    );
+  };
+
   handleChangeContent(rawContent) {
     const nextState = { content: toMarkdown(rawContent) };
-    const linkedObjects = getLinkedObjects(rawContent);
-    const isLinkedObjectsChanged = this.state.linkedObjects.length !== linkedObjects.length;
-    if (isLinkedObjectsChanged) {
-      const objPercentage = setObjPercents(linkedObjects, this.state.objPercentage);
-      nextState.linkedObjects = linkedObjects;
-      nextState.objPercentage = objPercentage;
-    }
-    if (this.state.content !== nextState.content || isLinkedObjectsChanged) {
-      this.setState(nextState, this.handleUpdateState);
-    }
+    this.getLinkedObjects(rawContent).then(linkedObjects => {
+      const isLinkedObjectsChanged = !isEqual(this.state.linkedObjects, linkedObjects);
+      if (isLinkedObjectsChanged) {
+        const objPercentage = setObjPercents(linkedObjects, this.state.objPercentage);
+        nextState.linkedObjects = linkedObjects;
+        nextState.objPercentage = objPercentage;
+      }
+      if (this.state.content !== nextState.content || isLinkedObjectsChanged) {
+        this.setState(nextState, this.handleUpdateState);
+      }
+    });
   }
 
   handleTopicsChange = topics => this.setState({ topics }, this.handleUpdateState);
@@ -214,10 +223,6 @@ class EditPost extends Component {
 
     postData.jsonMetadata = createPostMetadata(postBody, topics, oldMetadata, appData);
 
-    if (appData.forecast) {
-      postData.body = attachPostInfo(postData, appData.forecast);
-    }
-
     if (originalBody) {
       postData.originalBody = originalBody;
     }
@@ -227,7 +232,38 @@ class EditPost extends Component {
 
   handleUpdateState = () => throttle(this.saveDraft, 200, { leading: false, trailing: true })();
 
-  handleForecastChange = forecastValues => this.setState({ forecastValues });
+  handleForecastChange = (nextForecastValues, isReset) => {
+    const { linkedObjects, forecastValues } = this.state;
+    const { isValid, wobjData } = nextForecastValues;
+    if (isReset && !isEmpty(forecastValues.wobjData.author_permlink)) {
+      this.setState(prevState => {
+        const filteredObjects = prevState.linkedObjects.filter(
+          obj => obj.id !== prevState.forecastValues.wobjData.author_permlink,
+        );
+        return { forecastValues: nextForecastValues, linkedObjects: filteredObjects };
+      });
+    } else if (
+      !isReset &&
+      isValid &&
+      wobjData &&
+      !linkedObjects.some(obj => obj.id === wobjData.author_permlink)
+    ) {
+      getObject(wobjData.author_permlink).then(serverObject => {
+        const filtered = linkedObjects.filter(
+          obj => obj.id !== get(forecastValues, ['wobjData', 'author_permlink']),
+          '',
+        );
+        const nextLinkedObjects = [getClientWObj(serverObject, this.props.locale), ...filtered];
+        this.setState({
+          forecastValues: nextForecastValues,
+          linkedObjects: nextLinkedObjects,
+          objPercentage: setObjPercents(nextLinkedObjects, this.state.objPercentage),
+        });
+      });
+    } else {
+      this.setState({ forecastValues: nextForecastValues });
+    }
+  };
 
   saveDraft = debounce(() => {
     if (this.props.saving) return;
