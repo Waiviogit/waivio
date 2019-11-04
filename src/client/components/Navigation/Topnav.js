@@ -974,34 +974,6 @@ class Topnav extends React.Component {
             <Link to="/" className="Topnav__brand">
               <img alt="InvestArena" src={brandLogoPath} className="Topnav__brand-icon" />
             </Link>
-            {isMobile && (
-              <Popover
-                placement="top"
-                trigger="click"
-                overlayClassName="nav-menu-mobile"
-                visible={popoverMobileMenuVisible}
-                onVisibleChange={this.handleMobileMenuVisibleChange}
-                content={
-                  <TopNavigation
-                    authenticated={isAuthenticated}
-                    location={this.props.history.location}
-                    isMobile
-                    onMenuClick={this.handleMobileMenuVisibleChange}
-                  />
-                }
-              >
-                <Button
-                  className="mobile-menu-btn"
-                  type="primary"
-                  onClick={this.handleMobileMenuVisibleChange}
-                >
-                  {intl.formatMessage({
-                    id: 'menu',
-                    defaultMessage: 'Menu',
-                  })}
-                </Button>
-              </Popover>
-            )}
           </div>
           <div className={classNames('center', { mobileVisible: searchBarActive })}>
             <div className="Topnav__input-container">
