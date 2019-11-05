@@ -947,12 +947,7 @@ class Topnav extends React.Component {
       isLoadingPlatform,
       isNightMode,
     } = this.props;
-    const {
-      searchBarActive,
-      isModalDeposit,
-      dropdownOpen,
-      popoverBrokerVisible,
-    } = this.state;
+    const { searchBarActive, isModalDeposit, dropdownOpen, popoverBrokerVisible } = this.state;
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
     const brandLogoPath = isMobile ? '/images/icons/icon-72x72.png' : '/images/logo-brand.png';
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);

@@ -192,6 +192,7 @@ class PostPreviewModal extends Component {
             <h1 className="StoryFull__title preview">{title}</h1>
             <BodyContainer full body={body} />
             {!isEmpty(forecast) && (
+              <div className="StoryFull__chart preview">
               <PostChart
                 quoteSecurity={forecast.quoteSecurity}
                 createdAt={forecast.createdAt}
@@ -207,6 +208,7 @@ class PostPreviewModal extends Component {
                 slPrice={forecast.slPrice ? forecast.slPrice.toString() : null}
                 expForecast={expForecast}
               />
+              </div>
             )}
             <TagsSelector
               className="post-preview-topics"
