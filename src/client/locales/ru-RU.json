@@ -944,6 +944,8 @@
   "headerAuthorized.balance": "Баланс",
   "headerAuthorized.freeBalance": "Свободный баланс",
   "headerAuthorized.deposit": "Депозит",
+  "headerAuthorized.openDeals": "Открытые сделки",
+  "headerAuthorized.closedDeals": "Закрытые сделки",
   "deals.opened": "Сделка открыта",
   "deals.price": "Стоимость",
   "deals.cumPnl": "Общий P&L",
@@ -999,5 +1001,6 @@
   "hot_news": "Антуальные новости",
   "signUp": "Регистрация",
   "onlyForecasts": "Только посты с прогнозами",
-  "empty_my_feed": "Ваша лента пуста, потому что вы не подписаны ни на одного пользователя или тему."
+  "empty_my_feed": "Ваша лента пуста, потому что вы не подписаны ни на одного пользователя или тему.",
+  "actualNews" : "Актуальные новости"
 }

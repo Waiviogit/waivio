@@ -32,7 +32,7 @@ class ModalClose extends Component {
           <Modal
             title={this.props.intl.formatMessage({
               id: 'deals.closeAll',
-              defaultMessage: 'Close all',
+              defaultMessage: 'Close deal',
             })}
             visible={this.state.modal}
             footer={null}

@@ -5,7 +5,7 @@ import { rewardsValues } from '../../common/constants/rewards';
 
 const initialState = {
   locale: 'auto',
-  readLanguages: [],
+  postLocales: [],
   votingPower: false,
   votePercent: 10000,
   showNSFWPosts: false,
