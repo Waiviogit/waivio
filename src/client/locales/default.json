@@ -511,7 +511,7 @@
   "deals.opened": "Deal is opened",
   "deals.price": "Price",
   "openDeals.notPresent": "You do not have open deals",
-  "deals.closeAll": "Close all",
+  "deals.closeAll": "Close deal",
   "modalTakeProfit.header.title": "Take profit",
   "deals.till": "till",
   "deals.from": "from",
