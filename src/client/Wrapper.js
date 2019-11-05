@@ -226,10 +226,6 @@ export default class Wrapper extends React.PureComponent {
     }
   }
 
-  setBrokerConnect = isConnected => {
-    this.setState({ isBrokerConnected: isConnected });
-  };
-
   render() {
     const { user, usedLocale, translations, platformName } = this.props;
 
