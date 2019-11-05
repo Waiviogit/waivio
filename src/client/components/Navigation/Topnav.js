@@ -363,6 +363,7 @@ class Topnav extends React.Component {
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
     const displayBadge = notificationsCount > 0;
     const notificationsCountDisplay = notificationsCount > 99 ? '99+' : notificationsCount;
+
     const { dailyChosenPost, weeklyChosenPost } = this.state;
     return (
       <div
@@ -968,7 +969,7 @@ class Topnav extends React.Component {
       ? dropdownOptions
       : dropdownOptions.concat([downBar]);
     return (
-      <div className="Topnav">
+      <div className={classNames('Topnav', { 'no-navbroker': platformName === 'widgets' })}>
         <ModalDealConfirmation />
         <div className="topnav-layout">
           <div className={classNames('left', { 'Topnav__mobile-hidden': searchBarActive })}>
