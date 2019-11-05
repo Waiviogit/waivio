@@ -426,7 +426,7 @@
   "value_error_too_long": "Значение не может быть длиннее 255 символов.",
   "value_error_long": "Значение не может быть длиннее  {value} символов.",
   "create_new_object_placeholder": "Эта тема еще не существует, но вы можете создать его",
-  "tips.sessionStatus": "Статус торго",
+  "tips.sessionStatus": "Статус торговой сессии",
   "tips.dailyChange": "Изменение за день",
   "postQuotation.margin": "Маржа",
   "postQuotation.button.sell": "Прод.",
