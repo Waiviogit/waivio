@@ -148,6 +148,7 @@ class Topnav extends React.Component {
       searchBarActive: false,
       popoverMobileMenuVisible: false,
       popoverProfileVisible: false,
+      burgerMenuVisible: false,
       popoverBrokerVisible: false,
       searchBarValue: '',
       notificationsPopoverVisible: false,
@@ -187,6 +188,10 @@ class Topnav extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.setState({ popoverBrokerVisible: false });
+  }
+
   getTranformSearchCountData = searchResults => {
     const { objectTypesCount, wobjectsCounts, usersCount } = searchResults;
     const wobjectAllCount = wobjectsCounts
@@ -218,10 +223,25 @@ class Topnav extends React.Component {
     });
   }
 
+  handleBurgerMenuSelect = key =>
+    this.setState({ burgerMenuVisible: false }, () => {
+      this.props.onMenuItemClick(key);
+    });
+
   handleBrokerMenuSelect(key) {
     switch (key) {
       case 'deposit':
         this.setState({ popoverBrokerVisible: false, isModalDeposit: true });
+        break;
+      case 'openDeals':
+        this.setState({ popoverBrokerVisible: false }, () => {
+          this.props.history.push('/deals/open');
+        });
+        break;
+      case 'closedDeals':
+        this.setState({ popoverBrokerVisible: false }, () => {
+          this.props.history.push('/deals/closed');
+        });
         break;
       case 'broker-disconnect':
         this.setState({ popoverBrokerVisible: false }, () => {
@@ -240,6 +260,8 @@ class Topnav extends React.Component {
   handleProfileMenuVisibleChange(visible) {
     this.setState({ popoverProfileVisible: visible });
   }
+
+  handleBurgerMenuVisibleChange = visible => this.setState({ burgerMenuVisible: visible });
 
   handleBrokerMenuVisibleChange(visible) {
     this.setState({ popoverBrokerVisible: visible });
@@ -309,12 +331,23 @@ class Topnav extends React.Component {
   };
 
   menuForLoggedIn = () => {
-    const { intl, username, notifications, userMetaData, loadingNotifications } = this.props;
+    const {
+      intl,
+      username,
+      notifications,
+      userMetaData,
+      loadingNotifications,
+      platformName,
+      isLoadingPlatform,
+      screenSize,
+    } = this.props;
     const {
       searchBarActive,
       notificationsPopoverVisible,
       popoverProfileVisible,
+      burgerMenuVisible,
       hotNewsPopoverVisible,
+      popoverBrokerVisible,
     } = this.state;
     const lastSeenTimestamp = _.get(userMetaData, 'notifications_last_timestamp');
     const notificationsCount = _.isUndefined(lastSeenTimestamp)
@@ -327,6 +360,7 @@ class Topnav extends React.Component {
               _.includes(PARSED_NOTIFICATIONS, notification.type),
           ),
         );
+    const isMobile = screenSize === 'xsmall' || screenSize === 'small';
     const displayBadge = notificationsCount > 0;
     const notificationsCountDisplay = notificationsCount > 99 ? '99+' : notificationsCount;
     const { dailyChosenPost, weeklyChosenPost } = this.state;
@@ -381,10 +415,11 @@ class Topnav extends React.Component {
                 overlayClassName="Notifications__popover-overlay"
                 title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
               >
-                <Icon type="fire" className="Topnav__fire-icon" />
+                {!isMobile && <Icon type="fire" className="Topnav__fire-icon" />}
               </PopoverContainer>
             </BTooltip>
           </Menu.Item>
+
           <Menu.Item key="write">
             <BTooltip
               placement="bottom"
@@ -395,6 +430,68 @@ class Topnav extends React.Component {
                 <i className="iconfont icon-write" />
               </Link>
             </BTooltip>
+          </Menu.Item>
+          <Menu.Item key="broker">
+            {isMobile && (
+              <React.Fragment>
+                {platformName !== 'widgets' && !isLoadingPlatform ? (
+                  <Popover
+                    placement="bottom"
+                    trigger="click"
+                    visible={popoverBrokerVisible}
+                    onVisibleChange={this.handleOnClickBrokerIcon}
+                    overlayStyle={{ position: 'fixed' }}
+                    content={
+                      <div>
+                        <div className="Popover__overlay" />
+                        <PopoverMenu onSelect={this.handleBrokerMenuSelect}>
+                          <PopoverMenuItem key="deposit">
+                            <FormattedMessage
+                              id="headerAuthorized.deposit"
+                              defaultMessage="Deposit"
+                            />
+                          </PopoverMenuItem>
+                          <PopoverMenuItem key="openDeals">
+                            <FormattedMessage
+                              id="headerAuthorized.openDeals"
+                              defaultMessage="Open deals"
+                            />
+                          </PopoverMenuItem>
+                          <PopoverMenuItem key="closedDeals">
+                            <FormattedMessage
+                              id="headerAuthorized.closedDeals"
+                              defaultMessage="Closed deals"
+                            />
+                          </PopoverMenuItem>
+                          <PopoverMenuItem key="broker-disconnect">
+                            <FormattedMessage
+                              id="disconnect_broker"
+                              defaultMessage="Disconnect Broker"
+                            />
+                          </PopoverMenuItem>
+                        </PopoverMenu>
+                      </div>
+                    }
+                  >
+                    <img
+                      className="Topnav__icon-broker"
+                      role="presentation"
+                      title={platformName}
+                      src={`/images/investarena/${platformName}.png`}
+                      alt="broker"
+                    />
+                  </Popover>
+                ) : (
+                  <div
+                    className="Topnav__item-broker"
+                    onClick={this.handleOnClickBrokerIcon}
+                    role="presentation"
+                  >
+                    B
+                  </div>
+                )}
+              </React.Fragment>
+            )}
           </Menu.Item>
           <Menu.Item key="notifications" className="Topnav__item--badge">
             <BTooltip
@@ -433,50 +530,96 @@ class Topnav extends React.Component {
             </BTooltip>
           </Menu.Item>
           <Menu.Item key="user" className="Topnav__item-user">
-            <Link className="Topnav__user" to={`/@${username}`} onClick={Topnav.handleScrollToTop}>
-              <Avatar username={username} size={36} />
-            </Link>
+            {!isMobile ? (
+              <Link
+                className="Topnav__user"
+                to={`/@${username}`}
+                onClick={Topnav.handleScrollToTop}
+              >
+                <Avatar username={username} size={36} />
+              </Link>
+            ) : (
+              <PopoverContainer
+                placement="bottom"
+                trigger="click"
+                visible={popoverProfileVisible}
+                onVisibleChange={this.handleProfileMenuVisibleChange}
+                overlayStyle={{ position: 'fixed' }}
+                content={
+                  <PopoverMenu onSelect={this.handleMoreMenuSelect}>
+                    <PopoverMenuItem key="my-profile" fullScreenHidden>
+                      <FormattedMessage id="my_profile" defaultMessage="My profile" />
+                    </PopoverMenuItem>
+                    <PopoverMenuItem key="replies" fullScreenHidden>
+                      <FormattedMessage id="replies" defaultMessage="Replies" />
+                    </PopoverMenuItem>
+                    <PopoverMenuItem key="wallet">
+                      <FormattedMessage id="wallet" defaultMessage="Wallet" />
+                    </PopoverMenuItem>
+                    <PopoverMenuItem key="activity">
+                      <FormattedMessage id="activity" defaultMessage="Activity" />
+                    </PopoverMenuItem>
+                    <PopoverMenuItem key="bookmarks">
+                      <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" />
+                    </PopoverMenuItem>
+                    <PopoverMenuItem key="drafts">
+                      <FormattedMessage id="drafts" defaultMessage="Drafts" />
+                    </PopoverMenuItem>
+                    <PopoverMenuItem key="settings">
+                      <FormattedMessage id="settings" defaultMessage="Settings" />
+                    </PopoverMenuItem>
+                    <PopoverMenuItem key="logout">
+                      <FormattedMessage id="logout" defaultMessage="Logout" />
+                    </PopoverMenuItem>
+                  </PopoverMenu>
+                }
+              >
+                {' '}
+                <a className="Topnav__link">
+                  <Avatar username={username} size={36} />
+                </a>
+              </PopoverContainer>
+            )}
           </Menu.Item>
           <Menu.Item key="more" className="Topnav__menu--icon">
             <PopoverContainer
               placement="bottom"
               trigger="click"
-              visible={popoverProfileVisible}
-              onVisibleChange={this.handleProfileMenuVisibleChange}
+              visible={burgerMenuVisible}
+              onVisibleChange={this.handleBurgerMenuVisibleChange}
               overlayStyle={{ position: 'fixed' }}
               content={
-                <PopoverMenu onSelect={this.handleMoreMenuSelect}>
-                  <PopoverMenuItem key="my-profile" fullScreenHidden>
-                    <FormattedMessage id="my_profile" defaultMessage="My profile" />
-                  </PopoverMenuItem>
+                <PopoverMenu onSelect={this.handleBurgerMenuSelect}>
                   <PopoverMenuItem key="feed" fullScreenHidden>
-                    <FormattedMessage id="feed" defaultMessage="Feed" />
+                    <FormattedMessage id="home" defaultMessage="Home" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="news" fullScreenHidden>
-                    <FormattedMessage id="news" defaultMessage="News" />
+                  <PopoverMenuItem key="myFeed" fullScreenHidden>
+                    <FormattedMessage id="my_feed" defaultMessage="My feed" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="objects" fullScreenHidden>
-                    <FormattedMessage id="objects" defaultMessage="Objects" />
+                  <PopoverMenuItem key="actualNews" fullScreenHidden>
+                    <div onClick={this.handleHotNewsPopoverVisibleChange}>
+                      <FormattedMessage id="actualNews" defaultMessage="Actual news" />
+                    </div>
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="replies" fullScreenHidden>
-                    <FormattedMessage id="replies" defaultMessage="Replies" />
+                  <PopoverMenuItem key="discover-objects" fullScreenHidden>
+                    <FormattedMessage id="discover" defaultMessage="Discover" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="wallet" fullScreenHidden>
-                    <FormattedMessage id="wallet" defaultMessage="Wallet" />
+                  <PopoverMenuItem key="about" fullScreenHidden>
+                    <FormattedMessage id="about" defaultMessage="About" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="activity">
+                  <PopoverMenuItem key="activity" mobileScreenHidden>
                     <FormattedMessage id="activity" defaultMessage="Activity" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="bookmarks">
+                  <PopoverMenuItem key="bookmarks" mobileScreenHidden>
                     <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="drafts">
+                  <PopoverMenuItem key="drafts" mobileScreenHidden>
                     <FormattedMessage id="drafts" defaultMessage="Drafts" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="settings">
+                  <PopoverMenuItem key="settings" mobileScreenHidden>
                     <FormattedMessage id="settings" defaultMessage="Settings" />
                   </PopoverMenuItem>
-                  <PopoverMenuItem key="logout">
+                  <PopoverMenuItem key="logout" mobileScreenHidden>
                     <FormattedMessage id="logout" defaultMessage="Logout" />
                   </PopoverMenuItem>
                 </PopoverMenu>
@@ -613,6 +756,14 @@ class Topnav extends React.Component {
       this.setState({ searchBarValue: value, searchData: '', currentItem: 'All' });
     }
   }
+
+  handleOnClickBrokerIcon = () => {
+    if (this.props.platformName !== 'widgets') {
+      this.handleBrokerMenuVisibleChange(!this.state.popoverBrokerVisible);
+    } else {
+      this.toggleModalBroker();
+    }
+  };
 
   usersSearchLayout(accounts) {
     return (
@@ -800,7 +951,6 @@ class Topnav extends React.Component {
       searchBarActive,
       isModalDeposit,
       dropdownOpen,
-      popoverMobileMenuVisible,
       popoverBrokerVisible,
     } = this.state;
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
@@ -830,34 +980,6 @@ class Topnav extends React.Component {
             <Link to="/" className="Topnav__brand">
               <img alt="InvestArena" src={brandLogoPath} className="Topnav__brand-icon" />
             </Link>
-            {isMobile && (
-              <Popover
-                placement="top"
-                trigger="click"
-                overlayClassName="nav-menu-mobile"
-                visible={popoverMobileMenuVisible}
-                onVisibleChange={this.handleMobileMenuVisibleChange}
-                content={
-                  <TopNavigation
-                    authenticated={isAuthenticated}
-                    location={this.props.history.location}
-                    isMobile
-                    onMenuClick={this.handleMobileMenuVisibleChange}
-                  />
-                }
-              >
-                <Button
-                  className="mobile-menu-btn"
-                  type="primary"
-                  onClick={this.handleMobileMenuVisibleChange}
-                >
-                  {intl.formatMessage({
-                    id: 'menu',
-                    defaultMessage: 'Menu',
-                  })}
-                </Button>
-              </Popover>
-            )}
           </div>
           <div className={classNames('center', { mobileVisible: searchBarActive })}>
             <div className="Topnav__input-container">
@@ -892,11 +1014,13 @@ class Topnav extends React.Component {
               <i className="iconfont icon-search" />
             </div>
             <div className="Topnav__horizontal-menu">
-              <TopNavigation
-                authenticated={isAuthenticated}
-                location={this.props.history.location}
-                isMobile={isMobile || screenSize === 'medium'}
-              />
+              {!isMobile && (
+                <TopNavigation
+                  authenticated={isAuthenticated}
+                  location={this.props.history.location}
+                  isMobile={isMobile || screenSize === 'medium'}
+                />
+              )}
             </div>
           </div>
           <div className="right">
@@ -963,47 +1087,64 @@ class Topnav extends React.Component {
                     />
                   </div>
                 </Modal>
-                <img
-                  role="presentation"
-                  title={platformName}
-                  onClick={this.toggleModalBroker}
-                  className="st-header__image"
-                  src={`/images/investarena/${platformName}.png`}
-                  alt="broker"
-                />
-                <Popover
-                  placement="bottom"
-                  trigger="click"
-                  visible={popoverBrokerVisible}
-                  onVisibleChange={this.handleBrokerMenuVisibleChange}
-                  overlayStyle={{ position: 'fixed' }}
-                  content={
-                    <div>
-                      <div className="Popover__overlay" />
-                      <PopoverMenu onSelect={this.handleBrokerMenuSelect}>
-                        <PopoverMenuItem key="deposit">
-                          <FormattedMessage
-                            id="headerAuthorized.deposit"
-                            defaultMessage="Deposit"
-                          />
-                        </PopoverMenuItem>
-                        <PopoverMenuItem key="broker-disconnect">
-                          <FormattedMessage
-                            id="disconnect_broker"
-                            defaultMessage="Disconnect Broker"
-                          />
-                        </PopoverMenuItem>
-                      </PopoverMenu>
-                    </div>
-                  }
-                >
-                  <a className="Topnav__link dropdown-icon">
-                    <Icon type="caret-down" />
-                  </a>
-                </Popover>
+                {!isMobile && (
+                  <React.Fragment>
+                    <img
+                      role="presentation"
+                      title={platformName}
+                      onClick={this.toggleModalBroker}
+                      className="st-header__image"
+                      src={`/images/investarena/${platformName}.png`}
+                      alt="broker"
+                    />
+                    <Popover
+                      placement="bottom"
+                      trigger="click"
+                      visible={popoverBrokerVisible}
+                      onVisibleChange={this.handleBrokerMenuVisibleChange}
+                      overlayStyle={{ position: 'fixed' }}
+                      content={
+                        <div>
+                          <div className="Popover__overlay" />
+                          <PopoverMenu onSelect={this.handleBrokerMenuSelect}>
+                            <PopoverMenuItem key="deposit">
+                              <FormattedMessage
+                                id="headerAuthorized.deposit"
+                                defaultMessage="Deposit"
+                              />
+                            </PopoverMenuItem>
+                            <PopoverMenuItem key="openDeals" fullScreenHidden>
+                              <FormattedMessage
+                                id="headerAuthorized.openDeals"
+                                defaultMessage="Open deals"
+                              />
+                            </PopoverMenuItem>
+                            <PopoverMenuItem key="closedDeals" fullScreenHidden>
+                              <FormattedMessage
+                                id="headerAuthorized.closedDeals"
+                                defaultMessage="Closed deals"
+                              />
+                            </PopoverMenuItem>
+                            <PopoverMenuItem key="broker-disconnect">
+                              <FormattedMessage
+                                id="disconnect_broker"
+                                defaultMessage="Disconnect Broker"
+                              />
+                            </PopoverMenuItem>
+                          </PopoverMenu>
+                        </div>
+                      }
+                    >
+                      <a className="Topnav__link dropdown-icon">
+                        <Icon type="caret-down" />
+                      </a>
+                    </Popover>
+                  </React.Fragment>
+                )}
               </div>
             ) : (
-              this.props.username && (
+              this.props.username &&
+              !isMobile && (
                 <div className="st-header-broker-balance-pl-wrap">
                   <Button type="primary" onClick={this.toggleModalBroker}>
                     {intl.formatMessage({

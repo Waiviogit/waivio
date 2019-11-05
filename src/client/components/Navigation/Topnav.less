@@ -191,6 +191,30 @@
     margin: 0 !important;
   }
 
+  &__item-broker {
+    height: 35px;
+    min-width: 35px;
+    border-radius: 50%;
+    background-color: @blue-dodgerBlue;
+    color: @white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: x-large;
+    font-weight: bold;
+  }
+
+  &__icon-broker {
+    height: 35px;
+    min-width: 35px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: x-large;
+    font-weight: bold;
+  }
+
   &__mobile-search {
     background: transparent;
     border: 0;
@@ -256,6 +280,19 @@
 
   .right.bottom-row {
     top: 48px;
+    width: 100%;
+    margin-right: 0;
+    display: flex;
+    justify-content: center;
+    @media @small {
+      display: block;
+      width: 270px;
+      margin-right: 16px;
+      top: 48px;
+    }
+    @media @large {
+      margin-right: 0;
+    }
 
     .st-header-broker-balance-pl-wrap {
       height: 46px;
