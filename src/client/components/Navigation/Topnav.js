@@ -951,7 +951,6 @@ class Topnav extends React.Component {
       searchBarActive,
       isModalDeposit,
       dropdownOpen,
-      // popoverMobileMenuVisible,
       popoverBrokerVisible,
     } = this.state;
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
