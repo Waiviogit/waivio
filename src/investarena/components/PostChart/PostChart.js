@@ -211,7 +211,9 @@ class PostChart extends Component {
     return (
       <div
         className={`w-100 ${
-          !quote || !quoteSettings || (!bars && !expForecast) || !quoteSettings.tickSize ? 'st-hidden' : ''
+          !quote || !quoteSettings || (!bars && !expForecast) || !quoteSettings.tickSize
+            ? 'st-hidden'
+            : ''
         }`}
       >
         <div className="st-chart-select hidden">
