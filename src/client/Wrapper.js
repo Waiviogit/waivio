@@ -197,6 +197,9 @@ export default class Wrapper extends React.PureComponent {
       case 'feed':
         this.props.history.push('/');
         break;
+      case 'myFeed':
+        this.props.history.push('/my_feed');
+        break;
       case 'news':
         this.props.history.push('/trending');
         break;
@@ -208,6 +211,12 @@ export default class Wrapper extends React.PureComponent {
         break;
       case 'my-profile':
         this.props.history.push(`/@${this.props.username}`);
+        break;
+      case 'discover-objects':
+        this.props.history.push(`/discover-objects/crypto`);
+        break;
+      case 'about':
+        this.props.history.push(`/object/oul-investarena/menu`);
         break;
       default:
         break;

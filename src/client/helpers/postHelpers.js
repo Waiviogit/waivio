@@ -13,11 +13,12 @@ import {
   WAIVIO_META_FIELD_NAME,
   WAIVIO_PARENT_PERMLINK,
 } from '../../common/constants/waivio';
-import * as apiConfig from '../../waivioApi/config.json';
+import { baseUrl } from '../../waivioApi/routes';
+import { invArena } from '../../investarena/configApi/apiResources';
 
 const appVersion = require('../../../package.json').version;
 
-export const forecastPostMessage = '> This post contains [forecast for';
+export const forecastPostMessage = '> This post contains';
 
 export const isPostDeleted = post => post.title === 'deleted' && post.body === 'deleted';
 
@@ -119,10 +120,15 @@ export function createPostMetadata(body, tags, oldMetadata = {}, appData) {
   return metaData;
 }
 
-export function attachPostInfo(postData, forecast) {
-  const { author, permlink, body } = postData;
-  const msg = `\n${forecastPostMessage} ${forecast.quoteSecurity}](https://investarena.waiviodev.com/@${author}/${permlink}) `;
-  return body + msg;
+export function attachPostInfo(postData, permlink) {
+  const { jsonMetadata, author, body } = postData;
+  let additionalMsg = '';
+  const forecast = jsonMetadata[INVESTARENA_META_FIELD_NAME];
+  if (forecast && forecast.wobjData) {
+    const { author_permlink: objectPermlink, name } = forecast.wobjData;
+    additionalMsg += `\n${forecastPostMessage} [forecast](${invArena.baseUrl}@${author}/${permlink}) for [${name}](${invArena.baseUrl}object/${objectPermlink})`;
+  }
+  return body + additionalMsg;
 }
 
 /**
@@ -147,7 +153,7 @@ export function splitPostContent(
 
 export function getObjectUrl(objPermlink) {
   if (!objPermlink) return '';
-  return `${apiConfig.production.protocol}${apiConfig.production.host}/object/${objPermlink}`;
+  return `${baseUrl}/object/${objPermlink}`;
 }
 
 export function getInitialState(props) {

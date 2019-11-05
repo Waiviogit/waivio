@@ -213,7 +213,7 @@ export default class Settings extends React.Component {
     const initialLanguages =
       readLanguages && readLanguages.length
         ? readLanguages
-        : LANGUAGES.find(lang => lang.name === 'English').id;
+        : LANGUAGES.find(lang => lang.name === 'Russian').id;
     const languageOptions = [];
 
     if (locale === 'auto') {

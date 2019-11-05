@@ -251,7 +251,7 @@ class CreatePostForecast extends Component {
         takeProfitValueIncorrect: false,
         stopLossValueIncorrect: false,
       },
-      this.props.onChange({ isValid: true }),
+      this.props.onChange({ isValid: true }, true),
     );
 
   freezeUpdates = quote => this.setState({ updatesFrozen: !quote });
