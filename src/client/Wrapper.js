@@ -6,6 +6,7 @@ import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import { ConfigProvider, Layout } from 'antd';
+import classNames from 'classnames';
 import enUS from 'antd/lib/locale-provider/en_US';
 import Cookie from 'js-cookie';
 import { findLanguage, getRequestLocale, getBrowserLocale, loadLanguage } from './translations';
@@ -127,7 +128,9 @@ export default class Wrapper extends React.PureComponent {
 
   constructor(props) {
     super(props);
-
+    this.state = {
+      isBrokerConnected: false
+    };
     this.loadLocale = this.loadLocale.bind(this);
     this.handleMenuItemClick = this.handleMenuItemClick.bind(this);
   }
@@ -223,8 +226,13 @@ export default class Wrapper extends React.PureComponent {
     }
   }
 
+  setBrokerConnect = (isConnected) => {
+    this.setState({isBrokerConnected: isConnected});
+  };
+
   render() {
     const { user, usedLocale, translations } = this.props;
+    const { isBrokerConnected } = this.state;
 
     const language = findLanguage(usedLocale);
 
@@ -234,9 +242,9 @@ export default class Wrapper extends React.PureComponent {
           <UsedLocaleContext.Provider value={usedLocale}>
             <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
               <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
-                <Topnav username={user.name} onMenuItemClick={this.handleMenuItemClick} />
+                <Topnav username={user.name} setBrokerConnect={this.setBrokerConnect} isBrokerConnected={isBrokerConnected} onMenuItemClick={this.handleMenuItemClick} />
               </Layout.Header>
-              <div className="content">
+              <div className={classNames("content", {"no-broker": !isBrokerConnected})}>
                 {renderRoutes(this.props.route.routes)}
                 <Transfer />
                 <PowerUpOrDown />
