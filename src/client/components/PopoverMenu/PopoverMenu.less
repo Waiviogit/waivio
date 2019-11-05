@@ -2,6 +2,15 @@
 @import (reference) '../../styles/custom.less';
 
 .PopoverMenu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+
+  @media @small {
+    top: 46px;
+  }
+
   &__connect-container {
     &-logout {
       display: flex;

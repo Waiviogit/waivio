@@ -194,7 +194,7 @@ class Story extends React.Component {
         objectFromCurrentPage = this.getObjectLayout(wobj);
         return null;
       }
-      if (i < 5) {
+      if (i < 4) {
         i += 1;
         return this.getObjectLayout(wobj);
       }
