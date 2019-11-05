@@ -30,6 +30,7 @@ import Transfer from './wallet/Transfer';
 import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
 import { getChartsData } from '../investarena/redux/actions/chartsActions';
+import { getPlatformNameState } from '../investarena/redux/selectors/platformSelectors';
 import EntryModal from './components/EntryModal/EntryModal';
 
 export const UsedLocaleContext = React.createContext('en-US');
@@ -44,6 +45,7 @@ export const UsedLocaleContext = React.createContext('en-US');
     translations: getTranslations(state),
     locale: getLocale(state),
     nightmode: getNightmode(state),
+    platformName: getPlatformNameState(state),
   }),
   {
     login,
@@ -82,6 +84,7 @@ export default class Wrapper extends React.PureComponent {
     busyLogin: PropTypes.func,
     nightmode: PropTypes.bool,
     getChartsData: PropTypes.func,
+    platformName: PropTypes.string,
   };
 
   static defaultProps = {
@@ -128,9 +131,6 @@ export default class Wrapper extends React.PureComponent {
 
   constructor(props) {
     super(props);
-    this.state = {
-      isBrokerConnected: false
-    };
     this.loadLocale = this.loadLocale.bind(this);
     this.handleMenuItemClick = this.handleMenuItemClick.bind(this);
   }
@@ -226,13 +226,12 @@ export default class Wrapper extends React.PureComponent {
     }
   }
 
-  setBrokerConnect = (isConnected) => {
-    this.setState({isBrokerConnected: isConnected});
+  setBrokerConnect = isConnected => {
+    this.setState({ isBrokerConnected: isConnected });
   };
 
   render() {
-    const { user, usedLocale, translations } = this.props;
-    const { isBrokerConnected } = this.state;
+    const { user, usedLocale, translations, platformName } = this.props;
 
     const language = findLanguage(usedLocale);
 
@@ -242,9 +241,9 @@ export default class Wrapper extends React.PureComponent {
           <UsedLocaleContext.Provider value={usedLocale}>
             <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
               <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
-                <Topnav username={user.name} setBrokerConnect={this.setBrokerConnect} isBrokerConnected={isBrokerConnected} onMenuItemClick={this.handleMenuItemClick} />
+                <Topnav username={user.name} onMenuItemClick={this.handleMenuItemClick} />
               </Layout.Header>
-              <div className={classNames("content", {"no-broker": !isBrokerConnected})}>
+              <div className={classNames('content', { 'no-broker': platformName === 'widgets' })}>
                 {renderRoutes(this.props.route.routes)}
                 <Transfer />
                 <PowerUpOrDown />
