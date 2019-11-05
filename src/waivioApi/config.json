@@ -4,7 +4,7 @@
     "": "www.waivio.com",
     "host": "waiviodev.com",
     "": "localhost:8093",
-    "appName": "waiviodev"
+    "appName": "investarena"
   },
   "test": {
     "protocol": "https://",
@@ -14,7 +14,7 @@
   "staging": {
     "protocol": "https://",
     "host": "waiviodev.com",
-    "appName": "waiviodev"
+    "appName": "investarena"
   },
   "production": {
     "protocol": "https://",
