@@ -200,7 +200,7 @@ class PostChart extends Component {
   };
   render() {
     const { chartType, timeScale, priceType } = this.state;
-    const { createdAt, forecast, quote, quoteSettings } = this.props;
+    const { bars, createdAt, expForecast, forecast, quote, quoteSettings } = this.props;
 
     let classNameCircle = '';
     if (!this.state.isLoading && !this.state.expired && !this.state.disabledSelect) {
@@ -211,7 +211,9 @@ class PostChart extends Component {
     return (
       <div
         className={`w-100 ${
-          !quote || !quoteSettings || !quoteSettings.tickSize ? 'st-hidden' : ''
+          !quote || !quoteSettings || (!bars && !expForecast) || !quoteSettings.tickSize
+            ? 'st-hidden'
+            : ''
         }`}
       >
         <div className="st-chart-select hidden">

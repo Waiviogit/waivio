@@ -2,16 +2,10 @@
 @import (reference) '../../styles/custom.less';
 
 .PopoverMenuItem {
-  height: 30px !important;
   text-transform: capitalize;
-  color: @black;
-  background: @white;
   opacity: 1;
 
   & > a {
-    font-size: 14px !important;
-    font-weight: 500;
-    color: @black-text !important;
     height: 30px !important;
     line-height: 30px !important;
 
@@ -25,6 +19,9 @@
 
     & > span {
       white-space: nowrap;
+      font-size: 16px !important;
+      font-weight: 500;
+      color: @black-text;
     }
   }
 
@@ -50,3 +47,5 @@
     display: list-item;
   }
 }
+
+@import 'PopoverMenuItem-nightmode';

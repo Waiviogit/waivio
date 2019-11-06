@@ -192,21 +192,23 @@ class PostPreviewModal extends Component {
             <h1 className="StoryFull__title preview">{title}</h1>
             <BodyContainer full body={body} />
             {!isEmpty(forecast) && (
-              <PostChart
-                quoteSecurity={forecast.quoteSecurity}
-                createdAt={forecast.createdAt}
-                forecast={
-                  typeof forecast.expiredAt === 'string'
-                    ? forecast.expiredAt
-                    : forecast.expiredAt.format(forecastDateTimeFormat)
-                }
-                recommend={forecast.recommend}
-                toggleModalPost={() => {}}
-                withModalChart={false}
-                tpPrice={forecast.tpPrice ? forecast.tpPrice.toString() : null}
-                slPrice={forecast.slPrice ? forecast.slPrice.toString() : null}
-                expForecast={expForecast}
-              />
+              <div className="StoryFull__chart preview">
+                <PostChart
+                  quoteSecurity={forecast.quoteSecurity}
+                  createdAt={forecast.createdAt}
+                  forecast={
+                    typeof forecast.expiredAt === 'string'
+                      ? forecast.expiredAt
+                      : forecast.expiredAt.format(forecastDateTimeFormat)
+                  }
+                  recommend={forecast.recommend}
+                  toggleModalPost={() => {}}
+                  withModalChart={false}
+                  tpPrice={forecast.tpPrice ? forecast.tpPrice.toString() : null}
+                  slPrice={forecast.slPrice ? forecast.slPrice.toString() : null}
+                  expForecast={expForecast}
+                />
+              </div>
             )}
             <TagsSelector
               className="post-preview-topics"

@@ -256,6 +256,7 @@ export const mapObjectAppends = (comments, wObj, albums) => {
       author_rank: (rankedUser && rankedUser.rank) || 0,
       append_field_name: field.name || '',
       append_field_weight: field.weight || null,
+      upvotedByModerator: field.upvotedByModerator ? field.upvotedByModerator : false,
     };
   });
 };

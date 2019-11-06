@@ -41,15 +41,17 @@ export default class RightSidebar extends React.Component {
         {!authenticated && <SignUp />}
         <Switch>
           <Route path="/activity" component={UserActivitySearch} />
-          <Route path="/@:name" render={() => <InterestingPeople />} />
           <Route path="/@:name/activity" component={UserActivitySearch} />
           <Route path="/@:name/transfers" render={() => <WalletSidebar />} />
           <Route
             path="/@:name"
             render={() =>
-              authenticated && (
-                <ForecastBlock username={match.params.name} renderPlace={'rightSidebar'} />
-              )
+              authenticated ? (
+                <React.Fragment>
+                  <ForecastBlock username={match.params.name} renderPlace={'rightSidebar'} />
+                  <InterestingPeople />
+                </React.Fragment>
+              ) : (<InterestingPeople />)
             }
           />
           <Route path="/" render={() => <InterestingPeople />} />

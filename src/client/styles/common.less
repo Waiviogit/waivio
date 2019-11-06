@@ -24,6 +24,13 @@ a:focus {
   width: 100%;
 }
 
+.no-broker {
+  margin-top: 64px;
+  @media @small {
+    margin-top: 95px;
+  }
+}
+
 .shifted {
   margin-top: 20px;
 }
@@ -113,6 +120,7 @@ body.post-modal .primary-modal {
 
 .ant-rate {
   color: @orange-hot;
+
   &:hover {
     color: @orange;
   }
@@ -136,9 +144,11 @@ video {
 
 .username {
   color: @black;
+
   &:hover {
     color: @black;
   }
+
   font-weight: 500;
 }
 
@@ -245,6 +255,7 @@ ul {
 .ant-message {
   z-index: @ant-message-z-index !important;
 }
+
 .ant-select-dropdown {
   z-index: @ant-modal-popover-z-index !important;
 }
@@ -278,11 +289,14 @@ ul {
     }
     max-width: 100vw;
     height: 100vh;
+
     .ant-modal-content {
       height: 100%;
+
       .ant-modal-header {
         height: 55px;
       }
+
       .ant-modal-body {
         position: absolute;
         top: 55px;
@@ -290,10 +304,12 @@ ul {
         left: 0;
         right: 0;
         padding: 0;
+
         .fs-content-wrapper {
           position: relative;
           height: 100%;
           width: 100%;
+
           .fs-embedded-content {
             position: absolute;
             top: 0;

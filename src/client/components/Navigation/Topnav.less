@@ -192,6 +192,7 @@
   }
 
   &__item-broker {
+    margin-top: 1px;
     height: 35px;
     min-width: 35px;
     border-radius: 50%;
@@ -386,6 +387,16 @@ div[data-dir='rtl'] .Topnav {
   border-bottom: @base-border;
   box-shadow: none;
   padding-top: 5px;
+  max-width: 250px;
+  @media @small {
+    max-width: 270px;
+  }
+  @media @medium {
+    max-width: 480px;
+  }
+  @media @large {
+    max-width: 520px;
+  }
 }
 
 .ant-select-dropdown-menu :first-child > ul {
@@ -523,6 +534,13 @@ div[data-dir='rtl'] .Topnav {
 
   &:hover {
     color: #595959 !important;
+  }
+}
+
+.no-navbroker {
+  height: 64px;
+  @media @small {
+    height: 96px;
   }
 }
 
