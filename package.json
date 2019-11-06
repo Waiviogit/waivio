@@ -159,7 +159,7 @@
     "url-loader": "^1.0.1",
     "webpack": "4.7.0",
     "webpack-bundle-analyzer": "2.11.1",
-    "webpack-dev-server": "3.1.4",
+    "webpack-dev-server": "3.1.11",
     "webpackbar": "^2.6.1"
   },
   "repository": "https://github.com/Waiviogit/waivio.git",
