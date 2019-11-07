@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { AutoComplete, Button, Icon, Input, Menu, Modal, Popover } from 'antd';
+import { AutoComplete, Button, Icon, Input, Menu, Modal } from 'antd';
 import classNames from 'classnames';
 import {
   resetSearchAutoCompete,
@@ -331,7 +331,16 @@ class Topnav extends React.Component {
   };
 
   menuForLoggedIn = () => {
-    const { intl, username, notifications, userMetaData, loadingNotifications, screenSize, platformName, isLoadingPlatform } = this.props;
+    const {
+      intl,
+      username,
+      notifications,
+      userMetaData,
+      loadingNotifications,
+      screenSize,
+      platformName,
+      isLoadingPlatform,
+    } = this.props;
     const {
       searchBarActive,
       notificationsPopoverVisible,
@@ -748,7 +757,7 @@ class Topnav extends React.Component {
     }
   }
 
-  handleOnClickBrokerIcon = (value) => {
+  handleOnClickBrokerIcon = value => {
     if (this.props.platformName !== 'widgets') {
       this.handleBrokerMenuVisibleChange(value);
     } else {
