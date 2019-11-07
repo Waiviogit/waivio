@@ -511,7 +511,7 @@
   "deals.opened": "Deal is opened",
   "deals.price": "Price",
   "openDeals.notPresent": "You do not have open deals",
-  "deals.closeAll": "Close all",
+  "deals.closeAll": "Close deal",
   "modalTakeProfit.header.title": "Take profit",
   "deals.till": "till",
   "deals.from": "from",
@@ -665,6 +665,8 @@
   "headerAuthorized.p&l": "P&L deals",
   "headerAuthorized.balance": "Balance",
   "headerAuthorized.freeBalance": "Free balance",
+  "headerAuthorized.openDeals": "Open deals",
+  "headerAuthorized.closedDeals": "Closed deals",
   "markets": "Markets",
   "my_steem": "My steem",
   "cards": "Cards",
@@ -984,6 +986,8 @@
   "check_review_agreement_part_2": "and entitles you to specified rewards. The sponsor reserves the right to review all submissions manually before paying the rewards.",
   "check_review_agreement_part_3": "In many jurisdictions, readers should be informed that the review has been partially sponsored. In order to meet these requirements, the following notice will be added to your post:",
   "check_review_post_add_text": "This review was sponsored in part by",
+  "approved_by_admin": "Approved by admin",
+  "min_70_is_required": "Min 70% is required",
   "top_performers": "Top performers",
   "week": "Week",
   "month": "Month",
@@ -1041,5 +1045,6 @@
   "dowmarkets": "DowMarkets",
   "limefx": "LimeFX",
   "onlyForecasts": "Only topics with forecasts",
-  "empty_my_feed": "Your feed is empty because you are not following any user or topic."
+  "empty_my_feed": "Your feed is empty because you are not following any user or topic.",
+  "actualNews" : "Actual news"
 }

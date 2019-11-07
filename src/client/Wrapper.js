@@ -6,6 +6,7 @@ import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import { ConfigProvider, Layout } from 'antd';
+import classNames from 'classnames';
 import enUS from 'antd/lib/locale-provider/en_US';
 import Cookie from 'js-cookie';
 import { findLanguage, getRequestLocale, getBrowserLocale, loadLanguage } from './translations';
@@ -29,6 +30,7 @@ import Transfer from './wallet/Transfer';
 import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
 import { getChartsData } from '../investarena/redux/actions/chartsActions';
+import { getPlatformNameState } from '../investarena/redux/selectors/platformSelectors';
 import EntryModal from './components/EntryModal/EntryModal';
 
 export const UsedLocaleContext = React.createContext('en-US');
@@ -43,6 +45,7 @@ export const UsedLocaleContext = React.createContext('en-US');
     translations: getTranslations(state),
     locale: getLocale(state),
     nightmode: getNightmode(state),
+    platformName: getPlatformNameState(state),
   }),
   {
     login,
@@ -81,6 +84,7 @@ export default class Wrapper extends React.PureComponent {
     busyLogin: PropTypes.func,
     nightmode: PropTypes.bool,
     getChartsData: PropTypes.func,
+    platformName: PropTypes.string,
   };
 
   static defaultProps = {
@@ -127,7 +131,6 @@ export default class Wrapper extends React.PureComponent {
 
   constructor(props) {
     super(props);
-
     this.loadLocale = this.loadLocale.bind(this);
     this.handleMenuItemClick = this.handleMenuItemClick.bind(this);
   }
@@ -197,6 +200,9 @@ export default class Wrapper extends React.PureComponent {
       case 'feed':
         this.props.history.push('/');
         break;
+      case 'myFeed':
+        this.props.history.push('/my_feed');
+        break;
       case 'news':
         this.props.history.push('/trending');
         break;
@@ -209,13 +215,19 @@ export default class Wrapper extends React.PureComponent {
       case 'my-profile':
         this.props.history.push(`/@${this.props.username}`);
         break;
+      case 'discover-objects':
+        this.props.history.push(`/discover-objects/crypto`);
+        break;
+      case 'about':
+        this.props.history.push(`/object/qjr-investarena-q-and-a/list`);
+        break;
       default:
         break;
     }
   }
 
   render() {
-    const { user, usedLocale, translations } = this.props;
+    const { user, usedLocale, translations, platformName } = this.props;
 
     const language = findLanguage(usedLocale);
 
@@ -227,7 +239,7 @@ export default class Wrapper extends React.PureComponent {
               <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
                 <Topnav username={user.name} onMenuItemClick={this.handleMenuItemClick} />
               </Layout.Header>
-              <div className="content">
+              <div className={classNames('content', { 'no-broker': platformName === 'widgets' })}>
                 {renderRoutes(this.props.route.routes)}
                 <Transfer />
                 <PowerUpOrDown />

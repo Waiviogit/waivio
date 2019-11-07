@@ -80,8 +80,11 @@ export const getObject = (authorPermlink, username) => {
   const query = `?required_fields=chartid${username ? `&user=${username}` : ''}`;
 
   return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${query}`, {
-    headers,
-    method: 'GET',
+    headers: {
+      ...headers,
+      app: config.appName,
+      method: 'GET',
+    },
   }).then(res => res.json());
 };
 

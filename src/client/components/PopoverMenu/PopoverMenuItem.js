@@ -3,11 +3,20 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import './PopoverMenuItem.less';
 
-const PopoverMenuItem = ({ itemKey, children, onClick, bold, disabled, fullScreenHidden }) => (
+const PopoverMenuItem = ({
+  itemKey,
+  children,
+  onClick,
+  bold,
+  disabled,
+  fullScreenHidden,
+  mobileScreenHidden,
+}) => (
   <li
     className={classNames('PopoverMenuItem', {
       'PopoverMenuItem--bold': bold,
       'PopOverMenuItem__full-screen-hidden': fullScreenHidden,
+      'PopOverMenuItem__mobile-screen-hidden': mobileScreenHidden,
     })}
   >
     <a
@@ -30,6 +39,7 @@ PopoverMenuItem.propTypes = {
   bold: PropTypes.bool,
   disabled: PropTypes.bool,
   fullScreenHidden: PropTypes.bool,
+  mobileScreenHidden: PropTypes.bool,
 };
 
 PopoverMenuItem.defaultProps = {
@@ -39,6 +49,7 @@ PopoverMenuItem.defaultProps = {
   bold: true,
   disabled: false,
   fullScreenHidden: false,
+  mobileScreenHidden: false,
 };
 
 export default PopoverMenuItem;
