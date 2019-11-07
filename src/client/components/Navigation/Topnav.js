@@ -1091,7 +1091,6 @@ class Topnav extends React.Component {
                       overlayStyle={{ position: 'fixed' }}
                       content={
                         <div>
-                          {/*<div className="Popover__overlay" />*/}
                           <PopoverMenu onSelect={this.handleBrokerMenuSelect}>
                             <PopoverMenuItem key="deposit">
                               <FormattedMessage
