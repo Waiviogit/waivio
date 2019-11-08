@@ -311,6 +311,7 @@ class Topnav extends React.Component {
         })}
       >
         <Menu className="Topnav__menu-container__menu" mode="horizontal">
+          <Menu.Item key="hot">{this.hotNews()}</Menu.Item>
           <Menu.Item key="signup">
             <ModalSignUp isButton={false} intl={intl} />
           </Menu.Item>
@@ -387,6 +388,59 @@ class Topnav extends React.Component {
     );
   };
 
+  hotNews = () => {
+    const { intl, screenSize } = this.props;
+    const { hotNewsPopoverVisible, dailyChosenPost, weeklyChosenPost } = this.state;
+    const isMobile = screenSize === 'xsmall' || screenSize === 'small';
+    return (
+      <BTooltip
+        placement="bottom"
+        title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
+        mouseEnterDelay={1}
+      >
+        <PopoverContainer
+          placement="bottomRight"
+          trigger="click"
+          content={
+            <div className="Topnav__hot-news">
+              {!_.isEmpty(dailyChosenPost) && (
+                <Link
+                  to={`/@${dailyChosenPost.author}/${dailyChosenPost.permlink}`}
+                  className="Topnav__hot-news-item"
+                  onClick={this.handleHotNewsPopoverVisibleChange}
+                >
+                  {dailyChosenPost.title}
+                </Link>
+              )}
+              {!_.isEmpty(weeklyChosenPost) && (
+                <Link
+                  to={`/@${weeklyChosenPost.author}/${weeklyChosenPost.permlink}`}
+                  className="Topnav__hot-news-item"
+                  onClick={this.handleHotNewsPopoverVisibleChange}
+                >
+                  {weeklyChosenPost.title}
+                </Link>
+              )}
+              <Link
+                to="/economical-calendar"
+                className="Topnav__hot-news-item"
+                onClick={this.handleHotNewsPopoverVisibleChange}
+              >
+                Economical calendar
+              </Link>
+            </div>
+          }
+          visible={hotNewsPopoverVisible}
+          onVisibleChange={this.handleHotNewsPopoverVisibleChange}
+          overlayClassName="Notifications__popover-overlay"
+          title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
+        >
+          {!isMobile && <Icon type="fire" className="Topnav__fire-icon" />}
+        </PopoverContainer>
+      </BTooltip>
+    );
+  };
+
   menuForLoggedIn = () => {
     const {
       intl,
@@ -402,8 +456,6 @@ class Topnav extends React.Component {
       searchBarActive,
       notificationsPopoverVisible,
       popoverProfileVisible,
-      burgerMenuVisible,
-      hotNewsPopoverVisible,
       popoverBrokerVisible,
     } = this.state;
     const lastSeenTimestamp = _.get(userMetaData, 'notifications_last_timestamp');
@@ -420,8 +472,6 @@ class Topnav extends React.Component {
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
     const displayBadge = notificationsCount > 0;
     const notificationsCountDisplay = notificationsCount > 99 ? '99+' : notificationsCount;
-
-    const { dailyChosenPost, weeklyChosenPost } = this.state;
     return (
       <div
         className={classNames('Topnav__menu-container', {
@@ -430,54 +480,7 @@ class Topnav extends React.Component {
       >
         <ModalBroker />
         <Menu selectedKeys={[]} className="Topnav__menu-container__menu" mode="horizontal">
-          <Menu.Item key="hot">
-            <BTooltip
-              placement="bottom"
-              title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
-              mouseEnterDelay={1}
-            >
-              <PopoverContainer
-                placement="bottomRight"
-                trigger="click"
-                content={
-                  <div className="Topnav__hot-news">
-                    {!_.isEmpty(dailyChosenPost) && (
-                      <Link
-                        to={`/@${dailyChosenPost.author}/${dailyChosenPost.permlink}`}
-                        className="Topnav__hot-news-item"
-                        onClick={this.handleHotNewsPopoverVisibleChange}
-                      >
-                        {dailyChosenPost.title}
-                      </Link>
-                    )}
-                    {!_.isEmpty(weeklyChosenPost) && (
-                      <Link
-                        to={`/@${weeklyChosenPost.author}/${weeklyChosenPost.permlink}`}
-                        className="Topnav__hot-news-item"
-                        onClick={this.handleHotNewsPopoverVisibleChange}
-                      >
-                        {weeklyChosenPost.title}
-                      </Link>
-                    )}
-                    <Link
-                      to="/economical-calendar"
-                      className="Topnav__hot-news-item"
-                      onClick={this.handleHotNewsPopoverVisibleChange}
-                    >
-                      Economical calendar
-                    </Link>
-                  </div>
-                }
-                visible={hotNewsPopoverVisible}
-                onVisibleChange={this.handleHotNewsPopoverVisibleChange}
-                overlayClassName="Notifications__popover-overlay"
-                title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
-              >
-                {!isMobile && <Icon type="fire" className="Topnav__fire-icon" />}
-              </PopoverContainer>
-            </BTooltip>
-          </Menu.Item>
-
+          <Menu.Item key="hot">{this.hotNews()}</Menu.Item>
           <Menu.Item key="write">
             <BTooltip
               placement="bottom"
