@@ -639,7 +639,7 @@ class Topnav extends React.Component {
             )}
           </Menu.Item>
           <Menu.Item key="more" className="Topnav__menu--icon">
-            {/*{this.burgerMenu()}*/}
+            {this.burgerMenu()}
           </Menu.Item>
         </Menu>
       </div>
