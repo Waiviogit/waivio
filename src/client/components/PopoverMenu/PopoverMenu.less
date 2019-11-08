@@ -2,6 +2,20 @@
 @import (reference) '../../styles/custom.less';
 
 .PopoverMenu {
+  top: 0;
+  position: fixed;
+  left: 0;
+  width: 100%;
+  background-color: @white;
+
+  @media @small {
+    top: 46px;
+  }
+
+  @media @medium {
+    position: unset;
+  }
+
   &__connect-container {
     &-logout {
       display: flex;
@@ -52,3 +66,5 @@ div[data-dir='rtl'] .PopoverMenu {
 .PopoverMenu__connect-container-logout > img {
   margin-right: 20px;
 }
+
+@import 'PopoverMenu-nightmode';

@@ -15,30 +15,7 @@ const LINKS = {
 };
 
 const getDealsLinks = (isMobile, pathname) =>
-  isMobile ? (
-    <React.Fragment>
-      <li className="TopNavigation__item">
-        <Link
-          to={`${LINKS.DEALS}/open`}
-          className={classNames('TopNavigation__link', {
-            'TopNavigation__link--active': pathname === `${LINKS.DEALS}/open`,
-          })}
-        >
-          <FormattedMessage id="open_deals" defaultMessage="!Open deals" />
-        </Link>
-      </li>
-      <li className="TopNavigation__item">
-        <Link
-          to={`${LINKS.DEALS}/closed`}
-          className={classNames('TopNavigation__link', {
-            'TopNavigation__link--active': pathname === `${LINKS.DEALS}/closed`,
-          })}
-        >
-          <FormattedMessage id="closed_deals" defaultMessage="!Closed deals" />
-        </Link>
-      </li>
-    </React.Fragment>
-  ) : (
+  isMobile ? null : (
     <li className="TopNavigation__item">
       <Link
         to={`${LINKS.DEALS}/open`}

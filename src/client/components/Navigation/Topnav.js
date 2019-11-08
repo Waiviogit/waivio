@@ -331,16 +331,7 @@ class Topnav extends React.Component {
   };
 
   menuForLoggedIn = () => {
-    const {
-      intl,
-      username,
-      notifications,
-      userMetaData,
-      loadingNotifications,
-      platformName,
-      isLoadingPlatform,
-      screenSize,
-    } = this.props;
+    const { intl, username, notifications, userMetaData, loadingNotifications, screenSize, platformName, isLoadingPlatform } = this.props;
     const {
       searchBarActive,
       notificationsPopoverVisible,
@@ -436,7 +427,7 @@ class Topnav extends React.Component {
             {isMobile && (
               <React.Fragment>
                 {platformName !== 'widgets' && !isLoadingPlatform ? (
-                  <Popover
+                  <PopoverContainer
                     placement="bottom"
                     trigger="click"
                     visible={popoverBrokerVisible}
@@ -444,7 +435,6 @@ class Topnav extends React.Component {
                     overlayStyle={{ position: 'fixed' }}
                     content={
                       <div>
-                        <div className="Popover__overlay" />
                         <PopoverMenu onSelect={this.handleBrokerMenuSelect}>
                           <PopoverMenuItem key="deposit">
                             <FormattedMessage
@@ -481,7 +471,7 @@ class Topnav extends React.Component {
                       src={`/images/investarena/${platformName}.png`}
                       alt="broker"
                     />
-                  </Popover>
+                  </PopoverContainer>
                 ) : (
                   <div
                     className="Topnav__item-broker"
@@ -758,9 +748,9 @@ class Topnav extends React.Component {
     }
   }
 
-  handleOnClickBrokerIcon = () => {
+  handleOnClickBrokerIcon = (value) => {
     if (this.props.platformName !== 'widgets') {
-      this.handleBrokerMenuVisibleChange(!this.state.popoverBrokerVisible);
+      this.handleBrokerMenuVisibleChange(value);
     } else {
       this.toggleModalBroker();
     }
@@ -1093,7 +1083,7 @@ class Topnav extends React.Component {
                       src={`/images/investarena/${platformName}.png`}
                       alt="broker"
                     />
-                    <Popover
+                    <PopoverContainer
                       placement="bottom"
                       trigger="click"
                       visible={popoverBrokerVisible}
@@ -1101,7 +1091,6 @@ class Topnav extends React.Component {
                       overlayStyle={{ position: 'fixed' }}
                       content={
                         <div>
-                          <div className="Popover__overlay" />
                           <PopoverMenu onSelect={this.handleBrokerMenuSelect}>
                             <PopoverMenuItem key="deposit">
                               <FormattedMessage
@@ -1109,13 +1098,13 @@ class Topnav extends React.Component {
                                 defaultMessage="Deposit"
                               />
                             </PopoverMenuItem>
-                            <PopoverMenuItem key="openDeals" fullScreenHidden>
+                            <PopoverMenuItem key="openDeals">
                               <FormattedMessage
                                 id="headerAuthorized.openDeals"
                                 defaultMessage="Open deals"
                               />
                             </PopoverMenuItem>
-                            <PopoverMenuItem key="closedDeals" fullScreenHidden>
+                            <PopoverMenuItem key="closedDeals">
                               <FormattedMessage
                                 id="headerAuthorized.closedDeals"
                                 defaultMessage="Closed deals"
@@ -1134,7 +1123,7 @@ class Topnav extends React.Component {
                       <a className="Topnav__link dropdown-icon">
                         <Icon type="caret-down" />
                       </a>
-                    </Popover>
+                    </PopoverContainer>
                   </React.Fragment>
                 )}
               </div>
