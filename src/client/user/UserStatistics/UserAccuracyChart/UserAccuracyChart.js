@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import Chart from 'react-google-charts';
 import classNames from 'classnames';
-import './UserAccuracyChart.less';
 import Loading from '../../../components/Icon/Loading';
+import './UserAccuracyChart.less';
 
-const UserAccuracyChart = ({ statisticsData }) => {
+const UserAccuracyChart = ({ statisticsData, setLoadedChart }) => {
   const chartRef = useRef(null);
   const percent =
     statisticsData.successful_count === 0
@@ -44,6 +44,8 @@ const UserAccuracyChart = ({ statisticsData }) => {
   const isChartLoaded =
     chartRef.current && chartRef.current.state && chartRef.current.state.loadingStatus === 'ready';
 
+  setLoadedChart(isChartLoaded);
+
   return (
     <div className="UserAccuracy">
       {!isChartLoaded && (
@@ -75,6 +77,7 @@ const UserAccuracyChart = ({ statisticsData }) => {
 
 UserAccuracyChart.propTypes = {
   statisticsData: PropTypes.shape().isRequired,
+  setLoadedChart: PropTypes.func.isRequired,
 };
 
 export default injectIntl(UserAccuracyChart);
