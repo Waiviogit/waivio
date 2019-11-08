@@ -4,6 +4,7 @@ import { injectIntl } from 'react-intl';
 import Chart from 'react-google-charts';
 import classNames from 'classnames';
 import './UserAccuracyChart.less';
+import Loading from '../../../components/Icon/Loading';
 
 const UserAccuracyChart = ({ statisticsData }) => {
   const chartRef = useRef(null);
@@ -44,23 +45,30 @@ const UserAccuracyChart = ({ statisticsData }) => {
     chartRef.current && chartRef.current.state && chartRef.current.state.loadingStatus === 'ready';
 
   return (
-    <div className={classNames('UserAccuracy', { hideChart: !isChartLoaded })}>
-      <div className="UserAccuracy__chart">
-        <Chart
-          ref={chartRef}
-          width={'100%'}
-          height={'95px'}
-          chartType="PieChart"
-          data={data}
-          options={options}
-        />
+    <div className="UserAccuracy">
+      {!isChartLoaded && (
+        <div className="UserAccuracy__loader">
+          <Loading center />
+        </div>
+      )}
+      <div className={classNames('UserAccuracy__data-wrapper', { hideChart: !isChartLoaded })}>
+        <div className="UserAccuracy__data-wrapper-chart">
+          <Chart
+            ref={chartRef}
+            width={'100%'}
+            height={'95px'}
+            chartType="PieChart"
+            data={data}
+            options={options}
+          />
+        </div>
+        <div
+          className={classNames('UserAccuracy__data-wrapper-value', {
+            success: percent >= 50,
+            unsuccess: percent < 50,
+          })}
+        >{`${percent}%`}</div>
       </div>
-      <div
-        className={classNames('UserAccuracy__value', {
-          success: percent >= 50,
-          unsuccess: percent < 50,
-        })}
-      >{`${percent}%`}</div>
     </div>
   );
 };
