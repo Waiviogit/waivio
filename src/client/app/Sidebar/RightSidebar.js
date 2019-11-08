@@ -51,7 +51,9 @@ export default class RightSidebar extends React.Component {
                   <ForecastBlock username={match.params.name} renderPlace={'rightSidebar'} />
                   <InterestingPeople />
                 </React.Fragment>
-              ) : (<InterestingPeople />)
+              ) : (
+                <InterestingPeople />
+              )
             }
           />
           <Route path="/" render={() => <InterestingPeople />} />
