@@ -31,7 +31,6 @@ import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
 import { getChartsData } from '../investarena/redux/actions/chartsActions';
 import { getPlatformNameState } from '../investarena/redux/selectors/platformSelectors';
-import EntryModal from './components/EntryModal/EntryModal';
 
 export const UsedLocaleContext = React.createContext('en-US');
 
@@ -245,7 +244,6 @@ export default class Wrapper extends React.PureComponent {
                 <PowerUpOrDown />
                 <NotificationPopup />
                 <BBackTop className="primary-modal" />
-                <EntryModal />
               </div>
             </Layout>
           </UsedLocaleContext.Provider>
