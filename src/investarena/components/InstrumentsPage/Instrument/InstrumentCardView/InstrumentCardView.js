@@ -71,7 +71,7 @@ const InstrumentCardView = ({
                 >
                   {parentName}
                 </Link>
-              )}\
+              )}
               <div className="InstrumentCardView__name">
                 <Link
                   to={pathName}
