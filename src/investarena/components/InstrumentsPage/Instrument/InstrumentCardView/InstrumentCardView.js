@@ -59,7 +59,6 @@ const InstrumentCardView = ({
               to={pathName}
               title={goToObjTitle(wObject.name)}
               className="InstrumentCardView__avatar"
-              target="_blank"
             >
               {avatarLayout(wObject.avatar)}
             </Link>
@@ -72,7 +71,7 @@ const InstrumentCardView = ({
                 >
                   {parentName}
                 </Link>
-              )}
+              )}\
               <div className="InstrumentCardView__name">
                 <Link
                   to={pathName}
