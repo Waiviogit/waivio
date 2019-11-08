@@ -11,12 +11,14 @@ const PopoverMenuItem = ({
   disabled,
   fullScreenHidden,
   mobileScreenHidden,
+  hideItem,
 }) => (
   <li
     className={classNames('PopoverMenuItem', {
       'PopoverMenuItem--bold': bold,
       'PopOverMenuItem__full-screen-hidden': fullScreenHidden,
       'PopOverMenuItem__mobile-screen-hidden': mobileScreenHidden,
+      'screen-hidden': hideItem,
     })}
   >
     <a
@@ -40,6 +42,7 @@ PopoverMenuItem.propTypes = {
   disabled: PropTypes.bool,
   fullScreenHidden: PropTypes.bool,
   mobileScreenHidden: PropTypes.bool,
+  hideItem: PropTypes.bool,
 };
 
 PopoverMenuItem.defaultProps = {
@@ -50,6 +53,7 @@ PopoverMenuItem.defaultProps = {
   disabled: false,
   fullScreenHidden: false,
   mobileScreenHidden: false,
+  hideItem: false,
 };
 
 export default PopoverMenuItem;

@@ -325,8 +325,65 @@ class Topnav extends React.Component {
           <Menu.Item key="language">
             <LanguageSettings />
           </Menu.Item>
+          <Menu.Item key="more" className="Topnav__menu--icon">
+            {this.burgerMenu('loggedOut')}
+          </Menu.Item>
         </Menu>
       </div>
+    );
+  };
+
+  burgerMenu = logStatus => {
+    const disabled = logStatus === 'loggedOut';
+    return (
+      <PopoverContainer
+        placement="bottom"
+        trigger="click"
+        visible={this.state.burgerMenuVisible}
+        onVisibleChange={this.handleBurgerMenuVisibleChange}
+        overlayStyle={{ position: 'fixed' }}
+        content={
+          <PopoverMenu onSelect={this.handleBurgerMenuSelect}>
+            <PopoverMenuItem key="feed" fullScreenHidden>
+              <FormattedMessage id="home" defaultMessage="Home" />
+            </PopoverMenuItem>
+            <PopoverMenuItem key="myFeed" fullScreenHidden hideItem={disabled}>
+              <FormattedMessage id="my_feed" defaultMessage="My feed" />
+            </PopoverMenuItem>
+            <PopoverMenuItem key="actualNews" fullScreenHidden>
+              <div onClick={this.handleHotNewsPopoverVisibleChange}>
+                <FormattedMessage id="actualNews" defaultMessage="Actual news" />
+              </div>
+            </PopoverMenuItem>
+            <PopoverMenuItem key="discover-objects" fullScreenHidden>
+              <FormattedMessage id="discover" defaultMessage="Discover" />
+            </PopoverMenuItem>
+            <PopoverMenuItem key="about" fullScreenHidden>
+              <FormattedMessage id="about" defaultMessage="About" />
+            </PopoverMenuItem>
+            <PopoverMenuItem key="activity" mobileScreenHidden>
+              <FormattedMessage id="activity" defaultMessage="Activity" />
+            </PopoverMenuItem>
+            <PopoverMenuItem key="bookmarks" mobileScreenHidden>
+              <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" />
+            </PopoverMenuItem>
+            <PopoverMenuItem key="drafts" mobileScreenHidden>
+              <FormattedMessage id="drafts" defaultMessage="Drafts" />
+            </PopoverMenuItem>
+            <PopoverMenuItem key="settings" mobileScreenHidden>
+              <FormattedMessage id="settings" defaultMessage="Settings" />
+            </PopoverMenuItem>
+            <PopoverMenuItem key="logout" mobileScreenHidden>
+              <FormattedMessage id="logout" defaultMessage="Logout" />
+            </PopoverMenuItem>
+          </PopoverMenu>
+        }
+      >
+        <a className="Topnav__link">
+          <Icon type="caret-down" />
+          <Icon type="bars" />
+        </a>
+      </PopoverContainer>
     );
   };
 
@@ -582,54 +639,7 @@ class Topnav extends React.Component {
             )}
           </Menu.Item>
           <Menu.Item key="more" className="Topnav__menu--icon">
-            <PopoverContainer
-              placement="bottom"
-              trigger="click"
-              visible={burgerMenuVisible}
-              onVisibleChange={this.handleBurgerMenuVisibleChange}
-              overlayStyle={{ position: 'fixed' }}
-              content={
-                <PopoverMenu onSelect={this.handleBurgerMenuSelect}>
-                  <PopoverMenuItem key="feed" fullScreenHidden>
-                    <FormattedMessage id="home" defaultMessage="Home" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="myFeed" fullScreenHidden>
-                    <FormattedMessage id="my_feed" defaultMessage="My feed" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="actualNews" fullScreenHidden>
-                    <div onClick={this.handleHotNewsPopoverVisibleChange}>
-                      <FormattedMessage id="actualNews" defaultMessage="Actual news" />
-                    </div>
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="discover-objects" fullScreenHidden>
-                    <FormattedMessage id="discover" defaultMessage="Discover" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="about" fullScreenHidden>
-                    <FormattedMessage id="about" defaultMessage="About" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="activity" mobileScreenHidden>
-                    <FormattedMessage id="activity" defaultMessage="Activity" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="bookmarks" mobileScreenHidden>
-                    <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="drafts" mobileScreenHidden>
-                    <FormattedMessage id="drafts" defaultMessage="Drafts" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="settings" mobileScreenHidden>
-                    <FormattedMessage id="settings" defaultMessage="Settings" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="logout" mobileScreenHidden>
-                    <FormattedMessage id="logout" defaultMessage="Logout" />
-                  </PopoverMenuItem>
-                </PopoverMenu>
-              }
-            >
-              <a className="Topnav__link">
-                <Icon type="caret-down" />
-                <Icon type="bars" />
-              </a>
-            </PopoverContainer>
+            {/*{this.burgerMenu()}*/}
           </Menu.Item>
         </Menu>
       </div>
