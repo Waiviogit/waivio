@@ -13,13 +13,30 @@
     vertical-align: -2px;
   }
 
-  &__more {
-    padding-top: 14px;
-    padding-bottom: 14px;
+  &__buttons-wrap {
+    display: flex;
+    justify-content: space-around;
 
-    & > a {
+    &-all {
+      padding-top: 14px;
+      padding-bottom: 14px;
+
+      & > a {
+        color: @blue-botticelli;
+        font-weight: 500;
+      }
+    }
+
+    &-more {
+      padding-top: 14px;
+      padding-bottom: 14px;
       color: @blue-botticelli;
       font-weight: 500;
+
+      &:hover {
+        cursor: pointer;
+        color: @orange-neonCarrot;
+      }
     }
   }
 }

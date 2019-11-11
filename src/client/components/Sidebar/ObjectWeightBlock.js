@@ -18,6 +18,7 @@ class ObjectWeightBlock extends React.Component {
     wObjects: [],
     wObjectsCount: 0,
     loading: true,
+    limit: 5,
   };
 
   async componentDidMount() {
@@ -34,6 +35,18 @@ class ObjectWeightBlock extends React.Component {
       console.log(error);
     }
   }
+
+  showMoreExpertise = () => {
+    this.setState({ limit: this.state.limit + 5 }, () => {
+      api.getWobjectsWithUserWeight(this.props.username, 0, this.state.limit).then(data =>
+        this.setState({
+          wObjects: data.wobjects,
+          wObjectsCount: data.wobjects_count,
+          loading: false,
+        }),
+      );
+    });
+  };
 
   render() {
     const { username } = this.props;
@@ -60,13 +73,20 @@ class ObjectWeightBlock extends React.Component {
               />
             ))}
           {wObjectsCount > 5 && (
-            <React.Fragment>
-              <h4 className="ObjectWeightBlock__more">
+            <div className="ObjectWeightBlock__buttons-wrap">
+              <div className="ObjectWeightBlock__buttons-wrap-all">
                 <Link to={`/@${username}/expertise`}>
-                  <FormattedMessage id="show_more" defaultMessage="Show more" />
+                  <FormattedMessage id="show_all" defaultMessage="Show All" />
                 </Link>
-              </h4>
-            </React.Fragment>
+              </div>
+              <div
+                className="ObjectWeightBlock__buttons-wrap-more"
+                onClick={this.showMoreExpertise}
+                role="presentation"
+              >
+                <FormattedMessage id="show_more" defaultMessage="Show more" />
+              </div>
+            </div>
           )}
         </div>
       </div>
