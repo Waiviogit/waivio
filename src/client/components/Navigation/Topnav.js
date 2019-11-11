@@ -335,7 +335,7 @@ class Topnav extends React.Component {
   };
 
   burgerMenu = logStatus => {
-    const disabled = logStatus === 'loggedOut';
+    const isLoggedOut = logStatus === 'loggedOut';
     return (
       <PopoverContainer
         placement="bottom"
@@ -348,7 +348,7 @@ class Topnav extends React.Component {
             <PopoverMenuItem key="feed" fullScreenHidden>
               <FormattedMessage id="home" defaultMessage="Home" />
             </PopoverMenuItem>
-            <PopoverMenuItem key="myFeed" fullScreenHidden hideItem={disabled}>
+            <PopoverMenuItem key="myFeed" fullScreenHidden hideItem={isLoggedOut}>
               <FormattedMessage id="my_feed" defaultMessage="My feed" />
             </PopoverMenuItem>
             <PopoverMenuItem key="actualNews" fullScreenHidden>
