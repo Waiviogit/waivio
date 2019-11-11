@@ -23,7 +23,7 @@ const initialState = {
   loadingNotifications: false,
   fetchFollowListError: false,
   statistics: {
-    isForecastAccuracyChart: false,
+    isAccuracyChart: false,
   },
 };
 
