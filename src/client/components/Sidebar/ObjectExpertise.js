@@ -13,9 +13,18 @@ const ObjectExpertise = ({ username, wobject }) => {
   const [experts, setExperts] = useState({ user: {}, users: [] });
   const { users, user } = experts;
   const isUserInTopFive = users.find(u => u.name === username);
+  const [limit, setLimit] = useState(5);
   useEffect(() => {
     getWobjectsExpertise(username, wobject.author_permlink, 0, 5).then(data => setExperts(data));
   }, [wobject.author_permlink]);
+
+  const showMoreExpertise = () => {
+    getWobjectsExpertise(username, wobject.author_permlink, 0, limit + 5).then(data =>
+      setExperts(data),
+    );
+    setLimit(limit + 5);
+  };
+
   return !_.isEmpty(users) ? (
     <div className="SidebarContentBlock">
       <h4 className="SidebarContentBlock__title">
@@ -24,7 +33,7 @@ const ObjectExpertise = ({ username, wobject }) => {
       </h4>
       <div className="SidebarContentBlock__content">
         {users &&
-          _.map(_.slice(users, 0, 5), u => (
+          _.map(_.slice(users, 0, limit), u => (
             <UserCard
               key={u.name}
               user={u}
@@ -45,14 +54,21 @@ const ObjectExpertise = ({ username, wobject }) => {
           </React.Fragment>
         )}
 
-        {_.size(users) > 5 && (
-          <React.Fragment>
-            <h4 className="ObjectExpertise__more">
+        {_.size(users) >= 5 && (
+          <div className="ObjectExpertise__buttons-wrap">
+            <div className="ObjectExpertise__buttons-wrap-all">
               <Link to={`/object/${wobject.author_permlink}/expertise`}>
-                <FormattedMessage id="show_more_authors" defaultMessage="Show more authors" />
+                <FormattedMessage id="show_all" defaultMessage="Show all" />
               </Link>
-            </h4>
-          </React.Fragment>
+            </div>
+            <div
+              className="ObjectExpertise__buttons-wrap-more"
+              onClick={showMoreExpertise}
+              role="presentation"
+            >
+              <FormattedMessage id="show_more" defaultMessage="Show more" />
+            </div>
+          </div>
         )}
       </div>
     </div>

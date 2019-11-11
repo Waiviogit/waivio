@@ -1,11 +1,27 @@
 @import (reference) '../../styles/custom.less';
 
-.ObjectExpertise__more {
-  padding-top: 14px;
+.ObjectExpertise {
+  &__buttons-wrap {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 14px;
 
-  & > a {
-    color: @blue-botticelli;
-    font-weight: 500;
+    &-all {
+      & > a {
+        color: @blue-botticelli;
+        font-weight: 500;
+      }
+    }
+
+    &-more {
+      color: @blue-botticelli;
+      font-weight: 500;
+
+      &:hover {
+        cursor: pointer;
+        color: @orange-neonCarrot;
+      }
+    }
   }
 
   .UserCard {
