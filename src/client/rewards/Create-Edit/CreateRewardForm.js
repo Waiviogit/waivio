@@ -77,37 +77,33 @@ class CreateRewardForm extends React.Component {
 
       const campaign = await getCampaignById(this.props.match.params.campaignId);
 
-      const expiredAt = moment(new Date(campaign.campaign.expired_at));
+      const expiredAt = moment(new Date(campaign.expired_at));
 
-      const isCampaignActive = campaign.campaign.status === 'active';
+      const isCampaignActive = campaign.status === 'active';
 
       let combinedObjects;
       let sponsors;
 
-      if (!isEmpty(campaign.campaign.match_bots)) {
+      if (!isEmpty(campaign.match_bots)) {
         combinedObjects = await getObjectsByIds({
-          authorPermlinks: [
-            ...campaign.campaign.match_bots,
-            campaign.campaign.requiredObject,
-            ...campaign.campaign.objects,
-          ],
+          authorPermlinks: [...campaign.match_bots, campaign.requiredObject, ...campaign.objects],
         });
 
         sponsors = combinedObjects.wobjects.filter(wobj =>
-          includes(campaign.campaign.sponsors, wobj.author_permlink),
+          includes(campaign.sponsors, wobj.author_permlink),
         );
       } else {
         combinedObjects = await getObjectsByIds({
-          authorPermlinks: [campaign.campaign.requiredObject, ...campaign.campaign.objects],
+          authorPermlinks: [campaign.requiredObject, ...campaign.objects],
         });
       }
 
       const primaryObject = combinedObjects.wobjects.find(
-        wobj => wobj.author_permlink === campaign.campaign.requiredObject,
+        wobj => wobj.author_permlink === campaign.requiredObject,
       );
 
       const secondaryObjects = combinedObjects.wobjects.filter(wobj =>
-        includes(campaign.campaign.objects, wobj.author_permlink),
+        includes(campaign.objects, wobj.author_permlink),
       );
 
       Promise.all([primaryObject, secondaryObjects, sponsors]).then(values => {
@@ -115,23 +111,23 @@ class CreateRewardForm extends React.Component {
         this.setState({
           iAgree: true,
           loading: false,
-          campaignName: campaign.campaign.name,
-          campaignType: campaign.campaign.type,
-          budget: campaign.campaign.budget,
-          reward: campaign.campaign.reward,
+          campaignName: campaign.name,
+          campaignType: campaign.type,
+          budget: campaign.budget,
+          reward: campaign.reward,
           primaryObject: getClientWObj(values[0], this.props.usedLocale),
           secondaryObjectsList: values[1].map(obj => getClientWObj(obj, this.props.usedLocale)),
           sponsorsList: !isEmpty(sponsors)
             ? values[2].map(obj => getClientWObj(obj, this.props.usedLocale))
             : [],
-          reservationPeriod: campaign.campaign.count_reservation_days,
-          minFollowers: campaign.campaign.userRequirements.minFollowers,
-          minPosts: campaign.campaign.userRequirements.minPosts,
-          targetDays: campaign.campaign.reservation_timetable,
-          minPhotos: campaign.campaign.requirements.minPhotos,
-          description: campaign.campaign.description,
+          reservationPeriod: campaign.count_reservation_days,
+          minFollowers: campaign.userRequirements.minFollowers,
+          minPosts: campaign.userRequirements.minPosts,
+          targetDays: campaign.reservation_timetable,
+          minPhotos: campaign.requirements.minPhotos,
+          description: campaign.description,
           // eslint-disable-next-line no-underscore-dangle
-          campaignId: campaign.campaign._id,
+          campaignId: campaign._id,
           expiredAt,
           isCampaignActive,
         });
