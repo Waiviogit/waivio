@@ -66,8 +66,12 @@ class PostPreviewModal extends Component {
   };
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if(nextProps.isPreview) {
-      const { errors } = validatePost(nextProps.content, nextProps.objPercentage, nextProps.forecastValues);
+    if (nextProps.isPreview) {
+      const { errors } = validatePost(
+        nextProps.content,
+        nextProps.objPercentage,
+        nextProps.forecastValues,
+      );
       if (!isEqual(prevState.postValidationErrors, errors)) {
         return { postValidationErrors: errors };
       }
@@ -311,8 +315,7 @@ class PostPreviewModal extends Component {
               <div className="edit-post-controls__err-msg">
                 {intl.formatMessage({ id: err.intlId, defaultMessage: err.message })}
               </div>
-            ))
-          }
+            ))}
           <Button
             htmlType="button"
             disabled={Boolean(this.state.postValidationErrors.length)}

@@ -168,12 +168,12 @@ export const assignProposition = ({ companyAuthor, companyPermlink, resPermlink,
 };
 
 export const declineProposition = ({
-                                     companyAuthor,
-                                     companyPermlink,
-                                     objPermlink,
-                                     unreservationPermlink,
-                                     reservationPermlink,
-                                   }) => (dispatch, getState, { steemConnectAPI }) => {
+  companyAuthor,
+  companyPermlink,
+  objPermlink,
+  unreservationPermlink,
+  reservationPermlink,
+}) => (dispatch, getState, { steemConnectAPI }) => {
   const username = getAuthenticatedUserName(getState());
   const commentOp = [
     'comment',
@@ -259,10 +259,10 @@ export const inactivateCampaign = (company, inactivatePermlink) => (
   });
 };
 
-export const GET_FORECAST_CHART_CONDITION = '@users/GET_FORECAST_CHART_CONDITION';
+export const SET_ACCURACY_CHART_CONDITION = '@users/SET_ACCURACY_CHART_CONDITION';
 
-export const setForecastAccuracyChartCondition = () => dispatch =>
+export const setAccuracyChartCondition = () => dispatch =>
   dispatch({
-    type: GET_FORECAST_CHART_CONDITION,
+    type: SET_ACCURACY_CHART_CONDITION,
     payload: true,
   });

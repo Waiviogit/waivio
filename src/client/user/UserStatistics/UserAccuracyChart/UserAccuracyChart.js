@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Chart from 'react-google-charts';
 import classNames from 'classnames';
-import {setForecastAccuracyChartCondition} from '../../userActions'
-import { getUserForecastAccuracyChartCondition } from '../../../reducers';
+import { setAccuracyChartCondition } from '../../userActions';
+import { getAccuracyChartCondition } from '../../../reducers';
 import Loading from '../../../components/Icon/Loading';
 import './UserAccuracyChart.less';
 
@@ -13,10 +13,10 @@ const UserAccuracyChart = ({ statisticsData, isChart, ...props }) => {
     statisticsData.successful_count === 0
       ? 0
       : parseInt(
-      (100 * statisticsData.successful_count) /
-      (statisticsData.successful_count + statisticsData.failed_count),
-      10,
-      );
+          (100 * statisticsData.successful_count) /
+            (statisticsData.successful_count + statisticsData.failed_count),
+          10,
+        );
   const data = [['', ''], ['success', percent], ['unsuccess', 100 - percent]];
   const options = {
     pieHole: 0.75,
@@ -46,7 +46,7 @@ const UserAccuracyChart = ({ statisticsData, isChart, ...props }) => {
     <div className="UserAccuracy">
       {!isChart && (
         <div className="UserAccuracy__loader">
-          <Loading center/>
+          <Loading center />
         </div>
       )}
       <div className={classNames('UserAccuracy__data-wrapper', { hideChart: !isChart })}>
@@ -85,11 +85,10 @@ UserAccuracyChart.propTypes = {
 };
 
 export default connect(
-  (state) => ({
-    isChart: getUserForecastAccuracyChartCondition(state)
-  })
-  ,
+  state => ({
+    isChart: getAccuracyChartCondition(state),
+  }),
   {
-    setForecastAccuracyChartCondition,
+    setAccuracyChartCondition,
   },
 )(UserAccuracyChart);

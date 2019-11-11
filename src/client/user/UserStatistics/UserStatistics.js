@@ -11,20 +11,14 @@ const UserStatistics = ({ accuracy, forecasts, setSortOptions, intl }) => (
   <div className="UserStatistics">
     {!isEmpty(accuracy) && (
       <React.Fragment>
-        <UserAccuracyContainer
-          accuracy={accuracy}
-          contentType={'forecast'}
-        />
-        <UserAccuracyContainer
-          accuracy={accuracy}
-          contentType={'profitability'}
-        />
+        <UserAccuracyContainer accuracy={accuracy} contentType={'forecast'} />
+        <UserAccuracyContainer accuracy={accuracy} contentType={'profitability'} />
       </React.Fragment>
     )}
     {!isEmpty(forecasts) && (
       <React.Fragment>
-        <UserForecastInstruments forecasts={forecasts}/>
-        <UserInstrumentsTable forecasts={forecasts} setSortOptions={setSortOptions}/>
+        <UserForecastInstruments forecasts={forecasts} />
+        <UserInstrumentsTable forecasts={forecasts} setSortOptions={setSortOptions} />
       </React.Fragment>
     )}
     {isEmpty(forecasts) && isEmpty(accuracy) && (
