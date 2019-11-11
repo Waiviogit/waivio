@@ -1,21 +1,26 @@
 @import (reference) '../../../styles/custom.less';
 
-.ObjectExpertiseByType__more {
-  padding: 16px 16px 0 16px;
-  display: flex;
-  justify-content: space-between;
-  color: @orange-hot;
+.ObjectExpertiseByType {
+  &__buttons-wrapper {
+    display: flex;
+    justify-content: space-around;
 
-  & > a {
-    font-weight: 500;
-  }
+    &-item {
+      padding: 16px 16px 0 16px;
+      display: flex;
+      justify-content: space-between;
+      color: @blue-botticelli;
+      font-weight: 500;
 
-  & > div {
-    cursor: pointer;
-  }
+      &:hover {
+        cursor: pointer;
+        color: @orange-neonCarrot;
+      }
 
-  .UserCard {
-    align-items: center;
+      .UserCard {
+        align-items: center;
+      }
+    }
   }
 }
 

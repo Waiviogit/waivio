@@ -79,12 +79,17 @@ const ObjectExpertiseByType = ({ match }) => {
       ));
 
       const renderButtons = () => (
-        <h4 className="ObjectExpertiseByType__more">
-          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-          <div onClick={() => setShowModal(true)} id="show_more_div">
+        <div className="ObjectExpertiseByType__buttons-wrapper">
+          <div className="ObjectExpertiseByType__buttons-wrapper-item">
+            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+            <div onClick={() => setShowModal(true)} id="show_more_div">
+              <FormattedMessage id="show_all" defaultMessage="Show All" />
+            </div>
+          </div>
+          <div className="ObjectExpertiseByType__buttons-wrapper-item">
             <FormattedMessage id="show_more" defaultMessage="Show more" />
           </div>
-        </h4>
+        </div>
       );
 
       const onWheelHandler = () => {
