@@ -1,17 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
-import './UserProfitability.less';
+import { getUserForecastAccuracyChartCondition } from '../../../reducers';
 import SkeletonCustom from '../../../components/Skeleton/SkeletonCustom';
+import './UserProfitability.less';
 
-const UserProfitability = ({ statisticsData, isLoadedChart }) => (
+const UserProfitability = ({ statisticsData, isChart }) => (
   <div
     className={classNames('UserProfitability', {
       success: statisticsData.pips > 0,
       unsuccess: statisticsData.pips < 0,
     })}
   >
-    {isLoadedChart ? (
+    {isChart ? (
       <React.Fragment>
         <div className="UserProfitability tooltip">
           <div className="UserProfitability__value">{`${statisticsData.pips}`}</div>
@@ -25,7 +27,7 @@ const UserProfitability = ({ statisticsData, isLoadedChart }) => (
     ) : (
       <SkeletonCustom
         className="UserProfitability__loader"
-        isLoading={!isLoadedChart}
+        isLoading={!isChart}
         randomWidth
         rows={2}
         width={50}
@@ -36,7 +38,11 @@ const UserProfitability = ({ statisticsData, isLoadedChart }) => (
 
 UserProfitability.propTypes = {
   statisticsData: PropTypes.shape().isRequired,
-  isLoadedChart: PropTypes.bool.isRequired,
+  isChart: PropTypes.bool.isRequired,
 };
 
-export default UserProfitability;
+export default connect(
+  (state) => ({
+    isChart: getUserForecastAccuracyChartCondition(state)
+  })
+)(UserProfitability);

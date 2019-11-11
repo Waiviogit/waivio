@@ -1,21 +1,22 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
 import Chart from 'react-google-charts';
 import classNames from 'classnames';
+import {setForecastAccuracyChartCondition} from '../../userActions'
+import { getUserForecastAccuracyChartCondition } from '../../../reducers';
 import Loading from '../../../components/Icon/Loading';
 import './UserAccuracyChart.less';
 
-const UserAccuracyChart = ({ statisticsData, setLoadedChart }) => {
-  const chartRef = useRef(null);
+const UserAccuracyChart = ({ statisticsData, isChart, ...props }) => {
   const percent =
     statisticsData.successful_count === 0
       ? 0
       : parseInt(
-          (100 * statisticsData.successful_count) /
-            (statisticsData.successful_count + statisticsData.failed_count),
-          10,
-        );
+      (100 * statisticsData.successful_count) /
+      (statisticsData.successful_count + statisticsData.failed_count),
+      10,
+      );
   const data = [['', ''], ['success', percent], ['unsuccess', 100 - percent]];
   const options = {
     pieHole: 0.75,
@@ -41,27 +42,29 @@ const UserAccuracyChart = ({ statisticsData, setLoadedChart }) => {
     },
   };
 
-  const isChartLoaded =
-    chartRef.current && chartRef.current.state && chartRef.current.state.loadingStatus === 'ready';
-
-  setLoadedChart(isChartLoaded);
-
   return (
     <div className="UserAccuracy">
-      {!isChartLoaded && (
+      {!isChart && (
         <div className="UserAccuracy__loader">
-          <Loading center />
+          <Loading center/>
         </div>
       )}
-      <div className={classNames('UserAccuracy__data-wrapper', { hideChart: !isChartLoaded })}>
+      <div className={classNames('UserAccuracy__data-wrapper', { hideChart: !isChart })}>
         <div className="UserAccuracy__data-wrapper-chart">
           <Chart
-            ref={chartRef}
             width={'100%'}
             height={'95px'}
             chartType="PieChart"
             data={data}
             options={options}
+            chartEvents={[
+              {
+                eventName: 'ready',
+                callback: () => {
+                  props.setForecastAccuracyChartCondition();
+                },
+              },
+            ]}
           />
         </div>
         <div
@@ -77,7 +80,16 @@ const UserAccuracyChart = ({ statisticsData, setLoadedChart }) => {
 
 UserAccuracyChart.propTypes = {
   statisticsData: PropTypes.shape().isRequired,
-  setLoadedChart: PropTypes.func.isRequired,
+  setForecastAccuracyChartCondition: PropTypes.func.isRequired,
+  isChart: PropTypes.bool.isRequired,
 };
 
-export default injectIntl(UserAccuracyChart);
+export default connect(
+  (state) => ({
+    isChart: getUserForecastAccuracyChartCondition(state)
+  })
+  ,
+  {
+    setForecastAccuracyChartCondition,
+  },
+)(UserAccuracyChart);

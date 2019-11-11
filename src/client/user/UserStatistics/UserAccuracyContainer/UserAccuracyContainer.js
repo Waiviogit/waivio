@@ -5,7 +5,7 @@ import UserAccuracyChart from '../UserAccuracyChart/UserAccuracyChart';
 import UserProfitability from '../UserProfitability/UserProfitability';
 import './UserAccuracyContainer.less';
 
-const UserAccuracyContainer = ({ intl, contentType, accuracy, isLoadedChart, setLoadedChart }) => (
+const UserAccuracyContainer = ({ intl, contentType, accuracy }) => (
   <div className="UserAccuracyContainer">
     <div className="UserAccuracyContainer__title">
       {contentType === 'forecast'
@@ -21,9 +21,9 @@ const UserAccuracyContainer = ({ intl, contentType, accuracy, isLoadedChart, set
     <div className="UserAccuracyContainer__period">
       <div className="UserAccuracyContainer__period-item">
         {contentType === 'forecast' ? (
-          <UserAccuracyChart statisticsData={accuracy.d1} setLoadedChart={setLoadedChart} />
+          <UserAccuracyChart statisticsData={accuracy.d1} />
         ) : (
-          <UserProfitability statisticsData={accuracy.d1} isLoadedChart={isLoadedChart} />
+          <UserProfitability statisticsData={accuracy.d1} />
         )}
         <div className="UserAccuracyContainer__period-item-value">
           {intl.formatMessage({
@@ -34,9 +34,9 @@ const UserAccuracyContainer = ({ intl, contentType, accuracy, isLoadedChart, set
       </div>
       <div className="UserAccuracyContainer__period-item border">
         {contentType === 'forecast' ? (
-          <UserAccuracyChart statisticsData={accuracy.d7} setLoadedChart={setLoadedChart} />
+          <UserAccuracyChart statisticsData={accuracy.d7} />
         ) : (
-          <UserProfitability statisticsData={accuracy.d7} isLoadedChart={isLoadedChart} />
+          <UserProfitability statisticsData={accuracy.d7} />
         )}
         <div className="UserAccuracyContainer__period-item-value">
           {intl.formatMessage({
@@ -47,9 +47,9 @@ const UserAccuracyContainer = ({ intl, contentType, accuracy, isLoadedChart, set
       </div>
       <div className="UserAccuracyContainer__period-item border">
         {contentType === 'forecast' ? (
-          <UserAccuracyChart statisticsData={accuracy.m1} setLoadedChart={setLoadedChart} />
+          <UserAccuracyChart statisticsData={accuracy.m1} />
         ) : (
-          <UserProfitability statisticsData={accuracy.m1} isLoadedChart={isLoadedChart} />
+          <UserProfitability statisticsData={accuracy.m1} />
         )}
         <div className="UserAccuracyContainer__period-item-value">
           {intl.formatMessage({
@@ -60,9 +60,9 @@ const UserAccuracyContainer = ({ intl, contentType, accuracy, isLoadedChart, set
       </div>
       <div className="UserAccuracyContainer__period-item border">
         {contentType === 'forecast' ? (
-          <UserAccuracyChart statisticsData={accuracy.m12} setLoadedChart={setLoadedChart} />
+          <UserAccuracyChart statisticsData={accuracy.m12} />
         ) : (
-          <UserProfitability statisticsData={accuracy.m12} isLoadedChart={isLoadedChart} />
+          <UserProfitability statisticsData={accuracy.m12} />
         )}
         <div className="UserAccuracyContainer__period-item-value">
           {intl.formatMessage({
@@ -79,13 +79,6 @@ UserAccuracyContainer.propTypes = {
   intl: PropTypes.shape().isRequired,
   contentType: PropTypes.string.isRequired,
   accuracy: PropTypes.shape().isRequired,
-  isLoadedChart: PropTypes.bool,
-  setLoadedChart: PropTypes.func,
-};
-
-UserAccuracyContainer.defaultProps = {
-  isLoadedChart: false,
-  setLoadedChart: PropTypes.bool,
 };
 
 export default injectIntl(UserAccuracyContainer);

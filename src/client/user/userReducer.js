@@ -3,6 +3,7 @@ import * as userActions from './userActions';
 import * as wobjActions from '../object/wobjActions';
 import * as appTypes from '../app/appActions';
 
+
 const initialState = {
   recommendedObjects: [],
   location: {},
@@ -22,6 +23,10 @@ const initialState = {
   latestNotification: {},
   loadingNotifications: false,
   fetchFollowListError: false,
+  statistics:
+    {
+      isForecastAccuracyChart: false
+    }
 };
 
 const filterRecommendedObjects = (objects, count = 5) => {
@@ -220,6 +225,14 @@ export default function userReducer(state = initialState, action) {
         ...state,
         recommendedObjects: filterRecommendedObjects(action.payload.wobjects),
       };
+    case userActions.GET_FORECAST_CHART_CONDITION:
+      return {
+        ...state,
+        statistics: {
+          ...state.statistics,
+          isForecastAccuracyChart: action.payload
+        }
+      };
     default: {
       return state;
     }
@@ -238,3 +251,5 @@ export const getIsLoadingNotifications = state => state.loadingNotifications;
 export const getFetchFollowListError = state => state.fetchFollowListError;
 export const getLatestNotification = state => state.latestNotification;
 export const getUserLocation = state => state.location;
+export const getUserForecastAccuracyChartCondition = state => state.statistics.isForecastAccuracyChart;
+
