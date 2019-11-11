@@ -57,7 +57,7 @@ class Page extends React.Component {
   };
 
   componentDidMount() {
-    if (this.props.match.path === '/'){
+    if (this.props.match.path === '/') {
       const isAppFilterOn = !localStorage.getItem('isAppHomeFilterOff');
       if (isAppFilterOn !== this.state.checked) {
         this.reloadContent(isAppFilterOn);
@@ -67,7 +67,7 @@ class Page extends React.Component {
       const isAppFilterOn = localStorage.getItem('isAppMyFeedFilterOn');
       if (isAppFilterOn !== this.state.checked) {
         this.reloadContent(isAppFilterOn);
-        this.setState({checked: isAppFilterOn});
+        this.setState({ checked: isAppFilterOn });
       }
     }
   }
@@ -86,18 +86,19 @@ class Page extends React.Component {
   handleChangeFeed = isAppFilterOn => {
     this.setState({ checked: isAppFilterOn });
     if (localStorage) {
-
-      if (this.props.match.path === '/'){
+      if (this.props.match.path === '/') {
         // eslint-disable-next-line no-unused-expressions
-        isAppFilterOn ? localStorage.removeItem('isAppHomeFilterOff') : localStorage.setItem('isAppHomeFilterOff', `true`);
+        isAppFilterOn
+          ? localStorage.removeItem('isAppHomeFilterOff')
+          : localStorage.setItem('isAppHomeFilterOff', `true`);
       } else {
-
         // eslint-disable-next-line no-unused-expressions
-        isAppFilterOn ?  localStorage.setItem('isAppMyFeedFilterOn', `true`) : localStorage.removeItem('isAppMyFeedFilterOn');
+        isAppFilterOn
+          ? localStorage.setItem('isAppMyFeedFilterOn', `true`)
+          : localStorage.removeItem('isAppMyFeedFilterOn');
       }
     }
     this.reloadContent(isAppFilterOn);
-
   };
 
   reloadContent = isAppFilterOn => {
