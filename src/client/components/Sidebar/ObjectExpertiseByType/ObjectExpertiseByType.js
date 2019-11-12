@@ -9,11 +9,13 @@ import UserCard from '../../UserCard';
 import { getObjectExpertiseByType } from '../../../../waivioApi/ApiClient';
 import './ObjectExpertiseByType.less';
 
+const OBJECTS_COUNT = 5;
+
 const initialState = {
   experts: [],
   loading: true,
   skip: 0,
-  limit: 5,
+  limit: OBJECTS_COUNT,
   hasNext: true,
 };
 
@@ -21,7 +23,7 @@ const initialModalState = {
   experts: [],
   loading: true,
   skip: 0,
-  limit: 5,
+  limit: OBJECTS_COUNT,
   hasNext: true,
 };
 
@@ -39,7 +41,7 @@ const ObjectExpertiseByType = ({ match }) => {
           ...objectsModalState,
           experts: [...objectsModalState.experts, ...data],
           skip: objectsModalState.skip + objectsModalState.limit,
-          hasNext: data.length === 5,
+          hasNext: data.length === OBJECTS_COUNT,
         });
       })
       .catch(() => setModalObjectsState({ ...objectsModalState, hasNext: false, loading: false }));
@@ -52,7 +54,7 @@ const ObjectExpertiseByType = ({ match }) => {
           ...objectsState,
           experts: [...objectsState.experts, ...data],
           skip: objectsState.skip + objectsState.limit,
-          hasNext: data.length === 5,
+          hasNext: data.length === OBJECTS_COUNT,
         });
       })
       .catch(() => setObjectsState({ ...objectsState, hasNext: false, loading: false }));
@@ -67,7 +69,7 @@ const ObjectExpertiseByType = ({ match }) => {
           experts: [...data],
           skip: skip + limit,
           loading: false,
-          hasNext: data.length === 5,
+          hasNext: data.length === OBJECTS_COUNT,
         });
       })
       .catch(() => setObjectsState({ ...initialState, loading: false }));
@@ -79,7 +81,7 @@ const ObjectExpertiseByType = ({ match }) => {
           experts: [...data],
           skip: objectsModalState.skip + objectsModalState.limit,
           loading: false,
-          hasNext: data.length === 5,
+          hasNext: data.length === OBJECTS_COUNT,
         });
       })
       .catch(() => setModalObjectsState({ ...initialModalState, loading: false }));

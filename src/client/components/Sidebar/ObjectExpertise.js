@@ -9,20 +9,22 @@ import './ObjectExpertise.less';
 import { getWobjectsExpertise } from '../../../waivioApi/ApiClient';
 import RightSidebarLoading from '../../app/Sidebar/RightSidebarLoading';
 
+const USERS_COUNT = 5;
+
 const ObjectExpertise = ({ username, wobject }) => {
   const [experts, setExperts] = useState({ user: {}, users: [] });
   const { users, user } = experts;
   const isUserInTopFive = users.find(u => u.name === username);
-  const [limit, setLimit] = useState(5);
   useEffect(() => {
-    getWobjectsExpertise(username, wobject.author_permlink, 0, 5).then(data => setExperts(data));
+    getWobjectsExpertise(username, wobject.author_permlink, 0, USERS_COUNT).then(data =>
+      setExperts(data),
+    );
   }, [wobject.author_permlink]);
 
   const showMoreExpertise = () => {
-    getWobjectsExpertise(username, wobject.author_permlink, 0, limit + 5).then(data =>
-      setExperts(data),
+    getWobjectsExpertise(username, wobject.author_permlink, 0, users.length + USERS_COUNT).then(
+      data => setExperts(data),
     );
-    setLimit(limit + 5);
   };
 
   return !_.isEmpty(users) ? (
@@ -33,7 +35,7 @@ const ObjectExpertise = ({ username, wobject }) => {
       </h4>
       <div className="SidebarContentBlock__content">
         {users &&
-          _.map(_.slice(users, 0, limit), u => (
+          _.map(_.slice(users, 0, users.length), u => (
             <UserCard
               key={u.name}
               user={u}
@@ -54,10 +56,13 @@ const ObjectExpertise = ({ username, wobject }) => {
           </React.Fragment>
         )}
 
-        {_.size(users) >= 5 && (
+        {_.size(users) >= USERS_COUNT && (
           <div className="ObjectExpertise__buttons-wrap">
             <div className="ObjectExpertise__buttons-wrap-all">
-              <Link to={`/object/${wobject.author_permlink}/expertise`}>
+              <Link
+                className="ObjectExpertise__buttons-wrap-all"
+                to={`/object/${wobject.author_permlink}/expertise`}
+              >
                 <FormattedMessage id="show_all" defaultMessage="Show all" />
               </Link>
             </div>

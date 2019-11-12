@@ -9,6 +9,8 @@ import WeightTag from '../WeightTag';
 import './ObjectWeightBlock.less';
 import RightSidebarLoading from '../../../client/app/Sidebar/RightSidebarLoading';
 
+const OBJECTS_COUNT = 5;
+
 class ObjectWeightBlock extends React.Component {
   static propTypes = {
     username: PropTypes.string.isRequired,
@@ -18,12 +20,12 @@ class ObjectWeightBlock extends React.Component {
     wObjects: [],
     wObjectsCount: 0,
     loading: true,
-    limit: 5,
+    limit: OBJECTS_COUNT,
   };
 
   async componentDidMount() {
     try {
-      const response = await api.getWobjectsWithUserWeight(this.props.username, 0, 5);
+      const response = await api.getWobjectsWithUserWeight(this.props.username, 0, OBJECTS_COUNT);
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({
         wObjects: response.wobjects,
@@ -37,7 +39,7 @@ class ObjectWeightBlock extends React.Component {
   }
 
   showMoreExpertise = () => {
-    this.setState({ limit: this.state.limit + 5 }, () => {
+    this.setState({ limit: this.state.limit + OBJECTS_COUNT }, () => {
       api.getWobjectsWithUserWeight(this.props.username, 0, this.state.limit).then(data =>
         this.setState({
           wObjects: data.wobjects,
@@ -72,13 +74,11 @@ class ObjectWeightBlock extends React.Component {
                 alt={<WeightTag weight={wobject.user_weight} />}
               />
             ))}
-          {wObjectsCount > 5 && (
+          {wObjectsCount > OBJECTS_COUNT && (
             <div className="ObjectWeightBlock__buttons-wrap">
-              <div className="ObjectWeightBlock__buttons-wrap-all">
-                <Link to={`/@${username}/expertise`}>
-                  <FormattedMessage id="show_all" defaultMessage="Show All" />
-                </Link>
-              </div>
+              <Link className="ObjectWeightBlock__buttons-wrap-all" to={`/@${username}/expertise`}>
+                <FormattedMessage id="show_all" defaultMessage="Show All" />
+              </Link>
               <div
                 className="ObjectWeightBlock__buttons-wrap-more"
                 onClick={this.showMoreExpertise}
