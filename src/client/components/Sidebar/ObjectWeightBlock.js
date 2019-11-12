@@ -39,15 +39,13 @@ class ObjectWeightBlock extends React.Component {
   }
 
   showMoreExpertise = () => {
-    this.setState({ limit: this.state.limit + OBJECTS_COUNT }, () => {
-      api.getWobjectsWithUserWeight(this.props.username, 0, this.state.limit).then(data =>
+    api
+      .getWobjectsWithUserWeight(this.props.username, this.state.wObjects.length, OBJECTS_COUNT)
+      .then(data =>
         this.setState({
-          wObjects: data.wobjects,
-          wObjectsCount: data.wobjects_count,
-          loading: false,
+          wObjects: [...this.state.wObjects, ...data.wobjects],
         }),
       );
-    });
   };
 
   render() {
