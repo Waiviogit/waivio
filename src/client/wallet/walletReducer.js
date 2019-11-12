@@ -28,7 +28,9 @@ export default function walletReducer(state = initialState, action) {
       return {
         ...state,
         transferVisible: true,
-        transferTo: action.payload,
+        transferTo: action.payload.userName,
+        amount: action.payload.amount,
+        currency: action.payload.currency,
       };
     case walletActions.CLOSE_TRANSFER:
       return {
@@ -192,6 +194,8 @@ export default function walletReducer(state = initialState, action) {
 
 export const getIsTransferVisible = state => state.transferVisible;
 export const getTransferTo = state => state.transferTo;
+export const getTransferAmount = state => state.amount;
+export const getTransferCurrency = state => state.currency;
 export const getIsPowerUpOrDownVisible = state => state.powerUpOrDownVisible;
 export const getIsPowerDown = state => state.powerDown;
 export const getTotalVestingShares = state => state.totalVestingShares;
