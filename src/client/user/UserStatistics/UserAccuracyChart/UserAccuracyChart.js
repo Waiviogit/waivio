@@ -1,12 +1,14 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
 import Chart from 'react-google-charts';
 import classNames from 'classnames';
+import { setAccuracyChartLoaded } from '../../userActions';
+import { getAccuracyChartLoaded } from '../../../reducers';
+import Loading from '../../../components/Icon/Loading';
 import './UserAccuracyChart.less';
 
-const UserAccuracyChart = ({ statisticsData }) => {
-  const chartRef = useRef(null);
+const UserAccuracyChart = ({ statisticsData, isChart, ...props }) => {
   const percent =
     statisticsData.successful_count === 0
       ? 0
@@ -40,33 +42,54 @@ const UserAccuracyChart = ({ statisticsData }) => {
     },
   };
 
-  const isChartLoaded =
-    chartRef.current && chartRef.current.state && chartRef.current.state.loadingStatus === 'ready';
-
   return (
-    <div className={classNames('UserAccuracy', { hideChart: !isChartLoaded })}>
-      <div className="UserAccuracy__chart">
-        <Chart
-          ref={chartRef}
-          width={'100%'}
-          height={'95px'}
-          chartType="PieChart"
-          data={data}
-          options={options}
-        />
+    <div className="UserAccuracy">
+      {!isChart && (
+        <div className="UserAccuracy__loader">
+          <Loading center />
+        </div>
+      )}
+      <div className={classNames('UserAccuracy__data-wrapper', { hideChart: !isChart })}>
+        <div className="UserAccuracy__data-wrapper-chart">
+          <Chart
+            width={'100%'}
+            height={'95px'}
+            chartType="PieChart"
+            data={data}
+            options={options}
+            chartEvents={[
+              {
+                eventName: 'ready',
+                callback: () => {
+                  props.setAccuracyChartLoaded();
+                },
+              },
+            ]}
+          />
+        </div>
+        <div
+          className={classNames('UserAccuracy__data-wrapper-value', {
+            success: percent >= 50,
+            unsuccess: percent < 50,
+          })}
+        >{`${percent}%`}</div>
       </div>
-      <div
-        className={classNames('UserAccuracy__value', {
-          success: percent >= 50,
-          unsuccess: percent < 50,
-        })}
-      >{`${percent}%`}</div>
     </div>
   );
 };
 
 UserAccuracyChart.propTypes = {
   statisticsData: PropTypes.shape().isRequired,
+  setForecastAccuracyChartCondition: PropTypes.func.isRequired,
+  isChart: PropTypes.bool.isRequired,
+  setAccuracyChartLoaded: PropTypes.func.isRequired
 };
 
-export default injectIntl(UserAccuracyChart);
+export default connect(
+  state => ({
+    isChart: getAccuracyChartLoaded(state),
+  }),
+  {
+    setAccuracyChartLoaded,
+  },
+)(UserAccuracyChart);
