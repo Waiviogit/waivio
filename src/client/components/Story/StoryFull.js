@@ -37,8 +37,9 @@ import PostQuotation from '../../../investarena/components/PostQuotation';
 import PostChart from '../../../investarena/components/PostChart';
 import WeightTag from '../WeightTag';
 import { UsedLocaleContext } from '../../Wrapper';
-import './StoryFull.less';
 import PopoverContainer from '../Popover';
+import './StoryFull.less';
+
 
 @injectIntl
 @withAuthActions
