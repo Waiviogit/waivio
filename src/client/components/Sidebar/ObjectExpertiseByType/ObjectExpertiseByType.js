@@ -62,30 +62,27 @@ const ObjectExpertiseByType = ({ match }) => {
 
   useEffect(() => {
     skip = 0;
-    getObjectExpertiseByType(typeName, skip, limit)
+    getObjectExpertiseByType(typeName, skip, OBJECTS_COUNT)
       .then(data => {
         setObjectsState({
           ...objectsState,
           experts: [...data],
-          skip: skip + limit,
+          skip: OBJECTS_COUNT,
           loading: false,
           hasNext: data.length === OBJECTS_COUNT,
         });
-      })
-      .catch(() => setObjectsState({ ...initialState, loading: false }));
-
-    getObjectExpertiseByType(typeName, objectsModalState.skip, objectsModalState.limit)
-      .then(data => {
         setModalObjectsState({
           ...objectsModalState,
           experts: [...data],
-          skip: objectsModalState.skip + objectsModalState.limit,
+          skip: OBJECTS_COUNT,
           loading: false,
           hasNext: data.length === OBJECTS_COUNT,
         });
       })
-      .catch(() => setModalObjectsState({ ...initialModalState, loading: false }));
-
+      .catch(() => {
+        setObjectsState({ ...initialState, loading: false });
+        setModalObjectsState({ ...initialModalState, loading: false });
+      });
     return () => setObjectsState(initialState);
   }, [match.params.typeName]);
 
