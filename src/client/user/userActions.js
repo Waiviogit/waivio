@@ -259,7 +259,7 @@ export const inactivateCampaign = (company, inactivatePermlink) => (
   });
 };
 
-export const SET_ACCURACY_CHART_LOADED= '@user/SET_ACCURACY_CHART_CONDITION';
+export const SET_ACCURACY_CHART_LOADED = '@user/SET_ACCURACY_CHART_CONDITION';
 
 export const setAccuracyChartLoaded = () => dispatch =>
   dispatch({
