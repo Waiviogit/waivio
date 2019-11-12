@@ -18,7 +18,6 @@ import { getFromMetadata, extractImageTags } from '../../helpers/parser';
 import { isPostDeleted, dropCategory } from '../../helpers/postHelpers';
 import withAuthActions from '../../auth/withAuthActions';
 import { getProxyImageURL } from '../../helpers/image';
-import Popover from '../Popover';
 import BTooltip from '../BTooltip';
 import { getHtml } from './Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
@@ -39,6 +38,7 @@ import PostChart from '../../../investarena/components/PostChart';
 import WeightTag from '../WeightTag';
 import { UsedLocaleContext } from '../../Wrapper';
 import './StoryFull.less';
+import PopoverContainer from '../Popover';
 
 @injectIntl
 @withAuthActions
@@ -97,6 +97,7 @@ class StoryFull extends React.Component {
         open: false,
         index: 0,
       },
+      isModalOpen: false,
     };
 
     this.images = [];
@@ -158,6 +159,10 @@ class StoryFull extends React.Component {
       }
     }
   }
+
+  handleModalClick = visible => {
+    this.setState({ isModalOpen: visible });
+  };
 
   renderDtubeEmbedPlayer() {
     const { post } = this.props;
@@ -434,9 +439,11 @@ class StoryFull extends React.Component {
               </span>
             )}
           </div>
-          <Popover
+          <PopoverContainer
             placement="bottomRight"
             trigger="click"
+            onVisibleChange={this.handleModalClick}
+            visible={this.state.isModalOpen}
             content={
               <PopoverMenu onSelect={this.handleClick} bold={false}>
                 {popoverMenu}
@@ -444,7 +451,7 @@ class StoryFull extends React.Component {
             }
           >
             <i className="iconfont icon-more StoryFull__header__more" />
-          </Popover>
+          </PopoverContainer>
         </div>
         {isForecastValid && (
           <div className="Story__forecast">
