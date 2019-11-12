@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
-
 import WeightTag from '../../WeightTag';
 import RightSidebarLoading from '../../../app/Sidebar/RightSidebarLoading';
 import UserCard from '../../UserCard';
@@ -18,20 +17,41 @@ const initialState = {
   hasNext: true,
 };
 
+const initialModalState = {
+  experts: [],
+  loading: true,
+  skip: 0,
+  limit: 5,
+  hasNext: true,
+};
+
 const ObjectExpertiseByType = ({ match }) => {
   const typeName = match.params.typeName;
   const [objectsState, setObjectsState] = useState(initialState);
+  const [objectsModalState, setModalObjectsState] = useState(initialModalState);
   const [showModal, setShowModal] = useState(false);
   // eslint-disable-next-line prefer-const
   let { skip, limit } = objectsState;
-
   const getExperts = () => {
+    getObjectExpertiseByType(typeName, objectsModalState.skip, objectsModalState.limit)
+      .then(data => {
+        setModalObjectsState({
+          ...objectsModalState,
+          experts: [...objectsModalState.experts, ...data],
+          skip: objectsModalState.skip + objectsModalState.limit,
+          hasNext: data.length === 5,
+        });
+      })
+      .catch(() => setModalObjectsState({ ...objectsModalState, hasNext: false, loading: false }));
+  };
+
+  const showMoreExperts = () => {
     getObjectExpertiseByType(typeName, skip, limit)
       .then(data => {
         setObjectsState({
           ...objectsState,
           experts: [...objectsState.experts, ...data],
-          skip: skip + limit,
+          skip: objectsState.skip + objectsState.limit,
           hasNext: data.length === 5,
         });
       })
@@ -51,6 +71,19 @@ const ObjectExpertiseByType = ({ match }) => {
         });
       })
       .catch(() => setObjectsState({ ...initialState, loading: false }));
+
+    getObjectExpertiseByType(typeName, objectsModalState.skip, objectsModalState.limit)
+      .then(data => {
+        setModalObjectsState({
+          ...objectsModalState,
+          experts: [...data],
+          skip: objectsModalState.skip + objectsModalState.limit,
+          loading: false,
+          hasNext: data.length === 5,
+        });
+      })
+      .catch(() => setModalObjectsState({ ...initialModalState, loading: false }));
+
     return () => setObjectsState(initialState);
   }, [match.params.typeName]);
 
@@ -59,7 +92,7 @@ const ObjectExpertiseByType = ({ match }) => {
   if (!objectsState.loading) {
     if (!_.isEmpty(objectsState.experts)) {
       const renderObjects = objectsState.experts
-        .slice(0, 5)
+        .slice(0, skip)
         .map(expert => (
           <UserCard
             key={expert.name}
@@ -69,7 +102,7 @@ const ObjectExpertiseByType = ({ match }) => {
           />
         ));
 
-      const renderObjectsModal = objectsState.experts.map(expert => (
+      const renderObjectsModal = objectsModalState.experts.map(expert => (
         <UserCard
           key={expert.name}
           user={expert}
@@ -86,14 +119,18 @@ const ObjectExpertiseByType = ({ match }) => {
               <FormattedMessage id="show_all" defaultMessage="Show All" />
             </div>
           </div>
-          <div className="ObjectExpertiseByType__buttons-wrapper-item">
+          <div
+            className="ObjectExpertiseByType__buttons-wrapper-item"
+            onClick={showMoreExperts}
+            role="presentation"
+          >
             <FormattedMessage id="show_more" defaultMessage="Show more" />
           </div>
         </div>
       );
 
       const onWheelHandler = () => {
-        if (objectsState.hasNext) {
+        if (objectsModalState.hasNext) {
           getExperts();
         }
       };
