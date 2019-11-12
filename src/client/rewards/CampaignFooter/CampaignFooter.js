@@ -33,7 +33,7 @@ class CampaignFooter extends React.Component {
     requiredObjectName: PropTypes.string.isRequired,
     rate: PropTypes.number.isRequired,
     defaultVotePercent: PropTypes.number.isRequired,
-    votePost: PropTypes.func.isRequired,
+    likeComment: PropTypes.func.isRequired,
     unfollowUser: PropTypes.func.isRequired,
     unfollowObject: PropTypes.func.isRequired,
     followUser: PropTypes.func.isRequired,
@@ -98,14 +98,13 @@ class CampaignFooter extends React.Component {
 
   onLikeClick = (post, postState, weight = 10000) => {
     const { sliderMode, defaultVotePercent } = this.props;
-    const author = post.author_original || post.author;
 
     if (sliderMode) {
-      this.props.votePost(post.id, author, post.permlink, weight);
+      this.props.likeComment(post.id, weight);
     } else if (postState.isLiked) {
-      this.props.votePost(post.id, author, post.permlink, 0);
+      this.props.likeComment(post.id, 0);
     } else {
-      this.props.votePost(post.id, author, post.permlink, defaultVotePercent);
+      this.props.likeComment(post.id, defaultVotePercent);
     }
   };
 
