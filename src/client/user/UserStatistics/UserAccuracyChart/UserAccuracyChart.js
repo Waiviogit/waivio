@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Chart from 'react-google-charts';
 import classNames from 'classnames';
-import { setAccuracyChartCondition } from '../../userActions';
-import { getAccuracyChartCondition } from '../../../reducers';
+import { setAccuracyChartLoaded } from '../../userActions';
+import { getAccuracyChartLoaded } from '../../../reducers';
 import Loading from '../../../components/Icon/Loading';
 import './UserAccuracyChart.less';
 
@@ -61,7 +61,7 @@ const UserAccuracyChart = ({ statisticsData, isChart, ...props }) => {
               {
                 eventName: 'ready',
                 callback: () => {
-                  props.setForecastAccuracyChartCondition();
+                  props.setAccuracyChartLoaded();
                 },
               },
             ]}
@@ -82,13 +82,14 @@ UserAccuracyChart.propTypes = {
   statisticsData: PropTypes.shape().isRequired,
   setForecastAccuracyChartCondition: PropTypes.func.isRequired,
   isChart: PropTypes.bool.isRequired,
+  setAccuracyChartLoaded: PropTypes.func.isRequired
 };
 
 export default connect(
   state => ({
-    isChart: getAccuracyChartCondition(state),
+    isChart: getAccuracyChartLoaded(state),
   }),
   {
-    setAccuracyChartCondition,
+    setAccuracyChartLoaded,
   },
 )(UserAccuracyChart);

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { getAccuracyChartCondition } from '../../../reducers';
+import { getAccuracyChartLoaded } from '../../../reducers';
 import SkeletonCustom from '../../../components/Skeleton/SkeletonCustom';
 import './UserProfitability.less';
 
@@ -42,5 +42,5 @@ UserProfitability.propTypes = {
 };
 
 export default connect(state => ({
-  isChart: getAccuracyChartCondition(state),
+  isChart: getAccuracyChartLoaded(state),
 }))(UserProfitability);
