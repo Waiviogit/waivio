@@ -74,11 +74,14 @@ class ObjectWeightBlock extends React.Component {
             ))}
           {wObjectsCount > OBJECTS_COUNT && (
             <div className="ObjectWeightBlock__buttons-wrap">
-              <Link className="ObjectWeightBlock__buttons-wrap-all" to={`/@${username}/expertise`}>
+              <Link
+                className="ObjectWeightBlock__buttons-wrap-show-all-btn"
+                to={`/@${username}/expertise`}
+              >
                 <FormattedMessage id="show_all" defaultMessage="Show All" />
               </Link>
               <div
-                className="ObjectWeightBlock__buttons-wrap-more"
+                className="ObjectWeightBlock__buttons-wrap-show-more-btn"
                 onClick={this.showMoreExpertise}
                 role="presentation"
               >

@@ -58,16 +58,14 @@ const ObjectExpertise = ({ username, wobject }) => {
 
         {_.size(users) >= USERS_COUNT && (
           <div className="ObjectExpertise__buttons-wrap">
-            <div className="ObjectExpertise__buttons-wrap-all">
-              <Link
-                className="ObjectExpertise__buttons-wrap-all"
-                to={`/object/${wobject.author_permlink}/expertise`}
-              >
-                <FormattedMessage id="show_all" defaultMessage="Show all" />
-              </Link>
-            </div>
+            <Link
+              className="ObjectExpertise__buttons-wrap-show-all-btn"
+              to={`/object/${wobject.author_permlink}/expertise`}
+            >
+              <FormattedMessage id="show_all" defaultMessage="Show all" />
+            </Link>
             <div
-              className="ObjectExpertise__buttons-wrap-more"
+              className="ObjectExpertise__buttons-wrap-show-more-btn"
               onClick={showMoreExpertise}
               role="presentation"
             >
