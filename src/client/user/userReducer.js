@@ -23,7 +23,7 @@ const initialState = {
   loadingNotifications: false,
   fetchFollowListError: false,
   statistics: {
-    isAccuracyChart: false,
+    isAccuracyChartLoaded: false,
   },
 };
 
@@ -228,7 +228,7 @@ export default function userReducer(state = initialState, action) {
         ...state,
         statistics: {
           ...state.statistics,
-          isAccuracyChart: action.payload,
+          isAccuracyChartLoaded: action.payload,
         },
       };
     default: {
@@ -249,4 +249,4 @@ export const getIsLoadingNotifications = state => state.loadingNotifications;
 export const getFetchFollowListError = state => state.fetchFollowListError;
 export const getLatestNotification = state => state.latestNotification;
 export const getUserLocation = state => state.location;
-export const getAccuracyChartLoaded = state => state.statistics.isAccuracyChart;
+export const getAccuracyChartLoaded = state => state.statistics.isAccuracyChartLoaded;
