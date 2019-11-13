@@ -57,10 +57,18 @@ class Page extends React.Component {
   };
 
   componentDidMount() {
-    const isAppFilterOn = !localStorage.getItem('isAppFilterOff');
-    if (isAppFilterOn !== this.state.checked) {
-      this.reloadContent(isAppFilterOn);
-      this.setState({ checked: isAppFilterOn });
+    if (this.props.match.path === '/') {
+      const isAppFilterOn = !localStorage.getItem('isAppHomeFilterOff');
+      if (isAppFilterOn !== this.state.checked) {
+        this.reloadContent(isAppFilterOn);
+        this.setState({ checked: isAppFilterOn });
+      }
+    } else {
+      const isAppFilterOn = localStorage.getItem('isAppMyFeedFilterOn');
+      if (isAppFilterOn !== this.state.checked) {
+        this.reloadContent(isAppFilterOn);
+        this.setState({ checked: isAppFilterOn });
+      }
     }
   }
 
@@ -74,12 +82,21 @@ class Page extends React.Component {
   };
 
   handleTopicClose = () => this.props.history.push('/trending');
+
   handleChangeFeed = isAppFilterOn => {
     this.setState({ checked: isAppFilterOn });
-    if (isAppFilterOn) {
-      if (localStorage) localStorage.removeItem('isAppFilterOff');
-    } else if (localStorage) {
-      localStorage.setItem('isAppFilterOff', `true`);
+    if (localStorage) {
+      if (this.props.match.path === '/') {
+        // eslint-disable-next-line no-unused-expressions
+        isAppFilterOn
+          ? localStorage.removeItem('isAppHomeFilterOff')
+          : localStorage.setItem('isAppHomeFilterOff', `true`);
+      } else {
+        // eslint-disable-next-line no-unused-expressions
+        isAppFilterOn
+          ? localStorage.setItem('isAppMyFeedFilterOn', `true`)
+          : localStorage.removeItem('isAppMyFeedFilterOn');
+      }
     }
     this.reloadContent(isAppFilterOn);
   };

@@ -235,12 +235,16 @@ class EditPost extends Component {
   handleForecastChange = (nextForecastValues, isReset) => {
     const { linkedObjects, forecastValues } = this.state;
     const { isValid, wobjData } = nextForecastValues;
-    if (isReset && !isEmpty(forecastValues.wobjData.author_permlink)) {
+    if (isReset) {
       this.setState(prevState => {
         const filteredObjects = prevState.linkedObjects.filter(
-          obj => obj.id !== prevState.forecastValues.wobjData.author_permlink,
+          obj => obj.id !== get(prevState.forecastValues, ['wobjData', 'author_permlink'], ''),
         );
-        return { forecastValues: nextForecastValues, linkedObjects: filteredObjects };
+        return {
+          forecastValues: nextForecastValues,
+          linkedObjects: filteredObjects,
+          objPercentage: setObjPercents(filteredObjects, this.state.objPercentage),
+        };
       });
     } else if (
       !isReset &&
@@ -347,6 +351,7 @@ class EditPost extends Component {
               onSettingsChange={this.handleSettingsChange}
               onPercentChange={this.handlePercentChange}
               onReadyBtnClick={this.setIsPreview}
+              isPreview={isPreview}
               onSubmit={this.handleSubmit}
               onUpdate={this.saveDraft}
             />

@@ -1,31 +1,56 @@
 @import (reference) '../../../styles/custom.less';
 @import (reference) '../../../styles/modules/variables.less';
+
 .UserAccuracy {
   display: flex;
   position: relative;
-  padding: 5px 15px;
   flex-direction: column;
-  align-items: center;
-  &__value {
-    position: absolute;
-    font-size: x-large;
-    font-weight: bold;
-    margin-top: 30px;
-  }
-  &__chart {
+
+  &__data-wrapper {
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px 15px;
+
+    &-value {
+      position: absolute;
+      font-size: x-large;
+      font-weight: bold;
+      margin-top: 30px;
+    }
+
+    &-chart {
+      display: flex;
+      justify-content: center;
+      width: 78px;
+
+      @media @xsmall {
+        width: 95px;
+      }
+    }
+  }
+
+  &__loader {
+    display: flex;
+    padding: 5px 15px;
     justify-content: center;
     width: 78px;
+    height: 105px;
+
     @media @xsmall {
       width: 95px;
     }
   }
 }
 
-.UserAccuracy__value.success {
+.UserAccuracy__data-wrapper-value.success {
   color: @green;
 }
 
-.UserAccuracy__value.unsuccess {
+.UserAccuracy__data-wrapper-value.unsuccess {
   color: @red;
+}
+
+.hideChart {
+  display: none;
 }

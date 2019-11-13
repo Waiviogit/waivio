@@ -22,6 +22,9 @@ const initialState = {
   latestNotification: {},
   loadingNotifications: false,
   fetchFollowListError: false,
+  statistics: {
+    isAccuracyChartLoaded: false,
+  },
 };
 
 const filterRecommendedObjects = (objects, count = 5) => {
@@ -220,6 +223,14 @@ export default function userReducer(state = initialState, action) {
         ...state,
         recommendedObjects: filterRecommendedObjects(action.payload.wobjects),
       };
+    case userActions.SET_ACCURACY_CHART_LOADED:
+      return {
+        ...state,
+        statistics: {
+          ...state.statistics,
+          isAccuracyChartLoaded: action.payload,
+        },
+      };
     default: {
       return state;
     }
@@ -238,3 +249,4 @@ export const getIsLoadingNotifications = state => state.loadingNotifications;
 export const getFetchFollowListError = state => state.fetchFollowListError;
 export const getLatestNotification = state => state.latestNotification;
 export const getUserLocation = state => state.location;
+export const getAccuracyChartLoaded = state => state.statistics.isAccuracyChartLoaded;
