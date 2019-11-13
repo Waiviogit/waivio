@@ -6,6 +6,7 @@ import { objectFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfF
 const initialState = {
   wobject: {},
   isFetching: false,
+  activeFilters: [],
 };
 
 export default function wobjectReducer(state = initialState, action) {
@@ -33,6 +34,11 @@ export default function wobjectReducer(state = initialState, action) {
           ...state.wobject,
           listItems: [...state.wobject.listItems, action.payload],
         },
+      };
+    case actions.SET_OBJECT_FILTERS:
+      return {
+        ...state,
+        activeFilters: action.payload,
       };
     case RATE_WOBJECT_SUCCESS: {
       const isNewVote = field =>
@@ -105,3 +111,4 @@ export const getObjectAuthor = state => state.author;
 export const getObjectFields = state => state.wobject.fields;
 export const getRatingFields = state =>
   getObjectFields(state).filter(field => field.name === objectFields.rating);
+export const getActiveFilters = state => state.activeFilters;

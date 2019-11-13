@@ -99,3 +99,11 @@ export const addListItem = item => dispatch =>
     type: ADD_ITEM_TO_LIST,
     payload: item,
   });
+
+export const SET_OBJECT_FILTERS = '@user/SET_OBJECT_FILTERS';
+
+export const setObjectFilters = activeFilters => dispatch =>
+  dispatch({
+    type: SET_OBJECT_FILTERS,
+    payload: activeFilters,
+  });
