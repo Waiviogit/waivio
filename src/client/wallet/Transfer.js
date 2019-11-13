@@ -14,6 +14,8 @@ import {
   getAuthenticatedUser,
   getIsTransferVisible,
   getTransferTo,
+  getTransferAmount,
+  getTransferCurrency,
   getCryptosPriceHistory,
 } from '../reducers';
 import './Transfer.less';
@@ -25,6 +27,8 @@ const InputGroup = Input.Group;
   state => ({
     visible: getIsTransferVisible(state),
     to: getTransferTo(state),
+    amount: getTransferAmount(state),
+    currency: getTransferCurrency(state),
     authenticated: getIsAuthenticated(state),
     user: getAuthenticatedUser(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
@@ -46,11 +50,15 @@ export default class Transfer extends React.Component {
     cryptosPriceHistory: PropTypes.shape().isRequired,
     getCryptoPriceHistory: PropTypes.func.isRequired,
     closeTransfer: PropTypes.func,
+    amount: PropTypes.number,
+    currency: PropTypes.string,
   };
 
   static defaultProps = {
     to: '',
     visible: false,
+    amount: 0,
+    currency: 'STEEM',
     closeTransfer: () => {},
   };
 
@@ -84,12 +92,12 @@ export default class Transfer extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { form, to } = nextProps;
-    if (this.props.to !== to) {
+    const { form, to, amount, currency } = this.props;
+    if (to !== nextProps.to || amount !== nextProps.amount || currency !== nextProps.currency) {
       form.setFieldsValue({
-        to,
-        amount: undefined,
-        currency: STEEM.symbol,
+        to: nextProps.to,
+        amount: nextProps.amount,
+        currency: nextProps.currency === 'STEEM' ? STEEM.symbol : SBD.symbol,
         memo: undefined,
       });
       this.setState({
