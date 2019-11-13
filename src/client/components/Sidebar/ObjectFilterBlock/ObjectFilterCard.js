@@ -5,11 +5,11 @@ import PropTypes from 'prop-types';
 import ObjectCard from '../ObjectCard';
 import './ObjectFilterBlock.less';
 
-const ObjectFilterCard = ({ wobject }) => (
+const ObjectFilterCard = ({ wobject, setObjectFilters }) => (
   <div className="ObjectFilterCard">
     <div className="ObjectFilterCard__checkbox-wrap">
       <div className="ObjectFilterCard__checkbox-wrap-item">
-        <Checkbox />
+        <Checkbox onChange={() => setObjectFilters(wobject.author_permlink)} />
       </div>
       <ObjectCard key={wobject.author_permlink} wobject={wobject} showFollow={false} />
     </div>
@@ -27,6 +27,7 @@ const ObjectFilterCard = ({ wobject }) => (
 
 ObjectFilterCard.propTypes = {
   wobject: PropTypes.shape().isRequired,
+  setObjectFilters: PropTypes.func.isRequired,
 };
 
 export default ObjectFilterCard;
