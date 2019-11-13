@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { Icon } from 'antd';
-import { map } from 'lodash';
+import { map, isEmpty } from 'lodash';
 import ObjectFilterCard from './ObjectFilterCard';
+import RightSidebarLoading from '../../../app/Sidebar/RightSidebarLoading';
 import './ObjectFilterBlock.less';
 
 const MOCK_DATA = [
@@ -661,7 +662,7 @@ const MOCK_DATA = [
 
 const ObjectFilterBlock = ({ username }) => {
   console.log('username', username);
-  return (
+  return !isEmpty(MOCK_DATA) ? (
     <div className="SidebarContentBlock">
       <div className="SidebarContentBlock__title">
         <div className="SidebarContentBlock__icon">
@@ -675,6 +676,8 @@ const ObjectFilterBlock = ({ username }) => {
         ))}
       </div>
     </div>
+  ) : (
+    <RightSidebarLoading />
   );
 };
 
