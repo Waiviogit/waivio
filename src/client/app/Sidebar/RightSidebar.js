@@ -14,6 +14,7 @@ import FeedSidebar from '../../components/Sidebar/FeedSidebar';
 import ObjectWeightBlock from '../../components/Sidebar/ObjectWeightBlock';
 import ObjectExpertiseByType from '../../components/Sidebar/ObjectExpertiseByType/ObjectExpertiseByType';
 import DiscoverFiltersSidebar from '../../discoverObjects/DiscoverFiltersSidebar/DiscoverFiltersSidebar';
+import ObjectFilterBlock from '../../components/Sidebar/ObjectFilterBlock/ObjectFilterBlock';
 
 @withRouter
 @connect(state => ({
@@ -62,7 +63,14 @@ export default class RightSidebar extends React.Component {
           />
           <Route
             path="/@:name"
-            render={() => authenticated && <ObjectWeightBlock username={match.params.name} />}
+            render={() =>
+              authenticated && (
+                <React.Fragment>
+                  <ObjectWeightBlock username={match.params.name} />
+                  <ObjectFilterBlock username={match.params.name} />
+                </React.Fragment>
+              )
+            }
           />
           <Route
             path="/"

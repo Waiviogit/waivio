@@ -42,7 +42,7 @@ class ObjectWeightBlock extends React.Component {
     if (loading) {
       return <RightSidebarLoading />;
     }
-
+    console.log('wObjects', wObjects);
     return wObjects.length ? (
       <div className="ObjectWeightBlock SidebarContentBlock">
         <h4 className="SidebarContentBlock__title title">
