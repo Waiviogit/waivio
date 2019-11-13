@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import { Icon } from 'antd';
 import { map } from 'lodash';
 import ObjectFilterCard from './ObjectFilterCard';
@@ -666,7 +667,7 @@ const ObjectFilterBlock = ({ username }) => {
         <div className="SidebarContentBlock__icon">
           <Icon type="filter" />
         </div>
-        Title
+        <FormattedMessage id="object_filter" defaultMessage="Object filter" />
       </div>
       <div className="SidebarContentBlock__content">
         {map(MOCK_DATA, wobject => (

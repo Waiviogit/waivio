@@ -6,8 +6,8 @@ import { Link } from 'react-router-dom';
 import * as api from '../../../waivioApi/ApiClient';
 import ObjectCard from './ObjectCard';
 import WeightTag from '../WeightTag';
-import './ObjectWeightBlock.less';
 import RightSidebarLoading from '../../../client/app/Sidebar/RightSidebarLoading';
+import './ObjectWeightBlock.less';
 
 class ObjectWeightBlock extends React.Component {
   static propTypes = {
@@ -42,7 +42,6 @@ class ObjectWeightBlock extends React.Component {
     if (loading) {
       return <RightSidebarLoading />;
     }
-    console.log('wObjects', wObjects);
     return wObjects.length ? (
       <div className="ObjectWeightBlock SidebarContentBlock">
         <h4 className="SidebarContentBlock__title title">
