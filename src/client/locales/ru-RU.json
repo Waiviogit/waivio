@@ -792,5 +792,6 @@
   "check_review_post_add_text": "Данный обзор был частично спонсирован пользователем",
   "approved_by_admin": "Одобрено админом",
   "min_70_is_required": "Необходимо не менее 70%",
-  "object_filter": "Фильтр объектов"
+  "object_filter": "Фильтр объектов",
+  "object_filter_number_of_posts": "Количество постов"
 }
