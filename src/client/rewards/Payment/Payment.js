@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
+import { connect } from 'react-redux';
 import PaymentTable from './PaymentTable/PaymentTable';
 import { getLenders } from '../../../waivioApi/ApiClient';
+import Action from '../../components/Button/Action';
+import { openTransfer } from '../../wallet/walletActions';
 import './Payment.less';
 
-const Payment = ({ match, intl, userName }) => {
+// eslint-disable-next-line no-shadow
+const Payment = ({ match, intl, userName, openTransfer }) => {
   const [sponsors, setSponsors] = useState({});
   const [payable, setPayable] = useState({});
 
@@ -36,21 +39,29 @@ const Payment = ({ match, intl, userName }) => {
           defaultMessage: 'Receivables',
         });
 
+  const name = match.params.userName;
+
   return (
     <div className="Payment">
       <div className="Payment__title">
         <div className="Payment__title-payment">
           {titleName}
-          {` > @${userName} (${payable} SBD)`}
+          {`: ${userName} `}
+          &rarr;
+          {` ${name} `}
         </div>
         <div className="Payment__title-pay">
-          <Link to={'/rewards/pay-now'}>
+          <Action
+            className="WalletSidebar__transfer"
+            primary
+            onClick={() => openTransfer(name, payable, 'SBD')}
+          >
             {intl.formatMessage({
-              id: 'payment_page_pay_now',
-              defaultMessage: 'Pay now',
+              id: 'pay',
+              defaultMessage: 'Pay',
             })}
-            (mock)
-          </Link>
+            {` ${payable} SBD`}
+          </Action>
         </div>
       </div>
       <div className="Payment__information-row">
@@ -75,6 +86,12 @@ Payment.propTypes = {
   intl: PropTypes.shape().isRequired,
   match: PropTypes.shape().isRequired,
   userName: PropTypes.string.isRequired,
+  openTransfer: PropTypes.func.isRequired,
 };
 
-export default injectIntl(Payment);
+export default injectIntl(
+  connect(
+    null,
+    { openTransfer },
+  )(Payment),
+);
