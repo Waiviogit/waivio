@@ -29,11 +29,20 @@ export const ADD_MORE_ACTIONS_TO_CURRENT_DISPLAYED_ACTIONS =
 export const UPDATE_FILTERED_ACTIONS = '@users/UPDATE_FILTERED_ACTIONS';
 export const LOADING_MORE_USERS_ACCOUNT_HISTORY = '@users/LOADING_MORE_USERS_ACCOUNT_HISTORY';
 
-export const openTransfer = createAction(OPEN_TRANSFER);
 export const closeTransfer = createAction(CLOSE_TRANSFER);
 
 export const openPowerUpOrDown = createAction(OPEN_POWER_UP_OR_DOWN);
 export const closePowerUpOrDown = createAction(CLOSE_POWER_UP_OR_DOWN);
+
+export const openTransfer = (userName, amount = 0, currency = 'STEEM') => dispatch =>
+  dispatch({
+    type: OPEN_TRANSFER,
+    payload: {
+      userName,
+      amount,
+      currency,
+    },
+  });
 
 const getParsedUserActions = userActions => {
   const userWalletTransactions = [];

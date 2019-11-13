@@ -745,6 +745,7 @@
   "debts_payables": "Payables",
   "debts_total": "Total",
   "debts_pay_all": "Pay all",
+  "pay": "Pay",
   "payment_card_pay_now": "Pay now",
   "payment_page_transfers_with_hashtag_included": "Only transfer with hashtag \"#waivio\" are included",
   "payment_page_payables": "Payables",
