@@ -62,7 +62,7 @@ const ObjectFilterBlock = ({ username, ...props }) => {
             <div className="ObjectFilterBlock__more" onClick={showMoreHandler} role="presentation">
               <FormattedMessage id="show_more" defaultMessage="Show more" />
               <div className={classNames('ObjectFilterBlock__more-icon', { loading: isLoading })}>
-                <Icon type="loading" style={{ fontSize: 18 }} spin />;
+                <Icon type="loading" style={{ fontSize: 18 }} spin />
               </div>
             </div>
           </React.Fragment>
