@@ -1,4 +1,8 @@
-import { getIsAuthenticated, getAuthenticatedUserName } from '../reducers';
+import {
+  getIsAuthenticated,
+  getAuthenticatedUserName,
+  getFollowingUpdatesFetched,
+} from '../reducers';
 import { getAllFollowing } from '../helpers/apiHelpers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -7,6 +11,7 @@ import { rewardPostContainerData } from '../rewards/rewardsHelper';
 
 require('isomorphic-fetch');
 
+// region Followings
 export const FOLLOW_USER = '@user/FOLLOW_USER';
 export const FOLLOW_USER_START = '@user/FOLLOW_USER_START';
 export const FOLLOW_USER_SUCCESS = '@user/FOLLOW_USER_SUCCESS';
@@ -29,19 +34,6 @@ export const followUser = username => (dispatch, getState, { steemConnectAPI }) 
     },
   });
 };
-
-export const GET_RECOMMENDED_OBJECTS = '@user/GET_RECOMMENDED_OBJECTS';
-export const GET_RECOMMENDED_OBJECTS_START = '@user/GET_RECOMMENDED_OBJECTS_START';
-export const GET_RECOMMENDED_OBJECTS_SUCCESS = '@user/GET_RECOMMENDED_OBJECTS_SUCCESS';
-export const GET_RECOMMENDED_OBJECTS_ERROR = '@user/GET_RECOMMENDED_OBJECTS_ERROR';
-
-export const getRecommendedObj = () => dispatch =>
-  dispatch({
-    type: GET_RECOMMENDED_OBJECTS,
-    payload: {
-      promise: ApiClient.getRecommendedObjects(),
-    },
-  });
 
 export const UNFOLLOW_USER = '@user/UNFOLLOW_USER';
 export const UNFOLLOW_USER_START = '@user/UNFOLLOW_USER_START';
@@ -110,6 +102,36 @@ export const getFollowingObjects = username => (dispatch, getState) => {
   });
 };
 
+export const GET_FOLLOWING_UPDATES = createAsyncActionType('@user/GET_FOLLOWING_UPDATES');
+export const getFollowingUpdates = (count = 5) => (dispatch, getState) => {
+  const state = getState();
+  const isUpdatesFetched = getFollowingUpdatesFetched(state);
+  const userName = getAuthenticatedUserName(state);
+  if (!isUpdatesFetched && userName) {
+    dispatch({
+      type: GET_FOLLOWING_UPDATES.ACTION,
+      payload: {
+        promise: ApiClient.getFollowingUpdates(userName, count),
+      },
+    });
+  }
+};
+
+// endregion
+
+export const GET_RECOMMENDED_OBJECTS = '@user/GET_RECOMMENDED_OBJECTS';
+export const GET_RECOMMENDED_OBJECTS_START = '@user/GET_RECOMMENDED_OBJECTS_START';
+export const GET_RECOMMENDED_OBJECTS_SUCCESS = '@user/GET_RECOMMENDED_OBJECTS_SUCCESS';
+export const GET_RECOMMENDED_OBJECTS_ERROR = '@user/GET_RECOMMENDED_OBJECTS_ERROR';
+
+export const getRecommendedObj = () => dispatch =>
+  dispatch({
+    type: GET_RECOMMENDED_OBJECTS,
+    payload: {
+      promise: ApiClient.getRecommendedObjects(),
+    },
+  });
+
 export const GET_NOTIFICATIONS = createAsyncActionType('@user/GET_NOTIFICATIONS');
 
 export const getNotifications = username => (dispatch, getState, { busyAPI }) => {
@@ -138,6 +160,7 @@ export const getCoordinates = () => dispatch =>
     payload: getUserCoordinatesByIpAdress(),
   });
 
+// region Campaigns
 export const assignProposition = ({ companyAuthor, companyPermlink, resPermlink, objPermlink }) => (
   dispatch,
   getState,
@@ -258,3 +281,4 @@ export const inactivateCampaign = (company, inactivatePermlink) => (
       .catch(error => reject(error));
   });
 };
+// endregion

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import * as authActions from '../auth/authActions';
 import * as userActions from './userActions';
 import * as wobjActions from '../object/wobjActions';
 import * as appTypes from '../app/appActions';
@@ -15,6 +16,15 @@ const initialState = {
   followingObjects: {
     list: [],
     pendingFollows: [],
+    isFetching: false,
+    fetched: false,
+  },
+  followingUpdates: {
+    usersUpdates: {
+      hasMore: false,
+      users: [],
+    },
+    objectsUpdates: [],
     isFetching: false,
     fetched: false,
   },
@@ -146,6 +156,36 @@ export default function userReducer(state = initialState, action) {
         },
       };
 
+    case userActions.GET_FOLLOWING_UPDATES.START:
+      return {
+        ...state,
+        followingUpdates: {
+          ...state.followingUpdates,
+          isFetching: true,
+          fetched: false,
+        },
+      };
+    case userActions.GET_FOLLOWING_UPDATES.SUCCESS: {
+      const { users_updates: usersUpdates, wobjects_updates: objectsUpdates } = action.payload;
+      return {
+        ...state,
+        followingUpdates: {
+          usersUpdates,
+          objectsUpdates,
+          isFetching: false,
+          fetched: true,
+        },
+      };
+    }
+    case authActions.LOGOUT:
+    case userActions.GET_FOLLOWING_UPDATES.ERROR: {
+      const { followingUpdates } = initialState;
+      return {
+        ...state,
+        followingUpdates,
+      };
+    }
+
     case wobjActions.FOLLOW_WOBJECT_START:
     case wobjActions.UNFOLLOW_WOBJECT_START:
       return {
@@ -238,3 +278,5 @@ export const getIsLoadingNotifications = state => state.loadingNotifications;
 export const getFetchFollowListError = state => state.fetchFollowListError;
 export const getLatestNotification = state => state.latestNotification;
 export const getUserLocation = state => state.location;
+export const getFollowingUpdatesFetched = state =>
+  _.get(state, ['followingUpdates', 'fetched'], false);

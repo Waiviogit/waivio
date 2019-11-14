@@ -61,6 +61,7 @@ export const getObject = (authorPermlink, username) => {
 export const getUsersByObject = object =>
   fetch(`${config.apiPrefix}${config.getObjects}/${object}`).then(res => res.json());
 
+// region Feed requests
 export const getFeedContentByObject = (name, limit = 10, user_languages) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${name}/posts`, {
@@ -121,36 +122,12 @@ export const getUserProfileBlog = (
       .catch(error => reject(error));
   });
 
-export const postCreateWaivioObject = requestBody =>
-  new Promise((resolve, reject) => {
-    fetch(`${config.objectsBotApiPrefix}${config.objectsBot.createObject}`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(requestBody),
-    })
-      .then(handleErrors)
-      .then(res => res.json())
-      .then(result => resolve(result))
-      .catch(error => reject(error));
-  });
-
 export const getUserFeedContent = (feedUserName, limit = 10, user_languages) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${feedUserName}${config.feed}`, {
       headers,
       method: 'POST',
       body: JSON.stringify({ limit, user_languages }),
-    })
-      .then(res => res.json())
-      .then(posts => resolve(posts))
-      .catch(error => reject(error));
-  });
-
-export const getContent = (author, permlink) =>
-  new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.post}/${author}/${permlink}`, {
-      headers,
-      method: 'GET',
     })
       .then(res => res.json())
       .then(posts => resolve(posts))
@@ -167,6 +144,31 @@ export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0, user_la
         limit,
         user_languages,
       }),
+    })
+      .then(res => res.json())
+      .then(posts => resolve(posts))
+      .catch(error => reject(error));
+  });
+// endregion
+
+export const postCreateWaivioObject = requestBody =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.objectsBotApiPrefix}${config.objectsBot.createObject}`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(requestBody),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getContent = (author, permlink) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.post}/${author}/${permlink}`, {
+      headers,
+      method: 'GET',
     })
       .then(res => res.json())
       .then(posts => resolve(posts))
@@ -222,6 +224,7 @@ export const postAppendWaivioObject = postData =>
       .catch(error => reject(error));
   });
 
+// region Follow API requests
 export const getAllFollowingObjects = username =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${username}`)
@@ -243,9 +246,9 @@ export const getWobjectFollowers = (wobject, skip = 0, limit = 50) =>
       .catch(error => reject(error));
   });
 
-export const getWobjectFollowing = (wobject, skip = 0, limit = 50) =>
+export const getWobjectFollowing = (userName, skip = 0, limit = 50) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.user}/${wobject}${config.followingObjects}`, {
+    fetch(`${config.apiPrefix}${config.user}/${userName}${config.followingObjects}`, {
       headers,
       method: 'POST',
       body: JSON.stringify({ skip, limit }),
@@ -272,6 +275,22 @@ export const getAccountWithFollowingCount = username =>
       follower_count: following.follower_count,
     }),
   );
+
+export const getFollowingUpdates = (userName, count = 5) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.apiPrefix}${config.user}/${userName}${config.followingUpdates}?users_count=${count}&wobjects_count=${count}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+// endregion
 
 export const getWobjectGallery = wobject =>
   new Promise((resolve, reject) => {
