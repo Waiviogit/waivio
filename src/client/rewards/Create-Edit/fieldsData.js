@@ -1,4 +1,4 @@
-export default (messageFactory, validators) => ({
+export default (messageFactory, validators, userName) => ({
   campaignName: {
     name: 'campaignName',
     label: messageFactory('campaign_name', 'campaign name'),
@@ -79,9 +79,9 @@ export default (messageFactory, validators) => ({
     name: 'sponsorsList',
     label: messageFactory(
       'registered_upvoting_accounts_ext',
-      'Registered upvoting accounts besides @sponsor (optional, up to 5)',
+      `Registered upvoting accounts besides @${userName} (optional, up to 5)`,
     ),
-    placeholder: messageFactory('sponsor_auto_complete_placeholder', 'Find sponsor'),
+    placeholder: messageFactory('sponsor_auto_complete_placeholder', 'Find user'),
     caption: messageFactory(
       'value_of_upvotes_can_be_accumulated_on_compensation_account',
       'The value of upvotes can be accumulated on a dedicated compensation account',
@@ -90,10 +90,7 @@ export default (messageFactory, validators) => ({
   compensationAccount: {
     name: 'compensationAccount',
     label: messageFactory('compensation_account_optional', 'Compensation account (optional)'),
-    placeholder: messageFactory(
-      'compensation_account_auto_complete_placeholder',
-      'Find compensation account',
-    ),
+    placeholder: messageFactory('compensation_account_auto_complete_placeholder', 'Find user'),
     caption: messageFactory(
       'accumulates_value_of_upvotes_from_registered_upvoting_accounts',
       'Accumulates the value of upvotes from registered upvoting accounts',

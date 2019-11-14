@@ -58,7 +58,7 @@ const CreateFormRenderer = props => {
     primaryObject,
     secondaryObjectsList,
   );
-  const fields = fieldsData(handlers.messageFactory, validators);
+  const fields = fieldsData(handlers.messageFactory, validators, user.name);
 
   const disabled = isCampaignActive || loading;
 
