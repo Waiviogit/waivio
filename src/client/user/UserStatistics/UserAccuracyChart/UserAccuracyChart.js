@@ -82,7 +82,7 @@ UserAccuracyChart.propTypes = {
   statisticsData: PropTypes.shape().isRequired,
   setForecastAccuracyChartCondition: PropTypes.func.isRequired,
   isChart: PropTypes.bool.isRequired,
-  setAccuracyChartLoaded: PropTypes.func.isRequired
+  setAccuracyChartLoaded: PropTypes.func.isRequired,
 };
 
 export default connect(
