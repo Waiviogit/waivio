@@ -1,23 +1,68 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { injectIntl } from 'react-intl';
-import { getAuthenticatedUserName } from '../../../reducers';
+import * as store from '../../../reducers';
 import { getFollowingUpdates } from '../../../user/userActions';
+import SidebarMenu from '../SidebarMenu/SidebarMenu';
+import { getClientWObj } from '../../../adapters';
 
 const itemsCount = 5;
+function buildFollowingUpdatesMenuConfig(updates) {
+  const config = {};
+  const { usersUpdates, objectsUpdates } = updates;
+
+  if (usersUpdates.users && usersUpdates.users.length) {
+    config.People = {
+      name: 'People',
+      intlId: 'people',
+      isCollapsible: true,
+      isCollapsed: Boolean(usersUpdates.users[0].last_posts_count),
+      items: usersUpdates.users.map(followingUser => ({
+        name: `@${followingUser.name}`,
+        intlId: `@${followingUser.name}`,
+        linkTo: `/@${followingUser.name}`,
+      })),
+    };
+  }
+
+  if (objectsUpdates && objectsUpdates.length) {
+    objectsUpdates.forEach(objectsGroup => {
+      const { object_type: objType, related_wobjects: objects } = objectsGroup;
+      config[objType] = {
+        name: objType,
+        intlId: objType,
+        isCollapsible: true,
+        isCollapsed: false,
+        items: objects.map(followingObject => {
+          const clientObj = getClientWObj(followingObject);
+          return {
+            name: clientObj.name,
+            intlId: clientObj.name,
+            linkTo: `/object/${clientObj.id}`,
+          };
+        }),
+      };
+    });
+  }
+
+  return config;
+}
+
 const FollowingUpdates = () => {
   // redux store
   const dispatch = useDispatch();
-  const userName = useSelector(getAuthenticatedUserName);
+  const followingUpdates = useSelector(store.getFollowingUpdates);
+  const userName = useSelector(store.getAuthenticatedUserName);
 
   const dispatchGetFollowingUsersUpdates = () => dispatch(getFollowingUpdates(itemsCount));
   useEffect(dispatchGetFollowingUsersUpdates, [userName]);
 
-  return <div className="collapsible-block SidebarContentBlock__content">followings</div>;
+  const menuConfig = buildFollowingUpdatesMenuConfig(followingUpdates);
+
+  return userName ? <SidebarMenu menuConfig={menuConfig} /> : 'please log in';
 };
 
 FollowingUpdates.propTypes = {};
 
 FollowingUpdates.defaultProps = {};
 
-export default injectIntl(FollowingUpdates);
+export default FollowingUpdates;

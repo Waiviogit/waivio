@@ -278,5 +278,5 @@ export const getIsLoadingNotifications = state => state.loadingNotifications;
 export const getFetchFollowListError = state => state.fetchFollowListError;
 export const getLatestNotification = state => state.latestNotification;
 export const getUserLocation = state => state.location;
-export const getFollowingUpdatesFetched = state =>
-  _.get(state, ['followingUpdates', 'fetched'], false);
+export const getFollowingUpdates = state => state.followingUpdates;
+export const getFollowingUpdatesFetched = state => state.followingUpdates.fetched;
