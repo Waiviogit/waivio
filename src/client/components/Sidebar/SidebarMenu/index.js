@@ -1,6 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
 import SidebarMenu from './SidebarMenu';
 import FollowingUpdates from '../FollowingUpdates/FollowingUpdates';
+import { getIsAuthenticated } from '../../../reducers';
+import SteemConnect from '../../../steemConnectAPI';
 
 const menuSections = {
   STEEM: 'Steem',
@@ -58,12 +63,29 @@ const menuConfig = {
   },
 };
 
-const SidebarMenuContainer = props => (
-  <React.Fragment>
-    <SidebarMenu menuConfig={menuConfig} {...props} />
-    <div style={{ 'font-weight': 'bold', 'text-align': 'center' }}>***</div>
-    <FollowingUpdates />
-  </React.Fragment>
-);
+const SidebarMenuContainer = props => {
+  const isAuthenticated = useSelector(getIsAuthenticated);
+  const next = props.location.pathname.length > 1 ? props.location.pathname : '';
+  return (
+    <React.Fragment>
+      <SidebarMenu menuConfig={menuConfig} {...props} />
+      {isAuthenticated ? (
+        <FollowingUpdates />
+      ) : (
+        <div className="pt3">
+          <a href={SteemConnect.getLoginURL(next)}>
+            <FormattedMessage id="login" defaultMessage="Log in" />
+          </a>
+          &nbsp;
+          <FormattedMessage id="more_options" defaultMessage="for more options" />
+        </div>
+      )}
+    </React.Fragment>
+  );
+};
+
+SidebarMenuContainer.propTypes = {
+  location: PropTypes.shape().isRequired,
+};
 
 export default SidebarMenuContainer;

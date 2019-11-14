@@ -4,6 +4,7 @@ import * as store from '../../../reducers';
 import { getFollowingUpdates } from '../../../user/userActions';
 import SidebarMenu from '../SidebarMenu/SidebarMenu';
 import { getClientWObj } from '../../../adapters';
+import Loading from '../../Icon/Loading';
 
 const itemsCount = 5;
 function buildFollowingUpdatesMenuConfig(updates) {
@@ -58,7 +59,7 @@ const FollowingUpdates = () => {
 
   const menuConfig = buildFollowingUpdatesMenuConfig(followingUpdates);
 
-  return userName ? <SidebarMenu menuConfig={menuConfig} /> : 'please log in';
+  return followingUpdates.isFetching ? <Loading /> : <SidebarMenu menuConfig={menuConfig} />;
 };
 
 FollowingUpdates.propTypes = {};
