@@ -16,7 +16,7 @@ function buildFollowingUpdatesMenuConfig(updates) {
       name: 'People',
       intlId: 'people',
       isCollapsible: true,
-      isCollapsed: Boolean(usersUpdates.users[0].last_posts_count),
+      isCollapsed: !usersUpdates.users[0].last_posts_count,
       items: usersUpdates.users.map(followingUser => ({
         name: `@${followingUser.name}`,
         intlId: `@${followingUser.name}`,
@@ -33,7 +33,7 @@ function buildFollowingUpdatesMenuConfig(updates) {
         name: objType,
         intlId: objType,
         isCollapsible: true,
-        isCollapsed: false,
+        isCollapsed: !(objects[0] && objects[0].last_posts_count),
         items: objects.map(followingObject => {
           const clientObj = getClientWObj(followingObject);
           return {
