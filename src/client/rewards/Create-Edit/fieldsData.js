@@ -200,6 +200,19 @@ export default (messageFactory, validators) => ({
     ],
     caption: messageFactory('users_start_with_zero_posts', 'New users start with 0 posts'),
   },
+  eligibleDays: {
+    name: 'eligibleDays',
+    label: messageFactory('eligible_days', 'Eligible period (days)'),
+    rules: [
+      {
+        validator: validators.checkEligibilityPeriod,
+      },
+    ],
+    caption: messageFactory(
+      'restrictions_frequency_value_should_zero',
+      'If there are no restrictions on the frequency of reviews of the primary object by the same user, the value should be set to zero.',
+    ),
+  },
   legalInfo: {
     header: messageFactory('legal', 'Legal'),
     p_1: messageFactory(

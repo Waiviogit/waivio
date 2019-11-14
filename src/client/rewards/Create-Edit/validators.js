@@ -37,6 +37,10 @@ export const validatorMessagesCreator = messageFactory => ({
     'The expiry date must be after the current date',
   ),
   postsQuantity: messageFactory('not_less_zero_posts', 'Number of posts cannot be negative'),
+  eligibleQuantity: messageFactory(
+    'not_less_zero_eligibility_period',
+    'Eligibility period cannot be negative',
+  ),
   nameField: messageFactory(
     'not_valid_campaign_name',
     'Invalid campaign name. Only alphanumeric characters, hyphens, underscores and dots are allowed',
@@ -105,6 +109,11 @@ export const validatorsCreator = (
   checkPostsQuantity: (rule, value, callback) => {
     // eslint-disable-next-line no-unused-expressions
     value < 0 ? callback(messages.postsQuantity) : callback();
+  },
+
+  checkEligibilityPeriod: (rule, value, callback) => {
+    // eslint-disable-next-line no-unused-expressions
+    value < 0 ? callback(messages.eligibleQuantity) : callback();
   },
 
   checkNameFieldIsEmpty: (rule, value, callback) => {

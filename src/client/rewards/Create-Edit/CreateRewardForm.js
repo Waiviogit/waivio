@@ -169,6 +169,7 @@ class CreateRewardForm extends React.Component {
         minPosts: data.minPosts,
         minExpertise: data.minExpertise,
         minSteemReputation: data.minSteemReputation,
+        eligibleDays: data.eligibleDays,
       },
       usersLegalNotice: data.usersLegalNotice,
       commissionAgreement: data.commissionAgreement,

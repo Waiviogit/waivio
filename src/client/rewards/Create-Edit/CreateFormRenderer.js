@@ -27,6 +27,7 @@ const CreateFormRenderer = props => {
     minExpertise,
     minFollowers,
     minPosts,
+    eligibleDays,
     description,
     expiredAt,
     usersLegalNotice,
@@ -350,6 +351,14 @@ const CreateFormRenderer = props => {
           <div className="CreateReward__field-caption">{fields.minPosts.caption}</div>
         </Form.Item>
 
+        <Form.Item label={fields.eligibleDays.label}>
+          {getFieldDecorator(fields.eligibleDays.name, {
+            rules: fields.eligibleDays.rules,
+            initialValue: eligibleDays,
+          })(<Input type="number" disabled={disabled} />)}
+          <div className="CreateReward__field-caption">{fields.eligibleDays.caption}</div>
+        </Form.Item>
+
         <Form.Item>
           <h3 className="CreateReward header">{fields.legalInfo.header}</h3>
           <p>{fields.legalInfo.p_1}</p>
@@ -458,6 +467,7 @@ CreateFormRenderer.defaultProps = {
   minExpertise: 0,
   minFollowers: 0,
   minPosts: 0,
+  eligibleDays: 0,
   description: '',
   expiredAt: null,
   usersLegalNotice: '',
@@ -479,6 +489,7 @@ CreateFormRenderer.propTypes = {
   minExpertise: PropTypes.number,
   minFollowers: PropTypes.number,
   minPosts: PropTypes.number,
+  eligibleDays: PropTypes.number,
   description: PropTypes.string,
   expiredAt: PropTypes.shape(),
   usersLegalNotice: PropTypes.string,
