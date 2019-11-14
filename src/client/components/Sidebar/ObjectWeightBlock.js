@@ -62,7 +62,7 @@ class ObjectWeightBlock extends React.Component {
             <React.Fragment>
               <h4 className="ObjectWeightBlock__more">
                 <Link to={`/@${username}/expertise`}>
-                  <FormattedMessage id="show_more" defaultMessage="Show more" />
+                  <FormattedMessage id="show_all" defaultMessage="Show all" />
                 </Link>
               </h4>
             </React.Fragment>

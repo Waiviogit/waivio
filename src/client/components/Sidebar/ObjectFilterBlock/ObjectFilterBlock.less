@@ -9,6 +9,7 @@
   &__checkbox-wrap {
     display: flex;
     align-items: center;
+    max-width: 195px;
 
     &-item {
       margin-right: 1rem;
@@ -38,4 +39,27 @@
 
 .ObjectFilterCard:first-child > .ObjectFilterCard__count {
   margin-bottom: 1rem;
+}
+
+.ObjectFilterBlock {
+  &__more {
+    display: flex;
+    padding-top: 14px;
+    color: @blue-botticelli;
+    font-weight: 500;
+
+    &-icon {
+      margin-left: 5px;
+      display: none;
+    }
+
+    &:hover {
+      cursor: pointer;
+      color: @orange-hot;
+    }
+  }
+}
+
+.ObjectFilterBlock__more-icon.loading {
+  display: block;
 }
