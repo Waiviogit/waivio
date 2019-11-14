@@ -20,6 +20,7 @@ function buildFollowingUpdatesMenuConfig(updates) {
       items: usersUpdates.users.map(followingUser => ({
         name: `@${followingUser.name}`,
         intlId: `@${followingUser.name}`,
+        meta: followingUser.last_posts_count > 0 ? followingUser.last_posts_count : '',
         linkTo: `/@${followingUser.name}`,
       })),
     };
@@ -38,6 +39,7 @@ function buildFollowingUpdatesMenuConfig(updates) {
           return {
             name: clientObj.name,
             intlId: clientObj.name,
+            meta: clientObj.last_posts_count > 0 ? clientObj.last_posts_count : '',
             linkTo: `/object/${clientObj.id}`,
           };
         }),

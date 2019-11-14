@@ -84,7 +84,10 @@ const SidebarMenu = ({ intl, menuConfig }) => {
               activeClassName="Sidenav__item--active"
               disabled={Boolean(sectionItem.disabled)}
             >
-              <FormattedMessage id={sectionItem.intlId} defaultMessage={sectionItem.name} />
+              <span className="flex justify-between">
+                <FormattedMessage id={sectionItem.intlId} defaultMessage={sectionItem.name} />
+                {sectionItem.meta ? <span>+{sectionItem.meta}</span> : null}
+              </span>
             </NavLink>
           </li>
         ) : null;
