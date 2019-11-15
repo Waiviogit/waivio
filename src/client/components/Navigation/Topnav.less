@@ -6,12 +6,14 @@
 
 .Topnav {
   position: relative;
+  top: 0;
   background-color: @white-ghostWhite;
   height: 144px;
   line-height: 52px;
   border-bottom: none;
   padding: 0 10px;
   box-shadow: 0 2px 8px @normal-grey;
+  transition: top 0.4s;
   @media @xsmall {
     background-color: #000;
     height: 96px;
@@ -269,6 +271,11 @@
     align-items: center;
     font-size: x-large;
     font-weight: bold;
+
+    & > img {
+      width: 29px;
+      height: 29px;
+    }
   }
 
   &__icon-broker {
@@ -697,6 +704,10 @@ div[data-dir='rtl'] .Topnav {
   @media @small {
     height: 96px;
   }
+}
+
+.top-hidden {
+  top: -45px;
 }
 
 .left {
