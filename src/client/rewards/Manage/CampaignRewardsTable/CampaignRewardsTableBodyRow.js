@@ -20,24 +20,20 @@ const CampaignRewardsTableRow = ({
 }) => {
   const [isModalOpen, toggleModal] = useState(false);
   const [isLoading, setLoad] = useState(false);
+  const [activationStatus, setActivationStatus] = useState('');
+  const [activationPermlink, setActivationPermlink] = useState('');
   const isChecked = currentItem.status === 'active' || currentItem.status === 'payed';
   const isInactive = currentItem.status === 'inactive';
-  const activationCampaignData = {
-    // eslint-disable-next-line no-underscore-dangle
-    campaign_id: currentItem._id,
-    guide_name: userName,
-    permlink: `activate-${rewardPostContainerData.author}-${generatePermlink()}`,
-  };
-
-  const inactivationCampaignData = {
-    // eslint-disable-next-line no-underscore-dangle
-    campaign_permlink: currentItem.activation_permlink,
-    guide_name: userName,
-    // eslint-disable-next-line no-underscore-dangle
-    permlink: `deactivation-${currentItem._id}-${generatePermlink()}`,
-  };
 
   const activateCamp = () => {
+    const generatedPermlink = `activate-${rewardPostContainerData.author}-${generatePermlink()}`;
+    setActivationPermlink(generatedPermlink);
+    const activationCampaignData = {
+      // eslint-disable-next-line no-underscore-dangle
+      campaign_id: currentItem._id,
+      guide_name: userName,
+      permlink: generatedPermlink,
+    };
     setLoad(true);
     validateActivationCampaign(activationCampaignData)
       .then(() => {
@@ -45,6 +41,7 @@ const CampaignRewardsTableRow = ({
           toggleModal(false);
           message.success(`Campaign '${currentItem.name}' - has been activated`);
           setLoad(false);
+          setActivationStatus('activated');
         });
       })
       .catch(() => {
@@ -54,13 +51,24 @@ const CampaignRewardsTableRow = ({
   };
 
   const inactivateCamp = () => {
+    const itemOnInactivate = currentItem.activation_permlink
+      ? { ...currentItem }
+      : { ...currentItem, activation_permlink: activationPermlink };
+    const inactivationCampaignData = {
+      // eslint-disable-next-line no-underscore-dangle
+      campaign_permlink: currentItem.activation_permlink || activationPermlink,
+      guide_name: userName,
+      // eslint-disable-next-line no-underscore-dangle
+      permlink: `deactivation-${currentItem._id}-${generatePermlink()}`,
+    };
     setLoad(true);
     validateInactivationCampaign(inactivationCampaignData)
       .then(() => {
-        inactivateCampaign(currentItem, inactivationCampaignData.permlink).then(() => {
+        inactivateCampaign(itemOnInactivate, inactivationCampaignData.permlink).then(() => {
           toggleModal(false);
           message.success(`Campaign '${currentItem.name}' - has been inactivated`);
           setLoad(false);
+          setActivationStatus('inactivated');
         });
       })
       .catch(() => {
@@ -83,7 +91,11 @@ const CampaignRewardsTableRow = ({
     <React.Fragment>
       <tr>
         <td>
-          <Checkbox checked={isChecked} onChange={handleChangeCheckbox} disabled={isInactive} />
+          <Checkbox
+            checked={activationStatus ? activationStatus === 'activated' : isChecked}
+            onChange={handleChangeCheckbox}
+            disabled={activationStatus ? activationStatus === 'inactivated' : isInactive}
+          />
         </td>
         <td>{currentItem.name}</td>
         <td>
@@ -99,7 +111,15 @@ const CampaignRewardsTableRow = ({
             </Link>
           )}
         </td>
-        <td>{currentItem.status}</td>
+
+        <td>
+          {/* eslint-disable-next-line no-nested-ternary */
+          activationStatus
+            ? activationStatus === 'activated'
+              ? intl.formatMessage({ id: 'manage_page_active', defaultMessage: 'Active' })
+              : intl.formatMessage({ id: 'manage_page_inactive', defaultMessage: 'Inactive' })
+            : currentItem.status}
+        </td>
         <td>{currentItem.type}</td>
         <td className="Campaign-rewards hide-element">{currentItem.budget.toFixed(2)}</td>
         <td className="Campaign-rewards hide-element">{currentItem.reward.toFixed(2)}</td>
@@ -110,7 +130,7 @@ const CampaignRewardsTableRow = ({
       <Modal
         closable
         title={
-          !isChecked
+          !(activationStatus ? activationStatus === 'activated' : isChecked)
             ? intl.formatMessage({
                 id: 'activate_campaign',
                 defaultMessage: `Activate rewards campaign`,
@@ -122,7 +142,11 @@ const CampaignRewardsTableRow = ({
         }
         maskClosable={false}
         visible={isModalOpen}
-        onOk={!isChecked ? activateCamp : inactivateCamp}
+        onOk={
+          !(activationStatus ? activationStatus === 'activated' : isChecked)
+            ? activateCamp
+            : inactivateCamp
+        }
         okButtonProps={{ disabled: isLoading, loading: isLoading }}
         cancelButtonProps={{ disabled: isLoading }}
         onCancel={() => {
