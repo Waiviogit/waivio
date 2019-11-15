@@ -1,7 +1,7 @@
-@import (reference) '../../../styles/modules/variables.less';
-@import (reference) '../../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
 
-.UserPayableCard {
+.PaymentCard {
   display: flex;
   align-items: center;
   border: 1px solid @white-gainsboro;
@@ -22,6 +22,7 @@
       }
       &-row {
         display: flex;
+        align-items: center;
         font-size: medium;
         &-name {
           font-weight: 500;
@@ -53,8 +54,19 @@
       font-size: medium;
       font-weight: 500;
     }
+    &-icon > img {
+      height: 25px;
+      width: 25px;
+    }
   }
 }
-.UserPayableCard__end-wrap-icon :hover {
+
+.PaymentCard__end-wrap-icon :hover {
   cursor: pointer;
 }
+
+.WalletSidebar__transfer {
+  margin-bottom: 0;
+}
+
+@import 'PaymentCard-nightmode';

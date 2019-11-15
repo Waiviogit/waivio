@@ -35,10 +35,7 @@ export const login = () => (dispatch, getState, { steemConnectAPI, waivioAPI }) 
     promise = new Promise(async (resolve, reject) => {
       try {
         const scUserData = await steemConnectAPI.me();
-        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(
-          scUserData.name,
-          steemConnectAPI.options.accessToken,
-        );
+        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
         resolve({ ...scUserData, userMetaData });
       } catch (e) {
         reject(e);

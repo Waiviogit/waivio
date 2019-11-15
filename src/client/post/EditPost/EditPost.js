@@ -6,14 +6,15 @@ import { injectIntl } from 'react-intl';
 import { Badge } from 'antd';
 import { debounce, has, kebabCase, throttle, uniqBy } from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
+import { getCampaignById } from '../../../waivioApi/ApiClient';
 import {
   getAuthenticatedUser,
-  getLocale,
   getDraftPosts,
   getIsEditorLoading,
   getIsEditorSaving,
   getIsImageUploading,
   getUpvoteSetting,
+  getSuitableLanguage,
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
 import { createPostMetadata, splitPostContent, getInitialState } from '../../helpers/postHelpers';
@@ -39,11 +40,12 @@ const getLinkedObjects = contentStateRaw => {
 @connect(
   (state, props) => ({
     user: getAuthenticatedUser(state),
-    locale: getLocale(state),
+    locale: getSuitableLanguage(state),
     draftPosts: getDraftPosts(state),
     publishing: getIsEditorLoading(state),
     saving: getIsEditorSaving(state),
     imageLoading: getIsImageUploading(state),
+    campaignId: new URLSearchParams(props.location.search).get('campaign'),
     draftId: new URLSearchParams(props.location.search).get('draft'),
     initObjects: new URLSearchParams(props.location.search).getAll('object'),
     upvoteSetting: getUpvoteSetting(state),
@@ -57,8 +59,10 @@ class EditPost extends Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
+    userName: PropTypes.string.isRequired,
     locale: PropTypes.string.isRequired,
     draftPosts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+    campaignId: PropTypes.string, // eslint-disable-line
     draftId: PropTypes.string,
     publishing: PropTypes.bool,
     saving: PropTypes.bool,
@@ -68,6 +72,7 @@ class EditPost extends Component {
   };
   static defaultProps = {
     upvoteSetting: false,
+    campaignId: '',
     draftId: '',
     publishing: false,
     saving: false,
@@ -100,6 +105,15 @@ class EditPost extends Component {
       return nextState;
     }
     return null;
+  }
+
+  componentDidMount() {
+    const { campaign } = this.state;
+    if (campaign && campaign.id) {
+      getCampaignById(campaign.id)
+        .then(campaignData => this.setState({ campaign: { ...campaignData, fetched: true } }))
+        .catch(error => console.log('Failed to get campaign data:', error));
+    }
   }
 
   handleChangeContent(rawContent) {
@@ -138,6 +152,7 @@ class EditPost extends Component {
   buildPost() {
     const {
       draftId,
+      campaign,
       parentPermlink,
       content,
       topics,
@@ -158,6 +173,13 @@ class EditPost extends Component {
       draftId,
       ...settings,
     };
+
+    if (campaign && campaign.alias) {
+      postData.body += `\n***\n${this.props.intl.formatMessage({
+        id: `check_review_post_add_text`,
+        defaultMessage: 'This review was sponsored in part by',
+      })} ${campaign.alias} ([@${campaign.guideName}](/@${campaign.guideName}))`;
+    }
 
     postData.parentAuthor = '';
     postData.parentPermlink = parentPermlink;
@@ -211,6 +233,7 @@ class EditPost extends Component {
       linkedObjects,
       objPercentage,
       settings,
+      campaign,
       isUpdating,
     } = this.state;
     const { saving, publishing, imageLoading, locale, draftPosts } = this.props;
@@ -221,7 +244,7 @@ class EditPost extends Component {
             <Editor
               enabled={!imageLoading}
               initialContent={draftContent}
-              locale={locale === 'auto' ? 'en-US' : locale}
+              locale={locale}
               onChange={this.handleChangeContent}
             />
             {draftPosts.some(d => d.draftId === this.state.draftId) && (
@@ -239,6 +262,11 @@ class EditPost extends Component {
               linkedObjects={linkedObjects}
               objPercentage={objPercentage}
               settings={settings}
+              reviewData={
+                campaign && campaign.fetched
+                  ? { campaign, reviewer: { name: this.props.userName } }
+                  : null
+              }
               isPublishing={publishing}
               isUpdating={isUpdating}
               onTopicsChange={this.handleTopicsChange}

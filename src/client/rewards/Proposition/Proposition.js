@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -16,6 +16,7 @@ import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { reserveActivatedCampaign } from '../../../waivioApi/ApiClient';
 import { rejectReservationCampaign } from '../../../waivioApi/ApiClient';
 import { generatePermlink } from '../../helpers/wObjectHelper';
+import { UsedLocaleContext } from '../../Wrapper';
 import './Proposition.less';
 
 const Proposition = ({
@@ -32,7 +33,8 @@ const Proposition = ({
   getSingleComment,
   authorizedUserName,
 }) => {
-  const proposedWobj = getClientWObj(wobj);
+  const usedLocale = useContext(UsedLocaleContext);
+  const proposedWobj = getClientWObj(wobj, usedLocale);
   const requiredObjectName = getFieldWithMaxWeight(
     proposition.required_object,
     'name',
@@ -56,12 +58,6 @@ const Proposition = ({
     };
     rejectReservationCampaign(rejectData)
       .then(() => {
-        message.success(
-          intl.formatMessage({
-            id: 'discarded_successfully',
-            defaultMessage: 'Discarded successfully',
-          }),
-        );
         discardProposition({
           companyAuthor: proposition.guide.name,
           companyPermlink: proposition.activation_permlink,
@@ -96,12 +92,6 @@ const Proposition = ({
     };
     reserveActivatedCampaign(reserveData)
       .then(() => {
-        message.success(
-          intl.formatMessage({
-            id: 'assigned_successfully',
-            defaultMessage: 'Assigned successfully',
-          }),
-        );
         assignProposition({
           companyAuthor: proposition.guide.name,
           companyPermlink: proposition.activation_permlink,
@@ -115,8 +105,8 @@ const Proposition = ({
       .catch(() => {
         message.error(
           intl.formatMessage({
-            id: 'cannot_activate_company',
-            defaultMessage: 'You cannot activate the company at the moment',
+            id: 'cannot_reserve_company',
+            defaultMessage: 'You cannot reserve the campaign at the moment',
           }),
         );
       });
@@ -150,7 +140,7 @@ const Proposition = ({
                 proposition.guide.name
               } (${intl.formatMessage({
                 id: 'paid',
-                defaultMessage: `paid`,
+                defaultMessage: `Total paid`,
               })} $${proposition.guide.total_payed})`}</div>
             </Link>
           </div>

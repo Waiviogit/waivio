@@ -11,7 +11,7 @@ import { getClientWObj } from '../../adapters';
 import { getInnerFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { mapFields, objectFields } from '../../../common/constants/listOfFields';
 import Loading from '../Icon/Loading';
-import { getIsMapModalOpen } from '../../reducers';
+import { getIsMapModalOpen, getSuitableLanguage } from '../../reducers';
 import { setMapFullscreenMode } from './mapActions';
 import './Map.less';
 
@@ -22,6 +22,7 @@ const defaultCoords = {
 @connect(
   state => ({
     isFullscreenMode: getIsMapModalOpen(state),
+    usedLocale: getSuitableLanguage(state),
   }),
   {
     setMapFullscreenMode,
@@ -81,7 +82,7 @@ class MapOS extends React.Component {
       : null;
 
   getOverlayLayout = () => {
-    const wobj = getClientWObj(this.state.infoboxData.wobject);
+    const wobj = getClientWObj(this.state.infoboxData.wobject, this.props.usedLocale);
     return (
       <Overlay anchor={this.state.infoboxData.coordinates} offset={[-12, 35]}>
         <div role="presentation" className="MapOS__overlay-wrap">
@@ -208,6 +209,7 @@ MapOS.propTypes = {
   userLocation: PropTypes.shape(),
   wobjects: PropTypes.arrayOf(PropTypes.shape()),
   customControl: PropTypes.node,
+  usedLocale: PropTypes.string,
   onCustomControlClick: PropTypes.func,
   setArea: PropTypes.func,
   setMapFullscreenMode: PropTypes.func,
@@ -221,6 +223,7 @@ MapOS.defaultProps = {
   heigth: 200,
   userLocation: {},
   customControl: null,
+  usedLocale: 'en-US',
   setArea: () => {},
   setMapFullscreenMode: () => {},
   onCustomControlClick: () => {},

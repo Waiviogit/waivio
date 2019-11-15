@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { Button, Form, Input, message, Select, Avatar, Rate, Icon } from 'antd';
 import { fieldsRules } from './const/appendFormConstants';
 import apiConfig from '../../waivioApi/config.json';
@@ -29,19 +29,17 @@ import {
   getObject,
   getRewardFund,
   getRate,
-  getAuthenticatedUser,
   getVotingPower,
   getVotePercent,
   getFollowingObjectsList,
-  getScreenSize,
+  getSuitableLanguage,
 } from '../reducers';
 import LANGUAGES from '../translations/languages';
 import { PRIMARY_COLOR } from '../../common/constants/waivio';
 import { getLanguageText } from '../translations';
 import QuickPostEditorFooter from '../components/QuickPostEditor/QuickPostEditorFooter';
 import MapAppendObject from '../components/Maps/MapAppendObject';
-import './AppendForm.less';
-import { getField } from '../objects/WaivioObject';
+import { getField } from '../helpers/wObjectHelper';
 import { appendObject } from '../object/appendActions';
 import { isValidImage } from '../helpers/image';
 import withEditor from '../components/Editor/withEditor';
@@ -57,47 +55,52 @@ import SearchObjectsAutocomplete from '../components/EditorObject/SearchObjectsA
 import ObjectCardView from '../objectCard/ObjectCardView';
 import { getNewsFilterLayout } from './NewsFilter/newsFilterHelper';
 import CreateObject from '../post/CreateObjectModal/CreateObject';
+import { baseUrl } from '../../waivioApi/routes';
+import './AppendForm.less';
 
 @connect(
   state => ({
-    user: getAuthenticatedUser(state),
     wObject: getObject(state),
     rewardFund: getRewardFund(state),
     rate: getRate(state),
     sliderMode: getVotingPower(state),
     defaultVotePercent: getVotePercent(state),
     followingList: getFollowingObjectsList(state),
-    screenSize: getScreenSize(state),
+    usedLocale: getSuitableLanguage(state),
   }),
   { appendObject, followObject, rateObject },
 )
-@injectIntl
 @Form.create()
 @withEditor
 export default class AppendForm extends Component {
   static propTypes = {
-    currentField: PropTypes.string,
-    currentLocale: PropTypes.string,
-    hideModal: PropTypes.func,
+    /* decorators */
+    form: PropTypes.shape(),
+    user: PropTypes.shape(),
     onImageUpload: PropTypes.func,
     onImageInvalid: PropTypes.func,
+    /* from connect */
     wObject: PropTypes.shape(),
-    form: PropTypes.shape(),
-    appendObject: PropTypes.func,
-    followObject: PropTypes.func,
-    intl: PropTypes.shape(),
-    user: PropTypes.shape(),
     rewardFund: PropTypes.shape(),
     rate: PropTypes.number,
     sliderMode: PropTypes.bool,
     defaultVotePercent: PropTypes.number.isRequired,
     followingList: PropTypes.arrayOf(PropTypes.string),
+    appendObject: PropTypes.func,
+    followObject: PropTypes.func,
     rateObject: PropTypes.func,
+    usedLocale: PropTypes.string,
+    /* passed props */
+    chosenLocale: PropTypes.string,
+    currentField: PropTypes.string,
+    hideModal: PropTypes.func,
+    intl: PropTypes.shape(),
   };
 
   static defaultProps = {
+    chosenLocale: '',
     currentField: 'auto',
-    currentLocale: 'en-US',
+    usedLocale: 'en-US',
     currentUsername: '',
     hideModal: () => {},
     onImageUpload: () => {},
@@ -214,7 +217,6 @@ export default class AppendForm extends Component {
     const { getFieldValue } = this.props.form;
     const { body, preview, currentField, currentLocale, like, follow, ...rest } = formValues;
 
-    const locale = currentLocale === 'auto' ? 'en-US' : currentLocale;
     let fieldBody = [];
     const postData = [];
 
@@ -264,7 +266,7 @@ export default class AppendForm extends Component {
     }
 
     const getAppendMsg = (author, appendValue) => {
-      const langReadable = _.filter(LANGUAGES, { id: locale })[0].name;
+      const langReadable = _.filter(LANGUAGES, { id: currentLocale })[0].name;
       switch (currentField) {
         case objectFields.avatar:
         case objectFields.background:
@@ -282,6 +284,30 @@ export default class AppendForm extends Component {
           return `@${author} added ${currentField} (${langReadable}):\n[${displayName}](${objectUrl})${
             alias ? ` as "${alias}"` : ''
           }`;
+        }
+        case objectFields.newsFilter: {
+          let rulesAllow = `\n`;
+          let rulesIgnore = '\nIgnore list:';
+          let rulesCounter = 0;
+
+          this.state.allowList.forEach(rule => {
+            if (!_.isEmpty(rule)) {
+              rulesAllow += `\n Filter rule #${rulesCounter + 1}:`;
+              rule.forEach(item => {
+                rulesAllow += ` <a href="${baseUrl}/object/${item.id}">${item.id}</a>,`;
+              });
+              // eslint-disable-next-line no-plusplus
+              rulesCounter++;
+            }
+          });
+
+          this.state.ignoreList.forEach((rule, index) => {
+            if (!_.isEmpty(rule)) {
+              const dotOrComma = this.state.ignoreList.length - 1 === index ? '.' : ',';
+              rulesIgnore += ` <a href="${baseUrl}/object/${rule.id}">${rule.id}</a>${dotOrComma}`;
+            }
+          });
+          return `@${author} added ${currentField} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;
         }
         default:
           return `@${author} added ${currentField} (${langReadable}):\n ${appendValue.replace(
@@ -303,7 +329,7 @@ export default class AppendForm extends Component {
       let fieldsObject = {
         name: _.includes(TYPES_OF_MENU_ITEM, currentField) ? objectFields.listItem : currentField,
         body: bodyField,
-        locale,
+        locale: currentLocale,
       };
 
       if (currentField === objectFields.phone) {
@@ -472,9 +498,7 @@ export default class AppendForm extends Component {
   validateFieldValue = (rule, value, callback) => {
     const { intl, wObject, form } = this.props;
     const currentField = form.getFieldValue('currentField');
-    let currentLocale = form.getFieldValue('currentLocale');
-
-    if (currentLocale === 'auto') currentLocale = 'en-US';
+    const currentLocale = form.getFieldValue('currentLocale');
 
     const filtered = wObject.fields.filter(
       f => f.locale === currentLocale && f.name === currentField,
@@ -1326,7 +1350,15 @@ export default class AppendForm extends Component {
   };
 
   render() {
-    const { intl, currentLocale, currentField, form, followingList, wObject } = this.props;
+    const {
+      intl,
+      chosenLocale,
+      usedLocale,
+      currentField,
+      form,
+      followingList,
+      wObject,
+    } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const { loading } = this.state;
 
@@ -1336,14 +1368,6 @@ export default class AppendForm extends Component {
       form.getFieldValue('currentField') === objectFields.sorting;
 
     const languageOptions = [];
-    if (currentLocale === 'auto') {
-      languageOptions.push(
-        <Select.Option disabled key="auto" value="auto">
-          <FormattedMessage id="select_language" defaultMessage="Select your language" />
-        </Select.Option>,
-      );
-    }
-
     LANGUAGES.forEach(lang => {
       languageOptions.push(
         <Select.Option key={lang.id} value={lang.id}>
@@ -1402,7 +1426,7 @@ export default class AppendForm extends Component {
         </div>
         <Form.Item>
           {getFieldDecorator('currentLocale', {
-            initialValue: currentLocale,
+            initialValue: chosenLocale || usedLocale,
           })(
             <Select
               className={classNames({ AppendForm__hidden: isCustomSortingList })}

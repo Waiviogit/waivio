@@ -137,6 +137,8 @@ export const getFavoriteCategories = state => fromFavorites.getFavoriteCategorie
 
 export const getIsTransferVisible = state => fromWallet.getIsTransferVisible(state.wallet);
 export const getTransferTo = state => fromWallet.getTransferTo(state.wallet);
+export const getTransferAmount = state => fromWallet.getTransferAmount(state.wallet);
+export const getTransferCurrency = state => fromWallet.getTransferCurrency(state.wallet);
 export const getIsPowerUpOrDownVisible = state =>
   fromWallet.getIsPowerUpOrDownVisible(state.wallet);
 export const getIsPowerDown = state => fromWallet.getIsPowerDown(state.wallet);
@@ -209,7 +211,17 @@ export const getObjectAlbums = state => fromGallery.getObjectAlbums(state.galler
 export const getIsObjectAlbumsLoading = state =>
   fromGallery.getIsObjectAlbumsLoading(state.gallery);
 
+export const getIsMapModalOpen = state => fromMap.getIsMapModalOpen(state.map);
+
+// common selectors
+
 export const getCurrentLocation = state => state.router.location;
 export const getQueryString = state => state.router.location.search;
 
-export const getIsMapModalOpen = state => fromMap.getIsMapModalOpen(state.map);
+export const getSuitableLanguage = state => {
+  const settingsLocale = getLocale(state);
+  if (settingsLocale !== 'auto') return settingsLocale;
+
+  const usedLocale = getUsedLocale(state);
+  return usedLocale || 'en-US';
+};

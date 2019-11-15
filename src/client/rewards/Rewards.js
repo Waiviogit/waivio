@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { Modal } from 'antd';
+import { message, Modal } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -94,6 +94,10 @@ class Rewards extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { match } = nextProps;
+
+    if (match.path !== this.props.match.path) {
+      this.setState({ activePayableFilters: [] });
+    }
     if (match.params.filterKey !== 'create') {
       const { username } = this.props;
       const { radius, coordinates, sort, activeFilters } = this.state;
@@ -197,36 +201,52 @@ class Rewards extends React.Component {
   };
 
   // Propositions
-  assignProposition = ({ companyAuthor, companyPermlink, resPermlink, objPermlink, companyId }) => {
+  assignPropositionHandler = ({
+    companyAuthor,
+    companyPermlink,
+    resPermlink,
+    objPermlink,
+    companyId,
+  }) => {
     this.setState({ loadingAssignDiscard: true });
     this.props
       .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink })
       .then(() => {
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'assigned_successfully',
+            defaultMessage: 'Assigned successfully',
+          }),
+        );
         const updatedPropositions = this.updateProposition(companyId, true, objPermlink);
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })
       .catch(() => {
+        message.error(
+          this.props.intl.formatMessage({
+            id: 'cannot_reserve_company',
+            defaultMessage: 'You cannot reserve the campaign at the moment',
+          }),
+        );
         this.setState({ loadingAssignDiscard: false });
       });
   };
-  updateProposition = (propsId, isAssign, objPermlink) =>
-    map(this.state.propositions, proposition => {
-      // eslint-disable-next-line no-param-reassign
-      if (proposition._id === propsId) {
-        map(proposition.users, user => {
-          if (user.name === this.props.username) {
-            if (_.includes(user.approved_objects, objPermlink)) {
-              const newUser = user;
-              newUser.approved_objects = _.filter(user.approved_objects, o => o !== objPermlink);
-              return newUser;
-            }
-            return user.approved_objects.push(objPermlink);
-          }
-          return user;
-        });
-      }
-      return proposition;
-    });
+
+  // eslint-disable-next-line consistent-return
+  updateProposition = (propsId, isAssign, objPermlink) => {
+    // eslint-disable-next-line no-param-reassign
+    const newPropos = { ...this.state.propositions[0] };
+    if (newPropos._id === propsId) {
+      newPropos.objects.forEach((object, index) => {
+        if (object.object.author_permlink === objPermlink) {
+          newPropos.objects[index].assigned = isAssign;
+        } else {
+          newPropos.objects[index].assigned = null;
+        }
+      });
+    }
+    return [newPropos];
+  };
 
   toggleModal = proposition => {
     this.setState({
@@ -254,12 +274,24 @@ class Rewards extends React.Component {
         reservationPermlink,
       })
       .then(() => {
+        message.success(
+          this.props.intl.formatMessage({
+            id: 'discarded_successfully',
+            defaultMessage: 'Discarded successfully',
+          }),
+        );
         const updatedPropositions = this.updateProposition(companyId, false, objPermlink);
         this.props.history.push(`/rewards/active`);
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })
       .catch(e => {
         console.log(e.toString());
+        message.error(
+          this.props.intl.formatMessage({
+            id: 'cannot_reject_campaign',
+            defaultMessage: 'You cannot reject the campaign at the moment',
+          }),
+        );
         this.setState({ loadingAssignDiscard: false });
       });
   };
@@ -296,7 +328,7 @@ class Rewards extends React.Component {
                 proposition={proposition}
                 wobj={wobj.object}
                 assignCommentPermlink={wobj.permlink}
-                assignProposition={this.assignProposition}
+                assignProposition={this.assignPropositionHandler}
                 discardProposition={this.discardProposition}
                 authorizedUserName={userName}
                 loading={loadingAssignDiscard}
@@ -412,22 +444,32 @@ class Rewards extends React.Component {
             </div>
           </Affix>
           <div className="center">{renderedRoutes}</div>
-          {(match.path === '/rewards/:filterKey/:campaignParent?' ||
-            match.path === '/rewards/payables') && (
+          {(match.path === '/rewards/payables' || match.path === '/rewards/receivables') && (
             <Affix className="rightContainer leftContainer__user" stickPosition={122}>
               <div className="right">
-                {!isEmpty(this.props.userLocation) &&
-                  !isCreate &&
-                  match.path !== '/rewards/payables' && (
-                    <React.Fragment>
-                      <MapWrap
-                        wobjects={this.getRequiredObjects()}
-                        userLocation={this.props.userLocation}
-                        onMarkerClick={this.goToCampaign}
-                        getAreaSearchData={this.getAreaSearchData}
-                      />
-                    </React.Fragment>
-                  )}
+                <RewardsFiltersPanel
+                  campaignsTypes={campaignsTypes}
+                  sponsors={sponsors}
+                  activeFilters={activeFilters}
+                  activePayableFilters={activePayableFilters}
+                  setFilterValue={this.setFilterValue}
+                  setPayablesFilterValue={this.setPayablesFilterValue}
+                  location={location}
+                />
+              </div>
+            </Affix>
+          )}
+          {match.path === '/rewards/:filterKey/:campaignParent?' && (
+            <Affix className="rightContainer leftContainer__user" stickPosition={122}>
+              <div className="right">
+                {!isEmpty(this.props.userLocation) && !isCreate && (
+                  <MapWrap
+                    wobjects={this.getRequiredObjects()}
+                    userLocation={this.props.userLocation}
+                    onMarkerClick={this.goToCampaign}
+                    getAreaSearchData={this.getAreaSearchData}
+                  />
+                )}
                 {!isEmpty(sponsors) && !isCreate && (
                   <RewardsFiltersPanel
                     campaignsTypes={campaignsTypes}

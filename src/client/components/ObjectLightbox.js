@@ -49,7 +49,6 @@ export default class ObjectLightbox extends Component {
               objName={objectName}
               showModal={this.state.open}
               hideModal={this.handleCloseRequest}
-              locale={'en-US'}
               field={objectFields.avatar}
             />
           </React.Fragment>
