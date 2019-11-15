@@ -199,9 +199,8 @@ export default function userReducer(state = initialState, action) {
         },
       };
     }
-    case userActions.GET_FOLLOWING_USERS_UPDATES.ERROR: {
+    case userActions.GET_FOLLOWING_USERS_UPDATES.ERROR:
       return state;
-    }
 
     case userActions.GET_FOLLOWING_OBJECTS_UPDATES.SUCCESS: {
       const { related_wobjects: relatedObjects, hasMore } = action.payload;
@@ -224,6 +223,8 @@ export default function userReducer(state = initialState, action) {
         },
       };
     }
+    case userActions.GET_FOLLOWING_OBJECTS_UPDATES.ERROR:
+      return state;
 
     case wobjActions.FOLLOW_WOBJECT_START:
     case wobjActions.UNFOLLOW_WOBJECT_START:
