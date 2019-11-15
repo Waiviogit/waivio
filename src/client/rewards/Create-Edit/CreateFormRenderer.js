@@ -301,11 +301,12 @@ const CreateFormRenderer = props => {
           <div className="CreateReward__objects-wrap">{renderSecondaryObjects}</div>
         </Form.Item>
 
-        <Form.Item label={fields.expiredAt.label}>
-          {getFieldDecorator(fields.expiredAt.name, {
-            rules: fields.expiredAt.rules,
-            initialValue: expiredAt,
-          })(<DatePicker allowClear={false} disabled={disabled} />)}
+        <Form.Item label={fields.description.label}>
+          {getFieldDecorator(fields.description.name, {
+            rules: fields.description.rules,
+            initialValue: description,
+          })(<Input.TextArea disabled={disabled} />)}
+          <div className="CreateReward__field-caption">{fields.description.caption}</div>
         </Form.Item>
 
         <div className="CreateReward__block-title">
@@ -366,14 +367,6 @@ const CreateFormRenderer = props => {
           <p>{fields.legalInfo.p_2}</p>
         </Form.Item>
 
-        <Form.Item label={fields.description.label}>
-          {getFieldDecorator(fields.description.name, {
-            rules: fields.description.rules,
-            initialValue: description,
-          })(<Input.TextArea disabled={disabled} />)}
-          <div className="CreateReward__field-caption">{fields.description.caption}</div>
-        </Form.Item>
-
         <Form.Item label={fields.agreement.label}>
           {getFieldDecorator(fields.agreement.name, { initialValue: agreement })(
             <SearchObjectsAutocomplete
@@ -412,6 +405,13 @@ const CreateFormRenderer = props => {
               </span>
             </Checkbox>,
           )}
+        </Form.Item>
+
+        <Form.Item label={fields.expiredAt.label}>
+          {getFieldDecorator(fields.expiredAt.name, {
+            rules: fields.expiredAt.rules,
+            initialValue: expiredAt,
+          })(<DatePicker allowClear={false} disabled={disabled} />)}
         </Form.Item>
 
         <Form.Item label={fields.commissionToWaivio.label}>

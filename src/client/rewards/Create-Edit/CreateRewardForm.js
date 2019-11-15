@@ -60,6 +60,7 @@ class CreateRewardForm extends React.Component {
     minExpertise: 0,
     minFollowers: 0,
     minPosts: 0,
+    eligibleDays: 0,
     description: '',
     expiredAt: null,
     usersLegalNotice: '',
@@ -145,13 +146,14 @@ class CreateRewardForm extends React.Component {
     if (getFieldValue('minFollowers') === '') setFieldsValue({ minFollowers: 0 });
 
     if (getFieldValue('minPosts') === '') setFieldsValue({ minPosts: 0 });
+
+    if (getFieldValue('eligibleDays') === '') setFieldsValue({ eligibleDays: 0 });
   };
 
   prepareSubmitData = (data, userName) => {
     const objects = map(data.secondaryObject, o => o.id);
     const pageObjects = data.agreement.length !== 0 ? map(data.agreement.length, o => o.id) : [];
     const sponsorAccounts = map(data.sponsorsList, o => o.account);
-
     return {
       requiredObject: data.primaryObject.author_permlink,
       guideName: userName,

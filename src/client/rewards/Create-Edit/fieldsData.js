@@ -81,7 +81,7 @@ export default (messageFactory, validators, userName) => ({
       'registered_upvoting_accounts_ext',
       `Registered upvoting accounts besides @${userName} (optional, up to 5)`,
     ),
-    placeholder: messageFactory('sponsor_auto_complete_placeholder', 'Find user'),
+    placeholder: messageFactory('users_auto_complete_placeholder', 'Find user'),
     caption: messageFactory(
       'value_of_upvotes_can_be_accumulated_on_compensation_account',
       'The value of upvotes can be accumulated on a dedicated compensation account',
@@ -90,7 +90,7 @@ export default (messageFactory, validators, userName) => ({
   compensationAccount: {
     name: 'compensationAccount',
     label: messageFactory('compensation_account_optional', 'Compensation account (optional)'),
-    placeholder: messageFactory('compensation_account_auto_complete_placeholder', 'Find user'),
+    placeholder: messageFactory('users_auto_complete_placeholder', 'Find user'),
     caption: messageFactory(
       'accumulates_value_of_upvotes_from_registered_upvoting_accounts',
       'Accumulates the value of upvotes from registered upvoting accounts',
