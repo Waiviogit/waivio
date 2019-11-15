@@ -1,22 +1,28 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { isEmpty } from 'lodash';
 import * as store from '../../../reducers';
-import { getFollowingUpdates } from '../../../user/userActions';
+import {
+  getFollowingUpdates,
+  getFollowingObjectsUpdatesMore,
+  getFollowingUsersUpdatesMore,
+} from '../../../user/userActions';
 import SidebarMenu from '../SidebarMenu/SidebarMenu';
 import { getClientWObj } from '../../../adapters';
 import Loading from '../../Icon/Loading';
 
 const itemsCount = 5;
+const usersSection = 'People';
 function buildFollowingUpdatesMenuConfig(updates) {
   const config = {};
   const { usersUpdates, objectsUpdates } = updates;
 
   if (usersUpdates.users && usersUpdates.users.length) {
-    config.People = {
-      name: 'People',
+    config[usersSection] = {
+      name: usersSection,
       intlId: 'people',
       isCollapsible: true,
-      isCollapsed: !usersUpdates.users[0].last_posts_count,
+      hasMore: usersUpdates.hasMore,
       items: usersUpdates.users.map(followingUser => ({
         name: `@${followingUser.name}`,
         intlId: `@${followingUser.name}`,
@@ -24,16 +30,20 @@ function buildFollowingUpdatesMenuConfig(updates) {
         linkTo: `/@${followingUser.name}`,
       })),
     };
+    // set initial value for isCollapsed prop
+    if (usersUpdates.users.length <= itemsCount) {
+      config[usersSection].isCollapsed = !usersUpdates.users[0].last_posts_count;
+    }
   }
 
-  if (objectsUpdates && objectsUpdates.length) {
-    objectsUpdates.forEach(objectsGroup => {
-      const { object_type: objType, related_wobjects: objects } = objectsGroup;
+  if (!isEmpty(objectsUpdates)) {
+    Object.values(objectsUpdates).forEach(objectsGroup => {
+      const { object_type: objType, related_wobjects: objects, hasMore } = objectsGroup;
       config[objType] = {
         name: objType,
         intlId: objType,
         isCollapsible: true,
-        isCollapsed: !(objects[0] && objects[0].last_posts_count),
+        hasMore,
         items: objects.map(followingObject => {
           const clientObj = getClientWObj(followingObject);
           return {
@@ -44,6 +54,10 @@ function buildFollowingUpdatesMenuConfig(updates) {
           };
         }),
       };
+      // initial value for isCollapse
+      if (objects.length <= itemsCount) {
+        config[objType].isCollapsed = !(objects[0] && objects[0].last_posts_count);
+      }
     });
   }
 
@@ -56,12 +70,31 @@ const FollowingUpdates = () => {
   const followingUpdates = useSelector(store.getFollowingUpdates);
   const userName = useSelector(store.getAuthenticatedUserName);
 
-  const dispatchGetFollowingUsersUpdates = () => dispatch(getFollowingUpdates(itemsCount));
-  useEffect(dispatchGetFollowingUsersUpdates, [userName]);
+  // local state
+  const [menuConfig, updateMenu] = useState({});
 
-  const menuConfig = buildFollowingUpdatesMenuConfig(followingUpdates);
+  useEffect(() => dispatch(getFollowingUpdates(itemsCount)), [userName]);
+  useEffect(() => updateMenu(buildFollowingUpdatesMenuConfig(followingUpdates)), [
+    followingUpdates,
+  ]);
 
-  return followingUpdates.isFetching ? <Loading /> : <SidebarMenu menuConfig={menuConfig} />;
+  // const menuConfig = buildFollowingUpdatesMenuConfig(followingUpdates);
+
+  const loadMoreUpdates = menuSectionName => () => {
+    if (menuSectionName === usersSection) {
+      dispatch(getFollowingUsersUpdatesMore(itemsCount));
+    } else {
+      dispatch(getFollowingObjectsUpdatesMore(menuSectionName, itemsCount));
+    }
+  };
+  return (
+    !isEmpty(menuConfig) &&
+    (followingUpdates.isFetching ? (
+      <Loading />
+    ) : (
+      <SidebarMenu menuConfig={menuConfig} loadMore={loadMoreUpdates} />
+    ))
+  );
 };
 
 FollowingUpdates.propTypes = {};

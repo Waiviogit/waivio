@@ -290,6 +290,36 @@ export const getFollowingUpdates = (userName, count = 5) =>
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
+
+export const getFollowingObjectsUpdates = (userName, objType, limit = 5, skip = 0) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.apiPrefix}${config.user}/${userName}${config.followingObjectsUpdates}?object_type=${objType}&limit=${limit}&skip=${skip}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getFollowingUsersUpdates = (userName, limit = 5, skip = 0) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.apiPrefix}${config.user}/${userName}${config.followingUsersUpdates}?limit=${limit}&skip=${skip}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
 // endregion
 
 export const getWobjectGallery = wobject =>

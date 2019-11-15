@@ -1,11 +1,15 @@
-import React, { useReducer } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { merge } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { NavLink } from 'react-router-dom';
 import { getIsAuthenticated } from '../../../reducers';
 
-const actionType = { TOGGLE_BLOCK: 'toggleBlock' };
+const actionType = {
+  TOGGLE_BLOCK: 'toggleBlock',
+  UPDATE_MENU: 'updateMenu',
+};
 function sidebarMenuReducer(state, action) {
   const { type, payload } = action;
   switch (type) {
@@ -17,16 +21,20 @@ function sidebarMenuReducer(state, action) {
           isCollapsed: !state[payload.block].isCollapsed,
         },
       };
+    case actionType.UPDATE_MENU:
+      return { ...merge(state, payload) };
     default:
       return state;
   }
 }
 
-const SidebarMenu = ({ intl, menuConfig }) => {
+const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
   // redux store
   const authenticated = useSelector(getIsAuthenticated);
   // local state
   const [menuState, dispatch] = useReducer(sidebarMenuReducer, menuConfig);
+
+  useEffect(() => dispatch({ type: actionType.UPDATE_MENU, payload: menuConfig }), [menuConfig]);
 
   const toggleBlock = section => () =>
     dispatch({ type: actionType.TOGGLE_BLOCK, payload: { block: section.name } });
@@ -92,6 +100,15 @@ const SidebarMenu = ({ intl, menuConfig }) => {
           </li>
         ) : null;
       })}
+      {menuSection.hasMore && (
+        <div
+          className="sidenav-discover-objects__show-more"
+          role="presentation"
+          onClick={loadMore(menuSection.name)}
+        >
+          <FormattedMessage id="show_more" defaultMessage="show more" />
+        </div>
+      )}
     </ul>
   );
 
@@ -112,6 +129,7 @@ const SidebarMenu = ({ intl, menuConfig }) => {
 SidebarMenu.propTypes = {
   intl: PropTypes.shape().isRequired,
   menuConfig: PropTypes.shape(),
+  loadMore: PropTypes.func,
 };
 
 SidebarMenu.defaultProps = {
@@ -123,6 +141,7 @@ SidebarMenu.defaultProps = {
       items: [],
     },
   },
+  loadMore: () => {},
 };
 
 export default injectIntl(SidebarMenu);

@@ -1,8 +1,4 @@
-import {
-  getIsAuthenticated,
-  getAuthenticatedUserName,
-  getFollowingUpdatesFetched,
-} from '../reducers';
+import * as store from '../reducers';
 import { getAllFollowing } from '../helpers/apiHelpers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -20,14 +16,14 @@ export const FOLLOW_USER_ERROR = '@user/FOLLOW_USER_ERROR';
 export const followUser = username => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
 
-  if (!getIsAuthenticated(state)) {
+  if (!store.getIsAuthenticated(state)) {
     return Promise.reject('User is not authenticated');
   }
 
   return dispatch({
     type: FOLLOW_USER,
     payload: {
-      promise: steemConnectAPI.follow(getAuthenticatedUserName(state), username),
+      promise: steemConnectAPI.follow(store.getAuthenticatedUserName(state), username),
     },
     meta: {
       username,
@@ -43,14 +39,14 @@ export const UNFOLLOW_USER_ERROR = '@user/UNFOLLOW_USER_ERROR';
 export const unfollowUser = username => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
 
-  if (!getIsAuthenticated(state)) {
+  if (!store.getIsAuthenticated(state)) {
     return Promise.reject('User is not authenticated');
   }
 
   return dispatch({
     type: UNFOLLOW_USER,
     payload: {
-      promise: steemConnectAPI.unfollow(getAuthenticatedUserName(state), username),
+      promise: steemConnectAPI.unfollow(store.getAuthenticatedUserName(state), username),
     },
     meta: {
       username,
@@ -66,11 +62,11 @@ export const GET_FOLLOWING_ERROR = '@user/GET_FOLLOWING_ERROR';
 export const getFollowing = username => (dispatch, getState) => {
   const state = getState();
 
-  if (!username && !getIsAuthenticated(state)) {
+  if (!username && !store.getIsAuthenticated(state)) {
     return dispatch({ type: GET_FOLLOWING_ERROR });
   }
 
-  const targetUsername = username || getAuthenticatedUserName(state);
+  const targetUsername = username || store.getAuthenticatedUserName(state);
 
   return dispatch({
     type: GET_FOLLOWING,
@@ -89,11 +85,11 @@ export const GET_FOLLOWING_OBJECTS_ERROR = '@user/GET_FOLLOWING_OBJECTS_ERROR';
 export const getFollowingObjects = username => (dispatch, getState) => {
   const state = getState();
 
-  if (!username && !getIsAuthenticated(state)) {
+  if (!username && !store.getIsAuthenticated(state)) {
     return dispatch({ type: GET_FOLLOWING_ERROR });
   }
 
-  const targetUsername = username || getAuthenticatedUserName(state);
+  const targetUsername = username || store.getAuthenticatedUserName(state);
   return dispatch({
     type: GET_FOLLOWING_OBJECTS,
     payload: {
@@ -105,8 +101,8 @@ export const getFollowingObjects = username => (dispatch, getState) => {
 export const GET_FOLLOWING_UPDATES = createAsyncActionType('@user/GET_FOLLOWING_UPDATES');
 export const getFollowingUpdates = (count = 5) => (dispatch, getState) => {
   const state = getState();
-  const isUpdatesFetched = getFollowingUpdatesFetched(state);
-  const userName = getAuthenticatedUserName(state);
+  const isUpdatesFetched = store.getFollowingUpdatesFetched(state);
+  const userName = store.getAuthenticatedUserName(state);
   if (!isUpdatesFetched && userName) {
     dispatch({
       type: GET_FOLLOWING_UPDATES.ACTION,
@@ -115,6 +111,46 @@ export const getFollowingUpdates = (count = 5) => (dispatch, getState) => {
       },
     });
   }
+};
+
+export const GET_FOLLOWING_OBJECTS_UPDATES = createAsyncActionType(
+  '@user/GET_FOLLOWING_OBJECTS_UPDATES',
+);
+export const getFollowingObjectsUpdatesMore = (objectType, count = 5) => (dispatch, getState) => {
+  const state = getState();
+  const followingObjects = store.getFollowingObjectsUpdatesByType(state, objectType);
+  const userName = store.getAuthenticatedUserName(state);
+
+  dispatch({
+    type: GET_FOLLOWING_OBJECTS_UPDATES.ACTION,
+    payload: {
+      promise: ApiClient.getFollowingObjectsUpdates(
+        userName,
+        objectType,
+        count,
+        followingObjects.length,
+      ),
+    },
+    meta: {
+      objectType,
+    },
+  });
+};
+
+export const GET_FOLLOWING_USERS_UPDATES = createAsyncActionType(
+  '@user/GET_FOLLOWING_USERS_UPDATES',
+);
+export const getFollowingUsersUpdatesMore = (count = 5) => (dispatch, getState) => {
+  const state = getState();
+  const followingUsers = store.getFollowingUsersUpdates(state);
+  const userName = store.getAuthenticatedUserName(state);
+
+  dispatch({
+    type: GET_FOLLOWING_USERS_UPDATES.ACTION,
+    payload: {
+      promise: ApiClient.getFollowingUsersUpdates(userName, count, followingUsers.users.length),
+    },
+  });
 };
 
 // endregion
@@ -137,11 +173,11 @@ export const GET_NOTIFICATIONS = createAsyncActionType('@user/GET_NOTIFICATIONS'
 export const getNotifications = username => (dispatch, getState, { busyAPI }) => {
   const state = getState();
 
-  if (!username && !getIsAuthenticated(state)) {
+  if (!username && !store.getIsAuthenticated(state)) {
     return dispatch({ type: GET_NOTIFICATIONS.ERROR });
   }
 
-  const targetUsername = username || getAuthenticatedUserName(state);
+  const targetUsername = username || store.getAuthenticatedUserName(state);
 
   return dispatch({
     type: GET_NOTIFICATIONS.ACTION,
@@ -166,7 +202,7 @@ export const assignProposition = ({ companyAuthor, companyPermlink, resPermlink,
   getState,
   { steemConnectAPI },
 ) => {
-  const username = getAuthenticatedUserName(getState());
+  const username = store.getAuthenticatedUserName(getState());
   const commentOp = [
     'comment',
     {
@@ -197,7 +233,7 @@ export const declineProposition = ({
   unreservationPermlink,
   reservationPermlink,
 }) => (dispatch, getState, { steemConnectAPI }) => {
-  const username = getAuthenticatedUserName(getState());
+  const username = store.getAuthenticatedUserName(getState());
   const commentOp = [
     'comment',
     {
@@ -227,7 +263,7 @@ export const activateCampaign = (company, campaignPermlink) => (
   getState,
   { steemConnectAPI },
 ) => {
-  const username = getAuthenticatedUserName(getState());
+  const username = store.getAuthenticatedUserName(getState());
   const commentOp = [
     'comment',
     {
@@ -257,7 +293,7 @@ export const inactivateCampaign = (company, inactivatePermlink) => (
   getState,
   { steemConnectAPI },
 ) => {
-  const username = getAuthenticatedUserName(getState());
+  const username = store.getAuthenticatedUserName(getState());
   const commentOp = [
     'comment',
     {
