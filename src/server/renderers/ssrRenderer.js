@@ -1,13 +1,13 @@
 import { Helmet } from 'react-helmet';
 
-export default function renderSsrPage(store, html, assets, template, noindex) {
+export default function renderSsrPage(store, html, assets, template) {
   const preloadedState = store ? store.getState() : {};
 
   const helmet = Helmet.renderStatic();
   const baseHelmet = helmet.meta.toString() + helmet.title.toString() + helmet.link.toString();
 
   let header = baseHelmet;
-  if (noindex) header += `<meta name="robots" content="noindex, nofollow">`;
+  // if (noindex) header += `<meta name="robots" content="noindex, nofollow">`;
 
   let scripts = `<script>window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState)
     .replace(/\u2028/g, '\\n')
