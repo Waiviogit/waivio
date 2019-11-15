@@ -27,6 +27,7 @@ const CreateFormRenderer = props => {
     minExpertise,
     minFollowers,
     minPosts,
+    eligibleDays,
     description,
     expiredAt,
     usersLegalNotice,
@@ -57,12 +58,12 @@ const CreateFormRenderer = props => {
     primaryObject,
     secondaryObjectsList,
   );
-  const fields = fieldsData(handlers.messageFactory, validators);
+  const fields = fieldsData(handlers.messageFactory, validators, user.name);
 
   const disabled = isCampaignActive || loading;
 
   const notEnoughMoneyWarn =
-    parseFloat(user.sbd_balance) * currentSteemDollarPrice <= 0 ? (
+    parseFloat(user.sbd_balance) <= 0 ? (
       <div className="notEnoughMoneyWarn">
         {handlers.messageFactory(
           'balance_more_than_zero',
@@ -300,11 +301,12 @@ const CreateFormRenderer = props => {
           <div className="CreateReward__objects-wrap">{renderSecondaryObjects}</div>
         </Form.Item>
 
-        <Form.Item label={fields.expiredAt.label}>
-          {getFieldDecorator(fields.expiredAt.name, {
-            rules: fields.expiredAt.rules,
-            initialValue: expiredAt,
-          })(<DatePicker allowClear={false} disabled={disabled} />)}
+        <Form.Item label={fields.description.label}>
+          {getFieldDecorator(fields.description.name, {
+            rules: fields.description.rules,
+            initialValue: description,
+          })(<Input.TextArea disabled={disabled} />)}
+          <div className="CreateReward__field-caption">{fields.description.caption}</div>
         </Form.Item>
 
         <div className="CreateReward__block-title">
@@ -350,19 +352,19 @@ const CreateFormRenderer = props => {
           <div className="CreateReward__field-caption">{fields.minPosts.caption}</div>
         </Form.Item>
 
+        <Form.Item label={fields.eligibleDays.label}>
+          {getFieldDecorator(fields.eligibleDays.name, {
+            rules: fields.eligibleDays.rules,
+            initialValue: eligibleDays,
+          })(<Input type="number" disabled={disabled} />)}
+          <div className="CreateReward__field-caption">{fields.eligibleDays.caption}</div>
+        </Form.Item>
+
         <Form.Item>
           <h3 className="CreateReward header">{fields.legalInfo.header}</h3>
           <p>{fields.legalInfo.p_1}</p>
           <br />
           <p>{fields.legalInfo.p_2}</p>
-        </Form.Item>
-
-        <Form.Item label={fields.description.label}>
-          {getFieldDecorator(fields.description.name, {
-            rules: fields.description.rules,
-            initialValue: description,
-          })(<Input.TextArea disabled={disabled} />)}
-          <div className="CreateReward__field-caption">{fields.description.caption}</div>
         </Form.Item>
 
         <Form.Item label={fields.agreement.label}>
@@ -405,6 +407,13 @@ const CreateFormRenderer = props => {
           )}
         </Form.Item>
 
+        <Form.Item label={fields.expiredAt.label}>
+          {getFieldDecorator(fields.expiredAt.name, {
+            rules: fields.expiredAt.rules,
+            initialValue: expiredAt,
+          })(<DatePicker allowClear={false} disabled={disabled} />)}
+        </Form.Item>
+
         <Form.Item label={fields.commissionToWaivio.label}>
           {getFieldDecorator(fields.commissionToWaivio.name, {
             rules: fields.commissionToWaivio.rules,
@@ -443,21 +452,22 @@ CreateFormRenderer.defaultProps = {
   campaignType: '',
   budget: 0,
   reward: 0,
-  reservationPeriod: 1,
+  reservationPeriod: 7,
   targetDays: {
-    monday: false,
-    tuesday: false,
-    wednesday: false,
-    thursday: false,
-    friday: false,
-    saturday: false,
-    sunday: false,
+    monday: true,
+    tuesday: true,
+    wednesday: true,
+    thursday: true,
+    friday: true,
+    saturday: true,
+    sunday: true,
   },
   minPhotos: 0,
   minSteemReputation: 25,
   minExpertise: 0,
   minFollowers: 0,
   minPosts: 0,
+  eligibleDays: 0,
   description: '',
   expiredAt: null,
   usersLegalNotice: '',
@@ -479,6 +489,7 @@ CreateFormRenderer.propTypes = {
   minExpertise: PropTypes.number,
   minFollowers: PropTypes.number,
   minPosts: PropTypes.number,
+  eligibleDays: PropTypes.number,
   description: PropTypes.string,
   expiredAt: PropTypes.shape(),
   usersLegalNotice: PropTypes.string,
