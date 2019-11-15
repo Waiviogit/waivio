@@ -21,18 +21,18 @@ const CampaignRewardsTableRow = ({
   const [isModalOpen, toggleModal] = useState(false);
   const [isLoading, setLoad] = useState(false);
   const [activationStatus, setActivationStatus] = useState('');
-  const [activationPremlink, setActivationPremlink] = useState('');
+  const [activationPermlink, setActivationPermlink] = useState('');
   const isChecked = currentItem.status === 'active' || currentItem.status === 'payed';
   const isInactive = currentItem.status === 'inactive';
 
   const activateCamp = () => {
-    const generatedPremlink = `activate-${rewardPostContainerData.author}-${generatePermlink()}`;
-    setActivationPremlink(generatedPremlink);
+    const generatedPermlink = `activate-${rewardPostContainerData.author}-${generatePermlink()}`;
+    setActivationPermlink(generatedPermlink);
     const activationCampaignData = {
       // eslint-disable-next-line no-underscore-dangle
       campaign_id: currentItem._id,
       guide_name: userName,
-      permlink: generatedPremlink,
+      permlink: generatedPermlink,
     };
     setLoad(true);
     validateActivationCampaign(activationCampaignData)
@@ -53,10 +53,10 @@ const CampaignRewardsTableRow = ({
   const inactivateCamp = () => {
     const itemOnInactivate = currentItem.activation_permlink
       ? { ...currentItem }
-      : { ...currentItem, activation_permlink: activationPremlink };
+      : { ...currentItem, activation_permlink: activationPermlink };
     const inactivationCampaignData = {
       // eslint-disable-next-line no-underscore-dangle
-      campaign_permlink: currentItem.activation_permlink || activationPremlink,
+      campaign_permlink: currentItem.activation_permlink || activationPermlink,
       guide_name: userName,
       // eslint-disable-next-line no-underscore-dangle
       permlink: `deactivation-${currentItem._id}-${generatePermlink()}`,
@@ -116,8 +116,8 @@ const CampaignRewardsTableRow = ({
           {/* eslint-disable-next-line no-nested-ternary */
           activationStatus
             ? activationStatus === 'activated'
-              ? 'Active'
-              : 'Inactive'
+              ? intl.formatMessage({ id: 'manage_page_active', defaultMessage: 'Active' })
+              : intl.formatMessage({ id: 'manage_page_inactive', defaultMessage: 'Inactive' })
             : currentItem.status}
         </td>
         <td>{currentItem.type}</td>
