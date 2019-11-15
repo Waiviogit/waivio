@@ -183,6 +183,7 @@
   "sort_author_reputation": "Reputation",
   "trending_topics": "Trending topics",
   "favorite_topics": "Favorite topics",
+  "people": "People",
   "interesting_people": "Interesting People",
   "top_reblogged_users": "Top Reblogged Users",
   "latest_comments": "Latest Comments",
@@ -788,5 +789,6 @@
   "check_review_agreement_part_3": "In many jurisdictions, readers should be informed that the review has been partially sponsored. In order to meet these requirements, the following notice will be added to your post:",
   "check_review_post_add_text": "This review was sponsored in part by",
   "approved_by_admin": "Approved by admin",
-  "min_70_is_required": "Min 70% is required"
+  "min_70_is_required": "Min 70% is required",
+  "more_options": "for more options"
 }
