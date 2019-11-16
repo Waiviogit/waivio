@@ -22,6 +22,7 @@ function buildFollowingUpdatesMenuConfig(updates) {
       name: usersSection,
       intlId: 'people',
       isCollapsible: true,
+      isCollapsed: !usersUpdates.users[0].last_posts_count,
       hasMore: usersUpdates.hasMore,
       items: usersUpdates.users.map(followingUser => ({
         name: `@${followingUser.name}`,
@@ -30,10 +31,6 @@ function buildFollowingUpdatesMenuConfig(updates) {
         linkTo: `/@${followingUser.name}`,
       })),
     };
-    // set initial value for isCollapsed prop
-    if (usersUpdates.users.length <= itemsCount) {
-      config[usersSection].isCollapsed = !usersUpdates.users[0].last_posts_count;
-    }
   }
 
   if (!isEmpty(objectsUpdates)) {
@@ -43,6 +40,7 @@ function buildFollowingUpdatesMenuConfig(updates) {
         name: objType,
         intlId: objType,
         isCollapsible: true,
+        isCollapsed: !(objects[0] && objects[0].last_posts_count),
         hasMore,
         items: objects.map(followingObject => {
           const clientObj = getClientWObj(followingObject);
@@ -54,10 +52,6 @@ function buildFollowingUpdatesMenuConfig(updates) {
           };
         }),
       };
-      // initial value for isCollapse
-      if (objects.length <= itemsCount) {
-        config[objType].isCollapsed = !(objects[0] && objects[0].last_posts_count);
-      }
     });
   }
 
@@ -77,8 +71,6 @@ const FollowingUpdates = () => {
   useEffect(() => updateMenu(buildFollowingUpdatesMenuConfig(followingUpdates)), [
     followingUpdates,
   ]);
-
-  // const menuConfig = buildFollowingUpdatesMenuConfig(followingUpdates);
 
   const loadMoreUpdates = menuSectionName => () => {
     if (menuSectionName === usersSection) {
