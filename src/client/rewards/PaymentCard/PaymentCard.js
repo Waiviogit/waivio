@@ -21,14 +21,6 @@ const PaymentCard = ({ intl, payable, name, alias, history, path, openTransfer }
           <div className="PaymentCard__content-name-wrap-alias"> {alias}</div>
           <div className="PaymentCard__content-name-wrap-row">
             <div className="PaymentCard__content-name-wrap-row-name">{`@${name}`}</div>
-            <div className="PaymentCard__end-wrap-icon">
-              {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
-              <img
-                src="https://waivio.nyc3.digitaloceanspaces.com/1573555009_0175b2a0-1737-4fdb-b983-7185174cb405"
-                alt="Payments history"
-                onClick={handleSetUser}
-              />
-            </div>
           </div>
         </div>
       </div>
@@ -37,8 +29,9 @@ const PaymentCard = ({ intl, payable, name, alias, history, path, openTransfer }
         <div className="PaymentCard__content-name-wrap-row-pay">
           <Action
             className="WalletSidebar__transfer"
-            primary
+            primary={payable >= 0}
             onClick={() => openTransfer(name, payable, 'SBD')}
+            disabled={payable <= 0}
           >
             {intl.formatMessage({
               id: 'pay',
@@ -46,6 +39,14 @@ const PaymentCard = ({ intl, payable, name, alias, history, path, openTransfer }
             })}
             {` ${payable && payable.toFixed(2)} SBD`}
           </Action>
+          <div className="PaymentCard__end-wrap-icon">
+            {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
+            <img
+              src="/images/icons/PaymentHistory.svg"
+              alt="Payments history"
+              onClick={handleSetUser}
+            />
+          </div>
         </div>
       </div>
     </div>
