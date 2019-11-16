@@ -483,11 +483,7 @@ class Topnav extends React.Component {
       platformName,
       isLoadingPlatform,
     } = this.props;
-    const {
-      searchBarActive,
-      notificationsPopoverVisible,
-      popoverBrokerVisible,
-    } = this.state;
+    const { searchBarActive, notificationsPopoverVisible, popoverBrokerVisible } = this.state;
     const lastSeenTimestamp = _.get(userMetaData, 'notifications_last_timestamp');
     const notificationsCount = _.isUndefined(lastSeenTimestamp)
       ? _.size(notifications)
