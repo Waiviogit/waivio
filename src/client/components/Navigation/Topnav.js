@@ -81,6 +81,12 @@ import './Topnav.less';
   },
 )
 class Topnav extends React.Component {
+  static handleScrollToTop() {
+    if (window) {
+      window.scrollTo(0, 0);
+    }
+  }
+
   static propTypes = {
     /* from decorators */
     intl: PropTypes.shape().isRequired,
@@ -128,19 +134,6 @@ class Topnav extends React.Component {
     screenSize: 'medium',
   };
 
-  static handleScrollToTop() {
-    if (window) {
-      window.scrollTo(0, 0);
-    }
-  }
-
-  static markers = {
-    USER: 'user',
-    WOBJ: 'wobj',
-    TYPE: 'type',
-    SELECT_BAR: 'searchSelectBar',
-  };
-
   constructor(props) {
     super(props);
 
@@ -181,7 +174,10 @@ class Topnav extends React.Component {
   }
 
   componentDidMount() {
-    window && window.addEventListener('scroll', this.handleScroll);
+    if (window) {
+      window.addEventListener('scroll', this.handleScroll);
+      this.prevScrollpos = window.pageYOffset;
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -196,7 +192,9 @@ class Topnav extends React.Component {
 
   componentWillUnmount() {
     this.setState({ popoverBrokerVisible: false });
-    window && window.removeEventListener('scroll', this.handleScroll);
+    if (window) {
+      window.removeEventListener('scroll', this.handleScroll);
+    }
   }
 
   getTranformSearchCountData = searchResults => {
@@ -222,6 +220,13 @@ class Topnav extends React.Component {
       countArr.push({ name: 'Users', count: usersCount, type: 'user' });
     }
     return countArr;
+  };
+
+  static markers = {
+    USER: 'user',
+    WOBJ: 'wobj',
+    TYPE: 'type',
+    SELECT_BAR: 'searchSelectBar',
   };
 
   handleMoreMenuSelect(key) {
@@ -306,18 +311,15 @@ class Topnav extends React.Component {
 
   handleClickMenu = e => this.setState({ selectedPage: e.key });
 
-  prevScrollpos = window.pageYOffset;
-
   handleScroll = () => {
     const currentScrollPos = window.pageYOffset;
     const visible = this.prevScrollpos < currentScrollPos;
 
     this.prevScrollpos = currentScrollPos;
 
-    this.setState({
-      prevScrollpos: currentScrollPos,
-      visible,
-    });
+    if (this.state.visible !== visible) {
+      this.setState({ visible });
+    }
   };
 
   menuForLoggedOut = () => {
@@ -419,9 +421,8 @@ class Topnav extends React.Component {
   };
 
   hotNews = () => {
-    const { intl, screenSize } = this.props;
+    const { intl } = this.props;
     const { hotNewsPopoverVisible, dailyChosenPost, weeklyChosenPost } = this.state;
-    const isMobile = screenSize === 'xsmall' || screenSize === 'small';
     return (
       <BTooltip
         placement="bottom"
@@ -485,7 +486,6 @@ class Topnav extends React.Component {
     const {
       searchBarActive,
       notificationsPopoverVisible,
-      popoverProfileVisible,
       popoverBrokerVisible,
     } = this.state;
     const lastSeenTimestamp = _.get(userMetaData, 'notifications_last_timestamp');
@@ -935,11 +935,11 @@ class Topnav extends React.Component {
 
   handleOnFocus = () => this.setState({ dropdownOpen: true });
 
-  renderTitle = title => <span>{title}</span>;
-
   scrollHandler = () => {
     this.setState({ scrolling: !this.state.scrolling });
   };
+
+  renderTitle = title => <span>{title}</span>;
 
   render() {
     const {
