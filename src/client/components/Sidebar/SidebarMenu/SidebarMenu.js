@@ -78,6 +78,10 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
         const linkTo = authenticated
           ? sectionItem.linkTo
           : sectionItem.unauthLink || sectionItem.linkTo;
+        const itemName = intl.formatMessage({
+          id: sectionItem.intlId,
+          defaultMessage: sectionItem.name,
+        });
         return linkTo ? (
           <li className="collapsible-block__item" key={sectionItem.name}>
             <NavLink
@@ -88,8 +92,8 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
               disabled={Boolean(sectionItem.disabled)}
             >
               <span className="flex justify-between">
-                <span className="sidenav-discover-objects__item-text">
-                  {intl.formatMessage({ id: sectionItem.intlId, defaultMessage: sectionItem.name })}
+                <span className="sidenav-discover-objects__item-text" title={itemName}>
+                  {itemName}
                 </span>
                 {sectionItem.meta ? <span>+{sectionItem.meta}</span> : null}
               </span>
