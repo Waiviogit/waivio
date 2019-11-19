@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Button } from 'antd';
@@ -17,6 +17,15 @@ import { UsedLocaleContext } from '../Wrapper';
 import '../components/ObjectHeader.less';
 
 const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, authenticated }) => {
+  const [isMobile, setIsMobile] = useState(false);
+  const resize = () => setIsMobile(window.innerWidth < 998);
+
+  useEffect(() => {
+    window.addEventListener('resize', resize);
+    resize();
+    return window.removeEventListener('resize', resize);
+  }, []);
+
   const usedLocale = useContext(UsedLocaleContext);
   const coverImage = wobject.background || DEFAULTS.BACKGROUND;
   const style = { backgroundImage: `url("${coverImage}")` };
@@ -61,11 +70,13 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, a
               <div className="ObjectHeader__controls">
                 <FollowButton following={wobject.author_permlink || ''} followingType="wobject" />
                 {accessExtend && authenticated && (
-                  <Button onClick={toggleViewEditMode}>
-                    {isEditMode
-                      ? intl.formatMessage({ id: 'view', defaultMessage: 'View' })
-                      : intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
-                  </Button>
+                  <Link to={`/object/${wobject.author_permlink}/${isMobile ? 'about' : ''}`}>
+                    <Button onClick={toggleViewEditMode}>
+                      {isEditMode
+                        ? intl.formatMessage({ id: 'view', defaultMessage: 'View' })
+                        : intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
+                    </Button>
+                  </Link>
                 )}
               </div>
             </div>
