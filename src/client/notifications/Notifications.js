@@ -9,7 +9,7 @@ import * as notificationConstants from '../../common/constants/notifications';
 import { getUserMetadata } from '../user/usersActions';
 import { getNotifications } from '../user/userActions';
 import {
-  getAuthenticateduserMetaData,
+  getAuthenticatedUserMetaData,
   getNotifications as getNotificationsState,
   getIsLoadingNotifications,
   getAuthenticatedUserName,
@@ -153,7 +153,7 @@ class Notifications extends React.Component {
 export default connect(
   state => ({
     notifications: getNotificationsState(state),
-    userMetaData: getAuthenticateduserMetaData(state),
+    userMetaData: getAuthenticatedUserMetaData(state),
     currentAuthUsername: getAuthenticatedUserName(state),
     loadingNotifications: getIsLoadingNotifications(state),
   }),

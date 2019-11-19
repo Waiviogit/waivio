@@ -18,7 +18,7 @@ import {
   getAutoCompleteSearchResults,
   getSearchObjectsResults,
   getNotifications,
-  getAuthenticateduserMetaData,
+  getAuthenticatedUserMetaData,
   getIsLoadingNotifications,
   getSearchUsersResults,
   searchObjectTypesResults,
@@ -46,7 +46,7 @@ import ModalSignUp from './ModalSignUp/ModalSignUp';
     searchByUser: getSearchUsersResults(state),
     searchByObjectType: searchObjectTypesResults(state),
     notifications: getNotifications(state),
-    userMetaData: getAuthenticateduserMetaData(state),
+    userMetaData: getAuthenticatedUserMetaData(state),
     loadingNotifications: getIsLoadingNotifications(state),
   }),
   {
@@ -59,6 +59,12 @@ import ModalSignUp from './ModalSignUp/ModalSignUp';
   },
 )
 class Topnav extends React.Component {
+  static handleScrollToTop() {
+    if (window) {
+      window.scrollTo(0, 0);
+    }
+  }
+
   static propTypes = {
     /* from decorators */
     intl: PropTypes.shape().isRequired,
@@ -96,19 +102,6 @@ class Topnav extends React.Component {
     onMenuItemClick: () => {},
     userMetaData: {},
     loadingNotifications: false,
-  };
-
-  static handleScrollToTop() {
-    if (window) {
-      window.scrollTo(0, 0);
-    }
-  }
-
-  static markers = {
-    USER: 'user',
-    WOBJ: 'wobj',
-    TYPE: 'type',
-    SELECT_BAR: 'searchSelectBar',
   };
 
   constructor(props) {
@@ -170,6 +163,13 @@ class Topnav extends React.Component {
       countArr.push({ name: 'Users', count: usersCount, type: 'user' });
     }
     return countArr;
+  };
+
+  static markers = {
+    USER: 'user',
+    WOBJ: 'wobj',
+    TYPE: 'type',
+    SELECT_BAR: 'searchSelectBar',
   };
 
   handleMoreMenuSelect(key) {
