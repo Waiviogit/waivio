@@ -140,7 +140,7 @@ const Proposition = ({
                 proposition.guide.name
               } (${intl.formatMessage({
                 id: 'paid',
-                defaultMessage: `paid`,
+                defaultMessage: `Total paid`,
               })} $${proposition.guide.total_payed})`}</div>
             </Link>
           </div>

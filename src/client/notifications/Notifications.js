@@ -24,6 +24,7 @@ import NotificationTransfer from '../components/Navigation/Notifications/Notific
 import NotificationVoteWitness from '../components/Navigation/Notifications/NotificationVoteWitness';
 import Loading from '../components/Icon/Loading';
 import './Notifications.less';
+import RightSidebar from '../app/Sidebar/RightSidebar';
 
 class Notifications extends React.Component {
   static propTypes = {
@@ -65,7 +66,12 @@ class Notifications extends React.Component {
               <LeftSidebar />
             </div>
           </Affix>
-          <div className="NotificationsPage">
+          <Affix className="rightContainer" stickPosition={77}>
+            <div className="right">
+              <RightSidebar />
+            </div>
+          </Affix>
+          <div className="NotificationsPage center">
             <div className="NotificationsPage__title">
               <h1>
                 <FormattedMessage id="notifications" defaultMessage="Notifications" />
