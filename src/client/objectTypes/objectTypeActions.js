@@ -47,7 +47,6 @@ export const getObjectType = (typeName, { limit = 15, skip = 0 } = { limit: 15, 
     type: GET_OBJECT_TYPE.ACTION,
     payload: ApiClient.getObjectType(typeName, { limit, skip, filter: activeFilters, sort }),
     meta: {
-      initialLoad: skip === 0,
       locale: usedLocale,
     },
   });
