@@ -2,7 +2,7 @@ import React, { useReducer } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { mapValues } from 'lodash';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { NavLink } from 'react-router-dom';
 import { getIsAuthenticated } from '../../../reducers';
 
@@ -88,7 +88,9 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
               disabled={Boolean(sectionItem.disabled)}
             >
               <span className="flex justify-between">
-                <FormattedMessage id={sectionItem.intlId} defaultMessage={sectionItem.name} />
+                <span className="sidenav-discover-objects__item-text">
+                  {intl.formatMessage({ id: sectionItem.intlId, defaultMessage: sectionItem.name })}
+                </span>
                 {sectionItem.meta ? <span>+{sectionItem.meta}</span> : null}
               </span>
             </NavLink>
@@ -101,7 +103,7 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
           role="presentation"
           onClick={loadMore(menuSection.name)}
         >
-          <FormattedMessage id="show_more" defaultMessage="show more" />
+          <span>{intl.formatMessage({ id: 'show_more', defaultMessage: 'show more' })}</span>
         </div>
       )}
     </ul>
