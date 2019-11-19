@@ -141,7 +141,13 @@ export function getInitialState(props) {
     draftId: uuidv4(),
     parentPermlink: WAIVIO_PARENT_PERMLINK,
     draftContent: {
-      title: '',
+      title:
+        props.campaignId && props.initObjects
+          ? `Review: ${props.initObjects
+              .filter(obj => obj.match(/^\[(.+)\]\((\S+)\)/))
+              .map(obj => obj.match(/^\[(.+)\]\((\S+)\)/)[1])
+              .join(', ')}`
+          : '',
       body: props.initObjects
         ? props.initObjects.reduce((acc, curr) => {
             const matches = curr.match(/^\[(.+)\]\((\S+)\)/);
