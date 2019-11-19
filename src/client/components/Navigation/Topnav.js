@@ -646,7 +646,22 @@ class Topnav extends React.Component {
     const { intl, autoCompleteSearchResults } = this.props;
     const { searchBarActive, dropdownOpen } = this.state;
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
-
+    const downBar = (
+      <AutoComplete.Option disabled key="all" className="Topnav__search-all-results">
+        <div className="search-btn" onClick={this.handleSearchAllResultsClick} role="presentation">
+          {intl.formatMessage(
+            {
+              id: 'search_all_results_for',
+              defaultMessage: 'Search all results for {search}',
+            },
+            { search: this.state.searchBarValue },
+          )}
+        </div>
+      </AutoComplete.Option>
+    );
+    const formattedAutoCompleteDropdown = _.isEmpty(dropdownOptions)
+      ? dropdownOptions
+      : dropdownOptions.concat([downBar]);
     return (
       <div className="Topnav">
         <div className="topnav-layout">
@@ -660,7 +675,7 @@ class Topnav extends React.Component {
             <div className="Topnav__input-container">
               <AutoComplete
                 dropdownClassName="Topnav__search-dropdown-container"
-                dataSource={dropdownOptions}
+                dataSource={formattedAutoCompleteDropdown}
                 onSearch={this.handleAutoCompleteSearch}
                 onSelect={this.handleSelectOnAutoCompleteDropdown}
                 onChange={this.handleOnChangeForAutoComplete}
