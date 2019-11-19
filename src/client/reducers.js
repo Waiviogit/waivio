@@ -56,7 +56,7 @@ export const getIsLoaded = state => fromAuth.getIsLoaded(state.auth);
 export const getIsReloading = state => fromAuth.getIsReloading(state.auth);
 export const getAuthenticatedUser = state => fromAuth.getAuthenticatedUser(state.auth);
 export const getAuthenticatedUserName = state => fromAuth.getAuthenticatedUserName(state.auth);
-export const getAuthenticateduserMetaData = state =>
+export const getAuthenticatedUserMetaData = state =>
   fromAuth.getAuthenticateduserMetaData(state.auth);
 
 export const getPosts = state => fromPosts.getPosts(state.posts);
