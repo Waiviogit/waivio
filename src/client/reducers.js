@@ -118,6 +118,11 @@ export const getIsLoadingNotifications = state => fromUser.getIsLoadingNotificat
 export const getFetchFollowListError = state => fromUser.getFetchFollowListError(state.user);
 export const getLatestNotification = state => fromUser.getLatestNotification(state.user);
 export const getUserLocation = state => fromUser.getUserLocation(state.user);
+export const getFollowingUpdates = state => fromUser.getFollowingUpdates(state.user);
+export const getFollowingUsersUpdates = state => fromUser.getFollowingUsersUpdates(state.user);
+export const getFollowingObjectsUpdatesByType = (state, objType) =>
+  fromUser.getFollowingObjectsUpdatesByType(state.user, objType);
+export const getFollowingUpdatesFetched = state => fromUser.getFollowingUpdatesFetched(state.user);
 
 export const getUser = (state, username) => fromUsers.getUser(state.users, username);
 export const getIsUserFetching = (state, username) =>
