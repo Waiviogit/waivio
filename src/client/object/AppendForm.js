@@ -39,7 +39,7 @@ import { PRIMARY_COLOR } from '../../common/constants/waivio';
 import { getLanguageText } from '../translations';
 import QuickPostEditorFooter from '../components/QuickPostEditor/QuickPostEditorFooter';
 import MapAppendObject from '../components/Maps/MapAppendObject';
-import { getField } from '../objects/WaivioObject';
+import { getField } from '../helpers/wObjectHelper';
 import { appendObject } from '../object/appendActions';
 import { isValidImage } from '../helpers/image';
 import withEditor from '../components/Editor/withEditor';
@@ -55,6 +55,7 @@ import SearchObjectsAutocomplete from '../components/EditorObject/SearchObjectsA
 import ObjectCardView from '../objectCard/ObjectCardView';
 import { getNewsFilterLayout } from './NewsFilter/newsFilterHelper';
 import CreateObject from '../post/CreateObjectModal/CreateObject';
+import { baseUrl } from '../../waivioApi/routes';
 import './AppendForm.less';
 
 @connect(
@@ -286,14 +287,14 @@ export default class AppendForm extends Component {
         }
         case objectFields.newsFilter: {
           let rulesAllow = `\n`;
-          let rulesIgnore = '';
+          let rulesIgnore = '\nIgnore list:';
           let rulesCounter = 0;
 
           this.state.allowList.forEach(rule => {
             if (!_.isEmpty(rule)) {
               rulesAllow += `\n Filter rule #${rulesCounter + 1}:`;
               rule.forEach(item => {
-                rulesAllow += ` <a href="https://waiviodev.com/object/${item.id}">${item.id}</a>,`;
+                rulesAllow += ` <a href="${baseUrl}/object/${item.id}">${item.id}</a>,`;
               });
               // eslint-disable-next-line no-plusplus
               rulesCounter++;
@@ -302,9 +303,8 @@ export default class AppendForm extends Component {
 
           this.state.ignoreList.forEach((rule, index) => {
             if (!_.isEmpty(rule)) {
-              rulesIgnore = '\nIgnore list:';
               const dotOrComma = this.state.ignoreList.length - 1 === index ? '.' : ',';
-              rulesIgnore += ` <a href="https://waiviodev.com/object/${rule.id}">${rule.id}</a>${dotOrComma}`;
+              rulesIgnore += ` <a href="${baseUrl}/object/${rule.id}">${rule.id}</a>${dotOrComma}`;
             }
           });
           return `@${author} added ${currentField} (${langReadable}):\n ${rulesAllow} ${rulesIgnore}`;

@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
+import { connect } from 'react-redux';
 import PaymentTable from './PaymentTable/PaymentTable';
 import { getLenders } from '../../../waivioApi/ApiClient';
+import Action from '../../components/Button/Action';
+import { openTransfer } from '../../wallet/walletActions';
 import './Payment.less';
 
-const Payment = ({ match, intl, userName }) => {
+// eslint-disable-next-line no-shadow
+const Payment = ({ match, intl, userName, openTransfer }) => {
   const [sponsors, setSponsors] = useState({});
   const [payable, setPayable] = useState({});
 
@@ -25,32 +28,47 @@ const Payment = ({ match, intl, userName }) => {
       .catch(e => console.log(e));
   }, []);
 
-  const titleName =
-    match.path === '/rewards/payables/@:userName'
-      ? intl.formatMessage({
-          id: 'payment_page_payables',
-          defaultMessage: 'Payables',
-        })
-      : intl.formatMessage({
-          id: 'payment_page_receivables',
-          defaultMessage: 'Receivables',
-        });
+  let titleName;
+  let isPayables;
+  if (match.path === '/rewards/payables/@:userName') {
+    titleName = intl.formatMessage({
+      id: 'payment_page_payables',
+      defaultMessage: 'Payables',
+    });
+    isPayables = true;
+  } else {
+    titleName = intl.formatMessage({
+      id: 'payment_page_receivables',
+      defaultMessage: 'Receivables',
+    });
+    isPayables = false;
+  }
+
+  const name = match.params.userName;
 
   return (
     <div className="Payment">
       <div className="Payment__title">
         <div className="Payment__title-payment">
           {titleName}
-          {` > @${userName} (${payable} SBD)`}
+          {`: ${userName} `}
+          {isPayables ? <span>&rarr;</span> : <span>&larr;</span>}
+          {` ${name} `}
         </div>
         <div className="Payment__title-pay">
-          <Link to={'/rewards/pay-now'}>
-            {intl.formatMessage({
-              id: 'payment_page_pay_now',
-              defaultMessage: 'Pay now',
-            })}
-            (mock)
-          </Link>
+          {isPayables && (
+            <Action
+              className="WalletSidebar__transfer"
+              primary
+              onClick={() => openTransfer(name, payable, 'SBD')}
+            >
+              {intl.formatMessage({
+                id: 'pay',
+                defaultMessage: 'Pay',
+              })}
+              {` ${payable} SBD`}
+            </Action>
+          )}
         </div>
       </div>
       <div className="Payment__information-row">
@@ -75,6 +93,12 @@ Payment.propTypes = {
   intl: PropTypes.shape().isRequired,
   match: PropTypes.shape().isRequired,
   userName: PropTypes.string.isRequired,
+  openTransfer: PropTypes.func.isRequired,
 };
 
-export default injectIntl(Payment);
+export default injectIntl(
+  connect(
+    null,
+    { openTransfer },
+  )(Payment),
+);

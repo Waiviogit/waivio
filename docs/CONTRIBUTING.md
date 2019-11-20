@@ -1,6 +1,6 @@
 ## Contributing to Waivio
 
-Want to get involved in Busy development? Thanks! There are plenty of ways you can help!
+Want to get involved in Waivio development? Thanks! There are plenty of ways you can help!
 
 Please take a moment to review this document in order to make the contribution process easy and effective for everyone involved.
 
@@ -22,7 +22,7 @@ Please take a moment to review this document in order to make the contribution p
 
 ### Using the issue tracker
 
-The [issue tracker](https://github.com/busyorg/busy/issues) is the preferred channel
+The [issue tracker](https://github.com/busyorg/waivio/issues) is the preferred channel
 for [bug reports](#bug-reports), [features requests](#feature-requests) and [submitting pull requests](#pull-requests).
 
 ### Bug reports
@@ -53,8 +53,8 @@ of the merits of this feature. Please provide as much detail and context as poss
 
 If you don't know where to start, feel free to contact us on our Discord server (#contributing channel).
 If you want to create your first PR take a look at our list of
-[good first issues](https://github.com/busyorg/busy/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
-or list of [help wanted issues](https://github.com/busyorg/busy/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22).
+[good first issues](https://github.com/busyorg/waivio/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+or list of [help wanted issues](https://github.com/busyorg/waivio/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22).
 Issues marked as In progress are currently taken by someone. When you found an issue that you would like to work on,
 let us know in the issue so we can mark it as In progress.
 
@@ -64,18 +64,18 @@ let us know in the issue so we can mark it as In progress.
 
 1. Fork this project.
 2. Clone your fork locally:
-   `git clone git@github.com:YourUsername/busy.git`
+   `git clone git@github.com:YourUsername/waivio.git`
 
    If you didn't add your SSH key to GitHub you can [add it](https://help.github.com/articles/connecting-to-github-with-ssh/),
    or use HTTPS clone:
 
-   `git clone https://github.com/busyorg/busy.git`
+   `git clone https://github.com/busyorg/waivio.git`
 
 3. Install dependencies: `yarn`
 4. Start the server: `yarn dev`
 5. Create branch for your changes: `git checkout -b something-amazing`
 6. Commit your changes.
-7. Create a [pull request](https://github.com/busyorg/busy/compare).
+7. Create a [pull request](https://github.com/busyorg/waivio/compare).
 
 If you have problems setting up you might find those resources helpful:
 
@@ -114,7 +114,7 @@ To start development server you need to run one command:
 yarn dev
 ```
 
-After some time (it can take few minutes) you should be able to see Busy running at http://localhost:3000
+After some time (it can take few minutes) you should be able to see Waivio running at http://localhost:3000
 
 After making some change to the code web browser will reload (in case of client code) or server will reload
 (you need to refresh page manually).
@@ -182,7 +182,7 @@ Then you can add updated files and commit them again.
 #### JavaScript heap out of memory on OSX
 
 There is known problem with development server crashing on OSX.
-https://github.com/busyorg/busy/issues/1675
+https://github.com/busyorg/waivio/issues/1675
 
 Workaround for this issue is downgrading to older version of antd.
 yarn add antd@2.13.11
@@ -234,17 +234,23 @@ Remember to use the same `id` and `defaultMessage` in default.json file and comp
 
 ## Team
 
-| Waiviogit           | Konstantin             | JM               |
-| -------------------------- | -------------------- | ---------------- |
-| ![][waiviogit]            | ![][konstantin1390]         | ![][milklim]       |
-| [[@waiviogit]             | [@konstantin1390]     | [@jm90m][@milklim] |
+| Roman           | Konstantin | Vladimir | Eugene | Max | Alex |
+|---|---|---|---|---|---|
+| ![][waiviogit] | ![][konstantin1390] | ![][milklim] | ![][eugenezherebilov] | ![][maksimoancha] | ![][grigurkoalexey] 
+| [@waiviogit] | [@konstantin1390] | [@milklim] | [@eugenezherebilov] | [@maksimoancha] | [@grigurkoalexey] 
 
 [@waiviogit]: https://github.com/waiviogit
 [@konstantin1390]: https://github.com/konstantin1390
-[@jm90m]: https://github.com/jm90m
+[@milklim]: https://github.com/milklim
+[@maksimoancha]: https://github.com/maksimoancha
+[@grigurkoalexey]: https://github.com/grigurkoalexey
+[@eugenezherebilov]: https://github.com/eugenezherebilov
 [client src]: ../src/client
 [server src]: ../src/server
 [default.json]: ../src/client/locales/default.json
-[waiviogit]: https://avatars.githubusercontent.com/waiviogit?size=56
-[konstantin1390]: https://avatars.githubusercontent.com/konstantin1390?size=56
-[milklim]: https://avatars.githubusercontent.com/milklim?size=56
+[waiviogit]: https://avatars.githubusercontent.com/waiviogit?size=150
+[konstantin1390]: https://avatars.githubusercontent.com/konstantin1390?size=150
+[milklim]: https://avatars.githubusercontent.com/milklim?size=130
+[maksimoancha]: https://avatars.githubusercontent.com/maksimoancha?size=150
+[grigurkoalexey]: https://avatars.githubusercontent.com/grigurkoalexey?size=150
+[eugenezherebilov]: https://avatars.githubusercontent.com/eugenezherebilov?size=150

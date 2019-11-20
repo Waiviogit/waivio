@@ -7,7 +7,7 @@ import { FormattedMessage } from 'react-intl';
 import { Icon } from 'antd';
 
 import Feed from '../feed/Feed';
-import { getFeed, getIsAuthenticated, getObject } from '../reducers';
+import { getFeed, getIsAuthenticated, getObject, getSuitableLanguage } from '../reducers';
 import {
   getFeedLoadingFromState,
   getFeedHasMoreFromState,
@@ -26,6 +26,7 @@ import './ObjectProfile.less';
     feed: getFeed(state),
     object: getObject(state),
     isAuthenticated: getIsAuthenticated(state),
+    usedLocale: getSuitableLanguage(state),
   }),
   {
     getObjectPosts,
@@ -44,6 +45,7 @@ export default class ObjectProfile extends React.Component {
     isAuthenticated: PropTypes.bool.isRequired,
     getObjectPosts: PropTypes.func,
     getMoreObjectPosts: PropTypes.func,
+    usedLocale: PropTypes.string,
   };
 
   static defaultProps = {
@@ -51,6 +53,7 @@ export default class ObjectProfile extends React.Component {
     location: {},
     getObjectPosts: () => {},
     getMoreObjectPosts: () => {},
+    usedLocale: 'en-US',
   };
 
   componentDidMount() {
@@ -82,11 +85,11 @@ export default class ObjectProfile extends React.Component {
   }
 
   handleCreatePost = () => {
-    const { history, object } = this.props;
+    const { history, object, usedLocale } = this.props;
     if (object && object.author_permlink) {
       let redirectUrl = `/editor?object=[${object.name}](${object.author_permlink})`;
       if (!isEmpty(object.parent)) {
-        const parentObject = getClientWObj(object.parent);
+        const parentObject = getClientWObj(object.parent, usedLocale);
         redirectUrl += `&object=[${parentObject.name}](${parentObject.author_permlink})`;
       }
       history.push(redirectUrl);

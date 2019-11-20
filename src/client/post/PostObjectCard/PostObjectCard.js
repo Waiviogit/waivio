@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Slider } from 'antd';
-import './PostObjectCard.less';
 import ObjectType from '../../object/ObjectType';
 import { getClientWObj } from '../../adapters';
 import Topic from '../../components/Button/Topic';
+import { UsedLocaleContext } from '../../Wrapper';
+import './PostObjectCard.less';
 
 const propTypes = {
   wObject: PropTypes.shape().isRequired,
 };
 
 const PostObjectCard = ({ wObject }) => {
-  const object = getClientWObj(wObject);
+  const usedLocale = useContext(UsedLocaleContext);
+  const object = getClientWObj(wObject, usedLocale);
   const pathName = `/object/${object.id}`;
   return (
     <React.Fragment>

@@ -8,15 +8,22 @@ export const LIKE_POST_START = '@post/LIKE_POST_START';
 export const LIKE_POST_SUCCESS = '@post/LIKE_POST_SUCCESS';
 export const LIKE_POST_ERROR = '@post/LIKE_POST_ERROR';
 
-export const getContent = (author, permlink, afterLike) => dispatch => {
+export const getContent = (author, permlink, afterLike) => (dispatch, getState, { steemAPI }) => {
   if (!author || !permlink) {
     return null;
   }
 
+  const doApiRequest = () => {
+    if (afterLike) {
+      return steemAPI.sendAsync('get_content', [author, permlink]);
+    }
+    return ApiClient.getContent(author, permlink);
+  };
+
   return dispatch({
     type: GET_CONTENT.ACTION,
     payload: {
-      promise: ApiClient.getContent(author, permlink).then(res => {
+      promise: doApiRequest().then(res => {
         if (res.id === 0) throw new Error('There is no such post');
         return res;
       }),

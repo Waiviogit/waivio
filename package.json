@@ -60,7 +60,7 @@
     "connected-react-router": "^6.5.2",
     "cookie-parser": "^1.4.3",
     "cross-env": "^5.0.5",
-    "debug": "~2.2.0",
+    "debug": "~2.6.9",
     "diff-match-patch": "^1.0.0",
     "draft-js": "^0.10.5",
     "embedjs": "^0.0.11",

@@ -4,7 +4,7 @@ import { push } from 'connected-react-router';
 import { bindActionCreators } from 'redux';
 import {
   getAuthenticatedUser,
-  getPendingLikes,
+  getCommentsPendingVotes,
   getFollowingList,
   getPendingFollows,
   getVotingPower,
@@ -13,7 +13,7 @@ import {
   getFollowingObjectsList,
   getPendingFollowingObjects,
 } from '../../reducers';
-import { voteCommentFromRewards as votePost } from '../../post/postActions';
+import { likeComment } from '../../comments/commentsActions';
 import { followUser, unfollowUser } from '../../user/userActions';
 import { followObject, unfollowObject } from '../../object/wobjActions';
 import CampaignFooter from './CampaignFooter';
@@ -28,12 +28,12 @@ const mapStateToProps = (state, { post, requiredObjectPermlink }) => {
     objectFollowed: getFollowingObjectsList(state).includes(requiredObjectPermlink),
   };
 
-  const pendingVote = getPendingLikes(state)[post.id];
+  const pendingVote = getCommentsPendingVotes(state).find(comment => comment.id === post.id);
 
   const pendingLike =
-    pendingVote && (pendingVote.weight > 0 || (pendingVote.weight === 0 && postState.isLiked));
+    pendingVote && (pendingVote.percent > 0 || (pendingVote.percent === 0 && postState.isLiked));
   const pendingFlag =
-    pendingVote && (pendingVote.weight < 0 || (pendingVote.weight === 0 && postState.isReported));
+    pendingVote && (pendingVote.percent < 0 || (pendingVote.percent === 0 && postState.isReported));
 
   return {
     user,
@@ -55,7 +55,7 @@ export default connect(
   dispatch =>
     bindActionCreators(
       {
-        votePost,
+        likeComment,
         followUser,
         unfollowUser,
         followObject,

@@ -100,7 +100,7 @@ class Editor extends React.Component {
         entityMap[key] = {
           ...value,
           data: loadedObject
-            ? { ...value.data, object: getClientWObj(loadedObject) }
+            ? { ...value.data, object: getClientWObj(loadedObject, this.props.locale) }
             : { ...value.data },
         };
       });

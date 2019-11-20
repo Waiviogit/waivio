@@ -12,7 +12,7 @@ const headers = {
 
 export function handleErrors(response) {
   if (!response.ok) {
-    throw Error(response.statusText);
+    throw new Error(response.statusText);
   }
   return response;
 }
@@ -51,14 +51,17 @@ export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US' }) =>
 export const getObject = (authorPermlink, username) => {
   const query = username ? `?user=${username}` : '';
 
-  return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${query}`).then(res =>
-    res.json(),
-  );
+  return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${query}`, {
+    headers: {
+      app: config.appName,
+    },
+  }).then(res => res.json());
 };
 
 export const getUsersByObject = object =>
   fetch(`${config.apiPrefix}${config.getObjects}/${object}`).then(res => res.json());
 
+// region Feed requests
 export const getFeedContentByObject = (name, limit = 10, user_languages) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${name}/posts`, {
@@ -119,36 +122,12 @@ export const getUserProfileBlog = (
       .catch(error => reject(error));
   });
 
-export const postCreateWaivioObject = requestBody =>
-  new Promise((resolve, reject) => {
-    fetch(`${config.objectsBotApiPrefix}${config.objectsBot.createObject}`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(requestBody),
-    })
-      .then(handleErrors)
-      .then(res => res.json())
-      .then(result => resolve(result))
-      .catch(error => reject(error));
-  });
-
 export const getUserFeedContent = (feedUserName, limit = 10, user_languages) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${feedUserName}${config.feed}`, {
       headers,
       method: 'POST',
       body: JSON.stringify({ limit, user_languages }),
-    })
-      .then(res => res.json())
-      .then(posts => resolve(posts))
-      .catch(error => reject(error));
-  });
-
-export const getContent = (author, permlink) =>
-  new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.post}/${author}/${permlink}`, {
-      headers,
-      method: 'GET',
     })
       .then(res => res.json())
       .then(posts => resolve(posts))
@@ -170,6 +149,31 @@ export const getMoreUserFeedContent = ({ userName, limit = 10, skip = 0, user_la
       .then(posts => resolve(posts))
       .catch(error => reject(error));
   });
+// endregion
+
+export const postCreateWaivioObject = requestBody =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.objectsBotApiPrefix}${config.objectsBot.createObject}`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(requestBody),
+    })
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getContent = (author, permlink) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.post}/${author}/${permlink}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(posts => resolve(posts))
+      .catch(error => reject(error));
+  });
 
 export const searchObjects = (searchString, objType = '', forParent, limit = 15) => {
   const requestBody = { search_string: searchString, limit };
@@ -179,7 +183,9 @@ export const searchObjects = (searchString, objType = '', forParent, limit = 15)
     headers,
     method: 'POST',
     body: JSON.stringify(requestBody),
-  }).then(res => res.json());
+  })
+    .then(handleErrors)
+    .then(res => res.json());
 };
 
 export const searchUsers = (searchString, limit = 15) =>
@@ -218,6 +224,7 @@ export const postAppendWaivioObject = postData =>
       .catch(error => reject(error));
   });
 
+// region Follow API requests
 export const getAllFollowingObjects = username =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${username}`)
@@ -239,9 +246,9 @@ export const getWobjectFollowers = (wobject, skip = 0, limit = 50) =>
       .catch(error => reject(error));
   });
 
-export const getWobjectFollowing = (wobject, skip = 0, limit = 50) =>
+export const getWobjectFollowing = (userName, skip = 0, limit = 50) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.user}/${wobject}${config.followingObjects}`, {
+    fetch(`${config.apiPrefix}${config.user}/${userName}${config.followingObjects}`, {
       headers,
       method: 'POST',
       body: JSON.stringify({ skip, limit }),
@@ -268,6 +275,52 @@ export const getAccountWithFollowingCount = username =>
       follower_count: following.follower_count,
     }),
   );
+
+export const getFollowingUpdates = (userName, count = 5) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.apiPrefix}${config.user}/${userName}${config.followingUpdates}?users_count=${count}&wobjects_count=${count}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getFollowingObjectsUpdates = (userName, objType, limit = 5, skip = 0) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.apiPrefix}${config.user}/${userName}${config.followingObjectsUpdates}?object_type=${objType}&limit=${limit}&skip=${skip}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getFollowingUsersUpdates = (userName, limit = 5, skip = 0) =>
+  new Promise((resolve, reject) => {
+    fetch(
+      `${config.apiPrefix}${config.user}/${userName}${config.followingUsersUpdates}?limit=${limit}&skip=${skip}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+// endregion
 
 export const getWobjectGallery = wobject =>
   new Promise((resolve, reject) => {
@@ -591,21 +644,6 @@ export const getCampaignByGuideNameAndObject = (guideName, object) =>
       .catch(error => reject(error));
   });
 
-//endregion
-
-export const getAuthenticatedUserMetadata = (
-  userName,
-  accessToken = Cookie.get('access_token'),
-) => {
-  const { apiPrefix, user, userMetadata } = config;
-  return fetch(`${apiPrefix}${user}/${userName}${userMetadata}`, {
-    headers: { ...headers, 'access-token': accessToken },
-    method: 'GET',
-  })
-    .then(res => res.json())
-    .then(res => _.omit(res.user_metadata, '_id'));
-};
-
 export const getLenders = ({ sponsor, user, filters }) => {
   const isSponsor = sponsor ? `?sponsor=${sponsor}` : '';
   const payable = filters && filters.payable ? `&payable=${filters.payable}` : '';
@@ -624,6 +662,18 @@ export const getLenders = ({ sponsor, user, filters }) => {
       .catch(error => reject(error));
   });
 };
+//endregion
+
+//region UserMetadata Requests
+export const getAuthenticatedUserMetadata = userName => {
+  const { apiPrefix, user, userMetadata } = config;
+  return fetch(`${apiPrefix}${user}/${userName}${userMetadata}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => _.omit(res.user_metadata, '_id'));
+};
 
 export const updateUserMetadata = (userName, data) =>
   fetch(`${config.apiPrefix}${config.user}/${userName}${config.userMetadata}`, {
@@ -631,6 +681,7 @@ export const updateUserMetadata = (userName, data) =>
     method: 'PUT',
     body: JSON.stringify({ user_metadata: data }),
   }).then(res => res.json());
+//endregion
 
 // injected as extra argument in Redux Thunk
 export const waivioAPI = {

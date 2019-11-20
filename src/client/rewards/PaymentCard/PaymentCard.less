@@ -22,11 +22,16 @@
       }
       &-row {
         display: flex;
+        align-items: center;
         font-size: medium;
         &-name {
           font-weight: 500;
           color: @blue-botticelli;
           padding-right: 10px;
+        }
+
+        &-pay {
+          display: flex;
         }
       }
     }
@@ -53,11 +58,20 @@
       font-size: medium;
       font-weight: 500;
     }
+    &-icon > img {
+      height: 25px;
+      width: 25px;
+      margin-left: 15px;
+    }
   }
 }
 
 .PaymentCard__end-wrap-icon :hover {
   cursor: pointer;
+}
+
+.WalletSidebar__transfer {
+  margin-bottom: 0;
 }
 
 @import 'PaymentCard-nightmode';

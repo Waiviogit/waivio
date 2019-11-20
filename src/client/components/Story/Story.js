@@ -25,11 +25,11 @@ import Avatar from '../Avatar';
 import NSFWStoryPreviewMessage from './NSFWStoryPreviewMessage';
 import HiddenStoryPreviewMessage from './HiddenStoryPreviewMessage';
 import DMCARemovedMessage from './DMCARemovedMessage';
-import './Story.less';
 import ObjectAvatar from '../ObjectAvatar';
 import PostedFrom from './PostedFrom';
 import WeightTag from '../WeightTag';
 import { calculateApprovePercent } from '../../helpers/wObjectHelper';
+import './Story.less';
 
 @injectIntl
 @withRouter
@@ -109,6 +109,7 @@ class Story extends React.Component {
 
   getApprovalTagLayoyt = () => {
     const percent = calculateApprovePercent(this.props.post.active_votes);
+    const { formatMessage } = this.props.intl;
     return (
       <React.Fragment>
         <Tag>
@@ -119,7 +120,15 @@ class Story extends React.Component {
             </span>
           </span>
         </Tag>
-        <span className="MinPercent">Min 70% is required</span>
+        {this.props.post.upvotedByModerator ? (
+          <span className="Story__approvedByAdmin">
+            {formatMessage({ id: 'approved_by_admin', defaultMessage: 'Approved by admin' })}
+          </span>
+        ) : (
+          <span className="MinPercent">
+            {formatMessage({ id: 'min_70_is_required', defaultMessage: 'Min 70% is required' })}
+          </span>
+        )}
       </React.Fragment>
     );
   };

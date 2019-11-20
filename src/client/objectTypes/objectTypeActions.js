@@ -5,6 +5,7 @@ import {
   getObjectTypeSorting,
   getUserLocation,
   getQueryString,
+  getSuitableLanguage,
 } from '../reducers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 
@@ -26,6 +27,7 @@ export const getObjectType = (typeName, { limit = 15, skip = 0 } = { limit: 15, 
   getState,
 ) => {
   const state = getState();
+  const usedLocale = getSuitableLanguage(state);
   const activeFilters = { ...getActiveFilters(state) };
   const sort = getObjectTypeSorting(state);
   const searchString = new URLSearchParams(getQueryString(state)).get('search');
@@ -45,7 +47,7 @@ export const getObjectType = (typeName, { limit = 15, skip = 0 } = { limit: 15, 
     type: GET_OBJECT_TYPE.ACTION,
     payload: ApiClient.getObjectType(typeName, { limit, skip, filter: activeFilters, sort }),
     meta: {
-      initialLoad: skip === 0,
+      locale: usedLocale,
     },
   });
 };

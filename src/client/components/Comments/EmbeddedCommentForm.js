@@ -102,7 +102,7 @@ class EmbeddedCommentForm extends React.Component {
         />
         <button
           onClick={this.handleSubmit}
-          disabled={isDisabledSubmit}
+          disabled={isDisabledSubmit || !bodyHTML}
           className={`EmbeddedCommentForm__button ${buttonClass}`}
         >
           {isDisabledSubmit && <Icon type="loading" />}
