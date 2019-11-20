@@ -9,10 +9,30 @@ import { openTransfer } from '../../wallet/walletActions';
 import './PaymentCard.less';
 
 // eslint-disable-next-line no-shadow
-const PaymentCard = ({ intl, payable, name, alias, history, path, openTransfer }) => {
+const PaymentCard = ({ intl, payable, name, alias, history, path, openTransfer, match }) => {
   const handleSetUser = () => {
     history.push(path);
   };
+
+  let renderTransferButton = (
+    <Action
+      className="WalletSidebar__transfer"
+      primary={payable >= 0}
+      onClick={() => openTransfer(name, payable, 'SBD')}
+      disabled={payable <= 0}
+    >
+      {intl.formatMessage({
+        id: 'pay',
+        defaultMessage: 'Pay',
+      })}
+      {` ${payable && payable.toFixed(2)} SBD`}
+    </Action>
+  );
+
+  if (match.path === '/rewards/receivables') {
+    renderTransferButton = <span>{` ${payable && payable.toFixed(2)} SBD`}</span>;
+  }
+
   return (
     <div className="PaymentCard">
       <div className="PaymentCard__content">
@@ -25,20 +45,8 @@ const PaymentCard = ({ intl, payable, name, alias, history, path, openTransfer }
         </div>
       </div>
       <div className="PaymentCard__end-wrap">
-        <div className="PaymentCard__end-wrap-payable"> </div>
         <div className="PaymentCard__content-name-wrap-row-pay">
-          <Action
-            className="WalletSidebar__transfer"
-            primary={payable >= 0}
-            onClick={() => openTransfer(name, payable, 'SBD')}
-            disabled={payable <= 0}
-          >
-            {intl.formatMessage({
-              id: 'pay',
-              defaultMessage: 'Pay',
-            })}
-            {` ${payable && payable.toFixed(2)} SBD`}
-          </Action>
+          {renderTransferButton}
           <div className="PaymentCard__end-wrap-icon">
             {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
             <img
@@ -61,6 +69,7 @@ PaymentCard.propTypes = {
   history: PropTypes.shape().isRequired,
   path: PropTypes.string.isRequired,
   openTransfer: PropTypes.func.isRequired,
+  match: PropTypes.shape().isRequired,
 };
 
 PaymentCard.defaultProps = {
