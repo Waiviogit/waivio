@@ -11,7 +11,7 @@ import SidebarMenu from '../SidebarMenu/SidebarMenu';
 import { getClientWObj } from '../../../adapters';
 import Loading from '../../Icon/Loading';
 
-const itemsCount = 3;
+const itemsCount = 5;
 const usersSection = 'People';
 function buildFollowingUpdatesMenuConfig(updates) {
   const config = {};
