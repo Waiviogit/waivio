@@ -61,7 +61,6 @@ const menuConfig = {
       },
     ],
   },
-
 };
 
 const SidebarMenuContainer = props => {
