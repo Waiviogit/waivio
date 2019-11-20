@@ -312,8 +312,7 @@ class Topnav extends React.Component {
   handleClickMenu = e => this.setState({ selectedPage: e.key });
 
   handleScroll = () => {
-    let currentScrollPos = null;
-    if(window) currentScrollPos = window.pageYOffset;
+    const currentScrollPos = window && window.pageYOffset;
     const visible = this.prevScrollpos < currentScrollPos;
 
     this.prevScrollpos = currentScrollPos;
