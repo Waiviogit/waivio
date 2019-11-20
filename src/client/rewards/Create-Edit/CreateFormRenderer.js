@@ -167,7 +167,7 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.campaignName.name, {
             rules: fields.campaignName.rules,
             initialValue: campaignName,
-          })(<Input disabled={disabled} />)}
+          })(<Input disabled={disabled} autoFocus />)}
           <div className="CreateReward__field-caption">{fields.campaignName.caption}</div>
         </Form.Item>
 
@@ -212,6 +212,7 @@ const CreateFormRenderer = props => {
               itemsIdsToOmit={sponsorsIdsToOmit}
               placeholder={fields.sponsorsList.placeholder}
               style={{ width: '100%' }}
+              autoFocus={false}
             />,
           )}
           <div className="CreateReward__field-caption">{fields.sponsorsList.caption}</div>
@@ -226,6 +227,7 @@ const CreateFormRenderer = props => {
               handleSelect={handlers.handleSetCompensationAccount}
               placeholder={fields.compensationAccount.placeholder}
               style={{ width: '100%' }}
+              autoFocus={false}
             />,
           )}
           <div className="CreateReward__field-caption">{fields.compensationAccount.caption}</div>
@@ -275,6 +277,7 @@ const CreateFormRenderer = props => {
               handleSelect={handlers.setPrimaryObject}
               isPermlinkValue={false}
               disabled={disabled}
+              autoFocus={false}
             />,
           )}
           <div className="CreateReward__field-caption">{fields.primaryObject.caption}</div>
