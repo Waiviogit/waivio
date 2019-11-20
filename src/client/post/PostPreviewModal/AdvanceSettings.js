@@ -109,15 +109,13 @@ class AdvanceSettings extends Component {
               {intl.formatMessage({ id: 'like_post', defaultMessage: 'Like this post' })}
             </Checkbox>
           </div>
-          {linkedObjects.length > 1 && (
-            <ObjectWeights
-              intl={intl}
-              linkedObjects={linkedObjects}
-              objPercentage={objPercentage}
-              weightBuffer={weightBuffer}
-              onPercentChange={this.handlePercentChange}
-            />
-          )}
+          <ObjectWeights
+            intl={intl}
+            linkedObjects={linkedObjects}
+            objPercentage={objPercentage}
+            weightBuffer={weightBuffer}
+            onPercentChange={this.handlePercentChange}
+          />
         </Collapse.Panel>
       </Collapse>
     );

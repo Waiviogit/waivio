@@ -9,7 +9,7 @@ import PolicyConfirmation from '../../components/PolicyConfirmation/PolicyConfir
 import AdvanceSettings from './AdvanceSettings';
 import CheckReviewModal from '../CheckReviewModal/CheckReviewModal';
 import { isContentValid, splitPostContent } from '../../helpers/postHelpers';
-import { handleWeightChange, setObjPercents } from '../../helpers/wObjInfluenceHelper';
+import { handleWeightChange } from '../../helpers/wObjInfluenceHelper';
 import { rewardsValues } from '../../../common/constants/rewards';
 import BBackTop from '../../components/BBackTop';
 import './PostPreviewModal.less';
@@ -18,6 +18,10 @@ const isTopicValid = topic => /^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$/.test(topic);
 
 @injectIntl
 class PostPreviewModal extends Component {
+  static findScrollElement() {
+    return document.querySelector('.post-preview-modal');
+  }
+
   static propTypes = {
     intl: PropTypes.shape(),
     isPublishing: PropTypes.bool,
@@ -50,10 +54,6 @@ class PostPreviewModal extends Component {
     isUpdating: false,
   };
 
-  static findScrollElement() {
-    return document.querySelector('.post-preview-modal');
-  }
-
   constructor(props) {
     super(props);
 
@@ -61,7 +61,6 @@ class PostPreviewModal extends Component {
       isModalOpen: false,
       title: '',
       body: '',
-      objPercentage: setObjPercents(props.linkedObjects, props.objPercentage),
       weightBuffer: 0,
       isConfirmed: false,
       // Check review modal
@@ -97,13 +96,11 @@ class PostPreviewModal extends Component {
 
   showModal = () => {
     const { postTitle, postBody } = splitPostContent(this.props.content);
-    const objPercentage = setObjPercents(this.props.linkedObjects, this.props.objPercentage);
     this.setState({
       isModalOpen: true,
       title: postTitle,
       body: postBody,
       weightBuffer: 0,
-      objPercentage,
     });
   };
 
@@ -124,10 +121,11 @@ class PostPreviewModal extends Component {
   handleTopicsChange = topics => this.props.onTopicsChange(topics);
 
   handlePercentChange = (objId, percent) => {
-    const { objPercentage, weightBuffer } = this.state;
-    const nextState = handleWeightChange(objPercentage, objId, percent, weightBuffer);
-    this.setState(nextState);
-    if (nextState.weightBuffer === 0) this.props.onPercentChange(nextState.objPercentage);
+    const { objPercentage, onPercentChange } = this.props;
+    const nextState = handleWeightChange(objPercentage, objId, percent, this.state.weightBuffer);
+    this.setState({ weightBuffer: nextState.weightBuffer }, () =>
+      onPercentChange(nextState.objPercentage),
+    );
   };
 
   handleReviewSubmit = () => {
@@ -143,16 +141,17 @@ class PostPreviewModal extends Component {
   };
 
   render() {
-    const { isModalOpen, isConfirmed, body, title, weightBuffer, objPercentage } = this.state;
+    const { body, isConfirmed, isModalOpen, title, weightBuffer } = this.state;
     const {
+      content,
       intl,
       isPublishing,
-      content,
-      topics,
+      isUpdating,
       linkedObjects,
+      objPercentage,
       reviewData,
       settings,
-      isUpdating,
+      topics,
     } = this.props;
     return (
       <React.Fragment>
