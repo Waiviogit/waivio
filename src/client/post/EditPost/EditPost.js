@@ -189,11 +189,13 @@ class EditPost extends Component {
     const currDraft = this.props.draftPosts.find(d => d.draftId === this.props.draftId);
     const oldMetadata = currDraft && currDraft.jsonMetadata;
     const waivioData = {
-      wobjects: linkedObjects.map(obj => ({
-        objectName: obj.name,
-        author_permlink: obj.id,
-        percent: objPercentage[obj.id].percent,
-      })),
+      wobjects: linkedObjects
+        .filter(obj => objPercentage[obj.id].percent > 0)
+        .map(obj => ({
+          objectName: obj.name,
+          author_permlink: obj.id,
+          percent: objPercentage[obj.id].percent,
+        })),
     };
 
     postData.jsonMetadata = createPostMetadata(postBody, topics, oldMetadata, waivioData);
