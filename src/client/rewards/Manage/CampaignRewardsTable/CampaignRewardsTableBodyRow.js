@@ -40,12 +40,18 @@ const CampaignRewardsTableRow = ({
     setLoad(true);
     validateActivationCampaign(activationCampaignData)
       .then(() => {
-        activateCampaign(currentItem, activationCampaignData.permlink).then(() => {
-          toggleModal(false);
-          message.success(`Campaign '${currentItem.name}' - has been activated`);
-          setLoad(false);
-          setActivationStatus('activated');
-        });
+        activateCampaign(currentItem, activationCampaignData.permlink)
+          .then(() => {
+            toggleModal(false);
+            message.success(`Campaign '${currentItem.name}' - has been activated`);
+            setLoad(false);
+            setActivationStatus('activated');
+          })
+          .catch(e => {
+            toggleModal(false);
+            message.error(e.error_description);
+            setLoad(false);
+          });
       })
       .catch(() => {
         message.error(`Can't activate campaign'${currentItem.name}', try again later`);
@@ -67,12 +73,18 @@ const CampaignRewardsTableRow = ({
     setLoad(true);
     validateInactivationCampaign(inactivationCampaignData)
       .then(() => {
-        inactivateCampaign(itemOnInactivate, inactivationCampaignData.permlink).then(() => {
-          toggleModal(false);
-          message.success(`Campaign '${currentItem.name}' - has been inactivated`);
-          setLoad(false);
-          setActivationStatus('inactivated');
-        });
+        inactivateCampaign(itemOnInactivate, inactivationCampaignData.permlink)
+          .then(() => {
+            toggleModal(false);
+            message.success(`Campaign '${currentItem.name}' - has been inactivated`);
+            setLoad(false);
+            setActivationStatus('inactivated');
+          })
+          .catch(e => {
+            toggleModal(false);
+            message.error(e.error_description);
+            setLoad(false);
+          });
       })
       .catch(() => {
         message.error(`Can't inactivate campaign'${currentItem.name}', try again later`);
