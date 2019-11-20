@@ -23,7 +23,10 @@ const CampaignRewardsTableRow = ({
   const [activationStatus, setActivationStatus] = useState('');
   const [activationPermlink, setActivationPermlink] = useState('');
   const isChecked = currentItem.status === 'active' || currentItem.status === 'payed';
-  const isInactive = currentItem.status === 'inactive';
+  const isInactive =
+    currentItem.status === 'inactive' ||
+    currentItem.status === 'expired' ||
+    currentItem.status === 'deleted';
 
   const activateCamp = () => {
     const generatedPermlink = `activate-${rewardPostContainerData.author}-${generatePermlink()}`;

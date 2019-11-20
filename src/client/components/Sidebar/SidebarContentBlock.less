@@ -29,6 +29,9 @@
   &__content {
     padding: 0 16px;
 
+    &.collapsible-block {
+      padding: 0;
+    }
     .collapsible-block {
       &__title {
         display: flex;
@@ -72,6 +75,12 @@
 
         &__label {
           font-size: 16px;
+        }
+
+        .sidenav-discover-objects__item-text {
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
         }
       }
 
