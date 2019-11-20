@@ -165,6 +165,7 @@ class Topnav extends React.Component {
     return countArr;
   };
 
+  // eslint-disable-next-line react/sort-comp
   static markers = {
     USER: 'user',
     WOBJ: 'wobj',
