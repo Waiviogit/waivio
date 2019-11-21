@@ -12,7 +12,6 @@ const LINKS = {
   FEED_PROMOTED: '/promoted',
   REWARDS: '/rewards',
   DISCOVER: '/discover-objects',
-  ACTIVITY: '/activity',
   ABOUT: '/object/ylr-waivio',
 };
 const FEED_URLS = [LINKS.FEED_HOT, LINKS.FEED_NEW, LINKS.FEED_TRENDING];
@@ -53,18 +52,6 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
           <FormattedMessage id="discover" defaultMessage="Discover" />
         </Link>
       </li>
-      {authenticated && (
-        <li className="TopNavigation__item">
-          <Link
-            to={LINKS.ACTIVITY}
-            className={classNames('TopNavigation__link', {
-              'TopNavigation__link--active': pathname === LINKS.ACTIVITY,
-            })}
-          >
-            <FormattedMessage id="activity" defaultMessage="Activity" />
-          </Link>
-        </li>
-      )}
       <li className="TopNavigation__item">
         <Link
           to={LINKS.ABOUT}
