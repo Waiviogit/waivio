@@ -56,15 +56,15 @@ const MobileNavigation = ({ match, formatMessage }) => {
     }
   }
 
-  const title = formatMessage({ id: `mobnav_${filterName}`, defaultMessage: 'Default' });
+  const title = formatMessage({ id: `mobnav_${filterName}`, defaultMessage: filterName });
 
   return (
     <React.Fragment>
       <span className="discover-objects-header__title">
         <span className="discover-objects-header__topic ttc">
-          {formatMessage({ id: `mobnav_${pageName}`, defaultMessage: 'Personal' })}:&nbsp;
+          {formatMessage({ id: `mobnav_${pageName}`, defaultMessage: pageName })}:&nbsp;
         </span>
-        <span className="ttc">{title !== 'Default' ? title : filterName}</span>&nbsp;
+        <span className="ttc">{title}</span>&nbsp;
         <span className="discover-objects-header__selector">
           (
           <span className="underline" role="presentation" onClick={() => setModalVisibility(true)}>
