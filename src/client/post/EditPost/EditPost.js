@@ -4,7 +4,7 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Badge } from 'antd';
-import { get, debounce, has, kebabCase, omit, throttle, uniqBy } from 'lodash';
+import { debounce, get, has, kebabCase, throttle, uniqBy } from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
 import { getCampaignById } from '../../../waivioApi/ApiClient';
 import {
@@ -24,7 +24,7 @@ import PostObjectCard from '../PostObjectCard/PostObjectCard';
 import { Entity, toMarkdown } from '../../components/EditorExtended';
 import LastDraftsContainer from '../Write/LastDraftsContainer';
 import ObjectCreation from '../../components/Sidebar/ObjectCreation/ObjectCreation';
-import { setInitialObjPercents } from '../../helpers/wObjInfluenceHelper';
+import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import './EditPost.less';
 
 const getLinkedObjects = contentStateRaw => {
@@ -122,7 +122,7 @@ class EditPost extends Component {
     const linkedObjects = getLinkedObjects(rawContent);
     const isLinkedObjectsChanged = this.state.linkedObjects.length !== linkedObjects.length;
     if (isLinkedObjectsChanged) {
-      const objPercentage = setInitialObjPercents(linkedObjects, this.state.objPercentage);
+      const objPercentage = setObjPercents(linkedObjects, this.state.objPercentage);
       nextState.linkedObjects = linkedObjects;
       nextState.objPercentage = objPercentage;
     }
@@ -148,6 +148,15 @@ class EditPost extends Component {
   handleSubmit() {
     const postData = this.buildPost();
     this.props.createPost(postData);
+  }
+
+  handleToggleLinkedObject(objId, isLinked) {
+    const { linkedObjects, objPercentage } = this.state;
+    const updPercentage = {
+      ...objPercentage,
+      [objId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value
+    };
+    this.setState({ objPercentage: setObjPercents(linkedObjects, updPercentage) });
   }
 
   buildPost() {
@@ -282,8 +291,7 @@ class EditPost extends Component {
               <PostObjectCard
                 isLinked={get(objPercentage, [wObj.id, 'percent'], 0) > 0}
                 wObject={wObj}
-                // onToggle={this.handleToggleLinkedObject}
-                onToggle={e => console.log('-->', e)}
+                onToggle={this.handleToggleLinkedObject}
                 key={wObj.id}
               />
             ))}

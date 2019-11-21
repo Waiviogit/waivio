@@ -9,7 +9,6 @@ import PolicyConfirmation from '../../components/PolicyConfirmation/PolicyConfir
 import AdvanceSettings from './AdvanceSettings';
 import CheckReviewModal from '../CheckReviewModal/CheckReviewModal';
 import { isContentValid, splitPostContent } from '../../helpers/postHelpers';
-import { handleWeightChange } from '../../helpers/wObjInfluenceHelper';
 import { rewardsValues } from '../../../common/constants/rewards';
 import BBackTop from '../../components/BBackTop';
 import './PostPreviewModal.less';
@@ -61,7 +60,6 @@ class PostPreviewModal extends Component {
       isModalOpen: false,
       title: '',
       body: '',
-      weightBuffer: 0,
       isConfirmed: false,
       // Check review modal
       isCheckReviewModalOpen: false,
@@ -95,13 +93,11 @@ class PostPreviewModal extends Component {
   };
 
   showModal = () => {
-    const { objPercentage } = this.props;
     const { postTitle, postBody } = splitPostContent(this.props.content);
     this.setState({
       isModalOpen: true,
       title: postTitle,
       body: postBody,
-      weightBuffer: Object.values(objPercentage).reduce((res, curr) => res - curr.percent, 100),
     });
   };
 
@@ -123,10 +119,11 @@ class PostPreviewModal extends Component {
 
   handlePercentChange = (objId, percent) => {
     const { objPercentage, onPercentChange } = this.props;
-    const nextState = handleWeightChange(objPercentage, objId, percent, this.state.weightBuffer);
-    this.setState({ weightBuffer: nextState.weightBuffer }, () =>
-      onPercentChange(nextState.objPercentage),
-    );
+    const nextObjPercentage = {
+      ...objPercentage,
+      [objId]: { percent },
+    };
+    onPercentChange(nextObjPercentage);
   };
 
   handleReviewSubmit = () => {
@@ -142,7 +139,7 @@ class PostPreviewModal extends Component {
   };
 
   render() {
-    const { body, isConfirmed, isModalOpen, title, weightBuffer } = this.state;
+    const { body, isConfirmed, isModalOpen, title } = this.state;
     const {
       content,
       intl,
@@ -158,18 +155,18 @@ class PostPreviewModal extends Component {
       <React.Fragment>
         {isModalOpen && (
           <Modal
-            title={intl.formatMessage({ id: 'preview', defaultMessage: 'Preview' })}
-            style={{ top: 0 }}
-            visible={isModalOpen}
             centered={false}
             closable
             confirmLoading={false}
-            wrapClassName={`post-preview-modal${isPublishing ? ' publishing' : ''}`}
-            width={800}
             footer={null}
-            onCancel={this.hideModal}
-            zIndex={1500}
             maskClosable={false}
+            style={{ top: 0 }}
+            title={intl.formatMessage({ id: 'preview', defaultMessage: 'Preview' })}
+            visible={isModalOpen}
+            width={800}
+            wrapClassName={`post-preview-modal${isPublishing ? ' publishing' : ''}`}
+            zIndex={1500}
+            onCancel={this.hideModal}
           >
             <BBackTop isModal target={PostPreviewModal.findScrollElement} />
             <h1 className="StoryFull__title preview">{title}</h1>
@@ -205,7 +202,6 @@ class PostPreviewModal extends Component {
               <AdvanceSettings
                 linkedObjects={linkedObjects}
                 objPercentage={objPercentage}
-                weightBuffer={weightBuffer}
                 settings={settings}
                 onSettingsChange={this.handleSettingsChange}
                 onPercentChange={this.handlePercentChange}
@@ -213,12 +209,12 @@ class PostPreviewModal extends Component {
             )}
             <div className="edit-post-controls">
               <Button
+                className="edit-post__submit-btn"
+                disabled={!isConfirmed}
                 htmlType="submit"
-                onClick={this.handleSubmit}
                 loading={isPublishing}
                 size="large"
-                disabled={!isConfirmed}
-                className="edit-post__submit-btn"
+                onClick={this.handleSubmit}
               >
                 {intl.formatMessage({ id: 'publish', defaultMessage: 'Publish' })}
               </Button>
@@ -228,11 +224,11 @@ class PostPreviewModal extends Component {
         {reviewData && (
           <CheckReviewModal
             intl={intl}
-            postBody={body}
             isCheckReviewModalOpen={this.state.isCheckReviewModalOpen}
             isReviewValid={this.state.isReviewValid}
-            reviewData={reviewData}
             linkedObjects={linkedObjects}
+            postBody={body}
+            reviewData={reviewData}
             onCancel={this.hideCheckReviewModal}
             onEdit={this.showEditor}
             onSubmit={this.handleReviewSubmit}

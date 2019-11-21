@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
@@ -56,58 +56,67 @@ const ObjectWeights = ({
   isLinkedObjectsValid,
   linkedObjects,
   objPercentage,
-  weightBuffer,
   onPercentChange,
-}) => (
-  <div className="object-weights">
-    <div className="object-weights__header">
-      <div className="title">
-        {intl.formatMessage({ id: 'object_weights', defaultMessage: 'Object weights' })}
+}) => {
+  const [weightBuffer, setWeightBuffer] = useState(
+    Object.values(objPercentage).reduce((res, curr) => res - curr.percent, 100),
+  );
+  useEffect(() => {
+    setWeightBuffer(Object.values(objPercentage).reduce((res, curr) => res - curr.percent, 100));
+  }, objPercentage);
+  return (
+    <div className="object-weights">
+      <div className="object-weights__header">
+        <div className="title">
+          {intl.formatMessage({ id: 'object_weights', defaultMessage: 'Object weights' })}
+        </div>
+        <div
+          className={classNames('weight-buffer', {
+            hide: weightBuffer === 0 || weightBuffer === 100,
+            'validation-error': !isLinkedObjectsValid && weightBuffer > 0,
+          })}
+          title={intl.formatMessage({
+            id: 'linked_objects_remaining',
+            defaultMessage: 'Remaining',
+          })}
+        >
+          <Progress
+            status="active"
+            showInfo
+            percent={weightBuffer}
+            strokeWidth={5}
+            strokeColor="orange"
+            trailColor="red"
+          />
+        </div>
       </div>
-      <div
-        className={classNames('weight-buffer', {
-          hide: weightBuffer === 0,
-          'validation-error': !isLinkedObjectsValid && weightBuffer > 0,
-        })}
-        title={intl.formatMessage({ id: 'linked_objects_remaining', defaultMessage: 'Remaining' })}
-      >
-        <Progress
-          status="active"
-          showInfo
-          percent={weightBuffer}
-          strokeWidth={5}
-          strokeColor="orange"
-          trailColor="red"
+      {Boolean(!isLinkedObjectsValid && weightBuffer > 0) && (
+        <div className="object-weights__buffer-validation-msg">
+          <FormattedMessage
+            id="linked_objects_buffer_validation"
+            defaultMessage="Buffer must be empty"
+          />
+        </div>
+      )}
+      {linkedObjects.map(obj => (
+        <ObjectWeight
+          key={obj.id}
+          objId={obj.id}
+          objName={obj.name}
+          percentValue={objPercentage[obj.id].percent}
+          percentMax={objPercentage[obj.id].percent + weightBuffer}
+          onPercentChange={onPercentChange}
         />
-      </div>
+      ))}
     </div>
-    {Boolean(!isLinkedObjectsValid && weightBuffer > 0) && (
-      <div className="object-weights__buffer-validation-msg">
-        <FormattedMessage
-          id="linked_objects_buffer_validation"
-          defaultMessage="Buffer must be empty"
-        />
-      </div>
-    )}
-    {linkedObjects.map(obj => (
-      <ObjectWeight
-        key={obj.id}
-        objId={obj.id}
-        objName={obj.name}
-        percentValue={objPercentage[obj.id].percent}
-        percentMax={objPercentage[obj.id].max}
-        onPercentChange={onPercentChange}
-      />
-    ))}
-  </div>
-);
+  );
+};
 
 ObjectWeights.propTypes = {
   intl: PropTypes.shape().isRequired,
   isLinkedObjectsValid: PropTypes.bool,
   linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
   objPercentage: PropTypes.shape(),
-  weightBuffer: PropTypes.number,
   onPercentChange: PropTypes.func,
 };
 
@@ -116,7 +125,6 @@ ObjectWeights.defaultProps = {
   isLinkedObjectsValid: true,
   linkedObjects: [],
   objPercentage: {},
-  weightBuffer: 0,
   onPercentChange: () => {},
 };
 
