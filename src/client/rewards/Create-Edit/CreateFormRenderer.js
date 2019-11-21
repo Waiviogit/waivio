@@ -167,7 +167,7 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.campaignName.name, {
             rules: fields.campaignName.rules,
             initialValue: campaignName,
-          })(<Input disabled={disabled} />)}
+          })(<Input disabled={disabled} autoFocus />)}
           <div className="CreateReward__field-caption">{fields.campaignName.caption}</div>
         </Form.Item>
 
@@ -212,6 +212,7 @@ const CreateFormRenderer = props => {
               itemsIdsToOmit={sponsorsIdsToOmit}
               placeholder={fields.sponsorsList.placeholder}
               style={{ width: '100%' }}
+              autoFocus={false}
             />,
           )}
           <div className="CreateReward__field-caption">{fields.sponsorsList.caption}</div>
@@ -226,6 +227,7 @@ const CreateFormRenderer = props => {
               handleSelect={handlers.handleSetCompensationAccount}
               placeholder={fields.compensationAccount.placeholder}
               style={{ width: '100%' }}
+              autoFocus={false}
             />,
           )}
           <div className="CreateReward__field-caption">{fields.compensationAccount.caption}</div>
@@ -262,7 +264,9 @@ const CreateFormRenderer = props => {
           })(<Input type="number" disabled={disabled} />)}
         </Form.Item>
 
-        <Form.Item label={fields.primaryObject.label}>
+        <Form.Item
+          label={<span className="CreateReward__label">{fields.primaryObject.label}</span>}
+        >
           {getFieldDecorator(fields.primaryObject.name, {
             rules: fields.primaryObject.rules,
             initialValue: primaryObject,
@@ -275,13 +279,16 @@ const CreateFormRenderer = props => {
               handleSelect={handlers.setPrimaryObject}
               isPermlinkValue={false}
               disabled={disabled}
+              autoFocus={false}
             />,
           )}
           <div className="CreateReward__field-caption">{fields.primaryObject.caption}</div>
           <div className="CreateReward__objects-wrap">{renderPrimaryObject}</div>
         </Form.Item>
 
-        <Form.Item label={fields.secondaryObject.label}>
+        <Form.Item
+          label={<span className="CreateReward__label">{fields.secondaryObject.label}</span>}
+        >
           {getFieldDecorator(fields.secondaryObject.name, {
             rules: fields.secondaryObject.rules,
             initialValue: secondaryObjectsList,
