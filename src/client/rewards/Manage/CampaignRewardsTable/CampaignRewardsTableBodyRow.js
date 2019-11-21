@@ -53,8 +53,18 @@ const CampaignRewardsTableRow = ({
             setLoad(false);
           });
       })
-      .catch(() => {
-        message.error(`Can't activate campaign'${currentItem.name}', try again later`);
+      .catch(e => {
+        toggleModal(false);
+        if (e && e.error && e.error === 'Expiration time is invalid') {
+          message.error(
+            intl.formatMessage({
+              id: 'manage_page_expiration_time_is_invalid',
+              defaultMessage: 'Expiration time is invalid, please, check expire data!',
+            }),
+          );
+        } else {
+          message.error(`Can't activate campaign'${currentItem.name}', try again later`);
+        }
         setLoad(false);
       });
   };
@@ -87,6 +97,7 @@ const CampaignRewardsTableRow = ({
           });
       })
       .catch(() => {
+        toggleModal(false);
         message.error(`Can't inactivate campaign'${currentItem.name}', try again later`);
         setLoad(false);
       });
