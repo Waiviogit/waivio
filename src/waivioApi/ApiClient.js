@@ -17,6 +17,13 @@ export function handleErrors(response) {
   return response;
 }
 
+export function handleValidateCampaignErrors(response) {
+  if (!response.ok) {
+    return response.json().then(data => Promise.reject(data));
+  }
+  return response;
+}
+
 export const getRecommendedObjects = () =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
     headers,
@@ -562,6 +569,7 @@ export const validateActivationCampaign = data =>
       method: 'POST',
       body: JSON.stringify(data),
     })
+      .then(handleValidateCampaignErrors)
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));
@@ -574,6 +582,7 @@ export const validateInactivationCampaign = data =>
       method: 'POST',
       body: JSON.stringify(data),
     })
+      .then(handleErrors)
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));
@@ -586,6 +595,7 @@ export const reserveActivatedCampaign = data =>
       method: 'POST',
       body: JSON.stringify(data),
     })
+      .then(handleErrors)
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));
@@ -598,6 +608,7 @@ export const rejectReservationCampaign = data =>
       method: 'POST',
       body: JSON.stringify(data),
     })
+      .then(handleErrors)
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));

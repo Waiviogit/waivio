@@ -264,7 +264,9 @@ const CreateFormRenderer = props => {
           })(<Input type="number" disabled={disabled} />)}
         </Form.Item>
 
-        <Form.Item label={fields.primaryObject.label}>
+        <Form.Item
+          label={<span className="CreateReward__label">{fields.primaryObject.label}</span>}
+        >
           {getFieldDecorator(fields.primaryObject.name, {
             rules: fields.primaryObject.rules,
             initialValue: primaryObject,
@@ -284,7 +286,9 @@ const CreateFormRenderer = props => {
           <div className="CreateReward__objects-wrap">{renderPrimaryObject}</div>
         </Form.Item>
 
-        <Form.Item label={fields.secondaryObject.label}>
+        <Form.Item
+          label={<span className="CreateReward__label">{fields.secondaryObject.label}</span>}
+        >
           {getFieldDecorator(fields.secondaryObject.name, {
             rules: fields.secondaryObject.rules,
             initialValue: secondaryObjectsList,
