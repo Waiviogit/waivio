@@ -16,58 +16,89 @@ const SidenavDiscoverObjects = ({ withTitle }) => {
   // state
   const [displayedTypesCount, setTypesCount] = useState(typesLimit);
   return (
-    <ul className="sidenav-discover-objects Sidenav">
-      {withTitle && (
-        <div className="Sidenav__section-title">
-          <FormattedMessage id="objects" defaultMessage="Objects" />:
-        </div>
-      )}
-      {isLoading ? (
-        <SkeletonCustom
-          className="sidenav-discover-objects__loading"
-          isLoading={isLoading}
-          randomWidth
-          rows={typesLimit + 1}
-          width={170}
-        />
-      ) : (
-        <React.Fragment>
-          <li key="all-types" className="ttc">
-            <NavLink
-              to={`/discover-objects`}
-              isActive={() => pathname === '/discover-objects'}
-              className="sidenav-discover-objects__item"
-              activeClassName="Sidenav__item--active"
-            >
-              <FormattedMessage id="all" defaultMessage="All" />
-            </NavLink>
-          </li>
-          {Object.values(objectTypes)
-            .slice(0, displayedTypesCount)
-            .map(type => (
-              <li key={`${type.author}/${type.permlink}`} className="ttc">
-                <NavLink
-                  to={`/discover-objects/${type.name}`}
-                  isActive={() => pathname.includes(type.name)}
-                  className="sidenav-discover-objects__item"
-                  activeClassName="Sidenav__item--active"
-                >
-                  {type.name}
-                </NavLink>
-              </li>
-            ))}
-          {displayedTypesCount < size(objectTypes) ? (
-            <div
-              className="sidenav-discover-objects__show-more"
-              role="presentation"
-              onClick={() => setTypesCount(displayedTypesCount + typesLimit)}
-            >
-              <FormattedMessage id="show_more" defaultMessage="show more" />
-            </div>
-          ) : null}
-        </React.Fragment>
-      )}
-    </ul>
+    <React.Fragment>
+      <ul className="sidenav-discover-objects Sidenav">
+        {withTitle && (
+          <div className="Sidenav__section-title">
+            <FormattedMessage id="objects" defaultMessage="Objects" />:
+          </div>
+        )}
+        {isLoading ? (
+          <SkeletonCustom
+            className="sidenav-discover-objects__loading"
+            isLoading={isLoading}
+            randomWidth
+            rows={typesLimit + 1}
+            width={170}
+          />
+        ) : (
+          <React.Fragment>
+            <li key="all-types" className="ttc">
+              <NavLink
+                to={`/discover-objects`}
+                isActive={() => pathname === '/discover-objects'}
+                className="sidenav-discover-objects__item"
+                activeClassName="Sidenav__item--active"
+              >
+                <FormattedMessage id="all" defaultMessage="All" />
+              </NavLink>
+            </li>
+            {Object.values(objectTypes)
+              .slice(0, displayedTypesCount)
+              .map(type => (
+                <li key={`${type.author}/${type.permlink}`} className="ttc">
+                  <NavLink
+                    to={`/discover-objects/${type.name}`}
+                    isActive={() => pathname.includes(type.name)}
+                    className="sidenav-discover-objects__item"
+                    activeClassName="Sidenav__item--active"
+                  >
+                    {type.name}
+                  </NavLink>
+                </li>
+              ))}
+            {displayedTypesCount < size(objectTypes) ? (
+              <div
+                className="sidenav-discover-objects__show-more"
+                role="presentation"
+                onClick={() => setTypesCount(displayedTypesCount + typesLimit)}
+              >
+                <FormattedMessage id="show_more" defaultMessage="show more" />
+              </div>
+            ) : null}
+          </React.Fragment>
+        )}
+      </ul>
+      <ul className="sidenav-discover-objects Sidenav mt3">
+        {withTitle && (
+          <div className="Sidenav__section-title">
+            <FormattedMessage id="users" defaultMessage="Users" />:
+          </div>
+        )}
+        {isLoading ? (
+          <SkeletonCustom
+            className="sidenav-discover-objects__loading"
+            isLoading={isLoading}
+            randomWidth
+            rows={typesLimit + 1}
+            width={170}
+          />
+        ) : (
+          <React.Fragment>
+            <li key="all-types" className="ttc">
+              <NavLink
+                to={`/discover`}
+                isActive={() => pathname === '/discover'}
+                className="sidenav-discover-objects__item"
+                activeClassName="Sidenav__item--active"
+              >
+                <FormattedMessage id="all" defaultMessage="All" />
+              </NavLink>
+            </li>
+          </React.Fragment>
+        )}
+      </ul>
+    </React.Fragment>
   );
 };
 

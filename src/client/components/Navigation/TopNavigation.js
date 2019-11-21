@@ -14,6 +14,7 @@ const LINKS = {
   DISCOVER: '/discover-objects',
   ACTIVITY: '/activity',
   ABOUT: '/object/ylr-waivio',
+  USERS: '/discover',
 };
 const FEED_URLS = [LINKS.FEED_HOT, LINKS.FEED_NEW, LINKS.FEED_TRENDING];
 
@@ -47,7 +48,8 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
         <Link
           to={`${LINKS.DISCOVER}/hashtag`}
           className={classNames('TopNavigation__link', {
-            'TopNavigation__link--active': pathname.includes(LINKS.DISCOVER),
+            'TopNavigation__link--active':
+              pathname.includes(LINKS.DISCOVER) || pathname.includes(LINKS.USERS),
           })}
         >
           <FormattedMessage id="discover" defaultMessage="Discover" />
