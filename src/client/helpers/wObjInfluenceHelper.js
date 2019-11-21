@@ -1,6 +1,6 @@
 import { get, size, forEach } from 'lodash';
 
-export const setObjPercents = (linkedObjects, percentage) => {
+export const setInitialObjPercents = (linkedObjects, percentage) => {
   const len = linkedObjects && linkedObjects.length;
   if (!len) {
     return {};

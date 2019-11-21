@@ -95,12 +95,13 @@ class PostPreviewModal extends Component {
   };
 
   showModal = () => {
+    const { objPercentage } = this.props;
     const { postTitle, postBody } = splitPostContent(this.props.content);
     this.setState({
       isModalOpen: true,
       title: postTitle,
       body: postBody,
-      weightBuffer: 0,
+      weightBuffer: Object.values(objPercentage).reduce((res, curr) => res - curr.percent, 100),
     });
   };
 

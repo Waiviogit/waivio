@@ -4,7 +4,7 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Badge } from 'antd';
-import { debounce, has, kebabCase, throttle, uniqBy } from 'lodash';
+import { get, debounce, has, kebabCase, omit, throttle, uniqBy } from 'lodash';
 import requiresLogin from '../../auth/requiresLogin';
 import { getCampaignById } from '../../../waivioApi/ApiClient';
 import {
@@ -20,11 +20,11 @@ import { createPost, saveDraft } from '../Write/editorActions';
 import { createPostMetadata, splitPostContent, getInitialState } from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
-import ObjectCardView from '../../objectCard/ObjectCardView';
+import PostObjectCard from '../PostObjectCard/PostObjectCard';
 import { Entity, toMarkdown } from '../../components/EditorExtended';
 import LastDraftsContainer from '../Write/LastDraftsContainer';
 import ObjectCreation from '../../components/Sidebar/ObjectCreation/ObjectCreation';
-import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
+import { setInitialObjPercents } from '../../helpers/wObjInfluenceHelper';
 import './EditPost.less';
 
 const getLinkedObjects = contentStateRaw => {
@@ -86,11 +86,12 @@ class EditPost extends Component {
 
     this.state = getInitialState(props);
 
-    this.handleTopicsChange = this.handleTopicsChange.bind(this);
-    this.handleSettingsChange = this.handleSettingsChange.bind(this);
-    this.handleChangeContent = this.handleChangeContent.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
     this.buildPost = this.buildPost.bind(this);
+    this.handleChangeContent = this.handleChangeContent.bind(this);
+    this.handleSettingsChange = this.handleSettingsChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleToggleLinkedObject = this.handleToggleLinkedObject.bind(this);
+    this.handleTopicsChange = this.handleTopicsChange.bind(this);
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -121,7 +122,7 @@ class EditPost extends Component {
     const linkedObjects = getLinkedObjects(rawContent);
     const isLinkedObjectsChanged = this.state.linkedObjects.length !== linkedObjects.length;
     if (isLinkedObjectsChanged) {
-      const objPercentage = setObjPercents(linkedObjects, this.state.objPercentage);
+      const objPercentage = setInitialObjPercents(linkedObjects, this.state.objPercentage);
       nextState.linkedObjects = linkedObjects;
       nextState.objPercentage = objPercentage;
     }
@@ -260,25 +261,31 @@ class EditPost extends Component {
             )}
             <PostPreviewModal
               content={content}
-              topics={topics}
+              isPublishing={publishing}
+              isUpdating={isUpdating}
               linkedObjects={linkedObjects}
               objPercentage={objPercentage}
-              settings={settings}
+              onUpdate={this.saveDraft}
               reviewData={
                 campaign && campaign.fetched
                   ? { campaign, reviewer: { name: this.props.userName } }
                   : null
               }
-              isPublishing={publishing}
-              isUpdating={isUpdating}
-              onTopicsChange={this.handleTopicsChange}
-              onSettingsChange={this.handleSettingsChange}
+              settings={settings}
+              topics={topics}
               onPercentChange={this.handlePercentChange}
+              onSettingsChange={this.handleSettingsChange}
               onSubmit={this.handleSubmit}
-              onUpdate={this.saveDraft}
+              onTopicsChange={this.handleTopicsChange}
             />
             {linkedObjects.map(wObj => (
-              <ObjectCardView wObject={wObj} key={wObj.id} />
+              <PostObjectCard
+                isLinked={get(objPercentage, [wObj.id, 'percent'], 0) > 0}
+                wObject={wObj}
+                // onToggle={this.handleToggleLinkedObject}
+                onToggle={e => console.log('-->', e)}
+                key={wObj.id}
+              />
             ))}
           </div>
           <div className="rightContainer">
