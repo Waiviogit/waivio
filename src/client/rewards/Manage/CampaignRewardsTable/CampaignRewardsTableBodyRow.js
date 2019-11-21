@@ -43,7 +43,17 @@ const CampaignRewardsTableRow = ({
         activateCampaign(currentItem, activationCampaignData.permlink)
           .then(() => {
             toggleModal(false);
-            message.success(`Campaign '${currentItem.name}' - has been activated`);
+            message.success(
+              intl.formatMessage(
+                {
+                  id: 'manage_page_campaign_activated',
+                  defaultMessage: `Campaign '${currentItem.name}' - has been activated`,
+                },
+                {
+                  campaignName: currentItem.name,
+                },
+              ),
+            );
             setLoad(false);
             setActivationStatus('activated');
           })
@@ -63,7 +73,17 @@ const CampaignRewardsTableRow = ({
             }),
           );
         } else {
-          message.error(`Can't activate campaign'${currentItem.name}', try again later`);
+          message.error(
+            intl.formatMessage(
+              {
+                id: 'manage_page_cant_activate_campaign',
+                defaultMessage: `Can't activate campaign '${currentItem.name}', try again later`,
+              },
+              {
+                campaignName: currentItem.name,
+              },
+            ),
+          );
         }
         setLoad(false);
       });
@@ -86,7 +106,17 @@ const CampaignRewardsTableRow = ({
         inactivateCampaign(itemOnInactivate, inactivationCampaignData.permlink)
           .then(() => {
             toggleModal(false);
-            message.success(`Campaign '${currentItem.name}' - has been inactivated`);
+            message.success(
+              intl.formatMessage(
+                {
+                  id: 'manage_page_campaign_inactivated',
+                  defaultMessage: `Campaign '${currentItem.name}' - has been inactivated`,
+                },
+                {
+                  campaignName: currentItem.name,
+                },
+              ),
+            );
             setLoad(false);
             setActivationStatus('inactivated');
           })
@@ -98,7 +128,17 @@ const CampaignRewardsTableRow = ({
       })
       .catch(() => {
         toggleModal(false);
-        message.error(`Can't inactivate campaign'${currentItem.name}', try again later`);
+        message.error(
+          intl.formatMessage(
+            {
+              id: 'manage_page_cant_inactivate_campaign',
+              defaultMessage: `Can't inactivate campaign '${currentItem.name}', try again later`,
+            },
+            {
+              campaignName: currentItem.name,
+            },
+          ),
+        );
         setLoad(false);
       });
   };
