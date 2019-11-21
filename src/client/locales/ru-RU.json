@@ -797,6 +797,6 @@
   "min_70_is_required": "Необходимо не менее 70%",
   "manage_page_active": "Активная",
   "manage_page_inactive": "Неактивная",
-  "manage_page_expiration_time_is_invalid": "Срок действия недействителен, пожалуйста, проверьте срок действия!",
+  "manage_page_expiration_time_is_invalid": "Срок действия недействителен! Пожалуйста, проверьте срок действия!",
   "more_options": "чтобы увидеть больше"
 }

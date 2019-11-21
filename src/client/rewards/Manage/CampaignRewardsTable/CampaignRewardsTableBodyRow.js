@@ -59,7 +59,7 @@ const CampaignRewardsTableRow = ({
           message.error(
             intl.formatMessage({
               id: 'manage_page_expiration_time_is_invalid',
-              defaultMessage: 'Expiration time is invalid, please, check expire data!',
+              defaultMessage: 'Expiration time is invalid! Please, check expire data!',
             }),
           );
         } else {
