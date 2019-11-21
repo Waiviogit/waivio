@@ -4,25 +4,17 @@ import { useSelector, shallowEqual } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { size } from 'lodash';
-import {
-  getCurrentLocation,
-  getObjectTypesList,
-  getObjectTypesLoading,
-  getScreenSize,
-} from '../reducers';
+import { getCurrentLocation, getObjectTypesList, getObjectTypesLoading } from '../reducers';
 import SkeletonCustom from '../components/Skeleton/SkeletonCustom';
 
-let typesLimit = 5;
+const typesLimit = 5;
 const SidenavDiscoverObjects = ({ withTitle }) => {
   // redux-store
   const { pathname } = useSelector(getCurrentLocation);
   const isLoading = useSelector(getObjectTypesLoading);
   const objectTypes = useSelector(getObjectTypesList, shallowEqual);
-  const screenSize = useSelector(getScreenSize);
   // state
   const [displayedTypesCount, setTypesCount] = useState(typesLimit);
-
-  if (screenSize === 'large') typesLimit = 29;
 
   return (
     <ul className="sidenav-discover-objects Sidenav">
