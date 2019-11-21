@@ -7,7 +7,7 @@ import { size } from 'lodash';
 import { getCurrentLocation, getObjectTypesList, getObjectTypesLoading } from '../reducers';
 import SkeletonCustom from '../components/Skeleton/SkeletonCustom';
 
-const typesLimit = 29;
+const typesLimit = 5;
 const SidenavDiscoverObjects = ({ withTitle }) => {
   // redux-store
   const { pathname } = useSelector(getCurrentLocation);
@@ -15,6 +15,7 @@ const SidenavDiscoverObjects = ({ withTitle }) => {
   const objectTypes = useSelector(getObjectTypesList, shallowEqual);
   // state
   const [displayedTypesCount, setTypesCount] = useState(typesLimit);
+
   return (
     <ul className="sidenav-discover-objects Sidenav">
       {withTitle && (
