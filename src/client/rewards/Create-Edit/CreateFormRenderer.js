@@ -442,7 +442,6 @@ const CreateFormRenderer = props => {
 
         {button}
       </Form>
-      {console.log(props.loading)}
       <Modal
         closable
         title={campaignId ? fields.modal.editTitle : fields.modal.createTitle}
