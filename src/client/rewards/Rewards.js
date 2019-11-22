@@ -33,6 +33,7 @@ import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
 import Avatar from '../components/Avatar';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
+import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import './Rewards.less';
 
 @withRouter
@@ -442,7 +443,10 @@ class Rewards extends React.Component {
               <LeftSidebar />
             </div>
           </Affix>
-          <div className="center">{renderedRoutes}</div>
+          <div className="center mt3">
+            <MobileNavigation formatMessage={intl.formatMessage} match={match} />
+            {renderedRoutes}
+          </div>
           {(match.path === '/rewards/payables' || match.path === '/rewards/receivables') && (
             <Affix className="rightContainer leftContainer__user" stickPosition={122}>
               <div className="right">
