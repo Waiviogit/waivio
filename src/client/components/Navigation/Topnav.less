@@ -14,7 +14,7 @@
   padding: 0 10px;
   box-shadow: 0 2px 8px @normal-grey;
   transition: top 0.4s;
-  @media @xsmall {
+  @media @small {
     background-color: #000;
     height: 96px;
   }
@@ -88,7 +88,7 @@
   }
 
   &__search-content-type {
-    @media @xsmall {
+    @media @small {
       display: none;
     }
   }
@@ -147,14 +147,14 @@
     color: @blue-vivid !important;
     border-bottom: 0 !important;
     text-decoration: none;
-    @media @xsmall {
+    @media @small {
       width: 200px;
       color: @blue-botticelli !important;
     }
 
     .Avatar {
       border-width: 2px;
-      @media @xsmall {
+      @media @small {
         border-width: 1px;
       }
     }
@@ -171,7 +171,7 @@
     box-sizing: border-box;
     font-size: 26px !important;
     border-bottom: none !important;
-    @media @xsmall {
+    @media @small {
       width: 26px;
       height: 26px;
     }
@@ -192,7 +192,7 @@
       border: 2px solid @blue-vivid;
       border-radius: 50%;
       font-weight: 600;
-      @media @xsmall {
+      @media @small {
         border: none;
       }
     }
@@ -208,7 +208,7 @@
       color: inherit;
       width: 36px;
       height: 36px;
-      @media @xsmall {
+      @media @small {
         width: 26px;
         height: 26px;
       }
@@ -220,7 +220,7 @@
       & > i {
         font-size: 36px;
         margin-right: 0;
-        @media @xsmall {
+        @media @small {
           font-size: 26px;
         }
       }
@@ -374,7 +374,7 @@
     color: @blue-vivid;
     font-size: 18px;
     font-family: inherit;
-    @media @xsmall {
+    @media @small {
       top: 48px;
       right: 0;
       left: unset;
@@ -390,18 +390,20 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
-    @media @xsmall {
+    @media @small {
       justify-content: flex-end;
     }
   }
 
   &__balance-wrap {
-    width: auto;
+    width: 50%;
     display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
 
     &--left {
       justify-content: flex-start;
-      @media @xsmall {
+      @media @small {
         -webkit-box-orient: vertical;
         -webkit-box-direction: normal;
         flex-direction: column;
@@ -414,8 +416,8 @@
     }
 
     &--right {
-      justify-content: flex-end;
-      @media @xsmall {
+      align-items: flex-end;
+      @media @small {
         border-left: 1px solid #fff;
         display: flex;
         -webkit-box-orient: vertical;
@@ -424,6 +426,7 @@
         line-height: 14px;
         padding: 0 6px;
         justify-content: center;
+        align-items: flex-start;
       }
     }
 
@@ -433,10 +436,24 @@
   }
 
   &__balance-text {
-    @media @xsmall {
+    width: auto;
+    height: 24px;
+    line-height: 24px;
+    font-size: 14px;
+    font-weight: 500;
+
+    @media @small {
       font-weight: 600;
       color: #fafafa4d;
+      font-size: 16px;
     }
+  }
+
+  &__balance-amount {
+    width: auto;
+    height: 24px;
+    line-height: 24px;
+    font-size: 14px;
   }
 
   .Topnav__right-top.bottom-row {
@@ -519,7 +536,7 @@
     justify-content: space-between;
     align-items: center;
     color: @blue-vivid;
-    @media @xsmall {
+    @media @small {
       display: none;
     }
 
@@ -532,10 +549,22 @@
     position: absolute;
     top: 48px;
     width: 100%;
-    @media @xsmall {
+    @media @small {
       top: 0;
       right: 0;
       width: min-content;
+    }
+  }
+
+  .left {
+    padding-left: 0 !important;
+    height: 48px;
+
+    & > a.Topnav__brand {
+      font-family: inherit;
+      font-size: 26px;
+      font-weight: 600;
+      color: @blue-vivid;
     }
   }
 }
@@ -582,7 +611,7 @@ div[data-dir='rtl'] .Topnav {
 }
 
 .ant-select-dropdown-menu :first-child > ul {
-  @media @xsmall {
+  @media @small {
     max-width: 240px;
   }
 
@@ -711,18 +740,6 @@ div[data-dir='rtl'] .Topnav {
 
 .top-hidden {
   top: -45px;
-}
-
-.left {
-  padding-left: 0 !important;
-  height: 48px;
-
-  & > a.Topnav__brand {
-    font-family: inherit;
-    font-size: 26px;
-    font-weight: 600;
-    color: @blue-vivid;
-  }
 }
 
 @media screen and (max-width: @small-bp) {

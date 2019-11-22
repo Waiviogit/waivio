@@ -287,7 +287,7 @@ class QuickPostEditor extends React.Component {
                 </div>
               )}
               <Input.TextArea
-                autosize={{ minRows: inputMinRows, maxRows: 12 }}
+                autoSize={{ minRows: inputMinRows, maxRows: 12 }}
                 onChange={this.handleUpdateCurrentInputValue}
                 onFocus={this.handleFocusInput}
                 onBlur={this.handleUnfocusInput}
