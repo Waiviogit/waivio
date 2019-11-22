@@ -63,7 +63,7 @@ const ObjectWeights = ({
   );
   useEffect(() => {
     setWeightBuffer(Object.values(objPercentage).reduce((res, curr) => res - curr.percent, 100));
-  }, objPercentage);
+  }, [objPercentage]);
   return (
     <div className="object-weights">
       <div className="object-weights__header">

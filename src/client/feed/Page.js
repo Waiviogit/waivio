@@ -22,6 +22,11 @@ import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNa
   loaded: getIsLoaded(state),
 }))
 class Page extends React.Component {
+  static fetchData({ store, match }) {
+    const { sortBy, category } = match.params;
+    return store.dispatch(getFeedContent({ sortBy, category, limit: 10 }));
+  }
+
   static propTypes = {
     authenticated: PropTypes.bool.isRequired,
     history: PropTypes.shape().isRequired,
@@ -29,11 +34,6 @@ class Page extends React.Component {
     match: PropTypes.shape().isRequired,
     intl: PropTypes.shape().isRequired,
   };
-
-  static fetchData({ store, match }) {
-    const { sortBy, category } = match.params;
-    return store.dispatch(getFeedContent({ sortBy, category, limit: 10 }));
-  }
 
   state = { isModalOpen: false };
 
