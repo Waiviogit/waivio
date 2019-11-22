@@ -104,13 +104,6 @@ class Topnav extends React.Component {
     loadingNotifications: false,
   };
 
-  static markers = {
-    USER: 'user',
-    WOBJ: 'wobj',
-    TYPE: 'type',
-    SELECT_BAR: 'searchSelectBar',
-  };
-
   constructor(props) {
     super(props);
 
@@ -172,6 +165,12 @@ class Topnav extends React.Component {
     return countArr;
   };
 
+  static markers = {
+    USER: 'user',
+    WOBJ: 'wobj',
+    TYPE: 'type',
+    SELECT_BAR: 'searchSelectBar',
+  };
   handleMoreMenuSelect(key) {
     this.setState({ popoverVisible: false }, () => {
       this.props.onMenuItemClick(key);
