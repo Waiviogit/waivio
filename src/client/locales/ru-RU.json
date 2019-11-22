@@ -816,10 +816,10 @@
   "create_page_create_rewards_campaign": "Создать кампанию",
   "create_page_edit_rewards_campaign": "Редактировать кампанию",
   "create_page_want_create_rewards_campaign": "Вы хотите создать кампанию?",
-  "create_page_want_edit_rewards_campaign": "Вы хотите внести изменения в кампанию?"
+  "create_page_want_edit_rewards_campaign": "Вы хотите внести изменения в кампанию?",
   "manage_page_expiration_time_is_invalid": "Срок действия недействителен! Пожалуйста, проверьте срок действия.",
   "manage_page_campaign_activated": "Кампания '{campaignName}' - активированная",
   "manage_page_campaign_inactivated": "Кампания '{campaignName}' - деактивированная",
   "manage_page_cant_activate_campaign": "Кампания не может быть активированна '{campaignName}', попробуйте позже",
-  "manage_page_cant_inactivate_campaign": "Кампания не может быть деактивированна '{campaignName}', попробуйте позже",
+  "manage_page_cant_inactivate_campaign": "Кампания не может быть деактивированна '{campaignName}', попробуйте позже"
 }
