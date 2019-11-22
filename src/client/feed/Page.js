@@ -31,6 +31,11 @@ import QuickPostEditor from '../components/QuickPostEditor/QuickPostEditor';
   },
 )
 class Page extends React.Component {
+  static fetchData({ store, match }) {
+    const { sortBy, category } = match.params;
+    return store.dispatch(getFeedContent({ sortBy, category, limit: 10 }));
+  }
+
   static propTypes = {
     authenticated: PropTypes.bool.isRequired,
     cleanFeed: PropTypes.func.isRequired,
@@ -46,11 +51,6 @@ class Page extends React.Component {
   static defaultProps = {
     userName: '',
   };
-
-  static fetchData({ store, match }) {
-    const { sortBy, category } = match.params;
-    return store.dispatch(getFeedContent({ sortBy, category, limit: 10 }));
-  }
 
   state = {
     checked: false,
