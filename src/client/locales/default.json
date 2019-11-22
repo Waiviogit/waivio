@@ -817,7 +817,7 @@
   "manage_page_campaign_activated": "Campaign '{campaignName}' - has been activated",
   "manage_page_campaign_inactivated": "Campaign '{campaignName}' - has been inactivated",
   "manage_page_cant_activate_campaign": "Can't activate campaign '{campaignName}', try again later",
-  "manage_page_cant_inactivate_campaign": "Can't inactivate campaign '{campaignName}', try again later"
+  "manage_page_cant_inactivate_campaign": "Can't inactivate campaign '{campaignName}', try again later",
   "object_filter": "Object filter",
   "object_filter_number_of_posts": "Number of posts"
 }

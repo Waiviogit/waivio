@@ -821,7 +821,7 @@
   "manage_page_campaign_activated": "Кампания '{campaignName}' - активированная",
   "manage_page_campaign_inactivated": "Кампания '{campaignName}' - деактивированная",
   "manage_page_cant_activate_campaign": "Кампания не может быть активированна '{campaignName}', попробуйте позже",
-  "manage_page_cant_inactivate_campaign": "Кампания не может быть деактивированна '{campaignName}', попробуйте позже"
+  "manage_page_cant_inactivate_campaign": "Кампания не может быть деактивированна '{campaignName}', попробуйте позже",
   "object_filter": "Фильтр объектов",
   "object_filter_number_of_posts": "Количество постов"
 }
