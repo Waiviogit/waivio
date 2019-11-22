@@ -51,10 +51,12 @@ const render = async Component => {
     return 'large';
   };
   store.dispatch(setUsedLocale(lang));
-  store.dispatch(setScreenSize(screenSize(window.screen.width)));
-  window.addEventListener('resize', () =>
-    store.dispatch(setScreenSize(screenSize(window.screen.width))),
-  );
+  if (window) {
+    store.dispatch(setScreenSize(screenSize(window.screen.width)));
+    window.addEventListener('resize', () =>
+      store.dispatch(setScreenSize(screenSize(window.screen.width))),
+    );
+  }
 
   ReactDOM.hydrate(
     <Provider store={store}>

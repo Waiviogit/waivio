@@ -40,7 +40,6 @@ import { UsedLocaleContext } from '../../Wrapper';
 import PopoverContainer from '../Popover';
 import './StoryFull.less';
 
-
 @injectIntl
 @withAuthActions
 class StoryFull extends React.Component {

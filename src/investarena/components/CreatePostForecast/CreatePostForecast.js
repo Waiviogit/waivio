@@ -321,7 +321,7 @@ class CreatePostForecast extends Component {
                     <p className="m-0">
                       <FormattedMessage
                         id="createPost.selectTitle.recommend"
-                        defaultMessage="I recommend"
+                        defaultMessage="Action"
                       />
                     </p>
                     <Select
@@ -399,7 +399,7 @@ class CreatePostForecast extends Component {
                     <p className="m-0">
                       <FormattedMessage
                         id="createPost.selectTitle.forecast"
-                        defaultMessage="Forecast time"
+                        defaultMessage="Period"
                       />
                     </p>
                     {isUpdating || this.state.selectForecast === 'Custom' ? (
