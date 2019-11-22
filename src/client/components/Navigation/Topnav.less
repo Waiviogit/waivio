@@ -456,8 +456,6 @@
     font-size: 14px;
   }
 
-
-
   .Topnav__right-top.bottom-row {
     top: 48px;
     width: 100%;
@@ -555,6 +553,18 @@
       top: 0;
       right: 0;
       width: min-content;
+    }
+  }
+
+  .left {
+    padding-left: 0 !important;
+    height: 48px;
+
+    & > a.Topnav__brand {
+      font-family: inherit;
+      font-size: 26px;
+      font-weight: 600;
+      color: @blue-vivid;
     }
   }
 }
@@ -730,18 +740,6 @@ div[data-dir='rtl'] .Topnav {
 
 .top-hidden {
   top: -45px;
-}
-
-.left {
-  padding-left: 0 !important;
-  height: 48px;
-
-  & > a.Topnav__brand {
-    font-family: inherit;
-    font-size: 26px;
-    font-weight: 600;
-    color: @blue-vivid;
-  }
 }
 
 @media screen and (max-width: @small-bp) {

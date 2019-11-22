@@ -174,7 +174,7 @@ class Topnav extends React.Component {
   }
 
   componentDidMount() {
-    if (window) {
+    if (window && window.screen.width < 768) {
       window.addEventListener('scroll', this.handleScroll);
       this.prevScrollpos = window.pageYOffset;
     }

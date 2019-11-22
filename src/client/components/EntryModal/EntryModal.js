@@ -71,7 +71,7 @@ const EntryModal = () => {
         <span className="EntryModal invest-title pl1">Invest</span>
         <span className="EntryModal arena-title">Arena</span>
         <span>, не переживайте, она останется доступной на домене</span>
-        <span className="EntryModal link" onClick={handleClickRedirect}>
+        <span className="EntryModal link" onClick={handleClickRedirect} role="presentation">
           v1.investarena.com
         </span>
       </div>
@@ -89,7 +89,7 @@ const EntryModal = () => {
 
   return (
     <div>
-      {localStorage.getItem('message_read') !== 'true' ? (
+      {typeof window !== 'undefined' && localStorage.getItem('message_read') !== 'true' ? (
         <Modal
           title={[title()]}
           visible={modalVisibility}
