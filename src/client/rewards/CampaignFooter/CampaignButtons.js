@@ -126,7 +126,7 @@ export default class CampaignButtons extends React.Component {
       handlePostPopoverMenuClick,
       requiredObjectPermlink,
     } = this.props;
-    const followText = this.getFollowText(postState.userFollowed, post.author);
+    const followText = this.getFollowText(postState.userFollowed, post.parent_author);
     const followObjText = this.getFollowText(postState.objectFollowed, requiredObjectPermlink);
 
     let popoverMenu = [];
