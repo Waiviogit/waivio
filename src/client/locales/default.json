@@ -816,5 +816,8 @@
   "manage_page_campaign_activated": "Campaign '{campaignName}' - has been activated",
   "manage_page_campaign_inactivated": "Campaign '{campaignName}' - has been inactivated",
   "manage_page_cant_activate_campaign": "Can't activate campaign '{campaignName}', try again later",
-  "manage_page_cant_inactivate_campaign": "Can't inactivate campaign '{campaignName}', try again later"
+  "manage_page_cant_inactivate_campaign": "Can't inactivate campaign '{campaignName}', try again later",
+  "manage_page_account_balance": "Account balance (STEEM)",
+  "manage_page_manage_campaign": "Manage rewards campaign"
+
 }
