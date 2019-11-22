@@ -147,7 +147,8 @@ class SubFeed extends React.Component {
       failed = getUserFeedFailedFromState(user.name, feed);
       loadMoreContent = () => this.props.getMoreUserFeedContent(user.name);
     } else {
-      const withAppHomeFilter = !localStorage.getItem('isAppHomeFilterOff');
+      const withAppHomeFilter =
+        typeof window !== 'undefined' ? !localStorage.getItem('isAppHomeFilterOff') : true;
 
       const sortBy = withAppHomeFilter ? 'feed' : 'trending';
       const category = withAppHomeFilter ? 'wia_feed' : 'all';
