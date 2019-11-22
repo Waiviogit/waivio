@@ -171,7 +171,6 @@ class Topnav extends React.Component {
     TYPE: 'type',
     SELECT_BAR: 'searchSelectBar',
   };
-
   handleMoreMenuSelect(key) {
     this.setState({ popoverVisible: false }, () => {
       this.props.onMenuItemClick(key);
