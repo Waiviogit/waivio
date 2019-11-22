@@ -7,7 +7,7 @@ import './PostObjectCard.less';
 const propTypes = {
   isLinked: PropTypes.bool.isRequired,
   wObject: PropTypes.shape().isRequired,
-  onToggle: PropTypes.shape().isRequired,
+  onToggle: PropTypes.func.isRequired,
 };
 
 const PostObjectCard = ({ isLinked, wObject, onToggle }) => {
