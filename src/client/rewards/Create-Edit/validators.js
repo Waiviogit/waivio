@@ -51,7 +51,7 @@ export const validatorMessagesCreator = messageFactory => ({
 
 export const validatorsCreator = (
   user,
-  currentSteemDollarPrice,
+  currentSteemPrice,
   messages,
   getFieldValue,
   requiredObject,

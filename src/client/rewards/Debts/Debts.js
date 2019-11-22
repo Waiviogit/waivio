@@ -5,7 +5,7 @@ import _ from 'lodash';
 import PaymentCard from '../PaymentCard/PaymentCard';
 import './Debts.less';
 
-const Debts = ({ intl, currentSteemDollarPrice, debtObjsData, componentLocation }) => (
+const Debts = ({ intl, currentSteemPrice, debtObjsData, componentLocation }) => (
   <div className="Debts">
     <div className="Debts__main-title">
       {componentLocation === '/rewards/payables'
@@ -26,9 +26,7 @@ const Debts = ({ intl, currentSteemDollarPrice, debtObjsData, componentLocation 
         })}
         : {debtObjsData && debtObjsData.payable && debtObjsData.payable.toFixed(2)}
         {' SBD '}
-        {currentSteemDollarPrice
-          ? `(US$ ${(currentSteemDollarPrice * debtObjsData.payable).toFixed(2)})`
-          : ''}
+        {currentSteemPrice ? `(US$ ${(currentSteemPrice * debtObjsData.payable).toFixed(2)})` : ''}
       </div>
     </div>
     {_.map(debtObjsData.histories, debtObjData => {
@@ -50,7 +48,7 @@ const Debts = ({ intl, currentSteemDollarPrice, debtObjsData, componentLocation 
 Debts.propTypes = {
   intl: PropTypes.shape().isRequired,
   debtObjsData: PropTypes.shape().isRequired,
-  currentSteemDollarPrice: PropTypes.number.isRequired,
+  currentSteemPrice: PropTypes.number.isRequired,
   componentLocation: PropTypes.string.isRequired,
 };
 

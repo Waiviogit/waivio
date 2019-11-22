@@ -32,7 +32,7 @@ const CreateFormRenderer = props => {
     expiredAt,
     usersLegalNotice,
     agreement,
-    currentSteemDollarPrice,
+    currentSteemPrice,
     user,
     sponsorsList,
     compensationAccount,
@@ -53,7 +53,7 @@ const CreateFormRenderer = props => {
   const messages = validatorMessagesCreator(handlers.messageFactory);
   const validators = validatorsCreator(
     user,
-    currentSteemDollarPrice,
+    currentSteemPrice,
     messages,
     getFieldValue,
     primaryObject,
@@ -458,7 +458,7 @@ const CreateFormRenderer = props => {
 };
 
 CreateFormRenderer.defaultProps = {
-  currentSteemDollarPrice: 0,
+  currentSteemPrice: 0,
   campaignData: {},
   user: {},
   sponsorsList: [],
@@ -534,7 +534,7 @@ CreateFormRenderer.propTypes = {
     messageFactory: PropTypes.func.isRequired,
     handleCreateCampaign: PropTypes.func.isRequired,
   }).isRequired,
-  currentSteemDollarPrice: PropTypes.number,
+  currentSteemPrice: PropTypes.number,
   user: PropTypes.shape(),
   sponsorsList: PropTypes.arrayOf(PropTypes.shape()),
   secondaryObjectsList: PropTypes.arrayOf(PropTypes.object),
