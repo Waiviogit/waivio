@@ -7,7 +7,6 @@ import { isNeedFilters, updateActiveFilters } from './helper';
 import {
   getActiveFilters,
   getObjectTypeSorting,
-  getObjectTypesList,
   getObjectTypeState,
   getObjectTypeLoading,
   getFilteredObjects,
@@ -22,7 +21,6 @@ import {
   changeSortingAndLoad,
 } from '../objectTypes/objectTypeActions';
 import { setMapFullscreenMode } from '../components/Maps/mapActions';
-import { getObjectTypes } from '../objectTypes/objectTypesActions';
 import Loading from '../components/Icon/Loading';
 import ObjectCardView from '../objectCard/ObjectCardView';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
@@ -45,7 +43,6 @@ const SORT_OPTIONS = {
     availableFilters: getAvailableFilters(state),
     activeFilters: getActiveFilters(state),
     sort: getObjectTypeSorting(state),
-    typesList: getObjectTypesList(state),
     theType: getObjectTypeState(state),
     hasMap: getHasMap(state),
     filteredObjects: getFilteredObjects(state),
@@ -56,7 +53,6 @@ const SORT_OPTIONS = {
   {
     dispatchClearObjectTypeStore: clearType,
     dispatchGetObjectType: getObjectType,
-    dispatchGetObjectTypes: getObjectTypes,
     dispatchSetActiveFilters: setFiltersAndLoad,
     dispatchChangeSorting: changeSortingAndLoad,
     dispatchSetMapFullscreenMode: setMapFullscreenMode,
@@ -69,7 +65,6 @@ class DiscoverObjectsContent extends Component {
     availableFilters: PropTypes.shape().isRequired,
     activeFilters: PropTypes.shape().isRequired,
     sort: PropTypes.string.isRequired,
-    typesList: PropTypes.shape().isRequired,
     theType: PropTypes.shape().isRequired,
     hasMap: PropTypes.bool.isRequired,
     filteredObjects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
@@ -77,7 +72,6 @@ class DiscoverObjectsContent extends Component {
     hasMoreObjects: PropTypes.bool.isRequired,
     dispatchGetObjectType: PropTypes.func.isRequired,
     dispatchClearObjectTypeStore: PropTypes.func.isRequired,
-    dispatchGetObjectTypes: PropTypes.func.isRequired,
     dispatchSetActiveFilters: PropTypes.func.isRequired,
     dispatchChangeSorting: PropTypes.func.isRequired,
     dispatchSetMapFullscreenMode: PropTypes.func.isRequired,
@@ -104,9 +98,8 @@ class DiscoverObjectsContent extends Component {
   }
 
   componentDidMount() {
-    const { dispatchGetObjectType, dispatchGetObjectTypes, typeName, typesList } = this.props;
+    const { dispatchGetObjectType, typeName } = this.props;
     dispatchGetObjectType(typeName, { skip: 0 });
-    if (isEmpty(typesList)) dispatchGetObjectTypes();
   }
 
   componentWillUnmount() {

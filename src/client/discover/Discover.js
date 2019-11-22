@@ -29,7 +29,7 @@ const Discover = ({ intl }) => {
             <LeftSidebar />
           </div>
         </Affix>
-        <div className="Discover">
+        <div className="Objects">
           <div className="discover-objects-header">
             <div className="flex justify-between">
               <span className="discover-objects-header__title">
@@ -70,7 +70,7 @@ const Discover = ({ intl }) => {
               defaultMessage="Discover the most reputable users of this platform"
             />
           </div>
-          <div className="Discover__content">
+          <div className="Objects__content">
             <DiscoverContent />
           </div>
         </div>
