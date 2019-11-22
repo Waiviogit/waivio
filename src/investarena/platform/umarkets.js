@@ -25,7 +25,10 @@ import { updateQuotes } from '../redux/actions/quotesActions';
 import { updateQuotesSettings } from '../redux/actions/quotesSettingsActions';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { CHART_ID } from '../constants/objectsInvestarena';
-import { mutateObject } from './platformHelper';
+import { mutateObject, getOS } from './platformHelper';
+import {CALLERS} from "../constants/platform";
+
+const multiplier = 1000000;
 
 export class Umarkets {
   constructor() {
@@ -52,10 +55,28 @@ export class Umarkets {
     this.platformName = null;
     this.hours = HOURS;
   }
+
+  static parseCloseMarketOrderResult(result) {
+    if (result.response === 'NOT_TRADING_TIME') {
+      message.error('Not trading time');
+    } else if (result.response === 'CLOSE_DEAL_INTERVAL_IS_TOO_SMALL') {
+      message.error('Wait 60 seconds after opening deal to close');
+    }
+  }
+
+  static parseChangeMarketOrderResult(result) {
+    if (result.response === 'NOT_TRADING_TIME') {
+      message.error('Not trading time');
+    } else if (result.response === 'INVALID_ORDER_PRICE') {
+      message.error('Invalid order price');
+    }
+  }
+
   initialize(store) {
     this.store = store;
     this.dispatch = store.dispatch;
   }
+
   createWebSocketConnection() {
     this.stompUser = localStorage.getItem('stompUser');
     this.stompPassword = localStorage.getItem('stompPassword');
@@ -75,17 +96,20 @@ export class Umarkets {
       'trading',
     );
   }
+
   createSockJS() {
     const websrv = parseInt(localStorage.getItem('WEBSRV'));
     const url = `${config[process.env.NODE_ENV].brokerWSUrl[this.platformName]}websrv${websrv}`;
     return new SockJS(url);
   }
+
   closeWebSocketConnection() {
     if (this.websocket && this.stompClient) {
       this.websocket.close();
       this.stompClient.disconnect();
     }
   }
+
   onConnect() {
     this.dispatch(connectPlatformSuccess(this.platformName));
     if (this.stompClient !== null && this.sid !== null) {
@@ -94,10 +118,12 @@ export class Umarkets {
     }
     setInterval(this.getUserStatistics.bind(this), 30000);
   }
+
   onError(error) {
     this.dispatch(connectPlatformError(error));
     this.reconnect();
   }
+
   reconnect() {
     if (this.reconnectionCounter !== 1) {
       this.reconnectionCounter = 1;
@@ -114,12 +140,14 @@ export class Umarkets {
       this.dispatch(disconnectBroker());
     }
   }
+
   platformSubscribe() {
     this.stompClient.subscribe(
       `/amq/queue/session.${this.sid}`,
       this.onWebSocketMessage.bind(this),
     );
   }
+
   getStartData() {
     this.getServerTime();
     this.getUserSettings();
@@ -128,24 +156,31 @@ export class Umarkets {
     this.getOpenDeals();
     this.getClosedDeals();
   }
+
   getServerTime() {
     this.sendRequestToPlatform(CMD.getTime, '[]');
   }
+
   getUserAccount() {
     this.sendRequestToPlatform(CMD.getUserAccount, '[]');
   }
+
   getUserSettings() {
     this.sendRequestToPlatform(CMD.getUserSettings, '[]');
   }
+
   getUserStatistics() {
     this.sendRequestToPlatform(CMD.getUserStatistics, '[]');
   }
+
   getUserRates() {
     this.sendRequestToPlatform(CMD.getUserRates, '[]');
   }
+
   getOpenDeals() {
     this.sendRequestToPlatform(CMD.getOpenDeals, '[]');
   }
+
   getClosedDeals(
     period = 'LAST_7_DAYS',
     getClosedDealsForStatistics = false,
@@ -155,35 +190,48 @@ export class Umarkets {
     this.lastClosedDealTime = lastClosedDealTime;
     this.sendRequestToPlatform(CMD.getClosedDeals, `[${period}, null, null]`);
   }
-  createOpenDeal(deal, dataDealToApi) {
+
+  getAppIdentity(callerKey) {
+    return JSON.stringify({OS: getOS(), App: config.app, Version: config.version, Caller: CALLERS[callerKey]})
+  }
+
+  createOpenDeal(deal, dataDealToApi, callerKey) {
     this.dataDealToApi = dataDealToApi;
     this.sendRequestToPlatform(
       CMD.sendOpenMarketOrder,
       `["${deal.security}","${deal.side}","${deal.amount}","${config.appVersion}"]`,
+      this.getAppIdentity(callerKey)
     );
   }
-  closeOpenDeal(dealId, allMarker) {
+
+  closeOpenDeal(dealId, callerKey) {
     this.sendRequestToPlatform(
       CMD.sendCloseMarketOrder,
-      `["${dealId}","${config.appVersion}${allMarker || ''}"]`,
+      `["${dealId}","${config.appVersion}"]`,
+      this.getAppIdentity(callerKey)
     );
   }
+
   changeAccount(accountName) {
     this.sendRequestToPlatform(CMD.changeAccount, `[${accountName}]`);
   }
+
   duplicateOpenDeal(dealId, dataDealToApi) {
     this.dataDealToApi = dataDealToApi;
     this.sendRequestToPlatform(CMD.duplicateOpenDeal, `[${dealId},"${config.appVersion}"]`);
   }
+
   changeOpenDeal(id, slRate = null, slAmount = null, tpRate = null, tpAmount = null) {
     this.sendRequestToPlatform(
       CMD.changeOpenDeal,
       `[${id},${slRate},${slAmount},${tpRate},${tpAmount},"${config.appVersion}"]`,
     );
   }
+
   getLimitStopOrders() {
     this.sendRequestToPlatform(CMD.getLimitStopOrders, '[]');
   }
+
   getChartData(active, interval) {
     if (active && interval) {
       if (this.stompClient !== null && this.sid !== null && this.um_session !== null) {
@@ -197,19 +245,21 @@ export class Umarkets {
       }
     }
   }
-  sendRequestToPlatform(cmd, params) {
+
+  sendRequestToPlatform(cmd, params, submissionReason) {
     if (this.stompClient !== null && this.sid !== null && this.um_session !== null) {
       try {
         this.stompClient.send(
           '/exchange/CMD/',
           {},
-          `{"sid": "${this.sid}", "umid": "${this.um_session}", "cmd": "${cmd}", "params": ${params}}`,
+          `{"sid": "${this.sid}", "umid": "${this.um_session}", "cmd": "${cmd}", "params": ${params}${submissionReason ? `,submissionReason: ${submissionReason}` : ""}}`,
         );
       } catch (e) {
         // console.log('Stomp error ' + e.name + ':' + e.message + '\n' + e.stack);
       }
     }
   }
+
   onWebSocketMessage(mes) {
     const result = JSON.parse(mes.body);
     if (result.type === 'response' || result.type === 'update') {
@@ -265,6 +315,7 @@ export class Umarkets {
       }
     }
   }
+
   parseUserAccount(result) {
     if (result.content && result.content.currency) {
       this.dispatch(updateUserAccountCurrency(result.content.currency));
@@ -275,6 +326,7 @@ export class Umarkets {
       this.getClosedDeals();
     }
   }
+
   parseUserRates(result) {
     const content = result.content;
     const rates = content.rates;
@@ -285,16 +337,16 @@ export class Umarkets {
       }
       this.quotes[q.security] = {
         security: q.security,
-        bidPrice: (q.bidPrice / 1000000).toString(),
-        askPrice: (q.askPrice / 1000000).toString(),
+        bidPrice: (q.bidPrice / multiplier).toString(),
+        askPrice: (q.askPrice / multiplier).toString(),
         dailyChange: q.dailyChange,
         timestamp: q.timestamp,
         state: this.statesQuotes[q.security],
       };
       data[q.security] = {
         security: q.security,
-        bidPrice: (q.bidPrice / 1000000).toString(),
-        askPrice: (q.askPrice / 1000000).toString(),
+        bidPrice: (q.bidPrice / multiplier).toString(),
+        askPrice: (q.askPrice / multiplier).toString(),
         dailyChange: q.dailyChange,
         timestamp: q.timestamp,
         state: this.statesQuotes[q.security],
@@ -305,13 +357,15 @@ export class Umarkets {
     });
     this.dispatch(updateQuotes(data));
   }
+
   fixChange(security, quote, oldQuote) {
     const newPrice = quote.bidPrice;
-    const oldPrice = oldQuote.bidPrice * 1000000;
+    const oldPrice = oldQuote.bidPrice * multiplier;
     if (newPrice !== oldPrice) {
       this.statesQuotes[security] = newPrice > oldPrice ? 'up' : 'down';
     }
   }
+
   parseUserSettings(result) {
     const content = result.content;
     const quotesSettings = content.securitySettings;
@@ -371,23 +425,25 @@ export class Umarkets {
     // this.quotesSettings = sortedQuotesSettings;
     // this.dispatch(updateQuotesSettings(this.quotesSettings));
   }
+
   parseChartData(result) {
     const chart = result.content;
     const quoteSecurity = chart.security;
     const timeScale = chart.barType;
     const bars = chart.bars;
-    this.dispatch(getChartDataSuccess({ quoteSecurity, timeScale, bars }));
+    this.dispatch(getChartDataSuccess({quoteSecurity, timeScale, bars}));
     if (this.hasOwnProperty('publish')) {
-      this.publish(`ChartData${quoteSecurity}`, { quoteSecurity, timeScale, bars });
+      this.publish(`ChartData${quoteSecurity}`, {quoteSecurity, timeScale, bars});
     }
   }
+
   parseOpenDeals(result) {
     const content = _.sortBy(result.content, 'dealSequenceNumber').reverse();
     const openDeals = {};
-    const data = { open_deals: [] };
+    const data = {open_deals: []};
     content.map(openDeal => {
-      openDeal.openPrice /= 1000000;
-      openDeal.amount /= 1000000;
+      openDeal.openPrice /= multiplier;
+      openDeal.amount /= multiplier;
       openDeals[openDeal.dealId] = openDeal;
       data.open_deals.push({
         amount: openDeal.amount,
@@ -402,15 +458,16 @@ export class Umarkets {
     });
     this.dispatch(getOpenDealsSuccess(openDeals));
   }
+
   parseClosedDeals(result) {
     if (!this.getClosedDealsForStatistics) {
       const content = _.sortBy(result.content.closedDeals, 'closeTime').reverse();
       const closedDeals = {};
       content.map(closeDeal => {
-        closeDeal.amount /= 1000000;
-        closeDeal.pnl /= 1000000;
-        closeDeal.openPrice /= 1000000;
-        closeDeal.closePrice /= 1000000;
+        closeDeal.amount /= multiplier;
+        closeDeal.pnl /= multiplier;
+        closeDeal.openPrice /= multiplier;
+        closeDeal.closePrice /= multiplier;
         closedDeals[closeDeal.dealId] = closeDeal;
       });
       this.dispatch(getCloseDealsSuccess(closedDeals));
@@ -421,20 +478,20 @@ export class Umarkets {
         closedDeal => closedDeal.closeTime > this.lastClosedDealTime,
       );
       if (contentFilter.length > 0) {
-        const data = { closed_deals: [] };
+        const data = {closed_deals: []};
         content.map(closeDeal => {
           data.closed_deals.push({
             deal_id: closeDeal.dealId,
             deal_sequence_number: closeDeal.dealSequenceNumber,
             security: closeDeal.security,
             side: closeDeal.side,
-            amount: closeDeal.amount / 1000000,
-            open_price: closeDeal.openPrice / 1000000,
+            amount: closeDeal.amount / multiplier,
+            open_price: closeDeal.openPrice / multiplier,
             open_time: closeDeal.openTime,
-            close_price: closeDeal.closePrice / 1000000,
+            close_price: closeDeal.closePrice / multiplier,
             close_time: closeDeal.closeTime,
             rollover_commission: closeDeal.rolloverCommission,
-            pnl: closeDeal.pnl / 1000000,
+            pnl: closeDeal.pnl / multiplier,
             broker_name: this.platformName,
           });
         });
@@ -442,6 +499,7 @@ export class Umarkets {
       }
     }
   }
+
   parseUserStatistics(result) {
     const content = result.content;
     this.userStatistics = {
@@ -453,6 +511,7 @@ export class Umarkets {
     };
     this.dispatch(updateUserStatistics(this.userStatistics));
   }
+
   parseOpenMarketOrderResult(result) {
     if (result.response === 'INSUFFICIENT_BALANCE') {
       this.dataDealToApi = null;
@@ -462,20 +521,7 @@ export class Umarkets {
       message.error('Not trading time');
     }
   }
-  static parseCloseMarketOrderResult(result) {
-    if (result.response === 'NOT_TRADING_TIME') {
-      message.error('Not trading time');
-    } else if (result.response === 'CLOSE_DEAL_INTERVAL_IS_TOO_SMALL') {
-      message.error('Wait 60 seconds after opening deal to close');
-    }
-  }
-  static parseChangeMarketOrderResult(result) {
-    if (result.response === 'NOT_TRADING_TIME') {
-      message.error('Not trading time');
-    } else if (result.response === 'INVALID_ORDER_PRICE') {
-      message.error('Invalid order price');
-    }
-  }
+
   parseOpenByMarketOrder(result) {
     this.getOpenDeals();
     message.success('Deal successfully opened');
@@ -484,10 +530,12 @@ export class Umarkets {
       this.dataDealToApi = null;
     }
   }
+
   parseCloseByMarketOrder(result) {
     message.success('Deal successfully closed');
     this.dispatch(closeOpenDealPlatformSuccess(result.content.dealId));
   }
+
   parseChangeByMarketOrder(result) {
     const content = result.content;
     if (content.stopLossAmount) {

@@ -32,7 +32,6 @@ import ObjectProfile from '../client/object/ObjectProfile';
 import InstrumentsPage from '../investarena/components/InstrumentsPage';
 import DealsPage from '../investarena/components/DealsPage';
 import WobjFollowers from '../client/object/WobjFollowers';
-import ObjectGallery from '../client/object/ObjectGallery/ObjectGallery';
 import ObjectGalleryAlbum from '../client/object/ObjectGallery/ObjectGalleryAlbum';
 import WobjHistory from '../client/object/WobjHistory';
 import ObjectAbout from '../client/object/ObjectAbout';

@@ -520,7 +520,7 @@ class Story extends React.Component {
               />
             )}
             {forecast && isForecastValid && (
-              <PostQuotation quoteSecurity={forecast.quoteSecurity} postId={forecast.postId} />
+              <PostQuotation quoteSecurity={forecast.quoteSecurity} postId={forecast.postId} caller='od-pm'/>
             )}
             <StoryFooter
               user={user}

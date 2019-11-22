@@ -75,8 +75,8 @@ const withTrade = Component => {
       const margin = PlatformHelper.getMargin(this.props.quote, this.props.quoteSettings, amount);
       this.setState({ amount, margin });
     };
-    handleClickOpenDeal = side => {
-      this.props.createOpenDeal(side, this.state.amount, this.state.margin);
+    handleClickOpenDeal = (side, caller) => {
+      this.props.createOpenDeal(side, this.state.amount, this.state.margin, caller);
     };
     handleBlurInput = e => {
       const amount = PlatformHelper.validateOnBlur(e.target.value, this.props.quoteSettings);
@@ -131,7 +131,7 @@ const withTrade = Component => {
     return {
       ...ownProps,
       ...stateProps,
-      createOpenDeal: (side, amount, margin) => {
+      createOpenDeal: (side, amount, margin, caller) => {
         if (
           platformName !== 'widgets' &&
           !isOpen &&
@@ -150,6 +150,7 @@ const withTrade = Component => {
               margin,
               postId,
               platformName,
+              caller
             }),
           );
         } else if (!isSignIn) {
@@ -174,6 +175,7 @@ const withTrade = Component => {
               margin,
               postId,
               platformName,
+              caller
             ),
           );
         } else if (
@@ -193,6 +195,7 @@ const withTrade = Component => {
               margin,
               postId,
               platformName,
+              caller
             ),
           );
         }

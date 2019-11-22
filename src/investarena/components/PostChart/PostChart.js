@@ -135,7 +135,7 @@ class PostChart extends Component {
   toggleModalTC = () => {
     if (this.props.withModalChart) {
       const { quote, quoteSettings, platformName, toggleModal } = this.props;
-      toggleModal('openDeals', { quote, quoteSettings, platformName });
+      toggleModal('openDeals', { quote, quoteSettings, platformName, caller: 'od-pc' });
     }
   };
 
