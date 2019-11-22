@@ -64,7 +64,7 @@ const CreateFormRenderer = props => {
   const disabled = isCampaignActive || loading;
 
   const notEnoughMoneyWarn =
-    parseFloat(user.sbd_balance) <= 0 ? (
+    parseFloat(user.balance) <= 0 ? (
       <div className="notEnoughMoneyWarn">
         {handlers.messageFactory(
           'balance_more_than_zero',
