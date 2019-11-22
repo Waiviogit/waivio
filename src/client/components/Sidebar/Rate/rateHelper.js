@@ -3,8 +3,15 @@ import { ratePercent } from '../../../../common/constants/listOfFields';
 
 export const rateCount = field => (field.rating_votes && field.rating_votes.length) || 0;
 
-export const averageRate = field =>
-  _.meanBy(field.rating_votes, vote => ratePercent.indexOf(vote.rate) + 1);
+export const averageRate = field => {
+  const avrRate = 0;
+  if (field.rating_votes)
+    _.meanBy(field.rating_votes, vote => {
+      if (vote <= 10) return ratePercent.indexOf(vote.rate) + 1;
+      return 5;
+    });
+  return avrRate;
+};
 
 // export const getRatesWithMaxVotes = (ratings, count) => {
 //   _.forEach(ratings, rate => {

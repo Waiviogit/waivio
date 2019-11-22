@@ -121,9 +121,9 @@ class CampaignFooter extends React.Component {
   handleFollowClick(post) {
     const { userFollowed } = this.props.postState;
     if (userFollowed) {
-      this.props.unfollowUser(post.author);
+      this.props.unfollowUser(post.parent_author);
     } else {
-      this.props.followUser(post.author);
+      this.props.followUser(post.parent_author);
     }
   }
 

@@ -6,8 +6,8 @@ import Affix from '../components/Utils/Affix';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import DiscoverObjectsContent from './DiscoverObjectsContent';
 import ObjectsContainer from '../objects/ObjectsContainer';
-import './DiscoverObjects.less';
 import RightSidebar from '../app/Sidebar/RightSidebar';
+import './DiscoverObjects.less';
 
 const DiscoverObjects = ({ intl, history, match }) => {
   const isTypeChosen = Boolean(match.params.typeName);
@@ -36,6 +36,7 @@ const DiscoverObjects = ({ intl, history, match }) => {
           {match.params.typeName ? (
             <DiscoverObjectsContent
               history={history}
+              match={match}
               typeName={match.params.typeName}
               key={pathname + search}
               intl={intl}

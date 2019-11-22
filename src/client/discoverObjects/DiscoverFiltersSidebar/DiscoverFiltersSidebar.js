@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { Icon } from 'antd';
 import { isEmpty, memoize } from 'lodash';
 import { isNeedFilters } from '../helper';
@@ -61,7 +61,7 @@ const DiscoverFiltersSidebar = ({ intl, match, history }) => {
         <div className="SidebarContentBlock">
           <div className="SidebarContentBlock__title">
             <i className="iconfont icon-trysearchlist SidebarContentBlock__icon" />
-            <FormattedMessage id="filters" defaultMessage="Filter" />
+            {intl.formatMessage({ id: 'filters', defaultMessage: 'Filter' })}
           </div>
           <FiltersContainer intl={intl} filters={filters} />
         </div>

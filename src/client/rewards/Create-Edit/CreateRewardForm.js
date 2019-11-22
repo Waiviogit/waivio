@@ -42,24 +42,25 @@ class CreateRewardForm extends React.Component {
     secondaryObjectsList: [],
     pageObjects: [],
     sponsorsList: [],
-    reservationPeriod: 1,
+    reservationPeriod: 7,
     compensationAccount: {},
     loading: false,
     parentPermlink: '',
     targetDays: {
-      monday: false,
-      tuesday: false,
-      wednesday: false,
-      thursday: false,
-      friday: false,
-      saturday: false,
-      sunday: false,
+      monday: true,
+      tuesday: true,
+      wednesday: true,
+      thursday: true,
+      friday: true,
+      saturday: true,
+      sunday: true,
     },
     minPhotos: 0,
     minSteemReputation: 25,
     minExpertise: 0,
     minFollowers: 0,
     minPosts: 0,
+    eligibleDays: 0,
     description: '',
     expiredAt: null,
     usersLegalNotice: '',
@@ -68,6 +69,8 @@ class CreateRewardForm extends React.Component {
     iAgree: false,
     campaignId: null,
     isCampaignActive: false,
+    isModal: false,
+    isValidationAccepted: false,
   };
 
   componentDidMount = async () => {
@@ -145,13 +148,14 @@ class CreateRewardForm extends React.Component {
     if (getFieldValue('minFollowers') === '') setFieldsValue({ minFollowers: 0 });
 
     if (getFieldValue('minPosts') === '') setFieldsValue({ minPosts: 0 });
+
+    if (getFieldValue('eligibleDays') === '') setFieldsValue({ eligibleDays: 0 });
   };
 
   prepareSubmitData = (data, userName) => {
     const objects = map(data.secondaryObject, o => o.id);
     const pageObjects = data.agreement.length !== 0 ? map(data.agreement.length, o => o.id) : [];
     const sponsorAccounts = map(data.sponsorsList, o => o.account);
-
     return {
       requiredObject: data.primaryObject.author_permlink,
       guideName: userName,
@@ -169,6 +173,7 @@ class CreateRewardForm extends React.Component {
         minPosts: data.minPosts,
         minExpertise: data.minExpertise,
         minSteemReputation: data.minSteemReputation,
+        eligibleDays: data.eligibleDays,
       },
       usersLegalNotice: data.usersLegalNotice,
       commissionAgreement: data.commissionAgreement,
@@ -279,6 +284,10 @@ class CreateRewardForm extends React.Component {
       );
     },
 
+    setModal: value => {
+      this.setState({ isModal: value });
+    },
+
     getObjectsToOmit: () => {
       const objectsToOmit = [];
       if (!isEmpty(this.state.primaryObject)) {
@@ -291,21 +300,37 @@ class CreateRewardForm extends React.Component {
     },
 
     handleSubmit: e => {
-      this.setState({ loading: true });
       e.preventDefault();
       this.checkOptionFields();
       this.props.form.validateFieldsAndScroll((err, values) => {
         if (!err && !isEmpty(values.primaryObject) && !isEmpty(values.secondaryObject)) {
+          this.setState({ isValidationAccepted: true, isModal: true });
+        }
+        if (err) {
+          this.setState({ isModal: false });
+        }
+      });
+    },
+
+    handleCreateCampaign: () => {
+      this.setState({ loading: true });
+      this.props.form.validateFieldsAndScroll((err, values) => {
+        if (
+          !err &&
+          !isEmpty(values.primaryObject) &&
+          !isEmpty(values.secondaryObject) &&
+          this.state.isValidationAccepted
+        ) {
           createCampaign(this.prepareSubmitData(values, this.props.userName))
             .then(() => {
               message.success(`'${values.campaignName}' rewards campaign has been created.`);
-              this.setState({ loading: false });
+              this.setState({ loading: false, isModal: false });
               this.manageRedirect();
             })
             .catch(error => {
               console.log(error);
               message.error(`${values.campaignName}'rewards campaign has been rejected`);
-              this.setState({ loading: false });
+              this.setState({ loading: false, isModal: false });
             });
         }
         if (err) {
@@ -355,6 +380,7 @@ class CreateRewardForm extends React.Component {
       agreement,
       campaignId,
       iAgree,
+      isModal,
     } = this.state;
 
     return (
@@ -390,6 +416,7 @@ class CreateRewardForm extends React.Component {
         campaignId={campaignId}
         isCampaignActive={isCampaignActive}
         iAgree={iAgree}
+        isModal={isModal}
       />
     );
   }
