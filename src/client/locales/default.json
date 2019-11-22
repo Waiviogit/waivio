@@ -763,7 +763,7 @@
   "paymentTable_review_by_user": "by @{userName} (requested by @{sponsorName})",
   "paymentTable_reservation": "Reservation",
   "filter_days": "Over {value} days",
-  "filter_payable": "Over {value} SBD",
+  "filter_payable": "Over {value} STEEM",
   "discover": "discover",
   "personal": "personal",
   "custom_json": "custom_json",

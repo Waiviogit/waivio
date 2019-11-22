@@ -25,7 +25,7 @@ const Debts = ({ intl, currentSteemPrice, debtObjsData, componentLocation }) => 
           defaultMessage: 'Total',
         })}
         : {debtObjsData && debtObjsData.payable && debtObjsData.payable.toFixed(2)}
-        {' SBD '}
+        {' STEEM '}
         {currentSteemPrice ? `(US$ ${(currentSteemPrice * debtObjsData.payable).toFixed(2)})` : ''}
       </div>
     </div>
