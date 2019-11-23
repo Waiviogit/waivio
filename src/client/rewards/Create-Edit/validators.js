@@ -51,7 +51,7 @@ export const validatorMessagesCreator = messageFactory => ({
 
 export const validatorsCreator = (
   user,
-  currentSteemDollarPrice,
+  currentSteemPrice,
   messages,
   getFieldValue,
   requiredObject,
@@ -122,7 +122,7 @@ export const validatorsCreator = (
   },
 
   compareBudgetValues: (rule, value, callback) => {
-    const userUSDBalance = parseFloat(user.sbd_balance);
+    const userUSDBalance = parseFloat(user.balance);
     if (value <= 0 && value !== '') callback(messages.budgetToZero);
     else if (userUSDBalance < value) callback(messages.budgetToUSBDbalance);
     else callback();

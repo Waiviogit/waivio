@@ -25,7 +25,7 @@ const CampaignRewardsTable = ({
           </th>
           <th className="Campaign-rewards maxWidth" rowSpan="3">
             {intl.formatMessage({
-              id: 'campaing',
+              id: 'campaign',
               defaultMessage: `Campaign`,
             })}
           </th>
@@ -59,11 +59,11 @@ const CampaignRewardsTable = ({
         <tr>
           <th className="Campaign-rewards basicWidth hide-element" rowSpan="2">
             <p>{intl.formatMessage({ id: 'monthly', defaultMessage: `Monthly` })}</p>
-            <p>(SBD)</p>
+            <p>(STEEM)</p>
           </th>
           <th className="Campaign-rewards basicWidth hide-element" rowSpan="2">
             <p>{intl.formatMessage({ id: 'reward', defaultMessage: `Reward` })}</p>
-            <p>(SBD)</p>
+            <p>(STEEM)</p>
           </th>
           <th className="Campaign-rewards basicWidth hide-element" rowSpan="2">
             {intl.formatMessage({ id: 'reserved', defaultMessage: `Reserved` })}
