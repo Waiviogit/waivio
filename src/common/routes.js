@@ -28,7 +28,7 @@ import Search from '../client/search/Search';
 import Notifications from '../client/notifications/Notifications';
 import Error404 from '../client/statics/Error404';
 import ExitPage from '../client/statics/ExitPage';
-import ObjectProfile from '../client/object/ObjectProfile';
+import ObjectPageFeed from '../client/object/ObjectFeed';
 import WobjFollowers from '../client/object/WobjFollowers';
 import ObjectGallery from '../client/object/ObjectGallery/ObjectGallery';
 import ObjectGalleryAlbum from '../client/object/ObjectGallery/ObjectGalleryAlbum';
@@ -226,7 +226,7 @@ const routes = [
           {
             path: '/object/:name',
             exact: true,
-            component: ObjectProfile,
+            component: ObjectPageFeed,
           },
           {
             path: `/object/:name/${URL.SEGMENT.ABOUT}`,
