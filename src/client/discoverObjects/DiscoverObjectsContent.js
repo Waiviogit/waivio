@@ -79,7 +79,6 @@ class DiscoverObjectsContent extends Component {
     intl: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
     typeName: PropTypes.string,
-    match: PropTypes.shape().isRequired,
   };
 
   static defaultProps = {
@@ -182,7 +181,6 @@ class DiscoverObjectsContent extends Component {
       sort,
       filteredObjects,
       hasMoreObjects,
-      match,
     } = this.props;
 
     const sortSelector = hasMap ? (
@@ -203,58 +201,54 @@ class DiscoverObjectsContent extends Component {
     );
     return (
       <React.Fragment>
-        <div className="discover-objects-header">
-          <div className="flex justify-between">
-            <MobileNavigation match={match} formatMessage={intl.formatMessage} />
-            {_.size(SORT_OPTIONS) - Number(!hasMap) > 1 ? sortSelector : null}
-          </div>
-          <div className="discover-objects-header__tags-block common">
-            {this.getCommonFiltersLayout()}
-          </div>
-          {isTypeHasFilters ? (
-            <React.Fragment>
-              {!isEmpty(availableFilters) ? (
-                <div className="discover-objects-header__tags-block">
-                  <span className="discover-objects-header__topic ttc">
-                    {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
-                  </span>
-                  {this.getCommonFiltersLayout()}
-                  {_.map(chosenFilters, (filterValues, filterName) =>
-                    filterValues.map(filterValue => (
-                      <Tag
-                        className="ttc"
-                        key={`${filterName}:${filterValue}`}
-                        closable
-                        onClose={this.handleRemoveTag(filterName, filterValue)}
-                      >
-                        {filterValue}
-                      </Tag>
-                    )),
-                  )}
-                  <span
-                    className="discover-objects-header__selector underline ttl"
-                    role="presentation"
-                    onClick={this.showFiltersModal}
-                  >
-                    {intl.formatMessage({ id: 'add_new_proposition', defaultMessage: 'Add' })}
-                  </span>
-                </div>
-              ) : null}
-              {hasMap ? (
-                <div className="discover-objects-header__toggle-map tc">
-                  <Button
-                    icon="compass"
-                    size="large"
-                    className={isEmpty(map) ? 'map-btn' : 'map-btn active'}
-                    onClick={this.showMap}
-                  >
-                    {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
-                  </Button>
-                </div>
-              ) : null}
-            </React.Fragment>
-          ) : null}
+        <MobileNavigation />
+        {_.size(SORT_OPTIONS) - Number(!hasMap) > 1 ? sortSelector : null}
+        <div className="discover-objects-header__tags-block common">
+          {this.getCommonFiltersLayout()}
         </div>
+        {isTypeHasFilters ? (
+          <React.Fragment>
+            {!isEmpty(availableFilters) ? (
+              <div className="discover-objects-header__tags-block">
+                <span className="discover-objects-header__topic ttc">
+                  {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
+                </span>
+                {this.getCommonFiltersLayout()}
+                {_.map(chosenFilters, (filterValues, filterName) =>
+                  filterValues.map(filterValue => (
+                    <Tag
+                      className="ttc"
+                      key={`${filterName}:${filterValue}`}
+                      closable
+                      onClose={this.handleRemoveTag(filterName, filterValue)}
+                    >
+                      {filterValue}
+                    </Tag>
+                  )),
+                )}
+                <span
+                  className="discover-objects-header__selector underline ttl"
+                  role="presentation"
+                  onClick={this.showFiltersModal}
+                >
+                  {intl.formatMessage({ id: 'add_new_proposition', defaultMessage: 'Add' })}
+                </span>
+              </div>
+            ) : null}
+            {hasMap ? (
+              <div className="discover-objects-header__toggle-map tc">
+                <Button
+                  icon="compass"
+                  size="large"
+                  className={isEmpty(map) ? 'map-btn' : 'map-btn active'}
+                  onClick={this.showMap}
+                >
+                  {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
+                </Button>
+              </div>
+            ) : null}
+          </React.Fragment>
+        ) : null}
         {!isEmpty(filteredObjects) ? (
           <ReduxInfiniteScroll
             className="Feed"

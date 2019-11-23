@@ -7,17 +7,6 @@ import './Debts.less';
 
 const Debts = ({ intl, currentSteemDollarPrice, debtObjsData, componentLocation }) => (
   <div className="Debts">
-    <div className="Debts__main-title">
-      {componentLocation === '/rewards/payables'
-        ? intl.formatMessage({
-            id: 'debts_payables',
-            defaultMessage: 'Payables',
-          })
-        : intl.formatMessage({
-            id: 'debts_receivables',
-            defaultMessage: 'Receivables',
-          })}
-    </div>
     <div className="Debts__information-row">
       <div className="Debts__information-row-total-title">
         {intl.formatMessage({

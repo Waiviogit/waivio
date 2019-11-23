@@ -2,7 +2,13 @@
 @import (reference) '../../../styles/modules/variables';
 
 .discover-objects-header {
-  padding: 0 12px;
+  display: flex;
+  padding: 0 5px 5px 0;
+  font-size: 1rem;
+
+  @media @medium, @large {
+    display: none;
+  }
 
   .SortSelector {
     align-self: flex-end;
@@ -14,25 +20,21 @@
 
   &__title {
     font-weight: 500;
-    @media @medium, @large {
-      font-size: 1.25rem;
-    }
   }
   &__topic {
     font-weight: 600;
     padding-right: 5px;
-    @media @medium, @large {
-      font-weight: 500;
-    }
   }
   &__selector {
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 400;
-    &:hover {
+    text-transform: capitalize;
+
+    & > span {
       color: @primary-color;
     }
-    @media @medium, @large {
-      display: none;
+    &:hover {
+      color: @primary-color;
     }
   }
   &__toggle-map {

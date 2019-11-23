@@ -444,7 +444,7 @@ class Rewards extends React.Component {
             </div>
           </Affix>
           <div className="center mt3">
-            <MobileNavigation formatMessage={intl.formatMessage} match={match} />
+            <MobileNavigation />
             {renderedRoutes}
           </div>
           {(match.path === '/rewards/payables' || match.path === '/rewards/receivables') && (
