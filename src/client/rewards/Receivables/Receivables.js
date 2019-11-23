@@ -5,7 +5,7 @@ import _ from 'lodash';
 import { getLenders } from '../../../waivioApi/ApiClient';
 import Debts from '../Debts/Debts';
 
-const ReceivablesContainer = ({ userName, currentSteemDollarPrice, filterData, location }) => {
+const ReceivablesContainer = ({ userName, currentSteemPrice, filterData, location }) => {
   const payableFilters = {};
   _.map(filterData, f => {
     payableFilters[f.filterName] = f.value;
@@ -23,7 +23,7 @@ const ReceivablesContainer = ({ userName, currentSteemDollarPrice, filterData, l
   return (
     <Debts
       userName={userName}
-      currentSteemDollarPrice={currentSteemDollarPrice}
+      currentSteemPrice={currentSteemPrice}
       debtObjsData={sponsors}
       componentLocation={location.pathname}
     />
@@ -32,7 +32,7 @@ const ReceivablesContainer = ({ userName, currentSteemDollarPrice, filterData, l
 
 ReceivablesContainer.propTypes = {
   location: PropTypes.shape().isRequired,
-  currentSteemDollarPrice: PropTypes.number.isRequired,
+  currentSteemPrice: PropTypes.number.isRequired,
   userName: PropTypes.string.isRequired,
   filterData: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };

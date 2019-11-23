@@ -122,8 +122,8 @@ class Manage extends React.Component {
         <div className="Manage__account-balance-wrap">
           <div className="Manage__account-balance-wrap-title">
             {intl.formatMessage({
-              id: 'rewardAccountBalance',
-              defaultMessage: `Account balance (SBD)`,
+              id: 'manage_page_account_balance',
+              defaultMessage: `Account balance (STEEM)`,
             })}
           </div>
           <BalanceTable intl={intl} budgetTotal={budgetTotal} user={user} />
@@ -131,7 +131,7 @@ class Manage extends React.Component {
           <div className="Manage__rewards-campaign-wrap">
             <div className="Manage__rewards-campaign-wrap-title">
               {intl.formatMessage({
-                id: 'manageRewardsCampaign',
+                id: 'manage_page_manage_campaign',
                 defaultMessage: `Manage rewards campaign`,
               })}
             </div>
