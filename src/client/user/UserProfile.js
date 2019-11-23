@@ -96,7 +96,7 @@ export default class UserProfile extends React.Component {
       if (!isEmpty(activeFilters)) {
         requestFeedData.author_permlinks = activeFilters;
       }
-      this.props.getUserProfileBlogPosts(username, { requestFeedData });
+      this.props.getUserProfileBlogPosts(username, requestFeedData);
     };
 
     return (
