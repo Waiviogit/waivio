@@ -95,10 +95,10 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
   });
 };
 
-export const getUserProfileBlogPosts = (userName, { limit = 10, skip = 0, initialLoad = true }) => (
-  dispatch,
-  getState,
-) => {
+export const getUserProfileBlogPosts = (
+  userName,
+  { limit = 10, skip = 0, initialLoad = true, author_permlinks },
+) => (dispatch, getState) => {
   if (!initialLoad) {
     const state = getState();
     const feed = getFeed(state);
@@ -111,6 +111,7 @@ export const getUserProfileBlogPosts = (userName, { limit = 10, skip = 0, initia
     payload: ApiClient.getUserProfileBlog(userName, {
       limit,
       skip,
+      author_permlinks,
     }),
     meta: {
       sortBy: 'blog',

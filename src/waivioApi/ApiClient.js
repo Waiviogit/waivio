@@ -110,7 +110,7 @@ export const getFeedContent = (sortBy, queryData) =>
       .catch(error => reject(error));
   });
 
-export const getUserProfileBlog = (userName, { limit, skip }) =>
+export const getUserProfileBlog = (userName, { limit, skip, author_permlinks }) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.blog}`, {
       headers,
@@ -118,6 +118,7 @@ export const getUserProfileBlog = (userName, { limit, skip }) =>
       body: JSON.stringify({
         limit,
         skip,
+        author_permlinks,
       }),
     })
       .then(res => res.json())

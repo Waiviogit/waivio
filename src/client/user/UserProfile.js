@@ -1,10 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import _, { isEmpty } from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Feed from '../feed/Feed';
-import { getIsAuthenticated, getAuthenticatedUser, getFeed } from '../reducers';
+import {
+  getIsAuthenticated,
+  getAuthenticatedUser,
+  getFeed,
+  getActiveObjectFilters,
+} from '../reducers';
 import {
   getFeedLoadingFromState,
   getFeedFetchedFromState,
@@ -23,6 +28,7 @@ import PostModal from '../post/PostModalContainer';
     authenticated: getIsAuthenticated(state),
     authenticatedUser: getAuthenticatedUser(state),
     feed: getFeed(state),
+    activeFilters: getActiveObjectFilters(state),
   }),
   {
     getUserProfileBlogPosts,
@@ -38,12 +44,14 @@ export default class UserProfile extends React.Component {
     showPostModal: PropTypes.func.isRequired,
     limit: PropTypes.number,
     getUserProfileBlogPosts: PropTypes.func,
+    activeFilters: PropTypes.arrayOf(PropTypes.shape()),
   };
 
   static defaultProps = {
     limit: 10,
     location: {},
     getUserProfileBlogPosts: () => {},
+    activeFilters: [],
   };
 
   componentDidMount() {
@@ -53,20 +61,43 @@ export default class UserProfile extends React.Component {
     this.props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
   }
 
+  componentDidUpdate(prevProps) {
+    const { activeFilters, match, limit } = this.props;
+    if (prevProps.activeFilters !== activeFilters) {
+      if (!isEmpty(activeFilters)) {
+        this.props.getUserProfileBlogPosts(match.params.name, {
+          limit,
+          initialLoad: true,
+          author_permlinks: activeFilters,
+        });
+      } else {
+        this.props.getUserProfileBlogPosts(match.params.name, {
+          limit,
+          initialLoad: true,
+        });
+      }
+    }
+  }
+
   render() {
-    const { authenticated, authenticatedUser, feed } = this.props;
+    const { authenticated, authenticatedUser, feed, activeFilters } = this.props;
     const username = this.props.match.params.name;
     const isOwnProfile = authenticated && username === authenticatedUser.name;
     const content = getFeedFromState('blog', username, feed);
     const isFetching = getFeedLoadingFromState('blog', username, feed);
     const fetched = getFeedFetchedFromState('blog', username, feed);
     const hasMore = getFeedHasMoreFromState('blog', username, feed);
-    const loadMoreContentAction = () =>
-      this.props.getUserProfileBlogPosts(username, {
+    const loadMoreContentAction = () => {
+      const requestFeedData = {
         limit: this.props.limit,
         skip: content.length || 0,
         initialLoad: false,
-      });
+      };
+      if (!isEmpty(activeFilters)) {
+        requestFeedData.author_permlinks = activeFilters;
+      }
+      this.props.getUserProfileBlogPosts(username, { requestFeedData });
+    };
 
     return (
       <div>
