@@ -59,12 +59,6 @@ import ModalSignUp from './ModalSignUp/ModalSignUp';
   },
 )
 class Topnav extends React.Component {
-  static handleScrollToTop() {
-    if (window) {
-      window.scrollTo(0, 0);
-    }
-  }
-
   static propTypes = {
     /* from decorators */
     intl: PropTypes.shape().isRequired,
@@ -110,6 +104,12 @@ class Topnav extends React.Component {
     TYPE: 'type',
     SELECT_BAR: 'searchSelectBar',
   };
+
+  static handleScrollToTop() {
+    if (window) {
+      window.scrollTo(0, 0);
+    }
+  }
 
   constructor(props) {
     super(props);
