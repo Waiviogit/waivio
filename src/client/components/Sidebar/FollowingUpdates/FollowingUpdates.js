@@ -28,7 +28,7 @@ function buildFollowingUpdatesMenuConfig(updates) {
         name: `@${followingUser.name}`,
         intlId: `@${followingUser.name}`,
         meta: followingUser.last_posts_count > 0 ? followingUser.last_posts_count : '',
-        linkTo: `/@${followingUser.name}`,
+        linkTo: `/blog/@${followingUser.name}`,
       })),
     };
   }
@@ -48,7 +48,7 @@ function buildFollowingUpdatesMenuConfig(updates) {
             name: clientObj.name,
             intlId: clientObj.name,
             meta: clientObj.last_posts_count > 0 ? clientObj.last_posts_count : '',
-            linkTo: `/object/${clientObj.id}`,
+            linkTo: `/feed/${clientObj.id}`,
           };
         }),
       };

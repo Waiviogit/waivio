@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
 import { getFeedContent } from './feedActions';
 import { getIsAuthenticated, getIsLoaded } from '../reducers';
-import SubFeed from './SubFeed';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
 import Affix from '../components/Utils/Affix';
@@ -30,9 +30,10 @@ class Page extends React.Component {
   static propTypes = {
     authenticated: PropTypes.bool.isRequired,
     history: PropTypes.shape().isRequired,
+    intl: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
-    intl: PropTypes.shape().isRequired,
+    route: PropTypes.shape().isRequired,
   };
 
   state = { isModalOpen: false };
@@ -75,7 +76,7 @@ class Page extends React.Component {
             <div className="center">
               <MobileNavigation match={match} formatMessage={intl.formatMessage} />
               {authenticated && <QuickPostEditor />}
-              <SubFeed />
+              {renderRoutes(this.props.route.routes)}
             </div>
           </div>
         </div>
