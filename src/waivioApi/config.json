@@ -64,5 +64,6 @@
   "userMetadata": "/userMetadata",
   "users": "/users",
   "wobjectsExpertise": "/object_expertise",
-  "wobjectsWithUserWeight": "/objects_shares"
+  "wobjectsWithUserWeight": "/objects_shares",
+  "wobjectsWithCount": "/get_post_filters"
 }

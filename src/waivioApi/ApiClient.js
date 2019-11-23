@@ -357,6 +357,22 @@ export const getWobjectsWithUserWeight = (
       .catch(error => reject(error));
   });
 };
+
+export const getWobjectsWithCount = (userName, skip = 0, limit = 30) => {
+  return new Promise((resolve, reject) => {
+    fetch(
+      `${config.apiPrefix}${config.user}/${userName}${config.wobjectsWithCount}?limit=${limit}&skip=${skip}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(handleErrors)
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+};
 export const getWobjectsExpertise = (user, authorPermlink, skip = 0, limit = 30) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.wobjectsExpertise}`, {
