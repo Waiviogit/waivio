@@ -37,6 +37,9 @@ const ObjectFilterBlock = ({ username, ...props }) => {
       .getWobjectsWithCount(username, wobjectsData.length, OBJECTS_COUNT)
       .then(data => {
         setWobjectsData([...wobjectsData, ...data]);
+        if (data.length < 5) {
+          setLoadedAll(true);
+        }
         setLoading(false);
       })
       .catch(() => setLoadedAll(true));
