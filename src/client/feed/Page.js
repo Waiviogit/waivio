@@ -30,7 +30,6 @@ class Page extends React.Component {
   static propTypes = {
     authenticated: PropTypes.bool.isRequired,
     history: PropTypes.shape().isRequired,
-    intl: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     route: PropTypes.shape().isRequired,
@@ -50,7 +49,7 @@ class Page extends React.Component {
   handleTopicClose = () => this.props.history.push('/trending');
 
   render() {
-    const { authenticated, location, intl, match } = this.props;
+    const { authenticated, location } = this.props;
     const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
 
     return (
@@ -74,7 +73,7 @@ class Page extends React.Component {
               </div>
             </Affix>
             <div className="center">
-              <MobileNavigation match={match} formatMessage={intl.formatMessage} />
+              <MobileNavigation />
               {authenticated && <QuickPostEditor />}
               {renderRoutes(this.props.route.routes)}
             </div>

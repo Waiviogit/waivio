@@ -48,7 +48,7 @@ function buildFollowingUpdatesMenuConfig(updates) {
             name: clientObj.name,
             intlId: clientObj.name,
             meta: clientObj.last_posts_count > 0 ? clientObj.last_posts_count : '',
-            linkTo: `/feed/${clientObj.id}`,
+            linkTo: `/feed/${clientObj.id}?category=${clientObj.object_type}&name=${clientObj.name}`,
           };
         }),
       };
