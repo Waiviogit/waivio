@@ -1,25 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { injectIntl, FormattedMessage } from 'react-intl';
-import { withRouter, Link } from 'react-router-dom';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Menu, Icon, Input, AutoComplete } from 'antd';
+import { AutoComplete, Icon, Input, Menu } from 'antd';
 import classNames from 'classnames';
 import {
+  resetSearchAutoCompete,
   searchAutoComplete,
   searchObjectsAutoCompete,
-  searchUsersAutoCompete,
   searchObjectTypesAutoCompete,
-  resetSearchAutoCompete,
+  searchUsersAutoCompete,
 } from '../../search/searchActions';
 import { getUserMetadata } from '../../user/usersActions';
 import {
-  getAutoCompleteSearchResults,
-  getSearchObjectsResults,
-  getNotifications,
   getAuthenticatedUserMetaData,
+  getAutoCompleteSearchResults,
   getIsLoadingNotifications,
+  getNotifications,
+  getSearchObjectsResults,
   getSearchUsersResults,
   searchObjectTypesResults,
 } from '../../reducers';
@@ -59,6 +59,12 @@ import ModalSignUp from './ModalSignUp/ModalSignUp';
   },
 )
 class Topnav extends React.Component {
+  static handleScrollToTop() {
+    if (window) {
+      window.scrollTo(0, 0);
+    }
+  }
+
   static propTypes = {
     /* from decorators */
     intl: PropTypes.shape().isRequired,
@@ -85,7 +91,6 @@ class Topnav extends React.Component {
     searchByUser: PropTypes.arrayOf(PropTypes.shape()),
     searchByObjectType: PropTypes.arrayOf(PropTypes.shape()),
   };
-
   static defaultProps = {
     autoCompleteSearchResults: {},
     searchByObject: [],
@@ -104,12 +109,6 @@ class Topnav extends React.Component {
     TYPE: 'type',
     SELECT_BAR: 'searchSelectBar',
   };
-
-  static handleScrollToTop() {
-    if (window) {
-      window.scrollTo(0, 0);
-    }
-  }
 
   constructor(props) {
     super(props);
@@ -171,6 +170,18 @@ class Topnav extends React.Component {
     }
     return countArr;
   };
+
+  debouncedSearch = _.debounce(value => this.props.searchAutoComplete(value, 3, 15), 300);
+
+  debouncedSearchByObject = _.debounce((searchString, objType) =>
+    this.props.searchObjectsAutoCompete(searchString, objType),
+  );
+  debouncedSearchByUser = _.debounce(searchString =>
+    this.props.searchUsersAutoCompete(searchString),
+  );
+  debouncedSearchByObjectTypes = _.debounce(searchString =>
+    this.props.searchObjectTypesAutoCompete(searchString),
+  );
 
   handleMoreMenuSelect(key) {
     this.setState({ popoverVisible: false }, () => {
@@ -400,17 +411,6 @@ class Topnav extends React.Component {
     }
     this.props.history.push(redirectUrl);
   };
-
-  debouncedSearch = _.debounce(value => this.props.searchAutoComplete(value, 3, 15), 300);
-  debouncedSearchByObject = _.debounce((searchString, objType) =>
-    this.props.searchObjectsAutoCompete(searchString, objType),
-  );
-  debouncedSearchByUser = _.debounce(searchString =>
-    this.props.searchUsersAutoCompete(searchString),
-  );
-  debouncedSearchByObjectTypes = _.debounce(searchString =>
-    this.props.searchObjectTypesAutoCompete(searchString),
-  );
 
   handleAutoCompleteSearch(value) {
     this.debouncedSearch(value);
@@ -672,7 +672,6 @@ class Topnav extends React.Component {
             <Link className="Topnav__brand" to="/">
               Waivio
             </Link>
-            <span className="Topnav__version">beta</span>
           </div>
           <div className={classNames('center', { mobileVisible: searchBarActive })}>
             <div className="Topnav__input-container">

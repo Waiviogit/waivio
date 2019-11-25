@@ -21,9 +21,6 @@ const ObjectsContainer = ({ history }) => {
     <div className="Objects">
       <MobileNavigation />
       <div className="Objects__title">
-        <div className="Objects__message">
-          <FormattedMessage id="objects_title" defaultMessage="Discover more objects" />
-        </div>
         <SearchObjectsAutocomplete handleSelect={handleSelectObject} />
       </div>
       <Tabs defaultActiveKey="1">
