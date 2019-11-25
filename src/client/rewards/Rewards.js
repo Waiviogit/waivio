@@ -114,6 +114,13 @@ class Rewards extends React.Component {
     } else this.setState({ propositions: [{}] }); // for map, not equal propositions
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const { username, match } = this.props;
+    const { radius, coordinates, sort, activeFilters, isSearchAreaFilter } = this.state;
+    if (prevState.isSearchAreaFilter !== isSearchAreaFilter && !isSearchAreaFilter)
+      this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+  }
+
   getRequiredObjects = () =>
     map(this.state.propositions, proposition => proposition.required_object);
 
