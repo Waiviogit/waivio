@@ -252,7 +252,7 @@ export class Umarkets {
         this.stompClient.send(
           '/exchange/CMD/',
           {},
-          `{"sid": "${this.sid}", "umid": "${this.um_session}", "cmd": "${cmd}", "params": ${params}${submissionReason ? `,submissionReason: ${submissionReason}` : ""}}`,
+          `{"sid": "${this.sid}", "umid": "${this.um_session}", "cmd": "${cmd}", "params": ${params}${submissionReason ? `, "submissionReason": ${submissionReason}` : ""}}`,
         );
       } catch (e) {
         // console.log('Stomp error ' + e.name + ':' + e.message + '\n' + e.stack);
