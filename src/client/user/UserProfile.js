@@ -28,7 +28,6 @@ import PostModal from '../post/PostModalContainer';
     authenticated: getIsAuthenticated(state),
     authenticatedUser: getAuthenticatedUser(state),
     feed: getFeed(state),
-    activeFilters: getActiveObjectFilters(state),
   }),
   {
     getUserProfileBlogPosts,

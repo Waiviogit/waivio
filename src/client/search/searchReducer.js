@@ -45,6 +45,11 @@ export default (state = initialState, action) => {
       };
     case searchActions.AUTO_COMPLETE_SEARCH.SUCCESS: {
       const { result, search } = action.payload;
+      const { followingUsersList } = action.meta;
+      result.users.forEach(user => {
+        // eslint-disable-next-line no-param-reassign
+        user.isFollowing = followingUsersList.includes(user.account);
+      });
       return {
         ...state,
         autoCompleteSearchResults: isEmpty(search) ? [] : result,
