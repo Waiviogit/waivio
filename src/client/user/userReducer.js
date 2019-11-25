@@ -8,7 +8,7 @@ const initialState = {
   recommendedObjects: [],
   location: {},
   following: {
-    list: [],
+    list: {},
     pendingFollows: [],
     isFetching: false,
     fetched: false,
@@ -63,12 +63,17 @@ export default function userReducer(state = initialState, action) {
         },
         fetchFollowListError: true,
       };
+    // eslint-disable-next-line no-case-declarations
     case userActions.GET_FOLLOWING_SUCCESS:
+      const followingObject = {};
+      action.payload.forEach(user => {
+        followingObject[user] = true;
+      });
       return {
         ...state,
         following: {
           ...state.following,
-          list: action.payload,
+          list: followingObject,
           isFetching: false,
           fetched: true,
         },
@@ -306,7 +311,7 @@ export default function userReducer(state = initialState, action) {
   }
 }
 
-export const getFollowingList = state => state.following.list;
+export const getFollowingList = state => Object.keys(state.following.list);
 export const getFollowingObjectsList = state => state.followingObjects.list;
 export const getPendingFollows = state => state.following.pendingFollows;
 export const getPendingFollowingObjects = state => state.followingObjects.pendingFollows;

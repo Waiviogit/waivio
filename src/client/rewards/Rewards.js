@@ -114,6 +114,13 @@ class Rewards extends React.Component {
     } else this.setState({ propositions: [{}] }); // for map, not equal propositions
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const { username, match } = this.props;
+    const { radius, coordinates, sort, activeFilters, isSearchAreaFilter } = this.state;
+    if (prevState.isSearchAreaFilter && !isSearchAreaFilter)
+      this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+  }
+
   getRequiredObjects = () =>
     map(this.state.propositions, proposition => proposition.required_object);
 
@@ -403,14 +410,14 @@ class Rewards extends React.Component {
     const filterKey = match.params.filterKey;
     const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
     const isCreate = location.pathname === '/rewards/create';
-    const currentSteemDollarPrice =
-      cryptosPriceHistory && cryptosPriceHistory.SBD && cryptosPriceHistory.SBD.priceDetails
-        ? cryptosPriceHistory.SBD.priceDetails.currentUSDPrice
+    const currentSteemPrice =
+      cryptosPriceHistory && cryptosPriceHistory.STEEM && cryptosPriceHistory.STEEM.priceDetails
+        ? cryptosPriceHistory.STEEM.priceDetails.currentUSDPrice
         : 0;
 
     const renderedRoutes = renderRoutes(this.props.route.routes, {
       user,
-      currentSteemDollarPrice,
+      currentSteemPrice,
       hasMore,
       IsRequiredObjectWrap,
       loading,
@@ -444,7 +451,7 @@ class Rewards extends React.Component {
             </div>
           </Affix>
           <div className="center mt3">
-            <MobileNavigation formatMessage={intl.formatMessage} match={match} />
+            <MobileNavigation />
             {renderedRoutes}
           </div>
           {(match.path === '/rewards/payables' || match.path === '/rewards/receivables') && (

@@ -95,31 +95,22 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
   });
 };
 
-export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = true }) => (
+export const getUserProfileBlogPosts = (userName, { limit = 10, skip = 0, initialLoad = true }) => (
   dispatch,
   getState,
 ) => {
-  let startAuthor = '';
-  let startPermlink = '';
   if (!initialLoad) {
     const state = getState();
     const feed = getFeed(state);
-    const posts = getPosts(state);
     const feedContent = getFeedFromState('blog', userName, feed);
 
     if (!feedContent.length) return Promise.resolve(null);
-
-    const lastPost = posts[feedContent[feedContent.length - 1]];
-
-    startAuthor = lastPost.author;
-    startPermlink = lastPost.permlink;
   }
   return dispatch({
     type: initialLoad ? GET_FEED_CONTENT.ACTION : GET_MORE_FEED_CONTENT.ACTION,
     payload: ApiClient.getUserProfileBlog(userName, {
-      startAuthor,
-      startPermlink,
       limit,
+      skip,
     }),
     meta: {
       sortBy: 'blog',

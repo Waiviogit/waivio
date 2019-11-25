@@ -24,7 +24,7 @@ const mapStateToProps = (state, { post, requiredObjectPermlink }) => {
   const userVote = _.find(post.active_votes, { voter: user.name }) || {};
   const postState = {
     isLiked: userVote.percent > 0,
-    userFollowed: getFollowingList(state).includes(post.author),
+    userFollowed: getFollowingList(state).includes(post.parent_author),
     objectFollowed: getFollowingObjectsList(state).includes(requiredObjectPermlink),
   };
 
@@ -41,7 +41,7 @@ const mapStateToProps = (state, { post, requiredObjectPermlink }) => {
     postState,
     pendingLike,
     pendingFlag,
-    pendingFollow: getPendingFollows(state).includes(post.author),
+    pendingFollow: getPendingFollows(state).includes(post.parent_author),
     pendingFollowObject: getPendingFollowingObjects(state).includes(requiredObjectPermlink),
     ownPost: user.name === post.author,
     sliderMode: getVotingPower(state),

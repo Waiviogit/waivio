@@ -23,7 +23,7 @@ const Payment = ({ match, intl, userName, openTransfer }) => {
     getLenders(requestParams)
       .then(data => {
         setSponsors(data.histories);
-        setPayable(data.payable);
+        setPayable(data.histories[0].amount_sbd);
       })
       .catch(e => console.log(e));
   }, []);
@@ -60,13 +60,13 @@ const Payment = ({ match, intl, userName, openTransfer }) => {
             <Action
               className="WalletSidebar__transfer"
               primary
-              onClick={() => openTransfer(name, payable, 'SBD')}
+              onClick={() => openTransfer(name, payable, 'STEEM')}
             >
               {intl.formatMessage({
                 id: 'pay',
                 defaultMessage: 'Pay',
               })}
-              {` ${payable} SBD`}
+              {` ${payable} STEEM`}
             </Action>
           )}
         </div>
