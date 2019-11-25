@@ -2,57 +2,6 @@
 @import (reference) '../styles/modules/variables';
 
 //region DiscoverObjectsContent
-.discover-objects-header {
-  padding: 0 12px;
-
-  .SortSelector {
-    align-self: flex-end;
-  }
-
-  .filter-highlighted {
-    color: @primary-color;
-  }
-
-  &__title {
-    font-weight: 500;
-    @media @medium, @large {
-      font-size: 1.25rem;
-    }
-  }
-  &__topic {
-    font-weight: 600;
-    padding-right: 5px;
-    @media @medium, @large {
-      font-weight: 500;
-    }
-  }
-  &__selector {
-    font-size: 0.9rem;
-    font-weight: 400;
-    &:hover {
-      color: @primary-color;
-    }
-    @media @medium, @large {
-      display: none;
-    }
-  }
-  &__toggle-map {
-    padding: 10px 0 5px 0;
-  }
-  &__toggle-map,
-  &__tags-block {
-    @media @small, @medium, @large {
-      display: none;
-    }
-    &.common {
-      display: none;
-
-      @media @small, @medium, @large {
-        display: block;
-      }
-    }
-  }
-}
 .discover-filters-modal.ant-modal {
   min-width: 100vw;
   .ant-modal-content {

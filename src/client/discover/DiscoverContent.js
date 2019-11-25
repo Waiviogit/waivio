@@ -1,11 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
 import DiscoverUser from './DiscoverUser';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import { getTopExperts as getTopExpertsApi } from '../user/usersActions';
-import { getTopExperts, getTopExpertsLoading, getTopExpertsHasMore } from '../reducers';
+import {
+  getTopExperts,
+  getTopExpertsLoading,
+  getTopExpertsHasMore,
+  getObjectTypesList,
+} from '../reducers';
 import Loading from '../components/Icon/Loading';
+import { getObjectTypes } from '../objectTypes/objectTypesActions';
 
 const displayLimit = 20;
 
@@ -14,9 +21,11 @@ const displayLimit = 20;
     topExperts: getTopExperts(state),
     topExpertsLoading: getTopExpertsLoading(state),
     hasMoreExperts: getTopExpertsHasMore(state),
+    typesList: getObjectTypesList(state),
   }),
   {
     getTopExperts: getTopExpertsApi,
+    getObjectTypes,
   },
 )
 class DiscoverContent extends React.Component {
@@ -31,7 +40,14 @@ class DiscoverContent extends React.Component {
     getTopExperts: PropTypes.func.isRequired,
     topExpertsLoading: PropTypes.bool.isRequired,
     hasMoreExperts: PropTypes.bool.isRequired,
+    typesList: PropTypes.shape().isRequired,
+    getObjectTypes: PropTypes.func.isRequired,
   };
+
+  componentDidMount() {
+    const { typesList } = this.props;
+    if (isEmpty(typesList)) this.props.getObjectTypes();
+  }
 
   handleLoadMore = () => {
     if (!this.props.topExpertsLoading) {

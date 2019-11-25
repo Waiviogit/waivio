@@ -23,7 +23,7 @@ const Payment = ({ match, intl, userName, openTransfer }) => {
     getLenders(requestParams)
       .then(data => {
         setSponsors(data.histories);
-        setPayable(data.payable);
+        setPayable(data.histories[0].amount_sbd);
       })
       .catch(e => console.log(e));
   }, []);

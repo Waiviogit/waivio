@@ -75,7 +75,7 @@ class ModalSignUp extends React.Component {
         ) : (
           <a role="presentation" onClick={this.toggleModal}>
             {this.props.intl.formatMessage({
-              id: 'signUp',
+              id: 'signup',
               defaultMessage: 'Sign up',
             })}
           </a>
