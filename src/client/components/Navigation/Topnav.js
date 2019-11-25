@@ -501,6 +501,9 @@ class Topnav extends React.Component {
               <Avatar username={option.account} size={40} />
               <div className="Topnav__search-content">{option.account}</div>
             </div>
+            <div className="Topnav__search-content-small">
+              {option.isFollowing && <span>following</span>}
+            </div>
           </AutoComplete.Option>
         ))}
       </AutoComplete.OptGroup>
