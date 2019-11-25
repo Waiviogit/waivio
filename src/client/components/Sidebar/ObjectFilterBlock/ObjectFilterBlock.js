@@ -16,6 +16,7 @@ const OBJECTS_COUNT = 5;
 const ObjectFilterBlock = ({ username, ...props }) => {
   const [activeFilters, setActiveFilters] = useState([]);
   const [wobjectsData, setWobjectsData] = useState([]);
+  const [isLoadedAll, setLoadedAll] = useState(false);
   const [isLoading, setLoading] = useState(false);
   useEffect(() => {
     api.getWobjectsWithCount(username, 0, 5).then(data => setWobjectsData(data));
@@ -32,10 +33,13 @@ const ObjectFilterBlock = ({ username, ...props }) => {
   };
 
   const showMoreObjects = () => {
-    api.getWobjectsWithCount(username, wobjectsData.length, OBJECTS_COUNT).then(data => {
-      setWobjectsData([...wobjectsData, ...data]);
-      setLoading(false);
-    });
+    api
+      .getWobjectsWithCount(username, wobjectsData.length, OBJECTS_COUNT)
+      .then(data => {
+        setWobjectsData([...wobjectsData, ...data]);
+        setLoading(false);
+      })
+      .catch(() => setLoadedAll(true));
   };
 
   const showMoreHandler = () => {
@@ -55,7 +59,7 @@ const ObjectFilterBlock = ({ username, ...props }) => {
         {map(wobjectsData, wobjectData => (
           <ObjectFilterCard wobjectData={wobjectData} setObjectFilters={setActiveObjectFilters} />
         ))}
-        {wobjectsData.length >= 5 && (
+        {wobjectsData.length >= 5 && !isLoadedAll && (
           <React.Fragment>
             <div className="ObjectFilterBlock__more" onClick={showMoreHandler} role="presentation">
               <FormattedMessage id="show_more" defaultMessage="Show more" />
