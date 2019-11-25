@@ -117,7 +117,7 @@ class Rewards extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     const { username, match } = this.props;
     const { radius, coordinates, sort, activeFilters, isSearchAreaFilter } = this.state;
-    if (prevState.isSearchAreaFilter !== isSearchAreaFilter && !isSearchAreaFilter)
+    if (prevState.isSearchAreaFilter && !isSearchAreaFilter)
       this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
   }
 
