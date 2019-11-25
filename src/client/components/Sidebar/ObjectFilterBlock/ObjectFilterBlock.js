@@ -15,12 +15,10 @@ const OBJECTS_COUNT = 5;
 
 const ObjectFilterBlock = ({ username, ...props }) => {
   const [activeFilters, setActiveFilters] = useState([]);
-  const [wobjects, setWobjects] = useState([]);
+  const [wobjectsData, setWobjectsData] = useState([]);
   const [isLoading, setLoading] = useState(false);
-  // added mock property - count
-  const mockData = wobjects.map(wobj => ({ ...wobj, count: 20 }));
   useEffect(() => {
-    api.getWobjectsWithUserWeight(username, 0, 5).then(data => setWobjects(data.wobjects));
+    api.getWobjectsWithCount(username, 0, 5).then(data => setWobjectsData(data));
     return () => {
       props.setObjectFilters([]);
     };
@@ -34,8 +32,8 @@ const ObjectFilterBlock = ({ username, ...props }) => {
   };
 
   const showMoreObjects = () => {
-    api.getWobjectsWithUserWeight(username, wobjects.length, OBJECTS_COUNT).then(data => {
-      setWobjects([...wobjects, ...data.wobjects]);
+    api.getWobjectsWithCount(username, wobjectsData.length, OBJECTS_COUNT).then(data => {
+      setWobjectsData([...wobjectsData, ...data]);
       setLoading(false);
     });
   };
@@ -45,7 +43,7 @@ const ObjectFilterBlock = ({ username, ...props }) => {
     showMoreObjects();
   };
   props.setObjectFilters(activeFilters);
-  return !isEmpty(mockData) ? (
+  return !isEmpty(wobjectsData) ? (
     <div className="SidebarContentBlock">
       <div className="SidebarContentBlock__title">
         <div className="SidebarContentBlock__icon">
@@ -54,10 +52,10 @@ const ObjectFilterBlock = ({ username, ...props }) => {
         <FormattedMessage id="object_filter" defaultMessage="Object filter" />
       </div>
       <div className="SidebarContentBlock__content">
-        {map(mockData, wobject => (
-          <ObjectFilterCard wobject={wobject} setObjectFilters={setActiveObjectFilters} />
+        {map(wobjectsData, wobjectData => (
+          <ObjectFilterCard wobjectData={wobjectData} setObjectFilters={setActiveObjectFilters} />
         ))}
-        {mockData.length >= 5 && (
+        {wobjectsData.length >= 5 && (
           <React.Fragment>
             <div className="ObjectFilterBlock__more" onClick={showMoreHandler} role="presentation">
               <FormattedMessage id="show_more" defaultMessage="Show more" />

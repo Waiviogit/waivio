@@ -5,13 +5,17 @@ import PropTypes from 'prop-types';
 import ObjectCard from '../ObjectCard';
 import './ObjectFilterBlock.less';
 
-const ObjectFilterCard = ({ wobject, setObjectFilters }) => (
+const ObjectFilterCard = ({ wobjectData, setObjectFilters }) => (
   <div className="ObjectFilterCard">
     <div className="ObjectFilterCard__checkbox-wrap">
       <div className="ObjectFilterCard__checkbox-wrap-item">
-        <Checkbox onChange={() => setObjectFilters(wobject.author_permlink)} />
+        <Checkbox onChange={() => setObjectFilters(wobjectData.author_permlink)} />
       </div>
-      <ObjectCard key={wobject.author_permlink} wobject={wobject} showFollow={false} />
+      <ObjectCard
+        key={wobjectData.wobject.author_permlink}
+        wobject={wobjectData.wobject}
+        showFollow={false}
+      />
     </div>
     <div className="ObjectFilterCard__count">
       <Tooltip
@@ -19,14 +23,14 @@ const ObjectFilterCard = ({ wobject, setObjectFilters }) => (
           <FormattedMessage id="object_filter_number_of_posts" defaultMessage="Number of posts" />
         }
       >
-        {wobject.count}
+        {wobjectData.posts_count}
       </Tooltip>
     </div>
   </div>
 );
 
 ObjectFilterCard.propTypes = {
-  wobject: PropTypes.shape().isRequired,
+  wobjectData: PropTypes.shape().isRequired,
   setObjectFilters: PropTypes.func.isRequired,
 };
 
