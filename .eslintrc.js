@@ -33,5 +33,14 @@ module.exports = {
     'global-require': OFF,
     // Allow mixed linebreaks locally, but commit only LF.
     'linebreak-style': process.env.CI ? ['error', 'unix'] : OFF,
+    "react/sort-comp": [2, {
+      order: [
+        'static-variables',
+        'static-methods',
+        'lifecycle',
+        'everything-else',
+        'render'
+      ]
+    }]
   },
 };
