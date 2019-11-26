@@ -18,6 +18,7 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import requiresLogin from '../auth/requiresLogin';
 import './Settings.less';
 import TopNavigation from '../components/Navigation/TopNavigation';
+import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 
 const FormItem = Form.Item;
 
@@ -157,6 +158,7 @@ export default class ProfileSettings extends React.Component {
             </div>
           </Affix>
           <div className="center">
+            <MobileNavigation />
             <h1>
               <FormattedMessage id="edit_profile" defaultMessage="Edit Profile" />
             </h1>

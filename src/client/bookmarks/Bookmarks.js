@@ -19,6 +19,7 @@ import RightSidebar from '../app/Sidebar/RightSidebar';
 import requiresLogin from '../auth/requiresLogin';
 import PostModal from '../post/PostModalContainer';
 import TopNavigation from '../components/Navigation/TopNavigation';
+import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 
 @requiresLogin
 @injectIntl
@@ -91,6 +92,7 @@ export default class Bookmarks extends React.Component {
             </div>
           </Affix>
           <div className="center">
+            <MobileNavigation />
             <Feed
               content={content}
               isFetching={isFetching}

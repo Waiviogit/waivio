@@ -15,6 +15,7 @@ import EmailShare from '../components/Button/EmailShare';
 import { REFERRAL_PERCENT } from '../helpers/constants';
 import './Invite.less';
 import TopNavigation from '../components/Navigation/TopNavigation';
+import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 
 @requiresLogin
 @injectIntl
@@ -78,6 +79,7 @@ export default class Invite extends React.Component {
             </div>
           </Affix>
           <div className="center">
+            <MobileNavigation />
             <div className="Invite">
               <div className="Invite__icon-container" />
               <h1 className="Invite__title">
