@@ -626,7 +626,7 @@
   "rewards_for": "Rewards for",
   "date": "date",
   "budget_more_than_zero": "Budget should be more than zero",
-  "budget_overprices_wallet_balance": "Budget should not exceed your SBD wallet balance",
+  "budget_overprices_wallet_balance": "Budget should not exceed your STEEM wallet balance",
   "reward_more_than_zero": "Reward should be more than zero",
   "reward_not_exceed_budget": "The reward should not exceed the budget",
   "reserve_period_one_day": "The reservation period must be at least one day",
