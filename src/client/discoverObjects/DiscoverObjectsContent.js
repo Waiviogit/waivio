@@ -202,39 +202,42 @@ class DiscoverObjectsContent extends Component {
     return (
       <React.Fragment>
         <MobileNavigation />
-        {_.size(SORT_OPTIONS) - Number(!hasMap) > 1 ? sortSelector : null}
+
         <div className="discover-objects-header__tags-block common">
           {this.getCommonFiltersLayout()}
         </div>
         {isTypeHasFilters ? (
           <React.Fragment>
-            {!isEmpty(availableFilters) ? (
-              <div className="discover-objects-header__tags-block">
-                <span className="discover-objects-header__topic ttc">
-                  {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
-                </span>
-                {this.getCommonFiltersLayout()}
-                {_.map(chosenFilters, (filterValues, filterName) =>
-                  filterValues.map(filterValue => (
-                    <Tag
-                      className="ttc"
-                      key={`${filterName}:${filterValue}`}
-                      closable
-                      onClose={this.handleRemoveTag(filterName, filterValue)}
-                    >
-                      {filterValue}
-                    </Tag>
-                  )),
-                )}
-                <span
-                  className="discover-objects-header__selector underline ttl"
-                  role="presentation"
-                  onClick={this.showFiltersModal}
-                >
-                  {intl.formatMessage({ id: 'add_new_proposition', defaultMessage: 'Add' })}
-                </span>
-              </div>
-            ) : null}
+            <div className="discover-objects-header__selection-block">
+              {!isEmpty(availableFilters) ? (
+                <div className="discover-objects-header__tags-block">
+                  <span className="discover-objects-header__topic ttc">
+                    {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
+                  </span>
+                  {this.getCommonFiltersLayout()}
+                  {_.map(chosenFilters, (filterValues, filterName) =>
+                    filterValues.map(filterValue => (
+                      <Tag
+                        className="ttc"
+                        key={`${filterName}:${filterValue}`}
+                        closable
+                        onClose={this.handleRemoveTag(filterName, filterValue)}
+                      >
+                        {filterValue}
+                      </Tag>
+                    )),
+                  )}
+                  <span
+                    className="discover-objects-header__selector underline ttl"
+                    role="presentation"
+                    onClick={this.showFiltersModal}
+                  >
+                    {intl.formatMessage({ id: 'add_new_proposition', defaultMessage: 'Add' })}
+                  </span>
+                </div>
+              ) : null}
+              {_.size(SORT_OPTIONS) - Number(!hasMap) > 1 ? sortSelector : null}
+            </div>
             {hasMap ? (
               <div className="discover-objects-header__toggle-map tc">
                 <Button
