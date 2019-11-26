@@ -62,7 +62,7 @@ export default class UserProfile extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { match, limit } = this.props;
+    const { match, limit, activeFilters } = this.props;
     const { name } = match.params;
 
     if (name !== nextProps.match.params.name) {
@@ -78,16 +78,13 @@ export default class UserProfile extends React.Component {
       }
       window.scrollTo(0, 0);
     }
-  }
 
-  componentDidUpdate(prevProps) {
-    const { match, limit, activeFilters } = this.props;
-    if (activeFilters !== prevProps.activeFilters) {
-      if (!isEmpty(activeFilters)) {
+    if (activeFilters !== nextProps.activeFilters) {
+      if (!isEmpty(nextProps.activeFilters)) {
         this.props.getUserProfileBlogPosts(match.params.name, {
           limit,
           initialLoad: true,
-          author_permlinks: activeFilters,
+          author_permlinks: nextProps.activeFilters,
         });
       } else {
         this.props.getUserProfileBlogPosts(match.params.name, {
