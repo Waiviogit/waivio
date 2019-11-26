@@ -61,9 +61,28 @@ export default class UserProfile extends React.Component {
     this.props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { match, limit } = this.props;
+    const { name } = match.params;
+
+    if (name !== nextProps.match.params.name) {
+      if (
+        nextProps.feed &&
+        nextProps.feed.blog &&
+        !nextProps.feed.blog[nextProps.match.params.name]
+      ) {
+        this.props.getUserProfileBlogPosts(nextProps.match.params.name, {
+          limit,
+          initialLoad: true,
+        });
+      }
+      window.scrollTo(0, 0);
+    }
+  }
+
   componentDidUpdate(prevProps) {
-    const { activeFilters, match, limit } = this.props;
-    if (prevProps.activeFilters !== activeFilters) {
+    const { match, limit, activeFilters } = this.props;
+    if (activeFilters !== prevProps.activeFilters) {
       if (!isEmpty(activeFilters)) {
         this.props.getUserProfileBlogPosts(match.params.name, {
           limit,

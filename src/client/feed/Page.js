@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
 import { getFeedContent } from './feedActions';
 import { getIsAuthenticated, getIsLoaded } from '../reducers';
-import SubFeed from './SubFeed';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
 import Affix from '../components/Utils/Affix';
@@ -32,7 +32,7 @@ class Page extends React.Component {
     history: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
-    intl: PropTypes.shape().isRequired,
+    route: PropTypes.shape().isRequired,
   };
 
   state = { isModalOpen: false };
@@ -49,7 +49,7 @@ class Page extends React.Component {
   handleTopicClose = () => this.props.history.push('/trending');
 
   render() {
-    const { authenticated, location, intl, match } = this.props;
+    const { authenticated, location } = this.props;
     const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
 
     return (
@@ -73,9 +73,9 @@ class Page extends React.Component {
               </div>
             </Affix>
             <div className="center">
-              <MobileNavigation match={match} formatMessage={intl.formatMessage} />
+              <MobileNavigation />
               {authenticated && <QuickPostEditor />}
-              <SubFeed />
+              {renderRoutes(this.props.route.routes)}
             </div>
           </div>
         </div>

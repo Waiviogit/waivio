@@ -201,8 +201,10 @@ class DiscoverObjectsContent extends Component {
     );
     return (
       <React.Fragment>
-        <MobileNavigation />
-        {_.size(SORT_OPTIONS) - Number(!hasMap) > 1 ? sortSelector : null}
+        <div className="discover-objects-header__selection-block">
+          <MobileNavigation />
+          {_.size(SORT_OPTIONS) - Number(!hasMap) > 1 ? sortSelector : null}
+        </div>
         <div className="discover-objects-header__tags-block common">
           {this.getCommonFiltersLayout()}
         </div>
