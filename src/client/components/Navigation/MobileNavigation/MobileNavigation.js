@@ -127,7 +127,7 @@ const MobileNavigation = ({ location, match }) => {
       break;
     case '/edit-profile':
       pageName = 'tools';
-      filterName = 'edit profile';
+      filterName = 'edit_profile';
       break;
     case '/invite':
       pageName = 'tools';
