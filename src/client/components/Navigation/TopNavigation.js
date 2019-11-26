@@ -12,11 +12,24 @@ const LINKS = {
   FEED_PROMOTED: '/promoted',
   REWARDS: '/rewards',
   DISCOVER: '/discover-objects',
-  TOOLS: '/drafts',
+  TOOLS_ACTIVITY: '/activity',
+  TOOLS_DRAFTS: '/drafts',
+  TOOLS_BOOKMARKS: '/bookmarks',
+  TOOLS_EDIT_PROFILE: '/edit-profile',
+  TOOLS_INVITE: '/invite',
+  TOOLS_SETTINGS: '/settings',
   ABOUT: '/object/ylr-waivio',
   USERS: '/discover',
 };
 const FEED_URLS = [LINKS.FEED_HOT, LINKS.FEED_NEW, LINKS.FEED_TRENDING];
+const TOOLS_URLS = [
+  LINKS.TOOLS_BOOKMARKS,
+  LINKS.TOOLS_DRAFTS,
+  LINKS.TOOLS_EDIT_PROFILE,
+  LINKS.TOOLS_INVITE,
+  LINKS.TOOLS_SETTINGS,
+  LINKS.TOOLS_ACTIVITY,
+];
 
 const TopNavigation = ({ authenticated, location: { pathname } }) => {
   const isRouteMathed =
@@ -57,9 +70,9 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
       </li>
       <li className="TopNavigation__item">
         <Link
-          to={`${LINKS.TOOLS}`}
+          to={`${LINKS.TOOLS_DRAFTS}`}
           className={classNames('TopNavigation__link', {
-            'TopNavigation__link--active': pathname.includes(LINKS.TOOLS),
+            'TopNavigation__link--active': TOOLS_URLS.some(feedUrl => pathname.includes(feedUrl)),
           })}
         >
           <FormattedMessage id="tools" defaultMessage="Tools" />
