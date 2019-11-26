@@ -12,6 +12,7 @@ const LINKS = {
   FEED_PROMOTED: '/promoted',
   REWARDS: '/rewards',
   DISCOVER: '/discover-objects',
+  TOOLS: '/drafts',
   ABOUT: '/object/ylr-waivio',
   USERS: '/discover',
 };
@@ -52,6 +53,16 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
           })}
         >
           <FormattedMessage id="discover" defaultMessage="Discover" />
+        </Link>
+      </li>
+      <li className="TopNavigation__item">
+        <Link
+          to={`${LINKS.TOOLS}`}
+          className={classNames('TopNavigation__link', {
+            'TopNavigation__link--active': pathname.includes(LINKS.TOOLS),
+          })}
+        >
+          <FormattedMessage id="tools" defaultMessage="Tools" />
         </Link>
       </li>
       <li className="TopNavigation__item">

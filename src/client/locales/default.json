@@ -766,6 +766,7 @@
   "filter_payable": "Over {value} STEEM",
   "discover": "discover",
   "personal": "personal",
+  "tools": "Tools",
   "custom_json": "custom_json",
   "comment_options": "comment_options",
   "for_days": "for",
