@@ -82,7 +82,7 @@ class Chat extends React.Component {
     const requestData = {
       cmd: 'init',
       args: {
-        user_name: this.props.userName,
+        username: this.props.userName,
       },
     };
     switch (messageType) {
@@ -91,8 +91,8 @@ class Chat extends React.Component {
         break;
       case 'init_response':
         requestData.cmd = 'auth_connection';
-        requestData.args.transaction_id = data.value.result.id;
-        requestData.args.block_number = data.value.result.block_num;
+        requestData.args.transactionId = data.value.result.id;
+        requestData.args.blockNumber = data.value.result.block_num;
         this.ifr.contentWindow.postMessage(requestData, 'https://stchat.cf');
         break;
       case 'start_chat':
