@@ -5,12 +5,16 @@ const WebpackBar = require('webpackbar');
 const StartServerPlugin = require('start-server-webpack-plugin');
 const paths = require('../scripts/paths');
 const { MATCH_JS, MATCH_CSS_LESS, DEFINE_PLUGIN } = require('./configUtils');
-// const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = function createConfig(env = 'dev') {
   const IS_DEV = env === 'dev';
 
-  const config = {
+  const smp = new SpeedMeasurePlugin();
+
+  const config = smp.wrap({
     mode: IS_DEV ? 'development' : 'production',
     target: 'node',
     entry: [paths.server],
@@ -62,7 +66,7 @@ module.exports = function createConfig(env = 'dev') {
       //   cache: true,
       // }),
     ],
-  };
+  });
 
   if (IS_DEV) {
     config.entry = ['webpack/hot/poll?300', ...config.entry];
@@ -70,8 +74,13 @@ module.exports = function createConfig(env = 'dev') {
       ...config.plugins,
       new webpack.HotModuleReplacementPlugin(),
       new webpack.WatchIgnorePlugin([paths.assets]),
+      new HardSourceWebpackPlugin(),
       new StartServerPlugin({
         name: 'server.js',
+      }),
+      new UglifyJsPlugin({
+        cache: true,
+        parallel: true,
       }),
     ];
     config.resolve = {
