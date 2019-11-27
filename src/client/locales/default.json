@@ -67,7 +67,7 @@
   "gallery": "Gallery",
   "catalog": "Catalog",
   "reblogged": "Re-blogged",
-  "reblogged_username": "{username} reblogged",
+  "reblogged_username": "reblogged by {username} ",
   "follow_username": "Follow {username}",
   "unfollow_username": "Unfollow {username}",
   "block_user": "Block this user",
