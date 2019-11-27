@@ -73,7 +73,7 @@ export default class Bookmarks extends React.Component {
     const noBookmarks = !reloading && !isFetching && !content.length;
 
     return (
-      <React.Fragment>
+      <div className="shifted">
         <Helmet>
           <title>
             {intl.formatMessage({ id: 'bookmarks', defaultMessage: 'Bookmarks' })} - Waivio
@@ -114,7 +114,7 @@ export default class Bookmarks extends React.Component {
           </div>
         </div>
         <PostModal />
-      </React.Fragment>
+      </div>
     );
   }
 }
