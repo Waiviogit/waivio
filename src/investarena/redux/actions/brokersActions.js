@@ -124,10 +124,10 @@ export function disconnectBroker(isReconnect = false) {
       localStorage.removeItem(data);
     });
     dispatch(disconnectTokenSuccess());
+    if(singleton.platform && singleton.platform.platformName) message.success('Broker successfully disconnected');
     singleton.closeWebSocketConnection();
     singleton.platform = 'widgets';
     singleton.createWebSocketConnection();
-    message.success('Broker successfully disconnected');
     if (!isReconnect) {
       dispatch(toggleModal('broker'));
     }
