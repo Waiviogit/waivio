@@ -9,8 +9,8 @@ const SidenavUser = () => (
       <FormattedMessage id="sidenav_user_personal" defaultMessage="Personal" />:
     </div>
     <li>
-      <NavLink to="/activity" activeClassName="Sidenav__item--active">
-        <FormattedMessage id="activity" defaultMessage="Activity" />
+      <NavLink to="/drafts" activeClassName="Sidenav__item--active">
+        <FormattedMessage id="drafts" defaultMessage="Drafts" />
       </NavLink>
     </li>
     <li>
@@ -19,23 +19,18 @@ const SidenavUser = () => (
       </NavLink>
     </li>
     <li>
-      <NavLink to="/drafts" activeClassName="Sidenav__item--active">
-        <FormattedMessage id="drafts" defaultMessage="Drafts" />
-      </NavLink>
-    </li>
-    <li>
       <NavLink to="/edit-profile" activeClassName="Sidenav__item--active">
         <FormattedMessage id="edit_profile" defaultMessage="Edit profile" />
       </NavLink>
     </li>
     <li>
-      <NavLink to="/invite" activeClassName="Sidenav__item--active">
-        <FormattedMessage id="invite" defaultMessage="Invite" />
+      <NavLink to="/settings" activeClassName="Sidenav__item--active">
+        <FormattedMessage id="settings" defaultMessage="Settings" />
       </NavLink>
     </li>
     <li>
-      <NavLink to="/settings" activeClassName="Sidenav__item--active">
-        <FormattedMessage id="settings" defaultMessage="Settings" />
+      <NavLink to="/invite" activeClassName="Sidenav__item--active">
+        <FormattedMessage id="invite" defaultMessage="Invite" />
       </NavLink>
     </li>
     <div className="Sidenav__section-title pt3">
