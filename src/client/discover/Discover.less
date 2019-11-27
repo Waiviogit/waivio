@@ -2,7 +2,8 @@
 @import (reference) '../styles/modules/variables';
 
 .Discover {
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
   width: 100%;
 
   @media @medium, @large {
@@ -12,7 +13,7 @@
 
   &__title {
     margin-bottom: 8px;
-    padding-bottom: 8px;
+    padding: 0 0 8px 5px;
     text-align: left;
   }
 

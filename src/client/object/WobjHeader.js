@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import FollowButton from '../widgets/FollowButton';
 import ObjectLightbox from '../components/ObjectLightbox';
@@ -13,16 +14,26 @@ import DEFAULTS from '../object/const/defaultValues';
 import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
 import { getClientWObj } from '../adapters';
 import { objectFields } from '../../common/constants/listOfFields';
+import { UsedLocaleContext } from '../Wrapper';
 import '../components/ObjectHeader.less';
 
-const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, authenticated }) => {
+const WobjHeader = ({
+  isEditMode,
+  wobject,
+  username,
+  intl,
+  toggleViewEditMode,
+  authenticated,
+  isMobile,
+}) => {
+  const usedLocale = useContext(UsedLocaleContext);
   const coverImage = wobject.background || DEFAULTS.BACKGROUND;
   const style = { backgroundImage: `url("${coverImage}")` };
   const descriptionShort = wobject.title || '';
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
   const canEdit = accessExtend && isEditMode;
   const parentName = wobject.parent
-    ? getClientWObj(wobject.parent, intl.locale)[objectFields.name]
+    ? getClientWObj(wobject.parent, usedLocale)[objectFields.name]
     : '';
 
   const getStatusLayout = statusField => (
@@ -59,11 +70,13 @@ const WobjHeader = ({ isEditMode, wobject, username, intl, toggleViewEditMode, a
               <div className="ObjectHeader__controls">
                 <FollowButton following={wobject.author_permlink || ''} followingType="wobject" />
                 {accessExtend && authenticated && (
-                  <Button onClick={toggleViewEditMode}>
-                    {isEditMode
-                      ? intl.formatMessage({ id: 'view', defaultMessage: 'View' })
-                      : intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
-                  </Button>
+                  <Link to={`/object/${wobject.author_permlink}/${isMobile ? 'about' : ''}`}>
+                    <Button onClick={toggleViewEditMode}>
+                      {isEditMode
+                        ? intl.formatMessage({ id: 'view', defaultMessage: 'View' })
+                        : intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
+                    </Button>
+                  </Link>
                 )}
               </div>
             </div>
@@ -112,6 +125,7 @@ WobjHeader.propTypes = {
   wobject: PropTypes.shape(),
   username: PropTypes.string,
   toggleViewEditMode: PropTypes.func,
+  isMobile: PropTypes.bool,
 };
 
 WobjHeader.defaultProps = {
@@ -121,6 +135,9 @@ WobjHeader.defaultProps = {
   wobject: {},
   username: '',
   toggleViewEditMode: () => {},
+  isMobile: false,
 };
 
-export default injectIntl(WobjHeader);
+const mapStateToProps = state => ({ isMobile: state.app.screenSize !== 'large' });
+
+export default injectIntl(connect(mapStateToProps)(WobjHeader));

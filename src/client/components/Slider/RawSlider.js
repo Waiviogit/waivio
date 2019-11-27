@@ -19,7 +19,7 @@ class RawSlider extends React.Component {
     initialValue: 100,
     tipFormatter: value => `${value}%`,
     onChange: () => {},
-    min: 0,
+    min: 1,
     disabled: false,
   };
 
@@ -40,7 +40,7 @@ class RawSlider extends React.Component {
   }
 
   marks = {
-    0: '0%',
+    1: '1%',
     25: '25%',
     50: '50%',
     75: '75%',

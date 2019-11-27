@@ -37,6 +37,8 @@ import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
 import Chat from './components/Chat/Chat';
 
+export const UsedLocaleContext = React.createContext('en-US');
+
 @withRouter
 @connect(
   state => ({
@@ -230,27 +232,29 @@ export default class Wrapper extends React.PureComponent {
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
         <ConfigProvider locale={enUS}>
-          <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
-            <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
-              <Topnav username={user.name} onMenuItemClick={this.handleMenuItemClick} />
-            </Layout.Header>
-            <div className="content">
-              <Affix offsetTop={0}>
-                <TopNavigation authenticated={isAuthenticated} location={history.location} />
-              </Affix>
-              {renderRoutes(this.props.route.routes)}
-              <Transfer />
-              <PowerUpOrDown />
-              <NotificationPopup />
-              <BBackTop
-                openChat={this.props.changeChatCondition}
-                isChat={isChat}
-                className="primary-modal"
-                authentication={isAuthenticated}
-              />
-              {isAuthenticated ? <Chat visibility={isChat} userName={username} /> : null}
-            </div>
-          </Layout>
+          <UsedLocaleContext.Provider value={usedLocale}>
+            <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
+              <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
+                <Topnav username={user.name} onMenuItemClick={this.handleMenuItemClick} />
+              </Layout.Header>
+              <div className="content">
+                <Affix offsetTop={0}>
+                  <TopNavigation authenticated={isAuthenticated} location={history.location} />
+                </Affix>
+                {renderRoutes(this.props.route.routes)}
+                <Transfer />
+                <PowerUpOrDown />
+                <NotificationPopup />
+                <BBackTop
+                  openChat={this.props.changeChatCondition}
+                  isChat={isChat}
+                  className="primary-modal"
+                  authentication={isAuthenticated}
+                />
+                {isAuthenticated ? <Chat visibility={isChat} userName={username} /> : null}
+              </div>
+            </Layout>
+          </UsedLocaleContext.Provider>
         </ConfigProvider>
       </IntlProvider>
     );

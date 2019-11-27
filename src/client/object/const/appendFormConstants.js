@@ -193,13 +193,13 @@ export const fieldsRules = {
   ],
   [objectFields.workTime]: [
     {
-      max: 100,
+      max: 250,
       message: {
         intlId: {
           id: 'value_error_long',
           defaultMessage: "Value can't be longer than 100 characters.",
         },
-        intlMeta: { value: 100 },
+        intlMeta: { value: 250 },
       },
     },
     {

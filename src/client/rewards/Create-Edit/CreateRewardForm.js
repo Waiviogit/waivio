@@ -9,6 +9,7 @@ import { Form, message } from 'antd';
 import { createCampaign, getCampaignById, getObjectsByIds } from '../../../waivioApi/ApiClient';
 import CreateFormRenderer from './CreateFormRenderer';
 import { getClientWObj } from '../../adapters';
+import { UsedLocaleContext } from '../../Wrapper';
 import './CreateReward.less';
 
 @withRouter
@@ -18,6 +19,7 @@ class CreateRewardForm extends React.Component {
   static propTypes = {
     userName: PropTypes.string,
     user: PropTypes.shape(),
+    usedLocale: PropTypes.string,
     form: PropTypes.shape(),
     intl: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
@@ -27,6 +29,7 @@ class CreateRewardForm extends React.Component {
   static defaultProps = {
     userName: '',
     user: {},
+    usedLocale: 'en-US',
     form: {},
     currentSteemDollarPrice: 0,
   };
@@ -39,24 +42,25 @@ class CreateRewardForm extends React.Component {
     secondaryObjectsList: [],
     pageObjects: [],
     sponsorsList: [],
-    reservationPeriod: 1,
+    reservationPeriod: 7,
     compensationAccount: {},
     loading: false,
     parentPermlink: '',
     targetDays: {
-      monday: false,
-      tuesday: false,
-      wednesday: false,
-      thursday: false,
-      friday: false,
-      saturday: false,
-      sunday: false,
+      monday: true,
+      tuesday: true,
+      wednesday: true,
+      thursday: true,
+      friday: true,
+      saturday: true,
+      sunday: true,
     },
     minPhotos: 0,
     minSteemReputation: 25,
     minExpertise: 0,
     minFollowers: 0,
     minPosts: 0,
+    eligibleDays: 0,
     description: '',
     expiredAt: null,
     usersLegalNotice: '',
@@ -65,6 +69,8 @@ class CreateRewardForm extends React.Component {
     iAgree: false,
     campaignId: null,
     isCampaignActive: false,
+    isModal: false,
+    isValidationAccepted: false,
   };
 
   componentDidMount = async () => {
@@ -74,37 +80,33 @@ class CreateRewardForm extends React.Component {
 
       const campaign = await getCampaignById(this.props.match.params.campaignId);
 
-      const expiredAt = moment(new Date(campaign.campaign.expired_at));
+      const expiredAt = moment(new Date(campaign.expired_at));
 
-      const isCampaignActive = campaign.campaign.status === 'active';
+      const isCampaignActive = campaign.status === 'active';
 
       let combinedObjects;
       let sponsors;
 
-      if (!isEmpty(campaign.campaign.match_bots)) {
+      if (!isEmpty(campaign.match_bots)) {
         combinedObjects = await getObjectsByIds({
-          authorPermlinks: [
-            ...campaign.campaign.match_bots,
-            campaign.campaign.requiredObject,
-            ...campaign.campaign.objects,
-          ],
+          authorPermlinks: [...campaign.match_bots, campaign.requiredObject, ...campaign.objects],
         });
 
         sponsors = combinedObjects.wobjects.filter(wobj =>
-          includes(campaign.campaign.sponsors, wobj.author_permlink),
+          includes(campaign.sponsors, wobj.author_permlink),
         );
       } else {
         combinedObjects = await getObjectsByIds({
-          authorPermlinks: [campaign.campaign.requiredObject, ...campaign.campaign.objects],
+          authorPermlinks: [campaign.requiredObject, ...campaign.objects],
         });
       }
 
       const primaryObject = combinedObjects.wobjects.find(
-        wobj => wobj.author_permlink === campaign.campaign.requiredObject,
+        wobj => wobj.author_permlink === campaign.requiredObject,
       );
 
       const secondaryObjects = combinedObjects.wobjects.filter(wobj =>
-        includes(campaign.campaign.objects, wobj.author_permlink),
+        includes(campaign.objects, wobj.author_permlink),
       );
 
       Promise.all([primaryObject, secondaryObjects, sponsors]).then(values => {
@@ -112,21 +114,23 @@ class CreateRewardForm extends React.Component {
         this.setState({
           iAgree: true,
           loading: false,
-          campaignName: campaign.campaign.name,
-          campaignType: campaign.campaign.type,
-          budget: campaign.campaign.budget,
-          reward: campaign.campaign.reward,
-          primaryObject: getClientWObj(values[0]),
-          secondaryObjectsList: values[1].map(obj => getClientWObj(obj)),
-          sponsorsList: !isEmpty(sponsors) ? values[2].map(obj => getClientWObj(obj)) : [],
-          reservationPeriod: campaign.campaign.count_reservation_days,
-          minFollowers: campaign.campaign.userRequirements.minFollowers,
-          minPosts: campaign.campaign.userRequirements.minPosts,
-          targetDays: campaign.campaign.reservation_timetable,
-          minPhotos: campaign.campaign.requirements.minPhotos,
-          description: campaign.campaign.description,
+          campaignName: campaign.name,
+          campaignType: campaign.type,
+          budget: campaign.budget,
+          reward: campaign.reward,
+          primaryObject: getClientWObj(values[0], this.props.usedLocale),
+          secondaryObjectsList: values[1].map(obj => getClientWObj(obj, this.props.usedLocale)),
+          sponsorsList: !isEmpty(sponsors)
+            ? values[2].map(obj => getClientWObj(obj, this.props.usedLocale))
+            : [],
+          reservationPeriod: campaign.count_reservation_days,
+          minFollowers: campaign.userRequirements.minFollowers,
+          minPosts: campaign.userRequirements.minPosts,
+          targetDays: campaign.reservation_timetable,
+          minPhotos: campaign.requirements.minPhotos,
+          description: campaign.description,
           // eslint-disable-next-line no-underscore-dangle
-          campaignId: campaign.campaign._id,
+          campaignId: campaign._id,
           expiredAt,
           isCampaignActive,
         });
@@ -144,13 +148,14 @@ class CreateRewardForm extends React.Component {
     if (getFieldValue('minFollowers') === '') setFieldsValue({ minFollowers: 0 });
 
     if (getFieldValue('minPosts') === '') setFieldsValue({ minPosts: 0 });
+
+    if (getFieldValue('eligibleDays') === '') setFieldsValue({ eligibleDays: 0 });
   };
 
   prepareSubmitData = (data, userName) => {
     const objects = map(data.secondaryObject, o => o.id);
     const pageObjects = data.agreement.length !== 0 ? map(data.agreement.length, o => o.id) : [];
     const sponsorAccounts = map(data.sponsorsList, o => o.account);
-
     return {
       requiredObject: data.primaryObject.author_permlink,
       guideName: userName,
@@ -168,6 +173,7 @@ class CreateRewardForm extends React.Component {
         minPosts: data.minPosts,
         minExpertise: data.minExpertise,
         minSteemReputation: data.minSteemReputation,
+        eligibleDays: data.eligibleDays,
       },
       usersLegalNotice: data.usersLegalNotice,
       commissionAgreement: data.commissionAgreement,
@@ -278,6 +284,10 @@ class CreateRewardForm extends React.Component {
       );
     },
 
+    setModal: value => {
+      this.setState({ isModal: value });
+    },
+
     getObjectsToOmit: () => {
       const objectsToOmit = [];
       if (!isEmpty(this.state.primaryObject)) {
@@ -290,21 +300,37 @@ class CreateRewardForm extends React.Component {
     },
 
     handleSubmit: e => {
-      this.setState({ loading: true });
       e.preventDefault();
       this.checkOptionFields();
       this.props.form.validateFieldsAndScroll((err, values) => {
         if (!err && !isEmpty(values.primaryObject) && !isEmpty(values.secondaryObject)) {
+          this.setState({ isValidationAccepted: true, isModal: true });
+        }
+        if (err) {
+          this.setState({ isModal: false });
+        }
+      });
+    },
+
+    handleCreateCampaign: () => {
+      this.setState({ loading: true });
+      this.props.form.validateFieldsAndScroll((err, values) => {
+        if (
+          !err &&
+          !isEmpty(values.primaryObject) &&
+          !isEmpty(values.secondaryObject) &&
+          this.state.isValidationAccepted
+        ) {
           createCampaign(this.prepareSubmitData(values, this.props.userName))
             .then(() => {
               message.success(`'${values.campaignName}' rewards campaign has been created.`);
-              this.setState({ loading: false });
+              this.setState({ loading: false, isModal: false });
               this.manageRedirect();
             })
             .catch(error => {
               console.log(error);
               message.error(`${values.campaignName}'rewards campaign has been rejected`);
-              this.setState({ loading: false });
+              this.setState({ loading: false, isModal: false });
             });
         }
         if (err) {
@@ -354,6 +380,7 @@ class CreateRewardForm extends React.Component {
       agreement,
       campaignId,
       iAgree,
+      isModal,
     } = this.state;
 
     return (
@@ -389,9 +416,14 @@ class CreateRewardForm extends React.Component {
         campaignId={campaignId}
         isCampaignActive={isCampaignActive}
         iAgree={iAgree}
+        isModal={isModal}
       />
     );
   }
 }
 
-export default CreateRewardForm;
+export default props => (
+  <UsedLocaleContext.Consumer>
+    {context => <CreateRewardForm {...props} usedLocale={context} />}
+  </UsedLocaleContext.Consumer>
+);

@@ -13,8 +13,9 @@ import {
   getIsUserLoaded,
   getAuthenticatedUserName,
   getChatCondition,
+  getUsersAccountHistory,
 } from '../reducers';
-import { openTransfer } from '../wallet/walletActions';
+import { getUserAccountHistory, openTransfer } from '../wallet/walletActions';
 import { getUserAccount } from './usersActions';
 import { changeChatCondition } from './userActions';
 import { setPostMessageAction } from '../components/Chat/chatActions';
@@ -25,6 +26,7 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
+import { getUserDetailsKey } from '../helpers/stateHelpers';
 
 @connect(
   (state, ownProps) => ({
@@ -34,11 +36,13 @@ import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
     user: getUser(state, ownProps.match.params.name),
     loaded: getIsUserLoaded(state, ownProps.match.params.name),
     failed: getIsUserFailed(state, ownProps.match.params.name),
+    usersAccountHistory: getUsersAccountHistory(state),
     isChat: getChatCondition(state),
   }),
   {
     getUserAccount,
     openTransfer,
+    getUserAccountHistory,
     changeChatCondition,
     setPostMessageAction,
   },
@@ -55,6 +59,8 @@ export default class User extends React.Component {
     failed: PropTypes.bool,
     getUserAccount: PropTypes.func,
     openTransfer: PropTypes.func,
+    getUserAccountHistory: PropTypes.func.isRequired,
+    usersAccountHistory: PropTypes.shape().isRequired,
     changeChatCondition: PropTypes.func.isRequired,
     isChat: PropTypes.bool.isRequired,
     setPostMessageAction: PropTypes.func.isRequired,
@@ -77,7 +83,15 @@ export default class User extends React.Component {
   };
 
   componentDidMount() {
-    const { user, authenticated, authenticatedUserName } = this.props;
+    const {
+      user,
+      authenticated,
+      authenticatedUserName,
+      usersAccountHistory,
+      // eslint-disable-next-line no-shadow
+      getUserAccountHistory,
+      match,
+    } = this.props;
     if (!user.id && !user.failed) {
       this.props.getUserAccount(this.props.match.params.name);
     }
@@ -91,6 +105,9 @@ export default class User extends React.Component {
           isFollowing,
         });
       });
+    }
+    if (_.isEmpty(usersAccountHistory[getUserDetailsKey(match.params.name)])) {
+      getUserAccountHistory(match.params.name);
     }
   }
 

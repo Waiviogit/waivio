@@ -6,6 +6,7 @@ import { FormattedMessage } from 'react-intl';
 import ObjectList from './ObjectList';
 import SearchObjectsAutocomplete from '../components/EditorObject/SearchObjectsAutocomplete';
 import './Objects.less';
+import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 
 const TabPane = Tabs.TabPane;
 
@@ -15,12 +16,11 @@ const ObjectsContainer = ({ history }) => {
       history.push(`/object/${selected.id}`);
     }
   };
+
   return (
     <div className="Objects">
+      <MobileNavigation />
       <div className="Objects__title">
-        <div className="Objects__message">
-          <FormattedMessage id="objects_title" defaultMessage="Discover more objects" />
-        </div>
         <SearchObjectsAutocomplete handleSelect={handleSelectObject} />
       </div>
       <Tabs defaultActiveKey="1">

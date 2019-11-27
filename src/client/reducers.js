@@ -58,7 +58,7 @@ export const getIsLoaded = state => fromAuth.getIsLoaded(state.auth);
 export const getIsReloading = state => fromAuth.getIsReloading(state.auth);
 export const getAuthenticatedUser = state => fromAuth.getAuthenticatedUser(state.auth);
 export const getAuthenticatedUserName = state => fromAuth.getAuthenticatedUserName(state.auth);
-export const getAuthenticateduserMetaData = state =>
+export const getAuthenticatedUserMetaData = state =>
   fromAuth.getAuthenticateduserMetaData(state.auth);
 
 export const getPosts = state => fromPosts.getPosts(state.posts);
@@ -120,6 +120,11 @@ export const getIsLoadingNotifications = state => fromUser.getIsLoadingNotificat
 export const getFetchFollowListError = state => fromUser.getFetchFollowListError(state.user);
 export const getLatestNotification = state => fromUser.getLatestNotification(state.user);
 export const getUserLocation = state => fromUser.getUserLocation(state.user);
+export const getFollowingUpdates = state => fromUser.getFollowingUpdates(state.user);
+export const getFollowingUsersUpdates = state => fromUser.getFollowingUsersUpdates(state.user);
+export const getFollowingObjectsUpdatesByType = (state, objType) =>
+  fromUser.getFollowingObjectsUpdatesByType(state.user, objType);
+export const getFollowingUpdatesFetched = state => fromUser.getFollowingUpdatesFetched(state.user);
 export const getChatCondition = state => fromUser.getChatCondition(state.user);
 export const getChatConnectionCondition = state => fromUser.getChatConnectionCondition(state.user);
 
@@ -144,6 +149,8 @@ export const getFavoriteCategories = state => fromFavorites.getFavoriteCategorie
 
 export const getIsTransferVisible = state => fromWallet.getIsTransferVisible(state.wallet);
 export const getTransferTo = state => fromWallet.getTransferTo(state.wallet);
+export const getTransferAmount = state => fromWallet.getTransferAmount(state.wallet);
+export const getTransferCurrency = state => fromWallet.getTransferCurrency(state.wallet);
 export const getIsPowerUpOrDownVisible = state =>
   fromWallet.getIsPowerUpOrDownVisible(state.wallet);
 export const getIsPowerDown = state => fromWallet.getIsPowerDown(state.wallet);
