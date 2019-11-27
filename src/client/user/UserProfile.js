@@ -73,7 +73,7 @@ export default class UserProfile extends React.Component {
   }
 
   render() {
-    const { authenticated, authenticatedUser, feed } = this.props;
+    const { authenticated, authenticatedUser, feed, limit } = this.props;
     const username = this.props.match.params.name;
     const isOwnProfile = authenticated && username === authenticatedUser.name;
     const content = getFeedFromState('blog', username, feed);
@@ -81,11 +81,7 @@ export default class UserProfile extends React.Component {
     const fetched = getFeedFetchedFromState('blog', username, feed);
     const hasMore = getFeedHasMoreFromState('blog', username, feed);
     const loadMoreContentAction = () =>
-      this.props.getUserProfileBlogPosts(username, {
-        limit: this.props.limit,
-        skip: content.length || 0,
-        initialLoad: false,
-      });
+      this.props.getUserProfileBlogPosts(username, { limit, initialLoad: false });
 
     return (
       <div>
