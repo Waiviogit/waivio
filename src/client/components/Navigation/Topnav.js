@@ -479,7 +479,6 @@ class Topnav extends React.Component {
       notifications,
       userMetaData,
       loadingNotifications,
-      screenSize,
       platformName,
       isLoadingPlatform,
     } = this.props;
@@ -495,7 +494,6 @@ class Topnav extends React.Component {
               _.includes(PARSED_NOTIFICATIONS, notification.type),
           ),
         );
-    const isMobile = screenSize === 'xsmall' || screenSize === 'small';
     const displayBadge = notificationsCount > 0;
     const notificationsCountDisplay = notificationsCount > 99 ? '99+' : notificationsCount;
     return (
@@ -506,67 +504,65 @@ class Topnav extends React.Component {
       >
         <ModalBroker />
         <Menu selectedKeys={[]} className="Topnav__menu" mode="horizontal">
-          {isMobile && (
-            <Menu.Item className="Topnav__menu-item" key="broker">
-              <React.Fragment>
-                {platformName !== 'widgets' && !isLoadingPlatform ? (
-                  <PopoverContainer
-                    placement="bottom"
-                    trigger="click"
-                    visible={popoverBrokerVisible}
-                    onVisibleChange={this.handleOnClickBrokerIcon}
-                    overlayStyle={{ position: 'fixed' }}
-                    content={
-                      <div>
-                        <PopoverMenu onSelect={this.handleBrokerMenuSelect}>
-                          <PopoverMenuItem key="deposit">
-                            <FormattedMessage
-                              id="headerAuthorized.deposit"
-                              defaultMessage="Deposit"
-                            />
-                          </PopoverMenuItem>
-                          <PopoverMenuItem key="openDeals">
-                            <FormattedMessage
-                              id="headerAuthorized.openDeals"
-                              defaultMessage="Open deals"
-                            />
-                          </PopoverMenuItem>
-                          <PopoverMenuItem key="closedDeals">
-                            <FormattedMessage
-                              id="headerAuthorized.closedDeals"
-                              defaultMessage="Closed deals"
-                            />
-                          </PopoverMenuItem>
-                          <PopoverMenuItem key="broker-disconnect">
-                            <FormattedMessage
-                              id="disconnect_broker"
-                              defaultMessage="Disconnect Broker"
-                            />
-                          </PopoverMenuItem>
-                        </PopoverMenu>
-                      </div>
-                    }
-                  >
-                    <img
-                      className="Topnav__icon-broker"
-                      role="presentation"
-                      title={platformName}
-                      src={`/images/investarena/${platformName}.png`}
-                      alt="broker"
-                    />
-                  </PopoverContainer>
-                ) : (
-                  <div
-                    className="Topnav__item-broker"
-                    onClick={this.handleOnClickBrokerIcon}
+          <Menu.Item className="Topnav__menu-item Topnav__menu-item--broker" key="broker">
+            <React.Fragment>
+              {platformName !== 'widgets' && !isLoadingPlatform ? (
+                <PopoverContainer
+                  placement="bottom"
+                  trigger="click"
+                  visible={popoverBrokerVisible}
+                  onVisibleChange={this.handleOnClickBrokerIcon}
+                  overlayStyle={{ position: 'fixed' }}
+                  content={
+                    <div>
+                      <PopoverMenu onSelect={this.handleBrokerMenuSelect}>
+                        <PopoverMenuItem key="deposit">
+                          <FormattedMessage
+                            id="headerAuthorized.deposit"
+                            defaultMessage="Deposit"
+                          />
+                        </PopoverMenuItem>
+                        <PopoverMenuItem key="openDeals">
+                          <FormattedMessage
+                            id="headerAuthorized.openDeals"
+                            defaultMessage="Open deals"
+                          />
+                        </PopoverMenuItem>
+                        <PopoverMenuItem key="closedDeals">
+                          <FormattedMessage
+                            id="headerAuthorized.closedDeals"
+                            defaultMessage="Closed deals"
+                          />
+                        </PopoverMenuItem>
+                        <PopoverMenuItem key="broker-disconnect">
+                          <FormattedMessage
+                            id="disconnect_broker"
+                            defaultMessage="Disconnect Broker"
+                          />
+                        </PopoverMenuItem>
+                      </PopoverMenu>
+                    </div>
+                  }
+                >
+                  <img
+                    className="Topnav__icon-broker"
                     role="presentation"
-                  >
-                    <img src="/images/icons/broker.svg" alt="broker" />
-                  </div>
-                )}
-              </React.Fragment>
-            </Menu.Item>
-          )}
+                    title={platformName}
+                    src={`/images/investarena/${platformName}.png`}
+                    alt="broker"
+                  />
+                </PopoverContainer>
+              ) : (
+                <div
+                  className="Topnav__item-broker"
+                  onClick={this.handleOnClickBrokerIcon}
+                  role="presentation"
+                >
+                  <img src="/images/icons/broker.svg" alt="broker" />
+                </div>
+              )}
+            </React.Fragment>
+          </Menu.Item>
 
           <Menu.Item className="Topnav__menu-item" key="hot">
             {this.hotNews()}
