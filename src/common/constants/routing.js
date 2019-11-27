@@ -25,7 +25,6 @@ export default {
         routeParts.UPDATES,
         routeParts.REVIEWS,
         routeParts.FOLLOWERS,
-        routeParts.FEED,
         routeParts.EXPERTISE,
         routeParts.MENU,
         routeParts.PAGE,

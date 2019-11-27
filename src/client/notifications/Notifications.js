@@ -44,14 +44,14 @@ class Notifications extends React.Component {
   };
 
   componentDidMount() {
-    const { userMetaData, notifications } = this.props;
+    const { userMetaData, notifications, currentAuthUsername } = this.props;
 
     if (_.isEmpty(userMetaData)) {
       this.props.getUpdatedUserMetadata();
     }
 
     if (_.isEmpty(notifications)) {
-      this.props.getNotifications();
+      this.props.getNotifications(currentAuthUsername);
     }
   }
 

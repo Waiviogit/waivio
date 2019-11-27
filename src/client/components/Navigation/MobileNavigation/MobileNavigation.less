@@ -3,7 +3,7 @@
 
 .discover-objects-header {
   display: flex;
-  padding: 0 5px 5px;
+  padding: 8px 16px;
   font-size: 1rem;
 
   @media @medium, @large {
@@ -42,6 +42,7 @@
   }
   &__toggle-map,
   &__tags-block {
+    padding-left: 15px;
     @media @small, @medium, @large {
       display: none;
     }
@@ -51,6 +52,14 @@
       @media @small, @medium, @large {
         display: block;
       }
+    }
+  }
+  &__selection-block {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    @media @medium {
+      justify-content: flex-end;
     }
   }
 }
