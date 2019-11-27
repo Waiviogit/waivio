@@ -31,6 +31,7 @@ import { getLanguageText } from '../translations';
 import './Settings.less';
 import packageJson from '../../../package.json';
 import TopNavigation from '../components/Navigation/TopNavigation';
+import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 
 @requiresLogin
 @injectIntl
@@ -236,7 +237,7 @@ export default class Settings extends React.Component {
     });
 
     return (
-      <React.Fragment>
+      <div className="shifted">
         <Helmet>
           <title>
             {intl.formatMessage({ id: 'settings', defaultMessage: 'Settings' })} - Waivio
@@ -250,6 +251,7 @@ export default class Settings extends React.Component {
             </div>
           </Affix>
           <div className="center">
+            <MobileNavigation />
             <h1>
               <FormattedMessage id="settings" defaultMessage="Settings" />
             </h1>
@@ -460,7 +462,7 @@ export default class Settings extends React.Component {
             )}
           </div>
         </div>
-      </React.Fragment>
+      </div>
     );
   }
 }

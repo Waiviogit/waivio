@@ -113,6 +113,30 @@ const MobileNavigation = ({ location, match }) => {
       pageName = 'campaigns';
       filterName = 'match_bot';
       break;
+    case '/activity':
+      pageName = 'tools';
+      filterName = 'activity';
+      break;
+    case '/drafts':
+      pageName = 'tools';
+      filterName = 'drafts';
+      break;
+    case '/settings':
+      pageName = 'tools';
+      filterName = 'settings';
+      break;
+    case '/bookmarks':
+      pageName = 'tools';
+      filterName = 'bookmarks';
+      break;
+    case '/edit-profile':
+      pageName = 'tools';
+      filterName = 'edit_profile';
+      break;
+    case '/invite':
+      pageName = 'tools';
+      filterName = 'invite';
+      break;
     default:
       break;
   }
