@@ -7,6 +7,7 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import UserActivity from './UserActivity';
 import RightSidebar from '../app/Sidebar/RightSidebar';
 import requiresLogin from '../auth/requiresLogin';
+import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 
 const Activity = ({ intl }) => (
   <div className="shifted">
@@ -25,6 +26,7 @@ const Activity = ({ intl }) => (
         </div>
       </Affix>
       <div className="center">
+        <MobileNavigation />
         <UserActivity isCurrentUser />
       </div>
     </div>
