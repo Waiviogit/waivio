@@ -1,16 +1,19 @@
 import React from 'react';
-import { map } from 'lodash';
+import _, { map } from 'lodash';
+import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { bindActionCreators } from 'redux';
-import { Button, Form, Select, Modal, Upload, Icon, message, Spin } from 'antd';
-import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
+import { Button, Form, Select, Modal, message } from 'antd';
 import { getObjectTagCategory, getObject } from '../../reducers';
 import { objectFields } from '../../../common/constants/listOfFields';
 import * as appendActions from '../appendActions';
-import { getField, generatePermlink, prepareImageToStore } from '../../helpers/wObjectHelper';
+import { getField, generatePermlink } from '../../helpers/wObjectHelper';
 import './CreateTag.less';
+import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
+import ObjectCardView from '../../objectCard/ObjectCardView';
+import { fieldsRules } from '../const/appendFormConstants';
 
 @connect(
   state => ({
@@ -21,7 +24,6 @@ import './CreateTag.less';
   dispatch =>
     bindActionCreators(
       {
-        // addImageToAlbumStore: image => galleryActions.addImageToAlbumStore(image),
         appendObject: wObject => appendActions.appendObject(wObject),
       },
       dispatch,
@@ -30,10 +32,48 @@ import './CreateTag.less';
 class CreateTag extends React.Component {
   state = {
     previewVisible: false,
-    previewImage: '',
-    fileList: [],
-    uploadingList: [],
+    tagList: [],
     loading: false,
+    selectedObjects: [],
+  };
+
+  getFieldRules = fieldName => {
+    const { intl } = this.props;
+    const rules = fieldsRules[fieldName] || [];
+    return rules.map(rule => {
+      if (_.has(rule, 'message')) {
+        return {
+          ...rule,
+          message: intl.formatMessage(
+            _.get(rule, 'message.intlId'),
+            _.get(rule, 'message.intlMeta'),
+          ),
+        };
+      }
+      if (_.has(rule, 'validator')) {
+        return { validator: this.validateFieldValue };
+      }
+      return rule;
+    });
+  };
+
+  validateFieldValue = (rule, value, callback) => {
+    const { intl, wObject, form } = this.props;
+    const currentField = form.getFieldValue('currentField');
+    const currentLocale = form.getFieldValue('currentLocale');
+
+    const filtered = wObject.fields.filter(
+      f => f.locale === currentLocale && f.name === currentField,
+    );
+    if (filtered.map(f => f.body.toLowerCase()).includes(value)) {
+      callback(
+        intl.formatMessage({
+          id: 'append_object_validation_msg',
+          defaultMessage: 'The field with this value already exists',
+        }),
+      );
+    }
+    callback();
   };
 
   getWobjectData = () => {
@@ -48,30 +88,27 @@ class CreateTag extends React.Component {
     return data;
   };
 
-  getWobjectField = image => {
-    const { form } = this.props;
-
+  getWobjectField = tags => {
+    const currentLocale = this.props.form.getFieldValue('currentLocale');
     return {
-      name: 'galleryItem',
-      body: image.response.image,
-      locale: 'en-US',
-      id: form.getFieldValue('id'),
+      name: 'tagCloud',
+      body: [...tags],
+      locale: currentLocale,
+      id: uuidv4(),
     };
   };
 
-  getWobjectBody = image => {
-    const { currentUsername, intl, selectedCategory } = this.props;
-    return intl.formatMessage(
-      {
-        id: 'append_new_tag',
-        defaultMessage: `@{user} added a new tag to category {category} <br />`,
-      },
-      {
-        user: currentUsername,
-        category: selectedCategory.body,
-        url: image.response.image,
-      },
-    );
+  getWobjectBody = () => {
+    const { currentUsername, selectedCategory } = this.props;
+    let tagList = `\n`;
+
+    this.state.tagList.forEach(tag => {
+      if (!_.isEmpty(tag)) {
+        tagList += `\n ${tag.name}:`;
+      }
+    });
+
+    return `@${currentUsername} added to category ${selectedCategory} fallowing tags:\n ${tagList}`;
   };
 
   handlePreviewCancel = () => this.setState({ previewVisible: false });
@@ -80,24 +117,24 @@ class CreateTag extends React.Component {
     e.preventDefault();
 
     const { selectedCategory, hideModal, intl } = this.props;
-    const { fileList } = this.state;
+    const { tagList } = this.state;
 
     this.props.form.validateFields(err => {
       if (!err) {
         this.setState({ loading: true });
 
-        this.appendImages(fileList)
+        this.appendTags(tagList)
           .then(() => {
             hideModal();
-            this.setState({ fileList: [], uploadingList: [], loading: false });
+            this.setState({ tagList: [], uploadingList: [], loading: false });
             message.success(
               intl.formatMessage(
                 {
                   id: 'added_image_to_album',
-                  defaultMessage: `@{user} added a new tag to category {category} <br /> {url}`,
+                  defaultMessage: `@{user} added a new tag to category {category}`,
                 },
                 {
-                  category: selectedCategory.body,
+                  category: selectedCategory,
                 },
               ),
             );
@@ -106,7 +143,7 @@ class CreateTag extends React.Component {
             message.error(
               intl.formatMessage({
                 id: 'couldnt_upload_image',
-                defaultMessage: "Couldn't add the image to album.",
+                defaultMessage: "Couldn't add tag to the category.",
               }),
             );
             this.setState({ loading: false });
@@ -115,114 +152,74 @@ class CreateTag extends React.Component {
     });
   };
 
-  handleChange = ({ fileList, file }) => {
-    if (!fileList.length) {
-      this.props.form.resetFields();
-    }
+  // handleChange = ({ tagList, tag }) => {
+  //   if (!tagList.length) {
+  //     this.props.form.resetFields();
+  //   }
 
-    const isAllowed = ALLOWED_IMG_FORMATS.includes(`${file.type.split('/')[1]}`);
-    if (!isAllowed) {
-      message.error(
-        this.props.intl.formatMessage(
-          {
-            id: 'file_format_allowed',
-            defaultMessage: 'You can only upload {formats} file formats!',
-          },
-          {
-            formats: ALLOWED_IMG_FORMATS.join(' ').toUpperCase(),
-          },
-        ),
-      );
-      return;
-    }
+  // switch (file.status) {
+  //   case 'uploading':
+  //     this.setState(prevState => ({ uploadingList: prevState.uploadingList.concat(file.uid) }));
+  //     break;
+  //   case 'done':
+  //     this.setState(prevState => ({
+  //       uploadingList: prevState.uploadingList.filter(f => f !== file.uid),
+  //     }));
+  //     break;
+  //   default:
+  //     this.setState({ uploadingList: [] });
+  // }
 
-    const maxSizeByte = MAX_IMG_SIZE[objectFields.background];
-    if (file.size > maxSizeByte) {
-      message.error(
-        this.props.intl.formatMessage(
-          {
-            id: 'invalid_image_size',
-            defaultMessage: 'Image must smaller than {size}MB!',
-          },
-          {
-            size: (maxSizeByte / 1024 / 1024).toFixed(),
-          },
-        ),
-      );
-      return;
-    }
+  // this.setState({ fileList });
+  // };
 
-    switch (file.status) {
-      case 'uploading':
-        this.setState(prevState => ({ uploadingList: prevState.uploadingList.concat(file.uid) }));
-        break;
-      case 'done':
-        this.setState(prevState => ({
-          uploadingList: prevState.uploadingList.filter(f => f !== file.uid),
-        }));
-        break;
-      default:
-        this.setState({ uploadingList: [] });
-    }
-
-    this.setState({ fileList });
-  };
-
-  handlePreview = file => {
-    this.setState({
-      previewImage: file.url || file.thumbUrl,
-      previewVisible: true,
-    });
-  };
-
-  appendImages = async images => {
-    const { addImageToAlbumStore, form } = this.props;
-
+  appendTags = async tags => {
     const data = this.getWobjectData();
 
     /* eslint-disable no-restricted-syntax */
-    for (const image of images) {
-      const postData = {
-        ...data,
-        permlink: `${data.author}-${generatePermlink()}`,
-        field: this.getWobjectField(image),
-        body: this.getWobjectBody(image),
-      };
+    const postData = {
+      ...data,
+      permlink: `${data.author}-${generatePermlink()}`,
+      field: this.getWobjectField(tags),
+      body: this.getWobjectBody(),
+    };
 
-      /* eslint-disable no-await-in-loop */
-      const response = await this.props.appendObject(postData);
-      await new Promise(resolve => setTimeout(resolve, 2000));
+    /* eslint-disable no-await-in-loop */
+    const response = await this.props.appendObject(postData);
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
-      if (response.value.transactionId) {
-        const filteredFileList = this.state.fileList.filter(file => file.uid !== image.uid);
-        this.setState({ fileList: filteredFileList }, async () => {
-          const img = prepareImageToStore(postData);
-          await addImageToAlbumStore({
-            ...img,
-            author: response.value.author,
-            id: form.getFieldValue('id'),
-          });
-        });
-      }
+    if (response.value.transactionId) {
+      const filteredTagsList = this.state.fileList.filter(
+        (item, index) => item.id !== tags[index].id,
+      );
+      this.setState({ tagList: filteredTagsList });
     }
   };
 
   handleModalCancel = () => {
     this.props.hideModal();
-    this.setState({ fileList: [], uploadingList: [] });
+    this.setState({ tagList: [] });
+  };
+
+  handleSelectObject = obj => {
+    const currentField = this.props.form.getFieldValue('currentField');
+    if (obj && obj.id) {
+      this.props.form.setFieldsValue({
+        [currentField]: [...this.state.tagList, obj],
+      });
+      this.setState({ tagList: [...this.state.tagList, obj] });
+    }
   };
 
   render() {
     const { showModal, form, intl, selectedCategory, categories } = this.props;
-    const { previewVisible, previewImage, fileList, uploadingList, loading } = this.state;
-
-    const acceptImageFormat = ALLOWED_IMG_FORMATS.map(format => `.${format}`).join(',');
+    const { tagList, loading } = this.state;
 
     return (
       <Modal
         title={intl.formatMessage({
           id: 'add_new_image',
-          defaultMessage: 'Add new image',
+          defaultMessage: 'Add new tag',
         })}
         footer={null}
         visible={showModal}
@@ -232,7 +229,7 @@ class CreateTag extends React.Component {
       >
         <Form className="CreateTag" layout="vertical">
           <Form.Item>
-            {form.getFieldDecorator('id', {
+            {form.getFieldDecorator('tagCategory', {
               initialValue: selectedCategory ? selectedCategory.id : 'Choose a category',
               rules: [
                 {
@@ -242,103 +239,39 @@ class CreateTag extends React.Component {
                       id: 'field_error',
                       defaultMessage: 'Field is required',
                     },
-                    { field: 'Album' },
+                    { field: 'Tag Category' },
                   ),
                 },
               ],
             })(
               <Select disabled={loading}>
                 {map(categories, category => (
-                  <Select.Option key={`${category.id}${category.bogy}`} value={category.id}>
-                    {category.body}
+                  <Select.Option key={`${category.id}`} value={category.name}>
+                    {category.name}
                   </Select.Option>
                 ))}
               </Select>,
             )}
           </Form.Item>
 
-          <Form.Item
-            label={intl.formatMessage({
-              id: 'upload_photos',
-              defaultMessage: 'Upload photos',
-            })}
-          >
-            {form.getFieldDecorator('upload', {
-              rules: [
-                {
-                  required: !fileList.length,
-                  message: intl.formatMessage({
-                    id: 'upload_photo_error',
-                    defaultMessage: 'You need to upload at least one image',
-                  }),
-                },
-              ],
+          <Form.Item>
+            {form.getFieldDecorator(objectFields.tagCloud, {
+              rules: this.getFieldRules(objectFields.parent),
             })(
-              <div className="clearfix">
-                <Spin
-                  tip={intl.formatMessage({
-                    id: 'image_submitting',
-                    defaultMessage: 'Submitting...',
-                  })}
-                  spinning={loading}
-                >
-                  <Upload
-                    accept={acceptImageFormat}
-                    action="https://www.waivio.com/api/image"
-                    listType="picture-card"
-                    fileList={fileList}
-                    onPreview={this.handlePreview}
-                    onChange={this.handleChange}
-                    supportServerRender
-                  >
-                    {fileList.length >= 10 ? null : (
-                      <div>
-                        <Icon type="plus" />
-                        <div className="ant-upload-text">
-                          {intl.formatMessage({
-                            id: 'upload_image',
-                            defaultMessage: 'Upload',
-                          })}
-                        </div>
-                      </div>
-                    )}
-                  </Upload>
-                  <Modal visible={previewVisible} footer={null} onCancel={this.handlePreviewCancel}>
-                    <img
-                      alt="example"
-                      style={{ width: '100%', 'max-height': '90vh' }}
-                      src={previewImage}
-                    />
-                  </Modal>
-                </Spin>
-              </div>,
+              <SearchObjectsAutocomplete
+                handleSelect={this.handleSelectObject}
+                objectType="hashtag"
+              />,
             )}
+            {!_.isEmpty(tagList) && tagList.map(obj => <ObjectCardView wObject={obj} />)}
           </Form.Item>
           <Form.Item className="CreateTag__submit">
-            {!uploadingList.length ? (
-              <Button
-                type="primary"
-                loading={loading}
-                disabled={loading}
-                onClick={this.handleSubmit}
-              >
-                {intl.formatMessage({
-                  id: loading ? 'image_send_progress' : 'image_append_send',
-                  defaultMessage: loading ? 'Submitting' : 'Submit image',
-                })}
-              </Button>
-            ) : (
-              <Button
-                type="primary"
-                loading={Boolean(uploadingList.length)}
-                disabled={Boolean(uploadingList.length)}
-              >
-                {intl.formatMessage({
-                  id: 'uploading_image_progress',
-                  defaultMessage: 'Uploading image...',
-                })}
-              </Button>
-            )}
+            <Button type="primary" disabled={loading} onClick={this.handleSubmit}>
+              {intl.formatMessage({
+                id: 'tags_append_send',
+                defaultMessage: 'Submit tags',
+              })}
+            </Button>
           </Form.Item>
         </Form>
       </Modal>
@@ -355,7 +288,6 @@ CreateTag.propTypes = {
   currentUsername: PropTypes.shape(),
   wObject: PropTypes.shape(),
   appendObject: PropTypes.func,
-  addImageToAlbumStore: PropTypes.func,
   selectedCategory: PropTypes.string.isRequired,
 };
 

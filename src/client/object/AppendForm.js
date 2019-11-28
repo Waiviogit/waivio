@@ -746,39 +746,7 @@ export default class AppendForm extends Component {
       }
       // case objectFields.tagCloud: {
       //   return (
-      //     <React.Fragment>
-      //       <Form.Item>
-      //         {getFieldDecorator('id', {
-      //           initialValue: selectedAlbum ? selectedAlbum.id : 'Choose an album',
-      //           rules: [
-      //             {
-      //               required: true,
-      //               message: intl.formatMessage(
-      //                 {
-      //                   id: 'field_error',
-      //                   defaultMessage: 'Field is required',
-      //                 },
-      //                 { field: 'Album' },
-      //               ),
-      //             },
-      //           ],
-      //         })(
-      //           <Select disabled={loading}>
-      //             {map(albums, album => (
-      //               <Select.Option key={`${album.id}${album.bogy}`} value={album.id}>
-      //                 {album.body}
-      //               </Select.Option>
-      //             ))}
-      //           </Select>,
-      //         )}
-      //       </Form.Item>
-      //       <Form.Item>
-      //         {getFieldDecorator(objectFields.tagCloud, {
-      //           rules: this.getFieldRules(objectFields.parent),
-      //         })(<SearchObjectsAutocomplete handleSelect={this.handleSelectObject} objectType="hashtag"/>)}
-      //         {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
-      //       </Form.Item>
-      //     </React.Fragment>
+      //
       //   );
       // }
       case objectFields.parent: {
