@@ -33,24 +33,24 @@ const SidenavUser = () => (
         <FormattedMessage id="invite" defaultMessage="Invite" />
       </NavLink>
     </li>
-    <div className="Sidenav__section-title pt3">
-      <FormattedMessage id="sidenav_user_websites" defaultMessage="Websites" />:
-    </div>
-    <li>
-      <NavLink to="/create_mock" activeClassName="Sidenav__item--active">
-        <FormattedMessage id="sidenav_user_create" defaultMessage="Create" />
-      </NavLink>
-    </li>
-    <li>
-      <NavLink to="/manage_mock" activeClassName="Sidenav__item--active">
-        <FormattedMessage id="sidenav_user_manage" defaultMessage="Manage" />
-      </NavLink>
-    </li>
-    <li>
-      <NavLink to="/payments_mock" activeClassName="Sidenav__item--active">
-        <FormattedMessage id="sidenav_user_payments" defaultMessage="Payments" />
-      </NavLink>
-    </li>
+    {/* <div className="Sidenav__section-title pt3"> */}
+    {/* <FormattedMessage id="sidenav_user_websites" defaultMessage="Websites" />: */}
+    {/* </div> */}
+    {/* <li> */}
+    {/* <NavLink to="/create_mock" activeClassName="Sidenav__item--active"> */}
+    {/* <FormattedMessage id="sidenav_user_create" defaultMessage="Create" /> */}
+    {/* </NavLink> */}
+    {/* </li> */}
+    {/* <li> */}
+    {/* <NavLink to="/manage_mock" activeClassName="Sidenav__item--active"> */}
+    {/* <FormattedMessage id="sidenav_user_manage" defaultMessage="Manage" /> */}
+    {/* </NavLink> */}
+    {/* </li> */}
+    {/* <li> */}
+    {/* <NavLink to="/payments_mock" activeClassName="Sidenav__item--active"> */}
+    {/* <FormattedMessage id="sidenav_user_payments" defaultMessage="Payments" /> */}
+    {/* </NavLink> */}
+    {/* </li> */}
   </ul>
 );
 
