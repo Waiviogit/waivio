@@ -27,6 +27,7 @@ import {
   getFollowingObjects,
   getNotifications,
 } from './user/userActions';
+import { getMessagesQuantity } from '../waivioApi/ApiClient';
 import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './app/appActions';
 import * as reblogActions from './app/Reblog/reblogActions';
 import NotificationPopup from './notifications/NotificationPopup';
@@ -107,6 +108,7 @@ export default class Wrapper extends React.PureComponent {
     setUsedLocale: () => {},
     busyLogin: () => {},
     changeChatCondition: () => {},
+    getMessagesQuantity: () => {},
     nightmode: false,
   };
 
@@ -136,6 +138,9 @@ export default class Wrapper extends React.PureComponent {
     super(props);
     this.loadLocale = this.loadLocale.bind(this);
     this.handleMenuItemClick = this.handleMenuItemClick.bind(this);
+    this.state = {
+      messagesCount: 0,
+    };
   }
 
   componentDidMount() {
@@ -144,6 +149,9 @@ export default class Wrapper extends React.PureComponent {
       this.props.getFollowingObjects();
       this.props.getNotifications();
       this.props.busyLogin();
+      getMessagesQuantity(this.props.username).then(data =>
+        this.setState({ messagesCount: data.count }),
+      );
     });
 
     this.props.getRewardFund();
@@ -152,10 +160,15 @@ export default class Wrapper extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { locale } = this.props;
+    const { locale, isChat } = this.props;
 
     if (locale !== nextProps.locale) {
       this.loadLocale(nextProps.locale);
+    }
+    if (nextProps.isChat !== isChat) {
+      getMessagesQuantity(this.props.username).then(data =>
+        this.setState({ messagesCount: data.count }),
+      );
     }
   }
 
@@ -228,6 +241,7 @@ export default class Wrapper extends React.PureComponent {
       isChat,
       username,
     } = this.props;
+    const { messagesCount } = this.state;
     const language = findLanguage(usedLocale);
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
@@ -250,6 +264,7 @@ export default class Wrapper extends React.PureComponent {
                   isChat={isChat}
                   className="primary-modal"
                   authentication={isAuthenticated}
+                  messagesCount={messagesCount}
                 />
                 {isAuthenticated ? <Chat visibility={isChat} userName={username} /> : null}
               </div>

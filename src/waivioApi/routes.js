@@ -1,7 +1,7 @@
 import config from './config.json';
 
 export const baseUrl = config[process.env.NODE_ENV].protocol + config[process.env.NODE_ENV].host;
-
+console.log(baseUrl);
 const routes = {
   ...config,
   appName: config[process.env.NODE_ENV].appName,

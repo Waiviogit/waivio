@@ -11,6 +11,7 @@ export default function BBackTop({
   isChat,
   authentication,
   openChat,
+  messagesCount,
   ...otherProps
 }) {
   return (
@@ -21,13 +22,18 @@ export default function BBackTop({
         })}
       >
         {authentication ? (
-          <div className="BBackTop__chat-button">
+          <div className={classNames('BBackTop__chat-button')}>
             <Button
               onClick={openChat}
               type="primary"
               shape="circle"
-              icon={!isChat ? 'message' : 'close'}
-            />
+              icon={
+                // eslint-disable-next-line no-nested-ternary
+                !isChat ? (!messagesCount ? 'message' : null) : 'close'
+              }
+            >
+              {!isChat && messagesCount ? messagesCount : null}
+            </Button>
           </div>
         ) : null}
         <BackTop className="BBackTop_button" {...otherProps}>
@@ -44,9 +50,11 @@ BBackTop.propTypes = {
   isChat: PropTypes.bool.isRequired,
   openChat: PropTypes.func.isRequired,
   authentication: PropTypes.bool.isRequired,
+  messagesCount: PropTypes.number,
 };
 
 BBackTop.defaultProps = {
   className: '',
   isModal: false,
+  messagesCount: 0,
 };

@@ -31,7 +31,10 @@ const getLinkedObjects = contentStateRaw => {
   const objEntities = Object.values(contentStateRaw.entityMap).filter(
     entity => entity.type === Entity.OBJECT && has(entity, 'data.object.type'),
   );
-  return uniqBy(objEntities.map(entity => entity.data.object), 'id');
+  return uniqBy(
+    objEntities.map(entity => entity.data.object),
+    'id',
+  );
 };
 
 @injectIntl

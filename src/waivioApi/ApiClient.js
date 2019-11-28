@@ -475,6 +475,18 @@ export const getTopUsers = (isRandom = false, { limit, skip } = { limit: 30, ski
   });
 };
 
+export const getMessagesQuantity = username => {
+  return new Promise((resolve, reject) => {
+    fetch(`https://stchat.cf/api/user/${username}/unread_count`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(data => resolve(data))
+      .catch(error => reject(error));
+  });
+};
+
 //region Campaigns Requests
 
 export const getCampaignById = campaignId =>

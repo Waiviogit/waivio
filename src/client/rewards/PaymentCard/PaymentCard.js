@@ -76,11 +76,4 @@ PaymentCard.defaultProps = {
   alias: '',
 };
 
-export default withRouter(
-  injectIntl(
-    connect(
-      null,
-      { openTransfer },
-    )(PaymentCard),
-  ),
-);
+export default withRouter(injectIntl(connect(null, { openTransfer })(PaymentCard)));
