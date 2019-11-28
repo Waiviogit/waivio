@@ -32,7 +32,8 @@ export default function BBackTop({
                 !isChat ? (!messagesCount ? 'message' : null) : 'close'
               }
             >
-              {!isChat && messagesCount ? messagesCount : null}
+              {// eslint-disable-next-line no-nested-ternary
+              !isChat && messagesCount ? (messagesCount > 99 ? '99+' : messagesCount) : null}
             </Button>
           </div>
         ) : null}
