@@ -65,7 +65,7 @@ const applyAtomicStyle = (block, entityMap, content) => {
     case ATOMIC_TYPES.SEPARATOR:
       return `${strippedContent}***`;
     case ATOMIC_TYPES.IMAGE:
-      return `${strippedContent}<center>![${text || 'image'}](${data.src})</center>\n${
+      return `${strippedContent}<center>![${text || ''}](${data.src})</center>\n${
         text ? `<center>${text}</center>` : ''
       }`;
     case ATOMIC_TYPES.VIDEO:

@@ -15,6 +15,7 @@ import DeleteDraftModal from './DeleteDraftModal';
 import requiresLogin from '../../auth/requiresLogin';
 import './Drafts.less';
 import TopNavigation from '../../components/Navigation/TopNavigation';
+import MobileNavigation from '../../components/Navigation/MobileNavigation/MobileNavigation';
 
 @requiresLogin
 @injectIntl
@@ -106,6 +107,7 @@ class Drafts extends React.Component {
             </div>
           </Affix>
           <div className="center">
+            <MobileNavigation />
             <div>
               <h1>
                 <FormattedMessage id="drafts" defaultMessage="Drafts" />

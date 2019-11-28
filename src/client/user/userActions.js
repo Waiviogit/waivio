@@ -284,7 +284,7 @@ export const activateCampaign = (company, campaignPermlink) => (
     steemConnectAPI
       .broadcast([commentOp])
       .then(() => resolve('SUCCESS'))
-      .catch(error => reject(error));
+      .catch(error => reject({ ...error }));
   });
 };
 

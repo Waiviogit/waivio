@@ -140,8 +140,8 @@ const parseMdLine = (line, existingEntities, extraStyles = {}) => {
 
   const addImage = child => {
     data.src = child.url;
-    data.alt = child.alt;
-    text = child.alt;
+    data.alt = child.alt || '';
+    text = child.alt || '';
   };
 
   const addVideo = child => {

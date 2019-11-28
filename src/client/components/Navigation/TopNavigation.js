@@ -12,10 +12,24 @@ const LINKS = {
   FEED_PROMOTED: '/promoted',
   REWARDS: '/rewards',
   DISCOVER: '/discover-objects',
-  ACTIVITY: '/activity',
+  TOOLS_ACTIVITY: '/activity',
+  TOOLS_DRAFTS: '/drafts',
+  TOOLS_BOOKMARKS: '/bookmarks',
+  TOOLS_EDIT_PROFILE: '/edit-profile',
+  TOOLS_INVITE: '/invite',
+  TOOLS_SETTINGS: '/settings',
   ABOUT: '/object/ylr-waivio',
+  USERS: '/discover',
 };
 const FEED_URLS = [LINKS.FEED_HOT, LINKS.FEED_NEW, LINKS.FEED_TRENDING];
+const TOOLS_URLS = [
+  LINKS.TOOLS_BOOKMARKS,
+  LINKS.TOOLS_DRAFTS,
+  LINKS.TOOLS_EDIT_PROFILE,
+  LINKS.TOOLS_INVITE,
+  LINKS.TOOLS_SETTINGS,
+  LINKS.TOOLS_ACTIVITY,
+];
 
 const TopNavigation = ({ authenticated, location: { pathname } }) => {
   const isRouteMathed =
@@ -47,24 +61,23 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
         <Link
           to={`${LINKS.DISCOVER}/hashtag`}
           className={classNames('TopNavigation__link', {
-            'TopNavigation__link--active': pathname.includes(LINKS.DISCOVER),
+            'TopNavigation__link--active':
+              pathname.includes(LINKS.DISCOVER) || pathname.includes(LINKS.USERS),
           })}
         >
           <FormattedMessage id="discover" defaultMessage="Discover" />
         </Link>
       </li>
-      {authenticated && (
-        <li className="TopNavigation__item">
-          <Link
-            to={LINKS.ACTIVITY}
-            className={classNames('TopNavigation__link', {
-              'TopNavigation__link--active': pathname === LINKS.ACTIVITY,
-            })}
-          >
-            <FormattedMessage id="activity" defaultMessage="Activity" />
-          </Link>
-        </li>
-      )}
+      <li className="TopNavigation__item">
+        <Link
+          to={`${LINKS.TOOLS_DRAFTS}`}
+          className={classNames('TopNavigation__link', {
+            'TopNavigation__link--active': TOOLS_URLS.some(feedUrl => pathname.includes(feedUrl)),
+          })}
+        >
+          <FormattedMessage id="tools" defaultMessage="Tools" />
+        </Link>
+      </li>
       <li className="TopNavigation__item">
         <Link
           to={LINKS.ABOUT}

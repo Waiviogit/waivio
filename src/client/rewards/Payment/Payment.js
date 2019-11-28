@@ -23,21 +23,26 @@ const Payment = ({ match, intl, userName, openTransfer }) => {
     getLenders(requestParams)
       .then(data => {
         setSponsors(data.histories);
-        setPayable(data.payable);
+        setPayable(data.histories[0].amount_sbd);
       })
       .catch(e => console.log(e));
   }, []);
 
-  const titleName =
-    match.path === '/rewards/payables/@:userName'
-      ? intl.formatMessage({
-          id: 'payment_page_payables',
-          defaultMessage: 'Payables',
-        })
-      : intl.formatMessage({
-          id: 'payment_page_receivables',
-          defaultMessage: 'Receivables',
-        });
+  let titleName;
+  let isPayables;
+  if (match.path === '/rewards/payables/@:userName') {
+    titleName = intl.formatMessage({
+      id: 'payment_page_payables',
+      defaultMessage: 'Payables',
+    });
+    isPayables = true;
+  } else {
+    titleName = intl.formatMessage({
+      id: 'payment_page_receivables',
+      defaultMessage: 'Receivables',
+    });
+    isPayables = false;
+  }
 
   const name = match.params.userName;
 
@@ -47,21 +52,23 @@ const Payment = ({ match, intl, userName, openTransfer }) => {
         <div className="Payment__title-payment">
           {titleName}
           {`: ${userName} `}
-          &rarr;
+          {isPayables ? <span>&rarr;</span> : <span>&larr;</span>}
           {` ${name} `}
         </div>
         <div className="Payment__title-pay">
-          <Action
-            className="WalletSidebar__transfer"
-            primary
-            onClick={() => openTransfer(name, payable, 'SBD')}
-          >
-            {intl.formatMessage({
-              id: 'pay',
-              defaultMessage: 'Pay',
-            })}
-            {` ${payable} SBD`}
-          </Action>
+          {isPayables && (
+            <Action
+              className="WalletSidebar__transfer"
+              primary
+              onClick={() => openTransfer(name, payable, 'STEEM')}
+            >
+              {intl.formatMessage({
+                id: 'pay',
+                defaultMessage: 'Pay',
+              })}
+              {` ${payable} STEEM`}
+            </Action>
+          )}
         </div>
       </div>
       <div className="Payment__information-row">

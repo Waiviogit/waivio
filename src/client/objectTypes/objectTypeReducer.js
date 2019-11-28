@@ -20,18 +20,23 @@ const objectType = (state = initialState, action) => {
         fetching: true,
       };
     case wobjTypeActions.GET_OBJECT_TYPE.SUCCESS: {
-      const { initialLoad, locale } = action.meta;
+      const { locale } = action.meta;
       const {
         related_wobjects: relatedWobjects,
         hasMoreWobjects,
         filters,
         ...data
       } = action.payload;
-      let filteredObjects = [
+      const filteredObjects = [
         ...state.filteredObjects,
-        ...relatedWobjects.map(wObj => getClientWObj(wObj, locale)),
+        ...relatedWobjects
+          .filter(
+            wObj =>
+              !wObj.status ||
+              (wObj.status.title !== 'unavailable' && wObj.status.title !== 'relisted'),
+          )
+          .map(wObj => getClientWObj(wObj, locale)),
       ];
-      if (initialLoad) filteredObjects = relatedWobjects.map(wObj => getClientWObj(wObj, locale));
       const filtersList = filters ? omit(filters, ['map']) : {};
       const activeFilters = isEmpty(state.activeFilters)
         ? reduce(

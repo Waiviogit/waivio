@@ -11,7 +11,6 @@ const LeftSidebar = () => (
     <Route path="/@:name/wallet" component={SidebarMenu} />
     <Route path="/@:name" component={UserInfo} />
     <Route path="/object/:name" component={UserInfo} />
-    <Route path="/activity" component={SidenavUser} />
     <Route
       path="/rewards/(active|reserved|history|promoted|created|receivables)"
       component={SidenavRewards}
@@ -23,6 +22,7 @@ const LeftSidebar = () => (
     <Route path="/rewards/match-bot" component={SidenavRewards} />
     <Route path="/rewards/edit/:campaignName" component={SidenavRewards} />
     <Route path="/discover-objects/:typeName?" component={SidenavDiscoverObjects} />
+    <Route path="/discover" component={SidenavDiscoverObjects} />
     <Route path="/replies" component={SidebarMenu} />
     <Route path="/bookmarks" component={SidenavUser} />
     <Route path="/drafts" component={SidenavUser} />

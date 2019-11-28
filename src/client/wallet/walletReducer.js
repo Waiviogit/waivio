@@ -72,19 +72,22 @@ export default function walletReducer(state = initialState, action) {
         ...state,
         usersAccountHistoryLoading: true,
       };
-    case walletActions.GET_USER_ACCOUNT_HISTORY.SUCCESS:
+    case walletActions.GET_USER_ACCOUNT_HISTORY.SUCCESS: {
+      const usernameKey = getUserDetailsKey(action.payload.username);
+
       return {
         ...state,
         usersTransactions: {
           ...state.usersTransactions,
-          [getUserDetailsKey(action.payload.username)]: action.payload.userWalletTransactions,
+          [usernameKey]: action.payload.userWalletTransactions,
         },
         usersAccountHistory: {
           ...state.usersAccountHistory,
-          [getUserDetailsKey(action.payload.username)]: action.payload.userAccountHistory,
+          [usernameKey]: action.payload.userAccountHistory,
         },
         usersAccountHistoryLoading: false,
       };
+    }
     case walletActions.GET_USER_ACCOUNT_HISTORY.ERROR:
       return {
         ...state,

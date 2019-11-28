@@ -105,6 +105,12 @@ class UserActivity extends React.Component {
       this.props.getUserAccountHistory(username);
     }
 
+    setTimeout(() => {
+      if (_.isEmpty(usersAccountHistory[getUserDetailsKey(username)])) {
+        this.props.getUserAccountHistory(username);
+      }
+    }, 2000);
+
     if (_.isEmpty(user)) {
       this.props.getAccount(username);
     }

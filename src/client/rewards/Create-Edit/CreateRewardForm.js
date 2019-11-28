@@ -69,6 +69,8 @@ class CreateRewardForm extends React.Component {
     iAgree: false,
     campaignId: null,
     isCampaignActive: false,
+    isModal: false,
+    isValidationAccepted: false,
   };
 
   componentDidMount = async () => {
@@ -282,6 +284,10 @@ class CreateRewardForm extends React.Component {
       );
     },
 
+    setModal: value => {
+      this.setState({ isModal: value });
+    },
+
     getObjectsToOmit: () => {
       const objectsToOmit = [];
       if (!isEmpty(this.state.primaryObject)) {
@@ -294,21 +300,37 @@ class CreateRewardForm extends React.Component {
     },
 
     handleSubmit: e => {
-      this.setState({ loading: true });
       e.preventDefault();
       this.checkOptionFields();
       this.props.form.validateFieldsAndScroll((err, values) => {
         if (!err && !isEmpty(values.primaryObject) && !isEmpty(values.secondaryObject)) {
+          this.setState({ isValidationAccepted: true, isModal: true });
+        }
+        if (err) {
+          this.setState({ isModal: false });
+        }
+      });
+    },
+
+    handleCreateCampaign: () => {
+      this.setState({ loading: true });
+      this.props.form.validateFieldsAndScroll((err, values) => {
+        if (
+          !err &&
+          !isEmpty(values.primaryObject) &&
+          !isEmpty(values.secondaryObject) &&
+          this.state.isValidationAccepted
+        ) {
           createCampaign(this.prepareSubmitData(values, this.props.userName))
             .then(() => {
               message.success(`'${values.campaignName}' rewards campaign has been created.`);
-              this.setState({ loading: false });
+              this.setState({ loading: false, isModal: false });
               this.manageRedirect();
             })
             .catch(error => {
               console.log(error);
               message.error(`${values.campaignName}'rewards campaign has been rejected`);
-              this.setState({ loading: false });
+              this.setState({ loading: false, isModal: false });
             });
         }
         if (err) {
@@ -358,6 +380,7 @@ class CreateRewardForm extends React.Component {
       agreement,
       campaignId,
       iAgree,
+      isModal,
     } = this.state;
 
     return (
@@ -393,6 +416,7 @@ class CreateRewardForm extends React.Component {
         campaignId={campaignId}
         isCampaignActive={isCampaignActive}
         iAgree={iAgree}
+        isModal={isModal}
       />
     );
   }

@@ -1,28 +1,22 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useReducer } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { merge } from 'lodash';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { mapValues } from 'lodash';
+import { injectIntl } from 'react-intl';
 import { NavLink } from 'react-router-dom';
 import { getIsAuthenticated } from '../../../reducers';
 
-const actionType = {
-  TOGGLE_BLOCK: 'toggleBlock',
-  UPDATE_MENU: 'updateMenu',
-};
+const actionType = { TOGGLE_BLOCK: 'toggleBlock' };
 function sidebarMenuReducer(state, action) {
-  const { type, payload } = action;
+  const { type, section } = action;
   switch (type) {
     case actionType.TOGGLE_BLOCK:
       return {
         ...state,
-        [payload.block]: {
-          ...state[payload.block],
-          isCollapsed: !state[payload.block].isCollapsed,
+        [section]: {
+          isCollapsed: !state[section].isCollapsed,
         },
       };
-    case actionType.UPDATE_MENU:
-      return { ...merge(state, payload) };
     default:
       return state;
   }
@@ -32,12 +26,13 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
   // redux store
   const authenticated = useSelector(getIsAuthenticated);
   // local state
-  const [menuState, dispatch] = useReducer(sidebarMenuReducer, menuConfig);
-
-  useEffect(() => dispatch({ type: actionType.UPDATE_MENU, payload: menuConfig }), [menuConfig]);
+  const [menuState, dispatch] = useReducer(
+    sidebarMenuReducer,
+    mapValues(menuConfig, menuSection => ({ isCollapsed: menuSection.isCollapsed })),
+  );
 
   const toggleBlock = section => () =>
-    dispatch({ type: actionType.TOGGLE_BLOCK, payload: { block: section.name } });
+    dispatch({ type: actionType.TOGGLE_BLOCK, section: section.name });
 
   const checkIsActive = (match, location) => {
     if (!match) return false;
@@ -55,7 +50,7 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
           {intl.formatMessage({ id: menuSection.intlId, defaultMessage: menuSection.name })}
         </span>
         <span className="collapsible-block__title-icon">
-          {menuSection.isCollapsed ? (
+          {menuState[menuSection.name].isCollapsed ? (
             <i className="iconfont icon-addition" />
           ) : (
             <i className="iconfont icon-offline" />
@@ -83,6 +78,10 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
         const linkTo = authenticated
           ? sectionItem.linkTo
           : sectionItem.unauthLink || sectionItem.linkTo;
+        const itemName = intl.formatMessage({
+          id: sectionItem.intlId,
+          defaultMessage: sectionItem.name,
+        });
         return linkTo ? (
           <li className="collapsible-block__item" key={sectionItem.name}>
             <NavLink
@@ -93,7 +92,9 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
               disabled={Boolean(sectionItem.disabled)}
             >
               <span className="flex justify-between">
-                <FormattedMessage id={sectionItem.intlId} defaultMessage={sectionItem.name} />
+                <span className="sidenav-discover-objects__item-text" title={itemName}>
+                  {itemName}
+                </span>
                 {sectionItem.meta ? <span>+{sectionItem.meta}</span> : null}
               </span>
             </NavLink>
@@ -106,7 +107,7 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
           role="presentation"
           onClick={loadMore(menuSection.name)}
         >
-          <FormattedMessage id="show_more" defaultMessage="show more" />
+          <span>{intl.formatMessage({ id: 'show_more', defaultMessage: 'show more' })}</span>
         </div>
       )}
     </ul>
@@ -114,11 +115,13 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
 
   return (
     <div className="collapsible-block SidebarContentBlock__content">
-      {Object.values(menuState).map(section =>
+      {Object.values(menuConfig).map(section =>
         !section.requireAuth || authenticated ? (
           <div className={`collapsible-block__${section.name}-section`} key={section.name}>
             {getSectionTitle(section)}
-            {section.isCollapsible && !section.isCollapsed ? getSectionContent(section) : null}
+            {section.isCollapsible && !menuState[section.name].isCollapsed
+              ? getSectionContent(section)
+              : null}
           </div>
         ) : null,
       )}

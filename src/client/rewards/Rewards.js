@@ -33,6 +33,7 @@ import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
 import Avatar from '../components/Avatar';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
+import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import './Rewards.less';
 
 @withRouter
@@ -111,6 +112,13 @@ class Rewards extends React.Component {
         });
       }
     } else this.setState({ propositions: [{}] }); // for map, not equal propositions
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { username, match } = this.props;
+    const { radius, coordinates, sort, activeFilters, isSearchAreaFilter } = this.state;
+    if (prevState.isSearchAreaFilter && !isSearchAreaFilter)
+      this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
   }
 
   getRequiredObjects = () =>
@@ -403,14 +411,14 @@ class Rewards extends React.Component {
     const robots = location.pathname === 'index,follow';
     // const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
     const isCreate = location.pathname === '/rewards/create';
-    const currentSteemDollarPrice =
-      cryptosPriceHistory && cryptosPriceHistory.SBD && cryptosPriceHistory.SBD.priceDetails
-        ? cryptosPriceHistory.SBD.priceDetails.currentUSDPrice
+    const currentSteemPrice =
+      cryptosPriceHistory && cryptosPriceHistory.STEEM && cryptosPriceHistory.STEEM.priceDetails
+        ? cryptosPriceHistory.STEEM.priceDetails.currentUSDPrice
         : 0;
 
     const renderedRoutes = renderRoutes(this.props.route.routes, {
       user,
-      currentSteemDollarPrice,
+      currentSteemPrice,
       hasMore,
       IsRequiredObjectWrap,
       loading,
@@ -443,7 +451,10 @@ class Rewards extends React.Component {
               <LeftSidebar />
             </div>
           </Affix>
-          <div className="center">{renderedRoutes}</div>
+          <div className="center mt3">
+            <MobileNavigation />
+            {renderedRoutes}
+          </div>
           {(match.path === '/rewards/payables' || match.path === '/rewards/receivables') && (
             <Affix className="rightContainer leftContainer__user" stickPosition={122}>
               <div className="right">

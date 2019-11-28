@@ -31,7 +31,7 @@ const MatchBot = ({ intl }) => {
           {intl.formatMessage({
             id: 'match_bot_content_user_has_posted_review_eligible_receive_direct_reward',
             defaultMessage:
-              "For example, the user has posted a review that is eligible to receive a direct reward of 5.00 SBD. Match bot can upvote that post for a specified value of, say, 10% of the reward (assuming Match bot has enough voting value). This way, the user will receive 0.50 SBD in author's rewards and the direct payment can be reduced to 4.50 SBD.",
+              "For example, the user has posted a review that is eligible to receive a direct reward of 5.00 STEEM. Match bot can upvote that post for a specified value of, say, 10% of the reward (assuming Match bot has enough voting value). This way, the user will receive 0.50 STEEM in author's rewards and the direct payment can be reduced to 4.50 STEEM.",
           })}
         </p>
         <p>

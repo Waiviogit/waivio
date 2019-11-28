@@ -1,10 +1,18 @@
 import { isEmpty } from 'lodash';
 
 export const validatorMessagesCreator = messageFactory => ({
+  budgetLess: messageFactory(
+    'budget_more_than_thousandth',
+    'Budget should be more or equal 0,001 STEEM',
+  ),
   budgetToZero: messageFactory('budget_more_than_zero', 'Budget should be more than zero'),
-  budgetToUSBDbalance: messageFactory(
+  budgetToSteemBalance: messageFactory(
     'budget_overprices_wallet_balance',
-    'Budget should not exceed your SBD wallet balance',
+    'Budget should not exceed your STEEM wallet balance',
+  ),
+  rewardsLess: messageFactory(
+    'reward_more_than_thousandth',
+    'Reward should be more or equal 0,001 STEEM',
   ),
   rewardToZero: messageFactory('reward_more_than_zero', 'Reward should be more than zero'),
   rewardToBudget: messageFactory(
@@ -51,7 +59,7 @@ export const validatorMessagesCreator = messageFactory => ({
 
 export const validatorsCreator = (
   user,
-  currentSteemDollarPrice,
+  currentSteemPrice,
   messages,
   getFieldValue,
   requiredObject,
@@ -122,15 +130,16 @@ export const validatorsCreator = (
   },
 
   compareBudgetValues: (rule, value, callback) => {
-    const userUSDBalance = parseFloat(user.sbd_balance);
+    const userUSDBalance = parseFloat(user.balance);
+    if (value > 0 && value < 0.001) callback(messages.budgetLess);
     if (value <= 0 && value !== '') callback(messages.budgetToZero);
-    else if (userUSDBalance < value) callback(messages.budgetToUSBDbalance);
+    else if (userUSDBalance < value) callback(messages.budgetToSteemBalance);
     else callback();
   },
 
   compareRewardAndBudget: (rule, value, callback) => {
     const budgetValue = getFieldValue('budget');
-
+    if (value > 0 && value < 0.001) callback(messages.rewardsLess);
     if (value <= 0 && value !== '') callback(messages.rewardToZero);
     else if (budgetValue < value) callback(messages.rewardToBudget);
     else callback();

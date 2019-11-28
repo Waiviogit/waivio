@@ -11,7 +11,7 @@ import SidebarMenu from '../SidebarMenu/SidebarMenu';
 import { getClientWObj } from '../../../adapters';
 import Loading from '../../Icon/Loading';
 
-const itemsCount = 3;
+const itemsCount = 5;
 const usersSection = 'People';
 function buildFollowingUpdatesMenuConfig(updates) {
   const config = {};
@@ -22,18 +22,15 @@ function buildFollowingUpdatesMenuConfig(updates) {
       name: usersSection,
       intlId: 'people',
       isCollapsible: true,
+      isCollapsed: !usersUpdates.users[0].last_posts_count,
       hasMore: usersUpdates.hasMore,
       items: usersUpdates.users.map(followingUser => ({
         name: `@${followingUser.name}`,
         intlId: `@${followingUser.name}`,
         meta: followingUser.last_posts_count > 0 ? followingUser.last_posts_count : '',
-        linkTo: `/@${followingUser.name}`,
+        linkTo: `/blog/@${followingUser.name}`,
       })),
     };
-    // set initial value for isCollapsed prop
-    if (usersUpdates.users.length <= itemsCount) {
-      config[usersSection].isCollapsed = !usersUpdates.users[0].last_posts_count;
-    }
   }
 
   if (!isEmpty(objectsUpdates)) {
@@ -43,6 +40,7 @@ function buildFollowingUpdatesMenuConfig(updates) {
         name: objType,
         intlId: objType,
         isCollapsible: true,
+        isCollapsed: !(objects[0] && objects[0].last_posts_count),
         hasMore,
         items: objects.map(followingObject => {
           const clientObj = getClientWObj(followingObject);
@@ -50,14 +48,10 @@ function buildFollowingUpdatesMenuConfig(updates) {
             name: clientObj.name,
             intlId: clientObj.name,
             meta: clientObj.last_posts_count > 0 ? clientObj.last_posts_count : '',
-            linkTo: `/object/${clientObj.id}`,
+            linkTo: `/feed/${clientObj.id}?category=${clientObj.object_type}&name=${clientObj.name}`,
           };
         }),
       };
-      // initial value for isCollapse
-      if (objects.length <= itemsCount) {
-        config[objType].isCollapsed = !(objects[0] && objects[0].last_posts_count);
-      }
     });
   }
 
@@ -77,8 +71,6 @@ const FollowingUpdates = () => {
   useEffect(() => updateMenu(buildFollowingUpdatesMenuConfig(followingUpdates)), [
     followingUpdates,
   ]);
-
-  // const menuConfig = buildFollowingUpdatesMenuConfig(followingUpdates);
 
   const loadMoreUpdates = menuSectionName => () => {
     if (menuSectionName === usersSection) {
