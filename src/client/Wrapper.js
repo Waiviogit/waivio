@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
-import { ConfigProvider, Layout } from 'antd';
+import { ConfigProvider, Button, Layout } from 'antd';
 import classNames from 'classnames';
 import enUS from 'antd/lib/locale-provider/en_US';
 import Cookie from 'js-cookie';
@@ -40,6 +40,7 @@ import BBackTop from './components/BBackTop';
 import { getChartsData } from '../investarena/redux/actions/chartsActions';
 import { getPlatformNameState } from '../investarena/redux/selectors/platformSelectors';
 import Chat from './components/Chat/Chat';
+import ChatButton from './components/ChatButton/ChatButton';
 
 export const UsedLocaleContext = React.createContext('en-US');
 
@@ -279,12 +280,12 @@ export default class Wrapper extends React.PureComponent {
                 <Transfer />
                 <PowerUpOrDown />
                 <NotificationPopup />
-                <BBackTop
+                <BBackTop className="primary-modal" />
+                <ChatButton
                   openChat={this.props.changeChatCondition}
                   isChat={isChat}
-                  className="primary-modal"
-                  authentication={isAuthenticated}
                   messagesCount={messagesCount}
+                  authentication={isAuthenticated}
                 />
                 {isAuthenticated ? <Chat visibility={isChat} userName={username} /> : null}
               </div>
