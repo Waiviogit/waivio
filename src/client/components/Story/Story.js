@@ -132,7 +132,7 @@ class Story extends React.Component {
               defaultMessage: 'Approval',
             })}
             <span className={`CalculatedPercent-${percent >= 70 ? 'green' : 'red'}`}>
-              {percent.toFixed(2)}%
+              {` ${percent.toFixed(2)}%`}
             </span>
           </span>
         </Tag>
