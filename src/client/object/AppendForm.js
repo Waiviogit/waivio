@@ -260,6 +260,10 @@ export default class AppendForm extends Component {
         fieldBody.push(rest[ratingFields.category]);
         break;
       }
+      case objectFields.category: {
+        fieldBody.push(rest[objectFields.category]);
+        break;
+      }
       default:
         fieldBody.push(JSON.stringify(rest));
         break;
@@ -336,6 +340,13 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           [phoneFields.number]: formValues[phoneFields.number],
+        };
+      }
+
+      if (currentField === objectFields.category) {
+        fieldsObject = {
+          ...fieldsObject,
+          id: uuidv4(),
         };
       }
 
@@ -733,24 +744,43 @@ export default class AppendForm extends Component {
           </Form.Item>
         );
       }
-      case objectFields.tagCloud: {
-        return (
-          <Form.Item>
-            {getFieldDecorator(objectFields.tagCloud, {
-              rules: this.getFieldRules(objectFields.tagCloud),
-            })(
-              <Input
-                className="AppendForm__input"
-                disabled={loading}
-                placeholder={intl.formatMessage({
-                  id: 'tag_placeholder',
-                  defaultMessage: 'Enter tag',
-                })}
-              />,
-            )}
-          </Form.Item>
-        );
-      }
+      // case objectFields.tagCloud: {
+      //   return (
+      //     <React.Fragment>
+      //       <Form.Item>
+      //         {getFieldDecorator('id', {
+      //           initialValue: selectedAlbum ? selectedAlbum.id : 'Choose an album',
+      //           rules: [
+      //             {
+      //               required: true,
+      //               message: intl.formatMessage(
+      //                 {
+      //                   id: 'field_error',
+      //                   defaultMessage: 'Field is required',
+      //                 },
+      //                 { field: 'Album' },
+      //               ),
+      //             },
+      //           ],
+      //         })(
+      //           <Select disabled={loading}>
+      //             {map(albums, album => (
+      //               <Select.Option key={`${album.id}${album.bogy}`} value={album.id}>
+      //                 {album.body}
+      //               </Select.Option>
+      //             ))}
+      //           </Select>,
+      //         )}
+      //       </Form.Item>
+      //       <Form.Item>
+      //         {getFieldDecorator(objectFields.tagCloud, {
+      //           rules: this.getFieldRules(objectFields.parent),
+      //         })(<SearchObjectsAutocomplete handleSelect={this.handleSelectObject} objectType="hashtag"/>)}
+      //         {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
+      //       </Form.Item>
+      //     </React.Fragment>
+      //   );
+      // }
       case objectFields.parent: {
         return (
           <Form.Item>
@@ -1344,6 +1374,26 @@ export default class AppendForm extends Component {
       }
       case objectFields.newsFilter:
         return getNewsFilterLayout(this);
+      case objectFields.category: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.category, {
+              rules: this.getFieldRules(objectFields.category),
+            })(
+              <Input
+                className={classNames('AppendForm__input', {
+                  'validation-error': !this.state.isSomeValue,
+                })}
+                disabled={loading}
+                placeholder={intl.formatMessage({
+                  id: 'category_tag_category_placeholder',
+                  defaultMessage: 'Tag category',
+                })}
+              />,
+            )}
+          </Form.Item>
+        );
+      }
       default:
         return null;
     }

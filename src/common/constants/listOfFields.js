@@ -25,6 +25,7 @@ export const objectFields = {
   status: 'status',
   galleryItem: 'galleryItem',
   galleryAlbum: 'galleryAlbum',
+  category: 'tagCategory',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -121,6 +122,7 @@ export const getAllowedFieldsByObjType = objectType => {
         objectFields.parent,
         objectFields.galleryItem,
         objectFields.galleryAlbum,
+        objectFields.category,
       ];
     case OBJECT_TYPE.LIST:
       return [
@@ -133,6 +135,7 @@ export const getAllowedFieldsByObjType = objectType => {
         objectFields.parent,
         objectFields.galleryItem,
         objectFields.galleryAlbum,
+        objectFields.category,
       ];
     default: {
       const excludeFields = [objectFields.listItem, objectFields.pageContent];

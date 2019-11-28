@@ -26,6 +26,7 @@ export const getClientWObj = (serverWObj, usedLocale = 'en-US') => {
     userCount: user_count || 0,
     followersNames: followers_names,
     type: (object_type && object_type.toLowerCase()) || 'item',
+    tagCategory: serverWObj.fields.filter(field => field.name === 'tagCategory'),
     ...getFieldsWithMaxWeight(serverWObj, usedLocale),
     ...serverWObj,
   };

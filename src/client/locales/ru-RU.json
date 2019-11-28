@@ -557,6 +557,7 @@
   "objects_related_by_tags": "Объекты, связанные с #тегами",
   "follow_extra": "Оставайтесь в курсе обновлений объектов, представленных другими пользователями",
   "category_rating_placeholder": "категория",
+  "category_tag_category_placeholder": "Категория тегов",
   "your_vote_placeholder": "Ваш голос (необязательно)",
   "your_vote": "Ваш голос ",
   "rate_vote_error": "Не удалось оценить голос",
