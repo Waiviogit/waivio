@@ -12,7 +12,7 @@ import RightSidebar from '../app/Sidebar/RightSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTop from '../components/Utils/ScrollToTop';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
-import QuickPostEditor from '../components/QuickPostEditor/QuickPostEditor';
+// import QuickPostEditor from '../components/QuickPostEditor/QuickPostEditor';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 
 @injectIntl
@@ -28,8 +28,9 @@ class Page extends React.Component {
   }
 
   static propTypes = {
-    authenticated: PropTypes.bool.isRequired,
+    // authenticated: PropTypes.bool.isRequired,
     history: PropTypes.shape().isRequired,
+    location: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     route: PropTypes.shape().isRequired,
   };
@@ -48,12 +49,15 @@ class Page extends React.Component {
   handleTopicClose = () => this.props.history.push('/trending');
 
   render() {
-    const { authenticated } = this.props;
+    // const { authenticated, location } = this.props;
+    const { location } = this.props;
+    const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
 
     return (
       <div>
         <Helmet>
           <title>Waivio</title>
+          <meta name="robots" content={robots} />
         </Helmet>
         <ScrollToTop />
         <ScrollToTopOnMount />
@@ -71,7 +75,7 @@ class Page extends React.Component {
             </Affix>
             <div className="center">
               <MobileNavigation />
-              {authenticated && <QuickPostEditor />}
+              {/* {authenticated && <QuickPostEditor />} */}
               {renderRoutes(this.props.route.routes)}
             </div>
           </div>
