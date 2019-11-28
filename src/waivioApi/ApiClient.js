@@ -495,7 +495,6 @@ export const getMessagesQuantity = username => {
   });
 };
 
-
 export const getTopUsers = (isRandom = false, { limit, skip } = { limit: 30, skip: 0 }) => {
   const queryString = `?${isRandom ? 'sample=true' : `limit=${limit}&skip=${skip}`}`;
   return new Promise((resolve, reject) => {

@@ -26,7 +26,7 @@ import { updateQuotesSettings } from '../redux/actions/quotesSettingsActions';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { CHART_ID } from '../constants/objectsInvestarena';
 import { mutateObject, getOS } from './platformHelper';
-import {CALLERS} from "../constants/platform";
+import { CALLERS } from '../constants/platform';
 
 const multiplier = 1000000;
 
@@ -192,7 +192,12 @@ export class Umarkets {
   }
 
   getAppIdentity(callerKey) {
-    return JSON.stringify({OS: getOS(), App: config.app, Version: config.version, Caller: CALLERS[callerKey]})
+    return JSON.stringify({
+      OS: getOS(),
+      App: config.app,
+      Version: config.version,
+      Caller: CALLERS[callerKey],
+    });
   }
 
   createOpenDeal(deal, dataDealToApi, callerKey) {
@@ -200,7 +205,7 @@ export class Umarkets {
     this.sendRequestToPlatform(
       CMD.sendOpenMarketOrder,
       `["${deal.security}","${deal.side}","${deal.amount}","${config.appVersion}"]`,
-      this.getAppIdentity(callerKey)
+      this.getAppIdentity(callerKey),
     );
   }
 
@@ -208,7 +213,7 @@ export class Umarkets {
     this.sendRequestToPlatform(
       CMD.sendCloseMarketOrder,
       `["${dealId}","${config.appVersion}"]`,
-      this.getAppIdentity(callerKey)
+      this.getAppIdentity(callerKey),
     );
   }
 
@@ -252,7 +257,11 @@ export class Umarkets {
         this.stompClient.send(
           '/exchange/CMD/',
           {},
-          `{"sid": "${this.sid}", "umid": "${this.um_session}", "cmd": "${cmd}", "params": ${params}${submissionReason ? `, "submissionReason": ${submissionReason}` : ""}}`,
+          `{"sid": "${this.sid}", "umid": "${
+            this.um_session
+          }", "cmd": "${cmd}", "params": ${params}${
+            submissionReason ? `, "submissionReason": ${submissionReason}` : ''
+          }}`,
         );
       } catch (e) {
         // console.log('Stomp error ' + e.name + ':' + e.message + '\n' + e.stack);
@@ -431,16 +440,16 @@ export class Umarkets {
     const quoteSecurity = chart.security;
     const timeScale = chart.barType;
     const bars = chart.bars;
-    this.dispatch(getChartDataSuccess({quoteSecurity, timeScale, bars}));
+    this.dispatch(getChartDataSuccess({ quoteSecurity, timeScale, bars }));
     if (this.hasOwnProperty('publish')) {
-      this.publish(`ChartData${quoteSecurity}`, {quoteSecurity, timeScale, bars});
+      this.publish(`ChartData${quoteSecurity}`, { quoteSecurity, timeScale, bars });
     }
   }
 
   parseOpenDeals(result) {
     const content = _.sortBy(result.content, 'dealSequenceNumber').reverse();
     const openDeals = {};
-    const data = {open_deals: []};
+    const data = { open_deals: [] };
     content.map(openDeal => {
       openDeal.openPrice /= multiplier;
       openDeal.amount /= multiplier;
@@ -478,7 +487,7 @@ export class Umarkets {
         closedDeal => closedDeal.closeTime > this.lastClosedDealTime,
       );
       if (contentFilter.length > 0) {
-        const data = {closed_deals: []};
+        const data = { closed_deals: [] };
         content.map(closeDeal => {
           data.closed_deals.push({
             deal_id: closeDeal.dealId,

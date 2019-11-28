@@ -133,7 +133,10 @@ export const optionsChartType = [
   { value: 'Candle', label: 'Candle' },
 ];
 
-export const optionsPrice = [{ value: 'Sell', label: 'Bid' }, { value: 'Buy', label: 'Ask' }];
+export const optionsPrice = [
+  { value: 'Sell', label: 'Bid' },
+  { value: 'Buy', label: 'Ask' },
+];
 
 export const optionsTimeScale = [
   { value: 'MINUTE', label: '1m' },

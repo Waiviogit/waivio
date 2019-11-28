@@ -17,7 +17,11 @@ const UserAccuracyChart = ({ statisticsData, isChart, ...props }) => {
             (statisticsData.successful_count + statisticsData.failed_count),
           10,
         );
-  const data = [['', ''], ['success', percent], ['unsuccess', 100 - percent]];
+  const data = [
+    ['', ''],
+    ['success', percent],
+    ['unsuccess', 100 - percent],
+  ];
   const options = {
     pieHole: 0.75,
     backgroundColor: 'transparent',

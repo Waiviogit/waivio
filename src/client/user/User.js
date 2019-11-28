@@ -12,10 +12,13 @@ import {
   getIsUserFailed,
   getIsUserLoaded,
   getAuthenticatedUserName,
+  getChatCondition,
 } from '../reducers';
 import { openTransfer } from '../wallet/walletActions';
 import { getUserAccount } from './usersActions';
 import { getAvatarURL } from '../components/Avatar';
+import { changeChatCondition } from './userActions';
+import { setPostMessageAction } from '../components/Chat/chatActions';
 import Error404 from '../statics/Error404';
 import UserHero from './UserHero';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
@@ -31,10 +34,13 @@ import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
     user: getUser(state, ownProps.match.params.name),
     loaded: getIsUserLoaded(state, ownProps.match.params.name),
     failed: getIsUserFailed(state, ownProps.match.params.name),
+    isChat: getChatCondition(state),
   }),
   {
     getUserAccount,
     openTransfer,
+    changeChatCondition,
+    setPostMessageAction,
   },
 )
 export default class User extends React.Component {
@@ -49,6 +55,9 @@ export default class User extends React.Component {
     failed: PropTypes.bool,
     getUserAccount: PropTypes.func,
     openTransfer: PropTypes.func,
+    changeChatCondition: PropTypes.func.isRequired,
+    isChat: PropTypes.bool.isRequired,
+    setPostMessageAction: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -183,6 +192,9 @@ export default class User extends React.Component {
             hasCover={hasCover}
             onFollowClick={this.handleFollowClick}
             onTransferClick={this.handleTransferClick}
+            changeChatCondition={this.props.changeChatCondition}
+            setPostMessageAction={this.props.setPostMessageAction}
+            isChat={this.props.isChat}
           />
         )}
         <div className="shifted">
