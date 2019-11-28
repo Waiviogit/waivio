@@ -273,7 +273,11 @@ export default class Wrapper extends React.PureComponent {
           <UsedLocaleContext.Provider value={usedLocale}>
             <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
               <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
-                <Topnav username={user.name} onMenuItemClick={this.handleMenuItemClick} />
+                <Topnav
+                  username={user.name}
+                  openChat={this.props.changeChatCondition}
+                  onMenuItemClick={this.handleMenuItemClick}
+                />
               </Layout.Header>
               <div className={classNames('content', { 'no-broker': platformName === 'widgets' })}>
                 {renderRoutes(this.props.route.routes)}

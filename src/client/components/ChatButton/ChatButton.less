@@ -1,7 +1,14 @@
+@import (reference) '../../styles/modules/variables.less';
+
 .ChatButton {
   position: fixed;
   bottom: 100px;
   right: 24px;
+  display: none;
+
+  @media @small {
+    display: block;
+  }
 
   &__item > .ant-btn-circle {
     width: 60px;
