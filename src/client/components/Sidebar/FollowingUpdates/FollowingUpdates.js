@@ -46,7 +46,7 @@ function buildFollowingUpdatesMenuConfig(updates) {
           const clientObj = getClientWObj(followingObject);
           return {
             name: clientObj.name,
-            intlId: clientObj.name,
+            intlId: clientObj.name || 'unknown_object',
             meta: clientObj.last_posts_count > 0 ? clientObj.last_posts_count : '',
             linkTo: `/feed/${clientObj.id}?category=${clientObj.object_type}&name=${clientObj.name}`,
           };
