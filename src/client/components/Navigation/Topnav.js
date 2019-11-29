@@ -456,7 +456,7 @@ class Topnav extends React.Component {
     this.setState({ dropdownOpen: false });
     this.hideAutoCompleteDropdown();
   }
-
+  //
   handleOnChangeForAutoComplete(value, data) {
     if (
       data.props.marker === Topnav.markers.TYPE ||
@@ -624,10 +624,19 @@ class Topnav extends React.Component {
     this.setState(
       {
         dropdownOpen: false,
-        searchData: '',
-        searchBarValue: '',
+        // searchData: '',
+        // searchBarValue: '',
         currentItem: 'All',
         searchBarActive: false,
+      },
+      // this.props.resetSearchAutoCompete,
+    );
+
+  handleClearSearchData = () =>
+    this.setState(
+      {
+        searchData: '',
+        searchBarValue: '',
       },
       this.props.resetSearchAutoCompete,
     );
@@ -695,6 +704,8 @@ class Topnav extends React.Component {
                 />
               </AutoComplete>
               <i className="iconfont icon-search" />
+              {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+              <i className="iconfont icon-close" onClick={this.handleClearSearchData} />
             </div>
           </div>
           <div className="right">
