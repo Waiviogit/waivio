@@ -408,7 +408,7 @@ export default class Transfer extends React.Component {
               rules: [{ validator: this.validateMemo }],
             })(
               <Input.TextArea
-                autosize={{ minRows: 2, maxRows: 6 }}
+                autoSize={{ minRows: 2, maxRows: 6 }}
                 placeholder={intl.formatMessage({
                   id: 'memo_placeholder',
                   defaultMessage: 'Additional message to include in this payment (optional)',

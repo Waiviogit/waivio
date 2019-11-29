@@ -190,7 +190,7 @@ export default class ProfileSettings extends React.Component {
                     <FormItem>
                       {getFieldDecorator('about')(
                         <Input.TextArea
-                          autosize={{ minRows: 2, maxRows: 6 }}
+                          autoSize={{ minRows: 2, maxRows: 6 }}
                           placeholder={intl.formatMessage({
                             id: 'profile_about_placeholder',
                             defaultMessage: 'Few words about you',

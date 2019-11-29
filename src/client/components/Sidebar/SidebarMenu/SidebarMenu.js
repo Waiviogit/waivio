@@ -83,7 +83,7 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
           defaultMessage: sectionItem.name,
         });
         return linkTo ? (
-          <li className="collapsible-block__item" key={sectionItem.name}>
+          <li className="collapsible-block__item" key={`sectionItem-${sectionItem.name}`}>
             <NavLink
               to={linkTo}
               className="sidenav-discover-objects__item"
