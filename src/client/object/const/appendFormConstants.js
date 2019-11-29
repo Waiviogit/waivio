@@ -676,7 +676,7 @@ export const fieldsRules = {
       validator: true,
     },
   ],
-  [objectFields.category]: [
+  [objectFields.tagCategory]: [
     {
       transform: value => value && value.toLowerCase(),
     },
@@ -698,6 +698,24 @@ export const fieldsRules = {
           defaultMessage: "Value can't be longer than 100 characters.",
         },
         intlMeta: { value: 100 },
+      },
+    },
+    {
+      validator: true,
+    },
+  ],
+  [objectFields.categoryItem]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      required: true,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'Category Item' },
       },
     },
     {

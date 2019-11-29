@@ -260,8 +260,8 @@ export default class AppendForm extends Component {
         fieldBody.push(rest[ratingFields.category]);
         break;
       }
-      case objectFields.category: {
-        fieldBody.push(rest[objectFields.category]);
+      case objectFields.tagCategory: {
+        fieldBody.push(rest[objectFields.tagCategory]);
         break;
       }
       default:
@@ -343,7 +343,7 @@ export default class AppendForm extends Component {
         };
       }
 
-      if (currentField === objectFields.category) {
+      if (currentField === objectFields.tagCategory) {
         fieldsObject = {
           ...fieldsObject,
           id: uuidv4(),
@@ -1342,11 +1342,11 @@ export default class AppendForm extends Component {
       }
       case objectFields.newsFilter:
         return getNewsFilterLayout(this);
-      case objectFields.category: {
+      case objectFields.tagCategory: {
         return (
           <Form.Item>
-            {getFieldDecorator(objectFields.category, {
-              rules: this.getFieldRules(objectFields.category),
+            {getFieldDecorator(objectFields.tagCategory, {
+              rules: this.getFieldRules(objectFields.tagCategory),
             })(
               <Input
                 className={classNames('AppendForm__input', {

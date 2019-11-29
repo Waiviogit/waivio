@@ -17,7 +17,6 @@ export const objectFields = {
   listItem: 'listItem',
   price: 'price',
   parent: 'parent',
-  tagCloud: 'tagCloud',
   newsFilter: 'newsFilter',
   button: 'button',
   workTime: 'workTime',
@@ -25,7 +24,8 @@ export const objectFields = {
   status: 'status',
   galleryItem: 'galleryItem',
   galleryAlbum: 'galleryAlbum',
-  category: 'tagCategory',
+  tagCategory: 'tagCategory',
+  categoryItem: 'categoryItem',
 };
 
 export const TYPES_OF_MENU_ITEM = {

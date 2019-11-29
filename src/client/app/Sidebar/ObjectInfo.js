@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import { Button, Icon, Tag } from 'antd';
+import { Button, Icon } from 'antd';
 import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -113,7 +113,8 @@ class ObjectInfo extends React.Component {
     let short = '';
     let background = '';
     let photosCount = 0;
-    let tags = [];
+    let tagCategories = [];
+    let categoryItems = [];
     let phones = [];
     let email = '';
     let menuItems = [];
@@ -158,8 +159,11 @@ class ObjectInfo extends React.Component {
 
       photosCount = wobject.photos_count;
 
-      const filtered = _.filter(wobject.fields, ['name', objectFields.tagCloud]);
-      tags = _.orderBy(filtered, ['weight'], ['desc']);
+      const filteredTagCategories = _.filter(wobject.fields, ['name', objectFields.tagCategory]);
+      tagCategories = _.orderBy(filteredTagCategories, ['weight'], ['desc']);
+
+      const filteredCategoryItems = _.filter(wobject.fields, ['name', objectFields.categoryItem]);
+      categoryItems = _.orderBy(filteredCategoryItems, ['tag_weight'], ['desc']);
 
       const filteredPhones = _.filter(wobject.fields, ['name', objectFields.phone]);
       phones = _.orderBy(filteredPhones, ['weight'], ['desc']);
@@ -388,44 +392,18 @@ class ObjectInfo extends React.Component {
               <RateInfo username={userName} authorPermlink={wobject.author_permlink} />,
             )}
             {listItem(
-              objectFields.tagCloud,
-              <div className="field-info">
-                {accessExtend ? (
-                  <React.Fragment>
-                    {tags.length <= 3 ? (
-                      tags.slice(0, 3).map(({ body }) => (
-                        <div key={body} className="tag-item">
-                          {body}
-                        </div>
-                      ))
-                    ) : (
-                      <React.Fragment>
-                        {tags.slice(0, 2).map(({ body }) => (
-                          <div key={body} className="tag-item">
-                            {body}
-                          </div>
-                        ))}
-                        <Link
-                          to={`/object/${wobject.author_permlink}/updates/${objectFields.tagCloud}`}
-                          onClick={() => this.handleSelectField(objectFields.tagCloud)}
-                        >
-                          <FormattedMessage id="show_more_tags" defaultMessage="show more">
-                            {value => <div className="tag-item">{value}</div>}
-                          </FormattedMessage>
-                        </Link>
-                      </React.Fragment>
-                    )}
-                  </React.Fragment>
-                ) : (
-                  <React.Fragment>
-                    {tags.slice(0, 3).map(({ body }) => (
-                      <Tag key={body} color="volcano">
-                        {body}
-                      </Tag>
-                    ))}
-                  </React.Fragment>
-                )}
-              </div>,
+              objectFields.tagCategory,
+              tagCategories
+                ? // eslint-disable-next-line no-unused-vars
+                  tagCategories.map(item => <div>item.name</div>)
+                : null,
+            )}
+            {listItem(
+              objectFields.categoryItem,
+              categoryItems
+                ? // eslint-disable-next-line no-unused-vars
+                  categoryItems.map(item => <div>item.name</div>)
+                : null,
             )}
             {isRenderGallery && (hasGalleryImg || accessExtend) ? (
               <div className="field-info">
