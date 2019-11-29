@@ -456,7 +456,7 @@ class Topnav extends React.Component {
     this.setState({ dropdownOpen: false });
     this.hideAutoCompleteDropdown();
   }
-  //
+
   handleOnChangeForAutoComplete(value, data) {
     if (
       data.props.marker === Topnav.markers.TYPE ||
@@ -621,16 +621,11 @@ class Topnav extends React.Component {
     });
 
   handleOnBlur = () =>
-    this.setState(
-      {
-        dropdownOpen: false,
-        // searchData: '',
-        // searchBarValue: '',
-        currentItem: 'All',
-        searchBarActive: false,
-      },
-      // this.props.resetSearchAutoCompete,
-    );
+    this.setState({
+      dropdownOpen: false,
+      currentItem: 'All',
+      searchBarActive: false,
+    });
 
   handleClearSearchData = () =>
     this.setState(
