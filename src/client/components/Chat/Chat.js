@@ -26,6 +26,7 @@ class Chat extends React.Component {
     userName: PropTypes.string.isRequired,
     isConnectionStart: PropTypes.bool.isRequired,
     setDefaultCondition: PropTypes.func.isRequired,
+    openChat: PropTypes.func.isRequired,
   };
 
   state = {
@@ -48,6 +49,9 @@ class Chat extends React.Component {
             console.log(event.data.args.status);
             // eslint-disable-next-line react/no-did-mount-set-state
             this.setState({ isAuthorized: true });
+            break;
+          case 'close_chat':
+            this.props.openChat();
             break;
           case 'start_chat_response':
             console.log(event.data.args.status);

@@ -291,7 +291,13 @@ export default class Wrapper extends React.PureComponent {
                   messagesCount={messagesCount}
                   authentication={isAuthenticated}
                 />
-                {isAuthenticated ? <Chat visibility={isChat} userName={username} /> : null}
+                {isAuthenticated ? (
+                  <Chat
+                    visibility={isChat}
+                    openChat={this.props.changeChatCondition}
+                    userName={username}
+                  />
+                ) : null}
               </div>
             </Layout>
           </UsedLocaleContext.Provider>
