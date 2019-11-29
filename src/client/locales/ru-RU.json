@@ -844,5 +844,6 @@
   "sidenav_user_websites": "Веб-сайты",
   "sidenav_user_create": "Создать",
   "sidenav_user_manage": "Управлять",
-  "sidenav_user_payments": "Платежи"
+  "sidenav_user_payments": "Платежи",
+  "posts": "Посты"
 }
