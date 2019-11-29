@@ -5,6 +5,7 @@ export const REFERRAL_PERCENT = 1000;
 export const knownDomains = [
   'busy.org',
   'waiviodev.com',
+  'waivio.com',
   'investarena.waiviodev.com',
   'staging.busy.org',
   'steemit.com',

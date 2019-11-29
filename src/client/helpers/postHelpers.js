@@ -40,7 +40,7 @@ export function getAppData(post) {
     const appDetails = _.get(jsonMetadata, 'app', '');
     const appData = _.split(appDetails, '/');
     const appKey = _.get(appData, 0, '');
-    const version = _.get(appData, 1, '');
+    const version = _.get(appData, 1, '1.0.0');
 
     if (whiteListedApps[appKey]) {
       return {
