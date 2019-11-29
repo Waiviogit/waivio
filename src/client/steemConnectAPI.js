@@ -11,14 +11,19 @@ function sc2Extended() {
     Object.create(Object.getPrototypeOf(sc2api)),
     sc2api,
     {
-      followObject(follower, followingObject, cb) {
+      followObject(follower, followingObject = '', sessionId = 0, cb) {
         const params = {
           required_auths: [],
           required_posting_auths: [follower],
           id: 'follow_wobject',
           json: JSON.stringify([
             'follow',
-            { user: follower, author_permlink: followingObject, what: ['feed'] },
+            {
+              user: follower,
+              author_permlink: followingObject,
+              session_id: sessionId,
+              what: ['feed'],
+            },
           ]),
         };
         return this.broadcast([['custom_json', params]], cb);
