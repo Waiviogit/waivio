@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import './ChatButton.less';
 
 const ChatButton = ({ authentication, openChat, isChat, messagesCount }) => (
-  <div className={classNames('ChatButton', { 'hide-element': !authentication })}>
+  <div className={classNames('ChatButton', { 'hide-element': !authentication || isChat })}>
     <div className={classNames('ChatButton__item')}>
       <Button onClick={openChat} type="primary" shape="circle">
         {// eslint-disable-next-line no-nested-ternary
