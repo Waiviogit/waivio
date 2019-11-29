@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
-import { ConfigProvider, Layout } from 'antd';
+import { ConfigProvider, Button, Layout } from 'antd';
 import classNames from 'classnames';
 import enUS from 'antd/lib/locale-provider/en_US';
 import Cookie from 'js-cookie';
@@ -18,9 +18,17 @@ import {
   getUsedLocale,
   getTranslations,
   getNightmode,
+  getIsAuthenticated,
+  getChatCondition,
 } from './reducers';
 import { login, logout, busyLogin } from './auth/authActions';
-import { getFollowing, getFollowingObjects, getNotifications } from './user/userActions';
+import { getMessagesQuantity } from '../waivioApi/ApiClient';
+import {
+  changeChatCondition,
+  getFollowing,
+  getFollowingObjects,
+  getNotifications,
+} from './user/userActions';
 import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './app/appActions';
 import { getPerformersStatistic } from '../investarena/redux/actions/topPerformersActions';
 import * as reblogActions from './app/Reblog/reblogActions';
@@ -31,6 +39,8 @@ import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
 import { getChartsData } from '../investarena/redux/actions/chartsActions';
 import { getPlatformNameState } from '../investarena/redux/selectors/platformSelectors';
+import Chat from './components/Chat/Chat';
+import ChatButton from './components/ChatButton/ChatButton';
 
 export const UsedLocaleContext = React.createContext('en-US');
 
@@ -40,11 +50,13 @@ export const UsedLocaleContext = React.createContext('en-US');
     loaded: getIsLoaded(state),
     user: getAuthenticatedUser(state),
     username: getAuthenticatedUserName(state),
+    isAuthenticated: getIsAuthenticated(state),
     usedLocale: getUsedLocale(state),
     translations: getTranslations(state),
     locale: getLocale(state),
     nightmode: getNightmode(state),
     platformName: getPlatformNameState(state),
+    isChat: getChatCondition(state),
   }),
   {
     login,
@@ -59,6 +71,7 @@ export const UsedLocaleContext = React.createContext('en-US');
     getRebloggedList: reblogActions.getRebloggedList,
     setUsedLocale,
     getChartsData,
+    changeChatCondition,
   },
 )
 export default class Wrapper extends React.PureComponent {
@@ -84,6 +97,9 @@ export default class Wrapper extends React.PureComponent {
     nightmode: PropTypes.bool,
     getChartsData: PropTypes.func,
     platformName: PropTypes.string,
+    isAuthenticated: PropTypes.bool.isRequired,
+    isChat: PropTypes.bool.isRequired,
+    changeChatCondition: PropTypes.func,
   };
 
   static defaultProps = {
@@ -104,6 +120,8 @@ export default class Wrapper extends React.PureComponent {
     busyLogin: () => {},
     nightmode: false,
     getChartsData: () => {},
+    changeChatCondition: () => {},
+    getMessagesQuantity: () => {},
   };
 
   static async fetchData({ store, req }) {
@@ -132,6 +150,9 @@ export default class Wrapper extends React.PureComponent {
     super(props);
     this.loadLocale = this.loadLocale.bind(this);
     this.handleMenuItemClick = this.handleMenuItemClick.bind(this);
+    this.state = {
+      messagesCount: 0,
+    };
   }
 
   componentDidMount() {
@@ -141,6 +162,9 @@ export default class Wrapper extends React.PureComponent {
       this.props.getPerformersStatistic();
       this.props.getNotifications();
       this.props.busyLogin();
+      getMessagesQuantity(this.props.username).then(data =>
+        this.setState({ messagesCount: data.count }),
+      );
     });
 
     this.props.getRewardFund();
@@ -150,10 +174,15 @@ export default class Wrapper extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { locale } = this.props;
+    const { locale, isChat } = this.props;
 
     if (locale !== nextProps.locale) {
       this.loadLocale(nextProps.locale);
+    }
+    if (nextProps.isChat !== isChat) {
+      getMessagesQuantity(this.props.username).then(data =>
+        this.setState({ messagesCount: data.count }),
+      );
     }
   }
 
@@ -226,8 +255,16 @@ export default class Wrapper extends React.PureComponent {
   }
 
   render() {
-    const { user, usedLocale, translations, platformName } = this.props;
-
+    const {
+      user,
+      usedLocale,
+      translations,
+      platformName,
+      username,
+      isChat,
+      isAuthenticated,
+    } = this.props;
+    const { messagesCount } = this.state;
     const language = findLanguage(usedLocale);
 
     return (
@@ -236,7 +273,11 @@ export default class Wrapper extends React.PureComponent {
           <UsedLocaleContext.Provider value={usedLocale}>
             <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
               <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
-                <Topnav username={user.name} onMenuItemClick={this.handleMenuItemClick} />
+                <Topnav
+                  username={user.name}
+                  openChat={this.props.changeChatCondition}
+                  onMenuItemClick={this.handleMenuItemClick}
+                />
               </Layout.Header>
               <div className={classNames('content', { 'no-broker': platformName === 'widgets' })}>
                 {renderRoutes(this.props.route.routes)}
@@ -244,6 +285,19 @@ export default class Wrapper extends React.PureComponent {
                 <PowerUpOrDown />
                 <NotificationPopup />
                 <BBackTop className="primary-modal" />
+                <ChatButton
+                  openChat={this.props.changeChatCondition}
+                  isChat={isChat}
+                  messagesCount={messagesCount}
+                  authentication={isAuthenticated}
+                />
+                {isAuthenticated ? (
+                  <Chat
+                    visibility={isChat}
+                    openChat={this.props.changeChatCondition}
+                    userName={username}
+                  />
+                ) : null}
               </div>
             </Layout>
           </UsedLocaleContext.Provider>

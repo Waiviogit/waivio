@@ -19,18 +19,14 @@ export const makeGetPostQuoteState = () =>
   );
 
 export const makeGetInstrumentsDropdownOptions = () =>
-  createSelector(
-    getQuotesState,
-    getQuotesSettingsState,
-    (quotes, quotesSettings) => {
-      const optionsQuote = [];
-      if (_.size(quotesSettings) !== 0) {
-        _.map(quotesSettings, (item, key) => {
-          if (quotes[key] && Number(quotes[key].askPrice) !== 0 && !blackListQuotes.includes(key)) {
-            optionsQuote.push({ value: key, label: item.name });
-          }
-        });
-      }
-      return optionsQuote;
-    },
-  );
+  createSelector(getQuotesState, getQuotesSettingsState, (quotes, quotesSettings) => {
+    const optionsQuote = [];
+    if (_.size(quotesSettings) !== 0) {
+      _.map(quotesSettings, (item, key) => {
+        if (quotes[key] && Number(quotes[key].askPrice) !== 0 && !blackListQuotes.includes(key)) {
+          optionsQuote.push({ value: key, label: item.name });
+        }
+      });
+    }
+    return optionsQuote;
+  });

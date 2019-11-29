@@ -25,6 +25,9 @@ const initialState = {
   statistics: {
     isAccuracyChartLoaded: false,
   },
+  isChatOpen: false,
+  isConnectionStart: false,
+  isPrivateChat: false,
 };
 
 const filterRecommendedObjects = (objects, count = 5) => {
@@ -231,6 +234,12 @@ export default function userReducer(state = initialState, action) {
           isAccuracyChartLoaded: action.payload,
         },
       };
+    case userActions.CHANGE_CHAT_CONDITION:
+      return {
+        ...state,
+        isChatOpen: !state.isChatOpen,
+        isConnectionStart: true,
+      };
     default: {
       return state;
     }
@@ -250,3 +259,5 @@ export const getFetchFollowListError = state => state.fetchFollowListError;
 export const getLatestNotification = state => state.latestNotification;
 export const getUserLocation = state => state.location;
 export const getAccuracyChartLoaded = state => state.statistics.isAccuracyChartLoaded;
+export const getChatCondition = state => state.isChatOpen;
+export const getChatConnectionCondition = state => state.isConnectionStart;

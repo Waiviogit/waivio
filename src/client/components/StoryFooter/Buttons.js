@@ -385,8 +385,8 @@ export default class Buttons extends React.Component {
               </a>
             </BTooltip>
             <span className="Buttons__number">
-          {post.children > 0 && <FormattedNumber value={post.children} />}
-        </span>
+              {post.children > 0 && <FormattedNumber value={post.children} />}
+            </span>
           </React.Fragment>
         )}
         {showReblogLink && (

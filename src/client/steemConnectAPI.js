@@ -49,6 +49,17 @@ function sc2Extended() {
         return this.broadcast([['custom_json', params]], cb);
       },
     },
+    {
+      settingSessionId(username, sessionId, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'session_id',
+          json: JSON.stringify({ session_id: sessionId }),
+        };
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
   );
 
   return copied;

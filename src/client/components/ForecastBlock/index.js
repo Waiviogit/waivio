@@ -18,7 +18,4 @@ function mapDispatchToProps(dispatch, ownProps) {
   };
 }
 
-export default connect(
-  mapState,
-  mapDispatchToProps,
-)(ForecastBlockContainer);
+export default connect(mapState, mapDispatchToProps)(ForecastBlockContainer);

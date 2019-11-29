@@ -337,12 +337,12 @@ export class PlatformHelper {
       sMin = Math.abs(sMin);
       sMax = Math.abs(sMax);
     } else if (sMin > 0 && sMax > 0) {
-        sMin = 0;
-        sMax = 0;
-      } else {
-        sMin = Math.abs(sMin);
-        sMax = Math.abs(sMax);
-      }
+      sMin = 0;
+      sMax = 0;
+    } else {
+      sMin = Math.abs(sMin);
+      sMax = Math.abs(sMax);
+    }
     rangesPrice.min = sMin.toFixed(2);
     rangesPrice.max = sMax.toFixed(2);
     return rangesPrice;
@@ -410,9 +410,8 @@ export class PlatformHelper {
     const decimals = PlatformHelper.countDecimals(step);
     if (res > quoteSettings.minimumQuantity / 1000000) {
       return numberFormat(res, decimals);
-    } 
-      return numberFormat(quoteSettings.minimumQuantity / 1000000, decimals);
-    
+    }
+    return numberFormat(quoteSettings.minimumQuantity / 1000000, decimals);
   }
   static moreDeal(amount, quoteSettings) {
     const amountParseString = amount.replace(/,/g, '');
@@ -422,9 +421,8 @@ export class PlatformHelper {
     const decimals = PlatformHelper.countDecimals(step);
     if (res < quoteSettings.maximumQuantity / 1000000) {
       return numberFormat(res, decimals);
-    } 
-      return numberFormat(quoteSettings.maximumQuantity / 1000000, decimals);
-    
+    }
+    return numberFormat(quoteSettings.maximumQuantity / 1000000, decimals);
   }
   static validateOnBlur(amount, quoteSettings) {
     const amountParseString = amount.replace(/,/g, '');
@@ -435,13 +433,12 @@ export class PlatformHelper {
     } else if (amountInt > quoteSettings.maximumQuantity / 1000000) {
       const decimals = PlatformHelper.countDecimals(quoteSettings.maximumQuantity);
       return numberFormat(quoteSettings.maximumQuantity / 1000000, decimals);
-    } 
-      const resultNumber =
-        Math.round(amountInt / (quoteSettings.quantityIncrement / 1000000)) *
-        (quoteSettings.quantityIncrement / 1000000);
-      const decimals = PlatformHelper.countDecimals(resultNumber);
-      return numberFormat(resultNumber, decimals);
-    
+    }
+    const resultNumber =
+      Math.round(amountInt / (quoteSettings.quantityIncrement / 1000000)) *
+      (quoteSettings.quantityIncrement / 1000000);
+    const decimals = PlatformHelper.countDecimals(resultNumber);
+    return numberFormat(resultNumber, decimals);
   }
   static validateOnChange(amount, quoteSettings) {
     const amountParseString = amount.replace(/,/g, '');
@@ -455,14 +452,12 @@ export class PlatformHelper {
     } else if (amountParseString.length === 0) {
       const decimals = PlatformHelper.countDecimals(quoteSettings.minimumQuantity);
       return numberFormat(quoteSettings.minimumQuantity / 1000000, decimals);
-    } 
-      if (amountParseString.match(/[1-9]+?/)) {
-        const decimals = PlatformHelper.countDecimals(amountInt);
-        return numberFormat(amountInt, decimals);
-      } 
-        return amount.replace(/^,/, '');
-      
-    
+    }
+    if (amountParseString.match(/[1-9]+?/)) {
+      const decimals = PlatformHelper.countDecimals(amountInt);
+      return numberFormat(amountInt, decimals);
+    }
+    return amount.replace(/^,/, '');
   }
   static validateOnKeyPress(e) {
     if (e && e.key && !e.key.match(/[0-9]/) && e.key.length === 1) {
@@ -486,9 +481,8 @@ export class PlatformHelper {
       parseFloat(input.value) < rangeMax
     ) {
       return true;
-    } 
-      return false;
-    
+    }
+    return false;
   }
   static countDecimals(value) {
     if (Math.floor(value) === value) return 0;
@@ -506,11 +500,11 @@ export const mutateObject = wobjects =>
       author_permlink: wobj.id,
     }));
 
-export const getOS = () =>{
-  let OSName="Unknown OS";
-  if (navigator.appVersion.indexOf("Win")!==-1) OSName="Windows";
-  if (navigator.appVersion.indexOf("Mac")!==-1) OSName="MacOS";
-  if (navigator.appVersion.indexOf("X11")!==-1) OSName="UNIX";
-  if (navigator.appVersion.indexOf("Linux")!==-1) OSName="Linux";
-  return OSName
-}
+export const getOS = () => {
+  let OSName = 'Unknown OS';
+  if (navigator.appVersion.indexOf('Win') !== -1) OSName = 'Windows';
+  if (navigator.appVersion.indexOf('Mac') !== -1) OSName = 'MacOS';
+  if (navigator.appVersion.indexOf('X11') !== -1) OSName = 'UNIX';
+  if (navigator.appVersion.indexOf('Linux') !== -1) OSName = 'Linux';
+  return OSName;
+};

@@ -4,13 +4,15 @@
 .BBackTop {
   position: fixed;
   width: 100%;
-  height: 0px;
+  height: 0;
   bottom: 60px;
   right: 20px;
   z-index: @backtop-z-index;
 
   .BBackTop__container {
     position: relative;
+    display: flex;
+    justify-content: flex-end;
     margin: 0 auto;
     max-width: @container-width;
     @media @large {
@@ -41,4 +43,11 @@
       }
     }
   }
+  &__chat-button {
+    margin-right: 5px;
+  }
+}
+.BBackTop__chat-button > .ant-btn-circle {
+  width: 40px;
+  height: 40px;
 }

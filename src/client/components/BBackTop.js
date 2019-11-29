@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { BackTop } from 'antd';
 import classNames from 'classnames';
+import './Chat/Chat';
 import './BBackTop.less';
 
 export default function BBackTop({ className, isModal, ...otherProps }) {
