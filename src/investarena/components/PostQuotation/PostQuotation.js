@@ -1,12 +1,12 @@
-import {injectIntl} from 'react-intl';
+import { injectIntl } from 'react-intl';
 import React from 'react';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import quoteData from '../../default/quoteData';
-import {quoteFormat} from '../../platform/parsingPrice';
+import { quoteFormat } from '../../platform/parsingPrice';
 import quoteSettingsData from '../../default/quoteSettingsData';
 import withTrade from '../HOC/withTrade';
-import {currencyFormat} from '../../platform/numberFormat';
+import { currencyFormat } from '../../platform/numberFormat';
 import './PostQuotation.less';
 
 const propTypes = {
@@ -34,20 +34,20 @@ const defaultProps = {
 };
 
 const PostQuotation = ({
-                         quote,
-                         quoteSettings,
-                         margin,
-                         amount,
-                         toggleConfirmationModal,
-                         handleClickOpenDeal,
-                         handleClickLess,
-                         handleClickMore,
-                         handleBlurInput,
-                         handleChangeInput,
-                         handleKeyPressInput,
-                         caller,
-                         intl,
-                       }) => {
+  quote,
+  quoteSettings,
+  margin,
+  amount,
+  toggleConfirmationModal,
+  handleClickOpenDeal,
+  handleClickLess,
+  handleClickMore,
+  handleBlurInput,
+  handleChangeInput,
+  handleKeyPressInput,
+  caller,
+  intl,
+}) => {
   const wobj = quoteSettings.wobjData ? quoteSettings.wobjData : {};
   const dailyChange = `${quote.dailyChange.toFixed(2)}%`;
   const classOfDailyChange = quote.dailyChange > 0 ? 'st-quote-text-up' : 'st-quote-text-down';
@@ -96,7 +96,7 @@ const PostQuotation = ({
             </div>
             <div className="d-flex justify-content-between st-margin-bottom-small">
               <span>
-                {intl.formatMessage({id: 'postQuotation.margin', defaultMessage: 'Margin'})}
+                {intl.formatMessage({ id: 'postQuotation.margin', defaultMessage: 'Margin' })}
               </span>
               {currencyFormat(margin)}
             </div>
@@ -122,11 +122,11 @@ const PostQuotation = ({
                 role="presentation"
                 className={`st-post-action-block st-margin-right-small st-quote-${
                   quote.state ? quote.state : 'not-update'
-                  }`}
+                }`}
                 onClick={handleOpenDeal.bind(this, 'Sell', caller)}
               >
                 <span className="st-post-action-span">
-                  {intl.formatMessage({id: 'postQuotation.button.sell', defaultMessage: 'Sell'})}
+                  {intl.formatMessage({ id: 'postQuotation.button.sell', defaultMessage: 'Sell' })}
                 </span>
                 <div>{quoteFormat(quote.bidPrice, quoteSettings)}</div>
               </div>
@@ -134,11 +134,11 @@ const PostQuotation = ({
                 role="presentation"
                 className={`st-post-action-block st-quote-${
                   quote.state ? quote.state : 'not-update'
-                  }`}
+                }`}
                 onClick={handleOpenDeal.bind(this, 'Buy', caller)}
               >
                 <span className="st-post-action-span">
-                  {intl.formatMessage({id: 'postQuotation.button.buy', defaultMessage: 'Buy'})}
+                  {intl.formatMessage({ id: 'postQuotation.button.buy', defaultMessage: 'Buy' })}
                 </span>
                 <div>{quoteFormat(quote.askPrice, quoteSettings)}</div>
               </div>

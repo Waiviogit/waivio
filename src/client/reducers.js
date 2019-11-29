@@ -31,6 +31,7 @@ import objectTypeReducer, * as fromObjectType from '../client/objectTypes/object
 import appendReducer, * as fromAppend from '../client/object/appendReducer';
 import galleryReducer, * as fromGallery from '../client/object/ObjectGallery/galleryReducer';
 import mapReducer, * as fromMap from '../client/components/Maps/mapReducer';
+import chatReducer, * as fromChat from '../client/components/Chat/chatReducer';
 
 export default history =>
   combineReducers({
@@ -64,6 +65,7 @@ export default history =>
     topPerformers: topPerformersReducer,
     forecasts: forecastReducer,
     map: mapReducer,
+    chat: chatReducer,
   });
 
 export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);
@@ -135,6 +137,11 @@ export const getFetchFollowListError = state => fromUser.getFetchFollowListError
 export const getLatestNotification = state => fromUser.getLatestNotification(state.user);
 export const getUserLocation = state => fromUser.getUserLocation(state.user);
 export const getAccuracyChartLoaded = state => fromUser.getAccuracyChartLoaded(state.user);
+export const getChatCondition = state => fromUser.getChatCondition(state.user);
+export const getChatConnectionCondition = state => fromUser.getChatConnectionCondition(state.user);
+
+export const getPostMessageType = state => fromChat.getPostMessageType(state.chat);
+export const getPostMessageData = state => fromChat.getPostMessageData(state.chat);
 
 export const getUser = (state, username) => fromUsers.getUser(state.users, username);
 export const getIsUserFetching = (state, username) =>

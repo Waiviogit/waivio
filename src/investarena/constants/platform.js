@@ -17,6 +17,5 @@ export const CALLERS = {
   'od-pm': 'Open deal from post modal',
   'od-dp': 'OpenDeal from Discover Page',
   'od-pc': 'Open deal from post card',
-  'cd-dp': 'Close deal from Deals Page'
+  'cd-dp': 'Close deal from Deals Page',
 };
-

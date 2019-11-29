@@ -18,7 +18,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(InstrumentContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(InstrumentContainer);

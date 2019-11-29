@@ -43,6 +43,12 @@ export const getRecommendedObj = () => dispatch =>
     },
   });
 
+export const CHANGE_CHAT_CONDITION = '@user/CHANGE_CHAT_CONDITION';
+export const changeChatCondition = () => dispatch =>
+  dispatch({
+    type: CHANGE_CHAT_CONDITION,
+  });
+
 export const UNFOLLOW_USER = '@user/UNFOLLOW_USER';
 export const UNFOLLOW_USER_START = '@user/UNFOLLOW_USER_START';
 export const UNFOLLOW_USER_SUCCESS = '@user/UNFOLLOW_USER_SUCCESS';

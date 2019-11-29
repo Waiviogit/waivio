@@ -119,6 +119,7 @@ class Topnav extends React.Component {
     searchByObject: PropTypes.arrayOf(PropTypes.shape()),
     searchByUser: PropTypes.arrayOf(PropTypes.shape()),
     searchByObjectType: PropTypes.arrayOf(PropTypes.shape()),
+    openChat: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -942,6 +943,7 @@ class Topnav extends React.Component {
       platformName,
       isLoadingPlatform,
       isNightMode,
+      openChat,
     } = this.props;
     const { searchBarActive, isModalDeposit, dropdownOpen, popoverBrokerVisible } = this.state;
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
@@ -1043,7 +1045,7 @@ class Topnav extends React.Component {
             </button>
             {this.props.username && (
               <div className="Topnav__chat" key="more">
-                <Icon type="message" className="icon-chat" />
+                <Icon type="message" className="icon-chat" onClick={openChat} />
               </div>
             )}
           </div>

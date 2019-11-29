@@ -45,7 +45,8 @@ const withTrade = Component => {
           this.state.amount === '' ||
           this.state.margin === '' ||
           this.state.margin === '---' ||
-          (!this.props.quote || !this.props.quoteSettings)
+          !this.props.quote ||
+          !this.props.quoteSettings
         ) {
           const amountValue = nexProps.quoteSettings.defaultQuantity / 1000000;
           const amount =
@@ -150,7 +151,7 @@ const withTrade = Component => {
               margin,
               postId,
               platformName,
-              caller
+              caller,
             }),
           );
         } else if (!isSignIn) {
@@ -175,7 +176,7 @@ const withTrade = Component => {
               margin,
               postId,
               platformName,
-              caller
+              caller,
             ),
           );
         } else if (
@@ -195,18 +196,14 @@ const withTrade = Component => {
               margin,
               postId,
               platformName,
-              caller
+              caller,
             ),
           );
         }
       },
     };
   }
-  return connect(
-    mapState,
-    null,
-    mergeProps,
-  )(WithTrade);
+  return connect(mapState, null, mergeProps)(WithTrade);
 };
 
 export default withTrade;
