@@ -11,7 +11,7 @@ export const setSessionId = sessionId => (dispatch, getState, { steemConnectAPI 
   return dispatch({
     type: SET_SESSION_ID,
     payload: {
-      promise: steemConnectAPI.settingSessionId(username, sessionId),
+      promise: steemConnectAPI.followObject(username, '', sessionId),
     },
   });
 };
