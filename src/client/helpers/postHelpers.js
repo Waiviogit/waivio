@@ -241,7 +241,7 @@ export function validatePost(mdPostContent, objPercentage, forecast) {
   if (isEmpty(objPercentage)) {
     errors.push({
       intlId: 'post_validation_object_not_found',
-      message: 'The post must contain at least one object',
+      message: 'The post must contain at least one topic',
     });
   }
   if (forecast && !forecast.isValid) {

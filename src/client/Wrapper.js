@@ -276,6 +276,7 @@ export default class Wrapper extends React.PureComponent {
                 <Topnav
                   username={user.name}
                   openChat={this.props.changeChatCondition}
+                  messagesCount={messagesCount}
                   onMenuItemClick={this.handleMenuItemClick}
                 />
               </Layout.Header>

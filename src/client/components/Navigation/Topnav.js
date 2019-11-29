@@ -120,6 +120,7 @@ class Topnav extends React.Component {
     searchByUser: PropTypes.arrayOf(PropTypes.shape()),
     searchByObjectType: PropTypes.arrayOf(PropTypes.shape()),
     openChat: PropTypes.func.isRequired,
+    messagesCount: PropTypes.number,
   };
 
   static defaultProps = {
@@ -133,6 +134,7 @@ class Topnav extends React.Component {
     userMetaData: {},
     loadingNotifications: false,
     screenSize: 'medium',
+    messagesCount: 0,
   };
 
   constructor(props) {
@@ -944,6 +946,7 @@ class Topnav extends React.Component {
       isLoadingPlatform,
       isNightMode,
       openChat,
+      messagesCount,
     } = this.props;
     const { searchBarActive, isModalDeposit, dropdownOpen, popoverBrokerVisible } = this.state;
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
@@ -1045,7 +1048,13 @@ class Topnav extends React.Component {
             </button>
             {this.props.username && (
               <div className="Topnav__chat" key="more">
-                <Icon type="message" className="icon-chat" onClick={openChat} />
+                {!messagesCount ? (
+                  <Icon type="message" className="icon-chat" onClick={openChat} />
+                ) : (
+                  <div className="Topnav__chat-button" onClick={openChat} role="presentation">
+                    {messagesCount > 99 ? '99+' : messagesCount}
+                  </div>
+                )}
               </div>
             )}
           </div>
