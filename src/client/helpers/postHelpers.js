@@ -229,3 +229,26 @@ export function isContentValid(markdownContent) {
   const { postTitle, postBody } = splitPostContent(markdownContent);
   return Boolean(postTitle && postBody.trim());
 }
+
+export function validatePost(mdPostContent, objPercentage, forecast) {
+  const errors = [];
+  if (!(mdPostContent && isContentValid(mdPostContent))) {
+    errors.push({
+      intlId: 'post_validation_incomplete_content',
+      message: 'The post should contain the title and content',
+    });
+  }
+  if (isEmpty(objPercentage)) {
+    errors.push({
+      intlId: 'post_validation_object_not_found',
+      message: 'The post must contain at least one object',
+    });
+  }
+  if (forecast && !forecast.isValid) {
+    errors.push({
+      intlId: 'post_validation_invalid_forecast',
+      message: 'Fill in the required fields',
+    });
+  }
+  return { errors, hasError: Boolean(errors.length) };
+}

@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Button, Modal } from 'antd';
-import { throttle, isEmpty } from 'lodash';
+import { throttle, isEqual, isEmpty } from 'lodash';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import TagsSelector from '../../components/TagsSelector/TagsSelector';
 import PolicyConfirmation from '../../components/PolicyConfirmation/PolicyConfirmation';
 import AdvanceSettings from './AdvanceSettings';
 import CheckReviewModal from '../CheckReviewModal/CheckReviewModal';
-import { isContentValid, splitPostContent } from '../../helpers/postHelpers';
+import { splitPostContent, validatePost } from '../../helpers/postHelpers';
 import { handleWeightChange, setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import { rewardsValues } from '../../../common/constants/rewards';
 import BBackTop from '../../components/BBackTop';
@@ -21,6 +21,10 @@ const isTopicValid = topic => /^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$/.test(topic);
 
 @injectIntl
 class PostPreviewModal extends Component {
+  static findScrollElement() {
+    return document.querySelector('.post-preview-modal');
+  }
+
   static propTypes = {
     intl: PropTypes.shape(),
     isPublishing: PropTypes.bool,
@@ -40,6 +44,7 @@ class PostPreviewModal extends Component {
     }),
     isUpdating: PropTypes.bool,
     objPercentage: PropTypes.shape(),
+    isPreview: PropTypes.bool,
     onTopicsChange: PropTypes.func.isRequired,
     onSettingsChange: PropTypes.func.isRequired,
     onPercentChange: PropTypes.func.isRequired,
@@ -56,11 +61,22 @@ class PostPreviewModal extends Component {
     objPercentage: {},
     reviewData: null,
     isUpdating: false,
+    isPreview: false,
     onReadyBtnClick: () => {},
   };
 
-  static findScrollElement() {
-    return document.querySelector('.post-preview-modal');
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.isPreview) {
+      const { errors } = validatePost(
+        nextProps.content,
+        nextProps.objPercentage,
+        nextProps.forecastValues,
+      );
+      if (!isEqual(prevState.postValidationErrors, errors)) {
+        return { postValidationErrors: errors };
+      }
+    }
+    return null;
   }
 
   constructor(props) {
@@ -70,6 +86,7 @@ class PostPreviewModal extends Component {
       isModalOpen: false,
       title: '',
       body: '',
+      postValidationErrors: [],
       objPercentage: setObjPercents(props.linkedObjects, props.objPercentage),
       weightBuffer: 0,
       isConfirmed: false,
@@ -80,15 +97,30 @@ class PostPreviewModal extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    const { isModalOpen, postValidationErrors } = this.state;
     return (
+      isModalOpen ||
       nextState.isModalOpen ||
-      this.state.isModalOpen ||
-      isContentValid(this.props.content) !== isContentValid(nextProps.content)
+      !isEqual(
+        postValidationErrors,
+        validatePost(nextProps.content, nextProps.objPercentage, nextProps.forecastValues).errors,
+      )
     );
   }
 
   onUpdate = () => {
     throttle(this.throttledUpdate, 200, { leading: false, trailing: true })();
+  };
+
+  getPostErrors = () => {
+    const { content, forecastValues, objPercentage } = this.props;
+    this.props.onReadyBtnClick(true);
+    const { hasError, errors } = validatePost(content, objPercentage, forecastValues);
+    if (hasError) {
+      this.setState({ postValidationErrors: errors });
+    } else {
+      this.setState({ postValidationErrors: [] }, this.showModal);
+    }
   };
 
   throttledUpdate = () => {
@@ -105,19 +137,15 @@ class PostPreviewModal extends Component {
   };
 
   showModal = () => {
-    const { forecastValues } = this.props;
-    this.props.onReadyBtnClick(true);
-    if (forecastValues && forecastValues.isValid) {
-      const { postTitle, postBody } = splitPostContent(this.props.content);
-      const objPercentage = setObjPercents(this.props.linkedObjects, this.props.objPercentage);
-      this.setState({
-        isModalOpen: true,
-        title: postTitle,
-        body: postBody,
-        weightBuffer: 0,
-        objPercentage,
-      });
-    }
+    const { postTitle, postBody } = splitPostContent(this.props.content);
+    const objPercentage = setObjPercents(this.props.linkedObjects, this.props.objPercentage);
+    this.setState({
+      isModalOpen: true,
+      title: postTitle,
+      body: postBody,
+      weightBuffer: 0,
+      objPercentage,
+    });
   };
 
   hideModal = () => {
@@ -156,11 +184,18 @@ class PostPreviewModal extends Component {
   };
 
   render() {
-    const { isModalOpen, isConfirmed, body, title, weightBuffer, objPercentage } = this.state;
+    const {
+      body,
+      isConfirmed,
+      isModalOpen,
+      objPercentage,
+      postValidationErrors,
+      title,
+      weightBuffer,
+    } = this.state;
     const {
       intl,
       isPublishing,
-      content,
       topics,
       linkedObjects,
       reviewData,
@@ -275,10 +310,16 @@ class PostPreviewModal extends Component {
           />
         )}
         <div className="edit-post-controls">
+          {!isEmpty(postValidationErrors) &&
+            postValidationErrors.map(err => (
+              <div className="edit-post-controls__err-msg">
+                {intl.formatMessage({ id: err.intlId, defaultMessage: err.message })}
+              </div>
+            ))}
           <Button
             htmlType="button"
-            disabled={!content || !isContentValid(content)}
-            onClick={this.showModal}
+            disabled={Boolean(this.state.postValidationErrors.length)}
+            onClick={this.getPostErrors}
             size="large"
             className="edit-post-controls__publish-ready-btn"
           >

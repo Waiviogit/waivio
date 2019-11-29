@@ -173,7 +173,7 @@ class ObjectProfile extends React.Component {
                 expForecast={null}
                 isObjectProfile
               />
-              <PostQuotation quoteSecurity={object.chartid} />
+              <PostQuotation quoteSecurity={object.chartid} caller='od-op'/>
             </div>
           )}
           {isAuthenticated && (

@@ -54,7 +54,7 @@ class Instrument extends Component {
   };
   toggleModalInstrumentsChart = () => {
     const { quote, quoteSettings, platformName, toggleModal } = this.props;
-    toggleModal('openDeals', { quote, quoteSettings, platformName });
+    toggleModal('openDeals', { quote, quoteSettings, platformName, caller: 'od-op' });
   };
   render() {
     const { intl, quoteSettings, quote, signals, chart } = this.props;

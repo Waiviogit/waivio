@@ -258,3 +258,11 @@ export const inactivateCampaign = (company, inactivatePermlink) => (
       .catch(error => reject(error));
   });
 };
+
+export const SET_ACCURACY_CHART_LOADED = '@user/SET_ACCURACY_CHART_CONDITION';
+
+export const setAccuracyChartLoaded = () => dispatch =>
+  dispatch({
+    type: SET_ACCURACY_CHART_LOADED,
+    payload: true,
+  });

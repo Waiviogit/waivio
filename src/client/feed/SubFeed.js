@@ -79,9 +79,9 @@ class SubFeed extends React.Component {
       if (fetched) return;
       this.props.getUserFeedContent(user.name);
     } else {
-      const withAppFilter = !localStorage.getItem('isAppFilterOff');
-      const sortBy = withAppFilter ? 'feed' : 'trending';
-      const category = withAppFilter ? 'wia_feed' : 'all';
+      const withAppHomeFilter = !localStorage.getItem('isAppHomeFilterOff');
+      const sortBy = withAppHomeFilter ? 'feed' : 'trending';
+      const category = withAppHomeFilter ? 'wia_feed' : 'all';
       const fetched = getFeedFetchedFromState(sortBy, category, feed);
       if (fetched) return;
       this.props.getFeedContent(sortBy, category);
@@ -111,9 +111,9 @@ class SubFeed extends React.Component {
         this.props.getUserFeedContent(user.name);
       }
     } else if (match.url === '/' && match.url !== this.props.match.url) {
-      const withAppFilter = !localStorage.getItem('isAppFilterOff');
-      const sortBy = withAppFilter ? 'feed' : 'trending';
-      const category = withAppFilter ? 'wia_feed' : 'all';
+      const withAppHomeFilter = !localStorage.getItem('isAppHomeFilterOff');
+      const sortBy = withAppHomeFilter ? 'feed' : 'trending';
+      const category = withAppHomeFilter ? 'wia_feed' : 'all';
       const fetching = getFeedLoadingFromState(sortBy, category, feed);
       if (!fetching) {
         this.props.getFeedContent(sortBy, category);
@@ -147,10 +147,11 @@ class SubFeed extends React.Component {
       failed = getUserFeedFailedFromState(user.name, feed);
       loadMoreContent = () => this.props.getMoreUserFeedContent(user.name);
     } else {
-      const withAppFilter = !localStorage.getItem('isAppFilterOff');
+      const withAppHomeFilter =
+        typeof window !== 'undefined' ? !localStorage.getItem('isAppHomeFilterOff') : true;
 
-      const sortBy = withAppFilter ? 'feed' : 'trending';
-      const category = withAppFilter ? 'wia_feed' : 'all';
+      const sortBy = withAppHomeFilter ? 'feed' : 'trending';
+      const category = withAppHomeFilter ? 'wia_feed' : 'all';
       hasMore = getFeedHasMoreFromState(sortBy, category, feed);
 
       content = getFeedFromState(sortBy, category, feed);
@@ -162,7 +163,6 @@ class SubFeed extends React.Component {
 
     const empty = _.isEmpty(content);
     const displayEmptyFeed = empty && fetched && loaded && !isFetching && !failed;
-
     const ready = loaded && fetched && !isFetching;
 
     return (

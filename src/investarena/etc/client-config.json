@@ -1,5 +1,7 @@
 {
-  "appVersion": "ST Investarena v.1.0.0",
+  "appVersion": "ST Investarena v.2.0.0",
+  "app": "Investarena.com",
+  "version": "2.0.0",
   "production": {
     "apiPrefix": "https://investarena.com/",
     "brokerWSUrl": {

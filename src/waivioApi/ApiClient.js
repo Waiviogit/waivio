@@ -17,8 +17,8 @@ const headers = {
 
 const getFilterKey = () => {
   if (localStorage) {
-    const isAppFilterOff = localStorage.getItem('isAppFilterOff');
-    return isAppFilterOff ? '' : filterKey;
+    const isAppMyFeedFilterOn = !localStorage.getItem('isAppMyFeedFilterOn');
+    return isAppMyFeedFilterOn ? '' : filterKey;
   }
   return filterKey;
 };

@@ -871,7 +871,7 @@ export default class AppendForm extends Component {
               rules: this.getFieldRules(objectFields.workTime),
             })(
               <Input.TextArea
-                autosize={{ minRows: 4, maxRows: 8 }}
+                autoSize={{ minRows: 4, maxRows: 8 }}
                 className={classNames('AppendForm__input', {
                   'validation-error': !this.state.isSomeValue,
                 })}
@@ -896,7 +896,7 @@ export default class AppendForm extends Component {
                   'validation-error': !this.state.isSomeValue,
                 })}
                 disabled={loading}
-                autosize={{ minRows: 4, maxRows: 8 }}
+                autoSize={{ minRows: 4, maxRows: 8 }}
                 placeholder={intl.formatMessage({
                   id: 'price_field',
                   defaultMessage: 'Price',
@@ -917,7 +917,7 @@ export default class AppendForm extends Component {
                   'validation-error': !this.state.isSomeValue,
                 })}
                 disabled={loading}
-                autosize={{ minRows: 4, maxRows: 8 }}
+                autoSize={{ minRows: 4, maxRows: 8 }}
                 placeholder={intl.formatMessage({
                   id: 'description_full',
                   defaultMessage: 'Full description',

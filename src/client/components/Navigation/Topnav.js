@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { AutoComplete, Button, Icon, Input, Menu, Modal, Popover } from 'antd';
+import { AutoComplete, Button, Icon, Input, Menu, Modal } from 'antd';
 import classNames from 'classnames';
 import {
   resetSearchAutoCompete,
@@ -81,6 +81,12 @@ import './Topnav.less';
   },
 )
 class Topnav extends React.Component {
+  static handleScrollToTop() {
+    if (window) {
+      window.scrollTo(0, 0);
+    }
+  }
+
   static propTypes = {
     /* from decorators */
     intl: PropTypes.shape().isRequired,
@@ -128,19 +134,6 @@ class Topnav extends React.Component {
     screenSize: 'medium',
   };
 
-  static handleScrollToTop() {
-    if (window) {
-      window.scrollTo(0, 0);
-    }
-  }
-
-  static markers = {
-    USER: 'user',
-    WOBJ: 'wobj',
-    TYPE: 'type',
-    SELECT_BAR: 'searchSelectBar',
-  };
-
   constructor(props) {
     super(props);
 
@@ -160,6 +153,8 @@ class Topnav extends React.Component {
       selectColor: false,
       dailyChosenPost: '',
       weeklyChosenPost: '',
+      scrolling: false,
+      visible: false,
     };
     this.handleMoreMenuSelect = this.handleMoreMenuSelect.bind(this);
     this.handleBrokerMenuSelect = this.handleBrokerMenuSelect.bind(this);
@@ -178,6 +173,13 @@ class Topnav extends React.Component {
     this.handleClickMenu = this.handleClickMenu.bind(this);
   }
 
+  componentDidMount() {
+    if (window && window.screen.width < 768) {
+      window.addEventListener('scroll', this.handleScroll);
+      this.prevScrollpos = window.pageYOffset;
+    }
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (
       prevState.searchBarValue !== this.state.searchBarValue &&
@@ -190,6 +192,9 @@ class Topnav extends React.Component {
 
   componentWillUnmount() {
     this.setState({ popoverBrokerVisible: false });
+    if (window) {
+      window.removeEventListener('scroll', this.handleScroll);
+    }
   }
 
   getTranformSearchCountData = searchResults => {
@@ -215,6 +220,13 @@ class Topnav extends React.Component {
       countArr.push({ name: 'Users', count: usersCount, type: 'user' });
     }
     return countArr;
+  };
+
+  static markers = {
+    USER: 'user',
+    WOBJ: 'wobj',
+    TYPE: 'type',
+    SELECT_BAR: 'searchSelectBar',
   };
 
   handleMoreMenuSelect(key) {
@@ -299,6 +311,17 @@ class Topnav extends React.Component {
 
   handleClickMenu = e => this.setState({ selectedPage: e.key });
 
+  handleScroll = () => {
+    const currentScrollPos = window && window.pageYOffset;
+    const visible = this.prevScrollpos < currentScrollPos;
+
+    this.prevScrollpos = currentScrollPos;
+
+    if (this.state.visible !== visible) {
+      this.setState({ visible });
+    }
+  };
+
   menuForLoggedOut = () => {
     const { location, intl } = this.props;
     const { searchBarActive } = this.state;
@@ -306,23 +329,27 @@ class Topnav extends React.Component {
 
     return (
       <div
-        className={classNames('Topnav__menu-container Topnav__menu-logged-out', {
+        className={classNames('Topnav__menu-container Topnav__menu-logedout', {
           'Topnav__mobile-hidden': searchBarActive,
         })}
       >
-        <Menu className="Topnav__menu-container__menu" mode="horizontal">
-          <Menu.Item key="signup">
+        <Menu className="Topnav__menu" mode="horizontal">
+          <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="signup">
             <ModalSignUp isButton={false} intl={intl} />
           </Menu.Item>
-          <Menu.Item key="divider" disabled>
+          <Menu.Item
+            className="Topnav__menu-item Topnav__menu-item--logedout"
+            key="divider"
+            disabled
+          >
             |
           </Menu.Item>
-          <Menu.Item key="login">
+          <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="login">
             <a href={SteemConnect.getLoginURL(next)}>
               <FormattedMessage id="login" defaultMessage="Log in" />
             </a>
           </Menu.Item>
-          <Menu.Item key="language">
+          <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="language">
             <LanguageSettings />
           </Menu.Item>
         </Menu>
@@ -330,16 +357,132 @@ class Topnav extends React.Component {
     );
   };
 
+  burgerMenu = logStatus => {
+    const isLoggedOut = logStatus === 'loggedOut';
+    return (
+      <PopoverContainer
+        placement="bottom"
+        trigger="click"
+        visible={this.state.burgerMenuVisible}
+        onVisibleChange={this.handleBurgerMenuVisibleChange}
+        overlayStyle={{ position: 'fixed' }}
+        content={
+          <PopoverMenu onSelect={this.handleBurgerMenuSelect}>
+            <PopoverMenuItem key="myFeed" fullScreenHidden hideItem={isLoggedOut}>
+              <FormattedMessage id="my_feed" defaultMessage="My feed" />
+            </PopoverMenuItem>
+            <PopoverMenuItem key="discover-objects" fullScreenHidden>
+              <FormattedMessage id="discover" defaultMessage="Discover" />
+            </PopoverMenuItem>
+            <PopoverMenuItem key="activity" mobileScreenHidden>
+              <FormattedMessage id="activity" defaultMessage="Activity" />
+            </PopoverMenuItem>
+            <PopoverMenuItem key="bookmarks" mobileScreenHidden>
+              <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" />
+            </PopoverMenuItem>
+            <PopoverMenuItem key="drafts" mobileScreenHidden>
+              <FormattedMessage id="drafts" defaultMessage="Drafts" />
+            </PopoverMenuItem>
+            <PopoverMenuItem key="settings" mobileScreenHidden>
+              <FormattedMessage id="settings" defaultMessage="Settings" />
+            </PopoverMenuItem>
+            <PopoverMenuItem key="replies" fullScreenHidden>
+              <FormattedMessage id="replies" defaultMessage="Replies" />
+            </PopoverMenuItem>
+            <PopoverMenuItem key="wallet">
+              <FormattedMessage id="wallet" defaultMessage="Wallet" />
+            </PopoverMenuItem>
+            <PopoverMenuItem key="activity">
+              <FormattedMessage id="activity" defaultMessage="Activity" />
+            </PopoverMenuItem>
+            <PopoverMenuItem key="bookmarks">
+              <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" />
+            </PopoverMenuItem>
+            <PopoverMenuItem key="drafts">
+              <FormattedMessage id="drafts" defaultMessage="Drafts" />
+            </PopoverMenuItem>
+            <PopoverMenuItem key="settings">
+              <FormattedMessage id="settings" defaultMessage="Settings" />
+            </PopoverMenuItem>
+            <PopoverMenuItem key="about" fullScreenHidden>
+              <FormattedMessage id="about" defaultMessage="About" />
+            </PopoverMenuItem>
+            <PopoverMenuItem key="logout">
+              <FormattedMessage id="logout" defaultMessage="Logout" />
+            </PopoverMenuItem>
+          </PopoverMenu>
+        }
+      >
+        <a className="Topnav__link Topnav__link--menu">
+          <Icon type="menu" className="iconfont icon-menu" />
+        </a>
+      </PopoverContainer>
+    );
+  };
+
+  hotNews = () => {
+    const { intl } = this.props;
+    const { hotNewsPopoverVisible, dailyChosenPost, weeklyChosenPost } = this.state;
+    return (
+      <BTooltip
+        placement="bottom"
+        title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
+        mouseEnterDelay={1}
+      >
+        <PopoverContainer
+          placement="bottomRight"
+          trigger="click"
+          content={
+            <div className="Topnav__hot-news">
+              {!_.isEmpty(dailyChosenPost) && (
+                <Link
+                  to={`/@${dailyChosenPost.author}/${dailyChosenPost.permlink}`}
+                  className="Topnav__hot-news-item"
+                  onClick={this.handleHotNewsPopoverVisibleChange}
+                >
+                  {dailyChosenPost.title}
+                </Link>
+              )}
+              {!_.isEmpty(weeklyChosenPost) && (
+                <Link
+                  to={`/@${weeklyChosenPost.author}/${weeklyChosenPost.permlink}`}
+                  className="Topnav__hot-news-item"
+                  onClick={this.handleHotNewsPopoverVisibleChange}
+                >
+                  {weeklyChosenPost.title}
+                </Link>
+              )}
+              <Link
+                to="/economical-calendar"
+                className="Topnav__hot-news-item"
+                onClick={this.handleHotNewsPopoverVisibleChange}
+              >
+                Economical calendar
+              </Link>
+            </div>
+          }
+          visible={hotNewsPopoverVisible}
+          onVisibleChange={this.handleHotNewsPopoverVisibleChange}
+          overlayClassName="Notifications__popover-overlay"
+          title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
+        >
+          <Icon type="fire" className="iconfont fire-icon" />
+        </PopoverContainer>
+      </BTooltip>
+    );
+  };
+
   menuForLoggedIn = () => {
-    const { intl, username, notifications, userMetaData, loadingNotifications, screenSize, platformName, isLoadingPlatform } = this.props;
     const {
-      searchBarActive,
-      notificationsPopoverVisible,
-      popoverProfileVisible,
-      burgerMenuVisible,
-      hotNewsPopoverVisible,
-      popoverBrokerVisible,
-    } = this.state;
+      intl,
+      username,
+      notifications,
+      userMetaData,
+      loadingNotifications,
+      platformName,
+      isLoadingPlatform,
+    } = this.props;
+    const { searchBarActive, notificationsPopoverVisible, popoverBrokerVisible } = this.state;
     const lastSeenTimestamp = _.get(userMetaData, 'notifications_last_timestamp');
     const notificationsCount = _.isUndefined(lastSeenTimestamp)
       ? _.size(notifications)
@@ -351,11 +494,8 @@ class Topnav extends React.Component {
               _.includes(PARSED_NOTIFICATIONS, notification.type),
           ),
         );
-    const isMobile = screenSize === 'xsmall' || screenSize === 'small';
     const displayBadge = notificationsCount > 0;
     const notificationsCountDisplay = notificationsCount > 99 ? '99+' : notificationsCount;
-
-    const { dailyChosenPost, weeklyChosenPost } = this.state;
     return (
       <div
         className={classNames('Topnav__menu-container', {
@@ -363,56 +503,71 @@ class Topnav extends React.Component {
         })}
       >
         <ModalBroker />
-        <Menu selectedKeys={[]} className="Topnav__menu-container__menu" mode="horizontal">
-          <Menu.Item key="hot">
-            <BTooltip
-              placement="bottom"
-              title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
-              mouseEnterDelay={1}
-            >
-              <PopoverContainer
-                placement="bottomRight"
-                trigger="click"
-                content={
-                  <div className="Topnav__hot-news">
-                    {!_.isEmpty(dailyChosenPost) && (
-                      <Link
-                        to={`/@${dailyChosenPost.author}/${dailyChosenPost.permlink}`}
-                        className="Topnav__hot-news-item"
-                        onClick={this.handleHotNewsPopoverVisibleChange}
-                      >
-                        {dailyChosenPost.title}
-                      </Link>
-                    )}
-                    {!_.isEmpty(weeklyChosenPost) && (
-                      <Link
-                        to={`/@${weeklyChosenPost.author}/${weeklyChosenPost.permlink}`}
-                        className="Topnav__hot-news-item"
-                        onClick={this.handleHotNewsPopoverVisibleChange}
-                      >
-                        {weeklyChosenPost.title}
-                      </Link>
-                    )}
-                    <Link
-                      to="/economical-calendar"
-                      className="Topnav__hot-news-item"
-                      onClick={this.handleHotNewsPopoverVisibleChange}
-                    >
-                      Economical calendar
-                    </Link>
-                  </div>
-                }
-                visible={hotNewsPopoverVisible}
-                onVisibleChange={this.handleHotNewsPopoverVisibleChange}
-                overlayClassName="Notifications__popover-overlay"
-                title={intl.formatMessage({ id: 'hot_news', defaultMessage: 'Hot news' })}
-              >
-                {!isMobile && <Icon type="fire" className="Topnav__fire-icon" />}
-              </PopoverContainer>
-            </BTooltip>
+        <Menu selectedKeys={[]} className="Topnav__menu" mode="horizontal">
+          <Menu.Item className="Topnav__menu-item Topnav__menu-item--broker" key="broker">
+            <React.Fragment>
+              {platformName !== 'widgets' && !isLoadingPlatform ? (
+                <PopoverContainer
+                  placement="bottom"
+                  trigger="click"
+                  visible={popoverBrokerVisible}
+                  onVisibleChange={this.handleOnClickBrokerIcon}
+                  overlayStyle={{ position: 'fixed' }}
+                  content={
+                    <div>
+                      <PopoverMenu onSelect={this.handleBrokerMenuSelect}>
+                        <PopoverMenuItem key="deposit">
+                          <FormattedMessage
+                            id="headerAuthorized.deposit"
+                            defaultMessage="Deposit"
+                          />
+                        </PopoverMenuItem>
+                        <PopoverMenuItem key="openDeals">
+                          <FormattedMessage
+                            id="headerAuthorized.openDeals"
+                            defaultMessage="Open deals"
+                          />
+                        </PopoverMenuItem>
+                        <PopoverMenuItem key="closedDeals">
+                          <FormattedMessage
+                            id="headerAuthorized.closedDeals"
+                            defaultMessage="Closed deals"
+                          />
+                        </PopoverMenuItem>
+                        <PopoverMenuItem key="broker-disconnect">
+                          <FormattedMessage
+                            id="disconnect_broker"
+                            defaultMessage="Disconnect Broker"
+                          />
+                        </PopoverMenuItem>
+                      </PopoverMenu>
+                    </div>
+                  }
+                >
+                  <img
+                    className="Topnav__icon-broker"
+                    role="presentation"
+                    title={platformName}
+                    src={`/images/investarena/${platformName}.png`}
+                    alt="broker"
+                  />
+                </PopoverContainer>
+              ) : (
+                <div
+                  className="Topnav__item-broker"
+                  onClick={this.handleOnClickBrokerIcon}
+                  role="presentation"
+                >
+                  <img src="/images/icons/broker.svg" alt="broker" />
+                </div>
+              )}
+            </React.Fragment>
           </Menu.Item>
 
-          <Menu.Item key="write">
+          <Menu.Item className="Topnav__menu-item" key="hot">
+            {this.hotNews()}
+          </Menu.Item>
+          <Menu.Item className="Topnav__menu-item" key="write">
             <BTooltip
               placement="bottom"
               title={intl.formatMessage({ id: 'write_post', defaultMessage: 'Write post' })}
@@ -423,68 +578,8 @@ class Topnav extends React.Component {
               </Link>
             </BTooltip>
           </Menu.Item>
-          <Menu.Item key="broker">
-            {isMobile && (
-              <React.Fragment>
-                {platformName !== 'widgets' && !isLoadingPlatform ? (
-                  <PopoverContainer
-                    placement="bottom"
-                    trigger="click"
-                    visible={popoverBrokerVisible}
-                    onVisibleChange={this.handleOnClickBrokerIcon}
-                    overlayStyle={{ position: 'fixed' }}
-                    content={
-                      <div>
-                        <PopoverMenu onSelect={this.handleBrokerMenuSelect}>
-                          <PopoverMenuItem key="deposit">
-                            <FormattedMessage
-                              id="headerAuthorized.deposit"
-                              defaultMessage="Deposit"
-                            />
-                          </PopoverMenuItem>
-                          <PopoverMenuItem key="openDeals">
-                            <FormattedMessage
-                              id="headerAuthorized.openDeals"
-                              defaultMessage="Open deals"
-                            />
-                          </PopoverMenuItem>
-                          <PopoverMenuItem key="closedDeals">
-                            <FormattedMessage
-                              id="headerAuthorized.closedDeals"
-                              defaultMessage="Closed deals"
-                            />
-                          </PopoverMenuItem>
-                          <PopoverMenuItem key="broker-disconnect">
-                            <FormattedMessage
-                              id="disconnect_broker"
-                              defaultMessage="Disconnect Broker"
-                            />
-                          </PopoverMenuItem>
-                        </PopoverMenu>
-                      </div>
-                    }
-                  >
-                    <img
-                      className="Topnav__icon-broker"
-                      role="presentation"
-                      title={platformName}
-                      src={`/images/investarena/${platformName}.png`}
-                      alt="broker"
-                    />
-                  </PopoverContainer>
-                ) : (
-                  <div
-                    className="Topnav__item-broker"
-                    onClick={this.handleOnClickBrokerIcon}
-                    role="presentation"
-                  >
-                    B
-                  </div>
-                )}
-              </React.Fragment>
-            )}
-          </Menu.Item>
-          <Menu.Item key="notifications" className="Topnav__item--badge">
+
+          <Menu.Item className="Topnav__menu-item" key="notifications">
             <BTooltip
               placement="bottom"
               title={intl.formatMessage({ id: 'notifications', defaultMessage: 'Notifications' })}
@@ -520,107 +615,13 @@ class Topnav extends React.Component {
               </PopoverContainer>
             </BTooltip>
           </Menu.Item>
-          <Menu.Item key="user" className="Topnav__item-user">
-            {!isMobile ? (
-              <Link
-                className="Topnav__user"
-                to={`/@${username}`}
-                onClick={Topnav.handleScrollToTop}
-              >
-                <Avatar username={username} size={36} />
-              </Link>
-            ) : (
-              <PopoverContainer
-                placement="bottom"
-                trigger="click"
-                visible={popoverProfileVisible}
-                onVisibleChange={this.handleProfileMenuVisibleChange}
-                overlayStyle={{ position: 'fixed' }}
-                content={
-                  <PopoverMenu onSelect={this.handleMoreMenuSelect}>
-                    <PopoverMenuItem key="my-profile" fullScreenHidden>
-                      <FormattedMessage id="my_profile" defaultMessage="My profile" />
-                    </PopoverMenuItem>
-                    <PopoverMenuItem key="replies" fullScreenHidden>
-                      <FormattedMessage id="replies" defaultMessage="Replies" />
-                    </PopoverMenuItem>
-                    <PopoverMenuItem key="wallet">
-                      <FormattedMessage id="wallet" defaultMessage="Wallet" />
-                    </PopoverMenuItem>
-                    <PopoverMenuItem key="activity">
-                      <FormattedMessage id="activity" defaultMessage="Activity" />
-                    </PopoverMenuItem>
-                    <PopoverMenuItem key="bookmarks">
-                      <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" />
-                    </PopoverMenuItem>
-                    <PopoverMenuItem key="drafts">
-                      <FormattedMessage id="drafts" defaultMessage="Drafts" />
-                    </PopoverMenuItem>
-                    <PopoverMenuItem key="settings">
-                      <FormattedMessage id="settings" defaultMessage="Settings" />
-                    </PopoverMenuItem>
-                    <PopoverMenuItem key="logout">
-                      <FormattedMessage id="logout" defaultMessage="Logout" />
-                    </PopoverMenuItem>
-                  </PopoverMenu>
-                }
-              >
-                {' '}
-                <a className="Topnav__link">
-                  <Avatar username={username} size={36} />
-                </a>
-              </PopoverContainer>
-            )}
+          <Menu.Item className="Topnav__menu-item" key="user">
+            <Link className="Topnav__user" to={`/@${username}`} onClick={Topnav.handleScrollToTop}>
+              <Avatar username={username} size={36} />
+            </Link>
           </Menu.Item>
-          <Menu.Item key="more" className="Topnav__menu--icon">
-            <PopoverContainer
-              placement="bottom"
-              trigger="click"
-              visible={burgerMenuVisible}
-              onVisibleChange={this.handleBurgerMenuVisibleChange}
-              overlayStyle={{ position: 'fixed' }}
-              content={
-                <PopoverMenu onSelect={this.handleBurgerMenuSelect}>
-                  <PopoverMenuItem key="feed" fullScreenHidden>
-                    <FormattedMessage id="home" defaultMessage="Home" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="myFeed" fullScreenHidden>
-                    <FormattedMessage id="my_feed" defaultMessage="My feed" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="actualNews" fullScreenHidden>
-                    <div onClick={this.handleHotNewsPopoverVisibleChange}>
-                      <FormattedMessage id="actualNews" defaultMessage="Actual news" />
-                    </div>
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="discover-objects" fullScreenHidden>
-                    <FormattedMessage id="discover" defaultMessage="Discover" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="about" fullScreenHidden>
-                    <FormattedMessage id="about" defaultMessage="About" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="activity" mobileScreenHidden>
-                    <FormattedMessage id="activity" defaultMessage="Activity" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="bookmarks" mobileScreenHidden>
-                    <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="drafts" mobileScreenHidden>
-                    <FormattedMessage id="drafts" defaultMessage="Drafts" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="settings" mobileScreenHidden>
-                    <FormattedMessage id="settings" defaultMessage="Settings" />
-                  </PopoverMenuItem>
-                  <PopoverMenuItem key="logout" mobileScreenHidden>
-                    <FormattedMessage id="logout" defaultMessage="Logout" />
-                  </PopoverMenuItem>
-                </PopoverMenu>
-              }
-            >
-              <a className="Topnav__link">
-                <Icon type="caret-down" />
-                <Icon type="bars" />
-              </a>
-            </PopoverContainer>
+          <Menu.Item className="Topnav__menu-item Topnav__menu-item--burger" key="more">
+            {this.burgerMenu()}
           </Menu.Item>
         </Menu>
       </div>
@@ -748,7 +749,7 @@ class Topnav extends React.Component {
     }
   }
 
-  handleOnClickBrokerIcon = (value) => {
+  handleOnClickBrokerIcon = value => {
     if (this.props.platformName !== 'widgets') {
       this.handleBrokerMenuVisibleChange(value);
     } else {
@@ -926,6 +927,10 @@ class Topnav extends React.Component {
 
   handleOnFocus = () => this.setState({ dropdownOpen: true });
 
+  scrollHandler = () => {
+    this.setState({ scrolling: !this.state.scrolling });
+  };
+
   renderTitle = title => <span>{title}</span>;
 
   render() {
@@ -959,12 +964,21 @@ class Topnav extends React.Component {
       ? dropdownOptions
       : dropdownOptions.concat([downBar]);
     return (
-      <div className={classNames('Topnav', { 'no-navbroker': platformName === 'widgets' })}>
+      <div
+        className={classNames('Topnav', {
+          'no-navbroker': platformName === 'widgets',
+          'top-hidden': this.state.visible && isMobile,
+        })}
+      >
         <ModalDealConfirmation />
         <div className="topnav-layout">
           <div className={classNames('left', { 'Topnav__mobile-hidden': searchBarActive })}>
             <Link to="/" className="Topnav__brand">
-              <img alt="InvestArena" src={brandLogoPath} className="Topnav__brand-icon" />
+              {isMobile ? (
+                'investarena'
+              ) : (
+                <img alt="InvestArena" src={brandLogoPath} className="Topnav__brand-icon" />
+              )}
             </Link>
           </div>
           <div className={classNames('center', { mobileVisible: searchBarActive })}>
@@ -1009,7 +1023,11 @@ class Topnav extends React.Component {
               )}
             </div>
           </div>
-          <div className="right">
+          <div
+            className={classNames('Topnav__right-top', {
+              'Topnav__right-top--logedout': !isAuthenticated,
+            })}
+          >
             <button
               className={classNames('Topnav__mobile-search', {
                 'Topnav__mobile-search-close': searchBarActive,
@@ -1023,32 +1041,38 @@ class Topnav extends React.Component {
                 })}
               />
             </button>
-            {this.content()}
+            {this.props.username && (
+              <div className="Topnav__chat" key="more">
+                <Icon type="message" className="icon-chat" />
+              </div>
+            )}
           </div>
-          <div className="right bottom-row">
-            {platformName !== 'widgets' && !isLoadingPlatform ? (
-              <div className="st-header-broker-balance-pl-wrap">
-                <div className="st-balance-wrap">
-                  <div className="st-balance-text">
+          <div className="Topnav__right-bottom">{this.content()}</div>
+
+          {platformName !== 'widgets' && !isLoadingPlatform ? (
+            <div className="Topnav__broker">
+              <div className="Topnav__broker-wrap">
+                <div className="Topnav__balance-wrap Topnav__balance-wrap--left">
+                  <div className="Topnav__balance-text">
                     {intl.formatMessage({
                       id: 'headerAuthorized.p&l',
                       defaultMessage: 'P&L deals',
                     })}
                     :
                   </div>
-                  <div className="st-balance-amount">
+                  <div className="Topnav__balance-amount">
                     <Balance balanceType="unrealizedPnl" />
                   </div>
                 </div>
-                <div className="st-balance-border">
-                  <div className="st-balance-text">
+                <div className="Topnav__balance-wrap Topnav__balance-wrap--right">
+                  <div className="Topnav__balance-text">
                     {intl.formatMessage({
                       id: 'headerAuthorized.balance',
                       defaultMessage: 'Balance',
                     })}
                     :
                   </div>
-                  <div className="st-balance-amount">
+                  <div className="Topnav__balance-amount">
                     <Balance balanceType="balance" />
                   </div>
                 </div>
@@ -1121,15 +1145,17 @@ class Topnav extends React.Component {
                       }
                     >
                       <a className="Topnav__link dropdown-icon">
-                        <Icon type="caret-down" />
+                        <Icon type="iconfont caret-down" />
                       </a>
                     </PopoverContainer>
                   </React.Fragment>
                 )}
               </div>
-            ) : (
-              this.props.username &&
-              !isMobile && (
+            </div>
+          ) : (
+            this.props.username &&
+            !isMobile && (
+              <div className="Topnav__broker">
                 <div className="st-header-broker-balance-pl-wrap">
                   <Button type="primary" onClick={this.toggleModalBroker}>
                     {intl.formatMessage({
@@ -1138,9 +1164,9 @@ class Topnav extends React.Component {
                     })}
                   </Button>
                 </div>
-              )
-            )}
-          </div>
+              </div>
+            )
+          )}
         </div>
       </div>
     );
