@@ -17,7 +17,7 @@ const ChatButton = ({ authentication, openChat, isChat, messagesCount }) => (
           )
         ) : !isChat ? (
           !messagesCount ? (
-            <Icon style={{ fontSize: '30px' }} type="message" />
+            <Icon style={{ fontSize: '30px', paddingTop: '5px' }} type="message" />
           ) : null
         ) : (
           <Icon style={{ fontSize: '30px' }} type="close" />
