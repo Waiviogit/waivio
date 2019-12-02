@@ -15,8 +15,8 @@ const Chat = ({
   openChat,
   ...props
 }) => {
-  const ifr = useRef();
   const [isChatConnected, setChatConnected] = useState(false);
+  const ifr = useRef();
   const sendChatRequestData = (messageType, data) => {
     const requestData = {
       cmd: 'init',
