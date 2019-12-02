@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Icon } from 'antd';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
@@ -16,6 +17,7 @@ const Chat = ({
   ...props
 }) => {
   const [isChatConnected, setChatConnected] = useState(false);
+  const [isCloseButton, setCloseButton] = useState(false);
   const ifr = useRef();
   const sendChatRequestData = (messageType, data) => {
     const requestData = {
@@ -47,6 +49,7 @@ const Chat = ({
       if (event && event.data && event.origin === 'https://stchat.cf') {
         switch (event.data.cmd) {
           case 'connected':
+            setCloseButton(true);
             sendChatRequestData('connected');
             break;
           case 'init_response':
@@ -55,6 +58,7 @@ const Chat = ({
               .then(data => sendChatRequestData('init_response', data));
             break;
           case 'auth_connection_response':
+            setCloseButton(false);
             setChatConnected(true);
             break;
           case 'close_chat':
@@ -103,6 +107,11 @@ const Chat = ({
           />
         )}
       </div>
+      {isCloseButton && (
+        <div className="Chat__close-button">
+          <Icon type="close" onClick={openChat} />
+        </div>
+      )}
     </div>
   );
 };
