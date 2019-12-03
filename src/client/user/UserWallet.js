@@ -21,6 +21,7 @@ import {
   getLoadingMoreUsersAccountHistory,
   getUserHasMoreAccountHistory,
   getCryptosPriceHistory,
+  getScreenSize,
 } from '../reducers';
 import {
   getGlobalProperties,
@@ -28,6 +29,7 @@ import {
   getMoreUserAccountHistory,
 } from '../wallet/walletActions';
 import { getAccount } from './usersActions';
+import WalletSidebar from '../components/Sidebar/WalletSidebar';
 
 @withRouter
 @connect(
@@ -44,6 +46,7 @@ import { getAccount } from './usersActions';
     usersAccountHistoryLoading: getUsersAccountHistoryLoading(state),
     loadingGlobalProperties: getLoadingGlobalProperties(state),
     loadingMoreUsersAccountHistory: getLoadingMoreUsersAccountHistory(state),
+    screenSize: getScreenSize(state),
     userHasMoreActions: getUserHasMoreAccountHistory(
       state,
       ownProps.isCurrentUser
@@ -78,6 +81,7 @@ class Wallet extends Component {
     userHasMoreActions: PropTypes.bool.isRequired,
     isCurrentUser: PropTypes.bool,
     authenticatedUserName: PropTypes.string,
+    screenSize: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -123,7 +127,9 @@ class Wallet extends Component {
       userHasMoreActions,
       usersAccountHistory,
       cryptosPriceHistory,
+      screenSize,
     } = this.props;
+
     const userKey = getUserDetailsKey(user.name);
     const transactions = _.get(usersTransactions, userKey, []);
     const actions = _.get(usersAccountHistory, userKey, []);
@@ -139,6 +145,8 @@ class Wallet extends Component {
     );
     const steemRateLoading = _.isNull(currentSteemRate) || _.isNull(currentSBDRate);
 
+    const isMobile = screenSize === 'xsmall' || screenSize === 'small';
+
     return (
       <div>
         <UserWalletSummary
@@ -151,6 +159,7 @@ class Wallet extends Component {
           sbdRate={currentSBDRate}
           steemRateLoading={steemRateLoading}
         />
+        {isMobile && <WalletSidebar />}
         {transactions.length === 0 && usersAccountHistoryLoading ? (
           <Loading style={{ marginTop: '20px' }} />
         ) : (

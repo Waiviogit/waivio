@@ -621,13 +621,17 @@ class Topnav extends React.Component {
     });
 
   handleOnBlur = () =>
+    this.setState({
+      dropdownOpen: false,
+      currentItem: 'All',
+      searchBarActive: false,
+    });
+
+  handleClearSearchData = () =>
     this.setState(
       {
-        dropdownOpen: false,
         searchData: '',
         searchBarValue: '',
-        currentItem: 'All',
-        searchBarActive: false,
       },
       this.props.resetSearchAutoCompete,
     );
@@ -695,6 +699,8 @@ class Topnav extends React.Component {
                 />
               </AutoComplete>
               <i className="iconfont icon-search" />
+              {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+              <i className="iconfont icon-close" onClick={this.handleClearSearchData} />
             </div>
           </div>
           <div className="right">
