@@ -30,7 +30,6 @@ class Page extends React.Component {
   static propTypes = {
     authenticated: PropTypes.bool.isRequired,
     history: PropTypes.shape().isRequired,
-    location: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     route: PropTypes.shape().isRequired,
   };
@@ -49,14 +48,11 @@ class Page extends React.Component {
   handleTopicClose = () => this.props.history.push('/trending');
 
   render() {
-    const { authenticated, location, history } = this.props;
-    const robots = location.pathname === '/' ? 'index,follow' : 'noindex,follow';
-
+    const { authenticated, history } = this.props;
     return (
       <div>
         <Helmet>
           <title>Waivio</title>
-          <meta name="robots" content={robots} />
         </Helmet>
         <ScrollToTop />
         <ScrollToTopOnMount />
