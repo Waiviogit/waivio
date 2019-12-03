@@ -31,10 +31,7 @@ export const followUser = username => (dispatch, getState, { steemConnectAPI }) 
   });
 };
 
-export const UNFOLLOW_USER = '@user/UNFOLLOW_USER';
-export const UNFOLLOW_USER_START = '@user/UNFOLLOW_USER_START';
-export const UNFOLLOW_USER_SUCCESS = '@user/UNFOLLOW_USER_SUCCESS';
-export const UNFOLLOW_USER_ERROR = '@user/UNFOLLOW_USER_ERROR';
+export const UNFOLLOW_USER = createAsyncActionType('@user/UNFOLLOW_USER');
 
 export const unfollowUser = username => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
@@ -44,7 +41,7 @@ export const unfollowUser = username => (dispatch, getState, { steemConnectAPI }
   }
 
   return dispatch({
-    type: UNFOLLOW_USER,
+    type: UNFOLLOW_USER.ACTION,
     payload: {
       promise: steemConnectAPI.unfollow(store.getAuthenticatedUserName(state), username),
     },

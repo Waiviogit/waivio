@@ -61,7 +61,7 @@ class UserMenu extends React.Component {
                 role="presentation"
                 data-key="discussions"
               >
-                <FormattedMessage id="discussions" defaultMessage="Discussions" />
+                <FormattedMessage id="posts" defaultMessage="Posts" />
               </li>
               <li
                 className={this.getItemClasses('comments')}
@@ -116,6 +116,14 @@ class UserMenu extends React.Component {
                 data-key="activity"
               >
                 <FormattedMessage id="activity" defaultMessage="Activity" />
+              </li>
+              <li
+                className={this.getItemClasses('about')}
+                onClick={this.handleClick}
+                role="presentation"
+                data-key="about"
+              >
+                <FormattedMessage id="about" defaultMessage="About" />
               </li>
             </ul>
           </Scrollbars>

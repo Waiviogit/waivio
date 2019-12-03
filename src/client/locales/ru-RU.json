@@ -697,7 +697,7 @@
   "select_time": "Пожалуйста, выберите время!",
   "agree_to_the": "Я соглашаюсь с ",
   "agreement": "соглашением",
-  "terms_and_conditions": "Пользовательское соглашение ",
+  "terms_and_conditions": "Пользовательским соглашением ",
   "service_acknowledge_campaign_not_violate_laws": "сервиса и признаю, что эта кампания не нарушает никаких законов Британской Колумбии, Канада.",
   "change": "изменить",
   "not_less_zero_posts": "Количество постов не может быть отрицательным",
@@ -844,5 +844,6 @@
   "sidenav_user_websites": "Веб-сайты",
   "sidenav_user_create": "Создать",
   "sidenav_user_manage": "Управлять",
-  "sidenav_user_payments": "Платежи"
+  "sidenav_user_payments": "Платежи",
+  "posts": "Посты"
 }
