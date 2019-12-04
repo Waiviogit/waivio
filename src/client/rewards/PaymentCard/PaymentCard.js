@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
@@ -35,15 +36,17 @@ const PaymentCard = ({ intl, payable, name, alias, history, path, openTransfer, 
 
   return (
     <div className="PaymentCard">
-      <div className="PaymentCard__content">
-        <Avatar username={name} size={40} />
-        <div className="PaymentCard__content-name-wrap">
-          <div className="PaymentCard__content-name-wrap-alias"> {alias}</div>
-          <div className="PaymentCard__content-name-wrap-row">
-            <div className="PaymentCard__content-name-wrap-row-name">{`@${name}`}</div>
+      <Link to={`/@${name}`}>
+        <div className="PaymentCard__content">
+          <Avatar username={name} size={40} />
+          <div className="PaymentCard__content-name-wrap">
+            <div className="PaymentCard__content-name-wrap-alias"> {alias}</div>
+            <div className="PaymentCard__content-name-wrap-row">
+              <div className="PaymentCard__content-name-wrap-row-name">{`@${name}`}</div>
+            </div>
           </div>
         </div>
-      </div>
+      </Link>
       <div className="PaymentCard__end-wrap">
         <div className="PaymentCard__content-name-wrap-row-pay">
           {renderTransferButton}
@@ -76,11 +79,4 @@ PaymentCard.defaultProps = {
   alias: '',
 };
 
-export default withRouter(
-  injectIntl(
-    connect(
-      null,
-      { openTransfer },
-    )(PaymentCard),
-  ),
-);
+export default withRouter(injectIntl(connect(null, { openTransfer })(PaymentCard)));

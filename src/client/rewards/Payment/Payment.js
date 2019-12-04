@@ -96,9 +96,4 @@ Payment.propTypes = {
   openTransfer: PropTypes.func.isRequired,
 };
 
-export default injectIntl(
-  connect(
-    null,
-    { openTransfer },
-  )(Payment),
-);
+export default injectIntl(connect(null, { openTransfer })(Payment));
