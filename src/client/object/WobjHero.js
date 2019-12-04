@@ -1,53 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Route, Switch, withRouter } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
+import { Modal } from 'antd';
 import WobjHeader from './WobjHeader';
 import UserHeaderLoading from '../components/UserHeaderLoading';
-import ObjectMenu from '../components/ObjectMenu';
-// import Hero from '../components/Hero';
-import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
-
-@withRouter
-class WobjMenuWrapper extends React.Component {
-  static propTypes = {
-    match: PropTypes.shape().isRequired,
-    location: PropTypes.shape().isRequired,
-    history: PropTypes.shape().isRequired,
-    wobject: PropTypes.shape().isRequired,
-    username: PropTypes.string.isRequired,
-    albumsAndImagesCount: PropTypes.number,
-  };
-
-  static defaultProps = {
-    albumsAndImagesCount: 0,
-  };
-
-  onChange = key => {
-    const { match, history } = this.props;
-    const section = key === 'reviews' ? '' : `/${key}`;
-    history.push(`${match.url.replace(/\/$/, '')}${section}`);
-  };
-
-  render() {
-    const { ...otherProps } = this.props;
-    const current = this.props.location.pathname.split('/')[3];
-    const currentKey = current || 'reviews';
-    let fieldsCount = 0;
-    if (this.props.wobject && this.props.wobject.fields && this.props.wobject.fields.length) {
-      fieldsCount = this.props.wobject.fields.length + this.props.albumsAndImagesCount;
-    }
-    const accessExtend = haveAccess(this.props.wobject, this.props.username, accessTypesArr[0]);
-    return (
-      <ObjectMenu
-        accessExtend={accessExtend}
-        defaultKey={currentKey}
-        onChange={this.onChange}
-        {...otherProps}
-        fieldsCount={fieldsCount}
-      />
-    );
-  }
-}
+import WobjMenuWrapper from '../object/WobjMenuWrapper/WobjMenuWrapper';
+import { getScreenSize } from '../reducers';
 
 const WobjHero = ({
   isEditMode,
@@ -58,38 +17,55 @@ const WobjHero = ({
   isFollowing,
   toggleViewEditMode,
   albumsAndImagesCount,
-}) => (
-  <React.Fragment>
-    <Switch>
-      <Route
-        path="/object/:name"
-        render={() => (
-          <React.Fragment>
-            {isFetching ? (
-              <UserHeaderLoading />
-            ) : (
-              <WobjHeader
-                isEditMode={isEditMode}
-                username={username}
-                authenticated={authenticated}
-                wobject={wobject}
-                isFollowing={isFollowing}
-                toggleViewEditMode={toggleViewEditMode}
-              />
-            )}
-            <WobjMenuWrapper
-              followers={wobject.followers_count || 0}
-              wobject={wobject}
-              username={username}
-              albumsAndImagesCount={albumsAndImagesCount}
-            />
-          </React.Fragment>
-        )}
-      />
-      {/* <Route render={() => (authenticated ? <Hero /> : <div />)} /> */}
-    </Switch>
-  </React.Fragment>
-);
+}) => {
+  const [isModalVisible, setModalVisibility] = useState(false);
+  const screenSize = useSelector(getScreenSize);
+  const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
+
+  return (
+    <React.Fragment>
+      <Switch>
+        <Route
+          path="/object/:name"
+          render={() => (
+            <React.Fragment>
+              {isFetching ? (
+                <UserHeaderLoading />
+              ) : (
+                <WobjHeader
+                  isEditMode={isEditMode}
+                  username={username}
+                  authenticated={authenticated}
+                  wobject={wobject}
+                  isFollowing={isFollowing}
+                  toggleViewEditMode={toggleViewEditMode}
+                  setModalVisibility={setModalVisibility}
+                />
+              )}
+            </React.Fragment>
+          )}
+        />
+      </Switch>
+      {isMobile ? (
+        <Modal footer={null} visible={isModalVisible} onCancel={() => setModalVisibility(false)}>
+          <WobjMenuWrapper
+            followers={wobject.followers_count || 0}
+            wobject={wobject}
+            username={username}
+            albumsAndImagesCount={albumsAndImagesCount}
+          />
+        </Modal>
+      ) : (
+        <WobjMenuWrapper
+          followers={wobject.followers_count || 0}
+          wobject={wobject}
+          username={username}
+          albumsAndImagesCount={albumsAndImagesCount}
+        />
+      )}
+    </React.Fragment>
+  );
+};
 
 WobjHero.propTypes = {
   authenticated: PropTypes.bool.isRequired,

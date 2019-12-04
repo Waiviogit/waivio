@@ -25,6 +25,7 @@ const WobjHeader = ({
   toggleViewEditMode,
   authenticated,
   isMobile,
+  setModalVisibility,
 }) => {
   const usedLocale = useContext(UsedLocaleContext);
   const coverImage = wobject.background || DEFAULTS.BACKGROUND;
@@ -78,6 +79,9 @@ const WobjHeader = ({
                     </Button>
                   </Link>
                 )}
+                <Button onClick={() => setModalVisibility(true)}>
+                  {intl.formatMessage({ id: 'object_info', defaultMessage: 'Object info' })}
+                </Button>
               </div>
             </div>
           </div>
@@ -126,6 +130,7 @@ WobjHeader.propTypes = {
   username: PropTypes.string,
   toggleViewEditMode: PropTypes.func,
   isMobile: PropTypes.bool,
+  setModalVisibility: PropTypes.func.isRequired,
 };
 
 WobjHeader.defaultProps = {
