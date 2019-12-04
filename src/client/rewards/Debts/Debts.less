@@ -1,9 +1,14 @@
+@import (reference) '../../styles/modules/variables.less';
+
 .Debts {
   display: flex;
   top: 70px;
   flex-direction: column;
   min-width: 310px;
-  padding-left: 5px;
+  padding: 0 12px 0 12px;
+  @media @small {
+    padding: 0;
+  }
 
   &__main-title {
     font-size: x-large;
