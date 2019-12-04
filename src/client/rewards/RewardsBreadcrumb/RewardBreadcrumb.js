@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Breadcrumb } from 'antd';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
+import '../Rewards.less';
 
 const rewardText = {
   all: { id: 'all', defaultMessage: 'all' },

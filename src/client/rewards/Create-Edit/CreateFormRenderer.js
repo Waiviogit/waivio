@@ -155,7 +155,7 @@ const CreateFormRenderer = props => {
   );
 
   return (
-    <div className="CreateRewardForm shifted">
+    <div className="CreateRewardForm">
       {notEnoughMoneyWarn}
       {activeCampaignWarn}
 
