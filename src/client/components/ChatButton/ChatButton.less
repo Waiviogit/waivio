@@ -1,3 +1,4 @@
+@import (reference) '../../styles/custom.less';
 @import (reference) '../../styles/modules/variables.less';
 
 .ChatButton {
@@ -14,6 +15,10 @@
     width: 60px;
     height: 60px;
     font-size: x-large;
+  }
+
+  &__item > .ant-btn-primary {
+    background-color: @blue-vivid;
   }
 
   &.hide-element {
