@@ -18,7 +18,7 @@ const PaymentCard = ({ intl, payable, name, alias, history, path, openTransfer, 
     <Action
       className="WalletSidebar__transfer"
       primary={payable >= 0}
-      onClick={() => openTransfer(name, payable, 'STEEM')}
+      onClick={() => openTransfer(name, payable, 'STEEM', 'Campaign transfer payment')}
       disabled={payable <= 0}
     >
       {intl.formatMessage({
