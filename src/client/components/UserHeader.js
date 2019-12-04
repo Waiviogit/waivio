@@ -59,7 +59,7 @@ const UserHeader = ({
                   <FollowButton following={handle} followingType="user" />
                 )}
               </div>
-              {authenticated && !isChat ? (
+              {authenticated && !isChat && !isSameUser ? (
                 <div className="UserHeader__user-chat-button">
                   <Button onClick={sendData} type="primary" shape="circle" icon="message" />
                 </div>
