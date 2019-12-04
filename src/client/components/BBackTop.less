@@ -8,6 +8,13 @@
   bottom: 60px;
   right: 20px;
   z-index: @backtop-z-index;
+  @media @small {
+    right: 95px;
+  }
+  @media @large {
+    padding: 0;
+    right: 20px;
+  }
 
   .BBackTop__container {
     position: relative;

@@ -20,6 +20,7 @@ import {
   getNightmode,
   getIsAuthenticated,
   getChatCondition,
+  getScreenSize,
 } from './reducers';
 import { login, logout, busyLogin } from './auth/authActions';
 import { getMessagesQuantity } from '../waivioApi/ApiClient';
@@ -57,6 +58,7 @@ export const UsedLocaleContext = React.createContext('en-US');
     nightmode: getNightmode(state),
     platformName: getPlatformNameState(state),
     isChat: getChatCondition(state),
+    screenSize: getScreenSize(state),
   }),
   {
     login,
@@ -100,6 +102,7 @@ export default class Wrapper extends React.PureComponent {
     isAuthenticated: PropTypes.bool.isRequired,
     isChat: PropTypes.bool.isRequired,
     changeChatCondition: PropTypes.func,
+    screenSize: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -171,6 +174,9 @@ export default class Wrapper extends React.PureComponent {
     this.props.getRebloggedList();
     this.props.getRate();
     this.props.getChartsData();
+    if (this.props.screenSize !== 'large') {
+      window.$crisp.push(['do', 'chat:hide']);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
