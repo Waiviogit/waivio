@@ -55,7 +55,7 @@ const PaymentCard = ({ intl, payable, name, alias, history, path, openTransfer, 
             <Tooltip
               title={intl.formatMessage(
                 {
-                  id: 'your_payment_history_with_user',
+                  id: 'payment_card_your_payment_history_with_user',
                   defaultMessage: "Your payment history with '{username}'",
                 },
                 { username: name },

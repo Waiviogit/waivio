@@ -16,17 +16,18 @@ const PaymentTableRow = ({ intl, sponsor }) => (
               id: 'paymentTable_review',
               defaultMessage: `Review`,
             })}
-          </span>{' '}
-          {intl.formatMessage(
-            {
-              id: 'paymentTable_review_by_user',
-              defaultMessage: `by @${sponsor.userName} (requested by @${sponsor.sponsor})`,
-            },
-            {
-              userName: sponsor.userName,
-              sponsorName: sponsor.sponsor,
-            },
-          )}
+          </span>
+          &nbsp;
+          {intl.formatMessage({
+            id: 'paymentTable_review_by',
+            defaultMessage: `by`,
+          })}
+          <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link> (
+          {intl.formatMessage({
+            id: 'paymentTable_requested by',
+            defaultMessage: `requested by`,
+          })}{' '}
+          <Link to={`/@${sponsor.userName}`}>@{sponsor.sponsor}</Link>)
         </div>
         {sponsor && sponsor.details ? (
           <div className="PaymentTable__action-column ml3">
