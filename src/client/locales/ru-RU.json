@@ -845,5 +845,7 @@
   "sidenav_user_create": "Создать",
   "sidenav_user_manage": "Управлять",
   "sidenav_user_payments": "Платежи",
-  "posts": "Посты"
+  "posts": "Посты",
+  "object_info": "Данные обьекта",
+  "user_info": "Данные пользователя"
 }
