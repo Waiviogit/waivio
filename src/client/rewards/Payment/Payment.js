@@ -51,9 +51,10 @@ const Payment = ({ match, intl, userName, openTransfer }) => {
     <div className="Payment">
       <div className="Payment__title">
         <div className="Payment__title-payment">
-          {titleName}:<Link to={`/@${userName}`}>&nbsp;{userName}&nbsp;</Link>
+          {titleName}:
+          <Link className="Payment__title-link" to={`/@${userName}`}>{` ${userName} `}</Link>
           {isPayables ? <span>&rarr;</span> : <span>&larr;</span>}
-          <Link to={`/@${name}`}>&nbsp;{name}&nbsp;</Link>
+          <Link className="Payment__title-link" to={`/@${name}`}>{` ${name} `}</Link>
         </div>
         <div className="Payment__title-pay">
           {isPayables && payable && (
@@ -84,7 +85,7 @@ const Payment = ({ match, intl, userName, openTransfer }) => {
           defaultMessage: 'Only transfer with hashtag "#waivio" are included',
         })}
       </div>
-      {!isEmpty(sponsors) ? <PaymentTable sponsors={sponsors} /> : null}
+      {!isEmpty(sponsors) && <PaymentTable sponsors={sponsors} />}
     </div>
   );
 };
