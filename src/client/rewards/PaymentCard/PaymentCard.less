@@ -13,17 +13,22 @@
   &__content {
     display: flex;
     align-items: center;
+
     &-name-wrap {
       margin-left: 10px;
       max-width: calc(100vw - 210px);
       flex-direction: column;
+
       &-alias {
         font-weight: bold;
+        color: @black-text-basic;
       }
+
       &-row {
         display: flex;
         align-items: center;
         font-size: medium;
+
         &-name {
           font-weight: 500;
           color: @blue-botticelli;
@@ -32,6 +37,16 @@
 
         &-pay {
           display: flex;
+
+          .WalletSidebar__transfer {
+            margin-bottom: 0;
+
+            &.Action--primary:disabled {
+              background-color: @white-smoke !important;
+              border-color: @white-gainsboro !important;
+              color: @blue-botticelli !important;
+            }
+          }
         }
       }
     }
@@ -53,11 +68,13 @@
   &__end-wrap {
     display: flex;
     align-items: center;
+
     &-payable {
       padding-right: 14px;
       font-size: medium;
       font-weight: 500;
     }
+
     &-icon > img {
       height: 25px;
       width: 25px;
@@ -68,10 +85,6 @@
 
 .PaymentCard__end-wrap-icon :hover {
   cursor: pointer;
-}
-
-.WalletSidebar__transfer {
-  margin-bottom: 10px;
 }
 
 @import 'PaymentCard-nightmode';

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import PaymentTable from './PaymentTable/PaymentTable';
 import { getLenders } from '../../../waivioApi/ApiClient';
 import Action from '../../components/Button/Action';
@@ -51,12 +52,12 @@ const Payment = ({ match, intl, userName, openTransfer }) => {
       <div className="Payment__title">
         <div className="Payment__title-payment">
           {titleName}
-          {`: ${userName} `}
+          <Link className="Payment__title-link" to={`/@${userName}`}>{`: ${userName} `}</Link>
           {isPayables ? <span>&rarr;</span> : <span>&larr;</span>}
-          {` ${name} `}
+          <Link className="Payment__title-link" to={`/@${name}`}>{` ${name} `}</Link>
         </div>
         <div className="Payment__title-pay">
-          {isPayables && (
+          {isPayables && payable && (
             <Action
               className="WalletSidebar__transfer"
               primary
@@ -84,7 +85,7 @@ const Payment = ({ match, intl, userName, openTransfer }) => {
           defaultMessage: 'Only transfer with hashtag "#waivio" are included',
         })}
       </div>
-      {!_.isEmpty(sponsors) ? <PaymentTable sponsors={sponsors} /> : null}
+      {!isEmpty(sponsors) && <PaymentTable sponsors={sponsors} />}
     </div>
   );
 };
@@ -96,9 +97,4 @@ Payment.propTypes = {
   openTransfer: PropTypes.func.isRequired,
 };
 
-export default injectIntl(
-  connect(
-    null,
-    { openTransfer },
-  )(Payment),
-);
+export default injectIntl(connect(null, { openTransfer })(Payment));

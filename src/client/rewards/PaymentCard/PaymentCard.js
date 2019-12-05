@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
+import { Tooltip } from 'antd';
 import Action from '../../components/Button/Action';
 import Avatar from '../../components/Avatar';
 import { openTransfer } from '../../wallet/walletActions';
@@ -35,25 +37,37 @@ const PaymentCard = ({ intl, payable, name, alias, history, path, openTransfer, 
 
   return (
     <div className="PaymentCard">
-      <div className="PaymentCard__content">
-        <Avatar username={name} size={40} />
-        <div className="PaymentCard__content-name-wrap">
-          <div className="PaymentCard__content-name-wrap-alias"> {alias}</div>
-          <div className="PaymentCard__content-name-wrap-row">
-            <div className="PaymentCard__content-name-wrap-row-name">{`@${name}`}</div>
+      <Link to={`/@${name}`}>
+        <div className="PaymentCard__content">
+          <Avatar username={name} size={40} />
+          <div className="PaymentCard__content-name-wrap">
+            <div className="PaymentCard__content-name-wrap-alias"> {alias}</div>
+            <div className="PaymentCard__content-name-wrap-row">
+              <div className="PaymentCard__content-name-wrap-row-name">{`@${name}`}</div>
+            </div>
           </div>
         </div>
-      </div>
+      </Link>
       <div className="PaymentCard__end-wrap">
         <div className="PaymentCard__content-name-wrap-row-pay">
           {renderTransferButton}
           <div className="PaymentCard__end-wrap-icon">
-            {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
-            <img
-              src="/images/icons/PaymentHistory.svg"
-              alt="Payments history"
-              onClick={handleSetUser}
-            />
+            <Tooltip
+              title={intl.formatMessage(
+                {
+                  id: 'payment_card_your_payment_history_with_user',
+                  defaultMessage: "Your payment history with '{username}'",
+                },
+                { username: name },
+              )}
+            >
+              {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
+              <img
+                src="/images/icons/PaymentHistory.svg"
+                alt="Payments history"
+                onClick={handleSetUser}
+              />
+            </Tooltip>
           </div>
         </div>
       </div>
@@ -76,11 +90,4 @@ PaymentCard.defaultProps = {
   alias: '',
 };
 
-export default withRouter(
-  injectIntl(
-    connect(
-      null,
-      { openTransfer },
-    )(PaymentCard),
-  ),
-);
+export default withRouter(injectIntl(connect(null, { openTransfer })(PaymentCard)));
