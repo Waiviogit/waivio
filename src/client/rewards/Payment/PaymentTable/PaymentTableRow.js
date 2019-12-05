@@ -7,7 +7,7 @@ import './PaymentTable.less';
 
 const PaymentTableRow = ({ intl, sponsor }) => (
   <tr>
-    <td>{formatDate(sponsor.createdAt)}</td>
+    <td>{formatDate(intl, sponsor.createdAt)}</td>
     <td>
       <div className="PaymentTable__action-column">
         <div>
@@ -17,29 +17,33 @@ const PaymentTableRow = ({ intl, sponsor }) => (
               defaultMessage: `Review`,
             })}
           </span>{' '}
-          {intl.formatMessage(
-            {
-              id: 'paymentTable_review_by_user',
-              defaultMessage: `by @${sponsor.userName} (requested by @${sponsor.sponsor})`,
-            },
-            {
-              userName: sponsor.userName,
-              sponsorName: sponsor.sponsor,
-            },
-          )}
+          {intl.formatMessage({
+            id: 'paymentTable_review_by',
+            defaultMessage: `by`,
+          })}{' '}
+          <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link> (
+          {intl.formatMessage({
+            id: 'paymentTable_requested_by',
+            defaultMessage: `requested by`,
+          })}{' '}
+          <Link to={`/@${sponsor.userName}`}>@{sponsor.sponsor}</Link>)
         </div>
-        {sponsor && sponsor.details ? (
+        {sponsor && sponsor.details && sponsor.details.main_object && (
           <div className="PaymentTable__action-column ml3">
             <div>
-              {`-`}
-              {sponsor.details.main_object}
+              {`- `}
+              <Link to={`/object/${sponsor.details.main_object}`}>
+                {sponsor.details.main_object}
+              </Link>
             </div>
             <div>
-              {`-`}
-              {sponsor.details.review_object}
+              {`- `}
+              <Link to={`/object/${sponsor.details.review_object}`}>
+                {sponsor.details.review_object}
+              </Link>
             </div>
           </div>
-        ) : null}
+        )}
       </div>
     </td>
     <td>
@@ -60,8 +64,8 @@ const PaymentTableRow = ({ intl, sponsor }) => (
         </Link>
       </p>
     </td>
-    <td>{sponsor.amount_sbd}</td>
-    <td className="PaymentTable__balance-column">{sponsor.balance}</td>
+    <td>{sponsor.amount_sbd ? sponsor.amount_sbd : 0}</td>
+    <td className="PaymentTable__balance-column">{sponsor.balance ? sponsor.balance : 0}</td>
   </tr>
 );
 

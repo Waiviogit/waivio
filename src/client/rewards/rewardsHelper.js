@@ -71,10 +71,74 @@ export const getTextByFilterKey = (intl, filterKey) => {
   }
 };
 
-export const formatDate = date => {
+export const formatDate = (intl, date) => {
   const dt = new Date(date);
   const day = `0${dt.getDate()}`.slice(-2);
   const month = `0${dt.getMonth() + 1}`.slice(-2);
   const year = dt.getFullYear();
-  return `${day}-${month}-${year}`;
+
+  switch (month) {
+    case '01':
+      return `${day}-${intl.formatMessage({
+        id: 'peyment_jan',
+        defaultMessage: 'Jan',
+      })}-${year}`;
+    case '02':
+      return `${day}-${intl.formatMessage({
+        id: 'peyment_feb',
+        defaultMessage: 'Feb',
+      })}-${year}`;
+    case '03':
+      return `${day}-${intl.formatMessage({
+        id: 'peyment_mar',
+        defaultMessage: 'Mar',
+      })}-${year}`;
+    case '04':
+      return `${day}-${intl.formatMessage({
+        id: 'peyment_apr',
+        defaultMessage: 'Apr',
+      })}-${year}`;
+    case '05':
+      return `${day}-${intl.formatMessage({
+        id: 'peyment_may',
+        defaultMessage: 'May',
+      })}-${year}`;
+    case '06':
+      return `${day}-${intl.formatMessage({
+        id: 'peyment_june',
+        defaultMessage: 'June',
+      })}-${year}`;
+    case '07':
+      return `${day}-${intl.formatMessage({
+        id: 'peyment_july',
+        defaultMessage: 'July',
+      })}-${year}`;
+    case '08':
+      return `${day}-${intl.formatMessage({
+        id: 'peyment_aug',
+        defaultMessage: 'Aug',
+      })}-${year}`;
+    case '09':
+      return `${day}-${intl.formatMessage({
+        id: 'peyment_sept',
+        defaultMessage: 'Sept',
+      })}-${year}`;
+    case '10':
+      return `${day}-${intl.formatMessage({
+        id: 'peyment_oct',
+        defaultMessage: 'Oct',
+      })}-${year}`;
+    case '11':
+      return `${day}-${intl.formatMessage({
+        id: 'peyment_nov',
+        defaultMessage: 'Nov',
+      })}-${year}`;
+    case '12':
+      return `${day}-${intl.formatMessage({
+        id: 'peyment_dec',
+        defaultMessage: 'Dec',
+      })}-${year}`;
+    default:
+      return ' ';
+  }
 };
