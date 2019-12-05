@@ -847,5 +847,6 @@
   "sidenav_user_payments": "Платежи",
   "posts": "Посты",
   "object_info": "Данные обьекта",
-  "user_info": "Данные пользователя"
+  "user_info": "Данные пользователя",
+  "exchange": "Обмен"
 }
