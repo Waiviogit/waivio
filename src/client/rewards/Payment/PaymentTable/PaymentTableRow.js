@@ -24,7 +24,7 @@ const PaymentTableRow = ({ intl, sponsor }) => (
           })}
           <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link> (
           {intl.formatMessage({
-            id: 'paymentTable_requested by',
+            id: 'paymentTable_requested_by',
             defaultMessage: `requested by`,
           })}{' '}
           <Link to={`/@${sponsor.userName}`}>@{sponsor.sponsor}</Link>)

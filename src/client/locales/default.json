@@ -763,6 +763,8 @@
   "paymentTable_balance": "Balance STEEM",
   "paymentTable_review": "Review",
   "paymentTable_review_by_user": "by @{userName} (requested by @{sponsorName})",
+  "paymentTable_review_by": "by",
+  "paymentTable_requested_by": "requested by",
   "paymentTable_reservation": "Reservation",
   "filter_days": "Over {value} days",
   "filter_payable": "Over {value} STEEM",

@@ -387,6 +387,8 @@
   "paymentTable_balance": "Баланс STEEM",
   "paymentTable_review": "Обзор",
   "paymentTable_review_by_user": "от @{userName} (оп запросу @{sponsorName})",
+  "paymentTable_review_by": "от",
+  "paymentTable_requested_by": "оп запросу",
   "paymentTable_reservation": "Резервирование",
   "sidenav_rewards_payables": "Задолженность",
   "sidenav_rewards_receivables": "Дебиторская задолженность",
