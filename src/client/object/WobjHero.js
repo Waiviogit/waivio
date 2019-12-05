@@ -40,29 +40,38 @@ const WobjHero = ({
                   isFollowing={isFollowing}
                   toggleViewEditMode={toggleViewEditMode}
                   setModalVisibility={setModalVisibility}
+                  isMobile={isMobile}
                 />
+              )}
+              {isMobile ? (
+                <Modal
+                  footer={null}
+                  visible={isModalVisible}
+                  onCancel={() => setModalVisibility(false)}
+                >
+                  <WobjMenuWrapper
+                    followers={wobject.followers_count || 0}
+                    wobject={wobject}
+                    username={username}
+                    albumsAndImagesCount={albumsAndImagesCount}
+                    setModalVisibility={setModalVisibility}
+                  />
+                </Modal>
+              ) : (
+                <div>
+                  <WobjMenuWrapper
+                    followers={wobject.followers_count || 0}
+                    wobject={wobject}
+                    username={username}
+                    albumsAndImagesCount={albumsAndImagesCount}
+                    setModalVisibility={setModalVisibility}
+                  />
+                </div>
               )}
             </React.Fragment>
           )}
         />
       </Switch>
-      {isMobile ? (
-        <Modal footer={null} visible={isModalVisible} onCancel={() => setModalVisibility(false)}>
-          <WobjMenuWrapper
-            followers={wobject.followers_count || 0}
-            wobject={wobject}
-            username={username}
-            albumsAndImagesCount={albumsAndImagesCount}
-          />
-        </Modal>
-      ) : (
-        <WobjMenuWrapper
-          followers={wobject.followers_count || 0}
-          wobject={wobject}
-          username={username}
-          albumsAndImagesCount={albumsAndImagesCount}
-        />
-      )}
     </React.Fragment>
   );
 };
