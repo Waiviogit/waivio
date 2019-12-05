@@ -470,6 +470,7 @@
   "object_field_galleryItem": "Gallery item",
   "object_field_galleryAlbum": "Gallery album",
   "field_error": "{field} is required",
+  "object_link_required": "Link to new object is required",
   "append_send": "Submit",
   "suggestion_add_field": "Update object",
   "rank": "Rank",

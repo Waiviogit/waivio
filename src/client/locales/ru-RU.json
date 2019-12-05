@@ -508,6 +508,7 @@
   "object_field_galleryItem": "Элемент галереи",
   "object_field_galleryAlbum": "Альбом галереи",
   "field_error": "требуется {field}",
+  "object_link_required": "Требуется ссылка на новый объект",
   "append_send": "Подтвердить",
   "suggestion_add_field": "Обновить объект",
   "rank": "Ранг",
