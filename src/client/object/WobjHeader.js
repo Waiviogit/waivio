@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
 
 import FollowButton from '../widgets/FollowButton';
 import ObjectLightbox from '../components/ObjectLightbox';
@@ -25,6 +24,7 @@ const WobjHeader = ({
   toggleViewEditMode,
   authenticated,
   isMobile,
+  setModalVisibility,
 }) => {
   const usedLocale = useContext(UsedLocaleContext);
   const coverImage = wobject.background || DEFAULTS.BACKGROUND;
@@ -78,6 +78,11 @@ const WobjHeader = ({
                     </Button>
                   </Link>
                 )}
+                {isMobile && (
+                  <Button onClick={() => setModalVisibility(true)}>
+                    {intl.formatMessage({ id: 'object_info', defaultMessage: 'Object info' })}
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -126,6 +131,7 @@ WobjHeader.propTypes = {
   username: PropTypes.string,
   toggleViewEditMode: PropTypes.func,
   isMobile: PropTypes.bool,
+  setModalVisibility: PropTypes.func.isRequired,
 };
 
 WobjHeader.defaultProps = {
@@ -138,6 +144,4 @@ WobjHeader.defaultProps = {
   isMobile: false,
 };
 
-const mapStateToProps = state => ({ isMobile: state.app.screenSize !== 'large' });
-
-export default injectIntl(connect(mapStateToProps)(WobjHeader));
+export default injectIntl(WobjHeader);
