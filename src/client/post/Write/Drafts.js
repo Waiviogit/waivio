@@ -123,10 +123,7 @@ class Drafts extends React.Component {
             {!reloading && _.size(draftPosts) !== 0 && (
               <div className="Drafts__toolbar">
                 <Checkbox
-                  checked={_.isEqual(
-                    selectedDrafts,
-                    draftPosts.map(d => d.draftId),
-                  )}
+                  checked={_.isEqual(selectedDrafts, draftPosts.map(d => d.draftId))}
                   onChange={this.handleCheckAll}
                 />
                 <div>

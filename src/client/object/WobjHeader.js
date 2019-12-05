@@ -88,7 +88,7 @@ const WobjHeader = ({
               </div>
               <div className="ObjectHeader__controls">
                 <FollowButton following={wobject.author_permlink || ''} followingType="wobject" />
-                { renderEditButton }
+                {renderEditButton}
                 {isMobile && (
                   <Button onClick={() => setModalVisibility(true)}>
                     {intl.formatMessage({ id: 'object_info', defaultMessage: 'Object info' })}
