@@ -7,7 +7,7 @@ import './PaymentTable.less';
 
 const PaymentTableRow = ({ intl, sponsor }) => (
   <tr>
-    <td>{formatDate(sponsor.createdAt)}</td>
+    <td>{formatDate(intl, sponsor.createdAt)}</td>
     <td>
       <div className="PaymentTable__action-column">
         <div>
@@ -20,7 +20,7 @@ const PaymentTableRow = ({ intl, sponsor }) => (
           {intl.formatMessage({
             id: 'paymentTable_review_by',
             defaultMessage: `by`,
-          })}
+          })}{' '}
           <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link> (
           {intl.formatMessage({
             id: 'paymentTable_requested_by',
