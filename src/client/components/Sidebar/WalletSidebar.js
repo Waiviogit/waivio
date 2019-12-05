@@ -54,8 +54,6 @@ class WalletSidebar extends React.Component {
     const ownProfile = match.params.name === user.name || isCurrentUser;
     const cryptos = [STEEM.symbol, SBD.symbol];
     const steemBalance = user.balance ? String(user.balance).match(/^[\d.]+/g)[0] : 0;
-    console.log(steemBalance);
-
     return (
       <div className="WalletSidebar">
         <Action big className="WalletSidebar__transfer" primary onClick={this.handleOpenTransfer}>
