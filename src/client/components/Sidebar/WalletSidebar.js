@@ -53,6 +53,8 @@ class WalletSidebar extends React.Component {
     const { match, user, isCurrentUser } = this.props;
     const ownProfile = match.params.name === user.name || isCurrentUser;
     const cryptos = [STEEM.symbol, SBD.symbol];
+    const steemBalance = user.balance.match(/^[\d.]+/g)[0];
+    console.log(steemBalance);
 
     return (
       <div className="WalletSidebar">
@@ -71,6 +73,15 @@ class WalletSidebar extends React.Component {
         )}
         <CryptoTrendingCharts cryptos={cryptos} />
         {ownProfile && <ClaimRewardsBlock />}
+        <a
+          href={`https://widget.blocktrades.us/trade?affiliate_id=8523b1e2-b2d5-4f76-b920-8f11cd4f45f0&input_coin_type=steem&input_coin_amount=${steemBalance}&output_coin_type=ltc`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Action big className="WalletSidebar__transfer">
+            <FormattedMessage id="exchange" defaultMessage="Exchange" />
+          </Action>
+        </a>
       </div>
     );
   }

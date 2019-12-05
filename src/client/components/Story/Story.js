@@ -426,7 +426,7 @@ class Story extends React.Component {
             <div className="Story__topics">
               <div className="Story__published">
                 <div className="PostWobject__wrap">
-                  {post.wobjects && this.getWobjects(post.wobjects)}
+                  {post.wobjects && this.getWobjects(post.wobjects.slice(0, 4))}
                 </div>
               </div>
             </div>
