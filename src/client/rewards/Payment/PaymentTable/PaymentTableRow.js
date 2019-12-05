@@ -16,8 +16,7 @@ const PaymentTableRow = ({ intl, sponsor }) => (
               id: 'paymentTable_review',
               defaultMessage: `Review`,
             })}
-          </span>
-          &nbsp;
+          </span>{' '}
           {intl.formatMessage({
             id: 'paymentTable_review_by',
             defaultMessage: `by`,
@@ -29,18 +28,22 @@ const PaymentTableRow = ({ intl, sponsor }) => (
           })}{' '}
           <Link to={`/@${sponsor.userName}`}>@{sponsor.sponsor}</Link>)
         </div>
-        {sponsor && sponsor.details ? (
+        {sponsor && sponsor.details && sponsor.details.main_object && (
           <div className="PaymentTable__action-column ml3">
             <div>
-              {`-`}
-              {sponsor.details.main_object}
+              {`- `}
+              <Link to={`/object/${sponsor.details.main_object}`}>
+                {sponsor.details.main_object}
+              </Link>
             </div>
             <div>
-              {`-`}
-              {sponsor.details.review_object}
+              {`- `}
+              <Link to={`/object/${sponsor.details.review_object}`}>
+                {sponsor.details.review_object}
+              </Link>
             </div>
           </div>
-        ) : null}
+        )}
       </div>
     </td>
     <td>
@@ -61,8 +64,8 @@ const PaymentTableRow = ({ intl, sponsor }) => (
         </Link>
       </p>
     </td>
-    <td>{sponsor.amount_sbd}</td>
-    <td className="PaymentTable__balance-column">{sponsor.balance}</td>
+    <td>{sponsor.amount_sbd ? sponsor.amount_sbd : 0}</td>
+    <td className="PaymentTable__balance-column">{sponsor.balance ? sponsor.balance : 0}</td>
   </tr>
 );
 
