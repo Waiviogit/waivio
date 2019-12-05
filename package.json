@@ -17,7 +17,7 @@
     "prettier-check-all": "node ./scripts/prettier/tasks/checkFiles.js all",
     "prettier-file": "node ./scripts/prettier/tasks/formatFile.js",
     "dev": "node --max-old-space-size=8192 ./scripts/start.js",
-    "build": "node ./scripts/build.js",
+    "build": "node --max-old-space-size=8192 ./scripts/build.js",
     "start": "node ./build/server.js",
     "test": "jest --config jest.config.json --coverage",
     "test:watch": "jest --config jest.config.json --watch",
