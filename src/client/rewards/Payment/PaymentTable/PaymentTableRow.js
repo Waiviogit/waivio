@@ -9,9 +9,10 @@ const PaymentTableRow = ({ intl, sponsor }) => (
   <tr>
     <td>{formatDate(intl, sponsor.createdAt)}</td>
     <td>
-      <div className="PaymentTable__action-column">
+      <div className="PaymentTable__action-wrap">
         <div>
-          <span className="PaymentTable__action-column fw6">
+          <React.Fragment>
+          <span className="PaymentTable__action-item fw6">
             {sponsor.type === 'transfer'
               ? intl.formatMessage({
                   id: 'paymentTable_transfer',
@@ -32,7 +33,8 @@ const PaymentTableRow = ({ intl, sponsor }) => (
                 defaultMessage: 'by',
               })}{' '}
           <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link> (
-          {intl.formatMessage({
+          </React.Fragment>
+            {intl.formatMessage({
             id: 'paymentTable_requested_by',
             defaultMessage: `requested by`,
           })}{' '}
