@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
-import { formatDate } from '../../rewardsHelper';
+import { convertDigits, formatDate } from '../../rewardsHelper';
 import './PaymentTable.less';
 
 const PaymentTableRow = ({ intl, sponsor }) => (
@@ -12,15 +12,25 @@ const PaymentTableRow = ({ intl, sponsor }) => (
       <div className="PaymentTable__action-column">
         <div>
           <span className="PaymentTable__action-column fw6">
-            {intl.formatMessage({
-              id: 'paymentTable_review',
-              defaultMessage: `Review`,
-            })}
+            {sponsor.type === 'transfer'
+              ? intl.formatMessage({
+                  id: 'paymentTable_transfer',
+                  defaultMessage: `Transfer`,
+                })
+              : intl.formatMessage({
+                  id: 'paymentTable_review',
+                  defaultMessage: 'Review',
+                })}
           </span>{' '}
-          {intl.formatMessage({
-            id: 'paymentTable_review_by',
-            defaultMessage: `by`,
-          })}{' '}
+          {sponsor.type === 'transfer'
+            ? intl.formatMessage({
+                id: 'paymentTable_from',
+                defaultMessage: 'from',
+              })
+            : intl.formatMessage({
+                id: 'paymentTable_review_by',
+                defaultMessage: 'by',
+              })}{' '}
           <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link> (
           {intl.formatMessage({
             id: 'paymentTable_requested_by',
@@ -47,25 +57,45 @@ const PaymentTableRow = ({ intl, sponsor }) => (
       </div>
     </td>
     <td>
-      <p>
-        <Link to={`/@${sponsor.userName}/${sponsor.details.reservation_permlink}`}>
+      {sponsor.type === 'transfer' ? (
+        <p>
           {intl.formatMessage({
-            id: 'paymentTable_reservation',
-            defaultMessage: `Reservation`,
+            id: 'paymentTable_debt_repayment',
+            defaultMessage: `Debt repayment`,
           })}
-        </Link>
-      </p>
-      <p>
-        <Link to={`/@${sponsor.userName}/${sponsor.details.review_permlink}`}>
-          {intl.formatMessage({
-            id: 'paymentTable_review',
-            defaultMessage: `Review`,
-          })}
-        </Link>
-      </p>
+        </p>
+      ) : (
+        <React.Fragment>
+          <p>
+            <Link to={`/@${sponsor.userName}/${sponsor.details.reservation_permlink}`}>
+              {intl.formatMessage({
+                id: 'paymentTable_reservation',
+                defaultMessage: `Reservation`,
+              })}
+            </Link>
+          </p>
+          <p>
+            <Link to={`/@${sponsor.userName}/${sponsor.details.review_permlink}`}>
+              {intl.formatMessage({
+                id: 'paymentTable_review',
+                defaultMessage: `Review`,
+              })}
+            </Link>
+          </p>
+        </React.Fragment>
+      )}
     </td>
-    <td>{sponsor.amount_sbd ? sponsor.amount_sbd : 0}</td>
-    <td className="PaymentTable__balance-column">{sponsor.balance ? sponsor.balance : 0}</td>
+    <td>
+      {/* eslint-disable-next-line no-nested-ternary */
+      sponsor.amount
+        ? sponsor.type === 'transfer'
+          ? `-${convertDigits(sponsor.amount)}`
+          : convertDigits(sponsor.amount)
+        : 0}
+    </td>
+    <td className="PaymentTable__balance-column">
+      {convertDigits(sponsor.balance) ? convertDigits(sponsor.balance) : 0}
+    </td>
   </tr>
 );
 
