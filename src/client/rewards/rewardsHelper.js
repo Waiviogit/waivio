@@ -142,3 +142,5 @@ export const formatDate = (intl, date) => {
       return ' ';
   }
 };
+
+export const convertDigits = number => parseFloat((Math.round(number * 1000) / 1000).toFixed(3));

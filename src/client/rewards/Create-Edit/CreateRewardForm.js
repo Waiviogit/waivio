@@ -154,7 +154,8 @@ class CreateRewardForm extends React.Component {
 
   prepareSubmitData = (data, userName) => {
     const objects = map(data.secondaryObject, o => o.id);
-    const pageObjects = data.agreement.length !== 0 ? map(data.agreement.length, o => o.id) : [];
+    const agreementObjects =
+      this.state.pageObjects.length !== 0 ? map(this.state.pageObjects, o => o.id) : [];
     const sponsorAccounts = map(data.sponsorsList, o => o.account);
     return {
       requiredObject: data.primaryObject.author_permlink,
@@ -173,12 +174,12 @@ class CreateRewardForm extends React.Component {
         minPosts: data.minPosts,
         minExpertise: data.minExpertise,
         minSteemReputation: data.minSteemReputation,
-        eligibleDays: data.eligibleDays,
       },
+      frequency_assign: data.eligibleDays,
       usersLegalNotice: data.usersLegalNotice,
       commissionAgreement: data.commissionAgreement,
       objects,
-      pageObjects,
+      agreementObjects,
       compensationAccount: data.compensationAccount && data.compensationAccount.account,
       match_bots: sponsorAccounts,
       // eslint-disable-next-line no-underscore-dangle
