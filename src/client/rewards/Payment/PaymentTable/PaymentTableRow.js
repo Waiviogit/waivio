@@ -12,36 +12,36 @@ const PaymentTableRow = ({ intl, sponsor }) => (
       <div className="PaymentTable__action-wrap">
         <div>
           <React.Fragment>
-          <span className="PaymentTable__action-item fw6">
+            <span className="PaymentTable__action-item fw6">
+              {sponsor.type === 'transfer'
+                ? intl.formatMessage({
+                    id: 'paymentTable_transfer',
+                    defaultMessage: `Transfer`,
+                  })
+                : intl.formatMessage({
+                    id: 'paymentTable_review',
+                    defaultMessage: 'Review',
+                  })}
+            </span>{' '}
             {sponsor.type === 'transfer'
               ? intl.formatMessage({
-                  id: 'paymentTable_transfer',
-                  defaultMessage: `Transfer`,
+                  id: 'paymentTable_from',
+                  defaultMessage: 'from',
                 })
               : intl.formatMessage({
-                  id: 'paymentTable_review',
-                  defaultMessage: 'Review',
-                })}
-          </span>{' '}
-          {sponsor.type === 'transfer'
-            ? intl.formatMessage({
-                id: 'paymentTable_from',
-                defaultMessage: 'from',
-              })
-            : intl.formatMessage({
-                id: 'paymentTable_review_by',
-                defaultMessage: 'by',
-              })}{' '}
-          <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link> (
-          </React.Fragment>
+                  id: 'paymentTable_review_by',
+                  defaultMessage: 'by',
+                })}{' '}
+            <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link> (
             {intl.formatMessage({
-            id: 'paymentTable_requested_by',
-            defaultMessage: `requested by`,
-          })}{' '}
-          <Link to={`/@${sponsor.userName}`}>@{sponsor.sponsor}</Link>)
+              id: 'paymentTable_requested_by',
+              defaultMessage: `requested by`,
+            })}{' '}
+            <Link to={`/@${sponsor.userName}`}>@{sponsor.sponsor}</Link>)
+          </React.Fragment>
         </div>
         {sponsor && sponsor.details && sponsor.details.main_object && (
-          <div className="PaymentTable__action-column ml3">
+          <div className="PaymentTable__action-items">
             <div>
               {`- `}
               <Link to={`/object/${sponsor.details.main_object}`}>
