@@ -96,8 +96,8 @@ class ObjectProfile extends React.Component {
     const { match, limit, locale } = this.props;
     if (locale !== nextProps.locale) {
       this.props.getObjectPosts({
-        object: name,
-        username: name,
+        object: match.params.name,
+        username: match.params.name,
         limit,
       });
     }
