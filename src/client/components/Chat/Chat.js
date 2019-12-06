@@ -45,11 +45,11 @@ const Chat = ({
     }
   };
   useEffect(() => {
+    setCloseButton(true);
     window.addEventListener('message', event => {
       if (event && event.data && event.origin === 'https://stchat.cf') {
         switch (event.data.cmd) {
           case 'connected':
-            setCloseButton(true);
             sendChatRequestData('connected');
             break;
           case 'init_response':
@@ -109,7 +109,7 @@ const Chat = ({
       </div>
       {isCloseButton && (
         <div className="Chat__close-button">
-          <Icon type="close" onClick={openChat} />
+          <Icon style={{ fontSize: '25px'}} type="close" onClick={openChat} />
         </div>
       )}
     </div>
