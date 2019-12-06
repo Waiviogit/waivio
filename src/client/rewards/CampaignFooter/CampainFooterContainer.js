@@ -50,16 +50,18 @@ const mapStateToProps = (state, { post, requiredObjectPermlink }) => {
   };
 };
 
-export default connect(mapStateToProps, dispatch =>
-  bindActionCreators(
-    {
-      likeComment,
-      followUser,
-      unfollowUser,
-      followObject,
-      unfollowObject,
-      push,
-    },
-    dispatch,
-  ),
+export default connect(
+  mapStateToProps,
+  dispatch =>
+    bindActionCreators(
+      {
+        likeComment,
+        followUser,
+        unfollowUser,
+        followObject,
+        unfollowObject,
+        push,
+      },
+      dispatch,
+    ),
 )(CampaignFooter);
