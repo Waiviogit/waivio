@@ -15,7 +15,7 @@ const Debts = ({ intl, currentSteemPrice, debtObjsData, componentLocation }) => 
         })}
         : {debtObjsData && debtObjsData.payable && debtObjsData.payable.toFixed(2)}
         {' STEEM '}
-        {currentSteemPrice ? `(US$ ${(currentSteemPrice * debtObjsData.payable).toFixed(2)})` : ''}
+        {currentSteemPrice ? `($${(currentSteemPrice * debtObjsData.payable).toFixed(2)})` : ''}
       </div>
     </div>
     {_.map(debtObjsData.histories, debtObjData => {
