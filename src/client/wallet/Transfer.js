@@ -14,6 +14,7 @@ import {
   getCryptosPriceHistory,
   getIsAuthenticated,
   getIsTransferVisible,
+  getScreenSize,
   getTransferAmount,
   getTransferCurrency,
   getTransferMemo,
@@ -34,6 +35,7 @@ const InputGroup = Input.Group;
     authenticated: getIsAuthenticated(state),
     user: getAuthenticatedUser(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
+    screenSize: getScreenSize(state),
   }),
   {
     closeTransfer,
@@ -55,6 +57,7 @@ export default class Transfer extends React.Component {
     amount: PropTypes.number,
     currency: PropTypes.string,
     memo: PropTypes.string,
+    screenSize: PropTypes.string,
   };
 
   static defaultProps = {
@@ -64,6 +67,7 @@ export default class Transfer extends React.Component {
     memo: '',
     currency: 'STEEM',
     closeTransfer: () => {},
+    screenSize: 'large',
   };
 
   static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
@@ -128,7 +132,7 @@ export default class Transfer extends React.Component {
       amount = parsedAmount * parseFloat(currentSBDRate);
     }
 
-    return `~ $${intl.formatNumber(amount, {
+    return `$${intl.formatNumber(amount, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     })}`;
@@ -305,8 +309,9 @@ export default class Transfer extends React.Component {
   };
 
   render() {
-    const { intl, visible, authenticated, user, memo } = this.props;
+    const { intl, visible, authenticated, user, memo, screenSize } = this.props;
     const { getFieldDecorator } = this.props.form;
+    const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
 
     const balance =
       this.state.currency === Transfer.CURRENCIES.STEEM ? user.balance : user.sbd_balance;
@@ -320,8 +325,12 @@ export default class Transfer extends React.Component {
         onChange={this.handleCurrencyChange}
         className="Transfer__amount__type"
       >
-        <Radio.Button value={Transfer.CURRENCIES.STEEM}>{Transfer.CURRENCIES.STEEM}</Radio.Button>
-        <Radio.Button value={Transfer.CURRENCIES.SBD}>{Transfer.CURRENCIES.SBD}</Radio.Button>
+        <Radio.Button value={Transfer.CURRENCIES.STEEM} className="Transfer__amount__type-steem">
+          {Transfer.CURRENCIES.STEEM}
+        </Radio.Button>
+        <Radio.Button value={Transfer.CURRENCIES.SBD} className="Transfer__amount__type-sbd">
+          {Transfer.CURRENCIES.SBD}
+        </Radio.Button>
       </Radio.Group>,
     );
 
@@ -392,13 +401,18 @@ export default class Transfer extends React.Component {
                   })}
                 />,
               )}
-              <Input
-                disabled
-                className="Transfer__usd-value"
-                addonAfter={currencyPrefix}
-                placeholder={usdValue}
-              />
+              {isMobile ? (
+                <Input disabled className="Transfer__usd-value" placeholder={usdValue} />
+              ) : (
+                <Input
+                  disabled
+                  className="Transfer__usd-value"
+                  addonAfter={currencyPrefix}
+                  placeholder={usdValue}
+                />
+              )}
             </InputGroup>
+            <Form.Item>{isMobile && currencyPrefix}</Form.Item>
             {authenticated && (
               <FormattedMessage
                 id="balance_amount"

@@ -20,10 +20,26 @@
   &__amount {
     display: flex !important;
 
+    &__type {
+      width: 100%;
+
+      &-steem {
+        width: 50%;
+      }
+
+      &-sbd {
+        width: 50%;
+      }
+    }
+
     &__input {
       border-right: 0 !important;
-      width: auto !important;
-      min-width: 225px;
+      width: 100% !important;
+      margin-bottom: 15px !important;
+
+      @media @small {
+        width: 50% !important;
+      }
 
       &:focus,
       &:hover {
