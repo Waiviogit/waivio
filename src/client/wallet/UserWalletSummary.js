@@ -164,15 +164,13 @@ const UserWalletSummary = ({
         )}
       </div>
     </div>
-    <div className="UserWalletSummary__item">
-      <i className="iconfont icon-people_fill UserWalletSummary__icon" />
-      <div className="UserWalletSummary__label">
-        <FormattedMessage id="est_account_value" defaultMessage="Est. Account Value" />
-      </div>
-      <div className="UserWalletSummary__value">
-        {loading || loadingGlobalProperties || steemRateLoading ? (
-          <Loading />
-        ) : (
+    {!(loading || loadingGlobalProperties || steemRateLoading) && (
+      <div className="UserWalletSummary__item">
+        <i className="iconfont icon-people_fill UserWalletSummary__icon" />
+        <div className="UserWalletSummary__label">
+          <FormattedMessage id="est_account_value" defaultMessage="Est. Account Value" />
+        </div>
+        <div className="UserWalletSummary__value">
           <USDDisplay
             value={calculateEstAccountValue(
               user,
@@ -182,9 +180,9 @@ const UserWalletSummary = ({
               sbdRate,
             )}
           />
-        )}
+        </div>
       </div>
-    </div>
+    )}
   </div>
 );
 

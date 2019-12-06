@@ -9,39 +9,43 @@ const PaymentTableRow = ({ intl, sponsor }) => (
   <tr>
     <td>{formatDate(intl, sponsor.createdAt)}</td>
     <td>
-      <div className="PaymentTable__action-column">
+      <div className="PaymentTable__action-wrap">
         <div>
-          <span className="PaymentTable__action-column fw6">
+          <React.Fragment>
+            <span className="PaymentTable__action-item fw6">
+              {intl.formatMessage({
+                id: 'paymentTable_review',
+                defaultMessage: `Review`,
+              })}
+            </span>{' '}
             {intl.formatMessage({
-              id: 'paymentTable_review',
-              defaultMessage: `Review`,
-            })}
-          </span>{' '}
-          {intl.formatMessage({
-            id: 'paymentTable_review_by',
-            defaultMessage: `by`,
-          })}{' '}
-          <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link> (
-          {intl.formatMessage({
-            id: 'paymentTable_requested_by',
-            defaultMessage: `requested by`,
-          })}{' '}
-          <Link to={`/@${sponsor.userName}`}>@{sponsor.sponsor}</Link>)
+              id: 'paymentTable_review_by',
+              defaultMessage: `by`,
+            })}{' '}
+            <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link> (
+            {intl.formatMessage({
+              id: 'paymentTable_requested_by',
+              defaultMessage: `requested by`,
+            })}{' '}
+            <Link to={`/@${sponsor.userName}`}>@{sponsor.sponsor}</Link>)
+          </React.Fragment>
+          {sponsor && sponsor.details && sponsor.details.main_object && (
+            <div className="PaymentTable__action-column ml3">
+              <div>
+                {`- `}
+                <Link to={`/object/${sponsor.details.main_object}`}>
+                  {sponsor.details.main_object}
+                </Link>
+              </div>
+              <div>
+                {`- `}
+                <Link to={`/object/${sponsor.details.review_object}`}>
+                  {sponsor.details.review_object}
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
-        {sponsor && sponsor.details && sponsor.details.main_object && (
-          <div className="PaymentTable__action-column ml3">
-            <div>
-              <Link to={`/object/${sponsor.details.main_object}`}>
-                {sponsor.details.main_object}
-              </Link>
-            </div>
-            <div>
-              <Link to={`/object/${sponsor.details.review_object}`}>
-                {sponsor.details.review_object}
-              </Link>
-            </div>
-          </div>
-        )}
       </div>
     </td>
     <td>
