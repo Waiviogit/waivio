@@ -31,7 +31,7 @@ const CampaignRewardsTable = ({
           </th>
           <th className="Campaign-rewards basicWidth" rowSpan="3">
             {intl.formatMessage({ id: 'edit', defaultMessage: `Edit` })}
-            ***
+            **
           </th>
           <th className="Campaign-rewards mediumWidth" rowSpan="3">
             {intl.formatMessage({
@@ -47,7 +47,6 @@ const CampaignRewardsTable = ({
           </th>
           <th className="Campaign-rewards hide-element" colSpan="2">
             {intl.formatMessage({ id: 'budget_target', defaultMessage: `Budget target` })}
-            ****
           </th>
           <th className="Campaign-rewards hide-element" colSpan="2">
             {intl.formatMessage({ id: 'current_month', defaultMessage: `Current month` })}
