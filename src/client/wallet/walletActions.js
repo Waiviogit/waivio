@@ -34,13 +34,14 @@ export const closeTransfer = createAction(CLOSE_TRANSFER);
 export const openPowerUpOrDown = createAction(OPEN_POWER_UP_OR_DOWN);
 export const closePowerUpOrDown = createAction(CLOSE_POWER_UP_OR_DOWN);
 
-export const openTransfer = (userName, amount = 0, currency = 'STEEM') => dispatch =>
+export const openTransfer = (userName, amount = 0, currency = 'STEEM', memo = '') => dispatch =>
   dispatch({
     type: OPEN_TRANSFER,
     payload: {
       userName,
       amount,
       currency,
+      memo,
     },
   });
 

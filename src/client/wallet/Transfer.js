@@ -1,22 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
-import { Form, Input, Radio, Modal } from 'antd';
-import { STEEM, SBD } from '../../common/constants/cryptos';
+import { Form, Input, Modal, Radio } from 'antd';
+import { SBD, STEEM } from '../../common/constants/cryptos';
 import steemAPI from '../steemAPI';
 import SteemConnect from '../steemConnectAPI';
 import { getCryptoPriceHistory } from '../app/appActions';
 import { closeTransfer } from './walletActions';
 import {
-  getIsAuthenticated,
   getAuthenticatedUser,
+  getCryptosPriceHistory,
+  getIsAuthenticated,
   getIsTransferVisible,
-  getTransferTo,
   getTransferAmount,
   getTransferCurrency,
-  getCryptosPriceHistory,
+  getTransferMemo,
+  getTransferTo,
 } from '../reducers';
 import './Transfer.less';
 
@@ -29,6 +30,7 @@ const InputGroup = Input.Group;
     to: getTransferTo(state),
     amount: getTransferAmount(state),
     currency: getTransferCurrency(state),
+    memo: getTransferMemo(state),
     authenticated: getIsAuthenticated(state),
     user: getAuthenticatedUser(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
@@ -52,12 +54,14 @@ export default class Transfer extends React.Component {
     closeTransfer: PropTypes.func,
     amount: PropTypes.number,
     currency: PropTypes.string,
+    memo: PropTypes.string,
   };
 
   static defaultProps = {
     to: '',
     visible: false,
     amount: 0,
+    memo: '',
     currency: 'STEEM',
     closeTransfer: () => {},
   };
@@ -98,7 +102,7 @@ export default class Transfer extends React.Component {
         to: nextProps.to,
         amount: nextProps.amount,
         currency: nextProps.currency === 'STEEM' ? STEEM.symbol : SBD.symbol,
-        memo: undefined,
+        memo: nextProps.memo,
       });
       this.setState({
         currency: STEEM.symbol,
@@ -301,23 +305,27 @@ export default class Transfer extends React.Component {
   };
 
   render() {
-    const { intl, visible, authenticated, user } = this.props;
+    const { intl, visible, authenticated, user, memo } = this.props;
     const { getFieldDecorator } = this.props.form;
 
     const balance =
       this.state.currency === Transfer.CURRENCIES.STEEM ? user.balance : user.sbd_balance;
+    const isChangesDisabled = !!memo;
 
     const currencyPrefix = getFieldDecorator('currency', {
       initialValue: this.state.currency,
     })(
-      <Radio.Group onChange={this.handleCurrencyChange} className="Transfer__amount__type">
+      <Radio.Group
+        disabled={isChangesDisabled}
+        onChange={this.handleCurrencyChange}
+        className="Transfer__amount__type"
+      >
         <Radio.Button value={Transfer.CURRENCIES.STEEM}>{Transfer.CURRENCIES.STEEM}</Radio.Button>
         <Radio.Button value={Transfer.CURRENCIES.SBD}>{Transfer.CURRENCIES.SBD}</Radio.Button>
       </Radio.Group>,
     );
 
     const usdValue = this.getUSDValue();
-
     return (
       <Modal
         visible={visible}
@@ -342,6 +350,7 @@ export default class Transfer extends React.Component {
               ],
             })(
               <Input
+                disabled={isChangesDisabled}
                 type="text"
                 placeholder={intl.formatMessage({
                   id: 'to_placeholder',
@@ -374,6 +383,7 @@ export default class Transfer extends React.Component {
                 ],
               })(
                 <Input
+                  disabled={isChangesDisabled}
                   className="Transfer__amount__input"
                   onChange={this.handleAmountChange}
                   placeholder={intl.formatMessage({
@@ -395,7 +405,11 @@ export default class Transfer extends React.Component {
                 defaultMessage="Your balance: {amount}"
                 values={{
                   amount: (
-                    <span role="presentation" onClick={this.handleBalanceClick} className="balance">
+                    <span
+                      role="presentation"
+                      onClick={isChangesDisabled ? () => {} : this.handleBalanceClick}
+                      className="balance"
+                    >
                       {balance}
                     </span>
                   ),
@@ -408,7 +422,8 @@ export default class Transfer extends React.Component {
               rules: [{ validator: this.validateMemo }],
             })(
               <Input.TextArea
-                autosize={{ minRows: 2, maxRows: 6 }}
+                disabled={isChangesDisabled}
+                autoSize={{ minRows: 2, maxRows: 6 }}
                 placeholder={intl.formatMessage({
                   id: 'memo_placeholder',
                   defaultMessage: 'Additional message to include in this payment (optional)',

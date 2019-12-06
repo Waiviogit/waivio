@@ -5,10 +5,21 @@
   display: flex;
   flex-direction: column;
   position: absolute;
+  padding: 0 12px 0 12px;
+  @media @small {
+    padding: 0 20px 0 0;
+  }
+  @media @large {
+    padding: 0;
+  }
 
   &__title {
-    font-size: x-large;
-    padding: 25px 0 25px;
+    display: none;
+    @media @small {
+      display: block;
+      font-size: x-large;
+      padding: 25px 0 25px;
+    }
   }
 
   &__text-content {

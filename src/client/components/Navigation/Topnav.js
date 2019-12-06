@@ -59,12 +59,6 @@ import ModalSignUp from './ModalSignUp/ModalSignUp';
   },
 )
 class Topnav extends React.Component {
-  static handleScrollToTop() {
-    if (window) {
-      window.scrollTo(0, 0);
-    }
-  }
-
   static propTypes = {
     /* from decorators */
     intl: PropTypes.shape().isRequired,
@@ -109,6 +103,12 @@ class Topnav extends React.Component {
     TYPE: 'type',
     SELECT_BAR: 'searchSelectBar',
   };
+
+  static handleScrollToTop() {
+    if (window) {
+      window.scrollTo(0, 0);
+    }
+  }
 
   constructor(props) {
     super(props);
@@ -621,13 +621,17 @@ class Topnav extends React.Component {
     });
 
   handleOnBlur = () =>
+    this.setState({
+      dropdownOpen: false,
+      currentItem: 'All',
+      searchBarActive: false,
+    });
+
+  handleClearSearchData = () =>
     this.setState(
       {
-        dropdownOpen: false,
         searchData: '',
         searchBarValue: '',
-        currentItem: 'All',
-        searchBarActive: false,
       },
       this.props.resetSearchAutoCompete,
     );
@@ -695,6 +699,8 @@ class Topnav extends React.Component {
                 />
               </AutoComplete>
               <i className="iconfont icon-search" />
+              {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+              <i className="iconfont icon-close" onClick={this.handleClearSearchData} />
             </div>
           </div>
           <div className="right">
