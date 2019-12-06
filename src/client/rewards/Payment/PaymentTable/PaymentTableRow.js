@@ -31,13 +31,11 @@ const PaymentTableRow = ({ intl, sponsor }) => (
         {sponsor && sponsor.details && sponsor.details.main_object && (
           <div className="PaymentTable__action-column ml3">
             <div>
-              {`- `}
               <Link to={`/object/${sponsor.details.main_object}`}>
                 {sponsor.details.main_object}
               </Link>
             </div>
             <div>
-              {`- `}
               <Link to={`/object/${sponsor.details.review_object}`}>
                 {sponsor.details.review_object}
               </Link>
