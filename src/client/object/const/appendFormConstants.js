@@ -706,9 +706,6 @@ export const fieldsRules = {
   ],
   [objectFields.categoryItem]: [
     {
-      transform: value => value && value.toLowerCase(),
-    },
-    {
       required: true,
       message: {
         intlId: {

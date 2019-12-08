@@ -35,6 +35,7 @@ import { getFieldWithMaxWeight } from './wObjectHelper';
 import OBJECT_TYPE from './const/objectTypes';
 import CreateImage from './ObjectGallery/CreateImage';
 import CreateAlbum from './ObjectGallery/CreateAlbum';
+import CreateTag from './TagCategory/CreateTag';
 
 @connect(
   state => ({
@@ -87,6 +88,7 @@ export default class WobjHistory extends React.Component {
       showModal: false,
       showModalGalleryItem: false,
       showModalGalleryAlbum: false,
+      showModalCategoryItem: false,
       sort: 'recency',
     };
   }
@@ -122,6 +124,8 @@ export default class WobjHistory extends React.Component {
       this.setState(prevState => ({ showModalGalleryItem: !prevState.showModalGalleryItem }));
     } else if (this.state.field === objectFields.galleryAlbum) {
       this.setState(prevState => ({ showModalGalleryAlbum: !prevState.showModalGalleryAlbum }));
+    } else if (this.state.field === objectFields.categoryItem) {
+      this.setState(prevState => ({ showModalCategoryItem: !prevState.showModalCategoryItem }));
     } else {
       this.setState({ showModal: !this.state.showModal });
     }
@@ -136,6 +140,7 @@ export default class WobjHistory extends React.Component {
       showModal,
       showModalGalleryItem,
       showModalGalleryAlbum,
+      showModalCategoryItem,
       sort,
     } = this.state;
     const { feed, object, comments, readLanguages, isAuthenticated, albums } = this.props;
@@ -204,6 +209,7 @@ export default class WobjHistory extends React.Component {
                 hideModal={this.handleToggleModal}
               />
               <CreateAlbum showModal={showModalGalleryAlbum} hideModal={this.handleToggleModal} />
+              <CreateTag showModal={showModalCategoryItem} hideModal={this.handleToggleModal} />
               {showModal && (
                 <AppendModal
                   showModal={showModal}

@@ -122,7 +122,8 @@ export const getAllowedFieldsByObjType = objectType => {
         objectFields.parent,
         objectFields.galleryItem,
         objectFields.galleryAlbum,
-        objectFields.category,
+        objectFields.tagCategory,
+        objectFields.categoryItem,
       ];
     case OBJECT_TYPE.LIST:
       return [
@@ -135,7 +136,8 @@ export const getAllowedFieldsByObjType = objectType => {
         objectFields.parent,
         objectFields.galleryItem,
         objectFields.galleryAlbum,
-        objectFields.category,
+        objectFields.tagCategory,
+        objectFields.categoryItem,
       ];
     default: {
       const excludeFields = [objectFields.listItem, objectFields.pageContent];

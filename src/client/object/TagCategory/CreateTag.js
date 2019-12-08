@@ -2,10 +2,18 @@ import React from 'react';
 import _, { map } from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { bindActionCreators } from 'redux';
-import { Button, Form, Select, Modal, message } from 'antd';
-import { getObjectTagCategory, getObject } from '../../reducers';
+import { Form, Select, Modal, message } from 'antd';
+import LANGUAGES from '../../translations/languages';
+import {
+  getObjectTagCategory,
+  getObject,
+  getAuthenticatedUserName,
+  getFollowingObjectsList,
+  getSuitableLanguage,
+} from '../../reducers';
+import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { appendObject } from '../appendActions';
 import { getField, generatePermlink } from '../../helpers/wObjectHelper';
@@ -14,12 +22,17 @@ import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjec
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { fieldsRules } from '../const/appendFormConstants';
 import { getClientWObj } from '../../adapters';
+import AppendFormFooter from '../AppendFormFooter';
+import { getLanguageText } from '../../translations';
 
 @connect(
   state => ({
-    currentUsername: getObject(state),
+    currentUsername: getAuthenticatedUserName(state),
     wObject: getObject(state),
     categories: getObjectTagCategory(state),
+    followingList: getFollowingObjectsList(state),
+    locale: getSuitableLanguage(state),
+    usedLocale: getSuitableLanguage(state),
   }),
   dispatch =>
     bindActionCreators(
@@ -31,10 +44,23 @@ import { getClientWObj } from '../../adapters';
 )
 class CreateTag extends React.Component {
   state = {
-    categoryItemList: [],
+    categoryItem: null,
     loading: false,
-    selectedObjects: [],
+    selectedCategory: this.props.categories[0],
+    currentTags: [],
   };
+
+  async componentDidMount() {
+    const { selectedCategory } = this.state;
+    if (!_.isEmpty(selectedCategory && selectedCategory.categoryItems)) {
+      let currentTags = await getObjectsByIds({
+        authorPermlinks: selectedCategory.categoryItems.map(tag => tag.name),
+      });
+      currentTags = currentTags.wobjects.map(tag => getClientWObj(tag));
+      // eslint-disable-next-line react/no-did-mount-set-state
+      this.setState({ currentTags });
+    }
+  }
 
   getFieldRules = fieldName => {
     const { intl } = this.props;
@@ -58,11 +84,10 @@ class CreateTag extends React.Component {
 
   validateFieldValue = (rule, value, callback) => {
     const { intl, wObject, form } = this.props;
-    const currentField = form.getFieldValue('currentField');
     const currentLocale = form.getFieldValue('currentLocale');
 
     const filtered = wObject.fields.filter(
-      f => f.locale === currentLocale && f.name === currentField,
+      f => f.locale === currentLocale && f.name === 'categoryItem',
     );
     if (filtered.map(f => f.body.toLowerCase()).includes(value)) {
       callback(
@@ -75,58 +100,52 @@ class CreateTag extends React.Component {
     callback();
   };
 
-  getWobjectField = categoryItems => {
-    const currentLocale = this.props.form.getFieldValue('currentLocale');
-    return {
-      name: 'categoryItem',
-      body: [...categoryItems],
-      locale: currentLocale,
-      category_id: this.props.selectedCategory.id,
-    };
-  };
+  getWobjectField = categoryItem => ({
+    name: 'categoryItem',
+    body: categoryItem.author_permlink,
+    locale: this.props.form.getFieldValue('currentLocale'),
+    id: this.state.selectedCategory.id,
+  });
 
   getWobjectBody = () => {
-    const { currentUsername, selectedCategory } = this.props;
-    let categoryItemList = `\n`;
-
-    this.state.categoryItemList.forEach(tag => {
-      if (!_.isEmpty(tag)) {
-        categoryItemList += `\n ${tag.name}:`;
-      }
-    });
-
-    return `@${currentUsername} added to category ${selectedCategory.name} fallowing category items:\n ${categoryItemList}`;
+    const { currentUsername } = this.props;
+    const currentLocale = this.props.form.getFieldValue('currentLocale');
+    const langReadable = _.filter(LANGUAGES, { id: currentLocale })[0].name;
+    const { categoryItem, selectedCategory } = this.state;
+    return `@${currentUsername} added #tag ${categoryItem.author_permlink} (${langReadable}) into ${selectedCategory.body} category`;
   };
-
-  handlePreviewCancel = () => this.setState({ previewVisible: false });
 
   handleSubmit = e => {
     e.preventDefault();
 
-    const { selectedCategory, hideModal, intl } = this.props;
-    const { categoryItemList } = this.state;
-
+    const { hideModal, intl, currentUsername } = this.props;
+    const { categoryItem, selectedCategory } = this.state;
+    const currentLocale = this.props.form.getFieldValue('currentLocale');
+    const langReadable = _.filter(LANGUAGES, { id: currentLocale })[0].name;
     this.props.form.validateFields(err => {
       if (!err) {
         this.setState({ loading: true });
 
-        this.appendTags(categoryItemList)
+        this.appendTag(categoryItem)
           .then(() => {
             hideModal();
-            this.setState({ categoryItemList: [], uploadingList: [], loading: false });
+            this.setState({ categoryItem: null, loading: false });
             message.success(
               intl.formatMessage(
                 {
-                  id: 'added_image_to_album',
-                  defaultMessage: `@{user} added a new tag to category {category}`,
+                  id: 'added_tags_to_category',
+                  defaultMessage: `@{user} added a new #tag ({language}) to {category} category`,
                 },
                 {
-                  category: selectedCategory,
+                  user: currentUsername,
+                  language: langReadable,
+                  category: selectedCategory.body,
                 },
               ),
             );
           })
-          .catch(() => {
+          .catch(error => {
+            console.error(error.message);
             message.error(
               intl.formatMessage({
                 id: 'couldnt_upload_image',
@@ -135,6 +154,8 @@ class CreateTag extends React.Component {
             );
             this.setState({ loading: false });
           });
+      } else {
+        console.error(err);
       }
     });
   };
@@ -151,55 +172,75 @@ class CreateTag extends React.Component {
     return data;
   };
 
-  appendTags = async categoryItems => {
+  appendTag = async categoryItem => {
     const data = this.getWobjectData();
 
     /* eslint-disable no-restricted-syntax */
     const postData = {
       ...data,
       permlink: `${data.author}-${generatePermlink()}`,
-      field: this.getWobjectField(categoryItems),
+      field: this.getWobjectField(categoryItem),
       body: this.getWobjectBody(),
     };
 
     /* eslint-disable no-await-in-loop */
-    const response = await this.props.appendObject(postData);
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    if (response.value.transactionId) {
-      const filteredTagsList = this.state.fileList.filter(
-        (item, index) => item.id !== categoryItems[index].id,
-      );
-      this.setState({ categoryItemList: filteredTagsList });
-    }
+    await this.props.appendObject(postData);
+    //   await new Promise(resolve => setTimeout(resolve, 2000));
+    //
+    //   if (response.value.transactionId) {
+    //     const filteredTagsList = this.state.fileList.filter(
+    //       (item, index) => item.id !== categoryItems[index].id,
+    //     );
+    //     this.setState({ categoryItemList: filteredTagsList });
+    //   }
   };
 
   handleModalCancel = () => {
     this.props.hideModal();
-    this.setState({ categoryItemList: [] });
+    this.setState({ categoryItem: null });
   };
 
   handleSelectObject = obj => {
-    const currentField = this.props.form.getFieldValue('currentField');
     if (obj && obj.id) {
+      const clientObj = getClientWObj(obj);
       this.props.form.setFieldsValue({
-        [currentField]: [...this.state.categoryItemList, obj],
+        categoryItem: clientObj,
       });
-      this.setState({ categoryItemList: [...this.state.categoryItemList, obj] });
+      this.setState({ categoryItem: clientObj });
+    }
+  };
+
+  handleSelectCategory = async value => {
+    const category = this.props.categories.find(item => item.body === value);
+    if (!_.isEmpty(category.categoryItems)) {
+      let currentTags = await getObjectsByIds({
+        authorPermlinks: category.categoryItems.map(tag => tag.name),
+      });
+      currentTags = currentTags.wobjects.map(tag => getClientWObj(tag));
+      this.setState({ selectedCategory: category, currentTags });
+    } else {
+      this.setState({ selectedCategory: category, currentTags: [] });
     }
   };
 
   render() {
-    const { showModal, form, intl, selectedCategory, categories } = this.props;
-    const { categoryItemList, loading } = this.state;
-    const currentsTags = selectedCategory.categoryItems.map(tag =>
-      getClientWObj(getObject(tag.name)),
-    );
+    const { showModal, form, intl, categories, usedLocale } = this.props;
+    const { categoryItem, loading, selectedCategory, currentTags } = this.state;
+
+    const languageOptions = [];
+    LANGUAGES.forEach(lang => {
+      languageOptions.push(
+        <Select.Option key={lang.id} value={lang.id}>
+          {getLanguageText(lang)}
+        </Select.Option>,
+      );
+    });
+
     return (
       <Modal
         title={intl.formatMessage({
-          id: 'add_new_image',
-          defaultMessage: 'Add new tag',
+          id: 'add_new_tag',
+          defaultMessage: 'Add new #tag',
         })}
         footer={null}
         visible={showModal}
@@ -208,20 +249,41 @@ class CreateTag extends React.Component {
         destroyOnClose
       >
         <Form className="CreateTag" layout="vertical">
+          <div className="ant-form-item-label label AppendForm__appendTitles">
+            <FormattedMessage id="suggest4" defaultMessage="I suggest to add field" />
+          </div>
           <Form.Item>
             {form.getFieldDecorator('tagCategory', {
-              initialValue: selectedCategory ? selectedCategory.id : 'Choose a category',
+              initialValue: selectedCategory ? selectedCategory.body : 'Select a category',
               rules: this.getFieldRules(objectFields.tagCategory),
             })(
-              <Select disabled={loading}>
+              <Select disabled={loading} onChange={this.handleSelectCategory}>
                 {map(categories, category => (
-                  <Select.Option key={`${category.id}`} value={category.name}>
-                    {category.name}
+                  <Select.Option key={`${category.id}`} value={category.body}>
+                    {category.body}
                   </Select.Option>
                 ))}
               </Select>,
             )}
           </Form.Item>
+
+          <div className="ant-form-item-label AppendForm__appendTitles">
+            <FormattedMessage id="suggest2" defaultMessage="With language" />
+          </div>
+
+          <Form.Item>
+            {form.getFieldDecorator('currentLocale', {
+              initialValue: usedLocale,
+            })(
+              <Select disabled={loading} style={{ width: '100%' }}>
+                {languageOptions}
+              </Select>,
+            )}
+          </Form.Item>
+
+          <div className="ant-form-item-label label AppendForm__appendTitles">
+            <FormattedMessage id="suggest5" defaultMessage="I suggest to add field" />
+          </div>
 
           <Form.Item>
             {form.getFieldDecorator(objectFields.categoryItem, {
@@ -232,19 +294,20 @@ class CreateTag extends React.Component {
                 objectType="hashtag"
               />,
             )}
-            {!_.isEmpty(currentsTags) &&
-              currentsTags.map(tag => <ObjectCardView wObject={tag} small />)}
-            {!_.isEmpty(categoryItemList) &&
-              categoryItemList.map(obj => <ObjectCardView wObject={obj} small />)}
+            {categoryItem && <ObjectCardView wObject={categoryItem} showSmallVersion />}
+
+            {!_.isEmpty(currentTags) && (
+              <React.Fragment>
+                <div className="ant-form-item-label label AppendForm__appendTitles pt3">
+                  <FormattedMessage id="already_added" defaultMessage="Already added #tags" />
+                </div>
+                {currentTags.map(tag => (
+                  <ObjectCardView wObject={tag} showSmallVersion key={tag.name} />
+                ))}
+              </React.Fragment>
+            )}
           </Form.Item>
-          <Form.Item className="CreateTag__submit">
-            <Button type="primary" disabled={loading} onClick={this.handleSubmit}>
-              {intl.formatMessage({
-                id: 'categoryItems_append_send',
-                defaultMessage: 'Submit categoryItems',
-              })}
-            </Button>
-          </Form.Item>
+          <AppendFormFooter loading={loading} form={form} handleSubmit={this.handleSubmit} />
         </Form>
       </Modal>
     );
@@ -256,11 +319,11 @@ CreateTag.propTypes = {
   hideModal: PropTypes.func.isRequired,
   intl: PropTypes.shape().isRequired,
   form: PropTypes.shape().isRequired,
-  categories: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  categories: PropTypes.arrayOf(PropTypes.shape()),
   currentUsername: PropTypes.shape(),
   wObject: PropTypes.shape(),
   appendObject: PropTypes.func,
-  selectedCategory: PropTypes.string.isRequired,
+  usedLocale: PropTypes.string,
 };
 
 CreateTag.defaultProps = {
@@ -268,6 +331,9 @@ CreateTag.defaultProps = {
   wObject: {},
   appendObject: () => {},
   addImageToAlbumStore: () => {},
+  categories: [],
+  followingList: [],
+  usedLocale: 'en-US',
 };
 
 export default injectIntl(Form.create()(CreateTag));

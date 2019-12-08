@@ -8,6 +8,7 @@ import AppendModal from '../../object/AppendModal';
 import IconButton from '../IconButton';
 import { objectFields } from '../../../common/constants/listOfFields';
 import './Proposition.less';
+import CreateTag from '../../object/TagCategory/CreateTag';
 
 class Proposition extends React.Component {
   state = {
@@ -36,6 +37,21 @@ class Proposition extends React.Component {
       'icon-button__text': true,
       'field-selected': selectedField === fieldName,
     });
+    let renderModal = null;
+    switch (fieldName) {
+      case objectFields.categoryItem:
+        renderModal = <CreateTag showModal={showModal} hideModal={this.handleToggleModal} />;
+        break;
+      default:
+        renderModal = (
+          <AppendModal
+            objName={objName}
+            showModal={showModal}
+            hideModal={this.handleToggleModal}
+            field={fieldName}
+          />
+        );
+    }
 
     return (
       <React.Fragment>
@@ -58,14 +74,7 @@ class Proposition extends React.Component {
             </Link>
           </div>
         </div>
-        {showModal && (
-          <AppendModal
-            objName={objName}
-            showModal={showModal}
-            hideModal={this.handleToggleModal}
-            field={fieldName}
-          />
-        )}
+        {showModal && renderModal}
       </React.Fragment>
     );
   }

@@ -114,7 +114,6 @@ class ObjectInfo extends React.Component {
     let background = '';
     let photosCount = 0;
     let tagCategories = [];
-    let categoryItems = [];
     let phones = [];
     let email = '';
     let menuItems = [];
@@ -159,11 +158,7 @@ class ObjectInfo extends React.Component {
 
       photosCount = wobject.photos_count;
 
-      const filteredTagCategories = _.filter(wobject.fields, ['name', objectFields.tagCategory]);
-      tagCategories = _.orderBy(filteredTagCategories, ['weight'], ['desc']);
-
-      const filteredCategoryItems = _.filter(wobject.fields, ['name', objectFields.categoryItem]);
-      categoryItems = _.orderBy(filteredCategoryItems, ['tag_weight'], ['desc']);
+      tagCategories = _.orderBy(wobject.tagCategories, ['weight'], ['desc']);
 
       const filteredPhones = _.filter(wobject.fields, ['name', objectFields.phone]);
       phones = _.orderBy(filteredPhones, ['weight'], ['desc']);
@@ -395,16 +390,10 @@ class ObjectInfo extends React.Component {
               objectFields.tagCategory,
               tagCategories
                 ? // eslint-disable-next-line no-unused-vars
-                  tagCategories.map(item => <div>item.name</div>)
+                  tagCategories.map(item => <div>{item.body}</div>)
                 : null,
             )}
-            {listItem(
-              objectFields.categoryItem,
-              categoryItems
-                ? // eslint-disable-next-line no-unused-vars
-                  categoryItems.map(item => <div>item.name</div>)
-                : null,
-            )}
+            {listItem(objectFields.categoryItem, null)}
             {isRenderGallery && (hasGalleryImg || accessExtend) ? (
               <div className="field-info">
                 {accessExtend && (

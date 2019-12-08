@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Button, Form, Input, message, Select, Avatar, Rate, Icon } from 'antd';
+import { Form, Input, message, Select, Avatar, Rate, Icon } from 'antd';
 import { fieldsRules } from './const/appendFormConstants';
 import apiConfig from '../../waivioApi/config.json';
 import {
@@ -45,9 +45,7 @@ import { isValidImage } from '../helpers/image';
 import withEditor from '../components/Editor/withEditor';
 import { MAX_IMG_SIZE, ALLOWED_IMG_FORMATS } from '../../common/constants/validation';
 import { getVoteValue } from '../helpers/user';
-import LikeSection from './LikeSection';
 import { getFieldWithMaxWeight, getInnerFieldWithMaxWeight, getListItems } from './wObjectHelper';
-import FollowObjectForm from './FollowObjectForm';
 import { followObject, rateObject } from '../object/wobjActions';
 import SortingList from '../components/DnDList/DnDList';
 import DnDListItem from '../components/DnDList/DnDListItem';
@@ -57,6 +55,7 @@ import { getNewsFilterLayout } from './NewsFilter/newsFilterHelper';
 import CreateObject from '../post/CreateObjectModal/CreateObject';
 import { baseUrl } from '../../waivioApi/routes';
 import './AppendForm.less';
+import AppendFormFooter from './AppendFormFooter';
 
 @connect(
   state => ({
@@ -85,7 +84,6 @@ export default class AppendForm extends Component {
     rate: PropTypes.number,
     sliderMode: PropTypes.bool,
     defaultVotePercent: PropTypes.number.isRequired,
-    followingList: PropTypes.arrayOf(PropTypes.string),
     appendObject: PropTypes.func,
     followObject: PropTypes.func,
     rateObject: PropTypes.func,
@@ -1368,15 +1366,7 @@ export default class AppendForm extends Component {
   };
 
   render() {
-    const {
-      intl,
-      chosenLocale,
-      usedLocale,
-      currentField,
-      form,
-      followingList,
-      wObject,
-    } = this.props;
+    const { intl, chosenLocale, usedLocale, currentField, form, wObject } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const { loading } = this.state;
 
@@ -1457,31 +1447,7 @@ export default class AppendForm extends Component {
         </Form.Item>
 
         {this.renderContentValue(getFieldValue('currentField'))}
-
-        <LikeSection
-          onVotePercentChange={this.calculateVoteWorth}
-          votePercent={this.state.votePercent}
-          voteWorth={this.state.voteWorth}
-          form={form}
-          sliderVisible={this.state.sliderVisible}
-          onLikeClick={this.handleLikeClick}
-          disabled={loading}
-        />
-
-        {followingList.includes(wObject.author_permlink) ? null : (
-          <FollowObjectForm loading={loading} form={form} />
-        )}
-
-        {getFieldValue('currentField') !== 'auto' && (
-          <Form.Item className="AppendForm__bottom__submit">
-            <Button type="primary" loading={loading} disabled={loading} onClick={this.handleSubmit}>
-              <FormattedMessage
-                id={loading ? 'post_send_progress' : 'append_send'}
-                defaultMessage={loading ? 'Submitting' : 'Suggest'}
-              />
-            </Button>
-          </Form.Item>
-        )}
+        <AppendFormFooter loading={loading} form={form} handleSubmit={this.handleSubmit} />
       </Form>
     );
   }
