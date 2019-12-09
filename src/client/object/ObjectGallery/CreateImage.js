@@ -4,19 +4,21 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { bindActionCreators } from 'redux';
-import { Button, Form, Select, Modal, Upload, Icon, message, Spin } from 'antd';
+import { Form, Select, Modal, Upload, Icon, message, Spin } from 'antd';
 import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
-import { getAuthenticatedUserName, getObject } from '../../reducers';
+import { getAuthenticatedUserName, getObject, getObjectAlbums } from '../../reducers';
 import { objectFields } from '../../../common/constants/listOfFields';
 import * as galleryActions from './galleryActions';
 import * as appendActions from '../appendActions';
 import { getField, generatePermlink, prepareImageToStore } from '../../helpers/wObjectHelper';
 import './CreateImage.less';
+import AppendFormFooter from '../AppendFormFooter';
 
 @connect(
   state => ({
     currentUsername: getAuthenticatedUserName(state),
     wObject: getObject(state),
+    albums: getObjectAlbums(state),
   }),
   dispatch =>
     bindActionCreators(
@@ -314,30 +316,19 @@ class CreateImage extends React.Component {
               </div>,
             )}
           </Form.Item>
-          <Form.Item className="CreateImage__submit">
+          <Form.Item>
             {!uploadingList.length ? (
-              <Button
-                type="primary"
+              <AppendFormFooter
                 loading={loading}
-                disabled={loading}
-                onClick={this.handleSubmit}
-              >
-                {intl.formatMessage({
-                  id: loading ? 'image_send_progress' : 'image_append_send',
-                  defaultMessage: loading ? 'Submitting' : 'Submit image',
-                })}
-              </Button>
+                form={this.props.form}
+                handleSubmit={this.handleSubmit}
+              />
             ) : (
-              <Button
-                type="primary"
+              <AppendFormFooter
                 loading={Boolean(uploadingList.length)}
-                disabled={Boolean(uploadingList.length)}
-              >
-                {intl.formatMessage({
-                  id: 'uploading_image_progress',
-                  defaultMessage: 'Uploading image...',
-                })}
-              </Button>
+                form={this.props.form}
+                handleSubmit={this.handleSubmit}
+              />
             )}
           </Form.Item>
         </Form>

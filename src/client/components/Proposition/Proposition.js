@@ -9,6 +9,8 @@ import IconButton from '../IconButton';
 import { objectFields } from '../../../common/constants/listOfFields';
 import './Proposition.less';
 import CreateTag from '../../object/TagCategory/CreateTag';
+import CreateAlbum from '../../object/ObjectGallery/CreateAlbum';
+import CreateImage from '../../object/ObjectGallery/CreateImage';
 
 class Proposition extends React.Component {
   state = {
@@ -41,6 +43,12 @@ class Proposition extends React.Component {
     switch (fieldName) {
       case objectFields.categoryItem:
         renderModal = <CreateTag showModal={showModal} hideModal={this.handleToggleModal} />;
+        break;
+      case objectFields.galleryAlbum:
+        renderModal = <CreateAlbum showModal={showModal} hideModal={this.handleToggleModal} />;
+        break;
+      case objectFields.galleryItem:
+        renderModal = <CreateImage showModal={showModal} hideModal={this.handleToggleModal} />;
         break;
       default:
         renderModal = (

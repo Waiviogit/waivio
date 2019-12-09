@@ -56,7 +56,6 @@ export default class WobjHistory extends React.Component {
     match: PropTypes.shape().isRequired,
     feed: PropTypes.shape().isRequired,
     toggleViewEditMode: PropTypes.func.isRequired,
-    albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     comments: PropTypes.shape(),
     isAuthenticated: PropTypes.bool,
     getObjectComments: PropTypes.func,
@@ -143,7 +142,7 @@ export default class WobjHistory extends React.Component {
       showModalCategoryItem,
       sort,
     } = this.state;
-    const { feed, object, comments, readLanguages, isAuthenticated, albums } = this.props;
+    const { feed, object, comments, readLanguages, isAuthenticated } = this.props;
 
     const commentIds = getFeedFromState('comments', object.author, feed);
     const content = getFilteredContent(
@@ -202,12 +201,7 @@ export default class WobjHistory extends React.Component {
                 onClick={this.handleAddBtnClick}
                 caption={<FormattedMessage id="add_new_proposition" defaultMessage="Add" />}
               />
-              <CreateImage
-                albums={albums}
-                selectedAlbum={albums[1]}
-                showModal={showModalGalleryItem}
-                hideModal={this.handleToggleModal}
-              />
+              <CreateImage showModal={showModalGalleryItem} hideModal={this.handleToggleModal} />
               <CreateAlbum showModal={showModalGalleryAlbum} hideModal={this.handleToggleModal} />
               <CreateTag showModal={showModalCategoryItem} hideModal={this.handleToggleModal} />
               {showModal && (

@@ -93,6 +93,34 @@ class ObjectInfo extends React.Component {
 
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
 
+  renderCategoryItems = categoryItems => {
+    if (!_.isEmpty(categoryItems)) {
+      const elements = [];
+      const len = categoryItems.length < 5 ? categoryItems.length : 5;
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < len; i++) {
+        elements.push(<span key={categoryItems[i].name}>{`${categoryItems[i].name}, `}</span>);
+      }
+      // eslint-disable-next-line no-unused-expressions
+      categoryItems.length > 5 && elements.push(<span>Show more...</span>);
+      return elements;
+    }
+    return null;
+  };
+
+  renderTagCategories = tagCategories => {
+    if (tagCategories) {
+      return tagCategories.map(item => (
+        <div key={item.id}>
+          {`${item.body}:`}
+          <br />
+          {this.renderCategoryItems(item.categoryItems)}
+        </div>
+      ));
+    }
+    return null;
+  };
+
   render() {
     const { location, wobject, userName, albums, isAuthenticated, usedLocale } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
@@ -386,13 +414,7 @@ class ObjectInfo extends React.Component {
               objectFields.rating,
               <RateInfo username={userName} authorPermlink={wobject.author_permlink} />,
             )}
-            {listItem(
-              objectFields.tagCategory,
-              tagCategories
-                ? // eslint-disable-next-line no-unused-vars
-                  tagCategories.map(item => <div>{item.body}</div>)
-                : null,
-            )}
+            {listItem(objectFields.tagCategory, this.renderTagCategories(tagCategories))}
             {listItem(objectFields.categoryItem, null)}
             {isRenderGallery && (hasGalleryImg || accessExtend) ? (
               <div className="field-info">
