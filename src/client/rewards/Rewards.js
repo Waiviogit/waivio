@@ -26,6 +26,7 @@ import {
   declineProposition,
   getCoordinates,
 } from '../user/userActions';
+import { setTotalPayable } from '../rewards/rewardsAction';
 import RewardsFiltersPanel from './RewardsFiltersPanel/RewardsFiltersPanel';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { preparePropositionReqData } from './rewardsHelper';
@@ -46,11 +47,12 @@ import './Rewards.less';
     cryptosPriceHistory: getCryptosPriceHistory(state),
     user: getAuthenticatedUser(state),
   }),
-  { assignProposition, declineProposition, getCoordinates, activateCampaign },
+  { assignProposition, declineProposition, getCoordinates, activateCampaign, setTotalPayable },
 )
 class Rewards extends React.Component {
   static propTypes = {
     assignProposition: PropTypes.func.isRequired,
+    setTotalPayable: PropTypes.func.isRequired,
     // activateCampaign: PropTypes.func.isRequired,
     declineProposition: PropTypes.func.isRequired,
     userLocation: PropTypes.shape(),
@@ -91,6 +93,10 @@ class Rewards extends React.Component {
     if (!_.size(this.props.userLocation)) {
       this.props.getCoordinates();
     }
+    ApiClient.getLenders({
+      sponsor: '',
+      user: this.props.username,
+    }).then(data => this.props.setTotalPayable(data.payable));
   }
 
   componentWillReceiveProps(nextProps) {

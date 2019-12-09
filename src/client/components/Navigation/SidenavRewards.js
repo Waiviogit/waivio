@@ -3,7 +3,7 @@ import { injectIntl } from 'react-intl';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getAutoCompleteSearchResults, getIsAuthenticated } from '../../reducers';
+import { getAutoCompleteSearchResults, getIsAuthenticated, getTotalPayable } from '../../reducers';
 import './Sidenav.less';
 import SteemConnect from '../../steemConnectAPI';
 
@@ -11,12 +11,14 @@ import SteemConnect from '../../steemConnectAPI';
 @connect(state => ({
   autoCompleteSearchResults: getAutoCompleteSearchResults(state),
   authenticated: getIsAuthenticated(state),
+  totalPayable: getTotalPayable(state),
 }))
 export default class SidenavRewards extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
     authenticated: PropTypes.bool.isRequired,
+    totalPayable: PropTypes.number.isRequired,
   };
 
   static defaultProps = {
@@ -50,7 +52,7 @@ export default class SidenavRewards extends React.Component {
   };
 
   render() {
-    const { intl, authenticated, location } = this.props;
+    const { intl, authenticated, location, totalPayable } = this.props;
     const { menuCondition } = this.state;
     const next = location.pathname.length > 1 ? location.pathname : '';
     return (
@@ -108,14 +110,16 @@ export default class SidenavRewards extends React.Component {
                       })}
                     </NavLink>
                   </li>
-                  <li>
-                    <NavLink to={`/rewards/receivables`} activeClassName="Sidenav__item--active">
-                      {intl.formatMessage({
-                        id: 'sidenav_rewards_receivables',
-                        defaultMessage: `Receivables`,
-                      })}
-                    </NavLink>
-                  </li>
+                  {totalPayable && (
+                    <li>
+                      <NavLink to={`/rewards/receivables`} activeClassName="Sidenav__item--active">
+                        {intl.formatMessage({
+                          id: 'sidenav_rewards_receivables',
+                          defaultMessage: `Receivables`,
+                        })}
+                      </NavLink>
+                    </li>
+                  )}
                   <li>
                     <NavLink to={`/rewards/history`} activeClassName="Sidenav__item--active">
                       {intl.formatMessage({
