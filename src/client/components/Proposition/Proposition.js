@@ -7,10 +7,10 @@ import cn from 'classnames';
 import AppendModal from '../../object/AppendModal';
 import IconButton from '../IconButton';
 import { objectFields } from '../../../common/constants/listOfFields';
-import './Proposition.less';
 import CreateTag from '../../object/TagCategory/CreateTag';
 import CreateAlbum from '../../object/ObjectGallery/CreateAlbum';
 import CreateImage from '../../object/ObjectGallery/CreateImage';
+import './Proposition.less';
 
 class Proposition extends React.Component {
   state = {

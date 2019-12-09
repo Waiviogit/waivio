@@ -11,8 +11,8 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import * as galleryActions from './galleryActions';
 import * as appendActions from '../appendActions';
 import { getField, generatePermlink, prepareImageToStore } from '../../helpers/wObjectHelper';
-import './CreateImage.less';
 import AppendFormFooter from '../AppendFormFooter';
+import './CreateImage.less';
 
 @connect(
   state => ({

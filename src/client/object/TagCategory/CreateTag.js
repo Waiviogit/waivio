@@ -17,13 +17,13 @@ import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { appendObject } from '../appendActions';
 import { getField, generatePermlink } from '../../helpers/wObjectHelper';
-import './CreateTag.less';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { fieldsRules } from '../const/appendFormConstants';
 import { getClientWObj } from '../../adapters';
 import AppendFormFooter from '../AppendFormFooter';
 import { getLanguageText } from '../../translations';
+import './CreateTag.less';
 
 @connect(
   state => ({
@@ -182,17 +182,7 @@ class CreateTag extends React.Component {
       field: this.getWobjectField(categoryItem),
       body: this.getWobjectBody(),
     };
-
-    /* eslint-disable no-await-in-loop */
     await this.props.appendObject(postData);
-    //   await new Promise(resolve => setTimeout(resolve, 2000));
-    //
-    //   if (response.value.transactionId) {
-    //     const filteredTagsList = this.state.fileList.filter(
-    //       (item, index) => item.id !== categoryItems[index].id,
-    //     );
-    //     this.setState({ categoryItemList: filteredTagsList });
-    //   }
   };
 
   handleModalCancel = () => {

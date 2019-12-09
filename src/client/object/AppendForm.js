@@ -54,8 +54,8 @@ import ObjectCardView from '../objectCard/ObjectCardView';
 import { getNewsFilterLayout } from './NewsFilter/newsFilterHelper';
 import CreateObject from '../post/CreateObjectModal/CreateObject';
 import { baseUrl } from '../../waivioApi/routes';
-import './AppendForm.less';
 import AppendFormFooter from './AppendFormFooter';
+import './AppendForm.less';
 
 @connect(
   state => ({
@@ -742,11 +742,6 @@ export default class AppendForm extends Component {
           </Form.Item>
         );
       }
-      // case objectFields.tagCloud: {
-      //   return (
-      //
-      //   );
-      // }
       case objectFields.parent: {
         return (
           <Form.Item>
