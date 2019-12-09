@@ -6,7 +6,13 @@ import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { Icon, Switch } from 'antd';
 import Feed from '../feed/Feed';
-import { getFeed, getIsAuthenticated, getObject, getSuitableLanguage } from '../reducers';
+import {
+  getFeed,
+  getIsAuthenticated,
+  getObject,
+  getSuitableLanguage,
+  getLocale,
+} from '../reducers';
 import {
   getFeedFromState,
   getFeedHasMoreFromState,
@@ -36,6 +42,7 @@ import './ObjectProfile.less';
     isAuthenticated: getIsAuthenticated(state),
     isLoadingPlatform: getIsLoadingPlatformState(state),
     usedLocale: getSuitableLanguage(state),
+    locale: getLocale(state),
   }),
   {
     getObjectPosts,
@@ -58,6 +65,7 @@ class ObjectProfile extends React.Component {
     limit: PropTypes.number,
     isLoadingPlatform: PropTypes.bool,
     usedLocale: PropTypes.string,
+    locale: PropTypes.string,
   };
 
   static defaultProps = {
@@ -65,6 +73,7 @@ class ObjectProfile extends React.Component {
     location: {},
     isLoadingPlatform: true,
     usedLocale: 'en-US',
+    locale: '',
   };
 
   state = {
@@ -84,7 +93,14 @@ class ObjectProfile extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { match, limit } = this.props;
+    const { match, limit, locale } = this.props;
+    if (locale !== nextProps.locale) {
+      this.props.getObjectPosts({
+        object: match.params.name,
+        username: match.params.name,
+        limit,
+      });
+    }
     if (match.params.name !== nextProps.match.params.name) {
       if (
         nextProps.feed &&
@@ -138,7 +154,6 @@ class ObjectProfile extends React.Component {
     const showChart =
       !isLoadingPlatform &&
       some(supportedObjectTypes, objectType => objectType === object.object_type);
-
     const loadMoreContentAction = () => {
       const { skip } = this.state;
       if (this.state.checked) {
