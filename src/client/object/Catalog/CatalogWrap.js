@@ -145,10 +145,7 @@ class CatalogWrap extends React.Component {
         getObjectsByIds({ authorPermlinks: permlinks, locale })
           .then(res =>
             permlinks.map(permlink =>
-              getClientWObj(
-                res.wobjects.find(wobj => wobj.author_permlink === permlink),
-                locale,
-              ),
+              getClientWObj(res.wobjects.find(wobj => wobj.author_permlink === permlink), locale),
             ),
           )
           .then(res => {

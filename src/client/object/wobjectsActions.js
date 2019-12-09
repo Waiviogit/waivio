@@ -13,11 +13,11 @@ export const GET_OBJECT_START = '@objects/GET_OBJECT_START';
 export const GET_OBJECT_ERROR = '@objects/GET_OBJECT_ERROR';
 export const GET_OBJECT_SUCCESS = '@objects/GET_OBJECT_SUCCESS';
 
-export const getObject = (authorPermlink, username) => (dispatch, getState) => {
+export const getObject = (authorPermlink, requiredField) => (dispatch, getState) => {
   const usedLocale = getUsedLocale(getState());
   return dispatch({
     type: GET_OBJECT,
-    payload: ApiClient.getObject(authorPermlink, username)
+    payload: ApiClient.getObject(authorPermlink, requiredField)
       .then(wobj => getClientWObj(wobj, usedLocale))
       .catch(err => console.log(err)),
   });
