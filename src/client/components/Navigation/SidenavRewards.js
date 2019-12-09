@@ -55,6 +55,7 @@ export default class SidenavRewards extends React.Component {
     const { intl, authenticated, location, totalPayable } = this.props;
     const { menuCondition } = this.state;
     const next = location.pathname.length > 1 ? location.pathname : '';
+    console.log(totalPayable);
     return (
       <React.Fragment>
         <ul className="Sidenav">
@@ -110,16 +111,14 @@ export default class SidenavRewards extends React.Component {
                       })}
                     </NavLink>
                   </li>
-                  {totalPayable && (
-                    <li>
-                      <NavLink to={`/rewards/receivables`} activeClassName="Sidenav__item--active">
-                        {intl.formatMessage({
-                          id: 'sidenav_rewards_receivables',
-                          defaultMessage: `Receivables`,
-                        })}
-                      </NavLink>
-                    </li>
-                  )}
+                  <li>
+                    <NavLink to={`/rewards/receivables`} activeClassName="Sidenav__item--active">
+                      {intl.formatMessage({
+                        id: 'sidenav_rewards_receivables',
+                        defaultMessage: `Receivables`,
+                      })}
+                    </NavLink>
+                  </li>
                   <li>
                     <NavLink to={`/rewards/history`} activeClassName="Sidenav__item--active">
                       {intl.formatMessage({
