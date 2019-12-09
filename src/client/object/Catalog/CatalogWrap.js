@@ -2,7 +2,7 @@ import { Breadcrumb } from 'antd';
 import { Link, withRouter } from 'react-router-dom';
 import React from 'react';
 import { connect } from 'react-redux';
-import { has, isEmpty, isEqual, map, forEach, uniq } from 'lodash';
+import { get, has, isEmpty, isEqual, map, forEach, uniq } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import {
@@ -113,7 +113,7 @@ class CatalogWrap extends React.Component {
           const sorting = getListSorting(res);
           return {
             sort: sorting.type,
-            wobjNested: res,
+            wobjNested: getClientWObj(res, this.props.locale),
             listItems: sortListItemsBy(listItems, sorting.type, sorting.order),
             breadcrumb,
             loading: false,
@@ -145,7 +145,10 @@ class CatalogWrap extends React.Component {
         getObjectsByIds({ authorPermlinks: permlinks, locale })
           .then(res =>
             permlinks.map(permlink =>
-              getClientWObj(res.wobjects.find(wobj => wobj.author_permlink === permlink), locale),
+              getClientWObj(
+                res.wobjects.find(wobj => wobj.author_permlink === permlink),
+                locale,
+              ),
             ),
           )
           .then(res => {
@@ -269,6 +272,9 @@ class CatalogWrap extends React.Component {
               </Breadcrumb.Item>
             ))}
           </Breadcrumb>
+          {get(wobjNested, [objectFields.title], undefined) ? (
+            <div className="fw5 pt3">{wobjNested.title}</div>
+          ) : null}
         </div>
 
         {wobject.object_type === OBJ_TYPE.LIST && isEditMode && (
