@@ -3,22 +3,27 @@ import { injectIntl } from 'react-intl';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getAutoCompleteSearchResults, getIsAuthenticated, getTotalPayable } from '../../reducers';
+import {
+  getAuthenticatedUserName,
+  getAutoCompleteSearchResults,
+  getIsAuthenticated,
+} from '../../reducers';
 import './Sidenav.less';
 import SteemConnect from '../../steemConnectAPI';
+import { getRewardsGeneralCounts } from '../../../waivioApi/ApiClient';
 
 @injectIntl
 @connect(state => ({
   autoCompleteSearchResults: getAutoCompleteSearchResults(state),
   authenticated: getIsAuthenticated(state),
-  totalPayable: getTotalPayable(state),
+  userName: getAuthenticatedUserName(state),
 }))
 export default class SidenavRewards extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
     authenticated: PropTypes.bool.isRequired,
-    totalPayable: PropTypes.number.isRequired,
+    userName: PropTypes.srting.isRequired,
   };
 
   static defaultProps = {
@@ -38,7 +43,24 @@ export default class SidenavRewards extends React.Component {
         rewards: true,
         campaigns: true,
       },
+      rewardsCount: {
+        hasReceivables: false,
+        historyCount: 0,
+        createdCampaignsCount: 0,
+      },
     };
+  }
+
+  componentDidMount() {
+    getRewardsGeneralCounts(this.props.userName).then(data =>
+      this.setState({
+        rewardsCount: {
+          hasReceivables: data.has_receivable,
+          historyCount: data.count_history_campaigns,
+          createdCampaignsCount: data.count_campaigns,
+        },
+      }),
+    );
   }
 
   toggleMenuCondition = menuItem => {
@@ -52,10 +74,10 @@ export default class SidenavRewards extends React.Component {
   };
 
   render() {
-    const { intl, authenticated, location, totalPayable } = this.props;
-    const { menuCondition } = this.state;
+    const { intl, authenticated, location } = this.props;
+    const { menuCondition, rewardsCount } = this.state;
+    const { hasReceivables, historyCount, createdCampaignsCount } = rewardsCount;
     const next = location.pathname.length > 1 ? location.pathname : '';
-    console.log(totalPayable);
     return (
       <React.Fragment>
         <ul className="Sidenav">
@@ -111,22 +133,26 @@ export default class SidenavRewards extends React.Component {
                       })}
                     </NavLink>
                   </li>
-                  <li>
-                    <NavLink to={`/rewards/receivables`} activeClassName="Sidenav__item--active">
-                      {intl.formatMessage({
-                        id: 'sidenav_rewards_receivables',
-                        defaultMessage: `Receivables`,
-                      })}
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink to={`/rewards/history`} activeClassName="Sidenav__item--active">
-                      {intl.formatMessage({
-                        id: 'history',
-                        defaultMessage: `History`,
-                      })}
-                    </NavLink>
-                  </li>
+                  {hasReceivables && (
+                    <li>
+                      <NavLink to={`/rewards/receivables`} activeClassName="Sidenav__item--active">
+                        {intl.formatMessage({
+                          id: 'sidenav_rewards_receivables',
+                          defaultMessage: `Receivables`,
+                        })}
+                      </NavLink>
+                    </li>
+                  )}
+                  {historyCount && (
+                    <li>
+                      <NavLink to={`/rewards/history`} activeClassName="Sidenav__item--active">
+                        {intl.formatMessage({
+                          id: 'history',
+                          defaultMessage: `History`,
+                        })}
+                      </NavLink>
+                    </li>
+                  )}
                 </React.Fragment>
               )}
               <div className="Sidenav__title-wrap">
@@ -159,30 +185,34 @@ export default class SidenavRewards extends React.Component {
                       })}
                     </NavLink>
                   </li>
-                  <li>
-                    <NavLink to={`/rewards/manage`} activeClassName="Sidenav__item--active">
-                      {intl.formatMessage({
-                        id: 'manage',
-                        defaultMessage: `Manage`,
-                      })}
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink to={`/rewards/payables`} activeClassName="Sidenav__item--active">
-                      {intl.formatMessage({
-                        id: 'sidenav_rewards_payables',
-                        defaultMessage: `Payables`,
-                      })}
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink to={`/rewards/match-bot`} activeClassName="Sidenav__item--active">
-                      {intl.formatMessage({
-                        id: 'match_bot',
-                        defaultMessage: `Match bot`,
-                      })}
-                    </NavLink>
-                  </li>
+                  {createdCampaignsCount && (
+                    <React.Fragment>
+                      <li>
+                        <NavLink to={`/rewards/manage`} activeClassName="Sidenav__item--active">
+                          {intl.formatMessage({
+                            id: 'manage',
+                            defaultMessage: `Manage`,
+                          })}
+                        </NavLink>
+                      </li>
+                      <li>
+                        <NavLink to={`/rewards/payables`} activeClassName="Sidenav__item--active">
+                          {intl.formatMessage({
+                            id: 'sidenav_rewards_payables',
+                            defaultMessage: `Payables`,
+                          })}
+                        </NavLink>
+                      </li>
+                      <li>
+                        <NavLink to={`/rewards/match-bot`} activeClassName="Sidenav__item--active">
+                          {intl.formatMessage({
+                            id: 'match_bot',
+                            defaultMessage: `Match bot`,
+                          })}
+                        </NavLink>
+                      </li>
+                    </React.Fragment>
+                  )}
                 </React.Fragment>
               )}
             </React.Fragment>
