@@ -190,7 +190,7 @@ const CampaignRewardsTableRow = ({
         <td className="Campaign-rewards hide-element">{currentItem.budget.toFixed(2)}</td>
         <td className="Campaign-rewards hide-element">{currentItem.reward.toFixed(2)}</td>
         <td className="Campaign-rewards hide-element">{currentItem.reserved}</td>
-        <td className="Campaign-rewards hide-element">{currentItem.payable}</td>
+        <td className="Campaign-rewards hide-element">{currentItem.completed}</td>
         <td className="Campaign-rewards hide-element">{currentItem.remaining}</td>
       </tr>
       <Modal
