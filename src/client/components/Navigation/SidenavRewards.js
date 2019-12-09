@@ -3,8 +3,8 @@ import { injectIntl } from 'react-intl';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import './Sidenav.less';
 import { getAutoCompleteSearchResults, getIsAuthenticated } from '../../reducers';
+import './Sidenav.less';
 import SteemConnect from '../../steemConnectAPI';
 
 @injectIntl
