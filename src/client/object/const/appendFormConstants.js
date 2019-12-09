@@ -513,10 +513,9 @@ export const fieldsRules = {
       required: true,
       message: {
         intlId: {
-          id: 'field_error',
-          defaultMessage: 'Field is required',
+          id: 'object_link_required',
+          defaultMessage: 'Link to new object is required',
         },
-        intlMeta: { field: 'Button' },
       },
     },
     {
