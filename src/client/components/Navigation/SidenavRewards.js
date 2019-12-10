@@ -23,7 +23,7 @@ export default class SidenavRewards extends React.Component {
     intl: PropTypes.shape().isRequired,
     location: PropTypes.shape().isRequired,
     authenticated: PropTypes.bool.isRequired,
-    userName: PropTypes.srting.isRequired,
+    userName: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -81,7 +81,11 @@ export default class SidenavRewards extends React.Component {
     return (
       <React.Fragment>
         <ul className="Sidenav">
-          <div className="Sidenav__title-wrap">
+          <div
+            className="Sidenav__title-wrap"
+            onClick={() => this.toggleMenuCondition('rewards')}
+            role="presentation"
+          >
             <div className="Sidenav__title-item">
               {intl.formatMessage({
                 id: 'rewards',
@@ -89,11 +93,7 @@ export default class SidenavRewards extends React.Component {
               })}
               :
             </div>
-            <div
-              className="Sidenav__title-icon"
-              onClick={() => this.toggleMenuCondition('rewards')}
-              role="presentation"
-            >
+            <div className="Sidenav__title-icon">
               {!menuCondition.rewards ? (
                 <i className="iconfont icon-addition" />
               ) : (
@@ -133,7 +133,7 @@ export default class SidenavRewards extends React.Component {
                       })}
                     </NavLink>
                   </li>
-                  {hasReceivables && (
+                  {hasReceivables ? (
                     <li>
                       <NavLink to={`/rewards/receivables`} activeClassName="Sidenav__item--active">
                         {intl.formatMessage({
@@ -142,8 +142,8 @@ export default class SidenavRewards extends React.Component {
                         })}
                       </NavLink>
                     </li>
-                  )}
-                  {historyCount && (
+                  ) : null}
+                  {!!historyCount && (
                     <li>
                       <NavLink to={`/rewards/history`} activeClassName="Sidenav__item--active">
                         {intl.formatMessage({
@@ -155,7 +155,11 @@ export default class SidenavRewards extends React.Component {
                   )}
                 </React.Fragment>
               )}
-              <div className="Sidenav__title-wrap">
+              <div
+                className="Sidenav__title-wrap"
+                onClick={() => this.toggleMenuCondition('campaigns')}
+                role="presentation"
+              >
                 <div className="Sidenav__title-item">
                   {intl.formatMessage({
                     id: 'campaigns',
@@ -163,11 +167,7 @@ export default class SidenavRewards extends React.Component {
                   })}
                   :
                 </div>
-                <div
-                  className="Sidenav__title-icon"
-                  onClick={() => this.toggleMenuCondition('campaigns')}
-                  role="presentation"
-                >
+                <div className="Sidenav__title-icon">
                   {!menuCondition.campaigns ? (
                     <i className="iconfont icon-addition" />
                   ) : (
@@ -185,7 +185,7 @@ export default class SidenavRewards extends React.Component {
                       })}
                     </NavLink>
                   </li>
-                  {createdCampaignsCount && (
+                  {!!createdCampaignsCount && (
                     <React.Fragment>
                       <li>
                         <NavLink to={`/rewards/manage`} activeClassName="Sidenav__item--active">
