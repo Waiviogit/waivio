@@ -20,6 +20,7 @@ export const preparePropositionReqData = ({
     currentUserName: username,
     sort,
   };
+  if (username) reqData.currentUserName = username;
   if (coordinates && coordinates.length > 0) {
     reqData.coordinates = coordinates;
   }
