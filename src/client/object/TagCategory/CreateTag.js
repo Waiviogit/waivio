@@ -63,6 +63,8 @@ class CreateTag extends React.Component {
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ currentTags });
     }
+    // eslint-disable-next-line react/no-did-mount-set-state
+    this.setState({ selectedCategory: this.props.categories[0] });
   }
 
   getFieldRules = fieldName => {
