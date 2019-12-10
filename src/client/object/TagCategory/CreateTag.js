@@ -46,15 +46,18 @@ class CreateTag extends React.Component {
   state = {
     categoryItem: null,
     loading: false,
-    selectedCategory: this.props.categories[0],
+    selectedCategory: [],
     currentTags: [],
   };
 
   async componentDidMount() {
-    const { selectedCategory } = this.state;
-    if (!_.isEmpty(selectedCategory && selectedCategory.categoryItems)) {
+    if (
+      !_.isEmpty(
+        this.props.categories && this.props.categories[0] && this.props.categories[0].categoryItems,
+      )
+    ) {
       let currentTags = await getObjectsByIds({
-        authorPermlinks: selectedCategory.categoryItems.map(tag => tag.name),
+        authorPermlinks: this.props.categories[0].categoryItems.map(tag => tag.name),
       });
       currentTags = currentTags.wobjects.map(tag => getClientWObj(tag));
       // eslint-disable-next-line react/no-did-mount-set-state
