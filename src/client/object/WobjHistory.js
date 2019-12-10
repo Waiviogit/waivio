@@ -30,11 +30,12 @@ import { getLanguageText } from '../translations';
 import AppendModal from './AppendModal';
 import IconButton from '../components/IconButton';
 import SortSelector from '../components/SortSelector/SortSelector';
-import './WobjHistory.less';
 import { getFieldWithMaxWeight } from './wObjectHelper';
 import OBJECT_TYPE from './const/objectTypes';
 import CreateImage from './ObjectGallery/CreateImage';
 import CreateAlbum from './ObjectGallery/CreateAlbum';
+import CreateTag from './TagCategory/CreateTag';
+import './WobjHistory.less';
 
 @connect(
   state => ({
@@ -55,7 +56,6 @@ export default class WobjHistory extends React.Component {
     match: PropTypes.shape().isRequired,
     feed: PropTypes.shape().isRequired,
     toggleViewEditMode: PropTypes.func.isRequired,
-    albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     comments: PropTypes.shape(),
     isAuthenticated: PropTypes.bool,
     getObjectComments: PropTypes.func,
@@ -87,6 +87,7 @@ export default class WobjHistory extends React.Component {
       showModal: false,
       showModalGalleryItem: false,
       showModalGalleryAlbum: false,
+      showModalCategoryItem: false,
       sort: 'recency',
     };
   }
@@ -122,6 +123,8 @@ export default class WobjHistory extends React.Component {
       this.setState(prevState => ({ showModalGalleryItem: !prevState.showModalGalleryItem }));
     } else if (this.state.field === objectFields.galleryAlbum) {
       this.setState(prevState => ({ showModalGalleryAlbum: !prevState.showModalGalleryAlbum }));
+    } else if (this.state.field === objectFields.categoryItem) {
+      this.setState(prevState => ({ showModalCategoryItem: !prevState.showModalCategoryItem }));
     } else {
       this.setState({ showModal: !this.state.showModal });
     }
@@ -136,9 +139,10 @@ export default class WobjHistory extends React.Component {
       showModal,
       showModalGalleryItem,
       showModalGalleryAlbum,
+      showModalCategoryItem,
       sort,
     } = this.state;
-    const { feed, object, comments, readLanguages, isAuthenticated, albums } = this.props;
+    const { feed, object, comments, readLanguages, isAuthenticated } = this.props;
 
     const commentIds = getFeedFromState('comments', object.author, feed);
     const content = getFilteredContent(
@@ -197,13 +201,9 @@ export default class WobjHistory extends React.Component {
                 onClick={this.handleAddBtnClick}
                 caption={<FormattedMessage id="add_new_proposition" defaultMessage="Add" />}
               />
-              <CreateImage
-                albums={albums}
-                selectedAlbum={albums[1]}
-                showModal={showModalGalleryItem}
-                hideModal={this.handleToggleModal}
-              />
+              <CreateImage showModal={showModalGalleryItem} hideModal={this.handleToggleModal} />
               <CreateAlbum showModal={showModalGalleryAlbum} hideModal={this.handleToggleModal} />
+              <CreateTag showModal={showModalCategoryItem} hideModal={this.handleToggleModal} />
               {showModal && (
                 <AppendModal
                   showModal={showModal}

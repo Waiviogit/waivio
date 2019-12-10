@@ -73,7 +73,7 @@ export default class Wobj extends React.Component {
   };
 
   static fetchData({ store, match }) {
-    return store.dispatch(getObject(match.params.name));
+    return store.dispatch(getObject(match.params.name, 'tagCategory'));
   }
 
   constructor(props) {
@@ -89,9 +89,9 @@ export default class Wobj extends React.Component {
   }
 
   componentDidMount() {
-    const { authenticatedUserName, match, wobject } = this.props;
+    const { match, wobject } = this.props;
     if (isEmpty(wobject)) {
-      this.props.getObjectInfo(match.params.name, authenticatedUserName);
+      this.props.getObjectInfo(match.params.name, 'tagCategory');
     }
   }
 
