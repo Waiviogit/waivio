@@ -510,7 +510,6 @@ export const getPropositions = ({
       status,
       approved,
       requiredObject,
-      currentUserName,
       sort,
     };
 
@@ -524,6 +523,7 @@ export const getPropositions = ({
     if (!_.isEmpty(guideNames)) reqData.guideNames = guideNames;
     if (!_.isEmpty(types)) reqData.types = types;
     if (!_.isEmpty(userName)) reqData.userName = userName;
+    if (currentUserName) reqData.currentUserName = currentUserName;
 
     fetch(`${config.campaignApiPrefix}${config.campaigns}`, {
       headers,
