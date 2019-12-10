@@ -642,10 +642,13 @@ export const getCampaignsByGuideName = guideName =>
 
 export const getRewardsGeneralCounts = guideName =>
   new Promise((resolve, reject) => {
-    fetch(`${config.campaignApiPrefix}${config.campaigns}${config.dashboard}/${guideName}`, {
-      headers,
-      method: 'GET',
-    })
+    fetch(
+      `${config.campaignApiPrefix}${config.campaigns}${config.statistics}/?guideName${guideName}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));
