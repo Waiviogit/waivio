@@ -16,7 +16,7 @@ const MatchBot = ({ intl }) => {
       <div className="MatchBot__title">
         {intl.formatMessage({
           id: 'sponsor_match_bot',
-          defaultMessage: '@Sponsor match bot',
+          defaultMessage: 'Sponsor match bot',
         })}
       </div>
       <div className="MatchBot__text-content">
@@ -41,19 +41,21 @@ const MatchBot = ({ intl }) => {
               'Important: Third-party campaign sponsors must pre-register match bot sponsor in each campaign so that its vote value is subtracted from the direct obligations.',
           })}
         </p>
-        <p>
-          {intl.formatMessage({
-            id: 'minimum_voting_power',
-            defaultMessage: 'Minimum voting power: 80% (change).',
-          })}
-        </p>
-        <p>
-          {intl.formatMessage({
-            id: 'match_bot_will_upvote_eligible_posts_only_if_VP',
-            defaultMessage:
-              'Match bot will upvote eligible posts only if VP on the account exceeds the set value.',
-          })}
-        </p>
+        <div className="MatchBot__highlighted-block">
+          <p>
+            {intl.formatMessage({
+              id: 'minimum_voting_power',
+              defaultMessage: 'Minimum voting power: 80% (change).',
+            })}
+          </p>
+          <p>
+            {intl.formatMessage({
+              id: 'match_bot_will_upvote_eligible_posts_only_if_VP',
+              defaultMessage:
+                'Match bot will upvote eligible posts only if VP on the account exceeds the set value.',
+            })}
+          </p>
+        </div>
       </div>
       {!_.isEmpty(sponsors) ? <MatchBotTable intl={intl} sponsors={sponsors} /> : null}
       <div>*** THE TABLE CONTAINS MOCK DATA</div>
