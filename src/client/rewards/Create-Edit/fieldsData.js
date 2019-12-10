@@ -296,8 +296,8 @@ export default (messageFactory, validators, userName) => ({
       'of the service and acknowledge that this campaign does not violate any laws of British Columbia, Canada.',
     ),
   },
-  commissionToWaivio: {
-    name: 'commissionToWaivio',
+  commissionAgreement: {
+    name: 'commissionAgreement',
     label: messageFactory(
       'agree_to_pay_following_commissions_waivio',
       'I agree to pay the following commissions to Waivio and partners',

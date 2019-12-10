@@ -65,7 +65,7 @@ class CreateRewardForm extends React.Component {
     expiredAt: null,
     usersLegalNotice: '',
     agreement: {},
-    commissionToWaivio: 5,
+    commissionAgreement: 5,
     iAgree: false,
     campaignId: null,
     isCampaignActive: false,
@@ -157,11 +157,10 @@ class CreateRewardForm extends React.Component {
     const agreementObjects =
       this.state.pageObjects.length !== 0 ? map(this.state.pageObjects, o => o.id) : [];
     const sponsorAccounts = map(data.sponsorsList, o => o.account);
-    return {
+    const preparedObject = {
       requiredObject: data.primaryObject.author_permlink,
       guideName: userName,
       name: data.campaignName,
-      description: data.description,
       type: data.type,
       budget: data.budget,
       reward: data.reward,
@@ -176,8 +175,7 @@ class CreateRewardForm extends React.Component {
         minSteemReputation: data.minSteemReputation,
       },
       frequency_assign: data.eligibleDays,
-      usersLegalNotice: data.usersLegalNotice,
-      commissionAgreement: data.commissionAgreement,
+      commissionAgreement: data.commissionAgreement / 100,
       objects,
       agreementObjects,
       compensationAccount: data.compensationAccount && data.compensationAccount.account,
@@ -187,6 +185,9 @@ class CreateRewardForm extends React.Component {
       reservation_timetable: data.targetDays,
       id: this.state.campaignId,
     };
+    if (data.usersLegalNotice) preparedObject.usersLegalNotice = data.usersLegalNotice;
+    if (data.description) preparedObject.description = data.description;
+    return preparedObject;
   };
 
   manageRedirect = () => {
@@ -365,7 +366,7 @@ class CreateRewardForm extends React.Component {
       sponsorsList,
       reservationPeriod,
       compensationAccount,
-      commissionToWaivio,
+      commissionAgreement,
       isCampaignActive,
       loading,
       parentPermlink,
@@ -413,7 +414,7 @@ class CreateRewardForm extends React.Component {
         parentPermlink={parentPermlink}
         getFieldDecorator={form.getFieldDecorator}
         getFieldValue={form.getFieldValue}
-        commissionToWaivio={commissionToWaivio}
+        commissionAgreement={commissionAgreement}
         campaignId={campaignId}
         isCampaignActive={isCampaignActive}
         iAgree={iAgree}
