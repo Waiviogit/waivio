@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import PaymentTable from './PaymentTable/PaymentTable';
 import { getLenders } from '../../../waivioApi/ApiClient';
 import Action from '../../components/Button/Action';
@@ -23,21 +24,26 @@ const Payment = ({ match, intl, userName, openTransfer }) => {
     getLenders(requestParams)
       .then(data => {
         setSponsors(data.histories);
-        setPayable(data.payable);
+        setPayable(data.histories[0].amount_sbd);
       })
       .catch(e => console.log(e));
   }, []);
 
-  const titleName =
-    match.path === '/rewards/payables/@:userName'
-      ? intl.formatMessage({
-          id: 'payment_page_payables',
-          defaultMessage: 'Payables',
-        })
-      : intl.formatMessage({
-          id: 'payment_page_receivables',
-          defaultMessage: 'Receivables',
-        });
+  let titleName;
+  let isPayables;
+  if (match.path === '/rewards/payables/@:userName') {
+    titleName = intl.formatMessage({
+      id: 'payment_page_payables',
+      defaultMessage: 'Payables',
+    });
+    isPayables = true;
+  } else {
+    titleName = intl.formatMessage({
+      id: 'payment_page_receivables',
+      defaultMessage: 'Receivables',
+    });
+    isPayables = false;
+  }
 
   const name = match.params.userName;
 
@@ -46,22 +52,24 @@ const Payment = ({ match, intl, userName, openTransfer }) => {
       <div className="Payment__title">
         <div className="Payment__title-payment">
           {titleName}
-          {`: ${userName} `}
-          &rarr;
-          {` ${name} `}
+          <Link className="Payment__title-link" to={`/@${userName}`}>{`: ${userName} `}</Link>
+          {isPayables ? <span>&rarr;</span> : <span>&larr;</span>}
+          <Link className="Payment__title-link" to={`/@${name}`}>{` ${name} `}</Link>
         </div>
         <div className="Payment__title-pay">
-          <Action
-            className="WalletSidebar__transfer"
-            primary
-            onClick={() => openTransfer(name, payable, 'SBD')}
-          >
-            {intl.formatMessage({
-              id: 'pay',
-              defaultMessage: 'Pay',
-            })}
-            {` ${payable} SBD`}
-          </Action>
+          {isPayables && payable && (
+            <Action
+              className="WalletSidebar__transfer"
+              primary
+              onClick={() => openTransfer(name, payable, 'STEEM')}
+            >
+              {intl.formatMessage({
+                id: 'pay',
+                defaultMessage: 'Pay',
+              })}
+              {` ${payable} STEEM`}
+            </Action>
+          )}
         </div>
       </div>
       <div className="Payment__information-row">
@@ -77,7 +85,7 @@ const Payment = ({ match, intl, userName, openTransfer }) => {
           defaultMessage: 'Only transfer with hashtag "#waivio" are included',
         })}
       </div>
-      {!_.isEmpty(sponsors) ? <PaymentTable sponsors={sponsors} /> : null}
+      {!isEmpty(sponsors) && <PaymentTable sponsors={sponsors} />}
     </div>
   );
 };
@@ -89,9 +97,4 @@ Payment.propTypes = {
   openTransfer: PropTypes.func.isRequired,
 };
 
-export default injectIntl(
-  connect(
-    null,
-    { openTransfer },
-  )(Payment),
-);
+export default injectIntl(connect(null, { openTransfer })(Payment));

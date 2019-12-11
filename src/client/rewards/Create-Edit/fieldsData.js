@@ -43,7 +43,7 @@ export default (messageFactory, validators, userName) => ({
   },
   budget: {
     name: 'budget',
-    label: messageFactory('campaign_budget', 'Campaign budget (monthly, SBD)'),
+    label: messageFactory('campaign_budget', 'Campaign budget (monthly, STEEM)'),
     rules: [
       {
         required: true,
@@ -60,7 +60,7 @@ export default (messageFactory, validators, userName) => ({
   },
   reward: {
     name: 'reward',
-    label: messageFactory('reward_per_review_SBD', 'Reward (per review, SBD)'),
+    label: messageFactory('reward_per_review_STEEM', 'Reward (per review, STEEM)'),
     rules: [
       {
         required: true,
@@ -296,8 +296,8 @@ export default (messageFactory, validators, userName) => ({
       'of the service and acknowledge that this campaign does not violate any laws of British Columbia, Canada.',
     ),
   },
-  commissionToWaivio: {
-    name: 'commissionToWaivio',
+  commissionAgreement: {
+    name: 'commissionAgreement',
     label: messageFactory(
       'agree_to_pay_following_commissions_waivio',
       'I agree to pay the following commissions to Waivio and partners',
@@ -324,6 +324,18 @@ export default (messageFactory, validators, userName) => ({
     spanText: messageFactory(
       'edit_button_span_text',
       'Once saved, the campaign can be activated in the Campaigns/Manage tab.',
+    ),
+  },
+  modal: {
+    createTitle: messageFactory('create_page_create_rewards_campaign', 'Create rewards campaign'),
+    editTitle: messageFactory('create_page_edit_rewards_campaign', 'Edit rewards campaign'),
+    createContent: messageFactory(
+      'create_page_want_create_rewards_campaign',
+      'Do you want create campaign?',
+    ),
+    editContent: messageFactory(
+      'create_page_want_edit_rewards_campaign',
+      'Do you want edit campaign?',
     ),
   },
 });

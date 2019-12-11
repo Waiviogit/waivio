@@ -18,6 +18,7 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import requiresLogin from '../auth/requiresLogin';
 import './Settings.less';
 import TopNavigation from '../components/Navigation/TopNavigation';
+import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 
 const FormItem = Form.Item;
 
@@ -143,7 +144,7 @@ export default class ProfileSettings extends React.Component {
     ));
 
     return (
-      <React.Fragment>
+      <div className="shifted">
         <Helmet>
           <title>
             {intl.formatMessage({ id: 'edit_profile', defaultMessage: 'Edit profile' })} - Waivio
@@ -157,6 +158,7 @@ export default class ProfileSettings extends React.Component {
             </div>
           </Affix>
           <div className="center">
+            <MobileNavigation />
             <h1>
               <FormattedMessage id="edit_profile" defaultMessage="Edit Profile" />
             </h1>
@@ -188,7 +190,7 @@ export default class ProfileSettings extends React.Component {
                     <FormItem>
                       {getFieldDecorator('about')(
                         <Input.TextArea
-                          autosize={{ minRows: 2, maxRows: 6 }}
+                          autoSize={{ minRows: 2, maxRows: 6 }}
                           placeholder={intl.formatMessage({
                             id: 'profile_about_placeholder',
                             defaultMessage: 'Few words about you',
@@ -309,7 +311,7 @@ export default class ProfileSettings extends React.Component {
             </Form>
           </div>
         </div>
-      </React.Fragment>
+      </div>
     );
   }
 }

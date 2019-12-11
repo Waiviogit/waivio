@@ -28,7 +28,8 @@ import Search from '../client/search/Search';
 import Notifications from '../client/notifications/Notifications';
 import Error404 from '../client/statics/Error404';
 import ExitPage from '../client/statics/ExitPage';
-import ObjectProfile from '../client/object/ObjectProfile';
+import ObjectPageFeed from '../client/object/ObjectFeed';
+import ObjectFeed from '../client/object/ObjectFeed/ObjectFeed';
 import WobjFollowers from '../client/object/WobjFollowers';
 import ObjectGallery from '../client/object/ObjectGallery/ObjectGallery';
 import ObjectGalleryAlbum from '../client/object/ObjectGallery/ObjectGalleryAlbum';
@@ -47,6 +48,8 @@ import ReceivablesCampaign from '../client/rewards/Receivables/Receivables';
 import PayablesCampaign from '../client/rewards/Payables/Payables';
 import PaymentCampaign from '../client/rewards/Payment/Payment';
 import ObjectOfTypePage from '../client/object/ObjectOfTypePage/ObjectOfTypePage';
+import SubFeed from '../client/feed/SubFeed';
+import UserInfo from '../client/app/Sidebar/UserInfo';
 
 const routes = [
   {
@@ -172,7 +175,7 @@ const routes = [
         component: DiscoverObjects,
       },
       {
-        path: '/@:name/(comments|followers|followed|reblogs|feed|transfers|activity|expertise)?',
+        path: '/@:name/(comments|followers|followed|reblogs|transfers|activity|expertise|about)?',
         component: User,
         exact: true,
         routes: [
@@ -216,6 +219,11 @@ const routes = [
             exact: true,
             component: UserExpertise,
           },
+          {
+            path: '/@:name/about',
+            exact: true,
+            component: UserInfo,
+          },
         ],
       },
       {
@@ -226,7 +234,7 @@ const routes = [
           {
             path: '/object/:name',
             exact: true,
-            component: ObjectProfile,
+            component: ObjectPageFeed,
           },
           {
             path: `/object/:name/${URL.SEGMENT.ABOUT}`,
@@ -293,8 +301,23 @@ const routes = [
         component: ExitPage,
       },
       {
-        path: '/:sortBy(trending|created|hot|promoted)?/:category?',
+        path: '/:sortBy(trending|created|hot|promoted|feed|blog)?/:category?',
         component: Page,
+        exact: true,
+        routes: [
+          {
+            path: '/feed/:name',
+            component: ObjectFeed,
+          },
+          {
+            path: '/blog/@:name',
+            component: UserProfile,
+          },
+          {
+            path: '/:sortBy(trending|created|hot)?/:category?',
+            component: SubFeed,
+          },
+        ],
       },
       {
         path: '*',

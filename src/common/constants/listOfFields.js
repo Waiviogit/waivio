@@ -17,7 +17,6 @@ export const objectFields = {
   listItem: 'listItem',
   price: 'price',
   parent: 'parent',
-  tagCloud: 'tagCloud',
   newsFilter: 'newsFilter',
   button: 'button',
   workTime: 'workTime',
@@ -25,6 +24,8 @@ export const objectFields = {
   status: 'status',
   galleryItem: 'galleryItem',
   galleryAlbum: 'galleryAlbum',
+  tagCategory: 'tagCategory',
+  categoryItem: 'categoryItem',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -121,6 +122,8 @@ export const getAllowedFieldsByObjType = objectType => {
         objectFields.parent,
         objectFields.galleryItem,
         objectFields.galleryAlbum,
+        objectFields.tagCategory,
+        objectFields.categoryItem,
       ];
     case OBJECT_TYPE.LIST:
       return [
@@ -133,6 +136,8 @@ export const getAllowedFieldsByObjType = objectType => {
         objectFields.parent,
         objectFields.galleryItem,
         objectFields.galleryAlbum,
+        objectFields.tagCategory,
+        objectFields.categoryItem,
       ];
     default: {
       const excludeFields = [objectFields.listItem, objectFields.pageContent];

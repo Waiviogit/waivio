@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import React, { Component } from 'react';
 import { Icon, Col, Row } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { getAlbums } from '../../object/ObjectGallery/galleryActions';
 import Loading from '../../components/Icon/Loading';
 import GalleryAlbum from './GalleryAlbum';
 import './ObjectGallery.less';
@@ -12,23 +13,38 @@ import { getIsObjectAlbumsLoading, getObjectAlbums, getIsAuthenticated } from '.
 import IconButton from '../../components/IconButton';
 
 @injectIntl
-@connect(state => ({
-  loading: getIsObjectAlbumsLoading(state),
-  albums: getObjectAlbums(state),
-  isAuthenticated: getIsAuthenticated(state),
-}))
+@connect(
+  state => ({
+    loading: getIsObjectAlbumsLoading(state),
+    albums: getObjectAlbums(state),
+    isAuthenticated: getIsAuthenticated(state),
+  }),
+  {
+    getAlbums,
+  },
+)
 export default class ObjectGallery extends Component {
   static propTypes = {
     match: PropTypes.shape().isRequired,
     loading: PropTypes.bool.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+    getAlbums: PropTypes.func,
+  };
+
+  static defaultProps = {
+    getAlbums: () => {},
   };
 
   state = {
     photoIndex: 0,
     showModal: false,
   };
+
+  componentDidMount() {
+    const { match } = this.props;
+    this.props.getAlbums(match.params.name);
+  }
 
   handleToggleModal = () =>
     this.setState(prevState => ({

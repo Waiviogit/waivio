@@ -73,7 +73,7 @@ export default class Wobj extends React.Component {
   };
 
   static fetchData({ store, match }) {
-    return store.dispatch(getObject(match.params.name));
+    return store.dispatch(getObject(match.params.name, 'tagCategory'));
   }
 
   constructor(props) {
@@ -89,9 +89,9 @@ export default class Wobj extends React.Component {
   }
 
   componentDidMount() {
-    const { authenticatedUserName, match, wobject } = this.props;
+    const { match, wobject } = this.props;
     if (isEmpty(wobject)) {
-      this.props.getObjectInfo(match.params.name, authenticatedUserName);
+      this.props.getObjectInfo(match.params.name, 'tagCategory');
     }
   }
 
@@ -143,13 +143,17 @@ export default class Wobj extends React.Component {
       match,
       wobject,
       albums,
+      screenSize,
     } = this.props;
     if (failed) return <Error404 />;
 
+    const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
     const objectName = wobject.name || wobject.default_name || '';
     const waivioHost = global.postOrigin || 'https://waiviodev.com';
     const desc = `${objectName || ''}`;
-    const image = wobject.avatar;
+    const image =
+      wobject.avatar ||
+      'https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png';
     const canonicalUrl = `${waivioHost}/object/${match.params.name}`;
     const url = `${waivioHost}/object/${match.params.name}`;
     const displayedObjectName = objectName || '';
@@ -211,14 +215,16 @@ export default class Wobj extends React.Component {
                 </div>
               </Affix>
             )}
-            <Affix className="rightContainer" stickPosition={72}>
-              <div className="right">
-                {wobject.author_permlink && (
-                  <ObjectExpertise username={userName} wobject={wobject} />
-                )}
-              </div>
-              <div>{wobject.author_permlink && <ObjectsRelated wobject={wobject} />}</div>
-            </Affix>
+            {!isMobile && (
+              <Affix className="rightContainer" stickPosition={72}>
+                <div className="right">
+                  {wobject.author_permlink && (
+                    <ObjectExpertise username={userName} wobject={wobject} />
+                  )}
+                </div>
+                <div>{wobject.author_permlink && <ObjectsRelated wobject={wobject} />}</div>
+              </Affix>
+            )}
             <div className="center">
               {renderRoutes(this.props.route.routes, {
                 isEditMode,

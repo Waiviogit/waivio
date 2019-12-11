@@ -370,11 +370,11 @@ class Story extends React.Component {
           <i className="iconfont icon-share1" />
           <FormattedMessage
             id="reblogged_username"
-            defaultMessage="{username} reblogged"
+            defaultMessage="reblogged by {username}"
             values={{
               username: (
-                <Link to={`/@${post.reblogged_by[0]}`}>
-                  <span className="username">{post.reblogged_by[0]}</span>
+                <Link to={`/@${post.reblogged_by}`}>
+                  <span className="username">{post.reblogged_by}</span>
                 </Link>
               ),
             }}
@@ -426,7 +426,7 @@ class Story extends React.Component {
             <div className="Story__topics">
               <div className="Story__published">
                 <div className="PostWobject__wrap">
-                  {post.wobjects && this.getWobjects(post.wobjects)}
+                  {post.wobjects && this.getWobjects(post.wobjects.slice(0, 4))}
                 </div>
               </div>
             </div>

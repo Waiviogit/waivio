@@ -36,6 +36,7 @@
   "createCampaign": "/create_campaign",
   "createObject": "/create/object",
   "dashboard": "/dashboard",
+  "statistics": "/statistics",
   "feed": "/feed",
   "followingObjects": "/following_objects",
   "followingUpdates": "/following_updates",

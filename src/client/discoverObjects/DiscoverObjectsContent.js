@@ -7,7 +7,6 @@ import { isNeedFilters, updateActiveFilters } from './helper';
 import {
   getActiveFilters,
   getObjectTypeSorting,
-  getObjectTypesList,
   getObjectTypeState,
   getObjectTypeLoading,
   getFilteredObjects,
@@ -22,13 +21,13 @@ import {
   changeSortingAndLoad,
 } from '../objectTypes/objectTypeActions';
 import { setMapFullscreenMode } from '../components/Maps/mapActions';
-import { getObjectTypes } from '../objectTypes/objectTypesActions';
 import Loading from '../components/Icon/Loading';
 import ObjectCardView from '../objectCard/ObjectCardView';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import DiscoverObjectsFilters from './DiscoverFiltersSidebar/FiltersContainer';
 import SidenavDiscoverObjects from './SidenavDiscoverObjects';
 import SortSelector from '../components/SortSelector/SortSelector';
+import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 
 const modalName = {
   FILTERS: 'filters',
@@ -44,7 +43,6 @@ const SORT_OPTIONS = {
     availableFilters: getAvailableFilters(state),
     activeFilters: getActiveFilters(state),
     sort: getObjectTypeSorting(state),
-    typesList: getObjectTypesList(state),
     theType: getObjectTypeState(state),
     hasMap: getHasMap(state),
     filteredObjects: getFilteredObjects(state),
@@ -55,7 +53,6 @@ const SORT_OPTIONS = {
   {
     dispatchClearObjectTypeStore: clearType,
     dispatchGetObjectType: getObjectType,
-    dispatchGetObjectTypes: getObjectTypes,
     dispatchSetActiveFilters: setFiltersAndLoad,
     dispatchChangeSorting: changeSortingAndLoad,
     dispatchSetMapFullscreenMode: setMapFullscreenMode,
@@ -68,7 +65,6 @@ class DiscoverObjectsContent extends Component {
     availableFilters: PropTypes.shape().isRequired,
     activeFilters: PropTypes.shape().isRequired,
     sort: PropTypes.string.isRequired,
-    typesList: PropTypes.shape().isRequired,
     theType: PropTypes.shape().isRequired,
     hasMap: PropTypes.bool.isRequired,
     filteredObjects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
@@ -76,7 +72,6 @@ class DiscoverObjectsContent extends Component {
     hasMoreObjects: PropTypes.bool.isRequired,
     dispatchGetObjectType: PropTypes.func.isRequired,
     dispatchClearObjectTypeStore: PropTypes.func.isRequired,
-    dispatchGetObjectTypes: PropTypes.func.isRequired,
     dispatchSetActiveFilters: PropTypes.func.isRequired,
     dispatchChangeSorting: PropTypes.func.isRequired,
     dispatchSetMapFullscreenMode: PropTypes.func.isRequired,
@@ -102,9 +97,8 @@ class DiscoverObjectsContent extends Component {
   }
 
   componentDidMount() {
-    const { dispatchGetObjectType, dispatchGetObjectTypes, typeName, typesList } = this.props;
+    const { dispatchGetObjectType, typeName } = this.props;
     dispatchGetObjectType(typeName, { skip: 0 });
-    if (isEmpty(typesList)) dispatchGetObjectTypes();
   }
 
   componentWillUnmount() {
@@ -181,7 +175,6 @@ class DiscoverObjectsContent extends Component {
     const {
       intl,
       isFetching,
-      typeName,
       hasMap,
       availableFilters,
       activeFilters: { map, ...chosenFilters },
@@ -208,70 +201,56 @@ class DiscoverObjectsContent extends Component {
     );
     return (
       <React.Fragment>
-        <div className="discover-objects-header">
-          <div className="flex justify-between">
-            <span className="discover-objects-header__title">
-              <span className="discover-objects-header__topic ttc">
-                {intl.formatMessage({ id: 'objects', defaultMessage: 'Objects' })}:&nbsp;
-              </span>
-              <span className="ttc">{typeName}</span>&nbsp;
-              <span className="discover-objects-header__selector">
-                (
-                <span className="underline" role="presentation" onClick={this.showTypesModal}>
-                  {intl.formatMessage({ id: 'change', defaultMessage: 'change' })}
-                </span>
-                )
-              </span>
-            </span>
-            {_.size(SORT_OPTIONS) - Number(!hasMap) > 1 ? sortSelector : null}
-          </div>
-          <div className="discover-objects-header__tags-block common">
-            {this.getCommonFiltersLayout()}
-          </div>
-          {isTypeHasFilters ? (
-            <React.Fragment>
-              {!isEmpty(availableFilters) ? (
-                <div className="discover-objects-header__tags-block">
-                  <span className="discover-objects-header__topic ttc">
-                    {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
-                  </span>
-                  {this.getCommonFiltersLayout()}
-                  {_.map(chosenFilters, (filterValues, filterName) =>
-                    filterValues.map(filterValue => (
-                      <Tag
-                        className="ttc"
-                        key={`${filterName}:${filterValue}`}
-                        closable
-                        onClose={this.handleRemoveTag(filterName, filterValue)}
-                      >
-                        {filterValue}
-                      </Tag>
-                    )),
-                  )}
-                  <span
-                    className="discover-objects-header__selector underline ttl"
-                    role="presentation"
-                    onClick={this.showFiltersModal}
-                  >
-                    {intl.formatMessage({ id: 'add_new_proposition', defaultMessage: 'Add' })}
-                  </span>
-                </div>
-              ) : null}
-              {hasMap ? (
-                <div className="discover-objects-header__toggle-map tc">
-                  <Button
-                    icon="compass"
-                    size="large"
-                    className={isEmpty(map) ? 'map-btn' : 'map-btn active'}
-                    onClick={this.showMap}
-                  >
-                    {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
-                  </Button>
-                </div>
-              ) : null}
-            </React.Fragment>
-          ) : null}
+        <div className="discover-objects-header__selection-block">
+          <MobileNavigation />
+          {_.size(SORT_OPTIONS) - Number(!hasMap) > 1 ? sortSelector : null}
         </div>
+        <div className="discover-objects-header__tags-block common">
+          {this.getCommonFiltersLayout()}
+        </div>
+        {isTypeHasFilters ? (
+          <React.Fragment>
+            {!isEmpty(availableFilters) ? (
+              <div className="discover-objects-header__tags-block">
+                <span className="discover-objects-header__topic ttc">
+                  {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
+                </span>
+                {this.getCommonFiltersLayout()}
+                {_.map(chosenFilters, (filterValues, filterName) =>
+                  filterValues.map(filterValue => (
+                    <Tag
+                      className="ttc"
+                      key={`${filterName}:${filterValue}`}
+                      closable
+                      onClose={this.handleRemoveTag(filterName, filterValue)}
+                    >
+                      {filterValue}
+                    </Tag>
+                  )),
+                )}
+                <span
+                  className="discover-objects-header__selector underline ttl"
+                  role="presentation"
+                  onClick={this.showFiltersModal}
+                >
+                  {intl.formatMessage({ id: 'add_new_proposition', defaultMessage: 'Add' })}
+                </span>
+              </div>
+            ) : null}
+            {hasMap ? (
+              <div className="discover-objects-header__toggle-map tc">
+                <Button
+                  icon="compass"
+                  size="large"
+                  className={isEmpty(map) ? 'map-btn' : 'map-btn active'}
+                  onClick={this.showMap}
+                >
+                  {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
+                </Button>
+              </div>
+            ) : null}
+          </React.Fragment>
+        ) : null}
         {!isEmpty(filteredObjects) ? (
           <ReduxInfiniteScroll
             className="Feed"

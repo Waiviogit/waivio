@@ -45,10 +45,28 @@
     }
   }
 
-  .Sidenav__section-title {
-    font-weight: 800;
-    margin-bottom: 10px;
-    text-transform: capitalize;
+  &__title {
+    &-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    &-item {
+      font-weight: 800;
+      text-transform: capitalize;
+      cursor: pointer;
+    }
+
+    &-icon {
+      font-weight: 600;
+      color: @blue-botticelli;
+      margin-left: auto;
+      cursor: pointer;
+      .iconfont {
+        font-size: 22px !important;
+      }
+    }
   }
 }
 
@@ -72,6 +90,7 @@ div[data-dir='rtl'] .Sidenav {
   & > i {
     color: @primary-color;
   }
+
   &.sidenav-discover-objects__item {
     color: @primary-color !important;
   }

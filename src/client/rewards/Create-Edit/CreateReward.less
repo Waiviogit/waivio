@@ -101,11 +101,24 @@
 .notEnoughMoneyWarn {
   font-size: 1.2em;
   margin: 20px auto;
-  color: #f5222d;
+  color: @red-danger;
 }
 
 .CreateRewardForm {
-  padding-bottom: 30px;
+  padding: 0 12px 30px 12px;
+
+  @media @small {
+    padding: 0 0 30px 0;
+  }
+}
+
+.CreateReward__label::before {
+  display: inline-block;
+  margin-right: 4px;
+  color: @red-danger;
+  font-size: 1em;
+  font-family: SimSun, sans-serif;
+  content: '*';
 }
 
 @import 'CreateReward-nightmode';

@@ -25,13 +25,13 @@ const CampaignRewardsTable = ({
           </th>
           <th className="Campaign-rewards maxWidth" rowSpan="3">
             {intl.formatMessage({
-              id: 'campaing',
+              id: 'campaign',
               defaultMessage: `Campaign`,
             })}
           </th>
           <th className="Campaign-rewards basicWidth" rowSpan="3">
             {intl.formatMessage({ id: 'edit', defaultMessage: `Edit` })}
-            ***
+            **
           </th>
           <th className="Campaign-rewards mediumWidth" rowSpan="3">
             {intl.formatMessage({
@@ -47,7 +47,6 @@ const CampaignRewardsTable = ({
           </th>
           <th className="Campaign-rewards hide-element" colSpan="2">
             {intl.formatMessage({ id: 'budget_target', defaultMessage: `Budget target` })}
-            ****
           </th>
           <th className="Campaign-rewards hide-element" colSpan="2">
             {intl.formatMessage({ id: 'current_month', defaultMessage: `Current month` })}
@@ -59,11 +58,11 @@ const CampaignRewardsTable = ({
         <tr>
           <th className="Campaign-rewards basicWidth hide-element" rowSpan="2">
             <p>{intl.formatMessage({ id: 'monthly', defaultMessage: `Monthly` })}</p>
-            <p>(SBD)</p>
+            <p>(STEEM)</p>
           </th>
           <th className="Campaign-rewards basicWidth hide-element" rowSpan="2">
             <p>{intl.formatMessage({ id: 'reward', defaultMessage: `Reward` })}</p>
-            <p>(SBD)</p>
+            <p>(STEEM)</p>
           </th>
           <th className="Campaign-rewards basicWidth hide-element" rowSpan="2">
             {intl.formatMessage({ id: 'reserved', defaultMessage: `Reserved` })}

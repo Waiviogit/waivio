@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Button, Form, Input, message, Select, Avatar, Rate, Icon } from 'antd';
+import { Form, Input, message, Select, Avatar, Rate, Icon } from 'antd';
 import { fieldsRules } from './const/appendFormConstants';
 import apiConfig from '../../waivioApi/config.json';
 import {
@@ -45,9 +45,7 @@ import { isValidImage } from '../helpers/image';
 import withEditor from '../components/Editor/withEditor';
 import { MAX_IMG_SIZE, ALLOWED_IMG_FORMATS } from '../../common/constants/validation';
 import { getVoteValue } from '../helpers/user';
-import LikeSection from './LikeSection';
 import { getFieldWithMaxWeight, getInnerFieldWithMaxWeight, getListItems } from './wObjectHelper';
-import FollowObjectForm from './FollowObjectForm';
 import { followObject, rateObject } from '../object/wobjActions';
 import SortingList from '../components/DnDList/DnDList';
 import DnDListItem from '../components/DnDList/DnDListItem';
@@ -56,6 +54,7 @@ import ObjectCardView from '../objectCard/ObjectCardView';
 import { getNewsFilterLayout } from './NewsFilter/newsFilterHelper';
 import CreateObject from '../post/CreateObjectModal/CreateObject';
 import { baseUrl } from '../../waivioApi/routes';
+import AppendFormFooter from './AppendFormFooter';
 import './AppendForm.less';
 
 @connect(
@@ -85,7 +84,6 @@ export default class AppendForm extends Component {
     rate: PropTypes.number,
     sliderMode: PropTypes.bool,
     defaultVotePercent: PropTypes.number.isRequired,
-    followingList: PropTypes.arrayOf(PropTypes.string),
     appendObject: PropTypes.func,
     followObject: PropTypes.func,
     rateObject: PropTypes.func,
@@ -260,6 +258,10 @@ export default class AppendForm extends Component {
         fieldBody.push(rest[ratingFields.category]);
         break;
       }
+      case objectFields.tagCategory: {
+        fieldBody.push(rest[objectFields.tagCategory]);
+        break;
+      }
       default:
         fieldBody.push(JSON.stringify(rest));
         break;
@@ -336,6 +338,13 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           [phoneFields.number]: formValues[phoneFields.number],
+        };
+      }
+
+      if (currentField === objectFields.tagCategory) {
+        fieldsObject = {
+          ...fieldsObject,
+          id: uuidv4(),
         };
       }
 
@@ -733,24 +742,6 @@ export default class AppendForm extends Component {
           </Form.Item>
         );
       }
-      case objectFields.tagCloud: {
-        return (
-          <Form.Item>
-            {getFieldDecorator(objectFields.tagCloud, {
-              rules: this.getFieldRules(objectFields.tagCloud),
-            })(
-              <Input
-                className="AppendForm__input"
-                disabled={loading}
-                placeholder={intl.formatMessage({
-                  id: 'tag_placeholder',
-                  defaultMessage: 'Enter tag',
-                })}
-              />,
-            )}
-          </Form.Item>
-        );
-      }
       case objectFields.parent: {
         return (
           <Form.Item>
@@ -835,7 +826,7 @@ export default class AppendForm extends Component {
               rules: this.getFieldRules(objectFields.workTime),
             })(
               <Input.TextArea
-                autosize={{ minRows: 4, maxRows: 8 }}
+                autoSize={{ minRows: 4, maxRows: 8 }}
                 className={classNames('AppendForm__input', {
                   'validation-error': !this.state.isSomeValue,
                 })}
@@ -860,7 +851,7 @@ export default class AppendForm extends Component {
                   'validation-error': !this.state.isSomeValue,
                 })}
                 disabled={loading}
-                autosize={{ minRows: 4, maxRows: 8 }}
+                autoSize={{ minRows: 4, maxRows: 8 }}
                 placeholder={intl.formatMessage({
                   id: 'price_field',
                   defaultMessage: 'Price',
@@ -881,7 +872,7 @@ export default class AppendForm extends Component {
                   'validation-error': !this.state.isSomeValue,
                 })}
                 disabled={loading}
-                autosize={{ minRows: 4, maxRows: 8 }}
+                autoSize={{ minRows: 4, maxRows: 8 }}
                 placeholder={intl.formatMessage({
                   id: 'description_full',
                   defaultMessage: 'Full description',
@@ -1344,21 +1335,33 @@ export default class AppendForm extends Component {
       }
       case objectFields.newsFilter:
         return getNewsFilterLayout(this);
+      case objectFields.tagCategory: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.tagCategory, {
+              rules: this.getFieldRules(objectFields.tagCategory),
+            })(
+              <Input
+                className={classNames('AppendForm__input', {
+                  'validation-error': !this.state.isSomeValue,
+                })}
+                disabled={loading}
+                placeholder={intl.formatMessage({
+                  id: 'category_tag_category_placeholder',
+                  defaultMessage: 'Tag category',
+                })}
+              />,
+            )}
+          </Form.Item>
+        );
+      }
       default:
         return null;
     }
   };
 
   render() {
-    const {
-      intl,
-      chosenLocale,
-      usedLocale,
-      currentField,
-      form,
-      followingList,
-      wObject,
-    } = this.props;
+    const { intl, chosenLocale, usedLocale, currentField, form, wObject } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const { loading } = this.state;
 
@@ -1439,31 +1442,7 @@ export default class AppendForm extends Component {
         </Form.Item>
 
         {this.renderContentValue(getFieldValue('currentField'))}
-
-        <LikeSection
-          onVotePercentChange={this.calculateVoteWorth}
-          votePercent={this.state.votePercent}
-          voteWorth={this.state.voteWorth}
-          form={form}
-          sliderVisible={this.state.sliderVisible}
-          onLikeClick={this.handleLikeClick}
-          disabled={loading}
-        />
-
-        {followingList.includes(wObject.author_permlink) ? null : (
-          <FollowObjectForm loading={loading} form={form} />
-        )}
-
-        {getFieldValue('currentField') !== 'auto' && (
-          <Form.Item className="AppendForm__bottom__submit">
-            <Button type="primary" loading={loading} disabled={loading} onClick={this.handleSubmit}>
-              <FormattedMessage
-                id={loading ? 'post_send_progress' : 'append_send'}
-                defaultMessage={loading ? 'Submitting' : 'Suggest'}
-              />
-            </Button>
-          </Form.Item>
-        )}
+        <AppendFormFooter loading={loading} form={form} handleSubmit={this.handleSubmit} />
       </Form>
     );
   }

@@ -11,12 +11,12 @@ const menuSections = {
   STEEM: 'Steem',
   PERSONAL: 'Personal',
 };
-const menuConfig = {
+const getMenuConfig = ({ isAuthenticated }) => ({
   [menuSections.STEEM]: {
     name: menuSections.STEEM,
     intlId: 'steem',
     isCollapsible: true,
-    isCollapsed: false,
+    isCollapsed: isAuthenticated,
     items: [
       {
         name: 'Trending',
@@ -61,14 +61,14 @@ const menuConfig = {
       },
     ],
   },
-};
+});
 
 const SidebarMenuContainer = props => {
   const isAuthenticated = useSelector(getIsAuthenticated);
   const next = props.location.pathname.length > 1 ? props.location.pathname : '';
   return (
     <React.Fragment>
-      <SidebarMenu menuConfig={menuConfig} {...props} />
+      <SidebarMenu menuConfig={getMenuConfig({ isAuthenticated })} {...props} />
       {isAuthenticated ? (
         <FollowingUpdates />
       ) : (

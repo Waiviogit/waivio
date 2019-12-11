@@ -7,7 +7,18 @@
   border-collapse: collapse;
   table-layout: fixed;
   font-size: medium;
-  width: 80%;
+
+  @media @small {
+    width: 95%;
+  }
+
+  @media @medium {
+    width: 75%;
+  }
+
+  @media @large {
+    width: 80%;
+  }
 
   & td {
     border: 1px solid @black;
@@ -32,18 +43,25 @@
   }
 
   &.basicWidth {
-    width: 9%;
+    width: 11%;
   }
 
   &.mediumWidth {
-    width: 33%;
+    width: 27%;
   }
 
   &.maxWidth {
     width: 40%;
   }
 
-  &__action-column {
+  &__action-wrap {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  &__action-items {
+    margin-left: 2rem;
     text-align: start;
   }
 

@@ -5,19 +5,8 @@ import _ from 'lodash';
 import PaymentCard from '../PaymentCard/PaymentCard';
 import './Debts.less';
 
-const Debts = ({ intl, currentSteemDollarPrice, debtObjsData, componentLocation }) => (
+const Debts = ({ intl, currentSteemPrice, debtObjsData, componentLocation }) => (
   <div className="Debts">
-    <div className="Debts__main-title">
-      {componentLocation === '/rewards/payables'
-        ? intl.formatMessage({
-            id: 'debts_payables',
-            defaultMessage: 'Payables',
-          })
-        : intl.formatMessage({
-            id: 'debts_receivables',
-            defaultMessage: 'Receivables',
-          })}
-    </div>
     <div className="Debts__information-row">
       <div className="Debts__information-row-total-title">
         {intl.formatMessage({
@@ -25,9 +14,9 @@ const Debts = ({ intl, currentSteemDollarPrice, debtObjsData, componentLocation 
           defaultMessage: 'Total',
         })}
         : {debtObjsData && debtObjsData.payable && debtObjsData.payable.toFixed(2)}
-        {' SBD '}
-        {currentSteemDollarPrice
-          ? `(US$ ${(currentSteemDollarPrice * debtObjsData.payable).toFixed(2)})`
+        {' STEEM '}
+        {currentSteemPrice && debtObjsData.payable
+          ? `($${(currentSteemPrice * debtObjsData.payable).toFixed(2)})`
           : ''}
       </div>
     </div>
@@ -50,7 +39,7 @@ const Debts = ({ intl, currentSteemDollarPrice, debtObjsData, componentLocation 
 Debts.propTypes = {
   intl: PropTypes.shape().isRequired,
   debtObjsData: PropTypes.shape().isRequired,
-  currentSteemDollarPrice: PropTypes.number.isRequired,
+  currentSteemPrice: PropTypes.number.isRequired,
   componentLocation: PropTypes.string.isRequired,
 };
 

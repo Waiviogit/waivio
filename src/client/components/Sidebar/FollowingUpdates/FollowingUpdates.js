@@ -28,7 +28,7 @@ function buildFollowingUpdatesMenuConfig(updates) {
         name: `@${followingUser.name}`,
         intlId: `@${followingUser.name}`,
         meta: followingUser.last_posts_count > 0 ? followingUser.last_posts_count : '',
-        linkTo: `/@${followingUser.name}`,
+        linkTo: `/blog/@${followingUser.name}`,
       })),
     };
   }
@@ -46,9 +46,9 @@ function buildFollowingUpdatesMenuConfig(updates) {
           const clientObj = getClientWObj(followingObject);
           return {
             name: clientObj.name,
-            intlId: clientObj.name,
+            intlId: clientObj.name || 'unknown_object',
             meta: clientObj.last_posts_count > 0 ? clientObj.last_posts_count : '',
-            linkTo: `/object/${clientObj.id}`,
+            linkTo: `/feed/${clientObj.id}?category=${clientObj.object_type}&name=${clientObj.name}`,
           };
         }),
       };

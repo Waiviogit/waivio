@@ -1,4 +1,4 @@
-import { get, keyBy, orderBy, slice } from 'lodash';
+import { get, keyBy, orderBy, slice, omit } from 'lodash';
 import * as authActions from '../auth/authActions';
 import * as userActions from './userActions';
 import * as wobjActions from '../object/wobjActions';
@@ -8,7 +8,7 @@ const initialState = {
   recommendedObjects: [],
   location: {},
   following: {
-    list: [],
+    list: {},
     pendingFollows: [],
     isFetching: false,
     fetched: false,
@@ -63,12 +63,17 @@ export default function userReducer(state = initialState, action) {
         },
         fetchFollowListError: true,
       };
+    // eslint-disable-next-line no-case-declarations
     case userActions.GET_FOLLOWING_SUCCESS:
+      const followingObject = {};
+      action.payload.forEach(user => {
+        followingObject[user] = true;
+      });
       return {
         ...state,
         following: {
           ...state.following,
-          list: action.payload,
+          list: followingObject,
           isFetching: false,
           fetched: true,
         },
@@ -108,7 +113,7 @@ export default function userReducer(state = initialState, action) {
         fetchFollowListError: false,
       };
     case userActions.FOLLOW_USER_START:
-    case userActions.UNFOLLOW_USER_START:
+    case userActions.UNFOLLOW_USER.START:
       return {
         ...state,
         following: {
@@ -126,18 +131,18 @@ export default function userReducer(state = initialState, action) {
         ...state,
         following: {
           ...state.following,
-          list: [...state.following.list, action.meta.username],
+          list: { ...state.following.list, [action.meta.username]: true },
           pendingFollows: state.following.pendingFollows.filter(
             user => user !== action.meta.username,
           ),
         },
       };
-    case userActions.UNFOLLOW_USER_SUCCESS:
+    case userActions.UNFOLLOW_USER.SUCCESS:
       return {
         ...state,
         following: {
           ...state.following,
-          list: state.following.list.filter(user => user !== action.meta.username),
+          list: omit(state.following.list, action.meta.username),
           pendingFollows: state.following.pendingFollows.filter(
             user => user !== action.meta.username,
           ),
@@ -145,7 +150,7 @@ export default function userReducer(state = initialState, action) {
       };
 
     case userActions.FOLLOW_USER_ERROR:
-    case userActions.UNFOLLOW_USER_ERROR:
+    case userActions.UNFOLLOW_USER.ERROR:
       return {
         ...state,
         following: {
@@ -306,7 +311,7 @@ export default function userReducer(state = initialState, action) {
   }
 }
 
-export const getFollowingList = state => state.following.list;
+export const getFollowingList = state => Object.keys(state.following.list);
 export const getFollowingObjectsList = state => state.followingObjects.list;
 export const getPendingFollows = state => state.following.pendingFollows;
 export const getPendingFollowingObjects = state => state.followingObjects.pendingFollows;

@@ -5,10 +5,28 @@
   display: flex;
   flex-direction: column;
   position: absolute;
+  padding: 0 12px 0 12px;
+  @media @small {
+    padding: 0 20px 0 0;
+  }
+  @media @large {
+    padding: 0;
+  }
 
   &__title {
-    font-size: x-large;
-    padding: 25px 0 25px;
+    display: none;
+    @media @small {
+      display: block;
+      font-size: x-large;
+      padding: 25px 0 25px;
+    }
+  }
+
+  &__highlighted-block {
+    border-top: 1px solid @black-text-basic;
+    border-bottom: 1px solid @black-text-basic;
+    margin: 20px 0 20px 0;
+    padding: 20px 0 20px 0;
   }
 
   &__text-content {

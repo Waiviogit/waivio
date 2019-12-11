@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import { Button, Icon, Tag } from 'antd';
+import { Button, Icon } from 'antd';
 import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -93,6 +93,34 @@ class ObjectInfo extends React.Component {
 
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
 
+  renderCategoryItems = categoryItems => {
+    if (!_.isEmpty(categoryItems)) {
+      const elements = [];
+      const len = categoryItems.length < 5 ? categoryItems.length : 5;
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < len; i++) {
+        elements.push(<span key={categoryItems[i].name}>{`${categoryItems[i].name}, `}</span>);
+      }
+      // eslint-disable-next-line no-unused-expressions
+      categoryItems.length > 5 && elements.push(<span>Show more...</span>);
+      return elements;
+    }
+    return null;
+  };
+
+  renderTagCategories = tagCategories => {
+    if (tagCategories) {
+      return tagCategories.map(item => (
+        <div key={item.id}>
+          {`${item.body}:`}
+          <br />
+          {this.renderCategoryItems(item.categoryItems)}
+        </div>
+      ));
+    }
+    return null;
+  };
+
   render() {
     const { location, wobject, userName, albums, isAuthenticated, usedLocale } = this.props;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
@@ -113,7 +141,7 @@ class ObjectInfo extends React.Component {
     let short = '';
     let background = '';
     let photosCount = 0;
-    let tags = [];
+    let tagCategories = [];
     let phones = [];
     let email = '';
     let menuItems = [];
@@ -158,8 +186,7 @@ class ObjectInfo extends React.Component {
 
       photosCount = wobject.photos_count;
 
-      const filtered = _.filter(wobject.fields, ['name', objectFields.tagCloud]);
-      tags = _.orderBy(filtered, ['weight'], ['desc']);
+      tagCategories = _.orderBy(wobject.tagCategories, ['weight'], ['desc']);
 
       const filteredPhones = _.filter(wobject.fields, ['name', objectFields.phone]);
       phones = _.orderBy(filteredPhones, ['weight'], ['desc']);
@@ -299,10 +326,13 @@ class ObjectInfo extends React.Component {
           )}
           {!isEditMode &&
             sortListItemsBy(
-              combineObjectMenu(menuItems.map(menuItem => getClientWObj(menuItem, usedLocale)), {
-                button,
-                news: Boolean(newsFilter),
-              }),
+              combineObjectMenu(
+                menuItems.map(menuItem => getClientWObj(menuItem, usedLocale)),
+                {
+                  button,
+                  news: Boolean(newsFilter),
+                },
+              ),
               !_.isEmpty(wobject.sortCustom) ? 'custom' : '',
               wobject && wobject.sortCustom,
             ).map(item => getMenuSectionLink(item))}
@@ -387,46 +417,8 @@ class ObjectInfo extends React.Component {
               objectFields.rating,
               <RateInfo username={userName} authorPermlink={wobject.author_permlink} />,
             )}
-            {listItem(
-              objectFields.tagCloud,
-              <div className="field-info">
-                {accessExtend ? (
-                  <React.Fragment>
-                    {tags.length <= 3 ? (
-                      tags.slice(0, 3).map(({ body }) => (
-                        <div key={body} className="tag-item">
-                          {body}
-                        </div>
-                      ))
-                    ) : (
-                      <React.Fragment>
-                        {tags.slice(0, 2).map(({ body }) => (
-                          <div key={body} className="tag-item">
-                            {body}
-                          </div>
-                        ))}
-                        <Link
-                          to={`/object/${wobject.author_permlink}/updates/${objectFields.tagCloud}`}
-                          onClick={() => this.handleSelectField(objectFields.tagCloud)}
-                        >
-                          <FormattedMessage id="show_more_tags" defaultMessage="show more">
-                            {value => <div className="tag-item">{value}</div>}
-                          </FormattedMessage>
-                        </Link>
-                      </React.Fragment>
-                    )}
-                  </React.Fragment>
-                ) : (
-                  <React.Fragment>
-                    {tags.slice(0, 3).map(({ body }) => (
-                      <Tag key={body} color="volcano">
-                        {body}
-                      </Tag>
-                    ))}
-                  </React.Fragment>
-                )}
-              </div>,
-            )}
+            {listItem(objectFields.tagCategory, this.renderTagCategories(tagCategories))}
+            {listItem(objectFields.categoryItem, null)}
             {isRenderGallery && (hasGalleryImg || accessExtend) ? (
               <div className="field-info">
                 {accessExtend && (

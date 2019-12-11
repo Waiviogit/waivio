@@ -4,24 +4,20 @@
 @wrapPadding: 15px;
 
 .Proposition {
-  margin-bottom: 15px;
+  margin-bottom: @wrapPadding;
   background-color: @white;
 
   .RewardsHeader {
-    &-block {
-      border: 1px solid @blue-hawkesBlue;
-    }
-
     &-wrap {
-      padding-bottom: 0;
-      margin-top: 0;
-      border: none;
+      border-radius: 0;
+      margin-bottom: 15px;
     }
 
     &-wrap-second {
       display: flex;
       justify-content: space-between;
-      padding: 0 10px;
+      padding-top: @wrapPadding;
+      border-top: 1px solid @blue-hawkesBlue;
     }
 
     &-details {
@@ -70,7 +66,7 @@
   }
 
   &__author-title {
-    margin-right: 15px;
+    margin-right: @wrapPadding;
   }
 
   &__footer {
@@ -78,7 +74,7 @@
     width: 100%;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: @wrapPadding;
   }
 
   &__object-line {
@@ -87,14 +83,14 @@
     justify-content: space-between;
 
     .ObjectCard {
-      padding: 14px 0;
+      padding: @wrapPadding 0;
       width: 100%;
       border: none;
     }
   }
 
   .WriteReview-button {
-    margin-right: 15px;
+    margin-right: @wrapPadding;
   }
 }
 

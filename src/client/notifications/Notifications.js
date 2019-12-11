@@ -25,6 +25,7 @@ import NotificationVoteWitness from '../components/Navigation/Notifications/Noti
 import Loading from '../components/Icon/Loading';
 import './Notifications.less';
 import RightSidebar from '../app/Sidebar/RightSidebar';
+import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 
 class Notifications extends React.Component {
   static propTypes = {
@@ -43,14 +44,14 @@ class Notifications extends React.Component {
   };
 
   componentDidMount() {
-    const { userMetaData, notifications } = this.props;
+    const { userMetaData, notifications, currentAuthUsername } = this.props;
 
     if (_.isEmpty(userMetaData)) {
       this.props.getUpdatedUserMetadata();
     }
 
     if (_.isEmpty(notifications)) {
-      this.props.getNotifications();
+      this.props.getNotifications(currentAuthUsername);
     }
   }
 
@@ -72,6 +73,7 @@ class Notifications extends React.Component {
             </div>
           </Affix>
           <div className="NotificationsPage center">
+            <MobileNavigation />
             <div className="NotificationsPage__title">
               <h1>
                 <FormattedMessage id="notifications" defaultMessage="Notifications" />

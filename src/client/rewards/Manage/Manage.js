@@ -65,24 +65,10 @@ class Manage extends React.Component {
     return (
       <React.Fragment>
         <div>
+          *{' '}
           {intl.formatMessage({
             id: 'campaigns_be_suspended',
             defaultMessage: `All campaigns will be suspended if`,
-          })}
-          :
-        </div>
-        <div>
-          *{' '}
-          {intl.formatMessage({
-            id: 'accounts_payable_exeed',
-            defaultMessage: `accounts payable exeed 30 days`,
-          })}
-        </div>
-        <div>
-          **{' '}
-          {intl.formatMessage({
-            id: 'remaining_balance_is_not_sufficient',
-            defaultMessage: `the remaining balance is not sufficient to cover outstanding obligations`,
           })}
         </div>
       </React.Fragment>
@@ -94,17 +80,10 @@ class Manage extends React.Component {
     return (
       <React.Fragment>
         <div>
-          ***{' '}
+          **{' '}
           {intl.formatMessage({
             id: 'only_inactive_campaigns',
             defaultMessage: `Only inactive campaigns can be edited`,
-          })}
-        </div>
-        <div>
-          ****{' '}
-          {intl.formatMessage({
-            id: 'campaign_budgets_calcualted',
-            defaultMessage: `Campaign budgets calcualted from the 1st day of each month`,
           })}
         </div>
       </React.Fragment>
@@ -122,8 +101,8 @@ class Manage extends React.Component {
         <div className="Manage__account-balance-wrap">
           <div className="Manage__account-balance-wrap-title">
             {intl.formatMessage({
-              id: 'rewardAccountBalance',
-              defaultMessage: `Account balance (SBD)`,
+              id: 'manage_page_account_balance',
+              defaultMessage: `Account balance (STEEM)`,
             })}
           </div>
           <BalanceTable intl={intl} budgetTotal={budgetTotal} user={user} />
@@ -131,7 +110,7 @@ class Manage extends React.Component {
           <div className="Manage__rewards-campaign-wrap">
             <div className="Manage__rewards-campaign-wrap-title">
               {intl.formatMessage({
-                id: 'manageRewardsCampaign',
+                id: 'manage_page_manage_campaign',
                 defaultMessage: `Manage rewards campaign`,
               })}
             </div>

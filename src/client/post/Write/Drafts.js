@@ -15,6 +15,7 @@ import DeleteDraftModal from './DeleteDraftModal';
 import requiresLogin from '../../auth/requiresLogin';
 import './Drafts.less';
 import TopNavigation from '../../components/Navigation/TopNavigation';
+import MobileNavigation from '../../components/Navigation/MobileNavigation/MobileNavigation';
 
 @requiresLogin
 @injectIntl
@@ -106,6 +107,7 @@ class Drafts extends React.Component {
             </div>
           </Affix>
           <div className="center">
+            <MobileNavigation />
             <div>
               <h1>
                 <FormattedMessage id="drafts" defaultMessage="Drafts" />
@@ -121,7 +123,10 @@ class Drafts extends React.Component {
             {!reloading && _.size(draftPosts) !== 0 && (
               <div className="Drafts__toolbar">
                 <Checkbox
-                  checked={_.isEqual(selectedDrafts, draftPosts.map(d => d.draftId))}
+                  checked={_.isEqual(
+                    selectedDrafts,
+                    draftPosts.map(d => d.draftId),
+                  )}
                   onChange={this.handleCheckAll}
                 />
                 <div>

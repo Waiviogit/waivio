@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Checkbox, DatePicker, Form, Input, InputNumber, Select } from 'antd';
+import { Button, Checkbox, DatePicker, Form, Input, InputNumber, Modal, Select } from 'antd';
 import PropTypes from 'prop-types';
 import { isEmpty, map } from 'lodash';
 import { Link } from 'react-router-dom';
@@ -32,7 +32,7 @@ const CreateFormRenderer = props => {
     expiredAt,
     usersLegalNotice,
     agreement,
-    currentSteemDollarPrice,
+    currentSteemPrice,
     user,
     sponsorsList,
     compensationAccount,
@@ -43,16 +43,17 @@ const CreateFormRenderer = props => {
     parentPermlink,
     getFieldDecorator,
     getFieldValue,
-    commissionToWaivio,
+    commissionAgreement,
     campaignId,
     isCampaignActive,
     iAgree,
+    isModal,
   } = props;
 
   const messages = validatorMessagesCreator(handlers.messageFactory);
   const validators = validatorsCreator(
     user,
-    currentSteemDollarPrice,
+    currentSteemPrice,
     messages,
     getFieldValue,
     primaryObject,
@@ -63,7 +64,7 @@ const CreateFormRenderer = props => {
   const disabled = isCampaignActive || loading;
 
   const notEnoughMoneyWarn =
-    parseFloat(user.sbd_balance) <= 0 ? (
+    parseFloat(user.balance) <= 0 ? (
       <div className="notEnoughMoneyWarn">
         {handlers.messageFactory(
           'balance_more_than_zero',
@@ -154,7 +155,7 @@ const CreateFormRenderer = props => {
   );
 
   return (
-    <div className="CreateRewardForm shifted">
+    <div className="CreateRewardForm">
       {notEnoughMoneyWarn}
       {activeCampaignWarn}
 
@@ -167,7 +168,7 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.campaignName.name, {
             rules: fields.campaignName.rules,
             initialValue: campaignName,
-          })(<Input disabled={disabled} />)}
+          })(<Input disabled={disabled} autoFocus />)}
           <div className="CreateReward__field-caption">{fields.campaignName.caption}</div>
         </Form.Item>
 
@@ -212,6 +213,7 @@ const CreateFormRenderer = props => {
               itemsIdsToOmit={sponsorsIdsToOmit}
               placeholder={fields.sponsorsList.placeholder}
               style={{ width: '100%' }}
+              autoFocus={false}
             />,
           )}
           <div className="CreateReward__field-caption">{fields.sponsorsList.caption}</div>
@@ -226,6 +228,7 @@ const CreateFormRenderer = props => {
               handleSelect={handlers.handleSetCompensationAccount}
               placeholder={fields.compensationAccount.placeholder}
               style={{ width: '100%' }}
+              autoFocus={false}
             />,
           )}
           <div className="CreateReward__field-caption">{fields.compensationAccount.caption}</div>
@@ -262,7 +265,9 @@ const CreateFormRenderer = props => {
           })(<Input type="number" disabled={disabled} />)}
         </Form.Item>
 
-        <Form.Item label={fields.primaryObject.label}>
+        <Form.Item
+          label={<span className="CreateReward__label">{fields.primaryObject.label}</span>}
+        >
           {getFieldDecorator(fields.primaryObject.name, {
             rules: fields.primaryObject.rules,
             initialValue: primaryObject,
@@ -275,13 +280,16 @@ const CreateFormRenderer = props => {
               handleSelect={handlers.setPrimaryObject}
               isPermlinkValue={false}
               disabled={disabled}
+              autoFocus={false}
             />,
           )}
           <div className="CreateReward__field-caption">{fields.primaryObject.caption}</div>
           <div className="CreateReward__objects-wrap">{renderPrimaryObject}</div>
         </Form.Item>
 
-        <Form.Item label={fields.secondaryObject.label}>
+        <Form.Item
+          label={<span className="CreateReward__label">{fields.secondaryObject.label}</span>}
+        >
           {getFieldDecorator(fields.secondaryObject.name, {
             rules: fields.secondaryObject.rules,
             initialValue: secondaryObjectsList,
@@ -414,10 +422,10 @@ const CreateFormRenderer = props => {
           })(<DatePicker allowClear={false} disabled={disabled} />)}
         </Form.Item>
 
-        <Form.Item label={fields.commissionToWaivio.label}>
-          {getFieldDecorator(fields.commissionToWaivio.name, {
-            rules: fields.commissionToWaivio.rules,
-            initialValue: commissionToWaivio,
+        <Form.Item label={fields.commissionAgreement.label}>
+          {getFieldDecorator(fields.commissionAgreement.name, {
+            rules: fields.commissionAgreement.rules,
+            initialValue: commissionAgreement,
           })(
             <InputNumber
               className="CreateReward ant-input-number"
@@ -425,21 +433,32 @@ const CreateFormRenderer = props => {
               max={100}
               formatter={value => `${value}%`}
               parser={value => value.replace('%', '')}
-              initialValue={commissionToWaivio}
+              initialValue={commissionAgreement}
               disabled={disabled}
             />,
           )}
-          <div className="CreateReward__field-caption">{fields.commissionToWaivio.caption}</div>
+          <div className="CreateReward__field-caption">{fields.commissionAgreement.caption}</div>
         </Form.Item>
 
         {button}
       </Form>
+      <Modal
+        closable
+        title={campaignId ? fields.modal.editTitle : fields.modal.createTitle}
+        maskClosable={false}
+        visible={isModal}
+        onOk={handlers.handleCreateCampaign}
+        okButtonProps={{ disabled: props.loading, loading: props.loading }}
+        onCancel={() => handlers.setModal(false)}
+      >
+        {campaignId ? fields.modal.editContent : fields.modal.createTitle}
+      </Modal>
     </div>
   );
 };
 
 CreateFormRenderer.defaultProps = {
-  currentSteemDollarPrice: 0,
+  currentSteemPrice: 0,
   campaignData: {},
   user: {},
   sponsorsList: [],
@@ -472,9 +491,10 @@ CreateFormRenderer.defaultProps = {
   expiredAt: null,
   usersLegalNotice: '',
   agreement: null,
-  commissionToWaivio: 5,
+  commissionAgreement: 5,
   campaignId: null,
   iAgree: false,
+  isModal: false,
 };
 
 CreateFormRenderer.propTypes = {
@@ -494,11 +514,12 @@ CreateFormRenderer.propTypes = {
   expiredAt: PropTypes.shape(),
   usersLegalNotice: PropTypes.string,
   agreement: PropTypes.shape(),
-  commissionToWaivio: PropTypes.number,
+  commissionAgreement: PropTypes.number,
   handlers: PropTypes.shape({
     handleAddSponsorToList: PropTypes.func.isRequired,
     removeSponsorObject: PropTypes.func.isRequired,
     setPrimaryObject: PropTypes.func.isRequired,
+    setModal: PropTypes.func.isRequired,
     removePrimaryObject: PropTypes.func.isRequired,
     handleAddSecondaryObjectToList: PropTypes.func.isRequired,
     removeSecondaryObject: PropTypes.func.isRequired,
@@ -511,8 +532,9 @@ CreateFormRenderer.propTypes = {
     handleSubmit: PropTypes.func.isRequired,
     handleSelectChange: PropTypes.func.isRequired,
     messageFactory: PropTypes.func.isRequired,
+    handleCreateCampaign: PropTypes.func.isRequired,
   }).isRequired,
-  currentSteemDollarPrice: PropTypes.number,
+  currentSteemPrice: PropTypes.number,
   user: PropTypes.shape(),
   sponsorsList: PropTypes.arrayOf(PropTypes.shape()),
   secondaryObjectsList: PropTypes.arrayOf(PropTypes.object),
@@ -526,6 +548,7 @@ CreateFormRenderer.propTypes = {
   campaignId: PropTypes.string,
   isCampaignActive: PropTypes.bool.isRequired,
   iAgree: PropTypes.bool,
+  isModal: PropTypes.bool.isRequired,
 };
 
 export default CreateFormRenderer;
