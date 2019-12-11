@@ -51,7 +51,7 @@ const Proposition = ({
     const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
     const rejectData = {
       campaign_permlink: proposition.activation_permlink,
-      user_name: proposition.guide.name,
+      user_name: authorizedUserName,
       reservation_permlink: proposition.objects[0].permlink,
       unreservation_permlink: unreservationPermlink,
     };
