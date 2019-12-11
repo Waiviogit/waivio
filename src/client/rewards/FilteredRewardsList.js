@@ -61,15 +61,17 @@ const FilteredRewardsList = props => {
           </FormattedMessage>
         </SortSelector.Item>
       </SortSelector>
-      <ReduxInfiniteScroll
-        elementIsScrollable={false}
-        hasMore={hasMore}
-        loadMore={handleLoadMore}
-        loadingMore={loading}
-        loader={<Loading />}
-      >
-        {campaignsLayoutWrapLayout(IsRequiredObjectWrap, filterKey, userName, match)}
-      </ReduxInfiniteScroll>
+      <div className="FilteredRewardsList">
+        <ReduxInfiniteScroll
+          elementIsScrollable={false}
+          hasMore={hasMore}
+          loadMore={handleLoadMore}
+          loadingMore={loading}
+          loader={<Loading />}
+        >
+          {campaignsLayoutWrapLayout(IsRequiredObjectWrap, filterKey, userName, match)}
+        </ReduxInfiniteScroll>
+      </div>
     </React.Fragment>
   ) : (
     <Loading />

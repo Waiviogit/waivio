@@ -43,7 +43,7 @@ const CreateFormRenderer = props => {
     parentPermlink,
     getFieldDecorator,
     getFieldValue,
-    commissionToWaivio,
+    commissionAgreement,
     campaignId,
     isCampaignActive,
     iAgree,
@@ -155,7 +155,7 @@ const CreateFormRenderer = props => {
   );
 
   return (
-    <div className="CreateRewardForm shifted">
+    <div className="CreateRewardForm">
       {notEnoughMoneyWarn}
       {activeCampaignWarn}
 
@@ -422,10 +422,10 @@ const CreateFormRenderer = props => {
           })(<DatePicker allowClear={false} disabled={disabled} />)}
         </Form.Item>
 
-        <Form.Item label={fields.commissionToWaivio.label}>
-          {getFieldDecorator(fields.commissionToWaivio.name, {
-            rules: fields.commissionToWaivio.rules,
-            initialValue: commissionToWaivio,
+        <Form.Item label={fields.commissionAgreement.label}>
+          {getFieldDecorator(fields.commissionAgreement.name, {
+            rules: fields.commissionAgreement.rules,
+            initialValue: commissionAgreement,
           })(
             <InputNumber
               className="CreateReward ant-input-number"
@@ -433,11 +433,11 @@ const CreateFormRenderer = props => {
               max={100}
               formatter={value => `${value}%`}
               parser={value => value.replace('%', '')}
-              initialValue={commissionToWaivio}
+              initialValue={commissionAgreement}
               disabled={disabled}
             />,
           )}
-          <div className="CreateReward__field-caption">{fields.commissionToWaivio.caption}</div>
+          <div className="CreateReward__field-caption">{fields.commissionAgreement.caption}</div>
         </Form.Item>
 
         {button}
@@ -491,7 +491,7 @@ CreateFormRenderer.defaultProps = {
   expiredAt: null,
   usersLegalNotice: '',
   agreement: null,
-  commissionToWaivio: 5,
+  commissionAgreement: 5,
   campaignId: null,
   iAgree: false,
   isModal: false,
@@ -514,7 +514,7 @@ CreateFormRenderer.propTypes = {
   expiredAt: PropTypes.shape(),
   usersLegalNotice: PropTypes.string,
   agreement: PropTypes.shape(),
-  commissionToWaivio: PropTypes.number,
+  commissionAgreement: PropTypes.number,
   handlers: PropTypes.shape({
     handleAddSponsorToList: PropTypes.func.isRequired,
     removeSponsorObject: PropTypes.func.isRequired,

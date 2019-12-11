@@ -53,17 +53,7 @@ export const fieldsRules = {
           id: 'field_error',
           defaultMessage: 'Field is required',
         },
-        intlMeta: { field: 'Tag cloud' },
-      },
-    },
-    {
-      max: 100,
-      message: {
-        intlId: {
-          id: 'value_error_long',
-          defaultMessage: "Value can't be longer than 100 characters.",
-        },
-        intlMeta: { value: 100 },
+        intlMeta: { field: 'Tag' },
       },
     },
     {
@@ -523,10 +513,9 @@ export const fieldsRules = {
       required: true,
       message: {
         intlId: {
-          id: 'field_error',
-          defaultMessage: 'Field is required',
+          id: 'object_link_required',
+          defaultMessage: 'Link to new object is required',
         },
-        intlMeta: { field: 'Button' },
       },
     },
     {
@@ -682,6 +671,49 @@ export const fieldsRules = {
       },
     },
     { transform: value => value && value.trim() },
+    {
+      validator: true,
+    },
+  ],
+  [objectFields.tagCategory]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      required: true,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'Tag Category' },
+      },
+    },
+    {
+      max: 100,
+      message: {
+        intlId: {
+          id: 'value_error_long',
+          defaultMessage: "Value can't be longer than 100 characters.",
+        },
+        intlMeta: { value: 100 },
+      },
+    },
+    {
+      validator: true,
+    },
+  ],
+  [objectFields.categoryItem]: [
+    {
+      required: true,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'Category Item' },
+      },
+    },
     {
       validator: true,
     },

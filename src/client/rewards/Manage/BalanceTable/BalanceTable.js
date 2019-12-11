@@ -5,6 +5,10 @@ import './BalanceTable.less';
 
 const BalanceTable = props => {
   const { intl, budgetTotal, user } = props;
+  const balance = parseFloat(user.balance);
+  const payable = budgetTotal.sum_payable ? budgetTotal.sum_payable.toFixed(3) : '0.000';
+  const reserved = budgetTotal.sum_reserved ? budgetTotal.sum_reserved.toFixed(3) : '0.000';
+  const remaining = (balance - payable - reserved).toFixed(3);
   return (
     <table className="BalanceTable">
       <thead>
@@ -12,17 +16,17 @@ const BalanceTable = props => {
           <th>{intl.formatMessage({ id: 'balance', defaultMessage: `Balance` })}</th>
           <th>{intl.formatMessage({ id: 'payable', defaultMessage: `Payable` })}*</th>
           <th>{intl.formatMessage({ id: 'reserved', defaultMessage: `Reserved` })}</th>
-          <th>{intl.formatMessage({ id: 'remaining', defaultMessage: `Remaining` })}**</th>
+          <th>{intl.formatMessage({ id: 'remaining', defaultMessage: `Remaining` })}</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>
-            <FormattedNumber value={parseFloat(user.sbd_balance)} />
+            <FormattedNumber value={balance} />
           </td>
-          <td>{budgetTotal.sum_payable ? budgetTotal.sum_payable.toFixed(2) : '0.00'}</td>
-          <td>{budgetTotal.sum_reserved ? budgetTotal.sum_reserved.toFixed(2) : '0.00'}</td>
-          <td>{budgetTotal.remaining ? budgetTotal.remaining.toFixed(2) : '0.00'}</td>
+          <td>{payable}</td>
+          <td>{reserved}</td>
+          <td>{remaining}</td>
         </tr>
       </tbody>
     </table>

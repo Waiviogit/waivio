@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import _ from 'lodash';
+import classNames from 'classnames';
 import { currentUserFollowersUser } from '../helpers/apiHelpers';
 import {
   getIsAuthenticated,
@@ -130,7 +131,7 @@ export default class User extends React.Component {
   };
 
   render() {
-    const { authenticated, authenticatedUser, loaded, failed } = this.props;
+    const { authenticated, authenticatedUser, loaded, failed, match } = this.props;
     const { isFollowing } = this.state;
     if (failed) return <Error404 />;
     const username = this.props.match.params.name;
@@ -163,6 +164,7 @@ export default class User extends React.Component {
     const title = `${displayedUsername} - Waivio`;
 
     const isSameUser = authenticated && authenticatedUser.name === username;
+    const isAboutPage = match.params['0'] === 'about';
 
     return (
       <div className="main-panel">
@@ -174,6 +176,8 @@ export default class User extends React.Component {
           <meta property="og:type" content="article" />
           <meta property="og:url" content={url} />
           <meta property="og:image" content={image} />
+          <meta property="og:image:width" content="600" />
+          <meta property="og:image:height" content="600" />
           <meta property="og:description" content={desc} />
           <meta property="og:site_name" content="Waivio" />
           <meta property="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
@@ -205,14 +209,18 @@ export default class User extends React.Component {
         <div className="shifted">
           <div className="feed-layout container">
             <Affix className="leftContainer leftContainer__user" stickPosition={72}>
-              <div className="left">
+              <div className={classNames('left', { 'display-none': isAboutPage })}>
                 <LeftSidebar />
               </div>
             </Affix>
             <Affix className="rightContainer" stickPosition={72}>
               <div className="right">{loaded && <RightSidebar key={user.name} />}</div>
             </Affix>
-            {loaded && <div className="center">{renderRoutes(this.props.route.routes)}</div>}
+            {loaded && (
+              <div className={classNames('center', { pa3: isAboutPage })}>
+                {renderRoutes(this.props.route.routes)}
+              </div>
+            )}
           </div>
         </div>
       </div>

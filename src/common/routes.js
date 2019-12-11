@@ -49,6 +49,7 @@ import PayablesCampaign from '../client/rewards/Payables/Payables';
 import PaymentCampaign from '../client/rewards/Payment/Payment';
 import ObjectOfTypePage from '../client/object/ObjectOfTypePage/ObjectOfTypePage';
 import SubFeed from '../client/feed/SubFeed';
+import UserInfo from '../client/app/Sidebar/UserInfo';
 
 const routes = [
   {
@@ -174,7 +175,7 @@ const routes = [
         component: DiscoverObjects,
       },
       {
-        path: '/@:name/(comments|followers|followed|reblogs|transfers|activity|expertise)?',
+        path: '/@:name/(comments|followers|followed|reblogs|transfers|activity|expertise|about)?',
         component: User,
         exact: true,
         routes: [
@@ -217,6 +218,11 @@ const routes = [
             path: '/@:name/expertise',
             exact: true,
             component: UserExpertise,
+          },
+          {
+            path: '/@:name/about',
+            exact: true,
+            component: UserInfo,
           },
         ],
       },

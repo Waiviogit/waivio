@@ -65,7 +65,7 @@ class CreateRewardForm extends React.Component {
     expiredAt: null,
     usersLegalNotice: '',
     agreement: {},
-    commissionToWaivio: 5,
+    commissionAgreement: 5,
     iAgree: false,
     campaignId: null,
     isCampaignActive: false,
@@ -154,13 +154,13 @@ class CreateRewardForm extends React.Component {
 
   prepareSubmitData = (data, userName) => {
     const objects = map(data.secondaryObject, o => o.id);
-    const pageObjects = data.agreement.length !== 0 ? map(data.agreement.length, o => o.id) : [];
+    const agreementObjects =
+      this.state.pageObjects.length !== 0 ? map(this.state.pageObjects, o => o.id) : [];
     const sponsorAccounts = map(data.sponsorsList, o => o.account);
-    return {
+    const preparedObject = {
       requiredObject: data.primaryObject.author_permlink,
       guideName: userName,
       name: data.campaignName,
-      description: data.description,
       type: data.type,
       budget: data.budget,
       reward: data.reward,
@@ -173,12 +173,11 @@ class CreateRewardForm extends React.Component {
         minPosts: data.minPosts,
         minExpertise: data.minExpertise,
         minSteemReputation: data.minSteemReputation,
-        eligibleDays: data.eligibleDays,
       },
-      usersLegalNotice: data.usersLegalNotice,
-      commissionAgreement: data.commissionAgreement,
+      frequency_assign: data.eligibleDays,
+      commissionAgreement: data.commissionAgreement / 100,
       objects,
-      pageObjects,
+      agreementObjects,
       compensationAccount: data.compensationAccount && data.compensationAccount.account,
       match_bots: sponsorAccounts,
       // eslint-disable-next-line no-underscore-dangle
@@ -186,6 +185,9 @@ class CreateRewardForm extends React.Component {
       reservation_timetable: data.targetDays,
       id: this.state.campaignId,
     };
+    if (data.usersLegalNotice) preparedObject.usersLegalNotice = data.usersLegalNotice;
+    if (data.description) preparedObject.description = data.description;
+    return preparedObject;
   };
 
   manageRedirect = () => {
@@ -323,13 +325,13 @@ class CreateRewardForm extends React.Component {
         ) {
           createCampaign(this.prepareSubmitData(values, this.props.userName))
             .then(() => {
-              message.success(`'${values.campaignName}' rewards campaign has been created.`);
+              message.success(`Rewards campaign ${values.campaignName} has been created.`);
               this.setState({ loading: false, isModal: false });
               this.manageRedirect();
             })
             .catch(error => {
               console.log(error);
-              message.error(`${values.campaignName}'rewards campaign has been rejected`);
+              message.error(`Campaign ${values.campaignName} has been rejected`);
               this.setState({ loading: false, isModal: false });
             });
         }
@@ -364,7 +366,7 @@ class CreateRewardForm extends React.Component {
       sponsorsList,
       reservationPeriod,
       compensationAccount,
-      commissionToWaivio,
+      commissionAgreement,
       isCampaignActive,
       loading,
       parentPermlink,
@@ -412,7 +414,7 @@ class CreateRewardForm extends React.Component {
         parentPermlink={parentPermlink}
         getFieldDecorator={form.getFieldDecorator}
         getFieldValue={form.getFieldValue}
-        commissionToWaivio={commissionToWaivio}
+        commissionAgreement={commissionAgreement}
         campaignId={campaignId}
         isCampaignActive={isCampaignActive}
         iAgree={iAgree}

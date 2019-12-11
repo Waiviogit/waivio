@@ -1,6 +1,8 @@
 @import (reference) '../styles/custom.less';
 @import (reference) '../styles/modules/variables.less';
 
+@wrapPadding: 15px;
+
 .Rewards {
   width: 100%;
 
@@ -11,11 +13,32 @@
     }
   }
 
-  .RewardsHeader,
+  .RewardsHeader {
+    &-block {
+      border: 1px solid @blue-hawkesBlue;
+      border-radius: 4px;
+      border-bottom: 0;
+      padding: @wrapPadding;
+      background-color: @white;
+    }
+
+    &-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 500;
+      font-size: larger;
+    }
+
+    &-payment {
+      font-weight: 600;
+    }
+  }
+
   .RewardsFooter {
     &-button {
       button {
-        margin-right: 10px;
+        margin-right: @wrapPadding;
       }
     }
 
@@ -29,8 +52,10 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px;
+      padding: @wrapPadding;
       border: 1px solid @blue-hawkesBlue;
+      border-top: 0;
+      border-radius: 4px;
 
       .anticon {
         font-size: 26px;
@@ -87,7 +112,7 @@
     color: @tertiary-color;
 
     button {
-      margin-left: 15px;
+      margin-left: @wrapPadding;
     }
   }
 }
@@ -96,6 +121,20 @@
   &__user-card {
     display: flex;
     align-items: center;
+  }
+}
+
+.RewardBreadcrumb {
+  display: none;
+  @media @small {
+    display: block;
+  }
+}
+
+.FilteredRewardsList {
+  padding: 0 @wrapPadding;
+  @media @small {
+    padding: 0;
   }
 }
 

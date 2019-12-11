@@ -7,6 +7,9 @@ import cn from 'classnames';
 import AppendModal from '../../object/AppendModal';
 import IconButton from '../IconButton';
 import { objectFields } from '../../../common/constants/listOfFields';
+import CreateTag from '../../object/TagCategory/CreateTag';
+import CreateAlbum from '../../object/ObjectGallery/CreateAlbum';
+import CreateImage from '../../object/ObjectGallery/CreateImage';
 import './Proposition.less';
 
 class Proposition extends React.Component {
@@ -36,6 +39,27 @@ class Proposition extends React.Component {
       'icon-button__text': true,
       'field-selected': selectedField === fieldName,
     });
+    let renderModal = null;
+    switch (fieldName) {
+      case objectFields.categoryItem:
+        renderModal = <CreateTag showModal={showModal} hideModal={this.handleToggleModal} />;
+        break;
+      case objectFields.galleryAlbum:
+        renderModal = <CreateAlbum showModal={showModal} hideModal={this.handleToggleModal} />;
+        break;
+      case objectFields.galleryItem:
+        renderModal = <CreateImage showModal={showModal} hideModal={this.handleToggleModal} />;
+        break;
+      default:
+        renderModal = (
+          <AppendModal
+            objName={objName}
+            showModal={showModal}
+            hideModal={this.handleToggleModal}
+            field={fieldName}
+          />
+        );
+    }
 
     return (
       <React.Fragment>
@@ -58,14 +82,7 @@ class Proposition extends React.Component {
             </Link>
           </div>
         </div>
-        {showModal && (
-          <AppendModal
-            objName={objName}
-            showModal={showModal}
-            hideModal={this.handleToggleModal}
-            field={fieldName}
-          />
-        )}
+        {showModal && renderModal}
       </React.Fragment>
     );
   }

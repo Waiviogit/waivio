@@ -29,6 +29,12 @@ const DiscoverObjects = ({ intl, history, match }) => {
         <title>
           {intl.formatMessage({ id: 'objects_title', defaultMessage: 'Discover objects' })} - Waivio
         </title>
+        <meta
+          property="og:image"
+          content={
+            'https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png'
+          }
+        />
       </Helmet>
       <div className="feed-layout container">
         <Affix className="leftContainer" stickPosition={77}>

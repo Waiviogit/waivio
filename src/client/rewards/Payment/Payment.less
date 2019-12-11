@@ -9,18 +9,27 @@
 
   &__title {
     display: flex;
-    padding: 25px 0 25px;
+    margin-bottom: 10px;
     align-items: center;
 
     &-payment {
+      font-weight: 500;
       font-size: x-large;
       padding-right: 10px;
+    }
+
+    &-link {
+      color: @black-text-basic;
     }
 
     &-pay {
       font-size: medium;
       font-weight: 500;
       text-decoration: underline;
+
+      .WalletSidebar__transfer {
+        margin-bottom: 0;
+      }
     }
   }
 

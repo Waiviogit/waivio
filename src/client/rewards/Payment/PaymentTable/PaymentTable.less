@@ -43,18 +43,25 @@
   }
 
   &.basicWidth {
-    width: 9%;
+    width: 11%;
   }
 
   &.mediumWidth {
-    width: 33%;
+    width: 27%;
   }
 
   &.maxWidth {
     width: 40%;
   }
 
-  &__action-column {
+  &__action-wrap {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  &__action-items {
+    margin-left: 2rem;
     text-align: start;
   }
 

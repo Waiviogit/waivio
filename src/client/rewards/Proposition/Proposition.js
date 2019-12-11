@@ -13,8 +13,7 @@ import { getSingleComment } from '../../comments/commentsActions';
 import { getCommentContent } from '../../reducers';
 import { connect } from 'react-redux';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
-import { reserveActivatedCampaign } from '../../../waivioApi/ApiClient';
-import { rejectReservationCampaign } from '../../../waivioApi/ApiClient';
+import { rejectReservationCampaign, reserveActivatedCampaign } from '../../../waivioApi/ApiClient';
 import { generatePermlink } from '../../helpers/wObjectHelper';
 import { UsedLocaleContext } from '../../Wrapper';
 import './Proposition.less';
@@ -52,7 +51,7 @@ const Proposition = ({
     const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
     const rejectData = {
       campaign_permlink: proposition.activation_permlink,
-      user_name: proposition.guide.name,
+      user_name: authorizedUserName,
       reservation_permlink: proposition.objects[0].permlink,
       unreservation_permlink: unreservationPermlink,
     };
@@ -121,13 +120,10 @@ const Proposition = ({
       <div className="RewardsHeader-block">
         <div className="RewardsHeader-wrap">
           {`${intl.formatMessage({
-            id: 'reward_requested_by',
-            defaultMessage: `Reviews requested by`,
+            id: 'rewards_for_review',
+            defaultMessage: `Reward for review`,
           })}:`}
-          <span>{`${intl.formatMessage({
-            id: 'rewards',
-            defaultMessage: `Rewards`,
-          })}:`}</span>
+          <span className="RewardsHeader-payment">{`${proposition.reward} STEEM`}</span>
         </div>
         <div className="RewardsHeader-wrap-second">
           <div className="RewardsHeader__user-card">
@@ -135,16 +131,22 @@ const Proposition = ({
               <Avatar username={proposition.guide.name} size={34} />
             </Link>
             <Link to={`/@${proposition.guide.name}`} title={proposition.guide.name}>
-              <div className="RewardsHeader__user-card-alias">{proposition.guide.alias}</div>
+              <div className="RewardsHeader__user-card-alias">
+                {proposition.guide.alias} (
+                {intl.formatMessage({
+                  id: 'sponsor',
+                  defaultMessage: `Sponsor`,
+                })}
+                )
+              </div>
               <div className="RewardsHeader__user-card-username">{`@${
                 proposition.guide.name
               } (${intl.formatMessage({
                 id: 'paid',
                 defaultMessage: `Total paid`,
-              })} $${proposition.guide.total_payed})`}</div>
+              })} ${proposition.guide.total_payed} STEEM)`}</div>
             </Link>
           </div>
-          <span className="RewarsHeader-payment">{`$${proposition.reward}`}</span>
         </div>
       </div>
       <ObjectCardView wObject={proposedWobj} key={proposedWobj.id} />
@@ -161,7 +163,7 @@ const Proposition = ({
         ) : (
           <React.Fragment>
             {assigned !== null && !assigned && !isReserved && (
-              <div className="RewardsHeader-button">
+              <div className="RewardsFooter-button">
                 <Button
                   type="primary"
                   loading={loading}

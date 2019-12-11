@@ -55,8 +55,8 @@ export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US' }) =>
     body: JSON.stringify({ author_permlinks: authorPermlinks, locale }),
   }).then(res => res.json());
 
-export const getObject = (authorPermlink, username) => {
-  const query = username ? `?user=${username}` : '';
+export const getObject = (authorPermlink, requiredField) => {
+  const query = requiredField ? `?required_fields=${requiredField}` : '';
 
   return fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${query}`, {
     headers: {
@@ -510,7 +510,6 @@ export const getPropositions = ({
       status,
       approved,
       requiredObject,
-      currentUserName,
       sort,
     };
 
@@ -524,6 +523,7 @@ export const getPropositions = ({
     if (!_.isEmpty(guideNames)) reqData.guideNames = guideNames;
     if (!_.isEmpty(types)) reqData.types = types;
     if (!_.isEmpty(userName)) reqData.userName = userName;
+    if (currentUserName) reqData.currentUserName = currentUserName;
 
     fetch(`${config.campaignApiPrefix}${config.campaigns}`, {
       headers,
@@ -632,6 +632,17 @@ export const getFilteredCampaignsByGuideName = (guideName, status) =>
 export const getCampaignsByGuideName = guideName =>
   new Promise((resolve, reject) => {
     fetch(`${config.campaignApiPrefix}${config.campaigns}${config.dashboard}/${guideName}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
+export const getRewardsGeneralCounts = guideName =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.statistics}/?guideName=${guideName}`, {
       headers,
       method: 'GET',
     })
