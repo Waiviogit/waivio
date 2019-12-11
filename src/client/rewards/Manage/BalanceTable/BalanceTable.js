@@ -6,9 +6,9 @@ import './BalanceTable.less';
 const BalanceTable = props => {
   const { intl, budgetTotal, user } = props;
   const balance = parseFloat(user.balance);
-  const payable = budgetTotal.sum_payable ? budgetTotal.sum_payable.toFixed(2) : '0.00';
-  const reserved = budgetTotal.sum_reserved ? budgetTotal.sum_reserved.toFixed(2) : '0.00';
-  const remaining = balance - payable - reserved;
+  const payable = budgetTotal.sum_payable ? budgetTotal.sum_payable.toFixed(3) : '0.000';
+  const reserved = budgetTotal.sum_reserved ? budgetTotal.sum_reserved.toFixed(3) : '0.000';
+  const remaining = (balance - payable - reserved).toFixed(3);
   return (
     <table className="BalanceTable">
       <thead>
