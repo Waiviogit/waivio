@@ -24,7 +24,7 @@ const Payment = ({ match, intl, userName, openTransfer }) => {
     getLenders(requestParams)
       .then(data => {
         setSponsors(data.histories);
-        setPayable(data.histories[0].amount_sbd);
+        setPayable(data.histories[0].amount);
       })
       .catch(e => console.log(e));
   }, []);
@@ -97,4 +97,9 @@ Payment.propTypes = {
   openTransfer: PropTypes.func.isRequired,
 };
 
-export default injectIntl(connect(null, { openTransfer })(Payment));
+export default injectIntl(
+  connect(
+    null,
+    { openTransfer },
+  )(Payment),
+);

@@ -440,6 +440,22 @@ class Rewards extends React.Component {
       <div className="Rewards">
         <Helmet>
           <title>Waivio</title>
+          <meta
+            property="og:title"
+            content={`${intl.formatMessage({
+              id: 'rewards',
+              defaultMessage: 'Rewards',
+            })}
+        - Waivio`}
+          />
+          <meta property="og:type" content="article" />
+          <meta
+            property="og:image"
+            content={
+              'https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png'
+            }
+          />
+          <meta property="og:site_name" content="Waivio" />
           <meta name="robots" content={robots} />
         </Helmet>
         <ScrollToTop />
