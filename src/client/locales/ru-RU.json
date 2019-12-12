@@ -872,5 +872,13 @@
   "payment_card_your_payment_history_with_user": "Ваша история платежей с '{username}'",
   "object_info": "Данные обьекта",
   "user_info": "Данные пользователя",
-  "exchange": "Обмен"
+  "exchange": "Обмен",
+  "matchBot_title_create_rule": "Создать правило",
+  "matchBot_placeholder_find_sponsor": "Найти спонсора",
+  "matchBot_set_note": "Примечание",
+  "matchBot_description_longer_255_symbols": "Примечание должно быть не более 255 символов!",
+  "matchBot_btn_create": "Создать",
+  "matchBot_btn_edit": "Редактировать",
+  "matchBot_title_sponsor": "Спонсор",
+  "matchBot_voting_power": "Сила голоса"
 }

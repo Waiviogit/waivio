@@ -82,7 +82,12 @@ const CreateRule = ({ intl, form, modalVisible, handleChangeModalVisible, isEdit
     >
       <div className="MatchBot__modal-wrap">
         <Form layout="vertical" onSubmit={handleSubmit}>
-          <Form.Item label="Set sponsor">
+          <Form.Item
+            label={intl.formatMessage({
+              id: 'matchBot_title_sponsor',
+              defaultMessage: 'Sponsor',
+            })}
+          >
             {getFieldDecorator('sponsorField', {
               rules: [
                 {
@@ -95,7 +100,10 @@ const CreateRule = ({ intl, form, modalVisible, handleChangeModalVisible, isEdit
                 allowClear={false}
                 disabled={isLoading}
                 handleSelect={handleSetSponsor}
-                placeholder={'Find sponsor'}
+                placeholder={intl.formatMessage({
+                  id: 'matchBot_placeholder_find_sponsor',
+                  defaultMessage: 'Find sponsor',
+                })}
                 style={{ width: '100%' }}
                 autoFocus={false}
               />,
@@ -110,7 +118,12 @@ const CreateRule = ({ intl, form, modalVisible, handleChangeModalVisible, isEdit
               />
             )}
           </Form.Item>
-          <Form.Item label="Set voting power">
+          <Form.Item
+            label={intl.formatMessage({
+              id: 'matchBot_voting_power',
+              defaultMessage: 'Voting power',
+            })}
+          >
             <Slider
               min={1}
               defaultValue={100}
@@ -121,8 +134,8 @@ const CreateRule = ({ intl, form, modalVisible, handleChangeModalVisible, isEdit
           </Form.Item>
           <Form.Item
             label={intl.formatMessage({
-              id: 'matchBot_set_notice',
-              defaultMessage: 'Set notice',
+              id: 'matchBot_set_note',
+              defaultMessage: 'Set note',
             })}
           >
             {getFieldDecorator('noticeField', {
@@ -131,7 +144,7 @@ const CreateRule = ({ intl, form, modalVisible, handleChangeModalVisible, isEdit
                   max: 255,
                   message: intl.formatMessage({
                     id: 'matchBot_description_longer_255_symbols',
-                    defaultMessage: 'Notice should be no longer then 255 symbols!',
+                    defaultMessage: 'Note should be no longer then 255 symbols!',
                   }),
                 },
               ],
@@ -140,15 +153,15 @@ const CreateRule = ({ intl, form, modalVisible, handleChangeModalVisible, isEdit
           {!isEdit ? (
             <Button type="primary" htmlType="submit" loading={isLoading} disabled={false}>
               {intl.formatMessage({
-                id: 'matchBot_btn_create_rule',
-                defaultMessage: 'Create rule',
+                id: 'matchBot_btn_create',
+                defaultMessage: 'Create',
               })}
             </Button>
           ) : (
             <Button type="primary" htmlType="submit" loading={isLoading} disabled={false}>
               {intl.formatMessage({
                 id: 'matchBot_btn_edit_rule',
-                defaultMessage: 'Edit rule',
+                defaultMessage: 'Edit',
               })}
             </Button>
           )}
