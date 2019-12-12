@@ -4,9 +4,57 @@
 .ModalSignUp {
   display: flex;
   flex-direction: column;
-  @media @small, @medium, @large {
-    flex-direction: row;
+  //@media @small, @medium, @large {
+  //  flex-direction: row;
+  //}
+
+  &__social {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 49%;
+
+    & > span {
+      width: 100%;
+    }
   }
+
+  &__social-btn {
+    width: 50%;
+    margin: 10px 0 10px 0;
+  }
+
+  &__social-btn {
+    width: 100%;
+    &--fb {
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-block;
+      text-decoration: none;
+      background-color: #4c69ba;
+      color: #fff;
+      transition: background-color 0.3s, border-color 0.3s;
+      height: 46px;
+      border-radius: 2px;
+      border: 1px solid transparent;
+      box-shadow: rgba(0, 0, 0, 0.24) 0 2px 2px 0, rgba(0, 0, 0, 0.24) 0 0 1px 0;
+      font-family: Roboto, sans-serif;
+      text-align: left;
+    }
+  }
+
+  &__icon-fb {
+    margin-right: 10px;
+    padding: 10px;
+    border-radius: 2px;
+    & > svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
   align-items: center;
   justify-content: space-between;
   &__button {
@@ -51,4 +99,7 @@
       font-size: 42px;
     }
   }
+}
+
+.social-btn {
 }

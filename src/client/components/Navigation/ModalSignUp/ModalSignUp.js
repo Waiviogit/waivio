@@ -1,7 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Modal } from 'antd';
+import { Modal, Icon } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import GoogleLogin from 'react-google-login';
+import FacebookLogin from 'react-facebook-login';
 import './ModalSignUp.less';
 
 @injectIntl
@@ -16,8 +18,14 @@ class ModalSignUp extends React.Component {
     this.state = {
       isOpen: false,
     };
-    this.openNinjaModal = this.openNinjaModal.bind(this);
   }
+  responseGoogle = response => {
+    console.log(response);
+  };
+
+  responseFacebook = response => {
+    console.log(response);
+  };
 
   getSignUpInfo = (imageLink, imageRoute, price, aim, result, features, isNinja) => (
     <div className="SignUpCard">
@@ -26,6 +34,7 @@ class ModalSignUp extends React.Component {
           <img alt="linkLogo" src={`${imageLink}`} />
         </a>
       </div>
+
       <div className="SignUpCard__line SignUpCard__text-price">{price}</div>
       <div className="SignUpCard__line">{aim}</div>
       <div className="SignUpCard__line">{result}</div>
@@ -42,11 +51,6 @@ class ModalSignUp extends React.Component {
     </div>
   );
 
-  openNinjaModal = () => {
-    this.authorizeViaNinja.click();
-    this.toggleModal();
-  };
-
   toggleModal = () => {
     this.setState({ isOpen: !this.state.isOpen });
   };
@@ -54,20 +58,6 @@ class ModalSignUp extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <div>
-          {/* eslint-disable-next-line jsx-a11y/anchor-has-content */}
-          <a
-            ref={a => {
-              this.authorizeViaNinja = a;
-            }}
-            title="Register a Waivio Account"
-            data-name="Waivio"
-            data-image="https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png"
-            data-referrer="waivio"
-            href="https://widget.steem.ninja/widget.html?referrer=waivio"
-            className="ninja-widget"
-          />
-        </div>
         {this.props.isButton ? (
           <button onClick={this.toggleModal} className="ModalSignUp__button">
             <FormattedMessage id="signup" defaultMessage="Sign up" />
@@ -90,24 +80,26 @@ class ModalSignUp extends React.Component {
             footer={null}
           >
             <div className="ModalSignUp">
-              {this.getSignUpInfo(
-                'https://cdn.steemitimages.com/DQmdbfH5akvanZk8Ntw92iEgcREkV8kv4uqxioTxDJLrHwD/steem-ninja.png',
-                'https://account.steem.ninja/?ref=waivio',
-                '$2.50',
-                this.props.intl.formatMessage({
-                  id: 'newSteemAcc',
-                  defaultMessage: 'New Steem Account',
-                }),
-                this.props.intl.formatMessage({
-                  id: 'instAccountCreation',
-                  defaultMessage: 'Instant Account Creation',
-                }),
-                this.props.intl.formatMessage({
-                  id: 'bonusDelegation',
-                  defaultMessage: 'BONUS: 15 SP delegation (for 90 days)',
-                }),
-                true,
-              )}
+              <div>Registration</div>
+              <div className="ModalSignUp__social">
+                <div>Or sign up with</div>
+                <GoogleLogin
+                  clientId="623736583769-qlg46kt2o7gc4kjd2l90nscitf38vl5t.apps.googleusercontent.com"
+                  onSuccess={this.responseGoogle}
+                  onFailure={this.responseGoogle}
+                  cookiePolicy={'single_host_origin'}
+                  className="ModalSignUp__social-btn"
+                />
+                <FacebookLogin
+                  appId="754038848413420"
+                  autoLoad={false}
+                  fields="name,email,picture"
+                  callback={this.responseFacebook}
+                  textButton="Sign In with Facebook"
+                  cssClass="ModalSignUp__social-btn ModalSignUp__social-btn--fb"
+                  icon={<Icon type="facebook" className="ModalSignUp__icon-fb" />}
+                />
+              </div>
               {this.getSignUpInfo(
                 'https://cdn.steemitimages.com/DQmernVC8CUupAFckxvE62oMYVJNAsK8YDLmyBzJnNLzH7S/steemit.png',
                 process.env.SIGNUP_URL,

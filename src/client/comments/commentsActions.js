@@ -41,9 +41,9 @@ const getRootCommentsList = apiRes =>
 const getCommentsChildrenLists = apiRes => {
   const listsById = {};
   Object.keys(apiRes.content).forEach(commentKey => {
-    listsById[getPostKey(apiRes.content[commentKey])] = apiRes.content[commentKey].replies.map(
-      childKey => getPostKey(apiRes.content[childKey]),
-    );
+    listsById[getPostKey(apiRes.content[commentKey])] = apiRes.content[
+      commentKey
+    ].replies.map(childKey => getPostKey(apiRes.content[childKey]));
   });
   return listsById;
 };
