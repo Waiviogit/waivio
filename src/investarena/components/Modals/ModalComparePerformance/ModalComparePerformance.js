@@ -75,8 +75,8 @@ class ModalComparePerformance extends React.Component {
 
   prepareOptions(searchResults) {
     const dataSource = [];
-    if (!_.isEmpty(searchResults.accounts))
-      dataSource.push(this.usersSearchLayout(searchResults.accounts));
+    if (!_.isEmpty(searchResults.users))
+      dataSource.push(this.usersSearchLayout(searchResults.users));
 
     if (!_.isEmpty(searchResults.wobjects))
       dataSource.push(this.wobjectSearchLayout(searchResults.wobjects));
