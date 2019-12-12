@@ -121,7 +121,7 @@ class ModalComparePerformance extends React.Component {
             marker={'user'}
             key={`user${option.account}`}
             value={`user${option.account}`}
-            className="Topnav__search-autocomplete"
+            className="ModalComparePerformance__autocomplete-option"
           >
             <div className="Topnav__search-content-wrap">
               <Avatar username={option.account} size={40} />
@@ -153,7 +153,7 @@ class ModalComparePerformance extends React.Component {
               permlink={option.author_permlink}
               key={option.author_permlink}
               value={`wobj${wobjName}`}
-              className="ModalComparePerformance__search-autocomplete"
+              className="ModalComparePerformance__autocomplete-option"
             >
               <ObjectCard wobject={option} showFollow={false} withLinks={false} />
               <div className="Topnav__search-content-small">{option.object_type}</div>
@@ -204,7 +204,8 @@ class ModalComparePerformance extends React.Component {
             {_.isEmpty(itemToCompare) ? (
               <div className="">
                 <AutoComplete
-                  dropdownClassName=""
+                  className={'ModalComparePerformance__autocomplete'}
+                  dropdownClassName={'ModalComparePerformance__autocomplete-dropdown'}
                   dataSource={dropdownOptions}
                   onSearch={this.handleAutoCompleteSearch}
                   onSelect={this.handleSelectOnAutoCompleteDropdown}

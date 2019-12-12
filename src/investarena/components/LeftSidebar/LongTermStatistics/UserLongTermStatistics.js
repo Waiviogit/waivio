@@ -52,11 +52,11 @@ class UserLongTermStatistics extends React.Component {
   render() {
     const { intl, isMobile, toggleModalPerformance, withCompareButton } = this.props;
     return !this.state.loading ? (
-      <div className="InstrumentLongTermStatistics">
-        <div className="InstrumentLongTermStatistics__title">
+      <div className="InstrumentLongTermStatistics SidebarContentBlock">
+        <div className="SidebarContentBlock__title">
           {intl.formatMessage({ id: 'performance', defaultMessage: `Performance` })}
         </div>
-        <div>
+        <div className="SidebarContentBlock__content">
           {!_.isEmpty(this.state.longTermStatistics) ? (
             <React.Fragment>
               {_.map(this.state.longTermStatistics, period => (
