@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Button, Form, Input, Modal, Slider } from 'antd';
 import { isEmpty } from 'lodash';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import ReviewItem from '../../Create-Edit/ReviewItem';
+import { setMatchBotRules } from '../../rewardsActions';
 import '../MatchBot.less';
 
-const CreateRule = ({ intl, form, modalVisible, handleChangeModalVisible, isEdit }) => {
+const CreateRule = ({ intl, form, modalVisible, handleChangeModalVisible, isEdit, ...props }) => {
   const { getFieldDecorator, setFieldsValue } = form;
   const [sponsor, setSponsor] = useState({});
   const [sliderValue, setSliderValue] = useState(1);
@@ -34,17 +36,22 @@ const CreateRule = ({ intl, form, modalVisible, handleChangeModalVisible, isEdit
     form.validateFieldsAndScroll((err, values) => {
       if (!err && !isEmpty(sponsor)) {
         const prepareObjData = {
-          sponsor,
+          sponsor: sponsor.account,
           enabled: true,
           upvote: sliderValue,
         };
         if (values.noticeField) prepareObjData.notes = values.noticeField;
+        props
+          .setMatchBotRules(prepareObjData)
+          .then(data => console.log(data))
+          .catch(error => console.error(error));
       }
       if (err) {
         console.error(err);
       }
     });
   };
+
   const marks = {
     1: '1%',
     25: '25%',
@@ -55,7 +62,10 @@ const CreateRule = ({ intl, form, modalVisible, handleChangeModalVisible, isEdit
 
   return (
     <Modal
-      title="Basic Modal"
+      title={intl.formatMessage({
+        id: 'matchBot_title_create_rule',
+        defaultMessage: 'Create rule',
+      })}
       visible={modalVisible}
       onCancel={handleChangeModalVisible}
       footer={null}
@@ -104,8 +114,8 @@ const CreateRule = ({ intl, form, modalVisible, handleChangeModalVisible, isEdit
                 {
                   max: 255,
                   message: intl.formatMessage({
-                    id: 'matchBot_description_longer_250_symbols',
-                    defaultMessage: 'Notice should be no longer then 250 symbols!',
+                    id: 'matchBot_description_longer_255_symbols',
+                    defaultMessage: 'Notice should be no longer then 255 symbols!',
                   }),
                 },
               ],
@@ -138,9 +148,10 @@ CreateRule.propTypes = {
   modalVisible: PropTypes.bool.isRequired,
   isEdit: PropTypes.bool,
   handleChangeModalVisible: PropTypes.func.isRequired,
+  setMatchBotRules: PropTypes.func.isRequired,
 };
 CreateRule.defaultProps = {
   isEdit: false,
 };
 
-export default Form.create()(injectIntl(CreateRule));
+export default Form.create()(injectIntl(connect(null, { setMatchBotRules })(CreateRule)));
