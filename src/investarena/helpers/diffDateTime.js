@@ -68,13 +68,14 @@ export function getDataForecast() {
   return moment.utc(nowDate + periodAfter).format(forecastDateTimeFormat);
 }
 
-export function getLongTermStatisticsForUser(data, intl) {
+export function getLongTermStatisticsForUser(data) {
   const longTermStatistics = {};
   const formatData = (period, price, defaultMessage) => {
     if (period && price !== null) {
       longTermStatistics[period] = {
         price: `${price.toFixed(2)}%`,
-        label: intl.formatMessage({ id: `longTermData_${period}`, defaultMessage }),
+        label: defaultMessage,
+        intlId: `longTermData_${period}`,
         isUp: price >= 0,
       };
     }

@@ -35,7 +35,7 @@ class UserLongTermStatistics extends React.Component {
   componentDidMount() {
     this.cancelablePromise.promise.then(data => {
       if (data && !_.isError(data) && !_.isEmpty(data)) {
-        const longTermStatistics = getLongTermStatisticsForUser(data, this.props.intl);
+        const longTermStatistics = getLongTermStatisticsForUser(data);
         this.setState({ longTermStatistics, loading: false });
       } else {
         this.setState({ loading: false });
@@ -50,17 +50,20 @@ class UserLongTermStatistics extends React.Component {
   cancelablePromise = makeCancelable(api.performers.getUserStatistics(this.props.userName));
 
   render() {
+    const { intl, isMobile, toggleModalPerformance, withCompareButton } = this.props;
     return !this.state.loading ? (
       <div className="InstrumentLongTermStatistics">
         <div className="InstrumentLongTermStatistics__title">
-          {this.props.intl.formatMessage({ id: 'performance', defaultMessage: `Performance` })}
+          {intl.formatMessage({ id: 'performance', defaultMessage: `Performance` })}
         </div>
         <div>
           {!_.isEmpty(this.state.longTermStatistics) ? (
             <React.Fragment>
               {_.map(this.state.longTermStatistics, period => (
                 <div className="PeriodStatisticsLine" key={`${period.price}${period.label}`}>
-                  <div className="PeriodStatisticsLine__periodName">{period.label}</div>
+                  <div className="PeriodStatisticsLine__periodName">
+                    {intl.formatMessage({ id: period.intlId, defaultMessage: period.label })}
+                  </div>
                   <div
                     className={`PeriodStatisticsLine__value-${period.isUp ? 'success' : 'danger'}`}
                   >
@@ -68,17 +71,17 @@ class UserLongTermStatistics extends React.Component {
                   </div>
                 </div>
               ))}
-              {this.props.withCompareButton && !this.props.isMobile && (
+              {withCompareButton && !isMobile && (
                 <React.Fragment>
-                  <Button className="button-compare" onClick={this.props.toggleModalPerformance}>
-                    {this.props.intl.formatMessage({ id: 'compare', defaultMessage: 'Compare' })}
+                  <Button className="button-compare" onClick={toggleModalPerformance}>
+                    {intl.formatMessage({ id: 'compare', defaultMessage: 'Compare' })}
                   </Button>
                 </React.Fragment>
               )}
             </React.Fragment>
           ) : (
             <div>
-              {this.props.intl.formatMessage({
+              {intl.formatMessage({
                 id: 'unavailableStatisticsUser',
                 defaultMessage: 'The user has not written any posts with forecasts',
               })}
