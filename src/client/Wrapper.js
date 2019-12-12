@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
-import { Affix, ConfigProvider, Layout } from 'antd';
+import { ConfigProvider, Layout } from 'antd';
 import enUS from 'antd/lib/locale-provider/en_US';
 import Cookie from 'js-cookie';
 import { findLanguage, getRequestLocale, getBrowserLocale, loadLanguage } from './translations';
@@ -208,7 +208,7 @@ export default class Wrapper extends React.PureComponent {
   }
 
   render() {
-    const { user, isAuthenticated, usedLocale, translations, history } = this.props;
+    const { user, isAuthenticated, usedLocale, translations, history, username } = this.props;
 
     const language = findLanguage(usedLocale);
 
@@ -221,9 +221,11 @@ export default class Wrapper extends React.PureComponent {
                 <Topnav username={user.name} onMenuItemClick={this.handleMenuItemClick} />
               </Layout.Header>
               <div className="content">
-                <Affix offsetTop={0}>
-                  <TopNavigation authenticated={isAuthenticated} location={history.location} />
-                </Affix>
+                <TopNavigation
+                  authenticated={isAuthenticated}
+                  userName={username}
+                  location={history.location}
+                />
                 {renderRoutes(this.props.route.routes)}
                 <Transfer />
                 <PowerUpOrDown />
