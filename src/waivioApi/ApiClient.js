@@ -483,6 +483,17 @@ export const getMoreObjectsByType = (type, skip, limit, filter = {}) =>
       .catch(error => reject(error));
   });
 
+export const getMessagesQuantity = username => {
+  return new Promise((resolve, reject) => {
+    fetch(`https://stchat.cf/api/user/${username}/unread_count`, {
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(data => resolve(data))
+      .catch(error => reject(error));
+  });
+};
+
 export const getTopUsers = (isRandom = false, { limit, skip } = { limit: 30, skip: 0 }) => {
   const queryString = `?${isRandom ? 'sample=true' : `limit=${limit}&skip=${skip}`}`;
   return new Promise((resolve, reject) => {

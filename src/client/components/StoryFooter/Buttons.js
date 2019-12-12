@@ -379,17 +379,16 @@ export default class Buttons extends React.Component {
                 </BTooltip>
               </span>
             )}
+            <BTooltip title={intl.formatMessage({ id: 'comment', defaultMessage: 'Comment' })}>
+              <a className="Buttons__link" role="presentation" onClick={this.handleCommentsClick}>
+                <i className="iconfont icon-message_fill" />
+              </a>
+            </BTooltip>
+            <span className="Buttons__number">
+              {post.children > 0 && <FormattedNumber value={post.children} />}
+            </span>
           </React.Fragment>
         )}
-
-        <BTooltip title={intl.formatMessage({ id: 'comment', defaultMessage: 'Comment' })}>
-          <a className="Buttons__link" role="presentation" onClick={this.handleCommentsClick}>
-            <i className="iconfont icon-message_fill" />
-          </a>
-        </BTooltip>
-        <span className="Buttons__number">
-          {post.children > 0 && <FormattedNumber value={post.children} />}
-        </span>
         {showReblogLink && (
           <BTooltip
             title={intl.formatMessage({
@@ -402,7 +401,7 @@ export default class Buttons extends React.Component {
             </a>
           </BTooltip>
         )}
-        {this.renderPostPopoverMenu()}
+        {!isAppend && this.renderPostPopoverMenu()}
         {!postState.isReblogged && (
           <Modal
             title={intl.formatMessage({

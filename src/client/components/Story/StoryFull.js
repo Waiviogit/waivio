@@ -519,7 +519,11 @@ class StoryFull extends React.Component {
           />
         )}
         {isForecastValid && (
-          <PostQuotation quoteSecurity={forecast.quoteSecurity} postId={forecast.postId} />
+          <PostQuotation
+            quoteSecurity={forecast.quoteSecurity}
+            postId={forecast.postId}
+            caller="od-pp"
+          />
         )}
 
         <Collapse defaultActiveKey={['1']} accordion>

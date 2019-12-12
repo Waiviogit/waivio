@@ -42,7 +42,7 @@ export class PlatformHelper {
         let isCrossCurrTrue = false;
         if (termCurrency === accountCurrency || baseCurrency === accountCurrency) {
           _.forEach(arrRates, item => {
-            if (quote['security'] === item.security) {
+            if (quote.security === item.security) {
               value.askPrice = quote.askPrice;
               value.bidPrice = quote.bidPrice;
               return false;
@@ -50,7 +50,7 @@ export class PlatformHelper {
           });
         } else {
           _.forEach(arrRates, item => {
-            if (quote['security'] === item.security) {
+            if (quote.security === item.security) {
               value.askPrice = quote.askPrice;
               value.bidPrice = quote.bidPrice;
               midPrice = (parseFloat(value.askPrice) + parseFloat(value.bidPrice)) / 2;
@@ -91,10 +91,10 @@ export class PlatformHelper {
       margin = (() => {
         let margin = 0;
         const midPrice = (askPrice + bidPrice) / 2;
-        if (quote['security'].substring(0, 3) === accountCurrency) {
+        if (quote.security.substring(0, 3) === accountCurrency) {
           margin = amount / quoteSettings.leverage;
         } else if (
-          quote['security'].substring(3, 6) === accountCurrency ||
+          quote.security.substring(3, 6) === accountCurrency ||
           instrCurrency === accountCurrency
         ) {
           margin = (amount / quoteSettings.leverage) * midPrice;
@@ -159,12 +159,12 @@ export class PlatformHelper {
     let pnl = 0;
     if (quote && quote.bidPrice && quote.askPrice) {
       const crossUSD = this.getCrossUSD(quote, quoteSettings);
-      const currentPrice = parseFloat(deal['openPrice']);
-      if (deal['side'] && (deal['side'] === 'LONG' || deal['side'] === 'BUY')) {
-        pnl = (-(currentPrice - quote.bidPrice) * deal['amount']) / parseFloat(crossUSD);
+      const currentPrice = parseFloat(deal.openPrice);
+      if (deal.side && (deal.side === 'LONG' || deal.side === 'BUY')) {
+        pnl = (-(currentPrice - quote.bidPrice) * deal.amount) / parseFloat(crossUSD);
       }
-      if (deal['side'] && (deal['side'] === 'SHORT' || deal['side'] === 'SELL')) {
-        pnl = ((currentPrice - quote.askPrice) * deal['amount']) / parseFloat(crossUSD);
+      if (deal.side && (deal.side === 'SHORT' || deal.side === 'SELL')) {
+        pnl = ((currentPrice - quote.askPrice) * deal.amount) / parseFloat(crossUSD);
       }
     }
     return pnl;
@@ -173,17 +173,17 @@ export class PlatformHelper {
     let pnl = 0;
     if (quote && quote.bidPrice && quote.askPrice) {
       const crossUSD = this.getCrossUSD(quote, quoteSettings);
-      const amount = deal['amount'];
-      const openPrice = parseFloat(deal['openPrice']);
-      const currentPrice = parseFloat(deal['currentValue']);
-      if (deal['side'] && (deal['side'] === 'SHORT' || deal['side'] === 'SELL')) {
+      const amount = deal.amount;
+      const openPrice = parseFloat(deal.openPrice);
+      const currentPrice = parseFloat(deal.currentValue);
+      if (deal.side && (deal.side === 'SHORT' || deal.side === 'SELL')) {
         if (crossUSD > 0) {
           pnl = (-(currentPrice - openPrice) * amount) / parseFloat(crossUSD);
         } else {
           pnl = -(currentPrice - openPrice) * amount * parseFloat(-crossUSD);
         }
       }
-      if (deal['side'] && (deal['side'] === 'LONG' || deal['side'] === 'BUY')) {
+      if (deal.side && (deal.side === 'LONG' || deal.side === 'BUY')) {
         if (crossUSD > 0) {
           pnl = ((currentPrice - openPrice) * amount) / parseFloat(crossUSD);
         } else {
@@ -220,14 +220,14 @@ export class PlatformHelper {
     let dIndex = 1;
     if (
       singleton.platform.userSettings.securitySettings === undefined ||
-      !singleton.platform.userSettings.securitySettings[quote['security']]
+      !singleton.platform.userSettings.securitySettings[quote.security]
     ) {
       return dIndex;
     }
-    const tick = singleton.platform.userSettings.securitySettings[quote['security']].tickSize;
+    const tick = singleton.platform.userSettings.securitySettings[quote.security].tickSize;
     const rounding =
-      singleton.platform.userSettings.securitySettings[quote['security']].priceRounding / 1000000;
-    const market = singleton.platform.userSettings.securitySettings[quote['security']].market;
+      singleton.platform.userSettings.securitySettings[quote.security].priceRounding / 1000000;
+    const market = singleton.platform.userSettings.securitySettings[quote.security].market;
     if (market !== 'Index') {
       if (tick > 1000) {
         if (rounding === 1) {
@@ -242,13 +242,13 @@ export class PlatformHelper {
     return dIndex;
   }
   static getPriceDirection(quote, deal) {
-    let dealParams = {};
-    if (deal['side'] && (deal['side'] === 'SHORT' || deal['side'] === 'SELL')) {
+    const dealParams = {};
+    if (deal.side && (deal.side === 'SHORT' || deal.side === 'SELL')) {
       dealParams.direction = 'SHORT';
-      dealParams.price = quote['askPrice'];
+      dealParams.price = quote.askPrice;
     } else {
       dealParams.direction = 'LONG';
-      dealParams.price = quote['bidPrice'];
+      dealParams.price = quote.bidPrice;
     }
     return dealParams;
   }
@@ -265,7 +265,7 @@ export class PlatformHelper {
     const dIndex = this.getDIndex(quote);
     const flFix = this.getFlFix(dIndex);
     const dealParams = this.getPriceDirection(quote, deal);
-    let rangesPrice = {};
+    const rangesPrice = {};
     let takeProfitMin = 0;
     let takeProfitMax = 0;
     switch (dealParams.direction) {
@@ -278,8 +278,8 @@ export class PlatformHelper {
         takeProfitMax = (dealParams.price * (100 + maxPercent / 1000000)) / 100 - flFix;
         break;
     }
-    rangesPrice['min'] = takeProfitMin.toFixed(dIndex);
-    rangesPrice['max'] = takeProfitMax.toFixed(dIndex);
+    rangesPrice.min = takeProfitMin.toFixed(dIndex);
+    rangesPrice.max = takeProfitMax.toFixed(dIndex);
     return rangesPrice;
   }
   static getPriceStopLossRange(quote, deal) {
@@ -288,7 +288,7 @@ export class PlatformHelper {
     const dIndex = this.getDIndex(quote);
     const flFix = this.getFlFix(dIndex);
     const dealParams = this.getPriceDirection(quote, deal);
-    let rangesPrice = {};
+    const rangesPrice = {};
     let stopLossMin = 0;
     let stopLossMax = 0;
     switch (dealParams.direction) {
@@ -301,8 +301,8 @@ export class PlatformHelper {
         stopLossMax = (dealParams.price * (100 - minPercent / 1000000)) / 100 - flFix;
         break;
     }
-    rangesPrice['min'] = stopLossMin.toFixed(dIndex);
-    rangesPrice['max'] = stopLossMax.toFixed(dIndex);
+    rangesPrice.min = stopLossMin.toFixed(dIndex);
+    rangesPrice.max = stopLossMax.toFixed(dIndex);
     return rangesPrice;
   }
   static getAmountStopLossRange(quote, deal, quoteSettings) {
@@ -312,9 +312,9 @@ export class PlatformHelper {
     const pnl = this.getPnl(quote, deal, quoteSettings);
     let stopLossMin = 0;
     let stopLossMax = 0;
-    let rangesPrice = {};
-    let tempDealForMin = {};
-    let tempDealForMax = {};
+    const rangesPrice = {};
+    const tempDealForMin = {};
+    const tempDealForMax = {};
     _.map(deal, (item, key) => {
       tempDealForMin[key] = deal[key];
       tempDealForMax[key] = deal[key];
@@ -329,24 +329,22 @@ export class PlatformHelper {
         stopLossMax = (dealParams.price * (100 - maxPercent / 1000000)) / 100;
         break;
     }
-    tempDealForMin['currentValue'] = stopLossMin;
-    tempDealForMax['currentValue'] = stopLossMax;
+    tempDealForMin.currentValue = stopLossMin;
+    tempDealForMax.currentValue = stopLossMax;
     let sMin = this.getPnlRange(quote, tempDealForMin, quoteSettings);
     let sMax = this.getPnlRange(quote, tempDealForMax, quoteSettings);
     if (pnl < 0) {
       sMin = Math.abs(sMin);
       sMax = Math.abs(sMax);
+    } else if (sMin > 0 && sMax > 0) {
+      sMin = 0;
+      sMax = 0;
     } else {
-      if (sMin > 0 && sMax > 0) {
-        sMin = 0;
-        sMax = 0;
-      } else {
-        sMin = Math.abs(sMin);
-        sMax = Math.abs(sMax);
-      }
+      sMin = Math.abs(sMin);
+      sMax = Math.abs(sMax);
     }
-    rangesPrice['min'] = sMin.toFixed(2);
-    rangesPrice['max'] = sMax.toFixed(2);
+    rangesPrice.min = sMin.toFixed(2);
+    rangesPrice.max = sMax.toFixed(2);
     return rangesPrice;
   }
   static getAmountTakeProfitRange(quote, deal, quoteSettings) {
@@ -356,9 +354,9 @@ export class PlatformHelper {
     const pnl = this.getPnl(quote, deal, quoteSettings);
     let takeProfitMin = 0;
     let takeProfitMax = 0;
-    let rangesPrice = {};
-    let tempDealForMin = {};
-    let tempDealForMax = {};
+    const rangesPrice = {};
+    const tempDealForMin = {};
+    const tempDealForMax = {};
     _.map(deal, (item, key) => {
       tempDealForMin[key] = deal[key];
       tempDealForMax[key] = deal[key];
@@ -373,8 +371,8 @@ export class PlatformHelper {
         takeProfitMax = (dealParams.price * (100 + maxPercent / 1000000)) / 100;
         break;
     }
-    tempDealForMin['currentValue'] = takeProfitMin;
-    tempDealForMax['currentValue'] = takeProfitMax;
+    tempDealForMin.currentValue = takeProfitMin;
+    tempDealForMax.currentValue = takeProfitMax;
     let sMin = this.getPnlRange(quote, tempDealForMin, quoteSettings);
     let sMax = this.getPnlRange(quote, tempDealForMax, quoteSettings);
     if (pnl < 0) {
@@ -389,19 +387,19 @@ export class PlatformHelper {
       sMin = Math.abs(sMin);
       sMax = Math.abs(sMax);
     }
-    rangesPrice['min'] = (sMin + 0.01).toFixed(2);
-    rangesPrice['max'] = sMax.toFixed(2);
+    rangesPrice.min = (sMin + 0.01).toFixed(2);
+    rangesPrice.max = sMax.toFixed(2);
     return rangesPrice;
   }
   static getRanges(quote, deal, quoteSettings) {
-    let ranges = {
+    const ranges = {
       stopLoss: { amount: {}, rate: {} },
       takeProfit: { amount: {}, rate: {} },
     };
-    ranges['stopLoss']['amount'] = this.getAmountStopLossRange(quote, deal, quoteSettings);
-    ranges['stopLoss']['rate'] = this.getPriceStopLossRange(quote, deal);
-    ranges['takeProfit']['amount'] = this.getAmountTakeProfitRange(quote, deal, quoteSettings);
-    ranges['takeProfit']['rate'] = this.getPriceTakeProfitRange(quote, deal);
+    ranges.stopLoss.amount = this.getAmountStopLossRange(quote, deal, quoteSettings);
+    ranges.stopLoss.rate = this.getPriceStopLossRange(quote, deal);
+    ranges.takeProfit.amount = this.getAmountTakeProfitRange(quote, deal, quoteSettings);
+    ranges.takeProfit.rate = this.getPriceTakeProfitRange(quote, deal);
     return ranges;
   }
   static lessDeal(amount, quoteSettings) {
@@ -412,9 +410,8 @@ export class PlatformHelper {
     const decimals = PlatformHelper.countDecimals(step);
     if (res > quoteSettings.minimumQuantity / 1000000) {
       return numberFormat(res, decimals);
-    } else {
-      return numberFormat(quoteSettings.minimumQuantity / 1000000, decimals);
     }
+    return numberFormat(quoteSettings.minimumQuantity / 1000000, decimals);
   }
   static moreDeal(amount, quoteSettings) {
     const amountParseString = amount.replace(/,/g, '');
@@ -424,9 +421,8 @@ export class PlatformHelper {
     const decimals = PlatformHelper.countDecimals(step);
     if (res < quoteSettings.maximumQuantity / 1000000) {
       return numberFormat(res, decimals);
-    } else {
-      return numberFormat(quoteSettings.maximumQuantity / 1000000, decimals);
     }
+    return numberFormat(quoteSettings.maximumQuantity / 1000000, decimals);
   }
   static validateOnBlur(amount, quoteSettings) {
     const amountParseString = amount.replace(/,/g, '');
@@ -437,13 +433,12 @@ export class PlatformHelper {
     } else if (amountInt > quoteSettings.maximumQuantity / 1000000) {
       const decimals = PlatformHelper.countDecimals(quoteSettings.maximumQuantity);
       return numberFormat(quoteSettings.maximumQuantity / 1000000, decimals);
-    } else {
-      const resultNumber =
-        Math.round(amountInt / (quoteSettings.quantityIncrement / 1000000)) *
-        (quoteSettings.quantityIncrement / 1000000);
-      const decimals = PlatformHelper.countDecimals(resultNumber);
-      return numberFormat(resultNumber, decimals);
     }
+    const resultNumber =
+      Math.round(amountInt / (quoteSettings.quantityIncrement / 1000000)) *
+      (quoteSettings.quantityIncrement / 1000000);
+    const decimals = PlatformHelper.countDecimals(resultNumber);
+    return numberFormat(resultNumber, decimals);
   }
   static validateOnChange(amount, quoteSettings) {
     const amountParseString = amount.replace(/,/g, '');
@@ -457,14 +452,12 @@ export class PlatformHelper {
     } else if (amountParseString.length === 0) {
       const decimals = PlatformHelper.countDecimals(quoteSettings.minimumQuantity);
       return numberFormat(quoteSettings.minimumQuantity / 1000000, decimals);
-    } else {
-      if (amountParseString.match(/[1-9]+?/)) {
-        const decimals = PlatformHelper.countDecimals(amountInt);
-        return numberFormat(amountInt, decimals);
-      } else {
-        return amount.replace(/^,/, '');
-      }
     }
+    if (amountParseString.match(/[1-9]+?/)) {
+      const decimals = PlatformHelper.countDecimals(amountInt);
+      return numberFormat(amountInt, decimals);
+    }
+    return amount.replace(/^,/, '');
   }
   static validateOnKeyPress(e) {
     if (e && e.key && !e.key.match(/[0-9]/) && e.key.length === 1) {
@@ -488,9 +481,8 @@ export class PlatformHelper {
       parseFloat(input.value) < rangeMax
     ) {
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
   static countDecimals(value) {
     if (Math.floor(value) === value) return 0;
@@ -507,3 +499,12 @@ export const mutateObject = wobjects =>
       chartId: wobj[CHART_ID],
       author_permlink: wobj.id,
     }));
+
+export const getOS = () => {
+  let OSName = 'Unknown OS';
+  if (navigator.appVersion.indexOf('Win') !== -1) OSName = 'Windows';
+  if (navigator.appVersion.indexOf('Mac') !== -1) OSName = 'MacOS';
+  if (navigator.appVersion.indexOf('X11') !== -1) OSName = 'UNIX';
+  if (navigator.appVersion.indexOf('Linux') !== -1) OSName = 'Linux';
+  return OSName;
+};

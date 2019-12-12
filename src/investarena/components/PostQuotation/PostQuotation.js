@@ -14,8 +14,9 @@ const propTypes = {
   quote: PropTypes.shape(),
   intl: PropTypes.shape().isRequired,
   amount: PropTypes.string,
+  caller: PropTypes.string,
   margin: PropTypes.string,
-  toggleConfirmationModal: PropTypes.func,
+  toggleConfirmationModal: PropTypes.func.isRequired,
   handleClickLess: PropTypes.func.isRequired,
   handleClickMore: PropTypes.func.isRequired,
   handleClickOpenDeal: PropTypes.func.isRequired,
@@ -27,15 +28,9 @@ const propTypes = {
 const defaultProps = {
   quoteSettings: quoteSettingsData,
   quote: quoteData,
+  caller: 'od-pc',
   amount: '',
   margin: '',
-  toggleConfirmationModal: () => {},
-  handleClickLess: () => {},
-  handleClickMore: () => {},
-  handleClickOpenDeal: () => {},
-  handleBlurInput: () => {},
-  handleChangeInput: () => {},
-  handleKeyPressInput: () => {},
 };
 
 const PostQuotation = ({
@@ -50,6 +45,7 @@ const PostQuotation = ({
   handleBlurInput,
   handleChangeInput,
   handleKeyPressInput,
+  caller,
   intl,
 }) => {
   const wobj = quoteSettings.wobjData ? quoteSettings.wobjData : {};
@@ -59,8 +55,8 @@ const PostQuotation = ({
     quoteSettings.isSession || quote.isSession
       ? 'st-post-quotation-icon-point-green'
       : 'st-post-quotation-icon-point-red';
-  const handleOpenDeal = direction => {
-    handleClickOpenDeal(direction);
+  const handleOpenDeal = (direction, caller) => {
+    handleClickOpenDeal(direction, caller);
     if (toggleConfirmationModal) toggleConfirmationModal();
   };
 
@@ -127,7 +123,7 @@ const PostQuotation = ({
                 className={`st-post-action-block st-margin-right-small st-quote-${
                   quote.state ? quote.state : 'not-update'
                 }`}
-                onClick={handleOpenDeal.bind(this, 'Sell')}
+                onClick={handleOpenDeal.bind(this, 'Sell', caller)}
               >
                 <span className="st-post-action-span">
                   {intl.formatMessage({ id: 'postQuotation.button.sell', defaultMessage: 'Sell' })}
@@ -139,7 +135,7 @@ const PostQuotation = ({
                 className={`st-post-action-block st-quote-${
                   quote.state ? quote.state : 'not-update'
                 }`}
-                onClick={handleOpenDeal.bind(this, 'Buy')}
+                onClick={handleOpenDeal.bind(this, 'Buy', caller)}
               >
                 <span className="st-post-action-span">
                   {intl.formatMessage({ id: 'postQuotation.button.buy', defaultMessage: 'Buy' })}

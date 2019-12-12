@@ -119,6 +119,8 @@ class Topnav extends React.Component {
     searchByObject: PropTypes.arrayOf(PropTypes.shape()),
     searchByUser: PropTypes.arrayOf(PropTypes.shape()),
     searchByObjectType: PropTypes.arrayOf(PropTypes.shape()),
+    openChat: PropTypes.func.isRequired,
+    messagesCount: PropTypes.number,
   };
 
   static defaultProps = {
@@ -132,6 +134,7 @@ class Topnav extends React.Component {
     userMetaData: {},
     loadingNotifications: false,
     screenSize: 'medium',
+    messagesCount: 0,
   };
 
   constructor(props) {
@@ -392,18 +395,6 @@ class Topnav extends React.Component {
             <PopoverMenuItem key="wallet">
               <FormattedMessage id="wallet" defaultMessage="Wallet" />
             </PopoverMenuItem>
-            <PopoverMenuItem key="activity">
-              <FormattedMessage id="activity" defaultMessage="Activity" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="bookmarks">
-              <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="drafts">
-              <FormattedMessage id="drafts" defaultMessage="Drafts" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="settings">
-              <FormattedMessage id="settings" defaultMessage="Settings" />
-            </PopoverMenuItem>
             <PopoverMenuItem key="about" fullScreenHidden>
               <FormattedMessage id="about" defaultMessage="About" />
             </PopoverMenuItem>
@@ -479,7 +470,6 @@ class Topnav extends React.Component {
       notifications,
       userMetaData,
       loadingNotifications,
-      screenSize,
       platformName,
       isLoadingPlatform,
     } = this.props;
@@ -495,7 +485,6 @@ class Topnav extends React.Component {
               _.includes(PARSED_NOTIFICATIONS, notification.type),
           ),
         );
-    const isMobile = screenSize === 'xsmall' || screenSize === 'small';
     const displayBadge = notificationsCount > 0;
     const notificationsCountDisplay = notificationsCount > 99 ? '99+' : notificationsCount;
     return (
@@ -506,67 +495,65 @@ class Topnav extends React.Component {
       >
         <ModalBroker />
         <Menu selectedKeys={[]} className="Topnav__menu" mode="horizontal">
-          {isMobile && (
-            <Menu.Item className="Topnav__menu-item" key="broker">
-              <React.Fragment>
-                {platformName !== 'widgets' && !isLoadingPlatform ? (
-                  <PopoverContainer
-                    placement="bottom"
-                    trigger="click"
-                    visible={popoverBrokerVisible}
-                    onVisibleChange={this.handleOnClickBrokerIcon}
-                    overlayStyle={{ position: 'fixed' }}
-                    content={
-                      <div>
-                        <PopoverMenu onSelect={this.handleBrokerMenuSelect}>
-                          <PopoverMenuItem key="deposit">
-                            <FormattedMessage
-                              id="headerAuthorized.deposit"
-                              defaultMessage="Deposit"
-                            />
-                          </PopoverMenuItem>
-                          <PopoverMenuItem key="openDeals">
-                            <FormattedMessage
-                              id="headerAuthorized.openDeals"
-                              defaultMessage="Open deals"
-                            />
-                          </PopoverMenuItem>
-                          <PopoverMenuItem key="closedDeals">
-                            <FormattedMessage
-                              id="headerAuthorized.closedDeals"
-                              defaultMessage="Closed deals"
-                            />
-                          </PopoverMenuItem>
-                          <PopoverMenuItem key="broker-disconnect">
-                            <FormattedMessage
-                              id="disconnect_broker"
-                              defaultMessage="Disconnect Broker"
-                            />
-                          </PopoverMenuItem>
-                        </PopoverMenu>
-                      </div>
-                    }
-                  >
-                    <img
-                      className="Topnav__icon-broker"
-                      role="presentation"
-                      title={platformName}
-                      src={`/images/investarena/${platformName}.png`}
-                      alt="broker"
-                    />
-                  </PopoverContainer>
-                ) : (
-                  <div
-                    className="Topnav__item-broker"
-                    onClick={this.handleOnClickBrokerIcon}
+          <Menu.Item className="Topnav__menu-item Topnav__menu-item--broker" key="broker">
+            <React.Fragment>
+              {platformName !== 'widgets' && !isLoadingPlatform ? (
+                <PopoverContainer
+                  placement="bottom"
+                  trigger="click"
+                  visible={popoverBrokerVisible}
+                  onVisibleChange={this.handleOnClickBrokerIcon}
+                  overlayStyle={{ position: 'fixed' }}
+                  content={
+                    <div>
+                      <PopoverMenu onSelect={this.handleBrokerMenuSelect}>
+                        <PopoverMenuItem key="deposit">
+                          <FormattedMessage
+                            id="headerAuthorized.deposit"
+                            defaultMessage="Deposit"
+                          />
+                        </PopoverMenuItem>
+                        <PopoverMenuItem key="openDeals">
+                          <FormattedMessage
+                            id="headerAuthorized.openDeals"
+                            defaultMessage="Open deals"
+                          />
+                        </PopoverMenuItem>
+                        <PopoverMenuItem key="closedDeals">
+                          <FormattedMessage
+                            id="headerAuthorized.closedDeals"
+                            defaultMessage="Closed deals"
+                          />
+                        </PopoverMenuItem>
+                        <PopoverMenuItem key="broker-disconnect">
+                          <FormattedMessage
+                            id="disconnect_broker"
+                            defaultMessage="Disconnect Broker"
+                          />
+                        </PopoverMenuItem>
+                      </PopoverMenu>
+                    </div>
+                  }
+                >
+                  <img
+                    className="Topnav__icon-broker"
                     role="presentation"
-                  >
-                    <img src="/images/icons/broker.svg" alt="broker" />
-                  </div>
-                )}
-              </React.Fragment>
-            </Menu.Item>
-          )}
+                    title={platformName}
+                    src={`/images/investarena/${platformName}.png`}
+                    alt="broker"
+                  />
+                </PopoverContainer>
+              ) : (
+                <div
+                  className="Topnav__item-broker"
+                  onClick={this.handleOnClickBrokerIcon}
+                  role="presentation"
+                >
+                  <img src="/images/icons/broker.svg" alt="broker" />
+                </div>
+              )}
+            </React.Fragment>
+          </Menu.Item>
 
           <Menu.Item className="Topnav__menu-item" key="hot">
             {this.hotNews()}
@@ -946,6 +933,8 @@ class Topnav extends React.Component {
       platformName,
       isLoadingPlatform,
       isNightMode,
+      openChat,
+      messagesCount,
     } = this.props;
     const { searchBarActive, isModalDeposit, dropdownOpen, popoverBrokerVisible } = this.state;
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
@@ -1047,7 +1036,13 @@ class Topnav extends React.Component {
             </button>
             {this.props.username && (
               <div className="Topnav__chat" key="more">
-                <Icon type="message" className="icon-chat" />
+                {!messagesCount ? (
+                  <Icon type="message" className="icon-chat" onClick={openChat} />
+                ) : (
+                  <div className="Topnav__chat-button" onClick={openChat} role="presentation">
+                    {messagesCount > 99 ? '99+' : messagesCount}
+                  </div>
+                )}
               </div>
             )}
           </div>

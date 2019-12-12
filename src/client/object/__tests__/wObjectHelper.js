@@ -370,15 +370,23 @@ describe('sortListItemsBy', () => {
   });
   it('should sort items according sortOrder', () => {
     const expected = [obj2, list3, list1, obj1, list2];
-    expect(sortListItemsBy(items, 'custom', expected.map(item => item.id))).toEqual(expected);
+    expect(
+      sortListItemsBy(
+        items,
+        'custom',
+        expected.map(item => item.id),
+      ),
+    ).toEqual(expected);
   });
   it('should move new items to the end of the list', () => {
     const expected = [obj2, list1, list2];
-    expect(sortListItemsBy(items, 'custom', expected.map(item => item.id))).toEqual([
-      ...expected,
-      list3,
-      obj1,
-    ]);
+    expect(
+      sortListItemsBy(
+        items,
+        'custom',
+        expected.map(item => item.id),
+      ),
+    ).toEqual([...expected, list3, obj1]);
   });
   it('should skip item without error if there is no item for id in sort-order', () => {
     const expected = [obj2, list1, list2];

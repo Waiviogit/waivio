@@ -49,6 +49,7 @@ const ModalDealConfirmation = props => {
                   amountModal={props.modalInfo.amount}
                   postId={props.modalInfo.postId}
                   toggleConfirmationModal={props.toggleModal}
+                  caller={props.modalInfo.caller || 'od-pm'}
                 />
               )}
             </div>

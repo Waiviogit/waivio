@@ -1006,6 +1006,6 @@
   "empty_my_feed": "Ваша лента пуста, потому что вы не подписаны ни на одного пользователя или тему.",
   "actualNews" : "Актуальные новости",
   "post_validation_incomplete_content": "У поста должно быть заглавие и содержимое",
-  "post_validation_object_not_found": "Пост должен содержать по крайней мере один объект",
+  "post_validation_object_not_found": "Пост должен содержать по крайней мере одину тему",
   "post_validation_invalid_forecast": "Заполните необходимые поля формы"
 }

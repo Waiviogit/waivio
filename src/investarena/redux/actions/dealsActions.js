@@ -20,6 +20,7 @@ export function createOpenDealPlatform(
   margin,
   postId = '',
   platform,
+  caller,
 ) {
   return () => {
     const validAmount = parseFloat(amount.replace(/,/g, '')) * 1000000;
@@ -43,7 +44,7 @@ export function createOpenDealPlatform(
         platform,
         deal_id: null,
       };
-      singleton.platform.createOpenDeal(deal, dataDealToApi);
+      singleton.platform.createOpenDeal(deal, dataDealToApi, caller);
     }
   };
 }
@@ -76,8 +77,8 @@ export function getPostOpenDeals(postId) {
   };
 }
 
-export function closeOpenDealPlatform(dealId, allMarker) {
-  singleton.platform.closeOpenDeal(dealId, allMarker);
+export function closeOpenDealPlatform(dealId, caller) {
+  singleton.platform.closeOpenDeal(dealId, caller);
 }
 
 export function duplicateOpenDealPlatform(quote, quoteSettings, openDeal, platform) {
@@ -97,7 +98,7 @@ export function duplicateOpenDealPlatform(quote, quoteSettings, openDeal, platfo
   singleton.platform.duplicateOpenDeal(openDeal.dealId, dataDealToApi);
 }
 
-export function lockOpenDealPlatform(quote, quoteSettings, openDeal, platform) {
+export function lockOpenDealPlatform(quote, quoteSettings, openDeal, platform, caller) {
   const margin = PlatformHelper.getMargin(quote, quoteSettings, openDeal.amount);
   const dataDealToApi = {
     security: quote.security,
@@ -116,7 +117,7 @@ export function lockOpenDealPlatform(quote, quoteSettings, openDeal, platform) {
     side: openDeal.side === 'SELL' || openDeal.side === 'SHORT' ? 'BUY' : 'SELL',
     amount: openDeal.amount * 1000000,
   };
-  singleton.platform.createOpenDeal(deal, dataDealToApi);
+  singleton.platform.createOpenDeal(deal, dataDealToApi, caller);
 }
 
 export function changeOpenDealPlatform(id, slRate, slAmount, tpRate, tpAmount) {

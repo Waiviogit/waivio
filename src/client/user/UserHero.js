@@ -58,6 +58,9 @@ const UserHero = ({
   hasCover,
   isFollowing,
   onTransferClick,
+  changeChatCondition,
+  isChat,
+  setPostMessageAction,
 }) => {
   const objectsFollowingCount = user.objects_following_count ? user.objects_following_count : 0;
   const followingCount = user.following_count + objectsFollowingCount;
@@ -74,6 +77,10 @@ const UserHero = ({
               ) : (
                 <UserHeader
                   username={username}
+                  authenticated={authenticated}
+                  isChat={isChat}
+                  changeChatCondition={changeChatCondition}
+                  setPostMessageAction={setPostMessageAction}
                   handle={user.name}
                   wobjWeight={user.wobjects_weight}
                   vestingShares={parseFloat(user.vesting_shares)}
@@ -104,6 +111,9 @@ UserHero.propTypes = {
   hasCover: PropTypes.bool,
   isFollowing: PropTypes.bool,
   onTransferClick: PropTypes.func,
+  changeChatCondition: PropTypes.func.isRequired,
+  isChat: PropTypes.bool.isRequired,
+  setPostMessageAction: PropTypes.func.isRequired,
 };
 
 UserHero.defaultProps = {

@@ -45,7 +45,8 @@ const withTrade = Component => {
           this.state.amount === '' ||
           this.state.margin === '' ||
           this.state.margin === '---' ||
-          (!this.props.quote || !this.props.quoteSettings)
+          !this.props.quote ||
+          !this.props.quoteSettings
         ) {
           const amountValue = nexProps.quoteSettings.defaultQuantity / 1000000;
           const amount =
@@ -75,8 +76,8 @@ const withTrade = Component => {
       const margin = PlatformHelper.getMargin(this.props.quote, this.props.quoteSettings, amount);
       this.setState({ amount, margin });
     };
-    handleClickOpenDeal = side => {
-      this.props.createOpenDeal(side, this.state.amount, this.state.margin);
+    handleClickOpenDeal = (side, caller) => {
+      this.props.createOpenDeal(side, this.state.amount, this.state.margin, caller);
     };
     handleBlurInput = e => {
       const amount = PlatformHelper.validateOnBlur(e.target.value, this.props.quoteSettings);
@@ -131,7 +132,7 @@ const withTrade = Component => {
     return {
       ...ownProps,
       ...stateProps,
-      createOpenDeal: (side, amount, margin) => {
+      createOpenDeal: (side, amount, margin, caller) => {
         if (
           platformName !== 'widgets' &&
           !isOpen &&
@@ -150,6 +151,7 @@ const withTrade = Component => {
               margin,
               postId,
               platformName,
+              caller,
             }),
           );
         } else if (!isSignIn) {
@@ -174,6 +176,7 @@ const withTrade = Component => {
               margin,
               postId,
               platformName,
+              caller,
             ),
           );
         } else if (
@@ -193,17 +196,14 @@ const withTrade = Component => {
               margin,
               postId,
               platformName,
+              caller,
             ),
           );
         }
       },
     };
   }
-  return connect(
-    mapState,
-    null,
-    mergeProps,
-  )(WithTrade);
+  return connect(mapState, null, mergeProps)(WithTrade);
 };
 
 export default withTrade;

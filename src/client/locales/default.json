@@ -1048,6 +1048,6 @@
   "empty_my_feed": "Your feed is empty because you are not following any user or topic.",
   "actualNews" : "Actual news",
   "post_validation_incomplete_content": "The post should contain the title and content",
-  "post_validation_object_not_found": "The post must contain at least one object",
+  "post_validation_object_not_found": "The post must contain at least one topic",
   "post_validation_invalid_forecast": "Fill in the required fields"
 }

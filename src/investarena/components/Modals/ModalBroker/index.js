@@ -53,8 +53,4 @@ function mergeProps(stateProps, dispatchProps) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  null,
-  mergeProps,
-)(ModalBrokerContainer);
+export default connect(mapStateToProps, null, mergeProps)(ModalBrokerContainer);

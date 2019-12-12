@@ -18,7 +18,11 @@ function sc2Extended() {
           id: 'follow_wobject',
           json: JSON.stringify([
             'follow',
-            { user: follower, author_permlink: followingObject, what: ['feed'] },
+            {
+              user: follower,
+              author_permlink: followingObject,
+              what: ['feed'],
+            },
           ]),
         };
         return this.broadcast([['custom_json', params]], cb);
@@ -45,6 +49,17 @@ function sc2Extended() {
           required_posting_auths: [username],
           id: 'wobj_rating',
           json: JSON.stringify({ author, permlink, author_permlink: authorPermlink, rate }),
+        };
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      settingSessionId(username, sessionId, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'session_id',
+          json: JSON.stringify({ session_id: sessionId }),
         };
         return this.broadcast([['custom_json', params]], cb);
       },

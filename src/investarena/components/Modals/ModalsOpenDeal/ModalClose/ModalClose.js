@@ -19,7 +19,7 @@ class ModalClose extends Component {
     this.setState({ modal: !this.state.modal });
   };
   handleClickConfirmCloseDeal = () => {
-    closeOpenDealPlatform(this.props.openDealId);
+    closeOpenDealPlatform(this.props.openDealId, 'cd-dp');
     this.toggle();
   };
   render() {

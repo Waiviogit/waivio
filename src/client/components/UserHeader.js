@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
+import { Button } from 'antd';
 import { getUserRankKey, getUserRank } from '../helpers/user';
 import AvatarLightbox from './AvatarLightbox';
 import FollowButton from '../widgets/FollowButton';
@@ -12,6 +13,7 @@ import WeightTag from './WeightTag';
 
 const UserHeader = ({
   username,
+  authenticated,
   handle,
   wobjWeight,
   vestingShares,
@@ -20,10 +22,17 @@ const UserHeader = ({
   hasCover,
   isFollowing,
   isActive,
+  changeChatCondition,
+  isChat,
+  setPostMessageAction,
 }) => {
   const style = hasCover
     ? { backgroundImage: `url("https://steemitimages.com/2048x512/${coverImage}")` }
     : {};
+  const sendData = () => {
+    setPostMessageAction('start_chat', handle);
+    changeChatCondition();
+  };
   return (
     <div className={classNames('UserHeader', { 'UserHeader--cover': hasCover })} style={style}>
       <div className="UserHeader__container">
@@ -50,6 +59,11 @@ const UserHeader = ({
                   <FollowButton following={handle} followingType="user" />
                 )}
               </div>
+              {authenticated && !isChat && !isSameUser ? (
+                <div className="UserHeader__user-chat-button">
+                  <Button onClick={sendData} type="primary" shape="circle" icon="message" />
+                </div>
+              ) : null}
             </div>
           </div>
           <div className="UserHeader__handle-rank-container">
@@ -86,6 +100,7 @@ const UserHeader = ({
 
 UserHeader.propTypes = {
   username: PropTypes.string,
+  authenticated: PropTypes.bool.isRequired,
   handle: PropTypes.string,
   wobjWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   vestingShares: PropTypes.number,
@@ -94,6 +109,9 @@ UserHeader.propTypes = {
   hasCover: PropTypes.bool,
   isFollowing: PropTypes.bool,
   isActive: PropTypes.bool.isRequired,
+  changeChatCondition: PropTypes.func.isRequired,
+  isChat: PropTypes.bool.isRequired,
+  setPostMessageAction: PropTypes.func.isRequired,
 };
 
 UserHeader.defaultProps = {

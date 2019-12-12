@@ -53,7 +53,7 @@ const TradeButtons = props => {
           </span>
           <div
             className={`st-trade-buttons-action-block st-quote-down`}
-            onClick={props.handleClickOpenDeal.bind(this, 'Sell')}
+            onClick={props.handleClickOpenDeal.bind(this, 'Sell', 'od-dp')}
           >
             {props.intl.formatMessage({
               id: 'postQuotation.button.sell',
@@ -88,7 +88,7 @@ const TradeButtons = props => {
           </div>
           <div
             className={`st-trade-buttons-action-block st-quote-up`}
-            onClick={props.handleClickOpenDeal.bind(this, 'Buy')}
+            onClick={props.handleClickOpenDeal.bind(this, 'Buy', 'od-dp')}
           >
             {props.intl.formatMessage({
               id: 'postQuotation.button.buy',
