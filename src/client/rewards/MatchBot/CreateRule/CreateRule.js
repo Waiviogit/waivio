@@ -13,6 +13,7 @@ const CreateRule = ({ intl, form, modalVisible, handleChangeModalVisible, isEdit
   const { getFieldDecorator, setFieldsValue } = form;
   const [sponsor, setSponsor] = useState({});
   const [sliderValue, setSliderValue] = useState(1);
+  const [isLoading, setLoaded] = useState(false);
   const handleSetSponsor = obj => {
     setSponsor(obj);
     setFieldsValue({ sponsorField: obj });
@@ -32,6 +33,7 @@ const CreateRule = ({ intl, form, modalVisible, handleChangeModalVisible, isEdit
       : callback();
 
   const handleSubmit = e => {
+    setLoaded(true);
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err && !isEmpty(sponsor)) {
@@ -43,11 +45,19 @@ const CreateRule = ({ intl, form, modalVisible, handleChangeModalVisible, isEdit
         if (values.noticeField) prepareObjData.notes = values.noticeField;
         props
           .setMatchBotRules(prepareObjData)
-          .then(data => console.log(data))
-          .catch(error => console.error(error));
+          .then(() => {
+            setLoaded(false);
+            handleChangeModalVisible();
+          })
+          .catch(error => {
+            setLoaded(false);
+            handleChangeModalVisible();
+            console.error(error);
+          });
       }
       if (err) {
         console.error(err);
+        setLoaded(false);
       }
     });
   };
@@ -83,7 +93,7 @@ const CreateRule = ({ intl, form, modalVisible, handleChangeModalVisible, isEdit
             })(
               <SearchUsersAutocomplete
                 allowClear={false}
-                disabled={false}
+                disabled={isLoading}
                 handleSelect={handleSetSponsor}
                 placeholder={'Find sponsor'}
                 style={{ width: '100%' }}
@@ -94,14 +104,20 @@ const CreateRule = ({ intl, form, modalVisible, handleChangeModalVisible, isEdit
               <ReviewItem
                 key={sponsor.account}
                 object={sponsor}
-                loading={false}
+                loading={isLoading}
                 removeReviewObject={handleRemoveSponsor}
                 isUser
               />
             )}
           </Form.Item>
           <Form.Item label="Set voting power">
-            <Slider min={1} defaultValue={100} marks={marks} onChange={handleChangeSliderValue} />
+            <Slider
+              min={1}
+              defaultValue={100}
+              disabled={isLoading}
+              marks={marks}
+              onChange={handleChangeSliderValue}
+            />
           </Form.Item>
           <Form.Item
             label={intl.formatMessage({
@@ -119,17 +135,17 @@ const CreateRule = ({ intl, form, modalVisible, handleChangeModalVisible, isEdit
                   }),
                 },
               ],
-            })(<Input.TextArea />)}
+            })(<Input.TextArea disabled={isLoading} />)}
           </Form.Item>
           {!isEdit ? (
-            <Button type="primary" htmlType="submit" loading={false} disabled={false}>
+            <Button type="primary" htmlType="submit" loading={isLoading} disabled={false}>
               {intl.formatMessage({
                 id: 'matchBot_btn_create_rule',
                 defaultMessage: 'Create rule',
               })}
             </Button>
           ) : (
-            <Button type="primary" htmlType="submit" loading={false} disabled={false}>
+            <Button type="primary" htmlType="submit" loading={isLoading} disabled={false}>
               {intl.formatMessage({
                 id: 'matchBot_btn_edit_rule',
                 defaultMessage: 'Edit rule',
