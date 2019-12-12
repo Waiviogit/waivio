@@ -19,8 +19,12 @@ const LINKS = {
   TOOLS_INVITE: '/invite',
   TOOLS_SETTINGS: '/settings',
   ABOUT: '/object/ylr-waivio',
+  NOTIFICATIONS: '/notifications-list',
   USERS: '/discover',
+  BLOG: '/blog',
+  FEED: '/feed',
 };
+
 const FEED_URLS = [LINKS.FEED_HOT, LINKS.FEED_NEW, LINKS.FEED_TRENDING];
 const TOOLS_URLS = [
   LINKS.TOOLS_BOOKMARKS,
