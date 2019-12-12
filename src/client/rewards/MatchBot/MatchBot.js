@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 import MatchBotTable from './MatchBotTable/MatchBotTable';
 import './MatchBot.less';
+import CreateRule from './CreateRule/CreateRule';
 
 const MatchBot = ({ intl }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const handleChangeModalVisible = () => setModalVisible(!modalVisible);
+
   // Mock
   const sponsors = [
     { id: 1, isActive: true, name: 'sponsor_1', upvote: 100, action: 'edit', notes: 'some note' },
@@ -57,22 +60,24 @@ const MatchBot = ({ intl }) => {
           </p>
         </div>
       </div>
-      {!_.isEmpty(sponsors) ? <MatchBotTable intl={intl} sponsors={sponsors} /> : null}
+      {!isEmpty(sponsors) ? <MatchBotTable intl={intl} sponsors={sponsors} /> : null}
       <div>*** THE TABLE CONTAINS MOCK DATA</div>
       <div>
         {
           '{id:1, isActive: true, name: "sponsor_1", upvote: 100, action: "edit", notes: "some note"}'
         }
       </div>
-      <button className="MatchBot__button">
-        {/* Mock link */}
-        <Link to={`/rewards/create-rule`}>
-          {intl.formatMessage({
-            id: 'createNewCampaign',
-            defaultMessage: `Create new rule`,
-          })}
-        </Link>
+      <button className="MatchBot__button" onClick={handleChangeModalVisible}>
+        {intl.formatMessage({
+          id: 'createNewCampaign',
+          defaultMessage: `Create new rule`,
+        })}
       </button>
+      <CreateRule
+        modalVisible={modalVisible}
+        handleChangeModalVisible={handleChangeModalVisible}
+        currentRules={sponsors}
+      />
     </div>
   );
 };
