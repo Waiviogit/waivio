@@ -73,11 +73,13 @@ const MatchBot = ({ intl }) => {
           defaultMessage: `Create new rule`,
         })}
       </button>
-      <CreateRule
-        modalVisible={modalVisible}
-        handleChangeModalVisible={handleChangeModalVisible}
-        currentRules={sponsors}
-      />
+      {modalVisible && (
+        <CreateRule
+          modalVisible={modalVisible}
+          handleChangeModalVisible={handleChangeModalVisible}
+          currentRules={sponsors}
+        />
+      )}
     </div>
   );
 };
