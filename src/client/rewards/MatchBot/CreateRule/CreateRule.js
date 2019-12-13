@@ -9,7 +9,15 @@ import ReviewItem from '../../Create-Edit/ReviewItem';
 import { setMatchBotRules } from '../../rewardsActions';
 import './CreateRule.less';
 
-const CreateRule = ({ intl, form, modalVisible, handleChangeModalVisible, isEdit, ...props }) => {
+const CreateRule = ({
+  intl,
+  form,
+  modalVisible,
+  handleChangeModalVisible,
+  editRule,
+  setEditRule,
+  ...props
+}) => {
   const { getFieldDecorator, setFieldsValue } = form;
   const [sponsor, setSponsor] = useState({});
   const [sliderValue, setSliderValue] = useState(1);
@@ -17,6 +25,10 @@ const CreateRule = ({ intl, form, modalVisible, handleChangeModalVisible, isEdit
   const handleSetSponsor = obj => {
     setSponsor(obj);
     setFieldsValue({ sponsorField: obj });
+  };
+  const handleCloseModal = () => {
+    setEditRule({});
+    handleChangeModalVisible();
   };
   const handleRemoveSponsor = () => setSponsor({});
   const handleChangeSliderValue = value => {
@@ -72,12 +84,19 @@ const CreateRule = ({ intl, form, modalVisible, handleChangeModalVisible, isEdit
 
   return (
     <Modal
-      title={intl.formatMessage({
-        id: 'matchBot_title_create_rule',
-        defaultMessage: 'Create rule',
-      })}
+      title={
+        isEmpty(editRule)
+          ? intl.formatMessage({
+              id: 'matchBot_title_create_rule',
+              defaultMessage: 'Create rule',
+            })
+          : intl.formatMessage({
+              id: 'matchBot_title_edit_rule',
+              defaultMessage: 'Edit rule',
+            })
+      }
       visible={modalVisible}
-      onCancel={handleChangeModalVisible}
+      onCancel={handleCloseModal}
       footer={null}
     >
       <div className="CreateRule">
@@ -151,7 +170,7 @@ const CreateRule = ({ intl, form, modalVisible, handleChangeModalVisible, isEdit
             })(<Input.TextArea disabled={isLoading} />)}
           </Form.Item>
           <div className="CreateRule__button">
-            {!isEdit ? (
+            {isEmpty(editRule) ? (
               <Button type="primary" htmlType="submit" loading={isLoading} disabled={false}>
                 {intl.formatMessage({
                   id: 'matchBot_btn_create',
@@ -177,12 +196,13 @@ CreateRule.propTypes = {
   intl: PropTypes.shape().isRequired,
   form: PropTypes.shape().isRequired,
   modalVisible: PropTypes.bool.isRequired,
-  isEdit: PropTypes.bool,
+  editRule: PropTypes.shape(),
   handleChangeModalVisible: PropTypes.func.isRequired,
   setMatchBotRules: PropTypes.func.isRequired,
+  setEditRule: PropTypes.func.isRequired,
 };
 CreateRule.defaultProps = {
-  isEdit: false,
+  editRule: {},
 };
 
 export default Form.create()(injectIntl(connect(null, { setMatchBotRules })(CreateRule)));

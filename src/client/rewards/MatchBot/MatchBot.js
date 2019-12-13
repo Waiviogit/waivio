@@ -1,19 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
 import MatchBotTable from './MatchBotTable/MatchBotTable';
 import './MatchBot.less';
 import CreateRule from './CreateRule/CreateRule';
+import { getMatchBotRules } from '../../../waivioApi/ApiClient';
 
-const MatchBot = ({ intl }) => {
+const MatchBot = ({ intl, userName }) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [editRule, setEditRule] = useState({});
+  const [rules, setRules] = useState([]);
   const handleChangeModalVisible = () => setModalVisible(!modalVisible);
-
-  // Mock
-  const sponsors = [
-    { id: 1, isActive: true, name: 'sponsor_1', upvote: 100, action: 'edit', notes: 'some note' },
-  ];
+  const handleEditRule = rule => {
+    setModalVisible(!modalVisible);
+    setEditRule(rule);
+  };
+  useEffect(() => {
+    getMatchBotRules(userName).then(data => setRules(data));
+  }, []);
+  console.log('editRule', editRule);
   return (
     <div className="MatchBot">
       <div className="MatchBot__title">
@@ -60,13 +66,9 @@ const MatchBot = ({ intl }) => {
           </p>
         </div>
       </div>
-      {!isEmpty(sponsors) ? <MatchBotTable intl={intl} sponsors={sponsors} /> : null}
-      <div>*** THE TABLE CONTAINS MOCK DATA</div>
-      <div>
-        {
-          '{id:1, isActive: true, name: "sponsor_1", upvote: 100, action: "edit", notes: "some note"}'
-        }
-      </div>
+      {!isEmpty(rules) && !isEmpty(rules.results) && (
+        <MatchBotTable intl={intl} rules={rules.results} handleEditRule={handleEditRule} />
+      )}
       <button className="MatchBot__button" onClick={handleChangeModalVisible}>
         {intl.formatMessage({
           id: 'createNewCampaign',
@@ -77,7 +79,8 @@ const MatchBot = ({ intl }) => {
         <CreateRule
           modalVisible={modalVisible}
           handleChangeModalVisible={handleChangeModalVisible}
-          currentRules={sponsors}
+          editRule={editRule}
+          setEditRule={setEditRule}
         />
       )}
     </div>
@@ -86,6 +89,11 @@ const MatchBot = ({ intl }) => {
 
 MatchBot.propTypes = {
   intl: PropTypes.shape().isRequired,
+  userName: PropTypes.string,
+};
+
+MatchBot.defaultProps = {
+  userName: '',
 };
 
 export default injectIntl(MatchBot);

@@ -1,32 +1,39 @@
 import React from 'react';
 import { Checkbox } from 'antd';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { injectIntl } from 'react-intl';
 
-const MatchBotTableRow = ({ sponsor }) => (
-  <React.Fragment>
-    <tr>
-      <td>
-        <Checkbox checked={sponsor.isActive} />
-      </td>
-      <td>{sponsor.name}</td>
-      <td>{sponsor.upvote}%</td>
-      <td>
-        <Link to={`/rewards/edit-rule`} title="Edit">
-          <span>{sponsor.action}</span>
-        </Link>
-      </td>
-      <td>{sponsor.notes}</td>
-    </tr>
-  </React.Fragment>
-);
+const MatchBotTableRow = ({ intl, rule, handleEditRule }) => {
+  const editRule = () => {
+    handleEditRule(rule);
+  };
+  return (
+    <React.Fragment>
+      <tr>
+        <td>
+          <Checkbox checked={rule.enabled} />
+        </td>
+        <td>{rule.sponsor}</td>
+        <td>{rule.voting_percent}%</td>
+        <td>
+          <div className="MatchBotTable__edit" onClick={editRule} role="presentation">
+            {intl.formatMessage({ id: 'matchBot_table_edit', defaultMessage: `Edit` })}
+          </div>
+        </td>
+        <td>{rule.note}</td>
+      </tr>
+    </React.Fragment>
+  );
+};
 
 MatchBotTableRow.propTypes = {
-  sponsor: PropTypes.shape(),
+  intl: PropTypes.shape().isRequired,
+  rule: PropTypes.shape(),
+  handleEditRule: PropTypes.func.isRequired,
 };
 
 MatchBotTableRow.defaultProps = {
-  sponsor: {},
+  rule: {},
 };
 
-export default MatchBotTableRow;
+export default injectIntl(MatchBotTableRow);
