@@ -165,7 +165,7 @@ const routes = [
         component: Invite,
       },
       {
-        path: '/notifications',
+        path: '/notifications-list',
         exact: true,
         component: Notifications,
       },

@@ -445,7 +445,7 @@ class Rewards extends React.Component {
             content={`${intl.formatMessage({
               id: 'rewards',
               defaultMessage: 'Rewards',
-            })}{' '}
+            })}
         - Waivio`}
           />
           <meta property="og:type" content="article" />
