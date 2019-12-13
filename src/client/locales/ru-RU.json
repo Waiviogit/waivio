@@ -883,8 +883,10 @@
   "matchBot_title_sponsor": "Спонсор",
   "matchBot_voting_power": "Сила голоса",
   "matchBot_title_edit": "Редактировать",
-  "matchBot_modal_create_rule_with_sponsor_and_upvote": "Вы хотите создать правило со спонсором '{спонсор}' и силой лайка {upvote}%",
+  "matchBot_modal_create_rule_with_sponsor_and_upvote": "Вы хотите создать правило со спонсором '{спонсор}' и силой лайка {upvote}%?",
+  "matchBot_modal_edit_rule_with_current_changes": "Вы хотите отредактировать правило с текущими значениями?",
   "matchBot_rule_creation_confirmation": "Подтверждение создания правила",
+  "matchBot_rule_editing_confirmation": "Подтверждение редактирования правила",
   "matchBot_success_created": "Правило успешно создано",
   "matchBot_success_edited": "Правило успешно отредактировано"
 }

@@ -20,14 +20,16 @@ const CreateRule = ({
 }) => {
   const { getFieldDecorator, setFieldsValue } = form;
   const [sponsor, setSponsor] = useState({});
-  const [sliderValue, setSliderValue] = useState(1);
+  const [sliderValue, setSliderValue] = useState(100);
   const [isConfirmModalLoading, setConfirmModalLoaded] = useState(false);
   const [isConfirmModal, setConfirmModal] = useState(false);
+
   useEffect(() => {
-    if (isEmpty(editRule)) {
-      console.log(editRule);
+    if (!isEmpty(editRule)) {
+      setSliderValue(editRule.voting_percent * 100);
     }
   }, []);
+
   const handleSetSponsor = obj => {
     setSponsor(obj);
     setFieldsValue({ sponsorField: obj });
@@ -61,19 +63,22 @@ const CreateRule = ({
       if (!err && !isEmpty(values.sponsorField)) {
         setConfirmModal(true);
       }
+      if (!err && !isEmpty(editRule)) {
+        setConfirmModal(true);
+      }
       if (err) {
         console.error(err);
       }
     });
   };
-  const handleCreateRule = () => {
+  const handleSetRule = () => {
     setConfirmModalLoaded(true);
     form.validateFieldsAndScroll((err, values) => {
       if (!err && !isEmpty(values.sponsorField)) {
         const prepareObjData = {
           sponsor: sponsor.account,
           enabled: true,
-          upvote: sliderValue,
+          upvote: sliderValue / 100,
         };
         if (values.noticeField) prepareObjData.notes = values.noticeField;
         props
@@ -82,21 +87,37 @@ const CreateRule = ({
             setConfirmModalLoaded(false);
             handleChangeModalVisible();
             message.success(
-              isEmpty(editRule)
-                ? intl.formatMessage({
-                    id: 'matchBot_success_created',
-                    defaultMessage: 'Rule created successfully',
-                  })
-                : intl.formatMessage({
-                    id: 'matchBot_success_edited',
-                    defaultMessage: 'Rule edited successfully',
-                  }),
+              intl.formatMessage({
+                id: 'matchBot_success_created',
+                defaultMessage: 'Rule created successfully',
+              }),
             );
           })
-          .catch(error => {
+          .catch(() => {
             setConfirmModalLoaded(false);
             handleChangeModalVisible();
-            console.error(error);
+          });
+      }
+      if (!err && !isEmpty(editRule)) {
+        const prepareObjData = {
+          sponsor: editRule.sponsor,
+          upvote: sliderValue / 100,
+        };
+        props
+          .setMatchBotRules(prepareObjData)
+          .then(() => {
+            setConfirmModalLoaded(false);
+            handleChangeModalVisible();
+            message.success(
+              intl.formatMessage({
+                id: 'matchBot_success_edited',
+                defaultMessage: 'Rule edited successfully',
+              }),
+            );
+          })
+          .catch(() => {
+            setConfirmModalLoaded(false);
+            handleChangeModalVisible();
           });
       }
       if (err) {
@@ -133,49 +154,57 @@ const CreateRule = ({
     >
       <div className="CreateRule">
         <Form layout="vertical" onSubmit={handleSubmit}>
-          <Form.Item
-            label={intl.formatMessage({
-              id: 'matchBot_title_sponsor',
-              defaultMessage: 'Sponsor',
-            })}
-          >
-            {getFieldDecorator('sponsorField', {
-              rules: [
-                {
-                  validator: checkSponsor,
-                },
-              ],
-              initialValue: sponsor,
-            })(
-              <SearchUsersAutocomplete
-                allowClear={false}
-                disabled={!isEmpty(editRule)}
-                handleSelect={handleSetSponsor}
-                placeholder={intl.formatMessage({
-                  id: 'matchBot_placeholder_find_sponsor',
-                  defaultMessage: 'Find sponsor',
-                })}
-                style={{ width: '100%' }}
-                autoFocus={false}
-              />,
-            )}
-            {!isEmpty(sponsor) && (
-              <ReviewItem
-                key={sponsor.account}
-                object={sponsor}
-                removeReviewObject={handleRemoveSponsor}
-                loading={!isEmpty(editRule)}
-                isUser
-              />
-            )}
-          </Form.Item>
+          {isEmpty(editRule) && (
+            <Form.Item
+              label={intl.formatMessage({
+                id: 'matchBot_title_sponsor',
+                defaultMessage: 'Sponsor',
+              })}
+            >
+              {isEmpty(editRule) &&
+                getFieldDecorator('sponsorField', {
+                  rules: [
+                    {
+                      validator: checkSponsor,
+                    },
+                  ],
+                  initialValue: sponsor,
+                })(
+                  <SearchUsersAutocomplete
+                    allowClear={false}
+                    disabled={!isEmpty(editRule)}
+                    handleSelect={handleSetSponsor}
+                    placeholder={intl.formatMessage({
+                      id: 'matchBot_placeholder_find_sponsor',
+                      defaultMessage: 'Find sponsor',
+                    })}
+                    style={{ width: '100%' }}
+                    autoFocus={false}
+                  />,
+                )}
+              {!isEmpty(sponsor) && (
+                <ReviewItem
+                  key={sponsor.account}
+                  object={sponsor}
+                  removeReviewObject={handleRemoveSponsor}
+                  loading={!isEmpty(editRule)}
+                  isUser
+                />
+              )}
+            </Form.Item>
+          )}
           <Form.Item
             label={intl.formatMessage({
               id: 'matchBot_voting_power',
               defaultMessage: 'Voting power',
             })}
           >
-            <Slider min={1} defaultValue={100} marks={marks} onChange={handleChangeSliderValue} />
+            <Slider
+              min={1}
+              defaultValue={sliderValue}
+              marks={marks}
+              onChange={handleChangeSliderValue}
+            />
           </Form.Item>
           <Form.Item
             label={intl.formatMessage({
@@ -215,26 +244,38 @@ const CreateRule = ({
         </Form>
       </div>
       <Modal
-        title={intl.formatMessage({
-          id: 'matchBot_rule_creation_confirmation',
-          defaultMessage: 'Rule creation confirmation',
-        })}
+        title={
+          isEmpty(editRule)
+            ? intl.formatMessage({
+                id: 'matchBot_rule_creation_confirmation',
+                defaultMessage: 'Rule creation confirmation',
+              })
+            : intl.formatMessage({
+                id: 'matchBot_rule_editing_confirmation',
+                defaultMessage: 'Rule editing confirmation',
+              })
+        }
         visible={isConfirmModal}
         onCancel={handleCloseConfirmModal}
-        onOk={handleCreateRule}
+        onOk={handleSetRule}
         confirmLoading={isConfirmModalLoading}
       >
-        {intl.formatMessage(
-          {
-            id: 'matchBot_modal_create_rule_with_sponsor_and_upvote',
-            defaultMessage:
-              "Do you want to create rule with sponsor '{sponsor}' and with upvote {upvote}%",
-          },
-          {
-            sponsor: sponsor.account,
-            upvote: sliderValue * 100,
-          },
-        )}
+        {isEmpty(editRule)
+          ? intl.formatMessage(
+              {
+                id: 'matchBot_modal_create_rule_with_sponsor_and_upvote',
+                defaultMessage:
+                  "Do you want to create rule with sponsor '{sponsor}' and with upvote {upvote}%",
+              },
+              {
+                sponsor: sponsor.account,
+                upvote: sliderValue,
+              },
+            )
+          : intl.formatMessage({
+              id: 'matchBot_modal_edit_rule_with_current_changes',
+              defaultMessage: 'Do you want to edit rule with current changes',
+            })}
       </Modal>
     </Modal>
   );

@@ -14,7 +14,7 @@ const MatchBotTableRow = ({ intl, rule, handleEditRule }) => {
           <Checkbox checked={rule.enabled} />
         </td>
         <td>{rule.sponsor}</td>
-        <td>{rule.voting_percent}%</td>
+        <td>{rule.voting_percent * 100}%</td>
         <td>
           <div className="MatchBotTable__edit" onClick={editRule} role="presentation">
             {intl.formatMessage({ id: 'matchBot_table_edit', defaultMessage: `Edit` })}
