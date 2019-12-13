@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { Button, Form, Input, Modal, Slider } from 'antd';
+import { Button, Form, Input, message, Modal, Slider } from 'antd';
 import { isEmpty } from 'lodash';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import ReviewItem from '../../Create-Edit/ReviewItem';
@@ -81,6 +81,17 @@ const CreateRule = ({
           .then(() => {
             setConfirmModalLoaded(false);
             handleChangeModalVisible();
+            message.success(
+              isEmpty(editRule)
+                ? intl.formatMessage({
+                    id: 'matchBot_success_created',
+                    defaultMessage: 'Rule created successfully',
+                  })
+                : intl.formatMessage({
+                    id: 'matchBot_success_edited',
+                    defaultMessage: 'Rule edited successfully',
+                  }),
+            );
           })
           .catch(error => {
             setConfirmModalLoaded(false);

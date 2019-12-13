@@ -19,7 +19,6 @@ const MatchBot = ({ intl, userName }) => {
   useEffect(() => {
     getMatchBotRules(userName).then(data => setRules(data));
   }, []);
-  console.log('editRule', editRule);
   return (
     <div className="MatchBot">
       <div className="MatchBot__title">
