@@ -40,7 +40,8 @@ import CreateImage from '../../object/ObjectGallery/CreateImage';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
-import InstrumentLongTermStatistics from '../../../investarena/components/LeftSidebar/LongTermStatistics/InstrumentLongTermStatistics';
+import LongTermStatistics from '../../../investarena/components/LeftSidebar/LongTermStatistics/LongTermStatistics';
+import api from '../../../investarena/configApi/apiResources';
 import ModalComparePerformance from '../../../investarena/components/Modals/ModalComparePerformance/ModalComparePerformance';
 import { getClientWObj } from '../../adapters';
 import LinkButton from '../../components/LinkButton/LinkButton';
@@ -403,12 +404,20 @@ class ObjectInfo extends React.Component {
             {listItem(objectFields.description, <DescriptionInfo description={description} />)}
             {wobject[CHART_ID] && (
               <React.Fragment>
-                <InstrumentLongTermStatistics
-                  wobject={this.props.wobject}
+                <LongTermStatistics
+                  itemId={this.props.wobject.author_permlink}
+                  fetcher={api.performers.getInstrumentStatistics}
                   withCompareButton
                   toggleModalPerformance={this.toggleModalPerformance}
                   isMobile={isMobile}
-                />
+                >
+                  <div>
+                    <FormattedMessage
+                      id="unavailableStatisticsObject"
+                      defaultMessage="Long term statistics is unavailable for current instrument"
+                    />
+                  </div>
+                </LongTermStatistics>
                 {isModalComparePerformanceOpen && wobject && !isMobile && (
                   <ModalComparePerformance
                     toggleModal={this.toggleModalPerformance}
