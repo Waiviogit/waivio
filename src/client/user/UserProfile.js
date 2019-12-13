@@ -53,8 +53,7 @@ class UserProfile extends React.Component {
   };
 
   state = {
-    checked: false,
-    skip: 0,
+    withForecastOnly: false,
   };
 
   componentDidMount() {
@@ -66,12 +65,13 @@ class UserProfile extends React.Component {
 
   onSwitchChange = isAppFilterOn => {
     const { match, limit } = this.props;
-    const { skip } = this.state;
-    this.setState({ checked: isAppFilterOn });
+    this.setState({ withForecastOnly: isAppFilterOn });
 
     if (isAppFilterOn) {
-      this.props.getUserProfileBlogPostsWithForecasts(match.params.name, true, skip, limit);
-      this.setState(prevState => ({ skip: prevState.skip + limit }));
+      this.props.getUserProfileBlogPostsWithForecasts(match.params.name, {
+        limit,
+        initialLoad: true,
+      });
     } else {
       this.props.getUserProfileBlogPosts(match.params.name, { limit, initialLoad: true });
     }
@@ -86,10 +86,8 @@ class UserProfile extends React.Component {
     const fetched = getFeedFetchedFromState('blog', username, feed);
     const hasMore = getFeedHasMoreFromState('blog', username, feed);
     const loadMoreContentAction = () => {
-      const { skip } = this.state;
-      if (this.state.checked) {
-        this.props.getUserProfileBlogPostsWithForecasts(username, false, skip, limit);
-        this.setState(prevState => ({ skip: prevState.skip + limit }));
+      if (this.state.withForecastOnly) {
+        this.props.getUserProfileBlogPostsWithForecasts(username, { limit, initialLoad: false });
       } else {
         this.props.getUserProfileBlogPosts(username, { limit, initialLoad: false });
       }
@@ -108,7 +106,7 @@ class UserProfile extends React.Component {
             <Switch
               defaultChecked
               onChange={this.onSwitchChange}
-              checked={this.state.checked}
+              checked={this.state.withForecastOnly}
               size="small"
             />
           </div>

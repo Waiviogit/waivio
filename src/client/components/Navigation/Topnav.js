@@ -395,18 +395,6 @@ class Topnav extends React.Component {
             <PopoverMenuItem key="wallet">
               <FormattedMessage id="wallet" defaultMessage="Wallet" />
             </PopoverMenuItem>
-            <PopoverMenuItem key="activity">
-              <FormattedMessage id="activity" defaultMessage="Activity" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="bookmarks">
-              <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="drafts">
-              <FormattedMessage id="drafts" defaultMessage="Drafts" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="settings">
-              <FormattedMessage id="settings" defaultMessage="Settings" />
-            </PopoverMenuItem>
             <PopoverMenuItem key="about" fullScreenHidden>
               <FormattedMessage id="about" defaultMessage="About" />
             </PopoverMenuItem>
