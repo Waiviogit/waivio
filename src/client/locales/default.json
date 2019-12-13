@@ -878,6 +878,7 @@
   "matchBot_btn_edit": "Edit",
   "matchBot_title_sponsor": "Sponsor",
   "matchBot_voting_power": "Voting power",
-  "matchBot_table_edit": "Edit"
-
+  "matchBot_table_edit": "Edit",
+  "matchBot_modal_create_rule_with_sponsor_and_upvote": "Do you want to create rule with sponsor '{sponsor}' and with upvote {upvote}%",
+  "matchBot_rule_creation_confirmation": "Rule creation confirmation"
 }

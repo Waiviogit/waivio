@@ -882,5 +882,7 @@
   "matchBot_btn_edit": "Редактировать",
   "matchBot_title_sponsor": "Спонсор",
   "matchBot_voting_power": "Сила голоса",
-  "matchBot_title_edit": "Редактировать"
+  "matchBot_title_edit": "Редактировать",
+  "matchBot_modal_create_rule_with_sponsor_and_upvote": "Вы хотите создать правило со спонсором '{спонсор}' и силой лайка {upvote}%",
+  "matchBot_rule_creation_confirmation": "Подтверждение создания правила"
 }

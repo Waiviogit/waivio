@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
@@ -21,7 +21,13 @@ const CreateRule = ({
   const { getFieldDecorator, setFieldsValue } = form;
   const [sponsor, setSponsor] = useState({});
   const [sliderValue, setSliderValue] = useState(1);
-  const [isLoading, setLoaded] = useState(false);
+  const [isConfirmModalLoading, setConfirmModalLoaded] = useState(false);
+  const [isConfirmModal, setConfirmModal] = useState(false);
+  useEffect(() => {
+    if (isEmpty(editRule)) {
+      console.log(editRule);
+    }
+  }, []);
   const handleSetSponsor = obj => {
     setSponsor(obj);
     setFieldsValue({ sponsorField: obj });
@@ -34,21 +40,36 @@ const CreateRule = ({
   const handleChangeSliderValue = value => {
     setSliderValue(value);
   };
-  const checkSponsor = (rule, value, callback) =>
-    isEmpty(sponsor)
-      ? callback(
-          intl.formatMessage({
-            id: 'matchBot_add_sponsor',
-            defaultMessage: 'Add sponsor',
-          }),
-        )
-      : callback();
+  const handleCloseConfirmModal = () => {
+    if (!isConfirmModalLoading) setConfirmModal(!isConfirmModal);
+  };
+  const checkSponsor = (rule, value, callback) => {
+    if (isEmpty(sponsor)) {
+      callback(
+        intl.formatMessage({
+          id: 'matchBot_add_sponsor',
+          defaultMessage: 'Add sponsor',
+        }),
+      );
+    }
+    callback();
+  };
 
   const handleSubmit = e => {
-    setLoaded(true);
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
-      if (!err && !isEmpty(sponsor)) {
+      if (!err && !isEmpty(values.sponsorField)) {
+        setConfirmModal(true);
+      }
+      if (err) {
+        console.error(err);
+      }
+    });
+  };
+  const handleCreateRule = () => {
+    setConfirmModalLoaded(true);
+    form.validateFieldsAndScroll((err, values) => {
+      if (!err && !isEmpty(values.sponsorField)) {
         const prepareObjData = {
           sponsor: sponsor.account,
           enabled: true,
@@ -58,18 +79,18 @@ const CreateRule = ({
         props
           .setMatchBotRules(prepareObjData)
           .then(() => {
-            setLoaded(false);
+            setConfirmModalLoaded(false);
             handleChangeModalVisible();
           })
           .catch(error => {
-            setLoaded(false);
+            setConfirmModalLoaded(false);
             handleChangeModalVisible();
             console.error(error);
           });
       }
       if (err) {
         console.error(err);
-        setLoaded(false);
+        setConfirmModalLoaded(false);
       }
     });
   };
@@ -117,7 +138,7 @@ const CreateRule = ({
             })(
               <SearchUsersAutocomplete
                 allowClear={false}
-                disabled={isLoading}
+                disabled={!isEmpty(editRule)}
                 handleSelect={handleSetSponsor}
                 placeholder={intl.formatMessage({
                   id: 'matchBot_placeholder_find_sponsor',
@@ -131,8 +152,8 @@ const CreateRule = ({
               <ReviewItem
                 key={sponsor.account}
                 object={sponsor}
-                loading={isLoading}
                 removeReviewObject={handleRemoveSponsor}
+                loading={!isEmpty(editRule)}
                 isUser
               />
             )}
@@ -143,13 +164,7 @@ const CreateRule = ({
               defaultMessage: 'Voting power',
             })}
           >
-            <Slider
-              min={1}
-              defaultValue={100}
-              disabled={isLoading}
-              marks={marks}
-              onChange={handleChangeSliderValue}
-            />
+            <Slider min={1} defaultValue={100} marks={marks} onChange={handleChangeSliderValue} />
           </Form.Item>
           <Form.Item
             label={intl.formatMessage({
@@ -167,18 +182,18 @@ const CreateRule = ({
                   }),
                 },
               ],
-            })(<Input.TextArea disabled={isLoading} />)}
+            })(<Input.TextArea />)}
           </Form.Item>
           <div className="CreateRule__button">
             {isEmpty(editRule) ? (
-              <Button type="primary" htmlType="submit" loading={isLoading} disabled={false}>
+              <Button type="primary" htmlType="submit" disabled={false}>
                 {intl.formatMessage({
                   id: 'matchBot_btn_create',
                   defaultMessage: 'Create',
                 })}
               </Button>
             ) : (
-              <Button type="primary" htmlType="submit" loading={isLoading} disabled={false}>
+              <Button type="primary" htmlType="submit" disabled={false}>
                 {intl.formatMessage({
                   id: 'matchBot_btn_edit_rule',
                   defaultMessage: 'Edit',
@@ -188,6 +203,28 @@ const CreateRule = ({
           </div>
         </Form>
       </div>
+      <Modal
+        title={intl.formatMessage({
+          id: 'matchBot_rule_creation_confirmation',
+          defaultMessage: 'Rule creation confirmation',
+        })}
+        visible={isConfirmModal}
+        onCancel={handleCloseConfirmModal}
+        onOk={handleCreateRule}
+        confirmLoading={isConfirmModalLoading}
+      >
+        {intl.formatMessage(
+          {
+            id: 'matchBot_modal_create_rule_with_sponsor_and_upvote',
+            defaultMessage:
+              "Do you want to create rule with sponsor '{sponsor}' and with upvote {upvote}%",
+          },
+          {
+            sponsor: sponsor.account,
+            upvote: sliderValue * 100,
+          },
+        )}
+      </Modal>
     </Modal>
   );
 };
