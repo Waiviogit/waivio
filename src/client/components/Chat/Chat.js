@@ -109,7 +109,7 @@ const Chat = ({
       </div>
       {isCloseButton && (
         <div className="Chat__close-button">
-          <Icon style={{ fontSize: '25px'}} type="close" onClick={openChat} />
+          <Icon style={{ fontSize: '25px' }} type="close" onClick={openChat} />
         </div>
       )}
     </div>
