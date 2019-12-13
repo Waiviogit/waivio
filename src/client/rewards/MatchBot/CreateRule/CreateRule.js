@@ -34,10 +34,6 @@ const CreateRule = ({
     setSponsor(obj);
     setFieldsValue({ sponsorField: obj });
   };
-  const handleCloseModal = () => {
-    setEditRule({});
-    handleChangeModalVisible();
-  };
   const handleRemoveSponsor = () => setSponsor({});
   const handleChangeSliderValue = value => {
     setSliderValue(value);
@@ -45,18 +41,10 @@ const CreateRule = ({
   const handleCloseConfirmModal = () => {
     if (!isConfirmModalLoading) setConfirmModal(!isConfirmModal);
   };
-  const checkSponsor = (rule, value, callback) => {
-    if (isEmpty(sponsor)) {
-      callback(
-        intl.formatMessage({
-          id: 'matchBot_add_sponsor',
-          defaultMessage: 'Add sponsor',
-        }),
-      );
-    }
-    callback();
+  const handleCloseModal = () => {
+    setEditRule({});
+    handleChangeModalVisible();
   };
-
   const handleSubmit = e => {
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
@@ -125,6 +113,18 @@ const CreateRule = ({
         setConfirmModalLoaded(false);
       }
     });
+  };
+
+  const checkSponsor = (rule, value, callback) => {
+    if (isEmpty(sponsor)) {
+      callback(
+        intl.formatMessage({
+          id: 'matchBot_add_sponsor',
+          defaultMessage: 'Add sponsor',
+        }),
+      );
+    }
+    callback();
   };
 
   const marks = {
