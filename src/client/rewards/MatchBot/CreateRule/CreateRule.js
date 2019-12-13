@@ -7,7 +7,7 @@ import { isEmpty } from 'lodash';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import ReviewItem from '../../Create-Edit/ReviewItem';
 import { setMatchBotRules } from '../../rewardsActions';
-import '../MatchBot.less';
+import './CreateRule.less';
 
 const CreateRule = ({ intl, form, modalVisible, handleChangeModalVisible, isEdit, ...props }) => {
   const { getFieldDecorator, setFieldsValue } = form;
@@ -80,7 +80,7 @@ const CreateRule = ({ intl, form, modalVisible, handleChangeModalVisible, isEdit
       onCancel={handleChangeModalVisible}
       footer={null}
     >
-      <div className="MatchBot__modal-wrap">
+      <div className="CreateRule">
         <Form layout="vertical" onSubmit={handleSubmit}>
           <Form.Item
             label={intl.formatMessage({
@@ -150,21 +150,23 @@ const CreateRule = ({ intl, form, modalVisible, handleChangeModalVisible, isEdit
               ],
             })(<Input.TextArea disabled={isLoading} />)}
           </Form.Item>
-          {!isEdit ? (
-            <Button type="primary" htmlType="submit" loading={isLoading} disabled={false}>
-              {intl.formatMessage({
-                id: 'matchBot_btn_create',
-                defaultMessage: 'Create',
-              })}
-            </Button>
-          ) : (
-            <Button type="primary" htmlType="submit" loading={isLoading} disabled={false}>
-              {intl.formatMessage({
-                id: 'matchBot_btn_edit_rule',
-                defaultMessage: 'Edit',
-              })}
-            </Button>
-          )}
+          <div className="CreateRule__button">
+            {!isEdit ? (
+              <Button type="primary" htmlType="submit" loading={isLoading} disabled={false}>
+                {intl.formatMessage({
+                  id: 'matchBot_btn_create',
+                  defaultMessage: 'Create',
+                })}
+              </Button>
+            ) : (
+              <Button type="primary" htmlType="submit" loading={isLoading} disabled={false}>
+                {intl.formatMessage({
+                  id: 'matchBot_btn_edit_rule',
+                  defaultMessage: 'Edit',
+                })}
+              </Button>
+            )}
+          </div>
         </Form>
       </div>
     </Modal>
