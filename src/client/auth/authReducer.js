@@ -8,6 +8,7 @@ const initialState = {
   loaded: false,
   user: {},
   userMetaData: {},
+  isGuestUser: false,
 };
 
 export default (state = initialState, action) => {
@@ -30,6 +31,7 @@ export default (state = initialState, action) => {
         loaded: true,
         user: action.payload.account || state.user,
         userMetaData: action.payload.userMetaData,
+        isGuestUser: action.payload.isGuestUser,
       };
     case types.LOGIN_ERROR:
       return {

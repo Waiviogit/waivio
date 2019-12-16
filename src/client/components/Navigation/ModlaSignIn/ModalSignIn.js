@@ -25,8 +25,9 @@ class ModalSignIn extends React.Component {
     console.log(response);
   };
 
-  responseFacebook = response => {
-    setToken(response.token, response.expiration);
+  responseFacebook = async response => {
+    await setToken(response.accessToken, 'facebook');
+    this.props.login();
   };
 
   toggleModal = () => {
@@ -91,5 +92,13 @@ class ModalSignIn extends React.Component {
     );
   }
 }
+
+ModalSignIn.propTypes = {
+  login: PropTypes.func,
+};
+
+ModalSignIn.defaultProps = {
+  login: () => {},
+};
 
 export default ModalSignIn;

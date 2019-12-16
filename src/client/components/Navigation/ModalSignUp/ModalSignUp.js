@@ -8,17 +8,11 @@ import FacebookLogin from 'react-facebook-login';
 import './ModalSignUp.less';
 import { login } from '../../../auth/authActions';
 import { setToken } from '../../../helpers/getToken';
-import { getIsAuthenticated } from '../../../reducers';
 
 @injectIntl
-@connect(
-  state => ({
-    isAuthenticated: getIsAuthenticated(state),
-  }),
-  {
-    login,
-  },
-)
+@connect(() => ({}), {
+  login,
+})
 class ModalSignUp extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -31,13 +25,13 @@ class ModalSignUp extends React.Component {
       isOpen: false,
     };
   }
-  responseGoogle = response => {
-    console.log(response);
+  responseGoogle = async response => {
+    await setToken(response.accessToken, 'google');
+    this.props.login();
   };
 
   responseFacebook = async response => {
     await setToken(response.accessToken, 'facebook');
-    // eslint-disable-next-line react/prop-types
     this.props.login();
   };
 
@@ -128,5 +122,13 @@ class ModalSignUp extends React.Component {
     );
   }
 }
+
+ModalSignUp.propTypes = {
+  login: PropTypes.func,
+};
+
+ModalSignUp.defaultProps = {
+  login: () => {},
+};
 
 export default ModalSignUp;

@@ -53,7 +53,7 @@ export default class ProfileSettings extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     form: PropTypes.shape().isRequired,
-    userName: PropTypes.string.isRequired,
+    userName: PropTypes.string,
     onImageUpload: PropTypes.func,
     onImageInvalid: PropTypes.func,
   };
@@ -61,6 +61,7 @@ export default class ProfileSettings extends React.Component {
   static defaultProps = {
     onImageUpload: () => {},
     onImageInvalid: () => {},
+    userName: '',
   };
 
   constructor(props) {

@@ -50,8 +50,9 @@ export const login = () => async (dispatch, getState, { steemConnectAPI, waivioA
       try {
         const tokenData = await getValidTokenData();
         const socialName = localStorage.getItem('socialName');
-        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.user.name);
-        resolve({ account: tokenData.user, userMetaData, socialName, isGuestUser: true });
+        console.log(tokenData);
+        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.userData.name);
+        resolve({ account: tokenData.userData, userMetaData, socialName, isGuestUser: true });
       } catch (e) {
         reject(e);
       }
