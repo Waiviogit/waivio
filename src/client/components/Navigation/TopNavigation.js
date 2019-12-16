@@ -19,7 +19,7 @@ const LINKS = {
   TOOLS_INVITE: '/invite',
   TOOLS_SETTINGS: '/settings',
   ABOUT: '/object/ylr-waivio',
-  NOTIFICATIONS: '/notifications-list',
+  NOTIFICATIONS: '/notifications',
   USERS: '/discover',
   BLOG: '/blog',
   FEED: '/feed',
