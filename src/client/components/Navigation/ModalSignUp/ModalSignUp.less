@@ -13,11 +13,20 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 49%;
+    width: 270px;
 
     & > span {
       width: 100%;
     }
+  }
+
+  &__title {
+    margin-bottom: 15px;
+  }
+
+  &__subtitle {
+    align-self: flex-start;
+    margin-top: 15px;
   }
 
   &__social-btn {
@@ -34,7 +43,7 @@
       display: inline-block;
       text-decoration: none;
       background-color: #4c69ba;
-      color: #fff;
+      color: #ffffff;
       transition: background-color 0.3s, border-color 0.3s;
       height: 46px;
       border-radius: 2px;
@@ -53,6 +62,29 @@
       width: 18px;
       height: 18px;
     }
+  }
+
+  &__signin {
+    background-color: rgb(255, 255, 255);
+    display: inline-flex;
+    align-items: center;
+    color: rgba(0, 0, 0, 0.54);
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 2px 2px 0px, rgba(0, 0, 0, 0.24) 0px 0px 1px 0px;
+    padding: 0px;
+    border-radius: 2px;
+    border: 1px solid transparent;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: Roboto, sans-serif;
+    width: 270px;
+    height: 46px;
+  }
+
+  &__icon-steemit {
+    margin-right: 10px;
+    background: rgb(255, 255, 255);
+    padding: 10px;
+    border-radius: 2px;
   }
 
   align-items: center;
@@ -79,6 +111,8 @@
   .SignUpCard {
     max-width: 270px;
     border: @base-border;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 2px 2px 0px, rgba(0, 0, 0, 0.24) 0px 0px 1px 0px;
+
     img {
       max-width: 240px;
     }

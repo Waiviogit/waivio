@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Modal } from 'antd';
+import { Icon, Modal } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import GoogleLogin from 'react-google-login';
 import FacebookLogin from 'react-facebook-login';
 import '../ModalSignUp/ModalSignUp.less';
 import SteemConnect from '../../../steemConnectAPI';
+import { setToken } from '../../../helpers/getToken';
 
 @injectIntl
 class ModalSignIn extends React.Component {
@@ -25,7 +26,7 @@ class ModalSignIn extends React.Component {
   };
 
   responseFacebook = response => {
-    console.log(response);
+    setToken(response.token, response.expiration);
   };
 
   toggleModal = () => {
@@ -51,24 +52,36 @@ class ModalSignIn extends React.Component {
             footer={null}
           >
             <div className="ModalSignUp">
-              <div>Sign In</div>
-              <a href={SteemConnect.getLoginURL(this.props.next)}>
-                <FormattedMessage id="login" defaultMessage="Log in" />
+              <h2 className="ModalSignUp__title">Sign In</h2>
+              <a
+                role="button"
+                href={SteemConnect.getLoginURL(this.props.next)}
+                className="ModalSignUp__signin"
+              >
+                <img
+                  src="/images/icons/steemit.svg"
+                  alt="steemit"
+                  className="ModalSignUp__icon-steemit"
+                />
+                <FormattedMessage id="signin" defaultMessage="Sign in with SteemIt" />
               </a>
-              <div>
-                <span>Or sign up woth</span>
+              <div className="ModalSignUp__social">
+                <div className="ModalSignUp__subtitle">Or sign in with</div>
                 <GoogleLogin
                   clientId="623736583769-qlg46kt2o7gc4kjd2l90nscitf38vl5t.apps.googleusercontent.com"
-                  buttonText="Login"
                   onSuccess={this.responseGoogle}
                   onFailure={this.responseGoogle}
                   cookiePolicy={'single_host_origin'}
+                  className="ModalSignUp__social-btn"
                 />
                 <FacebookLogin
                   appId="754038848413420"
-                  autoLoad
+                  autoLoad={false}
                   fields="name,email,picture"
                   callback={this.responseFacebook}
+                  textButton="Sign In with Facebook"
+                  cssClass="ModalSignUp__social-btn ModalSignUp__social-btn--fb"
+                  icon={<Icon type="facebook" className="ModalSignUp__icon-fb" />}
                 />
               </div>
             </div>

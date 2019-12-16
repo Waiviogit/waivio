@@ -5,6 +5,7 @@ import { createAsyncActionType } from '../helpers/stateHelpers';
 import { addNewNotification } from '../app/appActions';
 import { getFollowing } from '../user/userActions';
 import { BUSY_API_TYPES } from '../../common/constants/notifications';
+import { getValidTokenData } from '../helpers/getToken';
 
 export const LOGIN = '@auth/LOGIN';
 export const LOGIN_START = '@auth/LOGIN_START';
@@ -22,21 +23,35 @@ export const BUSY_LOGIN = createAsyncActionType('@auth/BUSY_LOGIN');
 
 const loginError = createAction(LOGIN_ERROR);
 
-export const login = () => (dispatch, getState, { steemConnectAPI, waivioAPI }) => {
+export const login = () => async (dispatch, getState, { steemConnectAPI, waivioAPI }) => {
   const state = getState();
 
   let promise = Promise.resolve(null);
 
+  const token = localStorage ? localStorage.getItem('accessToken') : null;
+
   if (getIsLoaded(state)) {
     promise = Promise.resolve(null);
-  } else if (!steemConnectAPI.options.accessToken) {
+  } else if (!steemConnectAPI.options.accessToken && !token) {
     promise = Promise.reject(new Error('There is not accessToken present'));
-  } else {
+  } else if (steemConnectAPI.options.accessToken) {
     promise = new Promise(async (resolve, reject) => {
       try {
         const scUserData = await steemConnectAPI.me();
+        console.log(scUserData);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
         resolve({ ...scUserData, userMetaData });
+      } catch (e) {
+        reject(e);
+      }
+    });
+  } else if (token) {
+    promise = new Promise(async (resolve, reject) => {
+      try {
+        const tokenData = await getValidTokenData();
+        const socialName = localStorage.getItem('socialName');
+        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.user.name);
+        resolve({ account: tokenData.user, userMetaData, socialName, isGuestUser: true });
       } catch (e) {
         reject(e);
       }

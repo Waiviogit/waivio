@@ -36,7 +36,7 @@ export default (state = initialState, action) => {
         ...state,
         isFetching: false,
         isAuthenticated: false,
-        loaded: true,
+        loaded: false,
       };
     case types.RELOAD_START:
       return {

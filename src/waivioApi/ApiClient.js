@@ -710,4 +710,39 @@ export const waivioAPI = {
   getAuthenticatedUserMetadata,
 };
 
+export const getAccessToken = (token, social) => {
+  let response = {};
+  return fetch(`${config.baseUrl}${config.auth}/${social}`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ access_token: token }),
+  })
+    .then(data => {
+      response.token = data.headers.get('access-token');
+      response.expiration = data.headers.get('expires-in');
+      return data.json();
+    })
+    .then(data => {
+      response.guestName = data.user.name;
+      return response;
+    });
+};
+
+export const getNewToken = token => {
+  let response = {};
+  return fetch(`${config.baseUrl}${config.auth}/${config.validateAuthToken}`, {
+    method: 'POST',
+    headers: { 'access-token': token },
+  })
+    .then(data => {
+      response.token = data.headers.get('access-token');
+      response.expiration = data.headers.get('expires-in');
+      return data.json();
+    })
+    .then(data => {
+      response.guestName = data.user.name;
+      return response;
+    });
+};
+
 export default null;
