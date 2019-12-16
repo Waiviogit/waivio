@@ -74,14 +74,24 @@ const MatchBotTableRow = ({ intl, rule, handleEditRule, ...props }) => {
         confirmLoading={isLoading}
       >
         {!isEnabled
-          ? intl.formatMessage({
-              id: 'matchBot_success_intention_rule_activation',
-              defaultMessage: 'Do you want to activate rule?',
-            })
-          : intl.formatMessage({
-              id: 'matchBot_success_intention_rule_inactivation',
-              defaultMessage: 'Do you want to inactivate rule?',
-            })}
+          ? intl.formatMessage(
+              {
+                id: 'matchBot_success_intention_rule_activation',
+                defaultMessage: "Do you want to activate rule with sponsor '{sponsor}'?",
+              },
+              {
+                sponsor: rule.sponsor,
+              },
+            )
+          : intl.formatMessage(
+              {
+                id: 'matchBot_success_intention_rule_inactivation',
+                defaultMessage: "Do you want to inactivate rule? with sponsor '{sponsor}'?",
+              },
+              {
+                sponsor: rule.sponsor,
+              },
+            )}
       </Modal>
     </React.Fragment>
   );
