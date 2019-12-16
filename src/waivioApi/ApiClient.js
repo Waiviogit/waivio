@@ -690,7 +690,7 @@ export const getLenders = ({ sponsor, user, filters }) => {
 export const getAuthenticatedUserMetadata = userName => {
   const { apiPrefix, user, userMetadata } = config;
   return fetch(`${apiPrefix}${user}/${userName}${userMetadata}`, {
-    headers,
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
     method: 'GET',
   })
     .then(res => res.json())
@@ -709,5 +709,7 @@ export const updateUserMetadata = (userName, data) =>
 export const waivioAPI = {
   getAuthenticatedUserMetadata,
 };
+
+// I don't read changes before commit
 
 export default null;
