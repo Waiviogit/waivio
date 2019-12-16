@@ -888,5 +888,11 @@
   "matchBot_rule_creation_confirmation": "Подтверждение создания правила",
   "matchBot_rule_editing_confirmation": "Подтверждение редактирования правила",
   "matchBot_success_created": "Правило успешно создано",
-  "matchBot_success_edited": "Правило успешно отредактировано"
+  "matchBot_success_edited": "Правило успешно отредактировано",
+  "matchBot_success_activated": "Правило успешно активировано",
+  "matchBot_success_inactivated": "Правило деактивировано успешно",
+  "matchBot_success_rule_activation": "Активация правила",
+  "matchBot_success_rule_inactivation": "Деактивация правила",
+  "matchBot_success_intention_rule_activation": "Вы хотите активировать правило?",
+  "matchBot_success_intention_rule_inactivation": "Вы хотите деактивировать правило?"
 }

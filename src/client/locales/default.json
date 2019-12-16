@@ -884,5 +884,11 @@
   "matchBot_rule_creation_confirmation": "Rule creation confirmation",
   "matchBot_rule_editing_confirmation": "Rule editing confirmation",
   "matchBot_success_created": "Rule created successfully",
-  "matchBot_success_edited": "Rule edited successfully"
+  "matchBot_success_edited": "Rule edited successfully",
+  "matchBot_success_activated": "Rule activated successfully",
+  "matchBot_success_inactivated": "Rule inactivated successfully",
+  "matchBot_success_rule_activation": "Rule activation",
+  "matchBot_success_rule_inactivation": "Rule inactivation",
+  "matchBot_success_intention_rule_activation": "Do you want to activate rule?",
+  "matchBot_success_intention_rule_inactivation": "Do you want to inactivate rule?"
 }
