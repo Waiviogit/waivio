@@ -1,22 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
-import { Button, message } from 'antd';
+import { Button, message, Modal, Slider } from 'antd';
+import { setMatchBotVotingPower } from '../rewardsActions';
 import CreateRule from './CreateRule/CreateRule';
 import { getMatchBotRules } from '../../../waivioApi/ApiClient';
 import MatchBotTable from './MatchBotTable/MatchBotTable';
 import './MatchBot.less';
 
-const MatchBot = ({ intl, userName }) => {
+const MatchBot = ({ intl, userName, ...props }) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [voteModalVisible, setVoteModalVisible] = useState(false);
+  const [isLoading, setLoaded] = useState(false);
+  const [sliderValue, setSliderValue] = useState(100);
   const [editRule, setEditRule] = useState({});
   const [rules, setRules] = useState({ results: [] });
+  const [minVotingPower, setMinVotingPower] = useState(0);
   const maxRulesLimit = 25;
   const isOverRules = rules.results.length >= maxRulesLimit;
+  const marks = {
+    1: '1%',
+    25: '25%',
+    50: '50%',
+    75: '75%',
+    100: '100%',
+  };
 
   useEffect(() => {
-    getMatchBotRules(userName).then(data => setRules(data));
+    getMatchBotRules(userName).then(data => {
+      setRules(data);
+      setMinVotingPower(80);
+    });
   }, []);
 
   const handleChangeModalVisible = () => {
@@ -34,6 +50,22 @@ const MatchBot = ({ intl, userName }) => {
   const handleEditRule = rule => {
     setModalVisible(!modalVisible);
     setEditRule(rule);
+  };
+  const handleOpenVoteModal = () => setVoteModalVisible(!voteModalVisible);
+  const handleChangeSliderValue = value => setSliderValue(value);
+  const formatTooltip = value => `${value}%`;
+  const handleSetMinVotingPower = () => {
+    setLoaded(true);
+    props.setMatchBotVotingPower(sliderValue).then(() => {
+      setLoaded(false);
+      handleOpenVoteModal();
+      message.success(
+        intl.formatMessage({
+          id: 'match_bot_success_min_voted_changed',
+          defaultMessage: 'Minimum voting power changed',
+        }),
+      );
+    });
   };
 
   return (
@@ -68,10 +100,25 @@ const MatchBot = ({ intl, userName }) => {
         </p>
         <div className="MatchBot__highlighted-block">
           <p>
-            {intl.formatMessage({
-              id: 'minimum_voting_power',
-              defaultMessage: 'Minimum voting power: 80% (change).',
-            })}
+            <span>
+              {intl.formatMessage({
+                id: 'minimum_voting_power',
+                defaultMessage: 'Minimum voting power',
+              })}
+              :{` ${minVotingPower}% `}
+            </span>
+            (
+            <span
+              className="MatchBot__highlighted-block-change-vote"
+              onClick={handleOpenVoteModal}
+              role="presentation"
+            >
+              {intl.formatMessage({
+                id: 'minimum_voting_power_change',
+                defaultMessage: 'change',
+              })}
+            </span>
+            )
           </p>
           <p>
             {intl.formatMessage({
@@ -101,12 +148,31 @@ const MatchBot = ({ intl, userName }) => {
           setEditRule={setEditRule}
         />
       )}
+      <Modal
+        title={intl.formatMessage({
+          id: 'match_bot_change_min_voting_power',
+          defaultMessage: 'Change minimum voting power',
+        })}
+        visible={voteModalVisible}
+        onCancel={handleOpenVoteModal}
+        onOk={handleSetMinVotingPower}
+        confirmLoading={isLoading}
+      >
+        <Slider
+          min={1}
+          defaultValue={minVotingPower}
+          marks={marks}
+          tipFormatter={formatTooltip}
+          onChange={handleChangeSliderValue}
+        />
+      </Modal>
     </div>
   );
 };
 
 MatchBot.propTypes = {
   intl: PropTypes.shape().isRequired,
+  setMatchBotVotingPower: PropTypes.func.isRequired,
   userName: PropTypes.string,
 };
 
@@ -114,4 +180,4 @@ MatchBot.defaultProps = {
   userName: '',
 };
 
-export default injectIntl(MatchBot);
+export default injectIntl(connect(null, { setMatchBotVotingPower })(MatchBot));

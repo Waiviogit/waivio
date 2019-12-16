@@ -6,15 +6,18 @@
   flex-direction: column;
   position: absolute;
   padding: 0 12px 0 12px;
+
   @media @small {
     padding: 0 20px 0 0;
   }
+
   @media @large {
     padding: 0;
   }
 
   &__title {
     display: none;
+
     @media @small {
       display: block;
       font-size: x-large;
@@ -27,6 +30,11 @@
     border-bottom: 1px solid @black-text-basic;
     margin: 20px 0 20px 0;
     padding: 20px 0 20px 0;
+
+    &-change-vote {
+      color: @orange-hot;
+      cursor: pointer;
+    }
   }
 
   &__text-content {
