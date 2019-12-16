@@ -2,23 +2,40 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
-import MatchBotTable from './MatchBotTable/MatchBotTable';
-import './MatchBot.less';
+import { Button, message } from 'antd';
 import CreateRule from './CreateRule/CreateRule';
 import { getMatchBotRules } from '../../../waivioApi/ApiClient';
+import MatchBotTable from './MatchBotTable/MatchBotTable';
+import './MatchBot.less';
 
 const MatchBot = ({ intl, userName }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [editRule, setEditRule] = useState({});
-  const [rules, setRules] = useState([]);
-  const handleChangeModalVisible = () => setModalVisible(!modalVisible);
+  const [rules, setRules] = useState({ results: [] });
+  const maxRulesLimit = 25;
+  const isOverRules = rules.results.length >= maxRulesLimit;
+
+  useEffect(() => {
+    getMatchBotRules(userName).then(data => setRules(data));
+  }, []);
+
+  const handleChangeModalVisible = () => {
+    if (isOverRules) {
+      message.error(
+        intl.formatMessage({
+          id: 'match_bot_cannot_create_rules_more',
+          defaultMessage: `You cannot create more then 25 rules`,
+        }),
+      );
+      return;
+    }
+    setModalVisible(!modalVisible);
+  };
   const handleEditRule = rule => {
     setModalVisible(!modalVisible);
     setEditRule(rule);
   };
-  useEffect(() => {
-    getMatchBotRules(userName).then(data => setRules(data));
-  }, []);
+
   return (
     <div className="MatchBot">
       <div className="MatchBot__title">
@@ -68,12 +85,14 @@ const MatchBot = ({ intl, userName }) => {
       {!isEmpty(rules) && !isEmpty(rules.results) && (
         <MatchBotTable intl={intl} rules={rules.results} handleEditRule={handleEditRule} />
       )}
-      <button className="MatchBot__button" onClick={handleChangeModalVisible}>
-        {intl.formatMessage({
-          id: 'createNewCampaign',
-          defaultMessage: `Create new rule`,
-        })}
-      </button>
+      <div className="MatchBot__button">
+        <Button type="primary" onClick={handleChangeModalVisible}>
+          {intl.formatMessage({
+            id: 'createNewCampaign',
+            defaultMessage: `Create new rule`,
+          })}
+        </Button>
+      </div>
       {modalVisible && (
         <CreateRule
           modalVisible={modalVisible}
