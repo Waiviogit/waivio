@@ -18,7 +18,7 @@ const MatchBotTableRow = ({ intl, rule, handleEditRule, ...props }) => {
 
   const changeRuleStatus = () => {
     setLoaded(true);
-    props.setMatchBotRules({ enabled: !isEnabled }).then(() => {
+    props.setMatchBotRules({ sponsor: rule.sponsor, enabled: !isEnabled }).then(() => {
       handleChangeModalVisible();
       if (!isEnabled) {
         setActivationStatus('activated');
