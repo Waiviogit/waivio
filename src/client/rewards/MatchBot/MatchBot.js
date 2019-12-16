@@ -56,7 +56,8 @@ const MatchBot = ({ intl, userName, ...props }) => {
   const formatTooltip = value => `${value}%`;
   const handleSetMinVotingPower = () => {
     setLoaded(true);
-    props.setMatchBotVotingPower(sliderValue).then(() => {
+    const preparedSliderValue = sliderValue / 100;
+    props.setMatchBotVotingPower(preparedSliderValue).then(() => {
       setLoaded(false);
       handleOpenVoteModal();
       message.success(
