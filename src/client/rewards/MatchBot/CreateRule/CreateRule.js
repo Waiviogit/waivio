@@ -126,6 +126,7 @@ const CreateRule = ({
     }
     callback();
   };
+  const formatTooltip = value => `${value}%`;
 
   const marks = {
     1: '1%',
@@ -203,6 +204,7 @@ const CreateRule = ({
               min={1}
               defaultValue={sliderValue}
               marks={marks}
+              tipFormatter={formatTooltip}
               onChange={handleChangeSliderValue}
             />
           </Form.Item>
