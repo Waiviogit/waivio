@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Button, Form, Input, message, Modal, Slider } from 'antd';
@@ -16,13 +16,13 @@ const CreateRule = ({
   handleChangeModalVisible,
   editRule,
   setEditRule,
-  ...props
 }) => {
   const { getFieldDecorator, setFieldsValue } = form;
   const [sponsor, setSponsor] = useState({});
   const [sliderValue, setSliderValue] = useState(100);
   const [isConfirmModalLoading, setConfirmModalLoaded] = useState(false);
   const [isConfirmModal, setConfirmModal] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!isEmpty(editRule)) {
@@ -69,8 +69,7 @@ const CreateRule = ({
           upvote: sliderValue / 100,
         };
         if (values.noticeField) prepareObjData.notes = values.noticeField;
-        props
-          .setMatchBotRules(prepareObjData)
+        dispatch(setMatchBotRules(prepareObjData))
           .then(() => {
             setConfirmModalLoaded(false);
             handleChangeModalVisible();
@@ -91,8 +90,7 @@ const CreateRule = ({
           sponsor: editRule.sponsor,
           upvote: sliderValue / 100,
         };
-        props
-          .setMatchBotRules(prepareObjData)
+        dispatch(setMatchBotRules(prepareObjData))
           .then(() => {
             setConfirmModalLoaded(false);
             handleChangeModalVisible();
@@ -289,11 +287,10 @@ CreateRule.propTypes = {
   modalVisible: PropTypes.bool.isRequired,
   editRule: PropTypes.shape(),
   handleChangeModalVisible: PropTypes.func.isRequired,
-  setMatchBotRules: PropTypes.func.isRequired,
   setEditRule: PropTypes.func.isRequired,
 };
 CreateRule.defaultProps = {
   editRule: {},
 };
 
-export default Form.create()(injectIntl(connect(null, { setMatchBotRules })(CreateRule)));
+export default Form.create()(injectIntl(CreateRule));

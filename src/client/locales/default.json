@@ -733,6 +733,8 @@
   "minimum_voting_power_change": "change",
   "match_bot_success_min_voted_changed": "Minimum voting power changed",
   "match_bot_change_min_voting_power": "Change minimum voting power",
+  "match_bot_turn_off": "Turn off",
+  "match_bot_turn_on": "Turn on",
   "match_bot_will_upvote_eligible_posts_only_if_VP": "Match bot will upvote eligible posts only if VP on the account exceeds the set value.",
   "match_bot_cannot_create_rules_more": "You cannot create more then 25 rules",
   "users_auto_complete_placeholder": "Find users",

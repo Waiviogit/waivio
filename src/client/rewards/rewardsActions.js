@@ -11,7 +11,7 @@ export const setMatchBotRules = ruleObj => (dispatch, getState, { steemConnectAP
     botName: username,
   };
   return dispatch({
-    type: SET_MATCH_BOT_RULE,
+    type: SET_MATCH_BOT_RULE.ACTION,
     payload: {
       promise: steemConnectAPI.settingMatchBotRule(username, preparedRuleObj),
     },
@@ -34,7 +34,7 @@ export const setMatchBotVotingPower = minVotingPower => (
     botName: username,
   };
   return dispatch({
-    type: SET_MATCH_BOT_VOTING_POWER,
+    type: SET_MATCH_BOT_VOTING_POWER.ACTION,
     payload: {
       promise: steemConnectAPI.settingMatchBotVotingPower(username, preparedObj),
     },
