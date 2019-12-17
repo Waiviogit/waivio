@@ -4,7 +4,7 @@ import _ from 'lodash';
 import MatchBotTableRow from './MatchBotTableRow';
 import './MatchBotTable.less';
 
-const MatchBotTable = ({ intl, sponsors }) => (
+const MatchBotTable = ({ intl, rules, handleEditRule }) => (
   <table className="MatchBotTable">
     <thead>
       <tr>
@@ -26,8 +26,9 @@ const MatchBotTable = ({ intl, sponsors }) => (
       </tr>
     </thead>
     <tbody>
-      {_.map(sponsors, sponsor => (
-        <MatchBotTableRow key={sponsor.id} sponsor={sponsor} />
+      {_.map(rules, rule => (
+        // eslint-disable-next-line no-underscore-dangle
+        <MatchBotTableRow key={rule._id} rule={rule} handleEditRule={handleEditRule} />
       ))}
     </tbody>
   </table>
@@ -35,11 +36,12 @@ const MatchBotTable = ({ intl, sponsors }) => (
 
 MatchBotTable.propTypes = {
   intl: PropTypes.shape().isRequired,
-  sponsors: PropTypes.arrayOf(PropTypes.shape()),
+  rules: PropTypes.arrayOf(PropTypes.shape()),
+  handleEditRule: PropTypes.func.isRequired,
 };
 
 MatchBotTable.defaultProps = {
-  sponsors: [],
+  rules: [],
 };
 
 export default MatchBotTable;

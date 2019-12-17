@@ -203,16 +203,16 @@ export default class SidenavRewards extends React.Component {
                           })}
                         </NavLink>
                       </li>
-                      <li>
-                        <NavLink to={`/rewards/match-bot`} activeClassName="Sidenav__item--active">
-                          {intl.formatMessage({
-                            id: 'match_bot',
-                            defaultMessage: `Match bot`,
-                          })}
-                        </NavLink>
-                      </li>
                     </React.Fragment>
                   )}
+                  <li>
+                    <NavLink to={`/rewards/match-bot`} activeClassName="Sidenav__item--active">
+                      {intl.formatMessage({
+                        id: 'match_bot',
+                        defaultMessage: `Match bot`,
+                      })}
+                    </NavLink>
+                  </li>
                 </React.Fragment>
               )}
             </React.Fragment>
