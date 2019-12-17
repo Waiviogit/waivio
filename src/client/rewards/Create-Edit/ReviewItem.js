@@ -18,7 +18,7 @@ const ReviewItem = ({ isUser, object, removeReviewObject, loading }) => (
 ReviewItem.propTypes = {
   object: PropTypes.shape().isRequired,
   removeReviewObject: PropTypes.func.isRequired,
-  loading: false,
+  loading: PropTypes.bool,
   isUser: PropTypes.bool,
 };
 

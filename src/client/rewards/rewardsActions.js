@@ -1,9 +1,7 @@
 import { getAuthenticatedUserName } from '../reducers';
+import { createAsyncActionType } from '../helpers/stateHelpers';
 
-export const SET_MATCH_BOT_RULE = '@rewards/SET_MATCH_BOT_RULE';
-export const SET_MATCH_BOT_RULE_START = "@rewards/SET_MATCH_BOT_RULE'_START";
-export const SET_MATCH_BOT_RULE_ERROR = "@rewards/SET_MATCH_BOT_RULE'_ERROR";
-export const SET_MATCH_BOT_RULE_SUCCESS = "@rewards/SET_MATCH_BOT_RULE'_SUCCESS";
+export const SET_MATCH_BOT_RULE = createAsyncActionType('@rewards/SET_MATCH_BOT_RULE');
 
 export const setMatchBotRules = ruleObj => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
@@ -20,10 +18,9 @@ export const setMatchBotRules = ruleObj => (dispatch, getState, { steemConnectAP
   });
 };
 
-export const SET_MATCH_BOT_VOTING_POWER = '@rewards/SET_MATCH_BOT_VOTING_POWER';
-export const SET_MATCH_BOT_VOTING_POWER_START = '@rewards/SET_MATCH_BOT_VOTING_POWER_START';
-export const SET_MATCH_BOT_VOTING_POWER_ERROR = '@rewards/SET_MATCH_BOT_VOTING_POWER_ERROR';
-export const SET_MATCH_BOT_VOTING_POWER_SUCCESS = '@rewards/SET_MATCH_BOT_VOTING_POWER_SUCCESS';
+export const SET_MATCH_BOT_VOTING_POWER = createAsyncActionType(
+  '@rewards/SET_MATCH_BOT_VOTING_POWER',
+);
 
 export const setMatchBotVotingPower = minVotingPower => (
   dispatch,
