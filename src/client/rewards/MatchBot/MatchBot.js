@@ -1,23 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
-import { Button, message, Modal, Slider } from 'antd';
+import { Button, message, Modal, Slider, Switch, Tooltip } from 'antd';
 import { setMatchBotVotingPower } from '../rewardsActions';
 import CreateRule from './CreateRule/CreateRule';
 import { getMatchBotRules } from '../../../waivioApi/ApiClient';
 import MatchBotTable from './MatchBotTable/MatchBotTable';
 import './MatchBot.less';
 
-const MatchBot = ({ intl, userName, ...props }) => {
+const MatchBot = ({ intl, userName }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [voteModalVisible, setVoteModalVisible] = useState(false);
   const [isLoading, setLoaded] = useState(false);
+  const [isSwitched, setSwitched] = useState(false);
   const [sliderValue, setSliderValue] = useState(100);
   const [editRule, setEditRule] = useState({});
   const [rules, setRules] = useState({ results: [] });
   const [minVotingPower, setMinVotingPower] = useState(0);
+  const handleSwitcher = () => setSwitched(!isSwitched);
   const maxRulesLimit = 25;
   const isOverRules = rules.results.length >= maxRulesLimit;
   const marks = {
@@ -54,10 +56,11 @@ const MatchBot = ({ intl, userName, ...props }) => {
   const handleOpenVoteModal = () => setVoteModalVisible(!voteModalVisible);
   const handleChangeSliderValue = value => setSliderValue(value);
   const formatTooltip = value => `${value}%`;
+  const dispatch = useDispatch();
   const handleSetMinVotingPower = () => {
     setLoaded(true);
     const preparedSliderValue = sliderValue / 100;
-    props.setMatchBotVotingPower(preparedSliderValue).then(() => {
+    dispatch(setMatchBotVotingPower(preparedSliderValue)).then(() => {
       setLoaded(false);
       handleOpenVoteModal();
       message.success(
@@ -71,11 +74,28 @@ const MatchBot = ({ intl, userName, ...props }) => {
 
   return (
     <div className="MatchBot">
-      <div className="MatchBot__title">
-        {intl.formatMessage({
-          id: 'sponsor_match_bot',
-          defaultMessage: 'Sponsor match bot',
-        })}
+      <div className="MatchBot__title-wrap">
+        <div className="MatchBot__title">
+          {intl.formatMessage({
+            id: 'sponsor_match_bot',
+            defaultMessage: 'Sponsor match bot',
+          })}
+        </div>
+        <Tooltip
+          title={
+            isSwitched
+              ? intl.formatMessage({
+                  id: 'match_bot_turn_on',
+                  defaultMessage: 'Turn on',
+                })
+              : intl.formatMessage({
+                  id: 'match_bot_turn_off',
+                  defaultMessage: 'Turn off',
+                })
+          }
+        >
+          <Switch className="MatchBot__switcher" defaultChecked={false} onChange={handleSwitcher} />
+        </Tooltip>
       </div>
       <div className="MatchBot__text-content">
         <p>
@@ -173,7 +193,6 @@ const MatchBot = ({ intl, userName, ...props }) => {
 
 MatchBot.propTypes = {
   intl: PropTypes.shape().isRequired,
-  setMatchBotVotingPower: PropTypes.func.isRequired,
   userName: PropTypes.string,
 };
 
@@ -181,4 +200,4 @@ MatchBot.defaultProps = {
   userName: '',
 };
 
-export default injectIntl(connect(null, { setMatchBotVotingPower })(MatchBot));
+export default injectIntl(MatchBot);

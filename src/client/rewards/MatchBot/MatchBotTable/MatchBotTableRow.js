@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { Checkbox, message, Modal } from 'antd';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setMatchBotRules } from '../../rewardsActions';
 
-const MatchBotTableRow = ({ intl, rule, handleEditRule, ...props }) => {
+const MatchBotTableRow = ({ intl, rule, handleEditRule }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setLoaded] = useState(false);
   const [activationStatus, setActivationStatus] = useState('');
+  const dispatch = useDispatch();
   const handleChangeModalVisible = () => setModalVisible(!modalVisible);
   const editRule = () => {
     handleEditRule(rule);
@@ -18,7 +19,7 @@ const MatchBotTableRow = ({ intl, rule, handleEditRule, ...props }) => {
 
   const changeRuleStatus = () => {
     setLoaded(true);
-    props.setMatchBotRules({ sponsor: rule.sponsor, enabled: !isEnabled }).then(() => {
+    dispatch(setMatchBotRules({ sponsor: rule.sponsor, enabled: !isEnabled })).then(() => {
       handleChangeModalVisible();
       if (!isEnabled) {
         setActivationStatus('activated');
@@ -101,11 +102,10 @@ MatchBotTableRow.propTypes = {
   intl: PropTypes.shape().isRequired,
   rule: PropTypes.shape(),
   handleEditRule: PropTypes.func.isRequired,
-  setMatchBotRules: PropTypes.func.isRequired,
 };
 
 MatchBotTableRow.defaultProps = {
   rule: {},
 };
 
-export default injectIntl(connect(null, { setMatchBotRules })(MatchBotTableRow));
+export default injectIntl(MatchBotTableRow);
