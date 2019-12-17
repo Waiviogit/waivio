@@ -117,6 +117,7 @@ class Page extends React.Component {
   render() {
     const {
       authenticated,
+      history,
       location: { pathname },
       match,
     } = this.props;
@@ -155,7 +156,7 @@ class Page extends React.Component {
                   onTopicClose={this.handleTopicClose}
                 />
               )}
-              {authenticated && <QuickPostEditor />}
+              {authenticated && <QuickPostEditor history={history} />}
               <div className="feed-layout__switcher">
                 <div className="feed-layout__text">
                   {this.props.intl.formatMessage({
