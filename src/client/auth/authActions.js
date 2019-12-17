@@ -5,7 +5,7 @@ import { createAsyncActionType } from '../helpers/stateHelpers';
 import { addNewNotification } from '../app/appActions';
 import { getFollowing } from '../user/userActions';
 import { BUSY_API_TYPES } from '../../common/constants/notifications';
-import { getValidTokenData } from '../helpers/getToken';
+import { getValidTokenData, setToken } from '../helpers/getToken';
 
 export const LOGIN = '@auth/LOGIN';
 export const LOGIN_START = '@auth/LOGIN_START';
@@ -23,7 +23,11 @@ export const BUSY_LOGIN = createAsyncActionType('@auth/BUSY_LOGIN');
 
 const loginError = createAction(LOGIN_ERROR);
 
-export const login = () => async (dispatch, getState, { steemConnectAPI, waivioAPI }) => {
+export const login = (accessToken = '', socialNetwork = '') => async (
+  dispatch,
+  getState,
+  { steemConnectAPI, waivioAPI },
+) => {
   const state = getState();
 
   let promise = Promise.resolve(null);
@@ -32,6 +36,17 @@ export const login = () => async (dispatch, getState, { steemConnectAPI, waivioA
 
   if (getIsLoaded(state)) {
     promise = Promise.resolve(null);
+  } else if (accessToken && socialNetwork) {
+    promise = new Promise(async (resolve, reject) => {
+      try {
+        const tokenData = await setToken(accessToken, socialNetwork);
+        console.log(tokenData);
+        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.userData.name);
+        resolve({ account: tokenData.userData, userMetaData, socialNetwork, isGuestUser: true });
+      } catch (e) {
+        reject(e);
+      }
+    });
   } else if (!steemConnectAPI.options.accessToken && !token) {
     promise = Promise.reject(new Error('There is not accessToken present'));
   } else if (steemConnectAPI.options.accessToken) {
@@ -48,8 +63,9 @@ export const login = () => async (dispatch, getState, { steemConnectAPI, waivioA
   } else if (token) {
     promise = new Promise(async (resolve, reject) => {
       try {
-        const tokenData = await getValidTokenData();
+        const expiration = localStorage.getItem('accessTokenExpiration');
         const socialName = localStorage.getItem('socialName');
+        const tokenData = await getValidTokenData(token, expiration);
         console.log(tokenData);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.userData.name);
         resolve({ account: tokenData.userData, userMetaData, socialName, isGuestUser: true });
@@ -83,9 +99,21 @@ export const reload = () => (dispatch, getState, { steemConnectAPI }) =>
   });
 
 export const logout = () => (dispatch, getState, { steemConnectAPI }) => {
-  steemConnectAPI.revokeToken();
-  Cookie.remove('access_token');
-
+  const state = getState();
+  if (state.auth.isGuestUser) {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('accessTokenExpiration');
+    localStorage.removeItem('socialName');
+    if (window) {
+      // eslint-disable-next-line no-unused-expressions
+      window.FB && window.FB.logout();
+      // eslint-disable-next-line no-unused-expressions
+      window.gapi && window.gapi.auth2.getAuthInstance().signOut();
+    }
+  } else {
+    steemConnectAPI.revokeToken();
+    Cookie.remove('access_token');
+  }
   dispatch({
     type: LOGOUT,
   });

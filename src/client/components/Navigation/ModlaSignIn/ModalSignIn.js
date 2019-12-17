@@ -4,9 +4,9 @@ import { Icon, Modal } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import GoogleLogin from 'react-google-login';
 import FacebookLogin from 'react-facebook-login';
-import '../ModalSignUp/ModalSignUp.less';
 import SteemConnect from '../../../steemConnectAPI';
 import { setToken } from '../../../helpers/getToken';
+import '../ModalSignUp/ModalSignUp.less';
 
 @injectIntl
 class ModalSignIn extends React.Component {
@@ -21,17 +21,15 @@ class ModalSignIn extends React.Component {
       isOpen: false,
     };
   }
-  responseGoogle = response => {
-    console.log(response);
+
+  responseGoogle = async response => {
+    await setToken(response.accessToken, 'google');
+    this.props.login();
   };
 
   responseFacebook = async response => {
     await setToken(response.accessToken, 'facebook');
     this.props.login();
-  };
-
-  toggleModal = () => {
-    this.setState({ isOpen: !this.state.isOpen });
   };
 
   render() {

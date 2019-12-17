@@ -740,7 +740,7 @@ export const getNewToken = token => {
       return data.json();
     })
     .then(data => {
-      response.guestName = data.user.name;
+      response.userData = data.user;
       return response;
     });
 };

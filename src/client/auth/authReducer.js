@@ -60,6 +60,8 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isAuthenticated: false,
+        loaded: false,
+        isGuestUser: false,
         user: {},
       };
     case GET_USER_METADATA.SUCCESS:
