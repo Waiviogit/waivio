@@ -98,8 +98,8 @@ const Chat = ({
         'hide-element': !visibility,
       })}
       defaultSize={{
-        width: 550,
-        height: 700,
+        width: 410,
+        height: 600,
       }}
     >
         <div className="Chat__wrap">
