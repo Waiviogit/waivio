@@ -513,8 +513,8 @@ class Rewards extends React.Component {
         </div>
         {isModalDetailsOpen && !_.isEmpty(objectDetails) && (
           <Modal
-            title={this.props.intl.formatMessage({
-              id: 'details',
+            title={intl.formatMessage({
+              id: 'rewards_details_modal_details',
               defaultMessage: 'Details',
             })}
             closable
@@ -526,12 +526,28 @@ class Rewards extends React.Component {
           >
             <div className="Proposition__title">{objectDetails.name}</div>
             <div className="Proposition__header">
-              <div className="Proposition__-type">{`Sponsored: ${objectDetails.type}`}</div>
-              <div className="Proposition__reward">{`Reward: $${objectDetails.reward}`}</div>
+              <div className="Proposition__-type">{`${intl.formatMessage({
+                id: 'rewards_details_modal_sponsored',
+                defaultMessage: 'Sponsored',
+              })}: ${objectDetails.type === 'reviews' &&
+                intl.formatMessage({
+                  id: 'rewards_details_modal_reviews',
+                  defaultMessage: 'reviews',
+                })}`}</div>
+              <div className="Proposition__reward">{`${intl.formatMessage({
+                id: 'rewards_details_modal_reward',
+                defaultMessage: 'Reward',
+              })}: ${objectDetails.reward} STEEM`}</div>
             </div>
             <div className="Proposition__footer">
               <div className="Proposition__author">
-                <div className="Proposition__author-title">{`Sponsor`}:</div>
+                <div className="Proposition__author-title">
+                  {intl.formatMessage({
+                    id: 'rewards_details_modal_sponsor',
+                    defaultMessage: 'Sponsor',
+                  })}
+                  :
+                </div>
                 <div className="Rewards-modal__user-card">
                   <Link to={`/@${objectDetails.guide.name}`}>
                     <Avatar username={objectDetails.guide.name} size={34} />
@@ -541,7 +557,10 @@ class Rewards extends React.Component {
                   </Link>
                 </div>
               </div>
-              <div>{`Paid rewards: ${objectDetails.payed}$ (${objectDetails.payedPercent}%)`}</div>
+              <div>{`${intl.formatMessage({
+                id: 'rewards_details_modal_paid_rewards',
+                defaultMessage: 'Paid rewards',
+              })}: ${objectDetails.payed} STEEM (${objectDetails.payedPercent}%)`}</div>
             </div>
             <div className="Proposition__body">
               <div className="Proposition__body-description">{objectDetails.description}</div>
