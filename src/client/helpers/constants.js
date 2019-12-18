@@ -1,5 +1,5 @@
 export const BENEFICIARY_ACCOUNT = 'waivio';
-export const BENEFICIARY_PERCENT = 1000;
+export const BENEFICIARY_PERCENT = 300;
 export const REFERRAL_PERCENT = 1000;
 
 export const knownDomains = [
