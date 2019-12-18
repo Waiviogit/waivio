@@ -2,21 +2,23 @@
 @import (reference) '../../styles/modules/variables.less';
 
 .Chat {
-  position: fixed;
   display: flex;
-  width: 100%;
-  height: 100%;
+  position: fixed !important;
+  //overflow: auto;
   bottom: 0;
   z-index: 1100000;
   background-color: @white-ghostWhite;
   box-shadow: 0 0 4px 4px #99aab5;
   overflow: hidden;
+  @media @medium-max {
+    width: 100% !important;
+    height: 100% !important;
+  }
 
   @media @large {
-    max-height: 680px;
+    max-height: 95vh;
     border-radius: 10px;
     bottom: 20px;
-    width: 530px;
     right: 20px;
   }
 

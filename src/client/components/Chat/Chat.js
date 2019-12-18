@@ -1,21 +1,22 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Icon } from 'antd';
+import React, {useEffect, useRef, useState} from 'react';
+import {Icon} from 'antd';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { connect } from 'react-redux';
-import { getPostMessageType, getPostMessageData, getChatConnectionCondition } from '../../reducers';
-import { setSessionId, setDefaultCondition } from './chatActions';
+import {connect} from 'react-redux';
+import {Resizable} from "re-resizable";
+import {getChatConnectionCondition, getPostMessageData, getPostMessageType} from '../../reducers';
+import {setDefaultCondition, setSessionId} from './chatActions';
 import './Chat.less';
 
 const Chat = ({
-  visibility,
-  postMessageType,
-  postMessageData,
-  userName,
-  isConnectionStart,
-  openChat,
-  ...props
-}) => {
+                visibility,
+                postMessageType,
+                postMessageData,
+                userName,
+                isConnectionStart,
+                openChat,
+                ...props
+              }) => {
   const [isChatConnected, setChatConnected] = useState(false);
   const [isCloseButton, setCloseButton] = useState(false);
   const ifr = useRef();
@@ -68,8 +69,8 @@ const Chat = ({
             // console.log(event.data.args.status);
             break;
           case 'new_event':
-            // console.log('new_event');
-            break;
+            console.log('new_event');
+            break;/**/
           default:
         }
       }
@@ -92,27 +93,31 @@ const Chat = ({
 
   setConditionOnHideChat();
   return (
-    <div
+    <Resizable
       className={classNames('Chat', {
         'hide-element': !visibility,
       })}
+      defaultSize={{
+        width: 550,
+        height: 700,
+      }}
     >
-      <div className="Chat__wrap">
-        {isConnectionStart && (
-          <iframe
-            src="https://stchat.cf/app.html"
-            /* eslint no-return-assign: "error" */
-            ref={ifr}
-            title="frame"
-          />
-        )}
-      </div>
-      {isCloseButton && (
-        <div className="Chat__close-button">
-          <Icon style={{ fontSize: '25px' }} type="close" onClick={openChat} />
+        <div className="Chat__wrap">
+          {isConnectionStart && (
+            <iframe
+              src="https://stchat.cf/app.html"
+              /* eslint no-return-assign: "error" */
+              ref={ifr}
+              title="frame"
+            />
+          )}
         </div>
-      )}
-    </div>
+        {isCloseButton && (
+          <div className="Chat__close-button">
+            <Icon style={{fontSize: '25px'}} type="close" onClick={openChat}/>
+          </div>
+        )}
+    </Resizable>
   );
 };
 
