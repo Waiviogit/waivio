@@ -226,7 +226,12 @@ class Rewards extends React.Component {
             defaultMessage: 'Assigned successfully',
           }),
         );
-        const updatedPropositions = this.updateProposition(companyId, true, objPermlink);
+        const updatedPropositions = this.updateProposition(
+          companyId,
+          true,
+          objPermlink,
+          companyAuthor,
+        );
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })
       .catch(() => {
@@ -241,19 +246,26 @@ class Rewards extends React.Component {
   };
 
   // eslint-disable-next-line consistent-return
-  updateProposition = (propsId, isAssign, objPermlink) => {
-    // eslint-disable-next-line no-param-reassign
-    const newPropos = { ...this.state.propositions[0] };
-    if (newPropos._id === propsId) {
-      newPropos.objects.forEach((object, index) => {
-        if (object.object.author_permlink === objPermlink) {
-          newPropos.objects[index].assigned = isAssign;
-        } else {
-          newPropos.objects[index].assigned = null;
-        }
-      });
-    }
-    return [newPropos];
+  updateProposition = (propsId, isAssign, objPermlink, companyAuthor) => {
+    const newPropos = this.state.propositions.map(proposition => {
+      if (proposition._id === propsId) {
+        proposition.objects.forEach((object, index) => {
+          if (object.object.author_permlink === objPermlink) {
+            // eslint-disable-next-line no-param-reassign
+            proposition.objects[index].assigned = isAssign;
+          } else {
+            // eslint-disable-next-line no-param-reassign
+            proposition.objects[index].assigned = null;
+          }
+        });
+      }
+      if (proposition.guide.name === companyAuthor && proposition._id !== propsId) {
+        // eslint-disable-next-line no-param-reassign
+        proposition.isReservedSiblingObj = true;
+      }
+      return proposition;
+    });
+    return newPropos;
   };
 
   toggleModal = proposition => {
@@ -513,8 +525,8 @@ class Rewards extends React.Component {
         </div>
         {isModalDetailsOpen && !_.isEmpty(objectDetails) && (
           <Modal
-            title={this.props.intl.formatMessage({
-              id: 'details',
+            title={intl.formatMessage({
+              id: 'rewards_details_modal_details',
               defaultMessage: 'Details',
             })}
             closable
@@ -526,12 +538,28 @@ class Rewards extends React.Component {
           >
             <div className="Proposition__title">{objectDetails.name}</div>
             <div className="Proposition__header">
-              <div className="Proposition__-type">{`Sponsored: ${objectDetails.type}`}</div>
-              <div className="Proposition__reward">{`Reward: $${objectDetails.reward}`}</div>
+              <div className="Proposition__-type">{`${intl.formatMessage({
+                id: 'rewards_details_modal_sponsored',
+                defaultMessage: 'Sponsored',
+              })}: ${objectDetails.type === 'reviews' &&
+                intl.formatMessage({
+                  id: 'rewards_details_modal_reviews',
+                  defaultMessage: 'reviews',
+                })}`}</div>
+              <div className="Proposition__reward">{`${intl.formatMessage({
+                id: 'rewards_details_modal_reward',
+                defaultMessage: 'Reward',
+              })}: ${objectDetails.reward} STEEM`}</div>
             </div>
             <div className="Proposition__footer">
               <div className="Proposition__author">
-                <div className="Proposition__author-title">{`Sponsor`}:</div>
+                <div className="Proposition__author-title">
+                  {intl.formatMessage({
+                    id: 'rewards_details_modal_sponsor',
+                    defaultMessage: 'Sponsor',
+                  })}
+                  :
+                </div>
                 <div className="Rewards-modal__user-card">
                   <Link to={`/@${objectDetails.guide.name}`}>
                     <Avatar username={objectDetails.guide.name} size={34} />
@@ -541,7 +569,10 @@ class Rewards extends React.Component {
                   </Link>
                 </div>
               </div>
-              <div>{`Paid rewards: ${objectDetails.payed}$ (${objectDetails.payedPercent}%)`}</div>
+              <div>{`${intl.formatMessage({
+                id: 'rewards_details_modal_paid_rewards',
+                defaultMessage: 'Paid rewards',
+              })}: ${objectDetails.payed} STEEM (${objectDetails.payedPercent}%)`}</div>
             </div>
             <div className="Proposition__body">
               <div className="Proposition__body-description">{objectDetails.description}</div>
