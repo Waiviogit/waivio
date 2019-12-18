@@ -23,7 +23,7 @@ export const BUSY_LOGIN = createAsyncActionType('@auth/BUSY_LOGIN');
 
 const loginError = createAction(LOGIN_ERROR);
 
-export const login = (accessToken = '', socialNetwork = '') => async (
+export const login = (accessToken = '', socialNetwork = '', regData = '') => async (
   dispatch,
   getState,
   { steemConnectAPI, waivioAPI },
@@ -39,8 +39,7 @@ export const login = (accessToken = '', socialNetwork = '') => async (
   } else if (accessToken && socialNetwork) {
     promise = new Promise(async (resolve, reject) => {
       try {
-        const tokenData = await setToken(accessToken, socialNetwork);
-        console.log(tokenData);
+        const tokenData = await setToken(accessToken, socialNetwork, regData);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.userData.name);
         resolve({ account: tokenData.userData, userMetaData, socialNetwork, isGuestUser: true });
       } catch (e) {
@@ -66,7 +65,6 @@ export const login = (accessToken = '', socialNetwork = '') => async (
         const expiration = localStorage.getItem('accessTokenExpiration');
         const socialName = localStorage.getItem('socialName');
         const tokenData = await getValidTokenData(token, expiration);
-        console.log(tokenData);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.userData.name);
         resolve({ account: tokenData.userData, userMetaData, socialName, isGuestUser: true });
       } catch (e) {

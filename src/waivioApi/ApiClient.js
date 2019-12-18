@@ -710,12 +710,20 @@ export const waivioAPI = {
   getAuthenticatedUserMetadata,
 };
 
-export const getAccessToken = (token, social) => {
+export const getAccessToken = (token, social, regData) => {
   let response = {};
+  let body = {};
+  body.access_token = token;
+
+  if (!_.isEmpty(regData)) {
+    body.userName = regData.userName;
+    body.pickSocialFields = regData.pickSocialFields;
+  }
+
   return fetch(`${config.baseUrl}${config.auth}/${social}`, {
     method: 'POST',
     headers,
-    body: JSON.stringify({ access_token: token }),
+    body: JSON.stringify(body),
   })
     .then(data => {
       response.token = data.headers.get('access-token');
@@ -743,6 +751,14 @@ export const getNewToken = token => {
       response.userData = data.user;
       return response;
     });
+};
+
+export const isUserNameVacant = userName => {
+  return fetch(`${config.baseUrl}${config.user}/${userName}`);
+};
+
+export const isUserRegistered = token => {
+  return false;
 };
 
 export default null;

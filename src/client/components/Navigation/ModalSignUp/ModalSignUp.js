@@ -1,24 +1,52 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Icon } from 'antd';
+import { Modal, Form, Icon, Input, Button, Checkbox } from 'antd';
+import { isEmpty } from 'lodash';
 import { useDispatch } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { GoogleLogin } from 'react-google-login';
 import FacebookLogin from 'react-facebook-login';
+import getSlug from 'speakingurl';
 import { login } from '../../../auth/authActions';
+import { isUserRegistered } from '../../../../waivioApi/ApiClient';
 import './ModalSignUp.less';
 
-const ModalSignUp = ({ isButton }) => {
+const ModalSignUp = ({ isButton, form }) => {
   const dispatch = useDispatch();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userData, setUserData] = useState({});
+
+  const {
+    getFieldDecorator,
+    getFieldsError,
+    getFieldError,
+    isFieldTouched,
+    validateFields,
+    setFieldsValue,
+  } = form;
 
   const responseGoogle = async response => {
-    dispatch(login(response.accessToken, 'google'));
+    const res = isUserRegistered(response.id);
+    if (res.isRegistrered) {
+      dispatch(login(response.accessToken, 'google'));
+    }
+
+    setFieldsValue({
+      username: getSlug(response.name),
+    });
+    setUserData(response);
   };
 
   const responseFacebook = async response => {
-    dispatch(login(response.accessToken, 'facebook'));
+    const res = isUserRegistered(response.accessToken);
+    if (res.isRegistrered) {
+      dispatch(login(response.accessToken, 'facebook'));
+    }
+    setFieldsValue({
+      username: getSlug(response.name),
+    });
+    setUserData({ ...response, socialNetwork: 'facebook' });
   };
 
   const getSignUpInfo = (
@@ -44,6 +72,58 @@ const ModalSignUp = ({ isButton }) => {
         <FormattedMessage id="signup" defaultMessage="Sign up" />
       </a>
     </div>
+  );
+
+  const hasErrors = fieldsError => Object.keys(fieldsError).some(field => fieldsError[field]);
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    validateFields((err, values) => {
+      if (!err) {
+        console.log('Received values of form: ', values);
+      }
+      console.log(values);
+      dispatch(
+        login(userData.accessToken, userData.socialNetwork, {
+          userName: values.username,
+          pickSocialFields: values.agreement,
+        }),
+      );
+    });
+  };
+
+  // const validateUserName = userName => {};
+
+  const usernameError = isFieldTouched('username') && getFieldError('username');
+
+  const nameForm = (
+    <Form layout="vertical" onSubmit={handleSubmit}>
+      <Form.Item validateStatus={usernameError ? 'error' : ''} help={usernameError || ''}>
+        {getFieldDecorator('username', {
+          rules: [
+            {
+              required: true,
+              message: 'Please input your username!',
+            },
+            {
+              pattern: /^[a-z0-9.-]+$/,
+              message: 'Only letters, digits, periods, dashes are allowed',
+            },
+          ],
+        })(<Input placeholder="Username" addonBefore="waivio_" maxLength={18} />)}
+      </Form.Item>
+      <Form.Item>
+        {getFieldDecorator('agreement', {
+          initialValue: true,
+          valuePropName: 'checked',
+        })(<Checkbox>I agree to post my public data into blockchain</Checkbox>)}
+      </Form.Item>
+      <Form.Item>
+        <Button type="primary" htmlType="submit" disabled={hasErrors(getFieldsError())}>
+          Log in
+        </Button>
+      </Form.Item>
+    </Form>
   );
 
   return (
@@ -91,6 +171,7 @@ const ModalSignUp = ({ isButton }) => {
               icon={<Icon type="facebook" className="ModalSignUp__icon-fb" />}
             />
           </div>
+          {!isEmpty(userData) && nameForm}
         </div>
       </Modal>
     </React.Fragment>
@@ -99,6 +180,7 @@ const ModalSignUp = ({ isButton }) => {
 
 ModalSignUp.propTypes = {
   isButton: PropTypes.bool.isRequired,
+  form: PropTypes.shape().isRequired,
 };
 
-export default ModalSignUp;
+export default Form.create({ name: 'user_name' })(ModalSignUp);
