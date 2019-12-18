@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { get, last, isEmpty } from 'lodash';
+import { get, last, isEqual, isEmpty, throttle } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import moment from 'moment';
@@ -111,7 +111,7 @@ class PostChart extends Component {
             this.state.isSession &&
             this.shouldGetChartData(nextProps.bars)
           ) {
-            this.props.getChartData(this.state.timeScale);
+            this.getChartData(this.state.timeScale);
           } else if (this.isExpiredByTime()) {
             const expiredProps = {
               ...nextProps,
@@ -131,6 +131,8 @@ class PostChart extends Component {
       }
     }
   }
+
+  getChartData = throttle(timeScale => this.props.getChartData(timeScale), 15000);
 
   toggleModalTC = () => {
     if (this.props.withModalChart) {
