@@ -1049,5 +1049,7 @@
   "actualNews" : "Actual news",
   "post_validation_incomplete_content": "The post should contain the title and content",
   "post_validation_object_not_found": "The post must contain at least one topic",
-  "post_validation_invalid_forecast": "Fill in the required fields"
+  "post_validation_invalid_forecast": "Fill in the required fields",
+  "sidenav_user_payments": "Payments",
+  "posts": "Posts"
 }

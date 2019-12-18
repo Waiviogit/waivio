@@ -61,7 +61,7 @@ class UserMenu extends React.Component {
                 role="presentation"
                 data-key="discussions"
               >
-                <FormattedMessage id="discussions" defaultMessage="Discussions" />
+                <FormattedMessage id="posts" defaultMessage="Posts" />
               </li>
               <li
                 className={this.getItemClasses('comments')}
@@ -70,6 +70,14 @@ class UserMenu extends React.Component {
                 data-key="comments"
               >
                 <FormattedMessage id="comments" defaultMessage="Comments" />
+              </li>
+              <li
+                className={this.getItemClasses('about')}
+                onClick={this.handleClick}
+                role="presentation"
+                data-key="about"
+              >
+                <FormattedMessage id="about" defaultMessage="About" />
               </li>
               <li
                 className={this.getItemClasses('followers')}
@@ -110,20 +118,20 @@ class UserMenu extends React.Component {
                 <FormattedMessage id="wallet" defaultMessage="Wallet" />
               </li>
               <li
-                className={this.getItemClasses('activity')}
-                onClick={this.handleClick}
-                role="presentation"
-                data-key="activity"
-              >
-                <FormattedMessage id="activity" defaultMessage="Activity" />
-              </li>
-              <li
                 className={this.getItemClasses('statistics')}
                 onClick={this.handleClick}
                 role="presentation"
                 data-key="statistics"
               >
                 <FormattedMessage id="statistics" defaultMessage="Statistics" />
+              </li>
+              <li
+                className={this.getItemClasses('activity')}
+                onClick={this.handleClick}
+                role="presentation"
+                data-key="activity"
+              >
+                <FormattedMessage id="activity" defaultMessage="Activity" />
               </li>
             </ul>
           </Scrollbars>

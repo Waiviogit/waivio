@@ -1,8 +1,9 @@
 @import (reference) '../styles/custom.less';
+@import (reference) '../styles/modules/variables';
 
 .UserMenu {
   height: 46px;
-  background-color: white;
+  background-color: #ffffff;
   border-top: solid 1px #e9e7e7;
   border-bottom: solid 1px #e9e7e7;
 
@@ -10,9 +11,11 @@
     height: 46px;
     line-height: 46px;
     white-space: nowrap;
-    display: flex;
-    justify-content: center;
-    width: 100% !important;
+    @media @large {
+      display: flex;
+      justify-content: center;
+      width: 100% !important;
+    }
   }
 
   &__item {
@@ -28,6 +31,7 @@
     &--active,
     &:hover {
       color: @primary-color;
+
       border-bottom: 2px @border-style-base @primary-color;
     }
   }
@@ -47,6 +51,14 @@ div[data-dir='rtl'] .UserMenu {
   &__item {
     margin-right: 0;
     margin-left: 16px;
+  }
+}
+
+[data-key='about'] {
+  display: inline-block;
+
+  @media @medium {
+    display: none;
   }
 }
 
