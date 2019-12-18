@@ -167,7 +167,7 @@ const Proposition = ({
                 <Button
                   type="primary"
                   loading={loading}
-                  disabled={loading}
+                  disabled={loading || proposition.isReservedSiblingObj}
                   onClick={reserveOnClickHandler}
                 >
                   {intl.formatMessage({

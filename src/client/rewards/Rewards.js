@@ -226,7 +226,12 @@ class Rewards extends React.Component {
             defaultMessage: 'Assigned successfully',
           }),
         );
-        const updatedPropositions = this.updateProposition(companyId, true, objPermlink);
+        const updatedPropositions = this.updateProposition(
+          companyId,
+          true,
+          objPermlink,
+          companyAuthor,
+        );
         this.setState({ propositions: updatedPropositions, loadingAssignDiscard: false });
       })
       .catch(() => {
@@ -241,19 +246,26 @@ class Rewards extends React.Component {
   };
 
   // eslint-disable-next-line consistent-return
-  updateProposition = (propsId, isAssign, objPermlink) => {
-    // eslint-disable-next-line no-param-reassign
-    const newPropos = { ...this.state.propositions[0] };
-    if (newPropos._id === propsId) {
-      newPropos.objects.forEach((object, index) => {
-        if (object.object.author_permlink === objPermlink) {
-          newPropos.objects[index].assigned = isAssign;
-        } else {
-          newPropos.objects[index].assigned = null;
-        }
-      });
-    }
-    return [newPropos];
+  updateProposition = (propsId, isAssign, objPermlink, companyAuthor) => {
+    const newPropos = this.state.propositions.map(proposition => {
+      if (proposition._id === propsId) {
+        proposition.objects.forEach((object, index) => {
+          if (object.object.author_permlink === objPermlink) {
+            // eslint-disable-next-line no-param-reassign
+            proposition.objects[index].assigned = isAssign;
+          } else {
+            // eslint-disable-next-line no-param-reassign
+            proposition.objects[index].assigned = null;
+          }
+        });
+      }
+      if (proposition.guide.name === companyAuthor && proposition._id !== propsId) {
+        // eslint-disable-next-line no-param-reassign
+        proposition.isReservedSiblingObj = true;
+      }
+      return proposition;
+    });
+    return newPropos;
   };
 
   toggleModal = proposition => {
