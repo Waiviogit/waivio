@@ -78,7 +78,7 @@ class PostChart extends Component {
       if (this.state.expired) {
         this.setState(
           {
-            timeScale: get(expForecast, 'rate.quote.timeScale', this.state.timeScale).toUpperCase(),
+            timeScale: get(expForecast, ['rate', 'quote', 'timeScale'], this.state.timeScale).toUpperCase(),
           },
           () => this.updateChartData(this.props),
         );
@@ -98,7 +98,7 @@ class PostChart extends Component {
         this.setState(
           {
             expired: true,
-            timeScale: nextProps.expiredTimeScale || this.state.timeScale,
+            timeScale: get(nextProps.expForecast, ['rate', 'quote', 'timeScale'], this.state.timeScale).toUpperCase(),
           },
           () => this.updateChartData(nextProps),
         );
@@ -153,6 +153,7 @@ class PostChart extends Component {
     });
   updateChartData = props => {
     const notEnoughData = this.chartData.updateData({
+      platform: props.platformName,
       isScaleChanged: Boolean(props.expForecast && get(props.expForecast, 'rate.quote.timeScale')),
       timeScale: this.state.timeScale,
       data: this.state.expired
@@ -161,7 +162,7 @@ class PostChart extends Component {
       quote: props.quote,
       expiredAt: props.expiredAt,
       quoteSettings: props.quoteSettings,
-      expiredByTime: props.expiredByTime,
+      expiredByTime: get(props.expForecast, ['rate', 'quote', 'expiredByTime'], true),
       chartType: this.state.chartType,
       priceType: this.state.priceType,
       isExpired: this.state.expired,
@@ -178,7 +179,7 @@ class PostChart extends Component {
   shouldGetChartData = bars => {
     const timeNow = currentTime.getTime();
     const lastTimeScale = last(bars[this.state.timeScale]);
-    let lastTime = !lastTimeScale || !lastTimeScale.length ? null : lastTimeScale.time;
+    let lastTime = get(lastTimeScale, ['time'], null);
     const coefficient = 1000 * 60 * CanvasHelper.hours[this.state.timeScale];
     if (timeNow - lastTime - coefficient > coefficient && timeNow - lastTime > coefficient) {
       lastTime += coefficient * Math.floor((timeNow - lastTime) / coefficient);
