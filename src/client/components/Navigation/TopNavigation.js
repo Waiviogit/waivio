@@ -12,7 +12,6 @@ const LINKS = {
   FEED_PROMOTED: '/promoted',
   REWARDS: '/rewards',
   DISCOVER: '/discover-objects',
-  TOOLS_ACTIVITY: '/activity',
   TOOLS_DRAFTS: '/drafts',
   TOOLS_BOOKMARKS: '/bookmarks',
   TOOLS_EDIT_PROFILE: '/edit-profile',
@@ -32,7 +31,6 @@ const TOOLS_URLS = [
   LINKS.TOOLS_EDIT_PROFILE,
   LINKS.TOOLS_INVITE,
   LINKS.TOOLS_SETTINGS,
-  LINKS.TOOLS_ACTIVITY,
 ];
 
 const TopNavigation = ({ authenticated, location: { pathname } }) => {
