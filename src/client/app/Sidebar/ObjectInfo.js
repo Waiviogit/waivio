@@ -326,10 +326,13 @@ class ObjectInfo extends React.Component {
           )}
           {!isEditMode &&
             sortListItemsBy(
-              combineObjectMenu(menuItems.map(menuItem => getClientWObj(menuItem, usedLocale)), {
-                button,
-                news: Boolean(newsFilter),
-              }),
+              combineObjectMenu(
+                menuItems.map(menuItem => getClientWObj(menuItem, usedLocale)),
+                {
+                  button,
+                  news: Boolean(newsFilter),
+                },
+              ),
               !_.isEmpty(wobject.sortCustom) ? 'custom' : '',
               wobject && wobject.sortCustom,
             ).map(item => getMenuSectionLink(item))}

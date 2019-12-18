@@ -651,6 +651,17 @@ export const getRewardsGeneralCounts = guideName =>
       .catch(error => reject(error));
   });
 
+export const getMatchBotRules = guideName =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.matchBots}/?bot_name=${guideName}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export const getCampaignByGuideNameAndObject = (guideName, object) =>
   new Promise((resolve, reject) => {
     fetch(`${config.campaignApiPrefix}${config.campaigns}`, {
