@@ -29,12 +29,14 @@
     "createObject": "/create-object"
   },
   "activation": "/validate_activation",
+  "auth": "/auth",
   "blog": "/blog",
   "campaign": "/campaign",
   "campaigns": "/campaigns",
   "childWobjects": "/child_wobjects",
   "createCampaign": "/create_campaign",
   "createObject": "/create/object",
+  "guestOperations": "/guest_operations",
   "dashboard": "/dashboard",
   "statistics": "/statistics",
   "feed": "/feed",
@@ -64,8 +66,7 @@
   "user": "/user",
   "userMetadata": "/userMetadata",
   "users": "/users",
+  "validateAuthToken": "validate_auth_token",
   "wobjectsExpertise": "/object_expertise",
-  "wobjectsWithUserWeight": "/objects_shares",
-  "auth": "/auth",
-  "validateAuthToken": "validate_auth_token"
+  "wobjectsWithUserWeight": "/objects_shares"
 }
