@@ -4,8 +4,6 @@ import { AutoComplete, Icon, Input, Modal } from 'antd';
 import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import './ModalComparePerformance.less';
-import InstrumentLongTermStatistics from '../../LeftSidebar/LongTermStatistics/InstrumentLongTermStatistics';
 import ObjectCard from '../../../../client/components/Sidebar/ObjectCard';
 import {
   getAutoCompleteSearchResults,
@@ -16,8 +14,10 @@ import { searchAutoComplete } from '../../../../client/search/searchActions';
 import { getFieldWithMaxWeight } from '../../../../client/object/wObjectHelper';
 import { objectFields } from '../../../../common/constants/listOfFields';
 import Avatar from '../../../../client/components/Avatar';
-import UserLongTermStatistics from '../../LeftSidebar/LongTermStatistics/UserLongTermStatistics';
+import LongTermStatistics from '../../LeftSidebar/LongTermStatistics/LongTermStatistics';
+import api from '../../../configApi/apiResources';
 import UserCard from '../../../../client/components/UserCard';
+import './ModalComparePerformance.less';
 
 @injectIntl
 @connect(
@@ -75,8 +75,8 @@ class ModalComparePerformance extends React.Component {
 
   prepareOptions(searchResults) {
     const dataSource = [];
-    if (!_.isEmpty(searchResults.accounts))
-      dataSource.push(this.usersSearchLayout(searchResults.accounts));
+    if (!_.isEmpty(searchResults.users))
+      dataSource.push(this.usersSearchLayout(searchResults.users));
 
     if (!_.isEmpty(searchResults.wobjects))
       dataSource.push(this.wobjectSearchLayout(searchResults.wobjects));
@@ -121,7 +121,7 @@ class ModalComparePerformance extends React.Component {
             marker={'user'}
             key={`user${option.account}`}
             value={`user${option.account}`}
-            className="Topnav__search-autocomplete"
+            className="ModalComparePerformance__autocomplete-option"
           >
             <div className="Topnav__search-content-wrap">
               <Avatar username={option.account} size={40} />
@@ -153,7 +153,7 @@ class ModalComparePerformance extends React.Component {
               permlink={option.author_permlink}
               key={option.author_permlink}
               value={`wobj${wobjName}`}
-              className="ModalComparePerformance__search-autocomplete"
+              className="ModalComparePerformance__autocomplete-option"
             >
               <ObjectCard wobject={option} showFollow={false} withLinks={false} />
               <div className="Topnav__search-content-small">{option.object_type}</div>
@@ -175,6 +175,22 @@ class ModalComparePerformance extends React.Component {
   render() {
     const { intl, isModalOpen, autoCompleteSearchResults, isItemUser } = this.props;
     const { searchBarValue, itemToCompare, isItemToCompareUser } = this.state;
+    const noUserStatsMsg = (
+      <div>
+        {intl.formatMessage({
+          id: 'unavailableStatisticsUser',
+          defaultMessage: 'The user has not written any posts with forecasts',
+        })}
+      </div>
+    );
+    const noObjectStatsMsg = (
+      <div>
+        {intl.formatMessage({
+          id: 'unavailableStatisticsObject',
+          defaultMessage: 'Long term statistics is unavailable for current instrument',
+        })}
+      </div>
+    );
     const dropdownOptions = this.prepareOptions(autoCompleteSearchResults);
     return (
       <Modal
@@ -190,12 +206,22 @@ class ModalComparePerformance extends React.Component {
           {isItemUser ? (
             <div className="ModalComparePerformance-item">
               <UserCard user={{ name: this.state.item }} showFollow={false} />
-              <UserLongTermStatistics userName={this.state.item} />
+              <LongTermStatistics
+                itemId={this.state.item}
+                fetcher={api.performers.getUserStatistics}
+              >
+                {noUserStatsMsg}
+              </LongTermStatistics>
             </div>
           ) : (
             <div className="ModalComparePerformance-item">
               <ObjectCard wobject={this.state.item} showFollow={false} />
-              <InstrumentLongTermStatistics wobject={this.state.item} />
+              <LongTermStatistics
+                itemId={this.state.item.author_permlink}
+                fetcher={api.performers.getInstrumentStatistics}
+              >
+                {noObjectStatsMsg}
+              </LongTermStatistics>
             </div>
           )}
           <div>vs</div>
@@ -204,7 +230,8 @@ class ModalComparePerformance extends React.Component {
             {_.isEmpty(itemToCompare) ? (
               <div className="">
                 <AutoComplete
-                  dropdownClassName=""
+                  className={'ModalComparePerformance__autocomplete'}
+                  dropdownClassName={'ModalComparePerformance__autocomplete-dropdown'}
                   dataSource={dropdownOptions}
                   onSearch={this.handleAutoCompleteSearch}
                   onSelect={this.handleSelectOnAutoCompleteDropdown}
@@ -232,7 +259,12 @@ class ModalComparePerformance extends React.Component {
                   <UserCard user={{ name: itemToCompare }} showFollow={false} withLinks={false} />
                   <Icon type="close-circle" onClick={this.removeItemToCompare} />
                 </div>
-                <UserLongTermStatistics userName={itemToCompare} />
+                <LongTermStatistics
+                  itemId={itemToCompare}
+                  fetcher={api.performers.getUserStatistics}
+                >
+                  {noUserStatsMsg}
+                </LongTermStatistics>
               </React.Fragment>
             ) : (
               <React.Fragment>
@@ -240,7 +272,12 @@ class ModalComparePerformance extends React.Component {
                   <ObjectCard wobject={itemToCompare} showFollow={false} withLinks={false} />
                   <Icon type="close-circle" onClick={this.removeItemToCompare} />
                 </div>
-                <InstrumentLongTermStatistics wobject={itemToCompare} />
+                <LongTermStatistics
+                  itemId={itemToCompare.author_permlink}
+                  fetcher={api.performers.getInstrumentStatistics}
+                >
+                  {noObjectStatsMsg}
+                </LongTermStatistics>
               </React.Fragment>
             )}
           </div>
