@@ -4,6 +4,7 @@ import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
 import config from './routes';
 import { getFollowingCount } from '../client/helpers/apiHelpers';
+import { getValidTokenData } from '../client/helpers/getToken';
 
 const headers = {
   Accept: 'application/json',
@@ -705,12 +706,8 @@ export const updateUserMetadata = (userName, data) =>
   }).then(res => res.json());
 //endregion
 
-// injected as extra argument in Redux Thunk
-export const waivioAPI = {
-  getAuthenticatedUserMetadata,
-};
-
-export const getAccessToken = (token, social, regData) => {
+//region Guest user's requests
+export const getAccessToken = (token, social) => {
   let response = {};
   let body = {};
   body.access_token = token;
@@ -759,6 +756,26 @@ export const isUserNameVacant = userName => {
 
 export const isUserRegistered = token => {
   return false;
+};
+
+export const broadcastGuestOperation = async (operationId, data, userName) => {
+  const token = await getValidTokenData();
+  return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
+    method: 'POST',
+    headers: { 'access-token': token },
+    body: {
+      id: operationId,
+      data,
+      userName,
+    },
+  }).then(data => console.log('\t> > > ', data));
+};
+//endregion
+
+// injected as extra argument in Redux Thunk
+export const waivioAPI = {
+  getAuthenticatedUserMetadata,
+  broadcastGuestOperation,
 };
 
 export default null;

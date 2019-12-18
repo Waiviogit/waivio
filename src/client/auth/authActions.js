@@ -32,7 +32,10 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
 
   let promise = Promise.resolve(null);
 
-  const token = localStorage ? localStorage.getItem('accessToken') : null;
+  let token = null;
+  if (typeof localStorage !== 'undefined') {
+    token = localStorage.getItem('accessToken');
+  }
 
   if (getIsLoaded(state)) {
     promise = Promise.resolve(null);
@@ -92,7 +95,7 @@ export const reload = () => (dispatch, getState, { steemConnectAPI }) =>
   dispatch({
     type: RELOAD,
     payload: {
-      promise: steemConnectAPI.me(),
+      promise: steemConnectAPI.me(getAuthenticatedUserName(getState())),
     },
   });
 
