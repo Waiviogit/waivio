@@ -516,6 +516,7 @@ class StoryFull extends React.Component {
             tpPrice={forecast.tpPrice ? forecast.tpPrice.toString() : null}
             slPrice={forecast.slPrice ? forecast.slPrice.toString() : null}
             expForecast={post.exp_forecast}
+            expiredAt={_.get(post, ['exp_forecast', 'expiredAt'], forecast.expiredAt)}
           />
         )}
         {isForecastValid && (
