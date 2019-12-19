@@ -199,6 +199,10 @@ const Proposition = ({
         isModalDetailsOpen={isModalDetailsOpen}
         objectDetails={proposition}
         toggleModal={toggleModalDetails}
+        reserveOnClickHandler={reserveOnClickHandler}
+        loading={loading}
+        assigned={assigned}
+        isReserved={isReserved}
       />
       <Modal
         closable

@@ -1,11 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Modal } from 'antd';
+import { Button, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import Avatar from '../../components/Avatar';
 
-const Details = ({ intl, objectDetails, toggleModal, isModalDetailsOpen }) => {
+const Details = ({
+  intl,
+  objectDetails,
+  toggleModal,
+  isModalDetailsOpen,
+  loading,
+  reserveOnClickHandler,
+  assigned,
+  isReserved,
+}) => {
   console.log(objectDetails);
   return (
     <Modal
@@ -61,6 +70,17 @@ const Details = ({ intl, objectDetails, toggleModal, isModalDetailsOpen }) => {
       <div className="Proposition__body">
         <div className="Proposition__body-description">{objectDetails.description}</div>
       </div>
+      <Button
+        type="primary"
+        loading={loading}
+        disabled={!(assigned !== null && !assigned && !isReserved) || loading}
+        onClick={reserveOnClickHandler}
+      >
+        {intl.formatMessage({
+          id: 'reserve',
+          defaultMessage: `Reserve`,
+        })}
+      </Button>
     </Modal>
   );
 };
@@ -70,5 +90,9 @@ Details.propTypes = {
   objectDetails: PropTypes.shape().isRequired,
   toggleModal: PropTypes.func.isRequired,
   isModalDetailsOpen: PropTypes.bool.isRequired,
+  loading: PropTypes.bool.isRequired,
+  reserveOnClickHandler: PropTypes.func.isRequired,
+  assigned: PropTypes.bool.isRequired,
+  isReserved: PropTypes.bool.isRequired,
 };
 export default injectIntl(Details);
