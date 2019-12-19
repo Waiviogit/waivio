@@ -1,13 +1,91 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
 .Details {
-  &__title {
+  .ant-modal-body {
+    padding-top: 0.75rem;
+    border: 1px solid @orange-hot;
+  }
+  &__modal-title {
     text-align: center;
     font-size: 20px;
     font-weight: normal;
   }
+
+  &__title-wrap {
+    display: flex;
+    font-size: 20px;
+    justify-content: space-between;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid @blue-hawkesBlue;
+
+    &-name {
+      font-weight: 600;
+    }
+
+    &-data {
+      &-colored {
+        color: @orange-hot;
+      }
+    }
+  }
+
   &__header {
     display: flex;
     width: 100%;
     justify-content: space-between;
     align-items: center;
+  }
+
+  &__user-info {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__total-paid {
+    font-weight: 500;
+    color: @blue-botticelli;
+  }
+
+  &__user-card {
+    display: flex;
+    align-items: center;
+
+    &-username {
+      margin-left: 10px;
+      font-weight: 500;
+      color: @blue-botticelli;
+    }
+  }
+
+  &__text-wrap {
+    margin: 3.5rem;
+  }
+
+  &__criteria-wrap {
+    margin-left: 1rem;
+  }
+
+  &__criteria-row {
+    display: flex;
+
+    .ant-checkbox-wrapper {
+      font-size: 0.75rem;
+      margin-right: 0.5rem;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: center;
+
+    &-reserve-btn {
+      display: flex;
+      align-items: center;
+
+      button {
+        margin-right: 1rem;
+      }
+    }
   }
 }
