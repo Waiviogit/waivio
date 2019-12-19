@@ -17,6 +17,7 @@ import { rejectReservationCampaign, reserveActivatedCampaign } from '../../../wa
 import { generatePermlink } from '../../helpers/wObjectHelper';
 import { UsedLocaleContext } from '../../Wrapper';
 import './Proposition.less';
+import Details from '../Details/Details';
 
 const Proposition = ({
   intl,
@@ -26,7 +27,6 @@ const Proposition = ({
   discardProposition,
   loading,
   wobj,
-  toggleModal,
   assigned,
   post,
   getSingleComment,
@@ -34,6 +34,7 @@ const Proposition = ({
 }) => {
   const usedLocale = useContext(UsedLocaleContext);
   const proposedWobj = getClientWObj(wobj, usedLocale);
+  const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
   const requiredObjectName = getFieldWithMaxWeight(
     proposition.required_object,
     'name',
@@ -44,7 +45,7 @@ const Proposition = ({
   }, []);
 
   const toggleModalDetails = () => {
-    toggleModal(proposition);
+    setModalDetailsOpen(!isModalDetailsOpen);
   };
 
   const discardPr = obj => {
@@ -194,6 +195,11 @@ const Proposition = ({
           </React.Fragment>
         )}
       </div>
+      <Details
+        isModalDetailsOpen={isModalDetailsOpen}
+        objectDetails={proposition}
+        toggleModal={toggleModalDetails}
+      />
       <Modal
         closable
         maskClosable={false}
@@ -222,7 +228,6 @@ Proposition.propTypes = {
   loading: PropTypes.bool.isRequired,
   assigned: PropTypes.bool,
   assignCommentPermlink: PropTypes.string,
-  toggleModal: PropTypes.func.isRequired,
   intl: PropTypes.shape().isRequired,
   post: PropTypes.shape(),
 };
