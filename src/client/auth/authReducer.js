@@ -1,3 +1,4 @@
+import { get } from 'lodash';
 import * as types from './authActions';
 import { GET_USER_METADATA } from '../user/usersActions';
 
@@ -81,3 +82,11 @@ export const getIsReloading = state => state.isReloading;
 export const getAuthenticatedUser = state => state.user;
 export const getAuthenticatedUserName = state => state.user.name;
 export const getAuthenticateduserMetaData = state => state.userMetaData;
+export const getAuthenticatedUserAvatar = state => {
+  let jsonMetadata = get(state, 'user.json_metadata');
+  if (jsonMetadata) {
+    jsonMetadata = JSON.parse(state.user.json_metadata);
+    return get(jsonMetadata, 'profile.profile_image');
+  }
+  return undefined;
+};

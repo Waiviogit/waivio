@@ -68,5 +68,6 @@
   "users": "/users",
   "validateAuthToken": "validate_auth_token",
   "wobjectsExpertise": "/object_expertise",
-  "wobjectsWithUserWeight": "/objects_shares"
+  "wobjectsWithUserWeight": "/objects_shares",
+  "hasSocialAccount": "/has_social_account"
 }

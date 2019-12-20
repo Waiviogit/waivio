@@ -1,5 +1,6 @@
 import sc2 from 'sc2-sdk';
 import { waivioAPI } from '../waivioApi/ApiClient';
+import { getValidTokenData } from './helpers/getToken';
 
 function sc2Extended() {
   const sc2api = sc2.Initialize({
@@ -16,13 +17,21 @@ function sc2Extended() {
   }
   if (isGuest) {
     sc2Proto.broadcast = function broadcast(operations) {
-      console.log('\tbroadcast > ', JSON.stringify(operations));
-      return waivioAPI.broadcastGuestOperation(`waivio_guest_`, operations, 'currUserName');
+      console.log('\tbroadcast > ', operations);
+      let operation;
+      if (operations[0][0] === 'custom_json') {
+        operation = `waivio_guest_${operations[0][1].id}`;
+      } else {
+        operation = `waivio_guest_${operations[0][0]}`;
+      }
+      return waivioAPI.broadcastGuestOperation(operation, operations);
     };
-    sc2Proto.me = function getUserAccount(username) {
-      console.log('\tgetUserAccount > ', username);
+    sc2Proto.me = async function getUserAccount() {
+      const userData = await getValidTokenData();
+      console.log('\tgetUserAccount > ', userData.userData.name);
       // return Promise.resolve({ name: username });
-      return waivioAPI.getAuthenticatedUserMetadata(username);
+      const account = await waivioAPI.getUserAccount(userData.userData.name);
+      return { account, name: account.name };
     };
   }
 

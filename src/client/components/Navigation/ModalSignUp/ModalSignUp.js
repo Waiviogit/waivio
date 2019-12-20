@@ -27,26 +27,28 @@ const ModalSignUp = ({ isButton, form }) => {
   } = form;
 
   const responseGoogle = async response => {
-    const res = isUserRegistered(response.id);
-    if (res.isRegistrered) {
+    console.log(response);
+    const res = await isUserRegistered(response.googleId, 'google');
+    if (res) {
       dispatch(login(response.accessToken, 'google'));
+    } else {
+      setFieldsValue({
+        username: getSlug(`${response.profileObj.givenName} ${response.profileObj.familyName}`),
+      });
+      setUserData({ ...response, socialNetwork: 'google' });
     }
-
-    setFieldsValue({
-      username: getSlug(response.name),
-    });
-    setUserData(response);
   };
 
   const responseFacebook = async response => {
-    const res = isUserRegistered(response.accessToken);
-    if (res.isRegistrered) {
+    const res = await isUserRegistered(response.id, 'facebook');
+    if (res) {
       dispatch(login(response.accessToken, 'facebook'));
+    } else {
+      setFieldsValue({
+        username: getSlug(response.name),
+      });
+      setUserData({ ...response, socialNetwork: 'facebook' });
     }
-    setFieldsValue({
-      username: getSlug(response.name),
-    });
-    setUserData({ ...response, socialNetwork: 'facebook' });
   };
 
   const getSignUpInfo = (
@@ -85,7 +87,7 @@ const ModalSignUp = ({ isButton, form }) => {
       console.log(values);
       dispatch(
         login(userData.accessToken, userData.socialNetwork, {
-          userName: values.username,
+          userName: `waivio_${values.username}`,
           pickSocialFields: values.agreement,
         }),
       );
@@ -106,7 +108,7 @@ const ModalSignUp = ({ isButton, form }) => {
               message: 'Please input your username!',
             },
             {
-              pattern: /^[a-z0-9.-]+$/,
+              pattern: /^[A-Za-z0-9.-]+$/,
               message: 'Only letters, digits, periods, dashes are allowed',
             },
           ],

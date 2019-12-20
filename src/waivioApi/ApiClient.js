@@ -6,7 +6,7 @@ import config from './routes';
 import { getFollowingCount } from '../client/helpers/apiHelpers';
 import { getValidTokenData } from '../client/helpers/getToken';
 
-const headers = {
+let headers = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
 };
@@ -690,24 +690,34 @@ export const getLenders = ({ sponsor, user, filters }) => {
 //region UserMetadata Requests
 export const getAuthenticatedUserMetadata = userName => {
   const { apiPrefix, user, userMetadata } = config;
+
   return fetch(`${apiPrefix}${user}/${userName}${userMetadata}`, {
-    headers,
+    headers: headers,
     method: 'GET',
   })
     .then(res => res.json())
     .then(res => _.omit(res.user_metadata, '_id'));
 };
 
-export const updateUserMetadata = (userName, data) =>
+export const updateUserMetadata = (userName, data) => {
+  const isGuest = localStorage.getItem('accessToken');
+
+  if (isGuest) {
+    headers = { ...headers, 'access-token': isGuest, 'waivio-auth': true };
+  } else {
+    headers = { ...headers, 'access-token': Cookie.get('access_token') };
+  }
   fetch(`${config.apiPrefix}${config.user}/${userName}${config.userMetadata}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    headers,
     method: 'PUT',
     body: JSON.stringify({ user_metadata: data }),
   }).then(res => res.json());
+};
+
 //endregion
 
 //region Guest user's requests
-export const getAccessToken = (token, social) => {
+export const getAccessToken = (token, social, regData) => {
   let response = {};
   let body = {};
   body.access_token = token;
@@ -747,6 +757,9 @@ export const getNewToken = token => {
     .then(data => {
       response.userData = data.user;
       return response;
+    })
+    .catch(e => {
+      console.error(e.message);
     });
 };
 
@@ -754,20 +767,24 @@ export const isUserNameVacant = userName => {
   return fetch(`${config.baseUrl}${config.user}/${userName}`);
 };
 
-export const isUserRegistered = token => {
-  return false;
+export const isUserRegistered = (id, socialNetwork) => {
+  return fetch(
+    `${config.baseUrl}${config.auth}/${config.hasSocialAccount}?id=${id}&provider=${socialNetwork}`,
+  )
+    .then(data => data.json())
+    .then(data => data.result);
 };
 
-export const broadcastGuestOperation = async (operationId, data, userName) => {
-  const token = await getValidTokenData();
+export const broadcastGuestOperation = async (operationId, data) => {
+  const userData = await getValidTokenData();
   return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
     method: 'POST',
-    headers: { 'access-token': token },
-    body: {
+    headers: { ...headers, 'access-token': userData.token },
+    body: JSON.stringify({
       id: operationId,
-      data,
-      userName,
-    },
+      data: { operations: data },
+      userName: userData.userData.name,
+    }),
   }).then(data => console.log('\t> > > ', data));
 };
 //endregion
@@ -776,6 +793,7 @@ export const broadcastGuestOperation = async (operationId, data, userName) => {
 export const waivioAPI = {
   getAuthenticatedUserMetadata,
   broadcastGuestOperation,
+  getUserAccount,
 };
 
 export default null;
