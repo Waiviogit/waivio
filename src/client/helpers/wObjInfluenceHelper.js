@@ -1,11 +1,11 @@
-import { get, size, forEach } from 'lodash';
+import { forEach, size, transform } from 'lodash';
 
-export const setObjPercents = (linkedObjects, percentage) => {
+export const setInitialObjPercents = (linkedObjects, percentage) => {
   const len = linkedObjects && linkedObjects.length;
   if (!len) {
     return {};
   } else if (len === 1) {
-    return { [linkedObjects[0].id]: { percent: 100, max: 100 } };
+    return { [linkedObjects[0].id]: { percent: 100 } };
   }
   if (
     len === size(percentage) &&
@@ -14,7 +14,7 @@ export const setObjPercents = (linkedObjects, percentage) => {
   ) {
     const objPercentage = {};
     forEach(percentage, (value, key) => {
-      objPercentage[key] = { ...value, max: value.percent };
+      objPercentage[key] = { percent: value.percent };
     });
     return objPercentage;
   }
@@ -24,27 +24,28 @@ export const setObjPercents = (linkedObjects, percentage) => {
   const objPercentage = {
     [first.id]: {
       percent: firstPercent,
-      max: firstPercent,
     },
   };
   rest.forEach(obj => {
-    objPercentage[obj.id] = { percent: averagePercent, max: averagePercent };
+    objPercentage[obj.id] = { percent: averagePercent };
   });
   return objPercentage;
 };
 
-export const handleWeightChange = (percentage, objId, weightPercent, weightBuffer) => {
-  const deltaWeight = get(percentage, [objId, 'percent']) - weightPercent;
-  const weightBufferNext = weightBuffer + deltaWeight;
-  if (weightBufferNext >= 0) {
-    const percentageNext = {};
-    forEach(percentage, (value, key) => {
-      const percent = key === objId ? weightPercent : value.percent;
-      percentageNext[key] = { percent, max: percent + weightBufferNext };
-    });
-    return { objPercentage: percentageNext, weightBuffer: weightBufferNext };
-  }
-  return percentage;
+export const setObjPercents = (linkedObjects, percentage) => {
+  const { linked, zeroWeighted } = transform(
+    percentage,
+    (res, val, key) => {
+      const group = val.percent > 0 ? 'linked' : 'zeroWeighted';
+      res[group][key] = { percent: val.percent };
+    },
+    { linked: {}, zeroWeighted: {} },
+  );
+
+  return {
+    ...setInitialObjPercents(linkedObjects.filter(o => !zeroWeighted[o.id]), linked),
+    ...zeroWeighted,
+  };
 };
 
 export const setInitialInfluence = (objArr, wObj, influenceRemain) => {
@@ -85,19 +86,19 @@ export const changeObjInfluenceHandler = (objArr, currObj, influence, influenceR
     const resultArr = objArr.map(obj =>
       obj.id === currObj.id
         ? {
-            ...obj,
-            influence: {
-              value: influence,
-              max: influence + influenceRemainNext,
-            },
-          }
-        : {
-            ...obj,
-            influence: {
-              value: obj.influence.value,
-              max: obj.influence.value + influenceRemainNext,
-            },
+          ...obj,
+          influence: {
+            value: influence,
+            max: influence + influenceRemainNext,
           },
+        }
+        : {
+          ...obj,
+          influence: {
+            value: obj.influence.value,
+            max: obj.influence.value + influenceRemainNext,
+          },
+        },
     );
     return { linkedObjects: resultArr, influenceRemain: influenceRemainNext };
   }
