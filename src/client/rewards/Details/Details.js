@@ -17,19 +17,11 @@ const Details = ({
   assigned,
   isReserved,
 }) => {
-  const localizer = (id, message) => intl.formatMessage({ id, message });
+  const localizer = (id, defaultMessage) => intl.formatMessage({ id, defaultMessage });
   const data = detailsData(localizer);
   return (
     <Modal
-      title={
-        <div className="Details__modal-title">
-          {intl.formatMessage({
-            id: 'rewards_details_seek_honest_reviews',
-            defaultMessage: 'We seek honest reviews',
-          })}
-          !
-        </div>
-      }
+      title={<div className="Details__modal-title">{data.seekHonestReviews}!</div>}
       closable
       onCancel={toggleModal}
       maskClosable={false}
@@ -39,19 +31,9 @@ const Details = ({
       width={768}
     >
       <div className="Details__title-wrap">
-        <div className="Details__title-wrap-name">
-          {intl.formatMessage({
-            id: 'rewards_details_reward_for_reviews',
-            defaultMessage: 'Reward for reviews',
-          })}
-        </div>
+        <div className="Details__title-wrap-name">{data.rewardReviews}</div>
         <div className="Details__title-wrap-data">
-          <span>
-            {intl.formatMessage({
-              id: 'rewards_details_earn',
-              defaultMessage: 'Earn',
-            })}
-          </span>
+          <span>{data.earn}</span>
           <span className="Details__title-wrap-data-colored">
             <span className="fw6">{` ${objectDetails.reward} `}</span>
             <span>STEEM</span>
@@ -69,23 +51,13 @@ const Details = ({
           </Link>
           <Link to={`/@${objectDetails.guide.name}`} title={objectDetails.guide.name}>
             <div className="Details__user-card-username">
-              {objectDetails.guide.alias} (
-              {intl.formatMessage({
-                id: 'sponsor',
-                defaultMessage: `Sponsor`,
-              })}
-              )
+              {objectDetails.guide.alias} ({data.sponsor})
             </div>
             <div className="Details__user-card-username">{`@${objectDetails.guide.name}`}</div>
           </Link>
         </div>
         <div className="Details__total-paid">
-          <div>
-            {intl.formatMessage({
-              id: 'paid',
-              defaultMessage: `Total paid`,
-            })}
-          </div>
+          <div>{data.totalPaid}</div>
           <div>{`${objectDetails.guide.total_payed} STEEM`}</div>
         </div>
       </div>
@@ -118,75 +90,36 @@ const Details = ({
             <div>{data.accountNotBlacklisted}</div>
           </div>
         </div>
-        <div className="Details__text fw6 mv3">Post requirements:</div>
-        <div className="Details__text mv3">
-          For the review to be eligible for the award, all the following requirements must be met:
-        </div>
+        <div className="Details__text fw6 mv3">{data.postRequirements}</div>
+        <div className="Details__text mv3">{data.reviewEligibleAward}</div>
         <div className="Details__criteria-wrap">
-          <div className="Details__criteria-row">
-            1. Minimum [min. number of photos] original photos of [name of the secondary object];
-          </div>
-          <div className="Details__criteria-row">
-            2. Photo of the receipt (without personal details);
-          </div>
-          <div className="Details__criteria-row">
-            3. Link to [name of the secondary object]: [URL of the secondary object]
-          </div>
-          <div className="Details__criteria-row">
-            4. Link to [name of primary object]: [URL of the primary object]
-          </div>
-          <div className="Details__criteria-row">
-            5. Additional requirements/notes: [additional notes]
-          </div>
+          <div className="Details__criteria-row">1. {data.minimumOriginalPhotos}</div>
+          <div className="Details__criteria-row">2. {data.photoReceipt}</div>
+          <div className="Details__criteria-row">3. {data.linkSecondaryObject}</div>
+          <div className="Details__criteria-row">4. {data.linkPrimaryObject}</div>
+          <div className="Details__criteria-row">5. {data.additionalRequirements}</div>
         </div>
-        <div className="Details__text mv3">
-          Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent,
-          spam, poorly written or for other reasons as stated in the agreement.
-        </div>
+        <div className="Details__text mv3">{data.sponsorReservesPayment}</div>
 
-        <div className="Details__text fw6 mv3">Reward:</div>
-        <span>
-          The amount of the reward is determined in STEEM at the time of reservation. The reward
-          will be paid in the form of a combination of upvotes (Steem Power) and direct payments
-          (liquid STEEM). Only upvotes from registered accounts (@[sponsor], @[registered match
-          bots]) count towards the payment of rewards. The value of all other upvotes is not
-          subtracted from the specified amount of the reward.
-        </span>
+        <div className="Details__text fw6 mv3">{data.reward}:</div>
+        <span>{data.amountRewardDetermined}</span>
 
         <div className="Details__text fw6 mv3">Legal:</div>
-        <span>
-          By making the reservation, you confirm that you have read and agree to the Terms and
-          Conditions of the Service Agreement, including the following: Legal highlights: legal
-          agreement highlights.
-        </span>
+        <span>{data.legalAgreementHighlights}</span>
       </div>
       <div className="Details__footer">
         <div className="Details__footer-reserve-btn">
-          <Button onClick={toggleModal}>
-            {intl.formatMessage({
-              id: 'cancel',
-              defaultMessage: `Cancel`,
-            })}
-          </Button>
+          <Button onClick={toggleModal}>{data.cancel}</Button>
           <Button
             type="primary"
             loading={loading}
             disabled={!(assigned !== null && !assigned && !isReserved) || loading}
             onClick={reserveOnClickHandler}
           >
-            {intl.formatMessage({
-              id: 'reserve',
-              defaultMessage: `Reserve`,
-            })}
+            {data.reserve}
           </Button>
           {objectDetails.count_reservation_days &&
-            `${intl.formatMessage({
-              id: 'for_days',
-              defaultMessage: `for`,
-            })} ${objectDetails.count_reservation_days} ${intl.formatMessage({
-              id: 'days',
-              defaultMessage: `days`,
-            })}`}
+            `${data.forDays} ${objectDetails.count_reservation_days} ${data.days}`}
         </div>
       </div>
     </Modal>
