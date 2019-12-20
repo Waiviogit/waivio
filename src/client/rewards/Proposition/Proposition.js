@@ -203,6 +203,7 @@ const Proposition = ({
         loading={loading}
         assigned={assigned}
         isReserved={isReserved}
+        proposedWobj={proposedWobj}
       />
       <Modal
         closable

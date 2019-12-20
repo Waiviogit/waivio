@@ -1,4 +1,4 @@
-export default localizer => ({
+export default (localizer, objectData) => ({
   seekHonestReviews: localizer('rewards_details_seek_honest_reviews', 'We seek honest reviews'),
   rewardReviews: localizer('rewards_details_reward_for_reviews', 'Reward for reviews'),
   earn: localizer('rewards_details_earn', 'Earn'),
@@ -25,14 +25,23 @@ export default localizer => ({
     'Minimum number of followers',
   ),
   minimumNumberPosts: localizer('rewards_details_minimum_number_posts', 'Minimum number of posts'),
-  receivedRewardReviewing: localizer(
-    'rewards_details_received_reward_reviewing',
-    'Have not received a reward from @[campaign sponsor] for reviewing [primary object] in the last [frequency days] days and does not have an active reservation for such a reward at the moment.',
+  receivedRewardFrom: localizer(
+    'rewards_details_received_reward_from',
+    'Have not received a reward from',
+  ),
+  forReviewing: localizer('rewards_details_for_reviewing', 'for reviewing'),
+  inTheLast: localizer(
+    'rewards_details_in_the_last',
+    'in the last {frequencyDays} days and does not have an active reservation for such a reward at the moment.',
+    {
+      frequencyDays: objectData.frequency_assign,
+    },
   ),
   accountNotBlacklisted: localizer(
     'rewards_details_account_not_blacklisted',
-    'User account is not blacklisted by @[sponsor] or referenced accounts.',
+    'User account is not blacklisted by ',
   ),
+  referencedAccounts: localizer('rewards_details_referenced_accounts.', 'or referenced accounts.'),
   postRequirements: localizer('rewards_details_post_requirements', 'Post requirements'),
   reviewEligibleAward: localizer(
     'rewards_details_review_eligible_award',
@@ -40,20 +49,16 @@ export default localizer => ({
   ),
   minimumOriginalPhotos: localizer(
     'rewards_details_minimum_original_photos',
-    'Minimum [min. number of photos] original photos of [name of the secondary object];',
+    'Minimum {minPhotos} original photos of',
+    {
+      minPhotos: objectData.requirements.minPhotos,
+    },
   ),
   photoReceipt: localizer(
     'rewards_details_photo_the_receipt',
     'Photo of the receipt (without personal details);',
   ),
-  linkSecondaryObject: localizer(
-    'rewards_details_link_secondary_object',
-    'Link to [name of the secondary object]: [URL of the secondary object]',
-  ),
-  linkPrimaryObject: localizer(
-    'rewards_details_link_primary_object',
-    'Link to [name of primary object]: [URL of the primary object]',
-  ),
+  linkTo: localizer('rewards_details_link_to', 'Link to'),
   additionalRequirements: localizer(
     'rewards_details_additional_requirements',
     'Additional requirements/notes',

@@ -4,8 +4,8 @@ import { Button, Modal, Checkbox } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import Avatar from '../../components/Avatar';
-import './Details.less';
 import detailsData from './detailsData';
+import './Details.less';
 
 const Details = ({
   intl,
@@ -16,12 +16,14 @@ const Details = ({
   reserveOnClickHandler,
   assigned,
   isReserved,
+  proposedWobj,
 }) => {
-  const localizer = (id, defaultMessage) => intl.formatMessage({ id, defaultMessage });
-  const data = detailsData(localizer);
+  const localizer = (id, defaultMessage, variablesData) =>
+    intl.formatMessage({ id, defaultMessage }, variablesData);
+  const messageData = detailsData(localizer, objectDetails);
   return (
     <Modal
-      title={<div className="Details__modal-title">{data.seekHonestReviews}!</div>}
+      title={<div className="Details__modal-title">{messageData.seekHonestReviews}!</div>}
       closable
       onCancel={toggleModal}
       maskClosable={false}
@@ -31,9 +33,9 @@ const Details = ({
       width={768}
     >
       <div className="Details__title-wrap">
-        <div className="Details__title-wrap-name">{data.rewardReviews}</div>
+        <div className="Details__title-wrap-name">{messageData.rewardReviews}</div>
         <div className="Details__title-wrap-data">
-          <span>{data.earn}</span>
+          <span>{messageData.earn}</span>
           <span className="Details__title-wrap-data-colored">
             <span className="fw6">{` ${objectDetails.reward} `}</span>
             <span>STEEM</span>
@@ -51,75 +53,116 @@ const Details = ({
           </Link>
           <Link to={`/@${objectDetails.guide.name}`} title={objectDetails.guide.name}>
             <div className="Details__user-card-username">
-              {objectDetails.guide.alias} ({data.sponsor})
+              {objectDetails.guide.alias} ({messageData.sponsor})
             </div>
             <div className="Details__user-card-username">{`@${objectDetails.guide.name}`}</div>
           </Link>
         </div>
         <div className="Details__total-paid">
-          <div>{data.totalPaid}</div>
+          <div>{messageData.totalPaid}</div>
           <div>{`${objectDetails.guide.total_payed} STEEM`}</div>
         </div>
       </div>
       <div className="Details__text-wrap">
-        <div className="Details__text fw6 mv3">{data.eligibilityRequirements}:</div>
-        <div className="Details__text mv3">{data.eligibilityCriteriaParticipate}</div>
+        <div className="Details__text fw6 mv3">{messageData.eligibilityRequirements}:</div>
+        <div className="Details__text mv3">{messageData.eligibilityCriteriaParticipate}</div>
         <div className="Details__criteria-wrap">
           <div className="Details__criteria-row">
             <Checkbox checked disabled />
-            <div>{data.minimumSteemReputation}:</div>
+            <div>{`${messageData.minimumSteemReputation}: ${objectDetails.userRequirements.minSteemReputation}`}</div>
           </div>
           <div className="Details__criteria-row">
             <Checkbox checked disabled />
-            <div>{data.minimumWaivioExpertise}:</div>
+            <div>{`${messageData.minimumWaivioExpertise}: ${objectDetails.userRequirements.minExpertise}`}</div>
           </div>
           <div className="Details__criteria-row">
             <Checkbox checked disabled />
-            <div>{data.minimumNumberFollowers}:</div>
+            <div>{`${messageData.minimumNumberFollowers}: ${objectDetails.userRequirements.minFollowers}`}</div>
           </div>
           <div className="Details__criteria-row">
             <Checkbox checked disabled />
-            <div>{data.minimumNumberPosts}:</div>
+            <div>{`${messageData.minimumNumberPosts}: ${objectDetails.userRequirements.minPosts}`}</div>
           </div>
           <div className="Details__criteria-row">
             <Checkbox checked disabled />
-            <div>{data.receivedRewardReviewing}</div>
+            <div>
+              {messageData.receivedRewardFrom}
+              <Link to={`/@${objectDetails.guide.name}`}>{` @${objectDetails.guide.name} `}</Link>
+              {messageData.forReviewing}
+              <Link
+                to={`/object/${objectDetails.requiredObject}`}
+              >{` '${objectDetails.requiredObject}' `}</Link>
+              {messageData.inTheLast}
+            </div>
           </div>
           <div className="Details__criteria-row">
             <Checkbox checked disabled />
-            <div>{data.accountNotBlacklisted}</div>
+            <div>
+              {messageData.accountNotBlacklisted}
+              <Link to={`/@${objectDetails.guide.name}`}>{` @${objectDetails.guide.name} `}</Link>
+              {messageData.referencedAccounts}
+            </div>
           </div>
         </div>
-        <div className="Details__text fw6 mv3">{data.postRequirements}</div>
-        <div className="Details__text mv3">{data.reviewEligibleAward}</div>
+        <div className="Details__text fw6 mv3">{messageData.postRequirements}</div>
+        <div className="Details__text mv3">{messageData.reviewEligibleAward}</div>
         <div className="Details__criteria-wrap">
-          <div className="Details__criteria-row">1. {data.minimumOriginalPhotos}</div>
-          <div className="Details__criteria-row">2. {data.photoReceipt}</div>
-          <div className="Details__criteria-row">3. {data.linkSecondaryObject}</div>
-          <div className="Details__criteria-row">4. {data.linkPrimaryObject}</div>
-          <div className="Details__criteria-row">5. {data.additionalRequirements}</div>
+          <div className="Details__criteria-row">
+            {`1. ${messageData.minimumOriginalPhotos} `}
+            <Link className="ml1" to={`/object/${proposedWobj.name}`}>
+              {proposedWobj.name}
+            </Link>
+            ;
+          </div>
+          <div className="Details__criteria-row">{`2. ${messageData.photoReceipt}`}</div>
+          <div className="Details__criteria-row">
+            {`3. ${messageData.linkTo}`}
+            <Link className="ml1" to={`/object/${proposedWobj.name}`}>
+              {proposedWobj.name}
+            </Link>
+            :
+            <Link
+              className="ml1"
+              to={`/object/${proposedWobj.name}`}
+            >{`www.waivio.com/object/${proposedWobj.name}`}</Link>
+          </div>
+          <div className="Details__criteria-row">
+            {`4. ${messageData.linkTo}`}
+            <Link className="ml1" to={`/object/${objectDetails.requiredObject}`}>
+              {objectDetails.requiredObject}
+            </Link>
+            :
+            <Link
+              className="ml1"
+              to={`/object/${objectDetails.requiredObject}`}
+            >{`www.waivio.com/object/${objectDetails.requiredObject}`}</Link>
+          </div>
+          <div className="Details__criteria-row">
+            {objectDetails.description &&
+              `5. ${messageData.additionalRequirements}: ${objectDetails.description}`}
+          </div>
         </div>
-        <div className="Details__text mv3">{data.sponsorReservesPayment}</div>
+        <div className="Details__text mv3">{messageData.sponsorReservesPayment}</div>
 
-        <div className="Details__text fw6 mv3">{data.reward}:</div>
-        <span>{data.amountRewardDetermined}</span>
+        <div className="Details__text fw6 mv3">{messageData.reward}:</div>
+        <span>{messageData.amountRewardDetermined}</span>
 
         <div className="Details__text fw6 mv3">Legal:</div>
-        <span>{data.legalAgreementHighlights}</span>
+        <span>{messageData.legalAgreementHighlights}</span>
       </div>
       <div className="Details__footer">
         <div className="Details__footer-reserve-btn">
-          <Button onClick={toggleModal}>{data.cancel}</Button>
+          <Button onClick={toggleModal}>{messageData.cancel}</Button>
           <Button
             type="primary"
             loading={loading}
             disabled={!(assigned !== null && !assigned && !isReserved) || loading}
             onClick={reserveOnClickHandler}
           >
-            {data.reserve}
+            {messageData.reserve}
           </Button>
           {objectDetails.count_reservation_days &&
-            `${data.forDays} ${objectDetails.count_reservation_days} ${data.days}`}
+            `${messageData.forDays} ${objectDetails.count_reservation_days} ${messageData.days}`}
         </div>
       </div>
     </Modal>
@@ -135,5 +178,6 @@ Details.propTypes = {
   reserveOnClickHandler: PropTypes.func.isRequired,
   assigned: PropTypes.bool.isRequired,
   isReserved: PropTypes.bool.isRequired,
+  proposedWobj: PropTypes.shape().isRequired,
 };
 export default injectIntl(Details);
