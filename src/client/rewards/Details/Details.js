@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Button, Modal, Checkbox } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
 import Avatar from '../../components/Avatar';
 import detailsData from './detailsData';
 import './Details.less';
@@ -91,7 +92,7 @@ const Details = ({
               {messageData.forReviewing}
               <Link
                 to={`/object/${objectDetails.requiredObject}`}
-              >{` '${objectDetails.requiredObject}' `}</Link>
+              >{` ${objectDetails.requiredObject} `}</Link>
               {messageData.inTheLast}
             </div>
           </div>
@@ -143,12 +144,36 @@ const Details = ({
           </div>
         </div>
         <div className="Details__text mv3">{messageData.sponsorReservesPayment}</div>
-
         <div className="Details__text fw6 mv3">{messageData.reward}:</div>
-        <span>{messageData.amountRewardDetermined}</span>
+        <span>
+          {messageData.amountRewardDetermined}(
+          <Link to={`/object/${objectDetails.requiredObject}`}>{objectDetails.requiredObject}</Link>
+          {!isEmpty(objectDetails.match_bots) &&
+            objectDetails.match_bots.map(bot => (
+              <React.Fragment>
+                ,
+                <Link className="ml1" to={`/object/${bot}`}>
+                  {`www.waivio.com/object/${bot}`}
+                </Link>
+              </React.Fragment>
+            ))}
+          ){messageData.countTowardsPaymentRewards}
+        </span>
 
-        <div className="Details__text fw6 mv3">Legal:</div>
-        <span>{messageData.legalAgreementHighlights}</span>
+        <div className="Details__text fw6 mv3">{messageData.legal}:</div>
+        <span>
+          {messageData.makingReservation}
+          <Link className="ml1" to="/object/xrj-terms-and-conditions/page">
+            {messageData.legalTermsAndConditions}
+          </Link>
+          {!isEmpty(objectDetails.agreementObjects) && ` ${messageData.includingTheFollowing}`}
+          {!isEmpty(objectDetails.agreementObjects) &&
+            objectDetails.agreementObjects.map(obj => (
+              <Link className="ml1" to={`/object/${obj}/page`}>
+                {obj}
+              </Link>
+            ))}
+        </span>
       </div>
       <div className="Details__footer">
         <div className="Details__footer-reserve-btn">

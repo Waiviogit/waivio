@@ -70,11 +70,24 @@ export default (localizer, objectData) => ({
   reward: localizer('rewards_details_reward', 'Reward'),
   amountRewardDetermined: localizer(
     'rewards_details_amount_reward_determined',
-    'The amount of the reward is determined in STEEM at the time of reservation. The reward will be paid in the form of a combination of upvotes (Steem Power) and direct payments (liquid STEEM). Only upvotes from registered accounts (@[sponsor], @[registered match bots]) count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.',
+    'The amount of the reward is determined in STEEM at the time of reservation. The reward will be paid in the form of a combination of upvotes (Steem Power) and direct payments (liquid STEEM). Only upvotes from registered accounts',
   ),
-  legalAgreementHighlights: localizer(
-    'rewards_details_legal_agreement_highlights',
-    'By making the reservation, you confirm that you have read and agree to the Terms and Conditions of the Service Agreement, including the following: Legal highlights: legal agreement highlights.',
+  countTowardsPaymentRewards: localizer(
+    'rewards_details_count_towards_payment_rewards',
+    'count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.',
+  ),
+  legal: localizer('rewards_details_legal', 'Legal'),
+  makingReservation: localizer(
+    'rewards_details_making_reservation',
+    'By making the reservation, you confirm that you have read and agree to the',
+  ),
+  legalTermsAndConditions: localizer(
+    'rewards_details_legal_terms_and_conditions',
+    'Terms and Conditions of the Service Agreement',
+  ),
+  includingTheFollowing: localizer(
+    'rewards_details_including_the_following',
+    'including the following: Legal highlights:',
   ),
   cancel: localizer('cancel', 'Cancel'),
   reserve: localizer('reserve', 'Reserve'),
