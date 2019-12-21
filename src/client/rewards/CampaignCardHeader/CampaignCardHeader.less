@@ -1,0 +1,41 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.CampaignCardHeader {
+  display: flex;
+  font-size: 20px;
+  justify-content: space-between;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid @blue-hawkesBlue;
+
+  &__name {
+    font-weight: 600;
+  }
+
+  &__data {
+    &-colored {
+      color: @orange-hot;
+    }
+  }
+
+  &__user-info {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__user-card {
+    display: flex;
+    align-items: center;
+
+    &-username {
+      margin-left: 10px;
+      font-weight: 500;
+      color: @blue-botticelli;
+    }
+
+    &-total-paid {
+      font-weight: 500;
+      color: @blue-botticelli;
+    }
+  }
+}

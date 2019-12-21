@@ -4,9 +4,9 @@ import { Button, Modal, Checkbox } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
-import Avatar from '../../components/Avatar';
 import detailsData from './detailsData';
 import './Details.less';
+import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
 
 const Details = ({
   intl,
@@ -33,37 +33,7 @@ const Details = ({
       footer={null}
       width={768}
     >
-      <div className="Details__title-wrap">
-        <div className="Details__title-wrap-name">{messageData.rewardReviews}</div>
-        <div className="Details__title-wrap-data">
-          <span>{messageData.earn}</span>
-          <span className="Details__title-wrap-data-colored">
-            <span className="fw6">{` ${objectDetails.reward} `}</span>
-            <span>STEEM</span>
-          </span>
-          <span>
-            {' '}
-            (<span className="fw6">{`${objectDetails.reward}`}</span> USD)
-          </span>
-        </div>
-      </div>
-      <div className="Details__user-info">
-        <div className="Details__user-card">
-          <Link to={`/@${objectDetails.guide.name}`}>
-            <Avatar username={objectDetails.guide.name} size={34} />
-          </Link>
-          <Link to={`/@${objectDetails.guide.name}`} title={objectDetails.guide.name}>
-            <div className="Details__user-card-username">
-              {objectDetails.guide.alias} ({messageData.sponsor})
-            </div>
-            <div className="Details__user-card-username">{`@${objectDetails.guide.name}`}</div>
-          </Link>
-        </div>
-        <div className="Details__total-paid">
-          <div>{messageData.totalPaid}</div>
-          <div>{`${objectDetails.guide.total_payed} STEEM`}</div>
-        </div>
-      </div>
+      <CampaignCardHeader campaignData={objectDetails} />
       <div className="Details__text-wrap">
         <div className="Details__text fw6 mv3">{messageData.eligibilityRequirements}:</div>
         <div className="Details__text mv3">{messageData.eligibilityCriteriaParticipate}</div>
