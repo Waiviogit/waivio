@@ -181,7 +181,11 @@ const Details = ({
           <Button
             type="primary"
             loading={loading}
-            disabled={!(assigned !== null && !assigned && !isReserved) || loading}
+            disabled={
+              !(assigned !== null && !assigned && !isReserved) ||
+              loading ||
+              objectDetails.isReservedSiblingObj
+            }
             onClick={reserveOnClickHandler}
           >
             {messageData.reserve}

@@ -169,7 +169,7 @@ const Proposition = ({
                   type="primary"
                   loading={loading}
                   disabled={loading || proposition.isReservedSiblingObj}
-                  onClick={reserveOnClickHandler}
+                  onClick={toggleModalDetails}
                 >
                   {intl.formatMessage({
                     id: 'reserve',
