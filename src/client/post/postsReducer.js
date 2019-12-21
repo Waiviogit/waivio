@@ -188,6 +188,14 @@ const posts = (state = initialState, action) => {
         ...state,
         list: getPostsList(state.list, action),
       };
+    case 'FAKE_LIKE_POST_SUCCESS': {
+      const updatedPost = { ...state.list[action.meta.postPermlink] };
+      updatedPost.active_votes.push(action.meta);
+      return {
+        ...state,
+        list: { ...state.list, updatedPost },
+      };
+    }
     default:
       return state;
   }

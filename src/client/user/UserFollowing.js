@@ -8,17 +8,19 @@ import UserDynamicList from './UserDynamicList';
 import { getWobjectFollowing } from '../../waivioApi/ApiClient';
 import ObjectDynamicList from '../object/ObjectDynamicList';
 import './UserFollowing.less';
-import { getUser } from '../reducers';
+import { getUser, isGuestUser } from '../reducers';
 
 const TabPane = Tabs.TabPane;
 
 @connect((state, ownProps) => ({
   user: getUser(state, ownProps.match.params.name),
+  isGuest: isGuestUser(state),
 }))
 export default class UserFollowing extends React.Component {
   static propTypes = {
     user: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
+    isGuest: PropTypes.bool.isRequired,
   };
 
   static limit = 50;
@@ -35,9 +37,13 @@ export default class UserFollowing extends React.Component {
       previous[previous.length - 1] && previous[previous.length - 1].name
         ? previous[previous.length - 1].name
         : '';
-    return getFollowing(match.params.name, startFrom, 'blog', UserFollowing.limit).then(
-      followings => followings.map(following => ({ name: following })),
-    );
+    return getFollowing(
+      match.params.name,
+      startFrom,
+      'blog',
+      UserFollowing.limit,
+      this.props.isGuest,
+    ).then(followings => followings.map(following => ({ name: following })));
   }
 
   objectFetcher = skip => {

@@ -90,3 +90,4 @@ export const getAuthenticatedUserAvatar = state => {
   }
   return undefined;
 };
+export const isGuestUser = state => state.isGuestUser;

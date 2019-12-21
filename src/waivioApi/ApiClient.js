@@ -707,7 +707,7 @@ export const updateUserMetadata = (userName, data) => {
   } else {
     headers = { ...headers, 'access-token': Cookie.get('access_token') };
   }
-  fetch(`${config.apiPrefix}${config.user}/${userName}${config.userMetadata}`, {
+  return fetch(`${config.apiPrefix}${config.user}/${userName}${config.userMetadata}`, {
     headers,
     method: 'PUT',
     body: JSON.stringify({ user_metadata: data }),
@@ -788,6 +788,12 @@ export const broadcastGuestOperation = async (operationId, data) => {
   }).then(data => console.log('\t> > > ', data));
 };
 //endregion
+
+export const getFollowingUsers = async username => {
+  return fetch(`${config.apiPrefix}${config.user}/${username}`)
+    .then(res => res.json())
+    .then(data => data.users_follow);
+};
 
 // injected as extra argument in Redux Thunk
 export const waivioAPI = {

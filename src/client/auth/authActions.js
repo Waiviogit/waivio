@@ -32,9 +32,10 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
 
   let promise = Promise.resolve(null);
 
-  let token = null;
+  let isGuest = null;
   if (typeof localStorage !== 'undefined') {
-    token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem('accessToken');
+    isGuest = token === 'null' ? false : Boolean(token);
   }
 
   if (getIsLoaded(state)) {
@@ -49,16 +50,15 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         reject(e);
       }
     });
-  } else if (!steemConnectAPI.options.accessToken && !token) {
+  } else if (!steemConnectAPI.options.accessToken && !isGuest) {
     promise = Promise.reject(new Error('There is not accessToken present'));
-  } else if (token || steemConnectAPI.options.accessToken) {
+  } else if (isGuest || steemConnectAPI.options.accessToken) {
     promise = new Promise(async (resolve, reject) => {
       try {
         const scUserData = await steemConnectAPI.me();
         console.log(scUserData);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
-        const isGuestUser = Boolean(token);
-        resolve({ ...scUserData, userMetaData, isGuestUser });
+        resolve({ ...scUserData, userMetaData, isGuestUser: isGuest });
       } catch (e) {
         reject(e);
       }

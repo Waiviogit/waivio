@@ -5,12 +5,20 @@ import { getAuthenticatedUserName } from '../reducers';
 
 export const GET_ACCOUNT = createAsyncActionType('@users/GET_ACCOUNT');
 
-export const getAccount = name => dispatch =>
+export const getAccount = name => dispatch => {
+  let isGuest = null;
+
+  if (typeof localStorage !== 'undefined') {
+    const token = localStorage.getItem('accessToken');
+    isGuest = token === 'null' ? false : Boolean(token);
+  }
+
   dispatch({
     type: GET_ACCOUNT.ACTION,
-    payload: getAccountWithFollowingCountAPI(name),
+    payload: getAccountWithFollowingCountAPI(name, isGuest),
     meta: { username: name },
   }).catch(() => {});
+};
 
 export const getUserAccount = name => dispatch =>
   dispatch({

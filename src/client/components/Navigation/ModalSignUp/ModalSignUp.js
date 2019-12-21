@@ -27,27 +27,30 @@ const ModalSignUp = ({ isButton, form }) => {
   } = form;
 
   const responseGoogle = async response => {
-    console.log(response);
-    const res = await isUserRegistered(response.googleId, 'google');
-    if (res) {
-      dispatch(login(response.accessToken, 'google'));
-    } else {
-      setFieldsValue({
-        username: getSlug(`${response.profileObj.givenName} ${response.profileObj.familyName}`),
-      });
-      setUserData({ ...response, socialNetwork: 'google' });
+    if (response) {
+      const res = await isUserRegistered(response.googleId, 'google');
+      if (res) {
+        dispatch(login(response.accessToken, 'google'));
+      } else {
+        setFieldsValue({
+          username: getSlug(`${response.profileObj.givenName} ${response.profileObj.familyName}`),
+        });
+        setUserData({ ...response, socialNetwork: 'google' });
+      }
     }
   };
 
   const responseFacebook = async response => {
-    const res = await isUserRegistered(response.id, 'facebook');
-    if (res) {
-      dispatch(login(response.accessToken, 'facebook'));
-    } else {
-      setFieldsValue({
-        username: getSlug(response.name),
-      });
-      setUserData({ ...response, socialNetwork: 'facebook' });
+    if (response) {
+      const res = await isUserRegistered(response.id, 'facebook');
+      if (res) {
+        dispatch(login(response.accessToken, 'facebook'));
+      } else {
+        setFieldsValue({
+          username: getSlug(response.name),
+        });
+        setUserData({ ...response, socialNetwork: 'facebook' });
+      }
     }
   };
 
@@ -159,7 +162,7 @@ const ModalSignUp = ({ isButton, form }) => {
             <GoogleLogin
               clientId="623736583769-qlg46kt2o7gc4kjd2l90nscitf38vl5t.apps.googleusercontent.com"
               onSuccess={responseGoogle}
-              onFailure={responseGoogle}
+              // onFailure={responseGoogle}
               cookiePolicy={'single_host_origin'}
               className="ModalSignUp__social-btn"
             />
@@ -168,6 +171,7 @@ const ModalSignUp = ({ isButton, form }) => {
               autoLoad={false}
               fields="name,email,picture"
               callback={responseFacebook}
+              onFailure={() => {}}
               textButton="Sign In with Facebook"
               cssClass="ModalSignUp__social-btn ModalSignUp__social-btn--fb"
               icon={<Icon type="facebook" className="ModalSignUp__icon-fb" />}
