@@ -105,7 +105,7 @@ const Details = ({
             </div>
           </div>
         </div>
-        <div className="Details__text fw6 mv3">{messageData.postRequirements}</div>
+        <div className="Details__text fw6 mv3">{messageData.postRequirements}:</div>
         <div className="Details__text mv3">{messageData.reviewEligibleAward}</div>
         <div className="Details__criteria-wrap">
           <div className="Details__criteria-row">
