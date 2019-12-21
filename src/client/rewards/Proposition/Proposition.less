@@ -6,8 +6,15 @@
 .Proposition {
   margin-bottom: @wrapPadding;
   background-color: @white;
+  border: 2px solid @orange-hot;
+  border-radius: 4px;
 
   .RewardsHeader {
+    &-block {
+      border: 0 !important;
+      border-radius: 4px 4px 0 0 !important;
+    }
+
     &-wrap {
       border-radius: 0;
       margin-bottom: 15px;
