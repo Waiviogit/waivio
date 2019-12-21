@@ -18,6 +18,7 @@ import { generatePermlink } from '../../helpers/wObjectHelper';
 import { UsedLocaleContext } from '../../Wrapper';
 import './Proposition.less';
 import Details from '../Details/Details';
+import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
 
 const Proposition = ({
   intl,
@@ -119,36 +120,7 @@ const Proposition = ({
   return (
     <div className="Proposition">
       <div className="RewardsHeader-block">
-        <div className="RewardsHeader-wrap">
-          {`${intl.formatMessage({
-            id: 'rewards_for_review',
-            defaultMessage: `Reward for review`,
-          })}:`}
-          <span className="RewardsHeader-payment">{`${proposition.reward} STEEM`}</span>
-        </div>
-        <div className="RewardsHeader-wrap-second">
-          <div className="RewardsHeader__user-card">
-            <Link to={`/@${proposition.guide.name}`}>
-              <Avatar username={proposition.guide.name} size={34} />
-            </Link>
-            <Link to={`/@${proposition.guide.name}`} title={proposition.guide.name}>
-              <div className="RewardsHeader__user-card-alias">
-                {proposition.guide.alias} (
-                {intl.formatMessage({
-                  id: 'sponsor',
-                  defaultMessage: `Sponsor`,
-                })}
-                )
-              </div>
-              <div className="RewardsHeader__user-card-username">{`@${
-                proposition.guide.name
-              } (${intl.formatMessage({
-                id: 'paid',
-                defaultMessage: `Total paid`,
-              })} ${proposition.guide.total_payed} STEEM)`}</div>
-            </Link>
-          </div>
-        </div>
+        <CampaignCardHeader campaignData={proposition} />
       </div>
       <ObjectCardView wObject={proposedWobj} key={proposedWobj.id} />
       <div className="RewardsFooter-wrap">

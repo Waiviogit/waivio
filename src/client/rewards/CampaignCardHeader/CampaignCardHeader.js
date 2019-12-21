@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import Avatar from '../../components/Avatar';
 import './CampaignCardHeader.less';
 
-const CampaignCardHeader = ({ intl, campaignData }) => (
+const CampaignCardHeader = ({ intl, campaignData, isDetails }) => (
   <React.Fragment>
     <div className="CampaignCardHeader">
       <div className="CampaignCardHeader__name">
@@ -21,14 +21,25 @@ const CampaignCardHeader = ({ intl, campaignData }) => (
             defaultMessage: 'Earn',
           })}
         </span>
-        <span className="CampaignCardHeader__data-colored">
-          <span className="fw6">{` ${campaignData.reward} `}</span>
-          <span>STEEM</span>
-        </span>
-        <span>
-          {' '}
-          (<span className="fw6">{`${campaignData.reward}`}</span> USD)
-        </span>
+        {!isDetails ? (
+          <React.Fragment>
+            <span className="CampaignCardHeader__data-colored">
+              <span className="fw6">{` ${campaignData.reward} `}</span>
+              <span>USD</span>
+            </span>
+          </React.Fragment>
+        ) : (
+          <React.Fragment>
+            <span className="CampaignCardHeader__data-colored">
+              <span className="fw6">{` ${campaignData.reward} `}</span>
+              <span>STEEM</span>
+            </span>
+            <span>
+              {' '}
+              (<span className="fw6">{campaignData.reward}</span> USD)
+            </span>
+          </React.Fragment>
+        )}
       </div>
     </div>
     <div className="CampaignCardHeader__user-info">
@@ -55,6 +66,10 @@ const CampaignCardHeader = ({ intl, campaignData }) => (
 CampaignCardHeader.propTypes = {
   intl: PropTypes.shape().isRequired,
   campaignData: PropTypes.shape().isRequired,
+  isDetails: PropTypes.bool,
+};
+CampaignCardHeader.defaultProps = {
+  isDetails: false,
 };
 
 export default injectIntl(CampaignCardHeader);

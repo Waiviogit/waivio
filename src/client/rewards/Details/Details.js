@@ -33,7 +33,7 @@ const Details = ({
       footer={null}
       width={768}
     >
-      <CampaignCardHeader campaignData={objectDetails} />
+      <CampaignCardHeader campaignData={objectDetails} isDetails />
       <div className="Details__text-wrap">
         <div className="Details__text fw6 mv3">{messageData.eligibilityRequirements}:</div>
         <div className="Details__text mv3">{messageData.eligibilityCriteriaParticipate}</div>
