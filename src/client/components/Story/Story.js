@@ -11,7 +11,7 @@ import {
 import { Link, withRouter } from 'react-router-dom';
 import { Tag } from 'antd';
 import formatter from '../../helpers/steemitFormatter';
-import { isValidForecast } from '../../helpers/forecastHelper';
+import { getForecastData } from '../../helpers/forecastHelper';
 import {
   isPostDeleted,
   isPostTaggedNSFW,
@@ -29,7 +29,6 @@ import DMCARemovedMessage from './DMCARemovedMessage';
 import PostChart from '../../../investarena/components/PostChart';
 import PostQuotation from '../../../investarena/components/PostQuotation';
 import PostSellBuy from '../../../investarena/components/PostSellBuy';
-import { jsonParse } from '../../helpers/formatter';
 import PostForecast from '../../../investarena/components/PostForecast';
 import ObjectAvatar from '../ObjectAvatar';
 import PostedFrom from './PostedFrom';
@@ -377,18 +376,24 @@ class Story extends React.Component {
       defaultVotePercent,
     } = this.props;
     const isEnoughtData = !_.isEmpty(post) && !_.isEmpty(postState);
+    const {
+      predictedEndDate,
+      quoteSecurity,
+      postPrice,
+      createdAt,
+      buyOrSell,
+      tpPrice,
+      slPrice,
+      isForecastExpired,
+      // expiredBars,
+      finalQuote,
+      expiredAt,
+      profitability,
+      isForecastValid,
+    } = getForecastData(post);
     let rebloggedUI = null;
-    let isForecastValid = false;
-    let isForecastExpired = false;
-    let forecast = null;
 
     if (isEnoughtData) {
-      const jsonMetadata = jsonParse(post.json_metadata);
-      forecast = _.get(jsonMetadata, 'wia', null);
-      if (forecast && !_.isEmpty(post.forecast)) {
-        isForecastValid = isValidForecast(forecast);
-        isForecastExpired = !_.isEmpty(post.exp_forecast);
-      }
       if (!post || isPostDeleted(post)) return <div />;
 
       if (post.reblogged_by && post.reblogged_by.length > 0) {
@@ -453,10 +458,10 @@ class Story extends React.Component {
             {isForecastValid ? (
               <div className="Story__forecast">
                 <PostForecast
-                  quoteSecurity={forecast.quoteSecurity}
-                  postForecast={forecast.expiredAt}
+                  quoteSecurity={quoteSecurity}
+                  postForecast={predictedEndDate}
                   isExpired={isForecastExpired}
-                  expiredAt={forecast.expiredAt}
+                  expiredAt={expiredAt}
                 />
               </div>
             ) : (
@@ -472,11 +477,12 @@ class Story extends React.Component {
           {isForecastValid && (
             <PostSellBuy
               isExpired={isForecastExpired}
-              quoteSecurity={forecast.quoteSecurity}
-              postPrice={forecast.postPrice ? forecast.postPrice.toString() : 0}
-              forecast={forecast.expiredAt}
-              recommend={forecast.recommend}
-              profitability={isForecastExpired ? post.exp_forecast.profitability : 0}
+              finalQuote={finalQuote}
+              quoteSecurity={quoteSecurity}
+              postPrice={postPrice ? postPrice.toString() : 0}
+              forecast={predictedEndDate}
+              recommend={buyOrSell}
+              profitability={profitability}
             />
           )}
           <div className="Story__content">
@@ -509,21 +515,20 @@ class Story extends React.Component {
           <div className="Story__footer">
             {isForecastValid && (
               <PostChart
-                quoteSecurity={forecast.quoteSecurity}
-                createdAt={forecast.createdAt}
-                forecast={forecast.expiredAt}
-                recommend={forecast.recommend}
+                quoteSecurity={quoteSecurity}
+                createdAt={createdAt}
+                forecast={predictedEndDate}
+                recommend={buyOrSell}
                 toggleModalPost={() => {}}
-                tpPrice={forecast.tpPrice ? forecast.tpPrice.toString() : null}
-                slPrice={forecast.slPrice ? forecast.slPrice.toString() : null}
+                tpPrice={tpPrice}
+                slPrice={slPrice}
                 expForecast={post.exp_forecast}
-                expiredAt={_.get(post, ['exp_forecast', 'expiredAt'], forecast.expiredAt)}
+                expiredAt={expiredAt}
               />
             )}
-            {forecast && isForecastValid && (
+            {isForecastValid && (
               <PostQuotation
-                quoteSecurity={forecast.quoteSecurity}
-                postId={forecast.postId}
+                quoteSecurity={quoteSecurity}
                 caller="od-pm"
               />
             )}

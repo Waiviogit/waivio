@@ -52,13 +52,14 @@ const defaultProps = {
 class PostChart extends Component {
   constructor(props) {
     super(props);
+    const timeScale = get(
+      props.expForecast,
+      ['rate', 'quote', 'timeScale'],
+      CanvasHelper.getTimeScale(this.props.createdAt, this.props.forecast),
+    );
     this.state = {
       isLoading: true,
-      timeScale: get(
-        props.expForecast,
-        ['rate', 'quote', 'timeScale'],
-        CanvasHelper.getTimeScale(this.props.createdAt, this.props.forecast),
-      ).toUpperCase(),
+      timeScale: timeScale ? timeScale.toUpperCase() : 'MINUTE',
       chartType: 'Line',
       priceType: props.recommend,
       expired: !!props.expForecast || this.isExpiredByTime(),
