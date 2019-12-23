@@ -5,9 +5,37 @@
 
 .Proposition {
   margin-bottom: @wrapPadding;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+
+  &__header {
+    border: 2px solid @orange-hot;
+    border-bottom: 0;
+    border-radius: 4px 4px 0 0;
+    padding: @wrapPadding;
+    margin: 0 @wrapPadding;
+  }
+
+  &__footer {
+    border: 2px solid @orange-hot;
+    border-radius: 0 0 4px 4px;
+    border-top: 0;
+    background-color: @white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: @wrapPadding;
+    margin: 0 @wrapPadding;
+
+    .anticon {
+      font-size: 26px;
+      margin-right: 5px;
+    }
+
+    &-button {
+      button {
+        margin-right: @wrapPadding;
+      }
+    }
+  }
 
   &__wrap {
     width: 95%;
@@ -19,26 +47,15 @@
   &__card {
     position: relative;
     width: 100%;
-    bottom: 215px;
 
     .ObjectCardView {
       box-shadow: 2px 2px 8px -2px @blue-botticelli;
       overflow: hidden;
       background-color: @white;
-      &__name-truncated {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
     }
   }
 
   .RewardsHeader {
-    &-block {
-      border: 0 !important;
-      border-radius: 4px 4px 0 0 !important;
-    }
-
     &-wrap {
       border-radius: 0;
       margin-bottom: 15px;
@@ -77,13 +94,6 @@
     font-weight: bold;
   }
 
-  &__header {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
-  }
-
   &__author {
     display: flex;
     width: 50%;
@@ -98,14 +108,6 @@
 
   &__author-title {
     margin-right: @wrapPadding;
-  }
-
-  &__footer {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: @wrapPadding;
   }
 
   &__object-line {
