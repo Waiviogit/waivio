@@ -188,13 +188,26 @@ const posts = (state = initialState, action) => {
         ...state,
         list: getPostsList(state.list, action),
       };
-    case 'FAKE_LIKE_POST_SUCCESS': {
-      const updatedPost = { ...state.list[action.meta.postPermlink] };
-      updatedPost.active_votes.push(action.meta);
+    case postsActions.FAKE_LIKE_POST_START:
       return {
         ...state,
-        list: { ...state.list, updatedPost },
+        pendingLikes: { ...state.pendingLikes, [action.meta.postId]: action.meta },
       };
+    case postsActions.FAKE_LIKE_POST_SUCCESS: {
+      if (action.payload.isFakeLikeOk) {
+        const updatedPost = { ...state.list[action.meta.postPermlink] };
+
+        updatedPost.active_votes = updatedPost.active_votes.filter(
+          vote => vote.voter !== action.meta.voter,
+        );
+        updatedPost.active_votes.push(action.meta);
+        return {
+          ...state,
+          list: { ...state.list, [action.meta.postPermlink]: updatedPost },
+          pendingLikes: {},
+        };
+      }
+      return state;
     }
     default:
       return state;

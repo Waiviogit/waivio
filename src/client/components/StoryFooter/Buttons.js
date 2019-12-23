@@ -62,6 +62,7 @@ export default class Buttons extends React.Component {
       reactionsModalVisible: false,
       loadingEdit: false,
       upVotes: getUpvotes(this.props.post.active_votes),
+      downVotes: getDownvotes(this.props.post.active_votes),
     };
 
     this.handleLikeClick = this.handleLikeClick.bind(this);
@@ -87,6 +88,7 @@ export default class Buttons extends React.Component {
     }
     this.setState({
       upVotes: getUpvotes(nextProps.post.active_votes),
+      downVotes: getDownvotes(nextProps.post.active_votes),
     });
   }
 
@@ -258,12 +260,8 @@ export default class Buttons extends React.Component {
 
     const isAppend = !!this.props.post.append_field_name;
 
-    const { upVotes } = this.state;
-    const downVotes = getDownvotes(post.active_votes)
-      .sort(sortVotes)
-      .reverse();
-    console.log('upvotes', upVotes.length);
-    console.log('post', post.active_votes.length);
+    const upVotes = this.state.upVotes.sort(sortVotes);
+    const downVotes = this.state.downVotes.sort(sortVotes).reverse();
 
     const totalPayout =
       parseFloat(post.pending_payout_value) +

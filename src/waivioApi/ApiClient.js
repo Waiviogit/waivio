@@ -785,7 +785,7 @@ export const broadcastGuestOperation = async (operationId, data) => {
       data: { operations: data },
       userName: userData.userData.name,
     }),
-  }).then(data => console.log('\t> > > ', data));
+  }).then(data => data);
 };
 //endregion
 
