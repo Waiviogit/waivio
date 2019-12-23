@@ -56,7 +56,7 @@ const MatchBot = ({ intl, userName }) => {
     if (userName) {
       getMatchBotRules(userName).then(data => {
         setRules(data);
-        setMinVotingPower(80);
+        setMinVotingPower(80); // TODO: change setting value when backend will ready
       });
     }
   }, []);
@@ -87,6 +87,7 @@ const MatchBot = ({ intl, userName }) => {
     dispatch(setMatchBotVotingPower(preparedSliderValue)).then(() => {
       setLoaded(false);
       handleOpenVoteModal();
+      setMinVotingPower(sliderValue);
       message.success(
         intl.formatMessage({
           id: 'match_bot_success_min_voted_changed',

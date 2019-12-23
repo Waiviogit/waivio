@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { message, Modal } from 'antd';
+import { message } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -7,7 +7,6 @@ import { withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
-import { Link } from 'react-router-dom';
 import _, { isEmpty, map } from 'lodash';
 import {
   getAuthenticatedUser,
@@ -31,7 +30,6 @@ import * as ApiClient from '../../waivioApi/ApiClient';
 import { preparePropositionReqData } from './rewardsHelper';
 import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
-import Avatar from '../components/Avatar';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import './Rewards.less';
@@ -80,7 +78,6 @@ class Rewards extends React.Component {
     radius: 50000000,
     coordinates: [],
     campaignsTypes: [],
-    isModalDetailsOpen: false,
     objectDetails: {},
     activeFilters: { guideNames: [], types: [] },
     activePayableFilters: [],
@@ -268,13 +265,6 @@ class Rewards extends React.Component {
     return newPropos;
   };
 
-  toggleModal = proposition => {
-    this.setState({
-      isModalDetailsOpen: !this.state.isModalDetailsOpen,
-      objectDetails: !this.state.isModalDetailsOpen ? proposition : {},
-    });
-  };
-
   discardProposition = ({
     companyAuthor,
     companyPermlink,
@@ -318,7 +308,7 @@ class Rewards extends React.Component {
   // END Propositions
 
   campaignsLayoutWrapLayout = (IsRequiredObjectWrap, filterKey, userName) => {
-    const { propositions, isModalDetailsOpen, loadingAssignDiscard } = this.state;
+    const { propositions, loadingAssignDiscard } = this.state;
     const { intl } = this.props;
     if (_.size(propositions) !== 0) {
       if (IsRequiredObjectWrap) {
@@ -353,8 +343,6 @@ class Rewards extends React.Component {
                 authorizedUserName={userName}
                 loading={loadingAssignDiscard}
                 key={`${wobj.object.author_permlink}`}
-                isModalDetailsOpen={isModalDetailsOpen}
-                toggleModal={this.toggleModal}
                 assigned={wobj.assigned}
               />
             ),
@@ -405,8 +393,6 @@ class Rewards extends React.Component {
     const { location, intl, match, username, cryptosPriceHistory, user } = this.props;
     const {
       sponsors,
-      isModalDetailsOpen,
-      objectDetails,
       campaignsTypes,
       activeFilters,
       isSearchAreaFilter,
@@ -523,62 +509,6 @@ class Rewards extends React.Component {
             </Affix>
           )}
         </div>
-        {isModalDetailsOpen && !_.isEmpty(objectDetails) && (
-          <Modal
-            title={intl.formatMessage({
-              id: 'rewards_details_modal_details',
-              defaultMessage: 'Details',
-            })}
-            closable
-            onCancel={this.toggleModal}
-            maskClosable={false}
-            visible={this.state.isModalDetailsOpen}
-            wrapClassName="Rewards-modal"
-            footer={null}
-          >
-            <div className="Proposition__title">{objectDetails.name}</div>
-            <div className="Proposition__header">
-              <div className="Proposition__-type">{`${intl.formatMessage({
-                id: 'rewards_details_modal_sponsored',
-                defaultMessage: 'Sponsored',
-              })}: ${objectDetails.type === 'reviews' &&
-                intl.formatMessage({
-                  id: 'rewards_details_modal_reviews',
-                  defaultMessage: 'reviews',
-                })}`}</div>
-              <div className="Proposition__reward">{`${intl.formatMessage({
-                id: 'rewards_details_modal_reward',
-                defaultMessage: 'Reward',
-              })}: ${objectDetails.reward} STEEM`}</div>
-            </div>
-            <div className="Proposition__footer">
-              <div className="Proposition__author">
-                <div className="Proposition__author-title">
-                  {intl.formatMessage({
-                    id: 'rewards_details_modal_sponsor',
-                    defaultMessage: 'Sponsor',
-                  })}
-                  :
-                </div>
-                <div className="Rewards-modal__user-card">
-                  <Link to={`/@${objectDetails.guide.name}`}>
-                    <Avatar username={objectDetails.guide.name} size={34} />
-                  </Link>
-                  <Link to={`/@${objectDetails.guide.name}`} title={objectDetails.guide.name}>
-                    <span className="username">{objectDetails.guide.name}</span>
-                  </Link>
-                </div>
-              </div>
-              <div>{`${intl.formatMessage({
-                id: 'rewards_details_modal_paid_rewards',
-                defaultMessage: 'Paid rewards',
-              })}: ${objectDetails.payed} STEEM (${objectDetails.payedPercent}%)`}</div>
-            </div>
-            <div className="Proposition__body">
-              <div className="Proposition__body-description">{objectDetails.description}</div>
-            </div>
-          </Modal>
-        )}
       </div>
     );
   }
