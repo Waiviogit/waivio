@@ -143,11 +143,9 @@ export default class Wobj extends React.Component {
       match,
       wobject,
       albums,
-      screenSize,
     } = this.props;
     if (failed) return <Error404 />;
 
-    const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
     const objectName = wobject.name || wobject.default_name || '';
     const waivioHost = global.postOrigin || 'https://waiviodev.com';
     const desc = `${objectName || ''}`;
@@ -217,16 +215,14 @@ export default class Wobj extends React.Component {
                 </div>
               </Affix>
             )}
-            {!isMobile && (
-              <Affix className="rightContainer" stickPosition={72}>
-                <div className="right">
-                  {wobject.author_permlink && (
-                    <ObjectExpertise username={userName} wobject={wobject} />
-                  )}
-                </div>
-                <div>{wobject.author_permlink && <ObjectsRelated wobject={wobject} />}</div>
-              </Affix>
-            )}
+            <Affix className="rightContainer" stickPosition={72}>
+              <div className="right">
+                {wobject.author_permlink && (
+                  <ObjectExpertise username={userName} wobject={wobject} />
+                )}
+              </div>
+              <div>{wobject.author_permlink && <ObjectsRelated wobject={wobject} />}</div>
+            </Affix>
             <div className="center">
               {renderRoutes(this.props.route.routes, {
                 isEditMode,
