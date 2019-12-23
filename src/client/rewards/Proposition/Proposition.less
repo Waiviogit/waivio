@@ -5,9 +5,28 @@
 
 .Proposition {
   margin-bottom: @wrapPadding;
-  background-color: @white;
-  border: 2px solid @orange-hot;
-  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__wrap {
+    width: 95%;
+    background-color: @white;
+    border: 2px solid @orange-hot;
+    border-radius: 4px;
+  }
+
+  &__card {
+    position: relative;
+    width: 100%;
+    bottom: 215px;
+
+    .ObjectCardView {
+      box-shadow: 2px 2px 8px -2px @blue-botticelli;
+      overflow: hidden;
+      background-color: @white;
+    }
+  }
 
   .RewardsHeader {
     &-block {

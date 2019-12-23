@@ -1,13 +1,11 @@
 /* eslint-disable */
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Button, message, Modal } from 'antd';
-import { Link } from 'react-router-dom';
 import { getClientWObj } from '../../adapters';
 import ObjectCardView from '../../objectCard/ObjectCardView';
-import Avatar from '../../components/Avatar';
 import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
 import { getSingleComment } from '../../comments/commentsActions';
 import { getCommentContent } from '../../reducers';
@@ -48,6 +46,8 @@ const Proposition = ({
   const toggleModalDetails = () => {
     setModalDetailsOpen(!isModalDetailsOpen);
   };
+
+  const propositionWrap = useRef();
 
   const discardPr = obj => {
     const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
@@ -118,81 +118,88 @@ const Proposition = ({
   };
 
   return (
-    <div className="Proposition">
-      <div className="RewardsHeader-block">
-        <CampaignCardHeader campaignData={proposition} />
+    <div
+      className="Proposition"
+      style={{ height: propositionWrap.current && propositionWrap.current.clientHeight + 4 }}
+    >
+      <div className="Proposition__wrap" ref={propositionWrap}>
+        <div className="RewardsHeader-block">
+          <CampaignCardHeader campaignData={proposition} />
+        </div>
+        <div className="RewardsFooter-wrap">
+          {proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (
+            <CampaignFooter
+              post={post}
+              proposedWobj={proposedWobj}
+              requiredObjectPermlink={proposition.required_object.author_permlink}
+              requiredObjectName={requiredObjectName}
+              discardPr={discardPr}
+              proposition={proposition}
+            />
+          ) : (
+            <React.Fragment>
+              {assigned !== null && !assigned && !isReserved && (
+                <div className="RewardsFooter-button">
+                  <Button
+                    type="primary"
+                    loading={loading}
+                    disabled={loading || proposition.isReservedSiblingObj}
+                    onClick={toggleModalDetails}
+                  >
+                    {intl.formatMessage({
+                      id: 'reserve',
+                      defaultMessage: `Reserve`,
+                    })}
+                  </Button>
+                  {proposition.count_reservation_days &&
+                    `${intl.formatMessage({
+                      id: 'for_days',
+                      defaultMessage: `for`,
+                    })} ${proposition.count_reservation_days} ${intl.formatMessage({
+                      id: 'days',
+                      defaultMessage: `days`,
+                    })}`}
+                </div>
+              )}
+              <a role="presentation" className="RewardsHeader" onClick={toggleModalDetails}>
+                {intl.formatMessage({
+                  id: 'details',
+                  defaultMessage: `Details`,
+                })}
+              </a>
+            </React.Fragment>
+          )}
+        </div>
+        <Details
+          isModalDetailsOpen={isModalDetailsOpen}
+          objectDetails={proposition}
+          toggleModal={toggleModalDetails}
+          reserveOnClickHandler={reserveOnClickHandler}
+          loading={loading}
+          assigned={assigned}
+          isReserved={isReserved}
+          proposedWobj={proposedWobj}
+        />
+        <Modal
+          closable
+          maskClosable={false}
+          title={intl.formatMessage({
+            id: 'reserve_campaign',
+            defaultMessage: `Reserve rewards campaign`,
+          })}
+          visible={isModalOpen}
+          onOk={modalOnOklHandler}
+          onCancel={modalOnCancelHandler}
+        >
+          {intl.formatMessage({
+            id: 'reserve_campaign_accept',
+            defaultMessage: `Do you want to reserve rewards campaign?`,
+          })}
+        </Modal>
       </div>
-      <ObjectCardView wObject={proposedWobj} key={proposedWobj.id} />
-      <div className="RewardsFooter-wrap">
-        {proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (
-          <CampaignFooter
-            post={post}
-            proposedWobj={proposedWobj}
-            requiredObjectPermlink={proposition.required_object.author_permlink}
-            requiredObjectName={requiredObjectName}
-            discardPr={discardPr}
-            proposition={proposition}
-          />
-        ) : (
-          <React.Fragment>
-            {assigned !== null && !assigned && !isReserved && (
-              <div className="RewardsFooter-button">
-                <Button
-                  type="primary"
-                  loading={loading}
-                  disabled={loading || proposition.isReservedSiblingObj}
-                  onClick={toggleModalDetails}
-                >
-                  {intl.formatMessage({
-                    id: 'reserve',
-                    defaultMessage: `Reserve`,
-                  })}
-                </Button>
-                {proposition.count_reservation_days &&
-                  `${intl.formatMessage({
-                    id: 'for_days',
-                    defaultMessage: `for`,
-                  })} ${proposition.count_reservation_days} ${intl.formatMessage({
-                    id: 'days',
-                    defaultMessage: `days`,
-                  })}`}
-              </div>
-            )}
-            <a role="presentation" className="RewardsHeader" onClick={toggleModalDetails}>
-              {intl.formatMessage({
-                id: 'details',
-                defaultMessage: `Details`,
-              })}
-            </a>
-          </React.Fragment>
-        )}
+      <div className="Proposition__card">
+        <ObjectCardView wObject={proposedWobj} key={proposedWobj.id} />
       </div>
-      <Details
-        isModalDetailsOpen={isModalDetailsOpen}
-        objectDetails={proposition}
-        toggleModal={toggleModalDetails}
-        reserveOnClickHandler={reserveOnClickHandler}
-        loading={loading}
-        assigned={assigned}
-        isReserved={isReserved}
-        proposedWobj={proposedWobj}
-      />
-      <Modal
-        closable
-        maskClosable={false}
-        title={intl.formatMessage({
-          id: 'reserve_campaign',
-          defaultMessage: `Reserve rewards campaign`,
-        })}
-        visible={isModalOpen}
-        onOk={modalOnOklHandler}
-        onCancel={modalOnCancelHandler}
-      >
-        {intl.formatMessage({
-          id: 'reserve_campaign_accept',
-          defaultMessage: `Do you want to reserve rewards campaign?`,
-        })}
-      </Modal>
     </div>
   );
 };
