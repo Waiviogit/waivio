@@ -4,7 +4,7 @@ import { Button, Modal, Checkbox } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
-import getDetailsMessages from './detailsData';
+import getDetailsMessages from './detailsMessagesData';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
 import './Details.less';
 
