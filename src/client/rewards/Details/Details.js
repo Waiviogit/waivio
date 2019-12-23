@@ -4,9 +4,9 @@ import { Button, Modal, Checkbox } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
-import detailsData from './detailsData';
-import './Details.less';
+import getDetailsMessages from './detailsData';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
+import './Details.less';
 
 const Details = ({
   intl,
@@ -21,7 +21,7 @@ const Details = ({
 }) => {
   const localizer = (id, defaultMessage, variablesData) =>
     intl.formatMessage({ id, defaultMessage }, variablesData);
-  const messageData = detailsData(localizer, objectDetails);
+  const messageData = getDetailsMessages(localizer, objectDetails);
   return (
     <Modal
       title={<div className="Details__modal-title">{messageData.seekHonestReviews}!</div>}
@@ -104,7 +104,7 @@ const Details = ({
             </Link>
             :
             <Link
-              className="ml1"
+              className="Details__criteria-link ml1"
               to={`/object/${objectDetails.requiredObject}`}
             >{`www.waivio.com/object/${objectDetails.requiredObject}`}</Link>
           </div>
