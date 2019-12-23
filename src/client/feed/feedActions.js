@@ -95,7 +95,7 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
   });
 };
 
-export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = true }) => (
+export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = true, skip }) => (
   dispatch,
   getState,
 ) => {
@@ -120,6 +120,7 @@ export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = tr
       startAuthor,
       startPermlink,
       limit,
+      skip,
     }),
     meta: {
       sortBy: 'blog',

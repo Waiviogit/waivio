@@ -113,7 +113,7 @@ export const getFeedContent = (sortBy, queryData) =>
 
 export const getUserProfileBlog = (
   userName,
-  { startAuthor = '', startPermlink = '', limit = 10 },
+  { startAuthor = '', startPermlink = '', limit = 10, skip },
 ) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.blog}`, {
@@ -121,6 +121,7 @@ export const getUserProfileBlog = (
       method: 'POST',
       body: JSON.stringify({
         limit,
+        skip,
         start_author: startAuthor,
         start_permlink: startPermlink,
       }),
@@ -752,6 +753,7 @@ export const getNewToken = token => {
     .then(data => {
       response.token = data.headers.get('access-token');
       response.expiration = data.headers.get('expires-in');
+      response.status = data.status;
       return data.json();
     })
     .then(data => {
@@ -777,15 +779,17 @@ export const isUserRegistered = (id, socialNetwork) => {
 
 export const broadcastGuestOperation = async (operationId, data) => {
   const userData = await getValidTokenData();
-  return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
-    method: 'POST',
-    headers: { ...headers, 'access-token': userData.token },
-    body: JSON.stringify({
-      id: operationId,
-      data: { operations: data },
-      userName: userData.userData.name,
-    }),
-  }).then(data => data);
+  if (userData.token) {
+    return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
+      method: 'POST',
+      headers: { ...headers, 'access-token': userData.token },
+      body: JSON.stringify({
+        id: operationId,
+        data: { operations: data },
+        userName: userData.userData.name,
+      }),
+    }).then(data => data);
+  }
 };
 //endregion
 
@@ -793,6 +797,12 @@ export const getFollowingUsers = async username => {
   return fetch(`${config.apiPrefix}${config.user}/${username}`)
     .then(res => res.json())
     .then(data => data.users_follow);
+};
+
+export const getFollowersFromAPI = async username => {
+  return fetch(`${config.apiPrefix}${config.user}/${username}${config.getObjectFollowers}`)
+    .then(res => res.json())
+    .then(data => data.followers);
 };
 
 // injected as extra argument in Redux Thunk

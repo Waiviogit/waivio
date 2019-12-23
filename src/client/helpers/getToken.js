@@ -1,4 +1,3 @@
-import { isEmpty } from 'lodash';
 import { getAccessToken, getNewToken } from '../../waivioApi/ApiClient';
 
 export const setToken = async (socialToken, social, regData) => {
@@ -17,7 +16,7 @@ export const getValidTokenData = async () => {
   const expiration = localStorage.getItem('accessTokenExpiration');
   if (expiration && Date.now() > expiration * 1000) {
     const userData = await getNewToken(token);
-    if (!isEmpty(userData)) {
+    if (userData.status === 200) {
       localStorage.setItem('accessToken', userData.token);
       localStorage.setItem('accessTokenExpiration', String(userData.expiration));
       localStorage.setItem('guestName', userData.userData.name);
@@ -25,5 +24,5 @@ export const getValidTokenData = async () => {
     }
   }
   const name = localStorage.getItem('guestName');
-  return { token, userData: { name } };
+  return { token: null, userData: { name } };
 };

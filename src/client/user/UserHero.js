@@ -60,7 +60,8 @@ const UserHero = ({
 }) => {
   const [isModalVisible, setModalVisibility] = useState(false);
   const objectsFollowingCount = user.objects_following_count ? user.objects_following_count : 0;
-  const followingCount = user.following_count + objectsFollowingCount;
+  const usersFollowingCount = user.users_follow ? user.users_follow.length : 0;
+  const followingCount = usersFollowingCount + objectsFollowingCount;
   const screenSize = useSelector(getScreenSize);
   const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
 
@@ -96,14 +97,14 @@ const UserHero = ({
                   visible={isModalVisible}
                 >
                   <UserMenuWrapper
-                    followers={user.follower_count}
+                    usersFollowingCounts={user.followers_count}
                     following={followingCount}
                     setModalVisibility={setModalVisibility}
                   />
                 </Modal>
               ) : (
                 <UserMenuWrapper
-                  followers={user.follower_count}
+                  followers={user.followers_count}
                   following={followingCount}
                   setModalVisibility={setModalVisibility}
                 />
