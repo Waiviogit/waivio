@@ -1,9 +1,10 @@
 /* eslint-disable */
 import React, { useContext, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Button, message, Modal } from 'antd';
+import { Button, message, Modal, Icon } from 'antd';
 import { getClientWObj } from '../../adapters';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
@@ -34,6 +35,11 @@ const Proposition = ({
   const usedLocale = useContext(UsedLocaleContext);
   const proposedWobj = getClientWObj(wobj, usedLocale);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
+  const cryptosPriceHistory = useSelector(state => state.app.cryptosPriceHistory);
+  const currentUSDPrice =
+    cryptosPriceHistory &&
+    cryptosPriceHistory.STEEM &&
+    cryptosPriceHistory.STEEM.priceDetails.currentUSDPrice;
   const requiredObjectName = getFieldWithMaxWeight(
     proposition.required_object,
     'name',
@@ -118,7 +124,7 @@ const Proposition = ({
   return (
     <div className="Proposition">
       <div className="Proposition__header">
-        <CampaignCardHeader campaignData={proposition} />
+        <CampaignCardHeader campaignData={proposition} currentUSDPrice={currentUSDPrice} />
       </div>
       <div className="Proposition__card">
         <ObjectCardView wObject={proposedWobj} key={proposedWobj.id} />
@@ -158,12 +164,15 @@ const Proposition = ({
                   })}`}
               </div>
             )}
-            <a role="presentation" className="RewardsHeader" onClick={toggleModalDetails}>
-              {intl.formatMessage({
-                id: 'details',
-                defaultMessage: `Details`,
-              })}
-            </a>
+            <div className="Proposition__footer-details" onClick={toggleModalDetails}>
+              <span role="presentation">
+                {intl.formatMessage({
+                  id: 'details',
+                  defaultMessage: `Details`,
+                })}
+              </span>
+              <Icon type="right" />
+            </div>
           </React.Fragment>
         )}
       </div>
@@ -176,6 +185,7 @@ const Proposition = ({
         assigned={assigned}
         isReserved={isReserved}
         proposedWobj={proposedWobj}
+        currentUSDPrice={currentUSDPrice}
       />
       <Modal
         closable
