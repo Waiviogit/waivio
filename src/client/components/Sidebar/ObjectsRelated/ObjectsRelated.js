@@ -2,14 +2,14 @@ import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import WeightTag from '../../WeightTag';
 import './ObjectsRelated.less';
 import { getAuthorsChildWobjects } from '../../../../waivioApi/ApiClient';
 import RightSidebarLoading from '../../../app/Sidebar/RightSidebarLoading';
 import ObjectCard from '../ObjectCard';
 
-const ObjectsRelated = ({ wobject }) => {
+const ObjectsRelated = ({ wobject, intl }) => {
   const [objectsState, setObjectsState] = useState({
     objects: [],
     loading: true,
@@ -77,12 +77,12 @@ const ObjectsRelated = ({ wobject }) => {
       ));
 
       const renderButtons = () => (
-        <h4 className="ObjectsRelated__more">
+        <div className="ObjectsRelated__more">
           {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-          <div onClick={() => setShowModal(true)} id="show_more_div">
-            <FormattedMessage id="show_more" defaultMessage="Show more" />
-          </div>
-        </h4>
+          <a onClick={() => setShowModal(true)} id="show_more_div">
+            {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}
+          </a>
+        </div>
       );
 
       const onWheelHandler = () => {
@@ -93,17 +93,17 @@ const ObjectsRelated = ({ wobject }) => {
 
       renderCard = (
         <div className="SidebarContentBlock" data-test="objectsRelatedComponent">
-          <h4 className="SidebarContentBlock__title">
-            <i className="iconfont icon-collection SidebarContentBlock__icon" />{' '}
-            <FormattedMessage id="related_to_object" defaultMessage="Related" />
-          </h4>
+          <div className="SidebarContentBlock__title">
+            <i className="iconfont icon-link SidebarContentBlock__icon" />{' '}
+            {intl.formatMessage({ id: 'related_to_object', defaultMessage: 'Related to object' })}
+          </div>
           <div className="SidebarContentBlock__content">{renderObjects}</div>
           {renderButtons()}
           <div onWheel={_.throttle(onWheelHandler, 100)}>
             <Modal
               title="Related"
               visible={showModal}
-              onOk={() => setShowModal(false)}
+              footer={null}
               onCancel={() => setShowModal(false)}
               id="ObjectRelated__Modal"
             >
@@ -121,8 +121,8 @@ const ObjectsRelated = ({ wobject }) => {
 };
 
 ObjectsRelated.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
   wobject: PropTypes.shape().isRequired,
+  intl: PropTypes.shape().isRequired,
 };
 
-export default ObjectsRelated;
+export default injectIntl(ObjectsRelated);
