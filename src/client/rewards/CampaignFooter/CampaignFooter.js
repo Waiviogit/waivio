@@ -5,7 +5,6 @@ import { injectIntl } from 'react-intl';
 import { Modal } from 'antd';
 import find from 'lodash/find';
 import Slider from '../../components/Slider/Slider';
-import Payout from '../../components/StoryFooter/Payout';
 import CampaignButtons from './CampaignButtons';
 import Comments from '../../comments/Comments';
 import { getVoteValue } from '../../helpers/user';
@@ -64,6 +63,7 @@ class CampaignFooter extends React.Component {
     onShareClick: () => {},
     handlePostPopoverMenuClick: () => {},
     discardPr: () => {},
+    isComment: false,
   };
 
   constructor(props) {
@@ -190,10 +190,11 @@ class CampaignFooter extends React.Component {
     if (this.props.post.children > 0) {
       this.setState(prevState => ({ commentsVisible: isVisible || !prevState.commentsVisible }));
     }
+    this.setState({ isComment: !this.state.isComment });
   };
 
   render() {
-    const { commentsVisible, modalVisible } = this.state;
+    const { commentsVisible, modalVisible, isComment } = this.state;
     const {
       post,
       postState,
@@ -214,7 +215,6 @@ class CampaignFooter extends React.Component {
     return (
       <div className="CampaignFooter">
         <div className="CampaignFooter__actions">
-          <Payout post={post} />
           {this.state.sliderVisible && (
             <Confirmation onConfirm={this.handleLikeConfirm} onCancel={this.handleSliderCancel} />
           )}
@@ -247,7 +247,7 @@ class CampaignFooter extends React.Component {
             onChange={this.handleSliderChange}
           />
         )}
-        {!singlePostVew && (
+        {!singlePostVew && isComment && (
           <Comments show={commentsVisible} isQuickComments={!singlePostVew} post={post} />
         )}
         <Modal
