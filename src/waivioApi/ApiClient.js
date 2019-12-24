@@ -700,11 +700,11 @@ export const getAuthenticatedUserMetadata = userName => {
     .then(res => _.omit(res.user_metadata, '_id'));
 };
 
-export const updateUserMetadata = (userName, data) => {
-  const isGuest = localStorage.getItem('accessToken');
+export const updateUserMetadata = async (userName, data) => {
+  const isGuest = await getValidTokenData();
 
   if (isGuest) {
-    headers = { ...headers, 'access-token': isGuest, 'waivio-auth': true };
+    headers = { ...headers, 'access-token': isGuest.token, 'waivio-auth': true };
   } else {
     headers = { ...headers, 'access-token': Cookie.get('access_token') };
   }
@@ -778,6 +778,7 @@ export const isUserRegistered = (id, socialNetwork) => {
 };
 
 export const broadcastGuestOperation = async (operationId, data) => {
+  debugger;
   const userData = await getValidTokenData();
   if (userData.token) {
     return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {

@@ -11,6 +11,7 @@ export const LIKE_POST_ERROR = '@post/LIKE_POST_ERROR';
 export const FAKE_LIKE_POST = '@post/FAKE_LIKE_POST';
 export const FAKE_LIKE_POST_START = '@post/FAKE_LIKE_POST_START';
 export const FAKE_LIKE_POST_SUCCESS = '@post/FAKE_LIKE_POST_SUCCESS';
+export const FAKE_LIKE_POST_ERROR = '@post/FAKE_LIKE_POST_ERROR';
 
 export const getContent = (author, permlink, afterLike) => (dispatch, getState, { steemAPI }) => {
   if (!author || !permlink) {

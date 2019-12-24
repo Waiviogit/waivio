@@ -209,6 +209,11 @@ const posts = (state = initialState, action) => {
       }
       return state;
     }
+    case postsActions.FAKE_LIKE_POST_ERROR:
+      return {
+        ...state,
+        pendingLikes: _.omit(state.pendingLikes, action.meta.postId),
+      };
     default:
       return state;
   }

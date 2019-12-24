@@ -8,7 +8,7 @@ import { GoogleLogin } from 'react-google-login';
 import FacebookLogin from 'react-facebook-login';
 import getSlug from 'speakingurl';
 import { login } from '../../../auth/authActions';
-import { isUserRegistered } from '../../../../waivioApi/ApiClient';
+import { getUserAccount, isUserRegistered } from '../../../../waivioApi/ApiClient';
 import './ModalSignUp.less';
 
 const ModalSignUp = ({ isButton, form }) => {
@@ -96,7 +96,10 @@ const ModalSignUp = ({ isButton, form }) => {
     });
   };
 
-  // const validateUserName = userName => {};
+  const validateUserName = async (rule, value, callback) => {
+    const user = await getUserAccount(value);
+    return user.message ? callback('User with this username already exists') : callback();
+  };
 
   const usernameError = isFieldTouched('username') && getFieldError('username');
 
@@ -112,6 +115,9 @@ const ModalSignUp = ({ isButton, form }) => {
             {
               pattern: /^[A-Za-z0-9.-]+$/,
               message: 'Only letters, digits, periods, dashes are allowed',
+            },
+            {
+              validator: validateUserName,
             },
           ],
         })(<Input placeholder="Username" addonBefore="waivio_" maxLength={18} />)}

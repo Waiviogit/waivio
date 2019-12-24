@@ -24,5 +24,5 @@ export const getValidTokenData = async () => {
     }
   }
   const name = localStorage.getItem('guestName');
-  return { token: null, userData: { name } };
+  return { token, userData: { name } };
 };
