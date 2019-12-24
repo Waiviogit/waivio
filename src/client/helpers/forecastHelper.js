@@ -25,7 +25,7 @@ export const getForecastData = post => {
     const { quoteSecurity, postPrice, recommend, createdAt, tpPrice, slPrice } = forecast;
     const predictedEndDate = forecast.expiredAt;
     const isForecastExpired = !isEmpty(post.exp_forecast) || moment().valueOf() > moment(predictedEndDate).valueOf();
-    const { expiredAt, bars, profitability } = get(post, ['exp_forecast'], {});
+    const { bars, expiredAt, profitability } = get(post, ['exp_forecast'], {});
 
     return {
       predictedEndDate,
