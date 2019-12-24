@@ -18,7 +18,7 @@ const Campaign = ({ proposition, filterKey, history, intl }) => {
     : '...';
   const rewardMax =
     proposition.max_reward !== proposition.min_reward
-      ? ` - ${currentUSDPrice ? convertDigits(proposition.max_reward) : '...'}`
+      ? `${currentUSDPrice ? currentUSDPrice * convertDigits(proposition.max_reward) : '...'}`
       : '';
   const goToProducts = () => history.push(`/rewards/${filterKey}/${requiredObject.id}`);
   return (
@@ -30,7 +30,7 @@ const Campaign = ({ proposition, filterKey, history, intl }) => {
             <React.Fragment>
               <span>
                 {intl.formatMessage({
-                  id: 'rewards_details_earn_up_to',
+                  id: 'rewards_details_earn',
                   defaultMessage: 'Earn',
                 })}
               </span>
@@ -49,7 +49,7 @@ const Campaign = ({ proposition, filterKey, history, intl }) => {
                 })}
               </span>
               <span>
-                <span className="fw6 ml1">{`${rewardPrise} ${rewardMax}`}</span>
+                <span className="fw6 ml1">{`${rewardMax}`}</span>
                 {' USD '}
                 <Icon type="right" />
               </span>
