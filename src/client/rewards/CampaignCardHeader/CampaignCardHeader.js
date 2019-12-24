@@ -2,12 +2,12 @@ import React from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { isEmpty } from 'lodash';
 import Avatar from '../../components/Avatar';
-import { convertDigits } from '../rewardsHelper';
+import { convertDigits, getCurrentUSDPrice } from '../rewardsHelper';
 import './CampaignCardHeader.less';
 
-const CampaignCardHeader = ({ intl, campaignData, isDetails, currentUSDPrice }) => {
+const CampaignCardHeader = ({ intl, campaignData, isDetails }) => {
+  const currentUSDPrice = getCurrentUSDPrice();
   const rewardPrise = currentUSDPrice
     ? convertDigits(currentUSDPrice * campaignData.reward)
     : '...';
@@ -40,10 +40,10 @@ const CampaignCardHeader = ({ intl, campaignData, isDetails, currentUSDPrice }) 
                 <span className="fw6">{` ${campaignData.reward} `}</span>
                 <span>STEEM</span>
               </span>
-              {isEmpty(currentUSDPrice) && (
+              {currentUSDPrice && (
                 <span>
                   {' '}
-                  (<span className="fw6">{currentUSDPrice * campaignData.reward}</span> USD)
+                  (<span className="fw6">{` ${rewardPrise} `}</span> USD)
                 </span>
               )}
             </React.Fragment>
@@ -76,11 +76,9 @@ CampaignCardHeader.propTypes = {
   intl: PropTypes.shape().isRequired,
   campaignData: PropTypes.shape().isRequired,
   isDetails: PropTypes.bool,
-  currentUSDPrice: PropTypes.number,
 };
 CampaignCardHeader.defaultProps = {
   isDetails: false,
-  currentUSDPrice: {},
 };
 
 export default injectIntl(CampaignCardHeader);
