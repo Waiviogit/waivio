@@ -35,11 +35,6 @@ const Proposition = ({
   const usedLocale = useContext(UsedLocaleContext);
   const proposedWobj = getClientWObj(wobj, usedLocale);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
-  const cryptosPriceHistory = useSelector(state => state.app.cryptosPriceHistory);
-  const currentUSDPrice =
-    cryptosPriceHistory &&
-    cryptosPriceHistory.STEEM &&
-    cryptosPriceHistory.STEEM.priceDetails.currentUSDPrice;
   const requiredObjectName = getFieldWithMaxWeight(
     proposition.required_object,
     'name',
@@ -124,7 +119,7 @@ const Proposition = ({
   return (
     <div className="Proposition">
       <div className="Proposition__header">
-        <CampaignCardHeader campaignData={proposition} currentUSDPrice={currentUSDPrice} />
+        <CampaignCardHeader campaignData={proposition} />
       </div>
       <div className="Proposition__card">
         <ObjectCardView wObject={proposedWobj} key={proposedWobj.id} />
@@ -185,7 +180,6 @@ const Proposition = ({
         assigned={assigned}
         isReserved={isReserved}
         proposedWobj={proposedWobj}
-        currentUSDPrice={currentUSDPrice}
       />
       <Modal
         closable
