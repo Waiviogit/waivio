@@ -5,8 +5,8 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import detailsData from './detailsData';
-import './Details.less';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
+import './Details.less';
 
 const Details = ({
   intl,

@@ -43,7 +43,7 @@ const CampaignCardHeader = ({ intl, campaignData, isDetails }) => {
               {currentUSDPrice && (
                 <span>
                   {' '}
-                  (<span className="fw6">{` ${rewardPrise} `}</span> USD)
+                  (<span className="fw6">{`${rewardPrise} `}</span> USD)
                 </span>
               )}
             </React.Fragment>
