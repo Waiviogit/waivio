@@ -1,13 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import { Route, Switch, withRouter } from 'react-router-dom';
-import { Modal } from 'antd';
 import UserHeader from '../components/UserHeader';
 import UserHeaderLoading from '../components/UserHeaderLoading';
 import UserMenu from '../components/UserMenu';
 import Hero from '../components/Hero';
-import { getScreenSize } from '../reducers';
 
 const activityFields = [
   'last_owner_update',
@@ -58,11 +55,8 @@ const UserHero = ({
   isFollowing,
   onTransferClick,
 }) => {
-  const [isModalVisible, setModalVisibility] = useState(false);
   const objectsFollowingCount = user.objects_following_count ? user.objects_following_count : 0;
   const followingCount = user.following_count + objectsFollowingCount;
-  const screenSize = useSelector(getScreenSize);
-  const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
 
   return (
     <div>
@@ -85,29 +79,9 @@ const UserHero = ({
                   isFollowing={isFollowing}
                   onTransferClick={onTransferClick}
                   isActive={isUserActive(user)}
-                  setModalVisibility={setModalVisibility}
-                  isMobile={isMobile}
                 />
               )}
-              {isMobile ? (
-                <Modal
-                  onCancel={() => setModalVisibility(false)}
-                  footer={null}
-                  visible={isModalVisible}
-                >
-                  <UserMenuWrapper
-                    followers={user.follower_count}
-                    following={followingCount}
-                    setModalVisibility={setModalVisibility}
-                  />
-                </Modal>
-              ) : (
-                <UserMenuWrapper
-                  followers={user.follower_count}
-                  following={followingCount}
-                  setModalVisibility={setModalVisibility}
-                />
-              )}
+              <UserMenuWrapper followers={user.follower_count} following={followingCount} />
             </div>
           )}
         />

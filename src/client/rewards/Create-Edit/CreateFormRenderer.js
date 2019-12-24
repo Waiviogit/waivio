@@ -323,7 +323,7 @@ const CreateFormRenderer = props => {
         <p>
           {handlers.messageFactory(
             'eligiblity_warn',
-            ' User eligibility criteria will be verified at the time of reward reservation only.',
+            'User eligibility criteria will be verified at the time of reward reservation only.',
           )}
         </p>
         <br />

@@ -15,9 +15,9 @@ import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { rejectReservationCampaign, reserveActivatedCampaign } from '../../../waivioApi/ApiClient';
 import { generatePermlink } from '../../helpers/wObjectHelper';
 import { UsedLocaleContext } from '../../Wrapper';
-import './Proposition.less';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
+import './Proposition.less';
 
 const Proposition = ({
   intl,

@@ -2,24 +2,19 @@
 @import (reference) '../styles/modules/variables';
 
 .UserMenu {
+  height: 46px;
   background-color: white;
-
-  @media @small {
-    height: 46px;
-    border-top: solid 1px #e9e7e7;
-    border-bottom: solid 1px #e9e7e7;
-  }
+  border-top: solid 1px #e9e7e7;
+  border-bottom: solid 1px #e9e7e7;
 
   &__menu {
+    height: 46px;
     line-height: 46px;
-
-    @media @medium {
-      white-space: nowrap;
-      height: 46px;
-    }
+    white-space: nowrap;
   }
 
   &__item {
+    display: inline-block;
     height: 45px;
     margin-right: 12px;
     cursor: pointer;
@@ -27,17 +22,12 @@
     font-size: 16px;
     font-weight: 500;
     text-transform: capitalize;
-    display: flex;
-    justify-content: center;
 
     &--active,
     &:hover {
       color: @primary-color;
-      border-bottom: 2px @border-style-base @primary-color;
-    }
 
-    @media @small {
-      display: inline-block;
+      border-bottom: 2px @border-style-base @primary-color;
     }
   }
 
@@ -60,16 +50,10 @@ div[data-dir='rtl'] .UserMenu {
 }
 
 [data-key='about'] {
-  @media @small {
-    display: none;
-  }
-}
+  display: inline-block;
 
-.menu-layout {
-  .UserMenu__menu {
-    @media @small {
-      width: 100% !important;
-    }
+  @media @medium {
+    display: none;
   }
 }
 

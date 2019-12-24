@@ -56,7 +56,7 @@ const MatchBot = ({ intl, userName }) => {
     if (userName) {
       getMatchBotRules(userName).then(data => {
         setRules(data);
-        setMinVotingPower(80); // change setting value when backend will ready
+        setMinVotingPower(80); // TODO: change setting value when backend will ready
       });
     }
   }, []);
