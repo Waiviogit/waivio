@@ -15,6 +15,7 @@ import Popover from '../../components/Popover';
 export default class CampaignButtons extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
+    pastDays: PropTypes.number.isRequired,
     post: PropTypes.shape().isRequired,
     postState: PropTypes.shape().isRequired,
     propositionId: PropTypes.string.isRequired,
@@ -69,15 +70,16 @@ export default class CampaignButtons extends React.Component {
       });
     }
   }
+
   getFollowText(isFollowed, permlink) {
     if (isFollowed) {
       return this.props.intl.formatMessage(
-        { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
+        { id: 'campaign_buttons_unfollow_username', defaultMessage: 'Unfollow {username}' },
         { username: permlink },
       );
     }
     return this.props.intl.formatMessage(
-      { id: 'follow_username', defaultMessage: 'Follow {username}' },
+      { id: 'campaign_buttons_follow_username', defaultMessage: 'Follow {username}' },
       { username: permlink },
     );
   }
@@ -147,7 +149,10 @@ export default class CampaignButtons extends React.Component {
             'icon-flag_fill': postState.isReported,
           })}
         />
-        {this.props.intl.formatMessage({ id: 'unfollow_username', defaultMessage: 'Release' })}
+        {this.props.intl.formatMessage({
+          id: 'campaign_buttons_release',
+          defaultMessage: 'Release',
+        })}
       </PopoverMenuItem>,
     ];
     return (
@@ -174,19 +179,41 @@ export default class CampaignButtons extends React.Component {
       proposedObjectPermlink,
       proposedObjectName,
       propositionId,
+      pastDays,
     } = this.props;
 
     return (
       <div className="Buttons">
-        <div>
-          <BTooltip title={intl.formatMessage({ id: 'comment', defaultMessage: 'Comment' })}>
+        <div className="Buttons__wrap">
+          <div>
+            {`${intl.formatMessage({
+              id: 'campaign_buttons_reserved',
+              defaultMessage: 'Reserved',
+            })} - ${
+              pastDays === 0
+                ? intl.formatMessage({
+                    id: 'campaign_buttons_today',
+                    defaultMessage: 'today',
+                  })
+                : ` ${pastDays} ${intl.formatMessage({
+                    id: 'campaign_buttons_days_left',
+                    defaultMessage: 'days left',
+                  })}`
+            }`}
+          </div>
+          <BTooltip
+            title={intl.formatMessage({
+              id: 'campaign_buttons_comment',
+              defaultMessage: 'Comment',
+            })}
+          >
             <a className="Buttons__link" role="presentation" onClick={this.handleCommentsClick}>
               <i className="iconfont icon-message_fill" />
             </a>
           </BTooltip>
-          <span className="Buttons__number">
+          <div className="Buttons__number">
             {post.children > 0 && <FormattedNumber value={post.children} />}
-          </span>
+          </div>
           {this.renderPostPopoverMenu()}
         </div>
         <React.Fragment>
@@ -197,7 +224,7 @@ export default class CampaignButtons extends React.Component {
             type="primary"
           >
             {intl.formatMessage({
-              id: 'write_review',
+              id: 'campaign_buttons_write_review',
               defaultMessage: `Write review`,
             })}
           </LinkButton>
