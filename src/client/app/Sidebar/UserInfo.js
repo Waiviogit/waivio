@@ -61,13 +61,10 @@ class UserInfo extends React.Component {
       hostWithoutWWW = hostWithoutWWW.slice(4);
     }
 
-    const voteWorth = getVoteValue(
-      user,
-      rewardFund.recent_claims,
-      rewardFund.reward_balance,
-      rate,
-      10000,
-    );
+    const voteWorth =
+      user && rewardFund.recent_claims && rewardFund.reward_balance && rate
+        ? getVoteValue(user, rewardFund.recent_claims, rewardFund.reward_balance, rate, 10000)
+        : 0;
 
     return (
       <div>

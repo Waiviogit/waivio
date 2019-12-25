@@ -98,7 +98,7 @@ const ModalSignUp = ({ isButton, form }) => {
 
   const validateUserName = async (rule, value, callback) => {
     const user = await getUserAccount(value);
-    return user.message ? callback('User with this username already exists') : callback();
+    return user.message ? callback('User with such username already exists') : callback();
   };
 
   const usernameError = isFieldTouched('username') && getFieldError('username');

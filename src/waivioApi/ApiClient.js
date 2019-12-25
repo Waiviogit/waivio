@@ -5,6 +5,7 @@ import Cookie from 'js-cookie';
 import config from './routes';
 import { getFollowingCount } from '../client/helpers/apiHelpers';
 import { getValidTokenData } from '../client/helpers/getToken';
+import user from '../client/helpers/user';
 
 let headers = {
   Accept: 'application/json',
@@ -701,10 +702,15 @@ export const getAuthenticatedUserMetadata = userName => {
 };
 
 export const updateUserMetadata = async (userName, data) => {
-  const isGuest = await getValidTokenData();
+  let isGuest = null;
+  if (typeof localStorage !== 'undefined') {
+    const token = localStorage.getItem('accessToken');
+    isGuest = token === 'null' ? false : Boolean(token);
+  }
 
   if (isGuest) {
-    headers = { ...headers, 'access-token': isGuest.token, 'waivio-auth': true };
+    const token = await getValidTokenData();
+    headers = { ...headers, 'access-token': token.token, 'waivio-auth': true };
   } else {
     headers = { ...headers, 'access-token': Cookie.get('access_token') };
   }
@@ -778,7 +784,6 @@ export const isUserRegistered = (id, socialNetwork) => {
 };
 
 export const broadcastGuestOperation = async (operationId, data) => {
-  debugger;
   const userData = await getValidTokenData();
   if (userData.token) {
     return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
@@ -804,6 +809,34 @@ export const getFollowersFromAPI = async username => {
   return fetch(`${config.apiPrefix}${config.user}/${username}${config.getObjectFollowers}`)
     .then(res => res.json())
     .then(data => data.followers);
+};
+
+export const updateGuestProfile = async (username, json_metadata) => {
+  const body = {
+    id: 'waivio_guest_account_update',
+    data: {
+      operations: [
+        [
+          'custom_json',
+          {
+            required_auths: [],
+            required_posting_auths: [username],
+            id: 'account_update',
+            json: JSON.stringify({
+              account: username,
+              json_metadata: JSON.stringify(json_metadata),
+            }),
+          },
+        ],
+      ],
+    },
+  };
+  const userData = await getValidTokenData();
+  return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
+    method: 'POST',
+    headers: { ...headers, 'access-token': userData.token },
+    body: JSON.stringify(body),
+  }).then(data => data);
 };
 
 // injected as extra argument in Redux Thunk

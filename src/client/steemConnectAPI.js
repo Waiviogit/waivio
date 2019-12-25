@@ -20,7 +20,11 @@ function sc2Extended() {
       console.log('\tbroadcast > ', operations);
       let operation;
       if (operations[0][0] === 'custom_json') {
-        operation = `waivio_guest_${operations[0][1].id}`;
+        if (operations[0][1].json.includes('reblog')) {
+          operation = `waivio_guest_reblog`;
+        } else {
+          operation = `waivio_guest_${operations[0][1].id}`;
+        }
       } else {
         operation = `waivio_guest_${operations[0][0]}`;
       }

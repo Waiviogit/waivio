@@ -22,6 +22,7 @@
   "notify_add_list_item": "Элемент списка успешно добавлен",
   "notify_add_list_item_error": "Не удалось добавить элемент списка",
   "signup": "Регистрация",
+  "signin": "Вход",
   "login": "Войти",
   "activity": "Активность",
   "replies": "Ответы",

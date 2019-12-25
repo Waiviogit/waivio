@@ -6,7 +6,8 @@ import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Input } from 'antd';
 import SteemConnect from '../steemConnectAPI';
-import { getIsReloading, getAuthenticatedUser } from '../reducers';
+import { updateProfile } from '../auth/authActions';
+import { getIsReloading, getAuthenticatedUser, isGuestUser } from '../reducers';
 import socialProfiles from '../helpers/socialProfiles';
 import withEditor from '../components/Editor/withEditor';
 import EditorInput from '../components/Editor/EditorInput';
@@ -16,9 +17,9 @@ import Action from '../components/Button/Action';
 import Affix from '../components/Utils/Affix';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import requiresLogin from '../auth/requiresLogin';
-import './Settings.less';
 import TopNavigation from '../components/Navigation/TopNavigation';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
+import './Settings.less';
 
 const FormItem = Form.Item;
 
@@ -41,10 +42,16 @@ function mapPropsToFields(props) {
 
 @requiresLogin
 @injectIntl
-@connect(state => ({
-  user: getAuthenticatedUser(state),
-  reloading: getIsReloading(state),
-}))
+@connect(
+  state => ({
+    user: getAuthenticatedUser(state),
+    reloading: getIsReloading(state),
+    isGuest: isGuestUser(state),
+  }),
+  {
+    updateProfile,
+  },
+)
 @Form.create({
   mapPropsToFields,
 })
@@ -56,12 +63,16 @@ export default class ProfileSettings extends React.Component {
     userName: PropTypes.string,
     onImageUpload: PropTypes.func,
     onImageInvalid: PropTypes.func,
+    isGuest: PropTypes.bool,
+    updateProfile: PropTypes.func,
   };
 
   static defaultProps = {
     onImageUpload: () => {},
     onImageInvalid: () => {},
     userName: '',
+    isGuest: false,
+    updateProfile: () => {},
   };
 
   constructor(props) {
@@ -82,7 +93,8 @@ export default class ProfileSettings extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    const { form } = this.props;
+    // eslint-disable-next-line no-shadow
+    const { form, isGuest, userName, updateProfile } = this.props;
 
     if (!form.isFieldsTouched()) return;
 
@@ -97,8 +109,12 @@ export default class ProfileSettings extends React.Component {
             }),
             {},
           );
-        const win = window.open(SteemConnect.sign('profile-update', cleanValues), '_blank');
-        win.focus();
+        if (isGuest) {
+          updateProfile(userName, cleanValues);
+        } else {
+          const win = window.open(SteemConnect.sign('profile-update', cleanValues), '_blank');
+          win.focus();
+        }
       }
     });
   }

@@ -6,11 +6,17 @@ import { addNewNotification } from '../app/appActions';
 import { getFollowing } from '../user/userActions';
 import { BUSY_API_TYPES } from '../../common/constants/notifications';
 import { setToken } from '../helpers/getToken';
+import { updateGuestProfile } from '../../waivioApi/ApiClient';
 
 export const LOGIN = '@auth/LOGIN';
 export const LOGIN_START = '@auth/LOGIN_START';
 export const LOGIN_SUCCESS = '@auth/LOGIN_SUCCESS';
 export const LOGIN_ERROR = '@auth/LOGIN_ERROR';
+
+export const UPDATE_PROFILE = '@auth/UPDATE_PROFILE';
+export const UPDATE_PROFILE_START = '@auth/UPDATE_PROFILE_START';
+export const UPDATE_PROFILE_SUCCESS = '@auth/UPDATE_PROFILE_SUCCESS';
+export const UPDATE_PROFILE_ERROR = '@auth/UPDATE_PROFILE_ERROR';
 
 export const RELOAD = '@auth/RELOAD';
 export const RELOAD_START = '@auth/RELOAD_START';
@@ -147,5 +153,24 @@ export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
     payload: {
       promise: busyAPI.sendAsync('login', [accessToken]),
     },
+  });
+};
+
+export const updateProfile = (username, values) => (dispatch, getState) => {
+  const state = getState();
+  // eslint-disable-next-line camelcase
+  const json_metadata = JSON.parse(state.auth.user.json_metadata);
+  json_metadata.profile = { ...json_metadata.profile, ...values };
+  return dispatch({
+    type: UPDATE_PROFILE,
+    payload: {
+      promise: updateGuestProfile(username, json_metadata).then(data => {
+        if (data.statuscode === 200) {
+          return { isProfileUpdated: false };
+        }
+        return { isProfileUpdated: true };
+      }),
+    },
+    meta: JSON.stringify(json_metadata),
   });
 };

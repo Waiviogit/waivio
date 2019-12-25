@@ -69,7 +69,6 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
           if (res.status === 200 && isGuest) {
             return { isFakeLikeOk: true };
           }
-          console.log('vote post', res);
           if (window.analytics) {
             window.analytics.track('Vote', {
               category: 'vote',

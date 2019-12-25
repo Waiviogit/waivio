@@ -70,6 +70,26 @@ export default (state = initialState, action) => {
         ...state,
         userMetaData: action.payload,
       };
+    case types.UPDATE_PROFILE_START:
+      return {
+        ...state,
+        isFetching: true,
+      };
+    case types.UPDATE_PROFILE_SUCCESS: {
+      if (action.payload.isProfileUpdated) {
+        return {
+          ...state,
+          isFetching: false,
+          user: {
+            ...state.user,
+            json_metadata: action.meta,
+          },
+        };
+      }
+      return state;
+    }
+    case types.UPDATE_PROFILE_ERROR:
+      return state;
     default:
       return state;
   }
