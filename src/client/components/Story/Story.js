@@ -101,7 +101,6 @@ class Story extends React.Component {
     this.state = {
       showHiddenStoryPreview: false,
       displayLoginModal: false,
-      isQuoteValid: true,
       isVisible: false,
     };
 
@@ -118,7 +117,7 @@ class Story extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+    return nextState.isVisible && (!_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state));
   }
 
   getApprovalTagLayout = () => {
@@ -428,7 +427,6 @@ class Story extends React.Component {
     }
     return isEnoughData ? (
       <VisibilitySensor
-        offset={{top:-50, bottom: -50}}
         onChange={this.handleChangeVisibility}
         partialVisibility
       >
@@ -464,7 +462,7 @@ class Story extends React.Component {
                   <PostedFrom post={post} />
                 </span>
               </div>
-              {this.state.isVisible && isForecastValid ? (
+              {isForecastValid ? (
                 <div className="Story__forecast">
                   <PostForecast
                     quoteSecurity={quoteSecurity}
@@ -483,7 +481,7 @@ class Story extends React.Component {
                 </div>
               )}
             </div>
-            {this.state.isVisible && isForecastValid && (
+            {isForecastValid && (
               <PostSellBuy
                 isExpired={isForecastExpired}
                 finalQuote={finalQuote}
@@ -522,7 +520,7 @@ class Story extends React.Component {
               {this.renderStoryPreview()}
             </div>
             <div className="Story__footer">
-              {this.state.isVisible && isForecastValid && (
+              {isForecastValid && (
                 <PostChart
                   quoteSecurity={quoteSecurity}
                   createdAt={createdAt}
@@ -535,7 +533,7 @@ class Story extends React.Component {
                   expiredAt={expiredAt}
                 />
               )}
-              {this.state.isVisible && isForecastValid && (
+              {isForecastValid && (
                 <PostQuotation
                   quoteSecurity={quoteSecurity}
                   caller="od-pm"
