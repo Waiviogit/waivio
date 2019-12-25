@@ -5,11 +5,16 @@
 
   &__rate {
     display: flex !important;
+    &-right-col {
+      width: 45% !important;
+      padding-left: 15px !important;
+    }
 
     &-title {
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
+      font-weight: 500;
       max-width: 50%;
     }
 
@@ -29,8 +34,9 @@
   }
 
   &__divider {
-    padding-left: 15px !important;
-    border-left: 2px @border-style-base @border-color-base;
+    padding-right: 15px !important;
+    border-right: 2px @border-style-base @border-color-base;
+    width: 55% !important;
   }
 }
 

@@ -3,14 +3,12 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Avatar from '../../components/Avatar';
-import { convertDigits, getCurrentUSDPrice } from '../rewardsHelper';
+import { getCurrentUSDPrice } from '../rewardsHelper';
 import './CampaignCardHeader.less';
 
 const CampaignCardHeader = ({ intl, campaignData, isDetails }) => {
   const currentUSDPrice = getCurrentUSDPrice();
-  const rewardPrise = currentUSDPrice
-    ? convertDigits(currentUSDPrice * campaignData.reward)
-    : '...';
+  const rewardPrise = currentUSDPrice ? (currentUSDPrice * campaignData.reward).toFixed(2) : '...';
   return (
     <React.Fragment>
       <div className="CampaignCardHeader">

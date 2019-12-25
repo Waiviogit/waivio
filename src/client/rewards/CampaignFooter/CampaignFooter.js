@@ -2,14 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import moment from 'moment';
 import { Modal } from 'antd';
 import find from 'lodash/find';
 import Slider from '../../components/Slider/Slider';
 import CampaignButtons from './CampaignButtons';
 import Comments from '../../comments/Comments';
 import { getVoteValue } from '../../helpers/user';
+import { getDaysLeft } from '../rewardsHelper';
 import { getRate, getAppUrl } from '../../reducers';
 import Confirmation from '../../components/StoryFooter/Confirmation';
 import withAuthActions from '../../auth/withAuthActions';
@@ -78,7 +77,7 @@ class CampaignFooter extends React.Component {
       voteWorth: 0,
       modalVisible: false,
       reservedUser: {},
-      pastDays: 0,
+      daysLeft: 0,
     };
     this.handlePostPopoverMenuClick = this.handlePostPopoverMenuClick.bind(this);
   }
@@ -101,20 +100,13 @@ class CampaignFooter extends React.Component {
   }
 
   componentDidMount() {
-    const { user } = this.props;
-    const reservedUser = find(
-      this.props.proposition.reserved_users,
-      resUser => resUser.name === user.name,
-    );
+    const { user, proposition } = this.props;
+    const reservedUser = find(proposition.reserved_users, resUser => resUser.name === user.name);
     // eslint-disable-next-line react/no-did-mount-set-state
-    this.setState({ pastDays: this.getPastDays(reservedUser.createdAt) });
+    this.setState({
+      daysLeft: getDaysLeft(reservedUser.createdAt, proposition.count_reservation_days),
+    });
   }
-
-  getPastDays = reserveDate => {
-    const cuttentTime = moment(Date.now()).unix();
-    const reservationTime = moment(reserveDate).unix();
-    return parseInt((cuttentTime - reservationTime) / 86400, 10);
-  };
 
   onLikeClick = (post, postState, weight = 10000) => {
     const { sliderMode, defaultVotePercent } = this.props;
@@ -214,7 +206,7 @@ class CampaignFooter extends React.Component {
   };
 
   render() {
-    const { commentsVisible, modalVisible, isComment, pastDays } = this.state;
+    const { commentsVisible, modalVisible, isComment, daysLeft } = this.state;
     const {
       post,
       postState,
@@ -240,7 +232,7 @@ class CampaignFooter extends React.Component {
           )}
           {!this.state.sliderVisible && (
             <CampaignButtons
-              pastDays={pastDays}
+              daysLeft={daysLeft}
               post={post}
               postState={postState}
               pendingLike={pendingLike}

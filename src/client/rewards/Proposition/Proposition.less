@@ -32,13 +32,16 @@
     }
 
     &-button {
+      font-weight: 500;
       button {
         margin-right: @wrapPadding;
       }
     }
+
     &-details {
       font-weight: 500;
       color: @blue-botticelli;
+
       &:hover {
         cursor: pointer;
       }
@@ -60,6 +63,23 @@
       box-shadow: 2px 2px 8px -2px @blue-botticelli;
       overflow: hidden;
       background-color: @white;
+
+      &__info {
+        width: 80%;
+        max-width: 80%;
+      }
+
+      &__price {
+        font-weight: 500;
+        font-size: 0.9em;
+      }
+
+      &__avatar {
+        .avatar-image {
+          border-radius: 8px;
+          border: 0;
+        }
+      }
     }
   }
 

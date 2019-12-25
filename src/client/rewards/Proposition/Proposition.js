@@ -1,10 +1,10 @@
 /* eslint-disable */
 import React, { useContext, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Button, message, Modal, Icon } from 'antd';
+import classNames from 'classnames';
 import { getClientWObj } from '../../adapters';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
@@ -124,7 +124,11 @@ const Proposition = ({
       <div className="Proposition__card">
         <ObjectCardView wObject={proposedWobj} key={proposedWobj.id} />
       </div>
-      <div className="Proposition__footer">
+      <div
+        className={classNames('Proposition__footer', {
+          'justify-end': assigned === null || isReserved,
+        })}
+      >
         {proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (
           <CampaignFooter
             post={post}

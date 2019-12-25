@@ -4,7 +4,7 @@ import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
 import { Button, Icon } from 'antd';
 import { getClientWObj } from '../../adapters';
-import { convertDigits, getCurrentUSDPrice } from '../rewardsHelper';
+import { getCurrentUSDPrice } from '../rewardsHelper';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { UsedLocaleContext } from '../../Wrapper';
 import './Campaign.less';
@@ -14,11 +14,11 @@ const Campaign = ({ proposition, filterKey, history, intl }) => {
   const requiredObject = getClientWObj(proposition.required_object, usedLocale);
   const currentUSDPrice = getCurrentUSDPrice();
   const rewardPrise = currentUSDPrice
-    ? convertDigits(currentUSDPrice * proposition.min_reward)
+    ? (currentUSDPrice * proposition.min_reward).toFixed(2)
     : '...';
   const rewardMax =
     proposition.max_reward !== proposition.min_reward
-      ? `${currentUSDPrice ? currentUSDPrice * convertDigits(proposition.max_reward) : '...'}`
+      ? `${currentUSDPrice ? (currentUSDPrice * proposition.max_reward).toFixed(2) : '...'}`
       : '';
   const goToProducts = () => history.push(`/rewards/${filterKey}/${requiredObject.id}`);
   return (

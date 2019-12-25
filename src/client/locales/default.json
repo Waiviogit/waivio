@@ -936,6 +936,7 @@
   "type_experts": "Type experts",
   "campaign_buttons_reserved": "Reserved",
   "campaign_buttons_days_left": "days left",
+  "campaign_buttons_day_left": "day left",
   "campaign_buttons_today": "today",
   "campaign_buttons_comment": "Comment",
   "campaign_buttons_write_review": "Write review",

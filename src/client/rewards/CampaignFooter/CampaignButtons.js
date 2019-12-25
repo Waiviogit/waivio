@@ -15,7 +15,7 @@ import Popover from '../../components/Popover';
 export default class CampaignButtons extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
-    pastDays: PropTypes.number.isRequired,
+    daysLeft: PropTypes.number.isRequired,
     post: PropTypes.shape().isRequired,
     postState: PropTypes.shape().isRequired,
     propositionId: PropTypes.string.isRequired,
@@ -179,7 +179,7 @@ export default class CampaignButtons extends React.Component {
       proposedObjectPermlink,
       proposedObjectName,
       propositionId,
-      pastDays,
+      daysLeft,
     } = this.props;
 
     return (
@@ -189,17 +189,10 @@ export default class CampaignButtons extends React.Component {
             {`${intl.formatMessage({
               id: 'campaign_buttons_reserved',
               defaultMessage: 'Reserved',
-            })} - ${
-              pastDays === 0
-                ? intl.formatMessage({
-                    id: 'campaign_buttons_today',
-                    defaultMessage: 'today',
-                  })
-                : ` ${pastDays} ${intl.formatMessage({
-                    id: 'campaign_buttons_days_left',
-                    defaultMessage: 'days left',
-                  })}`
-            }`}
+            })} - ${daysLeft} ${intl.formatMessage({
+              id: 'campaign_buttons_days_left',
+              defaultMessage: 'days left',
+            })}`}
           </div>
           <BTooltip
             title={intl.formatMessage({

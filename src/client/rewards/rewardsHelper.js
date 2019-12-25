@@ -1,5 +1,7 @@
 import { useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import moment from 'moment';
 
 export const displayLimit = 10;
 
@@ -157,4 +159,10 @@ export const getCurrentUSDPrice = () => {
     cryptosPriceHistory.STEEM &&
     cryptosPriceHistory.STEEM.priceDetails.currentUSDPrice;
   return currentUSDPrice;
+};
+
+export const getDaysLeft = (reserveDate, daysCount) => {
+  const currentTime = moment(Date.now()).unix();
+  const reservationTime = moment(reserveDate).unix() + daysCount * 86400;
+  return parseInt((reservationTime - currentTime) / 86400, 10);
 };
