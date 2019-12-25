@@ -16,7 +16,7 @@ const propTypes = {
   amount: PropTypes.string,
   caller: PropTypes.string,
   margin: PropTypes.string,
-  toggleConfirmationModal: PropTypes.func.isRequired,
+  toggleConfirmationModal: PropTypes.func,
   handleClickLess: PropTypes.func.isRequired,
   handleClickMore: PropTypes.func.isRequired,
   handleClickOpenDeal: PropTypes.func.isRequired,
@@ -31,6 +31,7 @@ const defaultProps = {
   caller: 'od-pc',
   amount: '',
   margin: '',
+  toggleConfirmationModal: () => {},
 };
 
 const PostQuotation = ({

@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { get, isEmpty, last } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import { jsonParse } from './formatter';
 
 export const isValidForecast = forecast => {
@@ -25,7 +25,7 @@ export const getForecastData = post => {
     const { quoteSecurity, postPrice, recommend, createdAt, tpPrice, slPrice } = forecast;
     const predictedEndDate = forecast.expiredAt;
     const isForecastExpired = !isEmpty(post.exp_forecast) || moment().valueOf() > moment(predictedEndDate).valueOf();
-    const { bars, expiredAt, profitability } = get(post, ['exp_forecast'], {});
+    const { bars, expiredAt, profitability, rate } = get(post, ['exp_forecast'], {});
 
     return {
       predictedEndDate,
@@ -37,7 +37,7 @@ export const getForecastData = post => {
       slPrice: slPrice ? slPrice.toString() : null,
       isForecastExpired,
       expiredBars: bars || [],
-      finalQuote: last(bars) || null,
+      finalQuote: rate && rate.quote,
       expiredAt,
       profitability: profitability || 0,
       isForecastValid: isValidForecast(forecast),
