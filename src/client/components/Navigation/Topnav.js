@@ -35,7 +35,7 @@ import './Topnav.less';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
-import ModalSignUp from './ModalSignUp/ModalSignUp';
+// import ModalSignUp from './ModalSignUp/ModalSignUp';
 
 @injectIntl
 @withRouter
@@ -220,7 +220,10 @@ class Topnav extends React.Component {
       >
         <Menu className="Topnav__menu-container__menu" mode="horizontal">
           <Menu.Item key="signup">
-            <ModalSignUp isButton={false} />
+            {/* <ModalSignUp isButton={false} /> */}
+            <a target="_blank" rel="noopener noreferrer" href={process.env.SIGNUP_URL}>
+              <FormattedMessage id="signup" defaultMessage="Sign up" />
+            </a>
           </Menu.Item>
           <Menu.Item key="divider" disabled>
             |
