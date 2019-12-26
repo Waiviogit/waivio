@@ -142,7 +142,7 @@ export function getInitialState(props) {
     parentPermlink: WAIVIO_PARENT_PERMLINK,
     draftContent: {
       title:
-        props.campaignId && props.initObjects
+        props.initObjects && props.initObjects.length
           ? `Review: ${props.initObjects
               .filter(obj => obj.match(/^\[(.+)\]\((\S+)\)/))
               .map(obj => obj.match(/^\[(.+)\]\((\S+)\)/)[1])

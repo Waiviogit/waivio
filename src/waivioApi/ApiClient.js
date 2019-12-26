@@ -654,6 +654,17 @@ export const getRewardsGeneralCounts = guideName =>
       .catch(error => reject(error));
   });
 
+export const getMatchBotRules = guideName =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.campaignApiPrefix}${config.matchBots}/?bot_name=${guideName}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+
 export const getCampaignByGuideNameAndObject = (guideName, object) =>
   new Promise((resolve, reject) => {
     fetch(`${config.campaignApiPrefix}${config.campaigns}`, {
@@ -692,7 +703,6 @@ export const getLenders = ({ sponsor, user, filters }) => {
 //region UserMetadata Requests
 export const getAuthenticatedUserMetadata = userName => {
   const { apiPrefix, user, userMetadata } = config;
-
   return fetch(`${apiPrefix}${user}/${userName}${userMetadata}`, {
     headers: headers,
     method: 'GET',
@@ -846,5 +856,7 @@ export const waivioAPI = {
   broadcastGuestOperation,
   getUserAccount,
 };
+
+// I don't read changes before commit
 
 export default null;

@@ -16,6 +16,7 @@ import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { rejectReservationCampaign, reserveActivatedCampaign } from '../../../waivioApi/ApiClient';
 import { generatePermlink } from '../../helpers/wObjectHelper';
 import { UsedLocaleContext } from '../../Wrapper';
+import Details from '../Details/Details';
 import './Proposition.less';
 
 const Proposition = ({
@@ -26,7 +27,6 @@ const Proposition = ({
   discardProposition,
   loading,
   wobj,
-  toggleModal,
   assigned,
   post,
   getSingleComment,
@@ -34,6 +34,7 @@ const Proposition = ({
 }) => {
   const usedLocale = useContext(UsedLocaleContext);
   const proposedWobj = getClientWObj(wobj, usedLocale);
+  const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
   const requiredObjectName = getFieldWithMaxWeight(
     proposition.required_object,
     'name',
@@ -44,14 +45,14 @@ const Proposition = ({
   }, []);
 
   const toggleModalDetails = () => {
-    toggleModal(proposition);
+    setModalDetailsOpen(!isModalDetailsOpen);
   };
 
   const discardPr = obj => {
     const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
     const rejectData = {
       campaign_permlink: proposition.activation_permlink,
-      user_name: proposition.guide.name,
+      user_name: authorizedUserName,
       reservation_permlink: proposition.objects[0].permlink,
       unreservation_permlink: unreservationPermlink,
     };
@@ -167,8 +168,8 @@ const Proposition = ({
                 <Button
                   type="primary"
                   loading={loading}
-                  disabled={loading}
-                  onClick={reserveOnClickHandler}
+                  disabled={loading || proposition.isReservedSiblingObj}
+                  onClick={toggleModalDetails}
                 >
                   {intl.formatMessage({
                     id: 'reserve',
@@ -194,6 +195,16 @@ const Proposition = ({
           </React.Fragment>
         )}
       </div>
+      <Details
+        isModalDetailsOpen={isModalDetailsOpen}
+        objectDetails={proposition}
+        toggleModal={toggleModalDetails}
+        reserveOnClickHandler={reserveOnClickHandler}
+        loading={loading}
+        assigned={assigned}
+        isReserved={isReserved}
+        proposedWobj={proposedWobj}
+      />
       <Modal
         closable
         maskClosable={false}
@@ -222,7 +233,6 @@ Proposition.propTypes = {
   loading: PropTypes.bool.isRequired,
   assigned: PropTypes.bool,
   assignCommentPermlink: PropTypes.string,
-  toggleModal: PropTypes.func.isRequired,
   intl: PropTypes.shape().isRequired,
   post: PropTypes.shape(),
 };

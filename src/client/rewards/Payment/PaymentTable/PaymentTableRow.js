@@ -37,7 +37,7 @@ const PaymentTableRow = ({ intl, sponsor }) => (
               id: 'paymentTable_requested_by',
               defaultMessage: `requested by`,
             })}{' '}
-            <Link to={`/@${sponsor.userName}`}>@{sponsor.sponsor}</Link>)
+            <Link to={`/@${sponsor.sponsor}`}>@{sponsor.sponsor}</Link>)
           </React.Fragment>
         </div>
         {sponsor && sponsor.details && sponsor.details.main_object && (

@@ -126,7 +126,7 @@ export default class ProfileSettings extends React.Component {
   }
 
   render() {
-    const { intl, form, userName } = this.props;
+    const { intl, form } = this.props;
     const { bodyHTML } = this.state;
     const { getFieldDecorator } = form;
 
@@ -168,7 +168,6 @@ export default class ProfileSettings extends React.Component {
           </title>
         </Helmet>
         <div className="settings-layout container">
-          <TopNavigation authenticated userName={userName} />
           <Affix className="leftContainer" stickPosition={77}>
             <div className="left">
               <LeftSidebar />

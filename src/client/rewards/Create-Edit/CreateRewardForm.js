@@ -325,13 +325,13 @@ class CreateRewardForm extends React.Component {
         ) {
           createCampaign(this.prepareSubmitData(values, this.props.userName))
             .then(() => {
-              message.success(`'${values.campaignName}' rewards campaign has been created.`);
+              message.success(`Rewards campaign ${values.campaignName} has been created.`);
               this.setState({ loading: false, isModal: false });
               this.manageRedirect();
             })
             .catch(error => {
               console.log(error);
-              message.error(`${values.campaignName}'rewards campaign has been rejected`);
+              message.error(`Campaign ${values.campaignName} has been rejected`);
               this.setState({ loading: false, isModal: false });
             });
         }

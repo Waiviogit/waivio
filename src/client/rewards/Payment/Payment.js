@@ -24,7 +24,7 @@ const Payment = ({ match, intl, userName, openTransfer }) => {
     getLenders(requestParams)
       .then(data => {
         setSponsors(data.histories);
-        setPayable(data.histories[0].amount_sbd);
+        setPayable(data.histories[0].amount);
       })
       .catch(e => console.log(e));
   }, []);
@@ -51,8 +51,8 @@ const Payment = ({ match, intl, userName, openTransfer }) => {
     <div className="Payment">
       <div className="Payment__title">
         <div className="Payment__title-payment">
-          {titleName}
-          <Link className="Payment__title-link" to={`/@${userName}`}>{`: ${userName} `}</Link>
+          {titleName}:
+          <Link className="Payment__title-link" to={`/@${userName}`}>{` ${userName} `}</Link>
           {isPayables ? <span>&rarr;</span> : <span>&larr;</span>}
           <Link className="Payment__title-link" to={`/@${name}`}>{` ${name} `}</Link>
         </div>

@@ -3,13 +3,12 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-
 import { getUserRankKey, getUserRank } from '../helpers/user';
 import AvatarLightbox from './AvatarLightbox';
 import FollowButton from '../widgets/FollowButton';
 import Action from './Button/Action';
-import WeightTag from './WeightTag';
 import './UserHeader.less';
+import WeightTag from './WeightTag';
 
 const UserHeader = ({
   username,
@@ -21,8 +20,6 @@ const UserHeader = ({
   hasCover,
   isFollowing,
   isActive,
-  setModalVisibility,
-  isMobile,
 }) => {
   const style = hasCover
     ? { backgroundImage: `url("https://steemitimages.com/2048x512/${coverImage}")` }
@@ -51,12 +48,6 @@ const UserHeader = ({
                   </Link>
                 ) : (
                   <FollowButton following={handle} followingType="user" />
-                )}
-                {`  `}
-                {isMobile && (
-                  <Action onClick={() => setModalVisibility(true)}>
-                    <FormattedMessage id="user_info" defaultMessage="User info" />
-                  </Action>
                 )}
               </div>
             </div>
@@ -103,8 +94,6 @@ UserHeader.propTypes = {
   hasCover: PropTypes.bool,
   isFollowing: PropTypes.bool,
   isActive: PropTypes.bool.isRequired,
-  setModalVisibility: PropTypes.func.isRequired,
-  isMobile: PropTypes.bool,
 };
 
 UserHeader.defaultProps = {
@@ -117,7 +106,6 @@ UserHeader.defaultProps = {
   hasCover: false,
   isFollowing: false,
   onTransferClick: () => {},
-  isMobile: false,
 };
 
 export default UserHeader;

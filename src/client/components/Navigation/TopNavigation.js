@@ -12,15 +12,18 @@ const LINKS = {
   FEED_PROMOTED: '/promoted',
   REWARDS: '/rewards',
   DISCOVER: '/discover-objects',
-  TOOLS_ACTIVITY: '/activity',
   TOOLS_DRAFTS: '/drafts',
   TOOLS_BOOKMARKS: '/bookmarks',
   TOOLS_EDIT_PROFILE: '/edit-profile',
   TOOLS_INVITE: '/invite',
   TOOLS_SETTINGS: '/settings',
   ABOUT: '/object/ylr-waivio',
+  NOTIFICATIONS: '/notifications',
   USERS: '/discover',
+  BLOG: '/blog',
+  FEED: '/feed',
 };
+
 const FEED_URLS = [LINKS.FEED_HOT, LINKS.FEED_NEW, LINKS.FEED_TRENDING];
 const TOOLS_URLS = [
   LINKS.TOOLS_BOOKMARKS,
@@ -28,7 +31,6 @@ const TOOLS_URLS = [
   LINKS.TOOLS_EDIT_PROFILE,
   LINKS.TOOLS_INVITE,
   LINKS.TOOLS_SETTINGS,
-  LINKS.TOOLS_ACTIVITY,
 ];
 
 const TopNavigation = ({ authenticated, location: { pathname } }) => {

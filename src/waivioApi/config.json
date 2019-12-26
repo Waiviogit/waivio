@@ -39,6 +39,7 @@
   "guestOperations": "/guest_operations",
   "dashboard": "/dashboard",
   "statistics": "/statistics",
+  "matchBots": "/match_bots",
   "feed": "/feed",
   "followingObjects": "/following_objects",
   "followingUpdates": "/following_updates",
