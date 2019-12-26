@@ -39,6 +39,9 @@ export const getFollowing = async (
 ) => {
   if (isGuest) {
     const res = await getFollowingUsers(username);
+    if (res.message) {
+      throw new Error(res);
+    }
     let index = startForm ? res.indexOf(startForm) : 0;
     index = index === -1 ? 0 : index;
     return res.slice(index, limit + index);

@@ -54,6 +54,9 @@ const posts = (state = initialState, action) => {
         },
       };
     }
+    case feedTypes.GET_USER_COMMENTS.ERROR:
+    case feedTypes.GET_MORE_USER_COMMENTS.ERROR:
+      return state;
     case feedTypes.GET_MORE_USER_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_USER_FEED_CONTENT.SUCCESS: {
       const list = {
@@ -79,7 +82,6 @@ const posts = (state = initialState, action) => {
         postsStates,
       };
     }
-
     case feedTypes.GET_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_OBJECT_POSTS.SUCCESS:
     case feedTypes.GET_MORE_OBJECT_POSTS.SUCCESS:

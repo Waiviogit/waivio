@@ -25,6 +25,15 @@ function sc2Extended() {
         } else {
           operation = `waivio_guest_${operations[0][1].id}`;
         }
+      } else if (operations[0][0] === 'comment') {
+        const jsonMetadata = JSON.parse(operations[0][1].json_metadata);
+        if (jsonMetadata.comment) {
+          // eslint-disable-next-line no-param-reassign
+          operations[0][1].guest_root_author = operations[0][1].author;
+          // eslint-disable-next-line no-param-reassign
+          operations[0][1].author = jsonMetadata.comment.userId;
+        }
+        operation = `waivio_guest_${operations[0][0]}`;
       } else {
         operation = `waivio_guest_${operations[0][0]}`;
       }

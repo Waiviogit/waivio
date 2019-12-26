@@ -92,7 +92,7 @@ class UserInfo extends React.Component {
                   id="joined_date"
                   defaultMessage="Joined {date}"
                   values={{
-                    date: intl.formatDate(user.created, {
+                    date: intl.formatDate(user.created || user.createdAt, {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',

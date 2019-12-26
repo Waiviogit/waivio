@@ -9,18 +9,28 @@ import { getWobjectFollowing } from '../../waivioApi/ApiClient';
 import ObjectDynamicList from '../object/ObjectDynamicList';
 import './UserFollowing.less';
 import { getUser, isGuestUser } from '../reducers';
+import { notify } from '../app/Notification/notificationActions';
 
 const TabPane = Tabs.TabPane;
 
-@connect((state, ownProps) => ({
-  user: getUser(state, ownProps.match.params.name),
-  isGuest: isGuestUser(state),
-}))
+@connect(
+  (state, ownProps) => ({
+    user: getUser(state, ownProps.match.params.name),
+    isGuest: isGuestUser(state),
+  }),
+  {
+    notify,
+  },
+)
 export default class UserFollowing extends React.Component {
   static propTypes = {
     user: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
-    isGuest: PropTypes.bool.isRequired,
+    isGuest: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    isGuest: false,
   };
 
   static limit = 50;
@@ -43,7 +53,9 @@ export default class UserFollowing extends React.Component {
       'blog',
       UserFollowing.limit,
       this.props.isGuest,
-    ).then(followings => followings.map(following => ({ name: following })));
+    )
+      .then(followings => followings.map(following => ({ name: following })))
+      .catch(err => err);
   }
 
   objectFetcher = skip => {
@@ -81,7 +93,7 @@ export default class UserFollowing extends React.Component {
                   <FormattedMessage id="users" defaultMessage="Users" />
                 </span>
                 <span className="UserFollowing__badge">
-                  <FormattedNumber value={user.users_follow.length} />
+                  <FormattedNumber value={user.users_follow ? user.users_follow.length : 0} />
                 </span>
               </React.Fragment>
             }

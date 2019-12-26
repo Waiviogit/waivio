@@ -39,13 +39,17 @@ export default class UserDynamicList extends React.Component {
         loading: true,
       },
       () => {
-        fetcher(users).then(newUsers =>
-          this.setState(state => ({
-            loading: false,
-            hasMore: newUsers.length === limit,
-            users: _.unionBy(state.users, newUsers, 'name'),
-          })),
-        );
+        fetcher(users)
+          .then(newUsers =>
+            this.setState(state => ({
+              loading: false,
+              hasMore: newUsers.length === limit,
+              users: _.unionBy(state.users, newUsers, 'name'),
+            })),
+          )
+          .catch(err => {
+            console.error(err.message);
+          });
       },
     );
   }

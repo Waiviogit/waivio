@@ -69,19 +69,6 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         reject(e);
       }
     });
-    // } else if (token) {
-    //   promise = new Promise(async (resolve, reject) => {
-    //     try {
-    //       // const expiration = localStorage.getItem('accessTokenExpiration');
-    //       const socialName = localStorage.getItem('socialName');
-    //       // const tokenData = await getValidTokenData(token, expiration);
-    //       const tokenData = await getValidTokenData();
-    //       const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.userData.name);
-    //       resolve({ account: tokenData.userData, userMetaData, socialName, isGuestUser: true });
-    //     } catch (e) {
-    //       reject(e);
-    //     }
-    //   });
   }
   return dispatch({
     type: LOGIN,
