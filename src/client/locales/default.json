@@ -871,5 +871,6 @@
   "payment_card_your_payment_history_with_user": "Your payment history with '{username}'",
   "object_info": "Object info",
   "user_info": "User info",
-  "exchange": "Exchange"
+  "exchange": "Exchange",
+  "guest_comments": "Guest user are can't see own comments"
 }

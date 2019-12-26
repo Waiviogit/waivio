@@ -873,5 +873,6 @@
   "payment_card_your_payment_history_with_user": "Ваша история платежей с '{username}'",
   "object_info": "Данные обьекта",
   "user_info": "Данные пользователя",
-  "exchange": "Обмен"
+  "exchange": "Обмен",
+  "guest_comments": "Госевые пользователи не могут видеть собственные коментарии"
 }
