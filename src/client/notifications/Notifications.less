@@ -6,10 +6,17 @@
 
 .NotificationsPage {
   display: inline-block;
+  width: 100%;
+
   &__title {
+    display: none;
     padding-bottom: 16px;
     padding-left: @page-padding;
     text-align: left;
+
+    @media @medium {
+      display: block;
+    }
   }
 
   &__content {
@@ -29,6 +36,10 @@
         border-bottom-right-radius: @border-radius-base;
         border-bottom-left-radius: @border-radius-base;
       }
+    }
+
+    @media @medium {
+      margin-bottom: @content-margin;
     }
   }
 

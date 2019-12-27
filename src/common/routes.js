@@ -165,11 +165,6 @@ const routes = [
         component: Invite,
       },
       {
-        path: '/notifications',
-        exact: true,
-        component: Notifications,
-      },
-      {
         path: '/discover-objects/:typeName?',
         exact: true,
         component: DiscoverObjects,
@@ -301,10 +296,14 @@ const routes = [
         component: ExitPage,
       },
       {
-        path: '/:sortBy(trending|created|hot|promoted|feed|blog)?/:category?',
+        path: '/:sortBy(trending|created|hot|promoted|feed|blog|notifications)?/:category?',
         component: Page,
         exact: true,
         routes: [
+          {
+            path: '/notifications',
+            component: Notifications,
+          },
           {
             path: '/feed/:name',
             component: ObjectFeed,
