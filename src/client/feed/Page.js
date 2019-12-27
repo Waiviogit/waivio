@@ -115,7 +115,7 @@ class Page extends React.Component {
     }
   };
 
-  setFetching = value => this.setState({ isFetching: value });
+  setFetched = value => this.setState({ isFetching: value });
 
   render() {
     const {
@@ -176,7 +176,7 @@ class Page extends React.Component {
                   size="small"
                 />
               </div>
-              <SubFeed setFetching={this.setFetching} />
+              <SubFeed setFetched={this.setFetched} />
             </div>
           </div>
         </div>

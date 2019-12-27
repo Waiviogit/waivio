@@ -60,7 +60,7 @@ class SubFeed extends React.Component {
     getUserFeedContent: PropTypes.func,
     getMoreUserFeedContent: PropTypes.func,
     getMoreFeedContent: PropTypes.func,
-    setFetching: PropTypes.func,
+    setFetched: PropTypes.func,
   };
 
   static defaultProps = {
@@ -68,7 +68,7 @@ class SubFeed extends React.Component {
     getUserFeedContent: () => {},
     getMoreUserFeedContent: () => {},
     getMoreFeedContent: () => {},
-    setFetching: () => {},
+    setFetched: () => {},
   };
 
   componentDidMount() {
@@ -129,7 +129,7 @@ class SubFeed extends React.Component {
   }
 
   render() {
-    const { authenticated, loaded, user, feed, match, setFetching } = this.props;
+    const { authenticated, loaded, user, feed, match, setFetched } = this.props;
     let content = [];
     let isFetching = false;
     let fetched = false;
@@ -141,7 +141,7 @@ class SubFeed extends React.Component {
     if (isAuthHomeFeed) {
       content = getUserFeedFromState(user.name, feed);
       isFetching = getUserFeedLoadingFromState(user.name, feed);
-      setFetching(isFetching);
+      setFetched(isFetching);
       fetched = getUserFeedFetchedFromState(user.name, feed);
       hasMore =
         feed.feed[user.name] && !_.isNil(feed.feed[user.name].hasMore)
@@ -158,7 +158,7 @@ class SubFeed extends React.Component {
       hasMore = getFeedHasMoreFromState(sortBy, category, feed);
       content = getFeedFromState(sortBy, category, feed);
       isFetching = getFeedLoadingFromState(sortBy, category, feed);
-      setFetching(isFetching);
+      setFetched(isFetching);
       fetched = getFeedFetchedFromState(sortBy, category, feed);
       failed = getFeedFailedFromState(sortBy, category, feed);
       loadMoreContent = () => this.props.getMoreFeedContent(sortBy, category);
