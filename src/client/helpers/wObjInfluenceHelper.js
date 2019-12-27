@@ -43,7 +43,10 @@ export const setObjPercents = (linkedObjects, percentage) => {
   );
 
   return {
-    ...setInitialObjPercents(linkedObjects.filter(o => !zeroWeighted[o.id]), linked),
+    ...setInitialObjPercents(
+      linkedObjects.filter(o => !zeroWeighted[o.id]),
+      linked,
+    ),
     ...zeroWeighted,
   };
 };
@@ -86,19 +89,19 @@ export const changeObjInfluenceHandler = (objArr, currObj, influence, influenceR
     const resultArr = objArr.map(obj =>
       obj.id === currObj.id
         ? {
-          ...obj,
-          influence: {
-            value: influence,
-            max: influence + influenceRemainNext,
-          },
-        }
+            ...obj,
+            influence: {
+              value: influence,
+              max: influence + influenceRemainNext,
+            },
+          }
         : {
-          ...obj,
-          influence: {
-            value: obj.influence.value,
-            max: obj.influence.value + influenceRemainNext,
+            ...obj,
+            influence: {
+              value: obj.influence.value,
+              max: obj.influence.value + influenceRemainNext,
+            },
           },
-        },
     );
     return { linkedObjects: resultArr, influenceRemain: influenceRemainNext };
   }

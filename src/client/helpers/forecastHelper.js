@@ -20,11 +20,12 @@ export const isValidForecast = forecast => {
 };
 
 export const getForecastData = post => {
-  const forecast = post && post.forecast || get(jsonParse(post.json_metadata), 'wia', null);
+  const forecast = (post && post.forecast) || get(jsonParse(post.json_metadata), 'wia', null);
   if (forecast) {
     const { quoteSecurity, postPrice, recommend, createdAt, tpPrice, slPrice } = forecast;
     const predictedEndDate = forecast.expiredAt;
-    const isForecastExpired = !isEmpty(post.exp_forecast) || moment().valueOf() > moment(predictedEndDate).valueOf();
+    const isForecastExpired =
+      !isEmpty(post.exp_forecast) || moment().valueOf() > moment(predictedEndDate).valueOf();
     const { bars, expiredAt, profitability, rate } = get(post, ['exp_forecast'], {});
 
     return {
@@ -41,7 +42,7 @@ export const getForecastData = post => {
       expiredAt,
       profitability: profitability || 0,
       isForecastValid: isValidForecast(forecast),
-    }
+    };
   }
   return {
     isForecastValid: false,

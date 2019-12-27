@@ -376,7 +376,6 @@ class StoryFull extends React.Component {
       isForecastValid,
     } = getForecastData(post);
 
-
     return (
       <div className="StoryFull">
         {replyUI}
@@ -528,12 +527,7 @@ class StoryFull extends React.Component {
             expiredAt={expiredAt}
           />
         )}
-        {isForecastValid && (
-          <PostQuotation
-            quoteSecurity={quoteSecurity}
-            caller="od-pp"
-          />
-        )}
+        {isForecastValid && <PostQuotation quoteSecurity={quoteSecurity} caller="od-pp" />}
 
         <Collapse defaultActiveKey={['1']} accordion>
           {!_.isEmpty(linkedObjects) && (

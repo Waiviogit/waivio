@@ -54,6 +54,7 @@ class Page extends React.Component {
 
   state = {
     checked: false,
+    isFetching: false,
   };
 
   componentDidMount() {
@@ -114,6 +115,8 @@ class Page extends React.Component {
     }
   };
 
+  setFetching = value => this.setState({ isFetching: value });
+
   render() {
     const {
       authenticated,
@@ -121,6 +124,7 @@ class Page extends React.Component {
       location: { pathname },
       match,
     } = this.props;
+    const { isFetching } = this.state;
     const { category, sortBy } = match.params;
     const robots = pathname === '/' ? 'index,follow' : 'noindex,follow';
 
@@ -167,11 +171,12 @@ class Page extends React.Component {
                 <Switch
                   defaultChecked
                   onChange={this.handleChangeFeed}
+                  disabled={isFetching}
                   checked={this.state.checked}
                   size="small"
                 />
               </div>
-              <SubFeed />
+              <SubFeed setFetching={this.setFetching} />
             </div>
           </div>
         </div>

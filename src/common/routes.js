@@ -52,7 +52,6 @@ import UserStatisticsContainer from '../client/user/UserStatistics/UserStatistic
 import EconomicalCalendar from '../investarena/components/EconomicalCalendar/EconomicalCalendar';
 import UserInfo from '../client/app/Sidebar/UserInfo';
 
-
 const routes = [
   {
     component: Wrapper,

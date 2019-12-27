@@ -40,7 +40,7 @@ const PostSellBuy = ({
   finalQuote,
 }) => {
   let profitabilityIcon;
-  const wobj = quoteSettings && quoteSettings.wobjData || {};
+  const wobj = (quoteSettings && quoteSettings.wobjData) || {};
   const recommendPost = recommend.toLowerCase();
   if (isExpired && profitability !== undefined) {
     let data = { img: '/images/icons/ic_trending_flat.svg', title: 'Neutral' };

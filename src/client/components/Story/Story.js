@@ -117,7 +117,10 @@ class Story extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return nextState.isVisible && (!_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state));
+    return (
+      nextState.isVisible &&
+      (!_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state))
+    );
   }
 
   getApprovalTagLayout = () => {
@@ -426,10 +429,7 @@ class Story extends React.Component {
       }
     }
     return isEnoughData ? (
-      <VisibilitySensor
-        onChange={this.handleChangeVisibility}
-        partialVisibility
-      >
+      <VisibilitySensor onChange={this.handleChangeVisibility} partialVisibility>
         <div className="Story" id={`${post.author}-${post.permlink}`}>
           {rebloggedUI}
           <div className="Story__content">
@@ -533,12 +533,7 @@ class Story extends React.Component {
                   expiredAt={expiredAt}
                 />
               )}
-              {isForecastValid && (
-                <PostQuotation
-                  quoteSecurity={quoteSecurity}
-                  caller="od-pm"
-                />
-              )}
+              {isForecastValid && <PostQuotation quoteSecurity={quoteSecurity} caller="od-pm" />}
               <StoryFooter
                 user={user}
                 post={post}
