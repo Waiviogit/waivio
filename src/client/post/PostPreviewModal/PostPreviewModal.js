@@ -15,7 +15,7 @@ import './PostPreviewModal.less';
 import PostChart from '../../../investarena/components/PostChart';
 import { getForecastObject } from '../../../investarena/components/CreatePostForecast/helpers';
 import { forecastDateTimeFormat } from '../../../investarena/constants/constantsForecast';
-import {setObjPercents} from "../../helpers/wObjInfluenceHelper";
+import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 
 const isTopicValid = topic => /^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$/.test(topic);
 
