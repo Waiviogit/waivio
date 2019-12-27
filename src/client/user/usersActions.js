@@ -1,21 +1,13 @@
 import { createAsyncActionType } from '../helpers/stateHelpers';
-import { getAccountWithFollowingCount as getAccountWithFollowingCountAPI } from '../helpers/apiHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../reducers';
 
 export const GET_ACCOUNT = createAsyncActionType('@users/GET_ACCOUNT');
 
 export const getAccount = name => dispatch => {
-  let isGuest = null;
-
-  if (typeof localStorage !== 'undefined') {
-    const token = localStorage.getItem('accessToken');
-    isGuest = token === 'null' ? false : Boolean(token);
-  }
-
   dispatch({
     type: GET_ACCOUNT.ACTION,
-    payload: getAccountWithFollowingCountAPI(name, isGuest),
+    payload: ApiClient.getUserAccount(name),
     meta: { username: name },
   }).catch(() => {});
 };
@@ -23,7 +15,7 @@ export const getAccount = name => dispatch => {
 export const getUserAccount = name => dispatch =>
   dispatch({
     type: GET_ACCOUNT.ACTION,
-    payload: ApiClient.getAccountWithFollowingCount(name),
+    payload: ApiClient.getUserAccount(name),
     meta: { username: name },
   }).catch(() => {});
 

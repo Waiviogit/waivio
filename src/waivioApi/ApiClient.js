@@ -3,9 +3,7 @@ import _ from 'lodash';
 import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
 import config from './routes';
-import { getFollowingCount } from '../client/helpers/apiHelpers';
 import { getValidTokenData } from '../client/helpers/getToken';
-import user from '../client/helpers/user';
 
 let headers = {
   Accept: 'application/json',
@@ -237,7 +235,7 @@ export const postAppendWaivioObject = postData =>
 // region Follow API requests
 export const getAllFollowingObjects = username =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.user}/${username}`)
+    fetch(`${config.apiPrefix}${config.user}/${username}${config.followingObjects}`)
       .then(res => res.json())
       .then(user => resolve(user.objects_follow || []))
       .catch(error => reject(error));
@@ -269,22 +267,22 @@ export const getWobjectFollowing = (userName, skip = 0, limit = 50) =>
       .catch(error => reject(error));
   });
 
-export const getUserAccount = username =>
+export const getUserAccount = (username, with_followings = false) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.user}/${username}`)
+    fetch(`${config.apiPrefix}${config.user}/${username}?$with_followings=${with_followings}`)
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
 
-export const getAccountWithFollowingCount = username =>
-  Promise.all([getUserAccount(username), getFollowingCount(username)]).then(
-    ([account, following]) => ({
-      ...account,
-      following_count: following.following_count,
-      follower_count: following.follower_count,
-    }),
-  );
+// export const getAccountWithFollowingCount = username =>
+//   Promise.all([getUserAccount(username), getFollowingCount(username)]).then(
+//     ([account, following]) => ({
+//       ...account,
+//       following_count: following.following_count,
+//       follower_count: following.followers_count,
+//     }),
+//   );
 
 export const getFollowingUpdates = (userName, count = 5) =>
   new Promise((resolve, reject) => {
@@ -809,17 +807,29 @@ export const broadcastGuestOperation = async (operationId, data) => {
 };
 //endregion
 
-export const getFollowingUsers = async username => {
-  return fetch(`${config.apiPrefix}${config.user}/${username}`)
+// export const getFollowingUsers = async (username) => {
+//   return fetch(`${config.apiPrefix}${config.user}/${username}`)
+//     .then(res => res.json())
+//     .then(data => data.users_follow)
+//     .catch(err => err.message);
+// };
+
+export const getFollowersFromAPI = (username, limit = 10, skip = 0) => {
+  return fetch(
+    `${config.apiPrefix}${config.user}/${username}${config.getObjectFollowers}?skip=${skip}&limit=${limit}`,
+  )
     .then(res => res.json())
-    .then(data => data.users_follow)
-    .catch(err => err.message);
+    .then(data => data)
+    .catch(err => console.error(err));
 };
 
-export const getFollowersFromAPI = async username => {
-  return fetch(`${config.apiPrefix}${config.user}/${username}${config.getObjectFollowers}`)
+export const getFollowingsFromAPI = (username, limit = 10, skip = 0) => {
+  return fetch(
+    `${config.apiPrefix}${config.user}/${username}${config.followingUsers}?skip=${skip}&limit=${limit}`,
+  )
     .then(res => res.json())
-    .then(data => data.followers);
+    .then(data => data)
+    .catch(err => console.error(err));
 };
 
 export const updateGuestProfile = async (username, json_metadata) => {

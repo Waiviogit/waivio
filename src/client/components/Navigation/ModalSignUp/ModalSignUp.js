@@ -53,11 +53,10 @@ const ModalSignUp = ({ isButton, form }) => {
       }
     }
   };
-
   const getSignUpInfo = (
     <div className="SignUpCard">
       <div className="SignUpCard__line">
-        <a href={process.env.SIGNUP_URL}>
+        <a target="_blank" rel="noopener noreferrer" href={process.env.SIGNUP_URL}>
           <img
             alt="linkLogo"
             src="https://cdn.steemitimages.com/DQmernVC8CUupAFckxvE62oMYVJNAsK8YDLmyBzJnNLzH7S/steemit.png"

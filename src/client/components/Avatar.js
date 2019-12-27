@@ -12,6 +12,7 @@ export function getAvatarURL(username, size = 100, guestAvatar, currentUserName)
     ? `https://steemitimages.com/u/${username}/avatar`
     : `https://steemitimages.com/u/${username}/avatar/small`;
 }
+// todo: add logic for fetching guest users avatars
 
 const Avatar = ({ username, size }) => {
   const guestAvatar = useSelector(getAuthenticatedUserAvatar);

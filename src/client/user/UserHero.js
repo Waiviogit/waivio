@@ -56,8 +56,9 @@ const UserHero = ({
   onTransferClick,
 }) => {
   const objectsFollowingCount = user.objects_following_count ? user.objects_following_count : 0;
-  const usersFollowingCount = user.users_follow ? user.users_follow.length : 0;
+  const usersFollowingCount = user.users_following_count ? user.users_following_count : 0;
   const followingCount = usersFollowingCount + objectsFollowingCount;
+  const followersCount = user.followers_count ? user.followers_count : 0;
 
   return (
     <div>
@@ -82,7 +83,7 @@ const UserHero = ({
                   isActive={isUserActive(user)}
                 />
               )}
-              <UserMenuWrapper followers={user.follower_count} following={followingCount} />
+              <UserMenuWrapper followers={followersCount} following={followingCount} />
             </div>
           )}
         />

@@ -17,7 +17,6 @@ import Action from '../components/Button/Action';
 import Affix from '../components/Utils/Affix';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import requiresLogin from '../auth/requiresLogin';
-import TopNavigation from '../components/Navigation/TopNavigation';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import './Settings.less';
 

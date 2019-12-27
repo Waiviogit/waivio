@@ -1,7 +1,7 @@
 import SteemAPI from '../steemAPI';
 import { jsonParse } from '../helpers/formatter';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
-import { getFollowingUsers } from '../../waivioApi/ApiClient';
+import { getUserAccount } from '../../waivioApi/ApiClient';
 
 export const getAccount = username =>
   SteemAPI.sendAsync('get_accounts', [[username]]).then(result => {
@@ -15,8 +15,8 @@ export const getAccount = username =>
 
 export const getFollowingCount = async (username, isGuest = false) => {
   if (isGuest) {
-    const res = await getFollowingUsers(username);
-    return { following_count: res.length };
+    const res = await getUserAccount(username, true);
+    return { following_count: res.users_following_count };
   }
   return SteemAPI.sendAsync('call', ['follow_api', 'get_follow_count', [username]]);
 };
@@ -38,13 +38,13 @@ export const getFollowing = async (
   isGuest,
 ) => {
   if (isGuest) {
-    const res = await getFollowingUsers(username);
+    const res = await getUserAccount(username, true);
     if (res.message) {
       throw new Error(res);
     }
-    let index = startForm ? res.indexOf(startForm) : 0;
+    let index = startForm ? res.users_follow.indexOf(startForm) : 0;
     index = index === -1 ? 0 : index;
-    return res.slice(index, limit + index);
+    return res.users_follow.slice(index, limit + index);
   }
   return SteemAPI.sendAsync('call', [
     'follow_api',

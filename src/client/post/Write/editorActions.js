@@ -255,7 +255,8 @@ export function createPost(postData) {
               dispatch(addEditedPost(permlink));
             }
             dispatch(push(isGuest ? '/' : `/@${author}/${permlink}`));
-            dispatch(notify('Your post will be posted soon', 'success'));
+            // eslint-disable-next-line no-unused-expressions
+            isGuest && dispatch(notify('Your post will be posted soon', 'success'));
 
             if (window.analytics) {
               window.analytics.track('Post', {

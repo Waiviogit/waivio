@@ -43,7 +43,7 @@ function sc2Extended() {
       const userData = await getValidTokenData();
       console.log('\tgetUserAccount > ', userData.userData.name);
       // return Promise.resolve({ name: username });
-      const account = await waivioAPI.getUserAccount(userData.userData.name);
+      const account = await waivioAPI.getUserAccount(userData.userData.name, true);
       return { account, name: account.name };
     };
   }

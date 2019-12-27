@@ -1,5 +1,4 @@
 import * as store from '../reducers';
-import { getAllFollowing } from '../helpers/apiHelpers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getUserCoordinatesByIpAdress } from '../components/Maps/mapHelper';
@@ -56,7 +55,7 @@ export const GET_FOLLOWING_START = '@user/GET_FOLLOWING_START';
 export const GET_FOLLOWING_SUCCESS = '@user/GET_FOLLOWING_SUCCESS';
 export const GET_FOLLOWING_ERROR = '@user/GET_FOLLOWING_ERROR';
 
-export const getFollowing = username => (dispatch, getState) => {
+export const getFollowing = (username, skip, limit) => (dispatch, getState) => {
   const state = getState();
 
   if (!username && !store.getIsAuthenticated(state)) {
@@ -69,7 +68,7 @@ export const getFollowing = username => (dispatch, getState) => {
     type: GET_FOLLOWING,
     meta: targetUsername,
     payload: {
-      promise: getAllFollowing(targetUsername, state.auth.isGuestUser),
+      promise: ApiClient.getFollowingsFromAPI(targetUsername, skip, limit).then(data => data.users),
     },
   });
 };
