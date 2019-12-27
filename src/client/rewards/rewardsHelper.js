@@ -1,3 +1,8 @@
+import { useSelector } from 'react-redux';
+import { isEmpty } from 'lodash';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import moment from 'moment';
+
 export const displayLimit = 10;
 
 export const rewardPostContainerData = {
@@ -145,3 +150,19 @@ export const formatDate = (intl, date) => {
 };
 
 export const convertDigits = number => parseFloat((Math.round(number * 1000) / 1000).toFixed(3));
+
+export const getCurrentUSDPrice = () => {
+  const cryptosPriceHistory = useSelector(state => state.app.cryptosPriceHistory);
+  if (isEmpty(cryptosPriceHistory)) return !cryptosPriceHistory;
+  const currentUSDPrice =
+    cryptosPriceHistory &&
+    cryptosPriceHistory.STEEM &&
+    cryptosPriceHistory.STEEM.priceDetails.currentUSDPrice;
+  return currentUSDPrice;
+};
+
+export const getDaysLeft = (reserveDate, daysCount) => {
+  const currentTime = moment(Date.now()).unix();
+  const reservationTime = moment(reserveDate).unix() + daysCount * 86400;
+  return parseInt((reservationTime - currentTime) / 86400, 10);
+};
