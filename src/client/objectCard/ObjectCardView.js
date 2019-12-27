@@ -1,4 +1,3 @@
-import { Icon } from 'antd';
 import React from 'react';
 import _ from 'lodash';
 import { injectIntl } from 'react-intl';
@@ -77,7 +76,6 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
               )}
               {wObject.price && (
                 <span className="ObjectCardView__price" title={wObject.price}>
-                  <Icon type="dollar" />
                   {wObject.price}
                 </span>
               )}

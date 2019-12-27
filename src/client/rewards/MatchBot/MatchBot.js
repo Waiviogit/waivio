@@ -56,7 +56,7 @@ const MatchBot = ({ intl, userName }) => {
     if (userName) {
       getMatchBotRules(userName).then(data => {
         setRules(data);
-        setMinVotingPower(80); // TODO: change setting value when backend will ready
+        setMinVotingPower(data.votingPower / 100);
       });
     }
   }, []);
@@ -83,7 +83,9 @@ const MatchBot = ({ intl, userName }) => {
   const dispatch = useDispatch();
   const handleSetMinVotingPower = () => {
     setLoaded(true);
-    const preparedSliderValue = sliderValue / 100;
+    const preparedSliderValue = {
+      voting_power: sliderValue * 100,
+    };
     dispatch(setMatchBotVotingPower(preparedSliderValue)).then(() => {
       setLoaded(false);
       handleOpenVoteModal();
