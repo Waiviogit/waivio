@@ -2,10 +2,21 @@
 @import (reference) '../../styles/modules/variables.less';
 
 .Campaign {
-  margin-bottom: 15px;
-  cursor: pointer;
   .ObjectCardView {
     background-color: @white;
+
+    &__content {
+      margin-bottom: 30px;
+    }
+  }
+  &__button {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    bottom: 23px;
+    .ant-btn {
+      margin-right: 10px;
+    }
   }
 }
 

@@ -3,11 +3,26 @@
 .nightmode {
   .Proposition {
     margin-bottom: 15px;
-    background-color: @grey-nero;
+
+    &__header {
+      background-color: @grey-nero;
+    }
+
+    &__footer {
+      background-color: @grey-nero;
+    }
+
+    &__card {
+      .ObjectCardView {
+        background-color: @grey-nero;
+      }
+    }
+
     .RewardsHeader {
       &-block {
         border: @border-width-base @border-style-base @normal-grey;
       }
+
       &__user-card {
         &-username {
           color: @blue-hawkesBlue;
