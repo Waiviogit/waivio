@@ -296,12 +296,12 @@ const routes = [
         component: ExitPage,
       },
       {
-        path: '/:sortBy(trending|created|hot|promoted|feed|blog|notifications)?/:category?',
+        path: '/:sortBy(trending|created|hot|promoted|feed|blog|notifications-list)?/:category?',
         component: Page,
         exact: true,
         routes: [
           {
-            path: '/notifications',
+            path: '/notifications-list',
             component: Notifications,
           },
           {
