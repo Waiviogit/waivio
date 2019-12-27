@@ -66,9 +66,9 @@ const CreateRule = ({
         const prepareObjData = {
           sponsor: sponsor.account,
           enabled: true,
-          upvote: sliderValue / 100,
+          voting_percent: sliderValue / 100,
         };
-        if (values.noticeField) prepareObjData.notes = values.noticeField;
+        if (values.noticeField) prepareObjData.note = values.noticeField;
         dispatch(setMatchBotRules(prepareObjData))
           .then(() => {
             setConfirmModalLoaded(false);
@@ -88,8 +88,9 @@ const CreateRule = ({
       if (!err && !isEmpty(editRule)) {
         const prepareObjData = {
           sponsor: editRule.sponsor,
-          upvote: sliderValue / 100,
+          voting_percent: sliderValue / 100,
         };
+        if (values.noticeField) prepareObjData.note = values.noticeField;
         dispatch(setMatchBotRules(prepareObjData))
           .then(() => {
             setConfirmModalLoaded(false);
