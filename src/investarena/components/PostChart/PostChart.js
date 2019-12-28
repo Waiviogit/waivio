@@ -158,8 +158,8 @@ class PostChart extends Component {
     if (!quote || !quote.askPrice || !quote.bidPrice) return false;
     const { recommend, slPrice, tpPrice } = this.props;
     return recommend === 'Buy'
-      ? tpPrice && quote.askPrice > tpPrice || slPrice && quote.askPrice < slPrice
-      : tpPrice && quote.bidPrice < tpPrice || slPrice && quote.bidPrice > slPrice;
+      ? (tpPrice && quote.askPrice > tpPrice) || (slPrice && quote.askPrice < slPrice)
+      : (tpPrice && quote.bidPrice < tpPrice) || (slPrice && quote.bidPrice > slPrice);
   };
   isExpiredByTime = () => moment().valueOf() > moment(this.props.forecast).valueOf();
   createChartData = () =>
@@ -185,7 +185,11 @@ class PostChart extends Component {
       priceType: this.state.priceType,
       isExpired: this.state.expired,
       timeScale: this.state.timeScale,
-      expiredByTime: get(props.expForecast, ['rate', 'quote', 'expiredByTime'], this.isExpiredByTime),
+      expiredByTime: get(
+        props.expForecast,
+        ['rate', 'quote', 'expiredByTime'],
+        this.isExpiredByTime,
+      ),
       expiredAt: props.expiredAt,
       isScaleChanged: Boolean(props.expForecast && get(props.expForecast, 'rate.quote.timeScale')),
     });
@@ -234,7 +238,7 @@ class PostChart extends Component {
     return (
       <div
         className={`w-100 ${
-          !quote || !quoteSettings || (!bars && !expForecast) || !quoteSettings.tickSize
+          !expForecast && (!quote || !quoteSettings || !bars || !quoteSettings.tickSize)
             ? 'st-hidden'
             : ''
         }`}
