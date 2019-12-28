@@ -10,6 +10,7 @@
   border: 1px solid @blue-hawkesBlue;
   border-radius: 4px;
   margin-top: 15px;
+
   &__content {
     width: 100%;
     position: relative;
@@ -19,17 +20,20 @@
     outline: none;
     margin: @wrapPadding;
   }
+
   &__content-row {
     display: flex;
     flex-flow: row nowrap;
     width: 100%;
   }
+
   &__info {
     width: 70%;
     max-width: 70%;
     padding-left: @wrapPadding;
     word-wrap: break-word;
     word-break: break-word;
+
     &.small {
       .ObjectCardView__title,
       .ObjectCardView__name-truncated {
@@ -37,8 +41,10 @@
       }
     }
   }
+
   &__avatar {
     width: 25%;
+
     .avatar-image {
       width: 100%;
       padding-top: 100%;
@@ -50,21 +56,26 @@
       border: 1px solid #e9e7e7;
     }
   }
+
   &__type {
     color: @blue-botticelli;
     margin-bottom: 0.5em;
   }
+
   &__price {
     color: @blue-botticelli;
     margin-bottom: 0.5em;
+
     i {
       margin-right: 5px;
     }
   }
+
   &__name {
     cursor: auto;
     display: flex;
-    align-items: baseline;
+    font-weight: 600;
+    align-items: center;
 
     &-truncated {
       margin-right: 10px;
@@ -76,10 +87,11 @@
       font-weight: 600;
     }
   }
+
   &__title {
     margin-top: 0.5em;
     color: @black;
-    font-size: 1.2em;
+    font-size: 1em;
   }
 }
 

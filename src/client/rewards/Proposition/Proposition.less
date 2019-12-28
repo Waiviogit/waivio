@@ -5,7 +5,83 @@
 
 .Proposition {
   margin-bottom: @wrapPadding;
-  background-color: @white;
+
+  &__header {
+    border: 2px solid @orange-hot;
+    border-bottom: 0;
+    border-radius: 4px 4px 0 0;
+    padding: @wrapPadding;
+    margin: 0 @wrapPadding;
+  }
+
+  &__footer {
+    border: 2px solid @orange-hot;
+    border-radius: 0 0 4px 4px;
+    border-top: 0;
+    background-color: @white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: @wrapPadding;
+    margin: 0 @wrapPadding;
+
+    .anticon {
+      font-size: 16px;
+      font-weight: 600;
+      margin-right: 5px;
+    }
+
+    &-button {
+      font-weight: 500;
+      button {
+        margin-right: @wrapPadding;
+      }
+    }
+
+    &-details {
+      font-weight: 500;
+      color: @blue-botticelli;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+
+  &__wrap {
+    width: 95%;
+    background-color: @white;
+    border: 2px solid @orange-hot;
+    border-radius: 4px;
+  }
+
+  &__card {
+    position: relative;
+    width: 100%;
+
+    .ObjectCardView {
+      box-shadow: 2px 2px 8px -2px @blue-botticelli;
+      overflow: hidden;
+      background-color: @white;
+
+      &__info {
+        width: 80%;
+        max-width: 80%;
+      }
+
+      &__price {
+        font-weight: 500;
+        font-size: 0.9em;
+      }
+
+      &__avatar {
+        .avatar-image {
+          border-radius: 8px;
+          border: 0;
+        }
+      }
+    }
+  }
 
   .RewardsHeader {
     &-wrap {
@@ -46,13 +122,6 @@
     font-weight: bold;
   }
 
-  &__header {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
-  }
-
   &__author {
     display: flex;
     width: 50%;
@@ -69,14 +138,6 @@
     margin-right: @wrapPadding;
   }
 
-  &__footer {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: @wrapPadding;
-  }
-
   &__object-line {
     display: flex;
     align-items: center;
@@ -87,10 +148,6 @@
       width: 100%;
       border: none;
     }
-  }
-
-  .WriteReview-button {
-    margin-right: @wrapPadding;
   }
 }
 

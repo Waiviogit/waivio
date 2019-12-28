@@ -591,6 +591,7 @@
   "history": "History",
   "reserve": "Reserve",
   "release": "Release",
+  "days_left": "days left",
   "filterRule": "FilterRule",
   "assigned_successfully": "Assigned successfully",
   "min_images_count": "You should add images, minimum",
@@ -753,7 +754,7 @@
   "target_days_for_reviews": "Target days for reviews",
   "reservation_period_will_dynamically_adjusted": "Reservation period will be dynamically adjusted to match target days",
   "registered_upvoting_accounts": "Registered upvoting accounts besides @${userName} (optional, up to 5)",
-  "write_review": "Write a review",
+  "write_review": "Write review",
   "match_bot": "Match bot",
   "match_bot_designed_offset_portion_of_direct_rewards": "Match bot is designed to offset portion of direct rewards with upvotes.",
   "match_bot_content_user_has_posted_review_eligible_receive_direct_reward": "For example, the user has posted a review that is eligible to receive a direct reward of 5.00 STEEM. Match bot can upvote that post for a specified value of, say, 10% of the reward (assuming Match bot has enough voting value). This way, the user will receive 0.50 STEEM in author's rewards and the direct payment can be reduced to 4.50 STEEM.",
@@ -935,6 +936,15 @@
   "eligiblity_warn": "User eligibility criteria will be verified at the time of reward reservation only.",
   "reputation_cannot_be_negative": "Reputation can not be negative",
   "registered_upvoting_accounts_text": "Registered upvoting accounts",
+  "guest_comments": "Guest users can't see their own comments",
   "type_experts": "Type experts",
-  "guest_comments": "Guest users can't see their own comments"
+  "campaign_buttons_reserved": "Reserved",
+  "campaign_buttons_days_left": "days left",
+  "campaign_buttons_day_left": "day left",
+  "campaign_buttons_today": "today",
+  "campaign_buttons_comment": "Comment",
+  "campaign_buttons_write_review": "Write review",
+  "campaign_buttons_unfollow_username": "Unfollow {username}",
+  "campaign_buttons_follow_username": "Follow {username}",
+  "campaign_buttons_release": "Release"
 }

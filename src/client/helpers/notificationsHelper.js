@@ -111,9 +111,7 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
 export const getNotificationsLink = (notification, currentAuthUsername) => {
   switch (notification.type) {
     case notificationConstants.REPLY:
-      return `/@${currentAuthUsername}/${notification.parent_permlink}/#@${notification.author}/${
-        notification.permlink
-      }`;
+      return `/@${currentAuthUsername}/${notification.parent_permlink}/#@${notification.author}/${notification.permlink}`;
     case notificationConstants.FOLLOW:
       return `/@${notification.follower}`;
     case notificationConstants.MENTION:
@@ -126,7 +124,7 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
     case notificationConstants.WITNESS_VOTE:
       return `/@${notification.account}`;
     default:
-      return '/notifications';
+      return '/notifications-list';
   }
 };
 

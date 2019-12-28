@@ -4,6 +4,7 @@
 .CampaignCardHeader {
   display: flex;
   font-size: 20px;
+  font-weight: 500;
   justify-content: space-between;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid @blue-hawkesBlue;
@@ -13,14 +14,17 @@
   }
 
   &__data {
+    white-space: nowrap;
     &-colored {
       color: @orange-hot;
     }
   }
 
   &__user-info {
+    padding-top: 15px;
     display: flex;
     justify-content: space-between;
+    font-size: 0.9em;
   }
 
   &__user-card {
@@ -34,6 +38,7 @@
     }
 
     &-total-paid {
+      white-space: nowrap;
       font-weight: 500;
       color: @blue-botticelli;
     }

@@ -1,22 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { take } from 'lodash';
-import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
-import { Link } from 'react-router-dom';
+import { injectIntl, FormattedNumber } from 'react-intl';
 import { Icon } from 'antd';
 import classNames from 'classnames';
 import LinkButton from '../../components/LinkButton/LinkButton';
 import withAuthActions from '../../auth/withAuthActions';
-import { sortVotes } from '../../helpers/sortHelpers';
-import {
-  getUpvotes,
-  getDownvotes,
-  getAppendUpvotes,
-  getAppendDownvotes,
-} from '../../helpers/voteHelpers';
 import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/PopoverMenu';
-import ReactionsModal from '../../components/Reactions/ReactionsModal';
-import USDDisplay from '../../components/Utils/USDDisplay';
 import '../../components/StoryFooter/Buttons.less';
 import BTooltip from '../../components/BTooltip';
 import Popover from '../../components/Popover';
@@ -26,16 +15,15 @@ import Popover from '../../components/Popover';
 export default class CampaignButtons extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
+    daysLeft: PropTypes.number.isRequired,
     post: PropTypes.shape().isRequired,
     postState: PropTypes.shape().isRequired,
     propositionId: PropTypes.string.isRequired,
-    defaultVotePercent: PropTypes.number.isRequired,
     requiredObjectPermlink: PropTypes.string.isRequired,
     requiredObjectName: PropTypes.string.isRequired,
     proposedObjectPermlink: PropTypes.string.isRequired,
     proposedObjectName: PropTypes.string.isRequired,
     onActionInitiated: PropTypes.func.isRequired,
-    pendingLike: PropTypes.bool,
     pendingFollow: PropTypes.bool,
     pendingFollowObject: PropTypes.bool,
     onLikeClick: PropTypes.func,
@@ -82,15 +70,16 @@ export default class CampaignButtons extends React.Component {
       });
     }
   }
+
   getFollowText(isFollowed, permlink) {
     if (isFollowed) {
       return this.props.intl.formatMessage(
-        { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
+        { id: 'campaign_buttons_unfollow_username', defaultMessage: 'Unfollow {username}' },
         { username: permlink },
       );
     }
     return this.props.intl.formatMessage(
-      { id: 'follow_username', defaultMessage: 'Follow {username}' },
+      { id: 'campaign_buttons_follow_username', defaultMessage: 'Follow {username}' },
       { username: permlink },
     );
   }
@@ -105,6 +94,7 @@ export default class CampaignButtons extends React.Component {
     this.props.onCommentClick();
   }
 
+  // Not used at that moment
   handleShowReactions() {
     this.setState({
       reactionsModalVisible: true,
@@ -159,7 +149,10 @@ export default class CampaignButtons extends React.Component {
             'icon-flag_fill': postState.isReported,
           })}
         />
-        {this.props.intl.formatMessage({ id: 'unfollow_username', defaultMessage: 'Release' })}
+        {this.props.intl.formatMessage({
+          id: 'campaign_buttons_release',
+          defaultMessage: 'Release',
+        })}
       </PopoverMenuItem>,
     ];
     return (
@@ -181,84 +174,41 @@ export default class CampaignButtons extends React.Component {
     const {
       intl,
       post,
-      postState,
-      pendingLike,
-      defaultVotePercent,
       requiredObjectPermlink,
       requiredObjectName,
       proposedObjectPermlink,
       proposedObjectName,
       propositionId,
+      daysLeft,
     } = this.props;
 
-    const isAppend = !!this.props.post.append_field_name;
-
-    const upVotes = isAppend
-      ? getAppendUpvotes(post.active_votes).sort(sortVotes)
-      : getUpvotes(post.active_votes).sort(sortVotes);
-    const downVotes = isAppend
-      ? getAppendDownvotes(post.active_votes)
-          .sort(sortVotes)
-          .reverse()
-      : getDownvotes(post.active_votes)
-          .sort(sortVotes)
-          .reverse();
-
-    const totalPayout =
-      parseFloat(post.pending_payout_value) +
-      parseFloat(post.total_payout_value) +
-      parseFloat(post.curator_payout_value);
-    const voteRshares = post.active_votes.reduce((a, b) => a + parseFloat(b.rshares), 0);
-    const ratio = voteRshares > 0 ? totalPayout / voteRshares : 0;
-
-    const upVotesPreview = take(upVotes, 10).map(vote => (
-      <p key={vote.voter}>
-        <Link to={`/@${vote.voter}`}>{vote.voter}</Link>
-
-        {vote.rshares * ratio > 0.01 && (
-          <span style={{ opacity: '0.5' }}>
-            {' '}
-            <USDDisplay value={vote.rshares * ratio} />
-          </span>
-        )}
-      </p>
-    ));
-
-    const upVotesDiff = upVotes.length - upVotesPreview.length;
-    const upVotesMore = upVotesDiff > 0 && (
-      <p>
-        <a role="presentation" onClick={this.handleShowReactions}>
-          <FormattedMessage
-            id="and_more_amount"
-            defaultMessage="and {amount} more"
-            values={{ amount: upVotesDiff }}
-          />
-        </a>
-      </p>
-    );
-
-    const likeClass = classNames({ active: postState.isLiked, Buttons__link: true });
-
-    const messageLiked = { id: 'like', defaultMessage: 'Like' };
-    const messageUnLiked = { id: 'unlike', defaultMessage: 'Unlike' };
-    let likeTooltip = <span>{intl.formatMessage(messageLiked)}</span>;
-    if (postState.isLiked) {
-      likeTooltip = <span>{intl.formatMessage(messageUnLiked)}</span>;
-    } else if (defaultVotePercent !== 10000) {
-      likeTooltip = (
-        <span>
-          {intl.formatMessage({ id: 'like' })}{' '}
-          <span style={{ opacity: 0.5 }}>
-            <FormattedNumber
-              style="percent" // eslint-disable-line
-              value={defaultVotePercent / 10000}
-            />
-          </span>
-        </span>
-      );
-    }
     return (
       <div className="Buttons">
+        <div className="Buttons__wrap">
+          <div>
+            {`${intl.formatMessage({
+              id: 'campaign_buttons_reserved',
+              defaultMessage: 'Reserved',
+            })} - ${daysLeft} ${intl.formatMessage({
+              id: 'campaign_buttons_days_left',
+              defaultMessage: 'days left',
+            })}`}
+          </div>
+          <BTooltip
+            title={intl.formatMessage({
+              id: 'campaign_buttons_comment',
+              defaultMessage: 'Comment',
+            })}
+          >
+            <a className="Buttons__link" role="presentation" onClick={this.handleCommentsClick}>
+              <i className="iconfont icon-message_fill" />
+            </a>
+          </BTooltip>
+          <div className="Buttons__number">
+            {post.children > 0 && <FormattedNumber value={post.children} />}
+          </div>
+          {this.renderPostPopoverMenu()}
+        </div>
         <React.Fragment>
           <LinkButton
             block={false}
@@ -267,61 +217,11 @@ export default class CampaignButtons extends React.Component {
             type="primary"
           >
             {intl.formatMessage({
-              id: 'write_review',
-              defaultMessage: `Write a review`,
+              id: 'campaign_buttons_write_review',
+              defaultMessage: `Write review`,
             })}
           </LinkButton>
-          <BTooltip title={likeTooltip}>
-            <a role="presentation" className={likeClass} onClick={this.handleLikeClick}>
-              {pendingLike ? (
-                <Icon type="loading" />
-              ) : (
-                <i
-                  className={`iconfont icon-${this.state.sliderVisible ? 'right' : 'praise_fill'}`}
-                />
-              )}
-            </a>
-          </BTooltip>
-          {post.active_votes.length > 0 && (
-            <span
-              className="Buttons__number Buttons__reactions-count"
-              role="presentation"
-              onClick={this.handleShowReactions}
-            >
-              <BTooltip
-                title={
-                  <div>
-                    {upVotes.length > 0 ? (
-                      upVotesPreview
-                    ) : (
-                      <FormattedMessage id="no_likes" defaultMessage="No likes yet" />
-                    )}
-                    {upVotesMore}
-                  </div>
-                }
-              >
-                <FormattedNumber value={upVotes.length} />
-                <span />
-              </BTooltip>
-            </span>
-          )}
         </React.Fragment>
-        <BTooltip title={intl.formatMessage({ id: 'comment', defaultMessage: 'Comment' })}>
-          <a className="Buttons__link" role="presentation" onClick={this.handleCommentsClick}>
-            <i className="iconfont icon-message_fill" />
-          </a>
-        </BTooltip>
-        <span className="Buttons__number">
-          {post.children > 0 && <FormattedNumber value={post.children} />}
-        </span>
-        {this.renderPostPopoverMenu()}
-        <ReactionsModal
-          visible={this.state.reactionsModalVisible}
-          upVotes={upVotes}
-          ratio={ratio}
-          downVotes={downVotes}
-          onClose={this.handleCloseReactions}
-        />
       </div>
     );
   }

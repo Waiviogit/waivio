@@ -8,6 +8,7 @@ import { setMatchBotVotingPower } from '../rewardsActions';
 import { getAuthenticatedUser } from '../../reducers';
 import CreateRule from './CreateRule/CreateRule';
 import { getMatchBotRules } from '../../../waivioApi/ApiClient';
+import { baseUrl } from '../../../waivioApi/routes';
 import MatchBotTable from './MatchBotTable/MatchBotTable';
 import Error401 from '../../statics/Error401';
 import './MatchBot.less';
@@ -29,17 +30,9 @@ const MatchBot = ({ intl, userName }) => {
       .some(authName => authName === authority);
   const handleSwitcher = () => {
     if (!isAuthority) {
-      window.open(
-        'https://beta.steemconnect.com/authorize/waiviocampaigns',
-        '',
-        'width=450, height=615',
-      );
+      window.location = `https://beta.steemconnect.com/authorize/waiviocampaigns?auto_return=true&redirect_uri=${baseUrl}/rewards/match-bot`;
     } else {
-      window.open(
-        'https://beta.steemconnect.com/revoke/waiviocampaigns',
-        '',
-        'width=450, height=615',
-      );
+      window.location = `https://beta.steemconnect.com/revoke/waiviocampaigns?auto_return=true&redirect_uri=${baseUrl}/rewards/match-bot`;
     }
   };
   const maxRulesLimit = 25;
