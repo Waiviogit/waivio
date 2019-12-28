@@ -60,7 +60,7 @@ const PostSellBuy = ({
   }
   return (
     <React.Fragment>
-      {quoteSettings && quoteSettings.leverage && wobj && wobj.author_permlink && (
+      {finalQuote || (quoteSettings && quoteSettings.leverage && wobj && wobj.author_permlink) ? (
         <div className="st-post-sell-buy-wrap">
           <div className="d-flex align-items-center">
             <InstrumentAvatar
@@ -69,9 +69,13 @@ const PostSellBuy = ({
               permlink={wobj.author_permlink}
             />
             <div className="st-margin-left-small">
-              <Link to={`/object/${wobj.author_permlink}`} className="st-post-sell-buy-quote">
-                {quoteSettings.name}
-              </Link>
+              {wobj.author_permlink ? (
+                <Link to={`/object/${wobj.author_permlink}`} className="st-post-sell-buy-quote">
+                  {quoteSettings.name}
+                </Link>
+              ) : (
+                finalQuote && <span className="fw7">{finalQuote.security}</span>
+              )}
             </div>
             <div className={`st-post-sell-buy-block st-post-recommend-${recommendPost}`}>
               <div
@@ -129,7 +133,7 @@ const PostSellBuy = ({
             {profitabilityIcon}
           </div>
         </div>
-      )}
+      ) : null}
     </React.Fragment>
   );
 };
