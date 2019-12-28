@@ -9,6 +9,7 @@ import FacebookLogin from 'react-facebook-login';
 import getSlug from 'speakingurl';
 import { login } from '../../../auth/authActions';
 import { getUserAccount, isUserRegistered } from '../../../../waivioApi/ApiClient';
+import { notify } from './../../../app/Notification/notificationActions';
 import './ModalSignUp.less';
 
 const ModalSignUp = ({ isButton, form }) => {
@@ -85,22 +86,27 @@ const ModalSignUp = ({ isButton, form }) => {
     validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
+        dispatch(
+          login(userData.accessToken, userData.socialNetwork, {
+            userName: `waivio_${values.username}`,
+            pickSocialFields: values.agreement,
+          }),
+        );
+      } else {
+        dispatch(notify(`${err.username.errors[0].message}`, 'error'));
       }
-      dispatch(
-        login(userData.accessToken, userData.socialNetwork, {
-          userName: `waivio_${values.username}`,
-          pickSocialFields: values.agreement,
-        }),
-      );
     });
   };
 
-  const validateUserName = async (rule, value, callback) => {
-    const user = await getUserAccount(value);
-    return user.message ? callback('User with such username already exists') : callback();
-  };
-
   const usernameError = isFieldTouched('username') && getFieldError('username');
+
+  const validateUserName = async (rule, value, callback) => {
+    const user = await getUserAccount(`waivio_${value}`);
+    if (user.id) {
+      callback('User with such username already exists');
+    }
+    callback();
+  };
 
   const nameForm = (
     <Form layout="vertical" onSubmit={handleSubmit}>
@@ -112,14 +118,14 @@ const ModalSignUp = ({ isButton, form }) => {
               message: 'Please input your username!',
             },
             {
-              pattern: /^[A-Za-z0-9.-]+$/,
+              pattern: /^[A-Za-z0-9.-]{3,16}$/,
               message: 'Only letters, digits, periods, dashes are allowed',
             },
             {
               validator: validateUserName,
             },
           ],
-        })(<Input placeholder="Username" addonBefore="waivio_" maxLength={18} />)}
+        })(<Input placeholder="Username" addonBefore="waivio_" minLength={3} maxLength={16} />)}
       </Form.Item>
       <Form.Item>
         {getFieldDecorator('agreement', {
@@ -129,7 +135,7 @@ const ModalSignUp = ({ isButton, form }) => {
       </Form.Item>
       <Form.Item>
         <Button type="primary" htmlType="submit" disabled={hasErrors(getFieldsError())}>
-          Log in
+          <FormattedMessage id="signup" defaultMessage="Sign up" />
         </Button>
       </Form.Item>
     </Form>
@@ -146,7 +152,6 @@ const ModalSignUp = ({ isButton, form }) => {
           <FormattedMessage id="signup" defaultMessage="Sign up" />
         </a>
       )}
-      {/* eslint-disable-next-line jsx-a11y/anchor-has-content */}
       <Modal
         width={600}
         title=""
@@ -166,7 +171,6 @@ const ModalSignUp = ({ isButton, form }) => {
             <GoogleLogin
               clientId="623736583769-qlg46kt2o7gc4kjd2l90nscitf38vl5t.apps.googleusercontent.com"
               onSuccess={responseGoogle}
-              // onFailure={responseGoogle}
               cookiePolicy={'single_host_origin'}
               className="ModalSignUp__social-btn"
             />

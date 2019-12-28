@@ -936,5 +936,5 @@
   "reputation_cannot_be_negative": "Reputation can not be negative",
   "registered_upvoting_accounts_text": "Registered upvoting accounts",
   "type_experts": "Type experts",
-  "guest_comments": "Guest user are can't see own comments"
+  "guest_comments": "Guest users can't see their own comments"
 }

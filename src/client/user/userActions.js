@@ -80,6 +80,8 @@ export const GET_FOLLOWING_OBJECTS_ERROR = '@user/GET_FOLLOWING_OBJECTS_ERROR';
 
 export const getFollowingObjects = username => (dispatch, getState) => {
   const state = getState();
+  const skip = 0;
+  const limit = state.auth.user.objects_following_count;
 
   if (!username && !store.getIsAuthenticated(state)) {
     return dispatch({ type: GET_FOLLOWING_ERROR });
@@ -89,7 +91,7 @@ export const getFollowingObjects = username => (dispatch, getState) => {
   return dispatch({
     type: GET_FOLLOWING_OBJECTS,
     payload: {
-      promise: ApiClient.getAllFollowingObjects(targetUsername),
+      promise: ApiClient.getAllFollowingObjects(targetUsername, skip, limit),
     },
   });
 };

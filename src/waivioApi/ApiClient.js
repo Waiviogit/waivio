@@ -233,11 +233,15 @@ export const postAppendWaivioObject = postData =>
   });
 
 // region Follow API requests
-export const getAllFollowingObjects = username =>
+export const getAllFollowingObjects = (username, skip, limit) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.user}/${username}${config.followingObjects}`)
+    fetch(`${config.apiPrefix}${config.user}/${username}${config.followingObjects}`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ limit, skip }),
+    })
       .then(res => res.json())
-      .then(user => resolve(user.objects_follow || []))
+      .then(res => resolve(res.map(obj => obj.author_permlink)))
       .catch(error => reject(error));
   });
 
@@ -274,15 +278,6 @@ export const getUserAccount = (username, with_followings = false) =>
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
-
-// export const getAccountWithFollowingCount = username =>
-//   Promise.all([getUserAccount(username), getFollowingCount(username)]).then(
-//     ([account, following]) => ({
-//       ...account,
-//       following_count: following.following_count,
-//       follower_count: following.followers_count,
-//     }),
-//   );
 
 export const getFollowingUpdates = (userName, count = 5) =>
   new Promise((resolve, reject) => {

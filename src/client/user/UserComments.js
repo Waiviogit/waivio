@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import Feed from '../feed/Feed';
 import PostModal from '../post/PostModalContainer';
-import { getFeed, isGuestUser } from '../reducers';
+import { getAuthenticatedUserName, getFeed, isGuestUser } from '../reducers';
 import {
   getFeedFromState,
   getFeedLoadingFromState,
@@ -17,6 +17,7 @@ import { getUserComments, getMoreUserComments } from '../feed/feedActions';
   state => ({
     feed: getFeed(state),
     isGuest: isGuestUser(state),
+    authenticatedUserName: getAuthenticatedUserName(state),
   }),
   {
     getUserComments,
@@ -33,6 +34,7 @@ export default class UserProfilePosts extends React.Component {
     getUserComments: PropTypes.func,
     getMoreUserComments: PropTypes.func,
     isGuest: PropTypes.bool,
+    authenticatedUserName: PropTypes.string,
   };
 
   static defaultProps = {
@@ -40,6 +42,7 @@ export default class UserProfilePosts extends React.Component {
     getUserComments: () => {},
     getMoreUserComments: () => {},
     isGuest: false,
+    authenticatedUserName: '',
   };
 
   componentDidMount() {
@@ -49,13 +52,13 @@ export default class UserProfilePosts extends React.Component {
   }
 
   render() {
-    const { feed, match, limit, isGuest } = this.props;
+    const { feed, match, limit, isGuest, authenticatedUserName } = this.props;
     const username = match.params.name;
-    if (isGuest) {
+    if (isGuest && username === authenticatedUserName) {
       return (
         <FormattedMessage
           id="guest_comments"
-          defaultMessage="Guest user are can't see own comments"
+          defaultMessage="Guest users can't see their own comments"
         />
       );
     }

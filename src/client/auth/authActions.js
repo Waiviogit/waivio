@@ -81,6 +81,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   }).catch(e => {
     console.warn(e);
     dispatch(loginError());
+    return e;
   });
 };
 

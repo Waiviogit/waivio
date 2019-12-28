@@ -9,7 +9,8 @@ import FacebookLogin from 'react-facebook-login';
 import getSlug from 'speakingurl';
 import SteemConnect from '../../../steemConnectAPI';
 import { login } from '../../../auth/authActions';
-import { isUserRegistered } from '../../../../waivioApi/ApiClient';
+import { getUserAccount, isUserRegistered } from '../../../../waivioApi/ApiClient';
+import { notify } from '../../../app/Notification/notificationActions';
 import '../ModalSignUp/ModalSignUp.less';
 
 const ModalSignIn = ({ form, next }) => {
@@ -62,20 +63,27 @@ const ModalSignIn = ({ form, next }) => {
     validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
+        dispatch(
+          login(userData.accessToken, userData.socialNetwork, {
+            userName: `waivio_${values.username}`,
+            pickSocialFields: values.agreement,
+          }),
+        );
+      } else {
+        dispatch(notify(`${err.username.errors[0].message}`, 'error'));
       }
-      console.log(values);
-      dispatch(
-        login(userData.accessToken, userData.socialNetwork, {
-          userName: `waivio_${values.username}`,
-          pickSocialFields: values.agreement,
-        }),
-      );
     });
   };
 
-  // const validateUserName = userName => {};
-
   const usernameError = isFieldTouched('username') && getFieldError('username');
+
+  const validateUserName = async (rule, value, callback) => {
+    const user = await getUserAccount(`waivio_${value}`);
+    if (user.id) {
+      callback('User with such username already exists');
+    }
+    callback();
+  };
 
   const nameForm = (
     <Form layout="vertical" onSubmit={handleSubmit}>
@@ -87,11 +95,14 @@ const ModalSignIn = ({ form, next }) => {
               message: 'Please input your username!',
             },
             {
-              pattern: /^[A-Za-z0-9.-]+$/,
+              pattern: /^[A-Za-z0-9.-]{3,16}$/,
               message: 'Only letters, digits, periods, dashes are allowed',
             },
+            {
+              validator: validateUserName,
+            },
           ],
-        })(<Input placeholder="Username" addonBefore="waivio_" maxLength={18} />)}
+        })(<Input placeholder="Username" addonBefore="waivio_" maxLength={16} />)}
       </Form.Item>
       <Form.Item>
         {getFieldDecorator('agreement', {
