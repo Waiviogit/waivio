@@ -4,7 +4,7 @@ import * as appendAction from './appendActions';
 import { SET_USED_LOCALE } from '../app/appActions';
 import { RATE_WOBJECT_SUCCESS } from '../../client/object/wobjActions';
 import { objectFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
-import { getClientWObj, getServerWObj } from '../adapters';
+import { getClientWObj } from '../adapters';
 
 const initialState = {
   wobject: {},
@@ -102,7 +102,7 @@ export default function wobjectReducer(state = initialState, action) {
         const usedLocale = action.payload.id;
         return {
           ...state,
-          wobject: getClientWObj(getServerWObj(state.wobject), usedLocale),
+          wobject: getClientWObj(state.wobject, usedLocale),
         };
       }
       return state;
