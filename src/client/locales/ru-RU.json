@@ -24,6 +24,8 @@
   "signup": "Регистрация",
   "signin": "Вход",
   "login": "Войти",
+  "or_signup_with": "Или войти через",
+  "signin_with_steemIt": "Войти через steemConnect",
   "activity": "Активность",
   "replies": "Ответы",
   "settings": "Настройки",

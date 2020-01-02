@@ -273,7 +273,7 @@ export const getWobjectFollowing = (userName, skip = 0, limit = 50) =>
 
 export const getUserAccount = (username, with_followings = false) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.user}/${username}?$with_followings=${with_followings}`)
+    fetch(`${config.apiPrefix}${config.user}/${username}?with_followings=${with_followings}`)
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));

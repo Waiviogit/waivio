@@ -62,7 +62,6 @@ const ModalSignIn = ({ form, next }) => {
     e.preventDefault();
     validateFields((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
         dispatch(
           login(userData.accessToken, userData.socialNetwork, {
             userName: `waivio_${values.username}`,
@@ -112,7 +111,7 @@ const ModalSignIn = ({ form, next }) => {
       </Form.Item>
       <Form.Item>
         <Button type="primary" htmlType="submit" disabled={hasErrors(getFieldsError())}>
-          Log in
+          <FormattedMessage id="signin" defaultMessage="Sign in" />
         </Button>
       </Form.Item>
     </Form>

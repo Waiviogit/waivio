@@ -85,7 +85,6 @@ const ModalSignUp = ({ isButton, form }) => {
     e.preventDefault();
     validateFields((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
         dispatch(
           login(userData.accessToken, userData.socialNetwork, {
             userName: `waivio_${values.username}`,
