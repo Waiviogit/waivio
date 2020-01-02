@@ -93,10 +93,12 @@ class PostModal extends React.Component {
       author: authorDetails,
       shownPostContents,
     } = this.props;
-    const { author, permlink, title, url } = currentShownPost;
+    // eslint-disable-next-line camelcase
+    const { root_author, permlink, title, url } = currentShownPost;
     const baseURL = window ? window.location.origin : 'https://waiviodev.com';
     const postURL = `${baseURL}${dropCategory(url)}`;
-    const twitterText = `"${encodeURIComponent(title)}" by @${author}`;
+    // eslint-disable-next-line camelcase
+    const twitterText = `"${encodeURIComponent(title)}" by @${root_author}`;
     const twitterShareURL = getTwitterShareURL(twitterText, postURL);
     const facebookShareURL = getFacebookShareURL(postURL);
     const signature = _.get(authorDetails, 'json_metadata.profile.signature', null);
@@ -126,7 +128,8 @@ class PostModal extends React.Component {
           <a role="presentation" onClick={this.handleHidePostModal} className="PostModal__action">
             <i className="iconfont icon-close PostModal__icon" />
           </a>
-          <Link replace to={`/@${author}/${permlink}`} className="PostModal__action">
+          {/* eslint-disable-next-line camelcase */}
+          <Link replace to={`/@${root_author}/${permlink}`} className="PostModal__action">
             <i className="iconfont icon-send PostModal__icon" />
           </Link>
           <a

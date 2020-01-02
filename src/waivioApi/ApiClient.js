@@ -3,9 +3,9 @@ import _ from 'lodash';
 import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
 import config from './routes';
-import { getFollowingCount } from '../client/helpers/apiHelpers';
+import { getValidTokenData } from '../client/helpers/getToken';
 
-const headers = {
+let headers = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
 };
@@ -112,7 +112,7 @@ export const getFeedContent = (sortBy, queryData) =>
 
 export const getUserProfileBlog = (
   userName,
-  { startAuthor = '', startPermlink = '', limit = 10 },
+  { startAuthor = '', startPermlink = '', limit = 10, skip },
 ) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${userName}${config.blog}`, {
@@ -120,6 +120,7 @@ export const getUserProfileBlog = (
       method: 'POST',
       body: JSON.stringify({
         limit,
+        skip,
         start_author: startAuthor,
         start_permlink: startPermlink,
       }),
@@ -232,11 +233,15 @@ export const postAppendWaivioObject = postData =>
   });
 
 // region Follow API requests
-export const getAllFollowingObjects = username =>
+export const getAllFollowingObjects = (username, skip, limit) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.user}/${username}`)
+    fetch(`${config.apiPrefix}${config.user}/${username}${config.followingObjects}`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ limit, skip }),
+    })
       .then(res => res.json())
-      .then(user => resolve(user.objects_follow || []))
+      .then(res => resolve(res.map(obj => obj.author_permlink)))
       .catch(error => reject(error));
   });
 
@@ -266,22 +271,13 @@ export const getWobjectFollowing = (userName, skip = 0, limit = 50) =>
       .catch(error => reject(error));
   });
 
-export const getUserAccount = username =>
+export const getUserAccount = (username, with_followings = false) =>
   new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.user}/${username}`)
+    fetch(`${config.apiPrefix}${config.user}/${username}?with_followings=${with_followings}`)
       .then(res => res.json())
       .then(result => resolve(result))
       .catch(error => reject(error));
   });
-
-export const getAccountWithFollowingCount = username =>
-  Promise.all([getUserAccount(username), getFollowingCount(username)]).then(
-    ([account, following]) => ({
-      ...account,
-      following_count: following.following_count,
-      follower_count: following.follower_count,
-    }),
-  );
 
 export const getFollowingUpdates = (userName, count = 5) =>
   new Promise((resolve, reject) => {
@@ -701,24 +697,162 @@ export const getLenders = ({ sponsor, user, filters }) => {
 export const getAuthenticatedUserMetadata = userName => {
   const { apiPrefix, user, userMetadata } = config;
   return fetch(`${apiPrefix}${user}/${userName}${userMetadata}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    headers: headers,
     method: 'GET',
   })
     .then(res => res.json())
     .then(res => _.omit(res.user_metadata, '_id'));
 };
 
-export const updateUserMetadata = (userName, data) =>
-  fetch(`${config.apiPrefix}${config.user}/${userName}${config.userMetadata}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+export const updateUserMetadata = async (userName, data) => {
+  let isGuest = null;
+  if (typeof localStorage !== 'undefined') {
+    const token = localStorage.getItem('accessToken');
+    isGuest = token === 'null' ? false : Boolean(token);
+  }
+
+  if (isGuest) {
+    const token = await getValidTokenData();
+    headers = { ...headers, 'access-token': token.token, 'waivio-auth': true };
+  } else {
+    headers = { ...headers, 'access-token': Cookie.get('access_token') };
+  }
+  return fetch(`${config.apiPrefix}${config.user}/${userName}${config.userMetadata}`, {
+    headers,
     method: 'PUT',
     body: JSON.stringify({ user_metadata: data }),
   }).then(res => res.json());
+};
+
 //endregion
+
+//region Guest user's requests
+export const getAccessToken = (token, social, regData) => {
+  let response = {};
+  let body = {};
+  body.access_token = token;
+
+  if (!_.isEmpty(regData)) {
+    body.userName = regData.userName;
+    body.pickSocialFields = regData.pickSocialFields;
+  }
+
+  return fetch(`${config.baseUrl}${config.auth}/${social}`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body),
+  })
+    .then(data => {
+      response.token = data.headers.get('access-token');
+      response.expiration = data.headers.get('expires-in');
+      return data.json();
+    })
+    .then(data => {
+      response.userData = data.user;
+      return response;
+    });
+};
+
+export const getNewToken = token => {
+  let response = {};
+  return fetch(`${config.baseUrl}${config.auth}/${config.validateAuthToken}`, {
+    method: 'POST',
+    headers: { 'access-token': token },
+  })
+    .then(data => {
+      response.token = data.headers.get('access-token');
+      response.expiration = data.headers.get('expires-in');
+      response.status = data.status;
+      return data.json();
+    })
+    .then(data => {
+      response.userData = data.user;
+      return response;
+    })
+    .catch(e => {
+      console.error(e.message);
+    });
+};
+
+export const isUserNameVacant = userName => {
+  return fetch(`${config.baseUrl}${config.user}/${userName}`);
+};
+
+export const isUserRegistered = (id, socialNetwork) => {
+  return fetch(
+    `${config.baseUrl}${config.auth}/${config.hasSocialAccount}?id=${id}&provider=${socialNetwork}`,
+  )
+    .then(data => data.json())
+    .then(data => data.result);
+};
+
+export const broadcastGuestOperation = async (operationId, data) => {
+  const userData = await getValidTokenData();
+  if (userData.token) {
+    return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
+      method: 'POST',
+      headers: { ...headers, 'access-token': userData.token },
+      body: JSON.stringify({
+        id: operationId,
+        data: { operations: data },
+        userName: userData.userData.name,
+      }),
+    }).then(data => data);
+  }
+};
+//endregion
+
+export const getFollowersFromAPI = (username, limit = 10, skip = 0) => {
+  return fetch(
+    `${config.apiPrefix}${config.user}/${username}${config.getObjectFollowers}?skip=${skip}&limit=${limit}`,
+  )
+    .then(res => res.json())
+    .then(data => data)
+    .catch(err => console.error(err));
+};
+
+export const getFollowingsFromAPI = (username, limit = 10, skip = 0) => {
+  return fetch(
+    `${config.apiPrefix}${config.user}/${username}${config.followingUsers}?skip=${skip}&limit=${limit}`,
+  )
+    .then(res => res.json())
+    .then(data => data)
+    .catch(err => console.error(err));
+};
+
+export const updateGuestProfile = async (username, json_metadata) => {
+  const body = {
+    id: 'waivio_guest_account_update',
+    data: {
+      operations: [
+        [
+          'custom_json',
+          {
+            required_auths: [],
+            required_posting_auths: [username],
+            id: 'account_update',
+            json: JSON.stringify({
+              account: username,
+              json_metadata: JSON.stringify(json_metadata),
+            }),
+          },
+        ],
+      ],
+    },
+  };
+  const userData = await getValidTokenData();
+  return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
+    method: 'POST',
+    headers: { ...headers, 'access-token': userData.token },
+    body: JSON.stringify(body),
+  }).then(data => data);
+};
 
 // injected as extra argument in Redux Thunk
 export const waivioAPI = {
   getAuthenticatedUserMetadata,
+  broadcastGuestOperation,
+  getUserAccount,
 };
 
 // I don't read changes before commit

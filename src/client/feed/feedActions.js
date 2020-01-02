@@ -95,7 +95,7 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
   });
 };
 
-export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = true }) => (
+export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = true, skip }) => (
   dispatch,
   getState,
 ) => {
@@ -120,6 +120,7 @@ export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = tr
       startAuthor,
       startPermlink,
       limit,
+      skip,
     }),
     meta: {
       sortBy: 'blog',
@@ -169,7 +170,12 @@ export const getUserComments = ({ username, limit = 20 }) => (dispatch, getState
     type: GET_USER_COMMENTS.ACTION,
     payload: steemAPI
       .sendAsync('get_discussions_by_comments', [{ start_author: username, limit }])
-      .then(postsData => postsData),
+      .then(postsData => {
+        if (postsData.error) {
+          throw new Error(postsData.error.message);
+        }
+        return postsData;
+      }),
     meta: { sortBy: 'comments', category: username, limit },
   });
 

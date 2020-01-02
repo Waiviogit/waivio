@@ -215,7 +215,9 @@ export function createPost(postData) {
       : createPermlink(title, author, parentAuthor, parentPermlink);
     const state = getState();
     const authUser = state.auth.user;
-    const newBody = isUpdating ? getBodyPatchIfSmaller(postData.originalBody, body) : body;
+    const isGuest = state.auth.isGuestUser;
+    const newBody =
+      isUpdating && !isGuest ? getBodyPatchIfSmaller(postData.originalBody, body) : body;
 
     dispatch(saveSettings({ upvoteSetting: upvote, rewardSetting: reward }));
 
@@ -252,7 +254,9 @@ export function createPost(postData) {
               dispatch(deleteDraft(draftId));
               dispatch(addEditedPost(permlink));
             }
-            dispatch(push(`/@${author}/${permlink}`));
+            dispatch(push(isGuest ? '/' : `/@${author}/${permlink}`));
+            // eslint-disable-next-line no-unused-expressions
+            isGuest && dispatch(notify('Your post will be posted soon', 'success'));
 
             if (window.analytics) {
               window.analytics.track('Post', {

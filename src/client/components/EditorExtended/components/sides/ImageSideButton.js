@@ -10,13 +10,10 @@ import { Block } from '../../util/constants';
 import { imageUploading, imageUploaded } from '../../../../post/Write/editorActions';
 
 @injectIntl
-@connect(
-  null,
-  {
-    imageUploading,
-    imageUploaded,
-  },
-)
+@connect(null, {
+  imageUploading,
+  imageUploaded,
+})
 export default class ImageSideButton extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,

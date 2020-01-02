@@ -436,65 +436,42 @@ class Rewards extends React.Component {
 
     return (
       <div className="Rewards">
-        <Helmet>
-          <title>Waivio</title>
-          <meta
-            property="og:title"
-            content={`${intl.formatMessage({
-              id: 'rewards',
-              defaultMessage: 'Rewards',
-            })}
+        <div className="shifted">
+          <Helmet>
+            <title>Waivio</title>
+            <meta
+              property="og:title"
+              content={`${intl.formatMessage({
+                id: 'rewards',
+                defaultMessage: 'Rewards',
+              })}
         - Waivio`}
-          />
-          <meta property="og:type" content="article" />
-          <meta
-            property="og:image"
-            content={
-              'https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png'
-            }
-          />
-          <meta property="og:site_name" content="Waivio" />
-          <meta name="robots" content={robots} />
-        </Helmet>
-        <ScrollToTop />
-        <ScrollToTopOnMount />
-        <div className="feed-layout container">
-          <Affix className="leftContainer" stickPosition={122}>
-            <div className="left">
-              <LeftSidebar />
-            </div>
-          </Affix>
-          <div className="center mt3">
-            <MobileNavigation />
-            {renderedRoutes}
-          </div>
-          {(match.path === '/rewards/payables' || match.path === '/rewards/receivables') && (
-            <Affix className="rightContainer leftContainer__user" stickPosition={122}>
-              <div className="right">
-                <RewardsFiltersPanel
-                  campaignsTypes={campaignsTypes}
-                  sponsors={sponsors}
-                  activeFilters={activeFilters}
-                  activePayableFilters={activePayableFilters}
-                  setFilterValue={this.setFilterValue}
-                  setPayablesFilterValue={this.setPayablesFilterValue}
-                  location={location}
-                />
+            />
+            <meta property="og:type" content="article" />
+            <meta
+              property="og:image"
+              content={
+                'https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png'
+              }
+            />
+            <meta property="og:site_name" content="Waivio" />
+            <meta name="robots" content={robots} />
+          </Helmet>
+          <ScrollToTop />
+          <ScrollToTopOnMount />
+          <div className="feed-layout container">
+            <Affix className="leftContainer" stickPosition={77}>
+              <div className="left">
+                <LeftSidebar />
               </div>
             </Affix>
-          )}
-          {match.path === '/rewards/:filterKey/:campaignParent?' && (
-            <Affix className="rightContainer leftContainer__user" stickPosition={122}>
-              <div className="right">
-                {!isEmpty(this.props.userLocation) && !isCreate && (
-                  <MapWrap
-                    wobjects={this.getRequiredObjects()}
-                    userLocation={this.props.userLocation}
-                    onMarkerClick={this.goToCampaign}
-                    getAreaSearchData={this.getAreaSearchData}
-                  />
-                )}
-                {!isEmpty(sponsors) && !isCreate && (
+            <div className="center">
+              <MobileNavigation />
+              {renderedRoutes}
+            </div>
+            {(match.path === '/rewards/payables' || match.path === '/rewards/receivables') && (
+              <Affix className="rightContainer leftContainer__user" stickPosition={122}>
+                <div className="right">
                   <RewardsFiltersPanel
                     campaignsTypes={campaignsTypes}
                     sponsors={sponsors}
@@ -504,10 +481,35 @@ class Rewards extends React.Component {
                     setPayablesFilterValue={this.setPayablesFilterValue}
                     location={location}
                   />
-                )}
-              </div>
-            </Affix>
-          )}
+                </div>
+              </Affix>
+            )}
+            {match.path === '/rewards/:filterKey/:campaignParent?' && (
+              <Affix className="rightContainer leftContainer__user" stickPosition={122}>
+                <div className="right">
+                  {!isEmpty(this.props.userLocation) && !isCreate && (
+                    <MapWrap
+                      wobjects={this.getRequiredObjects()}
+                      userLocation={this.props.userLocation}
+                      onMarkerClick={this.goToCampaign}
+                      getAreaSearchData={this.getAreaSearchData}
+                    />
+                  )}
+                  {!isEmpty(sponsors) && !isCreate && (
+                    <RewardsFiltersPanel
+                      campaignsTypes={campaignsTypes}
+                      sponsors={sponsors}
+                      activeFilters={activeFilters}
+                      activePayableFilters={activePayableFilters}
+                      setFilterValue={this.setFilterValue}
+                      setPayablesFilterValue={this.setPayablesFilterValue}
+                      location={location}
+                    />
+                  )}
+                </div>
+              </Affix>
+            )}
+          </div>
         </div>
       </div>
     );

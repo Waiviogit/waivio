@@ -1,4 +1,6 @@
 import sc2 from 'sc2-sdk';
+import { waivioAPI } from '../waivioApi/ApiClient';
+import { getValidTokenData } from './helpers/getToken';
 
 function sc2Extended() {
   const sc2api = sc2.Initialize({
@@ -7,8 +9,44 @@ function sc2Extended() {
     callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
   });
 
+  const sc2Proto = Object.create(Object.getPrototypeOf(sc2api));
+
+  let isGuest = false;
+  if (typeof localStorage !== 'undefined') {
+    isGuest = localStorage.getItem('accessToken');
+  }
+  if (isGuest) {
+    sc2Proto.broadcast = function broadcast(operations) {
+      let operation;
+      if (operations[0][0] === 'custom_json') {
+        if (operations[0][1].json.includes('reblog')) {
+          operation = `waivio_guest_reblog`;
+        } else {
+          operation = `waivio_guest_${operations[0][1].id}`;
+        }
+      } else if (operations[0][0] === 'comment') {
+        const jsonMetadata = JSON.parse(operations[0][1].json_metadata);
+        if (jsonMetadata.comment) {
+          // eslint-disable-next-line no-param-reassign
+          operations[0][1].guest_root_author = operations[0][1].author;
+          // eslint-disable-next-line no-param-reassign
+          operations[0][1].author = jsonMetadata.comment.userId;
+        }
+        operation = `waivio_guest_${operations[0][0]}`;
+      } else {
+        operation = `waivio_guest_${operations[0][0]}`;
+      }
+      return waivioAPI.broadcastGuestOperation(operation, operations);
+    };
+    sc2Proto.me = async function getUserAccount() {
+      const userData = await getValidTokenData();
+      const account = await waivioAPI.getUserAccount(userData.userData.name, true);
+      return { account, name: account.name };
+    };
+  }
+
   const copied = Object.assign(
-    Object.create(Object.getPrototypeOf(sc2api)),
+    sc2Proto,
     sc2api,
     {
       followObject(follower, followingObject, cb) {
@@ -54,7 +92,7 @@ function sc2Extended() {
         const params = {
           required_auths: [],
           required_posting_auths: [username],
-          id: 'match_bot_create_rule',
+          id: 'match_bot_rule',
           json: JSON.stringify(ruleObj),
         };
         return this.broadcast([['custom_json', params]], cb);
@@ -65,7 +103,7 @@ function sc2Extended() {
         const params = {
           required_auths: [],
           required_posting_auths: [username],
-          id: 'match_bot_set_min_voting_power',
+          id: 'match_bot_change_power',
           json: JSON.stringify(voteObj),
         };
         return this.broadcast([['custom_json', params]], cb);
