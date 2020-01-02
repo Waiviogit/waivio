@@ -140,7 +140,7 @@ const MatchBot = ({ intl, userName }) => {
               {intl.formatMessage({
                 id: 'third_party_campaign_sponsors_must_pre_register_match_bot_sponsor_in_campaign',
                 defaultMessage:
-                  'Important: Third-party campaign sponsors must pre-register match bot sponsor in each campaign so that its vote value is subtracted from the direct obligations.',
+                  'Important: Third party campaign sponsors must register the match bot in their campaigns for the value of bot upvotes to be subtracted from the direct obligations.',
               })}
             </p>
             <div className="MatchBot__highlighted-block">
