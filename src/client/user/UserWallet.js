@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import { FormattedMessage } from 'react-intl';
 import UserWalletSummary from '../wallet/UserWalletSummary';
 import { SBD, STEEM } from '../../common/constants/cryptos';
 import { getUserDetailsKey } from '../helpers/stateHelpers';
@@ -147,6 +148,37 @@ class Wallet extends Component {
 
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
 
+    const isGuest = user.name.startsWith('waivio_');
+
+    const registerMessage = (
+      <div className="mv3 tc">
+        <FormattedMessage id="register" defaultMessage="Register" />
+        <a target="_blank" rel="noopener noreferrer" href={process.env.SIGNUP_URL}>
+          <FormattedMessage id="steemConnect" defaultMessage="steemConnect" />
+        </a>
+        <FormattedMessage
+          id="account_to_get_your_reward"
+          defaultMessage="account to get your reward."
+        />
+      </div>
+    );
+
+    const walletTransactions =
+      transactions.length === 0 && usersAccountHistoryLoading ? (
+        <Loading style={{ marginTop: '20px' }} />
+      ) : (
+        <UserWalletTransactions
+          transactions={transactions}
+          actions={actions}
+          currentUsername={user.name}
+          totalVestingShares={totalVestingShares}
+          totalVestingFundSteem={totalVestingFundSteem}
+          getMoreUserAccountHistory={this.props.getMoreUserAccountHistory}
+          loadingMoreUsersAccountHistory={loadingMoreUsersAccountHistory}
+          userHasMoreActions={userHasMoreActions}
+        />
+      );
+
     return (
       <div>
         <UserWalletSummary
@@ -158,22 +190,11 @@ class Wallet extends Component {
           steemRate={currentSteemRate}
           sbdRate={currentSBDRate}
           steemRateLoading={steemRateLoading}
+          isGuest={isGuest}
         />
+        {isGuest && registerMessage}
         {isMobile && <WalletSidebar />}
-        {transactions.length === 0 && usersAccountHistoryLoading ? (
-          <Loading style={{ marginTop: '20px' }} />
-        ) : (
-          <UserWalletTransactions
-            transactions={transactions}
-            actions={actions}
-            currentUsername={user.name}
-            totalVestingShares={totalVestingShares}
-            totalVestingFundSteem={totalVestingFundSteem}
-            getMoreUserAccountHistory={this.props.getMoreUserAccountHistory}
-            loadingMoreUsersAccountHistory={loadingMoreUsersAccountHistory}
-            userHasMoreActions={userHasMoreActions}
-          />
-        )}
+        {!isGuest && walletTransactions}
       </div>
     );
   }

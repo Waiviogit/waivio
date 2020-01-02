@@ -127,8 +127,8 @@
   "memo_placeholder": "Дополнительное сообщение для включения в этот платеж (опционально)",
   "memo_exchange_error": "Примечание обязательно при отправке на обмен.",
   "memo_encryption_error": "Зашифрованные примечания не поддерживаются.",
-  "power_up": "Power up",
-  "power_down": "Power down",
+  "power_up": "Steem power +",
+  "power_down": "Steem power -",
   "message": "Сообщение",
   "edit_profile": "Редактировать",
   "profile_name": "Имя",
@@ -952,5 +952,8 @@
   "reputation_cannot_be_negative": "Репутация не может быть отрицательной",
   "registered_upvoting_accounts_text": "Зарегестрированные кураторские аккаунты",
   "type_experts": "Эксперты по типу",
-  "guest_comments": "Госевые пользователи не могут видеть собственные коментарии"
+  "guest_comments": "Госевые пользователи не могут видеть собственные коментарии",
+  "register": "Зарегестрируйте ",
+  "steemConnect": "steemConnect",
+  "account_to_get_your_reward": " аккаунт, чтобы получить награду.",
 }
