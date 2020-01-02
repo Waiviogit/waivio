@@ -31,7 +31,7 @@ class StoryFooter extends React.Component {
     saving: PropTypes.bool,
     singlePostVew: PropTypes.bool,
     onLikeClick: PropTypes.func,
-    onReportClick: PropTypes.func.isRequired,
+    onReportClick: PropTypes.func,
     onShareClick: PropTypes.func,
     onEditClick: PropTypes.func,
     handlePostPopoverMenuClick: PropTypes.func,
@@ -50,6 +50,7 @@ class StoryFooter extends React.Component {
     onShareClick: () => {},
     onEditClick: () => {},
     handlePostPopoverMenuClick: () => {},
+    onReportClick: () => {},
   };
 
   constructor(props) {

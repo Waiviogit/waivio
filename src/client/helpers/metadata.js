@@ -48,6 +48,7 @@ export const deleteDraftMetadata = (draftIds, userName) =>
 
 const getUpdatedBookmarks = (bookmarks, postId) =>
   bookmarks.includes(postId) ? bookmarks.filter(b => b !== postId) : [...bookmarks, postId];
+
 export const toggleBookmarkMetadata = (userName, postId) =>
   getMetadata(userName)
     .then(metadata =>

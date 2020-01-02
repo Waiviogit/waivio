@@ -33,6 +33,47 @@ export const getSingleComment = (author, permlink, focus = false) => (
     meta: { focus },
   });
 
+export const getFakeSingleComment = (
+  parentAuthor,
+  parentPermlink,
+  author,
+  permlink,
+  body,
+  jsonMetadata,
+  focus = false,
+) => (dispatch, getState) => {
+  const state = getState();
+  const date = new Date().toISOString().split('.')[0];
+  const id = `${parentAuthor}/${parentPermlink}`;
+  const depth = state.comments.comments[id] ? state.comments.comments[id].depth + 1 : 0;
+  const payload = new Promise(resolve => {
+    resolve({
+      author,
+      permlink,
+      parent_author: parentAuthor,
+      parent_permlink: parentPermlink,
+      focus,
+      json_metadata: JSON.stringify(jsonMetadata),
+      author_reputation: 0,
+      cashout_time: date,
+      active_votes: [],
+      body,
+      depth,
+      author_wobjects_weight: 0,
+      created: date,
+      id,
+      url: `/@${author}`,
+    });
+  });
+  dispatch({
+    type: GET_SINGLE_COMMENT.ACTION,
+    payload: {
+      promise: payload,
+    },
+    meta: { focus },
+  });
+};
+
 const getRootCommentsList = apiRes =>
   Object.keys(apiRes.content)
     .filter(commentKey => apiRes.content[commentKey].depth === 1)
@@ -41,9 +82,9 @@ const getRootCommentsList = apiRes =>
 const getCommentsChildrenLists = apiRes => {
   const listsById = {};
   Object.keys(apiRes.content).forEach(commentKey => {
-    listsById[getPostKey(apiRes.content[commentKey])] = apiRes.content[commentKey].replies.map(
-      childKey => getPostKey(apiRes.content[childKey]),
-    );
+    listsById[getPostKey(apiRes.content[commentKey])] = apiRes.content[
+      commentKey
+    ].replies.map(childKey => getPostKey(apiRes.content[childKey]));
   });
   return listsById;
 };
@@ -94,7 +135,7 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
     return dispatch(notify("Message can't be empty", 'error'));
   }
 
-  const author = auth.user.name;
+  const author = auth.isGuestUser && isUpdating ? originalComment.author : auth.user.name;
   const permlink = isUpdating
     ? originalComment.permlink
     : createCommentPermlink(parentAuthor, parentPermlink);
@@ -105,7 +146,8 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
     isUpdating && jsonParse(originalComment.json_metadata),
   );
 
-  const newBody = isUpdating ? getBodyPatchIfSmaller(originalComment.body, body) : body;
+  const newBody =
+    isUpdating && !auth.isGuestUser ? getBodyPatchIfSmaller(originalComment.body, body) : body;
 
   let rootPostId = null;
   if (parentPost.parent_author) {
@@ -119,7 +161,21 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
       promise: steemConnectAPI
         .comment(parentAuthor, parentPermlink, author, permlink, '', newBody, jsonMetadata)
         .then(() => {
-          dispatch(getSingleComment(author, permlink, !isUpdating));
+          if (auth.isGuestUser) {
+            dispatch(
+              getFakeSingleComment(
+                parentAuthor,
+                parentPermlink,
+                author,
+                permlink,
+                newBody,
+                jsonMetadata,
+                !isUpdating,
+              ),
+            );
+          } else {
+            dispatch(getSingleComment(author, permlink, !isUpdating));
+          }
 
           if (window.analytics) {
             window.analytics.track('Comment', {
