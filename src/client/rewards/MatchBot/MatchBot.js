@@ -99,8 +99,8 @@ const MatchBot = ({ intl, userName }) => {
           <div className="MatchBot__title-wrap">
             <div className="MatchBot__title">
               {intl.formatMessage({
-                id: 'sponsor_match_bot',
-                defaultMessage: 'Sponsor match bot',
+                id: 'match_bot_manage_match_bot',
+                defaultMessage: 'Manage match bot',
               })}
             </div>
             <Tooltip
