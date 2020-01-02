@@ -127,8 +127,8 @@
   "memo_placeholder": "Additional message to include in this payment (optional)",
   "memo_exchange_error": "Memo is required when sending to an exchange.",
   "memo_encryption_error": "Encrypted memos are not supported.",
-  "power_up": "Power up",
-  "power_down": "Power down",
+  "power_up": "Steem power +",
+  "power_down": "Steem power -",
   "message": "Message",
   "edit_profile": "Edit profile",
   "profile_name": "Name",
@@ -946,5 +946,8 @@
   "campaign_buttons_write_review": "Write review",
   "campaign_buttons_unfollow_username": "Unfollow {username}",
   "campaign_buttons_follow_username": "Follow {username}",
-  "campaign_buttons_release": "Release"
+  "campaign_buttons_release": "Release",
+  "register": "Register ",
+  "steemConnect": "steemConnect",
+  "account_to_get_your_reward": " account to get your reward."
 }

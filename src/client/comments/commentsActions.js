@@ -100,13 +100,15 @@ export const getComments = (postId, originalAuthor) => (dispatch, getState, { st
 
   const content = posts.list[postId] || comments.comments[postId];
 
-  const { category, author, permlink } = content;
+  // eslint-disable-next-line camelcase
+  const { category, root_author, permlink } = content;
 
   dispatch({
     type: GET_COMMENTS,
     payload: {
       promise: steemAPI
-        .sendAsync('get_state', [`/${category}/@${originalAuthor || author}/${permlink}`])
+        // eslint-disable-next-line camelcase
+        .sendAsync('get_state', [`/${category}/@${originalAuthor || root_author}/${permlink}`])
         .then(apiRes => ({
           rootCommentsList: getRootCommentsList(apiRes),
           commentsChildrenList: getCommentsChildrenLists(apiRes),

@@ -25,6 +25,7 @@ const MatchBot = ({ intl, userName }) => {
   const authority = 'waiviocampaigns';
   const isAuthority =
     !isEmpty(authenticatedUser) &&
+    !isEmpty(authenticatedUser.posting) &&
     authenticatedUser.posting.account_auths
       .map(auth => auth[0])
       .some(authName => authName === authority);

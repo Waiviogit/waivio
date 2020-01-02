@@ -108,7 +108,7 @@ const ModalSignUp = ({ isButton, form }) => {
   };
 
   const nameForm = (
-    <Form layout="vertical" onSubmit={handleSubmit}>
+    <Form layout="vertical" onSubmit={handleSubmit} className="">
       <Form.Item validateStatus={usernameError ? 'error' : ''} help={usernameError || ''}>
         {getFieldDecorator('username', {
           rules: [
