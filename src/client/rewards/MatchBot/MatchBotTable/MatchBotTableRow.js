@@ -55,6 +55,7 @@ const MatchBotTableRow = ({ intl, rule, handleEditRule }) => {
             {intl.formatMessage({ id: 'matchBot_table_edit', defaultMessage: `Edit` })}
           </div>
         </td>
+        <td>abc</td>
         <td>{rule.note}</td>
       </tr>
       <Modal

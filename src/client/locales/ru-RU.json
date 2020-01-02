@@ -811,6 +811,7 @@
   "match_bot_authorization_completed_steemconnect_can_revoked_any_time": "Авторизация осуществляется через SteemConnect и может быть отменена в любое время.",
   "match_bot_authorize_now": "Авторизуйтесь сейчас",
   "match_bot_remove_authorization": "Убрать авторизацию",
+  "match_bot_expiry_date": "Дата окончания",
   "up_to_5_comma_delimited": "(до 5, через запятую)",
   "value_of_upvotes_can_be_accumulated_on_compensation_account": "Значение лайков можно накапливать на специальном компенсационном счете.",
   "compensation_account_optional": "Компенсационный счет(необязательно)",

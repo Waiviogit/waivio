@@ -771,6 +771,7 @@
   "match_bot_authorization_completed_steemconnect_can_revoked_any_time": "The authorization is completed via SteemConnect and can be revoked at any time.",
   "match_bot_authorize_now": "Authorize now",
   "match_bot_remove_authorization": "Remove authorization",
+  "match_bot_expired_date": "Expiry date",
   "users_auto_complete_placeholder": "Find users",
   "up_to_5_comma_delimited": "(up to 5, comma delimited)",
   "value_of_upvotes_can_be_accumulated_on_compensation_account": "The value of upvotes can be accumulated on a dedicated compensation account",

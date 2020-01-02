@@ -11,7 +11,7 @@ const MatchBotTable = ({ intl, rules, handleEditRule }) => (
         <th className="MatchBotTable basicWidth">
           {intl.formatMessage({ id: 'active', defaultMessage: `Active` })}
         </th>
-        <th className="MatchBotTable mediumWidth">
+        <th className="MatchBotTable sponsorWidth">
           {intl.formatMessage({ id: 'sponsor', defaultMessage: `Sponsor` })}
         </th>
         <th className="MatchBotTable basicWidth">
@@ -20,7 +20,8 @@ const MatchBotTable = ({ intl, rules, handleEditRule }) => (
         <th className="MatchBotTable basicWidth">
           {intl.formatMessage({ id: 'action', defaultMessage: `Action` })}
         </th>
-        <th className="MatchBotTable maxWidth">
+        <th className="MatchBotTable dateWidth">Expiry date</th>
+        <th className="MatchBotTable notesWidth">
           {intl.formatMessage({ id: 'notes', defaultMessage: `Notes` })}
         </th>
       </tr>
