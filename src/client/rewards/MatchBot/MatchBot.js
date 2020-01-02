@@ -99,8 +99,8 @@ const MatchBot = ({ intl, userName }) => {
           <div className="MatchBot__title-wrap">
             <div className="MatchBot__title">
               {intl.formatMessage({
-                id: 'sponsor_match_bot',
-                defaultMessage: 'Sponsor match bot',
+                id: 'match_bot_manage_match_bot',
+                defaultMessage: 'Manage match bot',
               })}
             </div>
             <Tooltip
@@ -136,14 +136,49 @@ const MatchBot = ({ intl, userName }) => {
                   "For example, the user has posted a review that is eligible to receive a direct reward of 5.00 STEEM. Match bot can upvote that post for a specified value of, say, 10% of the reward (assuming Match bot has enough voting value). This way, the user will receive 0.50 STEEM in author's rewards and the direct payment can be reduced to 4.50 STEEM.",
               })}
             </p>
-            <p>
+            <p className="MatchBot__text fw6">
               {intl.formatMessage({
-                id: 'third_party_campaign_sponsors_must_pre_register_match_bot_sponsor_in_campaign',
+                id:
+                  'match_bot_third_party_campaign_sponsors_must_pre_register_match_bot_sponsor_in_campaign',
                 defaultMessage:
-                  'Important: Third-party campaign sponsors must pre-register match bot sponsor in each campaign so that its vote value is subtracted from the direct obligations.',
+                  'Important: Third party campaign sponsors must register the match bot in their campaigns for the value of bot upvotes to be subtracted from the direct obligations.',
               })}
             </p>
             <div className="MatchBot__highlighted-block">
+              <div className="MatchBot__text mb3 fw6">
+                <p>
+                  {intl.formatMessage({
+                    id: 'match_bot_match_bot_requires_authorization_distribute_votes_behalf',
+                    defaultMessage:
+                      'The match bot requires authorization to distribute votes on your behalf:',
+                  })}
+                  {
+                    <span
+                      className="MatchBot__text-link"
+                      onClick={handleSwitcher}
+                      role="presentation"
+                    >
+                      {' '}
+                      {!isAuthority
+                        ? intl.formatMessage({
+                            id: 'match_bot_authorize_now',
+                            defaultMessage: 'Authorize now',
+                          })
+                        : intl.formatMessage({
+                            id: 'match_bot_remove_authorization',
+                            defaultMessage: 'Remove authorization',
+                          })}
+                    </span>
+                  }
+                </p>
+                <p>
+                  {intl.formatMessage({
+                    id: 'match_bot_authorization_completed_steemconnect_can_revoked_any_time',
+                    defaultMessage:
+                      'The authorization is completed via SteemConnect and can be revoked at any time.',
+                  })}
+                </p>
+              </div>
               <p>
                 <span>
                   {intl.formatMessage({
