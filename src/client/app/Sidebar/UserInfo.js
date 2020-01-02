@@ -61,13 +61,10 @@ class UserInfo extends React.Component {
       hostWithoutWWW = hostWithoutWWW.slice(4);
     }
 
-    const voteWorth = getVoteValue(
-      user,
-      rewardFund.recent_claims,
-      rewardFund.reward_balance,
-      rate,
-      10000,
-    );
+    const voteWorth =
+      user && rewardFund.recent_claims && rewardFund.reward_balance && rate
+        ? getVoteValue(user, rewardFund.recent_claims, rewardFund.reward_balance, rate, 10000)
+        : 0;
 
     return (
       <div>
@@ -95,7 +92,7 @@ class UserInfo extends React.Component {
                   id="joined_date"
                   defaultMessage="Joined {date}"
                   values={{
-                    date: intl.formatDate(user.created, {
+                    date: intl.formatDate(user.created || user.createdAt, {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',

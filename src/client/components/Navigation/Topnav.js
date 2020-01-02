@@ -23,7 +23,6 @@ import {
   getSearchUsersResults,
   searchObjectTypesResults,
 } from '../../reducers';
-import SteemConnect from '../../steemConnectAPI';
 import { PARSED_NOTIFICATIONS } from '../../../common/constants/notifications';
 import BTooltip from '../BTooltip';
 import Avatar from '../Avatar';
@@ -31,11 +30,12 @@ import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import Popover from '../Popover';
 import Notifications from './Notifications/Notifications';
 import LanguageSettings from './LanguageSettings';
-import './Topnav.less';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
-// import ModalSignUp from './ModalSignUp/ModalSignUp';
+import ModalSignUp from './ModalSignUp/ModalSignUp';
+import ModalSignIn from './ModlaSignIn/ModalSignIn';
+import './Topnav.less';
 
 @injectIntl
 @withRouter
@@ -220,18 +220,13 @@ class Topnav extends React.Component {
       >
         <Menu className="Topnav__menu-container__menu" mode="horizontal">
           <Menu.Item key="signup">
-            {/* <ModalSignUp isButton={false} /> */}
-            <a target="_blank" rel="noopener noreferrer" href={process.env.SIGNUP_URL}>
-              <FormattedMessage id="signup" defaultMessage="Sign up" />
-            </a>
+            <ModalSignUp isButton={false} />
           </Menu.Item>
           <Menu.Item key="divider" disabled>
             |
           </Menu.Item>
           <Menu.Item key="login">
-            <a href={SteemConnect.getLoginURL(next)}>
-              <FormattedMessage id="login" defaultMessage="Log in" />
-            </a>
+            <ModalSignIn next={next} />
           </Menu.Item>
           <Menu.Item key="language">
             <LanguageSettings />

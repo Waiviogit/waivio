@@ -183,6 +183,7 @@ class Comment extends React.Component {
           editOpen: false,
           commentFormText: '',
         });
+        return true;
       })
       .catch(() => {
         this.setState({
@@ -223,12 +224,18 @@ class Comment extends React.Component {
       defaultVotePercent,
       isQuickComment,
     } = this.props;
+    let isGuest = false;
+    if (comment.json_metadata.includes('"social":')) {
+      const jsonMetadata = JSON.parse(comment.json_metadata);
+      comment.authorGuest = jsonMetadata.comment.userId;
+      isGuest = true;
+    }
     const { showHiddenComment } = this.state;
     const anchorId = `@${comment.author}/${comment.permlink}`;
     const anchorLink = `${comment.url.slice(0, comment.url.indexOf('#'))}#${anchorId}`;
 
-    const editable = comment.author === user.name;
-    const commentAuthorReputation = formatter.reputation(comment.author_reputation);
+    const editable = isGuest ? comment.authorGuest === user.name : comment.author === user.name;
+    const commentAuthorReputation = isGuest ? 0 : formatter.reputation(comment.author_reputation);
     const showCommentContent = commentAuthorReputation >= 0 || showHiddenComment;
 
     let content = null;
@@ -264,7 +271,7 @@ class Comment extends React.Component {
     }
 
     const avatarSize = comment.depth === 1 ? 40 : 32;
-
+    const author = isGuest ? comment.authorGuest : comment.author;
     return (
       <div ref={this.setSelf} className="Comment" id={anchorId}>
         <span
@@ -278,14 +285,14 @@ class Comment extends React.Component {
             <i className="iconfont icon-offline" />
           )}
         </span>
-        <Link to={`/@${comment.author}`} style={{ height: avatarSize }}>
-          <Avatar username={comment.author} size={avatarSize} />
+        <Link to={`/@${author}`} style={{ height: avatarSize }}>
+          <Avatar username={author} size={avatarSize} />
         </Link>
         <div className="Comment__text">
-          <Link to={`/@${comment.author}`}>
-            <span className="username">{comment.author}</span>
+          <Link to={`/@${author}`}>
+            <span className="username">{author}</span>
             <WeightTag weight={comment.author_wobjects_weight} />
-            {comment.author === rootPostAuthor && (
+            {author === rootPostAuthor && (
               <BTooltip
                 title={intl.formatMessage({
                   id: 'original_poster',

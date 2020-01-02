@@ -14,6 +14,7 @@ import {
   getIsLoaded,
   getFollowingFetched,
   getFetchFollowListError,
+  isGuestUser,
 } from '../reducers';
 import HorizontalBarChart from '../components/HorizontalBarChart';
 import LetsGetStartedIcon from './LetsGetStartedIcon';
@@ -28,6 +29,7 @@ import './LetsGetStarted.less';
   authenticated: getIsAuthenticated(state),
   followingFetched: getFollowingFetched(state),
   fetchFollowListError: getFetchFollowListError(state),
+  isGuest: isGuestUser(state),
 }))
 class LetsGetStarted extends React.Component {
   static propTypes = {
@@ -39,11 +41,18 @@ class LetsGetStarted extends React.Component {
     loaded: PropTypes.bool.isRequired,
     followingFetched: PropTypes.bool.isRequired,
     fetchFollowListError: PropTypes.bool.isRequired,
+    isGuest: PropTypes.bool,
   };
 
-  static getCurrentUserState(authenticatedUser, followingList) {
+  static defaultProps = {
+    isGuest: false,
+  };
+
+  static getCurrentUserState(authenticatedUser, followingList, isGuest) {
     const hasPost = authenticatedUser.last_root_post !== '1970-01-01T00:00:00';
-    const hasVoted = authenticatedUser.last_vote_time !== authenticatedUser.created;
+    const hasVoted = isGuest
+      ? true
+      : authenticatedUser.last_vote_time !== authenticatedUser.created;
     const jsonMetadata = _.attempt(JSON.parse, authenticatedUser.json_metadata);
     const hasProfile =
       _.has(jsonMetadata, 'profile.name') &&
@@ -62,7 +71,11 @@ class LetsGetStarted extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = LetsGetStarted.getCurrentUserState(props.authenticatedUser, props.followingList);
+    this.state = LetsGetStarted.getCurrentUserState(
+      props.authenticatedUser,
+      props.followingList,
+      props.isGuest,
+    );
   }
 
   componentWillReceiveProps(nextProps) {
@@ -70,6 +83,7 @@ class LetsGetStarted extends React.Component {
     const newUserState = LetsGetStarted.getCurrentUserState(
       nextProps.authenticatedUser,
       nextProps.followingList,
+      nextProps.isGuest,
     );
     const diffHasProfile = this.state.hasProfile !== newUserState.hasProfile;
     const diffHasPost = this.state.hasPost !== newUserState.hasPost;

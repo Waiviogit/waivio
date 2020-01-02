@@ -7,12 +7,13 @@ import { FormattedMessage } from 'react-intl';
 import { GoogleLogin } from 'react-google-login';
 import FacebookLogin from 'react-facebook-login';
 import getSlug from 'speakingurl';
+import SteemConnect from '../../../steemConnectAPI';
 import { login } from '../../../auth/authActions';
 import { getUserAccount, isUserRegistered } from '../../../../waivioApi/ApiClient';
-import { notify } from './../../../app/Notification/notificationActions';
-import './ModalSignUp.less';
+import { notify } from '../../../app/Notification/notificationActions';
+import '../ModalSignUp/ModalSignUp.less';
 
-const ModalSignUp = ({ isButton, form }) => {
+const ModalSignIn = ({ form, next }) => {
   const dispatch = useDispatch();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -54,30 +55,6 @@ const ModalSignUp = ({ isButton, form }) => {
       }
     }
   };
-  const getSignUpInfo = (
-    <div className="SignUpCard">
-      <div className="SignUpCard__line">
-        <a target="_blank" rel="noopener noreferrer" href={process.env.SIGNUP_URL}>
-          <img
-            alt="linkLogo"
-            src="https://cdn.steemitimages.com/DQmernVC8CUupAFckxvE62oMYVJNAsK8YDLmyBzJnNLzH7S/steemit.png"
-          />
-        </a>
-      </div>
-      <div className="SignUpCard__line">
-        <FormattedMessage id="newSteemAcc" defaultMessage="New Steem Account" />
-      </div>
-      <div className="SignUpCard__line">
-        <FormattedMessage id="longerWaiting" defaultMessage="Waiting time up to 2 weeks" />
-      </div>
-      <div className="SignUpCard__line">
-        <FormattedMessage id="emailAndPhoneReq" defaultMessage="Email and Phone Required" />
-      </div>
-      <a target="_blank" rel="noopener noreferrer" href={process.env.SIGNUP_URL}>
-        <FormattedMessage id="signup" defaultMessage="Sign up" />
-      </a>
-    </div>
-  );
 
   const hasErrors = fieldsError => Object.keys(fieldsError).some(field => fieldsError[field]);
 
@@ -124,7 +101,7 @@ const ModalSignUp = ({ isButton, form }) => {
               validator: validateUserName,
             },
           ],
-        })(<Input placeholder="Username" addonBefore="waivio_" minLength={3} maxLength={16} />)}
+        })(<Input placeholder="Username" addonBefore="waivio_" maxLength={16} />)}
       </Form.Item>
       <Form.Item>
         {getFieldDecorator('agreement', {
@@ -134,7 +111,7 @@ const ModalSignUp = ({ isButton, form }) => {
       </Form.Item>
       <Form.Item>
         <Button type="primary" htmlType="submit" disabled={hasErrors(getFieldsError())}>
-          <FormattedMessage id="signup" defaultMessage="Sign up" />
+          <FormattedMessage id="signin" defaultMessage="Sign in" />
         </Button>
       </Form.Item>
     </Form>
@@ -142,15 +119,9 @@ const ModalSignUp = ({ isButton, form }) => {
 
   return (
     <React.Fragment>
-      {isButton ? (
-        <button onClick={() => setIsModalOpen(true)} className="ModalSignUp__button">
-          <FormattedMessage id="signup" defaultMessage="Sign up" />
-        </button>
-      ) : (
-        <a role="presentation" onClick={() => setIsModalOpen(true)}>
-          <FormattedMessage id="signup" defaultMessage="Sign up" />
-        </a>
-      )}
+      <a role="presentation" onClick={() => setIsModalOpen(true)}>
+        <FormattedMessage id="signin" defaultMessage="Sign in" />
+      </a>
       <Modal
         width={600}
         title=""
@@ -159,13 +130,18 @@ const ModalSignUp = ({ isButton, form }) => {
         footer={null}
       >
         <div className="ModalSignUp">
-          <h2 className="ModalSignUp__title">
-            <FormattedMessage id="signup" defaultMessage="Sign up" />
-          </h2>
-          {getSignUpInfo}
+          <h2 className="ModalSignUp__title">Sign In</h2>
+          <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignUp__signin">
+            <img
+              src="/images/icons/steemit.svg"
+              alt="steemit"
+              className="ModalSignUp__icon-steemit"
+            />
+            <FormattedMessage id="signin_with_steemIt" defaultMessage="Sign in with SteemConnect" />
+          </a>
           <div className="ModalSignUp__social">
             <div className="ModalSignUp__subtitle">
-              <FormattedMessage id="or_sign_up_with" defaultMessage="Or sign up with" />
+              <FormattedMessage id="or_signup_with" defaultMessage="Or sign up with" />
             </div>
             <GoogleLogin
               clientId="623736583769-qlg46kt2o7gc4kjd2l90nscitf38vl5t.apps.googleusercontent.com"
@@ -191,9 +167,9 @@ const ModalSignUp = ({ isButton, form }) => {
   );
 };
 
-ModalSignUp.propTypes = {
-  isButton: PropTypes.bool.isRequired,
+ModalSignIn.propTypes = {
+  next: PropTypes.string.isRequired,
   form: PropTypes.shape().isRequired,
 };
 
-export default Form.create({ name: 'user_name' })(ModalSignUp);
+export default Form.create({ name: 'user_name' })(ModalSignIn);
