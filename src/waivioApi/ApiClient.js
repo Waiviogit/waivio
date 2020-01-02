@@ -802,13 +802,6 @@ export const broadcastGuestOperation = async (operationId, data) => {
 };
 //endregion
 
-// export const getFollowingUsers = async (username) => {
-//   return fetch(`${config.apiPrefix}${config.user}/${username}`)
-//     .then(res => res.json())
-//     .then(data => data.users_follow)
-//     .catch(err => err.message);
-// };
-
 export const getFollowersFromAPI = (username, limit = 10, skip = 0) => {
   return fetch(
     `${config.apiPrefix}${config.user}/${username}${config.getObjectFollowers}?skip=${skip}&limit=${limit}`,

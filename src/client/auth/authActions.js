@@ -62,7 +62,6 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
     promise = new Promise(async (resolve, reject) => {
       try {
         const scUserData = await steemConnectAPI.me();
-        console.log(scUserData);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
         resolve({ ...scUserData, userMetaData, isGuestUser: isGuest });
       } catch (e) {

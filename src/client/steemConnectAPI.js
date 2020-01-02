@@ -17,7 +17,6 @@ function sc2Extended() {
   }
   if (isGuest) {
     sc2Proto.broadcast = function broadcast(operations) {
-      console.log('\tbroadcast > ', operations);
       let operation;
       if (operations[0][0] === 'custom_json') {
         if (operations[0][1].json.includes('reblog')) {
@@ -41,8 +40,6 @@ function sc2Extended() {
     };
     sc2Proto.me = async function getUserAccount() {
       const userData = await getValidTokenData();
-      console.log('\tgetUserAccount > ', userData.userData.name);
-      // return Promise.resolve({ name: username });
       const account = await waivioAPI.getUserAccount(userData.userData.name, true);
       return { account, name: account.name };
     };

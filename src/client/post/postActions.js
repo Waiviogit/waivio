@@ -2,7 +2,6 @@ import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 
 export const GET_CONTENT = createAsyncActionType('@post/GET_CONTENT');
-// export const FAKE_LIKE_POST = createAsyncActionType('@post/FAKE_LIKE_POST');
 
 export const LIKE_POST = '@post/LIKE_POST';
 export const LIKE_POST_START = '@post/LIKE_POST_START';
