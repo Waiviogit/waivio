@@ -5,15 +5,18 @@
   &__button {
     display: flex;
     justify-content: flex-end;
+    .ant-btn-primary {
+      margin-left: 0.85rem;
+    }
   }
-  //&__label::before {
-  //  display: inline-block;
-  //  margin-right: 4px;
-  //  color: @red-danger;
-  //  font-size: 1em;
-  //  font-family: SimSun, sans-serif;
-  //  content: '*';
-  //}
+  &__label::before {
+    display: inline-block;
+    margin-right: 4px;
+    color: @red-danger;
+    font-size: 1em;
+    font-family: SimSun, sans-serif;
+    content: '*';
+  }
 }
 
 .ant-tooltip.ant-slider-tooltip {

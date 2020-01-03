@@ -287,11 +287,17 @@ const CreateRule = ({
             })(<Input.TextArea />)}
           </Form.Item>
           <div className="CreateRule__button">
+            <Button disabled={false} onClick={handleCloseModal}>
+              {intl.formatMessage({
+                id: 'matchBot_btn_cancel',
+                defaultMessage: 'Cancel',
+              })}
+            </Button>
             {isEmpty(editRule) ? (
               <Button type="primary" htmlType="submit" disabled={false}>
                 {intl.formatMessage({
-                  id: 'matchBot_btn_create',
-                  defaultMessage: 'Create',
+                  id: 'matchBot_btn_add_sponsor',
+                  defaultMessage: 'Add sponsor',
                 })}
               </Button>
             ) : (
