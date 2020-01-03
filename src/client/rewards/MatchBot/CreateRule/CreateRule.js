@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { Button, Form, Input, message, Modal, Slider } from 'antd';
+import { Button, DatePicker, Form, Input, message, Modal, Slider } from 'antd';
 import { isEmpty } from 'lodash';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import ReviewItem from '../../Create-Edit/ReviewItem';
@@ -67,6 +67,7 @@ const CreateRule = ({
           sponsor: sponsor.account,
           enabled: true,
           voting_percent: sliderValue / 100,
+          expiry_date: values.expiryDate,
         };
         if (values.noticeField) prepareObjData.note = values.noticeField;
         dispatch(setMatchBotRules(prepareObjData))
@@ -125,6 +126,21 @@ const CreateRule = ({
     }
     callback();
   };
+
+  const checkExpireDate = (rule, value, callback) => {
+    const currentDay = new Date().getDate();
+    if ((value && value.unix() * 1000 < Date.now()) || (value && value.date() === currentDay)) {
+      callback(
+        intl.formatMessage({
+          id: 'matchBot_expiry_date_after_current',
+          defaultMessage: 'The expiry date must be after the current date',
+        }),
+      );
+    } else {
+      callback();
+    }
+  };
+
   const formatTooltip = value => `${value}%`;
 
   const marks = {
@@ -140,8 +156,8 @@ const CreateRule = ({
       title={
         isEmpty(editRule)
           ? intl.formatMessage({
-              id: 'matchBot_title_create_rule',
-              defaultMessage: 'Create rule',
+              id: 'matchBot_title_add_new_sponsor',
+              defaultMessage: 'Add new sponsor',
             })
           : intl.formatMessage({
               id: 'matchBot_title_edit_rule',
@@ -194,10 +210,22 @@ const CreateRule = ({
             </Form.Item>
           )}
           <Form.Item
-            label={intl.formatMessage({
-              id: 'matchBot_voting_power',
-              defaultMessage: 'Voting power',
-            })}
+            label={
+              <React.Fragment>
+                <div>
+                  {intl.formatMessage({
+                    id: 'matchBot_define_value_match_upvote',
+                    defaultMessage: 'Define value of the match upvote:',
+                  })}
+                </div>
+                <div>
+                  {intl.formatMessage({
+                    id: 'matchBot_as_of_eligible_reward',
+                    defaultMessage: '(as a % of the eligible reward)',
+                  })}
+                </div>
+              </React.Fragment>
+            }
           >
             <Slider
               min={1}
@@ -206,11 +234,43 @@ const CreateRule = ({
               tipFormatter={formatTooltip}
               onChange={handleChangeSliderValue}
             />
+            <span className="CreateRule__text f9">
+              {intl.formatMessage({
+                id: 'matchBot_match_bot_will_upvote_posts_eligible_receive_rewards',
+                defaultMessage:
+                  'Match bot will upvote posts eligible to receive rewards offered by the specified sponsor.',
+              })}
+            </span>
           </Form.Item>
+
+          <Form.Item
+            label={intl.formatMessage({
+              id: 'matchBot_expiry_date',
+              defaultMessage: 'Expiry date',
+            })}
+          >
+            {getFieldDecorator('expiryDate', {
+              rules: [
+                {
+                  type: 'object',
+                  required: true,
+                  message: intl.formatMessage({
+                    id: 'matchBot_select_time',
+                    defaultMessage: 'Please, select time!',
+                  }),
+                },
+                {
+                  validator: checkExpireDate,
+                },
+              ],
+              // initialValue: expiredAt,
+            })(<DatePicker allowClear={false} />)}
+          </Form.Item>
+
           <Form.Item
             label={intl.formatMessage({
               id: 'matchBot_set_note',
-              defaultMessage: 'Set note',
+              defaultMessage: 'Note (not visible to the public):',
             })}
           >
             {getFieldDecorator('noticeField', {
