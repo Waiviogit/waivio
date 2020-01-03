@@ -618,7 +618,7 @@
   "postalCode": "Почтовый индекс",
   "stateProvince": "Штат/Провинция",
   "menu_item_placeholder": "Название пункта меню",
-  "newSteemAcc": "Новый Аккаунт Steem",
+  "newSteemAcc": "Аккаунт c Steem кошельком",
   "instAccountCreation": "Мгновенное Создание Аккаунта",
   "longerWaiting": "Более длительное время ожидания (до 2 недель)",
   "bonusDelegation": "БОНУС: 15 SP делегирование (на 90 дней)",
@@ -955,5 +955,7 @@
   "guest_comments": "Госевые пользователи не могут видеть собственные коментарии",
   "register": "Зарегестрируйте ",
   "steemConnect": "steemConnect",
-  "account_to_get_your_reward": " аккаунт, чтобы получить награду."
+  "account_to_get_your_reward": "аккаунт, чтобы получить награду",
+  "or_sign_up_with": "или регистрируйтесь через",
+  "or_sign_in_with": "или войдите через"
 }

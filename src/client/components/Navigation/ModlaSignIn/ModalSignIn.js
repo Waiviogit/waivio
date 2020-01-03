@@ -111,7 +111,7 @@ const ModalSignIn = ({ form, next }) => {
       </Form.Item>
       <Form.Item>
         <Button type="primary" htmlType="submit" disabled={hasErrors(getFieldsError())}>
-          <FormattedMessage id="signin" defaultMessage="Sign in" />
+          <FormattedMessage id="signin" defaultMessage="Log in" />
         </Button>
       </Form.Item>
     </Form>
@@ -120,30 +120,30 @@ const ModalSignIn = ({ form, next }) => {
   return (
     <React.Fragment>
       <a role="presentation" onClick={() => setIsModalOpen(true)}>
-        <FormattedMessage id="signin" defaultMessage="Sign in" />
+        <FormattedMessage id="signin" defaultMessage="Log in" />
       </a>
       <Modal
-        width={600}
+        width={416}
         title=""
         visible={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         footer={null}
       >
         <div className="ModalSignUp">
-          <h2 className="ModalSignUp__title">Sign In</h2>
+          <h2 className="ModalSignUp__title">
+            <FormattedMessage id="login" defaultMessage="Log in" />
+          </h2>
           <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignUp__signin">
             <img
               src="/images/icons/steemit.svg"
               alt="steemit"
               className="ModalSignUp__icon-steemit"
             />
-            <FormattedMessage id="signin_with_steemIt" defaultMessage="Sign in with SteemConnect" />
+            <FormattedMessage id="signin_with_steemIt" defaultMessage="SteemConnect" />
           </a>
           <div className="ModalSignUp__social">
-            <div className="ModalSignUp__subtitle">
-              <FormattedMessage id="or_signup_with" defaultMessage="Or sign up with" />
-            </div>
             <GoogleLogin
+              buttonText="Google"
               clientId="623736583769-qlg46kt2o7gc4kjd2l90nscitf38vl5t.apps.googleusercontent.com"
               onSuccess={responseGoogle}
               cookiePolicy={'single_host_origin'}
@@ -155,7 +155,7 @@ const ModalSignIn = ({ form, next }) => {
               fields="name,email,picture"
               callback={responseFacebook}
               onFailure={() => {}}
-              textButton="Sign In with Facebook"
+              textButton="Facebook"
               cssClass="ModalSignUp__social-btn ModalSignUp__social-btn--fb"
               icon={<Icon type="facebook" className="ModalSignUp__icon-fb" />}
             />

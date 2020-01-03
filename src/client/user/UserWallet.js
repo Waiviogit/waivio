@@ -155,7 +155,7 @@ class Wallet extends Component {
         <FormattedMessage id="register" defaultMessage="Register" />
         <a target="_blank" rel="noopener noreferrer" href={process.env.SIGNUP_URL}>
           <FormattedMessage id="steemConnect" defaultMessage="steemConnect" />
-        </a>
+        </a>{' '}
         <FormattedMessage
           id="account_to_get_your_reward"
           defaultMessage="account to get your reward."
