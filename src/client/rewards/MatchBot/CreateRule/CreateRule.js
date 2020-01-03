@@ -172,10 +172,11 @@ const CreateRule = ({
         <Form layout="vertical" onSubmit={handleSubmit}>
           {isEmpty(editRule) && (
             <Form.Item
-              label={intl.formatMessage({
-                id: 'matchBot_title_sponsor',
-                defaultMessage: 'Sponsor',
-              })}
+              label={
+                <span className="CreateRule__label">
+                  {intl.formatMessage({ id: 'matchBot_title_sponsor', defaultMessage: 'Sponsor' })}
+                </span>
+              }
             >
               {isEmpty(editRule) &&
                 getFieldDecorator('sponsorField', {
