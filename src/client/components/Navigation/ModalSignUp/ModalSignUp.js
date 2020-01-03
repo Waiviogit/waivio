@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Modal, Form, Icon, Input, Button, Checkbox } from 'antd';
 import { isEmpty } from 'lodash';
 import { useDispatch } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { GoogleLogin } from 'react-google-login';
 import FacebookLogin from 'react-facebook-login';
 import getSlug from 'speakingurl';
@@ -12,7 +12,7 @@ import { getUserAccount, isUserRegistered } from '../../../../waivioApi/ApiClien
 import { notify } from './../../../app/Notification/notificationActions';
 import './ModalSignUp.less';
 
-const ModalSignUp = ({ isButton, form }) => {
+const ModalSignUp = ({ isButton, form, intl }) => {
   const dispatch = useDispatch();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -100,9 +100,28 @@ const ModalSignUp = ({ isButton, form }) => {
   const usernameError = isFieldTouched('username') && getFieldError('username');
 
   const validateUserName = async (rule, value, callback) => {
+    if (value.length >= 25)
+      callback(
+        `${intl.formatMessage({
+          id: 'name_is_too_long',
+          defaultMessage: 'Name is too long (map 25 symbols)',
+        })}`,
+      );
+    if (value.trim().length === 0)
+      callback(
+        `${intl.formatMessage({
+          id: 'please_input_username',
+          defaultMessage: 'Please input your username',
+        })}`,
+      );
     const user = await getUserAccount(`waivio_${value}`);
     if (user.id) {
-      callback('User with such username already exists');
+      callback(
+        `${intl.formatMessage({
+          id: 'already_exists',
+          defaultMessage: 'User with such username already exists',
+        })}`,
+      );
     }
     callback();
   };
@@ -114,11 +133,17 @@ const ModalSignUp = ({ isButton, form }) => {
           rules: [
             {
               required: true,
-              message: 'Please input your username!',
+              message: `${intl.formatMessage({
+                id: 'please_input_username',
+                defaultMessage: 'Please input your username',
+              })}`,
             },
             {
-              pattern: /^[A-Za-z0-9.-]{3,16}$/,
-              message: 'Only letters, digits, periods, dashes are allowed',
+              pattern: /^[A-Za-z0-9.-]$/,
+              message: `${intl.formatMessage({
+                id: 'only_letters',
+                defaultMessage: 'Only letters, digits, periods, dashes are allowed',
+              })}`,
             },
             {
               validator: validateUserName,
@@ -172,6 +197,7 @@ const ModalSignUp = ({ isButton, form }) => {
               clientId="623736583769-qlg46kt2o7gc4kjd2l90nscitf38vl5t.apps.googleusercontent.com"
               onSuccess={responseGoogle}
               cookiePolicy={'single_host_origin'}
+              onFailure={() => {}}
               className="ModalSignUp__social-btn"
             />
             <FacebookLogin
@@ -193,8 +219,9 @@ const ModalSignUp = ({ isButton, form }) => {
 };
 
 ModalSignUp.propTypes = {
+  intl: PropTypes.shape().isRequired,
   isButton: PropTypes.bool.isRequired,
   form: PropTypes.shape().isRequired,
 };
 
-export default Form.create({ name: 'user_name' })(ModalSignUp);
+export default Form.create({ name: 'user_name' })(injectIntl(ModalSignUp));

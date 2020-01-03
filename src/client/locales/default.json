@@ -955,5 +955,8 @@
   "steemConnect": "steemConnect",
   "account_to_get_your_reward": "account to get your reward.",
   "or_sign_up_with": "Or sign up with",
-  "or_sign_in_with": "account to get your reward."
+  "or_sign_in_with": "account to get your reward.",
+  "name_is_too_long": "Name is too long (map 25 symbols)",
+  "please_input_username": "User with such username already exists",
+  "only_letters": "Only letters, digits, periods, dashes are allowed"
 }
