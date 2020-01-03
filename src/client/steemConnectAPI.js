@@ -3,7 +3,7 @@ import sc2 from 'sc2-sdk';
 import { waivioAPI } from '../waivioApi/ApiClient';
 import { getValidTokenData } from './helpers/getToken';
 
-function broadcast(operations, rootPostAuthor) {
+function broadcast(operations, actionAuthor) {
   let operation;
   if (operations[0][0] === 'custom_json') {
     if (operations[0][1].json.includes('reblog')) {
@@ -13,7 +13,7 @@ function broadcast(operations, rootPostAuthor) {
     }
   } else if (operations[0][0] === 'comment') {
     const jsonMetadata = JSON.parse(operations[0][1].json_metadata);
-    if (rootPostAuthor) operations[0][1].post_root_author = rootPostAuthor;
+    if (actionAuthor) operations[0][1].post_root_author = actionAuthor;
     if (jsonMetadata.comment) {
       operations[0][1].guest_root_author = operations[0][1].author;
       operations[0][1].author = jsonMetadata.comment.userId;
