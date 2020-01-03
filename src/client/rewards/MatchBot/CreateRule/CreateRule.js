@@ -9,6 +9,7 @@ import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersA
 import ReviewItem from '../../Create-Edit/ReviewItem';
 import { setMatchBotRules } from '../../rewardsActions';
 import './CreateRule.less';
+import DeleteRuleModal from './DeleteRuleModal/DeleteRuleModal';
 
 const CreateRule = ({
   intl,
@@ -23,6 +24,7 @@ const CreateRule = ({
   const [sliderValue, setSliderValue] = useState(100);
   const [isConfirmModalLoading, setConfirmModalLoaded] = useState(false);
   const [isConfirmModal, setConfirmModal] = useState(false);
+  const [isDeleteModal, setDeleteModal] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -46,6 +48,8 @@ const CreateRule = ({
     setEditRule({});
     handleChangeModalVisible();
   };
+
+  const handleDeleteModalVisibility = () => setDeleteModal(!isDeleteModal);
   const handleSubmit = e => {
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
@@ -327,7 +331,7 @@ const CreateRule = ({
                 :
               </div>
               <div className="CreateRule__button-delete">
-                <Button disabled={false}>
+                <Button disabled={false} onClick={handleDeleteModalVisibility}>
                   {intl.formatMessage({
                     id: 'matchBot_btn_delete_rule',
                     defaultMessage: 'Delete rule',
@@ -372,6 +376,11 @@ const CreateRule = ({
               defaultMessage: 'Do you want to edit rule with current changes',
             })}
       </Modal>
+      <DeleteRuleModal
+        isDeleteModal={isDeleteModal}
+        handleModalVisibility={handleDeleteModalVisibility}
+        sponsor={editRule.sponsor}
+      />
     </Modal>
   );
 };
