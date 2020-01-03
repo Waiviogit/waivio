@@ -5,6 +5,11 @@
   &__button {
     display: flex;
     justify-content: flex-end;
+    &-delete {
+      .ant-btn {
+        color: red;
+      }
+    }
     .ant-btn-primary {
       margin-left: 0.85rem;
     }
@@ -16,6 +21,10 @@
     font-size: 1em;
     font-family: SimSun, sans-serif;
     content: '*';
+  }
+  &__edit-footer {
+    margin-top: 1rem;
+    border-top: 1px solid @blue-hawkesBlue;
   }
 }
 

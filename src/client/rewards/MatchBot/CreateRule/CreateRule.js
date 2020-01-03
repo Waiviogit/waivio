@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Button, DatePicker, Form, Input, message, Modal, Slider } from 'antd';
+import { Link } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import ReviewItem from '../../Create-Edit/ReviewItem';
@@ -154,15 +155,22 @@ const CreateRule = ({
   return (
     <Modal
       title={
-        isEmpty(editRule)
-          ? intl.formatMessage({
+        isEmpty(editRule) ? (
+          <span>
+            {intl.formatMessage({
               id: 'matchBot_title_add_new_sponsor',
               defaultMessage: 'Add new sponsor',
-            })
-          : intl.formatMessage({
+            })}
+          </span>
+        ) : (
+          <span>
+            {intl.formatMessage({
               id: 'matchBot_title_edit_rule',
-              defaultMessage: 'Edit rule',
-            })
+              defaultMessage: 'Edit match bot rules for',
+            })}
+            <Link to={`/@${editRule.sponsor}`}>{` @${editRule.sponsor}`}</Link>
+          </span>
+        )
       }
       visible={modalVisible}
       onCancel={handleCloseModal}
@@ -304,11 +312,30 @@ const CreateRule = ({
               <Button type="primary" htmlType="submit" disabled={false}>
                 {intl.formatMessage({
                   id: 'matchBot_btn_edit_rule',
-                  defaultMessage: 'Edit',
+                  defaultMessage: 'Save changes',
                 })}
               </Button>
             )}
           </div>
+          {isEmpty(!editRule) && (
+            <div className="CreateRule__edit-footer">
+              <div className="CreateRule__text f9">
+                {intl.formatMessage({
+                  id: 'matchBot_remove_match_bot_rule_click_button',
+                  defaultMessage: 'To remove the match bot rule, click the delete button',
+                })}
+                :
+              </div>
+              <div className="CreateRule__button-delete">
+                <Button disabled={false}>
+                  {intl.formatMessage({
+                    id: 'matchBot_btn_delete_rule',
+                    defaultMessage: 'Delete rule',
+                  })}
+                </Button>
+              </div>
+            </div>
+          )}
         </Form>
       </div>
       <Modal
