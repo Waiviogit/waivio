@@ -150,8 +150,9 @@ const MatchBot = ({ intl, userName }) => {
                   {intl.formatMessage({
                     id: 'match_bot_match_bot_requires_authorization_distribute_votes_behalf',
                     defaultMessage:
-                      'The match bot requires authorization to distribute votes on your behalf:',
+                      'The match bot requires authorization to distribute votes on your behalf',
                   })}
+                  :
                   {
                     <span
                       className="MatchBot__text-link"
@@ -210,7 +211,13 @@ const MatchBot = ({ intl, userName }) => {
             </div>
           </div>
           {!isEmpty(rules) && !isEmpty(rules.results) && (
-            <MatchBotTable intl={intl} rules={rules.results} handleEditRule={handleEditRule} />
+            <MatchBotTable
+              intl={intl}
+              rules={rules.results}
+              handleEditRule={handleEditRule}
+              handleSwitcher={handleSwitcher}
+              isAuthority={isAuthority}
+            />
           )}
           <div className="MatchBot__button">
             <Button type="primary" onClick={handleChangeModalVisible}>
