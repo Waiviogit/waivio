@@ -6,8 +6,19 @@
     display: flex;
     justify-content: flex-end;
     &-delete {
+      display: flex;
+      justify-content: center;
+      margin-top: 2.3rem;
+
       .ant-btn {
-        color: red;
+        color: @white;
+        background-color: @red;
+        border-color: @red;
+        &:hover {
+          color: @white;
+          background-color: @red-danger;
+          border-color: @red-danger;
+        }
       }
     }
     .ant-btn-primary {
@@ -23,7 +34,8 @@
     content: '*';
   }
   &__edit-footer {
-    margin-top: 1rem;
+    margin-top: 2.3rem;
+    padding-top: 1rem;
     border-top: 1px solid @blue-hawkesBlue;
   }
 }
