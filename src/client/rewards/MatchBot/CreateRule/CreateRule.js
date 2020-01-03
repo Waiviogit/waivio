@@ -8,8 +8,9 @@ import { isEmpty } from 'lodash';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import ReviewItem from '../../Create-Edit/ReviewItem';
 import { setMatchBotRules } from '../../rewardsActions';
-import './CreateRule.less';
 import DeleteRuleModal from './DeleteRuleModal/DeleteRuleModal';
+import ConfirmModal from './ConfirmModal';
+import './CreateRule.less';
 
 const CreateRule = ({
   intl,
@@ -321,7 +322,7 @@ const CreateRule = ({
               </Button>
             )}
           </div>
-          {isEmpty(!editRule) && (
+          {!isEmpty(editRule) && (
             <div className="CreateRule__edit-footer">
               <div className="CreateRule__text f9">
                 {intl.formatMessage({
@@ -342,40 +343,15 @@ const CreateRule = ({
           )}
         </Form>
       </div>
-      <Modal
-        title={
-          isEmpty(editRule)
-            ? intl.formatMessage({
-                id: 'matchBot_rule_creation_confirmation',
-                defaultMessage: 'Rule creation confirmation',
-              })
-            : intl.formatMessage({
-                id: 'matchBot_rule_editing_confirmation',
-                defaultMessage: 'Rule editing confirmation',
-              })
-        }
-        visible={isConfirmModal}
+      <ConfirmModal
+        sponsor={sponsor}
+        editRule={editRule}
         onCancel={handleCloseConfirmModal}
         onOk={handleSetRule}
+        visible={isConfirmModal}
         confirmLoading={isConfirmModalLoading}
-      >
-        {isEmpty(editRule)
-          ? intl.formatMessage(
-              {
-                id: 'matchBot_modal_create_rule_with_sponsor_and_upvote',
-                defaultMessage:
-                  "Do you want to create rule with sponsor '{sponsor}' and with upvote {upvote}%",
-              },
-              {
-                sponsor: sponsor.account,
-                upvote: sliderValue,
-              },
-            )
-          : intl.formatMessage({
-              id: 'matchBot_modal_edit_rule_with_current_changes',
-              defaultMessage: 'Do you want to edit rule with current changes',
-            })}
-      </Modal>
+        sliderValue={sliderValue}
+      />
       <DeleteRuleModal
         isDeleteModal={isDeleteModal}
         handleModalVisibility={handleDeleteModalVisibility}
