@@ -65,7 +65,7 @@ const ModalSignUp = ({ isButton, form }) => {
         </a>
       </div>
       <div className="SignUpCard__line">
-        <FormattedMessage id="newSteemAcc" defaultMessage="New Steem Account" />
+        <FormattedMessage id="newSteemAcc" defaultMessage="Account with wallet" />
       </div>
       <div className="SignUpCard__line">
         <FormattedMessage id="longerWaiting" defaultMessage="Waiting time up to 2 weeks" />
@@ -152,7 +152,7 @@ const ModalSignUp = ({ isButton, form }) => {
         </a>
       )}
       <Modal
-        width={600}
+        width={416}
         title=""
         visible={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
@@ -165,9 +165,10 @@ const ModalSignUp = ({ isButton, form }) => {
           {getSignUpInfo}
           <div className="ModalSignUp__social">
             <div className="ModalSignUp__subtitle">
-              <FormattedMessage id="or_sign_up_with" defaultMessage="Or sign up with" />
+              <FormattedMessage id="or_sign_up_with" defaultMessage="Or sign up with" />:
             </div>
             <GoogleLogin
+              buttonText="Google"
               clientId="623736583769-qlg46kt2o7gc4kjd2l90nscitf38vl5t.apps.googleusercontent.com"
               onSuccess={responseGoogle}
               cookiePolicy={'single_host_origin'}
@@ -179,7 +180,7 @@ const ModalSignUp = ({ isButton, form }) => {
               fields="name,email,picture"
               callback={responseFacebook}
               onFailure={() => {}}
-              textButton="Sign In with Facebook"
+              textButton="Facebook"
               cssClass="ModalSignUp__social-btn ModalSignUp__social-btn--fb"
               icon={<Icon type="facebook" className="ModalSignUp__icon-fb" />}
             />

@@ -9,8 +9,8 @@ import {
   getIsAuthenticated,
 } from '../../reducers';
 import './Sidenav.less';
-import SteemConnect from '../../steemConnectAPI';
 import { getRewardsGeneralCounts } from '../../../waivioApi/ApiClient';
+import ModalSignIn from './ModlaSignIn/ModalSignIn';
 
 @injectIntl
 @connect(state => ({
@@ -21,7 +21,6 @@ import { getRewardsGeneralCounts } from '../../../waivioApi/ApiClient';
 export default class SidenavRewards extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
-    location: PropTypes.shape().isRequired,
     authenticated: PropTypes.bool.isRequired,
     userName: PropTypes.string.isRequired,
   };
@@ -74,10 +73,9 @@ export default class SidenavRewards extends React.Component {
   };
 
   render() {
-    const { intl, authenticated, location } = this.props;
+    const { intl, authenticated } = this.props;
     const { menuCondition, rewardsCount } = this.state;
     const { hasReceivables, historyCount, createdCampaignsCount } = rewardsCount;
-    const next = location.pathname.length > 1 ? location.pathname : '';
     return (
       <React.Fragment>
         <ul className="Sidenav">
@@ -221,13 +219,8 @@ export default class SidenavRewards extends React.Component {
               {intl.formatMessage({
                 id: 'pleaseLogin',
                 defaultMessage: `For more options please`,
-              })}
-              <a href={SteemConnect.getLoginURL(next)} className="ml1">
-                {intl.formatMessage({
-                  id: 'login',
-                  defaultMessage: `log in`,
-                })}
-              </a>
+              })}{' '}
+              <ModalSignIn isButton={false} />
             </span>
           )}
         </ul>

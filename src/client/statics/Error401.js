@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter, Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import SteemConnect from '../steemConnectAPI';
 import './ErrorPage.less';
+import ModalSignIn from '../components/Navigation/ModlaSignIn/ModalSignIn';
 
 const Error401 = ({ staticContext }) => {
   if (staticContext) {
@@ -25,11 +25,7 @@ const Error401 = ({ staticContext }) => {
           id="need_login_link_text"
           defaultMessage="You need to login to use this feature, please {link}."
           values={{
-            link: (
-              <a href={SteemConnect.getLoginURL()}>
-                <FormattedMessage id="login" defaultMessage="Login" />
-              </a>
-            ),
+            link: <ModalSignIn isButton={false} />,
           }}
         />
       </p>
