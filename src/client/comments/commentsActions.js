@@ -161,7 +161,16 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
     type: SEND_COMMENT,
     payload: {
       promise: steemConnectAPI
-        .comment(parentAuthor, parentPermlink, author, permlink, '', newBody, jsonMetadata)
+        .comment(
+          parentAuthor,
+          parentPermlink,
+          author,
+          permlink,
+          '',
+          newBody,
+          jsonMetadata,
+          parentPost.root_author,
+        )
         .then(() => {
           if (auth.isGuestUser) {
             dispatch(
