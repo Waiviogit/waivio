@@ -24,6 +24,7 @@ const MatchBotTable = ({ handleEditRule, handleSwitcher, isAuthority, messageDat
           handleEditRule={handleEditRule}
           handleSwitcher={handleSwitcher}
           isAuthority={isAuthority}
+          messageData={messageData}
           rule={rule}
         />
       ))}
