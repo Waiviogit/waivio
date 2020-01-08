@@ -72,7 +72,7 @@ const MatchBotTableRow = ({ handleEditRule, handleSwitcher, isAuthority, intl, r
             {messageData.edit}
           </div>
         </td>
-        <td>{formatDate(intl, mockDate)}</td>
+        <td>{`${formatDate(intl, mockDate)} mock`}</td>
         <td>{rule.note}</td>
       </tr>
       <Modal
