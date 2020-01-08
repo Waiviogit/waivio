@@ -140,7 +140,7 @@ const MatchBot = ({ intl, userName }) => {
             <MatchBotTable
               handleEditRule={handleEditRule}
               handleSwitcher={handleSwitcher}
-              intl={intl}
+              messageData={messageData}
               isAuthority={isAuthority}
               rules={rules.results}
             />

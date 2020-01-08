@@ -43,4 +43,10 @@ export default localizer => ({
     'matchBot_change_min_voting_power',
     'Change minimum voting power',
   ),
+  active: localizer('matchBot_active', 'Active'),
+  sponsor: localizer('matchBot_sponsor', 'Sponsor'),
+  upvote: localizer('matchBot_upvote', 'Upvote'),
+  action: localizer('matchBot_action', 'Action'),
+  notes: localizer('matchBot_notes', 'Notes'),
+  expiryDate: localizer('matchBot_expiry_date', 'Expiry date'),
 });
