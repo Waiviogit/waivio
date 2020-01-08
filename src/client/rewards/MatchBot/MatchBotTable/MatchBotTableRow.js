@@ -4,12 +4,14 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
 import { setMatchBotRules } from '../../rewardsActions';
+import { formatDate } from '../../rewardsHelper';
 
 const MatchBotTableRow = ({ intl, rule, handleEditRule, handleSwitcher, isAuthority }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalAuthVisible, setModalAuthVisible] = useState(false);
   const [isLoading, setLoaded] = useState(false);
   const [activationStatus, setActivationStatus] = useState('');
+  const mockDate = '2019-12-10T13:42:02.350Z'; // TODO: Remove when backend will ready
   const dispatch = useDispatch();
   const handleChangeModalVisible = () => setModalVisible(!modalVisible);
   const editRule = () => {
@@ -93,7 +95,6 @@ const MatchBotTableRow = ({ intl, rule, handleEditRule, handleSwitcher, isAuthor
       setLoaded(false);
     });
   };
-
   return (
     <React.Fragment>
       <tr>
@@ -110,7 +111,7 @@ const MatchBotTableRow = ({ intl, rule, handleEditRule, handleSwitcher, isAuthor
             {intl.formatMessage({ id: 'matchBot_table_edit', defaultMessage: `Edit` })}
           </div>
         </td>
-        <td>abc</td>
+        <td>{formatDate(intl, mockDate)}</td>
         <td>{rule.note}</td>
       </tr>
       <Modal
