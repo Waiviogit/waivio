@@ -5,7 +5,14 @@ import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import './DeleteRuleModal.less';
 
-const DeleteRuleModal = ({ intl, isDeleteModal, handleModalVisibility, sponsor }) => {
+const DeleteRuleModal = ({
+  intl,
+  isDeleteModal,
+  handleModalVisibility,
+  sponsor,
+  onOk,
+  deleteLoading,
+}) => {
   const handleDeleteRule = () => handleModalVisibility();
   return (
     <Modal
@@ -27,14 +34,14 @@ const DeleteRuleModal = ({ intl, isDeleteModal, handleModalVisibility, sponsor }
       </div>
       <div className="DeleteRuleModal__footer">
         <div className="CreateRule__button">
-          <Button onClick={handleModalVisibility}>
+          <Button onClick={handleModalVisibility} disabled={deleteLoading}>
             {intl.formatMessage({
               id: 'matchBot_btn_cancel',
               defaultMessage: 'Cancel',
             })}
           </Button>
           <div className="CreateRule__button-delete">
-            <Button disabled={false} onClick={handleDeleteRule}>
+            <Button disabled={deleteLoading} onClick={onOk} loading={deleteLoading}>
               {intl.formatMessage({
                 id: 'matchBot_btn_delete',
                 defaultMessage: 'Delete',
@@ -52,6 +59,8 @@ DeleteRuleModal.propTypes = {
   isDeleteModal: PropTypes.bool.isRequired,
   handleModalVisibility: PropTypes.func.isRequired,
   sponsor: PropTypes.shape().isRequired,
+  deleteLoading: PropTypes.bool.isRequired,
+  onOk: PropTypes.func.isRequired,
 };
 
 export default injectIntl(DeleteRuleModal);

@@ -109,6 +109,17 @@ function sc2Extended() {
         return this.broadcast([['custom_json', params]], cb);
       },
     },
+    {
+      deleteMatchBotRule(username, sponsorName, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'match_bot_rule_delete',
+          json: JSON.stringify(sponsorName),
+        };
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
   );
 
   return copied;

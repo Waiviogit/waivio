@@ -946,6 +946,7 @@
   "matchBot_modal_confirmation_required": "Требуется подтверждение",
   "matchBot_do_you_want_delete_match_bot_rules": "Do you want to delete match bot rules for",
   "matchBot_btn_delete": "Delete",
+  "matchBot_success_deleted": "Rule deleted successfully",
   "create_button_span_text": "Once created, the campaign can be activated in the Campaigns/Manage tab.",
   "page_object_placeholder": "Link to the agreement (page object, optional)",
   "agree_to_pay_following_commissions_waivio": "I agree to pay the following commissions to Waivio and partners",

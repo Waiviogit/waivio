@@ -948,6 +948,7 @@
   "matchBot_modal_confirmation_required": "Confirmation required",
   "matchBot_btn_add_sponsor": "Добавить спонсора",
   "matchBot_btn_delete": "Удалить",
+  "matchBot_success_deleted": "Правило удалено успешно",
   "campaign_buttons_reserved": "Зарезервировано",
   "campaign_buttons_days_left": "дня(дней) назад",
   "campaign_buttons_today": "сегодня",

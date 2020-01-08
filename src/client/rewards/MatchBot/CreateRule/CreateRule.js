@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import ReviewItem from '../../Create-Edit/ReviewItem';
-import { setMatchBotRules } from '../../rewardsActions';
+import { deleteMatchBotRule, setMatchBotRules } from '../../rewardsActions';
 import DeleteRuleModal from './DeleteRuleModal/DeleteRuleModal';
 import ConfirmModal from './ConfirmModal';
 import './CreateRule.less';
@@ -26,6 +26,7 @@ const CreateRule = ({
   const [isConfirmModalLoading, setConfirmModalLoaded] = useState(false);
   const [isConfirmModal, setConfirmModal] = useState(false);
   const [isDeleteModal, setDeleteModal] = useState(false);
+  const [isDeleteModalLoading, setDeleteModalLoaded] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -65,6 +66,7 @@ const CreateRule = ({
       }
     });
   };
+
   const handleSetRule = () => {
     setConfirmModalLoaded(true);
     form.validateFieldsAndScroll((err, values) => {
@@ -119,6 +121,28 @@ const CreateRule = ({
         setConfirmModalLoaded(false);
       }
     });
+  };
+
+  const handleDeleteRule = () => {
+    setDeleteModalLoaded(true);
+    const prepareObjData = {
+      sponsor: editRule.sponsor,
+    };
+    dispatch(deleteMatchBotRule(prepareObjData))
+      .then(() => {
+        handleChangeModalVisible();
+        setDeleteModalLoaded(false);
+        message.success(
+          intl.formatMessage({
+            id: 'matchBot_success_deleted',
+            defaultMessage: 'Rule deleted successfully',
+          }),
+        );
+      })
+      .catch(() => {
+        setDeleteModalLoaded(false);
+        handleChangeModalVisible();
+      });
   };
 
   const checkSponsor = (rule, value, callback) => {
@@ -347,15 +371,17 @@ const CreateRule = ({
         sponsor={sponsor}
         editRule={editRule}
         onCancel={handleCloseConfirmModal}
-        onOk={handleSetRule}
         visible={isConfirmModal}
         confirmLoading={isConfirmModalLoading}
         sliderValue={sliderValue}
+        onOk={handleSetRule}
       />
       <DeleteRuleModal
         isDeleteModal={isDeleteModal}
         handleModalVisibility={handleDeleteModalVisibility}
         sponsor={editRule.sponsor}
+        deleteLoading={isDeleteModalLoading}
+        onOk={handleDeleteRule}
       />
     </Modal>
   );
