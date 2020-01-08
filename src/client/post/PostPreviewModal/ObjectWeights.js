@@ -52,12 +52,12 @@ class ObjectWeight extends React.PureComponent {
 }
 
 const ObjectWeights = ({
-                         intl,
-                         isLinkedObjectsValid,
-                         linkedObjects,
-                         objPercentage,
-                         onPercentChange,
-                       }) => {
+  intl,
+  isLinkedObjectsValid,
+  linkedObjects,
+  objPercentage,
+  onPercentChange,
+}) => {
   const [weightBuffer, setWeightBuffer] = useState(
     Object.values(objPercentage).reduce((res, curr) => res - curr.percent, 100),
   );

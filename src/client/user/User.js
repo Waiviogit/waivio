@@ -14,7 +14,7 @@ import {
   getIsUserLoaded,
   getAuthenticatedUserName,
   getUsersAccountHistory,
-  getChatCondition
+  getChatCondition,
 } from '../reducers';
 import { getUserAccountHistory, openTransfer } from '../wallet/walletActions';
 import { getUserAccount } from './usersActions';

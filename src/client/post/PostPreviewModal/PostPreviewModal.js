@@ -185,13 +185,7 @@ class PostPreviewModal extends Component {
   };
 
   render() {
-    const {
-      body,
-      isConfirmed,
-      isModalOpen,
-      postValidationErrors,
-      title,
-    } = this.state;
+    const { body, isConfirmed, isModalOpen, postValidationErrors, title } = this.state;
     const {
       intl,
       isPublishing,
