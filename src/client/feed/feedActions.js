@@ -39,7 +39,7 @@ export const GET_MORE_OBJECT_POSTS = createAsyncActionType('@object/GET_MORE_OBJ
 export const CLEAN_FEED = 'CLEAN_FEED';
 
 const getUserLocalesArray = getState => {
-  let locales = ['en-US'];
+  let locales = ['ru-RU', 'en-US'];
   const state = getState();
   const readLanguages = getReadLanguages(state);
   if (isEmpty(readLanguages)) {
