@@ -15,7 +15,7 @@ import './PostPreviewModal.less';
 import PostChart from '../../../investarena/components/PostChart';
 import { getForecastObject } from '../../../investarena/components/CreatePostForecast/helpers';
 import { forecastDateTimeFormat } from '../../../investarena/constants/constantsForecast';
-import {setObjPercents} from "../../helpers/wObjInfluenceHelper";
+import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 
 const isTopicValid = topic => /^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$/.test(topic);
 
@@ -87,7 +87,6 @@ class PostPreviewModal extends Component {
       title: '',
       body: '',
       postValidationErrors: [],
-      objPercentage: setObjPercents(props.linkedObjects, props.objPercentage),
       weightBuffer: 0,
       isConfirmed: false,
       // Check review modal
@@ -190,10 +189,8 @@ class PostPreviewModal extends Component {
       body,
       isConfirmed,
       isModalOpen,
-      objPercentage,
       postValidationErrors,
       title,
-      weightBuffer,
     } = this.state;
     const {
       intl,
@@ -203,6 +200,7 @@ class PostPreviewModal extends Component {
       reviewData,
       settings,
       forecastValues,
+      objPercentage,
       expForecast,
       isUpdating,
     } = this.props;
@@ -278,7 +276,6 @@ class PostPreviewModal extends Component {
               <AdvanceSettings
                 linkedObjects={linkedObjects}
                 objPercentage={objPercentage}
-                weightBuffer={weightBuffer}
                 settings={settings}
                 onSettingsChange={this.handleSettingsChange}
                 onPercentChange={this.handlePercentChange}

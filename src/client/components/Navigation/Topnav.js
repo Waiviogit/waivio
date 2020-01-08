@@ -47,7 +47,7 @@ import config from '../../../investarena/configApi/config';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
-import ModalSignUp from './ModalSignUp/ModalSignUp';
+// import ModalSignUp from './ModalSignUp/ModalSignUp';
 import TopNavigation from './TopNavigation';
 import { getTopPosts } from '../../../waivioApi/ApiClient';
 import './Topnav.less';
@@ -326,7 +326,7 @@ class Topnav extends React.Component {
   };
 
   menuForLoggedOut = () => {
-    const { location, intl } = this.props;
+    const { location } = this.props;
     const { searchBarActive } = this.state;
     const next = location.pathname.length > 1 ? location.pathname : '';
 
@@ -338,7 +338,10 @@ class Topnav extends React.Component {
       >
         <Menu className="Topnav__menu" mode="horizontal">
           <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="signup">
-            <ModalSignUp isButton={false} intl={intl} />
+            {/* <ModalSignUp isButton={false} intl={intl} /> */}
+            <a target="_blank" rel="noopener noreferrer" href={process.env.SIGNUP_URL}>
+              <FormattedMessage id="signup" defaultMessage="Sign up" />
+            </a>
           </Menu.Item>
           <Menu.Item
             className="Topnav__menu-item Topnav__menu-item--logedout"

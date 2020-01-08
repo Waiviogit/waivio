@@ -5,7 +5,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import OBJECT_TYPE from '../object/const/objectTypes';
 import { hasType } from '../helpers/wObjectHelper';
-import { getObjectSettings } from '../../common/constants/listOfFields';
+// import { getObjectSettings } from '../../common/constants/listOfFields';
 import './ObjectMenu.less';
 
 class ObjectMenu extends React.Component {

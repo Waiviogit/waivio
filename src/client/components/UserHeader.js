@@ -60,7 +60,7 @@ const UserHeader = ({
                 )}
               </div>
               {authenticated && !isChat && !isSameUser ? (
-                <div className="UserHeader__user-chat-button">
+                <div className="UserHeader__user__button">
                   <Button onClick={sendData} type="primary" shape="circle" icon="message" />
                 </div>
               ) : null}
