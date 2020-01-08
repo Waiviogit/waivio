@@ -54,18 +54,21 @@ const Details = ({
             <Checkbox checked disabled />
             <div>{`${messageData.minimumNumberPosts}: ${objectDetails.userRequirements.minPosts}`}</div>
           </div>
-          <div className="Details__criteria-row">
-            <Checkbox checked disabled />
-            <div>
-              {messageData.receivedRewardFrom}
-              <Link to={`/@${objectDetails.guide.name}`}>{` @${objectDetails.guide.name} `}</Link>
-              {messageData.forReviewing}
-              <Link
-                to={`/object/${objectDetails.requiredObject}`}
-              >{` ${objectDetails.requiredObject} `}</Link>
-              {messageData.inTheLast}
+          {!!objectDetails.frequency_assign && (
+            <div className="Details__criteria-row">
+              <Checkbox checked disabled />
+              <div>
+                {messageData.receivedRewardFrom}
+                <Link to={`/@${objectDetails.guide.name}`}>{` @${objectDetails.guide.name} `}</Link>
+                {messageData.forReviewing}
+                <Link
+                  className="nowrap"
+                  to={`/object/${objectDetails.requiredObject}`}
+                >{` ${objectDetails.name} `}</Link>
+                {messageData.inTheLast}
+              </div>
             </div>
-          </div>
+          )}
           <div className="Details__criteria-row">
             <Checkbox checked disabled />
             <div>
@@ -86,21 +89,21 @@ const Details = ({
             ;
           </div>
           <div className="Details__criteria-row">{`2. ${messageData.photoReceipt}`}</div>
-          <div className="Details__criteria-row">
+          <div className="Details__criteria-row nowrap">
             {`3. ${messageData.linkTo}`}
-            <Link className="ml1" to={`/object/${proposedWobj.name}`}>
+            <Link className="ml1" to={`/object/${proposedWobj.author_permlink}`}>
               {proposedWobj.name}
             </Link>
             :
             <Link
-              className="ml1"
-              to={`/object/${proposedWobj.name}`}
-            >{`www.waivio.com/object/${proposedWobj.name}`}</Link>
+              className="Details__criteria-link ml1"
+              to={`/object/${proposedWobj.author_permlink}`}
+            >{`www.waivio.com/object/${proposedWobj.author_permlink}`}</Link>
           </div>
           <div className="Details__criteria-row">
             {`4. ${messageData.linkTo}`}
             <Link className="ml1" to={`/object/${objectDetails.requiredObject}`}>
-              {objectDetails.requiredObject}
+              {objectDetails.name}
             </Link>
             :
             <Link
@@ -117,7 +120,7 @@ const Details = ({
         <div className="Details__text fw6 mv3">{messageData.reward}:</div>
         <span>
           {messageData.amountRewardDetermined}(
-          <Link to={`/object/${objectDetails.requiredObject}`}>{objectDetails.requiredObject}</Link>
+          <Link to={`/object/${objectDetails.guide.name}`}>{objectDetails.guide.name}</Link>
           {!isEmpty(objectDetails.match_bots) &&
             objectDetails.match_bots.map(bot => (
               <React.Fragment>

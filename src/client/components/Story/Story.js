@@ -204,7 +204,7 @@ class Story extends React.Component {
 
   handleLikeClick(post, postState, weight = 10000) {
     const { sliderMode, defaultVotePercent } = this.props;
-    const author = post.author_original || post.author;
+    const author = post.author_original || post.root_author || post.author;
 
     if (sliderMode) {
       this.props.votePost(post.id, author, post.permlink, weight);

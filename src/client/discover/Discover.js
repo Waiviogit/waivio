@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import DiscoverContent from './DiscoverContent';
 import Affix from '../components/Utils/Affix';
@@ -41,14 +41,8 @@ const Discover = ({ intl }) => (
           <LeftSidebar />
         </div>
       </Affix>
-      <div className="Objects">
+      <div className="Objects center">
         <MobileNavigation />
-        <div className="Discover__title">
-          <FormattedMessage
-            id="discover_more_people_info"
-            defaultMessage="Discover the most reputable users of this platform"
-          />
-        </div>
         <div className="Objects__content">
           <DiscoverContent />
         </div>

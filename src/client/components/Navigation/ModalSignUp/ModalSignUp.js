@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Modal, Form, Icon, Input, Button, Checkbox } from 'antd';
 import { isEmpty } from 'lodash';
 import { useDispatch } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { GoogleLogin } from 'react-google-login';
 import FacebookLogin from 'react-facebook-login';
 import getSlug from 'speakingurl';
@@ -12,7 +12,7 @@ import { getUserAccount, isUserRegistered } from '../../../../waivioApi/ApiClien
 import { notify } from './../../../app/Notification/notificationActions';
 import './ModalSignUp.less';
 
-const ModalSignUp = ({ isButton, form }) => {
+const ModalSignUp = ({ isButton, form, intl }) => {
   const dispatch = useDispatch();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -65,7 +65,7 @@ const ModalSignUp = ({ isButton, form }) => {
         </a>
       </div>
       <div className="SignUpCard__line">
-        <FormattedMessage id="newSteemAcc" defaultMessage="New Steem Account" />
+        <FormattedMessage id="newSteemAcc" defaultMessage="Account with wallet" />
       </div>
       <div className="SignUpCard__line">
         <FormattedMessage id="longerWaiting" defaultMessage="Waiting time up to 2 weeks" />
@@ -100,25 +100,50 @@ const ModalSignUp = ({ isButton, form }) => {
   const usernameError = isFieldTouched('username') && getFieldError('username');
 
   const validateUserName = async (rule, value, callback) => {
+    if (value.length >= 25)
+      callback(
+        `${intl.formatMessage({
+          id: 'name_is_too_long',
+          defaultMessage: 'Name is too long (map 25 symbols)',
+        })}`,
+      );
+    if (value.trim().length === 0)
+      callback(
+        `${intl.formatMessage({
+          id: 'please_input_username',
+          defaultMessage: 'Please input your username',
+        })}`,
+      );
     const user = await getUserAccount(`waivio_${value}`);
     if (user.id) {
-      callback('User with such username already exists');
+      callback(
+        `${intl.formatMessage({
+          id: 'already_exists',
+          defaultMessage: 'User with such username already exists',
+        })}`,
+      );
     }
     callback();
   };
 
   const nameForm = (
-    <Form layout="vertical" onSubmit={handleSubmit}>
+    <Form layout="vertical" onSubmit={handleSubmit} className="mt3">
       <Form.Item validateStatus={usernameError ? 'error' : ''} help={usernameError || ''}>
         {getFieldDecorator('username', {
           rules: [
             {
               required: true,
-              message: 'Please input your username!',
+              message: `${intl.formatMessage({
+                id: 'please_input_username',
+                defaultMessage: 'Please input your username',
+              })}`,
             },
             {
-              pattern: /^[A-Za-z0-9.-]{3,16}$/,
-              message: 'Only letters, digits, periods, dashes are allowed',
+              pattern: /^[A-Za-z0-9.-]$/,
+              message: `${intl.formatMessage({
+                id: 'only_letters',
+                defaultMessage: 'Only letters, digits, periods, dashes are allowed',
+              })}`,
             },
             {
               validator: validateUserName,
@@ -152,7 +177,7 @@ const ModalSignUp = ({ isButton, form }) => {
         </a>
       )}
       <Modal
-        width={600}
+        width={416}
         title=""
         visible={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
@@ -165,12 +190,14 @@ const ModalSignUp = ({ isButton, form }) => {
           {getSignUpInfo}
           <div className="ModalSignUp__social">
             <div className="ModalSignUp__subtitle">
-              <FormattedMessage id="or_sign_up_with" defaultMessage="Or sign up with" />
+              <FormattedMessage id="or_sign_up_with" defaultMessage="Or sign up with" />:
             </div>
             <GoogleLogin
+              buttonText="Google"
               clientId="623736583769-qlg46kt2o7gc4kjd2l90nscitf38vl5t.apps.googleusercontent.com"
               onSuccess={responseGoogle}
               cookiePolicy={'single_host_origin'}
+              onFailure={() => {}}
               className="ModalSignUp__social-btn"
             />
             <FacebookLogin
@@ -179,7 +206,7 @@ const ModalSignUp = ({ isButton, form }) => {
               fields="name,email,picture"
               callback={responseFacebook}
               onFailure={() => {}}
-              textButton="Sign In with Facebook"
+              textButton="Facebook"
               cssClass="ModalSignUp__social-btn ModalSignUp__social-btn--fb"
               icon={<Icon type="facebook" className="ModalSignUp__icon-fb" />}
             />
@@ -192,8 +219,9 @@ const ModalSignUp = ({ isButton, form }) => {
 };
 
 ModalSignUp.propTypes = {
+  intl: PropTypes.shape().isRequired,
   isButton: PropTypes.bool.isRequired,
   form: PropTypes.shape().isRequired,
 };
 
-export default Form.create({ name: 'user_name' })(ModalSignUp);
+export default Form.create({ name: 'user_name' })(injectIntl(ModalSignUp));

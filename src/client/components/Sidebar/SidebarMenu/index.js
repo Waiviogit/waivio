@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import SidebarMenu from './SidebarMenu';
 import FollowingUpdates from '../FollowingUpdates/FollowingUpdates';
 import { getIsAuthenticated } from '../../../reducers';
-import SteemConnect from '../../../steemConnectAPI';
+import ModalSignIn from '../../Navigation/ModlaSignIn/ModalSignIn';
 
 const menuSections = {
   STEEM: 'Steem',
@@ -65,7 +65,6 @@ const getMenuConfig = ({ isAuthenticated }) => ({
 
 const SidebarMenuContainer = props => {
   const isAuthenticated = useSelector(getIsAuthenticated);
-  const next = props.location.pathname.length > 1 ? props.location.pathname : '';
   return (
     <React.Fragment>
       <SidebarMenu menuConfig={getMenuConfig({ isAuthenticated })} {...props} />
@@ -73,9 +72,7 @@ const SidebarMenuContainer = props => {
         <FollowingUpdates />
       ) : (
         <div className="pt3">
-          <a href={SteemConnect.getLoginURL(next)}>
-            <FormattedMessage id="login" defaultMessage="Log in" />
-          </a>
+          <ModalSignIn isButton={false} />
           &nbsp;
           <FormattedMessage id="more_options" defaultMessage="for more options" />
         </div>
