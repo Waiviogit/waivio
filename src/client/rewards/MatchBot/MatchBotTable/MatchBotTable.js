@@ -1,19 +1,32 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import MatchBotTableRow from './MatchBotTableRow';
 import './MatchBotTable.less';
 
-const MatchBotTable = ({ handleEditRule, handleSwitcher, isAuthority, messageData, rules }) => (
+const MatchBotTable = ({ handleEditRule, handleSwitcher, intl, isAuthority, rules }) => (
   <table className="MatchBotTable">
     <thead>
       <tr>
-        <th className="MatchBotTable basicWidth">{messageData.active}</th>
-        <th className="MatchBotTable sponsorWidth">{messageData.sponsor}</th>
-        <th className="MatchBotTable basicWidth">{messageData.upvote}</th>
-        <th className="MatchBotTable basicWidth">{messageData.action}</th>
-        <th className="MatchBotTable dateWidth">{messageData.expiryDate}</th>
-        <th className="MatchBotTable notesWidth">{messageData.notes}</th>
+        <th className="MatchBotTable basicWidth">
+          {intl.formatMessage({ id: 'matchBot_active', defaultMessage: 'Active' })}
+        </th>
+        <th className="MatchBotTable sponsorWidth">
+          {intl.formatMessage({ id: 'matchBot_sponsor', defaultMessage: 'Sponsor' })}
+        </th>
+        <th className="MatchBotTable basicWidth">
+          {intl.formatMessage({ id: 'matchBot_upvote', defaultMessage: 'Upvote' })}
+        </th>
+        <th className="MatchBotTable basicWidth">
+          {intl.formatMessage({ id: 'matchBot_action', defaultMessage: 'Action' })}
+        </th>
+        <th className="MatchBotTable dateWidth">
+          {intl.formatMessage({ id: 'matchBot_expiry_date', defaultMessage: 'Expiry date' })}
+        </th>
+        <th className="MatchBotTable notesWidth">
+          {intl.formatMessage({ id: 'matchBot_notes', defaultMessage: 'Notes' })}
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -24,7 +37,6 @@ const MatchBotTable = ({ handleEditRule, handleSwitcher, isAuthority, messageDat
           handleEditRule={handleEditRule}
           handleSwitcher={handleSwitcher}
           isAuthority={isAuthority}
-          messageData={messageData}
           rule={rule}
         />
       ))}
@@ -36,7 +48,7 @@ MatchBotTable.propTypes = {
   handleEditRule: PropTypes.func.isRequired,
   handleSwitcher: PropTypes.func.isRequired,
   isAuthority: PropTypes.bool.isRequired,
-  messageData: PropTypes.shape().isRequired,
+  intl: PropTypes.shape().isRequired,
   rules: PropTypes.arrayOf(PropTypes.shape()),
 };
 
@@ -44,4 +56,4 @@ MatchBotTable.defaultProps = {
   rules: [],
 };
 
-export default MatchBotTable;
+export default injectIntl(MatchBotTable);

@@ -5,16 +5,19 @@ import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
 
 const ConfirmModal = ({
-  intl,
+  confirmLoading,
   editRule,
-  visible,
+  intl,
   onCancel,
   onOk,
-  confirmLoading,
   sponsor,
   sliderValue,
+  visible,
 }) => (
   <Modal
+    confirmLoading={confirmLoading}
+    onCancel={onCancel}
+    onOk={onOk}
     title={
       isEmpty(editRule)
         ? intl.formatMessage({
@@ -27,9 +30,6 @@ const ConfirmModal = ({
           })
     }
     visible={visible}
-    onCancel={onCancel}
-    onOk={onOk}
-    confirmLoading={confirmLoading}
   >
     {isEmpty(editRule)
       ? intl.formatMessage(
@@ -51,14 +51,14 @@ const ConfirmModal = ({
 );
 
 ConfirmModal.propTypes = {
-  intl: PropTypes.shape().isRequired,
-  visible: PropTypes.bool.isRequired,
-  onCancel: PropTypes.func.isRequired,
-  onOk: PropTypes.func.isRequired,
   confirmLoading: PropTypes.bool.isRequired,
   editRule: PropTypes.shape().isRequired,
+  intl: PropTypes.shape().isRequired,
+  onCancel: PropTypes.func.isRequired,
+  onOk: PropTypes.func.isRequired,
   sponsor: PropTypes.shape().isRequired,
   sliderValue: PropTypes.number.isRequired,
+  visible: PropTypes.bool.isRequired,
 };
 
 export default injectIntl(ConfirmModal);

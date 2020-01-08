@@ -1,5 +1,4 @@
 export default (localizer, objectData) => ({
-  obj: console.log(objectData),
   cannotCreateRulesMore: localizer(
     'matchBot_cannot_create_rules_more',
     'You cannot create more then 25 rules',
@@ -50,7 +49,7 @@ export default (localizer, objectData) => ({
   action: localizer('matchBot_action', 'Action'),
   notes: localizer('matchBot_notes', 'Notes'),
   expiryDate: localizer('matchBot_expiry_date', 'Expiry date'),
-  authorizationRequired: localizer('match_bot_authorization_required', 'Authorization is required'),
+  authorizationRequired: localizer('matchBot_authorization_required', 'Authorization is required'),
   successRuleActivation: localizer('matchBot_success_rule_activation', 'Rule activation'),
   successRuleInactivation: localizer('matchBot_success_rule_inactivation', 'Rule inactivation'),
   matchBotRequiresAuthorizationDistribute: localizer(
@@ -59,23 +58,24 @@ export default (localizer, objectData) => ({
   ),
   successIntentionRuleActivation: localizer(
     'matchBot_success_intention_rule_activation',
-    "Do you want to activate rule with sponsor '{sponsor}?'",
+    "Do you want to activate rule with sponsor '{sponsor}'?",
     {
       sponsor: objectData,
     },
   ),
   successIntentionRuleInactivation: localizer(
     'matchBot_success_intention_rule_inactivation',
-    "Do you want to inactivate rule with sponsor '{sponsor}'",
+    "Do you want to inactivate rule with sponsor '{sponsor}'?",
     {
       sponsor: objectData,
     },
   ),
-
   ruleActivatedSuccessfully: localizer('matchBot_success_activated', 'Rule activated successfully'),
   ruleInactivatedSuccessfully: localizer(
     'matchBot_success_inactivated',
     'Rule inactivated successfully',
   ),
   edit: localizer('matchBot_table_edit', 'Edit'),
+  addNewSponsor: localizer('matchBot_title_add_new_sponsor', 'Add new sponsor'),
+  titleEditRule: localizer('matchBot_title_edit_rule', 'Edit match bot rules for'),
 });

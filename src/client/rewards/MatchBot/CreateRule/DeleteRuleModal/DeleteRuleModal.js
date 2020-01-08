@@ -6,12 +6,12 @@ import { injectIntl } from 'react-intl';
 import './DeleteRuleModal.less';
 
 const DeleteRuleModal = ({
+  deleteLoading,
+  handleModalVisibility,
   intl,
   isDeleteModal,
-  handleModalVisibility,
-  sponsor,
   onOk,
-  deleteLoading,
+  sponsor,
 }) => {
   const handleDeleteRule = () => handleModalVisibility();
   return (
@@ -55,12 +55,12 @@ const DeleteRuleModal = ({
 };
 
 DeleteRuleModal.propTypes = {
+  deleteLoading: PropTypes.bool.isRequired,
+  handleModalVisibility: PropTypes.func.isRequired,
   intl: PropTypes.shape().isRequired,
   isDeleteModal: PropTypes.bool.isRequired,
-  handleModalVisibility: PropTypes.func.isRequired,
-  sponsor: PropTypes.shape().isRequired,
-  deleteLoading: PropTypes.bool.isRequired,
   onOk: PropTypes.func.isRequired,
+  sponsor: PropTypes.shape().isRequired,
 };
 
 export default injectIntl(DeleteRuleModal);

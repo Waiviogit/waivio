@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { Button, DatePicker, Form, Input, message, Modal, Slider } from 'antd';
 import { Link } from 'react-router-dom';
+import { Button, DatePicker, Form, Input, message, Modal, Slider } from 'antd';
 import { isEmpty } from 'lodash';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import ReviewItem from '../../Create-Edit/ReviewItem';
@@ -13,21 +13,29 @@ import ConfirmModal from './ConfirmModal';
 import './CreateRule.less';
 
 const CreateRule = ({
-  intl,
-  form,
-  modalVisible,
-  handleChangeModalVisible,
   editRule,
+  form,
+  handleChangeModalVisible,
+  intl,
+  modalVisible,
   setEditRule,
 }) => {
-  const { getFieldDecorator, setFieldsValue } = form;
-  const [sponsor, setSponsor] = useState({});
-  const [sliderValue, setSliderValue] = useState(100);
   const [isConfirmModalLoading, setConfirmModalLoaded] = useState(false);
   const [isConfirmModal, setConfirmModal] = useState(false);
   const [isDeleteModal, setDeleteModal] = useState(false);
   const [isDeleteModalLoading, setDeleteModalLoaded] = useState(false);
+  const [sliderValue, setSliderValue] = useState(100);
+  const [sponsor, setSponsor] = useState({});
   const dispatch = useDispatch();
+
+  const { getFieldDecorator, setFieldsValue } = form;
+  const marks = {
+    1: '1%',
+    25: '25%',
+    50: '50%',
+    75: '75%',
+    100: '100%',
+  };
 
   useEffect(() => {
     if (!isEmpty(editRule)) {
@@ -50,7 +58,6 @@ const CreateRule = ({
     setEditRule({});
     handleChangeModalVisible();
   };
-
   const handleDeleteModalVisibility = () => setDeleteModal(!isDeleteModal);
   const handleSubmit = e => {
     e.preventDefault();
@@ -66,7 +73,6 @@ const CreateRule = ({
       }
     });
   };
-
   const handleSetRule = () => {
     setConfirmModalLoaded(true);
     form.validateFieldsAndScroll((err, values) => {
@@ -122,7 +128,6 @@ const CreateRule = ({
       }
     });
   };
-
   const handleDeleteRule = () => {
     setDeleteModalLoaded(true);
     const prepareObjData = {
@@ -156,7 +161,6 @@ const CreateRule = ({
     }
     callback();
   };
-
   const checkExpireDate = (rule, value, callback) => {
     const currentDay = new Date().getDate();
     if ((value && value.unix() * 1000 < Date.now()) || (value && value.date() === currentDay)) {
@@ -170,16 +174,7 @@ const CreateRule = ({
       callback();
     }
   };
-
   const formatTooltip = value => `${value}%`;
-
-  const marks = {
-    1: '1%',
-    25: '25%',
-    50: '50%',
-    75: '75%',
-    100: '100%',
-  };
 
   return (
     <Modal
