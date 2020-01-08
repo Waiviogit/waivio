@@ -11,7 +11,8 @@ import { calculateVotingPower } from '../../vendor/steemitHelpers';
 import SocialLinks from '../../components/SocialLinks';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import ModalComparePerformance from '../../../investarena/components/Modals/ModalComparePerformance/ModalComparePerformance';
-import UserLongTermStatistics from '../../../investarena/components/LeftSidebar/LongTermStatistics/UserLongTermStatistics';
+import LongTermStatistics from '../../../investarena/components/LeftSidebar/LongTermStatistics/LongTermStatistics';
+import api from '../../../investarena/configApi/apiResources';
 
 @injectIntl
 @connect((state, ownProps) => ({
@@ -142,12 +143,20 @@ class UserInfo extends React.Component {
           </div>
         )}
         {this.props.user.name && (
-          <UserLongTermStatistics
-            userName={this.props.user.name}
+          <LongTermStatistics
+            itemId={this.props.user.name}
+            fetcher={api.performers.getUserStatistics}
             withCompareButton
             toggleModalPerformance={this.toggleModalPerformance}
             isMobile={isMobile}
-          />
+          >
+            <div>
+              {intl.formatMessage({
+                id: 'unavailableStatisticsUser',
+                defaultMessage: 'The user has not written any posts with forecasts',
+              })}
+            </div>
+          </LongTermStatistics>
         )}
         {this.state.isModalComparePerformanceOpen && this.props.user.name && !isMobile && (
           <ModalComparePerformance

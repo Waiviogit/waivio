@@ -13,7 +13,6 @@ class AdvanceSettings extends Component {
     intl: PropTypes.shape().isRequired,
     linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
     objPercentage: PropTypes.shape(),
-    weightBuffer: PropTypes.number,
     settings: PropTypes.shape({
       reward: PropTypes.oneOf([rewardsValues.none, rewardsValues.half, rewardsValues.all]),
       beneficiary: PropTypes.bool,
@@ -47,7 +46,6 @@ class AdvanceSettings extends Component {
       isUpdating,
       linkedObjects,
       objPercentage,
-      weightBuffer,
       settings: { reward, beneficiary, upvote },
     } = this.props;
     return (
@@ -114,7 +112,6 @@ class AdvanceSettings extends Component {
               intl={intl}
               linkedObjects={linkedObjects}
               objPercentage={objPercentage}
-              weightBuffer={weightBuffer}
               onPercentChange={this.handlePercentChange}
             />
           )}

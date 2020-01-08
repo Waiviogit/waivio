@@ -1,0 +1,46 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.Chat {
+  display: flex;
+  position: fixed !important;
+  //overflow: auto;
+  bottom: 0;
+  z-index: 1100000;
+  background-color: @white-ghostWhite;
+  box-shadow: 0 0 4px 4px #99aab5;
+  overflow: hidden;
+  @media @medium-max {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  @media @large {
+    min-height: 600px;
+    min-width: 380px;
+    border-radius: 10px;
+    bottom: 20px;
+    right: 20px;
+  }
+
+  &__wrap {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  &__close-button {
+    padding: 5px;
+    position: absolute;
+    right: 0;
+  }
+}
+
+.Chat.hide-element {
+  display: none;
+}
+
+.Chat__wrap > iframe {
+  height: 100%;
+}

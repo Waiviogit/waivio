@@ -418,8 +418,8 @@
   "postSellBuy.profitability": "Profitability:",
   "broker.broker": "Broker",
   "modalBroker.header.title": "Broker settings",
-  "modalBroker.tab.connect": "Connect to your broker",
-  "modalBroker.tab.create": "Create trading account",
+  "modalBroker.tab.connect": "Connect to broker",
+  "modalBroker.tab.create": "Create account",
   "modalBroker.selectBroker": "Please select your broker",
   "modalBroker.connect": "CONNECT",
   "modalBroker.disconnect": "DISCONNECT",
@@ -746,7 +746,7 @@
   "longTermData_d7": "Week",
   "longTermData_m1": "Month",
   "longTermData_m3": "3 months",
-  "longTermData_m6": "Six months",
+  "longTermData_m6": "6 months",
   "longTermData_m9": "9 months",
   "longTermData_m12": "Year",
   "longTermData_m24": "2 years",
@@ -1048,6 +1048,8 @@
   "empty_my_feed": "Your feed is empty because you are not following any user or topic.",
   "actualNews" : "Actual news",
   "post_validation_incomplete_content": "The post should contain the title and content",
-  "post_validation_object_not_found": "The post must contain at least one object",
-  "post_validation_invalid_forecast": "Fill in the required fields"
+  "post_validation_object_not_found": "The post must contain at least one topic",
+  "post_validation_invalid_forecast": "Fill in the required fields",
+  "sidenav_user_payments": "Payments",
+  "posts": "Posts"
 }

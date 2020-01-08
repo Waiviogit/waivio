@@ -50,6 +50,7 @@ import PaymentCampaign from '../client/rewards/Payment/Payment';
 import ObjectOfTypePage from '../client/object/ObjectOfTypePage/ObjectOfTypePage';
 import UserStatisticsContainer from '../client/user/UserStatistics/UserStatisticsContainer';
 import EconomicalCalendar from '../investarena/components/EconomicalCalendar/EconomicalCalendar';
+import UserInfo from '../client/app/Sidebar/UserInfo';
 
 const routes = [
   {
@@ -181,7 +182,7 @@ const routes = [
       },
       {
         path:
-          '/@:name/(comments|followers|followed|reblogs|feed|transfers|activity|expertise|statistics)?',
+          '/@:name/(comments|followers|followed|reblogs|feed|transfers|activity|expertise|statistics|about)?',
         component: User,
         exact: true,
         routes: [
@@ -224,6 +225,11 @@ const routes = [
             path: '/@:name/expertise',
             exact: true,
             component: UserExpertise,
+          },
+          {
+            path: '/@:name/about',
+            exact: true,
+            component: UserInfo,
           },
           {
             path: '/@:name/statistics',

@@ -8,14 +8,14 @@ import TagsSelector from '../../components/TagsSelector/TagsSelector';
 import PolicyConfirmation from '../../components/PolicyConfirmation/PolicyConfirmation';
 import AdvanceSettings from './AdvanceSettings';
 import CheckReviewModal from '../CheckReviewModal/CheckReviewModal';
-import { splitPostContent, validatePost } from '../../helpers/postHelpers';
-import { handleWeightChange, setObjPercents } from '../../helpers/wObjInfluenceHelper';
+import { isContentValid, splitPostContent, validatePost } from '../../helpers/postHelpers';
 import { rewardsValues } from '../../../common/constants/rewards';
 import BBackTop from '../../components/BBackTop';
 import './PostPreviewModal.less';
 import PostChart from '../../../investarena/components/PostChart';
 import { getForecastObject } from '../../../investarena/components/CreatePostForecast/helpers';
 import { forecastDateTimeFormat } from '../../../investarena/constants/constantsForecast';
+import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 
 const isTopicValid = topic => /^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$/.test(topic);
 
@@ -87,7 +87,6 @@ class PostPreviewModal extends Component {
       title: '',
       body: '',
       postValidationErrors: [],
-      objPercentage: setObjPercents(props.linkedObjects, props.objPercentage),
       weightBuffer: 0,
       isConfirmed: false,
       // Check review modal
@@ -101,6 +100,7 @@ class PostPreviewModal extends Component {
     return (
       isModalOpen ||
       nextState.isModalOpen ||
+      isContentValid(this.props.content) !== isContentValid(nextProps.content) ||
       !isEqual(
         postValidationErrors,
         validatePost(nextProps.content, nextProps.objPercentage, nextProps.forecastValues).errors,
@@ -165,12 +165,13 @@ class PostPreviewModal extends Component {
   handleTopicsChange = topics => this.props.onTopicsChange(topics);
 
   handlePercentChange = (objId, percent) => {
-    const { objPercentage, weightBuffer } = this.state;
-    const nextState = handleWeightChange(objPercentage, objId, percent, weightBuffer);
-    this.setState(nextState);
-    if (nextState.weightBuffer === 0) this.props.onPercentChange(nextState.objPercentage);
+    const { objPercentage, onPercentChange } = this.props;
+    const nextObjPercentage = {
+      ...objPercentage,
+      [objId]: { percent },
+    };
+    onPercentChange(nextObjPercentage);
   };
-
   handleReviewSubmit = () => {
     this.setState({ isCheckReviewModalOpen: false }, this.props.onSubmit);
   };
@@ -188,10 +189,8 @@ class PostPreviewModal extends Component {
       body,
       isConfirmed,
       isModalOpen,
-      objPercentage,
       postValidationErrors,
       title,
-      weightBuffer,
     } = this.state;
     const {
       intl,
@@ -201,6 +200,7 @@ class PostPreviewModal extends Component {
       reviewData,
       settings,
       forecastValues,
+      objPercentage,
       expForecast,
       isUpdating,
     } = this.props;
@@ -276,7 +276,6 @@ class PostPreviewModal extends Component {
               <AdvanceSettings
                 linkedObjects={linkedObjects}
                 objPercentage={objPercentage}
-                weightBuffer={weightBuffer}
                 settings={settings}
                 onSettingsChange={this.handleSettingsChange}
                 onPercentChange={this.handlePercentChange}

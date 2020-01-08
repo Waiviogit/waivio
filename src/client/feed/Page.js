@@ -54,6 +54,7 @@ class Page extends React.Component {
 
   state = {
     checked: false,
+    isFetching: false,
   };
 
   componentDidMount() {
@@ -114,12 +115,16 @@ class Page extends React.Component {
     }
   };
 
+  setFetched = value => this.setState({ isFetching: value });
+
   render() {
     const {
       authenticated,
+      history,
       location: { pathname },
       match,
     } = this.props;
+    const { isFetching } = this.state;
     const { category, sortBy } = match.params;
     const robots = pathname === '/' ? 'index,follow' : 'noindex,follow';
 
@@ -155,7 +160,7 @@ class Page extends React.Component {
                   onTopicClose={this.handleTopicClose}
                 />
               )}
-              {authenticated && <QuickPostEditor />}
+              {authenticated && <QuickPostEditor history={history} />}
               <div className="feed-layout__switcher">
                 <div className="feed-layout__text">
                   {this.props.intl.formatMessage({
@@ -166,11 +171,12 @@ class Page extends React.Component {
                 <Switch
                   defaultChecked
                   onChange={this.handleChangeFeed}
+                  disabled={isFetching}
                   checked={this.state.checked}
                   size="small"
                 />
               </div>
-              <SubFeed />
+              <SubFeed setFetched={this.setFetched} />
             </div>
           </div>
         </div>

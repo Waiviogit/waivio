@@ -35,7 +35,4 @@ function mapDispatchToProps(dispatch, ownProps) {
   };
 }
 
-export default connect(
-  mapState,
-  mapDispatchToProps,
-)(PostChartContainer);
+export default connect(mapState, mapDispatchToProps)(PostChartContainer);

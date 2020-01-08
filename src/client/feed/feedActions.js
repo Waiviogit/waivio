@@ -39,7 +39,7 @@ export const GET_MORE_OBJECT_POSTS = createAsyncActionType('@object/GET_MORE_OBJ
 export const CLEAN_FEED = 'CLEAN_FEED';
 
 const getUserLocalesArray = getState => {
-  let locales = ['ru-RU'];
+  let locales = ['ru-RU', 'en-US'];
   const state = getState();
   const readLanguages = getReadLanguages(state);
   if (isEmpty(readLanguages)) {
@@ -151,11 +151,19 @@ export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = tr
 
 export const getUserProfileBlogPostsWithForecasts = (
   userName,
-  initialLoad = true,
-  skip = 0,
-  limit = 10,
-) => dispatch =>
-  dispatch({
+  { limit = 10, initialLoad = true },
+) => (dispatch, getState) => {
+  let skip = 0;
+  if (!initialLoad) {
+    const state = getState();
+    const feed = getFeed(state);
+    const feedContent = getFeedFromState('blog', userName, feed);
+
+    if (!feedContent.length) return Promise.resolve(null);
+
+    skip = feedContent.length;
+  }
+  return dispatch({
     type: initialLoad ? GET_FEED_CONTENT.ACTION : GET_MORE_FEED_CONTENT.ACTION,
     payload: ApiClient.getUserProfileBlogForecasts(userName, skip, limit),
     meta: {
@@ -164,6 +172,7 @@ export const getUserProfileBlogPostsWithForecasts = (
       limit,
     },
   });
+};
 
 export const cleanFeed = () => dispatch =>
   dispatch({

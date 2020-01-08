@@ -119,6 +119,8 @@ class Topnav extends React.Component {
     searchByObject: PropTypes.arrayOf(PropTypes.shape()),
     searchByUser: PropTypes.arrayOf(PropTypes.shape()),
     searchByObjectType: PropTypes.arrayOf(PropTypes.shape()),
+    openChat: PropTypes.func.isRequired,
+    messagesCount: PropTypes.number,
   };
 
   static defaultProps = {
@@ -132,6 +134,7 @@ class Topnav extends React.Component {
     userMetaData: {},
     loadingNotifications: false,
     screenSize: 'medium',
+    messagesCount: 0,
   };
 
   constructor(props) {
@@ -394,18 +397,6 @@ class Topnav extends React.Component {
             </PopoverMenuItem>
             <PopoverMenuItem key="wallet">
               <FormattedMessage id="wallet" defaultMessage="Wallet" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="activity">
-              <FormattedMessage id="activity" defaultMessage="Activity" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="bookmarks">
-              <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="drafts">
-              <FormattedMessage id="drafts" defaultMessage="Drafts" />
-            </PopoverMenuItem>
-            <PopoverMenuItem key="settings">
-              <FormattedMessage id="settings" defaultMessage="Settings" />
             </PopoverMenuItem>
             <PopoverMenuItem key="about" fullScreenHidden>
               <FormattedMessage id="about" defaultMessage="About" />
@@ -945,6 +936,8 @@ class Topnav extends React.Component {
       platformName,
       isLoadingPlatform,
       isNightMode,
+      openChat,
+      messagesCount,
     } = this.props;
     const { searchBarActive, isModalDeposit, dropdownOpen, popoverBrokerVisible } = this.state;
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
@@ -1046,7 +1039,13 @@ class Topnav extends React.Component {
             </button>
             {this.props.username && (
               <div className="Topnav__chat" key="more">
-                <Icon type="message" className="icon-chat" />
+                {!messagesCount ? (
+                  <Icon type="message" className="icon-chat" onClick={openChat} />
+                ) : (
+                  <div className="Topnav__chat-button" onClick={openChat} role="presentation">
+                    {messagesCount > 99 ? '99+' : messagesCount}
+                  </div>
+                )}
               </div>
             )}
           </div>

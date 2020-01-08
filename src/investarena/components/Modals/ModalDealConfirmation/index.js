@@ -21,7 +21,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ModalOpenDealsContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(ModalOpenDealsContainer);

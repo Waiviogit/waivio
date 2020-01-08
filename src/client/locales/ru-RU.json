@@ -831,7 +831,7 @@
   "longTermData_m12": "Год",
   "longTermData_m24": "2 года",
   "onlyRelated": "Только торговая тематика",
-  "wia.followingInstruments": "Cледующие инструменты",
+  "wia.followingInstruments": "Подписки на инструменты",
   "wia.cryptos": "Крипто",
   "wia.currencies": "Валюта",
   "wia.commodities": "Товары",
@@ -858,8 +858,8 @@
   "image_modal_add": "Добавить",
   "image_modal_cancel": "Oтмена",
   "broker_modal_broker_settings": "Настройки брокера",
-  "modalBroker.tab.connect": "Подключитесь брокеру",
-  "modalBroker.tab.create": "Создать торговый аккаунт",
+  "modalBroker.tab.connect": "Подключить брокера",
+  "modalBroker.tab.create": "Создать аккаунт",
   "modalBroker.connectTo": "Подключиться к:",
   "modalBroker.weNeverKeep": "Мы никогда не храним ваши пароли",
   "modalBroker.tradingAccounts": "от торговых счетов брокеров",
@@ -1006,6 +1006,8 @@
   "empty_my_feed": "Ваша лента пуста, потому что вы не подписаны ни на одного пользователя или тему.",
   "actualNews" : "Актуальные новости",
   "post_validation_incomplete_content": "У поста должно быть заглавие и содержимое",
-  "post_validation_object_not_found": "Пост должен содержать по крайней мере один объект",
-  "post_validation_invalid_forecast": "Заполните необходимые поля формы"
+  "post_validation_object_not_found": "Пост должен содержать по крайней мере одину тему",
+  "post_validation_invalid_forecast": "Заполните необходимые поля формы",
+  "sidenav_user_payments": "Платежи",
+  "posts": "Посты"
 }

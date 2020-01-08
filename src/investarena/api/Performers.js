@@ -7,6 +7,8 @@ export default class Performers extends Base {
 
     this.searchInstrumentsStat = this.searchInstrumentsStat.bind(this);
     this.getMostProfitableUsers = this.getMostProfitableUsers.bind(this);
+    this.getUserStatistics = this.getUserStatistics.bind(this);
+    this.getInstrumentStatistics = this.getInstrumentStatistics.bind(this);
   }
 
   searchInstrumentsStat(searchString, limit = 7) {
@@ -45,10 +47,10 @@ export default class Performers extends Base {
     });
   }
 
-  getInstrumentStatistics(autorPermlink) {
+  getInstrumentStatistics(authorPermlink) {
     return new Promise((resolve, reject) => {
       this.apiClient
-        .get(`${config.performers.instrumentStatistic}/${autorPermlink}`)
+        .get(`${config.performers.instrumentStatistic}/${authorPermlink}`)
         .then(response => resolve(response.data))
         .catch(error => reject(error));
     });
