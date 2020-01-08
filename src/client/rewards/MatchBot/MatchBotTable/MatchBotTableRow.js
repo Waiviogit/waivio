@@ -16,8 +16,9 @@ const MatchBotTableRow = ({ handleEditRule, handleSwitcher, isAuthority, intl, r
 
   const isEnabled = activationStatus ? activationStatus === 'activated' : rule.enabled;
   const mockDate = '2019-12-10T13:42:02.350Z'; // TODO: Remove when backend will ready
-  const localizer = (id, defaultMessage) => intl.formatMessage({ id, defaultMessage });
-  const messageData = getMatchBotMessageData(localizer, rule);
+  const localizer = (id, defaultMessage, variablesData) =>
+    intl.formatMessage({ id, defaultMessage }, variablesData);
+  const messageData = getMatchBotMessageData(localizer, rule.sponsor);
 
   const handleChangeModalVisible = () => setModalVisible(!modalVisible);
   const handleChangeAuthModalVisible = () => {

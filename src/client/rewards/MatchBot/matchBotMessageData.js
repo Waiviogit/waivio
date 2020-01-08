@@ -1,4 +1,5 @@
 export default (localizer, objectData) => ({
+  obj: console.log(objectData),
   cannotCreateRulesMore: localizer(
     'matchBot_cannot_create_rules_more',
     'You cannot create more then 25 rules',
@@ -60,14 +61,14 @@ export default (localizer, objectData) => ({
     'matchBot_success_intention_rule_activation',
     "Do you want to activate rule with sponsor '{sponsor}?'",
     {
-      sponsor: objectData.sponsor,
+      sponsor: objectData,
     },
   ),
   successIntentionRuleInactivation: localizer(
     'matchBot_success_intention_rule_inactivation',
     "Do you want to inactivate rule with sponsor '{sponsor}'",
     {
-      sponsor: objectData.sponsor,
+      sponsor: objectData,
     },
   ),
 
