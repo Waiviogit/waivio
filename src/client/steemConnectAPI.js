@@ -105,7 +105,7 @@ function sc2Extended() {
         const params = {
           required_auths: [],
           required_posting_auths: [username],
-          id: 'match_bot_rule',
+          id: 'match_bot_set_rule',
           json: JSON.stringify(ruleObj),
         };
         return this.broadcast([['custom_json', params]], cb);
@@ -127,7 +127,7 @@ function sc2Extended() {
         const params = {
           required_auths: [],
           required_posting_auths: [username],
-          id: 'match_bot_rule_delete',
+          id: 'match_bot_remove_rule',
           json: JSON.stringify(sponsorName),
         };
         return this.broadcast([['custom_json', params]], cb);
