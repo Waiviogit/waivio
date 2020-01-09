@@ -16,9 +16,8 @@ const MatchBotTableRow = ({ handleEditRule, handleSwitcher, isAuthority, intl, r
 
   const isEnabled = activationStatus ? activationStatus === 'activated' : rule.enabled;
   const mockDate = '2019-12-10T13:42:02.350Z'; // TODO: Remove when backend will ready
-  const localizer = (id, defaultMessage, variablesData) =>
-    intl.formatMessage({ id, defaultMessage }, variablesData);
-  const messageData = getMatchBotMessageData(localizer, rule.sponsor);
+  const localizer = (id, defaultMessage) => intl.formatMessage({ id, defaultMessage });
+  const messageData = getMatchBotMessageData(localizer);
 
   const handleChangeModalVisible = () => setModalVisible(!modalVisible);
   const handleChangeAuthModalVisible = () => {
@@ -38,8 +37,8 @@ const MatchBotTableRow = ({ handleEditRule, handleSwitcher, isAuthority, intl, r
   };
   const setModalContent = () => {
     if (!isAuthority) return messageData.matchBotRequiresAuthorizationDistribute;
-    if (!isEnabled) return messageData.successIntentionRuleActivation;
-    return messageData.successIntentionRuleInactivation;
+    if (!isEnabled) return `${messageData.successIntentionRuleActivation} ${rule.sponsor}?`;
+    return `${messageData.successIntentionRuleInactivation} ${rule.sponsor}?`;
   };
   const changeRuleStatus = () => {
     setLoaded(true);
@@ -47,9 +46,9 @@ const MatchBotTableRow = ({ handleEditRule, handleSwitcher, isAuthority, intl, r
       handleChangeModalVisible();
       if (!isEnabled) {
         setActivationStatus('activated');
-        message.success(messageData.successIntentionRuleActivation);
+        message.success(messageData.ruleActivatedSuccessfully);
       } else {
-        message.success(messageData.successIntentionRuleInactivation);
+        message.success(messageData.ruleInactivatedSuccessfully);
         setActivationStatus('inactivated');
       }
       setLoaded(false);
