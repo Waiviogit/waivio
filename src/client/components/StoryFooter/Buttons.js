@@ -57,6 +57,7 @@ export default class Buttons extends React.Component {
 
     this.state = {
       shareModalVisible: false,
+      actionButtonsVisible: false,
       shareModalLoading: false,
       sliderVisible: false,
       reactionsModalVisible: false,
@@ -72,6 +73,7 @@ export default class Buttons extends React.Component {
     this.handleCloseReactions = this.handleCloseReactions.bind(this);
     this.onFlagClick = this.onFlagClick.bind(this);
     this.handleCommentsClick = this.handleCommentsClick.bind(this);
+    this.handlePopoverVisibleChange = this.handlePopoverVisibleChange.bind(this);
     this.renderPostPopoverMenu = this.renderPostPopoverMenu.bind(this);
   }
 
@@ -138,6 +140,12 @@ export default class Buttons extends React.Component {
       reactionsModalVisible: false,
     });
   }
+
+  handlePopoverVisibleChange(isVisible) {
+    this.setState({ actionButtonsVisible: isVisible });
+  }
+
+  showPopoverMenu = () => this.handlePopoverVisibleChange(true);
 
   renderPostPopoverMenu() {
     const {
@@ -230,13 +238,19 @@ export default class Buttons extends React.Component {
       <Popover
         placement="bottomRight"
         trigger="click"
+        visible={this.state.actionButtonsVisible}
+        onVisibleChange={this.handlePopoverVisibleChange}
         content={
           <PopoverMenu onSelect={handlePostPopoverMenuClick} bold={false}>
             {popoverMenu}
           </PopoverMenu>
         }
       >
-        <i className="Buttons__post-menu iconfont icon-more" />
+        <i
+          className="Buttons__post-menu iconfont icon-more"
+          role="presentation"
+          onClick={this.showPopoverMenu}
+        />
       </Popover>
     );
   }
