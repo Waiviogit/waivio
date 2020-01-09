@@ -14,7 +14,7 @@ const Campaign = ({ proposition, filterKey, history, intl }) => {
   const requiredObject = getClientWObj(proposition.required_object, usedLocale);
   const currentUSDPrice = getCurrentUSDPrice();
   const rewardPrise = currentUSDPrice
-    ? (currentUSDPrice * proposition.min_reward).toFixed(2)
+    ? `${(currentUSDPrice * proposition.min_reward).toFixed(2)} USD`
     : `${proposition.max_reward} STEEM`;
   const rewardMax =
     // eslint-disable-next-line no-nested-ternary

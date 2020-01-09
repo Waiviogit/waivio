@@ -22,6 +22,10 @@ const Details = ({
   const localizer = (id, defaultMessage, variablesData) =>
     intl.formatMessage({ id, defaultMessage }, variablesData);
   const messageData = getDetailsMessages(localizer, objectDetails);
+  const isCamaignReserved =
+    !(assigned !== null && !assigned && !isReserved) ||
+    loading ||
+    objectDetails.isReservedSiblingObj;
   return (
     <Modal
       title={<div className="Details__modal-title">{messageData.seekHonestReviews}!</div>}
@@ -154,14 +158,10 @@ const Details = ({
           <Button
             type="primary"
             loading={loading}
-            disabled={
-              !(assigned !== null && !assigned && !isReserved) ||
-              loading ||
-              objectDetails.isReservedSiblingObj
-            }
+            disabled={isCamaignReserved}
             onClick={reserveOnClickHandler}
           >
-            {messageData.reserve}
+            {!isCamaignReserved ? messageData.reserve : messageData.reserved}
           </Button>
           {objectDetails.count_reservation_days &&
             `${messageData.forDays} ${objectDetails.count_reservation_days} ${messageData.days}`}
