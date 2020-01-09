@@ -9,6 +9,7 @@ import {
   defaultAccountLimit,
 } from '../helpers/apiHelpers';
 import { ACTIONS_DISPLAY_LIMIT, actionsFilter } from '../helpers/accountHistoryHelper';
+import { GUEST_PREFIX } from '../../common/constants/waivio';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
 export const CLOSE_TRANSFER = '@wallet/CLOSE_TRANSFER';
@@ -45,7 +46,7 @@ export const openTransfer = (userName, amount = 0, currency = 'STEEM', memo = ''
     },
   });
 
-const getParsedUserActions = userActions => {
+const parseSteemUserActions = userActions => {
   const userWalletTransactions = [];
   const userAccountHistory = [];
 
@@ -63,11 +64,52 @@ const getParsedUserActions = userActions => {
 
     userAccountHistory.push(actionDetails);
   });
-
   return {
     userWalletTransactions,
     userAccountHistory,
   };
+};
+const parseGuestActions = actions => {
+  const guestActionType = {
+    DEMO_POST: 'demo_post',
+    DEMO_POST_TRANSFER: 'demo_post_transfer',
+  };
+  return actions.map((action, index) => {
+    const transferDirection =
+      action.type === guestActionType.DEMO_POST
+        ? { from: action.sponsor, to: action.userName }
+        : { from: action.userName, to: action.sponsor || 'mock' };
+    return {
+      trx_id: action._id, // eslint-disable-line
+      block: 39603148,
+      trx_in_block: 1,
+      op_in_trx: 0,
+      virtual_op: 0,
+      timestamp: action.updatedAt.split('.')[0],
+      // timestamp: action.updatedAt,
+      op: [
+        'transfer',
+        {
+          ...transferDirection,
+          amount: `${action.amount} STEEM`,
+          memo: (action.type === guestActionType.DEMO_POST && action.details.post_permlink) || '',
+        },
+      ],
+      actionCount: index + 1,
+    };
+  });
+};
+const getParsedUserActions = (userActions, isGuest) => {
+  if (isGuest) {
+    const userWalletTransactions = parseGuestActions(_.get(userActions, ['histories'], []));
+    return {
+      userWalletTransactions,
+      userAccountHistory: userWalletTransactions.length
+        ? userWalletTransactions
+        : [{ actionCount: 0 }],
+    };
+  }
+  return parseSteemUserActions(userActions);
 };
 
 export const getGlobalProperties = () => dispatch =>
@@ -78,28 +120,32 @@ export const getGlobalProperties = () => dispatch =>
     },
   });
 
-export const getUserAccountHistory = username => dispatch =>
-  dispatch({
+export const getUserAccountHistory = username => dispatch => {
+  const isGuest = username.startsWith(GUEST_PREFIX);
+  return dispatch({
     type: GET_USER_ACCOUNT_HISTORY.ACTION,
     payload: {
-      promise: getAccountHistory(username).then(userActions => {
-        const parsedUserActions = getParsedUserActions(userActions);
+      promise: getAccountHistory(username, { isGuest }).then(userActions => {
+        const parsedUserActions = getParsedUserActions(userActions, isGuest);
 
         return {
           username,
           userWalletTransactions: parsedUserActions.userWalletTransactions,
           userAccountHistory: parsedUserActions.userAccountHistory,
+          balance: _.get(userActions, ['payable'], null),
         };
       }),
     },
   });
+};
 
-export const getMoreUserAccountHistory = (username, start, limit) => dispatch =>
-  dispatch({
+export const getMoreUserAccountHistory = (username, start, limit) => dispatch => {
+  const isGuest = username.startsWith(GUEST_PREFIX);
+  return dispatch({
     type: GET_MORE_USER_ACCOUNT_HISTORY.ACTION,
     payload: {
-      promise: getAccountHistory(username, start, limit).then(userActions => {
-        const parsedUserActions = getParsedUserActions(userActions);
+      promise: getAccountHistory(username, { from: start, limit, isGuest }).then(userActions => {
+        const parsedUserActions = getParsedUserActions(userActions, isGuest);
         return {
           username,
           userWalletTransactions: parsedUserActions.userWalletTransactions,
@@ -108,6 +154,7 @@ export const getMoreUserAccountHistory = (username, start, limit) => dispatch =>
       }),
     },
   });
+};
 
 export const getUserEstAccountValue = user => dispatch =>
   dispatch({

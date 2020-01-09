@@ -91,6 +91,7 @@ export default (localizer, objectData) => ({
   ),
   cancel: localizer('cancel', 'Cancel'),
   reserve: localizer('reserve', 'Reserve'),
+  reserved: localizer('rewards_details_reserved', 'Reserved'),
   forDays: localizer('for_days', 'for'),
   days: localizer('days', 'days'),
 });

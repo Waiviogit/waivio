@@ -8,7 +8,9 @@ import './CampaignCardHeader.less';
 
 const CampaignCardHeader = ({ intl, campaignData, isDetails }) => {
   const currentUSDPrice = getCurrentUSDPrice();
-  const rewardPrise = currentUSDPrice ? (currentUSDPrice * campaignData.reward).toFixed(2) : '...';
+  const rewardPrise = currentUSDPrice
+    ? `${(currentUSDPrice * campaignData.reward).toFixed(2)} USD`
+    : `${campaignData.reward} STEEM`;
   return (
     <React.Fragment>
       <div className="CampaignCardHeader">
@@ -29,7 +31,6 @@ const CampaignCardHeader = ({ intl, campaignData, isDetails }) => {
             <React.Fragment>
               <span className="CampaignCardHeader__data-colored">
                 <span className="fw6">{` ${rewardPrise} `}</span>
-                <span>USD</span>
               </span>
             </React.Fragment>
           ) : (
@@ -41,7 +42,7 @@ const CampaignCardHeader = ({ intl, campaignData, isDetails }) => {
               {currentUSDPrice && (
                 <span>
                   {' '}
-                  (<span className="fw6">{`${rewardPrise} `}</span> USD)
+                  (<span className="fw6">{rewardPrise}</span>)
                 </span>
               )}
             </React.Fragment>
