@@ -37,8 +37,8 @@ const MatchBotTableRow = ({ handleEditRule, handleSwitcher, isAuthority, intl, r
   };
   const setModalContent = () => {
     if (!isAuthority) return messageData.matchBotRequiresAuthorizationDistribute;
-    if (!isEnabled) return `${messageData.successIntentionRuleActivation} ${rule.sponsor}?`;
-    return `${messageData.successIntentionRuleInactivation} ${rule.sponsor}?`;
+    if (!isEnabled) return `${messageData.successIntentionRuleActivation} '${rule.sponsor}'?`;
+    return `${messageData.successIntentionRuleInactivation} '${rule.sponsor}'?`;
   };
   const changeRuleStatus = () => {
     setLoaded(true);
