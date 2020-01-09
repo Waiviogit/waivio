@@ -23,8 +23,8 @@ export default class WebSocketClient {
     if (this.websocket) {
       this.websocket.close();
     }
-    let websocket = io.connect(this.wsUrl, {
-      query: `client=${this.headers ? this.headers['client'] : ''}`,
+    const websocket = io.connect(this.wsUrl, {
+      query: `client=${this.headers ? this.headers.client : ''}`,
     });
 
     websocket.on('connect', this.onWebSocketConnect);
@@ -40,7 +40,7 @@ export default class WebSocketClient {
   }
   onWebSocketConnect = () => {
     if (this.subscriptions.length > 0) {
-      this.websocket.emit('subscribeClient', this.headers['client']);
+      this.websocket.emit('subscribeClient', this.headers.client);
       this.subscriptions.forEach(channel => {
         this.websocket.emit('subscribeChannel', channel);
       });
@@ -72,6 +72,7 @@ export default class WebSocketClient {
       case 'expire_update':
         this.actionExpiredPost(message);
         break;
+      default:
     }
   };
   onDisconnect = () => {};
@@ -87,6 +88,7 @@ export default class WebSocketClient {
       case 'destroy':
         this.dispatch(deleteCommentSuccess(message.data.id, message.data.commentable_id));
         break;
+      default: break;
     }
   }
   actionLike(message) {

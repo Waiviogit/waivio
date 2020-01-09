@@ -146,7 +146,8 @@
     "instrumentPerformers": "/instrument-performers"
   },
   "forecasts": {
-    "activeForecasts": "/active_forecasts"
+    "activeForecasts": "/active_forecasts",
+    "quickForecast": "/quick_forecast"
   },
 
   "favorites": {

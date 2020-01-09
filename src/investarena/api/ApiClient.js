@@ -44,14 +44,11 @@ export default class ApiClient {
         // }
         return response;
       },
-      () => {
-        return {};
-      },
+      () => ({}),
     );
   }
 }
-const request = ({ url, method, data, params = {} }) => {
-  return axios({
+const request = ({ url, method, data, params = {} }) => axios({
     method,
     url,
     params,
@@ -92,4 +89,3 @@ const request = ({ url, method, data, params = {} }) => {
       return response;
     },
   );
-};

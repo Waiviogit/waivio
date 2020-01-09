@@ -1,0 +1,75 @@
+@import (reference) '../../../client/styles/custom.less';
+
+.ballotButton {
+  padding: 0 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: @font-family-sans-serif;
+  background-color: transparent;
+  transition: .5s;
+  width: 100px;
+  border: none;
+
+  &:disabled {
+    cursor: auto;
+  }
+
+  &__container {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  &__button-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 50%;
+    flex-grow: 3;
+    padding-right: 20px;
+  }
+
+  &__positive {
+    border: 1px solid @green-darker;
+    color: @green-darker;
+    margin: 0 10px 0 0;
+
+    &:hover {
+      background-color: @green-darker;
+      color: @white;
+    }
+
+    &:disabled {
+      &:hover {
+        background-color: transparent;
+        color: @green-darker;
+      }
+    }
+  }
+
+  &__negative {
+    border: 1px solid @red;
+    color: @red;
+    margin: 0 0 0 10px;
+
+    &:hover {
+      background-color: @red;
+      color: @white;
+    }
+
+    &:disabled {
+      &:hover {
+        background-color: transparent;
+        color: @red;
+      }
+    }
+  }
+
+  &__timer {
+    font-family: @font-family-monospace;
+  }
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
+}

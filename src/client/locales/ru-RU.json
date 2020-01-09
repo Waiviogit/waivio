@@ -622,6 +622,7 @@
   "bonusDelegation": "БОНУС: 15 SP делегирование (на 90 дней)",
   "emailAndPhoneReq": "Требуется Email и Телефон",
   "info": "Информация",
+  "quick_forecast": "Прогнозы",
   "about": "О нас",
   "only_for_my": "Только для меня",
   "noProposition": "Нет вознаграждения, соответствующего критериям пользователя @{userName}",

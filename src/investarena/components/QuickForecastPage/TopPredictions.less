@@ -1,0 +1,35 @@
+@import (reference) '../../../client/styles/custom.less';
+
+.top-predictors {
+  background-color: @white;
+  border: 1px solid @blue-hawkesBlue;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+
+  &__title {
+    padding: 15px;
+    border-bottom: 1px solid @blue-hawkesBlue;
+  }
+
+  &__content {
+    padding: 15px;
+  }
+
+  &__tab {
+    padding: 15px 0;
+    border-bottom: 1px solid @blue-hawkesBlue;
+
+    &::first-letter {
+      text-transform: uppercase;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:first-child {
+      padding-top: 0;
+    }
+  }
+}

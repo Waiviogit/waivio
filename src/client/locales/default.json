@@ -771,6 +771,7 @@
   "filterRule": "FilterRule",
   "info": "Information",
   "about": "About",
+  "quick_forecast": "Forecast",
   "only_for_my": "Only for me",
   "noProposition": "No reward matches the criteria for user @{userName}",
   "eligible": "Eligible",

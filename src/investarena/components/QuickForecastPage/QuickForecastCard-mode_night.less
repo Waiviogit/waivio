@@ -1,0 +1,47 @@
+@import (reference) '../../../client/styles/custom.less';
+
+.nightmode {
+  .forecastCard {
+    display: flex;
+    border: 1px solid @normal-grey;
+    border-radius: 4px;
+    padding: 12px;
+    background-color: @grey-nero;
+    color: @white-smoke;
+
+    &__title {
+      padding: 15px 0;
+    }
+
+    &__image {
+      width: 25%;
+      height: 25%;
+      object-fit: contain;
+    }
+
+    &__info {
+      flex-grow: 1;
+      display: flex;
+      justify-content: space-between;
+      flex-direction: column;
+      padding: 0 0 0 15px;
+    }
+
+    &__top-block {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
+  .graphic {
+    display: block;
+    background-color: transparent;
+    border-radius: 50%;
+    border: 1px solid @blue-botticelli;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    transition: .5s;
+    outline: none;
+  }
+}

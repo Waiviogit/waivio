@@ -26,4 +26,10 @@ export default class Forecasts extends Base {
       .get(`${config.posts.withForecastBywobject}/${wobjectName}`)
       .then(response => response.data);
   }
+
+  getQuickForecast() {
+    return this.apiClient
+      .get(`${config.forecasts.quickForecast}`)
+      .then(response => response.data);
+  }
 }
