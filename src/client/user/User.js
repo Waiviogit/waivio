@@ -14,9 +14,12 @@ import {
   getIsUserLoaded,
   getAuthenticatedUserName,
   getUsersAccountHistory,
+  getChatCondition,
 } from '../reducers';
 import { getUserAccountHistory, openTransfer } from '../wallet/walletActions';
 import { getUserAccount } from './usersActions';
+import { changeChatCondition } from './userActions';
+import { setPostMessageAction } from '../components/Chat/chatActions';
 import { getAvatarURL } from '../components/Avatar';
 import Error404 from '../statics/Error404';
 import UserHero from './UserHero';
@@ -35,11 +38,14 @@ import { getUserDetailsKey } from '../helpers/stateHelpers';
     loaded: getIsUserLoaded(state, ownProps.match.params.name),
     failed: getIsUserFailed(state, ownProps.match.params.name),
     usersAccountHistory: getUsersAccountHistory(state),
+    isChat: getChatCondition(state),
   }),
   {
     getUserAccount,
     openTransfer,
     getUserAccountHistory,
+    changeChatCondition,
+    setPostMessageAction,
   },
 )
 export default class User extends React.Component {
@@ -56,6 +62,9 @@ export default class User extends React.Component {
     openTransfer: PropTypes.func,
     getUserAccountHistory: PropTypes.func.isRequired,
     usersAccountHistory: PropTypes.shape().isRequired,
+    changeChatCondition: PropTypes.func.isRequired,
+    isChat: PropTypes.bool.isRequired,
+    setPostMessageAction: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -195,6 +204,9 @@ export default class User extends React.Component {
           <UserHero
             authenticated={authenticated}
             user={user}
+            changeChatCondition={this.props.changeChatCondition}
+            setPostMessageAction={this.props.setPostMessageAction}
+            isChat={this.props.isChat}
             username={displayedUsername}
             isSameUser={isSameUser}
             coverImage={coverImage}
