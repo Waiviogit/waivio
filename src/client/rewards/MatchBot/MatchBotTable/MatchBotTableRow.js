@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { injectIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
 import { Checkbox, message, Modal } from 'antd';
 import { setMatchBotRules } from '../../rewardsActions';
 import { formatDate } from '../../rewardsHelper';
@@ -37,8 +38,19 @@ const MatchBotTableRow = ({ handleEditRule, handleSwitcher, isAuthority, intl, r
   };
   const setModalContent = () => {
     if (!isAuthority) return messageData.matchBotRequiresAuthorizationDistribute;
-    if (!isEnabled) return `${messageData.successIntentionRuleActivation} '${rule.sponsor}'?`;
-    return `${messageData.successIntentionRuleInactivation} '${rule.sponsor}'?`;
+    if (!isEnabled)
+      return (
+        <div>
+          {messageData.successIntentionRuleActivation}{' '}
+          <Link to={`/@${rule.sponsor}`}>{` @${rule.sponsor}`}</Link>?
+        </div>
+      );
+    return (
+      <div>
+        {messageData.successIntentionRuleInactivation}{' '}
+        <Link to={`/@${rule.sponsor}`}>{` @${rule.sponsor}`}</Link>?
+      </div>
+    );
   };
   const changeRuleStatus = () => {
     setLoaded(true);
