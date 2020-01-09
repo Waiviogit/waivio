@@ -250,6 +250,7 @@
     & > ul {
       justify-content: flex-end;
     }
+
     @media @medium {
       margin-left: 0;
     }
@@ -334,6 +335,7 @@
 
   &__chat {
     font-size: 36px;
+
     &-button {
       font-size: x-large;
       width: 40px;
@@ -371,7 +373,9 @@
 
   .icon-remind,
   .icon-write {
-    font-size: 22px !important;
+    @media @medium {
+      font-size: 26px !important;
+    }
   }
 
   .icon-language {
@@ -536,11 +540,22 @@
 
   &__hot-news-item {
     display: block;
-    padding: 12px 0;
+    padding: 12px 0 0 0;
+    color: @grey-mortar;
+
+    &:hover{
+      color: @blue-vivid;
+    }
   }
 
   &__hot-news-item:not(:last-child) {
     border-bottom: 1px solid #e9e7e7;
+    padding: 12px 0;
+  }
+
+  &__hot-news-item:first-child {
+    border-bottom: 1px solid #e9e7e7;
+    padding:  0 0 12px 0 ;
   }
 
   &__right-top {

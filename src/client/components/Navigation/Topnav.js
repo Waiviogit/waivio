@@ -338,7 +338,6 @@ class Topnav extends React.Component {
       >
         <Menu className="Topnav__menu" mode="horizontal">
           <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="signup">
-            {/* <ModalSignUp isButton={false} intl={intl} /> */}
             <a target="_blank" rel="noopener noreferrer" href={process.env.SIGNUP_URL}>
               <FormattedMessage id="signup" defaultMessage="Sign up" />
             </a>
