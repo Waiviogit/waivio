@@ -10,7 +10,7 @@ import getMatchBotMessageData from '../matchBotMessageData';
 
 const MatchBotTableRow = ({ handleEditRule, handleSwitcher, isAuthority, intl, rule }) => {
   const [activationStatus, setActivationStatus] = useState('');
-  const [isLoading, setLoaded] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalAuthVisible, setModalAuthVisible] = useState(false);
   const dispatch = useDispatch();
@@ -52,7 +52,7 @@ const MatchBotTableRow = ({ handleEditRule, handleSwitcher, isAuthority, intl, r
     );
   };
   const changeRuleStatus = () => {
-    setLoaded(true);
+    setLoading(true);
     dispatch(setMatchBotRules({ sponsor: rule.sponsor, enabled: !isEnabled })).then(() => {
       handleChangeModalVisible();
       if (!isEnabled) {
@@ -62,7 +62,7 @@ const MatchBotTableRow = ({ handleEditRule, handleSwitcher, isAuthority, intl, r
         message.success(messageData.ruleInactivatedSuccessfully);
         setActivationStatus('inactivated');
       }
-      setLoaded(false);
+      setLoading(false);
     });
   };
 

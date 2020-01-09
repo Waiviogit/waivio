@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import moment from 'moment';
 import { Button, DatePicker, Form, Input, message, Modal, Slider } from 'antd';
 import { isEmpty } from 'lodash';
@@ -108,6 +107,7 @@ const CreateRule = ({
         const prepareObjData = {
           sponsor: editRule.sponsor,
           voting_percent: sliderValue / 100,
+          enabled: editRule.enabled,
           expiredAt: values.expiryDate,
         };
         if (values.noticeField) prepareObjData.note = values.noticeField;
