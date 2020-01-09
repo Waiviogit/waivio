@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import moment from 'moment';
 import { Button, DatePicker, Form, Input, message, Modal, Slider } from 'antd';
 import { isEmpty } from 'lodash';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
@@ -20,6 +22,7 @@ const CreateRule = ({
   modalVisible,
   setEditRule,
 }) => {
+  const [expiredAt, setExpired] = useState('');
   const [isConfirmModalLoading, setConfirmModalLoaded] = useState(false);
   const [isConfirmModal, setConfirmModal] = useState(false);
   const [isDeleteModal, setDeleteModal] = useState(false);
@@ -41,6 +44,7 @@ const CreateRule = ({
     if (!isEmpty(editRule)) {
       setSliderValue(editRule.voting_percent * 100);
     }
+    setExpired(moment(new Date(editRule.expiredAt)));
   }, []);
 
   const handleSetSponsor = obj => {
@@ -81,7 +85,7 @@ const CreateRule = ({
           sponsor: sponsor.account,
           enabled: true,
           voting_percent: sliderValue / 100,
-          expiry_date: values.expiryDate,
+          expiredAt: values.expiryDate,
         };
         if (values.noticeField) prepareObjData.note = values.noticeField;
         dispatch(setMatchBotRules(prepareObjData))
@@ -104,6 +108,7 @@ const CreateRule = ({
         const prepareObjData = {
           sponsor: editRule.sponsor,
           voting_percent: sliderValue / 100,
+          expiredAt: values.expiryDate,
         };
         if (values.noticeField) prepareObjData.note = values.noticeField;
         dispatch(setMatchBotRules(prepareObjData))
@@ -275,7 +280,6 @@ const CreateRule = ({
               })}
             </span>
           </Form.Item>
-
           <Form.Item
             label={intl.formatMessage({
               id: 'matchBot_expiry_date',
@@ -296,7 +300,7 @@ const CreateRule = ({
                   validator: checkExpireDate,
                 },
               ],
-              // initialValue: expiredAt,
+              initialValue: !isEmpty(editRule) && expiredAt,
             })(<DatePicker allowClear={false} />)}
           </Form.Item>
 

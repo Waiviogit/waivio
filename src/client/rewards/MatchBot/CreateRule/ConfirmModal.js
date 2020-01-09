@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal } from 'antd';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
 
@@ -31,22 +32,29 @@ const ConfirmModal = ({
     }
     visible={visible}
   >
-    {isEmpty(editRule)
-      ? intl.formatMessage(
+    {isEmpty(editRule) ? (
+      <div>
+        {intl.formatMessage({
+          id: 'matchBot_modal_create_rule_with_sponsor',
+          defaultMessage: 'Do you want to create rule with sponsor',
+        })}{' '}
+        <Link to={`/@${sponsor.account}`}>{` @${sponsor.account}`}</Link>{' '}
+        {intl.formatMessage(
           {
-            id: 'matchBot_modal_create_rule_with_sponsor_and_upvote',
-            defaultMessage:
-              "Do you want to create rule with sponsor '{sponsor}' and with upvote {upvote}%",
+            id: 'matchBot_modal_sponsor_with_upvote',
+            defaultMessage: 'and with upvote {upvote}%?',
           },
           {
-            sponsor: sponsor.account,
             upvote: sliderValue,
           },
-        )
-      : intl.formatMessage({
-          id: 'matchBot_modal_edit_rule_with_current_changes',
-          defaultMessage: 'Do you want to edit rule with current changes',
-        })}
+        )}
+      </div>
+    ) : (
+      intl.formatMessage({
+        id: 'matchBot_modal_edit_rule_with_current_changes',
+        defaultMessage: 'Do you want to edit rule with current changes',
+      })
+    )}
   </Modal>
 );
 

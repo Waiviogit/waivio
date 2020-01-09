@@ -16,7 +16,6 @@ const MatchBotTableRow = ({ handleEditRule, handleSwitcher, isAuthority, intl, r
   const dispatch = useDispatch();
 
   const isEnabled = activationStatus ? activationStatus === 'activated' : rule.enabled;
-  const mockDate = '2019-12-10T13:42:02.350Z'; // TODO: Remove when backend will ready
   const localizer = (id, defaultMessage) => intl.formatMessage({ id, defaultMessage });
   const messageData = getMatchBotMessageData(localizer);
 
@@ -83,7 +82,7 @@ const MatchBotTableRow = ({ handleEditRule, handleSwitcher, isAuthority, intl, r
             {messageData.edit}
           </div>
         </td>
-        <td>{`${formatDate(intl, mockDate)} mock`}</td>
+        <td>{formatDate(intl, rule.expiredAt)}</td>
         <td>{rule.note}</td>
       </tr>
       <Modal

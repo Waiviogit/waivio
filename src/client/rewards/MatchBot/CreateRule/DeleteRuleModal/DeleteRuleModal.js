@@ -60,7 +60,7 @@ DeleteRuleModal.propTypes = {
   intl: PropTypes.shape().isRequired,
   isDeleteModal: PropTypes.bool.isRequired,
   onOk: PropTypes.func.isRequired,
-  sponsor: PropTypes.shape().isRequired,
+  sponsor: PropTypes.string.isRequired,
 };
 
 export default injectIntl(DeleteRuleModal);
