@@ -1,33 +1,49 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { Button, Form, Input, message, Modal, Slider } from 'antd';
+import { Link } from 'react-router-dom';
+import moment from 'moment';
+import { Button, DatePicker, Form, Input, message, Modal, Slider } from 'antd';
 import { isEmpty } from 'lodash';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import ReviewItem from '../../Create-Edit/ReviewItem';
-import { setMatchBotRules } from '../../rewardsActions';
+import { deleteMatchBotRule, setMatchBotRules } from '../../rewardsActions';
+import DeleteRuleModal from './DeleteRuleModal/DeleteRuleModal';
+import ConfirmModal from './ConfirmModal';
 import './CreateRule.less';
 
 const CreateRule = ({
-  intl,
-  form,
-  modalVisible,
-  handleChangeModalVisible,
   editRule,
+  form,
+  handleChangeModalVisible,
+  intl,
+  modalVisible,
   setEditRule,
 }) => {
-  const { getFieldDecorator, setFieldsValue } = form;
-  const [sponsor, setSponsor] = useState({});
-  const [sliderValue, setSliderValue] = useState(100);
+  const [expiredAt, setExpired] = useState('');
   const [isConfirmModalLoading, setConfirmModalLoaded] = useState(false);
   const [isConfirmModal, setConfirmModal] = useState(false);
+  const [isDeleteModal, setDeleteModal] = useState(false);
+  const [isDeleteModalLoading, setDeleteModalLoaded] = useState(false);
+  const [sliderValue, setSliderValue] = useState(100);
+  const [sponsor, setSponsor] = useState({});
   const dispatch = useDispatch();
+
+  const { getFieldDecorator, setFieldsValue } = form;
+  const marks = {
+    1: '1%',
+    25: '25%',
+    50: '50%',
+    75: '75%',
+    100: '100%',
+  };
 
   useEffect(() => {
     if (!isEmpty(editRule)) {
       setSliderValue(editRule.voting_percent * 100);
     }
+    setExpired(moment(new Date(editRule.expiredAt)));
   }, []);
 
   const handleSetSponsor = obj => {
@@ -45,6 +61,7 @@ const CreateRule = ({
     setEditRule({});
     handleChangeModalVisible();
   };
+  const handleDeleteModalVisibility = () => setDeleteModal(!isDeleteModal);
   const handleSubmit = e => {
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
@@ -67,6 +84,7 @@ const CreateRule = ({
           sponsor: sponsor.account,
           enabled: true,
           voting_percent: sliderValue / 100,
+          expiredAt: values.expiryDate,
         };
         if (values.noticeField) prepareObjData.note = values.noticeField;
         dispatch(setMatchBotRules(prepareObjData))
@@ -89,6 +107,8 @@ const CreateRule = ({
         const prepareObjData = {
           sponsor: editRule.sponsor,
           voting_percent: sliderValue / 100,
+          enabled: editRule.enabled,
+          expiredAt: values.expiryDate,
         };
         if (values.noticeField) prepareObjData.note = values.noticeField;
         dispatch(setMatchBotRules(prepareObjData))
@@ -113,6 +133,27 @@ const CreateRule = ({
       }
     });
   };
+  const handleDeleteRule = () => {
+    setDeleteModalLoaded(true);
+    const prepareObjData = {
+      sponsor: editRule.sponsor,
+    };
+    dispatch(deleteMatchBotRule(prepareObjData))
+      .then(() => {
+        handleChangeModalVisible();
+        setDeleteModalLoaded(false);
+        message.success(
+          intl.formatMessage({
+            id: 'matchBot_success_deleted',
+            defaultMessage: 'Rule deleted successfully',
+          }),
+        );
+      })
+      .catch(() => {
+        setDeleteModalLoaded(false);
+        handleChangeModalVisible();
+      });
+  };
 
   const checkSponsor = (rule, value, callback) => {
     if (isEmpty(sponsor)) {
@@ -125,28 +166,40 @@ const CreateRule = ({
     }
     callback();
   };
-  const formatTooltip = value => `${value}%`;
-
-  const marks = {
-    1: '1%',
-    25: '25%',
-    50: '50%',
-    75: '75%',
-    100: '100%',
+  const checkExpireDate = (rule, value, callback) => {
+    const currentDay = new Date().getDate();
+    if ((value && value.unix() * 1000 < Date.now()) || (value && value.date() === currentDay)) {
+      callback(
+        intl.formatMessage({
+          id: 'matchBot_expiry_date_after_current',
+          defaultMessage: 'The expiry date must be after the current date',
+        }),
+      );
+    } else {
+      callback();
+    }
   };
+  const formatTooltip = value => `${value}%`;
 
   return (
     <Modal
       title={
-        isEmpty(editRule)
-          ? intl.formatMessage({
-              id: 'matchBot_title_create_rule',
-              defaultMessage: 'Create rule',
-            })
-          : intl.formatMessage({
+        isEmpty(editRule) ? (
+          <span>
+            {intl.formatMessage({
+              id: 'matchBot_title_add_new_sponsor',
+              defaultMessage: 'Add new sponsor',
+            })}
+          </span>
+        ) : (
+          <span>
+            {intl.formatMessage({
               id: 'matchBot_title_edit_rule',
-              defaultMessage: 'Edit rule',
-            })
+              defaultMessage: 'Edit match bot rules for',
+            })}
+            <Link to={`/@${editRule.sponsor}`}>{` @${editRule.sponsor}`}</Link>
+          </span>
+        )
       }
       visible={modalVisible}
       onCancel={handleCloseModal}
@@ -156,10 +209,11 @@ const CreateRule = ({
         <Form layout="vertical" onSubmit={handleSubmit}>
           {isEmpty(editRule) && (
             <Form.Item
-              label={intl.formatMessage({
-                id: 'matchBot_title_sponsor',
-                defaultMessage: 'Sponsor',
-              })}
+              label={
+                <span className="CreateRule__label">
+                  {intl.formatMessage({ id: 'matchBot_title_sponsor', defaultMessage: 'Sponsor' })}
+                </span>
+              }
             >
               {isEmpty(editRule) &&
                 getFieldDecorator('sponsorField', {
@@ -194,10 +248,22 @@ const CreateRule = ({
             </Form.Item>
           )}
           <Form.Item
-            label={intl.formatMessage({
-              id: 'matchBot_voting_power',
-              defaultMessage: 'Voting power',
-            })}
+            label={
+              <React.Fragment>
+                <div>
+                  {intl.formatMessage({
+                    id: 'matchBot_define_value_match_upvote',
+                    defaultMessage: 'Define value of the match upvote:',
+                  })}
+                </div>
+                <div>
+                  {intl.formatMessage({
+                    id: 'matchBot_as_of_eligible_reward',
+                    defaultMessage: '(as a % of the eligible reward)',
+                  })}
+                </div>
+              </React.Fragment>
+            }
           >
             <Slider
               min={1}
@@ -206,11 +272,42 @@ const CreateRule = ({
               tipFormatter={formatTooltip}
               onChange={handleChangeSliderValue}
             />
+            <span className="CreateRule__text f9">
+              {intl.formatMessage({
+                id: 'matchBot_match_bot_will_upvote_posts_eligible_receive_rewards',
+                defaultMessage:
+                  'Match bot will upvote posts eligible to receive rewards offered by the specified sponsor.',
+              })}
+            </span>
           </Form.Item>
           <Form.Item
             label={intl.formatMessage({
+              id: 'matchBot_expiry_date',
+              defaultMessage: 'Expiry date',
+            })}
+          >
+            {getFieldDecorator('expiryDate', {
+              rules: [
+                {
+                  type: 'object',
+                  required: true,
+                  message: intl.formatMessage({
+                    id: 'matchBot_select_time',
+                    defaultMessage: 'Please, select time!',
+                  }),
+                },
+                {
+                  validator: checkExpireDate,
+                },
+              ],
+              initialValue: !isEmpty(editRule) && expiredAt,
+            })(<DatePicker allowClear={false} />)}
+          </Form.Item>
+
+          <Form.Item
+            label={intl.formatMessage({
               id: 'matchBot_set_note',
-              defaultMessage: 'Set note',
+              defaultMessage: 'Note (not visible to the public):',
             })}
           >
             {getFieldDecorator('noticeField', {
@@ -226,58 +323,65 @@ const CreateRule = ({
             })(<Input.TextArea />)}
           </Form.Item>
           <div className="CreateRule__button">
+            <Button disabled={false} onClick={handleCloseModal}>
+              {intl.formatMessage({
+                id: 'matchBot_btn_cancel',
+                defaultMessage: 'Cancel',
+              })}
+            </Button>
             {isEmpty(editRule) ? (
               <Button type="primary" htmlType="submit" disabled={false}>
                 {intl.formatMessage({
-                  id: 'matchBot_btn_create',
-                  defaultMessage: 'Create',
+                  id: 'matchBot_btn_add_sponsor',
+                  defaultMessage: 'Add sponsor',
                 })}
               </Button>
             ) : (
               <Button type="primary" htmlType="submit" disabled={false}>
                 {intl.formatMessage({
                   id: 'matchBot_btn_edit_rule',
-                  defaultMessage: 'Edit',
+                  defaultMessage: 'Save changes',
                 })}
               </Button>
             )}
           </div>
+          {!isEmpty(editRule) && (
+            <div className="CreateRule__edit-footer">
+              <div className="CreateRule__text f9">
+                {intl.formatMessage({
+                  id: 'matchBot_remove_match_bot_rule_click_button',
+                  defaultMessage: 'To remove the match bot rule, click the delete button',
+                })}
+                :
+              </div>
+              <div className="CreateRule__button-delete">
+                <Button disabled={false} onClick={handleDeleteModalVisibility}>
+                  {intl.formatMessage({
+                    id: 'matchBot_btn_delete_rule',
+                    defaultMessage: 'Delete rule',
+                  })}
+                </Button>
+              </div>
+            </div>
+          )}
         </Form>
       </div>
-      <Modal
-        title={
-          isEmpty(editRule)
-            ? intl.formatMessage({
-                id: 'matchBot_rule_creation_confirmation',
-                defaultMessage: 'Rule creation confirmation',
-              })
-            : intl.formatMessage({
-                id: 'matchBot_rule_editing_confirmation',
-                defaultMessage: 'Rule editing confirmation',
-              })
-        }
-        visible={isConfirmModal}
+      <ConfirmModal
+        sponsor={sponsor}
+        editRule={editRule}
         onCancel={handleCloseConfirmModal}
-        onOk={handleSetRule}
+        visible={isConfirmModal}
         confirmLoading={isConfirmModalLoading}
-      >
-        {isEmpty(editRule)
-          ? intl.formatMessage(
-              {
-                id: 'matchBot_modal_create_rule_with_sponsor_and_upvote',
-                defaultMessage:
-                  "Do you want to create rule with sponsor '{sponsor}' and with upvote {upvote}%",
-              },
-              {
-                sponsor: sponsor.account,
-                upvote: sliderValue,
-              },
-            )
-          : intl.formatMessage({
-              id: 'matchBot_modal_edit_rule_with_current_changes',
-              defaultMessage: 'Do you want to edit rule with current changes',
-            })}
-      </Modal>
+        sliderValue={sliderValue}
+        onOk={handleSetRule}
+      />
+      <DeleteRuleModal
+        isDeleteModal={isDeleteModal}
+        handleModalVisibility={handleDeleteModalVisibility}
+        sponsor={editRule.sponsor}
+        deleteLoading={isDeleteModalLoading}
+        onOk={handleDeleteRule}
+      />
     </Modal>
   );
 };
