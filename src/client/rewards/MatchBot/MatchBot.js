@@ -11,16 +11,18 @@ import { getMatchBotRules } from '../../../waivioApi/ApiClient';
 import { baseUrl } from '../../../waivioApi/routes';
 import MatchBotTable from './MatchBotTable/MatchBotTable';
 import Error401 from '../../statics/Error401';
+import getMatchBotMessageData from './matchBotMessageData';
 import './MatchBot.less';
 
 const MatchBot = ({ intl, userName }) => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [voteModalVisible, setVoteModalVisible] = useState(false);
-  const [isLoading, setLoaded] = useState(false);
-  const [sliderValue, setSliderValue] = useState(100);
   const [editRule, setEditRule] = useState({});
-  const [rules, setRules] = useState({ results: [] });
+  const [isLoading, setLoaded] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const [minVotingPower, setMinVotingPower] = useState(0);
+  const [rules, setRules] = useState({ results: [] });
+  const [sliderValue, setSliderValue] = useState(100);
+  const [voteModalVisible, setVoteModalVisible] = useState(false);
+
   const authenticatedUser = useSelector(getAuthenticatedUser);
   const authority = 'waiviocampaigns';
   const isAuthority =
@@ -55,14 +57,12 @@ const MatchBot = ({ intl, userName }) => {
     }
   }, []);
 
+  const localizer = (id, defaultMessage) => intl.formatMessage({ id, defaultMessage });
+  const messageData = getMatchBotMessageData(localizer);
+
   const handleChangeModalVisible = () => {
     if (isOverRules) {
-      message.error(
-        intl.formatMessage({
-          id: 'match_bot_cannot_create_rules_more',
-          defaultMessage: `You cannot create more then 25 rules`,
-        }),
-      );
+      message.error(messageData.cannotCreateRulesMore);
       return;
     }
     setModalVisible(!modalVisible);
@@ -84,75 +84,29 @@ const MatchBot = ({ intl, userName }) => {
       setLoaded(false);
       handleOpenVoteModal();
       setMinVotingPower(sliderValue);
-      message.success(
-        intl.formatMessage({
-          id: 'match_bot_success_min_voted_changed',
-          defaultMessage: 'Minimum voting power changed',
-        }),
-      );
+      message.success(messageData.successMinVotedChanged);
     });
   };
-
   return (
     <div className="MatchBot">
       {userName ? (
         <React.Fragment>
           <div className="MatchBot__title-wrap">
-            <div className="MatchBot__title">
-              {intl.formatMessage({
-                id: 'match_bot_manage_match_bot',
-                defaultMessage: 'Manage match bot',
-              })}
-            </div>
-            <Tooltip
-              title={
-                !isAuthority
-                  ? intl.formatMessage({
-                      id: 'match_bot_turn_on',
-                      defaultMessage: 'Turn on',
-                    })
-                  : intl.formatMessage({
-                      id: 'match_bot_turn_off',
-                      defaultMessage: 'Turn off',
-                    })
-              }
-            >
+            <div className="MatchBot__title">{messageData.manageMatchBot}</div>
+            <Tooltip title={!isAuthority ? messageData.turnOn : messageData.turnOff}>
               <div className="MatchBot__switcher">
                 <Switch checked={isAuthority} onChange={handleSwitcher} />
               </div>
             </Tooltip>
           </div>
           <div className="MatchBot__text-content">
-            <p>
-              {intl.formatMessage({
-                id: 'match_bot_designed_offset_portion_of_direct_rewards',
-                defaultMessage:
-                  'Match bot is designed to offset portion of direct rewards with upvotes.',
-              })}
-            </p>
-            <p>
-              {intl.formatMessage({
-                id: 'match_bot_content_user_has_posted_review_eligible_receive_direct_reward',
-                defaultMessage:
-                  "For example, the user has posted a review that is eligible to receive a direct reward of 5.00 STEEM. Match bot can upvote that post for a specified value of, say, 10% of the reward (assuming Match bot has enough voting value). This way, the user will receive 0.50 STEEM in author's rewards and the direct payment can be reduced to 4.50 STEEM.",
-              })}
-            </p>
-            <p className="MatchBot__text fw6">
-              {intl.formatMessage({
-                id:
-                  'match_bot_third_party_campaign_sponsors_must_pre_register_match_bot_sponsor_in_campaign',
-                defaultMessage:
-                  'Important: Third party campaign sponsors must register the match bot in their campaigns for the value of bot upvotes to be subtracted from the direct obligations.',
-              })}
-            </p>
+            <p>{messageData.designedOffsetPortion}</p>
+            <p>{messageData.contentUserPostedReview}</p>
+            <p className="MatchBot__text fw6">{messageData.thirdPartyCampaignSponsors}</p>
             <div className="MatchBot__highlighted-block">
               <div className="MatchBot__text mb3 fw6">
                 <p>
-                  {intl.formatMessage({
-                    id: 'match_bot_match_bot_requires_authorization_distribute_votes_behalf',
-                    defaultMessage:
-                      'The match bot requires authorization to distribute votes on your behalf:',
-                  })}
+                  {messageData.matchBotRequiresAuthorization}:
                   {
                     <span
                       className="MatchBot__text-link"
@@ -160,33 +114,15 @@ const MatchBot = ({ intl, userName }) => {
                       role="presentation"
                     >
                       {' '}
-                      {!isAuthority
-                        ? intl.formatMessage({
-                            id: 'match_bot_authorize_now',
-                            defaultMessage: 'Authorize now',
-                          })
-                        : intl.formatMessage({
-                            id: 'match_bot_remove_authorization',
-                            defaultMessage: 'Remove authorization',
-                          })}
+                      {!isAuthority ? messageData.authorizeNow : messageData.removeAuthorization}
                     </span>
                   }
                 </p>
-                <p>
-                  {intl.formatMessage({
-                    id: 'match_bot_authorization_completed_steemconnect_can_revoked_any_time',
-                    defaultMessage:
-                      'The authorization is completed via SteemConnect and can be revoked at any time.',
-                  })}
-                </p>
+                <p>{messageData.authorizationCompletedSteemconnect}</p>
               </div>
               <p>
                 <span>
-                  {intl.formatMessage({
-                    id: 'minimum_voting_power',
-                    defaultMessage: 'Minimum voting power',
-                  })}
-                  :{` ${minVotingPower}% `}
+                  {messageData.minimumVotingPower}:{` ${minVotingPower}% `}
                 </span>
                 (
                 <span
@@ -194,38 +130,32 @@ const MatchBot = ({ intl, userName }) => {
                   onClick={handleOpenVoteModal}
                   role="presentation"
                 >
-                  {intl.formatMessage({
-                    id: 'minimum_voting_power_change',
-                    defaultMessage: 'change',
-                  })}
+                  {messageData.change}
                 </span>
                 )
               </p>
-              <p>
-                {intl.formatMessage({
-                  id: 'match_bot_will_upvote_eligible_posts_only_if_VP',
-                  defaultMessage:
-                    'Match bot will upvote eligible posts only if VP on the account exceeds the set value.',
-                })}
-              </p>
+              <p>{messageData.upvoteEligiblePosts}</p>
             </div>
           </div>
           {!isEmpty(rules) && !isEmpty(rules.results) && (
-            <MatchBotTable intl={intl} rules={rules.results} handleEditRule={handleEditRule} />
+            <MatchBotTable
+              handleEditRule={handleEditRule}
+              handleSwitcher={handleSwitcher}
+              messageData={messageData}
+              isAuthority={isAuthority}
+              rules={rules.results}
+            />
           )}
           <div className="MatchBot__button">
             <Button type="primary" onClick={handleChangeModalVisible}>
-              {intl.formatMessage({
-                id: 'createNewCampaign',
-                defaultMessage: `Create new rule`,
-              })}
+              {messageData.addSponsor}
             </Button>
           </div>
           {modalVisible && (
             <CreateRule
-              modalVisible={modalVisible}
-              handleChangeModalVisible={handleChangeModalVisible}
               editRule={editRule}
+              handleChangeModalVisible={handleChangeModalVisible}
+              modalVisible={modalVisible}
               setEditRule={setEditRule}
             />
           )}
@@ -234,21 +164,18 @@ const MatchBot = ({ intl, userName }) => {
         <Error401 />
       )}
       <Modal
-        title={intl.formatMessage({
-          id: 'match_bot_change_min_voting_power',
-          defaultMessage: 'Change minimum voting power',
-        })}
-        visible={voteModalVisible}
+        confirmLoading={isLoading}
         onCancel={handleOpenVoteModal}
         onOk={handleSetMinVotingPower}
-        confirmLoading={isLoading}
+        title={messageData.changeMinVotingPower}
+        visible={voteModalVisible}
       >
         <Slider
-          min={1}
           defaultValue={minVotingPower}
+          onChange={handleChangeSliderValue}
+          min={1}
           marks={marks}
           tipFormatter={formatTooltip}
-          onChange={handleChangeSliderValue}
         />
       </Modal>
     </div>

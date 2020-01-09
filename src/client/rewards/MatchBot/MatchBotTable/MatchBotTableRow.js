@@ -1,44 +1,68 @@
 import React, { useState } from 'react';
-import { Checkbox, message, Modal } from 'antd';
 import PropTypes from 'prop-types';
-import { injectIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
+import { injectIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
+import { Checkbox, message, Modal } from 'antd';
 import { setMatchBotRules } from '../../rewardsActions';
+import { formatDate } from '../../rewardsHelper';
+import getMatchBotMessageData from '../matchBotMessageData';
 
-const MatchBotTableRow = ({ intl, rule, handleEditRule }) => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [isLoading, setLoaded] = useState(false);
+const MatchBotTableRow = ({ handleEditRule, handleSwitcher, isAuthority, intl, rule }) => {
   const [activationStatus, setActivationStatus] = useState('');
+  const [isLoading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalAuthVisible, setModalAuthVisible] = useState(false);
   const dispatch = useDispatch();
+
+  const isEnabled = activationStatus ? activationStatus === 'activated' : rule.enabled;
+  const localizer = (id, defaultMessage) => intl.formatMessage({ id, defaultMessage });
+  const messageData = getMatchBotMessageData(localizer);
+
   const handleChangeModalVisible = () => setModalVisible(!modalVisible);
+  const handleChangeAuthModalVisible = () => {
+    setModalAuthVisible(!modalAuthVisible);
+  };
+  const handleOnOkAuth = () => {
+    handleSwitcher();
+    handleChangeAuthModalVisible();
+  };
   const editRule = () => {
     handleEditRule(rule);
   };
-
-  const isEnabled = activationStatus ? activationStatus === 'activated' : rule.enabled;
-
+  const setTitle = () => {
+    if (!isAuthority) return messageData.authorizationRequired;
+    if (!isEnabled) return messageData.successRuleActivation;
+    return messageData.successRuleInactivation;
+  };
+  const setModalContent = () => {
+    if (!isAuthority) return messageData.matchBotRequiresAuthorizationDistribute;
+    if (!isEnabled)
+      return (
+        <div>
+          {messageData.successIntentionRuleActivation}{' '}
+          <Link to={`/@${rule.sponsor}`}>{` @${rule.sponsor}`}</Link>?
+        </div>
+      );
+    return (
+      <div>
+        {messageData.successIntentionRuleInactivation}{' '}
+        <Link to={`/@${rule.sponsor}`}>{` @${rule.sponsor}`}</Link>?
+      </div>
+    );
+  };
   const changeRuleStatus = () => {
-    setLoaded(true);
+    setLoading(true);
     dispatch(setMatchBotRules({ sponsor: rule.sponsor, enabled: !isEnabled })).then(() => {
       handleChangeModalVisible();
       if (!isEnabled) {
         setActivationStatus('activated');
-        message.success(
-          intl.formatMessage({
-            id: 'matchBot_success_activated',
-            defaultMessage: 'Rule activated successfully',
-          }),
-        );
+        message.success(messageData.ruleActivatedSuccessfully);
       } else {
-        message.success(
-          intl.formatMessage({
-            id: 'matchBot_success_inactivated',
-            defaultMessage: 'Rule inactivated successfully',
-          }),
-        );
+        message.success(messageData.ruleInactivatedSuccessfully);
         setActivationStatus('inactivated');
       }
-      setLoaded(false);
+      setLoading(false);
     });
   };
 
@@ -46,66 +70,41 @@ const MatchBotTableRow = ({ intl, rule, handleEditRule }) => {
     <React.Fragment>
       <tr>
         <td>
-          <Checkbox checked={isEnabled} onChange={handleChangeModalVisible} />
+          <Checkbox
+            checked={isEnabled}
+            onChange={isAuthority ? handleChangeModalVisible : handleChangeAuthModalVisible}
+          />
         </td>
         <td>{rule.sponsor}</td>
         <td>{Math.round(rule.voting_percent * 100)}%</td>
         <td>
           <div className="MatchBotTable__edit" onClick={editRule} role="presentation">
-            {intl.formatMessage({ id: 'matchBot_table_edit', defaultMessage: `Edit` })}
+            {messageData.edit}
           </div>
         </td>
+        <td>{formatDate(intl, rule.expiredAt)}</td>
         <td>{rule.note}</td>
       </tr>
       <Modal
-        title={
-          !isEnabled
-            ? intl.formatMessage({
-                id: 'matchBot_success_rule_activation',
-                defaultMessage: 'Rule activation',
-              })
-            : intl.formatMessage({
-                id: 'matchBot_success_rule_inactivation',
-                defaultMessage: 'Rule inactivation',
-              })
-        }
-        visible={modalVisible}
-        onCancel={handleChangeModalVisible}
-        onOk={changeRuleStatus}
-        confirmLoading={isLoading}
+        confirmLoading={isAuthority && isLoading}
+        onCancel={isAuthority ? handleChangeModalVisible : handleChangeAuthModalVisible}
+        onOk={isAuthority ? changeRuleStatus : handleOnOkAuth}
+        okText={!isAuthority && messageData.authorizeNow}
+        title={setTitle()}
+        visible={isAuthority ? modalVisible : modalAuthVisible}
       >
-        {!isEnabled
-          ? intl.formatMessage(
-              {
-                id: 'matchBot_success_intention_rule_activation',
-                defaultMessage: "Do you want to activate rule with sponsor '{sponsor}'?",
-              },
-              {
-                sponsor: rule.sponsor,
-              },
-            )
-          : intl.formatMessage(
-              {
-                id: 'matchBot_success_intention_rule_inactivation',
-                defaultMessage: "Do you want to inactivate rule? with sponsor '{sponsor}'?",
-              },
-              {
-                sponsor: rule.sponsor,
-              },
-            )}
+        {setModalContent()}
       </Modal>
     </React.Fragment>
   );
 };
 
 MatchBotTableRow.propTypes = {
-  intl: PropTypes.shape().isRequired,
-  rule: PropTypes.shape(),
   handleEditRule: PropTypes.func.isRequired,
-};
-
-MatchBotTableRow.defaultProps = {
-  rule: {},
+  handleSwitcher: PropTypes.func.isRequired,
+  isAuthority: PropTypes.bool.isRequired,
+  intl: PropTypes.shape().isRequired,
+  rule: PropTypes.shape().isRequired,
 };
 
 export default injectIntl(MatchBotTableRow);
