@@ -28,3 +28,16 @@ export const setMatchBotVotingPower = votingPower => (dispatch, getState, { stee
     },
   });
 };
+
+export const DEL_MATCH_BOT_RULE = createAsyncActionType('@rewards/DEL_MATCH_BOT_RULE');
+
+export const deleteMatchBotRule = sponsorName => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+  const username = getAuthenticatedUserName(state);
+  return dispatch({
+    type: DEL_MATCH_BOT_RULE.ACTION,
+    payload: {
+      promise: steemConnectAPI.deleteMatchBotRule(username, sponsorName),
+    },
+  });
+};

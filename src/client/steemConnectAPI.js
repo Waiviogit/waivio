@@ -105,7 +105,7 @@ function sc2Extended() {
         const params = {
           required_auths: [],
           required_posting_auths: [username],
-          id: 'match_bot_rule',
+          id: 'match_bot_set_rule',
           json: JSON.stringify(ruleObj),
         };
         return this.broadcast([['custom_json', params]], cb);
@@ -118,6 +118,17 @@ function sc2Extended() {
           required_posting_auths: [username],
           id: 'match_bot_change_power',
           json: JSON.stringify(voteObj),
+        };
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      deleteMatchBotRule(username, sponsorName, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'match_bot_remove_rule',
+          json: JSON.stringify(sponsorName),
         };
         return this.broadcast([['custom_json', params]], cb);
       },
