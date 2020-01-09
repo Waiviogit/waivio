@@ -15,10 +15,13 @@ const Campaign = ({ proposition, filterKey, history, intl }) => {
   const currentUSDPrice = getCurrentUSDPrice();
   const rewardPrise = currentUSDPrice
     ? (currentUSDPrice * proposition.min_reward).toFixed(2)
-    : '...';
+    : `${proposition.max_reward} STEEM`;
   const rewardMax =
+    // eslint-disable-next-line no-nested-ternary
     proposition.max_reward !== proposition.min_reward
-      ? `${currentUSDPrice ? (currentUSDPrice * proposition.max_reward).toFixed(2) : '...'}`
+      ? currentUSDPrice
+        ? `${(currentUSDPrice * proposition.max_reward).toFixed(2)} USD`
+        : `${proposition.max_reward} STEEM`
       : '';
   const goToProducts = () => history.push(`/rewards/${filterKey}/${requiredObject.id}`);
   return (
@@ -35,8 +38,7 @@ const Campaign = ({ proposition, filterKey, history, intl }) => {
                 })}
               </span>
               <span>
-                <span className="fw6 ml1">{`${rewardPrise}`}</span>
-                {' USD '}
+                <span className="fw6 ml1">{rewardPrise}</span>
                 <Icon type="right" />
               </span>
             </React.Fragment>
