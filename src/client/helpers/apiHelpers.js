@@ -1,7 +1,7 @@
 import SteemAPI from '../steemAPI';
 import { jsonParse } from '../helpers/formatter';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
-import { getUserAccount } from '../../waivioApi/ApiClient';
+import { getGuestPaymentsHistory, getUserAccount } from '../../waivioApi/ApiClient';
 
 export const getAccount = username =>
   SteemAPI.sendAsync('get_accounts', [[username]]).then(result => {
@@ -79,8 +79,16 @@ export const getAllFollowing = (username, isGuest) =>
 
 export const defaultAccountLimit = 500;
 
-export const getAccountHistory = (account, from = -1, limit = defaultAccountLimit) =>
+const getSteemAccountHistory = (account, from = -1, limit = defaultAccountLimit) =>
   SteemAPI.sendAsync('get_account_history', [account, from, limit]);
+const getGuestAccountHistory = (account, from = 0, limit = 20) =>
+  getGuestPaymentsHistory(account, { skip: from, limit });
+export const getAccountHistory = (account, { from, limit, isGuest = false }) => {
+  if (isGuest) {
+    return getGuestAccountHistory(account, from, limit);
+  }
+  return getSteemAccountHistory(account, from, limit);
+};
 
 export const getDynamicGlobalProperties = () =>
   SteemAPI.sendAsync('get_dynamic_global_properties', []);

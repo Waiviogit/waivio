@@ -38,6 +38,7 @@
   "createObject": "/create/object",
   "guestOperations": "/guest_operations",
   "dashboard": "/dashboard",
+  "demoPayables": "/demo_payables",
   "statistics": "/statistics",
   "matchBots": "/match_bots",
   "feed": "/feed",
