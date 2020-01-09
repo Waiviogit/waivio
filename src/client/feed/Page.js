@@ -85,7 +85,7 @@ class Page extends React.Component {
   handleTopicClose = () => this.props.history.push('/trending');
 
   handleChangeFeed = isAppFilterOn => {
-    this.setState({ checked: isAppFilterOn });
+    this.setState({ checked: !!isAppFilterOn });
     if (localStorage) {
       if (this.props.match.path === '/') {
         // eslint-disable-next-line no-unused-expressions
