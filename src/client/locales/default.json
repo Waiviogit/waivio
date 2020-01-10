@@ -1051,5 +1051,6 @@
   "post_validation_object_not_found": "The post must contain at least one topic",
   "post_validation_invalid_forecast": "Fill in the required fields",
   "sidenav_user_payments": "Payments",
-  "posts": "Posts"
+  "posts": "Posts",
+  "no_forecasts": "No forecasts"
 }

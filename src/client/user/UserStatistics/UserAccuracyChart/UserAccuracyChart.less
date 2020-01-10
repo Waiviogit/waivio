@@ -14,9 +14,8 @@
 
     &-value {
       position: absolute;
-      font-size: x-large;
-      font-weight: bold;
       margin-top: 30px;
+      max-width: 55%;
     }
 
     &-chart {
@@ -39,12 +38,21 @@
   }
 }
 
-.UserAccuracy__data-wrapper-value.success {
-  color: @green;
-}
-
-.UserAccuracy__data-wrapper-value.unsuccess {
-  color: @red;
+.UserAccuracy__data-wrapper-value {
+  .value {
+    font-size: x-large;
+    font-weight: bold;
+    &.success {
+      color: @green;
+    }
+    &.unsuccess {
+      color: @red;
+    }
+  }
+  .no-forecast-placeholder {
+    line-height: 1;
+    text-align: center;
+  }
 }
 
 .hideChart {

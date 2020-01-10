@@ -1009,5 +1009,6 @@
   "post_validation_object_not_found": "Пост должен содержать по крайней мере одину тему",
   "post_validation_invalid_forecast": "Заполните необходимые поля формы",
   "sidenav_user_payments": "Платежи",
-  "posts": "Посты"
+  "posts": "Посты",
+  "no_forecasts": "Нет прогнозов"
 }
