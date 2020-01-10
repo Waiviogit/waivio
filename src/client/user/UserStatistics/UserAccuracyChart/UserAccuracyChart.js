@@ -8,7 +8,7 @@ import { getAccuracyChartLoaded } from '../../../reducers';
 import Loading from '../../../components/Icon/Loading';
 import './UserAccuracyChart.less';
 
-const UserAccuracyChart = ({ statisticsData, isChart, ...props }) => {
+const UserAccuracyChart = ({ statisticsData, isChart, setAccuracyChartLoaded }) => {
   const percent =
     statisticsData.successful_count === 0
       ? 0
@@ -65,7 +65,7 @@ const UserAccuracyChart = ({ statisticsData, isChart, ...props }) => {
               {
                 eventName: 'ready',
                 callback: () => {
-                  props.setAccuracyChartLoaded();
+                  setAccuracyChartLoaded();
                 },
               },
             ]}
@@ -84,7 +84,6 @@ const UserAccuracyChart = ({ statisticsData, isChart, ...props }) => {
 
 UserAccuracyChart.propTypes = {
   statisticsData: PropTypes.shape().isRequired,
-  setForecastAccuracyChartCondition: PropTypes.func.isRequired,
   isChart: PropTypes.bool.isRequired,
   setAccuracyChartLoaded: PropTypes.func.isRequired,
 };

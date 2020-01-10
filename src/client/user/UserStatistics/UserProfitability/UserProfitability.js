@@ -15,12 +15,8 @@ const UserProfitability = ({ statisticsData, isChart }) => (
   >
     {isChart ? (
       <React.Fragment>
-        <div className="UserProfitability tooltip">
+        <div className="UserProfitability">
           <div className="UserProfitability__value">{`${statisticsData.pips}`}</div>
-          <div className="UserProfitability tooltiptext">
-            <span className="UserProfitability success">{statisticsData.successful_count}</span>/
-            <span className="UserProfitability unsuccess">{statisticsData.failed_count}</span>
-          </div>
         </div>
         <div className="UserProfitability__profit">pips</div>
       </React.Fragment>
