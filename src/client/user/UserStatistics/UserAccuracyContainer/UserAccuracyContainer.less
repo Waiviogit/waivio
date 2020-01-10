@@ -22,7 +22,12 @@
     cursor: default;
 
     &-item {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
       width: 25%;
+
       &-value {
         text-align: center;
         padding: 0 0 0.3rem 0;
@@ -34,6 +39,11 @@
 
 .UserAccuracyContainer__period-item.border {
   border-left: 1px solid @white-gainsboro;
+}
+
+.no-forecast-placeholder {
+  line-height: 1;
+  text-align: center;
 }
 
 @import 'UserAccuracyContainer-nightmode';

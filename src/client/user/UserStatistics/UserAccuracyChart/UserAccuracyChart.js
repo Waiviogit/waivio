@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
 import Chart from 'react-google-charts';
 import classNames from 'classnames';
 import { setAccuracyChartLoaded } from '../../userActions';
 import { getAccuracyChartLoaded } from '../../../reducers';
 import Loading from '../../../components/Icon/Loading';
+import { noDataPlaceholder } from '../UserAccuracyContainer/UserAccuracyContainer';
 import './UserAccuracyChart.less';
 
 const UserAccuracyChart = ({ statisticsData, isChart, dispatchChartLoaded }) => {
@@ -75,9 +75,7 @@ const UserAccuracyChart = ({ statisticsData, isChart, dispatchChartLoaded }) => 
         </div>
         <div className="UserAccuracy__data-wrapper-value">
           {noData ? (
-            <div className="no-forecast-placeholder">
-              <FormattedMessage id="no_forecasts" defaultMessage="No forecasts" />
-            </div>
+            noDataPlaceholder
           ) : (
             <div
               className={classNames('value', {

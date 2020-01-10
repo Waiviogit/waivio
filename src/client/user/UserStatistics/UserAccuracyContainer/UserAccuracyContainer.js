@@ -1,5 +1,5 @@
 import React from 'react';
-import { injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Tooltip } from 'antd';
 import UserAccuracyChart from '../UserAccuracyChart/UserAccuracyChart';
@@ -84,6 +84,12 @@ const UserAccuracyContainer = ({ intl, contentType, accuracy }) => (
         </div>
       </Tooltip>
     </div>
+  </div>
+);
+
+export const noDataPlaceholder = (
+  <div className="no-forecast-placeholder">
+    <FormattedMessage id="no_forecasts" defaultMessage="No forecasts" />
   </div>
 );
 
