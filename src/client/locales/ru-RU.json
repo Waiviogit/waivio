@@ -984,5 +984,10 @@
   "or_sign_in_with": "или войдите через",
   "name_is_too_long": "Слишком длинное имя (макс 25 символов)",
   "please_input_username": "Пользователь с данным именем уже существует",
-  "only_letters": "Только буквы(латиница), цыфры, точки, дефисы"
+  "only_letters": "Только буквы(латиница), цыфры, точки, дефисы",
+  "imageSetter_add_image": "Добавить картинку",
+  "imageSetter_add_images": "Добавить картинки",
+  "imageSetter_upload": "Загрузить",
+  "imageSetter_or": "или",
+  "imageSetter_paste_image_link": "Вставить ссылку на картинку"
 }

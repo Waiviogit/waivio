@@ -56,6 +56,7 @@ import CreateObject from '../post/CreateObjectModal/CreateObject';
 import { baseUrl } from '../../waivioApi/routes';
 import AppendFormFooter from './AppendFormFooter';
 import './AppendForm.less';
+import ImageSetter from '../components/ImageSetter/ImageSetter';
 
 @connect(
   state => ({
@@ -796,6 +797,11 @@ export default class AppendForm extends Component {
                 )}
               </div>
             )}
+            <ImageSetter
+              images={this.state.currentImage}
+              handleAddImage={this.handleImageChange}
+              onRemoveImage={this.handleRemoveImage}
+            />
           </div>
         );
       }

@@ -981,5 +981,10 @@
   "or_sign_in_with": "account to get your reward.",
   "name_is_too_long": "Name is too long (map 25 symbols)",
   "please_input_username": "User with such username already exists",
-  "only_letters": "Only letters, digits, periods, dashes are allowed"
+  "only_letters": "Only letters, digits, periods, dashes are allowed",
+  "imageSetter_add_image": "Add image",
+  "imageSetter_add_images": "Add images",
+  "imageSetter_upload": "Upload",
+  "imageSetter_or": "or",
+  "imageSetter_paste_image_link": "Paste image link"
 }

@@ -1,0 +1,97 @@
+@import (reference) '../../styles/custom.less';
+
+.ImageSetter {
+  display: flex;
+  flex-direction: column;
+
+  &__label {
+    padding: 1rem 0;
+    font-size: 1.2em;
+    font-weight: 500;
+
+    &::before {
+      display: inline-block;
+      margin-right: 4px;
+      color: @red-danger;
+      font-size: 1em;
+      font-family: SimSun, sans-serif;
+      content: '*';
+    }
+  }
+
+  &__imagebox {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+
+    &-preview {
+      border: 1px solid @white-gainsboro;
+      border-radius: 4px;
+      padding: 8px;
+      margin: 16px 16px 0 0;
+    }
+
+    &-remove {
+      align-items: center;
+      background-color: @white;
+      color: @primary-color !important;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      height: 10px;
+      margin-left: 88px;
+      margin-top: -14px;
+      position: absolute;
+      width: 14px;
+
+      &-icon {
+        font-size: 30px !important;
+      }
+    }
+  }
+
+  &__upload {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &-file {
+      display: none !important;
+    }
+
+    &-btn {
+      border: 1px dashed @white-gainsboro;
+      background-color: @white-darker;
+      border-radius: 4px;
+      width: 104px;
+      height: 104px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:hover {
+        border: 1px dashed @orange-hot;
+      }
+
+      &-container {
+        display: flex;
+        flex-direction: column;
+        color: @blue-botticelli !important;
+
+        &-img {
+          font-size: 2em;
+        }
+
+        &-label {
+          font-size: 1em;
+          font-weight: 500;
+        }
+      }
+    }
+
+    &-input {
+      width: 75% !important;
+    }
+  }
+}
