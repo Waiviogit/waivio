@@ -149,7 +149,7 @@ export default class Wobj extends React.Component {
 
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
     const objectName = wobject.name || wobject.default_name || '';
-    const waivioHost = global.postOrigin || 'https://waiviodev.com';
+    const waivioHost = global.postOrigin || 'https://waivio.com';
     const desc = `${objectName || ''}`;
     const image =
       wobject.avatar ||

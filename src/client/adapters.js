@@ -88,7 +88,7 @@ export const getServerWObj = clientWObj => {
     weight: weight || '',
     parents: parents && parents.length ? parents : [],
     children: children && children.length ? children : [],
-    app: app || 'waiviodev/1.0.0',
+    app: app || 'waivio/1.0.0',
     community: '',
     createdAt: createdAt || Date.now(),
     updatedAt: updatedAt || Date.now(),

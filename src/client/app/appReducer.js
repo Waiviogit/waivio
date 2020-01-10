@@ -13,7 +13,7 @@ const initialState = {
   trendingTopics: [],
   rewardFund: {},
   bannerClosed: false,
-  appUrl: 'https://waiviodev.com',
+  appUrl: 'https://waivio.com',
   usedLocale: null,
   translations: {},
   cryptosPriceHistory: {},

@@ -46,7 +46,7 @@ const DEFINE_PLUGIN = new webpack.DefinePlugin({
   ),
   'process.env.STEEMJS_URL': JSON.stringify(process.env.STEEMJS_URL || 'https://api.steemit.com'),
   'process.env.SIGNUP_URL': JSON.stringify(
-    process.env.SIGNUP_URL || 'https://signup.steemit.com/?ref=waiviodev',
+    process.env.SIGNUP_URL || 'https://signup.steemit.com/?ref=waivio',
   ),
   'process.env.MANIFEST_PATH': JSON.stringify(paths.assets),
 });
