@@ -178,7 +178,7 @@ class PostContent extends React.Component {
 
     const postMetaData = jsonParse(content.json_metadata);
     const waivioHost = appUrl || 'https://investarena.com';
-    let canonicalHost = waivioHost;
+    const canonicalHost = waivioHost;
 
     // if (postMetaData && _.indexOf(postMetaData.app, 'steemit') === 0) {
     //   canonicalHost = 'https://steemit.com';
