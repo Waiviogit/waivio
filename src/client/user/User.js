@@ -49,6 +49,11 @@ import { getUserDetailsKey } from '../helpers/stateHelpers';
   },
 )
 export default class User extends React.Component {
+
+  static fetchData({ store, match }) {
+    return store.dispatch(getUserAccount(match.params.name));
+  }
+
   static propTypes = {
     route: PropTypes.shape().isRequired,
     authenticated: PropTypes.bool.isRequired,
@@ -74,10 +79,6 @@ export default class User extends React.Component {
     getUserAccount: () => {},
     openTransfer: () => {},
   };
-
-  static fetchData({ store, match }) {
-    return store.dispatch(getUserAccount(match.params.name));
-  }
 
   state = {
     isFollowing: false,
@@ -166,7 +167,7 @@ export default class User extends React.Component {
       coverImage = profile.cover_image;
     }
     const hasCover = !!coverImage;
-    const waivioHost = global.postOrigin || 'https://waiviodev.com';
+    const waivioHost = global.postOrigin || 'https://investarena.com';
     const image = getAvatarURL(username) || '/images/logo.png';
     const canonicalUrl = `${waivioHost}/@${username}`;
     const url = `${waivioHost}/@${username}`;
