@@ -15,12 +15,14 @@ const renderStatistic = (contentType, statsData) =>
 
 const getTooltipContent = (contentType, data) => {
   const prop = contentType === 'forecast' ? 'count' : 'pips';
-  return (
+  const successValue = data[`successful_${prop}`];
+  const failedValue = data[`failed_${prop}`];
+  return !(successValue === 0 && failedValue === 0) ? (
     <div>
       <span style={{ color: '#54d2a0', padding: '0 4px' }}>{data[`successful_${prop}`]}</span>/
       <span style={{ color: '#d9534f', padding: '0 4px' }}>{data[`failed_${prop}`]}</span>
     </div>
-  );
+  ) : null;
 };
 
 const UserAccuracyContainer = ({ intl, contentType, accuracy }) => (
