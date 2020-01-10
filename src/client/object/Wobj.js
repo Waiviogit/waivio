@@ -147,7 +147,7 @@ export default class Wobj extends React.Component {
     if (failed) return <Error404 />;
 
     const objectName = wobject.name || wobject.default_name || '';
-    const waivioHost = global.postOrigin || 'https://waiviodev.com';
+    const waivioHost = global.postOrigin || 'https://waivio.com';
     const desc = `${objectName || ''}`;
     const image =
       wobject.avatar ||
