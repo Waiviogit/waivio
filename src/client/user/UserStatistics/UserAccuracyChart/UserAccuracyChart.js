@@ -6,9 +6,11 @@ import classNames from 'classnames';
 import { setAccuracyChartLoaded } from '../../userActions';
 import { getAccuracyChartLoaded } from '../../../reducers';
 import Loading from '../../../components/Icon/Loading';
+import { noDataPlaceholder } from '../UserAccuracyContainer/UserAccuracyContainer';
 import './UserAccuracyChart.less';
 
-const UserAccuracyChart = ({ statisticsData, isChart, ...props }) => {
+const UserAccuracyChart = ({ statisticsData, isChart, dispatchChartLoaded }) => {
+  const noData = statisticsData.successful_count === 0 && statisticsData.failed_count === 0;
   const percent =
     statisticsData.successful_count === 0
       ? 0
@@ -23,7 +25,7 @@ const UserAccuracyChart = ({ statisticsData, isChart, ...props }) => {
     ['unsuccess', 100 - percent],
   ];
   const options = {
-    pieHole: 0.75,
+    pieHole: 0.8,
     backgroundColor: 'transparent',
     pieSliceBorderColor: 'transparent',
     slices: [
@@ -31,7 +33,7 @@ const UserAccuracyChart = ({ statisticsData, isChart, ...props }) => {
         color: '#54d2a0',
       },
       {
-        color: '#d9534f',
+        color: noData ? '#8798a4' : '#d9534f',
       },
     ],
     enableInteractivity: false,
@@ -65,18 +67,26 @@ const UserAccuracyChart = ({ statisticsData, isChart, ...props }) => {
               {
                 eventName: 'ready',
                 callback: () => {
-                  props.setAccuracyChartLoaded();
+                  dispatchChartLoaded();
                 },
               },
             ]}
           />
         </div>
-        <div
-          className={classNames('UserAccuracy__data-wrapper-value', {
-            success: percent >= 50,
-            unsuccess: percent < 50,
-          })}
-        >{`${percent}%`}</div>
+        <div className="UserAccuracy__data-wrapper-value">
+          {noData ? (
+            noDataPlaceholder
+          ) : (
+            <div
+              className={classNames('value', {
+                success: percent >= 50,
+                unsuccess: percent < 50,
+              })}
+            >
+              {`${percent}%`}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -84,9 +94,8 @@ const UserAccuracyChart = ({ statisticsData, isChart, ...props }) => {
 
 UserAccuracyChart.propTypes = {
   statisticsData: PropTypes.shape().isRequired,
-  setForecastAccuracyChartCondition: PropTypes.func.isRequired,
   isChart: PropTypes.bool.isRequired,
-  setAccuracyChartLoaded: PropTypes.func.isRequired,
+  dispatchChartLoaded: PropTypes.func.isRequired,
 };
 
 export default connect(
@@ -94,6 +103,6 @@ export default connect(
     isChart: getAccuracyChartLoaded(state),
   }),
   {
-    setAccuracyChartLoaded,
+    dispatchChartLoaded: setAccuracyChartLoaded,
   },
 )(UserAccuracyChart);
