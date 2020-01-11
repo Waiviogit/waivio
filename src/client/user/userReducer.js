@@ -112,11 +112,6 @@ export default function userReducer(state = initialState, action) {
           pendingFollows: [...state.following.pendingFollows, action.meta.username],
         },
       };
-    case userActions.GET_USER_LOCATION.SUCCESS:
-      return {
-        ...state,
-        location: action.payload,
-      };
     case userActions.FOLLOW_USER_SUCCESS:
       return {
         ...state,

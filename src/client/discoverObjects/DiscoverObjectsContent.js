@@ -20,7 +20,6 @@ import {
   setFiltersAndLoad,
   changeSortingAndLoad,
 } from '../objectTypes/objectTypeActions';
-import { setMapFullscreenMode } from '../components/Maps/mapActions';
 import { getObjectTypes } from '../objectTypes/objectTypesActions';
 import Loading from '../components/Icon/Loading';
 import ObjectCardView from '../objectCard/ObjectCardView';
@@ -58,7 +57,6 @@ const SORT_OPTIONS = {
     dispatchGetObjectTypes: getObjectTypes,
     dispatchSetActiveFilters: setFiltersAndLoad,
     dispatchChangeSorting: changeSortingAndLoad,
-    dispatchSetMapFullscreenMode: setMapFullscreenMode,
   },
 )
 class DiscoverObjectsContent extends Component {

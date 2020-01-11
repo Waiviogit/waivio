@@ -11,7 +11,6 @@ import apiConfig from '../../waivioApi/config.json';
 import {
   linkFields,
   objectFields,
-  mapFields,
   addressFields,
   socialObjectFields,
   websiteFields,
@@ -38,7 +37,6 @@ import LANGUAGES from '../translations/languages';
 import { PRIMARY_COLOR } from '../../common/constants/waivio';
 import { getLanguageText } from '../translations';
 import QuickPostEditorFooter from '../components/QuickPostEditor/QuickPostEditorFooter';
-import MapAppendObject from '../components/Maps/MapAppendObject';
 import { getField } from '../helpers/wObjectHelper';
 import { appendObject } from '../object/appendActions';
 import { isValidImage } from '../helpers/image';
@@ -393,15 +391,6 @@ export default class AppendForm extends Component {
     }
   };
 
-  setCoordinates = ({ latLng }) => {
-    this.props.form.setFieldsValue({
-      [mapFields.latitude]: latLng[0].toFixed(6),
-      [mapFields.longitude]: latLng[1].toFixed(6),
-    });
-  };
-
-  // region News Filter Block
-
   // eslint-disable-next-line react/sort-comp
   addNewNewsFilterLine = () => {
     const allowList = [...this.state.allowList];
@@ -480,9 +469,6 @@ export default class AppendForm extends Component {
     switch (currentField) {
       case objectFields.address:
         formFields = form.getFieldsValue(Object.values(addressFields));
-        break;
-      case objectFields.map:
-        formFields = form.getFieldsValue(Object.values(mapFields));
         break;
       case objectFields.link:
         formFields = form.getFieldsValue(Object.values(linkFields));
@@ -1034,21 +1020,6 @@ export default class AppendForm extends Component {
         return (
           <React.Fragment>
             <Form.Item>
-              {getFieldDecorator(mapFields.latitude, {
-                rules: this.getFieldRules(mapFields.latitude),
-              })(
-                <Input
-                  onBlur={this.onUpdateCoordinate(mapFields.latitude)}
-                  className={classNames('AppendForm__input', {
-                    'validation-error': !this.state.isSomeValue,
-                  })}
-                  disabled={loading}
-                  placeholder={intl.formatMessage({
-                    id: 'location_latitude',
-                    defaultMessage: 'Latitude',
-                  })}
-                />,
-              )}
             </Form.Item>
             <Form.Item>
               {getFieldDecorator(mapFields.longitude, {
@@ -1067,14 +1038,6 @@ export default class AppendForm extends Component {
                 />,
               )}
             </Form.Item>
-            <MapAppendObject
-              setCoordinates={this.setCoordinates}
-              heigth={400}
-              center={[
-                Number(getFieldValue(mapFields.latitude)),
-                Number(getFieldValue(mapFields.longitude)),
-              ]}
-            />
           </React.Fragment>
         );
       }

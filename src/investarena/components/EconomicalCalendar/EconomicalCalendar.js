@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import {injectIntl} from "react-intl";
 
 const EconomicalCalendar = ({intl}) => {
-  console.log(intl);
   const localeCalender = intl.locale ? intl.locale.slice(0, 2).toUpperCase() : 'EN';
 
   return (
