@@ -14,9 +14,8 @@
 
     &-value {
       position: absolute;
-      font-size: x-large;
-      font-weight: bold;
       margin-top: 30px;
+      max-width: 60%;
     }
 
     &-chart {
@@ -32,23 +31,24 @@
 
   &__loader {
     display: flex;
-    padding: 5px 15px;
+    align-items: center;
     justify-content: center;
-    width: 78px;
+    width: 100%;
     height: 105px;
-
-    @media @xsmall {
-      width: 95px;
-    }
   }
 }
 
-.UserAccuracy__data-wrapper-value.success {
-  color: @green;
-}
-
-.UserAccuracy__data-wrapper-value.unsuccess {
-  color: @red;
+.UserAccuracy__data-wrapper-value {
+  .value {
+    font-size: x-large;
+    font-weight: bold;
+    &.success {
+      color: @green;
+    }
+    &.unsuccess {
+      color: @red;
+    }
+  }
 }
 
 .hideChart {
