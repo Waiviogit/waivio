@@ -44,6 +44,21 @@
   }
 }
 
+.content-block-title(@justify: flex-start) {
+  display: flex;
+  justify-content: @justify;
+  min-height: 48px;
+  width: 100%;
+  align-items: center;
+  border-bottom: @base-border;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  color: @blue-baliHai;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 4px 16px;
+}
+
 .view-as-link(@color: @orange-hot, @color-hover: #ff9130) {
   color: @color;
   text-decoration: none;

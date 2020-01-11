@@ -1,4 +1,5 @@
 @import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/mixins';
 @import (reference) '../../../styles/modules/variables.less';
 
 .UserInstrumentsTable {
@@ -13,16 +14,12 @@
 }
 
 .UserInstrumentsTableHeader {
-  display: flex;
-  width: 100%;
-  justify-content: space-around;
-  padding: 0.5rem;
-  border-bottom: 1px solid @white-gainsboro;
+  .content-block-title(space-between);
 
   &__item {
     display: flex;
     justify-content: center;
-    width: 33%;
+    width: 30%;
 
     &-icon {
       padding-right: 0.2rem;
@@ -30,12 +27,13 @@
 
     &-content {
       font-weight: bold;
+      cursor: pointer;
     }
   }
 }
 
 .UserInstrumentsTableHeader__item.active {
-  color: @blue-dodgerBlue;
+  color: rgba(0, 0, 0, 0.7);
 }
 
 .UserInstrumentsTableRow {
@@ -59,14 +57,11 @@
     }
   }
 
-  &__deals {
-    width: 33%;
-    text-align: center;
-  }
-
+  &__deals,
   &__profit {
-    width: 33%;
+    cursor: default;
     text-align: center;
+    width: 33%;
   }
 }
 
