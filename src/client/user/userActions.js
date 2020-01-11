@@ -316,6 +316,3 @@ export const inactivateCampaign = (company, inactivatePermlink) => (
   });
 };
 // endregion
-//
-// export const CLEAR_USER_DATA = '@user/CLEAR_USER_DATA';
-// export const clearUserData = () => dispatch => dispatch({ type: CLEAR_USER_DATA });
