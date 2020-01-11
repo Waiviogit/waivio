@@ -30,7 +30,6 @@ import objectTypesReducer, * as fromObjectTypes from '../client/objectTypes/obje
 import objectTypeReducer, * as fromObjectType from '../client/objectTypes/objectTypeReducer';
 import appendReducer, * as fromAppend from '../client/object/appendReducer';
 import galleryReducer, * as fromGallery from '../client/object/ObjectGallery/galleryReducer';
-import mapReducer, * as fromMap from '../client/components/Maps/mapReducer';
 import chatReducer, * as fromChat from '../client/components/Chat/chatReducer';
 
 export default history =>
@@ -64,8 +63,7 @@ export default history =>
     gallery: galleryReducer,
     topPerformers: topPerformersReducer,
     forecasts: forecastReducer,
-    map: mapReducer,
-    chat: chatReducer,
+    chat: chatReducer
   });
 
 export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);
@@ -235,8 +233,6 @@ export const getIsAppendLoading = state => fromAppend.getIsAppendLoading(state.a
 export const getObjectAlbums = state => fromGallery.getObjectAlbums(state.gallery);
 export const getIsObjectAlbumsLoading = state =>
   fromGallery.getIsObjectAlbumsLoading(state.gallery);
-
-export const getIsMapModalOpen = state => fromMap.getIsMapModalOpen(state.map);
 
 // common selectors
 

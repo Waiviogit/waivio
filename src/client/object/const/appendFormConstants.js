@@ -1,6 +1,5 @@
 import {
   addressFields,
-  mapFields,
   objectFields,
   phoneFields,
   ratingFields,
@@ -11,7 +10,6 @@ import {
   objectURLValidationRegExp,
   phoneNameValidationRegExp,
 } from '../../../common/constants/validation';
-import { regexCoordsLatitude, regexCoordsLongitude } from '../../components/Maps/mapHelper';
 
 export const fieldsRules = {
   [objectFields.name]: [
@@ -350,56 +348,6 @@ export const fieldsRules = {
           defaultMessage: "Value can't be longer than 100 characters.",
         },
         intlMeta: { value: 100 },
-      },
-    },
-    {
-      validator: true,
-    },
-  ],
-  [mapFields.latitude]: [
-    {
-      pattern: regexCoordsLatitude,
-      message: {
-        intlId: {
-          id: 'value_invalid_latitude',
-          defaultMessage: 'Should be number from -85 to 85',
-        },
-        intlMeta: { value: 100 },
-      },
-    },
-    {
-      required: true,
-      message: {
-        intlId: {
-          id: 'field_error',
-          defaultMessage: 'Field is required',
-        },
-        intlMeta: { field: 'Latitude' },
-      },
-    },
-    {
-      validator: true,
-    },
-  ],
-  [mapFields.longitude]: [
-    {
-      pattern: regexCoordsLongitude,
-      message: {
-        intlId: {
-          id: 'value_invalid_longitude',
-          defaultMessage: 'Should be number from -180 to 180',
-        },
-        intlMeta: { value: 100 },
-      },
-    },
-    {
-      required: true,
-      message: {
-        intlId: {
-          id: 'field_error',
-          defaultMessage: 'Field is required',
-        },
-        intlMeta: { field: 'Longitude' },
       },
     },
     {
