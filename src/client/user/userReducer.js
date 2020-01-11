@@ -182,7 +182,6 @@ export default function userReducer(state = initialState, action) {
         },
       };
     }
-    case authActions.LOGOUT:
     case userActions.GET_FOLLOWING_UPDATES.ERROR: {
       const { followingUpdates } = initialState;
       return {
@@ -305,6 +304,8 @@ export default function userReducer(state = initialState, action) {
         ...state,
         recommendedObjects: filterRecommendedObjects(action.payload.wobjects),
       };
+    case authActions.LOGOUT:
+      return initialState;
     default: {
       return state;
     }

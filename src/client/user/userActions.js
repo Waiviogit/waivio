@@ -171,7 +171,7 @@ export const GET_NOTIFICATIONS = createAsyncActionType('@user/GET_NOTIFICATIONS'
 export const getNotifications = username => (dispatch, getState, { busyAPI }) => {
   const state = getState();
 
-  if (!username && !store.getIsAuthenticated(state)) {
+  if ((!username && !store.getIsAuthenticated(state)) || store.isGuestUser(state)) {
     return dispatch({ type: GET_NOTIFICATIONS.ERROR });
   }
 
@@ -316,3 +316,6 @@ export const inactivateCampaign = (company, inactivatePermlink) => (
   });
 };
 // endregion
+//
+// export const CLEAR_USER_DATA = '@user/CLEAR_USER_DATA';
+// export const clearUserData = () => dispatch => dispatch({ type: CLEAR_USER_DATA });
