@@ -1,50 +1,152 @@
 import React from 'react';
-import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import {injectIntl} from 'react-intl';
 
-import ObjectExpertise from '../../../client/components/Sidebar/ObjectExpertise';
 import QuickForecastCard from './QuickForecastCard';
 import Loading from '../../../client/components/Icon/Loading';
-import {answerForQuickForecast, getDataForQuickForecast} from '../../redux/actions/forecastActions';
 import BallotTimer from './BallotTimer';
+import TopPredictors from './TopPredictors';
+import USDDisplay from '../../../client/components/Utils/USDDisplay';
+import SortSelector from '../../../client/components/SortSelector/SortSelector';
+import {answerForQuickForecast, getDataForQuickForecast} from '../../redux/actions/forecastActions';
+import {marketNames} from '../../constants/objectsInvestarena';
 
 import './QuickForecastPage.less';
-import TopPredictors from "./TopPredictors";
 
 class QuickForecastPage extends React.PureComponent {
   state = {
     isLoading: false,
+    sortBy: ''
   };
 
   componentDidMount() {
-    this.props.getDataForQuickForecast();
+    this.props.getDataForQuickForecast([{
+      author: '',
+      permlink: 'ukd-bitcoin',
+      expiredAt: '',
+      security: 'BTCUSD',
+      recommend: 'Buy',
+      instrument: 'Commodity',
+      active: false,
+    }, {
+      author: '',
+      permlink: 'ukd-bitcoin',
+      expiredAt: '',
+      security: 'BTCUSD',
+      recommend: 'Sell',
+      instrument: 'Crypto',
+      active: false,
+    }, {
+      author: 'lucykolosova',
+      permlink: 'cute-cat',
+      expiredAt: '',
+      security: 'BTCUSD',
+      recommend: 'buy',
+      instrument: 'Index',
+      active: false,
+    }]);
+
     setTimeout(() => this.setState(state => ({isLoading: !state.isLoading})), 3000)
   }
 
+  handleSort(sort) {
+    this.setState({sortBy: sort});
+  };
+
   render() {
-    const {mockObj} = this.props;
+    const filterForecastList = this.props.quickForecastDataList.filter(obj => obj.instrument === this.state.sortBy);
+    const forecastList = this.state.sortBy
+      ? filterForecastList
+      : this.props.quickForecastDataList;
+    const filtersType = [...marketNames,
+      {
+        name: 'Reset',
+        key: '',
+        intl: {
+          id: 'reset_filter',
+          defaultMessage: 'Reset'
+        }
+      }];
+    const sortItemKey = type => type.name === 'Reset' ? '' : type.name;
+    const mockUserTop = [{
+      userName: 'vlemon',
+      guessed: 10
+    }, {
+      userName: 'popkov',
+      guessed: 120
+    }, {
+      userName: 'fedorchuk',
+      guessed: 120
+    }, {
+      userName: 'tarazkp',
+      guessed: 120
+    }, {
+      userName: 'theycallmedan',
+      guessed: 120
+    }];
+    const mockUserWin = [{
+      userName: 'vlemon',
+      reward: 10
+    }, {
+      userName: 'popkov',
+      reward: 120
+    }, {
+      userName: 'fedorchuk',
+      reward: 120
+    }, {
+      userName: 'tarazkp',
+      reward: 120
+    }, {
+      userName: 'theycallmedan',
+      reward: 120
+    }];
 
     return (
       <div className="shifted">
         <div className="feed-layout container">
           <div className="leftContainer">
-            <ObjectExpertise username={'Kurt Donald Cobain'} wobject={mockObj[0]}/>
+            <div className="reward">
+              <span>Rewards:</span>
+              <USDDisplay value={14}/>
+              <span>Current round:</span>
+              <USDDisplay value={14}/>
+            </div>
+            <TopPredictors userList={mockUserWin} title="Current round winners" showMore/>
           </div>
           <div className="center">
             <div className="timer-container">
-              <BallotTimer hours={2} minutes={30}/>
+              <BallotTimer willCallAfterTimerEnd={this.props.getDataForQuickForecast} hours={2} minutes={30}/>
             </div>
-            {this.state.isLoading
-              ?
-              mockObj.map((obj) => (
-                <QuickForecastCard wObject={obj} key={Math.random()}
-                                   answerForecast={this.props.answerForQuickForecast}
-                                   getForecast={this.props.getDataForQuickForecast}/>))
-              : <Loading/>
+            <SortSelector caption="Filter" sort={this.state.sortBy} onChange={sort => this.handleSort(sort)}>
+              {
+                filtersType.map(type => (
+                  <SortSelector.Item key={sortItemKey(type)}>
+                    {this.props.intl.formatMessage({id: type.intl.id, defaultMessage: type.intl.defaultMessage})}
+                  </SortSelector.Item>
+                ))
+              }
+            </SortSelector>
+            {
+              this.state.isLoading
+                ? forecastList.map(obj => (
+                  <QuickForecastCard wObject={obj} key={Math.random()}
+                                     predictionObject={this.props.quotes[obj.security].name}
+                                     answerForecast={this.props.answerForQuickForecast}
+                                     getForecast={this.props.getDataForQuickForecast}/>)
+                )
+                : <Loading/>
+            }
+            {
+              this.state.isLoading && !forecastList.length && (
+                <div className="no-posts">
+                  There are currently no forecasts in this category.
+                </div>
+              )
             }
           </div>
           <div className="rightContainer">
-            <TopPredictors reward={12}/>
+            <TopPredictors userList={mockUserTop} title="Top 5 Users" activeUser={this.props.userName}/>
           </div>
         </div>
       </div>
@@ -53,13 +155,22 @@ class QuickForecastPage extends React.PureComponent {
 }
 
 QuickForecastPage.propTypes = {
-  mockObj: PropTypes.arrayOf().isRequired,
+  quickForecastDataList: PropTypes.arrayOf(PropTypes.object).isRequired,
   answerForQuickForecast: PropTypes.func.isRequired,
   getDataForQuickForecast: PropTypes.func.isRequired,
+  intl: PropTypes.shape({
+    formatMessage: PropTypes.func,
+  }).isRequired,
+  quotes: PropTypes.shape().isRequired,
+  userName: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = state => ({
-  mockObj: state.forecasts.quickForecastData,
+  quickForecastDataList: state.forecasts.quickForecastData,
+  quotes: state.quotesSettings,
+  usersList: state.forecasts.userStatistics,
+  winners: state.forecasts.winners,
+  userName: state.auth.user.name,
 });
 
 const mapDispatchToProps = {
@@ -67,4 +178,4 @@ const mapDispatchToProps = {
   getDataForQuickForecast,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(QuickForecastPage);
+export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(QuickForecastPage));

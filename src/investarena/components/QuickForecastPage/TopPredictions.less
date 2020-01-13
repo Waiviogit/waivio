@@ -7,22 +7,41 @@
   display: flex;
   flex-direction: column;
 
+  &__reward {
+    font-size: 15px;
+    color: @green-darker;
+  }
+
   &__title {
-    padding: 15px;
     border-bottom: 1px solid @blue-hawkesBlue;
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
   }
 
   &__content {
-    padding: 15px;
+    padding: 15px 15px 0;
+  }
+
+  &__flex-wrapper {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  &__user-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0 5px;
   }
 
   &__tab {
     padding: 15px 0;
     border-bottom: 1px solid @blue-hawkesBlue;
-
-    &::first-letter {
-      text-transform: uppercase;
-    }
+    display: flex;
+    justify-content: space-between;
+    font-weight: 500;
+    align-items: center;
 
     &:last-child {
       border-bottom: none;
@@ -31,5 +50,39 @@
     &:first-child {
       padding-top: 0;
     }
+
+    &--text-center {
+      justify-content: center;
+    }
+  }
+
+  &__link {
+    overflow: hidden;
+    color: @black;
+
+    &:hover {
+      color: @black;
+    }
+  }
+
+  &__present {
+    border: 1px solid @white-gainsboro;
+    background-color: @white-darker;
+    border-radius: 4px;
+    font-size: 12px;
+    line-height: 20px;
+    padding: 0 7px;
+    height: fit-content;
+  }
+
+  &__show-more {
+    color: @blue-botticelli;
+    text-align: center;
+    margin: 8px 0;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
   }
 }

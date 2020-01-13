@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default class BallotTimer extends React.PureComponent {
+class BallotTimer extends React.PureComponent {
   state = {
     hours: this.props.hours,
     minutes: this.props.minutes,
@@ -9,8 +9,14 @@ export default class BallotTimer extends React.PureComponent {
   };
 
   componentDidMount() {
-    setInterval(this.startTimer, 1000);
+    this.intervalID = setInterval(this.startTimer, 1000);
   }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
+  }
+
+  intervalID;
 
   startTimer = () => {
     if (this.state.seconds === 0) {
@@ -34,11 +40,12 @@ export default class BallotTimer extends React.PureComponent {
       }
 
       this.setState({
-        minutes: 5,
-        seconds: 0,
+        hours: this.props.hours,
+        minutes: this.props.minutes,
+        seconds: this.props.seconds,
       });
 
-      //send request get new forecast
+      this.props.willCallAfterTimerEnd();
     }
   };
 
@@ -57,15 +64,18 @@ export default class BallotTimer extends React.PureComponent {
   }
 }
 
-BallotTimer.propsType = {
+BallotTimer.propTypes = {
   hours: PropTypes.number,
   minutes: PropTypes.number,
   seconds: PropTypes.number,
+  willCallAfterTimerEnd: PropTypes.func,
 };
 
 BallotTimer.defaultProps = {
   hours: 0,
   minutes: 5,
   seconds: 0,
+  willCallAfterTimerEnd: () => {}
 };
 
+export default BallotTimer;

@@ -33,7 +33,11 @@ GraphicCaller.propTypes = {
   quotes: PropTypes.shape().isRequired,
   quotesSettings: PropTypes.shape().isRequired,
   id: PropTypes.string.isRequired,
-  disabled: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool,
+};
+
+GraphicCaller.defaultProps = {
+  disabled: false,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GraphicCaller);

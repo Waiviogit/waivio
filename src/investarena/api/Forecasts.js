@@ -27,9 +27,21 @@ export default class Forecasts extends Base {
       .then(response => response.data);
   }
 
-  getQuickForecast() {
+  getQuickForecast(userName) {
     return this.apiClient
-      .get(`${config.forecasts.quickForecast}`)
+      .get(`${config.forecasts.quickForecast}/${userName}/feed`)
+      .then(response => response.data);
+  }
+
+  getQuickForecastStatistics(userName) {
+    return this.apiClient
+      .get(`${config.forecasts.quickForecastStatistics}/${userName}/statistics`)
+      .then(response => response.data);
+  }
+
+  getQuickForecastWinners() {
+    return this.apiClient
+      .get(`${config.forecasts.quickForecastWinners}`)
       .then(response => response.data);
   }
 }

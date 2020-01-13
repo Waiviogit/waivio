@@ -3,72 +3,9 @@ import * as activeForecastTypes from '../actions/forecastActions';
 
 const initialState = {
   forecastData: [],
-  quickForecastData: [{
-    name: 'Bitcoin',
-    title: 'Sed ut perectetur, adipoluptatemi in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"',
-    avatar: 'https://waivio.nyc3.digitaloceanspaces.com/1562259438_7fd702aa-2940-4a6e-aad4-18a71db2d193_medium',
-    author_permlink: "ukd-bitcoin",
-    parent: {
-      author_permlink: 'ukd-bitcoin'
-    },
-    chartid: 'BTCUSD',
-    parentName: 'author',
-    fields: [],
-    permlink: 'fdgdg',
-    wasClicked: true
-  },{
-    name: 'Bitcoin',
-    title: 'Sed ut perectetur, adipoluptatemi in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"',
-    avatar: 'https://waivio.nyc3.digitaloceanspaces.com/1562259438_7fd702aa-2940-4a6e-aad4-18a71db2d193_medium',
-    author_permlink: "ukd-bitcoin",
-    parent: {
-      author_permlink: 'ukd-bitcoin'
-    },
-    chartid: 'BTCUSD',
-    parentName: 'author',
-    fields: [],
-    permlink: 'fdgdg',
-    wasClicked: false
-  }, {
-    name: 'Bitcoin',
-    title: 'Sed ut perectetur, adipoluptatemi in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"',
-    avatar: 'https://waivio.nyc3.digitaloceanspaces.com/1562259438_7fd702aa-2940-4a6e-aad4-18a71db2d193_medium',
-    author_permlink: "ukd-bitcoin",
-    parent: {
-      author_permlink: 'ukd-bitcoin'
-    },
-    chartid: 'BTCUSD',
-    parentName: 'author',
-    fields: [],
-    permlink: 'fdgdg',
-    wasClicked: false
-  }, {
-    name: 'Bitcoin',
-    title: 'Sed ut perectetur, adipoluptatemi in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"',
-    avatar: 'https://waivio.nyc3.digitaloceanspaces.com/1562259438_7fd702aa-2940-4a6e-aad4-18a71db2d193_medium',
-    author_permlink: "ukd-bitcoin",
-    parent: {
-      author_permlink: 'ukd-bitcoin'
-    },
-    chartid: 'BTCUSD',
-    parentName: 'author',
-    fields: [],
-    permlink: 'fdgdg',
-    wasClicked: false
-  }, {
-    name: 'Bitcoin',
-    title: 'Sed ut perectetur, adipoluptatemi in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"',
-    avatar: 'https://waivio.nyc3.digitaloceanspaces.com/1562259438_7fd702aa-2940-4a6e-aad4-18a71db2d193_medium',
-    author_permlink: "ukd-bitcoin",
-    parent: {
-      author_permlink: 'ukd-bitcoin'
-    },
-    chartid: 'BTCUSD',
-    parentName: 'author',
-    fields: [],
-    permlink: 'fdgdg',
-    wasClicked: false
-  }],
+  quickForecastData: [],
+  userStatistics: [],
+  winners: [],
 };
 
 export default (state = initialState, action) => {
@@ -88,6 +25,7 @@ export default (state = initialState, action) => {
       };
 
     case activeForecastTypes.GET_QUICK_FORECAST_DATA:
+
       return {
         ...state,
         quickForecastData: [...action.payload],
@@ -96,6 +34,18 @@ export default (state = initialState, action) => {
     case activeForecastTypes.ANSWER_QUICK_FORECAST:
       return {
         ...state,
+      };
+
+    case activeForecastTypes.GET_QUICK_FORECAST_STATISTIC.SUCCESS:
+      return {
+        ...state,
+        userStatistics: [...state.userStatistics, ...action.payload],
+      };
+
+    case activeForecastTypes.GET_QUICK_FORECAST_STATISTIC.ERROR:
+      return {
+        ...state,
+        userStatistics: [],
       };
 
     default:

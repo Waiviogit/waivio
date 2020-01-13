@@ -55,6 +55,13 @@ export default class SortSelector extends React.Component {
     const currentSort = React.Children.map(this.props.children, c => c).find(
       c => c.key === `.$${sort}`,
     );
+    const filterCurrentValue = () => {
+      if(currentSort && currentSort.props && currentSort.props.children !== 'Reset') {
+        return currentSort.props.children
+      }
+
+      return '';
+    };
 
     return (
       <div className="SortSelector">
@@ -73,7 +80,7 @@ export default class SortSelector extends React.Component {
           }
         >
           <span className="SortSelector__current">
-            {currentSort && currentSort.props && currentSort.props.children}
+            {filterCurrentValue()}
             <i className="iconfont icon-unfold" />
           </span>
         </Popover>

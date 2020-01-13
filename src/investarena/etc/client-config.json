@@ -147,7 +147,9 @@
   },
   "forecasts": {
     "activeForecasts": "/active_forecasts",
-    "quickForecast": "/quick_forecast"
+    "quickForecast": "/quick-forecasts",
+    "quickForecastStatistics": "quick-forecasts",
+    "quickForecastWinners": "quick-forecasts/winners"
   },
 
   "favorites": {
