@@ -58,11 +58,6 @@ export const addressFields = {
   country: 'country',
 };
 
-export const mapFields = {
-  latitude: 'latitude',
-  longitude: 'longitude',
-};
-
 export const linkFields = {
   linkFacebook: 'linkFacebook',
   linkTwitter: 'linkTwitter',
