@@ -34,7 +34,6 @@ class SearchObjectsAutocomplete extends Component {
     allowClear: true,
     rowIndex: 0,
     ruleIndex: 0,
-    isPermlinkValue: true,
     disabled: false,
     placeholder: '',
     parentPermlink: '',
@@ -54,7 +53,6 @@ class SearchObjectsAutocomplete extends Component {
     handleSelect: PropTypes.func,
     rowIndex: PropTypes.number,
     ruleIndex: PropTypes.number,
-    isPermlinkValue: PropTypes.bool,
     disabled: PropTypes.bool,
     placeholder: PropTypes.string,
     parentPermlink: PropTypes.string,
@@ -73,13 +71,7 @@ class SearchObjectsAutocomplete extends Component {
   }
 
   handleChange(value = '') {
-    if (!value) this.props.clearSearchResults();
-    const searchString = value.toLowerCase();
-    this.setState(prevState =>
-      prevState.isOptionSelected && this.props.isPermlinkValue
-        ? { searchString: '', isOptionSelected: false }
-        : { searchString },
-    );
+    this.setState({ searchString: value.toLowerCase() });
   }
 
   debouncedSearch = _.debounce(
@@ -100,11 +92,6 @@ class SearchObjectsAutocomplete extends Component {
   }
 
   handleSelect(objId) {
-    this.setState({ isOptionSelected: true });
-    if (!this.props.isPermlinkValue) {
-      this.setState({ searchString: '' });
-    }
-    this.props.clearSearchResults();
     const selectedObject = this.props.searchObjectsResults.find(obj => obj.id === objId);
     this.props.handleSelect(
       selectedObject || {
@@ -120,6 +107,8 @@ class SearchObjectsAutocomplete extends Component {
       this.props.rowIndex,
       this.props.ruleIndex,
     );
+    this.props.clearSearchResults();
+    this.setState({ searchString: '' });
   }
   render() {
     const { searchString } = this.state;
