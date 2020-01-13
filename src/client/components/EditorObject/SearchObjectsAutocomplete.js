@@ -63,7 +63,6 @@ class SearchObjectsAutocomplete extends Component {
     super(props);
     this.state = {
       searchString: '',
-      isOptionSelected: false,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
