@@ -49,7 +49,9 @@ class LetsGetStarted extends React.Component {
   };
 
   static getCurrentUserState(authenticatedUser, followingList, isGuest) {
-    const hasPost = authenticatedUser.last_root_post !== '1970-01-01T00:00:00';
+    const hasPost = authenticatedUser.last_root_post
+      ? authenticatedUser.last_root_post !== '1970-01-01T00:00:00'
+      : Boolean(authenticatedUser.count_posts);
     const hasVoted = isGuest
       ? true
       : authenticatedUser.last_vote_time !== authenticatedUser.created;
@@ -108,11 +110,15 @@ class LetsGetStarted extends React.Component {
       loaded,
       followingFetched,
       fetchFollowListError,
+      isGuest,
     } = this.props;
     const { hasProfile, hasPost, hasVoted, hasFollowed } = this.state;
-    const totalOptions = 4;
+    const totalOptions = isGuest ? 3 : 4;
+    const actionsArray = isGuest
+      ? [hasProfile, hasPost, hasFollowed]
+      : [hasProfile, hasPost, hasVoted, hasFollowed];
     const currentSelected = _.reduce(
-      [hasProfile, hasPost, hasVoted, hasFollowed],
+      actionsArray,
       (total, current) => {
         let newTotal = total;
         if (current) {
@@ -179,22 +185,24 @@ class LetsGetStarted extends React.Component {
               </span>
             </Link>
           </div>
-          <div className="LetsGetStarted__action">
-            <LetsGetStartedIcon
-              renderCheck={hasVoted}
-              isLoading={isAuthFetching}
-              iconClassName="icon-praise"
-            />
-            <Link to="/trending">
-              <span
-                className={classNames('LetsGetStarted__action__text', {
-                  LetsGetStarted__action__completed: hasVoted,
-                })}
-              >
-                <FormattedMessage id="like_good_posts" defaultMessage="Like some good posts" />
-              </span>
-            </Link>
-          </div>
+          {!this.props.isGuest && (
+            <div className="LetsGetStarted__action">
+              <LetsGetStartedIcon
+                renderCheck={hasVoted}
+                isLoading={isAuthFetching}
+                iconClassName="icon-praise"
+              />
+              <Link to="/trending">
+                <span
+                  className={classNames('LetsGetStarted__action__text', {
+                    LetsGetStarted__action__completed: hasVoted,
+                  })}
+                >
+                  <FormattedMessage id="like_good_posts" defaultMessage="Like some good posts" />
+                </span>
+              </Link>
+            </div>
+          )}
           <div className="LetsGetStarted__action">
             <LetsGetStartedIcon
               renderCheck={hasPost}

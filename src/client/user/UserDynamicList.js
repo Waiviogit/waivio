@@ -31,13 +31,14 @@ export default class UserDynamicList extends React.Component {
 
   handleLoadMore() {
     const { fetcher } = this.props;
+    const { users } = this.state;
 
     this.setState(
       {
         loading: true,
       },
       () => {
-        fetcher()
+        fetcher(users)
           .then(newUsers =>
             this.setState(state => ({
               loading: false,
