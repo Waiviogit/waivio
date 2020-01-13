@@ -60,7 +60,6 @@ class WalletSidebar extends React.Component {
 
   render() {
     const { match, user, isCurrentUser, cryptosPriceHistory, isGuest } = this.props;
-    console.log(cryptosPriceHistory);
     const ownProfile = match.params.name === user.name || isCurrentUser;
     const cryptos = [STEEM.symbol, SBD.symbol];
     const steemBalance = user.balance ? String(user.balance).match(/^[\d.]+/g)[0] : 0;
