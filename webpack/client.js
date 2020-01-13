@@ -9,6 +9,15 @@ const paths = require('../scripts/paths');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+const { UnusedFilesWebpackPlugin } = require('unused-files-webpack-plugin');
+const path = require('path');
+const glob = require('glob');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const PurgecssPlugin = require('purgecss-webpack-plugin');
+
+const PATHS = {
+  src: path.join(__dirname, 'src'),
+};
 
 const {
   CONTENT_PORT,
@@ -38,6 +47,13 @@ module.exports = function createConfig(env = 'dev') {
     context: process.cwd(),
     plugins: [
       DEFINE_PLUGIN,
+      new UnusedFilesWebpackPlugin(),
+      new MiniCssExtractPlugin({
+        filename: '[name].css',
+      }),
+      new PurgecssPlugin({
+        paths: glob.sync(`${PATHS.src}/**/*`, { nodir: true }),
+      }),
       new AssetsPlugin({
         path: paths.build,
         filename: 'assets.json',
@@ -46,6 +62,7 @@ module.exports = function createConfig(env = 'dev') {
         name: 'client',
         color: '#f56be2',
       }),
+
       // new UglifyJsPlugin({
       //   cache: true,
       // }),
