@@ -6,8 +6,8 @@ import Avatar from '../../../client/components/Avatar';
 
 import './TopPredictions.less';
 
-const TopPredictors = ({title, userList, showMore, activeUser}) => {
-  const myNameInTopFive = userList.some(user => user.userName === activeUser);
+const TopPredictors = ({title, userList, showMore, activeUser, handleShowMore}) => {
+  const myNameInTopFive = userList.some(user => user.name === activeUser.name);
 
   return (
     <div className="top-predictors">
@@ -18,18 +18,18 @@ const TopPredictors = ({title, userList, showMore, activeUser}) => {
         {
           userList.map(user => (
             <div key={Math.random()} className="top-predictors__tab">
-                <Link className="top-predictors__link" to={`/@${user.userName}`}>
+                <Link className="top-predictors__link" to={`/@${user.name}`}>
                   <div className="top-predictors__flex-wrapper">
-                  <Avatar username={user.userName} size={34}/>
-                  <span className="top-predictors__user-name">{user.userName}</span>
+                  <Avatar username={user.name} size={34}/>
+                  <span className="top-predictors__user-name">{user.name}</span>
                   </div>
                 </Link>
               {
-                user.guessed && (
-                <span className="top-predictors__present">{user.guessed}</span>)
+                user.successful_suppose >= 0 && (
+                <span className="top-predictors__present">{user.successful_suppose}</span>)
               }
               {
-                user.reward && (
+                user.reward >= 0 && (
                 <span className="top-predictors__reward">+{user.reward}</span>)
               }
             </div>
@@ -37,25 +37,25 @@ const TopPredictors = ({title, userList, showMore, activeUser}) => {
         }
         {
           showMore && (
-            <button className="top-predictors__show-more" onClick={() => console.log('show more')}>
+            <button className="top-predictors__show-more" onClick={() => handleShowMore()}>
               ShowMore
             </button>
           )
         }
         {
-          activeUser && !myNameInTopFive && (
+          activeUser.name && !myNameInTopFive && (
             <React.Fragment>
               <div className="top-predictors__tab top-predictors__tab--text-center">
               ...
             </div>
                 <div className="top-predictors__tab">
-                  <Link className="top-predictors__link" to={`/@${activeUser}`}>
+                  <Link className="top-predictors__link" to={`/@${activeUser.name}`}>
                   <div className="top-predictors__flex-wrapper">
-                      <Avatar username={activeUser} size={34}/>
-                      <span className="top-predictors__user-name">{activeUser}</span>
+                      <Avatar username={activeUser.name} size={34}/>
+                      <span className="top-predictors__user-name">{activeUser.name}</span>
                   </div>
                   </Link>
-                  <span className="top-predictors__present">15</span>
+                  <span className="top-predictors__present">{activeUser.successful_suppose}</span>
                 </div>
             </React.Fragment>
           )
@@ -67,16 +67,22 @@ const TopPredictors = ({title, userList, showMore, activeUser}) => {
 TopPredictors.propTypes = {
   title: PropTypes.string.isRequired,
   userList: PropTypes.arrayOf(PropTypes.shape({
-    userName: PropTypes.string,
-    guessed: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+    name: PropTypes.string,
+    successful_suppose: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    reward: PropTypes.number,
   })).isRequired,
   showMore: PropTypes.bool,
-  activeUser: PropTypes.string,
+  activeUser: PropTypes.shape({
+    name: PropTypes.string,
+    successful_suppose: PropTypes.number,
+  }),
+  handleShowMore: PropTypes.func,
 };
 
 TopPredictors.defaultProps = {
   showMore: false,
   activeUser: '',
+  handleShowMore: () => {},
 };
 
 export default TopPredictors;

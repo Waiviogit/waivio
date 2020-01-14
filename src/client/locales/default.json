@@ -792,6 +792,7 @@
   "forecast.currentForecast": "Current forecasts",
   "forecast.create": "Created:",
   "forecast.expire": "Expire:",
+  "no_quick_forecasts": "There are currently no forecasts in this category",
   "approve": "Approve",
   "reject": "Reject",
   "vote": "Vote",

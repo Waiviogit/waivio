@@ -933,6 +933,7 @@
   "forecast.currentForecast": "Текущие прогнозы",
   "forecast.create": "Создан:",
   "forecast.expire": "Истекает:",
+  "no_quick_forecasts": "Hа данный момент в данной категории нет прогнозов",
   "approval": "Одобрение:",
   "story_min_70_is_required": "Требуется минимум 70%",
   "postForecast.expired": "Дата окончания",

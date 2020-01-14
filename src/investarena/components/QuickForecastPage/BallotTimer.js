@@ -9,7 +9,9 @@ class BallotTimer extends React.PureComponent {
   };
 
   componentDidMount() {
-    this.intervalID = setInterval(this.startTimer, 1000);
+    if (this.state.minutes > 0) {
+      this.intervalID = setInterval(this.startTimer, 1000);
+    }
   }
 
   componentWillUnmount() {
@@ -20,7 +22,7 @@ class BallotTimer extends React.PureComponent {
 
   startTimer = () => {
     if (this.state.seconds === 0) {
-      this.setState((prevState) => ({
+      this.setState(prevState => ({
         minutes: prevState.minutes - 1,
         seconds: 59,
       }));
@@ -31,7 +33,7 @@ class BallotTimer extends React.PureComponent {
     }
 
     if (this.state.seconds === 0 && this.state.minutes === 0) {
-      if(this.state.hours !== 0) {
+      if (this.state.hours !== 0) {
         this.setState({
           hours: this.state.hours - 1,
           minutes: 59,
@@ -39,17 +41,24 @@ class BallotTimer extends React.PureComponent {
         });
       }
 
-      this.setState({
-        hours: this.props.hours,
-        minutes: this.props.minutes,
-        seconds: this.props.seconds,
-      });
+      if (this.props.replay) {
+        this.setState({
+          hours: this.props.hours,
+          minutes: this.props.minutes,
+          seconds: this.props.seconds,
+        });
+      } else {
+        clearInterval(this.intervalID);
+      }
+
+
 
       this.props.willCallAfterTimerEnd();
     }
   };
 
   render() {
+
     return (
       <React.Fragment>
         {
@@ -69,13 +78,16 @@ BallotTimer.propTypes = {
   minutes: PropTypes.number,
   seconds: PropTypes.number,
   willCallAfterTimerEnd: PropTypes.func,
+  replay: PropTypes.bool,
 };
 
 BallotTimer.defaultProps = {
   hours: 0,
-  minutes: 5,
+  minutes: 0,
   seconds: 0,
-  willCallAfterTimerEnd: () => {}
+  willCallAfterTimerEnd: () => {
+  },
+  replay: false,
 };
 
 export default BallotTimer;

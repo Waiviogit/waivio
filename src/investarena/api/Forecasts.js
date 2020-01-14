@@ -39,9 +39,15 @@ export default class Forecasts extends Base {
       .then(response => response.data);
   }
 
-  getQuickForecastWinners() {
+  getQuickForecastWinners(user, limit, skip) {
     return this.apiClient
-      .get(`${config.forecasts.quickForecastWinners}`)
+      .post(`${config.forecasts.quickForecastWinners}`, {user, limit, skip})
+      .then(response => response.data);
+  }
+
+  getQuickForecastRewards() {
+    return this.apiClient
+      .get(`${config.forecasts.quickForecastRewards}`)
       .then(response => response.data);
   }
 }

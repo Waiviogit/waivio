@@ -7,6 +7,43 @@
   padding: 12px;
   background-color: @white;
   margin-bottom: 5px;
+  position: relative;
+
+  &__val {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    background-color: @white-smoke;
+    border: 1px solid @blue-hawkesBlue;
+  }
+
+  &__to-vote-card {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 4px;
+    background-color: @white-opacity;
+    justify-content: center;
+    align-items: center;
+    padding: 15px 8px;
+  }
+
+  &__to-vote-graphic {
+    text-align: center;
+  }
+
+  &__to-vote-card-container {
+    display: flex;
+    justify-content: space-evenly;
+  }
+
+  &__to-vote-timer {
+    text-align: center;
+  }
 
   &__disabled {
     opacity: .5;
@@ -64,6 +101,80 @@
 
 .no-posts {
   padding: 10px 15px;
+}
+
+.ballotButton {
+  padding: 0 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: @font-family-sans-serif;
+  background-color: transparent;
+  transition: .5s;
+  width: 100px;
+  border: none;
+
+  &:disabled {
+    cursor: auto;
+  }
+
+  &__container {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  &__button-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 50%;
+    flex-grow: 3;
+    padding-right: 20px;
+  }
+
+  &__positive {
+    border: 1px solid @green-darker;
+    color: @green-darker;
+    margin: 0 10px 0 0;
+
+    &:hover {
+      background-color: @green-darker;
+      color: @white;
+    }
+
+    &:disabled {
+      &:hover {
+        background-color: transparent;
+        color: @green-darker;
+      }
+    }
+  }
+
+  &__negative {
+    border: 1px solid @red;
+    color: @red;
+    margin: 0 0 0 10px;
+
+    &:hover {
+      background-color: @red;
+      color: @white;
+    }
+
+    &:disabled {
+      &:hover {
+        background-color: transparent;
+        color: @red;
+      }
+    }
+  }
+
+  &__timer {
+    font-family: @font-family-monospace;
+  }
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
 }
 
 @import 'QuickForecastCard-mode_night';

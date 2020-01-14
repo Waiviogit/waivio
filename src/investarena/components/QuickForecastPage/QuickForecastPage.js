@@ -9,7 +9,12 @@ import BallotTimer from './BallotTimer';
 import TopPredictors from './TopPredictors';
 import USDDisplay from '../../../client/components/Utils/USDDisplay';
 import SortSelector from '../../../client/components/SortSelector/SortSelector';
-import {answerForQuickForecast, getDataForQuickForecast} from '../../redux/actions/forecastActions';
+import {
+  answerForQuickForecast,
+  getDataForQuickForecast,
+  getForecastStatistic,
+  getForecastWinners
+} from '../../redux/actions/forecastActions';
 import {marketNames} from '../../constants/objectsInvestarena';
 
 import './QuickForecastPage.less';
@@ -20,45 +25,58 @@ class QuickForecastPage extends React.PureComponent {
     sortBy: ''
   };
 
-  componentDidMount() {
-    this.props.getDataForQuickForecast([{
-      author: '',
-      permlink: 'ukd-bitcoin',
-      expiredAt: '',
-      security: 'BTCUSD',
-      recommend: 'Buy',
-      instrument: 'Commodity',
-      active: false,
-    }, {
-      author: '',
-      permlink: 'ukd-bitcoin',
-      expiredAt: '',
-      security: 'BTCUSD',
-      recommend: 'Sell',
-      instrument: 'Crypto',
-      active: false,
-    }, {
-      author: 'lucykolosova',
-      permlink: 'cute-cat',
-      expiredAt: '',
-      security: 'BTCUSD',
-      recommend: 'buy',
-      instrument: 'Index',
-      active: false,
-    }]);
+  componentDidMount () {
+    this.props.getDataForQuickForecast();
+    this.props.getForecastStatistic();
+    this.props.getForecastWinners(5, this.props.quickForecastDataList.length);
 
     setTimeout(() => this.setState(state => ({isLoading: !state.isLoading})), 3000)
   }
 
-  handleSort(sort) {
+  handleSort (sort) {
     this.setState({sortBy: sort});
   };
 
+  handleFinishTimer () {
+    this.props.getDataForQuickForecast();
+    this.props.getForecastWinners();
+  }
+
   render() {
-    const filterForecastList = this.props.quickForecastDataList.filter(obj => obj.instrument === this.state.sortBy);
-    const forecastList = this.state.sortBy
-      ? filterForecastList
-      : this.props.quickForecastDataList;
+    // const seconds = (finish - currentTime) * 0.001;
+    const time = 3000;
+    let minutes = time / 60;
+    let hours;
+
+    if (minutes > 60) {
+      hours = Math.floor(minutes / 60);
+      minutes -= (hours * 60);
+    }
+
+    if (minutes < 0) {
+      minutes = 0;
+      hours = 0;
+    }
+    const filterForecastList = this.props.quickForecastDataList.filter(obj => obj.market === this.state.sortBy);
+    // const forecastList = this.state.sortBy
+    //   ? filterForecastList
+    //   : this.props.quickForecastDataList;
+    const forecastList = [{
+      "_id": "5e1c9f7face3080c161a91c8",
+      "author_count_forecasts": 1,
+      "priority_counter": 3,
+      "active": true,
+      "market": "Stock",
+      "visible_marker": 0,
+      "id": "sor31/testing",
+      "author": "sor31",
+      "permlink": "testing",
+      "createdAt": "2020-01-13T16:48:58.000Z",
+      "security": "ABBV",
+      "recommend": "Sell",
+      "expiredAt": "2020-01-13T17:18:58.000Z",
+      "__v": 0
+    }];
     const filtersType = [...marketNames,
       {
         name: 'Reset',
@@ -69,54 +87,16 @@ class QuickForecastPage extends React.PureComponent {
         }
       }];
     const sortItemKey = type => type.name === 'Reset' ? '' : type.name;
-    const mockUserTop = [{
-      userName: 'vlemon',
-      guessed: 10
-    }, {
-      userName: 'popkov',
-      guessed: 120
-    }, {
-      userName: 'fedorchuk',
-      guessed: 120
-    }, {
-      userName: 'tarazkp',
-      guessed: 120
-    }, {
-      userName: 'theycallmedan',
-      guessed: 120
-    }];
-    const mockUserWin = [{
-      userName: 'vlemon',
-      reward: 10
-    }, {
-      userName: 'popkov',
-      reward: 120
-    }, {
-      userName: 'fedorchuk',
-      reward: 120
-    }, {
-      userName: 'tarazkp',
-      reward: 120
-    }, {
-      userName: 'theycallmedan',
-      reward: 120
-    }];
 
     return (
       <div className="shifted">
         <div className="feed-layout container">
           <div className="leftContainer">
-            <div className="reward">
-              <span>Rewards:</span>
-              <USDDisplay value={14}/>
-              <span>Current round:</span>
-              <USDDisplay value={14}/>
-            </div>
-            <TopPredictors userList={mockUserWin} title="Current round winners" showMore/>
+            <TopPredictors userList={this.props.usersList} title="Top 5 Users" activeUser={this.props.user}/>
           </div>
           <div className="center">
             <div className="timer-container">
-              <BallotTimer willCallAfterTimerEnd={this.props.getDataForQuickForecast} hours={2} minutes={30}/>
+              <BallotTimer minutes={minutes} hours={hours} willCallAfterTimerEnd={this.handleFinishTimer} timeInSeconds={3000}/>
             </div>
             <SortSelector caption="Filter" sort={this.state.sortBy} onChange={sort => this.handleSort(sort)}>
               {
@@ -130,9 +110,10 @@ class QuickForecastPage extends React.PureComponent {
             {
               this.state.isLoading
                 ? forecastList.map(obj => (
-                  <QuickForecastCard wObject={obj} key={Math.random()}
-                                     predictionObject={this.props.quotes[obj.security].name}
+                  <QuickForecastCard forecast={obj} key={Math.random()}
+                                     predictionObjectName={this.props.quotesSett[obj.security].name}
                                      answerForecast={this.props.answerForQuickForecast}
+                                     price={this.props.quotes[obj.security].bidPrice}
                                      getForecast={this.props.getDataForQuickForecast}/>)
                 )
                 : <Loading/>
@@ -140,13 +121,23 @@ class QuickForecastPage extends React.PureComponent {
             {
               this.state.isLoading && !forecastList.length && (
                 <div className="no-posts">
-                  There are currently no forecasts in this category.
+                  {this.props.intl.formatMessage({id: 'no_quick_forecasts', defaultMessage: 'There are currently no forecasts in this category'})}
                 </div>
               )
             }
           </div>
           <div className="rightContainer">
-            <TopPredictors userList={mockUserTop} title="Top 5 Users" activeUser={this.props.userName}/>
+            <div className="reward">
+              <span>Rewards:</span>
+              <USDDisplay value={14}/>
+              <span>Current round:</span>
+              <USDDisplay value={14}/>
+            </div>
+            <TopPredictors
+              userList={this.props.winners}
+              title="Current round winners"
+              activeUser={this.props.user}
+              showMore={this.props.hasMore}/>
           </div>
         </div>
       </div>
@@ -158,24 +149,45 @@ QuickForecastPage.propTypes = {
   quickForecastDataList: PropTypes.arrayOf(PropTypes.object).isRequired,
   answerForQuickForecast: PropTypes.func.isRequired,
   getDataForQuickForecast: PropTypes.func.isRequired,
+  getForecastWinners: PropTypes.func.isRequired,
+  getForecastStatistic: PropTypes.func.isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
+  quotesSett: PropTypes.shape().isRequired,
   quotes: PropTypes.shape().isRequired,
-  userName: PropTypes.string.isRequired,
+  user: PropTypes.shape({
+    name: PropTypes.string,
+    successful_suppose: PropTypes.number,
+  }),
+  usersList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  winners: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  hasMore: PropTypes.bool,
+};
+
+QuickForecastPage.defaultProps = {
+  user: {
+    name: '',
+    successful_suppose: 0,
+  },
+  hasMore: false,
 };
 
 const mapStateToProps = state => ({
   quickForecastDataList: state.forecasts.quickForecastData,
-  quotes: state.quotesSettings,
+  quotesSett: state.quotesSettings,
+  quotes: state.quotes,
   usersList: state.forecasts.userStatistics,
+  user: state.forecasts.current,
   winners: state.forecasts.winners,
-  userName: state.auth.user.name,
+  hasMore: state.forecasts.hasMoreStatistic
 });
 
 const mapDispatchToProps = {
   answerForQuickForecast,
   getDataForQuickForecast,
+  getForecastWinners,
+  getForecastStatistic,
 };
 
 export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(QuickForecastPage));

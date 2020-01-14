@@ -5,7 +5,10 @@ const initialState = {
   forecastData: [],
   quickForecastData: [],
   userStatistics: [],
+  hasMoreStatistic: false,
   winners: [],
+  currenUser: {},
+  roundInfo: {},
 };
 
 export default (state = initialState, action) => {
@@ -31,22 +34,60 @@ export default (state = initialState, action) => {
         quickForecastData: [...action.payload],
       };
 
-    case activeForecastTypes.ANSWER_QUICK_FORECAST:
-      return {
-        ...state,
-      };
-
     case activeForecastTypes.GET_QUICK_FORECAST_STATISTIC.SUCCESS:
+
       return {
         ...state,
-        userStatistics: [...state.userStatistics, ...action.payload],
+        userStatistics: [...action.payload.top],
+        current: {
+          ...action.payload.current
+        },
       };
 
     case activeForecastTypes.GET_QUICK_FORECAST_STATISTIC.ERROR:
+
       return {
         ...state,
         userStatistics: [],
+        current: {},
       };
+
+    case activeForecastTypes.GET_QUICK_FORECAST_WINNERS.SUCCESS:
+
+      return {
+        ...state,
+        winners: [...state.winners, ...action.payload.users.map(user => ({
+          name: user.user,
+          reward: user.reward,
+        }))],
+        hasMoreStatistic: action.payload.hasMore,
+      };
+
+    case activeForecastTypes.GET_QUICK_FORECAST_WINNERS.ERROR:
+
+      return {
+        ...state,
+        winners: [...state.winners, ...action.payload.users],
+        hasMoreStatistic: false,
+      };
+
+    case activeForecastTypes.GET_QUICK_FORECAST_REWARDS.SUCCESS:
+
+      return {
+        ...state,
+        roundInfo: {
+          rewards: action.payload.all_time_rewards,
+          voitingPowers: action.payload.voting_power,
+        },
+      };
+
+    case activeForecastTypes.GET_QUICK_FORECAST_REWARDS.ERROR:
+
+      return {
+        ...state,
+        roundInfo: {},
+      };
+
 
     default:
       return state;
