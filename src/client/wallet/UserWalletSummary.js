@@ -79,6 +79,7 @@ const getFormattedPendingWithdrawalSP = (user, totalVestingShares, totalVestingF
 
 const UserWalletSummary = ({
   user,
+  balance,
   loading,
   totalVestingShares,
   totalVestingFundSteem,
@@ -99,7 +100,7 @@ const UserWalletSummary = ({
           <Loading />
         ) : (
           <span>
-            <FormattedNumber value={parseFloat(user.balance)} />
+            <FormattedNumber value={parseFloat(balance)} />
             {' STEEM'}
           </span>
         )}
@@ -169,7 +170,7 @@ const UserWalletSummary = ({
         </div>
       </React.Fragment>
     )}
-    {!(loading || loadingGlobalProperties || steemRateLoading) && (
+    {!isGuest && !(loading || loadingGlobalProperties || steemRateLoading) && (
       <div className="UserWalletSummary__item">
         <i className="iconfont icon-people_fill UserWalletSummary__icon" />
         <div className="UserWalletSummary__label">
@@ -194,6 +195,7 @@ const UserWalletSummary = ({
 UserWalletSummary.propTypes = {
   loadingGlobalProperties: PropTypes.bool.isRequired,
   user: PropTypes.shape().isRequired,
+  balance: PropTypes.number.isRequired,
   totalVestingShares: PropTypes.string.isRequired,
   totalVestingFundSteem: PropTypes.string.isRequired,
   steemRate: PropTypes.number,

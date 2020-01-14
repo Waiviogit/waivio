@@ -87,6 +87,7 @@ export default function walletReducer(state = initialState, action) {
           [usernameKey]: action.payload.userAccountHistory,
         },
         usersAccountHistoryLoading: false,
+        balance: action.payload.balance,
       };
     }
     case walletActions.GET_USER_ACCOUNT_HISTORY.ERROR:
@@ -219,3 +220,4 @@ export const getUserHasMoreAccountHistory = (state, username) => {
 export const getAccountHistoryFilter = state => state.accountHistoryFilter;
 export const getCurrentDisplayedActions = state => state.currentDisplayedActions;
 export const getCurrentFilteredActions = state => state.currentFilteredActions;
+export const getGuestUserBalance = state => state.balance;

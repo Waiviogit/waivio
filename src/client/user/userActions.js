@@ -171,7 +171,7 @@ export const GET_NOTIFICATIONS = createAsyncActionType('@user/GET_NOTIFICATIONS'
 export const getNotifications = username => (dispatch, getState, { busyAPI }) => {
   const state = getState();
 
-  if (!username && !store.getIsAuthenticated(state)) {
+  if ((!username && !store.getIsAuthenticated(state)) || store.isGuestUser(state)) {
     return dispatch({ type: GET_NOTIFICATIONS.ERROR });
   }
 

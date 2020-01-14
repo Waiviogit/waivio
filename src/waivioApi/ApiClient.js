@@ -724,6 +724,20 @@ export const updateUserMetadata = async (userName, data) => {
   }).then(res => res.json());
 };
 
+export const getGuestPaymentsHistory = (userName, { skip = 0, limit = 20 }) => {
+  return new Promise((resolve, reject) => {
+    fetch(
+      `${config.campaignApiPrefix}${config.payments}${config.demoPayables}?userName=${userName}&skip=${skip}&${limit}`,
+      {
+        headers,
+        method: 'GET',
+      },
+    )
+      .then(res => res.json())
+      .then(result => resolve(result))
+      .catch(error => reject(error));
+  });
+};
 //endregion
 
 //region Guest user's requests
