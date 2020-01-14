@@ -31,6 +31,7 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
       />
     );
   };
+  const objName = wObject.name || wObject.default_name;
   const parentName = wObject.parent ? getFieldWithMaxWeight(wObject.parent, objectTypes.name) : '';
   const goToObjTitle = wobjName =>
     `${intl.formatMessage({
@@ -44,7 +45,7 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
           <div className="ObjectCardView__content-row">
             <Link
               to={pathName}
-              title={goToObjTitle(wObject.name)}
+              title={goToObjTitle(objName)}
               className="ObjectCardView__avatar"
               target="_blank"
             >
@@ -64,9 +65,9 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
                 <Link
                   to={pathName}
                   className="ObjectCardView__name-truncated"
-                  title={goToObjTitle(wObject.name)}
+                  title={goToObjTitle(objName)}
                 >
-                  {wObject.name}
+                  {objName}
                 </Link>
                 {wObject.weight && <WeightTag weight={wObject.weight} />}
               </div>

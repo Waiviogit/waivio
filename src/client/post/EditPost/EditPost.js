@@ -194,7 +194,7 @@ class EditPost extends Component {
   }
 
   handleCreateObject(object) {
-    this.handleObjectSelect(object);
+    setTimeout(() => this.handleObjectSelect(object), 1200);
   }
 
   buildPost() {
