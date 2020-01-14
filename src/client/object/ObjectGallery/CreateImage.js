@@ -39,6 +39,7 @@ class CreateImage extends React.Component {
     fileList: [],
     uploadingList: [],
     loading: false,
+    imageUploading: false,
     currentImage: [],
   };
 
@@ -123,12 +124,14 @@ class CreateImage extends React.Component {
 
   handleImageChange = e => {
     const { onImageInvalid, onImageUpload } = this.props;
-    const { getFieldValue } = this.props.form;
-    const currentField = getFieldValue('currentField');
-
     if (e.target.files && e.target.files[0]) {
-      if (!isValidImage(e.target.files[0], MAX_IMG_SIZE[currentField], ALLOWED_IMG_FORMATS)) {
-        onImageInvalid(MAX_IMG_SIZE[currentField], `(${ALLOWED_IMG_FORMATS.join(', ')}) `);
+      if (
+        !isValidImage(e.target.files[0], MAX_IMG_SIZE[objectFields.background], ALLOWED_IMG_FORMATS)
+      ) {
+        onImageInvalid(
+          MAX_IMG_SIZE[objectFields.background],
+          `(${ALLOWED_IMG_FORMATS.join(', ')}) `,
+        );
         return;
       }
 
@@ -144,10 +147,12 @@ class CreateImage extends React.Component {
     }
   };
 
-  disableAndInsertImage = (image, imageName = 'image') => {
-    const { getFieldValue } = this.props.form;
-    const currentField = getFieldValue('currentField');
+  handleAddImageByLink = image => {
+    const images = [...this.state.currentImage, image];
+    this.setState({ currentImage: images });
+  };
 
+  disableAndInsertImage = (image, imageName = 'image') => {
     const newImage = {
       src: image,
       name: imageName,
@@ -155,17 +160,12 @@ class CreateImage extends React.Component {
     };
     const images = [...this.state.currentImage, newImage];
     this.setState({ imageUploading: false, currentImage: images });
-    this.props.form.setFieldsValue({ [currentField]: image });
   };
 
   handleRemoveImage = imageId => {
-    // const { getFieldValue } = this.props.form;
-    // const currentField = getFieldValue('currentField');
     this.setState({
       currentImage: this.state.currentImage.filter(f => f.id !== imageId),
     });
-    // this.setState({ currentImage: [] });
-    // this.props.form.setFieldsValue({ [currentField]: '' });
   };
 
   handleChange = ({ fileList, file }) => {
@@ -333,6 +333,7 @@ class CreateImage extends React.Component {
                   handleAddImage={this.handleImageChange}
                   handleAddImageByLink={this.handleAddImageByLink}
                   onRemoveImage={this.handleRemoveImage}
+                  isLoading={this.state.imageUploading}
                 />
                 <Spin
                   tip={intl.formatMessage({

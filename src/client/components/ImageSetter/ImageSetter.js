@@ -13,9 +13,10 @@ const ImageSetter = ({
   onRemoveImage,
   handleAddImage,
   handleAddImageByLink,
+  isLoading,
 }) => {
   const imageLinkInput = useRef(null);
-  const handleOnPressEnterInput = () => {
+  const handleOnUploadImageByLink = () => {
     if (imageLinkInput.current && imageLinkInput.current.value) {
       const url = imageLinkInput.current.value;
       const filename = url.substring(url.lastIndexOf('/') + 1);
@@ -25,6 +26,7 @@ const ImageSetter = ({
         id: uuidv4(),
       };
       handleAddImageByLink(newImage);
+      imageLinkInput.current.value = '';
     }
   };
 
@@ -41,7 +43,7 @@ const ImageSetter = ({
               defaultMessage: 'Add images',
             })}
       </div>
-      {!isEmpty(images) && (
+      {(!isEmpty(images) || isLoading) && (
         <div className="ImageSetter__imagebox">
           {map(images, image => (
             <div className="ImageSetter__imagebox-preview" key={image.id}>
@@ -55,6 +57,13 @@ const ImageSetter = ({
               <img src={image.src} width="86" height="86" alt={image.src} />
             </div>
           ))}
+          {isLoading && (
+            <div className="ImageSetter__imagebox-preview">
+              <div className="ImageSetter__imagebox-preview-loader">
+                <Icon type="loading" />
+              </div>
+            </div>
+          )}
         </div>
       )}
       <div className="ImageSetter__upload">
@@ -95,7 +104,7 @@ const ImageSetter = ({
           <button
             className="ImageSetter__upload-input-btn"
             type="button"
-            onClick={handleOnPressEnterInput}
+            onClick={handleOnUploadImageByLink}
           >
             <Icon type="upload" />
           </button>
@@ -109,6 +118,7 @@ ImageSetter.propTypes = {
   handleAddImage: PropTypes.func.isRequired,
   intl: PropTypes.shape().isRequired,
   isMultiple: PropTypes.bool,
+  isLoading: PropTypes.bool.isRequired,
   images: PropTypes.arrayOf(PropTypes.shape()),
   onRemoveImage: PropTypes.func.isRequired,
   handleAddImageByLink: PropTypes.func.isRequired,
