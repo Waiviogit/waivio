@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { bindActionCreators } from 'redux';
 import { Form, Select, Modal, Upload, Icon, message, Spin } from 'antd';
+import uuidv4 from 'uuid/v4';
 import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
 import { getAuthenticatedUserName, getObject, getObjectAlbums } from '../../reducers';
 import { objectFields } from '../../../common/constants/listOfFields';
@@ -12,6 +13,8 @@ import * as galleryActions from './galleryActions';
 import * as appendActions from '../appendActions';
 import { getField, generatePermlink, prepareImageToStore } from '../../helpers/wObjectHelper';
 import AppendFormFooter from '../AppendFormFooter';
+import ImageSetter from '../../components/ImageSetter/ImageSetter';
+import { isValidImage } from '../../helpers/image';
 import './CreateImage.less';
 
 @connect(
@@ -36,6 +39,7 @@ class CreateImage extends React.Component {
     fileList: [],
     uploadingList: [],
     loading: false,
+    currentImage: [],
   };
 
   getWobjectData = () => {
@@ -115,6 +119,53 @@ class CreateImage extends React.Component {
           });
       }
     });
+  };
+
+  handleImageChange = e => {
+    const { onImageInvalid, onImageUpload } = this.props;
+    const { getFieldValue } = this.props.form;
+    const currentField = getFieldValue('currentField');
+
+    if (e.target.files && e.target.files[0]) {
+      if (!isValidImage(e.target.files[0], MAX_IMG_SIZE[currentField], ALLOWED_IMG_FORMATS)) {
+        onImageInvalid(MAX_IMG_SIZE[currentField], `(${ALLOWED_IMG_FORMATS.join(', ')}) `);
+        return;
+      }
+
+      this.setState({
+        imageUploading: true,
+      });
+
+      onImageUpload(e.target.files[0], this.disableAndInsertImage, () =>
+        this.setState({
+          imageUploading: false,
+        }),
+      );
+    }
+  };
+
+  disableAndInsertImage = (image, imageName = 'image') => {
+    const { getFieldValue } = this.props.form;
+    const currentField = getFieldValue('currentField');
+
+    const newImage = {
+      src: image,
+      name: imageName,
+      id: uuidv4(),
+    };
+    const images = [...this.state.currentImage, newImage];
+    this.setState({ imageUploading: false, currentImage: images });
+    this.props.form.setFieldsValue({ [currentField]: image });
+  };
+
+  handleRemoveImage = imageId => {
+    // const { getFieldValue } = this.props.form;
+    // const currentField = getFieldValue('currentField');
+    this.setState({
+      currentImage: this.state.currentImage.filter(f => f.id !== imageId),
+    });
+    // this.setState({ currentImage: [] });
+    // this.props.form.setFieldsValue({ [currentField]: '' });
   };
 
   handleChange = ({ fileList, file }) => {
@@ -277,6 +328,12 @@ class CreateImage extends React.Component {
               ],
             })(
               <div className="clearfix">
+                <ImageSetter
+                  images={this.state.currentImage}
+                  handleAddImage={this.handleImageChange}
+                  handleAddImageByLink={this.handleAddImageByLink}
+                  onRemoveImage={this.handleRemoveImage}
+                />
                 <Spin
                   tip={intl.formatMessage({
                     id: 'image_submitting',
@@ -344,6 +401,8 @@ CreateImage.propTypes = {
   form: PropTypes.shape().isRequired,
   selectedAlbum: PropTypes.shape(),
   albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  onImageUpload: PropTypes.func.isRequired,
+  onImageInvalid: PropTypes.func.isRequired,
   currentUsername: PropTypes.shape(),
   wObject: PropTypes.shape(),
   appendObject: PropTypes.func,

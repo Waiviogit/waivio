@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Form, Input, message, Select, Avatar, Rate, Icon } from 'antd';
+import { Form, Input, message, Select, /* Avatar */ Rate, Icon } from 'antd';
 import { fieldsRules } from './const/appendFormConstants';
 import apiConfig from '../../waivioApi/config.json';
 import {
@@ -37,7 +37,7 @@ import {
 import LANGUAGES from '../translations/languages';
 import { PRIMARY_COLOR } from '../../common/constants/waivio';
 import { getLanguageText } from '../translations';
-import QuickPostEditorFooter from '../components/QuickPostEditor/QuickPostEditorFooter';
+// import QuickPostEditorFooter from '../components/QuickPostEditor/QuickPostEditorFooter';
 import MapAppendObject from '../components/Maps/MapAppendObject';
 import { getField } from '../helpers/wObjectHelper';
 import { appendObject } from '../object/appendActions';
@@ -539,7 +539,6 @@ export default class AppendForm extends Component {
   disableAndInsertImage = (image, imageName = 'image') => {
     const { getFieldValue } = this.props.form;
     const currentField = getFieldValue('currentField');
-
     const newImage = {
       src: image,
       name: imageName,
@@ -549,10 +548,16 @@ export default class AppendForm extends Component {
     this.props.form.setFieldsValue({ [currentField]: image });
   };
 
+  handleAddImageByLink = image => {
+    const { getFieldValue } = this.props.form;
+    const currentField = getFieldValue('currentField');
+    this.setState({ imageUploading: false, currentImage: [image] });
+    this.props.form.setFieldsValue({ [currentField]: image.src });
+  };
+
   handleImageChange = e => {
     const { getFieldValue } = this.props.form;
     const currentField = getFieldValue('currentField');
-
     if (e.target.files && e.target.files[0]) {
       if (!isValidImage(e.target.files[0], MAX_IMG_SIZE[currentField], ALLOWED_IMG_FORMATS)) {
         this.props.onImageInvalid(
@@ -649,6 +654,7 @@ export default class AppendForm extends Component {
   };
 
   getFieldRules = fieldName => {
+    // debugger;
     const { intl } = this.props;
     const rules = fieldsRules[fieldName] || [];
     return rules.map(rule => {
@@ -755,53 +761,58 @@ export default class AppendForm extends Component {
       }
       case objectFields.background:
       case objectFields.avatar: {
-        const imageLink = getFieldValue(currentField);
+        // const imageLink = getFieldValue(currentField);
         return (
           <div className="image-wrapper">
-            <QuickPostEditorFooter
-              imageUploading={this.state.imageUploading}
-              handleImageChange={this.handleImageChange}
-              currentImages={this.state.currentImage}
-              onRemoveImage={this.handleRemoveImage}
-              showAddButton={false}
-            />
-            <span>
-              {intl.formatMessage({
-                id: 'or',
-                defaultMessage: 'or',
-              })}
-            </span>
+            {/* <QuickPostEditorFooter */}
+            {/* imageUploading={this.state.imageUploading} */}
+            {/* handleImageChange={this.handleImageChange} */}
+            {/* currentImages={this.state.currentImage} */}
+            {/* onRemoveImage={this.handleRemoveImage} */}
+            {/* showAddButton={false} */}
+            {/* /> */}
+            {/* <span> */}
+            {/* {intl.formatMessage({ */}
+            {/*   id: 'or', /}
+             {/*   defaultMessage: 'or', */}
+            {/* })} */}
+            {/* </span> */}
+            {/* <Form.Item> */}
+            {/* {getFieldDecorator(currentField, { rules: this.getFieldRules(currentField) })( */}
+            {/*   <Input */}
+            {/*     className="AppendForm__input" */}
+            {/*     disabled={loading} */}
+            {/*     placeholder={intl.formatMessage({ */}
+            {/*       id: 'photo_url_placeholder', */}
+            {/*       defaultMessage: 'Photo URL', */}
+            {/*     })} */}
+            {/*   />, */}
+            {/* )} */}
+            {/* </Form.Item> */}
+            {/* {imageLink && ( */}
+            {/* <div className="AppendForm__previewWrap"> */}
+            {/*   {currentField === objectFields.avatar ? ( */}
+            {/*     <Avatar shape="square" size={100} src={imageLink} className="avatar"/> */}
+            {/*   ) : ( */}
+            {/*     <div */}
+            {/*       style={{ */}
+            {/*         backgroundImage: `url(${imageLink})`, */}
+            {/*       }} */}
+            {/*       className="background" */}
+            {/*     /> */}
+            {/*   )} */}
+            {/* </div> */}
+            {/* )} */}
             <Form.Item>
               {getFieldDecorator(currentField, { rules: this.getFieldRules(currentField) })(
-                <Input
-                  className="AppendForm__input"
-                  disabled={loading}
-                  placeholder={intl.formatMessage({
-                    id: 'photo_url_placeholder',
-                    defaultMessage: 'Photo URL',
-                  })}
+                <ImageSetter
+                  images={this.state.currentImage}
+                  handleAddImage={this.handleImageChange}
+                  handleAddImageByLink={this.handleAddImageByLink}
+                  onRemoveImage={this.handleRemoveImage}
                 />,
               )}
             </Form.Item>
-            {imageLink && (
-              <div className="AppendForm__previewWrap">
-                {currentField === objectFields.avatar ? (
-                  <Avatar shape="square" size={100} src={imageLink} className="avatar" />
-                ) : (
-                  <div
-                    style={{
-                      backgroundImage: `url(${imageLink})`,
-                    }}
-                    className="background"
-                  />
-                )}
-              </div>
-            )}
-            <ImageSetter
-              images={this.state.currentImage}
-              handleAddImage={this.handleImageChange}
-              onRemoveImage={this.handleRemoveImage}
-            />
           </div>
         );
       }
