@@ -49,7 +49,6 @@ import { getUserDetailsKey } from '../helpers/stateHelpers';
   },
 )
 export default class User extends React.Component {
-
   static fetchData({ store, match }) {
     return store.dispatch(getUserAccount(match.params.name));
   }
