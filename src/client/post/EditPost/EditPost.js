@@ -170,7 +170,7 @@ class EditPost extends Component {
     this.setState({ objPercentage: setObjPercents(linkedObjects, updPercentage) });
   }
 
-  handleObjectSelect = object => {
+  handleObjectSelect(object) {
     this.setState(prevState => {
       const { postTitle, postBody } = splitPostContent(prevState.content);
       const objName = object.name || object.default_name;
@@ -182,7 +182,7 @@ class EditPost extends Component {
         },
       };
     });
-  };
+  }
 
   buildPost() {
     const {
