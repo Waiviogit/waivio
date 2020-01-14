@@ -1019,8 +1019,7 @@ export default class AppendForm extends Component {
       case objectFields.map: {
         return (
           <React.Fragment>
-            <Form.Item>
-            </Form.Item>
+            <Form.Item></Form.Item>
             <Form.Item>
               {getFieldDecorator(mapFields.longitude, {
                 rules: this.getFieldRules(mapFields.longitude),
