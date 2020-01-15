@@ -60,6 +60,7 @@ export default class Transfer extends React.Component {
     currency: PropTypes.string,
     memo: PropTypes.string,
     screenSize: PropTypes.string,
+    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -70,6 +71,7 @@ export default class Transfer extends React.Component {
     currency: 'STEEM',
     closeTransfer: () => {},
     screenSize: 'large',
+    isGuest: false,
   };
 
   static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
