@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { rejectReservationCampaign, reserveActivatedCampaign } from '../../../waivioApi/ApiClient';
 import { generatePermlink } from '../../helpers/wObjectHelper';
-import { UsedLocaleContext } from '../../Wrapper';
+import { AppSharedContext } from '../../Wrapper';
 import Details from '../Details/Details';
 import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
 import './Proposition.less';
@@ -32,7 +32,7 @@ const Proposition = ({
   getSingleComment,
   authorizedUserName,
 }) => {
-  const usedLocale = useContext(UsedLocaleContext);
+  const { usedLocale } = useContext(AppSharedContext);
   const proposedWobj = getClientWObj(wobj, usedLocale);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
   const requiredObjectName = getFieldWithMaxWeight(

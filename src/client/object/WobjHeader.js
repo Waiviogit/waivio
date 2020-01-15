@@ -14,7 +14,7 @@ import DEFAULTS from '../object/const/defaultValues';
 import { accessTypesArr, haveAccess } from '../helpers/wObjectHelper';
 import { getClientWObj } from '../adapters';
 import { objectFields } from '../../common/constants/listOfFields';
-import { UsedLocaleContext } from '../Wrapper';
+import { AppSharedContext } from '../Wrapper';
 import '../components/ObjectHeader.less';
 
 const WobjHeader = ({
@@ -26,7 +26,7 @@ const WobjHeader = ({
   authenticated,
   isMobile,
 }) => {
-  const usedLocale = useContext(UsedLocaleContext);
+  const { usedLocale, isGuestUser } = useContext(AppSharedContext);
   const coverImage = wobject.background || DEFAULTS.BACKGROUND;
   const style = { backgroundImage: `url("${coverImage}")` };
   const descriptionShort = wobject.title || '';
@@ -69,7 +69,7 @@ const WobjHeader = ({
               </div>
               <div className="ObjectHeader__controls">
                 <FollowButton following={wobject.author_permlink || ''} followingType="wobject" />
-                {accessExtend && authenticated && (
+                {accessExtend && !isGuestUser && authenticated && (
                   <Link to={`/object/${wobject.author_permlink}/${isMobile ? 'about' : ''}`}>
                     <Button onClick={toggleViewEditMode}>
                       {isEditMode

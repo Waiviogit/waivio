@@ -29,8 +29,9 @@ import Transfer from './wallet/Transfer';
 import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
+import { GUEST_PREFIX } from '../common/constants/waivio';
 
-export const UsedLocaleContext = React.createContext('en-US');
+export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
 @withRouter
 @connect(
@@ -215,7 +216,12 @@ export default class Wrapper extends React.PureComponent {
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
         <ConfigProvider locale={enUS}>
-          <UsedLocaleContext.Provider value={usedLocale}>
+          <AppSharedContext.Provider
+            value={{
+              usedLocale,
+              isGuestUser: username && username.startsWith(GUEST_PREFIX),
+            }}
+          >
             <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
               <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
                 <Topnav username={user.name} onMenuItemClick={this.handleMenuItemClick} />
@@ -233,7 +239,7 @@ export default class Wrapper extends React.PureComponent {
                 <BBackTop className="primary-modal" />
               </div>
             </Layout>
-          </UsedLocaleContext.Provider>
+          </AppSharedContext.Provider>
         </ConfigProvider>
       </IntlProvider>
     );

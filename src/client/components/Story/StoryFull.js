@@ -31,7 +31,7 @@ import PostedFrom from './PostedFrom';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { getClientWObj } from '../../adapters';
 import WeightTag from '../WeightTag';
-import { UsedLocaleContext } from '../../Wrapper';
+import { AppSharedContext } from '../../Wrapper';
 import './StoryFull.less';
 
 @injectIntl
@@ -523,7 +523,7 @@ class StoryFull extends React.Component {
 }
 
 export default props => (
-  <UsedLocaleContext.Consumer>
-    {context => <StoryFull {...props} usedLocale={context} />}
-  </UsedLocaleContext.Consumer>
+  <AppSharedContext.Consumer>
+    {context => <StoryFull {...props} {...context} />}
+  </AppSharedContext.Consumer>
 );
