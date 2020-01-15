@@ -1,7 +1,6 @@
 import QuoteCaptionBlock from './blocks/blockquotecaption';
 import CaptionBlock from './blocks/caption';
 import AtomicBlock from './blocks/atomic';
-import TodoBlock from './blocks/todo';
 import ImageBlock from './blocks/image';
 import BreakBlock from './blocks/break';
 
@@ -24,14 +23,6 @@ export default (setEditorState, getEditorState) => contentBlock => {
         component: AtomicBlock,
         editable: false,
         props: {
-          getEditorState,
-        },
-      };
-    case Block.TODO:
-      return {
-        component: TodoBlock,
-        props: {
-          setEditorState,
           getEditorState,
         },
       };
