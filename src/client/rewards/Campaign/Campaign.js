@@ -6,11 +6,11 @@ import { Button, Icon } from 'antd';
 import { getClientWObj } from '../../adapters';
 import { getCurrentUSDPrice } from '../rewardsHelper';
 import ObjectCardView from '../../objectCard/ObjectCardView';
-import { UsedLocaleContext } from '../../Wrapper';
+import { AppSharedContext } from '../../Wrapper';
 import './Campaign.less';
 
 const Campaign = ({ proposition, filterKey, history, intl }) => {
-  const usedLocale = useContext(UsedLocaleContext);
+  const { usedLocale } = useContext(AppSharedContext);
   const requiredObject = getClientWObj(proposition.required_object, usedLocale);
   const currentUSDPrice = getCurrentUSDPrice();
   const rewardPrise = currentUSDPrice
