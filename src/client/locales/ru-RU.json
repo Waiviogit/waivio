@@ -141,6 +141,7 @@
   "profile_website_placeholder": "URL вашего сайта",
   "profile_picture": "Изображение профиля",
   "profile_cover": "Изображение обложки",
+  "profile_change": "Изменить",
   "profile_social_profiles": "Социальные профили",
   "profile_social_profile_incorrect": "Данное имя пользователя нельзя использовать. Допускаются только алфавитно-цифровые символы, дефисы, символы подчеркивания и точки.",
   "profile_signature": "Подпись",
