@@ -19,6 +19,7 @@ import {
   getTransferCurrency,
   getTransferMemo,
   getTransferTo,
+  isGuestUser,
 } from '../reducers';
 import './Transfer.less';
 
@@ -36,6 +37,7 @@ const InputGroup = Input.Group;
     user: getAuthenticatedUser(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
     screenSize: getScreenSize(state),
+    isGuest: isGuestUser(state),
   }),
   {
     closeTransfer,
@@ -309,7 +311,7 @@ export default class Transfer extends React.Component {
   };
 
   render() {
-    const { intl, visible, authenticated, user, memo, screenSize } = this.props;
+    const { intl, visible, authenticated, user, memo, screenSize, isGuest } = this.props;
     const { getFieldDecorator } = this.props.form;
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
 
@@ -328,7 +330,11 @@ export default class Transfer extends React.Component {
         <Radio.Button value={Transfer.CURRENCIES.STEEM} className="Transfer__amount__type-steem">
           {Transfer.CURRENCIES.STEEM}
         </Radio.Button>
-        <Radio.Button value={Transfer.CURRENCIES.SBD} className="Transfer__amount__type-sbd">
+        <Radio.Button
+          value={Transfer.CURRENCIES.SBD}
+          className="Transfer__amount__type-sbd"
+          disabled={isGuest}
+        >
           {Transfer.CURRENCIES.SBD}
         </Radio.Button>
       </Radio.Group>,

@@ -22,9 +22,9 @@ export const getContent = (author, permlink, afterLike) => (dispatch, getState, 
 
   // eslint-disable-next-line consistent-return
   const doApiRequest = () => {
-    if (afterLike && !isGuest) {
-      return steemAPI.sendAsync('get_content', [author, permlink]);
-    }
+    // if (afterLike && !isGuest) {
+    //   return steemAPI.sendAsync('get_content', [author, permlink]);
+    // }
     return ApiClient.getContent(author, permlink);
   };
 
@@ -62,29 +62,24 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
   return dispatch({
     type: TYPE,
     payload: {
-      promise: steemConnectAPI
-        .vote(voter, votedPostAuthor || post.author, post.permlink, weight)
-        .then(res => {
-          if (res.status === 200 && isGuest) {
-            return { isFakeLikeOk: true };
-          }
-          if (window.analytics) {
-            window.analytics.track('Vote', {
-              category: 'vote',
-              label: 'submit',
-              value: 1,
-            });
-          }
+      promise: steemConnectAPI.vote(voter, votedPostAuthor, post.permlink, weight).then(res => {
+        if (res.status === 200 && isGuest) {
+          return { isFakeLikeOk: true };
+        }
+        if (window.analytics) {
+          window.analytics.track('Vote', {
+            category: 'vote',
+            label: 'submit',
+            value: 1,
+          });
+        }
 
-          // // Delay to make sure you get the latest data (unknown issue with API)
-          if (!isGuest) {
-            setTimeout(
-              () => dispatch(getContent(votedPostAuthor || post.author, post.permlink, true)),
-              1000,
-            );
-          }
-          return res;
-        }),
+        // // Delay to make sure you get the latest data (unknown issue with API)
+        if (!isGuest) {
+          setTimeout(() => dispatch(getContent(post.author, post.permlink, true)), 1000);
+        }
+        return res;
+      }),
     },
     meta: isGuest
       ? {

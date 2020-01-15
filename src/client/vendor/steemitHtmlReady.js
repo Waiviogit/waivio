@@ -229,7 +229,8 @@ function linkify(content, mutate, hashtags, usertags, images, links) {
   // Cribbed from https://github.com/twitter/twitter-text/blob/v1.14.7/js/twitter-text.js#L90
   // https://github.com/steemit/condenser/blob/7c588536d2568a554391ea1edaa656c636c5a890/src/shared/HtmlReady.js#L272-L290
   content = content.replace(
-    /(^|[^a-zA-Z0-9_!#$%&*@＠\/]|(^|[^a-zA-Z0-9_+~.-\/#]))[@＠]([a-z][-\.a-z\d]+[a-z\d])/gi,
+    // Added # symbol to regEx on position 70 for correct match of Guest user names
+    /(^|[^a-zA-Z0-9_!#$%&*@＠\/]|(^|[^a-zA-Z0-9_+~.-\/#]))[@＠]([a-z][-_\.a-z\d]+[a-z\d])/gi,
     (match, preceeding1, preceeding2, user) => {
       const userLower = user.toLowerCase();
       const valid = validateAccountName(userLower) == null;
