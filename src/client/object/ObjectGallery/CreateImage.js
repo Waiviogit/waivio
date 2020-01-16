@@ -41,6 +41,7 @@ class CreateImage extends React.Component {
     loading: false,
     imageUploading: false,
     currentImages: [],
+    isValidLink: false,
   };
 
   getWobjectData = () => {
@@ -145,20 +146,40 @@ class CreateImage extends React.Component {
     }
   };
 
-  handleAddImageByLink = image => {
+  checkIsValidImageLink = (image, setImageIsValid) => {
+    const img = new Image();
+    img.src = image.src;
+    img.onload = () => setImageIsValid(image, true);
+    img.onerror = () => setImageIsValid(image, false);
+  };
+
+  checkIsImage = (image, isValidLink) => {
     const { intl } = this.props;
     const { currentImages } = this.state;
     const isSameLink = currentImages.some(currentImage => currentImage.src === image.src);
-    if (!isSameLink) {
-      const images = [...this.state.currentImages, image];
-      this.setState({ currentImages: images });
-    } else
+    if (isValidLink) {
+      if (!isSameLink) {
+        const images = [...this.state.currentImages, image];
+        this.setState({ currentImages: images });
+      } else
+        message.error(
+          intl.formatMessage({
+            id: 'imageSetter_link_is_already_added',
+            defaultMessage: 'The link you are trying to add is already added',
+          }),
+        );
+    } else {
       message.error(
         intl.formatMessage({
-          id: 'imageSetter_link_is_already_added',
-          defaultMessage: 'The link you are trying to add is already added',
+          id: 'imageSetter_invalid_link',
+          defaultMessage: 'The link is invalid',
         }),
       );
+    }
+  };
+
+  handleAddImageByLink = image => {
+    this.checkIsValidImageLink(image, this.checkIsImage);
   };
 
   disableAndInsertImage = (image, imageName = 'image') => {
