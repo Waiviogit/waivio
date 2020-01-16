@@ -189,7 +189,9 @@ class PostContent extends React.Component {
     const postState = {
       isReblogged: reblogList.includes(content.id),
       isReblogging: pendingReblogs.includes(content.id),
-      isSaved: bookmarks.includes(content.id),
+      isSaved: content.guestInfo
+        ? bookmarks.includes(`${content.guestInfo.userId}/${content.root_permlink}`)
+        : bookmarks.includes(content.id),
       isLiked: userVote.percent > 0,
       isReported: userVote.percent < 0,
       userFollowed: followingList.includes(content.author),
