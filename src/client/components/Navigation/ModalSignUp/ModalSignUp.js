@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Form, Icon, Input, Button, Checkbox } from 'antd';
 import { isEmpty } from 'lodash';
-import { useDispatch } from 'react-redux';
+import { batch, useDispatch } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { GoogleLogin } from 'react-google-login';
 import FacebookLogin from 'react-facebook-login';
 import getSlug from 'speakingurl';
-import { login } from '../../../auth/authActions';
+import { busyLogin, login } from '../../../auth/authActions';
 import { getUserAccount, isUserRegistered } from '../../../../waivioApi/ApiClient';
 import { notify } from './../../../app/Notification/notificationActions';
+import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
+import { GUEST_PREFIX } from '../../../../common/constants/waivio';
 import './ModalSignUp.less';
 
 const ModalSignUp = ({ isButton, form, intl }) => {
@@ -31,7 +33,14 @@ const ModalSignUp = ({ isButton, form, intl }) => {
     if (response) {
       const res = await isUserRegistered(response.googleId, 'google');
       if (res) {
-        dispatch(login(response.accessToken, 'google'));
+        dispatch(login(response.accessToken, 'google')).then(() => {
+          batch(() => {
+            dispatch(getFollowing());
+            dispatch(getFollowingObjects());
+            dispatch(getNotifications());
+            dispatch(busyLogin());
+          });
+        });
       } else {
         setFieldsValue({
           username: getSlug(`${response.profileObj.givenName} ${response.profileObj.familyName}`),
@@ -45,7 +54,14 @@ const ModalSignUp = ({ isButton, form, intl }) => {
     if (response) {
       const res = await isUserRegistered(response.id, 'facebook');
       if (res) {
-        dispatch(login(response.accessToken, 'facebook'));
+        dispatch(login(response.accessToken, 'facebook')).then(() => {
+          batch(() => {
+            dispatch(getFollowing());
+            dispatch(getFollowingObjects());
+            dispatch(getNotifications());
+            dispatch(busyLogin());
+          });
+        });
       } else {
         setFieldsValue({
           username: getSlug(response.name),
@@ -87,7 +103,7 @@ const ModalSignUp = ({ isButton, form, intl }) => {
       if (!err) {
         dispatch(
           login(userData.accessToken, userData.socialNetwork, {
-            userName: `waivio_${values.username}`,
+            userName: `${GUEST_PREFIX}${values.username}`,
             pickSocialFields: values.agreement,
           }),
         );
@@ -114,7 +130,7 @@ const ModalSignUp = ({ isButton, form, intl }) => {
           defaultMessage: 'Please input your username',
         })}`,
       );
-    const user = await getUserAccount(`waivio_${value}`);
+    const user = await getUserAccount(`${GUEST_PREFIX}${value}`);
     if (user.id) {
       callback(
         `${intl.formatMessage({
@@ -149,7 +165,9 @@ const ModalSignUp = ({ isButton, form, intl }) => {
               validator: validateUserName,
             },
           ],
-        })(<Input placeholder="Username" addonBefore="waivio_" minLength={3} maxLength={16} />)}
+        })(
+          <Input placeholder="Username" addonBefore={GUEST_PREFIX} minLength={3} maxLength={16} />,
+        )}
       </Form.Item>
       <Form.Item>
         {getFieldDecorator('agreement', {

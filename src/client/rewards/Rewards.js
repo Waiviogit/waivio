@@ -96,7 +96,7 @@ class Rewards extends React.Component {
     if (match.path !== this.props.match.path) {
       this.setState({ activePayableFilters: [] });
     }
-    if (match.params.filterKey !== 'create') {
+    if (match.params.filterKey !== 'create' && nextProps.username) {
       const { username } = this.props;
       const { radius, coordinates, sort, activeFilters } = this.state;
       if (
@@ -105,7 +105,14 @@ class Rewards extends React.Component {
         nextProps.username !== username
       ) {
         this.setState({ loadingCampaigns: true }, () => {
-          this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+          this.getPropositions({
+            username: nextProps.username,
+            match,
+            coordinates,
+            radius,
+            sort,
+            activeFilters,
+          });
         });
       }
     } else this.setState({ propositions: [{}] }); // for map, not equal propositions
@@ -114,7 +121,7 @@ class Rewards extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     const { username, match } = this.props;
     const { radius, coordinates, sort, activeFilters, isSearchAreaFilter } = this.state;
-    if (prevState.isSearchAreaFilter && !isSearchAreaFilter)
+    if (prevState.isSearchAreaFilter && !isSearchAreaFilter && username)
       this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
   }
 
@@ -365,7 +372,7 @@ class Rewards extends React.Component {
   handleLoadMore = () => {
     const { propositions, hasMore, radius, coordinates, sort, activeFilters } = this.state;
     const { username, match } = this.props;
-    if (hasMore) {
+    if (hasMore && username) {
       this.setState(
         {
           loading: true,

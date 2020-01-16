@@ -7,13 +7,13 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import {
   getAuthenticatedUser,
+  getFetchFollowListError,
+  getFollowingFetched,
   getFollowingList,
+  getIsAuthenticated,
   getIsAuthFetching,
   getIsFetchingFollowingList,
-  getIsAuthenticated,
   getIsLoaded,
-  getFollowingFetched,
-  getFetchFollowListError,
   isGuestUser,
 } from '../reducers';
 import HorizontalBarChart from '../components/HorizontalBarChart';
@@ -49,9 +49,9 @@ class LetsGetStarted extends React.Component {
   };
 
   static getCurrentUserState(authenticatedUser, followingList, isGuest) {
-    const hasPost = authenticatedUser.last_root_post
-      ? authenticatedUser.last_root_post !== '1970-01-01T00:00:00'
-      : Boolean(authenticatedUser.count_posts);
+    const hasPost =
+      authenticatedUser.last_root_post &&
+      authenticatedUser.last_root_post !== '1970-01-01T00:00:00';
     const hasVoted = isGuest
       ? true
       : authenticatedUser.last_vote_time !== authenticatedUser.created;

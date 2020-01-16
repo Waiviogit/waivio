@@ -250,7 +250,7 @@ class Story extends React.Component {
         this.handleFollowClick(post);
         break;
       case 'save':
-        this.props.toggleBookmark(post.id, post.author_original || post.root_author, post.permlink);
+        this.props.toggleBookmark(`${post.author}/${post.root_permlink}`);
         break;
       case 'report':
         this.handleReportClick(post, postState);
