@@ -8,6 +8,7 @@ const { MATCH_JS, MATCH_CSS_LESS, DEFINE_PLUGIN } = require('./configUtils');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const { UnusedFilesWebpackPlugin } = require('unused-files-webpack-plugin');
 
 module.exports = function createConfig(env = 'dev') {
   const IS_DEV = env === 'dev';
@@ -54,6 +55,7 @@ module.exports = function createConfig(env = 'dev') {
     },
     plugins: [
       DEFINE_PLUGIN,
+      new UnusedFilesWebpackPlugin(),
       new webpack.NormalModuleReplacementPlugin(MATCH_CSS_LESS, 'identity-obj-proxy'),
       new webpack.optimize.LimitChunkCountPlugin({
         maxChunks: 1,

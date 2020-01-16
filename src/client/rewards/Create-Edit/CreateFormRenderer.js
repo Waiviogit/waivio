@@ -278,7 +278,6 @@ const CreateFormRenderer = props => {
               style={{ width: '100%' }}
               placeholder={fields.primaryObject.placeholder}
               handleSelect={handlers.setPrimaryObject}
-              isPermlinkValue={false}
               disabled={disabled}
               autoFocus={false}
             />,
@@ -299,7 +298,6 @@ const CreateFormRenderer = props => {
               itemsIdsToOmit={handlers.getObjectsToOmit()}
               style={{ width: '100%' }}
               handleSelect={handlers.handleAddSecondaryObjectToList}
-              isPermlinkValue={false}
               disabled={disabled || isEmpty(primaryObject)}
               parentPermlink={parentPermlink}
               autoFocus={false}
@@ -383,7 +381,6 @@ const CreateFormRenderer = props => {
               placeholder={fields.agreement.placeholder}
               handleSelect={handlers.handleAddPageObject}
               objectType={OBJECT_TYPE.PAGE}
-              isPermlinkValue={false}
               disabled={disabled}
               autoFocus={false}
             />,

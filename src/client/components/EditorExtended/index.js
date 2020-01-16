@@ -13,7 +13,6 @@ import createEditorState from './model/content';
 import QuoteCaptionBlock from './components/blocks/blockquotecaption';
 import CaptionBlock from './components/blocks/caption';
 import AtomicBlock from './components/blocks/atomic';
-import TodoBlock from './components/blocks/todo';
 import ImageBlock from './components/blocks/image';
 import BreakBlock from './components/blocks/break';
 
@@ -51,7 +50,6 @@ export {
   QuoteCaptionBlock,
   CaptionBlock,
   AtomicBlock,
-  TodoBlock,
   ImageBlock,
   BreakBlock,
   ImageSideButton,

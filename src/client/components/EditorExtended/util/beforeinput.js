@@ -13,7 +13,7 @@ export const StringToTypeMap = {
   '*.': Block.UL,
   '* ': Block.UL,
   '- ': Block.UL,
-  '1.': Block.OL,
+  '1. ': Block.OL,
   '# ': Block.H1,
   '## ': Block.H2,
   '###': Block.H3,

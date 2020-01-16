@@ -9,7 +9,7 @@ import { Form, message } from 'antd';
 import { createCampaign, getCampaignById, getObjectsByIds } from '../../../waivioApi/ApiClient';
 import CreateFormRenderer from './CreateFormRenderer';
 import { getClientWObj } from '../../adapters';
-import { UsedLocaleContext } from '../../Wrapper';
+import { AppSharedContext } from '../../Wrapper';
 import './CreateReward.less';
 
 @withRouter
@@ -19,12 +19,13 @@ class CreateRewardForm extends React.Component {
   static propTypes = {
     userName: PropTypes.string,
     user: PropTypes.shape(),
-    usedLocale: PropTypes.string,
     form: PropTypes.shape(),
     intl: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     currentSteemDollarPrice: PropTypes.number,
+    /* from context */
+    usedLocale: PropTypes.string,
   };
   static defaultProps = {
     userName: '',
@@ -425,7 +426,7 @@ class CreateRewardForm extends React.Component {
 }
 
 export default props => (
-  <UsedLocaleContext.Consumer>
-    {context => <CreateRewardForm {...props} usedLocale={context} />}
-  </UsedLocaleContext.Consumer>
+  <AppSharedContext.Consumer>
+    {context => <CreateRewardForm {...props} {...context} />}
+  </AppSharedContext.Consumer>
 );
