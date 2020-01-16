@@ -20,6 +20,7 @@
 
     & > p {
       color: #99aab5;
+
       &:last-of-type {
         margin-bottom: 4px;
       }
@@ -57,5 +58,25 @@
   &__version {
     margin-top: 16px;
     width: auto;
+  }
+
+  &__profile-image {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .ant-btn {
+      margin-left: 1rem;
+    }
+  }
+
+  &__modal {
+    .ant-modal-content {
+      width: 600px;
+    }
+
+    .ant-modal-body {
+      padding: 0 24px 24px;
+    }
   }
 }
