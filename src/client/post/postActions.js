@@ -13,19 +13,12 @@ export const FAKE_LIKE_POST_SUCCESS = '@post/FAKE_LIKE_POST_SUCCESS';
 export const FAKE_LIKE_POST_ERROR = '@post/FAKE_LIKE_POST_ERROR';
 
 export const getContent = (author, permlink, afterLike) => dispatch => {
-  // export const getContent = (author, permlink, afterLike) => (dispatch, getState, { steemAPI }) => {
   if (!author || !permlink) {
     return null;
   }
 
-  // const state = getState();
-  // const isGuest = state.auth.isGuestUser;
-
   // eslint-disable-next-line consistent-return
   const doApiRequest = () => ApiClient.getContent(author, permlink);
-  // if (afterLike && !isGuest) {
-  //   return steemAPI.sendAsync('get_content', [author, permlink]);
-  // }
 
   return dispatch({
     type: GET_CONTENT.ACTION,

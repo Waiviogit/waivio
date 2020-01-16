@@ -7,13 +7,13 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import {
   getAuthenticatedUser,
+  getFetchFollowListError,
+  getFollowingFetched,
   getFollowingList,
+  getIsAuthenticated,
   getIsAuthFetching,
   getIsFetchingFollowingList,
-  getIsAuthenticated,
   getIsLoaded,
-  getFollowingFetched,
-  getFetchFollowListError,
   isGuestUser,
 } from '../reducers';
 import HorizontalBarChart from '../components/HorizontalBarChart';
