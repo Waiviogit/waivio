@@ -30,10 +30,13 @@ const mapStateToProps = (state, { id }) => {
 
   const userVote = _.find(post.active_votes, { voter: user.name }) || {};
   const isAppend = !!post.append_field_name;
+  const bookmarks = getBookmarks(state);
   const postState = {
     isReblogged: getRebloggedList(state).includes(post.id),
     isReblogging: getPendingReblogs(state).includes(post.id),
-    isSaved: getBookmarks(state).includes(post.id),
+    isSaved: post.guestInfo
+      ? bookmarks.includes(`${post.guestInfo.userId}/${post.root_permlink}`)
+      : bookmarks.includes(post.id),
     isLiked: isAppend ? userVote.percent % 10 === 0 && userVote.percent > 0 : userVote.percent > 0,
     isReported: isAppend ? userVote.percent % 10 > 0 && userVote.percent > 0 : userVote.percent < 0,
     userFollowed: getFollowingList(state).includes(post.author),

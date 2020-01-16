@@ -5,6 +5,7 @@ import UserHeader from '../components/UserHeader';
 import UserHeaderLoading from '../components/UserHeaderLoading';
 import UserMenu from '../components/UserMenu';
 import Hero from '../components/Hero';
+import { GUEST_PREFIX } from '../../common/constants/waivio';
 
 const activityFields = [
   'last_owner_update',
@@ -33,7 +34,15 @@ class UserMenuWrapper extends React.Component {
     const { match, location, history, ...otherProps } = this.props;
     const current = this.props.location.pathname.split('/')[2];
     const currentKey = current || 'discussions';
-    return <UserMenu defaultKey={currentKey} onChange={this.onChange} {...otherProps} />;
+    const isGuest = match.params.name.startsWith(GUEST_PREFIX);
+    return (
+      <UserMenu
+        defaultKey={currentKey}
+        onChange={this.onChange}
+        isGuest={isGuest}
+        {...otherProps}
+      />
+    );
   }
 }
 

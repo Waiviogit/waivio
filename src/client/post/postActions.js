@@ -12,21 +12,13 @@ export const FAKE_LIKE_POST_START = '@post/FAKE_LIKE_POST_START';
 export const FAKE_LIKE_POST_SUCCESS = '@post/FAKE_LIKE_POST_SUCCESS';
 export const FAKE_LIKE_POST_ERROR = '@post/FAKE_LIKE_POST_ERROR';
 
-export const getContent = (author, permlink, afterLike) => (dispatch, getState, { steemAPI }) => {
+export const getContent = (author, permlink, afterLike) => dispatch => {
   if (!author || !permlink) {
     return null;
   }
 
-  const state = getState();
-  const isGuest = state.auth.isGuestUser;
-
   // eslint-disable-next-line consistent-return
-  const doApiRequest = () => {
-    if (afterLike && !isGuest) {
-      return steemAPI.sendAsync('get_content', [author, permlink]);
-    }
-    return ApiClient.getContent(author, permlink);
-  };
+  const doApiRequest = () => ApiClient.getContent(author, permlink);
 
   return dispatch({
     type: GET_CONTENT.ACTION,
@@ -62,29 +54,24 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
   return dispatch({
     type: TYPE,
     payload: {
-      promise: steemConnectAPI
-        .vote(voter, votedPostAuthor || post.author, post.permlink, weight)
-        .then(res => {
-          if (res.status === 200 && isGuest) {
-            return { isFakeLikeOk: true };
-          }
-          if (window.analytics) {
-            window.analytics.track('Vote', {
-              category: 'vote',
-              label: 'submit',
-              value: 1,
-            });
-          }
+      promise: steemConnectAPI.vote(voter, votedPostAuthor, post.permlink, weight).then(res => {
+        if (res.status === 200 && isGuest) {
+          return { isFakeLikeOk: true };
+        }
+        if (window.analytics) {
+          window.analytics.track('Vote', {
+            category: 'vote',
+            label: 'submit',
+            value: 1,
+          });
+        }
 
-          // // Delay to make sure you get the latest data (unknown issue with API)
-          if (!isGuest) {
-            setTimeout(
-              () => dispatch(getContent(votedPostAuthor || post.author, post.permlink, true)),
-              1000,
-            );
-          }
-          return res;
-        }),
+        // // Delay to make sure you get the latest data (unknown issue with API)
+        if (!isGuest) {
+          setTimeout(() => dispatch(getContent(post.author, post.permlink, true)), 1000);
+        }
+        return res;
+      }),
     },
     meta: isGuest
       ? {

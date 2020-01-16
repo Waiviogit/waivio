@@ -374,9 +374,9 @@ CreateImage.propTypes = {
   intl: PropTypes.shape().isRequired,
   form: PropTypes.shape().isRequired,
   selectedAlbum: PropTypes.shape(),
-  albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   onImageUpload: PropTypes.func.isRequired,
   onImageInvalid: PropTypes.func.isRequired,
+  albums: PropTypes.arrayOf(PropTypes.shape()),
   currentUsername: PropTypes.shape(),
   wObject: PropTypes.shape(),
   appendObject: PropTypes.func,
@@ -387,6 +387,7 @@ CreateImage.defaultProps = {
   selectedAlbum: null,
   currentUsername: {},
   wObject: {},
+  albums: [],
   appendObject: () => {},
   addImageToAlbumStore: () => {},
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import url from 'url';
-import { connect } from 'react-redux';
+import { connect, batch } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
@@ -130,15 +130,18 @@ export default class Wrapper extends React.PureComponent {
 
   componentDidMount() {
     this.props.login().then(() => {
-      this.props.getFollowing();
-      this.props.getFollowingObjects();
-      this.props.getNotifications();
-      this.props.busyLogin();
+      batch(() => {
+        this.props.getFollowing();
+        this.props.getFollowingObjects();
+        this.props.getNotifications();
+        this.props.busyLogin();
+      });
     });
-
-    this.props.getRewardFund();
-    this.props.getRebloggedList();
-    this.props.getRate();
+    batch(() => {
+      this.props.getRewardFund();
+      this.props.getRebloggedList();
+      this.props.getRate();
+    });
   }
 
   componentWillReceiveProps(nextProps) {
