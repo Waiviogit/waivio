@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import UserWalletSummary from '../wallet/UserWalletSummary';
+import { GUEST_PREFIX } from '../../common/constants/waivio';
 import { SBD, STEEM } from '../../common/constants/cryptos';
 import { getUserDetailsKey } from '../helpers/stateHelpers';
 import UserWalletTransactions from '../wallet/UserWalletTransactions';
@@ -22,6 +23,7 @@ import {
   getUserHasMoreAccountHistory,
   getCryptosPriceHistory,
   getScreenSize,
+  getGuestUserBalance,
 } from '../reducers';
 import {
   getGlobalProperties,
@@ -54,6 +56,7 @@ import WalletSidebar from '../components/Sidebar/WalletSidebar';
         : getUser(state, ownProps.match.params.name).name,
     ),
     cryptosPriceHistory: getCryptosPriceHistory(state),
+    guestBalance: getGuestUserBalance(state),
   }),
   {
     getGlobalProperties,
@@ -82,11 +85,13 @@ class Wallet extends Component {
     isCurrentUser: PropTypes.bool,
     authenticatedUserName: PropTypes.string,
     screenSize: PropTypes.string.isRequired,
+    guestBalance: PropTypes.number,
   };
 
   static defaultProps = {
     isCurrentUser: false,
     authenticatedUserName: '',
+    guestBalance: null,
   };
 
   componentDidMount() {
@@ -127,6 +132,7 @@ class Wallet extends Component {
       userHasMoreActions,
       usersAccountHistory,
       cryptosPriceHistory,
+      guestBalance,
       screenSize,
     } = this.props;
 
@@ -147,10 +153,29 @@ class Wallet extends Component {
 
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
 
+    const isGuest = user.name.startsWith(GUEST_PREFIX);
+
+    const walletTransactions =
+      transactions.length === 0 && usersAccountHistoryLoading ? (
+        <Loading style={{ marginTop: '20px' }} />
+      ) : (
+        <UserWalletTransactions
+          transactions={transactions}
+          actions={actions}
+          currentUsername={user.name}
+          totalVestingShares={totalVestingShares}
+          totalVestingFundSteem={totalVestingFundSteem}
+          getMoreUserAccountHistory={this.props.getMoreUserAccountHistory}
+          loadingMoreUsersAccountHistory={loadingMoreUsersAccountHistory}
+          userHasMoreActions={userHasMoreActions}
+        />
+      );
+
     return (
       <div>
         <UserWalletSummary
           user={user}
+          balance={isGuest ? guestBalance : user.balance}
           loading={user.fetching}
           totalVestingShares={totalVestingShares}
           totalVestingFundSteem={totalVestingFundSteem}
@@ -158,22 +183,10 @@ class Wallet extends Component {
           steemRate={currentSteemRate}
           sbdRate={currentSBDRate}
           steemRateLoading={steemRateLoading}
+          isGuest={isGuest}
         />
         {isMobile && <WalletSidebar />}
-        {transactions.length === 0 && usersAccountHistoryLoading ? (
-          <Loading style={{ marginTop: '20px' }} />
-        ) : (
-          <UserWalletTransactions
-            transactions={transactions}
-            actions={actions}
-            currentUsername={user.name}
-            totalVestingShares={totalVestingShares}
-            totalVestingFundSteem={totalVestingFundSteem}
-            getMoreUserAccountHistory={this.props.getMoreUserAccountHistory}
-            loadingMoreUsersAccountHistory={loadingMoreUsersAccountHistory}
-            userHasMoreActions={userHasMoreActions}
-          />
-        )}
+        {walletTransactions}
       </div>
     );
   }

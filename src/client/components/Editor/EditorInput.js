@@ -125,7 +125,6 @@ class EditorInput extends React.Component {
       endPos,
       value.length,
     )}`;
-    this.resizeTextarea();
     this.setValue(newValue, startPos + imageText.length, startPos + imageText.length);
   }
 
@@ -141,7 +140,6 @@ class EditorInput extends React.Component {
       endPos,
       value.length,
     )}`;
-    this.resizeTextarea();
     this.setValue(newValue, startPos + wObjText.length, startPos + wObjText.length);
   }
 
@@ -186,12 +184,6 @@ class EditorInput extends React.Component {
       default:
         break;
     }
-
-    this.resizeTextarea();
-  }
-
-  resizeTextarea() {
-    if (this.originalInput) this.originalInput.resizeTextarea();
   }
 
   handlers = {

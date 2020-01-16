@@ -78,7 +78,7 @@ export default (messageFactory, validators, userName) => ({
   sponsorsList: {
     name: 'sponsorsList',
     label: messageFactory(
-      'registered_upvoting_accounts_ext',
+      'registered_upvoting_accounts_text',
       `Registered upvoting accounts besides @${userName} (optional, up to 5)`,
     ),
     placeholder: messageFactory('users_auto_complete_placeholder', 'Find user'),

@@ -10,6 +10,7 @@ import { getVoteValue } from '../../helpers/user';
 import { calculateVotingPower } from '../../vendor/steemitHelpers';
 import SocialLinks from '../../components/SocialLinks';
 import USDDisplay from '../../components/Utils/USDDisplay';
+import { GUEST_PREFIX } from '../../../common/constants/waivio';
 
 @injectIntl
 @connect((state, ownProps) => ({
@@ -61,13 +62,10 @@ class UserInfo extends React.Component {
       hostWithoutWWW = hostWithoutWWW.slice(4);
     }
 
-    const voteWorth = getVoteValue(
-      user,
-      rewardFund.recent_claims,
-      rewardFund.reward_balance,
-      rate,
-      10000,
-    );
+    const voteWorth =
+      user && rewardFund.recent_claims && rewardFund.reward_balance && rate
+        ? getVoteValue(user, rewardFund.recent_claims, rewardFund.reward_balance, rate, 10000)
+        : 0;
 
     return (
       <div>
@@ -95,7 +93,7 @@ class UserInfo extends React.Component {
                   id="joined_date"
                   defaultMessage="Joined {date}"
                   values={{
-                    date: intl.formatDate(user.created, {
+                    date: intl.formatDate(user.created || user.createdAt, {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',
@@ -103,24 +101,28 @@ class UserInfo extends React.Component {
                   }}
                 />
               </div>
-              <div>
-                <i className="iconfont icon-flashlight text-icon" />
-                <FormattedMessage id="voting_power" defaultMessage="Voting Power" />:{' '}
-                <FormattedNumber
-                  style="percent" // eslint-disable-line react/style-prop-object
-                  value={calculateVotingPower(user)}
-                  maximumFractionDigits={0}
-                />
-              </div>
-              <div>
-                <i className="iconfont icon-dollar text-icon" />
-                <FormattedMessage id="vote_value" defaultMessage="Vote Value" />:{' '}
-                {isNaN(voteWorth) ? (
-                  <Icon type="loading" className="text-icon-right" />
-                ) : (
-                  <USDDisplay value={voteWorth} />
-                )}
-              </div>
+              {!user.name.startsWith(GUEST_PREFIX) && (
+                <React.Fragment>
+                  <div>
+                    <i className="iconfont icon-flashlight text-icon" />
+                    <FormattedMessage id="voting_power" defaultMessage="Voting Power" />:{' '}
+                    <FormattedNumber
+                      style="percent" // eslint-disable-line react/style-prop-object
+                      value={calculateVotingPower(user)}
+                      maximumFractionDigits={0}
+                    />
+                  </div>
+                  <div>
+                    <i className="iconfont icon-dollar text-icon" />
+                    <FormattedMessage id="vote_value" defaultMessage="Vote Value" />:{' '}
+                    {isNaN(voteWorth) ? (
+                      <Icon type="loading" className="text-icon-right" />
+                    ) : (
+                      <USDDisplay value={voteWorth} />
+                    )}
+                  </div>
+                </React.Fragment>
+              )}
               <SocialLinks profile={profile} />
             </div>
           </div>

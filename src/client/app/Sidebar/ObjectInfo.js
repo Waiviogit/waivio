@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import { Button, Icon } from 'antd';
+import { Button, Icon, Tag } from 'antd';
 import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -99,7 +99,11 @@ class ObjectInfo extends React.Component {
       const len = categoryItems.length < 5 ? categoryItems.length : 5;
       // eslint-disable-next-line no-plusplus
       for (let i = 0; i < len; i++) {
-        elements.push(<span key={categoryItems[i].name}>{`${categoryItems[i].name}, `}</span>);
+        elements.push(
+          <Tag color="orange">
+            <Link to={`/object/${categoryItems[i].name}`}>{categoryItems[i].name}</Link>
+          </Tag>,
+        );
       }
       // eslint-disable-next-line no-unused-expressions
       categoryItems.length > 5 && elements.push(<span>Show more...</span>);
@@ -326,10 +330,13 @@ class ObjectInfo extends React.Component {
           )}
           {!isEditMode &&
             sortListItemsBy(
-              combineObjectMenu(menuItems.map(menuItem => getClientWObj(menuItem, usedLocale)), {
-                button,
-                news: Boolean(newsFilter),
-              }),
+              combineObjectMenu(
+                menuItems.map(menuItem => getClientWObj(menuItem, usedLocale)),
+                {
+                  button,
+                  news: Boolean(newsFilter),
+                },
+              ),
               !_.isEmpty(wobject.sortCustom) ? 'custom' : '',
               wobject && wobject.sortCustom,
             ).map(item => getMenuSectionLink(item))}

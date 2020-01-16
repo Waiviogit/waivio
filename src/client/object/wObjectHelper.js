@@ -100,7 +100,14 @@ export const getFieldsWithMaxWeight = (wObj, usedLocale = 'en-US', defaultLocale
 
   // firstly, looking for fields upvoted by moderator
   let maxWeightedFields = mapValues(
-    groupBy(orderBy(wObj.fields.filter(f => f.upvotedByModerator), 'weight', 'desc'), 'name'),
+    groupBy(
+      orderBy(
+        wObj.fields.filter(f => f.upvotedByModerator),
+        'weight',
+        'desc',
+      ),
+      'name',
+    ),
     fieldsArr =>
       fieldsArr.find(f => f.locale === usedLocale || f.locale === defaultLocale) || fieldsArr[0],
   );

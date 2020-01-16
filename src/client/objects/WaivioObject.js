@@ -7,12 +7,12 @@ import WeightTag from '../components/WeightTag';
 import FollowButton from '../widgets/FollowButton';
 import ObjectAvatar from '../components/ObjectAvatar';
 import { addressFields, objectFields, websiteFields } from '../../common/constants/listOfFields';
-import { UsedLocaleContext } from '../Wrapper';
+import { AppSharedContext } from '../Wrapper';
 import { getClientWObj } from '../adapters';
 import './WaivioObject.less';
 
 const WaivioObject = ({ wobj }) => {
-  const usedLocale = useContext(UsedLocaleContext);
+  const { usedLocale } = useContext(AppSharedContext);
   const wObject = getClientWObj(wobj, usedLocale);
   const { address, default_name: defaultName, name, website } = wObject;
 

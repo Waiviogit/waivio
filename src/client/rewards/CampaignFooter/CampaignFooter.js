@@ -5,10 +5,10 @@ import { injectIntl } from 'react-intl';
 import { Modal } from 'antd';
 import find from 'lodash/find';
 import Slider from '../../components/Slider/Slider';
-import Payout from '../../components/StoryFooter/Payout';
 import CampaignButtons from './CampaignButtons';
 import Comments from '../../comments/Comments';
 import { getVoteValue } from '../../helpers/user';
+import { getDaysLeft } from '../rewardsHelper';
 import { getRate, getAppUrl } from '../../reducers';
 import Confirmation from '../../components/StoryFooter/Confirmation';
 import withAuthActions from '../../auth/withAuthActions';
@@ -64,6 +64,7 @@ class CampaignFooter extends React.Component {
     onShareClick: () => {},
     handlePostPopoverMenuClick: () => {},
     discardPr: () => {},
+    isComment: false,
   };
 
   constructor(props) {
@@ -75,6 +76,8 @@ class CampaignFooter extends React.Component {
       sliderValue: 100,
       voteWorth: 0,
       modalVisible: false,
+      reservedUser: {},
+      daysLeft: 0,
     };
     this.handlePostPopoverMenuClick = this.handlePostPopoverMenuClick.bind(this);
   }
@@ -94,6 +97,15 @@ class CampaignFooter extends React.Component {
         });
       }
     }
+  }
+
+  componentDidMount() {
+    const { user, proposition } = this.props;
+    const reservedUser = find(proposition.reserved_users, resUser => resUser.name === user.name);
+    // eslint-disable-next-line react/no-did-mount-set-state
+    this.setState({
+      daysLeft: getDaysLeft(reservedUser.createdAt, proposition.count_reservation_days),
+    });
   }
 
   onLikeClick = (post, postState, weight = 10000) => {
@@ -190,10 +202,11 @@ class CampaignFooter extends React.Component {
     if (this.props.post.children > 0) {
       this.setState(prevState => ({ commentsVisible: isVisible || !prevState.commentsVisible }));
     }
+    this.setState({ isComment: !this.state.isComment });
   };
 
   render() {
-    const { commentsVisible, modalVisible } = this.state;
+    const { commentsVisible, modalVisible, isComment, daysLeft } = this.state;
     const {
       post,
       postState,
@@ -214,12 +227,12 @@ class CampaignFooter extends React.Component {
     return (
       <div className="CampaignFooter">
         <div className="CampaignFooter__actions">
-          <Payout post={post} />
           {this.state.sliderVisible && (
             <Confirmation onConfirm={this.handleLikeConfirm} onCancel={this.handleSliderCancel} />
           )}
           {!this.state.sliderVisible && (
             <CampaignButtons
+              daysLeft={daysLeft}
               post={post}
               postState={postState}
               pendingLike={pendingLike}
@@ -247,7 +260,7 @@ class CampaignFooter extends React.Component {
             onChange={this.handleSliderChange}
           />
         )}
-        {!singlePostVew && (
+        {!singlePostVew && isComment && (
           <Comments show={commentsVisible} isQuickComments={!singlePostVew} post={post} />
         )}
         <Modal

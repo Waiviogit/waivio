@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { Modal } from 'antd';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
 import WeightTag from '../../WeightTag';
@@ -14,11 +14,11 @@ const initialState = {
   experts: [],
   loading: true,
   skip: 0,
-  limit: 5,
+  limit: 15,
   hasNext: true,
 };
 
-const ObjectExpertiseByType = ({ match }) => {
+const ObjectExpertiseByType = ({ match, intl }) => {
   const typeName = match.params.typeName;
   const [objectsState, setObjectsState] = useState(initialState);
   const [showModal, setShowModal] = useState(false);
@@ -32,7 +32,7 @@ const ObjectExpertiseByType = ({ match }) => {
           ...objectsState,
           experts: [...objectsState.experts, ...data],
           skip: skip + limit,
-          hasNext: data.length === 5,
+          hasNext: data.length === 15,
         });
       })
       .catch(() => setObjectsState({ ...objectsState, hasNext: false, loading: false }));
@@ -47,7 +47,7 @@ const ObjectExpertiseByType = ({ match }) => {
           experts: [...data],
           skip: skip + limit,
           loading: false,
-          hasNext: data.length === 5,
+          hasNext: data.length === 15,
         });
       })
       .catch(() => setObjectsState({ ...initialState, loading: false }));
@@ -81,9 +81,9 @@ const ObjectExpertiseByType = ({ match }) => {
       const renderButtons = () => (
         <h4 className="ObjectExpertiseByType__more">
           {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-          <div onClick={() => setShowModal(true)} id="show_more_div">
-            <FormattedMessage id="show_more" defaultMessage="Show more" />
-          </div>
+          <a onClick={() => setShowModal(true)} id="show_more_div">
+            {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}
+          </a>
         </h4>
       );
 
@@ -95,17 +95,17 @@ const ObjectExpertiseByType = ({ match }) => {
 
       renderCard = (
         <div className="SidebarContentBlock" key={typeName}>
-          <h4 className="SidebarContentBlock__title">
+          <div className="SidebarContentBlock__title">
             <i className="iconfont icon-collection SidebarContentBlock__icon" />{' '}
-            <FormattedMessage id="type_experts" defaultMessage="Type Experts" />
-          </h4>
+            {intl.formatMessage({ id: 'type_experts', defaultMessage: 'Type Experts' })}
+          </div>
           <div className="SidebarContentBlock__content">{renderObjects}</div>
           {renderButtons()}
           <div id="ObjectExpertiseByType__Modal" onWheel={_.throttle(onWheelHandler, 120)}>
             <Modal
-              title="Related"
+              title={intl.formatMessage({ id: 'type_experts', defaultMessage: 'Type Experts' })}
               visible={showModal}
-              onOk={() => setShowModal(false)}
+              footer={null}
               onCancel={() => setShowModal(false)}
             >
               {renderObjectsModal}
@@ -123,6 +123,7 @@ const ObjectExpertiseByType = ({ match }) => {
 
 ObjectExpertiseByType.propTypes = {
   match: PropTypes.shape().isRequired,
+  intl: PropTypes.shape().isRequired,
 };
 
-export default ObjectExpertiseByType;
+export default injectIntl(ObjectExpertiseByType);

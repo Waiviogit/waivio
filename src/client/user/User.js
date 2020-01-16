@@ -91,7 +91,7 @@ export default class User extends React.Component {
     if (authenticated) {
       currentUserFollowersUser(authenticatedUserName, this.props.match.params.name).then(resp => {
         const result = _.head(resp);
-        const followingUsername = _.get(result, 'following', '');
+        const followingUsername = _.get(result, 'following', null);
         const isFollowing = this.props.authenticatedUserName === followingUsername;
         this.setState({
           isFollowing,
@@ -110,7 +110,7 @@ export default class User extends React.Component {
       currentUserFollowersUser(nextProps.authenticatedUserName, nextProps.match.params.name).then(
         resp => {
           const result = _.head(resp);
-          const followingUsername = _.get(result, 'following', '');
+          const followingUsername = _.get(result, 'following', null);
           const isFollowing = nextProps.authenticatedUserName === followingUsername;
           this.setState({
             isFollowing,

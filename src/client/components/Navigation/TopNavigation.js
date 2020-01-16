@@ -12,7 +12,6 @@ const LINKS = {
   FEED_PROMOTED: '/promoted',
   REWARDS: '/rewards',
   DISCOVER: '/discover-objects',
-  TOOLS_ACTIVITY: '/activity',
   TOOLS_DRAFTS: '/drafts',
   TOOLS_BOOKMARKS: '/bookmarks',
   TOOLS_EDIT_PROFILE: '/edit-profile',
@@ -32,10 +31,9 @@ const TOOLS_URLS = [
   LINKS.TOOLS_EDIT_PROFILE,
   LINKS.TOOLS_INVITE,
   LINKS.TOOLS_SETTINGS,
-  LINKS.TOOLS_ACTIVITY,
 ];
 
-const TopNavigation = ({ authenticated, location: { pathname } }) => {
+const TopNavigation = ({ location: { pathname } }) => {
   const isRouteMathed =
     pathname === '/' || Object.values(LINKS).some(url => pathname.includes(url));
   return isRouteMathed ? (
@@ -97,7 +95,7 @@ const TopNavigation = ({ authenticated, location: { pathname } }) => {
 };
 
 TopNavigation.propTypes = {
-  authenticated: PropTypes.bool.isRequired,
+  // authenticated: PropTypes.bool.isRequired,
   location: PropTypes.shape(),
 };
 

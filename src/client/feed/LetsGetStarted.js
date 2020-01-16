@@ -7,13 +7,14 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import {
   getAuthenticatedUser,
+  getFetchFollowListError,
+  getFollowingFetched,
   getFollowingList,
+  getIsAuthenticated,
   getIsAuthFetching,
   getIsFetchingFollowingList,
-  getIsAuthenticated,
   getIsLoaded,
-  getFollowingFetched,
-  getFetchFollowListError,
+  isGuestUser,
 } from '../reducers';
 import HorizontalBarChart from '../components/HorizontalBarChart';
 import LetsGetStartedIcon from './LetsGetStartedIcon';
@@ -28,6 +29,7 @@ import './LetsGetStarted.less';
   authenticated: getIsAuthenticated(state),
   followingFetched: getFollowingFetched(state),
   fetchFollowListError: getFetchFollowListError(state),
+  isGuest: isGuestUser(state),
 }))
 class LetsGetStarted extends React.Component {
   static propTypes = {
@@ -39,11 +41,20 @@ class LetsGetStarted extends React.Component {
     loaded: PropTypes.bool.isRequired,
     followingFetched: PropTypes.bool.isRequired,
     fetchFollowListError: PropTypes.bool.isRequired,
+    isGuest: PropTypes.bool,
   };
 
-  static getCurrentUserState(authenticatedUser, followingList) {
-    const hasPost = authenticatedUser.last_root_post !== '1970-01-01T00:00:00';
-    const hasVoted = authenticatedUser.last_vote_time !== authenticatedUser.created;
+  static defaultProps = {
+    isGuest: false,
+  };
+
+  static getCurrentUserState(authenticatedUser, followingList, isGuest) {
+    const hasPost =
+      authenticatedUser.last_root_post &&
+      authenticatedUser.last_root_post !== '1970-01-01T00:00:00';
+    const hasVoted = isGuest
+      ? true
+      : authenticatedUser.last_vote_time !== authenticatedUser.created;
     const jsonMetadata = _.attempt(JSON.parse, authenticatedUser.json_metadata);
     const hasProfile =
       _.has(jsonMetadata, 'profile.name') &&
@@ -62,7 +73,11 @@ class LetsGetStarted extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = LetsGetStarted.getCurrentUserState(props.authenticatedUser, props.followingList);
+    this.state = LetsGetStarted.getCurrentUserState(
+      props.authenticatedUser,
+      props.followingList,
+      props.isGuest,
+    );
   }
 
   componentWillReceiveProps(nextProps) {
@@ -70,6 +85,7 @@ class LetsGetStarted extends React.Component {
     const newUserState = LetsGetStarted.getCurrentUserState(
       nextProps.authenticatedUser,
       nextProps.followingList,
+      nextProps.isGuest,
     );
     const diffHasProfile = this.state.hasProfile !== newUserState.hasProfile;
     const diffHasPost = this.state.hasPost !== newUserState.hasPost;
@@ -94,11 +110,15 @@ class LetsGetStarted extends React.Component {
       loaded,
       followingFetched,
       fetchFollowListError,
+      isGuest,
     } = this.props;
     const { hasProfile, hasPost, hasVoted, hasFollowed } = this.state;
-    const totalOptions = 4;
+    const totalOptions = isGuest ? 3 : 4;
+    const actionsArray = isGuest
+      ? [hasProfile, hasPost, hasFollowed]
+      : [hasProfile, hasPost, hasVoted, hasFollowed];
     const currentSelected = _.reduce(
-      [hasProfile, hasPost, hasVoted, hasFollowed],
+      actionsArray,
       (total, current) => {
         let newTotal = total;
         if (current) {
@@ -165,22 +185,24 @@ class LetsGetStarted extends React.Component {
               </span>
             </Link>
           </div>
-          <div className="LetsGetStarted__action">
-            <LetsGetStartedIcon
-              renderCheck={hasVoted}
-              isLoading={isAuthFetching}
-              iconClassName="icon-praise"
-            />
-            <Link to="/trending">
-              <span
-                className={classNames('LetsGetStarted__action__text', {
-                  LetsGetStarted__action__completed: hasVoted,
-                })}
-              >
-                <FormattedMessage id="like_good_posts" defaultMessage="Like some good posts" />
-              </span>
-            </Link>
-          </div>
+          {!this.props.isGuest && (
+            <div className="LetsGetStarted__action">
+              <LetsGetStartedIcon
+                renderCheck={hasVoted}
+                isLoading={isAuthFetching}
+                iconClassName="icon-praise"
+              />
+              <Link to="/trending">
+                <span
+                  className={classNames('LetsGetStarted__action__text', {
+                    LetsGetStarted__action__completed: hasVoted,
+                  })}
+                >
+                  <FormattedMessage id="like_good_posts" defaultMessage="Like some good posts" />
+                </span>
+              </Link>
+            </div>
+          )}
           <div className="LetsGetStarted__action">
             <LetsGetStartedIcon
               renderCheck={hasPost}

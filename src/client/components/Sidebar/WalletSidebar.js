@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
 import { openTransfer, openPowerUpOrDown } from '../../wallet/walletActions';
-import { getAuthenticatedUser, getCryptosPriceHistory } from '../../reducers';
+import { getAuthenticatedUser, getCryptosPriceHistory, isGuestUser } from '../../reducers';
 import { STEEM, SBD } from '../../../common/constants/cryptos';
 import Action from '../Button/Action';
 import ClaimRewardsBlock from '../../wallet/ClaimRewardsBlock';
@@ -15,6 +15,7 @@ import './WalletSidebar.less';
 @withRouter
 @connect(
   state => ({
+    isGuest: isGuestUser(state),
     user: getAuthenticatedUser(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
   }),
@@ -31,12 +32,14 @@ class WalletSidebar extends React.Component {
     openTransfer: PropTypes.func.isRequired,
     openPowerUpOrDown: PropTypes.func.isRequired,
     cryptosPriceHistory: PropTypes.shape(),
+    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
     user: {},
     isCurrentUser: false,
     cryptosPriceHistory: {},
+    isGuest: false,
   };
 
   handleOpenTransfer = () => {
@@ -56,8 +59,7 @@ class WalletSidebar extends React.Component {
   handleChartsLoading = () => {};
 
   render() {
-    const { match, user, isCurrentUser, cryptosPriceHistory } = this.props;
-    console.log(cryptosPriceHistory);
+    const { match, user, isCurrentUser, cryptosPriceHistory, isGuest } = this.props;
     const ownProfile = match.params.name === user.name || isCurrentUser;
     const cryptos = [STEEM.symbol, SBD.symbol];
     const steemBalance = user.balance ? String(user.balance).match(/^[\d.]+/g)[0] : 0;
@@ -66,7 +68,7 @@ class WalletSidebar extends React.Component {
         <Action big className="WalletSidebar__transfer" primary onClick={this.handleOpenTransfer}>
           <FormattedMessage id="transfer" defaultMessage="Transfer" />
         </Action>
-        {ownProfile && (
+        {ownProfile && !isGuest && (
           <div className="WalletSidebar__power">
             <Action big onClick={this.handleOpenPowerUp}>
               <FormattedMessage id="power_up" defaultMessage="Power up" />
@@ -83,9 +85,11 @@ class WalletSidebar extends React.Component {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <Action big className="WalletSidebar__transfer">
-            <FormattedMessage id="exchange" defaultMessage="Exchange" />
-          </Action>
+          {!isGuest && (
+            <Action big className="WalletSidebar__transfer">
+              <FormattedMessage id="exchange" defaultMessage="Exchange" />
+            </Action>
+          )}
         </a>
       </div>
     );

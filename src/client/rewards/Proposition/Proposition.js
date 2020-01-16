@@ -3,11 +3,10 @@ import React, { useContext, useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { Button, message, Modal } from 'antd';
-import { Link } from 'react-router-dom';
+import { Button, message, Modal, Icon } from 'antd';
+import classNames from 'classnames';
 import { getClientWObj } from '../../adapters';
 import ObjectCardView from '../../objectCard/ObjectCardView';
-import Avatar from '../../components/Avatar';
 import CampaignFooter from '../CampaignFooter/CampainFooterContainer';
 import { getSingleComment } from '../../comments/commentsActions';
 import { getCommentContent } from '../../reducers';
@@ -15,7 +14,9 @@ import { connect } from 'react-redux';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { rejectReservationCampaign, reserveActivatedCampaign } from '../../../waivioApi/ApiClient';
 import { generatePermlink } from '../../helpers/wObjectHelper';
-import { UsedLocaleContext } from '../../Wrapper';
+import { AppSharedContext } from '../../Wrapper';
+import Details from '../Details/Details';
+import CampaignCardHeader from '../CampaignCardHeader/CampaignCardHeader';
 import './Proposition.less';
 
 const Proposition = ({
@@ -26,14 +27,14 @@ const Proposition = ({
   discardProposition,
   loading,
   wobj,
-  toggleModal,
   assigned,
   post,
   getSingleComment,
   authorizedUserName,
 }) => {
-  const usedLocale = useContext(UsedLocaleContext);
+  const { usedLocale } = useContext(AppSharedContext);
   const proposedWobj = getClientWObj(wobj, usedLocale);
+  const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
   const requiredObjectName = getFieldWithMaxWeight(
     proposition.required_object,
     'name',
@@ -44,7 +45,7 @@ const Proposition = ({
   }, []);
 
   const toggleModalDetails = () => {
-    toggleModal(proposition);
+    setModalDetailsOpen(!isModalDetailsOpen);
   };
 
   const discardPr = obj => {
@@ -117,40 +118,17 @@ const Proposition = ({
 
   return (
     <div className="Proposition">
-      <div className="RewardsHeader-block">
-        <div className="RewardsHeader-wrap">
-          {`${intl.formatMessage({
-            id: 'rewards_for_review',
-            defaultMessage: `Reward for review`,
-          })}:`}
-          <span className="RewardsHeader-payment">{`${proposition.reward} STEEM`}</span>
-        </div>
-        <div className="RewardsHeader-wrap-second">
-          <div className="RewardsHeader__user-card">
-            <Link to={`/@${proposition.guide.name}`}>
-              <Avatar username={proposition.guide.name} size={34} />
-            </Link>
-            <Link to={`/@${proposition.guide.name}`} title={proposition.guide.name}>
-              <div className="RewardsHeader__user-card-alias">
-                {proposition.guide.alias} (
-                {intl.formatMessage({
-                  id: 'sponsor',
-                  defaultMessage: `Sponsor`,
-                })}
-                )
-              </div>
-              <div className="RewardsHeader__user-card-username">{`@${
-                proposition.guide.name
-              } (${intl.formatMessage({
-                id: 'paid',
-                defaultMessage: `Total paid`,
-              })} ${proposition.guide.total_payed} STEEM)`}</div>
-            </Link>
-          </div>
-        </div>
+      <div className="Proposition__header">
+        <CampaignCardHeader campaignData={proposition} />
       </div>
-      <ObjectCardView wObject={proposedWobj} key={proposedWobj.id} />
-      <div className="RewardsFooter-wrap">
+      <div className="Proposition__card">
+        <ObjectCardView wObject={proposedWobj} key={proposedWobj.id} />
+      </div>
+      <div
+        className={classNames('Proposition__footer', {
+          'justify-end': assigned === null || isReserved,
+        })}
+      >
         {proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (
           <CampaignFooter
             post={post}
@@ -163,12 +141,12 @@ const Proposition = ({
         ) : (
           <React.Fragment>
             {assigned !== null && !assigned && !isReserved && (
-              <div className="RewardsFooter-button">
+              <div className="Proposition__footer-button">
                 <Button
                   type="primary"
                   loading={loading}
-                  disabled={loading}
-                  onClick={reserveOnClickHandler}
+                  disabled={loading || proposition.isReservedSiblingObj}
+                  onClick={toggleModalDetails}
                 >
                   {intl.formatMessage({
                     id: 'reserve',
@@ -185,15 +163,28 @@ const Proposition = ({
                   })}`}
               </div>
             )}
-            <a role="presentation" className="RewardsHeader" onClick={toggleModalDetails}>
-              {intl.formatMessage({
-                id: 'details',
-                defaultMessage: `Details`,
-              })}
-            </a>
+            <div className="Proposition__footer-details" onClick={toggleModalDetails}>
+              <span role="presentation">
+                {intl.formatMessage({
+                  id: 'details',
+                  defaultMessage: `Details`,
+                })}
+              </span>
+              <Icon type="right" />
+            </div>
           </React.Fragment>
         )}
       </div>
+      <Details
+        isModalDetailsOpen={isModalDetailsOpen}
+        objectDetails={proposition}
+        toggleModal={toggleModalDetails}
+        reserveOnClickHandler={reserveOnClickHandler}
+        loading={loading}
+        assigned={assigned}
+        isReserved={isReserved}
+        proposedWobj={proposedWobj}
+      />
       <Modal
         closable
         maskClosable={false}
@@ -222,7 +213,6 @@ Proposition.propTypes = {
   loading: PropTypes.bool.isRequired,
   assigned: PropTypes.bool,
   assignCommentPermlink: PropTypes.string,
-  toggleModal: PropTypes.func.isRequired,
   intl: PropTypes.shape().isRequired,
   post: PropTypes.shape(),
 };

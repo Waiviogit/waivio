@@ -1,0 +1,85 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.Details {
+  .nowrap {
+    white-space: nowrap;
+  }
+
+  .ant-modal {
+    top: 24px;
+  }
+  .ant-modal-body {
+    padding-top: 0.75rem;
+    border: 1px solid @orange-hot;
+  }
+
+  &__modal-title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: normal;
+  }
+
+  &__title-wrap {
+    display: flex;
+    font-size: 20px;
+    justify-content: space-between;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid @blue-hawkesBlue;
+
+    &-name {
+      font-weight: 600;
+    }
+
+    &-data {
+      &-colored {
+        color: @orange-hot;
+      }
+    }
+  }
+
+  &__header {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__text-wrap {
+    margin: 0 3.5rem 3.5rem;
+  }
+
+  &__criteria-wrap {
+    margin-left: 1rem;
+  }
+
+  &__criteria-link {
+    max-width: 50%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__criteria-row {
+    display: flex;
+
+    .ant-checkbox-wrapper {
+      font-size: 0.75rem;
+      margin-right: 0.5rem;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: center;
+
+    &-reserve-btn {
+      display: flex;
+      align-items: center;
+
+      button {
+        margin-right: 1rem;
+      }
+    }
+  }
+}

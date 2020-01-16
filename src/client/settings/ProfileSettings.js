@@ -4,9 +4,11 @@ import Helmet from 'react-helmet';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Form, Input } from 'antd';
+import { Form, Input, Avatar, Button, Modal } from 'antd';
+import uuidv4 from 'uuid/v4';
 import SteemConnect from '../steemConnectAPI';
-import { getIsReloading, getAuthenticatedUser } from '../reducers';
+import { updateProfile } from '../auth/authActions';
+import { getIsReloading, getAuthenticatedUser, isGuestUser } from '../reducers';
 import socialProfiles from '../helpers/socialProfiles';
 import withEditor from '../components/Editor/withEditor';
 import EditorInput from '../components/Editor/EditorInput';
@@ -16,15 +18,18 @@ import Action from '../components/Button/Action';
 import Affix from '../components/Utils/Affix';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import requiresLogin from '../auth/requiresLogin';
-import './Settings.less';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
+import ImageSetter from '../components/ImageSetter/ImageSetter';
+import { isValidImage } from '../helpers/image';
+import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../common/constants/validation';
+import { objectFields } from '../../common/constants/listOfFields';
+import './Settings.less';
 
 const FormItem = Form.Item;
 
 function mapPropsToFields(props) {
   let metadata = _.attempt(JSON.parse, props.user.json_metadata);
   if (_.isError(metadata)) metadata = {};
-
   const profile = metadata.profile || {};
 
   return Object.keys(profile).reduce(
@@ -40,10 +45,16 @@ function mapPropsToFields(props) {
 
 @requiresLogin
 @injectIntl
-@connect(state => ({
-  user: getAuthenticatedUser(state),
-  reloading: getIsReloading(state),
-}))
+@connect(
+  state => ({
+    user: getAuthenticatedUser(state),
+    reloading: getIsReloading(state),
+    isGuest: isGuestUser(state),
+  }),
+  {
+    updateProfile,
+  },
+)
 @Form.create({
   mapPropsToFields,
 })
@@ -52,13 +63,21 @@ export default class ProfileSettings extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     form: PropTypes.shape().isRequired,
+    userName: PropTypes.string,
     onImageUpload: PropTypes.func,
     onImageInvalid: PropTypes.func,
+    isGuest: PropTypes.bool,
+    updateProfile: PropTypes.func,
+    user: PropTypes.string,
   };
 
   static defaultProps = {
     onImageUpload: () => {},
     onImageInvalid: () => {},
+    userName: '',
+    user: '',
+    isGuest: false,
+    updateProfile: () => {},
   };
 
   constructor(props) {
@@ -66,6 +85,16 @@ export default class ProfileSettings extends React.Component {
 
     this.state = {
       bodyHTML: '',
+      profilePicture: {},
+      coverPicture: {},
+      isModal: false,
+      isLoadingImage: false,
+      avatarImage: [],
+      coverImage: [],
+      isChangedAvatar: false,
+      isChangedCover: false,
+      isCover: false,
+      isAvatar: false,
     };
 
     this.handleSignatureChange = this.handleSignatureChange.bind(this);
@@ -73,20 +102,100 @@ export default class ProfileSettings extends React.Component {
     this.renderBody = this.renderBody.bind(this);
   }
 
+  componentDidMount() {
+    const { user } = this.props;
+    const profileData = _.attempt(JSON.parse, user.json_metadata);
+    // eslint-disable-next-line react/no-did-mount-set-state
+    this.setState({
+      profilePicture: profileData.profile.profile_image,
+      coverPicture: profileData.profile.cover_image,
+    });
+  }
+
   handleSignatureChange(body) {
     _.throttle(this.renderBody, 200, { leading: false, trailing: true })(body);
   }
 
+  handleChangeImage = e => {
+    if (e.target.files && e.target.files[0]) {
+      if (
+        !isValidImage(e.target.files[0], MAX_IMG_SIZE[objectFields.background], ALLOWED_IMG_FORMATS)
+      ) {
+        this.props.onImageInvalid(
+          MAX_IMG_SIZE[objectFields.background],
+          `(${ALLOWED_IMG_FORMATS.join(', ')}) `,
+        );
+        return;
+      }
+
+      this.setState({
+        isLoadingImage: true,
+        avatarImage: [],
+        coverImage: [],
+      });
+
+      this.props.onImageUpload(e.target.files[0], this.disableAndInsertImage, () =>
+        this.setState({
+          isLoadingImage: false,
+        }),
+      );
+    }
+  };
+
+  disableAndInsertImage = (image, imageName = 'image') => {
+    const { isAvatar } = this.state;
+    const newImage = {
+      src: image,
+      name: imageName,
+      id: uuidv4(),
+    };
+    this.setState({
+      [`${isAvatar ? 'profilePicture' : 'coverPicture'}`]: image,
+      [`${isAvatar ? 'avatarImage' : 'coverImage'}`]: [newImage],
+      [`${isAvatar ? 'isChangedAvatar' : 'isChangedCover'}`]: true,
+      isLoadingImage: false,
+    });
+
+    this.props.form.setFieldsValue({
+      [`${isAvatar ? 'profile_image' : 'cover_image'}`]: image,
+    });
+  };
+
+  handleAddImageByLink = image => {
+    const { isAvatar } = this.state;
+    this.setState({
+      [`${isAvatar ? 'profilePicture' : 'coverPicture'}`]: image.src,
+      [`${isAvatar ? 'avatarImage' : 'coverImage'}`]: [image],
+      [`${isAvatar ? 'isChangedAvatar' : 'isChangedCover'}`]: true,
+    });
+    this.props.form.setFieldsValue({
+      [`${isAvatar ? 'profile_image' : 'cover_image'}`]: image.src,
+    });
+  };
+
+  handleRemoveImage = imageId => {
+    this.setState({
+      avatarImage: this.state.avatarImage.filter(f => f.id !== imageId),
+    });
+  };
+
   handleSubmit(e) {
     e.preventDefault();
-    const { form } = this.props;
+    // eslint-disable-next-line no-shadow
+    const { form, isGuest, userName, updateProfile } = this.props;
+    const { isChangedAvatar, isChangedCover } = this.state;
 
-    if (!form.isFieldsTouched()) return;
+    if (!form.isFieldsTouched() && !isChangedAvatar && !isChangedCover) return;
 
     form.validateFields((err, values) => {
       if (!err) {
         const cleanValues = Object.keys(values)
-          .filter(field => form.isFieldTouched(field))
+          .filter(
+            field =>
+              form.isFieldTouched(field) ||
+              (field === 'profile_image' && isChangedAvatar) ||
+              (field === 'cover_image' && isChangedCover),
+          )
           .reduce(
             (a, b) => ({
               ...a,
@@ -94,11 +203,23 @@ export default class ProfileSettings extends React.Component {
             }),
             {},
           );
-        const win = window.open(SteemConnect.sign('profile-update', cleanValues), '_blank');
-        win.focus();
+        if (isGuest) {
+          updateProfile(userName, cleanValues);
+        } else {
+          const win = window.open(SteemConnect.sign('profile-update', cleanValues), '_blank');
+          win.focus();
+        }
       }
     });
   }
+
+  openChangeAvatarModal = () => {
+    this.setState({ isModal: !this.state.isModal, isAvatar: !this.state.isAvatar });
+  };
+
+  openChangeCoverModal = () => {
+    this.setState({ isModal: !this.state.isModal, isCover: !this.state.isCover });
+  };
 
   renderBody(body) {
     this.setState({
@@ -108,7 +229,16 @@ export default class ProfileSettings extends React.Component {
 
   render() {
     const { intl, form } = this.props;
-    const { bodyHTML } = this.state;
+    const {
+      bodyHTML,
+      isModal,
+      isLoadingImage,
+      avatarImage,
+      coverImage,
+      isChangedAvatar,
+      isChangedCover,
+      isAvatar,
+    } = this.state;
     const { getFieldDecorator } = form;
 
     const socialInputs = socialProfiles.map(profile => (
@@ -240,13 +370,15 @@ export default class ProfileSettings extends React.Component {
                   <div className="Settings__section__inputs">
                     <FormItem>
                       {getFieldDecorator('profile_image')(
-                        <Input
-                          size="large"
-                          placeholder={intl.formatMessage({
-                            id: 'profile_picture',
-                            defaultMessage: 'Profile picture',
-                          })}
-                        />,
+                        <div className="Settings__profile-image">
+                          <Avatar size="large" icon="user" src={`${this.state.profilePicture}`} />
+                          <Button type="primary" onClick={this.openChangeAvatarModal}>
+                            {intl.formatMessage({
+                              id: 'profile_change_avatar',
+                              defaultMessage: 'Change avatar',
+                            })}
+                          </Button>
+                        </div>,
                       )}
                     </FormItem>
                   </div>
@@ -258,13 +390,20 @@ export default class ProfileSettings extends React.Component {
                   <div className="Settings__section__inputs">
                     <FormItem>
                       {getFieldDecorator('cover_image')(
-                        <Input
-                          size="large"
-                          placeholder={intl.formatMessage({
-                            id: 'profile_cover',
-                            defaultMessage: 'Cover picture',
-                          })}
-                        />,
+                        <div className="Settings__profile-image">
+                          <Avatar
+                            size="large"
+                            shape="square"
+                            icon="file-image"
+                            src={`${this.state.coverPicture}`}
+                          />
+                          <Button type="primary" onClick={this.openChangeCoverModal}>
+                            {intl.formatMessage({
+                              id: 'profile_change_cover',
+                              defaultMessage: 'Change cover',
+                            })}
+                          </Button>
+                        </div>,
                       )}
                     </FormItem>
                   </div>
@@ -301,13 +440,46 @@ export default class ProfileSettings extends React.Component {
                     )}
                   </div>
                 </div>
-                <Action primary big type="submit" disabled={!form.isFieldsTouched()}>
+                <Action
+                  primary
+                  big
+                  type="submit"
+                  disabled={!form.isFieldsTouched() && !isChangedAvatar && !isChangedCover}
+                >
                   <FormattedMessage id="save" defaultMessage="Save" />
                 </Action>
               </div>
             </Form>
           </div>
         </div>
+        <Modal
+          wrapClassName="Settings__modal"
+          title={
+            isAvatar
+              ? intl.formatMessage({
+                  id: 'profile_change_avatar',
+                  defaultMessage: 'Change avatar',
+                })
+              : intl.formatMessage({
+                  id: 'profile_change_cover',
+                  defaultMessage: 'Change cover',
+                })
+          }
+          closable
+          onCancel={isAvatar ? this.openChangeAvatarModal : this.openChangeCoverModal}
+          onOk={isAvatar ? this.openChangeAvatarModal : this.openChangeCoverModal}
+          okButtonProps={{ disabled: isLoadingImage }}
+          cancelButtonProps={{ disabled: isLoadingImage }}
+          visible={isModal}
+        >
+          <ImageSetter
+            isLoading={isLoadingImage}
+            handleAddImage={this.handleChangeImage}
+            onRemoveImage={this.handleRemoveImage}
+            images={isAvatar ? avatarImage : coverImage}
+            handleAddImageByLink={this.handleAddImageByLink}
+          />
+        </Modal>
       </div>
     );
   }

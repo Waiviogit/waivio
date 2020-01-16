@@ -54,6 +54,9 @@ const posts = (state = initialState, action) => {
         },
       };
     }
+    case feedTypes.GET_USER_COMMENTS.ERROR:
+    case feedTypes.GET_MORE_USER_COMMENTS.ERROR:
+      return state;
     case feedTypes.GET_MORE_USER_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_USER_FEED_CONTENT.SUCCESS: {
       const list = {
@@ -79,7 +82,6 @@ const posts = (state = initialState, action) => {
         postsStates,
       };
     }
-
     case feedTypes.GET_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_OBJECT_POSTS.SUCCESS:
     case feedTypes.GET_MORE_OBJECT_POSTS.SUCCESS:
@@ -187,6 +189,32 @@ const posts = (state = initialState, action) => {
       return {
         ...state,
         list: getPostsList(state.list, action),
+      };
+    case postsActions.FAKE_LIKE_POST_START:
+      return {
+        ...state,
+        pendingLikes: { ...state.pendingLikes, [action.meta.postId]: action.meta },
+      };
+    case postsActions.FAKE_LIKE_POST_SUCCESS: {
+      if (action.payload.isFakeLikeOk) {
+        const updatedPost = { ...state.list[action.meta.postPermlink] };
+
+        updatedPost.active_votes = updatedPost.active_votes.filter(
+          vote => vote.voter !== action.meta.voter,
+        );
+        updatedPost.active_votes.push(action.meta);
+        return {
+          ...state,
+          list: { ...state.list, [action.meta.postPermlink]: updatedPost },
+          pendingLikes: {},
+        };
+      }
+      return state;
+    }
+    case postsActions.FAKE_LIKE_POST_ERROR:
+      return {
+        ...state,
+        pendingLikes: _.omit(state.pendingLikes, action.meta.postId),
       };
     default:
       return state;

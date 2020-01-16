@@ -10,7 +10,6 @@ import './UserDynamicList.less';
 
 export default class UserDynamicList extends React.Component {
   static propTypes = {
-    limit: PropTypes.number.isRequired,
     fetcher: PropTypes.func.isRequired,
     showAuthorizedUser: PropTypes.bool,
     userName: PropTypes.string,
@@ -31,7 +30,7 @@ export default class UserDynamicList extends React.Component {
   }
 
   handleLoadMore() {
-    const { fetcher, limit } = this.props;
+    const { fetcher } = this.props;
     const { users } = this.state;
 
     this.setState(
@@ -39,13 +38,17 @@ export default class UserDynamicList extends React.Component {
         loading: true,
       },
       () => {
-        fetcher(users).then(newUsers =>
-          this.setState(state => ({
-            loading: false,
-            hasMore: newUsers.length === limit,
-            users: _.unionBy(state.users, newUsers, 'name'),
-          })),
-        );
+        fetcher(users)
+          .then(newUsers =>
+            this.setState(state => ({
+              loading: false,
+              hasMore: newUsers.hasMore,
+              users: _.unionBy(state.users, newUsers.users, 'name'),
+            })),
+          )
+          .catch(err => {
+            console.error(err.message);
+          });
       },
     );
   }

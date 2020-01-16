@@ -35,6 +35,7 @@ import OBJECT_TYPE from './const/objectTypes';
 import CreateImage from './ObjectGallery/CreateImage';
 import CreateAlbum from './ObjectGallery/CreateAlbum';
 import CreateTag from './TagCategory/CreateTag';
+import { AppSharedContext } from '../Wrapper';
 import './WobjHistory.less';
 
 @connect(
@@ -50,7 +51,7 @@ import './WobjHistory.less';
     getObjectComments,
   },
 )
-export default class WobjHistory extends React.Component {
+class WobjHistory extends React.Component {
   static propTypes = {
     history: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
@@ -61,6 +62,8 @@ export default class WobjHistory extends React.Component {
     getObjectComments: PropTypes.func,
     readLanguages: PropTypes.arrayOf(PropTypes.string),
     object: PropTypes.shape(),
+    /* from context */
+    isGuestUser: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -142,7 +145,7 @@ export default class WobjHistory extends React.Component {
       showModalCategoryItem,
       sort,
     } = this.state;
-    const { feed, object, comments, readLanguages, isAuthenticated } = this.props;
+    const { feed, object, comments, readLanguages, isAuthenticated, isGuestUser } = this.props;
 
     const commentIds = getFeedFromState('comments', object.author, feed);
     const content = getFilteredContent(
@@ -194,7 +197,7 @@ export default class WobjHistory extends React.Component {
               </Select.Option>
             ))}
           </Select>
-          {isAuthenticated && (
+          {!isGuestUser && isAuthenticated && (
             <React.Fragment>
               <IconButton
                 icon={<Icon type="plus-circle" />}
@@ -237,3 +240,9 @@ export default class WobjHistory extends React.Component {
     );
   }
 }
+
+export default props => (
+  <AppSharedContext.Consumer>
+    {context => <WobjHistory {...props} {...context} />}
+  </AppSharedContext.Consumer>
+);

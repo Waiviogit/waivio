@@ -149,11 +149,4 @@ const mapDispatchToProps = dispatch => ({
   appendObjectDispatch: wObject => dispatch(appendObject(wObject)),
 });
 
-export default injectIntl(
-  Form.create()(
-    connect(
-      mapStateToProps,
-      mapDispatchToProps,
-    )(CreateAlbum),
-  ),
-);
+export default injectIntl(Form.create()(connect(mapStateToProps, mapDispatchToProps)(CreateAlbum)));

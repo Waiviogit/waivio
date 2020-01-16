@@ -29,14 +29,18 @@
     "createObject": "/create-object"
   },
   "activation": "/validate_activation",
+  "auth": "/auth",
   "blog": "/blog",
   "campaign": "/campaign",
   "campaigns": "/campaigns",
   "childWobjects": "/child_wobjects",
   "createCampaign": "/create_campaign",
   "createObject": "/create/object",
+  "guestOperations": "/guest_operations",
   "dashboard": "/dashboard",
+  "demoPayables": "/demo_payables",
   "statistics": "/statistics",
+  "matchBots": "/match_bots",
   "feed": "/feed",
   "followingObjects": "/following_objects",
   "followingUpdates": "/following_updates",
@@ -64,6 +68,9 @@
   "user": "/user",
   "userMetadata": "/userMetadata",
   "users": "/users",
+  "validateAuthToken": "validate_auth_token",
   "wobjectsExpertise": "/object_expertise",
-  "wobjectsWithUserWeight": "/objects_shares"
+  "wobjectsWithUserWeight": "/objects_shares",
+  "hasSocialAccount": "/has_social_account",
+  "followingUsers": "/following_users"
 }

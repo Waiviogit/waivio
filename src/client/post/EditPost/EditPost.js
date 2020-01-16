@@ -17,7 +17,12 @@ import {
   getSuitableLanguage,
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
-import { createPostMetadata, splitPostContent, getInitialState } from '../../helpers/postHelpers';
+import {
+  createPostMetadata,
+  splitPostContent,
+  getInitialState,
+  getObjectUrl,
+} from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import PostObjectCard from '../PostObjectCard/PostObjectCard';
@@ -25,13 +30,18 @@ import { Entity, toMarkdown } from '../../components/EditorExtended';
 import LastDraftsContainer from '../Write/LastDraftsContainer';
 import ObjectCreation from '../../components/Sidebar/ObjectCreation/ObjectCreation';
 import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
+import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
+import CreateObject from '../CreateObjectModal/CreateObject';
 import './EditPost.less';
 
 const getLinkedObjects = contentStateRaw => {
   const objEntities = Object.values(contentStateRaw.entityMap).filter(
     entity => entity.type === Entity.OBJECT && has(entity, 'data.object.type'),
   );
-  return uniqBy(objEntities.map(entity => entity.data.object), 'id');
+  return uniqBy(
+    objEntities.map(entity => entity.data.object),
+    'id',
+  );
 };
 
 @injectIntl
@@ -92,6 +102,8 @@ class EditPost extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleToggleLinkedObject = this.handleToggleLinkedObject.bind(this);
     this.handleTopicsChange = this.handleTopicsChange.bind(this);
+    this.handleObjectSelect = this.handleObjectSelect.bind(this);
+    this.handleCreateObject = this.handleCreateObject.bind(this);
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -157,6 +169,26 @@ class EditPost extends Component {
       [objId]: { percent: isLinked ? 33 : 0 }, // 33 - just non zero value
     };
     this.setState({ objPercentage: setObjPercents(linkedObjects, updPercentage) });
+  }
+
+  handleObjectSelect(object) {
+    this.setState(prevState => {
+      const { postTitle, postBody } = splitPostContent(prevState.content);
+      const objName = object.name || object.default_name;
+      const separator = postBody.slice(-1) === '\n' ? '' : '\n';
+      return {
+        draftContent: {
+          title: postTitle || objName,
+          body: `${postBody}${separator}[${objName}](${getObjectUrl(
+            object.id || object.author_permlink,
+          )})`,
+        },
+      };
+    });
+  }
+
+  handleCreateObject(object) {
+    setTimeout(() => this.handleObjectSelect(object), 1200);
   }
 
   buildPost() {
@@ -248,7 +280,7 @@ class EditPost extends Component {
       campaign,
       isUpdating,
     } = this.state;
-    const { saving, publishing, imageLoading, locale, draftPosts } = this.props;
+    const { saving, publishing, imageLoading, intl, locale, draftPosts } = this.props;
     return (
       <div className="shifted">
         <div className="post-layout container">
@@ -287,6 +319,14 @@ class EditPost extends Component {
               onSubmit={this.handleSubmit}
               onTopicsChange={this.handleTopicsChange}
             />
+
+            <div>{intl.formatMessage({ id: 'add_object', defaultMessage: 'Add object' })}</div>
+            <SearchObjectsAutocomplete
+              handleSelect={this.handleObjectSelect}
+              itemsIdsToOmit={linkedObjects.map(obj => obj.id)}
+            />
+            <CreateObject onCreateObject={this.handleCreateObject} />
+
             {linkedObjects.map(wObj => (
               <PostObjectCard
                 isLinked={get(objPercentage, [wObj.id, 'percent'], 0) > 0}

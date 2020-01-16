@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import url from 'url';
-import { connect } from 'react-redux';
+import { connect, batch } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
@@ -29,8 +29,9 @@ import Transfer from './wallet/Transfer';
 import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
+import { GUEST_PREFIX } from '../common/constants/waivio';
 
-export const UsedLocaleContext = React.createContext('en-US');
+export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
 @withRouter
 @connect(
@@ -129,15 +130,18 @@ export default class Wrapper extends React.PureComponent {
 
   componentDidMount() {
     this.props.login().then(() => {
-      this.props.getFollowing();
-      this.props.getFollowingObjects();
-      this.props.getNotifications();
-      this.props.busyLogin();
+      batch(() => {
+        this.props.getFollowing();
+        this.props.getFollowingObjects();
+        this.props.getNotifications();
+        this.props.busyLogin();
+      });
     });
-
-    this.props.getRewardFund();
-    this.props.getRebloggedList();
-    this.props.getRate();
+    batch(() => {
+      this.props.getRewardFund();
+      this.props.getRebloggedList();
+      this.props.getRate();
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -215,7 +219,12 @@ export default class Wrapper extends React.PureComponent {
     return (
       <IntlProvider key={language.id} locale={language.localeData} messages={translations}>
         <ConfigProvider locale={enUS}>
-          <UsedLocaleContext.Provider value={usedLocale}>
+          <AppSharedContext.Provider
+            value={{
+              usedLocale,
+              isGuestUser: username && username.startsWith(GUEST_PREFIX),
+            }}
+          >
             <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
               <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
                 <Topnav username={user.name} onMenuItemClick={this.handleMenuItemClick} />
@@ -233,7 +242,7 @@ export default class Wrapper extends React.PureComponent {
                 <BBackTop className="primary-modal" />
               </div>
             </Layout>
-          </UsedLocaleContext.Provider>
+          </AppSharedContext.Provider>
         </ConfigProvider>
       </IntlProvider>
     );

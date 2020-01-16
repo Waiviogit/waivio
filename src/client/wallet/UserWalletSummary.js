@@ -79,6 +79,7 @@ const getFormattedPendingWithdrawalSP = (user, totalVestingShares, totalVestingF
 
 const UserWalletSummary = ({
   user,
+  balance,
   loading,
   totalVestingShares,
   totalVestingFundSteem,
@@ -86,6 +87,7 @@ const UserWalletSummary = ({
   steemRate,
   sbdRate,
   steemRateLoading,
+  isGuest,
 }) => (
   <div className="UserWalletSummary">
     <div className="UserWalletSummary__item">
@@ -98,73 +100,77 @@ const UserWalletSummary = ({
           <Loading />
         ) : (
           <span>
-            <FormattedNumber value={parseFloat(user.balance)} />
+            <FormattedNumber value={parseFloat(balance)} />
             {' STEEM'}
           </span>
         )}
       </div>
     </div>
-    <div className="UserWalletSummary__item">
-      <i className="iconfont icon-flashlight_fill UserWalletSummary__icon" />
-      <div className="UserWalletSummary__label">
-        <FormattedMessage id="steem_power" defaultMessage="Steem Power" />
-      </div>
-      <div className="UserWalletSummary__value">
-        {loading || loadingGlobalProperties ? (
-          <Loading />
-        ) : (
-          <span>
-            <FormattedNumber
-              value={parseFloat(
-                formatter.vestToSteem(
-                  user.vesting_shares,
-                  totalVestingShares,
-                  totalVestingFundSteem,
-                ),
-              )}
-            />
-            {getFormattedPendingWithdrawalSP(user, totalVestingShares, totalVestingFundSteem)}
-            {getFormattedTotalDelegatedSP(user, totalVestingShares, totalVestingFundSteem)}
-            {' SP'}
-          </span>
-        )}
-      </div>
-    </div>
-    <div className="UserWalletSummary__item">
-      <i className="iconfont icon-Dollar UserWalletSummary__icon" />
-      <div className="UserWalletSummary__label">
-        <FormattedMessage id="steem_dollar" defaultMessage="Steem Dollar" />
-      </div>
-      <div className="UserWalletSummary__value">
-        {loading ? (
-          <Loading />
-        ) : (
-          <span>
-            <FormattedNumber value={parseFloat(user.sbd_balance)} />
-            {' SBD'}
-          </span>
-        )}
-      </div>
-    </div>
-    <div className="UserWalletSummary__item">
-      <i className="iconfont icon-savings UserWalletSummary__icon" />
-      <div className="UserWalletSummary__label">
-        <FormattedMessage id="savings" defaultMessage="Savings" />
-      </div>
-      <div className="UserWalletSummary__value">
-        {loading ? (
-          <Loading />
-        ) : (
-          <span>
-            <FormattedNumber value={parseFloat(user.savings_balance)} />
-            {' STEEM, '}
-            <FormattedNumber value={parseFloat(user.savings_sbd_balance)} />
-            {' SBD'}
-          </span>
-        )}
-      </div>
-    </div>
-    {!(loading || loadingGlobalProperties || steemRateLoading) && (
+    {!isGuest && (
+      <React.Fragment>
+        <div className="UserWalletSummary__item">
+          <i className="iconfont icon-flashlight_fill UserWalletSummary__icon" />
+          <div className="UserWalletSummary__label">
+            <FormattedMessage id="steem_power" defaultMessage="Steem Power" />
+          </div>
+          <div className="UserWalletSummary__value">
+            {loading || loadingGlobalProperties ? (
+              <Loading />
+            ) : (
+              <span>
+                <FormattedNumber
+                  value={parseFloat(
+                    formatter.vestToSteem(
+                      user.vesting_shares,
+                      totalVestingShares,
+                      totalVestingFundSteem,
+                    ),
+                  )}
+                />
+                {getFormattedPendingWithdrawalSP(user, totalVestingShares, totalVestingFundSteem)}
+                {getFormattedTotalDelegatedSP(user, totalVestingShares, totalVestingFundSteem)}
+                {' SP'}
+              </span>
+            )}
+          </div>
+        </div>
+        <div className="UserWalletSummary__item">
+          <i className="iconfont icon-Dollar UserWalletSummary__icon" />
+          <div className="UserWalletSummary__label">
+            <FormattedMessage id="steem_dollar" defaultMessage="Steem Dollar" />
+          </div>
+          <div className="UserWalletSummary__value">
+            {loading ? (
+              <Loading />
+            ) : (
+              <span>
+                <FormattedNumber value={parseFloat(user.sbd_balance)} />
+                {' SBD'}
+              </span>
+            )}
+          </div>
+        </div>
+        <div className="UserWalletSummary__item">
+          <i className="iconfont icon-savings UserWalletSummary__icon" />
+          <div className="UserWalletSummary__label">
+            <FormattedMessage id="savings" defaultMessage="Savings" />
+          </div>
+          <div className="UserWalletSummary__value">
+            {loading ? (
+              <Loading />
+            ) : (
+              <span>
+                <FormattedNumber value={parseFloat(user.savings_balance)} />
+                {' STEEM, '}
+                <FormattedNumber value={parseFloat(user.savings_sbd_balance)} />
+                {' SBD'}
+              </span>
+            )}
+          </div>
+        </div>
+      </React.Fragment>
+    )}
+    {!isGuest && !(loading || loadingGlobalProperties || steemRateLoading) && (
       <div className="UserWalletSummary__item">
         <i className="iconfont icon-people_fill UserWalletSummary__icon" />
         <div className="UserWalletSummary__label">
@@ -189,12 +195,14 @@ const UserWalletSummary = ({
 UserWalletSummary.propTypes = {
   loadingGlobalProperties: PropTypes.bool.isRequired,
   user: PropTypes.shape().isRequired,
+  balance: PropTypes.number.isRequired,
   totalVestingShares: PropTypes.string.isRequired,
   totalVestingFundSteem: PropTypes.string.isRequired,
   steemRate: PropTypes.number,
   sbdRate: PropTypes.number,
   loading: PropTypes.bool,
   steemRateLoading: PropTypes.bool,
+  isGuest: PropTypes.bool,
 };
 
 UserWalletSummary.defaultProps = {
@@ -202,6 +210,7 @@ UserWalletSummary.defaultProps = {
   sbdRate: 1,
   loading: false,
   steemRateLoading: false,
+  isGuest: false,
 };
 
 export default UserWalletSummary;

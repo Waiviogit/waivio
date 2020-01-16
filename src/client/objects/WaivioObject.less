@@ -31,14 +31,13 @@
 
     &__content {
       font-weight: 500;
-      display: flex;
       margin-bottom: 8px;
     }
 
     &__links {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      width: 100%;
 
       & > a {
         font-weight: bold;
@@ -55,6 +54,26 @@
 
       &__header {
         display: flex;
+        align-items: center;
+        & > a {
+          max-width: 60px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+
+          @media only screen and (min-width: 375px) {
+            max-width: 120px;
+          }
+          @media @small {
+            max-width: 305px;
+          }
+          @media @medium {
+            max-width: 340px;
+          }
+          @media @large {
+            max-width: 390px;
+          }
+        }
       }
     }
 

@@ -1,5 +1,4 @@
 import * as store from '../reducers';
-import { getAllFollowing } from '../helpers/apiHelpers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getUserCoordinatesByIpAdress } from '../components/Maps/mapHelper';
@@ -56,7 +55,7 @@ export const GET_FOLLOWING_START = '@user/GET_FOLLOWING_START';
 export const GET_FOLLOWING_SUCCESS = '@user/GET_FOLLOWING_SUCCESS';
 export const GET_FOLLOWING_ERROR = '@user/GET_FOLLOWING_ERROR';
 
-export const getFollowing = username => (dispatch, getState) => {
+export const getFollowing = (username, skip, limit) => (dispatch, getState) => {
   const state = getState();
 
   if (!username && !store.getIsAuthenticated(state)) {
@@ -69,7 +68,7 @@ export const getFollowing = username => (dispatch, getState) => {
     type: GET_FOLLOWING,
     meta: targetUsername,
     payload: {
-      promise: getAllFollowing(targetUsername),
+      promise: ApiClient.getFollowingsFromAPI(targetUsername, skip, limit).then(data => data.users),
     },
   });
 };
@@ -81,6 +80,8 @@ export const GET_FOLLOWING_OBJECTS_ERROR = '@user/GET_FOLLOWING_OBJECTS_ERROR';
 
 export const getFollowingObjects = username => (dispatch, getState) => {
   const state = getState();
+  const skip = 0;
+  const limit = state.auth.user.objects_following_count;
 
   if (!username && !store.getIsAuthenticated(state)) {
     return dispatch({ type: GET_FOLLOWING_ERROR });
@@ -90,7 +91,7 @@ export const getFollowingObjects = username => (dispatch, getState) => {
   return dispatch({
     type: GET_FOLLOWING_OBJECTS,
     payload: {
-      promise: ApiClient.getAllFollowingObjects(targetUsername),
+      promise: ApiClient.getAllFollowingObjects(targetUsername, skip, limit),
     },
   });
 };
@@ -170,7 +171,7 @@ export const GET_NOTIFICATIONS = createAsyncActionType('@user/GET_NOTIFICATIONS'
 export const getNotifications = username => (dispatch, getState, { busyAPI }) => {
   const state = getState();
 
-  if (!username && !store.getIsAuthenticated(state)) {
+  if ((!username && !store.getIsAuthenticated(state)) || store.isGuestUser(state)) {
     return dispatch({ type: GET_NOTIFICATIONS.ERROR });
   }
 
