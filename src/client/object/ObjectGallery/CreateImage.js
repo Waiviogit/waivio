@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { bindActionCreators } from 'redux';
-import { Form, Select, Modal, message, Spin } from 'antd';
+import { Form, Select, Modal, message } from 'antd';
 import uuidv4 from 'uuid/v4';
 import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
 import { getAuthenticatedUserName, getObject, getObjectAlbums } from '../../reducers';
@@ -146,8 +146,19 @@ class CreateImage extends React.Component {
   };
 
   handleAddImageByLink = image => {
-    const images = [...this.state.currentImages, image];
-    this.setState({ currentImages: images });
+    const { intl } = this.props;
+    const { currentImages } = this.state;
+    const isSameLink = currentImages.some(currentImage => currentImage.src === image.src);
+    if (!isSameLink) {
+      const images = [...this.state.currentImages, image];
+      this.setState({ currentImages: images });
+    } else
+      message.error(
+        intl.formatMessage({
+          id: 'imageSetter_link_is_already_added',
+          defaultMessage: 'The link you are trying to add is already added',
+        }),
+      );
   };
 
   disableAndInsertImage = (image, imageName = 'image') => {
@@ -305,13 +316,7 @@ class CreateImage extends React.Component {
               </Select>,
             )}
           </Form.Item>
-
-          <Form.Item
-            label={intl.formatMessage({
-              id: 'upload_photos',
-              defaultMessage: 'Upload photos',
-            })}
-          >
+          <Form.Item>
             {form.getFieldDecorator('upload', {
               rules: [
                 {
@@ -324,28 +329,21 @@ class CreateImage extends React.Component {
               ],
             })(
               <div className="clearfix">
-                <Spin
-                  tip={intl.formatMessage({
-                    id: 'image_submitting',
-                    defaultMessage: 'Submitting...',
-                  })}
-                  spinning={loading}
-                >
-                  <ImageSetter
-                    images={this.state.currentImages}
-                    handleAddImage={this.handleImageChange}
-                    handleAddImageByLink={this.handleAddImageByLink}
-                    onRemoveImage={this.handleRemoveImage}
-                    isLoading={this.state.imageUploading}
+                <ImageSetter
+                  images={this.state.currentImages}
+                  handleAddImage={this.handleImageChange}
+                  handleAddImageByLink={this.handleAddImageByLink}
+                  onRemoveImage={this.handleRemoveImage}
+                  isLoading={this.state.imageUploading}
+                  isMultiple
+                />
+                <Modal visible={previewVisible} footer={null} onCancel={this.handlePreviewCancel}>
+                  <img
+                    alt="example"
+                    style={{ width: '100%', 'max-height': '90vh' }}
+                    src={previewImage}
                   />
-                  <Modal visible={previewVisible} footer={null} onCancel={this.handlePreviewCancel}>
-                    <img
-                      alt="example"
-                      style={{ width: '100%', 'max-height': '90vh' }}
-                      src={previewImage}
-                    />
-                  </Modal>
-                </Spin>
+                </Modal>
               </div>,
             )}
           </Form.Item>

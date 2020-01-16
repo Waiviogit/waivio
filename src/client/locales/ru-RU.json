@@ -991,5 +991,6 @@
   "imageSetter_add_images": "Добавить картинки",
   "imageSetter_upload": "Загрузить",
   "imageSetter_or": "или",
-  "imageSetter_paste_image_link": "Вставить ссылку на картинку"
+  "imageSetter_paste_image_link": "Вставить ссылку на картинку",
+  "imageSetter_link_is_already_added": "Ссылка, которую вы пытаетесь добавить, уже добавлена"
 }

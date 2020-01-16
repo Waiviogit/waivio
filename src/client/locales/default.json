@@ -988,5 +988,6 @@
   "imageSetter_add_images": "Add images",
   "imageSetter_upload": "Upload",
   "imageSetter_or": "or",
-  "imageSetter_paste_image_link": "Paste image link"
+  "imageSetter_paste_image_link": "Paste image link",
+  "imageSetter_link_is_already_added": "The link you are trying to add is already added"
 }

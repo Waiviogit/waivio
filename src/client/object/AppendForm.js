@@ -652,7 +652,6 @@ export default class AppendForm extends Component {
   };
 
   getFieldRules = fieldName => {
-    // debugger;
     const { intl } = this.props;
     const rules = fieldsRules[fieldName] || [];
     return rules.map(rule => {
