@@ -10,9 +10,9 @@ import getSlug from 'speakingurl';
 import { busyLogin, login } from '../../../auth/authActions';
 import { getUserAccount, isUserRegistered } from '../../../../waivioApi/ApiClient';
 import { notify } from './../../../app/Notification/notificationActions';
-import './ModalSignUp.less';
 import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
 import { GUEST_PREFIX } from '../../../../common/constants/waivio';
+import './ModalSignUp.less';
 
 const ModalSignUp = ({ isButton, form, intl }) => {
   const dispatch = useDispatch();
