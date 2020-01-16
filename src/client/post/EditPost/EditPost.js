@@ -103,6 +103,7 @@ class EditPost extends Component {
     this.handleToggleLinkedObject = this.handleToggleLinkedObject.bind(this);
     this.handleTopicsChange = this.handleTopicsChange.bind(this);
     this.handleObjectSelect = this.handleObjectSelect.bind(this);
+    this.handleCreateObject = this.handleCreateObject.bind(this);
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -178,10 +179,16 @@ class EditPost extends Component {
       return {
         draftContent: {
           title: postTitle || objName,
-          body: `${postBody}${separator}[${objName}](${getObjectUrl(object.author_permlink)})`,
+          body: `${postBody}${separator}[${objName}](${getObjectUrl(
+            object.id || object.author_permlink,
+          )})`,
         },
       };
     });
+  }
+
+  handleCreateObject(object) {
+    setTimeout(() => this.handleObjectSelect(object), 1200);
   }
 
   buildPost() {
