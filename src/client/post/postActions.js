@@ -80,7 +80,7 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
           weight,
           postPermlink: `${author}/${postPermlink}`,
           rshares: 1,
-          percent: weight / 100,
+          percent: weight,
         }
       : { postId, voter, weight },
   });

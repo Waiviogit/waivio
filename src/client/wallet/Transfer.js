@@ -9,6 +9,7 @@ import steemAPI from '../steemAPI';
 import SteemConnect from '../steemConnectAPI';
 import { getCryptoPriceHistory } from '../app/appActions';
 import { closeTransfer } from './walletActions';
+import { notify } from '../app/Notification/notificationActions';
 import {
   getAuthenticatedUser,
   getCryptosPriceHistory,
@@ -21,6 +22,7 @@ import {
   getTransferTo,
   isGuestUser,
 } from '../reducers';
+import { sendGuestTransfer } from '../../waivioApi/ApiClient';
 import './Transfer.less';
 
 const InputGroup = Input.Group;
@@ -42,6 +44,7 @@ const InputGroup = Input.Group;
   {
     closeTransfer,
     getCryptoPriceHistory,
+    notify,
   },
 )
 @Form.create()
@@ -61,6 +64,7 @@ export default class Transfer extends React.Component {
     memo: PropTypes.string,
     screenSize: PropTypes.string,
     isGuest: PropTypes.bool,
+    notify: PropTypes.func,
   };
 
   static defaultProps = {
@@ -72,6 +76,7 @@ export default class Transfer extends React.Component {
     closeTransfer: () => {},
     screenSize: 'large',
     isGuest: false,
+    notify: () => {},
   };
 
   static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
@@ -169,9 +174,19 @@ export default class Transfer extends React.Component {
           amount: `${parseFloat(values.amount).toFixed(3)} ${values.currency}`,
         };
         if (values.memo) transferQuery.memo = values.memo;
+        if (this.props.isGuest) {
+          sendGuestTransfer(transferQuery).then(res => {
+            if (res.status === 200) {
+              this.props.notify('Successful transaction', 'success');
+            } else {
+              this.props.notify('Transaction failed', 'error');
+            }
+          });
+        } else {
+          const win = window.open(SteemConnect.sign('transfer', transferQuery), '_blank');
+          win.focus();
+        }
 
-        const win = window.open(SteemConnect.sign('transfer', transferQuery), '_blank');
-        win.focus();
         this.props.closeTransfer();
       }
     });

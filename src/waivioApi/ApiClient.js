@@ -859,7 +859,24 @@ export const updateGuestProfile = async (username, json_metadata) => {
     method: 'POST',
     headers: { ...headers, 'access-token': userData.token },
     body: JSON.stringify(body),
-  }).then(data => data);
+  })
+    .then(data => data)
+    .catch(err => err.message);
+};
+
+export const sendGuestTransfer = async ({ to, amount }) => {
+  const userData = await getValidTokenData();
+  return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
+    method: 'POST',
+    headers: { ...headers, 'access-token': userData.token },
+    body: JSON.stringify({
+      id: 'waivio_guest_transfer',
+      data: { to, amount },
+    }),
+  })
+    .then(res => res.json())
+    .then(data => data)
+    .catch(err => err);
 };
 
 // injected as extra argument in Redux Thunk
