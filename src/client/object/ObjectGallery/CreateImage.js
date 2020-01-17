@@ -34,8 +34,6 @@ import './CreateImage.less';
 )
 class CreateImage extends React.Component {
   state = {
-    previewVisible: false,
-    previewImage: '',
     fileList: [],
     uploadingList: [],
     loading: false,
@@ -80,8 +78,6 @@ class CreateImage extends React.Component {
       },
     );
   };
-
-  handlePreviewCancel = () => this.setState({ previewVisible: false });
 
   handleSubmit = e => {
     e.preventDefault();
@@ -251,13 +247,6 @@ class CreateImage extends React.Component {
     this.setState({ fileList });
   };
 
-  handlePreview = file => {
-    this.setState({
-      previewImage: file.url || file.thumbUrl,
-      previewVisible: true,
-    });
-  };
-
   appendImages = async () => {
     const { addImageToAlbumStore, form } = this.props;
     const { currentImages } = this.state;
@@ -297,7 +286,7 @@ class CreateImage extends React.Component {
 
   render() {
     const { showModal, form, intl, selectedAlbum, albums } = this.props;
-    const { previewVisible, previewImage, fileList, uploadingList, loading } = this.state;
+    const { fileList, uploadingList, loading } = this.state;
 
     return (
       <Modal
@@ -358,13 +347,14 @@ class CreateImage extends React.Component {
                   isLoading={this.state.imageUploading}
                   isMultiple
                 />
-                <Modal visible={previewVisible} footer={null} onCancel={this.handlePreviewCancel}>
-                  <img
-                    alt="example"
-                    style={{ width: '100%', 'max-height': '90vh' }}
-                    src={previewImage}
-                  />
-                </Modal>
+                {/* TODO: Possible will use */}
+                {/* <Modal visible={previewVisible} footer={null} onCancel={this.handlePreviewCancel}> */}
+                {/*  <img */}
+                {/*    alt="example" */}
+                {/*    style={{ width: '100%', 'max-height': '90vh' }} */}
+                {/*    src={previewImage} */}
+                {/*  /> */}
+                {/* </Modal> */}
               </div>,
             )}
           </Form.Item>
