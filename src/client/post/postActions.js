@@ -48,13 +48,12 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
   const isGuest = auth.isGuestUser;
   const post = posts.list[postId];
   const voter = auth.user.name;
-  const postPermlink = post.permlink;
   const TYPE = isGuest ? FAKE_LIKE_POST : LIKE_POST;
-  const votedPostAuthor = isGuest ? post.author : author;
+  const votedPostAuthor = post.guestInfo ? post.author : author;
   return dispatch({
     type: TYPE,
     payload: {
-      promise: steemConnectAPI.vote(voter, votedPostAuthor, post.permlink, weight).then(res => {
+      promise: steemConnectAPI.vote(voter, author, post.permlink, weight).then(res => {
         if (res.status === 200 && isGuest) {
           return { isFakeLikeOk: true };
         }
@@ -68,7 +67,11 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
 
         // // Delay to make sure you get the latest data (unknown issue with API)
         if (!isGuest) {
-          setTimeout(() => dispatch(getContent(post.author, post.permlink, true)), 1000);
+          setTimeout(
+            () =>
+              dispatch(getContent(post.author_original || votedPostAuthor, post.permlink, true)),
+            1000,
+          );
         }
         return res;
       }),
@@ -78,9 +81,9 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
           postId,
           voter,
           weight,
-          postPermlink: `${author}/${postPermlink}`,
+          postPermlink: postId,
           rshares: 1,
-          percent: weight / 100,
+          percent: weight,
         }
       : { postId, voter, weight },
   });

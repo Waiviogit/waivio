@@ -13,7 +13,7 @@ export default class WobjFollowers extends React.Component {
   fetcher = async skip => {
     const { match } = this.props;
     const response = await getWobjectFollowers(match.params.name, skip.length, WobjFollowers.limit);
-    return { users: response, hasMore: skip.length === WobjFollowers.limit };
+    return { users: response, hasMore: response.length === WobjFollowers.limit };
   };
 
   render() {

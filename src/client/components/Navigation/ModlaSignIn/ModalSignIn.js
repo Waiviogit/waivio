@@ -13,6 +13,7 @@ import { getUserAccount, isUserRegistered } from '../../../../waivioApi/ApiClien
 import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
 import { notify } from '../../../app/Notification/notificationActions';
 import { GUEST_PREFIX } from '../../../../common/constants/waivio';
+import { getRate, getRebloggedList, getRewardFund } from '../../../reducers';
 import '../ModalSignUp/ModalSignUp.less';
 
 const ModalSignIn = ({ form, next }) => {
@@ -40,6 +41,9 @@ const ModalSignIn = ({ form, next }) => {
             dispatch(getFollowingObjects());
             dispatch(getNotifications());
             dispatch(busyLogin());
+            dispatch(getRewardFund());
+            dispatch(getRebloggedList());
+            dispatch(getRate());
           });
         });
       } else {
