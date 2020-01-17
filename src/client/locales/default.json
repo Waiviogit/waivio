@@ -141,6 +141,8 @@
   "profile_website_placeholder": "Your website URL",
   "profile_picture": "Profile picture",
   "profile_cover": "Cover picture",
+  "profile_change_avatar": "Change avatar",
+  "profile_change_cover": "Change cover",
   "profile_social_profiles": "Social profiles",
   "profile_social_profile_incorrect": "This doesn't seem to be valid username. Only alphanumeric characters, hyphens, underscores and dots are allowed.",
   "profile_signature": "Signature",
@@ -981,5 +983,11 @@
   "or_sign_in_with": "account to get your reward.",
   "name_is_too_long": "Name is too long (map 25 symbols)",
   "please_input_username": "User with such username already exists",
-  "only_letters": "Only letters, digits, periods, dashes are allowed"
+  "only_letters": "Only letters, digits, periods, dashes are allowed",
+  "imageSetter_add_image": "Add image",
+  "imageSetter_add_images": "Add images",
+  "imageSetter_upload": "Upload",
+  "imageSetter_or": "or",
+  "imageSetter_paste_image_link": "Paste image link",
+  "imageSetter_link_is_already_added": "The link you are trying to add is already added"
 }

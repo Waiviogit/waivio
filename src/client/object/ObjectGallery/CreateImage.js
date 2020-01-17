@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { bindActionCreators } from 'redux';
-import { Form, Select, Modal, Upload, Icon, message, Spin } from 'antd';
+import { Form, Select, Modal, message } from 'antd';
+import uuidv4 from 'uuid/v4';
 import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
 import { getAuthenticatedUserName, getObject, getObjectAlbums } from '../../reducers';
 import { objectFields } from '../../../common/constants/listOfFields';
@@ -12,6 +13,8 @@ import * as galleryActions from './galleryActions';
 import * as appendActions from '../appendActions';
 import { getField, generatePermlink, prepareImageToStore } from '../../helpers/wObjectHelper';
 import AppendFormFooter from '../AppendFormFooter';
+import ImageSetter from '../../components/ImageSetter/ImageSetter';
+import { isValidImage } from '../../helpers/image';
 import './CreateImage.less';
 
 @connect(
@@ -36,6 +39,8 @@ class CreateImage extends React.Component {
     fileList: [],
     uploadingList: [],
     loading: false,
+    imageUploading: false,
+    currentImages: [],
   };
 
   getWobjectData = () => {
@@ -52,10 +57,9 @@ class CreateImage extends React.Component {
 
   getWobjectField = image => {
     const { form } = this.props;
-
     return {
       name: 'galleryItem',
-      body: image.response.image,
+      body: image.src,
       locale: 'en-US',
       id: form.getFieldValue('id'),
     };
@@ -71,7 +75,7 @@ class CreateImage extends React.Component {
       {
         user: currentUsername,
         album: selectedAlbum.body,
-        url: image.response.image,
+        url: image.src,
       },
     );
   };
@@ -82,13 +86,12 @@ class CreateImage extends React.Component {
     e.preventDefault();
 
     const { selectedAlbum, hideModal, intl } = this.props;
-    const { fileList } = this.state;
 
     this.props.form.validateFields(err => {
       if (!err) {
         this.setState({ loading: true });
 
-        this.appendImages(fileList)
+        this.appendImages()
           .then(() => {
             hideModal();
             this.setState({ fileList: [], uploadingList: [], loading: false });
@@ -114,6 +117,63 @@ class CreateImage extends React.Component {
             this.setState({ loading: false });
           });
       }
+    });
+  };
+
+  handleImageChange = e => {
+    const { onImageInvalid, onImageUpload } = this.props;
+    if (e.target.files && e.target.files[0]) {
+      if (
+        !isValidImage(e.target.files[0], MAX_IMG_SIZE[objectFields.background], ALLOWED_IMG_FORMATS)
+      ) {
+        onImageInvalid(
+          MAX_IMG_SIZE[objectFields.background],
+          `(${ALLOWED_IMG_FORMATS.join(', ')}) `,
+        );
+        return;
+      }
+
+      this.setState({
+        imageUploading: true,
+      });
+
+      onImageUpload(e.target.files[0], this.disableAndInsertImage, () =>
+        this.setState({
+          imageUploading: false,
+        }),
+      );
+    }
+  };
+
+  handleAddImageByLink = image => {
+    const { intl } = this.props;
+    const { currentImages } = this.state;
+    const isSameLink = currentImages.some(currentImage => currentImage.src === image.src);
+    if (!isSameLink) {
+      const images = [...this.state.currentImages, image];
+      this.setState({ currentImages: images });
+    } else
+      message.error(
+        intl.formatMessage({
+          id: 'imageSetter_link_is_already_added',
+          defaultMessage: 'The link you are trying to add is already added',
+        }),
+      );
+  };
+
+  disableAndInsertImage = (image, imageName = 'image') => {
+    const newImage = {
+      src: image,
+      name: imageName,
+      id: uuidv4(),
+    };
+    const images = [...this.state.currentImages, newImage];
+    this.setState({ imageUploading: false, currentImages: images });
+  };
+
+  handleRemoveImage = imageId => {
+    this.setState({
+      currentImages: this.state.currentImages.filter(f => f.id !== imageId),
     });
   };
 
@@ -177,13 +237,13 @@ class CreateImage extends React.Component {
     });
   };
 
-  appendImages = async images => {
+  appendImages = async () => {
     const { addImageToAlbumStore, form } = this.props;
+    const { currentImages } = this.state;
 
     const data = this.getWobjectData();
-
     /* eslint-disable no-restricted-syntax */
-    for (const image of images) {
+    for (const image of currentImages) {
       const postData = {
         ...data,
         permlink: `${data.author}-${generatePermlink()}`,
@@ -217,8 +277,6 @@ class CreateImage extends React.Component {
   render() {
     const { showModal, form, intl, selectedAlbum, albums } = this.props;
     const { previewVisible, previewImage, fileList, uploadingList, loading } = this.state;
-
-    const acceptImageFormat = ALLOWED_IMG_FORMATS.map(format => `.${format}`).join(',');
 
     return (
       <Modal
@@ -258,13 +316,7 @@ class CreateImage extends React.Component {
               </Select>,
             )}
           </Form.Item>
-
-          <Form.Item
-            label={intl.formatMessage({
-              id: 'upload_photos',
-              defaultMessage: 'Upload photos',
-            })}
-          >
+          <Form.Item>
             {form.getFieldDecorator('upload', {
               rules: [
                 {
@@ -277,42 +329,21 @@ class CreateImage extends React.Component {
               ],
             })(
               <div className="clearfix">
-                <Spin
-                  tip={intl.formatMessage({
-                    id: 'image_submitting',
-                    defaultMessage: 'Submitting...',
-                  })}
-                  spinning={loading}
-                >
-                  <Upload
-                    accept={acceptImageFormat}
-                    action="https://www.waivio.com/api/image"
-                    listType="picture-card"
-                    fileList={fileList}
-                    onPreview={this.handlePreview}
-                    onChange={this.handleChange}
-                    supportServerRender
-                  >
-                    {fileList.length >= 10 ? null : (
-                      <div>
-                        <Icon type="plus" />
-                        <div className="ant-upload-text">
-                          {intl.formatMessage({
-                            id: 'upload_image',
-                            defaultMessage: 'Upload',
-                          })}
-                        </div>
-                      </div>
-                    )}
-                  </Upload>
-                  <Modal visible={previewVisible} footer={null} onCancel={this.handlePreviewCancel}>
-                    <img
-                      alt="example"
-                      style={{ width: '100%', 'max-height': '90vh' }}
-                      src={previewImage}
-                    />
-                  </Modal>
-                </Spin>
+                <ImageSetter
+                  images={this.state.currentImages}
+                  handleAddImage={this.handleImageChange}
+                  handleAddImageByLink={this.handleAddImageByLink}
+                  onRemoveImage={this.handleRemoveImage}
+                  isLoading={this.state.imageUploading}
+                  isMultiple
+                />
+                <Modal visible={previewVisible} footer={null} onCancel={this.handlePreviewCancel}>
+                  <img
+                    alt="example"
+                    style={{ width: '100%', 'max-height': '90vh' }}
+                    src={previewImage}
+                  />
+                </Modal>
               </div>,
             )}
           </Form.Item>
@@ -343,6 +374,8 @@ CreateImage.propTypes = {
   intl: PropTypes.shape().isRequired,
   form: PropTypes.shape().isRequired,
   selectedAlbum: PropTypes.shape(),
+  onImageUpload: PropTypes.func.isRequired,
+  onImageInvalid: PropTypes.func.isRequired,
   albums: PropTypes.arrayOf(PropTypes.shape()),
   currentUsername: PropTypes.shape(),
   wObject: PropTypes.shape(),

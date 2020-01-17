@@ -141,6 +141,8 @@
   "profile_website_placeholder": "URL вашего сайта",
   "profile_picture": "Изображение профиля",
   "profile_cover": "Изображение обложки",
+  "profile_change_avatar": "Изменить аватар",
+  "profile_change_cover": "Изменить обложку",
   "profile_social_profiles": "Социальные профили",
   "profile_social_profile_incorrect": "Данное имя пользователя нельзя использовать. Допускаются только алфавитно-цифровые символы, дефисы, символы подчеркивания и точки.",
   "profile_signature": "Подпись",
@@ -984,5 +986,11 @@
   "or_sign_in_with": "или войдите через",
   "name_is_too_long": "Слишком длинное имя (макс 25 символов)",
   "please_input_username": "Пользователь с данным именем уже существует",
-  "only_letters": "Только буквы(латиница), цыфры, точки, дефисы"
+  "only_letters": "Только буквы(латиница), цыфры, точки, дефисы",
+  "imageSetter_add_image": "Добавить картинку",
+  "imageSetter_add_images": "Добавить картинки",
+  "imageSetter_upload": "Загрузить",
+  "imageSetter_or": "или",
+  "imageSetter_paste_image_link": "Вставить ссылку на картинку",
+  "imageSetter_link_is_already_added": "Ссылка, которую вы пытаетесь добавить, уже добавлена"
 }

@@ -727,7 +727,7 @@ export const updateUserMetadata = async (userName, data) => {
 export const getGuestPaymentsHistory = (userName, { skip = 0, limit = 20 }) => {
   return new Promise((resolve, reject) => {
     fetch(
-      `${config.campaignApiPrefix}${config.payments}${config.demoPayables}?userName=${userName}&skip=${skip}&${limit}`,
+      `${config.campaignApiPrefix}${config.payments}${config.demoPayables}?userName=${userName}&skip=${skip}&limit=${limit}`,
       {
         headers,
         method: 'GET',

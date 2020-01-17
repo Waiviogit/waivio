@@ -32,6 +32,8 @@ export default class ObjectGalleryAlbum extends Component {
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     loading: PropTypes.bool.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
+    onImageUpload: PropTypes.func.isRequired,
+    onImageInvalid: PropTypes.func.isRequired,
   };
 
   state = {
@@ -74,6 +76,8 @@ export default class ObjectGalleryAlbum extends Component {
                   selectedAlbum={album[0]}
                   showModal={showModal}
                   hideModal={this.handleToggleModal}
+                  onImageUpload={this.props.onImageUpload}
+                  onImageInvalid={this.props.onImageInvalid}
                 />
               </div>
             </div>

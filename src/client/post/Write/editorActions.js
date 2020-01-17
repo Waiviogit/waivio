@@ -1,3 +1,4 @@
+import { batch } from 'react-redux';
 import assert from 'assert';
 import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
@@ -245,18 +246,26 @@ export function createPost(postData) {
             jsonMetadata,
             reward,
             beneficiary,
-            !isUpdating && upvote,
+            !isUpdating && !isGuest && upvote,
             permlink,
             referral,
             authUser.name,
           ).then(result => {
             if (draftId) {
-              dispatch(deleteDraft(draftId));
-              dispatch(addEditedPost(permlink));
+              batch(() => {
+                dispatch(deleteDraft(draftId));
+                dispatch(addEditedPost(permlink));
+              });
             }
-            dispatch(push(isGuest ? '/' : `/@${author}/${permlink}`));
-            // eslint-disable-next-line no-unused-expressions
-            isGuest && dispatch(notify('Your post will be posted soon', 'success'));
+            if (isGuest) {
+              if (upvote) {
+                steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
+              }
+              dispatch(push('/'));
+              dispatch(notify('Your post will be posted soon', 'success'));
+            } else {
+              dispatch(push(`/@${author}/${permlink}`));
+            }
 
             if (window.analytics) {
               window.analytics.track('Post', {
