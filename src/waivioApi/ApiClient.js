@@ -825,7 +825,7 @@ export const getFollowersFromAPI = (username, limit = 10, skip = 0) => {
     .catch(err => console.error(err));
 };
 
-export const getFollowingsFromAPI = (username, limit = 10, skip = 0) => {
+export const getFollowingsFromAPI = (username, limit = 100, skip = 0) => {
   return fetch(
     `${config.apiPrefix}${config.user}/${username}${config.followingUsers}?skip=${skip}&limit=${limit}`,
   )
@@ -871,7 +871,7 @@ export const sendGuestTransfer = async ({ to, amount }) => {
     headers: { ...headers, 'access-token': userData.token },
     body: JSON.stringify({
       id: 'waivio_guest_transfer',
-      data: { to, amount },
+      data: { to, amount: +amount.split(' ')[0] },
     }),
   })
     .then(res => res.json())
