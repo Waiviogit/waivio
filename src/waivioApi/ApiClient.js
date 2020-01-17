@@ -541,7 +541,7 @@ export const getSuitableUsers = (followsCount, postsCount) =>
       },
     )
       .then(res => res.json())
-      .then(result => resolve(result.users))
+      .then(result => resolve({ users: result.users, hasMore: false }))
       .catch(error => reject(error));
   });
 
