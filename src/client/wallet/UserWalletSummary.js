@@ -100,7 +100,7 @@ const UserWalletSummary = ({
           <Loading />
         ) : (
           <span>
-            <FormattedNumber value={parseFloat(balance)} />
+            <FormattedNumber value={balance ? parseFloat(balance) : 0} />
             {' STEEM'}
           </span>
         )}

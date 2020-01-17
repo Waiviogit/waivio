@@ -4,7 +4,7 @@ import Helmet from 'react-helmet';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Form, Input, Avatar, Button, Modal } from 'antd';
+import { Form, Input, Avatar, Button, Modal, message } from 'antd';
 import uuidv4 from 'uuid/v4';
 import SteemConnect from '../steemConnectAPI';
 import { updateProfile } from '../auth/authActions';
@@ -162,21 +162,41 @@ export default class ProfileSettings extends React.Component {
   };
 
   handleAddImageByLink = image => {
-    const { isAvatar } = this.state;
-    this.setState({
-      [`${isAvatar ? 'profilePicture' : 'coverPicture'}`]: image.src,
-      [`${isAvatar ? 'avatarImage' : 'coverImage'}`]: [image],
-      [`${isAvatar ? 'isChangedAvatar' : 'isChangedCover'}`]: true,
-    });
-    this.props.form.setFieldsValue({
-      [`${isAvatar ? 'profile_image' : 'cover_image'}`]: image.src,
-    });
+    this.checkIsValidImageLink(image, this.checkIsImage);
   };
 
-  handleRemoveImage = imageId => {
-    this.setState({
-      avatarImage: this.state.avatarImage.filter(f => f.id !== imageId),
-    });
+  checkIsImage = (image, isValidLink) => {
+    const { intl } = this.props;
+    const { isAvatar } = this.state;
+    if (isValidLink) {
+      this.setState({
+        [`${isAvatar ? 'profilePicture' : 'coverPicture'}`]: image.src,
+        [`${isAvatar ? 'avatarImage' : 'coverImage'}`]: [image],
+        [`${isAvatar ? 'isChangedAvatar' : 'isChangedCover'}`]: true,
+      });
+      this.props.form.setFieldsValue({
+        [`${isAvatar ? 'profile_image' : 'cover_image'}`]: image.src,
+      });
+    } else {
+      message.error(
+        intl.formatMessage({
+          id: 'imageSetter_invalid_link',
+          defaultMessage: 'The link is invalid',
+        }),
+      );
+    }
+  };
+
+  checkIsValidImageLink = (image, setImageIsValid) => {
+    const img = new Image();
+    img.src = image.src;
+    img.onload = () => setImageIsValid(image, true);
+    img.onerror = () => setImageIsValid(image, false);
+  };
+
+  handleRemoveImage = () => {
+    const { isAvatar } = this.state;
+    this.setState({ [`${isAvatar ? 'avatarImage' : 'coverImage'}`]: [] });
   };
 
   handleSubmit(e) {

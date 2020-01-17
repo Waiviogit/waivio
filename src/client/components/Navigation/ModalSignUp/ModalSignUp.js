@@ -13,12 +13,14 @@ import { notify } from './../../../app/Notification/notificationActions';
 import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
 import { GUEST_PREFIX } from '../../../../common/constants/waivio';
 import './ModalSignUp.less';
+import { getRate, getRebloggedList, getRewardFund } from '../../../reducers';
 
 const ModalSignUp = ({ isButton, form, intl }) => {
   const dispatch = useDispatch();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userData, setUserData] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     getFieldDecorator,
@@ -39,6 +41,9 @@ const ModalSignUp = ({ isButton, form, intl }) => {
             dispatch(getFollowingObjects());
             dispatch(getNotifications());
             dispatch(busyLogin());
+            dispatch(getRewardFund());
+            dispatch(getRebloggedList());
+            dispatch(getRate());
           });
         });
       } else {
@@ -97,18 +102,28 @@ const ModalSignUp = ({ isButton, form, intl }) => {
 
   const hasErrors = fieldsError => Object.keys(fieldsError).some(field => fieldsError[field]);
 
+  const handleCloseModal = () => {
+    setFieldsValue({ username: '' });
+    setIsModalOpen(false);
+    setIsLoading(false);
+  };
+
   const handleSubmit = e => {
     e.preventDefault();
     validateFields((err, values) => {
       if (!err) {
+        setIsLoading(true);
         dispatch(
           login(userData.accessToken, userData.socialNetwork, {
             userName: `${GUEST_PREFIX}${values.username}`,
             pickSocialFields: values.agreement,
           }),
-        );
+        ).then(() => {
+          setIsLoading(false);
+        });
       } else {
         dispatch(notify(`${err.username.errors[0].message}`, 'error'));
+        setIsLoading(false);
       }
     });
   };
@@ -155,7 +170,7 @@ const ModalSignUp = ({ isButton, form, intl }) => {
               })}`,
             },
             {
-              pattern: /^[A-Za-z0-9.-]$/,
+              pattern: /^[A-Za-z0-9.-]+$/,
               message: `${intl.formatMessage({
                 id: 'only_letters',
                 defaultMessage: 'Only letters, digits, periods, dashes are allowed',
@@ -176,7 +191,12 @@ const ModalSignUp = ({ isButton, form, intl }) => {
         })(<Checkbox>I agree to post my public data into blockchain</Checkbox>)}
       </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit" disabled={hasErrors(getFieldsError())}>
+        <Button
+          type="primary"
+          htmlType="submit"
+          disabled={hasErrors(getFieldsError())}
+          loading={isLoading}
+        >
           <FormattedMessage id="signup" defaultMessage="Sign up" />
         </Button>
       </Form.Item>
@@ -194,13 +214,7 @@ const ModalSignUp = ({ isButton, form, intl }) => {
           <FormattedMessage id="signup" defaultMessage="Sign up" />
         </a>
       )}
-      <Modal
-        width={416}
-        title=""
-        visible={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
-        footer={null}
-      >
+      <Modal width={416} title="" visible={isModalOpen} onCancel={handleCloseModal} footer={null}>
         <div className="ModalSignUp">
           <h2 className="ModalSignUp__title">
             <FormattedMessage id="signup" defaultMessage="Sign up" />
