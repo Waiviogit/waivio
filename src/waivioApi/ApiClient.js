@@ -4,6 +4,7 @@ import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
 import config from './routes';
 import { getValidTokenData } from '../client/helpers/getToken';
+import { message } from 'antd';
 
 let headers = {
   Accept: 'application/json',
@@ -832,6 +833,28 @@ export const getFollowingsFromAPI = (username, limit = 10, skip = 0) => {
     .then(res => res.json())
     .then(data => data)
     .catch(err => console.error(err));
+};
+
+export const getGuestAvatarUrl = (username, url, intl) => {
+  const formData = new FormData();
+  formData.append('userName', username);
+  formData.append('type', 'avatar');
+  formData.append('imageUrl', url);
+  return fetch(`https://www.waivio.com/api/image`, {
+    method: 'POST',
+    body: formData,
+  })
+    .then(res => res.json())
+    .then(data => data)
+    .catch(err => {
+      console.error('err', err);
+      message.error(
+        intl.formatMessage({
+          id: 'notify_uploading_iamge_error',
+          defaultMessage: "Couldn't upload image",
+        }),
+      );
+    });
 };
 
 export const updateGuestProfile = async (username, json_metadata) => {
