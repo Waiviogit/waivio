@@ -8,11 +8,12 @@ import Buttons from './Buttons';
 import Confirmation from './Confirmation';
 import Comments from '../../../client/comments/Comments';
 import { getVoteValue } from '../../helpers/user';
-import { getRate } from '../../reducers';
+import { getRate, isGuestUser } from '../../reducers';
 import './StoryFooter.less';
 
 @connect(state => ({
   rate: getRate(state),
+  isGuest: isGuestUser(state),
 }))
 class StoryFooter extends React.Component {
   static propTypes = {
@@ -35,6 +36,7 @@ class StoryFooter extends React.Component {
     onShareClick: PropTypes.func,
     onEditClick: PropTypes.func,
     handlePostPopoverMenuClick: PropTypes.func,
+    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -51,6 +53,7 @@ class StoryFooter extends React.Component {
     onEditClick: () => {},
     handlePostPopoverMenuClick: () => {},
     onReportClick: () => {},
+    isGuest: false,
   };
 
   constructor(props) {
@@ -104,14 +107,10 @@ class StoryFooter extends React.Component {
   handleSliderCancel = () => this.setState({ sliderVisible: false });
 
   handleSliderChange = value => {
-    const { user, rewardFund, rate } = this.props;
-    const voteWorth = getVoteValue(
-      user,
-      rewardFund.recent_claims,
-      rewardFund.reward_balance,
-      rate,
-      value * 100,
-    );
+    const { user, rewardFund, rate, isGuest } = this.props;
+    const voteWorth = isGuest
+      ? 0
+      : getVoteValue(user, rewardFund.recent_claims, rewardFund.reward_balance, rate, value * 100);
     this.setState({ sliderValue: value, voteWorth });
   };
 

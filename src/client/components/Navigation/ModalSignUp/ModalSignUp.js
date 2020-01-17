@@ -13,6 +13,7 @@ import { notify } from './../../../app/Notification/notificationActions';
 import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
 import { GUEST_PREFIX } from '../../../../common/constants/waivio';
 import './ModalSignUp.less';
+import { getRate, getRebloggedList, getRewardFund } from '../../../reducers';
 
 const ModalSignUp = ({ isButton, form, intl }) => {
   const dispatch = useDispatch();
@@ -40,6 +41,9 @@ const ModalSignUp = ({ isButton, form, intl }) => {
             dispatch(getFollowingObjects());
             dispatch(getNotifications());
             dispatch(busyLogin());
+            dispatch(getRewardFund());
+            dispatch(getRebloggedList());
+            dispatch(getRate());
           });
         });
       } else {

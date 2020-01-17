@@ -34,13 +34,12 @@ import './CreateImage.less';
 )
 class CreateImage extends React.Component {
   state = {
-    previewVisible: false,
-    previewImage: '',
     fileList: [],
     uploadingList: [],
     loading: false,
     imageUploading: false,
     currentImages: [],
+    isValidLink: false,
   };
 
   getWobjectData = () => {
@@ -79,8 +78,6 @@ class CreateImage extends React.Component {
       },
     );
   };
-
-  handlePreviewCancel = () => this.setState({ previewVisible: false });
 
   handleSubmit = e => {
     e.preventDefault();
@@ -145,20 +142,40 @@ class CreateImage extends React.Component {
     }
   };
 
-  handleAddImageByLink = image => {
+  checkIsValidImageLink = (image, setImageIsValid) => {
+    const img = new Image();
+    img.src = image.src;
+    img.onload = () => setImageIsValid(image, true);
+    img.onerror = () => setImageIsValid(image, false);
+  };
+
+  checkIsImage = (image, isValidLink) => {
     const { intl } = this.props;
     const { currentImages } = this.state;
     const isSameLink = currentImages.some(currentImage => currentImage.src === image.src);
-    if (!isSameLink) {
-      const images = [...this.state.currentImages, image];
-      this.setState({ currentImages: images });
-    } else
+    if (isValidLink) {
+      if (!isSameLink) {
+        const images = [...this.state.currentImages, image];
+        this.setState({ currentImages: images });
+      } else
+        message.error(
+          intl.formatMessage({
+            id: 'imageSetter_link_is_already_added',
+            defaultMessage: 'The link you are trying to add is already added',
+          }),
+        );
+    } else {
       message.error(
         intl.formatMessage({
-          id: 'imageSetter_link_is_already_added',
-          defaultMessage: 'The link you are trying to add is already added',
+          id: 'imageSetter_invalid_link',
+          defaultMessage: 'The link is invalid',
         }),
       );
+    }
+  };
+
+  handleAddImageByLink = image => {
+    this.checkIsValidImageLink(image, this.checkIsImage);
   };
 
   disableAndInsertImage = (image, imageName = 'image') => {
@@ -230,13 +247,6 @@ class CreateImage extends React.Component {
     this.setState({ fileList });
   };
 
-  handlePreview = file => {
-    this.setState({
-      previewImage: file.url || file.thumbUrl,
-      previewVisible: true,
-    });
-  };
-
   appendImages = async () => {
     const { addImageToAlbumStore, form } = this.props;
     const { currentImages } = this.state;
@@ -276,7 +286,7 @@ class CreateImage extends React.Component {
 
   render() {
     const { showModal, form, intl, selectedAlbum, albums } = this.props;
-    const { previewVisible, previewImage, fileList, uploadingList, loading } = this.state;
+    const { fileList, uploadingList, loading } = this.state;
 
     return (
       <Modal
@@ -337,13 +347,14 @@ class CreateImage extends React.Component {
                   isLoading={this.state.imageUploading}
                   isMultiple
                 />
-                <Modal visible={previewVisible} footer={null} onCancel={this.handlePreviewCancel}>
-                  <img
-                    alt="example"
-                    style={{ width: '100%', 'max-height': '90vh' }}
-                    src={previewImage}
-                  />
-                </Modal>
+                {/* TODO: Possible will use */}
+                {/* <Modal visible={previewVisible} footer={null} onCancel={this.handlePreviewCancel}> */}
+                {/*  <img */}
+                {/*    alt="example" */}
+                {/*    style={{ width: '100%', 'max-height': '90vh' }} */}
+                {/*    src={previewImage} */}
+                {/*  /> */}
+                {/* </Modal> */}
               </div>,
             )}
           </Form.Item>
