@@ -1,4 +1,4 @@
-@import (reference) '../../../client/styles/custom.less';
+@import (reference) '../../../../client/styles/custom.less';
 
 .forecastCard {
   display: flex;
@@ -6,59 +6,102 @@
   border-radius: 4px;
   padding: 12px;
   background-color: @white;
-  margin-bottom: 5px;
+  margin-bottom: 20px;
   position: relative;
+  height: 116px;
+
+  &--toLose {
+    border: 1px solid @red;
+  }
+
+  &--win {
+    border: 1px solid @green-darker;
+  }
 
   &__val {
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
     text-align: center;
-    background-color: @white-smoke;
+    background-color: transparent;
     border: 1px solid @blue-hawkesBlue;
+    font-size: 17px;
+    width: 90px;
+    height: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+
+    @media screen and (max-width: 380px) {
+      width: 75px;
+      height: 75px;
+    }
   }
 
   &__to-vote-card {
     width: 100%;
     height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
+    display: flex;
     border-radius: 4px;
-    background-color: @white-opacity;
     justify-content: center;
     align-items: center;
-    padding: 15px 8px;
+    margin-right: 10px;
+
+    &--disabled {
+      display: none;
+    }
   }
 
-  &__to-vote-graphic {
-    text-align: center;
-  }
-
-  &__to-vote-card-container {
+  &__price {
     display: flex;
-    justify-content: space-evenly;
+    flex-direction: column;
+
+    &--fall {
+      color: @red;
+    }
+
+    &--rise {
+      color: @green-darker;
+    }
   }
 
-  &__to-vote-timer {
-    text-align: center;
-  }
-
-  &__disabled {
-    opacity: .5;
+  &__flex-container-vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
   &__title {
-    text-align: center;
-    width: 95%;
-    margin-bottom: 25px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 20px;
+    color: @black;
+    flex-direction: column;
+
+    @media screen and (max-width: 380px) {
+      font-size: 16px;
+    }
   }
 
-  &__image {
-    width: 25%;
-    height: 25%;
-    object-fit: contain;
+  &__title-row {
+    display: flex;
+    align-items: center;
+  }
+
+  &__img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+
+    &--little {
+      width: 20px;
+      height: 20px;
+      margin-right: 5px;
+    }
   }
 
   &__info {
@@ -69,9 +112,26 @@
     padding: 0 0 0 15px;
   }
 
+  &__to-vote-card-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
   &__top-block {
     display: flex;
     justify-content: space-between;
+    margin: 0 0 25px;
+  }
+
+  &__forecast-timer {
+    font-size: 20px;
+    position: absolute;
+    bottom: -14px;
+    background: @blue-dodgerBlue;
+    border-radius: 4px;
+    color: @white;
+    padding: 0 10px;
+    margin: 0 auto;
   }
 }
 
@@ -108,9 +168,9 @@
   border-radius: 4px;
   cursor: pointer;
   font-family: @font-family-sans-serif;
-  background-color: transparent;
+  background-color: @white;
   transition: .5s;
-  width: 100px;
+  width: 35%;
   border: none;
 
   &:disabled {
@@ -129,7 +189,10 @@
     align-items: flex-end;
     height: 50%;
     flex-grow: 3;
-    padding-right: 20px;
+    position: absolute;
+    bottom: -12px;
+    width: 100%;
+    left: 0;
   }
 
   &__positive {
@@ -171,6 +234,22 @@
   &__timer {
     font-family: @font-family-monospace;
   }
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
+}
+
+.red {
+  color: @red;
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
+}
+
+.green {
+  color: @green-darker;
 
   &::first-letter {
     text-transform: uppercase;

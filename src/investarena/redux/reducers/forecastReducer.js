@@ -9,6 +9,8 @@ const initialState = {
   winners: [],
   currenUser: {},
   roundInfo: {},
+  timer: 0,
+  roundTime: 0,
 };
 
 export default (state = initialState, action) => {
@@ -27,7 +29,16 @@ export default (state = initialState, action) => {
         forecastData: [],
       };
 
-    case activeForecastTypes.GET_QUICK_FORECAST_DATA:
+    case activeForecastTypes.GET_QUICK_FORECAST_DATA.SUCCESS:
+
+      return {
+        ...state,
+        quickForecastData: [...action.payload.feed],
+        timer: action.payload.timer,
+        roundTime: action.payload.round_time
+      };
+
+    case activeForecastTypes.GET_QUICK_FORECAST_DATA.ERROR:
 
       return {
         ...state,
@@ -67,7 +78,7 @@ export default (state = initialState, action) => {
 
       return {
         ...state,
-        winners: [...state.winners, ...action.payload.users],
+        winners: [],
         hasMoreStatistic: false,
       };
 
@@ -88,6 +99,24 @@ export default (state = initialState, action) => {
         roundInfo: {},
       };
 
+    case activeForecastTypes.ANSWER_QUICK_FORECAST: {
+      const answeredForecast = state.quickForecastData[action.payload.id];
+
+      return {
+        ...state,
+        quickForecastData: [
+          {
+            ...answeredForecast,
+            active: false,
+            side: action.payload.answer,
+            postPrice: action.payload.postPrice,
+            quickForecastExpiredAt: action.payload.quickForecastExpiredAt,
+            status: 'pending',
+          },
+          ...state.quickForecastData,
+        ],
+      }
+    }
 
     default:
       return state;

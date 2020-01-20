@@ -1,0 +1,92 @@
+@import (reference) '../../../../client/styles/custom.less';
+
+.nightmode {
+  .top-predictors {
+    background-color: @grey-nero;
+    border: 1px solid @normal-grey;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+
+    &__reward {
+      font-size: 15px;
+      color: @green-darker;
+    }
+
+    &__title {
+      border-bottom: 1px solid @normal-grey;
+      padding: 10px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    &__content {
+      padding: 15px 15px 0;
+    }
+
+    &__flex-wrapper {
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    &__user-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin: 0 5px;
+    }
+
+    &__tab {
+      padding: 15px 0;
+      border-bottom: 1px solid @normal-grey;
+      display: flex;
+      justify-content: space-between;
+      font-weight: 500;
+      align-items: center;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &:first-child {
+        padding-top: 0;
+      }
+
+      &--text-center {
+        justify-content: center;
+      }
+    }
+
+    &__link {
+      overflow: hidden;
+      color: @white-smoke;
+
+      &:hover {
+        color: @white-smoke;
+      }
+    }
+
+    &__present {
+      border: 1px solid @normal-grey;
+      background-color: @grey-nero;
+      border-radius: 4px;
+      font-size: 12px;
+      line-height: 20px;
+      padding: 0 7px;
+      height: fit-content;
+    }
+
+    &__show-more {
+      color: @white-smoke;
+      text-align: center;
+      margin: 8px 0;
+      cursor: pointer;
+      background-color: transparent;
+      border: none;
+      outline: none;
+      width: 100%;
+    }
+  }
+
+}

@@ -2,18 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {injectIntl} from 'react-intl';
+import {Icon} from 'antd';
+import { Link } from 'react-router-dom';
 
-import QuickForecastCard from './QuickForecastCard';
+import QuickForecastCard from './QuickForecastCard/QuickForecastCard';
 import Loading from '../../../client/components/Icon/Loading';
 import BallotTimer from './BallotTimer';
-import TopPredictors from './TopPredictors';
+import TopPredictors from './TopPredictions/TopPredictors';
 import USDDisplay from '../../../client/components/Utils/USDDisplay';
 import SortSelector from '../../../client/components/SortSelector/SortSelector';
 import {
   answerForQuickForecast,
-  getDataForQuickForecast,
+  getDataForQuickForecast, getForecastRoundRewards,
   getForecastStatistic,
-  getForecastWinners
+  getForecastWinners,
 } from '../../redux/actions/forecastActions';
 import {marketNames} from '../../constants/objectsInvestarena';
 
@@ -21,123 +23,164 @@ import './QuickForecastPage.less';
 
 class QuickForecastPage extends React.PureComponent {
   state = {
-    isLoading: false,
-    sortBy: ''
+    sortBy: '',
   };
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.getDataForQuickForecast();
     this.props.getForecastStatistic();
-    this.props.getForecastWinners(5, this.props.quickForecastDataList.length);
+    this.props.getForecastWinners(5, this.props.winners.length);
+    this.props.getForecastRoundRewards();
 
-    setTimeout(() => this.setState(state => ({isLoading: !state.isLoading})), 3000)
+    this.currentTime = Date.now();
+    setTimeout(() => this.setState(state => ({isLoading: !state.isLoading})), 3000);
   }
 
-  handleSort (sort) {
-    this.setState({sortBy: sort});
-  };
+  getSortItemKey = type =>
+    (type.name === 'Reset'
+      ? ''
+      : type.name);
 
-  handleFinishTimer () {
+  filtersType = [{
+    name: 'Reset',
+    key: '',
+    intl: {
+      id: 'reset_filter',
+      defaultMessage: 'Reset',
+    },
+  },
+    ...marketNames];
+
+  handleSort(sort) {
+    this.setState({sortBy: sort});
+  }
+
+  handleFinishTimer() {
     this.props.getDataForQuickForecast();
-    this.props.getForecastWinners();
+    this.props.getForecastWinners(5, 0);
+    this.props.getForecastRoundRewards();
   }
 
   render() {
-    // const seconds = (finish - currentTime) * 0.001;
-    const time = 3000;
-    let minutes = time / 60;
-    let hours;
-
-    if (minutes > 60) {
-      hours = Math.floor(minutes / 60);
-      minutes -= (hours * 60);
-    }
-
-    if (minutes < 0) {
-      minutes = 0;
-      hours = 0;
-    }
-    const filterForecastList = this.props.quickForecastDataList.filter(obj => obj.market === this.state.sortBy);
-    // const forecastList = this.state.sortBy
-    //   ? filterForecastList
-    //   : this.props.quickForecastDataList;
-    const forecastList = [{
-      "_id": "5e1c9f7face3080c161a91c8",
-      "author_count_forecasts": 1,
-      "priority_counter": 3,
-      "active": true,
-      "market": "Stock",
-      "visible_marker": 0,
-      "id": "sor31/testing",
-      "author": "sor31",
-      "permlink": "testing",
-      "createdAt": "2020-01-13T16:48:58.000Z",
-      "security": "ABBV",
-      "recommend": "Sell",
-      "expiredAt": "2020-01-13T17:18:58.000Z",
-      "__v": 0
-    }];
-    const filtersType = [...marketNames,
-      {
-        name: 'Reset',
-        key: '',
-        intl: {
-          id: 'reset_filter',
-          defaultMessage: 'Reset'
-        }
-      }];
-    const sortItemKey = type => type.name === 'Reset' ? '' : type.name;
+    const filterForecastList = this.props.quickForecastDataList.filter(
+      obj => obj.market === this.state.sortBy && obj.active,
+    );
+    const answeredForecastList = this.props.quickForecastDataList.filter(
+      forecast => !forecast.active
+    );
+    const forecastList = this.state.sortBy
+      ? [...answeredForecastList, ...filterForecastList]
+      : this.props.quickForecastDataList;
+    const currentForecastList = answeredForecastList.length === 5
+      ? answeredForecastList
+      : forecastList;
+    const secondsInMilliseconds = sec => sec / 0.001;
+    const finishRoundTime = this.props.roundTime && this.currentTime + secondsInMilliseconds(this.props.roundTime);
 
     return (
       <div className="shifted">
         <div className="feed-layout container">
+          <h1 className="head-title">Guess and get money
+            <br/>absolutely
+            <span className="free"> FREE</span></h1>
           <div className="leftContainer">
-            <TopPredictors userList={this.props.usersList} title="Top 5 Users" activeUser={this.props.user}/>
+            <Link to="#" className="rules"  title="How it works">
+              <span className="rules__link">
+               {
+                 this.props.intl.formatMessage({
+                   id: 'how_it_work',
+                   defaultMessage: 'How it works',
+                 })
+               }&#160;
+              </span>
+              <Icon type="question-circle"/>
+            </Link>
+            <TopPredictors
+              userList={this.props.usersList}
+              title="Top 5 Users"
+              activeUser={this.props.user}
+            />
           </div>
           <div className="center">
-            <div className="timer-container">
-              <BallotTimer minutes={minutes} hours={hours} willCallAfterTimerEnd={this.handleFinishTimer} timeInSeconds={3000}/>
-            </div>
-            <SortSelector caption="Filter" sort={this.state.sortBy} onChange={sort => this.handleSort(sort)}>
-              {
-                filtersType.map(type => (
-                  <SortSelector.Item key={sortItemKey(type)}>
-                    {this.props.intl.formatMessage({id: type.intl.id, defaultMessage: type.intl.defaultMessage})}
-                  </SortSelector.Item>
-                ))
-              }
-            </SortSelector>
             {
-              this.state.isLoading
-                ? forecastList.map(obj => (
-                  <QuickForecastCard forecast={obj} key={Math.random()}
-                                     predictionObjectName={this.props.quotesSett[obj.security].name}
-                                     answerForecast={this.props.answerForQuickForecast}
-                                     price={this.props.quotes[obj.security].bidPrice}
-                                     getForecast={this.props.getDataForQuickForecast}/>)
-                )
-                : <Loading/>
+              this.state.isLoading ? (
+                <React.Fragment>
+                  <div className="timer-container">
+                    <BallotTimer endTimerTime={finishRoundTime}
+                                 willCallAfterTimerEnd={() => this.handleFinishTimer()}/>
+                  </div>
+                  <SortSelector
+                    caption="Filter"
+                    sort={this.state.sortBy}
+                    onChange={sort => this.handleSort(sort)}
+                  >
+                    {
+                      this.filtersType.map(type => (
+                        <SortSelector.Item key={this.getSortItemKey(type)}>
+                          {
+                            this.props.intl.formatMessage({id: type.intl.id, defaultMessage: type.intl.defaultMessage})
+                          }
+                        </SortSelector.Item>
+                      ))
+                    }
+                  </SortSelector>
+                  {
+                    currentForecastList.map((obj, index) => (
+                      <QuickForecastCard
+                        forecast={obj}
+                        key={Math.random()}
+                        predictionObjectName={this.props.quotesSett[obj.security] && this.props.quotesSett[obj.security].name}
+                        avatar={this.props.quotesSett[obj.security] && this.props.quotesSett[obj.security].wobjData.avatarlink}
+                        answerForecast={this.props.answerForQuickForecast}
+                        getForecast={this.props.getDataForQuickForecast}
+                        timerData={secondsInMilliseconds(this.props.timeForTimer)}
+                        id={index}
+                        timerCallback={() => this.handleFinishTimer()}
+                        counter={answeredForecastList.length}
+                      />))
+                  }
+                </React.Fragment>
+              ) : <Loading/>
             }
             {
               this.state.isLoading && !forecastList.length && (
                 <div className="no-posts">
-                  {this.props.intl.formatMessage({id: 'no_quick_forecasts', defaultMessage: 'There are currently no forecasts in this category'})}
+                  {
+                    this.props.intl.formatMessage({
+                      id: 'no_quick_forecasts',
+                      defaultMessage: 'There are currently no forecasts in this category',
+                    })
+                  }
                 </div>
-              )
-            }
+              )}
           </div>
           <div className="rightContainer">
             <div className="reward">
-              <span>Rewards:</span>
-              <USDDisplay value={14}/>
-              <span>Current round:</span>
-              <USDDisplay value={14}/>
+              <span className="reward__row">
+                {
+                  this.props.intl.formatMessage({
+                    id: 'forecasts__rewards',
+                    defaultMessage: 'Rewards',
+                  })
+                }:&#160;
+                <USDDisplay value={this.props.roundInformation.rewards}/>
+              </span>
+              <span className="reward__row">
+                {
+                  this.props.intl.formatMessage({
+                    id: 'forecast_round',
+                    defaultMessage: 'Current round',
+                  })
+                }:&#160;
+                <USDDisplay value={this.props.roundInformation.voitingPowers}/>
+              </span>
             </div>
             <TopPredictors
               userList={this.props.winners}
               title="Current round winners"
               activeUser={this.props.user}
-              showMore={this.props.hasMore}/>
+              showMore={this.props.hasMore}
+            />
           </div>
         </div>
       </div>
@@ -149,13 +192,13 @@ QuickForecastPage.propTypes = {
   quickForecastDataList: PropTypes.arrayOf(PropTypes.object).isRequired,
   answerForQuickForecast: PropTypes.func.isRequired,
   getDataForQuickForecast: PropTypes.func.isRequired,
+  getForecastRoundRewards: PropTypes.func.isRequired,
   getForecastWinners: PropTypes.func.isRequired,
   getForecastStatistic: PropTypes.func.isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
   quotesSett: PropTypes.shape().isRequired,
-  quotes: PropTypes.shape().isRequired,
   user: PropTypes.shape({
     name: PropTypes.string,
     successful_suppose: PropTypes.number,
@@ -163,6 +206,12 @@ QuickForecastPage.propTypes = {
   usersList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   winners: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   hasMore: PropTypes.bool,
+  roundTime: PropTypes.number,
+  timeForTimer: PropTypes.number.isRequired,
+  roundInformation: PropTypes.shape({
+    rewards: PropTypes.number,
+    voitingPowers: PropTypes.number,
+  }).isRequired,
 };
 
 QuickForecastPage.defaultProps = {
@@ -171,16 +220,19 @@ QuickForecastPage.defaultProps = {
     successful_suppose: 0,
   },
   hasMore: false,
+  roundTime: 0,
 };
 
 const mapStateToProps = state => ({
   quickForecastDataList: state.forecasts.quickForecastData,
   quotesSett: state.quotesSettings,
-  quotes: state.quotes,
   usersList: state.forecasts.userStatistics,
   user: state.forecasts.current,
   winners: state.forecasts.winners,
-  hasMore: state.forecasts.hasMoreStatistic
+  hasMore: state.forecasts.hasMoreStatistic,
+  timeForTimer: state.forecasts.timer,
+  roundInformation: state.forecasts.roundInfo,
+  roundTime: state.forecasts.roundTime,
 });
 
 const mapDispatchToProps = {
@@ -188,6 +240,7 @@ const mapDispatchToProps = {
   getDataForQuickForecast,
   getForecastWinners,
   getForecastStatistic,
+  getForecastRoundRewards,
 };
 
 export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(QuickForecastPage));

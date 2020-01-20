@@ -6,6 +6,11 @@
   font-size: 45px;
   border: 1px solid @blue-hawkesBlue;
   border-radius: 4px;
+  background-color: @white;
+
+  @media screen and (max-width: 500px) {
+    font-size: 35px;
+  }
 }
 
 .refresh-container {
@@ -14,6 +19,39 @@
   padding: 10px 12px;
   text-align: end;
   background-color: @white;
+}
+
+.rules {
+  border-radius: 4px;
+  border: 1px solid @blue-hawkesBlue;
+  background-color: @white;
+  padding: 20px 15px;
+  font-size: 20px;
+  margin: 0 0 24px;
+  height: 69px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  cursor: pointer;
+
+  &__link {
+    color: @blue-dodgerBlue;
+  }
+}
+
+.head-title {
+  font-size: 50px;
+  text-align: center;
+  padding: 0 95px 0 0;
+
+  @media screen and (max-width: 999px) {
+    padding: 0;
+  }
+
+  @media screen and (max-width: 500px) {
+    font-size: 35px;
+  }
 }
 
 .refresh-button {
@@ -27,11 +65,22 @@
 .reward {
   display: flex;
   justify-content: center;
-  font-size: 20px;
+  font-size: 16px;
   border: 1px solid @blue-hawkesBlue;
   border-radius: 4px;
   margin: 0 0 24px 0;
   background-color: @white;
   flex-direction: column;
   padding: 10px 15px;
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+  }
 }
+
+.free {
+  color: @red;
+}
+
+@import "QuickForecastPage-mode_night";

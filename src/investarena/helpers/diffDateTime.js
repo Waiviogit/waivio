@@ -56,6 +56,17 @@ export function timeForecastRemain(forecastTime) {
   return `0d 00:00:00`;
 }
 
+export function timeQuickForecastRemain(forecastTime) {
+  const dateForecast = parseInt(moment.utc(forecastTime).format('x'), 10);
+  const diff = dateForecast - currentTime.getTime();
+  if (diff > 0) {
+    const timeValues = calculateTime(diff);
+    const resultValues = `${timeValues.hours}h ${timeValues.minutes}m ${timeValues.seconds}s`;
+    return `${moment(resultValues, 'HH:mm:ss').format('HH:mm:ss')}`;
+  }
+  return `finished`;
+}
+
 // "2019-01-30T17:58:38.000Z"
 export function getDataCreatedAt() {
   const periodBefore = 692118400;

@@ -1,0 +1,68 @@
+.nightmode {
+  @import (reference) '../../../client/styles/custom.less';
+
+  .timer-container {
+    display: flex;
+    justify-content: center;
+    font-size: 45px;
+    border: 1px solid @normal-grey;
+    border-radius: 4px;
+    background-color: @grey-nero;
+  }
+
+  .refresh-container {
+    margin-left: 8px;
+    font-weight: 500;
+    padding: 10px 12px;
+    text-align: end;
+    background-color: @white;
+  }
+
+  .rules {
+    border-radius: 4px;
+    border: 1px solid @normal-grey;
+    background-color: @grey-nero;
+    padding: 20px 15px;
+    font-size: 20px;
+    margin: 0 0 24px;
+    height: 69px;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+
+    &__link {
+      color: @blue-dodgerBlue;
+      cursor: pointer;
+    }
+  }
+
+  .head-title {
+    font-size: 50px;
+    text-align: center;
+  }
+
+  .refresh-button {
+    font-family: @font-family-sans-serif;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .reward {
+    display: flex;
+    justify-content: center;
+    font-size: 16px;
+    border: 1px solid @normal-grey;
+    border-radius: 4px;
+    margin: 0 0 24px 0;
+    background-color: @grey-nero;
+    flex-direction: column;
+    padding: 10px 15px;
+  }
+
+  .free {
+    color: @red;
+  }
+
+}

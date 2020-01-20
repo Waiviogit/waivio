@@ -1,3 +1,5 @@
+import {message} from 'antd';
+
 import api from '../../configApi/apiResources';
 import createFormatter from '../../../client/helpers/steemitFormatter';
 import {createAsyncActionType} from '../../../client/helpers/stateHelpers';
@@ -5,12 +7,12 @@ import {getAuthenticatedUserName} from "../../../client/reducers";
 
 export const GET_FORECAST_DATA = createAsyncActionType('@forecast-data/GET_FORECAST_DATA');
 
-export const GET_QUICK_FORECAST_DATA = '@forecast-data/GET_QUICK_FORECAST_DATA';
+export const GET_QUICK_FORECAST_DATA = createAsyncActionType('@forecast-data/GET_QUICK_FORECAST_DATA');
 export const GET_QUICK_FORECAST_STATISTIC = createAsyncActionType('@forecast-data/GET_QUICK_FORECAST_STATISTIC');
 export const GET_QUICK_FORECAST_WINNERS = createAsyncActionType('@forecast-data/GET_QUICK_FORECAST_WINNERS');
 export const GET_QUICK_FORECAST_REWARDS = createAsyncActionType('@forecast-data/GET_QUICK_FORECAST_REWARDS');
 
-export const ANSWER_QUICK_FORECAST = createAsyncActionType('@forecast-data/ANSWER_QUICK_FORECAST');
+export const ANSWER_QUICK_FORECAST = '@forecast-data/ANSWER_QUICK_FORECAST';
 export const ANSWER_QUICK_FORECAST_LIKE_POST = '@forecast-data/ANSWER_QUICK_FORECAST_LIKE_POST';
 export const ANSWER_QUICK_FORECAST_SEND_COMMENT = '@forecast-data/ANSWER_QUICK_FORECAST_SEND_COMMENT';
 
@@ -25,7 +27,7 @@ export const getDataForQuickForecast = () => (dispatch, getState) => {
   const username = getAuthenticatedUserName(getState());
 
   dispatch({
-    type: GET_QUICK_FORECAST_DATA,
+    type: GET_QUICK_FORECAST_DATA.ACTION,
     payload: api.quickForecast.getQuickForecast(username),
   });
 };
@@ -39,13 +41,15 @@ export const getForecastStatistic = () => (dispatch, getState) => {
   });
 };
 
-export const getForecastWinners = (limit, skip) => (dispatch, getState) => {
+export const getForecastWinners = (limit = 0, skip = 0) => (dispatch, getState) => {
   const user = getAuthenticatedUserName(getState());
-
-  dispatch({
-    type: GET_QUICK_FORECAST_WINNERS.ACTION,
-    payload: api.quickForecast.getQuickForecastWinners(user, limit, skip)
-  });
+  const hasMore = getState().forecasts.hasMoreStatistic;
+  if (hasMore) {
+    dispatch({
+      type: GET_QUICK_FORECAST_WINNERS.ACTION,
+      payload: api.quickForecast.getQuickForecastWinners(user, limit, skip)
+    });
+  }
 };
 
 export const getForecastRoundRewards = () => dispatch => {
@@ -55,53 +59,67 @@ export const getForecastRoundRewards = () => dispatch => {
   });
 };
 
-export const answerForQuickForecast = (author, permlink, answer, postPrice, weight = 10000) => (dispatch, getState, {steemConnectAPI}) => {
+export const answerForQuickForecast = (author, permlink, answer, id, security, quickForecastExpiredAt, counter, weight = 10000) => (dispatch, getState, {steemConnectAPI}) => {
   const username = getAuthenticatedUserName(getState());
+  const postPrice = getState().quotes[security].bidPrice;
+  if (quickForecastExpiredAt > Date.now()) {
+    dispatch({
+      type: ANSWER_QUICK_FORECAST_LIKE_POST,
+      payload: {
+        promise: steemConnectAPI
+          .vote(username, author, permlink, weight)
+          .then(res => {
+            if (window.analytics) {
+              window.analytics.track('Vote', {
+                category: 'vote',
+                label: 'submit',
+                value: 1,
+              });
+            }
 
-  dispatch({
-    type: ANSWER_QUICK_FORECAST_LIKE_POST,
-    payload: {
-      promise: steemConnectAPI
-        .vote(username, author, permlink, weight)
-        .then(res => {
-          if (window.analytics) {
-            window.analytics.track('Vote', {
-              category: 'vote',
-              label: 'submit',
-              value: 1,
-            });
-          }
+            return res;
+          }).catch(e => e),
+      }
+    });
 
-          return res;
-        }),
-    }
-  });
-
-  dispatch({
-    type: ANSWER_QUICK_FORECAST_SEND_COMMENT,
-    payload: {
-      promise: new Promise((resolve, reject) =>
-        steemConnectAPI
-          .broadcast([['comment',
-            {
-              parent_author: author,
-              parent_permlink: permlink,
-              author: username,
-              permlink: createFormatter.commentPermlink(author, permlink),
-              title: 'unactivate topic for rewards',
-              body: `Campaign was inactivated by '${username}' `,
-              json_metadata: JSON.stringify({
-                forecast_comment: {
-                  forecast_author: author,
-                  forecast_permlink: permlink,
-                  side: answer,
+    dispatch({
+      type: ANSWER_QUICK_FORECAST_SEND_COMMENT,
+      payload: {
+        promise: new Promise((resolve, reject) =>
+          steemConnectAPI
+            .broadcast([['comment',
+              {
+                parent_author: author,
+                parent_permlink: permlink,
+                author: username,
+                permlink: createFormatter.commentPermlink(author, permlink),
+                title: 'unactivate topic for rewards',
+                body: `Campaign was inactivated by '${username}' `,
+                json_metadata: JSON.stringify({
+                  forecast_comment: {
+                    side: answer,
+                    postPrice,
+                    security
+                  }
+                }),
+              },
+            ]]).then(() => {
+              message.info(`you still have ${5 - counter} forecasts `);
+              dispatch({
+                type: ANSWER_QUICK_FORECAST,
+                payload: {
+                  answer,
+                  id,
                   postPrice,
+                  quickForecastExpiredAt,
+                  status: 'pending',
                 }
-              }),
-            },
-          ]])
-          .then(() => resolve('SUCCESS'))
-          .catch(error => reject(error)))
-    }
-  })
+              });
+            }
+          ).catch(error => reject(error)))
+      }
+    });
+  }
+
+  getDataForQuickForecast();
 };
