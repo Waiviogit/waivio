@@ -5,12 +5,12 @@ import { Icon } from 'antd';
 
 import { toggleModal } from '../../redux/actions/modalsActions';
 
-const GraphicCaller = props => (
+const GraphicCaller = ({disabled, quotes, id, quotesSettings, toggleModalCaller}) => (
   <button className="graphic"
-          disabled={props.disabled}
-          onClick={() => props.toggleModal('openDeals',  {
-            quote: props.quotes[props.id],
-            quoteSettings: props.quotesSettings[props.id],
+          disabled={disabled}
+          onClick={() => toggleModalCaller('openDeals',  {
+            quote: quotes[id],
+            quoteSettings: quotesSettings[id],
             platformName:"widgets",
             caller: 'od-op'
             })
@@ -25,11 +25,11 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  toggleModal,
+  toggleModalCaller: toggleModal,
 };
 
 GraphicCaller.propTypes = {
-  toggleModal: PropTypes.func.isRequired,
+  toggleModalCaller: PropTypes.func.isRequired,
   quotes: PropTypes.shape().isRequired,
   quotesSettings: PropTypes.shape().isRequired,
   id: PropTypes.string.isRequired,

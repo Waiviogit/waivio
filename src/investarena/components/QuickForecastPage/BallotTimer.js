@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Icon} from 'antd';
-import {timeQuickForecastRemain} from "../../helpers/diffDateTime";
+import {timeQuickForecastRemain} from '../../helpers/diffDateTime';
 
 class BallotTimer extends React.PureComponent {
   state = {

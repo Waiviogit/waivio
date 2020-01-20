@@ -211,8 +211,11 @@ export const activateCampaign = (company, campaignPermlink) => (
       permlink: campaignPermlink,
       title: 'activate topic for rewards',
       body: `Campaign ${company.name} was activated by ${username} `,
-      json_metadata: {},
-     },
+      json_metadata: JSON.stringify({
+        // eslint-disable-next-line no-underscore-dangle
+        waivioRewards: { type: 'waivio_activate_campaign', campaign_id: company._id },
+      }),
+    },
   ];
 
   return new Promise((resolve, reject) => {

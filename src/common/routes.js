@@ -51,7 +51,7 @@ import ObjectOfTypePage from '../client/object/ObjectOfTypePage/ObjectOfTypePage
 import UserStatisticsContainer from '../client/user/UserStatistics/UserStatisticsContainer';
 import EconomicalCalendar from '../investarena/components/EconomicalCalendar/EconomicalCalendar';
 import UserInfo from '../client/app/Sidebar/UserInfo';
-import QuickForecastPage from "../investarena/components/QuickForecastPage/QuickForecastPage";
+import QuickForecastPage from '../investarena/components/QuickForecastPage/QuickForecastPage';
 
 const routes = [
   {
