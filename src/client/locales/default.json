@@ -989,5 +989,8 @@
   "imageSetter_upload": "Upload",
   "imageSetter_or": "or",
   "imageSetter_paste_image_link": "Paste image link",
-  "imageSetter_link_is_already_added": "The link you are trying to add is already added"
+  "imageSetter_link_is_already_added": "The link you are trying to add is already added",
+  "there_are_not user with name": "Sorry! There are no user with name {item} on Waivio",
+  "not_to_worry": "Not to worry. You can head back to {link}",
+  "there_are_not_object_with_name": "Sorry! There are no user with name {item} on Waivio"
 }
