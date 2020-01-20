@@ -160,7 +160,7 @@ class CreateRewardForm extends React.Component {
     const agreementObjects =
       this.state.pageObjects.length !== 0 ? map(this.state.pageObjects, o => o.id) : [];
     const sponsorAccounts = map(data.sponsorsList, o => o.account);
-    const appName = apiConfig[process.env.NODE_ENV].appName || 'waiviodev';
+    const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     const preparedObject = {
       requiredObject: data.primaryObject.author_permlink,
       guideName: userName,
