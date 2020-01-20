@@ -17,7 +17,12 @@ import {
   getSuitableLanguage,
 } from '../../reducers';
 import { createPost, saveDraft } from '../Write/editorActions';
-import { createPostMetadata, splitPostContent, getInitialState } from '../../helpers/postHelpers';
+import {
+  createPostMetadata,
+  splitPostContent,
+  getInitialState,
+  getObjectUrl,
+} from '../../helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtended';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import ObjectCardView from '../../objectCard/ObjectCardView';
@@ -28,6 +33,8 @@ import { setObjPercents } from '../../helpers/wObjInfluenceHelper';
 import CreatePostForecast from '../../../investarena/components/CreatePostForecast';
 import { getForecastObject } from '../../../investarena/components/CreatePostForecast/helpers';
 import { getClientWObj } from '../../adapters';
+import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
+import CreateObject from '../CreateObjectModal/CreateObject';
 import './EditPost.less';
 
 @injectIntl
@@ -87,6 +94,8 @@ class EditPost extends Component {
     this.handleChangeContent = this.handleChangeContent.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.buildPost = this.buildPost.bind(this);
+    this.handleObjectSelect = this.handleObjectSelect.bind(this);
+    this.handleCreateObject = this.handleCreateObject.bind(this);
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -165,6 +174,27 @@ class EditPost extends Component {
   handleSubmit() {
     const postData = this.buildPost();
     this.props.createPost(postData);
+  }
+
+  handleObjectSelect(object) {
+    debugger;
+    this.setState(prevState => {
+      const { postTitle, postBody } = splitPostContent(prevState.content);
+      const objName = object.name || object.default_name;
+      const separator = postBody.slice(-1) === '\n' ? '' : '\n';
+      return {
+        draftContent: {
+          title: postTitle || objName,
+          body: `${postBody}${separator}[${objName}](${getObjectUrl(
+            object.id || object.author_permlink,
+          )})`,
+        },
+      };
+    });
+  }
+
+  handleCreateObject(object) {
+    setTimeout(() => this.handleObjectSelect(object), 1200);
   }
 
   buildPost() {
@@ -306,7 +336,7 @@ class EditPost extends Component {
       isUpdating,
       isPreview,
     } = this.state;
-    const { saving, publishing, imageLoading, locale, draftPosts } = this.props;
+    const { saving, publishing, imageLoading, intl, locale, draftPosts } = this.props;
     return (
       <div className="shifted">
         <div className="post-layout container">
@@ -355,6 +385,14 @@ class EditPost extends Component {
               onSubmit={this.handleSubmit}
               onUpdate={this.saveDraft}
             />
+
+            <div>{intl.formatMessage({ id: 'add_object', defaultMessage: 'Add object' })}</div>
+            <SearchObjectsAutocomplete
+              handleSelect={this.handleObjectSelect}
+              itemsIdsToOmit={linkedObjects.map(obj => obj.id)}
+            />
+            <CreateObject onCreateObject={this.handleCreateObject} />
+
             {linkedObjects.map(wObj => (
               <ObjectCardView wObject={wObj} key={wObj.id} />
             ))}

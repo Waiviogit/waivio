@@ -63,7 +63,7 @@ export default history =>
     gallery: galleryReducer,
     topPerformers: topPerformersReducer,
     forecasts: forecastReducer,
-    chat: chatReducer
+    chat: chatReducer,
   });
 
 export const getIsAuthenticated = state => fromAuth.getIsAuthenticated(state.auth);
