@@ -542,7 +542,7 @@ export const getSuitableUsers = (followsCount, postsCount) =>
       },
     )
       .then(res => res.json())
-      .then(result => resolve(result.users))
+      .then(result => resolve({ users: result.users, hasMore: false }))
       .catch(error => reject(error));
   });
 
@@ -728,7 +728,7 @@ export const updateUserMetadata = async (userName, data) => {
 export const getGuestPaymentsHistory = (userName, { skip = 0, limit = 20 }) => {
   return new Promise((resolve, reject) => {
     fetch(
-      `${config.campaignApiPrefix}${config.payments}${config.demoPayables}?userName=${userName}&skip=${skip}&${limit}`,
+      `${config.campaignApiPrefix}${config.payments}${config.demoPayables}?userName=${userName}&skip=${skip}&limit=${limit}`,
       {
         headers,
         method: 'GET',
@@ -826,7 +826,7 @@ export const getFollowersFromAPI = (username, limit = 10, skip = 0) => {
     .catch(err => console.error(err));
 };
 
-export const getFollowingsFromAPI = (username, limit = 10, skip = 0) => {
+export const getFollowingsFromAPI = (username, limit = 100, skip = 0) => {
   return fetch(
     `${config.apiPrefix}${config.user}/${username}${config.followingUsers}?skip=${skip}&limit=${limit}`,
   )
@@ -882,7 +882,24 @@ export const updateGuestProfile = async (username, json_metadata) => {
     method: 'POST',
     headers: { ...headers, 'access-token': userData.token },
     body: JSON.stringify(body),
-  }).then(data => data);
+  })
+    .then(data => data)
+    .catch(err => err.message);
+};
+
+export const sendGuestTransfer = async ({ to, amount }) => {
+  const userData = await getValidTokenData();
+  return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
+    method: 'POST',
+    headers: { ...headers, 'access-token': userData.token },
+    body: JSON.stringify({
+      id: 'waivio_guest_transfer',
+      data: { to, amount: +amount.split(' ')[0] },
+    }),
+  })
+    .then(res => res.json())
+    .then(data => data)
+    .catch(err => err);
 };
 
 // injected as extra argument in Redux Thunk

@@ -68,6 +68,7 @@ class SubFeed extends React.Component {
     getMoreUserFeedContent: () => {},
     getMoreFeedContent: () => {},
   };
+  state = { isAuthHomeFeed: false };
 
   componentDidMount() {
     const { authenticated, loaded, user, match, feed } = this.props;
@@ -76,6 +77,8 @@ class SubFeed extends React.Component {
     if (!loaded && Cookie.get('access_token')) return;
 
     if (match.url === '/' && authenticated) {
+      // eslint-disable-next-line react/no-did-mount-set-state
+      this.setState({ isAuthHomeFeed: true });
       const fetched = getUserFeedFetchedFromState(user.name, feed);
       if (fetched) return;
       this.props.getUserFeedContent(user.name);
@@ -118,14 +121,14 @@ class SubFeed extends React.Component {
   }
 
   render() {
-    const { authenticated, loaded, user, feed, match } = this.props;
+    const { loaded, user, feed, match } = this.props;
+    const { isAuthHomeFeed } = this.state;
     let content = [];
     let isFetching = false;
     let fetched = false;
     let hasMore = false;
     let failed = false;
     let loadMoreContent = () => {};
-    const isAuthHomeFeed = match.url === '/' && authenticated;
 
     if (isAuthHomeFeed) {
       content = getUserFeedFromState(user.name, feed);
