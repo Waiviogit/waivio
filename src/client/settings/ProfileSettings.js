@@ -245,7 +245,6 @@ export default class ProfileSettings extends React.Component {
           this.props.form.setFieldsValue({
             profile_image: data.image,
           });
-          this.setState({});
         })
         .then(() => this.setSettingsFields());
     } else this.setSettingsFields();
