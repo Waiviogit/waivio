@@ -41,15 +41,13 @@ export const getForecastStatistic = () => (dispatch, getState) => {
   });
 };
 
-export const getForecastWinners = (limit = 0, skip = 0) => (dispatch, getState) => {
+export const getForecastWinners = (limit, skip) => (dispatch, getState) => {
   const user = getAuthenticatedUserName(getState());
-  const hasMore = getState().forecasts.hasMoreStatistic;
-  if (hasMore) {
+
     dispatch({
       type: GET_QUICK_FORECAST_WINNERS.ACTION,
       payload: api.quickForecast.getQuickForecastWinners(user, limit, skip)
     });
-  }
 };
 
 export const getForecastRoundRewards = () => dispatch => {
@@ -68,57 +66,49 @@ export const answerForQuickForecast = (author, permlink, answer, id, security, q
       payload: {
         promise: steemConnectAPI
           .vote(username, author, permlink, weight)
-          .then(res => {
-            if (window.analytics) {
-              window.analytics.track('Vote', {
-                category: 'vote',
-                label: 'submit',
-                value: 1,
-              });
-            }
-
-            return res;
-          }).catch(e => e),
+          .then(() => {
+            dispatch({
+              type: ANSWER_QUICK_FORECAST_SEND_COMMENT,
+              payload: {
+                promise: new Promise((resolve, reject) =>
+                  steemConnectAPI
+                    .broadcast([['comment',
+                      {
+                        parent_author: author,
+                        parent_permlink: permlink,
+                        author: username,
+                        permlink: createFormatter.commentPermlink(author, permlink),
+                        title: 'unactivate topic for rewards',
+                        body: `Campaign was inactivated by '${username}' `,
+                        json_metadata: JSON.stringify({
+                          forecast_comment: {
+                            side: answer,
+                            postPrice,
+                            security
+                          }
+                        }),
+                      },
+                    ]]).then(() => {
+                      message.success(`You still have ${5 - counter - 1 } forecasts `);
+                      dispatch({
+                        type: ANSWER_QUICK_FORECAST,
+                        payload: {
+                          answer,
+                          id,
+                          postPrice,
+                          quickForecastExpiredAt,
+                          status: 'pending',
+                        }
+                      });
+                    }
+                  ).catch(error => reject(error)))
+              }
+            });
+          }).catch(() => message.error('This is an error message')),
       }
     });
 
-    dispatch({
-      type: ANSWER_QUICK_FORECAST_SEND_COMMENT,
-      payload: {
-        promise: new Promise((resolve, reject) =>
-          steemConnectAPI
-            .broadcast([['comment',
-              {
-                parent_author: author,
-                parent_permlink: permlink,
-                author: username,
-                permlink: createFormatter.commentPermlink(author, permlink),
-                title: 'unactivate topic for rewards',
-                body: `Campaign was inactivated by '${username}' `,
-                json_metadata: JSON.stringify({
-                  forecast_comment: {
-                    side: answer,
-                    postPrice,
-                    security
-                  }
-                }),
-              },
-            ]]).then(() => {
-              message.info(`you still have ${5 - counter} forecasts `);
-              dispatch({
-                type: ANSWER_QUICK_FORECAST,
-                payload: {
-                  answer,
-                  id,
-                  postPrice,
-                  quickForecastExpiredAt,
-                  status: 'pending',
-                }
-              });
-            }
-          ).catch(error => reject(error)))
-      }
-    });
+
   }
 
   getDataForQuickForecast();

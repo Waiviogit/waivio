@@ -11,35 +11,35 @@ const TopPredictors = ({title, userList, showMore, activeUser, handleShowMore, i
   const myNameInTopFive = userList.some(user => user.name === activeUser.name);
 
   return (
-    <div className="top-predictors">
-      <div className="top-predictors__title">
+    <div className="TopPredictors">
+      <div className="TopPredictors__title">
         <span>{title}</span>
         <i className="iconfont icon-Dollar"/>
       </div>
-      <div className="top-predictors__content">
+      <div className="TopPredictors__content">
         {
           userList.map(user => (
-            <div key={Math.random()} className="top-predictors__tab">
-              <Link className="top-predictors__link" to={`/@${user.name}`}>
-                <div className="top-predictors__flex-wrapper">
+            <div key={Math.random()} className="TopPredictors__tab">
+              <Link className="TopPredictors__link" to={`/@${user.name}`}>
+                <div className="TopPredictors__flex-wrapper">
                   <Avatar username={user.name} size={34}/>
-                  <span className="top-predictors__user-name">{user.name}</span>
+                  <span className="TopPredictors__user-name">{user.name}</span>
                 </div>
               </Link>
               {
                 user.successful_suppose >= 0 && (
-                  <span className="top-predictors__present">{user.successful_suppose}</span>)
+                  <span className="TopPredictors__present">{user.successful_suppose}</span>)
               }
               {
                 user.reward >= 0 && (
-                  <span className="top-predictors__reward">+{user.reward}</span>)
+                  <span className="TopPredictors__reward">+{user.reward}</span>)
               }
             </div>
           ))
         }
         {
           showMore && (
-            <button className="top-predictors__show-more" onClick={() => handleShowMore()}>
+            <button className="TopPredictors__show-more" onClick={() => handleShowMore()}>
               {
                 intl.formatMessage({
                   id: 'show_more_winners',
@@ -52,17 +52,17 @@ const TopPredictors = ({title, userList, showMore, activeUser, handleShowMore, i
         {
           activeUser.name && !myNameInTopFive && (
             <React.Fragment>
-              <div className="top-predictors__tab top-predictors__tab--text-center">
+              <div className="TopPredictors__tab TopPredictors__tab--text-center">
                 ...
               </div>
-              <div className="top-predictors__tab">
-                <Link className="top-predictors__link" to={`/@${activeUser.name}`}>
-                  <div className="top-predictors__flex-wrapper">
+              <div className="TopPredictors__tab">
+                <Link className="TopPredictors__link" to={`/@${activeUser.name}`}>
+                  <div className="TopPredictors__flex-wrapper">
                     <Avatar username={activeUser.name} size={34}/>
-                    <span className="top-predictors__user-name">{activeUser.name}</span>
+                    <span className="TopPredictors__user-name">{activeUser.name}</span>
                   </div>
                 </Link>
-                <span className="top-predictors__present">{activeUser.successful_suppose}</span>
+                <span className="TopPredictors__present">{activeUser.successful_suppose}</span>
               </div>
             </React.Fragment>
           )
@@ -84,7 +84,7 @@ TopPredictors.propTypes = {
     name: PropTypes.string,
     successful_suppose: PropTypes.number,
   }),
-  handleShowMore: PropTypes.func,
+  handleShowMore: PropTypes.func.isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
@@ -93,8 +93,6 @@ TopPredictors.propTypes = {
 TopPredictors.defaultProps = {
   showMore: false,
   activeUser: '',
-  handleShowMore: () => {
-  },
 };
 
 export default injectIntl(TopPredictors);

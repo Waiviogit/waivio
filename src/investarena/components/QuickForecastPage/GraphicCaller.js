@@ -30,8 +30,8 @@ const mapDispatchToProps = {
 
 GraphicCaller.propTypes = {
   toggleModalCaller: PropTypes.func.isRequired,
-  quotes: PropTypes.shape().isRequired,
-  quotesSettings: PropTypes.shape().isRequired,
+  quotes: PropTypes.shape({}).isRequired,
+  quotesSettings: PropTypes.shape({}).isRequired,
   id: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
 };

@@ -10,13 +10,13 @@ const DynamicPrice = ({postPrice, quotes, secur, closedPrice, intl}) => {
   const price = quotes[secur].bidPrice;
   const activePrice = closedPrice || price;
   const rise = postPrice < activePrice;
-  const priceClassList = classNames("forecastCard__price", {
-    'forecastCard__price--fall': !rise,
-    'forecastCard__price--rise': rise,
+  const priceClassList = classNames("ForecastCard__price", {
+    'ForecastCard__price--fall': !rise,
+    'ForecastCard__price--rise': rise,
   });
 
   return (
-    <div className="forecastCard__val">
+    <div className="ForecastCard__val">
       <div>
         {
           closedPrice
@@ -42,7 +42,7 @@ const DynamicPrice = ({postPrice, quotes, secur, closedPrice, intl}) => {
 
 DynamicPrice.propTypes = {
   postPrice: PropTypes.number.isRequired,
-  quotes: PropTypes.shape().isRequired,
+  quotes: PropTypes.shape({}).isRequired,
   secur: PropTypes.string.isRequired,
   closedPrice: PropTypes.number.isRequired,
   intl: PropTypes.shape({

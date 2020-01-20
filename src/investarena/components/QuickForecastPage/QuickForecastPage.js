@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import {injectIntl} from 'react-intl';
-import {Icon} from 'antd';
+import { connect } from 'react-redux';
+import { injectIntl } from 'react-intl';
+import { Icon } from 'antd';
 import { Link } from 'react-router-dom';
 
 import QuickForecastCard from './QuickForecastCard/QuickForecastCard';
@@ -11,37 +11,37 @@ import BallotTimer from './BallotTimer';
 import TopPredictors from './TopPredictions/TopPredictors';
 import USDDisplay from '../../../client/components/Utils/USDDisplay';
 import SortSelector from '../../../client/components/SortSelector/SortSelector';
+import { marketNames } from '../../constants/objectsInvestarena';
 import {
   answerForQuickForecast,
   getDataForQuickForecast, getForecastRoundRewards,
   getForecastStatistic,
   getForecastWinners,
 } from '../../redux/actions/forecastActions';
-import {marketNames} from '../../constants/objectsInvestarena';
 
 import './QuickForecastPage.less';
 
-class QuickForecastPage extends React.PureComponent {
-  state = {
-    sortBy: '',
-  };
+const QuickForecastPage = props => {
+  const [sortBy, setSort] = useState();
+  const [isLoading, pageLoading] = useState(false);
+  const [currentTime, setTime] = useState();
 
-  componentDidMount() {
-    this.props.getDataForQuickForecast();
-    this.props.getForecastStatistic();
-    this.props.getForecastWinners(5, this.props.winners.length);
-    this.props.getForecastRoundRewards();
+  useEffect(() => {
+      props.getDataForQuickForecast();
+      props.getForecastStatistic();
+      props.getForecastWinners(5, 0);
+      props.getForecastRoundRewards();
+      setTime(Date.now());
 
-    this.currentTime = Date.now();
-    setTimeout(() => this.setState(state => ({isLoading: !state.isLoading})), 3000);
-  }
+    setTimeout(() => pageLoading(true), 3000);
+  }, []);
 
-  getSortItemKey = type =>
+  const getSortItemKey = type =>
     (type.name === 'Reset'
       ? ''
       : type.name);
 
-  filtersType = [{
+  const filtersType = [{
     name: 'Reset',
     key: '',
     intl: {
@@ -51,31 +51,32 @@ class QuickForecastPage extends React.PureComponent {
   },
     ...marketNames];
 
-  handleSort(sort) {
-    this.setState({sortBy: sort});
+  function handleSort(sort) {
+    setSort(sort);
   }
 
-  handleFinishTimer() {
-    this.props.getDataForQuickForecast();
-    this.props.getForecastWinners(5, 0);
-    this.props.getForecastRoundRewards();
-  }
+  function handleFinishTimer() {
+    props.getDataForQuickForecast();
+    props.getForecastRoundRewards();
 
-  render() {
-    const filterForecastList = this.props.quickForecastDataList.filter(
-      obj => obj.market === this.state.sortBy && obj.active,
+    if(props.hasMore) {
+      props.getForecastWinners(5, props.winners.length);
+    }
+  }
+    const filterForecastList = props.quickForecastDataList.filter(
+      obj => obj.market === sortBy && obj.active,
     );
-    const answeredForecastList = this.props.quickForecastDataList.filter(
-      forecast => !forecast.active
-    );
-    const forecastList = this.state.sortBy
-      ? [...answeredForecastList, ...filterForecastList]
-      : this.props.quickForecastDataList;
-    const currentForecastList = answeredForecastList.length === 5
-      ? answeredForecastList
-      : forecastList;
-    const secondsInMilliseconds = sec => sec / 0.001;
-    const finishRoundTime = this.props.roundTime && this.currentTime + secondsInMilliseconds(this.props.roundTime);
+  const answeredForecastList = props.quickForecastDataList.filter(
+    forecast => !forecast.active
+  );
+  const forecastList = sortBy
+    ? [...answeredForecastList, ...filterForecastList]
+    : props.quickForecastDataList;
+  const currentForecastList = answeredForecastList.length === 5
+    ? answeredForecastList
+    : forecastList;
+  const secondsInMilliseconds = sec => sec / 0.001;
+  const finishRoundTime = props.roundTime && currentTime + secondsInMilliseconds(props.roundTime);
 
     return (
       <div className="shifted">
@@ -87,7 +88,7 @@ class QuickForecastPage extends React.PureComponent {
             <Link to="#" className="rules"  title="How it works">
               <span className="rules__link">
                {
-                 this.props.intl.formatMessage({
+                 props.intl.formatMessage({
                    id: 'how_it_work',
                    defaultMessage: 'How it works',
                  })
@@ -96,29 +97,29 @@ class QuickForecastPage extends React.PureComponent {
               <Icon type="question-circle"/>
             </Link>
             <TopPredictors
-              userList={this.props.usersList}
+              userList={props.usersList}
               title="Top 5 Users"
-              activeUser={this.props.user}
+              activeUser={props.user}
             />
           </div>
           <div className="center">
             {
-              this.state.isLoading ? (
+              isLoading ? (
                 <React.Fragment>
                   <div className="timer-container">
                     <BallotTimer endTimerTime={finishRoundTime}
-                                 willCallAfterTimerEnd={() => this.handleFinishTimer()}/>
+                                 willCallAfterTimerEnd={() => handleFinishTimer()}/>
                   </div>
                   <SortSelector
                     caption="Filter"
-                    sort={this.state.sortBy}
-                    onChange={sort => this.handleSort(sort)}
+                    sort={sortBy}
+                    onChange={sort => handleSort(sort)}
                   >
                     {
-                      this.filtersType.map(type => (
-                        <SortSelector.Item key={this.getSortItemKey(type)}>
+                      filtersType.map(type => (
+                        <SortSelector.Item key={getSortItemKey(type)}>
                           {
-                            this.props.intl.formatMessage({id: type.intl.id, defaultMessage: type.intl.defaultMessage})
+                            props.intl.formatMessage({id: type.intl.id, defaultMessage: type.intl.defaultMessage})
                           }
                         </SortSelector.Item>
                       ))
@@ -129,13 +130,13 @@ class QuickForecastPage extends React.PureComponent {
                       <QuickForecastCard
                         forecast={obj}
                         key={Math.random()}
-                        predictionObjectName={this.props.quotesSett[obj.security] && this.props.quotesSett[obj.security].name}
-                        avatar={this.props.quotesSett[obj.security] && this.props.quotesSett[obj.security].wobjData.avatarlink}
-                        answerForecast={this.props.answerForQuickForecast}
-                        getForecast={this.props.getDataForQuickForecast}
-                        timerData={secondsInMilliseconds(this.props.timeForTimer)}
+                        predictionObjectName={props.quotesSett[obj.security] && props.quotesSett[obj.security].name}
+                        avatar={props.quotesSett[obj.security] && props.quotesSett[obj.security].wobjData.avatarlink}
+                        answerForecast={props.answerForQuickForecast}
+                        getForecast= {props.getDataForQuickForecast}
+                        timerData={secondsInMilliseconds(props.timeForTimer)}
                         id={index}
-                        timerCallback={() => this.handleFinishTimer()}
+                        timerCallback={() => handleFinishTimer()}
                         counter={answeredForecastList.length}
                       />))
                   }
@@ -143,10 +144,10 @@ class QuickForecastPage extends React.PureComponent {
               ) : <Loading/>
             }
             {
-              this.state.isLoading && !forecastList.length && (
+              isLoading && !forecastList.length && (
                 <div className="no-posts">
                   {
-                    this.props.intl.formatMessage({
+                    props.intl.formatMessage({
                       id: 'no_quick_forecasts',
                       defaultMessage: 'There are currently no forecasts in this category',
                     })
@@ -158,35 +159,34 @@ class QuickForecastPage extends React.PureComponent {
             <div className="reward">
               <span className="reward__row">
                 {
-                  this.props.intl.formatMessage({
+                  props.intl.formatMessage({
                     id: 'forecasts__rewards',
                     defaultMessage: 'Rewards',
                   })
                 }:&#160;
-                <USDDisplay value={this.props.roundInformation.rewards}/>
+                <USDDisplay value={props.roundInformation.rewards}/>
               </span>
               <span className="reward__row">
                 {
-                  this.props.intl.formatMessage({
+                  props.intl.formatMessage({
                     id: 'forecast_round',
                     defaultMessage: 'Current round',
                   })
                 }:&#160;
-                <USDDisplay value={this.props.roundInformation.voitingPowers}/>
+                <USDDisplay value={props.roundInformation.voitingPowers}/>
               </span>
             </div>
             <TopPredictors
-              userList={this.props.winners}
+              userList={props.winners}
               title="Current round winners"
-              activeUser={this.props.user}
-              showMore={this.props.hasMore}
+              activeUser={props.user}
+              showMore={props.hasMore}
             />
           </div>
         </div>
       </div>
     );
-  }
-}
+  };
 
 QuickForecastPage.propTypes = {
   quickForecastDataList: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -198,12 +198,15 @@ QuickForecastPage.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
-  quotesSett: PropTypes.shape().isRequired,
+  quotesSett: PropTypes.shape({}).isRequired,
   user: PropTypes.shape({
     name: PropTypes.string,
     successful_suppose: PropTypes.number,
   }),
-  usersList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  usersList: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string,
+    successful_suppose: PropTypes.number,
+  })).isRequired,
   winners: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   hasMore: PropTypes.bool,
   roundTime: PropTypes.number,

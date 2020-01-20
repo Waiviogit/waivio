@@ -42,9 +42,9 @@ const QuickForecastCard = ({forecast, answerForecast, predictionObjectName, time
     );
 
   // classLists
-  const forecastCardClassList = classNames('forecastCard', {
-    "forecastCard--toLose": lose,
-    "forecastCard--win": winner,
+  const forecastCardClassList = classNames('ForecastCard', {
+    "ForecastCard--toLose": lose,
+    "ForecastCard--win": winner,
   });
   const sideClassList = classNames({
     'green': side === 'Yes',
@@ -59,11 +59,11 @@ const QuickForecastCard = ({forecast, answerForecast, predictionObjectName, time
 
   return (
     <div className={forecastCardClassList}>
-      <div className="forecastCard__info">
+      <div className="ForecastCard__info">
         {
           !forecast.active ? (
-            <div className="forecastCard__to-vote-card-container">
-              <div className="forecastCard__val">
+            <div className="ForecastCard__to-vote-card-container">
+              <div className="ForecastCard__val">
                 <div>
                   {
                     intl.formatMessage({
@@ -74,12 +74,12 @@ const QuickForecastCard = ({forecast, answerForecast, predictionObjectName, time
                 </div>
                 <USDDisplay value={+forecast.postPrice}/>
               </div>
-              <div className="forecastCard__flex-container-vertical">
+              <div className="ForecastCard__flex-container-vertical">
                 {
                   pendingStatus ? (
-                    <h2 className="forecastCard__title">
-                      <p className="forecastCard__title-row">
-                        <img className="forecastCard__img forecastCard__img--little"
+                    <h2 className="ForecastCard__title">
+                      <p className="ForecastCard__title-row">
+                        <img className="ForecastCard__img ForecastCard__img--little"
                              src={avatar}
                              alt={predictionObjectName}
                         /> {predictionObjectName}
@@ -95,7 +95,7 @@ const QuickForecastCard = ({forecast, answerForecast, predictionObjectName, time
                     </h2>
                   ) : forecastFinishMessage
                 }
-                <div className="forecastCard__forecast-timer">
+                <div className="ForecastCard__forecast-timer">
                   <BallotTimer
                     endTimerTime={forecast.quickForecastExpiredAt}
                     willCallAfterTimerEnd={timerCallback}
@@ -110,9 +110,9 @@ const QuickForecastCard = ({forecast, answerForecast, predictionObjectName, time
             </div>
           ) : (
             <React.Fragment>
-              <div className="forecastCard__top-block">
-                <img className="forecastCard__img" src={avatar} alt={predictionObjectName}/>&#160;
-                <p className="forecastCard__title">
+              <div className="ForecastCard__top-block">
+                <img className="ForecastCard__img" src={avatar} alt={predictionObjectName}/>&#160;
+                <p className="ForecastCard__title">
                   {
                     intl.formatMessage({
                         id: 'forecast_question',
