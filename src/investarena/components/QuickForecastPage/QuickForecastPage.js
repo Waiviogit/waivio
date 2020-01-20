@@ -133,7 +133,7 @@ const QuickForecastPage = props => {
                         predictionObjectName={props.quotesSett[obj.security] && props.quotesSett[obj.security].name}
                         avatar={props.quotesSett[obj.security] && props.quotesSett[obj.security].wobjData.avatarlink}
                         answerForecast={props.answerForQuickForecast}
-                        getForecast= {props.getDataForQuickForecast}
+                        getForecast={props.getDataForQuickForecast}
                         timerData={secondsInMilliseconds(props.timeForTimer)}
                         id={index}
                         timerCallback={() => handleFinishTimer()}

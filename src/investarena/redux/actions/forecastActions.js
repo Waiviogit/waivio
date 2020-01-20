@@ -107,8 +107,6 @@ export const answerForQuickForecast = (author, permlink, answer, id, security, q
           }).catch(() => message.error('This is an error message')),
       }
     });
-
-
   }
 
   getDataForQuickForecast();
