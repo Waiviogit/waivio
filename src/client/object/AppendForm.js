@@ -5,8 +5,9 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Button, Form, Input, message, Select, Avatar, Rate, Icon } from 'antd';
+import { Button, Form, Input, message, Select, Rate, Icon } from 'antd';
 import { fieldsRules } from './const/appendFormConstants';
+import ImageSetter from '../components/ImageSetter/ImageSetter';
 import apiConfig from '../../waivioApi/config.json';
 import {
   linkFields,
@@ -36,7 +37,6 @@ import {
 import LANGUAGES from '../translations/languages';
 import { PRIMARY_COLOR } from '../../common/constants/waivio';
 import { getLanguageText } from '../translations';
-import QuickPostEditorFooter from '../components/QuickPostEditor/QuickPostEditorFooter';
 import { getField } from '../helpers/wObjectHelper';
 import { appendObject } from '../object/appendActions';
 import { isValidImage } from '../helpers/image';
@@ -464,6 +464,13 @@ export default class AppendForm extends Component {
     });
   };
 
+  handleAddImageByLink = image => {
+    const { getFieldValue } = this.props.form;
+    const currentField = getFieldValue('currentField');
+    this.setState({ imageUploading: false, currentImage: [image] });
+    this.props.form.setFieldsValue({ [currentField]: image.src });
+  };
+
   checkRequiredField = (form, currentField) => {
     let formFields = null;
     switch (currentField) {
@@ -683,7 +690,7 @@ export default class AppendForm extends Component {
   renderContentValue = currentField => {
     const { loading, selectedObject } = this.state;
     const { intl, wObject } = this.props;
-    const { getFieldDecorator, getFieldValue } = this.props.form;
+    const { getFieldDecorator } = this.props.form;
 
     const combinedFieldValidationMsg = !this.state.isSomeValue && (
       <div className="append-combined-value__validation-msg">
@@ -785,48 +792,18 @@ export default class AppendForm extends Component {
       }
       case objectFields.background:
       case objectFields.avatar: {
-        const imageLink = getFieldValue(currentField);
         return (
           <div className="image-wrapper">
-            <QuickPostEditorFooter
-              imageUploading={this.state.imageUploading}
-              handleImageChange={this.handleImageChange}
-              currentImages={this.state.currentImage}
-              onRemoveImage={this.handleRemoveImage}
-              showAddButton={false}
-            />
-            <span>
-              {intl.formatMessage({
-                id: 'or',
-                defaultMessage: 'or',
-              })}
-            </span>
             <Form.Item>
               {getFieldDecorator(currentField, { rules: this.getFieldRules(currentField) })(
-                <Input
-                  className="AppendForm__input"
-                  disabled={loading}
-                  placeholder={intl.formatMessage({
-                    id: 'photo_url_placeholder',
-                    defaultMessage: 'Photo URL',
-                  })}
+                <ImageSetter
+                  images={this.state.currentImage}
+                  handleAddImage={this.handleImageChange}
+                  handleAddImageByLink={this.handleAddImageByLink}
+                  onRemoveImage={this.handleRemoveImage}
                 />,
               )}
             </Form.Item>
-            {imageLink && (
-              <div className="AppendForm__previewWrap">
-                {currentField === objectFields.avatar ? (
-                  <Avatar shape="square" size={100} src={imageLink} className="avatar" />
-                ) : (
-                  <div
-                    style={{
-                      backgroundImage: `url(${imageLink})`,
-                    }}
-                    className="background"
-                  />
-                )}
-              </div>
-            )}
           </div>
         );
       }
