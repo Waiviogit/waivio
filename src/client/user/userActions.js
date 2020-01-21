@@ -195,11 +195,13 @@ export const getCoordinates = () => dispatch =>
   });
 
 // region Campaigns
-export const assignProposition = ({ companyAuthor, companyPermlink, resPermlink, objPermlink }) => (
-  dispatch,
-  getState,
-  { steemConnectAPI },
-) => {
+export const assignProposition = ({
+  companyAuthor,
+  companyPermlink,
+  resPermlink,
+  objPermlink,
+  appName,
+}) => (dispatch, getState, { steemConnectAPI }) => {
   const username = store.getAuthenticatedUserName(getState());
   const commentOp = [
     'comment',
@@ -211,7 +213,11 @@ export const assignProposition = ({ companyAuthor, companyPermlink, resPermlink,
       title: 'reserve object for rewards',
       body: `User @${username} reserve [object](https://www.waivio.com/object/${objPermlink}), from [campaign](https://www.waivio.com/@${companyAuthor}/${companyPermlink})`,
       json_metadata: JSON.stringify({
-        waivioRewards: { type: 'waivio_assign_campaign', approved_object: objPermlink },
+        waivioRewards: {
+          type: 'waivio_assign_campaign',
+          approved_object: objPermlink,
+          app: appName,
+        },
       }),
     },
   ];

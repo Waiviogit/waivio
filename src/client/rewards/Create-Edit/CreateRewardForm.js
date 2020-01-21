@@ -10,6 +10,8 @@ import { createCampaign, getCampaignById, getObjectsByIds } from '../../../waivi
 import CreateFormRenderer from './CreateFormRenderer';
 import { getClientWObj } from '../../adapters';
 import { AppSharedContext } from '../../Wrapper';
+// eslint-disable-next-line import/extensions
+import * as apiConfig from '../../../waivioApi/config';
 import './CreateReward.less';
 
 @withRouter
@@ -158,10 +160,12 @@ class CreateRewardForm extends React.Component {
     const agreementObjects =
       this.state.pageObjects.length !== 0 ? map(this.state.pageObjects, o => o.id) : [];
     const sponsorAccounts = map(data.sponsorsList, o => o.account);
+    const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     const preparedObject = {
       requiredObject: data.primaryObject.author_permlink,
       guideName: userName,
       name: data.campaignName,
+      app: appName,
       type: data.type,
       budget: data.budget,
       reward: data.reward,

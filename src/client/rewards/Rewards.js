@@ -32,6 +32,8 @@ import Proposition from './Proposition/Proposition';
 import Campaign from './Campaign/Campaign';
 import MapWrap from '../components/Maps/MapWrap/MapWrap';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
+// eslint-disable-next-line import/extensions
+import * as apiConfig from '../../waivioApi/config';
 import './Rewards.less';
 
 @withRouter
@@ -220,9 +222,10 @@ class Rewards extends React.Component {
     objPermlink,
     companyId,
   }) => {
+    const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     this.setState({ loadingAssignDiscard: true });
     this.props
-      .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink })
+      .assignProposition({ companyAuthor, companyPermlink, objPermlink, resPermlink, appName })
       .then(() => {
         message.success(
           this.props.intl.formatMessage({

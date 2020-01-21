@@ -23,6 +23,7 @@ import ImageSetter from '../components/ImageSetter/ImageSetter';
 import { isValidImage } from '../helpers/image';
 import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../common/constants/validation';
 import { objectFields } from '../../common/constants/listOfFields';
+import { getGuestAvatarUrl } from '../../waivioApi/ApiClient';
 import './Settings.less';
 
 const FormItem = Form.Item;
@@ -91,8 +92,6 @@ export default class ProfileSettings extends React.Component {
       isLoadingImage: false,
       avatarImage: [],
       coverImage: [],
-      isChangedAvatar: false,
-      isChangedCover: false,
       isCover: false,
       isAvatar: false,
     };
@@ -130,9 +129,10 @@ export default class ProfileSettings extends React.Component {
 
       this.setState({
         isLoadingImage: true,
-        avatarImage: [],
-        coverImage: [],
       });
+
+      if (this.state.isAvatar) this.setState({ avatarImage: [] });
+      if (this.state.isCover) this.setState({ coverImage: [] });
 
       this.props.onImageUpload(e.target.files[0], this.disableAndInsertImage, () =>
         this.setState({
@@ -152,7 +152,6 @@ export default class ProfileSettings extends React.Component {
     this.setState({
       [`${isAvatar ? 'profilePicture' : 'coverPicture'}`]: image,
       [`${isAvatar ? 'avatarImage' : 'coverImage'}`]: [newImage],
-      [`${isAvatar ? 'isChangedAvatar' : 'isChangedCover'}`]: true,
       isLoadingImage: false,
     });
 
@@ -167,12 +166,12 @@ export default class ProfileSettings extends React.Component {
 
   checkIsImage = (image, isValidLink) => {
     const { intl } = this.props;
-    const { isAvatar } = this.state;
-    if (isValidLink) {
+    const { isAvatar, isGuest } = this.state;
+
+    if (!isGuest && isValidLink) {
       this.setState({
         [`${isAvatar ? 'profilePicture' : 'coverPicture'}`]: image.src,
         [`${isAvatar ? 'avatarImage' : 'coverImage'}`]: [image],
-        [`${isAvatar ? 'isChangedAvatar' : 'isChangedCover'}`]: true,
       });
       this.props.form.setFieldsValue({
         [`${isAvatar ? 'profile_image' : 'cover_image'}`]: image.src,
@@ -199,11 +198,12 @@ export default class ProfileSettings extends React.Component {
     this.setState({ [`${isAvatar ? 'avatarImage' : 'coverImage'}`]: [] });
   };
 
-  handleSubmit(e) {
-    e.preventDefault();
+  setSettingsFields = () => {
     // eslint-disable-next-line no-shadow
     const { form, isGuest, userName, updateProfile } = this.props;
-    const { isChangedAvatar, isChangedCover } = this.state;
+    const { avatarImage, coverImage } = this.state;
+    const isChangedAvatar = !!avatarImage.length;
+    const isChangedCover = !!coverImage.length;
 
     if (!form.isFieldsTouched() && !isChangedAvatar && !isChangedCover) return;
 
@@ -231,6 +231,23 @@ export default class ProfileSettings extends React.Component {
         }
       }
     });
+  };
+
+  handleSubmit(e) {
+    e.preventDefault();
+    // eslint-disable-next-line no-shadow
+    const { isGuest, userName, intl } = this.props;
+    const { profilePicture, avatarImage } = this.state;
+
+    if (isGuest && !_.isEmpty(avatarImage)) {
+      getGuestAvatarUrl(userName, profilePicture, intl)
+        .then(data => {
+          this.props.form.setFieldsValue({
+            profile_image: data.image,
+          });
+        })
+        .then(() => this.setSettingsFields());
+    } else this.setSettingsFields();
   }
 
   openChangeAvatarModal = () => {
@@ -249,16 +266,7 @@ export default class ProfileSettings extends React.Component {
 
   render() {
     const { intl, form } = this.props;
-    const {
-      bodyHTML,
-      isModal,
-      isLoadingImage,
-      avatarImage,
-      coverImage,
-      isChangedAvatar,
-      isChangedCover,
-      isAvatar,
-    } = this.state;
+    const { bodyHTML, isModal, isLoadingImage, avatarImage, coverImage, isAvatar } = this.state;
     const { getFieldDecorator } = form;
 
     const socialInputs = socialProfiles.map(profile => (
@@ -464,7 +472,7 @@ export default class ProfileSettings extends React.Component {
                   primary
                   big
                   type="submit"
-                  disabled={!form.isFieldsTouched() && !isChangedAvatar && !isChangedCover}
+                  disabled={!form.isFieldsTouched() && !avatarImage.length && !coverImage.length}
                 >
                   <FormattedMessage id="save" defaultMessage="Save" />
                 </Action>
