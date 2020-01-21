@@ -26,6 +26,7 @@ const FilteredRewardsList = props => {
     loadingCampaigns,
     campaignsLayoutWrapLayout,
     handleLoadMore,
+    parentObjectName,
   } = props;
 
   return !loadingCampaigns ? (
@@ -44,23 +45,27 @@ const FilteredRewardsList = props => {
           <FormattedMessage id="search_area" defaultMessage="Search area" />
         </Tag>
       )}
-      <SortSelector sort={sort} onChange={handleSortChange}>
-        <SortSelector.Item key="reward">
-          <FormattedMessage id="amount_sort" defaultMessage="amount">
-            {msg => msg}
-          </FormattedMessage>
-        </SortSelector.Item>
-        <SortSelector.Item key="date">
-          <FormattedMessage id="expiry_sort" defaultMessage="expiry">
-            {msg => msg}
-          </FormattedMessage>
-        </SortSelector.Item>
-        <SortSelector.Item key="proximity">
-          <FormattedMessage id="proximity_sort" defaultMessage="proximity">
-            {msg => msg}
-          </FormattedMessage>
-        </SortSelector.Item>
-      </SortSelector>
+      {!IsRequiredObjectWrap ? (
+        <div className="FilteredRewardsList__header">{parentObjectName}</div>
+      ) : (
+        <SortSelector sort={sort} onChange={handleSortChange}>
+          <SortSelector.Item key="reward">
+            <FormattedMessage id="amount_sort" defaultMessage="amount">
+              {msg => msg}
+            </FormattedMessage>
+          </SortSelector.Item>
+          <SortSelector.Item key="date">
+            <FormattedMessage id="expiry_sort" defaultMessage="expiry">
+              {msg => msg}
+            </FormattedMessage>
+          </SortSelector.Item>
+          <SortSelector.Item key="proximity">
+            <FormattedMessage id="proximity_sort" defaultMessage="proximity">
+              {msg => msg}
+            </FormattedMessage>
+          </SortSelector.Item>
+        </SortSelector>
+      )}
       <div className="FilteredRewardsList">
         <ReduxInfiniteScroll
           elementIsScrollable={false}
@@ -85,6 +90,7 @@ FilteredRewardsList.defaultProps = {
   sort: 'reward',
   loadingCampaigns: false,
   loading: false,
+  parentObjectName: PropTypes.string,
 };
 
 FilteredRewardsList.propTypes = {
@@ -103,6 +109,7 @@ FilteredRewardsList.propTypes = {
   loadingCampaigns: PropTypes.bool,
   campaignsLayoutWrapLayout: PropTypes.func.isRequired,
   handleLoadMore: PropTypes.func.isRequired,
+  parentObjectName: PropTypes.string,
 };
 
 export default FilteredRewardsList;

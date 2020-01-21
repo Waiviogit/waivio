@@ -9,7 +9,7 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import { AppSharedContext } from '../../Wrapper';
 import './Campaign.less';
 
-const Campaign = ({ proposition, filterKey, history, intl }) => {
+const Campaign = ({ proposition, filterKey, history, intl, setParentObjectName }) => {
   const { usedLocale } = useContext(AppSharedContext);
   const requiredObject = getClientWObj(proposition.required_object, usedLocale);
   const currentUSDPrice = getCurrentUSDPrice();
@@ -23,9 +23,13 @@ const Campaign = ({ proposition, filterKey, history, intl }) => {
         ? `${(currentUSDPrice * proposition.max_reward).toFixed(2)} USD`
         : `${proposition.max_reward} STEEM`
       : '';
-  const goToProducts = () => history.push(`/rewards/${filterKey}/${requiredObject.id}`);
+  const goToProducts = () => {
+    setParentObjectName(requiredObject.default_name);
+    history.push(`/rewards/${filterKey}/${requiredObject.id}`);
+  };
   return (
     <div className="Campaign">
+      {console.log(requiredObject)}
       <ObjectCardView wObject={requiredObject} key={requiredObject.id} />
       <div className="Campaign__button" role="presentation" onClick={goToProducts}>
         <Button type="primary" size="large">
@@ -69,6 +73,7 @@ Campaign.propTypes = {
   filterKey: PropTypes.string.isRequired,
   // userName: PropTypes.string,
   history: PropTypes.shape().isRequired,
+  setParentObjectName: PropTypes.func.isRequired,
 };
 
 Campaign.defaultProps = {
