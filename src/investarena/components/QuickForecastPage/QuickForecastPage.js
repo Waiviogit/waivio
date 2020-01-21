@@ -14,7 +14,8 @@ import SortSelector from '../../../client/components/SortSelector/SortSelector';
 import { marketNames } from '../../constants/objectsInvestarena';
 import {
   answerForQuickForecast,
-  getDataForQuickForecast, getForecastRoundRewards,
+  getDataForQuickForecast,
+  getForecastRoundRewards,
   getForecastStatistic,
   getForecastWinners,
 } from '../../redux/actions/forecastActions';
@@ -25,11 +26,12 @@ const QuickForecastPage = props => {
   const [sortBy, setSort] = useState();
   const [isLoading, pageLoading] = useState(false);
   const [currentTime, setTime] = useState();
+  const winnersLimit = 5;
 
   useEffect(() => {
       props.getDataForQuickForecast();
       props.getForecastStatistic();
-      props.getForecastWinners(5, 0);
+      props.getForecastWinners(winnersLimit, 0);
       props.getForecastRoundRewards();
       setTime(Date.now());
 
@@ -60,7 +62,7 @@ const QuickForecastPage = props => {
     props.getForecastRoundRewards();
 
     if(props.hasMore) {
-      props.getForecastWinners(5, props.winners.length);
+      props.getForecastWinners(winnersLimit, props.winners.length);
     }
   }
     const filterForecastList = props.quickForecastDataList.filter(
@@ -85,17 +87,17 @@ const QuickForecastPage = props => {
             <br/>absolutely
             <span className="free"> FREE</span></h1>
           <div className="leftContainer">
-            <Link to="#" className="rules"  title="How it works">
-              <span className="rules__link">
+            <div  className="rules"  title="How it works">
+              <Link to="#" className="rules__link">
                {
                  props.intl.formatMessage({
                    id: 'how_it_work',
                    defaultMessage: 'How it works',
                  })
                }&#160;
-              </span>
+              </Link>
               <Icon type="question-circle"/>
-            </Link>
+            </div>
             <TopPredictors
               userList={props.usersList}
               title="Top 5 Users"

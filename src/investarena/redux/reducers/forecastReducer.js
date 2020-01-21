@@ -42,7 +42,7 @@ export default (state = initialState, action) => {
 
       return {
         ...state,
-        quickForecastData: [...action.payload],
+        quickForecastData: [...state.quickForecastData],
       };
 
     case activeForecastTypes.GET_QUICK_FORECAST_STATISTIC.SUCCESS:
@@ -59,8 +59,6 @@ export default (state = initialState, action) => {
 
       return {
         ...state,
-        userStatistics: [],
-        current: {},
       };
 
     case activeForecastTypes.GET_QUICK_FORECAST_WINNERS.SUCCESS:
@@ -68,9 +66,10 @@ export default (state = initialState, action) => {
       return {
         ...state,
         winners: [...state.winners, ...action.payload.users.map(user => ({
-          name: user.user,
-          reward: user.reward,
-        }))],
+            name: user.user,
+            reward: user.reward,
+          })
+        )],
         hasMoreStatistic: action.payload.hasMore,
       };
 
@@ -78,7 +77,6 @@ export default (state = initialState, action) => {
 
       return {
         ...state,
-        winners: [],
         hasMoreStatistic: false,
       };
 
@@ -96,7 +94,6 @@ export default (state = initialState, action) => {
 
       return {
         ...state,
-        roundInfo: {},
       };
 
     case activeForecastTypes.ANSWER_QUICK_FORECAST: {

@@ -19,7 +19,7 @@ const TopPredictors = ({title, userList, showMore, activeUser, handleShowMore, i
       <div className="TopPredictors__content">
         {
           userList.map(user => (
-            <div key={Math.random()} className="TopPredictors__tab">
+            <div key={user.name} className="TopPredictors__tab">
               <Link className="TopPredictors__link" to={`/@${user.name}`}>
                 <div className="TopPredictors__flex-wrapper">
                   <Avatar username={user.name} size={34}/>
@@ -84,7 +84,7 @@ TopPredictors.propTypes = {
     name: PropTypes.string,
     successful_suppose: PropTypes.number,
   }),
-  handleShowMore: PropTypes.func.isRequired,
+  handleShowMore: PropTypes.func,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
@@ -93,6 +93,7 @@ TopPredictors.propTypes = {
 TopPredictors.defaultProps = {
   showMore: false,
   activeUser: '',
+  handleShowMore: () => {},
 };
 
 export default injectIntl(TopPredictors);

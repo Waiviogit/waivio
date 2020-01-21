@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
-import { timeQuickForecastRemain } from '../../helpers/diffDateTime';
+import { timeForecastRemain } from '../../helpers/diffDateTime';
 
 const BallotTimer = ({ endTimerTime, willCallAfterTimerEnd }) => {
-  const [time, setTime] = useState(timeQuickForecastRemain(endTimerTime));
+  const [time, setTime] = useState(timeForecastRemain(endTimerTime, false));
   let interval;
 
   const handleUpdateTimeRemain = () => {
     if (endTimerTime > Date.now()) {
-      setTime(timeQuickForecastRemain(endTimerTime));
+      setTime(timeForecastRemain(endTimerTime, false));
     } else {
       clearInterval(interval);
       willCallAfterTimerEnd();
@@ -37,7 +37,6 @@ BallotTimer.propTypes = {
 
 BallotTimer.defaultProps = {
   endTimerTime: 0,
-  replay: false,
 };
 
 export default BallotTimer;

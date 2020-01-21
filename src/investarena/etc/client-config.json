@@ -146,11 +146,7 @@
     "instrumentPerformers": "/instrument-performers"
   },
   "forecasts": {
-    "activeForecasts": "/active_forecasts",
-    "quickForecast": "/quick-forecasts",
-    "quickForecastStatistics": "/quick-forecasts",
-    "quickForecastWinners": "/quick-forecasts/winners",
-    "quickForecastRewards": "/quick-forecasts/rewards"
+    "activeForecasts": "/active_forecasts"
   },
 
   "investArenaApi": "https://investarena.waiviodev.com",

@@ -1,4 +1,5 @@
 import {message} from 'antd';
+import _ from 'lodash';
 
 import api from '../../configApi/apiResources';
 import createFormatter from '../../../client/helpers/steemitFormatter';
@@ -59,19 +60,19 @@ export const getForecastRoundRewards = () => dispatch => {
 
 export const answerForQuickForecast = (author, permlink, answer, id, security, quickForecastExpiredAt, counter, weight = 10000) => (dispatch, getState, {steemConnectAPI}) => {
   const username = getAuthenticatedUserName(getState());
-  const postPrice = getState().quotes[security].bidPrice;
+  const postPrice = _.get(getState().quotes, [[security], 'bidPrice']);
+
   if (quickForecastExpiredAt > Date.now()) {
     dispatch({
       type: ANSWER_QUICK_FORECAST_LIKE_POST,
       payload: {
-        promise: steemConnectAPI
+        promise: new Promise((resolve, reject) => steemConnectAPI
           .vote(username, author, permlink, weight)
           .then(() => {
             dispatch({
               type: ANSWER_QUICK_FORECAST_SEND_COMMENT,
               payload: {
-                promise: new Promise((resolve, reject) =>
-                  steemConnectAPI
+                promise: steemConnectAPI
                     .broadcast([['comment',
                       {
                         parent_author: author,
@@ -101,10 +102,10 @@ export const answerForQuickForecast = (author, permlink, answer, id, security, q
                         }
                       });
                     }
-                  ).catch(error => reject(error)))
+                  ).catch(error => reject(error))
               }
-            });
-          }).catch(() => message.error('This is an error message')),
+            })
+          }).catch(e => reject(e))),
       }
     });
   }

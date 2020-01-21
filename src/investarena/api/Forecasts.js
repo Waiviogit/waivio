@@ -26,28 +26,4 @@ export default class Forecasts extends Base {
       .get(`${config.posts.withForecastBywobject}/${wobjectName}`)
       .then(response => response.data);
   }
-
-  getQuickForecast(userName) {
-    return this.apiClient
-      .get(`${config.forecasts.quickForecast}/${userName}/feed`)
-      .then(response => response.data);
-  }
-
-  getQuickForecastStatistics(userName) {
-    return this.apiClient
-      .get(`${config.forecasts.quickForecastStatistics}/${userName}/statistics`)
-      .then(response => response.data);
-  }
-
-  getQuickForecastWinners(user, limit, skip) {
-    return this.apiClient
-      .post(`${config.forecasts.quickForecastWinners}`, {user, limit, skip})
-      .then(response => response.data);
-  }
-
-  getQuickForecastRewards() {
-    return this.apiClient
-      .get(`${config.forecasts.quickForecastRewards}`)
-      .then(response => response.data);
-  }
 }

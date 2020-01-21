@@ -7,7 +7,7 @@ import {injectIntl} from 'react-intl';
 import USDDisplay from '../../../client/components/Utils/USDDisplay';
 
 const DynamicPrice = ({postPrice, quotes, secur, closedPrice, intl}) => {
-  const price = quotes[secur].bidPrice;
+  const price = quotes[secur] && quotes[secur].bidPrice;
   const activePrice = closedPrice || price;
   const rise = postPrice < activePrice;
   const priceClassList = classNames("ForecastCard__price", {
