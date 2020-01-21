@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { isUndefined, filter } from 'lodash';
 import classNames from 'classnames';
 import sanitizeHtml from 'sanitize-html';
 import Remarkable from 'remarkable';
@@ -15,17 +15,17 @@ import PostFeedEmbed from './PostFeedEmbed';
 import './Body.less';
 
 export const remarkable = new Remarkable({
-  html: true, // Remarkable renders first then sanitize runs...
+  html: true,
   breaks: true,
-  linkify: false, // linkify is done locally
-  typographer: false, // https://github.com/jonschlinkert/remarkable/issues/142#issuecomment-221546793
+  linkify: false,
+  typographer: false,
   quotes: '“”‘’',
 });
 
 const getEmbed = link => {
   const embed = embedjs.get(link, { width: '100%', height: 400, autoplay: false });
 
-  if (_.isUndefined(embed)) {
+  if (isUndefined(embed)) {
     return {
       provider_name: '',
       thumbnail: '',
@@ -45,7 +45,7 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
   let parsedBody = body.replace(/<!--([\s\S]+?)(-->|$)/g, '(html comment removed: $1)');
 
   parsedBody.replace(imageRegex, img => {
-    if (_.filter(parsedJsonMetadata.image, i => i.indexOf(img) !== -1).length === 0) {
+    if (filter(parsedJsonMetadata.image, i => i.indexOf(img) !== -1).length === 0) {
       parsedJsonMetadata.image.push(img);
     }
   });

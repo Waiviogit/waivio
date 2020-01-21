@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch';
-import _ from 'lodash';
+import { get } from 'lodash';
 import { createAction } from 'redux-actions';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 
@@ -76,8 +76,8 @@ export const getCryptoPriceHistory = (symbol, refresh = false) => dispatch => {
           `https://min-api.cryptocompare.com/data/histoday?fsym=${symbol}&tsym=BTC&limit=6`,
         ).then(res => res.json()),
       ]).then(response => {
-        const usdPriceHistory = _.get(response, 0, {});
-        const btcPriceHistory = _.get(response, 1, {});
+        const usdPriceHistory = get(response, 0, {});
+        const btcPriceHistory = get(response, 1, {});
         return {
           usdPriceHistory,
           btcPriceHistory,

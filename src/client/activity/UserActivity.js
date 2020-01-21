@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import _ from 'lodash';
+import { isEmpty, get } from 'lodash';
 import { getUserDetailsKey } from '../helpers/stateHelpers';
 import {
   getUser,
@@ -97,29 +97,29 @@ class UserActivity extends React.Component {
       ? authenticatedUserName
       : this.props.location.pathname.match(/@(.*)(.*?)\//)[1];
 
-    if (_.isEmpty(totalVestingFundSteem) || _.isEmpty(totalVestingShares)) {
+    if (isEmpty(totalVestingFundSteem) || isEmpty(totalVestingShares)) {
       this.props.getGlobalProperties();
     }
 
-    if (_.isEmpty(usersAccountHistory[getUserDetailsKey(username)])) {
+    if (isEmpty(usersAccountHistory[getUserDetailsKey(username)])) {
       this.props.getUserAccountHistory(username);
     }
 
     setTimeout(() => {
-      if (_.isEmpty(usersAccountHistory[getUserDetailsKey(username)])) {
+      if (isEmpty(usersAccountHistory[getUserDetailsKey(username)])) {
         this.props.getUserAccountHistory(username);
       }
     }, 2000);
 
-    if (_.isEmpty(user)) {
+    if (isEmpty(user)) {
       this.props.getAccount(username);
     }
 
-    if (_.isEmpty(usersEstAccountsValues[getUserDetailsKey(username)]) && !_.isEmpty(user.name)) {
+    if (isEmpty(usersEstAccountsValues[getUserDetailsKey(username)]) && !isEmpty(user.name)) {
       this.props.getUserEstAccountValue(user);
     }
 
-    if (_.isEmpty(currentDisplayedActions)) {
+    if (isEmpty(currentDisplayedActions)) {
       this.props.setInitialCurrentDisplayedActions(user.name);
     }
 
@@ -137,7 +137,7 @@ class UserActivity extends React.Component {
       loadingGlobalProperties,
       isCurrentUser,
     } = this.props;
-    const actions = _.get(usersAccountHistory, getUserDetailsKey(user.name), []);
+    const actions = get(usersAccountHistory, getUserDetailsKey(user.name), []);
 
     return (
       <div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { isEmpty, map } from 'lodash';
 import classNames from 'classnames';
 import { Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
@@ -17,7 +17,7 @@ const QuickPostEditorFooter = ({
   // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
   <div className="QuickPostEditor__footer" tabIndex="0" onFocus={handleFooterFocus}>
     <div className="QuickPostEditor__imagebox">
-      {_.map(currentImages, image => (
+      {map(currentImages, image => (
         <div className="QuickPostEditor__imagebox__preview__image" key={image.id}>
           <div
             className="QuickPostEditor__imagebox__remove"
@@ -47,16 +47,16 @@ const QuickPostEditorFooter = ({
         ) : (
           <div
             className={classNames({
-              QuickPostEditor__imagebox__upload: showAddButton && !_.isEmpty(currentImages),
+              QuickPostEditor__imagebox__upload: showAddButton && !isEmpty(currentImages),
             })}
           >
             <i
               className={classNames('iconfont QuickPostEditor__imagebox__upload__icon', {
-                'icon-picture': _.isEmpty(currentImages),
-                'icon-add': showAddButton && !_.isEmpty(currentImages),
+                'icon-picture': isEmpty(currentImages),
+                'icon-add': showAddButton && !isEmpty(currentImages),
               })}
             >
-              {_.isEmpty(currentImages) && (
+              {isEmpty(currentImages) && (
                 <FormattedMessage id="add_photo" defaultMessage="Add photo">
                   {value => <div className="add-button">{value}</div>}
                 </FormattedMessage>

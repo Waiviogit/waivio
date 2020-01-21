@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import embedjs from 'embedjs';
-import _ from 'lodash';
+import { get, has } from 'lodash';
 import PostFeedEmbed from './PostFeedEmbed';
 import BodyShort from './BodyShort';
 import { jsonParse } from '../../helpers/formatter';
@@ -46,9 +46,9 @@ const StoryPreview = ({ post }) => {
   const embeds = embedjs.getAll(post.body, { height: '100%' });
   const video = jsonMetadata && jsonMetadata.video;
   let hasVideo = false;
-  if (_.has(video, 'content.videohash') && _.has(video, 'info.snaphash')) {
-    const author = _.get(video, 'info.author', '');
-    const permlink = _.get(video, 'info.permlink', '');
+  if (has(video, 'content.videohash') && has(video, 'info.snaphash')) {
+    const author = get(video, 'info.author', '');
+    const permlink = get(video, 'info.permlink', '');
     const dTubeEmbedUrl = `https://emb.d.tube/#!/${author}/${permlink}/true`;
     const dTubeIFrame = `<iframe width="100%" height="340" src="${dTubeEmbedUrl}" allowFullScreen></iframe>`;
     hasVideo = true;

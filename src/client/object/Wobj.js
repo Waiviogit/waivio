@@ -27,6 +27,7 @@ import { getInitialUrl } from './wObjectHelper';
 import { objectFields } from '../../common/constants/listOfFields';
 import ObjectExpertise from '../components/Sidebar/ObjectExpertise';
 import ObjectsRelated from '../components/Sidebar/ObjectsRelated/ObjectsRelated';
+import NotFound from '../statics/NotFound';
 
 @withRouter
 @connect(
@@ -147,6 +148,16 @@ export default class Wobj extends React.Component {
     if (failed) return <Error404 />;
 
     const objectName = wobject.name || wobject.default_name || '';
+    if (!objectName)
+      return (
+        <div className="main-panel">
+          <NotFound
+            item={match.params.name}
+            title={'there_are_not_object_with_name'}
+            titleDefault={'Sorry! There are no object with name {item} on Waivio'}
+          />
+        </div>
+      );
     const waivioHost = global.postOrigin || 'https://waivio.com';
     const desc = `${objectName || ''}`;
     const image =
@@ -216,12 +227,14 @@ export default class Wobj extends React.Component {
               </Affix>
             )}
             <Affix className="rightContainer" stickPosition={72}>
-              <div className="right">
-                {wobject.author_permlink && (
-                  <ObjectExpertise username={userName} wobject={wobject} />
-                )}
-              </div>
-              <div>{wobject.author_permlink && <ObjectsRelated wobject={wobject} />}</div>
+              <React.Fragment>
+                <div className="right">
+                  {wobject.author_permlink && (
+                    <ObjectExpertise username={userName} wobject={wobject} />
+                  )}
+                </div>
+                <div>{wobject.author_permlink && <ObjectsRelated wobject={wobject} />}</div>
+              </React.Fragment>
             </Affix>
             <div className="center">
               {renderRoutes(this.props.route.routes, {
