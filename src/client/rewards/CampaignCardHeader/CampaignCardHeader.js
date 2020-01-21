@@ -51,7 +51,7 @@ const CampaignCardHeader = ({ intl, campaignData, isDetails }) => {
       </div>
       <div className="User-info">
         <Link to={`/@${campaignData.guide.name}`}>
-          <Avatar username={campaignData.guide.name} size={34} />
+          <Avatar username={campaignData.guide.name} size={44} />
         </Link>
         <div className="User-info__content">
           <Link to={`/@${campaignData.guide.name}`} title={campaignData.guide.name}>
