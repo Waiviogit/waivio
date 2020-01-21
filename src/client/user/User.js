@@ -137,7 +137,7 @@ export default class User extends React.Component {
     if (failed) return <Error404 />;
     const username = this.props.match.params.name;
     const { user } = this.props;
-    if (!user.id)
+    if (!user.id && !user.fetching)
       return (
         <div className="main-panel">
           <NotFound
@@ -192,7 +192,7 @@ export default class User extends React.Component {
           <meta property="og:description" content={desc} />
           <meta property="og:site_name" content="Waivio" />
           <meta property="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
-          <meta property="twitter:site" content={'@steemit'} />
+          <meta property="twitter:site" content={'@waivio'} />
           <meta property="twitter:title" content={title} />
           <meta property="twitter:description" content={desc} />
           <meta
