@@ -464,11 +464,40 @@ export default class AppendForm extends Component {
     });
   };
 
+  checkIsImage = (image, isValidLink) => {
+    const { intl } = this.props;
+    const { currentImage } = this.state;
+    const isSameLink = currentImage.some(current => current.src === image.src);
+    if (isValidLink) {
+      if (!isSameLink) {
+        const images = [...this.state.currentImage, image];
+        this.setState({ currentImage: images });
+      } else
+        message.error(
+          intl.formatMessage({
+            id: 'imageSetter_link_is_already_added',
+            defaultMessage: 'The link you are trying to add is already added',
+          }),
+        );
+    } else {
+      message.error(
+        intl.formatMessage({
+          id: 'imageSetter_invalid_link',
+          defaultMessage: 'The link is invalid',
+        }),
+      );
+    }
+  };
+
+  checkIsValidImageLink = (image, setImageIsValid) => {
+    const img = new Image();
+    img.src = image.src;
+    img.onload = () => setImageIsValid(image, true);
+    img.onerror = () => setImageIsValid(image, false);
+  };
+
   handleAddImageByLink = image => {
-    const { getFieldValue } = this.props.form;
-    const currentField = getFieldValue('currentField');
-    this.setState({ imageUploading: false, currentImage: [image] });
-    this.props.form.setFieldsValue({ [currentField]: image.src });
+    this.checkIsValidImageLink(image, this.checkIsImage);
   };
 
   checkRequiredField = (form, currentField) => {
