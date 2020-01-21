@@ -25,6 +25,7 @@ function sc2Extended() {
             },
           ]),
         };
+
         return this.broadcast([['custom_json', params]], cb);
       },
     },
@@ -39,6 +40,7 @@ function sc2Extended() {
             { user: unfollower, author_permlink: unfollowingObject, what: [] },
           ]),
         };
+
         return this.broadcast([['custom_json', params]], cb);
       },
     },
@@ -50,6 +52,7 @@ function sc2Extended() {
           id: 'wobj_rating',
           json: JSON.stringify({ author, permlink, author_permlink: authorPermlink, rate }),
         };
+
         return this.broadcast([['custom_json', params]], cb);
       },
     },
@@ -61,6 +64,7 @@ function sc2Extended() {
           id: 'session_id',
           json: JSON.stringify({ session_id: sessionId }),
         };
+
         return this.broadcast([['custom_json', params]], cb);
       },
     },
