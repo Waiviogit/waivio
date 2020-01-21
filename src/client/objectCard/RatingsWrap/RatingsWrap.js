@@ -2,16 +2,14 @@ import React, { useState } from 'react';
 import { Col, Rate, Row } from 'antd';
 import { sortBy } from 'lodash';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { averageRate, avrRate } from '../../components/Sidebar/Rate/rateHelper';
-import { getAuthenticatedUserName, getScreenSize } from '../../reducers';
 import RateObjectModal from '../../components/Sidebar/Rate/RateObjectModal';
 import './RatingsWrap.less';
 
-const RatingsWrap = ({ ratings, screenSize, wobjId, username, withMobileView }) => {
+const RatingsWrap = ({ ratings, screenSize, wobjId, username, mobileView }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedRating, setSelectedRating] = useState(null);
-  const isMobile = withMobileView && (screenSize === 'xsmall' || screenSize === 'small');
+  const isMobile = screenSize === 'xsmall' || screenSize === 'small';
   const sortedRatings = sortBy(ratings, ['body']);
 
   const openRateModal = selectedRate => () => {
@@ -37,9 +35,35 @@ const RatingsWrap = ({ ratings, screenSize, wobjId, username, withMobileView }) 
     </Col>
   );
 
+  const mobileRatesLayout = isCompactView => {
+    if (isCompactView) {
+      return (
+        <div className="RatingsWrap">
+          <div className="RatingsWrap-rate">
+            <Rate allowHalf disabled value={avrRate(sortedRatings)} />
+          </div>
+        </div>
+      );
+    }
+    return (
+      <div className="RatingsWrap">
+        {sortedRatings.map(rate => (
+          <div className="RatingsWrap__rate" key={rate.body}>
+            <div className="RatingsWrap__stars">
+              <Rate allowHalf disabled value={averageRate(rate)} />
+            </div>
+            <div className="RatingsWrap__rate-title">{rate.body}</div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   return sortedRatings[0] ? (
     <React.Fragment>
-      {!isMobile ? (
+      {isMobile ? (
+        mobileRatesLayout(mobileView === 'compact')
+      ) : (
         <div className="RatingsWrap">
           <Row>
             {rateLayout(sortedRatings[1] ? 12 : 24, 0, 'RatingsWrap__divider')}
@@ -51,12 +75,6 @@ const RatingsWrap = ({ ratings, screenSize, wobjId, username, withMobileView }) 
               {sortedRatings[3] && rateLayout(12, 3, 'RatingsWrap__rate-right-col')}
             </Row>
           )}
-        </div>
-      ) : (
-        <div className="RatingsWrap">
-          <div className="RatingsWrap-rate">
-            <Rate allowHalf disabled value={avrRate(sortedRatings)} />
-          </div>
         </div>
       )}
       <RateObjectModal
@@ -76,15 +94,12 @@ RatingsWrap.propTypes = {
   screenSize: PropTypes.string.isRequired,
   wobjId: PropTypes.string.isRequired,
   username: PropTypes.string,
-  withMobileView: PropTypes.bool,
+  mobileView: PropTypes.oneOf(['compact', 'full']),
 };
 
 RatingsWrap.defaultProps = {
   username: '',
-  withMobileView: true,
+  mobileView: 'compact',
 };
 
-export default connect(state => ({
-  screenSize: getScreenSize(state),
-  username: getAuthenticatedUserName(state),
-}))(RatingsWrap);
+export default RatingsWrap;

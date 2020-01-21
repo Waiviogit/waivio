@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import _ from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -8,10 +9,30 @@ import WeightTag from '../components/WeightTag';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 import DEFAULTS from '../object/const/defaultValues';
 import { objectFields as objectTypes } from '../../common/constants/listOfFields';
+import { getAuthenticatedUserName, getScreenSize } from '../reducers';
 import './ObjectCardView.less';
 
-const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl, withMobileView }) => {
-  const getObjectRatings = () => _.filter(wObject.fields, ['name', 'rating']);
+const ObjectCardView = ({
+  wObject,
+  ownRatesOnly,
+  showSmallVersion,
+  mobileView,
+  pathNameAvatar,
+  intl,
+}) => {
+  const screenSize = useSelector(getScreenSize);
+  const username = useSelector(getAuthenticatedUserName);
+
+  const getObjectRatings = () => {
+    const ratingFields = _.filter(wObject.fields, ['name', 'rating']);
+    // return ownRatesOnly ? ratingFields.filter(r => r.rating_votes.some(vote => vote.voter === username)) : ratingFields;
+    return ownRatesOnly
+      ? ratingFields.map(rating => ({
+          ...rating,
+          rating_votes: rating.rating_votes.filter(vote => vote.voter === username),
+        }))
+      : ratingFields;
+  };
   const pathName = pathNameAvatar || `/object/${wObject.id}`;
   const ratings = getObjectRatings();
 
@@ -69,7 +90,9 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl, withM
                 <RatingsWrap
                   ratings={ratings}
                   wobjId={wObject.id || wObject.author_permlink}
-                  withMobileView={withMobileView}
+                  mobileView={mobileView}
+                  screenSize={screenSize}
+                  username={username}
                 />
               )}
               {wObject.title && (
@@ -93,14 +116,16 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl, withM
 ObjectCardView.propTypes = {
   wObject: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
+  ownRatesOnly: PropTypes.bool,
   showSmallVersion: PropTypes.bool,
   pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
-  withMobileView: objectTypes.bool,
+  mobileView: PropTypes.oneOf(['compact', 'full']),
 };
 
 ObjectCardView.defaultProps = {
+  ownRatesOnly: false,
   showSmallVersion: false,
   pathNameAvatar: '',
-  withMobileView: true,
+  mobileView: 'compact',
 };
 export default injectIntl(ObjectCardView);
