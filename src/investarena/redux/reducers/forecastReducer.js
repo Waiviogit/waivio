@@ -42,7 +42,6 @@ export default (state = initialState, action) => {
 
       return {
         ...state,
-        quickForecastData: [...state.quickForecastData],
       };
 
     case activeForecastTypes.GET_QUICK_FORECAST_STATISTIC.SUCCESS:
