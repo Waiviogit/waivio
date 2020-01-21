@@ -49,22 +49,23 @@ const CampaignCardHeader = ({ intl, campaignData, isDetails }) => {
           )}
         </div>
       </div>
-      <div className="CampaignCardHeader__user-info">
-        <div className="CampaignCardHeader__user-card">
-          <Link to={`/@${campaignData.guide.name}`}>
-            <Avatar username={campaignData.guide.name} size={34} />
-          </Link>
+      <div className="User-info">
+        <Link to={`/@${campaignData.guide.name}`}>
+          <Avatar username={campaignData.guide.name} size={34} />
+        </Link>
+        <div className="User-info__content">
           <Link to={`/@${campaignData.guide.name}`} title={campaignData.guide.name}>
-            <div className="CampaignCardHeader__user-card-username">
+            <div className="Username">
               {campaignData.guide.alias} (
               {intl.formatMessage({ id: 'sponsor', defaultMessage: 'Sponsor' })})
             </div>
-            <div className="CampaignCardHeader__user-card-username">{`@${campaignData.guide.name}`}</div>
+            <div className="Username">{`@${campaignData.guide.name}`}</div>
           </Link>
-        </div>
-        <div className="CampaignCardHeader__user-card-total-paid">
-          <div>{intl.formatMessage({ id: 'paid', defaultMessage: 'Total paid' })}</div>
-          <div>{`${campaignData.guide.total_payed} STEEM`}</div>
+          <div className="Total-paid">
+            <div>{intl.formatMessage({ id: 'paid', defaultMessage: 'Total paid' })}</div>
+            <div className="Total-paid__colon">:</div>
+            <div>{`${campaignData.guide.total_payed} STEEM`}</div>
+          </div>
         </div>
       </div>
     </React.Fragment>

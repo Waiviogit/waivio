@@ -2,7 +2,7 @@ import React from 'react';
 import { Tag } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
-
+import { Link } from 'react-router-dom';
 import { getTextByFilterKey } from './rewardsHelper';
 import RewardBreadcrumb from './RewardsBreadcrumb/RewardBreadcrumb';
 import SortSelector from '../components/SortSelector/SortSelector';
@@ -26,7 +26,6 @@ const FilteredRewardsList = props => {
     loadingCampaigns,
     campaignsLayoutWrapLayout,
     handleLoadMore,
-    parentObjectName,
   } = props;
 
   return !loadingCampaigns ? (
@@ -45,8 +44,15 @@ const FilteredRewardsList = props => {
           <FormattedMessage id="search_area" defaultMessage="Search area" />
         </Tag>
       )}
-      {!IsRequiredObjectWrap ? (
-        <div className="FilteredRewardsList__header">{parentObjectName}</div>
+      {!IsRequiredObjectWrap && propositions && propositions[0] ? (
+        <div className="FilteredRewardsList__header">
+          <Link
+            to={`/object/${propositions[0].requiredObject}`}
+            className="FilteredRewardsList__header-text"
+          >
+            {propositions[0].required_object.default_name}
+          </Link>
+        </div>
       ) : (
         <SortSelector sort={sort} onChange={handleSortChange}>
           <SortSelector.Item key="reward">
@@ -90,7 +96,6 @@ FilteredRewardsList.defaultProps = {
   sort: 'reward',
   loadingCampaigns: false,
   loading: false,
-  parentObjectName: PropTypes.string,
 };
 
 FilteredRewardsList.propTypes = {
@@ -109,7 +114,6 @@ FilteredRewardsList.propTypes = {
   loadingCampaigns: PropTypes.bool,
   campaignsLayoutWrapLayout: PropTypes.func.isRequired,
   handleLoadMore: PropTypes.func.isRequired,
-  parentObjectName: PropTypes.string,
 };
 
 export default FilteredRewardsList;

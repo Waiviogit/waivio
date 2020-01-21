@@ -138,11 +138,14 @@
   }
   &__header {
     padding: 0px 30px 8px;
-    font-size: large;
-    font-weight: bold;
-    color: @black;
     @media @small {
       display: none;
+    }
+    &-text {
+      text-transform: capitalize;
+      font-size: large;
+      font-weight: bold;
+      color: @black;
     }
   }
 }

@@ -84,7 +84,6 @@ class Rewards extends React.Component {
     activeFilters: { guideNames: [], types: [] },
     activePayableFilters: [],
     isSearchAreaFilter: false,
-    parentObjectName: '',
   };
 
   componentDidMount() {
@@ -204,10 +203,6 @@ class Rewards extends React.Component {
       sort,
       activeFilters,
     });
-  };
-
-  setParentObjectName = name => {
-    this.setState({ parentObjectName: name });
   };
 
   resetMapFilter = () => this.setState({ isSearchAreaFilter: false });
@@ -337,7 +332,6 @@ class Rewards extends React.Component {
                 filterKey={filterKey}
                 key={`${proposition.required_object.author_permlink}${proposition.required_object.createdAt}`}
                 userName={userName}
-                setParentObjectName={this.setParentObjectName}
               />
             ),
         );
@@ -418,7 +412,6 @@ class Rewards extends React.Component {
       activePayableFilters,
       sort,
       loadingCampaigns,
-      parentObjectName,
     } = this.state;
 
     const IsRequiredObjectWrap = !match.params.campaignParent;
@@ -442,8 +435,6 @@ class Rewards extends React.Component {
       propositions,
       intl,
       isSearchAreaFilter,
-      parentObjectName,
-      setParentObjectName: this.setParentObjectName,
       resetMapFilter: this.resetMapFilter,
       sort,
       handleSortChange: this.handleSortChange,

@@ -9,7 +9,7 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import { AppSharedContext } from '../../Wrapper';
 import './Campaign.less';
 
-const Campaign = ({ proposition, filterKey, history, intl, setParentObjectName }) => {
+const Campaign = ({ proposition, filterKey, history, intl }) => {
   const { usedLocale } = useContext(AppSharedContext);
   const requiredObject = getClientWObj(proposition.required_object, usedLocale);
   const currentUSDPrice = getCurrentUSDPrice();
@@ -24,7 +24,6 @@ const Campaign = ({ proposition, filterKey, history, intl, setParentObjectName }
         : `${proposition.max_reward} STEEM`
       : '';
   const goToProducts = () => {
-    setParentObjectName(requiredObject.default_name);
     history.push(`/rewards/${filterKey}/${requiredObject.id}`);
   };
   return (
@@ -73,7 +72,6 @@ Campaign.propTypes = {
   filterKey: PropTypes.string.isRequired,
   // userName: PropTypes.string,
   history: PropTypes.shape().isRequired,
-  setParentObjectName: PropTypes.func.isRequired,
 };
 
 Campaign.defaultProps = {
