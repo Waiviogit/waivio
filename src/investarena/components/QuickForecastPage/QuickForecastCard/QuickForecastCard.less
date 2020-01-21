@@ -1,0 +1,262 @@
+@import (reference) '../../../../client/styles/custom.less';
+
+.ForecastCard {
+  display: flex;
+  border: 1px solid @blue-hawkesBlue;
+  border-radius: 4px;
+  padding: 12px;
+  background-color: @white;
+  margin-bottom: 20px;
+  position: relative;
+  height: 116px;
+
+  &--toLose {
+    border: 1px solid @red;
+  }
+
+  &--win {
+    border: 1px solid @green-darker;
+  }
+
+  &__val {
+    border-radius: 50%;
+    text-align: center;
+    background-color: transparent;
+    border: 1px solid @blue-hawkesBlue;
+    font-size: 17px;
+    width: 90px;
+    height: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+
+    @media screen and (max-width: 380px) {
+      width: 75px;
+      height: 75px;
+    }
+  }
+
+  &__to-vote-card {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    border-radius: 4px;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+
+    &--disabled {
+      display: none;
+    }
+  }
+
+  &__price {
+    display: flex;
+    flex-direction: column;
+
+    &--fall {
+      color: @red;
+    }
+
+    &--rise {
+      color: @green-darker;
+    }
+  }
+
+  &__flex-container-vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__title {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 20px;
+    color: @black;
+    flex-direction: column;
+
+    @media screen and (max-width: 380px) {
+      font-size: 16px;
+    }
+  }
+
+  &__title-row {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+  }
+
+  &__img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+
+    &--little {
+      width: 30px;
+      height: 30px;
+      margin-right: 5px;
+    }
+  }
+
+  &__info {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    padding: 0 0 0 15px;
+  }
+
+  &__to-vote-card-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__top-block {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 25px;
+  }
+
+  &__forecast-timer {
+    font-size: 20px;
+    position: absolute;
+    bottom: -14px;
+    background: @blue-dodgerBlue;
+    border-radius: 4px;
+    color: @white;
+    padding: 0 10px;
+    margin: 0 auto;
+    text-align: center;
+    width: 140px;
+  }
+}
+
+.graphic {
+  display: block;
+  background-color: transparent;
+  border-radius: 50%;
+  border: 1px solid @blue-botticelli;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  transition: .5s;
+  outline: none;
+
+  &:hover {
+    background-color: @blue-hawkesBlue;
+  }
+
+  &:disabled {
+    cursor: auto;
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+}
+
+.no-posts {
+  padding: 10px 15px;
+}
+
+.ballotButton {
+  padding: 0 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: @font-family-sans-serif;
+  background-color: @white;
+  transition: .5s;
+  width: 35%;
+  border: none;
+
+  &:disabled {
+    cursor: auto;
+  }
+
+  &__container {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  &__button-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 50%;
+    flex-grow: 3;
+    position: absolute;
+    bottom: -12px;
+    width: 100%;
+    left: 0;
+  }
+
+  &__positive {
+    border: 1px solid @green-darker;
+    color: @green-darker;
+    margin: 0 10px 0 0;
+
+    &:hover {
+      background-color: @green-darker;
+      color: @white;
+    }
+
+    &:disabled {
+      &:hover {
+        background-color: transparent;
+        color: @green-darker;
+      }
+    }
+  }
+
+  &__negative {
+    border: 1px solid @red;
+    color: @red;
+    margin: 0 0 0 10px;
+
+    &:hover {
+      background-color: @red;
+      color: @white;
+    }
+
+    &:disabled {
+      &:hover {
+        background-color: transparent;
+        color: @red;
+      }
+    }
+  }
+
+  &__timer {
+    font-family: @font-family-monospace;
+  }
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
+}
+
+.red {
+  color: @red;
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
+}
+
+.green {
+  color: @green-darker;
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
+}
+
+@import 'QuickForecastCard-nightmode';

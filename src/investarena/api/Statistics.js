@@ -1,6 +1,7 @@
+import { isEmpty } from 'lodash';
+
 import Base from './Base';
 import config from '../configApi/config';
-import { isEmpty } from 'lodash';
 
 export default class Statistics extends Base {
   getUserStatistics(userName) {

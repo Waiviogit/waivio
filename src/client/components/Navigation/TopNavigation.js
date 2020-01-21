@@ -12,6 +12,7 @@ const LINKS = {
   // MARKETS: '/markets',
   DEALS: '/deals',
   ABOUT: '/object/qjr-investarena-q-and-a/list',
+  QUICK_FORECAST: '/quickforecast',
 };
 
 const getDealsLinks = (isMobile, pathname) =>
@@ -73,6 +74,16 @@ const TopNavigation = ({ authenticated, location: { pathname }, isMobile, onMenu
           })}
         >
           <FormattedMessage id="about" defaultMessage="About" />
+        </Link>
+      </li>
+      <li className="TopNavigation__item">
+        <Link
+          to={LINKS.QUICK_FORECAST}
+          className={classNames('TopNavigation__link', {
+            'TopNavigation__link--active': pathname.includes(LINKS.QUICK_FORECAST),
+          })}
+        >
+          <FormattedMessage id="quick_forecast" defaultMessage="Forecast" />
         </Link>
       </li>
     </ul>
