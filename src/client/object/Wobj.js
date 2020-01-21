@@ -227,12 +227,14 @@ export default class Wobj extends React.Component {
               </Affix>
             )}
             <Affix className="rightContainer" stickPosition={72}>
-              <div className="right">
-                {wobject.author_permlink && (
-                  <ObjectExpertise username={userName} wobject={wobject} />
-                )}
-              </div>
-              <div>{wobject.author_permlink && <ObjectsRelated wobject={wobject} />}</div>
+              <React.Fragment>
+                <div className="right">
+                  {wobject.author_permlink && (
+                    <ObjectExpertise username={userName} wobject={wobject} />
+                  )}
+                </div>
+                <div>{wobject.author_permlink && <ObjectsRelated wobject={wobject} />}</div>
+              </React.Fragment>
             </Affix>
             <div className="center">
               {renderRoutes(this.props.route.routes, {

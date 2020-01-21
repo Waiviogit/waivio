@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { uniq } from 'lodash';
 import * as feedTypes from './feedActions';
 import { TOGGLE_BOOKMARK } from '../bookmarks/bookmarksActions';
 import { getPostKey } from '../helpers/stateHelpers';
@@ -48,12 +48,12 @@ const feedIdsList = (state = [], action) => {
       }
       return [];
     case feedTypes.GET_MORE_USER_FEED_CONTENT.SUCCESS:
-      return _.uniq([...state, ...mapPostsKeys(action.payload)]);
+      return uniq([...state, ...mapPostsKeys(action.payload)]);
     case feedTypes.GET_MORE_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_MORE_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_MORE_REPLIES.SUCCESS:
     case feedTypes.GET_MORE_OBJECT_POSTS.SUCCESS:
-      return _.uniq([...state, ...mapPostsKeys(action.payload)]);
+      return uniq([...state, ...mapPostsKeys(action.payload)]);
     default:
       return state;
   }

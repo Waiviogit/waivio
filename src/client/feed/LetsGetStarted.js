@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'lodash';
+import { has, size, attempt, isEmpty, reduce } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
@@ -55,12 +55,12 @@ class LetsGetStarted extends React.Component {
     const hasVoted = isGuest
       ? true
       : authenticatedUser.last_vote_time !== authenticatedUser.created;
-    const jsonMetadata = _.attempt(JSON.parse, authenticatedUser.json_metadata);
+    const jsonMetadata = attempt(JSON.parse, authenticatedUser.json_metadata);
     const hasProfile =
-      _.has(jsonMetadata, 'profile.name') &&
-      _.has(jsonMetadata, 'profile.about') &&
-      _.has(jsonMetadata, 'profile.profile_image');
-    const hasFollowed = _.size(followingList) >= 5;
+      has(jsonMetadata, 'profile.name') &&
+      has(jsonMetadata, 'profile.about') &&
+      has(jsonMetadata, 'profile.profile_image');
+    const hasFollowed = size(followingList) >= 5;
 
     return {
       hasProfile,
@@ -97,7 +97,7 @@ class LetsGetStarted extends React.Component {
     if (diffHasVoted) newState.hasVoted = newUserState.hasVoted;
     if (diffHasFollowed) newState.hasFollowed = newUserState.hasFollowed;
 
-    if (!_.isEmpty(newState)) {
+    if (!isEmpty(newState)) {
       this.setState(newState);
     }
   }
@@ -117,7 +117,7 @@ class LetsGetStarted extends React.Component {
     const actionsArray = isGuest
       ? [hasProfile, hasPost, hasFollowed]
       : [hasProfile, hasPost, hasVoted, hasFollowed];
-    const currentSelected = _.reduce(
+    const currentSelected = reduce(
       actionsArray,
       (total, current) => {
         let newTotal = total;

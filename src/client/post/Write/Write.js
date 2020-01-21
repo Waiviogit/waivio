@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { replace } from 'connected-react-router';
-import _ from 'lodash';
+import { get, kebabCase, isArray, debounce } from 'lodash';
 import 'url-search-params-polyfill';
 import { injectIntl } from 'react-intl';
 import uuidv4 from 'uuid/v4';
@@ -126,14 +126,14 @@ class Write extends React.Component {
       });
     } else if (differentDraft) {
       const { draftPosts, draftId, upvoteSetting } = nextProps;
-      const draftPost = _.get(draftPosts, draftId, {});
-      const initialTitle = _.get(draftPost, 'title', '');
-      const initialWavioData = _.get(draftPost, `jsonMetadata.${WAIVIO_META_FIELD_NAME}`, {});
-      const initialBody = _.get(draftPost, 'body', '');
-      const initialTopics = _.get(draftPost, 'jsonMetadata.tags', []);
-      const initialReward = _.get(draftPost, 'reward', rewardsValues.half);
-      const initialBeneficiary = _.get(draftPost, 'beneficiary', true);
-      const initialUpvote = _.get(draftPost, 'upvote', upvoteSetting);
+      const draftPost = get(draftPosts, draftId, {});
+      const initialTitle = get(draftPost, 'title', '');
+      const initialWavioData = get(draftPost, `jsonMetadata.${WAIVIO_META_FIELD_NAME}`, {});
+      const initialBody = get(draftPost, 'body', '');
+      const initialTopics = get(draftPost, 'jsonMetadata.tags', []);
+      const initialReward = get(draftPost, 'reward', rewardsValues.half);
+      const initialBeneficiary = get(draftPost, 'beneficiary', true);
+      const initialUpvote = get(draftPost, 'upvote', upvoteSetting);
       this.draftId = draftId;
       this.setState({
         initialTitle,
@@ -154,7 +154,7 @@ class Write extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (_.get(this.props, 'location.search') !== _.get(prevProps, 'location.search')) {
+    if (get(this.props, 'location.search') !== get(prevProps, 'location.search')) {
       this.saveDraft.cancel();
     }
   }
@@ -186,7 +186,7 @@ class Write extends React.Component {
     data.author = this.props.user.name || '';
 
     if (data.title && !this.permlink) {
-      data.permlink = _.kebabCase(data.title);
+      data.permlink = kebabCase(data.title);
     } else {
       data.permlink = this.permlink;
     }
@@ -228,7 +228,7 @@ class Write extends React.Component {
 
   initFromDraft = (draftId, draftPost) => {
     let tags = [];
-    if (_.isArray(draftPost.jsonMetadata.tags)) {
+    if (isArray(draftPost.jsonMetadata.tags)) {
       tags = draftPost.jsonMetadata.tags;
     }
 
@@ -256,7 +256,7 @@ class Write extends React.Component {
 
   handleCancelDeleteDraft = () => this.setState({ showModalDelete: false });
 
-  saveDraft = _.debounce(form => {
+  saveDraft = debounce(form => {
     if (this.props.saving) return;
 
     const data = this.getNewPostData(form);

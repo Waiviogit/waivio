@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import _ from 'lodash';
+import { unionBy } from 'lodash';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import UserCard from '../components/UserCard';
 import Loading from '../components/Icon/Loading';
@@ -43,7 +43,7 @@ export default class UserDynamicList extends React.Component {
             this.setState(state => ({
               loading: false,
               hasMore: newUsers.hasMore,
-              users: _.unionBy(state.users, newUsers.users, 'name'),
+              users: unionBy(state.users, newUsers.users, 'name'),
             })),
           )
           .catch(err => {

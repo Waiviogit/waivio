@@ -1,5 +1,5 @@
 import uuidv4 from 'uuid/v4';
-import _, { fromPairs, get } from 'lodash';
+import { fromPairs, get, attempt, isError, includes, unescape, split } from 'lodash';
 import { getHtml } from '../components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
 import { categoryRegex } from './regexHelpers';
@@ -17,11 +17,11 @@ export const isPostDeleted = post => post.title === 'deleted' && post.body === '
 export const isPostTaggedNSFW = post => {
   if (post.parent_permlink === 'nsfw') return true;
 
-  const postJSONMetaData = _.attempt(JSON.parse, post.json_metadata);
+  const postJSONMetaData = attempt(JSON.parse, post.json_metadata);
 
-  if (_.isError(postJSONMetaData)) return false;
+  if (isError(postJSONMetaData)) return false;
 
-  return _.includes(postJSONMetaData.tags, 'nsfw');
+  return includes(postJSONMetaData.tags, 'nsfw');
 };
 
 export function dropCategory(url) {
@@ -37,10 +37,10 @@ export function dropCategory(url) {
 export function getAppData(post) {
   try {
     const jsonMetadata = jsonParse(post.json_metadata);
-    const appDetails = _.get(jsonMetadata, 'app', '');
-    const appData = _.split(appDetails, '/');
-    const appKey = _.get(appData, 0, '');
-    const version = _.get(appData, 1, '1.0.0');
+    const appDetails = get(jsonMetadata, 'app', '');
+    const appData = split(appDetails, '/');
+    const appKey = get(appData, 0, '');
+    const version = get(appData, 1, '1.0.0');
 
     if (whiteListedApps[appKey]) {
       return {
@@ -55,18 +55,18 @@ export function getAppData(post) {
 }
 
 export const isBannedPost = post => {
-  const bannedAuthors = _.get(DMCA, 'authors', []);
-  const bannedPosts = _.get(DMCA, 'posts', []);
+  const bannedAuthors = get(DMCA, 'authors', []);
+  const bannedPosts = get(DMCA, 'posts', []);
   const postURL = `${post.author}/${post.permlink}`;
 
-  return _.includes(bannedAuthors, post.author) || _.includes(bannedPosts, postURL);
+  return includes(bannedAuthors, post.author) || includes(bannedPosts, postURL);
 };
 
 export function getContentImages(content, parsed = false) {
   const parsedBody = parsed ? content : getHtml(content, {}, 'text');
 
   return extractImageTags(parsedBody).map(tag =>
-    _.unescape(tag.src.replace('https://steemitimages.com/0x0/', '')),
+    unescape(tag.src.replace('https://steemitimages.com/0x0/', '')),
   );
 }
 

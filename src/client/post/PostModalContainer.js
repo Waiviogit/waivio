@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import _ from 'lodash';
+import { get } from 'lodash';
+import * as PropTypes from 'prop-types';
 import { getShowPostModal, getCurrentShownPost, getUser, getPostContent } from '../reducers';
 import { hidePostModal as hidePostModalAction } from '../app/appActions';
 import PostModal from './PostModal';
@@ -22,11 +23,25 @@ const PostModalContainer = ({
     />
   );
 
+PostModalContainer.propTypes = {
+  hidePostModal: PropTypes.func.isRequired,
+  author: PropTypes.string.isRequired,
+  showPostModal: PropTypes.bool,
+  currentShownPost: PropTypes.shape(),
+  shownPostContents: PropTypes.bool,
+};
+
+PostModalContainer.defaultProps = {
+  showPostModal: false,
+  currentShownPost: {},
+  shownPostContents: false,
+};
+
 export default connect(
   state => {
     const currentShownPost = getCurrentShownPost(state);
-    const author = _.get(currentShownPost, 'author');
-    const permlink = _.get(currentShownPost, 'permlink');
+    const author = get(currentShownPost, 'author');
+    const permlink = get(currentShownPost, 'permlink');
     return {
       showPostModal: getShowPostModal(state),
       author: getUser(state, author),

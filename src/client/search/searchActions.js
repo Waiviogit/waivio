@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { each, concat, reverse, sortBy } from 'lodash';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 import { getAccountReputation, getAllSearchResultPages } from '../helpers/apiHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -20,10 +20,10 @@ export const searchAskSteem = search => dispatch =>
         getAllSearchResultPages(search)
           .then(response => {
             let mergedResults = [];
-            _.each(response, element => {
-              mergedResults = _.concat(mergedResults, element.results);
+            each(response, element => {
+              mergedResults = concat(mergedResults, element.results);
             });
-            return _.reverse(_.sortBy(mergedResults, ['type', 'created']));
+            return reverse(sortBy(mergedResults, ['type', 'created']));
           })
           .catch(() => []),
         getAccountReputation(search),

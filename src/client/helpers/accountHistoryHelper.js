@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { isEmpty, includes } from 'lodash';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
 
 export const ACTIONS_DISPLAY_LIMIT = 100;
@@ -18,7 +18,7 @@ export const getCustomJSONFilterType = actionDetails => {
   const customActionType = actionJSON[0];
   const customActionDetails = actionJSON[1];
   if (customActionType === accountHistoryConstants.FOLLOW) {
-    return _.isEmpty(customActionDetails.what)
+    return isEmpty(customActionDetails.what)
       ? `-${accountHistoryConstants.UNFOLLOWED}`
       : `+${accountHistoryConstants.FOLLOWED}`;
   } else if (customActionType === accountHistoryConstants.REBLOG) {
@@ -58,7 +58,7 @@ export const stringMatchesFilters = (string, filters = []) => {
   let filterMatches = false;
   for (let i = 0; i < filters.length; i += 1) {
     const currentFilter = filters[i];
-    if (_.includes(string, currentFilter)) {
+    if (includes(string, currentFilter)) {
       filterMatches = true;
       break;
     }
@@ -69,7 +69,7 @@ export const stringMatchesFilters = (string, filters = []) => {
 export const actionsFilter = (action, accountHistoryFilter, currentUsername) => {
   const actionType = action.op[0];
   const actionDetails = action.op[1];
-  const activitySearchIsEmpty = _.isEmpty(accountHistoryFilter);
+  const activitySearchIsEmpty = isEmpty(accountHistoryFilter);
 
   if (activitySearchIsEmpty) {
     return true;

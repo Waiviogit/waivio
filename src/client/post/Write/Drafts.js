@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import _ from 'lodash';
+import { sortBy, isEqual, size, map } from 'lodash';
 import { Checkbox } from 'antd';
 import Loading from '../../components/Icon/Loading';
 import { reload } from '../../auth/authActions';
@@ -89,7 +89,7 @@ class Drafts extends React.Component {
   render() {
     const { intl, reloading, draftPosts, pendingDrafts } = this.props;
     const { showModalDelete, selectedDrafts } = this.state;
-    const sortedDraftPosts = _.sortBy(draftPosts, draft => new Date(draft.lastUpdated)).reverse();
+    const sortedDraftPosts = sortBy(draftPosts, draft => new Date(draft.lastUpdated)).reverse();
     const noDrafts = !reloading && draftPosts.length === 0;
 
     return (
@@ -117,10 +117,10 @@ class Drafts extends React.Component {
               </h3>
             </div>
             {reloading && <Loading center={false} />}
-            {!reloading && _.size(draftPosts) !== 0 && (
+            {!reloading && size(draftPosts) !== 0 && (
               <div className="Drafts__toolbar">
                 <Checkbox
-                  checked={_.isEqual(
+                  checked={isEqual(
                     selectedDrafts,
                     draftPosts.map(d => d.draftId),
                   )}
@@ -147,7 +147,7 @@ class Drafts extends React.Component {
               </h3>
             )}
             {!reloading &&
-              _.map(sortedDraftPosts, draft => (
+              map(sortedDraftPosts, draft => (
                 <DraftRow
                   key={draft.draftId}
                   draft={draft}
