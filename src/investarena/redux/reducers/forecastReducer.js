@@ -30,7 +30,6 @@ export default (state = initialState, action) => {
       };
 
     case activeForecastTypes.GET_QUICK_FORECAST_DATA.SUCCESS:
-
       return {
         ...state,
         quickForecastData: [...action.payload.feed],
@@ -39,13 +38,9 @@ export default (state = initialState, action) => {
       };
 
     case activeForecastTypes.GET_QUICK_FORECAST_DATA.ERROR:
-
-      return {
-        ...state,
-      };
+      return state;
 
     case activeForecastTypes.GET_QUICK_FORECAST_STATISTIC.SUCCESS:
-
       return {
         ...state,
         userStatistics: [...action.payload.top],
@@ -55,13 +50,9 @@ export default (state = initialState, action) => {
       };
 
     case activeForecastTypes.GET_QUICK_FORECAST_STATISTIC.ERROR:
-
-      return {
-        ...state,
-      };
+      return state;
 
     case activeForecastTypes.GET_QUICK_FORECAST_WINNERS.SUCCESS:
-
       return {
         ...state,
         winners: [...state.winners, ...action.payload.users.map(user => ({
@@ -73,14 +64,12 @@ export default (state = initialState, action) => {
       };
 
     case activeForecastTypes.GET_QUICK_FORECAST_WINNERS.ERROR:
-
       return {
         ...state,
         hasMoreStatistic: false,
       };
 
     case activeForecastTypes.GET_QUICK_FORECAST_REWARDS.SUCCESS:
-
       return {
         ...state,
         roundInfo: {
@@ -90,10 +79,7 @@ export default (state = initialState, action) => {
       };
 
     case activeForecastTypes.GET_QUICK_FORECAST_REWARDS.ERROR:
-
-      return {
-        ...state,
-      };
+      return state;
 
     case activeForecastTypes.ANSWER_QUICK_FORECAST: {
       const answeredForecast = state.quickForecastData[action.payload.id];
