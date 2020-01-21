@@ -11,12 +11,6 @@ export const makeGetQuoteState = () =>
     (state, props) => props.quoteSecurity,
     (quotes, quoteSecurity) => quotes[quoteSecurity],
   );
-export const makeGetPostQuoteState = () =>
-  createSelector(
-    getQuotesState,
-    (state, quoteSecurity) => quoteSecurity,
-    (quotes, quoteSecurity) => quotes[quoteSecurity],
-  );
 
 export const makeGetInstrumentsDropdownOptions = () =>
   createSelector(getQuotesState, getQuotesSettingsState, (quotes, quotesSettings) => {

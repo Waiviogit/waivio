@@ -18,6 +18,7 @@ export function localeDate(date, locale) {
   }
   return `${dateArray.filter(item => !!item).join('/')} ${dateFormat.time}`.trim();
 }
+
 export function calculateTime(timeValue) {
   let calculatedTime = Math.floor(timeValue / 1000);
   const seconds = calculatedTime % 60;
@@ -33,6 +34,7 @@ export function calculateTime(timeValue) {
     days: calculatedTime,
   };
 }
+
 export function timeExpired(forecastTime, lang) {
   let resultTime;
   const dateCreate = parseInt(moment.utc(forecastTime).format('x'), 10);
@@ -45,15 +47,20 @@ export function timeExpired(forecastTime, lang) {
   }
   return resultTime;
 }
-export function timeForecastRemain(forecastTime) {
+
+export function timeForecastRemain(forecastTime, withDay = true) {
   const dateForecast = parseInt(moment.utc(forecastTime).format('x'), 10);
   const diff = dateForecast - currentTime.getTime();
   if (diff > 0) {
     const timeValues = calculateTime(diff);
     const resultValues = `${timeValues.hours}:${timeValues.minutes}:${timeValues.seconds}`;
-    return `${timeValues.days}d ${moment(resultValues, 'HH:mm:ss').format('HH:mm:ss')}`;
+
+    return withDay
+      ? `${timeValues.days}d ${moment(resultValues, 'HH:mm:ss').format('HH:mm:ss')}`
+      : `${moment(resultValues, 'HH:mm:ss').format('HH:mm:ss')}`;
   }
-  return `0d 00:00:00`;
+
+  return withDay ? `0d 00:00:00` : 'finished';
 }
 
 // "2019-01-30T17:58:38.000Z"
@@ -62,6 +69,7 @@ export function getDataCreatedAt() {
   const nowDate = Date.now();
   return moment(nowDate - periodBefore).format(forecastDateTimeFormat);
 }
+
 export function getDataForecast() {
   const periodAfter = 604800;
   const nowDate = Date.now();

@@ -1,0 +1,42 @@
+@import (reference) '../../../../client/styles/custom.less';
+
+.nightmode {
+  .TopPredictors {
+    background-color: @grey-nero;
+    border: 1px solid @normal-grey;
+
+    &__reward {
+      color: @green-darker;
+    }
+
+    &__title {
+      border-bottom: 1px solid @normal-grey;
+    }
+
+    &__tab {
+      border-bottom: 1px solid @normal-grey;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    &__link {
+      color: @white-smoke;
+
+      &:hover {
+        color: @white-smoke;
+      }
+    }
+
+    &__present {
+      border: 1px solid @normal-grey;
+      background-color: @grey-nero;
+    }
+
+    &__show-more {
+      color: @white-smoke;
+      background-color: transparent;
+    }
+  }
+}

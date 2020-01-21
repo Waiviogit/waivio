@@ -10,13 +10,13 @@ function toggleModal(state, action) {
       modals: _.remove(state.modals, action.payload.type),
       modalsInfo: _.omit(state.modalsInfo, [action.payload.type]),
     };
-  } else {
-    return {
-      ...state,
-      modals: [...state.modals, action.payload.type],
-      modalsInfo: { ...state.modalsInfo, [action.payload.type]: action.payload.modalInfo },
-    };
   }
+
+  return {
+    ...state,
+    modals: [...state.modals, action.payload.type],
+    modalsInfo: { ...state.modalsInfo, [action.payload.type]: action.payload.modalInfo },
+  };
 }
 
 export default function(state = initialState, action) {
