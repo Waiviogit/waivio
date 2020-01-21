@@ -10,7 +10,7 @@ import DEFAULTS from '../object/const/defaultValues';
 import { objectFields as objectTypes } from '../../common/constants/listOfFields';
 import './ObjectCardView.less';
 
-const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => {
+const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl, withMobileView }) => {
   const getObjectRatings = () => _.filter(wObject.fields, ['name', 'rating']);
   const pathName = pathNameAvatar || `/object/${wObject.id}`;
   const ratings = getObjectRatings();
@@ -65,7 +65,13 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
                 </Link>
                 {wObject.weight && <WeightTag weight={wObject.weight} />}
               </div>
-              {ratings && <RatingsWrap ratings={ratings} />}
+              {ratings && (
+                <RatingsWrap
+                  ratings={ratings}
+                  wobjId={wObject.id || wObject.author_permlink}
+                  withMobileView={withMobileView}
+                />
+              )}
               {wObject.title && (
                 <div className="ObjectCardView__title" title={wObject.title}>
                   {wObject.title}
@@ -89,10 +95,12 @@ ObjectCardView.propTypes = {
   intl: PropTypes.shape().isRequired,
   showSmallVersion: PropTypes.bool,
   pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
+  withMobileView: objectTypes.bool,
 };
 
 ObjectCardView.defaultProps = {
   showSmallVersion: false,
   pathNameAvatar: '',
+  withMobileView: true,
 };
 export default injectIntl(ObjectCardView);

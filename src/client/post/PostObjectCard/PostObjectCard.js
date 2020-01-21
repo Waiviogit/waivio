@@ -19,7 +19,7 @@ const PostObjectCard = ({ isLinked, wObject, onToggle }) => {
       <div className="PostObjectCard__switch">
         <Switch checked={isLinked} onChange={handleChange} />
       </div>
-      <ObjectCardView wObject={wObject} />
+      <ObjectCardView wObject={wObject} withMobileView={false} />
     </div>
   );
 };
