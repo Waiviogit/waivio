@@ -13,12 +13,12 @@ import { getUserAccount, isUserRegistered } from '../../../../waivioApi/ApiClien
 import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
 import { notify } from '../../../app/Notification/notificationActions';
 import { GUEST_PREFIX } from '../../../../common/constants/waivio';
-import { getRate, getRebloggedList, getRewardFund } from '../../../reducers';
+import { getRate, getRewardFund } from './../../../app/appActions';
+import { getRebloggedList } from './../../../app/Reblog/reblogActions';
 import '../ModalSignUp/ModalSignUp.less';
 
 const ModalSignIn = ({ form, next }) => {
   const dispatch = useDispatch();
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userData, setUserData] = useState({});
 
@@ -127,7 +127,14 @@ const ModalSignIn = ({ form, next }) => {
         {getFieldDecorator('agreement', {
           initialValue: true,
           valuePropName: 'checked',
-        })(<Checkbox>I agree to post my public data into blockchain</Checkbox>)}
+        })(
+          <Checkbox>
+            <FormattedMessage
+              id="iAgreePostMyData"
+              defaultMessage="I agree to post my public data into the blockchain"
+            />
+          </Checkbox>,
+        )}
       </Form.Item>
       <Form.Item>
         <Button type="primary" htmlType="submit" disabled={hasErrors(getFieldsError())}>
@@ -188,8 +195,12 @@ const ModalSignIn = ({ form, next }) => {
 };
 
 ModalSignIn.propTypes = {
-  next: PropTypes.string.isRequired,
+  next: PropTypes.string,
   form: PropTypes.shape().isRequired,
+};
+
+ModalSignIn.defaultProps = {
+  next: '',
 };
 
 export default Form.create({ name: 'user_name' })(ModalSignIn);

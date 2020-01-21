@@ -59,7 +59,7 @@ const PaymentTableRow = ({ intl, sponsor }) => (
       </div>
     </td>
     <td>
-      {sponsor.type === 'transfer' ? (
+      {sponsor.type === 'transfer' || sponsor.type === 'demo_debt' ? (
         <p>
           {intl.formatMessage({
             id: 'paymentTable_debt_repayment',

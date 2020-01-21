@@ -864,15 +864,17 @@ export const updateGuestProfile = async (username, json_metadata) => {
     .catch(err => err.message);
 };
 
-export const sendGuestTransfer = async ({ to, amount }) => {
+export const sendGuestTransfer = async ({ to, amount, memo }) => {
   const userData = await getValidTokenData();
+  const body = {
+    id: 'waivio_guest_transfer',
+    data: { to, amount: +amount.split(' ')[0] },
+  };
+  if (memo) body.data.memo = memo;
   return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
     method: 'POST',
     headers: { ...headers, 'access-token': userData.token },
-    body: JSON.stringify({
-      id: 'waivio_guest_transfer',
-      data: { to, amount: +amount.split(' ')[0] },
-    }),
+    body: JSON.stringify(body),
   })
     .then(res => res.json())
     .then(data => data)

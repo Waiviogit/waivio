@@ -129,7 +129,9 @@ const Proposition = ({
           'justify-end': assigned === null || isReserved,
         })}
       >
-        {proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (
+        {/*Temporary fix until changes on backend will be made*/}
+        {/*{proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (*/}
+        {proposition.activation_permlink && assigned === true ? (
           <CampaignFooter
             post={post}
             proposedWobj={proposedWobj}

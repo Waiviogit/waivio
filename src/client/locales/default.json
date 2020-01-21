@@ -989,5 +989,7 @@
   "imageSetter_upload": "Upload",
   "imageSetter_or": "or",
   "imageSetter_paste_image_link": "Paste image link",
-  "imageSetter_link_is_already_added": "The link you are trying to add is already added"
+  "imageSetter_link_is_already_added": "The link you are trying to add is already added",
+  "iAgreePostMyData": "I agree to post my public data into the blockchain",
+  "transferThroughBank": "Your funds transaction will be processed through WaivioBank service. WaiveBank doesn't take any fees."
 }

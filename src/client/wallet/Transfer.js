@@ -5,7 +5,6 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 import { Form, Input, Modal, Radio } from 'antd';
 import { SBD, STEEM } from '../../common/constants/cryptos';
-import steemAPI from '../steemAPI';
 import SteemConnect from '../steemConnectAPI';
 import { getCryptoPriceHistory } from '../app/appActions';
 import { closeTransfer } from './walletActions';
@@ -22,7 +21,8 @@ import {
   getTransferTo,
   isGuestUser,
 } from '../reducers';
-import { sendGuestTransfer } from '../../waivioApi/ApiClient';
+import { sendGuestTransfer, getUserAccount } from '../../waivioApi/ApiClient';
+import { BANK_ACCOUNT, GUEST_PREFIX } from '../../common/constants/waivio';
 import './Transfer.less';
 
 const InputGroup = Input.Group;
@@ -83,6 +83,7 @@ export default class Transfer extends React.Component {
 
   static minAccountLength = 3;
   static maxAccountLength = 16;
+  static maxGuestAccountLength = 23;
   static exchangeRegex = /^(bittrex|blocktrades|poloniex|changelly|openledge|shapeshiftio|deepcrypto8)$/;
   static CURRENCIES = {
     STEEM: 'STEEM',
@@ -115,7 +116,7 @@ export default class Transfer extends React.Component {
         to: nextProps.to,
         amount: nextProps.amount,
         currency: nextProps.currency === 'STEEM' ? STEEM.symbol : SBD.symbol,
-        memo: nextProps.memo,
+        // memo: nextProps.memo,
       });
       this.setState({
         currency: STEEM.symbol,
@@ -166,15 +167,31 @@ export default class Transfer extends React.Component {
   };
 
   handleContinueClick = () => {
-    const { form } = this.props;
+    const { form, isGuest, memo } = this.props;
     form.validateFields({ force: true }, (errors, values) => {
       if (!errors) {
         const transferQuery = {
-          to: values.to,
           amount: `${parseFloat(values.amount).toFixed(3)} ${values.currency}`,
         };
-        if (values.memo) transferQuery.memo = values.memo;
-        if (this.props.isGuest) {
+
+        if (values.to.startsWith(GUEST_PREFIX)) {
+          transferQuery.to = BANK_ACCOUNT;
+          transferQuery.memo = memo
+            ? { id: memo, to: values.to }
+            : { id: 'user_to_guest_transfer', to: values.to };
+          if (values.memo) transferQuery.memo.message = values.memo;
+          transferQuery.memo = JSON.stringify(transferQuery.memo);
+        } else {
+          transferQuery.to = values.to;
+          if (memo) {
+            transferQuery.memo = { id: memo };
+            if (values.memo) transferQuery.memo.message = values.memo;
+            transferQuery.memo = JSON.stringify(transferQuery.memo);
+          }
+          if (values.memo) transferQuery.memo = values.memo;
+        }
+
+        if (isGuest) {
           sendGuestTransfer(transferQuery).then(res => {
             if (res.status === 200) {
               this.props.notify('Successful transaction', 'success');
@@ -236,6 +253,7 @@ export default class Transfer extends React.Component {
 
   validateUsername = (rule, value, callback) => {
     const { intl } = this.props;
+    const guestName = value.startsWith(GUEST_PREFIX);
     this.props.form.validateFields(['memo'], { force: true });
 
     if (!value) {
@@ -259,7 +277,10 @@ export default class Transfer extends React.Component {
       ]);
       return;
     }
-    if (value.length > Transfer.maxAccountLength) {
+    if (
+      (guestName && value.length > Transfer.maxGuestAccountLength) ||
+      (!guestName && value.length > Transfer.maxAccountLength)
+    ) {
       callback([
         new Error(
           intl.formatMessage(
@@ -275,8 +296,19 @@ export default class Transfer extends React.Component {
       ]);
       return;
     }
-    steemAPI.sendAsync('get_accounts', [[value]]).then(result => {
-      if (result[0]) {
+    if (this.props.isGuest && value.startsWith(GUEST_PREFIX)) {
+      callback([
+        new Error(
+          intl.formatMessage({
+            id: 'guest_guest_transfers_prohibited',
+            defaultMessage: 'Money transfers between guest users are prohibited!',
+          }),
+        ),
+      ]);
+      return;
+    }
+    getUserAccount(value, false).then(result => {
+      if (!_.isEmpty(result)) {
         callback();
       } else {
         callback([
@@ -329,8 +361,10 @@ export default class Transfer extends React.Component {
 
   render() {
     const { intl, visible, authenticated, user, memo, screenSize, isGuest } = this.props;
-    const { getFieldDecorator } = this.props.form;
+    const { getFieldDecorator, getFieldValue } = this.props.form;
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
+    const to = getFieldValue('to');
+    const guestName = to && to.startsWith(GUEST_PREFIX);
 
     const balance =
       this.state.currency === Transfer.CURRENCIES.STEEM ? user.balance : user.sbd_balance;
@@ -391,6 +425,12 @@ export default class Transfer extends React.Component {
               />,
             )}
           </Form.Item>
+          {guestName && (
+            <FormattedMessage
+              id="transferThroughBank"
+              defaultMessage="Your funds transaction will be processed through WaivioBank service. WaiveBank doesn't take any fees."
+            />
+          )}
           <Form.Item label={<FormattedMessage id="amount" defaultMessage="Amount" />}>
             <InputGroup className="Transfer__amount">
               {getFieldDecorator('amount', {

@@ -188,7 +188,14 @@ const ModalSignUp = ({ isButton, form, intl }) => {
         {getFieldDecorator('agreement', {
           initialValue: true,
           valuePropName: 'checked',
-        })(<Checkbox>I agree to post my public data into blockchain</Checkbox>)}
+        })(
+          <Checkbox>
+            <FormattedMessage
+              id="iAgreePostMyData"
+              defaultMessage="I agree to post my public data into the blockchain"
+            />
+          </Checkbox>,
+        )}
       </Form.Item>
       <Form.Item>
         <Button
