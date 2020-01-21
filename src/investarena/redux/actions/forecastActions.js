@@ -1,10 +1,10 @@
-import {message} from 'antd';
-import _ from 'lodash';
+import { message } from 'antd';
+import { get } from 'lodash';
 
 import api from '../../configApi/apiResources';
 import createFormatter from '../../../client/helpers/steemitFormatter';
-import {createAsyncActionType} from '../../../client/helpers/stateHelpers';
-import {getAuthenticatedUserName} from "../../../client/reducers";
+import { createAsyncActionType } from '../../../client/helpers/stateHelpers';
+import { getAuthenticatedUserName } from "../../../client/reducers";
 
 export const GET_FORECAST_DATA = createAsyncActionType('@forecast-data/GET_FORECAST_DATA');
 
@@ -60,7 +60,7 @@ export const getForecastRoundRewards = () => dispatch => {
 
 export const answerForQuickForecast = (author, permlink, answer, id, security, quickForecastExpiredAt, counter, weight = 10000) => (dispatch, getState, {steemConnectAPI}) => {
   const username = getAuthenticatedUserName(getState());
-  const postPrice = _.get(getState().quotes, [[security], 'bidPrice']);
+  const postPrice = get(getState(), ['quotes', security, 'bidPrice'], null);
 
   if (quickForecastExpiredAt > Date.now()) {
     dispatch({
