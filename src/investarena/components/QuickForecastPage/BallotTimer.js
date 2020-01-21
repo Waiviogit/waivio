@@ -23,11 +23,13 @@ const BallotTimer = ({ endTimerTime, willCallAfterTimerEnd }) => {
   }, []);
 
   return (
-    <span>
+    <React.Fragment>
       <Icon type="clock-circle" />
-      &#160;
-      {time}
-    </span>
+            &#160;
+      <span className="roundTimer">
+            {time}
+      </span>
+    </React.Fragment>
   );
 };
 

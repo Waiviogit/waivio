@@ -57,8 +57,13 @@ const QuickForecastPage = props => {
   }
 
   function handleFinishTimer() {
-    props.getDataForQuickForecast();
-    props.getForecastRoundRewards();
+    pageLoading(false);
+
+    setTimeout(() => {
+      props.getDataForQuickForecast();
+      props.getForecastRoundRewards();
+      pageLoading(true);
+    }, 1000);
 
     if (props.hasMore) {
       props.getForecastWinners(winnersLimit, props.winners.length);
@@ -86,11 +91,16 @@ const QuickForecastPage = props => {
           <span className="free"> FREE</span>
         </h1>
         <div className="leftContainer">
-          <div className="rules" title="How it works">
+          <div className="rules" title={
+            props.intl.formatMessage({
+              id: 'how_it_work',
+              defaultMessage: 'How it works?',
+            })
+          }>
             <Link to="#" className="rules__link">
               {props.intl.formatMessage({
                 id: 'how_it_work',
-                defaultMessage: 'How it works',
+                defaultMessage: 'How it works?',
               })}
               &#160;
             </Link>

@@ -121,7 +121,6 @@
   &__top-block {
     display: flex;
     justify-content: space-between;
-    margin: 0 0 25px;
   }
 
   &__forecast-timer {
@@ -135,6 +134,8 @@
     margin: 0 auto;
     text-align: center;
     width: 140px;
+    display: flex;
+    align-items: center;
   }
 }
 
@@ -146,7 +147,7 @@
   width: 25px;
   height: 25px;
   cursor: pointer;
-  transition: .5s;
+  transition: 0.5s;
   outline: none;
 
   &:hover {
@@ -167,7 +168,7 @@
 }
 
 .ballotButton {
-  padding: 0 10px;
+  padding: 2px 10px;
   border-radius: 4px;
   cursor: pointer;
   font-family: @font-family-sans-serif;
@@ -210,7 +211,6 @@
 
     &:disabled {
       &:hover {
-        background-color: transparent;
         color: @green-darker;
       }
     }
@@ -228,7 +228,6 @@
 
     &:disabled {
       &:hover {
-        background-color: transparent;
         color: @red;
       }
     }

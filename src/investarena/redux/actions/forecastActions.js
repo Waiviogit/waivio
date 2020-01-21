@@ -21,6 +21,7 @@ export const GET_QUICK_FORECAST_REWARDS = createAsyncActionType(
 );
 
 export const ANSWER_QUICK_FORECAST = '@forecast-data/ANSWER_QUICK_FORECAST';
+export const FINISH_QUICK_FORECAST = '@forecast-data/FINISH_QUICK_FORECAST';
 export const ANSWER_QUICK_FORECAST_LIKE_POST = '@forecast-data/ANSWER_QUICK_FORECAST_LIKE_POST';
 export const ANSWER_QUICK_FORECAST_SEND_COMMENT =
   '@forecast-data/ANSWER_QUICK_FORECAST_SEND_COMMENT';
@@ -73,6 +74,8 @@ export const answerForQuickForecast = (
   security,
   quickForecastExpiredAt,
   counter,
+  setDisabled,
+  setLoading,
   weight = 10000,
 ) => (dispatch, getState, { steemConnectAPI }) => {
   const username = getAuthenticatedUserName(getState());
@@ -127,11 +130,13 @@ export const answerForQuickForecast = (
                 },
               });
             })
-            .catch(e => reject(e)),
+            .catch(e => {
+              reject(e);
+              setDisabled(false);
+              setLoading(false);
+            }),
         ),
       },
     });
   }
-
-  getDataForQuickForecast();
 };
