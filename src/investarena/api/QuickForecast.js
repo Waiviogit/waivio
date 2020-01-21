@@ -12,28 +12,30 @@ export default class QuickForecast extends Base {
   }
 
   getQuickForecast(userName) {
-
     return this.apiClient
       .get(`${config.investArenaApi}${config.quickForecasts.quickForecast}/${userName}/feed`)
       .then(response => response.data);
   }
 
   getQuickForecastStatistics(userName) {
-
     return this.apiClient
-      .get(`${config.investArenaApi}${config.quickForecasts.quickForecastStatistics}/${userName}/statistics`)
+      .get(
+        `${config.investArenaApi}${config.quickForecasts.quickForecastStatistics}/${userName}/statistics`,
+      )
       .then(response => response.data);
   }
 
   getQuickForecastWinners(user, limit, skip) {
-
     return this.apiClient
-      .post(`${config.investArenaApi}${config.quickForecasts.quickForecastWinners}`, {user, limit, skip})
+      .post(`${config.investArenaApi}${config.quickForecasts.quickForecastWinners}`, {
+        user,
+        limit,
+        skip,
+      })
       .then(response => response.data);
   }
 
   getQuickForecastRewards() {
-
     return this.apiClient
       .get(`${config.investArenaApi}${config.quickForecasts.quickForecastRewards}`)
       .then(response => response.data);

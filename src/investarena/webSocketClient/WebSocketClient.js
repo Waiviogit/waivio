@@ -88,7 +88,8 @@ export default class WebSocketClient {
       case 'destroy':
         this.dispatch(deleteCommentSuccess(message.data.id, message.data.commentable_id));
         break;
-      default: break;
+      default:
+        break;
     }
   }
   actionLike(message) {

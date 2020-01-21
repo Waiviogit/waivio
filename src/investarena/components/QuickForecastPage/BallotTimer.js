@@ -18,16 +18,17 @@ const BallotTimer = ({ endTimerTime, willCallAfterTimerEnd }) => {
 
   useEffect(() => {
     if (endTimerTime > Date.now()) {
-      interval = setInterval(handleUpdateTimeRemain, 1000)
+      interval = setInterval(handleUpdateTimeRemain, 1000);
     }
   }, []);
 
   return (
     <span>
-      <Icon type="clock-circle"/>&#160;
-      { time }
+      <Icon type="clock-circle" />
+      &#160;
+      {time}
     </span>
-  )
+  );
 };
 
 BallotTimer.propTypes = {

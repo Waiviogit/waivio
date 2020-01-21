@@ -11,7 +11,7 @@ import QuickForecast from './QuickForecast';
 
 export default function({ apiPrefix } = {}) {
   const api = new ApiClient({ prefix: apiPrefix });
-  const apiForecast = new ApiClient({prefix: ''});
+  const apiForecast = new ApiClient({ prefix: '' });
 
   return {
     authentications: new Authentications({ apiClient: api }),
@@ -21,7 +21,7 @@ export default function({ apiPrefix } = {}) {
     signals: new Signals({ apiClient: api }),
     performers: new Performers({ apiClient: api }),
     forecasts: new Forecasts({ apiClient: api }),
-    quickForecast: new QuickForecast({apiClient: apiForecast }),
+    quickForecast: new QuickForecast({ apiClient: apiForecast }),
     statistics: new Statistics({ apiClient: api }),
   };
 }

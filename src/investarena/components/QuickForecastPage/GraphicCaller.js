@@ -5,16 +5,19 @@ import { Icon } from 'antd';
 
 import { toggleModal } from '../../redux/actions/modalsActions';
 
-const GraphicCaller = ({disabled, quotes, id, quotesSettings, toggleModalCaller}) => (
-  <button className="graphic"
-          disabled={disabled}
-          onClick={() => toggleModalCaller('openDeals',  {
-            quote: quotes[id],
-            quoteSettings: quotesSettings[id],
-            platformName:"widgets",
-            caller: 'od-op'
-            })
-          }>
+const GraphicCaller = ({ disabled, quotes, id, quotesSettings, toggleModalCaller }) => (
+  <button
+    className="graphic"
+    disabled={disabled}
+    onClick={() =>
+      toggleModalCaller('openDeals', {
+        quote: quotes[id],
+        quoteSettings: quotesSettings[id],
+        platformName: 'widgets',
+        caller: 'od-op',
+      })
+    }
+  >
     <Icon type="bar-chart" />
   </button>
 );

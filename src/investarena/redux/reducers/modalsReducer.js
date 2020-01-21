@@ -12,12 +12,11 @@ function toggleModal(state, action) {
     };
   }
 
-    return {
-      ...state,
-      modals: [...state.modals, action.payload.type],
-      modalsInfo: { ...state.modalsInfo, [action.payload.type]: action.payload.modalInfo },
-    };
-
+  return {
+    ...state,
+    modals: [...state.modals, action.payload.type],
+    modalsInfo: { ...state.modalsInfo, [action.payload.type]: action.payload.modalInfo },
+  };
 }
 
 export default function(state = initialState, action) {

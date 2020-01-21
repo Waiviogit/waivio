@@ -48,7 +48,8 @@ export default class ApiClient {
     );
   }
 }
-const request = ({ url, method, data, params = {} }) => axios({
+const request = ({ url, method, data, params = {} }) =>
+  axios({
     method,
     url,
     params,

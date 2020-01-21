@@ -56,8 +56,8 @@ export default class SortSelector extends React.Component {
       c => c.key === `.$${sort}`,
     );
     const filterCurrentValue = () => {
-      if(currentSort && currentSort.props && currentSort.props.children !== 'Reset') {
-        return currentSort.props.children
+      if (currentSort && currentSort.props && currentSort.props.children !== 'Reset') {
+        return currentSort.props.children;
       }
 
       return '';

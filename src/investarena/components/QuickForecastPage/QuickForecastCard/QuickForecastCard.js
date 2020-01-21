@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import {injectIntl} from 'react-intl';
+import { injectIntl } from 'react-intl';
 
 import BallotTimer from '../BallotTimer';
 import USDDisplay from '../../../../client/components/Utils/USDDisplay';
@@ -10,151 +10,168 @@ import GraphicCaller from '../GraphicCaller';
 
 import './QuickForecastCard.less';
 
-const QuickForecastCard = ({forecast, answerForecast, predictionObjectName, timerData, id, avatar, timerCallback, counter, intl}) => {
+const QuickForecastCard = ({
+  forecast,
+  answerForecast,
+  predictionObjectName,
+  timerData,
+  id,
+  avatar,
+  timerCallback,
+  counter,
+  intl,
+}) => {
   // flags
   const pendingStatus = forecast.status === 'pending';
   const winner = forecast.status === 'guessed';
   const lose = forecast.status === 'finished';
-  const side = forecast.side === 'up'
-    ? intl.formatMessage({defaultMessage: 'Yes', id: 'forecast_answer_rise'})
-    : intl.formatMessage({defaultMessage: 'No', id: 'forecast_answer_fall'});
+  const side =
+    forecast.side === 'up'
+      ? intl.formatMessage({ defaultMessage: 'Yes', id: 'forecast_answer_rise' })
+      : intl.formatMessage({ defaultMessage: 'No', id: 'forecast_answer_fall' });
 
   // messages
-  const forecastFinishMessage = winner
-    ? (
-      <h2>
-        {
-          intl.formatMessage({
-            id: 'forecast_winner_message',
-            defaultMessage: 'You Win!!!'
-          })
-        }
-      </h2>
-    ) : (
-      <h2>
-        {
-          intl.formatMessage({
-            id: 'forecast_lose_message',
-            defaultMessage: 'Try again!!!'
-          })
-        }
-      </h2>
-    );
+  const forecastFinishMessage = winner ? (
+    <h2>
+      {intl.formatMessage({
+        id: 'forecast_winner_message',
+        defaultMessage: 'You Win!!!',
+      })}
+    </h2>
+  ) : (
+    <h2>
+      {intl.formatMessage({
+        id: 'forecast_lose_message',
+        defaultMessage: 'Try again!!!',
+      })}
+    </h2>
+  );
 
   // classLists
   const forecastCardClassList = classNames('ForecastCard', {
-    "ForecastCard--toLose": lose,
-    "ForecastCard--win": winner,
+    'ForecastCard--toLose': lose,
+    'ForecastCard--win': winner,
   });
   const sideClassList = classNames({
-    'green': side === 'Yes',
-    'red': side === 'No',
+    green: side === 'Yes',
+    red: side === 'No',
   });
 
   const handleClick = answer => {
     const expiredTime = Date.now() + timerData;
-    answerForecast(forecast.author, forecast.permlink, answer, id, forecast.security, expiredTime, counter);
+    answerForecast(
+      forecast.author,
+      forecast.permlink,
+      answer,
+      id,
+      forecast.security,
+      expiredTime,
+      counter,
+    );
   };
-  const time = timerData * 0.001 / 60;
+  const time = (timerData * 0.001) / 60;
 
   return (
     <div className={forecastCardClassList}>
       <div className="ForecastCard__info">
-        {
-          !forecast.active ? (
-            <div className="ForecastCard__to-vote-card-container">
-              <div className="ForecastCard__val">
-                <div>
-                  {
-                    intl.formatMessage({
-                      id: 'was',
-                      defaultMessage: 'Was'
-                    })
-                  }
-                </div>
-                <USDDisplay value={+forecast.postPrice}/>
+        {!forecast.active ? (
+          <div className="ForecastCard__to-vote-card-container">
+            <div className="ForecastCard__val">
+              <div>
+                {intl.formatMessage({
+                  id: 'was',
+                  defaultMessage: 'Was',
+                })}
               </div>
-              <div className="ForecastCard__flex-container-vertical">
-                {
-                  pendingStatus ? (
-                    <h2 className="ForecastCard__title">
-                      <p className="ForecastCard__title-row">
-                        <img className="ForecastCard__img ForecastCard__img--little"
-                             src={avatar}
-                             alt={predictionObjectName}
-                        /> {predictionObjectName}
-                      </p>
-                      <p className="green">
-                        {
-                          intl.formatMessage({
-                            id: 'rise',
-                            defaultMessage: 'Rise'
-                          })
-                        }: <span className={sideClassList}>{side}</span>
-                      </p>
-                    </h2>
-                  ) : forecastFinishMessage
-                }
-                <div className="ForecastCard__forecast-timer">
-                  <BallotTimer
-                    endTimerTime={forecast.quickForecastExpiredAt}
-                    willCallAfterTimerEnd={timerCallback}
-                  />
-                </div>
-              </div>
-              <DynamicPrice
-                postPrice={forecast.postPrice}
-                secur={forecast.security}
-                closedPrice={forecast.endPrice}
-              />
+              <USDDisplay value={+forecast.postPrice} />
             </div>
-          ) : (
-            <React.Fragment>
-              <div className="ForecastCard__top-block">
-                <img className="ForecastCard__img" src={avatar} alt={predictionObjectName}/>&#160;
-                <p className="ForecastCard__title">
+            <div className="ForecastCard__flex-container-vertical">
+              {pendingStatus ? (
+                <h2 className="ForecastCard__title">
+                  <p className="ForecastCard__title-row">
+                    <img
+                      className="ForecastCard__img ForecastCard__img--little"
+                      src={avatar}
+                      alt={predictionObjectName}
+                    />{' '}
+                    {predictionObjectName}
+                  </p>
+                  <p className="green">
+                    {intl.formatMessage({
+                      id: 'rise',
+                      defaultMessage: 'Rise',
+                    })}
+                    : <span className={sideClassList}>{side}</span>
+                  </p>
+                </h2>
+              ) : (
+                forecastFinishMessage
+              )}
+              <div className="ForecastCard__forecast-timer">
+                <BallotTimer
+                  endTimerTime={forecast.quickForecastExpiredAt}
+                  willCallAfterTimerEnd={timerCallback}
+                />
+              </div>
+            </div>
+            <DynamicPrice
+              postPrice={forecast.postPrice}
+              secur={forecast.security}
+              closedPrice={forecast.endPrice}
+            />
+          </div>
+        ) : (
+          <React.Fragment>
+            <div className="ForecastCard__top-block">
+              <p className="ForecastCard__title ForecastCard__title-row">
+                <img
+                  className="ForecastCard__img ForecastCard__img--little"
+                  src={avatar}
+                  alt={predictionObjectName}
+                />
+                &#160;
+                {intl.formatMessage(
                   {
-                    intl.formatMessage({
-                        id: 'forecast_question',
-                        defaultMessage: '{predictionObjectName} will rise in {time} min?'
-                      },
-                      {
-                        predictionObjectName,
-                        time
-                      },
-                    )
-                  }
-                </p>
+                    id: 'forecast_question',
+                    defaultMessage: '{predictionObjectName} will rise in {time} min?',
+                  },
+                  {
+                    predictionObjectName,
+                    time,
+                  },
+                )}
+              </p>
+            </div>
+            <div className="ballotButton__container">
+              <div className="ballotButton__button-container">
+                <button
+                  disabled={!forecast.active}
+                  onClick={() => handleClick('up', forecast.permlink)}
+                  className="ballotButton ballotButton__positive"
+                >
+                  {intl.formatMessage({
+                    id: 'forecast_answer_rise',
+                    defaultMessage: 'Yes',
+                  })}
+                </button>
+                <button
+                  disabled={!forecast.active}
+                  onClick={() => handleClick('down', forecast.permlink)}
+                  className="ballotButton ballotButton__negative"
+                >
+                  {intl.formatMessage({
+                    id: 'forecast_answer_fall',
+                    defaultMessage: 'No',
+                  })}
+                </button>
               </div>
-              <div className="ballotButton__container">
-                <div className="ballotButton__button-container">
-                  <button disabled={!forecast.active} onClick={() => handleClick('up', forecast.permlink)}
-                          className='ballotButton ballotButton__positive'>
-                    {
-                      intl.formatMessage({
-                        id: 'forecast_answer_rise',
-                        defaultMessage: 'Yes'
-                      })
-                    }
-                  </button>
-                  <button disabled={!forecast.active} onClick={() => handleClick('down', forecast.permlink)}
-                          className='ballotButton ballotButton__negative'>
-                    {
-                      intl.formatMessage({
-                        id: 'forecast_answer_fall',
-                        defaultMessage: 'No'
-                      })
-                    }
-                  </button>
-                </div>
-              </div>
-            </React.Fragment>
-          )
-        }
+            </div>
+          </React.Fragment>
+        )}
       </div>
-      <GraphicCaller id={forecast.security}/>
+      <GraphicCaller id={forecast.security} />
     </div>
-  )
+  );
 };
 
 QuickForecastCard.propTypes = {
