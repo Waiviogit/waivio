@@ -47,15 +47,15 @@ const Details = ({
             <div>{`${messageData.minimumSteemReputation}: ${objectDetails.userRequirements.minSteemReputation}`}</div>
           </div>
           <div className="Details__criteria-row">
-            <Checkbox checked disabled />
+            <Checkbox checked={objectDetails.requirement_filters.expertise} disabled />
             <div>{`${messageData.minimumWaivioExpertise}: ${objectDetails.userRequirements.minExpertise}`}</div>
           </div>
           <div className="Details__criteria-row">
-            <Checkbox checked disabled />
+            <Checkbox checked={objectDetails.requirement_filters.followers} disabled />
             <div>{`${messageData.minimumNumberFollowers}: ${objectDetails.userRequirements.minFollowers}`}</div>
           </div>
           <div className="Details__criteria-row">
-            <Checkbox checked disabled />
+            <Checkbox checked={objectDetails.requirement_filters.posts} disabled />
             <div>{`${messageData.minimumNumberPosts}: ${objectDetails.userRequirements.minPosts}`}</div>
           </div>
           {!!objectDetails.frequency_assign && (
@@ -74,7 +74,7 @@ const Details = ({
             </div>
           )}
           <div className="Details__criteria-row">
-            <Checkbox checked disabled />
+            <Checkbox checked={!objectDetails.requirement_filters.is_user_blacklist} disabled />
             <div>
               {messageData.accountNotBlacklisted}
               <Link to={`/@${objectDetails.guide.name}`}>{` @${objectDetails.guide.name} `}</Link>
