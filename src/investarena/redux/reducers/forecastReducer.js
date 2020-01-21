@@ -38,10 +38,14 @@ export default (state = initialState, action) => {
       };
 
     case activeForecastTypes.GET_QUICK_FORECAST_DATA.ERROR:
+<<<<<<< HEAD
       return {
         ...state,
         quickForecastData: [...state.quickForecastData],
       };
+=======
+      return state;
+>>>>>>> c70cefd97fd6d64776b32f7efe57021d6efd7a6f
 
     case activeForecastTypes.GET_QUICK_FORECAST_STATISTIC.SUCCESS:
       return {
@@ -53,9 +57,13 @@ export default (state = initialState, action) => {
       };
 
     case activeForecastTypes.GET_QUICK_FORECAST_STATISTIC.ERROR:
+<<<<<<< HEAD
       return {
         ...state,
       };
+=======
+      return state;
+>>>>>>> c70cefd97fd6d64776b32f7efe57021d6efd7a6f
 
     case activeForecastTypes.GET_QUICK_FORECAST_WINNERS.SUCCESS:
       return {
@@ -86,9 +94,13 @@ export default (state = initialState, action) => {
       };
 
     case activeForecastTypes.GET_QUICK_FORECAST_REWARDS.ERROR:
+<<<<<<< HEAD
       return {
         ...state,
       };
+=======
+      return state;
+>>>>>>> c70cefd97fd6d64776b32f7efe57021d6efd7a6f
 
     case activeForecastTypes.ANSWER_QUICK_FORECAST: {
       const answeredForecast = state.quickForecastData[action.payload.id];
