@@ -74,7 +74,7 @@ const Details = ({
             </div>
           )}
           <div className="Details__criteria-row">
-            <Checkbox checked={!objectDetails.requirement_filters.is_user_blacklist} disabled />
+            <Checkbox checked={objectDetails.requirement_filters.not_blacklisted} disabled />
             <div>
               {messageData.accountNotBlacklisted}
               <Link to={`/@${objectDetails.guide.name}`}>{` @${objectDetails.guide.name} `}</Link>
