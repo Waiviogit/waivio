@@ -14,6 +14,7 @@ import {
   getObject as getObjectState,
   getObjectAlbums,
   getScreenSize,
+  getObjectFetchingState,
 } from '../reducers';
 import OBJECT_TYPE from './const/objectTypes';
 import { clearObjectFromStore, getObject, getObjectInfo } from './wobjectsActions';
@@ -38,6 +39,7 @@ import NotFound from '../statics/NotFound';
     loaded: getIsUserLoaded(state, ownProps.match.params.name),
     failed: getIsUserFailed(state, ownProps.match.params.name),
     wobject: getObjectState(state),
+    isFetching: getObjectFetchingState(state),
     screenSize: getScreenSize(state),
     albums: getObjectAlbums(state),
   }),
@@ -55,6 +57,7 @@ export default class Wobj extends React.Component {
     match: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
     failed: PropTypes.bool,
+    isFetching: PropTypes.bool,
     getObjectInfo: PropTypes.func,
     resetGallery: PropTypes.func.isRequired,
     wobject: PropTypes.shape(),
@@ -67,6 +70,7 @@ export default class Wobj extends React.Component {
     authenticatedUserName: '',
     loaded: false,
     failed: false,
+    isFetching: false,
     getObjectInfo: () => {},
     wobject: {},
     screenSize: 'large',
@@ -144,11 +148,12 @@ export default class Wobj extends React.Component {
       match,
       wobject,
       albums,
+      isFetching,
     } = this.props;
     if (failed) return <Error404 />;
 
     const objectName = wobject.name || wobject.default_name || '';
-    if (!objectName)
+    if (!objectName && !isFetching)
       return (
         <div className="main-panel">
           <NotFound

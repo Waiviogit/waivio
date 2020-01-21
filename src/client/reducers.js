@@ -195,6 +195,7 @@ export const getSearchUsersResults = state => fromSearch.getSearchUsersResults(s
 export const searchObjectTypesResults = state => fromSearch.searchObjectTypesResults(state.search);
 
 export const getObject = state => fromObject.getObjectState(state.object);
+export const getObjectFetchingState = state => fromObject.getObjectFetchingState(state.object);
 export const getObjectAuthor = state => fromObject.getObjectAuthor(state.object);
 export const getObjectFields = state => fromObject.getObjectFields(state.object);
 export const getRatingFields = state => fromObject.getRatingFields(state.object);
