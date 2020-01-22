@@ -22,6 +22,7 @@ export const GET_QUICK_FORECAST_REWARDS = createAsyncActionType(
 );
 
 export const ANSWER_QUICK_FORECAST = '@forecast-data/ANSWER_QUICK_FORECAST';
+export const ANSWER_QUICK_LOADING = '@forecast-data/ANSWER_QUICK_LOADING';
 export const ANSWER_QUICK_ERROR = '@forecast-data/ANSWER_QUICK_ERROR';
 export const FINISH_QUICK_FORECAST = '@forecast-data/FINISH_QUICK_FORECAST';
 export const ANSWER_QUICK_FORECAST_LIKE_POST = '@forecast-data/ANSWER_QUICK_FORECAST_LIKE_POST';
@@ -90,6 +91,11 @@ export const answerForQuickForecast = (
   const commentArray = forecastComments(forecastObject);
   const comment = arrayRandElement(commentArray);
 
+  dispatch({
+    type: ANSWER_QUICK_LOADING,
+    payload: id,
+  });
+
   if (Date.parse(expiredAt) > Date.now()) {
     dispatch({
       type: ANSWER_QUICK_FORECAST_LIKE_POST,
@@ -132,7 +138,6 @@ export const answerForQuickForecast = (
                             id,
                             postPrice,
                             quickForecastExpiredAt: Date.now() + timerData,
-                            status: 'pending',
                           },
                         });
                       }, 3000);

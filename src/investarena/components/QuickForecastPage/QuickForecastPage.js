@@ -26,7 +26,7 @@ import './QuickForecastPage.less';
 
 const QuickForecastPage = props => {
   const [sortBy, setSort] = useState();
-  const [isLoading, pageLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [currentTime, setTime] = useState();
   const winnersLimit = 5;
 
@@ -37,7 +37,7 @@ const QuickForecastPage = props => {
     props.getForecastRoundRewards();
     setTime(Date.now());
 
-    setTimeout(() => pageLoading(true), 3000);
+    setTimeout(() => setLoading(true), 3000);
   }, [props.auth]);
 
   const getSortItemKey = type => (type.name === 'All' ? '' : type.name);
@@ -59,13 +59,13 @@ const QuickForecastPage = props => {
   }
 
   function handleFinishTimer() {
-    pageLoading(false);
+    setLoading(false);
 
     props.getDataForQuickForecast();
     props.getForecastRoundRewards();
     props.getForecastWinners(winnersLimit, props.winners.length);
     props.getForecastStatistic();
-    pageLoading(true);
+    setLoading(true);
   }
 
   const filterForecastList = props.quickForecastDataList.filter(
@@ -156,6 +156,7 @@ const QuickForecastPage = props => {
                   timerCallback={() => handleFinishTimer()}
                   counter={answeredForecastList.length}
                   handleAuthorization={props.onActionInitiated}
+                  disabled={props.isDisabled}
                 />
               ))}
             </React.Fragment>
@@ -235,6 +236,7 @@ QuickForecastPage.propTypes = {
   auth: PropTypes.bool.isRequired,
   roundTime: PropTypes.number,
   timeForTimer: PropTypes.number.isRequired,
+  isDisabled: PropTypes.bool,
   roundInformation: PropTypes.shape({
     rewards: PropTypes.number,
     voitingPowers: PropTypes.number,
@@ -248,6 +250,7 @@ QuickForecastPage.defaultProps = {
   },
   hasMore: false,
   roundTime: 0,
+  isDisabled: false,
 };
 
 const mapStateToProps = state => ({
@@ -261,6 +264,7 @@ const mapStateToProps = state => ({
   roundInformation: state.forecasts.roundInfo,
   roundTime: state.forecasts.roundTime,
   auth: state.auth.isAuthenticated,
+  isDisabled: state.forecasts.disabled,
 });
 
 const mapDispatchToProps = {

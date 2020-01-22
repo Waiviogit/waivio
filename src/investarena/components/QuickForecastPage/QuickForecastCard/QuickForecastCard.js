@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
@@ -24,21 +24,13 @@ const QuickForecastCard = ({
   counter,
   intl,
   handleAuthorization,
+  disabled,
 }) => {
   // flags
-  const [disabled, setDisabled] = useState(false);
-
-  useEffect(() => {
-    if (forecast.isLoading) {
-      setDisabled(false);
-    }
-  });
-
   const pendingStatus = forecast.status === 'pending';
   const winner = forecast.status === 'guessed';
   const lose = forecast.status === 'finished';
-  const side =
-    forecast.side === 'up'
+  const side = forecast.side === 'up'
       ? intl.formatMessage({ defaultMessage: 'Yes', id: 'forecast_answer_rise' })
       : intl.formatMessage({ defaultMessage: 'No', id: 'forecast_answer_fall' });
 
@@ -59,16 +51,14 @@ const QuickForecastCard = ({
     'ForecastCard--win': winner,
   });
   const sideClassList = classNames({
-    green: side === 'up',
-    red: side === 'down',
+    green: forecast.side === 'up',
+    red: forecast.side === 'down',
   });
   const forecastsMessage = classNames({
     green: winner,
     red: lose,
   });
-
   const handleClick = answer => {
-    setDisabled(true);
     answerForecast(
       forecast.author,
       forecast.permlink,
@@ -157,7 +147,7 @@ const QuickForecastCard = ({
                 )}
               </p>
             </div>
-            {!forecast.isLoading && disabled && <Loading />}
+            {!forecast.isLoading && <Loading />}
             <div className="ballotButton__container">
               <div className="ballotButton__button-container">
                 <button
@@ -212,10 +202,17 @@ QuickForecastCard.propTypes = {
   }).isRequired,
   timerCallback: PropTypes.func.isRequired,
   handleAuthorization: PropTypes.func.isRequired,
-  predictionObjectName: PropTypes.string.isRequired,
-  avatar: PropTypes.string.isRequired,
+  predictionObjectName: PropTypes.string,
+  avatar: PropTypes.string,
   timerData: PropTypes.number.isRequired,
   counter: PropTypes.number.isRequired,
+  disabled: PropTypes.bool,
+};
+
+QuickForecastCard.defaultProps = {
+  disabled: false,
+  avatar: '',
+  predictionObjectName: '',
 };
 
 export default injectIntl(QuickForecastCard);

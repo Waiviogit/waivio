@@ -11,6 +11,7 @@ const initialState = {
   roundInfo: {},
   timer: 0,
   roundTime: 0,
+  disabled: false,
 };
 
 export default (state = initialState, action) => {
@@ -29,13 +30,17 @@ export default (state = initialState, action) => {
         forecastData: [],
       };
 
-    case activeForecastTypes.GET_QUICK_FORECAST_DATA.SUCCESS:
+    case activeForecastTypes.GET_QUICK_FORECAST_DATA.SUCCESS: {
+      const mapperList = action.payload.feed.map(forecast => ({
+        ...forecast,
+        isLoading: true,
+      }));
       return {
         ...state,
-        quickForecastData: [...action.payload.feed],
+        quickForecastData: [...mapperList],
         timer: action.payload.timer,
         roundTime: action.payload.round_time,
-      };
+      }}
 
     case activeForecastTypes.GET_QUICK_FORECAST_DATA.ERROR:
       return state;
@@ -115,6 +120,7 @@ export default (state = initialState, action) => {
           },
           ...state.quickForecastData,
         ],
+        disabled: false,
       };
     }
 
@@ -128,6 +134,21 @@ export default (state = initialState, action) => {
       return {
         ...state,
         quickForecastData: [...state.quickForecastData],
+        disabled: false,
+      };
+    }
+
+    case activeForecastTypes.ANSWER_QUICK_LOADING: {
+      const answeredForecast = state.quickForecastData[action.payload];
+      state.quickForecastData.splice(action.payload, 1, {
+        ...answeredForecast,
+        isLoading: false,
+      });
+
+      return {
+        ...state,
+        quickForecastData: [...state.quickForecastData],
+        disabled: true,
       };
     }
 

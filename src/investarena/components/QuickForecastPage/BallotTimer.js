@@ -5,8 +5,9 @@ import className from 'classnames';
 import { timeForecastRemain } from '../../helpers/diffDateTime';
 
 const BallotTimer = ({ endTimerTime, willCallAfterTimerEnd }) => {
-  const [time, setTime] = useState(timeForecastRemain(endTimerTime, false));
   let interval;
+
+  const [time, setTime] = useState(timeForecastRemain(endTimerTime, false));
   const timerClassList = className('roundTimer', {
     'roundTimer--center': endTimerTime < Date.now(),
   });
@@ -15,7 +16,7 @@ const BallotTimer = ({ endTimerTime, willCallAfterTimerEnd }) => {
       setTime(timeForecastRemain(endTimerTime, false));
     } else {
       clearInterval(interval);
-      setTimeout(willCallAfterTimerEnd, 2000);
+      setTimeout(willCallAfterTimerEnd, 5000);
     }
   };
 
