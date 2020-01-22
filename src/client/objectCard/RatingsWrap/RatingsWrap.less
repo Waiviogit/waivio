@@ -28,8 +28,13 @@
 
   &__stars {
     min-width: 90px;
+    line-height: 0;
+
     .ant-rate-star {
       margin-right: 1px !important;
+    }
+    .ant-rate-disabled .ant-rate-star {
+      cursor: pointer;
     }
   }
 

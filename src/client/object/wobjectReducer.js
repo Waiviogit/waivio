@@ -35,6 +35,7 @@ export default function wobjectReducer(state = initialState, action) {
         },
       };
     case RATE_WOBJECT_SUCCESS: {
+      if (!state.wobject.fields) return state;
       const isNewVote = field =>
         field.rating_votes ? !field.rating_votes.some(v => v.voter === action.meta.voter) : true;
 

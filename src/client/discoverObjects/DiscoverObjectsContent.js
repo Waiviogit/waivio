@@ -262,7 +262,7 @@ class DiscoverObjectsContent extends Component {
             threshold={1500}
           >
             {filteredObjects.map(wObj => (
-              <ObjectCardView key={wObj.id} wObject={wObj} showSmallVersion intl={intl} />
+              <ObjectCardView key={wObj.id} wObject={wObj} intl={intl} />
             ))}
           </ReduxInfiniteScroll>
         ) : (

@@ -1,5 +1,6 @@
 import React from 'react';
-import _ from 'lodash';
+import { useSelector } from 'react-redux';
+import { filter, includes } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -8,16 +9,32 @@ import WeightTag from '../components/WeightTag';
 import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 import DEFAULTS from '../object/const/defaultValues';
 import { objectFields as objectTypes } from '../../common/constants/listOfFields';
+import { getAuthenticatedUserName, getScreenSize } from '../reducers';
 import './ObjectCardView.less';
 
-const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => {
-  const getObjectRatings = () => _.filter(wObject.fields, ['name', 'rating']);
+const ObjectCardView = ({
+  intl,
+  wObject,
+  options: { mobileView = 'compact', ownRatesOnly = false, pathNameAvatar = '' },
+}) => {
+  const screenSize = useSelector(getScreenSize);
+  const username = useSelector(getAuthenticatedUserName);
+
+  const getObjectRatings = () => {
+    const ratingFields = filter(wObject.fields, ['name', 'rating']);
+    return ownRatesOnly
+      ? ratingFields.map(rating => ({
+          ...rating,
+          rating_votes: rating.rating_votes.filter(vote => vote.voter === username),
+        }))
+      : ratingFields;
+  };
   const pathName = pathNameAvatar || `/object/${wObject.id}`;
   const ratings = getObjectRatings();
 
   const avatarLayout = (avatar = DEFAULTS.AVATAR) => {
     let url = avatar;
-    if (_.includes(url, 'waivio.')) url = `${url}_medium`;
+    if (includes(url, 'waivio.')) url = `${url}_medium`;
 
     return (
       <div
@@ -45,7 +62,7 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
             <Link to={pathName} title={goToObjTitle(objName)} className="ObjectCardView__avatar">
               {avatarLayout(wObject.avatar)}
             </Link>
-            <div className={`ObjectCardView__info${showSmallVersion ? ' small' : ''}`}>
+            <div className={'ObjectCardView__info'}>
               {parentName && (
                 <Link
                   to={`/object/${wObject.parent.author_permlink}`}
@@ -65,7 +82,17 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
                 </Link>
                 {wObject.weight && <WeightTag weight={wObject.weight} />}
               </div>
-              {ratings && <RatingsWrap ratings={ratings} />}
+              {ratings && (
+                <RatingsWrap
+                  mobileView={mobileView}
+                  ownRatesOnly={ownRatesOnly}
+                  ratings={ratings}
+                  screenSize={screenSize}
+                  username={username}
+                  wobjId={wObject.id || wObject.author_permlink}
+                  wobjName={wObject.name || wObject.default_name}
+                />
+              )}
               {wObject.title && (
                 <div className="ObjectCardView__title" title={wObject.title}>
                   {wObject.title}
@@ -85,14 +112,16 @@ const ObjectCardView = ({ wObject, showSmallVersion, pathNameAvatar, intl }) => 
 };
 
 ObjectCardView.propTypes = {
-  wObject: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
-  showSmallVersion: PropTypes.bool,
-  pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
+  wObject: PropTypes.shape().isRequired,
+  options: PropTypes.shape({
+    mobileView: PropTypes.oneOf(['compact', 'full']),
+    ownRatesOnly: PropTypes.bool,
+    pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
+  }),
 };
 
 ObjectCardView.defaultProps = {
-  showSmallVersion: false,
-  pathNameAvatar: '',
+  options: {},
 };
 export default injectIntl(ObjectCardView);

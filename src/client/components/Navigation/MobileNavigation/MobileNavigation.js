@@ -35,7 +35,7 @@ const MobileNavigation = ({ location, match }) => {
       id: 'objects',
     },
     rewards: {
-      regExp: /(^\/rewards\/)(all|active|reserved|receivables|history)$/,
+      regExp: /(^\/rewards\/)(all|active|reserved|receivables|history)/,
       id: 'rewards',
     },
     rewardsCampaigns: {

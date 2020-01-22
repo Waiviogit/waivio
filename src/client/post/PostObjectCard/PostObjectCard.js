@@ -17,9 +17,9 @@ const PostObjectCard = ({ isLinked, wObject, onToggle }) => {
   return (
     <div className="PostObjectCard">
       <div className="PostObjectCard__switch">
-        <Switch checked={isLinked} onChange={handleChange} />
+        <Switch checked={isLinked} onChange={handleChange} size="default" />
       </div>
-      <ObjectCardView wObject={wObject} />
+      <ObjectCardView wObject={wObject} options={{ mobileView: 'full', ownRatesOnly: true }} />
     </div>
   );
 };
