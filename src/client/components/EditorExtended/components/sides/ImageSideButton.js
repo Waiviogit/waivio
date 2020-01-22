@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
 // import { EditorState, AtomicBlockUtils } from 'draft-js';
-import { message, Modal } from 'antd';
+import { Modal } from 'antd';
 import uuidv4 from 'uuid/v4';
 import { addNewBlock } from '../../model';
 import { Block } from '../../util/constants';
@@ -11,6 +11,7 @@ import withEditor from '../../../Editor/withEditor';
 import { isValidImage } from '../../../../helpers/image';
 import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../../../common/constants/validation';
 import { objectFields } from '../../../../../common/constants/listOfFields';
+import addImageByLink from '../../../ImageSetter/ImageSetterHelpers';
 
 @withEditor
 @injectIntl
@@ -97,29 +98,12 @@ export default class ImageSideButton extends React.Component {
 
   handleOpenModal = () => this.setState({ isModal: !this.state.isModal });
 
+  getImageByLink = image => {
+    this.setState({ currentImage: [image] });
+  };
+
   handleAddImageByLink = image => {
-    this.checkIsValidImageLink(image, this.checkIsImage);
-  };
-
-  checkIsValidImageLink = (image, setImageIsValid) => {
-    const img = new Image();
-    img.src = image.src;
-    img.onload = () => setImageIsValid(image, true);
-    img.onerror = () => setImageIsValid(image, false);
-  };
-
-  checkIsImage = (image, isValidLink) => {
-    const { intl } = this.props;
-    if (isValidLink) {
-      this.setState({ currentImage: [image] });
-    } else {
-      message.error(
-        intl.formatMessage({
-          id: 'imageSetter_invalid_link',
-          defaultMessage: 'The link is invalid',
-        }),
-      );
-    }
+    addImageByLink(image, this.getImageByLink, this.props.intl);
   };
 
   // For testing - don't load images to ipfs

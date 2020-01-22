@@ -54,8 +54,9 @@ import { getNewsFilterLayout } from './NewsFilter/newsFilterHelper';
 import CreateObject from '../post/CreateObjectModal/CreateObject';
 import { baseUrl } from '../../waivioApi/routes';
 import AppendFormFooter from './AppendFormFooter';
-import './AppendForm.less';
 import ImageSetter from '../components/ImageSetter/ImageSetter';
+import addImageByLink from '../components/ImageSetter/ImageSetterHelpers';
+import './AppendForm.less';
 
 @connect(
   state => ({
@@ -546,11 +547,15 @@ export default class AppendForm extends Component {
     this.props.form.setFieldsValue({ [currentField]: image });
   };
 
-  handleAddImageByLink = image => {
+  getImageByLink = image => {
     const { getFieldValue } = this.props.form;
     const currentField = getFieldValue('currentField');
-    this.setState({ imageUploading: false, currentImage: [image] });
+    this.setState({ currentImage: [image], imageUploading: false });
     this.props.form.setFieldsValue({ [currentField]: image.src });
+  };
+
+  handleAddImageByLink = image => {
+    addImageByLink(image, this.getImageByLink, this.props.intl);
   };
 
   handleImageChange = e => {
