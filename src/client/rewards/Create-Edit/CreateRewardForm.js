@@ -70,7 +70,7 @@ class CreateRewardForm extends React.Component {
     agreement: {},
     commissionAgreement: 5,
     iAgree: false,
-    campaignId: null,
+    campaignId: '',
     isCampaignActive: false,
     isModal: false,
     isValidationAccepted: false,
@@ -132,6 +132,7 @@ class CreateRewardForm extends React.Component {
           targetDays: campaign.reservation_timetable,
           minPhotos: campaign.requirements.minPhotos,
           description: campaign.description,
+          commissionAgreement: parseInt(campaign.commissionAgreement * 100, 10),
           // eslint-disable-next-line no-underscore-dangle
           campaignId: campaign._id,
           expiredAt,
@@ -156,9 +157,9 @@ class CreateRewardForm extends React.Component {
   };
 
   prepareSubmitData = (data, userName) => {
+    const { campaignId, pageObjects } = this.state;
     const objects = map(data.secondaryObject, o => o.id);
-    const agreementObjects =
-      this.state.pageObjects.length !== 0 ? map(this.state.pageObjects, o => o.id) : [];
+    const agreementObjects = pageObjects.length !== 0 ? map(pageObjects, o => o.id) : [];
     const sponsorAccounts = map(data.sponsorsList, o => o.account);
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     const preparedObject = {
@@ -188,10 +189,10 @@ class CreateRewardForm extends React.Component {
       // eslint-disable-next-line no-underscore-dangle
       expired_at: data.expiredAt._d,
       reservation_timetable: data.targetDays,
-      id: this.state.campaignId,
     };
     if (data.usersLegalNotice) preparedObject.usersLegalNotice = data.usersLegalNotice;
     if (data.description) preparedObject.description = data.description;
+    if (campaignId) preparedObject.id = campaignId;
     return preparedObject;
   };
 
