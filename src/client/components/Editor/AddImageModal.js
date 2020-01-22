@@ -17,19 +17,15 @@ import './AddImageModal.less';
 class AddImageModal extends React.Component {
   static propTypes = {
     form: PropTypes.shape().isRequired,
-    onCancel: PropTypes.func,
-    insertImage: PropTypes.func,
-    onImageInvalid: PropTypes.func,
-    onImageUpload: PropTypes.func,
+    onCancel: PropTypes.func.isRequired,
+    insertImage: PropTypes.func.isRequired,
+    onImageInvalid: PropTypes.func.isRequired,
+    onImageUpload: PropTypes.func.isRequired,
     visible: PropTypes.bool,
     intl: PropTypes.shape(),
   };
 
   static defaultProps = {
-    onCancel: () => {},
-    insertImage: () => {},
-    onImageInvalid: () => {},
-    onImageUpload: () => {},
     visible: false,
     intl: {},
   };
@@ -40,7 +36,9 @@ class AddImageModal extends React.Component {
   };
 
   handleOk = e => {
-    e.preventDefault();
+    if (e.preventDefault) {
+      e.preventDefault();
+    } else e.returnValue = false; // For IE
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         this.props.insertImage(values.image);

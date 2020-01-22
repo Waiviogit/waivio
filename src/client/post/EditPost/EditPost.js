@@ -178,7 +178,7 @@ class EditPost extends Component {
       const separator = postBody.slice(-1) === '\n' ? '' : '\n';
       return {
         draftContent: {
-          title: postTitle || objName,
+          title: postTitle,
           body: `${postBody}${separator}[${objName}](${getObjectUrl(
             object.id || object.author_permlink,
           )})`,
@@ -321,10 +321,7 @@ class EditPost extends Component {
             />
 
             <div>{intl.formatMessage({ id: 'add_object', defaultMessage: 'Add object' })}</div>
-            <SearchObjectsAutocomplete
-              handleSelect={this.handleObjectSelect}
-              itemsIdsToOmit={linkedObjects.map(obj => obj.id)}
-            />
+            <SearchObjectsAutocomplete handleSelect={this.handleObjectSelect} />
             <CreateObject onCreateObject={this.handleCreateObject} />
 
             {linkedObjects.map(wObj => (

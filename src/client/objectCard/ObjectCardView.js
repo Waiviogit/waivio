@@ -25,7 +25,9 @@ const ObjectCardView = ({
     return ownRatesOnly
       ? ratingFields.map(rating => ({
           ...rating,
-          rating_votes: rating.rating_votes.filter(vote => vote.voter === username),
+          rating_votes:
+            (rating.rating_votes && rating.rating_votes.filter(vote => vote.voter === username)) ||
+            [],
         }))
       : ratingFields;
   };
