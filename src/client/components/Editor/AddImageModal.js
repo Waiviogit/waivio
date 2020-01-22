@@ -46,6 +46,7 @@ class AddImageModal extends React.Component {
       }
     });
     this.reset();
+    return false; // for Safari
   };
 
   handleImageChange = e => {
