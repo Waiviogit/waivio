@@ -11,6 +11,7 @@ import QuickForecastCard from './QuickForecastCard/QuickForecastCard';
 import BallotTimer from './BallotTimer';
 import TopPredictors from './TopPredictions/TopPredictors';
 import USDDisplay from '../../../client/components/Utils/USDDisplay';
+import withAuthActions from '../../../client/auth/withAuthActions';
 import SortSelector from '../../../client/components/SortSelector/SortSelector';
 import {marketNames} from '../../constants/objectsInvestarena';
 import {
@@ -22,7 +23,6 @@ import {
 } from '../../redux/actions/forecastActions';
 
 import './QuickForecastPage.less';
-import withAuthActions from "../../../client/auth/withAuthActions";
 
 const QuickForecastPage = props => {
   const [sortBy, setSort] = useState();
@@ -38,17 +38,17 @@ const QuickForecastPage = props => {
     setTime(Date.now());
 
     setTimeout(() => pageLoading(true), 3000);
-  }, []);
+  }, [props.auth]);
 
-  const getSortItemKey = type => (type.name === 'Reset' ? '' : type.name);
+  const getSortItemKey = type => (type.name === 'All' ? '' : type.name);
 
   const filtersType = [
     {
-      name: 'Reset',
+      name: 'All',
       key: '',
       intl: {
         id: 'reset_filter',
-        defaultMessage: 'Reset',
+        defaultMessage: 'All',
       },
     },
     ...marketNames,
@@ -221,6 +221,7 @@ QuickForecastPage.propTypes = {
   ).isRequired,
   winners: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   hasMore: PropTypes.bool,
+  auth: PropTypes.bool.isRequired,
   roundTime: PropTypes.number,
   timeForTimer: PropTypes.number.isRequired,
   roundInformation: PropTypes.shape({
@@ -248,6 +249,7 @@ const mapStateToProps = state => ({
   timeForTimer: state.forecasts.timer,
   roundInformation: state.forecasts.roundInfo,
   roundTime: state.forecasts.roundTime,
+  auth: state.auth.isAuthenticated
 });
 
 const mapDispatchToProps = {

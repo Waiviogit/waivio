@@ -12,7 +12,7 @@ const BallotTimer = ({ endTimerTime, willCallAfterTimerEnd }) => {
       setTime(timeForecastRemain(endTimerTime, false));
     } else {
       clearInterval(interval);
-      setTimeout(willCallAfterTimerEnd, 3000)
+      setTimeout(willCallAfterTimerEnd, 2000)
     }
   };
 
