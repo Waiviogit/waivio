@@ -2,7 +2,7 @@ import React from 'react';
 import { Tag } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
-
+import { Link } from 'react-router-dom';
 import { getTextByFilterKey } from './rewardsHelper';
 import RewardBreadcrumb from './RewardsBreadcrumb/RewardBreadcrumb';
 import SortSelector from '../components/SortSelector/SortSelector';
@@ -44,23 +44,34 @@ const FilteredRewardsList = props => {
           <FormattedMessage id="search_area" defaultMessage="Search area" />
         </Tag>
       )}
-      <SortSelector sort={sort} onChange={handleSortChange}>
-        <SortSelector.Item key="reward">
-          <FormattedMessage id="amount_sort" defaultMessage="amount">
-            {msg => msg}
-          </FormattedMessage>
-        </SortSelector.Item>
-        <SortSelector.Item key="date">
-          <FormattedMessage id="expiry_sort" defaultMessage="expiry">
-            {msg => msg}
-          </FormattedMessage>
-        </SortSelector.Item>
-        <SortSelector.Item key="proximity">
-          <FormattedMessage id="proximity_sort" defaultMessage="proximity">
-            {msg => msg}
-          </FormattedMessage>
-        </SortSelector.Item>
-      </SortSelector>
+      {!IsRequiredObjectWrap && propositions && propositions[0] ? (
+        <div className="FilteredRewardsList__header">
+          <Link
+            to={`/object/${propositions[0].requiredObject}`}
+            className="FilteredRewardsList__header-text"
+          >
+            {propositions[0].required_object.default_name}
+          </Link>
+        </div>
+      ) : (
+        <SortSelector sort={sort} onChange={handleSortChange}>
+          <SortSelector.Item key="reward">
+            <FormattedMessage id="amount_sort" defaultMessage="amount">
+              {msg => msg}
+            </FormattedMessage>
+          </SortSelector.Item>
+          <SortSelector.Item key="date">
+            <FormattedMessage id="expiry_sort" defaultMessage="expiry">
+              {msg => msg}
+            </FormattedMessage>
+          </SortSelector.Item>
+          <SortSelector.Item key="proximity">
+            <FormattedMessage id="proximity_sort" defaultMessage="proximity">
+              {msg => msg}
+            </FormattedMessage>
+          </SortSelector.Item>
+        </SortSelector>
+      )}
       <div className="FilteredRewardsList">
         <ReduxInfiniteScroll
           elementIsScrollable={false}
