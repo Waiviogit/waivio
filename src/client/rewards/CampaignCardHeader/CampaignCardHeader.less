@@ -8,6 +8,11 @@
   justify-content: space-between;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid @blue-hawkesBlue;
+  flex-direction: column;
+  color: @black;
+  @media @small {
+    flex-direction: row;
+  }
 
   &__name {
     font-weight: 600;
@@ -15,32 +20,49 @@
 
   &__data {
     white-space: nowrap;
+
     &-colored {
       color: @orange-hot;
     }
   }
+}
 
-  &__user-info {
-    padding-top: 15px;
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.9em;
+.user-info {
+  padding-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9em;
+  align-items: center;
+
+  .username {
+    font-weight: 500;
+    color: @blue-botticelli;
   }
 
-  &__user-card {
+  .total-paid {
     display: flex;
-    align-items: center;
-
-    &-username {
-      margin-left: 10px;
-      font-weight: 500;
-      color: @blue-botticelli;
+    white-space: nowrap;
+    font-weight: 500;
+    color: @blue-botticelli;
+    @media @small {
+      flex-direction: column;
     }
+    &__colon {
+      padding-right: 0.5rem;
+      @media @small {
+        display: none;
+      }
+    }
+  }
 
-    &-total-paid {
-      white-space: nowrap;
-      font-weight: 500;
-      color: @blue-botticelli;
+  &__content {
+    display: flex;
+    width: 100%;
+    margin-left: 10px;
+    justify-content: space-between;
+    flex-direction: column;
+    @media @small {
+      flex-direction: row;
     }
   }
 }
