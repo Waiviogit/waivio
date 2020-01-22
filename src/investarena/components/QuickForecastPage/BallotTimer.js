@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Icon } from 'antd';
 import { timeForecastRemain } from '../../helpers/diffDateTime';
 
 const BallotTimer = ({ endTimerTime, willCallAfterTimerEnd }) => {
   const [time, setTime] = useState(timeForecastRemain(endTimerTime, false));
   let interval;
 
+
   const handleUpdateTimeRemain = () => {
     if (endTimerTime > Date.now()) {
       setTime(timeForecastRemain(endTimerTime, false));
     } else {
       clearInterval(interval);
-      willCallAfterTimerEnd();
+      setTimeout(willCallAfterTimerEnd, 3000)
     }
   };
 
@@ -23,13 +23,9 @@ const BallotTimer = ({ endTimerTime, willCallAfterTimerEnd }) => {
   }, []);
 
   return (
-    <React.Fragment>
-      <Icon type="clock-circle" />
-            &#160;
       <span className="roundTimer">
             {time}
       </span>
-    </React.Fragment>
   );
 };
 

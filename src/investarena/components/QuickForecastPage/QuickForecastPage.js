@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { injectIntl } from 'react-intl';
-import { Icon } from 'antd';
-import { Link } from 'react-router-dom';
+import {connect} from 'react-redux';
+import {injectIntl} from 'react-intl';
+import {Icon} from 'antd';
+import {Link} from 'react-router-dom';
 
+import RightSidebarLoading from '../../../client/app/Sidebar/RightSidebarLoading';
+import StoryLoading from '../../../client/components/Story/StoryLoading';
 import QuickForecastCard from './QuickForecastCard/QuickForecastCard';
-import Loading from '../../../client/components/Icon/Loading';
 import BallotTimer from './BallotTimer';
 import TopPredictors from './TopPredictions/TopPredictors';
 import USDDisplay from '../../../client/components/Utils/USDDisplay';
 import SortSelector from '../../../client/components/SortSelector/SortSelector';
-import { marketNames } from '../../constants/objectsInvestarena';
+import {marketNames} from '../../constants/objectsInvestarena';
 import {
   answerForQuickForecast,
   getDataForQuickForecast,
@@ -21,6 +22,7 @@ import {
 } from '../../redux/actions/forecastActions';
 
 import './QuickForecastPage.less';
+import withAuthActions from "../../../client/auth/withAuthActions";
 
 const QuickForecastPage = props => {
   const [sortBy, setSort] = useState();
@@ -59,16 +61,13 @@ const QuickForecastPage = props => {
   function handleFinishTimer() {
     pageLoading(false);
 
-    setTimeout(() => {
-      props.getDataForQuickForecast();
-      props.getForecastRoundRewards();
-      pageLoading(true);
-    }, 1000);
-
-    if (props.hasMore) {
-      props.getForecastWinners(winnersLimit, props.winners.length);
-    }
+    props.getDataForQuickForecast();
+    props.getForecastRoundRewards();
+    props.getForecastWinners(winnersLimit, props.winners.length);
+    props.getForecastStatistic();
+    pageLoading(true);
   }
+
   const filterForecastList = props.quickForecastDataList.filter(
     obj => obj.market === sortBy && obj.active,
   );
@@ -86,7 +85,7 @@ const QuickForecastPage = props => {
       <div className="feed-layout container">
         <h1 className="head-title">
           Guess and get money
-          <br />
+          <br/>
           absolutely
           <span className="free"> FREE</span>
         </h1>
@@ -104,14 +103,19 @@ const QuickForecastPage = props => {
               })}
               &#160;
             </Link>
-            <Icon type="question-circle" />
+            <Icon type="question-circle"/>
           </div>
-          <TopPredictors userList={props.usersList} title="Top 5 Users" activeUser={props.user} />
+          {isLoading
+            ? <TopPredictors userList={props.usersList} title="Top 5 Users" top activeUser={props.user}/>
+            : <RightSidebarLoading/>
+          }
         </div>
         <div className="center">
           {isLoading ? (
             <React.Fragment>
               <div className="timer-container">
+                <Icon type="clock-circle"/>
+                &#160;
                 <BallotTimer
                   endTimerTime={finishRoundTime}
                   willCallAfterTimerEnd={() => handleFinishTimer()}
@@ -144,12 +148,11 @@ const QuickForecastPage = props => {
                   id={index}
                   timerCallback={() => handleFinishTimer()}
                   counter={answeredForecastList.length}
+                  handleAuthorization={props.onActionInitiated}
                 />
               ))}
             </React.Fragment>
-          ) : (
-            <Loading />
-          )}
+          ) : <StoryLoading/>}
           {isLoading && !forecastList.length && (
             <div className="no-posts">
               {props.intl.formatMessage({
@@ -163,11 +166,11 @@ const QuickForecastPage = props => {
           <div className="reward">
             <span className="reward__row">
               {props.intl.formatMessage({
-                id: 'forecasts__rewards',
+                id: 'forecasts_rewards',
                 defaultMessage: 'Rewards',
               })}
               :&#160;
-              <USDDisplay value={props.roundInformation.rewards} />
+              <USDDisplay value={props.roundInformation.rewards}/>
             </span>
             <span className="reward__row">
               {props.intl.formatMessage({
@@ -175,15 +178,19 @@ const QuickForecastPage = props => {
                 defaultMessage: 'Current round',
               })}
               :&#160;
-              <USDDisplay value={props.roundInformation.voitingPowers} />
+              <USDDisplay value={props.roundInformation.voitingPowers}/>
             </span>
           </div>
-          <TopPredictors
-            userList={props.winners}
-            title="Current round winners"
-            activeUser={props.user}
-            showMore={props.hasMore}
-          />
+          {
+            isLoading
+              ? (!!props.winners.length && (
+                <TopPredictors
+                  userList={props.winners}
+                  title="Current round winners"
+                  activeUser={props.user}
+                  showMore={props.hasMore}
+                />))
+              : <RightSidebarLoading/>}
         </div>
       </div>
     </div>
@@ -197,6 +204,7 @@ QuickForecastPage.propTypes = {
   getForecastRoundRewards: PropTypes.func.isRequired,
   getForecastWinners: PropTypes.func.isRequired,
   getForecastStatistic: PropTypes.func.isRequired,
+  onActionInitiated: PropTypes.func.isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
@@ -250,4 +258,4 @@ const mapDispatchToProps = {
   getForecastRoundRewards,
 };
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(QuickForecastPage));
+export default injectIntl(withAuthActions(connect(mapStateToProps, mapDispatchToProps)(QuickForecastPage)));

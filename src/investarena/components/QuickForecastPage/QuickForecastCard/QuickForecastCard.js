@@ -2,14 +2,16 @@ import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
+import {Icon} from 'antd';
+import {Link} from 'react-router-dom';
 
 import BallotTimer from '../BallotTimer';
 import USDDisplay from '../../../../client/components/Utils/USDDisplay';
 import GraphicIcon from '../GraphicIcon';
 import DynamicPriceWrapper from '../DynamicPriceWrapper';
+import Loading from '../../../../client/components/Icon/Loading';
 
 import './QuickForecastCard.less';
-import Loading from "../../../../client/components/Icon/Loading";
 
 const QuickForecastCard = ({
   forecast,
@@ -21,15 +23,16 @@ const QuickForecastCard = ({
   timerCallback,
   counter,
   intl,
+  handleAuthorization
 }) => {
   // flags
   const [disabled, setDisabled] = useState(false);
-  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
-    setDisabled(false);
-    setLoading(false);
-  }, [forecast]);
+    if(forecast.isLoading) {
+      setDisabled(false);
+    }
+  },);
 
   const pendingStatus = forecast.status === 'pending';
   const winner = forecast.status === 'guessed';
@@ -56,30 +59,28 @@ const QuickForecastCard = ({
     'ForecastCard--win': winner,
   });
   const sideClassList = classNames({
-    green: side === 'Yes',
-    red: side === 'No',
+    'green': side === 'up',
+    'red': side === 'down',
   });
   const forecastsMessage = classNames({
-    green: winner,
-    red: lose,
+    'green': winner,
+    'red': lose,
   });
 
   const handleClick = answer => {
-    const expiredTime = Date.now() + timerData;
     setDisabled(true);
-    setLoading(true);
     answerForecast(
       forecast.author,
       forecast.permlink,
+      forecast.expiredAt,
       answer,
       id,
       forecast.security,
-      expiredTime,
+      timerData,
       counter,
-      setDisabled,
-      setLoading,
     );
   };
+  const handleAnswerClick = (answer) => handleAuthorization(() => handleClick(answer));
   const time = (timerData * 0.001) / 60;
 
   return (
@@ -97,13 +98,13 @@ const QuickForecastCard = ({
               <USDDisplay value={+forecast.postPrice} />
             </div>
             <div className="ForecastCard__flex-container-vertical">
-                <h2 className="ForecastCard__title">
+                <Link to={`/object/${predictionObjectName}`} className="ForecastCard__title">
                   <p className="ForecastCard__title-row">
                     <img
                       className="ForecastCard__img ForecastCard__img--little"
                       src={avatar}
                       alt={predictionObjectName}
-                    />{' '}
+                    />&#160;
                     {predictionObjectName}
                   </p>
                   {pendingStatus ? (
@@ -119,8 +120,10 @@ const QuickForecastCard = ({
                       {forecastFinishMessage}
                     </span>
                   )}
-                </h2>
+                </Link>
               <div className="ForecastCard__forecast-timer">
+                <Icon type="clock-circle" />
+                &#160;
                 <BallotTimer
                   endTimerTime={forecast.quickForecastExpiredAt}
                   willCallAfterTimerEnd={timerCallback}
@@ -155,12 +158,12 @@ const QuickForecastCard = ({
                 )}
               </p>
             </div>
-            {isLoading && <Loading />}
+            {!forecast.isLoading && disabled && <Loading />}
             <div className="ballotButton__container">
               <div className="ballotButton__button-container">
                 <button
                   disabled={disabled}
-                  onClick={() => handleClick('up', forecast.permlink)}
+                  onClick={() => handleAnswerClick('up')}
                   className="ballotButton ballotButton__positive"
                 >
                   {intl.formatMessage({
@@ -170,7 +173,7 @@ const QuickForecastCard = ({
                 </button>
                 <button
                   disabled={disabled}
-                  onClick={() => handleClick('down', forecast.permlink)}
+                  onClick={() => handleAnswerClick('down')}
                   className="ballotButton ballotButton__negative"
                 >
                   {intl.formatMessage({
@@ -200,6 +203,8 @@ QuickForecastCard.propTypes = {
     active: PropTypes.bool,
     postPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     side: PropTypes.string,
+    expiredAt: PropTypes.string,
+    isLoading: PropTypes.bool
   }).isRequired,
   id: PropTypes.number.isRequired,
   answerForecast: PropTypes.func.isRequired,
@@ -207,6 +212,7 @@ QuickForecastCard.propTypes = {
     formatMessage: PropTypes.func.isRequired,
   }).isRequired,
   timerCallback: PropTypes.func.isRequired,
+  handleAuthorization: PropTypes.func.isRequired,
   predictionObjectName: PropTypes.string.isRequired,
   avatar: PropTypes.string.isRequired,
   timerData: PropTypes.number.isRequired,

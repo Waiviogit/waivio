@@ -7,9 +7,8 @@ import Avatar from '../../../../client/components/Avatar';
 
 import './TopPredictions.less';
 
-const TopPredictors = ({ title, userList, showMore, activeUser, handleShowMore, intl }) => {
+const TopPredictors = ({ title, userList, showMore, activeUser, handleShowMore, intl, top }) => {
   const myNameInTopFive = userList.some(user => user.name === activeUser.name);
-
   return (
     <div className="TopPredictors">
       <div className="TopPredictors__title">
@@ -39,7 +38,7 @@ const TopPredictors = ({ title, userList, showMore, activeUser, handleShowMore, 
             })}
           </button>
         )}
-        {activeUser.name && !myNameInTopFive && (
+        {activeUser.name && !myNameInTopFive && top && (
           <React.Fragment>
             <div className="TopPredictors__tab TopPredictors__tab--text-center">...</div>
             <div className="TopPredictors__tab">
@@ -72,6 +71,7 @@ TopPredictors.propTypes = {
     name: PropTypes.string,
     successful_suppose: PropTypes.number,
   }),
+  top: PropTypes.bool,
   handleShowMore: PropTypes.func,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
@@ -79,7 +79,9 @@ TopPredictors.propTypes = {
 };
 
 TopPredictors.defaultProps = {
+  authorization: false,
   showMore: false,
+  top: false,
   activeUser: '',
   handleShowMore: () => {},
 };
