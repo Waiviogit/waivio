@@ -121,14 +121,14 @@ class SubFeed extends React.Component {
   }
 
   render() {
-    const { loaded, user, feed, match } = this.props;
-    const { isAuthHomeFeed } = this.state;
+    const { authenticated, loaded, user, feed, match } = this.props;
     let content = [];
     let isFetching = false;
     let fetched = false;
     let hasMore = false;
     let failed = false;
     let loadMoreContent = () => {};
+    const isAuthHomeFeed = match.url === '/' && authenticated;
 
     if (isAuthHomeFeed) {
       content = getUserFeedFromState(user.name, feed);
