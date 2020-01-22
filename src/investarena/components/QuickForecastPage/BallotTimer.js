@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import className from 'classnames';
+
 import { timeForecastRemain } from '../../helpers/diffDateTime';
 
 const BallotTimer = ({ endTimerTime, willCallAfterTimerEnd }) => {
   const [time, setTime] = useState(timeForecastRemain(endTimerTime, false));
   let interval;
-
+  const timerClassList = className('roundTimer', {
+    'roundTimer--center': endTimerTime < Date.now(),
+  });
   const handleUpdateTimeRemain = () => {
     if (endTimerTime > Date.now()) {
       setTime(timeForecastRemain(endTimerTime, false));
@@ -21,7 +25,7 @@ const BallotTimer = ({ endTimerTime, willCallAfterTimerEnd }) => {
     }
   }, []);
 
-  return <span className="roundTimer">{time}</span>;
+  return <span className={timerClassList}>{time}</span>;
 };
 
 BallotTimer.propTypes = {
