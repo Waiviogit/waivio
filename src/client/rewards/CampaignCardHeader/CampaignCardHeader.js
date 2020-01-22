@@ -64,7 +64,9 @@ const CampaignCardHeader = ({ intl, campaignData, isDetails }) => {
           <div className="Total-paid">
             <div>{intl.formatMessage({ id: 'paid', defaultMessage: 'Total paid' })}</div>
             <div className="Total-paid__colon">:</div>
-            <div>{`${campaignData.guide.total_payed} STEEM`}</div>
+            <div>{`${
+              campaignData.guide.totalPayed ? campaignData.guide.totalPayed.toFixed(3) : 0
+            } STEEM`}</div>
           </div>
         </div>
       </div>
