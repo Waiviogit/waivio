@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import _ from 'lodash';
+import { filter, includes } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -13,15 +13,15 @@ import { getAuthenticatedUserName, getScreenSize } from '../reducers';
 import './ObjectCardView.less';
 
 const ObjectCardView = ({
-  wObject,
   intl,
+  wObject,
   options: { mobileView = 'compact', ownRatesOnly = false, pathNameAvatar = '' },
 }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
 
   const getObjectRatings = () => {
-    const ratingFields = _.filter(wObject.fields, ['name', 'rating']);
+    const ratingFields = filter(wObject.fields, ['name', 'rating']);
     return ownRatesOnly
       ? ratingFields.map(rating => ({
           ...rating,
@@ -34,7 +34,7 @@ const ObjectCardView = ({
 
   const avatarLayout = (avatar = DEFAULTS.AVATAR) => {
     let url = avatar;
-    if (_.includes(url, 'waivio.')) url = `${url}_medium`;
+    if (includes(url, 'waivio.')) url = `${url}_medium`;
 
     return (
       <div
@@ -84,11 +84,13 @@ const ObjectCardView = ({
               </div>
               {ratings && (
                 <RatingsWrap
-                  ratings={ratings}
-                  wobjId={wObject.id || wObject.author_permlink}
                   mobileView={mobileView}
+                  ownRatesOnly={ownRatesOnly}
+                  ratings={ratings}
                   screenSize={screenSize}
                   username={username}
+                  wobjId={wObject.id || wObject.author_permlink}
+                  wobjName={wObject.name || wObject.default_name}
                 />
               )}
               {wObject.title && (
@@ -110,8 +112,8 @@ const ObjectCardView = ({
 };
 
 ObjectCardView.propTypes = {
-  wObject: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
+  wObject: PropTypes.shape().isRequired,
   options: PropTypes.shape({
     mobileView: PropTypes.oneOf(['compact', 'full']),
     ownRatesOnly: PropTypes.bool,

@@ -15,17 +15,22 @@ import './RateForm.less';
 @Form.create()
 class RateForm extends React.Component {
   static propTypes = {
+    /* from decorators */
     form: PropTypes.shape().isRequired,
-    field: PropTypes.shape().isRequired,
-    rateObject: PropTypes.func.isRequired,
     intl: PropTypes.shape().isRequired,
-    initialValue: PropTypes.number,
-    username: PropTypes.string.isRequired,
+    /* from connect */
+    rateObject: PropTypes.func.isRequired,
+    /* passed props */
     authorPermlink: PropTypes.string.isRequired,
+    field: PropTypes.shape().isRequired,
+    initialValue: PropTypes.number,
+    ownRatesOnly: PropTypes.bool,
+    username: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
     initialValue: 0,
+    ownRatesOnly: false,
   };
 
   state = {
@@ -71,7 +76,7 @@ class RateForm extends React.Component {
   render() {
     const { getFieldDecorator } = this.props.form;
     const { loading, submitted, vote } = this.state;
-    const { intl, username, initialValue, field } = this.props;
+    const { intl, ownRatesOnly, username, initialValue, field } = this.props;
 
     if (submitted) {
       if (!field.rating_votes) {
@@ -107,7 +112,7 @@ class RateForm extends React.Component {
             </Form.Item>
           </Form>
         </div>
-        {!!initialValue && <StarRating field={field} />}
+        {!ownRatesOnly && !!initialValue && <StarRating field={field} />}
       </React.Fragment>
     ) : (
       <div className="RateForm__full">
@@ -117,7 +122,7 @@ class RateForm extends React.Component {
             defaultMessage: 'Thank you for your vote!',
           })}
         </div>
-        <StarRating field={field} />
+        {!ownRatesOnly && <StarRating field={field} />}
       </div>
     );
   }

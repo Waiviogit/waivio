@@ -6,7 +6,15 @@ import { averageRate, avrRate } from '../../components/Sidebar/Rate/rateHelper';
 import RateObjectModal from '../../components/Sidebar/Rate/RateObjectModal';
 import './RatingsWrap.less';
 
-const RatingsWrap = ({ ratings, screenSize, wobjId, username, mobileView }) => {
+const RatingsWrap = ({
+  ownRatesOnly,
+  ratings,
+  screenSize,
+  wobjId,
+  wobjName,
+  username,
+  mobileView,
+}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedRating, setSelectedRating] = useState(null);
   const isMobile = screenSize === 'xsmall' || screenSize === 'small';
@@ -49,7 +57,7 @@ const RatingsWrap = ({ ratings, screenSize, wobjId, username, mobileView }) => {
       <div className="RatingsWrap">
         {sortedRatings.map(rate => (
           <div className="RatingsWrap__rate" key={rate.body}>
-            <div className="RatingsWrap__stars">
+            <div className="RatingsWrap__stars" role="presentation" onClick={openRateModal(rate)}>
               <Rate allowHalf disabled value={averageRate(rate)} />
             </div>
             <div className="RatingsWrap__rate-title">{rate.body}</div>
@@ -78,11 +86,13 @@ const RatingsWrap = ({ ratings, screenSize, wobjId, username, mobileView }) => {
         </div>
       )}
       <RateObjectModal
-        wobjId={wobjId}
+        isVisible={isModalVisible}
+        ownRatesOnly={ownRatesOnly}
         ratingCategoryField={selectedRating}
         ratingFields={sortedRatings}
-        isVisible={isModalVisible}
         username={username}
+        wobjId={wobjId}
+        wobjName={wobjName}
         onCancel={closeRateModal}
       />
     </React.Fragment>
@@ -90,16 +100,20 @@ const RatingsWrap = ({ ratings, screenSize, wobjId, username, mobileView }) => {
 };
 
 RatingsWrap.propTypes = {
+  ownRatesOnly: PropTypes.bool,
   ratings: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   screenSize: PropTypes.string.isRequired,
   wobjId: PropTypes.string.isRequired,
+  wobjName: PropTypes.string.isRequired,
   username: PropTypes.string,
   mobileView: PropTypes.oneOf(['compact', 'full']),
 };
 
 RatingsWrap.defaultProps = {
+  ownRatesOnly: false,
   username: '',
   mobileView: 'compact',
+  wobjName: '',
 };
 
 export default RatingsWrap;

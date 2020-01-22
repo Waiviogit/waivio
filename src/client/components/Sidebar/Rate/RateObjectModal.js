@@ -10,21 +10,30 @@ function getInitialRateValue(field, currUser) {
   return voter ? ratePercent.indexOf(voter.rate) + 1 : 0;
 }
 
-const RateObjectModal = ({ wobjId, ratingCategoryField, isVisible, username, onCancel }) =>
+const RateObjectModal = ({
+  isVisible,
+  ratingCategoryField,
+  ownRatesOnly,
+  wobjId,
+  wobjName,
+  username,
+  onCancel,
+}) =>
   ratingCategoryField ? (
     <React.Fragment>
       <Modal
-        destroyOnClose
-        title={ratingCategoryField.body}
-        visible={username && isVisible}
-        footer={null}
-        onCancel={onCancel}
         className="RateInfo__modal"
+        destroyOnClose
+        footer={null}
+        title={wobjName ? `${wobjName} - ${ratingCategoryField.body}` : ratingCategoryField}
+        visible={username && isVisible}
+        onCancel={onCancel}
       >
         <RateForm
-          initialValue={getInitialRateValue(ratingCategoryField, username)}
-          field={ratingCategoryField}
           authorPermlink={wobjId}
+          field={ratingCategoryField}
+          initialValue={getInitialRateValue(ratingCategoryField, username)}
+          ownRatesOnly={ownRatesOnly}
           username={username}
         />
       </Modal>
@@ -32,15 +41,19 @@ const RateObjectModal = ({ wobjId, ratingCategoryField, isVisible, username, onC
   ) : null;
 
 RateObjectModal.propTypes = {
-  wobjId: PropTypes.string.isRequired,
-  ratingCategoryField: PropTypes.shape().isRequired,
   isVisible: PropTypes.bool,
+  ownRatesOnly: PropTypes.bool,
+  ratingCategoryField: PropTypes.shape().isRequired,
   username: PropTypes.string.isRequired,
+  wobjId: PropTypes.string.isRequired,
+  wobjName: PropTypes.string,
   onCancel: PropTypes.func,
 };
 RateObjectModal.defaultProps = {
   isVisible: false,
+  ownRatesOnly: false,
   ratingCategoryField: null,
+  wobjName: '',
   onCancel: () => {},
 };
 
