@@ -289,7 +289,7 @@ class CreateTag extends React.Component {
                 objectType="hashtag"
               />,
             )}
-            {categoryItem && <ObjectCardView wObject={categoryItem} showSmallVersion />}
+            {categoryItem && <ObjectCardView wObject={categoryItem} />}
 
             {!_.isEmpty(currentTags) && (
               <React.Fragment>
@@ -297,7 +297,7 @@ class CreateTag extends React.Component {
                   <FormattedMessage id="already_added" defaultMessage="Already added #tags" />
                 </div>
                 {currentTags.map(tag => (
-                  <ObjectCardView wObject={tag} showSmallVersion key={tag.name} />
+                  <ObjectCardView wObject={tag} key={tag.name} />
                 ))}
               </React.Fragment>
             )}
