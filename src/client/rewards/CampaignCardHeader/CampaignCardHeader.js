@@ -49,21 +49,21 @@ const CampaignCardHeader = ({ intl, campaignData, isDetails }) => {
           )}
         </div>
       </div>
-      <div className="User-info">
+      <div className="user-info">
         <Link to={`/@${campaignData.guide.name}`}>
           <Avatar username={campaignData.guide.name} size={44} />
         </Link>
-        <div className="User-info__content">
+        <div className="user-info__content">
           <Link to={`/@${campaignData.guide.name}`} title={campaignData.guide.name}>
-            <div className="Username">
+            <div className="username">
               {campaignData.guide.alias} (
               {intl.formatMessage({ id: 'sponsor', defaultMessage: 'Sponsor' })})
             </div>
-            <div className="Username">{`@${campaignData.guide.name}`}</div>
+            <div className="username">{`@${campaignData.guide.name}`}</div>
           </Link>
-          <div className="Total-paid">
+          <div className="total-paid">
             <div>{intl.formatMessage({ id: 'paid', defaultMessage: 'Total paid' })}</div>
-            <div className="Total-paid__colon">:</div>
+            <div className="total-paid__colon">:</div>
             <div>{`${
               campaignData.guide.totalPayed ? campaignData.guide.totalPayed.toFixed(3) : 0
             } STEEM`}</div>

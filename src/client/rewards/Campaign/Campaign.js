@@ -28,7 +28,6 @@ const Campaign = ({ proposition, filterKey, history, intl }) => {
   };
   return (
     <div className="Campaign">
-      {console.log(requiredObject)}
       <ObjectCardView wObject={requiredObject} key={requiredObject.id} />
       <div className="Campaign__button" role="presentation" onClick={goToProducts}>
         <Button type="primary" size="large">
