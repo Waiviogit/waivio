@@ -25,7 +25,7 @@ const RateObjectModal = ({
         className="RateInfo__modal"
         destroyOnClose
         footer={null}
-        title={wobjName ? `${wobjName} - ${ratingCategoryField.body}` : ratingCategoryField}
+        title={wobjName ? `${wobjName} - ${ratingCategoryField.body}` : ratingCategoryField.body}
         visible={username && isVisible}
         onCancel={onCancel}
       >
@@ -43,7 +43,7 @@ const RateObjectModal = ({
 RateObjectModal.propTypes = {
   isVisible: PropTypes.bool,
   ownRatesOnly: PropTypes.bool,
-  ratingCategoryField: PropTypes.shape().isRequired,
+  ratingCategoryField: PropTypes.shape(),
   username: PropTypes.string.isRequired,
   wobjId: PropTypes.string.isRequired,
   wobjName: PropTypes.string,

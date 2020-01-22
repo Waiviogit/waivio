@@ -104,9 +104,9 @@ class RateInfo extends React.Component {
           ))}
         {this.state.showModal && (
           <RateObjectModal
-            wobjId={this.props.authorPermlink}
-            ratingCategoryField={this.state.field}
             isVisible={this.state.showModal}
+            ratingCategoryField={this.state.field}
+            wobjId={this.props.authorPermlink}
             username={username}
             onCancel={this.toggleModal}
           />
