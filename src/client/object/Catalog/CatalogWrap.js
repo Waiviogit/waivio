@@ -306,8 +306,7 @@ class CatalogWrap extends React.Component {
                           ) : (
                             <ObjectCardView
                               wObject={listItem}
-                              showSmallVersion
-                              pathNameAvatar={linkTo}
+                              options={{ pathNameAvatar: { linkTo } }}
                             />
                           )}
                         </div>

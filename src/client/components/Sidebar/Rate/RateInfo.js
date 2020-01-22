@@ -1,15 +1,15 @@
 import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Rate } from 'antd';
+import { Rate } from 'antd';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import RateForm from './RateForm';
 import { averageRate, rateCount } from './rateHelper';
 import { ratePercent } from '../../../../common/constants/listOfFields';
 import { getRatingFields } from '../../../reducers';
-import './RateInfo.less';
 import BTooltip from '../../BTooltip';
+import RateObjectModal from './RateObjectModal';
+import './RateInfo.less';
 
 @injectIntl
 @connect(state => ({
@@ -38,7 +38,7 @@ class RateInfo extends React.Component {
     return voter ? ratePercent.indexOf(voter.rate) + 1 : 0;
   };
 
-  handleOnClick = field => {
+  handleOnClick = field => () => {
     this.setState({
       field,
     });
@@ -67,11 +67,8 @@ class RateInfo extends React.Component {
   };
 
   render() {
-    const { username, ratingFields } = this.props;
+    const { ratingFields, username } = this.props;
     const rankingList = _.sortBy(ratingFields, ['body']);
-    const ratingByCategoryFields = ratingFields.find(
-      field => field.permlink === this.state.field.permlink,
-    );
 
     return (
       <React.Fragment>
@@ -86,7 +83,7 @@ class RateInfo extends React.Component {
                       className="RateInfo__stars-container"
                       role="presentation"
                       data-field={JSON.stringify(field)}
-                      onClick={this.handleOnClick.bind(this, field)} // eslint-disable-line react/jsx-no-bind
+                      onClick={this.handleOnClick(field)}
                     >
                       <Rate allowHalf disabled value={+averageRate(field)} />
                     </div>
@@ -96,7 +93,7 @@ class RateInfo extends React.Component {
                     className="RateInfo__stars-container"
                     role="presentation"
                     data-field={JSON.stringify(field)}
-                    onClick={this.handleOnClick.bind(this, field)} // eslint-disable-line react/jsx-no-bind
+                    onClick={this.handleOnClick(field)}
                   >
                     <Rate allowHalf disabled value={+averageRate(field)} />
                   </div>
@@ -106,22 +103,13 @@ class RateInfo extends React.Component {
             </div>
           ))}
         {this.state.showModal && (
-          <Modal
-            destroyOnClose
-            title={this.state.field.body}
-            visible={this.state.showModal}
-            footer={null}
+          <RateObjectModal
+            isVisible={this.state.showModal}
+            ratingCategoryField={this.state.field}
+            wobjId={this.props.authorPermlink}
+            username={username}
             onCancel={this.toggleModal}
-            className="RateInfo__modal"
-          >
-            <RateForm
-              initialValue={this.getInitialRateValue(ratingByCategoryFields)}
-              field={this.state.field}
-              authorPermlink={this.props.authorPermlink}
-              username={username}
-              ratingByCategoryFields={ratingByCategoryFields}
-            />
-          </Modal>
+          />
         )}
       </React.Fragment>
     );

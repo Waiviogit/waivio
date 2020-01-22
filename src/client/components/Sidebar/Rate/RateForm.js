@@ -5,31 +5,32 @@ import { injectIntl } from 'react-intl';
 import { Button, Form, message, Rate } from 'antd';
 import { rateObject } from '../../../object/wobjActions';
 import { ratePercent, ratingFields } from '../../../../common/constants/listOfFields';
-import './RateForm.less';
 import StarRating from './StarRating';
+import './RateForm.less';
 
-@connect(
-  null,
-  {
-    rateObject,
-  },
-)
+@connect(null, {
+  rateObject,
+})
 @injectIntl
 @Form.create()
 class RateForm extends React.Component {
   static propTypes = {
+    /* from decorators */
     form: PropTypes.shape().isRequired,
-    field: PropTypes.shape().isRequired,
-    rateObject: PropTypes.func.isRequired,
     intl: PropTypes.shape().isRequired,
-    initialValue: PropTypes.number,
-    ratingByCategoryFields: PropTypes.shape().isRequired,
-    username: PropTypes.string.isRequired,
+    /* from connect */
+    rateObject: PropTypes.func.isRequired,
+    /* passed props */
     authorPermlink: PropTypes.string.isRequired,
+    field: PropTypes.shape().isRequired,
+    initialValue: PropTypes.number,
+    ownRatesOnly: PropTypes.bool,
+    username: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
     initialValue: 0,
+    ownRatesOnly: false,
   };
 
   state = {
@@ -75,21 +76,19 @@ class RateForm extends React.Component {
   render() {
     const { getFieldDecorator } = this.props.form;
     const { loading, submitted, vote } = this.state;
-    const { intl, ratingByCategoryFields, username, initialValue } = this.props;
-
-    const fieldWithVote = { ...ratingByCategoryFields };
+    const { intl, ownRatesOnly, username, initialValue, field } = this.props;
 
     if (submitted) {
-      if (!fieldWithVote.rating_votes) {
-        fieldWithVote.rating_votes = [];
+      if (!field.rating_votes) {
+        field.rating_votes = [];
       }
 
-      const previousVoteIndex = fieldWithVote.rating_votes.findIndex(v => v.voter === username);
+      const previousVoteIndex = field.rating_votes.findIndex(v => v.voter === username);
 
       if (previousVoteIndex === -1) {
-        fieldWithVote.rating_votes.push(vote);
+        field.rating_votes.push(vote);
       } else {
-        fieldWithVote.rating_votes[previousVoteIndex] = vote;
+        field.rating_votes[previousVoteIndex] = vote;
       }
     }
 
@@ -113,7 +112,7 @@ class RateForm extends React.Component {
             </Form.Item>
           </Form>
         </div>
-        {!!initialValue && <StarRating field={fieldWithVote} />}
+        {!ownRatesOnly && !!initialValue && <StarRating field={field} />}
       </React.Fragment>
     ) : (
       <div className="RateForm__full">
@@ -123,7 +122,7 @@ class RateForm extends React.Component {
             defaultMessage: 'Thank you for your vote!',
           })}
         </div>
-        <StarRating field={fieldWithVote} />
+        {!ownRatesOnly && <StarRating field={field} />}
       </div>
     );
   }
