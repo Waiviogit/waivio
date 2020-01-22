@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Input, Icon, Modal, message } from 'antd';
+import { Input, Icon, Modal } from 'antd';
 import _ from 'lodash';
 import uuidv4 from 'uuid/v4';
 import { injectIntl } from 'react-intl';
@@ -10,6 +10,7 @@ import { isValidImage } from '../../helpers/image';
 import ImageSetter from '../ImageSetter/ImageSetter';
 import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
 import { objectFields } from '../../../common/constants/listOfFields';
+import addImageByLink from '../ImageSetter/ImageSetterHelpers';
 import './QuickCommentEditor.less';
 
 @withEditor
@@ -83,29 +84,12 @@ class QuickCommentEditor extends React.Component {
     this.setState({ image: [], imageUploading: false });
   }
 
+  getImageByLink = image => {
+    this.setState({ image: [image] });
+  };
+
   handleAddImageByLink = image => {
-    this.checkIsValidImageLink(image, this.checkIsImage);
-  };
-
-  checkIsValidImageLink = (image, setImageIsValid) => {
-    const img = new Image();
-    img.src = image.src;
-    img.onload = () => setImageIsValid(image, true);
-    img.onerror = () => setImageIsValid(image, false);
-  };
-
-  checkIsImage = (image, isValidLink) => {
-    const { intl } = this.props;
-    if (isValidLink) {
-      this.setState({ image: [image] });
-    } else {
-      message.error(
-        intl.formatMessage({
-          id: 'imageSetter_invalid_link',
-          defaultMessage: 'The link is invalid',
-        }),
-      );
-    }
+    addImageByLink(image, this.getImageByLink, this.props.intl);
   };
 
   handleChangeImage = event => {
