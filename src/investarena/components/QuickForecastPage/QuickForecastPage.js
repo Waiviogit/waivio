@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import {injectIntl} from 'react-intl';
-import {Icon} from 'antd';
-import {Link} from 'react-router-dom';
+import { connect } from 'react-redux';
+import { injectIntl } from 'react-intl';
+import { Icon } from 'antd';
+import { Link } from 'react-router-dom';
 
 import RightSidebarLoading from '../../../client/app/Sidebar/RightSidebarLoading';
 import StoryLoading from '../../../client/components/Story/StoryLoading';
@@ -13,7 +13,7 @@ import TopPredictors from './TopPredictions/TopPredictors';
 import USDDisplay from '../../../client/components/Utils/USDDisplay';
 import withAuthActions from '../../../client/auth/withAuthActions';
 import SortSelector from '../../../client/components/SortSelector/SortSelector';
-import {marketNames} from '../../constants/objectsInvestarena';
+import { marketNames } from '../../constants/objectsInvestarena';
 import {
   answerForQuickForecast,
   getDataForQuickForecast,
@@ -85,17 +85,18 @@ const QuickForecastPage = props => {
       <div className="feed-layout container">
         <h1 className="head-title">
           Guess and get money
-          <br/>
+          <br />
           absolutely
           <span className="free"> FREE</span>
         </h1>
         <div className="leftContainer">
-          <div className="rules" title={
-            props.intl.formatMessage({
+          <div
+            className="rules"
+            title={props.intl.formatMessage({
               id: 'how_it_work',
               defaultMessage: 'How it works?',
-            })
-          }>
+            })}
+          >
             <Link to="#" className="rules__link">
               {props.intl.formatMessage({
                 id: 'how_it_work',
@@ -103,18 +104,24 @@ const QuickForecastPage = props => {
               })}
               &#160;
             </Link>
-            <Icon type="question-circle"/>
+            <Icon type="question-circle" />
           </div>
-          {isLoading
-            ? <TopPredictors userList={props.usersList} title="Top 5 Users" top activeUser={props.user}/>
-            : <RightSidebarLoading/>
-          }
+          {isLoading ? (
+            <TopPredictors
+              userList={props.usersList}
+              title="Top 5 Users"
+              top
+              activeUser={props.user}
+            />
+          ) : (
+            <RightSidebarLoading />
+          )}
         </div>
         <div className="center">
           {isLoading ? (
             <React.Fragment>
               <div className="timer-container">
-                <Icon type="clock-circle"/>
+                <Icon type="clock-circle" />
                 &#160;
                 <BallotTimer
                   endTimerTime={finishRoundTime}
@@ -152,7 +159,9 @@ const QuickForecastPage = props => {
                 />
               ))}
             </React.Fragment>
-          ) : <StoryLoading/>}
+          ) : (
+            <StoryLoading />
+          )}
           {isLoading && !forecastList.length && (
             <div className="no-posts">
               {props.intl.formatMessage({
@@ -170,7 +179,7 @@ const QuickForecastPage = props => {
                 defaultMessage: 'Rewards',
               })}
               :&#160;
-              <USDDisplay value={props.roundInformation.rewards}/>
+              <USDDisplay value={props.roundInformation.rewards} />
             </span>
             <span className="reward__row">
               {props.intl.formatMessage({
@@ -178,19 +187,21 @@ const QuickForecastPage = props => {
                 defaultMessage: 'Current round',
               })}
               :&#160;
-              <USDDisplay value={props.roundInformation.voitingPowers}/>
+              <USDDisplay value={props.roundInformation.voitingPowers} />
             </span>
           </div>
-          {
-            isLoading
-              ? (!!props.winners.length && (
-                <TopPredictors
-                  userList={props.winners}
-                  title="Current round winners"
-                  activeUser={props.user}
-                  showMore={props.hasMore}
-                />))
-              : <RightSidebarLoading/>}
+          {isLoading ? (
+            !!props.winners.length && (
+              <TopPredictors
+                userList={props.winners}
+                title="Current round winners"
+                activeUser={props.user}
+                showMore={props.hasMore}
+              />
+            )
+          ) : (
+            <RightSidebarLoading />
+          )}
         </div>
       </div>
     </div>
@@ -249,7 +260,7 @@ const mapStateToProps = state => ({
   timeForTimer: state.forecasts.timer,
   roundInformation: state.forecasts.roundInfo,
   roundTime: state.forecasts.roundTime,
-  auth: state.auth.isAuthenticated
+  auth: state.auth.isAuthenticated,
 });
 
 const mapDispatchToProps = {
@@ -260,4 +271,6 @@ const mapDispatchToProps = {
   getForecastRoundRewards,
 };
 
-export default injectIntl(withAuthActions(connect(mapStateToProps, mapDispatchToProps)(QuickForecastPage)));
+export default injectIntl(
+  withAuthActions(connect(mapStateToProps, mapDispatchToProps)(QuickForecastPage)),
+);

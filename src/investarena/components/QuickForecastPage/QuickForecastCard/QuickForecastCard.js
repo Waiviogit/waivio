@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { injectIntl } from 'react-intl';
-import {Icon} from 'antd';
-import {Link} from 'react-router-dom';
+import { Icon } from 'antd';
+import { Link } from 'react-router-dom';
 
 import BallotTimer from '../BallotTimer';
 import USDDisplay from '../../../../client/components/Utils/USDDisplay';
@@ -23,16 +23,16 @@ const QuickForecastCard = ({
   timerCallback,
   counter,
   intl,
-  handleAuthorization
+  handleAuthorization,
 }) => {
   // flags
   const [disabled, setDisabled] = useState(false);
 
   useEffect(() => {
-    if(forecast.isLoading) {
+    if (forecast.isLoading) {
       setDisabled(false);
     }
-  },);
+  });
 
   const pendingStatus = forecast.status === 'pending';
   const winner = forecast.status === 'guessed';
@@ -48,7 +48,7 @@ const QuickForecastCard = ({
         id: 'forecast_winner_message',
         defaultMessage: 'You Win!!!',
       })
-   : intl.formatMessage({
+    : intl.formatMessage({
         id: 'forecast_lose_message',
         defaultMessage: 'Try again!!!',
       });
@@ -59,12 +59,12 @@ const QuickForecastCard = ({
     'ForecastCard--win': winner,
   });
   const sideClassList = classNames({
-    'green': side === 'up',
-    'red': side === 'down',
+    green: side === 'up',
+    red: side === 'down',
   });
   const forecastsMessage = classNames({
-    'green': winner,
-    'red': lose,
+    green: winner,
+    red: lose,
   });
 
   const handleClick = answer => {
@@ -80,7 +80,7 @@ const QuickForecastCard = ({
       counter,
     );
   };
-  const handleAnswerClick = (answer) => handleAuthorization(() => handleClick(answer));
+  const handleAnswerClick = answer => handleAuthorization(() => handleClick(answer));
   const time = (timerData * 0.001) / 60;
 
   return (
@@ -98,29 +98,28 @@ const QuickForecastCard = ({
               <USDDisplay value={+forecast.postPrice} />
             </div>
             <div className="ForecastCard__flex-container-vertical">
-                <Link to={`/object/${predictionObjectName}`} className="ForecastCard__title">
-                  <p className="ForecastCard__title-row">
-                    <img
-                      className="ForecastCard__img ForecastCard__img--little"
-                      src={avatar}
-                      alt={predictionObjectName}
-                    />&#160;
-                    {predictionObjectName}
+              <Link to={`/object/${predictionObjectName}`} className="ForecastCard__title">
+                <p className="ForecastCard__title-row">
+                  <img
+                    className="ForecastCard__img ForecastCard__img--little"
+                    src={avatar}
+                    alt={predictionObjectName}
+                  />
+                  &#160;
+                  {predictionObjectName}
+                </p>
+                {pendingStatus ? (
+                  <p className="green">
+                    {intl.formatMessage({
+                      id: 'rise',
+                      defaultMessage: 'Rise',
+                    })}
+                    : <span className={sideClassList}>{side}</span>
                   </p>
-                  {pendingStatus ? (
-                    <p className="green">
-                      {intl.formatMessage({
-                        id: 'rise',
-                        defaultMessage: 'Rise',
-                      })}
-                      : <span className={sideClassList}>{side}</span>
-                    </p>
-                  ) : (
-                    <span className={forecastsMessage}>
-                      {forecastFinishMessage}
-                    </span>
-                  )}
-                </Link>
+                ) : (
+                  <span className={forecastsMessage}>{forecastFinishMessage}</span>
+                )}
+              </Link>
               <div className="ForecastCard__forecast-timer">
                 <Icon type="clock-circle" />
                 &#160;
@@ -204,7 +203,7 @@ QuickForecastCard.propTypes = {
     postPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     side: PropTypes.string,
     expiredAt: PropTypes.string,
-    isLoading: PropTypes.bool
+    isLoading: PropTypes.bool,
   }).isRequired,
   id: PropTypes.number.isRequired,
   answerForecast: PropTypes.func.isRequired,

@@ -6,13 +6,12 @@ const BallotTimer = ({ endTimerTime, willCallAfterTimerEnd }) => {
   const [time, setTime] = useState(timeForecastRemain(endTimerTime, false));
   let interval;
 
-
   const handleUpdateTimeRemain = () => {
     if (endTimerTime > Date.now()) {
       setTime(timeForecastRemain(endTimerTime, false));
     } else {
       clearInterval(interval);
-      setTimeout(willCallAfterTimerEnd, 2000)
+      setTimeout(willCallAfterTimerEnd, 2000);
     }
   };
 
@@ -22,11 +21,7 @@ const BallotTimer = ({ endTimerTime, willCallAfterTimerEnd }) => {
     }
   }, []);
 
-  return (
-      <span className="roundTimer">
-            {time}
-      </span>
-  );
+  return <span className="roundTimer">{time}</span>;
 };
 
 BallotTimer.propTypes = {

@@ -1,10 +1,10 @@
-import {message} from 'antd';
-import {get} from 'lodash';
+import { message } from 'antd';
+import { get } from 'lodash';
 import api from '../../configApi/apiResources';
 import createFormatter from '../../../client/helpers/steemitFormatter';
-import {createAsyncActionType} from '../../../client/helpers/stateHelpers';
-import {getAuthenticatedUserName} from '../../../client/reducers';
-import {forecastComments} from '../../constants/constantsForecast';
+import { createAsyncActionType } from '../../../client/helpers/stateHelpers';
+import { getAuthenticatedUserName } from '../../../client/reducers';
+import { forecastComments } from '../../constants/constantsForecast';
 
 export const GET_FORECAST_DATA = createAsyncActionType('@forecast-data/GET_FORECAST_DATA');
 
@@ -28,7 +28,7 @@ export const ANSWER_QUICK_FORECAST_LIKE_POST = '@forecast-data/ANSWER_QUICK_FORE
 export const ANSWER_QUICK_FORECAST_SEND_COMMENT =
   '@forecast-data/ANSWER_QUICK_FORECAST_SEND_COMMENT';
 
-export const getActiveForecasts = ({name, quote} = {name: '', quote: ''}) => dispatch =>
+export const getActiveForecasts = ({ name, quote } = { name: '', quote: '' }) => dispatch =>
   dispatch({
     type: GET_FORECAST_DATA.ACTION,
     payload: api.forecasts.getActiveForecasts(name, quote),
@@ -78,8 +78,8 @@ export const answerForQuickForecast = (
   timerData,
   counter,
   weight = 10000,
-) => (dispatch, getState, {steemConnectAPI}) => {
-  const arrayRandElement = (arr) => {
+) => (dispatch, getState, { steemConnectAPI }) => {
+  const arrayRandElement = arr => {
     const rand = Math.floor(Math.random() * arr.length);
     return arr[rand];
   };
@@ -135,8 +135,7 @@ export const answerForQuickForecast = (
                             status: 'pending',
                           },
                         });
-                      }, 3000)
-
+                      }, 3000);
                     })
                     .catch(error => {
                       reject(error);

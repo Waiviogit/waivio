@@ -79,7 +79,6 @@ export default (state = initialState, action) => {
       };
     }
 
-
     case activeForecastTypes.GET_QUICK_FORECAST_WINNERS.ERROR:
       return {
         ...state,
