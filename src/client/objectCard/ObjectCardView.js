@@ -12,13 +12,16 @@ import { objectFields as objectTypes } from '../../common/constants/listOfFields
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
 import './ObjectCardView.less';
 
-const ObjectCardView = ({ wObject, ownRatesOnly, mobileView, pathNameAvatar, intl }) => {
+const ObjectCardView = ({
+  wObject,
+  intl,
+  options: { mobileView = 'compact', ownRatesOnly = false, pathNameAvatar = '' },
+}) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
 
   const getObjectRatings = () => {
     const ratingFields = _.filter(wObject.fields, ['name', 'rating']);
-    // return ownRatesOnly ? ratingFields.filter(r => r.rating_votes.some(vote => vote.voter === username)) : ratingFields;
     return ownRatesOnly
       ? ratingFields.map(rating => ({
           ...rating,
@@ -109,14 +112,14 @@ const ObjectCardView = ({ wObject, ownRatesOnly, mobileView, pathNameAvatar, int
 ObjectCardView.propTypes = {
   wObject: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
-  ownRatesOnly: PropTypes.bool,
-  pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
-  mobileView: PropTypes.oneOf(['compact', 'full']),
+  options: PropTypes.shape({
+    mobileView: PropTypes.oneOf(['compact', 'full']),
+    ownRatesOnly: PropTypes.bool,
+    pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
+  }),
 };
 
 ObjectCardView.defaultProps = {
-  ownRatesOnly: false,
-  pathNameAvatar: '',
-  mobileView: 'compact',
+  options: {},
 };
 export default injectIntl(ObjectCardView);

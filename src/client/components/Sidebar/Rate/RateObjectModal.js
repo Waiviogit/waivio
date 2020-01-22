@@ -33,7 +33,7 @@ const RateObjectModal = ({ wobjId, ratingCategoryField, isVisible, username, onC
 
 RateObjectModal.propTypes = {
   wobjId: PropTypes.string.isRequired,
-  ratingCategoryField: PropTypes.shape,
+  ratingCategoryField: PropTypes.shape().isRequired,
   isVisible: PropTypes.bool,
   username: PropTypes.string.isRequired,
   onCancel: PropTypes.func,
