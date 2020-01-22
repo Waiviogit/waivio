@@ -44,11 +44,11 @@ const ImageSetter = ({
             })}
       </div>
       {(!isEmpty(images) || isLoading) && (
-        <div className="Image-box">
+        <div className="image-box">
           {map(images, image => (
-            <div className="Image-box__preview" key={image.id}>
+            <div className="image-box__preview" key={image.id}>
               <div
-                className="Image-box__remove"
+                className="image-box__remove"
                 onClick={() => onRemoveImage(image.id)}
                 role="presentation"
               >
@@ -58,18 +58,18 @@ const ImageSetter = ({
             </div>
           ))}
           {isLoading && (
-            <div className="Image-box__preview">
-              <div className="Image-box__preview-loader">
+            <div className="image-box__preview">
+              <div className="image-box__preview-loader">
                 <Icon type="loading" />
               </div>
             </div>
           )}
         </div>
       )}
-      <div className="Image-upload">
+      <div className="image-upload">
         <input
           id="inputfile"
-          className="Image-upload__file-input"
+          className="image-upload__file-input"
           type="file"
           accept="image/*"
           onInput={handleAddImage}
@@ -78,10 +78,10 @@ const ImageSetter = ({
           }}
         />
         <label htmlFor="inputfile">
-          <div className="Button-upload">
-            <div className="Button-upload__container">
-              <Icon className="Button-upload__container-img" type="plus" />
-              <div className="Button-upload__container-label">
+          <div className="button-upload">
+            <div className="button-upload__container">
+              <Icon className="button-upload__container-img" type="plus" />
+              <div className="button-upload__container-label">
                 {intl.formatMessage({
                   id: 'imageSetter_upload',
                   defaultMessage: 'Upload',
@@ -91,9 +91,9 @@ const ImageSetter = ({
           </div>
         </label>
         <span>{intl.formatMessage({ id: 'imageSetter_or', defaultMessage: 'or' })}</span>
-        <div className="Input-upload">
+        <div className="input-upload">
           <input
-            className="Input-upload__item"
+            className="input-upload__item"
             size="large"
             ref={imageLinkInput}
             placeholder={intl.formatMessage({
@@ -101,7 +101,7 @@ const ImageSetter = ({
               defaultMessage: 'Paste image link',
             })}
           />
-          <button className="Input-upload__btn" type="button" onClick={handleOnUploadImageByLink}>
+          <button className="input-upload__btn" type="button" onClick={handleOnUploadImageByLink}>
             <Icon type="upload" />
           </button>
         </div>
