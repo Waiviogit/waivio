@@ -12,14 +12,7 @@ import { objectFields as objectTypes } from '../../common/constants/listOfFields
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
 import './ObjectCardView.less';
 
-const ObjectCardView = ({
-  wObject,
-  ownRatesOnly,
-  showSmallVersion,
-  mobileView,
-  pathNameAvatar,
-  intl,
-}) => {
+const ObjectCardView = ({ wObject, ownRatesOnly, mobileView, pathNameAvatar, intl }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
 
@@ -66,7 +59,7 @@ const ObjectCardView = ({
             <Link to={pathName} title={goToObjTitle(objName)} className="ObjectCardView__avatar">
               {avatarLayout(wObject.avatar)}
             </Link>
-            <div className={`ObjectCardView__info${showSmallVersion ? ' small' : ''}`}>
+            <div className={'ObjectCardView__info'}>
               {parentName && (
                 <Link
                   to={`/object/${wObject.parent.author_permlink}`}
@@ -117,14 +110,12 @@ ObjectCardView.propTypes = {
   wObject: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
   ownRatesOnly: PropTypes.bool,
-  showSmallVersion: PropTypes.bool,
   pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
   mobileView: PropTypes.oneOf(['compact', 'full']),
 };
 
 ObjectCardView.defaultProps = {
   ownRatesOnly: false,
-  showSmallVersion: false,
   pathNameAvatar: '',
   mobileView: 'compact',
 };
