@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { includes, get } from 'lodash';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
 import Avatar from '../components/Avatar';
 
@@ -35,7 +35,7 @@ class UserActionIcon extends React.Component {
           const customActionType = actionJSON[0];
           const customActionDetails = actionJSON[1];
 
-          if (!_.includes(accountHistoryConstants.PARSED_CUSTOM_JSON_IDS, actionDetails.id)) {
+          if (!includes(accountHistoryConstants.PARSED_CUSTOM_JSON_IDS, actionDetails.id)) {
             return 'icon-document';
           }
           if (
@@ -108,7 +108,7 @@ class UserActionIcon extends React.Component {
       case accountHistoryConstants.ACCOUNT_UPDATE:
         return actionDetails.account;
       default:
-        return _.get(actionDetails, 'author', '');
+        return get(actionDetails, 'author', '');
     }
   }
   render() {

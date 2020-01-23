@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { isUndefined } from 'lodash';
 import { FormattedMessage, FormattedRelative } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { Checkbox } from 'antd';
@@ -49,7 +49,7 @@ class DraftRow extends React.Component {
   render() {
     const { id, draft, selected } = this.props;
     const { lastUpdated } = draft;
-    const hasLastUpdated = !_.isUndefined(lastUpdated);
+    const hasLastUpdated = !isUndefined(lastUpdated);
     let { title = '', body = '' } = draft;
     title = title.trim();
     body = body.replace(/\r?\n|\r|[\u200B-\u200D\uFEFF]/g, ' ').substring(0, 50);

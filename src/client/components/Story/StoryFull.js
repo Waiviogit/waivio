@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { isEmpty, isError, has, get, forEach, map, attempt } from 'lodash';
 import classNames from 'classnames';
 import readingTime from 'reading-time';
 import {
@@ -155,19 +155,19 @@ class StoryFull extends React.Component {
 
   renderDtubeEmbedPlayer() {
     const { post } = this.props;
-    const parsedJsonMetaData = _.attempt(JSON.parse, post.json_metadata);
+    const parsedJsonMetaData = attempt(JSON.parse, post.json_metadata);
 
-    if (_.isError(parsedJsonMetaData)) {
+    if (isError(parsedJsonMetaData)) {
       return null;
     }
 
     const video = getFromMetadata(post.json_metadata, 'video');
-    const isDtubeVideo = _.has(video, 'content.videohash') && _.has(video, 'info.snaphash');
+    const isDtubeVideo = has(video, 'content.videohash') && has(video, 'info.snaphash');
 
     if (isDtubeVideo) {
-      const videoTitle = _.get(video, 'info.title', '');
-      const author = _.get(video, 'info.author', '');
-      const permlink = _.get(video, 'info.permlink', '');
+      const videoTitle = get(video, 'info.title', '');
+      const author = get(video, 'info.author', '');
+      const permlink = get(video, 'info.permlink', '');
       const dTubeEmbedUrl = `https://emb.d.tube/#!/${author}/${permlink}/true`;
       const dTubeIFrame = `<iframe width="100%" height="340" src="${dTubeEmbedUrl}" title="${videoTitle}" allowFullScreen></iframe>`;
       const embed = {
@@ -208,7 +208,7 @@ class StoryFull extends React.Component {
     const taggedObjects = [];
     const linkedObjects = [];
 
-    _.forEach(post.wobjects, wobj => {
+    forEach(post.wobjects, wobj => {
       if (wobj.tagged) taggedObjects.push(wobj);
       else linkedObjects.push(wobj);
     });
@@ -468,7 +468,7 @@ class StoryFull extends React.Component {
         )}
 
         <Collapse defaultActiveKey={['1']} accordion>
-          {!_.isEmpty(linkedObjects) && (
+          {!isEmpty(linkedObjects) && (
             <Collapse.Panel
               header={`${intl.formatMessage({
                 id: 'linked_objects',
@@ -476,13 +476,13 @@ class StoryFull extends React.Component {
               })} ${linkedObjects.length}`}
               key="1"
             >
-              {_.map(linkedObjects, obj => {
+              {map(linkedObjects, obj => {
                 const wobj = getClientWObj(obj, usedLocale);
                 return <ObjectCardView key={`${wobj.id}`} wObject={wobj} />;
               })}
             </Collapse.Panel>
           )}
-          {!_.isEmpty(taggedObjects) && (
+          {!isEmpty(taggedObjects) && (
             <Collapse.Panel
               header={`${intl.formatMessage({
                 id: 'objects_related_by_tags',
@@ -490,7 +490,7 @@ class StoryFull extends React.Component {
               })} ${taggedObjects.length}`}
               key="2"
             >
-              {_.map(taggedObjects, obj => {
+              {map(taggedObjects, obj => {
                 const wobj = getClientWObj(obj, usedLocale);
                 return <ObjectCardView key={`${wobj.id}`} wObject={wobj} />;
               })}

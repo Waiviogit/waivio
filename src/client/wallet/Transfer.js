@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import _ from 'lodash';
+import { get, isNull } from 'lodash';
 import { Form, Input, Modal, Radio } from 'antd';
 import { SBD, STEEM } from '../../common/constants/cryptos';
 import steemAPI from '../steemAPI';
@@ -96,14 +96,14 @@ export default class Transfer extends React.Component {
 
   componentDidMount() {
     const { cryptosPriceHistory } = this.props;
-    const currentSteemRate = _.get(cryptosPriceHistory, 'STEEM.priceDetails.currentUSDPrice', null);
-    const currentSBDRate = _.get(cryptosPriceHistory, 'SBD.priceDetails.currentUSDPrice', null);
+    const currentSteemRate = get(cryptosPriceHistory, 'STEEM.priceDetails.currentUSDPrice', null);
+    const currentSBDRate = get(cryptosPriceHistory, 'SBD.priceDetails.currentUSDPrice', null);
 
-    if (_.isNull(currentSteemRate)) {
+    if (isNull(currentSteemRate)) {
       this.props.getCryptoPriceHistory(STEEM.symbol);
     }
 
-    if (_.isNull(currentSBDRate)) {
+    if (isNull(currentSBDRate)) {
       this.props.getCryptoPriceHistory(SBD.symbol);
     }
   }
@@ -126,11 +126,11 @@ export default class Transfer extends React.Component {
   getUSDValue() {
     const { cryptosPriceHistory, intl } = this.props;
     const { currency, oldAmount } = this.state;
-    const currentSteemRate = _.get(cryptosPriceHistory, 'STEEM.priceDetails.currentUSDPrice', null);
-    const currentSBDRate = _.get(cryptosPriceHistory, 'SBD.priceDetails.currentUSDPrice', null);
-    const steemRateLoading = _.isNull(currentSteemRate) || _.isNull(currentSBDRate);
+    const currentSteemRate = get(cryptosPriceHistory, 'STEEM.priceDetails.currentUSDPrice', null);
+    const currentSBDRate = get(cryptosPriceHistory, 'SBD.priceDetails.currentUSDPrice', null);
+    const steemRateLoading = isNull(currentSteemRate) || isNull(currentSBDRate);
     const parsedAmount = parseFloat(oldAmount);
-    const invalidAmount = parsedAmount <= 0 || _.isNaN(parsedAmount);
+    const invalidAmount = parsedAmount <= 0 || isNaN(parsedAmount);
     let amount = 0;
 
     if (steemRateLoading || invalidAmount) return '';

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { get } from 'lodash';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { Modal } from 'antd';
@@ -52,7 +52,7 @@ class PostModal extends React.Component {
   componentDidMount() {
     if (typeof document !== 'undefined') {
       const modalContents = document.getElementsByClassName('ant-modal-wrap');
-      const modalContentElement = _.get(modalContents, 0);
+      const modalContentElement = get(modalContents, 0);
       if (modalContentElement) {
         modalContentElement.scrollTop = 0;
       }
@@ -101,7 +101,7 @@ class PostModal extends React.Component {
     const twitterText = `"${encodeURIComponent(title)}" by @${root_author}`;
     const twitterShareURL = getTwitterShareURL(twitterText, postURL);
     const facebookShareURL = getFacebookShareURL(postURL);
-    const signature = _.get(authorDetails, 'json_metadata.profile.signature', null);
+    const signature = get(authorDetails, 'json_metadata.profile.signature', null);
 
     return (
       <Modal

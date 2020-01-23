@@ -1,10 +1,10 @@
-import _ from 'lodash';
+import { isError, get, attempt, size, unescape } from 'lodash';
 
 export function getFromMetadata(jsonMetadata, key) {
-  const metadata = _.attempt(JSON.parse, jsonMetadata);
-  if (_.isError(metadata)) return null;
+  const metadata = attempt(JSON.parse, jsonMetadata);
+  if (isError(metadata)) return null;
 
-  return _.get(metadata, key);
+  return get(metadata, key);
 }
 
 const attrs = /(\w+=".*?")/g;
@@ -31,9 +31,9 @@ export function extractImageTags(body) {
     return attributes.reduce((a, b) => {
       const values = b.match(attrElements);
 
-      if (_.size(values) === 3) {
-        const key = _.get(values, 1);
-        const value = _.get(values, 2);
+      if (size(values) === 3) {
+        const key = get(values, 1);
+        const value = get(values, 2);
         return {
           ...a,
           [key]: value,
@@ -46,7 +46,7 @@ export function extractImageTags(body) {
 }
 
 export function extractLinks(body) {
-  return extract(body, hrefRegex).map(_.unescape);
+  return extract(body, hrefRegex).map(unescape);
 }
 
 export default null;

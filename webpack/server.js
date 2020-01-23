@@ -55,7 +55,6 @@ module.exports = function createConfig(env = 'dev') {
     },
     plugins: [
       DEFINE_PLUGIN,
-      new UnusedFilesWebpackPlugin(),
       new webpack.NormalModuleReplacementPlugin(MATCH_CSS_LESS, 'identity-obj-proxy'),
       new webpack.optimize.LimitChunkCountPlugin({
         maxChunks: 1,
@@ -76,6 +75,7 @@ module.exports = function createConfig(env = 'dev') {
       ...config.plugins,
       new webpack.HotModuleReplacementPlugin(),
       new webpack.WatchIgnorePlugin([paths.assets]),
+      new UnusedFilesWebpackPlugin(),
       new HardSourceWebpackPlugin(),
       new StartServerPlugin({
         name: 'server.js',
