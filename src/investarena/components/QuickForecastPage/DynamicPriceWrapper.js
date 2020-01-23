@@ -1,15 +1,12 @@
 import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-
 import USDDisplay from '../../../client/components/Utils/USDDisplay';
+import DynamicPrice from './DynamicPrice';
 
-const DynamicPrice = ({ postPrice, quotes, secur, closedPrice, intl }) => {
-  const price = quotes[secur] && quotes[secur].bidPrice;
-  const activePrice = closedPrice || price;
-  const rise = postPrice < activePrice;
+const DynamicPriceWrapper = ({ postPrice, secur, closedPrice, intl }) => {
+  const rise = postPrice < closedPrice;
   const priceClassList = classNames('ForecastCard__price', {
     'ForecastCard__price--fall': !rise,
     'ForecastCard__price--rise': rise,
@@ -29,28 +26,27 @@ const DynamicPrice = ({ postPrice, quotes, secur, closedPrice, intl }) => {
             })}
       </div>
       <div className={priceClassList}>
-        <USDDisplay value={+activePrice} />
+        {closedPrice ? (
+          <USDDisplay value={+closedPrice} />
+        ) : (
+          <DynamicPrice postPrice={postPrice} security={secur} />
+        )}
       </div>
     </div>
   );
 };
 
-DynamicPrice.propTypes = {
+DynamicPriceWrapper.propTypes = {
   postPrice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-  quotes: PropTypes.shape({}).isRequired,
   secur: PropTypes.string.isRequired,
-  closedPrice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]) ,
+  closedPrice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   intl: PropTypes.shape({
     formatMessage: PropTypes.func.isRequired,
   }).isRequired,
 };
 
-DynamicPrice.defaultProps = {
+DynamicPriceWrapper.defaultProps = {
   closedPrice: 0,
 };
 
-const mapStateToProps = state => ({
-  quotes: state.quotes,
-});
-
-export default injectIntl(connect(mapStateToProps)(DynamicPrice));
+export default injectIntl(DynamicPriceWrapper);
