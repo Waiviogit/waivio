@@ -43,7 +43,7 @@ export default class Slider extends React.Component {
     }
   }
 
-  getCurrentValue = () => this.props.voteWorth;
+  getCurrentValue = () => this.props.voteWorth || 0;
 
   handleChange = value => {
     this.setState({ value }, () => {

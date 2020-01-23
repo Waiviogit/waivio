@@ -101,7 +101,7 @@ module.exports = function createConfig(env = 'dev') {
       new HardSourceWebpackPlugin(),
       new TerserPlugin({
         cache: true,
-        parallel: 2,
+        parallel: 4,
       }),
     ];
     config.resolve = {

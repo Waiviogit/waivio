@@ -4,6 +4,7 @@ import { jsonParse } from '../helpers/formatter';
 import { createPostMetadata } from '../helpers/postHelpers';
 import { createAsyncActionType, getPostKey } from '../helpers/stateHelpers';
 import { findRoot } from '../helpers/commentHelpers';
+import * as ApiClient from '../../waivioApi/ApiClient';
 
 export const GET_SINGLE_COMMENT = createAsyncActionType('@comments/GET_SINGLE_COMMENT');
 
@@ -22,14 +23,11 @@ export const LIKE_COMMENT_START = '@comments/LIKE_COMMENT_START';
 export const LIKE_COMMENT_SUCCESS = '@comments/LIKE_COMMENT_SUCCESS';
 export const LIKE_COMMENT_ERROR = '@comments/LIKE_COMMENT_ERROR';
 
-export const getSingleComment = (author, permlink, focus = false) => (
-  dispatch,
-  getState,
-  { steemAPI },
-) =>
+export const getSingleComment = (author, permlink, focus = false) => dispatch =>
   dispatch({
     type: GET_SINGLE_COMMENT.ACTION,
-    payload: steemAPI.sendAsync('get_content', [author, permlink]),
+    payload: ApiClient.getContent(author, permlink).then(data => data),
+    // payload: steemAPI.sendAsync('get_content', [author, permlink]),
     meta: { focus },
   });
 
@@ -95,7 +93,7 @@ const getCommentsChildrenLists = apiRes => {
  * @param originalAuthor is bot name of append object comment
  * preventing loading icon to be dispalyed
  */
-export const getComments = (postId, originalAuthor) => (dispatch, getState, { steemAPI }) => {
+export const getComments = postId => (dispatch, getState) => {
   const { posts, comments } = getState();
 
   const content = posts.list[postId] || comments.comments[postId];
@@ -106,14 +104,13 @@ export const getComments = (postId, originalAuthor) => (dispatch, getState, { st
   dispatch({
     type: GET_COMMENTS,
     payload: {
-      promise: steemAPI
-        // eslint-disable-next-line camelcase
-        .sendAsync('get_state', [`/${category}/@${originalAuthor || root_author}/${permlink}`])
-        .then(apiRes => ({
+      promise: ApiClient.getPostCommentsFromApi({ category, root_author, permlink }).then(
+        apiRes => ({
           rootCommentsList: getRootCommentsList(apiRes),
           commentsChildrenList: getCommentsChildrenLists(apiRes),
           content: apiRes.content,
-        })),
+        }),
+      ),
     },
     meta: {
       id: postId,
@@ -126,7 +123,7 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
   getState,
   { steemConnectAPI },
 ) => {
-  const { category, id, permlink: parentPermlink, author: parentAuthor } = parentPost;
+  const { category, id, permlink: parentPermlink, root_author: parentAuthor } = parentPost;
   const { auth, comments } = getState();
 
   if (!auth.isAuthenticated) {
@@ -224,7 +221,7 @@ export const likeComment = (commentId, weight = 10000, vote = 'like', retryCount
     type: LIKE_COMMENT,
     payload: {
       promise: steemConnectAPI.vote(voter, author, permlink, weight).then(res => {
-        dispatch(getSingleComment(author, permlink));
+        setTimeout(() => dispatch(getSingleComment(author, permlink)), auth.isGuestUser ? 2000 : 0);
         return res;
       }),
     },

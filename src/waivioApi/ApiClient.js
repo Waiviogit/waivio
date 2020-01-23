@@ -904,6 +904,32 @@ export const sendGuestTransfer = async ({ to, amount, memo }) => {
     .catch(err => err);
 };
 
+export const getUserCommentsFromApi = (username, skip = 0, limit = 10, start_permlink) => {
+  let res;
+  if (start_permlink) {
+    res = fetch(
+      `${config.apiPrefix}${config.user}/${username}${config.comments}?skip=${skip}&limit=${limit}&start_permlink=${start_permlink}`,
+    );
+  } else {
+    res = fetch(
+      `${config.apiPrefix}${config.user}/${username}${config.comments}?skip=${skip}&limit=${limit}`,
+    );
+  }
+  return res
+    .then(res => res.json())
+    .then(data => data)
+    .catch(err => err);
+};
+
+export const getPostCommentsFromApi = ({ category, root_author, permlink }) => {
+  return fetch(
+    `${config.apiPrefix}${config.postComments}?author=${root_author}&permlink=${permlink}&category=${category}`,
+  )
+    .then(res => res.json())
+    .then(data => data)
+    .catch(err => err);
+};
+
 // injected as extra argument in Redux Thunk
 export const waivioAPI = {
   getAuthenticatedUserMetadata,

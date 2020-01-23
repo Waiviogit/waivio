@@ -68,6 +68,9 @@ module.exports = function createConfig(env = 'dev') {
       //   cache: true,
       // }),
     ],
+    optimization: {
+      minimizer: [new TerserPlugin()],
+    },
   });
 
   if (IS_DEV) {
@@ -82,7 +85,7 @@ module.exports = function createConfig(env = 'dev') {
       }),
       new TerserPlugin({
         cache: true,
-        parallel: 2,
+        parallel: 4,
       }),
     ];
     config.resolve = {

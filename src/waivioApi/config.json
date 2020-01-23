@@ -72,5 +72,7 @@
   "wobjectsExpertise": "/object_expertise",
   "wobjectsWithUserWeight": "/objects_shares",
   "hasSocialAccount": "/has_social_account",
-  "followingUsers": "/following_users"
+  "followingUsers": "/following_users",
+  "comments": "/comments",
+  "postComments": "/post_comments"
 }
