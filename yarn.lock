@@ -328,10 +328,10 @@
     term-img "^2.1.0"
     urijs "1.19.1"
 
-"@heroku-cli/plugin-apps@^7.36.3":
-  version "7.36.3"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps/-/plugin-apps-7.36.3.tgz#c6001c8ac3dd0edd9ba52f0bb95b0fe8283ef2fd"
-  integrity sha512-T5ylV9ykRBz5w/Ve2X42CwXgh7p+LClnxi4o0mMDDYaox+xQ9fUuZhaDd3rBDVF6cuYT0MaTSAj/5xbamT6pvw==
+"@heroku-cli/plugin-apps@^7.35.0":
+  version "7.35.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-apps/-/plugin-apps-7.35.0.tgz#66e12d76b60ae612968f8cc3aacf76171713c629"
+  integrity sha512-Rvk+RhfCRsKTlw1cv7cydH/02H6jQys/xtyYoMQ0jDqOku8ZEGcXRo9icp1Xq2Jr3TbChB+uDh/zAE1REMKYTg==
   dependencies:
     "@heroku-cli/color" "^1.1.14"
     "@heroku-cli/command" "^8.2.14"
@@ -343,10 +343,10 @@
     tslib "^1"
     urijs "^1.19.1"
 
-"@heroku-cli/plugin-auth@^7.36.1":
-  version "7.36.1"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-auth/-/plugin-auth-7.36.1.tgz#d3172099c03343b1354797ef88f2d425f531c85e"
-  integrity sha512-sL6hZArZFUE4zvT53ytOkboV2a7pBoEGVAT511Za8eyo+zJQF3UvaqGjR0YbI86b26aVC+37FCTqzy2Js/P7DA==
+"@heroku-cli/plugin-auth@^7.24.0":
+  version "7.24.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-auth/-/plugin-auth-7.24.0.tgz#209b6808d39067122e958323d9042464059e674d"
+  integrity sha512-8vd5rPZ0A2UvGgRJR6BWaFlF0/Xs+MSDsP5AuMShC35c1YZhQ0i+nOxmxDTJZv8yU61wrmGTnrGaybbSYKQ3ww==
   dependencies:
     "@heroku-cli/color" "^1.1.14"
     "@heroku-cli/command" "^8.2.11"
@@ -355,10 +355,10 @@
     cli-ux "^4.9.3"
     date-fns "^2.0.0-alpha.8"
 
-"@heroku-cli/plugin-autocomplete@^7.36.0":
-  version "7.36.0"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-autocomplete/-/plugin-autocomplete-7.36.0.tgz#be63e715d6e70bd11da0a21cd6369801f5e2927a"
-  integrity sha512-9yUDfG6i4TCT8bnzbaIx5DR/RYaGo/wxgIIxclOdd7LIq+twJJCDxQI0hirFovNZScQSVn3O3Xrl+Co23kL1yw==
+"@heroku-cli/plugin-autocomplete@^7.27.0":
+  version "7.27.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-autocomplete/-/plugin-autocomplete-7.27.0.tgz#6c71b0b125ab20ab13297a2fc60a0659c7d6cf18"
+  integrity sha512-6FQ/GvZpAivrJwS2d2F15mSc6zqRPRihwfPTQbyDYvuMDzNMOZFUZ/1fjJULoUR2RgHV42BXFOpHjy/L/TAzNg==
   dependencies:
     "@heroku-cli/command" "^8.2.10"
     "@oclif/command" "^1.5.11"
@@ -453,10 +453,10 @@
     validator "^10.11.0"
     ws "^6.2.1"
 
-"@heroku-cli/plugin-config@^7.36.1":
-  version "7.36.1"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-config/-/plugin-config-7.36.1.tgz#7be60de8a9f8ac7d166901e24ebbdd38e2d0d60a"
-  integrity sha512-UKHMp1W2dmgm/v7y7xGNbtKSs38zVzo73z2npyrqFHIQJLJzIvhiWxh85QigAsCi/hwkaOVEM7khuUrHcGPzVQ==
+"@heroku-cli/plugin-config@^7.31.0":
+  version "7.31.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-config/-/plugin-config-7.31.0.tgz#b03c87861833c545a1a3e32e7645fc937521d08f"
+  integrity sha512-5fvmxJr0+7XJNrdeFccy49MNjRmI6KDVOZLIb0ewbUIXCCv3eNJATTyM9Z6lAPVii25TY0ve/80UOWLGvN2bWA==
   dependencies:
     "@heroku-cli/color" "^1.1.14"
     "@heroku-cli/command" "^8.2.10"
@@ -489,10 +489,10 @@
     cli-ux "^4.9.3"
     debug "4.1.1"
 
-"@heroku-cli/plugin-local@^7.36.0":
-  version "7.36.0"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-local/-/plugin-local-7.36.0.tgz#4c456c6e85aef01dbee1f581a339be599a2fed54"
-  integrity sha512-jh/TvdIWd+EL97yEHR4ngY9QWArKDf1twgPkluUijiUwdXglaL6mb6Kp7PDgARucSmRWLYsfWUajOCIleV9Sxw==
+"@heroku-cli/plugin-local@^7.34.0":
+  version "7.34.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-local/-/plugin-local-7.34.0.tgz#526a61260b484ce8c360d9a06db133e353210b22"
+  integrity sha512-ccco13JyUxgUdohrBgrnvyvgzAau27c0X9eCJmr20gTZuSxW/4DTuPk/i5ueYY/KjV/ODBJ4JweIFThzRnDULw==
   dependencies:
     "@heroku-cli/command" "^8.2.11"
     "@oclif/command" "^1"
@@ -522,10 +522,10 @@
     lodash "^4.17.11"
     lodash.flatten "^4.4.0"
 
-"@heroku-cli/plugin-pg-v5@^7.36.0":
-  version "7.36.0"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pg-v5/-/plugin-pg-v5-7.36.0.tgz#e1373e125cd366909cffc465dfec4848efe2f800"
-  integrity sha512-S2M5D8x4Y+7kmSZMZUxvBF0QMt9IqtOvq9yYn1oWiCGXTrxMICULVKc58CyWjMWlZxmIzgFjgNawOU1yFhGl6A==
+"@heroku-cli/plugin-pg-v5@^7.34.0":
+  version "7.34.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-pg-v5/-/plugin-pg-v5-7.34.0.tgz#3d50c7a7617eeba50a8ee5c39d9af650f1149aea"
+  integrity sha512-X4sRgNrkuUkSuKLBP1up2U/BvIuu202mFz0RY2grQqsJOcc3gbDp8ExfeP+xMwaX06fNb0XFr2enUkB4nwiNQg==
   dependencies:
     "@heroku-cli/plugin-addons" "^1.2.29"
     bytes "^3.1.0"
@@ -569,10 +569,10 @@
     heroku-exec-util "0.7.5"
     lodash "^4.17.13"
 
-"@heroku-cli/plugin-ps@^7.36.1":
-  version "7.36.1"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ps/-/plugin-ps-7.36.1.tgz#7364ff1316f4a10af252fbe72592745ce2876009"
-  integrity sha512-yHyY0EZ6dU2vj5stezL/UOHoW72vN1s28FSgKiEZXuQt+EGAHUKhmGzeZF+RPS4SDHcVTCj8QBWar89Vg0A49g==
+"@heroku-cli/plugin-ps@^7.30.0":
+  version "7.30.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-ps/-/plugin-ps-7.30.0.tgz#8270d94a02b21831b6cfa60bcf90cc74eeb7c6a4"
+  integrity sha512-2UB7x7LmtLqkzA+V6rDXpKDg25j6b3CI/ahgtWaAv3j60hBL3cBMHK/uYjWNyQJrwfTJOgsbiW1atq70mSCHrA==
   dependencies:
     "@heroku-cli/color" "^1.1.14"
     "@heroku-cli/command" "^8.2.10"
@@ -630,10 +630,10 @@
     date-fns "^1.29.0"
     http-call "^5.2.3"
 
-"@heroku-cli/plugin-webhooks@^7.36.1":
-  version "7.36.1"
-  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-webhooks/-/plugin-webhooks-7.36.1.tgz#771221ef2edeb97219c1464e8050148bd5747557"
-  integrity sha512-0z8RpbLGq86dOySugVorysR7K4s4YP1ilYw1rOpkganZqGJl5lClPUOMnkTu0utKZGOEOfVgTl+K18Uf1IW4tw==
+"@heroku-cli/plugin-webhooks@^7.34.0":
+  version "7.34.0"
+  resolved "https://registry.yarnpkg.com/@heroku-cli/plugin-webhooks/-/plugin-webhooks-7.34.0.tgz#8b2da94cdc11b1d1f7928fa5575a23133ac99922"
+  integrity sha512-mFuJS7UZfpAGo6m0eg9h+4h4548pPc7g2bQolHWs4irqPy17w6HwevDZBKkGtPK/6sFNbsIqZtD71bWb9Pu8jg==
   dependencies:
     "@heroku-cli/color" "^1.1.14"
     "@heroku-cli/command" "^8.2.11"
@@ -972,9 +972,9 @@
     "@types/react" "*"
 
 "@types/react@*":
-  version "16.9.18"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.18.tgz#7dfb420a780e3740d43563506009834a86ae2af0"
-  integrity sha512-MvjiKX/kUE8o49ipppg49RDZ97p4XfW1WWksp/UlTUSJpisyhzd62pZAMXxAscFLoxfYOflkGANAnGkSeHTFQg==
+  version "16.9.17"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.17.tgz#58f0cc0e9ec2425d1441dd7b623421a867aa253e"
+  integrity sha512-UP27In4fp4sWF5JgyV6pwVPAQM83Fj76JOcg02X5BZcpSu5Wx+fP9RMqc2v0ssBoQIFvD5JdKY41gjJJKmw6Bg==
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
@@ -2755,13 +2755,13 @@ browserslist@^3.2.6:
     electron-to-chromium "^1.3.47"
 
 browserslist@^4.8.3:
-  version "4.8.5"
-  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.8.5.tgz#691af4e327ac877b25e7a3f7ee869c4ef36cdea3"
-  integrity sha512-4LMHuicxkabIB+n9874jZX/az1IaZ5a+EUuvD7KFOu9x/Bd5YHyO0DIz2ls/Kl8g0ItS4X/ilEgf4T1Br0lgSg==
+  version "4.8.3"
+  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.8.3.tgz#65802fcd77177c878e015f0e3189f2c4f627ba44"
+  integrity sha512-iU43cMMknxG1ClEZ2MDKeonKE1CCrFVkQK2AqO2YWFmvIrx4JWrvQ4w4hQez6EpVI8rHTtqh/ruHHDHSOKxvUg==
   dependencies:
-    caniuse-lite "^1.0.30001022"
-    electron-to-chromium "^1.3.338"
-    node-releases "^1.1.46"
+    caniuse-lite "^1.0.30001017"
+    electron-to-chromium "^1.3.322"
+    node-releases "^1.1.44"
 
 bs58@^4.0.0:
   version "4.0.1"
@@ -3011,14 +3011,14 @@ caniuse-api@^1.5.2:
     lodash.uniq "^4.5.0"
 
 caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639:
-  version "1.0.30001022"
-  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30001022.tgz#a7721c26a4af4d8420680079dcd27754be84daf6"
-  integrity sha512-2RQQgO+yDEaqF4ltwrCja7oZst+FVnXHQLSJgZ678tausEljBq3/U20Fedvze+Hxqm8XLV+9OgGbtdgS7ksnRw==
+  version "1.0.30001021"
+  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30001021.tgz#ee4ad516fb2530abd90d2b32e986b172808672e5"
+  integrity sha512-FNfovmJx9ssO2hpvdN7D9daRAZHZ80gDV2KQRC0+icpm7QjyWm6Ea2TUEAk0rpNrRQYMeRbVOVsWwq9CE7V2zw==
 
-caniuse-lite@^1.0.30000792, caniuse-lite@^1.0.30000805, caniuse-lite@^1.0.30000844, caniuse-lite@^1.0.30001020, caniuse-lite@^1.0.30001022:
-  version "1.0.30001022"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001022.tgz#9eeffe580c3a8f110b7b1742dcf06a395885e4c6"
-  integrity sha512-FjwPPtt/I07KyLPkBQ0g7/XuZg6oUkYBVnPHNj3VHJbOjmmJ/GdSo/GUY6MwINEQvjhP6WZVbX8Tvms8xh0D5A==
+caniuse-lite@^1.0.30000792, caniuse-lite@^1.0.30000805, caniuse-lite@^1.0.30000844, caniuse-lite@^1.0.30001017, caniuse-lite@^1.0.30001020:
+  version "1.0.30001021"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001021.tgz#e75ed1ef6dbadd580ac7e7720bb16f07b083f254"
+  integrity sha512-wuMhT7/hwkgd8gldgp2jcrUjOU9RXJ4XxGumQeOsUr91l3WwmM68Cpa/ymCnWEDqakwFXhuDQbaKNHXBPgeE9g==
 
 capture-exit@^1.2.0:
   version "1.2.0"
@@ -3265,9 +3265,9 @@ cli-ux@4.9.3, cli-ux@^4.9.0, cli-ux@^4.9.1, cli-ux@^4.9.3:
     tslib "^1.9.3"
 
 cli-ux@^5.2.1, cli-ux@^5.3.2:
-  version "5.4.2"
-  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-5.4.2.tgz#ac3187db44ccfae85681adba3aa4e426d0b2eff4"
-  integrity sha512-DdebO9mCNjY0+rtzucZ3GcAaW5iI/2DFFSUU/R9Dx5ubnOa8gFb2+4gh7NqZCL/jL0zZgW7UFcKvYADi0WHI1Q==
+  version "5.4.1"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-5.4.1.tgz#d0eb2509923acd43989e11a9297de515adde9079"
+  integrity sha512-x5CJXJPKBrEo6o8Uy/Upajb9OWYMhTzOpRvKZyZ68kkHysiGd9phGP71WyHZfLUkhwdvpNUFkY2tsDr0ogyocg==
   dependencies:
     "@oclif/command" "^1.5.1"
     "@oclif/errors" "^1.2.1"
@@ -4742,10 +4742,10 @@ ejs@^2.5.7:
   resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.7.4.tgz#48661287573dcc53e366c7a1ae52c3a120eec9ba"
   integrity sha512-7vmuyh5+kuUyJKePhQfRQBhXV5Ce+RnaeeQArKu1EAMpL3WbgMt5WG6uQZpEVvYSSsxMXRKOewtDk9RaTKXRlA==
 
-electron-to-chromium@^1.2.7, electron-to-chromium@^1.3.30, electron-to-chromium@^1.3.338, electron-to-chromium@^1.3.47:
-  version "1.3.339"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.339.tgz#ff7b56c4bc58159f0d6623591116e4414e7a618b"
-  integrity sha512-C1i/vH6/kQx9YV8RddMkmW216GwW4pTrnYIlKmDFIqXA4fPwqDxIdGyHsuG+fgurHoljRz7/oaD+tztcryW/9g==
+electron-to-chromium@^1.2.7, electron-to-chromium@^1.3.30, electron-to-chromium@^1.3.322, electron-to-chromium@^1.3.47:
+  version "1.3.338"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.338.tgz#4f33745aed599dfa0fd7b388bf754c164e915168"
+  integrity sha512-wlmfixuHEc9CkfOKgcqdtzBmRW4NStM9ptl5oPILY2UDyHuSXb3Yit+yLVyLObTgGuMMU36hhnfs2GDJId7ctA==
 
 elliptic@^6.0.0:
   version "6.5.2"
@@ -4950,9 +4950,9 @@ error-stack-parser@^1.3.6:
     stackframe "^0.3.1"
 
 es-abstract@^1.13.0, es-abstract@^1.17.0, es-abstract@^1.17.0-next.1:
-  version "1.17.4"
-  resolved "https://registry.yarnpkg.com/es-abstract/-/es-abstract-1.17.4.tgz#e3aedf19706b20e7c2594c35fc0d57605a79e184"
-  integrity sha512-Ae3um/gb8F0mui/jPL+QiqmglkUsaQf7FwBEHYIFkztkneosu9imhqHpBzQ3h1vit8t5iQ74t6PEVvphBZiuiQ==
+  version "1.17.3"
+  resolved "https://registry.yarnpkg.com/es-abstract/-/es-abstract-1.17.3.tgz#d921ff5889a3664921094bb13aaf0dfd11818578"
+  integrity sha512-AwiVPKf3sKGMoWtFw0J7Y4MTZ4Iek67k4COWOwHqS8B9TOZ71DCfcoBmdamy8Y6mj4MDz0+VNUpC2HKHFHA3pg==
   dependencies:
     es-to-primitive "^1.2.1"
     function-bind "^1.1.1"
@@ -6433,37 +6433,37 @@ heroku-exec-util@0.7.5:
     uuid "3.2.1"
 
 heroku@^7.18.3:
-  version "7.36.3"
-  resolved "https://registry.yarnpkg.com/heroku/-/heroku-7.36.3.tgz#e68775e745dce880a4cd24ded9cf0e5a12d13b14"
-  integrity sha512-FBEq5S61j/mChd1rS/ERevetmBsz/Zwmr1hzOEiuD09MIEenK7xkFNWgfH8XyX6svvqaRZcUxqdRHl5yt5eUPQ==
+  version "7.35.1"
+  resolved "https://registry.yarnpkg.com/heroku/-/heroku-7.35.1.tgz#e01ae8ffd3a51552a56fef8bf19df403d86eda14"
+  integrity sha512-Lxm1FmQz1BEBZQjLYgqEEepf/yxkZ/X/FzkEB1vZZTZ5pq+VyRhbBvjxpNW5K6TeGcNJtKXsUdFWrcA77olfwQ==
   dependencies:
     "@heroku-cli/color" "1.1.14"
     "@heroku-cli/command" "^8.2.10"
     "@heroku-cli/plugin-addons-v5" "^7.24.0"
-    "@heroku-cli/plugin-apps" "^7.36.3"
+    "@heroku-cli/plugin-apps" "^7.35.0"
     "@heroku-cli/plugin-apps-v5" "^7.34.0"
-    "@heroku-cli/plugin-auth" "^7.36.1"
-    "@heroku-cli/plugin-autocomplete" "^7.36.0"
+    "@heroku-cli/plugin-auth" "^7.24.0"
+    "@heroku-cli/plugin-autocomplete" "^7.27.0"
     "@heroku-cli/plugin-buildpacks" "^7.34.0"
     "@heroku-cli/plugin-certs" "^7.24.0"
     "@heroku-cli/plugin-certs-v5" "^7.28.0"
     "@heroku-cli/plugin-ci" "^7.34.0"
     "@heroku-cli/plugin-ci-v5" "^7.35.0"
-    "@heroku-cli/plugin-config" "^7.36.1"
+    "@heroku-cli/plugin-config" "^7.31.0"
     "@heroku-cli/plugin-container-registry-v5" "^7.28.0"
     "@heroku-cli/plugin-git" "^7.24.0"
-    "@heroku-cli/plugin-local" "^7.36.0"
+    "@heroku-cli/plugin-local" "^7.34.0"
     "@heroku-cli/plugin-oauth-v5" "^7.24.0"
     "@heroku-cli/plugin-orgs-v5" "^7.26.0"
-    "@heroku-cli/plugin-pg-v5" "^7.36.0"
+    "@heroku-cli/plugin-pg-v5" "^7.34.0"
     "@heroku-cli/plugin-pipelines" "^7.35.0"
-    "@heroku-cli/plugin-ps" "^7.36.1"
+    "@heroku-cli/plugin-ps" "^7.30.0"
     "@heroku-cli/plugin-ps-exec" "2.3.8"
     "@heroku-cli/plugin-redis-v5" "^7.25.0"
     "@heroku-cli/plugin-run-v5" "^7.35.0"
     "@heroku-cli/plugin-spaces" "^7.27.0"
     "@heroku-cli/plugin-status" "^7.24.0"
-    "@heroku-cli/plugin-webhooks" "^7.36.1"
+    "@heroku-cli/plugin-webhooks" "^7.34.0"
     "@oclif/command" "1.5.18"
     "@oclif/config" "1.13.2"
     "@oclif/errors" "1.2.2"
@@ -9159,10 +9159,10 @@ node-pre-gyp@*:
     semver "^5.3.0"
     tar "^4.4.2"
 
-node-releases@^1.1.46:
-  version "1.1.47"
-  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.47.tgz#c59ef739a1fd7ecbd9f0b7cf5b7871e8a8b591e4"
-  integrity sha512-k4xjVPx5FpwBUj0Gw7uvFOTF4Ep8Hok1I6qjwL3pLfwe7Y0REQSAqOwwv9TWBCUtMHxcXfY4PgRLRozcChvTcA==
+node-releases@^1.1.44:
+  version "1.1.46"
+  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.46.tgz#6b262afef1bdc9a950a96df2e77e0d2290f484bf"
+  integrity sha512-YOjdx+Uoh9FbRO7yVYbnbt1puRWPQMemR3SutLeyv2XfxKs1ihpe0OLAUwBPEP2ImNH/PZC7SEiC6j32dwRZ7g==
   dependencies:
     semver "^6.3.0"
 
@@ -11215,9 +11215,9 @@ react-highcharts@^15.0.0:
     highcharts "^6.0.0"
 
 react-hot-loader@^4.12.11:
-  version "4.12.19"
-  resolved "https://registry.yarnpkg.com/react-hot-loader/-/react-hot-loader-4.12.19.tgz#99a1c763352828f404fa51cd887c5e16bb5b74d1"
-  integrity sha512-p8AnA4QE2GtrvkdmqnKrEiijtVlqdTIDCHZOwItkI9kW51bt5XnQ/4Anz8giiWf9kqBpEQwsmnChDCAFBRyR/Q==
+  version "4.12.18"
+  resolved "https://registry.yarnpkg.com/react-hot-loader/-/react-hot-loader-4.12.18.tgz#a9029e34af2690d76208f9a35189d73c2dfea6a7"
+  integrity sha512-qYD0Qi9lIbg9jLyfmodfqvAQqCBsoPKxAhca8Nxvy2/2pO5Q9r2kM28jN0bbbSnhwK8dJ7FjsfVtXKOxMW+bqw==
   dependencies:
     fast-levenshtein "^2.0.6"
     global "^4.3.0"
@@ -11978,9 +11978,9 @@ resolve@1.1.7:
   integrity sha1-IDEU2CrSxe2ejgQRs5ModeiJ6Xs=
 
 resolve@^1.10.0, resolve@^1.12.0, resolve@^1.13.1, resolve@^1.14.2, resolve@^1.3.2:
-  version "1.15.0"
-  resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.15.0.tgz#1b7ca96073ebb52e741ffd799f6b39ea462c67f5"
-  integrity sha512-+hTmAldEGE80U2wJJDC1lebb5jWqvTYAfm3YZ1ckk1gBr0MnCqUKlwK1e+anaFljIl+F5tR5IoZcm4ZDA1zMQw==
+  version "1.14.2"
+  resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.14.2.tgz#dbf31d0fa98b1f29aa5169783b9c290cb865fea2"
+  integrity sha512-EjlOBLBO1kxsUxsKjLt7TAECyKW6fOh1VRkykQkKGzcBbjjPIxBqGh0jf7GJ3k/f5mxMqW3htMD3WdTUVtW8HQ==
   dependencies:
     path-parse "^1.0.6"
 
@@ -13700,9 +13700,9 @@ uglify-es@^3.3.4, uglify-es@^3.3.9:
     source-map "~0.6.1"
 
 uglify-js@^3.1.4, uglify-js@^3.6.0:
-  version "3.7.6"
-  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.7.6.tgz#0783daa867d4bc962a37cc92f67f6e3238c47485"
-  integrity sha512-yYqjArOYSxvqeeiYH2VGjZOqq6SVmhxzaPjJC1W2F9e+bqvFL9QXQ2osQuKUFjM2hGjKG2YclQnRKWQSt/nOTQ==
+  version "3.7.5"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.7.5.tgz#278c7c24927ac5a32d3336fc68fd4ae1177a486a"
+  integrity sha512-GFZ3EXRptKGvb/C1Sq6nO1iI7AGcjyqmIyOw0DrD0675e+NNbGO72xmMM2iEBdFbxaTLo70NbjM/Wy54uZIlsg==
   dependencies:
     commander "~2.20.3"
     source-map "~0.6.1"
