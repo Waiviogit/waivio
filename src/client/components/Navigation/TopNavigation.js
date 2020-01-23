@@ -33,7 +33,7 @@ const TOOLS_URLS = [
   LINKS.TOOLS_SETTINGS,
 ];
 
-const TopNavigation = ({ location: { pathname } }) => {
+const TopNavigation = ({ authenticated, location: { pathname } }) => {
   const isRouteMathed =
     pathname === '/' || Object.values(LINKS).some(url => pathname.includes(url));
   return isRouteMathed ? (
@@ -49,16 +49,16 @@ const TopNavigation = ({ location: { pathname } }) => {
           <FormattedMessage id="feed" defaultMessage="Feed" />
         </Link>
       </li>
-      {/* <li className="TopNavigation__item"> */}
-      {/* <Link */}
-      {/* to={authenticated ? `${LINKS.REWARDS}/active` : `${LINKS.REWARDS}/all`} */}
-      {/* className={classNames('TopNavigation__link', { */}
-      {/* 'TopNavigation__link--active': pathname.includes(LINKS.REWARDS), */}
-      {/* })} */}
-      {/* > */}
-      {/* <FormattedMessage id="rewards" defaultMessage="Rewards" /> */}
-      {/* </Link> */}
-      {/* </li> */}
+      <li className="TopNavigation__item">
+        <Link
+          to={authenticated ? `${LINKS.REWARDS}/active` : `${LINKS.REWARDS}/all`}
+          className={classNames('TopNavigation__link', {
+            'TopNavigation__link--active': pathname.includes(LINKS.REWARDS),
+          })}
+        >
+          <FormattedMessage id="rewards" defaultMessage="Rewards" />
+        </Link>
+      </li>
       <li className="TopNavigation__item">
         <Link
           to={`${LINKS.DISCOVER}/hashtag`}
@@ -95,7 +95,7 @@ const TopNavigation = ({ location: { pathname } }) => {
 };
 
 TopNavigation.propTypes = {
-  // authenticated: PropTypes.bool.isRequired,
+  authenticated: PropTypes.bool.isRequired,
   location: PropTypes.shape(),
 };
 
