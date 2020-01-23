@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
 
-import GraphicCaller from './ChartCaller';
+import ChartCaller from './ChartCaller';
 
 const ChartIcon = props => {
   const [isOpen, setIsModalOpen] = useState(false);
@@ -10,7 +10,7 @@ const ChartIcon = props => {
   return (
     <button className="graphic" onClick={() => setIsModalOpen(true)}>
       <Icon type="bar-chart" />
-      {isOpen && <GraphicCaller id={props.id} isModalOpen={isOpen} setOpen={setIsModalOpen} />}
+      {isOpen && <ChartCaller id={props.id} isModalOpen={isOpen} setOpen={setIsModalOpen} />}
     </button>
   );
 };
