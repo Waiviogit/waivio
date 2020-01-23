@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import { toggleModal } from '../../redux/actions/modalsActions';
 
-const GraphicCaller = ({ quotes, id, quotesSettings, toggleModalCaller, inOpenModal, setOpen }) => {
+const ChartCaller = ({ quotes, id, quotesSettings, toggleModalCaller, isModalOpen, setOpen }) => {
   useEffect(() => {
     toggleModalCaller('openDeals', {
       quote: quotes[id],
@@ -13,7 +13,7 @@ const GraphicCaller = ({ quotes, id, quotesSettings, toggleModalCaller, inOpenMo
       caller: 'od-op',
     });
     setOpen(false);
-  }, [inOpenModal]);
+  }, [isModalOpen]);
 
   return <span />;
 };
@@ -27,12 +27,13 @@ const mapDispatchToProps = {
   toggleModalCaller: toggleModal,
 };
 
-GraphicCaller.propTypes = {
+ChartCaller.propTypes = {
   toggleModalCaller: PropTypes.func.isRequired,
   quotes: PropTypes.shape({}).isRequired,
   quotesSettings: PropTypes.shape({}).isRequired,
   id: PropTypes.string.isRequired,
-  inOpenModal: PropTypes.bool.isRequired,
+  isModalOpen: PropTypes.bool.isRequired,
+  setOpen: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(GraphicCaller);
+export default connect(mapStateToProps, mapDispatchToProps)(ChartCaller);

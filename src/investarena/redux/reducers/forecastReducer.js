@@ -33,7 +33,7 @@ export default (state = initialState, action) => {
     case activeForecastTypes.GET_QUICK_FORECAST_DATA.SUCCESS: {
       const mapperList = action.payload.feed.map(forecast => ({
         ...forecast,
-        isLoading: true,
+        isLoaded: true,
       }));
       return {
         ...state,
@@ -116,7 +116,7 @@ export default (state = initialState, action) => {
             postPrice: action.payload.postPrice,
             quickForecastExpiredAt: action.payload.quickForecastExpiredAt,
             status: 'pending',
-            isLoading: true,
+            isLoaded: true,
           },
           ...state.quickForecastData,
         ],
@@ -128,7 +128,7 @@ export default (state = initialState, action) => {
       const answeredForecast = state.quickForecastData[action.payload.id];
       state.quickForecastData.splice(action.payload.id, 1, {
         ...answeredForecast,
-        isLoading: true,
+        isLoaded: true,
       });
 
       return {
@@ -142,7 +142,7 @@ export default (state = initialState, action) => {
       const answeredForecast = state.quickForecastData[action.payload];
       state.quickForecastData.splice(action.payload, 1, {
         ...answeredForecast,
-        isLoading: false,
+        isLoaded: false,
       });
 
       return {

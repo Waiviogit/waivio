@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import USDDisplay from '../../../client/components/Utils/USDDisplay';
-import DynamicPrice from './DynamycPrice';
+import DynamicPrice from './DynamicPrice';
 
 const DynamicPriceWrapper = ({ postPrice, secur, closedPrice, intl }) => {
   const rise = postPrice < closedPrice;

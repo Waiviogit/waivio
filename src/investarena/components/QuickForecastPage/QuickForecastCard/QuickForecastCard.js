@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 
 import BallotTimer from '../BallotTimer';
 import USDDisplay from '../../../../client/components/Utils/USDDisplay';
-import GraphicIcon from '../GraphicIcon';
+import ChartIcon from '../ChartIcon';
 import DynamicPriceWrapper from '../DynamicPriceWrapper';
 import Loading from '../../../../client/components/Icon/Loading';
 
@@ -147,7 +147,7 @@ const QuickForecastCard = ({
                 )}
               </p>
             </div>
-            {!forecast.isLoading && <Loading />}
+            {!forecast.isLoaded && <Loading />}
             <div className="ballotButton__container">
               <div className="ballotButton__button-container">
                 <button
@@ -175,7 +175,7 @@ const QuickForecastCard = ({
           </React.Fragment>
         )}
       </div>
-      <GraphicIcon id={forecast.security} />
+      <ChartIcon id={forecast.security} />
     </div>
   );
 };
@@ -193,7 +193,7 @@ QuickForecastCard.propTypes = {
     postPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     side: PropTypes.string,
     expiredAt: PropTypes.string,
-    isLoading: PropTypes.bool,
+    isLoaded: PropTypes.bool,
   }).isRequired,
   id: PropTypes.number.isRequired,
   answerForecast: PropTypes.func.isRequired,

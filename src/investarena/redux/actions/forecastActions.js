@@ -129,7 +129,6 @@ export const answerForQuickForecast = (
                       ],
                     ])
                     .then(() => {
-                      setTimeout(() => {
                         message.success(`You still have ${5 - counter - 1} forecasts `);
                         dispatch({
                           type: ANSWER_QUICK_FORECAST,
@@ -140,7 +139,6 @@ export const answerForQuickForecast = (
                             quickForecastExpiredAt: Date.now() + timerData,
                           },
                         });
-                      }, 3000);
                     })
                     .catch(error => {
                       reject(error);
