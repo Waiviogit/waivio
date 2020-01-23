@@ -181,7 +181,7 @@ class EditPost extends Component {
           title: postTitle,
           body: `${postBody}${separator}[${objName}](${getObjectUrl(
             object.id || object.author_permlink,
-          )})`,
+          )})\n`,
         },
       };
     });

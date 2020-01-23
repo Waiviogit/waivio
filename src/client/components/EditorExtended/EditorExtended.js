@@ -91,6 +91,7 @@ class Editor extends React.Component {
       const response = await getObjectsByIds({
         authorPermlinks: objectIds,
         locale: this.props.locale,
+        requiredFields: ['rating'],
       });
       const loadObjects = keyBy(response.wobjects, 'author_permlink');
       const entityMap = {};
