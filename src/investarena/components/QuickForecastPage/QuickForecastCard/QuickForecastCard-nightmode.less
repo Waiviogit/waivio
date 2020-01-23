@@ -1,5 +1,4 @@
 @import (reference) '../../../../client/styles/custom.less';
-//@import (reference) '../../../../client/styles/modules/variables.less';
 
 .nightmode {
   .ForecastCard {
@@ -7,14 +6,12 @@
     background-color: @grey-nero;
     color: @white-smoke;
 
-    &__message {
-      border: 1px solid @green-darker;
-      background-color: @grey-nero;
-      color: @white;
+    &--toLose {
+      border: 1px solid @red;
+    }
 
-      &--toLose {
-        border: 1px solid @red;
-      }
+    &--win {
+      border: 1px solid @green-darker;
     }
 
     &__val {
@@ -47,8 +44,8 @@
 
       &:disabled {
         &:hover {
-          background-color: transparent;
           color: @green-darker;
+          background-color: @grey-nero;
         }
       }
     }
@@ -64,8 +61,8 @@
 
       &:disabled {
         &:hover {
-          background-color: transparent;
           color: @red;
+          background-color: @grey-nero;
         }
       }
     }

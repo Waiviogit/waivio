@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Icon } from 'antd';
+import className from 'classnames';
+
 import { timeForecastRemain } from '../../helpers/diffDateTime';
 
 const BallotTimer = ({ endTimerTime, willCallAfterTimerEnd }) => {
-  const [time, setTime] = useState(timeForecastRemain(endTimerTime, false));
   let interval;
 
+  const [time, setTime] = useState(timeForecastRemain(endTimerTime, false));
+  const timerClassList = className('roundTimer', {
+    'roundTimer--center': endTimerTime < Date.now(),
+  });
   const handleUpdateTimeRemain = () => {
     if (endTimerTime > Date.now()) {
       setTime(timeForecastRemain(endTimerTime, false));
@@ -22,13 +26,7 @@ const BallotTimer = ({ endTimerTime, willCallAfterTimerEnd }) => {
     }
   }, []);
 
-  return (
-    <span>
-      <Icon type="clock-circle" />
-      &#160;
-      {time}
-    </span>
-  );
+  return <span className={timerClassList}>{time}</span>;
 };
 
 BallotTimer.propTypes = {
