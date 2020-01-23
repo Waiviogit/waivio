@@ -7,9 +7,19 @@
   border: 1px solid @blue-hawkesBlue;
   border-radius: 4px;
   background-color: @white;
+  align-items: center;
 
   @media screen and (max-width: 500px) {
     font-size: 35px;
+  }
+}
+
+.roundTimer {
+  width: 170px;
+  text-align: left;
+
+  &--center {
+    text-align: center;
   }
 }
 
@@ -52,14 +62,6 @@
   @media screen and (max-width: 500px) {
     font-size: 35px;
   }
-}
-
-.refresh-button {
-  font-family: @font-family-sans-serif;
-  background-color: transparent;
-  border: none;
-  outline: none;
-  cursor: pointer;
 }
 
 .reward {
