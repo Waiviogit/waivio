@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { bindActionCreators } from 'redux';
 import { Form, Select, Modal, message } from 'antd';
-import uuidv4 from 'uuid/v4';
 import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
 import { getAuthenticatedUserName, getObject, getObjectAlbums } from '../../reducers';
 import { objectFields } from '../../../common/constants/listOfFields';
@@ -14,7 +13,6 @@ import * as appendActions from '../appendActions';
 import { getField, generatePermlink, prepareImageToStore } from '../../helpers/wObjectHelper';
 import AppendFormFooter from '../AppendFormFooter';
 import ImageSetter from '../../components/ImageSetter/ImageSetter';
-import { isValidImage } from '../../helpers/image';
 import './CreateImage.less';
 
 @connect(
@@ -117,83 +115,6 @@ class CreateImage extends React.Component {
     });
   };
 
-  handleImageChange = e => {
-    const { onImageInvalid, onImageUpload } = this.props;
-    if (e.target.files && e.target.files[0]) {
-      if (
-        !isValidImage(e.target.files[0], MAX_IMG_SIZE[objectFields.background], ALLOWED_IMG_FORMATS)
-      ) {
-        onImageInvalid(
-          MAX_IMG_SIZE[objectFields.background],
-          `(${ALLOWED_IMG_FORMATS.join(', ')}) `,
-        );
-        return;
-      }
-
-      this.setState({
-        imageUploading: true,
-      });
-
-      onImageUpload(e.target.files[0], this.disableAndInsertImage, () =>
-        this.setState({
-          imageUploading: false,
-        }),
-      );
-    }
-  };
-
-  checkIsValidImageLink = (image, setImageIsValid) => {
-    const img = new Image();
-    img.src = image.src;
-    img.onload = () => setImageIsValid(image, true);
-    img.onerror = () => setImageIsValid(image, false);
-  };
-
-  checkIsImage = (image, isValidLink) => {
-    const { intl } = this.props;
-    const { currentImages } = this.state;
-    const isSameLink = currentImages.some(currentImage => currentImage.src === image.src);
-    if (isValidLink) {
-      if (!isSameLink) {
-        const images = [...this.state.currentImages, image];
-        this.setState({ currentImages: images });
-      } else
-        message.error(
-          intl.formatMessage({
-            id: 'imageSetter_link_is_already_added',
-            defaultMessage: 'The link you are trying to add is already added',
-          }),
-        );
-    } else {
-      message.error(
-        intl.formatMessage({
-          id: 'imageSetter_invalid_link',
-          defaultMessage: 'The link is invalid',
-        }),
-      );
-    }
-  };
-
-  handleAddImageByLink = image => {
-    this.checkIsValidImageLink(image, this.checkIsImage);
-  };
-
-  disableAndInsertImage = (image, imageName = 'image') => {
-    const newImage = {
-      src: image,
-      name: imageName,
-      id: uuidv4(),
-    };
-    const images = [...this.state.currentImages, newImage];
-    this.setState({ imageUploading: false, currentImages: images });
-  };
-
-  handleRemoveImage = imageId => {
-    this.setState({
-      currentImages: this.state.currentImages.filter(f => f.id !== imageId),
-    });
-  };
-
   handleChange = ({ fileList, file }) => {
     if (!fileList.length) {
       this.props.form.resetFields();
@@ -284,6 +205,12 @@ class CreateImage extends React.Component {
     this.setState({ fileList: [], uploadingList: [] });
   };
 
+  onLoadingImage = value => this.setState({ isLoading: value });
+
+  getImages = image => {
+    this.setState({ currentImages: image });
+  };
+
   render() {
     const { showModal, form, intl, selectedAlbum, albums } = this.props;
     const { fileList, uploadingList, loading } = this.state;
@@ -340,11 +267,8 @@ class CreateImage extends React.Component {
             })(
               <div className="clearfix">
                 <ImageSetter
-                  images={this.state.currentImages}
-                  handleAddImage={this.handleImageChange}
-                  handleAddImageByLink={this.handleAddImageByLink}
-                  onRemoveImage={this.handleRemoveImage}
-                  isLoading={this.state.imageUploading}
+                  getImages={this.getImages}
+                  onLoadingImage={this.onLoadingImage}
                   isMultiple
                 />
                 {/* TODO: Possible will use */}
@@ -385,8 +309,6 @@ CreateImage.propTypes = {
   intl: PropTypes.shape().isRequired,
   form: PropTypes.shape().isRequired,
   selectedAlbum: PropTypes.shape(),
-  onImageUpload: PropTypes.func.isRequired,
-  onImageInvalid: PropTypes.func.isRequired,
   albums: PropTypes.arrayOf(PropTypes.shape()),
   currentUsername: PropTypes.shape(),
   wObject: PropTypes.shape(),
