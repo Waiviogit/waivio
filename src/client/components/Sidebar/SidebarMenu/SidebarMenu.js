@@ -78,10 +78,12 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
         const linkTo = authenticated
           ? sectionItem.linkTo
           : sectionItem.unauthLink || sectionItem.linkTo;
-        const itemName = intl.formatMessage({
-          id: sectionItem.intlId,
-          defaultMessage: sectionItem.name,
-        });
+        const itemName = sectionItem.isUntranslatable
+          ? sectionItem.name
+          : intl.formatMessage({
+              id: sectionItem.intlId,
+              defaultMessage: sectionItem.name,
+            });
         return linkTo ? (
           <li className="collapsible-block__item" key={`sectionItem-${sectionItem.name}`}>
             <NavLink
@@ -95,7 +97,7 @@ const SidebarMenu = ({ intl, menuConfig, loadMore }) => {
                 <span className="sidenav-discover-objects__item-text" title={itemName}>
                   {itemName}
                 </span>
-                {sectionItem.meta ? <span>+{sectionItem.meta}</span> : null}
+                {sectionItem.meta && <span>+{sectionItem.meta}</span>}
               </span>
             </NavLink>
           </li>

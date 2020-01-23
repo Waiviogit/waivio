@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { map } from 'lodash';
 import { LOCATION_CHANGE } from 'connected-react-router';
 import * as appTypes from './appActions';
 import * as postActions from '../post/postActions';
@@ -103,8 +103,8 @@ export default (state = initialState, action) => {
       };
     case appTypes.GET_CRYPTO_PRICE_HISTORY.SUCCESS: {
       const { symbol, usdPriceHistory, btcPriceHistory } = action.payload;
-      const usdPriceHistoryByClose = _.map(usdPriceHistory.Data, data => data.close);
-      const btcPriceHistoryByClose = _.map(btcPriceHistory.Data, data => data.close);
+      const usdPriceHistoryByClose = map(usdPriceHistory.Data, data => data.close);
+      const btcPriceHistoryByClose = map(btcPriceHistory.Data, data => data.close);
       const priceDetails = getCryptoPriceIncreaseDetails(
         usdPriceHistoryByClose,
         btcPriceHistoryByClose,

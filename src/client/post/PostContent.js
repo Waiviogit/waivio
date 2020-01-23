@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import _ from 'lodash';
+import { find, truncate } from 'lodash';
 import { Helmet } from 'react-helmet';
 import sanitize from 'sanitize-html';
 import { dropCategory, isBannedPost } from '../helpers/postHelpers';
@@ -180,11 +180,7 @@ class PostContent extends React.Component {
     const waivioHost = appUrl || 'https://waivio.com';
     const canonicalHost = waivioHost;
 
-    // if (postMetaData && _.indexOf(postMetaData.app, 'steemit') === 0) {
-    //   canonicalHost = 'https://steemit.com';
-    // }
-
-    const userVote = _.find(content.active_votes, { voter: user.name }) || {};
+    const userVote = find(content.active_votes, { voter: user.name }) || {};
 
     const postState = {
       isReblogged: reblogList.includes(content.id),
@@ -211,7 +207,7 @@ class PostContent extends React.Component {
     const postMetaImage = postMetaData && postMetaData.image && postMetaData.image[0];
     const htmlBody = getHtml(body, {}, 'text');
     const bodyText = sanitize(htmlBody, { allowedTags: [] });
-    const desc = `${_.truncate(bodyText, { length: 143 })} by ${author}`;
+    const desc = `${truncate(bodyText, { length: 143 })} by ${author}`;
     const image = postMetaImage || getAvatarURL(author) || '/images/logo.png';
     const canonicalUrl = `${canonicalHost}${dropCategory(content.url)}`;
     const url = `${waivioHost}${dropCategory(content.url)}`;

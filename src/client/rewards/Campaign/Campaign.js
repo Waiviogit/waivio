@@ -23,7 +23,9 @@ const Campaign = ({ proposition, filterKey, history, intl }) => {
         ? `${(currentUSDPrice * proposition.max_reward).toFixed(2)} USD`
         : `${proposition.max_reward} STEEM`
       : '';
-  const goToProducts = () => history.push(`/rewards/${filterKey}/${requiredObject.id}`);
+  const goToProducts = () => {
+    history.push(`/rewards/${filterKey}/${requiredObject.id}`);
+  };
   return (
     <div className="Campaign">
       <ObjectCardView wObject={requiredObject} key={requiredObject.id} />

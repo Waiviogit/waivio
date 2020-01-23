@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import _ from 'lodash';
+import { map, uniq } from 'lodash';
 import { FormattedRelative } from 'react-intl';
 import Avatar from '../components/Avatar';
 import BodyShort from '../components/Story/BodyShort';
@@ -36,7 +36,7 @@ const SearchResultPostPreview = ({ author, summary, created, permlink, title, ta
           </Link>
         </div>
         <div className="Search__post__tags">
-          {_.map(_.uniq(tags), tag => (
+          {map(uniq(tags), tag => (
             <span key={tag} className="Search__post__tags__container">
               <Topic name={tag} />
             </span>

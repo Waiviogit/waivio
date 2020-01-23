@@ -1,5 +1,5 @@
 import React from 'react';
-import _, { map } from 'lodash';
+import { map, isEmpty, get, has, filter } from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -52,7 +52,7 @@ class CreateTag extends React.Component {
 
   async componentDidMount() {
     if (
-      !_.isEmpty(
+      !isEmpty(
         this.props.categories && this.props.categories[0] && this.props.categories[0].categoryItems,
       )
     ) {
@@ -71,16 +71,13 @@ class CreateTag extends React.Component {
     const { intl } = this.props;
     const rules = fieldsRules[fieldName] || [];
     return rules.map(rule => {
-      if (_.has(rule, 'message')) {
+      if (has(rule, 'message')) {
         return {
           ...rule,
-          message: intl.formatMessage(
-            _.get(rule, 'message.intlId'),
-            _.get(rule, 'message.intlMeta'),
-          ),
+          message: intl.formatMessage(get(rule, 'message.intlId'), get(rule, 'message.intlMeta')),
         };
       }
-      if (_.has(rule, 'validator')) {
+      if (has(rule, 'validator')) {
         return { validator: this.validateFieldValue };
       }
       return rule;
@@ -115,7 +112,7 @@ class CreateTag extends React.Component {
   getWobjectBody = () => {
     const { currentUsername } = this.props;
     const currentLocale = this.props.form.getFieldValue('currentLocale');
-    const langReadable = _.filter(LANGUAGES, { id: currentLocale })[0].name;
+    const langReadable = filter(LANGUAGES, { id: currentLocale })[0].name;
     const { categoryItem, selectedCategory } = this.state;
     return `@${currentUsername} added #tag ${categoryItem.author_permlink} (${langReadable}) into ${selectedCategory.body} category`;
   };
@@ -126,7 +123,7 @@ class CreateTag extends React.Component {
     const { hideModal, intl, currentUsername } = this.props;
     const { categoryItem, selectedCategory } = this.state;
     const currentLocale = this.props.form.getFieldValue('currentLocale');
-    const langReadable = _.filter(LANGUAGES, { id: currentLocale })[0].name;
+    const langReadable = filter(LANGUAGES, { id: currentLocale })[0].name;
     this.props.form.validateFields(err => {
       if (!err) {
         this.setState({ loading: true });
@@ -207,7 +204,7 @@ class CreateTag extends React.Component {
 
   handleSelectCategory = async value => {
     const category = this.props.categories.find(item => item.body === value);
-    if (!_.isEmpty(category.categoryItems)) {
+    if (!isEmpty(category.categoryItems)) {
       let currentTags = await getObjectsByIds({
         authorPermlinks: category.categoryItems.map(tag => tag.name),
       });
@@ -289,15 +286,15 @@ class CreateTag extends React.Component {
                 objectType="hashtag"
               />,
             )}
-            {categoryItem && <ObjectCardView wObject={categoryItem} showSmallVersion />}
+            {categoryItem && <ObjectCardView wObject={categoryItem} />}
 
-            {!_.isEmpty(currentTags) && (
+            {!isEmpty(currentTags) && (
               <React.Fragment>
                 <div className="ant-form-item-label label AppendForm__appendTitles pt3">
                   <FormattedMessage id="already_added" defaultMessage="Already added #tags" />
                 </div>
                 {currentTags.map(tag => (
-                  <ObjectCardView wObject={tag} showSmallVersion key={tag.name} />
+                  <ObjectCardView wObject={tag} key={tag.name} />
                 ))}
               </React.Fragment>
             )}

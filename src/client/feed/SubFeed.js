@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Cookie from 'js-cookie';
-import _ from 'lodash';
+import { isEmpty, isNil } from 'lodash';
 import { showPostModal } from '../app/appActions';
 import {
   getFeedContent,
@@ -68,6 +68,7 @@ class SubFeed extends React.Component {
     getMoreUserFeedContent: () => {},
     getMoreFeedContent: () => {},
   };
+  state = { isAuthHomeFeed: false };
 
   componentDidMount() {
     const { authenticated, loaded, user, match, feed } = this.props;
@@ -76,6 +77,8 @@ class SubFeed extends React.Component {
     if (!loaded && Cookie.get('access_token')) return;
 
     if (match.url === '/' && authenticated) {
+      // eslint-disable-next-line react/no-did-mount-set-state
+      this.setState({ isAuthHomeFeed: true });
       const fetched = getUserFeedFetchedFromState(user.name, feed);
       if (fetched) return;
       this.props.getUserFeedContent(user.name);
@@ -118,21 +121,21 @@ class SubFeed extends React.Component {
   }
 
   render() {
-    const { authenticated, loaded, user, feed, match } = this.props;
+    const { loaded, user, feed, match } = this.props;
+    const { isAuthHomeFeed } = this.state;
     let content = [];
     let isFetching = false;
     let fetched = false;
     let hasMore = false;
     let failed = false;
     let loadMoreContent = () => {};
-    const isAuthHomeFeed = match.url === '/' && authenticated;
 
     if (isAuthHomeFeed) {
       content = getUserFeedFromState(user.name, feed);
       isFetching = getUserFeedLoadingFromState(user.name, feed);
       fetched = getUserFeedFetchedFromState(user.name, feed);
       hasMore =
-        feed.feed[user.name] && !_.isNil(feed.feed[user.name].hasMore)
+        feed.feed[user.name] && !isNil(feed.feed[user.name].hasMore)
           ? feed.feed[user.name].hasMore
           : true;
       failed = getUserFeedFailedFromState(user.name, feed);
@@ -147,7 +150,7 @@ class SubFeed extends React.Component {
       loadMoreContent = () => this.props.getMoreFeedContent(sortBy, match.params.category);
     }
 
-    const empty = _.isEmpty(content);
+    const empty = isEmpty(content);
     const displayEmptyFeed = empty && fetched && loaded && !isFetching && !failed;
 
     const ready = loaded && fetched && !isFetching;

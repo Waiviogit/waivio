@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import _ from 'lodash';
+import { isError, isEmpty, get, attempt, uniqBy, map, each } from 'lodash';
 import VisibilitySensor from 'react-visibility-sensor';
 import formatter from '../helpers/steemitFormatter';
 import { getCryptoDetails } from '../helpers/cryptosHelper';
@@ -135,24 +135,24 @@ export default class Post extends React.Component {
 
   renderCryptoTrendingCharts() {
     const { content } = this.props;
-    const parsedJsonMetadata = _.attempt(JSON.parse, content.json_metadata);
+    const parsedJsonMetadata = attempt(JSON.parse, content.json_metadata);
 
-    if (_.isError(parsedJsonMetadata)) {
+    if (isError(parsedJsonMetadata)) {
       return null;
     }
 
-    const tags = _.get(parsedJsonMetadata, 'tags', []);
+    const tags = get(parsedJsonMetadata, 'tags', []);
     const allCryptoDetails = [];
 
-    _.each(tags, tag => {
+    each(tags, tag => {
       const cryptoDetails = getCryptoDetails(tag);
-      if (!_.isEmpty(cryptoDetails)) {
+      if (!isEmpty(cryptoDetails)) {
         allCryptoDetails.push(cryptoDetails);
       }
     });
 
-    const cryptoTags = _.map(_.uniqBy(allCryptoDetails, 'symbol'), crypto => crypto.symbol);
-    return !_.isEmpty(cryptoTags) && <CryptoTrendingCharts cryptos={cryptoTags} />;
+    const cryptoTags = map(uniqBy(allCryptoDetails, 'symbol'), crypto => crypto.symbol);
+    return !isEmpty(cryptoTags) && <CryptoTrendingCharts cryptos={cryptoTags} />;
   }
 
   render() {
@@ -165,7 +165,7 @@ export default class Post extends React.Component {
     const reputation = loaded ? formatter.reputation(content.author_reputation) : 0;
     const showPost = reputation >= 0 || showHiddenPost;
 
-    const signature = _.get(user, 'json_metadata.profile.signature', null);
+    const signature = get(user, 'json_metadata.profile.signature', null);
 
     return (
       <div className="main-panel">

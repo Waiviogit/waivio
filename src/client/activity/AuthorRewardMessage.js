@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { reduce } from 'lodash';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import formatter from '../helpers/steemitFormatter';
@@ -17,7 +17,7 @@ const AuthorRewardMessage = ({
     { payout: actionDetails.vesting_payout, currency: 'SP' },
   ];
 
-  const parsedRewards = _.reduce(
+  const parsedRewards = reduce(
     rewards,
     (array, reward) => {
       const parsedPayout = parseFloat(reward.payout);

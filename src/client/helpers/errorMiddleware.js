@@ -1,11 +1,11 @@
-import _ from 'lodash';
+import { find, has } from 'lodash';
 import errors from '../../common/constants/errors';
 import { notify } from '../app/Notification/notificationActions';
 
 export function parseBlockChainError(error) {
-  const errorType = _.find(errors, e => error.includes(e.fingerprint));
+  const errorType = find(errors, e => error.includes(e.fingerprint));
 
-  if (_.has(errorType, 'message')) {
+  if (has(errorType, 'message')) {
     return errorType.message;
   }
   const idx = error.indexOf(':');

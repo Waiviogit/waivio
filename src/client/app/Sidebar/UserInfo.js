@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Icon } from 'antd';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
-import _ from 'lodash';
+import { get } from 'lodash';
 import urlParse from 'url-parse';
 import { getUser, getRewardFund, getRate } from '../../reducers';
 import { getVoteValue } from '../../helpers/user';
@@ -42,10 +42,10 @@ class UserInfo extends React.Component {
       } else {
         try {
           metadata = JSON.parse(user.json_metadata);
-          location = metadata && _.get(metadata, 'profile.location');
-          profile = (metadata && _.get(metadata, 'profile')) || {};
-          website = metadata && _.get(metadata, 'profile.website');
-          about = metadata && _.get(metadata, 'profile.about');
+          location = metadata && get(metadata, 'profile.location');
+          profile = (metadata && get(metadata, 'profile')) || {};
+          website = metadata && get(metadata, 'profile.website');
+          about = metadata && get(metadata, 'profile.about');
         } catch (e) {
           // do nothing
         }

@@ -3,16 +3,16 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
-import _ from 'lodash';
+import { get, head, isEmpty } from 'lodash';
 import classNames from 'classnames';
 import { currentUserFollowersUser } from '../helpers/apiHelpers';
 import {
-  getIsAuthenticated,
   getAuthenticatedUser,
-  getUser,
+  getAuthenticatedUserName,
+  getIsAuthenticated,
   getIsUserFailed,
   getIsUserLoaded,
-  getAuthenticatedUserName,
+  getUser,
   getUsersAccountHistory,
 } from '../reducers';
 import { getUserAccountHistory, openTransfer } from '../wallet/walletActions';
@@ -25,6 +25,7 @@ import RightSidebar from '../app/Sidebar/RightSidebar';
 import Affix from '../components/Utils/Affix';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import { getUserDetailsKey } from '../helpers/stateHelpers';
+import NotFound from '../statics/NotFound';
 
 @connect(
   (state, ownProps) => ({
@@ -90,15 +91,15 @@ export default class User extends React.Component {
 
     if (authenticated) {
       currentUserFollowersUser(authenticatedUserName, this.props.match.params.name).then(resp => {
-        const result = _.head(resp);
-        const followingUsername = _.get(result, 'following', null);
+        const result = head(resp);
+        const followingUsername = get(result, 'following', null);
         const isFollowing = this.props.authenticatedUserName === followingUsername;
         this.setState({
           isFollowing,
         });
       });
     }
-    if (_.isEmpty(usersAccountHistory[getUserDetailsKey(match.params.name)])) {
+    if (isEmpty(usersAccountHistory[getUserDetailsKey(match.params.name)])) {
       getUserAccountHistory(match.params.name);
     }
   }
@@ -109,8 +110,8 @@ export default class User extends React.Component {
     if (diffUsername || diffAuthUsername) {
       currentUserFollowersUser(nextProps.authenticatedUserName, nextProps.match.params.name).then(
         resp => {
-          const result = _.head(resp);
-          const followingUsername = _.get(result, 'following', null);
+          const result = head(resp);
+          const followingUsername = get(result, 'following', null);
           const isFollowing = nextProps.authenticatedUserName === followingUsername;
           this.setState({
             isFollowing,
@@ -136,6 +137,16 @@ export default class User extends React.Component {
     if (failed) return <Error404 />;
     const username = this.props.match.params.name;
     const { user } = this.props;
+    if (!user.id && !user.fetching)
+      return (
+        <div className="main-panel">
+          <NotFound
+            item={username}
+            title={'there_are_not user with name'}
+            titleDefault={'Sorry! There are no user with name {item} on Waivio'}
+          />
+        </div>
+      );
     let profile = {};
     try {
       if (user.json_metadata) {
@@ -181,7 +192,7 @@ export default class User extends React.Component {
           <meta property="og:description" content={desc} />
           <meta property="og:site_name" content="Waivio" />
           <meta property="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
-          <meta property="twitter:site" content={'@steemit'} />
+          <meta property="twitter:site" content={'@waivio'} />
           <meta property="twitter:title" content={title} />
           <meta property="twitter:description" content={desc} />
           <meta
