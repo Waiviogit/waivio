@@ -4,8 +4,7 @@ import Helmet from 'react-helmet';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Form, Input, Avatar, Button, Modal, message } from 'antd';
-import uuidv4 from 'uuid/v4';
+import { Form, Input, Avatar, Button, Modal } from 'antd';
 import SteemConnect from '../steemConnectAPI';
 import { updateProfile } from '../auth/authActions';
 import { getIsReloading, getAuthenticatedUser, isGuestUser } from '../reducers';
@@ -20,9 +19,6 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import requiresLogin from '../auth/requiresLogin';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import ImageSetter from '../components/ImageSetter/ImageSetter';
-import { isValidImage } from '../helpers/image';
-import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../common/constants/validation';
-import { objectFields } from '../../common/constants/listOfFields';
 import { getGuestAvatarUrl } from '../../waivioApi/ApiClient';
 import './Settings.less';
 
@@ -115,89 +111,6 @@ export default class ProfileSettings extends React.Component {
     _.throttle(this.renderBody, 200, { leading: false, trailing: true })(body);
   }
 
-  handleChangeImage = e => {
-    if (e.target.files && e.target.files[0]) {
-      if (
-        !isValidImage(e.target.files[0], MAX_IMG_SIZE[objectFields.background], ALLOWED_IMG_FORMATS)
-      ) {
-        this.props.onImageInvalid(
-          MAX_IMG_SIZE[objectFields.background],
-          `(${ALLOWED_IMG_FORMATS.join(', ')}) `,
-        );
-        return;
-      }
-
-      this.setState({
-        isLoadingImage: true,
-      });
-
-      if (this.state.isAvatar) this.setState({ avatarImage: [] });
-      if (this.state.isCover) this.setState({ coverImage: [] });
-
-      this.props.onImageUpload(e.target.files[0], this.disableAndInsertImage, () =>
-        this.setState({
-          isLoadingImage: false,
-        }),
-      );
-    }
-  };
-
-  disableAndInsertImage = (image, imageName = 'image') => {
-    const { isAvatar } = this.state;
-    const newImage = {
-      src: image,
-      name: imageName,
-      id: uuidv4(),
-    };
-    this.setState({
-      [`${isAvatar ? 'profilePicture' : 'coverPicture'}`]: image,
-      [`${isAvatar ? 'avatarImage' : 'coverImage'}`]: [newImage],
-      isLoadingImage: false,
-    });
-
-    this.props.form.setFieldsValue({
-      [`${isAvatar ? 'profile_image' : 'cover_image'}`]: image,
-    });
-  };
-
-  handleAddImageByLink = image => {
-    this.checkIsValidImageLink(image, this.checkIsImage);
-  };
-
-  checkIsImage = (image, isValidLink) => {
-    const { intl } = this.props;
-    const { isAvatar, isGuest } = this.state;
-
-    if (!isGuest && isValidLink) {
-      this.setState({
-        [`${isAvatar ? 'profilePicture' : 'coverPicture'}`]: image.src,
-        [`${isAvatar ? 'avatarImage' : 'coverImage'}`]: [image],
-      });
-      this.props.form.setFieldsValue({
-        [`${isAvatar ? 'profile_image' : 'cover_image'}`]: image.src,
-      });
-    } else {
-      message.error(
-        intl.formatMessage({
-          id: 'imageSetter_invalid_link',
-          defaultMessage: 'The link is invalid',
-        }),
-      );
-    }
-  };
-
-  checkIsValidImageLink = (image, setImageIsValid) => {
-    const img = new Image();
-    img.src = image.src;
-    img.onload = () => setImageIsValid(image, true);
-    img.onerror = () => setImageIsValid(image, false);
-  };
-
-  handleRemoveImage = () => {
-    const { isAvatar } = this.state;
-    this.setState({ [`${isAvatar ? 'avatarImage' : 'coverImage'}`]: [] });
-  };
-
   setSettingsFields = () => {
     // eslint-disable-next-line no-shadow
     const { form, isGuest, userName, updateProfile } = this.props;
@@ -250,12 +163,36 @@ export default class ProfileSettings extends React.Component {
     } else this.setSettingsFields();
   }
 
-  openChangeAvatarModal = () => {
+  onOpenChangeAvatarModal = () => {
     this.setState({ isModal: !this.state.isModal, isAvatar: !this.state.isAvatar });
   };
 
-  openChangeCoverModal = () => {
+  onOpenChangeCoverModal = () => {
     this.setState({ isModal: !this.state.isModal, isCover: !this.state.isCover });
+  };
+
+  onOkAvatarModal = () => {
+    const { avatarImage } = this.state;
+    this.setState({
+      isModal: !this.state.isModal,
+      isAvatar: !this.state.isAvatar,
+      profilePicture: avatarImage[0].src,
+    });
+    this.props.form.setFieldsValue({
+      profile_image: avatarImage[0].src,
+    });
+  };
+
+  onOkCoverModal = () => {
+    const { coverImage } = this.state;
+    this.setState({
+      isModal: !this.state.isModal,
+      isCover: !this.state.isCover,
+      coverPicture: coverImage[0].src,
+    });
+    this.props.form.setFieldsValue({
+      cover_image: coverImage[0].src,
+    });
   };
 
   renderBody(body) {
@@ -263,6 +200,16 @@ export default class ProfileSettings extends React.Component {
       bodyHTML: remarkable.render(body),
     });
   }
+
+  onLoadingImage = value => this.setState({ isLoadingImage: value });
+
+  getAvatar = image => {
+    this.setState({ avatarImage: image });
+  };
+
+  getCover = image => {
+    this.setState({ coverImage: image });
+  };
 
   render() {
     const { intl, form } = this.props;
@@ -400,7 +347,7 @@ export default class ProfileSettings extends React.Component {
                       {getFieldDecorator('profile_image')(
                         <div className="Settings__profile-image">
                           <Avatar size="large" icon="user" src={`${this.state.profilePicture}`} />
-                          <Button type="primary" onClick={this.openChangeAvatarModal}>
+                          <Button type="primary" onClick={this.onOpenChangeAvatarModal}>
                             {intl.formatMessage({
                               id: 'profile_change_avatar',
                               defaultMessage: 'Change avatar',
@@ -425,7 +372,7 @@ export default class ProfileSettings extends React.Component {
                             icon="file-image"
                             src={`${this.state.coverPicture}`}
                           />
-                          <Button type="primary" onClick={this.openChangeCoverModal}>
+                          <Button type="primary" onClick={this.onOpenChangeCoverModal}>
                             {intl.formatMessage({
                               id: 'profile_change_cover',
                               defaultMessage: 'Change cover',
@@ -494,19 +441,18 @@ export default class ProfileSettings extends React.Component {
                 })
           }
           closable
-          onCancel={isAvatar ? this.openChangeAvatarModal : this.openChangeCoverModal}
-          onOk={isAvatar ? this.openChangeAvatarModal : this.openChangeCoverModal}
+          onCancel={isAvatar ? this.onOpenChangeAvatarModal : this.onOpenChangeCoverModal}
+          onOk={isAvatar ? this.onOkAvatarModal : this.onOkCoverModal}
           okButtonProps={{ disabled: isLoadingImage }}
           cancelButtonProps={{ disabled: isLoadingImage }}
           visible={isModal}
         >
-          <ImageSetter
-            isLoading={isLoadingImage}
-            handleAddImage={this.handleChangeImage}
-            onRemoveImage={this.handleRemoveImage}
-            images={isAvatar ? avatarImage : coverImage}
-            handleAddImageByLink={this.handleAddImageByLink}
-          />
+          {isModal && (
+            <ImageSetter
+              onImageLoaded={isAvatar ? this.getAvatar : this.getCover}
+              onLoadingImage={this.onLoadingImage}
+            />
+          )}
         </Modal>
       </div>
     );
