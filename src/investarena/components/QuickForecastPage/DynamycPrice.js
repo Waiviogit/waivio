@@ -39,7 +39,7 @@ DynamicPrice.propTypes = {
   postPrice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   quotes: PropTypes.shape({}).isRequired,
   secur: PropTypes.string.isRequired,
-  closedPrice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]) ,
+  closedPrice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   intl: PropTypes.shape({
     formatMessage: PropTypes.func.isRequired,
   }).isRequired,
