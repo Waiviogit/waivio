@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Icon, Input, Form, Modal } from 'antd';
-import uuidv4 from 'uuid/v4';
 import Dropzone from 'react-dropzone';
 import { HotKeys } from 'react-hotkeys';
 import { MAXIMUM_UPLOAD_SIZE, isValidImage } from '../../helpers/image';
@@ -11,7 +10,6 @@ import EditorToolbar from './EditorToolbar';
 import ImageSetter from '../ImageSetter/ImageSetter';
 import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
 import { objectFields } from '../../../common/constants/listOfFields';
-import addImageByLink from '../ImageSetter/ImageSetterHelpers';
 import './EditorInput.less';
 
 class EditorInput extends React.Component {
@@ -329,26 +327,10 @@ class EditorInput extends React.Component {
     this.setState({ currentImage: [image] });
   };
 
-  handleAddImageByLink = image => {
-    addImageByLink(image, this.getImageByLink, this.props.intl);
-  };
+  onLoadingImage = value => this.setState({ isLoadingImage: value });
 
-  disableAndInsertImage = (image, imageName = 'image') => {
-    const newImage = {
-      src: image,
-      name: imageName,
-      id: uuidv4(),
-    };
-    this.setState({
-      currentImage: [newImage],
-      isLoadingImage: false,
-    });
-  };
-
-  handleRemoveImage = () => {
-    this.setState({
-      currentImage: [],
-    });
+  getImages = image => {
+    this.setState({ currentImage: image });
   };
 
   handleOnOkModal = () => {
@@ -371,7 +353,7 @@ class EditorInput extends React.Component {
       intl,
       ...restProps
     } = this.props;
-    const { dropzoneActive, showModal, isLoadingImage, currentImage } = this.state;
+    const { dropzoneActive, showModal, isLoadingImage } = this.state;
 
     return (
       <React.Fragment>
@@ -389,13 +371,7 @@ class EditorInput extends React.Component {
           visible={showModal}
           onOk={this.handleOnOkModal}
         >
-          <ImageSetter
-            isLoading={isLoadingImage}
-            handleAddImage={this.handleChangeImage}
-            onRemoveImage={this.handleRemoveImage}
-            images={currentImage}
-            handleAddImageByLink={this.handleAddImageByLink}
-          />
+          <ImageSetter getImages={this.getImages} onLoadingImage={this.onLoadingImage} />
         </Modal>
 
         <div className="EditorInput__dropzone-base">
