@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import _ from 'lodash';
+import { startCase } from 'lodash';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
 import SteemConnect from '../steemConnectAPI';
 import { getAuthenticatedUser } from '../reducers';
@@ -69,7 +69,7 @@ class ClaimRewardsBlock extends Component {
       <span className="ClaimRewardsBlock__reward__field">
         <FormattedMessage
           id={rewardField}
-          defaultMessage={_.startCase(rewardField.replace('_', ''))}
+          defaultMessage={startCase(rewardField.replace('_', ''))}
         />
       </span>
       <span className="ClaimRewardsBlock__reward__value">

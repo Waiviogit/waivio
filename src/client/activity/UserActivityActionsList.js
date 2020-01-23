@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { isEmpty, get } from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { getUserDetailsKey } from '../helpers/stateHelpers';
@@ -78,7 +78,7 @@ class UserActivityActionsList extends Component {
 
   constructor(props) {
     super(props);
-    if (_.isEmpty(props.currentDisplayedActions)) {
+    if (isEmpty(props.currentDisplayedActions)) {
       this.props.setInitialCurrentDisplayedActions(props.user.name);
     }
   }
@@ -102,8 +102,8 @@ class UserActivityActionsList extends Component {
     } = this.props;
     const currentUsername = user.name;
     const userKey = getUserDetailsKey(currentUsername);
-    const actions = _.get(usersAccountHistory, userKey, []);
-    const displayedActions = _.isEmpty(accountHistoryFilter)
+    const actions = get(usersAccountHistory, userKey, []);
+    const displayedActions = isEmpty(accountHistoryFilter)
       ? currentDisplayedActions
       : currentFilteredActions;
     const hasMore = userHasMoreActions || actions.length !== currentDisplayedActions.length;
@@ -118,25 +118,24 @@ class UserActivityActionsList extends Component {
         loadingMore={loadingMoreUsersAccountHistory}
       >
         <div />
-        {displayedActions.map(
-          action =>
-            isWalletTransaction(action.op[0]) ? (
-              <WalletTransaction
-                key={`${action.trx_id}${action.actionCount}`}
-                transaction={action}
-                currentUsername={currentUsername}
-                totalVestingShares={totalVestingShares}
-                totalVestingFundSteem={totalVestingFundSteem}
-              />
-            ) : (
-              <UserAction
-                key={`${action.trx_id}${action.actionCount}`}
-                action={action}
-                totalVestingShares={totalVestingShares}
-                totalVestingFundSteem={totalVestingFundSteem}
-                currentUsername={currentUsername}
-              />
-            ),
+        {displayedActions.map(action =>
+          isWalletTransaction(action.op[0]) ? (
+            <WalletTransaction
+              key={`${action.trx_id}${action.actionCount}`}
+              transaction={action}
+              currentUsername={currentUsername}
+              totalVestingShares={totalVestingShares}
+              totalVestingFundSteem={totalVestingFundSteem}
+            />
+          ) : (
+            <UserAction
+              key={`${action.trx_id}${action.actionCount}`}
+              action={action}
+              totalVestingShares={totalVestingShares}
+              totalVestingFundSteem={totalVestingFundSteem}
+              currentUsername={currentUsername}
+            />
+          ),
         )}
       </ReduxInfiniteScroll>
     );

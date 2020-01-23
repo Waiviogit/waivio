@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import _ from 'lodash';
+import { slice, get, isEmpty, isEqual, size, map } from 'lodash';
 import * as notificationConstants from '../../../../common/constants/notifications';
 import { saveNotificationsLastTimestamp } from '../../../helpers/metadata';
 import NotificationFollowing from './NotificationFollowing';
@@ -41,7 +41,7 @@ class Notifications extends React.Component {
     super(props);
 
     this.state = {
-      displayedNotifications: _.slice(props.notifications, 0, displayLimit),
+      displayedNotifications: slice(props.notifications, 0, displayLimit),
     };
 
     this.notificationsContent = null;
@@ -53,8 +53,8 @@ class Notifications extends React.Component {
 
   componentDidMount() {
     const { notifications, lastSeenTimestamp, currentAuthUsername } = this.props;
-    const latestNotification = _.get(notifications, 0);
-    const timestamp = _.get(latestNotification, 'timestamp');
+    const latestNotification = get(notifications, 0);
+    const timestamp = get(latestNotification, 'timestamp');
 
     if (timestamp > lastSeenTimestamp) {
       saveNotificationsLastTimestamp(timestamp, currentAuthUsername).then(() =>
@@ -64,19 +64,19 @@ class Notifications extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const differentNotifications = !_.isEqual(
-      _.size(this.props.notifications),
-      _.size(nextProps.notifications),
+    const differentNotifications = !isEqual(
+      size(this.props.notifications),
+      size(nextProps.notifications),
     );
-    const emptyDisplayedNotifications = _.isEmpty(this.state.displayedNotifications);
+    const emptyDisplayedNotifications = isEmpty(this.state.displayedNotifications);
 
     if (differentNotifications || emptyDisplayedNotifications) {
       this.setState({
-        displayedNotifications: _.slice(nextProps.notifications, 0, displayLimit),
+        displayedNotifications: slice(nextProps.notifications, 0, displayLimit),
       });
     } else {
-      const latestNotification = _.get(nextProps.notifications, 0);
-      const timestamp = _.get(latestNotification, 'timestamp');
+      const latestNotification = get(nextProps.notifications, 0);
+      const timestamp = get(latestNotification, 'timestamp');
 
       if (timestamp > nextProps.lastSeenTimestamp) {
         saveNotificationsLastTimestamp(timestamp, this.props.currentAuthUsername).then(() =>
@@ -107,7 +107,7 @@ class Notifications extends React.Component {
     const { notifications } = this.props;
     const { displayedNotifications } = this.state;
     const moreNotificationsStartIndex = displayedNotifications.length;
-    const moreNotifications = _.slice(
+    const moreNotifications = slice(
       notifications,
       moreNotificationsStartIndex,
       moreNotificationsStartIndex + displayLimit,
@@ -118,7 +118,7 @@ class Notifications extends React.Component {
   }
 
   handleNotificationsClick(e) {
-    const openedInNewTab = _.get(e, 'metaKey', false) || _.get(e, 'ctrlKey', false);
+    const openedInNewTab = get(e, 'metaKey', false) || get(e, 'ctrlKey', false);
     if (!openedInNewTab) {
       this.props.onNotificationClick();
     }
@@ -133,7 +133,7 @@ class Notifications extends React.Component {
       loadingNotifications,
     } = this.props;
     const { displayedNotifications } = this.state;
-    const displayEmptyNotifications = _.isEmpty(notifications) && !loadingNotifications;
+    const displayEmptyNotifications = isEmpty(notifications) && !loadingNotifications;
 
     return (
       <div className="Notifications">
@@ -145,7 +145,7 @@ class Notifications extends React.Component {
           }}
         >
           {loadingNotifications && <Loading style={{ padding: 20 }} />}
-          {_.map(displayedNotifications, (notification, index) => {
+          {map(displayedNotifications, (notification, index) => {
             const key = `${index}${notification.timestamp}`;
             const read = lastSeenTimestamp >= notification.timestamp;
             switch (notification.type) {

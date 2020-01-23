@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import Feed from '../feed/Feed';
@@ -96,8 +96,8 @@ export default class UserProfile extends React.Component {
             loadMoreContent={loadMoreContentAction}
             showPostModal={this.props.showPostModal}
           />
-          {_.isEmpty(content) && fetched && isOwnProfile && <EmptyUserOwnProfile />}
-          {_.isEmpty(content) && fetched && !isOwnProfile && <EmptyUserProfile />}
+          {isEmpty(content) && fetched && isOwnProfile && <EmptyUserOwnProfile />}
+          {isEmpty(content) && fetched && !isOwnProfile && <EmptyUserProfile />}
         </div>
         {<PostModal />}
       </div>

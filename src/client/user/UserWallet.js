@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import _ from 'lodash';
+import { isEmpty, get, isNull } from 'lodash';
 import UserWalletSummary from '../wallet/UserWalletSummary';
 import { GUEST_PREFIX } from '../../common/constants/waivio';
 import { SBD, STEEM } from '../../common/constants/cryptos';
@@ -107,15 +107,15 @@ class Wallet extends Component {
       ? authenticatedUserName
       : this.props.location.pathname.match(/@(.*)(.*?)\//)[1];
 
-    if (_.isEmpty(totalVestingFundSteem) || _.isEmpty(totalVestingShares)) {
+    if (isEmpty(totalVestingFundSteem) || isEmpty(totalVestingShares)) {
       this.props.getGlobalProperties();
     }
 
-    if (_.isEmpty(usersTransactions[getUserDetailsKey(username)])) {
+    if (isEmpty(usersTransactions[getUserDetailsKey(username)])) {
       this.props.getUserAccountHistory(username);
     }
 
-    if (_.isEmpty(user)) {
+    if (isEmpty(user)) {
       this.props.getAccount(username);
     }
   }
@@ -137,19 +137,19 @@ class Wallet extends Component {
     } = this.props;
 
     const userKey = getUserDetailsKey(user.name);
-    const transactions = _.get(usersTransactions, userKey, []);
-    const actions = _.get(usersAccountHistory, userKey, []);
-    const currentSteemRate = _.get(
+    const transactions = get(usersTransactions, userKey, []);
+    const actions = get(usersAccountHistory, userKey, []);
+    const currentSteemRate = get(
       cryptosPriceHistory,
       `${STEEM.symbol}.priceDetails.currentUSDPrice`,
       null,
     );
-    const currentSBDRate = _.get(
+    const currentSBDRate = get(
       cryptosPriceHistory,
       `${SBD.symbol}.priceDetails.currentUSDPrice`,
       null,
     );
-    const steemRateLoading = _.isNull(currentSteemRate) || _.isNull(currentSBDRate);
+    const steemRateLoading = isNull(currentSteemRate) || isNull(currentSBDRate);
 
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
 

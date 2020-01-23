@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import {
@@ -16,10 +16,10 @@ const UserActivitySearchMessage = ({
   currentFilteredActions,
   accountHistoryFilter,
 }) => {
-  const displayedActions = _.isEmpty(accountHistoryFilter)
+  const displayedActions = isEmpty(accountHistoryFilter)
     ? currentDisplayedActions
     : currentFilteredActions;
-  if (_.isEmpty(displayedActions) && loadingMoreUsersAccountHistory) {
+  if (isEmpty(displayedActions) && loadingMoreUsersAccountHistory) {
     return (
       <div className="UserActivityActions__search__container">
         <FormattedMessage
@@ -28,7 +28,7 @@ const UserActivitySearchMessage = ({
         />
       </div>
     );
-  } else if (_.isEmpty(displayedActions)) {
+  } else if (isEmpty(displayedActions)) {
     return (
       <div className="UserActivityActions__search__container">
         <FormattedMessage

@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { map } from 'lodash';
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -63,7 +63,7 @@ const WaivioObject = ({ wobj }) => {
           </div>
           <div className="WaivioObject__user__users_weight">
             {wobj.users &&
-              _.map(wobj.users, user => (
+              map(wobj.users, user => (
                 <div className="User__links" key={user.name}>
                   <Link to={`/@${user.name}`}>
                     <Avatar username={user.name} size={32} />

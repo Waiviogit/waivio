@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
-import _ from 'lodash';
+import { get, isEmpty, map } from 'lodash';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { getSearchResults, getSearchLoading } from '../reducers';
@@ -38,19 +38,19 @@ class Search extends React.Component {
   };
 
   componentDidMount() {
-    const searchQuery = _.get(this.props.location.state, 'query', '');
-    if (!_.isEmpty(searchQuery)) {
+    const searchQuery = get(this.props.location.state, 'query', '');
+    if (!isEmpty(searchQuery)) {
       this.props.searchAskSteem(searchQuery);
     } else {
       const searchQueryRegexResults = this.props.location.search.match(/\?q=(.*)/);
-      const searchQueryFromUrl = _.get(searchQueryRegexResults, 1, '');
+      const searchQueryFromUrl = get(searchQueryRegexResults, 1, '');
       this.props.searchAskSteem(searchQueryFromUrl);
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    const oldSearchQuery = _.get(this.props.location.state, 'query', '');
-    const newSearchQuery = _.get(nextProps.location.state, 'query', '');
+    const oldSearchQuery = get(this.props.location.state, 'query', '');
+    const newSearchQuery = get(nextProps.location.state, 'query', '');
 
     if (oldSearchQuery !== newSearchQuery) {
       this.props.searchAskSteem(newSearchQuery);
@@ -59,7 +59,7 @@ class Search extends React.Component {
 
   renderSearchResult() {
     const { searchResults } = this.props;
-    return _.map(searchResults, (result, i) => {
+    return map(searchResults, (result, i) => {
       switch (result.type) {
         case 'post':
           return (
@@ -83,7 +83,7 @@ class Search extends React.Component {
 
   render() {
     const { intl, searchResults, searchLoading } = this.props;
-    const noSearchResults = _.isEmpty(searchResults) && !searchLoading;
+    const noSearchResults = isEmpty(searchResults) && !searchLoading;
 
     return (
       <div className="settings-layout container">
