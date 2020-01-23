@@ -15,7 +15,6 @@ import {
   addressFields,
   socialObjectFields,
   websiteFields,
-  objectImageFields,
   phoneFields,
   ratingFields,
   ratePercent,
@@ -40,9 +39,7 @@ import { getLanguageText } from '../translations';
 import MapAppendObject from '../components/Maps/MapAppendObject';
 import { getField } from '../helpers/wObjectHelper';
 import { appendObject } from '../object/appendActions';
-import { isValidImage } from '../helpers/image';
 import withEditor from '../components/Editor/withEditor';
-import { MAX_IMG_SIZE, ALLOWED_IMG_FORMATS } from '../../common/constants/validation';
 import { getVoteValue } from '../helpers/user';
 import { getFieldWithMaxWeight, getInnerFieldWithMaxWeight, getListItems } from './wObjectHelper';
 import { followObject, rateObject } from '../object/wobjActions';
@@ -54,8 +51,8 @@ import { getNewsFilterLayout } from './NewsFilter/newsFilterHelper';
 import CreateObject from '../post/CreateObjectModal/CreateObject';
 import { baseUrl } from '../../waivioApi/routes';
 import AppendFormFooter from './AppendFormFooter';
-import './AppendForm.less';
 import ImageSetter from '../components/ImageSetter/ImageSetter';
+import './AppendForm.less';
 
 @connect(
   state => ({
@@ -76,8 +73,6 @@ export default class AppendForm extends Component {
     /* decorators */
     form: PropTypes.shape(),
     user: PropTypes.shape(),
-    onImageUpload: PropTypes.func,
-    onImageInvalid: PropTypes.func,
     /* from connect */
     wObject: PropTypes.shape(),
     rewardFund: PropTypes.shape(),
@@ -120,7 +115,6 @@ export default class AppendForm extends Component {
   state = {
     isSomeValue: true,
     imageUploading: false,
-    currentImage: [],
     votePercent: this.props.defaultVotePercent / 100,
     voteWorth: 0,
     isValidImage: false,
@@ -449,7 +443,6 @@ export default class AppendForm extends Component {
 
   handleSubmit = e => {
     if (e) e.preventDefault();
-
     this.props.form.validateFieldsAndScroll((err, values) => {
       const { form, intl } = this.props;
       const currentField = form.getFieldValue('currentField');
@@ -526,67 +519,15 @@ export default class AppendForm extends Component {
     this.props.form.setFieldsValue({ [objectFields.sorting]: sortedList });
   };
 
-  handleRemoveImage = () => {
+  onLoadingImage = value => this.setState({ isLoadingImage: value });
+
+  getImages = image => {
     const { getFieldValue } = this.props.form;
     const currentField = getFieldValue('currentField');
-
-    this.setState({ currentImage: [] });
-    this.props.form.setFieldsValue({ [currentField]: '' });
-  };
-
-  disableAndInsertImage = (image, imageName = 'image') => {
-    const { getFieldValue } = this.props.form;
-    const currentField = getFieldValue('currentField');
-    const newImage = {
-      src: image,
-      name: imageName,
-      id: uuidv4(),
-    };
-    this.setState({ imageUploading: false, currentImage: [newImage] });
-    this.props.form.setFieldsValue({ [currentField]: image });
-  };
-
-  handleAddImageByLink = image => {
-    const { getFieldValue } = this.props.form;
-    const currentField = getFieldValue('currentField');
-    this.setState({ imageUploading: false, currentImage: [image] });
-    this.props.form.setFieldsValue({ [currentField]: image.src });
-  };
-
-  handleImageChange = e => {
-    const { getFieldValue } = this.props.form;
-    const currentField = getFieldValue('currentField');
-    if (e.target.files && e.target.files[0]) {
-      if (!isValidImage(e.target.files[0], MAX_IMG_SIZE[currentField], ALLOWED_IMG_FORMATS)) {
-        this.props.onImageInvalid(
-          MAX_IMG_SIZE[currentField],
-          `(${ALLOWED_IMG_FORMATS.join(', ')}) `,
-        );
-        return;
-      }
-
-      this.setState({
-        imageUploading: true,
-        currentImage: [],
-      });
-
-      this.props.onImageUpload(e.target.files[0], this.disableAndInsertImage, () =>
-        this.setState({
-          imageUploading: false,
-        }),
-      );
-    }
-  };
-
-  handleOnChange = () => {
-    const { getFieldValue } = this.props.form;
-    const currentField = getFieldValue('currentField');
-
-    if (objectImageFields.includes(currentField)) {
-      this.setState({
-        imageUploading: false,
-        currentImage: [],
-      });
+    if (image.length) {
+      this.props.form.setFieldsValue({ [currentField]: image[0].src });
+    } else {
+      this.props.form.setFieldsValue({ [currentField]: '' });
     }
   };
 
@@ -759,12 +700,7 @@ export default class AppendForm extends Component {
           <div className="image-wrapper">
             <Form.Item>
               {getFieldDecorator(currentField, { rules: this.getFieldRules(currentField) })(
-                <ImageSetter
-                  images={this.state.currentImage}
-                  handleAddImage={this.handleImageChange}
-                  handleAddImageByLink={this.handleAddImageByLink}
-                  onRemoveImage={this.handleRemoveImage}
-                />,
+                <ImageSetter onImageLoaded={this.getImages} onLoadingImage={this.onLoadingImage} />,
               )}
             </Form.Item>
           </div>

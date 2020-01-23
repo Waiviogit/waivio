@@ -2,13 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Icon, Input, Form } from 'antd';
+import { Icon, Input, Form, Modal } from 'antd';
 import Dropzone from 'react-dropzone';
 import { HotKeys } from 'react-hotkeys';
 import { MAXIMUM_UPLOAD_SIZE, isValidImage } from '../../helpers/image';
 import EditorToolbar from './EditorToolbar';
+import ImageSetter from '../ImageSetter/ImageSetter';
+import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
+import { objectFields } from '../../../common/constants/listOfFields';
 import './EditorInput.less';
-import AddImageModal from './AddImageModal';
 
 class EditorInput extends React.Component {
   static propTypes = {
@@ -60,6 +62,8 @@ class EditorInput extends React.Component {
     this.state = {
       dropzoneActive: false,
       showModal: false,
+      isLoadingImage: false,
+      currentImage: [],
     };
 
     this.setInput = this.setInput.bind(this);
@@ -146,7 +150,6 @@ class EditorInput extends React.Component {
   insertCode(type, params) {
     if (!this.input) return;
     this.input.focus();
-
     switch (type) {
       case 'h1':
         this.insertAtCursor('# ', '', 2, 2);
@@ -289,8 +292,46 @@ class EditorInput extends React.Component {
     }));
   };
 
-  beforeInsertImage = (image, imageName) => {
-    this.insertImage(image, imageName, this.input);
+  beforeInsertImage = () => {
+    const { currentImage } = this.state;
+    this.insertImage(currentImage[0].src, currentImage[0].name, this.input);
+  };
+
+  handleChangeImage = e => {
+    const { onImageInvalid, onImageUpload } = this.props;
+    if (e.target.files && e.target.files[0]) {
+      if (
+        !isValidImage(e.target.files[0], MAX_IMG_SIZE[objectFields.background], ALLOWED_IMG_FORMATS)
+      ) {
+        onImageInvalid(
+          MAX_IMG_SIZE[objectFields.background],
+          `(${ALLOWED_IMG_FORMATS.join(', ')}) `,
+        );
+        return;
+      }
+
+      this.setState({
+        isLoadingImage: true,
+        currentImage: [],
+      });
+
+      onImageUpload(e.target.files[0], this.disableAndInsertImage, () =>
+        this.setState({
+          isLoadingImage: false,
+        }),
+      );
+    }
+  };
+
+  onLoadingImage = value => this.setState({ isLoadingImage: value });
+
+  getImages = image => {
+    this.setState({ currentImage: image });
+  };
+
+  handleOnOkModal = () => {
+    this.handleToggleModal();
+    this.beforeInsertImage();
   };
 
   render() {
@@ -308,7 +349,7 @@ class EditorInput extends React.Component {
       intl,
       ...restProps
     } = this.props;
-    const { dropzoneActive, showModal } = this.state;
+    const { dropzoneActive, showModal, isLoadingImage } = this.state;
 
     return (
       <React.Fragment>
@@ -318,13 +359,17 @@ class EditorInput extends React.Component {
           onSelectLinkedObject={this.handleSelectObject}
           imageRef={this.imageRef}
         />
-        <AddImageModal
-          visible={showModal}
+        <Modal
+          wrapClassName="Settings__modal"
           onCancel={this.handleToggleModal}
-          insertImage={this.beforeInsertImage}
-          onImageUpload={onImageUpload}
-          onImageInvalid={onImageInvalid}
-        />
+          okButtonProps={{ disabled: isLoadingImage }}
+          cancelButtonProps={{ disabled: isLoadingImage }}
+          visible={showModal}
+          onOk={this.handleOnOkModal}
+        >
+          <ImageSetter onImageLoaded={this.getImages} onLoadingImage={this.onLoadingImage} />
+        </Modal>
+
         <div className="EditorInput__dropzone-base">
           <Dropzone
             disableClick
