@@ -82,6 +82,10 @@
     color: @black;
     flex-direction: column;
 
+    &:hover {
+      color: @black;
+    }
+
     @media screen and (max-width: 380px) {
       font-size: 16px;
     }
@@ -91,6 +95,16 @@
     display: flex;
     align-items: center;
     flex-direction: row;
+  }
+
+  &__link {
+    color: @black;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      color: @black;
+    }
   }
 
   &__img {
@@ -179,7 +193,8 @@
   border: none;
 
   &:disabled {
-    cursor: auto;
+    background-color: @white;
+    cursor: not-allowed;
   }
 
   &__container {
@@ -213,6 +228,7 @@
     &:disabled {
       &:hover {
         color: @green-darker;
+        background-color: @white;
       }
     }
   }
@@ -230,6 +246,7 @@
     &:disabled {
       &:hover {
         color: @red;
+        background-color: @white;
       }
     }
   }

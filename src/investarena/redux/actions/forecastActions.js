@@ -17,6 +17,9 @@ export const GET_QUICK_FORECAST_STATISTIC = createAsyncActionType(
 export const GET_QUICK_FORECAST_WINNERS = createAsyncActionType(
   '@forecast-data/GET_QUICK_FORECAST_WINNERS',
 );
+export const QUICK_FORECAST_WINNERS_SHOW_MORE = createAsyncActionType(
+  '@forecast-data/QUICK_FORECAST_WINNERS_SHOW_MORE',
+);
 export const GET_QUICK_FORECAST_REWARDS = createAsyncActionType(
   '@forecast-data/GET_QUICK_FORECAST_REWARDS',
 );
@@ -62,6 +65,15 @@ export const getForecastWinners = (limit, skip) => (dispatch, getState) => {
   });
 };
 
+export const forecastWinnersShowMore = (limit, skip) => (dispatch, getState) => {
+  const user = getAuthenticatedUserName(getState());
+
+  dispatch({
+    type: QUICK_FORECAST_WINNERS_SHOW_MORE.ACTION,
+    payload: api.quickForecast.getQuickForecastWinners(user, limit, skip),
+  });
+};
+
 export const getForecastRoundRewards = () => dispatch => {
   dispatch({
     type: GET_QUICK_FORECAST_REWARDS.ACTION,
@@ -87,8 +99,13 @@ export const answerForQuickForecast = (
 
   const username = getAuthenticatedUserName(getState());
   const postPrice = get(getState(), ['quotes', security, 'bidPrice'], null);
+  const objPermlink = get(
+    getState(),
+    ['quotesSettings', security, 'wobjData', 'author_permlink'],
+    null,
+  );
   const forecastObject = get(getState(), ['quotesSettings', security, 'name'], null);
-  const commentArray = forecastComments(forecastObject);
+  const commentArray = forecastComments(forecastObject, objPermlink);
   const comment = arrayRandElement(commentArray);
 
   dispatch({
@@ -129,16 +146,16 @@ export const answerForQuickForecast = (
                       ],
                     ])
                     .then(() => {
-                        message.success(`You still have ${5 - counter - 1} forecasts `);
-                        dispatch({
-                          type: ANSWER_QUICK_FORECAST,
-                          payload: {
-                            answer,
-                            id,
-                            postPrice,
-                            quickForecastExpiredAt: Date.now() + timerData,
-                          },
-                        });
+                      message.success(`You still have ${5 - counter - 1} forecasts `);
+                      dispatch({
+                        type: ANSWER_QUICK_FORECAST,
+                        payload: {
+                          answer,
+                          id,
+                          postPrice,
+                          quickForecastExpiredAt: Date.now() + timerData,
+                        },
+                      });
                     })
                     .catch(error => {
                       reject(error);

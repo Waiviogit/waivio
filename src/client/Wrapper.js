@@ -237,6 +237,9 @@ export default class Wrapper extends React.PureComponent {
       case 'myFeed':
         this.props.history.push('/my_feed');
         break;
+      case 'quick_forecast':
+        this.props.history.push('/quickforecast');
+        break;
       case 'news':
         this.props.history.push('/trending');
         break;
@@ -278,6 +281,7 @@ export default class Wrapper extends React.PureComponent {
         <ConfigProvider locale={enUS}>
           <UsedLocaleContext.Provider value={usedLocale}>
             <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
+              route
               <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
                 <Topnav
                   username={user.name}

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { injectIntl } from 'react-intl';
+import { injectIntl, FormattedRelative } from 'react-intl';
 import { Icon } from 'antd';
 import { Link } from 'react-router-dom';
 
@@ -25,12 +25,14 @@ const QuickForecastCard = ({
   intl,
   handleAuthorization,
   disabled,
+  link,
 }) => {
   // flags
   const pendingStatus = forecast.status === 'pending';
   const winner = forecast.status === 'guessed';
   const lose = forecast.status === 'finished';
-  const side = forecast.side === 'up'
+  const side =
+    forecast.side === 'up'
       ? intl.formatMessage({ defaultMessage: 'Yes', id: 'forecast_answer_rise' })
       : intl.formatMessage({ defaultMessage: 'No', id: 'forecast_answer_fall' });
 
@@ -85,10 +87,12 @@ const QuickForecastCard = ({
                   defaultMessage: 'Was',
                 })}
               </div>
-              <USDDisplay value={+forecast.postPrice} />
+              <span title={forecast.postPrice}>
+                <USDDisplay value={+forecast.postPrice} />
+              </span>
             </div>
             <div className="ForecastCard__flex-container-vertical">
-              <Link to={`/object/${predictionObjectName}`} className="ForecastCard__title">
+              <Link to={`/object/${link}`} className="ForecastCard__title">
                 <p className="ForecastCard__title-row">
                   <img
                     className="ForecastCard__img ForecastCard__img--little"
@@ -129,19 +133,22 @@ const QuickForecastCard = ({
           <React.Fragment>
             <div className="ForecastCard__top-block">
               <p className="ForecastCard__title ForecastCard__title-row">
-                <img
-                  className="ForecastCard__img ForecastCard__img--little"
-                  src={avatar}
-                  alt={predictionObjectName}
-                />
+                <Link className="ForecastCard__link" to={`/object/${link}`}>
+                  <img
+                    className="ForecastCard__img ForecastCard__img--little"
+                    src={avatar}
+                    alt={predictionObjectName}
+                  />
+                  &#160;
+                  {predictionObjectName}
+                </Link>
                 &#160;
                 {intl.formatMessage(
                   {
                     id: 'forecast_question',
-                    defaultMessage: '{predictionObjectName} will rise in {time} min?',
+                    defaultMessage: 'will rise in {time} min?',
                   },
                   {
-                    predictionObjectName,
                     time,
                   },
                 )}
@@ -204,6 +211,7 @@ QuickForecastCard.propTypes = {
   handleAuthorization: PropTypes.func.isRequired,
   predictionObjectName: PropTypes.string,
   avatar: PropTypes.string,
+  link: PropTypes.string,
   timerData: PropTypes.number.isRequired,
   counter: PropTypes.number.isRequired,
   disabled: PropTypes.bool,
@@ -213,6 +221,7 @@ QuickForecastCard.defaultProps = {
   disabled: false,
   avatar: '',
   predictionObjectName: '',
+  link: '',
 };
 
 export default injectIntl(QuickForecastCard);

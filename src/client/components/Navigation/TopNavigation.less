@@ -14,29 +14,39 @@
   border-bottom: @base-border;
   padding-bottom: 10px;
   overflow: hidden;
+
   &__link {
     display: inline-block;
     height: 100%;
     cursor: pointer;
     color: @blue-botticelli;
     font-size: 18px;
+
+    @media screen and (max-width: @medium-bp) and (min-width: @small-bp) {
+      font-size: 13px;
+    }
+
     &--active,
     &:hover {
       color: @blue-vivid;
       border-bottom: 2px @border-style-base @blue-vivid;
     }
   }
+
   &__item {
     height: 30px;
+
     @media @small, @medium, @large {
       height: 45px;
       padding-top: 10px;
       font-weight: bold;
+
       &:not(:last-child) {
         margin-right: 12px;
       }
     }
   }
+
   @media @small, @medium, @large {
     display: flex;
     flex-direction: row;

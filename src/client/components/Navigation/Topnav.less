@@ -772,6 +772,7 @@ div[data-dir='rtl'] .Topnav {
 
 .no-navbroker {
   height: 102px;
+
   @media @small {
     height: 96px;
   }
@@ -801,6 +802,12 @@ div[data-dir='rtl'] .Topnav {
 
 .Avatar {
   border-color: @blue-vivid;
+}
+
+.center-menu {
+  @media screen and (max-width: @medium-bp) and (min-width: @small-bp) {
+    width: 49% !important;
+  }
 }
 
 @import 'Topnav-nightmode';

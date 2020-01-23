@@ -27,7 +27,9 @@ const DynamicPriceWrapper = ({ postPrice, secur, closedPrice, intl }) => {
       </div>
       <div className={priceClassList}>
         {closedPrice ? (
-          <USDDisplay value={+closedPrice} />
+          <span title={closedPrice}>
+            <USDDisplay value={+closedPrice} />
+          </span>
         ) : (
           <DynamicPrice postPrice={postPrice} security={secur} />
         )}

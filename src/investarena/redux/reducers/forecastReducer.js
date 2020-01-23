@@ -40,7 +40,8 @@ export default (state = initialState, action) => {
         quickForecastData: [...mapperList],
         timer: action.payload.timer,
         roundTime: action.payload.round_time,
-      }}
+      };
+    }
 
     case activeForecastTypes.GET_QUICK_FORECAST_DATA.ERROR:
       return state;
@@ -81,6 +82,28 @@ export default (state = initialState, action) => {
           })),
         ],
         hasMoreStatistic: action.payload.hasMore,
+      };
+    }
+
+    case activeForecastTypes.QUICK_FORECAST_WINNERS_SHOW_MORE.SUCCESS: {
+      return {
+        ...state,
+        winners: [
+          ...state.winners,
+          ...action.payload.users.map(user => ({
+            name: user.user,
+            reward: user.reward,
+          })),
+        ],
+        hasMoreStatistic: action.payload.hasMore,
+      };
+    }
+
+    case activeForecastTypes.QUICK_FORECAST_WINNERS_SHOW_MORE.ERROR: {
+      return {
+        ...state,
+        winners: [...state.winners],
+        hasMoreStatistic: false,
       };
     }
 
