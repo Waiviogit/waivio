@@ -2,28 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Input, Icon, Modal } from 'antd';
 import _ from 'lodash';
-import uuidv4 from 'uuid/v4';
-import { injectIntl } from 'react-intl';
 import withEditor from '../Editor/withEditor';
 import Avatar from '../Avatar';
-import { isValidImage } from '../../helpers/image';
 import ImageSetter from '../ImageSetter/ImageSetter';
-import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
-import { objectFields } from '../../../common/constants/listOfFields';
-import addImageByLink from '../ImageSetter/ImageSetterHelpers';
 import './QuickCommentEditor.less';
 
 @withEditor
-@injectIntl
 class QuickCommentEditor extends React.Component {
   static propTypes = {
     parentPost: PropTypes.shape().isRequired,
     username: PropTypes.string.isRequired,
-    intl: PropTypes.shape().isRequired,
     isLoading: PropTypes.bool,
     inputValue: PropTypes.string.isRequired,
-    onImageUpload: PropTypes.func,
-    onImageInvalid: PropTypes.func,
     onSubmit: PropTypes.func,
   };
 
@@ -41,105 +31,57 @@ class QuickCommentEditor extends React.Component {
     this.state = {
       body: '',
       isDisabledSubmit: false,
-      image: [],
+      currentImage: [],
       imageUploading: false,
       commentMsg: props.inputValue || '',
       isModal: false,
       isLoadingImage: false,
     };
-
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleMsgChange = this.handleMsgChange.bind(this);
-    this.handleRemoveImage = this.handleRemoveImage.bind(this);
   }
 
-  handleSubmit(e) {
+  handleSubmit = e => {
     e.preventDefault();
     e.stopPropagation();
     if (e.shiftKey) {
       this.setState(prevState => ({ commentMsg: `${prevState.commentMsg}\n` }));
     } else {
-      const { image, commentMsg } = this.state;
+      const { currentImage, commentMsg } = this.state;
       this.setState({ isDisabledSubmit: true });
       if (commentMsg) {
         let imageData = commentMsg.trim();
-        if (image) {
-          imageData += `\n![${image[0].name}](${image[0].src})\n`;
+        if (currentImage) {
+          imageData += `\n![${currentImage[0].name}](${currentImage[0].src})\n`;
         }
         this.props.onSubmit(this.props.parentPost, imageData).then(response => {
           if (!_.get(response, 'error', false)) {
-            this.setState({ commentMsg: '', image: [] });
+            this.setState({ commentMsg: '', currentImage: [] });
           }
         });
       }
     }
-  }
+  };
 
-  handleMsgChange(e) {
+  handleMsgChange = e => {
     const commentMsg = e.currentTarget.value;
     this.setState({ commentMsg });
-  }
-
-  handleRemoveImage() {
-    this.setState({ image: [], imageUploading: false });
-  }
-
-  getImageByLink = image => {
-    this.setState({ image: [image] });
   };
 
-  handleAddImageByLink = image => {
-    addImageByLink(image, this.getImageByLink, this.props.intl);
-  };
-
-  handleChangeImage = event => {
-    const { onImageInvalid, onImageUpload } = this.props;
-    if (event.target.files && event.target.files[0]) {
-      if (
-        !isValidImage(
-          event.target.files[0],
-          MAX_IMG_SIZE[objectFields.background],
-          ALLOWED_IMG_FORMATS,
-        )
-      ) {
-        onImageInvalid(
-          MAX_IMG_SIZE[objectFields.background],
-          `(${ALLOWED_IMG_FORMATS.join(', ')}) `,
-        );
-        return;
-      }
-
-      this.setState({
-        isLoadingImage: true,
-        image: [],
-      });
-
-      onImageUpload(event.target.files[0], this.disableAndInsertImage, () =>
-        this.setState({
-          isLoadingImage: false,
-        }),
-      );
-    }
-  };
-
-  disableAndInsertImage = (image, imageName = 'image') => {
-    const newImage = {
-      src: image,
-      name: imageName,
-      id: uuidv4(),
-    };
-    this.setState({
-      image: [newImage],
-      isLoadingImage: false,
-    });
+  handleRemoveImage = () => {
+    this.setState({ currentImage: [], imageUploading: false });
   };
 
   handleOpenModal = () => this.setState({ isModal: !this.state.isModal });
 
   handleOnOk = () => this.setState({ isModal: !this.state.isModal });
 
+  onLoadingImage = value => this.setState({ isLoading: value });
+
+  getImages = image => {
+    this.setState({ currentImage: image });
+  };
+
   render() {
-    const { image, imageUploading, commentMsg, isModal, isLoadingImage } = this.state;
+    const { currentImage, imageUploading, commentMsg, isModal, isLoadingImage } = this.state;
     const { username, isLoading } = this.props;
 
     const setImage = (
@@ -171,9 +113,9 @@ class QuickCommentEditor extends React.Component {
             onPressEnter={this.handleSubmit}
             onChange={this.handleMsgChange}
           />
-          {_.isEmpty(image) && setImage}
+          {_.isEmpty(currentImage) && setImage}
         </div>
-        {!_.isEmpty(image) && (
+        {!_.isEmpty(currentImage) && (
           <div className="QuickComment__img-preview">
             <div
               className="QuickComment__img-preview__remove"
@@ -182,7 +124,7 @@ class QuickCommentEditor extends React.Component {
             >
               <i className="iconfont icon-delete_fill QuickComment__img-preview__remove__icon" />
             </div>
-            <img src={image[0].src} alt={image[0].name} />
+            <img src={currentImage[0].src} alt={currentImage[0].name} />
           </div>
         )}
         <Modal
@@ -193,13 +135,7 @@ class QuickCommentEditor extends React.Component {
           visible={isModal}
           onOk={this.handleOnOk}
         >
-          <ImageSetter
-            isLoading={isLoadingImage}
-            handleAddImage={this.handleChangeImage}
-            onRemoveImage={this.handleRemoveImage}
-            images={image}
-            handleAddImageByLink={this.handleAddImageByLink}
-          />
+          <ImageSetter getImages={this.getImages} onLoadingImage={this.onLoadingImage} />
         </Modal>
       </React.Fragment>
     );

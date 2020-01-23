@@ -50,10 +50,6 @@ export default class ImageSideButton extends React.Component {
 
   handleOpenModal = () => this.setState({ isModal: !this.state.isModal });
 
-  getImageByLink = image => {
-    this.setState({ currentImage: [image] });
-  };
-
   onLoadingImage = value => this.setState({ isLoading: value });
 
   getImages = image => {
