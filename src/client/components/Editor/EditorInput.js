@@ -323,10 +323,6 @@ class EditorInput extends React.Component {
     }
   };
 
-  getImageByLink = image => {
-    this.setState({ currentImage: [image] });
-  };
-
   onLoadingImage = value => this.setState({ isLoadingImage: value });
 
   getImages = image => {
@@ -371,7 +367,7 @@ class EditorInput extends React.Component {
           visible={showModal}
           onOk={this.handleOnOkModal}
         >
-          <ImageSetter getImages={this.getImages} onLoadingImage={this.onLoadingImage} />
+          <ImageSetter onImageLoaded={this.getImages} onLoadingImage={this.onLoadingImage} />
         </Modal>
 
         <div className="EditorInput__dropzone-base">

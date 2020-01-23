@@ -267,7 +267,7 @@ class CreateImage extends React.Component {
             })(
               <div className="clearfix">
                 <ImageSetter
-                  getImages={this.getImages}
+                  onImageLoaded={this.getImages}
                   onLoadingImage={this.onLoadingImage}
                   isMultiple
                 />

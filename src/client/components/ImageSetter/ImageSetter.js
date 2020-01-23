@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Icon, message } from 'antd';
@@ -16,11 +16,17 @@ const ImageSetter = ({
   onImageInvalid,
   onImageUpload,
   onLoadingImage,
-  getImages,
+  onImageLoaded,
 }) => {
   const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
   const [isLoadingImage, setLoadingImage] = useState(false);
+
+  useEffect(() => {
+    if (currentImages.length) {
+      onImageLoaded(currentImages);
+    }
+  }, [currentImages]);
 
   const checkIsImage = (isValidLink, image) => {
     const isSameLink = currentImages.some(currentImage => currentImage.src === image.src);
@@ -105,9 +111,8 @@ const ImageSetter = ({
   const handleRemoveImage = imageId => {
     const filteredImages = currentImages.filter(f => f.id !== imageId);
     setCurrentImages(filteredImages);
+    if (!filteredImages.length) onImageLoaded([]);
   };
-
-  getImages(currentImages);
 
   return (
     <div className="ImageSetter">
@@ -193,7 +198,7 @@ ImageSetter.propTypes = {
   onImageInvalid: PropTypes.func.isRequired,
   onImageUpload: PropTypes.func.isRequired,
   onLoadingImage: PropTypes.func.isRequired,
-  getImages: PropTypes.func.isRequired,
+  onImageLoaded: PropTypes.func.isRequired,
   isMultiple: PropTypes.bool,
 };
 
