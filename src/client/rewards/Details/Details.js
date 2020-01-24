@@ -22,10 +22,14 @@ const Details = ({
   const localizer = (id, defaultMessage, variablesData) =>
     intl.formatMessage({ id, defaultMessage }, variablesData);
   const messageData = getDetailsMessages(localizer, objectDetails);
+
   const isCamaignReserved =
     !(assigned !== null && !assigned && !isReserved) ||
     loading ||
     objectDetails.isReservedSiblingObj;
+
+  let indexItem = 1;
+
   return (
     <Modal
       title={<div className="Details__modal-title">{messageData.seekHonestReviews}!</div>}
@@ -82,15 +86,22 @@ const Details = ({
         <div className="Details__text mv3">{messageData.reviewEligibleAward}</div>
         <div className="Details__criteria-wrap">
           <div className="Details__criteria-row">
-            {`1. ${messageData.minimumOriginalPhotos} `}
+            {/* eslint-disable-next-line no-plusplus */}
+            {`${indexItem++}. ${messageData.minimumOriginalPhotos} `}
             <Link className="ml1" to={`/object/${proposedWobj.name}`}>
               {proposedWobj.name}
             </Link>
             ;
           </div>
-          <div className="Details__criteria-row">{`2. ${messageData.photoReceipt}`}</div>
+          {objectDetails.requirements.receiptPhoto && (
+            /* eslint-disable-next-line no-plusplus */
+            <div className="Details__criteria-row">{`${indexItem++}. ${
+              messageData.photoReceipt
+            }`}</div>
+          )}
           <div className="Details__criteria-row nowrap">
-            {`3. ${messageData.linkTo}`}
+            {/* eslint-disable-next-line no-plusplus */}
+            {`${indexItem++}. ${messageData.linkTo}`}
             <Link className="ml1" to={`/object/${proposedWobj.author_permlink}`}>
               {proposedWobj.name}
             </Link>
@@ -100,8 +111,9 @@ const Details = ({
               to={`/object/${proposedWobj.author_permlink}`}
             >{`www.waivio.com/object/${proposedWobj.author_permlink}`}</Link>
           </div>
-          <div className="Details__criteria-row">
-            {`4. ${messageData.linkTo}`}
+          <div className="Details__criteria-row nowrap">
+            {/* eslint-disable-next-line no-plusplus */}
+            {`${indexItem++}. ${messageData.linkTo}`}
             <Link className="ml1" to={`/object/${objectDetails.requiredObject}`}>
               {objectDetails.name}
             </Link>
@@ -113,7 +125,8 @@ const Details = ({
           </div>
           <div className="Details__criteria-row">
             {objectDetails.description &&
-              `5. ${messageData.additionalRequirements}: ${objectDetails.description}`}
+              /* eslint-disable-next-line no-plusplus */
+              `${indexItem++}. ${messageData.additionalRequirements}: ${objectDetails.description}`}
           </div>
         </div>
         <div className="Details__text mv3">{messageData.sponsorReservesPayment}</div>
