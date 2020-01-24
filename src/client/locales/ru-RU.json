@@ -953,7 +953,7 @@
   "filter_caption": "Фильтр",
   "show_more_winners": "Показать больше победителей",
   "forecast_question": "вырастет через {time} мин?",
-  "rise": "Поднимется",
+  "rise": "Поднимется: ",
   "story_min_70_is_required": "Требуется минимум 70%",
   "postForecast.expired": "Дата окончания",
   "postSellBuy.profitability": "Доходность:",

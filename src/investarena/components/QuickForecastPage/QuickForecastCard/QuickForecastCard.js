@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -17,7 +17,6 @@ import './QuickForecastCard.less';
 
 const QuickForecastCard = ({
   forecast,
-  // answerForecast,
   predictionObjectName,
   timerData,
   avatar,
@@ -109,7 +108,7 @@ const QuickForecastCard = ({
                 </p>
                 {pendingStatus ? (
                   <p className="green">
-                    <FormattedMessage id="rise" defaultMessage="Rise" />:
+                    <FormattedMessage id="rise" defaultMessage="Rise: " />
                     <span className={sideClassList}>{side}</span>
                   </p>
                 ) : (

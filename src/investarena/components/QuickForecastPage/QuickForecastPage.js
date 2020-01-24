@@ -16,7 +16,6 @@ import SortSelector from '../../../client/components/SortSelector/SortSelector';
 import Affix from '../../../client/components/Utils/Affix';
 import { marketNames } from '../../constants/objectsInvestarena';
 import {
-  answerForQuickForecast,
   forecastWinnersShowMore,
   getDataForQuickForecast,
   getForecastRoundRewards,
@@ -155,7 +154,7 @@ const QuickForecastPage = props => {
                     </SortSelector.Item>
                   ))}
                 </SortSelector>
-                {currentForecastList.map((obj, index) => (
+                {currentForecastList.map((obj) => (
                   <QuickForecastCard
                     forecast={obj}
                     key={obj.author + obj.permlink}
@@ -170,7 +169,6 @@ const QuickForecastPage = props => {
                       props.quotesSett[obj.security] &&
                       props.quotesSett[obj.security].wobjData.author_permlink
                     }
-                    answerForecast={props.answerForQuickForecast}
                     getForecast={props.getDataForQuickForecast}
                     timerData={secondsInMilliseconds(props.timeForTimer)}
                     timerCallback={() => handleFinishTimer()}
@@ -230,7 +228,6 @@ const QuickForecastPage = props => {
 
 QuickForecastPage.propTypes = {
   quickForecastDataList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  answerForQuickForecast: PropTypes.func.isRequired,
   getDataForQuickForecast: PropTypes.func.isRequired,
   getForecastRoundRewards: PropTypes.func.isRequired,
   getForecastWinners: PropTypes.func.isRequired,
@@ -288,7 +285,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  answerForQuickForecast,
   getDataForQuickForecast,
   getForecastWinners,
   getForecastStatistic,
