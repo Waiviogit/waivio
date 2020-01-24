@@ -30,6 +30,7 @@ const QuickForecastPage = props => {
   const [isLoading, setLoading] = useState(false);
   const [currentTime, setTime] = useState(0);
   const winnersLimit = 5;
+  const answeredForecastList = props.quickForecastDataList.filter(forecast => !forecast.active);
 
   useEffect(() => {
     props.getDataForQuickForecast();
@@ -40,6 +41,12 @@ const QuickForecastPage = props => {
 
     setTimeout(() => setLoading(true), 3000);
   }, [props.auth]);
+
+  useEffect(() => {
+    if(answeredForecastList.length === 5) {
+      setSort('All');
+    }
+  }, [props.quickForecastDataList]);
 
   const filtersType = [
     {
@@ -74,13 +81,10 @@ const QuickForecastPage = props => {
 
     return obj.market === sortBy && obj.active;
   });
-  const answeredForecastList = props.quickForecastDataList.filter(forecast => !forecast.active);
-  const forecastList =
-    sortBy && sortBy !== 'All'
+  const forecastList = sortBy && sortBy !== 'All'
       ? [...answeredForecastList, ...filterForecastList]
       : props.quickForecastDataList;
-  const currentForecastList =
-    answeredForecastList.length === 5 ? answeredForecastList : forecastList;
+  const currentForecastList = answeredForecastList.length === 5 ? answeredForecastList : forecastList;
   const secondsInMilliseconds = sec => sec / 0.001;
   const finishRoundTime = props.roundTime && currentTime + secondsInMilliseconds(props.roundTime);
 
