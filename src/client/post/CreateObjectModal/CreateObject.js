@@ -109,6 +109,7 @@ class CreateObject extends React.Component {
         };
         this.props
           .createWaivioObject(objData)
+          //   Promise.resolve({ value: { parentPermlink: 'pp', parentAuthor: 'pa' }})
           .then(({ value: { parentPermlink, parentAuthor } }) => {
             this.props.notify(
               this.props.intl.formatMessage({
@@ -118,27 +119,31 @@ class CreateObject extends React.Component {
               'success',
             );
             this.setState({ loading: false, isModalOpen: false });
-            this.props.onCreateObject({
-              id: parentPermlink,
-              author: parentAuthor,
-              avatar: DEFAULTS.AVATAR,
-              name: objData.name,
-              title: '',
-              parents: [],
-              weight: '',
-              createdAt: Date.now(),
-              updatedAt: Date.now(),
-              children: [],
-              users: [],
-              userCount: 0,
-              version: 0,
-              isNew: false,
-              rank: 1,
-              type: objData.type,
-              background: '',
-            });
+            this.props.onCreateObject(
+              {
+                id: parentPermlink,
+                author: parentAuthor,
+                avatar: DEFAULTS.AVATAR,
+                name: objData.name,
+                title: '',
+                parents: [],
+                weight: '',
+                createdAt: Date.now(),
+                updatedAt: Date.now(),
+                children: [],
+                users: [],
+                userCount: 0,
+                version: 0,
+                isNew: false,
+                rank: 1,
+                type: objData.type,
+                background: '',
+              },
+              { locale: values.locale },
+            );
           })
-          .catch(() => {
+          .catch(error => {
+            console.log('\t> > > ', error);
             this.props.notify(
               this.props.intl.formatMessage({
                 id: 'create_object_error',

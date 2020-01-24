@@ -9,12 +9,15 @@ export const appendObject = (postData, { follow, votePower } = { follow: false }
   dispatch,
   getState,
 ) => {
+  console.log('\t> > > follow', follow, 'votePower:', votePower);
   const state = getState();
   return dispatch({
     type: APPEND_WAIVIO_OBJECT.ACTION,
     payload: {
       promise: postAppendWaivioObject(postData).then(res => {
-        dispatch(voteObject(res.author, res.permlink, votePower || getVotePercent(state)));
+        if (votePower !== null) {
+          dispatch(voteObject(res.author, res.permlink, votePower || getVotePercent(state)));
+        }
         if (follow) {
           dispatch(followObject(postData.parentPermlink));
         }
