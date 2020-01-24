@@ -23,7 +23,6 @@ const CreateFormRenderer = props => {
     reservationPeriod,
     targetDays,
     minPhotos,
-    minSteemReputation,
     minExpertise,
     minFollowers,
     minPosts,
@@ -326,14 +325,6 @@ const CreateFormRenderer = props => {
         </p>
         <br />
 
-        <Form.Item label={fields.minSteemReputation.label}>
-          {getFieldDecorator(fields.minSteemReputation.name, {
-            rules: fields.minSteemReputation.rules,
-            initialValue: minSteemReputation,
-          })(<Input type="number" disabled={disabled} />)}
-          <div className="CreateReward__field-caption">{fields.minSteemReputation.caption}</div>
-        </Form.Item>
-
         <Form.Item label={fields.minExpertise.label}>
           {getFieldDecorator(fields.minExpertise.name, {
             rules: fields.minExpertise.rules,
@@ -479,7 +470,6 @@ CreateFormRenderer.defaultProps = {
     sunday: true,
   },
   minPhotos: 0,
-  minSteemReputation: 25,
   minExpertise: 0,
   minFollowers: 0,
   minPosts: 0,
@@ -502,7 +492,6 @@ CreateFormRenderer.propTypes = {
   reservationPeriod: PropTypes.number,
   targetDays: PropTypes.shape(),
   minPhotos: PropTypes.number,
-  minSteemReputation: PropTypes.number,
   minExpertise: PropTypes.number,
   minFollowers: PropTypes.number,
   minPosts: PropTypes.number,

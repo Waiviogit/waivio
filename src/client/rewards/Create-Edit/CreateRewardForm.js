@@ -59,7 +59,6 @@ class CreateRewardForm extends React.Component {
       sunday: true,
     },
     minPhotos: 0,
-    minSteemReputation: 25,
     minExpertise: 0,
     minFollowers: 0,
     minPosts: 0,
@@ -147,8 +146,6 @@ class CreateRewardForm extends React.Component {
 
     if (getFieldValue('minPhotos') === '') setFieldsValue({ minPhotos: 0 });
 
-    if (getFieldValue('minSteemReputation') === '') setFieldsValue({ minSteemReputation: -100 });
-
     if (getFieldValue('minFollowers') === '') setFieldsValue({ minFollowers: 0 });
 
     if (getFieldValue('minPosts') === '') setFieldsValue({ minPosts: 0 });
@@ -178,7 +175,6 @@ class CreateRewardForm extends React.Component {
         minFollowers: data.minFollowers,
         minPosts: data.minPosts,
         minExpertise: data.minExpertise,
-        minSteemReputation: data.minSteemReputation,
       },
       frequency_assign: data.eligibleDays,
       commissionAgreement: data.commissionAgreement / 100,
@@ -378,7 +374,6 @@ class CreateRewardForm extends React.Component {
       parentPermlink,
       targetDays,
       minPhotos,
-      minSteemReputation,
       minExpertise,
       minFollowers,
       minPosts,
@@ -401,7 +396,6 @@ class CreateRewardForm extends React.Component {
         reservationPeriod={reservationPeriod}
         targetDays={targetDays}
         minPhotos={minPhotos}
-        minSteemReputation={minSteemReputation}
         minExpertise={minExpertise}
         minFollowers={minFollowers}
         minPosts={minPosts}
