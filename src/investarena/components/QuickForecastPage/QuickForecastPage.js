@@ -157,7 +157,7 @@ const QuickForecastPage = props => {
                 {currentForecastList.map((obj) => (
                   <QuickForecastCard
                     forecast={obj}
-                    key={obj.author + obj.permlink}
+                    key={obj.id}
                     predictionObjectName={
                       props.quotesSett[obj.security] && props.quotesSett[obj.security].name
                     }

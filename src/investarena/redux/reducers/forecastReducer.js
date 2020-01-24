@@ -105,7 +105,7 @@ export default (state = initialState, action) => {
 
     case activeForecastTypes.ANSWER_QUICK_FORECAST: {
       const answeredForecast = state.quickForecastData.find(
-        frcast => frcast.permlink === action.payload.permlink,
+        forecast => forecast.id === action.payload.id,
       );
       const forecastIndex = state.quickForecastData.indexOf(answeredForecast);
       state.quickForecastData.splice(forecastIndex, 1);
@@ -130,7 +130,7 @@ export default (state = initialState, action) => {
 
     case activeForecastTypes.ANSWER_QUICK_ERROR: {
       const answeredForecast = state.quickForecastData.find(
-        frcast => frcast.permlink === action.payload.permlink,
+        forecast => forecast.id === action.payload.id,
       );
       const forecastIndex = state.quickForecastData.indexOf(answeredForecast);
       state.quickForecastData.splice(forecastIndex, 1, {
@@ -147,7 +147,7 @@ export default (state = initialState, action) => {
 
     case activeForecastTypes.ANSWER_QUICK_LOADING: {
       const answeredForecast = state.quickForecastData.find(
-        fotecast => fotecast.permlink === action.payload,
+        fotecast => fotecast.id === action.payload,
       );
       const forecastIndex = state.quickForecastData.indexOf(answeredForecast);
       state.quickForecastData.splice(forecastIndex, 1, {

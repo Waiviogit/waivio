@@ -83,6 +83,7 @@ export const answerForQuickForecast = (
   expiredAt,
   answer,
   security,
+  id,
   timerData,
   weight = 10000,
 ) => (dispatch, getState, { steemConnectAPI }) => {
@@ -104,7 +105,7 @@ export const answerForQuickForecast = (
 
   dispatch({
     type: ANSWER_QUICK_LOADING,
-    payload: permlink,
+    payload: id,
   });
 
   if (Date.parse(expiredAt) > Date.now()) {
@@ -138,7 +139,7 @@ export const answerForQuickForecast = (
                 type: ANSWER_QUICK_FORECAST,
                 payload: {
                   answer,
-                  permlink,
+                  id,
                   postPrice,
                   quickForecastExpiredAt: Date.now() + timerData,
                 },
@@ -150,7 +151,7 @@ export const answerForQuickForecast = (
               dispatch({
                 type: ANSWER_QUICK_ERROR,
                 payload: {
-                  permlink,
+                  id,
                 },
               });
             });
@@ -160,7 +161,7 @@ export const answerForQuickForecast = (
           dispatch({
             type: ANSWER_QUICK_ERROR,
             payload: {
-              permlink,
+              id,
             },
           });
         }),

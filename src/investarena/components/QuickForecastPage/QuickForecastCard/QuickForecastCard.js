@@ -67,6 +67,7 @@ const QuickForecastCard = ({
         forecast.expiredAt,
         answer,
         forecast.security,
+        forecast.id,
         timerData,
       ),
     )
@@ -75,7 +76,7 @@ const QuickForecastCard = ({
           `${intl.formatMessage({
             id: 'forecast_info_message',
             defaultMessage: 'Forecasts remaining in current round:',
-          })} ${5 - counter}`,
+          })} ${4 - counter}`,
         );
       })
   };
@@ -196,7 +197,6 @@ QuickForecastCard.propTypes = {
     isLoaded: PropTypes.bool,
     id: PropTypes.string,
   }).isRequired,
-  answerForecast: PropTypes.func.isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func.isRequired,
   }).isRequired,
