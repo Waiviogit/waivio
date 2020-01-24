@@ -58,8 +58,8 @@ class CreateRewardForm extends React.Component {
       saturday: true,
       sunday: true,
     },
+    receiptPhoto: false,
     minPhotos: 0,
-    minSteemReputation: 25,
     minExpertise: 0,
     minFollowers: 0,
     minPosts: 0,
@@ -127,6 +127,7 @@ class CreateRewardForm extends React.Component {
             ? values[2].map(obj => getClientWObj(obj, this.props.usedLocale))
             : [],
           reservationPeriod: campaign.count_reservation_days,
+          receiptPhoto: campaign.requirements.receiptPhoto,
           minFollowers: campaign.userRequirements.minFollowers,
           minPosts: campaign.userRequirements.minPosts,
           targetDays: campaign.reservation_timetable,
@@ -146,8 +147,6 @@ class CreateRewardForm extends React.Component {
     const { setFieldsValue, getFieldValue } = this.props.form;
 
     if (getFieldValue('minPhotos') === '') setFieldsValue({ minPhotos: 0 });
-
-    if (getFieldValue('minSteemReputation') === '') setFieldsValue({ minSteemReputation: -100 });
 
     if (getFieldValue('minFollowers') === '') setFieldsValue({ minFollowers: 0 });
 
@@ -170,7 +169,10 @@ class CreateRewardForm extends React.Component {
       type: data.type,
       budget: data.budget,
       reward: data.reward,
-      requirements: { minPhotos: data.minPhotos },
+      requirements: {
+        minPhotos: data.minPhotos,
+        receiptPhoto: data.receiptPhoto,
+      },
       blacklist_users: [],
       whitelist_users: [],
       count_reservation_days: data.reservationPeriod,
@@ -178,7 +180,6 @@ class CreateRewardForm extends React.Component {
         minFollowers: data.minFollowers,
         minPosts: data.minPosts,
         minExpertise: data.minExpertise,
-        minSteemReputation: data.minSteemReputation,
       },
       frequency_assign: data.eligibleDays,
       commissionAgreement: data.commissionAgreement / 100,
@@ -377,8 +378,8 @@ class CreateRewardForm extends React.Component {
       loading,
       parentPermlink,
       targetDays,
+      receiptPhoto,
       minPhotos,
-      minSteemReputation,
       minExpertise,
       minFollowers,
       minPosts,
@@ -400,8 +401,8 @@ class CreateRewardForm extends React.Component {
         reward={reward}
         reservationPeriod={reservationPeriod}
         targetDays={targetDays}
+        receiptPhoto={receiptPhoto}
         minPhotos={minPhotos}
-        minSteemReputation={minSteemReputation}
         minExpertise={minExpertise}
         minFollowers={minFollowers}
         minPosts={minPosts}

@@ -151,19 +151,6 @@ export default (messageFactory, validators, userName) => ({
       },
     ],
   },
-  minSteemReputation: {
-    name: 'minSteemReputation',
-    label: messageFactory('min_steem_reputation', 'Minimum Steem reputation (optional)'),
-    rules: [
-      {
-        validator: validators.checkSteemReputation,
-      },
-    ],
-    caption: messageFactory(
-      'users_steem_start_reputation',
-      'New users on Steem start with reputation of 25',
-    ),
-  },
   minExpertise: {
     name: 'minExpertise',
     label: messageFactory('minimum_waivio_expertise', 'Minimum Waivio expertise (optional)'),
@@ -273,6 +260,18 @@ export default (messageFactory, validators, userName) => ({
     name: 'agreement',
     label: messageFactory('link_agreement', 'Link to the agreement (page object, optional)'),
     placeholder: messageFactory('page_object_placeholder', 'Find page object'),
+  },
+  checkboxReceiptPhoto: {
+    name: 'receiptPhoto',
+    valuePropName: 'checked',
+    title: messageFactory(
+      'request_receipt_photo',
+      'Request a photo of the receipt (without personal details)',
+    ),
+    caption: messageFactory(
+      'number_photos_required_increased',
+      'If selected, the number of photos required will be increased by one.',
+    ),
   },
   checkboxAgree: {
     name: 'checkboxAgree',
