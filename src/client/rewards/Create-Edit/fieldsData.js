@@ -261,6 +261,18 @@ export default (messageFactory, validators, userName) => ({
     label: messageFactory('link_agreement', 'Link to the agreement (page object, optional)'),
     placeholder: messageFactory('page_object_placeholder', 'Find page object'),
   },
+  checkboxReceiptPhoto: {
+    name: 'receiptPhoto',
+    valuePropName: 'checked',
+    title: messageFactory(
+      'request_receipt_photo',
+      'Request a photo of the receipt (without personal details)',
+    ),
+    caption: messageFactory(
+      'number_photos_required_increased',
+      'If selected, the number of photos required will be increased by one.',
+    ),
+  },
   checkboxAgree: {
     name: 'checkboxAgree',
     rules: [

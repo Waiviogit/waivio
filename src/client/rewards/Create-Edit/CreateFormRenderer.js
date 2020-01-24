@@ -22,6 +22,7 @@ const CreateFormRenderer = props => {
     reward,
     reservationPeriod,
     targetDays,
+    receiptPhoto,
     minPhotos,
     minExpertise,
     minFollowers,
@@ -264,6 +265,20 @@ const CreateFormRenderer = props => {
           })(<Input type="number" disabled={disabled} />)}
         </Form.Item>
 
+        <Form.Item className="CreateReward__photo-receipt">
+          {getFieldDecorator(fields.checkboxReceiptPhoto.name, {
+            valuePropName: fields.checkboxReceiptPhoto.valuePropName,
+            initialValue: receiptPhoto,
+          })(
+            <Checkbox defaultChecked={receiptPhoto} disabled={disabled}>
+              <span className="CreateReward__item-title huge-text">
+                {fields.checkboxReceiptPhoto.title}
+              </span>
+            </Checkbox>,
+          )}
+          <div className="CreateReward__field-caption">{fields.checkboxReceiptPhoto.caption}</div>
+        </Form.Item>
+
         <Form.Item
           label={<span className="CreateReward__label">{fields.primaryObject.label}</span>}
         >
@@ -469,6 +484,7 @@ CreateFormRenderer.defaultProps = {
     saturday: true,
     sunday: true,
   },
+  receiptPhoto: false,
   minPhotos: 0,
   minExpertise: 0,
   minFollowers: 0,
@@ -491,6 +507,7 @@ CreateFormRenderer.propTypes = {
   reward: PropTypes.number,
   reservationPeriod: PropTypes.number,
   targetDays: PropTypes.shape(),
+  receiptPhoto: PropTypes.bool,
   minPhotos: PropTypes.number,
   minExpertise: PropTypes.number,
   minFollowers: PropTypes.number,
