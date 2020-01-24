@@ -30,7 +30,8 @@ const QuickForecastCard = ({
   const pendingStatus = forecast.status === 'pending';
   const winner = forecast.status === 'guessed';
   const lose = forecast.status === 'finished';
-  const side = forecast.side === 'up'
+  const side =
+    forecast.side === 'up'
       ? intl.formatMessage({ defaultMessage: 'Yes', id: 'forecast_answer_rise' })
       : intl.formatMessage({ defaultMessage: 'No', id: 'forecast_answer_fall' });
 

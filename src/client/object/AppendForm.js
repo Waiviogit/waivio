@@ -1,5 +1,4 @@
 import _, { compact, flatten, keyBy, union } from 'lodash';
-import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
@@ -15,7 +14,6 @@ import {
   addressFields,
   socialObjectFields,
   websiteFields,
-  objectImageFields,
   phoneFields,
   ratingFields,
   ratePercent,
@@ -39,9 +37,7 @@ import { PRIMARY_COLOR } from '../../common/constants/waivio';
 import { getLanguageText } from '../translations';
 import { getField } from '../helpers/wObjectHelper';
 import { appendObject } from '../object/appendActions';
-import { isValidImage } from '../helpers/image';
 import withEditor from '../components/Editor/withEditor';
-import { MAX_IMG_SIZE, ALLOWED_IMG_FORMATS } from '../../common/constants/validation';
 import { getVoteValue } from '../helpers/user';
 import LikeSection from './LikeSection';
 import { getFieldWithMaxWeight, getInnerFieldWithMaxWeight, getListItems } from './wObjectHelper';
@@ -77,8 +73,6 @@ export default class AppendForm extends Component {
     /* decorators */
     form: PropTypes.shape(),
     user: PropTypes.shape(),
-    onImageUpload: PropTypes.func,
-    onImageInvalid: PropTypes.func,
     /* from connect */
     wObject: PropTypes.shape(),
     rewardFund: PropTypes.shape(),
