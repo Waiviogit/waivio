@@ -1,4 +1,5 @@
 @import (reference) '../../../client/styles/custom.less';
+@import (reference) '../../../client/styles/modules/variables';
 
 .timer-container {
   display: flex;
@@ -51,16 +52,12 @@
 }
 
 .head-title {
-  font-size: 50px;
+  font-size: 45px;
   text-align: center;
-  padding: 0 95px 0 0;
+  padding-top: 15px;
 
-  @media screen and (max-width: 999px) {
-    padding: 0;
-  }
-
-  @media screen and (max-width: 500px) {
-    font-size: 35px;
+  @media screen and (max-width: @small-bp) {
+    font-size: 29px;
   }
 }
 
@@ -83,6 +80,7 @@
 
 .free {
   color: @red;
+  text-transform: uppercase;
 }
 
 @import 'QuickForecastPage-nightmode';
