@@ -150,46 +150,48 @@ const ImageSetter = ({
           )}
         </div>
       )}
-      <div className="image-upload">
-        <input
-          id="inputfile"
-          className="image-upload__file-input"
-          type="file"
-          accept="image/*"
-          onInput={handleChangeImage}
-          onClick={e => {
-            e.target.value = null;
-          }}
-        />
-        <label htmlFor="inputfile">
-          <div className="button-upload">
-            <div className="button-upload__container">
-              <Icon className="button-upload__container-img" type="plus" />
-              <div className="button-upload__container-label">
-                {intl.formatMessage({
-                  id: 'imageSetter_upload',
-                  defaultMessage: 'Upload',
-                })}
+      {(isMultiple || !currentImages.length) && (
+        <div className="image-upload">
+          <input
+            id="inputfile"
+            className="image-upload__file-input"
+            type="file"
+            accept="image/*"
+            onInput={handleChangeImage}
+            onClick={e => {
+              e.target.value = null;
+            }}
+          />
+          <label htmlFor="inputfile">
+            <div className="button-upload">
+              <div className="button-upload__container">
+                <Icon className="button-upload__container-img" type="plus" />
+                <div className="button-upload__container-label">
+                  {intl.formatMessage({
+                    id: 'imageSetter_upload',
+                    defaultMessage: 'Upload',
+                  })}
+                </div>
               </div>
             </div>
+          </label>
+          <span>{intl.formatMessage({ id: 'imageSetter_or', defaultMessage: 'or' })}</span>
+          <div className="input-upload">
+            <input
+              className="input-upload__item"
+              size="large"
+              ref={imageLinkInput}
+              placeholder={intl.formatMessage({
+                id: 'imageSetter_paste_image_link',
+                defaultMessage: 'Paste image link',
+              })}
+            />
+            <button className="input-upload__btn" type="button" onClick={handleOnUploadImageByLink}>
+              <Icon type="upload" />
+            </button>
           </div>
-        </label>
-        <span>{intl.formatMessage({ id: 'imageSetter_or', defaultMessage: 'or' })}</span>
-        <div className="input-upload">
-          <input
-            className="input-upload__item"
-            size="large"
-            ref={imageLinkInput}
-            placeholder={intl.formatMessage({
-              id: 'imageSetter_paste_image_link',
-              defaultMessage: 'Paste image link',
-            })}
-          />
-          <button className="input-upload__btn" type="button" onClick={handleOnUploadImageByLink}>
-            <Icon type="upload" />
-          </button>
         </div>
-      </div>
+      )}
     </div>
   );
 };
