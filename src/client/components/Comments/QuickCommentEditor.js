@@ -136,7 +136,9 @@ class QuickCommentEditor extends React.Component {
           visible={isModal}
           onOk={this.handleOnOk}
         >
-          <ImageSetter onImageLoaded={this.getImages} onLoadingImage={this.onLoadingImage} />
+          {isModal && (
+            <ImageSetter onImageLoaded={this.getImages} onLoadingImage={this.onLoadingImage} />
+          )}
         </Modal>
       </React.Fragment>
     );

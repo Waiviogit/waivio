@@ -340,7 +340,9 @@ class EditorInput extends React.Component {
           visible={showModal}
           onOk={this.handleOnOkModal}
         >
-          <ImageSetter onImageLoaded={this.getImages} onLoadingImage={this.onLoadingImage} />
+          {showModal && (
+            <ImageSetter onImageLoaded={this.getImages} onLoadingImage={this.onLoadingImage} />
+          )}
         </Modal>
         <div className="EditorInput__dropzone-base">
           <Dropzone
