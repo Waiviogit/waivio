@@ -109,7 +109,7 @@ const ImageSetter = ({
   };
 
   const handleRemoveImage = imageId => {
-    const filteredImages = currentImages.filter(f => f.id !== imageId);
+    const filteredImages = currentImages.filter(image => image.id !== imageId);
     setCurrentImages(filteredImages);
     if (!filteredImages.length) onImageLoaded([]);
   };

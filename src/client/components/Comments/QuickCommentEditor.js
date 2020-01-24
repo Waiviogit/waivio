@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Input, Icon, Modal } from 'antd';
-import _ from 'lodash';
+import { get, isEmpty } from 'lodash';
 import withEditor from '../Editor/withEditor';
 import Avatar from '../Avatar';
 import ImageSetter from '../ImageSetter/ImageSetter';
@@ -60,7 +60,7 @@ class QuickCommentEditor extends React.Component {
           imageData += `\n![${currentImage[0].name}](${currentImage[0].src})\n`;
         }
         this.props.onSubmit(this.props.parentPost, imageData).then(response => {
-          if (!_.get(response, 'error', false)) {
+          if (!get(response, 'error', false)) {
             this.setState({ commentMsg: '', currentImage: [] });
           }
         });
@@ -114,9 +114,9 @@ class QuickCommentEditor extends React.Component {
             onPressEnter={this.handleSubmit}
             onChange={this.handleMsgChange}
           />
-          {_.isEmpty(currentImage) && setImage}
+          {isEmpty(currentImage) && setImage}
         </div>
-        {!_.isEmpty(currentImage) && (
+        {!isEmpty(currentImage) && (
           <div className="QuickComment__img-preview">
             <div
               className="QuickComment__img-preview__remove"
