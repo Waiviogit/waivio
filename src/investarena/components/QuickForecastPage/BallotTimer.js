@@ -24,6 +24,8 @@ const BallotTimer = ({ endTimerTime, willCallAfterTimerEnd }) => {
     if (endTimerTime > Date.now()) {
       interval = setInterval(handleUpdateTimeRemain, 1000);
     }
+
+    return () => clearInterval(interval);
   }, []);
 
   return <span className={timerClassList}>{time}</span>;

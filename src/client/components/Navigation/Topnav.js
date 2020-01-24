@@ -379,16 +379,19 @@ class Topnav extends React.Component {
             <PopoverMenuItem key="discover-objects" fullScreenHidden>
               <FormattedMessage id="discover" defaultMessage="Discover" />
             </PopoverMenuItem>
+            <PopoverMenuItem key="quick_forecast" fullScreenHidden>
+              <FormattedMessage id="quick_forecast" defaultMessage="Forecast" />
+            </PopoverMenuItem>
             <PopoverMenuItem key="activity" mobileScreenHidden>
               <FormattedMessage id="activity" defaultMessage="Activity" />
             </PopoverMenuItem>
             <PopoverMenuItem key="bookmarks" mobileScreenHidden>
               <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" />
             </PopoverMenuItem>
-            <PopoverMenuItem key="drafts" mobileScreenHidden>
+            <PopoverMenuItem key="drafts">
               <FormattedMessage id="drafts" defaultMessage="Drafts" />
             </PopoverMenuItem>
-            <PopoverMenuItem key="settings" mobileScreenHidden>
+            <PopoverMenuItem key="settings">
               <FormattedMessage id="settings" defaultMessage="Settings" />
             </PopoverMenuItem>
             <PopoverMenuItem key="replies" fullScreenHidden>
@@ -976,7 +979,7 @@ class Topnav extends React.Component {
               )}
             </Link>
           </div>
-          <div className={classNames('center', { mobileVisible: searchBarActive })}>
+          <div className={classNames('center', 'center-menu', { mobileVisible: searchBarActive })}>
             <div className="Topnav__input-container">
               <AutoComplete
                 dropdownClassName="Topnav__search-dropdown-container"
