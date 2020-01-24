@@ -43,10 +43,6 @@ const Details = ({
         <div className="Details__text mv3">{messageData.eligibilityCriteriaParticipate}</div>
         <div className="Details__criteria-wrap">
           <div className="Details__criteria-row">
-            <Checkbox checked disabled />
-            <div>{`${messageData.minimumSteemReputation}: ${objectDetails.userRequirements.minSteemReputation}`}</div>
-          </div>
-          <div className="Details__criteria-row">
             <Checkbox checked={objectDetails.requirement_filters.expertise} disabled />
             <div>{`${messageData.minimumWaivioExpertise}: ${objectDetails.userRequirements.minExpertise}`}</div>
           </div>
