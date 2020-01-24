@@ -142,7 +142,8 @@ export function splitPostContent(
   markdownContent,
   { titleKey, bodyKey } = { titleKey: 'postTitle', bodyKey: 'postBody' },
 ) {
-  const regExp = new RegExp('^(.+)\n'); // eslint-disable-line
+  // eslint-disable-next-line no-control-regex
+  const regExp = new RegExp('^(.*)\n');
   const postTitle = regExp.exec(markdownContent);
   const postBody = postTitle && markdownContent.replace(regExp, '');
   return {

@@ -4,6 +4,7 @@ import api from '../../configApi/apiResources';
 import createFormatter from '../../../client/helpers/steemitFormatter';
 import { createAsyncActionType } from '../../../client/helpers/stateHelpers';
 import { getAuthenticatedUserName } from '../../../client/reducers';
+import { forecastComments } from '../../constants/constantsForecast';
 
 export const GET_FORECAST_DATA = createAsyncActionType('@forecast-data/GET_FORECAST_DATA');
 
@@ -21,6 +22,9 @@ export const GET_QUICK_FORECAST_REWARDS = createAsyncActionType(
 );
 
 export const ANSWER_QUICK_FORECAST = '@forecast-data/ANSWER_QUICK_FORECAST';
+export const ANSWER_QUICK_LOADING = '@forecast-data/ANSWER_QUICK_LOADING';
+export const ANSWER_QUICK_ERROR = '@forecast-data/ANSWER_QUICK_ERROR';
+export const FINISH_QUICK_FORECAST = '@forecast-data/FINISH_QUICK_FORECAST';
 export const ANSWER_QUICK_FORECAST_LIKE_POST = '@forecast-data/ANSWER_QUICK_FORECAST_LIKE_POST';
 export const ANSWER_QUICK_FORECAST_SEND_COMMENT =
   '@forecast-data/ANSWER_QUICK_FORECAST_SEND_COMMENT';
@@ -68,17 +72,31 @@ export const getForecastRoundRewards = () => dispatch => {
 export const answerForQuickForecast = (
   author,
   permlink,
+  expiredAt,
   answer,
   id,
   security,
-  quickForecastExpiredAt,
+  timerData,
   counter,
   weight = 10000,
 ) => (dispatch, getState, { steemConnectAPI }) => {
+  const arrayRandElement = arr => {
+    const rand = Math.floor(Math.random() * arr.length);
+    return arr[rand];
+  };
+
   const username = getAuthenticatedUserName(getState());
   const postPrice = get(getState(), ['quotes', security, 'bidPrice'], null);
+  const forecastObject = get(getState(), ['quotesSettings', security, 'name'], null);
+  const commentArray = forecastComments(forecastObject);
+  const comment = arrayRandElement(commentArray);
 
-  if (quickForecastExpiredAt > Date.now()) {
+  dispatch({
+    type: ANSWER_QUICK_LOADING,
+    payload: id,
+  });
+
+  if (Date.parse(expiredAt) > Date.now()) {
     dispatch({
       type: ANSWER_QUICK_FORECAST_LIKE_POST,
       payload: {
@@ -99,7 +117,7 @@ export const answerForQuickForecast = (
                           author: username,
                           permlink: createFormatter.commentPermlink(author, permlink),
                           title: 'unactivate topic for rewards',
-                          body: `Campaign was inactivated by '${username}' `,
+                          body: comment,
                           json_metadata: JSON.stringify({
                             forecast_comment: {
                               side: answer,
@@ -118,20 +136,33 @@ export const answerForQuickForecast = (
                           answer,
                           id,
                           postPrice,
-                          quickForecastExpiredAt,
-                          status: 'pending',
+                          quickForecastExpiredAt: Date.now() + timerData,
                         },
                       });
                     })
-                    .catch(error => reject(error)),
+                    .catch(error => {
+                      reject(error);
+                      dispatch({
+                        type: ANSWER_QUICK_ERROR,
+                        payload: {
+                          id,
+                        },
+                      });
+                    }),
                 },
               });
             })
-            .catch(e => reject(e)),
+            .catch(e => {
+              reject(e);
+              dispatch({
+                type: ANSWER_QUICK_ERROR,
+                payload: {
+                  id,
+                },
+              });
+            }),
         ),
       },
     });
   }
-
-  getDataForQuickForecast();
 };
