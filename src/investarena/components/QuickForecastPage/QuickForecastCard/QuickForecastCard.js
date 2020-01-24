@@ -1,24 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { injectIntl, FormattedRelative } from 'react-intl';
-import { Icon } from 'antd';
-import { Link } from 'react-router-dom';
+import { injectIntl, FormattedMessage } from 'react-intl';
+import { Icon, message } from 'antd';
 
+import { Link } from 'react-router-dom';
+import { answerForQuickForecast } from '../../../redux/actions/forecastActions';
 import BallotTimer from '../BallotTimer';
 import USDDisplay from '../../../../client/components/Utils/USDDisplay';
 import ChartIcon from '../ChartIcon';
 import DynamicPriceWrapper from '../DynamicPriceWrapper';
-import Loading from '../../../../client/components/Icon/Loading';
 
+import Loading from '../../../../client/components/Icon/Loading';
 import './QuickForecastCard.less';
 
 const QuickForecastCard = ({
   forecast,
-  answerForecast,
+  // answerForecast,
   predictionObjectName,
   timerData,
-  id,
   avatar,
   timerCallback,
   counter,
@@ -28,24 +29,23 @@ const QuickForecastCard = ({
   link,
 }) => {
   // flags
+  const dispatch = useDispatch();
   const pendingStatus = forecast.status === 'pending';
   const winner = forecast.status === 'guessed';
   const lose = forecast.status === 'finished';
   const side =
-    forecast.side === 'up'
-      ? intl.formatMessage({ defaultMessage: 'Yes', id: 'forecast_answer_rise' })
-      : intl.formatMessage({ defaultMessage: 'No', id: 'forecast_answer_fall' });
+    forecast.side === 'up' ? (
+      <FormattedMessage id="forecast_answer_rise" defaultMessage="Yes" />
+    ) : (
+      <FormattedMessage id="forecast_answer_fall" defaultMessage="No" />
+    );
 
   // messages
-  const forecastFinishMessage = winner
-    ? intl.formatMessage({
-        id: 'forecast_winner_message',
-        defaultMessage: 'You Win!!!',
-      })
-    : intl.formatMessage({
-        id: 'forecast_lose_message',
-        defaultMessage: 'Try again!!!',
-      });
+  const forecastFinishMessage = winner ? (
+    <FormattedMessage id="forecast_winner_message" defaultMessage="You Win!!!" />
+  ) : (
+    <FormattedMessage id="forecast_lose_message" defaultMessage="Try again!!!" />
+  );
 
   // classLists
   const forecastCardClassList = classNames('ForecastCard', {
@@ -61,16 +61,24 @@ const QuickForecastCard = ({
     red: lose,
   });
   const handleClick = answer => {
-    answerForecast(
-      forecast.author,
-      forecast.permlink,
-      forecast.expiredAt,
-      answer,
-      id,
-      forecast.security,
-      timerData,
-      counter,
-    );
+    dispatch(
+      answerForQuickForecast(
+        forecast.author,
+        forecast.permlink,
+        forecast.expiredAt,
+        answer,
+        forecast.security,
+        timerData,
+      ),
+    )
+      .then(() => {
+        message.success(
+          `${intl.formatMessage({
+            id: 'forecast_info_message',
+            defaultMessage: 'Forecasts remaining in current round:',
+          })} ${5 - counter}`,
+        );
+      })
   };
   const handleAnswerClick = answer => handleAuthorization(() => handleClick(answer));
   const time = (timerData * 0.001) / 60;
@@ -82,10 +90,7 @@ const QuickForecastCard = ({
           <div className="ForecastCard__to-vote-card-container">
             <div className="ForecastCard__val">
               <div>
-                {intl.formatMessage({
-                  id: 'was',
-                  defaultMessage: 'Was',
-                })}
+                <FormattedMessage id="was" defaultMessage="Was" />
               </div>
               <span title={forecast.postPrice}>
                 <USDDisplay value={+forecast.postPrice} />
@@ -99,16 +104,13 @@ const QuickForecastCard = ({
                     src={avatar}
                     alt={predictionObjectName}
                   />
-                  &#160;
+                  &nbsp;
                   {predictionObjectName}
                 </p>
                 {pendingStatus ? (
                   <p className="green">
-                    {intl.formatMessage({
-                      id: 'rise',
-                      defaultMessage: 'Rise',
-                    })}
-                    : <span className={sideClassList}>{side}</span>
+                    <FormattedMessage id="rise" defaultMessage="Rise" />:
+                    <span className={sideClassList}>{side}</span>
                   </p>
                 ) : (
                   <span className={forecastsMessage}>{forecastFinishMessage}</span>
@@ -116,7 +118,7 @@ const QuickForecastCard = ({
               </Link>
               <div className="ForecastCard__forecast-timer">
                 <Icon type="clock-circle" />
-                &#160;
+                &nbsp;
                 <BallotTimer
                   endTimerTime={forecast.quickForecastExpiredAt}
                   willCallAfterTimerEnd={timerCallback}
@@ -139,18 +141,16 @@ const QuickForecastCard = ({
                     src={avatar}
                     alt={predictionObjectName}
                   />
-                  &#160;
+                  &nbsp;
                   {predictionObjectName}
                 </Link>
-                &#160;
+                &nbsp;
                 {intl.formatMessage(
                   {
                     id: 'forecast_question',
                     defaultMessage: 'will rise in {time} min?',
                   },
-                  {
-                    time,
-                  },
+                  { time },
                 )}
               </p>
             </div>
@@ -162,20 +162,14 @@ const QuickForecastCard = ({
                   onClick={() => handleAnswerClick('up')}
                   className="ballotButton ballotButton__positive"
                 >
-                  {intl.formatMessage({
-                    id: 'forecast_answer_rise',
-                    defaultMessage: 'Yes',
-                  })}
+                  <FormattedMessage id="forecast_answer_rise" defaultMessage="Yes" />
                 </button>
                 <button
                   disabled={disabled}
                   onClick={() => handleAnswerClick('down')}
                   className="ballotButton ballotButton__negative"
                 >
-                  {intl.formatMessage({
-                    id: 'forecast_answer_fall',
-                    defaultMessage: 'No',
-                  })}
+                  <FormattedMessage id="forecast_answer_fall" defaultMessage="No" />
                 </button>
               </div>
             </div>
@@ -201,8 +195,8 @@ QuickForecastCard.propTypes = {
     side: PropTypes.string,
     expiredAt: PropTypes.string,
     isLoaded: PropTypes.bool,
+    id: PropTypes.string,
   }).isRequired,
-  id: PropTypes.number.isRequired,
   answerForecast: PropTypes.func.isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func.isRequired,

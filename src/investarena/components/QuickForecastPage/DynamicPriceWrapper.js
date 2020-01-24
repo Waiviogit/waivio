@@ -1,11 +1,11 @@
 import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import { injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import USDDisplay from '../../../client/components/Utils/USDDisplay';
 import DynamicPrice from './DynamicPrice';
 
-const DynamicPriceWrapper = ({ postPrice, secur, closedPrice, intl }) => {
+const DynamicPriceWrapper = ({ postPrice, secur, closedPrice }) => {
   const rise = postPrice < closedPrice;
   const priceClassList = classNames('ForecastCard__price', {
     'ForecastCard__price--fall': !rise,
@@ -15,15 +15,11 @@ const DynamicPriceWrapper = ({ postPrice, secur, closedPrice, intl }) => {
   return (
     <div className="ForecastCard__val">
       <div>
-        {closedPrice
-          ? intl.formatMessage({
-              id: 'forecast_closed',
-              defaultMessage: 'Closed',
-            })
-          : intl.formatMessage({
-              id: 'forecast_active',
-              defaultMessage: 'Now',
-            })}
+        {closedPrice ? (
+          <FormattedMessage id="forecast_closed" defaultMessage="Closed" />
+        ) : (
+          <FormattedMessage id="forecast_active" defaultMessage="Now" />
+        )}
       </div>
       <div className={priceClassList}>
         {closedPrice ? (

@@ -805,8 +805,12 @@ div[data-dir='rtl'] .Topnav {
 }
 
 .center-menu {
-  @media screen and (max-width: @medium-bp) and (min-width: @small-bp) {
-    width: 49% !important;
+  @media @small {
+    width: auto;
+  }
+
+  @media @xsmall {
+    width: 46% !important;
   }
 }
 

@@ -797,10 +797,10 @@
   "comment_options": "comment_options",
   "for_days": "на",
   "reset_filter": "Все",
-  "forecast_title": "Угадай и получи деньги",
+  "forecast_title": "Угадай и получи деньги ",
   "legal_notice_users_user": "Обратите внимание(необязательно)",
   "custom": "Польз.",
-  "absolutely": "абсолютно",
+  "absolutely": "абсолютно ",
   "free": "бесплатно",
   "manage": "Управлять",
   "payables": "Задолженность",
@@ -938,8 +938,8 @@
   "forecast.create": "Создан:",
   "forecast.expire": "Истекает:",
   "no_quick_forecasts": "Hа данный момент в данной категории нет прогнозов",
-  "forecasts_rewards": "Вознаграждение",
-  "forecast_round": "Текущий раунд",
+  "forecasts_rewards": "Вознаграждение:",
+  "forecast_round": "Текущий раунд:",
   "how_it_work": "Правила",
   "top_five_title": "Топ 5",
   "current_winners_title": "Текущий раунд",
@@ -1032,5 +1032,6 @@
   "sidenav_user_payments": "Платежи",
   "posts": "Посты",
   "no_forecasts": "Нет прогнозов",
-  "was": "Было"
+  "was": "Было",
+  "forecast_info_message": "Осталось прогнозов в текущем раунде:"
 }

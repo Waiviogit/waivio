@@ -20,12 +20,12 @@ const BallotTimer = ({ endTimerTime, willCallAfterTimerEnd }) => {
     }
   };
 
-  useEffect(() => () => clearInterval(interval), []);
-
   useEffect(() => {
     if (endTimerTime > Date.now()) {
       interval = setInterval(handleUpdateTimeRemain, 1000);
     }
+
+    return () => clearInterval(interval);
   }, []);
 
   return <span className={timerClassList}>{time}</span>;

@@ -790,15 +790,15 @@
   "relisted": "Relisted",
   "find": "Find",
   "reset_filter": "All",
-  "absolutely": "absolutely",
+  "absolutely": "absolutely ",
   "free": "free",
-  "forecast_title": "Guess and get money",
+  "forecast_title": "Guess and get money ",
   "forecast.currentForecast": "Current forecasts",
   "forecast.create": "Created:",
   "forecast.expire": "Expire:",
   "no_quick_forecasts": "There are currently no forecasts in this category",
-  "forecasts_rewards": "Rewards",
-  "forecast_round": "Current round",
+  "forecasts_rewards": "Rewards:",
+  "forecast_round": "Current round:",
   "how_it_work": "How it works?",
   "filter_caption": "Filter",
   "top_five_title": "Top 5",
@@ -1074,5 +1074,6 @@
   "posts": "Posts",
   "no_forecasts": "No forecasts",
   "was": "Was",
-  "rise": "Rise"
+  "rise": "Rise",
+  "forecast_info_message": "Forecasts remaining in current round:"
 }

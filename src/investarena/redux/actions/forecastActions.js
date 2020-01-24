@@ -28,9 +28,6 @@ export const ANSWER_QUICK_FORECAST = '@forecast-data/ANSWER_QUICK_FORECAST';
 export const ANSWER_QUICK_LOADING = '@forecast-data/ANSWER_QUICK_LOADING';
 export const ANSWER_QUICK_ERROR = '@forecast-data/ANSWER_QUICK_ERROR';
 export const FINISH_QUICK_FORECAST = '@forecast-data/FINISH_QUICK_FORECAST';
-export const ANSWER_QUICK_FORECAST_LIKE_POST = '@forecast-data/ANSWER_QUICK_FORECAST_LIKE_POST';
-export const ANSWER_QUICK_FORECAST_SEND_COMMENT =
-  '@forecast-data/ANSWER_QUICK_FORECAST_SEND_COMMENT';
 
 export const getActiveForecasts = ({ name, quote } = { name: '', quote: '' }) => dispatch =>
   dispatch({
@@ -86,10 +83,8 @@ export const answerForQuickForecast = (
   permlink,
   expiredAt,
   answer,
-  id,
   security,
   timerData,
-  counter,
   weight = 10000,
 ) => (dispatch, getState, { steemConnectAPI }) => {
   const arrayRandElement = arr => {
@@ -110,76 +105,132 @@ export const answerForQuickForecast = (
 
   dispatch({
     type: ANSWER_QUICK_LOADING,
-    payload: id,
+    payload: permlink,
   });
 
   if (Date.parse(expiredAt) > Date.now()) {
-    dispatch({
-      type: ANSWER_QUICK_FORECAST_LIKE_POST,
-      payload: {
-        promise: new Promise((resolve, reject) =>
+    return new Promise((resolve, reject) =>
+      steemConnectAPI
+        .vote(username, author, permlink, weight)
+        .then(() => {
           steemConnectAPI
-            .vote(username, author, permlink, weight)
+            .broadcast([
+              [
+                'comment',
+                {
+                  parent_author: author,
+                  parent_permlink: permlink,
+                  author: username,
+                  permlink: createFormatter.commentPermlink(author, permlink),
+                  title: 'unactivate topic for rewards',
+                  body: comment,
+                  json_metadata: JSON.stringify({
+                    forecast_comment: {
+                      side: answer,
+                      postPrice,
+                      security,
+                    },
+                  }),
+                },
+              ],
+            ])
             .then(() => {
               dispatch({
-                type: ANSWER_QUICK_FORECAST_SEND_COMMENT,
+                type: ANSWER_QUICK_FORECAST,
                 payload: {
-                  promise: steemConnectAPI
-                    .broadcast([
-                      [
-                        'comment',
-                        {
-                          parent_author: author,
-                          parent_permlink: permlink,
-                          author: username,
-                          permlink: createFormatter.commentPermlink(author, permlink),
-                          title: 'unactivate topic for rewards',
-                          body: comment,
-                          json_metadata: JSON.stringify({
-                            forecast_comment: {
-                              side: answer,
-                              postPrice,
-                              security,
-                            },
-                          }),
-                        },
-                      ],
-                    ])
-                    .then(() => {
-                      message.success(`You still have ${5 - counter - 1} forecasts `);
-                      dispatch({
-                        type: ANSWER_QUICK_FORECAST,
-                        payload: {
-                          answer,
-                          id,
-                          postPrice,
-                          quickForecastExpiredAt: Date.now() + timerData,
-                        },
-                      });
-                    })
-                    .catch(error => {
-                      reject(error);
-                      dispatch({
-                        type: ANSWER_QUICK_ERROR,
-                        payload: {
-                          id,
-                        },
-                      });
-                    }),
+                  answer,
+                  permlink,
+                  postPrice,
+                  quickForecastExpiredAt: Date.now() + timerData,
                 },
               });
             })
-            .catch(e => {
-              reject(e);
+            .catch(error => {
+              reject(error);
               dispatch({
                 type: ANSWER_QUICK_ERROR,
                 payload: {
-                  id,
+                  permlink,
                 },
               });
-            }),
-        ),
-      },
-    });
+            });
+        })
+        .catch(e => {
+          reject(e);
+          dispatch({
+            type: ANSWER_QUICK_ERROR,
+            payload: {
+              permlink,
+            },
+          });
+        }),
+    );
+
+    // return dispatch({
+    //   type: ANSWER_QUICK_FORECAST_LIKE_POST,
+    //   payload: {
+    //     promise: new Promise((resolve, reject) =>
+    //       steemConnectAPI
+    //         .vote(username, author, permlink, weight)
+    //         .then(() => {
+    //           dispatch({
+    //             type: ANSWER_QUICK_FORECAST_SEND_COMMENT,
+    //             payload: {
+    //               promise: steemConnectAPI
+    //                 .broadcast([
+    //                   [
+    //                     'comment',
+    //                     {
+    //                       parent_author: author,
+    //                       parent_permlink: permlink,
+    //                       author: username,
+    //                       permlink: createFormatter.commentPermlink(author, permlink),
+    //                       title: 'unactivate topic for rewards',
+    //                       body: comment,
+    //                       json_metadata: JSON.stringify({
+    //                         forecast_comment: {
+    //                           side: answer,
+    //                           postPrice,
+    //                           security,
+    //                         },
+    //                       }),
+    //                     },
+    //                   ],
+    //                 ])
+    //                 .then(() => {
+    //                   dispatch({
+    //                     type: ANSWER_QUICK_FORECAST,
+    //                     payload: {
+    //                       answer,
+    //                       permlink,
+    //                       postPrice,
+    //                       quickForecastExpiredAt: Date.now() + timerData,
+    //                     },
+    //                   });
+    //                 })
+    //                 .catch(error => {
+    //                   reject(error);
+    //                   dispatch({
+    //                     type: ANSWER_QUICK_ERROR,
+    //                     payload: {
+    //                       permlink,
+    //                     },
+    //                   });
+    //                 }),
+    //             },
+    //           });
+    //         })
+    //         .catch(e => {
+    //           reject(e);
+    //           dispatch({
+    //             type: ANSWER_QUICK_ERROR,
+    //             payload: {
+    //               permlink,
+    //             },
+    //           });
+    //         }),
+    //     ),
+    //   },
+    // });
   }
 };

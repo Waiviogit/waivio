@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Icon } from 'antd';
 import { Link } from 'react-router-dom';
 
@@ -13,6 +13,7 @@ import TopPredictors from './TopPredictions/TopPredictors';
 import USDDisplay from '../../../client/components/Utils/USDDisplay';
 import withAuthActions from '../../../client/auth/withAuthActions';
 import SortSelector from '../../../client/components/SortSelector/SortSelector';
+import Affix from '../../../client/components/Utils/Affix';
 import { marketNames } from '../../constants/objectsInvestarena';
 import {
   answerForQuickForecast,
@@ -24,12 +25,11 @@ import {
 } from '../../redux/actions/forecastActions';
 
 import './QuickForecastPage.less';
-import Affix from '../../../client/components/Utils/Affix';
 
 const QuickForecastPage = props => {
   const [sortBy, setSort] = useState('All');
   const [isLoading, setLoading] = useState(false);
-  const [currentTime, setTime] = useState();
+  const [currentTime, setTime] = useState(0);
   const winnersLimit = 5;
 
   useEffect(() => {
@@ -41,8 +41,6 @@ const QuickForecastPage = props => {
 
     setTimeout(() => setLoading(true), 3000);
   }, [props.auth]);
-
-  const getSortItemKey = type => (type.name === 'All' ? 'All' : type.name);
 
   const filtersType = [
     {
@@ -71,7 +69,7 @@ const QuickForecastPage = props => {
   }
 
   const filterForecastList = props.quickForecastDataList.filter(obj => {
-    if (sortBy === 'Currencies') {
+    if (sortBy === 'Currencies' || sortBy === 'Currencies') {
       return obj.market === 'Currency' && obj.active;
     }
 
@@ -90,21 +88,10 @@ const QuickForecastPage = props => {
   return (
     <div className="container">
       <h1 className="head-title">
-        {props.intl.formatMessage({
-          id: 'forecast_title',
-          defaultMessage: 'Guess and get money',
-        })}
-        &#160;
-        {props.intl.formatMessage({
-          id: 'absolutely',
-          defaultMessage: 'absolutely',
-        })}
-        &#160;
+        <FormattedMessage id="forecast_title" defaultMessage="Guess and get money " />
+        <FormattedMessage id="absolutely" defaultMessage="absolutely " />
         <span className="free">
-          {props.intl.formatMessage({
-            id: 'free',
-            defaultMessage: 'free',
-          })}
+          <FormattedMessage id="free" defaultMessage="free" />
         </span>
       </h1>
       <div className="shifted">
@@ -119,11 +106,8 @@ const QuickForecastPage = props => {
                 })}
               >
                 <Link to="#" className="rules__link">
-                  {props.intl.formatMessage({
-                    id: 'how_it_work',
-                    defaultMessage: 'How it works?',
-                  })}
-                  &#160;
+                  <FormattedMessage id="how_it_work" defaultMessage="How it works?" />
+                  &nbsp;
                 </Link>
                 <Icon type="question-circle" />
               </div>
@@ -147,7 +131,7 @@ const QuickForecastPage = props => {
               <React.Fragment>
                 <div className="timer-container">
                   <Icon type="clock-circle" />
-                  &#160;
+                  &nbsp;
                   <BallotTimer
                     endTimerTime={finishRoundTime}
                     willCallAfterTimerEnd={() => handleFinishTimer()}
@@ -163,18 +147,18 @@ const QuickForecastPage = props => {
                   disabled={Boolean(answeredForecastList.length === 5)}
                 >
                   {filtersType.map(type => (
-                    <SortSelector.Item key={getSortItemKey(type)}>
-                      {props.intl.formatMessage({
-                        id: type.intl.id,
-                        defaultMessage: type.intl.defaultMessage,
-                      })}
+                    <SortSelector.Item key={type.name}>
+                      <FormattedMessage
+                        id={type.intl.id}
+                        defaultMessage={type.intl.defaultMessage}
+                      />
                     </SortSelector.Item>
                   ))}
                 </SortSelector>
                 {currentForecastList.map((obj, index) => (
                   <QuickForecastCard
                     forecast={obj}
-                    key={Math.random()}
+                    key={obj.author + obj.permlink}
                     predictionObjectName={
                       props.quotesSett[obj.security] && props.quotesSett[obj.security].name
                     }
@@ -189,7 +173,6 @@ const QuickForecastPage = props => {
                     answerForecast={props.answerForQuickForecast}
                     getForecast={props.getDataForQuickForecast}
                     timerData={secondsInMilliseconds(props.timeForTimer)}
-                    id={index}
                     timerCallback={() => handleFinishTimer()}
                     counter={answeredForecastList.length}
                     handleAuthorization={props.onActionInitiated}
@@ -202,10 +185,10 @@ const QuickForecastPage = props => {
             )}
             {isLoading && !forecastList.length && (
               <div className="no-posts">
-                {props.intl.formatMessage({
-                  id: 'no_quick_forecasts',
-                  defaultMessage: 'There are currently no forecasts in this category',
-                })}
+                <FormattedMessage
+                  id="no_quick_forecasts"
+                  defaultMessage="There are currently no forecasts in this category"
+                />
               </div>
             )}
           </div>
@@ -213,20 +196,12 @@ const QuickForecastPage = props => {
             <div className="right">
               <div className="reward">
                 <span className="reward__row">
-                  {props.intl.formatMessage({
-                    id: 'forecasts_rewards',
-                    defaultMessage: 'Rewards',
-                  })}
-                  :&#160;
+                  <FormattedMessage id="forecasts_rewards" defaultMessage="Rewards:" />
                   <USDDisplay value={props.roundInformation.rewards} />
                 </span>
                 <span className="reward__row">
-                  {props.intl.formatMessage({
-                    id: 'forecast_round',
-                    defaultMessage: 'Current round',
-                  })}
-                  :&#160;
-                  <USDDisplay value={props.roundInformation.voitingPowers} />
+                  <FormattedMessage id="forecast_round" defaultMessage="Current round:" />
+                  <USDDisplay value={props.roundInformation.votingPowers} />
                 </span>
               </div>
               {isLoading ? (
@@ -284,7 +259,7 @@ QuickForecastPage.propTypes = {
   isDisabled: PropTypes.bool,
   roundInformation: PropTypes.shape({
     rewards: PropTypes.number,
-    voitingPowers: PropTypes.number,
+    votingPowers: PropTypes.number,
   }).isRequired,
 };
 

@@ -1,4 +1,5 @@
 @import (reference) '../../../client/styles/custom.less';
+@import (reference) '../../../client/styles/modules/variables';
 
 .timer-container {
   display: flex;
@@ -51,15 +52,12 @@
 }
 
 .head-title {
-  font-size: 47px;
+  font-size: 45px;
   text-align: center;
+  padding-top: 15px;
 
-  @media screen and (max-width: 999px) {
-    padding: 0;
-  }
-
-  @media screen and (max-width: 500px) {
-    font-size: 30px;
+  @media screen and (max-width: @small-bp) {
+    font-size: 29px;
   }
 }
 
