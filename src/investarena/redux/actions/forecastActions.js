@@ -144,6 +144,7 @@ export const answerForQuickForecast = (
                   quickForecastExpiredAt: Date.now() + timerData,
                 },
               });
+              resolve();
             })
             .catch(error => {
               reject(error);
