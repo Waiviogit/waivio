@@ -129,16 +129,16 @@ export const answerForQuickForecast = (
                       ],
                     ])
                     .then(() => {
-                        message.success(`You still have ${5 - counter - 1} forecasts `);
-                        dispatch({
-                          type: ANSWER_QUICK_FORECAST,
-                          payload: {
-                            answer,
-                            id,
-                            postPrice,
-                            quickForecastExpiredAt: Date.now() + timerData,
-                          },
-                        });
+                      message.success(`You still have ${5 - counter - 1} forecasts `);
+                      dispatch({
+                        type: ANSWER_QUICK_FORECAST,
+                        payload: {
+                          answer,
+                          id,
+                          postPrice,
+                          quickForecastExpiredAt: Date.now() + timerData,
+                        },
+                      });
                     })
                     .catch(error => {
                       reject(error);

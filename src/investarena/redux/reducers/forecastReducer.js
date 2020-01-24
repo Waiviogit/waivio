@@ -40,7 +40,8 @@ export default (state = initialState, action) => {
         quickForecastData: [...mapperList],
         timer: action.payload.timer,
         roundTime: action.payload.round_time,
-      }}
+      };
+    }
 
     case activeForecastTypes.GET_QUICK_FORECAST_DATA.ERROR:
       return state;
