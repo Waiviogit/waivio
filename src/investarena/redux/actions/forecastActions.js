@@ -1,4 +1,3 @@
-import { message } from 'antd';
 import { get } from 'lodash';
 import api from '../../configApi/apiResources';
 import createFormatter from '../../../client/helpers/steemitFormatter';
