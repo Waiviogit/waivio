@@ -1,4 +1,3 @@
-import { message } from 'antd';
 import { get } from 'lodash';
 import api from '../../configApi/apiResources';
 import createFormatter from '../../../client/helpers/steemitFormatter';
@@ -17,6 +16,9 @@ export const GET_QUICK_FORECAST_STATISTIC = createAsyncActionType(
 export const GET_QUICK_FORECAST_WINNERS = createAsyncActionType(
   '@forecast-data/GET_QUICK_FORECAST_WINNERS',
 );
+export const QUICK_FORECAST_WINNERS_SHOW_MORE = createAsyncActionType(
+  '@forecast-data/QUICK_FORECAST_WINNERS_SHOW_MORE',
+);
 export const GET_QUICK_FORECAST_REWARDS = createAsyncActionType(
   '@forecast-data/GET_QUICK_FORECAST_REWARDS',
 );
@@ -25,9 +27,6 @@ export const ANSWER_QUICK_FORECAST = '@forecast-data/ANSWER_QUICK_FORECAST';
 export const ANSWER_QUICK_LOADING = '@forecast-data/ANSWER_QUICK_LOADING';
 export const ANSWER_QUICK_ERROR = '@forecast-data/ANSWER_QUICK_ERROR';
 export const FINISH_QUICK_FORECAST = '@forecast-data/FINISH_QUICK_FORECAST';
-export const ANSWER_QUICK_FORECAST_LIKE_POST = '@forecast-data/ANSWER_QUICK_FORECAST_LIKE_POST';
-export const ANSWER_QUICK_FORECAST_SEND_COMMENT =
-  '@forecast-data/ANSWER_QUICK_FORECAST_SEND_COMMENT';
 
 export const getActiveForecasts = ({ name, quote } = { name: '', quote: '' }) => dispatch =>
   dispatch({
@@ -62,6 +61,15 @@ export const getForecastWinners = (limit, skip) => (dispatch, getState) => {
   });
 };
 
+export const forecastWinnersShowMore = (limit, skip) => (dispatch, getState) => {
+  const user = getAuthenticatedUserName(getState());
+
+  dispatch({
+    type: QUICK_FORECAST_WINNERS_SHOW_MORE.ACTION,
+    payload: api.quickForecast.getQuickForecastWinners(user, limit, skip),
+  });
+};
+
 export const getForecastRoundRewards = () => dispatch => {
   dispatch({
     type: GET_QUICK_FORECAST_REWARDS.ACTION,
@@ -74,10 +82,9 @@ export const answerForQuickForecast = (
   permlink,
   expiredAt,
   answer,
-  id,
   security,
+  id,
   timerData,
-  counter,
   weight = 10000,
 ) => (dispatch, getState, { steemConnectAPI }) => {
   const arrayRandElement = arr => {
@@ -87,8 +94,9 @@ export const answerForQuickForecast = (
 
   const username = getAuthenticatedUserName(getState());
   const postPrice = get(getState(), ['quotes', security, 'bidPrice'], null);
+  const objPermlink = get(getState(), ['quotesSettings', security, 'wobjData', 'author_permlink'], null);
   const forecastObject = get(getState(), ['quotesSettings', security, 'name'], null);
-  const commentArray = forecastComments(forecastObject);
+  const commentArray = forecastComments(forecastObject, objPermlink);
   const comment = arrayRandElement(commentArray);
 
   dispatch({
@@ -97,72 +105,62 @@ export const answerForQuickForecast = (
   });
 
   if (Date.parse(expiredAt) > Date.now()) {
-    dispatch({
-      type: ANSWER_QUICK_FORECAST_LIKE_POST,
-      payload: {
-        promise: new Promise((resolve, reject) =>
+    return new Promise((resolve, reject) =>
+      steemConnectAPI
+        .vote(username, author, permlink, weight)
+        .then(() => {
           steemConnectAPI
-            .vote(username, author, permlink, weight)
+            .broadcast([
+              [
+                'comment',
+                {
+                  parent_author: author,
+                  parent_permlink: permlink,
+                  author: username,
+                  permlink: createFormatter.commentPermlink(author, permlink),
+                  title: 'unactivate topic for rewards',
+                  body: comment,
+                  json_metadata: JSON.stringify({
+                    forecast_comment: {
+                      side: answer,
+                      postPrice,
+                      security,
+                    },
+                  }),
+                },
+              ],
+            ])
             .then(() => {
               dispatch({
-                type: ANSWER_QUICK_FORECAST_SEND_COMMENT,
+                type: ANSWER_QUICK_FORECAST,
                 payload: {
-                  promise: steemConnectAPI
-                    .broadcast([
-                      [
-                        'comment',
-                        {
-                          parent_author: author,
-                          parent_permlink: permlink,
-                          author: username,
-                          permlink: createFormatter.commentPermlink(author, permlink),
-                          title: 'unactivate topic for rewards',
-                          body: comment,
-                          json_metadata: JSON.stringify({
-                            forecast_comment: {
-                              side: answer,
-                              postPrice,
-                              security,
-                            },
-                          }),
-                        },
-                      ],
-                    ])
-                    .then(() => {
-                      message.success(`You still have ${5 - counter - 1} forecasts `);
-                      dispatch({
-                        type: ANSWER_QUICK_FORECAST,
-                        payload: {
-                          answer,
-                          id,
-                          postPrice,
-                          quickForecastExpiredAt: Date.now() + timerData,
-                        },
-                      });
-                    })
-                    .catch(error => {
-                      reject(error);
-                      dispatch({
-                        type: ANSWER_QUICK_ERROR,
-                        payload: {
-                          id,
-                        },
-                      });
-                    }),
+                  answer,
+                  id,
+                  postPrice,
+                  quickForecastExpiredAt: Date.now() + timerData,
                 },
               });
+              resolve();
             })
-            .catch(e => {
-              reject(e);
+            .catch(error => {
+              reject(error);
               dispatch({
                 type: ANSWER_QUICK_ERROR,
                 payload: {
                   id,
                 },
               });
-            }),
-        ),
-      },
-    });
+            });
+        })
+        .catch(e => {
+          reject(e);
+          dispatch({
+            type: ANSWER_QUICK_ERROR,
+            payload: {
+              id,
+            },
+          });
+        }),
+    );
   }
 };

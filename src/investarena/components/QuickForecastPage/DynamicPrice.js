@@ -14,7 +14,7 @@ const DynamicPrice = ({ postPrice, quotes, security }) => {
   });
 
   return (
-    <div className={priceClassList}>
+    <div className={priceClassList} title={price}>
       <USDDisplay value={+price} />
     </div>
   );
