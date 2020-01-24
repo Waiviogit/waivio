@@ -122,6 +122,7 @@ export default ({
     td: ['style'],
     img: ['src', 'alt'],
     a: ['href', 'rel', 'target'],
+    ol: ['start'],
   },
   allowedSchemes: sanitizeHtml.defaults.allowedSchemes.concat(['byteball', 'bitcoin']),
   transformTags: {
