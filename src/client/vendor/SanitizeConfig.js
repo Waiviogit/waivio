@@ -31,9 +31,7 @@ const iframeWhitelist = [
       const m = src.match(/url=(.+?)[&?]/);
       if (!m || m.length !== 2) return null;
       return (
-        `https://w.soundcloud.com/player/?url=${
-          m[1]
-        }&auto_play=false&hide_related=false&show_comments=true` +
+        `https://w.soundcloud.com/player/?url=${m[1]}&auto_play=false&hide_related=false&show_comments=true` +
         '&show_user=true&show_reposts=false&visual=true'
       );
     },

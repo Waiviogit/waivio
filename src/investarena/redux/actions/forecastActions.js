@@ -94,7 +94,11 @@ export const answerForQuickForecast = (
 
   const username = getAuthenticatedUserName(getState());
   const postPrice = get(getState(), ['quotes', security, 'bidPrice'], null);
-  const objPermlink = get(getState(), ['quotesSettings', security, 'wobjData', 'author_permlink'], null);
+  const objPermlink = get(
+    getState(),
+    ['quotesSettings', security, 'wobjData', 'author_permlink'],
+    null,
+  );
   const forecastObject = get(getState(), ['quotesSettings', security, 'name'], null);
   const commentArray = forecastComments(forecastObject, objPermlink);
   const comment = arrayRandElement(commentArray);
