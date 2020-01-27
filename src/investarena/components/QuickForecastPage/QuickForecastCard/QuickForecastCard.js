@@ -70,15 +70,14 @@ const QuickForecastCard = ({
         forecast.id,
         timerData,
       ),
-    )
-      .then(() => {
-        message.success(
-          `${intl.formatMessage({
-            id: 'forecast_info_message',
-            defaultMessage: 'Forecasts remaining in current round:',
-          })} ${4 - counter}`,
-        );
-      })
+    ).then(() => {
+      message.success(
+        `${intl.formatMessage({
+          id: 'forecast_info_message',
+          defaultMessage: 'Forecasts remaining in current round:',
+        })} ${4 - counter}`,
+      );
+    });
   };
   const handleAnswerClick = answer => handleAuthorization(() => handleClick(answer));
   const time = (timerData * 0.001) / 60;
