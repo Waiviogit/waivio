@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { get, isNull } from 'lodash';
+import { get, isNull, isEmpty } from 'lodash';
 import { Form, Input, Modal, Radio } from 'antd';
 import { SBD, STEEM } from '../../common/constants/cryptos';
 import SteemConnect from '../steemConnectAPI';
@@ -116,7 +116,6 @@ export default class Transfer extends React.Component {
         to: nextProps.to,
         amount: nextProps.amount,
         currency: nextProps.currency === 'STEEM' ? STEEM.symbol : SBD.symbol,
-        // memo: nextProps.memo,
       });
       this.setState({
         currency: STEEM.symbol,
@@ -308,7 +307,7 @@ export default class Transfer extends React.Component {
       return;
     }
     getUserAccount(value, false).then(result => {
-      if (!_.isEmpty(result)) {
+      if (!isEmpty(result)) {
         callback();
       } else {
         callback([

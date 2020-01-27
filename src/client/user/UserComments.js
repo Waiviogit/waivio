@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-// import { FormattedMessage } from 'react-intl';
 import Feed from '../feed/Feed';
 import PostModal from '../post/PostModalContainer';
 import { getAuthenticatedUserName, getFeed, isGuestUser } from '../reducers';
@@ -33,8 +32,6 @@ export default class UserProfilePosts extends React.Component {
     limit: PropTypes.number,
     getUserComments: PropTypes.func,
     getMoreUserComments: PropTypes.func,
-    // isGuest: PropTypes.bool,
-    // authenticatedUserName: PropTypes.string,
   };
 
   static defaultProps = {
@@ -55,17 +52,8 @@ export default class UserProfilePosts extends React.Component {
   }
 
   render() {
-    // const { feed, match, limit, isGuest, authenticatedUserName } = this.props;
     const { feed, match, limit } = this.props;
     const username = match.params.name;
-    // if (isGuest && username === authenticatedUserName) {
-    //   return (
-    //     <FormattedMessage
-    //       id="guest_comments"
-    //       defaultMessage="Guest users can't see their own comments"
-    //     />
-    //   );
-    // }
     const content = getFeedFromState('comments', username, feed);
     const isFetching = getFeedLoadingFromState('comments', username, feed);
     const hasMore = getFeedHasMoreFromState('comments', username, feed);

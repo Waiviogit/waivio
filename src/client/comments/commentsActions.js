@@ -26,7 +26,6 @@ export const getSingleComment = (author, permlink, focus = false) => dispatch =>
   dispatch({
     type: GET_SINGLE_COMMENT.ACTION,
     payload: ApiClient.getContent(author, permlink).then(res => res),
-    // payload: steemAPI.sendAsync('get_content', [author, permlink]),
     meta: { focus },
   });
 
