@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { isEqual, filter, maxBy, map, isEmpty, get, toLower, isNil } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -106,7 +106,7 @@ class Story extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+    return !isEqual(nextProps, this.props) || !isEqual(nextState, this.state);
   }
 
   getApprovalTagLayoyt = () => {
@@ -156,8 +156,8 @@ class Story extends React.Component {
     if (wobj.objectName) {
       name = wobj.objectName;
     } else {
-      const nameFields = _.filter(wobj.fields, o => o.name === 'name');
-      const nameField = _.maxBy(nameFields, 'weight') || {
+      const nameFields = filter(wobj.fields, o => o.name === 'name');
+      const nameField = maxBy(nameFields, 'weight') || {
         body: wobj.default_name,
       };
       if (nameField) name = nameField.body;
@@ -178,7 +178,7 @@ class Story extends React.Component {
   getWobjects = wobjects => {
     let i = 0;
     let objectFromCurrentPage = null;
-    const returnData = _.map(wobjects, wobj => {
+    const returnData = map(wobjects, wobj => {
       if (wobj.author_permlink === this.props.match.params.name) {
         objectFromCurrentPage = this.getObjectLayout(wobj);
         return null;
@@ -277,8 +277,8 @@ class Story extends React.Component {
   handlePostModalDisplay(e) {
     e.preventDefault();
     const { post } = this.props;
-    const isReplyPreview = _.isEmpty(post.title) || post.title !== post.root_title;
-    const openInNewTab = _.get(e, 'metaKey', false) || _.get(e, 'ctrlKey', false);
+    const isReplyPreview = isEmpty(post.title) || post.title !== post.root_title;
+    const openInNewTab = get(e, 'metaKey', false) || get(e, 'ctrlKey', false);
     const postURL = dropCategory(post.url);
 
     if (isReplyPreview) {
@@ -297,12 +297,12 @@ class Story extends React.Component {
     e.preventDefault();
 
     const { post } = this.props;
-    const isReplyPreview = _.isEmpty(post.title) || post.title !== post.root_title;
-    const elementNodeName = _.toLower(_.get(e, 'target.nodeName', ''));
-    const elementClassName = _.get(e, 'target.className', '');
+    const isReplyPreview = isEmpty(post.title) || post.title !== post.root_title;
+    const elementNodeName = toLower(get(e, 'target.nodeName', ''));
+    const elementClassName = get(e, 'target.className', '');
     const showPostModal =
       elementNodeName !== 'i' && elementClassName !== 'PostFeedEmbed__playButton';
-    const openInNewTab = _.get(e, 'metaKey', false) || _.get(e, 'ctrlKey', false);
+    const openInNewTab = get(e, 'metaKey', false) || get(e, 'ctrlKey', false);
     const postURL = dropCategory(post.url);
 
     if (isReplyPreview) {
@@ -451,7 +451,7 @@ class Story extends React.Component {
                       id={`object_field_${post.append_field_name}`}
                       defaultMessage={post.append_field_name}
                     />
-                    {!_.isNil(post.append_field_weight) && this.getApprovalTagLayoyt()}
+                    {!isNil(post.append_field_weight) && this.getApprovalTagLayoyt()}
                   </React.Fragment>
                 ) : (
                   <React.Fragment>

@@ -1,16 +1,16 @@
-import _ from 'lodash';
+import { get, toUpper, toLower, find, isEmpty, last, nth } from 'lodash';
 import { CRYPTO_MAP } from '../../common/constants/cryptos';
 
 export function getCryptoDetails(cryptoQuery) {
-  const getCryptoBySymbol = _.get(CRYPTO_MAP, _.toUpper(cryptoQuery), {});
+  const getCryptoBySymbol = get(CRYPTO_MAP, toUpper(cryptoQuery), {});
 
-  if (!_.isEmpty(getCryptoBySymbol)) {
+  if (!isEmpty(getCryptoBySymbol)) {
     return getCryptoBySymbol;
   }
 
-  const cryptoDetails = _.find(CRYPTO_MAP, crypto => {
-    const formattedCryptoName = _.toLower(crypto.name).replace(/\s/g, ''); // lowercase & remove spaces
-    const formattedCryptoSymbol = _.toLower(crypto.symbol);
+  const cryptoDetails = find(CRYPTO_MAP, crypto => {
+    const formattedCryptoName = toLower(crypto.name).replace(/\s/g, ''); // lowercase & remove spaces
+    const formattedCryptoSymbol = toLower(crypto.symbol);
     const matchesCryptoId = crypto.id === cryptoQuery;
     const matchesCryptoName = formattedCryptoName === cryptoQuery;
     const matchesCryptoSymbol = formattedCryptoSymbol === cryptoQuery;
@@ -42,13 +42,13 @@ function getPriceDifferencePercentage(currentCryptoPrice, previousCryptoPrice) {
 }
 
 export function getCryptoPriceIncreaseDetails(usdCryptoPriceHistory, btcCryptoPriceHistory) {
-  const currentUSDPrice = _.last(usdCryptoPriceHistory);
-  const previousUSDPrice = _.nth(usdCryptoPriceHistory, -2);
+  const currentUSDPrice = last(usdCryptoPriceHistory);
+  const previousUSDPrice = nth(usdCryptoPriceHistory, -2);
   const cryptoUSDIncrease = currentUSDPrice > previousUSDPrice;
   const usdPriceDifferencePercent = getPriceDifferencePercentage(currentUSDPrice, previousUSDPrice);
 
-  const currentBTCPrice = _.last(btcCryptoPriceHistory);
-  const previousBTCPrice = _.nth(btcCryptoPriceHistory, -2);
+  const currentBTCPrice = last(btcCryptoPriceHistory);
+  const previousBTCPrice = nth(btcCryptoPriceHistory, -2);
   const cryptoBTCIncrease = currentBTCPrice > previousBTCPrice;
   const btcPriceDifferencePercent = getPriceDifferencePercentage(currentBTCPrice, previousBTCPrice);
 

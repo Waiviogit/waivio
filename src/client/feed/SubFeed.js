@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Cookie from 'js-cookie';
-import _ from 'lodash';
+import { isEmpty, isNil } from 'lodash';
 import { showPostModal } from '../app/appActions';
 import {
   getFeedContent,
@@ -135,7 +135,7 @@ class SubFeed extends React.Component {
       isFetching = getUserFeedLoadingFromState(user.name, feed);
       fetched = getUserFeedFetchedFromState(user.name, feed);
       hasMore =
-        feed.feed[user.name] && !_.isNil(feed.feed[user.name].hasMore)
+        feed.feed[user.name] && !isNil(feed.feed[user.name].hasMore)
           ? feed.feed[user.name].hasMore
           : true;
       failed = getUserFeedFailedFromState(user.name, feed);
@@ -150,7 +150,7 @@ class SubFeed extends React.Component {
       loadMoreContent = () => this.props.getMoreFeedContent(sortBy, match.params.category);
     }
 
-    const empty = _.isEmpty(content);
+    const empty = isEmpty(content);
     const displayEmptyFeed = empty && fetched && loaded && !isFetching && !failed;
 
     const ready = loaded && fetched && !isFetching;

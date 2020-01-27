@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { each, get, last, findIndex, isEmpty, filter } from 'lodash';
 import { createAction } from 'redux-actions';
 import formatter from '../helpers/steemitFormatter';
 import { createAsyncActionType, getUserDetailsKey } from '../helpers/stateHelpers';
@@ -50,7 +50,7 @@ const parseSteemUserActions = userActions => {
   const userWalletTransactions = [];
   const userAccountHistory = [];
 
-  _.each(userActions.reverse(), action => {
+  each(userActions.reverse(), action => {
     const actionCount = action[0];
     const actionDetails = {
       ...action[1],
@@ -102,7 +102,7 @@ const parseGuestActions = actions => {
 };
 const getParsedUserActions = (userActions, isGuest) => {
   if (isGuest) {
-    const userWalletTransactions = parseGuestActions(_.get(userActions, ['histories'], []));
+    const userWalletTransactions = parseGuestActions(get(userActions, ['histories'], []));
     return {
       userWalletTransactions,
       userAccountHistory: userWalletTransactions.length
@@ -133,7 +133,7 @@ export const getUserAccountHistory = username => dispatch => {
           username,
           userWalletTransactions: parsedUserActions.userWalletTransactions,
           userAccountHistory: parsedUserActions.userAccountHistory,
-          balance: _.get(userActions, ['payable'], null),
+          balance: get(userActions, ['payable'], null),
         };
       }),
     },
@@ -184,16 +184,16 @@ export const loadMoreCurrentUsersActions = username => (dispatch, getState) => {
   dispatch(loadingMoreUsersAccountHistory());
   const { wallet } = getState();
   const { usersAccountHistory, currentDisplayedActions, accountHistoryFilter } = wallet;
-  const currentUsersActions = _.get(usersAccountHistory, getUserDetailsKey(username), []);
-  const lastDisplayedAction = _.last(currentDisplayedActions);
+  const currentUsersActions = get(usersAccountHistory, getUserDetailsKey(username), []);
+  const lastDisplayedAction = last(currentDisplayedActions);
 
-  if (_.isEmpty(lastDisplayedAction)) {
+  if (isEmpty(lastDisplayedAction)) {
     dispatch(setInitialCurrentDisplayedActions(username));
     return;
   }
 
   const lastDisplayedActionCount = lastDisplayedAction.actionCount;
-  const lastDisplayedActionIndex = _.findIndex(
+  const lastDisplayedActionIndex = findIndex(
     currentUsersActions,
     userAction => userAction.actionCount === lastDisplayedActionCount,
   );
@@ -201,11 +201,11 @@ export const loadMoreCurrentUsersActions = username => (dispatch, getState) => {
     lastDisplayedActionIndex + 1,
     lastDisplayedActionIndex + 1 + ACTIONS_DISPLAY_LIMIT,
   );
-  const lastMoreAction = _.last(moreActions);
-  const lastMoreActionCount = _.isEmpty(lastMoreAction) ? 0 : lastMoreAction.actionCount;
+  const lastMoreAction = last(moreActions);
+  const lastMoreActionCount = isEmpty(lastMoreAction) ? 0 : lastMoreAction.actionCount;
 
   if (moreActions.length === ACTIONS_DISPLAY_LIMIT || lastMoreActionCount === 0) {
-    const filteredMoreActions = _.filter(moreActions, userAction =>
+    const filteredMoreActions = filter(moreActions, userAction =>
       actionsFilter(userAction, accountHistoryFilter, username),
     );
     dispatch(
@@ -215,7 +215,7 @@ export const loadMoreCurrentUsersActions = username => (dispatch, getState) => {
       }),
     );
   } else {
-    const lastActionCount = _.last(currentUsersActions).actionCount;
+    const lastActionCount = last(currentUsersActions).actionCount;
     const limit = lastActionCount < defaultAccountLimit ? lastActionCount : defaultAccountLimit;
     dispatch(getMoreUserAccountHistory(username, lastActionCount, limit));
   }

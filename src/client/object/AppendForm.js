@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { map, filter, has, isEmpty, get, includes, isNan } from 'lodash';
 import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -15,7 +15,6 @@ import {
   addressFields,
   socialObjectFields,
   websiteFields,
-  objectImageFields,
   phoneFields,
   ratingFields,
   ratePercent,
@@ -40,9 +39,7 @@ import { getLanguageText } from '../translations';
 import MapAppendObject from '../components/Maps/MapAppendObject';
 import { getField } from '../helpers/wObjectHelper';
 import { appendObject } from '../object/appendActions';
-import { isValidImage } from '../helpers/image';
 import withEditor from '../components/Editor/withEditor';
-import { MAX_IMG_SIZE, ALLOWED_IMG_FORMATS } from '../../common/constants/validation';
 import { getVoteValue } from '../helpers/user';
 import { getFieldWithMaxWeight, getInnerFieldWithMaxWeight, getListItems } from './wObjectHelper';
 import { followObject, rateObject } from '../object/wobjActions';
@@ -54,8 +51,8 @@ import { getNewsFilterLayout } from './NewsFilter/newsFilterHelper';
 import CreateObject from '../post/CreateObjectModal/CreateObject';
 import { baseUrl } from '../../waivioApi/routes';
 import AppendFormFooter from './AppendFormFooter';
-import './AppendForm.less';
 import ImageSetter from '../components/ImageSetter/ImageSetter';
+import './AppendForm.less';
 
 @connect(
   state => ({
@@ -76,8 +73,6 @@ export default class AppendForm extends Component {
     /* decorators */
     form: PropTypes.shape(),
     user: PropTypes.shape(),
-    onImageUpload: PropTypes.func,
-    onImageInvalid: PropTypes.func,
     /* from connect */
     wObject: PropTypes.shape(),
     rewardFund: PropTypes.shape(),
@@ -120,7 +115,6 @@ export default class AppendForm extends Component {
   state = {
     isSomeValue: true,
     imageUploading: false,
-    currentImage: [],
     votePercent: this.props.defaultVotePercent / 100,
     voteWorth: 0,
     isValidImage: false,
@@ -202,7 +196,7 @@ export default class AppendForm extends Component {
 
   onUpdateCoordinate = positionField => e => {
     const value = Number(e.target.value);
-    if (!_.isNan(value)) {
+    if (!isNan(value)) {
       this.props.form.setFieldsValue({
         [positionField]: Number(e.target.value),
       });
@@ -234,10 +228,10 @@ export default class AppendForm extends Component {
         break;
       }
       case objectFields.newsFilter: {
-        const allowList = _.map(this.state.allowList, rule => _.map(rule, o => o.id)).filter(
+        const allowList = map(this.state.allowList, rule => map(rule, o => o.id)).filter(
           sub => sub.length,
         );
-        const ignoreList = _.map(this.state.ignoreList, o => o.id);
+        const ignoreList = map(this.state.ignoreList, o => o.id);
         fieldBody.push(JSON.stringify({ allowList, ignoreList }));
         break;
       }
@@ -267,7 +261,7 @@ export default class AppendForm extends Component {
     }
 
     const getAppendMsg = (author, appendValue) => {
-      const langReadable = _.filter(LANGUAGES, { id: currentLocale })[0].name;
+      const langReadable = filter(LANGUAGES, { id: currentLocale })[0].name;
       switch (currentField) {
         case objectFields.avatar:
         case objectFields.background:
@@ -292,7 +286,7 @@ export default class AppendForm extends Component {
           let rulesCounter = 0;
 
           this.state.allowList.forEach(rule => {
-            if (!_.isEmpty(rule)) {
+            if (!isEmpty(rule)) {
               rulesAllow += `\n Filter rule #${rulesCounter + 1}:`;
               rule.forEach(item => {
                 rulesAllow += ` <a href="${baseUrl}/object/${item.id}">${item.id}</a>,`;
@@ -303,7 +297,7 @@ export default class AppendForm extends Component {
           });
 
           this.state.ignoreList.forEach((rule, index) => {
-            if (!_.isEmpty(rule)) {
+            if (!isEmpty(rule)) {
               const dotOrComma = this.state.ignoreList.length - 1 === index ? '.' : ',';
               rulesIgnore += ` <a href="${baseUrl}/object/${rule.id}">${rule.id}</a>${dotOrComma}`;
             }
@@ -328,7 +322,7 @@ export default class AppendForm extends Component {
 
       data.title = '';
       let fieldsObject = {
-        name: _.includes(TYPES_OF_MENU_ITEM, currentField) ? objectFields.listItem : currentField,
+        name: includes(TYPES_OF_MENU_ITEM, currentField) ? objectFields.listItem : currentField,
         body: bodyField,
         locale: currentLocale,
       };
@@ -347,7 +341,7 @@ export default class AppendForm extends Component {
         };
       }
 
-      if (_.includes(TYPES_OF_MENU_ITEM, currentField)) {
+      if (includes(TYPES_OF_MENU_ITEM, currentField)) {
         fieldsObject = {
           ...fieldsObject,
           type: currentField,
@@ -419,7 +413,7 @@ export default class AppendForm extends Component {
 
   deleteRuleItem = (rowNum, id) => {
     const allowList = this.state.allowList;
-    allowList[rowNum] = _.filter(allowList[rowNum], o => o.id !== id);
+    allowList[rowNum] = filter(allowList[rowNum], o => o.id !== id);
     this.setState({ allowList });
   };
 
@@ -431,7 +425,7 @@ export default class AppendForm extends Component {
 
   handleRemoveObjectFromIgnoreList = obj => {
     let ignoreList = this.state.ignoreList;
-    ignoreList = _.filter(ignoreList, o => o.id !== obj.id);
+    ignoreList = filter(ignoreList, o => o.id !== obj.id);
     this.setState({ ignoreList });
   };
 
@@ -449,16 +443,15 @@ export default class AppendForm extends Component {
 
   handleSubmit = e => {
     if (e) e.preventDefault();
-
     this.props.form.validateFieldsAndScroll((err, values) => {
       const { form, intl } = this.props;
       const currentField = form.getFieldValue('currentField');
       if (objectFields.newsFilter === currentField) {
-        const allowList = _.map(this.state.allowList, rule => _.map(rule, o => o.id)).filter(
+        const allowList = map(this.state.allowList, rule => map(rule, o => o.id)).filter(
           sub => sub.length,
         );
-        const ignoreList = _.map(this.state.ignoreList, o => o.id);
-        if (!_.isEmpty(allowList) || !_.isEmpty(ignoreList)) this.onSubmit(values);
+        const ignoreList = map(this.state.ignoreList, o => o.id);
+        if (!isEmpty(allowList) || !isEmpty(ignoreList)) this.onSubmit(values);
         else {
           message.error(
             intl.formatMessage({
@@ -526,67 +519,15 @@ export default class AppendForm extends Component {
     this.props.form.setFieldsValue({ [objectFields.sorting]: sortedList });
   };
 
-  handleRemoveImage = () => {
+  onLoadingImage = value => this.setState({ isLoadingImage: value });
+
+  getImages = image => {
     const { getFieldValue } = this.props.form;
     const currentField = getFieldValue('currentField');
-
-    this.setState({ currentImage: [] });
-    this.props.form.setFieldsValue({ [currentField]: '' });
-  };
-
-  disableAndInsertImage = (image, imageName = 'image') => {
-    const { getFieldValue } = this.props.form;
-    const currentField = getFieldValue('currentField');
-    const newImage = {
-      src: image,
-      name: imageName,
-      id: uuidv4(),
-    };
-    this.setState({ imageUploading: false, currentImage: [newImage] });
-    this.props.form.setFieldsValue({ [currentField]: image });
-  };
-
-  handleAddImageByLink = image => {
-    const { getFieldValue } = this.props.form;
-    const currentField = getFieldValue('currentField');
-    this.setState({ imageUploading: false, currentImage: [image] });
-    this.props.form.setFieldsValue({ [currentField]: image.src });
-  };
-
-  handleImageChange = e => {
-    const { getFieldValue } = this.props.form;
-    const currentField = getFieldValue('currentField');
-    if (e.target.files && e.target.files[0]) {
-      if (!isValidImage(e.target.files[0], MAX_IMG_SIZE[currentField], ALLOWED_IMG_FORMATS)) {
-        this.props.onImageInvalid(
-          MAX_IMG_SIZE[currentField],
-          `(${ALLOWED_IMG_FORMATS.join(', ')}) `,
-        );
-        return;
-      }
-
-      this.setState({
-        imageUploading: true,
-        currentImage: [],
-      });
-
-      this.props.onImageUpload(e.target.files[0], this.disableAndInsertImage, () =>
-        this.setState({
-          imageUploading: false,
-        }),
-      );
-    }
-  };
-
-  handleOnChange = () => {
-    const { getFieldValue } = this.props.form;
-    const currentField = getFieldValue('currentField');
-
-    if (objectImageFields.includes(currentField)) {
-      this.setState({
-        imageUploading: false,
-        currentImage: [],
-      });
+    if (image.length) {
+      this.props.form.setFieldsValue({ [currentField]: image[0].src });
+    } else {
+      this.props.form.setFieldsValue({ [currentField]: '' });
     }
   };
 
@@ -655,16 +596,13 @@ export default class AppendForm extends Component {
     const { intl } = this.props;
     const rules = fieldsRules[fieldName] || [];
     return rules.map(rule => {
-      if (_.has(rule, 'message')) {
+      if (has(rule, 'message')) {
         return {
           ...rule,
-          message: intl.formatMessage(
-            _.get(rule, 'message.intlId'),
-            _.get(rule, 'message.intlMeta'),
-          ),
+          message: intl.formatMessage(get(rule, 'message.intlId'), get(rule, 'message.intlMeta')),
         };
       }
-      if (_.has(rule, 'validator')) {
+      if (has(rule, 'validator')) {
         return { validator: this.validateFieldValue };
       }
       return rule;
@@ -710,7 +648,7 @@ export default class AppendForm extends Component {
               })(
                 <SearchObjectsAutocomplete
                   className="menu-item-search"
-                  itemsIdsToOmit={_.get(wObject, 'menuItems', []).map(f => f.author_permlink)}
+                  itemsIdsToOmit={get(wObject, 'menuItems', []).map(f => f.author_permlink)}
                   handleSelect={this.handleSelectObject}
                   objectType={objectType}
                 />,
@@ -762,12 +700,7 @@ export default class AppendForm extends Component {
           <div className="image-wrapper">
             <Form.Item>
               {getFieldDecorator(currentField, { rules: this.getFieldRules(currentField) })(
-                <ImageSetter
-                  images={this.state.currentImage}
-                  handleAddImage={this.handleImageChange}
-                  handleAddImageByLink={this.handleAddImageByLink}
-                  onRemoveImage={this.handleRemoveImage}
-                />,
+                <ImageSetter onImageLoaded={this.getImages} onLoadingImage={this.onLoadingImage} />,
               )}
             </Form.Item>
           </div>
@@ -1236,7 +1169,7 @@ export default class AppendForm extends Component {
             content: <DnDListItem name={button.title} type={objectFields.button} />,
           });
         }
-        if (!_.isEmpty(wObject.newsFilter)) {
+        if (!isEmpty(wObject.newsFilter)) {
           listItems.push({
             id: TYPES_OF_MENU_ITEM.NEWS,
             content: (
@@ -1365,7 +1298,7 @@ export default class AppendForm extends Component {
     getAllowedFieldsByObjType(wObject.object_type).forEach(option => {
       let intlId = option;
       let metaInfo = '';
-      if (_.includes(TYPES_OF_MENU_ITEM, option)) {
+      if (includes(TYPES_OF_MENU_ITEM, option)) {
         intlId = 'menuItem';
         metaInfo = option;
       }

@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { find } from 'lodash';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import Story from '../components/Story/Story';
@@ -28,7 +28,7 @@ const mapStateToProps = (state, { id }) => {
   const user = getAuthenticatedUser(state);
   const post = getPosts(state)[id];
 
-  const userVote = _.find(post.active_votes, { voter: user.name }) || {};
+  const userVote = find(post.active_votes, { voter: user.name }) || {};
   const isAppend = !!post.append_field_name;
   const bookmarks = getBookmarks(state);
   const postState = {

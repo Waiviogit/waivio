@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import _ from 'lodash';
+import { reduce, map } from 'lodash';
 import { connect } from 'react-redux';
 import { Checkbox } from 'antd';
 import { getUser, getAuthenticatedUser } from '../reducers';
@@ -178,7 +178,7 @@ class UserActivitySearch extends React.Component {
       ...this.state.checked,
       [e.target.name]: e.target.checked,
     };
-    const accountHistoryFilter = _.reduce(
+    const accountHistoryFilter = reduce(
       checked,
       (filterArray, isChecked, filter) => {
         if (isChecked) {
@@ -220,7 +220,7 @@ class UserActivitySearch extends React.Component {
   }
 
   renderFilters(filterTypes) {
-    return _.map(filterTypes, filter => (
+    return map(filterTypes, filter => (
       <div key={filter.id} className="collapsible-block__item">
         <Checkbox
           name={filter.id}

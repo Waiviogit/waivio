@@ -1,21 +1,58 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { Icon } from 'antd';
+import { Icon, message } from 'antd';
 import { map, isEmpty } from 'lodash';
 import uuidv4 from 'uuid/v4';
+import withEditor from '../Editor/withEditor';
+import { isValidImage } from '../../helpers/image';
+import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
+import { objectFields } from '../../../common/constants/listOfFields';
 import './ImageSetter.less';
 
 const ImageSetter = ({
   intl,
   isMultiple,
-  images,
-  onRemoveImage,
-  handleAddImage,
-  handleAddImageByLink,
-  isLoading,
+  onImageInvalid,
+  onImageUpload,
+  onLoadingImage,
+  onImageLoaded,
 }) => {
   const imageLinkInput = useRef(null);
+  const [currentImages, setCurrentImages] = useState([]);
+  const [isLoadingImage, setLoadingImage] = useState(false);
+
+  useEffect(() => {
+    if (currentImages.length) {
+      onImageLoaded(currentImages);
+    }
+  }, [currentImages]);
+
+  const checkIsImage = (isValidLink, image) => {
+    const isSameLink = currentImages.some(currentImage => currentImage.src === image.src);
+    if (isSameLink) {
+      message.error(
+        intl.formatMessage({
+          id: 'imageSetter_link_is_already_added',
+          defaultMessage: 'The link you are trying to add is already added',
+        }),
+      );
+      return;
+    }
+    if (isValidLink) {
+      if (!isMultiple) {
+        setCurrentImages([image]);
+      } else setCurrentImages([...currentImages, image]);
+    } else {
+      message.error(
+        intl.formatMessage({
+          id: 'imageSetter_invalid_link',
+          defaultMessage: 'The link is invalid',
+        }),
+      );
+    }
+  };
+
   const handleOnUploadImageByLink = () => {
     if (imageLinkInput.current && imageLinkInput.current.value) {
       const url = imageLinkInput.current.value;
@@ -25,9 +62,56 @@ const ImageSetter = ({
         name: filename,
         id: uuidv4(),
       };
-      handleAddImageByLink(newImage);
+      const img = new Image();
+      img.src = newImage.src;
+      img.onload = () => checkIsImage(true, newImage);
+      img.onerror = () => checkIsImage(false, newImage);
       imageLinkInput.current.value = '';
     }
+  };
+
+  const disableAndInsertImage = (image, imageName = 'image') => {
+    const newImage = {
+      src: image,
+      name: imageName,
+      id: uuidv4(),
+    };
+    if (isMultiple) {
+      setCurrentImages([...currentImages, newImage]);
+    } else setCurrentImages([newImage]);
+    setLoadingImage(false);
+    onLoadingImage(false);
+  };
+
+  const handleChangeImage = e => {
+    if (e.target.files && e.target.files[0]) {
+      if (
+        !isValidImage(e.target.files[0], MAX_IMG_SIZE[objectFields.background], ALLOWED_IMG_FORMATS)
+      ) {
+        onImageInvalid(
+          MAX_IMG_SIZE[objectFields.background],
+          `(${ALLOWED_IMG_FORMATS.join(', ')}) `,
+        );
+        return;
+      }
+
+      if (!isMultiple) {
+        setCurrentImages([]);
+      }
+      setLoadingImage(true);
+      onLoadingImage(true);
+
+      onImageUpload(e.target.files[0], disableAndInsertImage, () => {
+        setLoadingImage(false);
+        onLoadingImage(false);
+      });
+    }
+  };
+
+  const handleRemoveImage = imageId => {
+    const filteredImages = currentImages.filter(f => f.id !== imageId);
+    setCurrentImages(filteredImages);
+    if (!filteredImages.length) onImageLoaded([]);
   };
 
   return (
@@ -43,13 +127,13 @@ const ImageSetter = ({
               defaultMessage: 'Add images',
             })}
       </div>
-      {(!isEmpty(images) || isLoading) && (
-        <div className="Image-box">
-          {map(images, image => (
-            <div className="Image-box__preview" key={image.id}>
+      {(!isEmpty(currentImages) || isLoadingImage) && (
+        <div className="image-box">
+          {map(currentImages, image => (
+            <div className="image-box__preview" key={image.id}>
               <div
-                className="Image-box__remove"
-                onClick={() => onRemoveImage(image.id)}
+                className="image-box__remove"
+                onClick={() => handleRemoveImage(image.id)}
                 role="presentation"
               >
                 <i className="iconfont icon-delete_fill Image-box__remove-icon" />
@@ -57,73 +141,71 @@ const ImageSetter = ({
               <img src={image.src} width="86" height="86" alt={image.src} />
             </div>
           ))}
-          {isLoading && (
-            <div className="Image-box__preview">
-              <div className="Image-box__preview-loader">
+          {isLoadingImage && (
+            <div className="image-box__preview">
+              <div className="image-box__preview-loader">
                 <Icon type="loading" />
               </div>
             </div>
           )}
         </div>
       )}
-      <div className="Image-upload">
-        <input
-          id="inputfile"
-          className="Image-upload__file-input"
-          type="file"
-          accept="image/*"
-          onInput={handleAddImage}
-          onClick={e => {
-            e.target.value = null;
-          }}
-        />
-        <label htmlFor="inputfile">
-          <div className="Button-upload">
-            <div className="Button-upload__container">
-              <Icon className="Button-upload__container-img" type="plus" />
-              <div className="Button-upload__container-label">
-                {intl.formatMessage({
-                  id: 'imageSetter_upload',
-                  defaultMessage: 'Upload',
-                })}
+      {(isMultiple || !currentImages.length) && (
+        <div className="image-upload">
+          <input
+            id="inputfile"
+            className="image-upload__file-input"
+            type="file"
+            accept="image/*"
+            onInput={handleChangeImage}
+            onClick={e => {
+              e.target.value = null;
+            }}
+          />
+          <label htmlFor="inputfile">
+            <div className="button-upload">
+              <div className="button-upload__container">
+                <Icon className="button-upload__container-img" type="plus" />
+                <div className="button-upload__container-label">
+                  {intl.formatMessage({
+                    id: 'imageSetter_upload',
+                    defaultMessage: 'Upload',
+                  })}
+                </div>
               </div>
             </div>
+          </label>
+          <span>{intl.formatMessage({ id: 'imageSetter_or', defaultMessage: 'or' })}</span>
+          <div className="input-upload">
+            <input
+              className="input-upload__item"
+              size="large"
+              ref={imageLinkInput}
+              placeholder={intl.formatMessage({
+                id: 'imageSetter_paste_image_link',
+                defaultMessage: 'Paste image link',
+              })}
+            />
+            <button className="input-upload__btn" type="button" onClick={handleOnUploadImageByLink}>
+              <Icon type="upload" />
+            </button>
           </div>
-        </label>
-        <span>{intl.formatMessage({ id: 'imageSetter_or', defaultMessage: 'or' })}</span>
-        <div className="Input-upload">
-          <input
-            className="Input-upload__item"
-            size="large"
-            ref={imageLinkInput}
-            placeholder={intl.formatMessage({
-              id: 'imageSetter_paste_image_link',
-              defaultMessage: 'Paste image link',
-            })}
-          />
-          <button className="Input-upload__btn" type="button" onClick={handleOnUploadImageByLink}>
-            <Icon type="upload" />
-          </button>
         </div>
-      </div>
+      )}
     </div>
   );
 };
-
 ImageSetter.propTypes = {
-  handleAddImage: PropTypes.func.isRequired,
   intl: PropTypes.shape().isRequired,
+  onImageInvalid: PropTypes.func.isRequired,
+  onImageUpload: PropTypes.func.isRequired,
+  onLoadingImage: PropTypes.func.isRequired,
+  onImageLoaded: PropTypes.func.isRequired,
   isMultiple: PropTypes.bool,
-  isLoading: PropTypes.bool.isRequired,
-  images: PropTypes.arrayOf(PropTypes.shape()),
-  onRemoveImage: PropTypes.func.isRequired,
-  handleAddImageByLink: PropTypes.func.isRequired,
 };
 
 ImageSetter.defaultProps = {
-  intl: {},
   isMultiple: false,
-  images: [],
 };
 
-export default injectIntl(ImageSetter);
+export default withEditor(injectIntl(ImageSetter));

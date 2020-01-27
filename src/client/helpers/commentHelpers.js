@@ -1,11 +1,11 @@
-import _ from 'lodash';
+import { get } from 'lodash';
 
 function getCommentAnchor(comment) {
   const { url } = comment;
 
   if (typeof url !== 'string') return null;
 
-  return _.get(url.split('#'), '[1]', null);
+  return get(url.split('#'), '[1]', null);
 }
 
 /**

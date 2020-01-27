@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { each, find, omit } from 'lodash';
 import * as feedTypes from '../feed/feedActions';
 import * as postsActions from './postActions';
 import * as commentsActions from '../comments/commentsActions';
@@ -66,7 +66,7 @@ const posts = (state = initialState, action) => {
         ...state.postsStates,
       };
 
-      _.each(action.payload, post => {
+      each(action.payload, post => {
         const key = getPostKey(post);
         list[key] = { ...post, id: key };
         postsStates[key] = {
@@ -96,7 +96,7 @@ const posts = (state = initialState, action) => {
         ...state.postsStates,
       };
 
-      _.each(action.payload, post => {
+      each(action.payload, post => {
         const key = getPostKey(post);
         list[key] = { ...post, id: key };
         postsStates[key] = {
@@ -130,7 +130,7 @@ const posts = (state = initialState, action) => {
       let author = action.payload.author;
       let pendingLikes = state.pendingLikes;
       if (action.meta.afterLike) {
-        const matchPost = _.find(
+        const matchPost = find(
           state.list,
           post => `${post.author_original}/${post.permlink}` === key,
         );
@@ -138,7 +138,7 @@ const posts = (state = initialState, action) => {
           key = getPostKey(matchPost);
           author = matchPost.author;
         }
-        pendingLikes = _.omit(state.pendingLikes, key);
+        pendingLikes = omit(state.pendingLikes, key);
       }
 
       return {
@@ -183,7 +183,7 @@ const posts = (state = initialState, action) => {
     case postsActions.LIKE_POST_ERROR:
       return {
         ...state,
-        pendingLikes: _.omit(state.pendingLikes, action.meta.postId),
+        pendingLikes: omit(state.pendingLikes, action.meta.postId),
       };
     case commentsActions.SEND_COMMENT_SUCCESS:
       return {
@@ -214,7 +214,7 @@ const posts = (state = initialState, action) => {
     case postsActions.FAKE_LIKE_POST_ERROR:
       return {
         ...state,
-        pendingLikes: _.omit(state.pendingLikes, action.meta.postId),
+        pendingLikes: omit(state.pendingLikes, action.meta.postId),
       };
     default:
       return state;

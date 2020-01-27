@@ -22,8 +22,8 @@ const CreateFormRenderer = props => {
     reward,
     reservationPeriod,
     targetDays,
+    receiptPhoto,
     minPhotos,
-    minSteemReputation,
     minExpertise,
     minFollowers,
     minPosts,
@@ -265,6 +265,20 @@ const CreateFormRenderer = props => {
           })(<Input type="number" disabled={disabled} />)}
         </Form.Item>
 
+        <Form.Item className="CreateReward__photo-receipt">
+          {getFieldDecorator(fields.checkboxReceiptPhoto.name, {
+            valuePropName: fields.checkboxReceiptPhoto.valuePropName,
+            initialValue: receiptPhoto,
+          })(
+            <Checkbox defaultChecked={receiptPhoto} disabled={disabled}>
+              <span className="CreateReward__item-title huge-text">
+                {fields.checkboxReceiptPhoto.title}
+              </span>
+            </Checkbox>,
+          )}
+          <div className="CreateReward__field-caption">{fields.checkboxReceiptPhoto.caption}</div>
+        </Form.Item>
+
         <Form.Item
           label={<span className="CreateReward__label">{fields.primaryObject.label}</span>}
         >
@@ -325,14 +339,6 @@ const CreateFormRenderer = props => {
           )}
         </p>
         <br />
-
-        <Form.Item label={fields.minSteemReputation.label}>
-          {getFieldDecorator(fields.minSteemReputation.name, {
-            rules: fields.minSteemReputation.rules,
-            initialValue: minSteemReputation,
-          })(<Input type="number" disabled={disabled} />)}
-          <div className="CreateReward__field-caption">{fields.minSteemReputation.caption}</div>
-        </Form.Item>
 
         <Form.Item label={fields.minExpertise.label}>
           {getFieldDecorator(fields.minExpertise.name, {
@@ -478,8 +484,8 @@ CreateFormRenderer.defaultProps = {
     saturday: true,
     sunday: true,
   },
+  receiptPhoto: false,
   minPhotos: 0,
-  minSteemReputation: 25,
   minExpertise: 0,
   minFollowers: 0,
   minPosts: 0,
@@ -501,8 +507,8 @@ CreateFormRenderer.propTypes = {
   reward: PropTypes.number,
   reservationPeriod: PropTypes.number,
   targetDays: PropTypes.shape(),
+  receiptPhoto: PropTypes.bool,
   minPhotos: PropTypes.number,
-  minSteemReputation: PropTypes.number,
   minExpertise: PropTypes.number,
   minFollowers: PropTypes.number,
   minPosts: PropTypes.number,

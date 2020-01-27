@@ -29,6 +29,7 @@ function buildFollowingUpdatesMenuConfig(updates) {
         intlId: `@${followingUser.name}`,
         meta: followingUser.last_posts_count > 0 ? followingUser.last_posts_count : '',
         linkTo: `/blog/@${followingUser.name}`,
+        isUntranslatable: true,
       })),
     };
   }
@@ -49,6 +50,7 @@ function buildFollowingUpdatesMenuConfig(updates) {
             intlId: clientObj.name || 'unknown_object',
             meta: clientObj.last_posts_count > 0 ? clientObj.last_posts_count : '',
             linkTo: `/feed/${clientObj.id}?category=${clientObj.object_type}&name=${clientObj.name}`,
+            isUntranslatable: true,
           };
         }),
       };
