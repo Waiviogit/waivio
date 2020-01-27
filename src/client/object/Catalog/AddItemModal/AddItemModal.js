@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Button, Modal, message, Select, Form } from 'antd';
-import _, { isEmpty } from 'lodash';
+import { filter, isEmpty } from 'lodash';
 import { getAppendData } from '../../../helpers/wObjectHelper';
 import { getFieldWithMaxWeight } from '../../../object/wObjectHelper';
 import {
@@ -83,11 +83,11 @@ class AddItemModal extends Component {
     const { currentUserName, wobject, intl, form } = this.props;
 
     form.validateFields((err, values) => {
-      const isPassedItem = isEmpty(values) && !isModalOpen;
-      const objectValues = isPassedItem ? createdObjectValues : values;
+      const isManualSelected = isModalOpen && !isEmpty(values);
+      const objectValues = isManualSelected ? values : createdObjectValues;
       if (!err && !this.state.isLoading) {
         this.setState({ isLoading: true });
-        const langReadable = _.filter(LANGUAGES, { id: objectValues.locale })[0].name;
+        const langReadable = filter(LANGUAGES, { id: objectValues.locale })[0].name;
         const objectUrl = `${apiConfig.production.protocol}${apiConfig.production.host}/object/${selectedItem.id}`;
         const bodyMsg = `@${currentUserName} added list-item (${langReadable}):\n[${selectedItem.name} (type: ${selectedItem.type})](${objectUrl})`;
         const fieldContent = {
@@ -100,7 +100,7 @@ class AddItemModal extends Component {
 
         this.props
           .appendObject(appendData, {
-            votePower: isPassedItem ? null : votePercent * 100,
+            votePower: isManualSelected ? votePercent * 100 : null,
             follow: objectValues.follow,
           })
           .then(() => {
@@ -112,12 +112,12 @@ class AddItemModal extends Component {
               }),
             );
             this.props.onAddItem(selectedItem);
-            if (!isPassedItem) {
+            if (isManualSelected) {
               this.handleToggleModal();
             }
           })
           .catch(error => {
-            console.log('err > ', error);
+            console.log(`Add list item error:`, error);
             this.setState({ isLoading: false });
             message.error(
               intl.formatMessage({
@@ -125,7 +125,7 @@ class AddItemModal extends Component {
                 defaultMessage: "Couldn't add list item",
               }),
             );
-            if (!isPassedItem) {
+            if (isManualSelected) {
               this.handleToggleModal();
             }
           });
@@ -136,9 +136,6 @@ class AddItemModal extends Component {
   handleCreateObject = (wobj, { locale = 'en-US' }) => {
     this.setState({ selectedItem: wobj });
     this.handleSubmit({ locale, follow: false });
-    // this.props.form.setFieldsValue({ locale },
-    //   () => this.handleSubmit(false)
-    // );
   };
 
   render() {
@@ -250,10 +247,7 @@ class AddItemModal extends Component {
           handleSelect={this.handleObjectSelect}
           itemsIdsToOmit={itemsIdsToOmit}
         />
-        <CreateObject onCreateObject={this.handleCreateObject} />{' '}
-        {
-          // todo: add parent to the new object
-        }
+        <CreateObject onCreateObject={this.handleCreateObject} parentObject={wobject.parent} />{' '}
       </React.Fragment>
     );
   }

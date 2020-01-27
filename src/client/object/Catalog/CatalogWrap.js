@@ -277,7 +277,7 @@ class CatalogWrap extends React.Component {
           ) : null}
         </div>
 
-        {wobject.object_type === OBJ_TYPE.LIST && !isEditMode && (
+        {wobject.object_type === OBJ_TYPE.LIST && isEditMode && (
           <div className="CatalogWrap__add-item">
             <AddItemModal
               wobject={currWobject}

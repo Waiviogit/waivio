@@ -9,7 +9,6 @@ export const appendObject = (postData, { follow, votePower } = { follow: false }
   dispatch,
   getState,
 ) => {
-  console.log('\t> > > follow', follow, 'votePower:', votePower);
   const state = getState();
   return dispatch({
     type: APPEND_WAIVIO_OBJECT.ACTION,
