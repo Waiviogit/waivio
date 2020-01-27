@@ -2,15 +2,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
 // import { EditorState, AtomicBlockUtils } from 'draft-js';
-import { message, Modal } from 'antd';
-import uuidv4 from 'uuid/v4';
+import { Modal } from 'antd';
 import { addNewBlock } from '../../model';
 import { Block } from '../../util/constants';
 import ImageSetter from '../../../ImageSetter/ImageSetter';
 import withEditor from '../../../Editor/withEditor';
-import { isValidImage } from '../../../../helpers/image';
-import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../../../common/constants/validation';
-import { objectFields } from '../../../../../common/constants/listOfFields';
 
 @withEditor
 @injectIntl
@@ -20,8 +16,6 @@ export default class ImageSideButton extends React.Component {
     setEditorState: PropTypes.func.isRequired,
     getEditorState: PropTypes.func.isRequired,
     close: PropTypes.func.isRequired,
-    onImageInvalid: PropTypes.func.isRequired,
-    onImageUpload: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -29,51 +23,15 @@ export default class ImageSideButton extends React.Component {
     this.state = {
       isModal: false,
       isLoadingImage: false,
+      currentImage: [],
     };
-
-    this.onClick = this.onClick.bind(this);
   }
 
-  onClick() {
-    this.setState({ isModal: true });
-  }
+  onClick = () => this.setState({ isModal: true });
 
-  handleChangeImage = e => {
-    if (e.target.files && e.target.files[0]) {
-      if (
-        !isValidImage(e.target.files[0], MAX_IMG_SIZE[objectFields.background], ALLOWED_IMG_FORMATS)
-      ) {
-        this.props.onImageInvalid(
-          MAX_IMG_SIZE[objectFields.background],
-          `(${ALLOWED_IMG_FORMATS.join(', ')}) `,
-        );
-        return;
-      }
+  onLoadingImage = value => this.setState({ isLoading: value });
 
-      this.setState({
-        isLoadingImage: true,
-        currentImage: [],
-      });
-
-      this.props.onImageUpload(e.target.files[0], this.disableAndInsertImage, () =>
-        this.setState({
-          isLoadingImage: false,
-        }),
-      );
-    }
-  };
-
-  disableAndInsertImage = (image, imageName = 'image') => {
-    const newImage = {
-      src: image,
-      name: imageName,
-      id: uuidv4(),
-    };
-    this.setState({
-      currentImage: [newImage],
-      isLoadingImage: false,
-    });
-  };
+  getImages = image => this.setState({ currentImage: image });
 
   handleOnOk = () => {
     if (this.state.currentImage.length) {
@@ -89,38 +47,7 @@ export default class ImageSideButton extends React.Component {
     this.props.close();
   };
 
-  handleRemoveImage = () => {
-    this.setState({
-      currentImage: [],
-    });
-  };
-
   handleOpenModal = () => this.setState({ isModal: !this.state.isModal });
-
-  handleAddImageByLink = image => {
-    this.checkIsValidImageLink(image, this.checkIsImage);
-  };
-
-  checkIsValidImageLink = (image, setImageIsValid) => {
-    const img = new Image();
-    img.src = image.src;
-    img.onload = () => setImageIsValid(image, true);
-    img.onerror = () => setImageIsValid(image, false);
-  };
-
-  checkIsImage = (image, isValidLink) => {
-    const { intl } = this.props;
-    if (isValidLink) {
-      this.setState({ currentImage: [image] });
-    } else {
-      message.error(
-        intl.formatMessage({
-          id: 'imageSetter_invalid_link',
-          defaultMessage: 'The link is invalid',
-        }),
-      );
-    }
-  };
 
   // For testing - don't load images to ipfs
   // onChange(e) {
@@ -138,7 +65,7 @@ export default class ImageSideButton extends React.Component {
   // }
 
   render() {
-    const { isLoadingImage, isModal, currentImage } = this.state;
+    const { isLoadingImage, isModal } = this.state;
     return (
       <React.Fragment>
         <button
@@ -166,13 +93,9 @@ export default class ImageSideButton extends React.Component {
           visible={isModal}
           onOk={this.handleOnOk}
         >
-          <ImageSetter
-            isLoading={isLoadingImage}
-            handleAddImage={this.handleChangeImage}
-            onRemoveImage={this.handleRemoveImage}
-            images={currentImage}
-            handleAddImageByLink={this.handleAddImageByLink}
-          />
+          {isModal && (
+            <ImageSetter onImageLoaded={this.getImages} onLoadingImage={this.onLoadingImage} />
+          )}
         </Modal>
       </React.Fragment>
     );

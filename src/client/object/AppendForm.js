@@ -1,5 +1,4 @@
 import _, { compact, flatten, keyBy, union } from 'lodash';
-import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
@@ -15,7 +14,6 @@ import {
   addressFields,
   socialObjectFields,
   websiteFields,
-  objectImageFields,
   phoneFields,
   ratingFields,
   ratePercent,
@@ -39,9 +37,7 @@ import { PRIMARY_COLOR } from '../../common/constants/waivio';
 import { getLanguageText } from '../translations';
 import { getField } from '../helpers/wObjectHelper';
 import { appendObject } from '../object/appendActions';
-import { isValidImage } from '../helpers/image';
 import withEditor from '../components/Editor/withEditor';
-import { MAX_IMG_SIZE, ALLOWED_IMG_FORMATS } from '../../common/constants/validation';
 import { getVoteValue } from '../helpers/user';
 import LikeSection from './LikeSection';
 import { getFieldWithMaxWeight, getInnerFieldWithMaxWeight, getListItems } from './wObjectHelper';
@@ -77,8 +73,6 @@ export default class AppendForm extends Component {
     /* decorators */
     form: PropTypes.shape(),
     user: PropTypes.shape(),
-    onImageUpload: PropTypes.func,
-    onImageInvalid: PropTypes.func,
     /* from connect */
     wObject: PropTypes.shape(),
     rewardFund: PropTypes.shape(),
@@ -438,7 +432,6 @@ export default class AppendForm extends Component {
 
   handleSubmit = e => {
     if (e) e.preventDefault();
-
     this.props.form.validateFieldsAndScroll((err, values) => {
       const { form, intl } = this.props;
       const currentField = form.getFieldValue('currentField');
@@ -462,42 +455,6 @@ export default class AppendForm extends Component {
         this.onSubmit(values);
       }
     });
-  };
-
-  checkIsImage = (image, isValidLink) => {
-    const { intl } = this.props;
-    const { currentImage } = this.state;
-    const isSameLink = currentImage.some(current => current.src === image.src);
-    if (isValidLink) {
-      if (!isSameLink) {
-        const images = [...this.state.currentImage, image];
-        this.setState({ currentImage: images });
-      } else
-        message.error(
-          intl.formatMessage({
-            id: 'imageSetter_link_is_already_added',
-            defaultMessage: 'The link you are trying to add is already added',
-          }),
-        );
-    } else {
-      message.error(
-        intl.formatMessage({
-          id: 'imageSetter_invalid_link',
-          defaultMessage: 'The link is invalid',
-        }),
-      );
-    }
-  };
-
-  checkIsValidImageLink = (image, setImageIsValid) => {
-    const img = new Image();
-    img.src = image.src;
-    img.onload = () => setImageIsValid(image, true);
-    img.onerror = () => setImageIsValid(image, false);
-  };
-
-  handleAddImageByLink = image => {
-    this.checkIsValidImageLink(image, this.checkIsImage);
   };
 
   checkRequiredField = (form, currentField) => {
@@ -546,65 +503,6 @@ export default class AppendForm extends Component {
 
   handleChangeSorting = sortedList => {
     this.props.form.setFieldsValue({ [objectFields.sorting]: sortedList });
-  };
-
-  handleRemoveImage = () => {
-    const { getFieldValue } = this.props.form;
-    const currentField = getFieldValue('currentField');
-
-    this.setState({ currentImage: [] });
-    this.props.form.setFieldsValue({ [currentField]: '' });
-  };
-
-  disableAndInsertImage = (image, imageName = 'image') => {
-    const { getFieldValue } = this.props.form;
-    const currentField = getFieldValue('currentField');
-
-    const newImage = {
-      src: image,
-      name: imageName,
-      id: uuidv4(),
-    };
-    this.setState({ imageUploading: false, currentImage: [newImage] });
-    this.props.form.setFieldsValue({ [currentField]: image });
-  };
-
-  handleImageChange = e => {
-    const { getFieldValue } = this.props.form;
-    const currentField = getFieldValue('currentField');
-
-    if (e.target.files && e.target.files[0]) {
-      if (!isValidImage(e.target.files[0], MAX_IMG_SIZE[currentField], ALLOWED_IMG_FORMATS)) {
-        this.props.onImageInvalid(
-          MAX_IMG_SIZE[currentField],
-          `(${ALLOWED_IMG_FORMATS.join(', ')}) `,
-        );
-        return;
-      }
-
-      this.setState({
-        imageUploading: true,
-        currentImage: [],
-      });
-
-      this.props.onImageUpload(e.target.files[0], this.disableAndInsertImage, () =>
-        this.setState({
-          imageUploading: false,
-        }),
-      );
-    }
-  };
-
-  handleOnChange = () => {
-    const { getFieldValue } = this.props.form;
-    const currentField = getFieldValue('currentField');
-
-    if (objectImageFields.includes(currentField)) {
-      this.setState({
-        imageUploading: false,
-        currentImage: [],
-      });
-    }
   };
 
   handleLikeClick = () => {
@@ -716,6 +614,18 @@ export default class AppendForm extends Component {
       });
   };
 
+  onLoadingImage = value => this.setState({ isLoadingImage: value });
+
+  getImages = image => {
+    const { getFieldValue } = this.props.form;
+    const currentField = getFieldValue('currentField');
+    if (image.length) {
+      this.props.form.setFieldsValue({ [currentField]: image[0].src });
+    } else {
+      this.props.form.setFieldsValue({ [currentField]: '' });
+    }
+  };
+
   renderContentValue = currentField => {
     const { loading, selectedObject } = this.state;
     const { intl, wObject } = this.props;
@@ -825,12 +735,7 @@ export default class AppendForm extends Component {
           <div className="image-wrapper">
             <Form.Item>
               {getFieldDecorator(currentField, { rules: this.getFieldRules(currentField) })(
-                <ImageSetter
-                  images={this.state.currentImage}
-                  handleAddImage={this.handleImageChange}
-                  handleAddImageByLink={this.handleAddImageByLink}
-                  onRemoveImage={this.handleRemoveImage}
-                />,
+                <ImageSetter onImageLoaded={this.getImages} onLoadingImage={this.onLoadingImage} />,
               )}
             </Form.Item>
           </div>
