@@ -48,7 +48,9 @@ const ModalSignUp = ({ isButton, form, intl }) => {
         });
       } else {
         setFieldsValue({
-          username: getSlug(`${response.profileObj.givenName} ${response.profileObj.familyName}`),
+          username: getSlug(
+            `${response.profileObj.givenName} ${response.profileObj.familyName}`,
+          ).slice(0, 16),
         });
         setUserData({ ...response, socialNetwork: 'google' });
       }
@@ -69,7 +71,7 @@ const ModalSignUp = ({ isButton, form, intl }) => {
         });
       } else {
         setFieldsValue({
-          username: getSlug(response.name),
+          username: getSlug(response.name).slice(0, 16),
         });
         setUserData({ ...response, socialNetwork: 'facebook' });
       }

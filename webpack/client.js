@@ -6,7 +6,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const WebpackBar = require('webpackbar');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const paths = require('../scripts/paths');
-const TerserPlugin = require('terser-webpack-plugin');
+const Uglifyjs = require('uglifyjs-webpack-plugin');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const { UnusedFilesWebpackPlugin } = require('unused-files-webpack-plugin');
@@ -99,7 +99,7 @@ module.exports = function createConfig(env = 'dev') {
       ...config.plugins,
       new webpack.HotModuleReplacementPlugin(),
       new HardSourceWebpackPlugin(),
-      new TerserPlugin({
+      new Uglifyjs({
         cache: true,
         parallel: 4,
       }),

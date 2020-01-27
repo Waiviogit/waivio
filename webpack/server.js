@@ -7,7 +7,7 @@ const paths = require('../scripts/paths');
 const { MATCH_JS, MATCH_CSS_LESS, DEFINE_PLUGIN } = require('./configUtils');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
+const Uglifyjs = require('uglifyjs-webpack-plugin');
 const { UnusedFilesWebpackPlugin } = require('unused-files-webpack-plugin');
 
 module.exports = function createConfig(env = 'dev') {
@@ -68,9 +68,6 @@ module.exports = function createConfig(env = 'dev') {
       //   cache: true,
       // }),
     ],
-    optimization: {
-      minimizer: [new TerserPlugin()],
-    },
   });
 
   if (IS_DEV) {
@@ -83,7 +80,7 @@ module.exports = function createConfig(env = 'dev') {
       new StartServerPlugin({
         name: 'server.js',
       }),
-      new TerserPlugin({
+      new Uglifyjs({
         cache: true,
         parallel: 4,
       }),
