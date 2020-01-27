@@ -214,7 +214,7 @@ class PostContent extends React.Component {
     const canonicalUrl = `${canonicalHost}${dropCategory(content.url)}`;
     const url = `${waivioHost}${dropCategory(content.url)}`;
     const ampUrl = `${url}/amp`;
-    const metaTitle = `${title} - InvertArena`;
+    const metaTitle = `${title} - InvestArena`;
 
     return (
       <div>
