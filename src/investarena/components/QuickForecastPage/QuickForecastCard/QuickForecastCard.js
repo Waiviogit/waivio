@@ -77,7 +77,8 @@ const QuickForecastCard = ({
           defaultMessage: 'Forecasts remaining in current round:',
         })} ${4 - counter}`,
       );
-    });
+    })
+      .catch(() => message.error('Blockchain error'));
   };
   const handleAnswerClick = answer => handleAuthorization(() => handleClick(answer));
   const time = (timerData * 0.001) / 60;
