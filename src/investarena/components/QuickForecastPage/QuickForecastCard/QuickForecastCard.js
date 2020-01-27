@@ -78,7 +78,7 @@ const QuickForecastCard = ({
         })} ${4 - counter}`,
       );
     })
-      .catch(e => message.error('Blockchain error'));
+      .catch(() => message.error('Blockchain error'));
   };
   const handleAnswerClick = answer => handleAuthorization(() => handleClick(answer));
   const time = (timerData * 0.001) / 60;
