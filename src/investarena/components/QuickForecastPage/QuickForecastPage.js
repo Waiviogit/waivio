@@ -43,7 +43,7 @@ const QuickForecastPage = props => {
   }, [props.auth]);
 
   useEffect(() => {
-    if(answeredForecastList.length === 5) {
+    if (answeredForecastList.length === 5) {
       setSort('All');
     }
   }, [props.quickForecastDataList]);
@@ -81,10 +81,12 @@ const QuickForecastPage = props => {
 
     return obj.market === sortBy && obj.active;
   });
-  const forecastList = sortBy && sortBy !== 'All'
+  const forecastList =
+    sortBy && sortBy !== 'All'
       ? [...answeredForecastList, ...filterForecastList]
       : props.quickForecastDataList;
-  const currentForecastList = answeredForecastList.length === 5 ? answeredForecastList : forecastList;
+  const currentForecastList =
+    answeredForecastList.length === 5 ? answeredForecastList : forecastList;
   const secondsInMilliseconds = sec => sec / 0.001;
   const finishRoundTime = props.roundTime && currentTime + secondsInMilliseconds(props.roundTime);
 
@@ -158,7 +160,7 @@ const QuickForecastPage = props => {
                     </SortSelector.Item>
                   ))}
                 </SortSelector>
-                {currentForecastList.map((obj) => (
+                {currentForecastList.map(obj => (
                   <QuickForecastCard
                     forecast={obj}
                     key={obj.id}
