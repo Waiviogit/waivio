@@ -73,10 +73,11 @@ const parseGuestActions = actions => {
   const guestActionType = {
     DEMO_POST: 'demo_post',
     DEMO_POST_TRANSFER: 'demo_post_transfer',
+    DEMO_DEBT: 'demo_debt',
   };
   return actions.map((action, index) => {
     const transferDirection =
-      action.type === guestActionType.DEMO_POST
+      action.type === guestActionType.DEMO_POST || action.type === guestActionType.DEMO_DEBT
         ? { from: action.sponsor, to: action.userName }
         : { from: action.userName, to: action.sponsor || 'mock' };
     return {

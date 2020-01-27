@@ -163,22 +163,22 @@ export default class Buttons extends React.Component {
     if (postState.userFollowed && !pendingFollow) {
       followText = intl.formatMessage(
         { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
-        { username: post.author },
+        { username: (post.guestInfo && post.guestInfo.userId) || post.author },
       );
     } else if (postState.userFollowed && pendingFollow) {
       followText = intl.formatMessage(
         { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
-        { username: post.author },
+        { username: (post.guestInfo && post.guestInfo.userId) || post.author },
       );
     } else if (!postState.userFollowed && !pendingFollow) {
       followText = intl.formatMessage(
         { id: 'follow_username', defaultMessage: 'Follow {username}' },
-        { username: post.author },
+        { username: (post.guestInfo && post.guestInfo.userId) || post.author },
       );
     } else if (!postState.userFollowed && pendingFollow) {
       followText = intl.formatMessage(
         { id: 'follow_username', defaultMessage: 'Follow {username}' },
-        { username: post.author },
+        { username: (post.guestInfo && post.guestInfo.userId) || post.author },
       );
     }
 

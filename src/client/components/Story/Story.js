@@ -61,10 +61,12 @@ class Story extends React.Component {
     followUser: PropTypes.func,
     unfollowUser: PropTypes.func,
     push: PropTypes.func,
+    pendingFlag: PropTypes.func,
   };
 
   static defaultProps = {
     pendingLike: false,
+    pendingFlag: false,
     pendingFollow: false,
     pendingBookmark: false,
     saving: false,
@@ -350,6 +352,7 @@ class Story extends React.Component {
       post,
       postState,
       pendingLike,
+      pendingFlag,
       pendingFollow,
       pendingBookmark,
       saving,
@@ -390,19 +393,21 @@ class Story extends React.Component {
       );
     }
 
+    const author = post.guestInfo ? post.guestInfo.userId : post.author;
+
     return (
-      <div className="Story" id={`${post.author}-${post.permlink}`}>
+      <div className="Story" id={`${author}-${post.permlink}`}>
         {rebloggedUI}
         <div className="Story__content">
           <div className="Story__header">
-            <Link to={`/@${post.author}`}>
-              <Avatar username={post.author} size={40} />
+            <Link to={`/@${author}`}>
+              <Avatar username={author} size={40} />
             </Link>
             <div className="Story__header__text">
               <span className="Story__header__flex">
                 <h4>
-                  <Link to={`/@${post.author}`}>
-                    <span className="username">{post.author}</span>
+                  <Link to={`/@${author}`}>
+                    <span className="username">{author}</span>
                   </Link>
                 </h4>
                 <WeightTag weight={post.author_wobjects_weight} />
@@ -464,7 +469,7 @@ class Story extends React.Component {
               post={post}
               postState={postState}
               pendingLike={pendingLike}
-              pendingFlag={pendingLike}
+              pendingFlag={pendingFlag}
               rewardFund={rewardFund}
               ownPost={ownPost}
               singlePostVew={singlePostVew}

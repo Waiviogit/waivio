@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 
 import Feed from '../../feed/Feed';
-import { getFeed } from '../../reducers';
+import { getFeed, getReadLanguages } from '../../reducers';
 import {
   getFeedLoadingFromState,
   getFeedHasMoreFromState,
@@ -19,6 +19,7 @@ import './ObjectFeed.less';
 @connect(
   state => ({
     feed: getFeed(state),
+    readLocales: getReadLanguages(state),
   }),
   {
     getObjectPosts,
@@ -33,6 +34,7 @@ export default class ObjectFeed extends React.Component {
     getObjectPosts: PropTypes.func,
     getMoreObjectPosts: PropTypes.func,
     showPostModal: PropTypes.func.isRequired,
+    readLocales: PropTypes.arrayOf(PropTypes.string),
     /* passed */
     match: PropTypes.shape().isRequired,
     /* default props */
@@ -43,29 +45,36 @@ export default class ObjectFeed extends React.Component {
     limit: 10,
     getObjectPosts: () => {},
     getMoreObjectPosts: () => {},
+    readLocales: [],
   };
 
   componentDidMount() {
-    const { match, limit } = this.props;
+    const { match, limit, readLocales } = this.props;
     const { name } = match.params;
 
     this.props.getObjectPosts({
       object: name,
       username: name,
+      readLanguages: readLocales,
       limit,
     });
   }
   componentWillReceiveProps(nextProps) {
-    const { match, limit } = this.props;
-    if (match.params.name !== nextProps.match.params.name) {
+    const { match, limit, readLocales } = this.props;
+    if (
+      readLocales !== nextProps.readLocales ||
+      match.params.name !== nextProps.match.params.name
+    ) {
       if (
-        nextProps.feed &&
-        nextProps.feed.objectPosts &&
-        !nextProps.feed.objectPosts[nextProps.match.params.name]
+        readLocales !== nextProps.readLocales ||
+        (nextProps.feed &&
+          nextProps.feed.objectPosts &&
+          !nextProps.feed.objectPosts[nextProps.match.params.name])
       ) {
         this.props.getObjectPosts({
           object: nextProps.match.params.name,
           username: nextProps.match.params.name,
+          readLanguages: nextProps.readLocales,
           limit,
         });
       }
