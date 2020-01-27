@@ -28,6 +28,7 @@ class Affix extends React.Component {
   static defaultProps = {
     className: '',
     stickPosition: 0,
+    wrapperClassName: '',
   };
 
   componentDidMount() {

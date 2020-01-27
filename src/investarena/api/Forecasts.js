@@ -26,4 +26,10 @@ export default class Forecasts extends Base {
       .get(`${config.posts.withForecastBywobject}/${wobjectName}`)
       .then(response => response.data);
   }
+
+  getStatusForecast(user, permlink) {
+    return this.apiClient
+      .get(`${config.quickForecasts.quickForecast}/${user}/${permlink}`)
+      .then(response => response.data);
+  }
 }
