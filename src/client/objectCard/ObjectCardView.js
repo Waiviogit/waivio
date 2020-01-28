@@ -82,7 +82,7 @@ const ObjectCardView = ({
                 >
                   {objName}
                 </Link>
-                {wObject.weight && <WeightTag weight={wObject.weight} />}
+                {!isNaN(wObject.weight) && <WeightTag weight={Number(wObject.weight)} />}
               </div>
               {ratings && (
                 <RatingsWrap
