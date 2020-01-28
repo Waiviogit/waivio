@@ -4,6 +4,7 @@ import { jsonParse } from '../helpers/formatter';
 import { createPostMetadata } from '../helpers/postHelpers';
 import { createAsyncActionType, getPostKey } from '../helpers/stateHelpers';
 import { findRoot } from '../helpers/commentHelpers';
+import * as ApiClient from '../../waivioApi/ApiClient';
 
 export const GET_SINGLE_COMMENT = createAsyncActionType('@comments/GET_SINGLE_COMMENT');
 
@@ -17,19 +18,14 @@ export const SEND_COMMENT_START = 'SEND_COMMENT_START';
 export const SEND_COMMENT_SUCCESS = 'SEND_COMMENT_SUCCESS';
 export const SEND_COMMENT_ERROR = 'SEND_COMMENT_ERROR';
 
-export const LIKE_COMMENT = '@comments/LIKE_COMMENT';
-export const LIKE_COMMENT_START = '@comments/LIKE_COMMENT_START';
-export const LIKE_COMMENT_SUCCESS = '@comments/LIKE_COMMENT_SUCCESS';
-export const LIKE_COMMENT_ERROR = '@comments/LIKE_COMMENT_ERROR';
+export const LIKE_COMMENT = createAsyncActionType('@comments/LIKE_COMMENT');
 
-export const getSingleComment = (author, permlink, focus = false) => (
-  dispatch,
-  getState,
-  { steemAPI },
-) =>
+export const FAKE_LIKE_COMMENT = createAsyncActionType('@comments/FAKE_LIKE_COMMENT');
+
+export const getSingleComment = (author, permlink, focus = false) => dispatch =>
   dispatch({
     type: GET_SINGLE_COMMENT.ACTION,
-    payload: steemAPI.sendAsync('get_content', [author, permlink]),
+    payload: ApiClient.getContent(author, permlink).then(res => res),
     meta: { focus },
   });
 
@@ -48,10 +44,12 @@ export const getFakeSingleComment = (
   const depth = state.comments.comments[id] ? state.comments.comments[id].depth + 1 : 0;
   const payload = new Promise(resolve => {
     resolve({
+      category: 'waivio',
       author,
       permlink,
       parent_author: parentAuthor,
       parent_permlink: parentPermlink,
+      isFakeComment: true,
       focus,
       json_metadata: JSON.stringify(jsonMetadata),
       author_reputation: 0,
@@ -95,7 +93,7 @@ const getCommentsChildrenLists = apiRes => {
  * @param originalAuthor is bot name of append object comment
  * preventing loading icon to be dispalyed
  */
-export const getComments = (postId, originalAuthor) => (dispatch, getState, { steemAPI }) => {
+export const getComments = postId => (dispatch, getState) => {
   const { posts, comments } = getState();
 
   const content = posts.list[postId] || comments.comments[postId];
@@ -106,14 +104,13 @@ export const getComments = (postId, originalAuthor) => (dispatch, getState, { st
   dispatch({
     type: GET_COMMENTS,
     payload: {
-      promise: steemAPI
-        // eslint-disable-next-line camelcase
-        .sendAsync('get_state', [`/${category}/@${originalAuthor || root_author}/${permlink}`])
-        .then(apiRes => ({
+      promise: ApiClient.getPostCommentsFromApi({ category, root_author, permlink }).then(
+        apiRes => ({
           rootCommentsList: getRootCommentsList(apiRes),
           commentsChildrenList: getCommentsChildrenLists(apiRes),
           content: apiRes.content,
-        })),
+        }),
+      ),
     },
     meta: {
       id: postId,
@@ -127,6 +124,7 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
   { steemConnectAPI },
 ) => {
   const { category, id, permlink: parentPermlink, author: parentAuthor } = parentPost;
+  const guestParentAuthor = parentPost.guestInfo && parentPost.guestInfo.userId;
   const { auth, comments } = getState();
 
   if (!auth.isAuthenticated) {
@@ -137,7 +135,7 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
     return dispatch(notify("Message can't be empty", 'error'));
   }
 
-  const author = auth.isGuestUser && isUpdating ? originalComment.author : auth.user.name;
+  const author = isUpdating ? originalComment.author : auth.user.name;
   const permlink = isUpdating
     ? originalComment.permlink
     : createCommentPermlink(parentAuthor, parentPermlink);
@@ -154,7 +152,11 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
   let rootPostId = null;
   if (parentPost.parent_author) {
     const { comments: commentsState } = comments;
-    rootPostId = getPostKey(findRoot(commentsState, parentPost));
+    const commentsWithBotAuthor = {};
+    Object.values(commentsState).forEach(val => {
+      commentsWithBotAuthor[`${val.author}/${val.permlink}`] = val;
+    });
+    rootPostId = getPostKey(findRoot(commentsWithBotAuthor, parentPost));
   }
 
   return dispatch({
@@ -172,21 +174,18 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
           parentPost.root_author,
         )
         .then(() => {
-          if (auth.isGuestUser) {
-            dispatch(
-              getFakeSingleComment(
-                parentAuthor,
-                parentPermlink,
-                author,
-                permlink,
-                newBody,
-                jsonMetadata,
-                !isUpdating,
-              ),
-            );
-          } else {
-            dispatch(getSingleComment(author, permlink, !isUpdating));
-          }
+          dispatch(
+            getFakeSingleComment(
+              guestParentAuthor || parentAuthor,
+              parentPermlink,
+              author,
+              permlink,
+              newBody,
+              jsonMetadata,
+              !isUpdating,
+            ),
+          );
+          setTimeout(() => dispatch(getSingleComment(author, permlink, !isUpdating)), 2000);
 
           if (window.analytics) {
             window.analytics.track('Comment', {
@@ -219,16 +218,20 @@ export const likeComment = (commentId, weight = 10000, vote = 'like', retryCount
 
   const voter = auth.user.name;
   const { author, permlink } = comments.comments[commentId];
+  const TYPE = auth.isGuestUser ? FAKE_LIKE_COMMENT.ACTION : LIKE_COMMENT.ACTION;
 
   dispatch({
-    type: LIKE_COMMENT,
+    type: TYPE,
     payload: {
-      promise: steemConnectAPI.vote(voter, author, permlink, weight).then(res => {
+      promise: steemConnectAPI.vote(voter, author, permlink, weight).then(data => {
+        if (data.status === 200) {
+          return { voter, rshares: '0', percent: weight, reputation: 0 };
+        }
         dispatch(getSingleComment(author, permlink));
-        return res;
+        return data;
       }),
     },
-    meta: { commentId, voter, weight, vote, isRetry: retryCount > 0 },
+    meta: { commentId, voter, weight, vote, isRetry: retryCount > 0, percent: weight },
   }).catch(err => {
     if (err.res && err.res.status === 500 && retryCount <= 5) {
       dispatch(likeComment(commentId, weight, vote, retryCount + 1));

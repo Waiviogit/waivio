@@ -13,3 +13,5 @@ export const WAIVIO_POST_TYPE = {
 export const PRIMARY_COLOR = '#f87007';
 
 export const GUEST_PREFIX = 'waivio_';
+
+export const BANK_ACCOUNT = 'waiviobank';
