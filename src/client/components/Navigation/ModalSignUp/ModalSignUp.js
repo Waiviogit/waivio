@@ -48,7 +48,9 @@ const ModalSignUp = ({ isButton, form, intl }) => {
         });
       } else {
         setFieldsValue({
-          username: getSlug(`${response.profileObj.givenName} ${response.profileObj.familyName}`),
+          username: getSlug(
+            `${response.profileObj.givenName} ${response.profileObj.familyName}`,
+          ).slice(0, 16),
         });
         setUserData({ ...response, socialNetwork: 'google' });
       }
@@ -69,7 +71,7 @@ const ModalSignUp = ({ isButton, form, intl }) => {
         });
       } else {
         setFieldsValue({
-          username: getSlug(response.name),
+          username: getSlug(response.name).slice(0, 16),
         });
         setUserData({ ...response, socialNetwork: 'facebook' });
       }
@@ -188,7 +190,14 @@ const ModalSignUp = ({ isButton, form, intl }) => {
         {getFieldDecorator('agreement', {
           initialValue: true,
           valuePropName: 'checked',
-        })(<Checkbox>I agree to post my public data into blockchain</Checkbox>)}
+        })(
+          <Checkbox>
+            <FormattedMessage
+              id="iAgreePostMyData"
+              defaultMessage="I agree to post my public data into the blockchain"
+            />
+          </Checkbox>,
+        )}
       </Form.Item>
       <Form.Item>
         <Button

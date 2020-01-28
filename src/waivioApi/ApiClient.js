@@ -891,16 +891,44 @@ export const updateGuestProfile = async (username, json_metadata) => {
     .catch(err => err.message);
 };
 
-export const sendGuestTransfer = async ({ to, amount }) => {
+export const sendGuestTransfer = async ({ to, amount, memo }) => {
   const userData = await getValidTokenData();
+  const body = {
+    id: 'waivio_guest_transfer',
+    data: { to, amount: +amount.split(' ')[0] },
+  };
+  if (memo) body.data.memo = memo;
   return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
     method: 'POST',
     headers: { ...headers, 'access-token': userData.token },
-    body: JSON.stringify({
-      id: 'waivio_guest_transfer',
-      data: { to, amount: +amount.split(' ')[0] },
-    }),
+    body: JSON.stringify(body),
   })
+    .then(res => res.json())
+    .then(data => data)
+    .catch(err => err);
+};
+
+export const getUserCommentsFromApi = (username, skip = 0, limit = 10, start_permlink) => {
+  let res;
+  if (start_permlink) {
+    res = fetch(
+      `${config.apiPrefix}${config.user}/${username}${config.comments}?skip=${skip}&limit=${limit}&start_permlink=${start_permlink}`,
+    );
+  } else {
+    res = fetch(
+      `${config.apiPrefix}${config.user}/${username}${config.comments}?skip=${skip}&limit=${limit}`,
+    );
+  }
+  return res
+    .then(res => res.json())
+    .then(data => data)
+    .catch(err => err);
+};
+
+export const getPostCommentsFromApi = ({ category, root_author, permlink }) => {
+  return fetch(
+    `${config.apiPrefix}${config.postComments}?author=${root_author}&permlink=${permlink}&category=${category}`,
+  )
     .then(res => res.json())
     .then(data => data)
     .catch(err => err);

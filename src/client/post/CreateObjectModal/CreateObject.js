@@ -1,29 +1,34 @@
-import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Form, Input, Select, Button, Modal } from 'antd';
-import { connect } from 'react-redux';
+import { isEmpty, map } from 'lodash';
 import LANGUAGES from '../../translations/languages';
 import { getLanguageText } from '../../translations';
 import { objectFields } from '../../../common/constants/listOfFields';
 import LikeSection from '../../object/LikeSection';
 import FollowObjectForm from '../../object/FollowObjectForm';
-import { getSuitableLanguage, getObjectTypesList } from '../../reducers';
+import { getSuitableLanguage, getObjectTypesList, getAuthenticatedUserName } from '../../reducers';
 import { notify } from '../../app/Notification/notificationActions';
 import { getObjectTypes } from '../../objectTypes/objectTypesActions';
+import { appendObject } from '../../object/appendActions';
 import { createWaivioObject } from '../../object/wobjectsActions';
 import DEFAULTS from '../../object/const/defaultValues';
+import { getAppendData } from '../../helpers/wObjectHelper';
+import { getServerWObj } from '../../adapters';
 import './CreateObject.less';
 
 @injectIntl
 @Form.create()
 @connect(
   state => ({
+    username: getAuthenticatedUserName(state),
     objectTypes: getObjectTypesList(state),
     locale: getSuitableLanguage(state),
   }),
   {
+    appendObject,
     createWaivioObject,
     getObjectTypes,
     notify,
@@ -37,6 +42,8 @@ class CreateObject extends React.Component {
     /* from connect */
     objectTypes: PropTypes.shape(),
     locale: PropTypes.string.isRequired,
+    username: PropTypes.string,
+    appendObject: PropTypes.func.isRequired,
     createWaivioObject: PropTypes.func.isRequired,
     getObjectTypes: PropTypes.func.isRequired,
     notify: PropTypes.func.isRequired,
@@ -44,6 +51,7 @@ class CreateObject extends React.Component {
     isSingleType: PropTypes.bool,
     isModalOpen: PropTypes.bool,
     defaultObjectType: PropTypes.string,
+    parentObject: PropTypes.shape(),
     withOpenModalBtn: PropTypes.bool,
     openModalBtnText: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
     onCreateObject: PropTypes.func,
@@ -53,6 +61,8 @@ class CreateObject extends React.Component {
   static defaultProps = {
     objectTypes: {},
     locale: 'en-US',
+    username: '',
+    parentObject: {},
     withOpenModalBtn: true,
     isSingleType: false,
     isModalOpen: false,
@@ -84,7 +94,7 @@ class CreateObject extends React.Component {
 
   toggleModal = () => {
     if (!this.state.loading) {
-      if (!this.state.isModalOpen && _.isEmpty(this.props.objectTypes)) this.props.getObjectTypes();
+      if (!this.state.isModalOpen && isEmpty(this.props.objectTypes)) this.props.getObjectTypes();
       this.setState({ isModalOpen: !this.state.isModalOpen });
     }
   };
@@ -110,6 +120,28 @@ class CreateObject extends React.Component {
         this.props
           .createWaivioObject(objData)
           .then(({ value: { parentPermlink, parentAuthor } }) => {
+            // add parent to created object
+            if (!isEmpty(this.props.parentObject)) {
+              this.props.appendObject(
+                getAppendData(
+                  this.props.username,
+                  getServerWObj({
+                    id: parentPermlink,
+                    author: parentAuthor,
+                    creator: this.props.username,
+                    name: values.name,
+                    locale: values.locale,
+                  }),
+                  '',
+                  {
+                    name: objectFields.parent,
+                    body: this.props.parentObject.author_permlink,
+                    locale: values.locale,
+                  },
+                ),
+                { votePower: null, follow: false },
+              );
+            }
             this.props.notify(
               this.props.intl.formatMessage({
                 id: 'create_object_success',
@@ -118,27 +150,31 @@ class CreateObject extends React.Component {
               'success',
             );
             this.setState({ loading: false, isModalOpen: false });
-            this.props.onCreateObject({
-              id: parentPermlink,
-              author: parentAuthor,
-              avatar: DEFAULTS.AVATAR,
-              name: objData.name,
-              title: '',
-              parents: [],
-              weight: '',
-              createdAt: Date.now(),
-              updatedAt: Date.now(),
-              children: [],
-              users: [],
-              userCount: 0,
-              version: 0,
-              isNew: false,
-              rank: 1,
-              type: objData.type,
-              background: '',
-            });
+            this.props.onCreateObject(
+              {
+                id: parentPermlink,
+                author: parentAuthor,
+                avatar: DEFAULTS.AVATAR,
+                name: objData.name,
+                title: '',
+                parent: this.props.parentObject,
+                weight: '',
+                createdAt: Date.now(),
+                updatedAt: Date.now(),
+                children: [],
+                users: [],
+                userCount: 0,
+                version: 0,
+                isNew: false,
+                rank: 1,
+                type: objData.type,
+                background: '',
+              },
+              { locale: values.locale },
+            );
           })
-          .catch(() => {
+          .catch(error => {
+            console.log('\tObject creation:: ', error);
             this.props.notify(
               this.props.intl.formatMessage({
                 id: 'create_object_error',
@@ -282,7 +318,7 @@ class CreateObject extends React.Component {
                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                   }
                 >
-                  {_.map(objectTypes, type => (
+                  {map(objectTypes, type => (
                     <Option value={type.name} key={type.name}>
                       {type.name}
                     </Option>

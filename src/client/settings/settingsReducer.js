@@ -5,7 +5,6 @@ import { rewardsValues } from '../../common/constants/rewards';
 
 const initialState = {
   locale: 'auto',
-  readLanguages: [],
   votingPower: false,
   votePercent: 10000,
   showNSFWPosts: false,
@@ -15,6 +14,7 @@ const initialState = {
   upvoteSetting: false,
   exitPageSetting: true,
   rewardSetting: rewardsValues.half,
+  postLocales: [],
 };
 
 const settings = (state = initialState, action) => {
@@ -53,6 +53,8 @@ const settings = (state = initialState, action) => {
         ...state,
         locale: action.payload,
       };
+    case authTypes.LOGOUT:
+      return { ...initialState };
     default:
       return state;
   }
