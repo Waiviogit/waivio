@@ -21,6 +21,7 @@ const ImageSetter = ({
   const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
   const [isLoadingImage, setLoadingImage] = useState(false);
+  const [fileImages, setFileImages] = useState([]);
 
   useEffect(() => {
     if (currentImages.length) {
@@ -54,6 +55,15 @@ const ImageSetter = ({
   };
 
   const handleOnUploadImageByLink = () => {
+    if (currentImages.length >= 5) {
+      message.error(
+        intl.formatMessage({
+          id: 'imageSetter_cannot',
+          defaultMessage: 'You cannot upload more then 25 images',
+        }),
+      );
+      return;
+    }
     if (imageLinkInput.current && imageLinkInput.current.value) {
       const url = imageLinkInput.current.value;
       const filename = url.substring(url.lastIndexOf('/') + 1);
@@ -70,41 +80,49 @@ const ImageSetter = ({
     }
   };
 
-  const disableAndInsertImage = (image, imageName = 'image') => {
-    const newImage = {
-      src: image,
-      name: imageName,
-      id: uuidv4(),
-    };
-    if (isMultiple) {
-      setCurrentImages([...currentImages, newImage]);
-    } else setCurrentImages([newImage]);
-    setLoadingImage(false);
-    onLoadingImage(false);
-  };
-
-  const handleChangeImage = e => {
+  const handleChangeImage = async e => {
     if (e.target.files && e.target.files[0]) {
-      if (
-        !isValidImage(e.target.files[0], MAX_IMG_SIZE[objectFields.background], ALLOWED_IMG_FORMATS)
-      ) {
-        onImageInvalid(
-          MAX_IMG_SIZE[objectFields.background],
-          `(${ALLOWED_IMG_FORMATS.join(', ')}) `,
+      const uploadedImages = [];
+      const images = Object.values(e.target.files);
+      setFileImages(images);
+      if (images.length > 5 || currentImages.length + images.length > 5) {
+        message.error(
+          intl.formatMessage({
+            id: 'imageSetter_cannot',
+            defaultMessage: 'You cannot upload more then 25 images',
+          }),
         );
         return;
       }
-
-      if (!isMultiple) {
-        setCurrentImages([]);
-      }
-      setLoadingImage(true);
-      onLoadingImage(true);
-
-      onImageUpload(e.target.files[0], disableAndInsertImage, () => {
+      const disableAndInsertImage = (image, imageName = 'image') => {
+        const newImage = {
+          src: image,
+          name: imageName,
+          id: uuidv4(),
+        };
+        uploadedImages.push(newImage);
+      };
+      const onErrorLoadImage = () => {
         setLoadingImage(false);
         onLoadingImage(false);
-      });
+      };
+      setLoadingImage(true);
+      onLoadingImage(true);
+      /* eslint-disable no-restricted-syntax */
+      for (const image of images) {
+        if (!isValidImage(image, MAX_IMG_SIZE[objectFields.background], ALLOWED_IMG_FORMATS)) {
+          onImageInvalid(
+            MAX_IMG_SIZE[objectFields.background],
+            `(${ALLOWED_IMG_FORMATS.join(', ')}) `,
+          );
+        } else {
+          /* eslint-disable no-await-in-loop */
+          await onImageUpload(image, disableAndInsertImage, onErrorLoadImage);
+        }
+      }
+      setCurrentImages([...currentImages, ...uploadedImages]);
+      setLoadingImage(false);
+      onLoadingImage(false);
     }
   };
 
@@ -141,13 +159,14 @@ const ImageSetter = ({
               <img src={image.src} width="86" height="86" alt={image.src} />
             </div>
           ))}
-          {isLoadingImage && (
-            <div className="image-box__preview">
-              <div className="image-box__preview-loader">
-                <Icon type="loading" />
+          {isLoadingImage &&
+            map(fileImages, () => (
+              <div className="image-box__preview">
+                <div className="image-box__preview-loader">
+                  <Icon type="loading" />
+                </div>
               </div>
-            </div>
-          )}
+            ))}
         </div>
       )}
       {(isMultiple || !currentImages.length) && (
@@ -157,6 +176,7 @@ const ImageSetter = ({
             className="image-upload__file-input"
             type="file"
             accept="image/*"
+            multiple={isMultiple}
             onInput={handleChangeImage}
             onClick={e => {
               e.target.value = null;

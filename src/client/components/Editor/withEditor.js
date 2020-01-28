@@ -64,7 +64,7 @@ export default function withEditor(WrappedComponent) {
       formData.append('file', blob);
 
       // fetch(`https://ipfs.busy.org/upload`, {
-      fetch(`https://www.waivio.com/api/image`, {
+      return fetch(`https://www.waivio.com/api/image`, {
         method: 'POST',
         body: formData,
       })

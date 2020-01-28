@@ -995,6 +995,7 @@
   "imageSetter_or": "или",
   "imageSetter_paste_image_link": "Вставить ссылку на картинку",
   "imageSetter_link_is_already_added": "Ссылка, которую вы пытаетесь добавить, уже добавлена",
+  "imageSetter_cannot ": "Вы не можете загрузить более 25 изображений",
   "iAgreePostMyData": "Я даю согласие на запись мои публичных данных в блокчейн",
   "transferThroughBank": "Транзакция Ваших средств осуществляется через WaivioBank сервис, WaivioBank не взимает комиссию за переводы.",
   "there_are_not user with name": "Извините! Нет пользователя {item} на Waivio",
