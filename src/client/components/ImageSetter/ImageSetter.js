@@ -55,7 +55,7 @@ const ImageSetter = ({
   };
 
   const handleOnUploadImageByLink = () => {
-    if (currentImages.length >= 5) {
+    if (currentImages.length >= 25) {
       message.error(
         intl.formatMessage({
           id: 'imageSetter_cannot',
@@ -85,7 +85,7 @@ const ImageSetter = ({
       const uploadedImages = [];
       const images = Object.values(e.target.files);
       setFileImages(images);
-      if (images.length > 5 || currentImages.length + images.length > 5) {
+      if (images.length > 25 || currentImages.length + images.length > 25) {
         message.error(
           intl.formatMessage({
             id: 'imageSetter_cannot',
