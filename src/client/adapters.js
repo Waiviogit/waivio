@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import { isEmpty, get } from 'lodash';
 import { objectFields } from '../common/constants/listOfFields';
 import { getFieldsWithMaxWeight } from './object/wObjectHelper';
 import DEFAULTS from './object/const/defaultValues';
@@ -55,7 +55,7 @@ export const getServerWObj = clientWObj => {
     rank,
     createdAt,
     updatedAt,
-    parents,
+    parent,
     children,
     weight,
     app,
@@ -78,6 +78,9 @@ export const getServerWObj = clientWObj => {
   if (background) {
     fields.push({ name: objectFields.background, body: background });
   }
+  if (!isEmpty(parent)) {
+    fields.push({ name: objectFields.parent, body: parent && parent.author_permlink });
+  }
   return {
     author_permlink: id,
     author,
@@ -86,13 +89,13 @@ export const getServerWObj = clientWObj => {
     object_type: type,
     rank: rank || 1,
     weight: weight || '',
-    parents: parents && parents.length ? parents : [],
+    parent: !isEmpty(parent) ? parent : null,
     children: children && children.length ? children : [],
     app: app || 'waiviodev/1.0.0',
     community: '',
     createdAt: createdAt || Date.now(),
     updatedAt: updatedAt || Date.now(),
-    fields: [...clientWObj.fields, ...fields],
+    fields: [...get(clientWObj, ['fields'], []), ...fields],
   };
 };
 
