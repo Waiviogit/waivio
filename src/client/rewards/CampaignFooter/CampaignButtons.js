@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, FormattedNumber } from 'react-intl';
-import { Icon } from 'antd';
+import { Icon, Button } from 'antd';
 import classNames from 'classnames';
-import LinkButton from '../../components/LinkButton/LinkButton';
 import withAuthActions from '../../auth/withAuthActions';
 import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/PopoverMenu';
 import '../../components/StoryFooter/Buttons.less';
@@ -18,17 +17,14 @@ export default class CampaignButtons extends React.Component {
     daysLeft: PropTypes.number.isRequired,
     post: PropTypes.shape().isRequired,
     postState: PropTypes.shape().isRequired,
-    propositionId: PropTypes.string.isRequired,
     requiredObjectPermlink: PropTypes.string.isRequired,
-    requiredObjectName: PropTypes.string.isRequired,
-    proposedObjectPermlink: PropTypes.string.isRequired,
-    proposedObjectName: PropTypes.string.isRequired,
     onActionInitiated: PropTypes.func.isRequired,
     pendingFollow: PropTypes.bool,
     pendingFollowObject: PropTypes.bool,
     onLikeClick: PropTypes.func,
     onCommentClick: PropTypes.func,
     handlePostPopoverMenuClick: PropTypes.func,
+    toggleModalDetails: PropTypes.func,
   };
 
   static defaultProps = {
@@ -42,6 +38,7 @@ export default class CampaignButtons extends React.Component {
     onLikeClick: () => {},
     onCommentClick: () => {},
     handlePostPopoverMenuClick: () => {},
+    toggleModalDetails: () => {},
   };
 
   constructor(props) {
@@ -171,16 +168,7 @@ export default class CampaignButtons extends React.Component {
   }
 
   render() {
-    const {
-      intl,
-      post,
-      requiredObjectPermlink,
-      requiredObjectName,
-      proposedObjectPermlink,
-      proposedObjectName,
-      propositionId,
-      daysLeft,
-    } = this.props;
+    const { intl, post, daysLeft, toggleModalDetails } = this.props;
 
     return (
       <div className="Buttons">
@@ -210,17 +198,12 @@ export default class CampaignButtons extends React.Component {
           {this.renderPostPopoverMenu()}
         </div>
         <React.Fragment>
-          <LinkButton
-            block={false}
-            className="WriteReview-button"
-            to={`/editor?object=[${requiredObjectName}](${requiredObjectPermlink})&object=[${proposedObjectName}](${proposedObjectPermlink})&campaign=${propositionId}`}
-            type="primary"
-          >
+          <Button type="primary" onClick={() => toggleModalDetails({ value: true })}>
             {intl.formatMessage({
               id: 'campaign_buttons_write_review',
               defaultMessage: `Write review`,
             })}
-          </LinkButton>
+          </Button>
         </React.Fragment>
       </div>
     );
