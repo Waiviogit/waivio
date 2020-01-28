@@ -148,7 +148,22 @@ export default class AppendForm extends Component {
         // we do not vote append when append just created page/list
         if (data.votePower === null) {
           this.props.hideModal();
-          this.props.appendObject(data, { votePower: data.votePower, follow: formValues.follow });
+          this.props
+            .appendObject(data, { votePower: data.votePower, follow: formValues.follow })
+            .then(() => {
+              message.success(
+                this.props.intl.formatMessage(
+                  {
+                    id: 'added_field_to_wobject',
+                    defaultMessage: `You successfully have added the {field} field to {wobject} object`,
+                  },
+                  {
+                    field: getFieldValue('currentField'),
+                    wobject: wObject.name,
+                  },
+                ),
+              );
+            });
           return;
         }
 
