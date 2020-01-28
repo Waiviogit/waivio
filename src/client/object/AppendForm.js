@@ -694,7 +694,7 @@ export default class AppendForm extends Component {
                 disabled={loading}
                 placeholder={intl.formatMessage({
                   id: 'value_placeholder',
-                  defaultMessage: 'Add value',
+                  defaultMessage: 'Topic name',
                 })}
               />,
             )}
