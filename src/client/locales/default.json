@@ -1007,5 +1007,6 @@
   "STEEMcoins": "- STEEM coins",
   "guestAccounts": "GUEST ACCOUNTS",
   "lookAroundgetRewardsMakeConnections": "Look around, get rewards, make connections,",
-  "createSteemAccountLater": "create a Steem account later"
+  "createSteemAccountLater": "create a Steem account later",
+  "terms_and_policy_agreement": "I have read and agree to the {Terms}, the {Privacy}, the {Cookies}."
 }

@@ -1,23 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Checkbox, Form, Input, Select } from 'antd';
 import { FormattedMessage } from 'react-intl';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import PropTypes from 'prop-types';
 import getSlug from 'speakingurl';
 import { GUEST_PREFIX } from '../../../../common/constants/waivio';
 import { getUserAccount } from '../../../../waivioApi/ApiClient';
 import { login } from '../../../auth/authActions';
 import { notify } from '../../../app/Notification/notificationActions';
+import LANGUAGES from '../../../translations/languages';
+import { getLanguageText } from '../../../translations';
+import { getLocale } from '../../../reducers';
+import ImageSetter from '../../ImageSetter/ImageSetter';
 
 const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
   const {
     getFieldDecorator,
     getFieldsError,
     getFieldError,
-    isFieldTouched,
+    // isFieldTouched,
     validateFields,
     setFieldsValue,
   } = form;
+
+  let initialLanguages = useSelector(getLocale, shallowEqual);
+  initialLanguages = initialLanguages === 'auto' ? 'en-US' : initialLanguages;
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -53,8 +60,10 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
         />,
       );
     }
-    // if (value.trim().length === 0)
-    //   callback(< FormattedMessage id='please_input_username' defaultMessage='Please input your username' />);
+    if (value.trim().length === 0)
+      callback(
+        <FormattedMessage id="please_input_username" defaultMessage="Please input your username" />,
+      );
     const user = await getUserAccount(`${GUEST_PREFIX}${value}`);
     if (user.id) {
       callback(
@@ -68,8 +77,6 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
   };
 
   const hasErrors = fieldsError => Object.keys(fieldsError).some(field => fieldsError[field]);
-
-  const usernameError = isFieldTouched('username') && getFieldError('username');
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -85,72 +92,182 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
           setIsLoading(false);
         });
       } else {
-        dispatch(notify(`${err.username.errors[0].message}`, 'error'));
+        dispatch(notify(`${err.username.errors[0].message.props.defaultMessage}`, 'error'));
         setIsLoading(false);
       }
     });
   };
 
+  const getAvatar = image => {
+    setFieldsValue({ avatar: image });
+  };
+
+  const usernameError = getFieldError('username');
+  const aliasError = getFieldError('alias');
+  const agreementError = getFieldError('agreement');
+
   return (
-    <Form layout="vertical" onSubmit={handleSubmit} className="mt3">
-      <Form.Item validateStatus={usernameError ? 'error' : ''} help={usernameError || ''}>
-        {getFieldDecorator('username', {
-          rules: [
-            {
-              required: true,
-              message: (
-                <FormattedMessage
-                  id="please_input_username"
-                  defaultMessage="Please input your username"
-                />
-              ),
-            },
-            {
-              pattern: /^[A-Za-z0-9.-]+$/,
-              message: (
-                <FormattedMessage
-                  id="only_letters"
-                  defaultMessage="Only letters, digits, periods, dashes are allowed"
-                />
-              ),
-            },
-            {
-              validator: validateUserName,
-            },
-          ],
-        })(
-          <Input placeholder="Username" addonBefore={GUEST_PREFIX} minLength={3} maxLength={16} />,
-        )}
-      </Form.Item>
-      <Form.Item>
-        {getFieldDecorator('picture', {
-          rules: [],
-        })()}
-      </Form.Item>
-      <Form.Item>
-        {getFieldDecorator('agreement', {
-          initialValue: true,
-          valuePropName: 'checked',
-        })(
-          <Checkbox>
-            <FormattedMessage
-              id="iAgreePostMyData"
-              defaultMessage="I agree to post my public data into the blockchain"
-            />
-          </Checkbox>,
-        )}
-      </Form.Item>
-      <Form.Item>
-        <Button
-          type="primary"
-          htmlType="submit"
-          disabled={hasErrors(getFieldsError())}
-          loading={isLoading}
+    <React.Fragment>
+      <h2 className="ModalSignUp__title">
+        <FormattedMessage id="publicProfile" defaultMessage="Public profile" />
+      </h2>
+      <Form layout="vertical" onSubmit={handleSubmit} className="mt3">
+        <Form.Item
+          validateStatus={usernameError ? 'error' : 'success'}
+          help={usernameError || ''}
+          label="Nickname"
         >
-          <FormattedMessage id="signup" defaultMessage="Sign up" />
-        </Button>
-      </Form.Item>
-    </Form>
+          {getFieldDecorator('username', {
+            rules: [
+              {
+                required: true,
+                message: (
+                  <FormattedMessage
+                    id="please_input_nickname"
+                    defaultMessage="Nickname cannot be empty"
+                  />
+                ),
+              },
+              {
+                pattern: /^[A-Za-z0-9.-]+$/,
+                message: (
+                  <FormattedMessage
+                    id="only_letters"
+                    defaultMessage="Only letters, digits, periods, dashes are allowed"
+                  />
+                ),
+              },
+              {
+                validator: validateUserName,
+              },
+            ],
+          })(
+            <Input
+              placeholder="Enter nickname"
+              addonBefore={`@${GUEST_PREFIX}`}
+              minLength={3}
+              maxLength={16}
+            />,
+          )}
+        </Form.Item>
+
+        <Form.Item>
+          {getFieldDecorator('avatar')(
+            <ImageSetter
+              onImageLoaded={getAvatar}
+              onLoadingImage={setIsLoading}
+              className="mb3"
+              defaultImage={userData.w3.Paa}
+            />,
+          )}
+        </Form.Item>
+
+        <Form.Item validateStatus={aliasError ? 'error' : ''} help={aliasError || ''} label="Name">
+          {getFieldDecorator('alias', {
+            rules: [
+              {
+                message: (
+                  <FormattedMessage
+                    id="please_input_username"
+                    defaultMessage="Name cannot be empty"
+                  />
+                ),
+              },
+              {
+                pattern: /^[\sA-Za-z0-9.-]{0,64}$/,
+                message: (
+                  <FormattedMessage
+                    id="only_letters"
+                    defaultMessage="Only letters, digits, periods, dashes are allowed"
+                  />
+                ),
+              },
+            ],
+          })(<Input placeholder="Enter username" maxLength={64} />)}
+        </Form.Item>
+
+        <Form.Item>
+          {getFieldDecorator('locales', {
+            initialValue: initialLanguages,
+          })(
+            <Select mode="multiple" style={{ width: '100%' }}>
+              {LANGUAGES.map(lang => (
+                <Select.Option key={lang.id} value={lang.id}>
+                  {getLanguageText(lang)}
+                </Select.Option>
+              ))}
+            </Select>,
+          )}
+        </Form.Item>
+        <Form.Item
+          validateStatus={agreementError ? 'error' : ''}
+          help={agreementError || ''}
+          label="Preferred languages"
+        >
+          {getFieldDecorator('agreement', {
+            checked: false,
+            valuePropName: 'checked',
+            rules: [
+              {
+                required: true,
+                message: (
+                  <FormattedMessage
+                    id="please_input_username_"
+                    defaultMessage="You need to confirm agreement"
+                  />
+                ),
+              },
+            ],
+          })(
+            <Checkbox>
+              <FormattedMessage
+                id="terms_and_policy_agreement_1"
+                defaultMessage="I have read and agree to the {Terms} , the {Privacy}, the {Cookies}."
+                values={{
+                  Terms: (
+                    <a
+                      rel="noopener noreferrer"
+                      target="_blank"
+                      href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/xrj-terms-and-conditions"
+                    >
+                      Terms And Conditions
+                    </a>
+                  ),
+                  Privacy: (
+                    <a
+                      rel="noopener noreferrer"
+                      target="_blank"
+                      href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/poi-privacy-policy"
+                    >
+                      Privacy Policy
+                    </a>
+                  ),
+                  Cookies: (
+                    <a
+                      rel="noopener noreferrer"
+                      target="_blank"
+                      href="https://www.waivio.com/object/ylr-waivio/menu#oxa-legal/uid-cookies-policy"
+                    >
+                      Cookies Policy
+                    </a>
+                  ),
+                }}
+              />
+            </Checkbox>,
+          )}
+        </Form.Item>
+        <Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            disabled={hasErrors(getFieldsError())}
+            loading={isLoading}
+          >
+            <FormattedMessage id="signup" defaultMessage="Sign up" />
+          </Button>
+        </Form.Item>
+      </Form>
+    </React.Fragment>
   );
 };
 
@@ -160,4 +277,4 @@ GuestSignUpForm.propTypes = {
   isModalOpen: PropTypes.bool.isRequired,
 };
 
-export default Form.create({ name: 'user_name' })(GuestSignUpForm);
+export default Form.create({ name: 'username' })(GuestSignUpForm);

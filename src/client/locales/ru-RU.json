@@ -1009,5 +1009,6 @@
   "STEEMcoins": "- STEEM монеты",
   "guestAccounts": "ГОСТЕВОЙ АККАУНТ",
   "lookAroundgetRewardsMakeConnections": "Исследуйте, получайте награды, заводите связи,",
-  "createSteemAccountLater": "создавайте аккаунт Steem позже"
+  "createSteemAccountLater": "создавайте аккаунт Steem позже",
+  "terms_and_policy_agreement": "Я прочитал и согласен с {Terms}, {Privacy} и {Cookies}."
 }

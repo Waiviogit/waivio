@@ -17,6 +17,7 @@ const ImageSetter = ({
   onImageUpload,
   onLoadingImage,
   onImageLoaded,
+  defaultImage,
 }) => {
   const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
@@ -53,9 +54,9 @@ const ImageSetter = ({
     }
   };
 
-  const handleOnUploadImageByLink = () => {
-    if (imageLinkInput.current && imageLinkInput.current.value) {
-      const url = imageLinkInput.current.value;
+  const handleOnUploadImageByLink = image => {
+    if (image || (imageLinkInput.current && imageLinkInput.current.value)) {
+      const url = image || imageLinkInput.current.value;
       const filename = url.substring(url.lastIndexOf('/') + 1);
       const newImage = {
         src: url,
@@ -69,6 +70,10 @@ const ImageSetter = ({
       imageLinkInput.current.value = '';
     }
   };
+
+  useEffect(() => {
+    handleOnUploadImageByLink(defaultImage);
+  }, []);
 
   const disableAndInsertImage = (image, imageName = 'image') => {
     const newImage = {
@@ -114,19 +119,28 @@ const ImageSetter = ({
     if (!filteredImages.length) onImageLoaded([]);
   };
 
+  const renderTitle = () => {
+    console.log(defaultImage);
+    if (defaultImage) {
+      return intl.formatMessage({
+        id: 'public_profile',
+        defaultMessage: 'Public profile',
+      });
+    } else if (isMultiple) {
+      return intl.formatMessage({
+        id: 'imageSetter_add_images',
+        defaultMessage: 'Add images',
+      });
+    }
+    return intl.formatMessage({
+      id: 'imageSetter_add_image',
+      defaultMessage: 'Add image',
+    });
+  };
+
   return (
     <div className="ImageSetter">
-      <div className="ImageSetter__label">
-        {!isMultiple
-          ? intl.formatMessage({
-              id: 'imageSetter_add_image',
-              defaultMessage: 'Add image',
-            })
-          : intl.formatMessage({
-              id: 'imageSetter_add_images',
-              defaultMessage: 'Add images',
-            })}
-      </div>
+      <div className="ImageSetter__label">{renderTitle()}</div>
       {(!isEmpty(currentImages) || isLoadingImage) && (
         <div className="image-box">
           {map(currentImages, image => (
@@ -202,10 +216,12 @@ ImageSetter.propTypes = {
   onLoadingImage: PropTypes.func.isRequired,
   onImageLoaded: PropTypes.func.isRequired,
   isMultiple: PropTypes.bool,
+  defaultImage: PropTypes.string,
 };
 
 ImageSetter.defaultProps = {
   isMultiple: false,
+  defaultImage: '',
 };
 
 export default withEditor(injectIntl(ImageSetter));
