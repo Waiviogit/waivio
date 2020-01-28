@@ -607,9 +607,7 @@ export default class AppendForm extends Component {
       menuItemName: createdObject.name,
       locale: options.locale,
     });
-    this.setState({ selectedObject: createdObject, votePercent: null }, () => {
-      this.handleSubmit();
-    });
+    this.setState({ selectedObject: createdObject, votePercent: null }, this.handleSubmit);
   };
 
   handleSelectObject = obj => {
