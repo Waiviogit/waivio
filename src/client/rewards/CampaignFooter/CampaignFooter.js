@@ -222,7 +222,6 @@ class CampaignFooter extends React.Component {
       intl,
       toggleModalDetails,
     } = this.props;
-    console.log('this.props', this.props);
     return (
       <div className="CampaignFooter">
         <div className="CampaignFooter__actions">

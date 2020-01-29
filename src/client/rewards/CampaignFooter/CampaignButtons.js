@@ -104,6 +104,10 @@ export default class CampaignButtons extends React.Component {
     });
   }
 
+  openModalDetails = () => {
+    this.props.toggleModalDetails({ value: true });
+  };
+
   renderPostPopoverMenu() {
     const {
       pendingFollow,
@@ -168,7 +172,7 @@ export default class CampaignButtons extends React.Component {
   }
 
   render() {
-    const { intl, post, daysLeft, toggleModalDetails } = this.props;
+    const { intl, post, daysLeft } = this.props;
 
     return (
       <div className="Buttons">
@@ -198,7 +202,7 @@ export default class CampaignButtons extends React.Component {
           {this.renderPostPopoverMenu()}
         </div>
         <React.Fragment>
-          <Button type="primary" onClick={() => toggleModalDetails({ value: true })}>
+          <Button type="primary" onClick={this.openModalDetails}>
             {intl.formatMessage({
               id: 'campaign_buttons_write_review',
               defaultMessage: `Write review`,

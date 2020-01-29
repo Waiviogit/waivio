@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useContext, useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { Button, message, Modal, Icon } from 'antd';
 import classNames from 'classnames';
@@ -134,7 +134,7 @@ const Proposition = ({
         {/*Temporary fix until changes on backend will be made*/}
         {/*{proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (*/}
         {/* changes braked reservation process, changes reverted */}
-        {proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (
+        {proposition.activation_permlink && assigned === true && !isEmpty(post) ? (
           <CampaignFooter
             post={post}
             proposedWobj={proposedWobj}
@@ -236,7 +236,7 @@ export default connect(
     post:
       ownProps.authorizedUserName &&
       ownProps.assignCommentPermlink &&
-      !_.isEmpty(state.comments.comments)
+      !isEmpty(state.comments.comments)
         ? getCommentContent(state, ownProps.authorizedUserName, ownProps.assignCommentPermlink)
         : {},
   }),
