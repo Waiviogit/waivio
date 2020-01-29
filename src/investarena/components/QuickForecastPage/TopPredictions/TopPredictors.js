@@ -38,7 +38,11 @@ const TopPredictors = ({ title, userList, showMore, activeUser, handleShowMore, 
             {user.successful_suppose >= 0 && (
               <span className="TopPredictors__present">{user.successful_suppose}</span>
             )}
-            {user.reward >= 0 && <span className="TopPredictors__reward">+{user.reward}</span>}
+            {user.reward >= 0 && (
+              <span className="TopPredictors__reward" title={user.reward}>
+                +{user.reward.toFixed(3)}
+              </span>
+            )}
           </div>
         ))}
         {showMore && (

@@ -21,12 +21,14 @@ class Affix extends React.Component {
   static propTypes = {
     children: PropTypes.element.isRequired,
     className: PropTypes.string,
+    wrapperClassName: PropTypes.string,
     stickPosition: PropTypes.number,
   };
 
   static defaultProps = {
     className: '',
     stickPosition: 0,
+    wrapperClassName: '',
   };
 
   componentDidMount() {
@@ -124,7 +126,7 @@ class Affix extends React.Component {
   };
 
   render() {
-    const { className } = this.props;
+    const { className, wrapperClassName } = this.props;
     return (
       <div
         className={className}
@@ -138,6 +140,7 @@ class Affix extends React.Component {
           ref={affixContainer => {
             this.affixContainer = affixContainer;
           }}
+          className={wrapperClassName}
         >
           {this.props.children}
         </div>
