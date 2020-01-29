@@ -140,7 +140,6 @@ const ImageSetter = ({
   };
 
   const renderTitle = () => {
-    console.log(defaultImage);
     if (defaultImage) {
       return intl.formatMessage({
         id: 'profile_picture',
