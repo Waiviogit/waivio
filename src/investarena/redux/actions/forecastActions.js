@@ -22,6 +22,9 @@ export const QUICK_FORECAST_WINNERS_SHOW_MORE = createAsyncActionType(
 export const GET_QUICK_FORECAST_REWARDS = createAsyncActionType(
   '@forecast-data/GET_QUICK_FORECAST_REWARDS',
 );
+export const GET_QUICK_FORECAST_STATUS = createAsyncActionType(
+  '@forecast-data/GET_QUICK_FORECAST_STATUS',
+);
 
 export const ANSWER_QUICK_FORECAST = '@forecast-data/ANSWER_QUICK_FORECAST';
 export const ANSWER_QUICK_LOADING = '@forecast-data/ANSWER_QUICK_LOADING';
@@ -77,6 +80,20 @@ export const getForecastRoundRewards = () => dispatch => {
   });
 };
 
+export const getForecastStatus = permlink => (dispatch, getState) => {
+  const user = getAuthenticatedUserName(getState());
+
+  dispatch({
+    type: GET_QUICK_FORECAST_STATUS.ACTION,
+    payload: api.quickForecast.getStatusForecast(user, permlink),
+  });
+};
+
+export const loadingForecast = id => ({
+  type: ANSWER_QUICK_LOADING,
+  payload: id,
+});
+
 export const answerForQuickForecast = (
   author,
   permlink,
@@ -103,12 +120,58 @@ export const answerForQuickForecast = (
   const commentArray = forecastComments(forecastObject, objPermlink);
   const comment = arrayRandElement(commentArray);
 
-  dispatch({
-    type: ANSWER_QUICK_LOADING,
-    payload: id,
-  });
+  dispatch(loadingForecast(id));
 
   if (Date.parse(expiredAt) > Date.now()) {
+    if (author === username) {
+      return new Promise((resolve, reject) =>
+        steemConnectAPI
+          .broadcast([
+            [
+              'comment',
+              {
+                parent_author: author,
+                parent_permlink: permlink,
+                author: username,
+                permlink: createFormatter.commentPermlink(author, permlink),
+                title: 'unactivate topic for rewards',
+                body: comment,
+                json_metadata: JSON.stringify({
+                  forecast_comment: {
+                    side: answer,
+                    postPrice,
+                    security,
+                  },
+                }),
+              },
+            ],
+          ])
+          .then(() => {
+            if (author === username) {
+              dispatch({
+                type: ANSWER_QUICK_FORECAST,
+                payload: {
+                  answer,
+                  id,
+                  postPrice,
+                  quickForecastExpiredAt: Date.now() + timerData,
+                },
+              });
+              resolve();
+            }
+          })
+          .catch(e => {
+            dispatch({
+              type: ANSWER_QUICK_ERROR,
+              payload: {
+                id,
+              },
+            });
+            reject(e);
+          }),
+      );
+    }
+
     return new Promise((resolve, reject) =>
       steemConnectAPI
         .vote(username, author, permlink, weight)
@@ -146,24 +209,24 @@ export const answerForQuickForecast = (
               });
               resolve();
             })
-            .catch(error => {
-              reject(error);
+            .catch(e => {
               dispatch({
                 type: ANSWER_QUICK_ERROR,
                 payload: {
                   id,
                 },
               });
+              reject(e);
             });
         })
         .catch(e => {
-          reject(e);
           dispatch({
             type: ANSWER_QUICK_ERROR,
             payload: {
               id,
             },
           });
+          reject(e);
         }),
     );
   }

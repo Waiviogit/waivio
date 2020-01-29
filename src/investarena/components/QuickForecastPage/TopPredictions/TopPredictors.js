@@ -1,14 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 
 import Avatar from '../../../../client/components/Avatar';
+import { getDataForQuickForecast } from '../../../redux/actions/forecastActions';
 
 import './TopPredictions.less';
 
 const TopPredictors = ({ title, userList, showMore, activeUser, handleShowMore, intl, top }) => {
   const myNameInTopFive = userList.some(user => user.name === activeUser.name);
+  const currentUser = activeUser || userList.find(user => user.name === activeUser.name);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (currentUser.successful_suppose % 10 === 0) {
+      dispatch(getDataForQuickForecast());
+    }
+  }, [userList]);
   return (
     <div className="TopPredictors">
       <div className="TopPredictors__title">
