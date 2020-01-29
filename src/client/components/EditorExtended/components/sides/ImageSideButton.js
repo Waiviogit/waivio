@@ -100,7 +100,11 @@ export default class ImageSideButton extends React.Component {
           visible={isModal}
           onOk={this.handleOnOk}
         >
-          <ImageSetter onImageLoaded={this.getImages} onLoadingImage={this.onLoadingImage} />
+          <ImageSetter
+            onImageLoaded={this.getImages}
+            onLoadingImage={this.onLoadingImage}
+            isRequired
+          />
         </Modal>
       </React.Fragment>
     );

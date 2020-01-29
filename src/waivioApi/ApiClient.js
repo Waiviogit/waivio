@@ -752,8 +752,7 @@ export const getAccessToken = (token, social, regData) => {
   body.access_token = token;
 
   if (!_.isEmpty(regData)) {
-    body.userName = regData.userName;
-    body.pickSocialFields = regData.pickSocialFields;
+    Object.keys(regData).forEach(key => (body[key] = regData[key]));
   }
 
   return fetch(`${config.baseUrl}${config.auth}/${social}`, {
