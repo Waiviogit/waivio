@@ -22,8 +22,7 @@ const ModalSignUp = ({ isButton }) => {
 
   const responseGoogle = async response => {
     if (response) {
-      // const res = await isUserRegistered(response.googleId, 'google');
-      const res = false;
+      const res = await isUserRegistered(response.googleId, 'google');
       if (res) {
         dispatch(login(response.accessToken, 'google')).then(() => {
           batch(() => {
