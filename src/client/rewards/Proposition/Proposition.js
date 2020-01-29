@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useContext, useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { Button, message, Modal, Icon } from 'antd';
 import classNames from 'classnames';
@@ -35,6 +35,7 @@ const Proposition = ({
   const { usedLocale } = useContext(AppSharedContext);
   const proposedWobj = getClientWObj(wobj, usedLocale);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
+  const [isReviewDetails, setReviewDetails] = useState(false);
   const requiredObjectName = getFieldWithMaxWeight(
     proposition.required_object,
     'name',
@@ -44,7 +45,8 @@ const Proposition = ({
     getSingleComment(authorizedUserName, assignCommentPermlink);
   }, []);
 
-  const toggleModalDetails = () => {
+  const toggleModalDetails = ({ value }) => {
+    if (value) setReviewDetails(value);
     setModalDetailsOpen(!isModalDetailsOpen);
   };
 
@@ -131,7 +133,8 @@ const Proposition = ({
       >
         {/*Temporary fix until changes on backend will be made*/}
         {/*{proposition.activation_permlink && assigned === true && !_.isEmpty(post) ? (*/}
-        {proposition.activation_permlink && assigned === true ? (
+        {/* changes braked reservation process, changes reverted */}
+        {proposition.activation_permlink && assigned === true && !isEmpty(post) ? (
           <CampaignFooter
             post={post}
             proposedWobj={proposedWobj}
@@ -139,6 +142,7 @@ const Proposition = ({
             requiredObjectName={requiredObjectName}
             discardPr={discardPr}
             proposition={proposition}
+            toggleModalDetails={toggleModalDetails}
           />
         ) : (
           <React.Fragment>
@@ -185,6 +189,8 @@ const Proposition = ({
         loading={loading}
         assigned={assigned}
         isReserved={isReserved}
+        isReviewDetails={isReviewDetails}
+        requiredObjectName={requiredObjectName}
         proposedWobj={proposedWobj}
       />
       <Modal
@@ -230,7 +236,7 @@ export default connect(
     post:
       ownProps.authorizedUserName &&
       ownProps.assignCommentPermlink &&
-      !_.isEmpty(state.comments.comments)
+      !isEmpty(state.comments.comments)
         ? getCommentContent(state, ownProps.authorizedUserName, ownProps.assignCommentPermlink)
         : {},
   }),
