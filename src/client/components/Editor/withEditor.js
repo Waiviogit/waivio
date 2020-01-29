@@ -63,7 +63,7 @@ export default function withEditor(WrappedComponent) {
       const formData = new FormData();
       formData.append('file', blob);
 
-      fetch(`https://www.waivio.com/api/image`, {
+      return fetch(`https://www.waivio.com/api/image`, {
         method: 'POST',
         body: formData,
       })
