@@ -80,7 +80,9 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
         dispatch(
           login(userData.accessToken, userData.socialNetwork, {
             userName: `${GUEST_PREFIX}${values.username}`,
-            pickSocialFields: values.agreement,
+            avatar: values.avatar[0].src,
+            alias: values.alias,
+            locales: values.locales,
           }),
         ).then(() => {
           setIsLoading(false);
