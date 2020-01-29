@@ -2,26 +2,33 @@
 @import (reference) '../../styles/modules/variables.less';
 
 .nightmode {
-  .CatalogWrap__breadcrumb {
-    background: @grey-nero;
-    border: 1px solid @normal-grey;
-    .ant-breadcrumb-separator {
-      color: @white;
-    }
-    &__link {
-      color: @white;
-    }
-    &__obj-page-link {
-      color: @grey-darkGrey;
-    }
-    & .ant-breadcrumb > span:first-child {
-      a.CatalogWrap__breadcrumb__link {
+  .CatalogWrap {
+    &__breadcrumb {
+      background: @grey-nero;
+      border: 1px solid @normal-grey;
+
+      .ant-breadcrumb-separator {
         color: @white;
       }
+
+      &__link {
+        color: @white;
+      }
+
+      &__obj-page-link {
+        color: @grey-darkGrey;
+      }
+
+      & .ant-breadcrumb > span:first-child {
+        a.CatalogWrap__breadcrumb__link {
+          color: @white;
+        }
+      }
     }
-  }
-  &__add-item {
-    background: @grey-nero;
-    border: 1px solid @normal-grey;
+
+    &__add-item {
+      background: @grey-nero;
+      border: 1px solid @normal-grey;
+    }
   }
 }
