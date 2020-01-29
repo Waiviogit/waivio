@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { filter, includes } from 'lodash';
+import { filter, includes, orderBy } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -19,6 +19,17 @@ const ObjectCardView = ({
 }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
+  const [tags, setTags] = useState([]);
+
+  useEffect(() => {
+    if (wObject.tagCategories && !!wObject.tagCategories.length) {
+      const currentTags = wObject.tagCategories
+        .map(category => category.categoryItems)
+        .filter(categoryItems => !!categoryItems.length)
+        .map(items => orderBy(items, ['weight', 'name'])[0].name);
+      setTags(currentTags);
+    } else setTags([wObject.object_type]);
+  }, []);
 
   const getObjectRatings = () => {
     const ratingFields = filter(wObject.fields, ['name', 'rating']);
@@ -95,16 +106,29 @@ const ObjectCardView = ({
                   wobjName={wObject.name || wObject.default_name}
                 />
               )}
-              {wObject.title && (
+              <span className="ObjectCardView__tag-text">
+                {wObject.price && (
+                  <span className="ObjectCardView__price" title={wObject.price}>
+                    {wObject.price}
+                  </span>
+                )}
+                {tags.map(tag => (
+                  <span>&nbsp;&middot;{` ${tag}`}</span>
+                ))}
+              </span>
+              {wObject.address && (
+                <div className="ObjectCardView__tag-text">{`${wObject.address.street}, ${wObject.address.city}`}</div>
+              )}
+              {/* eslint-disable-next-line no-nested-ternary */}
+              {wObject.title ? (
                 <div className="ObjectCardView__title" title={wObject.title}>
                   {wObject.title}
                 </div>
-              )}
-              {wObject.price && (
-                <span className="ObjectCardView__price" title={wObject.price}>
-                  {wObject.price}
-                </span>
-              )}
+              ) : wObject.description ? (
+                <div className="ObjectCardView__title" title={wObject.description}>
+                  {wObject.description}
+                </div>
+              ) : null}
             </div>
           </div>
         </div>
