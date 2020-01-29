@@ -70,14 +70,15 @@ const QuickForecastCard = ({
         forecast.id,
         timerData,
       ),
-    ).then(() => {
-      message.success(
-        `${intl.formatMessage({
-          id: 'forecast_info_message',
-          defaultMessage: 'Forecasts remaining in current round:',
-        })} ${4 - counter}`,
-      );
-    })
+    )
+      .then(() => {
+        message.success(
+          `${intl.formatMessage({
+            id: 'forecast_info_message',
+            defaultMessage: 'Forecasts remaining in current round:',
+          })} ${4 - counter}`,
+        );
+      })
       .catch(() => message.error('Blockchain error'));
   };
   const handleAnswerClick = answer => handleAuthorization(() => handleClick(answer));

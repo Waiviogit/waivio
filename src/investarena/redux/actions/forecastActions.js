@@ -169,58 +169,61 @@ export const answerForQuickForecast = (
     }
 
     return new Promise((resolve, reject) =>
-      steemConnectAPI.vote(username, author, permlink, weight).then(() => {
-        steemConnectAPI
-          .broadcast([
-            [
-              'comment',
-              {
-                parent_author: author,
-                parent_permlink: permlink,
-                author: username,
-                permlink: createFormatter.commentPermlink(author, permlink),
-                title: 'unactivate topic for rewards',
-                body: comment,
-                json_metadata: JSON.stringify({
-                  forecast_comment: {
-                    side: answer,
-                    postPrice,
-                    security,
-                  },
-                }),
-              },
-            ],
-          ])
-          .then(() => {
-            dispatch({
-              type: ANSWER_QUICK_FORECAST,
-              payload: {
-                answer,
-                id,
-                postPrice,
-                quickForecastExpiredAt: Date.now() + timerData,
-              },
+      steemConnectAPI
+        .vote(username, author, permlink, weight)
+        .then(() => {
+          steemConnectAPI
+            .broadcast([
+              [
+                'comment',
+                {
+                  parent_author: author,
+                  parent_permlink: permlink,
+                  author: username,
+                  permlink: createFormatter.commentPermlink(author, permlink),
+                  title: 'unactivate topic for rewards',
+                  body: comment,
+                  json_metadata: JSON.stringify({
+                    forecast_comment: {
+                      side: answer,
+                      postPrice,
+                      security,
+                    },
+                  }),
+                },
+              ],
+            ])
+            .then(() => {
+              dispatch({
+                type: ANSWER_QUICK_FORECAST,
+                payload: {
+                  answer,
+                  id,
+                  postPrice,
+                  quickForecastExpiredAt: Date.now() + timerData,
+                },
+              });
+              resolve();
+            })
+            .catch(e => {
+              dispatch({
+                type: ANSWER_QUICK_ERROR,
+                payload: {
+                  id,
+                },
+              });
+              reject(e);
             });
-            resolve();
-          })
-          .catch(e => {
-            dispatch({
-              type: ANSWER_QUICK_ERROR,
-              payload: {
-                id,
-              },
-            });
-            reject(e);
+        })
+        .catch(e => {
+          dispatch({
+            type: ANSWER_QUICK_ERROR,
+            payload: {
+              id,
+            },
           });
-      }).catch(e => {
-        dispatch({
-          type: ANSWER_QUICK_ERROR,
-          payload: {
-            id,
-          },
-        });
-        reject(e);
-      }),
+          reject(e);
+        }),
     );
   }
 };
