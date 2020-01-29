@@ -15,14 +15,7 @@ import ImageSetter from '../../ImageSetter/ImageSetter';
 import './GuestSignUpForm.less';
 
 const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
-  const {
-    getFieldDecorator,
-    getFieldsError,
-    getFieldError,
-    // isFieldTouched,
-    validateFields,
-    setFieldsValue,
-  } = form;
+  const { getFieldDecorator, getFieldsError, getFieldError, validateFields, setFieldsValue } = form;
 
   let initialLanguages = useSelector(getLocale, shallowEqual);
   initialLanguages = initialLanguages === 'auto' ? 'en-US' : initialLanguages;
