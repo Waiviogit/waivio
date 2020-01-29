@@ -19,20 +19,33 @@
 
   &__title {
     margin-bottom: 15px;
+
+    &--lined {
+      width: 100%;
+      text-align: center;
+      border-bottom: 1px solid #000000;
+      line-height: 2px;
+      margin: 10px 0 20px;
+
+      & > span {
+        background: #ffffff;
+        padding: 0 10px;
+      }
+    }
   }
 
   &__subtitle {
     align-self: center;
-    margin-top: 15px;
-  }
-
-  &__social-btn {
-    width: 50%;
-    margin: 10px 0 10px 0;
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   &__social-btn {
     width: 100%;
+    margin: 10px 0 10px 0;
+
     &--fb {
       font-size: 14px;
       font-weight: 500;
@@ -51,10 +64,19 @@
     }
   }
 
+  &__link {
+    display: block;
+
+    & > span {
+      display: block;
+    }
+  }
+
   &__icon-fb {
     margin-right: 10px;
     padding: 10px;
     border-radius: 2px;
+
     & > svg {
       width: 18px;
       height: 18px;
@@ -66,8 +88,8 @@
     display: inline-flex;
     align-items: center;
     color: rgba(0, 0, 0, 0.54);
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 2px 2px 0px, rgba(0, 0, 0, 0.24) 0px 0px 1px 0px;
-    padding: 0px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0 2px 2px 0, rgba(0, 0, 0, 0.24) 0 0 1px 0;
+    padding: 0;
     margin-bottom: 10px;
     border-radius: 2px;
     border: 1px solid transparent;
@@ -87,6 +109,7 @@
 
   align-items: center;
   justify-content: space-between;
+
   &__button {
     .btn;
     .btn-default;
@@ -106,26 +129,31 @@
       border: none !important;
     }
   }
+
   .SignUpCard {
     max-width: 270px;
     border: @base-border;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 2px 2px 0px, rgba(0, 0, 0, 0.24) 0px 0px 1px 0px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0 2px 2px 0, rgba(0, 0, 0, 0.24) 0 0 1px 0;
 
     img {
       max-width: 240px;
     }
+
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 15px;
+    padding: 10px;
+
     &__line {
-      margin-bottom: 15px;
-      font-size: 14px;
+      margin-bottom: 6px;
+      font-size: 16px;
     }
+
     &__text-main {
       font-weight: 700;
     }
+
     &__text-price {
       font-weight: 500;
       font-size: 42px;

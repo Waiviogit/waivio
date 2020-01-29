@@ -729,7 +729,11 @@ export default class AppendForm extends Component {
           <div className="image-wrapper">
             <Form.Item>
               {getFieldDecorator(currentField, { rules: this.getFieldRules(currentField) })(
-                <ImageSetter onImageLoaded={this.getImages} onLoadingImage={this.onLoadingImage} />,
+                <ImageSetter
+                  onImageLoaded={this.getImages}
+                  onLoadingImage={this.onLoadingImage}
+                  isRequired
+                />,
               )}
             </Form.Item>
           </div>
