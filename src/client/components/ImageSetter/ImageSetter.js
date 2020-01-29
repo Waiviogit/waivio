@@ -4,6 +4,7 @@ import { injectIntl } from 'react-intl';
 import { Icon, message } from 'antd';
 import { map, isEmpty } from 'lodash';
 import uuidv4 from 'uuid/v4';
+import classNames from 'classnames';
 import withEditor from '../Editor/withEditor';
 import { isValidImage } from '../../helpers/image';
 import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
@@ -18,6 +19,7 @@ const ImageSetter = ({
   onLoadingImage,
   onImageLoaded,
   defaultImage,
+  isRequired,
 }) => {
   const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
@@ -123,8 +125,8 @@ const ImageSetter = ({
     console.log(defaultImage);
     if (defaultImage) {
       return intl.formatMessage({
-        id: 'public_profile',
-        defaultMessage: 'Public profile',
+        id: 'profile_picture',
+        defaultMessage: 'Profile picture',
       });
     } else if (isMultiple) {
       return intl.formatMessage({
@@ -140,7 +142,11 @@ const ImageSetter = ({
 
   return (
     <div className="ImageSetter">
-      <div className="ImageSetter__label">{renderTitle()}</div>
+      <div
+        className={classNames('ImageSetter__label', { 'ImageSetter__label--required': isRequired })}
+      >
+        {renderTitle()}
+      </div>
       {(!isEmpty(currentImages) || isLoadingImage) && (
         <div className="image-box">
           {map(currentImages, image => (
@@ -200,7 +206,11 @@ const ImageSetter = ({
                 defaultMessage: 'Paste image link',
               })}
             />
-            <button className="input-upload__btn" type="button" onClick={handleOnUploadImageByLink}>
+            <button
+              className="input-upload__btn"
+              type="button"
+              onClick={() => handleOnUploadImageByLink()}
+            >
               <Icon type="upload" />
             </button>
           </div>
@@ -217,11 +227,13 @@ ImageSetter.propTypes = {
   onImageLoaded: PropTypes.func.isRequired,
   isMultiple: PropTypes.bool,
   defaultImage: PropTypes.string,
+  isRequired: PropTypes.bool,
 };
 
 ImageSetter.defaultProps = {
   isMultiple: false,
   defaultImage: '',
+  isRequired: false,
 };
 
 export default withEditor(injectIntl(ImageSetter));

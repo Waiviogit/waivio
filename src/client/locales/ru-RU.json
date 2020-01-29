@@ -1010,5 +1010,8 @@
   "guestAccounts": "ГОСТЕВОЙ АККАУНТ",
   "lookAroundgetRewardsMakeConnections": "Исследуйте, получайте награды, заводите связи,",
   "createSteemAccountLater": "создавайте аккаунт Steem позже",
-  "terms_and_policy_agreement": "Я прочитал и согласен с {Terms}, {Privacy} и {Cookies}."
+  "terms_and_policy_agreement": "Я прочитал и согласен с {Terms}, {Privacy} и {Cookies}.",
+  "nickname": "Никнейм",
+  "preferred_languages": "Предпочитаемые языки",
+  "public_profile": "Публичный профиль"
 }

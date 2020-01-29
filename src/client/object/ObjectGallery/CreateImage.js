@@ -270,6 +270,7 @@ class CreateImage extends React.Component {
                   onImageLoaded={this.getImages}
                   onLoadingImage={this.onLoadingImage}
                   isMultiple
+                  isRequired
                 />
                 {/* TODO: Possible will use */}
                 {/* <Modal visible={previewVisible} footer={null} onCancel={this.handlePreviewCancel}> */}

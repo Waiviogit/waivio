@@ -12,6 +12,7 @@ import LANGUAGES from '../../../translations/languages';
 import { getLanguageText } from '../../../translations';
 import { getLocale } from '../../../reducers';
 import ImageSetter from '../../ImageSetter/ImageSetter';
+import './GuestSignUpForm.less';
 
 const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
   const {
@@ -109,13 +110,13 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
   return (
     <React.Fragment>
       <h2 className="ModalSignUp__title">
-        <FormattedMessage id="publicProfile" defaultMessage="Public profile" />
+        <FormattedMessage id="public_profile" defaultMessage="Public profile" />
       </h2>
-      <Form layout="vertical" onSubmit={handleSubmit} className="mt3">
+      <Form layout="vertical" onSubmit={handleSubmit}>
         <Form.Item
           validateStatus={usernameError ? 'error' : 'success'}
           help={usernameError || ''}
-          label="Nickname"
+          label={<FormattedMessage id="nickname" defaultMessage="Nickname" />}
         >
           {getFieldDecorator('username', {
             rules: [
@@ -156,13 +157,16 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
             <ImageSetter
               onImageLoaded={getAvatar}
               onLoadingImage={setIsLoading}
-              className="mb3"
               defaultImage={userData.w3.Paa}
             />,
           )}
         </Form.Item>
 
-        <Form.Item validateStatus={aliasError ? 'error' : ''} help={aliasError || ''} label="Name">
+        <Form.Item
+          validateStatus={aliasError ? 'error' : ''}
+          help={aliasError || ''}
+          label={<FormattedMessage id="profile_name" defaultMessage="name" />}
+        >
           {getFieldDecorator('alias', {
             rules: [
               {
@@ -186,7 +190,9 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
           })(<Input placeholder="Enter username" maxLength={64} />)}
         </Form.Item>
 
-        <Form.Item>
+        <Form.Item
+          label={<FormattedMessage id="preferred_languages" defaultMessage="Preferred Languages" />}
+        >
           {getFieldDecorator('locales', {
             initialValue: initialLanguages,
           })(
@@ -199,10 +205,11 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
             </Select>,
           )}
         </Form.Item>
+
         <Form.Item
           validateStatus={agreementError ? 'error' : ''}
           help={agreementError || ''}
-          label="Preferred languages"
+          label={<FormattedMessage id="rewards_details_legal" defaultMessage="Legal" />}
         >
           {getFieldDecorator('agreement', {
             checked: false,
@@ -221,7 +228,7 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
           })(
             <Checkbox>
               <FormattedMessage
-                id="terms_and_policy_agreement_1"
+                id="terms_and_policy_agreement"
                 defaultMessage="I have read and agree to the {Terms} , the {Privacy}, the {Cookies}."
                 values={{
                   Terms: (

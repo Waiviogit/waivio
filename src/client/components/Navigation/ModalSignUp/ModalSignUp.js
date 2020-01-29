@@ -8,7 +8,8 @@ import FacebookLogin from 'react-facebook-login';
 import { busyLogin, login } from '../../../auth/authActions';
 import { isUserRegistered } from '../../../../waivioApi/ApiClient';
 import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
-import { getRate, getRebloggedList, getRewardFund } from '../../../reducers';
+import { getRate, getRewardFund } from './../../../app/appActions';
+import { getRebloggedList } from './../../../app/Reblog/reblogActions';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 import './ModalSignUp.less';
 
@@ -20,12 +21,9 @@ const ModalSignUp = ({ isButton }) => {
   const [isFormVisible, setIsFormVisible] = useState(false);
 
   const responseGoogle = async response => {
-    console.log(response);
     if (response) {
-      const res = false;
-      // const res = await isUserRegistered(response.googleId, 'google');
+      const res = await isUserRegistered(response.googleId, 'google');
       if (res) {
-        setIsFormVisible(true);
         dispatch(login(response.accessToken, 'google')).then(() => {
           batch(() => {
             dispatch(getFollowing());
@@ -58,9 +56,11 @@ const ModalSignUp = ({ isButton }) => {
         });
       } else {
         setUserData({ ...response, socialNetwork: 'facebook' });
+        setIsFormVisible(true);
       }
     }
   };
+
   const getSignUpInfo = (
     <div className="SignUpCard">
       <div className="SignUpCard__line">
