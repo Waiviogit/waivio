@@ -786,6 +786,8 @@
   "number_photos_required_increased": "Если выбрано, количество требуемых фотографий будет увеличено на одну.",
   "agree_to_pay_following_commissions_waivio)": "Я согласен заплатить следующие комиссионные Waivio и партнерам",
   "commissions_must_paid_within_14_days": "Комиссии и вознаграждения пользователям должны быть оплачены в полном объеме в течение 14 дней с момента появления обязательств по оплате",
+  "create_button_text": "Создать",
+  "edit_button_text": "Сохранить",
   "not_less_five_commission_value": "Комиссия должна быть не менее 5%",
   "minimum_waivio_expertise": "Минимальный опыт Waivio(опционально)",
   "users_start_with_zero_expertise": "Новые пользователи на Waivio начинают с экспертизы 0",

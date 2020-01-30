@@ -319,7 +319,7 @@ export default (messageFactory, validators, userName) => ({
     ),
   },
   editButton: {
-    text: messageFactory('edit_button_text', 'Edit'),
+    text: messageFactory('edit_button_text', 'Save'),
     spanText: messageFactory(
       'edit_button_span_text',
       'Once saved, the campaign can be activated in the Campaigns/Manage tab.',
