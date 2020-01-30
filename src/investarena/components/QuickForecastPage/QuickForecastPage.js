@@ -119,7 +119,7 @@ const QuickForecastPage = props => {
 
     setTimeout(() => {
       setLoading(true);
-    }, 5000);
+    }, 3000);
   }
 
   function handleChangePage(page) {
