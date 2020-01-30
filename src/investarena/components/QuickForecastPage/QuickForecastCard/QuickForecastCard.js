@@ -12,6 +12,7 @@ import {
   getForecastStatus,
   getForecastWinners,
   loadingForecast,
+  getDataForQuickForecast,
 } from '../../../redux/actions/forecastActions';
 import BallotTimer from '../BallotTimer';
 import USDDisplay from '../../../../client/components/Utils/USDDisplay';
@@ -48,8 +49,14 @@ const QuickForecastCard = ({
     }
 
     if (forecast.status !== 'pending' && !disabled && intervalId) {
-      dispatch(getForecastStatistic());
-      dispatch(getForecastWinners(5, 0));
+      setIntervalId(null);
+
+      if(forecast.status === 'guessed') {
+        dispatch(getDataForQuickForecast());
+        dispatch(getForecastStatistic());
+        dispatch(getForecastWinners(5, 0));
+      }
+
       clearInterval(intervalId);
     }
 
@@ -71,12 +78,6 @@ const QuickForecastCard = ({
   ) : (
     <FormattedMessage id="forecast_lose_message" defaultMessage="Try again!!!" />
   );
-
-  // classLists
-  const forecastCardClassList = classNames('ForecastCard', {
-    'ForecastCard--toLose': lose,
-    'ForecastCard--win': winner,
-  });
   const sideClassList = classNames({
     green: forecast.side === 'up',
     red: forecast.side === 'down',
@@ -84,6 +85,18 @@ const QuickForecastCard = ({
   const forecastsMessage = classNames({
     green: winner,
     red: lose,
+  });
+  const messageActiveForecast =  pendingStatus ? (
+    <p className="green">
+      <FormattedMessage id="rise" defaultMessage="Rise: " />
+      <span className={sideClassList}>{side}</span>
+    </p>
+  ) : (<span className={forecastsMessage}>{forecastFinishMessage}</span>);
+
+  // classLists
+  const forecastCardClassList = classNames('ForecastCard', {
+    'ForecastCard--toLose': lose,
+    'ForecastCard--win': winner,
   });
   const handleFinishTimer = () => {
     dispatch(loadingForecast(forecast.id));
@@ -132,29 +145,24 @@ const QuickForecastCard = ({
               </span>
             </div>
             <div className="ForecastCard__flex-container-vertical">
-              {!forecast.isLoaded ? (
-                <Loading />
-              ) : (
-                <React.Fragment>
-                  <Link to={`/object/${link}`} className="ForecastCard__title">
-                    <p className="ForecastCard__title-row">
-                      <img
-                        className="ForecastCard__img ForecastCard__img--little"
-                        src={avatar}
-                        alt={predictionObjectName}
-                      />
-                      &nbsp;
-                      {predictionObjectName}
-                    </p>
-                    {pendingStatus ? (
-                      <p className="green">
-                        <FormattedMessage id="rise" defaultMessage="Rise: " />
-                        <span className={sideClassList}>{side}</span>
+                  <h2 className="ForecastCard__title">
+                      <p className="ForecastCard__title-row">
+                        <Link className="ForecastCard__link" to={`/object/${link}`} >
+                        <img
+                          className="ForecastCard__img ForecastCard__img--little"
+                          src={avatar}
+                          alt={predictionObjectName}
+                        />
+                        &nbsp;
+                        {predictionObjectName}
+                        </Link>
                       </p>
-                    ) : (
-                      <span className={forecastsMessage}>{forecastFinishMessage}</span>
-                    )}
-                  </Link>
+                  {!forecast.isLoaded
+                    ? <Loading />
+                    : messageActiveForecast
+                  }
+                  </h2>
+
                   <div className="ForecastCard__forecast-timer">
                     <Icon type="clock-circle" />
                     &nbsp;
@@ -163,8 +171,7 @@ const QuickForecastCard = ({
                       willCallAfterTimerEnd={handleFinishTimer}
                     />
                   </div>
-                </React.Fragment>
-              )}{' '}
+              {' '}
             </div>
             <DynamicPriceWrapper
               postPrice={forecast.postPrice}
