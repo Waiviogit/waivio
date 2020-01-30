@@ -125,7 +125,7 @@ class PostChart extends Component {
             this.shouldGetChartData(nextProps.bars)
           ) {
             this.getChartData(this.state.timeScale);
-          } else if (this.isExpiredByTime() || this.isExpiredByLimits(nextProps)) {
+          } else if (!this.props.isObjectProfile && (this.isExpiredByTime() || this.isExpiredByLimits(nextProps))) {
             const expiredProps = {
               ...nextProps,
               expiredByTime: this.isExpiredByTime(),
