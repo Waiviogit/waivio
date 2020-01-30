@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Checkbox, DatePicker, Form, Input, InputNumber, Modal, Select } from 'antd';
+import { Button, Checkbox, DatePicker, Form, Input, InputNumber, Select } from 'antd';
 import PropTypes from 'prop-types';
 import { isEmpty, map } from 'lodash';
 import { Link } from 'react-router-dom';
@@ -47,7 +47,6 @@ const CreateFormRenderer = props => {
     campaignId,
     isCampaignActive,
     iAgree,
-    isModal,
   } = props;
 
   const messages = validatorMessagesCreator(handlers.messageFactory);
@@ -442,20 +441,8 @@ const CreateFormRenderer = props => {
           )}
           <div className="CreateReward__field-caption">{fields.commissionAgreement.caption}</div>
         </Form.Item>
-
         {button}
       </Form>
-      <Modal
-        closable
-        title={campaignId ? fields.modal.editTitle : fields.modal.createTitle}
-        maskClosable={false}
-        visible={isModal}
-        onOk={handlers.handleCreateCampaign}
-        okButtonProps={{ disabled: props.loading, loading: props.loading }}
-        onCancel={() => handlers.setModal(false)}
-      >
-        {campaignId ? fields.modal.editContent : fields.modal.createTitle}
-      </Modal>
     </div>
   );
 };
@@ -497,7 +484,6 @@ CreateFormRenderer.defaultProps = {
   commissionAgreement: 5,
   campaignId: null,
   iAgree: false,
-  isModal: false,
 };
 
 CreateFormRenderer.propTypes = {
@@ -522,7 +508,6 @@ CreateFormRenderer.propTypes = {
     handleAddSponsorToList: PropTypes.func.isRequired,
     removeSponsorObject: PropTypes.func.isRequired,
     setPrimaryObject: PropTypes.func.isRequired,
-    setModal: PropTypes.func.isRequired,
     removePrimaryObject: PropTypes.func.isRequired,
     handleAddSecondaryObjectToList: PropTypes.func.isRequired,
     removeSecondaryObject: PropTypes.func.isRequired,
@@ -535,7 +520,6 @@ CreateFormRenderer.propTypes = {
     handleSubmit: PropTypes.func.isRequired,
     handleSelectChange: PropTypes.func.isRequired,
     messageFactory: PropTypes.func.isRequired,
-    handleCreateCampaign: PropTypes.func.isRequired,
   }).isRequired,
   currentSteemPrice: PropTypes.number,
   user: PropTypes.shape(),
@@ -551,7 +535,6 @@ CreateFormRenderer.propTypes = {
   campaignId: PropTypes.string,
   isCampaignActive: PropTypes.bool.isRequired,
   iAgree: PropTypes.bool,
-  isModal: PropTypes.bool.isRequired,
 };
 
 export default CreateFormRenderer;
