@@ -1,18 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Icon, message } from 'antd';
-
 import { Link } from 'react-router-dom';
-import { answerForQuickForecast } from '../../../redux/actions/forecastActions';
+
+import {
+  answerForQuickForecast,
+  getForecastStatistic,
+  getForecastStatus,
+  getForecastWinners,
+  loadingForecast,
+  getDataForQuickForecast,
+} from '../../../redux/actions/forecastActions';
 import BallotTimer from '../BallotTimer';
 import USDDisplay from '../../../../client/components/Utils/USDDisplay';
 import ChartIcon from '../ChartIcon';
 import DynamicPriceWrapper from '../DynamicPriceWrapper';
-
 import Loading from '../../../../client/components/Icon/Loading';
+
 import './QuickForecastCard.less';
 
 const QuickForecastCard = ({
@@ -20,15 +27,42 @@ const QuickForecastCard = ({
   predictionObjectName,
   timerData,
   avatar,
-  timerCallback,
   counter,
   intl,
   handleAuthorization,
   disabled,
   link,
 }) => {
-  // flags
+  const [intervalId, setIntervalId] = useState();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (
+      !forecast.active &&
+      !forecast.isLoaded &&
+      forecast.status === 'pending' &&
+      disabled &&
+      !intervalId
+    ) {
+      const interval = setInterval(() => dispatch(getForecastStatus(forecast.permlink)), 3000);
+      setIntervalId(interval);
+    }
+
+    if (forecast.status !== 'pending' && !disabled && intervalId) {
+      setIntervalId(null);
+
+      if(forecast.status === 'guessed') {
+        dispatch(getDataForQuickForecast());
+        dispatch(getForecastStatistic());
+        dispatch(getForecastWinners(5, 0));
+      }
+
+      clearInterval(intervalId);
+    }
+
+    return () => clearInterval(intervalId);
+  });
+
   const pendingStatus = forecast.status === 'pending';
   const winner = forecast.status === 'guessed';
   const lose = forecast.status === 'finished';
@@ -39,18 +73,11 @@ const QuickForecastCard = ({
       <FormattedMessage id="forecast_answer_fall" defaultMessage="No" />
     );
 
-  // messages
   const forecastFinishMessage = winner ? (
     <FormattedMessage id="forecast_winner_message" defaultMessage="You Win!!!" />
   ) : (
     <FormattedMessage id="forecast_lose_message" defaultMessage="Try again!!!" />
   );
-
-  // classLists
-  const forecastCardClassList = classNames('ForecastCard', {
-    'ForecastCard--toLose': lose,
-    'ForecastCard--win': winner,
-  });
   const sideClassList = classNames({
     green: forecast.side === 'up',
     red: forecast.side === 'down',
@@ -59,6 +86,22 @@ const QuickForecastCard = ({
     green: winner,
     red: lose,
   });
+  const messageActiveForecast =  pendingStatus ? (
+    <p className="green">
+      <FormattedMessage id="rise" defaultMessage="Rise: " />
+      <span className={sideClassList}>{side}</span>
+    </p>
+  ) : (<span className={forecastsMessage}>{forecastFinishMessage}</span>);
+
+  // classLists
+  const forecastCardClassList = classNames('ForecastCard', {
+    'ForecastCard--toLose': lose,
+    'ForecastCard--win': winner,
+  });
+  const handleFinishTimer = () => {
+    dispatch(loadingForecast(forecast.id));
+  };
+
   const handleClick = answer => {
     dispatch(
       answerForQuickForecast(
@@ -79,7 +122,11 @@ const QuickForecastCard = ({
           })} ${4 - counter}`,
         );
       })
-      .catch(() => message.error('Blockchain error'));
+      .catch(() =>
+        message.error(
+          'Not enough RC: you need to replenish the SP or wait until the RC (recovers 20% per day)',
+        ),
+      );
   };
   const handleAnswerClick = answer => handleAuthorization(() => handleClick(answer));
   const time = (timerData * 0.001) / 60;
@@ -98,33 +145,33 @@ const QuickForecastCard = ({
               </span>
             </div>
             <div className="ForecastCard__flex-container-vertical">
-              <Link to={`/object/${link}`} className="ForecastCard__title">
-                <p className="ForecastCard__title-row">
-                  <img
-                    className="ForecastCard__img ForecastCard__img--little"
-                    src={avatar}
-                    alt={predictionObjectName}
-                  />
-                  &nbsp;
-                  {predictionObjectName}
-                </p>
-                {pendingStatus ? (
-                  <p className="green">
-                    <FormattedMessage id="rise" defaultMessage="Rise: " />
-                    <span className={sideClassList}>{side}</span>
-                  </p>
-                ) : (
-                  <span className={forecastsMessage}>{forecastFinishMessage}</span>
-                )}
-              </Link>
-              <div className="ForecastCard__forecast-timer">
-                <Icon type="clock-circle" />
-                &nbsp;
-                <BallotTimer
-                  endTimerTime={forecast.quickForecastExpiredAt}
-                  willCallAfterTimerEnd={timerCallback}
-                />
-              </div>
+                  <h2 className="ForecastCard__title">
+                      <p className="ForecastCard__title-row">
+                        <Link className="ForecastCard__link" to={`/object/${link}`} >
+                        <img
+                          className="ForecastCard__img ForecastCard__img--little"
+                          src={avatar}
+                          alt={predictionObjectName}
+                        />
+                        &nbsp;
+                        {predictionObjectName}
+                        </Link>
+                      </p>
+                  {!forecast.isLoaded
+                    ? <Loading />
+                    : messageActiveForecast
+                  }
+                  </h2>
+
+                  <div className="ForecastCard__forecast-timer">
+                    <Icon type="clock-circle" />
+                    &nbsp;
+                    <BallotTimer
+                      endTimerTime={forecast.quickForecastExpiredAt}
+                      willCallAfterTimerEnd={handleFinishTimer}
+                    />
+                  </div>
+              {' '}
             </div>
             <DynamicPriceWrapper
               postPrice={forecast.postPrice}
@@ -201,7 +248,6 @@ QuickForecastCard.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func.isRequired,
   }).isRequired,
-  timerCallback: PropTypes.func.isRequired,
   handleAuthorization: PropTypes.func.isRequired,
   predictionObjectName: PropTypes.string,
   avatar: PropTypes.string,

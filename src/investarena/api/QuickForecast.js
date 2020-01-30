@@ -19,9 +19,7 @@ export default class QuickForecast extends Base {
 
   getQuickForecastStatistics(userName) {
     return this.apiClient
-      .get(
-        `${config.investArenaApi}${config.quickForecasts.quickForecastStatistics}/${userName}/statistics`,
-      )
+      .get(`${config.investArenaApi}${config.quickForecasts.quickForecast}/${userName}/statistics`)
       .then(response => response.data);
   }
 
@@ -38,6 +36,12 @@ export default class QuickForecast extends Base {
   getQuickForecastRewards() {
     return this.apiClient
       .get(`${config.investArenaApi}${config.quickForecasts.quickForecastRewards}`)
+      .then(response => response.data);
+  }
+
+  getStatusForecast(user, permlink) {
+    return this.apiClient
+      .get(`${config.investArenaApi}${config.quickForecasts.quickForecastFind}/${user}/${permlink}`)
       .then(response => response.data);
   }
 }

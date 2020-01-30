@@ -1,4 +1,5 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
@@ -9,6 +10,7 @@ import './TopPredictions.less';
 
 const TopPredictors = ({ title, userList, showMore, activeUser, handleShowMore, intl, top }) => {
   const myNameInTopFive = userList.some(user => user.name === activeUser.name);
+
   return (
     <div className="TopPredictors">
       <div className="TopPredictors__title">
