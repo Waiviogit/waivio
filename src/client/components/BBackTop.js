@@ -14,10 +14,10 @@ export default function BBackTop({ className, isModal, ...otherProps }) {
         })}
       >
         <BackTop className="BBackTop_button" {...otherProps}>
-          <i className="iconfont icon-back-top" />
+          <i className="iconfont icon-back-top"/>
         </BackTop>
-      </div>
-    </div>
+   </div>
+  </div>
   );
 }
 

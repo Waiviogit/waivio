@@ -165,10 +165,8 @@ export const answerForQuickForecast = (
             commentBody
           ])
           .then(() => {
-            if (author === username) {
               dispatch(answerQuickForecast(answer, id, postPrice, timerData));
               resolve();
-            }
           })
           .catch(e => {
             dispatch(answerQuickForecastError(id));
