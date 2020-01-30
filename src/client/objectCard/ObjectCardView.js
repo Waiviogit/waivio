@@ -113,7 +113,7 @@ const ObjectCardView = ({
                   </span>
                 )}
                 {tags.map(tag => (
-                  <span>&nbsp;&middot;{` ${tag}`}</span>
+                  <span key={tag}>&nbsp;&middot;{` ${tag}`}</span>
                 ))}
               </span>
               {wObject.address && (
