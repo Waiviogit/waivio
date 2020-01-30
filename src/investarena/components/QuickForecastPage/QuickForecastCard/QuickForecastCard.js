@@ -56,11 +56,9 @@ const QuickForecastCard = ({
     return () => clearInterval(intervalId);
   });
 
-  // flags
   const pendingStatus = forecast.status === 'pending';
   const winner = forecast.status === 'guessed';
   const lose = forecast.status === 'finished';
-
   const side =
     forecast.side === 'up' ? (
       <FormattedMessage id="forecast_answer_rise" defaultMessage="Yes" />
@@ -68,7 +66,6 @@ const QuickForecastCard = ({
       <FormattedMessage id="forecast_answer_fall" defaultMessage="No" />
     );
 
-  // messages
   const forecastFinishMessage = winner ? (
     <FormattedMessage id="forecast_winner_message" defaultMessage="You Win!!!" />
   ) : (
