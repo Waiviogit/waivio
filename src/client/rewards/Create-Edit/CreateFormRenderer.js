@@ -367,7 +367,7 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.eligibleDays.name, {
             rules: fields.eligibleDays.rules,
             initialValue: eligibleDays,
-          })(<Input type="number" disabled={disabled} />)}
+          })(<Input type="number" disabled={disabled} defaultValue={eligibleDays} />)}
           <div className="CreateReward__field-caption">{fields.eligibleDays.caption}</div>
         </Form.Item>
 
@@ -397,7 +397,7 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.usersLegalNotice.name, {
             rules: fields.usersLegalNotice.rules,
             initialValue: usersLegalNotice,
-          })(<Input.TextArea disabled={disabled} />)}
+          })(<Input.TextArea disabled={disabled} defaultValue={usersLegalNotice} />)}
           <div className="CreateReward__field-caption">{fields.usersLegalNotice.caption}.</div>
         </Form.Item>
 

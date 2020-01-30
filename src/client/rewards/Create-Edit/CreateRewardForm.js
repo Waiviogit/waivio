@@ -112,7 +112,6 @@ class CreateRewardForm extends React.Component {
 
       Promise.all([primaryObject, secondaryObjects, sponsors]).then(values => {
         // eslint-disable-next-line react/no-did-mount-set-state
-        console.log('campaign', campaign);
         this.setState({
           iAgree: true,
           loading: false,
@@ -138,6 +137,8 @@ class CreateRewardForm extends React.Component {
           compensationAccount: {
             account: campaign.compensationAccount,
           },
+          eligibleDays: campaign.frequency_assign,
+          usersLegalNotice: campaign.usersLegalNotice,
           expiredAt,
           isCampaignActive,
         });
@@ -198,12 +199,12 @@ class CreateRewardForm extends React.Component {
         data.compensationAccount && data.compensationAccount.account
           ? data.compensationAccount.account
           : '',
+      usersLegalNotice: data.usersLegalNotice ? data.usersLegalNotice : '',
       match_bots: sponsorAccounts,
       // eslint-disable-next-line no-underscore-dangle
       expired_at: data.expiredAt._d,
       reservation_timetable: data.targetDays,
     };
-    if (data.usersLegalNotice) preparedObject.usersLegalNotice = data.usersLegalNotice;
     if (data.description) preparedObject.description = data.description;
     if (campaignId) preparedObject.id = campaignId;
     return preparedObject;
@@ -381,6 +382,7 @@ class CreateRewardForm extends React.Component {
       agreement,
       campaignId,
       iAgree,
+      eligibleDays,
     } = this.state;
     return (
       <CreateFormRenderer
@@ -415,6 +417,7 @@ class CreateRewardForm extends React.Component {
         campaignId={campaignId}
         isCampaignActive={isCampaignActive}
         iAgree={iAgree}
+        eligibleDays={eligibleDays}
       />
     );
   }
