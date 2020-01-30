@@ -112,6 +112,7 @@ class CreateRewardForm extends React.Component {
 
       Promise.all([primaryObject, secondaryObjects, sponsors]).then(values => {
         // eslint-disable-next-line react/no-did-mount-set-state
+        console.log('campaign', campaign);
         this.setState({
           iAgree: true,
           loading: false,
@@ -134,9 +135,19 @@ class CreateRewardForm extends React.Component {
           commissionAgreement: parseInt(campaign.commissionAgreement * 100, 10),
           // eslint-disable-next-line no-underscore-dangle
           campaignId: campaign._id,
+          compensationAccount: {
+            account: campaign.compensationAccount,
+          },
           expiredAt,
           isCampaignActive,
         });
+        if (campaign.match_bots.length) {
+          this.setState({
+            sponsorsList: campaign.match_bots.map(matchBotAccount => ({
+              account: matchBotAccount,
+            })),
+          });
+        }
       });
     }
   };
@@ -183,7 +194,10 @@ class CreateRewardForm extends React.Component {
       commissionAgreement: data.commissionAgreement / 100,
       objects,
       agreementObjects,
-      compensationAccount: data.compensationAccount && data.compensationAccount.account,
+      compensationAccount:
+        data.compensationAccount && data.compensationAccount.account
+          ? data.compensationAccount.account
+          : '',
       match_bots: sponsorAccounts,
       // eslint-disable-next-line no-underscore-dangle
       expired_at: data.expiredAt._d,

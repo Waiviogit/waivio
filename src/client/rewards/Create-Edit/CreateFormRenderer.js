@@ -77,18 +77,18 @@ const CreateFormRenderer = props => {
       {handlers.messageFactory('active_campaign_warn', 'Only pending campaigns could be edited')}
     </div>
   ) : null;
-
-  const renderCompensationAccount = !isEmpty(compensationAccount) ? (
-    <div className="CreateReward__objects-wrap">
-      <ReviewItem
-        key={compensationAccount}
-        object={compensationAccount}
-        loading={loading}
-        removeReviewObject={handlers.removeCompensationAccount}
-        isUser
-      />
-    </div>
-  ) : null;
+  const renderCompensationAccount =
+    !isEmpty(compensationAccount) && compensationAccount.account ? (
+      <div className="CreateReward__objects-wrap">
+        <ReviewItem
+          key={compensationAccount}
+          object={compensationAccount}
+          loading={loading}
+          removeReviewObject={handlers.removeCompensationAccount}
+          isUser
+        />
+      </div>
+    ) : null;
 
   const sponsorsIdsToOmit = !isEmpty(sponsorsList) ? map(sponsorsList, obj => obj.account) : [];
 
