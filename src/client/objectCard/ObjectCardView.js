@@ -22,7 +22,7 @@ const ObjectCardView = ({
   const [tags, setTags] = useState([]);
 
   useEffect(() => {
-    if (wObject.tagCategories && !!wObject.tagCategories.length) {
+    if (wObject.tagCategories && wObject.tagCategories.length) {
       const currentTags = wObject.tagCategories
         .map(category => category.categoryItems)
         .filter(categoryItems => !!categoryItems.length)
