@@ -192,6 +192,7 @@ class PostChart extends Component {
       ),
       expiredAt: props.expiredAt,
       isScaleChanged: Boolean(props.expForecast && get(props.expForecast, 'rate.quote.timeScale')),
+      isNightMode: props.isNightMode,
     });
     this.setState({ disabledSelect: notEnoughData, isLoading: false });
   };
