@@ -72,8 +72,6 @@ class CreateRewardForm extends React.Component {
     iAgree: false,
     campaignId: '',
     isCampaignActive: false,
-    isModal: false,
-    isValidationAccepted: false,
   };
 
   componentDidMount = async () => {
@@ -136,9 +134,21 @@ class CreateRewardForm extends React.Component {
           commissionAgreement: parseInt(campaign.commissionAgreement * 100, 10),
           // eslint-disable-next-line no-underscore-dangle
           campaignId: campaign._id,
+          compensationAccount: {
+            account: campaign.compensationAccount,
+          },
+          eligibleDays: campaign.frequency_assign,
+          usersLegalNotice: campaign.usersLegalNotice,
           expiredAt,
           isCampaignActive,
         });
+        if (campaign.match_bots.length) {
+          this.setState({
+            sponsorsList: campaign.match_bots.map(matchBotAccount => ({
+              account: matchBotAccount,
+            })),
+          });
+        }
       });
     }
   };
@@ -185,13 +195,16 @@ class CreateRewardForm extends React.Component {
       commissionAgreement: data.commissionAgreement / 100,
       objects,
       agreementObjects,
-      compensationAccount: data.compensationAccount && data.compensationAccount.account,
+      compensationAccount:
+        data.compensationAccount && data.compensationAccount.account
+          ? data.compensationAccount.account
+          : '',
+      usersLegalNotice: data.usersLegalNotice ? data.usersLegalNotice : '',
       match_bots: sponsorAccounts,
       // eslint-disable-next-line no-underscore-dangle
       expired_at: data.expiredAt._d,
       reservation_timetable: data.targetDays,
     };
-    if (data.usersLegalNotice) preparedObject.usersLegalNotice = data.usersLegalNotice;
     if (data.description) preparedObject.description = data.description;
     if (campaignId) preparedObject.id = campaignId;
     return preparedObject;
@@ -293,10 +306,6 @@ class CreateRewardForm extends React.Component {
       );
     },
 
-    setModal: value => {
-      this.setState({ isModal: value });
-    },
-
     getObjectsToOmit: () => {
       const objectsToOmit = [];
       if (!isEmpty(this.state.primaryObject)) {
@@ -311,35 +320,19 @@ class CreateRewardForm extends React.Component {
     handleSubmit: e => {
       e.preventDefault();
       this.checkOptionFields();
-      this.props.form.validateFieldsAndScroll((err, values) => {
-        if (!err && !isEmpty(values.primaryObject) && !isEmpty(values.secondaryObject)) {
-          this.setState({ isValidationAccepted: true, isModal: true });
-        }
-        if (err) {
-          this.setState({ isModal: false });
-        }
-      });
-    },
-
-    handleCreateCampaign: () => {
       this.setState({ loading: true });
       this.props.form.validateFieldsAndScroll((err, values) => {
-        if (
-          !err &&
-          !isEmpty(values.primaryObject) &&
-          !isEmpty(values.secondaryObject) &&
-          this.state.isValidationAccepted
-        ) {
+        if (!err && !isEmpty(values.primaryObject) && !isEmpty(values.secondaryObject)) {
           createCampaign(this.prepareSubmitData(values, this.props.userName))
             .then(() => {
               message.success(`Rewards campaign ${values.campaignName} has been created.`);
-              this.setState({ loading: false, isModal: false });
+              this.setState({ loading: false });
               this.manageRedirect();
             })
             .catch(error => {
               console.log(error);
               message.error(`Campaign ${values.campaignName} has been rejected`);
-              this.setState({ loading: false, isModal: false });
+              this.setState({ loading: false });
             });
         }
         if (err) {
@@ -389,9 +382,8 @@ class CreateRewardForm extends React.Component {
       agreement,
       campaignId,
       iAgree,
-      isModal,
+      eligibleDays,
     } = this.state;
-
     return (
       <CreateFormRenderer
         handlers={this.handlers}
@@ -425,7 +417,7 @@ class CreateRewardForm extends React.Component {
         campaignId={campaignId}
         isCampaignActive={isCampaignActive}
         iAgree={iAgree}
-        isModal={isModal}
+        eligibleDays={eligibleDays}
       />
     );
   }
