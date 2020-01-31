@@ -12,7 +12,10 @@ export default class Forecasts extends Base {
   getActiveForecasts(name = '', quote = '') {
     return this.apiClient
       .get(`${config.forecasts.activeForecasts}?name=${name}&quote=${quote}`)
-      .then(response => response.data);
+      .then(({ error, data }) => {
+        if (error) return { forecasts: [] };
+        return data;
+      })
   }
 
   getPostsWithForecastByUser(name = '') {
