@@ -7,7 +7,7 @@ import { withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
-import _, { isEmpty, map } from 'lodash';
+import { isEmpty, map, size, includes, remove, find } from 'lodash';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
@@ -89,7 +89,7 @@ class Rewards extends React.Component {
   componentDidMount() {
     const { username, match, userLocation, history } = this.props;
     const { radius, coordinates, sort, activeFilters } = this.state;
-    if (!_.size(userLocation)) {
+    if (!size(userLocation)) {
       this.props.getCoordinates();
     }
     if (!username) {
@@ -149,8 +149,8 @@ class Rewards extends React.Component {
     const { username, match } = this.props;
     const { radius, coordinates, sort } = this.state;
     const activeFilters = this.state.activeFilters;
-    if (_.includes(activeFilters[key], filter)) {
-      _.remove(activeFilters[key], f => f === filter);
+    if (includes(activeFilters[key], filter)) {
+      remove(activeFilters[key], f => f === filter);
     } else {
       activeFilters[key].push(filter);
     }
@@ -160,7 +160,7 @@ class Rewards extends React.Component {
 
   setPayablesFilterValue = filter => {
     const activeFilters = [...this.state.activePayableFilters];
-    if (_.find(activeFilters, ['filterName', filter.filterName])) {
+    if (find(activeFilters, ['filterName', filter.filterName])) {
       this.setState({
         activePayableFilters: activeFilters.filter(f => f.filterName !== filter.filterName),
       });
@@ -329,7 +329,7 @@ class Rewards extends React.Component {
   campaignsLayoutWrapLayout = (IsRequiredObjectWrap, filterKey, userName) => {
     const { propositions, loadingAssignDiscard } = this.state;
     const { intl } = this.props;
-    if (_.size(propositions) !== 0) {
+    if (size(propositions) !== 0) {
       if (IsRequiredObjectWrap) {
         return map(
           propositions,
