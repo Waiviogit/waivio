@@ -47,9 +47,10 @@ class QuickCommentEditor extends React.Component {
     } else {
       const { currentImage, commentMsg } = this.state;
       this.setState({ isDisabledSubmit: true });
+
       if (commentMsg) {
         let imageData = commentMsg.trim();
-        if (currentImage) {
+        if (currentImage.length) {
           imageData += `\n![${currentImage[0].name}](${currentImage[0].src})\n`;
         }
         this.props.onSubmit(this.props.parentPost, imageData).then(response => {
@@ -135,7 +136,11 @@ class QuickCommentEditor extends React.Component {
           visible={isModal}
           onOk={this.handleOnOk}
         >
-          <ImageSetter onImageLoaded={this.getImages} onLoadingImage={this.onLoadingImage} />
+          <ImageSetter
+            onImageLoaded={this.getImages}
+            onLoadingImage={this.onLoadingImage}
+            isRequired
+          />
         </Modal>
       </React.Fragment>
     );

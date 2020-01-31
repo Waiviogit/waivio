@@ -4,6 +4,7 @@ import { injectIntl } from 'react-intl';
 import { Icon, message } from 'antd';
 import { map, isEmpty } from 'lodash';
 import uuidv4 from 'uuid/v4';
+import classNames from 'classnames';
 import withEditor from '../Editor/withEditor';
 import { isValidImage } from '../../helpers/image';
 import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
@@ -17,6 +18,8 @@ const ImageSetter = ({
   onImageUpload,
   onLoadingImage,
   onImageLoaded,
+  defaultImage,
+  isRequired,
 }) => {
   const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
@@ -54,7 +57,7 @@ const ImageSetter = ({
     }
   };
 
-  const handleOnUploadImageByLink = () => {
+  const handleOnUploadImageByLink = image => {
     if (currentImages.length >= 25) {
       message.error(
         intl.formatMessage({
@@ -64,8 +67,8 @@ const ImageSetter = ({
       );
       return;
     }
-    if (imageLinkInput.current && imageLinkInput.current.value) {
-      const url = imageLinkInput.current.value;
+    if (image || (imageLinkInput.current && imageLinkInput.current.value)) {
+      const url = image || imageLinkInput.current.value;
       const filename = url.substring(url.lastIndexOf('/') + 1);
       const newImage = {
         src: url,
@@ -79,6 +82,10 @@ const ImageSetter = ({
       imageLinkInput.current.value = '';
     }
   };
+
+  useEffect(() => {
+    handleOnUploadImageByLink(defaultImage);
+  }, []);
 
   const handleChangeImage = async e => {
     if (e.target.files && e.target.files[0]) {
@@ -132,18 +139,30 @@ const ImageSetter = ({
     if (!filteredImages.length) onImageLoaded([]);
   };
 
+  const renderTitle = () => {
+    if (defaultImage) {
+      return intl.formatMessage({
+        id: 'profile_picture',
+        defaultMessage: 'Profile picture',
+      });
+    } else if (isMultiple) {
+      return intl.formatMessage({
+        id: 'imageSetter_add_images',
+        defaultMessage: 'Add images',
+      });
+    }
+    return intl.formatMessage({
+      id: 'imageSetter_add_image',
+      defaultMessage: 'Add image',
+    });
+  };
+
   return (
     <div className="ImageSetter">
-      <div className="ImageSetter__label">
-        {!isMultiple
-          ? intl.formatMessage({
-              id: 'imageSetter_add_image',
-              defaultMessage: 'Add image',
-            })
-          : intl.formatMessage({
-              id: 'imageSetter_add_images',
-              defaultMessage: 'Add images',
-            })}
+      <div
+        className={classNames('ImageSetter__label', { 'ImageSetter__label--required': isRequired })}
+      >
+        {renderTitle()}
       </div>
       {(!isEmpty(currentImages) || isLoadingImage) && (
         <div className="image-box">
@@ -206,7 +225,11 @@ const ImageSetter = ({
                 defaultMessage: 'Paste image link',
               })}
             />
-            <button className="input-upload__btn" type="button" onClick={handleOnUploadImageByLink}>
+            <button
+              className="input-upload__btn"
+              type="button"
+              onClick={() => handleOnUploadImageByLink()}
+            >
               <Icon type="upload" />
             </button>
           </div>
@@ -222,10 +245,14 @@ ImageSetter.propTypes = {
   onLoadingImage: PropTypes.func.isRequired,
   onImageLoaded: PropTypes.func.isRequired,
   isMultiple: PropTypes.bool,
+  defaultImage: PropTypes.string,
+  isRequired: PropTypes.bool,
 };
 
 ImageSetter.defaultProps = {
   isMultiple: false,
+  defaultImage: '',
+  isRequired: false,
 };
 
 export default withEditor(injectIntl(ImageSetter));

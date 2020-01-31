@@ -451,6 +451,7 @@ export default class ProfileSettings extends React.Component {
             <ImageSetter
               onImageLoaded={isAvatar ? this.getAvatar : this.getCover}
               onLoadingImage={this.onLoadingImage}
+              isRequired
             />
           )}
         </Modal>
