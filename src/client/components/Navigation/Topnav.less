@@ -87,14 +87,29 @@
     display: flex;
     margin-left: 15px;
 
-    .icon-close {
+    &:hover .anticon.anticon-close-circle {
+      opacity: 1;
+    }
+
+    &:focus .anticon.anticon-close-circle {
+      opacity: 1;
+    }
+
+    .anticon.anticon-close-circle {
       position: absolute;
-      color: #000;
+      color: @blue-linkWater;
       font-size: 20px;
       z-index: 1000;
       right: 16px;
       left: unset;
       cursor: pointer;
+      top: 20px;
+      transition: .5s;
+      opacity: 0;
+
+      &:hover {
+        color: @blue-baliHai;
+      }
     }
 
     > .ant-select-show-search {
@@ -210,7 +225,7 @@
     }
 
     &-close {
-      margin-right: -16px;
+      margin-right: -5px;
     }
 
     &:hover {

@@ -35,6 +35,7 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
 import ModalSignUp from './ModalSignUp/ModalSignUp';
 import ModalSignIn from './ModlaSignIn/ModalSignIn';
+
 import './Topnav.less';
 
 @injectIntl
@@ -361,9 +362,17 @@ class Topnav extends React.Component {
 
   handleMobileSearchButtonClick = () => {
     const { searchBarActive } = this.state;
-    this.setState({ searchBarActive: !searchBarActive }, () => {
+    this.setState({
+      searchBarActive: !searchBarActive,
+    }, () => {
       this.searchInputRef.input.focus();
     });
+
+    if(!searchBarActive) {
+      this.setState({
+        dropdownOpen: false
+      })
+    }
   };
 
   hideAutoCompleteDropdown() {
@@ -618,12 +627,11 @@ class Topnav extends React.Component {
       'Topnav__search-selected-active': this.state.currentItem === key,
     });
 
-  handleOnBlur = () =>
-    this.setState({
-      dropdownOpen: false,
-      currentItem: 'All',
-      searchBarActive: false,
-    });
+  handleOnBlur = () => {
+   this.setState({
+     dropdownOpen: false
+   })
+  };
 
   handleClearSearchData = () =>
     this.setState(
@@ -667,7 +675,8 @@ class Topnav extends React.Component {
             </Link>
           </div>
           <div className={classNames('center', { mobileVisible: searchBarActive })}>
-            <div className="Topnav__input-container">
+            <div className="Topnav__input-container" onBlur={this.handleOnBlur}>
+              <i className="iconfont icon-search" />
               <AutoComplete
                 dropdownClassName="Topnav__search-dropdown-container"
                 dataSource={formattedAutoCompleteDropdown}
@@ -680,7 +689,6 @@ class Topnav extends React.Component {
                 dropdownStyle={{ color: 'red' }}
                 value={this.state.searchBarValue}
                 open={dropdownOpen}
-                onBlur={this.handleOnBlur}
                 onFocus={this.handleOnFocus}
               >
                 <Input
@@ -696,9 +704,7 @@ class Topnav extends React.Component {
                   autoCorrect="off"
                 />
               </AutoComplete>
-              <i className="iconfont icon-search" />
-              {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-              <i className="iconfont icon-close" onClick={this.handleClearSearchData} />
+                {!!this.state.searchBarValue.length && <Icon type="close-circle" style={{fontSize: '12px'}} theme="filled" onClick={this.handleClearSearchData}/>}
             </div>
           </div>
           <div className="right">
