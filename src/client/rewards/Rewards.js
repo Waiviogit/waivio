@@ -87,8 +87,14 @@ class Rewards extends React.Component {
   };
 
   componentDidMount() {
-    if (!_.size(this.props.userLocation)) {
+    const { username, match, userLocation, history } = this.props;
+    const { radius, coordinates, sort, activeFilters } = this.state;
+    if (!_.size(userLocation)) {
       this.props.getCoordinates();
+    }
+    if (!username) {
+      this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+      history.push(`/rewards/all`);
     }
   }
 
@@ -98,13 +104,11 @@ class Rewards extends React.Component {
     if (match.path !== this.props.match.path) {
       this.setState({ activePayableFilters: [] });
     }
-    if (match.params.filterKey !== 'create' && nextProps.username) {
-      const { username } = this.props;
+    if (match.params.filterKey !== 'create') {
       const { radius, coordinates, sort, activeFilters } = this.state;
       if (
         match.params.filterKey !== this.props.match.params.filterKey ||
-        nextProps.match.params.campaignParent !== this.props.match.params.campaignParent ||
-        nextProps.username !== username
+        nextProps.match.params.campaignParent !== this.props.match.params.campaignParent
       ) {
         this.setState({ loadingCampaigns: true }, () => {
           this.getPropositions({
@@ -123,8 +127,13 @@ class Rewards extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     const { username, match } = this.props;
     const { radius, coordinates, sort, activeFilters, isSearchAreaFilter } = this.state;
-    if (prevState.isSearchAreaFilter && !isSearchAreaFilter && username)
+    if (prevState.isSearchAreaFilter && !isSearchAreaFilter && username) {
       this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+    }
+    if (prevProps.username !== username && !username) {
+      this.getPropositions({ username, match, coordinates, radius, sort, activeFilters });
+      this.props.history.push(`/rewards/all`);
+    }
   }
 
   getRequiredObjects = () =>
