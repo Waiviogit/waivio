@@ -319,22 +319,10 @@ export default (messageFactory, validators, userName) => ({
     ),
   },
   editButton: {
-    text: messageFactory('edit_button_text', 'Edit'),
+    text: messageFactory('edit_button_text', 'Save'),
     spanText: messageFactory(
       'edit_button_span_text',
       'Once saved, the campaign can be activated in the Campaigns/Manage tab.',
-    ),
-  },
-  modal: {
-    createTitle: messageFactory('create_page_create_rewards_campaign', 'Create rewards campaign'),
-    editTitle: messageFactory('create_page_edit_rewards_campaign', 'Edit rewards campaign'),
-    createContent: messageFactory(
-      'create_page_want_create_rewards_campaign',
-      'Do you want create campaign?',
-    ),
-    editContent: messageFactory(
-      'create_page_want_edit_rewards_campaign',
-      'Do you want edit campaign?',
     ),
   },
 });
