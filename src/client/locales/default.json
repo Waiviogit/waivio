@@ -588,7 +588,7 @@
   "info": "Information",
   "about": "About",
   "only_for_my": "Only for me",
-  "noProposition": "No reward matches the criteria for user @{userName}",
+  "noProposition": "No reward matches the criteria",
   "eligible": "Eligible",
   "reserved": "Reserved",
   "history": "History",
