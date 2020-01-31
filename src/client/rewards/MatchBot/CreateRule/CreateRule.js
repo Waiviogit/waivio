@@ -43,9 +43,8 @@ const CreateRule = ({
     if (!isEmpty(editRule)) {
       setSliderValue(editRule.voting_percent * 100);
       if (editRule.note) setFieldsValue({ noticeField: editRule.note });
+      setExpired(editRule.expiredAt ? moment(new Date(editRule.expiredAt)) : '');
     }
-
-    setExpired(moment(new Date(editRule.expiredAt)));
   }, []);
 
   const handleSetSponsor = obj => {

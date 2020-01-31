@@ -866,6 +866,7 @@
   "matchBot_upvote": "Сила лайка",
   "matchBot_action": "Действие",
   "matchBot_notes": "Примечания",
+  "matchBot_termless": "бессрочно",
   "up_to_5_comma_delimited": "(до 5, через запятую)",
   "value_of_upvotes_can_be_accumulated_on_compensation_account": "Значение лайков можно накапливать на специальном компенсационном счете.",
   "compensation_account_optional": "Компенсационный счет(необязательно)",

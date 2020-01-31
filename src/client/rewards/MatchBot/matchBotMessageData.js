@@ -69,6 +69,7 @@ export default localizer => ({
     'matchBot_success_inactivated',
     'Rule inactivated successfully',
   ),
+  termless: localizer('matchBot_termless', 'termless'),
   edit: localizer('matchBot_table_edit', 'Edit'),
   addNewSponsor: localizer('matchBot_title_add_new_sponsor', 'Add new sponsor'),
   titleEditRule: localizer('matchBot_title_edit_rule', 'Edit match bot rules for'),

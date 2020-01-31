@@ -82,7 +82,7 @@ const MatchBotTableRow = ({ handleEditRule, handleSwitcher, isAuthority, intl, r
             {messageData.edit}
           </div>
         </td>
-        <td>{formatDate(intl, rule.expiredAt)}</td>
+        <td>{rule.expiredAt ? formatDate(intl, rule.expiredAt) : messageData.termless}</td>
         <td>{rule.note}</td>
       </tr>
       <Modal
