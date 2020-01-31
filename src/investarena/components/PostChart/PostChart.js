@@ -62,7 +62,7 @@ class PostChart extends Component {
       timeScale: timeScale ? timeScale.toUpperCase() : 'MINUTE',
       chartType: 'Line',
       priceType: props.recommend,
-      expired: !!props.expForecast || this.isExpiredByTime(),
+      expired: !!props.expForecast || this.isExpiredByTime(props),
       disabledSelect: false,
       isSession:
         this.props.platformName === 'widgets'
@@ -125,10 +125,10 @@ class PostChart extends Component {
             this.shouldGetChartData(nextProps.bars)
           ) {
             this.getChartData(this.state.timeScale);
-          } else if (!this.props.isObjectProfile && (this.isExpiredByTime() || this.isExpiredByLimits(nextProps))) {
+          } else if (!this.props.isObjectProfile && (this.isExpiredByTime(nextProps) || this.isExpiredByLimits(nextProps))) {
             const expiredProps = {
               ...nextProps,
-              expiredByTime: this.isExpiredByTime(),
+              expiredByTime: this.isExpiredByTime(nextProps),
               expiredBars: (nextProps.expForecast && nextProps.expForecast.bars) || nextProps.bars,
             };
             this.setState(
@@ -161,7 +161,7 @@ class PostChart extends Component {
       ? (tpPrice && quote.askPrice > tpPrice) || (slPrice && quote.askPrice < slPrice)
       : (tpPrice && quote.bidPrice < tpPrice) || (slPrice && quote.bidPrice > slPrice);
   };
-  isExpiredByTime = () => moment().valueOf() > moment(this.props.forecast).valueOf();
+  isExpiredByTime = props => moment().valueOf() > moment(props.forecast).valueOf();
   createChartData = () =>
     new ChartData({
       createdAt: this.props.createdAt,
@@ -188,7 +188,7 @@ class PostChart extends Component {
       expiredByTime: get(
         props.expForecast,
         ['rate', 'quote', 'expiredByTime'],
-        this.isExpiredByTime,
+        this.isExpiredByTime(props),
       ),
       expiredAt: props.expiredAt,
       isScaleChanged: Boolean(props.expForecast && get(props.expForecast, 'rate.quote.timeScale')),

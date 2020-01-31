@@ -71,7 +71,7 @@ export function getDataCreatedAt() {
 }
 
 export function getDataForecast() {
-  const periodAfter = 604800;
+  const periodAfter = 604800 * 1000;
   const nowDate = Date.now();
   return moment.utc(nowDate + periodAfter).format(forecastDateTimeFormat);
 }
