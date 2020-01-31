@@ -50,19 +50,22 @@ export default localizer => ({
   notes: localizer('matchBot_notes', 'Notes'),
   expiryDate: localizer('matchBot_expiry_date', 'Expiry date'),
   authorizationRequired: localizer('matchBot_authorization_required', 'Authorization is required'),
-  successRuleActivation: localizer('matchBot_success_rule_activation', 'Rule activation'),
-  successRuleInactivation: localizer('matchBot_success_rule_inactivation', 'Rule inactivation'),
+  successRuleActivation: localizer('matchBot_success_rule_activation', 'Confirm rule activation'),
+  successRuleInactivation: localizer(
+    'matchBot_success_rule_inactivation',
+    'Confirm rule inactivation',
+  ),
   matchBotRequiresAuthorizationDistribute: localizer(
     'matchBot_match_bot_requires_authorization_distribute_votes_behalf',
     'The match bot requires authorization to distribute upvotes on your behalf',
   ),
   successIntentionRuleActivation: localizer(
     'matchBot_success_intention_rule_activation',
-    'Do you want to activate rule with sponsor',
+    'Do you want to activate match bot rule for sponsor',
   ),
   successIntentionRuleInactivation: localizer(
     'matchBot_success_intention_rule_inactivation',
-    'Do you want to inactivate rule with sponsor',
+    'Do you want to inactivate match bot rule for sponsor',
   ),
   ruleActivatedSuccessfully: localizer('matchBot_success_activated', 'Rule activated successfully'),
   ruleInactivatedSuccessfully: localizer(
@@ -70,6 +73,8 @@ export default localizer => ({
     'Rule inactivated successfully',
   ),
   termless: localizer('matchBot_termless', 'termless'),
+  confirm: localizer('matchBot_confirm', 'Confirm'),
+  cancel: localizer('matchBot_cancel', 'Cancel'),
   edit: localizer('matchBot_table_edit', 'Edit'),
   addNewSponsor: localizer('matchBot_title_add_new_sponsor', 'Add new sponsor'),
   titleEditRule: localizer('matchBot_title_edit_rule', 'Edit match bot rules for'),

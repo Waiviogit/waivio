@@ -35,6 +35,7 @@ const MatchBotTableRow = ({ handleEditRule, handleSwitcher, isAuthority, intl, r
     if (!isEnabled) return messageData.successRuleActivation;
     return messageData.successRuleInactivation;
   };
+  const title = setTitle();
   const setModalContent = () => {
     if (!isAuthority) return messageData.matchBotRequiresAuthorizationDistribute;
     if (!isEnabled)
@@ -89,8 +90,9 @@ const MatchBotTableRow = ({ handleEditRule, handleSwitcher, isAuthority, intl, r
         confirmLoading={isAuthority && isLoading}
         onCancel={isAuthority ? handleChangeModalVisible : handleChangeAuthModalVisible}
         onOk={isAuthority ? changeRuleStatus : handleOnOkAuth}
-        okText={!isAuthority && messageData.authorizeNow}
-        title={setTitle()}
+        okText={!isAuthority ? messageData.authorizeNow : messageData.confirm}
+        cancelText={messageData.cancel}
+        title={title}
         visible={isAuthority ? modalVisible : modalAuthVisible}
       >
         {setModalContent()}
