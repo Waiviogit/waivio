@@ -110,12 +110,16 @@ const QuickForecastPage = props => {
 
   function handleFinishTimer() {
     setLoading(false);
+    setTime(Date.now());
 
     props.getDataForQuickForecast();
     props.getForecastRoundRewards();
     props.getForecastWinners(winnersLimit, 0);
     props.getForecastStatistic();
-    setLoading(true);
+
+    setTimeout(() => {
+      setLoading(true);
+    }, 3000);
   }
 
   function handleChangePage(page) {
@@ -137,7 +141,9 @@ const QuickForecastPage = props => {
   const currentForecastList =
     answeredForecastList.length === 5 ? answeredForecastList : forecastList;
   const secondsInMilliseconds = sec => sec / 0.001;
-  const finishRoundTime = props.roundTime && currentTime + secondsInMilliseconds(props.roundTime);
+  const finishRoundTime = props.roundTime >= 0
+    ? currentTime + secondsInMilliseconds(props.roundTime)
+    : currentTime + secondsInMilliseconds(9000);
 
   return (
     <div className="container">
@@ -165,7 +171,7 @@ const QuickForecastPage = props => {
         </div>
         <Affix
           className={leftContentClassList}
-          stickPosition={122}
+          stickPosition={112}
           wrapperClassName="none-position"
         >
           <div className="left">
@@ -263,9 +269,7 @@ const QuickForecastPage = props => {
                     props.quotesSett[obj.security] &&
                     props.quotesSett[obj.security].wobjData.author_permlink
                   }
-                  getForecast={props.getDataForQuickForecast}
                   timerData={secondsInMilliseconds(props.timeForTimer)}
-                  timerCallback={() => handleFinishTimer()}
                   counter={answeredForecastList.length}
                   handleAuthorization={props.onActionInitiated}
                   disabled={props.isDisabled}
@@ -287,7 +291,7 @@ const QuickForecastPage = props => {
         <Affix
           className={rightContentClassList}
           wrapperClassName="none-position"
-          stickPosition={122}
+          stickPosition={112}
         >
           <div className="right">
             <div className="reward">

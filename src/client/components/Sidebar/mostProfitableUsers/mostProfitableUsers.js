@@ -12,9 +12,11 @@ const mostProfitableUsers = ({ chartid }) => {
   const [state, setState] = useState({ performers: [], loading: true, isModalOpen: false });
 
   useEffect(() => {
-    api.performers
-      .getMostProfitableUsers(chartid)
-      .then(data => setState({ performers: data, loading: false }));
+    if (chartid) {
+      api.performers
+        .getMostProfitableUsers(chartid)
+        .then(data => setState({performers: data, loading: false}));
+    }
   }, [chartid]);
 
   const { performers, loading, isModalOpen } = state;

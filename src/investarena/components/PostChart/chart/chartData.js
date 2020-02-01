@@ -32,6 +32,7 @@ class ChartData {
     timeScale,
     expiredAt,
     isScaleChanged,
+    isNightMode,
   }) {
     this.timeScale = timeScale;
     const barsData = (data && data[this.timeScale]) || data;
@@ -59,6 +60,7 @@ class ChartData {
       this.quote = this.getQuoteOptions(quote, priceType);
       this.scaleY = this.getScaleY();
       this.notEnoughData = false;
+      this.isNightMode = isNightMode;
     } else {
       this.notEnoughData = true;
     }
