@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import classNames from 'classnames';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { Icon, Modal } from 'antd';
-import { Link } from 'react-router-dom';
+import {FormattedMessage, injectIntl} from 'react-intl';
+import {Icon, Modal} from 'antd';
+import {Link} from 'react-router-dom';
 
 import RightSidebarLoading from '../../../client/app/Sidebar/RightSidebarLoading';
 import StoryLoading from '../../../client/components/Story/StoryLoading';
@@ -15,7 +15,7 @@ import USDDisplay from '../../../client/components/Utils/USDDisplay';
 import withAuthActions from '../../../client/auth/withAuthActions';
 import SortSelector from '../../../client/components/SortSelector/SortSelector';
 import Affix from '../../../client/components/Utils/Affix';
-import { marketNames } from '../../constants/objectsInvestarena';
+import {marketNames} from '../../constants/objectsInvestarena';
 import {
   forecastWinnersShowMore,
   getDataForQuickForecast,
@@ -39,16 +39,16 @@ const QuickForecastPage = props => {
   const winnersLimit = 5;
   const answeredForecastList = props.quickForecastDataList.filter(forecast => !forecast.active);
   const centerContentClassList = classNames('center', {
-    active: currentPage && currentPage.key === 'forecast',
-    inactive: currentPage && currentPage.key !== 'forecast',
+    'center--active': currentPage && currentPage.key === 'forecast',
+    'center--inactive': currentPage && currentPage.key !== 'forecast',
   });
   const leftContentClassList = classNames('leftContainer', {
-    active: currentPage.key === 'top',
-    inactive: currentPage.key !== 'top',
+    'leftContainer--active': currentPage.key === 'top',
+    'leftContainer--inactive': currentPage.key !== 'top',
   });
   const rightContentClassList = classNames('rightContainer', {
-    active: currentPage.key === 'winners',
-    inactive: currentPage.key !== 'winners',
+    'rightContainer--active': currentPage.key === 'winners',
+    'rightContainer--inactive': currentPage.key !== 'winners',
   });
   const switcherClassList = classNames('switcher-page', {
     inactive: currentPage.key === 'forecast',

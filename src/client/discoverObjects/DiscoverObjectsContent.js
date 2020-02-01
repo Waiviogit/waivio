@@ -1,34 +1,30 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import _, { isEmpty, omit } from 'lodash';
-import { connect } from 'react-redux';
-import { Button, Modal, Tag } from 'antd';
-import { isNeedFilters, updateActiveFilters } from './helper';
+import _, {isEmpty, omit} from 'lodash';
+import {connect} from 'react-redux';
+import {Button, Modal, Tag} from 'antd';
+import {isNeedFilters, updateActiveFilters} from './helper';
 import {
   getActiveFilters,
-  getObjectTypeSorting,
-  getObjectTypesList,
-  getObjectTypeLoading,
-  getFilteredObjects,
-  getHasMoreRelatedObjects,
   getAvailableFilters,
+  getFilteredObjects,
   getHasMap,
+  getHasMoreRelatedObjects,
+  getObjectTypeLoading,
+  getObjectTypesList,
+  getObjectTypeSorting,
 } from '../reducers';
-import {
-  getObjectType,
-  clearType,
-  setFiltersAndLoad,
-  changeSortingAndLoad,
-} from '../objectTypes/objectTypeActions';
-import { getObjectTypes } from '../objectTypes/objectTypesActions';
+import {changeSortingAndLoad, clearType, getObjectType, setFiltersAndLoad,} from '../objectTypes/objectTypeActions';
+import {getObjectTypes} from '../objectTypes/objectTypesActions';
 import Loading from '../components/Icon/Loading';
 import ObjectCardView from '../objectCard/ObjectCardView';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import DiscoverObjectsFilters from './DiscoverFiltersSidebar/FiltersContainer';
 import SidenavDiscoverObjects from './SidenavDiscoverObjects';
 import SortSelector from '../components/SortSelector/SortSelector';
-import InstrumentCardView from '../../investarena/components/InstrumentsPage/Instrument/InstrumentCardView/InstrumentCardView';
-import { BROKER } from '../../investarena/constants/platform';
+import InstrumentCardView
+  from '../../investarena/components/InstrumentsPage/Instrument/InstrumentCardView/InstrumentCardView';
+import {BROKER} from '../../investarena/constants/platform';
 
 const modalName = {
   FILTERS: 'filters',
@@ -76,7 +72,6 @@ class DiscoverObjectsContent extends Component {
     dispatchGetObjectTypes: PropTypes.func.isRequired,
     dispatchSetActiveFilters: PropTypes.func.isRequired,
     dispatchChangeSorting: PropTypes.func.isRequired,
-    dispatchSetMapFullscreenMode: PropTypes.func.isRequired,
     /* passed props */
     intl: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
@@ -177,7 +172,7 @@ class DiscoverObjectsContent extends Component {
 
   resetNameSearchFilter = () => this.props.history.push(this.props.history.location.pathname);
 
-  showMap = () => this.props.dispatchSetMapFullscreenMode(true);
+  // showMap = () => this.props.dispatchSetMapFullscreenMode(true);
 
   render() {
     const { isTypeHasFilters, isModalOpen, modalTitle } = this.state;

@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import './Avatar.less';
 
 export function getAvatarURL(username, size = 100) {
+  if (username && username.includes('waivio_')) {
+    return `https://waivio.nyc3.digitaloceanspaces.com/avatar/${username}`;
+  }
   return size > 64
     ? `https://steemitimages.com/u/${username}/avatar`
     : `https://steemitimages.com/u/${username}/avatar/small`;

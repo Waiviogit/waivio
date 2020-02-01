@@ -1,26 +1,32 @@
 import React from 'react';
-import { Tabs } from 'antd';
+import {Tabs} from 'antd';
 import PropTypes from 'prop-types';
-import { FormattedMessage, FormattedNumber } from 'react-intl';
-import { connect } from 'react-redux';
-import { getFollowing } from '../helpers/apiHelpers';
+import {FormattedMessage, FormattedNumber} from 'react-intl';
+import {connect} from 'react-redux';
 import UserDynamicList from './UserDynamicList';
-import { getWobjectFollowing } from '../../waivioApi/ApiClient';
+import {getFollowingsFromAPI, getWobjectFollowing} from '../../waivioApi/ApiClient';
 import ObjectDynamicList from '../object/ObjectDynamicList';
+import {getUser} from '../reducers';
+import {notify} from '../app/Notification/notificationActions';
 import './UserFollowing.less';
-import { getUser } from '../reducers';
 
 const TabPane = Tabs.TabPane;
 
-@connect((state, ownProps) => ({
-  user: getUser(state, ownProps.match.params.name),
-}))
+@connect(
+  (state, ownProps) => ({
+    user: getUser(state, ownProps.match.params.name),
+  }),
+  {
+    notify,
+  },
+)
 export default class UserFollowing extends React.Component {
   static propTypes = {
     user: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
   };
 
+  // eslint-disable-next-line react/sort-comp
   static limit = 50;
 
   constructor(props) {
@@ -29,19 +35,22 @@ export default class UserFollowing extends React.Component {
     this.fetcher = this.fetcher.bind(this);
   }
 
-  fetcher(previous) {
-    const { match } = this.props;
-    const startFrom =
-      previous[previous.length - 1] && previous[previous.length - 1].name
-        ? previous[previous.length - 1].name
-        : '';
-    return getFollowing(match.params.name, startFrom, 'blog', UserFollowing.limit).then(
-      followings => followings.map(following => ({ name: following })),
+  skip = 0;
+  limit = 100;
+
+  async fetcher() {
+    const response = await getFollowingsFromAPI(
+      this.props.match.params.name,
+      this.limit,
+      this.skip,
     );
+    const users = response.users.map(user => ({name: user}));
+    this.skip += this.limit;
+    return {users, hasMore: response.hasMore};
   }
 
   objectFetcher = skip => {
-    const { match } = this.props;
+    const {match} = this.props;
     return getWobjectFollowing(match.params.name, skip, UserFollowing.limit);
   };
 
@@ -72,10 +81,12 @@ export default class UserFollowing extends React.Component {
             tab={
               <React.Fragment>
                 <span className="UserFollowing__item">
-                  <FormattedMessage id="users" defaultMessage="Users" />
+                  <FormattedMessage id="users" defaultMessage="Users"/>
                 </span>
                 <span className="UserFollowing__badge">
-                  <FormattedNumber value={user.following_count} />
+                  <FormattedNumber
+                    value={user.users_following_count ? user.users_following_count : 0}
+                  />
                 </span>
               </React.Fragment>
             }

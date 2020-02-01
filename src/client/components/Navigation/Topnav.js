@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { Link, withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { AutoComplete, Button, Icon, Input, Menu, Modal } from 'antd';
+import {FormattedMessage, injectIntl} from 'react-intl';
+import {Link, withRouter} from 'react-router-dom';
+import {connect} from 'react-redux';
+import {AutoComplete, Button, Icon, Input, Menu, Modal} from 'antd';
 import classNames from 'classnames';
 import {
   resetSearchAutoCompete,
@@ -13,9 +13,9 @@ import {
   searchObjectTypesAutoCompete,
   searchUsersAutoCompete,
 } from '../../search/searchActions';
-import { getUserMetadata } from '../../user/usersActions';
-import { toggleModal } from '../../../investarena/redux/actions/modalsActions';
-import { disconnectBroker } from '../../../investarena/redux/actions/brokersActions';
+import {getUserMetadata} from '../../user/usersActions';
+import {toggleModal} from '../../../investarena/redux/actions/modalsActions';
+import {disconnectBroker} from '../../../investarena/redux/actions/brokersActions';
 import {
   getAuthenticateduserMetaData,
   getAutoCompleteSearchResults,
@@ -26,30 +26,28 @@ import {
   getScreenSize,
   getSearchObjectsResults,
   getSearchUsersResults,
+  isGuestUser,
   searchObjectTypesResults,
 } from '../../reducers';
 import ModalBroker from '../../../investarena/components/Modals/ModalBroker';
 import ModalDealConfirmation from '../../../investarena/components/Modals/ModalDealConfirmation';
-import SteemConnect from '../../steemConnectAPI';
-import { PARSED_NOTIFICATIONS } from '../../../common/constants/notifications';
+import {PARSED_NOTIFICATIONS} from '../../../common/constants/notifications';
 import BTooltip from '../BTooltip';
 import Avatar from '../Avatar';
-import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
+import PopoverMenu, {PopoverMenuItem} from '../PopoverMenu/PopoverMenu';
 import PopoverContainer from '../Popover';
 import Notifications from './Notifications/Notifications';
 import LanguageSettings from './LanguageSettings';
 import Balance from '../../../investarena/components/Header/Balance';
-import {
-  getIsLoadingPlatformState,
-  getPlatformNameState,
-} from '../../../investarena/redux/selectors/platformSelectors';
+import {getIsLoadingPlatformState, getPlatformNameState,} from '../../../investarena/redux/selectors/platformSelectors';
 import config from '../../../investarena/configApi/config';
-import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
-import { objectFields } from '../../../common/constants/listOfFields';
+import {getFieldWithMaxWeight} from '../../object/wObjectHelper';
+import {objectFields} from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
-// import ModalSignUp from './ModalSignUp/ModalSignUp';
 import TopNavigation from './TopNavigation';
-import { getTopPosts } from '../../../waivioApi/ApiClient';
+import {getTopPosts} from '../../../waivioApi/ApiClient';
+import ModalSignUp from './ModalSignUp/ModalSignUp';
+import ModalSignIn from './ModalSignIn/ModalSignIn';
 import './Topnav.less';
 
 @injectIntl
@@ -68,6 +66,7 @@ import './Topnav.less';
     isNightMode: getNightmode(state),
     platformName: getPlatformNameState(state),
     isLoadingPlatform: getIsLoadingPlatformState(state),
+    isGuest: isGuestUser(state),
   }),
   {
     disconnectBroker,
@@ -121,6 +120,7 @@ class Topnav extends React.Component {
     searchByObjectType: PropTypes.arrayOf(PropTypes.shape()),
     openChat: PropTypes.func.isRequired,
     messagesCount: PropTypes.number,
+    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -130,11 +130,13 @@ class Topnav extends React.Component {
     searchByObjectType: [],
     notifications: [],
     username: undefined,
-    onMenuItemClick: () => {},
+    onMenuItemClick: () => {
+    },
     userMetaData: {},
     loadingNotifications: false,
     screenSize: 'medium',
     messagesCount: 0,
+    isGuest: false,
   };
 
   constructor(props) {
@@ -338,9 +340,7 @@ class Topnav extends React.Component {
       >
         <Menu className="Topnav__menu" mode="horizontal">
           <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="signup">
-            <a target="_blank" rel="noopener noreferrer" href={process.env.SIGNUP_URL}>
-              <FormattedMessage id="signup" defaultMessage="Sign up" />
-            </a>
+            <ModalSignUp isButton={false}/>
           </Menu.Item>
           <Menu.Item
             className="Topnav__menu-item Topnav__menu-item--logedout"
@@ -350,9 +350,7 @@ class Topnav extends React.Component {
             |
           </Menu.Item>
           <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="login">
-            <a href={SteemConnect.getLoginURL(next)}>
-              <FormattedMessage id="login" defaultMessage="Log in" />
-            </a>
+            <ModalSignIn next={next}/>
           </Menu.Item>
           <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="language">
             <LanguageSettings />
@@ -364,6 +362,7 @@ class Topnav extends React.Component {
 
   burgerMenu = logStatus => {
     const isLoggedOut = logStatus === 'loggedOut';
+    const {isGuest} = this.props;
     return (
       <PopoverContainer
         placement="bottom"
@@ -374,25 +373,27 @@ class Topnav extends React.Component {
         content={
           <PopoverMenu onSelect={this.handleBurgerMenuSelect}>
             <PopoverMenuItem key="myFeed" fullScreenHidden hideItem={isLoggedOut}>
-              <FormattedMessage id="my_feed" defaultMessage="My feed" />
+              <FormattedMessage id="my_feed" defaultMessage="My feed"/>
             </PopoverMenuItem>
             <PopoverMenuItem key="discover-objects" fullScreenHidden>
-              <FormattedMessage id="discover" defaultMessage="Discover" />
+              <FormattedMessage id="discover" defaultMessage="Discover"/>
             </PopoverMenuItem>
             <PopoverMenuItem key="quick_forecast" fullScreenHidden>
-              <FormattedMessage id="quick_forecast" defaultMessage="Forecast" />
+              <FormattedMessage id="quick_forecast" defaultMessage="Forecast"/>
             </PopoverMenuItem>
-            <PopoverMenuItem key="activity" mobileScreenHidden>
-              <FormattedMessage id="activity" defaultMessage="Activity" />
-            </PopoverMenuItem>
+            {!isGuest && (
+              <PopoverMenuItem key="activity" mobileScreenHidden>
+                <FormattedMessage id="activity" defaultMessage="Activity"/>
+              </PopoverMenuItem>
+            )}
             <PopoverMenuItem key="bookmarks" mobileScreenHidden>
-              <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" />
+              <FormattedMessage id="bookmarks" defaultMessage="Bookmarks"/>
             </PopoverMenuItem>
             <PopoverMenuItem key="drafts">
-              <FormattedMessage id="drafts" defaultMessage="Drafts" />
+              <FormattedMessage id="drafts" defaultMessage="Drafts"/>
             </PopoverMenuItem>
             <PopoverMenuItem key="settings">
-              <FormattedMessage id="settings" defaultMessage="Settings" />
+              <FormattedMessage id="settings" defaultMessage="Settings"/>
             </PopoverMenuItem>
             <PopoverMenuItem key="replies" fullScreenHidden>
               <FormattedMessage id="replies" defaultMessage="Replies" />

@@ -1,27 +1,15 @@
+import {attempt, filter, find, get, groupBy, includes, isEmpty, isError, mapValues, orderBy, uniqBy,} from 'lodash';
+import {getClientWObj} from '../adapters';
 import {
-  attempt,
-  get,
-  groupBy,
-  filter,
-  find,
-  includes,
-  isEmpty,
-  isError,
-  mapValues,
-  orderBy,
-  uniqBy,
-} from 'lodash';
-import { getClientWObj } from '../adapters';
-import {
-  supportedObjectFields,
-  objectFieldsWithInnerData,
-  TYPES_OF_MENU_ITEM,
   objectFields,
+  objectFieldsWithInnerData,
+  supportedObjectFields,
+  TYPES_OF_MENU_ITEM,
 } from '../../../src/common/constants/listOfFields';
-import { WAIVIO_META_FIELD_NAME } from '../../common/constants/waivio';
+import {WAIVIO_META_FIELD_NAME} from '../../common/constants/waivio';
 import OBJECT_TYPE from './const/objectTypes';
 
-export const getInitialUrl = (wobj, screenSize, { pathname, hash }) => {
+export const getInitialUrl = (wobj, screenSize, {pathname, hash}) => {
   let url = pathname + hash;
   const { type, menuItems, sortCustom } = wobj;
   switch (type && type.toLowerCase()) {
@@ -100,7 +88,14 @@ export const getFieldsWithMaxWeight = (wObj, usedLocale = 'en-US', defaultLocale
 
   // firstly, looking for fields upvoted by moderator
   let maxWeightedFields = mapValues(
-    groupBy(orderBy(wObj.fields.filter(f => f.upvotedByModerator), 'weight', 'desc'), 'name'),
+    groupBy(
+      orderBy(
+        wObj.fields.filter(f => f.upvotedByModerator),
+        'weight',
+        'desc',
+      ),
+      'name',
+    ),
     fieldsArr =>
       fieldsArr.find(f => f.locale === usedLocale || f.locale === defaultLocale) || fieldsArr[0],
   );

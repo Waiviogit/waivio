@@ -4,6 +4,7 @@ import secureRandom from 'secure-random';
 import diff_match_patch from 'diff-match-patch';
 import steemAPI from '../steemAPI';
 import formatter from '../helpers/steemitFormatter';
+import {GUEST_PREFIX} from '../../common/constants/waivio';
 
 const dmp = new diff_match_patch();
 /**
@@ -116,6 +117,11 @@ export function createPermlink(title, author, parent_author, parent_permlink) {
     if (s === '') {
       s = base58.encode(secureRandom.randomBuffer(4));
     }
+    if (author.startsWith(GUEST_PREFIX)) {
+      const prefix = `${base58.encode(secureRandom.randomBuffer(4))}-`;
+      permlink = prefix + s;
+      return Promise.resolve(checkPermLinkLength(permlink));
+    }
 
     return steemAPI
       .sendAsync('get_content', [author, s])
@@ -206,8 +212,12 @@ export const calculatePendingWithdrawalSP = (user, totalVestingShares, totalVest
 };
 
 export const calculateVotingPower = user => {
-  const secondsago = (new Date().getTime() - new Date(user.last_vote_time + 'Z').getTime()) / 1000;
-  return Math.min(10000, user.voting_power + (10000 * secondsago) / 432000) / 10000;
+  if (user.last_vote_time && user.voting_power) {
+    const secondsago =
+      (new Date().getTime() - new Date(user.last_vote_time + 'Z').getTime()) / 1000;
+    return Math.min(10000, user.voting_power + (10000 * secondsago) / 432000) / 10000;
+  }
+  return 0;
 };
 
 export const calculateEstAccountValue = (

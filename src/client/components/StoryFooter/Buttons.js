@@ -1,16 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import take from 'lodash/take';
-import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
-import { Link } from 'react-router-dom';
-import { Icon, Modal } from 'antd';
+import {FormattedMessage, FormattedNumber, injectIntl} from 'react-intl';
+import {Link} from 'react-router-dom';
+import {Icon, Modal} from 'antd';
 import classNames from 'classnames';
 import withAuthActions from '../../auth/withAuthActions';
-import { sortVotes } from '../../helpers/sortHelpers';
-import { getDownvotes, getUpvotes } from '../../helpers/voteHelpers';
+import {sortVotes} from '../../helpers/sortHelpers';
+import {getDownvotes, getUpvotes} from '../../helpers/voteHelpers';
 import Popover from '../Popover';
 import BTooltip from '../BTooltip';
-import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
+import PopoverMenu, {PopoverMenuItem} from '../PopoverMenu/PopoverMenu';
 import ReactionsModal from '../Reactions/ReactionsModal';
 import USDDisplay from '../Utils/USDDisplay';
 import './Buttons.less';
@@ -62,6 +62,8 @@ export default class Buttons extends React.Component {
       sliderVisible: false,
       reactionsModalVisible: false,
       loadingEdit: false,
+      upVotes: getUpvotes(this.props.post.active_votes),
+      downVotes: getDownvotes(this.props.post.active_votes),
     };
 
     this.handleLikeClick = this.handleLikeClick.bind(this);
@@ -86,6 +88,10 @@ export default class Buttons extends React.Component {
           this.state.shareModalVisible,
       });
     }
+    this.setState({
+      upVotes: getUpvotes(nextProps.post.active_votes),
+      downVotes: getDownvotes(nextProps.post.active_votes),
+    });
   }
 
   onFlagClick() {
@@ -164,23 +170,23 @@ export default class Buttons extends React.Component {
 
     if (postState.userFollowed && !pendingFollow) {
       followText = intl.formatMessage(
-        { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
-        { username: post.author },
+        {id: 'unfollow_username', defaultMessage: 'Unfollow {username}'},
+        {username: (post.guestInfo && post.guestInfo.userId) || post.author},
       );
     } else if (postState.userFollowed && pendingFollow) {
       followText = intl.formatMessage(
-        { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
-        { username: post.author },
+        {id: 'unfollow_username', defaultMessage: 'Unfollow {username}'},
+        {username: (post.guestInfo && post.guestInfo.userId) || post.author},
       );
     } else if (!postState.userFollowed && !pendingFollow) {
       followText = intl.formatMessage(
-        { id: 'follow_username', defaultMessage: 'Follow {username}' },
-        { username: post.author },
+        {id: 'follow_username', defaultMessage: 'Follow {username}'},
+        {username: (post.guestInfo && post.guestInfo.userId) || post.author},
       );
     } else if (!postState.userFollowed && pendingFollow) {
       followText = intl.formatMessage(
-        { id: 'follow_username', defaultMessage: 'Follow {username}' },
-        { username: post.author },
+        {id: 'follow_username', defaultMessage: 'Follow {username}'},
+        {username: (post.guestInfo && post.guestInfo.userId) || post.author},
       );
     }
 
@@ -268,10 +274,8 @@ export default class Buttons extends React.Component {
 
     const isAppend = !!this.props.post.append_field_name;
 
-    const upVotes = getUpvotes(post.active_votes).sort(sortVotes);
-    const downVotes = getDownvotes(post.active_votes)
-      .sort(sortVotes)
-      .reverse();
+    const upVotes = this.state.upVotes.sort(sortVotes);
+    const downVotes = this.state.downVotes.sort(sortVotes).reverse();
 
     const totalPayout =
       parseFloat(post.pending_payout_value) +

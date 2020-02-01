@@ -1,20 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import { injectIntl } from 'react-intl';
-import { Switch } from 'antd';
+import {isEmpty} from 'lodash';
+import {connect} from 'react-redux';
+import {withRouter} from 'react-router-dom';
+import {injectIntl} from 'react-intl';
+import {Switch} from 'antd';
 import Feed from '../feed/Feed';
-import { getIsAuthenticated, getAuthenticatedUser, getFeed } from '../reducers';
+import {getAuthenticatedUser, getFeed, getIsAuthenticated} from '../reducers';
 import {
-  getFeedLoadingFromState,
   getFeedFetchedFromState,
-  getFeedHasMoreFromState,
   getFeedFromState,
+  getFeedHasMoreFromState,
+  getFeedLoadingFromState,
 } from '../helpers/stateHelpers';
-import { getUserProfileBlogPosts, getUserProfileBlogPostsWithForecasts } from '../feed/feedActions';
-import { showPostModal } from '../app/appActions';
+import {getUserProfileBlogPosts, getUserProfileBlogPostsWithForecasts} from '../feed/feedActions';
+import {showPostModal} from '../app/appActions';
 import EmptyUserProfile from '../statics/EmptyUserProfile';
 import EmptyUserOwnProfile from '../statics/EmptyUserOwnProfile';
 import PostModal from '../post/PostModalContainer';
@@ -86,10 +86,12 @@ class UserProfile extends React.Component {
     const fetched = getFeedFetchedFromState('blog', username, feed);
     const hasMore = getFeedHasMoreFromState('blog', username, feed);
     const loadMoreContentAction = () => {
+      let skip = 10;
       if (this.state.withForecastOnly) {
         this.props.getUserProfileBlogPostsWithForecasts(username, { limit, initialLoad: false });
       } else {
-        this.props.getUserProfileBlogPosts(username, { limit, initialLoad: false });
+        this.props.getUserProfileBlogPosts(username, {limit, initialLoad: false, skip});
+        skip += limit;
       }
     };
 
@@ -117,8 +119,8 @@ class UserProfile extends React.Component {
             loadMoreContent={loadMoreContentAction}
             showPostModal={this.props.showPostModal}
           />
-          {_.isEmpty(content) && fetched && isOwnProfile && <EmptyUserOwnProfile />}
-          {_.isEmpty(content) && fetched && !isOwnProfile && <EmptyUserProfile />}
+          {isEmpty(content) && fetched && isOwnProfile && <EmptyUserOwnProfile/>}
+          {isEmpty(content) && fetched && !isOwnProfile && <EmptyUserProfile/>}
         </div>
         {<PostModal />}
       </div>

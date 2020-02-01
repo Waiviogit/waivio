@@ -1,4 +1,4 @@
-import { hasActionType, hasField } from '../object/wObjectHelper';
+import {hasActionType, hasField} from '../object/wObjectHelper';
 
 export const getFeedFromState = (sortBy, category = 'all', state) => {
   switch (sortBy) {
@@ -162,7 +162,17 @@ export const createAsyncActionType = type => ({
 });
 
 export const getUserDetailsKey = username => `user-${username}`;
-export const getPostKey = post => `${post.author}/${post.permlink}`;
+
+export const getPostKey = post => {
+  if (post.authorGuest) {
+    return `${post.authorGuest}/${post.permlink}`;
+  }
+  if (post.guestInfo) {
+    return `${post.guestInfo.userId}/${post.permlink}`;
+  }
+  return `${post.author}/${post.permlink}`;
+};
+
 export const getParentKey = post => `${post.parent_author}/${post.parent_permlink}`;
 
 export const makeCancelable = promise => {
@@ -170,8 +180,8 @@ export const makeCancelable = promise => {
 
   const wrappedPromise = new Promise((resolve, reject) => {
     promise.then(
-      val => (hasCanceled ? reject({ isCanceled: true }) : resolve(val)),
-      error => (hasCanceled ? reject({ isCanceled: true }) : reject(error)),
+      val => (hasCanceled ? reject({isCanceled: true}) : resolve(val)),
+      error => (hasCanceled ? reject({isCanceled: true}) : reject(error)),
     );
   });
 

@@ -1,29 +1,31 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
-import _ from 'lodash';
-import { connect } from 'react-redux';
-import { injectIntl, FormattedMessage } from 'react-intl';
-import { Form, Input, Avatar, Button, Modal } from 'antd';
+import {attempt, isEmpty, isError, throttle} from 'lodash';
+import {connect} from 'react-redux';
+import {FormattedMessage, injectIntl} from 'react-intl';
+import {Avatar, Button, Form, Input, Modal} from 'antd';
 import SteemConnect from '../steemConnectAPI';
-import { getIsReloading, getAuthenticatedUser } from '../reducers';
+import {updateProfile} from '../auth/authActions';
+import {getAuthenticatedUser, getIsReloading, isGuestUser} from '../reducers';
 import socialProfiles from '../helpers/socialProfiles';
 import withEditor from '../components/Editor/withEditor';
 import EditorInput from '../components/Editor/EditorInput';
-import { remarkable } from '../components/Story/Body';
+import {remarkable} from '../components/Story/Body';
 import BodyContainer from '../containers/Story/BodyContainer';
 import Action from '../components/Button/Action';
 import Affix from '../components/Utils/Affix';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import requiresLogin from '../auth/requiresLogin';
 import ImageSetter from '../components/ImageSetter/ImageSetter';
+import {getGuestAvatarUrl} from '../../waivioApi/ApiClient';
 import './Settings.less';
 
 const FormItem = Form.Item;
 
 function mapPropsToFields(props) {
-  let metadata = _.attempt(JSON.parse, props.user.json_metadata);
-  if (_.isError(metadata)) metadata = {};
+  let metadata = attempt(JSON.parse, props.user.json_metadata);
+  if (isError(metadata)) metadata = {};
 
   const profile = metadata.profile || {};
 
@@ -40,10 +42,16 @@ function mapPropsToFields(props) {
 
 @requiresLogin
 @injectIntl
-@connect(state => ({
-  user: getAuthenticatedUser(state),
-  reloading: getIsReloading(state),
-}))
+@connect(
+  state => ({
+    user: getAuthenticatedUser(state),
+    reloading: getIsReloading(state),
+    isGuest: isGuestUser(state),
+  }),
+  {
+    updateProfile,
+  },
+)
 @Form.create({
   mapPropsToFields,
 })
@@ -55,12 +63,21 @@ export default class ProfileSettings extends React.Component {
     user: PropTypes.shape(),
     onImageUpload: PropTypes.func,
     onImageInvalid: PropTypes.func,
+    isGuest: PropTypes.bool,
+    updateProfile: PropTypes.func,
+    userName: PropTypes.string,
   };
 
   static defaultProps = {
-    onImageUpload: () => {},
-    onImageInvalid: () => {},
-    user: {},
+    onImageUpload: () => {
+    },
+    onImageInvalid: () => {
+    },
+    userName: '',
+    user: '',
+    isGuest: false,
+    updateProfile: () => {
+    },
   };
 
   constructor(props) {
@@ -81,8 +98,8 @@ export default class ProfileSettings extends React.Component {
   }
 
   componentDidMount() {
-    const { user } = this.props;
-    const profileData = _.attempt(JSON.parse, user.json_metadata);
+    const {user} = this.props;
+    const profileData = attempt(JSON.parse, user.json_metadata);
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
       profilePicture: profileData.profile.profile_image,
@@ -128,8 +145,8 @@ export default class ProfileSettings extends React.Component {
 
   setSettingsFields = () => {
     // eslint-disable-next-line no-shadow
-    const { form } = this.props;
-    const { avatarImage, coverImage } = this.state;
+    const {form, isGuest, userName, updateProfile} = this.props;
+    const {avatarImage, coverImage} = this.state;
     const isChangedAvatar = !!avatarImage.length;
     const isChangedCover = !!coverImage.length;
 
@@ -151,37 +168,35 @@ export default class ProfileSettings extends React.Component {
             }),
             {},
           );
-        const win = window.open(SteemConnect.sign('profile-update', cleanValues), '_blank');
-        win.focus();
-        // TODO: to do when guest is ready
-        // if (isGuest) {
-        //   updateProfile(userName, cleanValues);
-        // } else {
-        //   const win = window.open(SteemConnect.sign('profile-update', cleanValues), '_blank');
-        //   win.focus();
-        // }
+        if (isGuest) {
+          updateProfile(userName, cleanValues);
+        } else {
+          const win = window.open(SteemConnect.sign('profile-update', cleanValues), '_blank');
+          win.focus();
+        }
       }
     });
   };
 
   handleSubmit = e => {
     e.preventDefault();
+    // eslint-disable-next-line no-shadow
+    const {isGuest, userName, intl} = this.props;
+    const {profilePicture, avatarImage} = this.state;
 
-    // TODO: to do when guest is ready
-    // if (isGuest && !_.isEmpty(avatarImage)) {
-    //   getGuestAvatarUrl(userName, profilePicture, intl)
-    //     .then(data => {
-    //       this.props.form.setFieldsValue({
-    //         profile_image: data.image,
-    //       });
-    //     })
-    //     .then(() => this.setSettingsFields());
-    // } else this.setSettingsFields();
-    this.setSettingsFields();
+    if (isGuest && !isEmpty(avatarImage)) {
+      getGuestAvatarUrl(userName, profilePicture, intl)
+        .then(data => {
+          this.props.form.setFieldsValue({
+            profile_image: data.image,
+          });
+        })
+        .then(() => this.setSettingsFields());
+    } else this.setSettingsFields();
   };
 
   handleSignatureChange = body =>
-    _.throttle(this.renderBody, 200, { leading: false, trailing: true })(body);
+    throttle(this.renderBody, 200, {leading: false, trailing: true})(body);
 
   renderBody = body => {
     this.setState({
@@ -429,6 +444,7 @@ export default class ProfileSettings extends React.Component {
             <ImageSetter
               onImageLoaded={isAvatar ? this.getAvatar : this.getCover}
               onLoadingImage={this.onLoadingImage}
+              isRequired
             />
           )}
         </Modal>

@@ -78,3 +78,5 @@ export const formatDate = date => {
   const year = dt.getFullYear();
   return `${day}-${month}-${year}`;
 };
+
+export const convertDigits = number => parseFloat((Math.round(number * 1000) / 1000).toFixed(3));

@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { take, find } from 'lodash';
-import { injectIntl, FormattedNumber, FormattedMessage } from 'react-intl';
-import { Icon } from 'antd';
-import { getUpvotes, getDownvotes } from '../../helpers/voteHelpers';
-import { sortVotes } from '../../helpers/sortHelpers';
-import { calculatePayout } from '../../vendor/steemitHelpers';
+import {find, take} from 'lodash';
+import {FormattedMessage, FormattedNumber, injectIntl} from 'react-intl';
+import {Icon} from 'antd';
+import {getDownvotes, getUpvotes} from '../../helpers/voteHelpers';
+import {sortVotes} from '../../helpers/sortHelpers';
+import {calculatePayout} from '../../vendor/steemitHelpers';
 import BTooltip from '../BTooltip';
 import ReactionsModal from '../Reactions/ReactionsModal';
 import withAuthActions from '../../auth/withAuthActions';
@@ -167,15 +167,17 @@ class Buttons extends React.Component {
     return (
       <div>
         <BTooltip title={likeTooltip}>
-          <a
-            role="presentation"
-            className={classNames('CommentFooter__link', {
-              'CommentFooter__link--active': userUpVoted,
-            })}
-            onClick={this.handleLikeClick}
-          >
-            {pendingLike ? <Icon type="loading" /> : <i className="iconfont icon-praise_fill" />}
-          </a>
+          {!this.props.comment.isFakeComment && (
+            <a
+              role="presentation"
+              className={classNames('CommentFooter__link', {
+                'CommentFooter__link--active': userUpVoted,
+              })}
+              onClick={this.handleLikeClick}
+            >
+              {pendingLike ? <Icon type="loading"/> : <i className="iconfont icon-praise_fill"/>}
+            </a>
+          )}
         </BTooltip>
         {upVotes.length > 0 && (
           <span
@@ -196,20 +198,22 @@ class Buttons extends React.Component {
             </BTooltip>
           </span>
         )}
-        <BTooltip title={intl.formatMessage({ id: 'dislike', defaultMessage: 'Dislike' })}>
-          <a
-            role="presentation"
-            className={classNames('CommentFooter__link', {
-              'CommentFooter__link--active': userDownVoted,
-            })}
-            onClick={this.handleDislikeClick}
-          >
-            {pendingDisLike ? (
-              <Icon type="loading" />
-            ) : (
-              <i className="iconfont icon-praise_fill Comment__icon_dislike" />
-            )}
-          </a>
+        <BTooltip title={intl.formatMessage({id: 'dislike', defaultMessage: 'Dislike'})}>
+          {!this.props.comment.isFakeComment && (
+            <a
+              role="presentation"
+              className={classNames('CommentFooter__link', {
+                'CommentFooter__link--active': userDownVoted,
+              })}
+              onClick={this.handleDislikeClick}
+            >
+              {pendingDisLike ? (
+                <Icon type="loading"/>
+              ) : (
+                <i className="iconfont icon-praise_fill Comment__icon_dislike"/>
+              )}
+            </a>
+          )}
         </BTooltip>
         {downVotes.length > 0 && (
           <span
@@ -232,18 +236,18 @@ class Buttons extends React.Component {
         )}
         {payoutValue >= 0.005 && (
           <React.Fragment>
-            <span className="CommentFooter__bullet" />
+            <span className="CommentFooter__bullet"/>
             <span className="CommentFooter__payout">
-              <BTooltip title={<PayoutDetail post={comment} />}>
-                <USDDisplay value={payoutValue} />
-                <span />
+              <BTooltip title={<PayoutDetail post={comment}/>}>
+                <USDDisplay value={payoutValue}/>
+                <span/>
               </BTooltip>
             </span>
           </React.Fragment>
         )}
-        {user.name && (
+        {!this.props.comment.isFakeComment && user.name && (
           <span>
-            <span className="CommentFooter__bullet" />
+            <span className="CommentFooter__bullet"/>
             <a
               role="presentation"
               className={classNames('CommentFooter__link', {
@@ -251,7 +255,7 @@ class Buttons extends React.Component {
               })}
               onClick={this.props.onReplyClick}
             >
-              <FormattedMessage id="reply" defaultMessage="Reply" />
+              <FormattedMessage id="reply" defaultMessage="Reply"/>
             </a>
           </span>
         )}

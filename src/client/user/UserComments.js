@@ -1,17 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import {connect} from 'react-redux';
+import {FormattedMessage} from 'react-intl';
 import Feed from '../feed/Feed';
 import PostModal from '../post/PostModalContainer';
-import { getFeed } from '../reducers';
-import {
-  getFeedFromState,
-  getFeedLoadingFromState,
-  getFeedHasMoreFromState,
-} from '../helpers/stateHelpers';
-import { showPostModal } from '../app/appActions';
-import { getUserComments, getMoreUserComments } from '../feed/feedActions';
+import {getFeed} from '../reducers';
+import {getFeedFromState, getFeedHasMoreFromState, getFeedLoadingFromState,} from '../helpers/stateHelpers';
+import {showPostModal} from '../app/appActions';
+import {getMoreUserComments, getUserComments} from '../feed/feedActions';
 
 @connect(
   state => ({
@@ -35,24 +31,34 @@ export default class UserProfilePosts extends React.Component {
 
   static defaultProps = {
     limit: 10,
-    getUserComments: () => {},
-    getMoreUserComments: () => {},
+    getUserComments: () => {
+    },
+    getMoreUserComments: () => {
+    },
   };
+
+  // eslint-disable-next-line react/sort-comp
+  static skip = 0;
 
   componentDidMount() {
     this.props.getUserComments({
       username: this.props.match.params.name,
     });
+
+    UserProfilePosts.skip += this.props.limit;
   }
 
   render() {
-    const { feed, match, limit } = this.props;
+    const {feed, match, limit} = this.props;
     const username = match.params.name;
 
     const content = getFeedFromState('comments', username, feed);
     const isFetching = getFeedLoadingFromState('comments', username, feed);
     const hasMore = getFeedHasMoreFromState('comments', username, feed);
-    const loadMoreContentAction = () => this.props.getMoreUserComments({ username, limit });
+    const loadMoreContentAction = () => {
+      this.props.getMoreUserComments({username, skip: UserProfilePosts.skip, limit});
+      UserProfilePosts.skip += this.props.limit;
+    };
 
     return (
       <React.Fragment>

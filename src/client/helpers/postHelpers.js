@@ -1,20 +1,20 @@
 import uuidv4 from 'uuid/v4';
-import _, { fromPairs, get, isEmpty } from 'lodash';
-import { getHtml } from '../components/Story/Body';
-import { extractImageTags, extractLinks } from './parser';
-import { categoryRegex } from './regexHelpers';
-import { jsonParse } from './formatter';
+import _, {fromPairs, get, isEmpty} from 'lodash';
+import {getHtml} from '../components/Story/Body';
+import {extractImageTags, extractLinks} from './parser';
+import {botNameRegex, categoryRegex} from './regexHelpers';
+import {jsonParse} from './formatter';
 import DMCA from '../../common/constants/dmca.json';
 import whiteListedApps from './apps';
-import { rewardsValues } from '../../common/constants/rewards';
+import {rewardsValues} from '../../common/constants/rewards';
 import {
   APP_NAME,
   INVESTARENA_META_FIELD_NAME,
   WAIVIO_META_FIELD_NAME,
   WAIVIO_PARENT_PERMLINK,
 } from '../../common/constants/waivio';
-import { baseUrl } from '../../waivioApi/routes';
-import { invArena } from '../../investarena/configApi/apiResources';
+import {baseUrl} from '../../waivioApi/routes';
+import {invArena} from '../../investarena/configApi/apiResources';
 
 const appVersion = require('../../../package.json').version;
 
@@ -35,6 +35,9 @@ export const isPostTaggedNSFW = post => {
 export function dropCategory(url) {
   return url ? url.replace(categoryRegex, '') : null;
 }
+
+export const replaceBotWithGuestName = (url, guestInfo) =>
+  url && guestInfo && guestInfo.userId ? url.replace(botNameRegex, guestInfo.userId) : url;
 
 /**
  * Gets app data from a post.

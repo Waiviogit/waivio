@@ -1,27 +1,22 @@
-import { Breadcrumb } from 'antd';
-import { Link, withRouter } from 'react-router-dom';
+import {Breadcrumb} from 'antd';
+import {Link, withRouter} from 'react-router-dom';
 import React from 'react';
-import { connect } from 'react-redux';
-import { has, isEmpty, isEqual, map, forEach, uniq } from 'lodash';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import {connect} from 'react-redux';
+import {forEach, has, isEmpty, isEqual, map, uniq} from 'lodash';
+import {FormattedMessage, injectIntl} from 'react-intl';
 import PropTypes from 'prop-types';
-import {
-  getFieldWithMaxWeight,
-  getListItems,
-  getListItemLink,
-  sortListItemsBy,
-} from '../wObjectHelper';
-import { getClientWObj, getServerWObj } from '../../adapters';
-import { objectFields } from '../../../common/constants/listOfFields';
+import {getFieldWithMaxWeight, getListItemLink, getListItems, sortListItemsBy,} from '../wObjectHelper';
+import {getClientWObj, getServerWObj} from '../../adapters';
+import {objectFields} from '../../../common/constants/listOfFields';
 import OBJ_TYPE from '../const/objectTypes';
 import AddItemModal from './AddItemModal/AddItemModal';
 import SortSelector from '../../components/SortSelector/SortSelector';
-import { getObject, getObjectsByIds } from '../../../../src/waivioApi/ApiClient';
+import {getObject, getObjectsByIds} from '../../../../src/waivioApi/ApiClient';
 import * as wobjectActions from '../../../client/object/wobjectsActions';
-import { getSuitableLanguage } from '../../reducers';
+import {getSuitableLanguage} from '../../reducers';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CategoryItemView from './CategoryItemView/CategoryItemView';
-import { hasType } from '../../helpers/wObjectHelper';
+import {hasType} from '../../helpers/wObjectHelper';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import Loading from '../../components/Icon/Loading';
 import './CatalogWrap.less';
@@ -145,7 +140,10 @@ class CatalogWrap extends React.Component {
         getObjectsByIds({ authorPermlinks: permlinks, locale })
           .then(res =>
             permlinks.map(permlink =>
-              getClientWObj(res.wobjects.find(wobj => wobj.author_permlink === permlink), locale),
+              getClientWObj(
+                res.wobjects.find(wobj => wobj.author_permlink === permlink),
+                locale,
+              ),
             ),
           )
           .then(res => {

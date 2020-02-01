@@ -4,38 +4,38 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import readingTime from 'reading-time';
 import {
-  injectIntl,
-  FormattedMessage,
-  FormattedRelative,
   FormattedDate,
-  FormattedTime,
+  FormattedMessage,
   FormattedNumber,
+  FormattedRelative,
+  FormattedTime,
+  injectIntl,
 } from 'react-intl';
-import { Link } from 'react-router-dom';
-import { Collapse, Icon } from 'antd';
+import {Link} from 'react-router-dom';
+import {Collapse, Icon} from 'antd';
 import Lightbox from 'react-image-lightbox';
-import { getFromMetadata, extractImageTags } from '../../helpers/parser';
-import { isPostDeleted, dropCategory } from '../../helpers/postHelpers';
+import {extractImageTags, getFromMetadata} from '../../helpers/parser';
+import {dropCategory, isPostDeleted, replaceBotWithGuestName} from '../../helpers/postHelpers';
 import withAuthActions from '../../auth/withAuthActions';
-import { getProxyImageURL } from '../../helpers/image';
+import {getProxyImageURL} from '../../helpers/image';
 import BTooltip from '../BTooltip';
-import { getHtml } from './Body';
+import {getHtml} from './Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import StoryDeleted from './StoryDeleted';
 import StoryFooter from '../StoryFooter/StoryFooter';
 import Avatar from '../Avatar';
-import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
+import PopoverMenu, {PopoverMenuItem} from '../PopoverMenu/PopoverMenu';
 import PostFeedEmbed from './PostFeedEmbed';
 import PostedFrom from './PostedFrom';
 import ObjectCardView from '../../objectCard/ObjectCardView';
-import { getClientWObj } from '../../adapters';
+import {getClientWObj} from '../../adapters';
 import PostForecast from './Story';
 import PostSellBuy from '../../../investarena/components/PostSellBuy';
-import { getForecastData } from '../../helpers/forecastHelper';
+import {getForecastData} from '../../helpers/forecastHelper';
 import PostQuotation from '../../../investarena/components/PostQuotation';
 import PostChart from '../../../investarena/components/PostChart';
 import WeightTag from '../WeightTag';
-import { UsedLocaleContext } from '../../Wrapper';
+import {UsedLocaleContext} from '../../Wrapper';
 import PopoverContainer from '../Popover';
 import './StoryFull.less';
 
@@ -111,8 +111,10 @@ class StoryFull extends React.Component {
   }
 
   componentWillUnmount() {
-    const { post } = this.props;
-    const hideWhiteBG = document && document.location.pathname !== dropCategory(post.url);
+    const {post} = this.props;
+    const hideWhiteBG =
+      document &&
+      document.location.pathname !== replaceBotWithGuestName(dropCategory(post.url), post.userInfo);
     if (hideWhiteBG) {
       document.body.classList.remove('white-bg');
     }

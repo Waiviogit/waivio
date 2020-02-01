@@ -1,34 +1,32 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import _ from 'lodash';
+import {withRouter} from 'react-router-dom';
+import {connect} from 'react-redux';
+import {get, isEmpty, isNull} from 'lodash';
 import UserWalletSummary from '../wallet/UserWalletSummary';
-import { SBD, STEEM } from '../../common/constants/cryptos';
-import { getUserDetailsKey } from '../helpers/stateHelpers';
+import {GUEST_PREFIX} from '../../common/constants/waivio';
+import {SBD, STEEM} from '../../common/constants/cryptos';
+import {getUserDetailsKey} from '../helpers/stateHelpers';
 import UserWalletTransactions from '../wallet/UserWalletTransactions';
 import Loading from '../components/Icon/Loading';
 import {
-  getUser,
   getAuthenticatedUser,
   getAuthenticatedUserName,
-  getTotalVestingShares,
-  getTotalVestingFundSteem,
-  getUsersTransactions,
-  getUsersAccountHistory,
-  getUsersAccountHistoryLoading,
+  getCryptosPriceHistory,
+  getGuestUserBalance,
   getLoadingGlobalProperties,
   getLoadingMoreUsersAccountHistory,
-  getUserHasMoreAccountHistory,
-  getCryptosPriceHistory,
   getScreenSize,
+  getTotalVestingFundSteem,
+  getTotalVestingShares,
+  getUser,
+  getUserHasMoreAccountHistory,
+  getUsersAccountHistory,
+  getUsersAccountHistoryLoading,
+  getUsersTransactions,
 } from '../reducers';
-import {
-  getGlobalProperties,
-  getUserAccountHistory,
-  getMoreUserAccountHistory,
-} from '../wallet/walletActions';
-import { getAccount } from './usersActions';
+import {getGlobalProperties, getMoreUserAccountHistory, getUserAccountHistory,} from '../wallet/walletActions';
+import {getAccount} from './usersActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
 
 @withRouter
@@ -54,6 +52,7 @@ import WalletSidebar from '../components/Sidebar/WalletSidebar';
         : getUser(state, ownProps.match.params.name).name,
     ),
     cryptosPriceHistory: getCryptosPriceHistory(state),
+    guestBalance: getGuestUserBalance(state),
   }),
   {
     getGlobalProperties,
@@ -82,11 +81,13 @@ class Wallet extends Component {
     isCurrentUser: PropTypes.bool,
     authenticatedUserName: PropTypes.string,
     screenSize: PropTypes.string.isRequired,
+    guestBalance: PropTypes.number,
   };
 
   static defaultProps = {
     isCurrentUser: false,
     authenticatedUserName: '',
+    guestBalance: null,
   };
 
   componentDidMount() {
@@ -102,15 +103,15 @@ class Wallet extends Component {
       ? authenticatedUserName
       : this.props.location.pathname.match(/@(.*)(.*?)\//)[1];
 
-    if (_.isEmpty(totalVestingFundSteem) || _.isEmpty(totalVestingShares)) {
+    if (isEmpty(totalVestingFundSteem) || isEmpty(totalVestingShares)) {
       this.props.getGlobalProperties();
     }
 
-    if (_.isEmpty(usersTransactions[getUserDetailsKey(username)])) {
+    if (isEmpty(usersTransactions[getUserDetailsKey(username)])) {
       this.props.getUserAccountHistory(username);
     }
 
-    if (_.isEmpty(user)) {
+    if (isEmpty(user)) {
       this.props.getAccount(username);
     }
   }
@@ -128,29 +129,49 @@ class Wallet extends Component {
       usersAccountHistory,
       cryptosPriceHistory,
       screenSize,
+      guestBalance,
     } = this.props;
 
     const userKey = getUserDetailsKey(user.name);
-    const transactions = _.get(usersTransactions, userKey, []);
-    const actions = _.get(usersAccountHistory, userKey, []);
-    const currentSteemRate = _.get(
+    const transactions = get(usersTransactions, userKey, []);
+    const actions = get(usersAccountHistory, userKey, []);
+    const currentSteemRate = get(
       cryptosPriceHistory,
       `${STEEM.symbol}.priceDetails.currentUSDPrice`,
       null,
     );
-    const currentSBDRate = _.get(
+    const currentSBDRate = get(
       cryptosPriceHistory,
       `${SBD.symbol}.priceDetails.currentUSDPrice`,
       null,
     );
-    const steemRateLoading = _.isNull(currentSteemRate) || _.isNull(currentSBDRate);
+    const steemRateLoading = isNull(currentSteemRate) || isNull(currentSBDRate);
 
     const isMobile = screenSize === 'xsmall' || screenSize === 'small';
+
+    const isGuest = user.name.startsWith(GUEST_PREFIX);
+
+    const walletTransactions =
+      transactions.length === 0 && usersAccountHistoryLoading ? (
+        <Loading style={{marginTop: '20px'}}/>
+      ) : (
+        <UserWalletTransactions
+          transactions={transactions}
+          actions={actions}
+          currentUsername={user.name}
+          totalVestingShares={totalVestingShares}
+          totalVestingFundSteem={totalVestingFundSteem}
+          getMoreUserAccountHistory={this.props.getMoreUserAccountHistory}
+          loadingMoreUsersAccountHistory={loadingMoreUsersAccountHistory}
+          userHasMoreActions={userHasMoreActions}
+        />
+      );
 
     return (
       <div>
         <UserWalletSummary
           user={user}
+          balance={isGuest ? guestBalance : user.balance}
           loading={user.fetching}
           totalVestingShares={totalVestingShares}
           totalVestingFundSteem={totalVestingFundSteem}
@@ -158,22 +179,10 @@ class Wallet extends Component {
           steemRate={currentSteemRate}
           sbdRate={currentSBDRate}
           steemRateLoading={steemRateLoading}
+          isGuest={isGuest}
         />
-        {isMobile && <WalletSidebar />}
-        {transactions.length === 0 && usersAccountHistoryLoading ? (
-          <Loading style={{ marginTop: '20px' }} />
-        ) : (
-          <UserWalletTransactions
-            transactions={transactions}
-            actions={actions}
-            currentUsername={user.name}
-            totalVestingShares={totalVestingShares}
-            totalVestingFundSteem={totalVestingFundSteem}
-            getMoreUserAccountHistory={this.props.getMoreUserAccountHistory}
-            loadingMoreUsersAccountHistory={loadingMoreUsersAccountHistory}
-            userHasMoreActions={userHasMoreActions}
-          />
-        )}
+        {isMobile && <WalletSidebar/>}
+        {walletTransactions}
       </div>
     );
   }

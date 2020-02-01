@@ -1,27 +1,27 @@
 import _ from 'lodash';
-import { connect } from 'react-redux';
-import { push } from 'connected-react-router';
-import { bindActionCreators } from 'redux';
+import {connect} from 'react-redux';
+import {push} from 'connected-react-router';
+import {bindActionCreators} from 'redux';
 import {
   getAuthenticatedUser,
-  getPendingLikes,
   getFollowingList,
-  getPendingFollows,
-  getVotingPower,
-  getRewardFund,
-  getVotePercent,
   getFollowingObjectsList,
   getPendingFollowingObjects,
+  getPendingFollows,
+  getPendingLikes,
+  getRewardFund,
+  getVotePercent,
+  getVotingPower,
 } from '../../reducers';
-import { voteCommentFromRewards as votePost } from '../../post/postActions';
-import { followUser, unfollowUser } from '../../user/userActions';
-import { followObject, unfollowObject } from '../../object/wobjActions';
+import {voteCommentFromRewards as votePost} from '../../post/postActions';
+import {followUser, unfollowUser} from '../../user/userActions';
+import {followObject, unfollowObject} from '../../object/wobjActions';
 import CampaignFooter from './CampaignFooter';
 
-const mapStateToProps = (state, { post, requiredObjectPermlink }) => {
+const mapStateToProps = (state, {post, requiredObjectPermlink}) => {
   const user = getAuthenticatedUser(state);
 
-  const userVote = _.find(post.active_votes, { voter: user.name }) || {};
+  const userVote = _.find(post.active_votes, {voter: user.name}) || {};
   const postState = {
     isLiked: userVote.percent > 0,
     userFollowed: getFollowingList(state).includes(post.author),
@@ -50,18 +50,16 @@ const mapStateToProps = (state, { post, requiredObjectPermlink }) => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  dispatch =>
-    bindActionCreators(
-      {
-        votePost,
-        followUser,
-        unfollowUser,
-        followObject,
-        unfollowObject,
-        push,
-      },
-      dispatch,
-    ),
+export default connect(mapStateToProps, dispatch =>
+  bindActionCreators(
+    {
+      votePost,
+      followUser,
+      unfollowUser,
+      followObject,
+      unfollowObject,
+      push,
+    },
+    dispatch,
+  ),
 )(CampaignFooter);

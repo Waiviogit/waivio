@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { Icon, Input, Form, Modal } from 'antd';
+import {FormattedMessage, injectIntl} from 'react-intl';
+import {Form, Icon, Input, Modal} from 'antd';
 import Dropzone from 'react-dropzone';
-import { HotKeys } from 'react-hotkeys';
-import { MAXIMUM_UPLOAD_SIZE, isValidImage } from '../../helpers/image';
+import {HotKeys} from 'react-hotkeys';
+import {isValidImage, MAXIMUM_UPLOAD_SIZE} from '../../helpers/image';
 import EditorToolbar from './EditorToolbar';
 import ImageSetter from '../ImageSetter/ImageSetter';
 import './EditorInput.less';
@@ -341,7 +341,11 @@ class EditorInput extends React.Component {
           onOk={this.handleOnOkModal}
         >
           {showModal && (
-            <ImageSetter onImageLoaded={this.getImages} onLoadingImage={this.onLoadingImage} />
+            <ImageSetter
+              onImageLoaded={this.getImages}
+              onLoadingImage={this.onLoadingImage}
+              isRequired
+            />
           )}
         </Modal>
         <div className="EditorInput__dropzone-base">

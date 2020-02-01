@@ -22,6 +22,7 @@
     justify-content: flex-end;
     margin: 0 auto;
     max-width: @container-width;
+    pointer-events: none;
     @media @large {
       padding: 0;
     }
@@ -34,6 +35,7 @@
   &_button {
     position: static !important;
     float: right;
+    pointer-events: all;
 
     i {
       color: @primary-color !important;

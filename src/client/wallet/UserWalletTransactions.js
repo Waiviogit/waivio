@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import {last} from 'lodash';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
-import { defaultAccountLimit } from '../helpers/apiHelpers';
+import {defaultAccountLimit} from '../helpers/apiHelpers';
 import Loading from '../components/Icon/Loading';
 import WalletTransaction from './WalletTransaction';
 import './UserWalletTransactions.less';
@@ -26,8 +26,8 @@ class UserWalletTransactions extends React.Component {
   };
 
   handleLoadMore = () => {
-    const { currentUsername, actions } = this.props;
-    const lastAction = _.last(actions);
+    const {currentUsername, actions} = this.props;
+    const lastAction = last(actions);
     const lastActionCount = lastAction ? lastAction.actionCount : -1;
     let limit = lastActionCount < defaultAccountLimit ? lastActionCount : defaultAccountLimit;
 

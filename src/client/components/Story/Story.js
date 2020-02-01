@@ -1,23 +1,18 @@
-import _ from 'lodash';
+import {filter, get, isEmpty, isEqual, isNil, map, maxBy, toLower} from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  injectIntl,
-  FormattedMessage,
-  FormattedRelative,
-  FormattedDate,
-  FormattedTime,
-} from 'react-intl';
-import { Link, withRouter } from 'react-router-dom';
-import { Tag } from 'antd';
+import {FormattedDate, FormattedMessage, FormattedRelative, FormattedTime, injectIntl,} from 'react-intl';
+import {Link, withRouter} from 'react-router-dom';
+import {Tag} from 'antd';
 import VisibilitySensor from 'react-visibility-sensor';
 import formatter from '../../helpers/steemitFormatter';
-import { getForecastData } from '../../helpers/forecastHelper';
+import {getForecastData} from '../../helpers/forecastHelper';
 import {
-  isPostDeleted,
-  isPostTaggedNSFW,
   dropCategory,
   isBannedPost,
+  isPostDeleted,
+  isPostTaggedNSFW,
+  replaceBotWithGuestName,
 } from '../../helpers/postHelpers';
 import withAuthActions from '../../auth/withAuthActions';
 import BTooltip from '../BTooltip';
@@ -34,7 +29,7 @@ import PostForecast from '../../../investarena/components/PostForecast';
 import ObjectAvatar from '../ObjectAvatar';
 import PostedFrom from './PostedFrom';
 import WeightTag from '../WeightTag';
-import { calculateApprovePercent } from '../../helpers/wObjectHelper';
+import {calculateApprovePercent} from '../../helpers/wObjectHelper';
 import './Story.less';
 
 @injectIntl
@@ -67,10 +62,12 @@ class Story extends React.Component {
     followUser: PropTypes.func,
     unfollowUser: PropTypes.func,
     push: PropTypes.func,
+    pendingFlag: PropTypes.func,
   };
 
   static defaultProps = {
     pendingLike: false,
+    pendingFlag: false,
     pendingFollow: false,
     pendingBookmark: false,
     saving: false,
@@ -118,8 +115,7 @@ class Story extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     return (
-      nextState.isVisible &&
-      (!_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state))
+      nextState.isVisible && (!isEqual(nextProps, this.props) || !isEqual(nextState, this.state))
     );
   }
 
@@ -174,8 +170,8 @@ class Story extends React.Component {
     if (wobj.objectName) {
       name = wobj.objectName;
     } else {
-      const nameFields = _.filter(wobj.fields, o => o.name === 'name');
-      const nameField = _.maxBy(nameFields, 'weight') || {
+      const nameFields = filter(wobj.fields, o => o.name === 'name');
+      const nameField = maxBy(nameFields, 'weight') || {
         body: wobj.default_name,
       };
       if (nameField) name = nameField.body;
@@ -196,7 +192,7 @@ class Story extends React.Component {
   getWobjects = wobjects => {
     let i = 0;
     let objectFromCurrentPage = null;
-    const returnData = _.map(wobjects, wobj => {
+    const returnData = map(wobjects, wobj => {
       if (wobj.author_permlink === this.props.match.params.name) {
         objectFromCurrentPage = this.getObjectLayout(wobj);
         return null;
@@ -225,8 +221,8 @@ class Story extends React.Component {
   handleChangeVisibility = isVisible => this.setState({ isVisible });
 
   handleLikeClick(post, postState, weight = 10000) {
-    const { sliderMode, defaultVotePercent } = this.props;
-    const author = post.author_original || post.author;
+    const {sliderMode, defaultVotePercent} = this.props;
+    const author = post.author_original || post.root_author || post.author;
 
     if (sliderMode) {
       this.props.votePost(post.id, author, post.permlink, weight);
@@ -272,7 +268,7 @@ class Story extends React.Component {
         this.handleFollowClick(post);
         break;
       case 'save':
-        this.props.toggleBookmark(post.id, post.author_original || post.author, post.permlink);
+        this.props.toggleBookmark(`${post.author}/${post.root_permlink}`);
         break;
       case 'report':
         this.handleReportClick(post, postState);
@@ -296,10 +292,14 @@ class Story extends React.Component {
 
   handlePostModalDisplay(e) {
     e.preventDefault();
-    const { post } = this.props;
-    const isReplyPreview = _.isEmpty(post.title) || post.title !== post.root_title;
-    const openInNewTab = _.get(e, 'metaKey', false) || _.get(e, 'ctrlKey', false);
-    const postURL = dropCategory(post.url);
+    const {post} = this.props;
+    const isReplyPreview = isEmpty(post.title) || post.title !== post.root_title;
+    const openInNewTab = get(e, 'metaKey', false) || get(e, 'ctrlKey', false);
+    let postURL;
+    if (post.guestInfo) {
+      postURL = replaceBotWithGuestName(post.url, post.guestInfo);
+    }
+    postURL = dropCategory(post.url);
 
     if (isReplyPreview) {
       this.props.history.push(postURL);
@@ -316,14 +316,17 @@ class Story extends React.Component {
   handlePreviewClickPostModalDisplay(e) {
     e.preventDefault();
 
-    const { post } = this.props;
-    const isReplyPreview = _.isEmpty(post.title) || post.title !== post.root_title;
-    const elementNodeName = _.toLower(_.get(e, 'target.nodeName', ''));
-    const elementClassName = _.get(e, 'target.className', '');
+    const {post} = this.props;
+    const isReplyPreview = isEmpty(post.title) || post.title !== post.root_title;
+    const elementNodeName = toLower(get(e, 'target.nodeName', ''));
+    const elementClassName = get(e, 'target.className', '');
     const showPostModal =
       elementNodeName !== 'i' && elementClassName !== 'PostFeedEmbed__playButton';
-    const openInNewTab = _.get(e, 'metaKey', false) || _.get(e, 'ctrlKey', false);
-    const postURL = dropCategory(post.url);
+    const openInNewTab = get(e, 'metaKey', false) || get(e, 'ctrlKey', false);
+    let postURL = dropCategory(post.url);
+    if (post.guestInfo) {
+      postURL = replaceBotWithGuestName(postURL, post.guestInfo);
+    }
 
     if (isReplyPreview) {
       this.props.history.push(postURL);
@@ -352,7 +355,7 @@ class Story extends React.Component {
 
     return showStoryPreview ? (
       <a
-        href={dropCategory(post.url)}
+        href={replaceBotWithGuestName(dropCategory(post.url), post.guestInfo)}
         rel="noopener noreferrer"
         target="_blank"
         onClick={this.handlePreviewClickPostModalDisplay}
@@ -372,6 +375,7 @@ class Story extends React.Component {
       post,
       postState,
       pendingLike,
+      pendingFlag,
       pendingFollow,
       pendingBookmark,
       saving,
@@ -381,7 +385,7 @@ class Story extends React.Component {
       sliderMode,
       defaultVotePercent,
     } = this.props;
-    const isEnoughData = !_.isEmpty(post) && !_.isEmpty(postState);
+    const isEnoughData = !isEmpty(post) && !isEmpty(postState);
     const {
       predictedEndDate,
       quoteSecurity,
@@ -411,8 +415,8 @@ class Story extends React.Component {
               defaultMessage="{username} reblogged"
               values={{
                 username: (
-                  <Link to={`/@${post.reblogged_by[0]}`}>
-                    <span className="username">{post.reblogged_by[0]}</span>
+                  <Link to={`/@${post.reblogged_by}`}>
+                    <span className="username">{post.reblogged_by}</span>
                   </Link>
                 ),
               }}
@@ -422,29 +426,32 @@ class Story extends React.Component {
       } else if (postState.isReblogged) {
         rebloggedUI = (
           <div className="Story__reblog">
-            <i className="iconfont icon-share1" />
-            <FormattedMessage id="reblogged" defaultMessage="Reblogged" />
+            <i className="iconfont icon-share1"/>
+            <FormattedMessage id="reblogged" defaultMessage="Reblogged"/>
           </div>
         );
       }
     }
+
+    const author = post.guestInfo ? post.guestInfo.userId : post.author;
+
     return isEnoughData ? (
       <VisibilitySensor onChange={this.handleChangeVisibility} partialVisibility>
-        <div className="Story" id={`${post.author}-${post.permlink}`}>
+        <div className="Story" id={`${author}-${post.permlink}`}>
           {rebloggedUI}
           <div className="Story__content">
             <div className="Story__header">
-              <Link to={`/@${post.author}`}>
-                <Avatar username={post.author} size={40} />
+              <Link to={`/@${author}`}>
+                <Avatar username={author} size={40}/>
               </Link>
               <div className="Story__header__text">
                 <span className="Story__header__flex">
                   <h4>
-                    <Link to={`/@${post.author}`}>
-                      <span className="username">{post.author}</span>
+                    <Link to={`/@${author}`}>
+                      <span className="username">{author}</span>
                     </Link>
                   </h4>
-                  <WeightTag weight={post.author_wobjects_weight} />
+                  <WeightTag weight={post.author_wobjects_weight}/>
                 </span>
                 <span>
                   <BTooltip
@@ -475,7 +482,7 @@ class Story extends React.Component {
                 <div className="Story__topics">
                   <div className="Story__published">
                     <div className="PostWobject__wrap">
-                      {post.wobjects && this.getWobjects(post.wobjects)}
+                      {post.wobjects && this.getWobjects(post.wobjects.slice(0, 4))}
                     </div>
                   </div>
                 </div>
@@ -494,7 +501,7 @@ class Story extends React.Component {
             )}
             <div className="Story__content">
               <a
-                href={dropCategory(post.url)}
+                href={replaceBotWithGuestName(dropCategory(post.url), post.guestInfo)}
                 rel="noopener noreferrer"
                 target="_blank"
                 onClick={this.handlePostModalDisplay}
@@ -507,7 +514,7 @@ class Story extends React.Component {
                         id={`object_field_${post.append_field_name}`}
                         defaultMessage={post.append_field_name}
                       />
-                      {!_.isNil(post.append_field_weight) && this.getApprovalTagLayout()}
+                      {!isNil(post.append_field_weight) && this.getApprovalTagLayout()}
                     </React.Fragment>
                   ) : (
                     <React.Fragment>
@@ -539,7 +546,7 @@ class Story extends React.Component {
                 post={post}
                 postState={postState}
                 pendingLike={pendingLike}
-                pendingFlag={pendingLike}
+                pendingFlag={pendingFlag}
                 rewardFund={rewardFund}
                 ownPost={ownPost}
                 singlePostVew={singlePostVew}

@@ -1,20 +1,17 @@
+import {batch} from 'react-redux';
 import assert from 'assert';
 import Cookie from 'js-cookie';
-import { push } from 'connected-react-router';
-import { createAction } from 'redux-actions';
-import {
-  BENEFICIARY_ACCOUNT,
-  BENEFICIARY_PERCENT,
-  REFERRAL_PERCENT,
-} from '../../helpers/constants';
-import { addDraftMetadata, deleteDraftMetadata } from '../../helpers/metadata';
-import { jsonParse } from '../../helpers/formatter';
-import { rewardsValues } from '../../../common/constants/rewards';
-import { createPermlink, getBodyPatchIfSmaller } from '../../vendor/steemitHelpers';
-import { saveSettings } from '../../settings/settingsActions';
-import { notify } from '../../app/Notification/notificationActions';
-import { getAuthenticatedUserName } from '../../reducers';
-import { attachPostInfo } from '../../helpers/postHelpers';
+import {push} from 'connected-react-router';
+import {createAction} from 'redux-actions';
+import {BENEFICIARY_ACCOUNT, BENEFICIARY_PERCENT, REFERRAL_PERCENT,} from '../../helpers/constants';
+import {addDraftMetadata, deleteDraftMetadata} from '../../helpers/metadata';
+import {jsonParse} from '../../helpers/formatter';
+import {rewardsValues} from '../../../common/constants/rewards';
+import {createPermlink, getBodyPatchIfSmaller} from '../../vendor/steemitHelpers';
+import {saveSettings} from '../../settings/settingsActions';
+import {notify} from '../../app/Notification/notificationActions';
+import {getAuthenticatedUserName} from '../../reducers';
+import {attachPostInfo} from '../../helpers/postHelpers';
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -216,12 +213,14 @@ export function createPost(postData) {
       : createPermlink(title, author, parentAuthor, parentPermlink);
     const state = getState();
     const authUser = state.auth.user;
+    const isGuest = state.auth.isGuestUser;
     getPermLink.then(permlink => {
-      const newBody = isUpdating
-        ? getBodyPatchIfSmaller(postData.originalBody, body)
-        : attachPostInfo(postData, permlink);
+      const newBody =
+        isUpdating && !isGuest
+          ? getBodyPatchIfSmaller(postData.originalBody, body)
+          : attachPostInfo(postData, permlink);
 
-      dispatch(saveSettings({ upvoteSetting: upvote, rewardSetting: reward }));
+      dispatch(saveSettings({upvoteSetting: upvote, rewardSetting: reward}));
 
       let referral;
       if (Cookie.get('referral')) {
@@ -246,16 +245,26 @@ export function createPost(postData) {
             jsonMetadata,
             reward,
             beneficiary,
-            !isUpdating && upvote,
+            !isUpdating && !isGuest && upvote,
             permlink,
             referral,
             authUser.name,
           ).then(result => {
             if (draftId) {
-              dispatch(deleteDraft(draftId));
-              dispatch(addEditedPost(permlink));
+              batch(() => {
+                dispatch(deleteDraft(draftId));
+                dispatch(addEditedPost(permlink));
+              });
             }
-            dispatch(push(`/@${author}/${permlink}`));
+            if (isGuest) {
+              if (upvote) {
+                steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
+              }
+              dispatch(push('/'));
+              dispatch(notify('Your post will be posted soon', 'success'));
+            } else {
+              dispatch(push(`/@${author}/${permlink}`));
+            }
 
             if (window.analytics) {
               window.analytics.track('Post', {

@@ -1,18 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import find from 'lodash/find';
 import Slider from '../Slider/Slider';
 import Payout from './Payout';
 import Buttons from './Buttons';
 import Confirmation from './Confirmation';
 import Comments from '../../../client/comments/Comments';
-import { getVoteValue } from '../../helpers/user';
-import { getRate } from '../../reducers';
+import {getVoteValue} from '../../helpers/user';
+import {getRate, isGuestUser} from '../../reducers';
 import './StoryFooter.less';
 
 @connect(state => ({
   rate: getRate(state),
+  isGuest: isGuestUser(state),
 }))
 class StoryFooter extends React.Component {
   static propTypes = {
@@ -31,10 +32,11 @@ class StoryFooter extends React.Component {
     saving: PropTypes.bool,
     singlePostVew: PropTypes.bool,
     onLikeClick: PropTypes.func,
-    onReportClick: PropTypes.func.isRequired,
+    onReportClick: PropTypes.func,
     onShareClick: PropTypes.func,
     onEditClick: PropTypes.func,
     handlePostPopoverMenuClick: PropTypes.func,
+    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -46,10 +48,17 @@ class StoryFooter extends React.Component {
     saving: false,
     singlePostVew: false,
     sliderMode: false,
-    onLikeClick: () => {},
-    onShareClick: () => {},
-    onEditClick: () => {},
-    handlePostPopoverMenuClick: () => {},
+    onLikeClick: () => {
+    },
+    onShareClick: () => {
+    },
+    onEditClick: () => {
+    },
+    handlePostPopoverMenuClick: () => {
+    },
+    onReportClick: () => {
+    },
+    isGuest: false,
   };
 
   constructor(props) {
@@ -103,15 +112,11 @@ class StoryFooter extends React.Component {
   handleSliderCancel = () => this.setState({ sliderVisible: false });
 
   handleSliderChange = value => {
-    const { user, rewardFund, rate } = this.props;
-    const voteWorth = getVoteValue(
-      user,
-      rewardFund.recent_claims,
-      rewardFund.reward_balance,
-      rate,
-      value * 100,
-    );
-    this.setState({ sliderValue: value, voteWorth });
+    const {user, rewardFund, rate, isGuest} = this.props;
+    const voteWorth = isGuest
+      ? 0
+      : getVoteValue(user, rewardFund.recent_claims, rewardFund.reward_balance, rate, value * 100);
+    this.setState({sliderValue: value, voteWorth});
   };
 
   toggleCommentsVisibility = isVisible => {

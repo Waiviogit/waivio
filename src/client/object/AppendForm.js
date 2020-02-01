@@ -1,57 +1,57 @@
-import _, { compact, flatten, keyBy, union } from 'lodash';
+import _, {compact, flatten, keyBy, union} from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { connect } from 'react-redux';
-import React, { Component } from 'react';
-import { FormattedMessage } from 'react-intl';
-import { Button, Form, Input, message, Select, Rate, Icon } from 'antd';
-import { fieldsRules } from './const/appendFormConstants';
+import {connect} from 'react-redux';
+import React, {Component} from 'react';
+import {FormattedMessage} from 'react-intl';
+import {Button, Form, Icon, Input, message, Rate, Select} from 'antd';
+import {fieldsRules} from './const/appendFormConstants';
 import ImageSetter from '../components/ImageSetter/ImageSetter';
 import apiConfig from '../../waivioApi/config.json';
 import {
+  addressFields,
+  buttonFields,
+  getAllowedFieldsByObjType,
   linkFields,
   objectFields,
-  addressFields,
-  socialObjectFields,
-  websiteFields,
   phoneFields,
-  ratingFields,
   ratePercent,
-  getAllowedFieldsByObjType,
-  buttonFields,
-  TYPES_OF_MENU_ITEM,
+  ratingFields,
+  socialObjectFields,
   statusFields,
+  TYPES_OF_MENU_ITEM,
+  websiteFields,
 } from '../../common/constants/listOfFields';
 import OBJECT_TYPE from '../object/const/objectTypes';
 import {
-  getObject,
-  getRewardFund,
-  getRate,
-  getVotingPower,
-  getVotePercent,
   getFollowingObjectsList,
+  getObject,
+  getRate,
+  getRewardFund,
   getSuitableLanguage,
+  getVotePercent,
+  getVotingPower,
 } from '../reducers';
 import LANGUAGES from '../translations/languages';
-import { PRIMARY_COLOR } from '../../common/constants/waivio';
-import { getLanguageText } from '../translations';
-import { getField } from '../helpers/wObjectHelper';
-import { appendObject } from '../object/appendActions';
+import {PRIMARY_COLOR} from '../../common/constants/waivio';
+import {getLanguageText} from '../translations';
+import {getField} from '../helpers/wObjectHelper';
+import {appendObject} from '../object/appendActions';
 import withEditor from '../components/Editor/withEditor';
-import { getVoteValue } from '../helpers/user';
+import {getVoteValue} from '../helpers/user';
 import LikeSection from './LikeSection';
-import { getFieldWithMaxWeight, getInnerFieldWithMaxWeight, getListItems } from './wObjectHelper';
+import {getFieldWithMaxWeight, getInnerFieldWithMaxWeight, getListItems} from './wObjectHelper';
 import FollowObjectForm from './FollowObjectForm';
-import { followObject, rateObject } from '../object/wobjActions';
+import {followObject, rateObject} from '../object/wobjActions';
 import SortingList from '../components/DnDList/DnDList';
 import DnDListItem from '../components/DnDList/DnDListItem';
 import SearchObjectsAutocomplete from '../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCardView from '../objectCard/ObjectCardView';
-import { getNewsFilterLayout } from './NewsFilter/newsFilterHelper';
+import {getNewsFilterLayout} from './NewsFilter/newsFilterHelper';
 import CreateObject from '../post/CreateObjectModal/CreateObject';
-import { baseUrl } from '../../waivioApi/routes';
-import { getObjectsByIds } from '../../waivioApi/ApiClient';
-import { getClientWObj } from '../adapters';
+import {baseUrl} from '../../waivioApi/routes';
+import {getObjectsByIds} from '../../waivioApi/ApiClient';
+import {getClientWObj} from '../adapters';
 import './AppendForm.less';
 
 @connect(
@@ -735,7 +735,11 @@ export default class AppendForm extends Component {
           <div className="image-wrapper">
             <Form.Item>
               {getFieldDecorator(currentField, { rules: this.getFieldRules(currentField) })(
-                <ImageSetter onImageLoaded={this.getImages} onLoadingImage={this.onLoadingImage} />,
+                <ImageSetter
+                  onImageLoaded={this.getImages}
+                  onLoadingImage={this.onLoadingImage}
+                  isRequired
+                />,
               )}
             </Form.Item>
           </div>

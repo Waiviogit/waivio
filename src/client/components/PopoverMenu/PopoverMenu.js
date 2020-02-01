@@ -5,20 +5,22 @@ import './PopoverMenu.less';
 
 const PopoverMenu = ({ children, onSelect, bold }) => (
   <ul className="PopoverMenu">
+    {/* eslint-disable-next-line consistent-return */}
     {React.Children.map(children, child => {
-      const { children: itemChildren, ...otherProps } = child.props;
-
-      return (
-        <PopoverMenuItem
-          key={child.key}
-          {...otherProps}
-          itemKey={child.key}
-          bold={bold}
-          onClick={() => onSelect(child.key)}
-        >
-          {child.props.children}
-        </PopoverMenuItem>
-      );
+      if (child) {
+        const {children: itemChildren, ...otherProps} = child.props;
+        return (
+          <PopoverMenuItem
+            key={child.key}
+            {...otherProps}
+            itemKey={child.key}
+            bold={bold}
+            onClick={() => onSelect(child.key)}
+          >
+            {child.props.children}
+          </PopoverMenuItem>
+        );
+      }
     })}
   </ul>
 );
