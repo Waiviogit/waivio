@@ -11,8 +11,8 @@ import { isUserRegistered } from '../../../../waivioApi/ApiClient';
 import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
 import { getRate, getRewardFund } from './../../../app/appActions';
 import { getRebloggedList } from './../../../app/Reblog/reblogActions';
-import '../ModalSignUp/ModalSignUp.less';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
+import '../ModalSignUp/ModalSignUp.less';
 
 const ModalSignIn = ({ next }) => {
   const dispatch = useDispatch();

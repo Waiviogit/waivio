@@ -21,15 +21,6 @@ export const getFollowingCount = async (username, isGuest = false) => {
   return SteemAPI.sendAsync('call', ['follow_api', 'get_follow_count', [username]]);
 };
 
-export const getAccountWithFollowingCount = (username, isGuest) =>
-  Promise.all([getAccount(username), getFollowingCount(username, isGuest)]).then(
-    ([account, following]) => ({
-      ...account,
-      following_count: following.following_count,
-      follower_count: following.follower_count,
-    }),
-  );
-
 export const getFollowing = async (
   username,
   startForm = '',

@@ -46,31 +46,6 @@ export const openTransfer = (userName, amount = 0, currency = 'STEEM', memo = ''
     },
   });
 
-// const getParsedUserActions = userActions => {
-//   const userWalletTransactions = [];
-//   const userAccountHistory = [];
-//
-//   each(userActions.reverse(), action => {
-//     const actionCount = action[0];
-//     const actionDetails = {
-//       ...action[1],
-//       actionCount,
-//     };
-//     const actionType = actionDetails.op[0];
-//
-//     if (isWalletTransaction(actionType)) {
-//       userWalletTransactions.push(actionDetails);
-//     }
-//
-//     userAccountHistory.push(actionDetails);
-//   });
-//
-//   return {
-//     userWalletTransactions,
-//     userAccountHistory,
-//   };
-// };
-
 const parseSteemUserActions = userActions => {
   const userWalletTransactions = [];
   const userAccountHistory = [];
@@ -113,7 +88,6 @@ const parseGuestActions = actions => {
       op_in_trx: 0,
       virtual_op: 0,
       timestamp: action.updatedAt.split('.')[0],
-      // timestamp: action.updatedAt,
       op: [
         'transfer',
         {

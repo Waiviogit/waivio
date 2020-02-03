@@ -1,5 +1,4 @@
 import { createAsyncActionType } from '../helpers/stateHelpers';
-// import { getAccountWithFollowingCount as getAccountWithFollowingCountAPI } from '../helpers/apiHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../reducers';
 
