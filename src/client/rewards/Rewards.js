@@ -368,13 +368,10 @@ class Rewards extends React.Component {
         ),
       );
     }
-    return `${intl.formatMessage(
-      {
-        id: 'noProposition',
-        defaultMessage: `No reward matches the criteria`,
-      },
-      { userName },
-    )}`;
+    return `${intl.formatMessage({
+      id: 'noProposition',
+      defaultMessage: `No reward matches the criteria`,
+    })}`;
   };
 
   goToCampaign = WobjPermlink => {
