@@ -6,7 +6,7 @@ export const usernameURLRegex = /@([^/]+)/;
 
 export const categoryRegex = /\/([^/]+)/;
 
-export const botNameRegex = /(?<=@)[\w-.]+/;
+export const botNameRegex = /@[\w-.]+/;
 
 export const rewriteRegex = /"https?:\/\/(?:www)?steemit\.com(\/((([\w-]+\/)?@[\w.-]+\/[\w-]+)|(@[\w.-]+(\/(comments|followers|followed|reblogs|transfers|activity))?)|((trending|created|active|hot|promoted)(\/[\w-]+)?))?)?"/g;
 
