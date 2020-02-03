@@ -1,9 +1,2 @@
 User-agent: *
-Disallow: /settings/
-Disallow: /bookmarks/
-Disallow: /drafts/
-Disallow: /edit-profile/
-Disallow: /activity/
-Disallow: /invite/
-Disallow: /feed/
-Disallow: /editor/
+Disallow: /
