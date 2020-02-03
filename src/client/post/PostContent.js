@@ -6,7 +6,7 @@ import { push } from 'connected-react-router';
 import { find, truncate } from 'lodash';
 import { Helmet } from 'react-helmet';
 import sanitize from 'sanitize-html';
-import { dropCategory, isBannedPost } from '../helpers/postHelpers';
+import { dropCategory, isBannedPost, replaceBotWithGuestName } from '../helpers/postHelpers';
 import {
   getAuthenticatedUser,
   getBookmarks,
@@ -209,8 +209,14 @@ class PostContent extends React.Component {
     const bodyText = sanitize(htmlBody, { allowedTags: [] });
     const desc = `${truncate(bodyText, { length: 143 })} by ${author}`;
     const image = postMetaImage || getAvatarURL(author) || '/images/logo.png';
-    const canonicalUrl = `${canonicalHost}${dropCategory(content.url)}`;
-    const url = `${waivioHost}${dropCategory(content.url)}`;
+    const canonicalUrl = `${canonicalHost}${replaceBotWithGuestName(
+      dropCategory(content.url),
+      content.guestInfo,
+    )}`;
+    const url = `${waivioHost}${replaceBotWithGuestName(
+      dropCategory(content.url),
+      content.guestInfo,
+    )}`;
     const ampUrl = `${url}/amp`;
     const metaTitle = `${title} - Waivio`;
 
