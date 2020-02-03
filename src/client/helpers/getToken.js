@@ -1,13 +1,17 @@
 import {getAccessToken, getNewToken} from '../../waivioApi/ApiClient';
 
 export const setToken = async (socialToken, social, regData) => {
-  const userData = await getAccessToken(socialToken, social, regData);
-  localStorage.setItem('accessToken', userData.token);
-  const expiration = userData.expiration;
-  localStorage.setItem('accessTokenExpiration', String(expiration));
-  localStorage.setItem('socialName', social);
-  localStorage.setItem('guestName', userData.userData.name);
-  return userData;
+  try {
+    const userData = await getAccessToken(socialToken, social, regData);
+    localStorage.setItem('accessToken', userData.token);
+    const expiration = userData.expiration;
+    localStorage.setItem('accessTokenExpiration', String(expiration));
+    localStorage.setItem('socialName', social);
+    localStorage.setItem('guestName', userData.userData.name);
+    return userData;
+  } catch (err) {
+    return err;
+  }
 };
 
 // eslint-disable-next-line no-unused-vars

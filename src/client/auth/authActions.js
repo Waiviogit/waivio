@@ -8,6 +8,7 @@ import {BUSY_API_TYPES} from '../../common/constants/notifications';
 import {disconnectBroker} from '../../investarena/redux/actions/brokersActions';
 import {setToken} from '../helpers/getToken';
 import {updateGuestProfile} from '../../waivioApi/ApiClient';
+import { notify } from '../app/Notification/notificationActions';
 
 export const LOGIN = '@auth/LOGIN';
 export const LOGIN_START = '@auth/LOGIN_START';
@@ -54,6 +55,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.userData.name);
         resolve({account: tokenData.userData, userMetaData, socialNetwork, isGuestUser: true});
       } catch (e) {
+        dispatch(notify(e.error.details[0].message));
         reject(e);
       }
     });
