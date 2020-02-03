@@ -7,11 +7,11 @@ import PostModal from '../post/PostModalContainer';
 import { getFeed } from '../reducers';
 import {
   getFeedFromState,
-  getFeedLoadingFromState,
   getFeedHasMoreFromState,
+  getFeedLoadingFromState,
 } from '../helpers/stateHelpers';
 import { showPostModal } from '../app/appActions';
-import { getUserComments, getMoreUserComments } from '../feed/feedActions';
+import { getMoreUserComments, getUserComments } from '../feed/feedActions';
 
 @connect(
   state => ({
@@ -39,10 +39,15 @@ export default class UserProfilePosts extends React.Component {
     getMoreUserComments: () => {},
   };
 
+  // eslint-disable-next-line react/sort-comp
+  static skip = 0;
+
   componentDidMount() {
     this.props.getUserComments({
       username: this.props.match.params.name,
     });
+
+    UserProfilePosts.skip += this.props.limit;
   }
 
   render() {
@@ -52,7 +57,10 @@ export default class UserProfilePosts extends React.Component {
     const content = getFeedFromState('comments', username, feed);
     const isFetching = getFeedLoadingFromState('comments', username, feed);
     const hasMore = getFeedHasMoreFromState('comments', username, feed);
-    const loadMoreContentAction = () => this.props.getMoreUserComments({ username, limit });
+    const loadMoreContentAction = () => {
+      this.props.getMoreUserComments({ username, skip: UserProfilePosts.skip, limit });
+      UserProfilePosts.skip += this.props.limit;
+    };
 
     return (
       <React.Fragment>

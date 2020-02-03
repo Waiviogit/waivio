@@ -28,7 +28,8 @@ export function validateAccountName(value) {
     if (!/^[a-z]/.test(label)) {
       return `${suffix}start with a letter.`;
     }
-    if (!/^[a-z0-9-]*$/.test(label)) {
+    // Added _ symbol to regEx for validation of Guest user names
+    if (!/^[a-z0-9-_]*$/.test(label)) {
       return `${suffix}have only letters, digits, or dashes.`;
     }
     if (/--/.test(label)) {

@@ -1,3 +1,4 @@
+import { batch } from 'react-redux';
 import assert from 'assert';
 import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
@@ -216,10 +217,12 @@ export function createPost(postData) {
       : createPermlink(title, author, parentAuthor, parentPermlink);
     const state = getState();
     const authUser = state.auth.user;
+    const isGuest = state.auth.isGuestUser;
     getPermLink.then(permlink => {
-      const newBody = isUpdating
-        ? getBodyPatchIfSmaller(postData.originalBody, body)
-        : attachPostInfo(postData, permlink);
+      const newBody =
+        isUpdating && !isGuest
+          ? getBodyPatchIfSmaller(postData.originalBody, body)
+          : attachPostInfo(postData, permlink);
 
       dispatch(saveSettings({ upvoteSetting: upvote, rewardSetting: reward }));
 
@@ -246,16 +249,26 @@ export function createPost(postData) {
             jsonMetadata,
             reward,
             beneficiary,
-            !isUpdating && upvote,
+            !isUpdating && !isGuest && upvote,
             permlink,
             referral,
             authUser.name,
           ).then(result => {
             if (draftId) {
-              dispatch(deleteDraft(draftId));
-              dispatch(addEditedPost(permlink));
+              batch(() => {
+                dispatch(deleteDraft(draftId));
+                dispatch(addEditedPost(permlink));
+              });
             }
-            dispatch(push(`/@${author}/${permlink}`));
+            if (isGuest) {
+              if (upvote) {
+                steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
+              }
+              dispatch(push('/'));
+              dispatch(notify('Your post will be posted soon', 'success'));
+            } else {
+              dispatch(push(`/@${author}/${permlink}`));
+            }
 
             if (window.analytics) {
               window.analytics.track('Post', {

@@ -8,7 +8,7 @@ import { getAuthenticatedUser, getSuitableLanguage } from '../../reducers';
 import { MAXIMUM_UPLOAD_SIZE } from '../../helpers/image';
 import { getClientWObj } from '../../adapters';
 import * as api from '../../../waivioApi/ApiClient';
-import { voteObject, followObject } from '../../object/wobjActions';
+import { followObject, voteObject } from '../../object/wobjActions';
 import { createPermlink } from '../../vendor/steemitHelpers';
 import { generateRandomString } from '../../helpers/wObjectHelper';
 import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
@@ -63,8 +63,7 @@ export default function withEditor(WrappedComponent) {
       const formData = new FormData();
       formData.append('file', blob);
 
-      // fetch(`https://ipfs.busy.org/upload`, {
-      fetch(`https://www.waivio.com/api/image`, {
+      return fetch(`https://www.waivio.com/api/image`, {
         method: 'POST',
         body: formData,
       })

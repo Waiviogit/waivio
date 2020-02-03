@@ -39,16 +39,16 @@ const QuickForecastPage = props => {
   const winnersLimit = 5;
   const answeredForecastList = props.quickForecastDataList.filter(forecast => !forecast.active);
   const centerContentClassList = classNames('center', {
-    active: currentPage && currentPage.key === 'forecast',
-    inactive: currentPage && currentPage.key !== 'forecast',
+    'center--active': currentPage && currentPage.key === 'forecast',
+    'center--inactive': currentPage && currentPage.key !== 'forecast',
   });
   const leftContentClassList = classNames('leftContainer', {
-    active: currentPage.key === 'top',
-    inactive: currentPage.key !== 'top',
+    'leftContainer--active': currentPage.key === 'top',
+    'leftContainer--inactive': currentPage.key !== 'top',
   });
   const rightContentClassList = classNames('rightContainer', {
-    active: currentPage.key === 'winners',
-    inactive: currentPage.key !== 'winners',
+    'rightContainer--active': currentPage.key === 'winners',
+    'rightContainer--inactive': currentPage.key !== 'winners',
   });
   const switcherClassList = classNames('switcher-page', {
     inactive: currentPage.key === 'forecast',
@@ -141,9 +141,10 @@ const QuickForecastPage = props => {
   const currentForecastList =
     answeredForecastList.length === 5 ? answeredForecastList : forecastList;
   const secondsInMilliseconds = sec => sec / 0.001;
-  const finishRoundTime = props.roundTime >= 0
-    ? currentTime + secondsInMilliseconds(props.roundTime)
-    : currentTime + secondsInMilliseconds(9000);
+  const finishRoundTime =
+    props.roundTime >= 0
+      ? currentTime + secondsInMilliseconds(props.roundTime)
+      : currentTime + secondsInMilliseconds(9000);
 
   return (
     <div className="container">

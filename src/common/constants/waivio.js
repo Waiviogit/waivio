@@ -14,5 +14,9 @@ export const WAIVIO_POST_TYPE = {
 
 export const PRIMARY_COLOR = '#f87007';
 
+export const GUEST_PREFIX = 'waivio_';
+
+export const BANK_ACCOUNT = 'waiviobank';
+
 export const DEFAULT_OBJECT_AVATAR_URL =
   'https://cdn.steemitimages.com/DQmWxwUb1hpd3X2bSL9VrWbJvNxKXDS2kANWoGTkwi4RdwV/unknown.png';

@@ -10,9 +10,10 @@ export default class WobjFollowers extends React.Component {
 
   static limit = 50;
 
-  fetcher = skip => {
+  fetcher = async skip => {
     const { match } = this.props;
-    return getWobjectFollowers(match.params.name, skip.length, WobjFollowers.limit);
+    const response = await getWobjectFollowers(match.params.name, skip.length, WobjFollowers.limit);
+    return { users: response, hasMore: response.length === WobjFollowers.limit };
   };
 
   render() {

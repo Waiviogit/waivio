@@ -1,14 +1,15 @@
-import _ from 'lodash';
+import { each, filter, findIndex, get, isEmpty, last } from 'lodash';
 import { createAction } from 'redux-actions';
 import formatter from '../helpers/steemitFormatter';
 import { createAsyncActionType, getUserDetailsKey } from '../helpers/stateHelpers';
 import {
+  defaultAccountLimit,
   getAccountHistory,
   getDynamicGlobalProperties,
   isWalletTransaction,
-  defaultAccountLimit,
 } from '../helpers/apiHelpers';
 import { ACTIONS_DISPLAY_LIMIT, actionsFilter } from '../helpers/accountHistoryHelper';
+import { GUEST_PREFIX } from '../../common/constants/waivio';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
 export const CLOSE_TRANSFER = '@wallet/CLOSE_TRANSFER';
@@ -45,11 +46,11 @@ export const openTransfer = (userName, amount = 0, currency = 'STEEM', memo = ''
     },
   });
 
-const getParsedUserActions = userActions => {
+const parseSteemUserActions = userActions => {
   const userWalletTransactions = [];
   const userAccountHistory = [];
 
-  _.each(userActions.reverse(), action => {
+  each(userActions.reverse(), action => {
     const actionCount = action[0];
     const actionDetails = {
       ...action[1],
@@ -63,11 +64,54 @@ const getParsedUserActions = userActions => {
 
     userAccountHistory.push(actionDetails);
   });
-
   return {
     userWalletTransactions,
     userAccountHistory,
   };
+};
+
+const parseGuestActions = actions => {
+  const guestActionType = {
+    DEMO_POST: 'demo_post',
+    DEMO_POST_TRANSFER: 'demo_post_transfer',
+    DEMO_DEBT: 'demo_debt',
+  };
+  return actions.map((action, index) => {
+    const transferDirection =
+      action.type === guestActionType.DEMO_POST || action.type === guestActionType.DEMO_DEBT
+        ? { from: action.sponsor, to: action.userName }
+        : { from: action.userName, to: action.sponsor || 'mock' };
+    return {
+      trx_id: action._id, // eslint-disable-line
+      block: 39603148,
+      trx_in_block: 1,
+      op_in_trx: 0,
+      virtual_op: 0,
+      timestamp: action.updatedAt.split('.')[0],
+      op: [
+        'transfer',
+        {
+          ...transferDirection,
+          amount: `${action.amount} STEEM`,
+          memo: (action.type === guestActionType.DEMO_POST && action.details.post_permlink) || '',
+        },
+      ],
+      actionCount: index + 1,
+    };
+  });
+};
+
+const getParsedUserActions = (userActions, isGuest) => {
+  if (isGuest) {
+    const userWalletTransactions = parseGuestActions(get(userActions, ['histories'], []));
+    return {
+      userWalletTransactions,
+      userAccountHistory: userWalletTransactions.length
+        ? userWalletTransactions
+        : [{ actionCount: 0 }],
+    };
+  }
+  return parseSteemUserActions(userActions);
 };
 
 export const getGlobalProperties = () => dispatch =>
@@ -78,28 +122,32 @@ export const getGlobalProperties = () => dispatch =>
     },
   });
 
-export const getUserAccountHistory = username => dispatch =>
+export const getUserAccountHistory = username => dispatch => {
+  const isGuest = username.startsWith(GUEST_PREFIX);
   dispatch({
     type: GET_USER_ACCOUNT_HISTORY.ACTION,
     payload: {
-      promise: getAccountHistory(username).then(userActions => {
-        const parsedUserActions = getParsedUserActions(userActions);
+      promise: getAccountHistory(username, { isGuest }).then(userActions => {
+        const parsedUserActions = getParsedUserActions(userActions, isGuest);
 
         return {
           username,
           userWalletTransactions: parsedUserActions.userWalletTransactions,
           userAccountHistory: parsedUserActions.userAccountHistory,
+          balance: get(userActions, ['payable'], null),
         };
       }),
     },
   });
+};
 
-export const getMoreUserAccountHistory = (username, start, limit) => dispatch =>
+export const getMoreUserAccountHistory = (username, start, limit) => dispatch => {
+  const isGuest = username.startsWith(GUEST_PREFIX);
   dispatch({
     type: GET_MORE_USER_ACCOUNT_HISTORY.ACTION,
     payload: {
-      promise: getAccountHistory(username, start, limit).then(userActions => {
-        const parsedUserActions = getParsedUserActions(userActions);
+      promise: getAccountHistory(username, { from: start, limit, isGuest }).then(userActions => {
+        const parsedUserActions = getParsedUserActions(userActions, isGuest);
         return {
           username,
           userWalletTransactions: parsedUserActions.userWalletTransactions,
@@ -108,6 +156,7 @@ export const getMoreUserAccountHistory = (username, start, limit) => dispatch =>
       }),
     },
   });
+};
 
 export const getUserEstAccountValue = user => dispatch =>
   dispatch({
@@ -136,16 +185,16 @@ export const loadMoreCurrentUsersActions = username => (dispatch, getState) => {
   dispatch(loadingMoreUsersAccountHistory());
   const { wallet } = getState();
   const { usersAccountHistory, currentDisplayedActions, accountHistoryFilter } = wallet;
-  const currentUsersActions = _.get(usersAccountHistory, getUserDetailsKey(username), []);
-  const lastDisplayedAction = _.last(currentDisplayedActions);
+  const currentUsersActions = get(usersAccountHistory, getUserDetailsKey(username), []);
+  const lastDisplayedAction = last(currentDisplayedActions);
 
-  if (_.isEmpty(lastDisplayedAction)) {
+  if (isEmpty(lastDisplayedAction)) {
     dispatch(setInitialCurrentDisplayedActions(username));
     return;
   }
 
   const lastDisplayedActionCount = lastDisplayedAction.actionCount;
-  const lastDisplayedActionIndex = _.findIndex(
+  const lastDisplayedActionIndex = findIndex(
     currentUsersActions,
     userAction => userAction.actionCount === lastDisplayedActionCount,
   );
@@ -153,11 +202,11 @@ export const loadMoreCurrentUsersActions = username => (dispatch, getState) => {
     lastDisplayedActionIndex + 1,
     lastDisplayedActionIndex + 1 + ACTIONS_DISPLAY_LIMIT,
   );
-  const lastMoreAction = _.last(moreActions);
-  const lastMoreActionCount = _.isEmpty(lastMoreAction) ? 0 : lastMoreAction.actionCount;
+  const lastMoreAction = last(moreActions);
+  const lastMoreActionCount = isEmpty(lastMoreAction) ? 0 : lastMoreAction.actionCount;
 
   if (moreActions.length === ACTIONS_DISPLAY_LIMIT || lastMoreActionCount === 0) {
-    const filteredMoreActions = _.filter(moreActions, userAction =>
+    const filteredMoreActions = filter(moreActions, userAction =>
       actionsFilter(userAction, accountHistoryFilter, username),
     );
     dispatch(
@@ -167,7 +216,7 @@ export const loadMoreCurrentUsersActions = username => (dispatch, getState) => {
       }),
     );
   } else {
-    const lastActionCount = _.last(currentUsersActions).actionCount;
+    const lastActionCount = last(currentUsersActions).actionCount;
     const limit = lastActionCount < defaultAccountLimit ? lastActionCount : defaultAccountLimit;
     dispatch(getMoreUserAccountHistory(username, lastActionCount, limit));
   }

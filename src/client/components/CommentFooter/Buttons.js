@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { take, find } from 'lodash';
-import { injectIntl, FormattedNumber, FormattedMessage } from 'react-intl';
+import { find, take } from 'lodash';
+import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
 import { Icon } from 'antd';
-import { getUpvotes, getDownvotes } from '../../helpers/voteHelpers';
+import { getDownvotes, getUpvotes } from '../../helpers/voteHelpers';
 import { sortVotes } from '../../helpers/sortHelpers';
 import { calculatePayout } from '../../vendor/steemitHelpers';
 import BTooltip from '../BTooltip';
@@ -167,15 +167,17 @@ class Buttons extends React.Component {
     return (
       <div>
         <BTooltip title={likeTooltip}>
-          <a
-            role="presentation"
-            className={classNames('CommentFooter__link', {
-              'CommentFooter__link--active': userUpVoted,
-            })}
-            onClick={this.handleLikeClick}
-          >
-            {pendingLike ? <Icon type="loading" /> : <i className="iconfont icon-praise_fill" />}
-          </a>
+          {!this.props.comment.isFakeComment && (
+            <a
+              role="presentation"
+              className={classNames('CommentFooter__link', {
+                'CommentFooter__link--active': userUpVoted,
+              })}
+              onClick={this.handleLikeClick}
+            >
+              {pendingLike ? <Icon type="loading" /> : <i className="iconfont icon-praise_fill" />}
+            </a>
+          )}
         </BTooltip>
         {upVotes.length > 0 && (
           <span
@@ -197,19 +199,21 @@ class Buttons extends React.Component {
           </span>
         )}
         <BTooltip title={intl.formatMessage({ id: 'dislike', defaultMessage: 'Dislike' })}>
-          <a
-            role="presentation"
-            className={classNames('CommentFooter__link', {
-              'CommentFooter__link--active': userDownVoted,
-            })}
-            onClick={this.handleDislikeClick}
-          >
-            {pendingDisLike ? (
-              <Icon type="loading" />
-            ) : (
-              <i className="iconfont icon-praise_fill Comment__icon_dislike" />
-            )}
-          </a>
+          {!this.props.comment.isFakeComment && (
+            <a
+              role="presentation"
+              className={classNames('CommentFooter__link', {
+                'CommentFooter__link--active': userDownVoted,
+              })}
+              onClick={this.handleDislikeClick}
+            >
+              {pendingDisLike ? (
+                <Icon type="loading" />
+              ) : (
+                <i className="iconfont icon-praise_fill Comment__icon_dislike" />
+              )}
+            </a>
+          )}
         </BTooltip>
         {downVotes.length > 0 && (
           <span
@@ -241,7 +245,7 @@ class Buttons extends React.Component {
             </span>
           </React.Fragment>
         )}
-        {user.name && (
+        {!this.props.comment.isFakeComment && user.name && (
           <span>
             <span className="CommentFooter__bullet" />
             <a

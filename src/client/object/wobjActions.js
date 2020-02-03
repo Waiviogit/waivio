@@ -1,5 +1,5 @@
 import { createAction } from 'redux-actions';
-import { getIsAuthenticated, getAuthenticatedUserName } from '../reducers';
+import { getAuthenticatedUserName, getIsAuthenticated } from '../reducers';
 import { getAllFollowing } from '../helpers/apiHelpers';
 import { createAsyncActionType } from '../helpers/stateHelpers';
 
@@ -67,7 +67,7 @@ export const getFollowing = username => (dispatch, getState) => {
     type: GET_FOLLOWING,
     meta: targetUsername,
     payload: {
-      promise: getAllFollowing(targetUsername),
+      promise: getAllFollowing(targetUsername, state.auth.isGuestUser),
     },
   });
 };

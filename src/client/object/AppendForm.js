@@ -4,33 +4,33 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Button, Form, Input, message, Select, Rate, Icon } from 'antd';
+import { Button, Form, Icon, Input, message, Rate, Select } from 'antd';
 import { fieldsRules } from './const/appendFormConstants';
 import ImageSetter from '../components/ImageSetter/ImageSetter';
 import apiConfig from '../../waivioApi/config.json';
 import {
+  addressFields,
+  buttonFields,
+  getAllowedFieldsByObjType,
   linkFields,
   objectFields,
-  addressFields,
-  socialObjectFields,
-  websiteFields,
   phoneFields,
-  ratingFields,
   ratePercent,
-  getAllowedFieldsByObjType,
-  buttonFields,
-  TYPES_OF_MENU_ITEM,
+  ratingFields,
+  socialObjectFields,
   statusFields,
+  TYPES_OF_MENU_ITEM,
+  websiteFields,
 } from '../../common/constants/listOfFields';
 import OBJECT_TYPE from '../object/const/objectTypes';
 import {
-  getObject,
-  getRewardFund,
-  getRate,
-  getVotingPower,
-  getVotePercent,
   getFollowingObjectsList,
+  getObject,
+  getRate,
+  getRewardFund,
   getSuitableLanguage,
+  getVotePercent,
+  getVotingPower,
 } from '../reducers';
 import LANGUAGES from '../translations/languages';
 import { PRIMARY_COLOR } from '../../common/constants/waivio';
@@ -735,7 +735,11 @@ export default class AppendForm extends Component {
           <div className="image-wrapper">
             <Form.Item>
               {getFieldDecorator(currentField, { rules: this.getFieldRules(currentField) })(
-                <ImageSetter onImageLoaded={this.getImages} onLoadingImage={this.onLoadingImage} />,
+                <ImageSetter
+                  onImageLoaded={this.getImages}
+                  onLoadingImage={this.onLoadingImage}
+                  isRequired
+                />,
               )}
             </Form.Item>
           </div>

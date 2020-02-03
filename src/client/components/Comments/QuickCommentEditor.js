@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Input, Icon, Modal } from 'antd';
+import { Icon, Input, Modal } from 'antd';
 import { get, isEmpty } from 'lodash';
 import withEditor from '../Editor/withEditor';
 import Avatar from '../Avatar';
@@ -54,9 +54,10 @@ class QuickCommentEditor extends React.Component {
     } else {
       const { currentImage, commentMsg } = this.state;
       this.setState({ isDisabledSubmit: true });
+
       if (commentMsg) {
         let imageData = commentMsg.trim();
-        if (currentImage) {
+        if (currentImage.length) {
           imageData += `\n![${currentImage[0].name}](${currentImage[0].src})\n`;
         }
         this.props.onSubmit(this.props.parentPost, imageData).then(response => {
@@ -137,7 +138,11 @@ class QuickCommentEditor extends React.Component {
           onOk={this.handleOnOk}
         >
           {isModal && (
-            <ImageSetter onImageLoaded={this.getImages} onLoadingImage={this.onLoadingImage} />
+            <ImageSetter
+              onImageLoaded={this.getImages}
+              onLoadingImage={this.onLoadingImage}
+              isRequired
+            />
           )}
         </Modal>
       </React.Fragment>

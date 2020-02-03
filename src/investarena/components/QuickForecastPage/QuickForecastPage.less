@@ -138,23 +138,27 @@
   padding: 5px 15px;
 }
 
-.active {
-  display: block !important;
-}
-
-.inactive {
-  display: none;
-
-  @media @small {
-    display: block;
-  }
-}
-
 .switcher-link {
   cursor: pointer;
 
   &:hover {
     color: @blue-dodgerBlue;
+  }
+}
+
+.center,
+.leftContainer,
+.rightContainer {
+  &--active {
+    display: block !important;
+  }
+
+  &--inactive {
+    display: none;
+
+    @media @small {
+      display: block;
+    }
   }
 }
 
