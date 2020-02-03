@@ -37,7 +37,7 @@ export function dropCategory(url) {
 }
 
 export const replaceBotWithGuestName = (url, guestInfo) =>
-  url && guestInfo && guestInfo.userId ? url.replace(botNameRegex, guestInfo.userId) : url;
+  url && guestInfo && guestInfo.userId ? url.replace(botNameRegex, `@${guestInfo.userId}`) : url;
 
 /**
  * Gets app data from a post.
