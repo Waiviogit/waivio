@@ -62,7 +62,7 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
           });
         }
 
-        // // Delay to make sure you get the latest data (unknown issue with API)
+        // Delay to make sure you get the latest data (unknown issue with API)
         if (!isGuest) {
           setTimeout(
             () =>

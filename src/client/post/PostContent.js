@@ -180,10 +180,6 @@ class PostContent extends React.Component {
     const waivioHost = appUrl || 'https://investarena.com';
     const canonicalHost = waivioHost;
 
-    // if (postMetaData && indexOf(postMetaData.app, 'steemit') === 0) {
-    //   canonicalHost = 'https://steemit.com';
-    // }
-
     const userVote = find(content.active_votes, {voter: user.name}) || {};
 
     const postState = {
