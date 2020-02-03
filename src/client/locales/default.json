@@ -1010,5 +1010,9 @@
   "terms_and_policy_agreement": "I have read and agree to the {Terms}, the {Privacy}, the {Cookies}.",
   "nickname": "Nickname",
   "preferred_languages": "Preferred languages",
-  "public_profile": "Public profile"
+  "public_profile": "Public profile",
+  "next": "Next",
+  "open_my_feed": "Open my feed",
+  "select_experts_to_follow": "Select experts to follow",
+  "select_topic_to_follow": "Select Topics to follow"
 }

@@ -780,5 +780,9 @@
   "approved_by_admin": "Схвалено адміном",
   "min_70_is_required": "Необхідно не менше 70%",
   "or_sign_up_with": "або через",
-  "or_sign_in_with": "або через"
+  "or_sign_in_with": "або через",
+  "next": "Далі",
+  "open_my_feed": "Відкрити мою стрічку",
+  "select_experts_to_follow": "Виберіть експерта",
+  "select_topic_to_follow": "Виберіть тему"
 }

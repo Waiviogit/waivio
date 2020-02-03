@@ -55,6 +55,7 @@ class FollowButton extends React.Component {
     secondary: false,
     followingType: 'user',
     authenticatedUserName: undefined,
+    followingList: [],
     followUser: () => {},
     followObject: () => {},
     unfollowUser: () => {},

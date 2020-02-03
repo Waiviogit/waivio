@@ -362,16 +362,19 @@ class Topnav extends React.Component {
 
   handleMobileSearchButtonClick = () => {
     const { searchBarActive } = this.state;
-    this.setState({
-      searchBarActive: !searchBarActive,
-    }, () => {
-      this.searchInputRef.input.focus();
-    });
+    this.setState(
+      {
+        searchBarActive: !searchBarActive,
+      },
+      () => {
+        this.searchInputRef.input.focus();
+      },
+    );
 
-    if(!searchBarActive) {
+    if (!searchBarActive) {
       this.setState({
-        dropdownOpen: false
-      })
+        dropdownOpen: false,
+      });
     }
   };
 
@@ -628,9 +631,9 @@ class Topnav extends React.Component {
     });
 
   handleOnBlur = () => {
-   this.setState({
-     dropdownOpen: false
-   })
+    this.setState({
+      dropdownOpen: false,
+    });
   };
 
   handleClearSearchData = () =>
@@ -704,7 +707,14 @@ class Topnav extends React.Component {
                   autoCorrect="off"
                 />
               </AutoComplete>
-                {!!this.state.searchBarValue.length && <Icon type="close-circle" style={{fontSize: '12px'}} theme="filled" onClick={this.handleClearSearchData}/>}
+              {!!this.state.searchBarValue.length && (
+                <Icon
+                  type="close-circle"
+                  style={{ fontSize: '12px' }}
+                  theme="filled"
+                  onClick={this.handleClearSearchData}
+                />
+              )}
             </div>
           </div>
           <div className="right">

@@ -30,6 +30,7 @@ import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
 import { GUEST_PREFIX } from '../common/constants/waivio';
+import WelcomeModal from './components/WelcomeModal/WelcomeModal';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -243,6 +244,7 @@ export default class Wrapper extends React.PureComponent {
                 <PowerUpOrDown />
                 <NotificationPopup />
                 <BBackTop className="primary-modal" />
+                <WelcomeModal />
               </div>
             </Layout>
           </AppSharedContext.Provider>

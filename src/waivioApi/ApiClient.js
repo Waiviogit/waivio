@@ -933,6 +933,47 @@ export const getPostCommentsFromApi = ({ category, root_author, permlink }) => {
     .catch(err => err);
 };
 
+export const getRecommendTopic = (limit = 30, locale = 'en-US', skip = 0, listHashtag) => {
+  return fetch(`${config.apiPrefix}${config.getObjects}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      limit,
+      skip,
+      locale,
+      author_permlinks: listHashtag,
+      object_types: ['hashtag'],
+    }),
+  }).then(res => res.json());
+};
+
+//no work
+export const getRecommendExperts = (limit = 30, locale = 'en-US', skip = 0, listHashtag) => {
+  return fetch(`${config.apiPrefix}${config.getUsers}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      limit,
+      skip,
+      locale,
+      author_permlinks: listHashtag,
+    }),
+  }).then(res => res.json());
+};
+
+export const getInformation = (limit = 30, locale = 'en-US', skip = 0, listHashtag) => {
+  return fetch(`${config.apiPrefix}${config.getUsers}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      limit,
+      skip,
+      locale,
+      author_permlinks: listHashtag,
+    }),
+  }).then(res => res.json());
+};
+
 // injected as extra argument in Redux Thunk
 export const waivioAPI = {
   getAuthenticatedUserMetadata,
