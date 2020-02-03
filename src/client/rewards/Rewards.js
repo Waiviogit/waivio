@@ -368,13 +368,10 @@ class Rewards extends React.Component {
         ),
       );
     }
-    return `${intl.formatMessage(
-      {
-        id: 'noProposition',
-        defaultMessage: `No reward matches the criteria for user @{userName}`,
-      },
-      { userName },
-    )}`;
+    return `${intl.formatMessage({
+      id: 'noProposition',
+      defaultMessage: `No reward matches the criteria`,
+    })}`;
   };
 
   goToCampaign = WobjPermlink => {
@@ -463,8 +460,7 @@ class Rewards extends React.Component {
               content={`${intl.formatMessage({
                 id: 'rewards',
                 defaultMessage: 'Rewards',
-              })}
-        - Waivio`}
+              })} - Waivio`}
             />
             <meta property="og:type" content="article" />
             <meta
@@ -489,7 +485,7 @@ class Rewards extends React.Component {
               {renderedRoutes}
             </div>
             {(match.path === '/rewards/payables' || match.path === '/rewards/receivables') && (
-              <Affix className="rightContainer leftContainer__user" stickPosition={122}>
+              <Affix className="rightContainer leftContainer__user" stickPosition={77}>
                 <div className="right">
                   <RewardsFiltersPanel
                     campaignsTypes={campaignsTypes}
@@ -504,7 +500,7 @@ class Rewards extends React.Component {
               </Affix>
             )}
             {match.path === '/rewards/:filterKey/:campaignParent?' && (
-              <Affix className="rightContainer leftContainer__user" stickPosition={122}>
+              <Affix className="rightContainer leftContainer__user" stickPosition={77}>
                 <div className="right">
                   {!isEmpty(this.props.userLocation) && !isCreate && (
                     <MapWrap
