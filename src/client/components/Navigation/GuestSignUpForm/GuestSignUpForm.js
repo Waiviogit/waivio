@@ -79,7 +79,7 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
       if (!err) {
         setIsLoading(true);
         const regData = {
-          userName: `waivio_${values.username}`,
+          userName: `${GUEST_PREFIX}${values.username}`,
           avatar: isEmpty(values.avatar) ? '' : values.avatar[0].src,
           alias: values.alias || '',
           locales: typeof values.locales === 'string' ? [values.locales] : values.locales,
