@@ -1,14 +1,13 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import _, {isEmpty, omit} from 'lodash';
+import {isEmpty, size, map } from 'lodash';
 import {connect} from 'react-redux';
-import {Button, Modal, Tag} from 'antd';
+import { Modal, Tag} from 'antd';
 import {isNeedFilters, updateActiveFilters} from './helper';
 import {
   getActiveFilters,
   getAvailableFilters,
   getFilteredObjects,
-  getHasMap,
   getHasMoreRelatedObjects,
   getObjectTypeLoading,
   getObjectTypesList,
@@ -41,7 +40,6 @@ const SORT_OPTIONS = {
     activeFilters: getActiveFilters(state),
     sort: getObjectTypeSorting(state),
     typesList: getObjectTypesList(state),
-    hasMap: getHasMap(state),
     filteredObjects: getFilteredObjects(state),
     isFetching: getObjectTypeLoading(state),
     hasMoreObjects: getHasMoreRelatedObjects(state),
@@ -61,9 +59,7 @@ class DiscoverObjectsContent extends Component {
     searchString: PropTypes.string,
     availableFilters: PropTypes.shape().isRequired,
     activeFilters: PropTypes.shape().isRequired,
-    sort: PropTypes.string.isRequired,
     typesList: PropTypes.shape().isRequired,
-    hasMap: PropTypes.bool.isRequired,
     filteredObjects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     isFetching: PropTypes.bool.isRequired,
     hasMoreObjects: PropTypes.bool.isRequired,
@@ -115,16 +111,6 @@ class DiscoverObjectsContent extends Component {
           {this.props.searchString}
         </Tag>
       )}
-      {this.props.activeFilters.map ? (
-        <Tag
-          className="filter-highlighted"
-          key="map-search-area-filter"
-          closable
-          onClose={this.resetMapFilter}
-        >
-          {this.props.intl.formatMessage({ id: 'search_area', defaultMessage: 'Search area' })}
-        </Tag>
-      ) : null}
     </React.Fragment>
   );
 
@@ -164,15 +150,7 @@ class DiscoverObjectsContent extends Component {
     dispatchSetActiveFilters(updatedFilters);
   };
 
-  resetMapFilter = () => {
-    const { activeFilters, dispatchSetActiveFilters } = this.props;
-    const updatedFilters = omit(activeFilters, ['map']);
-    dispatchSetActiveFilters(updatedFilters);
-  };
-
   resetNameSearchFilter = () => this.props.history.push(this.props.history.location.pathname);
-
-  // showMap = () => this.props.dispatchSetMapFullscreenMode(true);
 
   render() {
     const { isTypeHasFilters, isModalOpen, modalTitle } = this.state;
@@ -180,24 +158,13 @@ class DiscoverObjectsContent extends Component {
       intl,
       isFetching,
       typeName,
-      hasMap,
       availableFilters,
-      activeFilters: { map, ...chosenFilters },
-      sort,
+      activeFilters: { ...chosenFilters },
       filteredObjects,
       hasMoreObjects,
     } = this.props;
 
-    const sortSelector = hasMap ? (
-      <SortSelector sort={sort} onChange={this.handleChangeSorting}>
-        <SortSelector.Item key={SORT_OPTIONS.WEIGHT}>
-          {intl.formatMessage({ id: 'rank', defaultMessage: 'Rank' })}
-        </SortSelector.Item>
-        <SortSelector.Item key={SORT_OPTIONS.PROXIMITY}>
-          {intl.formatMessage({ id: 'proximity', defaultMessage: 'Proximity' })}
-        </SortSelector.Item>
-      </SortSelector>
-    ) : (
+    const sortSelector = (
       <SortSelector sort="weight" onChange={e => console.log('onSortChange', e)}>
         <SortSelector.Item key={SORT_OPTIONS.WEIGHT}>
           {intl.formatMessage({ id: 'rank', defaultMessage: 'Rank' })}
@@ -210,8 +177,8 @@ class DiscoverObjectsContent extends Component {
     let objectsRenderer;
 
     if (tradingtypes.includes(typeName)) {
-      const validFilteredObjects = !_.isEmpty(filteredObjects)
-        ? filteredObjects.filter(obj => !_.isEmpty(obj.chartid))
+      const validFilteredObjects = !isEmpty(filteredObjects)
+        ? filteredObjects.filter(obj => !isEmpty(obj.chartid))
         : [];
       objectsRenderer = validFilteredObjects.map(wObj => (
         <InstrumentCardView
@@ -249,7 +216,7 @@ class DiscoverObjectsContent extends Component {
                 )
               </span>
             </span>
-            {_.size(SORT_OPTIONS) - Number(!hasMap) > 1 ? sortSelector : null}
+            {size(SORT_OPTIONS) > 1 ? sortSelector : null}
           </div>
           <div className="discover-objects-header__tags-block common">
             {this.getCommonFiltersLayout()}
@@ -262,7 +229,7 @@ class DiscoverObjectsContent extends Component {
                     {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
                   </span>
                   {this.getCommonFiltersLayout()}
-                  {_.map(chosenFilters, (filterValues, filterName) =>
+                  {map(chosenFilters, (filterValues, filterName) =>
                     filterValues.map(filterValue => (
                       <Tag
                         className="ttc"
@@ -281,18 +248,6 @@ class DiscoverObjectsContent extends Component {
                   >
                     {intl.formatMessage({ id: 'add_new_proposition', defaultMessage: 'Add' })}
                   </span>
-                </div>
-              ) : null}
-              {hasMap ? (
-                <div className="discover-objects-header__toggle-map tc">
-                  <Button
-                    icon="compass"
-                    size="large"
-                    className={isEmpty(map) ? 'map-btn' : 'map-btn active'}
-                    onClick={this.showMap}
-                  >
-                    {intl.formatMessage({ id: 'view_map', defaultMessage: 'View map' })}
-                  </Button>
                 </div>
               ) : null}
             </React.Fragment>

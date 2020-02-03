@@ -6,7 +6,7 @@ import {injectIntl} from 'react-intl';
 import {bindActionCreators} from 'redux';
 import {Form, message, Modal, Select} from 'antd';
 import {ALLOWED_IMG_FORMATS, MAX_IMG_SIZE} from '../../../common/constants/validation';
-import {getAuthenticatedUserName, getObject} from '../../reducers';
+import {getAuthenticatedUserName, getObject, getObjectAlbums} from '../../reducers';
 import {objectFields} from '../../../common/constants/listOfFields';
 import * as galleryActions from './galleryActions';
 import * as appendActions from '../appendActions';
@@ -41,6 +41,8 @@ class CreateImage extends React.Component {
     currentImages: [],
     isValidLink: false,
   };
+
+  onLoadingImage = value => this.setState({isLoading: value});
 
   getWobjectData = () => {
     const { currentUsername, wObject } = this.props;
@@ -81,6 +83,9 @@ class CreateImage extends React.Component {
   };
 
   // handlePreviewCancel = () => this.setState({ previewVisible: false });
+  getImages = image => {
+    this.setState({currentImages: image});
+  };
 
   handleSubmit = e => {
     e.preventDefault();
@@ -216,12 +221,6 @@ class CreateImage extends React.Component {
   handleModalCancel = () => {
     this.props.hideModal();
     this.setState({fileList: [], uploadingList: []});
-  };
-
-  onLoadingImage = value => this.setState({isLoading: value});
-
-  getImages = image => {
-    this.setState({currentImages: image});
   };
 
   render() {
