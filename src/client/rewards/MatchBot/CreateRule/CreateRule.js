@@ -42,8 +42,9 @@ const CreateRule = ({
   useEffect(() => {
     if (!isEmpty(editRule)) {
       setSliderValue(editRule.voting_percent * 100);
+      if (editRule.note) setFieldsValue({ noticeField: editRule.note });
+      setExpired(editRule.expiredAt ? moment(new Date(editRule.expiredAt)) : '');
     }
-    setExpired(moment(new Date(editRule.expiredAt)));
   }, []);
 
   const handleSetSponsor = obj => {
@@ -76,56 +77,47 @@ const CreateRule = ({
       }
     });
   };
+
+  const setRule = (values, isEdit) => {
+    const prepareObjData = {
+      sponsor: !isEdit ? sponsor.account : editRule.sponsor,
+      voting_percent: sliderValue / 100,
+    };
+    if (!isEdit) prepareObjData.enabled = true;
+    if (values.expiryDate) prepareObjData.expiredAt = values.expiryDate;
+    if (values.noticeField) prepareObjData.note = values.noticeField;
+    dispatch(setMatchBotRules(prepareObjData))
+      .then(() => {
+        setConfirmModalLoaded(false);
+        handleChangeModalVisible();
+        message.success(
+          intl.formatMessage(
+            !isEdit
+              ? {
+                  id: 'matchBot_success_created',
+                  defaultMessage: 'Rule created successfully',
+                }
+              : {
+                  id: 'matchBot_success_edited',
+                  defaultMessage: 'Rule edited successfully',
+                },
+          ),
+        );
+      })
+      .catch(() => {
+        setConfirmModalLoaded(false);
+        handleChangeModalVisible();
+      });
+  };
+
   const handleSetRule = () => {
     setConfirmModalLoaded(true);
     form.validateFieldsAndScroll((err, values) => {
       if (!err && !isEmpty(values.sponsorField)) {
-        const prepareObjData = {
-          sponsor: sponsor.account,
-          enabled: true,
-          voting_percent: sliderValue / 100,
-          expiredAt: values.expiryDate,
-        };
-        if (values.noticeField) prepareObjData.note = values.noticeField;
-        dispatch(setMatchBotRules(prepareObjData))
-          .then(() => {
-            setConfirmModalLoaded(false);
-            handleChangeModalVisible();
-            message.success(
-              intl.formatMessage({
-                id: 'matchBot_success_created',
-                defaultMessage: 'Rule created successfully',
-              }),
-            );
-          })
-          .catch(() => {
-            setConfirmModalLoaded(false);
-            handleChangeModalVisible();
-          });
+        setRule(values);
       }
       if (!err && !isEmpty(editRule)) {
-        const prepareObjData = {
-          sponsor: editRule.sponsor,
-          voting_percent: sliderValue / 100,
-          enabled: editRule.enabled,
-          expiredAt: values.expiryDate,
-        };
-        if (values.noticeField) prepareObjData.note = values.noticeField;
-        dispatch(setMatchBotRules(prepareObjData))
-          .then(() => {
-            setConfirmModalLoaded(false);
-            handleChangeModalVisible();
-            message.success(
-              intl.formatMessage({
-                id: 'matchBot_success_edited',
-                defaultMessage: 'Rule edited successfully',
-              }),
-            );
-          })
-          .catch(() => {
-            setConfirmModalLoaded(false);
-            handleChangeModalVisible();
-          });
+        setRule(values, true);
       }
       if (err) {
         console.error(err);
@@ -288,14 +280,6 @@ const CreateRule = ({
           >
             {getFieldDecorator('expiryDate', {
               rules: [
-                {
-                  type: 'object',
-                  required: true,
-                  message: intl.formatMessage({
-                    id: 'matchBot_select_time',
-                    defaultMessage: 'Please, select time!',
-                  }),
-                },
                 {
                   validator: checkExpireDate,
                 },

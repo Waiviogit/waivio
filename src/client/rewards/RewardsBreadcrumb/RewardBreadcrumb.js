@@ -1,8 +1,9 @@
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Breadcrumb } from 'antd';
+import classNames from 'classnames';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import '../Rewards.less';
 
@@ -15,7 +16,7 @@ const rewardText = {
 };
 const RewardBreadcrumb = ({ intl, filterKey, reqObject }) => {
   const isCorrectFilter = !!rewardText[filterKey];
-  const objName = !_.isEmpty(reqObject) ? getFieldWithMaxWeight(reqObject, 'name') : null;
+  const objName = !isEmpty(reqObject) ? getFieldWithMaxWeight(reqObject, 'name') : null;
   const breadCrumbText = `${
     isCorrectFilter ? intl.formatMessage(rewardText[filterKey]) : ''
   } ${intl.formatMessage({
@@ -23,7 +24,7 @@ const RewardBreadcrumb = ({ intl, filterKey, reqObject }) => {
     defaultMessage: 'rewards',
   })}`;
   return (
-    <div className="RewardBreadcrumb">
+    <div className={classNames('RewardBreadcrumb', { 'ml3 mb3': !isEmpty(reqObject) })}>
       <Breadcrumb separator={'>'}>
         {objName ? (
           <React.Fragment>
