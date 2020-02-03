@@ -1,12 +1,12 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {withRouter} from 'react-router-dom';
-import {connect} from 'react-redux';
-import {get, isEmpty, isNull} from 'lodash';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { get, isEmpty, isNull } from 'lodash';
 import UserWalletSummary from '../wallet/UserWalletSummary';
-import {GUEST_PREFIX} from '../../common/constants/waivio';
-import {SBD, STEEM} from '../../common/constants/cryptos';
-import {getUserDetailsKey} from '../helpers/stateHelpers';
+import { GUEST_PREFIX } from '../../common/constants/waivio';
+import { SBD, STEEM } from '../../common/constants/cryptos';
+import { getUserDetailsKey } from '../helpers/stateHelpers';
 import UserWalletTransactions from '../wallet/UserWalletTransactions';
 import Loading from '../components/Icon/Loading';
 import {
@@ -25,8 +25,12 @@ import {
   getUsersAccountHistoryLoading,
   getUsersTransactions,
 } from '../reducers';
-import {getGlobalProperties, getMoreUserAccountHistory, getUserAccountHistory,} from '../wallet/walletActions';
-import {getAccount} from './usersActions';
+import {
+  getGlobalProperties,
+  getMoreUserAccountHistory,
+  getUserAccountHistory,
+} from '../wallet/walletActions';
+import { getAccount } from './usersActions';
 import WalletSidebar from '../components/Sidebar/WalletSidebar';
 
 @withRouter
@@ -153,7 +157,7 @@ class Wallet extends Component {
 
     const walletTransactions =
       transactions.length === 0 && usersAccountHistoryLoading ? (
-        <Loading style={{marginTop: '20px'}}/>
+        <Loading style={{ marginTop: '20px' }} />
       ) : (
         <UserWalletTransactions
           transactions={transactions}
@@ -181,7 +185,7 @@ class Wallet extends Component {
           steemRateLoading={steemRateLoading}
           isGuest={isGuest}
         />
-        {isMobile && <WalletSidebar/>}
+        {isMobile && <WalletSidebar />}
         {walletTransactions}
       </div>
     );

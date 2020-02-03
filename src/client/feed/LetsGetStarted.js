@@ -1,10 +1,10 @@
 import React from 'react';
-import {attempt, has, isEmpty, reduce, size} from 'lodash';
+import { attempt, has, isEmpty, reduce, size } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import {connect} from 'react-redux';
-import {Link} from 'react-router-dom';
-import {FormattedMessage} from 'react-intl';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 import {
   getAuthenticatedUser,
   getFetchFollowListError,
@@ -108,7 +108,7 @@ class LetsGetStarted extends React.Component {
       fetchFollowListError,
       isGuest,
     } = this.props;
-    const {hasProfile, hasPost, hasVoted, hasFollowed} = this.state;
+    const { hasProfile, hasPost, hasVoted, hasFollowed } = this.state;
     const totalOptions = isGuest ? 3 : 4;
 
     const actionsArray = isGuest
@@ -179,7 +179,7 @@ class LetsGetStarted extends React.Component {
                   <FormattedMessage
                     id="follow_steemians"
                     defaultMessage="Follow {amount} steemians"
-                    values={{amount: 5}}
+                    values={{ amount: 5 }}
                   />
                 </span>
               </Link>

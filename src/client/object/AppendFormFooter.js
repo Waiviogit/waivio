@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import {useSelector} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import {Button, Form} from 'antd';
-import {FormattedMessage} from 'react-intl';
+import { Button, Form } from 'antd';
+import { FormattedMessage } from 'react-intl';
 
 import LikeSection from './LikeSection';
 import FollowObjectForm from './FollowObjectForm';
-import {getVoteValue} from '../helpers/user';
+import { getVoteValue } from '../helpers/user';
 import {
   getAuthenticatedUser,
   getFollowingObjectsList,
@@ -17,7 +17,7 @@ import {
   getVotingPower,
 } from '../reducers';
 
-const AppendFormFooter = ({loading, form, handleSubmit}) => {
+const AppendFormFooter = ({ loading, form, handleSubmit }) => {
   const [isSliderVisible, setSliderVisibility] = useState(false);
   const [votePercent, setVotePercent] = useState(useSelector(getVotePercent));
   const [voteWorth, setVoteWorth] = useState(0);
@@ -29,7 +29,7 @@ const AppendFormFooter = ({loading, form, handleSubmit}) => {
   const rewardFund = useSelector(getRewardFund);
   const rate = useSelector(getRate);
 
-  const {getFieldValue} = form;
+  const { getFieldValue } = form;
 
   const calculateVoteWorth = votePercentValue => {
     const voteWorthValue = getVoteValue(
@@ -67,7 +67,7 @@ const AppendFormFooter = ({loading, form, handleSubmit}) => {
       />
 
       {followingList.includes(wObject.author_permlink) ? null : (
-        <FollowObjectForm loading={loading} form={form}/>
+        <FollowObjectForm loading={loading} form={form} />
       )}
 
       {getFieldValue('currentField') !== 'auto' && (

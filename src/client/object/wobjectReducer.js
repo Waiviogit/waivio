@@ -1,10 +1,10 @@
-import {get, isEmpty} from 'lodash';
+import { get, isEmpty } from 'lodash';
 import * as actions from './wobjectsActions';
 import * as appendAction from './appendActions';
-import {SET_USED_LOCALE} from '../app/appActions';
-import {RATE_WOBJECT_SUCCESS} from '../../client/object/wobjActions';
-import {objectFields, TYPES_OF_MENU_ITEM} from '../../common/constants/listOfFields';
-import {getClientWObj} from '../adapters';
+import { SET_USED_LOCALE } from '../app/appActions';
+import { RATE_WOBJECT_SUCCESS } from '../../client/object/wobjActions';
+import { objectFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
+import { getClientWObj } from '../adapters';
 
 const initialState = {
   wobject: {},

@@ -1,6 +1,6 @@
-import {get} from 'lodash';
+import { get } from 'lodash';
 import * as types from './authActions';
-import {GET_USER_METADATA} from '../user/usersActions';
+import { GET_USER_METADATA } from '../user/usersActions';
 
 const initialState = {
   isAuthenticated: false,

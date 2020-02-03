@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {injectIntl} from 'react-intl';
-import {connect} from 'react-redux';
-import {push} from 'connected-react-router';
-import {find, truncate} from 'lodash';
-import {Helmet} from 'react-helmet';
+import { injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
+import { push } from 'connected-react-router';
+import { find, truncate } from 'lodash';
+import { Helmet } from 'react-helmet';
 import sanitize from 'sanitize-html';
-import {dropCategory, isBannedPost, replaceBotWithGuestName} from '../helpers/postHelpers';
+import { dropCategory, isBannedPost, replaceBotWithGuestName } from '../helpers/postHelpers';
 import {
   getAppUrl,
   getAuthenticatedUser,
@@ -22,14 +22,14 @@ import {
   getVotePercent,
   getVotingPower,
 } from '../reducers';
-import {editPost} from './Write/editorActions';
-import {votePost} from './postActions';
-import {reblog} from '../app/Reblog/reblogActions';
-import {toggleBookmark} from '../bookmarks/bookmarksActions';
-import {followUser, unfollowUser} from '../user/userActions';
-import {getAvatarURL} from '../components/Avatar';
-import {getHtml} from '../components/Story/Body';
-import {jsonParse} from '../helpers/formatter';
+import { editPost } from './Write/editorActions';
+import { votePost } from './postActions';
+import { reblog } from '../app/Reblog/reblogActions';
+import { toggleBookmark } from '../bookmarks/bookmarksActions';
+import { followUser, unfollowUser } from '../user/userActions';
+import { getAvatarURL } from '../components/Avatar';
+import { getHtml } from '../components/Story/Body';
+import { jsonParse } from '../helpers/formatter';
 import StoryFull from '../components/Story/StoryFull';
 import DMCARemovedMessage from '../components/Story/DMCARemovedMessage';
 
@@ -180,7 +180,7 @@ class PostContent extends React.Component {
     const waivioHost = appUrl || 'https://investarena.com';
     const canonicalHost = waivioHost;
 
-    const userVote = find(content.active_votes, {voter: user.name}) || {};
+    const userVote = find(content.active_votes, { voter: user.name }) || {};
 
     const postState = {
       isReblogged: reblogList.includes(content.id),
@@ -203,11 +203,11 @@ class PostContent extends React.Component {
       (pendingLikes[content.id].weight < 0 ||
         (pendingLikes[content.id].weight === 0 && postState.isReported));
 
-    const {title, category, created, author, body} = content;
+    const { title, category, created, author, body } = content;
     const postMetaImage = postMetaData && postMetaData.image && postMetaData.image[0];
     const htmlBody = getHtml(body, {}, 'text');
-    const bodyText = sanitize(htmlBody, {allowedTags: []});
-    const desc = `${truncate(bodyText, {length: 143})} by ${author}`;
+    const bodyText = sanitize(htmlBody, { allowedTags: [] });
+    const desc = `${truncate(bodyText, { length: 143 })} by ${author}`;
     const image = postMetaImage || getAvatarURL(author) || '/images/logo.png';
     const canonicalUrl = `${canonicalHost}${replaceBotWithGuestName(
       dropCategory(content.url),
@@ -224,9 +224,9 @@ class PostContent extends React.Component {
       <div>
         <Helmet>
           <title>{title}</title>
-          <link rel="canonical" href={canonicalUrl}/>
-          <link rel="amphtml" href={ampUrl}/>
-          <meta property="description" content={desc}/>
+          <link rel="canonical" href={canonicalUrl} />
+          <link rel="amphtml" href={ampUrl} />
+          <meta property="description" content={desc} />
           <meta property="og:title" content={metaTitle} />
           <meta property="og:type" content="article" />
           <meta property="og:url" content={url} />

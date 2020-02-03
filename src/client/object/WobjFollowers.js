@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {getWobjectFollowers} from '../../waivioApi/ApiClient';
+import { getWobjectFollowers } from '../../waivioApi/ApiClient';
 import UserDynamicList from '../user/UserDynamicList';
 
 export default class WobjFollowers extends React.Component {
@@ -11,9 +11,9 @@ export default class WobjFollowers extends React.Component {
   static limit = 50;
 
   fetcher = async skip => {
-    const {match} = this.props;
+    const { match } = this.props;
     const response = await getWobjectFollowers(match.params.name, skip.length, WobjFollowers.limit);
-    return {users: response, hasMore: response.length === WobjFollowers.limit};
+    return { users: response, hasMore: response.length === WobjFollowers.limit };
   };
 
   render() {

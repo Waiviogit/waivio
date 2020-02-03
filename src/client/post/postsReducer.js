@@ -1,8 +1,8 @@
-import {each, find, omit} from 'lodash';
+import { each, find, omit } from 'lodash';
 import * as feedTypes from '../feed/feedActions';
 import * as postsActions from './postActions';
 import * as commentsActions from '../comments/commentsActions';
-import {getPostKey} from '../helpers/stateHelpers';
+import { getPostKey } from '../helpers/stateHelpers';
 
 const postItem = (state = {}, action) => {
   switch (action.type) {
@@ -44,7 +44,7 @@ const posts = (state = initialState, action) => {
       const commentsMoreList = {};
       action.payload.forEach(comment => {
         const key = getPostKey(comment);
-        commentsMoreList[key] = {...comment, id: key};
+        commentsMoreList[key] = { ...comment, id: key };
       });
       return {
         ...state,
@@ -68,7 +68,7 @@ const posts = (state = initialState, action) => {
 
       each(action.payload, post => {
         const key = getPostKey(post);
-        list[key] = {...post, id: key};
+        list[key] = { ...post, id: key };
         postsStates[key] = {
           fetching: false,
           loaded: true,
@@ -99,7 +99,7 @@ const posts = (state = initialState, action) => {
 
       each(action.payload, post => {
         const key = getPostKey(post);
-        list[key] = {...post, id: key};
+        list[key] = { ...post, id: key };
         postsStates[key] = {
           fetching: false,
           loaded: true,
@@ -194,11 +194,11 @@ const posts = (state = initialState, action) => {
     case postsActions.FAKE_LIKE_POST_START:
       return {
         ...state,
-        pendingLikes: {...state.pendingLikes, [action.meta.postId]: action.meta},
+        pendingLikes: { ...state.pendingLikes, [action.meta.postId]: action.meta },
       };
     case postsActions.FAKE_LIKE_POST_SUCCESS: {
       if (action.payload.isFakeLikeOk) {
-        const updatedPost = {...state.list[action.meta.postPermlink]};
+        const updatedPost = { ...state.list[action.meta.postPermlink] };
 
         updatedPost.active_votes = updatedPost.active_votes.filter(
           vote => vote.voter !== action.meta.voter,
@@ -206,7 +206,7 @@ const posts = (state = initialState, action) => {
         updatedPost.active_votes.push(action.meta);
         return {
           ...state,
-          list: {...state.list, [action.meta.postPermlink]: updatedPost},
+          list: { ...state.list, [action.meta.postPermlink]: updatedPost },
           pendingLikes: {},
         };
       }

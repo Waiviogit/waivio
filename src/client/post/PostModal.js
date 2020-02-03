@@ -1,16 +1,16 @@
 /* eslint-disable camelcase */
 import React from 'react';
 import PropTypes from 'prop-types';
-import {get} from 'lodash';
+import { get } from 'lodash';
 import classNames from 'classnames';
-import {Link} from 'react-router-dom';
-import {Modal} from 'antd';
-import {FormattedMessage} from 'react-intl';
+import { Link } from 'react-router-dom';
+import { Modal } from 'antd';
+import { FormattedMessage } from 'react-intl';
 import VisibilitySensor from 'react-visibility-sensor';
-import {dropCategory, isBannedPost, replaceBotWithGuestName} from '../helpers/postHelpers';
+import { dropCategory, isBannedPost, replaceBotWithGuestName } from '../helpers/postHelpers';
 import PostContent from './PostContent';
 import Comments from '../comments/Comments';
-import {getFacebookShareURL, getTwitterShareURL} from '../helpers/socialProfiles';
+import { getFacebookShareURL, getTwitterShareURL } from '../helpers/socialProfiles';
 import BBackTop from '../components/BBackTop';
 import './PostModal.less';
 
@@ -62,8 +62,8 @@ class PostModal extends React.Component {
       document.body.classList.add('post-modal');
     }
 
-    const {currentShownPost} = this.props;
-    const {title, url} = currentShownPost;
+    const { currentShownPost } = this.props;
+    const { title, url } = currentShownPost;
     PostModal.pushURLState(
       title,
       replaceBotWithGuestName(dropCategory(url), currentShownPost.guestInfo),
@@ -98,7 +98,7 @@ class PostModal extends React.Component {
       author: authorDetails,
       shownPostContents,
     } = this.props;
-    const {root_author, permlink, title, url} = currentShownPost;
+    const { root_author, permlink, title, url } = currentShownPost;
     const author = currentShownPost.guestInfo ? currentShownPost.guestInfo.userId : root_author;
     const baseURL = window ? window.location.origin : 'https://investarena.com';
     const postURL = `${baseURL}${replaceBotWithGuestName(

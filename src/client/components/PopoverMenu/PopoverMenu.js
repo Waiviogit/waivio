@@ -8,7 +8,7 @@ const PopoverMenu = ({ children, onSelect, bold }) => (
     {/* eslint-disable-next-line consistent-return */}
     {React.Children.map(children, child => {
       if (child) {
-        const {children: itemChildren, ...otherProps} = child.props;
+        const { children: itemChildren, ...otherProps } = child.props;
         return (
           <PopoverMenuItem
             key={child.key}

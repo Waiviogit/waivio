@@ -1,17 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import {message} from 'antd';
+import { connect } from 'react-redux';
+import { message } from 'antd';
 import filesize from 'filesize';
-import {injectIntl} from 'react-intl';
-import {getAuthenticatedUser, getSuitableLanguage} from '../../reducers';
-import {MAXIMUM_UPLOAD_SIZE} from '../../helpers/image';
-import {getClientWObj} from '../../adapters';
+import { injectIntl } from 'react-intl';
+import { getAuthenticatedUser, getSuitableLanguage } from '../../reducers';
+import { MAXIMUM_UPLOAD_SIZE } from '../../helpers/image';
+import { getClientWObj } from '../../adapters';
 import * as api from '../../../waivioApi/ApiClient';
-import {followObject, voteObject} from '../../object/wobjActions';
-import {createPermlink} from '../../vendor/steemitHelpers';
-import {generateRandomString} from '../../helpers/wObjectHelper';
-import {WAIVIO_PARENT_PERMLINK} from '../../../common/constants/waivio';
+import { followObject, voteObject } from '../../object/wobjActions';
+import { createPermlink } from '../../vendor/steemitHelpers';
+import { generateRandomString } from '../../helpers/wObjectHelper';
+import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
 
 function getDisplayName(WrappedComponent) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';

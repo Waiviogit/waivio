@@ -1,6 +1,10 @@
 /* eslint-disable camelcase */
-import {get, isEmpty} from 'lodash';
-import {createAsyncActionType, getFeedFromState, getFeedLoadingFromState,} from '../helpers/stateHelpers';
+import { get, isEmpty } from 'lodash';
+import {
+  createAsyncActionType,
+  getFeedFromState,
+  getFeedLoadingFromState,
+} from '../helpers/stateHelpers';
 import {
   getAuthenticatedUserName,
   getBookmarks as getBookmarksSelector,
@@ -13,7 +17,7 @@ import {
 } from '../reducers';
 
 import * as ApiClient from '../../waivioApi/ApiClient';
-import {mapObjectAppends} from '../object/wObjectHelper';
+import { mapObjectAppends } from '../object/wObjectHelper';
 
 export const GET_FEED_CONTENT = createAsyncActionType('@feed/GET_FEED_CONTENT');
 export const GET_MORE_FEED_CONTENT = createAsyncActionType('@feed/GET_MORE_FEED_CONTENT');
@@ -111,7 +115,7 @@ export const getMoreFeedContent = ({ sortBy, category, limit = 20 }) => (dispatc
   });
 };
 
-export const getUserProfileBlogPosts = (userName, {limit = 10, initialLoad = true, skip}) => (
+export const getUserProfileBlogPosts = (userName, { limit = 10, initialLoad = true, skip }) => (
   dispatch,
   getState,
 ) => {
@@ -212,11 +216,11 @@ export const getMoreUserFeedContent = ({ userName, limit = 20 }) => (dispatch, g
   });
 };
 
-export const getUserComments = ({username, limit = 10, skip = 0, start_permlink}) => dispatch =>
+export const getUserComments = ({ username, limit = 10, skip = 0, start_permlink }) => dispatch =>
   dispatch({
     type: GET_USER_COMMENTS.ACTION,
     payload: ApiClient.getUserCommentsFromApi(username, skip, limit, start_permlink),
-    meta: {sortBy: 'comments', category: username, limit},
+    meta: { sortBy: 'comments', category: username, limit },
   });
 
 export const getObjectComments = (author, permlink, category = 'waivio-object') => (
@@ -236,11 +240,11 @@ export const getObjectComments = (author, permlink, category = 'waivio-object') 
   });
 };
 
-export const getObjectPosts = ({username, object, readLanguages, limit = 10}) => dispatch => {
+export const getObjectPosts = ({ username, object, readLanguages, limit = 10 }) => dispatch => {
   dispatch({
     type: GET_OBJECT_POSTS.ACTION,
     payload: ApiClient.getFeedContentByObject(object, limit, readLanguages),
-    meta: {sortBy: 'objectPosts', category: username, limit},
+    meta: { sortBy: 'objectPosts', category: username, limit },
   });
 };
 
@@ -286,7 +290,7 @@ export const getObjectPostsWithForecasts = (
     meta: { sortBy: 'objectPosts', category: wobjectPermlink, limit },
   });
 
-export const getMoreUserComments = ({username, skip = 20, limit = 20}) => (
+export const getMoreUserComments = ({ username, skip = 20, limit = 20 }) => (
   dispatch,
   getState,
 ) => {
@@ -308,7 +312,7 @@ export const getMoreUserComments = ({username, skip = 20, limit = 20}) => (
   return dispatch({
     type: GET_MORE_USER_COMMENTS.ACTION,
     payload: ApiClient.getUserCommentsFromApi(username, skip, limit, startPermlink),
-    meta: {sortBy: 'comments', category: username, limit},
+    meta: { sortBy: 'comments', category: username, limit },
   });
 };
 

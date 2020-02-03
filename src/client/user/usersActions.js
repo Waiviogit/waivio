@@ -1,7 +1,7 @@
-import {createAsyncActionType} from '../helpers/stateHelpers';
+import { createAsyncActionType } from '../helpers/stateHelpers';
 // import { getAccountWithFollowingCount as getAccountWithFollowingCountAPI } from '../helpers/apiHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import {getAuthenticatedUserName} from '../reducers';
+import { getAuthenticatedUserName } from '../reducers';
 
 export const GET_ACCOUNT = createAsyncActionType('@users/GET_ACCOUNT');
 
@@ -9,16 +9,15 @@ export const getAccount = name => dispatch => {
   dispatch({
     type: GET_ACCOUNT.ACTION,
     payload: ApiClient.getUserAccount(name),
-    meta: {username: name},
-  }).catch(() => {
-  });
+    meta: { username: name },
+  }).catch(() => {});
 };
 
 export const getUserAccount = name => dispatch =>
   dispatch({
     type: GET_ACCOUNT.ACTION,
     payload: ApiClient.getUserAccount(name),
-    meta: {username: name},
+    meta: { username: name },
   }).catch(() => {});
 
 export const GET_RANDOM_EXPERTS = '@users/GET_RANDOM_EXPERTS';

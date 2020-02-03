@@ -1,20 +1,20 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import {Icon, Modal} from 'antd';
-import {batch, useDispatch} from 'react-redux';
-import {FormattedMessage} from 'react-intl';
-import {GoogleLogin} from 'react-google-login';
+import { Icon, Modal } from 'antd';
+import { batch, useDispatch } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
+import { GoogleLogin } from 'react-google-login';
 import FacebookLogin from 'react-facebook-login';
 import SteemConnect from '../../../steemConnectAPI';
-import {busyLogin, login} from '../../../auth/authActions';
-import {isUserRegistered} from '../../../../waivioApi/ApiClient';
-import {getFollowing, getFollowingObjects, getNotifications} from '../../../user/userActions';
-import {getRate, getRewardFund} from './../../../app/appActions';
-import {getRebloggedList} from './../../../app/Reblog/reblogActions';
+import { busyLogin, login } from '../../../auth/authActions';
+import { isUserRegistered } from '../../../../waivioApi/ApiClient';
+import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
+import { getRate, getRewardFund } from './../../../app/appActions';
+import { getRebloggedList } from './../../../app/Reblog/reblogActions';
 import '../ModalSignUp/ModalSignUp.less';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 
-const ModalSignIn = ({next}) => {
+const ModalSignIn = ({ next }) => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userData, setUserData] = useState({});
@@ -36,7 +36,7 @@ const ModalSignIn = ({next}) => {
           });
         });
       } else {
-        setUserData({...response, socialNetwork: 'google'});
+        setUserData({ ...response, socialNetwork: 'google' });
         setIsFormVisible(true);
       }
     }
@@ -55,7 +55,7 @@ const ModalSignIn = ({next}) => {
           });
         });
       } else {
-        setUserData({...response, socialNetwork: 'facebook'});
+        setUserData({ ...response, socialNetwork: 'facebook' });
         setIsFormVisible(true);
       }
     }
@@ -64,11 +64,11 @@ const ModalSignIn = ({next}) => {
   const renderSignIn = () => (
     <React.Fragment>
       <h2 className="ModalSignUp__title">
-        <FormattedMessage id="login" defaultMessage="Log in"/>
+        <FormattedMessage id="login" defaultMessage="Log in" />
       </h2>
       <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignUp__signin">
-        <img src="/images/icons/steemit.svg" alt="steemit" className="ModalSignUp__icon-steemit"/>
-        <FormattedMessage id="signin_with_steemIt" defaultMessage="SteemConnect"/>
+        <img src="/images/icons/steemit.svg" alt="steemit" className="ModalSignUp__icon-steemit" />
+        <FormattedMessage id="signin_with_steemIt" defaultMessage="SteemConnect" />
       </a>
       <div className="ModalSignUp__social">
         <GoogleLogin
@@ -83,11 +83,10 @@ const ModalSignIn = ({next}) => {
           autoLoad={false}
           fields="name,email,picture"
           callback={responseFacebook}
-          onFailure={() => {
-          }}
+          onFailure={() => {}}
           textButton="Facebook"
           cssClass="ModalSignUp__social-btn ModalSignUp__social-btn--fb"
-          icon={<Icon type="facebook" className="ModalSignUp__icon-fb"/>}
+          icon={<Icon type="facebook" className="ModalSignUp__icon-fb" />}
         />
       </div>
     </React.Fragment>
@@ -96,7 +95,7 @@ const ModalSignIn = ({next}) => {
   return (
     <React.Fragment>
       <a role="presentation" onClick={() => setIsModalOpen(true)}>
-        <FormattedMessage id="signin" defaultMessage="Log in"/>
+        <FormattedMessage id="signin" defaultMessage="Log in" />
       </a>
       <Modal
         width={416}
@@ -107,7 +106,7 @@ const ModalSignIn = ({next}) => {
       >
         <div className="ModalSignUp">
           {isFormVisible ? (
-            <GuestSignUpForm userData={userData} isModalOpen={isModalOpen}/>
+            <GuestSignUpForm userData={userData} isModalOpen={isModalOpen} />
           ) : (
             renderSignIn()
           )}

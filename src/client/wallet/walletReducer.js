@@ -1,7 +1,7 @@
-import {concat, filter, get, last, slice, uniqBy} from 'lodash';
+import { concat, filter, get, last, slice, uniqBy } from 'lodash';
 import * as walletActions from './walletActions';
-import {ACTIONS_DISPLAY_LIMIT, actionsFilter} from '../helpers/accountHistoryHelper';
-import {getUserDetailsKey} from '../helpers/stateHelpers';
+import { ACTIONS_DISPLAY_LIMIT, actionsFilter } from '../helpers/accountHistoryHelper';
+import { getUserDetailsKey } from '../helpers/stateHelpers';
 
 const initialState = {
   transferVisible: false,

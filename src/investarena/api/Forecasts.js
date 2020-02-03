@@ -15,7 +15,7 @@ export default class Forecasts extends Base {
       .then(({ error, data }) => {
         if (error) return { forecasts: [] };
         return data;
-      })
+      });
   }
 
   getPostsWithForecastByUser(name = '') {

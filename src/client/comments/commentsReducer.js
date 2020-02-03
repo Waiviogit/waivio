@@ -1,6 +1,6 @@
-import {mapValues, omit, uniq} from 'lodash';
+import { mapValues, omit, uniq } from 'lodash';
 import * as commentsTypes from './commentsActions';
-import {getParentKey, getPostKey} from '../helpers/stateHelpers';
+import { getParentKey, getPostKey } from '../helpers/stateHelpers';
 
 const initialState = {
   childrenById: {},
@@ -128,7 +128,7 @@ const pendingVotes = (state = initialState.pendingVotes, action) => {
     case commentsTypes.FAKE_LIKE_COMMENT.SUCCESS:
     case commentsTypes.GET_SINGLE_COMMENT.SUCCESS: {
       const commentKey = getPostKey(action.payload);
-      return state.filter(({id}) => id !== commentKey);
+      return state.filter(({ id }) => id !== commentKey);
     }
     default:
       return state;

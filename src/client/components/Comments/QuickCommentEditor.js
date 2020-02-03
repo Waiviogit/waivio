@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Icon, Input, Modal} from 'antd';
-import {get, isEmpty} from 'lodash';
+import { Icon, Input, Modal } from 'antd';
+import { get, isEmpty } from 'lodash';
 import withEditor from '../Editor/withEditor';
 import Avatar from '../Avatar';
 import ImageSetter from '../ImageSetter/ImageSetter';

@@ -1,16 +1,16 @@
 import React from 'react';
-import {map} from 'lodash';
+import { map } from 'lodash';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import {injectIntl} from 'react-intl';
-import {bindActionCreators} from 'redux';
-import {Form, message, Modal, Select} from 'antd';
-import {ALLOWED_IMG_FORMATS, MAX_IMG_SIZE} from '../../../common/constants/validation';
-import {getAuthenticatedUserName, getObject, getObjectAlbums} from '../../reducers';
-import {objectFields} from '../../../common/constants/listOfFields';
+import { connect } from 'react-redux';
+import { injectIntl } from 'react-intl';
+import { bindActionCreators } from 'redux';
+import { Form, message, Modal, Select } from 'antd';
+import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
+import { getAuthenticatedUserName, getObject, getObjectAlbums } from '../../reducers';
+import { objectFields } from '../../../common/constants/listOfFields';
 import * as galleryActions from './galleryActions';
 import * as appendActions from '../appendActions';
-import {generatePermlink, getField, prepareImageToStore} from '../../helpers/wObjectHelper';
+import { generatePermlink, getField, prepareImageToStore } from '../../helpers/wObjectHelper';
 import AppendFormFooter from '../AppendFormFooter';
 import ImageSetter from '../../components/ImageSetter/ImageSetter';
 import './CreateImage.less';
@@ -42,7 +42,7 @@ class CreateImage extends React.Component {
     isValidLink: false,
   };
 
-  onLoadingImage = value => this.setState({isLoading: value});
+  onLoadingImage = value => this.setState({ isLoading: value });
 
   getWobjectData = () => {
     const { currentUsername, wObject } = this.props;
@@ -84,7 +84,7 @@ class CreateImage extends React.Component {
 
   // handlePreviewCancel = () => this.setState({ previewVisible: false });
   getImages = image => {
-    this.setState({currentImages: image});
+    this.setState({ currentImages: image });
   };
 
   handleSubmit = e => {
@@ -186,8 +186,8 @@ class CreateImage extends React.Component {
   };
 
   appendImages = async () => {
-    const {addImageToAlbumStore, form} = this.props;
-    const {currentImages} = this.state;
+    const { addImageToAlbumStore, form } = this.props;
+    const { currentImages } = this.state;
 
     const data = this.getWobjectData();
 
@@ -220,12 +220,12 @@ class CreateImage extends React.Component {
 
   handleModalCancel = () => {
     this.props.hideModal();
-    this.setState({fileList: [], uploadingList: []});
+    this.setState({ fileList: [], uploadingList: [] });
   };
 
   render() {
-    const {showModal, form, intl, selectedAlbum, albums} = this.props;
-    const {fileList, uploadingList, loading} = this.state;
+    const { showModal, form, intl, selectedAlbum, albums } = this.props;
+    const { fileList, uploadingList, loading } = this.state;
 
     return (
       <Modal
@@ -335,10 +335,8 @@ CreateImage.defaultProps = {
   currentUsername: {},
   wObject: {},
   albums: [],
-  appendObject: () => {
-  },
-  addImageToAlbumStore: () => {
-  },
+  appendObject: () => {},
+  addImageToAlbumStore: () => {},
 };
 
 export default injectIntl(Form.create()(CreateImage));

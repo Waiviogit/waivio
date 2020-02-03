@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {getWobjectsExpertise} from '../../waivioApi/ApiClient';
+import { getWobjectsExpertise } from '../../waivioApi/ApiClient';
 import UserDynamicList from '../user/UserDynamicList';
 
 export default class WobjExpertise extends React.Component {
@@ -20,7 +20,7 @@ export default class WobjExpertise extends React.Component {
         skip.length,
         WobjExpertise.limit,
       );
-      resolve({users: data.users, hasMore: data.users.length === WobjExpertise.limit});
+      resolve({ users: data.users, hasMore: data.users.length === WobjExpertise.limit });
     });
   };
 

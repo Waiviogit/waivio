@@ -1,6 +1,6 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
-import {FormattedMessage} from 'react-intl';
+import { Link } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 
 const EmptyUserProfile = () => (
   <div className="text-center">

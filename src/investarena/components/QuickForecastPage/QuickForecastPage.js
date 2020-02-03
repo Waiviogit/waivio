@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
-import {FormattedMessage, injectIntl} from 'react-intl';
-import {Icon, Modal} from 'antd';
-import {Link} from 'react-router-dom';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { Icon, Modal } from 'antd';
+import { Link } from 'react-router-dom';
 
 import RightSidebarLoading from '../../../client/app/Sidebar/RightSidebarLoading';
 import StoryLoading from '../../../client/components/Story/StoryLoading';
@@ -15,7 +15,7 @@ import USDDisplay from '../../../client/components/Utils/USDDisplay';
 import withAuthActions from '../../../client/auth/withAuthActions';
 import SortSelector from '../../../client/components/SortSelector/SortSelector';
 import Affix from '../../../client/components/Utils/Affix';
-import {marketNames} from '../../constants/objectsInvestarena';
+import { marketNames } from '../../constants/objectsInvestarena';
 import {
   forecastWinnersShowMore,
   getDataForQuickForecast,
@@ -141,9 +141,10 @@ const QuickForecastPage = props => {
   const currentForecastList =
     answeredForecastList.length === 5 ? answeredForecastList : forecastList;
   const secondsInMilliseconds = sec => sec / 0.001;
-  const finishRoundTime = props.roundTime >= 0
-    ? currentTime + secondsInMilliseconds(props.roundTime)
-    : currentTime + secondsInMilliseconds(9000);
+  const finishRoundTime =
+    props.roundTime >= 0
+      ? currentTime + secondsInMilliseconds(props.roundTime)
+      : currentTime + secondsInMilliseconds(9000);
 
   return (
     <div className="container">

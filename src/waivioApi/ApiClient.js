@@ -3,10 +3,10 @@ import _ from 'lodash';
 import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
 import config from './routes';
-import {baseUrl as investarenaConfig} from '../investarena/configApi/apiResources';
-import {getFollowingCount} from '../client/helpers/apiHelpers';
-import {getValidTokenData} from '../client/helpers/getToken';
-import {supportedObjectTypes} from '../investarena/constants/objectsInvestarena';
+import { baseUrl as investarenaConfig } from '../investarena/configApi/apiResources';
+import { getFollowingCount } from '../client/helpers/apiHelpers';
+import { getValidTokenData } from '../client/helpers/getToken';
+import { supportedObjectTypes } from '../investarena/constants/objectsInvestarena';
 
 const filterKey = 'investarena';
 
@@ -292,7 +292,7 @@ export const getAllFollowingObjects = (username, skip, limit) =>
     fetch(`${config.apiPrefix}${config.user}/${username}${config.followingObjects}`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({limit, skip}),
+      body: JSON.stringify({ limit, skip }),
     })
       .then(res => res.json())
       .then(res => resolve(res.map(obj => obj.author_permlink)))
@@ -578,7 +578,7 @@ export const getSuitableUsers = (followsCount, postsCount) =>
       },
     )
       .then(res => res.json())
-      .then(result => resolve({users: result.users, hasMore: false}))
+      .then(result => resolve({ users: result.users, hasMore: false }))
       .catch(error => reject(error));
   });
 
@@ -724,18 +724,18 @@ export const updateUserMetadata = async (userName, data) => {
 
   if (isGuest) {
     const token = await getValidTokenData();
-    headers = {...headers, 'access-token': token.token, 'waivio-auth': true};
+    headers = { ...headers, 'access-token': token.token, 'waivio-auth': true };
   } else {
-    headers = {...headers, 'access-token': Cookie.get('access_token')};
+    headers = { ...headers, 'access-token': Cookie.get('access_token') };
   }
   return fetch(`${config.apiPrefix}${config.user}/${userName}${config.userMetadata}`, {
     headers,
     method: 'PUT',
-    body: JSON.stringify({user_metadata: data}),
+    body: JSON.stringify({ user_metadata: data }),
   }).then(res => res.json());
 };
 
-export const getGuestPaymentsHistory = (userName, {skip = 0, limit = 20}) => {
+export const getGuestPaymentsHistory = (userName, { skip = 0, limit = 20 }) => {
   return new Promise((resolve, reject) => {
     fetch(
       `${config.campaignApiPrefix}${config.payments}${config.demoPayables}?userName=${userName}&skip=${skip}&limit=${limit}`,
@@ -796,7 +796,7 @@ export const getUserCommentsFromApi = (username, skip = 0, limit = 10, start_per
     .catch(err => err);
 };
 
-export const getPostCommentsFromApi = ({category, root_author, permlink}) => {
+export const getPostCommentsFromApi = ({ category, root_author, permlink }) => {
   return fetch(
     `${config.apiPrefix}${config.postComments}?author=${root_author}&permlink=${permlink}&category=${category}`,
   )
@@ -836,7 +836,7 @@ export const getNewToken = token => {
   let response = {};
   return fetch(`${config.baseUrl}${config.auth}/${config.validateAuthToken}`, {
     method: 'POST',
-    headers: {'access-token': token},
+    headers: { 'access-token': token },
   })
     .then(data => {
       response.token = data.headers.get('access-token');
@@ -870,10 +870,10 @@ export const broadcastGuestOperation = async (operationId, data) => {
   if (userData.token) {
     return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
       method: 'POST',
-      headers: {...headers, 'access-token': userData.token},
+      headers: { ...headers, 'access-token': userData.token },
       body: JSON.stringify({
         id: operationId,
-        data: {operations: data},
+        data: { operations: data },
         userName: userData.userData.name,
       }),
     }).then(data => data);
@@ -925,23 +925,23 @@ export const updateGuestProfile = async (username, json_metadata) => {
   const userData = await getValidTokenData();
   return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
     method: 'POST',
-    headers: {...headers, 'access-token': userData.token},
+    headers: { ...headers, 'access-token': userData.token },
     body: JSON.stringify(body),
   })
     .then(data => data)
     .catch(err => err.message);
 };
 
-export const sendGuestTransfer = async ({to, amount, memo}) => {
+export const sendGuestTransfer = async ({ to, amount, memo }) => {
   const userData = await getValidTokenData();
   const body = {
     id: 'waivio_guest_transfer',
-    data: {to, amount: +amount.split(' ')[0]},
+    data: { to, amount: +amount.split(' ')[0] },
   };
   if (memo) body.data.memo = memo;
   return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
     method: 'POST',
-    headers: {...headers, 'access-token': userData.token},
+    headers: { ...headers, 'access-token': userData.token },
     body: JSON.stringify(body),
   })
     .then(res => res.json())

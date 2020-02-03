@@ -1,13 +1,13 @@
 import React from 'react';
-import {Tabs} from 'antd';
+import { Tabs } from 'antd';
 import PropTypes from 'prop-types';
-import {FormattedMessage, FormattedNumber} from 'react-intl';
-import {connect} from 'react-redux';
+import { FormattedMessage, FormattedNumber } from 'react-intl';
+import { connect } from 'react-redux';
 import UserDynamicList from './UserDynamicList';
-import {getFollowingsFromAPI, getWobjectFollowing} from '../../waivioApi/ApiClient';
+import { getFollowingsFromAPI, getWobjectFollowing } from '../../waivioApi/ApiClient';
 import ObjectDynamicList from '../object/ObjectDynamicList';
-import {getUser} from '../reducers';
-import {notify} from '../app/Notification/notificationActions';
+import { getUser } from '../reducers';
+import { notify } from '../app/Notification/notificationActions';
 import './UserFollowing.less';
 
 const TabPane = Tabs.TabPane;
@@ -44,13 +44,13 @@ export default class UserFollowing extends React.Component {
       this.limit,
       this.skip,
     );
-    const users = response.users.map(user => ({name: user}));
+    const users = response.users.map(user => ({ name: user }));
     this.skip += this.limit;
-    return {users, hasMore: response.hasMore};
+    return { users, hasMore: response.hasMore };
   }
 
   objectFetcher = skip => {
-    const {match} = this.props;
+    const { match } = this.props;
     return getWobjectFollowing(match.params.name, skip, UserFollowing.limit);
   };
 
@@ -81,7 +81,7 @@ export default class UserFollowing extends React.Component {
             tab={
               <React.Fragment>
                 <span className="UserFollowing__item">
-                  <FormattedMessage id="users" defaultMessage="Users"/>
+                  <FormattedMessage id="users" defaultMessage="Users" />
                 </span>
                 <span className="UserFollowing__badge">
                   <FormattedNumber

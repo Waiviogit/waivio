@@ -1,7 +1,7 @@
 import * as settingsTypes from './settingsActions';
 import * as authTypes from '../auth/authActions';
-import {GET_USER_METADATA} from '../user/usersActions';
-import {rewardsValues} from '../../common/constants/rewards';
+import { GET_USER_METADATA } from '../user/usersActions';
+import { rewardsValues } from '../../common/constants/rewards';
 
 const initialState = {
   locale: 'auto',

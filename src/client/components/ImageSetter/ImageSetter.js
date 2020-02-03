@@ -1,26 +1,26 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import {injectIntl} from 'react-intl';
-import {Icon, message} from 'antd';
-import {isEmpty, map} from 'lodash';
+import { injectIntl } from 'react-intl';
+import { Icon, message } from 'antd';
+import { isEmpty, map } from 'lodash';
 import uuidv4 from 'uuid/v4';
 import classNames from 'classnames';
 import withEditor from '../Editor/withEditor';
-import {isValidImage} from '../../helpers/image';
-import {ALLOWED_IMG_FORMATS, MAX_IMG_SIZE} from '../../../common/constants/validation';
-import {objectFields} from '../../../common/constants/listOfFields';
+import { isValidImage } from '../../helpers/image';
+import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
+import { objectFields } from '../../../common/constants/listOfFields';
 import './ImageSetter.less';
 
 const ImageSetter = ({
-                       intl,
-                       isMultiple,
-                       onImageInvalid,
-                       onImageUpload,
-                       onLoadingImage,
-                       onImageLoaded,
-                       defaultImage,
-                       isRequired,
-                     }) => {
+  intl,
+  isMultiple,
+  onImageInvalid,
+  onImageUpload,
+  onLoadingImage,
+  onImageLoaded,
+  defaultImage,
+  isRequired,
+}) => {
   const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
   const [isLoadingImage, setLoadingImage] = useState(false);
@@ -160,7 +160,7 @@ const ImageSetter = ({
   return (
     <div className="ImageSetter">
       <div
-        className={classNames('ImageSetter__label', {'ImageSetter__label--required': isRequired})}
+        className={classNames('ImageSetter__label', { 'ImageSetter__label--required': isRequired })}
       >
         {renderTitle()}
       </div>
@@ -173,19 +173,19 @@ const ImageSetter = ({
                 onClick={() => handleRemoveImage(image.id)}
                 role="presentation"
               >
-                <i className="iconfont icon-delete_fill Image-box__remove-icon"/>
+                <i className="iconfont icon-delete_fill Image-box__remove-icon" />
               </div>
-              <img src={image.src} width="86" height="86" alt={image.src}/>
+              <img src={image.src} width="86" height="86" alt={image.src} />
             </div>
           ))}
           {isLoadingImage &&
-          map(fileImages, () => (
-            <div className="image-box__preview">
-              <div className="image-box__preview-loader">
-                <Icon type="loading"/>
+            map(fileImages, () => (
+              <div className="image-box__preview">
+                <div className="image-box__preview-loader">
+                  <Icon type="loading" />
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       )}
       {(isMultiple || !currentImages.length) && (
@@ -230,7 +230,7 @@ const ImageSetter = ({
               type="button"
               onClick={() => handleOnUploadImageByLink()}
             >
-              <Icon type="upload"/>
+              <Icon type="upload" />
             </button>
           </div>
         </div>

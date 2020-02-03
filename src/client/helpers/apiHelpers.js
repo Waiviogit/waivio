@@ -1,7 +1,7 @@
 import SteemAPI from '../steemAPI';
-import {jsonParse} from '../helpers/formatter';
+import { jsonParse } from '../helpers/formatter';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
-import {getGuestPaymentsHistory, getUserAccount} from '../../waivioApi/ApiClient';
+import { getGuestPaymentsHistory, getUserAccount } from '../../waivioApi/ApiClient';
 
 export const getAccount = username =>
   SteemAPI.sendAsync('get_accounts', [[username]]).then(result => {
@@ -16,7 +16,7 @@ export const getAccount = username =>
 export const getFollowingCount = async (username, isGuest = false) => {
   if (isGuest) {
     const res = await getUserAccount(username, true);
-    return {following_count: res.users_following_count};
+    return { following_count: res.users_following_count };
   }
   return SteemAPI.sendAsync('call', ['follow_api', 'get_follow_count', [username]]);
 };
@@ -83,9 +83,9 @@ const getSteemAccountHistory = (account, from = -1, limit = defaultAccountLimit)
   SteemAPI.sendAsync('get_account_history', [account, from, limit]);
 
 const getGuestAccountHistory = (account, from = 0, limit = 20) =>
-  getGuestPaymentsHistory(account, {skip: from, limit});
+  getGuestPaymentsHistory(account, { skip: from, limit });
 
-export const getAccountHistory = (account, {from, limit, isGuest = false}) => {
+export const getAccountHistory = (account, { from, limit, isGuest = false }) => {
   if (isGuest) {
     return getGuestAccountHistory(account, from, limit);
   }

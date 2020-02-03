@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import {Scrollbars} from 'react-custom-scrollbars';
-import {FormattedMessage, FormattedNumber} from 'react-intl';
+import { Scrollbars } from 'react-custom-scrollbars';
+import { FormattedMessage, FormattedNumber } from 'react-intl';
 import './UserMenu.less';
 
 class UserMenu extends React.Component {
@@ -15,8 +15,7 @@ class UserMenu extends React.Component {
   };
 
   static defaultProps = {
-    onChange: () => {
-    },
+    onChange: () => {},
     defaultKey: 'discussions',
     followers: 0,
     following: 0,
@@ -118,7 +117,7 @@ class UserMenu extends React.Component {
                 role="presentation"
                 data-key="transfers"
               >
-                <FormattedMessage id="wallet" defaultMessage="Wallet"/>
+                <FormattedMessage id="wallet" defaultMessage="Wallet" />
               </li>
               <li
                 className={this.getItemClasses('statistics')}
@@ -126,7 +125,7 @@ class UserMenu extends React.Component {
                 role="presentation"
                 data-key="statistics"
               >
-                <FormattedMessage id="statistics" defaultMessage="Statistics"/>
+                <FormattedMessage id="statistics" defaultMessage="Statistics" />
               </li>
               {!this.props.isGuest && (
                 <li
@@ -135,7 +134,7 @@ class UserMenu extends React.Component {
                   role="presentation"
                   data-key="activity"
                 >
-                  <FormattedMessage id="activity" defaultMessage="Activity"/>
+                  <FormattedMessage id="activity" defaultMessage="Activity" />
                 </li>
               )}
             </ul>

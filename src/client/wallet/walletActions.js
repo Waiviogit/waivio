@@ -1,15 +1,15 @@
-import {each, filter, findIndex, get, isEmpty, last} from 'lodash';
-import {createAction} from 'redux-actions';
+import { each, filter, findIndex, get, isEmpty, last } from 'lodash';
+import { createAction } from 'redux-actions';
 import formatter from '../helpers/steemitFormatter';
-import {createAsyncActionType, getUserDetailsKey} from '../helpers/stateHelpers';
+import { createAsyncActionType, getUserDetailsKey } from '../helpers/stateHelpers';
 import {
   defaultAccountLimit,
   getAccountHistory,
   getDynamicGlobalProperties,
   isWalletTransaction,
 } from '../helpers/apiHelpers';
-import {ACTIONS_DISPLAY_LIMIT, actionsFilter} from '../helpers/accountHistoryHelper';
-import {GUEST_PREFIX} from '../../common/constants/waivio';
+import { ACTIONS_DISPLAY_LIMIT, actionsFilter } from '../helpers/accountHistoryHelper';
+import { GUEST_PREFIX } from '../../common/constants/waivio';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
 export const CLOSE_TRANSFER = '@wallet/CLOSE_TRANSFER';
@@ -104,8 +104,8 @@ const parseGuestActions = actions => {
   return actions.map((action, index) => {
     const transferDirection =
       action.type === guestActionType.DEMO_POST || action.type === guestActionType.DEMO_DEBT
-        ? {from: action.sponsor, to: action.userName}
-        : {from: action.userName, to: action.sponsor || 'mock'};
+        ? { from: action.sponsor, to: action.userName }
+        : { from: action.userName, to: action.sponsor || 'mock' };
     return {
       trx_id: action._id, // eslint-disable-line
       block: 39603148,
@@ -134,7 +134,7 @@ const getParsedUserActions = (userActions, isGuest) => {
       userWalletTransactions,
       userAccountHistory: userWalletTransactions.length
         ? userWalletTransactions
-        : [{actionCount: 0}],
+        : [{ actionCount: 0 }],
     };
   }
   return parseSteemUserActions(userActions);
@@ -153,7 +153,7 @@ export const getUserAccountHistory = username => dispatch => {
   dispatch({
     type: GET_USER_ACCOUNT_HISTORY.ACTION,
     payload: {
-      promise: getAccountHistory(username, {isGuest}).then(userActions => {
+      promise: getAccountHistory(username, { isGuest }).then(userActions => {
         const parsedUserActions = getParsedUserActions(userActions, isGuest);
 
         return {
@@ -172,7 +172,7 @@ export const getMoreUserAccountHistory = (username, start, limit) => dispatch =>
   dispatch({
     type: GET_MORE_USER_ACCOUNT_HISTORY.ACTION,
     payload: {
-      promise: getAccountHistory(username, {from: start, limit, isGuest}).then(userActions => {
+      promise: getAccountHistory(username, { from: start, limit, isGuest }).then(userActions => {
         const parsedUserActions = getParsedUserActions(userActions, isGuest);
         return {
           username,
@@ -209,8 +209,8 @@ export const loadingMoreUsersAccountHistory = createAction(LOADING_MORE_USERS_AC
 
 export const loadMoreCurrentUsersActions = username => (dispatch, getState) => {
   dispatch(loadingMoreUsersAccountHistory());
-  const {wallet} = getState();
-  const {usersAccountHistory, currentDisplayedActions, accountHistoryFilter} = wallet;
+  const { wallet } = getState();
+  const { usersAccountHistory, currentDisplayedActions, accountHistoryFilter } = wallet;
   const currentUsersActions = get(usersAccountHistory, getUserDetailsKey(username), []);
   const lastDisplayedAction = last(currentDisplayedActions);
 

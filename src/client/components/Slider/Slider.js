@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {FormattedMessage, FormattedNumber, injectIntl} from 'react-intl';
+import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
 import USDDisplay from '../Utils/USDDisplay';
 import RawSlider from './RawSlider';
 import './Slider.less';

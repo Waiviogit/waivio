@@ -1,21 +1,21 @@
-import React, {useEffect, useState} from 'react';
-import {Button, Checkbox, Form, Input, Select} from 'antd';
-import {FormattedMessage} from 'react-intl';
-import {shallowEqual, useDispatch, useSelector} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { Button, Checkbox, Form, Input, Select } from 'antd';
+import { FormattedMessage } from 'react-intl';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import getSlug from 'speakingurl';
-import {GUEST_PREFIX} from '../../../../common/constants/waivio';
-import {getUserAccount} from '../../../../waivioApi/ApiClient';
-import {login} from '../../../auth/authActions';
-import {notify} from '../../../app/Notification/notificationActions';
+import { GUEST_PREFIX } from '../../../../common/constants/waivio';
+import { getUserAccount } from '../../../../waivioApi/ApiClient';
+import { login } from '../../../auth/authActions';
+import { notify } from '../../../app/Notification/notificationActions';
 import LANGUAGES from '../../../translations/languages';
-import {getLanguageText} from '../../../translations';
-import {getLocale} from '../../../reducers';
+import { getLanguageText } from '../../../translations';
+import { getLocale } from '../../../reducers';
 import ImageSetter from '../../ImageSetter/ImageSetter';
 import './GuestSignUpForm.less';
 
-const GuestSignUpForm = ({form, userData, isModalOpen}) => {
-  const {getFieldDecorator, getFieldsError, getFieldError, validateFields, setFieldsValue} = form;
+const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
+  const { getFieldDecorator, getFieldsError, getFieldError, validateFields, setFieldsValue } = form;
 
   let initialLanguages = useSelector(getLocale, shallowEqual);
   initialLanguages = initialLanguages === 'auto' ? 'en-US' : initialLanguages;
@@ -38,7 +38,7 @@ const GuestSignUpForm = ({form, userData, isModalOpen}) => {
 
   useEffect(() => {
     if (!isModalOpen) {
-      setFieldsValue({username: ''});
+      setFieldsValue({ username: '' });
       setIsLoading(false);
     }
   }, [isModalOpen]);
@@ -56,7 +56,7 @@ const GuestSignUpForm = ({form, userData, isModalOpen}) => {
     }
     if (value.trim().length === 0)
       callback(
-        <FormattedMessage id="please_input_username" defaultMessage="Please input your username"/>,
+        <FormattedMessage id="please_input_username" defaultMessage="Please input your username" />,
       );
     const user = await getUserAccount(`${GUEST_PREFIX}${value}`);
     if (user.id) {
@@ -95,7 +95,7 @@ const GuestSignUpForm = ({form, userData, isModalOpen}) => {
   };
 
   const getAvatar = image => {
-    setFieldsValue({avatar: image});
+    setFieldsValue({ avatar: image });
   };
 
   const usernameError = getFieldError('username');
@@ -105,13 +105,13 @@ const GuestSignUpForm = ({form, userData, isModalOpen}) => {
   return (
     <React.Fragment>
       <h2 className="ModalSignUp__title">
-        <FormattedMessage id="public_profile" defaultMessage="Public profile"/>
+        <FormattedMessage id="public_profile" defaultMessage="Public profile" />
       </h2>
       <Form layout="vertical" onSubmit={handleSubmit}>
         <Form.Item
           validateStatus={usernameError ? 'error' : 'success'}
           help={usernameError || ''}
-          label={<FormattedMessage id="nickname" defaultMessage="Nickname"/>}
+          label={<FormattedMessage id="nickname" defaultMessage="Nickname" />}
         >
           {getFieldDecorator('username', {
             rules: [
@@ -160,7 +160,7 @@ const GuestSignUpForm = ({form, userData, isModalOpen}) => {
         <Form.Item
           validateStatus={aliasError ? 'error' : ''}
           help={aliasError || ''}
-          label={<FormattedMessage id="profile_name" defaultMessage="name"/>}
+          label={<FormattedMessage id="profile_name" defaultMessage="name" />}
         >
           {getFieldDecorator('alias', {
             rules: [
@@ -182,16 +182,16 @@ const GuestSignUpForm = ({form, userData, isModalOpen}) => {
                 ),
               },
             ],
-          })(<Input placeholder="Enter username" maxLength={64}/>)}
+          })(<Input placeholder="Enter username" maxLength={64} />)}
         </Form.Item>
 
         <Form.Item
-          label={<FormattedMessage id="preferred_languages" defaultMessage="Preferred Languages"/>}
+          label={<FormattedMessage id="preferred_languages" defaultMessage="Preferred Languages" />}
         >
           {getFieldDecorator('locales', {
             initialValue: initialLanguages,
           })(
-            <Select mode="multiple" style={{width: '100%'}}>
+            <Select mode="multiple" style={{ width: '100%' }}>
               {LANGUAGES.map(lang => (
                 <Select.Option key={lang.id} value={lang.id}>
                   {getLanguageText(lang)}
@@ -204,7 +204,7 @@ const GuestSignUpForm = ({form, userData, isModalOpen}) => {
         <Form.Item
           validateStatus={agreementError ? 'error' : ''}
           help={agreementError || ''}
-          label={<FormattedMessage id="rewards_details_legal" defaultMessage="Legal"/>}
+          label={<FormattedMessage id="rewards_details_legal" defaultMessage="Legal" />}
         >
           {getFieldDecorator('agreement', {
             checked: false,
@@ -265,7 +265,7 @@ const GuestSignUpForm = ({form, userData, isModalOpen}) => {
             disabled={hasErrors(getFieldsError())}
             loading={isLoading}
           >
-            <FormattedMessage id="signup" defaultMessage="Sign up"/>
+            <FormattedMessage id="signup" defaultMessage="Sign up" />
           </Button>
         </Form.Item>
       </Form>
@@ -279,4 +279,4 @@ GuestSignUpForm.propTypes = {
   isModalOpen: PropTypes.bool.isRequired,
 };
 
-export default Form.create({name: 'username'})(GuestSignUpForm);
+export default Form.create({ name: 'username' })(GuestSignUpForm);

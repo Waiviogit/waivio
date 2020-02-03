@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {isEmpty, size, map } from 'lodash';
-import {connect} from 'react-redux';
-import { Modal, Tag} from 'antd';
-import {isNeedFilters, updateActiveFilters} from './helper';
+import { isEmpty, size, map } from 'lodash';
+import { connect } from 'react-redux';
+import { Modal, Tag } from 'antd';
+import { isNeedFilters, updateActiveFilters } from './helper';
 import {
   getActiveFilters,
   getAvailableFilters,
@@ -13,17 +13,21 @@ import {
   getObjectTypesList,
   getObjectTypeSorting,
 } from '../reducers';
-import {changeSortingAndLoad, clearType, getObjectType, setFiltersAndLoad,} from '../objectTypes/objectTypeActions';
-import {getObjectTypes} from '../objectTypes/objectTypesActions';
+import {
+  changeSortingAndLoad,
+  clearType,
+  getObjectType,
+  setFiltersAndLoad,
+} from '../objectTypes/objectTypeActions';
+import { getObjectTypes } from '../objectTypes/objectTypesActions';
 import Loading from '../components/Icon/Loading';
 import ObjectCardView from '../objectCard/ObjectCardView';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import DiscoverObjectsFilters from './DiscoverFiltersSidebar/FiltersContainer';
 import SidenavDiscoverObjects from './SidenavDiscoverObjects';
 import SortSelector from '../components/SortSelector/SortSelector';
-import InstrumentCardView
-  from '../../investarena/components/InstrumentsPage/Instrument/InstrumentCardView/InstrumentCardView';
-import {BROKER} from '../../investarena/constants/platform';
+import InstrumentCardView from '../../investarena/components/InstrumentsPage/Instrument/InstrumentCardView/InstrumentCardView';
+import { BROKER } from '../../investarena/constants/platform';
 
 const modalName = {
   FILTERS: 'filters',

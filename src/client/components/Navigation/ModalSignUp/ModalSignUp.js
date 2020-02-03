@@ -1,19 +1,19 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import {Form, Icon, Modal} from 'antd';
-import {batch, useDispatch} from 'react-redux';
-import {FormattedMessage, injectIntl} from 'react-intl';
-import {GoogleLogin} from 'react-google-login';
+import { Form, Icon, Modal } from 'antd';
+import { batch, useDispatch } from 'react-redux';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { GoogleLogin } from 'react-google-login';
 import FacebookLogin from 'react-facebook-login';
-import {busyLogin, login} from '../../../auth/authActions';
-import {isUserRegistered} from '../../../../waivioApi/ApiClient';
-import {getFollowing, getFollowingObjects, getNotifications} from '../../../user/userActions';
-import {getRate, getRewardFund} from './../../../app/appActions';
-import {getRebloggedList} from './../../../app/Reblog/reblogActions';
+import { busyLogin, login } from '../../../auth/authActions';
+import { isUserRegistered } from '../../../../waivioApi/ApiClient';
+import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
+import { getRate, getRewardFund } from './../../../app/appActions';
+import { getRebloggedList } from './../../../app/Reblog/reblogActions';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 import './ModalSignUp.less';
 
-const ModalSignUp = ({isButton}) => {
+const ModalSignUp = ({ isButton }) => {
   const dispatch = useDispatch();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,7 +36,7 @@ const ModalSignUp = ({isButton}) => {
           });
         });
       } else {
-        setUserData({...response, socialNetwork: 'google'});
+        setUserData({ ...response, socialNetwork: 'google' });
         setIsFormVisible(true);
       }
     }
@@ -55,7 +55,7 @@ const ModalSignUp = ({isButton}) => {
           });
         });
       } else {
-        setUserData({...response, socialNetwork: 'facebook'});
+        setUserData({ ...response, socialNetwork: 'facebook' });
         setIsFormVisible(true);
       }
     }
@@ -72,12 +72,12 @@ const ModalSignUp = ({isButton}) => {
         </a>
       </div>
       <div className="ModalSignUp__link mb3">
-        <FormattedMessage id="freeSteemAcc" defaultMessage="- get a free Steem account"/>
-        <FormattedMessage id="emailAndPhoneReq" defaultMessage="- email & phone required"/>
-        <FormattedMessage id="longerWaiting" defaultMessage="- wait up to 2 weeks"/>
+        <FormattedMessage id="freeSteemAcc" defaultMessage="- get a free Steem account" />
+        <FormattedMessage id="emailAndPhoneReq" defaultMessage="- email & phone required" />
+        <FormattedMessage id="longerWaiting" defaultMessage="- wait up to 2 weeks" />
       </div>
       <a target="_blank" rel="noopener noreferrer" href={process.env.SIGNUP_URL}>
-        <FormattedMessage id="signup" defaultMessage="Sign up"/>
+        <FormattedMessage id="signup" defaultMessage="Sign up" />
       </a>
     </div>
   );
@@ -89,7 +89,7 @@ const ModalSignUp = ({isButton}) => {
   const renderSignUp = () => (
     <React.Fragment>
       <h2 className="ModalSignUp__title">
-        <FormattedMessage id="signupForRewards" defaultMessage="Sign up for rewards!"/>
+        <FormattedMessage id="signupForRewards" defaultMessage="Sign up for rewards!" />
       </h2>
       {/* <h2 className="ModalSignUp__title ModalSignUp__title--lined ModalSignUp__title ModalSignUp__title--lined--lined"> */}
       {/*  <span> */}
@@ -98,7 +98,7 @@ const ModalSignUp = ({isButton}) => {
       {/* </h2> */}
       {getSignUpInfo}
       <div className="ModalSignUp__subtitle">
-        <FormattedMessage id="payOneTimeFee" defaultMessage="or pay a one-time fee (about $3)"/>
+        <FormattedMessage id="payOneTimeFee" defaultMessage="or pay a one-time fee (about $3)" />
         <FormattedMessage
           id="getSteemAccountNow"
           defaultMessage="to get a Steem account now using:"
@@ -111,7 +111,7 @@ const ModalSignUp = ({isButton}) => {
           rel="noopener noreferrer"
           target="_blank"
         >
-          <FormattedMessage id="creditCards" defaultMessage="- credit cards"/>
+          <FormattedMessage id="creditCards" defaultMessage="- credit cards" />
         </a>
         <a
           href="https://blocktrades.us/create-steem-account"
@@ -119,7 +119,7 @@ const ModalSignUp = ({isButton}) => {
           rel="noopener noreferrer"
           target="_blank"
         >
-          <FormattedMessage id="BTC_LTC_ETH" defaultMessage="- BTC/LTC/ETH"/>
+          <FormattedMessage id="BTC_LTC_ETH" defaultMessage="- BTC/LTC/ETH" />
         </a>
         <a
           href="https://v2.steemconnect.com/accounts/create"
@@ -127,12 +127,12 @@ const ModalSignUp = ({isButton}) => {
           rel="noopener noreferrer"
           target="_blank"
         >
-          <FormattedMessage id="STEEMcoins" defaultMessage="- STEEM coins"/>
+          <FormattedMessage id="STEEMcoins" defaultMessage="- STEEM coins" />
         </a>
       </div>
       <h2 className="ModalSignUp__title ModalSignUp__title--lined">
         <span>
-          <FormattedMessage id="guestAccounts" defaultMessage="GUEST ACCOUNTS"/>
+          <FormattedMessage id="guestAccounts" defaultMessage="GUEST ACCOUNTS" />
         </span>
       </h2>
 
@@ -152,8 +152,7 @@ const ModalSignUp = ({isButton}) => {
           clientId="623736583769-qlg46kt2o7gc4kjd2l90nscitf38vl5t.apps.googleusercontent.com"
           onSuccess={responseGoogle}
           cookiePolicy={'single_host_origin'}
-          onFailure={() => {
-          }}
+          onFailure={() => {}}
           className="ModalSignUp__social-btn"
         />
         <FacebookLogin
@@ -161,11 +160,10 @@ const ModalSignUp = ({isButton}) => {
           autoLoad={false}
           fields="name,email,picture"
           callback={responseFacebook}
-          onFailure={() => {
-          }}
+          onFailure={() => {}}
           textButton="Facebook"
           cssClass="ModalSignUp__social-btn ModalSignUp__social-btn--fb"
-          icon={<Icon type="facebook" className="ModalSignUp__icon-fb"/>}
+          icon={<Icon type="facebook" className="ModalSignUp__icon-fb" />}
         />
       </div>
     </React.Fragment>
@@ -175,17 +173,17 @@ const ModalSignUp = ({isButton}) => {
     <React.Fragment>
       {isButton ? (
         <button onClick={() => setIsModalOpen(true)} className="ModalSignUp__button">
-          <FormattedMessage id="signup" defaultMessage="Sign up"/>
+          <FormattedMessage id="signup" defaultMessage="Sign up" />
         </button>
       ) : (
         <a role="presentation" onClick={() => setIsModalOpen(true)}>
-          <FormattedMessage id="signup" defaultMessage="Sign up"/>
+          <FormattedMessage id="signup" defaultMessage="Sign up" />
         </a>
       )}
       <Modal width={416} title="" visible={isModalOpen} onCancel={handleCloseModal} footer={null}>
         <div className="ModalSignUp">
           {isFormVisible ? (
-            <GuestSignUpForm userData={userData} isModalOpen={isModalOpen}/>
+            <GuestSignUpForm userData={userData} isModalOpen={isModalOpen} />
           ) : (
             renderSignUp()
           )}
@@ -199,4 +197,4 @@ ModalSignUp.propTypes = {
   isButton: PropTypes.bool.isRequired,
 };
 
-export default Form.create({name: 'user_name'})(injectIntl(ModalSignUp));
+export default Form.create({ name: 'user_name' })(injectIntl(ModalSignUp));

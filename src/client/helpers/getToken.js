@@ -1,4 +1,4 @@
-import {getAccessToken, getNewToken} from '../../waivioApi/ApiClient';
+import { getAccessToken, getNewToken } from '../../waivioApi/ApiClient';
 
 export const setToken = async (socialToken, social, regData) => {
   const userData = await getAccessToken(socialToken, social, regData);
@@ -24,5 +24,5 @@ export const getValidTokenData = async () => {
     }
   }
   const name = localStorage.getItem('guestName');
-  return {token, userData: {name}};
+  return { token, userData: { name } };
 };
