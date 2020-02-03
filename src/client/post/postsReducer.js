@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { each, find, omit } from 'lodash';
 import * as feedTypes from '../feed/feedActions';
 import * as postsActions from './postActions';
 import * as commentsActions from '../comments/commentsActions';
@@ -54,6 +54,9 @@ const posts = (state = initialState, action) => {
         },
       };
     }
+    case feedTypes.GET_USER_COMMENTS.ERROR:
+    case feedTypes.GET_MORE_USER_COMMENTS.ERROR:
+      return state;
     case feedTypes.GET_MORE_USER_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_USER_FEED_CONTENT.SUCCESS: {
       const list = {
@@ -63,7 +66,7 @@ const posts = (state = initialState, action) => {
         ...state.postsStates,
       };
 
-      _.each(action.payload, post => {
+      each(action.payload, post => {
         const key = getPostKey(post);
         list[key] = { ...post, id: key };
         postsStates[key] = {
@@ -94,7 +97,7 @@ const posts = (state = initialState, action) => {
         ...state.postsStates,
       };
 
-      _.each(action.payload, post => {
+      each(action.payload, post => {
         const key = getPostKey(post);
         list[key] = { ...post, id: key };
         postsStates[key] = {
@@ -128,7 +131,7 @@ const posts = (state = initialState, action) => {
       let author = action.payload.author;
       let pendingLikes = state.pendingLikes;
       if (action.meta.afterLike) {
-        const matchPost = _.find(
+        const matchPost = find(
           state.list,
           post => `${post.author_original}/${post.permlink}` === key,
         );
@@ -136,7 +139,7 @@ const posts = (state = initialState, action) => {
           key = getPostKey(matchPost);
           author = matchPost.author;
         }
-        pendingLikes = _.omit(state.pendingLikes, key);
+        pendingLikes = omit(state.pendingLikes, key);
       }
 
       return {
@@ -181,12 +184,38 @@ const posts = (state = initialState, action) => {
     case postsActions.LIKE_POST_ERROR:
       return {
         ...state,
-        pendingLikes: _.omit(state.pendingLikes, action.meta.postId),
+        pendingLikes: omit(state.pendingLikes, action.meta.postId),
       };
     case commentsActions.SEND_COMMENT_SUCCESS:
       return {
         ...state,
         list: getPostsList(state.list, action),
+      };
+    case postsActions.FAKE_LIKE_POST_START:
+      return {
+        ...state,
+        pendingLikes: { ...state.pendingLikes, [action.meta.postId]: action.meta },
+      };
+    case postsActions.FAKE_LIKE_POST_SUCCESS: {
+      if (action.payload.isFakeLikeOk) {
+        const updatedPost = { ...state.list[action.meta.postPermlink] };
+
+        updatedPost.active_votes = updatedPost.active_votes.filter(
+          vote => vote.voter !== action.meta.voter,
+        );
+        updatedPost.active_votes.push(action.meta);
+        return {
+          ...state,
+          list: { ...state.list, [action.meta.postPermlink]: updatedPost },
+          pendingLikes: {},
+        };
+      }
+      return state;
+    }
+    case postsActions.FAKE_LIKE_POST_ERROR:
+      return {
+        ...state,
+        pendingLikes: omit(state.pendingLikes, action.meta.postId),
       };
     default:
       return state;

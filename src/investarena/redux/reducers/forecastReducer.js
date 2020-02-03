@@ -108,22 +108,21 @@ export default (state = initialState, action) => {
         forecast => forecast.id === action.payload.id,
       );
       const forecastIndex = state.quickForecastData.indexOf(answeredForecast);
+      const answeredArray = state.quickForecastData.filter(forecast => !forecast.active);
       state.quickForecastData.splice(forecastIndex, 1);
+      state.quickForecastData.splice(answeredArray.length, 0, {
+        ...answeredForecast,
+        active: false,
+        side: action.payload.answer,
+        postPrice: action.payload.postPrice,
+        quickForecastExpiredAt: action.payload.quickForecastExpiredAt,
+        status: 'pending',
+        isLoaded: true,
+      });
 
       return {
         ...state,
-        quickForecastData: [
-          {
-            ...answeredForecast,
-            active: false,
-            side: action.payload.answer,
-            postPrice: action.payload.postPrice,
-            quickForecastExpiredAt: action.payload.quickForecastExpiredAt,
-            status: 'pending',
-            isLoaded: true,
-          },
-          ...state.quickForecastData,
-        ],
+        quickForecastData: [...state.quickForecastData],
         disabled: false,
       };
     }
@@ -147,7 +146,7 @@ export default (state = initialState, action) => {
 
     case activeForecastTypes.ANSWER_QUICK_LOADING: {
       const answeredForecast = state.quickForecastData.find(
-        fotecast => fotecast.id === action.payload,
+        forecast => forecast.id === action.payload,
       );
       const forecastIndex = state.quickForecastData.indexOf(answeredForecast);
       state.quickForecastData.splice(forecastIndex, 1, {
@@ -160,6 +159,28 @@ export default (state = initialState, action) => {
         quickForecastData: [...state.quickForecastData],
         disabled: true,
       };
+    }
+
+    case activeForecastTypes.GET_QUICK_FORECAST_STATUS.SUCCESS: {
+      if (action.payload.status !== 'pending') {
+        const answeredForecast = state.quickForecastData.find(
+          forecast => forecast.id === action.payload.id,
+        );
+        const forecastIndex = state.quickForecastData.indexOf(answeredForecast);
+
+        state.quickForecastData.splice(forecastIndex, 1, {
+          ...action.payload,
+          isLoaded: true,
+        });
+
+        return {
+          quickForecastData: [...state.quickForecastData],
+          ...state,
+          disabled: false,
+        };
+      }
+
+      return state;
     }
 
     default:

@@ -22,6 +22,9 @@ export const QUICK_FORECAST_WINNERS_SHOW_MORE = createAsyncActionType(
 export const GET_QUICK_FORECAST_REWARDS = createAsyncActionType(
   '@forecast-data/GET_QUICK_FORECAST_REWARDS',
 );
+export const GET_QUICK_FORECAST_STATUS = createAsyncActionType(
+  '@forecast-data/GET_QUICK_FORECAST_STATUS',
+);
 
 export const ANSWER_QUICK_FORECAST = '@forecast-data/ANSWER_QUICK_FORECAST';
 export const ANSWER_QUICK_LOADING = '@forecast-data/ANSWER_QUICK_LOADING';
@@ -77,6 +80,37 @@ export const getForecastRoundRewards = () => dispatch => {
   });
 };
 
+export const getForecastStatus = permlink => (dispatch, getState) => {
+  const user = getAuthenticatedUserName(getState());
+
+  dispatch({
+    type: GET_QUICK_FORECAST_STATUS.ACTION,
+    payload: api.quickForecast.getStatusForecast(user, permlink),
+  });
+};
+
+export const loadingForecast = id => ({
+  type: ANSWER_QUICK_LOADING,
+  payload: id,
+});
+
+export const answerQuickForecast = (answer, id, postPrice, timerData) => ({
+  type: ANSWER_QUICK_FORECAST,
+  payload: {
+    answer,
+    id,
+    postPrice,
+    quickForecastExpiredAt: Date.now() + timerData,
+  },
+});
+
+export const answerQuickForecastError = id => ({
+  type: ANSWER_QUICK_ERROR,
+  payload: {
+    id,
+  },
+});
+
 export const answerForQuickForecast = (
   author,
   permlink,
@@ -87,79 +121,76 @@ export const answerForQuickForecast = (
   timerData,
   weight = 10000,
 ) => (dispatch, getState, { steemConnectAPI }) => {
+  const username = getAuthenticatedUserName(getState());
+  const postPrice = get(getState(), ['quotes', security, 'bidPrice'], null);
+  const objPermlink = get(
+    getState(),
+    ['quotesSettings', security, 'wobjData', 'author_permlink'],
+    null,
+  );
+  const forecastObject = get(getState(), ['quotesSettings', security, 'name'], null);
   const arrayRandElement = arr => {
     const rand = Math.floor(Math.random() * arr.length);
     return arr[rand];
   };
-
-  const username = getAuthenticatedUserName(getState());
-  const postPrice = get(getState(), ['quotes', security, 'bidPrice'], null);
-  const objPermlink = get(getState(), ['quotesSettings', security, 'wobjData', 'author_permlink'], null);
-  const forecastObject = get(getState(), ['quotesSettings', security, 'name'], null);
   const commentArray = forecastComments(forecastObject, objPermlink);
   const comment = arrayRandElement(commentArray);
 
-  dispatch({
-    type: ANSWER_QUICK_LOADING,
-    payload: id,
-  });
+  const commentBody = [
+    'comment',
+    {
+      parent_author: author,
+      parent_permlink: permlink,
+      author: username,
+      permlink: createFormatter.commentPermlink(author, permlink),
+      title: 'unactivate topic for rewards',
+      body: comment,
+      json_metadata: JSON.stringify({
+        forecast_comment: {
+          side: answer,
+          postPrice,
+          security,
+        },
+      }),
+    },
+  ];
+
+  dispatch(loadingForecast(id));
 
   if (Date.parse(expiredAt) > Date.now()) {
+    if (author === username) {
+      return new Promise((resolve, reject) =>
+        steemConnectAPI
+          .broadcast([commentBody])
+          .then(() => {
+            dispatch(answerQuickForecast(answer, id, postPrice, timerData));
+            resolve();
+          })
+          .catch(e => {
+            dispatch(answerQuickForecastError(id));
+            reject(e);
+          }),
+      );
+    }
+
     return new Promise((resolve, reject) =>
       steemConnectAPI
         .vote(username, author, permlink, weight)
         .then(() => {
           steemConnectAPI
-            .broadcast([
-              [
-                'comment',
-                {
-                  parent_author: author,
-                  parent_permlink: permlink,
-                  author: username,
-                  permlink: createFormatter.commentPermlink(author, permlink),
-                  title: 'unactivate topic for rewards',
-                  body: comment,
-                  json_metadata: JSON.stringify({
-                    forecast_comment: {
-                      side: answer,
-                      postPrice,
-                      security,
-                    },
-                  }),
-                },
-              ],
-            ])
+            .broadcast([commentBody])
             .then(() => {
-              dispatch({
-                type: ANSWER_QUICK_FORECAST,
-                payload: {
-                  answer,
-                  id,
-                  postPrice,
-                  quickForecastExpiredAt: Date.now() + timerData,
-                },
-              });
+              dispatch(answerQuickForecast(answer, id, postPrice, timerData));
               resolve();
             })
-            .catch(error => {
-              reject(error);
-              dispatch({
-                type: ANSWER_QUICK_ERROR,
-                payload: {
-                  id,
-                },
-              });
+            .catch(e => {
+              dispatch(answerQuickForecastError(id));
+              reject(e);
             });
         })
         .catch(e => {
+          dispatch(answerQuickForecastError(id));
           reject(e);
-          dispatch({
-            type: ANSWER_QUICK_ERROR,
-            payload: {
-              id,
-            },
-          });
         }),
     );
   }

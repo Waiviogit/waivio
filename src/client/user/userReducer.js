@@ -104,7 +104,7 @@ export default function userReducer(state = initialState, action) {
         fetchFollowListError: false,
       };
     case userActions.FOLLOW_USER_START:
-    case userActions.UNFOLLOW_USER_START:
+    case userActions.UNFOLLOW_USER.START:
       return {
         ...state,
         following: {
@@ -123,7 +123,7 @@ export default function userReducer(state = initialState, action) {
           ),
         },
       };
-    case userActions.UNFOLLOW_USER_SUCCESS:
+    case userActions.UNFOLLOW_USER.SUCCESS:
       return {
         ...state,
         following: {
@@ -136,7 +136,7 @@ export default function userReducer(state = initialState, action) {
       };
 
     case userActions.FOLLOW_USER_ERROR:
-    case userActions.UNFOLLOW_USER_ERROR:
+    case userActions.UNFOLLOW_USER.ERROR:
       return {
         ...state,
         following: {

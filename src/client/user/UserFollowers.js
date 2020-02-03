@@ -1,31 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { getFollowers } from '../helpers/apiHelpers';
 import UserDynamicList from './UserDynamicList';
+import { getFollowersFromAPI } from '../../waivioApi/ApiClient';
 
-export default class UserFollowers extends React.Component {
-  static propTypes = {
-    match: PropTypes.shape().isRequired,
+const UserFollowers = ({ match }) => {
+  const limit = 50;
+  let skip = 0;
+
+  const fetcher = async () => {
+    const response = await getFollowersFromAPI(match.params.name, limit, skip);
+    const users = response.followers.map(user => ({ name: user }));
+    skip += limit;
+    return { users, hasMore: response.hasMore };
   };
 
-  static limit = 50;
+  return <UserDynamicList limit={limit} fetcher={fetcher} />;
+};
 
-  constructor(props) {
-    super(props);
+UserFollowers.propTypes = {
+  match: PropTypes.shape().isRequired,
+};
 
-    this.fetcher = this.fetcher.bind(this);
-  }
-
-  fetcher(previous) {
-    const { match } = this.props;
-    const startFrom =
-      previous[previous.length - 1] && previous[previous.length - 1].name
-        ? previous[previous.length - 1].name
-        : '';
-    return getFollowers(match.params.name, startFrom, 'blog', UserFollowers.limit);
-  }
-
-  render() {
-    return <UserDynamicList limit={UserFollowers.limit} fetcher={this.fetcher} />;
-  }
-}
+export default UserFollowers;

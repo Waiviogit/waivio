@@ -30,17 +30,25 @@
   }
 
   .left {
-    width: @left-width;
+    @media @small {
+      width: @left-width;
+    }
+
+    width: 100%;
   }
 
   .right {
-    width: @right-width;
+    @media @small {
+      width: @right-width;
+    }
+
+    width: 100%;
   }
 
   .leftContainer {
     float: left;
     display: none;
-    width: @left-width;
+    width: 100%;
 
     &__user {
       min-height: 150px !important;
@@ -48,16 +56,18 @@
 
     @media @medium {
       display: block;
+      width: @left-width;
     }
   }
 
   .rightContainer {
     float: right;
     display: none;
-    width: @right-width;
+    width: 100%;
 
     @media @small {
       display: block;
+      width: @right-width;
     }
   }
 

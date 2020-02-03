@@ -28,6 +28,10 @@ const BallotTimer = ({ endTimerTime, willCallAfterTimerEnd }) => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    setTime(timeForecastRemain(endTimerTime, false));
+  }, [endTimerTime]);
+
   return <span className={timerClassList}>{time}</span>;
 };
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 import PaymentTable from './PaymentTable/PaymentTable';
 import { getLenders } from '../../../waivioApi/ApiClient';
 import './Payment.less';
@@ -66,7 +66,7 @@ const Payment = ({ match, intl, userName }) => {
           defaultMessage: 'Only transfer with hashtag "#waivio" are included',
         })}
       </div>
-      {!_.isEmpty(sponsors) ? <PaymentTable sponsors={sponsors} /> : null}
+      {!isEmpty(sponsors) ? <PaymentTable sponsors={sponsors} /> : null}
     </div>
   );
 };

@@ -114,6 +114,7 @@ export default function wobjectReducer(state = initialState, action) {
 }
 
 export const getObjectState = state => state.wobject;
+export const getObjectFetchingState = state => state.isFetching;
 export const getObjectAuthor = state => state.author;
 export const getObjectFields = state => get(state, ['wobject', 'fields'], []);
 export const getRatingFields = state =>

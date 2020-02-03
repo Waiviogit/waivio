@@ -26,11 +26,11 @@ import {
   getScreenSize,
   getSearchObjectsResults,
   getSearchUsersResults,
+  isGuestUser,
   searchObjectTypesResults,
 } from '../../reducers';
 import ModalBroker from '../../../investarena/components/Modals/ModalBroker';
 import ModalDealConfirmation from '../../../investarena/components/Modals/ModalDealConfirmation';
-import SteemConnect from '../../steemConnectAPI';
 import { PARSED_NOTIFICATIONS } from '../../../common/constants/notifications';
 import BTooltip from '../BTooltip';
 import Avatar from '../Avatar';
@@ -47,9 +47,10 @@ import config from '../../../investarena/configApi/config';
 import { getFieldWithMaxWeight } from '../../object/wObjectHelper';
 import { objectFields } from '../../../common/constants/listOfFields';
 import ObjectAvatar from '../ObjectAvatar';
-// import ModalSignUp from './ModalSignUp/ModalSignUp';
 import TopNavigation from './TopNavigation';
 import { getTopPosts } from '../../../waivioApi/ApiClient';
+import ModalSignUp from './ModalSignUp/ModalSignUp';
+import ModalSignIn from './ModalSignIn/ModalSignIn';
 import './Topnav.less';
 
 @injectIntl
@@ -68,6 +69,7 @@ import './Topnav.less';
     isNightMode: getNightmode(state),
     platformName: getPlatformNameState(state),
     isLoadingPlatform: getIsLoadingPlatformState(state),
+    isGuest: isGuestUser(state),
   }),
   {
     disconnectBroker,
@@ -121,6 +123,7 @@ class Topnav extends React.Component {
     searchByObjectType: PropTypes.arrayOf(PropTypes.shape()),
     openChat: PropTypes.func.isRequired,
     messagesCount: PropTypes.number,
+    isGuest: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -135,6 +138,7 @@ class Topnav extends React.Component {
     loadingNotifications: false,
     screenSize: 'medium',
     messagesCount: 0,
+    isGuest: false,
   };
 
   constructor(props) {
@@ -338,9 +342,7 @@ class Topnav extends React.Component {
       >
         <Menu className="Topnav__menu" mode="horizontal">
           <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="signup">
-            <a target="_blank" rel="noopener noreferrer" href={process.env.SIGNUP_URL}>
-              <FormattedMessage id="signup" defaultMessage="Sign up" />
-            </a>
+            <ModalSignUp isButton={false} />
           </Menu.Item>
           <Menu.Item
             className="Topnav__menu-item Topnav__menu-item--logedout"
@@ -350,9 +352,7 @@ class Topnav extends React.Component {
             |
           </Menu.Item>
           <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="login">
-            <a href={SteemConnect.getLoginURL(next)}>
-              <FormattedMessage id="login" defaultMessage="Log in" />
-            </a>
+            <ModalSignIn next={next} />
           </Menu.Item>
           <Menu.Item className="Topnav__menu-item Topnav__menu-item--logedout" key="language">
             <LanguageSettings />
@@ -364,6 +364,7 @@ class Topnav extends React.Component {
 
   burgerMenu = logStatus => {
     const isLoggedOut = logStatus === 'loggedOut';
+    const { isGuest } = this.props;
     return (
       <PopoverContainer
         placement="bottom"
@@ -382,9 +383,11 @@ class Topnav extends React.Component {
             <PopoverMenuItem key="quick_forecast" fullScreenHidden>
               <FormattedMessage id="quick_forecast" defaultMessage="Forecast" />
             </PopoverMenuItem>
-            <PopoverMenuItem key="activity" mobileScreenHidden>
-              <FormattedMessage id="activity" defaultMessage="Activity" />
-            </PopoverMenuItem>
+            {!isGuest && (
+              <PopoverMenuItem key="activity" mobileScreenHidden>
+                <FormattedMessage id="activity" defaultMessage="Activity" />
+              </PopoverMenuItem>
+            )}
             <PopoverMenuItem key="bookmarks" mobileScreenHidden>
               <FormattedMessage id="bookmarks" defaultMessage="Bookmarks" />
             </PopoverMenuItem>
