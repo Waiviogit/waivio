@@ -1,6 +1,6 @@
-import {combineReducers} from 'redux';
+import { combineReducers } from 'redux';
 
-import {connectRouter} from 'connected-react-router';
+import { connectRouter } from 'connected-react-router';
 
 import appReducer, * as fromApp from './app/appReducer';
 import authReducer, * as fromAuth from './auth/authReducer';

@@ -1,12 +1,18 @@
-import {filter, get, isEmpty, isEqual, isNil, map, maxBy, toLower} from 'lodash';
+import { filter, get, isEmpty, isEqual, isNil, map, maxBy, toLower } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
-import {FormattedDate, FormattedMessage, FormattedRelative, FormattedTime, injectIntl,} from 'react-intl';
-import {Link, withRouter} from 'react-router-dom';
-import {Tag} from 'antd';
+import {
+  FormattedDate,
+  FormattedMessage,
+  FormattedRelative,
+  FormattedTime,
+  injectIntl,
+} from 'react-intl';
+import { Link, withRouter } from 'react-router-dom';
+import { Tag } from 'antd';
 import VisibilitySensor from 'react-visibility-sensor';
 import formatter from '../../helpers/steemitFormatter';
-import {getForecastData} from '../../helpers/forecastHelper';
+import { getForecastData } from '../../helpers/forecastHelper';
 import {
   dropCategory,
   isBannedPost,
@@ -29,7 +35,7 @@ import PostForecast from '../../../investarena/components/PostForecast';
 import ObjectAvatar from '../ObjectAvatar';
 import PostedFrom from './PostedFrom';
 import WeightTag from '../WeightTag';
-import {calculateApprovePercent} from '../../helpers/wObjectHelper';
+import { calculateApprovePercent } from '../../helpers/wObjectHelper';
 import './Story.less';
 
 @injectIntl
@@ -221,7 +227,7 @@ class Story extends React.Component {
   handleChangeVisibility = isVisible => this.setState({ isVisible });
 
   handleLikeClick(post, postState, weight = 10000) {
-    const {sliderMode, defaultVotePercent} = this.props;
+    const { sliderMode, defaultVotePercent } = this.props;
     const author = post.author_original || post.root_author || post.author;
 
     if (sliderMode) {
@@ -292,7 +298,7 @@ class Story extends React.Component {
 
   handlePostModalDisplay(e) {
     e.preventDefault();
-    const {post} = this.props;
+    const { post } = this.props;
     const isReplyPreview = isEmpty(post.title) || post.title !== post.root_title;
     const openInNewTab = get(e, 'metaKey', false) || get(e, 'ctrlKey', false);
     let postURL;
@@ -316,7 +322,7 @@ class Story extends React.Component {
   handlePreviewClickPostModalDisplay(e) {
     e.preventDefault();
 
-    const {post} = this.props;
+    const { post } = this.props;
     const isReplyPreview = isEmpty(post.title) || post.title !== post.root_title;
     const elementNodeName = toLower(get(e, 'target.nodeName', ''));
     const elementClassName = get(e, 'target.className', '');
@@ -426,8 +432,8 @@ class Story extends React.Component {
       } else if (postState.isReblogged) {
         rebloggedUI = (
           <div className="Story__reblog">
-            <i className="iconfont icon-share1"/>
-            <FormattedMessage id="reblogged" defaultMessage="Reblogged"/>
+            <i className="iconfont icon-share1" />
+            <FormattedMessage id="reblogged" defaultMessage="Reblogged" />
           </div>
         );
       }
@@ -442,7 +448,7 @@ class Story extends React.Component {
           <div className="Story__content">
             <div className="Story__header">
               <Link to={`/@${author}`}>
-                <Avatar username={author} size={40}/>
+                <Avatar username={author} size={40} />
               </Link>
               <div className="Story__header__text">
                 <span className="Story__header__flex">
@@ -451,7 +457,7 @@ class Story extends React.Component {
                       <span className="username">{author}</span>
                     </Link>
                   </h4>
-                  <WeightTag weight={post.author_wobjects_weight}/>
+                  <WeightTag weight={post.author_wobjects_weight} />
                 </span>
                 <span>
                   <BTooltip

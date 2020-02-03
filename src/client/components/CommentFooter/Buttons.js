@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import {find, take} from 'lodash';
-import {FormattedMessage, FormattedNumber, injectIntl} from 'react-intl';
-import {Icon} from 'antd';
-import {getDownvotes, getUpvotes} from '../../helpers/voteHelpers';
-import {sortVotes} from '../../helpers/sortHelpers';
-import {calculatePayout} from '../../vendor/steemitHelpers';
+import { find, take } from 'lodash';
+import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
+import { Icon } from 'antd';
+import { getDownvotes, getUpvotes } from '../../helpers/voteHelpers';
+import { sortVotes } from '../../helpers/sortHelpers';
+import { calculatePayout } from '../../vendor/steemitHelpers';
 import BTooltip from '../BTooltip';
 import ReactionsModal from '../Reactions/ReactionsModal';
 import withAuthActions from '../../auth/withAuthActions';
@@ -175,7 +175,7 @@ class Buttons extends React.Component {
               })}
               onClick={this.handleLikeClick}
             >
-              {pendingLike ? <Icon type="loading"/> : <i className="iconfont icon-praise_fill"/>}
+              {pendingLike ? <Icon type="loading" /> : <i className="iconfont icon-praise_fill" />}
             </a>
           )}
         </BTooltip>
@@ -198,7 +198,7 @@ class Buttons extends React.Component {
             </BTooltip>
           </span>
         )}
-        <BTooltip title={intl.formatMessage({id: 'dislike', defaultMessage: 'Dislike'})}>
+        <BTooltip title={intl.formatMessage({ id: 'dislike', defaultMessage: 'Dislike' })}>
           {!this.props.comment.isFakeComment && (
             <a
               role="presentation"
@@ -208,9 +208,9 @@ class Buttons extends React.Component {
               onClick={this.handleDislikeClick}
             >
               {pendingDisLike ? (
-                <Icon type="loading"/>
+                <Icon type="loading" />
               ) : (
-                <i className="iconfont icon-praise_fill Comment__icon_dislike"/>
+                <i className="iconfont icon-praise_fill Comment__icon_dislike" />
               )}
             </a>
           )}
@@ -236,18 +236,18 @@ class Buttons extends React.Component {
         )}
         {payoutValue >= 0.005 && (
           <React.Fragment>
-            <span className="CommentFooter__bullet"/>
+            <span className="CommentFooter__bullet" />
             <span className="CommentFooter__payout">
-              <BTooltip title={<PayoutDetail post={comment}/>}>
-                <USDDisplay value={payoutValue}/>
-                <span/>
+              <BTooltip title={<PayoutDetail post={comment} />}>
+                <USDDisplay value={payoutValue} />
+                <span />
               </BTooltip>
             </span>
           </React.Fragment>
         )}
         {!this.props.comment.isFakeComment && user.name && (
           <span>
-            <span className="CommentFooter__bullet"/>
+            <span className="CommentFooter__bullet" />
             <a
               role="presentation"
               className={classNames('CommentFooter__link', {
@@ -255,7 +255,7 @@ class Buttons extends React.Component {
               })}
               onClick={this.props.onReplyClick}
             >
-              <FormattedMessage id="reply" defaultMessage="Reply"/>
+              <FormattedMessage id="reply" defaultMessage="Reply" />
             </a>
           </span>
         )}

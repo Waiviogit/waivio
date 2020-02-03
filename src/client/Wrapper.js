@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import url from 'url';
-import {batch, connect} from 'react-redux';
-import {IntlProvider} from 'react-intl';
-import {withRouter} from 'react-router-dom';
-import {renderRoutes} from 'react-router-config';
-import {ConfigProvider, Layout} from 'antd';
+import { batch, connect } from 'react-redux';
+import { IntlProvider } from 'react-intl';
+import { withRouter } from 'react-router-dom';
+import { renderRoutes } from 'react-router-config';
+import { ConfigProvider, Layout } from 'antd';
 import classNames from 'classnames';
 import enUS from 'antd/lib/locale-provider/en_US';
 import Cookie from 'js-cookie';
-import {findLanguage, getBrowserLocale, getRequestLocale, loadLanguage} from './translations';
+import { findLanguage, getBrowserLocale, getRequestLocale, loadLanguage } from './translations';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
@@ -22,19 +22,24 @@ import {
   getTranslations,
   getUsedLocale,
 } from './reducers';
-import {busyLogin, login, logout} from './auth/authActions';
-import {getMessagesQuantity} from '../waivioApi/ApiClient';
-import {changeChatCondition, getFollowing, getFollowingObjects, getNotifications,} from './user/userActions';
-import {getRate, getRewardFund, setAppUrl, setUsedLocale} from './app/appActions';
-import {getPerformersStatistic} from '../investarena/redux/actions/topPerformersActions';
+import { busyLogin, login, logout } from './auth/authActions';
+import { getMessagesQuantity } from '../waivioApi/ApiClient';
+import {
+  changeChatCondition,
+  getFollowing,
+  getFollowingObjects,
+  getNotifications,
+} from './user/userActions';
+import { getRate, getRewardFund, setAppUrl, setUsedLocale } from './app/appActions';
+import { getPerformersStatistic } from '../investarena/redux/actions/topPerformersActions';
 import * as reblogActions from './app/Reblog/reblogActions';
 import NotificationPopup from './notifications/NotificationPopup';
 import Topnav from './components/Navigation/Topnav';
 import Transfer from './wallet/Transfer';
 import PowerUpOrDown from './wallet/PowerUpOrDown';
 import BBackTop from './components/BBackTop';
-import {getChartsData} from '../investarena/redux/actions/chartsActions';
-import {getPlatformNameState} from '../investarena/redux/selectors/platformSelectors';
+import { getChartsData } from '../investarena/redux/actions/chartsActions';
+import { getPlatformNameState } from '../investarena/redux/selectors/platformSelectors';
 import Chat from './components/Chat/Chat';
 import ChatButton from './components/ChatButton/ChatButton';
 
@@ -163,7 +168,7 @@ export default class Wrapper extends React.PureComponent {
         this.props.busyLogin();
       });
       getMessagesQuantity(this.props.username).then(data =>
-        this.setState({messagesCount: data.count}),
+        this.setState({ messagesCount: data.count }),
       );
     });
     batch(() => {

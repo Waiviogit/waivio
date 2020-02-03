@@ -1,13 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import {Link} from 'react-router-dom';
-import {FormattedDate, FormattedMessage, FormattedRelative, FormattedTime, injectIntl,} from 'react-intl';
-import {message, Tag} from 'antd';
+import { Link } from 'react-router-dom';
+import {
+  FormattedDate,
+  FormattedMessage,
+  FormattedRelative,
+  FormattedTime,
+  injectIntl,
+} from 'react-intl';
+import { message, Tag } from 'antd';
 import BTooltip from '../../components/BTooltip';
 import formatter from '../../helpers/steemitFormatter';
-import {MAXIMUM_UPLOAD_SIZE_HUMAN} from '../../helpers/image';
-import {sortComments} from '../../helpers/sortHelpers';
+import { MAXIMUM_UPLOAD_SIZE_HUMAN } from '../../helpers/image';
+import { sortComments } from '../../helpers/sortHelpers';
 import CommentForm from './CommentForm';
 import EmbeddedCommentForm from './EmbeddedCommentForm';
 import QuickCommentEditor from './QuickCommentEditor';
@@ -226,7 +232,7 @@ class Comment extends React.Component {
       isGuest = true;
     }
 
-    const {showHiddenComment} = this.state;
+    const { showHiddenComment } = this.state;
     const anchorId = `@${comment.author}/${comment.permlink}`;
     const anchorLink = `${comment.url.slice(0, comment.url.indexOf('#'))}#${anchorId}`;
 
@@ -241,7 +247,7 @@ class Comment extends React.Component {
         return <QuickCommentEditor {...props} />;
       }
       return this.state.editOpen ? (
-        <EmbeddedCommentForm {...props} onClose={this.handleEditClick}/>
+        <EmbeddedCommentForm {...props} onClose={this.handleEditClick} />
       ) : (
         <CommentForm {...props} />
       );
@@ -277,18 +283,18 @@ class Comment extends React.Component {
           onClick={this.handleCollapseClick}
         >
           {this.state.collapsed ? (
-            <i className="iconfont icon-addition"/>
+            <i className="iconfont icon-addition" />
           ) : (
-            <i className="iconfont icon-offline"/>
+            <i className="iconfont icon-offline" />
           )}
         </span>
-        <Link to={`/@${author}`} style={{height: avatarSize}}>
-          <Avatar username={author} size={avatarSize}/>
+        <Link to={`/@${author}`} style={{ height: avatarSize }}>
+          <Avatar username={author} size={avatarSize} />
         </Link>
         <div className="Comment__text">
           <Link to={`/@${author}`}>
             <span className="username">{author}</span>
-            <WeightTag weight={comment.author_wobjects_weight}/>
+            <WeightTag weight={comment.author_wobjects_weight} />
             {author === rootPostAuthor && (
               <BTooltip
                 title={intl.formatMessage({

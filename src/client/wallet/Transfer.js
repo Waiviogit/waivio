@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import {FormattedMessage, injectIntl} from 'react-intl';
-import {get, isEmpty, isNull} from 'lodash';
-import {Form, Input, Modal, Radio} from 'antd';
-import {SBD, STEEM} from '../../common/constants/cryptos';
+import { connect } from 'react-redux';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { get, isEmpty, isNull } from 'lodash';
+import { Form, Input, Modal, Radio } from 'antd';
+import { SBD, STEEM } from '../../common/constants/cryptos';
 import SteemConnect from '../steemConnectAPI';
-import {getCryptoPriceHistory} from '../app/appActions';
-import {closeTransfer} from './walletActions';
-import {notify} from '../app/Notification/notificationActions';
+import { getCryptoPriceHistory } from '../app/appActions';
+import { closeTransfer } from './walletActions';
+import { notify } from '../app/Notification/notificationActions';
 import {
   getAuthenticatedUser,
   getCryptosPriceHistory,
@@ -21,8 +21,8 @@ import {
   getTransferTo,
   isGuestUser,
 } from '../reducers';
-import {getUserAccount, sendGuestTransfer} from '../../waivioApi/ApiClient';
-import {BANK_ACCOUNT, GUEST_PREFIX} from '../../common/constants/waivio';
+import { getUserAccount, sendGuestTransfer } from '../../waivioApi/ApiClient';
+import { BANK_ACCOUNT, GUEST_PREFIX } from '../../common/constants/waivio';
 import './Transfer.less';
 
 const InputGroup = Input.Group;
@@ -73,12 +73,10 @@ export default class Transfer extends React.Component {
     amount: 0,
     memo: '',
     currency: 'STEEM',
-    closeTransfer: () => {
-    },
+    closeTransfer: () => {},
     screenSize: 'large',
     isGuest: false,
-    notify: () => {
-    },
+    notify: () => {},
   };
 
   // eslint-disable-next-line react/sort-comp
@@ -98,7 +96,7 @@ export default class Transfer extends React.Component {
   };
 
   componentDidMount() {
-    const {cryptosPriceHistory} = this.props;
+    const { cryptosPriceHistory } = this.props;
     const currentSteemRate = get(cryptosPriceHistory, 'STEEM.priceDetails.currentUSDPrice', null);
     const currentSBDRate = get(cryptosPriceHistory, 'SBD.priceDetails.currentUSDPrice', null);
 
@@ -126,8 +124,8 @@ export default class Transfer extends React.Component {
   }
 
   getUSDValue() {
-    const {cryptosPriceHistory, intl} = this.props;
-    const {currency, oldAmount} = this.state;
+    const { cryptosPriceHistory, intl } = this.props;
+    const { currency, oldAmount } = this.state;
     const currentSteemRate = get(cryptosPriceHistory, 'STEEM.priceDetails.currentUSDPrice', null);
     const currentSBDRate = get(cryptosPriceHistory, 'SBD.priceDetails.currentUSDPrice', null);
     const steemRateLoading = isNull(currentSteemRate) || isNull(currentSBDRate);
@@ -168,7 +166,7 @@ export default class Transfer extends React.Component {
   };
 
   handleContinueClick = () => {
-    const {form, isGuest, memo} = this.props;
+    const { form, isGuest, memo } = this.props;
     form.validateFields({ force: true }, (errors, values) => {
       if (!errors) {
         const transferQuery = {
@@ -178,14 +176,14 @@ export default class Transfer extends React.Component {
         if (values.to.startsWith(GUEST_PREFIX)) {
           transferQuery.to = BANK_ACCOUNT;
           transferQuery.memo = memo
-            ? {id: memo, to: values.to}
-            : {id: 'user_to_guest_transfer', to: values.to};
+            ? { id: memo, to: values.to }
+            : { id: 'user_to_guest_transfer', to: values.to };
           if (values.memo) transferQuery.memo.message = values.memo;
           transferQuery.memo = JSON.stringify(transferQuery.memo);
         } else {
           transferQuery.to = values.to;
           if (memo) {
-            transferQuery.memo = {id: memo};
+            transferQuery.memo = { id: memo };
             if (values.memo) transferQuery.memo.message = values.memo;
             transferQuery.memo = JSON.stringify(transferQuery.memo);
           }
@@ -252,7 +250,7 @@ export default class Transfer extends React.Component {
   };
 
   validateUsername = (rule, value, callback) => {
-    const {intl} = this.props;
+    const { intl } = this.props;
     const guestName = value.startsWith(GUEST_PREFIX);
     this.props.form.validateFields(['memo'], { force: true });
 
@@ -349,8 +347,8 @@ export default class Transfer extends React.Component {
   };
 
   render() {
-    const {intl, visible, authenticated, user, memo, screenSize, isGuest} = this.props;
-    const {getFieldDecorator, getFieldValue} = this.props.form;
+    const { intl, visible, authenticated, user, memo, screenSize, isGuest } = this.props;
+    const { getFieldDecorator, getFieldValue } = this.props.form;
     const isMobile = screenSize.includes('xsmall') || screenSize.includes('small');
     const to = getFieldValue('to');
     const guestName = to && to.startsWith(GUEST_PREFIX);
@@ -420,7 +418,7 @@ export default class Transfer extends React.Component {
               defaultMessage="Your funds transaction will be processed through WaivioBank service. WaiveBank doesn't take any fees."
             />
           )}
-          <Form.Item label={<FormattedMessage id="amount" defaultMessage="Amount"/>}>
+          <Form.Item label={<FormattedMessage id="amount" defaultMessage="Amount" />}>
             <InputGroup className="Transfer__amount">
               {getFieldDecorator('amount', {
                 trigger: '',

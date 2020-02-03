@@ -1,13 +1,13 @@
 import Cookie from 'js-cookie';
-import {createAction} from 'redux-actions';
-import {getAuthenticatedUserName, getIsAuthenticated, getIsLoaded} from '../reducers';
-import {createAsyncActionType} from '../helpers/stateHelpers';
-import {addNewNotification} from '../app/appActions';
-import {getFollowing} from '../user/userActions';
-import {BUSY_API_TYPES} from '../../common/constants/notifications';
-import {disconnectBroker} from '../../investarena/redux/actions/brokersActions';
-import {setToken} from '../helpers/getToken';
-import {updateGuestProfile} from '../../waivioApi/ApiClient';
+import { createAction } from 'redux-actions';
+import { getAuthenticatedUserName, getIsAuthenticated, getIsLoaded } from '../reducers';
+import { createAsyncActionType } from '../helpers/stateHelpers';
+import { addNewNotification } from '../app/appActions';
+import { getFollowing } from '../user/userActions';
+import { BUSY_API_TYPES } from '../../common/constants/notifications';
+import { disconnectBroker } from '../../investarena/redux/actions/brokersActions';
+import { setToken } from '../helpers/getToken';
+import { updateGuestProfile } from '../../waivioApi/ApiClient';
 import { notify } from '../app/Notification/notificationActions';
 
 export const LOGIN = '@auth/LOGIN';
@@ -34,7 +34,7 @@ const loginError = createAction(LOGIN_ERROR);
 export const login = (accessToken = '', socialNetwork = '', regData = '') => async (
   dispatch,
   getState,
-  {steemConnectAPI, waivioAPI},
+  { steemConnectAPI, waivioAPI },
 ) => {
   const state = getState();
 
@@ -53,7 +53,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       try {
         const tokenData = await setToken(accessToken, socialNetwork, regData);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(tokenData.userData.name);
-        resolve({account: tokenData.userData, userMetaData, socialNetwork, isGuestUser: true});
+        resolve({ account: tokenData.userData, userMetaData, socialNetwork, isGuestUser: true });
       } catch (e) {
         dispatch(notify(e.error.details[0].message));
         reject(e);
@@ -66,7 +66,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       try {
         const scUserData = await steemConnectAPI.me();
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
-        resolve({...scUserData, userMetaData, isGuestUser: isGuest});
+        resolve({ ...scUserData, userMetaData, isGuestUser: isGuest });
       } catch (e) {
         reject(e);
       }
@@ -97,7 +97,7 @@ export const reload = () => (dispatch, getState, { steemConnectAPI }) =>
     },
   });
 
-export const logout = () => (dispatch, getState, {busyAPI, steemConnectAPI}) => {
+export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) => {
   const state = getState();
   if (state.auth.isGuestUser) {
     localStorage.removeItem('accessToken');
@@ -152,15 +152,15 @@ export const updateProfile = (username, values) => (dispatch, getState) => {
   const state = getState();
   // eslint-disable-next-line camelcase
   const json_metadata = JSON.parse(state.auth.user.json_metadata);
-  json_metadata.profile = {...json_metadata.profile, ...values};
+  json_metadata.profile = { ...json_metadata.profile, ...values };
   return dispatch({
     type: UPDATE_PROFILE,
     payload: {
       promise: updateGuestProfile(username, json_metadata).then(data => {
         if (data.statuscode === 200) {
-          return {isProfileUpdated: false};
+          return { isProfileUpdated: false };
         }
-        return {isProfileUpdated: true};
+        return { isProfileUpdated: true };
       }),
     },
     meta: JSON.stringify(json_metadata),

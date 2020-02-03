@@ -8,13 +8,12 @@ import embedjs from 'embedjs';
 import slice from 'lodash/slice';
 import xmldom from 'xmldom';
 import linksRe from './steemitLinks';
-import {validateAccountName} from './ChainValidation';
-import {getProxyImageURL} from '../helpers/image';
+import { validateAccountName } from './ChainValidation';
+import { getProxyImageURL } from '../helpers/image';
 
-const noop = () => {
-};
+const noop = () => {};
 const DOMParser = new xmldom.DOMParser({
-  errorHandler: {warning: noop, error: noop},
+  errorHandler: { warning: noop, error: noop },
 });
 const XMLSerializer = new xmldom.XMLSerializer();
 

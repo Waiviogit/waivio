@@ -1,23 +1,23 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import {Button, Checkbox, Form, Icon, Input, Modal} from 'antd';
-import {isEmpty} from 'lodash';
-import {batch, useDispatch} from 'react-redux';
-import {FormattedMessage} from 'react-intl';
-import {GoogleLogin} from 'react-google-login';
+import { Button, Checkbox, Form, Icon, Input, Modal } from 'antd';
+import { isEmpty } from 'lodash';
+import { batch, useDispatch } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
+import { GoogleLogin } from 'react-google-login';
 import FacebookLogin from 'react-facebook-login';
 import getSlug from 'speakingurl';
 import SteemConnect from '../steemConnectAPI';
-import {busyLogin, login} from '../auth/authActions';
-import {getUserAccount, isUserRegistered} from '../../waivioApi/ApiClient';
-import {getFollowing, getFollowingObjects, getNotifications} from '../user/userActions';
-import {notify} from '../app/Notification/notificationActions';
-import {GUEST_PREFIX} from '../../common/constants/waivio';
-import {getRate, getRewardFund} from './../app/appActions';
-import {getRebloggedList} from './../app/Reblog/reblogActions';
+import { busyLogin, login } from '../auth/authActions';
+import { getUserAccount, isUserRegistered } from '../../waivioApi/ApiClient';
+import { getFollowing, getFollowingObjects, getNotifications } from '../user/userActions';
+import { notify } from '../app/Notification/notificationActions';
+import { GUEST_PREFIX } from '../../common/constants/waivio';
+import { getRate, getRewardFund } from './../app/appActions';
+import { getRebloggedList } from './../app/Reblog/reblogActions';
 import './Navigation/ModalSignUp/ModalSignUp.less';
 
-const LoginModal = ({form, visible, handleLoginModalCancel, next}) => {
+const LoginModal = ({ form, visible, handleLoginModalCancel, next }) => {
   const dispatch = useDispatch();
   const [userData, setUserData] = useState({});
 
@@ -51,7 +51,7 @@ const LoginModal = ({form, visible, handleLoginModalCancel, next}) => {
             `${response.profileObj.givenName} ${response.profileObj.familyName}`.slice(0, 16),
           ),
         });
-        setUserData({...response, socialNetwork: 'google'});
+        setUserData({ ...response, socialNetwork: 'google' });
       }
     }
   };
@@ -72,7 +72,7 @@ const LoginModal = ({form, visible, handleLoginModalCancel, next}) => {
         setFieldsValue({
           username: getSlug(response.name).slice(0, 16),
         });
-        setUserData({...response, socialNetwork: 'facebook'});
+        setUserData({ ...response, socialNetwork: 'facebook' });
       }
     }
   };
@@ -122,7 +122,7 @@ const LoginModal = ({form, visible, handleLoginModalCancel, next}) => {
               validator: validateUserName,
             },
           ],
-        })(<Input placeholder="Username" addonBefore={GUEST_PREFIX} maxLength={16}/>)}
+        })(<Input placeholder="Username" addonBefore={GUEST_PREFIX} maxLength={16} />)}
       </Form.Item>
       <Form.Item>
         {getFieldDecorator('agreement', {
@@ -139,7 +139,7 @@ const LoginModal = ({form, visible, handleLoginModalCancel, next}) => {
       </Form.Item>
       <Form.Item>
         <Button type="primary" htmlType="submit" disabled={hasErrors(getFieldsError())}>
-          <FormattedMessage id="signin" defaultMessage="Log in"/>
+          <FormattedMessage id="signin" defaultMessage="Log in" />
         </Button>
       </Form.Item>
     </Form>
@@ -155,7 +155,7 @@ const LoginModal = ({form, visible, handleLoginModalCancel, next}) => {
     >
       <div className="ModalSignUp">
         <h2 className="ModalSignUp__title">
-          <FormattedMessage id="login" defaultMessage="Log in"/>
+          <FormattedMessage id="login" defaultMessage="Log in" />
         </h2>
         <a role="button" href={SteemConnect.getLoginURL(next)} className="ModalSignUp__signin">
           <img
@@ -163,7 +163,7 @@ const LoginModal = ({form, visible, handleLoginModalCancel, next}) => {
             alt="steemit"
             className="ModalSignUp__icon-steemit"
           />
-          <FormattedMessage id="signin_with_steemIt" defaultMessage="SteemConnect"/>
+          <FormattedMessage id="signin_with_steemIt" defaultMessage="SteemConnect" />
         </a>
         <div className="ModalSignUp__social">
           <GoogleLogin
@@ -178,11 +178,10 @@ const LoginModal = ({form, visible, handleLoginModalCancel, next}) => {
             autoLoad={false}
             fields="name,email,picture"
             callback={responseFacebook}
-            onFailure={() => {
-            }}
+            onFailure={() => {}}
             textButton="Facebook"
             cssClass="ModalSignUp__social-btn ModalSignUp__social-btn--fb"
-            icon={<Icon type="facebook" className="ModalSignUp__icon-fb"/>}
+            icon={<Icon type="facebook" className="ModalSignUp__icon-fb" />}
           />
         </div>
         {!isEmpty(userData) && nameForm}
@@ -201,8 +200,7 @@ LoginModal.propTypes = {
 LoginModal.defaultProps = {
   visible: false,
   next: '',
-  handleLoginModalCancel: () => {
-  },
+  handleLoginModalCancel: () => {},
 };
 
-export default Form.create({name: 'user_name'})(LoginModal);
+export default Form.create({ name: 'user_name' })(LoginModal);

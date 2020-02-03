@@ -15,7 +15,7 @@ const mostProfitableUsers = ({ chartid }) => {
     if (chartid) {
       api.performers
         .getMostProfitableUsers(chartid)
-        .then(data => setState({performers: data, loading: false}));
+        .then(data => setState({ performers: data, loading: false }));
     }
   }, [chartid]);
 

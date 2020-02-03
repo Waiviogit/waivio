@@ -4,7 +4,7 @@ import secureRandom from 'secure-random';
 import diff_match_patch from 'diff-match-patch';
 import steemAPI from '../steemAPI';
 import formatter from '../helpers/steemitFormatter';
-import {GUEST_PREFIX} from '../../common/constants/waivio';
+import { GUEST_PREFIX } from '../../common/constants/waivio';
 
 const dmp = new diff_match_patch();
 /**

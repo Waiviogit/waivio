@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Route, Switch, withRouter} from 'react-router-dom';
+import { Route, Switch, withRouter } from 'react-router-dom';
 import UserHeader from '../components/UserHeader';
 import UserHeaderLoading from '../components/UserHeaderLoading';
 import UserMenu from '../components/UserMenu';
 import Hero from '../components/Hero';
-import {GUEST_PREFIX} from '../../common/constants/waivio';
+import { GUEST_PREFIX } from '../../common/constants/waivio';
 
 const activityFields = [
   'last_owner_update',
@@ -35,7 +35,7 @@ class UserMenuWrapper extends React.Component {
   };
 
   render() {
-    const {match, location, history, ...otherProps} = this.props;
+    const { match, location, history, ...otherProps } = this.props;
     const current = this.props.location.pathname.split('/')[2];
     const currentKey = current || 'discussions';
     const isGuest = match.params.name.startsWith(GUEST_PREFIX);
@@ -84,7 +84,7 @@ const UserHero = ({
           render={() => (
             <div>
               {user.fetching ? (
-                <UserHeaderLoading/>
+                <UserHeaderLoading />
               ) : (
                 <UserHeader
                   username={username}
@@ -103,7 +103,7 @@ const UserHero = ({
                   isActive={isUserActive(user)}
                 />
               )}
-              <UserMenuWrapper followers={followersCount} following={followingCount}/>
+              <UserMenuWrapper followers={followersCount} following={followingCount} />
             </div>
           )}
         />

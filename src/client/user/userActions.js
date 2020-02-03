@@ -1,7 +1,7 @@
-import {getAuthenticatedUserName, getIsAuthenticated, isGuestUser} from '../reducers';
-import {createAsyncActionType} from '../helpers/stateHelpers';
+import { getAuthenticatedUserName, getIsAuthenticated, isGuestUser } from '../reducers';
+import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import {rewardPostContainerData} from '../rewards/rewardsHelper';
+import { rewardPostContainerData } from '../rewards/rewardsHelper';
 
 require('isomorphic-fetch');
 
@@ -76,7 +76,7 @@ export const getFollowing = (username, skip, limit) => (dispatch, getState) => {
   const state = getState();
 
   if (!username && !getIsAuthenticated(state)) {
-    return dispatch({type: GET_FOLLOWING_ERROR});
+    return dispatch({ type: GET_FOLLOWING_ERROR });
   }
 
   const targetUsername = username || getAuthenticatedUserName(state);
@@ -101,7 +101,7 @@ export const getFollowingObjects = username => (dispatch, getState) => {
   const limit = state.auth.user.objects_following_count;
 
   if (!username && !getIsAuthenticated(state)) {
-    return dispatch({type: GET_FOLLOWING_ERROR});
+    return dispatch({ type: GET_FOLLOWING_ERROR });
   }
 
   const targetUsername = username || getAuthenticatedUserName(state);
@@ -119,11 +119,11 @@ export const getNotifications = username => (dispatch, getState, { busyAPI }) =>
   const state = getState();
 
   if (!username && !getIsAuthenticated(state)) {
-    return dispatch({type: GET_NOTIFICATIONS.ERROR});
+    return dispatch({ type: GET_NOTIFICATIONS.ERROR });
   }
 
   if ((!username && !getIsAuthenticated(state)) || isGuestUser(state)) {
-    return dispatch({type: GET_NOTIFICATIONS.ERROR});
+    return dispatch({ type: GET_NOTIFICATIONS.ERROR });
   }
 
   const targetUsername = username || getAuthenticatedUserName(state);

@@ -1,14 +1,14 @@
-import {createAction} from 'redux-actions';
-import {getAuthenticatedUserName, getIsAuthenticated} from '../reducers';
-import {getAllFollowing} from '../helpers/apiHelpers';
-import {createAsyncActionType} from '../helpers/stateHelpers';
+import { createAction } from 'redux-actions';
+import { getAuthenticatedUserName, getIsAuthenticated } from '../reducers';
+import { getAllFollowing } from '../helpers/apiHelpers';
+import { createAsyncActionType } from '../helpers/stateHelpers';
 
 export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
 export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';
 export const FOLLOW_WOBJECT_SUCCESS = '@wobj/FOLLOW_WOBJECT_SUCCESS';
 export const FOLLOW_WOBJECT_ERROR = '@wobj/FOLLOW_WOBJECT_ERROR';
 
-export const followObject = authorPermlink => (dispatch, getState, {steemConnectAPI}) => {
+export const followObject = authorPermlink => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
 
   if (!getIsAuthenticated(state)) {

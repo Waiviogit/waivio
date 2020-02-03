@@ -108,7 +108,7 @@ export const answerQuickForecastError = id => ({
   type: ANSWER_QUICK_ERROR,
   payload: {
     id,
-  }
+  },
 });
 
 export const answerForQuickForecast = (
@@ -137,23 +137,23 @@ export const answerForQuickForecast = (
   const comment = arrayRandElement(commentArray);
 
   const commentBody = [
-      'comment',
-      {
-        parent_author: author,
-        parent_permlink: permlink,
-        author: username,
-        permlink: createFormatter.commentPermlink(author, permlink),
-        title: 'unactivate topic for rewards',
-        body: comment,
-        json_metadata: JSON.stringify({
-          forecast_comment: {
-            side: answer,
-            postPrice,
-            security,
-          },
-        }),
-      },
-    ];
+    'comment',
+    {
+      parent_author: author,
+      parent_permlink: permlink,
+      author: username,
+      permlink: createFormatter.commentPermlink(author, permlink),
+      title: 'unactivate topic for rewards',
+      body: comment,
+      json_metadata: JSON.stringify({
+        forecast_comment: {
+          side: answer,
+          postPrice,
+          security,
+        },
+      }),
+    },
+  ];
 
   dispatch(loadingForecast(id));
 
@@ -161,12 +161,10 @@ export const answerForQuickForecast = (
     if (author === username) {
       return new Promise((resolve, reject) =>
         steemConnectAPI
-          .broadcast([
-            commentBody
-          ])
+          .broadcast([commentBody])
           .then(() => {
-              dispatch(answerQuickForecast(answer, id, postPrice, timerData));
-              resolve();
+            dispatch(answerQuickForecast(answer, id, postPrice, timerData));
+            resolve();
           })
           .catch(e => {
             dispatch(answerQuickForecastError(id));
@@ -180,9 +178,7 @@ export const answerForQuickForecast = (
         .vote(username, author, permlink, weight)
         .then(() => {
           steemConnectAPI
-            .broadcast([
-              commentBody
-            ])
+            .broadcast([commentBody])
             .then(() => {
               dispatch(answerQuickForecast(answer, id, postPrice, timerData));
               resolve();

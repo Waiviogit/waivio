@@ -1,4 +1,4 @@
-import {createAsyncActionType} from '../helpers/stateHelpers';
+import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 
 export const GET_CONTENT = createAsyncActionType('@post/GET_CONTENT');
@@ -38,7 +38,7 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
   getState,
   { steemConnectAPI },
 ) => {
-  const {auth, posts} = getState();
+  const { auth, posts } = getState();
   if (!auth.isAuthenticated) {
     return null;
   }
@@ -52,7 +52,7 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
     payload: {
       promise: steemConnectAPI.vote(voter, author, post.permlink, weight).then(res => {
         if (res.status === 200 && isGuest) {
-          return {isFakeLikeOk: true};
+          return { isFakeLikeOk: true };
         }
         if (window.analytics) {
           window.analytics.track('Vote', {
@@ -75,14 +75,14 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
     },
     meta: isGuest
       ? {
-        postId,
-        voter,
-        weight,
-        postPermlink: postId,
-        rshares: 1,
-        percent: weight,
-      }
-      : {postId, voter, weight},
+          postId,
+          voter,
+          weight,
+          postPermlink: postId,
+          rshares: 1,
+          percent: weight,
+        }
+      : { postId, voter, weight },
   });
 };
 

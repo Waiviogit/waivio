@@ -1,24 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
-import {attempt, isEmpty, isError, throttle} from 'lodash';
-import {connect} from 'react-redux';
-import {FormattedMessage, injectIntl} from 'react-intl';
-import {Avatar, Button, Form, Input, Modal} from 'antd';
+import { attempt, isEmpty, isError, throttle } from 'lodash';
+import { connect } from 'react-redux';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { Avatar, Button, Form, Input, Modal } from 'antd';
 import SteemConnect from '../steemConnectAPI';
-import {updateProfile} from '../auth/authActions';
-import {getAuthenticatedUser, getIsReloading, isGuestUser} from '../reducers';
+import { updateProfile } from '../auth/authActions';
+import { getAuthenticatedUser, getIsReloading, isGuestUser } from '../reducers';
 import socialProfiles from '../helpers/socialProfiles';
 import withEditor from '../components/Editor/withEditor';
 import EditorInput from '../components/Editor/EditorInput';
-import {remarkable} from '../components/Story/Body';
+import { remarkable } from '../components/Story/Body';
 import BodyContainer from '../containers/Story/BodyContainer';
 import Action from '../components/Button/Action';
 import Affix from '../components/Utils/Affix';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import requiresLogin from '../auth/requiresLogin';
 import ImageSetter from '../components/ImageSetter/ImageSetter';
-import {getGuestAvatarUrl} from '../../waivioApi/ApiClient';
+import { getGuestAvatarUrl } from '../../waivioApi/ApiClient';
 import './Settings.less';
 
 const FormItem = Form.Item;
@@ -69,15 +69,12 @@ export default class ProfileSettings extends React.Component {
   };
 
   static defaultProps = {
-    onImageUpload: () => {
-    },
-    onImageInvalid: () => {
-    },
+    onImageUpload: () => {},
+    onImageInvalid: () => {},
     userName: '',
     user: '',
     isGuest: false,
-    updateProfile: () => {
-    },
+    updateProfile: () => {},
   };
 
   constructor(props) {
@@ -98,7 +95,7 @@ export default class ProfileSettings extends React.Component {
   }
 
   componentDidMount() {
-    const {user} = this.props;
+    const { user } = this.props;
     const profileData = attempt(JSON.parse, user.json_metadata);
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
@@ -145,8 +142,8 @@ export default class ProfileSettings extends React.Component {
 
   setSettingsFields = () => {
     // eslint-disable-next-line no-shadow
-    const {form, isGuest, userName, updateProfile} = this.props;
-    const {avatarImage, coverImage} = this.state;
+    const { form, isGuest, userName, updateProfile } = this.props;
+    const { avatarImage, coverImage } = this.state;
     const isChangedAvatar = !!avatarImage.length;
     const isChangedCover = !!coverImage.length;
 
@@ -181,8 +178,8 @@ export default class ProfileSettings extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
     // eslint-disable-next-line no-shadow
-    const {isGuest, userName, intl} = this.props;
-    const {profilePicture, avatarImage} = this.state;
+    const { isGuest, userName, intl } = this.props;
+    const { profilePicture, avatarImage } = this.state;
 
     if (isGuest && !isEmpty(avatarImage)) {
       getGuestAvatarUrl(userName, profilePicture, intl)
@@ -196,7 +193,7 @@ export default class ProfileSettings extends React.Component {
   };
 
   handleSignatureChange = body =>
-    throttle(this.renderBody, 200, {leading: false, trailing: true})(body);
+    throttle(this.renderBody, 200, { leading: false, trailing: true })(body);
 
   renderBody = body => {
     this.setState({

@@ -1,6 +1,6 @@
 import sc2 from 'sc2-sdk';
-import {waivioAPI} from '../waivioApi/ApiClient';
-import {getValidTokenData} from './helpers/getToken';
+import { waivioAPI } from '../waivioApi/ApiClient';
+import { getValidTokenData } from './helpers/getToken';
 
 function broadcast(operations, actionAuthor) {
   let operation;
@@ -30,7 +30,7 @@ function broadcast(operations, actionAuthor) {
 async function getUserAccount() {
   const userData = await getValidTokenData();
   const account = await waivioAPI.getUserAccount(userData.userData.name, true);
-  return {account, name: account.name};
+  return { account, name: account.name };
 }
 
 function sc2Extended() {

@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import {connect} from 'react-redux';
-import {push} from 'connected-react-router';
+import { connect } from 'react-redux';
+import { push } from 'connected-react-router';
 import Story from '../components/Story/Story';
 import {
   getAuthenticatedUser,
@@ -18,17 +18,17 @@ import {
   getVotePercent,
   getVotingPower,
 } from '../reducers';
-import {votePost} from '../post/postActions';
-import {toggleBookmark} from '../bookmarks/bookmarksActions';
-import {editPost} from '../post/Write/editorActions';
-import {reblog} from '../app/Reblog/reblogActions';
-import {followUser, unfollowUser} from '../user/userActions';
+import { votePost } from '../post/postActions';
+import { toggleBookmark } from '../bookmarks/bookmarksActions';
+import { editPost } from '../post/Write/editorActions';
+import { reblog } from '../app/Reblog/reblogActions';
+import { followUser, unfollowUser } from '../user/userActions';
 
-const mapStateToProps = (state, {id}) => {
+const mapStateToProps = (state, { id }) => {
   const user = getAuthenticatedUser(state);
   const post = getPosts(state)[id];
 
-  const userVote = _.find(post.active_votes, {voter: user.name}) || {};
+  const userVote = _.find(post.active_votes, { voter: user.name }) || {};
   const isAppend = !!post.append_field_name;
   const bookmarks = getBookmarks(state);
   const postState = {

@@ -1,4 +1,4 @@
-import {hasActionType, hasField} from '../object/wObjectHelper';
+import { hasActionType, hasField } from '../object/wObjectHelper';
 
 export const getFeedFromState = (sortBy, category = 'all', state) => {
   switch (sortBy) {
@@ -180,8 +180,8 @@ export const makeCancelable = promise => {
 
   const wrappedPromise = new Promise((resolve, reject) => {
     promise.then(
-      val => (hasCanceled ? reject({isCanceled: true}) : resolve(val)),
-      error => (hasCanceled ? reject({isCanceled: true}) : reject(error)),
+      val => (hasCanceled ? reject({ isCanceled: true }) : resolve(val)),
+      error => (hasCanceled ? reject({ isCanceled: true }) : reject(error)),
     );
   });
 

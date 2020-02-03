@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import {injectIntl} from 'react-intl';
-import {Modal} from 'antd';
-import {addNewBlock} from '../../model';
-import {Block} from '../../util/constants';
+import { injectIntl } from 'react-intl';
+import { Modal } from 'antd';
+import { addNewBlock } from '../../model';
+import { Block } from '../../util/constants';
 import ImageSetter from '../../../ImageSetter/ImageSetter';
 import withEditor from '../../../Editor/withEditor';
 

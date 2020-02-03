@@ -1,16 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import take from 'lodash/take';
-import {FormattedMessage, FormattedNumber, injectIntl} from 'react-intl';
-import {Link} from 'react-router-dom';
-import {Icon, Modal} from 'antd';
+import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
+import { Icon, Modal } from 'antd';
 import classNames from 'classnames';
 import withAuthActions from '../../auth/withAuthActions';
-import {sortVotes} from '../../helpers/sortHelpers';
-import {getDownvotes, getUpvotes} from '../../helpers/voteHelpers';
+import { sortVotes } from '../../helpers/sortHelpers';
+import { getDownvotes, getUpvotes } from '../../helpers/voteHelpers';
 import Popover from '../Popover';
 import BTooltip from '../BTooltip';
-import PopoverMenu, {PopoverMenuItem} from '../PopoverMenu/PopoverMenu';
+import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import ReactionsModal from '../Reactions/ReactionsModal';
 import USDDisplay from '../Utils/USDDisplay';
 import './Buttons.less';
@@ -170,23 +170,23 @@ export default class Buttons extends React.Component {
 
     if (postState.userFollowed && !pendingFollow) {
       followText = intl.formatMessage(
-        {id: 'unfollow_username', defaultMessage: 'Unfollow {username}'},
-        {username: (post.guestInfo && post.guestInfo.userId) || post.author},
+        { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
+        { username: (post.guestInfo && post.guestInfo.userId) || post.author },
       );
     } else if (postState.userFollowed && pendingFollow) {
       followText = intl.formatMessage(
-        {id: 'unfollow_username', defaultMessage: 'Unfollow {username}'},
-        {username: (post.guestInfo && post.guestInfo.userId) || post.author},
+        { id: 'unfollow_username', defaultMessage: 'Unfollow {username}' },
+        { username: (post.guestInfo && post.guestInfo.userId) || post.author },
       );
     } else if (!postState.userFollowed && !pendingFollow) {
       followText = intl.formatMessage(
-        {id: 'follow_username', defaultMessage: 'Follow {username}'},
-        {username: (post.guestInfo && post.guestInfo.userId) || post.author},
+        { id: 'follow_username', defaultMessage: 'Follow {username}' },
+        { username: (post.guestInfo && post.guestInfo.userId) || post.author },
       );
     } else if (!postState.userFollowed && pendingFollow) {
       followText = intl.formatMessage(
-        {id: 'follow_username', defaultMessage: 'Follow {username}'},
-        {username: (post.guestInfo && post.guestInfo.userId) || post.author},
+        { id: 'follow_username', defaultMessage: 'Follow {username}' },
+        { username: (post.guestInfo && post.guestInfo.userId) || post.author },
       );
     }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {FormattedDate, FormattedMessage, FormattedNumber, FormattedTime} from 'react-intl';
+import { FormattedDate, FormattedMessage, FormattedNumber, FormattedTime } from 'react-intl';
 import formatter from '../helpers/steemitFormatter';
 import {
   calculateEstAccountValue,
@@ -78,17 +78,17 @@ const getFormattedPendingWithdrawalSP = (user, totalVestingShares, totalVestingF
 };
 
 const UserWalletSummary = ({
-                             user,
-                             balance,
-                             loading,
-                             totalVestingShares,
-                             totalVestingFundSteem,
-                             loadingGlobalProperties,
-                             steemRate,
-                             sbdRate,
-                             steemRateLoading,
-                             isGuest,
-                           }) => (
+  user,
+  balance,
+  loading,
+  totalVestingShares,
+  totalVestingFundSteem,
+  loadingGlobalProperties,
+  steemRate,
+  sbdRate,
+  steemRateLoading,
+  isGuest,
+}) => (
   <div className="UserWalletSummary">
     <div className="UserWalletSummary__item">
       <i className="iconfont icon-steem UserWalletSummary__icon" />
@@ -97,10 +97,10 @@ const UserWalletSummary = ({
       </div>
       <div className="UserWalletSummary__value">
         {loading ? (
-          <Loading/>
+          <Loading />
         ) : (
           <span>
-            <FormattedNumber value={balance ? parseFloat(balance) : 0}/>
+            <FormattedNumber value={balance ? parseFloat(balance) : 0} />
             {' STEEM'}
           </span>
         )}
@@ -109,13 +109,13 @@ const UserWalletSummary = ({
     {!isGuest && (
       <React.Fragment>
         <div className="UserWalletSummary__item">
-          <i className="iconfont icon-flashlight_fill UserWalletSummary__icon"/>
+          <i className="iconfont icon-flashlight_fill UserWalletSummary__icon" />
           <div className="UserWalletSummary__label">
-            <FormattedMessage id="steem_power" defaultMessage="Steem Power"/>
+            <FormattedMessage id="steem_power" defaultMessage="Steem Power" />
           </div>
           <div className="UserWalletSummary__value">
             {loading || loadingGlobalProperties ? (
-              <Loading/>
+              <Loading />
             ) : (
               <span>
                 <FormattedNumber
@@ -135,34 +135,34 @@ const UserWalletSummary = ({
           </div>
         </div>
         <div className="UserWalletSummary__item">
-          <i className="iconfont icon-Dollar UserWalletSummary__icon"/>
+          <i className="iconfont icon-Dollar UserWalletSummary__icon" />
           <div className="UserWalletSummary__label">
-            <FormattedMessage id="steem_dollar" defaultMessage="Steem Dollar"/>
+            <FormattedMessage id="steem_dollar" defaultMessage="Steem Dollar" />
           </div>
           <div className="UserWalletSummary__value">
             {loading ? (
-              <Loading/>
+              <Loading />
             ) : (
               <span>
-                <FormattedNumber value={parseFloat(user.sbd_balance)}/>
+                <FormattedNumber value={parseFloat(user.sbd_balance)} />
                 {' SBD'}
               </span>
             )}
           </div>
         </div>
         <div className="UserWalletSummary__item">
-          <i className="iconfont icon-savings UserWalletSummary__icon"/>
+          <i className="iconfont icon-savings UserWalletSummary__icon" />
           <div className="UserWalletSummary__label">
-            <FormattedMessage id="savings" defaultMessage="Savings"/>
+            <FormattedMessage id="savings" defaultMessage="Savings" />
           </div>
           <div className="UserWalletSummary__value">
             {loading ? (
-              <Loading/>
+              <Loading />
             ) : (
               <span>
-                <FormattedNumber value={parseFloat(user.savings_balance)}/>
+                <FormattedNumber value={parseFloat(user.savings_balance)} />
                 {' STEEM, '}
-                <FormattedNumber value={parseFloat(user.savings_sbd_balance)}/>
+                <FormattedNumber value={parseFloat(user.savings_sbd_balance)} />
                 {' SBD'}
               </span>
             )}
@@ -172,13 +172,13 @@ const UserWalletSummary = ({
     )}
     {!isGuest && !(loading || loadingGlobalProperties || steemRateLoading) && (
       <div className="UserWalletSummary__item">
-        <i className="iconfont icon-people_fill UserWalletSummary__icon"/>
+        <i className="iconfont icon-people_fill UserWalletSummary__icon" />
         <div className="UserWalletSummary__label">
-          <FormattedMessage id="est_account_value" defaultMessage="Est. Account Value"/>
+          <FormattedMessage id="est_account_value" defaultMessage="Est. Account Value" />
         </div>
         <div className="UserWalletSummary__value">
           {loading || loadingGlobalProperties || steemRateLoading ? (
-            <Loading/>
+            <Loading />
           ) : (
             <USDDisplay
               value={calculateEstAccountValue(
