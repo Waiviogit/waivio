@@ -112,8 +112,10 @@ const ObjectCardView = ({
                     {wObject.price}
                   </span>
                 )}
-                {tags.map(tag => (
-                  <span key={tag}>&nbsp;&middot;{` ${tag}`}</span>
+                {tags.map((tag, index) => (
+                  <span key={tag}>
+                    {index === 0 && !wObject.price ? tag : <span>&nbsp;&middot;{` ${tag}`}</span>}
+                  </span>
                 ))}
               </span>
               {wObject.address && (

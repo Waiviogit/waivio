@@ -101,11 +101,13 @@ class CampaignFooter extends React.Component {
   }
 
   componentDidMount() {
-    const { user, proposition } = this.props;
-    const reservedUser = find(proposition.reserved_users, resUser => resUser.name === user.name);
+    const { proposition } = this.props;
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
-      daysLeft: getDaysLeft(reservedUser.createdAt, proposition.count_reservation_days),
+      daysLeft: getDaysLeft(
+        proposition.objects[0].reservationCreated,
+        proposition.count_reservation_days,
+      ),
     });
   }
 
