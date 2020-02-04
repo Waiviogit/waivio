@@ -22,6 +22,7 @@ import {
   getForecastRoundRewards,
   getForecastStatistic,
   getForecastWinners,
+  finishQuickForecastTimer
 } from '../../redux/actions/forecastActions';
 
 import './QuickForecastPage.less';
@@ -51,7 +52,7 @@ const QuickForecastPage = props => {
     'rightContainer--inactive': currentPage.key !== 'winners',
   });
   const switcherClassList = classNames('switcher-page', {
-    inactive: currentPage.key === 'forecast',
+    'switcher-page--inactive': currentPage.key === 'forecast',
   });
   const filtersType = [
     {
@@ -111,13 +112,12 @@ const QuickForecastPage = props => {
   function handleFinishTimer() {
     setLoading(false);
     setTime(Date.now());
-
     props.getDataForQuickForecast();
     props.getForecastRoundRewards();
-    props.getForecastWinners(winnersLimit, 0);
     props.getForecastStatistic();
 
     setTimeout(() => {
+      props.finishQuickForecastTimer();
       setLoading(true);
     }, 3000);
   }
@@ -141,8 +141,7 @@ const QuickForecastPage = props => {
   const currentForecastList =
     answeredForecastList.length === 5 ? answeredForecastList : forecastList;
   const secondsInMilliseconds = sec => sec / 0.001;
-  const finishRoundTime =
-    props.roundTime >= 0
+  const finishRoundTime = props.roundTime >= 0
       ? currentTime + secondsInMilliseconds(props.roundTime)
       : currentTime + secondsInMilliseconds(9000);
 
@@ -163,11 +162,12 @@ const QuickForecastPage = props => {
                 id: currentPage.id,
                 defaultMessage: currentPage.defaultMessage,
               })}
-            &nbsp; (
-            <span className="switcher-link" role="presentation" onClick={() => setOpenModal(true)}>
-              {props.intl.formatMessage({ id: 'change', defaultMessage: 'change' })}
+            &nbsp;
+            <span className="switcher-link">
+              (<span className="underline" role="presentation" onClick={() => setOpenModal(true)}>
+                 {props.intl.formatMessage({ id: 'change', defaultMessage: 'change' })}
+              </span>)
             </span>
-            )
           </span>
         </div>
         <Affix
@@ -370,6 +370,7 @@ QuickForecastPage.propTypes = {
   getForecastRoundRewards: PropTypes.func.isRequired,
   getForecastWinners: PropTypes.func.isRequired,
   getForecastStatistic: PropTypes.func.isRequired,
+  finishQuickForecastTimer: PropTypes.func.isRequired,
   onActionInitiated: PropTypes.func.isRequired,
   forecastWinnersShowMore: PropTypes.func.isRequired,
   intl: PropTypes.shape({
@@ -428,6 +429,7 @@ const mapDispatchToProps = {
   getForecastStatistic,
   getForecastRoundRewards,
   forecastWinnersShowMore,
+  finishQuickForecastTimer
 };
 
 export default injectIntl(

@@ -804,13 +804,11 @@ div[data-dir='rtl'] .Topnav {
   border-color: @blue-vivid;
 }
 
-.center-menu {
-  @media @small {
-    width: auto;
-  }
+.topnav-layout div.center.center-menu {
+  width: auto;
 
-  @media @xsmall {
-    width: 46% !important;
+  @media @small and (max-width: @small-bp) {
+    width: 46%;
   }
 }
 

@@ -29,7 +29,7 @@ export const GET_QUICK_FORECAST_STATUS = createAsyncActionType(
 export const ANSWER_QUICK_FORECAST = '@forecast-data/ANSWER_QUICK_FORECAST';
 export const ANSWER_QUICK_LOADING = '@forecast-data/ANSWER_QUICK_LOADING';
 export const ANSWER_QUICK_ERROR = '@forecast-data/ANSWER_QUICK_ERROR';
-export const FINISH_QUICK_FORECAST = '@forecast-data/FINISH_QUICK_FORECAST';
+export const FINISH_QUICK_FORECAST_TIMER = '@forecast-data/FINISH_QUICK_FORECAST_TIMER';
 
 export const getActiveForecasts = ({ name, quote } = { name: '', quote: '' }) => dispatch =>
   dispatch({
@@ -109,6 +109,10 @@ export const answerQuickForecastError = id => ({
   payload: {
     id,
   },
+});
+
+export const finishQuickForecastTimer = () => ({
+  type: FINISH_QUICK_FORECAST_TIMER,
 });
 
 export const answerForQuickForecast = (

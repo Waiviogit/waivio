@@ -183,6 +183,16 @@ export default (state = initialState, action) => {
       return state;
     }
 
+    case activeForecastTypes.FINISH_QUICK_FORECAST_TIMER: {
+      const activeForecastList = state.quickForecastData.filter(forecast => !forecast.status);
+
+      return {
+        ...state,
+        winners: [],
+        quickForecastData: [...activeForecastList],
+      }
+    }
+
     default:
       return state;
   }
