@@ -4,6 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import getSlug from 'speakingurl';
+import { isEmpty } from 'lodash';
 import { GUEST_PREFIX } from '../../../../common/constants/waivio';
 import { getUserAccount } from '../../../../waivioApi/ApiClient';
 import { login } from '../../../auth/authActions';
@@ -77,13 +78,14 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
     validateFields((err, values) => {
       if (!err) {
         setIsLoading(true);
+        const regData = {
+          userName: `${GUEST_PREFIX}${values.username}`,
+          avatar: isEmpty(values.avatar) ? '' : values.avatar[0].src,
+          alias: values.alias || '',
+          locales: typeof values.locales === 'string' ? [values.locales] : values.locales,
+        };
         dispatch(
-          login(userData.accessToken, userData.socialNetwork, {
-            userName: `${GUEST_PREFIX}${values.username}`,
-            avatar: values.avatar[0].src,
-            alias: values.alias,
-            locales: values.locales,
-          }),
+          login(userData.accessToken, userData.socialNetwork, regData),
         ).then(() => {
           setIsLoading(false);
         });
