@@ -438,6 +438,7 @@ class Topnav extends React.Component {
         dropdownOpen: true,
         currentItem: optionValue,
       };
+
       if (data.props.type === 'wobject') {
         this.setState(nextState);
         this.debouncedSearchByObject(this.state.searchBarValue, optionValue);

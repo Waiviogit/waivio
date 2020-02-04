@@ -22,10 +22,13 @@ const ObjectFeedContainer = ({ history, match, wobject }) => {
 
   const handleCreatePost = () => {
     if (wobject && wobject.author_permlink) {
-      let redirectUrl = `/editor?object=[${wobject.name}](${wobject.author_permlink})`;
+      let redirectUrl = `/editor?object=`;
+      redirectUrl += encodeURIComponent(`[${wobject.name}](${wobject.author_permlink})`);
       if (!isEmpty(wobject.parent)) {
         const parentObject = getClientWObj(wobject.parent, usedLocale);
-        redirectUrl += `&object=[${parentObject.name}](${parentObject.author_permlink})`;
+        redirectUrl += `&object=${encodeURIComponent(
+          `[${parentObject.name}](${parentObject.author_permlink})`,
+        )}`;
       }
       history.push(redirectUrl);
     }

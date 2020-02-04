@@ -768,7 +768,8 @@ export const getAccessToken = (token, social, regData) => {
     .then(data => {
       response.userData = data.user;
       return response;
-    });
+    })
+    .catch(err => err);
 };
 
 export const getNewToken = token => {
