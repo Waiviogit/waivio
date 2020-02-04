@@ -71,6 +71,19 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
     callback();
   };
 
+  const checkboxValidator = (rule, value, callback) => {
+    if (value) {
+      callback();
+    } else {
+      callback(
+        <FormattedMessage
+          id="please_input_username_"
+          defaultMessage="You need to confirm agreement"
+        />,
+      );
+    }
+  };
+
   const hasErrors = fieldsError => Object.keys(fieldsError).some(field => fieldsError[field]);
 
   const handleSubmit = e => {
@@ -152,7 +165,7 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
             <ImageSetter
               onImageLoaded={getAvatar}
               onLoadingImage={setIsLoading}
-              defaultImage={userData.w3.Paa}
+              defaultImage={userData.image}
             />,
           )}
         </Form.Item>
@@ -207,17 +220,9 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
           label={<FormattedMessage id="rewards_details_legal" defaultMessage="Legal" />}
         >
           {getFieldDecorator('agreement', {
-            checked: false,
-            valuePropName: 'checked',
             rules: [
               {
-                required: true,
-                message: (
-                  <FormattedMessage
-                    id="please_input_username_"
-                    defaultMessage="You need to confirm agreement"
-                  />
-                ),
+                validator: checkboxValidator,
               },
             ],
           })(
