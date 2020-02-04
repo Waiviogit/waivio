@@ -8,15 +8,15 @@ import * as ApiClient from '../../waivioApi/ApiClient';
 
 export const GET_SINGLE_COMMENT = createAsyncActionType('@comments/GET_SINGLE_COMMENT');
 
-export const GET_COMMENTS = 'GET_COMMENTS';
-export const GET_COMMENTS_START = 'GET_COMMENTS_START';
-export const GET_COMMENTS_SUCCESS = 'GET_COMMENTS_SUCCESS';
-export const GET_COMMENTS_ERROR = 'GET_COMMENTS_ERROR';
+export const GET_COMMENTS = '@comments/GET_COMMENTS';
+export const GET_COMMENTS_START = '@comments/GET_COMMENTS_START';
+export const GET_COMMENTS_SUCCESS = '@comments/GET_COMMENTS_SUCCESS';
+export const GET_COMMENTS_ERROR = '@comments/GET_COMMENTS_ERROR';
 
-export const SEND_COMMENT = 'SEND_COMMENT';
-export const SEND_COMMENT_START = 'SEND_COMMENT_START';
-export const SEND_COMMENT_SUCCESS = 'SEND_COMMENT_SUCCESS';
-export const SEND_COMMENT_ERROR = 'SEND_COMMENT_ERROR';
+export const SEND_COMMENT = '@comments/SEND_COMMENT';
+export const SEND_COMMENT_START = '@comments/SEND_COMMENT_START';
+export const SEND_COMMENT_SUCCESS = '@comments/SEND_COMMENT_SUCCESS';
+export const SEND_COMMENT_ERROR = '@comments/SEND_COMMENT_ERROR';
 
 export const LIKE_COMMENT = createAsyncActionType('@comments/LIKE_COMMENT');
 
@@ -42,10 +42,12 @@ export const getFakeSingleComment = (
   const date = new Date().toISOString().split('.')[0];
   const id = `${parentAuthor}/${parentPermlink}`;
   const depth = state.comments.comments[id] ? state.comments.comments[id].depth + 1 : 0;
+  const authorGuest = state.auth.isGuestUser ? state.auth.user.name : author;
   const payload = new Promise(resolve => {
     resolve({
       category: 'waivio',
       author,
+      authorGuest,
       permlink,
       parent_author: parentAuthor,
       parent_permlink: parentPermlink,
@@ -61,6 +63,9 @@ export const getFakeSingleComment = (
       created: date,
       id,
       url: `/@${author}`,
+      guestInfo: {
+        userId: parentAuthor,
+      },
     });
   });
   dispatch({
@@ -185,7 +190,10 @@ export const sendComment = (parentPost, body, isUpdating = false, originalCommen
               !isUpdating,
             ),
           );
-          setTimeout(() => dispatch(getSingleComment(author, permlink, !isUpdating)), 2000);
+          setTimeout(
+            () => dispatch(getSingleComment(author, permlink, !isUpdating)),
+            auth.isGuestUser ? 6000 : 2000,
+          );
 
           if (window.analytics) {
             window.analytics.track('Comment', {
