@@ -3,6 +3,7 @@ import { Button, Checkbox, Form, Input, Select } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
 import getSlug from 'speakingurl';
 import { GUEST_PREFIX } from '../../../../common/constants/waivio';
 import { getUserAccount } from '../../../../waivioApi/ApiClient';
@@ -77,14 +78,13 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
     validateFields((err, values) => {
       if (!err) {
         setIsLoading(true);
-        dispatch(
-          login(userData.accessToken, userData.socialNetwork, {
-            userName: `${GUEST_PREFIX}${values.username}`,
-            avatar: values.avatar[0].src,
-            alias: values.alias,
-            locales: values.locales,
-          }),
-        ).then(() => {
+        const regData = {
+          userName: `${GUEST_PREFIX}${values.username}`,
+          avatar: isEmpty(values.avatar) ? '' : values.avatar[0].src,
+          alias: values.alias || '',
+          locales: typeof values.locales === 'string' ? [values.locales] : values.locales,
+        };
+        dispatch(login(userData.accessToken, userData.socialNetwork, regData)).then(() => {
           setIsLoading(false);
         });
       } else {
