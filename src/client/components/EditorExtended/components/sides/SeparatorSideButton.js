@@ -41,7 +41,7 @@ class SeparatorSideButton extends Component {
       >
         <Icon type="minus" className="btn-icon" />
         <span className="action-btn__caption">
-          {this.props.intl.formatMessage({ id: 'line', defaultMessage: 'Line' })}
+          {this.props.intl.formatMessage({ id: 'post_btn_separator', defaultMessage: 'Line' })}
         </span>
       </button>
     );

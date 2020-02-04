@@ -80,7 +80,7 @@ class ObjectSideButton extends Component {
       >
         <Icon type="codepen" className="object-btn" />
         <span className="action-btn__caption">
-          {this.props.intl.formatMessage({ id: 'object', defaultMessage: 'Object' })}
+          {this.props.intl.formatMessage({ id: 'post_btn_object', defaultMessage: 'Object' })}
         </span>
       </button>
     );

@@ -16,7 +16,7 @@
     display: flex;
     border: 1px solid @blue-botticelli;
     border-radius: 4px;
-    margin-left: 2px;
+    //margin-left: 2px;
   }
 
   .video-link-input,
@@ -96,8 +96,12 @@
     line-height: 1;
     padding: 4px 10px;
     border: none;
+    border-radius: 0;
     border-right: 1px solid @blue-botticelli;
-    border-radius: 4px 0 0 4px;
+    &:first-child {
+      //border: none;
+      border-radius: 4px 0 0 4px;
+    }
     &:last-child {
       border: none;
       border-radius: 0 4px 4px 0;
@@ -107,11 +111,11 @@
     }
 
     &:hover {
-      border-color: @grey-mortar;
+      color: @grey-mortar;
     }
 
     &:focus {
-      border-color: @primary-color;
+      color: @primary-color;
     }
 
     & > .btn-icon {
@@ -140,6 +144,7 @@
 }
 
 .md-add-button {
+  margin-right: 2px;
   &.md-open-button {
     transform: rotate(45deg);
   }

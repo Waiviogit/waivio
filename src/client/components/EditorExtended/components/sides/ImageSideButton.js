@@ -82,7 +82,7 @@ export default class ImageSideButton extends React.Component {
         >
           <Icon type="picture" className="btn-icon" />
           <span className="action-btn__caption">
-            {this.props.intl.formatMessage({ id: 'photo', defaultMessage: 'Photo' })}
+            {this.props.intl.formatMessage({ id: 'post_btn_photo', defaultMessage: 'Photo' })}
           </span>
           <input
             type="file"
