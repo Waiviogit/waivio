@@ -3,7 +3,7 @@ import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getUserCoordinatesByIpAdress } from '../components/Maps/mapHelper';
 import { rewardPostContainerData } from '../rewards/rewardsHelper';
-import { topicList } from '../../common/constants/listOfFields';
+import { topicList, userList } from '../../common/constants/listOfFields';
 
 require('isomorphic-fetch');
 
@@ -334,11 +334,12 @@ export const getRecommendTopics = () => dispatch => {
     },
   });
 };
+
 export const getRecommendExperts = () => dispatch => {
   dispatch({
     type: GET_RECOMMENDS_EXPERTS.ACTION,
     payload: {
-      promise: ApiClient.getRecommendTopic(topicList.length, 'en-US', 0, topicList),
+      promise: ApiClient.getUsers(userList.length, 'en-US', 0, userList),
     },
   });
 };

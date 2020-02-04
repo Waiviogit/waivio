@@ -962,16 +962,18 @@ export const getRecommendExperts = (limit = 30, locale = 'en-US', skip = 0, list
   }).then(res => res.json());
 };
 
-export const getInformation = (limit = 30, locale = 'en-US', skip = 0, listHashtag) => {
+export const getUsers = (limit = 30, locale = 'en-US', skip = 0, listUsers) => {
   return fetch(`${config.apiPrefix}${config.getUsers}`, {
     headers,
     method: 'POST',
-    body: JSON.stringify({
-      limit,
-      skip,
-      locale,
-      author_permlinks: listHashtag,
-    }),
+    body: JSON.stringify(listUsers),
+  }).then(res => res.json());
+};
+
+export const getNewUserFlag = userName => {
+  return fetch(`${config.apiPrefix}${config.user}/${userName}/setState`, {
+    headers,
+    method: 'GET',
   }).then(res => res.json());
 };
 

@@ -42,7 +42,7 @@ class FollowButton extends React.Component {
     following: PropTypes.string.isRequired,
     followingType: PropTypes.oneOf(['user', 'wobject']),
     authenticatedUserName: PropTypes.string,
-    followingList: PropTypes.arrayOf(PropTypes.string).isRequired,
+    followingList: PropTypes.arrayOf(PropTypes.string),
     pendingFollows: PropTypes.arrayOf(PropTypes.string).isRequired,
     onActionInitiated: PropTypes.func.isRequired,
     followUser: PropTypes.func,

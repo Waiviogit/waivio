@@ -6,7 +6,7 @@ import { addNewNotification } from '../app/appActions';
 import { getFollowing } from '../user/userActions';
 import { BUSY_API_TYPES } from '../../common/constants/notifications';
 import { setToken } from '../helpers/getToken';
-import { updateGuestProfile } from '../../waivioApi/ApiClient';
+import { updateGuestProfile, getNewUserFlag } from '../../waivioApi/ApiClient';
 import { notify } from '../app/Notification/notificationActions';
 
 export const LOGIN = '@auth/LOGIN';
@@ -24,11 +24,19 @@ export const RELOAD_START = '@auth/RELOAD_START';
 export const RELOAD_SUCCESS = '@auth/RELOAD_SUCCESS';
 export const RELOAD_ERROR = '@auth/RELOAD_ERROR';
 
+export const GET_NEW_USER_STATUS = createAsyncActionType('@auth/GET_NEW_USER_STATUS');
+
 export const LOGOUT = '@auth/LOGOUT';
 
 export const BUSY_LOGIN = createAsyncActionType('@auth/BUSY_LOGIN');
 
 const loginError = createAction(LOGIN_ERROR);
+export const getUserStatus = user => ({
+  type: GET_NEW_USER_STATUS.ACTION,
+  payload: {
+    promise: getNewUserFlag(user),
+  },
+});
 
 export const login = (accessToken = '', socialNetwork = '', regData = '') => async (
   dispatch,
@@ -38,8 +46,8 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   const state = getState();
 
   let promise = Promise.resolve(null);
-
   let isGuest = null;
+
   if (typeof localStorage !== 'undefined') {
     const token = localStorage.getItem('accessToken');
     isGuest = token === 'null' ? false : Boolean(token);

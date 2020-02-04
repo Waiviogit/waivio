@@ -9,8 +9,8 @@ import WeightTag from '../WeightTag';
 import Avatar from '../Avatar';
 import ObjectAvatar from '../ObjectAvatar';
 import FollowButton from '../../widgets/FollowButton';
-import { getRecommendTopics } from '../../user/userActions';
-import { recommendTopics } from '../../../common/constants/listOfFields';
+import { getRecommendTopics, getRecommendExperts } from '../../user/userActions';
+import { recommendTopics, recommendUses } from '../../../common/constants/listOfFields';
 
 import './WelcomeModal.less';
 
@@ -19,20 +19,30 @@ const WelcomeModal = ({
   followingObjectsList,
   followingList,
   recommendedTopics,
+  recommendedExperts,
   intl,
 }) => {
   const dispatch = useDispatch();
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [next, setNext] = useState(false);
   const followingKeysList = Object.keys(followingList);
   const haveFollowing = Boolean(followingKeysList.length) || Boolean(followingObjectsList.length);
 
-  useEffect(() => dispatch(getRecommendTopics()), []);
   useEffect(() => {
-    if (isAuthorization && !haveFollowing && recommendedTopics.length) {
+    dispatch(getRecommendTopics());
+    dispatch(getRecommendExperts());
+  }, []);
+
+  useEffect(() => {
+    if (
+      isAuthorization &&
+      !haveFollowing &&
+      recommendedTopics.length &&
+      recommendedExperts.length
+    ) {
       setIsOpen(true);
     }
-  }, [isAuthorization, followingObjectsList, followingList, recommendedTopics]);
+  }, [isAuthorization, followingObjectsList, followingList, recommendedTopics, recommendedExperts]);
 
   const NEWS = recommendedTopics.filter(topic => recommendTopics.news.includes(topic.default_name));
   const LIFESTYLE = recommendedTopics.filter(topic =>
@@ -48,6 +58,17 @@ const WelcomeModal = ({
     recommendTopics.stocks.includes(topic.default_name),
   );
   const MORE = recommendedTopics.filter(topic => recommendTopics.more.includes(topic.default_name));
+
+  const POLITICS = recommendedExperts.filter(user => recommendUses.politics.includes(user.name));
+  const ECONOMY = recommendedExperts.filter(user => recommendUses.economy.includes(user.name));
+  const SCIENCE = recommendedExperts.filter(user => recommendUses.science.includes(user.name));
+  const STEEM = recommendedExperts.filter(user => recommendUses.steem.includes(user.name));
+  const CRYPTO = recommendedExperts.filter(user => recommendUses.cryptos.includes(user.name));
+  const ENTERTAINMENTUSER = recommendedExperts.filter(user =>
+    recommendUses.entertainment.includes(user.name),
+  );
+  const HEALTH = recommendedExperts.filter(user => recommendUses.health.includes(user.name));
+  const TRAVEL = recommendedExperts.filter(user => recommendUses.travel.includes(user.name));
 
   const topic = [
     {
@@ -78,35 +99,35 @@ const WelcomeModal = ({
   const userList = [
     {
       name: 'POLITICS',
-      list: ['theouterlight', 'honeybee', 'ura-soul', 'johnvibes', 'corbettreport'],
+      list: POLITICS,
     },
     {
       name: 'ECONOMY',
-      list: ['themoneygps', 'joshsigurdson', 'x22report'],
+      list: ECONOMY,
     },
     {
       name: 'SCIENCE',
-      list: ['steemstem', 'emperorhassy', 'loveforlove'],
+      list: SCIENCE,
     },
     {
       name: 'STEEM',
-      list: ['theycallmedan', 'taskmaster4450', 'themarkymark'],
+      list: STEEM,
     },
     {
       name: 'CRYPTOS',
-      list: ['jrcornel', 'jondoe', 'vlemon', 'louisthomas'],
+      list: CRYPTO,
     },
     {
       name: 'ENTERTAINMENT',
-      list: ['dedicatedguy', 'newtrailers', 'traf'],
+      list: ENTERTAINMENTUSER,
     },
     {
       name: 'HEALTH',
-      list: ['anaestrada12', 'riccc96', 'naturalmedicine'],
+      list: HEALTH,
     },
     {
       name: 'TRAVEL',
-      list: ['koenau', 'travelgirl', 'jarvie'],
+      list: TRAVEL,
     },
   ];
 
@@ -136,8 +157,8 @@ const WelcomeModal = ({
   );
 
   const followingType = next ? 'user' : 'wobject';
-  const currentAvatar = name =>
-    next ? <Avatar size={30} username={name} /> : <ObjectAvatar item={name} size={30} />;
+  const currentAvatar = item =>
+    next ? <Avatar size={30} username={item.name} /> : <ObjectAvatar item={item} size={30} />;
   const currentRecommendList = next ? userList : topic;
   const currentAddress = name => (next ? `/object/${name.default_name}` : `/${name}`);
   return (
@@ -149,20 +170,20 @@ const WelcomeModal = ({
       onCancel={e => handleCancel(e)}
     >
       {currentRecommendList.map(obj => (
-        <div className="WelcomeModal__block">
+        <div key={obj.name} className="WelcomeModal__block">
           <div className="WelcomeModal__block-title">{obj.name}</div>
           {obj.list.map(theme => (
-            <div key={theme.defaultMessage} className="WelcomeModal__item">
+            <div key={theme.default_name || theme.name} className="WelcomeModal__item">
               <div className="WelcomeModal__mini-block">
                 {currentAvatar(theme)}
                 <Link className="WelcomeModal__name" target="_blank" to={currentAddress(theme)}>
-                  {theme.default_name || theme}
+                  {theme.default_name || theme.name}
                 </Link>
               </div>
               <div>
-                <WeightTag weight={theme.weight} />
+                <WeightTag weight={theme.weight || theme.wobjects_weight} />
                 <FollowButton
-                  following={theme.default_name || theme}
+                  following={theme.default_name || theme.name}
                   followingType={followingType}
                   secondary
                 />
@@ -177,12 +198,21 @@ const WelcomeModal = ({
 
 WelcomeModal.propTypes = {
   isAuthorization: PropTypes.bool.isRequired,
-  followingObjectsList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  followingList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  followingObjectsList: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.shape({})),
+    PropTypes.string,
+  ]),
+  followingList: PropTypes.shape({}).isRequired,
   recommendedTopics: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  recommendedExperts: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
+};
+
+WelcomeModal.defaultProps = {
+  followingObjectsList: [{}],
+  followingList: {},
 };
 
 const mapStateToProps = state => ({
@@ -190,6 +220,7 @@ const mapStateToProps = state => ({
   followingList: state.user.following.list,
   followingObjectsList: state.user.followingObjects.list,
   recommendedTopics: state.user.recommendedTopics,
+  recommendedExperts: state.user.recommendedExperts,
 });
 
 export default injectIntl(connect(mapStateToProps)(WelcomeModal));

@@ -19,7 +19,7 @@ import {
   getTranslations,
   getNightmode,
 } from './reducers';
-import { login, logout, busyLogin } from './auth/authActions';
+import { login, logout, busyLogin, getUserStatus } from './auth/authActions';
 import { getFollowing, getFollowingObjects, getNotifications } from './user/userActions';
 import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './app/appActions';
 import * as reblogActions from './app/Reblog/reblogActions';
@@ -45,6 +45,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     translations: getTranslations(state),
     locale: getLocale(state),
     nightmode: getNightmode(state),
+    isNewUser: state.auth.isNewUser,
   }),
   {
     login,
@@ -55,6 +56,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     getRate,
     getRewardFund,
     busyLogin,
+    getUserStatus,
     getRebloggedList: reblogActions.getRebloggedList,
     setUsedLocale,
   },
@@ -73,6 +75,7 @@ export default class Wrapper extends React.PureComponent {
     logout: PropTypes.func,
     getFollowing: PropTypes.func,
     getFollowingObjects: PropTypes.func,
+    getUserStatus: PropTypes.func,
     getRewardFund: PropTypes.func,
     getRebloggedList: PropTypes.func,
     getRate: PropTypes.func,
@@ -80,6 +83,7 @@ export default class Wrapper extends React.PureComponent {
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
     nightmode: PropTypes.bool,
+    isNewUser: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -87,6 +91,7 @@ export default class Wrapper extends React.PureComponent {
     translations: {},
     username: '',
     login: () => {},
+    getUserStatus: () => {},
     logout: () => {},
     getFollowing: () => {},
     getFollowingObjects: () => {},
@@ -162,6 +167,10 @@ export default class Wrapper extends React.PureComponent {
     } else {
       document.body.classList.remove('nightmode');
     }
+
+    if (this.props.username) {
+      this.props.getUserStatus(this.props.username);
+    }
   }
 
   async loadLocale(locale) {
@@ -216,7 +225,15 @@ export default class Wrapper extends React.PureComponent {
   }
 
   render() {
-    const { user, isAuthenticated, usedLocale, translations, history, username } = this.props;
+    const {
+      user,
+      isAuthenticated,
+      usedLocale,
+      translations,
+      history,
+      username,
+      isNewUser,
+    } = this.props;
 
     const language = findLanguage(usedLocale);
 
@@ -244,7 +261,7 @@ export default class Wrapper extends React.PureComponent {
                 <PowerUpOrDown />
                 <NotificationPopup />
                 <BBackTop className="primary-modal" />
-                <WelcomeModal />
+                {isNewUser && <WelcomeModal />}
               </div>
             </Layout>
           </AppSharedContext.Provider>
