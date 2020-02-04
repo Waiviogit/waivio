@@ -124,7 +124,12 @@ const Proposition = ({
         <CampaignCardHeader campaignData={proposition} />
       </div>
       <div className="Proposition__card">
-        <ObjectCardView wObject={proposedWobj} key={proposedWobj.id} />
+        <ObjectCardView
+          parentName={requiredObjectName}
+          parentPremlink={proposition.required_object.author_permlink}
+          wObject={proposedWobj}
+          key={proposedWobj.id}
+        />
       </div>
       <div
         className={classNames('Proposition__footer', {

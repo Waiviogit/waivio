@@ -6,15 +6,15 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
-import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 import DEFAULTS from '../object/const/defaultValues';
-import { objectFields as objectTypes } from '../../common/constants/listOfFields';
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
 import './ObjectCardView.less';
 
 const ObjectCardView = ({
   intl,
   wObject,
+  parentName,
+  parentPermlink,
   options: { mobileView = 'compact', ownRatesOnly = false, pathNameAvatar = '' },
 }) => {
   const screenSize = useSelector(getScreenSize);
@@ -61,7 +61,6 @@ const ObjectCardView = ({
     );
   };
   const objName = wObject.name || wObject.default_name;
-  const parentName = wObject.parent ? getFieldWithMaxWeight(wObject.parent, objectTypes.name) : '';
   const goToObjTitle = wobjName =>
     `${intl.formatMessage({
       id: 'GoTo',
@@ -75,10 +74,10 @@ const ObjectCardView = ({
             <Link to={pathName} title={goToObjTitle(objName)} className="ObjectCardView__avatar">
               {avatarLayout(wObject.avatar)}
             </Link>
-            <div className={'ObjectCardView__info'}>
+            <div className="ObjectCardView__info">
               {parentName && (
                 <Link
-                  to={`/object/${wObject.parent.author_permlink}`}
+                  to={`/object/${parentPermlink}`}
                   title={goToObjTitle(parentName)}
                   className="ObjectCardView__type"
                 >
@@ -147,9 +146,13 @@ ObjectCardView.propTypes = {
     ownRatesOnly: PropTypes.bool,
     pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
   }),
+  parentName: PropTypes.string,
+  parentPermlink: PropTypes.string,
 };
 
 ObjectCardView.defaultProps = {
   options: {},
+  parentName: '',
+  parentPermlink: '',
 };
 export default injectIntl(ObjectCardView);
