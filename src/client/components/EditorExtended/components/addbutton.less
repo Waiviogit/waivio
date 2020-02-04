@@ -35,9 +35,16 @@
       max-width: @input-max-width;
     }
 
-    .ant-input:focus {
-      box-shadow: none;
-      outline: none;
+    input.ant-input {
+      height: 36px;
+      &:focus {
+        box-shadow: none;
+        outline: none;
+      }
+      @media @medium {
+        border: 1px solid @primary-color;
+        border-radius: 4px;
+      }
     }
     .ant-btn {
       height: 36px;
