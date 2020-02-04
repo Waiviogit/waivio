@@ -261,9 +261,13 @@ class DiscoverObjectsContent extends Component {
             elementIsScrollable={false}
             threshold={1500}
           >
-            {filteredObjects.map(wObj => (
-              <ObjectCardView key={wObj.id} wObject={wObj} intl={intl} />
-            ))}
+            {filteredObjects.map(wObj =>
+              !wObj.hasCampaign ? (
+                <ObjectCardView key={wObj.id} wObject={wObj} intl={intl} />
+              ) : (
+                <div>QQQ</div>
+              ),
+            )}
           </ReduxInfiniteScroll>
         ) : (
           (isFetching && <Loading />) || (

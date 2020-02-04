@@ -117,7 +117,10 @@ const ObjectCardView = ({
                 ))}
               </span>
               {wObject.address && (
-                <div className="ObjectCardView__tag-text">{`${wObject.address.street}, ${wObject.address.city}`}</div>
+                <div className="ObjectCardView__tag-text">
+                  {wObject.address.street && <span>{`${wObject.address.street}, `}</span>}
+                  {wObject.address.city && <span>{wObject.address.city}</span>}
+                </div>
               )}
               {/* eslint-disable-next-line no-nested-ternary */}
               {wObject.title ? (
