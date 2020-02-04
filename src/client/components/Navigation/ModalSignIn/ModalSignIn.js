@@ -36,7 +36,7 @@ const ModalSignIn = ({ next }) => {
           });
         });
       } else {
-        setUserData({ ...response, socialNetwork: 'google' });
+        setUserData({ ...response, image: response.w3.Paa, socialNetwork: 'google' });
         setIsFormVisible(true);
       }
     }
@@ -58,7 +58,7 @@ const ModalSignIn = ({ next }) => {
           });
         });
       } else {
-        setUserData({ ...response, socialNetwork: 'facebook' });
+        setUserData({ ...response, image: response.picture.data.url, socialNetwork: 'facebook' });
         setIsFormVisible(true);
       }
     }
@@ -95,6 +95,12 @@ const ModalSignIn = ({ next }) => {
     </React.Fragment>
   );
 
+  const onModalClose = () => {
+    setIsModalOpen(false);
+    setIsFormVisible(false);
+  };
+
+
   return (
     <React.Fragment>
       <a role="presentation" onClick={() => setIsModalOpen(true)}>
@@ -104,7 +110,7 @@ const ModalSignIn = ({ next }) => {
         width={416}
         title=""
         visible={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
+        onCancel={onModalClose}
         footer={null}
       >
         <div className="ModalSignUp">
