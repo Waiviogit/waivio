@@ -12,8 +12,11 @@
   top: 0;
   transition: all 0.1s ease;
 
-  div {
+  .act-buttons-group {
     display: flex;
+    border: 1px solid @blue-botticelli;
+    border-radius: 4px;
+    margin-left: 2px;
   }
 
   .video-link-input,
@@ -75,7 +78,6 @@
   min-width: @add-btn-width;
   border-radius: @add-btn-width / 2;
   font-size: 22px;
-  margin-right: 2px;
   text-align: center;
   transition: all 0.2s ease;
 
@@ -89,8 +91,20 @@
   }
 
   &.action-btn {
-    border-color: @blue-botticelli;
+    display: inline-flex;
+    align-items: center;
     line-height: 1;
+    padding: 4px 10px;
+    border: none;
+    border-right: 1px solid @blue-botticelli;
+    border-radius: 4px 0 0 4px;
+    &:last-child {
+      border: none;
+      border-radius: 0 4px 4px 0;
+    }
+    @media @small {
+      padding: 4px;
+    }
 
     &:hover {
       border-color: @grey-mortar;
@@ -100,7 +114,7 @@
       border-color: @primary-color;
     }
 
-    & > .video-btn {
+    & > .btn-icon {
       padding-left: 2px;
       svg path {
         fill: @grey-empress;
@@ -111,6 +125,15 @@
       font-size: 24px;
       svg path {
         fill: @grey-empress;
+      }
+    }
+
+    .action-btn__caption {
+      display: none;
+      font-size: 19px;
+      padding-left: 4px;
+      @media @small {
+        display: unset;
       }
     }
   }
