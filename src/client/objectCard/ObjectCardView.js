@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { filter, includes, orderBy } from 'lodash';
+import { filter, includes, orderBy, isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -13,8 +13,7 @@ import './ObjectCardView.less';
 const ObjectCardView = ({
   intl,
   wObject,
-  parentName,
-  parentPermlink,
+  parentObject,
   options: { mobileView = 'compact', ownRatesOnly = false, pathNameAvatar = '' },
 }) => {
   const screenSize = useSelector(getScreenSize);
@@ -47,6 +46,9 @@ const ObjectCardView = ({
 
   const avatarLayout = (avatar = DEFAULTS.AVATAR) => {
     let url = avatar;
+    if (!isEmpty(parentObject) && avatar === DEFAULTS.AVATAR) {
+      url = parentObject.avatar;
+    }
     if (includes(url, 'waivio.')) url = `${url}_medium`;
 
     return (
@@ -61,6 +63,7 @@ const ObjectCardView = ({
     );
   };
   const objName = wObject.name || wObject.default_name;
+  const parentName = parentObject.name || parentObject.default_name;
   const goToObjTitle = wobjName =>
     `${intl.formatMessage({
       id: 'GoTo',
@@ -77,7 +80,7 @@ const ObjectCardView = ({
             <div className="ObjectCardView__info">
               {parentName && (
                 <Link
-                  to={`/object/${parentPermlink}`}
+                  to={`/object/${parentObject.author_permlink}`}
                   title={goToObjTitle(parentName)}
                   className="ObjectCardView__type"
                 >
@@ -146,13 +149,11 @@ ObjectCardView.propTypes = {
     ownRatesOnly: PropTypes.bool,
     pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
   }),
-  parentName: PropTypes.string,
-  parentPermlink: PropTypes.string,
+  parentObject: PropTypes.shape(),
 };
 
 ObjectCardView.defaultProps = {
   options: {},
-  parentName: '',
-  parentPermlink: '',
+  parentObject: {},
 };
 export default injectIntl(ObjectCardView);

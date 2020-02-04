@@ -36,6 +36,7 @@ const Proposition = ({
   const proposedWobj = getClientWObj(wobj, usedLocale);
   const [isModalDetailsOpen, setModalDetailsOpen] = useState(false);
   const [isReviewDetails, setReviewDetails] = useState(false);
+  const parentObject = getClientWObj(proposition.required_object, usedLocale);
   const requiredObjectName = getFieldWithMaxWeight(
     proposition.required_object,
     'name',
@@ -124,12 +125,7 @@ const Proposition = ({
         <CampaignCardHeader campaignData={proposition} />
       </div>
       <div className="Proposition__card">
-        <ObjectCardView
-          parentName={requiredObjectName}
-          parentPremlink={proposition.required_object.author_permlink}
-          wObject={proposedWobj}
-          key={proposedWobj.id}
-        />
+        <ObjectCardView parentObject={parentObject} wObject={proposedWobj} key={proposedWobj.id} />
       </div>
       <div
         className={classNames('Proposition__footer', {
