@@ -77,7 +77,7 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
     } else {
       callback(
         <FormattedMessage
-          id="please_input_username_"
+          id="please_input_username"
           defaultMessage="You need to confirm agreement"
         />,
       );

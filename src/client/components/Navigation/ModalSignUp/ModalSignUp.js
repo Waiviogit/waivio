@@ -52,6 +52,9 @@ const ModalSignUp = ({ isButton }) => {
             dispatch(getFollowingObjects());
             dispatch(getNotifications());
             dispatch(busyLogin());
+            dispatch(getRewardFund());
+            dispatch(getRebloggedList());
+            dispatch(getRate());
           });
         });
       } else {
