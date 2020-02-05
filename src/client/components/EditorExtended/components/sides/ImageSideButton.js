@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
-// import { EditorState, AtomicBlockUtils } from 'draft-js';
-import { Modal } from 'antd';
+import { Icon, Modal } from 'antd';
 import { addNewBlock } from '../../model';
 import { Block } from '../../util/constants';
 import ImageSetter from '../../../ImageSetter/ImageSetter';
@@ -81,7 +80,10 @@ export default class ImageSideButton extends React.Component {
           onClick={this.onClick}
           title={this.props.intl.formatMessage({ id: 'image', defaultMessage: 'Add an image' })}
         >
-          <i className="iconfont icon-picture" />
+          <Icon type="picture" className="btn-icon" />
+          <span className="action-btn__caption">
+            {this.props.intl.formatMessage({ id: 'post_btn_photo', defaultMessage: 'Photo' })}
+          </span>
           <input
             type="file"
             accept="image/*"
