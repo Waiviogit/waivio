@@ -65,11 +65,8 @@ const ObjectCardView = ({
     );
   };
   const objName = wObject.name || wObject.default_name;
-  // eslint-disable-next-line no-nested-ternary
   const parentName = isEmpty(passedObject)
-    ? wObject.parent
-      ? getFieldWithMaxWeight(wObject.parent, objectTypes.name)
-      : ''
+    ? getFieldWithMaxWeight(wObject.parent, objectTypes.name, '')
     : passedObject.name || passedObject.default_name;
 
   const goToObjTitle = wobjName =>
