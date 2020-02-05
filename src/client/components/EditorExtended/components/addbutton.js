@@ -160,7 +160,7 @@ export default class AddButton extends React.Component {
           (this.state.isControlElem ? (
             this.sideControl
           ) : (
-            <TransitionGroup>
+            <TransitionGroup className="act-buttons-group">
               {this.props.sideButtons.map(button => {
                 const Button = button.component;
                 const extraProps = button.props ? button.props : {};

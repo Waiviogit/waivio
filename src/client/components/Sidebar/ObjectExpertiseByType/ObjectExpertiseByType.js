@@ -13,42 +13,17 @@ import './ObjectExpertiseByType.less';
 const initialState = {
   experts: [],
   loading: true,
-  skip: 0,
-  limit: 15,
-  hasNext: true,
 };
 
 const ObjectExpertiseByType = ({ match, intl }) => {
   const typeName = match.params.typeName;
   const [objectsState, setObjectsState] = useState(initialState);
   const [showModal, setShowModal] = useState(false);
-  // eslint-disable-next-line prefer-const
-  let { skip, limit } = objectsState;
-
-  const getExperts = () => {
-    getObjectExpertiseByType(typeName, skip, limit)
-      .then(data => {
-        setObjectsState({
-          ...objectsState,
-          experts: [...objectsState.experts, ...data],
-          skip: skip + limit,
-          hasNext: data.length === 15,
-        });
-      })
-      .catch(() => setObjectsState({ ...objectsState, hasNext: false, loading: false }));
-  };
 
   useEffect(() => {
-    skip = 0;
-    getObjectExpertiseByType(typeName, skip, limit)
+    getObjectExpertiseByType(typeName, 0, 30)
       .then(data => {
-        setObjectsState({
-          ...objectsState,
-          experts: [...data],
-          skip: skip + limit,
-          loading: false,
-          hasNext: data.length === 15,
-        });
+        setObjectsState({ experts: [...data], loading: false });
       })
       .catch(() => setObjectsState({ ...initialState, loading: false }));
     return () => setObjectsState(initialState);
@@ -87,12 +62,6 @@ const ObjectExpertiseByType = ({ match, intl }) => {
         </h4>
       );
 
-      const onWheelHandler = () => {
-        if (objectsState.hasNext) {
-          getExperts();
-        }
-      };
-
       renderCard = (
         <div className="SidebarContentBlock" key={typeName}>
           <div className="SidebarContentBlock__title">
@@ -101,7 +70,7 @@ const ObjectExpertiseByType = ({ match, intl }) => {
           </div>
           <div className="SidebarContentBlock__content">{renderObjects}</div>
           {renderButtons()}
-          <div id="ObjectExpertiseByType__Modal" onWheel={_.throttle(onWheelHandler, 120)}>
+          <div id="ObjectExpertiseByType__Modal">
             <Modal
               title={intl.formatMessage({ id: 'type_experts', defaultMessage: 'Type Experts' })}
               visible={showModal}
