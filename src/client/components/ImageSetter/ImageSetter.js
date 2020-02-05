@@ -88,9 +88,9 @@ const ImageSetter = ({
   }, []);
 
   const handleChangeImage = async e => {
-    if (e.target.files && e.target.files[0]) {
+    if (e.currentTarget.files && e.currentTarget.files[0]) {
       const uploadedImages = [];
-      const images = Object.values(e.target.files);
+      const images = Object.values(e.currentTarget.files);
       setFileImages(images);
       if (images.length > 25 || currentImages.length + images.length > 25) {
         message.error(
