@@ -1016,8 +1016,18 @@
   "nickname": "Никнейм",
   "preferred_languages": "Предпочитаемые языки",
   "public_profile": "Публичный профиль",
-  "next": "Дальше",
   "open_my_feed": "Открыть мою ленту",
   "select_experts_to_follow": "Выберите експерта",
-  "select_topic_to_follow": "Выберите тему"
+  "select_topic_to_follow": "Выберите тему",
+  "next": "Дальше",
+  "lifestyle": "стиль жизни",
+  "entertainment": "развлечения",
+  "cryptos": "криптовалюта",
+  "stocks": "акции",
+  "more": "другие",
+  "politics": "политика",
+  "economy": "економикая",
+  "science": "наука",
+  "health": "здоровье",
+  "travel": "путешествия"
 }

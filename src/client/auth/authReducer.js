@@ -100,20 +100,6 @@ export default (state = initialState, action) => {
       return state;
     }
 
-    case types.GET_NEW_USER_STATUS.SUCCESS: {
-      if (action.payload.result) {
-        return {
-          ...state,
-          isNewUser: action.payload.result,
-        };
-      }
-
-      return state;
-    }
-
-    case types.GET_NEW_USER_STATUS.ERROR:
-      return state;
-
     case types.UPDATE_PROFILE_ERROR:
       return state;
 

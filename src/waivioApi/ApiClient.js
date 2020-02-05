@@ -970,13 +970,6 @@ export const getUsers = (limit = 30, locale = 'en-US', skip = 0, listUsers) => {
   }).then(res => res.json());
 };
 
-export const getNewUserFlag = userName => {
-  return fetch(`${config.apiPrefix}${config.user}/${userName}/setState`, {
-    headers,
-    method: 'GET',
-  }).then(res => res.json());
-};
-
 // injected as extra argument in Redux Thunk
 export const waivioAPI = {
   getAuthenticatedUserMetadata,

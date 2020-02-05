@@ -15,6 +15,7 @@ const initialState = {
   exitPageSetting: true,
   rewardSetting: rewardsValues.half,
   postLocales: [],
+  newUser: false,
 };
 
 const settings = (state = initialState, action) => {

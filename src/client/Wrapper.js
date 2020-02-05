@@ -19,7 +19,7 @@ import {
   getTranslations,
   getNightmode,
 } from './reducers';
-import { login, logout, busyLogin, getUserStatus } from './auth/authActions';
+import { login, logout, busyLogin } from './auth/authActions';
 import { getFollowing, getFollowingObjects, getNotifications } from './user/userActions';
 import { getRate, getRewardFund, setUsedLocale, setAppUrl } from './app/appActions';
 import * as reblogActions from './app/Reblog/reblogActions';
@@ -45,7 +45,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     translations: getTranslations(state),
     locale: getLocale(state),
     nightmode: getNightmode(state),
-    isNewUser: state.auth.isNewUser,
+    isNewUser: state.settings.newUser,
   }),
   {
     login,
@@ -56,7 +56,6 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     getRate,
     getRewardFund,
     busyLogin,
-    getUserStatus,
     getRebloggedList: reblogActions.getRebloggedList,
     setUsedLocale,
   },
@@ -75,7 +74,6 @@ export default class Wrapper extends React.PureComponent {
     logout: PropTypes.func,
     getFollowing: PropTypes.func,
     getFollowingObjects: PropTypes.func,
-    getUserStatus: PropTypes.func,
     getRewardFund: PropTypes.func,
     getRebloggedList: PropTypes.func,
     getRate: PropTypes.func,
@@ -166,10 +164,6 @@ export default class Wrapper extends React.PureComponent {
       document.body.classList.add('nightmode');
     } else {
       document.body.classList.remove('nightmode');
-    }
-
-    if (this.props.username) {
-      this.props.getUserStatus(this.props.username);
     }
   }
 

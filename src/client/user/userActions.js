@@ -3,7 +3,7 @@ import { createAsyncActionType } from '../helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getUserCoordinatesByIpAdress } from '../components/Maps/mapHelper';
 import { rewardPostContainerData } from '../rewards/rewardsHelper';
-import { topicList, userList } from '../../common/constants/listOfFields';
+import { newUserRecommendExperts, newUserRecommendTopics } from '../../common/constants/waivio';
 
 require('isomorphic-fetch');
 
@@ -327,6 +327,10 @@ export const GET_RECOMMENDS_HASHTAGS = createAsyncActionType('@user/GET_RECOMMEN
 export const GET_RECOMMENDS_EXPERTS = createAsyncActionType('@user/GET_RECOMMENDS_EXPERTS');
 
 export const getRecommendTopics = () => dispatch => {
+  const topicList = Object.values(newUserRecommendTopics).reduce(
+    (arr, acc) => [...acc, ...arr],
+    [],
+  );
   dispatch({
     type: GET_RECOMMENDS_HASHTAGS.ACTION,
     payload: {
@@ -336,6 +340,10 @@ export const getRecommendTopics = () => dispatch => {
 };
 
 export const getRecommendExperts = () => dispatch => {
+  const userList = Object.values(newUserRecommendExperts).reduce(
+    (arr, acc) => [...acc, ...arr],
+    [],
+  );
   dispatch({
     type: GET_RECOMMENDS_EXPERTS.ACTION,
     payload: {

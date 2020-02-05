@@ -28,62 +28,6 @@ export const objectFields = {
   categoryItem: 'categoryItem',
 };
 
-export const topicList = [
-  'politics',
-  'science',
-  'food',
-  'health',
-  'travel',
-  'movies',
-  'music',
-  'art',
-  'photography',
-  'bitcoin',
-  'ethereum',
-  'EOS',
-  'steem',
-  'crypto',
-  'currency',
-  'blockchain',
-  'trading',
-  'gold',
-  'stocks',
-  'funny',
-  'cats',
-  'beer',
-  'poll',
-];
-
-export const userList = [
-  'theouterlight',
-  'honeybee',
-  'ura-soul',
-  'johnvibes',
-  'corbettreport',
-  'themoneygps',
-  'joshsigurdson',
-  'x22report',
-  'steemstem',
-  'emperorhassy',
-  'loveforlove',
-  'theycallmedan',
-  'taskmaster4450',
-  'themarkymark',
-  'jrcornel',
-  'jondoe',
-  'vlemon',
-  'louisthomas',
-  'dedicatedguy',
-  'newtrailers',
-  'traf',
-  'anaestrada12',
-  'riccc96',
-  'naturalmedicine',
-  'koenau',
-  'travelgirl',
-  'jarvie',
-];
-
 export const TYPES_OF_MENU_ITEM = {
   LIST: 'menuList',
   PAGE: 'menuPage',
@@ -203,25 +147,6 @@ export const getAllowedFieldsByObjType = objectType => {
       );
     }
   }
-};
-
-export const recommendTopics = {
-  news: ['politics', 'science'],
-  lifestyle: ['food', 'health', 'travel'],
-  entertainment: ['movies', 'music', 'art', 'photography'],
-  cryptos: ['bitcoin', 'ethereum', 'EOS', 'steem', 'crypto', 'currency', 'blockchain'],
-  stocks: ['trading', 'gold', 'stocks'],
-  more: ['funny', 'cats', 'beer', 'poll'],
-};
-export const recommendUses = {
-  politics: ['theouterlight', 'honeybee', 'ura-soul', 'johnvibes', 'corbettreport'],
-  economy: ['themoneygps', 'joshsigurdson', 'x22report'],
-  science: ['steemstem', 'emperorhassy', 'loveforlove'],
-  steem: ['theycallmedan', 'taskmaster4450', 'themarkymark'],
-  cryptos: ['jrcornel', 'jondoe', 'vlemon', 'louisthomas'],
-  entertainment: ['dedicatedguy', 'newtrailers', 'traf'],
-  health: ['anaestrada12', 'riccc96', 'naturalmedicine'],
-  travel: ['koenau', 'travelgirl', 'jarvie'],
 };
 
 export default null;

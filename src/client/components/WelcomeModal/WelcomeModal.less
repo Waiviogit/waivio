@@ -11,15 +11,6 @@
     font-size: 25px;
   }
 
-  .ant-modal-body {
-    overflow: auto;
-    height: 75vh;
-
-    @media @small {
-      height: 50vh;
-    }
-  }
-
   .ant-modal-header {
     border: none;
   }
@@ -42,6 +33,7 @@
     outline: none;
     color: @white;
     cursor: pointer;
+    transition: 0.3s;
 
     &:hover {
       color: @white;
@@ -69,11 +61,19 @@
   }
 
   &__name {
-    margin-left: 10px;
+    margin: 0 5px;
     text-transform: lowercase;
     font-weight: 600;
     color: @black;
     cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 90px;
+    text-overflow: ellipsis;
+
+    @media @xsmall {
+      max-width: none;
+    }
 
     &:hover {
       color: @black;
@@ -91,3 +91,5 @@
     }
   }
 }
+
+@import 'WelcomeModal-nightmode';
