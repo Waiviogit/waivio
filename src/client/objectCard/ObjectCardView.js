@@ -85,7 +85,11 @@ const ObjectCardView = ({
             <div className="ObjectCardView__info">
               {parentName && (
                 <Link
-                  to={`/object/${passedParent.author_permlink}`}
+                  to={`/object/${
+                    isEmpty(passedParent)
+                      ? wObject.parent.author_permlink
+                      : passedParent.author_permlink
+                  }`}
                   title={goToObjTitle(parentName)}
                   className="ObjectCardView__type"
                 >
