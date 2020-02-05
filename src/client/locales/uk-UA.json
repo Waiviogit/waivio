@@ -784,5 +784,15 @@
   "next": "Далі",
   "open_my_feed": "Відкрити мою стрічку",
   "select_experts_to_follow": "Виберіть експерта",
-  "select_topic_to_follow": "Виберіть тему"
+  "select_topic_to_follow": "Виберіть тему",
+  "lifestyle": "стиль життя",
+  "entertainment": "розваги",
+  "cryptos": "криптовалюта",
+  "stocks": "акції",
+  "more": "інше",
+  "politics": "політика",
+  "economy": "економіка",
+  "science": "наука",
+  "health": "здоров'я",
+  "travel": "подорожі"
 }
