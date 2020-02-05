@@ -12,8 +12,10 @@
   top: 0;
   transition: all 0.1s ease;
 
-  div {
+  .act-buttons-group {
     display: flex;
+    border: 1px solid @blue-botticelli;
+    border-radius: 4px;
   }
 
   .video-link-input,
@@ -32,9 +34,16 @@
       max-width: @input-max-width;
     }
 
-    .ant-input:focus {
-      box-shadow: none;
-      outline: none;
+    input.ant-input {
+      height: 36px;
+      &:focus {
+        box-shadow: none;
+        outline: none;
+      }
+      @media @medium {
+        border: 1px solid @primary-color;
+        border-radius: 4px;
+      }
     }
     .ant-btn {
       height: 36px;
@@ -75,7 +84,6 @@
   min-width: @add-btn-width;
   border-radius: @add-btn-width / 2;
   font-size: 22px;
-  margin-right: 2px;
   text-align: center;
   transition: all 0.2s ease;
 
@@ -89,18 +97,33 @@
   }
 
   &.action-btn {
-    border-color: @blue-botticelli;
+    display: inline-flex;
+    align-items: center;
     line-height: 1;
+    padding: 4px 10px;
+    border: none;
+    border-radius: 0;
+    border-right: 1px solid @blue-botticelli;
+    &:first-child {
+      border-radius: 4px 0 0 4px;
+    }
+    &:last-child {
+      border: none;
+      border-radius: 0 4px 4px 0;
+    }
+    @media @small {
+      padding: 4px;
+    }
 
     &:hover {
-      border-color: @grey-mortar;
+      color: @grey-mortar;
     }
 
     &:focus {
-      border-color: @primary-color;
+      color: @primary-color;
     }
 
-    & > .video-btn {
+    & > .btn-icon {
       padding-left: 2px;
       svg path {
         fill: @grey-empress;
@@ -113,10 +136,20 @@
         fill: @grey-empress;
       }
     }
+
+    .action-btn__caption {
+      display: none;
+      font-size: 19px;
+      padding-left: 4px;
+      @media @small {
+        display: unset;
+      }
+    }
   }
 }
 
 .md-add-button {
+  margin-right: 2px;
   &.md-open-button {
     transform: rotate(45deg);
   }
