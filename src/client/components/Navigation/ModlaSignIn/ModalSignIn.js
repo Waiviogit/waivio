@@ -11,8 +11,8 @@ import { isUserRegistered } from '../../../../waivioApi/ApiClient';
 import { getFollowing, getFollowingObjects, getNotifications } from '../../../user/userActions';
 import { getRate, getRewardFund } from './../../../app/appActions';
 import { getRebloggedList } from './../../../app/Reblog/reblogActions';
-import '../ModalSignUp/ModalSignUp.less';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
+import '../ModalSignUp/ModalSignUp.less';
 
 const ModalSignIn = ({ next }) => {
   const dispatch = useDispatch();
@@ -36,7 +36,7 @@ const ModalSignIn = ({ next }) => {
           });
         });
       } else {
-        setUserData({ ...response, socialNetwork: 'google' });
+        setUserData({ ...response, image: response.w3.Paa, socialNetwork: 'google' });
         setIsFormVisible(true);
       }
     }
@@ -52,10 +52,13 @@ const ModalSignIn = ({ next }) => {
             dispatch(getFollowingObjects());
             dispatch(getNotifications());
             dispatch(busyLogin());
+            dispatch(getRewardFund());
+            dispatch(getRebloggedList());
+            dispatch(getRate());
           });
         });
       } else {
-        setUserData({ ...response, socialNetwork: 'facebook' });
+        setUserData({ ...response, image: response.picture.data.url, socialNetwork: 'facebook' });
         setIsFormVisible(true);
       }
     }
@@ -92,18 +95,17 @@ const ModalSignIn = ({ next }) => {
     </React.Fragment>
   );
 
+  const onModalClose = () => {
+    setIsModalOpen(false);
+    setIsFormVisible(false);
+  };
+
   return (
     <React.Fragment>
       <a role="presentation" onClick={() => setIsModalOpen(true)}>
         <FormattedMessage id="signin" defaultMessage="Log in" />
       </a>
-      <Modal
-        width={416}
-        title=""
-        visible={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
-        footer={null}
-      >
+      <Modal width={416} title="" visible={isModalOpen} onCancel={onModalClose} footer={null}>
         <div className="ModalSignUp">
           {isFormVisible ? (
             <GuestSignUpForm userData={userData} isModalOpen={isModalOpen} />

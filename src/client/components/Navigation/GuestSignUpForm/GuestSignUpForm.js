@@ -3,6 +3,7 @@ import { Button, Checkbox, Form, Input, Select } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
 import getSlug from 'speakingurl';
 import { GUEST_PREFIX } from '../../../../common/constants/waivio';
 import { getUserAccount } from '../../../../waivioApi/ApiClient';
@@ -70,6 +71,19 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
     callback();
   };
 
+  const checkboxValidator = (rule, value, callback) => {
+    if (value) {
+      callback();
+    } else {
+      callback(
+        <FormattedMessage
+          id="please_input_username"
+          defaultMessage="You need to confirm agreement"
+        />,
+      );
+    }
+  };
+
   const hasErrors = fieldsError => Object.keys(fieldsError).some(field => fieldsError[field]);
 
   const handleSubmit = e => {
@@ -77,14 +91,13 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
     validateFields((err, values) => {
       if (!err) {
         setIsLoading(true);
-        dispatch(
-          login(userData.accessToken, userData.socialNetwork, {
-            userName: `${GUEST_PREFIX}${values.username}`,
-            avatar: values.avatar[0].src,
-            alias: values.alias,
-            locales: values.locales,
-          }),
-        ).then(() => {
+        const regData = {
+          userName: `${GUEST_PREFIX}${values.username}`,
+          avatar: isEmpty(values.avatar) ? '' : values.avatar[0].src,
+          alias: values.alias || '',
+          locales: typeof values.locales === 'string' ? [values.locales] : values.locales,
+        };
+        dispatch(login(userData.accessToken, userData.socialNetwork, regData)).then(() => {
           setIsLoading(false);
         });
       } else {
@@ -152,7 +165,7 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
             <ImageSetter
               onImageLoaded={getAvatar}
               onLoadingImage={setIsLoading}
-              defaultImage={userData.w3.Paa}
+              defaultImage={userData.image}
             />,
           )}
         </Form.Item>
@@ -207,17 +220,9 @@ const GuestSignUpForm = ({ form, userData, isModalOpen }) => {
           label={<FormattedMessage id="rewards_details_legal" defaultMessage="Legal" />}
         >
           {getFieldDecorator('agreement', {
-            checked: false,
-            valuePropName: 'checked',
             rules: [
               {
-                required: true,
-                message: (
-                  <FormattedMessage
-                    id="please_input_username_"
-                    defaultMessage="You need to confirm agreement"
-                  />
-                ),
+                validator: checkboxValidator,
               },
             ],
           })(

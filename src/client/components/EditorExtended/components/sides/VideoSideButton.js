@@ -58,7 +58,10 @@ class VideoSideButton extends Component {
         })}
         onClick={this.onClick}
       >
-        <Icon type="video-camera" className="video-btn" />
+        <Icon type="video-camera" className="btn-icon" />
+        <span className="action-btn__caption">
+          {this.props.intl.formatMessage({ id: 'post_btn_video', defaultMessage: 'Video' })}
+        </span>
       </button>
     );
   }

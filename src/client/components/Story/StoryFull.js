@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom';
 import { Collapse, Icon } from 'antd';
 import Lightbox from 'react-image-lightbox';
 import { getFromMetadata, extractImageTags } from '../../helpers/parser';
-import { isPostDeleted, dropCategory } from '../../helpers/postHelpers';
+import { isPostDeleted, dropCategory, replaceBotWithGuestName } from '../../helpers/postHelpers';
 import withAuthActions from '../../auth/withAuthActions';
 import { getProxyImageURL } from '../../helpers/image';
 import Popover from '../Popover';
@@ -106,7 +106,9 @@ class StoryFull extends React.Component {
 
   componentWillUnmount() {
     const { post } = this.props;
-    const hideWhiteBG = document && document.location.pathname !== dropCategory(post.url);
+    const hideWhiteBG =
+      document &&
+      document.location.pathname !== replaceBotWithGuestName(dropCategory(post.url), post.userInfo);
     if (hideWhiteBG) {
       document.body.classList.remove('white-bg');
     }
@@ -262,7 +264,7 @@ class StoryFull extends React.Component {
             />
           </h3>
           <h4>
-            <Link to={dropCategory(post.url)}>
+            <Link to={replaceBotWithGuestName(dropCategory(post.url), post.userInfo)}>
               <FormattedMessage
                 id="post_reply_show_original_post"
                 defaultMessage="Show original post"
