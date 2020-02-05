@@ -125,7 +125,7 @@ const Proposition = ({
         <CampaignCardHeader campaignData={proposition} />
       </div>
       <div className="Proposition__card">
-        <ObjectCardView parentObject={parentObject} wObject={proposedWobj} key={proposedWobj.id} />
+        <ObjectCardView passedObject={parentObject} wObject={proposedWobj} key={proposedWobj.id} />
       </div>
       <div
         className={classNames('Proposition__footer', {

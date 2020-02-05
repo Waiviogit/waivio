@@ -7,13 +7,15 @@ import { Link } from 'react-router-dom';
 import RatingsWrap from './RatingsWrap/RatingsWrap';
 import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
+import { getFieldWithMaxWeight } from '../object/wObjectHelper';
 import { getAuthenticatedUserName, getScreenSize } from '../reducers';
+import { objectFields as objectTypes } from '../../common/constants/listOfFields';
 import './ObjectCardView.less';
 
 const ObjectCardView = ({
   intl,
   wObject,
-  parentObject,
+  passedObject,
   options: { mobileView = 'compact', ownRatesOnly = false, pathNameAvatar = '' },
 }) => {
   const screenSize = useSelector(getScreenSize);
@@ -46,8 +48,8 @@ const ObjectCardView = ({
 
   const avatarLayout = (avatar = DEFAULTS.AVATAR) => {
     let url = avatar;
-    if (!isEmpty(parentObject) && avatar === DEFAULTS.AVATAR) {
-      url = parentObject.avatar;
+    if (!isEmpty(passedObject) && avatar === DEFAULTS.AVATAR) {
+      url = passedObject.avatar;
     }
     if (includes(url, 'waivio.')) url = `${url}_medium`;
 
@@ -63,7 +65,13 @@ const ObjectCardView = ({
     );
   };
   const objName = wObject.name || wObject.default_name;
-  const parentName = parentObject.name || parentObject.default_name;
+  // eslint-disable-next-line no-nested-ternary
+  const parentName = isEmpty(passedObject)
+    ? wObject.parent
+      ? getFieldWithMaxWeight(wObject.parent, objectTypes.name)
+      : ''
+    : passedObject.name || passedObject.default_name;
+
   const goToObjTitle = wobjName =>
     `${intl.formatMessage({
       id: 'GoTo',
@@ -80,7 +88,7 @@ const ObjectCardView = ({
             <div className="ObjectCardView__info">
               {parentName && (
                 <Link
-                  to={`/object/${parentObject.author_permlink}`}
+                  to={`/object/${passedObject.author_permlink}`}
                   title={goToObjTitle(parentName)}
                   className="ObjectCardView__type"
                 >
@@ -149,11 +157,11 @@ ObjectCardView.propTypes = {
     ownRatesOnly: PropTypes.bool,
     pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
   }),
-  parentObject: PropTypes.shape(),
+  passedObject: PropTypes.shape(),
 };
 
 ObjectCardView.defaultProps = {
   options: {},
-  parentObject: {},
+  passedObject: {},
 };
 export default injectIntl(ObjectCardView);
